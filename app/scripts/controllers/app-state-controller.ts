@@ -61,6 +61,13 @@ import type {
   PreferencesControllerStateChangeEvent,
 } from './preferences-controller';
 
+export type DappSwapComparisonData = {
+  quotes?: QuoteResponse[];
+  latency?: number;
+  commands?: string;
+  error?: string;
+};
+
 export type AppStateControllerState = {
   activeQrCodeScanRequest: QrScanRequest | null;
   addressSecurityAlertResponses: Record<string, CachedScanAddressResponse>;
@@ -133,12 +140,7 @@ export type AppStateControllerState = {
   pendingShieldCohortTxType: string | null;
   defaultSubscriptionPaymentOptions?: DefaultSubscriptionPaymentOptions;
   dappSwapComparisonData?: {
-    [uniqueId: string]: {
-      quotes?: QuoteResponse[];
-      latency?: number;
-      commands?: string;
-      error?: string;
-    };
+    [uniqueId: string]: DappSwapComparisonData;
   };
 
   /**
@@ -1641,12 +1643,7 @@ export class AppStateController extends BaseController<
 
   setDappSwapComparisonData(
     uniqueId: string,
-    info: {
-      quotes?: QuoteResponse[];
-      latency?: number;
-      commands?: string;
-      error?: string;
-    },
+    info: DappSwapComparisonData,
   ): void {
     this.update((state) => {
       state.dappSwapComparisonData = {
@@ -1656,14 +1653,9 @@ export class AppStateController extends BaseController<
     });
   }
 
-  getDappSwapComparisonData(uniqueId: string):
-    | {
-        quotes?: QuoteResponse[];
-        latency?: number;
-        commands?: string;
-        error?: string;
-      }
-    | undefined {
+  getDappSwapComparisonData(
+    uniqueId: string,
+  ): DappSwapComparisonData | undefined {
     return this.state.dappSwapComparisonData?.[uniqueId] ?? undefined;
   }
 }

@@ -8,6 +8,7 @@ import {
   NetworkConfiguration,
 } from '@metamask/network-controller';
 
+import { DappSwapComparisonData } from '../../controllers/app-state-controller';
 import {
   DappSwapMiddlewareRequest,
   getQuotesForConfirmation,
@@ -25,12 +26,7 @@ export function createDappSwapMiddleware<
   fetchQuotes: (quotesInput: GenericQuoteRequest) => Promise<QuoteResponse[]>;
   setDappSwapComparisonData: (
     uniqueId: string,
-    info: {
-      quotes?: QuoteResponse[];
-      latency?: number;
-      commands?: string;
-      error?: string;
-    },
+    info: DappSwapComparisonData,
   ) => void;
   getNetworkConfigurationByNetworkClientId: (
     networkClientId: NetworkClientId,

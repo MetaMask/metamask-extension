@@ -14,6 +14,7 @@ import {
   getDataFromSwap,
   parseTransactionData,
 } from '../../../../shared/modules/dapp-swap-comparison/dapp-swap-comparison-utils';
+import { DappSwapComparisonData } from '../../controllers/app-state-controller';
 import { SecurityAlertResponse } from '../ppom/types';
 
 export type DappSwapMiddlewareRequest<
@@ -72,12 +73,7 @@ export function getQuotesForConfirmation({
   fetchQuotes: (quotesInput: GenericQuoteRequest) => Promise<QuoteResponse[]>;
   setDappSwapComparisonData: (
     uniqueId: string,
-    info: {
-      quotes?: QuoteResponse[];
-      latency?: number;
-      commands?: string;
-      error?: string;
-    },
+    info: DappSwapComparisonData,
   ) => void;
   getNetworkConfigurationByNetworkClientId: (
     networkClientId: NetworkClientId,
@@ -100,7 +96,7 @@ export function getQuotesForConfirmation({
       const { chainId } =
         getNetworkConfigurationByNetworkClientId(req.networkClientId) ?? {};
       const { data, from } = getSwapDetails(params);
-      if (data) {
+      if (data && securityAlertId && chainId) {
         const parsedTransactionData = parseTransactionData(data);
         commands = parsedTransactionData.commands;
         const { quotesInput } = getDataFromSwap(

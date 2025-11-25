@@ -67,13 +67,7 @@ export function useDappSwapComparisonInfo() {
   } = useDappSwapComparisonMetrics();
 
   useEffect(() => {
-    console.log('========================================INTO USE EFFECT');
     if (quoteFetchError) {
-      console.log(
-        '========================================',
-        quoteFetchError,
-        parsedCommands,
-      );
       captureDappSwapComparisonFailed(quoteFetchError, parsedCommands);
     }
   }, [captureDappSwapComparisonFailed, quoteFetchError, parsedCommands]);
