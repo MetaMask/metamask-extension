@@ -438,7 +438,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  {t('here')}
+                  {t('shieldClaimViewGuidelines')}
                 </a>
               </TextButton>,
             ])}

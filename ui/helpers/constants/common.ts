@@ -4,7 +4,8 @@ export const SECONDARY = 'SECONDARY';
 const _contractAddressLink =
   'https://support.metamask.io/managing-my-tokens/moving-your-tokens/why-am-i-being-warned-about-sending-tokens-to-a-contract/';
 
-export const TRANSACTION_SHIELD_LINK = 'https://metamask.io/transaction-shield';
+export const TRANSACTION_SHIELD_LINK =
+  'https://support.metamask.io/manage-crypto/transactions/transaction-shield';
 
 // eslint-disable-next-line prefer-destructuring
 export const METAMETRICS_SETTINGS_LINK =
