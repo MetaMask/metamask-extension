@@ -10,6 +10,7 @@ import {
 
 const ONBOARDING_FIXTURE_PATH = path.resolve(
   __dirname,
+  '../fixtures',
   'onboarding-fixture.json',
 );
 
@@ -64,7 +65,9 @@ describe('Wallet State', function () {
           console.log(
             '=============================================================================\n',
           );
-          console.log('🤖 Automatic update: comment @metamaskbot update-e2e-fixture');
+          console.log(
+            '🤖 Automatic update: comment @metamaskbot update-e2e-fixture',
+          );
           console.log(
             '\n🛠️  Manual update steps:\n  yarn dist\n  yarn test:e2e:single test/e2e/fixtures/wallet-fixture-export.spec.ts --browser chrome',
           );
