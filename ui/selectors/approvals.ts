@@ -54,6 +54,10 @@ export function getApprovalFlows(state: ApprovalsMetaMaskState) {
   return state.metamask.approvalFlows;
 }
 
+export function getHasApprovalFlows(state: ApprovalsMetaMaskState): boolean {
+  return (state.metamask.approvalFlows?.length ?? 0) > 0;
+}
+
 export function getPendingApprovals(state: ApprovalsMetaMaskState) {
   return Object.values(state.metamask.pendingApprovals ?? {});
 }
