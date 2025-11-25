@@ -1,9 +1,7 @@
 import React, { useCallback, useMemo, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
-///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
 import browser from 'webextension-polyfill';
-///: END:ONLY_INCLUDE_IF
 import {
   Button,
   ButtonSize,
@@ -51,14 +49,11 @@ import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask
 import {
   toggleExternalServices,
   setCompletedOnboarding,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   setCompletedOnboardingWithSidepanel,
-  ///: END:ONLY_INCLUDE_IF
+  setUseSidePanelAsDefault,
 } from '../../../store/actions';
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
-///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
 import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
-///: END:ONLY_INCLUDE_IF
 import WalletReadyAnimation from './wallet-ready-animation';
 
 export default function CreationSuccessful() {
@@ -72,10 +67,7 @@ export default function CreationSuccessful() {
   );
   const trackEvent = useContext(MetaMetricsContext);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-  const isTestEnvironment = Boolean(process.env.IN_TEST);
-  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   const isSidePanelEnabled = useSidePanelEnabled();
-  ///: END:ONLY_INCLUDE_IF
 
   const learnMoreLink =
     'https://support.metamask.io/stay-safe/safety-in-web3/basic-safety-and-security-tips-for-metamask/';
@@ -164,7 +156,6 @@ export default function CreationSuccessful() {
       toggleExternalServices(externalServicesOnboardingToggleState),
     );
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
     // Side Panel - only if feature flag is enabled
     if (isSidePanelEnabled) {
       try {
@@ -175,6 +166,7 @@ export default function CreationSuccessful() {
           });
           if (tabs && tabs.length > 0) {
             await browser.sidePanel.open({ windowId: tabs[0].windowId });
+            await dispatch(setUseSidePanelAsDefault(true));
             // Use the sidepanel-specific action - no navigation needed, sidepanel is already open
             await dispatch(setCompletedOnboardingWithSidepanel());
             return;
@@ -187,11 +179,6 @@ export default function CreationSuccessful() {
     }
     // Fallback to regular onboarding completion
     await dispatch(setCompletedOnboarding());
-    ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-    // Regular onboarding completion for non-experimental builds
-    await dispatch(setCompletedOnboarding());
-    ///: END:ONLY_INCLUDE_IF
 
     navigate(DEFAULT_ROUTE);
   }, [
@@ -203,9 +190,7 @@ export default function CreationSuccessful() {
     trackEvent,
     firstTimeFlowType,
     isFromSettingsSecurity,
-    ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
     isSidePanelEnabled,
-    ///: END:ONLY_INCLUDE_IF
   ]);
 
   const renderDoneButton = () => {
@@ -223,7 +208,7 @@ export default function CreationSuccessful() {
           width={BlockSize.Full}
           onClick={onDone}
         >
-          {t('done')}
+          {isSidePanelEnabled ? t('openWallet') : t('done')}
         </Button>
       </Box>
     );
@@ -305,9 +290,7 @@ export default function CreationSuccessful() {
           {renderSettingsActions}
         </Box>
       )}
-      {!isFromSettingsSRPBackup && !isTestEnvironment && (
-        <WalletReadyAnimation />
-      )}
+      {!isFromSettingsSRPBackup && <WalletReadyAnimation />}
       {!isFromSettingsSRPBackup && (
         <Text className="title">{t('yourWalletIsReady')}</Text>
       )}

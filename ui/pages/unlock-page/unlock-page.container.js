@@ -17,12 +17,9 @@ import {
   checkIsSeedlessPasswordOutdated,
   resetOnboarding,
   resetWallet,
+  getIsSeedlessOnboardingUserAuthenticated,
 } from '../../store/actions';
-import {
-  getIsSocialLoginFlow,
-  getFirstTimeFlowType,
-  getTheme,
-} from '../../selectors';
+import { getIsSocialLoginFlow, getFirstTimeFlowType } from '../../selectors';
 import { getCompletedOnboarding } from '../../ducks/metamask/metamask';
 import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import { useNavState } from '../../contexts/navigation-state';
@@ -37,7 +34,6 @@ const mapStateToProps = (state) => {
     isSocialLoginFlow: getIsSocialLoginFlow(state),
     isOnboardingCompleted: getCompletedOnboarding(state),
     firstTimeFlowType: getFirstTimeFlowType(state),
-    theme: getTheme(state),
   };
 };
 
@@ -50,6 +46,8 @@ const mapDispatchToProps = (dispatch) => {
     checkIsSeedlessPasswordOutdated: () =>
       dispatch(checkIsSeedlessPasswordOutdated()),
     resetWallet: () => dispatch(resetWallet()),
+    getIsSeedlessOnboardingUserAuthenticated: () =>
+      dispatch(getIsSeedlessOnboardingUserAuthenticated()),
   };
 };
 
@@ -67,11 +65,13 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...restOwnProps
   } = ownProps;
 
+  const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
+
   const onImport = async () => {
     await propsMarkPasswordForgotten();
     navigate(RESTORE_VAULT_ROUTE);
 
-    if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+    if (isPopup) {
       global.platform.openExtensionInBrowser?.(RESTORE_VAULT_ROUTE);
     }
   };
@@ -98,6 +98,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     navigate,
     location,
     navState,
+    isPopup,
   };
 };
 

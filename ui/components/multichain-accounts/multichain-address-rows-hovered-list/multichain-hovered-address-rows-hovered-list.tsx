@@ -21,9 +21,10 @@ import {
   IconName,
   IconSize,
   Text,
+  TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { BackgroundColor } from '../../../helpers/constants/design-system';
 import { Popover, PopoverPosition } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -35,6 +36,8 @@ import {
 import { MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import { selectBalanceForAllWallets } from '../../../selectors/assets';
 import { useFormatters } from '../../../hooks/useFormatters';
+// eslint-disable-next-line import/no-restricted-paths
+import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { MultichainAggregatedAddressListRow } from './multichain-aggregated-list-row';
 
 // Priority networks that should appear first (using CAIP chain IDs)
@@ -70,11 +73,11 @@ export const MultichainHoveredAddressRowsList = ({
   groupId,
   children,
   showAccountHeaderAndBalance = true,
-  hoverCloseDelay = 100,
+  hoverCloseDelay = 50,
 }: MultichainAddressRowsListProps) => {
   const t = useI18nContext();
   const [, handleCopy] = useCopyToClipboard();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [isHoverOpen, setIsHoverOpen] = useState(false);
   const [referenceElement, setReferenceElement] = useState<HTMLElement | null>(
     null,
@@ -240,7 +243,7 @@ export const MultichainHoveredAddressRowsList = ({
       index: number,
     ): React.JSX.Element => {
       const handleCopyClick = () => {
-        handleCopy(item.account.address);
+        handleCopy(normalizeSafeAddress(item.account.address));
       };
 
       return (
@@ -261,11 +264,11 @@ export const MultichainHoveredAddressRowsList = ({
   const handleViewAllClick = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
       e.stopPropagation();
-      history.push(
+      navigate(
         `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(groupId)}`,
       );
     },
-    [groupId, history],
+    [groupId, navigate],
   );
 
   const renderedRows = useMemo(() => {
@@ -296,6 +299,7 @@ export const MultichainHoveredAddressRowsList = ({
         onMouseLeave={handleMouseLeave}
         preventOverflow
         isPortal={true}
+        offset={[0, 3]}
         style={{
           zIndex: 99999,
           maxHeight: '400px',
@@ -312,10 +316,14 @@ export const MultichainHoveredAddressRowsList = ({
               flexDirection={BoxFlexDirection.Row}
               justifyContent={BoxJustifyContent.Between}
             >
-              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Bold}>
+              <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Bold}>
                 {accountGroup?.metadata.name}
               </Text>
-              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+              <Text
+                variant={TextVariant.BodySm}
+                fontWeight={FontWeight.Medium}
+                color={TextColor.TextAlternative}
+              >
                 {formatCurrencyWithMinThreshold(balance, currency)}
               </Text>
             </Box>

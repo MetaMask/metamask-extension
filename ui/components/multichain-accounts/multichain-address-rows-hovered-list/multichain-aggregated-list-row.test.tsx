@@ -48,7 +48,7 @@ const TEST_IDS = {
 } as const;
 
 const CSS_CLASSES = {
-  MULTICHAIN_ADDRESS_ROW: 'multichain-address-row',
+  MULTICHAIN_ADDRESS_ROW: 'multichain-aggregated-address-row',
   CUSTOM_CLASS: 'custom-class',
 } as const;
 
@@ -229,13 +229,10 @@ describe('MultichainAggregatedAddressListRow', () => {
       const row = screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROW);
       expect(row).toBeInTheDocument();
 
-      // Verify avatar group is rendered
-      const avatarGroup = screen.getByTestId(TEST_IDS.AVATAR_GROUP);
-      expect(avatarGroup).toBeInTheDocument();
-
       // Verify network avatars are displayed
       // Note: Only networks with valid images will be rendered
-      const networkAvatars = screen.getAllByAltText(ALT_TEXTS.NETWORK_LOGO);
+      const networkAvatars = screen.queryAllByAltText(ALT_TEXTS.NETWORK_LOGO);
+
       expect(networkAvatars.length).toBeGreaterThanOrEqual(1);
       expect(networkAvatars.length).toBeLessThanOrEqual(chainIds.length);
 
@@ -274,7 +271,7 @@ describe('MultichainAggregatedAddressListRow', () => {
   });
 
   describe('Copy Functionality', () => {
-    it('executes copy callback when copy button is clicked', () => {
+    it('executes copy callback when row is clicked', () => {
       const mockCallback = jest.fn();
       const props = createTestProps({
         copyActionParams: {
@@ -289,13 +286,13 @@ describe('MultichainAggregatedAddressListRow', () => {
         </Provider>,
       );
 
-      const copyButton = screen.getByRole('button');
-      fireEvent.click(copyButton);
+      const row = screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROW);
+      fireEvent.click(row);
 
       expect(mockCallback).toHaveBeenCalled();
     });
 
-    it('shows copy message after clicking copy button', () => {
+    it('shows copy message after clicking row', () => {
       const props = createTestProps();
 
       render(
@@ -304,15 +301,15 @@ describe('MultichainAggregatedAddressListRow', () => {
         </Provider>,
       );
 
-      const copyButton = screen.getByRole('button');
+      const row = screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROW);
 
       // Initially should show the truncated address
       expect(
         screen.getByText(TEST_STRINGS.TRUNCATED_ADDRESS),
       ).toBeInTheDocument();
 
-      // Click copy button
-      fireEvent.click(copyButton);
+      // Click row
+      fireEvent.click(row);
 
       // Should show the copy message
       expect(screen.getByText(TEST_STRINGS.COPY_MESSAGE)).toBeInTheDocument();
@@ -328,8 +325,8 @@ describe('MultichainAggregatedAddressListRow', () => {
         </Provider>,
       );
 
-      const copyButton = screen.getByRole('button');
-      fireEvent.click(copyButton);
+      const row = screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROW);
+      fireEvent.click(row);
 
       expect(props.copyActionParams.callback).toHaveBeenCalled();
 
@@ -354,8 +351,7 @@ describe('MultichainAggregatedAddressListRow', () => {
 
       expect(row).toHaveClass(CSS_CLASSES.MULTICHAIN_ADDRESS_ROW);
 
-      const copyButton = screen.getByRole('button');
-      fireEvent.click(copyButton);
+      fireEvent.click(row);
 
       expect(props.copyActionParams.callback).toHaveBeenCalled();
     });
@@ -369,8 +365,8 @@ describe('MultichainAggregatedAddressListRow', () => {
         </Provider>,
       );
 
-      const copyButton = screen.getByRole('button');
-      fireEvent.click(copyButton);
+      const row = screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROW);
+      fireEvent.click(row);
 
       expect(props.copyActionParams.callback).toHaveBeenCalled();
 
@@ -378,7 +374,7 @@ describe('MultichainAggregatedAddressListRow', () => {
         jest.advanceTimersByTime(1000);
       });
 
-      fireEvent.click(copyButton);
+      fireEvent.click(row);
       expect(props.copyActionParams.callback).toHaveBeenCalled();
     });
   });

@@ -4,22 +4,12 @@
   max-width: 400px;
 
   &__container {
-    background-color: var(--welcome-bg-light);
+    &--light {
+      background-color: var(--welcome-bg-light);
+    }
 
-    @media (prefers-color-scheme: dark) {
+    &--dark {
       background-color: var(--color-accent02-dark);
-    }
-  }
-
-  &__password-input {
-    &-container {
-      border-color: var(--color-border-default);
-    }
-
-    background-color: transparent;
-
-    & > input::placeholder {
-      color: var(--color-text-alternative);
     }
   }
 
@@ -31,6 +21,20 @@
       position: absolute;
       bottom: 10px;
       right: 0;
+    }
+
+    &__horizontal-logo {
+      margin-bottom: 24px;
+      width: 180px;
+      height: 180px;
+
+      &--popup {
+        margin-bottom: 24px;
+
+        @include design-system.screen-md-max {
+          margin-bottom: 0;
+        }
+      }
     }
 
     &__logo {

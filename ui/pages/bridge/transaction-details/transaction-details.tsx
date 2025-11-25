@@ -33,6 +33,7 @@ import { getTransactionBreakdownData } from '../../../components/app/transaction
 import type { MetaMaskReduxState } from '../../../store/store';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import {
   AlignItems,
   Display,
@@ -234,7 +235,7 @@ const CrossChainSwapTxDetails = ({
             iconName={IconName.ArrowLeft}
             size={ButtonIconSize.Sm}
             ariaLabel={t('back')}
-            onClick={() => navigate?.(-1)}
+            onClick={() => navigate?.(PREVIOUS_ROUTE)}
           />
         }
       >

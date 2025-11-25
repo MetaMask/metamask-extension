@@ -110,9 +110,7 @@ import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { DAY } from '../../shared/constants/time';
 import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   ENVIRONMENT_TYPE_SIDEPANEL,
-  ///: END:ONLY_INCLUDE_IF
   ENVIRONMENT_TYPE_POPUP,
 } from '../../shared/constants/app';
 import {
@@ -223,7 +221,7 @@ export function getNewNetworkAdded(state) {
 
 /**
  * @param state
- * @returns {{ chainId: import('@metamask/utils').Hex; nickname: string; editCompleted: boolean} | undefined}
+ * @returns {{ chainId: import('@metamask/utils').Hex; nickname?: string; editCompleted?: boolean; newNetwork?: boolean; trackRpcUpdateFromBanner?: boolean} | undefined}
  */
 export function getEditedNetwork(state) {
   return state.appState.editedNetwork;
@@ -291,12 +289,11 @@ export function getKeyringSnapRemovalResult(state) {
 
 export const getPendingTokens = (state) => state.appState.pendingTokens;
 
-export function getShowConnectionsRemovedModal(state) {
-  return state.appState.showConnectionsRemovedModal;
-}
-
 export function getShowShieldEntryModal(state) {
-  return state.appState.shieldEntryModal?.show;
+  const { show, hasUserInteractedWithModal } =
+    state.appState.shieldEntryModal || {};
+  // only show the modal if `show` is true and user has not interacted with the modal
+  return Boolean(show) && !hasUserInteractedWithModal;
 }
 
 export function getPendingShieldCohort(state) {
@@ -1867,13 +1864,11 @@ export function getAppActiveTab(state) {
 }
 
 export function getOriginOfCurrentTab(state) {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   // For sidepanel, always use appActiveTab
   if (getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) {
     const appActiveTab = getAppActiveTab(state);
     return appActiveTab?.origin;
   }
-  ///: END:ONLY_INCLUDE_IF
   // For all other cases, use activeTab
   return state.activeTab.origin;
 }
@@ -3308,6 +3303,18 @@ export function getIsCustomNetwork(state) {
 export function getNetworkDiscoverButtonEnabled(state) {
   const { neNetworkDiscoverButton } = getRemoteFeatureFlags(state);
   return neNetworkDiscoverButton;
+}
+
+/**
+ * Get the state of the `gasFeesSponsoredNetwork` remote feature flag.
+ * This flag determines whether the user should see a `Gas sponsored` label on the network menu list.
+ *
+ * @param {*} state
+ * @returns The state of the `gasFeesSponsoredNetwork` remote feature flag.
+ */
+export function getGasFeesSponsoredNetworkEnabled(state) {
+  const { gasFeesSponsoredNetwork } = getRemoteFeatureFlags(state);
+  return gasFeesSponsoredNetwork;
 }
 
 export function getBlockExplorerLinkText(

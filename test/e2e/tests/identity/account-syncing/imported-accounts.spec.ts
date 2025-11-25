@@ -10,7 +10,7 @@ import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
@@ -57,7 +57,7 @@ describe('Account syncing - Unsupported Account types', function () {
         testSpecificMock: sharedMockSetup,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
@@ -81,6 +81,10 @@ describe('Account syncing - Unsupported Account types', function () {
           prepareEventsEmittedCounter,
           waitUntilSyncedAccountsNumberEquals,
         } = arrangeTestUtils(driver, userStorageMockttpController);
+
+        // Wait for initial account sync to complete before adding a new account
+        await waitUntilSyncedAccountsNumberEquals(1);
+
         const { waitUntilEventsEmittedNumberEquals } =
           prepareEventsEmittedCounter(
             UserStorageMockttpControllerEvents.PUT_SINGLE,
@@ -90,8 +94,9 @@ describe('Account syncing - Unsupported Account types', function () {
         await accountListPage.addMultichainAccount();
 
         // Wait for sync operation to complete
-        await waitUntilSyncedAccountsNumberEquals(2);
+        // Check event first to ensure sync was attempted, then verify state
         await waitUntilEventsEmittedNumberEquals(1);
+        await waitUntilSyncedAccountsNumberEquals(2);
 
         // Verify both regular accounts are visible
         await accountListPage.checkAccountDisplayedInAccountList(
@@ -128,7 +133,7 @@ describe('Account syncing - Unsupported Account types', function () {
         testSpecificMock: sharedMockSetup,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');

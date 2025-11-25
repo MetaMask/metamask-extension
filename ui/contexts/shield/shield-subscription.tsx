@@ -4,6 +4,8 @@ import {
   PRODUCT_TYPES,
   COHORT_NAMES,
   type Cohort,
+  CohortName,
+  ModalType,
 } from '@metamask/subscription-controller';
 import log from 'loglevel';
 import { useSubscriptionEligibility } from '../../hooks/subscription/useSubscription';
@@ -12,11 +14,7 @@ import {
   setShowShieldEntryModalOnce,
   subscriptionsStartPolling,
 } from '../../store/actions';
-import {
-  getSelectedInternalAccount,
-  getUseExternalServices,
-} from '../../selectors';
-import { useAccountTotalFiatBalance } from '../../hooks/useAccountTotalFiatBalance';
+import { getUseExternalServices } from '../../selectors';
 import { selectIsSignedIn } from '../../selectors/identity/authentication';
 import { getIsMetaMaskShieldFeatureEnabled } from '../../../shared/modules/environment';
 import {
@@ -24,7 +22,8 @@ import {
   getIsActiveShieldSubscription,
 } from '../../selectors/subscription';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
-import { getUserBalanceCategory } from '../../../shared/modules/shield';
+import { useSubscriptionMetrics } from '../../hooks/shield/metrics/useSubscriptionMetrics';
+import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 
 export const ShieldSubscriptionContext = React.createContext<{
   evaluateCohortEligibility: (entrypointCohort: string) => Promise<void>;
@@ -56,21 +55,16 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
   const hasShieldEntryModalShownOnce = useSelector(
     getHasShieldEntryModalShownOnce,
   );
-  const selectedAccount = useSelector(getSelectedInternalAccount);
   const { getSubscriptionEligibility: getShieldSubscriptionEligibility } =
     useSubscriptionEligibility(PRODUCT_TYPES.SHIELD);
-  const { totalFiatBalance } = useAccountTotalFiatBalance(
-    selectedAccount,
-    false,
-    true, // use USD conversion rate instead of the current currency
-  );
+  const { captureShieldEligibilityCohortEvent } = useSubscriptionMetrics();
 
   /**
    * Assigns a user to a cohort based on eligibility rate (80/20 split).
    * Returns the selected cohort or null.
    */
   const assignToCohort = useCallback(
-    async (cohorts: Cohort[]): Promise<Cohort | null> => {
+    async (cohorts: Cohort[], modalType: ModalType): Promise<Cohort | null> => {
       if (cohorts.length === 0) {
         return null;
       }
@@ -104,6 +98,14 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
       if (selectedCohort) {
         try {
           await dispatch(assignUserToCohort({ cohort: selectedCohort.cohort }));
+          await captureShieldEligibilityCohortEvent(
+            {
+              cohort: selectedCohort.cohort as CohortName,
+              modalType,
+              numberOfEligibleCohorts: cohorts.length,
+            },
+            MetaMetricsEventName.ShieldEligibilityCohortAssigned,
+          );
           return selectedCohort;
         } catch (error) {
           log.error('[ShieldSubscription] Failed to assign cohort', error);
@@ -113,7 +115,7 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
 
       return null;
     },
-    [dispatch],
+    [dispatch, captureShieldEligibilityCohortEvent],
   );
 
   /**
@@ -137,33 +139,23 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
         }
 
         if (isShieldSubscriptionActive) {
-          dispatch(setShowShieldEntryModalOnce(false));
+          dispatch(
+            setShowShieldEntryModalOnce({
+              show: false,
+            }),
+          );
           return;
         }
 
-        if (
-          !selectedAccount ||
-          !isSignedIn ||
-          !isUnlocked ||
-          hasShieldEntryModalShownOnce
-        ) {
+        if (!isSignedIn || !isUnlocked || hasShieldEntryModalShownOnce) {
           return;
         }
 
-        const balanceCategory = totalFiatBalance
-          ? getUserBalanceCategory(Number(totalFiatBalance))
-          : undefined;
-
-        const shieldEligibility = await getShieldSubscriptionEligibility({
-          balanceCategory,
-        });
+        const shieldEligibility = await getShieldSubscriptionEligibility();
 
         if (
           !shieldEligibility?.canSubscribe ||
-          !shieldEligibility.canViewEntryModal ||
-          !shieldEligibility.minBalanceUSD ||
-          !totalFiatBalance ||
-          Number(totalFiatBalance) < shieldEligibility.minBalanceUSD
+          !shieldEligibility.canViewEntryModal
         ) {
           return;
         }
@@ -182,6 +174,17 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
           if (entrypointCohort !== COHORT_NAMES.POST_TX && !hasExpired) {
             return;
           }
+
+          // User has an assigned cohort but it has expired
+          // track `shield_eligibility_cohort_timeout` event
+          await captureShieldEligibilityCohortEvent(
+            {
+              cohort: assignedCohortName as CohortName,
+              numberOfEligibleCohorts: eligibleCohorts.length,
+            },
+            MetaMetricsEventName.ShieldEligibilityCohortTimeout,
+          );
+
           const cohort = eligibleCohorts.find(
             (c) => c.cohort === entrypointCohort,
           );
@@ -189,14 +192,16 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
             return;
           }
 
-          const shouldSubmitUserEvents = true; // submits `shield_entry_modal_viewed` event
           dispatch(
-            setShowShieldEntryModalOnce(
-              true,
-              shouldSubmitUserEvents,
-              entrypointCohort,
+            setShowShieldEntryModalOnce({
+              show: true,
+              shouldSubmitEvents: true, // submits `shield_entry_modal_viewed` event
+              triggeringCohort: entrypointCohort,
               modalType,
-            ),
+              // we will show the modal but we won't update the background state yet,
+              // we will only update after the user has interacted with the modal
+              shouldUpdateBackgroundState: false,
+            }),
           );
           return;
         }
@@ -204,18 +209,24 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
         // New user - only assign from wallet_home entrypoint
         if (
           entrypointCohort === COHORT_NAMES.WALLET_HOME &&
-          eligibleCohorts.length > 0
+          eligibleCohorts.length > 0 &&
+          modalType
         ) {
-          const selectedCohort = await assignToCohort(eligibleCohorts);
+          const selectedCohort = await assignToCohort(
+            eligibleCohorts,
+            modalType,
+          );
           if (selectedCohort?.cohort === COHORT_NAMES.WALLET_HOME) {
-            const shouldSubmitUserEvents = true; // submits `shield_entry_modal_viewed` event
             dispatch(
-              setShowShieldEntryModalOnce(
-                true,
-                shouldSubmitUserEvents,
-                selectedCohort.cohort,
+              setShowShieldEntryModalOnce({
+                show: true,
+                shouldSubmitEvents: true, // submits `shield_entry_modal_viewed` event to subscription backend
+                triggeringCohort: selectedCohort.cohort,
                 modalType,
-              ),
+                // we will show the modal but we won't update the background state yet,
+                // we will only update after the user has interacted with the modal
+                shouldUpdateBackgroundState: false,
+              }),
             );
           }
         }
@@ -228,13 +239,12 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
       isMetaMaskShieldFeatureEnabled,
       isBasicFunctionalityEnabled,
       isShieldSubscriptionActive,
-      selectedAccount,
       isSignedIn,
       isUnlocked,
       hasShieldEntryModalShownOnce,
-      totalFiatBalance,
       getShieldSubscriptionEligibility,
       assignToCohort,
+      captureShieldEligibilityCohortEvent,
     ],
   );
 
@@ -242,7 +252,6 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
     if (
       isMetaMaskShieldFeatureEnabled &&
       isBasicFunctionalityEnabled &&
-      selectedAccount &&
       isSignedIn &&
       isUnlocked
     ) {
@@ -252,7 +261,6 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
   }, [
     isMetaMaskShieldFeatureEnabled,
     isSignedIn,
-    selectedAccount,
     dispatch,
     isUnlocked,
     isBasicFunctionalityEnabled,

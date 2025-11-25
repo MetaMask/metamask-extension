@@ -13,15 +13,16 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import { KeyringObject } from '@metamask/keyring-controller';
 import { Json } from '@metamask/utils';
 import {
+  EntryModalSourceEnum,
   ShieldUserAccountCategoryEnum,
   ShieldUserAccountTypeEnum,
 } from '../../constants/subscriptions';
-import {
-  getShieldSubscription,
-  getSubscriptionPaymentData,
-} from '../../lib/shield';
+import { getShieldSubscription } from '../../lib/shield';
 import { KeyringType } from '../../constants/keyring';
-import { DefaultSubscriptionPaymentOptions } from '../../types';
+import {
+  DefaultSubscriptionPaymentOptions,
+  ShieldSubscriptionMetricsPropsFromUI,
+} from '../../types';
 // eslint-disable-next-line import/no-restricted-paths
 import {
   getDefaultSubscriptionPaymentOptions,
@@ -46,24 +47,23 @@ export function getLatestSubscriptionStatus(
 }
 
 export function getUserAccountType(
-  account: InternalAccount,
+  account: InternalAccount | null,
 ): ShieldUserAccountTypeEnum {
-  if (account.type === 'eip155:eoa') {
+  if (account?.type === 'eip155:eoa') {
     return ShieldUserAccountTypeEnum.EOA;
-  } else if (account.type === 'eip155:erc4337') {
+  } else if (account?.type === 'eip155:erc4337') {
     return ShieldUserAccountTypeEnum.ERC4337;
   }
-  // Shield is currently only supported for EVM accounts, so this should never happen
-  throw new Error('Unsupported account type');
+  return ShieldUserAccountTypeEnum.OTHER;
 }
 
 export function getUserAccountCategory(
-  account: InternalAccount,
+  account: InternalAccount | null,
   keyringsMetadata: KeyringObject[],
 ): ShieldUserAccountCategoryEnum {
-  const entropySource = account.options?.entropySource;
+  const entropySource = account?.options?.entropySource;
   const isHdKeyringAccount =
-    account.metadata.keyring.type === KeyringType.hdKeyTree;
+    account?.metadata?.keyring?.type === KeyringType.hdKeyTree;
 
   if (entropySource && isHdKeyringAccount) {
     const keyringIndex = keyringsMetadata.findIndex(
@@ -104,7 +104,7 @@ export function getUserBalanceCategory(balanceInUSD: number): BalanceCategory {
 }
 
 export function getUserAccountTypeAndCategory(
-  account: InternalAccount,
+  account: InternalAccount | null,
   keyringsMetadata: KeyringObject[],
 ) {
   const userAccountType = getUserAccountType(account);
@@ -120,16 +120,50 @@ export function getUserAccountTypeAndCategory(
 }
 
 /**
+ * Get the common tracking props for the Shield metrics.
+ *
+ * @param account - The account.
+ * @param keyringsMetadata - The keyrings metadata.
+ * @param balanceInUSD - The balance in USD.
+ * @returns The common tracking props.
+ */
+export function getShieldCommonTrackingProps(
+  account: InternalAccount | null,
+  keyringsMetadata: KeyringObject[],
+  balanceInUSD: number,
+) {
+  return {
+    ...getUserAccountTypeAndCategory(account, keyringsMetadata),
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    multi_chain_balance_category: getUserBalanceCategory(balanceInUSD),
+  };
+}
+
+export function getShieldMarketingTrackingProps(
+  marketingUtmParams?: Record<string, string>,
+) {
+  const marketingProps: Record<string, Json> = {};
+  Object.entries(marketingUtmParams || {}).forEach(([key, value]) => {
+    marketingProps[`marketing_${key}`] = value;
+  });
+
+  return marketingProps;
+}
+
+/**
  * Get the tracking props for the subscription request for the Shield metrics.
  *
  * @param subscriptionControllerState - The subscription controller state.
  * @param defaultSubscriptionPaymentOptions - The default subscription payment options.
+ * @param shieldSubscriptionMetricsProps - The Shield subscription metrics properties.
  * @param transactionMeta
  * @returns The tracking props.
  */
 export function getSubscriptionRequestTrackingProps(
   subscriptionControllerState: SubscriptionControllerState,
   defaultSubscriptionPaymentOptions?: DefaultSubscriptionPaymentOptions,
+  shieldSubscriptionMetricsProps?: ShieldSubscriptionMetricsPropsFromUI,
   transactionMeta?: TransactionMeta,
 ): Record<string, Json> {
   const {
@@ -167,6 +201,17 @@ export function getSubscriptionRequestTrackingProps(
     getLatestSubscriptionStatus(subscriptions, lastSubscription) || 'none';
 
   return {
+    ...getShieldMarketingTrackingProps(
+      shieldSubscriptionMetricsProps?.marketingUtmParams,
+    ),
+    source:
+      shieldSubscriptionMetricsProps?.source || EntryModalSourceEnum.Settings,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    multi_chain_balance_category: getUserBalanceCategory(
+      shieldSubscriptionMetricsProps?.userBalanceInUSD ?? 0,
+    ),
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     subscription_state: latestSubscriptionStatus,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -208,44 +253,20 @@ export function getSubscriptionRequestTrackingProps(
 }
 
 /**
- * Get the tracking props for the subscription restart request for the Shield metrics.
+ * Get the marketing UTM parameters for the Shield metrics from the url search parameters.
  *
- * @param subscriptionControllerState - The subscription controller state.
- * @param requestStatus - The request status.
- * @param errorMessage - The error message.
- * @returns The tracking props.
+ * @param search - The search parameters.
+ * @returns The marketing UTM parameters.
  */
-export function getSubscriptionRestartRequestTrackingProps(
-  subscriptionControllerState: SubscriptionControllerState,
-  requestStatus: 'started' | 'completed' | 'failed',
-  errorMessage?: string,
-): Record<string, Json> {
-  const { subscriptions, lastSubscription } = subscriptionControllerState;
-  const latestSubscriptionStatus =
-    getLatestSubscriptionStatus(subscriptions, lastSubscription) || 'none';
-  const lastSubscriptionData = getSubscriptionPaymentData(lastSubscription);
-  const billingInterval = getBillingIntervalForMetrics(
-    lastSubscriptionData.billingInterval,
-  );
-  return {
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    subscription_status: latestSubscriptionStatus,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    payment_type: lastSubscriptionData.paymentType,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    crypto_payment_chain: lastSubscriptionData.cryptoPaymentChain || null,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    crypto_payment_currency: lastSubscriptionData.cryptoPaymentCurrency || null,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    billing_interval: billingInterval,
-    status: requestStatus,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    error_message: errorMessage || null,
-  };
+export function getShieldMarketingUtmParamsForMetrics(search: string) {
+  const searchParams = new URLSearchParams(search);
+
+  const marketingUtmParams: Record<string, string> = {};
+
+  searchParams.forEach((value, key) => {
+    if (key.startsWith('utm_')) {
+      marketingUtmParams[key] = value;
+    }
+  });
+  return marketingUtmParams;
 }

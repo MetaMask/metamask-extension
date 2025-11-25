@@ -14,47 +14,34 @@
     }
   }
 
-  &__details {
+  &__membership {
+    height: 85px;
+    position: relative;
+    overflow: hidden;
+
+    &--active {
+      background-color: var(--color-accent03-dark);
+    }
+
     &--loading {
       background-color: var(--color-border-muted);
     }
 
     &--inactive {
       background-color: var(--color-background-subsection);
-    }
 
-    &--active {
-      background-color: var(--color-accent03-dark);
+      &-light {
+        background-color: var(--shield-membership-inactive-light);
+      }
     }
   }
 
-  &__membership {
-    background-size: 85px;
-    height: 85px;
-    background-image: url('/images/shield-membership-shadow.png');
-    background-repeat: no-repeat;
-    background-position: right -10px center;
-    margin-bottom: 0;
+  &__membership-text {
+    color: var(--color-accent03-light);
+  }
 
-    .transaction-shield-page__membership-text {
-      color: var(--color-accent03-light);
-    }
-
-    &--active {
-      background-color: var(--color-accent03-dark);
-    }
-
-    &--loading {
-      background: var(--color-border-muted);
-    }
-
-    &--inactive {
-      background-color: var(--color-background-subsection);
-
-      .transaction-shield-page__membership-text {
-        color: var(--color-text-default);
-      }
-    }
+  &__membership--inactive &__membership-text {
+    color: var(--color-text-default);
   }
 
   .warning-button:hover {
@@ -69,10 +56,13 @@
     }
   }
 
-  &-shield-illustration {
+  &-shield-banner {
     &__container {
-      height: 85px;
-      width: 85px;
+      position: absolute;
+      top: -4px;
+      right: 0;
+      height: 93px;
+      width: 93px;
     }
 
     &__canvas {

@@ -10,6 +10,7 @@ import {
   ChainId,
 } from '@metamask/controller-utils';
 import { hasProperty } from '@metamask/utils';
+import { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { SECOND } from '../../../shared/constants/time';
 import { getIsQuicknodeEndpointUrl } from '../../../shared/lib/network-utils';
 import {
@@ -88,7 +89,10 @@ function getInitialState(initialState?: Partial<NetworkController['state']>) {
     networks[CHAIN_IDS.BSC].name = 'BNB Chain';
     networks[CHAIN_IDS.OPTIMISM].name = 'OP';
     networks[CHAIN_IDS.POLYGON].name = 'Polygon';
-    networks[CHAIN_IDS.SEI].name = 'Sei';
+
+    // Remove Sei from initial state so it appears in Additional Networks section
+    // Users can add it manually, and it will be available in FEATURED_RPCS
+    delete networks[CHAIN_IDS.SEI];
 
     let network: NetworkConfiguration;
     if (process.env.IN_TEST) {
@@ -167,7 +171,23 @@ export const NetworkControllerInit: ControllerInitFunction<
   initMessenger,
   persistedState,
 }) => {
+  const remoteFeatureFlagsControllerState = initMessenger.call(
+    'RemoteFeatureFlagController:getState',
+  );
   const initialState = getInitialState(persistedState.NetworkController);
+
+  /**
+   * Determines if RPC failover is enabled based on RemoteFeatureFlagController
+   * state.
+   *
+   * @param state - RemoteFeatureFlagControllerState
+   * @returns true if RPC failover is enabled, false otherwise
+   */
+  const getIsRpcFailoverEnabled = (state: RemoteFeatureFlagControllerState) => {
+    const walletFrameworkRpcFailoverEnabled = state.remoteFeatureFlags
+      .walletFrameworkRpcFailoverEnabled as boolean | undefined;
+    return walletFrameworkRpcFailoverEnabled ?? false;
+  };
 
   const getBlockTrackerOptions = () => {
     return process.env.IN_TEST
@@ -233,6 +253,9 @@ export const NetworkControllerInit: ControllerInitFunction<
     getBlockTrackerOptions,
     getRpcServiceOptions,
     additionalDefaultNetworks: ADDITIONAL_DEFAULT_NETWORKS,
+    isRpcFailoverEnabled: getIsRpcFailoverEnabled(
+      remoteFeatureFlagsControllerState,
+    ),
   });
 
   initMessenger.subscribe(
@@ -284,7 +307,7 @@ export const NetworkControllerInit: ControllerInitFunction<
         controller.disableRpcFailover();
       }
     },
-    (state) => state.remoteFeatureFlags.walletFrameworkRpcFailoverEnabled,
+    getIsRpcFailoverEnabled,
   );
 
   // Delay lookupNetwork until after onboarding to prevent network requests before the user can

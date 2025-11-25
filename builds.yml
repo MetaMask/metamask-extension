@@ -17,7 +17,6 @@ buildTypes:
     id: 10
     features:
       - build-main
-      - build-experimental
       - keyring-snaps
       - multi-srp
       - multichain
@@ -51,7 +50,6 @@ buildTypes:
     id: 11
     features:
       - build-beta
-      - build-experimental
       - keyring-snaps
       - multichain
       - bitcoin
@@ -101,7 +99,6 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_EXPERIMENTAL_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: false
       - IS_SIDEPANEL: true
-      - METAMASK_SHIELD_ENABLED: true
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
       - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.2.3/index.html
@@ -121,7 +118,6 @@ buildTypes:
     # will not be removed
     features:
       - build-flask
-      - build-experimental
       - keyring-snaps
       - bitcoin
       - tron
@@ -207,7 +203,7 @@ features:
   multichain:
   ocap-kernel:
     assets:
-      - ./{app,offscreen,shared,ui}/**/ocap-kernel/**
+      - ./{app,shared,ui}/**/ocap-kernel/**
   gator-permissions:
     assets:
       - src: ./node_modules/@metamask/permissions-kernel-snap/dist/preinstalled-snap.json
@@ -306,6 +302,7 @@ env:
   - QUICKNODE_POLYGON_URL: null
   - QUICKNODE_BASE_URL: null
   - QUICKNODE_BSC_URL: null
+  - QUICKNODE_SEI_URL: null
 
   ###
   # API keys to 3rd party services
@@ -456,7 +453,7 @@ env:
   - APPLE_CLIENT_ID_UAT: ''
 
   # Metamask Shield
-  - METAMASK_SHIELD_ENABLED: 'false'
+  - METAMASK_SHIELD_ENABLED: 'true'
 
   # Snaps
   - AUTO_UPDATE_PREINSTALLED_SNAPS: 'true'
