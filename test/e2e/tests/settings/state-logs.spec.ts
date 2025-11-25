@@ -118,10 +118,25 @@ describe('State logs', function () {
         // Verify download and get state logs
         const stateLogs = await getDownloadedStateLogs(driver, downloadsFolder);
 
+        // Get new account ID for Solana
+        const newAccountId = Object.keys(
+          stateLogs.metamask.internalAccounts.accounts,
+        )[1];
+
+        // Replace new ID in reference logs
+        const referenceLogsText = JSON.stringify(referenceStateLogsDefinition);
+
+        const referenceLogs = JSON.parse(
+          referenceLogsText.replaceAll(
+            '3c62fe60-6f00-4227-86f4-33d0b1f4c39e',
+            newAccountId,
+          ),
+        );
+
         // Create type maps for comparison
         const currentTypeMap = createTypeMap(stateLogs);
         const expectedTypeMap: StateLogsTypeMap = createTypeMapFromDefinition(
-          referenceStateLogsDefinition as StateLogsTypeDefinition,
+          referenceLogs as StateLogsTypeDefinition,
         );
 
         console.log('📋 Created type maps for comparison');
