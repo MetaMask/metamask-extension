@@ -31,9 +31,8 @@ jest.mock('../../../../../store/controller-actions/bridge-controller', () => ({
 
 const mockUseDappSwapComparisonLatencyMetricsResponse = {
   requestDetectionLatency: '1200',
-  swapComparisonLatency: '1500',
   updateRequestDetectionLatency: jest.fn(),
-  updateSwapComparisonLatency: jest.fn(),
+  updateSwapComparisonLatency: jest.fn().mockReturnValue('1500'),
 };
 
 jest.mock('./useDappSwapComparisonLatencyMetrics', () => ({
