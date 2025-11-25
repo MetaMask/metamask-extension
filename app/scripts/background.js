@@ -180,8 +180,10 @@ const ONE_SECOND_IN_MILLISECONDS = 1_000;
 // Timeout for initializing phishing warning page.
 const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
-lazyListener.once('runtime', 'onInstalled').then(handleOnInstalled);
-lazyListener.once('runtime', 'onInstalled').then(handleSidePanelContextMenu);
+lazyListener.once('runtime', 'onInstalled').then((details) => {
+  handleOnInstalled(details);
+  handleSidePanelContextMenu();
+});
 
 /**
  * This deferred Promise is used to track whether initialization has finished.
