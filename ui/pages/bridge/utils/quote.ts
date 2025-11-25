@@ -106,6 +106,40 @@ export const formatProviderLabel = (args?: {
   bridges: QuoteResponse['quote']['bridges'];
 }): `${string}_${string}` => `${args?.bridgeId}_${args?.bridges[0]}`;
 
+export const sanitizeAmountInput = (
+  textToSanitize: string,
+  dropNumbersAfterSecondDecimal = true,
+) => {
+  // Remove non-numeric and non-decimal characters
+  const cleanedString = textToSanitize.replace(/[^\d.]+/gu, '');
+  // Find first decimal point and use its index to split the string into two parts
+  const pointIndex = cleanedString.indexOf('.');
+  const firstPart = cleanedString.slice(0, pointIndex + 1);
+  const secondPart = dropNumbersAfterSecondDecimal
+    ? // Ignore digits after second decimal point
+      cleanedString.slice(pointIndex + 1).split('.')[0]
+    : // Preserve digits after second decimal point
+      cleanedString.slice(pointIndex + 1).replace(/[^\d]+/gu, '');
+
+  return [firstPart, secondPart].filter(Boolean).join('');
+};
+
+/**
+ * Sanitizes the amount string for BigNumber calculations by converting empty strings or single decimal points to '0'.
+ *
+ * @param amount - The raw amount string from input
+ * @returns A safe string for BigNumber operations
+ */
+export const safeAmountForCalc = (
+  amount: string | null | undefined,
+): string => {
+  if (!amount) {
+    return '0';
+  }
+  const sanitized = sanitizeAmountInput(amount);
+  return sanitized === '' || sanitized === '.' ? '0' : sanitized;
+};
+
 export const isQuoteExpiredOrInvalid = ({
   activeQuote,
   toToken,

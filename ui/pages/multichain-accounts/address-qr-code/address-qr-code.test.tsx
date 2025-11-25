@@ -1,14 +1,12 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { Provider } from 'react-redux';
-import { MemoryRouter, Route } from 'react-router-dom';
+import { screen, fireEvent, waitFor } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { ACCOUNT_DETAILS_QR_CODE_ROUTE } from '../../../helpers/constants/routes';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { openBlockExplorer } from '../../../components/multichain/menu-items/view-explorer-menu-item';
 import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+
 import { AddressQRCode } from './address-qr-code';
 
 // Mock the block explorer utility
@@ -29,14 +27,17 @@ jest.mock('../../../hooks/useMultichainSelector', () => ({
   useMultichainSelector: jest.fn(),
 }));
 
-// Mock React Router
-const mockHistoryGoBack = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    goBack: mockHistoryGoBack,
-  }),
-}));
+// Mock react-router-dom-v5-compat
+const mockUseNavigate = jest.fn();
+const mockUseParams = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  const actual = jest.requireActual('react-router-dom-v5-compat');
+  return {
+    ...actual,
+    useNavigate: () => mockUseNavigate,
+    useParams: () => mockUseParams(),
+  };
+});
 
 // Mock i18n
 jest.mock('../../../hooks/useI18nContext', () => ({
@@ -51,7 +52,6 @@ jest.mock('../../../hooks/useI18nContext', () => ({
 }));
 
 const mockStore = configureStore([thunk]);
-const mockTrackEvent = jest.fn();
 
 // Cast the imported functions to mocked versions
 const mockUseMultichainSelector = useMultichainSelector as jest.MockedFunction<
@@ -116,29 +116,22 @@ const mockState = {
 const renderComponent = (state = mockState, address = mockAccount.address) => {
   const store = mockStore(state);
 
-  return render(
-    <Provider store={store}>
-      <MemoryRouter
-        initialEntries={[`${ACCOUNT_DETAILS_QR_CODE_ROUTE}/${address}`]}
-      >
-        <MetaMetricsContext.Provider value={mockTrackEvent}>
-          <Route path={`${ACCOUNT_DETAILS_QR_CODE_ROUTE}/:address`}>
-            <AddressQRCode />
-          </Route>
-        </MetaMetricsContext.Provider>
-      </MemoryRouter>
-    </Provider>,
-  );
+  // Set up useParams mock to return the address
+  mockUseParams.mockReturnValue({ address });
+
+  return renderWithProvider(<AddressQRCode />, store);
 };
 
 describe('AddressQRCode', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    // Clear all mock calls but not implementations
+    mockUseNavigate.mockClear();
+    mockUseParams.mockClear();
+    mockUseMultichainSelector.mockClear();
+    mockGetMultichainAccountUrl.mockClear();
 
-    // Mock the multichain selector
+    // Set up default mock return values
     mockUseMultichainSelector.mockReturnValue(mockMultichainNetwork);
-
-    // Mock the block explorer URL helper
     mockGetMultichainAccountUrl.mockReturnValue(mockBlockExplorerUrl);
   });
 
@@ -166,7 +159,7 @@ describe('AddressQRCode', () => {
       const backButton = screen.getByLabelText('Back');
       fireEvent.click(backButton);
 
-      expect(mockHistoryGoBack).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(-1);
     });
   });
 
@@ -183,7 +176,7 @@ describe('AddressQRCode', () => {
         expect(mockOpenBlockExplorer).toHaveBeenCalledWith(
           mockBlockExplorerUrl,
           'Account Details QR Code Page',
-          mockTrackEvent,
+          expect.any(Function),
         );
       });
     });
