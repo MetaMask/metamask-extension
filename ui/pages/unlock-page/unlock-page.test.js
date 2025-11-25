@@ -23,6 +23,11 @@ jest.mock('../../contexts/navigation-state', () => ({
   NavigationStateProvider: ({ children }) => children,
 }));
 
+jest.mock('../onboarding-flow/welcome/fox-appear-animation', () => ({
+  __esModule: true,
+  default: () => <div data-testid="fox-appear-animation" />,
+}));
+
 const mockTryUnlockMetamask = jest.fn(() => {
   return async () => {
     return Promise.resolve();
