@@ -63,7 +63,13 @@
         "process.kill": true,
         "process.platform": true,
         "setTimeout": true
+      },
+      "packages": {
+        "@lydell/node-pty>@lydell/node-pty-darwin-arm64": true
       }
+    },
+    "@lydell/node-pty>@lydell/node-pty-darwin-arm64": {
+      "native": true
     },
     "@metamask/build-utils": {
       "packages": {
