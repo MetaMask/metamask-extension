@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom-v5-compat';
 import { Attachment as ClaimAttachment } from '@metamask/claims-controller';
 import { useClaims } from '../../contexts/claims/claims';
 import { generateClaimSignature } from '../../store/actions';

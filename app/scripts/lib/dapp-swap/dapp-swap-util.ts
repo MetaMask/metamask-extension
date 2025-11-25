@@ -4,7 +4,10 @@ import {
   GenericQuoteRequest,
   QuoteResponse,
 } from '@metamask/bridge-controller';
-import { NetworkClientId } from '@metamask/network-controller';
+import {
+  NetworkClientId,
+  NetworkConfiguration,
+} from '@metamask/network-controller';
 
 import { captureException } from '../../../../shared/lib/sentry';
 import { getDataFromSwap } from '../../../../shared/modules/dapp-swap-comparison/dapp-swap-comparison-utils';
@@ -58,6 +61,7 @@ export function getQuotesForConfirmation({
   req,
   fetchQuotes,
   setSwapQuotes,
+  getNetworkConfigurationByNetworkClientId,
   dappSwapMetricsFlag,
   securityAlertId,
 }: {
@@ -67,6 +71,9 @@ export function getQuotesForConfirmation({
     uniqueId: string,
     info: { quotes?: QuoteResponse[]; latency?: number },
   ) => void;
+  getNetworkConfigurationByNetworkClientId: (
+    networkClientId: NetworkClientId,
+  ) => NetworkConfiguration | undefined;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   dappSwapMetricsFlag: { enabled: boolean; bridge_quote_fees: number };
   securityAlertId?: string;
@@ -81,8 +88,10 @@ export function getQuotesForConfirmation({
     const { params, origin } = req;
 
     if (origin === DAPP_SWAP_COMPARISON_ORIGIN || origin === TEST_DAPP_ORIGIN) {
-      const { data, from, chainId } = getSwapDetails(params);
-      if (data) {
+      const { chainId } =
+        getNetworkConfigurationByNetworkClientId(req.networkClientId) ?? {};
+      const { data, from } = getSwapDetails(params);
+      if (data && securityAlertId && chainId) {
         const { quotesInput } = getDataFromSwap(chainId as Hex, data);
         if (quotesInput) {
           const startTime = new Date().getTime();

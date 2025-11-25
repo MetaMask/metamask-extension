@@ -15,6 +15,7 @@ export function createDappSwapMiddleware<
 >({
   fetchQuotes,
   setSwapQuotes,
+  getNetworkConfigurationByNetworkClientId,
   dappSwapMetricsFlag,
 }: {
   fetchQuotes: (quotesInput: GenericQuoteRequest) => Promise<QuoteResponse[]>;
@@ -22,6 +23,9 @@ export function createDappSwapMiddleware<
     uniqueId: string,
     info: { quotes?: QuoteResponse[]; latency?: number },
   ) => void;
+  getNetworkConfigurationByNetworkClientId: (
+    networkClientId: NetworkClientId,
+  ) => NetworkConfiguration | undefined;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   dappSwapMetricsFlag: { enabled: boolean; bridge_quote_fees: number };
 }) {
@@ -38,6 +42,7 @@ export function createDappSwapMiddleware<
         req,
         fetchQuotes,
         setSwapQuotes,
+        getNetworkConfigurationByNetworkClientId,
         dappSwapMetricsFlag,
         securityAlertId,
       });
