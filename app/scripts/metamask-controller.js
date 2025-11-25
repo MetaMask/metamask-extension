@@ -4418,14 +4418,10 @@ export default class MetamaskController extends EventEmitter {
         this.txController.clearUnapprovedTransactions();
       }
 
-      if (this.isMultichainAccountsFeatureState2Enabled()) {
-        await this.controllerMessenger.call(
-          'MultichainAccountService:createMultichainAccountWallet',
-          { password },
-        );
-      } else {
-        await this.keyringController.createNewVaultAndKeychain(password);
-      }
+      await this.controllerMessenger.call(
+        'MultichainAccountService:createMultichainAccountWallet',
+        { password },
+      );
 
       // set is resetting wallet in progress to false, after new vault and keychain are created
       this.appStateController.setIsWalletResetInProgress(false);
