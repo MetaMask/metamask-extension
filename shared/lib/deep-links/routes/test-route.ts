@@ -6,7 +6,7 @@ export default new Route({
   handler: function handler(params: URLSearchParams) {
     return {
       // we use the developer options route for testing purposes
-      // because it doesn't require any special permissions to access
+      // because it doesn't rewrite query params
       path: DEVELOPER_OPTIONS_ROUTE,
       query: params,
     };
