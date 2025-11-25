@@ -1220,6 +1220,7 @@
         "structuredClone": true
       },
       "packages": {
+        "html-bundler-webpack-plugin>ansis": true,
         "webpack>enhanced-resolve": true,
         "html-bundler-webpack-plugin>html-minifier-terser": true,
         "webpack>tapable": true,
