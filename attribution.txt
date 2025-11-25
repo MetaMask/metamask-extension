@@ -31604,7 +31604,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************
 
 @metamask/keyring-api
-21.1.0 <https://github.com/MetaMask/keyring-api>
+21.2.0 <https://github.com/MetaMask/keyring-api>
 Copyright ConsenSys Software Inc. 2022. All rights reserved.
  
 You acknowledge and agree that ConsenSys Software Inc. (“ConsenSys”) (or ConsenSys’s licensors) own all legal right, title and interest in and to the work, software, application, source code, documentation and any other documents in this repository (collectively, the “Program”), including any intellectual property rights which subsist in the Program (whether those rights happen to be registered or not, and wherever in the world those rights may exist), whether in source code or any other form.
@@ -33955,7 +33955,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ******************************
 
 @metamask/tron-wallet-snap
-1.10.0 <https://github.com/MetaMask/snap-tron-wallet>
+1.12.1 <https://github.com/MetaMask/snap-tron-wallet>
 license: (MIT-0 OR Apache-2.0)
 authors: undefined
 
