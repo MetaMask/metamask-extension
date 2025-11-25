@@ -12,7 +12,6 @@ import {
 } from '@metamask/subscription-controller';
 import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
 import { NameType } from '@metamask/name-controller';
-import { useSelector } from 'react-redux';
 import {
   BannerAlert,
   BannerAlertSeverity,
@@ -77,7 +76,6 @@ import { useAsyncResult } from '../../../hooks/useAsync';
 import { useTimeout } from '../../../hooks/useTimeout';
 import { MINUTE } from '../../../../shared/constants/time';
 import Name from '../../../components/app/name';
-import ShieldIllustrationAnimation from '../../../components/app/shield-entry-modal/shield-illustration-animation';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
 import {
   ShieldCtaActionClickedEnum,
@@ -87,9 +85,10 @@ import {
   ShieldErrorStateViewEnum,
 } from '../../../../shared/constants/subscriptions';
 import { ThemeType } from '../../../../shared/constants/preferences';
-import { getTheme } from '../../../selectors';
+import { useTheme } from '../../../hooks/useTheme';
 import CancelMembershipModal from './cancel-membership-modal';
 import { isCardPaymentMethod, isCryptoPaymentMethod } from './types';
+import ShieldBannerAnimation from './shield-banner-animation';
 
 const TransactionShield = () => {
   const t = useI18nContext();
@@ -107,7 +106,7 @@ const TransactionShield = () => {
   }, [search]);
 
   const { formatCurrency } = useFormatters();
-  const theme = useSelector(getTheme);
+  const theme = useTheme();
   const isLightTheme = theme === ThemeType.light;
 
   const {
@@ -669,6 +668,7 @@ const TransactionShield = () => {
       {membershipErrorBanner}
       <Box className="transaction-shield-page__container" marginBottom={4}>
         <Box
+          data-theme={isMembershipInactive ? theme : ThemeType.dark}
           className={classnames(
             'transaction-shield-page__row transaction-shield-page__membership',
             {
@@ -752,9 +752,9 @@ const TransactionShield = () => {
             )}
           </Box>
           {!showSkeletonLoader && (
-            <ShieldIllustrationAnimation
-              containerClassName="transaction-shield-page-shield-illustration__container"
-              canvasClassName="transaction-shield-page-shield-illustration__canvas"
+            <ShieldBannerAnimation
+              containerClassName="transaction-shield-page-shield-banner__container"
+              canvasClassName="transaction-shield-page-shield-banner__canvas"
             />
           )}
         </Box>

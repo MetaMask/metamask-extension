@@ -30,6 +30,8 @@ export type RewardsState = {
   errorToast: RewardsErrorToastState;
   // Show/hide rewards badge
   rewardsBadgeHidden: boolean;
+  // Account linked timestamp (when an account is linked to a subscription)
+  accountLinkedTimestamp: number | null;
 };
 
 export const initialState: RewardsState = {
@@ -60,6 +62,8 @@ export const initialState: RewardsState = {
   },
   // Show/hide rewards badge
   rewardsBadgeHidden: true,
+  // Account linked timestamp
+  accountLinkedTimestamp: null,
 };
 
 const rewardsSlice = createSlice({
@@ -158,6 +162,12 @@ const rewardsSlice = createSlice({
     setRewardsBadgeHidden: (state, action: PayloadAction<boolean>) => {
       state.rewardsBadgeHidden = action.payload;
     },
+    setRewardsAccountLinkedTimestamp: (
+      state,
+      action: PayloadAction<number | null>,
+    ) => {
+      state.accountLinkedTimestamp = action.payload;
+    },
   },
 });
 
@@ -175,6 +185,7 @@ export const {
   setRewardsGeoMetadataError,
   setErrorToast,
   setRewardsBadgeHidden,
+  setRewardsAccountLinkedTimestamp,
 } = rewardsSlice.actions;
 
 export default rewardsSlice.reducer;
