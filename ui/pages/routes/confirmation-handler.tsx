@@ -14,6 +14,7 @@ import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_FULLSCREEN,
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
 } from '../../../shared/constants/app';
 import {
   getHasApprovalFlows,
@@ -37,6 +38,18 @@ const EXEMPTED_ROUTES = [
   '/confirm-transaction/',
   '/confirm-add-suggested-token',
   '/confirm-add-suggested-nft',
+];
+
+const SNAP_APPROVAL_TYPES = [
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval,
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
+  ///: END:ONLY_INCLUDE_IF
+  'wallet_installSnap',
+  'wallet_updateSnap',
+  'wallet_installSnapResult',
 ];
 
 export const ConfirmationHandler = () => {
@@ -83,19 +96,12 @@ export const ConfirmationHandler = () => {
     return isExemptedRoute || isExemptedApproval;
   }, [pathname, pendingApprovals, isFullscreen]);
 
-  const canRedirect = !isNotification && !stayOnHomePage;
-
   // Flows that *should* navigate in fullscreen, based on E2E specs
-  const hasWalletInitiatedSnapApproval = pendingApprovals.some(
-    (approval) =>
-      approval.type === 'wallet_installSnap' ||
-      approval.type === 'wallet_updateSnap' ||
-      approval.type === 'wallet_installSnapResult' ||
-      approval.type === 'snap_manageAccounts:showSnapAccountRedirect' ||
-      approval.type === 'snap_manageAccounts:confirmAccountCreation' ||
-      approval.type === 'snap_manageAccounts:confirmAccountRemoval' ||
-      approval.type === 'snap_manageAccounts:showNameSnapAccount',
+  const hasWalletInitiatedSnapApproval = pendingApprovals.some((approval) =>
+    SNAP_APPROVAL_TYPES.includes(approval.type),
   );
+
+  const canRedirect = !isNotification && !stayOnHomePage;
 
   // Ported from home.component - checkStatusAndNavigate()
   useEffect(() => {
