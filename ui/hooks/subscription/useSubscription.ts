@@ -51,7 +51,6 @@ import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors
 import {
   getMetaMetricsId,
   getModalTypeForShieldEntryModal,
-  getSelectedInternalAccount,
   getUnapprovedConfirmations,
 } from '../../selectors';
 import { useSubscriptionMetrics } from '../shield/metrics/useSubscriptionMetrics';
@@ -406,9 +405,12 @@ export const useSubscriptionEligibility = (product: ProductType) => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const isSignedIn = useSelector(selectIsSignedIn);
   const isUnlocked = useSelector(getIsUnlocked);
-  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const evmInternalAccount = useSelector((state) =>
+    // Account address will be the same for all EVM accounts
+    getInternalAccountBySelectedAccountGroupAndCaip(state, 'eip155:1'),
+  );
   const { totalFiatBalance } = useAccountTotalFiatBalance(
-    selectedAccount,
+    evmInternalAccount,
     false,
     true, // use USD conversion rate instead of the current currency
   );

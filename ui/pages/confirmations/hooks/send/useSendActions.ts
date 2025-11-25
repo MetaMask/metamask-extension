@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom-v5-compat';
 import {
   CONFIRM_TRANSACTION_ROUTE,
   DEFAULT_ROUTE,
+  PREVIOUS_ROUTE,
   SEND_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { setDefaultHomeActiveTabName } from '../../../../store/actions';
@@ -84,7 +85,7 @@ export const useSendActions = () => {
   ]);
 
   const handleBack = useCallback(() => {
-    navigate(-1);
+    navigate(PREVIOUS_ROUTE);
   }, [navigate]);
 
   const handleCancel = useCallback(() => {
