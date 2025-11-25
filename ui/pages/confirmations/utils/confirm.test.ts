@@ -147,13 +147,13 @@ describe('confirm util', () => {
   });
 
   describe('checkValidSingleOrBatchTransaction', () => {
-    it('returns null for valid single transaction', () => {
+    it('throws error for single transaction with invalid data', () => {
       expect(() =>
         checkValidSingleOrBatchTransaction([{ data: '0x' }]),
       ).toThrow();
     });
 
-    it('returns null for valid batch transaction', () => {
+    it('returns undefined for valid batch transaction', () => {
       const result = checkValidSingleOrBatchTransaction([
         { data: '0x3593564c0000' },
         { data: '0x87517c450000' },
@@ -161,7 +161,7 @@ describe('confirm util', () => {
       expect(result).toStrictEqual(undefined);
     });
 
-    it('throws error for invalid batch transaction', () => {
+    it('throws error if number of nested transactions is greater than 3', () => {
       expect(() =>
         checkValidSingleOrBatchTransaction([
           { data: '0x' },

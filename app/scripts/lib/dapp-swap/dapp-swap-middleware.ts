@@ -3,6 +3,10 @@ import {
   GenericQuoteRequest,
   QuoteResponse,
 } from '@metamask/bridge-controller';
+import {
+  NetworkClientId,
+  NetworkConfiguration,
+} from '@metamask/network-controller';
 
 import {
   DappSwapMiddlewareRequest,
