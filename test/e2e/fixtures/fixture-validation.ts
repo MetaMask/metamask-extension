@@ -1,6 +1,5 @@
-import fs from 'fs-extra';
 import path from 'path';
-
+import fs from 'fs-extra';
 import {
   createTypeMap,
   type StateLogsTypeMap,
@@ -78,9 +77,10 @@ export const formatSchemaDiff = ({
 
   if (newKeys.length > 0) {
     messages.push(
-      ['Detected new keys in wallet state fixture:', ...newKeys.map((key) => `  • ${key}`)].join(
-        '\n',
-      ),
+      [
+        'Detected new keys in wallet state fixture:',
+        ...newKeys.map((key) => `  • ${key}`),
+      ].join('\n'),
     );
   }
 
@@ -112,4 +112,3 @@ export const formatSchemaDiff = ({
 
   return messages.join('\n\n');
 };
-

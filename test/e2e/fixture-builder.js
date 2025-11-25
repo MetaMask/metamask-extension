@@ -1,10 +1,8 @@
-const fs = require('fs');
-const path = require('path');
-const { merge, mergeWith } = require('lodash');
 const {
   WALLET_SNAP_PERMISSION_KEY,
   SnapCaveatType,
 } = require('@metamask/snaps-utils');
+const { merge, mergeWith } = require('lodash');
 const { toHex } = require('@metamask/controller-utils');
 const { mockNetworkStateOld } = require('../stub/networks');
 
@@ -27,82 +25,10 @@ const {
   defaultFixture,
   FIXTURE_STATE_METADATA_VERSION,
 } = require('./default-fixture');
+const onboardingFixtureJson = require('./fixtures/onboarding-fixture.json');
 
 function onboardingFixture() {
-  const fixturePath = path.resolve(
-    process.cwd(),
-    'test',
-    'e2e',
-    'fixtures',
-    'onboarding-fixture.json',
-  );
-
-  if (fs.existsSync(fixturePath)) {
-    try {
-      const content = fs.readFileSync(fixturePath, 'utf8');
-      const parsed = JSON.parse(content);
-      // eslint-disable-next-line no-console
-      console.log(
-        '[FixtureBuilder] Using onboarding fixture from fixtures directory:',
-        fixturePath,
-      );
-      return parsed;
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.error(
-        '[FixtureBuilder] Error reading onboarding fixture file:',
-        fixturePath,
-        e,
-      );
-    }
-  }
-
-  // eslint-disable-next-line no-console
-  console.error('\n');
-  // eslint-disable-next-line no-console
-  console.error(
-    '=============================================================================',
-  );
-  // eslint-disable-next-line no-console
-  console.error('❌ [FixtureBuilder] No onboarding fixture found!');
-  // eslint-disable-next-line no-console
-  console.error(
-    '=============================================================================',
-  );
-  // eslint-disable-next-line no-console
-  console.error('\n📝 To create your local fixture:\n');
-  // eslint-disable-next-line no-console
-  console.error('📋 STEP 1: Ensure the fixtures directory exists');
-  // eslint-disable-next-line no-console
-  console.error('   mkdir -p test/e2e/fixtures');
-  // eslint-disable-next-line no-console
-  console.error('\n📋 STEP 2: Update the contents with your own wallet state');
-  // eslint-disable-next-line no-console
-  console.error('   Option A - 📥 Download from PR comment:');
-  // eslint-disable-next-line no-console
-  console.error(
-    '      Save the file to test/e2e/fixtures/onboarding-fixture.json\n',
-  );
-  // eslint-disable-next-line no-console
-  console.error('   Option B - 🔧 Export your own wallet state:');
-  // eslint-disable-next-line no-console
-  console.error('      🏗️  a) Build:  yarn dist');
-  // eslint-disable-next-line no-console
-  console.error(
-    '      🧪 b) Export: yarn test:e2e:single test/e2e/wallet-fixture-export.spec.ts --browser chrome',
-  );
-  // eslint-disable-next-line no-console
-  console.error(
-    '      📦 c) Copy:   File will be saved to test/e2e/fixtures/onboarding-fixture.json',
-  );
-  // eslint-disable-next-line no-console
-  console.error(
-    '\n=============================================================================\n',
-  );
-
-  throw new Error(
-    '[FixtureBuilder] No local onboarding fixture found! See instructions above.',
-  );
+  return onboardingFixtureJson;
 }
 
 class FixtureBuilder {
