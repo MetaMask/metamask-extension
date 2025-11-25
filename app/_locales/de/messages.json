@@ -2601,9 +2601,6 @@
   "function": {
     "message": "Funktion: $1"
   },
-  "fundingMethod": {
-    "message": "Methode der Mittelbereitstellung"
-  },
   "gas": {
     "message": "Gas"
   },
@@ -7004,12 +7001,6 @@
   },
   "time": {
     "message": "Zeit"
-  },
-  "tipsForUsingAWallet": {
-    "message": "Tipps zur Verwendung einer Wallet"
-  },
-  "tipsForUsingAWalletDescription": {
-    "message": "Das Hinzufügen von Tokens eröffnet weitere Möglichkeiten zur Nutzung von web3."
   },
   "to": {
     "message": "An"

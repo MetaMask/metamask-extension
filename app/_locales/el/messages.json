@@ -2601,9 +2601,6 @@
   "function": {
     "message": "Λειτουργία: $1"
   },
-  "fundingMethod": {
-    "message": "Μέθοδος χρηματοδότησης"
-  },
   "gas": {
     "message": "Τέλος συναλλαγής"
   },
@@ -7004,12 +7001,6 @@
   },
   "time": {
     "message": "Ώρα"
-  },
-  "tipsForUsingAWallet": {
-    "message": "Συμβουλές για τη χρήση πορτοφολιού"
-  },
-  "tipsForUsingAWalletDescription": {
-    "message": "Η προσθήκη tokens ξεκλειδώνει περισσότερους τρόπους χρήσης του web3."
   },
   "to": {
     "message": "Προς"
