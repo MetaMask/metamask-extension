@@ -6,6 +6,7 @@ import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom-v5-compat';
 
 import { useConfirmContext } from '../context/confirm';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { useRedesignedSendFlow } from './useRedesignedSendFlow';
 
 const SendTransactionTypes = [
@@ -26,7 +27,7 @@ export const useConfirmSendNavigation = () => {
     }
     const { origin, type } = currentConfirmation;
     if (origin === 'metamask' && type && SendTransactionTypes.includes(type)) {
-      navigate(-1);
+      navigate(PREVIOUS_ROUTE);
     }
   }, [currentConfirmation, navigate, isSendRedesignEnabled]);
 
