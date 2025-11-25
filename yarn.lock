@@ -7668,6 +7668,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/profile-sync-controller@npm:^27.0.0":
+  version: 27.0.0
+  resolution: "@metamask/profile-sync-controller@npm:27.0.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^9.0.0"
+    "@metamask/messenger": "npm:^0.3.0"
+    "@metamask/snaps-sdk": "npm:^9.0.0"
+    "@metamask/snaps-utils": "npm:^11.0.0"
+    "@metamask/utils": "npm:^11.8.1"
+    "@noble/ciphers": "npm:^1.3.0"
+    "@noble/hashes": "npm:^1.8.0"
+    immer: "npm:^9.0.6"
+    loglevel: "npm:^1.8.1"
+    siwe: "npm:^2.3.2"
+  peerDependencies:
+    "@metamask/address-book-controller": ^7.0.1
+    "@metamask/keyring-controller": ^25.0.0
+    "@metamask/providers": ^22.0.0
+    "@metamask/snaps-controllers": ^14.0.0
+    webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
+  checksum: 10/3bfa8f483a1dc6c0cc5301d3d02570afadea698c71910c0b53d9a840d172bcaeeaca0d8f2f93c57f4c00b7fd65ef38a62357ec45caf05adc43128c748254f6fa
+  languageName: node
+  linkType: hard
+
 "@metamask/protocol-example-snap@npm:^1.0.0":
   version: 1.0.0
   resolution: "@metamask/protocol-example-snap@npm:1.0.0"
@@ -8424,21 +8448,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/user-profile-controller@npm:@metamask-previews/user-profile-controller@0.0.0-preview-96f3a4d7":
-  version: 0.0.0-preview-96f3a4d7
-  resolution: "@metamask-previews/user-profile-controller@npm:0.0.0-preview-96f3a4d7"
+"@metamask/user-profile-controller@npm:@metamask-previews/user-profile-controller@0.0.0-preview-59735db0":
+  version: 0.0.0-preview-59735db0
+  resolution: "@metamask-previews/user-profile-controller@npm:0.0.0-preview-59735db0"
   dependencies:
+    "@metamask/accounts-controller": "npm:^34.0.0"
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/controller-utils": "npm:^11.15.0"
+    "@metamask/keyring-controller": "npm:^24.0.0"
     "@metamask/messenger": "npm:^0.3.0"
     "@metamask/polling-controller": "npm:^15.0.0"
+    "@metamask/profile-sync-controller": "npm:^27.0.0"
     "@metamask/utils": "npm:^11.8.1"
     async-mutex: "npm:^0.5.0"
-  peerDependencies:
-    "@metamask/accounts-controller": ^34.0.0
-    "@metamask/keyring-controller": ^24.0.0
-    "@metamask/profile-sync-controller": ^26.0.0
-  checksum: 10/024ffee968afe6c81977941b858c96bbc13b89fb04e303b149a2f156d80e208416c79f0c44bd8bb1b198294bd10ab57e872cb9916013e2072e1cbf6210b62dc3
+  checksum: 10/273c45120afdf3287b3db0b39ae59b5b7792196b05da421abee4af08a44eb8de6aa1eb1b459aa4b8dc4dad8c698d7e5415c0123bc2b1c8945307f65d15238f46
   languageName: node
   linkType: hard
 
