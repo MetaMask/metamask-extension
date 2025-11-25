@@ -81,7 +81,6 @@
     "webRequest",
     "offscreen",
     "identity",
-    "sidePanel",
     "contextMenus"
   ],
   "sandbox": {
