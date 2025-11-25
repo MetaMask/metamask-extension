@@ -69,11 +69,7 @@ export function useDappSwapComparisonInfo() {
           trxnData?.startsWith(FOUR_BYTE_EXECUTE_SWAP_CONTRACT),
         )?.data;
       }
-      const result = getDataFromSwap(
-        chainId,
-        transactionData,
-        txParams?.from as string,
-      );
+      const result = getDataFromSwap(chainId, transactionData);
       if (result.quotesInput) {
         updateRequestDetectionLatency();
       }
@@ -82,7 +78,7 @@ export function useDappSwapComparisonInfo() {
       captureException(error);
       captureDappSwapComparisonFailed((error as Error).toString());
       return {
-        commands: '',
+        commands: undefined,
         quotesInput: undefined,
         amountMin: undefined,
         tokenAddresses: [],
@@ -93,7 +89,6 @@ export function useDappSwapComparisonInfo() {
     chainId,
     data,
     nestedTransactions,
-    txParams?.from,
     updateRequestDetectionLatency,
   ]);
 
