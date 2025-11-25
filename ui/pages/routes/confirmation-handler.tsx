@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 
-import { ApprovalType } from '@metamask/controller-utils';
+// import { ApprovalType } from '@metamask/controller-utils';
 import {
   AWAITING_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
@@ -39,8 +39,6 @@ const APPROVAL_TYPES = [
   'wallet_installSnap',
   'wallet_updateSnap',
   'wallet_installSnapResult',
-  ApprovalType.ResultSuccess,
-  ApprovalType.ResultError,
 ];
 
 export const ConfirmationHandler = () => {
