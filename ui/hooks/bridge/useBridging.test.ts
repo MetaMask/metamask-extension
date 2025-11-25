@@ -1,10 +1,20 @@
 import { toChecksumAddress } from 'ethereumjs-util';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
+import { NetworkConfiguration } from '@metamask/network-controller';
 import { MetaMetricsSwapsEventSource } from '../../../shared/constants/metametrics';
-import { renderHookWithProvider } from '../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../shared/constants/network';
+import * as bridgeSelectors from '../../ducks/bridge/selectors';
 import useBridging from './useBridging';
+
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 const mockDispatch = jest.fn().mockReturnValue(() => jest.fn());
 jest.mock('react-redux', () => ({
@@ -67,7 +77,7 @@ describe('useBridging', () => {
         false,
       ],
       [
-        '/cross-chain/swaps/prepare-swap-page?',
+        '/cross-chain/swaps/prepare-swap-page?from=eip155:1/slip44:60',
         {
           ...getNativeAssetForChainId(CHAIN_IDS.MAINNET),
           chainId: 243,
@@ -76,7 +86,7 @@ describe('useBridging', () => {
         false,
       ],
       [
-        '/cross-chain/swaps/prepare-swap-page?from=eip155:10/erc20:0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d&swaps=true',
+        '/cross-chain/swaps/prepare-swap-page?from=eip155:10/erc20:0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
         {
           iconUrl: 'https://icon.url',
           symbol: 'TEST',
@@ -100,10 +110,21 @@ describe('useBridging', () => {
         isSwap: boolean,
       ) => {
         const openTabSpy = jest.spyOn(global.platform, 'openTab');
-        const { result, history } = renderUseBridging({
+        jest
+          .spyOn(bridgeSelectors, 'getFromChains')
+          .mockReturnValueOnce([
+            { chainId: CHAIN_IDS.MAINNET } as unknown as NetworkConfiguration,
+            { chainId: CHAIN_IDS.OPTIMISM } as unknown as NetworkConfiguration,
+          ]);
+        const { result } = renderUseBridging({
           metamask: {
             useExternalServices: true,
-            ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+            ...mockNetworkState(
+              {
+                chainId: CHAIN_IDS.MAINNET,
+              },
+              { chainId: CHAIN_IDS.OPTIMISM },
+            ),
             metaMetricsId: MOCK_METAMETRICS_ID,
             remoteFeatureFlags: {
               bridgeConfig: {
@@ -129,13 +150,11 @@ describe('useBridging', () => {
             },
           },
         });
-        const mockHistoryPush = jest.spyOn(history, 'push');
 
         result.current.openBridgeExperience(location, token, isSwap);
 
         expect(mockDispatch.mock.calls).toHaveLength(2);
-        expect(mockHistoryPush.mock.calls).toHaveLength(1);
-        expect(mockHistoryPush).toHaveBeenCalledWith(expectedUrl);
+        expect(mockUseNavigate).toHaveBeenCalledWith(expectedUrl);
         expect(openTabSpy).not.toHaveBeenCalled();
       },
     );
@@ -144,21 +163,21 @@ describe('useBridging', () => {
     it.each([
       [
         '/',
-        '/cross-chain/swaps/prepare-swap-page?from=eip155:1/slip44:60&swaps=true',
+        '/cross-chain/swaps/prepare-swap-page?from=eip155:1/slip44:60',
         undefined,
         'Home',
         true,
       ],
       [
         '/asset/0xa/',
-        '/cross-chain/swaps/prepare-swap-page?from=eip155:10/slip44:60&swaps=true',
+        '/cross-chain/swaps/prepare-swap-page?from=eip155:10/slip44:60',
         getNativeAssetForChainId(CHAIN_IDS.OPTIMISM),
         MetaMetricsSwapsEventSource.TokenView,
         true,
       ],
       [
         '/asset/0xa/0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
-        '/cross-chain/swaps/prepare-swap-page?from=eip155:10/erc20:0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d&swaps=true',
+        '/cross-chain/swaps/prepare-swap-page?from=eip155:10/erc20:0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
         {
           iconUrl: 'https://icon.url',
           symbol: 'TEST',
@@ -183,7 +202,13 @@ describe('useBridging', () => {
         isSwap: boolean,
       ) => {
         const openTabSpy = jest.spyOn(global.platform, 'openTab');
-        const { result, history } = renderUseBridging({
+        jest
+          .spyOn(bridgeSelectors, 'getFromChains')
+          .mockReturnValueOnce([
+            { chainId: CHAIN_IDS.MAINNET } as unknown as NetworkConfiguration,
+            { chainId: CHAIN_IDS.OPTIMISM } as unknown as NetworkConfiguration,
+          ]);
+        const { result } = renderUseBridging({
           metamask: {
             useExternalServices: true,
             ...mockNetworkState({ chainId: CHAIN_IDS.BSC }),
@@ -225,13 +250,11 @@ describe('useBridging', () => {
             pathname,
           },
         });
-        const mockHistoryPush = jest.spyOn(history, 'push');
 
         result.current.openBridgeExperience(location, token, isSwap);
 
         expect(mockDispatch.mock.calls).toHaveLength(2);
-        expect(mockHistoryPush.mock.calls).toHaveLength(1);
-        expect(mockHistoryPush).toHaveBeenCalledWith(expectedUrl);
+        expect(mockUseNavigate).toHaveBeenCalledWith(expectedUrl);
         expect(openTabSpy).not.toHaveBeenCalled();
       },
     );

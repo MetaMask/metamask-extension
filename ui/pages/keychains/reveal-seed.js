@@ -1,7 +1,7 @@
 import qrCode from 'qrcode-generator';
 import React, { useContext, useEffect, useState, useCallback } from 'react';
+import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
 import { getErrorMessage } from '../../../shared/modules/error';
 import {
   MetaMetricsEventCategory,
@@ -40,13 +40,12 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { requestRevealSeedWords } from '../../store/actions';
 import { getHDEntropyIndex } from '../../selectors/selectors';
 import { endTrace, trace, TraceName } from '../../../shared/lib/trace';
+import { PREVIOUS_ROUTE } from '../../helpers/constants/routes';
 
 const PASSWORD_PROMPT_SCREEN = 'PASSWORD_PROMPT_SCREEN';
 const REVEAL_SEED_SCREEN = 'REVEAL_SEED_SCREEN';
 
-export default function RevealSeedPage() {
-  const history = useHistory();
-  const { keyringId } = useParams();
+function RevealSeedPage({ navigate, keyringId }) {
   const dispatch = useDispatch();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -215,11 +214,15 @@ export default function RevealSeedPage() {
             }
           }}
         >
-          <Tab name={t('revealSeedWordsText')} tabKey="text-seed">
+          <Tab
+            name={t('revealSeedWordsText')}
+            tabKey="text-seed"
+            className="flex-1"
+          >
             <Label marginTop={4}>{t('yourPrivateSeedPhrase')}</Label>
             <ExportTextContainer text={seedWords} onClickCopy={onClickCopy} />
           </Tab>
-          <Tab name={t('revealSeedWordsQR')} tabKey="qr-srp">
+          <Tab name={t('revealSeedWordsQR')} tabKey="qr-srp" className="flex-1">
             <Box
               display={Display.Flex}
               justifyContent={JustifyContent.center}
@@ -263,7 +266,7 @@ export default function RevealSeedPage() {
                 hd_entropy_index: hdEntropyIndex,
               },
             });
-            history.goBack();
+            navigate(PREVIOUS_ROUTE);
           }}
         >
           {t('cancel')}
@@ -312,7 +315,7 @@ export default function RevealSeedPage() {
                 key_type: MetaMetricsEventKeyType.Srp,
               },
             });
-            history.goBack();
+            navigate(PREVIOUS_ROUTE);
           }}
         >
           {t('close')}
@@ -405,3 +408,10 @@ export default function RevealSeedPage() {
     </Box>
   );
 }
+
+RevealSeedPage.propTypes = {
+  navigate: PropTypes.func.isRequired,
+  keyringId: PropTypes.string,
+};
+
+export default RevealSeedPage;

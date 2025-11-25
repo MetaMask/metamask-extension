@@ -216,3 +216,40 @@ export const getMockTokenTransferConfirmState = ({
     }),
   );
 };
+
+export const addEthereumChainApproval = {
+  id: 'j8GP9DVKMR8mz6I-DQM25',
+  origin: 'https://chainid.network',
+  type: 'wallet_addEthereumChain',
+  time: 1760960363027,
+  requestData: {
+    chainId: '0x3af',
+    rpcPrefs: {
+      blockExplorerUrl: 'https://scan.v4.testnet.pulsechain.com',
+    },
+    chainName: 'PulseChain Testnet v4',
+    rpcUrl: 'https://rpc.v4.testnet.pulsechain.com',
+    ticker: 'tPLS',
+  },
+  requestState: null,
+  expectsResult: false,
+};
+
+export const getMockAddEthereumChainConfirmState = () => ({
+  ...mockState,
+  metamask: {
+    ...mockState.metamask,
+    pendingApprovals: {
+      '1': {
+        id: '1',
+        type: ApprovalType.AddEthereumChain,
+        requestData: {
+          chainId: '0x5',
+          chainName: 'Test Network',
+          rpcUrl: 'https://rpc.example.com',
+        },
+        origin: 'https://example.com',
+      },
+    },
+  },
+});

@@ -1,5 +1,13 @@
 import { SnapController } from '@metamask/snaps-controllers';
-import { Messenger } from '@metamask/base-controller';
+import {
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MockAnyNamespace,
+} from '@metamask/messenger';
+import {
+  KeyringControllerLockEvent,
+  KeyringControllerUnlockEvent,
+} from '@metamask/keyring-controller';
 import { ControllerInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import {
@@ -8,15 +16,16 @@ import {
   SnapControllerInitMessenger,
   SnapControllerMessenger,
 } from '../messengers/snaps';
+import { getRootMessenger } from '../../lib/messenger';
 import { SnapControllerInit } from './snap-controller-init';
 
 jest.mock('@metamask/snaps-controllers');
 
-function getInitRequestMock(): jest.Mocked<
+function getInitRequestMock(
+  baseMessenger = getRootMessenger(),
+): jest.Mocked<
   ControllerInitRequest<SnapControllerMessenger, SnapControllerInitMessenger>
 > {
-  const baseMessenger = new Messenger<never, never>();
-
   const requestMock = {
     ...buildControllerInitRequestMock(),
     controllerMessenger: getSnapControllerMessenger(baseMessenger),
@@ -28,6 +37,10 @@ function getInitRequestMock(): jest.Mocked<
 }
 
 describe('SnapControllerInit', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('initializes the controller', () => {
     const { controller } = SnapControllerInit(getInitRequestMock());
     expect(controller).toBeInstanceOf(SnapController);
@@ -41,7 +54,6 @@ describe('SnapControllerInit', () => {
       messenger: expect.any(Object),
       state: undefined,
       closeAllConnections: expect.any(Function),
-      dynamicPermissions: ['endowment:caip25'],
       encryptor: expect.any(Object),
       environmentEndowmentPermissions: expect.any(Array),
       excludedPermissions: expect.any(Object),
@@ -49,13 +61,50 @@ describe('SnapControllerInit', () => {
         allowLocalSnaps: false,
         rejectInvalidPlatformVersion: false,
         requireAllowlist: false,
-        useCaip25Permission: true,
         forcePreinstalledSnaps: false,
+        autoUpdatePreinstalledSnaps: false,
       },
       getFeatureFlags: expect.any(Function),
       getMnemonicSeed: expect.any(Function),
       preinstalledSnaps: expect.any(Array),
       trackEvent: expect.any(Function),
+      ensureOnboardingComplete: expect.any(Function),
     });
+  });
+
+  it('calls `SnapController:setClientActive` when the client is locked', () => {
+    const baseMessenger = new Messenger<
+      MockAnyNamespace,
+      never,
+      KeyringControllerLockEvent
+    >({ namespace: MOCK_ANY_NAMESPACE });
+
+    const request = getInitRequestMock(baseMessenger);
+    const { initMessenger } = request;
+
+    const spy = jest.spyOn(initMessenger, 'call');
+
+    SnapControllerInit(request);
+    baseMessenger.publish('KeyringController:lock');
+
+    expect(spy).toHaveBeenCalledWith('SnapController:setClientActive', false);
+  });
+
+  it('calls `SnapController:setClientActive` when the client is unlocked', () => {
+    const baseMessenger = new Messenger<
+      MockAnyNamespace,
+      never,
+      KeyringControllerUnlockEvent
+    >({ namespace: MOCK_ANY_NAMESPACE });
+
+    const request = getInitRequestMock(baseMessenger);
+    const { initMessenger } = request;
+
+    const spy = jest.spyOn(initMessenger, 'call');
+
+    SnapControllerInit(request);
+    baseMessenger.publish('KeyringController:unlock');
+
+    expect(spy).toHaveBeenCalledWith('SnapController:setClientActive', true);
   });
 });

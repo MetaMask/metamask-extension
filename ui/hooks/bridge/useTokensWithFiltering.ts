@@ -4,6 +4,7 @@ import { ChainId } from '@metamask/controller-utils';
 import { type CaipChainId, type Hex } from '@metamask/utils';
 import {
   isSolanaChainId,
+  isBitcoinChainId,
   formatChainIdToCaip,
   formatChainIdToHex,
   isNativeAddress,
@@ -11,6 +12,7 @@ import {
   BridgeClientId,
   type BridgeAsset,
   getNativeAssetForChainId,
+  isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import type {
   TokenListMap,
@@ -36,6 +38,7 @@ import type {
 import { getAssetImageUrl, toAssetId } from '../../../shared/lib/asset-utils';
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
 import type { BridgeToken } from '../../ducks/bridge/types';
+import { isTronEnergyOrBandwidthResource } from '../../ducks/bridge/utils';
 
 // This transforms the token object from the bridge-api into the format expected by the AssetPicker
 const buildTokenData = (
@@ -51,7 +54,7 @@ const buildTokenData = (
   // Only tokens on the active chain are processed here here
   const sharedFields = {
     ...token,
-    chainId: isSolanaChainId(chainId)
+    chainId: isNonEvmChainId(chainId)
       ? formatChainIdToCaip(chainId)
       : formatChainIdToHex(chainId),
     assetId:
@@ -61,21 +64,28 @@ const buildTokenData = (
   };
 
   if (isNativeAddress(token.address)) {
+    // Use MULTICHAIN_TOKEN_IMAGE_MAP for non-EVM chains
+    const image = isNonEvmChainId(chainId)
+      ? MULTICHAIN_TOKEN_IMAGE_MAP[
+          sharedFields.chainId as keyof typeof MULTICHAIN_TOKEN_IMAGE_MAP
+        ]
+      : CHAIN_ID_TOKEN_IMAGE_MAP[
+          sharedFields.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
+        ];
+
     return {
       ...sharedFields,
       type: AssetType.native,
       address: '', // Return empty string to match useMultichainBalances output
       image:
-        CHAIN_ID_TOKEN_IMAGE_MAP[
-          sharedFields.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-        ] ??
+        image ??
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
         // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         (token.iconUrl || ('icon' in token ? token.icon : '') || ''),
       // Only unimported native assets are processed here so hardcode balance to 0
       balance: '0',
       string: '0',
-    };
+    } as AssetWithDisplayData<NativeAsset>;
   }
 
   return {
@@ -129,9 +139,23 @@ export const useTokensWithFiltering = (
     if (!chainId) {
       return undefined;
     }
+    // For Bitcoin chains, we only support native asset
+    if (isBitcoinChainId(chainId)) {
+      // Return native asset for Bitcoin chains
+      const nativeAsset = getNativeAssetForChainId(chainId);
+      if (nativeAsset) {
+        const key = nativeAsset.address ?? '';
+        return {
+          [key]: nativeAsset,
+        };
+      }
+      return undefined;
+    }
+    // For Solana chains, we don't cache in the same way, return undefined to trigger fetch
     if (isSolanaChainId(chainId)) {
       return undefined;
     }
+    // For EVM chains, check the cache
     const hexChainId = formatChainIdToHex(chainId);
     return hexChainId ? cachedTokens[hexChainId]?.data : undefined;
   }, [chainId, cachedTokens]);
@@ -159,6 +183,7 @@ export const useTokensWithFiltering = (
           });
         },
         BRIDGE_API_BASE_URL,
+        process.env.METAMASK_VERSION,
       );
     }, [chainId, isTokenListCached]);
 
@@ -223,28 +248,23 @@ export const useTokensWithFiltering = (
           );
         };
 
-        if (
-          !chainId ||
-          !topTokens ||
-          !tokenList ||
-          Object.keys(tokenList).length === 0
-        ) {
+        if (!chainId || !topTokens) {
+          return;
+        }
+
+        if (!tokenList || Object.keys(tokenList).length === 0) {
           return;
         }
 
         // Yield multichain tokens with balances and are not blocked
         for (const token of multichainTokensWithBalance) {
-          if (
-            shouldAddToken(
-              token.symbol,
-              token.address ?? undefined,
-              token.chainId,
-            )
-          ) {
-            if (
-              (isNativeAddress(token.address) || token.isNative) &&
-              !isSolanaChainId(token.chainId)
-            ) {
+          // Filter out Tron Energy and Bandwidth resources (including MAX-BANDWIDTH, sTRX-BANDWIDTH, sTRX-ENERGY)
+          // as they are not tradeable assets
+          if (isTronEnergyOrBandwidthResource(token.chainId, token.symbol)) {
+            continue;
+          }
+          if (shouldAddToken(token.symbol, token.address, token.chainId)) {
+            if (isNativeAddress(token.address) || token.isNative) {
               yield {
                 symbol: token.symbol,
                 chainId: token.chainId,
@@ -271,6 +291,7 @@ export const useTokensWithFiltering = (
                       token.address,
                       formatChainIdToCaip(token.chainId),
                     )),
+                accountType: token.accountType,
               };
             } else {
               yield {
@@ -285,7 +306,8 @@ export const useTokensWithFiltering = (
                 string: token.string ?? undefined,
                 image:
                   (token.image ||
-                    tokenList?.[token.address.toLowerCase()]?.iconUrl) ??
+                    (token.address &&
+                      tokenList?.[token.address.toLowerCase()]?.iconUrl)) ??
                   getAssetImageUrl(
                     token.address,
                     formatChainIdToCaip(token.chainId),
@@ -304,8 +326,11 @@ export const useTokensWithFiltering = (
             tokenList?.[token_.address] ??
             tokenList?.[token_.address.toLowerCase()];
           const token = buildTokenData(chainId, matchedToken);
+          // Filter out Tron Energy and Bandwidth resources (including MAX-BANDWIDTH, sTRX-BANDWIDTH, sTRX-ENERGY)
+          // as they are not tradeable assets
           if (
             token &&
+            !isTronEnergyOrBandwidthResource(chainId, token.symbol) &&
             shouldAddToken(token.symbol, token.address ?? undefined, chainId)
           ) {
             yield token;
@@ -317,9 +342,12 @@ export const useTokensWithFiltering = (
         // eslint-disable-next-line @typescript-eslint/naming-convention
         for (const token_ of Object.values(tokenList)) {
           const token = buildTokenData(chainId, token_);
+          // Filter out Tron Energy and Bandwidth resources (including MAX-BANDWIDTH, sTRX-BANDWIDTH, sTRX-ENERGY)
+          // as they are not tradeable assets
           if (
             token &&
             token.symbol.indexOf('$') === -1 &&
+            !isTronEnergyOrBandwidthResource(chainId, token.symbol) &&
             shouldAddToken(token.symbol, token.address ?? undefined, chainId)
           ) {
             yield token;

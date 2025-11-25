@@ -1,4 +1,5 @@
 import { Suite } from 'mocha';
+import { MockttpServer } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
@@ -13,6 +14,7 @@ import { Anvil } from '../../seeder/anvil';
 import { Ganache } from '../../seeder/ganache';
 import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { mockSpotPrices } from '../tokens/utils/mocks';
 
 const EXPECTED_BALANCE_USD = '$85,025.00';
 const EXPECTED_SEPOLIA_BALANCE_NATIVE = '25';
@@ -25,7 +27,7 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
     const smartContract = SMART_CONTRACTS.NFTS;
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({
@@ -43,6 +45,15 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         smartContract,
         ethConversionInUsd: 3401, // 25 ETH × $3401 = $85,025.00
         title: this.test?.fullTitle(),
+        testSpecificMock: async (mockServer: MockttpServer) => {
+          await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
+            '0x0000000000000000000000000000000000000000': {
+              price: 3401,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
+          });
+        },
       },
       async ({
         driver,

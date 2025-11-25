@@ -4,12 +4,16 @@ import type {
 } from '@metamask/assets-controllers';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { Action, AnyAction } from 'redux';
+import { ModalType } from '@metamask/subscription-controller';
 import {
   HardwareTransportStates,
   WebHIDConnectedStatuses,
 } from '../../../shared/constants/hardware-wallets';
 import * as actionConstants from '../../store/actionConstants';
-import { PasswordChangeToastType } from '../../../shared/constants/app-state';
+import {
+  PasswordChangeToastType,
+  ClaimSubmitToastType,
+} from '../../../shared/constants/app-state';
 
 type AppState = {
   customNonceValue: string;
@@ -108,6 +112,7 @@ type AppState = {
         nickname?: string;
         editCompleted?: boolean;
         newNetwork?: boolean;
+        trackRpcUpdateFromBanner?: boolean;
       }
     | undefined;
   newNetworkAddedConfigurationId: string;
@@ -128,8 +133,18 @@ type AppState = {
   errorInSettings: string | null;
   showNewSrpAddedToast: boolean;
   showPasswordChangeToast: PasswordChangeToastType | null;
-  showConnectionsRemovedModal: boolean;
   showCopyAddressToast: boolean;
+  showClaimSubmitToast: ClaimSubmitToastType | null;
+  shieldEntryModal?: {
+    show: boolean;
+    shouldSubmitEvents: boolean;
+    modalType?: ModalType;
+    triggeringCohort?: string;
+    /**
+     * Whether the user has interacted with the modal.
+     */
+    hasUserInteractedWithModal?: boolean;
+  };
 };
 
 export type AppSliceState = {
@@ -230,8 +245,8 @@ const initialState: AppState = {
   showNewSrpAddedToast: false,
   showPasswordChangeToast: null,
   showCopyAddressToast: false,
+  showClaimSubmitToast: null,
   showSupportDataConsentModal: false,
-  showConnectionsRemovedModal: false,
 };
 
 export default function reduceApp(
@@ -775,16 +790,24 @@ export default function reduceApp(
         showCopyAddressToast: action.payload,
       };
 
+    case actionConstants.SET_SHOW_CLAIM_SUBMIT_TOAST:
+      return {
+        ...appState,
+        showClaimSubmitToast: action.payload,
+      };
+
     case actionConstants.SET_SHOW_SUPPORT_DATA_CONSENT_MODAL:
       return {
         ...appState,
         showSupportDataConsentModal: action.payload,
       };
 
-    case actionConstants.SET_SHOW_CONNECTIONS_REMOVED:
+    case actionConstants.SET_SHIELD_ENTRY_MODAL_STATUS:
       return {
         ...appState,
-        showConnectionsRemovedModal: action.value,
+        shieldEntryModal: {
+          ...action.payload,
+        },
       };
 
     default:

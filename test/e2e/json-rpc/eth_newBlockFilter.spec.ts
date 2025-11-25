@@ -11,7 +11,7 @@ describe('eth_newBlockFilter', function () {
   it('executes a new block filter call', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),

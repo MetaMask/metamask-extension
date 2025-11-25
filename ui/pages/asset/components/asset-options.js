@@ -1,7 +1,7 @@
 import React, { useContext, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 import { I18nContext } from '../../../contexts/i18n';
 import { Menu, MenuItem } from '../../../components/ui/menu';
@@ -20,24 +20,21 @@ const AssetOptions = ({
   onViewTokenDetails,
   tokenSymbol,
   isNativeAsset,
-  isEvm,
 }) => {
   const t = useContext(I18nContext);
   const [assetOptionsOpen, setAssetOptionsOpen] = useState(false);
-  const history = useHistory();
+  const navigate = useNavigate();
   const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);
   const ref = useRef(false);
 
   const routeToAddBlockExplorerUrl = () => {
-    history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
+    navigate(`${NETWORKS_ROUTE}#blockExplorerUrl`);
   };
 
   const openBlockExplorer = () => {
     setAssetOptionsOpen(false);
     onClickBlockExplorer();
   };
-
-  const shouldShowHideTokenButton = isEvm && !isNativeAsset;
 
   return (
     <div ref={ref}>
@@ -71,7 +68,7 @@ const AssetOptions = ({
                 : [t('blockExplorerAssetAction')],
             )}
           </MenuItem>
-          {shouldShowHideTokenButton && (
+          {!isNativeAsset && (
             <MenuItem
               iconName={IconName.Trash}
               data-testid="asset-options__hide"
@@ -107,7 +104,6 @@ const isNotFunc = (p) => {
 
 AssetOptions.propTypes = {
   isNativeAsset: PropTypes.bool,
-  isEvm: PropTypes.bool,
   onClickBlockExplorer: PropTypes.func.isRequired,
   onRemove: (props) => {
     if (props.isNativeAsset === false && isNotFunc(props.onRemove)) {

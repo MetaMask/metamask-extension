@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import SnapListItem from '../../../components/app/snaps/snap-list-item';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -38,12 +39,16 @@ import {
 } from '../../../components/multichain/pages/page';
 import { getSnapRoute } from '../../../helpers/utils/util';
 
-const SnapList = () => {
+const SnapList = ({ navigate: navigateProp }) => {
   const t = useI18nContext();
-  const history = useHistory();
   const settingsRef = useRef();
+
+  const hookNavigate = useNavigate();
+
+  // Use passed props if they exist, otherwise fall back to hooks
+  const navigate = navigateProp ?? hookNavigate;
   const onClick = (snap) => {
-    history.push(getSnapRoute(snap.id));
+    navigate(getSnapRoute(snap.id));
   };
 
   useEffect(() => {
@@ -63,7 +68,7 @@ const SnapList = () => {
               ariaLabel="Back"
               iconName="arrow-left"
               size="sm"
-              onClick={() => history.push(DEFAULT_ROUTE)}
+              onClick={() => navigate(DEFAULT_ROUTE)}
             />
           }
         >
@@ -136,7 +141,7 @@ const SnapList = () => {
                   display={Display.Flex}
                   width={BlockSize.Full}
                   height={BlockSize.Min}
-                ></Box>
+                />
                 <Box
                   className="snaps__content__list__container--no-snaps_banner-tip"
                   display={Display.Flex}
@@ -168,6 +173,10 @@ const SnapList = () => {
       </Page>
     </div>
   );
+};
+
+SnapList.propTypes = {
+  navigate: PropTypes.func,
 };
 
 export default SnapList;

@@ -1,7 +1,7 @@
 import { Browser } from 'selenium-webdriver';
 import { NormalizedScopeObject } from '@metamask/chain-agnostic-permission';
 import { Json } from '@metamask/utils';
-import { largeDelayMs, WINDOW_TITLES } from '../../helpers';
+import { largeDelayMs, veryLargeDelayMs, WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { replaceColon } from '../../flask/multichain-api/testHelpers';
 
@@ -103,7 +103,7 @@ class TestDappMultichain {
   }
 
   async fillExtensionIdInput(extensionId: string) {
-    await this.driver.fill(this.extensionIdInput, extensionId);
+    await this.driver.fill(this.extensionIdInput, extensionId, { retries: 3 });
   }
 
   /**
@@ -134,7 +134,7 @@ class TestDappMultichain {
         : extensionId,
     );
     await this.clickConnectExternallyConnectableButton();
-    await this.driver.delay(largeDelayMs);
+    await this.driver.delay(veryLargeDelayMs);
   }
 
   /**
@@ -169,20 +169,24 @@ class TestDappMultichain {
    * @param params - The parameters for retrieving the method result.
    * @param params.scope - The scope identifier for the method invocation.
    * @param params.method - The method name that was invoked.
+   * @param params.methodCount - The 1-based index of the method result to return. Defaults to 1.
    * @returns The result as string.
    */
   async getInvokeMethodResult({
     scope,
     method,
+    methodCount = 1,
   }: {
     scope: string;
     method: string;
+    methodCount?: number;
   }): Promise<string> {
     console.log(
       `Getting invoke method result for scope ${scope} and method ${method} on multichain test dapp.`,
     );
+    const index = Math.max(0, methodCount - 1);
     const result = await this.driver.findElement(
-      `[id="invoke-method-${replaceColon(scope)}-${method}-result-0"]`,
+      `[id="invoke-method-${replaceColon(scope)}-${method}-result-${index}"]`,
     );
     await this.driver.waitForNonEmptyElement(result);
     return await result.getText();
@@ -286,19 +290,22 @@ class TestDappMultichain {
    * @param params.scope - The CAIP-2 scope.
    * @param params.method - The JSON-RPC method to invoke.
    * @param params.params - The parameters for the JSON-RPC method.
+   * @param params.methodCount - The 1-based index of the method result to return. Defaults to 1.
    * @returns The result as string.
    */
   async invokeMethodAndReturnResult({
     scope,
     method,
     params = {},
+    methodCount = 1,
   }: {
     scope: string;
     method: string;
     params?: Json;
+    methodCount?: number;
   }): Promise<string> {
     await this.invokeMethod({ scope, method, params });
-    return this.getInvokeMethodResult({ scope, method });
+    return this.getInvokeMethodResult({ scope, method, methodCount });
   }
 
   /**
@@ -368,11 +375,22 @@ class TestDappMultichain {
     console.log(
       `Selecting ${method} for scope ${scope} on multichain test dapp.`,
     );
-    await this.driver.clickElement(
-      `[data-testid="${replaceColon(scope)}-select"]`,
-    );
-    await this.driver.clickElement(
-      `[data-testid="${replaceColon(scope)}-${method}-option"]`,
+    // With the waitUntil, we ensure the dropdown element is set to the correct method before clicking it
+    await this.driver.waitUntil(
+      async () => {
+        await this.driver.clickElement(
+          `[data-testid="${replaceColon(scope)}-select"]`,
+        );
+        await this.driver.clickElement(
+          `[data-testid="${replaceColon(scope)}-${method}-option"]`,
+        );
+        const selectEl = await this.driver.findElement(
+          `[data-testid="${replaceColon(scope)}-select"]`,
+        );
+        const selectedValue = await selectEl.getAttribute('value');
+        return selectedValue === method;
+      },
+      { interval: 100, timeout: 5000 },
     );
   }
 

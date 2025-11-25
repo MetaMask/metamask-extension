@@ -3,16 +3,21 @@ import { useSelector } from 'react-redux';
 
 import { getWalletsWithAccounts } from '../../../../selectors/multichain-accounts/account-tree';
 import {
+  isBitcoinAccountForSend,
   isEVMAccountForSend,
   isSolanaAccountForSend,
+  isTronAccountForSend,
 } from '../../utils/account';
 import { useSendContext } from '../../context/send';
 import { type Recipient } from './useRecipients';
 import { useSendType } from './useSendType';
+import { useAccountAddressSeedIconMap } from './useAccountAddressSeedIconMap';
 
 export const useAccountRecipients = (): Recipient[] => {
-  const { isEvmSendType, isSolanaSendType } = useSendType();
+  const { isEvmSendType, isSolanaSendType, isBitcoinSendType, isTronSendType } =
+    useSendType();
   const { from } = useSendContext();
+  const { accountAddressSeedIconMap } = useAccountAddressSeedIconMap();
 
   const walletsWithAccounts = useSelector(getWalletsWithAccounts);
 
@@ -32,11 +37,17 @@ export const useAccountRecipients = (): Recipient[] => {
 
           const shouldInclude =
             (isEvmSendType && isEVMAccountForSend(account)) ||
-            (isSolanaSendType && isSolanaAccountForSend(account));
+            (isSolanaSendType && isSolanaAccountForSend(account)) ||
+            (isBitcoinSendType && isBitcoinAccountForSend(account)) ||
+            (isTronSendType && isTronAccountForSend(account));
 
           if (shouldInclude) {
             recipients.push({
+              seedIcon: accountAddressSeedIconMap.get(
+                account.address.toLowerCase(),
+              ),
               accountGroupName,
+              accountType: account.type,
               address: account.address,
               walletName,
             });
@@ -46,5 +57,13 @@ export const useAccountRecipients = (): Recipient[] => {
     });
 
     return recipients;
-  }, [walletsWithAccounts, isEvmSendType, isSolanaSendType, from]);
+  }, [
+    from,
+    isEvmSendType,
+    isSolanaSendType,
+    isBitcoinSendType,
+    isTronSendType,
+    accountAddressSeedIconMap,
+    walletsWithAccounts,
+  ]);
 };

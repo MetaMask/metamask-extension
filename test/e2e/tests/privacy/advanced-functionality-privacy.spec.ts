@@ -1,5 +1,6 @@
 import assert from 'assert';
 import { Mockttp, MockedEndpoint } from 'mockttp';
+import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import AccountList from '../../page-objects/pages/account-list-page';
@@ -9,7 +10,9 @@ import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/o
 import {
   importSRPOnboardingFlow,
   completeImportSRPOnboardingFlow,
+  handleSidepanelPostOnboarding,
 } from '../../page-objects/flows/onboarding.flow';
+import { mockSpotPrices } from '../tokens/utils/mocks';
 
 async function mockApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
   return [
@@ -37,6 +40,13 @@ async function mockApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
           json: [{ fakedata: true }],
         };
       }),
+    await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
+      '0x0000000000000000000000000000000000000000': {
+        price: 1700,
+        marketCap: 382623505141,
+        pricePercentChange1d: 0,
+      },
+    }),
     // TODO: Enable this mock once bug #32312 is resolved: https://github.com/MetaMask/metamask-extension/issues/32312
     /*
     await mockServer
@@ -75,6 +85,9 @@ describe('MetaMask onboarding ', function () {
 
         await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.completeOnboarding();
+
+        // Handle sidepanel navigation if needed
+        await handleSidepanelPostOnboarding(driver);
 
         // Refresh tokens before asserting to mitigate flakiness
         const homePage = new HomePage(driver);
@@ -116,7 +129,7 @@ describe('MetaMask onboarding ', function () {
         // Refresh tokens before asserting to mitigate flakiness
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed();
+        await homePage.checkExpectedBalanceIsDisplayed('42,500.00', '$');
         await homePage.refreshErc20TokenList();
         await homePage.checkPageIsLoaded();
         await homePage.headerNavbar.openAccountMenu();
@@ -126,11 +139,21 @@ describe('MetaMask onboarding ', function () {
         await driver.delay(1000);
         for (const m of mockedEndpoint) {
           const requests = await m.getSeenRequests();
-          assert.equal(
-            requests.length,
-            1,
-            `${m} should make requests after onboarding`,
-          );
+          const mockUrl = m.toString();
+
+          // Spot-prices endpoint may be called multiple times (initial load + refresh)
+          if (mockUrl.includes('spot-prices')) {
+            assert.ok(
+              requests.length >= 1,
+              `${m} should make at least 1 request after onboarding (actual: ${requests.length})`,
+            );
+          } else {
+            assert.equal(
+              requests.length,
+              1,
+              `${m} should make requests after onboarding`,
+            );
+          }
         }
       },
     );

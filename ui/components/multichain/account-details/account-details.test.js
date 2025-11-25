@@ -4,7 +4,7 @@ import { userEvent } from '@testing-library/user-event';
 import React from 'react';
 import mockState from '../../../../test/data/mock-state.json';
 
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { shortenAddress } from '../../../helpers/utils/util';
 import {
   clearAccountDetails,
@@ -150,7 +150,8 @@ describe('AccountDetails', () => {
   });
 
   it('shows srp flow when the `Show Secret Recovery Phrase` button is clicked', async () => {
-    const { getByTestId } = render();
+    const mockNavigate = jest.fn();
+    const { getByTestId } = render({ navigate: mockNavigate });
 
     const showSRPButton = getByTestId('account-details-display-export-srp');
     fireEvent.click(showSRPButton);

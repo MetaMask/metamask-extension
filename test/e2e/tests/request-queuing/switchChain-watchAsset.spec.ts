@@ -15,7 +15,7 @@ describe('Request Queue SwitchChain -> WatchAsset', function (this: Suite) {
     const chainId = 1338;
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .build(),

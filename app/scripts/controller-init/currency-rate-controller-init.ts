@@ -1,4 +1,7 @@
-import { CurrencyRateController } from '@metamask/assets-controllers';
+import {
+  CodefiTokenPricesServiceV2,
+  CurrencyRateController,
+} from '@metamask/assets-controllers';
 import {
   CurrencyRateControllerInitMessenger,
   CurrencyRateControllerMessenger,
@@ -28,28 +31,8 @@ export const CurrencyRateControllerInit: ControllerInitFunction<
     includeUsdRate: true,
     useExternalServices: () =>
       initMessenger.call('PreferencesController:getState').useExternalServices,
+    tokenPricesService: new CodefiTokenPricesServiceV2(),
   });
-
-  // TODO: This logic should be ported to `CurrencyRateController` directly.
-  const originalFetchMultiExchangeRate =
-    // @ts-expect-error: Accessing private method.
-    controller.fetchMultiExchangeRate.bind(controller);
-
-  // @ts-expect-error: Accessing private method.
-  controller.fetchMultiExchangeRate = (...args) => {
-    const { useCurrencyRateCheck } = initMessenger.call(
-      'PreferencesController:getState',
-    );
-
-    if (useCurrencyRateCheck) {
-      return originalFetchMultiExchangeRate(...args);
-    }
-
-    return {
-      conversionRate: null,
-      usdConversionRate: null,
-    };
-  };
 
   return {
     memStateKey: 'CurrencyController',

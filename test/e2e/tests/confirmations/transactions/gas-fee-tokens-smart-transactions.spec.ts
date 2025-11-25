@@ -1,17 +1,19 @@
+import { CHAIN_IDS } from '@metamask/transaction-controller';
+import { Anvil } from '@viem/anvil';
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
-import { Anvil } from '@viem/anvil';
-import { CHAIN_IDS } from '@metamask/transaction-controller';
-import { Driver } from '../../../webdriver/driver';
+import { TX_SENTINEL_URL } from '../../../../../shared/constants/transaction';
+import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
 import FixtureBuilder from '../../../fixture-builder';
 import { WINDOW_TITLES, unlockWallet, withFixtures } from '../../../helpers';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
-import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
 import GasFeeTokenModal from '../../../page-objects/pages/confirmations/redesign/gas-fee-token-modal';
-import { mockSmartTransactionBatchRequests } from '../../smart-transactions/mocks';
+import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import { TX_SENTINEL_URL } from '../../../../../shared/constants/transaction';
+import { Driver } from '../../../webdriver/driver';
+import { mockSmartTransactionBatchRequests } from '../../smart-transactions/mocks';
+import { mockSpotPrices } from '../../tokens/utils/mocks';
 
 const TRANSACTION_HASH =
   '0xf25183af3bf64af01e9210201a2ede3c1dcd6d16091283152d13265242939fc4';
@@ -23,7 +25,7 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
   it('confirms two transactions if successful', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.MAINNET })
           .withPermissionControllerConnectedToTestDapp()
           .withNetworkControllerOnMainnet()
@@ -37,6 +39,13 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
             transactionHashes: [TRANSACTION_HASH, TRANSACTION_HASH_2],
           });
           mockSentinelNetworks(mockServer);
+          mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
+            '0x0000000000000000000000000000000000000000': {
+              price: 1700,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
+          });
         },
         title: this.test?.fullTitle(),
       },
@@ -81,7 +90,7 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
   it('fails two transactions if error', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.MAINNET })
           .withPermissionControllerConnectedToTestDapp()
           .withNetworkControllerOnMainnet()
@@ -162,6 +171,7 @@ async function mockSimulationResponse(mockServer: MockttpServer) {
                         feeRecipient:
                           '0xBAB951a55b61dfAe21Ff7C3501142B397367F026',
                         rateWei: '0x216FF33813A80',
+                        serviceFee: `0x${decimalToHex(430000)}`,
                       },
                       {
                         token: {

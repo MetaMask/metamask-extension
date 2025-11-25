@@ -13,10 +13,9 @@ import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { AccountListMenu } from '.';
 
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 const mockGetEnvironmentType = jest.fn();
 const mockDetectNfts = jest.fn();
 
@@ -24,7 +23,6 @@ jest.mock('../../../../app/scripts/lib/util', () => ({
   ...jest.requireActual('../../../../app/scripts/lib/util'),
   getEnvironmentType: () => () => mockGetEnvironmentType(),
 }));
-///: END:ONLY_INCLUDE_IF
 
 jest.mock('../../../store/actions', () => {
   return {
@@ -49,7 +47,7 @@ const render = (
     metamask: {
       ...mockState.metamask,
       remoteFeatureFlags: {
-        addBitcoinAccount: true,
+        bitcoinAccounts: { enabled: true, minimumVersion: '13.6.0' },
       },
       permissionHistory: {
         'https://test.dapp': {
@@ -373,7 +371,6 @@ describe('AccountListMenu', () => {
     const tag = listItems[0].querySelector('.mm-tag') as Element;
     expect(tag.textContent).toBe('mock snap name (Beta)');
   });
-  ///: END:ONLY_INCLUDE_IF
 
   describe('prop `allowedAccountTypes`', () => {
     const mockAccount = createMockInternalAccount();

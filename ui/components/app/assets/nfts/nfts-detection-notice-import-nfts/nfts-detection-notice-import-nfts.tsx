@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { BannerAlert } from '../../../../component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { SECURITY_ROUTE } from '../../../../../helpers/constants/routes';
@@ -15,7 +15,7 @@ export default function NftsDetectionNoticeImportNFTs({
   onActionButtonClick,
 }: NftsDetectionNoticeImportNFTsProps) {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   return (
     <BannerAlert
@@ -23,7 +23,7 @@ export default function NftsDetectionNoticeImportNFTs({
       actionButtonLabel={t('selectEnableDisplayMediaPrivacyPreference')}
       actionButtonOnClick={(e) => {
         e.preventDefault();
-        history.push(`${SECURITY_ROUTE}#display-nft-media`);
+        navigate(`${SECURITY_ROUTE}#display-nft-media`);
         onActionButtonClick?.();
       }}
     >

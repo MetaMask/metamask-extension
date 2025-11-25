@@ -3,7 +3,7 @@ import React from 'react';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { merge } from 'lodash';
 import { BtcScope } from '@metamask/keyring-api';
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { shortenAddress } from '../../../helpers/utils/util';
@@ -241,7 +241,6 @@ describe('AccountListItem', () => {
     expect(container.querySelector('.mm-tag')).not.toBeInTheDocument();
   });
 
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   it('renders the tag with the snap name for named snap accounts', () => {
     const { container } = render(
       {
@@ -305,7 +304,6 @@ describe('AccountListItem', () => {
     const tag = container.querySelector('.mm-tag');
     expect(tag).not.toBeInTheDocument();
   });
-  ///: END:ONLY_INCLUDE_IF
 
   describe('Multichain Behaviour', () => {
     describe('currency display', () => {

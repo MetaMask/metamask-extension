@@ -1,5 +1,5 @@
 import React from 'react';
-import * as reactRouterDom from 'react-router-dom';
+import type { Location as RouterLocation } from 'react-router-dom-v5-compat';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
@@ -13,27 +13,11 @@ import configureStore from '../../../store/store';
 import { TransactionGroup } from '../../../hooks/useTransactionDisplayData';
 import CrossChainSwapTxDetails from './transaction-details';
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: jest.fn(),
-  useLocation: jest.fn(),
-  useParams: jest.fn(),
-}));
-
 const getMockStore = (
   transactionGroup: TransactionGroup,
   srcTxMetaId: string,
   txHistoryItem: BridgeHistoryItem,
 ) => {
-  jest.spyOn(reactRouterDom, 'useLocation').mockReturnValue({
-    state: {
-      transactionGroup,
-    },
-  });
-  jest.spyOn(reactRouterDom, 'useParams').mockReturnValue({
-    srcTxMetaId,
-  });
-
   return configureStore(
     createBridgeMockStore({
       metamaskStateOverrides: {
@@ -67,10 +51,37 @@ const getMockStore = (
 };
 
 describe('transaction-details', () => {
+  const mockNavigate = jest.fn<
+    void,
+    [
+      path: string | number,
+      options?: { replace?: boolean; state?: Record<string, unknown> },
+    ]
+  >();
+
+  const mockLocation: RouterLocation = {
+    pathname: '/cross-chain/tx-details/test-id',
+    search: '',
+    hash: '',
+    state: {
+      transactionGroup: mockBridgeTxData.transactionGroup,
+      isEarliestNonce: true,
+    },
+    key: 'test-key',
+  };
+
+  const mockParams: { srcTxMetaId: string } = {
+    srcTxMetaId: mockBridgeTxData.srcTxMetaId,
+  };
+
   describe('bridge snapshots', () => {
     it('should render completed bridge tx', () => {
       const { queryAllByTestId, getByText } = renderWithProvider(
-        <CrossChainSwapTxDetails />,
+        <CrossChainSwapTxDetails
+          location={mockLocation}
+          navigate={mockNavigate}
+          params={mockParams}
+        />,
         getMockStore(
           mockBridgeTxData.transactionGroup,
           mockBridgeTxData.srcTxMetaId,
@@ -98,7 +109,11 @@ describe('transaction-details', () => {
 
     it('should render pending bridge snapshot', () => {
       const { queryAllByTestId, getByText } = renderWithProvider(
-        <CrossChainSwapTxDetails />,
+        <CrossChainSwapTxDetails
+          location={mockLocation}
+          navigate={mockNavigate}
+          params={mockParams}
+        />,
         getMockStore(
           {
             ...mockBridgeTxData.transactionGroup,
@@ -137,7 +152,11 @@ describe('transaction-details', () => {
 
     it('should render confirmed bridge tx', () => {
       const { queryAllByTestId, getByText } = renderWithProvider(
-        <CrossChainSwapTxDetails />,
+        <CrossChainSwapTxDetails
+          location={mockLocation}
+          navigate={mockNavigate}
+          params={mockParams}
+        />,
         getMockStore(
           {
             ...mockBridgeTxData.transactionGroup,
@@ -176,7 +195,11 @@ describe('transaction-details', () => {
 
     it('should render bridge tx that failed on src', () => {
       const { queryAllByTestId, getByText } = renderWithProvider(
-        <CrossChainSwapTxDetails />,
+        <CrossChainSwapTxDetails
+          location={mockLocation}
+          navigate={mockNavigate}
+          params={mockParams}
+        />,
         getMockStore(
           {
             ...mockBridgeTxData.transactionGroup,
@@ -215,7 +238,11 @@ describe('transaction-details', () => {
 
     it('should render bridge tx that failed on dest', () => {
       const { queryAllByTestId, getByText } = renderWithProvider(
-        <CrossChainSwapTxDetails />,
+        <CrossChainSwapTxDetails
+          location={mockLocation}
+          navigate={mockNavigate}
+          params={mockParams}
+        />,
         getMockStore(
           {
             ...mockBridgeTxData.transactionGroup,

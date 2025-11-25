@@ -1,7 +1,7 @@
 import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
 import configureStore from '../../../store/store';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import { SEND_STAGES } from '../../../ducks/send';
 // TODO: Remove restricted import
@@ -18,6 +18,10 @@ jest.mock('../../../../app/scripts/lib/util', () => ({
 jest.mock('react-router-dom-v5-compat', () => ({
   // eslint-disable-next-line react/prop-types
   Link: ({ children, ...props }) => <a {...props}>{children}</a>,
+  // eslint-disable-next-line react/prop-types
+  CompatRouter: ({ children }) => <div>{children}</div>,
+  matchPath: jest.fn(),
+  useNavigate: () => jest.fn(),
 }));
 
 const render = ({
@@ -34,7 +38,7 @@ const render = ({
     activeTab: {
       origin: 'https://remix.ethereum.org',
     },
-    ...(stateChanges ?? {}),
+    ...stateChanges,
   });
   return renderWithProvider(<AppHeader location={location} />, store);
 };

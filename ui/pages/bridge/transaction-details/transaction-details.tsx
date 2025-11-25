@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory, useParams, useLocation } from 'react-router-dom';
+import type { Location as RouterLocation } from 'react-router-dom-v5-compat';
 import {
   TransactionStatus,
   TransactionType,
@@ -33,6 +33,7 @@ import { getTransactionBreakdownData } from '../../../components/app/transaction
 import type { MetaMaskReduxState } from '../../../store/store';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import {
   AlignItems,
   Display,
@@ -75,22 +76,34 @@ import TransactionDetailRow from './transaction-detail-row';
 import BridgeExplorerLinks from './bridge-explorer-links';
 import BridgeStepList from './bridge-step-list';
 
-const CrossChainSwapTxDetails = () => {
+type CrossChainSwapTxDetailsProps = {
+  location?: RouterLocation;
+  navigate?: (
+    path: string | number,
+    options?: { replace?: boolean; state?: Record<string, unknown> },
+  ) => void;
+  params?: { srcTxMetaId: string };
+};
+
+const CrossChainSwapTxDetails = ({
+  location,
+  navigate,
+  params,
+}: CrossChainSwapTxDetailsProps) => {
   const t = useI18nContext();
   const locale = useSelector(getIntlLocale);
   const trackEvent = useContext(MetaMetricsContext);
   const rootState = useSelector((state) => state);
-  const history = useHistory();
-  const location = useLocation();
-  const { srcTxMetaId } = useParams<{ srcTxMetaId: string }>();
+
+  const srcTxMetaId = params?.srcTxMetaId;
   const selectedAddressTxList = useSelector(
     selectedAddressTxListSelectorAllChain,
   ) as TransactionMeta[];
 
   const transactionGroup: TransactionGroup | null =
-    location.state?.transactionGroup || null;
+    location?.state?.transactionGroup || null;
   const isEarliestNonce: boolean | null =
-    location.state?.isEarliestNonce || null;
+    location?.state?.isEarliestNonce || null;
   const srcChainTxMeta = selectedAddressTxList.find(
     (tx) => tx.id === srcTxMetaId,
   );
@@ -222,7 +235,7 @@ const CrossChainSwapTxDetails = () => {
             iconName={IconName.ArrowLeft}
             size={ButtonIconSize.Sm}
             ariaLabel={t('back')}
-            onClick={() => history.goBack()}
+            onClick={() => navigate?.(PREVIOUS_ROUTE)}
           />
         }
       >

@@ -3,8 +3,6 @@
   position: relative;
   height: 106px;  // BANNER_HEIGHT + 6px
   width: 100%;
-  padding: 0 16px; // 16px left and right margin as per spec
-  margin-bottom: 8px;
 }
 
 .carousel-cards-wrapper {
@@ -20,7 +18,7 @@
   border-radius: 12px;
   border: 1px solid var(--color-border-muted);
   background: var(--color-background-default);
-  padding: 12px; // Adjusted top/bottom padding to fit 76px content
+  padding: 12px; // Adjusted top/bottom padding to fit 72px content
   padding-left: 16px;
   position: absolute;
   overflow: hidden;
@@ -69,10 +67,10 @@
   pointer-events: none;
 }
 
-// Image Container (76px x 76px as per original spec)
+// Image Container (72px x 72px as per original spec)
 .carousel-card__image {
-  width: 76px;
-  height: 76px;
+  width: 72px;
+  height: 72px;
   border-radius: 12px;
   background: var(--color-background-muted); // Background as per spec
   display: flex;
@@ -83,8 +81,8 @@
 }
 
 .carousel-card__image img {
-  width: 76px;
-  height: 76px;
+  width: 72px;
+  height: 72px;
   object-fit: contain;
 }
 
@@ -93,7 +91,7 @@
   flex: 1; // Fill up remaining width
   display: flex;
   flex-direction: column;
-  height: 76px; // Match image height as per spec
+  height: 72px; // Match image height as per spec
   justify-content: flex-start;
   min-width: 0; // Allow flex item to shrink properly
 }

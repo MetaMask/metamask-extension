@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useRef } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { matchPath } from 'react-router-dom';
+import { matchPath } from 'react-router-dom-v5-compat';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -27,7 +27,10 @@ import { toggleNetworkMenu } from '../../../store/actions';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../../shared/constants/app';
 import { getIsUnlocked } from '../../../ducks/metamask/metamask';
 import { SEND_STAGES, getSendStage } from '../../../ducks/send';
 import { getSelectedMultichainNetworkConfiguration } from '../../../selectors/multichain/networks';
@@ -51,7 +54,9 @@ export const AppHeader = ({ location }) => {
 
   const dispatch = useDispatch();
 
-  const popupStatus = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
+  const environmentType = getEnvironmentType();
+  const popupStatus = environmentType === ENVIRONMENT_TYPE_POPUP;
+  const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
 
   // Disable the network and account pickers if the user is in
   // a critical flow
@@ -62,13 +67,16 @@ export const AppHeader = ({ location }) => {
     SEND_STAGES.ADD_RECIPIENT,
   ].includes(sendStage);
   const isConfirmationPage = Boolean(
-    matchPath(location.pathname, {
-      path: CONFIRM_TRANSACTION_ROUTE,
-      exact: false,
-    }),
+    matchPath(
+      {
+        path: CONFIRM_TRANSACTION_ROUTE,
+        end: false,
+      },
+      location.pathname,
+    ),
   );
   const isSwapsPage = Boolean(
-    matchPath(location.pathname, { path: SWAPS_ROUTE, exact: false }),
+    matchPath({ path: SWAPS_ROUTE, end: false }, location.pathname),
   );
 
   const unapprovedTransactions = useSelector(getUnapprovedTransactions);
@@ -119,7 +127,9 @@ export const AppHeader = ({ location }) => {
 
   return (
     <>
-      {isUnlocked && !popupStatus ? <MultichainMetaFoxLogo /> : null}
+      {isUnlocked && !popupStatus && !isSidepanel && true ? (
+        <MultichainMetaFoxLogo />
+      ) : null}
       <AppHeaderContainer isUnlocked={isUnlocked} popupStatus={popupStatus}>
         <>
           <Box

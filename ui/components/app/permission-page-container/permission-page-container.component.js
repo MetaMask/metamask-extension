@@ -26,7 +26,7 @@ import {
 import { TemplateAlertContextProvider } from '../../../pages/confirmations/confirmation/alerts/TemplateAlertContext';
 import { containsEthPermissionsAndNonEvmAccount } from '../../../helpers/utils/permissions';
 import { PermissionPageContainerFooter } from './permission-page-container-footer.component';
-import { PermissionPageContainerContent } from '.';
+import PermissionPageContainerContent from './permission-page-container-content';
 
 export default class PermissionPageContainer extends Component {
   static propTypes = {
@@ -47,7 +47,7 @@ export default class PermissionPageContainer extends Component {
       extensionId: PropTypes.string,
       iconUrl: PropTypes.string,
     }),
-    history: PropTypes.object.isRequired,
+    navigate: PropTypes.func.isRequired,
     connectPath: PropTypes.string.isRequired,
   };
 
@@ -128,8 +128,8 @@ export default class PermissionPageContainer extends Component {
   }
 
   goBack() {
-    const { history, connectPath } = this.props;
-    history.push(connectPath);
+    const { navigate, connectPath } = this.props;
+    navigate(connectPath);
   }
 
   onCancel = () => {

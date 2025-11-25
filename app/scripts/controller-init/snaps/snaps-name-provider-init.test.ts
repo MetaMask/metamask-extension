@@ -1,10 +1,10 @@
-import { Messenger } from '@metamask/base-controller';
 import { ControllerInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import {
   getSnapsNameProviderMessenger,
   SnapsNameProviderMessenger,
 } from '../messengers/snaps';
+import { getRootMessenger } from '../../lib/messenger';
 import { SnapsNameProvider } from '../../lib/SnapsNameProvider';
 import { SnapsNameProviderInit } from './snaps-name-provider-init';
 
@@ -13,7 +13,7 @@ jest.mock('../../lib/SnapsNameProvider');
 function getInitRequestMock(): jest.Mocked<
   ControllerInitRequest<SnapsNameProviderMessenger>
 > {
-  const baseMessenger = new Messenger<never, never>();
+  const baseMessenger = getRootMessenger<never, never>();
 
   const requestMock = {
     ...buildControllerInitRequestMock(),

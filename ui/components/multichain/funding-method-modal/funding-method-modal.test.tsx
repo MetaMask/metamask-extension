@@ -37,6 +37,7 @@ describe('FundingMethodModal', () => {
         onClose={jest.fn()}
         title="Test Modal"
         onClickReceive={jest.fn()}
+        data-testid="funding-method-modal"
       />,
       store,
     );
@@ -52,6 +53,7 @@ describe('FundingMethodModal', () => {
         onClose={jest.fn()}
         title="Test Modal"
         onClickReceive={jest.fn()}
+        data-testid="funding-method-modal"
       />,
       store,
     );
@@ -66,6 +68,7 @@ describe('FundingMethodModal', () => {
         onClose={jest.fn()}
         title="Test Modal"
         onClickReceive={jest.fn()}
+        data-testid="funding-method-modal"
       />,
       store,
     );
@@ -82,6 +85,7 @@ describe('FundingMethodModal', () => {
         onClose={jest.fn()}
         title="Test Modal"
         onClickReceive={onClickReceive}
+        data-testid="funding-method-modal"
       />,
       store,
     );
@@ -99,6 +103,7 @@ describe('FundingMethodModal', () => {
         onClose={jest.fn()}
         title="Test Modal"
         onClickReceive={jest.fn()}
+        data-testid="funding-method-modal"
       />,
       store,
     );

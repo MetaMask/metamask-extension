@@ -32,7 +32,7 @@ exports[`Bridge renders the component with initial props 1`] = `
           <h4
             class="mm-box mm-text mm-text--heading-sm mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-2 mm-box--padding-inline-end-2 mm-box--display-block mm-box--color-text-default"
           >
-            Bridge
+            Swap
           </h4>
         </div>
         <div
@@ -42,6 +42,7 @@ exports[`Bridge renders the component with initial props 1`] = `
           <button
             aria-label="Settings"
             class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+            data-testid="bridge__header-settings-button"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"

@@ -3,23 +3,23 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderHook } from '@testing-library/react-hooks';
 import { Provider } from 'react-redux';
-import { MemoryRouter, useHistory } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom-v5-compat';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import * as bridgeStatusActions from '../../../ducks/bridge-status/actions';
 import {
   DummyQuotesNoApproval,
   DummyQuotesWithApproval,
 } from '../../../../test/data/bridge/dummy-quotes';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import useSubmitBridgeTransaction from './useSubmitBridgeTransaction';
 
-jest.mock('react-router-dom', () => {
-  const original = jest.requireActual('react-router-dom');
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
   return {
-    ...original,
-    useHistory: jest.fn().mockImplementation(original.useHistory),
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
   };
 });
-
 jest.mock('../../../ducks/bridge/utils', () => ({
   ...jest.requireActual('../../../ducks/bridge/utils'),
   getTxGasEstimates: jest.fn(() => ({
@@ -169,11 +169,6 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
 
     it('routes to activity tab', async () => {
       const store = makeMockStore();
-
-      const mockHistory = {
-        push: jest.fn(),
-      };
-      (useHistory as jest.Mock).mockImplementationOnce(() => mockHistory);
       const { result } = renderHook(() => useSubmitBridgeTransaction(), {
         wrapper: makeWrapper(store),
       });
@@ -186,8 +181,8 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       );
 
       // Assert
-      expect(mockHistory.push).toHaveBeenCalledWith({
-        pathname: '/',
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+        replace: false,
         state: { stayOnHomePage: true },
       });
     });

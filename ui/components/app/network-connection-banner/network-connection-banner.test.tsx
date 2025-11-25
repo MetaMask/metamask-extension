@@ -41,12 +41,13 @@ describe('NetworkConnectionBanner', () => {
   });
 
   describe('when the status of the banner is "degraded"', () => {
-    it('renders the banner with a "Still connecting" message', () => {
+    it('renders the banner with a "Still connecting" message, including a "Update RPC" link if the network is not an Infura endpoint', () => {
       mockUseNetworkConnectionBanner.mockReturnValue({
         status: 'degraded',
         networkName: 'Ethereum Mainnet',
         networkClientId: 'mainnet',
         chainId: '0x1',
+        isInfuraEndpoint: false,
         trackNetworkBannerEvent: jest.fn(),
       });
       const store = configureStore({});
@@ -62,6 +63,28 @@ describe('NetworkConnectionBanner', () => {
       expect(getByText('Update RPC')).toBeInTheDocument();
     });
 
+    it('renders the banner with a "Still connecting" message, excluding a "Update RPC" link if the network is an Infura endpoint', () => {
+      mockUseNetworkConnectionBanner.mockReturnValue({
+        status: 'degraded',
+        networkName: 'Ethereum Mainnet',
+        networkClientId: 'mainnet',
+        chainId: '0x1',
+        isInfuraEndpoint: true,
+        trackNetworkBannerEvent: jest.fn(),
+      });
+      const store = configureStore({});
+
+      const { getByText, queryByText } = renderWithProvider(
+        <NetworkConnectionBanner />,
+        store,
+      );
+
+      expect(
+        getByText('Still connecting to Ethereum Mainnet...'),
+      ).toBeInTheDocument();
+      expect(queryByText('Update RPC')).not.toBeInTheDocument();
+    });
+
     describe('when the "Update RPC" link is clicked', () => {
       it('navigates to the edit form for the degraded network', () => {
         mockUseNetworkConnectionBanner.mockReturnValue({
@@ -69,6 +92,7 @@ describe('NetworkConnectionBanner', () => {
           networkName: 'Ethereum Mainnet',
           networkClientId: 'mainnet',
           chainId: '0x1',
+          isInfuraEndpoint: false,
           trackNetworkBannerEvent: jest.fn(),
         });
         const store = configureStore({});
@@ -81,7 +105,10 @@ describe('NetworkConnectionBanner', () => {
         );
         fireEvent.click(getByText('Update RPC'));
 
-        expect(mockSetEditedNetwork).toHaveBeenCalledWith({ chainId: '0x1' });
+        expect(mockSetEditedNetwork).toHaveBeenCalledWith({
+          chainId: '0x1',
+          trackRpcUpdateFromBanner: true,
+        });
         expect(navigateMock).toHaveBeenCalledWith('/settings/networks');
       });
 
@@ -92,6 +119,7 @@ describe('NetworkConnectionBanner', () => {
           networkName: 'Ethereum Mainnet',
           networkClientId: 'mainnet',
           chainId: '0x1',
+          isInfuraEndpoint: false,
           trackNetworkBannerEvent: trackNetworkBannerEventMock,
         });
         const store = configureStore({});
@@ -113,12 +141,13 @@ describe('NetworkConnectionBanner', () => {
   });
 
   describe('when the status of the banner is "unavailable"', () => {
-    it('renders the banner with a "Unable to connect" message', () => {
+    it('renders the banner with a "Unable to connect" message, including a "Update RPC" link if the network is not an Infura endpoint', () => {
       mockUseNetworkConnectionBanner.mockReturnValue({
         status: 'unavailable',
         networkName: 'Ethereum Mainnet',
         networkClientId: 'mainnet',
         chainId: '0x1',
+        isInfuraEndpoint: false,
         trackNetworkBannerEvent: jest.fn(),
       });
       const store = configureStore({});
@@ -131,7 +160,39 @@ describe('NetworkConnectionBanner', () => {
       expect(
         getByText('Unable to connect to Ethereum Mainnet.'),
       ).toBeInTheDocument();
-      expect(getByText('Update RPC')).toBeInTheDocument();
+      expect(
+        getByText('Check network connectivity', { exact: false }),
+      ).toBeInTheDocument();
+      expect(
+        getByText('update RPC', { selector: 'button' }),
+      ).toBeInTheDocument();
+    });
+
+    it('renders the banner with a "Unable to connect" message, excluding a "Update RPC" link if the network is an Infura endpoint', () => {
+      mockUseNetworkConnectionBanner.mockReturnValue({
+        status: 'unavailable',
+        networkName: 'Ethereum Mainnet',
+        networkClientId: 'mainnet',
+        chainId: '0x1',
+        isInfuraEndpoint: true,
+        trackNetworkBannerEvent: jest.fn(),
+      });
+      const store = configureStore({});
+
+      const { getByText, queryByText } = renderWithProvider(
+        <NetworkConnectionBanner />,
+        store,
+      );
+
+      expect(
+        getByText('Unable to connect to Ethereum Mainnet.'),
+      ).toBeInTheDocument();
+      expect(
+        getByText('Check network connectivity', { exact: false }),
+      ).toBeInTheDocument();
+      expect(
+        queryByText('update RPC', { selector: 'button' }),
+      ).not.toBeInTheDocument();
     });
 
     describe('when the "Update RPC" link is clicked', () => {
@@ -141,6 +202,7 @@ describe('NetworkConnectionBanner', () => {
           networkName: 'Ethereum Mainnet',
           networkClientId: 'mainnet',
           chainId: '0x1',
+          isInfuraEndpoint: false,
           trackNetworkBannerEvent: jest.fn(),
         });
         const store = configureStore({});
@@ -151,9 +213,12 @@ describe('NetworkConnectionBanner', () => {
           <NetworkConnectionBanner />,
           store,
         );
-        fireEvent.click(getByText('Update RPC'));
+        fireEvent.click(getByText('update RPC'));
 
-        expect(mockSetEditedNetwork).toHaveBeenCalledWith({ chainId: '0x1' });
+        expect(mockSetEditedNetwork).toHaveBeenCalledWith({
+          chainId: '0x1',
+          trackRpcUpdateFromBanner: true,
+        });
         expect(navigateMock).toHaveBeenCalledWith('/settings/networks');
       });
 
@@ -164,6 +229,7 @@ describe('NetworkConnectionBanner', () => {
           networkName: 'Ethereum Mainnet',
           networkClientId: 'mainnet',
           chainId: '0x1',
+          isInfuraEndpoint: false,
           trackNetworkBannerEvent: trackNetworkBannerEventMock,
         });
         const store = configureStore({});
@@ -172,7 +238,7 @@ describe('NetworkConnectionBanner', () => {
           <NetworkConnectionBanner />,
           store,
         );
-        fireEvent.click(getByText('Update RPC'));
+        fireEvent.click(getByText('update RPC'));
 
         expect(trackNetworkBannerEventMock).toHaveBeenCalledWith({
           bannerType: 'unavailable',

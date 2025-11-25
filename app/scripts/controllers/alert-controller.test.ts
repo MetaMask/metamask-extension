@@ -1,15 +1,18 @@
 /**
  * @jest-environment node
  */
-import { Messenger, deriveStateFromMetadata } from '@metamask/base-controller';
+import { deriveStateFromMetadata } from '@metamask/base-controller';
+import {
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import {
   AlertController,
-  AllowedActions,
-  AllowedEvents,
   AlertControllerMessenger,
-  AlertControllerGetStateAction,
-  AlertControllerStateChangeEvent,
   AlertControllerOptions,
   getDefaultAlertControllerState,
 } from './alert-controller';
@@ -29,16 +32,19 @@ const EMPTY_ACCOUNT = {
   },
 };
 
+type RootMessenger = Messenger<
+  MockAnyNamespace,
+  MessengerActions<AlertControllerMessenger>,
+  MessengerEvents<AlertControllerMessenger>
+>;
+
 type WithControllerOptions = Partial<AlertControllerOptions>;
 
 type WithControllerCallback<ReturnValue> = ({
   controller,
 }: {
   controller: AlertController;
-  messenger: Messenger<
-    AllowedActions | AlertControllerGetStateAction,
-    AllowedEvents | AlertControllerStateChangeEvent
-  >;
+  messenger: RootMessenger;
 }) => ReturnValue;
 
 type WithControllerArgs<ReturnValue> =
@@ -51,17 +57,19 @@ async function withController<ReturnValue>(
   const [{ ...rest }, fn] = args.length === 2 ? args : [{}, args[0]];
   const { ...alertControllerOptions } = rest;
 
-  const messenger = new Messenger<
-    AllowedActions | AlertControllerGetStateAction,
-    AllowedEvents | AlertControllerStateChangeEvent
-  >();
+  const messenger: RootMessenger = new Messenger({
+    namespace: MOCK_ANY_NAMESPACE,
+  });
 
-  const alertControllerMessenger: AlertControllerMessenger =
-    messenger.getRestricted({
-      name: 'AlertController',
-      allowedActions: ['AccountsController:getSelectedAccount'],
-      allowedEvents: ['AccountsController:selectedAccountChange'],
-    });
+  const alertControllerMessenger: AlertControllerMessenger = new Messenger({
+    namespace: 'AlertController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: alertControllerMessenger,
+    actions: ['AccountsController:getSelectedAccount'],
+    events: ['AccountsController:selectedAccountChange'],
+  });
 
   messenger.registerActionHandler(
     'AccountsController:getSelectedAccount',
@@ -187,7 +195,7 @@ describe('AlertController', () => {
           deriveStateFromMetadata(
             controller.state,
             controller.metadata,
-            'anonymous',
+            'includeInDebugSnapshot',
           ),
         ).toMatchInlineSnapshot(`
           {

@@ -939,6 +939,8 @@ Navigation refers to the process of moving through web pages within a browser se
 > await driver.navigate(PAGES.HOME);
 > ```
 >
+> Note: In Firefox, this will automatically use `PAGES.HOME` since Firefox doesn't support sidepanel.
+>
 > **Example - navigate to the background page**
 >
 > ```jsx

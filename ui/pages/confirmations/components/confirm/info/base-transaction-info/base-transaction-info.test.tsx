@@ -12,10 +12,15 @@ import {
   getMockContractInteractionConfirmState,
 } from '../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
+import * as DappSwapContext from '../../../../context/dapp-swap';
 import BaseTransactionInfo from './base-transaction-info';
 
 jest.mock('../../../simulation-details/useBalanceChanges', () => ({
   useBalanceChanges: jest.fn(() => ({ pending: false, value: [] })),
+}));
+
+jest.mock('../hooks/useBatchApproveBalanceChanges', () => ({
+  useBatchApproveBalanceChanges: jest.fn(),
 }));
 
 jest.mock('../../../../../../store/actions', () => ({
@@ -65,5 +70,27 @@ describe('<BaseTransactionInfo />', () => {
       mockStore,
     );
     expect(container).toMatchSnapshot();
+  });
+
+  it('renders partially if quoted swap view is displayed in info', () => {
+    const state = getMockContractInteractionConfirmState();
+    const mockStore = configureMockStore(middleware)(state);
+    jest.spyOn(DappSwapContext, 'useDappSwapContext').mockReturnValue({
+      isQuotedSwapDisplayedInInfo: true,
+      selectedQuote: undefined,
+      setSelectedQuote: jest.fn(),
+      setQuotedSwapDisplayedInInfo: jest.fn(),
+    } as ReturnType<typeof DappSwapContext.useDappSwapContext>);
+
+    const { getByText, queryByText } = renderWithConfirmContextProvider(
+      <BaseTransactionInfo />,
+      mockStore,
+    );
+    expect(getByText('Network fee')).toBeInTheDocument();
+    expect(getByText('Speed')).toBeInTheDocument();
+    expect(queryByText('Origin')).toBeNull();
+    expect(queryByText('Amount')).toBeNull();
+    expect(queryByText('Token')).toBeNull();
+    expect(queryByText('Gas fee')).toBeNull();
   });
 });

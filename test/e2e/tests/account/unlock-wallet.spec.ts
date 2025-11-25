@@ -1,4 +1,5 @@
 import { Mockttp } from 'mockttp';
+import { Browser } from 'selenium-webdriver';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
@@ -9,11 +10,15 @@ import LoginPage from '../../page-objects/pages/login-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { MOCK_GOOGLE_ACCOUNT, WALLET_PASSWORD } from '../../constants';
 import { OAuthMockttpService } from '../../helpers/seedless-onboarding/mocks';
-import { importWalletWithSocialLoginOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
+import {
+  importWalletWithSocialLoginOnboardingFlow,
+  onboardingMetricsFlow,
+} from '../../page-objects/flows/onboarding.flow';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import ChangePasswordPage from '../../page-objects/pages/settings/change-password-page';
+import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboarding-page';
 
 describe('Unlock wallet - ', function () {
   it('handle incorrect password during unlock and login successfully', async function () {
@@ -21,6 +26,7 @@ describe('Unlock wallet - ', function () {
       {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
+        ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
       },
       async ({
         driver,
@@ -46,6 +52,7 @@ describe('Unlock wallet - ', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) => {
           // using this to mock the OAuth Service (Web Authentication flow + Auth server)
@@ -94,9 +101,20 @@ describe('Unlock wallet - ', function () {
 
         const loginPage = new LoginPage(driver);
         await loginPage.loginToHomepage(WALLET_PASSWORD);
+        await loginPage.checkConnectionsRemovedModalIsDisplayed();
+        // reset wallet from connections removed modal
+        await loginPage.resetWalletFromConnectionsRemovedModal();
 
-        await homePage.checkPageIsLoaded();
-        await homePage.checkConnectionsRemovedModalIsDisplayed();
+        if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+          await onboardingMetricsFlow(driver, {
+            participateInMetaMetrics: false,
+            dataCollectionForMarketing: false,
+          });
+        }
+
+        // check onboarding welcome page is loaded after resetting the wallet
+        const startOnboardingPage = new StartOnboardingPage(driver);
+        await startOnboardingPage.checkLoginPageIsLoaded();
       },
     );
   });

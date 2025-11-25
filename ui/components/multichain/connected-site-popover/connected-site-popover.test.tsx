@@ -41,6 +41,7 @@ const render = () => {
       // Add multichain network state
       selectedMultichainNetworkChainId: 'eip155:5',
       isEvmSelected: true,
+      selectedNetworkClientId: 'goerli-test-client',
       multichainNetworkConfigurationsByChainId: {
         ...mockState.metamask.multichainNetworkConfigurationsByChainId,
         'eip155:5': {
@@ -50,6 +51,41 @@ const render = () => {
           isEvm: true,
         },
       },
+      // Add internal accounts for the new selector
+      internalAccounts: {
+        accounts: {
+          'eip155:5:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+            id: 'eip155:5:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            type: 'eip155:eoa',
+            metadata: {
+              name: 'Test Account',
+              lastSelected: Date.now(),
+            },
+            scopes: ['eip155:5'],
+            methods: [],
+            options: {},
+          },
+        },
+        selectedAccount: 'eip155:5:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+      },
+      // Add accounts for compatibility
+      accounts: {
+        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+          address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+          balance: '0x0',
+        },
+      },
+      // Add keyrings for compatibility
+      keyrings: [
+        {
+          type: 'HD Key Tree',
+          accounts: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
+          metadata: {
+            id: 'test-keyring-id',
+          },
+        },
+      ],
       // Add permissions for the test dapp
       subjects: {
         'https://metamask.github.io': {

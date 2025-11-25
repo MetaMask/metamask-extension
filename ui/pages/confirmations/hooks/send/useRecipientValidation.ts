@@ -1,13 +1,19 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { isSolanaAddress } from '../../../../../shared/lib/multichain/accounts';
+import {
+  isSolanaAddress,
+  isBtcMainnetAddress,
+  isTronAddress,
+} from '../../../../../shared/lib/multichain/accounts';
 import { isValidHexAddress } from '../../../../../shared/modules/hexstring-utils';
 import { isValidDomainName } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { RecipientValidationResult } from '../../types/send';
 import {
+  validateBtcAddress,
   validateEvmHexAddress,
   validateSolanaAddress,
+  validateTronAddress,
 } from '../../utils/sendValidations';
 import { useSendContext } from '../../context/send';
 import { useSendType } from './useSendType';
@@ -19,7 +25,8 @@ import { useNameValidation } from './useNameValidation';
 export const useRecipientValidation = () => {
   const t = useI18nContext();
   const { asset, chainId, to } = useSendContext();
-  const { isEvmSendType, isSolanaSendType } = useSendType();
+  const { isBitcoinSendType, isEvmSendType, isSolanaSendType, isTronSendType } =
+    useSendType();
   const { validateName } = useNameValidation();
   const [result, setResult] = useState<RecipientValidationResult>({});
   const prevAddressValidated = useRef<string>();
@@ -45,6 +52,14 @@ export const useRecipientValidation = () => {
         return validateSolanaAddress(toAddress);
       }
 
+      if (isBitcoinSendType && isBtcMainnetAddress(toAddress)) {
+        return validateBtcAddress(toAddress);
+      }
+
+      if (isTronSendType && isTronAddress(toAddress)) {
+        return validateTronAddress(toAddress);
+      }
+
       if (isValidDomainName(toAddress)) {
         return await validateName(chainId, toAddress);
       }
@@ -53,7 +68,15 @@ export const useRecipientValidation = () => {
         error: 'invalidAddress',
       };
     },
-    [asset, chainId, isEvmSendType, isSolanaSendType, validateName],
+    [
+      asset,
+      chainId,
+      isBitcoinSendType,
+      isEvmSendType,
+      isSolanaSendType,
+      isTronSendType,
+      validateName,
+    ],
   );
 
   useEffect(() => {

@@ -5,16 +5,19 @@ import { isHexString } from '@metamask/utils';
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import { Numeric } from '../../../../shared/modules/Numeric';
+import { BURN_ADDRESS } from '../../../../shared/modules/hexstring-utils';
 import {
   TOKEN_TRANSFER_FUNCTION_SIGNATURE,
   NFT_TRANSFER_FROM_FUNCTION_SIGNATURE,
   NFT_SAFE_TRANSFER_FROM_FUNCTION_SIGNATURE,
+  TOKEN_APPROVAL_FUNCTION_SIGNATURE,
 } from './send.constants';
 
 export {
   addGasBuffer,
   getAssetTransferData,
   generateERC20TransferData,
+  generateERC20ApprovalData,
   generateERC721TransferData,
   generateERC1155TransferData,
   isBalanceSufficient,
@@ -148,6 +151,27 @@ function generateERC1155TransferData({
             addHexPrefix(amount),
             addHexPrefix(data),
           ],
+        ),
+        (x) => `00${x.toString(16)}`.slice(-2),
+      )
+      .join('')
+  );
+}
+
+function generateERC20ApprovalData({
+  spenderAddress = BURN_ADDRESS,
+  amount = '0x0',
+}) {
+  if (!spenderAddress) {
+    return undefined;
+  }
+  return (
+    TOKEN_APPROVAL_FUNCTION_SIGNATURE +
+    Array.prototype.map
+      .call(
+        encode(
+          ['address', 'uint256'],
+          [addHexPrefix(spenderAddress), addHexPrefix(amount)],
         ),
         (x) => `00${x.toString(16)}`.slice(-2),
       )

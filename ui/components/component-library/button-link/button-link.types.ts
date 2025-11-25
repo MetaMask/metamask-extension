@@ -3,6 +3,9 @@ import React from 'react';
 import type { PolymorphicComponentPropWithRef } from '../box';
 import type { ButtonBaseStyleUtilityProps } from '../button-base/button-base.types';
 
+/**
+ * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react
+ */
 export enum ButtonLinkSize {
   Auto = 'auto',
   Sm = 'sm',

@@ -37,6 +37,7 @@ export type UseDisplayNameResponse = {
   contractDisplayName?: string;
   image?: string;
   icon?: IconProps | null;
+  isAccount: boolean;
   displayState: TrustSignalDisplayState;
   subtitle?: string | null;
 };
@@ -48,7 +49,9 @@ export function useDisplayNames(
 ): UseDisplayNameResponse[] {
   const nameEntries = useNames(requests);
   const firstPartyContractNames = useFirstPartyContractNames(requests);
-  const trustSignals = useTrustSignals(requests);
+  const trustSignals = useTrustSignals(
+    requests.map((req) => ({ ...req, chainId: req.variation })),
+  );
   const erc20Tokens = useERC20Tokens(requests);
   const watchedNFTNames = useWatchedNFTNames(requests);
   const nfts = useNFTs(requests);
@@ -101,12 +104,13 @@ export function useDisplayNames(
     }
 
     return {
-      name,
-      hasPetname,
       contractDisplayName: erc20Token?.name,
-      image,
-      icon: trustSignalIcon,
       displayState,
+      hasPetname,
+      icon: trustSignalIcon,
+      image,
+      isAccount: accountGroupName !== null,
+      name,
       subtitle,
     };
   });

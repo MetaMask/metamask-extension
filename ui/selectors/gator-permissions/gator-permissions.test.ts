@@ -12,6 +12,16 @@ import { SnapId } from '@metamask/snaps-sdk';
 import {
   getGatorPermissionsMap,
   getAggregatedGatorPermissionsCountAcrossAllChains,
+  getAggregatedGatorPermissionByChainId,
+  AppState,
+  getPermissionGroupMetaData,
+  getPermissionMetaDataByOrigin,
+  getUniqueSiteOriginsFromTokenTransferPermissions,
+  getTokenTransferPermissionsByOrigin,
+  getGatorPermissionCountsBySiteOrigin,
+  getTotalUniqueSitesCount,
+  getMergedConnectionsListWithGatorPermissions,
+  getPendingRevocations,
 } from './gator-permissions';
 
 const MOCK_CHAIN_ID_MAINNET = '0x1' as Hex;
@@ -249,13 +259,13 @@ describe('Gator Permissions Selectors', () => {
       siteOrigin: 'http://localhost:8001',
     },
   });
-  const mockState = {
+  const mockState: AppState = {
     metamask: {
       gatorPermissionsMapSerialized: JSON.stringify(mockGatorPermissionsMap),
       isGatorPermissionsEnabled: true,
       isFetchingGatorPermissions: false,
-      isUpdatingGatorPermissions: false,
       gatorPermissionsProviderSnapId: 'local:http://localhost:8080/' as SnapId,
+      pendingRevocations: [],
     },
   };
 
@@ -305,9 +315,9 @@ describe('Gator Permissions Selectors', () => {
             }),
             isGatorPermissionsEnabled: true,
             isFetchingGatorPermissions: false,
-            isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
           },
         };
 
@@ -342,9 +352,9 @@ describe('Gator Permissions Selectors', () => {
             ),
             isGatorPermissionsEnabled: true,
             isFetchingGatorPermissions: false,
-            isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
           },
         };
 
@@ -408,9 +418,9 @@ describe('Gator Permissions Selectors', () => {
             ),
             isGatorPermissionsEnabled: true,
             isFetchingGatorPermissions: false,
-            isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
           },
         };
 
@@ -455,9 +465,9 @@ describe('Gator Permissions Selectors', () => {
             ),
             isGatorPermissionsEnabled: true,
             isFetchingGatorPermissions: false,
-            isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
           },
         };
 
@@ -502,9 +512,9 @@ describe('Gator Permissions Selectors', () => {
             ),
             isGatorPermissionsEnabled: true,
             isFetchingGatorPermissions: false,
-            isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
           },
         };
 
@@ -549,9 +559,9 @@ describe('Gator Permissions Selectors', () => {
             ),
             isGatorPermissionsEnabled: true,
             isFetchingGatorPermissions: false,
-            isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
           },
         };
 
@@ -573,6 +583,1551 @@ describe('Gator Permissions Selectors', () => {
         );
         expect(result).toBe(6);
       });
+    });
+  });
+
+  describe('getPermissionGroupMetaData', () => {
+    describe('token-transfer permission group', () => {
+      it('should return correct permission group details for token-transfer with all permission types', () => {
+        const result = getPermissionGroupMetaData(mockState, 'token-transfer');
+
+        // Expected: 2 chains, each with 3 permissions (1 native-token-stream + 1 native-token-periodic + 1 erc20-token-stream)
+        expect(result).toEqual([
+          {
+            chainId: MOCK_CHAIN_ID_MAINNET,
+            count: 3,
+          },
+          {
+            chainId: MOCK_CHAIN_ID_POLYGON,
+            count: 3,
+          },
+        ]);
+      });
+
+      it('should return empty array when no permissions exist', () => {
+        const emptyState = {
+          metamask: {
+            gatorPermissionsMapSerialized: JSON.stringify({
+              'native-token-stream': {
+                [MOCK_CHAIN_ID_MAINNET]: [],
+                [MOCK_CHAIN_ID_POLYGON]: [],
+              },
+              'native-token-periodic': {
+                [MOCK_CHAIN_ID_MAINNET]: [],
+                [MOCK_CHAIN_ID_POLYGON]: [],
+              },
+              'erc20-token-stream': {
+                [MOCK_CHAIN_ID_MAINNET]: [],
+                [MOCK_CHAIN_ID_POLYGON]: [],
+              },
+              'erc20-token-periodic': {
+                [MOCK_CHAIN_ID_MAINNET]: [],
+                [MOCK_CHAIN_ID_POLYGON]: [],
+              },
+              other: {
+                [MOCK_CHAIN_ID_MAINNET]: [],
+                [MOCK_CHAIN_ID_POLYGON]: [],
+              },
+            }),
+            isGatorPermissionsEnabled: true,
+            isFetchingGatorPermissions: false,
+            gatorPermissionsProviderSnapId:
+              'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
+          },
+        };
+
+        const result = getPermissionGroupMetaData(emptyState, 'token-transfer');
+        expect(result).toEqual([]);
+      });
+
+      it('should handle different counts across chains correctly', () => {
+        const customMockGatorPermissionsMap =
+          mockGatorPermissionsStorageEntriesFactory({
+            [MOCK_CHAIN_ID_MAINNET]: {
+              nativeTokenStream: 2,
+              nativeTokenPeriodic: 1,
+              erc20TokenStream: 3,
+              siteOrigin: 'http://localhost:8000',
+            },
+            [MOCK_CHAIN_ID_POLYGON]: {
+              nativeTokenStream: 1,
+              nativeTokenPeriodic: 2,
+              erc20TokenStream: 0,
+              siteOrigin: 'http://localhost:8001',
+            },
+          });
+
+        const customState = {
+          metamask: {
+            gatorPermissionsMapSerialized: JSON.stringify(
+              customMockGatorPermissionsMap,
+            ),
+            isGatorPermissionsEnabled: true,
+            isFetchingGatorPermissions: false,
+            gatorPermissionsProviderSnapId:
+              'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
+          },
+        };
+
+        const result = getPermissionGroupMetaData(
+          customState,
+          'token-transfer',
+        );
+
+        expect(result).toEqual([
+          {
+            chainId: MOCK_CHAIN_ID_MAINNET,
+            count: 6,
+          },
+          {
+            chainId: MOCK_CHAIN_ID_POLYGON,
+            count: 3,
+          },
+        ]);
+      });
+
+      it('should handle only native token permissions', () => {
+        const nativeOnlyMockGatorPermissionsMap =
+          mockGatorPermissionsStorageEntriesFactory({
+            [MOCK_CHAIN_ID_MAINNET]: {
+              nativeTokenStream: 2,
+              nativeTokenPeriodic: 1,
+              erc20TokenStream: 0,
+              siteOrigin: 'http://localhost:8000',
+            },
+            [MOCK_CHAIN_ID_POLYGON]: {
+              nativeTokenStream: 0,
+              nativeTokenPeriodic: 3,
+              erc20TokenStream: 0,
+              siteOrigin: 'http://localhost:8001',
+            },
+          });
+
+        const customState = {
+          metamask: {
+            gatorPermissionsMapSerialized: JSON.stringify(
+              nativeOnlyMockGatorPermissionsMap,
+            ),
+            isGatorPermissionsEnabled: true,
+            isFetchingGatorPermissions: false,
+            gatorPermissionsProviderSnapId:
+              'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
+          },
+        };
+
+        const result = getPermissionGroupMetaData(
+          customState,
+          'token-transfer',
+        );
+
+        expect(result).toEqual([
+          {
+            chainId: MOCK_CHAIN_ID_MAINNET,
+            count: 3,
+          },
+          {
+            chainId: MOCK_CHAIN_ID_POLYGON,
+            count: 3,
+          },
+        ]);
+      });
+
+      it('should handle only ERC20 token permissions', () => {
+        const erc20OnlyMockGatorPermissionsMap =
+          mockGatorPermissionsStorageEntriesFactory({
+            [MOCK_CHAIN_ID_MAINNET]: {
+              nativeTokenStream: 0,
+              nativeTokenPeriodic: 0,
+              erc20TokenStream: 4,
+              siteOrigin: 'http://localhost:8000',
+            },
+            [MOCK_CHAIN_ID_POLYGON]: {
+              nativeTokenStream: 0,
+              nativeTokenPeriodic: 0,
+              erc20TokenStream: 2,
+              siteOrigin: 'http://localhost:8001',
+            },
+          });
+
+        const customState = {
+          metamask: {
+            gatorPermissionsMapSerialized: JSON.stringify(
+              erc20OnlyMockGatorPermissionsMap,
+            ),
+            isGatorPermissionsEnabled: true,
+            isFetchingGatorPermissions: false,
+            gatorPermissionsProviderSnapId:
+              'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
+          },
+        };
+
+        const result = getPermissionGroupMetaData(
+          customState,
+          'token-transfer',
+        );
+
+        expect(result).toEqual([
+          {
+            chainId: MOCK_CHAIN_ID_MAINNET,
+            count: 4,
+          },
+          {
+            chainId: MOCK_CHAIN_ID_POLYGON,
+            count: 2,
+          },
+        ]);
+      });
+
+      it('should handle mixed permission types with different counts', () => {
+        const mixedMockGatorPermissionsMap =
+          mockGatorPermissionsStorageEntriesFactory({
+            [MOCK_CHAIN_ID_MAINNET]: {
+              nativeTokenStream: 1,
+              nativeTokenPeriodic: 0,
+              erc20TokenStream: 2,
+              siteOrigin: 'http://localhost:8000',
+            },
+            [MOCK_CHAIN_ID_POLYGON]: {
+              nativeTokenStream: 0,
+              nativeTokenPeriodic: 2,
+              erc20TokenStream: 1,
+              siteOrigin: 'http://localhost:8001',
+            },
+          });
+
+        const customState = {
+          metamask: {
+            gatorPermissionsMapSerialized: JSON.stringify(
+              mixedMockGatorPermissionsMap,
+            ),
+            isGatorPermissionsEnabled: true,
+            isFetchingGatorPermissions: false,
+            gatorPermissionsProviderSnapId:
+              'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
+          },
+        };
+
+        const result = getPermissionGroupMetaData(
+          customState,
+          'token-transfer',
+        );
+
+        expect(result).toEqual([
+          {
+            chainId: MOCK_CHAIN_ID_MAINNET,
+            count: 3,
+          },
+          {
+            chainId: MOCK_CHAIN_ID_POLYGON,
+            count: 3,
+          },
+        ]);
+      });
+    });
+
+    describe('unknown permission group names', () => {
+      it('should return empty array for permission group that are not supported', () => {
+        const result = getPermissionGroupMetaData(
+          mockState,
+          'unknown-permission-group',
+        );
+        expect(result).toEqual([]);
+      });
+    });
+
+    describe('edge cases', () => {
+      it('should handle single chain with permissions', () => {
+        const singleChainMockGatorPermissionsMap =
+          mockGatorPermissionsStorageEntriesFactory({
+            [MOCK_CHAIN_ID_MAINNET]: {
+              nativeTokenStream: 2,
+              nativeTokenPeriodic: 1,
+              erc20TokenStream: 1,
+              siteOrigin: 'http://localhost:8000',
+            },
+          });
+
+        const customState = {
+          metamask: {
+            gatorPermissionsMapSerialized: JSON.stringify(
+              singleChainMockGatorPermissionsMap,
+            ),
+            isGatorPermissionsEnabled: true,
+            isFetchingGatorPermissions: false,
+            gatorPermissionsProviderSnapId:
+              'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
+          },
+        };
+
+        const result = getPermissionGroupMetaData(
+          customState,
+          'token-transfer',
+        );
+
+        // Expected: Mainnet: 2 + 1 + 1 = 4
+        expect(result).toEqual([
+          {
+            chainId: MOCK_CHAIN_ID_MAINNET,
+            count: 4,
+          },
+        ]);
+      });
+
+      it('should handle multiple chains with varying permission counts', () => {
+        const multiChainMockGatorPermissionsMap =
+          mockGatorPermissionsStorageEntriesFactory({
+            [MOCK_CHAIN_ID_MAINNET]: {
+              nativeTokenStream: 5,
+              nativeTokenPeriodic: 3,
+              erc20TokenStream: 2,
+              siteOrigin: 'http://localhost:8000',
+            },
+            [MOCK_CHAIN_ID_POLYGON]: {
+              nativeTokenStream: 1,
+              nativeTokenPeriodic: 0,
+              erc20TokenStream: 4,
+              siteOrigin: 'http://localhost:8001',
+            },
+          });
+
+        const customState = {
+          metamask: {
+            gatorPermissionsMapSerialized: JSON.stringify(
+              multiChainMockGatorPermissionsMap,
+            ),
+            isGatorPermissionsEnabled: true,
+            isFetchingGatorPermissions: false,
+            gatorPermissionsProviderSnapId:
+              'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
+          },
+        };
+
+        const result = getPermissionGroupMetaData(
+          customState,
+          'token-transfer',
+        );
+
+        // Expected: Mainnet: 5 + 3 + 2 = 10, Polygon: 1 + 0 + 4 = 5
+        expect(result).toEqual([
+          {
+            chainId: MOCK_CHAIN_ID_MAINNET,
+            count: 10,
+          },
+          {
+            chainId: MOCK_CHAIN_ID_POLYGON,
+            count: 5,
+          },
+        ]);
+      });
+    });
+  });
+
+  describe('getPermissionMetaDataByOrigin', () => {
+    describe('token transfer permissions by origin', () => {
+      it('should return correct token transfer details for a site origin with permissions', () => {
+        const result = getPermissionMetaDataByOrigin(
+          mockState,
+          'http://localhost:8000',
+        );
+
+        expect(result).toEqual({
+          tokenTransfer: {
+            count: 3,
+            chains: [MOCK_CHAIN_ID_MAINNET],
+          },
+        });
+      });
+
+      it('should return correct token transfer details for different site origin', () => {
+        const result = getPermissionMetaDataByOrigin(
+          mockState,
+          'http://localhost:8001',
+        );
+
+        expect(result).toEqual({
+          tokenTransfer: {
+            count: 3,
+            chains: [MOCK_CHAIN_ID_POLYGON],
+          },
+        });
+      });
+
+      it('should return empty details for site origin with no permissions', () => {
+        const result = getPermissionMetaDataByOrigin(
+          mockState,
+          'https://nonexistent.com',
+        );
+
+        expect(result).toEqual({
+          tokenTransfer: {
+            count: 0,
+            chains: [],
+          },
+        });
+      });
+
+      it('should handle case-insensitive site origin matching', () => {
+        const result = getPermissionMetaDataByOrigin(
+          mockState,
+          'HTTP://LOCALHOST:8000',
+        );
+
+        expect(result).toEqual({
+          tokenTransfer: {
+            count: 3,
+            chains: [MOCK_CHAIN_ID_MAINNET],
+          },
+        });
+      });
+
+      it('should aggregate permissions across multiple chains for same origin', () => {
+        const customMockGatorPermissionsMap =
+          mockGatorPermissionsStorageEntriesFactory({
+            [MOCK_CHAIN_ID_MAINNET]: {
+              nativeTokenStream: 2,
+              nativeTokenPeriodic: 1,
+              erc20TokenStream: 1,
+              siteOrigin: 'http://example.com',
+            },
+            [MOCK_CHAIN_ID_POLYGON]: {
+              nativeTokenStream: 1,
+              nativeTokenPeriodic: 2,
+              erc20TokenStream: 0,
+              siteOrigin: 'http://example.com',
+            },
+          });
+
+        const customState = {
+          metamask: {
+            gatorPermissionsMapSerialized: JSON.stringify(
+              customMockGatorPermissionsMap,
+            ),
+            isGatorPermissionsEnabled: true,
+            isFetchingGatorPermissions: false,
+            gatorPermissionsProviderSnapId:
+              'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
+          },
+        };
+
+        const result = getPermissionMetaDataByOrigin(
+          customState,
+          'http://example.com',
+        );
+
+        expect(result).toEqual({
+          tokenTransfer: {
+            count: 7,
+            chains: [MOCK_CHAIN_ID_MAINNET, MOCK_CHAIN_ID_POLYGON],
+          },
+        });
+      });
+
+      it('should handle empty permissions map', () => {
+        const emptyState = {
+          metamask: {
+            gatorPermissionsMapSerialized: JSON.stringify({
+              'native-token-stream': {
+                [MOCK_CHAIN_ID_MAINNET]: [],
+                [MOCK_CHAIN_ID_POLYGON]: [],
+              },
+              'native-token-periodic': {
+                [MOCK_CHAIN_ID_MAINNET]: [],
+                [MOCK_CHAIN_ID_POLYGON]: [],
+              },
+              'erc20-token-stream': {
+                [MOCK_CHAIN_ID_MAINNET]: [],
+                [MOCK_CHAIN_ID_POLYGON]: [],
+              },
+              'erc20-token-periodic': {
+                [MOCK_CHAIN_ID_MAINNET]: [],
+                [MOCK_CHAIN_ID_POLYGON]: [],
+              },
+              other: {
+                [MOCK_CHAIN_ID_MAINNET]: [],
+                [MOCK_CHAIN_ID_POLYGON]: [],
+              },
+            }),
+            isGatorPermissionsEnabled: true,
+            isFetchingGatorPermissions: false,
+            gatorPermissionsProviderSnapId:
+              'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
+          },
+        };
+
+        const result = getPermissionMetaDataByOrigin(
+          emptyState,
+          'http://localhost:8000',
+        );
+
+        expect(result).toEqual({
+          tokenTransfer: {
+            count: 0,
+            chains: [],
+          },
+        });
+      });
+    });
+
+    describe('undefined values handling', () => {
+      it('should throw error when undefined values are present in native-token-stream permissions', () => {
+        const mockGatorPermissionsMapWithUndefined = {
+          'native-token-stream': {
+            [MOCK_CHAIN_ID_MAINNET]: [undefined, { permissionResponse: {} }],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          'native-token-periodic': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          'erc20-token-stream': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          'erc20-token-periodic': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          other: {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+        };
+
+        const stateWithUndefined = {
+          metamask: {
+            gatorPermissionsMapSerialized: JSON.stringify(
+              mockGatorPermissionsMapWithUndefined,
+            ),
+            isGatorPermissionsEnabled: true,
+            isFetchingGatorPermissions: false,
+            gatorPermissionsProviderSnapId:
+              'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
+          },
+        };
+
+        expect(() => {
+          getPermissionMetaDataByOrigin(
+            stateWithUndefined,
+            'http://localhost:8000',
+          );
+        }).toThrow(
+          'Undefined values present in the gatorPermissionsMap for permission type: native-token-stream',
+        );
+      });
+
+      it('should throw error when undefined values are present in erc20-token-stream permissions', () => {
+        const mockGatorPermissionsMapWithUndefined = {
+          'native-token-stream': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          'native-token-periodic': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          'erc20-token-stream': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [undefined, { permissionResponse: {} }],
+          },
+          'erc20-token-periodic': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          other: {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+        };
+
+        const stateWithUndefined = {
+          metamask: {
+            gatorPermissionsMapSerialized: JSON.stringify(
+              mockGatorPermissionsMapWithUndefined,
+            ),
+            isGatorPermissionsEnabled: true,
+            isFetchingGatorPermissions: false,
+            gatorPermissionsProviderSnapId:
+              'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
+          },
+        };
+
+        expect(() => {
+          getPermissionMetaDataByOrigin(
+            stateWithUndefined,
+            'http://localhost:8000',
+          );
+        }).toThrow(
+          'Undefined values present in the gatorPermissionsMap for permission type: erc20-token-stream',
+        );
+      });
+
+      it('should throw error when undefined values are present in native-token-periodic permissions', () => {
+        const mockGatorPermissionsMapWithUndefined = {
+          'native-token-stream': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          'native-token-periodic': {
+            [MOCK_CHAIN_ID_MAINNET]: [undefined, { permissionResponse: {} }],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          'erc20-token-stream': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          'erc20-token-periodic': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          other: {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+        };
+
+        const stateWithUndefined = {
+          metamask: {
+            gatorPermissionsMapSerialized: JSON.stringify(
+              mockGatorPermissionsMapWithUndefined,
+            ),
+            isGatorPermissionsEnabled: true,
+            isFetchingGatorPermissions: false,
+            gatorPermissionsProviderSnapId:
+              'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
+          },
+        };
+
+        expect(() => {
+          getPermissionMetaDataByOrigin(
+            stateWithUndefined,
+            'http://localhost:8000',
+          );
+        }).toThrow(
+          'Undefined values present in the gatorPermissionsMap for permission type: native-token-periodic',
+        );
+      });
+
+      it('should throw error when undefined values are present in erc20-token-periodic permissions', () => {
+        const mockGatorPermissionsMapWithUndefined = {
+          'native-token-stream': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          'native-token-periodic': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          'erc20-token-stream': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          'erc20-token-periodic': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [undefined, { permissionResponse: {} }],
+          },
+          other: {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+        };
+
+        const stateWithUndefined = {
+          metamask: {
+            gatorPermissionsMapSerialized: JSON.stringify(
+              mockGatorPermissionsMapWithUndefined,
+            ),
+            isGatorPermissionsEnabled: true,
+            isFetchingGatorPermissions: false,
+            gatorPermissionsProviderSnapId:
+              'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
+          },
+        };
+
+        expect(() => {
+          getPermissionMetaDataByOrigin(
+            stateWithUndefined,
+            'http://localhost:8000',
+          );
+        }).toThrow(
+          'Undefined values present in the gatorPermissionsMap for permission type: erc20-token-periodic',
+        );
+      });
+    });
+
+    describe('URL encoding handling', () => {
+      it('should handle encoded site origin matching', () => {
+        const customState = {
+          metamask: {
+            gatorPermissionsMapSerialized: JSON.stringify(
+              mockGatorPermissionsStorageEntriesFactory({
+                [MOCK_CHAIN_ID_MAINNET]: {
+                  nativeTokenStream: 1,
+                  nativeTokenPeriodic: 1,
+                  erc20TokenStream: 1,
+                  siteOrigin: 'https://example.com',
+                },
+              }),
+            ),
+            isGatorPermissionsEnabled: true,
+            isFetchingGatorPermissions: false,
+            gatorPermissionsProviderSnapId:
+              'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
+          },
+        };
+
+        const result = getPermissionMetaDataByOrigin(
+          customState,
+          encodeURIComponent('https://example.com'),
+        );
+
+        expect(result.tokenTransfer.count).toBe(3);
+        expect(result.tokenTransfer.chains).toEqual([MOCK_CHAIN_ID_MAINNET]);
+      });
+
+      it('should handle decoded site origin matching', () => {
+        const customState = {
+          metamask: {
+            gatorPermissionsMapSerialized: JSON.stringify(
+              mockGatorPermissionsStorageEntriesFactory({
+                [MOCK_CHAIN_ID_MAINNET]: {
+                  nativeTokenStream: 1,
+                  nativeTokenPeriodic: 1,
+                  erc20TokenStream: 1,
+                  siteOrigin: 'https://example.com/path%20with%20spaces',
+                },
+              }),
+            ),
+            isGatorPermissionsEnabled: true,
+            isFetchingGatorPermissions: false,
+            isUpdatingGatorPermissions: false,
+            gatorPermissionsProviderSnapId:
+              'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
+          },
+        };
+
+        const result = getPermissionMetaDataByOrigin(
+          customState,
+          'https://example.com/path with spaces',
+        );
+
+        expect(result.tokenTransfer.count).toBe(3);
+        expect(result.tokenTransfer.chains).toEqual([MOCK_CHAIN_ID_MAINNET]);
+      });
+    });
+  });
+
+  describe('getUniqueSiteOriginsFromTokenTransferPermissions', () => {
+    it('should return unique site origins from token transfer permissions', () => {
+      const result =
+        getUniqueSiteOriginsFromTokenTransferPermissions(mockState);
+
+      expect(result).toEqual(
+        expect.arrayContaining([
+          'http://localhost:8000',
+          'http://localhost:8001',
+        ]),
+      );
+      expect(result).toHaveLength(2);
+    });
+
+    it('should return empty array when no permissions exist', () => {
+      const emptyState = {
+        metamask: {
+          gatorPermissionsMapSerialized: JSON.stringify({
+            'native-token-stream': {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            'native-token-periodic': {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            'erc20-token-stream': {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            'erc20-token-periodic': {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            other: {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+          }),
+          isGatorPermissionsEnabled: true,
+          isFetchingGatorPermissions: false,
+          isUpdatingGatorPermissions: false,
+          gatorPermissionsProviderSnapId:
+            'local:http://localhost:8080/' as SnapId,
+          pendingRevocations: [],
+        },
+      };
+
+      const result =
+        getUniqueSiteOriginsFromTokenTransferPermissions(emptyState);
+      expect(result).toEqual([]);
+    });
+
+    it('should deduplicate site origins across multiple chains', () => {
+      const customMockGatorPermissionsMap =
+        mockGatorPermissionsStorageEntriesFactory({
+          [MOCK_CHAIN_ID_MAINNET]: {
+            nativeTokenStream: 2,
+            nativeTokenPeriodic: 1,
+            erc20TokenStream: 1,
+            siteOrigin: 'https://example.com',
+          },
+          [MOCK_CHAIN_ID_POLYGON]: {
+            nativeTokenStream: 1,
+            nativeTokenPeriodic: 2,
+            erc20TokenStream: 1,
+            siteOrigin: 'https://example.com',
+          },
+        });
+
+      const customState = {
+        metamask: {
+          gatorPermissionsMapSerialized: JSON.stringify(
+            customMockGatorPermissionsMap,
+          ),
+          isGatorPermissionsEnabled: true,
+          isFetchingGatorPermissions: false,
+          isUpdatingGatorPermissions: false,
+          gatorPermissionsProviderSnapId:
+            'local:http://localhost:8080/' as SnapId,
+          pendingRevocations: [],
+        },
+      };
+
+      const result =
+        getUniqueSiteOriginsFromTokenTransferPermissions(customState);
+      expect(result).toEqual(['https://example.com']);
+      expect(result).toHaveLength(1);
+    });
+  });
+
+  describe('getTokenTransferPermissionsByOrigin', () => {
+    describe('token transfer permissions by origin', () => {
+      it('should return correct permissions for a site origin with permissions', () => {
+        const customState = {
+          metamask: {
+            gatorPermissionsMapSerialized: JSON.stringify(
+              mockGatorPermissionsStorageEntriesFactory({
+                [MOCK_CHAIN_ID_MAINNET]: {
+                  nativeTokenStream: 2,
+                  nativeTokenPeriodic: 1,
+                  erc20TokenStream: 1,
+                  siteOrigin: 'http://localhost:8000',
+                },
+                [MOCK_CHAIN_ID_POLYGON]: {
+                  nativeTokenStream: 1,
+                  nativeTokenPeriodic: 0,
+                  erc20TokenStream: 1,
+                  siteOrigin: 'http://localhost:8000',
+                },
+              }),
+            ),
+            isGatorPermissionsEnabled: true,
+            isFetchingGatorPermissions: false,
+            isUpdatingGatorPermissions: false,
+            gatorPermissionsProviderSnapId:
+              'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
+          },
+        };
+
+        const result = getTokenTransferPermissionsByOrigin(
+          customState,
+          'http://localhost:8000',
+        );
+
+        expect(result.length).toBe(6);
+        expect(
+          result.every((perm) => perm.siteOrigin === 'http://localhost:8000'),
+        ).toBe(true);
+      });
+
+      it('should return empty array for site origin with no permissions', () => {
+        const customState = {
+          metamask: {
+            gatorPermissionsMapSerialized: JSON.stringify(
+              mockGatorPermissionsStorageEntriesFactory({
+                [MOCK_CHAIN_ID_MAINNET]: {
+                  nativeTokenStream: 1,
+                  nativeTokenPeriodic: 1,
+                  erc20TokenStream: 1,
+                  siteOrigin: 'http://localhost:8000',
+                },
+              }),
+            ),
+            isGatorPermissionsEnabled: true,
+            isFetchingGatorPermissions: false,
+            isUpdatingGatorPermissions: false,
+            gatorPermissionsProviderSnapId:
+              'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
+          },
+        };
+
+        const result = getTokenTransferPermissionsByOrigin(
+          customState,
+          'http://different-origin.com',
+        );
+
+        expect(result).toEqual([]);
+      });
+
+      it('should handle case-insensitive site origin matching', () => {
+        const customState = {
+          metamask: {
+            gatorPermissionsMapSerialized: JSON.stringify(
+              mockGatorPermissionsStorageEntriesFactory({
+                [MOCK_CHAIN_ID_MAINNET]: {
+                  nativeTokenStream: 1,
+                  nativeTokenPeriodic: 1,
+                  erc20TokenStream: 1,
+                  siteOrigin: 'http://Example.COM',
+                },
+              }),
+            ),
+            isGatorPermissionsEnabled: true,
+            isFetchingGatorPermissions: false,
+            isUpdatingGatorPermissions: false,
+            gatorPermissionsProviderSnapId:
+              'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
+          },
+        };
+
+        const result = getTokenTransferPermissionsByOrigin(
+          customState,
+          'http://example.com',
+        );
+
+        expect(result.length).toBe(3);
+      });
+
+      it('should aggregate permissions across multiple chains for same origin', () => {
+        const customState = {
+          metamask: {
+            gatorPermissionsMapSerialized: JSON.stringify(
+              mockGatorPermissionsStorageEntriesFactory({
+                [MOCK_CHAIN_ID_MAINNET]: {
+                  nativeTokenStream: 2,
+                  nativeTokenPeriodic: 1,
+                  erc20TokenStream: 0,
+                  siteOrigin: 'http://localhost:8000',
+                },
+                [MOCK_CHAIN_ID_POLYGON]: {
+                  nativeTokenStream: 0,
+                  nativeTokenPeriodic: 1,
+                  erc20TokenStream: 2,
+                  siteOrigin: 'http://localhost:8000',
+                },
+              }),
+            ),
+            isGatorPermissionsEnabled: true,
+            isFetchingGatorPermissions: false,
+            isUpdatingGatorPermissions: false,
+            gatorPermissionsProviderSnapId:
+              'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
+          },
+        };
+
+        const result = getTokenTransferPermissionsByOrigin(
+          customState,
+          'http://localhost:8000',
+        );
+
+        expect(result.length).toBe(6);
+        const mainnetPermissions = result.filter(
+          (perm) => perm.permissionResponse.chainId === MOCK_CHAIN_ID_MAINNET,
+        );
+        const polygonPermissions = result.filter(
+          (perm) => perm.permissionResponse.chainId === MOCK_CHAIN_ID_POLYGON,
+        );
+        expect(mainnetPermissions.length).toBe(3);
+        expect(polygonPermissions.length).toBe(3);
+      });
+
+      it('should handle empty permissions map', () => {
+        const emptyState = {
+          metamask: {
+            gatorPermissionsMapSerialized: JSON.stringify({
+              'native-token-stream': {
+                [MOCK_CHAIN_ID_MAINNET]: [],
+                [MOCK_CHAIN_ID_POLYGON]: [],
+              },
+              'native-token-periodic': {
+                [MOCK_CHAIN_ID_MAINNET]: [],
+                [MOCK_CHAIN_ID_POLYGON]: [],
+              },
+              'erc20-token-stream': {
+                [MOCK_CHAIN_ID_MAINNET]: [],
+                [MOCK_CHAIN_ID_POLYGON]: [],
+              },
+              'erc20-token-periodic': {
+                [MOCK_CHAIN_ID_MAINNET]: [],
+                [MOCK_CHAIN_ID_POLYGON]: [],
+              },
+              other: {
+                [MOCK_CHAIN_ID_MAINNET]: [],
+                [MOCK_CHAIN_ID_POLYGON]: [],
+              },
+            }),
+            isGatorPermissionsEnabled: true,
+            isFetchingGatorPermissions: false,
+            isUpdatingGatorPermissions: false,
+            gatorPermissionsProviderSnapId:
+              'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
+          },
+        };
+
+        const result = getTokenTransferPermissionsByOrigin(
+          emptyState,
+          'http://localhost:8000',
+        );
+
+        expect(result).toEqual([]);
+      });
+    });
+
+    describe('undefined values handling', () => {
+      it('should throw error when undefined values are present in native-token-stream permissions', () => {
+        const mockGatorPermissionsMapWithUndefined = {
+          'native-token-stream': {
+            [MOCK_CHAIN_ID_MAINNET]: [undefined, { permissionResponse: {} }],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          'native-token-periodic': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          'erc20-token-stream': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          'erc20-token-periodic': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          other: {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+        };
+
+        const stateWithUndefined = {
+          metamask: {
+            gatorPermissionsMapSerialized: JSON.stringify(
+              mockGatorPermissionsMapWithUndefined,
+            ),
+            isGatorPermissionsEnabled: true,
+            isFetchingGatorPermissions: false,
+            isUpdatingGatorPermissions: false,
+            gatorPermissionsProviderSnapId:
+              'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
+          },
+        };
+
+        expect(() => {
+          getTokenTransferPermissionsByOrigin(
+            stateWithUndefined,
+            'http://localhost:8000',
+          );
+        }).toThrow(
+          'Undefined values present in the gatorPermissionsMap for permission type: native-token-stream',
+        );
+      });
+
+      it('should throw error when undefined values are present in erc20-token-periodic permissions', () => {
+        const mockGatorPermissionsMapWithUndefined = {
+          'native-token-stream': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          'native-token-periodic': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          'erc20-token-stream': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          'erc20-token-periodic': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [undefined, { permissionResponse: {} }],
+          },
+          other: {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+        };
+
+        const stateWithUndefined = {
+          metamask: {
+            gatorPermissionsMapSerialized: JSON.stringify(
+              mockGatorPermissionsMapWithUndefined,
+            ),
+            isGatorPermissionsEnabled: true,
+            isFetchingGatorPermissions: false,
+            isUpdatingGatorPermissions: false,
+            gatorPermissionsProviderSnapId:
+              'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
+          },
+        };
+
+        expect(() => {
+          getTokenTransferPermissionsByOrigin(
+            stateWithUndefined,
+            'http://localhost:8000',
+          );
+        }).toThrow(
+          'Undefined values present in the gatorPermissionsMap for permission type: erc20-token-periodic',
+        );
+      });
+    });
+
+    describe('URL encoding handling', () => {
+      it('should handle encoded site origin matching', () => {
+        const customState = {
+          metamask: {
+            gatorPermissionsMapSerialized: JSON.stringify(
+              mockGatorPermissionsStorageEntriesFactory({
+                [MOCK_CHAIN_ID_MAINNET]: {
+                  nativeTokenStream: 1,
+                  nativeTokenPeriodic: 1,
+                  erc20TokenStream: 1,
+                  siteOrigin: 'https://example.com',
+                },
+              }),
+            ),
+            isGatorPermissionsEnabled: true,
+            isFetchingGatorPermissions: false,
+            isUpdatingGatorPermissions: false,
+            gatorPermissionsProviderSnapId:
+              'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
+          },
+        };
+
+        const result = getTokenTransferPermissionsByOrigin(
+          customState,
+          encodeURIComponent('https://example.com'),
+        );
+
+        expect(result.length).toBe(3);
+      });
+
+      it('should handle decoded site origin matching', () => {
+        const customState = {
+          metamask: {
+            gatorPermissionsMapSerialized: JSON.stringify(
+              mockGatorPermissionsStorageEntriesFactory({
+                [MOCK_CHAIN_ID_MAINNET]: {
+                  nativeTokenStream: 1,
+                  nativeTokenPeriodic: 1,
+                  erc20TokenStream: 1,
+                  siteOrigin: 'https://example.com/path%20with%20spaces',
+                },
+              }),
+            ),
+            isGatorPermissionsEnabled: true,
+            isFetchingGatorPermissions: false,
+            isUpdatingGatorPermissions: false,
+            gatorPermissionsProviderSnapId:
+              'local:http://localhost:8080/' as SnapId,
+            pendingRevocations: [],
+          },
+        };
+
+        const result = getTokenTransferPermissionsByOrigin(
+          customState,
+          'https://example.com/path with spaces',
+        );
+
+        expect(result.length).toBe(3);
+      });
+    });
+  });
+
+  describe('getAggregatedGatorPermissionByChainId', () => {
+    it('should return aggregated token-transfer permissions for a given chainId', () => {
+      const result = getAggregatedGatorPermissionByChainId(mockState, {
+        aggregatedPermissionType: 'token-transfer',
+        chainId: MOCK_CHAIN_ID_MAINNET,
+      });
+
+      expect(result).toHaveLength(3);
+
+      const permissionTypes = result.map(
+        (
+          permission: StoredGatorPermissionSanitized<
+            Signer,
+            PermissionTypesWithCustom
+          >,
+        ) => permission.permissionResponse.permission.type,
+      );
+      expect(permissionTypes).toContain('native-token-stream');
+      expect(permissionTypes).toContain('erc20-token-stream');
+      expect(permissionTypes).toContain('native-token-periodic');
+    });
+
+    it('should return aggregated token-transfer permissions for a different chainId', () => {
+      const result = getAggregatedGatorPermissionByChainId(mockState, {
+        aggregatedPermissionType: 'token-transfer',
+        chainId: MOCK_CHAIN_ID_POLYGON,
+      });
+
+      expect(result).toHaveLength(3);
+
+      const permissionTypes = result.map(
+        (
+          permission: StoredGatorPermissionSanitized<
+            Signer,
+            PermissionTypesWithCustom
+          >,
+        ) => permission.permissionResponse.permission.type,
+      );
+      expect(permissionTypes).toContain('native-token-stream');
+      expect(permissionTypes).toContain('erc20-token-stream');
+      expect(permissionTypes).toContain('native-token-periodic');
+    });
+
+    it('should return empty array for non-existent chainId', () => {
+      const result = getAggregatedGatorPermissionByChainId(mockState, {
+        aggregatedPermissionType: 'token-transfer',
+        chainId: '0x1111111111111111111111111111111111111111' as Hex,
+      });
+
+      expect(result).toEqual([]);
+    });
+
+    it('should return empty array for unknown aggregated permission type', () => {
+      const result = getAggregatedGatorPermissionByChainId(mockState, {
+        aggregatedPermissionType: 'unknown-type',
+        chainId: MOCK_CHAIN_ID_MAINNET,
+      });
+
+      expect(result).toEqual([]);
+    });
+
+    it('should handle state with only some permission types populated', () => {
+      const mockStateWithPartialPermissions = {
+        metamask: {
+          gatorPermissionsMapSerialized: JSON.stringify({
+            'native-token-stream': {
+              [MOCK_CHAIN_ID_MAINNET]: [
+                {
+                  permissionResponse: {
+                    chainId: MOCK_CHAIN_ID_MAINNET as Hex,
+                    address: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
+                    expiry: 1750291200,
+                    permission: {
+                      type: 'native-token-stream',
+                      data: {
+                        maxAmount: '0x22b1c8c1227a0000',
+                        initialAmount: '0x6f05b59d3b20000',
+                        amountPerSecond: '0x6f05b59d3b20000',
+                        startTime: 1747699200,
+                        justification: 'Test justification',
+                      },
+                      rules: {},
+                    },
+                    context: '0x00000000',
+                    signerMeta: {
+                      delegationManager:
+                        '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
+                    },
+                  },
+                  siteOrigin: 'http://localhost:8000',
+                },
+              ],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            'erc20-token-stream': {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            'native-token-periodic': {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            'erc20-token-periodic': {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            other: {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+          }),
+          isGatorPermissionsEnabled: true,
+          isFetchingGatorPermissions: false,
+          gatorPermissionsProviderSnapId:
+            'local:http://localhost:8080/' as SnapId,
+          pendingRevocations: [],
+        },
+      };
+
+      const result = getAggregatedGatorPermissionByChainId(
+        mockStateWithPartialPermissions,
+        {
+          aggregatedPermissionType: 'token-transfer',
+          chainId: MOCK_CHAIN_ID_MAINNET,
+        },
+      );
+
+      expect(result).toHaveLength(1);
+      expect(result[0].permissionResponse.permission.type).toBe(
+        'native-token-stream',
+      );
+    });
+
+    it('should handle state with empty permission arrays', () => {
+      const mockStateWithEmptyPermissions = {
+        metamask: {
+          gatorPermissionsMapSerialized: JSON.stringify({
+            'native-token-stream': {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            'erc20-token-stream': {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            'native-token-periodic': {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            'erc20-token-periodic': {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            other: {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+          }),
+          isGatorPermissionsEnabled: true,
+          isFetchingGatorPermissions: false,
+          gatorPermissionsProviderSnapId:
+            'local:http://localhost:8080/' as SnapId,
+          pendingRevocations: [],
+        },
+      };
+
+      const result = getAggregatedGatorPermissionByChainId(
+        mockStateWithEmptyPermissions,
+        {
+          aggregatedPermissionType: 'token-transfer',
+          chainId: MOCK_CHAIN_ID_MAINNET,
+        },
+      );
+
+      expect(result).toEqual([]);
+    });
+  });
+
+  describe('getGatorPermissionCountsBySiteOrigin', () => {
+    it('should return a map with permission counts per site origin', () => {
+      const result = getGatorPermissionCountsBySiteOrigin(mockState);
+
+      expect(result).toBeInstanceOf(Map);
+      expect(result.get('http://localhost:8000')).toBe(5);
+      expect(result.get('http://localhost:8001')).toBe(3);
+    });
+
+    it('should return an empty map when no permissions exist', () => {
+      const emptyState = {
+        metamask: {
+          gatorPermissionsMapSerialized: JSON.stringify({
+            'native-token-stream': {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            'native-token-periodic': {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            'erc20-token-stream': {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            'erc20-token-periodic': {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            other: {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+          }),
+          isGatorPermissionsEnabled: true,
+          isFetchingGatorPermissions: false,
+          gatorPermissionsProviderSnapId:
+            'local:http://localhost:8080/' as SnapId,
+          pendingRevocations: [],
+        },
+      };
+
+      const result = getGatorPermissionCountsBySiteOrigin(emptyState);
+      expect(result).toBeInstanceOf(Map);
+      expect(result.size).toBe(0);
+    });
+
+    it('should aggregate counts for the same site origin across multiple chains', () => {
+      const customMockGatorPermissionsMap =
+        mockGatorPermissionsStorageEntriesFactory({
+          [MOCK_CHAIN_ID_MAINNET]: {
+            nativeTokenStream: 2,
+            nativeTokenPeriodic: 1,
+            erc20TokenStream: 1,
+            siteOrigin: 'https://example.com',
+          },
+          [MOCK_CHAIN_ID_POLYGON]: {
+            nativeTokenStream: 1,
+            nativeTokenPeriodic: 2,
+            erc20TokenStream: 1,
+            siteOrigin: 'https://example.com',
+          },
+        });
+
+      const customState = {
+        metamask: {
+          gatorPermissionsMapSerialized: JSON.stringify(
+            customMockGatorPermissionsMap,
+          ),
+          isGatorPermissionsEnabled: true,
+          isFetchingGatorPermissions: false,
+          gatorPermissionsProviderSnapId:
+            'local:http://localhost:8080/' as SnapId,
+          pendingRevocations: [],
+        },
+      };
+
+      const result = getGatorPermissionCountsBySiteOrigin(customState);
+      expect(result.get('https://example.com')).toBe(8);
+    });
+  });
+
+  describe('getTotalUniqueSitesCount', () => {
+    it('should return the total count of unique sites from both connections and gator permissions', () => {
+      const sitesConnectionsList = {
+        'https://app1.com': {},
+        'https://app2.com': {},
+      };
+      const gatorPermissionSiteOrigins = [
+        'http://localhost:8000',
+        'https://app1.com',
+      ];
+
+      const result = getTotalUniqueSitesCount.resultFunc(
+        sitesConnectionsList,
+        gatorPermissionSiteOrigins,
+      );
+
+      expect(result).toBe(3);
+    });
+
+    it('should return count when no traditional connections exist', () => {
+      const sitesConnectionsList = {};
+      const gatorPermissionSiteOrigins = [
+        'http://localhost:8000',
+        'http://localhost:8001',
+      ];
+
+      const result = getTotalUniqueSitesCount.resultFunc(
+        sitesConnectionsList,
+        gatorPermissionSiteOrigins,
+      );
+
+      expect(result).toBe(2);
+    });
+  });
+
+  describe('getMergedConnectionsListWithGatorPermissions', () => {
+    it('should add gator permission counts to existing connections', () => {
+      const sitesConnectionsList = {
+        'http://localhost:8000': {
+          addresses: ['0x123'],
+          origin: 'http://localhost:8000',
+          name: 'Test Site',
+          iconUrl: null,
+          subjectType: 'website' as never,
+          networkIconUrl: '',
+          networkName: 'Mainnet',
+          extensionId: null,
+        },
+      };
+      const gatorPermissionCounts = new Map([
+        ['http://localhost:8000', 3],
+        ['http://localhost:8001', 2],
+      ]);
+      const mockStateForMetadata = {
+        metamask: {
+          subjectMetadata: {
+            'http://localhost:8001': {
+              name: 'Another Site',
+              iconUrl: 'https://example.com/icon.png',
+            },
+          },
+        },
+      };
+
+      const result = getMergedConnectionsListWithGatorPermissions.resultFunc(
+        sitesConnectionsList,
+        gatorPermissionCounts,
+        mockStateForMetadata as never,
+      );
+
+      expect(result['http://localhost:8000'].advancedPermissionsCount).toBe(3);
+      expect(result['http://localhost:8001']).toBeDefined();
+      expect(result['http://localhost:8001'].advancedPermissionsCount).toBe(2);
+      expect(result['http://localhost:8001'].addresses).toEqual([]);
+    });
+  });
+
+  describe('getPendingRevocations', () => {
+    it('should return the list of gator permissions pending a revocation transaction', () => {
+      const result = getPendingRevocations({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          pendingRevocations: [
+            {
+              txId: '1',
+              permissionContext: '0x1',
+            },
+          ],
+        },
+      });
+      expect(result).toEqual([
+        {
+          txId: '1',
+          permissionContext: '0x1',
+        },
+      ]);
     });
   });
 });

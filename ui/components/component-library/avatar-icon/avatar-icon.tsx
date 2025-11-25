@@ -20,6 +20,9 @@ import {
   avatarIconSizeToIconSize,
 } from './avatar-icon.types';
 
+/**
+ * @deprecated Please update your code to use `AvatarIcon` from `@metamask/design-system-react`
+ */
 export const AvatarIcon: AvatarIconComponent = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention

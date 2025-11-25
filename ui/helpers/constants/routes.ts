@@ -7,6 +7,7 @@ type AppRoute = {
 };
 
 export const DEFAULT_ROUTE = '/';
+export const PREVIOUS_ROUTE = -1;
 export const UNLOCK_ROUTE = '/unlock';
 export const LOCK_ROUTE = '/lock';
 export const ASSET_ROUTE = '/asset';
@@ -16,6 +17,19 @@ export const ADVANCED_ROUTE = '/settings/advanced';
 export const DEVELOPER_OPTIONS_ROUTE = '/settings/developer-options';
 export const EXPERIMENTAL_ROUTE = '/settings/experimental';
 export const TRANSACTION_SHIELD_ROUTE = '/settings/transaction-shield';
+export const TRANSACTION_SHIELD_CLAIMS = '/settings/transaction-shield/claims';
+// Transaction Shield Claims routes
+export const TRANSACTION_SHIELD_CLAIM_ROUTES = {
+  BASE: TRANSACTION_SHIELD_CLAIMS,
+  NEW: {
+    FULL: `${TRANSACTION_SHIELD_CLAIMS}/new-claim`,
+    RELATIVE: '/new-claim',
+  },
+  VIEW: {
+    FULL: `${TRANSACTION_SHIELD_CLAIMS}/view-claim`,
+    RELATIVE: '/view-claim',
+  },
+} as const;
 export const SECURITY_ROUTE = '/settings/security';
 export const ABOUT_US_ROUTE = '/settings/about-us';
 export const NETWORKS_ROUTE = '/settings/networks';
@@ -67,6 +81,7 @@ export const CONNECTIONS = '/connections';
 export const PERMISSIONS = '/permissions';
 export const GATOR_PERMISSIONS = '/gator-permissions';
 export const TOKEN_TRANSFER_ROUTE = '/gator-permissions/token-transfer';
+export const REVIEW_GATOR_PERMISSIONS_ROUTE = '/review-gator-permissions';
 export const REVIEW_PERMISSIONS = '/review-permissions';
 export const CONNECT_ROUTE = '/connect';
 export const CONNECT_CONFIRM_PERMISSIONS_ROUTE = '/confirm-permissions';
@@ -654,6 +669,11 @@ export const ROUTES = [
   {
     path: TOKEN_TRANSFER_ROUTE,
     label: 'Gator Permissions Token Transfer',
+    trackInAnalytics: false,
+  },
+  {
+    path: `${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName`,
+    label: 'Review Gator Permissions',
     trackInAnalytics: false,
   },
 ] as const satisfies AppRoute[];

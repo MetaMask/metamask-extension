@@ -1,4 +1,5 @@
-import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
+import { getRootMessenger } from '../../lib/messenger';
 import {
   getTokenDetectionControllerInitMessenger,
   getTokenDetectionControllerMessenger,
@@ -6,18 +7,18 @@ import {
 
 describe('getTokenDetectionControllerMessenger', () => {
   it('returns a restricted messenger', () => {
-    const messenger = new Messenger<never, never>();
+    const messenger = getRootMessenger<never, never>();
     const controllerMessenger = getTokenDetectionControllerMessenger(messenger);
 
-    expect(controllerMessenger).toBeInstanceOf(RestrictedMessenger);
+    expect(controllerMessenger).toBeInstanceOf(Messenger);
   });
 });
 
 describe('getTokenDetectionControllerInitMessenger', () => {
   it('returns a restricted messenger', () => {
-    const messenger = new Messenger<never, never>();
+    const messenger = getRootMessenger<never, never>();
     const initMessenger = getTokenDetectionControllerInitMessenger(messenger);
 
-    expect(initMessenger).toBeInstanceOf(RestrictedMessenger);
+    expect(initMessenger).toBeInstanceOf(Messenger);
   });
 });

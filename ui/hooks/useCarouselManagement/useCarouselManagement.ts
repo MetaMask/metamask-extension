@@ -1,5 +1,5 @@
 import { isEqual } from 'lodash';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import log from 'loglevel';
 import { BigNumber } from 'bignumber.js';
@@ -103,8 +103,62 @@ export const useCarouselManagement = ({
   const hasZeroBalance = new BigNumber(totalBalance ?? ZERO_BALANCE).eq(
     ZERO_BALANCE,
   );
+  const contentfulEnabled =
+    remoteFeatureFlags?.contentfulCarouselEnabled ?? false;
+
+  const [downloadEligible, setDownloadEligible] = useState<boolean>(false);
+  const [downloadEligibilityReady, setDownloadEligibilityReady] =
+    useState<boolean>(false);
 
   useEffect(() => {
+    const eligibilityNeeded =
+      contentfulEnabled && useExternalServices && showDownloadMobileAppSlide;
+
+    if (!eligibilityNeeded) {
+      setDownloadEligible(false);
+      setDownloadEligibilityReady(true);
+      return () => undefined;
+    }
+
+    setDownloadEligibilityReady(false);
+
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const lineage = await getUserProfileLineageAction();
+        if (!cancelled) {
+          const onMobile = Boolean(
+            lineage?.lineage?.some((l) => l.agent === Platform.MOBILE),
+          );
+          setDownloadEligible(!onMobile);
+          setDownloadEligibilityReady(true);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          log.warn('Failed to fetch user profile lineage:', error);
+          setDownloadEligible(false);
+          setDownloadEligibilityReady(true);
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    selectedAccount.address,
+    useExternalServices,
+    showDownloadMobileAppSlide,
+    contentfulEnabled,
+  ]);
+
+  useEffect(() => {
+    // Wait until eligibility is resolved (or not required) to avoid double fetch
+    if (!downloadEligibilityReady) {
+      return;
+    }
+
     // If carousel is disabled, clear the slides
     if (!enabled) {
       const empty: CarouselSlide[] = [];
@@ -115,9 +169,6 @@ export const useCarouselManagement = ({
       return;
     }
     const maybeFetchContentful = async () => {
-      const contentfulEnabled =
-        remoteFeatureFlags?.contentfulCarouselEnabled ?? false;
-
       // Early Return if Contentful is disabled
       if (!contentfulEnabled) {
         const empty: CarouselSlide[] = [];
@@ -155,17 +206,6 @@ export const useCarouselManagement = ({
             }
             return s;
           };
-
-          const downloadEligible = await (async () => {
-            if (!useExternalServices || !showDownloadMobileAppSlide) {
-              return false;
-            }
-            const lineage = await getUserProfileLineageAction();
-            const onMobile = Boolean(
-              lineage?.lineage?.some((l) => l.agent === Platform.MOBILE),
-            );
-            return !onMobile;
-          })();
 
           const isEligible = (s: CarouselSlide) => {
             // Show Download Mobile App (only if not already on mobile + flags)
@@ -211,13 +251,11 @@ export const useCarouselManagement = ({
     enabled,
     dispatch,
     hasZeroBalance,
-    remoteFeatureFlags,
+    contentfulEnabled,
     testDate,
     inTest,
     slides,
-    selectedAccount.address,
-    useExternalServices,
-    showDownloadMobileAppSlide,
+    downloadEligibilityReady,
   ]);
 
   return { slides };

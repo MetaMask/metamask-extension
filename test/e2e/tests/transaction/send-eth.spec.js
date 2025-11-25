@@ -5,6 +5,8 @@ const {
 } = require('../../page-objects/flows/login.flow');
 const { withFixtures, WINDOW_TITLES, DAPP_URL } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
+const { CHAIN_IDS } = require('../../../../shared/constants/network');
+const { mockSpotPrices } = require('../tokens/utils/mocks');
 
 const PREFERENCES_STATE_MOCK = {
   preferences: {
@@ -222,7 +224,7 @@ describe('Send ETH', function () {
       it('should display the correct gas price on the legacy transaction', async function () {
         await withFixtures(
           {
-            dapp: true,
+            dappOptions: { numberOfTestDapps: 1 },
             fixtures: new FixtureBuilder()
               .withPermissionControllerConnectedToTestDapp()
               .withPreferencesController(PREFERENCES_STATE_MOCK)
@@ -230,6 +232,15 @@ describe('Send ETH', function () {
             title: this.test.fullTitle(),
             localNodeOptions: {
               hardfork: 'muirGlacier',
+            },
+            testSpecificMock: async (mockServer) => {
+              await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
+                '0x0000000000000000000000000000000000000000': {
+                  price: 1700,
+                  marketCap: 382623505141,
+                  pricePercentChange1d: 0,
+                },
+              });
             },
           },
           async ({ driver }) => {
@@ -305,12 +316,21 @@ describe('Send ETH', function () {
       it('should display correct gas values for EIP-1559 transaction', async function () {
         await withFixtures(
           {
-            dapp: true,
+            dappOptions: { numberOfTestDapps: 1 },
             fixtures: new FixtureBuilder()
               .withPermissionControllerConnectedToTestDapp()
               .withPreferencesController(PREFERENCES_STATE_MOCK)
               .build(),
             title: this.test.fullTitle(),
+            testSpecificMock: async (mockServer) => {
+              await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
+                '0x0000000000000000000000000000000000000000': {
+                  price: 1700,
+                  marketCap: 382623505141,
+                  pricePercentChange1d: 0,
+                },
+              });
+            },
           },
           async ({ driver }) => {
             await loginWithBalanceValidation(driver);
@@ -436,8 +456,6 @@ describe('Send ETH', function () {
               tag: 'button',
             });
             await driver.clickElement({ text: 'Continue', tag: 'button' });
-
-            await driver.clickElement('[data-testid="recipient-address"]');
 
             const recipientAddress = await driver.findElements({
               text: '0xc427D...Acd28',

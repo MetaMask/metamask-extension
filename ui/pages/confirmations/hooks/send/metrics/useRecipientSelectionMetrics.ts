@@ -37,18 +37,23 @@ export const useRecipientSelectionMetrics = () => {
   }, [setRecipientInputMethod]);
 
   const captureRecipientSelected = useCallback(async () => {
-    trackEvent({
-      event: MetaMetricsEventName.SendRecipientSelected,
-      category: MetaMetricsEventCategory.Send,
-      properties: {
-        account_type: accountType,
-        input_method: recipientInputMethod,
-        chain_id: chainId,
-        chain_id_caip: isEvmSendType
-          ? `eip155:${parseInt(chainId as string, 16)}`
-          : chainId,
+    trackEvent(
+      {
+        event: MetaMetricsEventName.SendRecipientSelected,
+        category: MetaMetricsEventCategory.Send,
+        properties: {
+          account_type: accountType,
+          input_method: recipientInputMethod,
+          chain_id: chainId,
+          chain_id_caip: isEvmSendType
+            ? `eip155:${parseInt(chainId as string, 16)}`
+            : chainId,
+        },
       },
-    });
+      {
+        excludeMetaMetricsId: false,
+      },
+    );
   }, [accountType, chainId, isEvmSendType, recipientInputMethod, trackEvent]);
 
   return {

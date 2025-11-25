@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Permission List Item render renders correctly 1`] = `
+<div>
+  <div
+    class="gap-4 items-baseline p-4 bg-default"
+    data-testid="permission-group-list-item"
+  >
+    <button
+      class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+      role="button"
+      style="width: 100%; background-color: transparent; padding: 0px;"
+    >
+      <div
+        class="items-start mr-2"
+      >
+        <div
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-[10px] h-10 w-10"
+          data-testid="permission-group-list-item__avatar-network"
+          style="border-radius: 50%;"
+        >
+          <span
+            class="text-muted text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default uppercase"
+          >
+            0
+          </span>
+        </div>
+      </div>
+      <div
+        class="flex flex-col items-start justify-start"
+        style="flex-grow: 1;"
+      >
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          Goerli
+        </p>
+        <p
+          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          2 token permissions
+        </p>
+      </div>
+      <div
+        class="gap-2 items-end justify-end"
+      >
+        <svg
+          class="inline-block w-4 h-4 text-icon-default"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="m8.887 22-1.775-1.775L15.337 12 7.112 3.775 8.887 2l10 10z"
+          />
+        </svg>
+      </div>
+    </button>
+  </div>
+</div>
+`;

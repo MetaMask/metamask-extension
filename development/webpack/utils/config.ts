@@ -62,7 +62,7 @@ export function getBuildName(
   type: string,
   build: BuildType,
   isDev: boolean,
-  args: Pick<Args, 'manifest_version' | 'lavamoat' | 'snow' | 'lockdown'>,
+  args: Pick<Args, 'manifest_version' | 'lavamoat' | 'snow'>,
 ) {
   const buildName =
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
@@ -73,8 +73,7 @@ export function getBuildName(
     const mv3Str = args.manifest_version === 3 ? ' MV3' : '';
     const lavamoatStr = args.lavamoat ? ' lavamoat' : '';
     const snowStr = args.snow ? ' snow' : '';
-    const lockdownStr = args.lockdown ? ' lockdown' : '';
-    return `${buildName}${mv3Str}${lavamoatStr}${snowStr}${lockdownStr}`;
+    return `${buildName}${mv3Str}${lavamoatStr}${snowStr}`;
   }
   return buildName;
 }
@@ -111,7 +110,7 @@ export function getVariables(
   setEnvironmentVariables({
     buildName: getBuildName(type, activeBuild, isDevBuild, args),
     buildType: type,
-    environment: env,
+    environment: args.test ? 'testing' : env,
     isDevBuild,
     isTestBuild: args.test,
     version: version.versionName,
@@ -134,7 +133,6 @@ export function getVariables(
   variables.set('ENABLE_SENTRY', args.sentry.toString());
   variables.set('ENABLE_SNOW', args.snow.toString());
   variables.set('ENABLE_LAVAMOAT', args.lavamoat.toString());
-  variables.set('ENABLE_LOCKDOWN', args.lockdown.toString());
 
   // convert the variables to a format that can be used by SWC, which expects
   // values be JSON stringified, as it JSON.parses them internally.
@@ -157,15 +155,16 @@ export function getVariables(
 }
 
 /**
- * Loads configuration variables from process.env, .metamaskrc, and build.yml.
+ * Loads configuration variables from process.env, .metamaskprodrc, .metamaskrc, and build.yml.
  *
  * The order of precedence is:
  * 1. process.env
- * 2. .metamaskrc
- * 3. build.yml
+ * 2. .metamaskprodrc
+ * 3. .metamaskrc
+ * 4. builds.yml
  *
  * i.e., if a variable is defined in `process.env`, it will take precedence over
- * the same variable defined in `.metamaskrc` or `build.yml`.
+ * the same variable defined in `.metamaskprodrc`, `.metamaskrc` or `build.yml`.
  *
  * @param activeBuild
  * @param build
@@ -177,6 +176,7 @@ function loadConfigVars(
   { env }: BuildTypesConfig,
 ) {
   const definitions = loadEnv();
+  addRc(definitions, join(__dirname, '../../../.metamaskprodrc'));
   addRc(definitions, join(__dirname, '../../../.metamaskrc'));
   addVars(activeBuild.env);
   addVars(env);
