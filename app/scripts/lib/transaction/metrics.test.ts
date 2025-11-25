@@ -1707,7 +1707,7 @@ describe('Transaction metrics', () => {
     });
   });
 
-  describe.only('transaction hash property', () => {
+  describe('transaction hash property', () => {
     describe('included when', () => {
       // @ts-expect-error This function is missing from the Mocha type definitions
       it.each([
@@ -1754,7 +1754,7 @@ describe('Transaction metrics', () => {
 
           expect(properties).toStrictEqual(
             expect.objectContaining({
-              hash: mockTransactionMeta.hash,
+              transaction_hash: mockTransactionMeta.hash,
             }),
           );
         },
@@ -1791,7 +1791,7 @@ describe('Transaction metrics', () => {
 
           expect(properties).not.toStrictEqual(
             expect.objectContaining({
-              hash: mockTransactionMeta.hash,
+              transaction_hash: mockTransactionMeta.hash,
             }),
           );
         },
@@ -1821,7 +1821,7 @@ describe('Transaction metrics', () => {
 
         expect(properties).not.toStrictEqual(
           expect.objectContaining({
-            hash: mockTransactionMeta.hash,
+            transaction_hash: mockTransactionMeta.hash,
           }),
         );
       });
@@ -1850,7 +1850,7 @@ describe('Transaction metrics', () => {
 
         expect(properties).not.toStrictEqual(
           expect.objectContaining({
-            hash: mockTransactionMeta.hash,
+            transaction_hash: mockTransactionMeta.hash,
           }),
         );
       });
@@ -1879,7 +1879,7 @@ describe('Transaction metrics', () => {
 
         expect(properties).not.toStrictEqual(
           expect.objectContaining({
-            hash: mockTransactionMeta.hash,
+            transaction_hash: mockTransactionMeta.hash,
           }),
         );
       });

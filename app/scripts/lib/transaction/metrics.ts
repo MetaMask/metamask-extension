@@ -1434,6 +1434,6 @@ function addHashProperty(
     isMetricsOptedIn &&
     isFinalisedStatus
   ) {
-    properties.hash = transactionMeta.hash;
+    properties.transaction_hash = transactionMeta.hash;
   }
 }
