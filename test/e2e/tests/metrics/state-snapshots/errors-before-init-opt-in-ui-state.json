@@ -53,7 +53,8 @@
       "showShieldEntryModalOnce": "boolean",
       "pendingShieldCohort": null,
       "pendingShieldCohortTxType": null,
-      "appActiveTab": "object"
+      "appActiveTab": "object",
+      "pna25Acknowledged": null
     },
     "BridgeController": {},
     "CurrencyController": {

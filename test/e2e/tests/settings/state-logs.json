@@ -69,6 +69,7 @@
     "onboardedInThisUISession": "boolean",
     "openMetaMaskTabs": {},
     "pendingTokens": {},
+    "pna25Acknowledged": null,
     "qrCodeData": "null",
     "removeNftMessage": "string",
     "requestAccountTabs": {},
