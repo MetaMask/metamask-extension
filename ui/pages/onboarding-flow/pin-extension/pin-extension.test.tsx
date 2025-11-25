@@ -17,7 +17,7 @@ jest.mock('../../../store/actions', () => ({
   setCompletedOnboardingWithSidepanel: jest.fn(),
 }));
 
-const mockPromises = [];
+const mockPromises: Promise<void>[] = [];
 
 const mockDispatch = jest.fn().mockImplementation(() => {
   const promise = Promise.resolve();
@@ -50,7 +50,42 @@ describe('Creation Successful Onboarding View', () => {
   });
 
   const arrangeMocks = (
-    stateOverrides = {
+    stateOverrides: {
+      metamask: {
+        isBackupAndSyncEnabled?: boolean;
+        participateInMetaMetrics?: boolean;
+        isSignedIn?: boolean;
+        useExternalServices?: boolean;
+        internalAccounts?: {
+          accounts: Record<
+            string,
+            {
+              address: string;
+              metadata: {
+                keyring: {
+                  type: string;
+                  accounts: string[];
+                };
+              };
+            }
+          >;
+          selectedAccount: string;
+        };
+        keyrings?: {
+          type: string;
+          accounts: string[];
+          metadata: {
+            id: string;
+            name: string;
+          };
+        }[];
+        firstTimeFlowType?: FirstTimeFlowType;
+        seedPhraseBackedUp?: boolean;
+      };
+      appState?: {
+        externalServicesOnboardingToggleState?: boolean;
+      };
+    } = {
       metamask: {
         isBackupAndSyncEnabled: false,
         participateInMetaMetrics: true,
@@ -89,8 +124,8 @@ describe('Creation Successful Onboarding View', () => {
     };
     const store = configureMockStore([thunk])(mockStore);
 
-    toggleExternalServices.mockClear();
-    setCompletedOnboarding.mockClear();
+    (toggleExternalServices as jest.Mock).mockClear();
+    (setCompletedOnboarding as jest.Mock).mockClear();
 
     return store;
   };
@@ -122,6 +157,10 @@ describe('Creation Successful Onboarding View', () => {
             {
               type: 'HD Key Tree',
               accounts: ['0x0000000000000000000000000000000000000000'],
+              metadata: {
+                id: 'test',
+                name: 'test',
+              },
             },
           ],
           firstTimeFlowType: FirstTimeFlowType.create,

@@ -2,7 +2,6 @@ import React, { useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import classnames from 'classnames';
-import { ButtonVariant } from '@metamask/snaps-sdk';
 import log from 'loglevel';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -18,7 +17,6 @@ import {
   TRANSACTION_SIMULATIONS_LEARN_MORE_LINK,
 } from '../../../../shared/lib/ui-utils';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import Button from '../../../components/ui/button';
 
 import {
   Box,
@@ -28,7 +26,7 @@ import {
   ButtonLink,
   AvatarNetwork,
   ButtonIcon,
-  IconSize,
+  ButtonIconSize,
   Icon,
 } from '../../../components/component-library';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -78,20 +76,29 @@ import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup
 import { BackupAndSyncToggle } from '../../../components/app/identity/backup-and-sync-toggle/backup-and-sync-toggle';
 import DeleteMetaMetricsDataButton from '../../settings/security-tab/delete-metametrics-data-button';
 import MetametricsToggle from '../../settings/security-tab/metametrics-toggle/metametrics-toggle';
+import { MetaMaskReduxState } from '../../../store/store';
 import { Setting } from './setting';
 
 const ANIMATION_TIME = 500;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function PrivacySettings() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [showDetail, setShowDetail] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedItem, setSelectedItem] = useState<{
+    id: number;
+    title: string;
+    subtitle: string;
+  } | null>(null);
   const [hiddenClass, setHiddenClass] = useState(true);
 
-  const defaultState = useSelector((state) => state.metamask);
+  const defaultState = useSelector(
+    (state: MetaMaskReduxState) => state.metamask,
+  );
   const {
     use4ByteResolution,
     useTokenDetection,
@@ -148,7 +155,7 @@ export default function PrivacySettings() {
     setUseExternalNameSources(turnOnExternalNameSources);
 
     if (ipfsURL && !ipfsError) {
-      const { host } = new URL(addUrlProtocolPrefix(ipfsURL));
+      const { host } = new URL(addUrlProtocolPrefix(ipfsURL) as string);
       dispatch(setIpfsGateway(host));
     }
 
@@ -156,19 +163,23 @@ export default function PrivacySettings() {
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.SettingsUpdated,
       properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         settings_group: 'onboarding_advanced_configuration',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         is_profile_syncing_enabled: isBackupAndSyncEnabled,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         is_basic_functionality_enabled: externalServicesOnboardingToggleState,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         turnon_token_detection: turnOnTokenDetection,
       },
     });
     navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
   };
 
-  const handleIPFSChange = (url) => {
+  const handleIPFSChange = (url: string) => {
     setIPFSURL(url);
     try {
-      const { host } = new URL(addUrlProtocolPrefix(url));
+      const { host } = new URL(addUrlProtocolPrefix(url) as string);
       if (!host || host === 'gateway.ipfs.io') {
         throw new Error();
       }
@@ -178,7 +189,11 @@ export default function PrivacySettings() {
     }
   };
 
-  const handleItemSelected = (item) => {
+  const handleItemSelected = (item: {
+    id: number;
+    title: string;
+    subtitle: string;
+  }) => {
     setSelectedItem(item);
     setShowDetail(true);
 
@@ -208,7 +223,7 @@ export default function PrivacySettings() {
     },
   ];
 
-  const handleDataCollectionForMarketing = async (value) => {
+  const handleDataCollectionForMarketing = async (value: boolean) => {
     try {
       dispatch(setMarketingConsent(value));
     } catch (error) {
@@ -241,15 +256,10 @@ export default function PrivacySettings() {
                 flexDirection={FlexDirection.Row}
                 justifyContent={JustifyContent.flexStart}
               >
-                <Button
-                  type="inline"
-                  icon={
-                    <Icon
-                      name={IconName.ArrowLeft}
-                      size={IconSize.Lg}
-                      color={IconColor.iconDefault}
-                    />
-                  }
+                <ButtonIcon
+                  iconName={IconName.ArrowLeft}
+                  ariaLabel="Back"
+                  size={ButtonIconSize.Lg}
                   data-testid="privacy-settings-back-button"
                   onClick={handleSubmit}
                 />
@@ -304,14 +314,11 @@ export default function PrivacySettings() {
                       <Text variant={TextVariant.bodyLgMedium}>
                         {item.title}
                       </Text>
-                      <Button
-                        type="inline"
-                        icon={
-                          <Icon
-                            name={IconName.ArrowRight}
-                            color={IconColor.iconDefault}
-                          />
-                        }
+                      <ButtonIcon
+                        iconName={IconName.ArrowRight}
+                        ariaLabel="Next"
+                        size={ButtonIconSize.Lg}
+                        color={IconColor.iconDefault}
                         onClick={() => handleItemSelected(item)}
                       />
                     </Box>
@@ -341,16 +348,11 @@ export default function PrivacySettings() {
               flexDirection={FlexDirection.Row}
               justifyContent={JustifyContent.flexStart}
             >
-              <Button
+              <ButtonIcon
                 data-testid="category-back-button"
-                type="inline"
-                icon={
-                  <Icon
-                    name={IconName.ArrowLeft}
-                    size={IconSize.Lg}
-                    color={IconColor.iconDefault}
-                  />
-                }
+                iconName={IconName.ArrowLeft}
+                ariaLabel="Back"
+                size={ButtonIconSize.Lg}
                 onClick={handleBack}
               />
               <Box
@@ -381,10 +383,15 @@ export default function PrivacySettings() {
                           category: MetaMetricsEventCategory.Onboarding,
                           event: MetaMetricsEventName.SettingsUpdated,
                           properties: {
+                            // eslint-disable-next-line @typescript-eslint/naming-convention
                             settings_group: 'onboarding_advanced_configuration',
+                            // eslint-disable-next-line @typescript-eslint/naming-convention
                             settings_type: 'basic_functionality',
+                            // eslint-disable-next-line @typescript-eslint/naming-convention
                             old_value: false,
+                            // eslint-disable-next-line @typescript-eslint/naming-convention
                             new_value: true,
+                            // eslint-disable-next-line @typescript-eslint/naming-convention
                             was_profile_syncing_on: false,
                           },
                         });
@@ -469,6 +476,7 @@ export default function PrivacySettings() {
                                           network.chainId
                                         ]
                                       }
+                                      name={network.name}
                                     />
                                     <Box
                                       textAlign={TextAlign.Left}
@@ -494,7 +502,8 @@ export default function PrivacySettings() {
                                   </Box>
                                   <ButtonIcon
                                     iconName={IconName.ArrowRight}
-                                    size={IconSize.Md}
+                                    size={ButtonIconSize.Md}
+                                    ariaLabel="Next"
                                   />
                                 </Box>
                               ))}
@@ -506,8 +515,7 @@ export default function PrivacySettings() {
                                   }),
                                 );
                               }}
-                              justifyContent={JustifyContent.Left}
-                              variant={ButtonVariant.link}
+                              justifyContent={JustifyContent.flexStart}
                             >
                               <Box
                                 display={Display.Flex}

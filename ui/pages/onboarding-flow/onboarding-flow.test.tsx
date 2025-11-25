@@ -39,13 +39,19 @@ jest.mock('react-router-dom-v5-compat', () => ({
 
 // Mock Rive animation components
 jest.mock('./welcome/fox-appear-animation', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: () => <div data-testid="fox-appear-animation" />,
 }));
 
 jest.mock('./welcome/metamask-wordmark-animation', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
-  default: ({ setIsAnimationComplete }) => {
+  default: ({
+    setIsAnimationComplete,
+  }: {
+    setIsAnimationComplete: (isAnimationComplete: boolean) => void;
+  }) => {
     // Simulate animation completion immediately using setTimeout
     setTimeout(() => setIsAnimationComplete(true), 0);
     return <div data-testid="metamask-wordmark-animation" />;
@@ -53,6 +59,7 @@ jest.mock('./welcome/metamask-wordmark-animation', () => ({
 }));
 
 jest.mock('./creation-successful/wallet-ready-animation', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: () => <div data-testid="wallet-ready-animation" />,
 }));
@@ -206,10 +213,14 @@ describe('Onboarding Flow', () => {
       const confirmPassword = queryByTestId('create-password-confirm-input');
       const createPasswordWallet = queryByTestId('create-password-submit');
 
-      fireEvent.click(checkTerms);
-      fireEvent.change(createPassword, { target: { value: password } });
-      fireEvent.change(confirmPassword, { target: { value: password } });
-      fireEvent.click(createPasswordWallet);
+      fireEvent.click(checkTerms as HTMLElement);
+      fireEvent.change(createPassword as HTMLElement, {
+        target: { value: password },
+      });
+      fireEvent.change(confirmPassword as HTMLElement, {
+        target: { value: password },
+      });
+      fireEvent.click(createPasswordWallet as HTMLElement);
 
       await waitFor(() =>
         expect(createNewVaultAndGetSeedPhrase).toHaveBeenCalled(),

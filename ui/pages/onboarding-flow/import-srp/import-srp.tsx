@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
 import { isValidMnemonic } from '@ethersproject/hdnode';
 import {
   AlignItems,
@@ -41,13 +40,21 @@ import {
 import SrpInputForm from '../../srp-input-form';
 import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
 
-const hasUpperCase = (draftSrp) => {
+type ImportSRPProps = {
+  onClearCallback?: () => void;
+  submitSecretRecoveryPhrase?: (secretRecoveryPhrase: string) => void;
+};
+
+const hasUpperCase = (draftSrp: string) => {
   return draftSrp !== draftSrp.toLowerCase();
 };
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function ImportSRP({
   onClearCallback,
   submitSecretRecoveryPhrase,
-}) {
+}: ImportSRPProps) {
   const dispatch = useDispatch();
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const [srpError, setSrpError] = useState('');
@@ -64,7 +71,7 @@ export default function ImportSRP({
   }, [currentKeyring, navigate, isWalletResetInProgress]);
   const trackEvent = useContext(MetaMetricsContext);
 
-  const onBack = async (e) => {
+  const onBack = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     // reset onboarding flow
     await dispatch(resetOnboarding());
@@ -88,14 +95,13 @@ export default function ImportSRP({
       return;
     }
 
-    if (submitSecretRecoveryPhrase) {
-      submitSecretRecoveryPhrase(secretRecoveryPhrase);
-    }
+    submitSecretRecoveryPhrase?.(secretRecoveryPhrase);
 
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.OnboardingWalletSecurityPhraseConfirmed,
       properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         hd_entropy_index: hdEntropyIndex,
       },
     });
@@ -140,7 +146,7 @@ export default function ImportSRP({
         <SrpInputForm
           error={srpError}
           setSecretRecoveryPhrase={setSecretRecoveryPhrase}
-          onClearCallback={onClearCallback}
+          onClearCallback={() => onClearCallback?.()}
         />
       </Box>
       <Box
@@ -166,8 +172,3 @@ export default function ImportSRP({
     </Box>
   );
 }
-
-ImportSRP.propTypes = {
-  submitSecretRecoveryPhrase: PropTypes.func,
-  onClearCallback: PropTypes.func,
-};

@@ -28,13 +28,22 @@ import {
   BorderColor,
   TextColor,
   TextVariant,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
 
-export default function OnboardingAppHeader({ isWelcomePage }) {
+type OnboardingAppHeaderProps = {
+  isWelcomePage?: boolean;
+};
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export default function OnboardingAppHeader({
+  isWelcomePage = false,
+}: OnboardingAppHeaderProps) {
   const dispatch = useDispatch();
   const { pathname, search } = useLocation();
   const t = useI18nContext();
@@ -106,14 +115,14 @@ export default function OnboardingAppHeader({ isWelcomePage }) {
                   <Icon
                     name={IconName.Extension}
                     key="extension"
-                    color={TextColor.textDefault}
+                    color={IconColor.iconDefault}
                     size={IconSize.Md}
                     className="onboarding-app-header__banner-tip-icon"
                   />,
                   <Icon
                     name={IconName.Keep}
                     key="keep"
-                    color={TextColor.textDefault}
+                    color={IconColor.iconDefault}
                     size={IconSize.Md}
                     className="onboarding-app-header__banner-tip-icon"
                   />,

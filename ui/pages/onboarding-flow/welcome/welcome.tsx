@@ -3,7 +3,6 @@ import React, {
   useContext,
   useEffect,
   useState,
-  lazy,
   Suspense,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -55,15 +54,13 @@ import {
 import { useRiveWasmContext } from '../../../contexts/rive-wasm';
 import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
 import WelcomeLogin from './welcome-login';
-import { LOGIN_ERROR, LOGIN_OPTION, LOGIN_TYPE } from './types';
+import { LOGIN_ERROR, LOGIN_OPTION, LOGIN_TYPE, LoginErrorType } from './types';
 import LoginErrorModal from './login-error-modal';
+import MetaMaskWordMarkAnimation from './metamask-wordmark-animation';
+import FoxAppearAnimation from './fox-appear-animation';
 
-// Lazy load animation components for better initial load performance
-const MetaMaskWordMarkAnimation = lazy(
-  () => import('./metamask-wordmark-animation'),
-);
-const FoxAppearAnimation = lazy(() => import('./fox-appear-animation'));
-
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function OnboardingWelcome() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -82,7 +79,7 @@ export default function OnboardingWelcome() {
     useState(false);
 
   const [isLoggingIn, setIsLoggingIn] = useState(false);
-  const [loginError, setLoginError] = useState(null);
+  const [loginError, setLoginError] = useState<LoginErrorType | null>(null);
 
   const { animationCompleted } = useRiveWasmContext();
   const shouldSkipAnimation = Boolean(
@@ -147,6 +144,7 @@ export default function OnboardingWelcome() {
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.WalletSetupStarted,
       properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         account_type: MetaMetricsEventAccountType.Default,
       },
     });
@@ -166,6 +164,7 @@ export default function OnboardingWelcome() {
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.WalletImportStarted,
       properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         account_type: MetaMetricsEventAccountType.Imported,
       },
     });
@@ -225,7 +224,7 @@ export default function OnboardingWelcome() {
         name: TraceName.OnboardingSocialLoginError,
         op: TraceOperation.OnboardingError,
         tags: { provider: socialConnectionType, errorMessage },
-        parentContext: onboardingParentContext.current,
+        parentContext: onboardingParentContext?.current,
       });
       bufferedEndTrace?.({ name: TraceName.OnboardingSocialLoginError });
       bufferedEndTrace?.({
@@ -261,6 +260,7 @@ export default function OnboardingWelcome() {
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.WalletSetupStarted,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: `${MetaMetricsEventAccountType.Default}_${socialConnectionType}`,
         },
       });
@@ -273,6 +273,7 @@ export default function OnboardingWelcome() {
           category: MetaMetricsEventCategory.Onboarding,
           event: MetaMetricsEventName.SocialLoginCompleted,
           properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             account_type: `${MetaMetricsEventAccountType.Default}_${socialConnectionType}`,
           },
         });
@@ -280,7 +281,7 @@ export default function OnboardingWelcome() {
           bufferedTrace?.({
             name: TraceName.OnboardingNewSocialCreateWallet,
             op: TraceOperation.OnboardingUserJourney,
-            parentContext: onboardingParentContext.current,
+            parentContext: onboardingParentContext?.current,
           });
           navigate(ONBOARDING_CREATE_PASSWORD_ROUTE, { replace: true });
         } else {
@@ -312,6 +313,7 @@ export default function OnboardingWelcome() {
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.WalletImportStarted,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: `${MetaMetricsEventAccountType.Imported}_${socialConnectionType}`,
         },
       });
@@ -324,6 +326,7 @@ export default function OnboardingWelcome() {
           category: MetaMetricsEventCategory.Onboarding,
           event: MetaMetricsEventName.SocialLoginCompleted,
           properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             account_type: `${MetaMetricsEventAccountType.Imported}_${socialConnectionType}`,
           },
         });
@@ -334,7 +337,7 @@ export default function OnboardingWelcome() {
           bufferedTrace?.({
             name: TraceName.OnboardingExistingSocialLogin,
             op: TraceOperation.OnboardingUserJourney,
-            parentContext: onboardingParentContext.current,
+            parentContext: onboardingParentContext?.current,
           });
           navigate(ONBOARDING_UNLOCK_ROUTE);
         }
@@ -369,7 +372,7 @@ export default function OnboardingWelcome() {
         if (!isFireFox) {
           // reset the participate in meta metrics in case it was set to true from previous login attempts
           // to prevent the queued events from being sent
-          dispatch(setParticipateInMetaMetrics(null));
+          dispatch(setParticipateInMetaMetrics(false));
         }
 
         if (loginType === LOGIN_TYPE.SRP) {

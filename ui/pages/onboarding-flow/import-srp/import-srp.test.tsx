@@ -82,7 +82,7 @@ describe('Import SRP', () => {
     const srpNote = queryByTestId('srp-input-import__srp-note');
     expect(srpNote).toBeInTheDocument();
 
-    srpNote.focus();
+    srpNote?.focus();
 
     await userEvent.paste(TEST_SEED);
 
@@ -90,7 +90,7 @@ describe('Import SRP', () => {
 
     expect(confirmSrpButton).not.toBeDisabled();
 
-    fireEvent.click(confirmSrpButton);
+    fireEvent.click(confirmSrpButton as HTMLElement);
 
     expect(mockSubmitSecretRecoveryPhrase).toHaveBeenCalledWith(TEST_SEED);
     expect(mockUseNavigate).toHaveBeenCalledWith(
@@ -110,16 +110,16 @@ describe('Import SRP', () => {
     const srpNote = queryByTestId('srp-input-import__srp-note');
     expect(srpNote).toBeInTheDocument();
 
-    srpNote.focus();
+    srpNote?.focus();
 
-    await userEvent.type(srpNote, TEST_SEED);
+    await userEvent.type(srpNote as HTMLElement, TEST_SEED);
     // fireEvent.change(srpNote, { target: { value: TEST_SEED } });
 
     const confirmSrpButton = queryByTestId('import-srp-confirm');
 
     expect(confirmSrpButton).not.toBeDisabled();
 
-    fireEvent.click(confirmSrpButton);
+    fireEvent.click(confirmSrpButton as HTMLElement);
 
     expect(mockSubmitSecretRecoveryPhrase).toHaveBeenCalledWith(TEST_SEED);
     expect(mockUseNavigate).toHaveBeenCalledWith(
@@ -141,7 +141,7 @@ describe('Import SRP', () => {
     );
 
     const backBtn = queryByTestId('import-srp-back-button');
-    fireEvent.click(backBtn);
+    fireEvent.click(backBtn as HTMLElement);
 
     await waitFor(() => {
       expect(resetOnboardingSpy).toHaveBeenCalled();

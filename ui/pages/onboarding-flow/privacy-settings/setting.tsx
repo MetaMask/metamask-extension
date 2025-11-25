@@ -11,6 +11,16 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
+type SettingProps = {
+  value?: boolean;
+  setValue?: (value: boolean) => void;
+  title?: string;
+  description: string | React.ReactNode;
+  showToggle?: boolean;
+  dataTestId?: string;
+  disabled?: boolean;
+};
+
 export const Setting = ({
   value,
   setValue,
@@ -19,7 +29,7 @@ export const Setting = ({
   showToggle = true,
   dataTestId,
   disabled = false,
-}) => {
+}: SettingProps) => {
   const t = useI18nContext();
 
   return (
@@ -46,7 +56,7 @@ export const Setting = ({
         <div className="privacy-settings__setting__toggle">
           <ToggleButton
             value={value}
-            onToggle={(val) => setValue(!val)}
+            onToggle={(val) => setValue?.(!val)}
             offLabel={t('off')}
             onLabel={t('on')}
             disabled={disabled}

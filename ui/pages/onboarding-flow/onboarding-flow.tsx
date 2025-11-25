@@ -33,6 +33,7 @@ import {
   getCompletedOnboarding,
   getIsPrimarySeedPhraseBackedUp,
   getIsUnlocked,
+  getOpenedWithSidepanel,
 } from '../../ducks/metamask/metamask';
 import {
   createNewVaultAndGetSeedPhrase,
@@ -86,6 +87,8 @@ import AccountNotFound from './account-not-found/account-not-found';
 import RevealRecoveryPhrase from './recovery-phrase/reveal-recovery-phrase';
 import OnboardingDownloadApp from './download-app/download-app';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function OnboardingFlow() {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -93,9 +96,7 @@ export default function OnboardingFlow() {
   const { pathname, search } = useLocation();
   const navigate = useNavigate();
   const completedOnboarding = useSelector(getCompletedOnboarding);
-  const openedWithSidepanel = useSelector(
-    (state) => state.metamask.openedWithSidepanel,
-  );
+  const openedWithSidepanel = useSelector(getOpenedWithSidepanel);
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterUnlock);
   const isFromReminder = new URLSearchParams(search).get('isFromReminder');
   const isFromSettingsSecurity = new URLSearchParams(search).get(
@@ -169,12 +170,13 @@ export default function OnboardingFlow() {
     });
     if (onboardingParentContext) {
       onboardingParentContext.current = {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         _name: TraceName.OnboardingJourneyOverall,
       };
     }
   }, [onboardingParentContext, bufferedTrace]);
 
-  const handleCreateNewAccount = async (password) => {
+  const handleCreateNewAccount = async (password: string) => {
     try {
       setIsLoading(true);
       let newSecretRecoveryPhrase;
@@ -191,13 +193,13 @@ export default function OnboardingFlow() {
         );
       }
 
-      setSecretRecoveryPhrase(newSecretRecoveryPhrase);
+      setSecretRecoveryPhrase(newSecretRecoveryPhrase as unknown as string);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleUnlock = async (password) => {
+  const handleUnlock = async (password: string) => {
     try {
       setIsLoading(true);
       let retrievedSecretRecoveryPhrase;
@@ -215,7 +217,9 @@ export default function OnboardingFlow() {
         );
       }
 
-      setSecretRecoveryPhrase(retrievedSecretRecoveryPhrase);
+      setSecretRecoveryPhrase(
+        retrievedSecretRecoveryPhrase as unknown as string,
+      );
       if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
         await dispatch(setCompletedOnboarding());
       }
@@ -225,7 +229,10 @@ export default function OnboardingFlow() {
     }
   };
 
-  const handleImportWithRecoveryPhrase = async (password, srp) => {
+  const handleImportWithRecoveryPhrase = async (
+    password: string,
+    srp: string,
+  ) => {
     return await dispatch(createNewVaultAndRestore(password, srp));
   };
 
@@ -320,7 +327,13 @@ export default function OnboardingFlow() {
           />
           <Route
             path={ONBOARDING_UNLOCK_ROUTE}
-            element={<Unlock onSubmit={handleUnlock} />}
+            element={
+              <Unlock
+                onSubmit={handleUnlock}
+                navigate={navigate}
+                location={location}
+              />
+            }
           />
           <Route
             path={ONBOARDING_PRIVACY_SETTINGS_ROUTE}

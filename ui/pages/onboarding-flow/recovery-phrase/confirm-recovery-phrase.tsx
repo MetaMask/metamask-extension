@@ -51,7 +51,9 @@ import RecoveryPhraseChips from './recovery-phrase-chips';
 
 const QUIZ_WORDS_COUNT = 3;
 
-const generateQuizWords = (secretRecoveryPhrase) => {
+const generateQuizWords = (
+  secretRecoveryPhrase: string[],
+): { index: number; word: string }[] => {
   const randomIndices = new Set();
   const srpLength = secretRecoveryPhrase.length;
 
@@ -66,14 +68,16 @@ const generateQuizWords = (secretRecoveryPhrase) => {
 
   const quizWords = Array.from(randomIndices).map((index) => {
     return {
-      index,
-      word: secretRecoveryPhrase[index],
+      index: index as number,
+      word: secretRecoveryPhrase[index as number],
     };
   });
 
   return quizWords;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
   const dispatch = useDispatch();
 
@@ -126,12 +130,14 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
 
   const handleQuizInput = useCallback(
     (inputValue) => {
-      const isNotAnswered = inputValue.some((answer) => !answer.word);
+      const isNotAnswered = inputValue.some(
+        (answer: { word: string }) => !answer.word,
+      );
       if (isNotAnswered) {
         setAnswerSrp('');
       } else {
         const copySplitSrp = [...splitSecretRecoveryPhrase];
-        inputValue.forEach((answer) => {
+        inputValue.forEach((answer: { index: number; word: string }) => {
           copySplitSrp[answer.index] = answer.word;
         });
         setAnswerSrp(copySplitSrp.join(' '));
@@ -152,6 +158,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.OnboardingWalletSecurityPhraseConfirmed,
       properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         hd_entropy_index: hdEntropyIndex,
       },
     });

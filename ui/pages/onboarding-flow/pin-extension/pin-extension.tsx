@@ -18,8 +18,8 @@ import {
   BlockSize,
   FlexDirection,
   BorderRadius,
-  IconColor,
   AlignItems,
+  BorderColor,
 } from '../../../helpers/constants/design-system';
 import { ONBOARDING_WELCOME_ROUTE } from '../../../helpers/constants/routes';
 import {
@@ -46,6 +46,8 @@ import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function OnboardingPinExtension() {
   const t = useI18nContext();
   const navigate = useNavigate();
@@ -69,8 +71,10 @@ export default function OnboardingPinExtension() {
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.ExtensionPinned,
       properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         wallet_setup_type:
           firstTimeFlowType === FirstTimeFlowType.import ? 'import' : 'new',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         new_wallet: firstTimeFlowType === FirstTimeFlowType.create,
       },
     });
@@ -78,13 +82,20 @@ export default function OnboardingPinExtension() {
     // Side Panel - only if feature flag is enabled and not in test mode
     if (isSidePanelEnabled) {
       try {
-        if (browser?.sidePanel?.open) {
+        const browserWithSidePanel = browser as typeof browser & {
+          sidePanel?: {
+            open: (options: { windowId?: number }) => Promise<void>;
+          };
+        };
+        if (browserWithSidePanel?.sidePanel?.open) {
           const tabs = await browser.tabs.query({
             active: true,
             currentWindow: true,
           });
           if (tabs && tabs.length > 0) {
-            await browser.sidePanel.open({ windowId: tabs[0].windowId });
+            await browserWithSidePanel?.sidePanel?.open({
+              windowId: tabs[0].windowId,
+            });
             // Use the sidepanel-specific action - no navigation needed, sidepanel is already open
             await dispatch(setCompletedOnboardingWithSidepanel());
             return;
@@ -128,7 +139,7 @@ export default function OnboardingPinExtension() {
               size={ButtonIconSize.Lg}
               borderRadius={BorderRadius.full}
               borderWidth={2}
-              borderColor={IconColor.iconDefault}
+              borderColor={BorderColor.infoDefault}
               className={classnames('onboarding-pin-extension__arrow', {
                 'onboarding-pin-extension__arrow--disabled': !hasPrev,
               })}
@@ -144,7 +155,7 @@ export default function OnboardingPinExtension() {
               size={ButtonIconSize.Lg}
               borderRadius={BorderRadius.full}
               borderWidth={2}
-              borderColor={IconColor.iconDefault}
+              borderColor={BorderColor.infoDefault}
               className={classnames(
                 'onboarding-pin-extension__arrow',
                 'onboarding-pin-extension__arrow--next',

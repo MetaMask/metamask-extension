@@ -34,7 +34,7 @@ describe('Onboarding Create Password', () => {
     },
   };
 
-  const mockCreateNewAccount = jest.fn().mockResolvedValue();
+  const mockCreateNewAccount = jest.fn().mockResolvedValue('password');
 
   afterEach(() => {
     jest.clearAllMocks();
@@ -111,12 +111,12 @@ describe('Onboarding Create Password', () => {
         },
       };
 
-      fireEvent.change(createPasswordInput, event);
+      fireEvent.change(createPasswordInput as HTMLElement, event);
       expect(createPasswordInput).toHaveAttribute('type', 'password');
 
       const showPassword = queryByTestId('show-password');
 
-      fireEvent.click(showPassword);
+      fireEvent.click(showPassword as HTMLElement);
       expect(createPasswordInput).toHaveAttribute('type', 'text');
     });
 
@@ -134,7 +134,7 @@ describe('Onboarding Create Password', () => {
         },
       };
 
-      fireEvent.change(createPasswordInput, event);
+      fireEvent.change(createPasswordInput as HTMLElement, event);
 
       const shortPasswordError = queryByTestId('short-password-error');
       expect(shortPasswordError).toBeInTheDocument();
@@ -143,7 +143,7 @@ describe('Onboarding Create Password', () => {
 
       expect(createNewWalletButton).toBeDisabled();
 
-      fireEvent.click(createNewWalletButton);
+      fireEvent.click(createNewWalletButton as HTMLElement);
       expect(mockCreateNewAccount).not.toHaveBeenCalled();
     });
 
@@ -170,8 +170,11 @@ describe('Onboarding Create Password', () => {
         },
       };
 
-      fireEvent.change(createPasswordInput, createPasswordEvent);
-      fireEvent.change(confirmPasswordInput, confirmPasswordEvent);
+      fireEvent.change(createPasswordInput as HTMLElement, createPasswordEvent);
+      fireEvent.change(
+        confirmPasswordInput as HTMLElement,
+        confirmPasswordEvent,
+      );
 
       const passwordMismatchError = queryByText("Passwords don't match");
 
@@ -181,7 +184,7 @@ describe('Onboarding Create Password', () => {
 
       expect(createNewWalletButton).toBeDisabled();
 
-      fireEvent.click(createNewWalletButton);
+      fireEvent.click(createNewWalletButton as HTMLElement);
 
       expect(mockCreateNewAccount).not.toHaveBeenCalled();
     });
@@ -209,8 +212,11 @@ describe('Onboarding Create Password', () => {
         },
       };
 
-      fireEvent.change(createPasswordInput, createPasswordEvent);
-      fireEvent.change(confirmPasswordInput, confirmPasswordEvent);
+      fireEvent.change(createPasswordInput as HTMLElement, createPasswordEvent);
+      fireEvent.change(
+        confirmPasswordInput as HTMLElement,
+        confirmPasswordEvent,
+      );
 
       const terms = queryByTestId('create-password-terms');
 
@@ -220,7 +226,7 @@ describe('Onboarding Create Password', () => {
 
       expect(createNewWalletButton).toBeDisabled();
 
-      fireEvent.click(createNewWalletButton);
+      fireEvent.click(createNewWalletButton as HTMLElement);
 
       expect(mockCreateNewAccount).not.toHaveBeenCalled();
     });
@@ -254,8 +260,11 @@ describe('Onboarding Create Password', () => {
         },
       };
 
-      fireEvent.change(createPasswordInput, createPasswordEvent);
-      fireEvent.change(confirmPasswordInput, confirmPasswordEvent);
+      fireEvent.change(createPasswordInput as HTMLElement, createPasswordEvent);
+      fireEvent.change(
+        confirmPasswordInput as HTMLElement,
+        confirmPasswordEvent,
+      );
 
       const terms = queryByTestId('create-password-terms');
 
@@ -265,7 +274,7 @@ describe('Onboarding Create Password', () => {
 
       expect(createNewWalletButton).toBeEnabled();
 
-      fireEvent.click(createNewWalletButton);
+      fireEvent.click(createNewWalletButton as HTMLElement);
 
       expect(mockCreateNewAccount).toHaveBeenCalled();
     });
@@ -303,17 +312,20 @@ describe('Onboarding Create Password', () => {
         },
       };
 
-      fireEvent.change(createPasswordInput, createPasswordEvent);
-      fireEvent.change(confirmPasswordInput, confirmPasswordEvent);
+      fireEvent.change(createPasswordInput as HTMLElement, createPasswordEvent);
+      fireEvent.change(
+        confirmPasswordInput as HTMLElement,
+        confirmPasswordEvent,
+      );
 
       const terms = queryByTestId('create-password-terms');
-      fireEvent.click(terms);
+      fireEvent.click(terms as HTMLElement);
 
       const createNewWalletButton = queryByTestId('create-password-submit');
 
       expect(createNewWalletButton).not.toBeDisabled();
 
-      fireEvent.click(createNewWalletButton);
+      fireEvent.click(createNewWalletButton as HTMLElement);
 
       expect(mockCreateNewAccount).toHaveBeenCalledWith(password);
 
@@ -341,7 +353,7 @@ describe('Onboarding Create Password', () => {
       const mockStore = configureMockStore([thunk])(importMockState);
 
       const props = {
-        importWithRecoveryPhrase: jest.fn().mockResolvedValue(),
+        importWithRecoveryPhrase: jest.fn().mockResolvedValue('password'),
         secretRecoveryPhrase: 'SRP',
       };
 
@@ -368,14 +380,17 @@ describe('Onboarding Create Password', () => {
         },
       };
 
-      fireEvent.change(createPasswordInput, createPasswordEvent);
-      fireEvent.change(confirmPasswordInput, confirmPasswordEvent);
+      fireEvent.change(createPasswordInput as HTMLElement, createPasswordEvent);
+      fireEvent.change(
+        confirmPasswordInput as HTMLElement,
+        confirmPasswordEvent,
+      );
 
       const terms = queryByTestId('create-password-terms');
-      fireEvent.click(terms);
+      fireEvent.click(terms as HTMLElement);
 
       const importWalletButton = queryByTestId('create-password-submit');
-      fireEvent.click(importWalletButton);
+      fireEvent.click(importWalletButton as HTMLElement);
 
       expect(props.importWithRecoveryPhrase).toHaveBeenCalledWith(
         password,
