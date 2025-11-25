@@ -30,7 +30,7 @@ export function submitRequestToBackground<R>(
     // tests don't always set the `background` property for convenience, as
     // the return values for various RPC calls aren't always used. In production
     // builds, this will not happen, and even if it did MM wouldn't work.
-    if (typeof background?.[method] !== 'function') {
+    if (!background) {
       console.warn(NO_BACKGROUND_CONNECTION_MESSAGE);
       return Promise.resolve() as Promise<R>;
     }
