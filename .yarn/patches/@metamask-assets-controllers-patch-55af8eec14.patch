@@ -1,0 +1,13 @@
+diff --git a/dist/token-prices-service/codefi-v2.cjs b/dist/token-prices-service/codefi-v2.cjs
+index f3c24e32ab755ae5c00e7d439600c4bab1587c71..df2932739853ab963f41a1d1270b1a6769c0ce88 100644
+--- a/dist/token-prices-service/codefi-v2.cjs
++++ b/dist/token-prices-service/codefi-v2.cjs
+@@ -98,6 +98,8 @@ exports.SUPPORTED_CURRENCIES = [
+     'mxn',
+     // Malaysian Ringgit
+     'myr',
++    // Monad
++    'mon',
+     // Nigerian Naira
+     'ngn',
+     // Norwegian Krone
