@@ -31381,7 +31381,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat@npm:^10.0.0":
+"lavamoat@npm:10.0.0":
   version: 10.0.0
   resolution: "lavamoat@npm:10.0.0"
   dependencies:
@@ -31400,6 +31400,28 @@ __metadata:
     lavamoat: src/cli.js
     lavamoat-run-command: src/run-command.js
   checksum: 10/3a6e995289a6fe5007f020b7288d22ea98c0eaee8d609cfc172c9a81ab7db1cec7fd7dffb84eb58ddbcefd73195e84a103df27ea76539eded5d77c4356454c5f
+  languageName: node
+  linkType: hard
+
+"lavamoat@patch:lavamoat@npm%3A10.0.0#~/.yarn/patches/lavamoat-npm-10.0.0-9a132772a6.patch":
+  version: 10.0.0
+  resolution: "lavamoat@patch:lavamoat@npm%3A10.0.0#~/.yarn/patches/lavamoat-npm-10.0.0-9a132772a6.patch::version=10.0.0&hash=cba933"
+  dependencies:
+    "@babel/code-frame": "npm:7.27.1"
+    "@babel/highlight": "npm:7.25.9"
+    "@lavamoat/aa": "npm:^4.3.4"
+    bindings: "npm:1.5.0"
+    corepack: "npm:0.33.0"
+    htmlescape: "npm:1.1.1"
+    lavamoat-core: "npm:^17.0.0"
+    lavamoat-tofu: "npm:^8.0.11"
+    node-gyp-build: "npm:4.8.4"
+    resolve: "npm:1.22.10"
+    yargs: "npm:17.7.2"
+  bin:
+    lavamoat: src/cli.js
+    lavamoat-run-command: src/run-command.js
+  checksum: 10/db6e19bf6ab8fdd6f1d4948d9ff7938ce1b77edacd537d0526f828eb8602670c5c40edbd230f5b237515a048b40289d71359c2b82127a3bb81227a937c3fbca3
   languageName: node
   linkType: hard
 
@@ -32880,7 +32902,7 @@ __metadata:
     jsonwebtoken: "npm:^9.0.2"
     koa: "npm:^2.7.0"
     labeled-stream-splicer: "npm:^2.0.2"
-    lavamoat: "npm:^10.0.0"
+    lavamoat: "patch:lavamoat@npm%3A10.0.0#~/.yarn/patches/lavamoat-npm-10.0.0-9a132772a6.patch"
     lavamoat-browserify: "npm:^19.0.2"
     lavamoat-viz: "npm:^7.0.5"
     level: "npm:^8.0.1"
