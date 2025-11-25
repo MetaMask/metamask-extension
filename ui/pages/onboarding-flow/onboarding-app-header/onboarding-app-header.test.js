@@ -16,17 +16,12 @@ jest.mock('../../../store/actions.ts', () => ({
   updateCurrentLocale: () => mockUpdateCurrentLocale,
 }));
 
-const mockUseLocation = {
+const mockLocation = {
   pathname: '/test',
   search: '',
   hash: '',
   state: null,
 };
-
-jest.mock('react-router-dom-v5-compat', () => ({
-  ...jest.requireActual('react-router-dom-v5-compat'),
-  useLocation: () => mockUseLocation,
-}));
 
 describe('OnboardingAppHeader', () => {
   const mockState = {
@@ -38,13 +33,19 @@ describe('OnboardingAppHeader', () => {
   const store = configureMockStore([thunk])(mockState);
 
   it('should match snapshot', () => {
-    const { container } = renderWithProvider(<OnboardingAppHeader />, store);
+    const { container } = renderWithProvider(
+      <OnboardingAppHeader location={mockLocation} />,
+      store,
+    );
 
     expect(container).toMatchSnapshot();
   });
 
   it('should call updateCurrentLocale action', () => {
-    const { getByRole } = renderWithProvider(<OnboardingAppHeader />, store);
+    const { getByRole } = renderWithProvider(
+      <OnboardingAppHeader location={mockLocation} />,
+      store,
+    );
 
     const selectCombobox = getByRole('combobox');
     fireEvent.change(selectCombobox);
@@ -53,14 +54,26 @@ describe('OnboardingAppHeader', () => {
   });
 
   it('shoul match snapshot on onboarding completion page', () => {
-    mockUseLocation.pathname = ONBOARDING_COMPLETION_ROUTE;
-    const { container } = renderWithProvider(<OnboardingAppHeader />, store);
+    const completionLocation = {
+      ...mockLocation,
+      pathname: ONBOARDING_COMPLETION_ROUTE,
+    };
+    const { container } = renderWithProvider(
+      <OnboardingAppHeader location={completionLocation} />,
+      store,
+    );
     expect(container).toMatchSnapshot();
   });
 
   it('should render the pin extension banner tip on onboarding completion page', () => {
-    mockUseLocation.pathname = ONBOARDING_COMPLETION_ROUTE;
-    const { getByText } = renderWithProvider(<OnboardingAppHeader />, store);
+    const completionLocation = {
+      ...mockLocation,
+      pathname: ONBOARDING_COMPLETION_ROUTE,
+    };
+    const { getByText } = renderWithProvider(
+      <OnboardingAppHeader location={completionLocation} />,
+      store,
+    );
     expect(getByText('Pin the MetaMask extension')).toBeInTheDocument();
   });
 });

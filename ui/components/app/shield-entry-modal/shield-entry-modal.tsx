@@ -179,7 +179,7 @@ const ShieldEntryModal = ({
       autoFocus={false}
       isClosedOnOutsideClick={false}
       isClosedOnEscapeKey={false}
-      onClose={handleOnClose}
+      onClose={() => handleOnClose()}
       className="shield-entry-modal"
       data-theme={ThemeType.dark}
     >
@@ -191,7 +191,7 @@ const ShieldEntryModal = ({
         className="shield-entry-modal__content"
       >
         <ModalHeader
-          onClose={handleOnClose}
+          onClose={() => handleOnClose()}
           closeButtonProps={{
             'data-testid': 'shield-entry-modal-close-button',
             className: 'absolute top-2 right-2',
