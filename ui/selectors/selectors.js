@@ -454,55 +454,42 @@ export const getMetaMaskAccounts = createDeepEqualSelector(
   getMetaMaskCachedBalances,
   getMultichainBalances,
   getMultichainNetworkProviders,
-  getCurrentChainId,
-  (_, chainId) => chainId,
   (
     internalAccounts,
     balances,
     cachedBalances,
     multichainBalances,
     multichainNetworkProviders,
-    currentChainId,
-    chainId,
   ) =>
     Object.values(internalAccounts).reduce((accounts, internalAccount) => {
       // TODO: mix in the identity state here as well, consolidating this
       // selector with `accountsWithSendEtherInfoSelector`
       let account = internalAccount;
 
-      if (chainId === undefined || currentChainId === chainId) {
-        // TODO: `AccountTracker` balances are in hex and `MultichainBalance` are in number.
-        // We should consolidate the format to either hex or number
-        if (isEvmAccountType(internalAccount.type)) {
-          if (balances?.[internalAccount.address]) {
-            account = {
-              ...account,
-              ...balances[internalAccount.address],
-            };
-          }
-        } else {
-          const internalAccountTypeCaip = internalAccount.type.split(':')[0];
-          const multichainNetwork = multichainNetworkProviders.find((network) =>
-            network.chainId.startsWith(internalAccountTypeCaip),
-          );
+      // TODO: `AccountTracker` balances are in hex and `MultichainBalance` are in number.
+      // We should consolidate the format to either hex or number
+      if (isEvmAccountType(internalAccount.type)) {
+        if (balances?.[internalAccount.address]) {
           account = {
             ...account,
-            balance:
-              multichainBalances?.[internalAccount.id]?.[
-                MULTICHAIN_NETWORK_TO_ASSET_TYPES[multichainNetwork?.chainId]
-              ]?.amount ?? '0',
-          };
-        }
-
-        if (account.balance === null || account.balance === undefined) {
-          account = {
-            ...account,
-            balance:
-              (cachedBalances && cachedBalances[internalAccount.address]) ??
-              '0x0',
+            ...balances[internalAccount.address],
           };
         }
       } else {
+        const internalAccountTypeCaip = internalAccount.type.split(':')[0];
+        const multichainNetwork = multichainNetworkProviders.find((network) =>
+          network.chainId.startsWith(internalAccountTypeCaip),
+        );
+        account = {
+          ...account,
+          balance:
+            multichainBalances?.[internalAccount.id]?.[
+              MULTICHAIN_NETWORK_TO_ASSET_TYPES[multichainNetwork?.chainId]
+            ]?.amount ?? '0',
+        };
+      }
+
+      if (account.balance === null || account.balance === undefined) {
         account = {
           ...account,
           balance:
