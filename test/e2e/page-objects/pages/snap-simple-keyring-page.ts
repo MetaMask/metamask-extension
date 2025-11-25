@@ -246,6 +246,7 @@ class SnapSimpleKeyringPage {
     await this.driver.waitForSelector(this.createSnapAccountName);
     await this.driver.fill(this.createSnapAccountName, accountName);
     await this.driver.clickElement(this.submitAddAccountWithNameButton);
+    await this.driver.delay(2000);
 
     await this.driver.waitForSelector(this.accountCreatedMessage);
     await this.driver.clickElementAndWaitForWindowToClose(
