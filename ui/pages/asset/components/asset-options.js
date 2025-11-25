@@ -1,7 +1,7 @@
 import React, { useContext, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 import { I18nContext } from '../../../contexts/i18n';
 import { Menu, MenuItem } from '../../../components/ui/menu';
@@ -23,12 +23,12 @@ const AssetOptions = ({
 }) => {
   const t = useContext(I18nContext);
   const [assetOptionsOpen, setAssetOptionsOpen] = useState(false);
-  const history = useHistory();
+  const navigate = useNavigate();
   const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);
   const ref = useRef(false);
 
   const routeToAddBlockExplorerUrl = () => {
-    history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
+    navigate(`${NETWORKS_ROUTE}#blockExplorerUrl`);
   };
 
   const openBlockExplorer = () => {
