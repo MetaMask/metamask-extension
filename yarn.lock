@@ -5645,7 +5645,7 @@ __metadata:
 
 "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A88.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-88.0.0-3dfc0ab8f1.patch":
   version: 88.0.0
-  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A88.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-88.0.0-3dfc0ab8f1.patch::version=88.0.0&hash=ab5ccb"
+  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A88.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-88.0.0-3dfc0ab8f1.patch::version=88.0.0&hash=323fbe"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5691,7 +5691,7 @@ __metadata:
     "@metamask/snaps-controllers": ^14.0.0
     "@metamask/transaction-controller": ^61.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/17587884760c7856d4459c2f60a1acff0d2430b4ae0f9710bff15076e7d21f726d2a1380781d427d32859f1e6e7568eda48e277093d3b85aaffab82021a14c0c
+  checksum: 10/d3e7c1d52fef37270c4060a0811cccb905a690cef1546c4713ede6d7a1e75c810c5efb71225092cfd8a3975676f2141a81b59456a6f2f41a160598565d36dfd8
   languageName: node
   linkType: hard
 
