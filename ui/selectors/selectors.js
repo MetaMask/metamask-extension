@@ -1986,10 +1986,6 @@ export function getIsSwapsChain(state, overrideChainId) {
     : ALLOWED_PROD_SWAPS_CHAIN_IDS.includes(chainId);
 }
 
-export function getHasBridgeQuotes(state) {
-  return Boolean(Object.values(state.metamask.quotes || {}).length);
-}
-
 /**
  * @deprecated Check if chainId is in ALLOWED_BRIDGE_CHAIN_IDS constant instead
  * @param state - The Redux state
