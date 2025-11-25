@@ -181,6 +181,7 @@ const ONE_SECOND_IN_MILLISECONDS = 1_000;
 const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
 lazyListener.once('runtime', 'onInstalled').then(handleOnInstalled);
+lazyListener.once('runtime', 'onInstalled').then(handleSidePanelContextMenu);
 
 /**
  * This deferred Promise is used to track whether initialization has finished.
@@ -1658,7 +1659,11 @@ function onInstall() {
   }
 }
 
-const initSidePanelContextMenu = async () => {
+/**
+ * Handles the onInstalled event for sidepanel context menu creation.
+ * This is registered via lazyListener to catch the event at module load time.
+ */
+async function handleSidePanelContextMenu() {
   // Only register sidepanel context menu for browsers that support it (Chrome/Edge/Brave)
   // and when the build-time feature flag is enabled
   if (
@@ -1684,12 +1689,10 @@ const initSidePanelContextMenu = async () => {
       return;
     }
 
-    browser.runtime.onInstalled.addListener(() => {
-      browser.contextMenus.create({
-        id: menuItemId,
-        title: 'MetaMask Sidepanel',
-        contexts: ['all'],
-      });
+    browser.contextMenus.create({
+      id: menuItemId,
+      title: 'MetaMask Sidepanel',
+      contexts: ['all'],
     });
 
     browser.contextMenus.onClicked.addListener((info, tab) => {
@@ -1715,9 +1718,7 @@ const initSidePanelContextMenu = async () => {
   } catch (error) {
     console.error('Error initializing sidepanel context menu:', error);
   }
-};
-
-initSidePanelContextMenu();
+}
 
 /**
  * Trigger actions that should happen only when an update is available
