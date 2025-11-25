@@ -104,7 +104,11 @@ export function useAsyncCallback<T>(
     if (!isMounted.current) {
       return;
     }
-    setResult(RESULT_PENDING);
+
+    if (result.status !== 'pending') {
+      setResult(RESULT_PENDING);
+    }
+
     try {
       const value = await asyncFn();
       if (isMounted.current) {
