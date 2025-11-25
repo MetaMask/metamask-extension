@@ -1,0 +1,14 @@
+diff --git a/src/parseForPolicy.js b/src/parseForPolicy.js
+index 7323cfedd5876fef5428c50313880e0cc68ef31b..7d5007c9b07eb3cdae047d008eab22f0f7025cfe 100644
+--- a/src/parseForPolicy.js
++++ b/src/parseForPolicy.js
+@@ -21,7 +21,8 @@ const { checkForResolutionOverride } = require('./resolutions')
+ 
+ // file extension omitted can be omitted, eg https://npmfs.com/package/yargs/17.0.1/yargs
+ const commonjsExtensions = ['', '.js', '.cjs']
+-const resolutionOmittedExtensions = ['.js', '.json']
++// extensions we want to give to the resolver that it omits by default. .js is here duplicated for our own sanity mostly.
++const resolutionOmittedExtensions = ['.js', '.cjs', '.json']
+ 
+ /**
+  * Allow use of `node:` prefixed builtins.
