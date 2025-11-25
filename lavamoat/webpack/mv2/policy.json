@@ -1765,7 +1765,7 @@
         "uuid": true
       }
     },
-    "@metamask/user-profile-controller>@metamask/polling-controller": {
+    "@metamask/profile-metrics-controller>@metamask/polling-controller": {
       "globals": {
         "clearTimeout": true,
         "console.error": true,
@@ -1808,6 +1808,17 @@
         "@metamask/ppom-validator>crypto-js": true,
         "@toruslabs/eccrypto>elliptic": true,
         "@metamask/ppom-validator>json-rpc-random-id": true
+      }
+    },
+    "@metamask/profile-metrics-controller": {
+      "globals": {
+        "URL": true,
+        "console.error": true
+      },
+      "packages": {
+        "@metamask/controller-utils": true,
+        "@metamask/profile-metrics-controller>@metamask/polling-controller": true,
+        "@metamask/eth-qr-keyring>async-mutex": true
       }
     },
     "@metamask/profile-sync-controller": {
@@ -2165,17 +2176,6 @@
         "webpack>events": true,
         "lodash": true,
         "uuid": true
-      }
-    },
-    "@metamask/user-profile-controller": {
-      "globals": {
-        "URL": true,
-        "console.error": true
-      },
-      "packages": {
-        "@metamask/controller-utils": true,
-        "@metamask/user-profile-controller>@metamask/polling-controller": true,
-        "@metamask/eth-qr-keyring>async-mutex": true
       }
     },
     "@metamask/utils": {
