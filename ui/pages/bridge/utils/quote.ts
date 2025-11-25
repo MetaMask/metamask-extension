@@ -2,6 +2,7 @@ import { BigNumber } from 'bignumber.js';
 import {
   type QuoteResponse,
   formatChainIdToCaip,
+  formatAddressToCaipReference,
   isNativeAddress,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
@@ -9,31 +10,10 @@ import type {
   NetworkConfiguration,
   AddNetworkFields,
 } from '@metamask/network-controller';
-import { isCaipAssetType, parseCaipAssetType } from '@metamask/utils';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
 import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
 import type { BridgeToken } from '../../../ducks/bridge/types';
-
-/**
- * Extracts the raw address from an address string that may be in CAIP-19 format.
- * CAIP-19 format: `{chainId}/{assetNamespace}:{assetReference}`
- * e.g., `tron:728126428/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t`
- *
- * @param addressOrAssetId - The address string (plain or CAIP-19 format)
- * @returns The raw address (assetReference if CAIP-19, otherwise the original string)
- */
-export const getAddressFromAssetIdOrAddress = (
-  addressOrAssetId: string | undefined,
-): string => {
-  if (!addressOrAssetId) {
-    return '';
-  }
-  if (isCaipAssetType(addressOrAssetId)) {
-    return parseCaipAssetType(addressOrAssetId).assetReference;
-  }
-  return addressOrAssetId;
-};
 
 export const formatTokenAmount = (
   locale: string,
@@ -196,12 +176,12 @@ export const isQuoteExpiredOrInvalid = ({
 
     // Extract raw addresses from CAIP-19 format if present
     // The bridge API returns plain addresses, but UI may store CAIP-19 asset IDs
-    const quoteDestAddressRaw = getAddressFromAssetIdOrAddress(
-      activeQuote.quote?.destAsset?.address,
-    );
-    const selectedDestAddressRaw = getAddressFromAssetIdOrAddress(
-      toToken.address,
-    );
+    const quoteDestAddressRaw = activeQuote.quote?.destAsset?.address
+      ? formatAddressToCaipReference(activeQuote.quote.destAsset.address)
+      : '';
+    const selectedDestAddressRaw = toToken.address
+      ? formatAddressToCaipReference(toToken.address)
+      : '';
 
     // For EVM chains, normalize to lowercase for comparison (addresses are case-insensitive)
     // For non-EVM chains, preserve case (base58 addresses are case-sensitive)
