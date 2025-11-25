@@ -59,7 +59,7 @@ export function parseTransactionData(data?: string) {
       data: data as Hex,
     });
   } catch (error) {
-    return { inputs: [], commandBytes: [] };
+    return { inputs: [], commandBytes: [], commands: '' };
   }
 
   const { commands, inputs } = parsedTransactionData.args;
