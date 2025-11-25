@@ -1672,6 +1672,8 @@ const initSidePanelContextMenu = async () => {
   try {
     await isInitialized;
 
+    const menuItemId = 'openSidePanel';
+
     const sidepanelEnabled =
       controller?.remoteFeatureFlagController?.state?.remoteFeatureFlags
         ?.extensionUxSidepanel;
@@ -1684,14 +1686,14 @@ const initSidePanelContextMenu = async () => {
 
     browser.runtime.onInstalled.addListener(() => {
       browser.contextMenus.create({
-        id: 'openSidePanel',
+        id: menuItemId,
         title: 'MetaMask Sidepanel',
         contexts: ['all'],
       });
     });
 
     browser.contextMenus.onClicked.addListener((info, tab) => {
-      if (info.menuItemId === 'openSidePanel') {
+      if (info.menuItemId === menuItemId) {
         // This will open the panel in all the pages on the current window.
         browser.sidePanel.open({ windowId: tab.windowId });
       }
@@ -1704,7 +1706,7 @@ const initSidePanelContextMenu = async () => {
         const updatedSidepanelFlag =
           state?.remoteFeatureFlags?.extensionUxSidepanel;
         if (updatedSidepanelFlag === false) {
-          browser.contextMenus?.remove('openSidePanel').catch(() => {
+          browser.contextMenus?.remove(menuItemId).catch(() => {
             // Ignore errors if context menu doesn't exist
           });
         }
