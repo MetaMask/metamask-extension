@@ -47,17 +47,50 @@ async function copyDirectoryToTmp(srcDir: string): Promise<string> {
  * @returns The extension storage path.
  */
 async function getExtensionStorageFilePath(driver: Driver): Promise<string> {
-  const { userDataDir } = (await driver.driver.getCapabilities()).get('chrome');
+  console.log('[getExtensionStorageFilePath] Getting Chrome capabilities...');
+  const capabilities = await driver.driver.getCapabilities();
+  const chromeOptions = capabilities.get('chrome');
+  console.log(
+    '[getExtensionStorageFilePath] Chrome options:',
+    JSON.stringify(chromeOptions),
+  );
+
+  const { userDataDir } = chromeOptions;
+  console.log('[getExtensionStorageFilePath] userDataDir:', userDataDir);
+
   const extensionsStoragePath = path.resolve(
     userDataDir,
     'Default',
     'Local Extension Settings',
   );
+  console.log(
+    '[getExtensionStorageFilePath] extensionsStoragePath:',
+    extensionsStoragePath,
+  );
+
+  // Check if the directory exists
+  const dirExists = fs.existsSync(extensionsStoragePath);
+  console.log('[getExtensionStorageFilePath] Directory exists:', dirExists);
+
+  if (dirExists) {
+    const dirContents = fs.readdirSync(extensionsStoragePath);
+    console.log(
+      '[getExtensionStorageFilePath] Directory contents:',
+      dirContents,
+    );
+  }
+
   // we expect the extension to have been installed only once
   const extensionName = fs.readdirSync(extensionsStoragePath)[0];
+  console.log('[getExtensionStorageFilePath] extensionName:', extensionName);
+
   const extensionStoragePath = path.resolve(
     extensionsStoragePath,
     extensionName,
+  );
+  console.log(
+    '[getExtensionStorageFilePath] extensionStoragePath:',
+    extensionStoragePath,
   );
 
   return extensionStoragePath;
@@ -111,7 +144,25 @@ async function waitUntilFileIsWritten({
   minFileSize?: number;
 }): Promise<void> {
   for (let attempt = 0; attempt < maxRetries; attempt++) {
-    const extensionPath = await getExtensionStorageFilePath(driver);
+    console.log(
+      `[waitUntilFileIsWritten] Attempt ${attempt + 1} of ${maxRetries}`,
+    );
+    let extensionPath: string;
+    try {
+      extensionPath = await getExtensionStorageFilePath(driver);
+    } catch (error) {
+      console.error(
+        '[waitUntilFileIsWritten] Error getting extension storage file path:',
+        error,
+      );
+      if (attempt < maxRetries - 1) {
+        console.log(`Waiting for 8 seconds before retrying...`);
+        await driver.delay(8000);
+        continue;
+      }
+      throw error;
+    }
+
     const extensionLogFile = getExtensionLogFile(extensionPath);
     const fileSize = await getFileSize(extensionLogFile);
     if (fileSize > minFileSize) {
