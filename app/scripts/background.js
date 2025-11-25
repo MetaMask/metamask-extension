@@ -55,6 +55,7 @@ import {
   CorruptionHandler,
   hasVault,
 } from './lib/state-corruption/state-corruption-recovery';
+import { initSidePanelContextMenu } from './lib/sidepanel-context-menu';
 import {
   backedUpStateKeys,
   PersistenceManager,
@@ -1666,60 +1667,8 @@ function onInstall() {
  * This is registered via lazyListener to catch the event at module load time.
  */
 async function handleSidePanelContextMenu() {
-  // Only register sidepanel context menu for browsers that support it (Chrome/Edge/Brave)
-  // and when the build-time feature flag is enabled
-  if (
-    !browser.contextMenus ||
-    !browser.sidePanel ||
-    process.env.IS_SIDEPANEL?.toString() !== 'true'
-  ) {
-    return;
-  }
-
-  try {
-    await isInitialized;
-
-    const menuItemId = 'openSidePanel';
-
-    const sidepanelEnabled =
-      controller?.remoteFeatureFlagController?.state?.remoteFeatureFlags
-        ?.extensionUxSidepanel;
-
-    // Only register context menu if remote feature flag is not explicitly disabled
-    // (undefined or true means enabled, false means disabled)
-    if (sidepanelEnabled === false) {
-      return;
-    }
-
-    browser.contextMenus.create({
-      id: menuItemId,
-      title: 'MetaMask Sidepanel',
-      contexts: ['all'],
-    });
-
-    browser.contextMenus.onClicked.addListener((info, tab) => {
-      if (info.menuItemId === menuItemId) {
-        // This will open the panel in all the pages on the current window.
-        browser.sidePanel.open({ windowId: tab.windowId });
-      }
-    });
-
-    // Listen for remote feature flag changes
-    controller?.controllerMessenger?.subscribe(
-      'RemoteFeatureFlagController:stateChange',
-      (state) => {
-        const updatedSidepanelFlag =
-          state?.remoteFeatureFlags?.extensionUxSidepanel;
-        if (updatedSidepanelFlag === false) {
-          browser.contextMenus?.remove(menuItemId).catch(() => {
-            // Ignore errors if context menu doesn't exist
-          });
-        }
-      },
-    );
-  } catch (error) {
-    console.error('Error initializing sidepanel context menu:', error);
-  }
+  await isInitialized;
+  await initSidePanelContextMenu(controller);
 }
 
 /**
