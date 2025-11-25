@@ -989,25 +989,6 @@
         "lodash": true
       }
     },
-    "@metamask/user-profile-controller>@metamask/controller-utils": {
-      "globals": {
-        "URL": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@metamask/ethjs-unit": true,
-        "@metamask/utils": true,
-        "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "bn.js": true,
-        "browserify>buffer": true,
-        "cockatiel": true,
-        "eth-ens-namehash": true,
-        "eslint>fast-deep-equal": true,
-        "lodash": true
-      }
-    },
     "@metamask/core-backend": {
       "globals": {
         "URL": true,
@@ -2128,9 +2109,8 @@
         "console.error": true
       },
       "packages": {
-        "@metamask/user-profile-controller>@metamask/controller-utils": true,
+        "@metamask/controller-utils": true,
         "@metamask/user-profile-controller>@metamask/polling-controller": true,
-        "@metamask/utils": true,
         "@metamask/eth-qr-keyring>async-mutex": true
       }
     },
