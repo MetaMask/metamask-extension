@@ -98,7 +98,7 @@ describe('Test Snap bip-32', function () {
         // Select entropy source SRP 1, enter a message, sign, approve and validate the result
         await testSnaps.selectEntropySource(
           'bip32EntropyDropDown',
-          '01K90ME89C8EQZA7FT81TB4153 (primary)',
+          'SRP 1 (primary)',
         );
 
         await testSnaps.fillMessage('messageSecp256k1Input', 'bar baz');
@@ -110,10 +110,7 @@ describe('Test Snap bip-32', function () {
         );
 
         // Select entropy source SRP 2, enter a message, sign, approve and validate the result
-        await testSnaps.selectEntropySource(
-          'bip32EntropyDropDown',
-          '01K90MKV5XAH4Q3F75MFHKBX75',
-        );
+        await testSnaps.selectEntropySource('bip32EntropyDropDown', 'SRP 2');
 
         await testSnaps.fillMessage('messageSecp256k1Input', 'bar baz');
         await testSnaps.clickButton('signBip32messageSecp256k1Button');

@@ -168,7 +168,9 @@
         }
       }
     },
-    "accountsAssets": {},
+    "accountsAssets": {
+      "3c62fe60-6f00-4227-86f4-33d0b1f4c39e": ["string"]
+    },
     "accountsByChainId": {
       "0x1": {
         "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
@@ -307,8 +309,29 @@
     },
     "approvalFlows": [],
     "assetExchangeRates": {},
-    "assetsMetadata": {},
-    "balances": {},
+    "assetsMetadata": {
+      "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501": {
+        "name": "string",
+        "symbol": "string",
+        "fungible": "boolean",
+        "iconUrl": "string",
+        "units": [
+          {
+            "name": "string",
+            "symbol": "string",
+            "decimals": "number"
+          }
+        ]
+      }
+    },
+    "balances": {
+      "3c62fe60-6f00-4227-86f4-33d0b1f4c39e": {
+        "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501": {
+          "unit": "string",
+          "amount": "string"
+        }
+      }
+    },
     "browserEnvironment": {
       "browser": "string",
       "os": "string"
@@ -493,11 +516,6 @@
         "name": "string",
         "lastSelected": "number"
       },
-      "bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252": {
-        "address": "string",
-        "name": "string",
-        "lastSelected": "number"
-      },
       "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer": {
         "address": "string",
         "name": "string",
@@ -542,7 +560,8 @@
           "address": "string",
           "options": {
             "entropySource": "string",
-            "exportable": "boolean",
+            "derivationPath": "string",
+            "index": "number",
             "entropy": {
               "type": "string",
               "id": "string",
@@ -551,37 +570,6 @@
             }
           },
           "methods": ["string"],
-          "metadata": {
-            "name": "string",
-            "importTime": "number",
-            "keyring": {
-              "type": "string"
-            },
-            "snap": {
-              "id": "string",
-              "name": "string",
-              "enabled": "boolean"
-            },
-            "lastSelected": "number"
-          }
-        },
-        "dcf615fa-115e-4b45-af18-2df686fffde2": {
-          "type": "string",
-          "id": "string",
-          "address": "string",
-          "options": {
-            "entropySource": "string",
-            "derivationPath": "string",
-            "index": "number",
-            "entropy": {
-              "type": "string",
-              "id": "string",
-              "groupIndex": "number",
-              "derivationPath": "string"
-            }
-          },
-          "methods": ["string"],
-          "scopes": ["string"],
           "metadata": {
             "name": "string",
             "importTime": "number",
@@ -648,11 +636,6 @@
     "logs": {},
     "lostIdentities": {
       "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
-        "address": "string",
-        "name": "string",
-        "lastSelected": "number"
-      },
-      "bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252": {
         "address": "string",
         "name": "string",
         "lastSelected": "number"
@@ -774,7 +757,9 @@
     "newPrivacyPolicyToastShownDate": "number",
     "nftsDetectionNoticeDismissed": "boolean",
     "nftsDropdownState": {},
-    "nonEvmTransactions": {},
+    "nonEvmTransactions": {
+      "3c62fe60-6f00-4227-86f4-33d0b1f4c39e": {}
+    },
     "nonRPCGasFeeApisDisabled": "boolean",
     "notificationGasPollTokens": [],
     "onboardingDate": "null",
