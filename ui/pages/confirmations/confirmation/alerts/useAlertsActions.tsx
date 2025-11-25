@@ -1,3 +1,5 @@
+'use no memo';
+
 import { ApprovalRequest } from '@metamask/approval-controller';
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
@@ -11,17 +13,19 @@ import {
 
 export const useAlertsActions = (
   hideAlertModal: () => void,
-  pendingConfirmation: ApprovalRequest<{ id: string }> | undefined,
+  pendingConfirmation: ApprovalRequest<{ id: string }>,
 ) => {
-  const { origin } = pendingConfirmation ?? {};
   const pendingConfirmationsFromOrigin = useSelector((state) =>
-    getApprovalsByOrigin(state as ApprovalsMetaMaskState, origin as string),
+    getApprovalsByOrigin(
+      state as ApprovalsMetaMaskState,
+      pendingConfirmation?.origin,
+    ),
   );
 
   const { getIndex, navigateToIndex } = useConfirmationNavigation();
 
   const navigateToPendingConfirmation = useCallback(() => {
-    const { id } = pendingConfirmation ?? {};
+    const { id } = pendingConfirmation;
     const pendingConfirmations = pendingConfirmationsFromOrigin?.filter(
       (confirmation) => confirmation.id !== id,
     );
