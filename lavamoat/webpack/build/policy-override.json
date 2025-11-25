@@ -1,0 +1,12 @@
+{
+  "resources": {
+    "@lydell/node-pty": {
+      "packages": {
+        "@lydell/node-pty>@lydell/node-pty-darwin-arm64": true
+      }
+    },
+    "@lydell/node-pty>@lydell/node-pty-darwin-arm64": {
+      "native": true
+    }
+  }
+}
