@@ -3,9 +3,17 @@ import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 
 import {
+  ACCOUNT_LIST_PAGE_ROUTE,
   AWAITING_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
+  SNAPS_ROUTE,
+  CONFIRMATION_V_NEXT_ROUTE,
+  UNLOCK_ROUTE,
+  CONNECT_ROUTE,
+  CONFIRM_TRANSACTION_ROUTE,
+  CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
+  CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
 } from '../../helpers/constants/routes';
 import { getConfirmationRoute } from '../confirmations/hooks/useConfirmationNavigation';
 // eslint-disable-next-line import/no-restricted-paths
@@ -29,15 +37,14 @@ import {
 import { useNavState } from '../../contexts/navigation-state';
 
 const EXEMPTED_ROUTES = [
-  '/account-list',
-  '/snaps',
-  '/unlock',
-  '/connect/',
-  '/confirmation/',
-  '/confirm/',
-  '/confirm-transaction/',
-  '/confirm-add-suggested-token',
-  '/confirm-add-suggested-nft',
+  ACCOUNT_LIST_PAGE_ROUTE,
+  SNAPS_ROUTE,
+  UNLOCK_ROUTE,
+  CONNECT_ROUTE,
+  CONFIRMATION_V_NEXT_ROUTE,
+  CONFIRM_TRANSACTION_ROUTE,
+  CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
+  CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
 ];
 
 const SNAP_APPROVAL_TYPES = [
