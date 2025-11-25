@@ -20,7 +20,7 @@ const ApiErrorHandler = ({ className = '' }: { className?: string }) => {
   return (
     <Box
       className={classnames(
-        'flex flex-col items-center text-center gap-4',
+        'flex flex-col items-center text-center gap-4 max-w-xs',
         className,
       )}
     >
