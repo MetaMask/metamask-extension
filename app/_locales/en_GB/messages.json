@@ -2765,9 +2765,6 @@
     "message": "Fund your wallet",
     "description": "Title for the balance empty state component encouraging users to add funds"
   },
-  "fundingMethod": {
-    "message": "Funding method"
-  },
   "gas": {
     "message": "Gas"
   },
@@ -5651,6 +5648,12 @@
   "rewardsOnboardingIntroStepConfirm": {
     "message": "Claim 250 points"
   },
+  "rewardsOnboardingIntroStepConfirmLoadingEligibility": {
+    "message": "Checking eligiblity..."
+  },
+  "rewardsOnboardingIntroStepConfirmLoadingRegion": {
+    "message": "Checking region.."
+  },
   "rewardsOnboardingIntroStepSkip": {
     "message": "Not now"
   },
@@ -5722,6 +5725,10 @@
   },
   "rewardsOnboardingStepOptIn": {
     "message": "Claim points"
+  },
+  "rewardsOptInVerifyingReferralCode": {
+    "message": "Verifying referral code...",
+    "description": "Text shown while verifying a referral code during rewards opt-in"
   },
   "rewardsPointsBalance": {
     "message": "$1 points",
@@ -7876,12 +7883,6 @@
   },
   "time": {
     "message": "Time"
-  },
-  "tipsForUsingAWallet": {
-    "message": "Tips for using a wallet"
-  },
-  "tipsForUsingAWalletDescription": {
-    "message": "Adding tokens unlocks more ways to use web3."
   },
   "to": {
     "message": "To"
