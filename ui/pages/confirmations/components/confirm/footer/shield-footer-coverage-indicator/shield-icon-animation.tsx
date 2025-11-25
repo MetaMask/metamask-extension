@@ -149,15 +149,15 @@ const ShieldIconAnimation = ({
       if (inputs) {
         updateSeverity(inputs);
 
+        const darkToggle = inputs.find((input) => input.name === 'Dark');
+        if (darkToggle && theme === ThemeType.dark) {
+          darkToggle.value = true;
+        } else if (darkToggle) {
+          darkToggle.value = false;
+        }
+
         // Play the state machine
         if (playAnimation) {
-          const darkToggle = inputs.find((input) => input.name === 'Dark');
-          if (darkToggle && theme === ThemeType.dark) {
-            darkToggle.value = true;
-          } else if (darkToggle) {
-            darkToggle.value = false;
-          }
-
           const startTrigger = inputs.find((input) => input.name === 'Start');
           if (startTrigger) {
             startTrigger.fire();
