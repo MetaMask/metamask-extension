@@ -51,7 +51,6 @@ export function useDappSwapComparisonInfo() {
   const { data, gas } = txParams ?? {};
   const {
     requestDetectionLatency,
-    swapComparisonLatency,
     updateRequestDetectionLatency,
     updateSwapComparisonLatency,
   } = useDappSwapComparisonLatencyMetrics();
@@ -71,11 +70,13 @@ export function useDappSwapComparisonInfo() {
         )?.data;
       }
       const result = getDataFromSwap(chainId, transactionData);
-      updateRequestDetectionLatency();
+      if (result.quotesInput) {
+        updateRequestDetectionLatency();
+      }
       return result;
     } catch (error) {
       captureException(error);
-      captureDappSwapComparisonFailed('error parsing swap data');
+      captureDappSwapComparisonFailed((error as Error).toString());
       return {
         commands: undefined,
         quotesInput: undefined,
@@ -157,7 +158,7 @@ export function useDappSwapComparisonInfo() {
         return;
       }
 
-      updateSwapComparisonLatency();
+      const swapComparisonLatency = updateSwapComparisonLatency();
 
       const { destTokenAddress, srcTokenAmount, srcTokenAddress } = quotesInput;
       const {
@@ -257,7 +258,6 @@ export function useDappSwapComparisonInfo() {
     requestDetectionLatency,
     updateSwapComparisonLatency,
     simulationData,
-    swapComparisonLatency,
     tokenDetails,
     tokenInfoPending,
   ]);
