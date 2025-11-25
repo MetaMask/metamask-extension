@@ -99,11 +99,9 @@ describe('Test Snap revoke permission', function () {
         // switch to metamask window
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        // wait for and click Connect
-        await driver.clickElement({
-          text: 'Account 1',
-        });
+        await driver.delay(10000);
 
+        await driver.delay(3000);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
