@@ -93,7 +93,6 @@ import {
   getPendingApprovals,
   getIsMultichainAccountsState1Enabled,
 } from '../../selectors';
-import { getApprovalFlows } from '../../selectors/approvals';
 
 import {
   hideImportNftsModal,
@@ -117,7 +116,6 @@ import {
 } from '../../ducks/metamask/metamask';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
-import { getConfirmationRoute } from '../confirmations/hooks/useConfirmationNavigation';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
@@ -168,6 +166,7 @@ import {
   isConfirmTransactionRoute,
   setTheme,
 } from './utils';
+import { ConfirmationHandler } from './confirmation-handler';
 
 /**
  * V5-to-v5-compat navigation function that bridges react-router-dom v5 history
@@ -516,7 +515,6 @@ export default function Routes() {
   );
   const pendingApprovals = useAppSelector(getPendingApprovals);
   const transactionsMetadata = useAppSelector(getUnapprovedTransactions);
-  const approvalFlows = useAppSelector(getApprovalFlows);
 
   const textDirection = useAppSelector((state) => state.metamask.textDirection);
   const isUnlocked = useAppSelector(getIsUnlocked);
@@ -665,46 +663,6 @@ export default function Routes() {
     }
   }, [currentCurrency, dispatch]);
 
-  // Navigate to confirmations when there are pending approvals and user is on asset details page
-  // This behavior is only enabled in sidepanel to avoid interfering with popup/extension flows
-  useEffect(() => {
-    const windowType = getEnvironmentType();
-
-    // Only run this navigation logic in sidepanel
-    if (windowType !== ENVIRONMENT_TYPE_SIDEPANEL) {
-      return;
-    }
-
-    // Only navigate to confirmations when user is on an asset details page
-    const isOnAssetDetailsPage = location.pathname.startsWith(ASSET_ROUTE);
-
-    // Network operations (addEthereumChain, switchEthereumChain) have their own UI
-    // and shouldn't trigger auto-navigation
-    const hasNonNavigableApprovals = pendingApprovals.some(
-      (approval) =>
-        approval.type === 'wallet_addEthereumChain' ||
-        approval.type === 'wallet_switchEthereumChain',
-    );
-
-    if (
-      isOnAssetDetailsPage &&
-      !hasNonNavigableApprovals &&
-      isUnlocked &&
-      (pendingApprovals.length > 0 || approvalFlows?.length > 0)
-    ) {
-      const url = getConfirmationRoute(
-        pendingApprovals[0]?.id,
-        pendingApprovals,
-        Boolean(approvalFlows?.length),
-        '', // queryString
-      );
-
-      if (url) {
-        history.replace(url);
-      }
-    }
-  }, [isUnlocked, pendingApprovals, approvalFlows, history, location.pathname]);
-
   const renderRoutes = useCallback(() => {
     const RestoreVaultComponent = forgottenPassword ? Route : Initialized;
 
@@ -828,14 +786,17 @@ export default function Routes() {
               paramsAsProps: false,
             })}
           </RouteWithLayout>
-          <Route path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}>
+          <RouteWithLayout
+            path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
+            layout={LegacyLayout}
+          >
             {createV5CompatRoute<{ id?: string }>(ConfirmTransaction, {
               wrapper: AuthenticatedV5Compat,
               includeLocation: true,
               includeParams: true,
               paramsAsProps: false,
             })}
-          </Route>
+          </RouteWithLayout>
           <RouteWithLayout path={SWAPS_ROUTE} layout={LegacyLayout}>
             {createV5CompatRoute(Swaps, {
               wrapper: AuthenticatedV5Compat,
@@ -867,33 +828,36 @@ export default function Routes() {
               includeLocation: true,
             })}
           </RouteWithLayout>
-          <Route path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}>
+          <RouteWithLayout
+            path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}
+            layout={LegacyLayout}
+          >
             {createV5CompatRoute(ConfirmAddSuggestedTokenPage, {
               wrapper: AuthenticatedV5Compat,
               includeNavigate: true,
               includeLocation: true,
             })}
-          </Route>
-          <Route path={CONFIRM_ADD_SUGGESTED_NFT_ROUTE}>
+          </RouteWithLayout>
+          <RouteWithLayout
+            path={CONFIRM_ADD_SUGGESTED_NFT_ROUTE}
+            layout={LegacyLayout}
+          >
             {createV5CompatRoute(ConfirmAddSuggestedNftPage, {
               wrapper: AuthenticatedV5Compat,
               includeNavigate: true,
               includeLocation: true,
             })}
-          </Route>
-          <Route path={`${CONFIRMATION_V_NEXT_ROUTE}/:id?`}>
-            {(props: RouteComponentProps<{ id?: string }>) => {
-              const renderFn = createV5CompatRoute<{ id?: string }>(
-                ConfirmationPage,
-                {
-                  wrapper: AuthenticatedV5Compat,
-                  includeParams: true,
-                  paramsAsProps: false,
-                },
-              );
-              return renderFn(props);
-            }}
-          </Route>
+          </RouteWithLayout>
+          <RouteWithLayout
+            path={`${CONFIRMATION_V_NEXT_ROUTE}/:id?`}
+            layout={LegacyLayout}
+          >
+            {createV5CompatRoute<{ id?: string }>(ConfirmationPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              paramsAsProps: false,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout
             authenticated
             path={NEW_ACCOUNT_ROUTE}
@@ -1324,6 +1288,8 @@ export default function Routes() {
         }>,
         { location },
       )}
+
+      <ConfirmationHandler />
     </div>
   );
 }
