@@ -236,7 +236,6 @@ const PrepareBridgePage = ({
 
   const activeQuote = isQuoteExpiredOrInvalid ? undefined : unvalidatedQuote;
 
-
   const selectedAccount = useSelector(getFromAccount);
 
   const gasIncluded7702 = useGasIncluded7702({
@@ -741,9 +740,9 @@ const PrepareBridgePage = ({
                 !isCrossChain(chainId, fromChain?.chainId),
             }}
             customTokenListGenerator={toTokenListGenerator}
-          amountInFiat={
-            activeQuote?.toTokenAmount?.valueInCurrency ?? undefined
-          }
+            amountInFiat={
+              activeQuote?.toTokenAmount?.valueInCurrency ?? undefined
+            }
             amountFieldProps={{
               testId: 'to-amount',
               readOnly: true,

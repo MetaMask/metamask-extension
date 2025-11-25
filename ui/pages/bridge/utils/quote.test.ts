@@ -199,7 +199,8 @@ describe('Bridge quote utils', () => {
     });
 
     it('should extract address from native asset CAIP-19 asset ID', () => {
-      const caip19AssetId = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
+      const caip19AssetId =
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
       expect(getAddressFromAssetIdOrAddress(caip19AssetId)).toBe('501');
     });
   });
