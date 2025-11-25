@@ -33,7 +33,7 @@ export const RULESET_ENGINE_API = {
   SIGNATURE_COVERAGE_RESULT: `${BASE_RULESET_ENGINE_API_URL}/signature/coverage/result`,
 };
 
-export const BASE_SHIELD_SUBSCRIPTION = {
+export const BASE_SHIELD_SUBSCRIPTION_CARD = {
   id: 'test_subscription_id',
   status: 'trialing',
   products: [
@@ -87,8 +87,8 @@ export const BASE_SHIELD_SUBSCRIPTION_CRYPTO = {
 };
 
 export const BASE_SHIELD_SUBSCRIPTION_CRYPTO_MONTHLY = {
+  ...BASE_SHIELD_SUBSCRIPTION_CRYPTO,
   id: 'test_subscription_id_crypto_monthly',
-  status: 'trialing',
   products: [
     {
       name: 'shield',
@@ -98,21 +98,7 @@ export const BASE_SHIELD_SUBSCRIPTION_CRYPTO_MONTHLY = {
     },
   ],
   interval: 'month',
-  currentPeriodStart: '2025-10-20T02:43:29.000Z',
   currentPeriodEnd: '2025-11-20T02:43:29.000Z',
-  trialStart: '2025-10-20T02:43:29.000Z',
-  trialEnd: '2025-11-03T02:43:29.000Z',
-  trialPeriodDays: 14,
-  paymentMethod: {
-    type: 'crypto',
-    crypto: {
-      chainId: '0x1',
-      tokenAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-      tokenSymbol: 'USDC',
-      payerAddress: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
-    },
-  },
-  isEligibleForSupport: true,
 };
 
 export const MOCK_CHECKOUT_SESSION_URL =

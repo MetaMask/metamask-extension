@@ -528,17 +528,14 @@ class TransactionConfirmation extends Confirmation {
     );
   }
 
-  async checkShieldCoverageIsCovered(): Promise<void> {
-    console.log('Checking if shield coverage indicator shows "Covered"');
+  async checkShieldCoverage(status: 'covered' | 'not_covered'): Promise<void> {
+    const statusText =
+      status === 'covered'
+        ? (tEn('shieldCovered') as string)
+        : (tEn('shieldNotCovered') as string);
+    console.log(`Checking if shield coverage indicator shows "${statusText}"`);
     await this.driver.waitForSelector(
-      this.shieldFooterCoverageIndicator(tEn('shieldCovered') as string),
-    );
-  }
-
-  async checkShieldCoverageIsNotCovered(): Promise<void> {
-    console.log('Checking if shield coverage indicator shows "Not covered"');
-    await this.driver.waitForSelector(
-      this.shieldFooterCoverageIndicator(tEn('shieldNotCovered') as string),
+      this.shieldFooterCoverageIndicator(statusText),
     );
   }
 }

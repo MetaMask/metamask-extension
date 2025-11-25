@@ -4,12 +4,13 @@ import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import ShieldPlanPage from '../../page-objects/pages/settings/shield/shield-plan-page';
 import HomePage from '../../page-objects/pages/home/homepage';
+import ShieldSubscriptionApprovePage from '../../page-objects/pages/settings/shield/shield-subscription-approve-page';
 import ShieldDetailPage from '../../page-objects/pages/settings/shield/shield-detail-page';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { ShieldMockttpService } from '../../helpers/shield/mocks';
 
-// Local fixture for this spec file
-function createShieldFixture() {
+// Local fixture for card payment tests
+function createShieldFixtureCard() {
   return new FixtureBuilder()
     .withNetworkControllerOnMainnet()
     .withEnabledNetworks({
@@ -37,144 +38,308 @@ function createShieldFixture() {
     });
 }
 
+// Local fixture for crypto payment tests
+function createShieldFixtureCrypto() {
+  return new FixtureBuilder()
+    .withNetworkControllerOnMainnet()
+    .withEnabledNetworks({
+      eip155: {
+        '0x1': true,
+      },
+    })
+    .withTokensController({
+      allTokens: {
+        '0x1': {
+          // USDC and USDT tokens on Mainnet
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
+            {
+              address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+              symbol: 'USDC',
+              decimals: 6,
+              isERC721: false,
+              aggregators: [],
+            },
+            {
+              address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+              symbol: 'USDT',
+              decimals: 6,
+              isERC721: false,
+              aggregators: [],
+            },
+          ],
+        },
+      },
+    })
+    .withAppStateController({
+      showShieldEntryModalOnce: null, // set the initial state to null so that the modal is shown
+    });
+}
+
 describe('Shield Subscription Tests', function () {
-  describe('Shield Entry Modal', function () {
-    it('should subscribe to the shield plan from the entry modal - annual plan', async function () {
-      await withFixtures(
-        {
-          fixtures: createShieldFixture().build(),
-          title: this.test?.fullTitle(),
-          testSpecificMock: (server: Mockttp) => {
-            const shieldMockttpService = new ShieldMockttpService();
-            return shieldMockttpService.setup(server);
+  describe('Card Payment', function () {
+    describe('Shield Entry Modal', function () {
+      it('should subscribe to the shield plan from the entry modal - annual plan', async function () {
+        await withFixtures(
+          {
+            fixtures: createShieldFixtureCard().build(),
+            title: this.test?.fullTitle(),
+            testSpecificMock: (server: Mockttp) => {
+              const shieldMockttpService = new ShieldMockttpService();
+              return shieldMockttpService.setup(server);
+            },
           },
-        },
-        async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          async ({ driver }) => {
+            await loginWithBalanceValidation(driver);
 
-          const homePage = new HomePage(driver);
+            const homePage = new HomePage(driver);
 
-          await homePage.checkShieldEntryModalIsDisplayed();
-          await homePage.clickOnShieldEntryModalGetStarted();
+            await homePage.checkShieldEntryModalIsDisplayed();
+            await homePage.clickOnShieldEntryModalGetStarted();
 
-          const shieldPlanPage = new ShieldPlanPage(driver);
-          await shieldPlanPage.completeShieldPlanSubscriptionFlow(
-            'annual',
-            'card',
-          );
+            const shieldPlanPage = new ShieldPlanPage(driver);
+            await shieldPlanPage.completeShieldPlanSubscriptionFlow(
+              'annual',
+              'card',
+            );
 
-          const shieldDetailPage = new ShieldDetailPage(driver);
-          await shieldDetailPage.validateShieldDetailPage();
-        },
-      );
+            const shieldDetailPage = new ShieldDetailPage(driver);
+            await shieldDetailPage.validateShieldDetailPage();
+          },
+        );
+      });
+
+      it('should subscribe to the shield plan from the entry modal - monthly plan', async function () {
+        await withFixtures(
+          {
+            fixtures: createShieldFixtureCard().build(),
+            title: this.test?.fullTitle(),
+            testSpecificMock: (server: Mockttp) => {
+              const shieldMockttpService = new ShieldMockttpService();
+              return shieldMockttpService.setup(server);
+            },
+          },
+          async ({ driver }) => {
+            await loginWithBalanceValidation(driver);
+
+            const homePage = new HomePage(driver);
+
+            await homePage.checkShieldEntryModalIsDisplayed();
+            await homePage.clickOnShieldEntryModalGetStarted();
+
+            const shieldPlanPage = new ShieldPlanPage(driver);
+            await shieldPlanPage.completeShieldPlanSubscriptionFlow(
+              'monthly',
+              'card',
+            );
+
+            const shieldDetailPage = new ShieldDetailPage(driver);
+            await shieldDetailPage.validateShieldDetailPage();
+          },
+        );
+      });
     });
 
-    it('should subscribe to the shield plan from the entry modal - monthly plan', async function () {
-      await withFixtures(
-        {
-          fixtures: createShieldFixture().build(),
-          title: this.test?.fullTitle(),
-          testSpecificMock: (server: Mockttp) => {
-            const shieldMockttpService = new ShieldMockttpService();
-            return shieldMockttpService.setup(server);
+    describe('Shield Settings Subscription', function () {
+      it('should subscribe to the shield plan from the settings > shield - annual plan', async function () {
+        await withFixtures(
+          {
+            fixtures: createShieldFixtureCard().build(),
+            title: this.test?.fullTitle(),
+            testSpecificMock: (server: Mockttp) => {
+              const shieldMockttpService = new ShieldMockttpService();
+              return shieldMockttpService.setup(server);
+            },
           },
-        },
-        async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          async ({ driver }) => {
+            await loginWithBalanceValidation(driver);
 
-          const homePage = new HomePage(driver);
+            const homePage = new HomePage(driver);
+            await homePage.checkShieldEntryModalIsDisplayed();
+            await homePage.clickOnShieldEntryModalGetStarted();
 
-          await homePage.checkShieldEntryModalIsDisplayed();
-          await homePage.clickOnShieldEntryModalGetStarted();
+            const shieldPlanPage = new ShieldPlanPage(driver);
+            await shieldPlanPage.checkPageIsLoaded();
+            await shieldPlanPage.clickBackButton();
 
-          const shieldPlanPage = new ShieldPlanPage(driver);
-          await shieldPlanPage.completeShieldPlanSubscriptionFlow(
-            'monthly',
-            'card',
-          );
+            const settingsPage = new SettingsPage(driver);
+            await settingsPage.checkPageIsLoaded();
+            await settingsPage.goToTransactionShieldPage();
 
-          const shieldDetailPage = new ShieldDetailPage(driver);
-          await shieldDetailPage.validateShieldDetailPage();
-        },
-      );
+            await homePage.checkShieldEntryModalIsDisplayed();
+            await homePage.clickOnShieldEntryModalGetStarted();
+
+            await shieldPlanPage.completeShieldPlanSubscriptionFlow(
+              'annual',
+              'card',
+            );
+
+            const shieldDetailPage = new ShieldDetailPage(driver);
+            await shieldDetailPage.validateShieldDetailPage();
+          },
+        );
+      });
+
+      it('should subscribe to the shield plan from the settings > shield - monthly plan', async function () {
+        await withFixtures(
+          {
+            fixtures: createShieldFixtureCard().build(),
+            title: this.test?.fullTitle(),
+            testSpecificMock: (server: Mockttp) => {
+              const shieldMockttpService = new ShieldMockttpService();
+              return shieldMockttpService.setup(server);
+            },
+          },
+          async ({ driver }) => {
+            await loginWithBalanceValidation(driver);
+
+            const homePage = new HomePage(driver);
+            await homePage.checkShieldEntryModalIsDisplayed();
+            await homePage.clickOnShieldEntryModalGetStarted();
+
+            const shieldPlanPage = new ShieldPlanPage(driver);
+            await shieldPlanPage.checkPageIsLoaded();
+            await shieldPlanPage.clickBackButton();
+
+            const settingsPage = new SettingsPage(driver);
+            await settingsPage.checkPageIsLoaded();
+            await settingsPage.goToTransactionShieldPage();
+
+            await homePage.clickOnShieldEntryModalGetStarted();
+            await shieldPlanPage.completeShieldPlanSubscriptionFlow(
+              'monthly',
+              'card',
+            );
+
+            const shieldDetailPage = new ShieldDetailPage(driver);
+            await shieldDetailPage.validateShieldDetailPage();
+          },
+        );
+      });
     });
   });
 
-  describe('Shield Settings Subscription', function () {
-    it('should subscribe to the shield plan from the settings > shield - annual plan', async function () {
-      await withFixtures(
-        {
-          fixtures: createShieldFixture().build(),
-          title: this.test?.fullTitle(),
-          testSpecificMock: (server: Mockttp) => {
-            const shieldMockttpService = new ShieldMockttpService();
-            return shieldMockttpService.setup(server);
+  describe('Crypto Payment', function () {
+    describe('Shield Entry Modal', function () {
+      it('should get started on entry modal - annual plan', async function () {
+        await withFixtures(
+          {
+            fixtures: createShieldFixtureCrypto().build(),
+            title: this.test?.fullTitle(),
+            testSpecificMock: (server: Mockttp) => {
+              const shieldMockttpService = new ShieldMockttpService();
+              return shieldMockttpService.setup(server);
+            },
+            ignoredConsoleErrors: [
+              // Rive WASM loading fails in test environment due to XMLHttpRequest limitations
+              'Could not load Rive WASM file',
+              'XMLHttpRequest is not a constructor',
+            ],
+            localNodeOptions: [
+              {
+                type: 'anvil',
+                options: {
+                  chainId: 1,
+                  loadState:
+                    './test/e2e/seeder/network-states/with100Usdc100Usdt.json',
+                },
+              },
+            ],
           },
-        },
-        async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          async ({ driver, localNodes }) => {
+            await loginWithBalanceValidation(driver, localNodes[0]);
 
-          const homePage = new HomePage(driver);
-          await homePage.checkShieldEntryModalIsDisplayed();
-          await homePage.clickOnShieldEntryModalGetStarted();
+            const homePage = new HomePage(driver);
 
-          const shieldPlanPage = new ShieldPlanPage(driver);
-          await shieldPlanPage.checkPageIsLoaded();
-          await shieldPlanPage.clickBackButton();
+            await homePage.checkShieldEntryModalIsDisplayed();
+            await homePage.clickOnShieldEntryModalGetStarted();
 
-          const settingsPage = new SettingsPage(driver);
-          await settingsPage.checkPageIsLoaded();
-          await settingsPage.goToTransactionShieldPage();
+            const shieldPlanPage = new ShieldPlanPage(driver);
+            await shieldPlanPage.checkPageIsLoaded();
 
-          await homePage.checkShieldEntryModalIsDisplayed();
-          await homePage.clickOnShieldEntryModalGetStarted();
+            await shieldPlanPage.completeShieldPlanSubscriptionFlow(
+              'annual',
+              'crypto',
+            );
 
-          await shieldPlanPage.completeShieldPlanSubscriptionFlow(
-            'annual',
-            'card',
-          );
+            const shieldSubscriptionApprovePage =
+              new ShieldSubscriptionApprovePage(driver);
+            await shieldSubscriptionApprovePage.checkPageIsLoaded();
+            await shieldSubscriptionApprovePage.clickStartNowButton();
 
-          const shieldDetailPage = new ShieldDetailPage(driver);
-          await shieldDetailPage.validateShieldDetailPage();
-        },
-      );
+            const shieldDetailPage = new ShieldDetailPage(driver);
+            await shieldDetailPage.checkPageIsLoaded();
+            await shieldDetailPage.validateShieldDetailPage({
+              charges: '80 USDC (Annual)',
+              nextBillingDate: 'Nov 3, 2025',
+              paymentMethod: 'USDC',
+            });
+          },
+        );
+      });
     });
 
-    it('should subscribe to the shield plan from the settings > shield - monthly plan', async function () {
-      await withFixtures(
-        {
-          fixtures: createShieldFixture().build(),
-          title: this.test?.fullTitle(),
-          testSpecificMock: (server: Mockttp) => {
-            const shieldMockttpService = new ShieldMockttpService();
-            return shieldMockttpService.setup(server);
+    describe('Shield Settings Subscription', function () {
+      it('should subscribe to the shield plan from the settings > shield - monthly plan', async function () {
+        await withFixtures(
+          {
+            fixtures: createShieldFixtureCrypto().build(),
+            title: this.test?.fullTitle(),
+            testSpecificMock: (server: Mockttp) => {
+              const shieldMockttpService = new ShieldMockttpService();
+              return shieldMockttpService.setup(server);
+            },
+            ignoredConsoleErrors: [
+              // Rive WASM loading fails in test environment due to XMLHttpRequest limitations
+              'Could not load Rive WASM file',
+              'XMLHttpRequest is not a constructor',
+            ],
+            localNodeOptions: [
+              {
+                type: 'anvil',
+                options: {
+                  chainId: 1,
+                  loadState:
+                    './test/e2e/seeder/network-states/with100Usdc100Usdt.json',
+                },
+              },
+            ],
           },
-        },
-        async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          async ({ driver, localNodes }) => {
+            await loginWithBalanceValidation(driver, localNodes[0]);
 
-          const homePage = new HomePage(driver);
-          await homePage.checkShieldEntryModalIsDisplayed();
-          await homePage.clickOnShieldEntryModalGetStarted();
+            const homePage = new HomePage(driver);
+            await homePage.checkShieldEntryModalIsDisplayed();
+            await homePage.clickOnShieldEntryModalGetStarted();
 
-          const shieldPlanPage = new ShieldPlanPage(driver);
-          await shieldPlanPage.checkPageIsLoaded();
-          await shieldPlanPage.clickBackButton();
+            const shieldPlanPage = new ShieldPlanPage(driver);
+            await shieldPlanPage.checkPageIsLoaded();
+            await shieldPlanPage.clickBackButton();
 
-          const settingsPage = new SettingsPage(driver);
-          await settingsPage.checkPageIsLoaded();
-          await settingsPage.goToTransactionShieldPage();
+            const settingsPage = new SettingsPage(driver);
+            await settingsPage.checkPageIsLoaded();
+            await settingsPage.goToTransactionShieldPage();
 
-          await homePage.clickOnShieldEntryModalGetStarted();
-          await shieldPlanPage.completeShieldPlanSubscriptionFlow(
-            'monthly',
-            'card',
-          );
+            await homePage.clickOnShieldEntryModalGetStarted();
+            await shieldPlanPage.completeShieldPlanSubscriptionFlow(
+              'monthly',
+              'crypto',
+            );
 
-          const shieldDetailPage = new ShieldDetailPage(driver);
-          await shieldDetailPage.validateShieldDetailPage();
-        },
-      );
+            const shieldSubscriptionApprovePage =
+              new ShieldSubscriptionApprovePage(driver);
+            await shieldSubscriptionApprovePage.checkPageIsLoaded();
+            await shieldSubscriptionApprovePage.clickStartNowButton();
+
+            const shieldDetailPage = new ShieldDetailPage(driver);
+            await shieldDetailPage.checkPageIsLoaded();
+            await shieldDetailPage.validateShieldDetailPage({
+              charges: '8 USDC (Monthly)',
+              nextBillingDate: 'Nov 20, 2025',
+              paymentMethod: 'USDC',
+            });
+          },
+        );
+      });
     });
   });
 });

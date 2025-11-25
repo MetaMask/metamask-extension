@@ -74,7 +74,7 @@ describe('Shield Ruleset Engine Tests', function () {
         const transactionConfirmation = new TransactionConfirmation(driver);
         await transactionConfirmation.checkPageIsLoaded();
 
-        await transactionConfirmation.checkShieldCoverageIsCovered();
+        await transactionConfirmation.checkShieldCoverage('covered');
 
         await transactionConfirmation.clickFooterCancelButton();
       },
@@ -116,7 +116,7 @@ describe('Shield Ruleset Engine Tests', function () {
         const transactionConfirmation = new TransactionConfirmation(driver);
         await transactionConfirmation.checkPageIsLoaded();
 
-        await transactionConfirmation.checkShieldCoverageIsNotCovered();
+        await transactionConfirmation.checkShieldCoverage('not_covered');
 
         await transactionConfirmation.clickFooterCancelButton();
       },
@@ -159,7 +159,7 @@ describe('Shield Ruleset Engine Tests', function () {
         await personalSignConfirmation.checkPageIsLoaded();
 
         const transactionConfirmation = new TransactionConfirmation(driver);
-        await transactionConfirmation.checkShieldCoverageIsCovered();
+        await transactionConfirmation.checkShieldCoverage('covered');
 
         await personalSignConfirmation.clickFooterCancelButton();
       },
@@ -203,7 +203,7 @@ describe('Shield Ruleset Engine Tests', function () {
         await personalSignConfirmation.checkPageIsLoaded();
 
         const transactionConfirmation = new TransactionConfirmation(driver);
-        await transactionConfirmation.checkShieldCoverageIsNotCovered();
+        await transactionConfirmation.checkShieldCoverage('not_covered');
 
         await personalSignConfirmation.clickFooterCancelButton();
       },

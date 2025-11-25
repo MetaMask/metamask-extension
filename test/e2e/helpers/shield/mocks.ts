@@ -2,7 +2,7 @@ import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/us
 import { Mockttp } from 'mockttp';
 import { UserStorageMockttpController } from '../identity/user-storage/userStorageMockttpController';
 import {
-  BASE_SHIELD_SUBSCRIPTION,
+  BASE_SHIELD_SUBSCRIPTION_CARD,
   BASE_SHIELD_SUBSCRIPTION_CRYPTO,
   BASE_SHIELD_SUBSCRIPTION_CRYPTO_MONTHLY,
   BASE_SUBSCRIPTION_API_URL,
@@ -228,7 +228,7 @@ export class ShieldMockttpService {
             customerId: 'test_customer_id',
             subscriptions: [
               {
-                ...BASE_SHIELD_SUBSCRIPTION,
+                ...BASE_SHIELD_SUBSCRIPTION_CARD,
                 cancelAtPeriodEnd: this.#cancelAtPeriodEnd,
               },
             ],
@@ -260,7 +260,7 @@ export class ShieldMockttpService {
         this.#cancelAtPeriodEnd = true;
         return {
           statusCode: 200,
-          json: { ...BASE_SHIELD_SUBSCRIPTION, cancelAtPeriodEnd: true },
+          json: { ...BASE_SHIELD_SUBSCRIPTION_CARD, cancelAtPeriodEnd: true },
         };
       });
   }
@@ -280,7 +280,7 @@ export class ShieldMockttpService {
         this.#cancelAtPeriodEnd = false;
         return {
           statusCode: 200,
-          json: { ...BASE_SHIELD_SUBSCRIPTION, cancelAtPeriodEnd: false },
+          json: { ...BASE_SHIELD_SUBSCRIPTION_CARD, cancelAtPeriodEnd: false },
         };
       });
   }
