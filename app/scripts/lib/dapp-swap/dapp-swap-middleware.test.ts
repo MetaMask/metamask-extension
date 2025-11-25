@@ -4,6 +4,7 @@ import { flushPromises } from '../../../../test/lib/timer-helpers';
 import { mockBridgeQuotes } from '../../../../test/data/confirmations/contract-interaction';
 import { createDappSwapMiddleware } from './dapp-swap-middleware';
 import { DappSwapMiddlewareRequest } from './dapp-swap-util';
+import _ from 'lodash';
 
 const REQUEST_MOCK = {
   params: [],
@@ -13,7 +14,7 @@ const REQUEST_MOCK = {
   networkClientId: 'networkClientId',
 };
 
-const fetchQuotes = jest.fn();
+let fetchQuotes = jest.fn();
 const setDappSwapComparisonData = jest.fn();
 const getNetworkConfigurationByNetworkClientId = jest.fn();
 
@@ -139,9 +140,7 @@ describe('DappSwapMiddleware', () => {
   });
 
   it('capture error and commands if quote fetching fails', async () => {
-    fetchQuotes.mockImplementation(() => {
-      throw 'error fetching quotes';
-    });
+    fetchQuotes = jest.fn().mockRejectedValue(new Error('fail'));
     getNetworkConfigurationByNetworkClientId.mockReturnValueOnce({
       chainId: '0x1',
       rpcEndpoints: [],
@@ -175,8 +174,7 @@ describe('DappSwapMiddleware', () => {
 
     expect(setDappSwapComparisonData).toHaveBeenCalledWith('123', {
       commands: '0x100604',
-      error:
-        'Error fetching bridge quotes: TypeError: fetchQuotes(...).then is not a function',
+      error: 'Error fetching bridge quotes: fail',
     });
   });
 });

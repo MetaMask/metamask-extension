@@ -73,7 +73,7 @@ export function useDappSwapComparisonInfo() {
   }, [captureDappSwapComparisonFailed, quoteFetchError, parsedCommands]);
 
   const { commands, quotesInput, amountMin, tokenAddresses } = useMemo(() => {
-    let parsedCommands = '';
+    let dataCommands = '';
     try {
       checkValidSingleOrBatchTransaction(nestedTransactions);
       let transactionData = data;
@@ -83,7 +83,7 @@ export function useDappSwapComparisonInfo() {
         )?.data;
       }
       const parsedTransactionData = parseTransactionData(transactionData);
-      parsedCommands = parsedTransactionData.commands;
+      dataCommands = parsedTransactionData.commands;
       const result = getDataFromSwap(
         chainId,
         parsedTransactionData.commandBytes,
@@ -92,12 +92,12 @@ export function useDappSwapComparisonInfo() {
       if (result.quotesInput) {
         updateRequestDetectionLatency();
       }
-      return { ...result, commands: parsedCommands };
+      return { ...result, commands: dataCommands };
     } catch (error) {
       captureException(error);
       captureDappSwapComparisonFailed(
         `Error getting data from swap: ${(error as Error).toString()}`,
-        parsedCommands,
+        dataCommands,
       );
       return {
         commands: undefined,
