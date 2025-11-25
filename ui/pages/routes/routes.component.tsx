@@ -828,7 +828,10 @@ export default function Routes() {
               paramsAsProps: false,
             })}
           </RouteWithLayout>
-          <Route path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}>
+          <Route
+            path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
+            layout={LegacyLayout}
+          >
             {createV5CompatRoute<{ id?: string }>(ConfirmTransaction, {
               wrapper: AuthenticatedV5Compat,
               includeLocation: true,
@@ -867,33 +870,30 @@ export default function Routes() {
               includeLocation: true,
             })}
           </RouteWithLayout>
-          <Route path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}>
+          <Route path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE} layout={LegacyLayout}>
             {createV5CompatRoute(ConfirmAddSuggestedTokenPage, {
               wrapper: AuthenticatedV5Compat,
               includeNavigate: true,
               includeLocation: true,
             })}
           </Route>
-          <Route path={CONFIRM_ADD_SUGGESTED_NFT_ROUTE}>
+          <Route path={CONFIRM_ADD_SUGGESTED_NFT_ROUTE} layout={LegacyLayout}>
             {createV5CompatRoute(ConfirmAddSuggestedNftPage, {
               wrapper: AuthenticatedV5Compat,
               includeNavigate: true,
               includeLocation: true,
             })}
           </Route>
-          <Route path={`${CONFIRMATION_V_NEXT_ROUTE}/:id?`}>
-            {(props: RouteComponentProps<{ id?: string }>) => {
-              const renderFn = createV5CompatRoute<{ id?: string }>(
-                ConfirmationPage,
-                {
-                  wrapper: AuthenticatedV5Compat,
-                  includeParams: true,
-                  paramsAsProps: false,
-                },
-              );
-              return renderFn(props);
-            }}
-          </Route>
+          <RouteWithLayout
+            path={`${CONFIRMATION_V_NEXT_ROUTE}/:id?`}
+            layout={LegacyLayout}
+          >
+            {createV5CompatRoute<{ id?: string }>(ConfirmationPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              paramsAsProps: false,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout
             authenticated
             path={NEW_ACCOUNT_ROUTE}
