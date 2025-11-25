@@ -28,6 +28,7 @@ import {
 import {
   getAssetsBySelectedAccountGroup,
   getTokenBalancesEvm,
+  selectAccountGroupBalanceForEmptyState,
 } from '../../../../selectors/assets';
 import {
   MetaMetricsEventCategory,
@@ -64,6 +65,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
+  const hasBalance = useSelector(selectAccountGroupBalanceForEmptyState);
   const trackEvent = useContext(MetaMetricsContext);
 
   const accountGroupIdAssets = useSelector(getAssetsBySelectedAccountGroup);
@@ -193,6 +195,29 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
       },
     });
   };
+
+  // Disable virtualization when empty balance state is shown
+  if (!hasBalance) {
+    return (
+      <div className="token-list-non-virtualized">
+        {sortedFilteredTokens.map((token) => {
+          const isNonEvmTestnet = NON_EVM_TESTNET_IDS.includes(
+            token.chainId as CaipChainId,
+          );
+
+          return (
+            <TokenCell
+              key={`${token.chainId}-${token.symbol}-${token.address}`}
+              token={token}
+              privacyMode={privacyMode}
+              onClick={isNonEvmTestnet ? undefined : handleTokenClick(token)}
+              safeChains={safeChains}
+            />
+          );
+        })}
+      </div>
+    );
+  }
 
   const virtualItems = virtualizer.getVirtualItems();
 
