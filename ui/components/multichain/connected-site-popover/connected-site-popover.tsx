@@ -190,7 +190,7 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
         )}
         {isConnected && (
           <Box paddingTop={4} paddingLeft={4} paddingRight={4}>
-            <ButtonSecondary block onClick={() => onClick()}>
+            <ButtonSecondary block onClick={onClick}>
               {t('managePermissions')}
             </ButtonSecondary>
           </Box>
