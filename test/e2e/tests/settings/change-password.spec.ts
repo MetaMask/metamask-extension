@@ -72,7 +72,6 @@ describe('Change wallet password', function () {
         });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.clickBackupRemindMeLaterButton();
 
         await doPasswordChangeAndLockWallet(driver, OLD_PASSWORD, NEW_PASSWORD);
 
