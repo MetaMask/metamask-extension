@@ -107,7 +107,7 @@ export const formatSchemaDiff = ({
   }
 
   messages.push(
-    "\nUpdate the fixture locally and commit the change, or request an update by commenting '@metamaskbot update fixture' on the pull request.",
+    "\nUpdate the fixture locally and commit the change, or request an update by commenting '@metamaskbot update-e2e-fixture' on the pull request.",
   );
 
   return messages.join('\n\n');

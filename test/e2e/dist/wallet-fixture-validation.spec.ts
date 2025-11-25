@@ -6,7 +6,7 @@ import {
   formatSchemaDiff,
   hasSchemaDifferences,
   readFixtureFile,
-} from './fixture-validation';
+} from '../fixtures/fixture-validation';
 
 const ONBOARDING_FIXTURE_PATH = path.resolve(
   __dirname,
@@ -57,6 +57,20 @@ describe('Wallet State', function () {
 
         if (hasSchemaDifferences(schemaDiff)) {
           const message = formatSchemaDiff(schemaDiff);
+          console.log(
+            '\n=============================================================================\n',
+          );
+          console.log('⚠️  WALLET FIXTURE STATE VALIDATION FAILED');
+          console.log(
+            '=============================================================================\n',
+          );
+          console.log('🤖 Automatic update: comment @metamaskbot update-e2e-fixture');
+          console.log(
+            '\n🛠️  Manual update steps:\n  yarn dist\n  yarn test:e2e:single test/e2e/fixtures/wallet-fixture-export.spec.ts --browser chrome',
+          );
+          console.log(
+            '\n=============================================================================\n',
+          );
           throw new Error(message);
         }
       },

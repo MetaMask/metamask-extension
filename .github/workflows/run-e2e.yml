@@ -7,10 +7,6 @@ on:
         required: true
         type: string
         description: The name of the E2E test suite
-      comment-fixture:
-        type: boolean
-        default: false
-        description: Post "Fixture Ready" comment after export job
       build-artifact:
         type: string
         default: ''
@@ -47,8 +43,6 @@ on:
         description: The path to the test artifacts
     secrets:
       INFURA_PROJECT_ID:
-        required: false
-      PR_COMMENT_TOKEN:
         required: false
 
 jobs:
@@ -137,14 +131,6 @@ jobs:
           name: test-runs-for-splitting
           path: test/test-results/
 
-      - name: e2e fixture validation
-        id: download-onboarding-fixture
-        continue-on-error: true
-        uses: actions/download-artifact@v4
-        with:
-          name: e2e-fixture-validation
-          path: .
-
       - name: Run E2E tests
         timeout-minutes: ${{ inputs.test-timeout-minutes }}
         run: ${{ inputs.test-command }} --retries 1
@@ -158,12 +144,3 @@ jobs:
         with:
           name: ${{ env.JOB_NAME }}
           path: ${{ inputs.test-artifacts-path }}
-
-      - name: Comment PR with fixture
-        if: ${{ inputs.comment-fixture == true && env.PR_NUMBER != '' }}
-        env:
-          PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
-          OWNER: ${{ github.repository_owner }}
-          REPOSITORY: ${{ github.event.repository.name }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: yarn tsx ./development/metamaskbot-fixture-announce.ts

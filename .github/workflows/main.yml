@@ -269,20 +269,6 @@ jobs:
     secrets:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
 
-  export-onboarding-fixture:
-    name: Export onboarding fixture
-    needs:
-      - build-dist-browserify
-    uses: ./.github/workflows/run-e2e.yml
-    with:
-      test-suite-name: export-onboarding-fixture
-      build-artifact: build-dist-browserify
-      test-command: yarn test:e2e:single test/e2e/wallet-fixture-export.spec.ts --browser chrome
-      test-artifacts-path: test-artifacts/onboarding-fixture
-      comment-fixture: true
-    secrets:
-      PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
-
   run-tests:
     name: Run tests
     needs:
