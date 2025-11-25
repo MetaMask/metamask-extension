@@ -6990,9 +6990,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:@metamask-previews/keyring-controller@24.0.0-preview-20df3e99":
-  version: 24.0.0-preview-20df3e99
-  resolution: "@metamask-previews/keyring-controller@npm:24.0.0-preview-20df3e99"
+"@metamask/keyring-controller@npm:^25.0.0":
+  version: 25.0.0
+  resolution: "@metamask/keyring-controller@npm:25.0.0"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@metamask/base-controller": "npm:^9.0.0"
@@ -7009,7 +7009,7 @@ __metadata:
     immer: "npm:^9.0.6"
     lodash: "npm:^4.17.21"
     ulid: "npm:^2.3.0"
-  checksum: 10/f5332805b9ff74cefeae49b5b3b4cf9b6b1617535e78f30e052ccf79a8eaff9cef49527873b28f0249cd6528f3a823c4b9e1e4b3b1124854886eb8ace1540372
+  checksum: 10/7258f70ef463f8f7260e64f7e22b695ed01520da46e77a4a01e8beff14b8da1545f905f615386b9d4e10b7f383651828b97f655202f410667f5028e2633aac25
   languageName: node
   linkType: hard
 
@@ -7860,12 +7860,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/seedless-onboarding-controller@npm:^6.1.0":
-  version: 6.1.0
-  resolution: "@metamask/seedless-onboarding-controller@npm:6.1.0"
+"@metamask/seedless-onboarding-controller@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "@metamask/seedless-onboarding-controller@npm:7.0.0"
   dependencies:
     "@metamask/auth-network-utils": "npm:^0.3.0"
     "@metamask/base-controller": "npm:^9.0.0"
+    "@metamask/browser-passworder": "npm:^6.0.0"
     "@metamask/messenger": "npm:^0.3.0"
     "@metamask/toprf-secure-backup": "npm:^0.10.0"
     "@metamask/utils": "npm:^11.8.1"
@@ -7874,8 +7875,8 @@ __metadata:
     "@noble/hashes": "npm:^1.8.0"
     async-mutex: "npm:^0.5.0"
   peerDependencies:
-    "@metamask/keyring-controller": ^24.0.0
-  checksum: 10/f2e2bdaf7d2a32f22fce19b8384ea5f22d8064e9a8fcb3b097f6ac4cd4e2e9ad14a4c7bb45bc10f6a867782a4ec40289669afe281378301808c0104444b8d5db
+    "@metamask/keyring-controller": ^25.0.0
+  checksum: 10/40bddeb73168f574f41a7d7db92113565f6e39f7e85d2866d96b5a4012e2b068b460cb97b8397683e60eaeb5515f26b4f24819ee9a4db4ce85c45b241d2fc79d
   languageName: node
   linkType: hard
 
@@ -32616,7 +32617,7 @@ __metadata:
     "@metamask/kernel-ui": "npm:^0.3.0"
     "@metamask/kernel-utils": "npm:^0.3.0"
     "@metamask/keyring-api": "npm:^21.1.0"
-    "@metamask/keyring-controller": "npm:^24.0.0"
+    "@metamask/keyring-controller": "npm:^25.0.0"
     "@metamask/keyring-internal-api": "npm:^9.1.0"
     "@metamask/keyring-internal-snap-client": "npm:^8.0.0"
     "@metamask/keyring-snap-client": "npm:^8.1.0"
@@ -32655,7 +32656,7 @@ __metadata:
     "@metamask/rpc-errors": "npm:^7.0.0"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
-    "@metamask/seedless-onboarding-controller": "npm:^6.1.0"
+    "@metamask/seedless-onboarding-controller": "npm:^7.0.0"
     "@metamask/selected-network-controller": "npm:^25.0.0"
     "@metamask/shield-controller": "npm:^2.1.1"
     "@metamask/signature-controller": "npm:^35.0.0"

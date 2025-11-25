@@ -246,8 +246,7 @@
     "@endo/env-options@npm:^1.1.8": "patch:@endo/env-options@npm%3A1.1.11#~/.yarn/patches/@endo-env-options-npm-1.1.11-1b7fae374a.patch",
     "@metamask/jazzicon@npm:^2.0.0": "patch:@metamask/jazzicon@npm%3A2.0.0#~/.yarn/patches/@metamask-jazzicon-npm-2.0.0-36957be38d.patch",
     "@rive-app/canvas@npm:2.31.5": "patch:@rive-app/canvas@patch%3A@rive-app/canvas@patch%253A@rive-app/canvas@npm%25253A2.31.5%2523~/.yarn/patches/@rive-app-canvas-npm-2.31.5-df519c6e0f.patch%253A%253Aversion=2.31.5&hash=1ed092%23~/.yarn/patches/@rive-app-canvas-patch-9b746e9393.patch%3A%3Aversion=2.31.5&hash=19c5d0#~/.yarn/patches/@rive-app-canvas-patch-03752f0c3b.patch",
-    "addons-linter/glob": "^10.5.0",
-    "@metamask/keyring-controller": "npm:@metamask-previews/keyring-controller@24.0.0-preview-20df3e99"
+    "addons-linter/glob": "^10.5.0"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -318,7 +317,7 @@
     "@metamask/kernel-ui": "^0.3.0",
     "@metamask/kernel-utils": "^0.3.0",
     "@metamask/keyring-api": "^21.1.0",
-    "@metamask/keyring-controller": "^24.0.0",
+    "@metamask/keyring-controller": "^25.0.0",
     "@metamask/keyring-internal-api": "^9.1.0",
     "@metamask/keyring-internal-snap-client": "^8.0.0",
     "@metamask/keyring-snap-client": "^8.1.0",
@@ -355,7 +354,7 @@
     "@metamask/rpc-errors": "^7.0.0",
     "@metamask/safe-event-emitter": "^3.1.1",
     "@metamask/scure-bip39": "^2.0.3",
-    "@metamask/seedless-onboarding-controller": "^6.1.0",
+    "@metamask/seedless-onboarding-controller": "^7.0.0",
     "@metamask/selected-network-controller": "^25.0.0",
     "@metamask/shield-controller": "^2.1.1",
     "@metamask/signature-controller": "^35.0.0",
