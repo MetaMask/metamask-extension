@@ -236,6 +236,7 @@ const PrepareBridgePage = ({
 
   const activeQuote = isQuoteExpiredOrInvalid ? undefined : unvalidatedQuote;
 
+
   const selectedAccount = useSelector(getFromAccount);
 
   const gasIncluded7702 = useGasIncluded7702({
@@ -740,11 +741,9 @@ const PrepareBridgePage = ({
                 !isCrossChain(chainId, fromChain?.chainId),
             }}
             customTokenListGenerator={toTokenListGenerator}
-            amountInFiat={
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-              activeQuote?.toTokenAmount?.valueInCurrency || undefined
-            }
+          amountInFiat={
+            activeQuote?.toTokenAmount?.valueInCurrency ?? undefined
+          }
             amountFieldProps={{
               testId: 'to-amount',
               readOnly: true,

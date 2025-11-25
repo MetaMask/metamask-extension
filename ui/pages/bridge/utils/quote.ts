@@ -9,10 +9,31 @@ import type {
   NetworkConfiguration,
   AddNetworkFields,
 } from '@metamask/network-controller';
+import { isCaipAssetType, parseCaipAssetType } from '@metamask/utils';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
 import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
 import type { BridgeToken } from '../../../ducks/bridge/types';
+
+/**
+ * Extracts the raw address from an address string that may be in CAIP-19 format.
+ * CAIP-19 format: `{chainId}/{assetNamespace}:{assetReference}`
+ * e.g., `tron:728126428/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t`
+ *
+ * @param addressOrAssetId - The address string (plain or CAIP-19 format)
+ * @returns The raw address (assetReference if CAIP-19, otherwise the original string)
+ */
+export const getAddressFromAssetIdOrAddress = (
+  addressOrAssetId: string | undefined,
+): string => {
+  if (!addressOrAssetId) {
+    return '';
+  }
+  if (isCaipAssetType(addressOrAssetId)) {
+    return parseCaipAssetType(addressOrAssetId).assetReference;
+  }
+  return addressOrAssetId;
+};
 
 export const formatTokenAmount = (
   locale: string,
@@ -167,25 +188,45 @@ export const isQuoteExpiredOrInvalid = ({
 
   // 2. Ensure the quote still matches the currently selected destination asset / chain
   if (activeQuote && toToken) {
-    const quoteDestAddress =
-      activeQuote.quote?.destAsset?.address?.toLowerCase() || '';
-    const selectedDestAddress = toToken.address?.toLowerCase() || '';
+    const destChainId = activeQuote.quote?.destChainId;
 
-    const quoteDestChainIdCaip = activeQuote.quote?.destChainId
-      ? formatChainIdToCaip(activeQuote.quote.destChainId)
+    // For non-EVM chains (Solana, Bitcoin, Tron), don't use toLowerCase() as addresses
+    // are case-sensitive (base58 encoding uses both upper and lowercase letters)
+    const isNonEvmDest = destChainId && isNonEvmChainId(destChainId);
+
+    // Extract raw addresses from CAIP-19 format if present
+    // The bridge API returns plain addresses, but UI may store CAIP-19 asset IDs
+    const quoteDestAddressRaw = getAddressFromAssetIdOrAddress(
+      activeQuote.quote?.destAsset?.address,
+    );
+    const selectedDestAddressRaw = getAddressFromAssetIdOrAddress(
+      toToken.address,
+    );
+
+    // For EVM chains, normalize to lowercase for comparison (addresses are case-insensitive)
+    // For non-EVM chains, preserve case (base58 addresses are case-sensitive)
+    const quoteDestAddress = isNonEvmDest
+      ? quoteDestAddressRaw
+      : quoteDestAddressRaw.toLowerCase();
+    const selectedDestAddress = isNonEvmDest
+      ? selectedDestAddressRaw
+      : selectedDestAddressRaw.toLowerCase();
+
+    const quoteDestChainIdCaip = destChainId
+      ? formatChainIdToCaip(destChainId)
       : '';
     const selectedDestChainIdCaip = toChain?.chainId
       ? formatChainIdToCaip(toChain.chainId)
       : '';
 
-    return !(
-      (quoteDestAddress === selectedDestAddress ||
-        // Extension's native asset address may be different from bridge-api's native
-        // asset address so if both assets are native, we should still return true
-        (isNativeAddress(quoteDestAddress) &&
-          isNativeAddress(selectedDestAddress))) &&
-      quoteDestChainIdCaip === selectedDestChainIdCaip
-    );
+    const addressMatch =
+      quoteDestAddress === selectedDestAddress ||
+      (isNativeAddress(quoteDestAddress) &&
+        isNativeAddress(selectedDestAddress));
+    const chainMatch = quoteDestChainIdCaip === selectedDestChainIdCaip;
+    const isInvalid = !(addressMatch && chainMatch);
+
+    return isInvalid;
   }
 
   return false;
