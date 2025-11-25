@@ -6962,19 +6962,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-api@npm:^21.0.0, @metamask/keyring-api@npm:^21.1.0":
-  version: 21.1.0
-  resolution: "@metamask/keyring-api@npm:21.1.0"
-  dependencies:
-    "@metamask/keyring-utils": "npm:^3.1.0"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.1.0"
-    bitcoin-address-validation: "npm:^2.2.3"
-  checksum: 10/3371a5ab0e9ba0e9b23b30b03a7d83d029e223def5485ab1aa2ec793ba18ff3738422dbe3c47f9cf82411d2ca6ca918928bf998741f0977055071b7bf3042314
-  languageName: node
-  linkType: hard
-
-"@metamask/keyring-api@npm:^21.2.0":
+"@metamask/keyring-api@npm:^21.0.0, @metamask/keyring-api@npm:^21.1.0, @metamask/keyring-api@npm:^21.2.0":
   version: 21.2.0
   resolution: "@metamask/keyring-api@npm:21.2.0"
   dependencies:
