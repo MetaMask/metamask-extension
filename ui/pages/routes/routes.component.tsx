@@ -11,6 +11,7 @@ import {
   useHistory,
   useLocation,
 } from 'react-router-dom';
+import type { To } from 'react-router-dom-v5-compat';
 import IdleTimer from 'react-idle-timer';
 import type { ApprovalType } from '@metamask/controller-utils';
 
@@ -75,6 +76,7 @@ import {
   GATOR_PERMISSIONS,
   TOKEN_TRANSFER_ROUTE,
   REVIEW_GATOR_PERMISSIONS_ROUTE,
+  REWARDS_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import {
@@ -115,6 +117,7 @@ import {
   getIsUnlocked,
 } from '../../ducks/metamask/metamask';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import RewardsPage from '../rewards';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import { getConfirmationRoute } from '../confirmations/hooks/useConfirmationNavigation';
 import {
@@ -168,14 +171,28 @@ import {
   setTheme,
 } from './utils';
 
-// V5-compat navigate function type for bridging v5 routes with v5-compat components
-type V5CompatNavigate = (
-  to: string | number,
-  options?: {
-    replace?: boolean;
-    state?: Record<string, unknown>;
-  },
-) => void;
+/**
+ * V5-to-v5-compat navigation function that bridges react-router-dom v5 history
+ * with v5-compat components expecting the newer navigate API.
+ *
+ * Supports two call signatures:
+ * - Navigate to a route: `navigate(path, options)`
+ * - Navigate in history: `navigate(delta)` (e.g., -1 to go back)
+ *
+ * @example
+ * // Navigate to a new route
+ * navigate('/settings', { replace: true });
+ * @example
+ * // Go back in history
+ * navigate(-1);
+ */
+type V5CompatNavigate = {
+  (
+    to: To,
+    options?: { replace?: boolean; state?: Record<string, unknown> },
+  ): void;
+  (delta: number): void;
+};
 
 /**
  * Creates a v5-compat navigate function from v5 history
@@ -186,13 +203,16 @@ type V5CompatNavigate = (
 const createV5CompatNavigate = (
   history: RouteComponentProps['history'],
 ): V5CompatNavigate => {
-  return (to, options = {}) => {
+  return (
+    to: To | number,
+    options?: { replace?: boolean; state?: Record<string, unknown> },
+  ) => {
     if (typeof to === 'number') {
       history.go(to);
-    } else if (options.replace) {
-      history.replace(to, options.state);
+    } else if (options?.replace) {
+      history.replace(to as string, options.state);
     } else {
-      history.push(to, options.state);
+      history.push(to as string, options?.state);
     }
   };
 };
@@ -785,19 +805,22 @@ export default function Routes() {
             component={Notifications}
             layout={RootLayout}
           />
-          <RouteWithLayout
-            authenticated
-            path={SNAPS_ROUTE}
-            component={SnapList}
-            exact
-            layout={LegacyLayout}
-          />
-          <RouteWithLayout
-            authenticated
-            path={SNAPS_VIEW_ROUTE}
-            component={SnapView}
-            layout={LegacyLayout}
-          />
+          <RouteWithLayout path={SNAPS_ROUTE} exact layout={LegacyLayout}>
+            {createV5CompatRoute(SnapList, {
+              wrapper: AuthenticatedV5Compat,
+              includeNavigate: true,
+              includeLocation: true,
+            })}
+          </RouteWithLayout>
+          <RouteWithLayout path={SNAPS_VIEW_ROUTE} layout={LegacyLayout}>
+            {createV5CompatRoute(SnapView, {
+              wrapper: AuthenticatedV5Compat,
+              includeNavigate: true,
+              includeLocation: true,
+              includeParams: true,
+              paramsAsProps: false,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout path={`${SEND_ROUTE}/:page?`} layout={RootLayout}>
             {createV5CompatRoute<{ page?: string }>(SendPage, {
               wrapper: AuthenticatedV5Compat,
@@ -807,14 +830,17 @@ export default function Routes() {
               paramsAsProps: false,
             })}
           </RouteWithLayout>
-          <Route path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}>
+          <RouteWithLayout
+            path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
+            layout={LegacyLayout}
+          >
             {createV5CompatRoute<{ id?: string }>(ConfirmTransaction, {
               wrapper: AuthenticatedV5Compat,
               includeLocation: true,
               includeParams: true,
               paramsAsProps: false,
             })}
-          </Route>
+          </RouteWithLayout>
           <RouteWithLayout path={SWAPS_ROUTE} layout={LegacyLayout}>
             {createV5CompatRoute(Swaps, {
               wrapper: AuthenticatedV5Compat,
@@ -846,27 +872,36 @@ export default function Routes() {
               includeLocation: true,
             })}
           </RouteWithLayout>
-          <Route path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}>
+          <RouteWithLayout
+            path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}
+            layout={LegacyLayout}
+          >
             {createV5CompatRoute(ConfirmAddSuggestedTokenPage, {
               wrapper: AuthenticatedV5Compat,
               includeNavigate: true,
               includeLocation: true,
             })}
-          </Route>
-          <Route path={CONFIRM_ADD_SUGGESTED_NFT_ROUTE}>
+          </RouteWithLayout>
+          <RouteWithLayout
+            path={CONFIRM_ADD_SUGGESTED_NFT_ROUTE}
+            layout={LegacyLayout}
+          >
             {createV5CompatRoute(ConfirmAddSuggestedNftPage, {
               wrapper: AuthenticatedV5Compat,
               includeNavigate: true,
               includeLocation: true,
             })}
-          </Route>
-          <Route path={`${CONFIRMATION_V_NEXT_ROUTE}/:id?`}>
+          </RouteWithLayout>
+          <RouteWithLayout
+            path={`${CONFIRMATION_V_NEXT_ROUTE}/:id?`}
+            layout={LegacyLayout}
+          >
             {createV5CompatRoute<{ id?: string }>(ConfirmationPage, {
               wrapper: AuthenticatedV5Compat,
               includeParams: true,
               paramsAsProps: false,
             })}
-          </Route>
+          </RouteWithLayout>
           <RouteWithLayout
             authenticated
             path={NEW_ACCOUNT_ROUTE}
@@ -1134,12 +1169,20 @@ export default function Routes() {
             component={ShieldPlan}
             layout={LegacyLayout}
           />
-          <RouteWithLayout
-            authenticated
-            path={DEFAULT_ROUTE}
-            component={Home}
-            layout={RootLayout}
-          />
+          <RouteWithLayout path={REWARDS_ROUTE} layout={RootLayout}>
+            {createV5CompatRoute(RewardsPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeNavigate: true,
+              includeLocation: true,
+            })}
+          </RouteWithLayout>
+          <RouteWithLayout path={DEFAULT_ROUTE} layout={RootLayout}>
+            {createV5CompatRoute(Home, {
+              wrapper: AuthenticatedV5Compat,
+              includeNavigate: true,
+              includeLocation: true,
+            })}
+          </RouteWithLayout>
         </Switch>
       </Suspense>
     );
@@ -1164,7 +1207,12 @@ export default function Routes() {
     if (!accountDetailsAddress || isMultichainAccountsState1Enabled) {
       return null;
     }
-    return <AccountDetails address={accountDetailsAddress} />;
+    return (
+      <AccountDetails
+        address={accountDetailsAddress}
+        navigate={createV5CompatNavigate(history)}
+      />
+    );
   };
 
   const loadMessage = loadingMessage
@@ -1282,7 +1330,9 @@ export default function Routes() {
 
       {renderRoutes()}
 
-      {isUnlocked ? <Alerts history={history} /> : null}
+      {isUnlocked ? (
+        <Alerts navigate={createV5CompatNavigate(history)} />
+      ) : null}
       {React.createElement(
         ToastMaster as React.ComponentType<{
           location: RouteComponentProps['location'];
