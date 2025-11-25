@@ -1,5 +1,5 @@
 import { ReactNodeLike } from 'prop-types';
-import React, { ReactNode } from 'react';
+import React, { ReactNode, memo } from 'react';
 
 import { Page } from '../../../components/multichain/pages/page';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
@@ -42,34 +42,36 @@ const GasFeeContextProviderWrapper: React.FC<{
   );
 };
 
-const Confirm: React.FC<{ confirmationId?: string }> = ({ confirmationId }) => (
-  <ConfirmContextProvider confirmationId={confirmationId}>
-    <DappSwapContextProvider>
-      <TransactionModalContextProvider>
-        {/* This context should be removed once we implement the new edit gas fees popovers */}
-        <GasFeeContextProviderWrapper>
-          <EIP1559TransactionGasModal />
-          <ConfirmAlerts>
-            <Page className="confirm_wrapper">
-              <ConfirmNav />
-              <Header />
-              <SmartTransactionsBannerAlert marginType="noTop" />
-              <ScrollToBottom>
-                <BlockaidLoadingIndicator />
-                <LedgerInfo />
-                <Title />
-                <Info />
-                <PluggableSection />
-              </ScrollToBottom>
-              <GasFeeTokenToast />
-              <Footer />
-              <Splash />
-            </Page>
-          </ConfirmAlerts>
-        </GasFeeContextProviderWrapper>
-      </TransactionModalContextProvider>
-    </DappSwapContextProvider>
-  </ConfirmContextProvider>
+const Confirm: React.FC<{ confirmationId?: string }> = memo(
+  ({ confirmationId }) => (
+    <ConfirmContextProvider confirmationId={confirmationId}>
+      <DappSwapContextProvider>
+        <TransactionModalContextProvider>
+          {/* This context should be removed once we implement the new edit gas fees popovers */}
+          <GasFeeContextProviderWrapper>
+            <EIP1559TransactionGasModal />
+            <ConfirmAlerts>
+              <Page className="confirm_wrapper">
+                <ConfirmNav />
+                <Header />
+                <SmartTransactionsBannerAlert marginType="noTop" />
+                <ScrollToBottom>
+                  <BlockaidLoadingIndicator />
+                  <LedgerInfo />
+                  <Title />
+                  <Info />
+                  <PluggableSection />
+                </ScrollToBottom>
+                <GasFeeTokenToast />
+                <Footer />
+                <Splash />
+              </Page>
+            </ConfirmAlerts>
+          </GasFeeContextProviderWrapper>
+        </TransactionModalContextProvider>
+      </DappSwapContextProvider>
+    </ConfirmContextProvider>
+  ),
 );
 
 export default Confirm;
