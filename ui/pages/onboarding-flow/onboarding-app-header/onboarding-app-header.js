@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom-v5-compat';
 import classnames from 'classnames';
 import MetaFoxLogo from '../../../components/ui/metafox-logo';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -34,9 +33,9 @@ import {
   ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
 
-export default function OnboardingAppHeader({ isWelcomePage }) {
+export default function OnboardingAppHeader({ isWelcomePage, location }) {
   const dispatch = useDispatch();
-  const { pathname, search } = useLocation();
+  const { pathname, search } = location;
   const t = useI18nContext();
   const currentLocale = useSelector(getCurrentLocale);
   const localeOptions = locales.map((locale) => {
@@ -141,4 +140,5 @@ export default function OnboardingAppHeader({ isWelcomePage }) {
 
 OnboardingAppHeader.propTypes = {
   isWelcomePage: PropTypes.bool,
+  location: PropTypes.object.isRequired,
 };
