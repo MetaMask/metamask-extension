@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import classnames from 'classnames';
-import browser from 'webextension-polyfill';
 import {
   PAYMENT_TYPES,
   PaymentType,
@@ -81,6 +80,7 @@ import {
   isDevOrUatBuild,
   getIsTrialedSubscription,
 } from '../../../shared/modules/shield';
+import ApiErrorHandler from '../../components/app/api-error-handler';
 import { ShieldPaymentModal } from './shield-payment-modal';
 import { Plan } from './types';
 import { getProductPrice } from './utils';
@@ -366,33 +366,7 @@ const ShieldPlan = () => {
           justifyContent={JustifyContent.flexStart}
           alignItems={AlignItems.center}
         >
-          <Box
-            className="shield-plan-page__error-content"
-            textAlign={TextAlign.Center}
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            alignItems={AlignItems.center}
-            gap={4}
-          >
-            <Icon
-              className="shield-plan-page__error-icon"
-              name={IconName.Error}
-              size={IconSize.Inherit}
-              color={IconColor.iconAlternative}
-            />
-            <Text variant={DSTextVariant.bodyMd}>
-              {t('shieldPlanErrorText')}
-            </Text>
-            <Button
-              size={ButtonSize.Lg}
-              variant={ButtonVariant.Primary}
-              // this reloads the entire extension
-              onClick={() => browser.runtime.reload()}
-              block
-            >
-              {t('tryAgain')}
-            </Button>
-          </Box>
+          <ApiErrorHandler className="shield-plan-page__error-content" />
         </Content>
       ) : (
         subscriptionPricing && (
