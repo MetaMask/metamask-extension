@@ -2,6 +2,7 @@ import { useEffect, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 
+import { ApprovalType } from '@metamask/controller-utils';
 import {
   AWAITING_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
@@ -57,16 +58,18 @@ export const ConfirmationHandler = () => {
   const canRedirect = !isNotification && !stayOnHomePage;
 
   // Flows that *should* navigate in fullscreen, based on E2E specs
-  // const hasWalletInitiatedSnapApproval = pendingApprovals.some(
-  //   (approval) =>
-  //     approval.type === 'wallet_installSnap' ||
-  //     approval.type === 'wallet_updateSnap' ||
-  //     approval.type === 'wallet_installSnapResult' ||
-  //     approval.type === 'snap_manageAccounts:showSnapAccountRedirect' ||
-  //     approval.type === 'snap_manageAccounts:confirmAccountCreation' ||
-  //     approval.type === 'snap_manageAccounts:confirmAccountRemoval' ||
-  //     approval.type === 'snap_manageAccounts:showNameSnapAccount',
-  // );
+  const hasWalletInitiatedSnapApproval = pendingApprovals.some(
+    (approval) =>
+      approval.type === 'wallet_installSnap' ||
+      approval.type === 'wallet_updateSnap' ||
+      approval.type === 'wallet_installSnapResult' ||
+      approval.type === 'snap_manageAccounts:showSnapAccountRedirect' ||
+      approval.type === 'snap_manageAccounts:confirmAccountCreation' ||
+      approval.type === 'snap_manageAccounts:confirmAccountRemoval' ||
+      approval.type === 'snap_manageAccounts:showNameSnapAccount' ||
+      approval.type === ApprovalType.ResultSuccess ||
+      approval.type === ApprovalType.ResultError,
+  );
 
   // Flows that *should not* navigate in fullscreen, based on E2E specs
   const hasDappSmartTransactionStatus = pendingApprovals.some(
@@ -87,9 +90,9 @@ export const ConfirmationHandler = () => {
       return;
     }
 
-    // if (isFullscreen && !hasWalletInitiatedSnapApproval && !hasApprovalFlows) {
-    //   return;
-    // }
+    if (isFullscreen && !hasWalletInitiatedSnapApproval && !hasApprovalFlows) {
+      return;
+    }
 
     if (canRedirect && showAwaitingSwapScreen) {
       navigate(AWAITING_SWAP_ROUTE);
@@ -115,7 +118,7 @@ export const ConfirmationHandler = () => {
     hasDappSmartTransactionStatus,
     hasApprovalFlows,
     hasSwapsQuotes,
-    // hasWalletInitiatedSnapApproval,
+    hasWalletInitiatedSnapApproval,
     isFullscreen,
     // isNotification,
     // isPopup,
