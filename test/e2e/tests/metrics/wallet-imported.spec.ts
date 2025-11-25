@@ -23,7 +23,6 @@ describe('Wallet Created Events - Imported Account', function () {
     ];
 
     const eventsFirefox = [
-      'App Opened',
       'App Installed',
       'App Installed',
       'App Installed',
