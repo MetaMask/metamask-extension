@@ -159,30 +159,34 @@ const ConfirmTransaction = ({
   }, []);
 
   useEffect(() => {
-    if (
-      paramsTransactionId &&
-      transactionId &&
-      prevParamsTransactionId !== paramsTransactionId
-    ) {
-      const { txData: { txParams: { data } = {}, origin } = {} } = transaction;
+    const handleNavigation = async () => {
+      if (
+        paramsTransactionId &&
+        transactionId &&
+        prevParamsTransactionId !== paramsTransactionId
+      ) {
+        const { txData: { txParams: { data } = {}, origin } = {} } =
+          transaction;
 
-      dispatch(clearConfirmTransaction());
-      dispatch(setTransactionToConfirm(paramsTransactionId));
-      if (origin !== ORIGIN_METAMASK) {
-        dispatch(getContractMethodData(data, use4ByteResolution));
-      }
-    } else if (prevTransactionId && !transactionId && !totalUnapproved) {
-      dispatch(setDefaultHomeActiveTabName('activity')).then(() => {
+        dispatch(clearConfirmTransaction());
+        dispatch(setTransactionToConfirm(paramsTransactionId));
+        if (origin !== ORIGIN_METAMASK) {
+          dispatch(getContractMethodData(data, use4ByteResolution));
+        }
+      } else if (prevTransactionId && !transactionId && !totalUnapproved) {
+        await dispatch(setDefaultHomeActiveTabName('activity'));
         navigate(DEFAULT_ROUTE, { replace: true });
-      });
-    } else if (
-      prevTransactionId &&
-      transactionId &&
-      prevTransactionId !== transactionId &&
-      paramsTransactionId !== transactionId
-    ) {
-      navigate(mostRecentOverviewPage, { replace: true });
-    }
+      } else if (
+        prevTransactionId &&
+        transactionId &&
+        prevTransactionId !== transactionId &&
+        paramsTransactionId !== transactionId
+      ) {
+        navigate(mostRecentOverviewPage, { replace: true });
+      }
+    };
+
+    handleNavigation();
   }, [
     dispatch,
     navigate,

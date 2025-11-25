@@ -1,3 +1,5 @@
+'use no memo';
+
 import { ApprovalRequest } from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import { Json } from '@metamask/utils';
@@ -19,7 +21,7 @@ const VALIDATED_APPROVAL_TYPES = [
 ];
 
 export function useUpdateEthereumChainAlerts(
-  pendingConfirmation: ApprovalRequest<Record<string, Json>> | undefined,
+  pendingConfirmation: ApprovalRequest<Record<string, Json>>,
 ): Alert[] {
   const pendingConfirmationsFromOrigin = useSelector((state) =>
     getApprovalsByOrigin(
@@ -33,7 +35,7 @@ export function useUpdateEthereumChainAlerts(
     if (
       pendingConfirmationsFromOrigin?.length <= 1 ||
       (!VALIDATED_APPROVAL_TYPES.includes(
-        pendingConfirmation?.type as ApprovalType,
+        pendingConfirmation.type as ApprovalType,
       ) &&
         (pendingConfirmation?.requestData?.metadata as Record<string, boolean>)
           ?.isSwitchEthereumChain !== true)
@@ -51,7 +53,7 @@ export function useUpdateEthereumChainAlerts(
         ],
         key: 'pendingConfirmationFromSameOrigin',
         message: t(
-          pendingConfirmation?.type === ApprovalType.AddEthereumChain
+          pendingConfirmation.type === ApprovalType.AddEthereumChain
             ? 'pendingConfirmationAddNetworkAlertMessage'
             : 'pendingConfirmationSwitchNetworkAlertMessage',
           [pendingConfirmationsFromOrigin.length - 1],

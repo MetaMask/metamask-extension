@@ -16,6 +16,7 @@ import {
   TextButtonSize,
   TextVariant,
 } from '@metamask/design-system-react';
+import { useSelector } from 'react-redux';
 import {
   ModalBody,
   TextField,
@@ -26,6 +27,7 @@ import { useValidateReferralCode } from '../../../../hooks/rewards/useValidateRe
 import LoadingIndicator from '../../../ui/loading-indicator';
 import RewardsErrorBanner from '../RewardsErrorBanner';
 import { useOptIn } from '../../../../hooks/rewards/useOptIn';
+import { selectOnboardingReferralCode } from '../../../../ducks/rewards/selectors';
 import {
   REWARDS_ONBOARD_OPTIN_LEGAL_LEARN_MORE_URL,
   REWARDS_ONBOARD_TERMS_URL,
@@ -36,6 +38,7 @@ const OnboardingStep4: React.FC = () => {
   const t = useI18nContext();
 
   const { optinLoading, optinError, optin } = useOptIn();
+  const onboardingReferralCode = useSelector(selectOnboardingReferralCode);
 
   const {
     referralCode,
@@ -43,8 +46,11 @@ const OnboardingStep4: React.FC = () => {
     isValidating: isValidatingReferralCode,
     isValid: referralCodeIsValid,
     isUnknownError: isUnknownErrorReferralCode,
-  } = useValidateReferralCode();
-
+  } = useValidateReferralCode(
+    onboardingReferralCode
+      ? onboardingReferralCode.trim().toUpperCase()
+      : undefined,
+  );
   const handleNext = useCallback(async () => {
     await optin(referralCode);
   }, [optin, referralCode]);
@@ -53,8 +59,8 @@ const OnboardingStep4: React.FC = () => {
     if (isValidatingReferralCode) {
       return (
         <LoadingIndicator
-          alt={undefined}
-          title={undefined}
+          alt={t('rewardsOptInVerifyingReferralCode')}
+          title={t('rewardsOptInVerifyingReferralCode')}
           isLoading={true}
           style={{ width: 32, height: 32, left: 5 }}
         />
@@ -173,6 +179,7 @@ const OnboardingStep4: React.FC = () => {
         className="w-full my-2"
         disabled={isDisabled}
         isDisabled={isDisabled}
+        isLoading={optinLoading}
       >
         {t('rewardsOnboardingStepOptIn')}
       </Button>
@@ -243,10 +250,12 @@ const OnboardingStep4: React.FC = () => {
 
       {/* Error Section */}
       {optinError && (
-        <RewardsErrorBanner
-          title={t('rewardsOnboardingStep4OptInError')}
-          description={optinError}
-        />
+        <Box className="pt-4">
+          <RewardsErrorBanner
+            title={t('rewardsOnboardingStep4OptInError')}
+            description={optinError}
+          />
+        </Box>
       )}
 
       {/* Title Section */}

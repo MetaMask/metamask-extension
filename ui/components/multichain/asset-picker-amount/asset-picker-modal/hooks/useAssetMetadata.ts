@@ -1,5 +1,4 @@
 import { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
-import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { getUseExternalServices } from '../../../../../selectors';
 import {
@@ -26,13 +25,6 @@ export const useAssetMetadata = (
 ) => {
   const allowExternalServices = useSelector(getUseExternalServices);
 
-  useEffect(() => {
-    return () => {
-      abortControllerRef.current?.abort();
-      abortControllerRef.current = null;
-    };
-  }, [abortControllerRef]);
-
   const { value: assetMetadata } = useAsyncResult<
     | {
         address: Hex | CaipAssetType | string;
@@ -57,7 +49,8 @@ export const useAssetMetadata = (
       shouldFetchMetadata &&
       trimmedSearchQuery.length > 30
     ) {
-      abortControllerRef.current ??= new AbortController();
+      // eslint-disable-next-line react-compiler/react-compiler
+      abortControllerRef.current = new AbortController();
       const metadata = await fetchAssetMetadata(
         trimmedSearchQuery,
         chainId,
