@@ -984,18 +984,18 @@ export async function loadStateFromPersistence(backup) {
   if (persistenceManager.storageKind === 'data') {
     const flag =
       versionedData.data.RemoteFeatureFlagController?.state?.remoteFeatureFlags
-        ?.extensionPlatformUseSplitStateStorage;
+        ?.platformSplitStateGradualRollout;
     const useSplitStateStorage =
       flag &&
       typeof flag === 'object' &&
       'value' in flag &&
-      Boolean(flag.value) &&
+      flag.value?.enabled === true &&
       // if we've already tried, don't try again.
-      versionedData.meta._tried !== true;
+      versionedData.meta._platformSplitStateGradualRolloutAttempted !== true;
 
     if (useSplitStateStorage) {
       // a sigil to mark that we *tried* to migrate to split state storage
-      versionedData.meta._tried = true;
+      versionedData.meta._platformSplitStateGradualRolloutAttempted = true;
       persistenceManager.setMetadata(versionedData.meta);
     }
 
@@ -1004,7 +1004,7 @@ export async function loadStateFromPersistence(backup) {
 
     if (useSplitStateStorage) {
       await persistenceManager.migrateToSplitState();
-      delete versionedData.meta._tried;
+      delete versionedData.meta._platformSplitStateGradualRolloutAttempted;
       persistenceManager.setMetadata(versionedData.meta);
     }
   } else if (persistenceManager.storageKind === 'split') {
