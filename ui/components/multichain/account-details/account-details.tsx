@@ -3,6 +3,7 @@ import React, { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
 import { AvatarAccountSize } from '@metamask/design-system-react';
+import type { To } from 'react-router-dom-v5-compat';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
@@ -45,9 +46,18 @@ import { AccountDetailsAuthenticate } from './account-details-authenticate';
 import { AccountDetailsDisplay } from './account-details-display';
 import { AccountDetailsKey } from './account-details-key';
 
-type AccountDetailsProps = { address: string };
+type AccountDetailsProps = {
+  address: string;
+  navigate?: {
+    (
+      to: To,
+      options?: { replace?: boolean; state?: Record<string, unknown> },
+    ): void;
+    (delta: number): void;
+  };
+};
 
-export const AccountDetails = ({ address }: AccountDetailsProps) => {
+export const AccountDetails = ({ address, navigate }: AccountDetailsProps) => {
   const dispatch = useDispatch();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -214,7 +224,7 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
         }}
         holdToRevealType="PrivateKey"
       />
-      {displayExportSrpQuiz && (
+      {displayExportSrpQuiz && navigate && (
         <SRPQuiz
           keyringId={keyringId}
           isOpen={srpQuizModalVisible}
@@ -223,6 +233,7 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
             onClose();
           }}
           closeAfterCompleting
+          navigate={navigate}
         />
       )}
     </>
