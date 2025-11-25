@@ -128,12 +128,12 @@ describe('DappSwapMiddleware', () => {
     await flushPromises();
 
     expect(fetchQuotes).toHaveBeenCalledWith({
-      destChainId: '1',
+      destChainId: '0x1',
       destTokenAddress: '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
       fee: 250,
       gasIncluded: false,
       gasIncluded7702: false,
-      srcChainId: '1',
+      srcChainId: '0x1',
       srcTokenAddress: '0x0000000000000000000000000000000000000000',
       srcTokenAmount: '0x5af3107a4000',
       walletAddress: '0x12312312312312',
