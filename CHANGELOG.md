@@ -9,16 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.10.4]
 
-### Uncategorized
-
-- bump semvar version to 13.10.4
-- bump semvar version to 13.10.4
-- bump semvar version to 13.10.4
-- bump semvar version to 13.10.4
-- bump semvar version to 13.10.4
-
 ### Fixed
 
+- Signed deep links with empty `sig_params` with extra params as valid (#38142)
+- Adds mon as currency to fetch prices (#38261)
 - Removes sidepanel from chrome manifest files (#38242)
 
 ## [13.10.3]
