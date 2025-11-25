@@ -80,7 +80,7 @@ describe('Snap Account Transfers', function (this: Suite) {
         const accountList = new AccountListPage(driver);
         await accountList.checkPageIsLoaded();
 
-        // Account balance doesn't update after transation is completed
+        // Account balance doesn't update after transaction is completed
         // await accountList.checkMultichainAccountBalanceDisplayed('$88,426');
         await accountList.checkMultichainAccountBalanceDisplayed('$81,623');
       },
@@ -142,7 +142,7 @@ describe('Snap Account Transfers', function (this: Suite) {
         const accountList = new AccountListPage(driver);
         await accountList.checkPageIsLoaded();
 
-        // Account balance doesn't update after transation is completed
+        // Account balance doesn't update after transaction is completed
         // await accountList.checkMultichainAccountBalanceDisplayed('$88,426');
         await accountList.checkMultichainAccountBalanceDisplayed('$81,623');
       },
