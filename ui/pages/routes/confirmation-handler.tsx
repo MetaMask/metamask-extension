@@ -14,8 +14,8 @@ import { getConfirmationRoute } from '../confirmations/hooks/useConfirmationNavi
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
-  // ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_FULLSCREEN,
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
 } from '../../../shared/constants/app';
 import {
   getHasApprovalFlows,
@@ -29,6 +29,20 @@ import {
 } from '../../ducks/swaps/swaps';
 import { useNavState } from '../../contexts/navigation-state';
 
+const APPROVAL_TYPES = [
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval,
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
+  ///: END:ONLY_INCLUDE_IF
+  'wallet_installSnap',
+  'wallet_updateSnap',
+  'wallet_installSnapResult',
+  ApprovalType.ResultSuccess,
+  ApprovalType.ResultError,
+];
+
 export const ConfirmationHandler = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -36,7 +50,6 @@ export const ConfirmationHandler = () => {
   const navState = useNavState();
 
   const envType = getEnvironmentType();
-  // const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
   const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
   const isFullscreen = envType === ENVIRONMENT_TYPE_FULLSCREEN;
 
@@ -58,26 +71,29 @@ export const ConfirmationHandler = () => {
   const canRedirect = !isNotification && !stayOnHomePage;
 
   // Flows that *should* navigate in fullscreen, based on E2E specs
-  const hasWalletInitiatedSnapApproval = pendingApprovals.some(
-    (approval) =>
-      approval.type === 'wallet_installSnap' ||
-      approval.type === 'wallet_updateSnap' ||
-      approval.type === 'wallet_installSnapResult' ||
-      approval.type === 'snap_manageAccounts:showSnapAccountRedirect' ||
-      approval.type === 'snap_manageAccounts:confirmAccountCreation' ||
-      approval.type === 'snap_manageAccounts:confirmAccountRemoval' ||
-      approval.type === 'snap_manageAccounts:showNameSnapAccount' ||
-      approval.type === ApprovalType.ResultSuccess ||
-      approval.type === ApprovalType.ResultError,
+  const hasSnapApproval = pendingApprovals.some((approval) =>
+    APPROVAL_TYPES.includes(approval.type),
   );
 
   // Flows that *should not* navigate in fullscreen, based on E2E specs
-  const hasDappSmartTransactionStatus = pendingApprovals.some(
+  const hasSmartTransactionStatus = pendingApprovals.some(
     (approval) =>
       approval.type === 'smartTransaction:showSmartTransactionStatusPage' &&
       approval.origin !== 'metamask' &&
       approval.origin !== 'MetaMask',
   );
+
+  const ignored = useMemo(() => {
+    return (
+      isFullscreen &&
+      (hasSmartTransactionStatus || (!hasSnapApproval && !hasApprovalFlows))
+    );
+  }, [
+    isFullscreen,
+    hasSmartTransactionStatus,
+    hasSnapApproval,
+    hasApprovalFlows,
+  ]);
 
   // Ported from home.component - checkStatusAndNavigate()
   useEffect(() => {
@@ -86,11 +102,7 @@ export const ConfirmationHandler = () => {
       return;
     }
 
-    if (isFullscreen && hasDappSmartTransactionStatus) {
-      return;
-    }
-
-    if (isFullscreen && !hasWalletInitiatedSnapApproval && !hasApprovalFlows) {
+    if (ignored) {
       return;
     }
 
@@ -115,18 +127,17 @@ export const ConfirmationHandler = () => {
   }, [
     canRedirect,
     hasBridgeQuotes,
-    hasDappSmartTransactionStatus,
+    // hasSmartTransactionStatus,
     hasApprovalFlows,
     hasSwapsQuotes,
-    hasWalletInitiatedSnapApproval,
+    // hasSnapApproval,
     isFullscreen,
-    // isNotification,
-    // isPopup,
     navigate,
     pathname,
     pendingApprovals,
     showAwaitingSwapScreen,
     swapsFetchParams,
+    ignored,
   ]);
 
   return null;
