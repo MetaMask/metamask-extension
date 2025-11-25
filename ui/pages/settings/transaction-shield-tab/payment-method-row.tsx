@@ -7,7 +7,6 @@ import {
   Subscription,
   SubscriptionCryptoPaymentMethod,
 } from '@metamask/subscription-controller';
-import { NameType } from '@metamask/name-controller';
 import {
   Box,
   ButtonLink,
@@ -33,7 +32,6 @@ import Tooltip from '../../../components/ui/tooltip';
 import { ShieldPaymentModal } from '../../shield-plan/shield-payment-modal';
 import {
   getIsShieldSubscriptionEndingSoon,
-  getIsShieldSubscriptionPaused,
 } from '../../../../shared/lib/shield';
 import { isCryptoPaymentMethod } from './types';
 
@@ -168,18 +166,6 @@ export const PaymentMethodRow = ({
     [onPaymentMethodChange],
   );
 
-  const handleClick = useCallback(() => {
-    // Don't open modal if paused with error (use existing error handler)
-    if (isPaused && !isUnexpectedErrorCryptoPayment) {
-      return;
-    }
-    // Don't open modal if subscription ending soon (use existing error handler)
-    if (isSubscriptionEndingSoon) {
-      return;
-    }
-    setShowPaymentModal(true);
-  }, [isPaused, isUnexpectedErrorCryptoPayment, isSubscriptionEndingSoon]);
-
   const paymentMethodDisplay = useMemo(() => {
     if (!displayedShieldSubscription) {
       return '';
@@ -234,29 +220,26 @@ export const PaymentMethodRow = ({
       );
     }
 
-    if (isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)) {
-      const tokenInfo = displayedShieldSubscription.paymentMethod.crypto;
-      const tokenAddress = cryptoPaymentMethod?.chains
-        ?.find((chain) => chain.chainId === tokenInfo.chainId)
-        ?.tokens.find(
-          (token) => token.symbol === tokenInfo.tokenSymbol,
-        )?.address;
+    const paymentMethodText = isCryptoPaymentMethod(
+      displayedShieldSubscription.paymentMethod,
+    )
+      ? displayedShieldSubscription.paymentMethod.crypto.tokenSymbol
+      : // display card info for card payment method
+        `${displayedShieldSubscription.paymentMethod.card.brand.charAt(0).toUpperCase() + displayedShieldSubscription.paymentMethod.card.brand.slice(1)} - ${displayedShieldSubscription.paymentMethod.card.last4}`;
 
-      if (!tokenAddress) {
-        return tokenInfo.tokenSymbol;
-      }
-      return (
-        <Name
-          value={tokenAddress}
-          type={NameType.ETHEREUM_ADDRESS}
-          preferContractSymbol
-          variation={tokenInfo.chainId}
-          fallbackName={tokenInfo.tokenSymbol}
-        />
-      );
-    }
-
-    return `${displayedShieldSubscription.paymentMethod.card.brand.charAt(0).toUpperCase() + displayedShieldSubscription.paymentMethod.card.brand.slice(1)} - ${displayedShieldSubscription.paymentMethod.card.last4}`;
+    return (
+      <ButtonLink
+        className="neutral-button"
+        onClick={() => setShowPaymentModal(true)}
+        endIconName={IconName.ArrowRight}
+        color={TextColor.textDefault}
+        endIconProps={{
+          color: IconColor.iconDefault,
+        }}
+      >
+        {paymentMethodText}
+      </ButtonLink>
+    );
   }, [
     displayedShieldSubscription,
     isPaused,
@@ -283,7 +266,7 @@ export const PaymentMethodRow = ({
   // For normal states, make it clickable
   return (
     <>
-      <Box as="button" onClick={handleClick}>
+      <Box>
         {paymentMethodDisplay}
       </Box>
       <ShieldPaymentModal

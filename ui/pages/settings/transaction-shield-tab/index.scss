@@ -48,6 +48,10 @@
     color: var(--color-warning-default);
   }
 
+  .neutral-button:hover {
+    color: var(--color-text-default);
+  }
+
   &__notification-banner {
     margin-inline: 0;
 
