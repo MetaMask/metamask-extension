@@ -57,10 +57,11 @@ export function useDappSwapComparisonMetrics() {
   );
 
   const captureDappSwapComparisonFailed = useCallback(
-    (reason: string) => {
+    (reason: string, commands?: string) => {
       captureDappSwapComparisonProperties({
         properties: {
           swap_dapp_comparison: reason ?? 'failed',
+          swap_dapp_commands: commands ?? '',
         },
       });
     },

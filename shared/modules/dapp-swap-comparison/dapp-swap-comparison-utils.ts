@@ -49,7 +49,7 @@ export const ABI = [
   },
 ];
 
-function parseTransactionData(data?: string) {
+export function parseTransactionData(data?: string) {
   const contractInterface = new Interface(ABI);
 
   let parsedTransactionData: TransactionDescription;
@@ -68,9 +68,11 @@ function parseTransactionData(data?: string) {
   return { commands, commandBytes, inputs };
 }
 
-export function getDataFromSwap(chainId: Hex, data?: string) {
-  const { commands, commandBytes, inputs } = parseTransactionData(data);
-
+export function getDataFromSwap(
+  chainId: Hex,
+  commandBytes: string[],
+  inputs: string[],
+) {
   const { amountMin, quotesInput } = getCommandValues(
     commandBytes,
     inputs,
@@ -79,7 +81,6 @@ export function getDataFromSwap(chainId: Hex, data?: string) {
 
   return {
     amountMin,
-    commands,
     quotesInput,
     tokenAddresses: [
       quotesInput?.destTokenAddress,

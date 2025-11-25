@@ -67,6 +67,13 @@ export function selectEnforcedSimulationsSlippage(
 export function selectDappSwapComparisonData(
   state: ConfirmMetamaskState,
   transactionId: string,
-): { quotes?: QuoteResponse[]; latency?: number } | undefined {
+):
+  | {
+      quotes?: QuoteResponse[];
+      latency?: number;
+      commands?: string;
+      error?: string;
+    }
+  | undefined {
   return state.metamask.dappSwapComparisonData?.[transactionId] ?? undefined;
 }

@@ -133,7 +133,12 @@ export type AppStateControllerState = {
   pendingShieldCohortTxType: string | null;
   defaultSubscriptionPaymentOptions?: DefaultSubscriptionPaymentOptions;
   dappSwapComparisonData?: {
-    [uniqueId: string]: { quotes?: QuoteResponse[]; latency?: number };
+    [uniqueId: string]: {
+      quotes?: QuoteResponse[];
+      latency?: number;
+      commands?: string;
+      error?: string;
+    };
   };
 
   /**
@@ -1636,7 +1641,12 @@ export class AppStateController extends BaseController<
 
   setDappSwapComparisonData(
     uniqueId: string,
-    info: { quotes?: QuoteResponse[]; latency?: number },
+    info: {
+      quotes?: QuoteResponse[];
+      latency?: number;
+      commands?: string;
+      error?: string;
+    },
   ): void {
     this.update((state) => {
       state.dappSwapComparisonData = {
@@ -1650,6 +1660,8 @@ export class AppStateController extends BaseController<
     | {
         quotes?: QuoteResponse[];
         latency?: number;
+        commands?: string;
+        error?: string;
       }
     | undefined {
     return this.state.dappSwapComparisonData?.[uniqueId] ?? undefined;

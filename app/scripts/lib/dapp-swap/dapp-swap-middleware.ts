@@ -18,14 +18,19 @@ export function createDappSwapMiddleware<
   Result extends Json,
 >({
   fetchQuotes,
-  setSwapQuotes,
+  setDappSwapComparisonData,
   getNetworkConfigurationByNetworkClientId,
   dappSwapMetricsFlag,
 }: {
   fetchQuotes: (quotesInput: GenericQuoteRequest) => Promise<QuoteResponse[]>;
-  setSwapQuotes: (
+  setDappSwapComparisonData: (
     uniqueId: string,
-    info: { quotes?: QuoteResponse[]; latency?: number },
+    info: {
+      quotes?: QuoteResponse[];
+      latency?: number;
+      commands?: string;
+      error?: string;
+    },
   ) => void;
   getNetworkConfigurationByNetworkClientId: (
     networkClientId: NetworkClientId,
@@ -45,7 +50,7 @@ export function createDappSwapMiddleware<
       getQuotesForConfirmation({
         req,
         fetchQuotes,
-        setSwapQuotes,
+        setDappSwapComparisonData,
         getNetworkConfigurationByNetworkClientId,
         dappSwapMetricsFlag,
         securityAlertId,

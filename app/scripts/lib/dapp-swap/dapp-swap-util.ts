@@ -10,7 +10,10 @@ import {
 } from '@metamask/network-controller';
 
 import { captureException } from '../../../../shared/lib/sentry';
-import { getDataFromSwap } from '../../../../shared/modules/dapp-swap-comparison/dapp-swap-comparison-utils';
+import {
+  getDataFromSwap,
+  parseTransactionData,
+} from '../../../../shared/modules/dapp-swap-comparison/dapp-swap-comparison-utils';
 import { SecurityAlertResponse } from '../ppom/types';
 
 export type DappSwapMiddlewareRequest<
@@ -60,16 +63,21 @@ const getSwapDetails = (params: DappSwapMiddlewareRequest['params']) => {
 export function getQuotesForConfirmation({
   req,
   fetchQuotes,
-  setSwapQuotes,
+  setDappSwapComparisonData,
   getNetworkConfigurationByNetworkClientId,
   dappSwapMetricsFlag,
   securityAlertId,
 }: {
   req: DappSwapMiddlewareRequest<JsonRpcParams>;
   fetchQuotes: (quotesInput: GenericQuoteRequest) => Promise<QuoteResponse[]>;
-  setSwapQuotes: (
+  setDappSwapComparisonData: (
     uniqueId: string,
-    info: { quotes?: QuoteResponse[]; latency?: number },
+    info: {
+      quotes?: QuoteResponse[];
+      latency?: number;
+      commands?: string;
+      error?: string;
+    },
   ) => void;
   getNetworkConfigurationByNetworkClientId: (
     networkClientId: NetworkClientId,
@@ -78,6 +86,7 @@ export function getQuotesForConfirmation({
   dappSwapMetricsFlag: { enabled: boolean; bridge_quote_fees: number };
   securityAlertId?: string;
 }) {
+  let commands = '';
   try {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const { enabled: dappSwapEnabled, bridge_quote_fees: bridgeQuoteFees } =
@@ -91,8 +100,14 @@ export function getQuotesForConfirmation({
       const { chainId } =
         getNetworkConfigurationByNetworkClientId(req.networkClientId) ?? {};
       const { data, from } = getSwapDetails(params);
-      if (data && securityAlertId && chainId) {
-        const { quotesInput } = getDataFromSwap(chainId as Hex, data);
+      if (data) {
+        const parsedTransactionData = parseTransactionData(data);
+        commands = parsedTransactionData.commands;
+        const { quotesInput } = getDataFromSwap(
+          chainId as Hex,
+          parsedTransactionData.commandBytes,
+          parsedTransactionData.inputs,
+        );
         if (quotesInput) {
           const startTime = new Date().getTime();
           fetchQuotes({
@@ -104,10 +119,14 @@ export function getQuotesForConfirmation({
               const endTime = new Date().getTime();
               const latency = endTime - startTime;
               if (quotes) {
-                setSwapQuotes(securityAlertId, { quotes, latency });
+                setDappSwapComparisonData(securityAlertId, { quotes, latency });
               }
             })
             .catch((error) => {
+              setDappSwapComparisonData(securityAlertId, {
+                error: `Error fetching bridge quotes: ${error.message}`,
+                commands,
+              });
               log.error('Error fetching dapp swap quotes', error);
               captureException(error);
             });
@@ -115,6 +134,12 @@ export function getQuotesForConfirmation({
       }
     }
   } catch (error) {
+    if (securityAlertId) {
+      setDappSwapComparisonData(securityAlertId, {
+        error: `Error fetching bridge quotes: ${(error as Error).toString()}`,
+        commands,
+      });
+    }
     log.error('Error fetching dapp swap quotes', error);
     captureException(error);
   }
