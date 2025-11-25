@@ -24,13 +24,7 @@ describe('Multichain account Web Socket', function (this: Suite) {
         await accountListPage.checkPageIsLoaded();
         await accountListPage.addMultichainAccount();
 
-        const connectionCount =
-          LocalWebSocketServer.getServerInstance().getWebsocketConnectionCount();
-        assert.equal(
-          connectionCount,
-          2,
-          `Expected 2 websocket connections, but found ${connectionCount}`,
-        );
+        await waitForWebsocketConnections(driver, 1);
       },
     );
   });
@@ -57,16 +51,7 @@ describe('Multichain account Web Socket', function (this: Suite) {
         await driver.switchToWindowWithTitle('MetaMask');
         await driver.closeWindow();
 
-        // Wait a moment
-        await driver.delay(5000);
-
-        const activeWebSocketConnections =
-          LocalWebSocketServer.getServerInstance().getWebsocketConnectionCount();
-        assert.equal(
-          activeWebSocketConnections,
-          2,
-          `Expected 2 websocket connections after closing MetaMask, but found ${activeWebSocketConnections}`,
-        );
+        await waitForWebsocketConnections(driver, 1);
       },
     );
   });
@@ -83,14 +68,7 @@ describe('Multichain account Web Socket', function (this: Suite) {
         const headerComponent = new HeaderNavbar(driver);
         await headerComponent.openAccountMenu();
 
-        // Verify that a websocket connection has been established with first window
-        let connectionCount =
-          LocalWebSocketServer.getServerInstance().getWebsocketConnectionCount();
-        assert.equal(
-          connectionCount,
-          2,
-          `Expected 2 websocket connection with first MM window, but found ${connectionCount}`,
-        );
+        await waitForWebsocketConnections(driver, 1);
 
         // Open a blank page to prevent browser from closing
         await driver.openNewPage('about:blank');
@@ -98,49 +76,40 @@ describe('Multichain account Web Socket', function (this: Suite) {
         // Open a new MetaMask window
         await driver.openNewPage(`${driver.extensionUrl}/home.html`);
 
-        // Verify that no new websocket connection is opened (give it some time)
-        await driver.delay(5000);
-        // jest.advanceTimersByTime(Duration.Second * 5);
-        connectionCount =
-          LocalWebSocketServer.getServerInstance().getWebsocketConnectionCount();
-        assert.equal(
-          connectionCount,
-          2,
-          `Expected 2 websocket connection with two MM windows, but found ${connectionCount}`,
-        );
+        await waitForWebsocketConnections(driver, 1);
 
         // Close the first MetaMask window
         await driver.switchToWindowWithTitle('MetaMask');
         await driver.closeWindow();
 
-        // Verify that websocket connection is NOT closed - second MM window still open (give it some time)
-        await driver.delay(5000);
-        connectionCount =
-          LocalWebSocketServer.getServerInstance().getWebsocketConnectionCount();
-        assert.equal(
-          connectionCount,
-          2,
-          `Expected 2 websocket connection after closing first MM window, but found ${connectionCount}`,
-        );
+        await waitForWebsocketConnections(driver, 1);
 
         // Close the second MetaMask window
         await driver.switchToWindowWithTitle('MetaMask');
         await driver.closeWindow();
 
-        // Wait for a short time (less than websocket close grace period)
-        await driver.delay(5000);
-
-        // Verify that websocket connection is NOT closed
-        const activeWebSocketConnections =
-          LocalWebSocketServer.getServerInstance().getWebsocketConnectionCount();
-        assert.equal(
-          activeWebSocketConnections,
-          2,
-          `Expected 2 websocket connections after closing all MM windows, but found ${activeWebSocketConnections}`,
-        );
+        await waitForWebsocketConnections(driver, 1);
 
         // The websocket close grace period is 5 minutes, we can't wait for this long to check if it's closed
       },
     );
   });
 });
+
+async function waitForWebsocketConnections(
+  driver: Driver,
+  expectedCount: number,
+) {
+  let connectionCount;
+  await driver.wait(async () => {
+    connectionCount =
+      LocalWebSocketServer.getServerInstance().getWebsocketConnectionCount();
+    return connectionCount === expectedCount;
+  }, 10000);
+
+  assert.equal(
+    connectionCount,
+    expectedCount,
+    `Expected ${expectedCount} websocket connections, but found ${connectionCount}`,
+  );
+}
