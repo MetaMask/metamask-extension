@@ -46,6 +46,8 @@ export enum ShieldUserAccountCategoryEnum {
 export enum ShieldUserAccountTypeEnum {
   EOA = 'EOA',
   ERC4337 = 'SmartAccount',
+  // in case user current selected account could be non evm like bitcoin, solana
+  OTHER = 'Other',
 }
 
 export enum ShieldCtaActionClickedEnum {

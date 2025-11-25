@@ -40,7 +40,7 @@ jest.mock('react-router-dom-v5-compat', () => {
     ...jest.requireActual('react-router-dom-v5-compat'),
     useNavigate: () => mockUseNavigate,
     useLocation: () => ({
-      pathname: '/cross-chain',
+      pathname: '/cross-chain/swaps/prepare-swap-page',
       search: '',
       hash: '',
       state: null,
