@@ -215,7 +215,6 @@ export const handleTransactionConfirmed = async (
   if (txReceipt?.status === '0x0') {
     extraParams.status = METRICS_STATUS_FAILED;
   }
-
   await createUpdateFinalizeTransactionEventFragment({
     eventName: TransactionMetaMetricsEvent.finalized,
     extraParams,

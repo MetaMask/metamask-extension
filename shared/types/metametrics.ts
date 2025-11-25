@@ -72,9 +72,7 @@ export type TransactionMetricsRequest = {
   getIsConfirmationAdvancedDetailsOpen: () => boolean;
   getHDEntropyIndex: () => number;
   getNetworkRpcUrl: (chainId: Hex) => string;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getFeatureFlags: () => Record<string, any>;
+  getFeatureFlags: () => Record<string, unknown>;
   getPna25Acknowledged: () => boolean;
 };
 
