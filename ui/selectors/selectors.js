@@ -481,14 +481,15 @@ export const getMetaMaskAccounts = createDeepEqualSelector(
             };
           }
         } else {
+          const internalAccountTypeCaip = internalAccount.type.split(':')[0];
           const multichainNetwork = multichainNetworkProviders.find((network) =>
-            network.isAddressCompatible(internalAccount.address),
+            network.chainId.startsWith(internalAccountTypeCaip),
           );
           account = {
             ...account,
             balance:
               multichainBalances?.[internalAccount.id]?.[
-                MULTICHAIN_NETWORK_TO_ASSET_TYPES[multichainNetwork.chainId]
+                MULTICHAIN_NETWORK_TO_ASSET_TYPES[multichainNetwork?.chainId]
               ]?.amount ?? '0',
           };
         }
