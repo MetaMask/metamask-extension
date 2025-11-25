@@ -1,14 +1,24 @@
 import browser from 'webextension-polyfill';
+import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import type MetamaskController from '../metamask-controller';
 
 const MENU_ITEM_ID = 'openSidePanel';
 
+// Type augmentation for sidePanel API (not yet in webextension-polyfill types)
+type BrowserWithSidePanel = typeof browser & {
+  sidePanel?: {
+    open: (options: { windowId: number }) => Promise<void>;
+  };
+};
+
 export async function initSidePanelContextMenu(
   controller: MetamaskController,
 ): Promise<void> {
+  const browserWithSidePanel = browser as BrowserWithSidePanel;
+
   if (
     !browser.contextMenus ||
-    !browser.sidePanel ||
+    !browserWithSidePanel.sidePanel ||
     process.env.IS_SIDEPANEL?.toString() !== 'true'
   ) {
     return;
@@ -35,14 +45,14 @@ export async function initSidePanelContextMenu(
   }
 
   browser.contextMenus.onClicked.addListener((info, tab) => {
-    if (info.menuItemId === MENU_ITEM_ID) {
-      browser.sidePanel.open({ windowId: tab.windowId });
+    if (info.menuItemId === MENU_ITEM_ID && tab?.windowId) {
+      browserWithSidePanel.sidePanel?.open({ windowId: tab.windowId });
     }
   });
 
   controller?.controllerMessenger?.subscribe(
     'RemoteFeatureFlagController:stateChange',
-    (state) => {
+    (state: RemoteFeatureFlagControllerState) => {
       if (isEnabled(state)) {
         createMenu();
       } else {
