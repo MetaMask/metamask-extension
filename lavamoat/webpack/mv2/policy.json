@@ -1016,6 +1016,24 @@
         "lodash": true
       }
     },
+    "@metamask/user-profile-controller>@metamask/controller-utils": {
+      "globals": {
+        "Buffer.from": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "bn.js": true,
+        "buffer": true,
+        "cockatiel": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "lodash": true
+      }
+    },
     "@metamask/core-backend": {
       "globals": {
         "URL": true,
@@ -1765,6 +1783,18 @@
         "uuid": true
       }
     },
+    "@metamask/user-profile-controller>@metamask/polling-controller": {
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "uuid": true
+      }
+    },
     "@metamask/post-message-stream": {
       "globals": {
         "MessageEvent.prototype": true,
@@ -2161,8 +2191,9 @@
         "console.error": true
       },
       "packages": {
-        "@metamask/controller-utils": true,
-        "@metamask/bridge-controller>@metamask/polling-controller": true,
+        "@metamask/user-profile-controller>@metamask/controller-utils": true,
+        "@metamask/user-profile-controller>@metamask/polling-controller": true,
+        "@metamask/utils": true,
         "@metamask/eth-qr-keyring>async-mutex": true
       }
     },
