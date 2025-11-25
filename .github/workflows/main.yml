@@ -340,7 +340,6 @@ jobs:
       - build-test-webpack
       - build-dist-browserify
       - build-test-flask-browserify
-      - export-onboarding-fixture
     if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/e2e-chrome.yml
     with:
@@ -357,7 +356,6 @@ jobs:
       - build-test-mv2-browserify
       - build-test-mv2-webpack
       - build-test-flask-mv2-browserify
-      - export-onboarding-fixture
     if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/e2e-firefox.yml
     with:
