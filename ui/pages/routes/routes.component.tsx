@@ -828,7 +828,7 @@ export default function Routes() {
               paramsAsProps: false,
             })}
           </RouteWithLayout>
-          <Route
+          <RouteWithLayout
             path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
             layout={LegacyLayout}
           >
@@ -838,7 +838,7 @@ export default function Routes() {
               includeParams: true,
               paramsAsProps: false,
             })}
-          </Route>
+          </RouteWithLayout>
           <RouteWithLayout path={SWAPS_ROUTE} layout={LegacyLayout}>
             {createV5CompatRoute(Swaps, {
               wrapper: AuthenticatedV5Compat,
@@ -870,20 +870,26 @@ export default function Routes() {
               includeLocation: true,
             })}
           </RouteWithLayout>
-          <Route path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE} layout={LegacyLayout}>
+          <RouteWithLayout
+            path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}
+            layout={LegacyLayout}
+          >
             {createV5CompatRoute(ConfirmAddSuggestedTokenPage, {
               wrapper: AuthenticatedV5Compat,
               includeNavigate: true,
               includeLocation: true,
             })}
-          </Route>
-          <Route path={CONFIRM_ADD_SUGGESTED_NFT_ROUTE} layout={LegacyLayout}>
+          </RouteWithLayout>
+          <RouteWithLayout
+            path={CONFIRM_ADD_SUGGESTED_NFT_ROUTE}
+            layout={LegacyLayout}
+          >
             {createV5CompatRoute(ConfirmAddSuggestedNftPage, {
               wrapper: AuthenticatedV5Compat,
               includeNavigate: true,
               includeLocation: true,
             })}
-          </Route>
+          </RouteWithLayout>
           <RouteWithLayout
             path={`${CONFIRMATION_V_NEXT_ROUTE}/:id?`}
             layout={LegacyLayout}
