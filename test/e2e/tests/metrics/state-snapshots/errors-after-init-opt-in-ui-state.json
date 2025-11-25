@@ -426,7 +426,9 @@
     "gatorPermissionsMapSerialized": "string",
     "isFetchingGatorPermissions": "boolean",
     "gatorPermissionsProviderSnapId": "string",
-    "srpSessionData": "object"
+    "srpSessionData": "object",
+    "syncQueue": "object",
+    "firstSyncCompleted": "boolean"
   },
   "ramps": "object",
   "rewards": "object",

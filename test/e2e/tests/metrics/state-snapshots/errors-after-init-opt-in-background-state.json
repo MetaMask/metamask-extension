@@ -312,6 +312,8 @@
     "watchEthereumAccountEnabled": "boolean",
     "referrals": "object"
   },
+  "ProfileMetricsController": "object",
+  "ProfileMetricsService": "undefined",
   "RemoteFeatureFlagController": {
     "remoteFeatureFlags": {
       "feature1": true,
