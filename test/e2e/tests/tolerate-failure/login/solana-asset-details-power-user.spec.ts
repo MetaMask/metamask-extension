@@ -16,7 +16,7 @@ describe('Power user persona', function () {
   // Setup timer reporting for all tests in this describe block
   setupTimerReporting();
   // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('Check Solana asset details page load time', async function () {
+  it('Check Solana asset details page load time', async function () {
     // skipped until https://github.com/MetaMask/metamask-extension/pull/37339 gets merged
     if (!process.env.INFURA_PROJECT_ID) {
       throw new Error(
@@ -43,15 +43,15 @@ describe('Power user persona', function () {
         await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkTokenListIsDisplayed();
-        await homePage.checkTokenListPricesAreDisplayed();
         const assetListPage = new AssetListPage(driver);
+        await assetListPage.checkTokenListIsDisplayed();
+        await assetListPage.checkTokenListPricesAreDisplayed();
         await assetListPage.openNetworksFilter();
         const networkManager = new NetworkManager(driver);
         await networkManager.selectNetworkByNameWithWait('Solana');
         await homePage.checkPageIsLoaded();
-        await homePage.checkTokenListIsDisplayed();
-        await homePage.checkTokenListPricesAreDisplayed();
+        await assetListPage.checkTokenListIsDisplayed();
+        await assetListPage.checkTokenListPricesAreDisplayed();
         await assetListPage.clickOnAsset('Solana');
         const timer1 = Timers.createTimer(
           'Time since the user clicks on the asset until the price chart is shown',

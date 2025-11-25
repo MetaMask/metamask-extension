@@ -14,6 +14,7 @@ import FixtureBuilder from '../../../fixture-builder';
 import { getCommonMocks } from '../utils/commonMocks.js';
 import { setupTimerReporting } from '../utils/testSetup.js';
 import Timers from '../../../../timers/Timers.js';
+import AssetListPage from '../../../page-objects/pages/home/asset-list.js';
 
 describe('MetaMask onboarding', function () {
   // Setup timer reporting for all tests in this describe block
@@ -56,6 +57,9 @@ describe('MetaMask onboarding', function () {
         const timer6 = Timers.createTimer(
           'Time since the user clicks on "Done" button until "Home" screen is visible',
         );
+        const timer7 = Timers.createTimer(
+          'Time since the user clicks on "Done" button until "Home" screen and assets list are visible',
+        );
 
         await driver.navigate();
         const startOnboardingPage = new StartOnboardingPage(driver);
@@ -91,15 +95,18 @@ describe('MetaMask onboarding', function () {
         timer6.startTimer();
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkTokenListIsDisplayed();
+        const assetListPage = new AssetListPage(driver);
+        await assetListPage.checkTokenListIsDisplayed();
+        await assetListPage.checkTokenListPricesAreDisplayed();
         timer6.stopTimer();
         await homePage.clickBackupRemindMeLaterButton();
-        await driver.delay(1000);
+        timer7.startTimer();
         await homePage.checkPageIsLoaded();
-        await homePage.checkTokenListIsDisplayed();
-        await homePage.checkTokenListPricesAreDisplayed();
-        await homePage.checkAssetIsDisplayed('Ethereum');
-        await homePage.checkAssetIsDisplayed('Solana');
+        await assetListPage.checkTokenListIsDisplayed();
+        await assetListPage.checkTokenListPricesAreDisplayed();
+        await assetListPage.checkTokenExistsInList('Ethereum');
+        await assetListPage.checkTokenExistsInList('Solana');
+        timer7.stopTimer();
       },
     );
   });

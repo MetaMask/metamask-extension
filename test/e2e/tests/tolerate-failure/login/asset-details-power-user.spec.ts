@@ -40,15 +40,15 @@ describe('Power user persona', function () {
         await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkTokenListIsDisplayed();
-        await homePage.checkTokenListPricesAreDisplayed();
         const assetListPage = new AssetListPage(driver);
+        await assetListPage.checkTokenListIsDisplayed();
+        await assetListPage.checkTokenListPricesAreDisplayed();
         await assetListPage.openNetworksFilter();
         const networkManager = new NetworkManager(driver);
         await networkManager.selectNetworkByNameWithWait('Ethereum');
         await homePage.checkPageIsLoaded();
-        await homePage.checkTokenListIsDisplayed();
-        await homePage.checkTokenListPricesAreDisplayed();
+        await assetListPage.checkTokenListIsDisplayed();
+        await assetListPage.checkTokenListPricesAreDisplayed();
         await assetListPage.clickOnAsset('USDC');
         const timer1 = Timers.createTimer(
           'Time since the user clicks on the asset until the price chart is shown',

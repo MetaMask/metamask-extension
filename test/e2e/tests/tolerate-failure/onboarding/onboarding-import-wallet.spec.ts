@@ -17,6 +17,7 @@ import { getCommonMocks } from '../utils/commonMocks.js';
 import { setupTimerReporting } from '../utils/testSetup.js';
 import Timers from '../../../../timers/Timers.js';
 import { E2E_SRP } from '../../../default-fixture';
+import AssetListPage from '../../../page-objects/pages/home/asset-list.js';
 
 describe('MetaMask onboarding', function () {
   // Setup timer reporting for all tests in this describe block
@@ -96,10 +97,11 @@ describe('MetaMask onboarding', function () {
         timer6.startTimer();
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkTokenListIsDisplayed();
-        await homePage.checkTokenListPricesAreDisplayed();
-        await homePage.checkAssetIsDisplayed('Ethereum');
-        await homePage.checkAssetIsDisplayed('Solana');
+        const assetListPage = new AssetListPage(driver);
+        await assetListPage.checkTokenListIsDisplayed();
+        await assetListPage.checkTokenListPricesAreDisplayed();
+        await assetListPage.checkTokenExistsInList('Ethereum');
+        await assetListPage.checkTokenExistsInList('Solana');
         timer6.stopTimer();
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountsPage();

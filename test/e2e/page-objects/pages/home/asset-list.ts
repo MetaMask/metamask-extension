@@ -143,6 +143,11 @@ class AssetListPage {
   private readonly tokenIncreaseDecreaseValue =
     '[data-testid="token-increase-decrease-value"]';
 
+  private readonly noPriceAvailableMessage = {
+    css: 'p',
+    text: 'No conversion rate available',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -178,11 +183,10 @@ class AssetListPage {
   }
 
   async clickOnAsset(assetName: string): Promise<void> {
-    const buttons = await this.driver.findElement({
+    await this.driver.clickElement({
       css: this.tokenListItem,
       text: assetName,
     });
-    await buttons.click();
   }
 
   async clickSendButton(): Promise<void> {
@@ -735,6 +739,31 @@ class AssetListPage {
       text: expectedAddressFormat,
     });
     console.log(`Token details verified successfully for ${symbol}`);
+  }
+
+  /**
+   * Checks if the token list is displayed
+   *
+   * @throws Error if the token list is not displayed
+   */
+  async checkTokenListIsDisplayed(): Promise<void> {
+    try {
+      await this.driver.waitForSelector(this.tokenListItem, {
+        timeout: 300000,
+      });
+    } catch (e) {
+      console.log('Token list is not displayed', e);
+      throw e;
+    }
+  }
+
+  /**
+   * Checks if the token list prices are displayed
+   *
+   * @throws Error if the token list prices are not displayed
+   */
+  async checkTokenListPricesAreDisplayed(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.noPriceAvailableMessage);
   }
 }
 

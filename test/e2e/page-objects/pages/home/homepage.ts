@@ -101,11 +101,6 @@ class HomePage {
 
   private readonly multichainTokenListButton = `[data-testid="multichain-token-list-button"]`;
 
-  private readonly noPriceAvailableMessage = {
-    css: 'p',
-    text: 'No conversion rate available',
-  };
-
   constructor(driver: Driver) {
     this.driver = driver;
     this.headerNavbar = new HeaderNavbar(driver);
@@ -301,36 +296,6 @@ class HomePage {
     console.log(
       `Expected balance ${expectedBalance} ${symbol} is displayed on homepage`,
     );
-  }
-
-  async checkTokenListIsDisplayed(): Promise<void> {
-    try {
-      await this.driver.waitForSelector(this.multichainTokenListButton, {
-        timeout: 300000,
-      });
-    } catch (e) {
-      console.log('Token list is not displayed', e);
-      throw e;
-    }
-  }
-
-  async checkAssetIsDisplayed(assetName: string): Promise<void> {
-    console.log(`Check if asset ${assetName} is displayed on homepage`);
-    await this.driver.waitUntil(
-      async () => {
-        const element = await this.driver.findElement({
-          css: this.multichainTokenListButton,
-          text: assetName,
-        });
-        return element !== null;
-      },
-      { timeout: 300000, interval: 100 },
-    );
-    console.log(`Asset ${assetName} is displayed on homepage`);
-  }
-
-  async checkTokenListPricesAreDisplayed(): Promise<void> {
-    await this.driver.assertElementNotPresent(this.noPriceAvailableMessage);
   }
 
   /**
