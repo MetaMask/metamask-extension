@@ -133,7 +133,6 @@ const validSwapBatchTransactionCommands = [
  * Checks if a transaction is a valid single or batch transaction
  *
  * @param nestedTransactions - transaction nested in a confirmation
- * @returns null
  */
 export function checkValidSingleOrBatchTransaction(
   nestedTransactions?: NestedTransactionMetadata[],
