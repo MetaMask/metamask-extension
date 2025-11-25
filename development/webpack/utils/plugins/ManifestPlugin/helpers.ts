@@ -82,8 +82,8 @@ export function transformManifest(
     }
   }
 
-  if (args.test && args.manifest_version === 2) {
-    // test builds need "tabs" permission for switchToWindowWithTitle in MV2
+  if (args.test) {
+    // test builds need "tabs" permission for switchToWindowWithTitle
     transforms.push(addTabsPermission);
   }
 

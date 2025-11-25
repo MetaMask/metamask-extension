@@ -51,7 +51,6 @@ import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors
 import {
   getMetaMetricsId,
   getModalTypeForShieldEntryModal,
-  getSelectedInternalAccount,
   getUnapprovedConfirmations,
   selectNetworkConfigurationByChainId,
 } from '../../selectors';
@@ -61,6 +60,7 @@ import { EntryModalSourceEnum } from '../../../shared/constants/subscriptions';
 import { DefaultSubscriptionPaymentOptions } from '../../../shared/types';
 import {
   getLatestSubscriptionStatus,
+  getShieldMarketingUtmParamsForMetrics,
   getUserBalanceCategory,
 } from '../../../shared/modules/shield';
 import { openWindow } from '../../helpers/utils/window';
@@ -400,9 +400,12 @@ export const useSubscriptionEligibility = (product: ProductType) => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const isSignedIn = useSelector(selectIsSignedIn);
   const isUnlocked = useSelector(getIsUnlocked);
-  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const evmInternalAccount = useSelector((state) =>
+    // Account address will be the same for all EVM accounts
+    getInternalAccountBySelectedAccountGroupAndCaip(state, 'eip155:1'),
+  );
   const { totalFiatBalance } = useAccountTotalFiatBalance(
-    selectedAccount,
+    evmInternalAccount,
     false,
     true, // use USD conversion rate instead of the current currency
   );
@@ -489,19 +492,10 @@ export const useHandleSubscription = ({
   const latestSubscriptionStatus =
     getLatestSubscriptionStatus(subscriptions, lastSubscription) || 'none';
 
-  const getMarketingUtmId = useCallback(() => {
-    const searchParams = new URLSearchParams(search);
-    const utmId = searchParams.get('utm_id');
-    if (utmId) {
-      return utmId;
-    }
-    return undefined;
-  }, [search]);
-
   const determineSubscriptionRequestSource =
     useCallback((): EntryModalSourceEnum => {
-      const marketingUtmId = getMarketingUtmId();
-      if (marketingUtmId) {
+      const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
+      if (Object.keys(marketingUtmParams).length > 0) {
         return EntryModalSourceEnum.Marketing;
       }
       const sourceParam = new URLSearchParams(search).get('source');
@@ -520,7 +514,7 @@ export const useHandleSubscription = ({
         default:
           return EntryModalSourceEnum.Settings;
       }
-    }, [getMarketingUtmId, search]);
+    }, [search]);
 
   const [handleSubscription, subscriptionResult] =
     useAsyncCallback(async () => {
@@ -535,6 +529,8 @@ export const useHandleSubscription = ({
         }),
       );
 
+      const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
+
       // We need to pass the default payment options & some metrics properties to the background app state controller
       // as these properties are not accessible in the background directly.
       // Shield subscription metrics requests can use them for the metrics capture
@@ -542,7 +538,7 @@ export const useHandleSubscription = ({
       await dispatch(setDefaultSubscriptionPaymentOptions(defaultOptions));
       await setShieldSubscriptionMetricsPropsToBackground({
         source: determineSubscriptionRequestSource(),
-        marketingUtmId: getMarketingUtmId(),
+        marketingUtmParams,
       });
 
       const source = determineSubscriptionRequestSource();
@@ -561,7 +557,7 @@ export const useHandleSubscription = ({
         billingInterval: selectedPlan,
         source,
         type: modalType,
-        marketingUtmId: getMarketingUtmId(),
+        marketingUtmParams,
       };
 
       if (selectedPaymentMethod === PAYMENT_TYPES.byCard) {
@@ -595,7 +591,7 @@ export const useHandleSubscription = ({
       latestSubscriptionStatus,
       modalType,
       determineSubscriptionRequestSource,
-      getMarketingUtmId,
+      search,
     ]);
 
   return {

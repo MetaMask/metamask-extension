@@ -509,6 +509,7 @@ describe('RewardsDataService', () => {
         id: 'test-subscription-id',
         referralCode: 'test-referral-code',
         accounts: [],
+        createdAt: new Date().toISOString(),
       },
     };
 
@@ -667,6 +668,7 @@ describe('RewardsDataService', () => {
       id: mockSubscriptionId,
       referralCode: 'test-referral-code',
       accounts: [],
+      createdAt: new Date().toISOString(),
     };
 
     const mockOptinResponse: LoginResponseDto = {

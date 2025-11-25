@@ -67,7 +67,6 @@ export default function CreationSuccessful() {
   );
   const trackEvent = useContext(MetaMetricsContext);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-  const isTestEnvironment = Boolean(process.env.IN_TEST);
   const isSidePanelEnabled = useSidePanelEnabled();
 
   const learnMoreLink =
@@ -291,9 +290,7 @@ export default function CreationSuccessful() {
           {renderSettingsActions}
         </Box>
       )}
-      {!isFromSettingsSRPBackup && !isTestEnvironment && (
-        <WalletReadyAnimation />
-      )}
+      {!isFromSettingsSRPBackup && <WalletReadyAnimation />}
       {!isFromSettingsSRPBackup && (
         <Text className="title">{t('yourWalletIsReady')}</Text>
       )}

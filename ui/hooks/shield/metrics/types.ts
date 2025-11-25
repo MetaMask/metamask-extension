@@ -28,7 +28,7 @@ export type CaptureShieldEntryModalEventParams = {
   /**
    * The UTM ID used if source is marketing campaign
    */
-  marketingUtmId?: string;
+  marketingUtmParams?: Record<string, string>;
 
   /**
    * The type of transaction after which the entry modal is triggered
@@ -150,7 +150,7 @@ export type CaptureShieldCtaClickedEventParams = {
   /**
    * The UTM ID used if source is marketing campaign
    */
-  marketingUtmId?: string;
+  marketingUtmParams?: Record<string, string>;
 };
 
 export type CaptureShieldClaimSubmissionEventParams = {
