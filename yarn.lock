@@ -6962,15 +6962,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-api@npm:^21.0.0, @metamask/keyring-api@npm:^21.1.0":
-  version: 21.1.0
-  resolution: "@metamask/keyring-api@npm:21.1.0"
+"@metamask/keyring-api@npm:^21.0.0, @metamask/keyring-api@npm:^21.1.0, @metamask/keyring-api@npm:^21.2.0":
+  version: 21.2.0
+  resolution: "@metamask/keyring-api@npm:21.2.0"
   dependencies:
     "@metamask/keyring-utils": "npm:^3.1.0"
     "@metamask/superstruct": "npm:^3.1.0"
     "@metamask/utils": "npm:^11.1.0"
     bitcoin-address-validation: "npm:^2.2.3"
-  checksum: 10/3371a5ab0e9ba0e9b23b30b03a7d83d029e223def5485ab1aa2ec793ba18ff3738422dbe3c47f9cf82411d2ca6ca918928bf998741f0977055071b7bf3042314
+  checksum: 10/cc3cd9f9ef65b33aa0af2f4aa556fab7ebab78ce21a09b8e1cb6f328b456c444e0169d7aac08dd62425fb12895d68dfee0ddb6e3d8a43950a8ba1852c6b92609
   languageName: node
   linkType: hard
 
@@ -8442,10 +8442,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/tron-wallet-snap@npm:^1.10.0":
-  version: 1.10.0
-  resolution: "@metamask/tron-wallet-snap@npm:1.10.0"
-  checksum: 10/c9b2f9cae0a2f9dcfd43934bd4321ed029e395122b61f1f3a8c3780dd4b44ac8669139b382da8b9230123639bf7a7554206223e3127d3e3317dfb802190cda46
+"@metamask/tron-wallet-snap@npm:^1.12.1":
+  version: 1.12.1
+  resolution: "@metamask/tron-wallet-snap@npm:1.12.1"
+  checksum: 10/6f48c8dd6f625d7bb290bf3d39978839a0f4b905c14883e43fb35538b5ffa822f9611b8977fc54e9cb83711a95a9cbce93ad6a0149c4c31cfd1272af4b7055b0
   languageName: node
   linkType: hard
 
@@ -32615,7 +32615,7 @@ __metadata:
     "@metamask/kernel-shims": "npm:^0.3.0"
     "@metamask/kernel-ui": "npm:^0.3.0"
     "@metamask/kernel-utils": "npm:^0.3.0"
-    "@metamask/keyring-api": "npm:^21.1.0"
+    "@metamask/keyring-api": "npm:^21.2.0"
     "@metamask/keyring-controller": "npm:^24.0.0"
     "@metamask/keyring-internal-api": "npm:^9.1.0"
     "@metamask/keyring-internal-snap-client": "npm:^8.0.0"
@@ -32678,7 +32678,7 @@ __metadata:
     "@metamask/test-dapp-solana": "npm:^0.3.1"
     "@metamask/test-snaps": "npm:^3.0.0"
     "@metamask/transaction-controller": "npm:^61.2.0"
-    "@metamask/tron-wallet-snap": "npm:^1.10.0"
+    "@metamask/tron-wallet-snap": "npm:^1.12.1"
     "@metamask/user-operation-controller": "npm:^40.0.0"
     "@metamask/utils": "npm:^11.4.2"
     "@ngraveio/bc-ur": "npm:^1.1.13"
