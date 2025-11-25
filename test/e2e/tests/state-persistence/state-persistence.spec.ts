@@ -1,10 +1,6 @@
 import assert from 'node:assert/strict';
 import { ACCOUNT_TYPE } from '../../constants';
-import {
-  WALLET_PASSWORD,
-  unlockWallet,
-  withFixtures,
-} from '../../helpers';
+import { WALLET_PASSWORD, unlockWallet, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import AccountListPage from '../../page-objects/pages/account-list-page';
@@ -133,7 +129,7 @@ const buildFlaggedFixture = (fixtureBuilder: FixtureBuilder) => {
 describe('State Persistence', function () {
   this.timeout(120000);
 
-  describe("split state", () => {
+  describe('split state', function () {
     it('should default to the split state storage', async function () {
       const fixtures = buildFlaggedFixture(new FixtureBuilder());
 
@@ -148,59 +144,60 @@ describe('State Persistence', function () {
     it('should update from data state to split state', async function () {
       const accountName = 'Account 2';
 
-      await withFixtures({ fixtures: new FixtureBuilder().build() }, async ({
-        driver,
-      }) => {
-        await loginWithBalanceValidation(driver);
+      await withFixtures(
+        { fixtures: new FixtureBuilder().build() },
+        async ({ driver }) => {
+          await loginWithBalanceValidation(driver);
 
-        let storage = await readStorage(driver);
-        assertDataStateStorage(storage);
+          let storage = await readStorage(driver);
+          assertDataStateStorage(storage);
 
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.checkPageIsLoaded();
-        await headerNavbar.openAccountMenu();
+          const headerNavbar = new HeaderNavbar(driver);
+          await headerNavbar.checkPageIsLoaded();
+          await headerNavbar.openAccountMenu();
 
-        const accountListPage = new AccountListPage(driver);
-        await accountListPage.addAccount({
-          accountType: ACCOUNT_TYPE.Ethereum,
-          accountName,
-        });
-        await accountListPage.checkAccountDisplayedInAccountList(accountName);
-        await accountListPage.closeAccountModal();
+          const accountListPage = new AccountListPage(driver);
+          await accountListPage.addAccount({
+            accountType: ACCOUNT_TYPE.Ethereum,
+            accountName,
+          });
+          await accountListPage.checkAccountDisplayedInAccountList(accountName);
+          await accountListPage.closeAccountModal();
 
-        storage = await readStorage(driver);
-        assertDataStateStorage(storage);
+          storage = await readStorage(driver);
+          assertDataStateStorage(storage);
 
-        await setManifestFlags({
-          remoteFeatureFlags: {
-            platformSplitStateGradualRollout: SPLIT_FLAG,
-          },
-        });
-        await ensureSplitFlagPersisted(driver);
-        await reloadExtension(driver);
-        await unlockWallet(driver, {
-          password: WALLET_PASSWORD,
-        });
+          await setManifestFlags({
+            remoteFeatureFlags: {
+              platformSplitStateGradualRollout: SPLIT_FLAG,
+            },
+          });
+          await ensureSplitFlagPersisted(driver);
+          await reloadExtension(driver);
+          await unlockWallet(driver, {
+            password: WALLET_PASSWORD,
+          });
 
-        await headerNavbar.checkPageIsLoaded();
-        await headerNavbar.openAccountMenu();
-        await accountListPage.checkAccountDisplayedInAccountList(accountName);
-        await accountListPage.closeAccountModal();
+          await headerNavbar.checkPageIsLoaded();
+          await headerNavbar.openAccountMenu();
+          await accountListPage.checkAccountDisplayedInAccountList(accountName);
+          await accountListPage.closeAccountModal();
 
-        storage = await readStorage(driver);
-        assertSplitStateStorage(storage);
+          storage = await readStorage(driver);
+          assertSplitStateStorage(storage);
 
-        await reloadExtension(driver);
-        await unlockWallet(driver, { password: WALLET_PASSWORD });
+          await reloadExtension(driver);
+          await unlockWallet(driver, { password: WALLET_PASSWORD });
 
-        await headerNavbar.checkPageIsLoaded();
-        await headerNavbar.openAccountMenu();
-        await accountListPage.checkAccountDisplayedInAccountList(accountName);
-        await accountListPage.closeAccountModal();
+          await headerNavbar.checkPageIsLoaded();
+          await headerNavbar.openAccountMenu();
+          await accountListPage.checkAccountDisplayedInAccountList(accountName);
+          await accountListPage.closeAccountModal();
 
-        storage = await readStorage(driver);
-        assertSplitStateStorage(storage);
-      });
+          storage = await readStorage(driver);
+          assertSplitStateStorage(storage);
+        },
+      );
     });
 
     it('should not attempt to update if an update attempt fails', async function () {

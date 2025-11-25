@@ -1,10 +1,7 @@
 import log from 'loglevel';
 import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
-import type {
-  MetaMaskStateType,
-  BaseStore,
-  MetaMaskStorageStructure,
-} from './base-store';
+import ExtensionStore from './extension-store';
+import type { MetaMaskStorageStructure } from './base-store';
 
 const fetchWithTimeout = getFetchWithTimeout();
 
@@ -13,16 +10,15 @@ const FIXTURE_SERVER_PORT = 12345;
 const FIXTURE_SERVER_URL = `http://${FIXTURE_SERVER_HOST}:${FIXTURE_SERVER_PORT}/state.json`;
 
 /**
- * A read-only network-based storage wrapper
+ * Derived class of ExtensionStore that initializes the store using the fixture server.
  */
-export default class ReadOnlyNetworkStore implements BaseStore {
+export class FixtureExtensionStore extends ExtensionStore {
   #initialized: boolean = false;
 
   #initializing?: Promise<void>;
 
-  #state: MetaMaskStateType | null = null;
-
   constructor() {
+    super();
     this.#initializing = this.#init();
   }
 
@@ -36,16 +32,7 @@ export default class ReadOnlyNetworkStore implements BaseStore {
     if (!this.#initialized) {
       await this.#initializing;
     }
-    if (!this.#state || typeof this.#state !== 'object') {
-      throw new Error('State is not initialized or not an object');
-    }
-    for (const [key, value] of pairs.entries()) {
-      if (typeof value === 'undefined') {
-        delete this.#state[key];
-      } else {
-        this.#state[key] = value;
-      }
-    }
+    return super.setKeyValues(pairs);
   }
 
   /**
@@ -61,7 +48,8 @@ export default class ReadOnlyNetworkStore implements BaseStore {
       const response = await fetchWithTimeout(FIXTURE_SERVER_URL);
 
       if (response.ok) {
-        this.#state = await response.json();
+        const state = await response.json();
+        await super.set(state);
       } else {
         log.debug(
           `Received response with a status of ${response.status} ${response.statusText}`,
@@ -79,37 +67,23 @@ export default class ReadOnlyNetworkStore implements BaseStore {
     }
   }
 
-  /**
-   * Returns state
-   */
-  async get() {
+  async get(): Promise<MetaMaskStorageStructure | null> {
     if (!this.#initialized) {
       await this.#initializing;
     }
-    return this.#state;
+    return super.get();
   }
 
-  /**
-   * Overwrite in-memory copy of state.
-   *
-   * @param data - The data to set
-   */
   async set(data: Required<MetaMaskStorageStructure>): Promise<void> {
-    if (!data) {
-      throw new Error('MetaMask - updated state is missing');
-    }
     if (!this.#initialized) {
       await this.#initializing;
     }
-    this.#state = data;
+    return super.set(data);
   }
 
-  /**
-   * Resets data to its initial state.
-   */
   async reset(): Promise<void> {
     this.#initialized = false;
-    this.#state = null;
+    await super.reset();
     this.#initializing = this.#init();
     await this.#initializing;
   }
