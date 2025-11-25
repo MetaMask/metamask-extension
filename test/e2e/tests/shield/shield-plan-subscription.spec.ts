@@ -116,6 +116,8 @@ describe('Shield Subscription Tests', function () {
           await shieldPlanPage.checkPageIsLoaded();
           await shieldPlanPage.clickBackButton();
 
+          // open menu and settings
+          await homePage.headerNavbar.openSettingsPage();
           const settingsPage = new SettingsPage(driver);
           await settingsPage.checkPageIsLoaded();
           await settingsPage.goToTransactionShieldPage();
@@ -152,6 +154,7 @@ describe('Shield Subscription Tests', function () {
           await shieldPlanPage.checkPageIsLoaded();
           await shieldPlanPage.clickBackButton();
 
+          await homePage.headerNavbar.openSettingsPage();
           const settingsPage = new SettingsPage(driver);
           await settingsPage.checkPageIsLoaded();
           await settingsPage.goToTransactionShieldPage();
