@@ -1,40 +1,42 @@
 {
+  "name": "__MSG_appName__",
+  "short_name": "__MSG_appName__",
+  "description": "__MSG_appDescription__",
+  "author": "https://metamask.io",
+  "version": "0.0.1",
+  "manifest_version": 3,
+  "default_locale": "en",
+
   "action": {
+    "default_title": "MetaMask",
+    "default_popup": "popup-init.html",
     "default_icon": {
       "16": "images/icon-16.png",
-      "19": "images/icon-19.png",
       "32": "images/icon-32.png",
-      "38": "images/icon-38.png",
       "64": "images/icon-64.png",
-      "128": "images/icon-128.png",
-      "512": "images/icon-512.png"
-    },
-    "default_title": "MetaMask",
-    "default_popup": "popup-init.html"
+      "128": "images/icon-128.png"
+    }
   },
-  "author": "https://metamask.io",
+
   "background": {
-    "service_worker": "service-worker.ts"
+    # NOTE: The file must be compiled to .js before loading.
+    "service_worker": "service-worker.js"
   },
+
   "commands": {
     "_execute_browser_action": {
       "suggested_key": {
-        "windows": "Alt+Shift+M",
-        "mac": "Alt+Shift+M",
-        "chromeos": "Alt+Shift+M",
-        "linux": "Alt+Shift+M"
+        "default": "Alt+Shift+M"
       }
     },
     "_execute_action": {
+      # Use 'default' key as all platform keys are identical.
       "suggested_key": {
-        "default": "Alt+Shift+M",
-        "windows": "Alt+Shift+M",
-        "mac": "Alt+Shift+M",
-        "chromeos": "Alt+Shift+M",
-        "linux": "Alt+Shift+M"
+        "default": "Alt+Shift+M"
       }
     }
   },
+
   "content_scripts": [
     {
       "matches": ["file://*/*", "http://*/*", "https://*/*"],
@@ -43,6 +45,7 @@
       "all_frames": true
     },
     {
+      # Injects the web3 provider into the page's main context.
       "matches": ["file://*/*", "http://*/*", "https://*/*"],
       "js": ["scripts/inpage.js"],
       "run_at": "document_start",
@@ -50,13 +53,14 @@
       "all_frames": true
     },
     {
+      # Content script for Trezor hardware wallet connection popup.
       "matches": ["*://connect.trezor.io/*/popup.html*"],
       "js": ["vendor/trezor/content-script.js"]
     }
   ],
-  "default_locale": "en",
-  "description": "__MSG_appDescription__",
+
   "host_permissions": [
+    # Required permissions for communicating with Ethereum nodes and interacting with all sites.
     "http://localhost:8545/",
     "file://*/*",
     "http://*/*",
@@ -64,7 +68,9 @@
     "ws://*/*",
     "wss://*/*"
   ],
+
   "icons": {
+    # Full list of icons for various resolutions.
     "16": "images/icon-16.png",
     "19": "images/icon-19.png",
     "32": "images/icon-32.png",
@@ -74,8 +80,7 @@
     "128": "images/icon-128.png",
     "512": "images/icon-512.png"
   },
-  "manifest_version": 3,
-  "name": "__MSG_appName__",
+
   "optional_permissions": ["clipboardRead"],
   "permissions": [
     "activeTab",
@@ -91,8 +96,8 @@
     "sidePanel",
     "contextMenus"
   ],
+
   "sandbox": {
     "pages": ["snaps/index.html"]
-  },
-  "short_name": "__MSG_appName__"
+  }
 }
