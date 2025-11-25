@@ -71,7 +71,7 @@ export default function OnboardingMetametrics() {
 
   // Check if the PNA25 feature is enabled
   // extension-ux-pna25 is a boolean LaunchDarkly flag
-  const isPna25Enabled = Boolean(remoteFeatureFlags?.['extension-ux-pna25']);
+  const isPna25Enabled = remoteFeatureFlags?.extensionUxPna25;
 
   const [
     isParticipateInMetaMetricsChecked,

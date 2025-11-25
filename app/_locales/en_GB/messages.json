@@ -4147,9 +4147,6 @@
   "newPrivacyPolicyTitle": {
     "message": "We’ve updated our privacy policy"
   },
-  "pna25BannerTitle": {
-    "message": "We’re updating MetaMetrics. We'll associate some in-app activity to on-chain data to better understand usage. You can opt out via Settings."
-  },
   "newRpcUrl": {
     "message": "New RPC URL"
   },
@@ -5059,6 +5056,9 @@
   "plusXMore": {
     "message": "+ $1 more",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
+  },
+  "pna25BannerTitle": {
+    "message": "We’re updating MetaMetrics. We'll associate some in-app activity to on-chain data to better understand usage. You can opt out via Settings."
   },
   "popularNetworkAddToolTip": {
     "message": "Some of these networks rely on third parties. The connections may be less reliable or enable third-parties to track activity.",

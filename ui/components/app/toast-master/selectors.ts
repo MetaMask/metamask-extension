@@ -17,7 +17,6 @@ import {
   getPermissions,
   isSolanaAccount,
 } from '../../../selectors';
-import { getRemoteFeatureFlags } from '../../../selectors/remote-feature-flags';
 import { MetaMaskReduxState } from '../../../store/store';
 import {
   PasswordChangeToastType,
@@ -253,17 +252,19 @@ export function selectShowShieldEndingToast(
  * @returns Boolean indicating whether to show the banner
  */
 export function selectShowPna25Banner(state: Pick<State, 'metamask'>): boolean {
-  const { completedOnboarding, participateInMetaMetrics, pna25Acknowledged } =
-    state.metamask || {};
+  const {
+    completedOnboarding,
+    participateInMetaMetrics,
+    pna25Acknowledged,
+    remoteFeatureFlags,
+  } = state.metamask || {};
 
   // Only show to users who have completed onboarding
   if (!completedOnboarding) {
     return false; // User hasn't completed onboarding yet
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const remoteFeatureFlags = getRemoteFeatureFlags(state as any);
-  const isPna25Enabled = remoteFeatureFlags?.extensionUxPna25;
+  const isPna25Enabled = remoteFeatureFlags?.['extension-ux-pna25'];
 
   // Check all conditions
   if (!isPna25Enabled) {
