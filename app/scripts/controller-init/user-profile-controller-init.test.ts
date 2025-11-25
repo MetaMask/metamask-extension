@@ -1,12 +1,12 @@
+import {
+  UserProfileController,
+  UserProfileControllerMessenger,
+} from '@metamask/user-profile-controller';
 import { getRootMessenger } from '../lib/messenger';
 import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import { getUserProfileControllerMessenger } from './messengers';
 import { UserProfileControllerInit } from './user-profile-controller-init';
-import {
-  UserProfileController,
-  UserProfileControllerMessenger,
-} from '@metamask/user-profile-controller';
 
 jest.mock('@metamask/user-profile-controller');
 

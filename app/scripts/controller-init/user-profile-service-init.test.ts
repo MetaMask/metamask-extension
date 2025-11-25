@@ -1,13 +1,13 @@
-import { getRootMessenger } from '../lib/messenger';
-import { ControllerInitRequest } from './types';
-import { buildControllerInitRequestMock } from './test/utils';
-import { getUserProfileServiceMessenger } from './messengers';
-import { UserProfileServiceInit } from './user-profile-service-init';
 import {
   Env,
   UserProfileService,
   UserProfileServiceMessenger,
 } from '@metamask/user-profile-controller';
+import { getRootMessenger } from '../lib/messenger';
+import { ControllerInitRequest } from './types';
+import { buildControllerInitRequestMock } from './test/utils';
+import { getUserProfileServiceMessenger } from './messengers';
+import { UserProfileServiceInit } from './user-profile-service-init';
 
 jest.mock('@metamask/user-profile-controller');
 

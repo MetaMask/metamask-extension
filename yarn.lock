@@ -5542,6 +5542,36 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/accounts-controller@npm:^35.0.0":
+  version: 35.0.0
+  resolution: "@metamask/accounts-controller@npm:35.0.0"
+  dependencies:
+    "@ethereumjs/util": "npm:^9.1.0"
+    "@metamask/base-controller": "npm:^9.0.0"
+    "@metamask/eth-snap-keyring": "npm:^18.0.0"
+    "@metamask/keyring-api": "npm:^21.0.0"
+    "@metamask/keyring-internal-api": "npm:^9.0.0"
+    "@metamask/keyring-utils": "npm:^3.1.0"
+    "@metamask/messenger": "npm:^0.3.0"
+    "@metamask/snaps-sdk": "npm:^9.0.0"
+    "@metamask/snaps-utils": "npm:^11.0.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^11.8.1"
+    deepmerge: "npm:^4.2.2"
+    ethereum-cryptography: "npm:^2.1.2"
+    immer: "npm:^9.0.6"
+    lodash: "npm:^4.17.21"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/keyring-controller": ^25.0.0
+    "@metamask/network-controller": ^26.0.0
+    "@metamask/providers": ^22.0.0
+    "@metamask/snaps-controllers": ^14.0.0
+    webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
+  checksum: 10/eb87e1d0d054dfea4511922643c0ed0d2699cd253a3dfde38d4340c4a321e56e41a34a9a533c91dd36ab68777cf448ee30db416023b95376f9bfd37912d20451
+  languageName: node
+  linkType: hard
+
 "@metamask/address-book-controller@npm:^7.0.0":
   version: 7.0.0
   resolution: "@metamask/address-book-controller@npm:7.0.0"
@@ -5820,6 +5850,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/browser-passworder@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@metamask/browser-passworder@npm:6.0.0"
+  dependencies:
+    "@metamask/utils": "npm:^11.0.1"
+  checksum: 10/44b31729ccd52e62df27a948fbea2320a11861d6465128b1626a723fc47e25f9e3a8c3bdc09329f3f270b5d9e023107cb439cfb6961a3614c6daa58ea4524f00
+  languageName: node
+  linkType: hard
+
 "@metamask/build-utils@npm:^3.0.0":
   version: 3.0.0
   resolution: "@metamask/build-utils@npm:3.0.0"
@@ -5891,6 +5930,27 @@ __metadata:
   peerDependencies:
     "@babel/runtime": ^7.0.0
   checksum: 10/30466473a73d02d32551c65820e307cd5231c35176521edce852efdf11a4b3dc2606afffd681e9105ddd686d1ba6bef85961b35f7ea3b77307141a92b66a6a12
+  languageName: node
+  linkType: hard
+
+"@metamask/controller-utils@npm:^11.16.0":
+  version: 11.16.0
+  resolution: "@metamask/controller-utils@npm:11.16.0"
+  dependencies:
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/ethjs-unit": "npm:^0.3.0"
+    "@metamask/utils": "npm:^11.8.1"
+    "@spruceid/siwe-parser": "npm:2.1.0"
+    "@types/bn.js": "npm:^5.1.5"
+    bignumber.js: "npm:^9.1.2"
+    bn.js: "npm:^5.2.1"
+    cockatiel: "npm:^3.1.2"
+    eth-ens-namehash: "npm:^2.0.8"
+    fast-deep-equal: "npm:^3.1.3"
+    lodash: "npm:^4.17.21"
+  peerDependencies:
+    "@babel/runtime": ^7.0.0
+  checksum: 10/ff364f3655edf0cd0c00743c1bf2ed3d66e057dbac6df9976146ad9bc176ce60e3b5e3765d9dd0aca5af68bbd6aad85779be97bae2aafc860bb56fa2deb69e7f
   languageName: node
   linkType: hard
 
@@ -6961,6 +7021,29 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/keyring-controller@npm:^25.0.0":
+  version: 25.0.0
+  resolution: "@metamask/keyring-controller@npm:25.0.0"
+  dependencies:
+    "@ethereumjs/util": "npm:^9.1.0"
+    "@metamask/base-controller": "npm:^9.0.0"
+    "@metamask/browser-passworder": "npm:^6.0.0"
+    "@metamask/eth-hd-keyring": "npm:^13.0.0"
+    "@metamask/eth-sig-util": "npm:^8.2.0"
+    "@metamask/eth-simple-keyring": "npm:^11.0.0"
+    "@metamask/keyring-api": "npm:^21.0.0"
+    "@metamask/keyring-internal-api": "npm:^9.0.0"
+    "@metamask/messenger": "npm:^0.3.0"
+    "@metamask/utils": "npm:^11.8.1"
+    async-mutex: "npm:^0.5.0"
+    ethereumjs-wallet: "npm:^1.0.1"
+    immer: "npm:^9.0.6"
+    lodash: "npm:^4.17.21"
+    ulid: "npm:^2.3.0"
+  checksum: 10/7258f70ef463f8f7260e64f7e22b695ed01520da46e77a4a01e8beff14b8da1545f905f615386b9d4e10b7f383651828b97f655202f410667f5028e2633aac25
+  languageName: node
+  linkType: hard
+
 "@metamask/keyring-internal-api@npm:^9.0.0, @metamask/keyring-internal-api@npm:^9.1.0":
   version: 9.1.0
   resolution: "@metamask/keyring-internal-api@npm:9.1.0"
@@ -7548,6 +7631,22 @@ __metadata:
   peerDependencies:
     "@metamask/network-controller": ^25.0.0
   checksum: 10/e1f5d45ce3b083d154ccacba54453bdeea6bbfafc461be559ce15ae435e0df500ebab8ffd06a5e7bc52e904c29d06c1a5ca0a29193f8778ca39dfd134a7f0794
+  languageName: node
+  linkType: hard
+
+"@metamask/polling-controller@npm:^16.0.0":
+  version: 16.0.0
+  resolution: "@metamask/polling-controller@npm:16.0.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^9.0.0"
+    "@metamask/controller-utils": "npm:^11.16.0"
+    "@metamask/utils": "npm:^11.8.1"
+    "@types/uuid": "npm:^8.3.0"
+    fast-json-stable-stringify: "npm:^2.1.0"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/network-controller": ^26.0.0
+  checksum: 10/b65d6879f7b8c996148eb816402b5544ca849ad8e59890eeeeb35dda18f9e8efe07c86ab5b3acf6a0cf9320b12ae311e2346c03bf74116331579d8460f556961
   languageName: node
   linkType: hard
 
@@ -8448,20 +8547,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/user-profile-controller@npm:@metamask-previews/user-profile-controller@0.0.0-preview-59735db0":
-  version: 0.0.0-preview-59735db0
-  resolution: "@metamask-previews/user-profile-controller@npm:0.0.0-preview-59735db0"
+"@metamask/user-profile-controller@npm:@metamask-previews/user-profile-controller@0.0.0-preview-8ae7c53c":
+  version: 0.0.0-preview-8ae7c53c
+  resolution: "@metamask-previews/user-profile-controller@npm:0.0.0-preview-8ae7c53c"
   dependencies:
-    "@metamask/accounts-controller": "npm:^34.0.0"
+    "@metamask/accounts-controller": "npm:^35.0.0"
     "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/controller-utils": "npm:^11.15.0"
-    "@metamask/keyring-controller": "npm:^24.0.0"
+    "@metamask/controller-utils": "npm:^11.16.0"
+    "@metamask/keyring-controller": "npm:^25.0.0"
     "@metamask/messenger": "npm:^0.3.0"
-    "@metamask/polling-controller": "npm:^15.0.0"
+    "@metamask/polling-controller": "npm:^16.0.0"
     "@metamask/profile-sync-controller": "npm:^27.0.0"
     "@metamask/utils": "npm:^11.8.1"
     async-mutex: "npm:^0.5.0"
-  checksum: 10/273c45120afdf3287b3db0b39ae59b5b7792196b05da421abee4af08a44eb8de6aa1eb1b459aa4b8dc4dad8c698d7e5415c0123bc2b1c8945307f65d15238f46
+  checksum: 10/9621ee0b078d9d093ca6a3ce4bfee6f2ddc358aacef1bf9c83748d8feb089579d5d3b4429f843ee480d32d318562f4fea77575694167017d17fbbe8b9080eeba
   languageName: node
   linkType: hard
 

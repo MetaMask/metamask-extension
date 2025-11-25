@@ -22,16 +22,14 @@ export const UserProfileControllerInit: ControllerInitFunction<
     'RemoteFeatureFlagController',
   );
   const metaMetricsController = getController('MetaMetricsController');
-  const isUserProfileEnabled =
+  const assertUserOptedIn = () =>
     remoteFeatureFlagController.state.remoteFeatureFlags.extensionUxPna25 ===
-    true;
+      true && metaMetricsController.state.participateInMetaMetrics === true;
 
   const controller = new UserProfileController({
     messenger: controllerMessenger,
     state: persistedState.UserProfileController,
-    assertUserOptedIn: () =>
-      isUserProfileEnabled &&
-      metaMetricsController.state.participateInMetaMetrics === true,
+    assertUserOptedIn,
     getMetaMetricsId: () => metaMetricsController.getMetaMetricsId(),
   });
 
