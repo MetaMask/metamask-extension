@@ -6,7 +6,7 @@ import {
   useNavigate,
   useLocation,
   type NavigateFunction,
-  type Location,
+  type Location as RouterLocation,
 } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
@@ -92,7 +92,7 @@ import OnboardingDownloadApp from './download-app/download-app';
 
 type OnboardingFlowProps = {
   navigate?: NavigateFunction;
-  location?: Location;
+  location?: RouterLocation;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import type { Location } from 'react-router-dom-v5-compat';
+import type { Location as RouterLocation } from 'react-router-dom-v5-compat';
 import classnames from 'classnames';
 import MetaFoxLogo from '../../../components/ui/metafox-logo';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -36,7 +36,7 @@ import {
 
 type OnboardingAppHeaderProps = {
   isWelcomePage?: boolean;
-  location?: Location;
+  location?: RouterLocation;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

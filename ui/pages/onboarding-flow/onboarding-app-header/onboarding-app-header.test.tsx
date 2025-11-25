@@ -2,6 +2,7 @@ import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import type { Location as RouterLocation } from 'react-router-dom-v5-compat';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
 import OnboardingAppHeader from './onboarding-app-header';
@@ -21,7 +22,7 @@ const mockLocation = {
   search: '',
   hash: '',
   state: null,
-};
+} as RouterLocation;
 
 describe('OnboardingAppHeader', () => {
   const mockState = {
