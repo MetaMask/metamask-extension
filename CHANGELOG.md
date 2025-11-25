@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.10.4]
 
+- Removes sidepanel from chrome manifest files (#38242)
+
 ## [13.10.3]
 
 ### Fixed
