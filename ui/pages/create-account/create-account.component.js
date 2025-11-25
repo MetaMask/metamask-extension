@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom-v5-compat';
+import { Routes, Route } from 'react-router-dom';
 import { Box } from '../../components/component-library';
 import { CONNECT_HARDWARE_ROUTE } from '../../helpers/constants/routes';
 import ConnectHardwareForm from './connect-hardware';

@@ -2,7 +2,6 @@ import React, { useMemo } from 'react';
 import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
 import { MemoryRouter, Router } from 'react-router-dom';
-import { CompatRouter } from 'react-router-dom-v5-compat';
 import PropTypes from 'prop-types';
 
 import { I18nContext, LegacyI18nProvider } from '../../ui/contexts/i18n';
@@ -66,10 +65,10 @@ export function renderWithProvider(component, store, initialEntries) {
     );
     return store ? (
       <Provider store={store}>
-        <WithoutStore></WithoutStore>
+        <WithoutStore />
       </Provider>
     ) : (
-      <WithoutStore></WithoutStore>
+      <WithoutStore />
     );
   };
 
@@ -91,17 +90,13 @@ export function renderWithProviderAndHistory(
   const Wrapper = ({ children }) => {
     const WithoutStore = () => (
       <Router history={history}>
-        <CompatRouter>
-          <I18nProvider currentLocale="en" current={en} en={en}>
-            <LegacyI18nProvider>
-              <MetaMetricsContext.Provider value={mockTrackEvent}>
-                <LegacyMetaMetricsProvider>
-                  {children}
-                </LegacyMetaMetricsProvider>
-              </MetaMetricsContext.Provider>
-            </LegacyI18nProvider>
-          </I18nProvider>
-        </CompatRouter>
+        <I18nProvider currentLocale="en" current={en} en={en}>
+          <LegacyI18nProvider>
+            <MetaMetricsContext.Provider value={mockTrackEvent}>
+              <LegacyMetaMetricsProvider>{children}</LegacyMetaMetricsProvider>
+            </MetaMetricsContext.Provider>
+          </LegacyI18nProvider>
+        </I18nProvider>
       </Router>
     );
     return store ? (

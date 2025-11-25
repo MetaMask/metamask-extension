@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom-v5-compat';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import {
@@ -33,28 +33,13 @@ import {
 import { ReviewGatorPermissionItem } from '../components';
 import { PREVIOUS_ROUTE } from '../../../../../helpers/constants/routes';
 
-type ReviewGatorPermissionsPageProps = {
-  params?: { chainId: string; permissionGroupName: string };
-  navigate?: (
-    to: string | number,
-    options?: { replace?: boolean; state?: Record<string, unknown> },
-  ) => void;
-};
-
-export const ReviewGatorPermissionsPage = ({
-  params,
-  navigate: navigateProp,
-}: ReviewGatorPermissionsPageProps = {}) => {
+export const ReviewGatorPermissionsPage = () => {
   const t = useI18nContext();
-  const navigateHook = useNavigate();
-  const urlParamsHook = useParams<{
+  const navigate = useNavigate();
+  const { chainId } = useParams<{
     chainId: string;
     permissionGroupName: string;
   }>();
-
-  // Use props if provided, otherwise fall back to hooks
-  const navigate = navigateProp || navigateHook;
-  const { chainId } = params || urlParamsHook;
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );

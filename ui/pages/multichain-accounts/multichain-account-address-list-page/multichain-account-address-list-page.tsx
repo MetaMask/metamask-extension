@@ -1,10 +1,6 @@
 import React, { useState, useCallback } from 'react';
 
-import {
-  useNavigate,
-  useLocation,
-  useParams,
-} from 'react-router-dom-v5-compat';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { CaipChainId } from '@metamask/utils';
 import {

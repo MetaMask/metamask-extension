@@ -1,7 +1,6 @@
 import React, { useCallback, useContext, useEffect, useMemo } from 'react';
-import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
+import { useNavigate, useLocation } from 'react-router-dom';
 import classnames from 'classnames';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import {
@@ -84,16 +83,11 @@ function hasDuplicateSymbolAndDiffAddress(suggestedTokens, tokens) {
   return Boolean(duplicate);
 }
 
-const ConfirmAddSuggestedToken = ({
-  navigate: routeNavigate,
-  location: routeLocation,
-} = {}) => {
+const ConfirmAddSuggestedToken = () => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
-  const hookNavigate = useNavigate();
-  const hookLocation = useLocation();
-  const navigate = routeNavigate || hookNavigate;
-  const location = routeLocation || hookLocation;
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const hasAppHeader = location?.pathname ? !hideAppHeader({ location }) : true;
 
@@ -241,17 +235,6 @@ const ConfirmAddSuggestedToken = ({
       />
     </div>
   );
-};
-
-ConfirmAddSuggestedToken.propTypes = {
-  navigate: PropTypes.func,
-  location: PropTypes.shape({
-    pathname: PropTypes.string,
-    search: PropTypes.string,
-    hash: PropTypes.string,
-    state: PropTypes.object,
-    key: PropTypes.string,
-  }),
 };
 
 export default ConfirmAddSuggestedToken;

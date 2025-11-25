@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import classnames from 'classnames';
 import { ButtonVariant } from '@metamask/snaps-sdk';
 import log from 'loglevel';

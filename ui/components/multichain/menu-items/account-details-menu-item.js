@@ -2,7 +2,7 @@ import React, { useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import { setAccountDetailsAddress } from '../../../store/actions';
 
 import { MenuItem } from '../../ui/menu';

@@ -3,6 +3,8 @@ import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 import { connect } from 'react-redux';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { Caip25EndowmentPermissionName } from '@metamask/chain-agnostic-permission';
+import { compose } from 'redux';
+import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import {
   getAccountsWithLabels,
   getLastConnectedInfo,
@@ -39,11 +41,9 @@ import PermissionApproval from './permissions-connect.component';
 
 const mapStateToProps = (state, ownProps) => {
   const {
-    match: {
-      params: { id: permissionsRequestId },
-    },
-    location: { pathname },
+    params: { id: permissionsRequestId },
   } = ownProps;
+  const { pathname } = ownProps.location;
   let permissionsRequests = getPermissionsRequests(state);
   permissionsRequests = [
     ...permissionsRequests,
@@ -187,9 +187,9 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-const PermissionApprovalContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps,
+const PermissionApprovalContainer = compose(
+  withRouterHooks,
+  connect(mapStateToProps, mapDispatchToProps),
 )(PermissionApproval);
 
 export default PermissionApprovalContainer;

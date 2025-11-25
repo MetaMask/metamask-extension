@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   TRIGGER_TYPES,
   type INotification,
@@ -27,10 +27,9 @@ import { NotificationDetailsHeader } from './notification-details-header/notific
 import { NotificationDetailsBody } from './notification-details-body/notification-details-body';
 import { NotificationDetailsFooter } from './notification-details-footer/notification-details-footer';
 
-function useNotificationByPath(propsParams?: { uuid: string }) {
+function useNotificationByPath() {
   const { pathname } = useLocation();
-  // If params are provided as props, use them; otherwise extract from pathname
-  const id = propsParams?.uuid || getExtractIdentifier(pathname);
+  const id = getExtractIdentifier(pathname);
   const notification = useSelector(getMetamaskNotificationById(id));
 
   return {
@@ -61,25 +60,11 @@ function useEffectOnNotificationView(notificationData?: INotification) {
   }, []);
 }
 
-type NotificationDetailsProps = {
-  params?: { uuid: string };
-  navigate?: (
-    to: string | number,
-    options?: { replace?: boolean; state?: Record<string, unknown> },
-  ) => void;
-};
-
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export default function NotificationDetails({
-  params,
-  navigate: navigateProp,
-}: NotificationDetailsProps = {}) {
-  const navigateHook = useNavigate();
-  const navigate = (navigateProp || navigateHook) as NonNullable<
-    typeof navigateProp
-  >;
-  const { notification } = useNotificationByPath(params);
+export default function NotificationDetails() {
+  const navigate = useNavigate();
+  const { notification } = useNotificationByPath();
   useEffectOnNotificationView(notification);
 
   // No Notification

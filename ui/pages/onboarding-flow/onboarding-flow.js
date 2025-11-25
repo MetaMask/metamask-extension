@@ -1,11 +1,10 @@
 import React, { useEffect, useState, useContext, useMemo } from 'react';
-import PropTypes from 'prop-types';
 import {
   Routes as Switch,
   Route,
   useNavigate,
   useLocation,
-} from 'react-router-dom-v5-compat';
+} from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
 import Unlock from '../unlock-page';
@@ -87,19 +86,12 @@ import AccountNotFound from './account-not-found/account-not-found';
 import RevealRecoveryPhrase from './recovery-phrase/reveal-recovery-phrase';
 import OnboardingDownloadApp from './download-app/download-app';
 
-export default function OnboardingFlow({
-  navigate: navigateProp,
-  location: locationProp,
-} = {}) {
+export default function OnboardingFlow() {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
-  const hookLocation = useLocation();
-  const hookNavigate = useNavigate();
-
-  // Use passed props if they exist, otherwise fall back to hooks
-  const location = locationProp ?? hookLocation;
-  const navigate = navigateProp ?? hookNavigate;
+  const location = useLocation();
+  const navigate = useNavigate();
   const { pathname, search } = location;
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const openedWithSidepanel = useSelector(
@@ -383,11 +375,6 @@ export default function OnboardingFlow({
     </Box>
   );
 }
-
-OnboardingFlow.propTypes = {
-  navigate: PropTypes.func,
-  location: PropTypes.object,
-};
 
 function setOnboardingDate() {
   submitRequestToBackgroundAndCatch('setOnboardingDate');

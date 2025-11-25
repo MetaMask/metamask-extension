@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Navigate } from 'react-router-dom-v5-compat';
+import { Navigate } from 'react-router-dom';
 import {
   DEFAULT_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,

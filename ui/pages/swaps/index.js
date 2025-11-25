@@ -5,13 +5,17 @@ import React, {
   useState,
   useCallback,
 } from 'react';
-import PropTypes from 'prop-types';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { Routes, Route, Navigate } from 'react-router-dom-v5-compat';
+import {
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+  useLocation,
+} from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { I18nContext } from '../../contexts/i18n';
-import { useSafeNavigation } from '../../hooks/useSafeNavigation';
 
 import {
   getSelectedAccount,
@@ -19,7 +23,8 @@ import {
   isHardwareWallet,
   getHardwareWalletType,
   getHDEntropyIndex,
-} from '../../selectors/selectors';
+  getCurrentNetworkTransactions,
+} from '../../selectors';
 import {
   getCurrentChainId,
   getSelectedNetworkClientId,
@@ -43,7 +48,6 @@ import {
   setTransactionSettingsOpened,
   getLatestAddedTokenTo,
 } from '../../ducks/swaps/swaps';
-import { getCurrentNetworkTransactions } from '../../selectors';
 import {
   getSmartTransactionsEnabled,
   getSmartTransactionsOptInStatusForMetrics,
@@ -98,10 +102,10 @@ import AwaitingSwap from './awaiting-swap';
 import LoadingQuote from './loading-swaps-quotes';
 import NotificationPage from './notification-page/notification-page';
 
-export default function Swap({ location: propsLocation }) {
+export default function Swap() {
   const t = useContext(I18nContext);
-  const { navigate, location: hookLocation } = useSafeNavigation();
-  const location = propsLocation || hookLocation;
+  const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
@@ -526,7 +530,3 @@ export default function Swap({ location: propsLocation }) {
     </div>
   );
 }
-
-Swap.propTypes = {
-  location: PropTypes.object,
-};

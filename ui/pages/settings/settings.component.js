@@ -5,7 +5,7 @@ import {
   Route,
   matchPath,
   Navigate,
-} from 'react-router-dom-v5-compat';
+} from 'react-router-dom';
 import classnames from 'classnames';
 import TabBar from '../../components/app/tab-bar';
 
@@ -33,7 +33,6 @@ import {
   TRANSACTION_SHIELD_ROUTE,
   TRANSACTION_SHIELD_CLAIM_ROUTES,
 } from '../../helpers/constants/routes';
-
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
 import {
   ButtonIcon,

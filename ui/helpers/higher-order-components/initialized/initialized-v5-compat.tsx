@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Navigate } from 'react-router-dom-v5-compat';
+import { Navigate } from 'react-router-dom';
 import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
 import { ONBOARDING_ROUTE } from '../../constants/routes';
 

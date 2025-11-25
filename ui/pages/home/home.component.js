@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Navigate } from 'react-router-dom-v5-compat';
+import { Navigate } from 'react-router-dom';
 import { Text, TextVariant, TextColor } from '@metamask/design-system-react';
 import { COHORT_NAMES } from '@metamask/subscription-controller';
 import {
@@ -172,7 +172,6 @@ export default class Home extends PureComponent {
     showShieldEntryModal: PropTypes.bool,
     isSocialLoginFlow: PropTypes.bool,
     lookupSelectedNetworks: PropTypes.func.isRequired,
-    navState: PropTypes.object,
     evaluateCohortEligibility: PropTypes.func,
     pendingShieldCohort: PropTypes.string,
     setPendingShieldCohort: PropTypes.func,
@@ -199,12 +198,9 @@ export default class Home extends PureComponent {
       showAwaitingSwapScreen,
       swapsFetchParams,
       location,
-      navState,
     } = this.props;
-    // Read stayOnHomePage from both v5 location.state and v5-compat navState
-    const stayOnHomePage =
-      Boolean(location?.state?.stayOnHomePage) ||
-      Boolean(navState?.stayOnHomePage);
+    // Read stayOnHomePage from location.state (React Router v6)
+    const stayOnHomePage = Boolean(location?.state?.stayOnHomePage);
 
     if (shouldCloseNotificationPopup(props)) {
       this.state.notificationClosing = true;
@@ -233,12 +229,9 @@ export default class Home extends PureComponent {
       location,
       pendingApprovals,
       hasApprovalFlows,
-      navState,
     } = this.props;
-    // Read stayOnHomePage from both v5 location.state and v5-compat navState
-    const stayOnHomePage =
-      Boolean(location?.state?.stayOnHomePage) ||
-      Boolean(navState?.stayOnHomePage);
+    // Read stayOnHomePage from location.state (React Router v6)
+    const stayOnHomePage = Boolean(location?.state?.stayOnHomePage);
 
     const canRedirect = !isNotification && !stayOnHomePage;
     if (canRedirect && showAwaitingSwapScreen) {
@@ -880,7 +873,7 @@ export default class Home extends PureComponent {
 
     if (forgottenPassword) {
       return <Navigate to={RESTORE_VAULT_ROUTE} replace />;
-    } else if (this.state.notificationClosing || this.state.redirecting) {
+    } else if (this.state.notificationClosing) {
       return null;
     }
 

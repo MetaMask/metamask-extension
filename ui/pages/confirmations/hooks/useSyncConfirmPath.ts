@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useParams, useLocation } from 'react-router-dom-v5-compat';
+import { useParams, useLocation } from 'react-router-dom';
 
 import {
   CONFIRM_TRANSACTION_ROUTE,

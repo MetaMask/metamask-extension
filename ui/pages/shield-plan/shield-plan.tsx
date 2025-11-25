@@ -8,7 +8,7 @@ import {
   RecurringInterval,
 } from '@metamask/subscription-controller';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import { Checkbox, TextVariant } from '@metamask/design-system-react';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,

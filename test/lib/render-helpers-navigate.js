@@ -5,7 +5,6 @@ import { render } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
 import { userEvent } from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
-import { CompatRouter } from 'react-router-dom-v5-compat';
 import PropTypes from 'prop-types';
 import configureStore from '../../ui/store/store';
 import { I18nContext, LegacyI18nProvider } from '../../ui/contexts/i18n';
@@ -44,13 +43,11 @@ function createProviderWrapper(store, pathname = '/') {
   const Wrapper = ({ children }) => {
     const container = (
       <MemoryRouter initialEntries={[pathname]}>
-        <CompatRouter>
-          <I18nProvider currentLocale="en" current={en} en={en}>
-            <LegacyI18nProvider>
-              <LegacyMetaMetricsProvider>{children}</LegacyMetaMetricsProvider>
-            </LegacyI18nProvider>
-          </I18nProvider>
-        </CompatRouter>
+        <I18nProvider currentLocale="en" current={en} en={en}>
+          <LegacyI18nProvider>
+            <LegacyMetaMetricsProvider>{children}</LegacyMetaMetricsProvider>
+          </LegacyI18nProvider>
+        </I18nProvider>
       </MemoryRouter>
     );
 

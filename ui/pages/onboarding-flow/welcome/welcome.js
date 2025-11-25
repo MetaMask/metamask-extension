@@ -7,7 +7,7 @@ import React, {
   Suspense,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import { Box } from '../../../components/component-library';
 import {
   ONBOARDING_COMPLETION_ROUTE,

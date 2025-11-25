@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Routes,
@@ -7,7 +6,7 @@ import {
   useNavigate,
   useParams,
   useLocation,
-} from 'react-router-dom-v5-compat';
+} from 'react-router-dom';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ORIGIN_METAMASK,
@@ -54,20 +53,13 @@ import { useAsyncResult } from '../../../hooks/useAsync';
 import { TraceName } from '../../../../shared/lib/trace';
 import ConfirmTokenTransactionSwitch from './confirm-token-transaction-switch';
 
-const ConfirmTransaction = ({
-  params: routeParams,
-  location: routeLocation,
-} = {}) => {
+const ConfirmTransaction = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const urlParams = useParams();
-  const hookLocation = useLocation();
+  const location = useLocation();
 
-  // Use params from props (v5 route) if available, otherwise fall back to useParams (v6)
-  const { id: paramsTransactionId } = routeParams || urlParams;
-
-  // Use location from props (v5 route) if available, otherwise fall back to useLocation (v6)
-  const location = routeLocation || hookLocation;
+  const { id: paramsTransactionId } = urlParams;
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const sendTo = useSelector(getSendTo);
@@ -233,19 +225,6 @@ const ConfirmTransaction = ({
   }
 
   return <Loading />;
-};
-
-ConfirmTransaction.propTypes = {
-  params: PropTypes.shape({
-    id: PropTypes.string,
-  }),
-  location: PropTypes.shape({
-    pathname: PropTypes.string,
-    search: PropTypes.string,
-    hash: PropTypes.string,
-    state: PropTypes.object,
-    key: PropTypes.string,
-  }),
 };
 
 export default ConfirmTransaction;

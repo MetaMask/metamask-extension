@@ -73,7 +73,6 @@ class UnlockPage extends Component {
     /**
      * Navigation state from v5-compat navigation context
      */
-    navState: PropTypes.object,
     /**
      * If isUnlocked is true will redirect to most recent route in history
      */
@@ -157,13 +156,13 @@ class UnlockPage extends Component {
   }
 
   UNSAFE_componentWillMount() {
-    const { isUnlocked, navigate, location, navState } = this.props;
+    const { isUnlocked, navigate, location } = this.props;
 
     if (isUnlocked) {
       // Redirect to the intended route if available, otherwise DEFAULT_ROUTE
       let redirectTo = DEFAULT_ROUTE;
-      // Read from both v5 location.state and v5-compat navState
-      const fromLocation = location.state?.from || navState?.from;
+      // Read from location.state (React Router v6)
+      const fromLocation = location.state?.from;
       if (fromLocation?.pathname) {
         const search = fromLocation.search || '';
         redirectTo = fromLocation.pathname + search;
@@ -505,6 +504,7 @@ class UnlockPage extends Component {
 
     const needHelpText = t('needHelpLinkText');
     const isRehydrationFlow = isSocialLoginFlow && !isOnboardingCompleted;
+    const isTestEnvironment = Boolean(process.env.IN_TEST);
 
     return (
       <Box
@@ -674,7 +674,7 @@ class UnlockPage extends Component {
             </Text>
           </Box>
         </Box>
-        {!isRehydrationFlow && (
+        {!isTestEnvironment && !isRehydrationFlow && (
           <Suspense fallback={<Box />}>
             <FoxAppearAnimation />
           </Suspense>

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Routes, Route } from 'react-router-dom-v5-compat';
+import { Routes, Route } from 'react-router-dom';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { SubjectType } from '@metamask/permission-controller';
 import { isSnapId } from '@metamask/snaps-utils';
@@ -15,7 +15,6 @@ import {
   parseCaipAccountId,
   parseCaipChainId,
 } from '@metamask/utils';
-import { getRelativeLocationForNestedRoutes } from '../routes/utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { isEthAddress } from '../../../app/scripts/lib/multichain/address';
@@ -456,7 +455,6 @@ export default class PermissionConnect extends Component {
       setSnapsInstallPrivacyWarningShownStatus,
       approvePermissionsRequest,
       navigate,
-      location,
     } = this.props;
     const {
       selectedAccountAddresses,
@@ -468,18 +466,13 @@ export default class PermissionConnect extends Component {
     const isRequestingSnap = isSnapId(permissionsRequest?.metadata?.origin);
 
     // Create a relative location for nested v5-compat Routes
-    const relativeLocation = getRelativeLocationForNestedRoutes(
-      location,
-      connectPath,
-    );
-
     return (
       <div className="permissions-connect">
         {!hideTopBar && this.renderTopBar(permissionsRequestId)}
         {redirecting && permissionsApproved ? (
           <PermissionsRedirect subjectMetadata={targetSubjectMetadata} />
         ) : (
-          <Routes location={relativeLocation}>
+          <Routes>
             <Route
               path="/"
               element={(() => {

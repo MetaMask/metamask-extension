@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { useNavigate, useParams } from 'react-router-dom-v5-compat';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { AccountWalletId } from '@metamask/account-api';
 import { CaipChainId } from '@metamask/utils';
@@ -71,17 +71,12 @@ type AccountBalance = {
   [key: string]: string | number;
 };
 
-type WalletDetailsProps = {
-  params?: { id: string };
-};
-
-const WalletDetails = ({ params: propsParams }: WalletDetailsProps = {}) => {
+const WalletDetails = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const hookParams = useParams();
+  const { id } = useParams();
 
-  const { id } = propsParams || hookParams;
   const decodedId = decodeURIComponent(id as string);
   const walletsWithAccounts = useSelector(getWalletsWithAccounts);
   const seedPhraseBackedUp = useSelector(getIsPrimarySeedPhraseBackedUp);

@@ -10,7 +10,7 @@ import {
   SubscriptionCryptoPaymentMethod,
   TokenPaymentInfo,
 } from '@metamask/subscription-controller';
-import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { NameType } from '@metamask/name-controller';
 import {
   BannerAlert,
