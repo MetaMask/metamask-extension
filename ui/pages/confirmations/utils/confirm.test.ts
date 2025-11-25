@@ -14,6 +14,7 @@ import {
   isValidASCIIURL,
   toPunycodeURL,
   stripProtocol,
+  checkValidSingleOrBatchTransaction,
 } from './confirm';
 
 const typedDataMsg =
@@ -142,6 +143,33 @@ describe('confirm util', () => {
       expect(stripProtocol('http://localhost:8545')).toStrictEqual(
         'localhost:8545',
       );
+    });
+  });
+
+  describe('checkValidSingleOrBatchTransaction', () => {
+    it('returns null for valid single transaction', () => {
+      expect(() =>
+        checkValidSingleOrBatchTransaction([{ data: '0x' }]),
+      ).toThrow();
+    });
+
+    it('returns null for valid batch transaction', () => {
+      const result = checkValidSingleOrBatchTransaction([
+        { data: '0x3593564c0000' },
+        { data: '0x87517c450000' },
+      ]);
+      expect(result).toStrictEqual(undefined);
+    });
+
+    it('throws error for invalid batch transaction', () => {
+      expect(() =>
+        checkValidSingleOrBatchTransaction([
+          { data: '0x' },
+          { data: '0x' },
+          { data: '0x' },
+          { data: '0x' },
+        ]),
+      ).toThrow();
     });
   });
 });

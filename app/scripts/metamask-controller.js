@@ -1003,16 +1003,6 @@ export default class MetamaskController extends EventEmitter {
                   this.txController,
                 ),
               validateSecurity: (securityAlertId, request, chainId) => {
-                validateRequestWithPPOM({
-                  chainId,
-                  ppomController: this.ppomController,
-                  request,
-                  securityAlertId,
-                  updateSecurityAlertResponse:
-                    this.updateSecurityAlertResponse.bind(this),
-                  getSecurityAlertsConfig:
-                    this.getSecurityAlertsConfig.bind(this),
-                });
                 getQuotesForConfirmation({
                   req,
                   fetchQuotes: this.controllerMessenger.call.bind(
@@ -1027,6 +1017,16 @@ export default class MetamaskController extends EventEmitter {
                     this.remoteFeatureFlagController?.state?.remoteFeatureFlags
                       ?.dappSwapMetrics,
                   securityAlertId,
+                });
+                return validateRequestWithPPOM({
+                  chainId,
+                  ppomController: this.ppomController,
+                  request,
+                  securityAlertId,
+                  updateSecurityAlertResponse:
+                    this.updateSecurityAlertResponse.bind(this),
+                  getSecurityAlertsConfig:
+                    this.getSecurityAlertsConfig.bind(this),
                 });
               },
               isAuxiliaryFundsSupported: (chainId) =>

@@ -15,6 +15,7 @@ import {
 import { TokenStandAndDetails } from '../../../../../store/actions';
 import { getRemoteFeatureFlags } from '../../../../../selectors/remote-feature-flags';
 import { ConfirmMetamaskState } from '../../../types/confirm';
+import { checkValidSingleOrBatchTransaction } from '../../../utils';
 import { getTokenValueFromRecord } from '../../../utils/token';
 import { selectDappSwapComparisonData } from '../../../selectors/confirm';
 import { useConfirmContext } from '../../../context/confirm';
@@ -63,6 +64,7 @@ export function useDappSwapComparisonInfo() {
 
   const { commands, quotesInput, amountMin, tokenAddresses } = useMemo(() => {
     try {
+      checkValidSingleOrBatchTransaction(nestedTransactions);
       let transactionData = data;
       if (nestedTransactions?.length) {
         transactionData = nestedTransactions?.find(({ data: trxnData }) =>
