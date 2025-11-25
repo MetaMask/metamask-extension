@@ -13,7 +13,7 @@ import { getConfirmationRoute } from '../confirmations/hooks/useConfirmationNavi
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
-  ENVIRONMENT_TYPE_POPUP,
+  // ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_FULLSCREEN,
 } from '../../../shared/constants/app';
 import {
@@ -35,7 +35,7 @@ export const ConfirmationHandler = () => {
   const navState = useNavState();
 
   const envType = getEnvironmentType();
-  const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
+  // const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
   const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
   const isFullscreen = envType === ENVIRONMENT_TYPE_FULLSCREEN;
 
@@ -57,16 +57,16 @@ export const ConfirmationHandler = () => {
   const canRedirect = !isNotification && !stayOnHomePage;
 
   // Flows that *should* navigate in fullscreen, based on E2E specs
-  const hasWalletInitiatedSnapApproval = pendingApprovals.some(
-    (approval) =>
-      approval.type === 'wallet_installSnap' ||
-      approval.type === 'wallet_updateSnap' ||
-      approval.type === 'wallet_installSnapResult' ||
-      approval.type === 'snap_manageAccounts:showSnapAccountRedirect' ||
-      approval.type === 'snap_manageAccounts:confirmAccountCreation' ||
-      approval.type === 'snap_manageAccounts:confirmAccountRemoval' ||
-      approval.type === 'snap_manageAccounts:showNameSnapAccount',
-  );
+  // const hasWalletInitiatedSnapApproval = pendingApprovals.some(
+  //   (approval) =>
+  //     approval.type === 'wallet_installSnap' ||
+  //     approval.type === 'wallet_updateSnap' ||
+  //     approval.type === 'wallet_installSnapResult' ||
+  //     approval.type === 'snap_manageAccounts:showSnapAccountRedirect' ||
+  //     approval.type === 'snap_manageAccounts:confirmAccountCreation' ||
+  //     approval.type === 'snap_manageAccounts:confirmAccountRemoval' ||
+  //     approval.type === 'snap_manageAccounts:showNameSnapAccount',
+  // );
 
   // Flows that *should not* navigate in fullscreen, based on E2E specs
   const hasDappSmartTransactionStatus = pendingApprovals.some(
@@ -78,18 +78,18 @@ export const ConfirmationHandler = () => {
 
   // Ported from home.component - checkStatusAndNavigate()
   useEffect(() => {
-    if (isFullscreen && hasDappSmartTransactionStatus) {
-      return;
-    }
-
-    if (isFullscreen && !hasWalletInitiatedSnapApproval && !hasApprovalFlows) {
-      return;
-    }
-
     // Only run when on home/default page (for now)
     if (pathname !== DEFAULT_ROUTE) {
       return;
     }
+
+    if (isFullscreen && hasDappSmartTransactionStatus) {
+      return;
+    }
+
+    // if (isFullscreen && !hasWalletInitiatedSnapApproval && !hasApprovalFlows) {
+    //   return;
+    // }
 
     if (canRedirect && showAwaitingSwapScreen) {
       navigate(AWAITING_SWAP_ROUTE);
@@ -115,10 +115,10 @@ export const ConfirmationHandler = () => {
     hasDappSmartTransactionStatus,
     hasApprovalFlows,
     hasSwapsQuotes,
-    hasWalletInitiatedSnapApproval,
+    // hasWalletInitiatedSnapApproval,
     isFullscreen,
-    isNotification,
-    isPopup,
+    // isNotification,
+    // isPopup,
     navigate,
     pathname,
     pendingApprovals,

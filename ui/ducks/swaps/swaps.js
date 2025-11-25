@@ -1123,7 +1123,7 @@ export const signAndSendSwapsSmartTransaction = ({
 };
 
 export const signAndSendTransactions = (
-  history,
+  navigate,
   trackEvent,
   additionalTrackingParams,
 ) => {
@@ -1150,7 +1150,7 @@ export const signAndSendTransactions = (
     await dispatch(setSwapsLiveness(swapsLivenessForNetwork));
 
     if (!swapsLivenessForNetwork.swapsFeatureIsLive) {
-      await history.push(SWAPS_MAINTENANCE_ROUTE);
+      await navigate(SWAPS_MAINTENANCE_ROUTE);
       return;
     }
 
@@ -1162,7 +1162,7 @@ export const signAndSendTransactions = (
     await dispatch(stopPollingForQuotes());
 
     if (!hardwareWalletUsed) {
-      history.push(AWAITING_SWAP_ROUTE);
+      navigate(AWAITING_SWAP_ROUTE);
     }
 
     const { fast: fastGasEstimate } = getSwapGasPriceEstimateData(state);
@@ -1313,7 +1313,7 @@ export const signAndSendTransactions = (
         },
       });
       await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
-      history.push(SWAPS_ERROR_ROUTE);
+      navigate(SWAPS_ERROR_ROUTE);
       return;
     }
 
@@ -1322,7 +1322,7 @@ export const signAndSendTransactions = (
     // For hardware wallets we go to the Awaiting Signatures page first and only after a user
     // completes 1 or 2 confirmations, we redirect to the Awaiting Swap page.
     if (hardwareWalletUsed) {
-      history.push(AWAITING_SIGNATURES_ROUTE);
+      navigate(AWAITING_SIGNATURES_ROUTE);
     }
 
     if (approveTxParams) {
@@ -1369,7 +1369,7 @@ export const signAndSendTransactions = (
       } catch (e) {
         debugLog('Approve transaction failed', e);
         await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
-        history.push(SWAPS_ERROR_ROUTE);
+        navigate(SWAPS_ERROR_ROUTE);
         return;
       }
     }
@@ -1402,14 +1402,14 @@ export const signAndSendTransactions = (
         : SWAP_FAILED_ERROR;
       debugLog('Trade transaction failed', e);
       await dispatch(setSwapsErrorKey(errorKey));
-      history.push(SWAPS_ERROR_ROUTE);
+      navigate(SWAPS_ERROR_ROUTE);
       return;
     }
 
     // Only after a user confirms swapping on a hardware wallet (second `updateAndApproveTx` call above),
     // we redirect to the Awaiting Swap page.
     if (hardwareWalletUsed) {
-      history.push(AWAITING_SWAP_ROUTE);
+      navigate(AWAITING_SWAP_ROUTE);
     }
 
     await forceUpdateMetamaskState(dispatch);

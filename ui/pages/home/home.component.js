@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Redirect, Route } from 'react-router-dom';
+import { Navigate } from 'react-router-dom-v5-compat';
 import { Text, TextVariant, TextColor } from '@metamask/design-system-react';
 import { COHORT_NAMES } from '@metamask/subscription-controller';
 import {
@@ -95,7 +95,7 @@ export default class Home extends PureComponent {
   };
 
   static propTypes = {
-    history: PropTypes.object,
+    navigate: PropTypes.func,
     forgottenPassword: PropTypes.bool,
     setConnectedStatusPopoverHasBeenShown: PropTypes.func,
     shouldShowSeedPhraseReminder: PropTypes.bool.isRequired,
@@ -120,6 +120,7 @@ export default class Home extends PureComponent {
     onTabClick: PropTypes.func.isRequired,
     setDataCollectionForMarketing: PropTypes.func.isRequired,
     dataCollectionForMarketing: PropTypes.bool,
+    location: PropTypes.object,
     shouldShowWeb3ShimUsageNotification: PropTypes.bool.isRequired,
     setWeb3ShimUsageAlertDismissed: PropTypes.func.isRequired,
     originOfCurrentTab: PropTypes.string,
@@ -185,7 +186,7 @@ export default class Home extends PureComponent {
   checkRedirectAfterDefaultPage() {
     const {
       redirectAfterDefaultPage,
-      history,
+      navigate,
       clearRedirectAfterDefaultPage,
       setAccountDetailsAddress,
     } = this.props;
@@ -199,7 +200,7 @@ export default class Home extends PureComponent {
         setAccountDetailsAddress(redirectAfterDefaultPage.address);
       }
 
-      history.push(redirectAfterDefaultPage.path);
+      navigate(redirectAfterDefaultPage.path);
       clearRedirectAfterDefaultPage();
     }
   }
@@ -220,7 +221,8 @@ export default class Home extends PureComponent {
   }
 
   static getDerivedStateFromProps(props) {
-    if (shouldCloseNotificationPopup(props)) {
+    const shouldClose = shouldCloseNotificationPopup(props);
+    if (shouldClose) {
       return { notificationClosing: true };
     }
     return null;
@@ -312,7 +314,7 @@ export default class Home extends PureComponent {
     const { t } = this.context;
 
     const {
-      history,
+      navigate,
       shouldShowSeedPhraseReminder,
       isPopup,
       shouldShowWeb3ShimUsageNotification,
@@ -575,7 +577,7 @@ export default class Home extends PureComponent {
             if (isPopup) {
               global.platform.openExtensionInBrowser(backUpSRPRoute);
             } else {
-              history.push(backUpSRPRoute);
+              navigate(backUpSRPRoute);
             }
           }}
           infoText={t('backupApprovalInfo')}
@@ -788,7 +790,7 @@ export default class Home extends PureComponent {
     } = this.props;
 
     if (forgottenPassword) {
-      return <Redirect to={{ pathname: RESTORE_VAULT_ROUTE }} />;
+      return <Navigate to={RESTORE_VAULT_ROUTE} replace />;
     } else if (this.state.notificationClosing) {
       return null;
     }
@@ -840,14 +842,28 @@ export default class Home extends PureComponent {
       !showShieldEntryModal &&
       !showRecoveryPhrase;
 
+    const { location } = this.props;
+
+    // Handle connected routes
+    if (location?.pathname === CONNECTED_ROUTE) {
+      return (
+        <ScrollContainer className="main-container main-container--has-shadow">
+          <ConnectedSites navigate={this.props.navigate} />
+        </ScrollContainer>
+      );
+    }
+
+    if (location?.pathname === CONNECTED_ACCOUNTS_ROUTE) {
+      return (
+        <ScrollContainer className="main-container main-container--has-shadow">
+          <ConnectedAccounts navigate={this.props.navigate} />
+        </ScrollContainer>
+      );
+    }
+
+    // Render normal home content
     return (
       <ScrollContainer className="main-container main-container--has-shadow">
-        <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />
-        <Route
-          path={CONNECTED_ACCOUNTS_ROUTE}
-          component={ConnectedAccounts}
-          exact
-        />
         <div className="home__container">
           {dataCollectionForMarketing === null &&
           participateInMetaMetrics === true
@@ -879,7 +895,7 @@ export default class Home extends PureComponent {
               defaultHomeActiveTabName={defaultHomeActiveTabName}
               useExternalServices={useExternalServices}
               setBasicFunctionalityModalOpen={setBasicFunctionalityModalOpen}
-            ></AccountOverview>
+            />
             {
               ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
               <div className="home__support">
