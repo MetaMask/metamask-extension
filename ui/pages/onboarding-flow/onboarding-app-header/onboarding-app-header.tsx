@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import type { Location } from 'react-router-dom-v5-compat';
 import classnames from 'classnames';
@@ -149,8 +148,3 @@ export default function OnboardingAppHeader({
     </Box>
   );
 }
-
-OnboardingAppHeader.propTypes = {
-  isWelcomePage: PropTypes.bool,
-  location: PropTypes.object,
-};
