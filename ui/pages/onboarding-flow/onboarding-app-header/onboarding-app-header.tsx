@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom-v5-compat';
+import type { Location } from 'react-router-dom-v5-compat';
 import classnames from 'classnames';
 import MetaFoxLogo from '../../../components/ui/metafox-logo';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -37,15 +37,17 @@ import {
 
 type OnboardingAppHeaderProps = {
   isWelcomePage?: boolean;
+  location?: Location;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function OnboardingAppHeader({
   isWelcomePage = false,
+  location,
 }: OnboardingAppHeaderProps) {
   const dispatch = useDispatch();
-  const { pathname, search } = useLocation();
+  const { pathname, search } = location || { pathname: '', search: '' };
   const t = useI18nContext();
   const currentLocale = useSelector(getCurrentLocale);
   const localeOptions = locales.map((locale) => {
@@ -150,4 +152,5 @@ export default function OnboardingAppHeader({
 
 OnboardingAppHeader.propTypes = {
   isWelcomePage: PropTypes.bool,
+  location: PropTypes.object,
 };

@@ -1,9 +1,12 @@
 import React, { useEffect, useState, useContext, useMemo } from 'react';
+import PropTypes from 'prop-types';
 import {
   Routes as Switch,
   Route,
   useNavigate,
   useLocation,
+  type NavigateFunction,
+  type Location,
 } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
@@ -87,14 +90,27 @@ import AccountNotFound from './account-not-found/account-not-found';
 import RevealRecoveryPhrase from './recovery-phrase/reveal-recovery-phrase';
 import OnboardingDownloadApp from './download-app/download-app';
 
+type OnboardingFlowProps = {
+  navigate?: NavigateFunction;
+  location?: Location;
+};
+
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export default function OnboardingFlow() {
+export default function OnboardingFlow({
+  navigate: navigateProp,
+  location: locationProp,
+}: OnboardingFlowProps) {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
-  const { pathname, search } = useLocation();
-  const navigate = useNavigate();
+  const hookLocation = useLocation();
+  const hookNavigate = useNavigate();
+
+  // Use passed props if they exist, otherwise fall back to hooks
+  const location = locationProp ?? hookLocation;
+  const navigate = navigateProp ?? hookNavigate;
+  const { pathname, search } = location;
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const openedWithSidepanel = useSelector(getOpenedWithSidepanel);
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterUnlock);
@@ -261,7 +277,12 @@ export default function OnboardingFlow() {
         'onboarding-flow--welcome-login': isWelcomePage,
       })}
     >
-      {!isPopup && <OnboardingAppHeader isWelcomePage={isWelcomePage} />}
+      {!isPopup && (
+        <OnboardingAppHeader
+          isWelcomePage={isWelcomePage}
+          location={location}
+        />
+      )}
       <Box
         className={classnames('onboarding-flow__container', {
           'onboarding-flow__container--full': isFullPage,
@@ -376,6 +397,11 @@ export default function OnboardingFlow() {
     </Box>
   );
 }
+
+OnboardingFlow.propTypes = {
+  navigate: PropTypes.func,
+  location: PropTypes.object,
+};
 
 function setOnboardingDate() {
   submitRequestToBackgroundAndCatch('setOnboardingDate');
