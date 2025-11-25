@@ -4997,9 +4997,6 @@
   "recipientEditAriaLabel": {
     "message": "Изменить получателя"
   },
-  "recipientPlaceholder": {
-    "message": "Введите или вставьте действительный адрес"
-  },
   "recoveryPhraseReminderBackupStart": {
     "message": "Создать резервную копию сейчас"
   },
