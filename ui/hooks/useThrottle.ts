@@ -14,7 +14,7 @@ export function useThrottle<ValueType>(value: ValueType, interval = 500) {
     }
 
     const id = window.setTimeout(() => {
-      lastUpdated.current = now;
+      lastUpdated.current = Date.now();
       setThrottledValue(value);
     }, interval);
 
