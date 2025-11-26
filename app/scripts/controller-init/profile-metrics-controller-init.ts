@@ -4,6 +4,8 @@ import {
 } from '@metamask/profile-metrics-controller';
 import type { ControllerInitFunction } from './types';
 
+const isTestEnvironment = Boolean(process.env.IN_TEST);
+
 /**
  * Initialize the profile metrics controller.
  *
@@ -29,6 +31,7 @@ export const ProfileMetricsControllerInit: ControllerInitFunction<
   const controller = new ProfileMetricsController({
     messenger: controllerMessenger,
     state: persistedState.ProfileMetricsController,
+    interval: isTestEnvironment ? 0 : 10000,
     assertUserOptedIn,
     getMetaMetricsId: () => metaMetricsController.getMetaMetricsId(),
   });

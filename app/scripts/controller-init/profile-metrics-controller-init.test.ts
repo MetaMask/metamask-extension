@@ -37,6 +37,7 @@ describe('ProfileMetricsControllerInit', () => {
     expect(controllerMock).toHaveBeenCalledWith({
       messenger: expect.any(Object),
       state: undefined,
+      interval: expect.any(Number),
       assertUserOptedIn: expect.any(Function),
       getMetaMetricsId: expect.any(Function),
     });
