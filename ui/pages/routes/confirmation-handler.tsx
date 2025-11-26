@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 
@@ -16,6 +16,7 @@ import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
   ORIGIN_METAMASK,
+  SMART_TRANSACTION_CONFIRMATION_TYPES,
 } from '../../../shared/constants/app';
 import {
   selectHasApprovalFlows,
@@ -59,42 +60,14 @@ export const ConfirmationHandler = () => {
   const hasApprovalFlows = useSelector(selectHasApprovalFlows);
 
   // Read stayOnHomePage from both v5 location.state and v5-compat navState
-  const stayOnHomePage = useMemo(
-    () =>
-      Boolean(location.state?.stayOnHomePage) ||
-      Boolean(navState?.stayOnHomePage),
-    [location.state, navState],
-  );
+  const stayOnHomePage =
+    Boolean(location.state?.stayOnHomePage) ||
+    Boolean(navState?.stayOnHomePage);
 
   const canRedirect = !isNotification && !stayOnHomePage;
 
-  // Flows that *should* navigate in fullscreen, based on E2E specs
-  const hasSnapApproval = pendingApprovals.some((approval) =>
-    SNAP_APPROVAL_TYPES.includes(approval.type),
-  );
-
-  // Flows that *should not* navigate in fullscreen, based on E2E specs
-  const hasSmartTransactionStatus = pendingApprovals.some(
-    (approval) =>
-      approval.type === 'smartTransaction:showSmartTransactionStatusPage' &&
-      approval.origin?.toLowerCase() !== ORIGIN_METAMASK,
-  );
-
-  const skipHandler =
-    isFullscreen &&
-    (hasSmartTransactionStatus || (!hasSnapApproval && !hasApprovalFlows));
-
   // Ported from home.component - checkStatusAndNavigate()
-  useEffect(() => {
-    // Only run when on home/default page (for now)
-    if (pathname !== DEFAULT_ROUTE) {
-      return;
-    }
-
-    if (skipHandler) {
-      return;
-    }
-
+  const checkStatusAndNavigate = useCallback(() => {
     if (canRedirect && showAwaitingSwapScreen) {
       navigate(AWAITING_SWAP_ROUTE);
     } else if (canRedirect && (hasSwapsQuotes || swapsFetchParams)) {
@@ -115,17 +88,44 @@ export const ConfirmationHandler = () => {
     }
   }, [
     canRedirect,
-    hasBridgeQuotes,
     hasApprovalFlows,
+    hasBridgeQuotes,
     hasSwapsQuotes,
-    isFullscreen,
     navigate,
-    pathname,
     pendingApprovals,
     showAwaitingSwapScreen,
     swapsFetchParams,
-    skipHandler,
   ]);
+
+  // Flows that *should* navigate in fullscreen, based on E2E specs
+  const hasSnapApproval = pendingApprovals.some((approval) =>
+    SNAP_APPROVAL_TYPES.includes(approval.type),
+  );
+
+  // Flows that *should not* navigate in fullscreen, based on E2E specs
+  const hasSmartTransactionStatus = pendingApprovals.some(
+    (approval) =>
+      approval.type ===
+        SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage &&
+      approval.origin?.toLowerCase() !== ORIGIN_METAMASK,
+  );
+
+  const skipHandler =
+    isFullscreen &&
+    (hasSmartTransactionStatus || (!hasSnapApproval && !hasApprovalFlows));
+
+  useEffect(() => {
+    // Only run when on home/default page (for now)
+    if (pathname !== DEFAULT_ROUTE) {
+      return;
+    }
+
+    if (skipHandler) {
+      return;
+    }
+
+    checkStatusAndNavigate();
+  }, [checkStatusAndNavigate, pathname, skipHandler]);
 
   return null;
 };
