@@ -8,7 +8,7 @@ import {
   RecurringInterval,
 } from '@metamask/subscription-controller';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
 import { Checkbox, TextVariant } from '@metamask/design-system-react';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -53,6 +53,7 @@ import {
   TextVariant as DSTextVariant,
 } from '../../helpers/constants/design-system';
 import {
+  DEFAULT_ROUTE,
   SETTINGS_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
@@ -70,18 +71,23 @@ import {
 } from '../../hooks/subscription/useSubscription';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { getLastUsedShieldSubscriptionPaymentDetails } from '../../selectors/subscription';
-import { SUBSCRIPTION_DEFAULT_TRIAL_PERIOD_DAYS } from '../../../shared/constants/subscriptions';
+import {
+  EntryModalSourceEnum,
+  SUBSCRIPTION_DEFAULT_TRIAL_PERIOD_DAYS,
+} from '../../../shared/constants/subscriptions';
 import {
   isDevOrTestEnvironment,
   isDevOrUatBuild,
   getIsTrialedSubscription,
 } from '../../../shared/modules/shield';
+import ApiErrorHandler from '../../components/app/api-error-handler';
 import { ShieldPaymentModal } from './shield-payment-modal';
 import { Plan } from './types';
 import { getProductPrice } from './utils';
 
 const ShieldPlan = () => {
   const navigate = useNavigate();
+  const { search } = useLocation();
   const t = useI18nContext();
 
   const lastUsedPaymentDetails = useSelector(
@@ -98,6 +104,7 @@ const ShieldPlan = () => {
     subscriptions,
     trialedProducts,
     loading: subscriptionsLoading,
+    error: subscriptionsError,
   } = useUserSubscriptions({
     refetch: true, // always fetch latest subscriptions state in shield plan screen
   });
@@ -121,10 +128,13 @@ const ShieldPlan = () => {
     lastUsedPaymentDetails?.plan || RECURRING_INTERVALS.year,
   );
 
-  const { subscriptionPricing, loading: subscriptionPricingLoading } =
-    useSubscriptionPricing({
-      refetch: true, // always fetch latest price
-    });
+  const {
+    subscriptionPricing,
+    loading: subscriptionPricingLoading,
+    error: subscriptionPricingError,
+  } = useSubscriptionPricing({
+    refetch: true, // always fetch latest price
+  });
 
   const pricingPlans = useSubscriptionProductPlans(
     PRODUCT_TYPES.SHIELD,
@@ -139,12 +149,15 @@ const ShieldPlan = () => {
     return pricingPlans?.find((plan) => plan.interval === selectedPlan);
   }, [pricingPlans, selectedPlan]);
 
-  const { availableTokenBalances, pending: pendingAvailableTokenBalances } =
-    useAvailableTokenBalances({
-      paymentChains: cryptoPaymentMethod?.chains,
-      price: selectedProductPrice,
-      productType: PRODUCT_TYPES.SHIELD,
-    });
+  const {
+    availableTokenBalances,
+    pending: pendingAvailableTokenBalances,
+    error: availableTokenBalancesError,
+  } = useAvailableTokenBalances({
+    paymentChains: cryptoPaymentMethod?.chains,
+    price: selectedProductPrice,
+    productType: PRODUCT_TYPES.SHIELD,
+  });
   const hasAvailableToken = availableTokenBalances.length > 0;
 
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
@@ -263,6 +276,12 @@ const ShieldPlan = () => {
     subscriptionPricingLoading ||
     subscriptionResult.pending;
 
+  const hasApiError =
+    subscriptionsError ||
+    subscriptionPricingError ||
+    availableTokenBalancesError ||
+    subscriptionResult.error;
+
   const plans: Plan[] = useMemo(
     () =>
       pricingPlans
@@ -305,9 +324,14 @@ const ShieldPlan = () => {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   const handleBack = () => {
-    // transaction shield settings page has guard to redirect to current shield plan page if there is no subscription
-    // which create a loop so we just back to settings page
-    navigate(SETTINGS_ROUTE, { replace: true });
+    const source = new URLSearchParams(search).get('source');
+    if (source === EntryModalSourceEnum.Settings) {
+      // this happens when user is from settings or transaction shield page
+      navigate(SETTINGS_ROUTE, { replace: true });
+    } else {
+      // this happens when user is from homepage or post transaction page
+      navigate(DEFAULT_ROUTE, { replace: true });
+    }
   };
 
   const rowsStyleProps: BoxProps<'div'> = {
@@ -336,213 +360,221 @@ const ShieldPlan = () => {
       >
         {t('shieldPlanTitle')}
       </Header>
-      {loading && <LoadingScreen />}
-      {subscriptionPricing && (
-        <>
-          <Content>
-            <Box
-              display={Display.Grid}
-              gap={2}
-              marginBottom={4}
-              paddingTop={2}
-              className="shield-plan-page__plans"
-            >
-              {plans.map((plan) => (
-                <Box
-                  as="button"
-                  key={plan.id}
-                  {...rowsStyleProps}
-                  borderRadius={BorderRadius.LG}
-                  className={classnames('shield-plan-page__plan', {
-                    'shield-plan-page__plan--selected':
-                      plan.id === selectedPlan,
-                  })}
-                  data-testid={`shield-plan-${plan.label.toLowerCase()}-button`}
-                  onClick={() => setSelectedPlan(plan.id)}
-                >
-                  <div className="shield-plan-page__radio" />
+      {loading && !hasApiError && <LoadingScreen />}
+      {!loading && hasApiError ? (
+        <Content
+          justifyContent={JustifyContent.flexStart}
+          alignItems={AlignItems.center}
+        >
+          <ApiErrorHandler className="shield-plan-page__error-content" />
+        </Content>
+      ) : (
+        subscriptionPricing && (
+          <>
+            <Content>
+              <Box
+                display={Display.Grid}
+                gap={2}
+                marginBottom={4}
+                paddingTop={2}
+                className="shield-plan-page__plans"
+              >
+                {plans.map((plan) => (
                   <Box
-                    textAlign={TextAlign.Left}
-                    className="shield-plan-page__radio-label"
+                    as="button"
+                    key={plan.id}
+                    {...rowsStyleProps}
+                    borderRadius={BorderRadius.LG}
+                    className={classnames('shield-plan-page__plan', {
+                      'shield-plan-page__plan--selected':
+                        plan.id === selectedPlan,
+                    })}
+                    data-testid={`shield-plan-${plan.label.toLowerCase()}-button`}
+                    onClick={() => setSelectedPlan(plan.id)}
                   >
-                    <Text variant={DSTextVariant.bodySm}>{plan.label}</Text>
-                    <Text
-                      variant={DSTextVariant.headingMd}
-                      className="shield-plan-page__plan-price"
-                    >
-                      {plan.price}
-                    </Text>
-                  </Box>
-                  {plan.id === RECURRING_INTERVALS.year && (
+                    <div className="shield-plan-page__radio" />
                     <Box
-                      display={Display.Flex}
-                      alignItems={AlignItems.center}
-                      justifyContent={JustifyContent.center}
-                      paddingInline={2}
-                      borderRadius={BorderRadius.SM}
-                      className="shield-plan-page__save-badge"
+                      textAlign={TextAlign.Left}
+                      className="shield-plan-page__radio-label"
                     >
+                      <Text variant={DSTextVariant.bodySm}>{plan.label}</Text>
                       <Text
-                        variant={DSTextVariant.bodyXsMedium}
-                        color={TextColor.iconInverse}
+                        variant={DSTextVariant.headingMd}
+                        className="shield-plan-page__plan-price"
                       >
-                        {t('shieldPlanSave')}
+                        {plan.price}
                       </Text>
                     </Box>
-                  )}
-                </Box>
-              ))}
-            </Box>
-            <Box className="shield-plan-page__group" marginBottom={4}>
-              <Box
-                as="button"
-                className="shield-plan-page__row"
-                {...rowsStyleProps}
-                onClick={() => setShowPaymentModal(true)}
-                width={BlockSize.Full}
-                data-testid="shield-plan-payment-method-button"
-              >
-                <Text variant={DSTextVariant.bodyLgMedium}>
-                  {t('shieldPlanPayWith')}
-                </Text>
-
-                <Box
-                  display={Display.Flex}
-                  gap={2}
-                  alignItems={AlignItems.center}
-                >
-                  {selectedPaymentMethod === PAYMENT_TYPES.byCrypto &&
-                  selectedToken ? (
-                    <BadgeWrapper
-                      badge={
-                        <AvatarNetwork
-                          size={AvatarNetworkSize.Xs}
-                          name={
-                            NETWORK_TO_NAME_MAP[
-                              selectedToken.chainId as keyof typeof NETWORK_TO_NAME_MAP
-                            ]
-                          }
-                          src={
-                            CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                              selectedToken.chainId
-                            ]
-                          }
-                          borderColor={BorderColor.borderMuted}
-                        />
-                      }
-                    >
-                      <AvatarToken
-                        name={selectedToken?.symbol || ''}
-                        src={selectedToken?.image || ''}
-                        borderColor={BorderColor.borderMuted}
-                      />
-                    </BadgeWrapper>
-                  ) : (
-                    <Icon size={IconSize.Xl} name={IconName.Card} />
-                  )}
-                  <Text variant={DSTextVariant.bodyLgMedium}>
-                    {selectedPaymentMethod === PAYMENT_TYPES.byCrypto
-                      ? selectedToken?.symbol || ''
-                      : t('shieldPlanCard')}
-                  </Text>
-                  <Icon size={IconSize.Md} name={IconName.ArrowDown} />
-                </Box>
-              </Box>
-            </Box>
-            <Box className="shield-plan-page__group">
-              <Box
-                className="shield-plan-page__row"
-                {...rowsStyleProps}
-                display={Display.Block}
-              >
-                <Text variant={DSTextVariant.bodyLgMedium} marginBottom={4}>
-                  {t('shieldPlanDetails')}
-                </Text>
-                <Box
-                  display={Display.Flex}
-                  flexDirection={FlexDirection.Column}
-                  gap={2}
-                >
-                  {planDetails.map((detail, index) => (
-                    <Box key={index} display={Display.Flex} gap={2}>
+                    {plan.id === RECURRING_INTERVALS.year && (
                       <Box
                         display={Display.Flex}
                         alignItems={AlignItems.center}
-                        style={{ height: '1lh' }}
+                        justifyContent={JustifyContent.center}
+                        paddingInline={2}
+                        borderRadius={BorderRadius.SM}
+                        className="shield-plan-page__save-badge"
                       >
-                        <Icon
-                          size={IconSize.Sm}
-                          name={IconName.Check}
-                          color={IconColor.primaryDefault}
-                        />
+                        <Text
+                          variant={DSTextVariant.bodyXsMedium}
+                          color={TextColor.iconInverse}
+                        >
+                          {t('shieldPlanSave')}
+                        </Text>
                       </Box>
-                      <Text variant={DSTextVariant.bodyMd}>{detail}</Text>
-                    </Box>
-                  ))}
+                    )}
+                  </Box>
+                ))}
+              </Box>
+              <Box className="shield-plan-page__group" marginBottom={4}>
+                <Box
+                  as="button"
+                  className="shield-plan-page__row"
+                  {...rowsStyleProps}
+                  onClick={() => setShowPaymentModal(true)}
+                  width={BlockSize.Full}
+                >
+                  <Text variant={DSTextVariant.bodyLgMedium}>
+                    {t('shieldPlanPayWith')}
+                  </Text>
+
+                  <Box
+                    display={Display.Flex}
+                    gap={2}
+                    alignItems={AlignItems.center}
+                  >
+                    {selectedPaymentMethod === PAYMENT_TYPES.byCrypto &&
+                    selectedToken ? (
+                      <BadgeWrapper
+                        badge={
+                          <AvatarNetwork
+                            size={AvatarNetworkSize.Xs}
+                            name={
+                              NETWORK_TO_NAME_MAP[
+                                selectedToken.chainId as keyof typeof NETWORK_TO_NAME_MAP
+                              ]
+                            }
+                            src={
+                              CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                                selectedToken.chainId
+                              ]
+                            }
+                            borderColor={BorderColor.borderMuted}
+                          />
+                        }
+                      >
+                        <AvatarToken
+                          name={selectedToken?.symbol || ''}
+                          src={selectedToken?.image || ''}
+                          borderColor={BorderColor.borderMuted}
+                        />
+                      </BadgeWrapper>
+                    ) : (
+                      <Icon size={IconSize.Xl} name={IconName.Card} />
+                    )}
+                    <Text variant={DSTextVariant.bodyLgMedium}>
+                      {selectedPaymentMethod === PAYMENT_TYPES.byCrypto
+                        ? selectedToken?.symbol || ''
+                        : t('shieldPlanCard')}
+                    </Text>
+                    <Icon size={IconSize.Md} name={IconName.ArrowDown} />
+                  </Box>
                 </Box>
               </Box>
-              {selectedPaymentMethod === PAYMENT_TYPES.byCrypto &&
-                selectedPlan === RECURRING_INTERVALS.month && (
-                  <Text
-                    variant={DSTextVariant.bodySm}
-                    color={TextColor.textAlternative}
-                    marginTop={4}
-                  >
-                    * {t('shieldPlanCryptoMonthlyNote')}
+              <Box className="shield-plan-page__group">
+                <Box
+                  className="shield-plan-page__row"
+                  {...rowsStyleProps}
+                  display={Display.Block}
+                >
+                  <Text variant={DSTextVariant.bodyLgMedium} marginBottom={4}>
+                    {t('shieldPlanDetails')}
                   </Text>
-                )}
-            </Box>
-            <ShieldPaymentModal
-              isOpen={showPaymentModal}
-              onClose={() => setShowPaymentModal(false)}
-              selectedToken={selectedToken}
-              selectedPaymentMethod={selectedPaymentMethod}
-              hasStableTokenWithBalance={hasAvailableToken}
-              setSelectedPaymentMethod={setSelectedPaymentMethod}
-              onAssetChange={setSelectedToken}
-              availableTokenBalances={availableTokenBalances}
-              tokensSupported={tokensSupported}
-            />
-          </Content>
-          <Footer
-            className="shield-plan-page__footer"
-            flexDirection={FlexDirection.Column}
-            gap={3}
-            backgroundColor={BackgroundColor.backgroundMuted}
-          >
-            {showTestClocksCheckbox && (
-              <Checkbox
-                label="Enable Stripe Test clocks (for development and testing only)"
-                labelProps={{
-                  variant: TextVariant.BodySm,
-                }}
-                onChange={() =>
-                  setEnableStripeTestClock(!enableStripeTestClock)
-                }
-                id="stripe-test-clocks"
-                isSelected={enableStripeTestClock}
+                  <Box
+                    display={Display.Flex}
+                    flexDirection={FlexDirection.Column}
+                    gap={2}
+                  >
+                    {planDetails.map((detail, index) => (
+                      <Box key={index} display={Display.Flex} gap={2}>
+                        <Box
+                          display={Display.Flex}
+                          alignItems={AlignItems.center}
+                          style={{ height: '1lh' }}
+                        >
+                          <Icon
+                            size={IconSize.Sm}
+                            name={IconName.Check}
+                            color={IconColor.primaryDefault}
+                          />
+                        </Box>
+                        <Text variant={DSTextVariant.bodyMd}>{detail}</Text>
+                      </Box>
+                    ))}
+                  </Box>
+                </Box>
+                {selectedPaymentMethod === PAYMENT_TYPES.byCrypto &&
+                  selectedPlan === RECURRING_INTERVALS.month && (
+                    <Text
+                      variant={DSTextVariant.bodySm}
+                      color={TextColor.textAlternative}
+                      marginTop={4}
+                    >
+                      * {t('shieldPlanCryptoMonthlyNote')}
+                    </Text>
+                  )}
+              </Box>
+              <ShieldPaymentModal
+                isOpen={showPaymentModal}
+                onClose={() => setShowPaymentModal(false)}
+                selectedToken={selectedToken}
+                selectedPaymentMethod={selectedPaymentMethod}
+                hasStableTokenWithBalance={hasAvailableToken}
+                setSelectedPaymentMethod={setSelectedPaymentMethod}
+                onAssetChange={setSelectedToken}
+                availableTokenBalances={availableTokenBalances}
+                tokensSupported={tokensSupported}
               />
-            )}
-            <Button
-              size={ButtonSize.Lg}
-              variant={ButtonVariant.Primary}
-              block
-              onClick={handleSubscription}
-              data-testid="shield-plan-continue-button"
+            </Content>
+            <Footer
+              className="shield-plan-page__footer"
+              flexDirection={FlexDirection.Column}
+              gap={3}
+              backgroundColor={BackgroundColor.backgroundMuted}
             >
-              {t('continue')}
-            </Button>
-            <Text
-              variant={DSTextVariant.bodySm}
-              color={TextColor.textAlternative}
-              textAlign={TextAlign.Center}
-            >
-              {selectedPlan === RECURRING_INTERVALS.year
-                ? t('shieldPlanFooterNoteYearly')
-                : t('shieldPlanFooterNoteMonthly')}
-            </Text>
-          </Footer>
-        </>
+              {showTestClocksCheckbox && (
+                <Checkbox
+                  label="Enable Stripe Test clocks (for development and testing only)"
+                  labelProps={{
+                    variant: TextVariant.BodySm,
+                  }}
+                  onChange={() =>
+                    setEnableStripeTestClock(!enableStripeTestClock)
+                  }
+                  id="stripe-test-clocks"
+                  isSelected={enableStripeTestClock}
+                />
+              )}
+              <Button
+                size={ButtonSize.Lg}
+                variant={ButtonVariant.Primary}
+                block
+                onClick={handleSubscription}
+                data-testid="shield-plan-continue-button"
+              >
+                {t('continue')}
+              </Button>
+              <Text
+                variant={DSTextVariant.bodySm}
+                color={TextColor.textAlternative}
+                textAlign={TextAlign.Center}
+              >
+                {selectedPlan === RECURRING_INTERVALS.year
+                  ? t('shieldPlanFooterNoteYearly')
+                  : t('shieldPlanFooterNoteMonthly')}
+              </Text>
+            </Footer>
+          </>
+        )
       )}
     </Page>
   );
