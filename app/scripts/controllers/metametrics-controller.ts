@@ -886,7 +886,7 @@ export default class MetaMetricsController extends BaseController<
   // It sets an uninstall URL ("Sorry to see you go!" page),
   // which is opened if a user uninstalls the extension.
   updateExtensionUninstallUrl(
-    participateInMetaMetrics: boolean,
+    participateInMetaMetrics: boolean | null,
     metaMetricsId: string,
   ): void {
     const query: {
@@ -920,7 +920,7 @@ export default class MetaMetricsController extends BaseController<
    * @returns The string of the new metametrics id, or null
    */
   async setParticipateInMetaMetrics(
-    participateInMetaMetrics: boolean,
+    participateInMetaMetrics: boolean | null,
   ): Promise<string | null> {
     const { metaMetricsId: existingMetaMetricsId } = this.state;
 
