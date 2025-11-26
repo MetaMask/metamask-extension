@@ -2598,9 +2598,6 @@
   "function": {
     "message": "功能：$1"
   },
-  "fundingMethod": {
-    "message": "充值方法"
-  },
   "gas": {
     "message": "燃料"
   },
@@ -6998,12 +6995,6 @@
   },
   "time": {
     "message": "时间"
-  },
-  "tipsForUsingAWallet": {
-    "message": "钱包使用提示"
-  },
-  "tipsForUsingAWalletDescription": {
-    "message": "添加代币可解锁使用 Web3 的更多方法。"
   },
   "to": {
     "message": "至"

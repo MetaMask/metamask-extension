@@ -2601,9 +2601,6 @@
   "function": {
     "message": "İşlev: $1"
   },
-  "fundingMethod": {
-    "message": "Para yatırma yöntemi"
-  },
   "gas": {
     "message": "Gaz"
   },
@@ -7001,12 +6998,6 @@
   },
   "time": {
     "message": "Zaman"
-  },
-  "tipsForUsingAWallet": {
-    "message": "Cüzdan kullanma ipuçları"
-  },
-  "tipsForUsingAWalletDescription": {
-    "message": "Token eklemek web3'ü kullanmanın daha fazla yolunun kilidini açar."
   },
   "to": {
     "message": "Alıcı"

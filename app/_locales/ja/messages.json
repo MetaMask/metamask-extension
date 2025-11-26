@@ -2601,9 +2601,6 @@
   "function": {
     "message": "機能: $1"
   },
-  "fundingMethod": {
-    "message": "入金方法"
-  },
   "gas": {
     "message": "ガス"
   },
@@ -7001,12 +6998,6 @@
   },
   "time": {
     "message": "時間"
-  },
-  "tipsForUsingAWallet": {
-    "message": "ウォレット使用のヒント"
-  },
-  "tipsForUsingAWalletDescription": {
-    "message": "トークンを追加すると、Web3の使用方法が増えます。"
   },
   "to": {
     "message": "送り先"

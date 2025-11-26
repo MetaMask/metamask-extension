@@ -2601,9 +2601,6 @@
   "function": {
     "message": "Function: $1"
   },
-  "fundingMethod": {
-    "message": "Paraan ng pagpopondo"
-  },
   "gas": {
     "message": "Gas"
   },
@@ -7001,12 +6998,6 @@
   },
   "time": {
     "message": "Oras"
-  },
-  "tipsForUsingAWallet": {
-    "message": "Mga tip sa paggamit ng wallet"
-  },
-  "tipsForUsingAWalletDescription": {
-    "message": "Kapag nagdagdag ka ng mga token, magkakaroon ka ng mas maraming paraan para magamit ang web3."
   },
   "to": {
     "message": "Sa/Kay"

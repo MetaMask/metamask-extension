@@ -2601,9 +2601,6 @@
   "function": {
     "message": "Chức năng: $1"
   },
-  "fundingMethod": {
-    "message": "Phương thức nạp tiền"
-  },
   "gas": {
     "message": "Gas"
   },
@@ -7001,12 +6998,6 @@
   },
   "time": {
     "message": "Thời gian"
-  },
-  "tipsForUsingAWallet": {
-    "message": "Lời khuyên sử dụng ví"
-  },
-  "tipsForUsingAWalletDescription": {
-    "message": "Việc thêm token sẽ mở ra nhiều cách sử dụng web3 hơn."
   },
   "to": {
     "message": "Đến"
