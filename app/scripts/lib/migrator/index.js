@@ -1,5 +1,6 @@
 import EventEmitter from 'events';
 import log from 'loglevel';
+import { PersistenceManager } from '../../lib/stores/persistence-manager';
 
 /**
  * @typedef {object} Migration
@@ -158,7 +159,7 @@ export default class Migrator extends EventEmitter {
     return {
       data,
       meta: {
-        storageKind: 'data',
+        storageKind: PersistenceManager.DEFAULT_STORAGE_KIND,
         version: this.defaultVersion,
       },
     };

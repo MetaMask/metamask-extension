@@ -6,7 +6,13 @@ const MigrateToSplitStateTest = () => {
   const dispatch = useDispatch();
 
   const handleMigrate = async () => {
-    await dispatch(migrateToSplitState());
+    if (
+      confirm(
+        "Are you sure you want to migrate to split state? You can't undo this action.",
+      )
+    ) {
+      await dispatch(migrateToSplitState());
+    }
   };
   return (
     <div>

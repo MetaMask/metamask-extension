@@ -10,6 +10,7 @@ import type {
   BaseStore,
   MetaData,
 } from './base-store';
+import { getManifestFlags } from '../../../../shared/lib/manifestFlags';
 
 export type StorageKind = 'data' | 'split';
 
@@ -119,6 +120,9 @@ const STATE_LOCK = 'state-lock';
  * state, managing metadata, and handling cleanup tasks.
  */
 export class PersistenceManager {
+  static readonly DEFAULT_STORAGE_KIND = ((process.env.IN_TEST ?
+    getManifestFlags().testing?.storageKind : null) ??
+    'split') as StorageKind;
   /**
    * dataPersistenceFailing is a boolean that is set to true if the storage
    * system attempts to write state and the write operation fails. This is only
@@ -207,7 +211,7 @@ export class PersistenceManager {
 
   #pendingPairs = new Map<string, unknown>();
 
-  storageKind: StorageKind = 'data';
+  storageKind: StorageKind = PersistenceManager.DEFAULT_STORAGE_KIND;
 
   /**
    * Sets the state in the local store.
@@ -428,6 +432,8 @@ export class PersistenceManager {
           this.#mostRecentRetrievedState = result;
         }
 
+        // if storageKind is not set in meta, we haven't migrated, so it is still
+        // `"data"`.
         this.storageKind = result.meta?.storageKind ?? 'data';
 
         return result;

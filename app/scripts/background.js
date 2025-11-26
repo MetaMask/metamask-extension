@@ -978,7 +978,7 @@ export async function loadStateFromPersistence(backup) {
       `MetaMask - migrator metadata version has invalid type '${typeof versionedData
         .meta.version}'`,
     );
-  } else if (!['data', 'split'].includes(versionedData.meta.storageKind)) {
+  } else if (!['data', 'split', undefined].includes(versionedData.meta.storageKind)) {
     throw new Error(
       `MetaMask - migrator metadata storageKind has invalid value '${versionedData.meta.storageKind}'`,
     );
@@ -1001,7 +1001,6 @@ export async function loadStateFromPersistence(backup) {
       flag.value?.enabled === true &&
       // if we've already tried, don't try again.
       versionedData.meta._platformSplitStateGradualRolloutAttempted !== true;
-
     if (useSplitStateStorage) {
       // a sigil to mark that we *tried* to migrate to split state storage
       versionedData.meta._platformSplitStateGradualRolloutAttempted = true;
@@ -1012,7 +1011,7 @@ export async function loadStateFromPersistence(backup) {
     await persistenceManager.set(versionedData.data);
 
     if (useSplitStateStorage) {
-      await persistenceManager.migrateToSplitState();
+      await persistenceManager.migrateToSplitState(versionedData.data);
       delete versionedData.meta._platformSplitStateGradualRolloutAttempted;
       persistenceManager.setMetadata(versionedData.meta);
     }

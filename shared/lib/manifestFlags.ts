@@ -100,6 +100,10 @@ export type ManifestFlags = {
      * The Infura project ID to use for API requests, useful to inject into a test build that doesn't have one
      */
     infuraProjectId?: string;
+    /**
+     * Storage kind to use for tests involving PersistenceManager
+     */
+    storageKind?: 'data' | 'split';
   };
 };
 

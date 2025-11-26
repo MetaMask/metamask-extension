@@ -49,7 +49,15 @@ export class FixtureExtensionStore extends ExtensionStore {
 
       if (response.ok) {
         const state = await response.json();
+        if (state.meta?.storageKind === 'split') {
+          // fixtures use old state, so we need to translate them to split state
+          // here
+          const kvs = new Map(Object.entries(state.data));
+          kvs.set("meta", state.meta);
+          await this.setKeyValues(kvs);
+        } else {
         await super.set(state);
+        }
       } else {
         log.debug(
           `Received response with a status of ${response.status} ${response.statusText}`,
