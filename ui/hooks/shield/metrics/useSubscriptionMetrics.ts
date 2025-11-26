@@ -27,6 +27,7 @@ import {
   CaptureShieldPaymentMethodChangeEventParams,
   CaptureShieldSubscriptionRequestParams,
   CaptureShieldSubscriptionRestartRequestEventParams,
+  CaptureShieldUnexpectedErrorEventParams,
   ExistingSubscriptionEventParams,
 } from './types';
 import {
@@ -382,6 +383,32 @@ export const useSubscriptionMetrics = () => {
     [trackEvent, selectedAccount, hdKeyingsMetadata, totalFiatBalance],
   );
 
+  /**
+   * Capture the event when an unexpected error occurs.
+   */
+  const captureShieldUnexpectedErrorEvent = useCallback(
+    (params: CaptureShieldUnexpectedErrorEventParams) => {
+      const commonTrackingProps = getShieldCommonTrackingProps(
+        selectedAccount,
+        hdKeyingsMetadata,
+        Number(totalFiatBalance),
+      );
+      trackEvent({
+        event: MetaMetricsEventName.ShieldSubscriptionUnexpectedErrorEvent,
+        category: MetaMetricsEventCategory.Shield,
+        properties: {
+          ...commonTrackingProps,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          error_message: params.errorMessage,
+          location: params.location,
+          path: params.path,
+        },
+      });
+    },
+    [trackEvent, selectedAccount, hdKeyingsMetadata, totalFiatBalance],
+  );
+
   return {
     setShieldSubscriptionMetricsPropsToBackground,
     captureShieldEntryModalEvent,
@@ -395,5 +422,6 @@ export const useSubscriptionMetrics = () => {
     captureCommonExistingShieldSubscriptionEvents,
     captureShieldErrorStateClickedEvent,
     captureShieldSubscriptionRestartRequestEvent,
+    captureShieldUnexpectedErrorEvent,
   };
 };

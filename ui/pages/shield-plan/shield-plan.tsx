@@ -73,6 +73,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { getLastUsedShieldSubscriptionPaymentDetails } from '../../selectors/subscription';
 import {
   EntryModalSourceEnum,
+  ShieldUnexpectedErrorEventLocationEnum,
   SUBSCRIPTION_DEFAULT_TRIAL_PERIOD_DAYS,
 } from '../../../shared/constants/subscriptions';
 import {
@@ -81,6 +82,7 @@ import {
   getIsTrialedSubscription,
 } from '../../../shared/modules/shield';
 import ApiErrorHandler from '../../components/app/api-error-handler';
+import { useSubscriptionMetrics } from '../../hooks/shield/metrics/useSubscriptionMetrics';
 import { ShieldPaymentModal } from './shield-payment-modal';
 import { Plan } from './types';
 import { getProductPrice } from './utils';
@@ -93,6 +95,8 @@ const ShieldPlan = () => {
   const lastUsedPaymentDetails = useSelector(
     getLastUsedShieldSubscriptionPaymentDetails,
   );
+
+  const { captureShieldUnexpectedErrorEvent } = useSubscriptionMetrics();
 
   // Stripe Test clocks
   const [enableStripeTestClock, setEnableStripeTestClock] = useState(
@@ -341,6 +345,14 @@ const ShieldPlan = () => {
     backgroundColor: BackgroundColor.backgroundSection,
     padding: 4,
   };
+
+  if (!loading && hasApiError) {
+    captureShieldUnexpectedErrorEvent({
+      errorMessage: hasApiError.message,
+      location: ShieldUnexpectedErrorEventLocationEnum.ShieldPlanPage,
+      path: window.location.pathname,
+    });
+  }
 
   return (
     <Page className="shield-plan-page" data-testid="shield-plan-page">

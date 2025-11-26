@@ -13,6 +13,7 @@ import {
   ShieldErrorStateActionClickedEnum,
   ShieldErrorStateLocationEnum,
   ShieldErrorStateViewEnum,
+  ShieldUnexpectedErrorEventLocationEnum,
 } from '../../../../shared/constants/subscriptions';
 import { DefaultSubscriptionPaymentOptions } from '../../../../shared/types';
 
@@ -196,3 +197,9 @@ export type CaptureShieldErrorStateClickedEventParams =
     location: ShieldErrorStateLocationEnum;
     view: ShieldErrorStateViewEnum;
   };
+
+export type CaptureShieldUnexpectedErrorEventParams = {
+  errorMessage: string;
+  location: ShieldUnexpectedErrorEventLocationEnum;
+  path: string;
+};

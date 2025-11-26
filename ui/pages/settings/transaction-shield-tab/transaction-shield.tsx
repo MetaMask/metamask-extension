@@ -85,6 +85,7 @@ import {
   ShieldErrorStateActionClickedEnum,
   ShieldErrorStateLocationEnum,
   ShieldErrorStateViewEnum,
+  ShieldUnexpectedErrorEventLocationEnum,
 } from '../../../../shared/constants/subscriptions';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { useTheme } from '../../../hooks/useTheme';
@@ -97,8 +98,11 @@ const TransactionShield = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const { search } = useLocation();
-  const { captureShieldCtaClickedEvent, captureShieldErrorStateClickedEvent } =
-    useSubscriptionMetrics();
+  const {
+    captureShieldCtaClickedEvent,
+    captureShieldErrorStateClickedEvent,
+    captureShieldUnexpectedErrorEvent,
+  } = useSubscriptionMetrics();
   const shouldWaitForSubscriptionCreation = useMemo(() => {
     const searchParams = new URLSearchParams(search);
     // param to wait for subscription creation happen in the background
@@ -658,6 +662,11 @@ const TransactionShield = () => {
   }, [captureShieldCtaClickedEvent]);
 
   if (!loading && hasApiError) {
+    captureShieldUnexpectedErrorEvent({
+      errorMessage: hasApiError.message,
+      location: ShieldUnexpectedErrorEventLocationEnum.TransactionShieldTab,
+      path: window.location.pathname,
+    });
     return (
       <Box
         className="transaction-shield-page"
