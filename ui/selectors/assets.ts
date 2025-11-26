@@ -17,6 +17,8 @@ import {
   KnownCaipNamespace,
   parseCaipAssetType,
   parseCaipChainId,
+  hasProperty,
+  isObject,
 } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import { groupBy } from 'lodash';
@@ -994,6 +996,27 @@ const selectAllMainnetNetworksEnabledMap = createSelector(
 );
 
 /**
+ * Safely extracts a balance value from an object with a fallback default.
+ * Uses @metamask/utils hasProperty for robust property checking.
+ *
+ * @param obj - The object to extract the balance from
+ * @param prop - The property name containing the balance
+ * @param defaultValue - The default value to return if extraction fails
+ * @returns The balance value or the default value
+ */
+function getBalanceOrDefault(
+  obj: unknown,
+  prop: string,
+  defaultValue: string,
+): string {
+  return isObject(obj) &&
+    hasProperty(obj, prop) &&
+    typeof obj[prop] === 'string'
+    ? (obj[prop] as string)
+    : defaultValue;
+}
+
+/**
  * Determines whether the selected account group has any tokens (native or non-native).
  * This determines whether to show the balance UI or the "Fund Your Wallet" empty state.
  *
@@ -1002,8 +1025,6 @@ const selectAllMainnetNetworksEnabledMap = createSelector(
  * - Non-native token balances (ERC-20, SPL tokens, etc.)
  *
  * Without tokens, users cannot transact, so we show the empty state to prompt funding.
- * This approach is more performant than calculating fiat values and handles cases where
- * price data is unavailable.
  *
  * @param state - Redux state containing account tree, balances, and assets.
  * @returns true if the account group has any non-zero token balances, false otherwise.
@@ -1029,10 +1050,6 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
     if (!selectedGroupId) {
       return false;
     }
-
-    // Check if there are any token balances (native or non-native) in the selected account group
-    // This determines whether to show the balance UI or the "Fund Your Wallet" empty state.
-    // Without tokens, users cannot transact, so we show the empty state to prompt funding.
 
     // Get accounts in the selected group from accountTreeState
     const accountTree = accountTreeState?.accountTree;
@@ -1083,7 +1100,7 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
         if (!mainnetEvmChainIds.has(chainId)) {
           return false;
         }
-        if (!chainAccounts || typeof chainAccounts !== 'object') {
+        if (!isObject(chainAccounts)) {
           return false;
         }
         return Object.entries(chainAccounts).some(([address, account]) => {
@@ -1091,15 +1108,15 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
           if (!groupAddresses.has(address.toLowerCase())) {
             return false;
           }
-          if (typeof account !== 'object' || !account) {
+          if (!isObject(account)) {
             return false;
           }
-          const balanceValue =
-            'balance' in account && typeof account.balance === 'string'
-              ? account.balance
-              : '0x0';
-          // Use isEmptyHexString to properly handle all hex zero formats, plus check for plain "0"
-          return !isEmptyHexString(balanceValue) && balanceValue !== '0';
+          const balanceValue = getBalanceOrDefault(account, 'balance', '0x0');
+          // Use isEmptyHexString to properly handle all hex zero formats
+          // Also check for plain "0" as a fallback edge case
+          return (
+            !isEmptyHexString(balanceValue) && (balanceValue as string) !== '0'
+          );
         });
       },
     );
@@ -1112,7 +1129,7 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
       if (!groupAccountIdsSet.has(accountId)) {
         return false;
       }
-      if (!accountBalances || typeof accountBalances !== 'object') {
+      if (!isObject(accountBalances)) {
         return false;
       }
       return Object.entries(accountBalances).some(([assetId, balanceData]) => {
@@ -1122,13 +1139,10 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
         if (!mainnetNonEvmChainIds.has(chainId)) {
           return false;
         }
-        if (typeof balanceData !== 'object' || !balanceData) {
+        if (!isObject(balanceData)) {
           return false;
         }
-        const balanceValue =
-          'amount' in balanceData && typeof balanceData.amount === 'string'
-            ? balanceData.amount
-            : '0';
+        const balanceValue = getBalanceOrDefault(balanceData, 'amount', '0');
         // Use isZeroAmount to properly handle decimal zeros like "0.0", "0.00", etc.
         return !isZeroAmount(balanceValue);
       });
@@ -1142,7 +1156,7 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
       if (!groupAddresses.has(address.toLowerCase())) {
         return false;
       }
-      if (!accountTokenBalances || typeof accountTokenBalances !== 'object') {
+      if (!isObject(accountTokenBalances)) {
         return false;
       }
       // Check all chains for this account
@@ -1152,7 +1166,7 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
           if (!mainnetEvmChainIds.has(chainId)) {
             return false;
           }
-          if (!chainBalances || typeof chainBalances !== 'object') {
+          if (!isObject(chainBalances)) {
             return false;
           }
           // Check all tokens on this chain
@@ -1160,7 +1174,8 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
             if (typeof balance !== 'string') {
               return false;
             }
-            // Use isEmptyHexString to check if token balance is non-zero, plus check for plain "0"
+            // Use isEmptyHexString to check if token balance is non-zero
+            // Also check for plain "0" as a fallback edge case
             return !isEmptyHexString(balance) && balance !== '0';
           });
         },
