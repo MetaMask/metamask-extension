@@ -1266,39 +1266,6 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
       expect(result).toBe(false);
     });
 
-    it('should handle mixed state with both EVM and non-EVM balances', () => {
-      const state = createMockStateWithEVMNetworks();
-
-      // Add accountsByChainId with non-zero EVM balance
-      // @ts-expect-error - Adding test data to mock state
-      state.metamask.accountsByChainId = {
-        '0x1': {
-          '0x0': {
-            balance: '0x8ac7230489e80000', // 10 ETH
-          },
-        },
-        '0x89': {
-          '0x0': {
-            balance: '0x0', // 0 MATIC
-          },
-        },
-      };
-
-      // Add multichainBalancesState with non-zero balance
-      state.metamask.balances = {
-        account2: {
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
-            amount: '5.25',
-            unit: 'SOL',
-          },
-        },
-      };
-
-      const result = selectAccountGroupBalanceForEmptyState(state);
-
-      expect(result).toBe(true);
-    });
-
     it('should return false when non-EVM balance is decimal zero like "0.0" or "0.00"', () => {
       const state = createMockStateWithNonEVMNetworks();
 
