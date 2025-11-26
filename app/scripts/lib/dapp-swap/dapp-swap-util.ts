@@ -88,7 +88,7 @@ export function getQuotesForConfirmation({
   try {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const { enabled: dappSwapEnabled, bridge_quote_fees: bridgeQuoteFees } =
-      dappSwapMetricsFlag;
+      dappSwapMetricsFlag ?? {};
     if (!dappSwapEnabled || !securityAlertId) {
       return;
     }

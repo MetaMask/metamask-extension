@@ -46,7 +46,7 @@ export function useDappSwapComparisonMetrics() {
       captureDappSwapComparisonProperties({
         properties: {
           // Using swapDappComparison.current below will ensure that failure in fetching quotes
-          // send from middleware is not overridden by loading state from UI
+          // in middleware is not overridden by loading state from UI
           swap_dapp_comparison: swapDappComparison.current ?? 'loading',
           swap_dapp_commands: commands,
         },
