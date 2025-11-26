@@ -92,7 +92,7 @@ const ShieldEntryModal = ({
     return EntryModalSourceEnum.Homepage;
   }, [triggeringCohort, pathname, search]);
 
-  const handleOnClose = (
+  const handleOnClose = async (
     ctaActionClicked: ShieldCtaActionClickedEnum = ShieldCtaActionClickedEnum.Dismiss,
   ) => {
     const source = determineEntryModalSource();
@@ -116,7 +116,7 @@ const ShieldEntryModal = ({
       onClose?.();
       return;
     } else if (shouldSubmitEvent) {
-      dispatch(
+      await dispatch(
         submitSubscriptionUserEvents({
           event: SubscriptionUserEvent.ShieldEntryModalViewed,
           cohort: triggeringCohort,
@@ -124,7 +124,7 @@ const ShieldEntryModal = ({
       );
     }
 
-    dispatch(
+    await dispatch(
       setShowShieldEntryModalOnce({
         show: false,
         hasUserInteractedWithModal: true,
@@ -132,7 +132,7 @@ const ShieldEntryModal = ({
     );
   };
 
-  const handleOnGetStarted = () => {
+  const handleOnGetStarted = async () => {
     const source = determineEntryModalSource();
     const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
 
@@ -144,7 +144,8 @@ const ShieldEntryModal = ({
       marketingUtmParams,
     });
 
-    handleOnClose(ShieldCtaActionClickedEnum.Start14DayTrial);
+    // Ensure handleOnClose completes before redirecting
+    await handleOnClose(ShieldCtaActionClickedEnum.Start14DayTrial);
 
     navigate({
       pathname: SHIELD_PLAN_ROUTE,
