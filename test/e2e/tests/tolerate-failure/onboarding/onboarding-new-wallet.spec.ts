@@ -58,7 +58,7 @@ describe('MetaMask onboarding', function () {
           'Time since the user clicks on "Done" button until "Home" screen is visible',
         );
         const timer7 = Timers.createTimer(
-          'Time since the user clicks on "Done" button until "Home" screen and assets list are visible',
+          'Time since the user clicks on "Done" button until "Skip backup" screen and assets list are visible',
         );
 
         await driver.navigate();
