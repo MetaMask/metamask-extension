@@ -1,4 +1,5 @@
 import { ApprovalType } from '@metamask/controller-utils';
+import { Hex } from '@metamask/utils';
 import { QuoteResponse } from '@metamask/bridge-controller';
 
 import { createSelector } from 'reselect';
@@ -73,6 +74,7 @@ export function selectDappSwapComparisonData(
       latency?: number;
       commands?: string;
       error?: string;
+      tokenAddresses?: Hex[];
     }
   | undefined {
   return state.metamask.dappSwapComparisonData?.[transactionId] ?? undefined;

@@ -99,7 +99,7 @@ export function getQuotesForConfirmation({
       if (data && securityAlertId && chainId) {
         const parsedTransactionData = parseTransactionData(data);
         commands = parsedTransactionData.commands;
-        const { quotesInput } = getDataFromSwap(
+        const { quotesInput, tokenAddresses } = getDataFromSwap(
           chainId as Hex,
           parsedTransactionData.commandBytes,
           parsedTransactionData.inputs,
@@ -115,7 +115,11 @@ export function getQuotesForConfirmation({
               const endTime = new Date().getTime();
               const latency = endTime - startTime;
               if (quotes) {
-                setDappSwapComparisonData(securityAlertId, { quotes, latency });
+                setDappSwapComparisonData(securityAlertId, {
+                  quotes,
+                  latency,
+                  tokenAddresses: tokenAddresses as Hex[],
+                });
               }
             })
             .catch((error) => {

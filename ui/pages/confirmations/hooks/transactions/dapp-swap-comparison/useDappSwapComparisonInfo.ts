@@ -36,6 +36,7 @@ export function useDappSwapComparisonInfo() {
     latency: quoteResponseLatency,
     commands: parsedCommands,
     error: quoteFetchError,
+    tokenAddresses,
   } = useSelector((state: ConfirmMetamaskState) => {
     return selectDappSwapComparisonData(
       state,
@@ -72,7 +73,7 @@ export function useDappSwapComparisonInfo() {
     }
   }, [captureDappSwapComparisonFailed, quoteFetchError, parsedCommands]);
 
-  const { commands, quotesInput, amountMin, tokenAddresses } = useMemo(() => {
+  const { commands, quotesInput, amountMin } = useMemo(() => {
     let dataCommands = '';
     try {
       checkValidSingleOrBatchTransaction(nestedTransactions);
@@ -103,7 +104,6 @@ export function useDappSwapComparisonInfo() {
         commands: undefined,
         quotesInput: undefined,
         amountMin: undefined,
-        tokenAddresses: [],
       };
     }
   }, [

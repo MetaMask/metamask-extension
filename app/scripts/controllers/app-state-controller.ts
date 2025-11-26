@@ -11,7 +11,12 @@ import {
   AcceptRequest,
   AddApprovalRequest,
 } from '@metamask/approval-controller';
-import { DeferredPromise, Json, createDeferredPromise } from '@metamask/utils';
+import {
+  DeferredPromise,
+  Hex,
+  Json,
+  createDeferredPromise,
+} from '@metamask/utils';
 import type { QrScanRequest, SerializedUR } from '@metamask/eth-qr-keyring';
 import type { Messenger } from '@metamask/messenger';
 import { Browser } from 'webextension-polyfill';
@@ -66,6 +71,7 @@ export type DappSwapComparisonData = {
   latency?: number;
   commands?: string;
   error?: string;
+  tokenAddresses?: Hex[];
 };
 
 export type AppStateControllerState = {
