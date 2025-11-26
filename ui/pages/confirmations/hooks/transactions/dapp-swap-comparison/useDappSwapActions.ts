@@ -18,7 +18,6 @@ export function useDappSwapActions() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { selectedQuote } = useDappSwapContext();
   const { captureSwapSubmit } = useDappSwapComparisonMetrics();
-  const { isSwapToBeCompared } = useDappSwapCheck();
 
   const updateSwapWithQuoteDetails = useCallback(
     (transactionMeta: TransactionMeta) => {
@@ -56,23 +55,17 @@ export function useDappSwapActions() {
       }
       transactionMeta.batchTransactionsOptions = {};
       transactionMeta.nestedTransactions = undefined;
+      captureSwapSubmit();
     },
-    [selectedQuote],
+    [captureSwapSubmit, selectedQuote],
   );
 
   const onDappSwapCompleted = useCallback(() => {
-    if (!isSwapToBeCompared) {
-      return;
-    }
     const uniqueId = currentConfirmation.securityAlertResponse?.securityAlertId;
     if (uniqueId) {
       deleteDappSwapComparisonData(uniqueId);
     }
-    captureSwapSubmit();
-  }, [
-    isSwapToBeCompared,
-    currentConfirmation?.securityAlertResponse?.securityAlertId,
-  ]);
+  }, [currentConfirmation?.securityAlertResponse?.securityAlertId]);
 
   return {
     updateSwapWithQuoteDetails,

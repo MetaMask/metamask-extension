@@ -1,7 +1,4 @@
-import {
-  NestedTransactionMetadata,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionType } from '@metamask/transaction-controller';
 import {
   PRIMARY_TYPES_ORDER,
   PRIMARY_TYPES_PERMIT,
@@ -122,39 +119,3 @@ export const toPunycodeURL = (urlString: string): string | undefined => {
 export const stripProtocol = (urlString: string): string => {
   return urlString.replace(/^\w+:\/\//u, '');
 };
-
-const validSwapBatchTransactionCommands = [
-  '0x3593564c',
-  '0x87517c45',
-  '0x095ea7b3',
-];
-
-/**
- * Checks if a transaction is a valid single or batch transaction
- *
- * @param nestedTransactions - transaction nested in a confirmation
- */
-export function checkValidSingleOrBatchTransaction(
-  nestedTransactions?: NestedTransactionMetadata[],
-) {
-  if (!nestedTransactions || nestedTransactions?.length === 0) {
-    return;
-  }
-  if (nestedTransactions.length > 3) {
-    throw new Error(
-      'Invalid batch transaction: maximum 3 nested transactions allowed',
-    );
-  }
-  const invalidNestedTransactions = nestedTransactions.filter(
-    ({ data }) =>
-      !data ||
-      !validSwapBatchTransactionCommands.some((command) =>
-        data?.startsWith(command),
-      ),
-  );
-  if (invalidNestedTransactions.length > 0) {
-    throw new Error(
-      `Invalid batch transaction: ${invalidNestedTransactions.map((nestedTransaction) => nestedTransaction.data?.substring(0, 10)).join(', ')}`,
-    );
-  }
-}

@@ -7,6 +7,7 @@ import {
   TxData,
 } from '@metamask/bridge-controller';
 import {
+  NestedTransactionMetadata,
   SimulationData,
   SimulationTokenBalanceChange,
 } from '@metamask/transaction-controller';
@@ -171,4 +172,35 @@ export function getBalanceChangeFromSimulationData(
   }
 
   return new BigNumber(balanceDifference, 16).toString(10);
+}
+
+const validSwapBatchTransactionCommands = [
+  '0x3593564c',
+  '0x87517c45',
+  '0x095ea7b3',
+];
+
+export function checkValidSingleOrBatchTransaction(
+  nestedTransactions?: NestedTransactionMetadata[],
+) {
+  if (!nestedTransactions || nestedTransactions?.length === 0) {
+    return;
+  }
+  if (nestedTransactions.length > 3) {
+    throw new Error(
+      'Invalid batch transaction: maximum 3 nested transactions allowed',
+    );
+  }
+  const invalidNestedTransactions = nestedTransactions.filter(
+    ({ data }) =>
+      !data ||
+      !validSwapBatchTransactionCommands.some((command) =>
+        data?.startsWith(command),
+      ),
+  );
+  if (invalidNestedTransactions.length > 0) {
+    throw new Error(
+      `Invalid batch transaction: ${invalidNestedTransactions.map((nestedTransaction) => nestedTransaction.data?.substring(0, 10)).join(', ')}`,
+    );
+  }
 }

@@ -8,9 +8,11 @@ import {
   NetworkClientId,
   NetworkConfiguration,
 } from '@metamask/network-controller';
+import { NestedTransactionMetadata } from '@metamask/transaction-controller';
 
 import { captureException } from '../../../../shared/lib/sentry';
 import {
+  checkValidSingleOrBatchTransaction,
   getDataFromSwap,
   parseTransactionData,
 } from '../../../../shared/modules/dapp-swap-comparison/dapp-swap-comparison-utils';
@@ -95,6 +97,9 @@ export function getQuotesForConfirmation({
     if (origin === DAPP_SWAP_COMPARISON_ORIGIN || origin === TEST_DAPP_ORIGIN) {
       const { chainId } =
         getNetworkConfigurationByNetworkClientId(req.networkClientId) ?? {};
+      checkValidSingleOrBatchTransaction(
+        params[0].calls as NestedTransactionMetadata[],
+      );
       const { data, from } = getSwapDetails(params);
       if (data && securityAlertId && chainId) {
         const parsedTransactionData = parseTransactionData(data);
