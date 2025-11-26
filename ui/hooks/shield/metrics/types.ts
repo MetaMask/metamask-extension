@@ -201,5 +201,4 @@ export type CaptureShieldErrorStateClickedEventParams =
 export type CaptureShieldUnexpectedErrorEventParams = {
   errorMessage: string;
   location: ShieldUnexpectedErrorEventLocationEnum;
-  path: string;
 };

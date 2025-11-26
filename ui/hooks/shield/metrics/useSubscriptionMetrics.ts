@@ -402,7 +402,6 @@ export const useSubscriptionMetrics = () => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           error_message: params.errorMessage,
           location: params.location,
-          path: params.path,
         },
       });
     },

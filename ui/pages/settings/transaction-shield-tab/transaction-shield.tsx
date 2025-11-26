@@ -98,11 +98,8 @@ const TransactionShield = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const { search } = useLocation();
-  const {
-    captureShieldCtaClickedEvent,
-    captureShieldErrorStateClickedEvent,
-    captureShieldUnexpectedErrorEvent,
-  } = useSubscriptionMetrics();
+  const { captureShieldCtaClickedEvent, captureShieldErrorStateClickedEvent } =
+    useSubscriptionMetrics();
   const shouldWaitForSubscriptionCreation = useMemo(() => {
     const searchParams = new URLSearchParams(search);
     // param to wait for subscription creation happen in the background
@@ -662,11 +659,6 @@ const TransactionShield = () => {
   }, [captureShieldCtaClickedEvent]);
 
   if (!loading && hasApiError) {
-    captureShieldUnexpectedErrorEvent({
-      errorMessage: hasApiError.message,
-      location: ShieldUnexpectedErrorEventLocationEnum.TransactionShieldTab,
-      path: window.location.pathname,
-    });
     return (
       <Box
         className="transaction-shield-page"
@@ -674,7 +666,11 @@ const TransactionShield = () => {
         width={BlockSize.Full}
         padding={4}
       >
-        <ApiErrorHandler className="transaction-shield-page__error-content mx-auto" />
+        <ApiErrorHandler
+          className="transaction-shield-page__error-content mx-auto"
+          error={hasApiError}
+          location={ShieldUnexpectedErrorEventLocationEnum.TransactionShieldTab}
+        />
       </Box>
     );
   }

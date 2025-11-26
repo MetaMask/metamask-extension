@@ -82,7 +82,6 @@ import {
   getIsTrialedSubscription,
 } from '../../../shared/modules/shield';
 import ApiErrorHandler from '../../components/app/api-error-handler';
-import { useSubscriptionMetrics } from '../../hooks/shield/metrics/useSubscriptionMetrics';
 import { ShieldPaymentModal } from './shield-payment-modal';
 import { Plan } from './types';
 import { getProductPrice } from './utils';
@@ -95,8 +94,6 @@ const ShieldPlan = () => {
   const lastUsedPaymentDetails = useSelector(
     getLastUsedShieldSubscriptionPaymentDetails,
   );
-
-  const { captureShieldUnexpectedErrorEvent } = useSubscriptionMetrics();
 
   // Stripe Test clocks
   const [enableStripeTestClock, setEnableStripeTestClock] = useState(
@@ -346,14 +343,6 @@ const ShieldPlan = () => {
     padding: 4,
   };
 
-  if (!loading && hasApiError) {
-    captureShieldUnexpectedErrorEvent({
-      errorMessage: hasApiError.message,
-      location: ShieldUnexpectedErrorEventLocationEnum.ShieldPlanPage,
-      path: window.location.pathname,
-    });
-  }
-
   return (
     <Page className="shield-plan-page" data-testid="shield-plan-page">
       <Header
@@ -378,7 +367,11 @@ const ShieldPlan = () => {
           justifyContent={JustifyContent.flexStart}
           alignItems={AlignItems.center}
         >
-          <ApiErrorHandler className="shield-plan-page__error-content" />
+          <ApiErrorHandler
+            className="shield-plan-page__error-content"
+            error={hasApiError}
+            location={ShieldUnexpectedErrorEventLocationEnum.ShieldPlanPage}
+          />
         </Content>
       ) : (
         subscriptionPricing && (

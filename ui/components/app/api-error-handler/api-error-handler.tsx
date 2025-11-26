@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import browser from 'webextension-polyfill';
 import {
   Box,
@@ -13,9 +13,25 @@ import {
 } from '@metamask/design-system-react';
 import classnames from 'classnames';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { ShieldUnexpectedErrorEventLocationEnum } from '../../../../shared/constants/subscriptions';
+import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
 
-const ApiErrorHandler = ({ className = '' }: { className?: string }) => {
+type ApiErrorHandlerProps = {
+  className?: string;
+  error: Error;
+  location: ShieldUnexpectedErrorEventLocationEnum;
+};
+
+const ApiErrorHandler = ({ className = '', error, location }: ApiErrorHandlerProps) => {
   const t = useI18nContext();
+  const { captureShieldUnexpectedErrorEvent } = useSubscriptionMetrics();
+
+  useEffect(() => {
+    captureShieldUnexpectedErrorEvent({
+      errorMessage: error?.message || 'Unknown error',
+      location,
+    });
+  }, [])
 
   return (
     <Box
