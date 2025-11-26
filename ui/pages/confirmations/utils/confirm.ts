@@ -124,9 +124,9 @@ export const stripProtocol = (urlString: string): string => {
 };
 
 enum ValidSwapBatchTransactionCommands {
-  EXECUTE = '0x3593564c',
-  APPROVAL = '0x87517c45',
-  ERC20_APPROVAL = '0x095ea7b3',
+  Execute = '0x3593564c',
+  Approval = '0x87517c45',
+  Erc20Approval = '0x095ea7b3',
 }
 
 /**
