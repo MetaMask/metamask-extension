@@ -9,11 +9,7 @@ import {
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
 import { type InternalAccount } from '@metamask/keyring-internal-api';
-import { type CaipChainId } from '@metamask/utils';
-import type {
-  AddNetworkFields,
-  NetworkConfiguration,
-} from '@metamask/network-controller';
+import { type Hex, type CaipChainId } from '@metamask/utils';
 import { trace, TraceName } from '../../../shared/lib/trace';
 import {
   forceUpdateMetamaskState,
@@ -31,7 +27,7 @@ import {
   setEVMSrcNativeBalance,
 } from './bridge';
 import type { TokenPayload } from './types';
-import { isNetworkAdded, isNonEvmChain } from './utils';
+import { isNonEvmChain } from './utils';
 
 const {
   setToChainId,
@@ -149,10 +145,7 @@ export const setFromChain = ({
   selectedAccount,
   token = null,
 }: {
-  networkConfig?:
-    | NetworkConfiguration
-    | AddNetworkFields
-    | (Omit<NetworkConfiguration, 'chainId'> & { chainId: CaipChainId });
+  networkConfig?: { chainId: Hex | CaipChainId; id?: string };
   selectedAccount: InternalAccount | null;
   token?: TokenPayload['payload'];
 }) => {
@@ -168,10 +161,7 @@ export const setFromChain = ({
     if (isNonEvm) {
       dispatch(setActiveNetworkWithError(networkConfig.chainId));
     } else {
-      const networkId = isNetworkAdded(networkConfig)
-        ? networkConfig.rpcEndpoints?.[networkConfig.defaultRpcEndpointIndex]
-            ?.networkClientId
-        : null;
+      const networkId = networkConfig.id;
       if (networkId) {
         dispatch(setActiveNetworkWithError(networkId));
       }

@@ -25,6 +25,15 @@ export type BridgeToken = {
   accountType?: KeyringAccountType;
 };
 
+/**
+ * This is the minimal network configuration used by the Swap UI
+ */
+export type BridgeNetwork = {
+  name: string;
+  nativeCurrency: string;
+  chainId: Hex | CaipChainId;
+};
+
 export type BridgeState = {
   /*
    * This stores the user's selected destination chain, and will be null if the user has not selected a destination chain

@@ -1,7 +1,4 @@
-import type {
-  NetworkConfiguration,
-  NetworkState,
-} from '@metamask/network-controller';
+import type { NetworkState } from '@metamask/network-controller';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   isSolanaChainId,
@@ -52,22 +49,15 @@ import {
   type AccountGroupObject,
   type AccountTreeControllerState,
 } from '@metamask/account-tree-controller';
-import {
-  MultichainNetworks,
-  MULTICHAIN_PROVIDER_CONFIGS,
-} from '../../../shared/constants/multichain/networks';
-import {
-  getHardwareWalletType,
-  getUSDConversionRateByChainId,
-  selectConversionRateByChainId,
-} from '../../selectors/selectors';
+import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
+import { getHardwareWalletType } from '../../selectors/selectors';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
-import { getNetworkConfigurationsByChainId } from '../../../shared/modules/selectors/networks';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import {
   getMultichainBalances,
   getMultichainCoinRates,
+  getMultichainNetworkConfigurationsByChainId,
   getMultichainProviderConfig,
 } from '../../selectors/multichain';
 import { getAssetsRates } from '../../selectors/assets';
@@ -78,7 +68,10 @@ import {
 import { toAssetId } from '../../../shared/lib/asset-utils';
 import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../../shared/constants/multichain/assets';
 import { Numeric } from '../../../shared/modules/Numeric';
-import { getIsSmartTransaction } from '../../../shared/modules/selectors';
+import {
+  getIsSmartTransaction,
+  type SmartTransactionsMetaMaskState,
+} from '../../../shared/modules/selectors';
 import {
   getInternalAccountsByScope,
   getSelectedInternalAccount,
@@ -100,7 +93,7 @@ import {
   isNonEvmChain,
   isTronChainId,
 } from './utils';
-import type { BridgeState } from './types';
+import type { BridgeNetwork, BridgeState } from './types';
 
 /**
  * Helper function to determine the CAIP asset type for non-EVM native assets
@@ -135,6 +128,7 @@ const getNonEvmNativeAssetType = (
 
 export type BridgeAppState = {
   metamask: BridgeAppStateFromController &
+    SmartTransactionsMetaMaskState['metamask'] &
     GasFeeState &
     NetworkState &
     AccountsControllerState &
@@ -190,63 +184,31 @@ const hasTronAccounts = (state: BridgeAppState) => {
   });
 };
 
-// only includes networks user has added
-export const getAllBridgeableNetworks = createDeepEqualSelector(
-  getNetworkConfigurationsByChainId,
-  (networkConfigurationsByChainId) => {
-    return uniqBy(
-      [
-        ...Object.values(networkConfigurationsByChainId),
-        // TODO: get this from network controller, use placeholder values for now
-        {
-          ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA],
-          blockExplorerUrls: [],
-          name: MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA].nickname,
-          nativeCurrency:
-            MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA].ticker,
-          rpcEndpoints: [{ url: '', type: '', networkClientId: '' }],
-          defaultRpcEndpointIndex: 0,
-          chainId: MultichainNetworks.SOLANA,
-        } as unknown as NetworkConfiguration,
-        ///: BEGIN:ONLY_INCLUDE_IF(bitcoin-swaps)
-        // TODO: get this from network controller, use placeholder values for now
-        {
-          ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN],
-          blockExplorerUrls: [],
-          name: MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN]
-            .nickname,
-          nativeCurrency:
-            MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN].ticker,
-          rpcEndpoints: [{ url: '', type: '', networkClientId: '' }],
-          defaultRpcEndpointIndex: 0,
-          chainId: MultichainNetworks.BITCOIN,
-        } as unknown as NetworkConfiguration,
-        ///: END:ONLY_INCLUDE_IF
-        ///: BEGIN:ONLY_INCLUDE_IF(tron)
-        // TODO: get this from network controller, use placeholder values for now
-        {
-          ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.TRON],
-          blockExplorerUrls: [],
-          name: MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.TRON].nickname,
-          nativeCurrency:
-            MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.TRON].ticker,
-          rpcEndpoints: [{ url: '', type: '', networkClientId: '' }],
-          defaultRpcEndpointIndex: 0,
-          chainId: MultichainNetworks.TRON,
-        } as unknown as NetworkConfiguration,
-        ///: END:ONLY_INCLUDE_IF
-      ],
-      'chainId',
-    ).filter(({ chainId }) =>
-      ALLOWED_BRIDGE_CHAIN_IDS.includes(
-        chainId as (typeof ALLOWED_BRIDGE_CHAIN_IDS)[number],
-      ),
+// Only includes networks user has added
+const getAllBridgeableNetworks = createDeepEqualSelector(
+  [getMultichainNetworkConfigurationsByChainId],
+  (
+    multichainNetworkConfigurationsByChainId,
+  ): Record<CaipChainId, BridgeNetwork> => {
+    // Build a record of networks keyed by ALL_ALLOWED_BRIDGE_CHAIN_IDS
+    return ALLOWED_BRIDGE_CHAIN_IDS.reduce(
+      (
+        networkRecord: Record<Hex | CaipChainId, BridgeNetwork>,
+        chainId: Hex | CaipChainId,
+      ) => {
+        if (multichainNetworkConfigurationsByChainId[chainId]) {
+          networkRecord[formatChainIdToCaip(chainId)] =
+            multichainNetworkConfigurationsByChainId[chainId];
+        }
+        return networkRecord;
+      },
+      {} as Record<CaipChainId, BridgeNetwork>,
     );
   },
 );
 
 const getBridgeFeatureFlags = createDeepEqualSelector(
-  [(state) => getRemoteFeatureFlags(state).bridgeConfig],
+  [(state: BridgeAppState) => getRemoteFeatureFlags(state).bridgeConfig],
   (bridgeConfig) => {
     const validatedFlags = selectBridgeFeatureFlags({
       remoteFeatureFlags: { bridgeConfig },
@@ -256,45 +218,49 @@ const getBridgeFeatureFlags = createDeepEqualSelector(
 );
 
 export const getPriceImpactThresholds = createDeepEqualSelector(
-  getBridgeFeatureFlags,
-  (bridgeFeatureFlags) => bridgeFeatureFlags?.priceImpactThreshold,
+  [
+    (state: BridgeAppState) =>
+      getBridgeFeatureFlags(state).priceImpactThreshold,
+  ],
+  (priceImpactThreshold) => priceImpactThreshold,
 );
 
 export const getFromChains = createDeepEqualSelector(
-  getAllBridgeableNetworks,
-  getBridgeFeatureFlags,
-  (state: BridgeAppState) => hasSolanaAccounts(state),
-  (state: BridgeAppState) => hasBitcoinAccounts(state),
-  (state: BridgeAppState) => hasTronAccounts(state),
+  [
+    getAllBridgeableNetworks,
+    (state: BridgeAppState) => getBridgeFeatureFlags(state).chains,
+    (state: BridgeAppState) => hasSolanaAccounts(state),
+    (state: BridgeAppState) => hasBitcoinAccounts(state),
+    (state: BridgeAppState) => hasTronAccounts(state),
+  ],
   (
     allBridgeableNetworks,
-    bridgeFeatureFlags,
+    chainsConfig,
     hasSolanaAccount,
     hasBitcoinAccount,
     hasTronAccount,
   ) => {
+    const filteredNetworks: Record<CaipChainId, BridgeNetwork> = {};
+    // Apply the standard filter for active source chains
+    Object.entries(chainsConfig).forEach(([chainId, { isActiveSrc }]) => {
+      if (isActiveSrc) {
+        const caipChainId = formatChainIdToCaip(chainId);
+        filteredNetworks[caipChainId] = allBridgeableNetworks[caipChainId];
+      }
+    });
     // First filter out Solana from source chains if no Solana account exists
-    let filteredNetworks = hasSolanaAccount
-      ? allBridgeableNetworks
-      : allBridgeableNetworks.filter(
-          ({ chainId }) => !isSolanaChainId(chainId),
-        );
-
+    if (!hasSolanaAccount) {
+      delete filteredNetworks[MultichainNetworks.SOLANA];
+    }
     // Then filter out Bitcoin from source chains if no Bitcoin account exists
-    filteredNetworks = hasBitcoinAccount
-      ? filteredNetworks
-      : filteredNetworks.filter(({ chainId }) => !isBitcoinChainId(chainId));
-
+    if (!hasBitcoinAccount) {
+      delete filteredNetworks[MultichainNetworks.BITCOIN];
+    }
     // Then filter out Tron from source chains if no Tron account exists
-    filteredNetworks = hasTronAccount
-      ? filteredNetworks
-      : filteredNetworks.filter(({ chainId }) => !isTronChainId(chainId));
-
-    // Then apply the standard filter for active source chains
-    return filteredNetworks.filter(
-      ({ chainId }) =>
-        bridgeFeatureFlags.chains[formatChainIdToCaip(chainId)]?.isActiveSrc,
-    );
+    if (!hasTronAccount) {
+      delete filteredNetworks[MultichainNetworks.TRON];
+    }
+    return Object.values(filteredNetworks).filter(Boolean);
   },
 );
 
@@ -331,11 +297,10 @@ export const getFromChain = createDeepEqualSelector(
 );
 
 export const getToChains = createDeepEqualSelector(
-  getAllBridgeableNetworks,
-  getBridgeFeatureFlags,
+  [getAllBridgeableNetworks, getBridgeFeatureFlags],
   (allBridgeableNetworks, bridgeFeatureFlags) => {
     const availableChains = uniqBy(
-      [...allBridgeableNetworks, ...FEATURED_RPCS],
+      [...Object.values(allBridgeableNetworks), ...FEATURED_RPCS],
       'chainId',
     ).filter(
       ({ chainId }) =>
@@ -360,8 +325,8 @@ export const getTopAssetsFromFeatureFlags = (
 
 const getDefaultTokenPair = createDeepEqualSelector(
   [
-    (state) => getFromChain(state)?.chainId,
-    (state) => getBridgeFeatureFlags(state).bip44DefaultPairs,
+    (state: BridgeAppState) => getFromChain(state)?.chainId,
+    (state: BridgeAppState) => getBridgeFeatureFlags(state).bip44DefaultPairs,
   ],
   (fromChainId, bip44DefaultPairs): null | [CaipAssetType, CaipAssetType] => {
     if (!fromChainId) {
@@ -380,7 +345,7 @@ const getDefaultTokenPair = createDeepEqualSelector(
 );
 
 const getBIP44DefaultToChainId = createSelector(
-  [(state) => getDefaultTokenPair(state)?.[1]],
+  [(state: BridgeAppState) => getDefaultTokenPair(state)?.[1]],
   (defaulToAssetId) => {
     if (!defaulToAssetId) {
       return null;
@@ -423,7 +388,7 @@ export const getToChain = createSelector(
 export const getFromToken = createSelector(
   [
     (state: BridgeAppState) => state.bridge.fromToken,
-    (state) => getFromChain(state)?.chainId,
+    (state: BridgeAppState) => getFromChain(state)?.chainId,
   ],
   (fromToken, fromChainId) => {
     if (!fromChainId) {
@@ -444,7 +409,7 @@ export const getFromToken = createSelector(
 );
 
 export const getToToken = createSelector(
-  [getFromToken, getToChain, (state) => state.bridge.toToken],
+  [getFromToken, getToChain, (state: BridgeAppState) => state.bridge.toToken],
   (fromToken, toChain, toToken) => {
     if (!toChain || !fromToken) {
       return null;
@@ -480,8 +445,8 @@ export const getAccountGroupNameByInternalAccount = createSelector(
 
 export const getFromAccount = createSelector(
   [
-    (state) => getFromChain(state)?.chainId,
-    (state) => state,
+    (state: BridgeAppState) => getFromChain(state)?.chainId,
+    (state: BridgeAppState) => state,
     getSelectedInternalAccount,
   ],
   (fromChainId, state, selectedInternalAccount) => {
@@ -498,7 +463,7 @@ export const getFromAccount = createSelector(
 );
 
 export const getToAccounts = createSelector(
-  [getToChain, getWalletsWithAccounts, (state) => state],
+  [getToChain, getWalletsWithAccounts, (state: BridgeAppState) => state],
   (toChain, accountsByWallet, state) => {
     if (!toChain) {
       return [];
@@ -530,7 +495,7 @@ const _getFromNativeBalance = createSelector(
     getFromChain,
     (state: BridgeAppState) => state.bridge.fromNativeBalance,
     getMultichainBalances,
-    (state) => getFromAccount(state)?.id,
+    (state: BridgeAppState) => getFromAccount(state)?.id,
   ],
   (fromChain, fromNativeBalance, nonEvmBalancesByAccountId, id) => {
     if (!fromChain || !id) {
@@ -553,11 +518,13 @@ const _getFromNativeBalance = createSelector(
 );
 
 export const getFromTokenBalance = createSelector(
-  getFromToken,
-  getFromChain,
-  (state: BridgeAppState) => state.bridge.fromTokenBalance,
-  getMultichainBalances,
-  getFromAccount,
+  [
+    getFromToken,
+    getFromChain,
+    (state: BridgeAppState) => state.bridge.fromTokenBalance,
+    getMultichainBalances,
+    getFromAccount,
+  ],
   (
     fromToken,
     fromChain,
@@ -595,8 +562,7 @@ export const getQuoteRequest = (state: BridgeAppState) => {
 };
 
 export const getQuoteRefreshRate = createSelector(
-  getBridgeFeatureFlags,
-  getFromChain,
+  [getBridgeFeatureFlags, getFromChain],
   (extensionConfig, fromChain) =>
     (fromChain &&
       extensionConfig.chains[formatChainIdToCaip(fromChain.chainId)]
@@ -821,8 +787,10 @@ export const getIsSwap = createDeepEqualSelector(
 );
 
 const _getValidatedSrcAmount = createSelector(
-  getFromToken,
-  (state: BridgeAppState) => state.metamask.quoteRequest.srcTokenAmount,
+  [
+    getFromToken,
+    (state: BridgeAppState) => state.metamask.quoteRequest.srcTokenAmount,
+  ],
   (fromToken, srcTokenAmount) =>
     srcTokenAmount && fromToken?.decimals
       ? calcTokenAmount(srcTokenAmount, Number(fromToken.decimals)).toString()
@@ -830,10 +798,12 @@ const _getValidatedSrcAmount = createSelector(
 );
 
 export const getFromAmountInCurrency = createSelector(
-  getFromToken,
-  getFromChain,
-  _getValidatedSrcAmount,
-  getFromTokenConversionRate,
+  [
+    getFromToken,
+    getFromChain,
+    _getValidatedSrcAmount,
+    getFromTokenConversionRate,
+  ],
   (
     fromToken,
     fromChain,
@@ -865,16 +835,18 @@ export const getFromAmountInCurrency = createSelector(
 export const getTxAlerts = (state: BridgeAppState) => state.bridge.txAlert;
 
 export const getValidationErrors = createDeepEqualSelector(
-  getBridgeQuotes,
-  _getValidatedSrcAmount,
-  getFromToken,
-  getFromAmount,
-  ({ metamask }: BridgeAppState) =>
-    selectMinimumBalanceForRentExemptionInSOL(metamask),
-  getQuoteRequest,
-  getTxAlerts,
-  _getFromNativeBalance,
-  getFromTokenBalance,
+  [
+    getBridgeQuotes,
+    _getValidatedSrcAmount,
+    getFromToken,
+    getFromAmount,
+    ({ metamask }: BridgeAppState) =>
+      selectMinimumBalanceForRentExemptionInSOL(metamask),
+    getQuoteRequest,
+    getTxAlerts,
+    _getFromNativeBalance,
+    getFromTokenBalance,
+  ],
   (
     { activeQuote, quotesLastFetchedMs, isLoading, quotesRefreshCount },
     validatedSrcAmount,
@@ -962,10 +934,12 @@ export const getWasTxDeclined = (state: BridgeAppState): boolean => {
 
 /**
  * Checks if the destination chain is Solana and the user has no Solana accounts
+ *
+ * @param state - The bridge app state
+ * @returns True if the destination chain is Solana and the user has no Solana accounts
  */
 export const needsSolanaAccountForDestination = createDeepEqualSelector(
-  getToChain,
-  (state: BridgeAppState) => hasSolanaAccounts(state),
+  [getToChain, (state: BridgeAppState) => hasSolanaAccounts(state)],
   (toChain, hasSolanaAccount) => {
     if (!toChain) {
       return false;
@@ -978,8 +952,7 @@ export const needsSolanaAccountForDestination = createDeepEqualSelector(
 );
 
 export const needsBitcoinAccountForDestination = createDeepEqualSelector(
-  getToChain,
-  (state: BridgeAppState) => hasBitcoinAccounts(state),
+  [getToChain, (state: BridgeAppState) => hasBitcoinAccounts(state)],
   (toChain, hasBitcoinAccount) => {
     if (!toChain) {
       return false;
@@ -992,8 +965,7 @@ export const needsBitcoinAccountForDestination = createDeepEqualSelector(
 );
 
 export const needsTronAccountForDestination = createDeepEqualSelector(
-  getToChain,
-  (state: BridgeAppState) => hasTronAccounts(state),
+  [getToChain, (state: BridgeAppState) => hasTronAccounts(state)],
   (toChain, hasTronAccount) => {
     if (!toChain) {
       return false;
@@ -1006,8 +978,7 @@ export const needsTronAccountForDestination = createDeepEqualSelector(
 );
 
 export const getIsToOrFromNonEvm = createSelector(
-  getFromChain,
-  getToChain,
+  [getFromChain, getToChain],
   (fromChain, toChain) => {
     if (!fromChain?.chainId || !toChain?.chainId) {
       return false;
@@ -1027,8 +998,7 @@ export const getIsToOrFromNonEvm = createSelector(
 );
 
 export const getIsSolanaSwap = createSelector(
-  getFromChain,
-  getToChain,
+  [getFromChain, getToChain],
   (fromChain, toChain) => {
     if (!fromChain?.chainId || !toChain?.chainId) {
       return false;
@@ -1080,8 +1050,8 @@ export const selectNoFeeAssets = createSelector(
 
 const getIsGasIncludedSwapSupported = createSelector(
   [
-    (state) => getFromChain(state)?.chainId,
-    (state) => getToChain(state)?.chainId,
+    (state: BridgeAppState) => getFromChain(state)?.chainId,
+    (state: BridgeAppState) => getToChain(state)?.chainId,
     (_, isSendBundleSupportedForChain: boolean) =>
       isSendBundleSupportedForChain,
   ],
@@ -1095,7 +1065,10 @@ const getIsGasIncludedSwapSupported = createSelector(
 );
 
 export const getIsStxEnabled = createSelector(
-  [(state) => getFromChain(state)?.chainId, (state) => state],
+  [
+    (state: BridgeAppState) => getFromChain(state)?.chainId,
+    (state: BridgeAppState) => state,
+  ],
   (fromChainId, state) => getIsSmartTransaction(state, fromChainId),
 );
 

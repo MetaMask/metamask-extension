@@ -7,10 +7,6 @@ import {
 import { BigNumber } from 'bignumber.js';
 import type { ContractMarketData } from '@metamask/assets-controllers';
 import {
-  AddNetworkFields,
-  NetworkConfiguration,
-} from '@metamask/network-controller';
-import {
   ChainId,
   type TxData,
   BridgeClientId,
@@ -260,14 +256,9 @@ export const exchangeRatesFromNativeAndCurrencyRates = (
 };
 
 export const isNetworkAdded = (
-  v:
-    | NetworkConfiguration
-    | AddNetworkFields
-    | (Omit<NetworkConfiguration, 'chainId'> & { chainId: CaipChainId })
-    | undefined,
-): v is NetworkConfiguration =>
-  v !== undefined &&
-  'networkClientId' in v.rpcEndpoints[v.defaultRpcEndpointIndex];
+  availableNetworks: { chainId: Hex | CaipChainId }[],
+  chainId: Hex | CaipChainId,
+) => availableNetworks.some((network) => network.chainId === chainId);
 
 const getTokenImage = (payload: TokenPayload['payload']) => {
   if (!payload) {
