@@ -1,7 +1,8 @@
 import {
-  QuoteMetadata,
-  QuoteResponse,
-  QuoteWarning,
+  type QuoteMetadata,
+  type QuoteResponse,
+  UnifiedSwapBridgeEventName,
+  type RequiredEventContextFromClient,
 } from '@metamask/bridge-controller';
 import { BridgeStatusAction } from '@metamask/bridge-status-controller';
 import { forceUpdateMetamaskState } from '../../store/actions';
@@ -35,8 +36,7 @@ export const submitBridgeTx = (
   accountAddress: string,
   quote: QuoteResponse & QuoteMetadata,
   isStxSupportedInClient: boolean,
-  isLoading: boolean,
-  warnings: QuoteWarning[],
+  context: RequiredEventContextFromClient[UnifiedSwapBridgeEventName.QuotesReceived],
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
     return dispatch(
@@ -45,15 +45,13 @@ export const submitBridgeTx = (
           string,
           QuoteResponse & QuoteMetadata,
           boolean,
-          boolean,
-          QuoteWarning[],
+          RequiredEventContextFromClient[UnifiedSwapBridgeEventName.QuotesReceived]
         ]
       >(BridgeStatusAction.SUBMIT_TX, [
         accountAddress,
         quote,
         isStxSupportedInClient,
-        isLoading,
-        warnings,
+        context
       ]),
     );
   };

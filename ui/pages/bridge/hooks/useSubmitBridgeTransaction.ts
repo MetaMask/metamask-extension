@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { isNonEvmChainId } from '@metamask/bridge-controller';
+import { getQuotesReceivedProperties, isNonEvmChainId } from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import {
   AWAITING_SIGNATURES_ROUTE,
@@ -61,7 +61,7 @@ export default function useSubmitBridgeTransaction() {
   const smartTransactionsEnabled = useSelector(getIsStxEnabled);
 
   const fromAccount = useSelector(getFromAccount);
-  const { isLoading } = useSelector(getBridgeQuotes);
+  const { recommendedQuote } = useSelector(getBridgeQuotes);
   const warnings = useSelector(getWarningLabels);
 
   const submitBridgeTransaction = async (
@@ -88,8 +88,7 @@ export default function useSubmitBridgeTransaction() {
             fromAccount.address,
             quoteResponse,
             false,
-            isLoading,
-            warnings,
+            getQuotesReceivedProperties(quoteResponse, warnings, true, recommendedQuote),
           ),
         );
         await dispatch(setDefaultHomeActiveTabName('activity'));
@@ -102,8 +101,7 @@ export default function useSubmitBridgeTransaction() {
           fromAccount.address,
           quoteResponse,
           smartTransactionsEnabled,
-          isLoading,
-          warnings,
+          getQuotesReceivedProperties(quoteResponse, warnings, true, recommendedQuote),
         ),
       );
     } catch (e) {
