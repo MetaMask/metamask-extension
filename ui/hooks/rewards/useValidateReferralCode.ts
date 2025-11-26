@@ -68,8 +68,8 @@ export const useValidateReferralCode = (
   );
 
   // Debounced validation
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedValidation = useCallback(
+    // eslint-disable-next-line react-compiler/react-compiler
     debounce(async (code: string) => {
       setUnknownError(false);
       const validationError = await validateCode(code);
@@ -108,7 +108,6 @@ export const useValidateReferralCode = (
       setReferralCode(initialValue);
     }
     // only run on mount or when initialValue changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialValue]);
 
   // Cleanup debounced function on unmount

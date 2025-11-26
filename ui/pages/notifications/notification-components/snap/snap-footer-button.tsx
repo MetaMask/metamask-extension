@@ -12,7 +12,7 @@ import { DetailedViewData, SnapNotification } from './types';
 
 export const SnapFooterButton = (props: { notification: SnapNotification }) => {
   const trackEvent = useContext(MetaMetricsContext);
-  const { useSnapNavigate } = useSnapNavigation();
+  const { handleSnapNavigate } = useSnapNavigation();
   const [isOpen, setIsOpen] = useState(false);
   const data = props.notification.data as DetailedViewData;
   const footer = data?.detailedView?.footerLink;
@@ -44,13 +44,11 @@ export const SnapFooterButton = (props: { notification: SnapNotification }) => {
       if (isExternal) {
         setIsOpen(true);
       } else {
-        // `useSnapNavigate` is a callback, not a hook.
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        useSnapNavigate(href);
+        handleSnapNavigate(href);
       }
     },
     [
-      useSnapNavigate,
+      handleSnapNavigate,
       props.notification.id,
       props.notification.type,
       trackEvent,

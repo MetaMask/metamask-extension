@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Hex } from '@metamask/utils';
 
 import { TokenStandard } from '../../../../shared/constants/transaction';
@@ -29,17 +30,18 @@ export const useGetTokenStandardAndDetails = (
       )) as TokenDetailsERC20;
     }, [tokenAddress]);
 
-  if (!details) {
-    return { decimalsNumber: undefined };
-  }
+  return useMemo(() => {
+    if (!details) {
+      return { decimalsNumber: undefined };
+    }
+    const { decimals, standard } = details;
 
-  const { decimals, standard } = details || {};
+    if (standard === TokenStandard.ERC20) {
+      const parsedDecimals =
+        parseTokenDetailDecimals(decimals) ?? ERC20_DEFAULT_DECIMALS;
+      return { ...details, decimalsNumber: parsedDecimals };
+    }
 
-  if (standard === TokenStandard.ERC20) {
-    const parsedDecimals =
-      parseTokenDetailDecimals(decimals) ?? ERC20_DEFAULT_DECIMALS;
-    details.decimalsNumber = parsedDecimals;
-  }
-
-  return details;
+    return details;
+  }, [details]);
 };
