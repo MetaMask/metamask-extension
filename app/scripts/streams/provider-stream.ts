@@ -323,6 +323,11 @@ const onMessageSetUpExtensionStreams = (msg: MessageType) => {
       setupExtensionStreams();
       setupLegacyExtensionStreams();
     }
+    reconnectAttempts = 0;
+    if (reconnectTimer) {
+      clearTimeout(reconnectTimer as unknown as number);
+      reconnectTimer = null;
+    }
     return Promise.resolve(`MetaMask: handled ${EXTENSION_MESSAGES.READY}`);
   }
   return undefined;
