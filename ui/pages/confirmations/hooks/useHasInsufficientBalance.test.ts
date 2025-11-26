@@ -1,9 +1,13 @@
-import { TransactionMeta, TransactionParams, TransactionType } from '@metamask/transaction-controller';
-import { useHasInsufficientBalance } from './useHasInsufficientBalance';
+import {
+  TransactionMeta,
+  TransactionParams,
+  TransactionType,
+} from '@metamask/transaction-controller';
+import { ApprovalType, toHex } from '@metamask/controller-utils';
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import { getMockConfirmState } from '../../../../test/data/confirmations/helper';
-import { ApprovalType, toHex } from '@metamask/controller-utils';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../test/data/confirmations/contract-interaction';
+import { useHasInsufficientBalance } from './useHasInsufficientBalance';
 
 const TRANSACTION_ID_MOCK = '123-456';
 const TRANSACTION_MOCK = {
@@ -58,9 +62,7 @@ function buildState({
   });
 }
 
-function runHook(
-  stateOptions?: Parameters<typeof buildState>[0],
-) {
+function runHook(stateOptions?: Parameters<typeof buildState>[0]) {
   const state = buildState(stateOptions);
   const response = renderHookWithConfirmContextProvider(
     () => useHasInsufficientBalance(),
@@ -83,23 +85,26 @@ describe('useHasInsufficientBalance', () => {
   });
 
   it('sums nested transaction values correctly', () => {
-        const BATCH_TRANSACTION_MOCK = {
-          ...TRANSACTION_MOCK,
-          nestedTransactions: [
-            {
-              to: '0x1234567890123456789012345678901234567890',
-              value: '0x3B9ACA00',
-              type: TransactionType.simpleSend,
-            },
-            {
-              to: '0x1234567890123456789012345678901234567891',
-              value: '0x1DCD6500',
-              type: TransactionType.simpleSend,
-            },
-          ],
-        };
-    const result = runHook({         currentConfirmation: BATCH_TRANSACTION_MOCK as Partial<TransactionMeta>,
-        transaction: BATCH_TRANSACTION_MOCK as Partial<TransactionMeta>, balance: 0x10});
+    const BATCH_TRANSACTION_MOCK = {
+      ...TRANSACTION_MOCK,
+      nestedTransactions: [
+        {
+          to: '0x1234567890123456789012345678901234567890',
+          value: '0x3B9ACA00',
+          type: TransactionType.simpleSend,
+        },
+        {
+          to: '0x1234567890123456789012345678901234567891',
+          value: '0x1DCD6500',
+          type: TransactionType.simpleSend,
+        },
+      ],
+    };
+    const result = runHook({
+      currentConfirmation: BATCH_TRANSACTION_MOCK as Partial<TransactionMeta>,
+      transaction: BATCH_TRANSACTION_MOCK as Partial<TransactionMeta>,
+      balance: 0x10,
+    });
     expect(result.hasInsufficientBalance).toBe(true);
   });
 

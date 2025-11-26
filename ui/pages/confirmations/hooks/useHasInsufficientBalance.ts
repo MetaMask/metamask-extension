@@ -11,7 +11,10 @@ import {
 import { useConfirmContext } from '../context/confirm';
 import { isBalanceSufficient } from '../send-legacy/send.utils';
 
-export function useHasInsufficientBalance(): { hasInsufficientBalance: boolean; nativeCurrency?: string } {
+export function useHasInsufficientBalance(): {
+  hasInsufficientBalance: boolean;
+  nativeCurrency?: string;
+} {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const {
     id: transactionId,
@@ -53,5 +56,5 @@ export function useHasInsufficientBalance(): { hasInsufficientBalance: boolean; 
     balance,
   });
 
-  return { hasInsufficientBalance: insufficientBalance, nativeCurrency};
+  return { hasInsufficientBalance: insufficientBalance, nativeCurrency };
 }
