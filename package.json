@@ -135,8 +135,6 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
-    "@metamask/bridge-controller@^63.1.0": "npm:@metamask-previews/bridge-controller@63.1.0-preview-d21b3dc",
-    "@metamask/bridge-status-controller@^63.0.0": "npm:@metamask-previews/bridge-status-controller@63.0.0-preview-d21b3dc",
     "http-cache-semantics": "^4.1.1",
     "semver-regex": "^3.1.4",
     "base-x@^3.0.x": "^3.0.11",
@@ -279,8 +277,8 @@
     "@metamask/assets-controllers": "patch:@metamask/assets-controllers@patch%3A@metamask/assets-controllers@npm%253A89.0.1%23~/.yarn/patches/@metamask-assets-controllers-npm-89.0.1-02fa7acd54.patch%3A%3Aversion=89.0.1&hash=6be0d3#~/.yarn/patches/@metamask-assets-controllers-patch-7c7d711c8c.patch",
     "@metamask/base-controller": "^9.0.0",
     "@metamask/bitcoin-wallet-snap": "^1.6.0",
-    "@metamask/bridge-controller": "^63.1.0",
-    "@metamask/bridge-status-controller": "^63.0.0",
+    "@metamask/bridge-controller": "^63.2.0",
+    "@metamask/bridge-status-controller": "^63.1.0",
     "@metamask/browser-passworder": "^4.3.0",
     "@metamask/chain-agnostic-permission": "^1.2.2",
     "@metamask/claims-controller": "^0.2.0",
