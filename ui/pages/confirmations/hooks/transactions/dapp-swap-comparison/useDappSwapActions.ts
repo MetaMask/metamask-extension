@@ -21,6 +21,7 @@ export function useDappSwapActions() {
 
   const updateSwapWithQuoteDetails = useCallback(
     (transactionMeta: TransactionMeta) => {
+      captureSwapSubmit();
       if (!selectedQuote) {
         return;
       }
@@ -55,7 +56,6 @@ export function useDappSwapActions() {
       }
       transactionMeta.batchTransactionsOptions = {};
       transactionMeta.nestedTransactions = undefined;
-      captureSwapSubmit();
     },
     [captureSwapSubmit, selectedQuote],
   );

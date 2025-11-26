@@ -47,10 +47,10 @@ export const Tabs = <TKey extends string = string>({
 
   useEffect(() => {
     const childIndex = findChildByKey(activeTabKey);
-    if (childIndex >= 0) {
+    if (childIndex >= 0 && activeTabIndex !== childIndex) {
       setActiveTabIndex(childIndex);
     }
-  }, [activeTabKey, findChildByKey]);
+  }, [activeTabKey, findChildByKey, activeTabIndex]);
 
   const handleTabClick = (tabIndex: number, tabKey: TKey): void => {
     if (tabIndex !== activeTabIndex) {
