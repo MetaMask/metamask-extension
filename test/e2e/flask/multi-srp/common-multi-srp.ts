@@ -1,21 +1,27 @@
 import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixtures/fixture-builder';
-import { withFixtures } from '../../helpers';
+import FixtureBuilder from '../../fixture-builder';
+import { WALLET_PASSWORD, withFixtures } from '../../helpers';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
+import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { BIP44_STAGE_TWO } from '../../tests/multichain-accounts/feature-flag-mocks';
-
-const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
+import { MockedEndpoint } from '../../mock-e2e';
 
 export const SECOND_TEST_E2E_SRP =
   'bench top weekend buyer spoon side resist become detect gauge eye feed';
 
 export async function withMultiSrp(
-  test: (driver: Driver, mockServer: Mockttp) => Promise<void>,
-  title?: string,
+  {
+    title,
+    testSpecificMock,
+  }: {
+    title?: string;
+    testSpecificMock: (mockServer: Mockttp) => Promise<MockedEndpoint>;
+  },
+  test: (driver: Driver) => Promise<void>,
   srpToUse: string = SECOND_TEST_E2E_SRP,
 ) {
   await withFixtures(
@@ -30,11 +36,11 @@ export async function withMultiSrp(
         .build(),
       title,
       testSpecificMock: async (mockServer: Mockttp) => [
-        await mockBIP44FeatureFlag(mockServer),
         await mockActiveNetworks(mockServer),
+        await testSpecificMock(mockServer),
       ],
     },
-    async ({ driver, mockServer }: { driver: Driver; mockServer: Mockttp }) => {
+    async ({ driver }) => {
       await loginWithBalanceValidation(driver);
       const homePage = new HomePage(driver);
       await homePage.checkPageIsLoaded();
@@ -44,10 +50,27 @@ export async function withMultiSrp(
       await accountListPage.checkPageIsLoaded();
       await accountListPage.startImportSecretPhrase(srpToUse);
       await homePage.checkNewSrpAddedToastIsDisplayed();
-      await test(driver, mockServer);
+      await test(driver);
     },
   );
 }
+
+export const verifySrp = async (
+  driver: Driver,
+  srp: string,
+  srpIndex: number,
+) => {
+  await new HeaderNavbar(driver).openSettingsPage();
+  const settingsPage = new SettingsPage(driver);
+  await settingsPage.checkPageIsLoaded();
+  await settingsPage.goToPrivacySettings();
+
+  const privacySettings = new PrivacySettings(driver);
+  await privacySettings.openRevealSrpQuiz(srpIndex);
+  await privacySettings.completeRevealSrpQuiz();
+  await privacySettings.fillPasswordToRevealSrp(WALLET_PASSWORD);
+  await privacySettings.checkSrpTextIsDisplayed(srp);
+};
 
 export async function mockActiveNetworks(mockServer: Mockttp) {
   return await mockServer
@@ -58,27 +81,6 @@ export async function mockActiveNetworks(mockServer: Mockttp) {
         json: {
           activeNetworks: [],
         },
-      };
-    });
-}
-export async function mockBIP44FeatureFlag(mockServer: Mockttp) {
-  return await mockServer
-    .forGet(FEATURE_FLAGS_URL)
-    .withQuery({
-      client: 'extension',
-      distribution: 'flask',
-      environment: 'dev',
-    })
-    .thenCallback(() => {
-      return {
-        ok: true,
-        statusCode: 200,
-        json: [
-          {
-            bitcoinAccounts: { enabled: true, minimumVersion: '13.6.0' },
-            ...BIP44_STAGE_TWO,
-          },
-        ],
       };
     });
 }
