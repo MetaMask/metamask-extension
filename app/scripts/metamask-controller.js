@@ -1003,6 +1003,9 @@ export default class MetamaskController extends EventEmitter {
                   this.txController,
                 ),
               validateSecurity: (securityAlertId, request, chainId) => {
+                // Code below to get quote is placed here as securityAlertId is not available in the middleware
+                // this needs to be cleaned up
+                // https://github.com/MetaMask/MetaMask-planning/issues/6345
                 getQuotesForConfirmation({
                   req,
                   fetchQuotes: this.controllerMessenger.call.bind(
