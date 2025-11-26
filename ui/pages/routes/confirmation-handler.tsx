@@ -1,8 +1,8 @@
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 
-import { ApprovalType } from '@metamask/controller-utils';
+// import { ApprovalType } from '@metamask/controller-utils';
 import {
   AWAITING_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
@@ -15,7 +15,7 @@ import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   // ENVIRONMENT_TYPE_POPUP,
-  ENVIRONMENT_TYPE_FULLSCREEN,
+  // ENVIRONMENT_TYPE_FULLSCREEN,
 } from '../../../shared/constants/app';
 import {
   getHasApprovalFlows,
@@ -34,11 +34,12 @@ export const ConfirmationHandler = () => {
   const location = useLocation();
   const { pathname } = location;
   const navState = useNavState();
+  const isInitialRender = useRef(true);
 
   const envType = getEnvironmentType();
   // const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
   const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
-  const isFullscreen = envType === ENVIRONMENT_TYPE_FULLSCREEN;
+  // const isFullscreen = envType === ENVIRONMENT_TYPE_FULLSCREEN;
 
   const showAwaitingSwapScreen = useSelector(getShowAwaitingSwapScreen);
   const hasSwapsQuotes = useSelector(getHasSwapsQuotes);
@@ -66,37 +67,25 @@ export const ConfirmationHandler = () => {
       approval.type === 'snap_manageAccounts:confirmAccountCreation' ||
       approval.type === 'snap_manageAccounts:confirmAccountRemoval' ||
       approval.type === 'snap_manageAccounts:showNameSnapAccount' ||
-      approval.type === 'snap_manageAccounts:showSnapAccountRedirect' ||
-      // approval.type === ApprovalType.ResultSuccess ||
-      // approval.type === ApprovalType.ResultError,
+      approval.type === 'snap_manageAccounts:showSnapAccountRedirect',
+    // approval.type === ApprovalType.ResultSuccess ||
+    // approval.type === ApprovalType.ResultError,
   );
 
   // Flows that *should not* navigate in fullscreen, based on E2E specs
-  const hasDappSmartTransactionStatus = pendingApprovals.some(
-    (approval) =>
-      approval.type === 'smartTransaction:showSmartTransactionStatusPage' &&
-      approval.origin !== 'metamask' &&
-      approval.origin !== 'MetaMask',
-  );
+  // const hasDappSmartTransactionStatus = pendingApprovals.some(
+  //   (approval) =>
+  //     approval.type === 'smartTransaction:showSmartTransactionStatusPage' &&
+  //     approval.origin !== 'metamask' &&
+  //     approval.origin !== 'MetaMask',
+  // );
 
   // Ported from home.component - checkStatusAndNavigate()
-  useEffect(() => {
+  const checkStatusAndNavigate = useCallback(() => {
     // Only run when on home/default page (for now)
     if (pathname !== DEFAULT_ROUTE) {
       return;
     }
-
-    if (!isNotification && !hasAllowedPopupRedirectApprovals) {
-      return;
-    }
-
-    // if (isFullscreen && hasDappSmartTransactionStatus) {
-    //   return;
-    // }
-
-    // if (isFullscreen && !hasWalletInitiatedSnapApproval && !hasApprovalFlows) {
-    //   return;
-    // }
 
     if (canRedirect && showAwaitingSwapScreen) {
       navigate(AWAITING_SWAP_ROUTE);
@@ -119,19 +108,32 @@ export const ConfirmationHandler = () => {
   }, [
     canRedirect,
     hasBridgeQuotes,
-    hasDappSmartTransactionStatus,
+    // hasDappSmartTransactionStatus,
     hasApprovalFlows,
     hasSwapsQuotes,
-    // hasWalletInitiatedSnapApproval,
-    hasAllowedPopupRedirectApprovals,
-    isFullscreen,
-    isNotification,
-    // isPopup,
+    // hasAllowedPopupRedirectApprovals,
+    // isFullscreen,
+    // isNotification,
     navigate,
     pathname,
     pendingApprovals,
     showAwaitingSwapScreen,
     swapsFetchParams,
+  ]);
+
+  useEffect(() => {
+    if (isInitialRender.current) {
+      isInitialRender.current = false;
+      checkStatusAndNavigate();
+    }
+
+    if (isNotification || hasAllowedPopupRedirectApprovals) {
+      checkStatusAndNavigate();
+    }
+  }, [
+    isNotification,
+    hasAllowedPopupRedirectApprovals,
+    checkStatusAndNavigate,
   ]);
 
   return null;
