@@ -36,13 +36,13 @@ export function SelectedGasFeeToken() {
   const { isSupported: isGaslessSupported, isSmartTransaction } =
     useIsGaslessSupported();
 
-  const hasInsufficientNative = useHasInsufficientBalance();
+  const { hasInsufficientBalance } = useHasInsufficientBalance();
 
   const hasOnlyFutureNativeToken =
     gasFeeTokens?.length === 1 &&
     gasFeeTokens[0].tokenAddress === NATIVE_TOKEN_ADDRESS;
 
-  const supportsFutureNative = hasInsufficientNative && isSmartTransaction;
+  const supportsFutureNative = hasInsufficientBalance && isSmartTransaction;
 
   const hasGasFeeTokens =
     !isQuotedSwapDisplayedInInfo &&

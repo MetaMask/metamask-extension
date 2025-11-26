@@ -10,16 +10,13 @@ import { genUnapprovedContractInteractionConfirmation } from '../../../../../../
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../../../../test/data/confirmations/gas';
 import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
-import { useInsufficientBalanceAlerts } from '../../../../../hooks/alerts/transactions/useInsufficientBalanceAlerts';
-import { Severity } from '../../../../../../../helpers/constants/design-system';
 import * as DappSwapContext from '../../../../../context/dapp-swap';
+import { useHasInsufficientBalance } from '../../../../../hooks/useHasInsufficientBalance';
 import { SelectedGasFeeToken } from './selected-gas-fee-token';
 
 jest.mock('../../../../../../../../shared/modules/selectors');
 jest.mock('../../../../../hooks/gas/useIsGaslessSupported');
-jest.mock(
-  '../../../../../hooks/alerts/transactions/useInsufficientBalanceAlerts',
-);
+jest.mock('../../../../../hooks/useHasInsufficientBalance');
 
 function getStore({
   gasFeeTokens,
@@ -47,9 +44,7 @@ function getStore({
 
 describe('SelectedGasFeeToken', () => {
   const useIsGaslessSupportedMock = jest.mocked(useIsGaslessSupported);
-  const useInsufficientBalanceAlertsMock = jest.mocked(
-    useInsufficientBalanceAlerts,
-  );
+  const useHasInsufficientBalanceMock = jest.mocked(useHasInsufficientBalance);
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -60,13 +55,10 @@ describe('SelectedGasFeeToken', () => {
       pending: false,
     });
 
-    useInsufficientBalanceAlertsMock.mockReturnValue([
-      {
-        content: 'Insufficient balance',
-        key: 'insufficientBalance',
-        severity: Severity.Danger,
-      },
-    ]);
+    useHasInsufficientBalanceMock.mockReturnValue({
+      hasInsufficientBalance: true,
+      nativeCurrency: 'ETH',
+    });
   });
 
   it('renders native symbol', () => {
@@ -142,7 +134,10 @@ describe('SelectedGasFeeToken', () => {
   });
 
   it('does not render arrow icon if sufficient balance and future native only', () => {
-    useInsufficientBalanceAlertsMock.mockReturnValue([]);
+    useHasInsufficientBalanceMock.mockReturnValue({
+      hasInsufficientBalance: false,
+      nativeCurrency: 'ETH',
+    });
 
     const result = renderWithConfirmContextProvider(
       <SelectedGasFeeToken />,
