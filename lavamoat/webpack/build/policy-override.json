@@ -18,6 +18,29 @@
     },
     "@lydell/node-pty>@lydell/node-pty-darwin-arm64": {
       "native": true
+    },
+    "webpack": {
+      "packages": {
+        "$root$": true,
+        "html-bundler-webpack-plugin": true
+      }
+    },
+    "webpack>loader-runner": {
+      "packages": {
+        "$root$": true,
+        "html-bundler-webpack-plugin": true
+      }
+    },
+    "html-bundler-webpack-plugin": {
+      "packages": {
+        "eta": true
+      }
+    },
+    "eta": {
+      "builtin": {
+        "node:path": true,
+        "node:fs": true
+      }
     }
   }
 }
