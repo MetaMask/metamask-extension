@@ -137,7 +137,6 @@ export const setupExtensionStreams = () => {
     clearTimeout(reconnectTimer as unknown as number);
     reconnectTimer = null;
   }
-  reconnectAttempts = 0;
   extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
   extensionStream = new ExtensionPortStream(extensionPort, { chunkSize: 0 });
   extensionStream.on('data', extensionStreamMessageListener);
