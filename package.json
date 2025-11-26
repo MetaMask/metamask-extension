@@ -829,7 +829,9 @@
       "@metamask/kernel-browser-runtime>@metamask/streams": false,
       "@metamask/kernel-browser-runtime>@metamask/kernel-store>better-sqlite3": false,
       "@metamask/logger>@metamask/streams": false,
-      "@metamask/streams": false
+      "@metamask/streams": false,
+      "@metamask/test-dapp-bitcoin>bip322-js>bitcoinjs-message>secp256k1": false,
+      "@metamask/test-dapp-bitcoin>bip322-js>secp256k1": false
     }
   },
   "packageManager": "yarn@4.10.3",
