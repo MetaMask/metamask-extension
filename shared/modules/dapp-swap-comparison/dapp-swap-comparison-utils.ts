@@ -177,10 +177,7 @@ export function getBalanceChangeFromSimulationData(
 
 function isValidApprovalForSwap(data: Hex, approveTokenAddress?: Hex) {
   const parsedTransactionData = parseApprovalTransactionData(data);
-  return (
-    parsedTransactionData?.tokenAddress === approveTokenAddress &&
-    parsedTransactionData?.name === 'approve'
-  );
+  return parsedTransactionData?.tokenAddress === approveTokenAddress;
 }
 
 export function checkValidSingleOrBatchTransaction(
