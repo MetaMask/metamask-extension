@@ -719,6 +719,14 @@ const selectEnabledNetworkMapForBalances = createSelector(
 );
 
 /**
+ * Provides accountsByChainId for checking EVM native balances.
+ */
+const selectAccountsByChainIdForBalances = createSelector(
+  [(state: BalanceCalculationState) => getMetamaskState(state).accountsByChainId],
+  (accountsByChainId) => accountsByChainId ?? EMPTY_OBJECT,
+);
+
+/**
  * Aggregates balances for all wallets and groups using core pure function.
  * Only the minimal controller state is composed to keep this selector lean.
  *
@@ -996,6 +1004,7 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
     selectTokensStateForBalances,
     selectCurrencyRateStateForBalances,
     selectAllMainnetNetworksEnabledMap,
+    selectAccountsByChainIdForBalances,
   ],
   (
     accountTreeState,
@@ -1008,6 +1017,7 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
     tokensState,
     currencyRateState,
     allMainnetNetworksMap,
+    accountsByChainId,
   ): boolean => {
     const selectedGroupId = accountTreeState?.accountTree?.selectedAccountGroup;
     if (!selectedGroupId) {
@@ -1038,7 +1048,41 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
 
     const balance = wallet.groups[selectedGroupId].totalBalanceInUserCurrency;
 
-    return balance > 0;
+    // If we have a fiat balance, return true
+    if (balance > 0) {
+      return true;
+    }
+
+    // Otherwise, check if there are any native token balances
+    // This handles cases where we don't have price conversion data but assets exist
+
+    // Check EVM native token balances from accountsByChainId
+    const hasEvmBalance = Object.values(accountsByChainId || {}).some(
+      (chainAccounts: any) => {
+        if (!chainAccounts || typeof chainAccounts !== 'object') {
+          return false;
+        }
+        return Object.values(chainAccounts).some((account: any) => {
+          const balanceValue = account?.balance || '0x0';
+          return balanceValue !== '0x0' && balanceValue !== '0';
+        });
+      },
+    );
+
+    // Check multichain balances for any non-zero non-EVM native token balances
+    const hasNonEvmBalance = Object.values(
+      multichainBalancesState?.balances || {},
+    ).some((accountBalances: any) => {
+      if (!accountBalances || typeof accountBalances !== 'object') {
+        return false;
+      }
+      return Object.values(accountBalances).some((balance: any) => {
+        const balanceValue = balance?.amount || '0';
+        return balanceValue !== '0' && balanceValue !== '0x0';
+      });
+    });
+
+    return hasEvmBalance || hasNonEvmBalance;
   },
 );
 
