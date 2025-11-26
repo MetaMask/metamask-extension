@@ -78,6 +78,7 @@ import { MINUTE } from '../../../../shared/constants/time';
 import Name from '../../../components/app/name';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
 import {
+  EntryModalSourceEnum,
   ShieldCtaActionClickedEnum,
   ShieldCtaSourceEnum,
   ShieldErrorStateActionClickedEnum,
@@ -243,7 +244,10 @@ const TransactionShield = () => {
   // redirect to shield plan page if user doesn't have a subscription
   useEffect(() => {
     if (!shouldWaitForSubscriptionCreation && !displayedShieldSubscription) {
-      navigate(SHIELD_PLAN_ROUTE);
+      navigate({
+        pathname: SHIELD_PLAN_ROUTE,
+        search: `?source=${EntryModalSourceEnum.Settings}`,
+      });
     }
   }, [
     shouldWaitForSubscriptionCreation,
@@ -460,7 +464,10 @@ const TransactionShield = () => {
 
     if (isCancelled) {
       // go to shield plan page to renew subscription for cancelled subscription
-      navigate(SHIELD_PLAN_ROUTE);
+      navigate({
+        pathname: SHIELD_PLAN_ROUTE,
+        search: `?source=${EntryModalSourceEnum.Settings}`,
+      });
     } else if (isUnexpectedErrorCryptoPayment) {
       // handle support action
       handleClickContactSupport();
