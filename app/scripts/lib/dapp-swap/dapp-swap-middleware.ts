@@ -35,6 +35,7 @@ export type DappSwapMiddlewareRequest<
 const FOUR_BYTE_EXECUTE_SWAP_CONTRACT = '0x3593564c';
 const DAPP_SWAP_COMPARISON_ORIGIN = 'https://app.uniswap.org';
 const TEST_DAPP_ORIGIN = 'https://metamask.github.io';
+const DEFAULT_QUOTEFEE = 250;
 
 const getSwapDetails = (params: DappSwapMiddlewareRequest['params']) => {
   if (!params?.length) {
@@ -67,6 +68,7 @@ export function createDappSwapMiddleware<
   fetchQuotes,
   setSwapQuotes,
   getNetworkConfigurationByNetworkClientId,
+  dappSwapMetricsFlag,
 }: {
   fetchQuotes: (quotesInput: GenericQuoteRequest) => Promise<QuoteResponse[]>;
   setSwapQuotes: (
@@ -76,6 +78,8 @@ export function createDappSwapMiddleware<
   getNetworkConfigurationByNetworkClientId: (
     networkClientId: NetworkClientId,
   ) => NetworkConfiguration | undefined;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  dappSwapMetricsFlag: { enabled: boolean; bridge_quote_fees: number };
 }) {
   return async (
     req: DappSwapMiddlewareRequest<Params>,
@@ -83,6 +87,13 @@ export function createDappSwapMiddleware<
     next: () => void,
   ) => {
     try {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      const { enabled: dappSwapEnabled, bridge_quote_fees: bridgeQuoteFees } =
+        dappSwapMetricsFlag;
+      if (!dappSwapEnabled) {
+        next();
+        return;
+      }
       const { securityAlertResponse, params, origin } = req;
       const { securityAlertId } = securityAlertResponse ?? {};
 
@@ -96,10 +107,14 @@ export function createDappSwapMiddleware<
 
         const { data, from } = getSwapDetails(params);
         if (data && securityAlertId && chainId) {
-          const { quotesInput } = getDataFromSwap(chainId as Hex, data, from);
+          const { quotesInput } = getDataFromSwap(chainId as Hex, data);
           if (quotesInput) {
             const startTime = new Date().getTime();
-            fetchQuotes(quotesInput)
+            fetchQuotes({
+              ...quotesInput,
+              walletAddress: from,
+              fee: bridgeQuoteFees ?? DEFAULT_QUOTEFEE,
+            })
               .then((quotes) => {
                 const endTime = new Date().getTime();
                 const latency = endTime - startTime;
