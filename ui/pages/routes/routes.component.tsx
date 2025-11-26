@@ -76,6 +76,7 @@ import {
   GATOR_PERMISSIONS,
   TOKEN_TRANSFER_ROUTE,
   REVIEW_GATOR_PERMISSIONS_ROUTE,
+  REWARDS_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import {
@@ -93,6 +94,7 @@ import {
   getPendingApprovals,
   getIsMultichainAccountsState1Enabled,
 } from '../../selectors';
+import { getApprovalFlows } from '../../selectors/approvals';
 
 import {
   hideImportNftsModal,
@@ -115,7 +117,9 @@ import {
   getIsUnlocked,
 } from '../../ducks/metamask/metamask';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import RewardsPage from '../rewards';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
+import { getConfirmationRoute } from '../confirmations/hooks/useConfirmationNavigation';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
@@ -166,7 +170,6 @@ import {
   isConfirmTransactionRoute,
   setTheme,
 } from './utils';
-import { ConfirmationHandler } from './confirmation-handler';
 
 /**
  * V5-to-v5-compat navigation function that bridges react-router-dom v5 history
@@ -515,6 +518,7 @@ export default function Routes() {
   );
   const pendingApprovals = useAppSelector(getPendingApprovals);
   const transactionsMetadata = useAppSelector(getUnapprovedTransactions);
+  const approvalFlows = useAppSelector(getApprovalFlows);
 
   const textDirection = useAppSelector((state) => state.metamask.textDirection);
   const isUnlocked = useAppSelector(getIsUnlocked);
@@ -662,6 +666,46 @@ export default function Routes() {
       dispatch(setCurrentCurrency('usd'));
     }
   }, [currentCurrency, dispatch]);
+
+  // Navigate to confirmations when there are pending approvals and user is on asset details page
+  // This behavior is only enabled in sidepanel to avoid interfering with popup/extension flows
+  useEffect(() => {
+    const windowType = getEnvironmentType();
+
+    // Only run this navigation logic in sidepanel
+    if (windowType !== ENVIRONMENT_TYPE_SIDEPANEL) {
+      return;
+    }
+
+    // Only navigate to confirmations when user is on an asset details page
+    const isOnAssetDetailsPage = location.pathname.startsWith(ASSET_ROUTE);
+
+    // Network operations (addEthereumChain, switchEthereumChain) have their own UI
+    // and shouldn't trigger auto-navigation
+    const hasNonNavigableApprovals = pendingApprovals.some(
+      (approval) =>
+        approval.type === 'wallet_addEthereumChain' ||
+        approval.type === 'wallet_switchEthereumChain',
+    );
+
+    if (
+      isOnAssetDetailsPage &&
+      !hasNonNavigableApprovals &&
+      isUnlocked &&
+      (pendingApprovals.length > 0 || approvalFlows?.length > 0)
+    ) {
+      const url = getConfirmationRoute(
+        pendingApprovals[0]?.id,
+        pendingApprovals,
+        Boolean(approvalFlows?.length),
+        '', // queryString
+      );
+
+      if (url) {
+        history.replace(url);
+      }
+    }
+  }, [isUnlocked, pendingApprovals, approvalFlows, history, location.pathname]);
 
   const renderRoutes = useCallback(() => {
     const RestoreVaultComponent = forgottenPassword ? Route : Initialized;
@@ -958,14 +1002,29 @@ export default function Routes() {
             layout={LegacyLayout}
           />
           <RouteWithLayout
-            authenticated
             path={TOKEN_TRANSFER_ROUTE}
-            component={TokenTransferPage}
             exact
             layout={LegacyLayout}
-          />
+          >
+            {createV5CompatRoute(TokenTransferPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeNavigate: true,
+              paramsAsProps: false,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout
-            authenticated
+            path={`${TOKEN_TRANSFER_ROUTE}/:origin`}
+            exact
+            layout={LegacyLayout}
+          >
+            {createV5CompatRoute<{ origin: string }>(TokenTransferPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              includeNavigate: true,
+              paramsAsProps: false,
+            })}
+          </RouteWithLayout>
+          <RouteWithLayout
             path={`${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName`}
             exact
             layout={LegacyLayout}
@@ -973,6 +1032,22 @@ export default function Routes() {
             {createV5CompatRoute<{
               chainId: string;
               permissionGroupName: string;
+            }>(ReviewGatorPermissionsPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              includeNavigate: true,
+              paramsAsProps: false,
+            })}
+          </RouteWithLayout>
+          <RouteWithLayout
+            path={`${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName/:origin`}
+            exact
+            layout={LegacyLayout}
+          >
+            {createV5CompatRoute<{
+              chainId: string;
+              permissionGroupName: string;
+              origin: string;
             }>(ReviewGatorPermissionsPage, {
               wrapper: AuthenticatedV5Compat,
               includeParams: true,
@@ -1118,13 +1193,19 @@ export default function Routes() {
             component={NonEvmBalanceCheck}
             layout={LegacyLayout}
           />
-
           <RouteWithLayout
             authenticated
             path={SHIELD_PLAN_ROUTE}
             component={ShieldPlan}
             layout={LegacyLayout}
           />
+          <RouteWithLayout path={REWARDS_ROUTE} layout={RootLayout}>
+            {createV5CompatRoute(RewardsPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeNavigate: true,
+              includeLocation: true,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout path={DEFAULT_ROUTE} layout={RootLayout}>
             {createV5CompatRoute(Home, {
               wrapper: AuthenticatedV5Compat,
@@ -1288,8 +1369,6 @@ export default function Routes() {
         }>,
         { location },
       )}
-
-      <ConfirmationHandler />
     </div>
   );
 }

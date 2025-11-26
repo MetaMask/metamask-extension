@@ -46,3 +46,16 @@ index f64d13f8de56631345a44e6ebb025e62e03f51bc..99aa7f27c574c94b26daa56091ac50d1
                      }
                  }
              });
+diff --git a/dist/token-prices-service/codefi-v2.cjs b/dist/token-prices-service/codefi-v2.cjs
+index ba0f0c1bcbf0f231549b1ca9d3be2d1137a0d732..9e39f38cd5be854011506c8bfe0a78dda147bc5c 100644
+--- a/dist/token-prices-service/codefi-v2.cjs
++++ b/dist/token-prices-service/codefi-v2.cjs
+@@ -100,6 +100,8 @@ exports.SUPPORTED_CURRENCIES = [
+     'mxn',
+     // Malaysian Ringgit
+     'myr',
++    // Monad
++    'mon',
+     // Nigerian Naira
+     'ngn',
+     // Norwegian Krone

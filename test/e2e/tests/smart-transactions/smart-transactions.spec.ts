@@ -86,6 +86,7 @@ describe('Smart Transactions', function () {
         await sendPage.selectTokenFee('USDC');
         await driver.delay(1000);
         await sendPage.clickConfirmButton();
+        await sendPage.clickViewActivity();
 
         const activityList = new ActivityListPage(driver);
         await activityList.checkNoFailedTransactions();
