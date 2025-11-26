@@ -47,7 +47,7 @@ index f64d13f8de56631345a44e6ebb025e62e03f51bc..99aa7f27c574c94b26daa56091ac50d1
                  }
              });
 diff --git a/dist/token-prices-service/codefi-v2.cjs b/dist/token-prices-service/codefi-v2.cjs
-index ba0f0c1bcbf0f231549b1ca9d3be2d1137a0d732..fd4851471fa0c2f07efbb527a3eea55cbfbc4743 100644
+index ba0f0c1bcbf0f231549b1ca9d3be2d1137a0d732..49af7c70a2f05d6587d960a227a724084333a942 100644
 --- a/dist/token-prices-service/codefi-v2.cjs
 +++ b/dist/token-prices-service/codefi-v2.cjs
 @@ -100,6 +100,8 @@ exports.SUPPORTED_CURRENCIES = [
@@ -137,3 +137,12 @@ index ba0f0c1bcbf0f231549b1ca9d3be2d1137a0d732..fd4851471fa0c2f07efbb527a3eea55c
  };
  /**
   * The list of chain IDs that can be supplied in the URL for the `/spot-prices`
+@@ -476,7 +478,7 @@ _CodefiTokenPricesServiceV2_policy = new WeakMap(), _CodefiTokenPricesServiceV2_
+         if (tokenAddresses.length === 0) {
+             return [];
+         }
+-        const url = new URL(`${BASE_URL_V2}/chains/${chainId}/spot-prices`);
++        const url = new URL(`${BASE_URL_V2}/chains/${parseInt(chainId, 16)}/spot-prices`);
+         url.searchParams.append('tokenAddresses', tokenAddresses.join(','));
+         url.searchParams.append('vsCurrency', currency);
+         url.searchParams.append('includeMarketData', 'true');
