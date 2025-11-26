@@ -45,6 +45,8 @@ import {
 } from '../ducks/metamask/metamask';
 import { findAssetByAddress } from '../pages/asset/util';
 import { isEvmChainId } from '../../shared/lib/asset-utils';
+import { isEmptyHexString } from '../../shared/modules/hexstring-utils';
+import { isZeroAmount } from '../helpers/utils/number-utils';
 import {
   TRON_RESOURCE_SYMBOLS_SET,
   TronResourceSymbol,
@@ -992,24 +994,26 @@ const selectAllMainnetNetworksEnabledMap = createSelector(
 );
 
 /**
- * Determines whether the selected account group has a balance greater than zero.
- * This selector returns a boolean to prevent unnecessary re-renders - it only changes
- * when the balance crosses the zero threshold, not on every balance update.
+ * Determines whether the selected account group has any tokens (native or non-native).
+ * This determines whether to show the balance UI or the "Fund Your Wallet" empty state.
  *
- * @param state - Redux state containing all required controller states for balance calculation.
- * @returns true if the account group has a balance > 0, false otherwise.
+ * Checks for:
+ * - Native token balances (ETH, MATIC, SOL, BTC, etc.)
+ * - Non-native token balances (ERC-20, SPL tokens, etc.)
+ *
+ * Without tokens, users cannot transact, so we show the empty state to prompt funding.
+ * This approach is more performant than calculating fiat values and handles cases where
+ * price data is unavailable.
+ *
+ * @param state - Redux state containing account tree, balances, and assets.
+ * @returns true if the account group has any non-zero token balances, false otherwise.
  */
 export const selectAccountGroupBalanceForEmptyState = createSelector(
   [
     selectAccountTreeStateForBalances,
     selectAccountsStateForBalances,
     selectTokenBalancesStateForBalances,
-    selectTokenRatesStateForBalances,
-    selectMultichainRatesStateForBalances,
     selectMultichainBalancesStateForBalances,
-    selectMultichainAssetsStateForBalances,
-    selectTokensStateForBalances,
-    selectCurrencyRateStateForBalances,
     selectAllMainnetNetworksEnabledMap,
     selectAccountsByChainIdForBalances,
   ],
@@ -1017,12 +1021,7 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
     accountTreeState,
     accountsState,
     tokenBalancesState,
-    tokenRatesState,
-    multichainRatesState,
     multichainBalancesState,
-    multichainAssetsState,
-    tokensState,
-    currencyRateState,
     allMainnetNetworksMap,
     accountsByChainId,
   ): boolean => {
@@ -1031,37 +1030,9 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
       return false;
     }
 
-    // Use the pre-computed memoized network map for better performance
-    const allBalances = calculateBalanceForAllWallets(
-      accountTreeState as AccountTreeControllerState,
-      accountsState,
-      tokenBalancesState,
-      tokenRatesState,
-      multichainRatesState,
-      multichainBalancesState,
-      multichainAssetsState,
-      tokensState,
-      currencyRateState,
-      allMainnetNetworksMap,
-    );
-
-    // Extract the selected account group balance
-    const walletId = selectedGroupId.split('/')[0];
-    const wallet = allBalances.wallets[walletId] ?? null;
-
-    if (!wallet?.groups[selectedGroupId]) {
-      return false;
-    }
-
-    const balance = wallet.groups[selectedGroupId].totalBalanceInUserCurrency;
-
-    // If we have a fiat balance, return true
-    if (balance > 0) {
-      return true;
-    }
-
-    // Otherwise, check if there are any native token balances
-    // This handles cases where we don't have price conversion data but assets exist
+    // Check if there are any token balances (native or non-native) in the selected account group
+    // This determines whether to show the balance UI or the "Fund Your Wallet" empty state.
+    // Without tokens, users cannot transact, so we show the empty state to prompt funding.
 
     // Get accounts in the selected group from accountTreeState
     const accountTree = accountTreeState?.accountTree;
@@ -1095,9 +1066,23 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
       },
     );
 
-    // Check EVM native token balances from accountsByChainId (only for accounts in this group)
-    const hasEvmBalance = Object.values(accountsByChainId || {}).some(
-      (chainAccounts) => {
+    // Get mainnet EVM and non-EVM chain IDs for filtering
+    const mainnetEvmChainIds = new Set(
+      Object.keys(allMainnetNetworksMap?.eip155 || {}),
+    );
+    const mainnetNonEvmChainIds = new Set(
+      Object.keys(allMainnetNetworksMap?.solana || {}).concat(
+        Object.keys(allMainnetNetworksMap?.bip122 || {}),
+      ),
+    );
+
+    // Check EVM native token balances from accountsByChainId (only for accounts in this group and mainnet chains)
+    const hasEvmBalance = Object.entries(accountsByChainId || {}).some(
+      ([chainId, chainAccounts]) => {
+        // Only check mainnet chains
+        if (!mainnetEvmChainIds.has(chainId)) {
+          return false;
+        }
         if (!chainAccounts || typeof chainAccounts !== 'object') {
           return false;
         }
@@ -1113,12 +1098,15 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
             'balance' in account && typeof account.balance === 'string'
               ? account.balance
               : '0x0';
-          return balanceValue !== '0x0' && balanceValue !== '0';
+          // Use isEmptyHexString to properly handle all hex zero formats, plus check for plain "0"
+          return (
+            !isEmptyHexString(balanceValue) && balanceValue !== '0'
+          );
         });
       },
     );
 
-    // Check multichain balances for any non-zero non-EVM native token balances (only for accounts in this group)
+    // Check multichain balances for any non-zero non-EVM native token balances (only for accounts in this group and mainnet chains)
     const hasNonEvmBalance = Object.entries(
       multichainBalancesState?.balances || {},
     ).some(([accountId, accountBalances]) => {
@@ -1129,19 +1117,61 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
       if (!accountBalances || typeof accountBalances !== 'object') {
         return false;
       }
-      return Object.values(accountBalances).some((balanceData) => {
-        if (typeof balanceData !== 'object' || !balanceData) {
-          return false;
-        }
-        const balanceValue =
-          'amount' in balanceData && typeof balanceData.amount === 'string'
-            ? balanceData.amount
-            : '0';
-        return balanceValue !== '0' && balanceValue !== '0x0';
-      });
+      return Object.entries(accountBalances).some(
+        ([assetId, balanceData]) => {
+          // Extract chainId from the asset ID (format: "chainId/assetType")
+          const chainId = assetId.split('/')[0];
+          // Only check mainnet chains
+          if (!mainnetNonEvmChainIds.has(chainId)) {
+            return false;
+          }
+          if (typeof balanceData !== 'object' || !balanceData) {
+            return false;
+          }
+          const balanceValue =
+            'amount' in balanceData && typeof balanceData.amount === 'string'
+              ? balanceData.amount
+              : '0';
+          // Use isZeroAmount to properly handle decimal zeros like "0.0", "0.00", etc.
+          return !isZeroAmount(balanceValue);
+        },
+      );
     });
 
-    return hasEvmBalance || hasNonEvmBalance;
+    // Check ERC-20 token balances (only for accounts in this group and mainnet chains)
+    const hasErc20Tokens = Object.entries(
+      tokenBalancesState?.tokenBalances || {},
+    ).some(([address, accountTokenBalances]) => {
+      // Only check accounts that belong to the selected group
+      if (!groupAddresses.has(address.toLowerCase())) {
+        return false;
+      }
+      if (!accountTokenBalances || typeof accountTokenBalances !== 'object') {
+        return false;
+      }
+      // Check all chains for this account
+      return Object.entries(accountTokenBalances).some(
+        ([chainId, chainBalances]) => {
+          // Only check mainnet chains
+          if (!mainnetEvmChainIds.has(chainId)) {
+            return false;
+          }
+          if (!chainBalances || typeof chainBalances !== 'object') {
+            return false;
+          }
+          // Check all tokens on this chain
+          return Object.values(chainBalances).some((balance) => {
+            if (typeof balance !== 'string') {
+              return false;
+            }
+            // Use isEmptyHexString to check if token balance is non-zero, plus check for plain "0"
+            return !isEmptyHexString(balance) && balance !== '0';
+          });
+        },
+      );
+    });
+
+    return hasEvmBalance || hasNonEvmBalance || hasErc20Tokens;
   },
 );
 

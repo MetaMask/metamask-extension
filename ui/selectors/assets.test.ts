@@ -3,7 +3,6 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { cloneDeep } from 'lodash';
 import {
-  calculateBalanceForAllWallets,
   calculateBalanceChangeForAllWallets,
   selectAssetsBySelectedAccountGroup,
 } from '@metamask/assets-controllers';
@@ -39,10 +38,6 @@ jest.mock('@metamask/assets-controllers', () => {
   const actual = jest.requireActual('@metamask/assets-controllers');
   return {
     ...actual,
-    calculateBalanceForAllWallets: jest.fn(() => ({
-      wallets: {},
-      userCurrency: 'usd',
-    })),
     calculateBalanceChangeForAllWallets: jest.fn(() => ({
       period: '1d',
       currentTotalInUserCurrency: 0,
@@ -51,7 +46,7 @@ jest.mock('@metamask/assets-controllers', () => {
       percentChange: 0,
       userCurrency: 'usd',
     })),
-    selectAssetsBySelectedAccountGroup: jest.fn(),
+    selectAssetsBySelectedAccountGroup: jest.fn(() => ({})), // Returns empty object by default
   };
 });
 
@@ -1091,38 +1086,52 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
 
   it('should return true when balance is greater than 0 for EVM networks', () => {
     const state = createMockStateWithEVMNetworks();
-    const expectedBalance = 750.25;
-    const mockResult = createMockBalanceResult(expectedBalance);
-    (calculateBalanceForAllWallets as jest.Mock).mockReturnValueOnce(
-      mockResult,
-    );
+
+    // Add accountsByChainId with non-zero EVM balance
+    // @ts-expect-error - Adding test data to mock state
+    state.metamask.accountsByChainId = {
+      '0x1': {
+        '0x0': {
+          balance: '0x8ac7230489e80000', // 10 ETH
+        },
+      },
+    };
 
     const result = selectAccountGroupBalanceForEmptyState(state);
 
     expect(result).toBe(true);
-    expect(calculateBalanceForAllWallets).toHaveBeenCalledTimes(1);
   });
 
   it('should return true when balance is greater than 0 for non-EVM networks like Solana', () => {
     const state = createMockStateWithNonEVMNetworks();
-    const expectedBalance = 500.5;
-    const mockResult = createMockBalanceResult(expectedBalance);
-    (calculateBalanceForAllWallets as jest.Mock).mockReturnValueOnce(
-      mockResult,
-    );
+
+    // Add multichainBalancesState with non-zero Solana balance
+    state.metamask.balances = {
+      account2: {
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+          amount: '10.5',
+          unit: 'SOL',
+        },
+      },
+    };
 
     const result = selectAccountGroupBalanceForEmptyState(state);
 
     expect(result).toBe(true);
-    expect(calculateBalanceForAllWallets).toHaveBeenCalledTimes(1);
   });
 
   it('should return false when balance is 0', () => {
     const state = createMockStateWithEVMNetworks();
-    const mockResult = createMockBalanceResult(0);
-    (calculateBalanceForAllWallets as jest.Mock).mockReturnValueOnce(
-      mockResult,
-    );
+
+    // Add accountsByChainId with zero EVM balance
+    // @ts-expect-error - Adding test data to mock state
+    state.metamask.accountsByChainId = {
+      '0x1': {
+        '0x0': {
+          balance: '0x0',
+        },
+      },
+    };
 
     const result = selectAccountGroupBalanceForEmptyState(state);
 
@@ -1131,22 +1140,29 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
 
   it('should return true for small positive balances', () => {
     const state = createMockStateWithEVMNetworks();
-    const mockResult = createMockBalanceResult(0.01);
-    (calculateBalanceForAllWallets as jest.Mock).mockReturnValueOnce(
-      mockResult,
-    );
+
+    // Add accountsByChainId with small positive EVM balance
+    // @ts-expect-error - Adding test data to mock state
+    state.metamask.accountsByChainId = {
+      '0x1': {
+        '0x0': {
+          balance: '0x2386f26fc10000', // 0.01 ETH
+        },
+      },
+    };
 
     const result = selectAccountGroupBalanceForEmptyState(state);
 
     expect(result).toBe(true);
   });
 
-  it('should return false for negative balances', () => {
+  it('should return false when no balances are set', () => {
     const state = createMockStateWithEVMNetworks();
-    const mockResult = createMockBalanceResult(-10);
-    (calculateBalanceForAllWallets as jest.Mock).mockReturnValueOnce(
-      mockResult,
-    );
+
+    // No balances set at all
+    // @ts-expect-error - Adding test data to mock state
+    state.metamask.accountsByChainId = {};
+    state.metamask.balances = {};
 
     const result = selectAccountGroupBalanceForEmptyState(state);
 
@@ -1155,56 +1171,58 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
 
   it('should exclude EVM testnets from balance calculation', () => {
     const state = createMockStateWithEVMNetworks(true); // Include EVM testnets
-    const mockResult = createMockBalanceResult();
-    (calculateBalanceForAllWallets as jest.Mock).mockReturnValueOnce(
-      mockResult,
-    );
 
-    selectAccountGroupBalanceForEmptyState(state);
+    // Add balances for both mainnet and testnet
+    // @ts-expect-error - Adding test data to mock state
+    state.metamask.accountsByChainId = {
+      '0x1': {
+        // Ethereum mainnet
+        '0x0': {
+          balance: '0x0', // Zero on mainnet
+        },
+      },
+      '0xaa36a7': {
+        // Sepolia testnet (should be ignored)
+        '0x0': {
+          balance: '0x8ac7230489e80000', // 10 ETH on testnet
+        },
+      },
+    };
 
-    const callArgs = (calculateBalanceForAllWallets as jest.Mock).mock.calls[0];
-    const enabledNetworkMap = callArgs[9]; // 10th argument is the network map
+    const result = selectAccountGroupBalanceForEmptyState(state);
 
-    // Should not include Sepolia (0xaa36a7) or Linea Sepolia (0xe705)
-    expect(enabledNetworkMap?.eip155).not.toHaveProperty('0xaa36a7');
-    expect(enabledNetworkMap?.eip155).not.toHaveProperty('0xe705');
-    // Should include mainnet networks
-    expect(enabledNetworkMap?.eip155).toHaveProperty('0x1');
-    expect(enabledNetworkMap?.eip155).toHaveProperty('0x89');
+    // Should return false because testnet balance is ignored
+    expect(result).toBe(false);
   });
 
   it('should exclude non-EVM testnets like Solana from balance calculation', () => {
     const state = createMockStateWithNonEVMNetworks(true); // Include non-EVM testnets
-    const mockResult = createMockBalanceResult();
-    (calculateBalanceForAllWallets as jest.Mock).mockReturnValueOnce(
-      mockResult,
-    );
 
-    selectAccountGroupBalanceForEmptyState(state);
+    // Add balances for both mainnet and testnet
+    state.metamask.balances = {
+      account2: {
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+          // Mainnet
+          amount: '0',
+          unit: 'SOL',
+        },
+        'solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z/slip44:501': {
+          // Testnet (should be ignored)
+          amount: '10.5',
+          unit: 'SOL',
+        },
+      },
+    };
 
-    const callArgs = (calculateBalanceForAllWallets as jest.Mock).mock.calls[0];
-    const enabledNetworkMap = callArgs[9];
+    const result = selectAccountGroupBalanceForEmptyState(state);
 
-    // Should not include Solana testnet or devnet
-    expect(enabledNetworkMap?.solana).not.toHaveProperty(
-      'solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
-    );
-    expect(enabledNetworkMap?.solana).not.toHaveProperty(
-      'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
-    );
-    // Should include Solana mainnet
-    expect(enabledNetworkMap?.solana).toHaveProperty(
-      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-    );
+    // Should return false because testnet balance is ignored
+    expect(result).toBe(false);
   });
 
-  describe('when fiat balance is 0 but native token balances exist', () => {
-    it('should return true when EVM native token balance exists (no price conversion)', () => {
+  describe('native token balance checks', () => {
+    it('should return true when EVM native token balance exists', () => {
       const state = createMockStateWithEVMNetworks();
-      const mockResult = createMockBalanceResult(0); // Fiat balance = 0
-      (calculateBalanceForAllWallets as jest.Mock).mockReturnValueOnce(
-        mockResult,
-      );
 
       // Add accountsByChainId with non-zero EVM balance
       // @ts-expect-error - Adding test data to mock state
@@ -1221,12 +1239,8 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
       expect(result).toBe(true);
     });
 
-    it('should return true when non-EVM native token balance exists (no price conversion)', () => {
+    it('should return true when non-EVM native token balance exists', () => {
       const state = createMockStateWithNonEVMNetworks();
-      const mockResult = createMockBalanceResult(0); // Fiat balance = 0
-      (calculateBalanceForAllWallets as jest.Mock).mockReturnValueOnce(
-        mockResult,
-      );
 
       // Add multichainBalancesState with non-zero Solana balance
       state.metamask.balances = {
@@ -1243,12 +1257,8 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
       expect(result).toBe(true);
     });
 
-    it('should return false when fiat balance is 0 and no native token balances exist', () => {
+    it('should return false when no native token balances exist', () => {
       const state = createMockStateWithEVMNetworks();
-      const mockResult = createMockBalanceResult(0); // Fiat balance = 0
-      (calculateBalanceForAllWallets as jest.Mock).mockReturnValueOnce(
-        mockResult,
-      );
 
       // Add accountsByChainId with zero EVM balance
       // @ts-expect-error - Adding test data to mock state
@@ -1270,10 +1280,6 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
 
     it('should handle mixed state with both EVM and non-EVM balances', () => {
       const state = createMockStateWithEVMNetworks();
-      const mockResult = createMockBalanceResult(0); // Fiat balance = 0
-      (calculateBalanceForAllWallets as jest.Mock).mockReturnValueOnce(
-        mockResult,
-      );
 
       // Add accountsByChainId with non-zero EVM balance
       // @ts-expect-error - Adding test data to mock state
@@ -1307,10 +1313,6 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
 
     it('should handle edge case with hex string "0" for EVM balance', () => {
       const state = createMockStateWithEVMNetworks();
-      const mockResult = createMockBalanceResult(0); // Fiat balance = 0
-      (calculateBalanceForAllWallets as jest.Mock).mockReturnValueOnce(
-        mockResult,
-      );
 
       // Test both "0x0" and "0" as zero values
       // @ts-expect-error - Adding test data to mock state
@@ -1325,6 +1327,55 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
       const result = selectAccountGroupBalanceForEmptyState(state);
 
       expect(result).toBe(false);
+    });
+
+    it('should return false when non-EVM balance is decimal zero like "0.0" or "0.00"', () => {
+      const state = createMockStateWithNonEVMNetworks();
+
+      // Add multichainBalancesState with decimal zero Solana balance
+      state.metamask.balances = {
+        account2: {
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+            amount: '0.00', // Decimal zero
+            unit: 'SOL',
+          },
+        },
+      };
+
+      const result = selectAccountGroupBalanceForEmptyState(state);
+
+      expect(result).toBe(false);
+    });
+
+    it('should return true when user has ERC-20 tokens but no native tokens', () => {
+      const state = createMockStateWithEVMNetworks();
+
+      // Add accountsByChainId with zero EVM balance
+      // @ts-expect-error - Adding test data to mock state
+      state.metamask.accountsByChainId = {
+        '0x1': {
+          '0x0': {
+            balance: '0x0', // No ETH
+          },
+        },
+      };
+
+      // Add tokenBalances with ERC-20 tokens
+      // @ts-expect-error - Adding test data to mock state
+      state.metamask.tokenBalances = {
+        '0x0': {
+          // account address
+          '0x1': {
+            // Ethereum mainnet
+            '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': '0xde0b6b3a7640000', // USDC balance
+          },
+        },
+      };
+
+      const result = selectAccountGroupBalanceForEmptyState(state);
+
+      // Should return true because user has non-native tokens
+      expect(result).toBe(true);
     });
   });
 });
