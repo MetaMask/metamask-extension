@@ -14,16 +14,11 @@ jest.mock('../../../../shared/lib/trace', () => {
   };
 });
 
-const mockHistoryPush = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockHistoryPush,
-  }),
-}));
+const mockNavigate = jest.fn();
 
 jest.mock('react-router-dom-v5-compat', () => ({
   ...jest.requireActual('react-router-dom-v5-compat'),
+  useNavigate: () => mockNavigate,
   Link: ({
     children,
     to,
@@ -75,7 +70,7 @@ describe('AppHeaderUnlockedContent trace', () => {
     expect(traceLib.trace).toHaveBeenCalledWith(
       expect.objectContaining({ name: traceLib.TraceName.ShowAccountList }),
     );
-    expect(mockHistoryPush).toHaveBeenCalledWith('/account-list');
+    expect(mockNavigate).toHaveBeenCalledWith('/account-list');
   });
 
   it('calls trace ShowAccountAddressList when networks subtitle is clicked', () => {
