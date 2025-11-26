@@ -1076,10 +1076,10 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
     const state = createMockStateWithEVMNetworks();
 
     // Add accountsByChainId with non-zero EVM balance
-    // @ts-expect-error - Adding test data to mock state
     state.metamask.accountsByChainId = {
       '0x1': {
         '0x0': {
+          address: '0x0',
           balance: '0x8ac7230489e80000', // 10 ETH
         },
       },
@@ -1112,10 +1112,10 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
     const state = createMockStateWithEVMNetworks();
 
     // Add accountsByChainId with zero EVM balance
-    // @ts-expect-error - Adding test data to mock state
     state.metamask.accountsByChainId = {
       '0x1': {
         '0x0': {
+          address: '0x0',
           balance: '0x0',
         },
       },
@@ -1130,10 +1130,10 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
     const state = createMockStateWithEVMNetworks();
 
     // Add accountsByChainId with small positive EVM balance
-    // @ts-expect-error - Adding test data to mock state
     state.metamask.accountsByChainId = {
       '0x1': {
         '0x0': {
+          address: '0x0',
           balance: '0x2386f26fc10000', // 0.01 ETH
         },
       },
@@ -1148,7 +1148,6 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
     const state = createMockStateWithEVMNetworks();
 
     // No balances set at all
-    // @ts-expect-error - Adding test data to mock state
     state.metamask.accountsByChainId = {};
     state.metamask.balances = {};
 
@@ -1161,17 +1160,18 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
     const state = createMockStateWithEVMNetworks(true); // Include EVM testnets
 
     // Add balances for both mainnet and testnet
-    // @ts-expect-error - Adding test data to mock state
     state.metamask.accountsByChainId = {
       '0x1': {
         // Ethereum mainnet
         '0x0': {
+          address: '0x0',
           balance: '0x0', // Zero on mainnet
         },
       },
       '0xaa36a7': {
         // Sepolia testnet (should be ignored)
         '0x0': {
+          address: '0x0',
           balance: '0x8ac7230489e80000', // 10 ETH on testnet
         },
       },
@@ -1213,10 +1213,10 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
       const state = createMockStateWithEVMNetworks();
 
       // Add accountsByChainId with non-zero EVM balance
-      // @ts-expect-error - Adding test data to mock state
       state.metamask.accountsByChainId = {
         '0x1': {
           '0x0': {
+            address: '0x0',
             balance: '0x8ac7230489e80000', // 10 ETH
           },
         },
@@ -1249,10 +1249,10 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
       const state = createMockStateWithEVMNetworks();
 
       // Add accountsByChainId with zero EVM balance
-      // @ts-expect-error - Adding test data to mock state
       state.metamask.accountsByChainId = {
         '0x1': {
           '0x0': {
+            address: '0x0',
             balance: '0x0',
           },
         },
@@ -1288,10 +1288,10 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
       const state = createMockStateWithEVMNetworks();
 
       // Add accountsByChainId with zero EVM balance
-      // @ts-expect-error - Adding test data to mock state
       state.metamask.accountsByChainId = {
         '0x1': {
           '0x0': {
+            address: '0x0',
             balance: '0x0', // No ETH
           },
         },
