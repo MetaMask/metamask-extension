@@ -51,13 +51,16 @@ describe('Add account', function () {
         });
 
         const homePage = new HomePage(driver);
+        const headerNavbar = new HeaderNavbar(driver);
         await homePage.checkPageIsLoaded();
         const activityList = new ActivityListPage(driver);
         await activityList.checkTxAmountInActivity('-2.8 ETH');
         await activityList.waitPendingTxToNotBeVisible();
+        await headerNavbar.openAccountMenu();
+        await accountListPage.checkMultichainAccountBalanceDisplayed('75,502');
+        await accountListPage.closeMultichainAccountsPage();
 
         // Lock wallet and recover via SRP in "forget password" option
-        const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.lockMetaMask();
         await new LoginPage(driver).gotoResetPasswordPage();
         const resetPasswordPage = new ResetPasswordPage(driver);
