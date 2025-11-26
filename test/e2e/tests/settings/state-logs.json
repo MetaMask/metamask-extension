@@ -545,6 +545,7 @@
     "isPushEnabled": "boolean",
     "isRampCardClosed": "boolean",
     "isSeedlessOnboardingUserAuthenticated": "boolean",
+    "openedWithSidepanel": "boolean",
     "isSignedIn": "boolean",
     "isUnlocked": "boolean",
     "isUpdateAvailable": "boolean",
