@@ -125,7 +125,10 @@ function schedulePhishingReconnect() {
 }
 
 export const setupPhishingExtStreams = (): void => {
-  phishingReconnectAttempts = 0;
+  if (phishingReconnectTimer) {
+    clearTimeout(phishingReconnectTimer as unknown as number);
+    phishingReconnectTimer = null;
+  }
   phishingExtPort = browser.runtime.connect({
     name: CONTENT_SCRIPT,
   });
@@ -233,6 +236,11 @@ const onMessageSetUpPhishingStreams = (
   if (msg.name === EXTENSION_MESSAGES.READY) {
     if (!phishingExtStream) {
       setupPhishingExtStreams();
+    }
+    phishingReconnectAttempts = 0;
+    if (phishingReconnectTimer) {
+      clearTimeout(phishingReconnectTimer as unknown as number);
+      phishingReconnectTimer = null;
     }
     return Promise.resolve(
       `MetaMask: handled "${EXTENSION_MESSAGES.READY}" for phishing streams`,

@@ -133,7 +133,10 @@ let METAMASK_EXTENSION_CONNECT_SENT = false;
  */
 export const setupExtensionStreams = () => {
   METAMASK_EXTENSION_CONNECT_SENT = true;
-  reconnectAttempts = 0;
+  if (reconnectTimer) {
+    clearTimeout(reconnectTimer as unknown as number);
+    reconnectTimer = null;
+  }
   extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
   extensionStream = new ExtensionPortStream(extensionPort, { chunkSize: 0 });
   extensionStream.on('data', extensionStreamMessageListener);
@@ -458,6 +461,11 @@ function extensionStreamMessageListener(msg: MessageType) {
     msg.data.method === 'metamask_chainChanged'
   ) {
     METAMASK_EXTENSION_CONNECT_SENT = false;
+    reconnectAttempts = 0;
+    if (reconnectTimer) {
+      clearTimeout(reconnectTimer as unknown as number);
+      reconnectTimer = null;
+    }
     window.postMessage(
       {
         target: METAMASK_INPAGE, // the post-message-stream "target"
