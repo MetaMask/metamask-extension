@@ -3,7 +3,7 @@ import { Mockttp } from 'mockttp';
 import { emptyHtmlPage } from '../../mock-e2e';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
 import { CHAIN_IDS } from '../../../../shared/constants/network';

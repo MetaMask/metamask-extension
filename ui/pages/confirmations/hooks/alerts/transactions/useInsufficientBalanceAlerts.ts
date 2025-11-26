@@ -1,3 +1,5 @@
+'use no memo';
+
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { CaipChainId, Hex } from '@metamask/utils';
 import { useMemo } from 'react';

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { debounce } from 'lodash';
 import { usePrevious } from './usePrevious';
 
@@ -24,7 +24,7 @@ export const useScrollRequired = (
   const [isScrollableState, setIsScrollable] = useState(false);
   const [isScrolledToBottomState, setIsScrolledToBottom] = useState(false);
 
-  const update = () => {
+  const update = useCallback(() => {
     if (!ref.current) {
       return;
     }
@@ -51,7 +51,7 @@ export const useScrollRequired = (
     if (!isScrollable || isScrolledToBottom) {
       setHasScrolledToBottom(true);
     }
-  };
+  }, [isScrollableState, offsetPxFromBottom]);
 
   useEffect(update, [ref, ...dependencies]);
 
@@ -59,7 +59,7 @@ export const useScrollRequired = (
     if (prevOffsetHeight !== ref.current?.offsetHeight) {
       update();
     }
-  }, [ref.current?.offsetHeight]);
+  }, [update, ref.current?.offsetHeight, prevOffsetHeight]);
 
   const scrollToBottom = () => {
     setIsScrolledToBottom(true);
