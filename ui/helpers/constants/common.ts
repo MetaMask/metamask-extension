@@ -9,6 +9,8 @@ export const TRANSACTION_SHIELD_SUPPORT_LINK =
 
 export const TRANSACTION_SHIELD_LINK = 'https://metamask.io/transaction-shield';
 
+export const FIND_TRANSACTION_HASH_LINK =
+  'https://support.metamask.io/manage-crypto/transactions/how-to-find-a-transaction-id';
 // eslint-disable-next-line prefer-destructuring
 export const METAMETRICS_SETTINGS_LINK =
   'https://support.metamask.io/privacy-and-security/how-to-manage-your-metametrics-settings';

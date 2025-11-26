@@ -50,7 +50,7 @@ import { setShowClaimSubmitToast } from '../../../../components/app/toast-master
 import { ClaimSubmitToastType } from '../../../../../shared/constants/app-state';
 import {
   TRANSACTION_SHIELD_SUPPORT_LINK,
-  TRANSACTION_SHIELD_LINK,
+  FIND_TRANSACTION_HASH_LINK,
 } from '../../../../helpers/constants/common';
 import { FileUploader } from '../../../../components/component-library/file-uploader';
 import {
@@ -323,11 +323,11 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
   );
 
   const onClickFindTransactionHash = useCallback(async () => {
-    window.open(TRANSACTION_SHIELD_LINK, '_blank', 'noopener noreferrer');
+    window.open(FIND_TRANSACTION_HASH_LINK, '_blank', 'noopener,noreferrer');
     captureShieldCtaClickedEvent({
       source: ShieldCtaSourceEnum.Settings,
       ctaActionClicked: ShieldCtaActionClickedEnum.FindingTxHash,
-      redirectToUrl: TRANSACTION_SHIELD_LINK,
+      redirectToUrl: FIND_TRANSACTION_HASH_LINK,
     });
   }, [captureShieldCtaClickedEvent]);
 
