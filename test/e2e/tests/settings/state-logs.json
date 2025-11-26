@@ -415,6 +415,17 @@
     "ensResolutionsByAddress": {},
     "estimatedGasFeeTimeBounds": {},
     "events": {
+      "cronjob-npm:@metamask/tron-wallet-snap-0": {
+        "date": "string",
+        "id": "string",
+        "recurring": "boolean",
+        "request": {
+          "method": "string"
+        },
+        "schedule": "string",
+        "scheduledAt": "string",
+        "snapId": "string"
+      },
       "cronjob-npm:@metamask/bitcoin-wallet-snap-0": {
         "date": "string",
         "id": "string",
@@ -1032,6 +1043,7 @@
     "onboardingModalOpen": "boolean",
     "onboardingActiveStep": "string",
     "onboardingModalRendered": "boolean",
+    "onboardingReferralCode": "string",
     "geoLocation": "null",
     "optinAllowedForGeo": "null",
     "optinAllowedForGeoLoading": "boolean",
