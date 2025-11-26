@@ -29960,7 +29960,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************
 
 @metamask/eth-snap-keyring
-18.0.0 <https://github.com/MetaMask/eth-snap-keyring>
+18.0.2 <https://github.com/MetaMask/eth-snap-keyring>
 Copyright ConsenSys Software Inc. 2022. All rights reserved.
  
 You acknowledge and agree that ConsenSys Software Inc. (“ConsenSys”) (or ConsenSys’s licensors) own all legal right, title and interest in and to the work, software, application, source code, documentation and any other documents in this repository (collectively, the “Program”), including any intellectual property rights which subsist in the Program (whether those rights happen to be registered or not, and wherever in the world those rights may exist), whether in source code or any other form.
@@ -31654,28 +31654,28 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ******************************
 
 @metamask/keyring-internal-api
-9.1.0 <https://github.com/MetaMask/accounts>
+9.1.1 <https://github.com/MetaMask/accounts>
 license: Custom: https://github.com/MetaMask/accounts
 authors: undefined
 
 ******************************
 
 @metamask/keyring-internal-snap-client
-8.0.0 <https://github.com/MetaMask/accounts>
+8.0.1 <https://github.com/MetaMask/accounts>
 license: Custom: https://github.com/MetaMask/accounts
 authors: undefined
 
 ******************************
 
 @metamask/keyring-snap-client
-8.1.0 <https://github.com/MetaMask/accounts>
+8.1.1 <https://github.com/MetaMask/accounts>
 license: Custom: https://github.com/MetaMask/accounts
 authors: undefined
 
 ******************************
 
 @metamask/keyring-snap-sdk
-7.1.0 <https://github.com/MetaMask/accounts>
+7.1.1 <https://github.com/MetaMask/accounts>
 license: Custom: https://github.com/MetaMask/accounts
 authors: undefined
 
