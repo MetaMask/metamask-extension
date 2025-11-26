@@ -5,6 +5,7 @@ import {
   RECURRING_INTERVALS,
   RecurringInterval,
   Subscription,
+  SUBSCRIPTION_STATUSES,
   SubscriptionCryptoPaymentMethod,
 } from '@metamask/subscription-controller';
 import {
@@ -69,6 +70,17 @@ export function getIsShieldSubscriptionPaused(
   }
 
   return PausedSubscriptionStatuses.includes(shieldSubscription.status);
+}
+
+export function getIsShieldSubscriptionTrialing(
+  subscriptions: Subscription | Subscription[],
+): boolean {
+  const shieldSubscription = getShieldSubscription(subscriptions);
+  return (
+    shieldSubscription?.status === SUBSCRIPTION_STATUSES.trialing ||
+    (shieldSubscription?.status === SUBSCRIPTION_STATUSES.provisional &&
+      Boolean(shieldSubscription?.trialPeriodDays)) // subscription in provisional status and has trial info is considered trialing
+  );
 }
 
 export function getIsShieldSubscriptionEndingSoon(
