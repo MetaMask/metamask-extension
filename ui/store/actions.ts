@@ -507,13 +507,12 @@ export function getSubscriptions(): ThunkAction<
   unknown,
   AnyAction
 > {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
     try {
       const subscriptions = await submitRequestToBackground('getSubscriptions');
       return subscriptions;
     } catch (error) {
       log.error('[getSubscriptions] error', error);
-      dispatch(displayWarning(error));
       throw new Error(
         `Failed to fetch subscriptions, ${getErrorMessage(error)}`,
       );
@@ -532,7 +531,7 @@ export function getSubscriptionPricing(): ThunkAction<
   unknown,
   AnyAction
 > {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
     try {
       const pricing = await submitRequestToBackground<PricingResponse>(
         'getSubscriptionPricing',
@@ -540,7 +539,6 @@ export function getSubscriptionPricing(): ThunkAction<
       return pricing;
     } catch (error) {
       log.error('[getSubscriptionPricing] error', error);
-      dispatch(displayWarning(error));
       throw new Error(
         `Failed to fetch subscription pricing, ${getErrorMessage(error)}`,
       );
@@ -660,12 +658,11 @@ export function cancelSubscription(params: {
 export function unCancelSubscription(params: {
   subscriptionId: string;
 }): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
     try {
       await submitRequestToBackground('unCancelSubscription', [params]);
     } catch (error) {
       log.error('[unCancelSubscription] error', error);
-      dispatch(displayWarning(error));
       throw new Error(
         `Failed to uncancel subscription, ${getErrorMessage(error)}`,
       );
@@ -679,7 +676,7 @@ export function getSubscriptionBillingPortalUrl(): ThunkAction<
   unknown,
   AnyAction
 > {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
     try {
       const billingPortalUrl = await submitRequestToBackground(
         'getSubscriptionBillingPortalUrl',
@@ -687,7 +684,6 @@ export function getSubscriptionBillingPortalUrl(): ThunkAction<
       return billingPortalUrl;
     } catch (error) {
       log.error('[getSubscriptionBillingPortalUrl] error', error);
-      dispatch(displayWarning(error));
       throw new Error(
         `Failed to get subscription billing portal url, ${getErrorMessage(error)}`,
       );
