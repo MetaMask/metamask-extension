@@ -279,6 +279,6 @@ export function selectShowPna25Banner(state: Pick<State, 'metamask'>): boolean {
     return false; // User already acknowledged
   }
 
-  // Show banner for users who haven't acknowledged (pna25Acknowledged === false)
-  return true;
+  // Only show banner if explicitly false (existing users who haven't acknowledged)
+  return pna25Acknowledged === false;
 }

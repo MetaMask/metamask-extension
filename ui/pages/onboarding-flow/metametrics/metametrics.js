@@ -147,7 +147,7 @@ export default function OnboardingMetametrics() {
       // This means they saw the updated policy during onboarding (whether they opted in or out)
       // No need to show banner to new users who already saw the updated message
       if (isPna25Enabled) {
-        await submitRequestToBackgroundAndCatch('setPna25Acknowledged', [true]);
+        submitRequestToBackgroundAndCatch('setPna25Acknowledged', [true]);
       }
     } catch (error) {
       log.error('onConfirm::error', error);
