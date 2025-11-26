@@ -38,8 +38,7 @@ describe('Snap Account Transfers', function (this: Suite) {
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .build(),
         testSpecificMock: async (mockServer: Mockttp) => {
-          await mockSnapSimpleKeyringAndSite(mockServer);
-          return [await mockSnapSimpleKeyringAndSiteWithSpotPrices(mockServer)];
+          return await mockSnapSimpleKeyringAndSiteWithSpotPrices(mockServer);
         },
         title: this.test?.fullTitle(),
       },

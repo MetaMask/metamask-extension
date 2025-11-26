@@ -102,7 +102,8 @@ describe('State logs', function () {
         await createDownloadFolder(downloadsFolder);
         await loginWithoutBalanceValidation(driver);
 
-        await driver.delay(10000);
+        // Add hardcoded delay to stabilize the test and ensure values for properties are loaded
+        await driver.delay(15000);
 
         // Download state logs
         await new HeaderNavbar(driver).openSettingsPage();
@@ -111,8 +112,6 @@ describe('State logs', function () {
         await settingsPage.clickAdvancedTab();
         const advancedSettingsPage = new AdvancedSettings(driver);
         await advancedSettingsPage.checkPageIsLoaded();
-        // Add hardcoded delay to stabilize the test and ensure values for properties are loaded
-        await driver.delay(15000);
         await advancedSettingsPage.downloadStateLogs();
 
         // Verify download and get state logs
