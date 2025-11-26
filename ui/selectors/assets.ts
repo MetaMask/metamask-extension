@@ -95,6 +95,10 @@ export type BalanceCalculationState = {
       conversionRates?: Record<string, unknown>;
       historicalPrices?: Record<string, unknown>;
       networkConfigurationsByChainId?: Record<string, unknown>;
+      accountsByChainId?: Record<
+        string,
+        Record<string, { balance: string; address: string }>
+      >;
     };
 };
 
@@ -731,7 +735,6 @@ const selectEnabledNetworkMapForBalances = createSelector(
 const selectAccountsByChainIdForBalances = createSelector(
   [
     (state: BalanceCalculationState) =>
-      // @ts-expect-error - accountsByChainId exists at runtime
       getMetamaskState(state).accountsByChainId,
   ],
   (accountsByChainId) => accountsByChainId ?? EMPTY_OBJECT,
