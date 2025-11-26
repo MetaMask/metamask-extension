@@ -2,7 +2,7 @@ import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import {
   mockBitcoinFeatureFlag,
