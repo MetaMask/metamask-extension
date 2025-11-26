@@ -36,7 +36,6 @@ export type DappSwapMiddlewareRequest<
 const FOUR_BYTE_EXECUTE_SWAP_CONTRACT = '0x3593564c';
 const DAPP_SWAP_COMPARISON_ORIGIN = 'https://app.uniswap.org';
 const TEST_DAPP_ORIGIN = 'https://metamask.github.io';
-const DEFAULT_QUOTEFEE = 250;
 
 const getSwapDetails = (params: DappSwapMiddlewareRequest['params']) => {
   if (!params?.length) {
@@ -114,7 +113,7 @@ export function getQuotesForConfirmation({
           fetchQuotes({
             ...quotesInput,
             walletAddress: from,
-            fee: bridgeQuoteFees ?? DEFAULT_QUOTEFEE,
+            fee: bridgeQuoteFees,
           })
             .then((quotes) => {
               const endTime = new Date().getTime();
