@@ -7,6 +7,7 @@ import rewardsReducer, {
   resetRewardsState,
   setOnboardingModalOpen,
   setOnboardingActiveStep,
+  setOnboardingReferralCode,
   setRewardsGeoMetadata,
   setRewardsGeoMetadataLoading,
   setRewardsGeoMetadataError,
@@ -78,6 +79,23 @@ describe('Ducks - Rewards', () => {
       expect(actions[0].type).toBe('rewards/setOnboardingActiveStep');
       const newState = rewardsReducer(initialState, actions[0]);
       expect(newState.onboardingActiveStep).toBe(OnboardingStep.STEP1);
+    });
+
+    it('setOnboardingReferralCode updates onboardingReferralCode', () => {
+      store.dispatch(setOnboardingReferralCode('ABC123'));
+      const actions = store.getActions();
+      expect(actions[0].type).toBe('rewards/setOnboardingReferralCode');
+      const newState = rewardsReducer(initialState, actions[0]);
+      expect(newState.onboardingReferralCode).toBe('ABC123');
+    });
+
+    it('setOnboardingReferralCode clears onboardingReferralCode when payload is null', () => {
+      const existing = { ...initialState, onboardingReferralCode: 'ABC123' };
+      store.dispatch(setOnboardingReferralCode(null));
+      const actions = store.getActions();
+      expect(actions[0].type).toBe('rewards/setOnboardingReferralCode');
+      const newState = rewardsReducer(existing, actions[0]);
+      expect(newState.onboardingReferralCode).toBeNull();
     });
 
     it('setRewardsGeoMetadata sets location and opt-in flags when payload provided', () => {
