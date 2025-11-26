@@ -1042,6 +1042,7 @@
     "onboardingModalOpen": "boolean",
     "onboardingActiveStep": "string",
     "onboardingModalRendered": "boolean",
+    "onboardingReferralCode": "string",
     "geoLocation": "null",
     "optinAllowedForGeo": "null",
     "optinAllowedForGeoLoading": "boolean",
