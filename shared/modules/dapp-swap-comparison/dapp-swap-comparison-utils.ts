@@ -232,26 +232,31 @@ export function checkValidSingleOrBatchTransaction(
     permit2ApprovalParsed?.spender?.toLowerCase() !== trade[0].to?.toLowerCase()
   ) {
     throw new Error(
-      'Error getting data from swap: invalid batch transaction, invalid permit2 approval',
+      'Error getting data from swap: invalid batch transaction, unexpected permit2 approval',
     );
   }
 
   const erc20Approvals = nestedTransactions.filter(({ data }) =>
     data?.startsWith(ERC20_APPROVE_TRANSACTION),
   );
+  if (!erc20Approvals?.length) {
+    return;
+  }
   const erc20ApprovalParsed = parseApprovalTransactionData(
     erc20Approvals[0]?.data as Hex,
   );
   if (
     erc20Approvals.length > 1 ||
-    (erc20Approvals.length === 1 &&
+    (permit2Approvals.length === 1 &&
       erc20ApprovalParsed?.spender?.toLowerCase() !==
-        trade[0].to?.toLowerCase() &&
+        permit2Approvals[0]?.to?.toLowerCase()) ||
+    (permit2Approvals.length === 0 &&
+      erc20Approvals.length === 1 &&
       erc20ApprovalParsed?.spender?.toLowerCase() !==
-        permit2Approvals[0]?.to?.toLowerCase())
+        trade[0].to?.toLowerCase())
   ) {
     throw new Error(
-      'Error getting data from swap: invalid batch transaction, invalid erc20 approval',
+      'Error getting data from swap: invalid batch transaction, unexpected erc20 approval',
     );
   }
 }
