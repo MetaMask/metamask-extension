@@ -710,6 +710,7 @@
     "pendingRevocations": [],
     "pendingShieldCohort": "null",
     "pendingShieldCohortTxType": "null",
+    "pna25Acknowledged": "boolean",
     "permissionActivityLog": [
       {
         "id": "number",
