@@ -5,13 +5,21 @@ import { withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { Driver } from '../../webdriver/driver';
 import { MockedEndpoint } from '../../mock-e2e';
-import HomePage from '../../page-objects/pages/home/homepage';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import { ACCOUNT_TYPE } from '../../constants';
 
 const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
 
+const AUTH_URL =
+  'https://authentication.api.cx.metamask.io/api/v2/profile/accounts';
+
+/**
+ * Mocks the feature flag response for enabling or disabling the feature
+ *
+ * @param enabled - A boolean indicating whether the feature flag should be enabled or disabled.
+ * @return A function that takes a Mockttp server instance and sets up the mock response.
+ */
 const mockSendFeatureFlag = (enabled: boolean) => (mockServer: Mockttp) =>
   mockServer
     .forGet(FEATURE_FLAGS_URL)
@@ -32,14 +40,18 @@ const mockSendFeatureFlag = (enabled: boolean) => (mockServer: Mockttp) =>
       };
     });
 
+/**
+ * Mocks the authentication service endpoint for profile metrics.
+ *
+ * @param mockServer - The Mockttp server instance to set up the mock on.
+ * @return A promise that resolves to the mocked endpoint.
+ */
 async function mockAuthService(mockServer: Mockttp) {
-  return await mockServer
-    .forPut(`https://authentication.api.cx.metamask.io/api/v2/profile/accounts`)
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-      };
-    });
+  return await mockServer.forPut(AUTH_URL).thenCallback(() => {
+    return {
+      statusCode: 200,
+    };
+  });
 }
 
 describe('Profile Metrics', function () {
