@@ -227,9 +227,11 @@ export function checkValidSingleOrBatchTransaction(
   );
   if (
     permit2Approvals.length > 1 ||
-    permit2ApprovalParsed?.tokenAddress?.toLowerCase() !==
-      approveTokenAddress?.toLowerCase() ||
-    permit2ApprovalParsed?.spender?.toLowerCase() !== trade[0].to?.toLowerCase()
+    (permit2Approvals.length === 1 &&
+      (permit2ApprovalParsed?.tokenAddress?.toLowerCase() !==
+        approveTokenAddress?.toLowerCase() ||
+        permit2ApprovalParsed?.spender?.toLowerCase() !==
+          trade[0].to?.toLowerCase()))
   ) {
     throw new Error(
       'Error getting data from swap: invalid batch transaction, unexpected permit2 approval',
@@ -244,6 +246,10 @@ export function checkValidSingleOrBatchTransaction(
   }
   const erc20ApprovalParsed = parseApprovalTransactionData(
     erc20Approvals[0]?.data as Hex,
+  );
+  console.log(
+    '--------------------------------',
+    JSON.stringify(erc20ApprovalParsed),
   );
   if (
     erc20Approvals.length > 1 ||
