@@ -1887,6 +1887,9 @@
   "dappSwapAdvantage": {
     "message": "Save and earn with MetaMask Swaps"
   },
+  "dappSwapAdvantageSaveOnly": {
+    "message": "Save with MetaMask Swaps"
+  },
   "dappSwapBenefits": {
     "message": "Network fees refunded on failed swaps"
   },
