@@ -230,6 +230,7 @@ export function MetaMetricsProvider({ children }) {
 
   // For backwards compatibility, attach the new methods as properties to trackEvent
   const trackEventWithMethods = trackEvent;
+  // eslint-disable-next-line react-compiler/react-compiler
   trackEventWithMethods.bufferedTrace = bufferedTrace;
   trackEventWithMethods.bufferedEndTrace = bufferedEndTrace;
   trackEventWithMethods.onboardingParentContext = onboardingParentContext;

@@ -284,7 +284,6 @@ export const SendPage = ({
       );
     }
     // sendAnalytics should not result in the event refiring
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trackEvent, swapQuotesError]);
 
   const onSubmit = async (event) => {
