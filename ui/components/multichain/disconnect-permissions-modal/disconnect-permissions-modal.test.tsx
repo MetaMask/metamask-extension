@@ -3,7 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import { Hex } from '@metamask/utils';
 import { fireEvent } from '../../../../test/jest';
 import mockState from '../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 
 import { DisconnectPermissionsModal } from '.';
 

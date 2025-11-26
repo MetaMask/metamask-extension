@@ -2,7 +2,7 @@ import React from 'react';
 import { Severity } from '../../../../helpers/constants/design-system';
 import { SecurityProvider } from '../../../../../shared/constants/security-provider';
 import { Text } from '../../../component-library';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import GeneralAlert, { GeneralAlertProps } from './general-alert';
 
 describe('GeneralAlert', () => {
@@ -29,7 +29,7 @@ describe('GeneralAlert', () => {
         details={details}
       />,
     );
-    expect(getByText('[seeDetails]')).toBeInTheDocument();
+    expect(getByText('See details')).toBeInTheDocument();
   });
 
   it('renders the security provider information when provided', () => {
@@ -42,6 +42,6 @@ describe('GeneralAlert', () => {
       />,
     );
 
-    expect(getByText('[securityProviderPoweredBy]')).toBeInTheDocument();
+    expect(getByText('Security Alert')).toBeInTheDocument();
   });
 });

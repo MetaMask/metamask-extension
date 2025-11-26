@@ -448,7 +448,7 @@ export function showAppHeader(props) {
  * );
  * // relativeLocation.pathname === '/snaps-connect'
  * @example
- * // Usage with v5-compat Routes:
+ * // Usage with v6 Routes:
  * <Routes location={relativeLocation}>
  *   <Route path="/" element={<HomePage />} />
  *   <Route path="/snaps-connect" element={<SnapsConnect />} />

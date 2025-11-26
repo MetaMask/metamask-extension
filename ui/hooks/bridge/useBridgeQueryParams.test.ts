@@ -10,7 +10,7 @@ import { mockNetworkState } from '../../../test/stub/networks';
 import { useBridgeQueryParams } from './useBridgeQueryParams';
 
 // Helper hook that combines useBridgeQueryParams with useLocation
-// so we can inspect the router state from the same v5-compat context
+// so we can inspect the router state from the same v6 context
 const useBridgeQueryParamsWithLocation = () => {
   const location = useLocation();
   useBridgeQueryParams();

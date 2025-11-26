@@ -2,7 +2,7 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { PREVIOUS_ROUTE } from '../../../../helpers/constants/routes';
 import { useShieldConfirm } from './useShieldConfirm';
 

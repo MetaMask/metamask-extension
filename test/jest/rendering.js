@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
-import { MemoryRouter, Router } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import { I18nContext, LegacyI18nProvider } from '../../ui/contexts/i18n';
@@ -77,43 +77,4 @@ export function renderWithProvider(component, store, initialEntries) {
   };
 
   return render(component, { wrapper: Wrapper });
-}
-
-export function renderWithProviderAndHistory(
-  component,
-  store,
-  history,
-  renderer = render,
-) {
-  const mockTrackEvent = createMockTrackEvent();
-
-  const Wrapper = ({ children }) => {
-    const WithoutStore = () => (
-      <Router history={history}>
-        <I18nProvider currentLocale="en" current={en} en={en}>
-          <LegacyI18nProvider>
-            <MetaMetricsContext.Provider value={mockTrackEvent}>
-              <LegacyMetaMetricsProvider>{children}</LegacyMetaMetricsProvider>
-            </MetaMetricsContext.Provider>
-          </LegacyI18nProvider>
-        </I18nProvider>
-      </Router>
-    );
-    return store ? (
-      <Provider store={store}>
-        <WithoutStore />
-      </Provider>
-    ) : (
-      <WithoutStore />
-    );
-  };
-
-  Wrapper.propTypes = {
-    children: PropTypes.node,
-  };
-
-  return {
-    ...renderer(component, { wrapper: Wrapper }),
-    history,
-  };
 }

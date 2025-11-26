@@ -30,8 +30,15 @@ const STATE_MOCK = {
 };
 
 describe('useSyncConfirmPath', () => {
+  const originalLocation = window.location;
+
   beforeEach(() => {
     jest.clearAllMocks();
+    // Mock window.location since the hook reads from global location
+    Object.defineProperty(window, 'location', {
+      value: { pathname: '/confirm-transaction' },
+      writable: true,
+    });
     // Default mock: on confirmation route with no params
     mockUseLocation.mockReturnValue({
       pathname: '/confirm-transaction',
@@ -40,6 +47,13 @@ describe('useSyncConfirmPath', () => {
       state: null,
     });
     mockUseParams.mockReturnValue({});
+  });
+
+  afterEach(() => {
+    Object.defineProperty(window, 'location', {
+      value: originalLocation,
+      writable: true,
+    });
   });
 
   it('should execute correctly', () => {

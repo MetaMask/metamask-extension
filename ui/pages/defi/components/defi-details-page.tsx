@@ -57,9 +57,11 @@ const DeFiPage = () => {
 
   // TODO: Get value in user's preferred currency
   const protocolPosition =
-    defiPositions[selectedAccount.address]?.[
+    chainId && protocolId
+      ? defiPositions[selectedAccount.address]?.[
       chainId as keyof (typeof defiPositions)[string]
-    ]?.protocols[protocolId];
+        ]?.protocols[protocolId]
+      : undefined;
 
   const extractedTokens = useMemo(() => {
     return Object.keys(protocolPosition?.positionTypes || {}).reduce(

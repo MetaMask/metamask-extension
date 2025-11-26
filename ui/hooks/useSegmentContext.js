@@ -19,7 +19,6 @@ export function useSegmentContext() {
   const paths = getPaths();
 
   // Try to match the current location against each path
-  // Note: v5-compat matchPath uses v6 signature (pattern first, pathname second)
   let match;
   paths.find((path) => {
     match = matchPath(

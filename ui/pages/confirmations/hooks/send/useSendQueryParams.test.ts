@@ -1,6 +1,6 @@
 import { DefaultRootState, useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
-import { SetURLSearchParams } from 'react-router-dom/dist/react-router-dom';
+import type { SetURLSearchParams } from 'react-router-dom';
 
 import mockState from '../../../../../test/data/mock-state.json';
 import { EVM_ASSET, MOCK_NFT1155 } from '../../../../../test/data/send/assets';

@@ -16,6 +16,7 @@ jest.mock('../../../../app/scripts/lib/util', () => ({
 }));
 
 jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   // eslint-disable-next-line react/prop-types
   Link: ({ children, ...props }) => <a {...props}>{children}</a>,
   // eslint-disable-next-line react/prop-types

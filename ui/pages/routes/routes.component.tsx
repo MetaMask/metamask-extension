@@ -4,8 +4,12 @@
 import classnames from 'classnames';
 import React, { Suspense, useEffect, useMemo, useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import { useRoutes, useNavigate, useLocation } from 'react-router-dom';
-
+import {
+  useRoutes,
+  useNavigate,
+  useLocation,
+  useNavigationType,
+} from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
 import type { ApprovalType } from '@metamask/controller-utils';
 
@@ -349,12 +353,12 @@ const ShieldPlan = mmLazy(
 // End Lazy Routes
 
 const MemoizedReviewPermissionsWrapper = React.memo(() => (
-    <State2Wrapper
-      state1Component={ReviewPermissions as React.ComponentType<unknown>}
-      state2Component={
-        MultichainReviewPermissions as React.ComponentType<unknown>
-      }
-    />
+  <State2Wrapper
+    state1Component={ReviewPermissions as React.ComponentType<unknown>}
+    state2Component={
+      MultichainReviewPermissions as React.ComponentType<unknown>
+    }
+  />
 ));
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -362,6 +366,7 @@ export default function RoutesComponent() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const navType = useNavigationType();
 
   const alertOpen = useAppSelector((state) => state.appState.alertOpen);
   const alertMessage = useAppSelector((state) => state.appState.alertMessage);
@@ -510,8 +515,10 @@ export default function RoutesComponent() {
 
   // Track location changes for metrics
   useEffect(() => {
-    dispatch(pageChanged(location.pathname));
-  }, [location, dispatch]);
+    if (navType === 'PUSH') {
+      dispatch(pageChanged(location.pathname));
+    }
+  }, [location.pathname, navType, dispatch]);
 
   useEffect(() => {
     setTheme(theme);

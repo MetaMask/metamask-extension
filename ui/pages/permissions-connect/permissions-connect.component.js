@@ -465,7 +465,6 @@ export default class PermissionConnect extends Component {
 
     const isRequestingSnap = isSnapId(permissionsRequest?.metadata?.origin);
 
-    // Create a relative location for nested v5-compat Routes
     return (
       <div className="permissions-connect">
         {!hideTopBar && this.renderTopBar(permissionsRequestId)}
