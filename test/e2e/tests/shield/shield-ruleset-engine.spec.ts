@@ -53,11 +53,6 @@ describe('Shield Ruleset Engine Tests', function () {
             });
           },
           dappOptions: { numberOfTestDapps: 1 },
-          ignoredConsoleErrors: [
-            // Rive WASM loading fails in test environment due to XMLHttpRequest limitations
-            'Could not load Rive WASM file',
-            'XMLHttpRequest is not a constructor',
-          ],
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
@@ -93,11 +88,6 @@ describe('Shield Ruleset Engine Tests', function () {
             });
           },
           dappOptions: { numberOfTestDapps: 1 },
-          ignoredConsoleErrors: [
-            // Rive WASM loading fails in test environment due to XMLHttpRequest limitations
-            'Could not load Rive WASM file',
-            'XMLHttpRequest is not a constructor',
-          ],
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
@@ -133,11 +123,6 @@ describe('Shield Ruleset Engine Tests', function () {
             });
           },
           dappOptions: { numberOfTestDapps: 1 },
-          ignoredConsoleErrors: [
-            // Rive WASM loading fails in test environment due to XMLHttpRequest limitations
-            'Could not load Rive WASM file',
-            'XMLHttpRequest is not a constructor',
-          ],
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
@@ -176,11 +161,6 @@ describe('Shield Ruleset Engine Tests', function () {
             });
           },
           dappOptions: { numberOfTestDapps: 1 },
-          ignoredConsoleErrors: [
-            // Rive WASM loading fails in test environment due to XMLHttpRequest limitations
-            'Could not load Rive WASM file',
-            'XMLHttpRequest is not a constructor',
-          ],
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
@@ -217,11 +197,6 @@ describe('Shield Ruleset Engine Tests', function () {
             });
           },
           dappOptions: { numberOfTestDapps: 1 },
-          ignoredConsoleErrors: [
-            // Rive WASM loading fails in test environment due to XMLHttpRequest limitations
-            'Could not load Rive WASM file',
-            'XMLHttpRequest is not a constructor',
-          ],
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
@@ -259,11 +234,6 @@ describe('Shield Ruleset Engine Tests', function () {
             });
           },
           dappOptions: { numberOfTestDapps: 1 },
-          ignoredConsoleErrors: [
-            // Rive WASM loading fails in test environment due to XMLHttpRequest limitations
-            'Could not load Rive WASM file',
-            'XMLHttpRequest is not a constructor',
-          ],
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);

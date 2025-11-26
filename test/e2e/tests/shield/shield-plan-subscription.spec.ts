@@ -147,19 +147,17 @@ describe('Shield Subscription Tests', function () {
             title: this.test?.fullTitle(),
             testSpecificMock: (server: Mockttp) => {
               const shieldMockttpService = new ShieldMockttpService();
-              return shieldMockttpService.setup(server);
+              return shieldMockttpService.setup(server, {
+                mockNotEligible: true,
+              });
             },
           },
           async ({ driver }) => {
             await loginWithBalanceValidation(driver);
 
             const homePage = new HomePage(driver);
-            await homePage.checkShieldEntryModalIsDisplayed();
-            await homePage.clickOnShieldEntryModalGetStarted();
-
+            await homePage.headerNavbar.openSettingsPage();
             const shieldPlanPage = new ShieldPlanPage(driver);
-            await shieldPlanPage.checkPageIsLoaded();
-            await shieldPlanPage.clickBackButton();
 
             const settingsPage = new SettingsPage(driver);
             await settingsPage.checkPageIsLoaded();
@@ -186,19 +184,17 @@ describe('Shield Subscription Tests', function () {
             title: this.test?.fullTitle(),
             testSpecificMock: (server: Mockttp) => {
               const shieldMockttpService = new ShieldMockttpService();
-              return shieldMockttpService.setup(server);
+              return shieldMockttpService.setup(server, {
+                mockNotEligible: true,
+              });
             },
           },
           async ({ driver }) => {
             await loginWithBalanceValidation(driver);
 
             const homePage = new HomePage(driver);
-            await homePage.checkShieldEntryModalIsDisplayed();
-            await homePage.clickOnShieldEntryModalGetStarted();
-
+            await homePage.headerNavbar.openSettingsPage();
             const shieldPlanPage = new ShieldPlanPage(driver);
-            await shieldPlanPage.checkPageIsLoaded();
-            await shieldPlanPage.clickBackButton();
 
             const settingsPage = new SettingsPage(driver);
             await settingsPage.checkPageIsLoaded();
@@ -281,7 +277,9 @@ describe('Shield Subscription Tests', function () {
             title: this.test?.fullTitle(),
             testSpecificMock: (server: Mockttp) => {
               const shieldMockttpService = new ShieldMockttpService();
-              return shieldMockttpService.setup(server);
+              return shieldMockttpService.setup(server, {
+                mockNotEligible: true,
+              });
             },
             localNodeOptions: [
               {
@@ -298,12 +296,8 @@ describe('Shield Subscription Tests', function () {
             await loginWithBalanceValidation(driver, localNodes[0]);
 
             const homePage = new HomePage(driver);
-            await homePage.checkShieldEntryModalIsDisplayed();
-            await homePage.clickOnShieldEntryModalGetStarted();
-
+            await homePage.headerNavbar.openSettingsPage();
             const shieldPlanPage = new ShieldPlanPage(driver);
-            await shieldPlanPage.checkPageIsLoaded();
-            await shieldPlanPage.clickBackButton();
 
             const settingsPage = new SettingsPage(driver);
             await settingsPage.checkPageIsLoaded();
@@ -348,6 +342,8 @@ describe('Shield Subscription Tests', function () {
           await loginWithBalanceValidation(driver);
 
           const homePage = new HomePage(driver);
+          await homePage.checkShieldEntryModalIsDisplayed();
+          await homePage.clickOnShieldEntryModalGetStarted();
 
           const shieldPlanPage = new ShieldPlanPage(driver);
           await shieldPlanPage.clickBackButton();
