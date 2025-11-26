@@ -303,9 +303,9 @@ function addTransactionControllerListeners(
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     async (payload) => {
       const { transactionMeta } = payload;
-      // when hardware wallet failed or rejected, due to user already click the confirm, then the flow will come to here.
-      // but because hardware wallet need double confirm in device, so we need to handle the transaction rejected here.
-      // if status is failed or rejected, then we need to handle the transaction rejected
+      // This is special case for hardware wallet, for some reason, the transaction controller still trigger transactionApproved event
+      // after user reject the transaction in devices. So we need to handle the transaction rejected here.
+      // ledger will make status as failed, and trezor will make status as rejected.
       if (
         transactionMeta.status === TransactionStatus.failed ||
         transactionMeta.status === TransactionStatus.rejected
