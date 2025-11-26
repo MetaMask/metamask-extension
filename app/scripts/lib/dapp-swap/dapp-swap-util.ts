@@ -104,11 +104,11 @@ export function getQuotesForConfirmation({
           parsedTransactionData.commandBytes,
           parsedTransactionData.inputs,
         );
-        checkValidSingleOrBatchTransaction(
-          params[0].calls as NestedTransactionMetadata[],
-          quotesInput?.srcTokenAddress as Hex,
-        );
         if (quotesInput) {
+          checkValidSingleOrBatchTransaction(
+            params[0].calls as NestedTransactionMetadata[],
+            quotesInput?.srcTokenAddress as Hex,
+          );
           const startTime = new Date().getTime();
           fetchQuotes({
             ...quotesInput,

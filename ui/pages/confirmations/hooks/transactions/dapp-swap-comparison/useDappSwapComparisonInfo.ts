@@ -89,11 +89,11 @@ export function useDappSwapComparisonInfo() {
         parsedTransactionData.commandBytes,
         parsedTransactionData.inputs,
       );
-      checkValidSingleOrBatchTransaction(
-        nestedTransactions,
-        result.quotesInput?.srcTokenAddress as Hex,
-      );
       if (result.quotesInput) {
+        checkValidSingleOrBatchTransaction(
+          nestedTransactions,
+          result.quotesInput?.srcTokenAddress as Hex,
+        );
         updateRequestDetectionLatency();
         captureDappSwapComparisonLoading(dataCommands);
       }
