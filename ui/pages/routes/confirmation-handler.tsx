@@ -14,7 +14,7 @@ import { getConfirmationRoute } from '../confirmations/hooks/useConfirmationNavi
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
-  ENVIRONMENT_TYPE_FULLSCREEN,
+  // ENVIRONMENT_TYPE_FULLSCREEN,
   // SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
 } from '../../../shared/constants/app';
 import {
