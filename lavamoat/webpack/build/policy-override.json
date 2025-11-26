@@ -1,5 +1,8 @@
 {
   "resources": {
+    "@swc/core>@swc/core-linux-x64-gnu": {
+      "native": true
+    },
     "@lydell/node-pty": {
       "packages": {
         "@lydell/node-pty>@lydell/node-pty-darwin-arm64": true
