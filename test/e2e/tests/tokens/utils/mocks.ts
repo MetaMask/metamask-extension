@@ -1,14 +1,12 @@
 import { Mockttp } from 'mockttp';
 import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
 
-const PRICE_API_URL = 'https://price.api.cx.metamask.io';
-
 const getPriceUrl = (version: string, chainId: string, endpoint: string) =>
-  `${PRICE_API_URL}/${version}/chains/${chainId}/${endpoint}`;
+  `https://price.api.cx.metamask.io/${version}/chains/${chainId}/${endpoint}`;
 
-export const mockEmptyPrices = async (mockServer: Mockttp) => {
+export const mockEmptyPrices = async (mockServer: Mockttp, chainId: string) => {
   return mockServer
-    .forGet(`${PRICE_API_URL}/v3/spot-prices`)
+    .forGet(getPriceUrl('v2', parseInt(chainId, 16).toString(), 'spot-prices'))
     .thenCallback(() => ({
       statusCode: 200,
       json: {},
@@ -30,13 +28,16 @@ export const mockEmptyHistoricalPrices = async (
 
 export const mockSpotPrices = async (
   mockServer: Mockttp,
+  chainIdToMock: string,
   prices: Record<
     string,
     { price: number; pricePercentChange1d?: number; marketCap: number }
   >,
 ) => {
   return mockServer
-    .forGet(`${PRICE_API_URL}/v3/spot-prices`)
+    .forGet(
+      getPriceUrl('v2', parseInt(chainIdToMock, 16).toString(), 'spot-prices'),
+    )
     .thenCallback(() => ({
       statusCode: 200,
       json: prices,

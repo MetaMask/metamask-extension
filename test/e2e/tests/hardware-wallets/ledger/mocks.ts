@@ -232,7 +232,7 @@ async function mockSwapNetworkInfo(mockServer: MockttpServer) {
 async function mockPriceAPIs(mockServer: MockttpServer) {
   // Mock empty spot prices for mainnet
   await mockServer
-    .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
+    .forGet('https://price.api.cx.metamask.io/v2/chains/1/spot-prices')
     .thenCallback(() => ({
       statusCode: 200,
       json: {},

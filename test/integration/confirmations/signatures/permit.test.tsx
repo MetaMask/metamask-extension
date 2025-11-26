@@ -168,15 +168,15 @@ describe('Permit Confirmation', () => {
   it('displays the simulation section', async () => {
     const scope = nock('https://price.api.cx.metamask.io')
       .persist()
-      .get('/v3/spot-prices')
+      .get('/v2/chains/1/spot-prices')
       .query({
-        assetIds:
-          'eip155:1/slip44:60,eip155:1/erc20:0xcccccccccccccccccccccccccccccccccccccccc',
+        tokenAddresses:
+          '0x0000000000000000000000000000000000000000,0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
         vsCurrency: 'ETH',
         includeMarketData: 'true',
       })
       .reply(200, {
-        'eip155:1/erc20:0xcccccccccccccccccccccccccccccccccccccccc': {
+        '0xcccccccccccccccccccccccccccccccccccccccc': {
           allTimeHigh: 12,
           allTimeLow: 1,
           circulatingSupply: 50000,
