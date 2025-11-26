@@ -2601,9 +2601,6 @@
   "function": {
     "message": "Функция: $1"
   },
-  "fundingMethod": {
-    "message": "Способ пополнения"
-  },
   "gas": {
     "message": "Газ"
   },
@@ -7004,12 +7001,6 @@
   },
   "time": {
     "message": "Время"
-  },
-  "tipsForUsingAWallet": {
-    "message": "Советы по использованию кошелька"
-  },
-  "tipsForUsingAWalletDescription": {
-    "message": "Добавление токенов открывает больше способов использования web3."
   },
   "to": {
     "message": "Место назначения"
