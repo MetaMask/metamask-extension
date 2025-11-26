@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 
-import { ApprovalType } from '@metamask/controller-utils';
+// import { ApprovalType } from '@metamask/controller-utils';
 import {
   AWAITING_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
@@ -15,7 +15,7 @@ import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
-  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
+  // SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
 } from '../../../shared/constants/app';
 import {
   getHasApprovalFlows,
@@ -29,19 +29,19 @@ import {
 } from '../../ducks/swaps/swaps';
 import { useNavState } from '../../contexts/navigation-state';
 
-const APPROVAL_TYPES = [
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
-  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval,
-  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
-  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
-  ///: END:ONLY_INCLUDE_IF
-  'wallet_installSnap',
-  'wallet_updateSnap',
-  'wallet_installSnapResult',
-  ApprovalType.ResultSuccess,
-  ApprovalType.ResultError,
-];
+// const APPROVAL_TYPES = [
+//   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+//   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
+//   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval,
+//   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
+//   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
+//   ///: END:ONLY_INCLUDE_IF
+//   'wallet_installSnap',
+//   'wallet_updateSnap',
+//   'wallet_installSnapResult',
+//   ApprovalType.ResultSuccess,
+//   ApprovalType.ResultError,
+// ];
 
 export const ConfirmationHandler = () => {
   const navigate = useNavigate();
@@ -51,7 +51,7 @@ export const ConfirmationHandler = () => {
 
   const envType = getEnvironmentType();
   const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
-  const isFullscreen = envType === ENVIRONMENT_TYPE_FULLSCREEN;
+  // const isFullscreen = envType === ENVIRONMENT_TYPE_FULLSCREEN;
 
   const showAwaitingSwapScreen = useSelector(getShowAwaitingSwapScreen);
   const hasSwapsQuotes = useSelector(getHasSwapsQuotes);
@@ -70,30 +70,30 @@ export const ConfirmationHandler = () => {
 
   const canRedirect = !isNotification && !stayOnHomePage;
 
-  // Flows that *should* navigate in fullscreen, based on E2E specs
-  const hasSnapApproval = pendingApprovals.some((approval) =>
-    APPROVAL_TYPES.includes(approval.type),
-  );
+  // // Flows that *should* navigate in fullscreen, based on E2E specs
+  // const hasSnapApproval = pendingApprovals.some((approval) =>
+  //   APPROVAL_TYPES.includes(approval.type),
+  // );
 
-  // Flows that *should not* navigate in fullscreen, based on E2E specs
-  const hasSmartTransactionStatus = pendingApprovals.some(
-    (approval) =>
-      approval.type === 'smartTransaction:showSmartTransactionStatusPage' &&
-      approval.origin !== 'metamask' &&
-      approval.origin !== 'MetaMask',
-  );
+  // // Flows that *should not* navigate in fullscreen, based on E2E specs
+  // const hasSmartTransactionStatus = pendingApprovals.some(
+  //   (approval) =>
+  //     approval.type === 'smartTransaction:showSmartTransactionStatusPage' &&
+  //     approval.origin !== 'metamask' &&
+  //     approval.origin !== 'MetaMask',
+  // );
 
-  const ignored = useMemo(() => {
-    return (
-      isFullscreen &&
-      (hasSmartTransactionStatus || (!hasSnapApproval && !hasApprovalFlows))
-    );
-  }, [
-    isFullscreen,
-    hasSmartTransactionStatus,
-    hasSnapApproval,
-    hasApprovalFlows,
-  ]);
+  // const ignored = useMemo(() => {
+  //   return (
+  //     isFullscreen &&
+  //     (hasSmartTransactionStatus || (!hasSnapApproval && !hasApprovalFlows))
+  //   );
+  // }, [
+  //   isFullscreen,
+  //   hasSmartTransactionStatus,
+  //   hasSnapApproval,
+  //   hasApprovalFlows,
+  // ]);
 
   // Ported from home.component - checkStatusAndNavigate()
   useEffect(() => {
@@ -102,7 +102,7 @@ export const ConfirmationHandler = () => {
       return;
     }
 
-    if (ignored) {
+    if (!isNotification) {
       return;
     }
 
@@ -131,13 +131,14 @@ export const ConfirmationHandler = () => {
     hasApprovalFlows,
     hasSwapsQuotes,
     // hasSnapApproval,
-    isFullscreen,
+    // isFullscreen,
+    isNotification,
     navigate,
     pathname,
     pendingApprovals,
     showAwaitingSwapScreen,
     swapsFetchParams,
-    ignored,
+    // ignored,
   ]);
 
   return null;
