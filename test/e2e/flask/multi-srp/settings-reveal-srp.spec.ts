@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
-import { E2E_SRP as FIRST_TEST_E2E_SRP } from '../../default-fixture';
+import { E2E_SRP as FIRST_TEST_E2E_SRP } from '../../fixtures/default-fixture';
 import {
   mockActiveNetworks,
   SECOND_TEST_E2E_SRP,
