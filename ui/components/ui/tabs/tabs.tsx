@@ -50,7 +50,7 @@ export const Tabs = <TKey extends string = string>({
     if (childIndex >= 0) {
       setActiveTabIndex(childIndex);
     }
-  }, [activeTabKey]);
+  }, [activeTabKey, findChildByKey]);
 
   const handleTabClick = (tabIndex: number, tabKey: TKey): void => {
     if (tabIndex !== activeTabIndex) {
