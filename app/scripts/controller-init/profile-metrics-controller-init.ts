@@ -31,7 +31,7 @@ export const ProfileMetricsControllerInit: ControllerInitFunction<
   const controller = new ProfileMetricsController({
     messenger: controllerMessenger,
     state: persistedState.ProfileMetricsController,
-    interval: isTestEnvironment ? 0 : 10000,
+    interval: isTestEnvironment ? 1000 : 10 * 1000,
     assertUserOptedIn,
     getMetaMetricsId: () => metaMetricsController.getMetaMetricsId(),
   });

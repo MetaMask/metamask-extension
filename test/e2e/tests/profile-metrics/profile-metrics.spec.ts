@@ -18,7 +18,7 @@ const AUTH_URL =
  * Mocks the feature flag response for enabling or disabling the feature
  *
  * @param enabled - A boolean indicating whether the feature flag should be enabled or disabled.
- * @return A function that takes a Mockttp server instance and sets up the mock response.
+ * @returns A function that takes a Mockttp server instance and sets up the mock response.
  */
 const mockSendFeatureFlag = (enabled: boolean) => (mockServer: Mockttp) =>
   mockServer
@@ -44,7 +44,7 @@ const mockSendFeatureFlag = (enabled: boolean) => (mockServer: Mockttp) =>
  * Mocks the authentication service endpoint for profile metrics.
  *
  * @param mockServer - The Mockttp server instance to set up the mock on.
- * @return A promise that resolves to the mocked endpoint.
+ * @returns A promise that resolves to the mocked endpoint.
  */
 async function mockAuthService(mockServer: Mockttp) {
   return await mockServer.forPut(AUTH_URL).thenCallback(() => {
@@ -52,6 +52,28 @@ async function mockAuthService(mockServer: Mockttp) {
       statusCode: 200,
     };
   });
+}
+
+/**
+ * Waits for the mocked endpoint to be called.
+ *
+ * @param driver - The WebDriver instance.
+ * @param mockedEndpoint - The mocked endpoint to wait for.
+ * @param times - The number of times the endpoint should be called. Default is 1.
+ * @param timeout - The maximum time to wait in milliseconds. Default is 5000ms.
+ * @returns A promise that resolves when the endpoint has been called.
+ */
+async function waitForEndpointToBeCalled(
+  driver: Driver,
+  mockedEndpoint: MockedEndpoint,
+  times = 1,
+  timeout = 5000,
+) {
+  let calls = 0;
+  return driver.wait(async () => {
+    calls = (await mockedEndpoint.getSeenRequests()).length;
+    return (await mockedEndpoint.isPending()) === false && calls >= times;
+  }, timeout);
 }
 
 describe('Profile Metrics', function () {
@@ -64,9 +86,9 @@ describe('Profile Metrics', function () {
               participateInMetaMetrics: true,
             })
             .build(),
-          testSpecificMock: async (mockServer: Mockttp) => [
-            await mockAuthService(mockServer),
-            await mockSendFeatureFlag(true)(mockServer),
+          testSpecificMock: async (server: Mockttp) => [
+            await mockAuthService(server),
+            await mockSendFeatureFlag(true)(server),
           ],
           title: this.test?.fullTitle(),
         },
@@ -79,15 +101,11 @@ describe('Profile Metrics', function () {
         }) => {
           await loginWithBalanceValidation(driver);
 
-          await driver.wait(async () => {
-            const isPending = await Promise.all(
-              mockedEndpoint.map((endpoint) => endpoint.isPending()),
-            );
-            return isPending.every((pending) => !pending);
-          }, 5000);
+          const [authCall] = mockedEndpoint;
+          await waitForEndpointToBeCalled(driver, authCall);
 
-          const [mockedAuthEndpoint] = mockedEndpoint;
-          const requests = await mockedAuthEndpoint.getSeenRequests();
+          console.log(authCall.id);
+          const requests = await authCall.getSeenRequests();
           assert.equal(
             requests.length,
             1,
@@ -105,9 +123,9 @@ describe('Profile Metrics', function () {
               participateInMetaMetrics: true,
             })
             .build(),
-          testSpecificMock: async (mockServer: Mockttp) => [
-            await mockAuthService(mockServer),
-            await mockSendFeatureFlag(true)(mockServer),
+          testSpecificMock: async (server: Mockttp) => [
+            await mockAuthService(server),
+            await mockSendFeatureFlag(true)(server),
           ],
           title: this.test?.fullTitle(),
         },
@@ -128,19 +146,14 @@ describe('Profile Metrics', function () {
             accountType: ACCOUNT_TYPE.Ethereum,
           });
 
-          await driver.wait(async () => {
-            const isPending = await Promise.all(
-              mockedEndpoint.map((endpoint) => endpoint.isPending()),
-            );
-            return isPending.every((pending) => !pending);
-          }, 5000);
+          const [authCall] = mockedEndpoint;
+          await waitForEndpointToBeCalled(driver, authCall, 2);
 
-          const [mockedAuthEndpoint] = mockedEndpoint;
-          const requests = await mockedAuthEndpoint.getSeenRequests();
+          const requests = await authCall.getSeenRequests();
           assert.equal(
             requests.length,
-            1,
-            'Expected one request to the auth API.',
+            2,
+            'Expected two requests to the auth API.',
           );
         },
       );
@@ -156,9 +169,9 @@ describe('Profile Metrics', function () {
               participateInMetaMetrics: false,
             })
             .build(),
-          testSpecificMock: async (mockServer: Mockttp) => [
-            await mockAuthService(mockServer),
-            await mockSendFeatureFlag(true)(mockServer),
+          testSpecificMock: async (server: Mockttp) => [
+            await mockAuthService(server),
+            await mockSendFeatureFlag(true)(server),
           ],
           title: this.test?.fullTitle(),
         },
@@ -173,8 +186,8 @@ describe('Profile Metrics', function () {
 
           await driver.delay(5000);
 
-          const [mockedAuthEndpoint] = mockedEndpoint;
-          const requests = await mockedAuthEndpoint.getSeenRequests();
+          const [authCall] = mockedEndpoint;
+          const requests = await authCall.getSeenRequests();
           assert.equal(
             requests.length,
             0,
@@ -192,9 +205,9 @@ describe('Profile Metrics', function () {
               participateInMetaMetrics: true,
             })
             .build(),
-          testSpecificMock: async (mockServer: Mockttp) => [
-            await mockAuthService(mockServer),
-            await mockSendFeatureFlag(false)(mockServer),
+          testSpecificMock: async (server: Mockttp) => [
+            await mockAuthService(server),
+            await mockSendFeatureFlag(false)(server),
           ],
           title: this.test?.fullTitle(),
         },
@@ -209,8 +222,8 @@ describe('Profile Metrics', function () {
 
           await driver.delay(5000);
 
-          const [mockedAuthEndpoint] = mockedEndpoint;
-          const requests = await mockedAuthEndpoint.getSeenRequests();
+          const [authCall] = mockedEndpoint;
+          const requests = await authCall.getSeenRequests();
           assert.equal(
             requests.length,
             0,
