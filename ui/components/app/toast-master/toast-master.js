@@ -41,6 +41,7 @@ import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/
 import {
   addPermittedAccount,
   hidePermittedNetworkToast,
+  setPna25Acknowledged,
 } from '../../../store/actions';
 import {
   AvatarNetwork,
@@ -108,7 +109,6 @@ import {
   setShowClaimSubmitToast,
   setShieldPausedToastLastClickedOrClosed,
   setShieldEndingToastLastClickedOrClosed,
-  setPna25Acknowledged,
 } from './utils';
 
 export function ToastMaster({ location } = {}) {
@@ -756,6 +756,7 @@ function ShieldEndingToast() {
 
 function Pna25Banner() {
   const t = useI18nContext();
+  const dispatch = useDispatch();
 
   const showPna25Banner = useSelector(selectShowPna25Banner);
 
@@ -764,12 +765,11 @@ function Pna25Banner() {
     global.platform.openTab({
       url: METAMETRICS_SETTINGS_LINK,
     });
-    setPna25Acknowledged(true);
   };
 
   const handleClose = () => {
     // Just acknowledge without opening link
-    setPna25Acknowledged(true);
+    dispatch(setPna25Acknowledged(true));
   };
 
   return (

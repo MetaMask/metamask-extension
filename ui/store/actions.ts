@@ -4783,6 +4783,19 @@ export function setDataCollectionForMarketing(
   };
 }
 
+export function setPna25Acknowledged(
+  acknowledged: boolean,
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.setPna25Acknowledged`);
+    await submitRequestToBackground('setPna25Acknowledged', [acknowledged]);
+    dispatch({
+      type: actionConstants.SET_PNA25_ACKNOWLEDGED,
+      value: acknowledged,
+    });
+  };
+}
+
 /**
  * Sets marketing consent with OAuth service for social login users.
  *
