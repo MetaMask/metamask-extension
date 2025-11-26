@@ -93,3 +93,5 @@ export type MetaMaskReduxState = ReturnType<Store['getState']>;
 export type MetaMaskReduxDispatch = Store['dispatch'];
 export const useAppSelector: TypedUseSelectorHook<MetaMaskReduxState> =
   useSelector;
+
+type X = MetaMaskReduxState['metamask'];

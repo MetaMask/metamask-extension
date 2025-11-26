@@ -1,4 +1,4 @@
-import { maskObject } from '../../../shared/modules/object.utils';
+import { maskObject } from '../../../shared/modules/mask-object';
 import ExtensionPlatform from '../platforms/extension';
 import { SENTRY_BACKGROUND_STATE } from '../constants/sentry-state';
 import { FixtureExtensionStore } from './stores/fixture-extension-store';

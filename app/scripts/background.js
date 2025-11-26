@@ -38,7 +38,7 @@ import {
 } from '../../shared/constants/metametrics';
 import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
-import { maskObject } from '../../shared/modules/object.utils';
+import { maskObject } from '../../shared/modules/mask-object';
 import {
   OffscreenCommunicationTarget,
   OffscreenCommunicationEvents,
