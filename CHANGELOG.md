@@ -65,6 +65,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix error message when trying to import an SRP with an account that is already imported via private key (#37743)
 - Change available value text to total fiat value when fiat mode is enabled (#37749)
 
+## [13.10.4]
+
+### Fixed
+
+- Signed deep links with empty `sig_params` with extra params as valid (#38142)
+- Adds mon as currency to fetch prices (#38261)
+- Removes sidepanel from chrome manifest files (#38242)
+
+## [13.10.3]
+
+### Fixed
+
+- Feature flags sidepanel context menu (#38220)
+
 ## [13.10.2]
 
 ### Fixed
@@ -1292,7 +1306,9 @@ authorized by the user.` error until the user fully revoked dapp
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.11.0...HEAD
-[13.11.0]: https://github.com/MetaMask/metamask-extension/compare/v13.10.2...v13.11.0
+[13.11.0]: https://github.com/MetaMask/metamask-extension/compare/v13.10.4...v13.11.0
+[13.10.4]: https://github.com/MetaMask/metamask-extension/compare/v13.10.3...v13.10.4
+[13.10.3]: https://github.com/MetaMask/metamask-extension/compare/v13.10.2...v13.10.3
 [13.10.2]: https://github.com/MetaMask/metamask-extension/compare/v13.10.1...v13.10.2
 [13.10.1]: https://github.com/MetaMask/metamask-extension/compare/v13.10.0...v13.10.1
 [13.10.0]: https://github.com/MetaMask/metamask-extension/compare/v13.9.0...v13.10.0
