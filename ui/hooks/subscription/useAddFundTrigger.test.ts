@@ -40,7 +40,7 @@ jest.mock('../../selectors/assets', () => {
 });
 jest.mock('loglevel');
 
-const SHIELD_ADD_FUND_TRIGGER_INTERVAL = 5 * MINUTE;
+const SHIELD_ADD_FUND_TRIGGER_THROTTLE_TIME = 5 * MINUTE;
 
 const MOCK_ACCOUNT_ADDRESS = '0x1234567890123456789012345678901234567890';
 const MOCK_CHAIN_ID = '0x1';
@@ -376,7 +376,7 @@ describe('useShieldAddFundTrigger', () => {
     renderHookWithProvider(() => useShieldAddFundTrigger(), state);
 
     act(() => {
-      jest.advanceTimersByTime(SHIELD_ADD_FUND_TRIGGER_INTERVAL + 1000);
+      jest.advanceTimersByTime(SHIELD_ADD_FUND_TRIGGER_THROTTLE_TIME + 1000);
     });
 
     expect(updateSubscriptionCryptoPaymentMethodMock).not.toHaveBeenCalled();
@@ -389,7 +389,7 @@ describe('useShieldAddFundTrigger', () => {
     renderHookWithProvider(() => useShieldAddFundTrigger(), state);
 
     act(() => {
-      jest.advanceTimersByTime(SHIELD_ADD_FUND_TRIGGER_INTERVAL);
+      jest.advanceTimersByTime(SHIELD_ADD_FUND_TRIGGER_THROTTLE_TIME);
     });
 
     expect(updateSubscriptionCryptoPaymentMethodMock).not.toHaveBeenCalled();
@@ -413,7 +413,7 @@ describe('useShieldAddFundTrigger', () => {
     renderHookWithProvider(() => useShieldAddFundTrigger(), state);
 
     act(() => {
-      jest.advanceTimersByTime(SHIELD_ADD_FUND_TRIGGER_INTERVAL + 1000);
+      jest.advanceTimersByTime(SHIELD_ADD_FUND_TRIGGER_THROTTLE_TIME + 1000);
     });
 
     expect(updateSubscriptionCryptoPaymentMethodMock).not.toHaveBeenCalled();
@@ -443,7 +443,7 @@ describe('useShieldAddFundTrigger', () => {
     renderHookWithProvider(() => useShieldAddFundTrigger(), state);
 
     act(() => {
-      jest.advanceTimersByTime(SHIELD_ADD_FUND_TRIGGER_INTERVAL);
+      jest.advanceTimersByTime(SHIELD_ADD_FUND_TRIGGER_THROTTLE_TIME);
     });
 
     expect(updateSubscriptionCryptoPaymentMethodMock).not.toHaveBeenCalled();
@@ -481,7 +481,7 @@ describe('useShieldAddFundTrigger', () => {
 
     // Advance timers by throttle interval to allow throttled value to update
     await act(async () => {
-      jest.advanceTimersByTime(SHIELD_ADD_FUND_TRIGGER_INTERVAL);
+      jest.advanceTimersByTime(SHIELD_ADD_FUND_TRIGGER_THROTTLE_TIME);
     });
 
     // Flush promises to allow async dispatch actions to complete
@@ -534,7 +534,7 @@ describe('useShieldAddFundTrigger', () => {
 
     // Advance timers by throttle interval to allow throttled value to update
     await act(async () => {
-      jest.advanceTimersByTime(SHIELD_ADD_FUND_TRIGGER_INTERVAL);
+      jest.advanceTimersByTime(SHIELD_ADD_FUND_TRIGGER_THROTTLE_TIME);
     });
 
     // Flush promises to allow async dispatch actions to complete

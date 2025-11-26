@@ -180,7 +180,7 @@ export const useHandleShieldAddFundTrigger = () => {
   };
 };
 
-const SHIELD_ADD_FUND_TRIGGER_INTERVAL = 5 * MINUTE;
+const SHIELD_ADD_FUND_TRIGGER_THROTTLE_TIME = 5 * MINUTE;
 
 /**
  * Main hook that combines balance check and handler to automatically trigger
@@ -208,7 +208,7 @@ export const useShieldAddFundTrigger = () => {
     useShieldSubscriptionCryptoSufficientBalanceCheck();
   const throttledHasAvailableSelectedToken = useThrottle(
     hasAvailableSelectedToken,
-    SHIELD_ADD_FUND_TRIGGER_INTERVAL,
+    SHIELD_ADD_FUND_TRIGGER_THROTTLE_TIME,
   );
 
   const { handleTriggerSubscriptionCheck } = useHandleShieldAddFundTrigger();
