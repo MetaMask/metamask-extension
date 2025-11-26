@@ -240,7 +240,7 @@ export const useShieldAddFundTrigger = () => {
     | SubscriptionCryptoPaymentMethod
     | undefined;
   const hasInsufficientBalanceError =
-    cryptoPaymentInfo?.crypto.error ===
+    cryptoPaymentInfo?.crypto?.error ===
     CRYPTO_PAYMENT_METHOD_ERRORS.INSUFFICIENT_BALANCE;
 
   const { hasAvailableSelectedToken } =
