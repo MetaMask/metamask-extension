@@ -2,7 +2,7 @@ import {
   PRODUCT_TYPES,
   SUBSCRIPTION_STATUSES,
 } from '@metamask/subscription-controller';
-import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { useEnableShieldCoverageChecks } from './useEnableShieldCoverageChecks';
 
 jest.mock('../../../../hooks/subscription/useSubscription', () => ({

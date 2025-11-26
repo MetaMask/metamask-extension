@@ -4,7 +4,7 @@ import { RenderResult } from '@testing-library/react';
 import type { SnapId } from '@metamask/snaps-sdk';
 import { JSXElement } from '@metamask/snaps-sdk/jsx';
 import configureStore, { MetaMaskReduxState } from '../../../../store/store';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
 import { SnapUIRenderer } from './snap-ui-renderer';
 
@@ -126,7 +126,7 @@ export function renderInterface(
       PERF_DEBUG
     />,
     store,
-  );
+  ) as RenderWithProviderResult;
 
   const getRenderCount = () =>
     parseInt(

@@ -6,7 +6,7 @@ import {
   MOCK_LEDGER_ACCOUNT,
   MOCK_SOLANA_ACCOUNT,
 } from '../../../../test/data/bridge/mock-bridge-store';
-import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
   getFromAccount,
   getFromChain,

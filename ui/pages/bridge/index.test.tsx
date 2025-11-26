@@ -6,10 +6,7 @@ import { setBackgroundConnection } from '../../store/background-connection';
 import { MOCKS, CONSTANTS } from '../../../test/jest';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
-import {
-  CROSS_CHAIN_SWAP_ROUTE,
-  PREPARE_SWAP_ROUTE,
-} from '../../helpers/constants/routes';
+import { PREPARE_SWAP_ROUTE } from '../../helpers/constants/routes';
 import CrossChainSwap from '.';
 
 const mockResetBridgeState = jest.fn();
@@ -107,7 +104,7 @@ describe('Bridge', () => {
     const { container, getByText } = renderWithProvider(
       <CrossChainSwap />,
       store,
-      CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE,
+      PREPARE_SWAP_ROUTE,
     );
 
     expect(getByText('Swap')).toBeInTheDocument();

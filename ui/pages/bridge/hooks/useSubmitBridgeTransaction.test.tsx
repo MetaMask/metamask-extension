@@ -182,7 +182,6 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
 
       // Assert
       expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
-        replace: false,
         state: { stayOnHomePage: true },
       });
     });
