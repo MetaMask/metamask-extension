@@ -339,7 +339,10 @@ describe('Amount', () => {
       const mockUpdateValue = jest.fn();
       jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
         updateValue: mockUpdateValue,
-        asset: EVM_ASSET,
+        asset: {
+          ...EVM_ASSET,
+          decimals: 18,
+        },
       } as unknown as SendContext.SendContextType);
       jest.spyOn(BalanceFunctions, 'useBalance').mockReturnValue({
         balance: '10.023',
