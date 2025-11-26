@@ -128,6 +128,7 @@ export const setupPhishingExtStreams = (): void => {
     clearTimeout(phishingReconnectTimer as unknown as number);
     phishingReconnectTimer = null;
   }
+  phishingReconnectAttempts = 0;
   phishingExtPort = browser.runtime.connect({
     name: CONTENT_SCRIPT,
   });
