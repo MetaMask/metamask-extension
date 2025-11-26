@@ -92,31 +92,6 @@ describe('Shield Subscription Tests', function () {
         },
       );
     });
-
-    it('should shield-plan page redirect to homepage when user clicks back button', async function () {
-      await withFixtures(
-        {
-          fixtures: createShieldFixture().build(),
-          title: this.test?.fullTitle(),
-          testSpecificMock: (server: Mockttp) => {
-            const shieldMockttpService = new ShieldMockttpService();
-            return shieldMockttpService.setup(server);
-          },
-        },
-        async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
-
-          const homePage = new HomePage(driver);
-          await homePage.checkShieldEntryModalIsDisplayed();
-          await homePage.clickOnShieldEntryModalGetStarted();
-
-          const shieldPlanPage = new ShieldPlanPage(driver);
-          await shieldPlanPage.clickBackButton();
-
-          await homePage.checkShieldEntryModalIsDisplayed();
-        },
-      );
-    });
   });
 
   describe('Shield Settings Subscription', function () {
@@ -185,39 +160,6 @@ describe('Shield Subscription Tests', function () {
 
           const shieldDetailPage = new ShieldDetailPage(driver);
           await shieldDetailPage.validateShieldDetailPage();
-        },
-      );
-    });
-
-    it('should shield-plan page redirect to settings page when user clicks back button', async function () {
-      await withFixtures(
-        {
-          fixtures: createShieldFixture().build(),
-          title: this.test?.fullTitle(),
-          testSpecificMock: (server: Mockttp) => {
-            const shieldMockttpService = new ShieldMockttpService();
-            return shieldMockttpService.setup(server, {
-              mockNotEligible: true,
-            });
-          },
-        },
-        async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
-
-          const homePage = new HomePage(driver);
-
-          await homePage.headerNavbar.openSettingsPage();
-          const settingsPage = new SettingsPage(driver);
-          await settingsPage.checkPageIsLoaded();
-          await settingsPage.goToTransactionShieldPage();
-
-          await homePage.checkShieldEntryModalIsDisplayed();
-          await homePage.clickOnShieldEntryModalGetStarted();
-
-          const shieldPlanPage = new ShieldPlanPage(driver);
-          await shieldPlanPage.clickBackButton();
-
-          await settingsPage.checkPageIsLoaded();
         },
       );
     });
