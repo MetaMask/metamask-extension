@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { memo, useCallback, useEffect, useState } from 'react';
 import {
   Box,
   BoxBackgroundColor,
@@ -218,7 +218,7 @@ const DappSwapComparisonInner = () => {
   );
 };
 
-export const DappSwapComparisonBanner = () => {
+export const DappSwapComparisonBanner = memo(() => {
   const { dappSwapMetrics } = useSelector(getRemoteFeatureFlags);
   const { isSwapToBeCompared } = useDappSwapCheck();
 
@@ -231,4 +231,4 @@ export const DappSwapComparisonBanner = () => {
   }
 
   return <DappSwapComparisonInner />;
-};
+});

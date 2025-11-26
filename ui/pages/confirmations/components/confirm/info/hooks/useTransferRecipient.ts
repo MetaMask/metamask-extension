@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import {
   TransactionMeta,
   TransactionType,
@@ -10,24 +11,30 @@ export function useTransferRecipient(): string | undefined {
   const { currentConfirmation: transactionMetadata } =
     useConfirmContext<TransactionMeta>();
 
-  if (!transactionMetadata) {
-    return undefined;
-  }
+  return useMemo(() => {
+    if (!transactionMetadata) {
+      return undefined;
+    }
 
-  return getRecipientFromTransactionMetadata(transactionMetadata);
+    return getRecipientFromTransactionMetadata(transactionMetadata);
+  }, [transactionMetadata]);
 }
 
 export function useNestedTransactionTransferRecipients(): string[] {
   const { currentConfirmation: transactionMetadata } =
     useConfirmContext<TransactionMeta>();
 
-  if (!transactionMetadata?.nestedTransactions?.length) {
-    return [];
-  }
+  const { nestedTransactions } = transactionMetadata ?? {};
 
-  return transactionMetadata.nestedTransactions
-    .map(getRecipientFromNestedTransactionMetadata)
-    .filter((recipient): recipient is string => recipient !== undefined);
+  return useMemo(() => {
+    if (!nestedTransactions?.length) {
+      return [];
+    }
+
+    return nestedTransactions
+      .map(getRecipientFromNestedTransactionMetadata)
+      .filter((recipient): recipient is string => recipient !== undefined);
+  }, [nestedTransactions]);
 }
 
 function getRecipientFromNestedTransactionMetadata(

@@ -258,12 +258,8 @@ export function selectTransactionFeeById(state, transactionId) {
 
 // Cannot use createSelector due to circular dependency caused by getMetaMaskAccounts.
 // chainId is optional parameter here
-export function selectTransactionAvailableBalance(
-  state,
-  transactionId,
-  chainId,
-) {
-  const accounts = getMetaMaskAccounts(state, chainId);
+export function selectTransactionAvailableBalance(state, transactionId) {
+  const accounts = getMetaMaskAccounts(state);
   const sender = selectTransactionSender(state, transactionId);
 
   return accounts[sender]?.balance;
