@@ -52,12 +52,12 @@ export const useShieldSubscriptionCryptoSufficientBalanceCheck = () => {
         ?.find(
           (chain) =>
             chain.chainId.toLowerCase() ===
-            cryptoPaymentInfo?.crypto?.chainId.toLowerCase(),
+            cryptoPaymentInfo?.crypto?.chainId?.toLowerCase(),
         )
         ?.tokens.find(
           (token) =>
             token.symbol.toLowerCase() ===
-            cryptoPaymentInfo?.crypto?.tokenSymbol.toLowerCase(),
+            cryptoPaymentInfo?.crypto?.tokenSymbol?.toLowerCase(),
         )
     : undefined;
 
