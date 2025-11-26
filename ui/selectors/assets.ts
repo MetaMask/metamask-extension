@@ -1099,9 +1099,7 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
               ? account.balance
               : '0x0';
           // Use isEmptyHexString to properly handle all hex zero formats, plus check for plain "0"
-          return (
-            !isEmptyHexString(balanceValue) && balanceValue !== '0'
-          );
+          return !isEmptyHexString(balanceValue) && balanceValue !== '0';
         });
       },
     );
@@ -1117,25 +1115,23 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
       if (!accountBalances || typeof accountBalances !== 'object') {
         return false;
       }
-      return Object.entries(accountBalances).some(
-        ([assetId, balanceData]) => {
-          // Extract chainId from the asset ID (format: "chainId/assetType")
-          const chainId = assetId.split('/')[0];
-          // Only check mainnet chains
-          if (!mainnetNonEvmChainIds.has(chainId)) {
-            return false;
-          }
-          if (typeof balanceData !== 'object' || !balanceData) {
-            return false;
-          }
-          const balanceValue =
-            'amount' in balanceData && typeof balanceData.amount === 'string'
-              ? balanceData.amount
-              : '0';
-          // Use isZeroAmount to properly handle decimal zeros like "0.0", "0.00", etc.
-          return !isZeroAmount(balanceValue);
-        },
-      );
+      return Object.entries(accountBalances).some(([assetId, balanceData]) => {
+        // Extract chainId from the asset ID (format: "chainId/assetType")
+        const chainId = assetId.split('/')[0];
+        // Only check mainnet chains
+        if (!mainnetNonEvmChainIds.has(chainId)) {
+          return false;
+        }
+        if (typeof balanceData !== 'object' || !balanceData) {
+          return false;
+        }
+        const balanceValue =
+          'amount' in balanceData && typeof balanceData.amount === 'string'
+            ? balanceData.amount
+            : '0';
+        // Use isZeroAmount to properly handle decimal zeros like "0.0", "0.00", etc.
+        return !isZeroAmount(balanceValue);
+      });
     });
 
     // Check ERC-20 token balances (only for accounts in this group and mainnet chains)

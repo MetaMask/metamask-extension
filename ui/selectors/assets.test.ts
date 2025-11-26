@@ -3,6 +3,7 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { cloneDeep } from 'lodash';
 import {
+  calculateBalanceForAllWallets,
   calculateBalanceChangeForAllWallets,
   selectAssetsBySelectedAccountGroup,
 } from '@metamask/assets-controllers';
@@ -38,6 +39,10 @@ jest.mock('@metamask/assets-controllers', () => {
   const actual = jest.requireActual('@metamask/assets-controllers');
   return {
     ...actual,
+    calculateBalanceForAllWallets: jest.fn(() => ({
+      wallets: {},
+      userCurrency: 'usd',
+    })),
     calculateBalanceChangeForAllWallets: jest.fn(() => ({
       period: '1d',
       currentTotalInUserCurrency: 0,
@@ -1067,23 +1072,6 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
     };
   };
 
-  const createMockBalanceResult = (balance = 750.25) => ({
-    wallets: {
-      'entropy:wallet1': {
-        totalBalanceInUserCurrency: balance * 2,
-        groups: {
-          'entropy:wallet1/group1': {
-            walletId: 'entropy:wallet1',
-            groupId: 'entropy:wallet1/group1',
-            totalBalanceInUserCurrency: balance,
-            userCurrency: 'usd',
-          },
-        },
-      },
-    },
-    userCurrency: 'usd',
-  });
-
   it('should return true when balance is greater than 0 for EVM networks', () => {
     const state = createMockStateWithEVMNetworks();
 
@@ -1361,7 +1349,6 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
       };
 
       // Add tokenBalances with ERC-20 tokens
-      // @ts-expect-error - Adding test data to mock state
       state.metamask.tokenBalances = {
         '0x0': {
           // account address
