@@ -1,3 +1,14 @@
+/*
+ * MetaMask Provider Streams
+ *
+ * Establishes and maintains multiplexed communication between the extension background
+ * (service worker) and each page (inpage provider). Handles:
+ * - Transport setup via WindowPostMessageStream and ExtensionPortStream
+ * - Channel separation using ObjectMultiplex
+ * - Graceful shutdown to prevent ERR_STREAM_PREMATURE_CLOSE on page navigation
+ * - Resilient reconnection with exponential backoff and single-flight guards
+ * - Legacy provider bridging (to be removed)
+ */
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { Substream } from '@metamask/object-multiplex/dist/Substream';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
@@ -41,6 +52,11 @@ let extensionMux: ObjectMultiplex,
   pageChannel: Substream,
   caipChannel: Substream;
 
+/**
+ * Sets up per-page streams and mux, connecting the in page transport to channels used
+ * by EIP-1193 and CAIP providers. Adds proactive mux termination on transport end/close
+ * to suppress premature close errors on navigation.
+ */
 const setupPageStreams = () => {
   // the transport-specific streams for communication between inpage and background
   const pageStream = new WindowPostMessageStream({
@@ -110,13 +126,19 @@ const setupPageStreams = () => {
 // The field below is used to ensure that replay is done only once for each restart.
 let METAMASK_EXTENSION_CONNECT_SENT = false;
 
+/**
+ * Initializes extension-side streams and mux, wiring channels to the page mux.
+ * Also registers disconnect handling and notifies in page of failures. Resets
+ * reconnect attempt counters on successful setup.
+ */
 export const setupExtensionStreams = () => {
   METAMASK_EXTENSION_CONNECT_SENT = true;
+  reconnectAttempts = 0;
   extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
   extensionStream = new ExtensionPortStream(extensionPort, { chunkSize: 0 });
   extensionStream.on('data', extensionStreamMessageListener);
 
-  // create and connect channel muxers
+  // create and connect channel multiplexers
   // so we can handle the channels individually
   extensionMux = new ObjectMultiplex();
   extensionMux.setMaxListeners(25);
@@ -307,6 +329,10 @@ const onMessageSetUpExtensionStreams = (msg: MessageType) => {
  * Ends two-way communication streams between browser extension and
  * the local per-page browser context.
  */
+/**
+ * Tears down all streams/muxes and disconnects the runtime port. Ensures any
+ * pending reconnect timer is cleared and counters reset to avoid reconnect storms.
+ */
 export function destroyStreams() {
   if (!extensionPort) {
     return;
@@ -320,6 +346,34 @@ export function destroyStreams() {
   extensionPort = null;
 
   METAMASK_EXTENSION_CONNECT_SENT = false;
+  if (reconnectTimer) {
+    clearTimeout(reconnectTimer as unknown as number);
+    reconnectTimer = null;
+  }
+  reconnectAttempts = 0;
+}
+
+const BASE_RECONNECT_DELAY_MS = 1000;
+const MAX_RECONNECT_DELAY_MS = 30000;
+let reconnectAttempts = 0;
+let reconnectTimer: number | null = null;
+/**
+ * Schedules a reconnect using exponential backoff with jitter and single-flight guard:
+ * - Delay = min(base * 2^attempts, MAX) + random(0, 20% of delay)
+ * - Only one timer can be active; subsequent calls are ignored until it fires
+ * - Attempts are capped to avoid unbounded growth
+ */
+function scheduleExtensionReconnect() {
+  if (reconnectTimer) {
+    return;
+  }
+  const base = Math.min(BASE_RECONNECT_DELAY_MS * 2 ** reconnectAttempts, MAX_RECONNECT_DELAY_MS);
+  const jitter = Math.floor(Math.random() * base * 0.2);
+  reconnectTimer = setTimeout(() => {
+    reconnectTimer = null;
+    setupExtensionStreams();
+    reconnectAttempts = Math.min(reconnectAttempts + 1, 30);
+  }, base + jitter) as unknown as number;
 }
 
 /**
@@ -327,6 +381,11 @@ export function destroyStreams() {
  * so that streams may be re-established later when the extension port is reconnected.
  *
  * @param [err] - Stream connection error
+ */
+/**
+ * Disconnect handler: destroys current streams and, if an error was detected,
+ * triggers a guarded backoff reconnect. Addresses Chromium race conditions where
+ * ports disconnect before connections are fully established.
  */
 export function onDisconnectDestroyStreams(err: unknown) {
   const lastErr = err || checkForLastError();
@@ -341,10 +400,8 @@ export function onDisconnectDestroyStreams(err: unknown) {
    * once the port and connections are ready. Delay time is arbitrary.
    */
   if (lastErr) {
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     console.warn(`${lastErr} Resetting the streams.`);
-    setTimeout(setupExtensionStreams, 1000);
+    scheduleExtensionReconnect();
   }
 }
 
@@ -391,6 +448,10 @@ function getNotificationTransformStream() {
  *
  * @param msg - instance of message received
  */
+/**
+ * Listens for 'metamask_chainChanged' from background to signal readiness
+ * and allows inpage to replay queued messages in MV3 environments.
+ */
 function extensionStreamMessageListener(msg: MessageType) {
   if (
     METAMASK_EXTENSION_CONNECT_SENT &&
@@ -418,6 +479,10 @@ function extensionStreamMessageListener(msg: MessageType) {
  * This function must ONLY be called in pipeline destruction/close callbacks.
  * Notifies the inpage context that streams have failed, via window.postMessage.
  * Relies on @metamask/object-multiplex and post-message-stream implementation details.
+ */
+/**
+ * Notifies inpage context that streams have failed via window.postMessage.
+ * Must only be called from pipeline destruction/close callbacks.
  */
 function notifyInpageOfStreamFailure() {
   window.postMessage(
