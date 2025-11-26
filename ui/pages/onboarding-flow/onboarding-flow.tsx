@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useContext, useMemo } from 'react';
-import PropTypes from 'prop-types';
 import {
   Routes as Switch,
   Route,
@@ -397,11 +396,6 @@ export default function OnboardingFlow({
     </Box>
   );
 }
-
-OnboardingFlow.propTypes = {
-  navigate: PropTypes.func,
-  location: PropTypes.object,
-};
 
 function setOnboardingDate() {
   submitRequestToBackgroundAndCatch('setOnboardingDate');
