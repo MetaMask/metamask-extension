@@ -79,6 +79,7 @@ import { MINUTE } from '../../../../shared/constants/time';
 import Name from '../../../components/app/name';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
 import {
+  EntryModalSourceEnum,
   ShieldCtaActionClickedEnum,
   ShieldCtaSourceEnum,
   ShieldErrorStateActionClickedEnum,
@@ -87,6 +88,7 @@ import {
 } from '../../../../shared/constants/subscriptions';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { useTheme } from '../../../hooks/useTheme';
+import ApiErrorHandler from '../../../components/app/api-error-handler';
 import CancelMembershipModal from './cancel-membership-modal';
 import { isCardPaymentMethod, isCryptoPaymentMethod } from './types';
 import ShieldBannerAnimation from './shield-banner-animation';
@@ -115,6 +117,7 @@ const TransactionShield = () => {
     subscriptions,
     lastSubscription,
     loading: subscriptionsLoading,
+    error: subscriptionsError,
   } = useUserSubscriptions({
     refetch: !shouldWaitForSubscriptionCreation, // always fetch latest subscriptions state in settings screen unless we are waiting for subscription creation (subscription is refetch in background)
   });
@@ -163,10 +166,13 @@ const TransactionShield = () => {
     }
   }, [shouldWaitForSubscriptionCreation, startSubscriptionCreationTimeout]);
 
-  const { subscriptionPricing, loading: subscriptionPricingLoading } =
-    useSubscriptionPricing({
-      refetch: true, // need to refetch here in case user already subscribed and doesn't go through shield plan screen
-    });
+  const {
+    subscriptionPricing,
+    loading: subscriptionPricingLoading,
+    error: subscriptionPricingError,
+  } = useSubscriptionPricing({
+    refetch: true, // need to refetch here in case user already subscribed and doesn't go through shield plan screen
+  });
   const cryptoPaymentMethod = useSubscriptionPaymentMethods(
     PAYMENT_TYPES.byCrypto,
     subscriptionPricing,
@@ -215,6 +221,14 @@ const TransactionShield = () => {
     newRecurringInterval: currentShieldSubscription?.interval,
   });
 
+  const hasApiError =
+    subscriptionsError ||
+    subscriptionPricingError ||
+    cancelSubscriptionResult.error ||
+    unCancelSubscriptionResult.error ||
+    openGetSubscriptionBillingPortalResult.error ||
+    updateSubscriptionCardPaymentMethodResult.error;
+
   const isWaitingForSubscriptionCreation =
     shouldWaitForSubscriptionCreation && !currentShieldSubscription;
 
@@ -232,7 +246,10 @@ const TransactionShield = () => {
   // redirect to shield plan page if user doesn't have a subscription
   useEffect(() => {
     if (!shouldWaitForSubscriptionCreation && !displayedShieldSubscription) {
-      navigate(SHIELD_PLAN_ROUTE);
+      navigate({
+        pathname: SHIELD_PLAN_ROUTE,
+        search: `?source=${EntryModalSourceEnum.Settings}`,
+      });
     }
   }, [
     shouldWaitForSubscriptionCreation,
@@ -449,7 +466,10 @@ const TransactionShield = () => {
 
     if (isCancelled) {
       // go to shield plan page to renew subscription for cancelled subscription
-      navigate(SHIELD_PLAN_ROUTE);
+      navigate({
+        pathname: SHIELD_PLAN_ROUTE,
+        search: `?source=${EntryModalSourceEnum.Settings}`,
+      });
     } else if (isUnexpectedErrorCryptoPayment) {
       // handle support action
       handleClickContactSupport();
@@ -636,6 +656,19 @@ const TransactionShield = () => {
       redirectToUrl: TRANSACTION_SHIELD_LINK,
     });
   }, [captureShieldCtaClickedEvent]);
+
+  if (!loading && hasApiError) {
+    return (
+      <Box
+        className="transaction-shield-page"
+        data-testid="transaction-shield-page"
+        width={BlockSize.Full}
+        padding={4}
+      >
+        <ApiErrorHandler className="transaction-shield-page__error-content mx-auto" />
+      </Box>
+    );
+  }
 
   return (
     <Box
