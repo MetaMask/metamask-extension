@@ -236,7 +236,7 @@ describe('Permission List Item', () => {
       });
 
       it('renders account name and copy button with visual feedback', () => {
-        const { getByTestId } = renderWithProvider(
+        const { getByTestId, getByLabelText } = renderWithProvider(
           <ReviewGatorPermissionItem
             networkName={mockNetworkName}
             gatorPermission={mockNativeTokenStreamPermission}
@@ -250,15 +250,15 @@ describe('Permission List Item', () => {
         expect(accountText).toBeInTheDocument();
         expect(accountText).toHaveTextContent(mockAccountName);
 
-        // Verify copy button is present
-        const copyButton = getByTestId('review-gator-permission-copy-address');
+        // Verify copy button is present (CopyIcon uses aria-label="copy-button")
+        const copyButton = getByLabelText('copy-button');
         expect(copyButton).toBeInTheDocument();
 
         // Click copy button to test functionality
         fireEvent.click(copyButton);
 
-        // After clicking, the text should change to "Address copied"
-        expect(accountText).toHaveTextContent('Address copied');
+        // After clicking, the account name should remain the same
+        expect(accountText).toHaveTextContent(mockAccountName);
       });
 
       it('renders native token periodic permission correctly', () => {
@@ -562,9 +562,16 @@ describe('Permission List Item', () => {
 
         expect(getByTestId('review-gator-permission-item')).toBeInTheDocument();
 
-        // Verify that when token metadata is loading, it shows "Unknown amount"
-        const amountLabel = getByTestId('review-gator-permission-amount-label');
-        expect(amountLabel.textContent).toContain('Unknown amount');
+        // Verify that when token metadata is loading, it shows a spinner instead of text
+        const amountSection = container.querySelector(
+          '[data-testid="review-gator-permission-amount-label"]',
+        );
+        // The spinner should be present, not the text element
+        expect(amountSection).not.toBeInTheDocument();
+
+        // Verify the spinner icon is present
+        const spinnerIcons = container.querySelectorAll('svg[style*="spin"]');
+        expect(spinnerIcons.length).toBeGreaterThan(0);
 
         // Expand to see more details
         const expandButton = container.querySelector('[aria-label="expand"]');
@@ -572,21 +579,23 @@ describe('Permission List Item', () => {
           fireEvent.click(expandButton);
         }
 
-        // Verify initial allowance shows "Unknown amount"
-        const initialAllowance = getByTestId(
-          'review-gator-permission-initial-allowance',
+        // Verify initial allowance shows spinner
+        const initialAllowance = container.querySelector(
+          '[data-testid="review-gator-permission-initial-allowance"]',
         );
-        expect(initialAllowance.textContent).toContain('Unknown amount');
+        expect(initialAllowance).not.toBeInTheDocument();
 
-        // Verify max allowance shows "Unknown amount"
-        const maxAllowance = getByTestId(
-          'review-gator-permission-max-allowance',
+        // Verify max allowance shows spinner
+        const maxAllowance = container.querySelector(
+          '[data-testid="review-gator-permission-max-allowance"]',
         );
-        expect(maxAllowance.textContent).toContain('Unknown amount');
+        expect(maxAllowance).not.toBeInTheDocument();
 
-        // Verify stream rate shows "Unknown amount"
-        const streamRate = getByTestId('review-gator-permission-stream-rate');
-        expect(streamRate.textContent).toContain('Unknown amount');
+        // Verify stream rate shows spinner
+        const streamRate = container.querySelector(
+          '[data-testid="review-gator-permission-stream-rate"]',
+        );
+        expect(streamRate).not.toBeInTheDocument();
       });
     });
   });

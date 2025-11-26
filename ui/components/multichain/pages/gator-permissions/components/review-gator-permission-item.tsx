@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   BoxFlexDirection,
@@ -23,6 +17,8 @@ import {
   ButtonIconSize,
   IconName,
   Button,
+  Icon,
+  IconSize,
 } from '@metamask/design-system-react';
 import {
   Erc20TokenPeriodicPermission,
@@ -37,7 +33,6 @@ import { getImageForChainId } from '../../../../../selectors/multichain';
 import { getURLHost, shortenAddress } from '../../../../../helpers/utils/util';
 import Card from '../../../../ui/card';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useCopyToClipboard } from '../../../../../hooks/useCopyToClipboard';
 import { getInternalAccountByAddress } from '../../../../../selectors/selectors';
 import {
   convertTimestampToReadableDate,
@@ -51,6 +46,7 @@ import { PreferredAvatar } from '../../../../app/preferred-avatar';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
 import { getPendingRevocations } from '../../../../../selectors/gator-permissions/gator-permissions';
 import { useGatorPermissionTokenInfo } from '../../../../../hooks/gator-permissions/useGatorPermissionTokenInfo';
+import { CopyIcon } from '../../../../app/confirm/info/row/copy-icon';
 
 type ReviewGatorPermissionItemProps = {
   /**
@@ -123,72 +119,10 @@ export const ReviewGatorPermissionItem = ({
     () => shortenAddress(permissionAccount),
     [permissionAccount],
   );
-  // Copy functionality with visual feedback
-  const [accountText, setAccountText] = useState(truncatedAddress);
-  const [addressCopied, setAddressCopied] = useState(false);
-  const [copyIcon, setCopyIcon] = useState(IconName.Copy);
-  const [copyMessage, setCopyMessage] = useState(accountText);
 
-  const timeoutRef = useRef<number | null>(null);
-  const accountTextRef = useRef(accountText);
-  const mountedRef = useRef(true);
-  const [, handleCopy] = useCopyToClipboard();
-
-  // Keep ref in sync with state
-  useEffect(() => {
-    accountTextRef.current = accountText;
-  }, [accountText]);
-
-  // Cleanup timeout when component unmounts and track mounted state
-  useEffect(() => {
-    mountedRef.current = true;
-
-    return () => {
-      mountedRef.current = false;
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-        timeoutRef.current = null;
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (internalAccount?.metadata?.name) {
-      setAccountText(internalAccount.metadata.name);
-    } else {
-      setAccountText(truncatedAddress);
-    }
+  const accountText = useMemo(() => {
+    return internalAccount?.metadata?.name || truncatedAddress;
   }, [internalAccount, truncatedAddress]);
-
-  // Update copy message when account changes
-  useEffect(() => {
-    setCopyMessage(accountText);
-  }, [accountText]);
-
-  // Handle copy button click
-  const handleCopyClick = useCallback(() => {
-    // Clear existing timeout if clicking multiple times
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-
-    setAddressCopied(true);
-    handleCopy(permissionAccount);
-    setCopyMessage(t('addressCopied'));
-    setCopyIcon(IconName.CopySuccess);
-
-    // Reset state after 1 second
-    // Use ref to get the latest accountText value, avoiding stale closure
-    timeoutRef.current = window.setTimeout(() => {
-      // Only update state if component is still mounted
-      if (mountedRef.current) {
-        setCopyMessage(accountTextRef.current);
-        setCopyIcon(IconName.Copy);
-        setAddressCopied(false);
-      }
-      timeoutRef.current = null;
-    }, 1000);
-  }, [permissionAccount, handleCopy, t]);
 
   // Use the hook to fetch token information (handles both native and ERC-20 tokens)
   const { tokenInfo: tokenMetadata, loading } = useGatorPermissionTokenInfo(
@@ -455,13 +389,22 @@ export const ReviewGatorPermissionItem = ({
             gap={2}
             alignItems={BoxAlignItems.Center}
           >
-            <Text
-              variant={TextVariant.BodyMd}
-              color={TextColor.TextAlternative}
-              data-testid={permissionDetails.amountLabel.testId}
-            >
-              {permissionDetails.amountLabel.value}
-            </Text>
+            {loading ? (
+              <Icon
+                name={IconName.Loading}
+                color={IconColor.IconMuted}
+                size={IconSize.Sm}
+                style={{ animation: 'spin 1.2s linear infinite' }}
+              />
+            ) : (
+              <Text
+                variant={TextVariant.BodyMd}
+                color={TextColor.TextAlternative}
+                data-testid={permissionDetails.amountLabel.testId}
+              >
+                {permissionDetails.amountLabel.value}
+              </Text>
+            )}
           </Box>
         </Box>
 
@@ -522,26 +465,14 @@ export const ReviewGatorPermissionItem = ({
             <PreferredAvatar address={permissionAccount} />
             <Text
               variant={TextVariant.BodyMd}
-              color={
-                addressCopied
-                  ? TextColor.SuccessDefault
-                  : TextColor.TextAlternative
-              }
+              color={TextColor.TextAlternative}
               data-testid="review-gator-permission-account-name"
             >
-              {copyMessage}
+              {accountText}
             </Text>
-            <ButtonIcon
-              iconName={copyIcon}
-              color={
-                addressCopied ? IconColor.SuccessDefault : IconColor.IconMuted
-              }
-              size={ButtonIconSize.Sm}
-              onClick={handleCopyClick}
-              ariaLabel={
-                addressCopied ? t('copiedExclamation') : t('copyToClipboard')
-              }
-              data-testid="review-gator-permission-copy-address"
+            <CopyIcon
+              copyText={permissionAccount}
+              style={{ position: 'static', right: 'auto', top: 'auto' }}
             />
           </Box>
         </Box>
@@ -652,6 +583,11 @@ export const ReviewGatorPermissionItem = ({
 
             {Object.entries(permissionDetails.expandedDetails).map(
               ([key, detail]) => {
+                const isLoadingValue =
+                  loading &&
+                  ['initialAllowance', 'maxAllowance', 'streamRate'].includes(
+                    key,
+                  );
                 return (
                   <Box
                     key={key}
@@ -668,14 +604,23 @@ export const ReviewGatorPermissionItem = ({
                     >
                       {t(detail.translationKey)}
                     </Text>
-                    <Text
-                      textAlign={TextAlign.Right}
-                      color={TextColor.TextAlternative}
-                      variant={TextVariant.BodyMd}
-                      data-testid={detail.testId}
-                    >
-                      {detail.value}
-                    </Text>
+                    {isLoadingValue ? (
+                      <Icon
+                        name={IconName.Loading}
+                        color={IconColor.IconMuted}
+                        size={IconSize.Sm}
+                        style={{ animation: 'spin 1.2s linear infinite' }}
+                      />
+                    ) : (
+                      <Text
+                        textAlign={TextAlign.Right}
+                        color={TextColor.TextAlternative}
+                        variant={TextVariant.BodyMd}
+                        data-testid={detail.testId}
+                      >
+                        {detail.value}
+                      </Text>
+                    )}
                   </Box>
                 );
               },
