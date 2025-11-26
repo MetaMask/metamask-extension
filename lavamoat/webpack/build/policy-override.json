@@ -22,13 +22,19 @@
     "webpack": {
       "packages": {
         "$root$": true,
-        "html-bundler-webpack-plugin": true
+        "html-bundler-webpack-plugin": true,
+        "css-loader": true,
+        "postcss-loader": true,
+        "sass-loader": true
       }
     },
     "webpack>loader-runner": {
       "packages": {
         "$root$": true,
-        "html-bundler-webpack-plugin": true
+        "html-bundler-webpack-plugin": true,
+        "css-loader": true,
+        "postcss-loader": true,
+        "sass-loader": true
       }
     },
     "html-bundler-webpack-plugin": {
@@ -38,8 +44,127 @@
     },
     "eta": {
       "builtin": {
-        "node:path": true,
-        "node:fs": true
+        "node:fs": true,
+        "node:path": true
+      },
+      "globals": {
+        "define": true
+      }
+    },
+    "css-loader": {
+      "builtin": {
+        "url": true,
+        "path": true
+      },
+      "packages": {
+        "postcss": true,
+        "semver": true,
+        "stylelint>postcss-value-parser": true,
+        "css-loader>postcss-modules-values": true,
+        "css-loader>postcss-modules-local-by-default": true,
+        "css-loader>postcss-modules-extract-imports": true,
+        "css-loader>postcss-modules-scope": true,
+        "css-loader>icss-utils": true
+      }
+    },
+    "css-loader>postcss-modules-values": {
+      "packages": {
+        "css-loader>icss-utils": true
+      }
+    },
+    "css-loader>postcss-modules-local-by-default": {
+      "packages": {
+        "stylelint>postcss-selector-parser": true,
+        "stylelint>postcss-value-parser": true,
+        "css-loader>icss-utils": true
+      }
+    },
+    "css-loader>postcss-modules-scope": {
+      "packages": {
+        "stylelint>postcss-selector-parser": true
+      }
+    },
+    "postcss-loader": {
+      "builtin": {
+        "path": true,
+        "url": true,
+        "module": true
+      },
+      "packages": {
+        "postcss": true,
+        "postcss-loader>cosmiconfig": true
+      }
+    },
+    "postcss-loader>cosmiconfig": {
+      "builtin": {
+        "fs": true,
+        "fs/promises": true,
+        "path": true,
+        "url": true,
+        "os": true
+      },
+      "packages": {
+        "postcss-loader>cosmiconfig>env-paths": true
+      }
+    },
+    "postcss-loader>cosmiconfig>env-paths": {
+      "builtin": {
+        "path": true,
+        "os": true
+      },
+      "globals": {
+        "process.env": true
+      }
+    },
+    "sass-loader": {
+      "builtin": {
+        "url": true,
+        "path": true,
+        "util": true
+      },
+      "packages": {
+        "sass-embedded": true
+      },
+      "globals": {
+        "process.cwd": true,
+        "process.env": true
+      }
+    },
+    "sass-embedded": {
+      "builtin": {
+        "path": true,
+        "url": true,
+        "util": true,
+        "child_process": true,
+        "assert": true,
+        "fs": true,
+        "stream": true,
+        "worker_threads": true,
+        "events": true
+      },
+      "packages": {
+        "sass-embedded>immutable": true,
+        "sass-embedded>@bufbuild/protobuf": true,
+        "wait-on>rxjs": true,
+        "mocha>supports-color": true,
+        "sass-embedded>varint": true,
+        "sass-embedded>buffer-builder": true
+      },
+      "globals": {
+        "process.platform": true,
+        "process.arch": true,
+        "process.cwd": true,
+        "URL": true
+      }
+    },
+    "sass-embedded>@bufbuild/protobuf": {
+      "globals": {
+        "TextDecoder": true
+      }
+    },
+    "sass-embedded>buffer-builder": {
+      "globals": {
+        "Buffer": true
       }
     }
   }
