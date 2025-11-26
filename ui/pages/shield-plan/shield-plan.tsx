@@ -361,7 +361,7 @@ const ShieldPlan = () => {
         {t('shieldPlanTitle')}
       </Header>
       {loading && !hasApiError && <LoadingScreen />}
-      {hasApiError ? (
+      {!loading && hasApiError ? (
         <Content
           justifyContent={JustifyContent.flexStart}
           alignItems={AlignItems.center}
