@@ -4,7 +4,7 @@ const {
 } = require('@metamask/snaps-utils');
 const { merge, mergeWith } = require('lodash');
 const { toHex } = require('@metamask/controller-utils');
-const { mockNetworkStateOld } = require('../stub/networks');
+const { mockNetworkStateOld } = require('../../stub/networks');
 
 const {
   AVALANCHE_DISPLAY_NAME,
@@ -13,19 +13,19 @@ const {
   LOCALHOST_DISPLAY_NAME,
   POLYGON_DISPLAY_NAME,
   ZK_SYNC_ERA_DISPLAY_NAME,
-} = require('../../shared/constants/network');
-const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
+} = require('../../../shared/constants/network');
+const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const {
   DAPP_URL,
   DAPP_URL_LOCALHOST,
   DAPP_ONE_URL,
   DEFAULT_FIXTURE_ACCOUNT,
-} = require('./constants');
+} = require('../constants');
 const {
   defaultFixture,
   FIXTURE_STATE_METADATA_VERSION,
 } = require('./default-fixture');
-const onboardingFixtureJson = require('./fixtures/onboarding-fixture.json');
+const onboardingFixtureJson = require('./onboarding-fixture.json');
 
 function onboardingFixture() {
   return onboardingFixtureJson;

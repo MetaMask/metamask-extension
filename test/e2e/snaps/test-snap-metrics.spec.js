@@ -5,7 +5,7 @@ const {
   getEventPayloads,
   WINDOW_TITLES,
 } = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
+const FixtureBuilder = require('../fixtures/fixture-builder');
 const { MOCK_META_METRICS_ID, DAPP_PATH, DAPP_URL } = require('../constants');
 const {
   mockNotificationSnap,
