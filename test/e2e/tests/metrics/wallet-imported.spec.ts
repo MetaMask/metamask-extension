@@ -6,7 +6,7 @@ import {
   withFixtures,
   assertInAnyOrder,
 } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import { mockSegment } from './mocks/segment';
 
@@ -14,7 +14,6 @@ describe('Wallet Created Events - Imported Account', function () {
   it('are sent when onboarding user who chooses to opt in metrics', async function () {
     // We need to distinguish between browsers, because routes differ (MetaMetrics screen)
     const eventsChrome = [
-      'App Opened',
       'App Installed',
       'App Installed',
       'SRP Backup Confirmed',
@@ -24,7 +23,6 @@ describe('Wallet Created Events - Imported Account', function () {
     ];
 
     const eventsFirefox = [
-      'App Opened',
       'App Installed',
       'App Installed',
       'App Installed',

@@ -75,6 +75,7 @@ describe('onRpcEndpointUnavailable', () => {
         event: 'RPC Service Unavailable',
         properties: {
           chain_id_caip: 'eip155:11155111',
+          rpc_domain: 'example.com',
           rpc_endpoint_url: 'example.com',
         },
       });
@@ -104,6 +105,7 @@ describe('onRpcEndpointUnavailable', () => {
         properties: {
           chain_id_caip: 'eip155:11155111',
           http_status: 420,
+          rpc_domain: 'example.com',
           rpc_endpoint_url: 'example.com',
         },
       });
@@ -132,6 +134,7 @@ describe('onRpcEndpointUnavailable', () => {
         event: 'RPC Service Unavailable',
         properties: {
           chain_id_caip: 'eip155:11155111',
+          rpc_domain: 'custom',
           rpc_endpoint_url: 'custom',
         },
       });
@@ -228,6 +231,7 @@ describe('onRpcEndpointDegraded', () => {
         event: 'RPC Service Degraded',
         properties: {
           chain_id_caip: 'eip155:11155111',
+          rpc_domain: 'example.com',
           rpc_endpoint_url: 'example.com',
         },
       });
@@ -257,6 +261,7 @@ describe('onRpcEndpointDegraded', () => {
         properties: {
           chain_id_caip: 'eip155:11155111',
           http_status: 420,
+          rpc_domain: 'example.com',
           rpc_endpoint_url: 'example.com',
         },
       });
@@ -285,6 +290,7 @@ describe('onRpcEndpointDegraded', () => {
         event: 'RPC Service Degraded',
         properties: {
           chain_id_caip: 'eip155:11155111',
+          rpc_domain: 'custom',
           rpc_endpoint_url: 'custom',
         },
       });

@@ -587,12 +587,12 @@ jobs:
 
           # Check E2E jobs only if they should have run
           if [[ "${{ needs.needs-e2e.outputs.needs-e2e }}" == "true" ]]; then
-            if [[ "${{ needs.e2e-chrome.result }}" == "failure" ]]; then
-              echo "E2E Chrome tests failed"
+            if [[ "${{ needs.e2e-chrome.result }}" != "success" ]]; then
+              echo "E2E Chrome tests did not succeed (result: ${{ needs.e2e-chrome.result }})"
               exit 1
             fi
-            if [[ "${{ needs.e2e-firefox.result }}" == "failure" ]]; then
-              echo "E2E Firefox tests failed"
+            if [[ "${{ needs.e2e-firefox.result }}" != "success" ]]; then
+              echo "E2E Firefox tests did not succeed (result: ${{ needs.e2e-firefox.result }})"
               exit 1
             fi
           fi

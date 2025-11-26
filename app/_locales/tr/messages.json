@@ -2470,9 +2470,6 @@
   "exploreDefi": {
     "message": "DeFi'yi keşfet"
   },
-  "exploreweb3": {
-    "message": "Web3'ü keşfet"
-  },
   "exportYourData": {
     "message": "Verilerinizi dışa aktarın"
   },
@@ -2600,9 +2597,6 @@
   },
   "function": {
     "message": "İşlev: $1"
-  },
-  "fundingMethod": {
-    "message": "Para yatırma yöntemi"
   },
   "gas": {
     "message": "Gaz"
@@ -7004,12 +6998,6 @@
   },
   "time": {
     "message": "Zaman"
-  },
-  "tipsForUsingAWallet": {
-    "message": "Cüzdan kullanma ipuçları"
-  },
-  "tipsForUsingAWalletDescription": {
-    "message": "Token eklemek web3'ü kullanmanın daha fazla yolunun kilidini açar."
   },
   "to": {
     "message": "Alıcı"
