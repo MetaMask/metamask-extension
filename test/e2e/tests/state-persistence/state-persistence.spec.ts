@@ -1,19 +1,46 @@
-import { PAGES, type Driver } from '../../webdriver/driver';
 import assert from 'node:assert/strict';
 import { ACCOUNT_TYPE, WINDOW_TITLES } from '../../constants';
 import { WALLET_PASSWORD, unlockWallet, withFixtures } from '../../helpers';
+import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { setManifestFlags } from '../../set-manifest-flags';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { PAGES, type Driver } from '../../webdriver/driver';
 
 type StoredState = Record<string, any>;
 
 const SPLIT_FLAG = { value: { enabled: true } };
+const BASE_MANIFEST_TESTING_FLAGS = { forceExtensionStore: true };
 
-const readStorage = async (driver: any) => {
+/**
+ * Builds fixture options with consistent manifest testing flags.
+ *
+ * @param testContext - Mocha test context used to set the title.
+ * @param manifestTestingOverrides - Optional manifest testing overrides.
+ * @returns Options for withFixtures.
+ */
+const getFixtureOptions = (
+  testContext: Mocha.Context,
+  manifestTestingOverrides: Record<string, unknown> = {},
+) => ({
+  title: testContext.test?.title,
+  manifestFlags: {
+    testing: {
+      ...BASE_MANIFEST_TESTING_FLAGS,
+      ...manifestTestingOverrides,
+    },
+  },
+});
+
+/**
+ * Reads extension storage from the opened page.
+ *
+ * @param driver - WebDriver instance.
+ * @returns Parsed storage snapshot.
+ */
+const readStorage = async (driver: Driver) => {
   const result = await driver.executeAsyncScript(`
     const callback = arguments[arguments.length - 1];
     const browser = globalThis.browser ?? globalThis.chrome;
@@ -90,7 +117,7 @@ const waitForKeyringControllerToBeSaved = async (driver: Driver) => {
       console.log("waiting");
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }`);
-}
+};
 
 const assertDataStateStorage = (storage: StoredState) => {
   assert.ok(storage.meta, 'meta should be present in data storage');
@@ -109,6 +136,35 @@ const assertDataStateStorage = (storage: StoredState) => {
   );
 };
 
+/**
+ * Ensures the split state storage is present and valid.
+ *
+ * @param driver - WebDriver instance.
+ * @returns Parsed split state storage snapshot.
+ */
+const expectSplitStateStorage = async (driver: Driver) => {
+  const storage = await readStorage(driver);
+  assertSplitStateStorage(storage);
+  return storage;
+};
+
+/**
+ * Ensures the data state storage is present and valid.
+ *
+ * @param driver - WebDriver instance.
+ * @returns Parsed data state storage snapshot.
+ */
+const expectDataStateStorage = async (driver: Driver) => {
+  const storage = await readStorage(driver);
+  assertDataStateStorage(storage);
+  return storage;
+};
+
+/**
+ * Waits for the extension to reload and the home screen to appear.
+ *
+ * @param driver - WebDriver instance.
+ */
 async function waitForRestart(driver: Driver) {
   await driver.waitUntil(
     async () => {
@@ -124,9 +180,29 @@ async function waitForRestart(driver: Driver) {
   await driver.assertElementNotPresent('.loading-logo', { timeout: 10000 });
 }
 
+/**
+ * Ensures the home page is rendered and idle.
+ *
+ * @param driver - WebDriver instance.
+ * @returns Home page object after it is ready.
+ */
+const ensureHomeReady = async (driver: Driver) => {
+  const homePage = new HomePage(driver);
+  await homePage.checkPageIsLoaded();
+  await homePage.waitForLoadingOverlayToDisappear();
+  return homePage;
+};
+
+/**
+ * Runs a background script, reloads the extension, and waits for restart.
+ *
+ * @param runScript - Stringified async script to execute before reload.
+ * @param driver - WebDriver instance.
+ * @returns Result object or error from the executed script.
+ */
 const runScriptThenReloadExtension = async (
   runScript: string | null,
-  driver: any,
+  driver: Driver,
 ) => {
   const extensionWindow = await driver.driver.getWindowHandle();
   const blankWindow = await driver.openNewPage('about:blank');
@@ -151,7 +227,27 @@ const runScriptThenReloadExtension = async (
   return result;
 };
 
-// Persist the remote flag into stored state so reload sees it during migration.
+/**
+ * Reloads the extension, unlocks, and waits for home readiness.
+ *
+ * @param driver - WebDriver instance.
+ * @param runScript - Optional stringified async script to run pre-reload.
+ */
+const reloadAndUnlock = async (
+  driver: Driver,
+  runScript: string | null = null,
+) => {
+  await runScriptThenReloadExtension(runScript, driver);
+  await unlockWallet(driver, { password: WALLET_PASSWORD });
+  await ensureHomeReady(driver);
+};
+
+/**
+ * Stringifies a script that persists the split flag into stored state.
+ *
+ * @param extra - Optional extra meta values to merge.
+ * @returns Stringified async script to execute.
+ */
 const ensureSplitFlagPersisted = (extra = {}) => {
   return `(globalThis.browser ?? chrome).storage.local
       .get(['data', 'meta'])
@@ -183,182 +279,137 @@ async function onboard(driver: Driver) {
   });
 }
 
+/**
+ * Completes the onboarding process and syncs the keyring.
+ *
+ * @param driver - The WebDriver instance.
+ */
+async function completeOnboardingAndSync(driver: Driver) {
+  await onboard(driver);
+  await ensureHomeReady(driver);
+  await waitForKeyringControllerToBeSaved(driver);
+}
+
+/**
+ * Asserts that the specified account is visible in the account list.
+ *
+ * @param headerNavbar - The header navigation bar instance.
+ * @param accountListPage - The account list page instance.
+ * @param accountName - The name of the account to check.
+ */
+const assertAccountVisible = async (
+  headerNavbar: HeaderNavbar,
+  accountListPage: AccountListPage,
+  accountName: string,
+) => {
+  await headerNavbar.openAccountMenu();
+  await accountListPage.checkAccountDisplayedInAccountList(accountName);
+  await accountListPage.closeAccountModal();
+};
+
 describe('State Persistence', function () {
   this.timeout(120000);
 
   describe('split state', function () {
     it('should default to the split state storage', async function () {
-      await withFixtures(
-        {
-          title: this.test?.title,
-          manifestFlags: {
-            testing: {
-              // We need to test the full onboarding flow with the production
-              // ExtensionStore to ensure split state is the default for new users.
-              forceExtensionStore: true,
-            },
-          },
-        },
-        async ({ driver }) => {
-          await onboard(driver);
-
-          // check home page just as a sanity check
-          const homePage = new HomePage(driver);
-          await homePage.checkPageIsLoaded();
-          await homePage.waitForLoadingOverlayToDisappear();
-
-          await waitForKeyringControllerToBeSaved(driver);
-
-          const storage = await readStorage(driver);
-          assertSplitStateStorage(storage);
-        },
-      );
+      await withFixtures(getFixtureOptions(this), async ({ driver }) => {
+        await completeOnboardingAndSync(driver);
+        await expectSplitStateStorage(driver);
+      });
     });
 
     it('should update from data state to split state', async function () {
       const accountName = 'Account 2';
 
       await withFixtures(
-        {
-          title: this.test?.title,
-          manifestFlags: {
-            testing: {
-              storageKind: 'data',
-              // We need to test the full onboarding flow with the production
-              // ExtensionStore to ensure split state is the default for new users.
-              forceExtensionStore: true,
-            },
-          },
-        },
+        getFixtureOptions(this, { storageKind: 'data' }),
         async ({ driver }) => {
-          await onboard(driver);
-
-          await waitForKeyringControllerToBeSaved(driver);
-
-          let storage = await readStorage(driver);
-          assertDataStateStorage(storage);
-
           const headerNavbar = new HeaderNavbar(driver);
+          const accountListPage = new AccountListPage(driver);
+
+          await completeOnboardingAndSync(driver);
+          await expectDataStateStorage(driver);
+
           await headerNavbar.checkPageIsLoaded();
           await headerNavbar.openAccountMenu();
-
-          const accountListPage = new AccountListPage(driver);
           await accountListPage.addAccount({
             accountType: ACCOUNT_TYPE.Ethereum,
             accountName,
           });
-          await headerNavbar.openAccountMenu();
-          console.log(`Added account: ${accountName}`);
-          await accountListPage.checkAccountDisplayedInAccountList(accountName);
-          await accountListPage.closeAccountModal();
-
-          console.log('Reading storage before migration...');
-          storage = await readStorage(driver);
-          assertDataStateStorage(storage);
-
-          console.log('Persisting split state flag into storage...');
-          await runScriptThenReloadExtension(
-            ensureSplitFlagPersisted(),
-            driver,
+          await assertAccountVisible(
+            headerNavbar,
+            accountListPage,
+            accountName,
           );
-          console.log('Extension reloaded.');
-          await unlockWallet(driver, {
-            password: WALLET_PASSWORD,
-          });
-          console.log('Wallet unlocked after reload.');
 
-          await headerNavbar.checkPageIsLoaded();
-          await headerNavbar.openAccountMenu();
-          await accountListPage.checkAccountDisplayedInAccountList(accountName);
-          await accountListPage.closeAccountModal();
+          await expectDataStateStorage(driver);
 
-          // we should have migrated... check it!
-          storage = await readStorage(driver);
-          assertSplitStateStorage(storage);
+          await reloadAndUnlock(driver, ensureSplitFlagPersisted());
+          await assertAccountVisible(
+            headerNavbar,
+            accountListPage,
+            accountName,
+          );
+          await expectSplitStateStorage(driver);
 
-          // reload once more to be sure everything is still good
-          await runScriptThenReloadExtension(null, driver);
-          await unlockWallet(driver, { password: WALLET_PASSWORD });
-
-          await headerNavbar.checkPageIsLoaded();
-          await headerNavbar.openAccountMenu();
-          await accountListPage.checkAccountDisplayedInAccountList(accountName);
-          await accountListPage.closeAccountModal();
-
-          // and finally, one more sanity check!
-          storage = await readStorage(driver);
-          assertSplitStateStorage(storage);
+          await reloadAndUnlock(driver);
+          await assertAccountVisible(
+            headerNavbar,
+            accountListPage,
+            accountName,
+          );
+          await expectSplitStateStorage(driver);
         },
       );
     });
 
     it('should not attempt to update if an update attempt fails', async function () {
       await withFixtures(
-        {
-          title: this.test?.title,
-          manifestFlags: {
-            testing: {
-              // set the default storage kind to `data`, so that initial
-              // onboarding is using the old state
-              storageKind: 'data',
-              // We need to test the full onboarding flow with the production
-              // ExtensionStore to ensure split state is the default for new users.
-              forceExtensionStore: true,
-            },
-          },
-        },
+        getFixtureOptions(this, { storageKind: 'data' }),
         async ({ driver }) => {
-          await onboard(driver);
+          await completeOnboardingAndSync(driver);
 
-          await waitForKeyringControllerToBeSaved(driver);
-
-          // set the meta flag in the db to simulate a failed prior attempt
-          // also set the remote flag to ensure that the migration would be
-          // attempted if not for the meta flag
+          // Seed a failed prior attempt and the remote flag so the migration would
+          // proceed if not for the attempted flag.
           await runScriptThenReloadExtension(
             ensureSplitFlagPersisted({
               _platformSplitStateGradualRolloutAttempted: true,
+              // a migration would set `_platformSplitStateGradualRolloutAttempted`
+              // if it proceeded, and then failed, so we set this extra bit
+              // just so we have something unique to check.
               canary: 'test-canary',
             }),
             driver,
           );
 
-          const storage1 = await readStorage(driver);
-          assertDataStateStorage(storage1);
+          const storage1 = await expectDataStateStorage(driver);
           assert.equal(
             storage1.meta._platformSplitStateGradualRolloutAttempted,
             true,
             'precondition: _platformSplitStateGradualRolloutAttempted should be true',
           );
 
-          // set the manifestFlags to use split state, so that on reload
-          // the migration *would* be attempted (but should be skipped)
+          // Set the manifest flags to use split state so the migration would be
+          // attempted (but should be skipped due to the meta flag).
           await setManifestFlags({
             testing: {
               storageKind: 'split',
             },
           });
 
-          console.log(
-            'Reloading extension to trigger the migration process (it shouldnt migrate though)',
-          );
           await runScriptThenReloadExtension(null, driver);
-
           await loginWithoutBalanceValidation(driver);
+          await ensureHomeReady(driver);
 
-          const homePage = new HomePage(driver);
-          await homePage.checkPageIsLoaded();
-          await homePage.waitForLoadingOverlayToDisappear();
-
-          // make sure we are *still* using the `data` state and that we haven't migrated!
-          const storage = await readStorage(driver);
-          assertDataStateStorage(storage);
-          // sanity check to make sure we still have the `_platformSplitStateGradualRolloutAttempted`
-          // flag set to true
+          // Ensure we are still using the data state and have not migrated.
+          const storage = await expectDataStateStorage(driver);
+          // additionally, ensure the attempted flag is still set
+          // and the canary value is untouched
           assert.equal(
             storage.meta._platformSplitStateGradualRolloutAttempted,
             true,
           );
+          assert.equal(storage.meta.canary, 'test-canary');
         },
       );
     });
