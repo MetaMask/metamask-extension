@@ -2470,9 +2470,6 @@
   "exploreDefi": {
     "message": "디파이 살펴보기"
   },
-  "exploreweb3": {
-    "message": "웹3 탐색"
-  },
   "exportYourData": {
     "message": "데이터 내보내기"
   },
@@ -2600,9 +2597,6 @@
   },
   "function": {
     "message": "기능: $1"
-  },
-  "fundingMethod": {
-    "message": "자금 조달 방법"
   },
   "gas": {
     "message": "가스"
@@ -7004,12 +6998,6 @@
   },
   "time": {
     "message": "시간"
-  },
-  "tipsForUsingAWallet": {
-    "message": "지갑 사용 팁"
-  },
-  "tipsForUsingAWalletDescription": {
-    "message": "토큰을 추가하면 웹3를 더 다양한 방법으로 사용할 수 있습니다."
   },
   "to": {
     "message": "수신:"
