@@ -91,7 +91,7 @@ export function useDappSwapComparisonInfo() {
       );
       checkValidSingleOrBatchTransaction(
         nestedTransactions,
-        result.quotesInput?.destTokenAddress as Hex,
+        result.quotesInput?.srcTokenAddress as Hex,
       );
       if (result.quotesInput) {
         updateRequestDetectionLatency();

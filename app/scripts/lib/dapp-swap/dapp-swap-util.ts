@@ -92,7 +92,6 @@ export function getQuotesForConfirmation({
       return;
     }
     const { params, origin } = req;
-
     if (origin === DAPP_SWAP_COMPARISON_ORIGIN || origin === TEST_DAPP_ORIGIN) {
       const { chainId } =
         getNetworkConfigurationByNetworkClientId(req.networkClientId) ?? {};
@@ -107,7 +106,7 @@ export function getQuotesForConfirmation({
         );
         checkValidSingleOrBatchTransaction(
           params[0].calls as NestedTransactionMetadata[],
-          quotesInput?.destTokenAddress as Hex,
+          quotesInput?.srcTokenAddress as Hex,
         );
         if (quotesInput) {
           const startTime = new Date().getTime();
