@@ -6363,6 +6363,9 @@
   "shieldPlanDetails3": {
     "message": "24/7 access to priority live chat support"
   },
+  "shieldPlanErrorText": {
+    "message": "Couldn’t connect to Transaction Shield"
+  },
   "shieldPlanFooterNoteMonthly": {
     "message": "Billed monthly, cancel anytime"
   },
