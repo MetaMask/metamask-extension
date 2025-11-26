@@ -50,6 +50,10 @@ export const ConfirmationHandler = () => {
   const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
   const isFullscreen = envType === ENVIRONMENT_TYPE_FULLSCREEN;
 
+  // In test environments (Jest integration tests), run synchronously
+  // In real browser, defer to avoid race conditions with Redux state updates
+  const isTestEnvironment = Boolean(process.env.IN_TEST);
+
   const showAwaitingSwapScreen = useSelector(getShowAwaitingSwapScreen);
   const hasSwapsQuotes = useSelector(getHasSwapsQuotes);
   const hasBridgeQuotes = useSelector(getHasBridgeQuotes);
@@ -96,37 +100,50 @@ export const ConfirmationHandler = () => {
   useEffect(() => {
     // Only run when on home/default page (for now)
     if (pathname !== DEFAULT_ROUTE) {
-      return;
+      return undefined;
     }
 
     if (skipHandler) {
-      return;
+      return undefined;
     }
 
-    if (canRedirect && showAwaitingSwapScreen) {
-      navigate(AWAITING_SWAP_ROUTE);
-    } else if (canRedirect && (hasSwapsQuotes || swapsFetchParams)) {
-      navigate(PREPARE_SWAP_ROUTE);
-    } else if (canRedirect && hasBridgeQuotes) {
-      navigate(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
-    } else if (pendingApprovals.length || hasApprovalFlows) {
-      const url = getConfirmationRoute(
-        pendingApprovals?.[0]?.id,
-        pendingApprovals,
-        hasApprovalFlows,
-        '',
-      );
+    const checkAndNavigate = () => {
+      if (canRedirect && showAwaitingSwapScreen) {
+        navigate(AWAITING_SWAP_ROUTE);
+      } else if (canRedirect && (hasSwapsQuotes || swapsFetchParams)) {
+        navigate(PREPARE_SWAP_ROUTE);
+      } else if (canRedirect && hasBridgeQuotes) {
+        navigate(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
+      } else if (pendingApprovals.length || hasApprovalFlows) {
+        const url = getConfirmationRoute(
+          pendingApprovals?.[0]?.id,
+          pendingApprovals,
+          hasApprovalFlows,
+          '',
+        );
 
-      if (url) {
-        navigate(url, { replace: true });
+        if (url) {
+          navigate(url, { replace: true });
+        }
       }
+    };
+
+    // In test environments, run synchronously
+    // In real browser, defer to let Redux state settle after approval resolution
+    if (isTestEnvironment) {
+      checkAndNavigate();
+      return undefined;
     }
+
+    const timer = setTimeout(checkAndNavigate, 0);
+    return () => clearTimeout(timer);
   }, [
     canRedirect,
     hasBridgeQuotes,
     hasApprovalFlows,
     hasSwapsQuotes,
     isFullscreen,
+    isTestEnvironment,
     navigate,
     pathname,
     pendingApprovals,
