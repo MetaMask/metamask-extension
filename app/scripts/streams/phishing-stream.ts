@@ -104,7 +104,6 @@ const destroyPhishingExtStreams = (): void => {
     clearTimeout(phishingReconnectTimer as unknown as number);
     phishingReconnectTimer = null;
   }
-  phishingReconnectAttempts = 0;
 };
 
 const BASE_PHISHING_RECONNECT_DELAY_MS = 1000;

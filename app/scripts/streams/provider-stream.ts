@@ -359,7 +359,6 @@ export function destroyStreams() {
     clearTimeout(reconnectTimer as unknown as number);
     reconnectTimer = null;
   }
-  reconnectAttempts = 0;
 }
 
 const BASE_RECONNECT_DELAY_MS = 1000;
@@ -381,6 +380,7 @@ function scheduleExtensionReconnect() {
   reconnectTimer = setTimeout(() => {
     reconnectTimer = null;
     setupExtensionStreams();
+    setupLegacyExtensionStreams();
   }, base + jitter) as unknown as number;
 }
 
