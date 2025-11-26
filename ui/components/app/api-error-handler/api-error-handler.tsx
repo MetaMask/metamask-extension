@@ -22,7 +22,11 @@ type ApiErrorHandlerProps = {
   location: ShieldUnexpectedErrorEventLocationEnum;
 };
 
-const ApiErrorHandler = ({ className = '', error, location }: ApiErrorHandlerProps) => {
+const ApiErrorHandler = ({
+  className = '',
+  error,
+  location,
+}: ApiErrorHandlerProps) => {
   const t = useI18nContext();
   const { captureShieldUnexpectedErrorEvent } = useSubscriptionMetrics();
 
@@ -31,7 +35,9 @@ const ApiErrorHandler = ({ className = '', error, location }: ApiErrorHandlerPro
       errorMessage: error?.message || 'Unknown error',
       location,
     });
-  }, [])
+    // we only want to capture the event once when the component is mounted
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Box

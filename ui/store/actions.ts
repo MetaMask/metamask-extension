@@ -507,8 +507,17 @@ export function getSubscriptions(): ThunkAction<
   unknown,
   AnyAction
 > {
-  return async (_dispatch: MetaMaskReduxDispatch) => {
-    return await submitRequestToBackground('getSubscriptions');
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      const subscriptions = await submitRequestToBackground('getSubscriptions');
+      return subscriptions;
+    } catch (error) {
+      log.error('[getSubscriptions] error', error);
+      dispatch(displayWarning(error));
+      throw new Error(
+        `Failed to fetch subscriptions, ${getErrorMessage(error)}`,
+      );
+    }
   };
 }
 
@@ -523,10 +532,19 @@ export function getSubscriptionPricing(): ThunkAction<
   unknown,
   AnyAction
 > {
-  return async (_dispatch: MetaMaskReduxDispatch) => {
-    return await submitRequestToBackground<PricingResponse>(
-      'getSubscriptionPricing',
-    );
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      const pricing = await submitRequestToBackground<PricingResponse>(
+        'getSubscriptionPricing',
+      );
+      return pricing;
+    } catch (error) {
+      log.error('[getSubscriptionPricing] error', error);
+      dispatch(displayWarning(error));
+      throw new Error(
+        `Failed to fetch subscription pricing, ${getErrorMessage(error)}`,
+      );
+    }
   };
 }
 
@@ -626,16 +644,32 @@ export function updateSubscriptionCryptoPaymentMethod(
 export function cancelSubscription(params: {
   subscriptionId: string;
 }): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (_dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('cancelSubscription', [params]);
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('cancelSubscription', [params]);
+    } catch (error) {
+      log.error('[cancelSubscription] error', error);
+      dispatch(displayWarning(error));
+      throw new Error(
+        `Failed to cancel subscription, ${getErrorMessage(error)}`,
+      );
+    }
   };
 }
 
 export function unCancelSubscription(params: {
   subscriptionId: string;
 }): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (_dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('unCancelSubscription', [params]);
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('unCancelSubscription', [params]);
+    } catch (error) {
+      log.error('[unCancelSubscription] error', error);
+      dispatch(displayWarning(error));
+      throw new Error(
+        `Failed to uncancel subscription, ${getErrorMessage(error)}`,
+      );
+    }
   };
 }
 
@@ -645,12 +679,19 @@ export function getSubscriptionBillingPortalUrl(): ThunkAction<
   unknown,
   AnyAction
 > {
-  return async (_dispatch: MetaMaskReduxDispatch) => {
-    const res = await submitRequestToBackground<BillingPortalResponse>(
-      'getSubscriptionBillingPortalUrl',
-      [],
-    );
-    return res;
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      const billingPortalUrl = await submitRequestToBackground(
+        'getSubscriptionBillingPortalUrl',
+      );
+      return billingPortalUrl;
+    } catch (error) {
+      log.error('[getSubscriptionBillingPortalUrl] error', error);
+      dispatch(displayWarning(error));
+      throw new Error(
+        `Failed to get subscription billing portal url, ${getErrorMessage(error)}`,
+      );
+    }
   };
 }
 
