@@ -2601,9 +2601,6 @@
   "function": {
     "message": "Fonction : $1"
   },
-  "fundingMethod": {
-    "message": "Mode de financement"
-  },
   "gas": {
     "message": "Carburant"
   },
@@ -7004,12 +7001,6 @@
   },
   "time": {
     "message": "Temps"
-  },
-  "tipsForUsingAWallet": {
-    "message": "Conseils pour l’utilisation d’un portefeuille"
-  },
-  "tipsForUsingAWalletDescription": {
-    "message": "L’ajout de jetons permet de débloquer d’autres moyens d’utiliser le Web3."
   },
   "to": {
     "message": "Vers"
