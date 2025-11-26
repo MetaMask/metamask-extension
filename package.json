@@ -10,7 +10,7 @@
     "webpack": "tsx ./development/webpack/launch.ts",
     "webpack:clearcache": "./development/clear-webpack-cache.js",
     "webpack:tsc": "tsc ./development/webpack/launch.ts ./development/webpack/build.ts --esModuleInterop --noEmitOnError true --skipLibCheck --downlevelIteration --outDir ./development/.webpack",
-    "webpack:lavamoat": "yarn webpack:tsc && lavamoat --policy lavamoat/webpack/build/policy.json --override lavamoat/webpack/build/policy-override.json ./development/.webpack/launch.js",
+    "webpack:lavamoat": "yarn webpack:tsc && lavamoat --policy lavamoat/webpack/build/policy.json --override lavamoat/webpack/build/policy-override.json ./development/.webpack/launch.js -- --no-cache",
     "foundryup": "yarn mm-foundryup",
     "postinstall": "yarn webpack:clearcache && yarn foundryup",
     "env:e2e": "SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' yarn",

@@ -31457,7 +31457,7 @@ __metadata:
 
 "lavamoat@patch:lavamoat@npm%3A10.0.0#~/.yarn/patches/lavamoat-npm-10.0.0-9a132772a6.patch":
   version: 10.0.0
-  resolution: "lavamoat@patch:lavamoat@npm%3A10.0.0#~/.yarn/patches/lavamoat-npm-10.0.0-9a132772a6.patch::version=10.0.0&hash=cba933"
+  resolution: "lavamoat@patch:lavamoat@npm%3A10.0.0#~/.yarn/patches/lavamoat-npm-10.0.0-9a132772a6.patch::version=10.0.0&hash=3339bc"
   dependencies:
     "@babel/code-frame": "npm:7.27.1"
     "@babel/highlight": "npm:7.25.9"
@@ -31473,7 +31473,7 @@ __metadata:
   bin:
     lavamoat: src/cli.js
     lavamoat-run-command: src/run-command.js
-  checksum: 10/db6e19bf6ab8fdd6f1d4948d9ff7938ce1b77edacd537d0526f828eb8602670c5c40edbd230f5b237515a048b40289d71359c2b82127a3bb81227a937c3fbca3
+  checksum: 10/ff676dbee8f865000a072e33d5922d31ef448cbdd25ef08c01982c2baec0b06f3ea664f5aa0b820d735134605d154e521b32be81dde7eb419b81fceee3fda992
   languageName: node
   linkType: hard
 
