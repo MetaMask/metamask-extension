@@ -55,12 +55,13 @@ import {
   CorruptionHandler,
   hasVault,
 } from './lib/state-corruption/state-corruption-recovery';
+import { initSidePanelContextMenu } from './lib/sidepanel-context-menu';
 import {
   backedUpStateKeys,
   PersistenceManager,
 } from './lib/stores/persistence-manager';
 import ExtensionStore from './lib/stores/extension-store';
-import ReadOnlyNetworkStore from './lib/stores/read-only-network-store';
+import { FixtureExtensionStore } from './lib/stores/fixture-extension-store';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import { updateRemoteFeatureFlags } from './lib/update-remote-feature-flags';
@@ -114,10 +115,10 @@ const BADGE_COLOR_NOTIFICATION = '#D73847';
 const BADGE_MAX_COUNT = 9;
 
 const inTest = process.env.IN_TEST;
-const useReadOnlyNetworkStore =
+const useFixtureStore =
   inTest && getManifestFlags().testing?.forceExtensionStore !== true;
-const localStore = useReadOnlyNetworkStore
-  ? new ReadOnlyNetworkStore()
+const localStore = useFixtureStore
+  ? new FixtureExtensionStore()
   : new ExtensionStore();
 const persistenceManager = new PersistenceManager({ localStore });
 
@@ -180,7 +181,10 @@ const ONE_SECOND_IN_MILLISECONDS = 1_000;
 // Timeout for initializing phishing warning page.
 const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
-lazyListener.once('runtime', 'onInstalled').then(handleOnInstalled);
+lazyListener.once('runtime', 'onInstalled').then((details) => {
+  handleOnInstalled(details);
+  handleSidePanelContextMenu();
+});
 
 /**
  * This deferred Promise is used to track whether initialization has finished.
@@ -1658,26 +1662,14 @@ function onInstall() {
     platform.openExtensionInBrowser();
   }
 }
-// Only register sidepanel context menu for browsers that support it (Chrome/Edge/Brave)
-// and when the feature flag is enabled
-if (
-  browser.contextMenus &&
-  browser.sidePanel &&
-  process.env.IS_SIDEPANEL?.toString() === 'true'
-) {
-  browser.runtime.onInstalled.addListener(() => {
-    browser.contextMenus.create({
-      id: 'openSidePanel',
-      title: 'MetaMask Sidepanel',
-      contexts: ['all'],
-    });
-  });
-  browser.contextMenus.onClicked.addListener((info, tab) => {
-    if (info.menuItemId === 'openSidePanel') {
-      // This will open the panel in all the pages on the current window.
-      browser.sidePanel.open({ windowId: tab.windowId });
-    }
-  });
+
+/**
+ * Handles the onInstalled event for sidepanel context menu creation.
+ * This is registered via lazyListener to catch the event at module load time.
+ */
+async function handleSidePanelContextMenu() {
+  await isInitialized;
+  await initSidePanelContextMenu(controller);
 }
 
 /**

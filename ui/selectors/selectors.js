@@ -482,7 +482,7 @@ export const getMetaMaskAccounts = createDeepEqualSelector(
           }
         } else {
           const multichainNetwork = multichainNetworkProviders.find((network) =>
-            network.isAddressCompatible(internalAccount.address),
+            internalAccount.scopes.some((scope) => scope === network.chainId),
           );
           account = {
             ...account,

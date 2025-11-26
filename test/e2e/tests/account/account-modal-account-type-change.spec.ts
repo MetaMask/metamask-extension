@@ -45,7 +45,7 @@ describe.skip('Switch Modal - Switch Account', function (this: Suite) {
 
         const upgradeAndBatchTxConfirmation = new Eip7702AndSendCalls(driver);
         await upgradeAndBatchTxConfirmation.checkExpectedTxTypeIsDisplayed(
-          "You're switching to a smart account",
+          "You're switching to a smart account.",
         );
         await upgradeAndBatchTxConfirmation.checkExpectedInteractingWithIsDisplayed(
           'Account 1',

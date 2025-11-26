@@ -525,7 +525,7 @@ describe('RewardsDataService', () => {
 
       expect(result).toEqual(mockLoginResponse);
       expect(mockFetch).toHaveBeenCalledWith(
-        `${REWARDS_API_URL.PRD}/auth/mobile-login`,
+        `${REWARDS_API_URL.UAT}/auth/mobile-login`,
         expect.objectContaining({
           method: 'POST',
           body: JSON.stringify(mockLoginRequest),
@@ -790,7 +790,7 @@ describe('RewardsDataService', () => {
 
       expect(result).toEqual(mockSeasonStateResponse);
       expect(mockFetch).toHaveBeenCalledWith(
-        `${REWARDS_API_URL.PRD}/seasons/${mockSeasonId}/state`,
+        `${REWARDS_API_URL.UAT}/seasons/${mockSeasonId}/state`,
         {
           credentials: 'omit',
           method: 'GET',
@@ -1071,7 +1071,7 @@ describe('RewardsDataService', () => {
       // Assert
       expect(result).toEqual(mockOptInStatusResponse);
       expect(mockFetch).toHaveBeenCalledWith(
-        `${REWARDS_API_URL.PRD}/public/rewards/ois`,
+        `${REWARDS_API_URL.UAT}/public/rewards/ois`,
         expect.objectContaining({
           method: 'POST',
           body: JSON.stringify(mockOptInStatusRequest),
@@ -1392,7 +1392,7 @@ describe('RewardsDataService', () => {
       );
     });
 
-    it('uses PRD URL for non-production environments', async () => {
+    it('uses UAT URL for non-production environments', async () => {
       delete process.env.METAMASK_ENVIRONMENT;
       service = createService();
 
@@ -1405,11 +1405,11 @@ describe('RewardsDataService', () => {
       await service.validateReferralCode('TEST');
 
       expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining(REWARDS_API_URL.PRD),
+        expect.stringContaining(REWARDS_API_URL.UAT),
         expect.any(Object),
       );
       expect(mockFetch).toHaveBeenCalledWith(
-        `${REWARDS_API_URL.PRD}/referral/validate?code=TEST`,
+        `${REWARDS_API_URL.UAT}/referral/validate?code=TEST`,
         expect.any(Object),
       );
     });
