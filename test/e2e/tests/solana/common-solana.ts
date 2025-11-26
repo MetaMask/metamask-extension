@@ -3,7 +3,7 @@ import * as fs from 'fs/promises';
 import { Mockttp, MockedEndpoint } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { DAPP_PATH } from '../../constants';
 import {
   loginWithBalanceValidation,
