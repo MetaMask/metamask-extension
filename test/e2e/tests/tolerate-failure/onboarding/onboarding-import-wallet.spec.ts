@@ -107,7 +107,9 @@ describe('MetaMask onboarding', function () {
         await headerNavbar.openAccountsPage();
         timer7.startTimer();
         const accountList = new AccountListPage(driver);
-        await accountList.checkListIsCompletelyLoaded();
+        await accountList.checkPageIsLoaded({
+          isMultichainAccountsState2Enabled: true,
+        });
         timer7.stopTimer();
       },
     );
