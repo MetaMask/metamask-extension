@@ -264,7 +264,7 @@ export function selectShowPna25Banner(state: Pick<State, 'metamask'>): boolean {
     return false; // User hasn't completed onboarding yet
   }
 
-  const isPna25Enabled = remoteFeatureFlags?.['extension-ux-pna25'];
+  const isPna25Enabled = remoteFeatureFlags?.extensionUxPna25;
 
   // Check all conditions
   if (!isPna25Enabled) {

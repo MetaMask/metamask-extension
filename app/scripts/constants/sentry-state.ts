@@ -419,7 +419,7 @@ export const SENTRY_UI_STATE = {
     welcomeScreenSeen: true,
     slides: false,
     confirmationExchangeRates: true,
-    pna25Acknowledged: true,
+    pna25Acknowledged: false,
   },
   metamask: {
     ...flattenedBackgroundStateMask,
