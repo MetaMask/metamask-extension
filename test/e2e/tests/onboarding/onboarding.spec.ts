@@ -82,7 +82,7 @@ describe('MetaMask onboarding', function () {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed('0');
+        await homePage.checkBalanceEmptyStateIsDisplayed();
       },
     );
   });
@@ -99,7 +99,7 @@ describe('MetaMask onboarding', function () {
         });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed('0');
+        await homePage.checkBalanceEmptyStateIsDisplayed();
       },
     );
   });

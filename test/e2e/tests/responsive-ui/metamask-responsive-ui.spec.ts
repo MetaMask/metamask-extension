@@ -29,7 +29,7 @@ describe('MetaMask Responsive UI', function (this: Suite) {
         // assert balance
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed('0');
+        await homePage.checkBalanceEmptyStateIsDisplayed();
       },
     );
   });

@@ -49,7 +49,7 @@ describe.skip('QR Hardware', function () {
         // Unlock first account of first page and check that the correct account has been added
         await selectQRAccountPage.unlockAccount(1);
         await headerNavbar.checkPageIsLoaded();
-        await new HomePage(driver).checkExpectedBalanceIsDisplayed('0');
+        await new HomePage(driver).checkBalanceEmptyStateIsDisplayed();
         await headerNavbar.openAccountMenu();
         await checkAccountAddressDisplayedInAccountList(driver, 'QR', 1);
       },
@@ -88,7 +88,7 @@ describe.skip('QR Hardware', function () {
         // Check that all 3 QR accounts are displayed in account list
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed('0');
+        await homePage.checkBalanceEmptyStateIsDisplayed();
         await headerNavbar.openAccountMenu();
         await checkAccountAddressDisplayedInAccountList(driver, 'QR', 3);
 
