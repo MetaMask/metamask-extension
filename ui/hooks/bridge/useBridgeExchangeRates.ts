@@ -10,8 +10,6 @@ import {
 import { getMarketData, getParticipateInMetaMetrics } from '../../selectors';
 import { getCurrentCurrency } from '../../ducks/metamask/metamask';
 import {
-  setDestTokenExchangeRates,
-  setDestTokenUsdExchangeRates,
   setSrcTokenExchangeRates,
 } from '../../ducks/bridge/bridge';
 import { exchangeRateFromMarketData } from '../../ducks/bridge/utils';
@@ -86,47 +84,6 @@ export const useBridgeExchangeRates = () => {
         );
       }
     }
-  }, [currency, dispatch, fromChainId, fromTokenAddress, marketData]);
+  }, [currency, dispatch, fromToken?.assetId, cachedFromTokenExchangeRate]);
 
-  // Fetch exchange rates for selected dest token if not found in marketData
-  useEffect(() => {
-    toAbortController.current?.abort();
-    toAbortController.current = new AbortController();
-    if (toChainId && toTokenAddress) {
-      const exchangeRate = exchangeRateFromMarketData(
-        toChainId,
-        toTokenAddress,
-        marketData,
-      );
-
-      if (!exchangeRate) {
-        dispatch(
-          setDestTokenExchangeRates({
-            chainId: toChainId,
-            tokenAddress: toTokenAddress,
-            currency,
-            signal: toAbortController.current.signal,
-          }),
-        );
-        // If the selected currency is not USD, fetch the USD exchange rate for metrics
-        if (isMetaMetricsEnabled && currency !== 'usd') {
-          dispatch(
-            setDestTokenUsdExchangeRates({
-              chainId: toChainId,
-              tokenAddress: toTokenAddress,
-              currency: 'usd',
-              signal: toAbortController.current.signal,
-            }),
-          );
-        }
-      }
-    }
-  }, [
-    currency,
-    dispatch,
-    isMetaMetricsEnabled,
-    marketData,
-    toChainId,
-    toTokenAddress,
-  ]);
 };

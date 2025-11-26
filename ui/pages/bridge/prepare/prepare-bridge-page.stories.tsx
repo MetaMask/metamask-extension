@@ -74,8 +74,6 @@ const mockFeatureFlags = {
 };
 const mockBridgeSlice = {
   toChainId: CHAIN_IDS.LINEA_MAINNET,
-  toNativeExchangeRate: 1,
-  toTokenExchangeRate: 0.99,
   fromTokenInputValue: '1',
 };
 export const DefaultStory = () => {

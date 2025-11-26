@@ -45,8 +45,6 @@ export type BridgeState = {
   toToken: BridgeToken | null;
   fromTokenInputValue: string | null;
   fromTokenExchangeRate: number | null; // Exchange rate from selected token to the default currency (can be fiat or crypto)
-  toTokenExchangeRate: number | null; // Exchange rate from the selected token to the default currency (can be fiat or crypto)
-  toTokenUsdExchangeRate: number | null; // Exchange rate from the selected token to the USD. This is needed for metrics
   fromNativeBalance: string | null; // User's balance for the native token of the selected fromChain(EVM)
   fromTokenBalance: string | null; // User's balance for the selected token (EVM)
   sortOrder: SortOrder;

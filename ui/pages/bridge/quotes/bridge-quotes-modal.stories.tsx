@@ -40,8 +40,6 @@ DefaultStory.decorators = [
         createBridgeMockStore({
           bridgeSliceOverrides: {
             fromTokenExchangeRate: 0.99,
-            toNativeExchangeRate: 1,
-            toTokenExchangeRate: 0.99,
             sortOrder: SortOrder.COST_ASC,
           },
           bridgeStateOverrides: { quotes: mockBridgeQuotesErc20Erc20 },
@@ -77,8 +75,6 @@ PositiveArbitrage.decorators = [
         createBridgeMockStore({
           bridgeSliceOverrides: {
             fromTokenExchangeRate: 0.99,
-            toNativeExchangeRate: 1,
-            toTokenExchangeRate: 2.1,
           },
           bridgeStateOverrides: { quotes: mockBridgeQuotesErc20Erc20 },
           metamaskStateOverrides: {

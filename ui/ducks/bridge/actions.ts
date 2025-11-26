@@ -19,8 +19,6 @@ import { submitRequestToBackground } from '../../store/background-connection';
 import type { MetaMaskReduxDispatch } from '../../store/store';
 import {
   bridgeSlice,
-  setDestTokenExchangeRates,
-  setDestTokenUsdExchangeRates,
   setSrcTokenExchangeRates,
   setTxAlerts,
   setEVMSrcTokenBalance as setEVMSrcTokenBalance_,
@@ -48,8 +46,6 @@ export {
   setToToken,
   setFromToken,
   setFromTokenInputValue,
-  setDestTokenExchangeRates,
-  setDestTokenUsdExchangeRates,
   setSrcTokenExchangeRates,
   setSortOrder,
   setSelectedQuote,
