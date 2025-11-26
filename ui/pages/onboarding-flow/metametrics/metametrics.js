@@ -125,6 +125,18 @@ export default function OnboardingMetametrics() {
         );
         dispatch(setParticipateInMetaMetrics(true));
 
+        // Set pna25Acknowledged to true for new users who opt into metrics during onboarding
+        // This means they saw the updated policy during onboarding
+        // Only set if feature flag is enabled, as the banner only shows when flag is enabled
+        if (isPna25Enabled) {
+          try {
+            await submitRequestToBackground('setPna25Acknowledged', [true]);
+          } catch (error) {
+            // Log error but don't block onboarding if state update fails
+            log.error('Error setting pna25Acknowledged:', error);
+          }
+        }
+
         await trackEvent({
           category: MetaMetricsEventCategory.Onboarding,
           event: MetaMetricsEventName.AppInstalled,
@@ -141,19 +153,6 @@ export default function OnboardingMetametrics() {
       } else {
         dispatch(setParticipateInMetaMetrics(false));
         dispatch(setDataCollectionForMarketing(false));
-      }
-
-      // If LD flag is enabled, set pna25Acknowledged to true
-      // This means they saw the updated policy during onboarding (whether they opted in or out)
-      // No need to show banner to new users who already saw the updated message
-      // Await to ensure state update completes before navigation
-      if (isPna25Enabled) {
-        try {
-          await submitRequestToBackground('setPna25Acknowledged', [true]);
-        } catch (error) {
-          // Log error but don't block navigation if state update fails
-          log.error('Error setting pna25Acknowledged:', error);
-        }
       }
     } catch (error) {
       log.error('onConfirm::error', error);
