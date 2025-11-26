@@ -1,7 +1,6 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-
 import {
   AlertActionKey,
   RowAlertKey,
@@ -24,9 +23,7 @@ export function useInsufficientBalanceAlerts({
   const { selectedGasFeeToken, gasFeeTokens } = currentConfirmation ?? {};
   const { hasInsufficientBalance, nativeCurrency } =
     useHasInsufficientBalance();
-
   const isSimulationEnabled = useSelector(getUseTransactionSimulations);
-
   const isSponsored = currentConfirmation?.isGasFeeSponsored;
   const {
     isSupported: isGaslessSupported,
@@ -34,24 +31,30 @@ export function useInsufficientBalanceAlerts({
   } = useIsGaslessSupported();
 
   const isGasFeeTokensEmpty = gasFeeTokens?.length === 0;
-  const hasNoGasFeeTokenSelected = ignoreGasFeeToken || !selectedGasFeeToken;
 
-  const isGaslessCheckComplete =
-    !isGaslessSupportedPending && isGaslessSupported;
+  // Check if gasless check has completed (regardless of result)
+  const isGaslessCheckComplete = !isGaslessSupportedPending;
 
-  const isSponsoredTransaction = isSponsored && isGaslessCheckComplete;
+  // Transaction is sponsored only if it's marked as sponsored AND gasless is supported
+  const isSponsoredTransaction = isSponsored && isGaslessSupported;
 
+  // Simulation is complete if it's disabled, or if enabled and gasFeeTokens is loaded
   const isSimulationComplete = !isSimulationEnabled || Boolean(gasFeeTokens);
 
-  const isGaslessEligibleForAlert =
-    (isGasFeeTokensEmpty && isGaslessCheckComplete) ||
-    (!isGasFeeTokensEmpty && !isGaslessCheckComplete);
+  // Check if user has selected a gas fee token (or we're ignoring that check)
+  const hasNoGasFeeTokenSelected = ignoreGasFeeToken || !selectedGasFeeToken;
+
+  // Show alert when gasless check is done and either:
+  // - Gasless is NOT supported (user needs native currency for gas)
+  // - Gasless IS supported but gasFeeTokens is empty (no alternative tokens available)
+  const shouldCheckGaslessConditions =
+    isGaslessCheckComplete && (!isGaslessSupported || isGasFeeTokensEmpty);
 
   const showAlert =
     hasInsufficientBalance &&
     isSimulationComplete &&
     hasNoGasFeeTokenSelected &&
-    isGaslessEligibleForAlert &&
+    shouldCheckGaslessConditions &&
     !isSponsoredTransaction;
 
   return useMemo(() => {
