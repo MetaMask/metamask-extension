@@ -27,11 +27,7 @@ import {
   getIsStxEnabled,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  formatCurrencyAmount,
-  formatNetworkFee,
-  formatTokenAmount,
-} from '../utils/quote';
+import { formatNetworkFee, formatTokenAmount } from '../utils/quote';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
   IconColor,
@@ -47,6 +43,7 @@ import { formatPriceImpact } from '../utils/price-impact';
 import { type DestinationAccount } from '../prepare/types';
 import { useRewards } from '../../../hooks/bridge/useRewards';
 import { RewardsBadge } from '../../../components/app/rewards/RewardsBadge';
+import AddRewardsAccount from '../../../components/app/rewards/AddRewardsAccount';
 import { Skeleton } from '../../../components/component-library/skeleton';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
@@ -139,7 +136,11 @@ export const MultichainBridgeQuoteCard = ({
     estimatedPoints,
     shouldShowRewardsRow,
     hasError: hasRewardsError,
-  } = useRewards({ activeQuote: activeQuote?.quote ?? null });
+    rewardsAccountScope,
+    accountOptedIn: rewardsAccountOptedIn,
+  } = useRewards({
+    activeQuote: isQuoteLoading ? null : (activeQuote?.quote ?? null),
+  });
 
   if (!activeQuote) {
     return null;
@@ -360,7 +361,7 @@ export const MultichainBridgeQuoteCard = ({
         </Row>
 
         {/* Minimum Received */}
-        {activeQuote.minToTokenAmount.valueInCurrency && (
+        {activeQuote.minToTokenAmount.amount && (
           <Row justifyContent={JustifyContent.spaceBetween}>
             <Row gap={2}>
               <Text
@@ -383,10 +384,10 @@ export const MultichainBridgeQuoteCard = ({
               color={TextColor.textAlternative}
               data-testid="minimum-received"
             >
-              {formatCurrencyAmount(
-                activeQuote.minToTokenAmount.valueInCurrency,
-                currency,
-                2,
+              {formatTokenAmount(
+                locale,
+                activeQuote.minToTokenAmount.amount,
+                activeQuote.quote.destAsset.symbol,
               )}
             </Text>
           </Row>
@@ -457,7 +458,10 @@ export const MultichainBridgeQuoteCard = ({
 
         {/* Estimated Rewards Points */}
         {shouldShowRewardsRow && (
-          <Row justifyContent={JustifyContent.spaceBetween}>
+          <Row
+            justifyContent={JustifyContent.spaceBetween}
+            data-testid="rewards-row"
+          >
             <Row gap={2}>
               <Text
                 variant={TextVariant.bodySm}
@@ -475,10 +479,14 @@ export const MultichainBridgeQuoteCard = ({
             </Row>
             <Row gap={1}>
               {isRewardsLoading || isQuoteLoading ? (
-                <Skeleton width={100} height={16} />
+                <Skeleton
+                  width={100}
+                  height={16}
+                  data-testid="rewards-loading-skeleton"
+                />
               ) : null}
               {!isRewardsLoading && !isQuoteLoading && hasRewardsError && (
-                <>
+                <Row data-testid="rewards-error-state">
                   <RewardsBadge
                     formattedPoints={t('bridgePoints_couldntLoad')}
                     withPointsSuffix={false}
@@ -496,22 +504,25 @@ export const MultichainBridgeQuoteCard = ({
                   >
                     {t('bridgePoints_error_content')}
                   </Tooltip>
+                </Row>
+              )}
+              {!isRewardsLoading && !isQuoteLoading && !hasRewardsError && (
+                <>
+                  {rewardsAccountScope && rewardsAccountOptedIn === false ? (
+                    <AddRewardsAccount account={rewardsAccountScope} />
+                  ) : (
+                    <RewardsBadge
+                      formattedPoints={new Intl.NumberFormat(locale).format(
+                        estimatedPoints ?? 0,
+                      )}
+                      withPointsSuffix={false}
+                      boxClassName="gap-1 bg-background-transparent"
+                      textClassName="text-alternative"
+                      useAlternativeIconColor={!estimatedPoints}
+                    />
+                  )}
                 </>
               )}
-              {!isRewardsLoading &&
-                !isQuoteLoading &&
-                !hasRewardsError &&
-                estimatedPoints !== null && (
-                  <RewardsBadge
-                    formattedPoints={new Intl.NumberFormat(locale).format(
-                      estimatedPoints,
-                    )}
-                    withPointsSuffix={false}
-                    boxClassName="gap-1 bg-background-transparent"
-                    textClassName="text-alternative"
-                    useAlternativeIconColor={!estimatedPoints}
-                  />
-                )}
             </Row>
           </Row>
         )}

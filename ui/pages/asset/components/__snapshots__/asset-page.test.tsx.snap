@@ -386,39 +386,6 @@ exports[`AssetPage should render a native asset 1`] = `
             class="mm-box transaction-list"
           >
             <div
-              class="mm-box ramps-card ramps-card-activity mm-box--margin-2 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--rounded-lg"
-            >
-              <div
-                class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
-              >
-                <h4
-                  class="mm-box mm-text ramps-card__title mm-text--heading-sm mm-box--color-text-default"
-                >
-                  Tips for using a wallet
-                </h4>
-                <button
-                  aria-label="Close"
-                  class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-info-inverse mm-box--background-color-transparent mm-box--rounded-lg"
-                  data-testid="ramp-card-close-btn"
-                >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-                    style="mask-image: url('./images/icons/close.svg');"
-                  />
-                </button>
-              </div>
-              <p
-                class="mm-box mm-text ramps-card__body mm-text--body-md mm-box--color-text-default"
-              >
-                Adding tokens unlocks more ways to use web3.
-              </p>
-              <button
-                class="mm-box mm-text mm-button-base mm-button-base--size-md ramps-card__cta-button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
-              >
-                Token marketplace
-              </button>
-            </div>
-            <div
               class="flex flex-col gap-3 items-center justify-center bg-default max-w-48 mx-auto mt-5 mb-6"
               data-testid="activity-tab-empty-state"
             >
@@ -865,39 +832,6 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
           <div
             class="mm-box transaction-list"
           >
-            <div
-              class="mm-box ramps-card ramps-card-activity mm-box--margin-2 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--rounded-lg"
-            >
-              <div
-                class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
-              >
-                <h4
-                  class="mm-box mm-text ramps-card__title mm-text--heading-sm mm-box--color-text-default"
-                >
-                  Tips for using a wallet
-                </h4>
-                <button
-                  aria-label="Close"
-                  class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-info-inverse mm-box--background-color-transparent mm-box--rounded-lg"
-                  data-testid="ramp-card-close-btn"
-                >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-                    style="mask-image: url('./images/icons/close.svg');"
-                  />
-                </button>
-              </div>
-              <p
-                class="mm-box mm-text ramps-card__body mm-text--body-md mm-box--color-text-default"
-              >
-                Adding tokens unlocks more ways to use web3.
-              </p>
-              <button
-                class="mm-box mm-text mm-button-base mm-button-base--size-md ramps-card__cta-button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
-              >
-                Token marketplace
-              </button>
-            </div>
             <div
               class="flex flex-col gap-3 items-center justify-center bg-default max-w-48 mx-auto mt-5 mb-6"
               data-testid="activity-tab-empty-state"
@@ -1374,39 +1308,6 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
           <div
             class="mm-box transaction-list"
           >
-            <div
-              class="mm-box ramps-card ramps-card-activity mm-box--margin-2 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--rounded-lg"
-            >
-              <div
-                class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
-              >
-                <h4
-                  class="mm-box mm-text ramps-card__title mm-text--heading-sm mm-box--color-text-default"
-                >
-                  Tips for using a wallet
-                </h4>
-                <button
-                  aria-label="Close"
-                  class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-info-inverse mm-box--background-color-transparent mm-box--rounded-lg"
-                  data-testid="ramp-card-close-btn"
-                >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-                    style="mask-image: url('./images/icons/close.svg');"
-                  />
-                </button>
-              </div>
-              <p
-                class="mm-box mm-text ramps-card__body mm-text--body-md mm-box--color-text-default"
-              >
-                Adding tokens unlocks more ways to use web3.
-              </p>
-              <button
-                class="mm-box mm-text mm-button-base mm-button-base--size-md ramps-card__cta-button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-xl"
-              >
-                Token marketplace
-              </button>
-            </div>
             <div
               class="flex flex-col gap-3 items-center justify-center bg-default max-w-48 mx-auto mt-5 mb-6"
               data-testid="activity-tab-empty-state"
