@@ -5622,7 +5622,7 @@
     "message": "Níl an t-idirbheart seo clúdaithe"
   },
   "shieldCoverageAlertMessageTxTypeNotSupported": {
-    "message": "Ní thacaítear leis an gcineál idirbhirt seo, mar sin níl sé faoi chosaint ag Transaction Shield. $1."
+    "message": "Ní thacaítear leis an gcineál idirbhirt seo, mar sin níl sé faoi chosaint ag Transaction Shield. $1"
   },
   "shieldCoverageAlertMessageUnknown": {
     "message": "Ní féidir an t-iarratas seo a fhíorú, mar sin níl sé faoi chosaint ag Transaction Shield. $1."

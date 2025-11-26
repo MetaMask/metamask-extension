@@ -31,6 +31,7 @@ export const ShieldCoverageAlertMessage = ({
           target="_blank"
           rel="noreferrer noopener"
           color={TextColor.primaryDefault}
+          style={{ verticalAlign: 'baseline' }}
         >
           {t('shieldCoverageAlertMessageLearnHowCoverageWorks')}
         </ButtonLink>,
