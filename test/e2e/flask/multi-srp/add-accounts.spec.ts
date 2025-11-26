@@ -2,7 +2,7 @@ import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
-import { withMultiSrp } from './common-multi-srp';
+import { mockActiveNetworks, withMultiSrp } from './common-multi-srp';
 
 const addAccountToSrp = async (driver: Driver, srpIndex: number) => {
   const headerNavbar = new HeaderNavbar(driver);
@@ -22,14 +22,26 @@ const addAccountToSrp = async (driver: Driver, srpIndex: number) => {
 
 describe('Multi SRP - Add accounts', function (this: Suite) {
   it('adds a new account for the default srp', async function () {
-    await withMultiSrp(async (driver) => {
-      await addAccountToSrp(driver, 0);
-    });
+    await withMultiSrp(
+      {
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockActiveNetworks,
+      },
+      async (driver: Driver) => {
+        await addAccountToSrp(driver, 0);
+      },
+    );
   });
 
   it('adds a new account for the new srp', async function () {
-    await withMultiSrp(async (driver) => {
-      await addAccountToSrp(driver, 1);
-    });
+    await withMultiSrp(
+      {
+        title: this.test?.fullTitle(),
+        testSpecificMock: mockActiveNetworks,
+      },
+      async (driver: Driver) => {
+        await addAccountToSrp(driver, 1);
+      },
+    );
   });
 });

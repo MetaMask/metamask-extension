@@ -50,23 +50,6 @@ class BitcoinHomepage extends HomePage {
   }
 
   /**
-   * Checks if the send button is enabled on bitcoin account homepage.
-   *
-   */
-  async checkIsSendButtonEnabled(): Promise<boolean> {
-    try {
-      await this.driver.findClickableElement(this.sendButton, {
-        timeout: 1000,
-      });
-    } catch (e) {
-      console.log('Send button not enabled', e);
-      return false;
-    }
-    console.log('Send button is enabled');
-    return true;
-  }
-
-  /**
    * Checks if the buy/sell button is enabled on bitcoin account homepage.
    */
   async checkIsBuySellButtonEnabled(): Promise<boolean> {
