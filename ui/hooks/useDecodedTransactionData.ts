@@ -31,9 +31,11 @@ export function useDecodedTransactionData({
 
 const TRANSACTION_DATA_VALUE_PARAM_NAMES = [
   'value',
-  'amount',
   '_value',
+  'value_',
+  'amount',
   '_amount',
+  'amount_',
 ];
 
 export function useDecodedTransactionDataValue(
