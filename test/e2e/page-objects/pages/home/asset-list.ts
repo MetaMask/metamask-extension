@@ -757,7 +757,7 @@ class AssetListPage {
   }
 
   /**
-   * Checks if the token list prices are displaned and no "No conversion rate available" message is displayed
+   * Checks if the token list prices are displayed and no "No conversion rate available" message is displayed
    *
    * @throws Error if a "No conversion rate available" message is displayed
    */
