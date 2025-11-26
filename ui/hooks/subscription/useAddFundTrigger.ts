@@ -7,6 +7,7 @@ import {
   CRYPTO_PAYMENT_METHOD_ERRORS,
 } from '@metamask/subscription-controller';
 import log from 'loglevel';
+import { BigNumber } from 'bignumber.js';
 import { useTokenBalances as pollAndUpdateEvmBalances } from '../useTokenBalances';
 import {
   getSubscriptionCryptoApprovalAmount,
@@ -115,16 +116,12 @@ export const useShieldSubscriptionCryptoSufficientBalanceCheck = () => {
       return undefined;
     }
 
-    // NOTE: we are using stable coin for subscription atm, so we need to scale the balance by the decimals
-    const scaledFactor = 10n ** 6n;
-    const scaledBalance =
-      BigInt(Math.round(Number(token.balance) * Number(scaledFactor))) /
-      scaledFactor;
+    const balance = new BigNumber(token.balance);
     const tokenHasEnoughBalance =
       subscriptionCryptoApprovalAmount &&
-      scaledBalance * BigInt(10 ** token.decimals) >=
-        BigInt(subscriptionCryptoApprovalAmount.approveAmount);
-
+      balance
+        .mul(new BigNumber(10).pow(token.decimals))
+        .gte(subscriptionCryptoApprovalAmount.approveAmount);
     if (!tokenHasEnoughBalance) {
       return undefined;
     }
