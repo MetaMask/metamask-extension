@@ -12,6 +12,7 @@ import {
   SimulationTokenBalanceChange,
 } from '@metamask/transaction-controller';
 import { getCommandValues } from './dapp-swap-command-utils';
+import { parseApprovalTransactionData } from '../transaction.utils';
 
 export const ABI = [
   {
@@ -174,33 +175,35 @@ export function getBalanceChangeFromSimulationData(
   return new BigNumber(balanceDifference, 16).toString(10);
 }
 
-const validSwapBatchTransactionCommands = [
-  '0x3593564c',
-  '0x87517c45',
-  '0x095ea7b3',
-];
+function isValidApprovalForSwap(data: Hex, approveTokenAddress?: Hex) {
+  const parsedTransactionData = parseApprovalTransactionData(data);
+  return (
+    parsedTransactionData?.tokenAddress === approveTokenAddress &&
+    parsedTransactionData?.name === 'approve'
+  );
+}
 
 export function checkValidSingleOrBatchTransaction(
   nestedTransactions?: NestedTransactionMetadata[],
+  approveTokenAddress?: Hex,
 ) {
   if (!nestedTransactions || nestedTransactions?.length === 0) {
     return;
   }
-  if (nestedTransactions.length > 3) {
+  if (nestedTransactions.length > 2) {
     throw new Error(
-      'Invalid batch transaction: maximum 3 nested transactions allowed',
+      'Error getting data from swap: invalid batch transaction maximum 3 nested transactions allowed',
     );
   }
-  const invalidNestedTransactions = nestedTransactions.filter(
-    ({ data }) =>
-      !data ||
-      !validSwapBatchTransactionCommands.some((command) =>
-        data?.startsWith(command),
-      ),
+  const validApprovalNestedTransactions = nestedTransactions.filter(
+    ({ data }) => isValidApprovalForSwap(data as Hex, approveTokenAddress),
   );
-  if (invalidNestedTransactions.length > 0) {
+  if (
+    validApprovalNestedTransactions.length == 0 &&
+    nestedTransactions.length > 1
+  ) {
     throw new Error(
-      `Invalid batch transaction: ${invalidNestedTransactions.map((nestedTransaction) => nestedTransaction.data?.substring(0, 10)).join(', ')}`,
+      'Error getting data from swap: invalid batch transaction, valid needed',
     );
   }
 }
