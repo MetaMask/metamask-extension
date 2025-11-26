@@ -5,7 +5,6 @@ import * as ReactReduxModule from 'react-redux';
 import { userEvent } from '@testing-library/user-event';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { renderHook } from '@testing-library/react-hooks';
-import { fireEvent } from '../../../../test/jest';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
@@ -82,12 +81,15 @@ describe('PrepareBridgePage', () => {
 
     expect(getByRole('button', { name: /ETH/u })).toBeInTheDocument();
 
-    expect(getByTestId('from-amount')).toBeInTheDocument();
-    expect(getByTestId('from-amount').closest('input')).not.toBeDisabled();
-    await act(() => {
-      fireEvent.change(getByTestId('from-amount'), { target: { value: '2' } });
+    const input = getByTestId('from-amount');
+    expect(input).toBeInTheDocument();
+    expect(input.closest('input')).not.toBeDisabled();
+    await act(async () => {
+      input.focus();
+      await userEvent.clear(input);
+      await userEvent.keyboard('2');
     });
-    expect(getByTestId('from-amount').closest('input')).toHaveValue('2');
+    expect(input).toHaveDisplayValue('2');
 
     expect(getByTestId('to-amount')).toBeInTheDocument();
     expect(getByTestId('to-amount').closest('input')).toBeDisabled();
@@ -162,15 +164,20 @@ describe('PrepareBridgePage', () => {
     expect(getByTestId('from-amount')).toBeInTheDocument();
     expect(getByTestId('from-amount').closest('input')).not.toBeDisabled();
 
-    await act(() => {
-      fireEvent.change(getByTestId('from-amount'), { target: { value: '1' } });
+    const input = getByTestId('from-amount');
+    await act(async () => {
+      input.focus();
+      await userEvent.clear(input);
+      await userEvent.keyboard('1');
     });
-    expect(getByTestId('from-amount').closest('input')).toHaveValue('1');
+    expect(input).toHaveDisplayValue('1');
 
-    await act(() => {
-      fireEvent.change(getByTestId('from-amount'), { target: { value: '2' } });
+    await act(async () => {
+      input.focus();
+      await userEvent.clear(input);
+      await userEvent.keyboard('2');
     });
-    expect(getByTestId('from-amount').closest('input')).toHaveValue('2');
+    expect(input).toHaveDisplayValue('2');
 
     expect(getByTestId('to-amount')).toBeInTheDocument();
     expect(getByTestId('to-amount').closest('input')).toBeDisabled();
@@ -238,42 +245,56 @@ describe('PrepareBridgePage', () => {
 
     expect(getByTestId('from-amount').closest('input')).not.toBeDisabled();
 
-    act(() => {
-      fireEvent.change(getByTestId('from-amount'), {
-        target: { value: '2abc.123456123456123456' },
-      });
+    const input = getByTestId('from-amount');
+    await act(async () => {
+      input.focus();
+      await userEvent.clear(input);
+      for (const char of '2abc.123456123456123456') {
+        await userEvent.keyboard(char);
+      }
     });
-    expect(getByTestId('from-amount').closest('input')).toHaveValue(
-      '2.123456123456123456',
-    );
+    expect(input).toHaveDisplayValue('2.123456123456123456');
 
-    act(() => {
-      fireEvent.change(getByTestId('from-amount'), {
-        target: { value: '2abc,131.1212' },
-      });
+    await act(async () => {
+      input.focus();
+      await userEvent.clear(input);
+      for (const char of '2abc,131.1212') {
+        await userEvent.keyboard(char);
+      }
     });
-    expect(getByTestId('from-amount').closest('input')).toHaveValue(
-      '2131.1212',
-    );
+    expect(input).toHaveDisplayValue('2131.1212');
 
-    act(() => {
-      fireEvent.change(getByTestId('from-amount'), {
-        target: { value: '2abc,131.123456123456123456123456' },
-      });
+    await act(async () => {
+      input.focus();
+      await userEvent.clear(input);
+      for (const char of '2abc,131.123456123456123456123456') {
+        await userEvent.keyboard(char);
+      }
     });
-    expect(getByTestId('from-amount').closest('input')).toHaveValue(
-      '2131.123456123456123456123456',
-    );
+    expect(input).toHaveDisplayValue('2131.123456123456123456123456');
 
-    act(() => {
-      fireEvent.change(getByTestId('from-amount'), {
-        target: { value: '2abc.131.123456123456123456123456' },
-      });
+    await act(async () => {
+      input.focus();
+      await userEvent.clear(input);
+      await userEvent.paste('2abc,131.123456123456123456123456');
     });
-    expect(getByTestId('from-amount').closest('input')).toHaveValue('2.131');
+    expect(input).toHaveDisplayValue('2131.123456123456123456123456');
 
-    userEvent.paste('2abc.131.123456123456123456123456');
-    expect(getByTestId('from-amount').closest('input')).toHaveValue('2.131');
+    await act(async () => {
+      input.focus();
+      await userEvent.clear(input);
+      for (const char of '2abc.131.123456123456123456123456') {
+        await userEvent.keyboard(char);
+      }
+    });
+    expect(input).toHaveDisplayValue('2.131123456123456123456123456');
+
+    await act(async () => {
+      input.focus();
+      await userEvent.clear(input);
+      await userEvent.paste('2abc.131.123456123456123456123456');
+    });
+    expect(input).toHaveDisplayValue('2.131');
   });
 });
 

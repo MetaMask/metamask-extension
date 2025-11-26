@@ -1,5 +1,5 @@
 import React, { useContext, useMemo } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
 import browser from 'webextension-polyfill';
 import {
@@ -96,7 +96,7 @@ import {
   getShieldSubscription,
   getSubscriptionPaymentData,
 } from '../../../../shared/lib/shield';
-import { useRewardsContext } from '../../../contexts/rewards';
+import { selectRewardsEnabled } from '../../../ducks/rewards/selectors';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
 
 const METRICS_LOCATION = 'Global Menu';
@@ -118,9 +118,9 @@ export const GlobalMenu = ({
   const { captureCommonExistingShieldSubscriptionEvents } =
     useSubscriptionMetrics();
   const basicFunctionality = useSelector(getUseExternalServices);
-  const { rewardsEnabled } = useRewardsContext();
+  const rewardsEnabled = useSelector(selectRewardsEnabled);
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const { notificationsUnreadCount } = useUnreadNotificationsCounter();
   const { notificationsReadCount } = useReadNotificationsCounter();
@@ -302,7 +302,7 @@ export const GlobalMenu = ({
         read_count: notificationsReadCount,
       },
     });
-    history.push(NOTIFICATIONS_ROUTE);
+    navigate(NOTIFICATIONS_ROUTE);
     closeMenu();
   };
 
