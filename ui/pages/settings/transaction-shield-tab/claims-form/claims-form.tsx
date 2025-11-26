@@ -48,7 +48,10 @@ import { submitShieldClaim } from '../../../../store/actions';
 import LoadingScreen from '../../../../components/ui/loading-screen';
 import { setShowClaimSubmitToast } from '../../../../components/app/toast-master/utils';
 import { ClaimSubmitToastType } from '../../../../../shared/constants/app-state';
-import { TRANSACTION_SHIELD_LINK } from '../../../../helpers/constants/common';
+import {
+  TRANSACTION_SHIELD_SUPPORT_LINK,
+  TRANSACTION_SHIELD_LINK,
+} from '../../../../helpers/constants/common';
 import { FileUploader } from '../../../../components/component-library/file-uploader';
 import {
   SUBMIT_CLAIM_ERROR_CODES,
@@ -422,7 +425,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
           ? t('shieldClaimDetailsViewClaims', [
               <TextButton key="here-link" className="min-w-0" asChild>
                 <a
-                  href={TRANSACTION_SHIELD_LINK}
+                  href={TRANSACTION_SHIELD_SUPPORT_LINK}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -434,7 +437,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
               validSubmissionWindowDays,
               <TextButton key="here-link" className="min-w-0" asChild>
                 <a
-                  href={TRANSACTION_SHIELD_LINK}
+                  href={TRANSACTION_SHIELD_SUPPORT_LINK}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
