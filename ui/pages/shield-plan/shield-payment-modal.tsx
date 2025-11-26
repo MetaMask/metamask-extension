@@ -55,6 +55,7 @@ export const ShieldPaymentModal = ({
   onAssetChange,
   hasStableTokenWithBalance,
   tokensSupported,
+  minimumAmountRequired,
 }: {
   isOpen: boolean;
   onClose: () => void;
@@ -65,6 +66,7 @@ export const ShieldPaymentModal = ({
   onAssetChange: (asset: TokenWithApprovalAmount) => void;
   hasStableTokenWithBalance: boolean;
   tokensSupported: string[];
+  minimumAmountRequired: string;
 }) => {
   const t = useI18nContext();
   const [showAssetPickerModal, setShowAssetPickerModal] = useState(false);
@@ -124,15 +126,17 @@ export const ShieldPaymentModal = ({
     // multiple tokens to display eg. Insufficient USDC, USDT or mUSD
     if (tokensSupportedCopy.length > 0) {
       return t('shieldPlanNoFunds', [
+        minimumAmountRequired,
         tokensSupportedCopy.join(', '),
         lastToken,
       ]);
     }
     // single token to display eg. Insufficient USDC
     return t('shieldPlanNoFundsOneToken', [
+      minimumAmountRequired,
       lastToken ?? SUBSCRIPTION_DEFAULT_PAYMENT_TOKEN,
     ]);
-  }, [tokensSupported, t]);
+  }, [tokensSupported, t, minimumAmountRequired]);
 
   return (
     <Modal
