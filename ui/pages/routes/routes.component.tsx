@@ -349,12 +349,12 @@ const ShieldPlan = mmLazy(
 // End Lazy Routes
 
 const MemoizedReviewPermissionsWrapper = React.memo(() => (
-  <State2Wrapper
-    state1Component={ReviewPermissions as React.ComponentType<unknown>}
-    state2Component={
-      MultichainReviewPermissions as React.ComponentType<unknown>
-    }
-  />
+    <State2Wrapper
+      state1Component={ReviewPermissions as React.ComponentType<unknown>}
+      state2Component={
+        MultichainReviewPermissions as React.ComponentType<unknown>
+      }
+    />
 ));
 
 // eslint-disable-next-line @typescript-eslint/naming-convention

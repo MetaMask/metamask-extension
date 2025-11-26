@@ -369,6 +369,7 @@ export const MultichainReviewPermissions = () => {
                     totalCount={details.count}
                     chainIds={details.chains}
                     paddingTop={connectedAccountGroups.length === 0 ? 4 : 0}
+                    origin={activeTabOrigin}
                   />
                 ),
               )
