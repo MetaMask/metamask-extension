@@ -101,9 +101,9 @@ describe('MetaMask onboarding', function () {
         await assetListPage.checkTokenListIsDisplayed();
         await assetListPage.checkConversionRateDisplayed();
         await assetListPage.checkTokenExistsInList('Ethereum');
-        await assetListPage.checkTokenExistsInList('Solana');
-        await assetListPage.checkTokenExistsInList('Bitcoin');
-        await assetListPage.checkTokenExistsInList('Tron');
+        await assetListPage.checkTokenExistsInList('Solana'); // https://github.com/MetaMask/metamask-extension/issues/38104
+        await assetListPage.checkTokenExistsInList('Bitcoin'); // https://github.com/MetaMask/metamask-extension/issues/38104
+        await assetListPage.checkTokenExistsInList('Tron'); // https://github.com/MetaMask/metamask-extension/issues/38104
         timer6.stopTimer();
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountsPage();
