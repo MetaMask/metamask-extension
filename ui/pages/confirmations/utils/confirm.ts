@@ -123,11 +123,11 @@ export const stripProtocol = (urlString: string): string => {
   return urlString.replace(/^\w+:\/\//u, '');
 };
 
-const validSwapBatchTransactionCommands = [
-  '0x3593564c',
-  '0x87517c45',
-  '0x095ea7b3',
-];
+enum ValidSwapBatchTransactionCommands {
+  Execute = '0x3593564c',
+  Approval = '0x87517c45',
+  Erc20Approval = '0x095ea7b3',
+}
 
 /**
  * Checks if a transaction is a valid single or batch transaction
@@ -148,7 +148,7 @@ export function checkValidSingleOrBatchTransaction(
   const invalidNestedTransactions = nestedTransactions.filter(
     ({ data }) =>
       !data ||
-      !validSwapBatchTransactionCommands.some((command) =>
+      !Object.values(ValidSwapBatchTransactionCommands).some((command) =>
         data?.startsWith(command),
       ),
   );
