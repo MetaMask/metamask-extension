@@ -10,8 +10,8 @@ import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
 import * as SendContext from '../../context/send';
 import { useSendType } from './useSendType';
 
-jest.mock('react-router-dom-v5-compat', () => ({
-  ...jest.requireActual('react-router-dom-v5-compat'),
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   useLocation: () => ({ pathname: '/send/asset' }),
   useSearchParams: () => [{ get: () => null }],
 }));

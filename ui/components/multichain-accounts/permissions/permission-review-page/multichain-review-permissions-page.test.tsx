@@ -16,9 +16,9 @@ import {
 import { MultichainReviewPermissions } from './multichain-review-permissions-page';
 
 const mockUseNavigate = jest.fn();
-jest.mock('react-router-dom-v5-compat', () => {
+jest.mock('react-router-dom', () => {
   return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
+    ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
     useParams: () => ({ origin: 'https%3A//test.dapp' }),
     useLocation: () => ({
@@ -31,8 +31,8 @@ jest.mock('react-router-dom-v5-compat', () => {
   };
 });
 
-jest.mock('react-router-dom-v5-compat', () => ({
-  ...jest.requireActual('react-router-dom-v5-compat'),
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   useNavigate: () => jest.fn(),
   useLocation: () => ({ pathname: '/test', search: '', hash: '', state: null }),
 }));

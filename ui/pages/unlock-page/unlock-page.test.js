@@ -9,9 +9,9 @@ import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import UnlockPage from '.';
 
 const mockUseNavigate = jest.fn();
-jest.mock('react-router-dom-v5-compat', () => {
+jest.mock('react-router-dom', () => {
   return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
+    ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
   };
 });
@@ -178,7 +178,7 @@ describe('Unlock Page', () => {
     expect(mockUseNavigate).toHaveBeenCalledWith(intendedPath);
   });
 
-  it('should redirect to context-stored location when unlocked (HashRouter v5-compat workaround)', () => {
+  it('should redirect to context-stored location when unlocked', () => {
     const intendedPath = '/previous-route';
     const mockStateWithUnlock = {
       metamask: { isUnlocked: true },

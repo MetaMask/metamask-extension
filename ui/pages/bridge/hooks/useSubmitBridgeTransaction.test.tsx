@@ -3,7 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderHook } from '@testing-library/react-hooks';
 import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router-dom-v5-compat';
+import { MemoryRouter } from 'react-router-dom';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import * as bridgeStatusActions from '../../../ducks/bridge-status/actions';
 import {
@@ -14,9 +14,9 @@ import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import useSubmitBridgeTransaction from './useSubmitBridgeTransaction';
 
 const mockUseNavigate = jest.fn();
-jest.mock('react-router-dom-v5-compat', () => {
+jest.mock('react-router-dom', () => {
   return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
+    ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
   };
 });

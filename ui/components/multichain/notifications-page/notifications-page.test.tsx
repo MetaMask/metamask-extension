@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import { BrowserRouter as Router } from 'react-router-dom-v5-compat';
+import { BrowserRouter as Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import { NotificationsPage } from './notifications-page';
 

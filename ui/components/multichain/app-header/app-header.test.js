@@ -15,7 +15,7 @@ jest.mock('../../../../app/scripts/lib/util', () => ({
   getEnvironmentType: jest.fn(),
 }));
 
-jest.mock('react-router-dom-v5-compat', () => ({
+jest.mock('react-router-dom', () => ({
   // eslint-disable-next-line react/prop-types
   Link: ({ children, ...props }) => <a {...props}>{children}</a>,
   // eslint-disable-next-line react/prop-types

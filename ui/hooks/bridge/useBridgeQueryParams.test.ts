@@ -1,6 +1,6 @@
 import * as bridgeControllerUtils from '@metamask/bridge-controller';
 import { BigNumber } from 'ethers';
-import { useLocation } from 'react-router-dom-v5-compat';
+import { useLocation } from 'react-router-dom';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import * as assetUtils from '../../../shared/lib/asset-utils';

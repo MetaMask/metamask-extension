@@ -1,4 +1,4 @@
-import { matchPath } from 'react-router-dom-v5-compat';
+import { matchPath } from 'react-router-dom';
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import {
@@ -426,9 +426,9 @@ export function showAppHeader(props) {
 }
 
 /**
- * Creates a relative location object for use with nested react-router-dom-v5-compat Routes.
+ * Creates a relative location object for use with nested react-router-dom Routes.
  *
- * When using v5-compat <Routes> and <Route> components inside a parent route,
+ * When using <Routes> and <Route> components inside a parent route,
  * the child Routes need to match against paths relative to the parent route,
  * not the full pathname. This function strips the base path prefix from the
  * location to create a relative location. The resulting pathname is guaranteed

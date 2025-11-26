@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom-v5-compat';
+import { useNavigate, useParams } from 'react-router-dom';
 import { SolScope } from '@metamask/keyring-api';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type { AccountGroupId, AccountWalletId } from '@metamask/account-api';
@@ -80,8 +80,8 @@ jest.mock('../../../selectors', () => ({
   getIsSolanaSupportEnabled: jest.fn(() => true),
 }));
 
-jest.mock('react-router-dom-v5-compat', () => ({
-  ...jest.requireActual('react-router-dom-v5-compat'),
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   useNavigate: jest.fn(),
   useParams: jest.fn(),
 }));

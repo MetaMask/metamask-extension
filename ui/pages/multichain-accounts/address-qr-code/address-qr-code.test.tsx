@@ -27,11 +27,11 @@ jest.mock('../../../hooks/useMultichainSelector', () => ({
   useMultichainSelector: jest.fn(),
 }));
 
-// Mock react-router-dom-v5-compat
+// Mock react-router-dom
 const mockUseNavigate = jest.fn();
 const mockUseParams = jest.fn();
-jest.mock('react-router-dom-v5-compat', () => {
-  const actual = jest.requireActual('react-router-dom-v5-compat');
+jest.mock('react-router-dom', () => {
+  const actual = jest.requireActual('react-router-dom');
   return {
     ...actual,
     useNavigate: () => mockUseNavigate,

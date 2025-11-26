@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Location as RouterLocation } from 'react-router-dom-v5-compat';
+import type { Location as RouterLocation } from 'react-router-dom';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';

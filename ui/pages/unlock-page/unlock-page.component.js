@@ -71,9 +71,6 @@ class UnlockPage extends Component {
      */
     location: PropTypes.object.isRequired,
     /**
-     * Navigation state from v5-compat navigation context
-     */
-    /**
      * If isUnlocked is true will redirect to most recent route in history
      */
     isUnlocked: PropTypes.bool,

@@ -52,9 +52,9 @@ jest.mock(
 
 const mockUseNavigate = jest.fn();
 const mockUseSearchParams = jest.fn();
-jest.mock('react-router-dom-v5-compat', () => {
+jest.mock('react-router-dom', () => {
   return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
+    ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
     useSearchParams: () => mockUseSearchParams(),
   };
