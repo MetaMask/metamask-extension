@@ -15,10 +15,11 @@ import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
+  ORIGIN_METAMASK,
 } from '../../../shared/constants/app';
 import {
-  getHasApprovalFlows,
-  getHasBridgeQuotes,
+  selectHasApprovalFlows,
+  selectHasBridgeQuotes,
   selectPendingApprovalsForNavigation,
 } from '../../selectors';
 import {
@@ -28,7 +29,7 @@ import {
 } from '../../ducks/swaps/swaps';
 import { useNavState } from '../../contexts/navigation-state';
 
-const snapApprovals = [
+const SNAP_APPROVAL_TYPES = [
   'wallet_installSnap',
   'wallet_updateSnap',
   'wallet_installSnapResult',
@@ -52,10 +53,10 @@ export const ConfirmationHandler = () => {
 
   const showAwaitingSwapScreen = useSelector(getShowAwaitingSwapScreen);
   const hasSwapsQuotes = useSelector(getHasSwapsQuotes);
-  const hasBridgeQuotes = useSelector(getHasBridgeQuotes);
+  const hasBridgeQuotes = useSelector(selectHasBridgeQuotes);
   const swapsFetchParams = useSelector(getFetchParams);
   const pendingApprovals = useSelector(selectPendingApprovalsForNavigation);
-  const hasApprovalFlows = useSelector(getHasApprovalFlows);
+  const hasApprovalFlows = useSelector(selectHasApprovalFlows);
 
   // Read stayOnHomePage from both v5 location.state and v5-compat navState
   const stayOnHomePage = useMemo(
@@ -69,28 +70,19 @@ export const ConfirmationHandler = () => {
 
   // Flows that *should* navigate in fullscreen, based on E2E specs
   const hasSnapApproval = pendingApprovals.some((approval) =>
-    snapApprovals.includes(approval.type),
+    SNAP_APPROVAL_TYPES.includes(approval.type),
   );
 
   // Flows that *should not* navigate in fullscreen, based on E2E specs
   const hasSmartTransactionStatus = pendingApprovals.some(
     (approval) =>
       approval.type === 'smartTransaction:showSmartTransactionStatusPage' &&
-      approval.origin !== 'metamask' &&
-      approval.origin !== 'MetaMask',
+      approval.origin?.toLowerCase() !== ORIGIN_METAMASK,
   );
 
-  const skipHandler = useMemo(() => {
-    return (
-      isFullscreen &&
-      (hasSmartTransactionStatus || (!hasSnapApproval && !hasApprovalFlows))
-    );
-  }, [
-    isFullscreen,
-    hasSmartTransactionStatus,
-    hasSnapApproval,
-    hasApprovalFlows,
-  ]);
+  const skipHandler =
+    isFullscreen &&
+    (hasSmartTransactionStatus || (!hasSnapApproval && !hasApprovalFlows));
 
   // Ported from home.component - checkStatusAndNavigate()
   useEffect(() => {

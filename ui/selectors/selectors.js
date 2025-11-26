@@ -1986,7 +1986,7 @@ export function getIsSwapsChain(state, overrideChainId) {
     : ALLOWED_PROD_SWAPS_CHAIN_IDS.includes(chainId);
 }
 
-export function getHasBridgeQuotes(state) {
+export function selectHasBridgeQuotes(state) {
   return Boolean(Object.values(state.metamask.quotes || {}).length);
 }
 

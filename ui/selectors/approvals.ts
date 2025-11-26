@@ -54,7 +54,7 @@ export function getApprovalFlows(state: ApprovalsMetaMaskState) {
   return state.metamask.approvalFlows;
 }
 
-export function getHasApprovalFlows(state: ApprovalsMetaMaskState) {
+export function selectHasApprovalFlows(state: ApprovalsMetaMaskState) {
   return (state.metamask.approvalFlows?.length ?? 0) > 0;
 }
 
