@@ -1002,14 +1002,29 @@ export default function Routes() {
             layout={LegacyLayout}
           />
           <RouteWithLayout
-            authenticated
             path={TOKEN_TRANSFER_ROUTE}
-            component={TokenTransferPage}
             exact
             layout={LegacyLayout}
-          />
+          >
+            {createV5CompatRoute(TokenTransferPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeNavigate: true,
+              paramsAsProps: false,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout
-            authenticated
+            path={`${TOKEN_TRANSFER_ROUTE}/:origin`}
+            exact
+            layout={LegacyLayout}
+          >
+            {createV5CompatRoute<{ origin: string }>(TokenTransferPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              includeNavigate: true,
+              paramsAsProps: false,
+            })}
+          </RouteWithLayout>
+          <RouteWithLayout
             path={`${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName`}
             exact
             layout={LegacyLayout}
@@ -1017,6 +1032,22 @@ export default function Routes() {
             {createV5CompatRoute<{
               chainId: string;
               permissionGroupName: string;
+            }>(ReviewGatorPermissionsPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              includeNavigate: true,
+              paramsAsProps: false,
+            })}
+          </RouteWithLayout>
+          <RouteWithLayout
+            path={`${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName/:origin`}
+            exact
+            layout={LegacyLayout}
+          >
+            {createV5CompatRoute<{
+              chainId: string;
+              permissionGroupName: string;
+              origin: string;
             }>(ReviewGatorPermissionsPage, {
               wrapper: AuthenticatedV5Compat,
               includeParams: true,
@@ -1162,7 +1193,6 @@ export default function Routes() {
             component={NonEvmBalanceCheck}
             layout={LegacyLayout}
           />
-
           <RouteWithLayout
             authenticated
             path={SHIELD_PLAN_ROUTE}
