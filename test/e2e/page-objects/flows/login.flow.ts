@@ -23,6 +23,9 @@ export const loginWithoutBalanceValidation = async (
   // user should land on homepage after successfully logging in with password
   const homePage = new HomePage(driver);
   await homePage.checkPageIsLoaded();
+  await driver.assertElementNotPresent({
+    text: 'Fund your wallet',
+  });
 };
 
 /**
