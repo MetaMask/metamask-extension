@@ -301,7 +301,8 @@ function addTransactionControllerListeners(
     'TransactionController:transactionApproved',
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    async ({ transactionMeta }) => {
+    async (payload) => {
+      const { transactionMeta } = payload;
       // when hardware wallet failed or rejected, due to user already click the confirm, then the flow will come to here.
       // but because hardware wallet need double confirm in device, so we need to handle the transaction rejected here.
       // if status is failed or rejected, then we need to handle the transaction rejected
@@ -309,13 +310,9 @@ function addTransactionControllerListeners(
         transactionMeta.status === TransactionStatus.failed ||
         transactionMeta.status === TransactionStatus.rejected
       ) {
-        await handleTransactionRejected(transactionMetricsRequest, {
-          transactionMeta,
-        });
+        await handleTransactionRejected(transactionMetricsRequest, payload);
       } else {
-        await handleTransactionApproved(transactionMetricsRequest, {
-          transactionMeta,
-        });
+        await handleTransactionApproved(transactionMetricsRequest, payload);
       }
     },
   );
