@@ -51,7 +51,7 @@ import {
 } from '../../../components/component-library';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
-import { submitRequestToBackgroundAndCatch } from '../../../components/app/toast-master/utils';
+import { submitRequestToBackground } from '../../../store/background-connection';
 
 const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 
@@ -146,8 +146,14 @@ export default function OnboardingMetametrics() {
       // If LD flag is enabled, set pna25Acknowledged to true
       // This means they saw the updated policy during onboarding (whether they opted in or out)
       // No need to show banner to new users who already saw the updated message
+      // Await to ensure state update completes before navigation
       if (isPna25Enabled) {
-        submitRequestToBackgroundAndCatch('setPna25Acknowledged', [true]);
+        try {
+          await submitRequestToBackground('setPna25Acknowledged', [true]);
+        } catch (error) {
+          // Log error but don't block navigation if state update fails
+          log.error('Error setting pna25Acknowledged:', error);
+        }
       }
     } catch (error) {
       log.error('onConfirm::error', error);

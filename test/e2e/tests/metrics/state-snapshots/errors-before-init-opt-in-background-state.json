@@ -53,7 +53,7 @@
       "showShieldEntryModalOnce": "boolean",
       "pendingShieldCohort": null,
       "pendingShieldCohortTxType": null,
-      "pna25Acknowledged": false,
+      "pna25Acknowledged": "boolean",
       "appActiveTab": "object"
     },
     "BridgeController": {},
