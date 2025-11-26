@@ -106,6 +106,8 @@ describe('MetaMask onboarding', function () {
         await assetListPage.checkConversionRateDisplayed();
         await assetListPage.checkTokenExistsInList('Ethereum');
         await assetListPage.checkTokenExistsInList('Solana');
+        await assetListPage.checkTokenExistsInList('Bitcoin');
+        await assetListPage.checkTokenExistsInList('Tron');
         timer7.stopTimer();
       },
     );
