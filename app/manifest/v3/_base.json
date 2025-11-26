@@ -84,12 +84,10 @@
     "notifications",
     "scripting",
     "storage",
-    "tabs",
     "unlimitedStorage",
     "webRequest",
     "offscreen",
     "identity",
-    "sidePanel",
     "contextMenus"
   ],
   "sandbox": {

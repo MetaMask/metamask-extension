@@ -78,8 +78,9 @@ const HD_PATHS = {
 };
 
 const getErrorMessage = (errorCode, t) => {
-  if (Object.keys(LEDGER_ERRORS_CODES).includes(errorCode)) {
-    return t(LEDGER_ERRORS_CODES[errorCode]);
+  const errorCodeLocalized = LEDGER_ERRORS_CODES[errorCode];
+  if (errorCodeLocalized !== undefined) {
+    return t(errorCodeLocalized);
   }
 
   return errorCode;
