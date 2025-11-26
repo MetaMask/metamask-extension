@@ -2,7 +2,7 @@ import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
