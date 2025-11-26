@@ -140,6 +140,17 @@ export function getShieldCommonTrackingProps(
   };
 }
 
+export function getShieldMarketingTrackingProps(
+  marketingUtmParams?: Record<string, string>,
+) {
+  const marketingProps: Record<string, Json> = {};
+  Object.entries(marketingUtmParams || {}).forEach(([key, value]) => {
+    marketingProps[`marketing_${key}`] = value;
+  });
+
+  return marketingProps;
+}
+
 /**
  * Get the tracking props for the subscription request for the Shield metrics.
  *
@@ -190,11 +201,11 @@ export function getSubscriptionRequestTrackingProps(
     getLatestSubscriptionStatus(subscriptions, lastSubscription) || 'none';
 
   return {
+    ...getShieldMarketingTrackingProps(
+      shieldSubscriptionMetricsProps?.marketingUtmParams,
+    ),
     source:
       shieldSubscriptionMetricsProps?.source || EntryModalSourceEnum.Settings,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    marketing_utm_id: shieldSubscriptionMetricsProps?.marketingUtmId || null,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     multi_chain_balance_category: getUserBalanceCategory(
@@ -239,4 +250,23 @@ export function getSubscriptionRequestTrackingProps(
     // eslint-disable-next-line @typescript-eslint/naming-convention
     is_trial: !isTrialed,
   };
+}
+
+/**
+ * Get the marketing UTM parameters for the Shield metrics from the url search parameters.
+ *
+ * @param search - The search parameters.
+ * @returns The marketing UTM parameters.
+ */
+export function getShieldMarketingUtmParamsForMetrics(search: string) {
+  const searchParams = new URLSearchParams(search);
+
+  const marketingUtmParams: Record<string, string> = {};
+
+  searchParams.forEach((value, key) => {
+    if (key.startsWith('utm_')) {
+      marketingUtmParams[key] = value;
+    }
+  });
+  return marketingUtmParams;
 }
