@@ -1299,24 +1299,6 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
       expect(result).toBe(true);
     });
 
-    it('should handle edge case with hex string "0" for EVM balance', () => {
-      const state = createMockStateWithEVMNetworks();
-
-      // Test both "0x0" and "0" as zero values
-      // @ts-expect-error - Adding test data to mock state
-      state.metamask.accountsByChainId = {
-        '0x1': {
-          '0x0': {
-            balance: '0', // String "0" instead of "0x0"
-          },
-        },
-      };
-
-      const result = selectAccountGroupBalanceForEmptyState(state);
-
-      expect(result).toBe(false);
-    });
-
     it('should return false when non-EVM balance is decimal zero like "0.0" or "0.00"', () => {
       const state = createMockStateWithNonEVMNetworks();
 

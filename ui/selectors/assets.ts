@@ -1112,11 +1112,8 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
             return false;
           }
           const balanceValue = getBalanceOrDefault(account, 'balance', '0x0');
-          // Use isEmptyHexString to properly handle all hex zero formats
-          // Also check for plain "0" as a fallback edge case
-          return (
-            !isEmptyHexString(balanceValue) && (balanceValue as string) !== '0'
-          );
+          // Use isEmptyHexString to properly handle all hex zero formats (0x0, 0x, etc.)
+          return !isEmptyHexString(balanceValue);
         });
       },
     );
@@ -1174,9 +1171,8 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
             if (typeof balance !== 'string') {
               return false;
             }
-            // Use isEmptyHexString to check if token balance is non-zero
-            // Also check for plain "0" as a fallback edge case
-            return !isEmptyHexString(balance) && balance !== '0';
+            // Use isEmptyHexString to check if token balance is non-zero (0x0, 0x, etc.)
+            return !isEmptyHexString(balance);
           });
         },
       );
