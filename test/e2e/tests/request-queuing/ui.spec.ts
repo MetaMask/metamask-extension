@@ -7,7 +7,7 @@ import NetworkManager, {
   NetworkId,
 } from '../../page-objects/pages/network-manager';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../../constants';
 import {
   withFixtures,
