@@ -32,4 +32,4 @@ export const HYPERLIQUID_REFERRAL_LEARN_MORE_URL =
   'https://hyperliquid.gitbook.io/hyperliquid-docs/referrals';
 
 export const SHIELD_TERMS_OF_USE_URL =
-  'https://consensys.io/transaction-shield-supplemental-terms';
+  'https://consensys.io/transaction-shield-supplemental-terms-and-privacy-notice';
