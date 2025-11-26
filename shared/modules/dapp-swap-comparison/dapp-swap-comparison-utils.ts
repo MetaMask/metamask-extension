@@ -11,8 +11,8 @@ import {
   SimulationData,
   SimulationTokenBalanceChange,
 } from '@metamask/transaction-controller';
-import { getCommandValues } from './dapp-swap-command-utils';
 import { parseApprovalTransactionData } from '../transaction.utils';
+import { getCommandValues } from './dapp-swap-command-utils';
 
 export const ABI = [
   {
