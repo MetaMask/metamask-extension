@@ -29,6 +29,13 @@ export function useDecodedTransactionData({
   }, [data, to, chainId]);
 }
 
+const TRANSACTION_DATA_VALUE_PARAM_NAMES = [
+  'value',
+  'amount',
+  '_value',
+  '_amount',
+];
+
 export function useDecodedTransactionDataValue(
   transactionMeta?: TransactionMeta,
 ) {
@@ -39,8 +46,8 @@ export function useDecodedTransactionDataValue(
   });
   const value = useMemo(
     () =>
-      decodeResponse?.value?.data?.[0]?.params?.find(
-        (param) => param.name === 'value' || param.name === 'amount',
+      decodeResponse?.value?.data?.[0]?.params?.find((param) =>
+        TRANSACTION_DATA_VALUE_PARAM_NAMES.includes(param.name ?? ''),
       )?.value,
     [decodeResponse],
   );
