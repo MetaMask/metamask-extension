@@ -380,7 +380,6 @@ function scheduleExtensionReconnect() {
   reconnectTimer = setTimeout(() => {
     reconnectTimer = null;
     setupExtensionStreams();
-    reconnectAttempts = Math.min(reconnectAttempts + 1, 30);
   }, base + jitter) as unknown as number;
 }
 
@@ -409,6 +408,7 @@ export function onDisconnectDestroyStreams(err: unknown) {
    */
   if (lastErr) {
     console.warn(`${lastErr} Resetting the streams.`);
+    reconnectAttempts = Math.min(reconnectAttempts + 1, 30);
     scheduleExtensionReconnect();
   }
 }

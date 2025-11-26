@@ -120,7 +120,6 @@ function schedulePhishingReconnect() {
   phishingReconnectTimer = setTimeout(() => {
     phishingReconnectTimer = null;
     setupPhishingExtStreams();
-    phishingReconnectAttempts = Math.min(phishingReconnectAttempts + 1, 30);
   }, base + jitter) as unknown as number;
 }
 
@@ -219,6 +218,7 @@ const onDisconnectDestroyPhishingStreams = (): void => {
    */
   if (err) {
     console.warn(`${err} Resetting the phishing streams.`);
+    phishingReconnectAttempts = Math.min(phishingReconnectAttempts + 1, 30);
     schedulePhishingReconnect();
   }
 };
