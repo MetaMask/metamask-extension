@@ -42,13 +42,13 @@ describe('Power user persona', function () {
         await homePage.checkPageIsLoaded();
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenListIsDisplayed();
-        await assetListPage.checkTokenListPricesAreDisplayed();
+        await assetListPage.checkConversionRateDisplayed();
         await assetListPage.openNetworksFilter();
         const networkManager = new NetworkManager(driver);
         await networkManager.selectNetworkByNameWithWait('Ethereum');
         await homePage.checkPageIsLoaded();
         await assetListPage.checkTokenListIsDisplayed();
-        await assetListPage.checkTokenListPricesAreDisplayed();
+        await assetListPage.checkConversionRateDisplayed();
         await assetListPage.clickOnAsset('USDC');
         const timer1 = Timers.createTimer(
           'Time since the user clicks on the asset until the price chart is shown',

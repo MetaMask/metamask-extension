@@ -148,6 +148,9 @@ class AssetListPage {
     text: 'No conversion rate available',
   };
 
+  private readonly modalCloseButton =
+    '[data-testid="modal-header-close-button"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -353,11 +356,7 @@ class AssetListPage {
     await this.driver.clickElement(this.networksToggle);
     await this.driver.waitUntil(
       async () => {
-        return Boolean(
-          await this.driver.findElement(
-            '[data-testid="modal-header-close-button"]',
-          ),
-        );
+        return Boolean(await this.driver.findElement(this.modalCloseButton));
       },
       {
         timeout: 5000,
@@ -758,11 +757,11 @@ class AssetListPage {
   }
 
   /**
-   * Checks if the token list prices are displayed
+   * Checks if the token list prices are displaned and no "No conversion rate available" message is displayed
    *
-   * @throws Error if the token list prices are not displayed
+   * @throws Error if a "No conversion rate available" message is displayed
    */
-  async checkTokenListPricesAreDisplayed(): Promise<void> {
+  async checkConversionRateIsDisplayed(): Promise<void> {
     await this.driver.assertElementNotPresent(this.noPriceAvailableMessage);
   }
 }

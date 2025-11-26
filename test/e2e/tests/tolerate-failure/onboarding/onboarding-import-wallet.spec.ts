@@ -99,7 +99,7 @@ describe('MetaMask onboarding', function () {
         await homePage.checkPageIsLoaded();
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenListIsDisplayed();
-        await assetListPage.checkTokenListPricesAreDisplayed();
+        await assetListPage.checkConversionRateDisplayed();
         await assetListPage.checkTokenExistsInList('Ethereum');
         await assetListPage.checkTokenExistsInList('Solana');
         timer6.stopTimer();

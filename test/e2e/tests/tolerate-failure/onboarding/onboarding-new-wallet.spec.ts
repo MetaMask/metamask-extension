@@ -97,13 +97,13 @@ describe('MetaMask onboarding', function () {
         await homePage.checkPageIsLoaded();
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenListIsDisplayed();
-        await assetListPage.checkTokenListPricesAreDisplayed();
+        await assetListPage.checkConversionRateDisplayed();
         timer6.stopTimer();
         await homePage.clickBackupRemindMeLaterButton();
         timer7.startTimer();
         await homePage.checkPageIsLoaded();
         await assetListPage.checkTokenListIsDisplayed();
-        await assetListPage.checkTokenListPricesAreDisplayed();
+        await assetListPage.checkConversionRateDisplayed();
         await assetListPage.checkTokenExistsInList('Ethereum');
         await assetListPage.checkTokenExistsInList('Solana');
         timer7.stopTimer();
