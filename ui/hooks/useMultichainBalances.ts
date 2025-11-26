@@ -13,7 +13,6 @@ import {
   TRON_RESOURCE_SYMBOLS_SET,
   type TronResourceSymbol,
 } from '../../shared/constants/multichain/assets';
-import type { TokenWithBalance } from '../components/app/assets/types';
 import {
   getAccountAssets,
   getAssetsMetadata,
@@ -32,17 +31,7 @@ import { useMultichainSelector } from './useMultichainSelector';
 const useNonEvmAssetsWithBalances = (
   accountId?: string,
   accountType?: InternalAccount['type'],
-): (Omit<TokenWithBalance, 'address' | 'chainId' | 'primary' | 'secondary'> & {
-  chainId: `${string}:${string}`;
-  decimals: number;
-  address: string;
-  assetId: `${string}:${string}`;
-  string: string;
-  balance: string;
-  tokenFiatAmount: number;
-  symbol: string;
-  accountType?: InternalAccount['type'];
-})[] => {
+) => {
   // non-evm tokens owned by non-evm account, includes native and non-native assets
   const assetsByAccountId = useSelector(getAccountAssets);
   const assetMetadataById = useSelector(getAssetsMetadata);
@@ -75,6 +64,7 @@ const useNonEvmAssetsWithBalances = (
           symbol: assetMetadataById[caipAssetId]?.symbol ?? '',
           assetId: caipAssetId,
           address: assetReference,
+          isNative: assetNamespace === 'slip44',
           string: balancesByAssetId[caipAssetId]?.amount ?? '0',
           balance: balancesByAssetId[caipAssetId]?.amount ?? '0',
           decimals: assetMetadataById[caipAssetId]?.units[0]?.decimals,
