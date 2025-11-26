@@ -1197,6 +1197,132 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
     );
   });
+
+  describe('when fiat balance is 0 but native token balances exist', () => {
+    it('should return true when EVM native token balance exists (no price conversion)', () => {
+      const state = createMockStateWithEVMNetworks();
+      const mockResult = createMockBalanceResult(0); // Fiat balance = 0
+      (calculateBalanceForAllWallets as jest.Mock).mockReturnValueOnce(
+        mockResult,
+      );
+
+      // Add accountsByChainId with non-zero EVM balance
+      (state.metamask as any).accountsByChainId = {
+        '0x1': {
+          '0x0': {
+            balance: '0x8ac7230489e80000', // 10 ETH
+          },
+        },
+      };
+
+      const result = selectAccountGroupBalanceForEmptyState(state);
+
+      expect(result).toBe(true);
+    });
+
+    it('should return true when non-EVM native token balance exists (no price conversion)', () => {
+      const state = createMockStateWithNonEVMNetworks();
+      const mockResult = createMockBalanceResult(0); // Fiat balance = 0
+      (calculateBalanceForAllWallets as jest.Mock).mockReturnValueOnce(
+        mockResult,
+      );
+
+      // Add multichainBalancesState with non-zero Solana balance
+      (state.metamask as any).balances = {
+        account2: {
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+            amount: '10.5',
+            unit: 'SOL',
+          },
+        },
+      };
+
+      const result = selectAccountGroupBalanceForEmptyState(state);
+
+      expect(result).toBe(true);
+    });
+
+    it('should return false when fiat balance is 0 and no native token balances exist', () => {
+      const state = createMockStateWithEVMNetworks();
+      const mockResult = createMockBalanceResult(0); // Fiat balance = 0
+      (calculateBalanceForAllWallets as jest.Mock).mockReturnValueOnce(
+        mockResult,
+      );
+
+      // Add accountsByChainId with zero EVM balance
+      (state.metamask as any).accountsByChainId = {
+        '0x1': {
+          '0x0': {
+            balance: '0x0',
+          },
+        },
+      };
+
+      // Add multichainBalancesState with zero balance
+      (state.metamask as any).balances = {};
+
+      const result = selectAccountGroupBalanceForEmptyState(state);
+
+      expect(result).toBe(false);
+    });
+
+    it('should handle mixed state with both EVM and non-EVM balances', () => {
+      const state = createMockStateWithEVMNetworks();
+      const mockResult = createMockBalanceResult(0); // Fiat balance = 0
+      (calculateBalanceForAllWallets as jest.Mock).mockReturnValueOnce(
+        mockResult,
+      );
+
+      // Add accountsByChainId with non-zero EVM balance
+      (state.metamask as any).accountsByChainId = {
+        '0x1': {
+          '0x0': {
+            balance: '0x8ac7230489e80000', // 10 ETH
+          },
+        },
+        '0x89': {
+          '0x0': {
+            balance: '0x0', // 0 MATIC
+          },
+        },
+      };
+
+      // Add multichainBalancesState with non-zero balance
+      (state.metamask as any).balances = {
+        account2: {
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+            amount: '5.25',
+            unit: 'SOL',
+          },
+        },
+      };
+
+      const result = selectAccountGroupBalanceForEmptyState(state);
+
+      expect(result).toBe(true);
+    });
+
+    it('should handle edge case with hex string "0" for EVM balance', () => {
+      const state = createMockStateWithEVMNetworks();
+      const mockResult = createMockBalanceResult(0); // Fiat balance = 0
+      (calculateBalanceForAllWallets as jest.Mock).mockReturnValueOnce(
+        mockResult,
+      );
+
+      // Test both "0x0" and "0" as zero values
+      (state.metamask as any).accountsByChainId = {
+        '0x1': {
+          '0x0': {
+            balance: '0', // String "0" instead of "0x0"
+          },
+        },
+      };
+
+      const result = selectAccountGroupBalanceForEmptyState(state);
+
+      expect(result).toBe(false);
+    });
+  });
 });
 
 describe('getAssetsBySelectedAccountGroup', () => {
