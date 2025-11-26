@@ -2470,9 +2470,6 @@
   "exploreDefi": {
     "message": "Jelajahi DeFi"
   },
-  "exploreweb3": {
-    "message": "Jelajahi web3"
-  },
   "exportYourData": {
     "message": "Ekspor data Anda"
   },
@@ -2600,9 +2597,6 @@
   },
   "function": {
     "message": "Fungsi: $1"
-  },
-  "fundingMethod": {
-    "message": "Metode pendanaan"
   },
   "gas": {
     "message": "Gas"
@@ -7004,12 +6998,6 @@
   },
   "time": {
     "message": "Waktu"
-  },
-  "tipsForUsingAWallet": {
-    "message": "Tip menggunakan dompet"
-  },
-  "tipsForUsingAWalletDescription": {
-    "message": "Menambahkan token membuka lebih banyak cara untuk menggunakan web3."
   },
   "to": {
     "message": "Ke"

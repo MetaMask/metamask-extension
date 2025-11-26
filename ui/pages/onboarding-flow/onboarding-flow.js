@@ -177,6 +177,8 @@ export default function OnboardingFlow({
       op: TraceOperation.OnboardingUserJourney,
     });
     if (onboardingParentContext) {
+      // Intentionally mutating ref object
+      // eslint-disable-next-line react-compiler/react-compiler
       onboardingParentContext.current = {
         _name: TraceName.OnboardingJourneyOverall,
       };

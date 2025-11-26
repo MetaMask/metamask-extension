@@ -2470,9 +2470,6 @@
   "exploreDefi": {
     "message": "Khám phá DeFi"
   },
-  "exploreweb3": {
-    "message": "Khám phá web3"
-  },
   "exportYourData": {
     "message": "Xuất dữ liệu của bạn"
   },
@@ -2600,9 +2597,6 @@
   },
   "function": {
     "message": "Chức năng: $1"
-  },
-  "fundingMethod": {
-    "message": "Phương thức nạp tiền"
   },
   "gas": {
     "message": "Gas"
@@ -7004,12 +6998,6 @@
   },
   "time": {
     "message": "Thời gian"
-  },
-  "tipsForUsingAWallet": {
-    "message": "Lời khuyên sử dụng ví"
-  },
-  "tipsForUsingAWalletDescription": {
-    "message": "Việc thêm token sẽ mở ra nhiều cách sử dụng web3 hơn."
   },
   "to": {
     "message": "Đến"
