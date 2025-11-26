@@ -42,6 +42,8 @@ const APPROVAL_TYPES = [
 ];
 
 export const ConfirmationHandler = () => {
+  'use no memo';
+
   const navigate = useNavigate();
   const location = useLocation();
   const { pathname } = location;
