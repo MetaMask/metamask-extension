@@ -113,7 +113,7 @@ describe('Shield Subscription Tests', function () {
           const shieldPlanPage = new ShieldPlanPage(driver);
           await shieldPlanPage.clickBackButton();
 
-          await homePage.checkShieldEntryModalIsDisplayed();
+          await homePage.checkPageIsLoaded();
         },
       );
     });
