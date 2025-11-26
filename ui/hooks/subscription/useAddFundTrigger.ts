@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
   PAYMENT_TYPES,
   PRODUCT_TYPES,
@@ -7,21 +7,17 @@ import {
   CRYPTO_PAYMENT_METHOD_ERRORS,
 } from '@metamask/subscription-controller';
 import log from 'loglevel';
-import { BigNumber } from 'bignumber.js';
-import { useTokenBalances as pollAndUpdateEvmBalances } from '../useTokenBalances';
 import {
-  getSubscriptionCryptoApprovalAmount,
   getSubscriptions,
   updateSubscriptionCryptoPaymentMethod,
 } from '../../store/actions';
-import { getSelectedAccount } from '../../selectors';
-import { getTokenBalancesEvm } from '../../selectors/assets';
 import { MetaMaskReduxDispatch } from '../../store/store';
 import { getIsShieldSubscriptionPaused } from '../../../shared/lib/shield';
-import { useAsyncCallback, useAsyncResult } from '../useAsync';
+import { useAsyncCallback } from '../useAsync';
 import { MINUTE } from '../../../shared/constants/time';
 import { useThrottle } from '../useThrottle';
 import {
+  useAvailableTokenBalances,
   useSubscriptionPaymentMethods,
   useSubscriptionPricing,
   useSubscriptionProductPlans,
@@ -65,75 +61,39 @@ export const useShieldSubscriptionCryptoSufficientBalanceCheck = () => {
         )
     : undefined;
 
-  const paymentChainIds = useMemo(
-    () => (cryptoPaymentInfo ? [cryptoPaymentInfo.crypto?.chainId] : []),
-    [cryptoPaymentInfo],
+  const pricingPlans = useSubscriptionProductPlans(
+    PRODUCT_TYPES.SHIELD,
+    subscriptionPricing,
   );
 
-  const selectedAccount = useSelector(getSelectedAccount);
-  const evmBalances = useSelector((state) =>
-    getTokenBalancesEvm(state, selectedAccount?.address),
-  );
+  const selectedProductPrice = useMemo(() => {
+    return pricingPlans?.find(
+      (plan) => plan.interval === shieldSubscription?.interval,
+    );
+  }, [pricingPlans, shieldSubscription]);
 
-  // need to do async here since `getSubscriptionCryptoApprovalAmount` make call to background script
-  const {
-    value: subscriptionCryptoApprovalAmount,
-    pending: subscriptionCryptoApprovalAmountPending,
-  } = useAsyncResult(async () => {
-    if (!shieldSubscription || !cryptoPaymentInfo || !selectedTokenPrice) {
-      return undefined;
-    }
-
-    const params = {
-      chainId: cryptoPaymentInfo.crypto?.chainId,
-      paymentTokenAddress: selectedTokenPrice.address,
-      productType: PRODUCT_TYPES.SHIELD,
-      interval: shieldSubscription.interval,
-    };
-
-    return await getSubscriptionCryptoApprovalAmount(params);
-  }, [cryptoPaymentInfo, selectedTokenPrice, shieldSubscription]);
-
-  // Poll and update evm balances for payment chains
-  pollAndUpdateEvmBalances({ chainIds: paymentChainIds });
+  const { availableTokenBalances } = useAvailableTokenBalances({
+    paymentChains: cryptoPaymentMethod?.chains,
+    price: selectedProductPrice,
+    productType: PRODUCT_TYPES.SHIELD,
+  });
   // valid token balances for checking
   const validTokenBalance = useMemo(() => {
-    if (
-      !cryptoPaymentInfo ||
-      !selectedTokenPrice ||
-      subscriptionCryptoApprovalAmountPending ||
-      !subscriptionCryptoApprovalAmount
-    ) {
+    if (!cryptoPaymentInfo || !selectedTokenPrice) {
       return undefined;
     }
 
-    const token = evmBalances.find(
+    const token = availableTokenBalances.find(
       (t) =>
         cryptoPaymentInfo.crypto?.chainId === t.chainId &&
-        selectedTokenPrice.address.toLowerCase() === t.address.toLowerCase(),
+        selectedTokenPrice.address.toLowerCase() === t.address?.toLowerCase(),
     );
     if (!token || !token.balance) {
       return undefined;
     }
 
-    const balance = new BigNumber(token.balance);
-    const tokenHasEnoughBalance =
-      subscriptionCryptoApprovalAmount &&
-      balance
-        .mul(new BigNumber(10).pow(token.decimals))
-        .gte(subscriptionCryptoApprovalAmount.approveAmount);
-    if (!tokenHasEnoughBalance) {
-      return undefined;
-    }
-
     return token;
-  }, [
-    subscriptionCryptoApprovalAmount,
-    subscriptionCryptoApprovalAmountPending,
-    evmBalances,
-    cryptoPaymentInfo,
-    selectedTokenPrice,
-  ]);
+  }, [cryptoPaymentInfo, selectedTokenPrice, availableTokenBalances]);
 
   const hasAvailableSelectedToken = Boolean(validTokenBalance);
 
@@ -225,6 +185,7 @@ const SHIELD_ADD_FUND_TRIGGER_INTERVAL = 5 * MINUTE;
 /**
  * Main hook that combines balance check and handler to automatically trigger
  * subscription check when user adds funds to the selected token
+ * TODO: this hook is not being used currently because of discussion going on for auto add fund trigger logic, keeping here to use in the future (remove TODO when decided)
  *
  */
 export const useShieldAddFundTrigger = () => {
