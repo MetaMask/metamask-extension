@@ -364,7 +364,8 @@ export class ShieldMockttpService {
       .forPost(RULESET_ENGINE_API.SIGNATURE_COVERAGE_INIT)
       .always()
       .thenJson(200, {
-        requestId: 'test-signature-request-id',
+        coverageId:
+          '0c25021ea15e2bfcefe908b9280ba1667b25ca78fd89c9ac2fca993b8841ad95',
       });
 
     // Mock signature coverage result endpoint
