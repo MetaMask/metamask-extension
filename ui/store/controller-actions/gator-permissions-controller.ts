@@ -30,6 +30,18 @@ export const addPendingRevocation = async ({
   ]);
 };
 
+export const submitDirectRevocation = async ({
+  permissionContext,
+}: {
+  permissionContext: Hex;
+}): Promise<void> => {
+  await submitRequestToBackground('submitDirectRevocation', [
+    {
+      permissionContext,
+    },
+  ]);
+};
+
 export const submitRevocation = async ({
   permissionContext,
 }: {

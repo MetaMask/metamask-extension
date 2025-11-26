@@ -94,6 +94,7 @@ describe('GatorPermissionsControllerInit', () => {
     expect(result.api).toEqual({
       fetchAndUpdateGatorPermissions: expect.any(Function),
       addPendingRevocation: expect.any(Function),
+      submitDirectRevocation: expect.any(Function),
       submitRevocation: expect.any(Function),
     });
   });

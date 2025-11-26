@@ -21,7 +21,7 @@ import {
 } from '../../../shared/lib/delegation/delegation';
 import {
   addPendingRevocation,
-  submitRevocation,
+  submitDirectRevocation,
   checkDelegationDisabled,
 } from '../../store/controller-actions/gator-permissions-controller';
 import { useGatorPermissionRedirect } from './useGatorPermissionRedirect';
@@ -172,9 +172,9 @@ export function useRevokeGatorPermissions({
         delegationHash,
         networkClientId,
       );
+
       if (isDisabled) {
-        await submitRevocation({ permissionContext });
-        // Return null since no actual transaction is needed when already disabled
+        await submitDirectRevocation({ permissionContext });
         return null;
       }
 
