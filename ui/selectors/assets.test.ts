@@ -1207,7 +1207,8 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
       );
 
       // Add accountsByChainId with non-zero EVM balance
-      (state.metamask as any).accountsByChainId = {
+      // @ts-expect-error - Adding test data to mock state
+      state.metamask.accountsByChainId = {
         '0x1': {
           '0x0': {
             balance: '0x8ac7230489e80000', // 10 ETH
@@ -1228,7 +1229,8 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
       );
 
       // Add multichainBalancesState with non-zero Solana balance
-      (state.metamask as any).balances = {
+      // @ts-expect-error - Adding test data to mock state
+      state.metamask.balances = {
         account2: {
           'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
             amount: '10.5',
@@ -1250,7 +1252,8 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
       );
 
       // Add accountsByChainId with zero EVM balance
-      (state.metamask as any).accountsByChainId = {
+      // @ts-expect-error - Adding test data to mock state
+      state.metamask.accountsByChainId = {
         '0x1': {
           '0x0': {
             balance: '0x0',
@@ -1259,7 +1262,7 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
       };
 
       // Add multichainBalancesState with zero balance
-      (state.metamask as any).balances = {};
+      state.metamask.balances = {};
 
       const result = selectAccountGroupBalanceForEmptyState(state);
 
@@ -1274,7 +1277,8 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
       );
 
       // Add accountsByChainId with non-zero EVM balance
-      (state.metamask as any).accountsByChainId = {
+      // @ts-expect-error - Adding test data to mock state
+      state.metamask.accountsByChainId = {
         '0x1': {
           '0x0': {
             balance: '0x8ac7230489e80000', // 10 ETH
@@ -1288,7 +1292,7 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
       };
 
       // Add multichainBalancesState with non-zero balance
-      (state.metamask as any).balances = {
+      state.metamask.balances = {
         account2: {
           'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
             amount: '5.25',
@@ -1310,7 +1314,8 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
       );
 
       // Test both "0x0" and "0" as zero values
-      (state.metamask as any).accountsByChainId = {
+      // @ts-expect-error - Adding test data to mock state
+      state.metamask.accountsByChainId = {
         '0x1': {
           '0x0': {
             balance: '0', // String "0" instead of "0x0"

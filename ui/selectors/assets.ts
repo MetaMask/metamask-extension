@@ -720,9 +720,15 @@ const selectEnabledNetworkMapForBalances = createSelector(
 
 /**
  * Provides accountsByChainId for checking EVM native balances.
+ *
+ * @param state - The application state.
+ * @returns The accounts by chain ID object.
  */
 const selectAccountsByChainIdForBalances = createSelector(
-  [(state: BalanceCalculationState) => getMetamaskState(state).accountsByChainId],
+  [
+    (state: BalanceCalculationState) =>
+      getMetamaskState(state).accountsByChainId,
+  ],
   (accountsByChainId) => accountsByChainId ?? EMPTY_OBJECT,
 );
 
