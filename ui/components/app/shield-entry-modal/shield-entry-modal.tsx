@@ -157,7 +157,7 @@ const ShieldEntryModal = ({
     navigate({
       pathname: SHIELD_PLAN_ROUTE,
       search: marketingUtmId
-        ? `?utm_id=${marketingUtmId}`
+        ? `?utm_id=${marketingUtmId}&source=${source}`
         : `?source=${source}`,
     });
   };
