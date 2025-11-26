@@ -101,7 +101,7 @@ export type AppStateControllerState = {
   networkConnectionBanner: NetworkConnectionBanner;
   newPrivacyPolicyToastClickedOrClosed: boolean | null;
   newPrivacyPolicyToastShownDate: number | null;
-  pna25Acknowledged: boolean | null;
+  pna25Acknowledged: boolean;
   nftsDetectionNoticeDismissed: boolean;
   nftsDropdownState: Json;
   notificationGasPollTokens: string[];
@@ -270,7 +270,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   lastViewedUserSurvey: null,
   newPrivacyPolicyToastClickedOrClosed: null,
   newPrivacyPolicyToastShownDate: null,
-  pna25Acknowledged: null,
+  pna25Acknowledged: false,
   nftsDetectionNoticeDismissed: false,
   notificationGasPollTokens: [],
   onboardingDate: null,

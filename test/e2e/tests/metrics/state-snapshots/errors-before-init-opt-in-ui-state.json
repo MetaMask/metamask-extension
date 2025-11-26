@@ -45,7 +45,7 @@
       "onboardingDate": null,
       "outdatedBrowserWarningLastShown": "object",
       "pendingShieldCohortTxType": null,
-      "pna25Acknowledged": null,
+      "pna25Acknowledged": false,
       "productTour": "accountIcon",
       "recoveryPhraseReminderHasBeenShown": true,
       "recoveryPhraseReminderLastShown": "number",

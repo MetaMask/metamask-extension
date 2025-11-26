@@ -244,9 +244,9 @@ export function selectShowShieldEndingToast(
  * - User has completed onboarding (completedOnboarding === true)
  * - LaunchDarkly feature flag (extension-ux-pna25) is enabled (boolean)
  * - User has opted into metrics (participateInMetaMetrics === true)
- * - User is an EXISTING user (pna25Acknowledged === null)
- * New users will have pna25Acknowledged = true (opted in) or false (opted out)
- * Existing users will have pna25Acknowledged = null (state didn't exist when they onboarded)
+ * - User is an EXISTING user (pna25Acknowledged === false)
+ * New users will have pna25Acknowledged = true (saw updated policy during onboarding)
+ * Existing users will have pna25Acknowledged = false (default, need to show banner)
  *
  * @param state - The application state containing the banner data.
  * @returns Boolean indicating whether to show the banner
@@ -279,6 +279,6 @@ export function selectShowPna25Banner(state: Pick<State, 'metamask'>): boolean {
     return false; // User already acknowledged
   }
 
-  // Show banner only for existing users who opted in before this feature
+  // Show banner for users who haven't acknowledged (pna25Acknowledged === false)
   return true;
 }

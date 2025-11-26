@@ -42,7 +42,7 @@ type AppState = {
   };
   alertOpen: boolean;
   alertMessage: string | null;
-  pna25Acknowledged: boolean | null;
+  pna25Acknowledged: boolean;
   qrCodeData: {
     type?: string | null;
     values?: { address?: string | null };
@@ -175,7 +175,7 @@ const initialState: AppState = {
   },
   alertOpen: false,
   alertMessage: null,
-  pna25Acknowledged: null,
+  pna25Acknowledged: false,
   qrCodeData: null,
   networkDropdownOpen: false,
   importNftsModal: { open: false },
