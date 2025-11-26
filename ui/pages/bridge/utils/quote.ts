@@ -2,6 +2,7 @@ import { BigNumber } from 'bignumber.js';
 import {
   type QuoteResponse,
   formatChainIdToCaip,
+  formatAddressToCaipReference,
   isNativeAddress,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
@@ -159,25 +160,45 @@ export const isQuoteExpiredOrInvalid = ({
 
   // 2. Ensure the quote still matches the currently selected destination asset / chain
   if (activeQuote && toToken) {
-    const quoteDestAddress =
-      activeQuote.quote?.destAsset?.address?.toLowerCase() || '';
-    const selectedDestAddress = toToken.address?.toLowerCase() || '';
+    const destChainId = activeQuote.quote?.destChainId;
 
-    const quoteDestChainIdCaip = activeQuote.quote?.destChainId
-      ? formatChainIdToCaip(activeQuote.quote.destChainId)
+    // For non-EVM chains (Solana, Bitcoin, Tron), don't use toLowerCase() as addresses
+    // are case-sensitive (base58 encoding uses both upper and lowercase letters)
+    const isNonEvmDest = destChainId && isNonEvmChainId(destChainId);
+
+    // Extract raw addresses from CAIP-19 format if present
+    // The bridge API returns plain addresses, but UI may store CAIP-19 asset IDs
+    const quoteDestAddressRaw = activeQuote.quote?.destAsset?.address
+      ? formatAddressToCaipReference(activeQuote.quote.destAsset.address)
+      : '';
+    const selectedDestAddressRaw = toToken.address
+      ? formatAddressToCaipReference(toToken.address)
+      : '';
+
+    // For EVM chains, normalize to lowercase for comparison (addresses are case-insensitive)
+    // For non-EVM chains, preserve case (base58 addresses are case-sensitive)
+    const quoteDestAddress = isNonEvmDest
+      ? quoteDestAddressRaw
+      : quoteDestAddressRaw.toLowerCase();
+    const selectedDestAddress = isNonEvmDest
+      ? selectedDestAddressRaw
+      : selectedDestAddressRaw.toLowerCase();
+
+    const quoteDestChainIdCaip = destChainId
+      ? formatChainIdToCaip(destChainId)
       : '';
     const selectedDestChainIdCaip = toChain?.chainId
       ? formatChainIdToCaip(toChain.chainId)
       : '';
 
-    return !(
-      (quoteDestAddress === selectedDestAddress ||
-        // Extension's native asset address may be different from bridge-api's native
-        // asset address so if both assets are native, we should still return true
-        (isNativeAddress(quoteDestAddress) &&
-          isNativeAddress(selectedDestAddress))) &&
-      quoteDestChainIdCaip === selectedDestChainIdCaip
-    );
+    const addressMatch =
+      quoteDestAddress === selectedDestAddress ||
+      (isNativeAddress(quoteDestAddress) &&
+        isNativeAddress(selectedDestAddress));
+    const chainMatch = quoteDestChainIdCaip === selectedDestChainIdCaip;
+    const isInvalid = !(addressMatch && chainMatch);
+
+    return isInvalid;
   }
 
   return false;
