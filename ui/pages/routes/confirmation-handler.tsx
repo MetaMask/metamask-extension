@@ -24,8 +24,8 @@ import {
 } from '../../selectors';
 import {
   getFetchParams,
-  getHasSwapsQuotes,
-  getShowAwaitingSwapScreen,
+  selectHasSwapsQuotes,
+  selectShowAwaitingSwapScreen,
 } from '../../ducks/swaps/swaps';
 import { useNavState } from '../../contexts/navigation-state';
 
@@ -51,8 +51,8 @@ export const ConfirmationHandler = () => {
   const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
   const isFullscreen = envType === ENVIRONMENT_TYPE_FULLSCREEN;
 
-  const showAwaitingSwapScreen = useSelector(getShowAwaitingSwapScreen);
-  const hasSwapsQuotes = useSelector(getHasSwapsQuotes);
+  const showAwaitingSwapScreen = useSelector(selectShowAwaitingSwapScreen);
+  const hasSwapsQuotes = useSelector(selectHasSwapsQuotes);
   const hasBridgeQuotes = useSelector(selectHasBridgeQuotes);
   const swapsFetchParams = useSelector(getFetchParams);
   const pendingApprovals = useSelector(selectPendingApprovalsForNavigation);
