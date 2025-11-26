@@ -32,7 +32,7 @@ export class ShieldMockttpService {
 
   #newClaimSubmitted = false;
 
-  #coverageStatus: 'covered' | 'not_covered' = 'covered';
+  #coverageStatus: 'covered' | 'not_covered' | 'malicious' = 'covered';
 
   async setup(
     server: Mockttp,
@@ -40,7 +40,7 @@ export class ShieldMockttpService {
       mockNotEligible?: boolean;
       isActiveUser?: boolean;
       subscriptionId?: string;
-      coverageStatus?: 'covered' | 'not_covered';
+      coverageStatus?: 'covered' | 'not_covered' | 'malicious';
     },
   ) {
     // Mock Identity Services first as shield/subscription APIs depend on it (Auth Token)
@@ -326,7 +326,8 @@ export class ShieldMockttpService {
       .forPost(RULESET_ENGINE_API.TRANSACTION_COVERAGE_INIT)
       .always()
       .thenJson(200, {
-        requestId: 'test-transaction-request-id',
+        coverageId:
+          '0c25021ea15e2bfcefe908b9280ba1667b25ca78fd89c9ac2fca993b8841ad95',
       });
 
     // Mock transaction coverage result endpoint
@@ -334,9 +335,19 @@ export class ShieldMockttpService {
       .forPost(RULESET_ENGINE_API.TRANSACTION_COVERAGE_RESULT)
       .always()
       .thenCallback(() => {
-        const status =
-          this.#coverageStatus === 'covered' ? 'covered' : 'not_covered';
-        const reasonCode = this.#coverageStatus === 'covered' ? 'E101' : 'E104';
+        let status: string;
+        let reasonCode: string;
+
+        if (this.#coverageStatus === 'covered') {
+          status = 'covered';
+          reasonCode = 'E101';
+        } else if (this.#coverageStatus === 'malicious') {
+          status = 'malicious';
+          reasonCode = 'E102';
+        } else {
+          status = 'not_covered';
+          reasonCode = 'E104';
+        }
 
         return {
           statusCode: 200,
@@ -361,9 +372,19 @@ export class ShieldMockttpService {
       .forPost(RULESET_ENGINE_API.SIGNATURE_COVERAGE_RESULT)
       .always()
       .thenCallback(() => {
-        const status =
-          this.#coverageStatus === 'covered' ? 'covered' : 'not_covered';
-        const reasonCode = this.#coverageStatus === 'covered' ? 'E101' : 'E104';
+        let status: string;
+        let reasonCode: string;
+
+        if (this.#coverageStatus === 'covered') {
+          status = 'covered';
+          reasonCode = 'E101';
+        } else if (this.#coverageStatus === 'malicious') {
+          status = 'malicious';
+          reasonCode = 'E102';
+        } else {
+          status = 'not_covered';
+          reasonCode = 'E104';
+        }
 
         return {
           statusCode: 200,

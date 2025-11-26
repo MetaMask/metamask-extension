@@ -39,174 +39,254 @@ function createShieldFixture() {
 }
 
 describe('Shield Ruleset Engine Tests', function () {
-  it('should show covered status for swap transaction when shield subscription is active', async function () {
-    await withFixtures(
-      {
-        fixtures: createShieldFixture().build(),
-        title: this.test?.fullTitle(),
-        testSpecificMock: (server: Mockttp) => {
-          const shieldMockttpService = new ShieldMockttpService();
-          return shieldMockttpService.setup(server, {
-            isActiveUser: true,
-            coverageStatus: 'covered',
-          });
+  describe('Simple Send Transactions', function () {
+    it('should show covered status for simple send transaction when shield subscription is active', async function () {
+      await withFixtures(
+        {
+          fixtures: createShieldFixture().build(),
+          title: this.test?.fullTitle(),
+          testSpecificMock: (server: Mockttp) => {
+            const shieldMockttpService = new ShieldMockttpService();
+            return shieldMockttpService.setup(server, {
+              isActiveUser: true,
+              coverageStatus: 'covered',
+            });
+          },
+          dappOptions: { numberOfTestDapps: 1 },
+          ignoredConsoleErrors: [
+            // Rive WASM loading fails in test environment due to XMLHttpRequest limitations
+            'Could not load Rive WASM file',
+            'XMLHttpRequest is not a constructor',
+          ],
         },
-        dappOptions: { numberOfTestDapps: 1 },
-        ignoredConsoleErrors: [
-          // Rive WASM loading fails in test environment due to XMLHttpRequest limitations
-          'Could not load Rive WASM file',
-          'XMLHttpRequest is not a constructor',
-        ],
-      },
-      async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        async ({ driver }) => {
+          await loginWithBalanceValidation(driver);
 
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-        await homePage.waitForNetworkAndDOMReady();
+          const homePage = new HomePage(driver);
+          await homePage.checkPageIsLoaded();
+          await homePage.waitForNetworkAndDOMReady();
 
-        const testDapp = new TestDapp(driver);
-        await testDapp.openTestDappPage();
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage();
 
-        await testDapp.clickSimpleSendButton();
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          await testDapp.clickSimpleSendButton();
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        const transactionConfirmation = new TransactionConfirmation(driver);
-        await transactionConfirmation.checkPageIsLoaded();
+          const transactionConfirmation = new TransactionConfirmation(driver);
+          await transactionConfirmation.checkPageIsLoaded();
 
-        await transactionConfirmation.checkShieldCoverage('covered');
+          await transactionConfirmation.checkShieldCoverage('covered');
+        },
+      );
+    });
 
-        await transactionConfirmation.clickFooterCancelButton();
-      },
-    );
+    it('should show not covered status for simple send transaction when transaction is not eligible', async function () {
+      await withFixtures(
+        {
+          fixtures: createShieldFixture().build(),
+          title: this.test?.fullTitle(),
+          testSpecificMock: (server: Mockttp) => {
+            const shieldMockttpService = new ShieldMockttpService();
+            return shieldMockttpService.setup(server, {
+              isActiveUser: true,
+              coverageStatus: 'not_covered',
+            });
+          },
+          dappOptions: { numberOfTestDapps: 1 },
+          ignoredConsoleErrors: [
+            // Rive WASM loading fails in test environment due to XMLHttpRequest limitations
+            'Could not load Rive WASM file',
+            'XMLHttpRequest is not a constructor',
+          ],
+        },
+        async ({ driver }) => {
+          await loginWithBalanceValidation(driver);
+
+          const homePage = new HomePage(driver);
+          await homePage.checkPageIsLoaded();
+          await homePage.waitForNetworkAndDOMReady();
+
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage();
+
+          await testDapp.clickSimpleSendButton();
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+          const transactionConfirmation = new TransactionConfirmation(driver);
+          await transactionConfirmation.checkPageIsLoaded();
+
+          await transactionConfirmation.checkShieldCoverage('not_covered');
+        },
+      );
+    });
+
+    it('should show malicious status for simple send transaction when transaction is malicious', async function () {
+      await withFixtures(
+        {
+          fixtures: createShieldFixture().build(),
+          title: this.test?.fullTitle(),
+          testSpecificMock: (server: Mockttp) => {
+            const shieldMockttpService = new ShieldMockttpService();
+            return shieldMockttpService.setup(server, {
+              isActiveUser: true,
+              coverageStatus: 'malicious',
+            });
+          },
+          dappOptions: { numberOfTestDapps: 1 },
+          ignoredConsoleErrors: [
+            // Rive WASM loading fails in test environment due to XMLHttpRequest limitations
+            'Could not load Rive WASM file',
+            'XMLHttpRequest is not a constructor',
+          ],
+        },
+        async ({ driver }) => {
+          await loginWithBalanceValidation(driver);
+
+          const homePage = new HomePage(driver);
+          await homePage.checkPageIsLoaded();
+          await homePage.waitForNetworkAndDOMReady();
+
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage();
+
+          await testDapp.clickSimpleSendButton();
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+          const transactionConfirmation = new TransactionConfirmation(driver);
+          await transactionConfirmation.checkPageIsLoaded();
+
+          // Malicious status displays as "Not covered" in the UI
+          await transactionConfirmation.checkShieldCoverage('malicious');
+        },
+      );
+    });
   });
 
-  it('should show not covered status for swap transaction when transaction is not eligible', async function () {
-    await withFixtures(
-      {
-        fixtures: createShieldFixture().build(),
-        title: this.test?.fullTitle(),
-        testSpecificMock: (server: Mockttp) => {
-          const shieldMockttpService = new ShieldMockttpService();
-          return shieldMockttpService.setup(server, {
-            isActiveUser: true,
-            coverageStatus: 'not_covered',
-          });
+  describe('Sign Transactions', function () {
+    it('should show covered status for sign transaction when shield subscription is active', async function () {
+      await withFixtures(
+        {
+          fixtures: createShieldFixture().build(),
+          title: this.test?.fullTitle(),
+          testSpecificMock: (server: Mockttp) => {
+            const shieldMockttpService = new ShieldMockttpService();
+            return shieldMockttpService.setup(server, {
+              isActiveUser: true,
+              coverageStatus: 'covered',
+            });
+          },
+          dappOptions: { numberOfTestDapps: 1 },
+          ignoredConsoleErrors: [
+            // Rive WASM loading fails in test environment due to XMLHttpRequest limitations
+            'Could not load Rive WASM file',
+            'XMLHttpRequest is not a constructor',
+          ],
         },
-        dappOptions: { numberOfTestDapps: 1 },
-        ignoredConsoleErrors: [
-          // Rive WASM loading fails in test environment due to XMLHttpRequest limitations
-          'Could not load Rive WASM file',
-          'XMLHttpRequest is not a constructor',
-        ],
-      },
-      async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        async ({ driver }) => {
+          await loginWithBalanceValidation(driver);
 
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-        await homePage.waitForNetworkAndDOMReady();
+          const homePage = new HomePage(driver);
+          await homePage.checkPageIsLoaded();
+          await homePage.waitForNetworkAndDOMReady();
 
-        const testDapp = new TestDapp(driver);
-        await testDapp.openTestDappPage();
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage();
 
-        await testDapp.clickSimpleSendButton();
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          await testDapp.clickPersonalSign();
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        const transactionConfirmation = new TransactionConfirmation(driver);
-        await transactionConfirmation.checkPageIsLoaded();
+          const personalSignConfirmation = new PersonalSignConfirmation(driver);
+          await personalSignConfirmation.checkPageIsLoaded();
 
-        await transactionConfirmation.checkShieldCoverage('not_covered');
-
-        await transactionConfirmation.clickFooterCancelButton();
-      },
-    );
-  });
-
-  it('should show covered status for sign transaction when shield subscription is active', async function () {
-    await withFixtures(
-      {
-        fixtures: createShieldFixture().build(),
-        title: this.test?.fullTitle(),
-        testSpecificMock: (server: Mockttp) => {
-          const shieldMockttpService = new ShieldMockttpService();
-          return shieldMockttpService.setup(server, {
-            isActiveUser: true,
-            coverageStatus: 'covered',
-          });
+          const transactionConfirmation = new TransactionConfirmation(driver);
+          await transactionConfirmation.checkShieldCoverage('covered');
         },
-        dappOptions: { numberOfTestDapps: 1 },
-        ignoredConsoleErrors: [
-          // Rive WASM loading fails in test environment due to XMLHttpRequest limitations
-          'Could not load Rive WASM file',
-          'XMLHttpRequest is not a constructor',
-        ],
-      },
-      async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+      );
+    });
 
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-        await homePage.waitForNetworkAndDOMReady();
-
-        const testDapp = new TestDapp(driver);
-        await testDapp.openTestDappPage();
-
-        await testDapp.clickPersonalSign();
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        const personalSignConfirmation = new PersonalSignConfirmation(driver);
-        await personalSignConfirmation.checkPageIsLoaded();
-
-        const transactionConfirmation = new TransactionConfirmation(driver);
-        await transactionConfirmation.checkShieldCoverage('covered');
-
-        await personalSignConfirmation.clickFooterCancelButton();
-      },
-    );
-  });
-
-  it('should show not covered status for sign transaction when signature is not eligible', async function () {
-    await withFixtures(
-      {
-        fixtures: createShieldFixture().build(),
-        title: this.test?.fullTitle(),
-        testSpecificMock: (server: Mockttp) => {
-          const shieldMockttpService = new ShieldMockttpService();
-          return shieldMockttpService.setup(server, {
-            isActiveUser: true,
-            coverageStatus: 'not_covered',
-          });
+    it('should show not covered status for sign transaction when signature is not eligible', async function () {
+      await withFixtures(
+        {
+          fixtures: createShieldFixture().build(),
+          title: this.test?.fullTitle(),
+          testSpecificMock: (server: Mockttp) => {
+            const shieldMockttpService = new ShieldMockttpService();
+            return shieldMockttpService.setup(server, {
+              isActiveUser: true,
+              coverageStatus: 'not_covered',
+            });
+          },
+          dappOptions: { numberOfTestDapps: 1 },
+          ignoredConsoleErrors: [
+            // Rive WASM loading fails in test environment due to XMLHttpRequest limitations
+            'Could not load Rive WASM file',
+            'XMLHttpRequest is not a constructor',
+          ],
         },
-        dappOptions: { numberOfTestDapps: 1 },
-        ignoredConsoleErrors: [
-          // Rive WASM loading fails in test environment due to XMLHttpRequest limitations
-          'Could not load Rive WASM file',
-          'XMLHttpRequest is not a constructor',
-        ],
-      },
-      async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        async ({ driver }) => {
+          await loginWithBalanceValidation(driver);
 
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-        await homePage.waitForNetworkAndDOMReady();
+          const homePage = new HomePage(driver);
+          await homePage.checkPageIsLoaded();
+          await homePage.waitForNetworkAndDOMReady();
 
-        const testDapp = new TestDapp(driver);
-        await testDapp.openTestDappPage();
-        await testDapp.checkPageIsLoaded();
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage();
+          await testDapp.checkPageIsLoaded();
 
-        await testDapp.clickPersonalSign();
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          await testDapp.clickPersonalSign();
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        const personalSignConfirmation = new PersonalSignConfirmation(driver);
-        await personalSignConfirmation.checkPageIsLoaded();
+          const personalSignConfirmation = new PersonalSignConfirmation(driver);
+          await personalSignConfirmation.checkPageIsLoaded();
 
-        const transactionConfirmation = new TransactionConfirmation(driver);
-        await transactionConfirmation.checkShieldCoverage('not_covered');
+          const transactionConfirmation = new TransactionConfirmation(driver);
+          await transactionConfirmation.checkShieldCoverage('not_covered');
+        },
+      );
+    });
 
-        await personalSignConfirmation.clickFooterCancelButton();
-      },
-    );
+    it('should show malicious status for sign transaction when signature is malicious', async function () {
+      await withFixtures(
+        {
+          fixtures: createShieldFixture().build(),
+          title: this.test?.fullTitle(),
+          testSpecificMock: (server: Mockttp) => {
+            const shieldMockttpService = new ShieldMockttpService();
+            return shieldMockttpService.setup(server, {
+              isActiveUser: true,
+              coverageStatus: 'malicious',
+            });
+          },
+          dappOptions: { numberOfTestDapps: 1 },
+          ignoredConsoleErrors: [
+            // Rive WASM loading fails in test environment due to XMLHttpRequest limitations
+            'Could not load Rive WASM file',
+            'XMLHttpRequest is not a constructor',
+          ],
+        },
+        async ({ driver }) => {
+          await loginWithBalanceValidation(driver);
+
+          const homePage = new HomePage(driver);
+          await homePage.checkPageIsLoaded();
+          await homePage.waitForNetworkAndDOMReady();
+
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage();
+          await testDapp.checkPageIsLoaded();
+
+          await testDapp.clickPersonalSign();
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+          const personalSignConfirmation = new PersonalSignConfirmation(driver);
+          await personalSignConfirmation.checkPageIsLoaded();
+
+          const transactionConfirmation = new TransactionConfirmation(driver);
+          // Malicious status displays as "Not covered" in the UI
+          await transactionConfirmation.checkShieldCoverage('malicious');
+        },
+      );
+    });
   });
 });

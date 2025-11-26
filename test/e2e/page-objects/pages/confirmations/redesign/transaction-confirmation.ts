@@ -528,7 +528,9 @@ class TransactionConfirmation extends Confirmation {
     );
   }
 
-  async checkShieldCoverage(status: 'covered' | 'not_covered'): Promise<void> {
+  async checkShieldCoverage(
+    status: 'covered' | 'not_covered' | 'malicious',
+  ): Promise<void> {
     const statusText =
       status === 'covered'
         ? (tEn('shieldCovered') as string)
