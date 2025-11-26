@@ -1229,7 +1229,6 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
       );
 
       // Add multichainBalancesState with non-zero Solana balance
-      // @ts-expect-error - Adding test data to mock state
       state.metamask.balances = {
         account2: {
           'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {

@@ -727,6 +727,7 @@ const selectEnabledNetworkMapForBalances = createSelector(
 const selectAccountsByChainIdForBalances = createSelector(
   [
     (state: BalanceCalculationState) =>
+      // @ts-expect-error - accountsByChainId exists at runtime
       getMetamaskState(state).accountsByChainId,
   ],
   (accountsByChainId) => accountsByChainId ?? EMPTY_OBJECT,
@@ -1062,13 +1063,49 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
     // Otherwise, check if there are any native token balances
     // This handles cases where we don't have price conversion data but assets exist
 
-    // Check EVM native token balances from accountsByChainId
+    // Get accounts in the selected group from accountTreeState
+    const accountTree = accountTreeState?.accountTree;
+    if (!accountTree?.wallets) {
+      return false;
+    }
+
+    // Find the group in the account tree to get account IDs
+    let groupAccountIds: string[] = [];
+    for (const treeWallet of Object.values(accountTree.wallets)) {
+      if (treeWallet.groups[selectedGroupId]) {
+        groupAccountIds = treeWallet.groups[selectedGroupId].accounts || [];
+        break;
+      }
+    }
+
+    if (groupAccountIds.length === 0) {
+      return false;
+    }
+
+    // Create a set for faster lookups
+    const groupAccountIdsSet = new Set(groupAccountIds);
+    const groupAddresses = new Set<string>();
+
+    // Extract addresses from accountsState for accounts in this group
+    Object.entries(accountsState.internalAccounts?.accounts || {}).forEach(
+      ([accountId, account]) => {
+        if (groupAccountIdsSet.has(accountId) && account?.address) {
+          groupAddresses.add(account.address.toLowerCase());
+        }
+      },
+    );
+
+    // Check EVM native token balances from accountsByChainId (only for accounts in this group)
     const hasEvmBalance = Object.values(accountsByChainId || {}).some(
       (chainAccounts) => {
         if (!chainAccounts || typeof chainAccounts !== 'object') {
           return false;
         }
-        return Object.values(chainAccounts).some((account) => {
+        return Object.entries(chainAccounts).some(([address, account]) => {
+          // Only check accounts that belong to the selected group
+          if (!groupAddresses.has(address.toLowerCase())) {
+            return false;
+          }
           if (typeof account !== 'object' || !account) {
             return false;
           }
@@ -1081,10 +1118,14 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
       },
     );
 
-    // Check multichain balances for any non-zero non-EVM native token balances
-    const hasNonEvmBalance = Object.values(
+    // Check multichain balances for any non-zero non-EVM native token balances (only for accounts in this group)
+    const hasNonEvmBalance = Object.entries(
       multichainBalancesState?.balances || {},
-    ).some((accountBalances) => {
+    ).some(([accountId, accountBalances]) => {
+      // Only check accounts that belong to the selected group
+      if (!groupAccountIdsSet.has(accountId)) {
+        return false;
+      }
       if (!accountBalances || typeof accountBalances !== 'object') {
         return false;
       }
