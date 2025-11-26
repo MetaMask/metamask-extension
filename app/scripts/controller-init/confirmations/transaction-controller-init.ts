@@ -303,6 +303,10 @@ function addTransactionControllerListeners(
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     async (payload) => {
       const { transactionMeta } = payload;
+      if (!transactionMeta) {
+        await handleTransactionApproved(transactionMetricsRequest, payload);
+        return;
+      }
       // This is special case for hardware wallet, for some reason, the transaction controller still trigger transactionApproved event
       // after user reject the transaction in devices. So we need to handle the transaction rejected here.
       // ledger will make status as failed, and trezor will make status as rejected.
