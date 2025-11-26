@@ -247,10 +247,6 @@ export function checkValidSingleOrBatchTransaction(
   const erc20ApprovalParsed = parseApprovalTransactionData(
     erc20Approvals[0]?.data as Hex,
   );
-  console.log(
-    '--------------------------------',
-    JSON.stringify(erc20ApprovalParsed),
-  );
   if (
     erc20Approvals.length > 1 ||
     (permit2Approvals.length === 1 &&
