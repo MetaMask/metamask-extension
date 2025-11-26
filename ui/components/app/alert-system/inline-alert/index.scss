@@ -18,4 +18,14 @@
     color: var(--color-success-default);
     background-color: var(--color-success-muted);
   }
+
+  &__disabled {
+    color: var(--color-text-alternative);
+    background-color: var(--color-background-muted);
+  }
+
+  &__pill {
+    padding: 2px 5px;
+    border-radius: 6px;
+  }
 }

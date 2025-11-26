@@ -44,6 +44,7 @@ import {
   SwapsControllerSetApproveTxIdAction,
   SwapsControllerSetTradeTxIdAction,
 } from '../../controllers/swaps/swaps.types';
+import { SubscriptionServiceAction } from '../../services/subscription/types';
 import {
   InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction,
   InstitutionalSnapControllerPublishHookAction,
@@ -104,7 +105,8 @@ type InitMessengerActions =
   | SwapsControllerSetTradeTxIdAction
   | TransactionControllerEstimateGasAction
   | TransactionControllerGetStateAction
-  | SubscriptionControllerActions;
+  | SubscriptionControllerActions
+  | SubscriptionServiceAction;
 
 type InitMessengerEvents =
   | TransactionControllerTransactionApprovedEvent
@@ -167,6 +169,7 @@ export function getTransactionControllerInitMessenger(
       'TransactionController:estimateGas',
       'TransactionController:getState',
       'SubscriptionController:getSubscriptionByProduct',
+      'SubscriptionService:submitSubscriptionSponsorshipIntent',
     ],
   });
   return controllerInitMessenger;

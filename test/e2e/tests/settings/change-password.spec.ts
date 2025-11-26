@@ -61,6 +61,7 @@ describe('Change wallet password', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -92,6 +93,7 @@ describe('Change wallet password', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) => {
           // using this to mock the OAuth Service (Web Authentication flow + Auth server)

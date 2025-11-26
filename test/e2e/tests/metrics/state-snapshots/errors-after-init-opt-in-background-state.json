@@ -50,6 +50,8 @@
     "notificationGasPollTokens": "object",
     "onboardingDate": null,
     "outdatedBrowserWarningLastShown": "object",
+    "pendingShieldCohort": null,
+    "pendingShieldCohortTxType": null,
     "popupGasPollTokens": "object",
     "productTour": "accountIcon",
     "recoveryPhraseReminderHasBeenShown": true,
@@ -72,6 +74,7 @@
     "showShieldEntryModalOnce": "boolean",
     "addressSecurityAlertResponses": "object",
     "currentExtensionPopupId": "number",
+    "dappSwapComparisonData": "object",
     "nftsDropdownState": {},
     "signatureSecurityAlertResponses": "object",
     "networkConnectionBanner": "object",
@@ -286,6 +289,7 @@
       "tokenNetworkFilter": { "0x539": "boolean" },
       "tokenSortConfig": "object",
       "useNativeCurrencyAsPrimaryCurrency": "boolean",
+      "useSidePanelAsDefault": "boolean",
       "shouldShowAggregatedBalancePopover": "boolean"
     },
     "securityAlertsEnabled": "boolean",
@@ -353,8 +357,8 @@
   "SnapInsightsController": { "insights": "object" },
   "SnapInterfaceController": { "interfaces": "object" },
   "SnapsRegistry": {
-    "database": null,
-    "lastUpdated": null,
+    "database": "object",
+    "lastUpdated": "number",
     "databaseUnavailable": "boolean"
   },
   "SubjectMetadataController": { "subjectMetadata": "object" },

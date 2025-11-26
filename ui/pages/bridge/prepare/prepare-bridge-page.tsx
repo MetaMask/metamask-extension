@@ -5,6 +5,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import { BigNumber } from 'bignumber.js';
 import { useSelector, useDispatch } from 'react-redux';
 import classnames from 'classnames';
 import { debounce } from 'lodash';
@@ -12,8 +13,7 @@ import { type TokenListMap } from '@metamask/assets-controllers';
 import { zeroAddress } from 'ethereumjs-util';
 import {
   formatChainIdToCaip,
-  isSolanaChainId,
-  isBitcoinChainId,
+  isNonEvmChainId,
   isValidQuoteRequest,
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
   getNativeAssetForChainId,
@@ -21,6 +21,7 @@ import {
   UnifiedSwapBridgeEventName,
   type BridgeController,
   isCrossChain,
+  isBitcoinChainId,
 } from '@metamask/bridge-controller';
 import { Hex, parseCaipChainId } from '@metamask/utils';
 import {
@@ -57,6 +58,7 @@ import {
   getFromAccount,
   getIsStxEnabled,
   getIsGasIncluded,
+  getFromTokenBalance,
 } from '../../../ducks/bridge/selectors';
 import {
   AvatarFavicon,
@@ -84,6 +86,7 @@ import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import {
   formatTokenAmount,
   isQuoteExpiredOrInvalid as isQuoteExpiredOrInvalidUtil,
+  safeAmountForCalc,
 } from '../utils/quote';
 import { isNetworkAdded } from '../../../ducks/bridge/utils';
 import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
@@ -190,12 +193,8 @@ const PrepareBridgePage = ({
   const toChain = useSelector(getToChain);
 
   const isFromTokensLoading = useMemo(() => {
-    // Non-EVM chains (Solana, Bitcoin) don't use the EVM token list
-    if (
-      fromChain &&
-      (isSolanaChainId(fromChain.chainId) ||
-        isBitcoinChainId(fromChain.chainId))
-    ) {
+    // Non-EVM chains (Solana, Bitcoin, Tron) don't use the EVM token list
+    if (fromChain && isNonEvmChainId(fromChain.chainId)) {
       return false;
     }
     return Object.keys(fromTokens).length === 0;
@@ -210,6 +209,7 @@ const PrepareBridgePage = ({
   const slippage = useSelector(getSlippage);
 
   const quoteRequest = useSelector(getQuoteRequest);
+  const fromTokenBalance = useSelector(getFromTokenBalance);
   const {
     isLoading,
     // This quote may be older than the refresh rate, but we keep it for display purposes
@@ -286,10 +286,7 @@ const PrepareBridgePage = ({
           let address = '';
           if (isNativeAddress(fromToken.address)) {
             address = '';
-          } else if (
-            isSolanaChainId(fromChain.chainId) ||
-            isBitcoinChainId(fromChain.chainId)
-          ) {
+          } else if (isNonEvmChainId(fromChain.chainId)) {
             address = fromToken.address || '';
           } else {
             address = fromToken.address?.toLowerCase() || '';
@@ -369,6 +366,19 @@ const PrepareBridgePage = ({
 
   const isToOrFromNonEvm = useSelector(getIsToOrFromNonEvm);
 
+  const insufficientBalOverride = useMemo(() => {
+    if (
+      !fromChain ||
+      !isNonEvmChainId(fromChain.chainId) ||
+      !fromAmount ||
+      !fromTokenBalance
+    ) {
+      return undefined;
+    }
+
+    return new BigNumber(fromTokenBalance).lt(safeAmountForCalc(fromAmount));
+  }, [fromAmount, fromChain, fromTokenBalance]);
+
   const quoteParams:
     | Parameters<BridgeController['updateBridgeQuoteRequestParams']>[0]
     | undefined = useMemo(
@@ -380,8 +390,7 @@ const PrepareBridgePage = ({
             srcTokenAmount:
               fromAmount && fromToken?.decimals
                 ? calcTokenValue(
-                    // Treat empty or incomplete amount as 0 to reject NaN
-                    ['', '.'].includes(fromAmount) ? '0' : fromAmount,
+                    safeAmountForCalc(fromAmount),
                     fromToken.decimals,
                   )
                     .toFixed()
@@ -395,7 +404,7 @@ const PrepareBridgePage = ({
             // balance is less than the tenderly balance
             insufficientBal: providerConfig?.rpcUrl?.includes('localhost')
               ? true
-              : undefined,
+              : insufficientBalOverride,
             slippage,
             walletAddress: selectedAccount.address,
             destWalletAddress: selectedDestinationAccount?.address,
@@ -416,6 +425,7 @@ const PrepareBridgePage = ({
       providerConfig?.rpcUrl,
       gasIncluded,
       gasIncluded7702,
+      insufficientBalOverride,
     ],
   );
 
@@ -731,9 +741,7 @@ const PrepareBridgePage = ({
             }}
             customTokenListGenerator={toTokenListGenerator}
             amountInFiat={
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-              activeQuote?.toTokenAmount?.valueInCurrency || undefined
+              activeQuote?.toTokenAmount?.valueInCurrency ?? undefined
             }
             amountFieldProps={{
               testId: 'to-amount',

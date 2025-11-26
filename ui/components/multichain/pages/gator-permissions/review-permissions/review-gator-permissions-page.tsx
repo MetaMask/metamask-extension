@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import {
@@ -23,28 +23,51 @@ import {
 import { Content, Header, Page } from '../../page';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { extractNetworkName } from '../helper';
+import {
+  extractNetworkName,
+  getDisplayOrigin,
+  safeDecodeURIComponent,
+} from '../helper';
 import { getMultichainNetworkConfigurationsByChainId } from '../../../../../selectors';
 import { useRevokeGatorPermissions } from '../../../../../hooks/gator-permissions/useRevokeGatorPermissions';
 import {
   AppState,
   getAggregatedGatorPermissionByChainId,
+  getAggregatedGatorPermissionByChainIdAndOrigin,
 } from '../../../../../selectors/gator-permissions/gator-permissions';
 import { ReviewGatorPermissionItem } from '../components';
+import { PREVIOUS_ROUTE } from '../../../../../helpers/constants/routes';
 
-export const ReviewGatorPermissionsPage = () => {
+type ReviewGatorPermissionsPageProps = {
+  params?: { chainId: string; permissionGroupName: string; origin?: string };
+  navigate?: (
+    to: string | number,
+    options?: { replace?: boolean; state?: Record<string, unknown> },
+  ) => void;
+};
+
+export const ReviewGatorPermissionsPage = ({
+  params,
+  navigate: navigateProp,
+}: ReviewGatorPermissionsPageProps = {}) => {
   const t = useI18nContext();
-  const history = useHistory();
-  const { chainId } = useParams();
+  const navigateHook = useNavigate();
+  const navigate = navigateProp || navigateHook;
+  const urlParamsHook = useParams<{
+    chainId: string;
+    permissionGroupName: string;
+    origin?: string;
+  }>();
+
+  const { chainId, origin } = params || urlParamsHook;
+  const originDecoded = origin ? safeDecodeURIComponent(origin) : undefined;
+
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
   const [totalGatorPermissions, setTotalGatorPermissions] = useState(0);
 
   const networkName: string = useMemo(() => {
-    if (!chainId) {
-      return t('unknownNetworkForGatorPermissions');
-    }
     const networkNameKey = extractNetworkName(evmNetworks, chainId as Hex);
     const networkNameFromTranslation: string = t(networkNameKey);
 
@@ -59,15 +82,22 @@ export const ReviewGatorPermissionsPage = () => {
     return networkNameFromTranslation;
   }, [chainId, evmNetworks, t]);
 
+  // Get permissions - filtered by origin if provided, otherwise all
   const gatorPermissions = useSelector((state: AppState) =>
-    getAggregatedGatorPermissionByChainId(state, {
-      aggregatedPermissionType: 'token-transfer',
-      chainId: chainId as Hex,
-    }),
+    originDecoded
+      ? getAggregatedGatorPermissionByChainIdAndOrigin(state, {
+          aggregatedPermissionType: 'token-transfer',
+          chainId: chainId as Hex,
+          siteOrigin: originDecoded,
+        })
+      : getAggregatedGatorPermissionByChainId(state, {
+          aggregatedPermissionType: 'token-transfer',
+          chainId: chainId as Hex,
+        }),
   );
 
   const { revokeGatorPermission } = useRevokeGatorPermissions({
-    chainId: (chainId ?? '') as Hex,
+    chainId: chainId as Hex,
   });
 
   useEffect(() => {
@@ -118,7 +148,7 @@ export const ReviewGatorPermissionsPage = () => {
             iconName={IconName.ArrowLeft}
             className="connections-header__start-accessory"
             color={IconColor.IconDefault}
-            onClick={() => history.goBack()}
+            onClick={() => navigate(PREVIOUS_ROUTE)}
             size={ButtonIconSize.Sm}
           />
         }
@@ -128,7 +158,7 @@ export const ReviewGatorPermissionsPage = () => {
           textAlign={TextAlign.Center}
           data-testid="review-gator-permissions-page-title"
         >
-          {networkName}
+          {origin ? `${getDisplayOrigin(origin)}: ${networkName}` : networkName}
         </Text>
       </Header>
       <Content padding={0}>

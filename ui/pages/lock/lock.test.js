@@ -1,6 +1,7 @@
 import React from 'react';
 import sinon from 'sinon';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import Lock from './lock.component';
 
 const mockUseNavigate = jest.fn();
@@ -32,6 +33,6 @@ describe('Lock', () => {
     renderWithProvider(<Lock {...props} />);
 
     expect(await props.lockMetamask.calledOnce).toStrictEqual(true);
-    expect(mockUseNavigate).toHaveBeenCalledWith('/');
+    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 });

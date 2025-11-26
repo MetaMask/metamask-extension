@@ -235,9 +235,6 @@
   "etherscanView": {
     "message": "حساب را در Etherscan ببینید"
   },
-  "expandView": {
-    "message": "توسعه ساحه دید"
-  },
   "failed": {
     "message": "ناموفق شد"
   },
