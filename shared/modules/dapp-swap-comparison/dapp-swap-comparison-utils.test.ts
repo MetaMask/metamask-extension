@@ -201,7 +201,7 @@ describe('dapp-swap utils', () => {
     it('throws error for single transaction with invalid data', () => {
       expect(() =>
         checkValidSingleOrBatchTransaction([{ data: '0x' }]),
-      ).toThrow();
+      ).toThrow('Invalid batch transaction: 0x');
     });
 
     it('returns undefined for valid batch transaction', () => {
@@ -220,7 +220,9 @@ describe('dapp-swap utils', () => {
           { data: '0x' },
           { data: '0x' },
         ]),
-      ).toThrow();
+      ).toThrow(
+        'Invalid batch transaction: maximum 3 nested transactions allowed',
+      );
     });
   });
 });
