@@ -63,13 +63,7 @@
         "process.kill": true,
         "process.platform": true,
         "setTimeout": true
-      },
-      "packages": {
-        "@lydell/node-pty>@lydell/node-pty-darwin-arm64": true
       }
-    },
-    "@lydell/node-pty>@lydell/node-pty-darwin-arm64": {
-      "native": true
     },
     "@metamask/build-utils": {
       "packages": {
@@ -176,8 +170,15 @@
         "process.report.getReport": true
       },
       "packages": {
+        "@swc/core>@swc/core-darwin-arm64": true,
         "@swc/core>@swc/core-linux-x64-gnu": true
       }
+    },
+    "@swc/core>@swc/core-darwin-arm64": {
+      "native": true
+    },
+    "@swc/core>@swc/core-linux-x64-gnu": {
+      "native": true
     },
     "webpack>@webassemblyjs/ast": {
       "globals": {
