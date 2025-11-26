@@ -544,20 +544,68 @@ and we'll take you to the right place.`
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        const rawUrl =
-          'https://link.metamask.io/home?foo=0&foo=1&bar=2&baz=3&sig_params=foo,bar';
-        const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl, false);
+        const rawUrl = 'https://link.metamask.io/test?foo=0&foo=1&bar=2';
+        const signedUrl = `${await signDeepLink(keyPair.privateKey, rawUrl)}&baz=3`;
 
         await driver.openNewURL(signedUrl);
         const deepLink = new DeepLink(driver);
         await deepLink.checkPageIsLoaded();
-        const hashParams = getHashParams(new URL(await driver.getCurrentUrl()));
         await deepLink.clickContinueButton();
-        await homePage.checkPageIsLoaded();
+        const hashParams = getHashParams(new URL(await driver.getCurrentUrl()));
 
         assert.deepStrictEqual(hashParams.getAll('foo'), ['0', '1']);
         assert.deepStrictEqual(hashParams.getAll('bar'), ['2']);
         assert.equal(hashParams.has('baz'), false);
+      },
+    );
+  });
+
+  it('signed with empty sig_params, but url has extra params added, does not expose extra params', async function () {
+    await withFixtures(
+      await getConfig(this.test?.fullTitle()),
+      async ({ driver }: { driver: Driver }) => {
+        await driver.navigate();
+        const loginPage = new LoginPage(driver);
+        await loginPage.checkPageIsLoaded();
+        await loginPage.loginToHomepage();
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+
+        const rawUrl = 'https://link.metamask.io/test';
+        const signedUrl = `${await signDeepLink(keyPair.privateKey, rawUrl)}&foo=0&foo=1&bar=2&baz=3`;
+
+        await driver.openNewURL(signedUrl);
+        const deepLink = new DeepLink(driver);
+        await deepLink.checkPageIsLoaded();
+        await deepLink.clickContinueButton();
+        const hashParams = getHashParams(new URL(await driver.getCurrentUrl()));
+
+        assert.deepStrictEqual(hashParams.size, 0);
+      },
+    );
+  });
+
+  it('signed with sig_params, url has no extra params added, works', async function () {
+    await withFixtures(
+      await getConfig(this.test?.fullTitle()),
+      async ({ driver }: { driver: Driver }) => {
+        await driver.navigate();
+        const loginPage = new LoginPage(driver);
+        await loginPage.checkPageIsLoaded();
+        await loginPage.loginToHomepage();
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+
+        const rawUrl = 'https://link.metamask.io/test';
+        const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
+
+        await driver.openNewURL(signedUrl);
+        const deepLink = new DeepLink(driver);
+        await deepLink.checkPageIsLoaded();
+        await deepLink.clickContinueButton();
+        const hashParams = getHashParams(new URL(await driver.getCurrentUrl()));
+
+        assert.deepStrictEqual(hashParams.size, 0);
       },
     );
   });
@@ -573,15 +621,14 @@ and we'll take you to the right place.`
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        const rawUrl = 'https://link.metamask.io/home?foo=1&bar=2&baz=3';
+        const rawUrl = 'https://link.metamask.io/test?foo=1&bar=2&baz=3';
         const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl, false);
 
         await driver.openNewURL(signedUrl);
         const deepLink = new DeepLink(driver);
         await deepLink.checkPageIsLoaded();
-        const hashParams = getHashParams(new URL(await driver.getCurrentUrl()));
         await deepLink.clickContinueButton();
-        await homePage.checkPageIsLoaded();
+        const hashParams = getHashParams(new URL(await driver.getCurrentUrl()));
 
         assert.deepStrictEqual(hashParams.getAll('foo'), ['1']);
         assert.deepStrictEqual(hashParams.getAll('bar'), ['2']);
@@ -601,14 +648,13 @@ and we'll take you to the right place.`
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        const rawUrl = 'https://link.metamask.io/home?foo=1&foo=2&bar=3';
+        const rawUrl = 'https://link.metamask.io/test?foo=1&foo=2&bar=3';
 
         await driver.openNewURL(rawUrl);
         const deepLink = new DeepLink(driver);
         await deepLink.checkPageIsLoaded();
-        const hashParams = getHashParams(new URL(await driver.getCurrentUrl()));
         await deepLink.clickContinueButton();
-        await homePage.checkPageIsLoaded();
+        const hashParams = getHashParams(new URL(await driver.getCurrentUrl()));
 
         assert.deepStrictEqual(hashParams.getAll('foo'), ['1', '2']);
         assert.deepStrictEqual(hashParams.getAll('bar'), ['3']);
