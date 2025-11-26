@@ -72,6 +72,7 @@ import { ConfirmInfoRowAddress } from '../../../components/app/confirm/info/row'
 import {
   getIsShieldSubscriptionEndingSoon,
   getIsShieldSubscriptionPaused,
+  getIsShieldSubscriptionTrialing,
 } from '../../../../shared/lib/shield';
 import { useAsyncResult } from '../../../hooks/useAsync';
 import { useTimeout } from '../../../hooks/useTimeout';
@@ -175,6 +176,7 @@ const TransactionShield = () => {
   const isCancelled =
     displayedShieldSubscription?.status === SUBSCRIPTION_STATUSES.canceled;
   const isPaused = getIsShieldSubscriptionPaused(subscriptions);
+  const isTrialing = getIsShieldSubscriptionTrialing(subscriptions);
   const isMembershipInactive = isCancelled || isPaused;
   const isSubscriptionEndingSoon =
     getIsShieldSubscriptionEndingSoon(subscriptions);
@@ -710,8 +712,7 @@ const TransactionShield = () => {
                     ? t('shieldTxMembershipInactive')
                     : t('shieldTxMembershipActive')}
                 </Text>
-                {currentShieldSubscription?.status ===
-                  SUBSCRIPTION_STATUSES.trialing && (
+                {isTrialing && (
                   <Tag
                     label={t('shieldTxMembershipFreeTrial')}
                     labelProps={{
