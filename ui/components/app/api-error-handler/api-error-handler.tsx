@@ -1,6 +1,5 @@
 import React from 'react';
 import browser from 'webextension-polyfill';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Box,
   Button,
@@ -13,6 +12,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import classnames from 'classnames';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
 const ApiErrorHandler = ({ className = '' }: { className?: string }) => {
   const t = useI18nContext();
