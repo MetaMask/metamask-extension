@@ -1058,12 +1058,18 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
 
     // Check EVM native token balances from accountsByChainId
     const hasEvmBalance = Object.values(accountsByChainId || {}).some(
-      (chainAccounts: any) => {
+      (chainAccounts) => {
         if (!chainAccounts || typeof chainAccounts !== 'object') {
           return false;
         }
-        return Object.values(chainAccounts).some((account: any) => {
-          const balanceValue = account?.balance || '0x0';
+        return Object.values(chainAccounts).some((account) => {
+          if (typeof account !== 'object' || !account) {
+            return false;
+          }
+          const balanceValue =
+            'balance' in account && typeof account.balance === 'string'
+              ? account.balance
+              : '0x0';
           return balanceValue !== '0x0' && balanceValue !== '0';
         });
       },
@@ -1072,12 +1078,18 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
     // Check multichain balances for any non-zero non-EVM native token balances
     const hasNonEvmBalance = Object.values(
       multichainBalancesState?.balances || {},
-    ).some((accountBalances: any) => {
+    ).some((accountBalances) => {
       if (!accountBalances || typeof accountBalances !== 'object') {
         return false;
       }
-      return Object.values(accountBalances).some((balance: any) => {
-        const balanceValue = balance?.amount || '0';
+      return Object.values(accountBalances).some((balanceData) => {
+        if (typeof balanceData !== 'object' || !balanceData) {
+          return false;
+        }
+        const balanceValue =
+          'amount' in balanceData && typeof balanceData.amount === 'string'
+            ? balanceData.amount
+            : '0';
         return balanceValue !== '0' && balanceValue !== '0x0';
       });
     });
