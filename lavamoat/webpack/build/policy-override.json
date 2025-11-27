@@ -25,7 +25,8 @@
         "html-bundler-webpack-plugin": true,
         "css-loader": true,
         "postcss-loader": true,
-        "sass-loader": true
+        "sass-loader": true,
+        "@lavamoat/webpack": true
       }
     },
     "webpack>loader-runner": {
@@ -34,7 +35,8 @@
         "html-bundler-webpack-plugin": true,
         "css-loader": true,
         "postcss-loader": true,
-        "sass-loader": true
+        "sass-loader": true,
+        "@lavamoat/webpack": true
       }
     },
     "html-bundler-webpack-plugin": {
@@ -185,6 +187,11 @@
       },
       "packages": {
         "depcheck>cosmiconfig>parse-json>error-ex>is-arrayish": true
+      }
+    },
+    "terser-webpack-plugin>jest-worker": {
+      "packages": {
+        "terser-webpack-plugin": true
       }
     }
   }
