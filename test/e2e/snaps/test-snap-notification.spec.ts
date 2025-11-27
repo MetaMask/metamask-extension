@@ -4,7 +4,7 @@ import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import HeaderNavbar from '../page-objects/pages/header-navbar';
 import { withFixtures, unlockWallet, WINDOW_TITLES } from '../helpers';
-import FixtureBuilder from '../fixture-builder';
+import FixtureBuilder from '../fixtures/fixture-builder';
 import NotificationsListPage from '../page-objects/pages/notifications-list-page';
 import { mockNotificationSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 import { DAPP_PATH } from '../constants';

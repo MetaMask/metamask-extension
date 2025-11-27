@@ -4,7 +4,7 @@ import { MockttpServer } from 'mockttp';
 import { RelayStatus } from '../../../../../app/scripts/lib/transaction/transaction-relay';
 import { TX_SENTINEL_URL } from '../../../../../shared/constants/transaction';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../../constants';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import {
   WINDOW_TITLES,
   convertETHToHexGwei,

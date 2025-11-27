@@ -1,7 +1,7 @@
 import { Context } from 'mocha';
 import { MockttpServer } from 'mockttp';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { withFixtures, largeDelayMs } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
