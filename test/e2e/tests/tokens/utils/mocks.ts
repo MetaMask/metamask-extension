@@ -7,7 +7,6 @@ const getPriceUrl = (version: string, chainId: string, endpoint: string) =>
 export const mockEmptyPrices = async (mockServer: Mockttp, chainId: string) => {
   return mockServer
     .forGet(getPriceUrl('v2', parseInt(chainId, 16).toString(), 'spot-prices'))
-    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {},
@@ -21,7 +20,6 @@ export const mockEmptyHistoricalPrices = async (
 ) => {
   return mockServer
     .forGet(getPriceUrl('v1', chainId, `historical-prices/${address}`))
-    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {},
@@ -40,7 +38,6 @@ export const mockSpotPrices = async (
     .forGet(
       getPriceUrl('v2', parseInt(chainIdToMock, 16).toString(), 'spot-prices'),
     )
-    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: prices,
@@ -68,7 +65,6 @@ export const mockHistoricalPrices = async (
         `historical-prices/${toChecksumHexAddress(address)}`,
       ),
     )
-    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
