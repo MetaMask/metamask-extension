@@ -13,10 +13,7 @@ import { getConfirmationRoute } from '../confirmations/hooks/useConfirmationNavi
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
-  ENVIRONMENT_TYPE_FULLSCREEN,
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
-  ORIGIN_METAMASK,
-  SMART_TRANSACTION_CONFIRMATION_TYPES,
 } from '../../../shared/constants/app';
 import {
   selectHasApprovalFlows,
@@ -48,7 +45,6 @@ export const ConfirmationHandler = () => {
 
   const envType = getEnvironmentType();
   const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
-  const isFullscreen = envType === ENVIRONMENT_TYPE_FULLSCREEN;
 
   const showAwaitingSwapScreen = useSelector(selectShowAwaitingSwapScreen);
   const hasSwapsQuotes = useSelector(selectHasSwapsQuotes);
@@ -95,21 +91,9 @@ export const ConfirmationHandler = () => {
     swapsFetchParams,
   ]);
 
-  // Flows that *should* navigate in fullscreen, based on E2E specs
-  const hasSnapApproval = pendingApprovals.some((approval) =>
+  const hasAllowedPopupRedirectApprovals = pendingApprovals.some((approval) =>
     SNAP_APPROVAL_TYPES.includes(approval.type),
   );
-
-  // Flows that *should not* navigate in fullscreen, based on E2E specs
-  const hasSmartTransactionStatus = pendingApprovals.some(
-    (approval) =>
-      approval.type ===
-        SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage &&
-      approval.origin?.toLowerCase() !== ORIGIN_METAMASK,
-  );
-
-  const skipHandler =
-    isFullscreen && (hasSmartTransactionStatus || !hasSnapApproval);
 
   useEffect(() => {
     // Only run when on home/default page (for now)
@@ -117,12 +101,15 @@ export const ConfirmationHandler = () => {
       return;
     }
 
-    if (skipHandler) {
-      return;
+    if (isNotification || hasAllowedPopupRedirectApprovals) {
+      checkStatusAndNavigate();
     }
-
-    checkStatusAndNavigate();
-  }, [checkStatusAndNavigate, pathname, skipHandler]);
+  }, [
+    checkStatusAndNavigate,
+    hasAllowedPopupRedirectApprovals,
+    isNotification,
+    pathname,
+  ]);
 
   return null;
 };
