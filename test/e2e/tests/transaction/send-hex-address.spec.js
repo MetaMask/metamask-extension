@@ -106,7 +106,6 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         fixtures: new FixtureBuilder()
           .withPreferencesControllerPetnamesDisabled()
           .withTokensControllerERC20()
-          .withEnabledNetworks({ eip155: { '0x539': true } })
           .build(),
         smartContract,
         title: this.test.fullTitle(),
@@ -166,7 +165,6 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPreferencesControllerPetnamesDisabled()
-          .withEnabledNetworks({ eip155: { '0x539': true } })
           .withTokensControllerERC20()
           .build(),
         smartContract,

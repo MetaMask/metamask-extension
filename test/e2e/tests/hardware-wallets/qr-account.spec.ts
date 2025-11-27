@@ -10,9 +10,7 @@ import MultichainAccountDetailsPage from '../../page-objects/pages/multichain/mu
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { checkAccountAddressDisplayedInAccountList } from './common';
 
-// BUG: Add funds banner doesn't clear
-// eslint-disable-next-line
-describe.skip('QR Hardware', function () {
+describe('QR Hardware', function () {
   it('derives the correct accounts and unlocks the first account', async function () {
     await withFixtures(
       {
