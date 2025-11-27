@@ -51,7 +51,8 @@ class HomePage {
 
   private readonly fundYourWalletBanner = {
     text: 'Fund your wallet',
-  }
+  };
+
   private readonly loadingOverlay = {
     text: 'Connecting to Localhost 8545',
   };
