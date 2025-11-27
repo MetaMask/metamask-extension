@@ -51,7 +51,6 @@ export function useDappSwapComparisonInfo() {
   const { data, gas } = txParams ?? {};
   const {
     requestDetectionLatency,
-    swapComparisonLatency,
     updateRequestDetectionLatency,
     updateSwapComparisonLatency,
   } = useDappSwapComparisonLatencyMetrics();
@@ -70,18 +69,16 @@ export function useDappSwapComparisonInfo() {
           trxnData?.startsWith(FOUR_BYTE_EXECUTE_SWAP_CONTRACT),
         )?.data;
       }
-      const result = getDataFromSwap(
-        chainId,
-        transactionData,
-        txParams?.from as string,
-      );
-      updateRequestDetectionLatency();
+      const result = getDataFromSwap(chainId, transactionData);
+      if (result.quotesInput) {
+        updateRequestDetectionLatency();
+      }
       return result;
     } catch (error) {
       captureException(error);
-      captureDappSwapComparisonFailed('error parsing swap data');
+      captureDappSwapComparisonFailed((error as Error).toString());
       return {
-        commands: '',
+        commands: undefined,
         quotesInput: undefined,
         amountMin: undefined,
         tokenAddresses: [],
@@ -92,7 +89,6 @@ export function useDappSwapComparisonInfo() {
     chainId,
     data,
     nestedTransactions,
-    txParams?.from,
     updateRequestDetectionLatency,
   ]);
 
@@ -162,7 +158,7 @@ export function useDappSwapComparisonInfo() {
         return;
       }
 
-      updateSwapComparisonLatency();
+      const swapComparisonLatency = updateSwapComparisonLatency();
 
       const { destTokenAddress, srcTokenAmount, srcTokenAddress } = quotesInput;
       const {
@@ -262,7 +258,6 @@ export function useDappSwapComparisonInfo() {
     requestDetectionLatency,
     updateSwapComparisonLatency,
     simulationData,
-    swapComparisonLatency,
     tokenDetails,
     tokenInfoPending,
   ]);

@@ -3685,7 +3685,7 @@
     "message": "Wallet notifications are currently not active."
   },
   "metamaskSwap": {
-    "message": "Metamask Swap"
+    "message": "MetaMask Swap"
   },
   "metamaskSwapsOfflineDescription": {
     "message": "MetaMask Swaps is undergoing maintenance. Please check back later."
@@ -5645,6 +5645,12 @@
   "rewardsOnboardingIntroStepConfirm": {
     "message": "Claim 250 points"
   },
+  "rewardsOnboardingIntroStepConfirmLoadingEligibility": {
+    "message": "Checking eligiblity..."
+  },
+  "rewardsOnboardingIntroStepConfirmLoadingRegion": {
+    "message": "Checking region.."
+  },
   "rewardsOnboardingIntroStepSkip": {
     "message": "Not now"
   },
@@ -5716,6 +5722,10 @@
   },
   "rewardsOnboardingStepOptIn": {
     "message": "Claim points"
+  },
+  "rewardsOptInVerifyingReferralCode": {
+    "message": "Verifying referral code...",
+    "description": "Text shown while verifying a referral code during rewards opt-in"
   },
   "rewardsPointsBalance": {
     "message": "$1 points",

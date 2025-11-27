@@ -220,6 +220,11 @@ const OnboardingIntroStep: React.FC = () => {
           candidateSubscriptionId === 'pending' ||
           candidateSubscriptionId === 'retry'
         }
+        loadingText={
+          optinAllowedForGeoLoading
+            ? t('rewardsOnboardingIntroStepConfirmLoadingRegion')
+            : t('rewardsOnboardingIntroStepConfirmLoadingEligibility')
+        }
         isDisabled={
           optinAllowedForGeoLoading ||
           Boolean(rewardsActiveAccountSubscriptionId) ||
