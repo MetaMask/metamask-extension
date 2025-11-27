@@ -13,6 +13,7 @@ import { getConfirmationRoute } from '../confirmations/hooks/useConfirmationNavi
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import {
+  ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_NOTIFICATION,
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
 } from '../../../shared/constants/app';
@@ -45,6 +46,7 @@ export const ConfirmationHandler = () => {
   const navState = useNavState();
 
   const envType = getEnvironmentType();
+  const isFullscreen = envType === ENVIRONMENT_TYPE_FULLSCREEN;
   const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
 
   const showAwaitingSwapScreen = useSelector(selectShowAwaitingSwapScreen);
@@ -102,13 +104,15 @@ export const ConfirmationHandler = () => {
       return;
     }
 
-    if (isNotification || hasAllowedPopupRedirectApprovals) {
-      checkStatusAndNavigate();
+    if (isFullscreen && !hasAllowedPopupRedirectApprovals) {
+      return;
     }
+
+    checkStatusAndNavigate();
   }, [
     checkStatusAndNavigate,
     hasAllowedPopupRedirectApprovals,
-    isNotification,
+    isFullscreen,
     pathname,
   ]);
 
