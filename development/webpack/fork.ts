@@ -9,6 +9,7 @@
  * @see {@link ./launch.ts}
  */
 
+// eslint-disable-next-line import/unambiguous
 const PPID = Number(process.env.PPID);
 if (isNaN(PPID) || PPID !== process.ppid) {
   throw new Error(
