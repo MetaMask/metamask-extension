@@ -2470,9 +2470,6 @@
   "exploreDefi": {
     "message": "DeFi'yi keşfet"
   },
-  "exploreweb3": {
-    "message": "Web3'ü keşfet"
-  },
   "exportYourData": {
     "message": "Verilerinizi dışa aktarın"
   },
@@ -7510,18 +7507,8 @@
   "walletConnectionGuide": {
     "message": "donanım cüzdanı bağlantı kılavuzumuz"
   },
-  "walletDetails": {
-    "message": "Cüzdan bilgileri"
-  },
   "walletName": {
     "message": "Cüzdan adı"
-  },
-  "walletNotFoundDescription": {
-    "message": "$1 kimliği ile cüzdan bulunamadı.",
-    "description": "$1 is the wallet ID"
-  },
-  "walletNotFoundTitle": {
-    "message": "Cüzdan bulunamadı"
   },
   "walletReadyLearn": {
     "message": "$1 paranıza erişimi asla kaybetmemeniz için bu ifadeyi güvenli bir şekilde saklayabilirsiniz.",

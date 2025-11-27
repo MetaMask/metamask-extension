@@ -2470,9 +2470,6 @@
   "exploreDefi": {
     "message": "Jelajahi DeFi"
   },
-  "exploreweb3": {
-    "message": "Jelajahi web3"
-  },
   "exportYourData": {
     "message": "Ekspor data Anda"
   },
@@ -7510,18 +7507,8 @@
   "walletConnectionGuide": {
     "message": "panduan koneksi dompet perangkat keras kami"
   },
-  "walletDetails": {
-    "message": "Detail dompet"
-  },
   "walletName": {
     "message": "Nama dompet"
-  },
-  "walletNotFoundDescription": {
-    "message": "Dompet dengan ID $1 tidak ditemukan.",
-    "description": "$1 is the wallet ID"
-  },
-  "walletNotFoundTitle": {
-    "message": "Dompet tidak ditemukan"
   },
   "walletReadyLearn": {
     "message": "$1 Anda dapat menyimpan frasa ini dengan aman sehingga Anda tidak akan pernah kehilangan akses ke uang Anda.",

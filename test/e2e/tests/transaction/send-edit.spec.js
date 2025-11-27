@@ -8,7 +8,7 @@ const {
 } = require('../../page-objects/flows/transaction');
 
 const { withFixtures } = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
+const FixtureBuilder = require('../../fixtures/fixture-builder');
 
 const PREFERENCES_STATE_MOCK = {
   preferences: {

@@ -2,7 +2,7 @@ import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { withFixtures, WINDOW_TITLES, sentryRegEx } from '../../helpers';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
