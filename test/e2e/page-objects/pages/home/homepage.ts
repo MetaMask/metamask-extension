@@ -364,6 +364,7 @@ class HomePage {
    * - The account group has a zero balance across all aggregated mainnet networks.
    * - The account group is not on a test network
    * - The account group is not in a cached state
+   * Not a replacement for checkExpectedBalanceIsDisplayed('0') this is still valid in certain cases.
    */
   async checkBalanceEmptyStateIsDisplayed(): Promise<void> {
     console.log('Check balance empty state is displayed on homepage');

@@ -97,7 +97,7 @@ describe('Multichain API', function () {
             '0x9999999999999999999999999999999999999999';
 
           await loginWithoutBalanceValidation(driver);
-          await new HomePage(driver).checkBalanceEmptyStateIsDisplayed();
+          await new HomePage(driver).checkExpectedBalanceIsDisplayed('0');
 
           const testDapp = new TestDappMultichain(driver);
           await testDapp.openTestDappPage();
@@ -424,7 +424,7 @@ describe('Multichain API', function () {
         },
         async ({ driver, extensionId }: FixtureCallbackArgs) => {
           await loginWithoutBalanceValidation(driver);
-          await new HomePage(driver).checkBalanceEmptyStateIsDisplayed();
+          new HomePage(driver).checkExpectedBalanceIsDisplayed('0');
 
           const testDapp = new TestDappMultichain(driver);
           await testDapp.openTestDappPage();
