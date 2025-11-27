@@ -26,7 +26,6 @@ import {
   useSubscriptionPaymentMethods,
   TokenWithApprovalAmount,
 } from '../../../hooks/subscription/useSubscriptionPricing';
-import Name from '../../../components/app/name';
 import Tooltip from '../../../components/ui/tooltip';
 import { ShieldPaymentModal } from '../../shield-plan/shield-payment-modal';
 import {
@@ -279,7 +278,6 @@ export const PaymentMethodRow = ({
     isSubscriptionEndingSoon,
     t,
     handlePaymentError,
-    cryptoPaymentMethod,
   ]);
 
   if (showSkeletonLoader) {
@@ -297,9 +295,7 @@ export const PaymentMethodRow = ({
   // For normal states, make it clickable
   return (
     <>
-      <Box>
-        {paymentMethodDisplay}
-      </Box>
+      <Box>{paymentMethodDisplay}</Box>
       <ShieldPaymentModal
         disableCardOption={!canChangePaymentMethodToCard}
         isOpen={showPaymentModal}
