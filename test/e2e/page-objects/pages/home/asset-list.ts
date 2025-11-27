@@ -292,7 +292,6 @@ class AssetListPage {
     );
     await this.driver.delay(3000);
     await this.driver.clickElement(this.customTokenModalOption);
-    await this.driver.delay(3000);
     await this.driver.waitForSelector(this.modalWarningBanner);
     await this.driver.fill(this.tokenAddressInput, tokenAddress);
     await this.driver.waitForSelector(this.tokenSymbolTitle);
