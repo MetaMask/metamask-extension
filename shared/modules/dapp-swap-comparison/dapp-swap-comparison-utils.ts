@@ -11,6 +11,7 @@ import {
   SimulationData,
   SimulationTokenBalanceChange,
 } from '@metamask/transaction-controller';
+import { parseApprovalTransactionData } from '../transaction.utils';
 import { getCommandValues } from './dapp-swap-command-utils';
 
 export const ABI = [
@@ -174,33 +175,90 @@ export function getBalanceChangeFromSimulationData(
   return new BigNumber(balanceDifference, 16).toString(10);
 }
 
+const FOUR_BYTE_EXECUTE_SWAP_CONTRACT = '0x3593564c';
+const PERMIT2_APPROVE_TRANSACTION = '0x87517c45';
+const ERC20_APPROVE_TRANSACTION = '0x095ea7b3';
 const validSwapBatchTransactionCommands = [
-  '0x3593564c',
-  '0x87517c45',
-  '0x095ea7b3',
+  FOUR_BYTE_EXECUTE_SWAP_CONTRACT,
+  PERMIT2_APPROVE_TRANSACTION,
+  ERC20_APPROVE_TRANSACTION,
 ];
 
 export function checkValidSingleOrBatchTransaction(
   nestedTransactions?: NestedTransactionMetadata[],
+  approveTokenAddress?: Hex,
 ) {
   if (!nestedTransactions || nestedTransactions?.length === 0) {
     return;
   }
   if (nestedTransactions.length > 3) {
     throw new Error(
-      'Invalid batch transaction: maximum 3 nested transactions allowed',
+      'Error getting data from swap: invalid batch transaction maximum 3 nested transactions allowed',
     );
   }
-  const invalidNestedTransactions = nestedTransactions.filter(
-    ({ data }) =>
-      !data ||
-      !validSwapBatchTransactionCommands.some((command) =>
-        data?.startsWith(command),
-      ),
-  );
-  if (invalidNestedTransactions.length > 0) {
+
+  if (
+    nestedTransactions.some(
+      ({ data }) =>
+        !validSwapBatchTransactionCommands.some((command) =>
+          data?.startsWith(command),
+        ),
+    )
+  ) {
     throw new Error(
-      `Invalid batch transaction: ${invalidNestedTransactions.map((nestedTransaction) => nestedTransaction.data?.substring(0, 10)).join(', ')}`,
+      'Error getting data from swap: invalid batch transaction, invalid command',
+    );
+  }
+
+  const trade = nestedTransactions.filter(({ data }) =>
+    data?.startsWith(FOUR_BYTE_EXECUTE_SWAP_CONTRACT),
+  );
+  if (trade?.length !== 1) {
+    throw new Error(
+      'Error getting data from swap: invalid batch transaction, trade needed',
+    );
+  }
+
+  const permit2Approvals = nestedTransactions.filter(({ data }) =>
+    data?.startsWith(PERMIT2_APPROVE_TRANSACTION),
+  );
+  const permit2ApprovalParsed = parseApprovalTransactionData(
+    permit2Approvals[0]?.data as Hex,
+  );
+  if (
+    permit2Approvals.length > 1 ||
+    (permit2Approvals.length === 1 &&
+      (permit2ApprovalParsed?.tokenAddress?.toLowerCase() !==
+        approveTokenAddress?.toLowerCase() ||
+        permit2ApprovalParsed?.spender?.toLowerCase() !==
+          trade[0].to?.toLowerCase()))
+  ) {
+    throw new Error(
+      'Error getting data from swap: invalid batch transaction, unexpected permit2 approval',
+    );
+  }
+
+  const erc20Approvals = nestedTransactions.filter(({ data }) =>
+    data?.startsWith(ERC20_APPROVE_TRANSACTION),
+  );
+  if (!erc20Approvals?.length) {
+    return;
+  }
+  const erc20ApprovalParsed = parseApprovalTransactionData(
+    erc20Approvals[0]?.data as Hex,
+  );
+  if (
+    erc20Approvals.length > 1 ||
+    (permit2Approvals.length === 1 &&
+      erc20ApprovalParsed?.spender?.toLowerCase() !==
+        permit2Approvals[0]?.to?.toLowerCase()) ||
+    (permit2Approvals.length === 0 &&
+      erc20Approvals.length === 1 &&
+      erc20ApprovalParsed?.spender?.toLowerCase() !==
+        trade[0].to?.toLowerCase())
+  ) {
+    throw new Error(
+      'Error getting data from swap: invalid batch transaction, unexpected erc20 approval',
     );
   }
 }

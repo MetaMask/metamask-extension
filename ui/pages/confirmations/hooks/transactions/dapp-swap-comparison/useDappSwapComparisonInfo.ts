@@ -76,7 +76,6 @@ export function useDappSwapComparisonInfo() {
   const { commands, quotesInput, amountMin } = useMemo(() => {
     let dataCommands = '';
     try {
-      checkValidSingleOrBatchTransaction(nestedTransactions);
       let transactionData = data;
       if (nestedTransactions?.length) {
         transactionData = nestedTransactions?.find(({ data: trxnData }) =>
@@ -91,6 +90,10 @@ export function useDappSwapComparisonInfo() {
         parsedTransactionData.inputs,
       );
       if (result.quotesInput) {
+        checkValidSingleOrBatchTransaction(
+          nestedTransactions,
+          result.quotesInput?.srcTokenAddress as Hex,
+        );
         updateRequestDetectionLatency();
         captureDappSwapComparisonLoading(dataCommands);
       }

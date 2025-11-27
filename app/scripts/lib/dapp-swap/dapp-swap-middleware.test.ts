@@ -216,9 +216,9 @@ describe('DappSwapMiddleware', () => {
     await flushPromises();
 
     expect(setDappSwapComparisonData).toHaveBeenCalledWith('123', {
-      commands: '',
+      commands: '0x100604',
       error:
-        'Error fetching bridge quotes: Error: Invalid batch transaction: dummy_test',
+        'Error fetching bridge quotes: Error: Error getting data from swap: invalid batch transaction, invalid command',
     });
   });
 });
