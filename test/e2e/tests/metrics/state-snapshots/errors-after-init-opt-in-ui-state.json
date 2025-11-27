@@ -254,7 +254,6 @@
     "onboardingTabs": "object",
     "socialBackupsMetadata": "object",
     "isSeedlessOnboardingUserAuthenticated": "boolean",
-    "openedWithSidepanel": "boolean",
     "subscriptions": "object",
     "trialedProducts": "object",
     "subjects": "object",

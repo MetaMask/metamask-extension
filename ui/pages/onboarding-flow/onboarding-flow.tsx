@@ -185,7 +185,6 @@ export default function OnboardingFlow({
     });
     if (onboardingParentContext) {
       // Intentionally mutating ref object
-      // eslint-disable-next-line react-compiler/react-compiler
       onboardingParentContext.current = {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         _name: TraceName.OnboardingJourneyOverall,

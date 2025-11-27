@@ -60,7 +60,6 @@ const initialState = {
   },
   throttledOrigins: {},
   isSeedlessOnboardingUserAuthenticated: false,
-  openedWithSidepanel: false,
 };
 
 /**
