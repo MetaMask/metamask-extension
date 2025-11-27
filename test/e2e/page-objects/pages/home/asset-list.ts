@@ -295,7 +295,7 @@ class AssetListPage {
       this.customNetworkSelectedOption(networkName),
     );
     await this.driver.clickElement(this.customTokenModalOption);
-    await this.driver.waitForSelector(this.modalWarningBanner);
+    await this.driver.waitForSelector(this.tokenAddressInput);
     await this.driver.fill(this.tokenAddressInput, tokenAddress);
     await this.driver.waitForSelector(this.tokenSymbolTitle);
 

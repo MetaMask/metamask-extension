@@ -10,7 +10,7 @@
       "metamaskNotificationsReadList": "object"
     },
     "AccountsController": {
-      "internalAccounts": { "selectedAccount": "string", "accounts": "object" }
+      "internalAccounts": { "accounts": "object", "selectedAccount": "string" }
     },
     "AlertController": {
       "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
@@ -242,9 +242,11 @@
     },
     "RemoteFeatureFlagController": {
       "remoteFeatureFlags": {
-        "feature1": true,
-        "feature2": false,
-        "feature3": { "name": "groupC", "value": "valueC" },
+        "enableMultichainAccountsState2": {
+          "enabled": true,
+          "featureVersion": "2",
+          "minimumVersion": "12.19.0"
+        },
         "sendRedesign": { "enabled": false }
       },
       "cacheTimestamp": "number"
