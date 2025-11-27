@@ -8,16 +8,15 @@ import {
   SubscriptionStatus,
 } from '@metamask/subscription-controller';
 import { cloneDeep } from 'lodash';
-import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { flushPromises } from '../../../test/lib/timer-helpers';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
 import mockState from '../../../test/data/mock-state.json';
 import * as actions from '../../store/actions';
 import { MINUTE } from '../../../shared/constants/time';
+import { AssetType } from '../../../shared/constants/transaction';
 import * as subscriptionPricingHooks from './useSubscriptionPricing';
 import * as subscriptionHooks from './useSubscription';
 import { useShieldAddFundTrigger } from './useAddFundTrigger';
-import { AssetType } from '../../../shared/constants/transaction';
 
 jest.mock('../../store/actions');
 jest.mock('../../hooks/subscription/useSubscription');
@@ -68,7 +67,9 @@ describe('useShieldAddFundTrigger', () => {
   const useSubscriptionPaymentMethodsMock = jest.mocked(
     subscriptionPricingHooks.useSubscriptionPaymentMethods,
   );
-  const useAvilableTokenBalancesMock = jest.mocked(subscriptionPricingHooks.useAvailableTokenBalances);
+  const useAvilableTokenBalancesMock = jest.mocked(
+    subscriptionPricingHooks.useAvailableTokenBalances,
+  );
   const getSubscriptionCryptoApprovalAmountMock = jest.mocked(
     actions.getSubscriptionCryptoApprovalAmount,
   );
@@ -150,13 +151,6 @@ describe('useShieldAddFundTrigger', () => {
       paymentAddress: MOCK_ACCOUNT_ADDRESS,
       paymentTokenAddress: MOCK_TOKEN_ADDRESS,
     });
-  }
-
-  function mockSelectedAccount() {
-    return {
-      address: MOCK_ACCOUNT_ADDRESS,
-      id: 'account-1',
-    };
   }
 
   beforeEach(() => {
