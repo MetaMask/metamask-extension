@@ -38,10 +38,8 @@ class AssetListPage {
 
   private readonly currentNetworksTotal = `${this.currentNetworkOption} [data-testid="account-value-and-suffix"]`;
 
-  private readonly customTokenModalOption = {
-    text: 'Custom token',
-    tag: 'button',
-  };
+  private readonly customTokenModalOption =
+    '[data-testid="import-tokens-modal-custom-token-tab"]';
 
   private readonly hideTokenButton = '[data-testid="asset-options__hide"]';
 
@@ -302,11 +300,14 @@ class AssetListPage {
     await this.driver.waitForSelector(
       this.customNetworkSelectedOption(networkName),
     );
-    await this.driver.waitForSelector(this.tokenSearchInput);
+    // on chrome the test is going to fast so this can fail without a wait
+    await this.driver.delay(1000);
+    await this.driver.waitForSelector(this.customTokenModalOption);
     await this.driver.clickElement(this.customTokenModalOption);
     await this.driver.waitForSelector(this.modalWarningBanner);
     // Wait for the input to be present and stable after modal content re-renders
     await this.driver.waitForSelector(this.tokenAddressInput);
+
     await this.driver.fill(this.tokenAddressInput, tokenAddress);
     await this.driver.waitForSelector(this.tokenSymbolTitle);
 
