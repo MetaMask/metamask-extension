@@ -193,6 +193,10 @@ class HomePage {
     );
   }
 
+  async clickBackupRemindMeLaterButtonSafe(): Promise<void> {
+    await this.driver.clickElementSafe(this.backupRemindMeLaterButton);
+  }
+
   async closeSurveyToast(surveyName: string): Promise<void> {
     console.log(`Close survey toast for ${surveyName}`);
     await this.driver.waitForSelector({
