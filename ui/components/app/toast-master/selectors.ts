@@ -242,8 +242,7 @@ export function selectShowShieldEndingToast(
 /**
  * Determines if the PNA25 banner should be shown based on:
  * - User has completed onboarding (completedOnboarding === true)
- * - LaunchDarkly flag (extensionUxPna25) is enabled for existing users
- * - Build-time environment variable (EXTENSION_UX_PNA25) is enabled
+ * - LaunchDarkly feature flag (extensionUxPna25) is enabled
  * - User has opted into metrics (participateInMetaMetrics === true)
  * - User hasn't acknowledged the banner yet (pna25Acknowledged === false)
  *
@@ -255,16 +254,20 @@ export function selectShowShieldEndingToast(
  * @returns Boolean indicating whether to show the banner
  */
 export function selectShowPna25Banner(state: Pick<State, 'metamask'>): boolean {
-  const { completedOnboarding, participateInMetaMetrics, pna25Acknowledged } =
-    state.metamask || {};
+  const {
+    completedOnboarding,
+    participateInMetaMetrics,
+    pna25Acknowledged,
+    remoteFeatureFlags,
+  } = state.metamask || {};
 
   // Only show to users who have completed onboarding
   if (!completedOnboarding) {
     return false; // User hasn't completed onboarding yet
   }
 
-  // Check if the PNA25 feature is enabled via build-time environment variable
-  const isPna25Enabled = process.env.EXTENSION_UX_PNA25 === 'true';
+  // For onboarding screen, we use local flag and for existing users, we use LaunchDarkly flag
+  const isPna25Enabled = remoteFeatureFlags?.extensionUxPna25;
 
   // Check all conditions
   if (!isPna25Enabled) {
