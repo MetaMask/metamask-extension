@@ -35,6 +35,7 @@ type MultichainEditAccountsPageProps = {
   supportedAccountGroups: AccountGroupWithInternalAccounts[];
   onSubmit: (accountGroups: AccountGroupId[]) => void;
   onClose: () => void;
+  isSnapsPermissionsRequest: boolean;
 };
 
 export const MultichainEditAccountsPage: React.FC<
@@ -46,6 +47,7 @@ export const MultichainEditAccountsPage: React.FC<
   supportedAccountGroups,
   onSubmit,
   onClose,
+  isSnapsPermissionsRequest,
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -128,22 +130,24 @@ export const MultichainEditAccountsPage: React.FC<
       className="main-container connect-page"
       backgroundColor={BackgroundColor.backgroundDefault}
     >
-      <Header
-        textProps={{
-          variant: TextVariant.headingSm,
-        }}
-        startAccessory={
-          <ButtonIcon
-            size={ButtonIconSize.Md}
-            ariaLabel={t('back')}
-            iconName={IconName.ArrowLeft}
-            onClick={onClose}
-            data-testid="back-button"
-          />
-        }
-      >
-        {title ?? t('editAccounts')}
-      </Header>
+      {!isSnapsPermissionsRequest && (
+        <Header
+          textProps={{
+            variant: TextVariant.headingSm,
+          }}
+          startAccessory={
+            <ButtonIcon
+              size={ButtonIconSize.Md}
+              ariaLabel={t('back')}
+              iconName={IconName.ArrowLeft}
+              onClick={onClose}
+              data-testid="back-button"
+            />
+          }
+        >
+          {title ?? t('editAccounts')}
+        </Header>
+      )}
       <Content
         paddingLeft={4}
         paddingRight={4}
@@ -163,6 +167,7 @@ export const MultichainEditAccountsPage: React.FC<
           data-testid="connect-more-accounts-button"
           onClick={handleConnect}
           size={ButtonSecondarySize.Lg}
+          disabled={selectedAccountGroups.length === 0}
           block
         >
           {confirmButtonText ?? t('connect')}
