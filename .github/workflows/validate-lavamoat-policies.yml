@@ -138,7 +138,7 @@ jobs:
           use-yarn-hydrate: true
 
       - name: Validate LavaMoat webpack build policy
-        run: yarn webpack:lavamoat --writeAutoPolicy
+        run: yarn webpack:lavamoat:generate
         env:
           INFURA_PROD_PROJECT_ID: 00000000000
           SEGMENT_PROD_WRITE_KEY: 00000000000
