@@ -1,11 +1,12 @@
 diff --git a/src/Common/VMScript.js b/src/Common/VMScript.js
-index f83d758d92d67528ada004b0a3d4379fb3afcec4..50b09389fe61019d9a69fbcd53193d7e3fc8d3c9 100644
+index f83d758d92d67528ada004b0a3d4379fb3afcec4..f9856b9727a2bb7deecb2c68247e76d9cd5d98f9 100644
 --- a/src/Common/VMScript.js
 +++ b/src/Common/VMScript.js
-@@ -35,6 +35,18 @@ class VMScript {
+@@ -35,6 +35,19 @@ class VMScript {
      }
  
      try {
++      // LavaMoat does not support ESM
 +      const sourceMapImport = 'import ___CSS_LOADER_API_SOURCEMAP_IMPORT___ from "../../node_modules/css-loader/dist/runtime/sourceMaps.js";'
 +      if (code.includes(sourceMapImport)){
 +        code = code.replace(sourceMapImport, `var ___CSS_LOADER_API_SOURCEMAP_IMPORT___ = require('../../node_modules/css-loader/dist/runtime/sourceMaps.js');`)
@@ -22,10 +23,10 @@ index f83d758d92d67528ada004b0a3d4379fb3afcec4..50b09389fe61019d9a69fbcd53193d7e
        let result = script.runInContext(this.context);
  
 diff --git a/src/Plugin/PluginService.js b/src/Plugin/PluginService.js
-index b4c434959c9cb6b56b65f2a8fe578d2dcc0466b9..01771bba8d9fa44cbb6bd7eda473352fe7beca26 100644
+index b4c434959c9cb6b56b65f2a8fe578d2dcc0466b9..f389bb0136f1f18408acaff8aace69e8052cc7d9 100644
 --- a/src/Plugin/PluginService.js
 +++ b/src/Plugin/PluginService.js
-@@ -48,10 +48,10 @@ class PluginService {
+@@ -48,10 +48,12 @@ class PluginService {
        // add reference for the preprocessor option into the loader options
        if (pluginOptions.preprocessor != null && loaderOptions.preprocessor == null) {
          loaderOptions.preprocessor = pluginOptions.preprocessor;
@@ -34,6 +35,8 @@ index b4c434959c9cb6b56b65f2a8fe578d2dcc0466b9..01771bba8d9fa44cbb6bd7eda473352f
 -        if (pluginOptions.preprocessorOptions && !loaderOptions.preprocessorOptions) {
 -          loaderOptions.preprocessorOptions = pluginOptions.preprocessorOptions;
 -        }
++      // this is a bug in the plugin, @itsyoboieltr opened a PR to fix this
++      // https://github.com/webdiscus/html-bundler-webpack-plugin/pull/187
 +      if (pluginOptions.preprocessorOptions && !loaderOptions.preprocessorOptions) {
 +        loaderOptions.preprocessorOptions = pluginOptions.preprocessorOptions;
        }

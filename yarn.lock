@@ -27912,7 +27912,7 @@ __metadata:
 
 "html-bundler-webpack-plugin@patch:html-bundler-webpack-plugin@npm%3A4.21.1#~/.yarn/patches/html-bundler-webpack-plugin-npm-4.21.1-c5b80fbfd7.patch":
   version: 4.21.1
-  resolution: "html-bundler-webpack-plugin@patch:html-bundler-webpack-plugin@npm%3A4.21.1#~/.yarn/patches/html-bundler-webpack-plugin-npm-4.21.1-c5b80fbfd7.patch::version=4.21.1&hash=2d3835"
+  resolution: "html-bundler-webpack-plugin@patch:html-bundler-webpack-plugin@npm%3A4.21.1#~/.yarn/patches/html-bundler-webpack-plugin-npm-4.21.1-c5b80fbfd7.patch::version=4.21.1&hash=942bd4"
   dependencies:
     "@types/html-minifier-terser": "npm:^7.0.2"
     ansis: "npm:4.1.0"
@@ -27955,7 +27955,7 @@ __metadata:
       optional: true
     twig:
       optional: true
-  checksum: 10/bcaa47e7382531f12f660d0fd28d8b70362212b03636698a2e65ba658e66604fa2d48af6b5ae3374e0ba9a070df917edd5f534e1465df8de877b9ec0f40ba8c9
+  checksum: 10/f2ebc757eb10255c6af197d308473e065702c8a7aff10eda4da04b2cfed8ccc7a027f0640ce3d172819e018366bd332a9867b7977edae5efbcba76bb8c94cc5b
   languageName: node
   linkType: hard
 
