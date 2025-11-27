@@ -237,6 +237,23 @@ function getOptions(
       group: toOrange('Developer assistance:'),
       type: 'boolean',
     },
+    reactCompilerVerbose: {
+      array: false,
+      default: false,
+      description:
+        'Enables/disables React Compiler verbose mode and statistics',
+      group: toOrange('Developer assistance:'),
+      type: 'boolean',
+    },
+    reactCompilerDebug: {
+      array: false,
+      choices: ['all', 'critical', 'none'],
+      default: 'none',
+      description:
+        'Sets React Compiler panic threshold that fails the build for all errors or critical errors only. If `none`, the build will not fail.',
+      group: toOrange('Developer assistance:'),
+      type: 'string',
+    },
 
     ...prerequisites,
     zip: {
@@ -355,23 +372,6 @@ function getOptions(
       description: 'Apply Snow to the build assets',
       group: toOrange('Security:'),
       type: 'boolean',
-    },
-    reactCompilerVerbose: {
-      array: false,
-      default: false,
-      description:
-        'Enables/disables React Compiler verbose mode and statistics',
-      group: toOrange('Developer assistance:'),
-      type: 'boolean',
-    },
-    reactCompilerDebug: {
-      array: false,
-      choices: ['all', 'critical', 'none'],
-      default: 'none',
-      description:
-        'Sets React Compiler panic threshold that fails the build for all errors or critical errors only. If `none`, the build will not fail.',
-      group: toOrange('Developer assistance:'),
-      type: 'string',
     },
 
     dryRun: {
