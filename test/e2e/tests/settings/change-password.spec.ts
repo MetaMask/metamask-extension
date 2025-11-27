@@ -114,6 +114,8 @@ describe('Change wallet password TEST', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
+        // TODO: This is a temporary fix to unblock CI. Remove this once the issue is fixed.
+        await homePage.clickBackupRemindMeLaterButtonSafe();
         await doPasswordChangeAndLockWallet(
           driver,
           OLD_PASSWORD,

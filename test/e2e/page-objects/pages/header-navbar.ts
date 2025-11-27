@@ -115,7 +115,6 @@ class HeaderNavbar {
     } else {
       await this.driver.clickElement(this.threeDotMenuButton);
     }
-    await this.driver.delay(3000);
   }
 
   async mouseClickOnThreeDotMenu(): Promise<void> {
