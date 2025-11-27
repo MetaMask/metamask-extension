@@ -292,7 +292,9 @@ class AssetListPage {
     await this.driver.waitForSelector(
       this.customNetworkSelectedOption(networkName),
     );
+    await this.driver.delay(2000);
     await this.driver.waitForSelector(this.customTokenModalOption);
+        await this.driver.delay(2000);
     await this.driver.clickElement(this.customTokenModalOption)
     await this.driver.waitForSelector(this.modalWarningBanner);
     // Wait for the input to be present and stable after modal content re-renders
