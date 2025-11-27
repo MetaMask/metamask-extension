@@ -1,5 +1,6 @@
 export const ERC20_DEFAULT_DECIMALS = 18;
 
+// Do not include the second burn address (0x000000000000000000000000000000000000dead) in this list
 export const LOWER_CASED_BURN_ADDRESSES = [
   '0x0000000000000000000000000000000000000000',
 ];
