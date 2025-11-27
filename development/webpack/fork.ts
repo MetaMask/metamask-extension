@@ -16,8 +16,7 @@ if (isNaN(PPID) || PPID !== process.ppid) {
   );
 }
 
-const { build } = await import('./build.ts');
-build(() => {
+require('./build').build(() => {
   // stop writing now because the parent process is still listening to these
   // streams and we don't want any more output to be shown to the user.
   process.stdout.write = process.stderr.write = () => true;

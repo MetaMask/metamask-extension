@@ -9,7 +9,7 @@
   "scripts": {
     "webpack": "tsx ./development/webpack/launch.ts",
     "webpack:clearcache": "./development/clear-webpack-cache.js",
-    "webpack:tsc": "tsc ./development/webpack/launch.ts ./development/webpack/build.ts --esModuleInterop --noEmitOnError true --skipLibCheck --downlevelIteration --outDir ./development/.webpack",
+    "webpack:tsc": "tsc ./development/webpack/launch.ts ./development/webpack/build.ts ./development/webpack/fork.ts --esModuleInterop --noEmitOnError true --skipLibCheck --downlevelIteration --outDir ./development/.webpack && node -e \"require('fs').writeFileSync('development/.webpack/launch.js', require('fs').readFileSync('development/.webpack/launch.js', 'utf8').replace('fork.ts', 'fork.js'));\"",
     "webpack:lavamoat": "yarn webpack:tsc && lavamoat --policy lavamoat/webpack/build/policy.json --override lavamoat/webpack/build/policy-override.json ./development/.webpack/launch.js",
     "webpack:lavamoat:build": "yarn webpack:lavamoat -- --no-cache",
     "webpack:lavamoat:generate": "yarn webpack:lavamoat --writeAutoPolicy",

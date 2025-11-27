@@ -29,7 +29,7 @@ if (args.cache === false || args.help === true || args.watch === true) {
   // cache is disabled, we need to output "help", or we're in watch mode.
   require('./build').build();
 } else {
-  fork(process, join(__dirname, 'fork.mts'), rawArgv);
+  fork(process, join(__dirname, 'fork.ts'), rawArgv);
 }
 
 /**
