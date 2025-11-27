@@ -87,7 +87,7 @@ export function getQuotesForConfirmation({
   try {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const { enabled: dappSwapEnabled, bridge_quote_fees: bridgeQuoteFees } =
-      dappSwapMetricsFlag ?? {};
+      dappSwapMetricsFlag;
     if (!dappSwapEnabled || !securityAlertId) {
       return;
     }
@@ -144,7 +144,8 @@ export function getQuotesForConfirmation({
         commands,
       });
     }
-    log.error('Error fetching dapp swap quotes', error);
-    captureException(error);
+    captureException(
+      `Error fetching bridge quotes: ${(error as Error).toString()}`,
+    );
   }
 }
