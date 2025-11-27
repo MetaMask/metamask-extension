@@ -120,6 +120,7 @@ describe('<DappSwapComparisonBanner />', () => {
       dappSwapUi: { enabled: true, threshold: 0.01 },
     });
     mockUseDappSwapComparisonRewardText.mockReturnValue(null);
+    process.env.ENABLE_DAPP_SWAP_COMPARISON_UI = 'true';
   });
 
   it('renders component without errors', () => {
