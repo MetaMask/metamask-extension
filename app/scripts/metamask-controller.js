@@ -1012,7 +1012,7 @@ export default class MetamaskController extends EventEmitter {
                     this.controllerMessenger,
                     `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.FETCH_QUOTES}`,
                   ),
-                  setSwapQuotes:
+                  setDappSwapComparisonData:
                     this.appStateController.setDappSwapComparisonData.bind(
                       this.appStateController,
                     ),
@@ -7092,9 +7092,10 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.FETCH_QUOTES}`,
         ),
-        setSwapQuotes: this.appStateController.setDappSwapComparisonData.bind(
-          this.appStateController,
-        ),
+        setDappSwapComparisonData:
+          this.appStateController.setDappSwapComparisonData.bind(
+            this.appStateController,
+          ),
         getNetworkConfigurationByNetworkClientId:
           this.networkController.getNetworkConfigurationByNetworkClientId.bind(
             this.networkController,

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { useCallback } from 'react';
+import { useCallback, useRef } from 'react';
 
 import { useConfirmContext } from '../../../context/confirm';
 import { useDappSwapContext } from '../../../context/dapp-swap';
@@ -11,18 +11,15 @@ export function useDappSwapComparisonMetrics() {
   const { selectedQuote } = useDappSwapContext();
   const { updateTransactionEventFragment } = useTransactionEventFragment();
   const { id: transactionId } = currentConfirmation ?? {};
+  const swapDappComparison = useRef('loading');
 
   const captureDappSwapComparisonProperties = useCallback(
     (params: {
       properties: Record<string, string>;
       sensitiveProperties?: Record<string, string>;
     }) => {
-      updateTransactionEventFragment(
-        {
-          ...params,
-        },
-        transactionId,
-      );
+      swapDappComparison.current = params.properties.swap_dapp_comparison;
+      updateTransactionEventFragment(params, transactionId);
     },
     [transactionId, updateTransactionEventFragment],
   );
@@ -48,7 +45,9 @@ export function useDappSwapComparisonMetrics() {
     (commands: string) => {
       captureDappSwapComparisonProperties({
         properties: {
-          swap_dapp_comparison: 'loading',
+          // Using swapDappComparison.current below will ensure that failure in fetching quotes
+          // in middleware is not overridden by loading state from UI
+          swap_dapp_comparison: swapDappComparison.current ?? 'loading',
           swap_dapp_commands: commands,
         },
       });
@@ -57,10 +56,11 @@ export function useDappSwapComparisonMetrics() {
   );
 
   const captureDappSwapComparisonFailed = useCallback(
-    (reason: string) => {
+    (reason: string, commands?: string) => {
       captureDappSwapComparisonProperties({
         properties: {
           swap_dapp_comparison: reason ?? 'failed',
+          swap_dapp_commands: commands ?? '',
         },
       });
     },

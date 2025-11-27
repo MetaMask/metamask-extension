@@ -8,9 +8,15 @@ import {
   NetworkClientId,
   NetworkConfiguration,
 } from '@metamask/network-controller';
+import { NestedTransactionMetadata } from '@metamask/transaction-controller';
 
 import { captureException } from '../../../../shared/lib/sentry';
-import { getDataFromSwap } from '../../../../shared/modules/dapp-swap-comparison/dapp-swap-comparison-utils';
+import {
+  checkValidSingleOrBatchTransaction,
+  getDataFromSwap,
+  parseTransactionData,
+} from '../../../../shared/modules/dapp-swap-comparison/dapp-swap-comparison-utils';
+import { DappSwapComparisonData } from '../../controllers/app-state-controller';
 import { SecurityAlertResponse } from '../ppom/types';
 
 export type DappSwapMiddlewareRequest<
@@ -59,16 +65,16 @@ const getSwapDetails = (params: DappSwapMiddlewareRequest['params']) => {
 export function getQuotesForConfirmation({
   req,
   fetchQuotes,
-  setSwapQuotes,
+  setDappSwapComparisonData,
   getNetworkConfigurationByNetworkClientId,
   dappSwapMetricsFlag,
   securityAlertId,
 }: {
   req: DappSwapMiddlewareRequest<JsonRpcParams>;
   fetchQuotes: (quotesInput: GenericQuoteRequest) => Promise<QuoteResponse[]>;
-  setSwapQuotes: (
+  setDappSwapComparisonData: (
     uniqueId: string,
-    info: { quotes?: QuoteResponse[]; latency?: number },
+    info: DappSwapComparisonData,
   ) => void;
   getNetworkConfigurationByNetworkClientId: (
     networkClientId: NetworkClientId,
@@ -77,6 +83,7 @@ export function getQuotesForConfirmation({
   dappSwapMetricsFlag: { enabled: boolean; bridge_quote_fees: number };
   securityAlertId?: string;
 }) {
+  let commands = '';
   try {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const { enabled: dappSwapEnabled, bridge_quote_fees: bridgeQuoteFees } =
@@ -85,14 +92,23 @@ export function getQuotesForConfirmation({
       return;
     }
     const { params, origin } = req;
-
     if (origin === DAPP_SWAP_COMPARISON_ORIGIN || origin === TEST_DAPP_ORIGIN) {
       const { chainId } =
         getNetworkConfigurationByNetworkClientId(req.networkClientId) ?? {};
       const { data, from } = getSwapDetails(params);
       if (data && securityAlertId && chainId) {
-        const { quotesInput } = getDataFromSwap(chainId as Hex, data);
+        const parsedTransactionData = parseTransactionData(data);
+        commands = parsedTransactionData.commands;
+        const { quotesInput, tokenAddresses } = getDataFromSwap(
+          chainId as Hex,
+          parsedTransactionData.commandBytes,
+          parsedTransactionData.inputs,
+        );
         if (quotesInput) {
+          checkValidSingleOrBatchTransaction(
+            params[0].calls as NestedTransactionMetadata[],
+            quotesInput?.srcTokenAddress as Hex,
+          );
           const startTime = new Date().getTime();
           fetchQuotes({
             ...quotesInput,
@@ -103,10 +119,18 @@ export function getQuotesForConfirmation({
               const endTime = new Date().getTime();
               const latency = endTime - startTime;
               if (quotes) {
-                setSwapQuotes(securityAlertId, { quotes, latency });
+                setDappSwapComparisonData(securityAlertId, {
+                  quotes,
+                  latency,
+                  tokenAddresses: tokenAddresses as Hex[],
+                });
               }
             })
             .catch((error) => {
+              setDappSwapComparisonData(securityAlertId, {
+                error: `Error fetching bridge quotes: ${error.message}`,
+                commands,
+              });
               log.error('Error fetching dapp swap quotes', error);
               captureException(error);
             });
@@ -114,6 +138,12 @@ export function getQuotesForConfirmation({
       }
     }
   } catch (error) {
+    if (securityAlertId) {
+      setDappSwapComparisonData(securityAlertId, {
+        error: `Error fetching bridge quotes: ${(error as Error).toString()}`,
+        commands,
+      });
+    }
     log.error('Error fetching dapp swap quotes', error);
     captureException(error);
   }

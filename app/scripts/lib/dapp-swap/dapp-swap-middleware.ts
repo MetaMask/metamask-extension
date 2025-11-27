@@ -8,6 +8,7 @@ import {
   NetworkConfiguration,
 } from '@metamask/network-controller';
 
+import { DappSwapComparisonData } from '../../controllers/app-state-controller';
 import {
   DappSwapMiddlewareRequest,
   getQuotesForConfirmation,
@@ -18,14 +19,14 @@ export function createDappSwapMiddleware<
   Result extends Json,
 >({
   fetchQuotes,
-  setSwapQuotes,
+  setDappSwapComparisonData,
   getNetworkConfigurationByNetworkClientId,
   dappSwapMetricsFlag,
 }: {
   fetchQuotes: (quotesInput: GenericQuoteRequest) => Promise<QuoteResponse[]>;
-  setSwapQuotes: (
+  setDappSwapComparisonData: (
     uniqueId: string,
-    info: { quotes?: QuoteResponse[]; latency?: number },
+    info: DappSwapComparisonData,
   ) => void;
   getNetworkConfigurationByNetworkClientId: (
     networkClientId: NetworkClientId,
@@ -45,7 +46,7 @@ export function createDappSwapMiddleware<
       getQuotesForConfirmation({
         req,
         fetchQuotes,
-        setSwapQuotes,
+        setDappSwapComparisonData,
         getNetworkConfigurationByNetworkClientId,
         dappSwapMetricsFlag,
         securityAlertId,

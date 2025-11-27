@@ -8,14 +8,15 @@ import { useSelector } from 'react-redux';
 
 import { captureException } from '../../../../../../shared/lib/sentry';
 import {
+  checkValidSingleOrBatchTransaction,
   getDataFromSwap,
   getBestQuote,
   getBalanceChangeFromSimulationData,
+  parseTransactionData,
 } from '../../../../../../shared/modules/dapp-swap-comparison/dapp-swap-comparison-utils';
 import { TokenStandAndDetails } from '../../../../../store/actions';
 import { getRemoteFeatureFlags } from '../../../../../selectors/remote-feature-flags';
 import { ConfirmMetamaskState } from '../../../types/confirm';
-import { checkValidSingleOrBatchTransaction } from '../../../utils';
 import { getTokenValueFromRecord } from '../../../utils/token';
 import { selectDappSwapComparisonData } from '../../../selectors/confirm';
 import { useConfirmContext } from '../../../context/confirm';
@@ -30,14 +31,18 @@ export function useDappSwapComparisonInfo() {
     dappSwapQa: { enabled: boolean };
   };
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { quotes, latency: quoteResponseLatency } = useSelector(
-    (state: ConfirmMetamaskState) => {
-      return selectDappSwapComparisonData(
-        state,
-        currentConfirmation?.securityAlertResponse?.securityAlertId ?? '',
-      );
-    },
-  ) ?? { quotes: undefined };
+  const {
+    quotes,
+    latency: quoteResponseLatency,
+    commands: parsedCommands,
+    error: quoteFetchError,
+    tokenAddresses,
+  } = useSelector((state: ConfirmMetamaskState) => {
+    return selectDappSwapComparisonData(
+      state,
+      currentConfirmation?.securityAlertResponse?.securityAlertId ?? '',
+    );
+  }) ?? { quotes: undefined };
 
   const {
     chainId,
@@ -62,43 +67,57 @@ export function useDappSwapComparisonInfo() {
     captureDappSwapComparisonMetricsProperties,
   } = useDappSwapComparisonMetrics();
 
-  const { commands, quotesInput, amountMin, tokenAddresses } = useMemo(() => {
+  useEffect(() => {
+    if (quoteFetchError) {
+      captureDappSwapComparisonFailed(quoteFetchError, parsedCommands);
+    }
+  }, [captureDappSwapComparisonFailed, quoteFetchError, parsedCommands]);
+
+  const { commands, quotesInput, amountMin } = useMemo(() => {
+    let dataCommands = '';
     try {
-      checkValidSingleOrBatchTransaction(nestedTransactions);
       let transactionData = data;
       if (nestedTransactions?.length) {
         transactionData = nestedTransactions?.find(({ data: trxnData }) =>
           trxnData?.startsWith(FOUR_BYTE_EXECUTE_SWAP_CONTRACT),
         )?.data;
       }
-      const result = getDataFromSwap(chainId, transactionData);
+      const parsedTransactionData = parseTransactionData(transactionData);
+      dataCommands = parsedTransactionData.commands;
+      const result = getDataFromSwap(
+        chainId,
+        parsedTransactionData.commandBytes,
+        parsedTransactionData.inputs,
+      );
       if (result.quotesInput) {
+        checkValidSingleOrBatchTransaction(
+          nestedTransactions,
+          result.quotesInput?.srcTokenAddress as Hex,
+        );
         updateRequestDetectionLatency();
+        captureDappSwapComparisonLoading(dataCommands);
       }
-      return result;
+      return { ...result, commands: dataCommands };
     } catch (error) {
       captureException(error);
-      captureDappSwapComparisonFailed((error as Error).toString());
+      captureDappSwapComparisonFailed(
+        `Error getting data from swap: ${(error as Error).toString()}`,
+        dataCommands,
+      );
       return {
         commands: undefined,
         quotesInput: undefined,
         amountMin: undefined,
-        tokenAddresses: [],
       };
     }
   }, [
     captureDappSwapComparisonFailed,
+    captureDappSwapComparisonLoading,
     chainId,
     data,
     nestedTransactions,
     updateRequestDetectionLatency,
   ]);
-
-  useEffect(() => {
-    if (commands) {
-      captureDappSwapComparisonLoading(commands);
-    }
-  }, [captureDappSwapComparisonLoading, commands]);
 
   const {
     fiatRates,
@@ -135,11 +154,15 @@ export function useDappSwapComparisonInfo() {
       };
     } catch (error) {
       captureException(error);
-      captureDappSwapComparisonFailed('error getting best quote');
+      captureDappSwapComparisonFailed(
+        `Error getting best quote: ${(error as Error).toString()}`,
+        commands,
+      );
       return { bestQuote: undefined, selectedQuote: undefined };
     }
   }, [
     amountMin,
+    commands,
     captureDappSwapComparisonFailed,
     dappSwapQa?.enabled,
     getGasUSDValue,
@@ -240,14 +263,17 @@ export function useDappSwapComparisonInfo() {
       });
     } catch (error) {
       captureException(error);
-      captureDappSwapComparisonFailed('error calculating metrics values');
+      captureDappSwapComparisonFailed(
+        `Error calculating metrics values: ${(error as Error).toString()}`,
+        commands,
+      );
     }
   }, [
     amountMin,
     bestQuote,
     captureDappSwapComparisonFailed,
-    captureDappSwapComparisonMetricsProperties,
     commands,
+    captureDappSwapComparisonMetricsProperties,
     gas,
     gasLimitNoBuffer,
     gasUsed,
