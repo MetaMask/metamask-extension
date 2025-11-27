@@ -51,7 +51,6 @@ import {
   setNewTokensImportedError,
   setDataCollectionForMarketing,
   setEditedNetwork,
-  setAccountDetailsAddress,
   lookupSelectedNetworks,
   setPendingShieldCohort,
 } from '../../store/actions';
@@ -255,8 +254,6 @@ const mapDispatchToProps = (dispatch) => {
     fetchBuyableChains: () => dispatch(fetchBuyableChains()),
     clearRedirectAfterDefaultPage: () =>
       dispatch(clearRedirectAfterDefaultPage()),
-    setAccountDetailsAddress: (address) =>
-      dispatch(setAccountDetailsAddress(address)),
     lookupSelectedNetworks: () => dispatch(lookupSelectedNetworks()),
     setPendingShieldCohort: (cohort) =>
       dispatch(setPendingShieldCohort(cohort)),
