@@ -155,17 +155,10 @@ export const getTxGasEstimates = async ({
 };
 
 const fetchTokenExchangeRates = async (
-  chainId: Hex | CaipChainId | ChainId,
   currency: string,
   signal?: AbortSignal,
-  ...tokenAddresses: string[]
+  ...assetIds: CaipAssetType[]
 ) => {
-  const assetIds = tokenAddresses
-    .map((address) => toAssetId(address, formatChainIdToCaip(chainId)))
-    .filter(Boolean);
-  if (assetIds.length === 0) {
-    return {};
-  }
   const queryParams = new URLSearchParams({
     assetIds: assetIds.join(','),
     includeMarketData: 'true',
@@ -193,19 +186,16 @@ const fetchTokenExchangeRates = async (
 // rate is not available in the TokenRatesController, which happens when the selected token has not been
 // imported into the wallet
 export const getTokenExchangeRate = async (request: {
-  chainId: Hex | CaipChainId | ChainId;
-  tokenAddress: string;
+  assetId: CaipAssetType;
   currency: string;
   signal?: AbortSignal;
 }) => {
-  const { chainId, tokenAddress, currency, signal } = request;
+  const { assetId, currency, signal } = request;
   const exchangeRates = await fetchTokenExchangeRates(
-    chainId,
     currency,
     signal,
-    tokenAddress,
+    assetId,
   );
-  const assetId = toAssetId(tokenAddress, formatChainIdToCaip(chainId));
   return assetId ? exchangeRates?.[assetId] : undefined;
 };
 
@@ -294,13 +284,16 @@ export const toBridgeToken = (
     return null;
   }
   const caipChainId = formatChainIdToCaip(payload.chainId);
-  return {
-    ...payload,
-    balance: payload.balance ?? '0',
-    chainId: payload.chainId,
-    image: getTokenImage(payload),
-    assetId: payload.assetId ?? toAssetId(payload.address, caipChainId),
-  };
+  const assetId = payload.assetId ?? toAssetId(payload.address, caipChainId);
+  return assetId
+    ? {
+        ...payload,
+        balance: payload.balance ?? '0',
+        chainId: payload.chainId,
+        image: getTokenImage(payload),
+        assetId,
+      }
+    : null;
 };
 const createBridgeTokenPayload = (
   tokenData: {

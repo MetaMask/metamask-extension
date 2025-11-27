@@ -102,7 +102,6 @@ import { useDestinationAccount } from '../hooks/useDestinationAccount';
 import { Toast, ToastContainer } from '../../../components/multichain';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import type { BridgeToken } from '../../../ducks/bridge/types';
-import { toAssetId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import {
   TOKEN_OCCURRENCES_MAP,
@@ -623,20 +622,10 @@ const PrepareBridgePage = ({
                         token_symbol_destination: fromToken?.symbol ?? null,
                         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                         // eslint-disable-next-line @typescript-eslint/naming-convention
-                        token_address_source:
-                          toToken?.assetId ??
-                          toAssetId(
-                            toToken.address ?? '',
-                            formatChainIdToCaip(toToken.chainId ?? ''),
-                          ) ??
-                          getNativeAssetForChainId(toChain.chainId)?.assetId,
+                        token_address_source: toToken?.assetId,
                         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                         // eslint-disable-next-line @typescript-eslint/naming-convention
-                        token_address_destination:
-                          toAssetId(
-                            fromToken.address ?? '',
-                            formatChainIdToCaip(fromToken.chainId ?? ''),
-                          ) ?? null,
+                        token_address_destination: fromToken?.assetId,
                         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                         // eslint-disable-next-line @typescript-eslint/naming-convention
                         chain_id_source: formatChainIdToCaip(toChain.chainId),

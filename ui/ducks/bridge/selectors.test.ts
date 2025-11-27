@@ -1811,6 +1811,8 @@ describe('Bridge selectors', () => {
           fromToken: {
             address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
             decimals: 6,
+            assetId:
+              'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
           },
         },
         featureFlagOverrides: {

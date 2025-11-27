@@ -63,7 +63,6 @@ import {
   HardwareKeyringNames,
   HardwareKeyringType,
 } from '../../../shared/constants/hardware-wallets';
-import { toAssetId } from '../../../shared/lib/asset-utils';
 import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../../shared/constants/multichain/assets';
 import { Numeric } from '../../../shared/modules/Numeric';
 import {
@@ -600,10 +599,7 @@ export const getFromTokenConversionRate = createSelector(
       const nativeAssetId = getNativeAssetForChainId(
         fromChain.chainId,
       )?.assetId;
-      const tokenAssetId = toAssetId(
-        fromToken.address,
-        formatChainIdToCaip(fromChain.chainId),
-      );
+      const tokenAssetId = fromToken.assetId;
       const nativeToCurrencyRate = isNonEvmChain(fromChain.chainId)
         ? Number(
             rates?.[fromChain.nativeCurrency?.toLowerCase()]?.conversionRate ??
