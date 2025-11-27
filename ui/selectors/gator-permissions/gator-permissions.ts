@@ -749,12 +749,13 @@ export const getAggregatedGatorPermissionByChainIdAndOrigin = createSelector(
 
         // Filter by origin
         const decodedSiteOrigin = safeDecodeURIComponent(siteOrigin);
-        return allPermissions.filter((permission) =>
+        const filteredPermissions = allPermissions.filter((permission) =>
           isEqualCaseInsensitive(
             safeDecodeURIComponent(permission.siteOrigin),
             decodedSiteOrigin,
           ),
         );
+        return sortGatorPermissionsByStartTime(filteredPermissions);
       }
       default: {
         console.warn(
