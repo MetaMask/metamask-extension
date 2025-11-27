@@ -15,8 +15,8 @@ import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
-  ORIGIN_METAMASK,
-  SMART_TRANSACTION_CONFIRMATION_TYPES,
+  // ORIGIN_METAMASK,
+  // SMART_TRANSACTION_CONFIRMATION_TYPES,
 } from '../../../shared/constants/app';
 import {
   selectHasApprovalFlows,
@@ -96,20 +96,19 @@ export const ConfirmationHandler = () => {
   ]);
 
   // Flows that *should* navigate in fullscreen, based on E2E specs
-  const hasSnapApproval = pendingApprovals.some((approval) =>
+  const hasAllowedPopupRedirectApprovals = pendingApprovals.some((approval) =>
     SNAP_APPROVAL_TYPES.includes(approval.type),
   );
 
   // Flows that *should not* navigate in fullscreen, based on E2E specs
-  const hasSmartTransactionStatus = pendingApprovals.some(
-    (approval) =>
-      approval.type ===
-        SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage &&
-      approval.origin?.toLowerCase() !== ORIGIN_METAMASK,
-  );
+  // const hasSmartTransactionStatus = pendingApprovals.some(
+  //   (approval) =>
+  //     approval.type ===
+  //       SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage &&
+  //     approval.origin?.toLowerCase() !== ORIGIN_METAMASK,
+  // );
 
-  const skipHandler =
-    isFullscreen && (hasSmartTransactionStatus || !hasSnapApproval);
+  const skipHandler = isFullscreen && !hasAllowedPopupRedirectApprovals;
 
   useEffect(() => {
     // Only run when on home/default page (for now)
