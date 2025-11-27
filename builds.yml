@@ -455,6 +455,9 @@ env:
   # Metamask Shield
   - METAMASK_SHIELD_ENABLED: 'true'
 
+  # Enable Dapp Swap Comparison UI - short living feature flag will never be enabled in production
+  - ENABLE_DAPP_SWAP_COMPARISON_UI: 'false'
+
   # Snaps
   - AUTO_UPDATE_PREINSTALLED_SNAPS: 'true'
   # This should only be used for local testing, and should not be enabled in any
