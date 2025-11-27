@@ -13,8 +13,9 @@ import { getConfirmationRoute } from '../confirmations/hooks/useConfirmationNavi
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import {
-  ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_BACKGROUND,
   ENVIRONMENT_TYPE_NOTIFICATION,
+  // SMART_TRANSACTION_CONFIRMATION_TYPES,
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
 } from '../../../shared/constants/app';
 import {
@@ -37,6 +38,7 @@ const SNAP_APPROVAL_TYPES = [
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
   ///: END:ONLY_INCLUDE_IF
+  // SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage,
 ];
 
 export const ConfirmationHandler = () => {
@@ -46,7 +48,7 @@ export const ConfirmationHandler = () => {
   const navState = useNavState();
 
   const envType = getEnvironmentType();
-  const isFullscreen = envType === ENVIRONMENT_TYPE_FULLSCREEN;
+  const isBackground = envType === ENVIRONMENT_TYPE_BACKGROUND;
   const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
 
   const showAwaitingSwapScreen = useSelector(selectShowAwaitingSwapScreen);
@@ -104,15 +106,14 @@ export const ConfirmationHandler = () => {
       return;
     }
 
-    if (isFullscreen && !hasAllowedPopupRedirectApprovals) {
-      return;
+    if (isNotification || isBackground || hasAllowedPopupRedirectApprovals) {
+      checkStatusAndNavigate();
     }
-
-    checkStatusAndNavigate();
   }, [
     checkStatusAndNavigate,
     hasAllowedPopupRedirectApprovals,
-    isFullscreen,
+    isBackground,
+    isNotification,
     pathname,
   ]);
 
