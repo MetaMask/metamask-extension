@@ -7,19 +7,15 @@ import {
   Subscription,
   SubscriptionCryptoPaymentMethod,
 } from '@metamask/subscription-controller';
-import { NameType } from '@metamask/name-controller';
 import {
   Box,
-  ButtonLink,
+  FontWeight,
   IconName,
   IconSize,
   Text,
-} from '../../../components/component-library';
-import {
-  IconColor,
-  TextColor,
+  TextButton,
   TextVariant,
-} from '../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   useAvailableTokenBalances,
@@ -27,7 +23,6 @@ import {
   useSubscriptionPaymentMethods,
   TokenWithApprovalAmount,
 } from '../../../hooks/subscription/useSubscriptionPricing';
-import Name from '../../../components/app/name';
 import Tooltip from '../../../components/ui/tooltip';
 import { ShieldPaymentModal } from '../../shield-plan/shield-payment-modal';
 import {
@@ -198,18 +193,6 @@ export const PaymentMethodRow = ({
     [onPaymentMethodChange],
   );
 
-  const handleClick = useCallback(() => {
-    // Don't open modal if paused with error (use existing error handler)
-    if (isPaused && !isUnexpectedErrorCryptoPayment) {
-      return;
-    }
-    // Don't open modal if subscription ending soon (use existing error handler)
-    if (isSubscriptionEndingSoon) {
-      return;
-    }
-    setShowPaymentModal(true);
-  }, [isPaused, isUnexpectedErrorCryptoPayment, isSubscriptionEndingSoon]);
-
   const paymentMethodDisplay = useMemo(() => {
     if (!displayedShieldSubscription) {
       return '';
@@ -228,61 +211,47 @@ export const PaymentMethodRow = ({
 
       return (
         <Tooltip position="top" title={t(tooltipText)}>
-          <ButtonLink
+          <TextButton
+            className="text-error-default decoration-error-default hover:decoration-error-default hover:text-error-default"
             startIconName={IconName.Danger}
-            startIconProps={{
-              size: IconSize.Md,
-            }}
+            startIconProps={{ size: IconSize.Md }}
             onClick={handlePaymentError}
-            danger
           >
             {t(buttonText, [
               isCryptoPaymentMethod(displayedShieldSubscription?.paymentMethod)
                 ? displayedShieldSubscription.paymentMethod.crypto.tokenSymbol
                 : '',
             ])}
-          </ButtonLink>
+          </TextButton>
         </Tooltip>
       );
     }
     if (isSubscriptionEndingSoon && displayedShieldSubscription) {
       return (
-        <ButtonLink
-          className="warning-button"
+        <TextButton
+          className="text-warning-default decoration-warning-default hover:decoration-warning-default hover:text-warning-default"
           startIconName={IconName.Danger}
           startIconProps={{
             size: IconSize.Md,
-            color: IconColor.warningDefault,
           }}
-          color={TextColor.warningDefault}
           onClick={handlePaymentError}
         >
           {isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)
             ? displayedShieldSubscription.paymentMethod.crypto.tokenSymbol
             : ''}
-        </ButtonLink>
+        </TextButton>
       );
     }
 
     if (isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)) {
-      const tokenInfo = displayedShieldSubscription.paymentMethod.crypto;
-      const tokenAddress = cryptoPaymentMethod?.chains
-        ?.find((chain) => chain.chainId === tokenInfo.chainId)
-        ?.tokens.find(
-          (token) => token.symbol === tokenInfo.tokenSymbol,
-        )?.address;
-
-      if (!tokenAddress) {
-        return tokenInfo.tokenSymbol;
-      }
       return (
-        <Name
-          value={tokenAddress}
-          type={NameType.ETHEREUM_ADDRESS}
-          preferContractSymbol
-          variation={tokenInfo.chainId}
-          fallbackName={tokenInfo.tokenSymbol}
-        />
+        <TextButton
+          className="text-default decoration-text-default hover:decoration-text-default hover:text-default"
+          onClick={() => setShowPaymentModal(true)}
+          endIconName={IconName.ArrowRight}
+        >
+          {displayedShieldSubscription.paymentMethod.crypto.tokenSymbol}
+        </TextButton>
       );
     }
 
@@ -295,11 +264,14 @@ export const PaymentMethodRow = ({
     isSubscriptionEndingSoon,
     t,
     handlePaymentError,
-    cryptoPaymentMethod,
   ]);
 
   if (showSkeletonLoader) {
-    return <Text variant={TextVariant.bodyMdMedium}>-</Text>;
+    return (
+      <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+        -
+      </Text>
+    );
   }
 
   // For error states, return the error button (not clickable for modal)
@@ -313,9 +285,7 @@ export const PaymentMethodRow = ({
   // For normal states, make it clickable
   return (
     <>
-      <Box as="button" onClick={handleClick}>
-        {paymentMethodDisplay}
-      </Box>
+      <Box>{paymentMethodDisplay}</Box>
       <ShieldPaymentModal
         disableCardOption={!canChangePaymentMethodToCard}
         isOpen={showPaymentModal}
