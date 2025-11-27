@@ -8,10 +8,14 @@ import { TokenStandard } from '../../../../../../shared/constants/transaction';
 import GeneralAlert from '../../../../../components/app/alert-system/general-alert/general-alert';
 import { Box, Text } from '../../../../../components/component-library';
 import {
+  AlignItems,
+  Display,
+  FlexDirection,
   TextAlign,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
+import { Skeleton } from '../../../../../components/component-library/skeleton';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { TypedSignSignaturePrimaryTypes } from '../../../constants';
@@ -222,6 +226,22 @@ const getDescription = (
   }
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export function TitleSkeleton() {
+  return (
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      alignItems={AlignItems.center}
+      paddingTop={4}
+      paddingBottom={4}
+    >
+      <Skeleton height="24px" width="200px" />
+    </Box>
+  );
+}
+
 const ConfirmTitle: React.FC = memo(() => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
@@ -296,13 +316,25 @@ const ConfirmTitle: React.FC = memo(() => {
   );
 
   if (!currentConfirmation) {
-    return null;
+    return <TitleSkeleton />;
   }
+
+  // These transaction types use the header for their title, not this component
+  const typesWithoutTitle = [
+    TransactionType.simpleSend,
+    TransactionType.tokenMethodTransfer,
+    TransactionType.tokenMethodTransferFrom,
+    TransactionType.tokenMethodSafeTransferFrom,
+  ];
+
+  const showTitleSkeleton =
+    currentConfirmation?.type &&
+    !typesWithoutTitle.includes(currentConfirmation.type);
 
   return (
     <>
       <ConfirmBannerAlert ownerId={currentConfirmation.id} />
-      {title !== '' && (
+      {title ? (
         <Text
           variant={TextVariant.headingLg}
           paddingTop={4}
@@ -311,6 +343,8 @@ const ConfirmTitle: React.FC = memo(() => {
         >
           {title}
         </Text>
+      ) : (
+        showTitleSkeleton && <TitleSkeleton />
       )}
       <NestedTransactionTag />
       {description !== '' && (
