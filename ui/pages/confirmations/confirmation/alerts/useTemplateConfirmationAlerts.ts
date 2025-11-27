@@ -1,3 +1,5 @@
+'use no memo';
+
 import { ApprovalRequest } from '@metamask/approval-controller';
 import { useDispatch } from 'react-redux';
 import { useEffect, useMemo } from 'react';

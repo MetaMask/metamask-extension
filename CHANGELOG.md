@@ -7,6 +7,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.10.4]
+
+### Fixed
+
+- Signed deep links with empty `sig_params` with extra params as valid (#38142)
+- Adds mon as currency to fetch prices (#38261)
+- Removes sidepanel from chrome manifest files (#38242)
+
+## [13.10.3]
+
+### Fixed
+
+- Feature flags sidepanel context menu (#38220)
+
+## [13.10.2]
+
+### Fixed
+
+- Fixes entry modal closed error (#38188)
+
+## [13.10.1]
+
+### Fixed
+
+- Prevents token list from fetching balances for all accounts (#38065)
+- Fixes dapp-swap comparison fiat rate fetching for native tokens (#37980)
+- Fixes dapp-swap fix conversion rate for pol native token (#38102)
+- Removes unnecessary extension permission (#38075)
+- Fixes missing native token balances in wallet balance (#38126)
+
 ## [13.10.0]
 
 ### Added
@@ -1217,7 +1247,11 @@ authorized by the user.` error until the user fully revoked dapp
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.10.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.10.4...HEAD
+[13.10.4]: https://github.com/MetaMask/metamask-extension/compare/v13.10.3...v13.10.4
+[13.10.3]: https://github.com/MetaMask/metamask-extension/compare/v13.10.2...v13.10.3
+[13.10.2]: https://github.com/MetaMask/metamask-extension/compare/v13.10.1...v13.10.2
+[13.10.1]: https://github.com/MetaMask/metamask-extension/compare/v13.10.0...v13.10.1
 [13.10.0]: https://github.com/MetaMask/metamask-extension/compare/v13.9.0...v13.10.0
 [13.9.0]: https://github.com/MetaMask/metamask-extension/compare/v13.8.0...v13.9.0
 [13.8.0]: https://github.com/MetaMask/metamask-extension/compare/v13.7.0...v13.8.0

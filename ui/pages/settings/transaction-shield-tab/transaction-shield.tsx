@@ -12,7 +12,6 @@ import {
 } from '@metamask/subscription-controller';
 import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
 import { NameType } from '@metamask/name-controller';
-import { useSelector } from 'react-redux';
 import {
   BannerAlert,
   BannerAlertSeverity,
@@ -72,14 +71,15 @@ import { ConfirmInfoRowAddress } from '../../../components/app/confirm/info/row'
 import {
   getIsShieldSubscriptionEndingSoon,
   getIsShieldSubscriptionPaused,
+  getIsShieldSubscriptionTrialing,
 } from '../../../../shared/lib/shield';
 import { useAsyncResult } from '../../../hooks/useAsync';
 import { useTimeout } from '../../../hooks/useTimeout';
 import { MINUTE } from '../../../../shared/constants/time';
 import Name from '../../../components/app/name';
-import ShieldIllustrationAnimation from '../../../components/app/shield-entry-modal/shield-illustration-animation';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
 import {
+  EntryModalSourceEnum,
   ShieldCtaActionClickedEnum,
   ShieldCtaSourceEnum,
   ShieldErrorStateActionClickedEnum,
@@ -87,9 +87,11 @@ import {
   ShieldErrorStateViewEnum,
 } from '../../../../shared/constants/subscriptions';
 import { ThemeType } from '../../../../shared/constants/preferences';
-import { getTheme } from '../../../selectors';
+import { useTheme } from '../../../hooks/useTheme';
+import ApiErrorHandler from '../../../components/app/api-error-handler';
 import CancelMembershipModal from './cancel-membership-modal';
 import { isCardPaymentMethod, isCryptoPaymentMethod } from './types';
+import ShieldBannerAnimation from './shield-banner-animation';
 
 const TransactionShield = () => {
   const t = useI18nContext();
@@ -107,7 +109,7 @@ const TransactionShield = () => {
   }, [search]);
 
   const { formatCurrency } = useFormatters();
-  const theme = useSelector(getTheme);
+  const theme = useTheme();
   const isLightTheme = theme === ThemeType.light;
 
   const {
@@ -115,6 +117,7 @@ const TransactionShield = () => {
     subscriptions,
     lastSubscription,
     loading: subscriptionsLoading,
+    error: subscriptionsError,
   } = useUserSubscriptions({
     refetch: !shouldWaitForSubscriptionCreation, // always fetch latest subscriptions state in settings screen unless we are waiting for subscription creation (subscription is refetch in background)
   });
@@ -163,10 +166,13 @@ const TransactionShield = () => {
     }
   }, [shouldWaitForSubscriptionCreation, startSubscriptionCreationTimeout]);
 
-  const { subscriptionPricing, loading: subscriptionPricingLoading } =
-    useSubscriptionPricing({
-      refetch: true, // need to refetch here in case user already subscribed and doesn't go through shield plan screen
-    });
+  const {
+    subscriptionPricing,
+    loading: subscriptionPricingLoading,
+    error: subscriptionPricingError,
+  } = useSubscriptionPricing({
+    refetch: true, // need to refetch here in case user already subscribed and doesn't go through shield plan screen
+  });
   const cryptoPaymentMethod = useSubscriptionPaymentMethods(
     PAYMENT_TYPES.byCrypto,
     subscriptionPricing,
@@ -175,6 +181,7 @@ const TransactionShield = () => {
   const isCancelled =
     displayedShieldSubscription?.status === SUBSCRIPTION_STATUSES.canceled;
   const isPaused = getIsShieldSubscriptionPaused(subscriptions);
+  const isTrialing = getIsShieldSubscriptionTrialing(subscriptions);
   const isMembershipInactive = isCancelled || isPaused;
   const isSubscriptionEndingSoon =
     getIsShieldSubscriptionEndingSoon(subscriptions);
@@ -214,6 +221,14 @@ const TransactionShield = () => {
     newRecurringInterval: currentShieldSubscription?.interval,
   });
 
+  const hasApiError =
+    subscriptionsError ||
+    subscriptionPricingError ||
+    cancelSubscriptionResult.error ||
+    unCancelSubscriptionResult.error ||
+    openGetSubscriptionBillingPortalResult.error ||
+    updateSubscriptionCardPaymentMethodResult.error;
+
   const isWaitingForSubscriptionCreation =
     shouldWaitForSubscriptionCreation && !currentShieldSubscription;
 
@@ -231,7 +246,10 @@ const TransactionShield = () => {
   // redirect to shield plan page if user doesn't have a subscription
   useEffect(() => {
     if (!shouldWaitForSubscriptionCreation && !displayedShieldSubscription) {
-      navigate(SHIELD_PLAN_ROUTE);
+      navigate({
+        pathname: SHIELD_PLAN_ROUTE,
+        search: `?source=${EntryModalSourceEnum.Settings}`,
+      });
     }
   }, [
     shouldWaitForSubscriptionCreation,
@@ -448,7 +466,10 @@ const TransactionShield = () => {
 
     if (isCancelled) {
       // go to shield plan page to renew subscription for cancelled subscription
-      navigate(SHIELD_PLAN_ROUTE);
+      navigate({
+        pathname: SHIELD_PLAN_ROUTE,
+        search: `?source=${EntryModalSourceEnum.Settings}`,
+      });
     } else if (isUnexpectedErrorCryptoPayment) {
       // handle support action
       handleClickContactSupport();
@@ -636,6 +657,19 @@ const TransactionShield = () => {
     });
   }, [captureShieldCtaClickedEvent]);
 
+  if (!loading && hasApiError) {
+    return (
+      <Box
+        className="transaction-shield-page"
+        data-testid="transaction-shield-page"
+        width={BlockSize.Full}
+        padding={4}
+      >
+        <ApiErrorHandler className="transaction-shield-page__error-content mx-auto" />
+      </Box>
+    );
+  }
+
   return (
     <Box
       className="transaction-shield-page"
@@ -669,6 +703,7 @@ const TransactionShield = () => {
       {membershipErrorBanner}
       <Box className="transaction-shield-page__container" marginBottom={4}>
         <Box
+          data-theme={isMembershipInactive ? theme : ThemeType.dark}
           className={classnames(
             'transaction-shield-page__row transaction-shield-page__membership',
             {
@@ -710,8 +745,7 @@ const TransactionShield = () => {
                     ? t('shieldTxMembershipInactive')
                     : t('shieldTxMembershipActive')}
                 </Text>
-                {currentShieldSubscription?.status ===
-                  SUBSCRIPTION_STATUSES.trialing && (
+                {isTrialing && (
                   <Tag
                     label={t('shieldTxMembershipFreeTrial')}
                     labelProps={{
@@ -752,9 +786,9 @@ const TransactionShield = () => {
             )}
           </Box>
           {!showSkeletonLoader && (
-            <ShieldIllustrationAnimation
-              containerClassName="transaction-shield-page-shield-illustration__container"
-              canvasClassName="transaction-shield-page-shield-illustration__canvas"
+            <ShieldBannerAnimation
+              containerClassName="transaction-shield-page-shield-banner__container"
+              canvasClassName="transaction-shield-page-shield-banner__canvas"
             />
           )}
         </Box>
