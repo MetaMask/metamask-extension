@@ -16,6 +16,9 @@ export default function useProcessNewDecimalValue(
   isTokenPrimary: boolean,
   tokenToFiatConversionRate: Numeric | undefined,
 ) {
+  const tokenToFiatConversionRateToString =
+    tokenToFiatConversionRate?.toString();
+
   return useCallback(
     (newDecimalValue: string, isTokenPrimaryOverride?: boolean) => {
       let newFiatDecimalValue, newTokenDecimalValue;
@@ -55,6 +58,7 @@ export default function useProcessNewDecimalValue(
 
       return { newFiatDecimalValue, newTokenDecimalValue };
     },
-    [tokenToFiatConversionRate?.toString(), isTokenPrimary, assetDecimals],
+    // `tokenToFiatConversionRate` intentionally excluded to ensure that re-renders are only triggered when conversion rate value actually changes.
+    [tokenToFiatConversionRateToString, isTokenPrimary, assetDecimals],
   );
 }
