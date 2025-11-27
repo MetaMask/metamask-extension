@@ -39,7 +39,8 @@
     },
     "html-bundler-webpack-plugin": {
       "packages": {
-        "eta": true
+        "eta": true,
+        "css-loader": true
       }
     },
     "eta": {
