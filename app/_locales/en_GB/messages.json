@@ -2620,9 +2620,6 @@
   "exploreDefi": {
     "message": "Explore DeFi"
   },
-  "exploreweb3": {
-    "message": "Explore web3"
-  },
   "exportYourData": {
     "message": "Export your data"
   },
@@ -6232,7 +6229,7 @@
     "message": "This chain is not supported, so it isn't protected by MetaMask Transaction Shield. $1"
   },
   "shieldCoverageAlertMessageLearnHowCoverageWorks": {
-    "message": "See What's Covered"
+    "message": "See what's Covered"
   },
   "shieldCoverageAlertMessagePaused": {
     "message": "There was an issue with your MetaMask Transaction Shield plan payment. Please update your payment method to resume coverage."
@@ -6265,7 +6262,7 @@
     "message": "This token shows strong signs of malicious behavior. Continuing may result in loss of funds. $1."
   },
   "shieldCoverageAlertMessageTxTypeNotSupported": {
-    "message": "This transaction type is not supported, so it isn't protected by MetaMask Transaction Shield. $1."
+    "message": "This transaction type is not supported, so it isn't protected by MetaMask Transaction Shield. $1"
   },
   "shieldCoverageAlertMessageUnknown": {
     "message": "This request can't be verified, so it isn't protected by MetaMask Transaction Shield. $1."
@@ -6362,6 +6359,9 @@
   },
   "shieldPlanDetails3": {
     "message": "24/7 access to priority live chat support"
+  },
+  "shieldPlanErrorText": {
+    "message": "Couldn’t connect to Transaction Shield"
   },
   "shieldPlanFooterNoteMonthly": {
     "message": "Billed monthly, cancel anytime"
