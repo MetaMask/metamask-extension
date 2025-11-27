@@ -53,7 +53,7 @@ async function doPasswordChangeAndLockWallet(
   await headerNavbar.lockMetaMask();
 }
 
-describe('Change wallet password', function () {
+describe('Change wallet password TEST', function () {
   const OLD_PASSWORD = WALLET_PASSWORD;
   const NEW_PASSWORD = 'newPassword';
 
