@@ -11,17 +11,16 @@ import { useCallback } from 'react';
 import { deleteDappSwapComparisonData } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
 import { useDappSwapContext } from '../../../context/dapp-swap';
-import { useDappSwapCheck } from './useDappSwapCheck';
 import { useDappSwapComparisonMetrics } from './useDappSwapComparisonMetrics';
 
 export function useDappSwapActions() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { selectedQuote } = useDappSwapContext();
   const { captureSwapSubmit } = useDappSwapComparisonMetrics();
-  const { isSwapToBeCompared } = useDappSwapCheck();
 
   const updateSwapWithQuoteDetails = useCallback(
     (transactionMeta: TransactionMeta) => {
+      captureSwapSubmit();
       if (!selectedQuote) {
         return;
       }
@@ -57,22 +56,15 @@ export function useDappSwapActions() {
       transactionMeta.batchTransactionsOptions = {};
       transactionMeta.nestedTransactions = undefined;
     },
-    [selectedQuote],
+    [captureSwapSubmit, selectedQuote],
   );
 
   const onDappSwapCompleted = useCallback(() => {
-    if (!isSwapToBeCompared) {
-      return;
-    }
     const uniqueId = currentConfirmation.securityAlertResponse?.securityAlertId;
     if (uniqueId) {
       deleteDappSwapComparisonData(uniqueId);
     }
-    captureSwapSubmit();
-  }, [
-    isSwapToBeCompared,
-    currentConfirmation?.securityAlertResponse?.securityAlertId,
-  ]);
+  }, [currentConfirmation?.securityAlertResponse?.securityAlertId]);
 
   return {
     updateSwapWithQuoteDetails,

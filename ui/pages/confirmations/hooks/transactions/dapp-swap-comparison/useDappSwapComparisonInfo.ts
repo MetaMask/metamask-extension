@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 
 import { captureException } from '../../../../../../shared/lib/sentry';
 import {
+  checkValidSingleOrBatchTransaction,
   getDataFromSwap,
   getBestQuote,
   getBalanceChangeFromSimulationData,
@@ -16,7 +17,6 @@ import {
 import { TokenStandAndDetails } from '../../../../../store/actions';
 import { getRemoteFeatureFlags } from '../../../../../selectors/remote-feature-flags';
 import { ConfirmMetamaskState } from '../../../types/confirm';
-import { checkValidSingleOrBatchTransaction } from '../../../utils';
 import { getTokenValueFromRecord } from '../../../utils/token';
 import { selectDappSwapComparisonData } from '../../../selectors/confirm';
 import { useConfirmContext } from '../../../context/confirm';
@@ -76,7 +76,6 @@ export function useDappSwapComparisonInfo() {
   const { commands, quotesInput, amountMin } = useMemo(() => {
     let dataCommands = '';
     try {
-      checkValidSingleOrBatchTransaction(nestedTransactions);
       let transactionData = data;
       if (nestedTransactions?.length) {
         transactionData = nestedTransactions?.find(({ data: trxnData }) =>
@@ -91,7 +90,12 @@ export function useDappSwapComparisonInfo() {
         parsedTransactionData.inputs,
       );
       if (result.quotesInput) {
+        checkValidSingleOrBatchTransaction(
+          nestedTransactions,
+          result.quotesInput?.srcTokenAddress as Hex,
+        );
         updateRequestDetectionLatency();
+        captureDappSwapComparisonLoading(dataCommands);
       }
       return { ...result, commands: dataCommands };
     } catch (error) {
@@ -108,17 +112,12 @@ export function useDappSwapComparisonInfo() {
     }
   }, [
     captureDappSwapComparisonFailed,
+    captureDappSwapComparisonLoading,
     chainId,
     data,
     nestedTransactions,
     updateRequestDetectionLatency,
   ]);
-
-  useEffect(() => {
-    if (commands) {
-      captureDappSwapComparisonLoading(commands);
-    }
-  }, [captureDappSwapComparisonLoading, commands]);
 
   const {
     fiatRates,
