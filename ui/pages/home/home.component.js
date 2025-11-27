@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Redirect, Route } from 'react-router-dom';
+import { Navigate } from 'react-router-dom-v5-compat';
 import { Text, TextVariant, TextColor } from '@metamask/design-system-react';
+import { COHORT_NAMES } from '@metamask/subscription-controller';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   MetaMetricsContextProp,
@@ -21,6 +22,7 @@ import ConnectedSites from '../connected-sites';
 import ConnectedAccounts from '../connected-accounts';
 import { isMv3ButOffscreenDocIsMissing } from '../../../shared/modules/mv3.utils';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
+import { ScrollContainer } from '../../contexts/scroll-container';
 
 import {
   FontWeight,
@@ -62,12 +64,12 @@ import {
   SUPPORT_LINK,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/lib/ui-utils';
-import { AccountOverview } from '../../components/multichain/account-overview';
+import { AccountOverview } from '../../components/multichain';
 import { setEditedNetwork } from '../../store/actions';
-import { navigateToConfirmation } from '../confirmations/hooks/useConfirmationNavigation';
+import { getConfirmationRoute } from '../confirmations/hooks/useConfirmationNavigation';
 import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
-import ConnectionsRemovedModal from '../../components/app/connections-removed-modal';
 import ShieldEntryModal from '../../components/app/shield-entry-modal';
+import RewardsOnboardingModal from '../../components/app/rewards/onboarding/OnboardingModal';
 ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
 import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IF
@@ -97,7 +99,7 @@ export default class Home extends PureComponent {
   };
 
   static propTypes = {
-    history: PropTypes.object,
+    navigate: PropTypes.func,
     forgottenPassword: PropTypes.bool,
     setConnectedStatusPopoverHasBeenShown: PropTypes.func,
     shouldShowSeedPhraseReminder: PropTypes.bool.isRequired,
@@ -164,13 +166,18 @@ export default class Home extends PureComponent {
     fetchBuyableChains: PropTypes.func.isRequired,
     redirectAfterDefaultPage: PropTypes.object,
     clearRedirectAfterDefaultPage: PropTypes.func,
-    setAccountDetailsAddress: PropTypes.func,
     isSeedlessPasswordOutdated: PropTypes.bool,
     isPrimarySeedPhraseBackedUp: PropTypes.bool,
-    showConnectionsRemovedModal: PropTypes.bool,
     showShieldEntryModal: PropTypes.bool,
     isSocialLoginFlow: PropTypes.bool,
     lookupSelectedNetworks: PropTypes.func.isRequired,
+    navState: PropTypes.object,
+    evaluateCohortEligibility: PropTypes.func,
+    pendingShieldCohort: PropTypes.string,
+    setPendingShieldCohort: PropTypes.func,
+    isSignedIn: PropTypes.bool,
+    rewardsEnabled: PropTypes.bool,
+    rewardsOnboardingEnabled: PropTypes.bool,
   };
 
   state = {
@@ -191,8 +198,12 @@ export default class Home extends PureComponent {
       showAwaitingSwapScreen,
       swapsFetchParams,
       location,
+      navState,
     } = this.props;
-    const stayOnHomePage = Boolean(location?.state?.stayOnHomePage);
+    // Read stayOnHomePage from both v5 location.state and v5-compat navState
+    const stayOnHomePage =
+      Boolean(location?.state?.stayOnHomePage) ||
+      Boolean(navState?.stayOnHomePage);
 
     if (shouldCloseNotificationPopup(props)) {
       this.state.notificationClosing = true;
@@ -212,7 +223,7 @@ export default class Home extends PureComponent {
 
   checkStatusAndNavigate() {
     const {
-      history,
+      navigate,
       isNotification,
       haveSwapsQuotes,
       haveBridgeQuotes,
@@ -221,44 +232,46 @@ export default class Home extends PureComponent {
       location,
       pendingApprovals,
       hasApprovalFlows,
+      navState,
     } = this.props;
-    const stayOnHomePage = Boolean(location?.state?.stayOnHomePage);
+    // Read stayOnHomePage from both v5 location.state and v5-compat navState
+    const stayOnHomePage =
+      Boolean(location?.state?.stayOnHomePage) ||
+      Boolean(navState?.stayOnHomePage);
 
     const canRedirect = !isNotification && !stayOnHomePage;
     if (canRedirect && showAwaitingSwapScreen) {
-      history.push(AWAITING_SWAP_ROUTE);
+      navigate(AWAITING_SWAP_ROUTE);
     } else if (canRedirect && (haveSwapsQuotes || swapsFetchParams)) {
-      history.push(PREPARE_SWAP_ROUTE);
+      navigate(PREPARE_SWAP_ROUTE);
     } else if (canRedirect && haveBridgeQuotes) {
-      history.push(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
+      navigate(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
     } else if (pendingApprovals.length || hasApprovalFlows) {
-      navigateToConfirmation(
+      const url = getConfirmationRoute(
         pendingApprovals?.[0]?.id,
         pendingApprovals,
         hasApprovalFlows,
-        history,
+        '', // queryString
       );
+
+      if (url) {
+        navigate(url, { replace: true });
+      }
     }
   }
 
   checkRedirectAfterDefaultPage() {
     const {
       redirectAfterDefaultPage,
-      history,
+      navigate,
       clearRedirectAfterDefaultPage,
-      setAccountDetailsAddress,
     } = this.props;
 
     if (
       redirectAfterDefaultPage?.shouldRedirect &&
       redirectAfterDefaultPage?.path
     ) {
-      // Set the account details address if provided
-      if (redirectAfterDefaultPage?.address) {
-        setAccountDetailsAddress(redirectAfterDefaultPage.address);
-      }
-
-      history.push(redirectAfterDefaultPage.path);
+      navigate(redirectAfterDefaultPage.path);
       clearRedirectAfterDefaultPage();
     }
   }
@@ -273,10 +286,16 @@ export default class Home extends PureComponent {
 
     // Ensure we have up-to-date connectivity statuses for all enabled networks
     this.props.lookupSelectedNetworks();
+
+    // Set pending Shield cohort for wallet home evaluation if there's no existing pending cohort
+    if (this.props.setPendingShieldCohort && !this.props.pendingShieldCohort) {
+      this.props.setPendingShieldCohort(COHORT_NAMES.WALLET_HOME);
+    }
   }
 
   static getDerivedStateFromProps(props) {
-    if (shouldCloseNotificationPopup(props)) {
+    const shouldClose = shouldCloseNotificationPopup(props);
+    if (shouldClose) {
       return { notificationClosing: true };
     }
     return null;
@@ -291,6 +310,10 @@ export default class Home extends PureComponent {
       setActiveNetwork,
       clearNewNetworkAdded,
       isSidepanel,
+      pendingShieldCohort,
+      evaluateCohortEligibility,
+      setPendingShieldCohort,
+      isSignedIn,
     } = this.props;
 
     const {
@@ -314,6 +337,12 @@ export default class Home extends PureComponent {
       isSidepanel
     ) {
       this.checkStatusAndNavigate();
+    }
+
+    // Check for pending Shield cohort evaluation if user is signed in
+    if (pendingShieldCohort && evaluateCohortEligibility && isSignedIn) {
+      setPendingShieldCohort(null);
+      evaluateCohortEligibility(pendingShieldCohort);
     }
 
     // Check for redirect after default page on updates
@@ -367,7 +396,7 @@ export default class Home extends PureComponent {
     const { t } = this.context;
 
     const {
-      history,
+      navigate,
       shouldShowSeedPhraseReminder,
       isPopup,
       shouldShowWeb3ShimUsageNotification,
@@ -630,7 +659,7 @@ export default class Home extends PureComponent {
             if (isPopup) {
               global.platform.openExtensionInBrowser(backUpSRPRoute);
             } else {
-              history.push(backUpSRPRoute);
+              navigate(backUpSRPRoute);
             }
           }}
           infoText={t('backupApprovalInfo')}
@@ -836,13 +865,14 @@ export default class Home extends PureComponent {
       showUpdateModal,
       isSeedlessPasswordOutdated,
       isPrimarySeedPhraseBackedUp,
-      showConnectionsRemovedModal,
       showShieldEntryModal,
       isSocialLoginFlow,
+      rewardsEnabled,
+      rewardsOnboardingEnabled,
     } = this.props;
 
     if (forgottenPassword) {
-      return <Redirect to={{ pathname: RESTORE_VAULT_ROUTE }} />;
+      return <Navigate to={RESTORE_VAULT_ROUTE} replace />;
     } else if (this.state.notificationClosing || this.state.redirecting) {
       return null;
     }
@@ -877,14 +907,45 @@ export default class Home extends PureComponent {
       showTermsOfUsePopup &&
       !isSocialLoginFlow;
 
+    const showRecoveryPhrase =
+      !showWhatsNew &&
+      showRecoveryPhraseReminder &&
+      !isPrimarySeedPhraseBackedUp;
+
+    const showRewardsModal =
+      rewardsEnabled &&
+      rewardsOnboardingEnabled &&
+      canSeeModals &&
+      !showTermsOfUse &&
+      !showWhatsNew &&
+      !showMultiRpcEditModal &&
+      !displayUpdateModal &&
+      !isSeedlessPasswordOutdated &&
+      !showShieldEntryModal &&
+      !showRecoveryPhrase;
+
+    const { location } = this.props;
+
+    // Handle connected routes
+    if (location?.pathname === CONNECTED_ROUTE) {
+      return (
+        <ScrollContainer className="main-container main-container--has-shadow">
+          <ConnectedSites navigate={this.props.navigate} />
+        </ScrollContainer>
+      );
+    }
+
+    if (location?.pathname === CONNECTED_ACCOUNTS_ROUTE) {
+      return (
+        <ScrollContainer className="main-container main-container--has-shadow">
+          <ConnectedAccounts navigate={this.props.navigate} />
+        </ScrollContainer>
+      );
+    }
+
+    // Render normal home content
     return (
-      <div className="main-container main-container--has-shadow">
-        <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />
-        <Route
-          path={CONNECTED_ACCOUNTS_ROUTE}
-          component={ConnectedAccounts}
-          exact
-        />
+      <ScrollContainer className="main-container main-container--has-shadow">
         <div className="home__container">
           {dataCollectionForMarketing === null &&
           participateInMetaMetrics === true
@@ -894,9 +955,7 @@ export default class Home extends PureComponent {
           {showMultiRpcEditModal && <MultiRpcEditModal />}
           {displayUpdateModal && <UpdateModal />}
           {showWhatsNew ? <WhatsNewModal onClose={hideWhatsNewPopup} /> : null}
-          {!showWhatsNew &&
-          showRecoveryPhraseReminder &&
-          !isPrimarySeedPhraseBackedUp ? (
+          {showRecoveryPhrase ? (
             <RecoveryPhraseReminder
               onConfirm={this.onRecoveryPhraseReminderClose}
             />
@@ -904,8 +963,8 @@ export default class Home extends PureComponent {
           {showTermsOfUse ? (
             <TermsOfUsePopup onAccept={this.onAcceptTermsOfUse} />
           ) : null}
-          {showConnectionsRemovedModal && <ConnectionsRemovedModal />}
           {showShieldEntryModal && <ShieldEntryModal />}
+          {showRewardsModal && <RewardsOnboardingModal />}
           {isPopup && !connectedStatusPopoverHasBeenShown
             ? this.renderPopover()
             : null}
@@ -918,7 +977,7 @@ export default class Home extends PureComponent {
               defaultHomeActiveTabName={defaultHomeActiveTabName}
               useExternalServices={useExternalServices}
               setBasicFunctionalityModalOpen={setBasicFunctionalityModalOpen}
-            ></AccountOverview>
+            />
             {
               ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
               <div className="home__support">
@@ -936,7 +995,7 @@ export default class Home extends PureComponent {
           </div>
           {this.renderNotifications()}
         </div>
-      </div>
+      </ScrollContainer>
     );
   }
 }

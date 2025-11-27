@@ -70,6 +70,7 @@ const snapsExecutionEnvJs = fs.readFileSync(snapsExecutionEnvJsPath, 'utf-8');
 
 const blocklistedHosts = [
   'arbitrum-mainnet.infura.io',
+  'avalanche-mainnet.infura.io',
   'bsc-dataseed.binance.org',
   'linea-mainnet.infura.io',
   'linea-sepolia.infura.io',
@@ -197,6 +198,7 @@ async function setupMocking(
       };
     });
 
+  // Subscriptions Eligibility
   await server
     .forGet(
       'https://subscription.dev-api.cx.metamask.io/v1/subscriptions/eligibility',
@@ -204,7 +206,18 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: [],
+        json: [
+          {
+            canSubscribe: false,
+            canViewEntryModal: false,
+            minBalanceUSD: 1000,
+            product: 'shield',
+            modalType: 'A',
+            cohorts: [],
+            assignedCohort: null,
+            hasAssignedCohortExpired: null,
+          },
+        ],
       };
     });
 
@@ -571,7 +584,7 @@ async function setupMocking(
   // Bridge API mocks - must be after AGGREGATOR_METADATA is defined
   // Network 1 (Mainnet)
   await server
-    .forGet('https://bridge.api.cx.metamask.io/networks/1/topAssets')
+    .forGet(`https://bridge.api.cx.metamask.io/networks/1/topAssets`)
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -875,15 +888,54 @@ async function setupMocking(
     };
   });
 
+  // Mock Rive animation files to prevent loading errors in e2e tests
+  // These animations are loaded during onboarding flow
   await server
-    .forGet('https://min-api.cryptocompare.com/data/pricemulti')
-    .withQuery({ fsyms: 'ETH', tsyms: 'usd' })
+    .forGet(/.*\/images\/riv_animations\/rive\.wasm/u)
+    .thenCallback(() => {
+      // Return empty ArrayBuffer for WASM file
+      return {
+        statusCode: 200,
+        headers: { 'content-type': 'application/wasm' },
+        body: Buffer.alloc(0),
+      };
+    });
+
+  await server
+    .forGet(/.*\/images\/riv_animations\/.*\.riv/u)
+    .thenCallback(() => {
+      // Return empty binary for .riv animation files
+      return {
+        statusCode: 200,
+        headers: { 'content-type': 'application/octet-stream' },
+        body: Buffer.alloc(0),
+      };
+    });
+
+  // Price API: Spot prices for native token (ETH)
+  // Uses zero address (0x0000000000000000000000000000000000000000) to represent native token
+  // API format: v2/chains/{chainId}/spot-prices?tokenAddresses={address}&vsCurrency=usd&includeMarketData=true
+  await server
+    .forGet(
+      `https://price.api.cx.metamask.io/v2/chains/${parseInt(
+        chainId,
+        16,
+      )}/spot-prices`,
+    )
+    .withQuery({
+      tokenAddresses: '0x0000000000000000000000000000000000000000',
+      vsCurrency: 'usd',
+      includeMarketData: 'true',
+    })
     .thenCallback(() => {
       return {
         statusCode: 200,
         json: {
-          ETH: {
-            USD: ethConversionInUsd,
+          '0x0000000000000000000000000000000000000000': {
+            id: 'ethereum',
+            price: ethConversionInUsd,
+            marketCap: 382623505141,
+            pricePercentChange1d: 0,
           },
         },
       };

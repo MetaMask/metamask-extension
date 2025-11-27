@@ -19,6 +19,7 @@ import {
   isNativeAddress,
   isNonEvmChainId,
   formatChainIdToHex,
+  isBitcoinChainId,
 } from '@metamask/bridge-controller';
 import { handleFetch } from '@metamask/controller-utils';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
@@ -28,10 +29,34 @@ import { getAssetImageUrl, toAssetId } from '../../../shared/lib/asset-utils';
 import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../shared/constants/bridge';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
+import {
+  TRON_RESOURCE_SYMBOLS_SET,
+  type TronResourceSymbol,
+} from '../../../shared/constants/multichain/assets';
 import type { TokenPayload, BridgeToken } from './types';
 
 // Re-export isNonEvmChainId from bridge-controller for backward compatibility
 export { isNonEvmChainId as isNonEvmChain } from '@metamask/bridge-controller';
+
+// Re-export isTronChainId from confirmations utils for consistency
+export { isTronChainId } from '../../pages/confirmations/utils/network';
+
+/**
+ * Checks if a token is a Tron Energy or Bandwidth resource (not tradeable assets)
+ *
+ * @param chainId - The chain ID to check
+ * @param symbol - The token symbol to check
+ * @returns true if the token is a Tron Energy/Bandwidth resource
+ */
+export const isTronEnergyOrBandwidthResource = (
+  chainId: ChainId | Hex | CaipChainId | string | undefined,
+  symbol: string | undefined,
+): boolean => {
+  return (
+    Boolean(chainId?.toString()?.includes('tron:')) &&
+    TRON_RESOURCE_SYMBOLS_SET.has(symbol?.toLowerCase() as TronResourceSymbol)
+  );
+};
 
 /**
  * Safely gets the native token name for a given chainId.
@@ -306,12 +331,20 @@ const createBridgeTokenPayload = (
 
 export const getDefaultToToken = (
   targetChainId: CaipChainId,
-  fromToken: Pick<NonNullable<TokenPayload['payload']>, 'address'>,
+  fromToken: Pick<NonNullable<TokenPayload['payload']>, 'address' | 'chainId'>,
 ) => {
   const commonPair = BRIDGE_CHAINID_COMMON_TOKEN_PAIR[targetChainId];
 
   if (commonPair) {
-    // If source is native token, default to USDC on same chain
+    // If bridging from Bitcoin, default to native mainnet token (ETH) instead of common pair token
+    if (fromToken.chainId && isBitcoinChainId(fromToken.chainId)) {
+      const nativeAsset = getNativeAssetForChainId(targetChainId);
+      if (nativeAsset) {
+        return createBridgeTokenPayload(nativeAsset, targetChainId);
+      }
+    }
+
+    // If source is native token, default to common pair token on destination chain
     if (isNativeAddress(fromToken.address)) {
       return createBridgeTokenPayload(commonPair, targetChainId);
     }

@@ -14,15 +14,30 @@ import mockState from '../../../../test/data/mock-state.json';
 import TransactionShield from './transaction-shield';
 
 const mockUseNavigate = jest.fn();
+const mockUseLocation = jest.fn();
 jest.mock('react-router-dom-v5-compat', () => {
   return {
     ...jest.requireActual('react-router-dom-v5-compat'),
     useNavigate: () => mockUseNavigate,
+    useLocation: () => mockUseLocation,
   };
 });
 
+jest.mock('./shield-banner-animation', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  __esModule: true,
+  default: () => <div data-testid="shield-banner-animation" />,
+}));
+
+jest.mock('./shield-subscription-icon-animation', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  __esModule: true,
+  default: () => <div data-testid="shield-subscription-icon-animation" />,
+}));
+
 describe('Transaction Shield Page', () => {
   const STATE_MOCK = {
+    ...mockState,
     metamask: {
       ...mockState.metamask,
       customerId: '1',
@@ -50,6 +65,7 @@ describe('Transaction Shield Page', () => {
               displayBrand: 'Visa',
             },
           },
+          isEligibleForSupport: true,
         } satisfies Subscription,
       ],
     },

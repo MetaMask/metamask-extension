@@ -1,33 +1,53 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { BigNumber } from 'bignumber.js';
 import { Hex } from '@metamask/utils';
-import { QuoteResponse, TxData } from '@metamask/bridge-controller';
+import { TxData } from '@metamask/bridge-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { captureException } from '@sentry/browser';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 
-import { TokenStandAndDetails } from '../../../../../store/actions';
-import { fetchQuotes } from '../../../../../store/controller-actions/bridge-controller';
-import { useAsyncResult } from '../../../../../hooks/useAsync';
+import { captureException } from '../../../../../../shared/lib/sentry';
 import {
+  checkValidSingleOrBatchTransaction,
   getDataFromSwap,
   getBestQuote,
-  getTokenValueFromRecord,
   getBalanceChangeFromSimulationData,
-} from '../../../utils/dapp-swap-comparison-utils';
+  parseTransactionData,
+} from '../../../../../../shared/modules/dapp-swap-comparison/dapp-swap-comparison-utils';
+import { TokenStandAndDetails } from '../../../../../store/actions';
+import { getRemoteFeatureFlags } from '../../../../../selectors/remote-feature-flags';
+import { ConfirmMetamaskState } from '../../../types/confirm';
+import { getTokenValueFromRecord } from '../../../utils/token';
+import { selectDappSwapComparisonData } from '../../../selectors/confirm';
 import { useConfirmContext } from '../../../context/confirm';
-import { useTransactionEventFragment } from '../../useTransactionEventFragment';
 import { useDappSwapComparisonLatencyMetrics } from './useDappSwapComparisonLatencyMetrics';
 import { useDappSwapUSDValues } from './useDappSwapUSDValues';
+import { useDappSwapComparisonMetrics } from './useDappSwapComparisonMetrics';
 
 const FOUR_BYTE_EXECUTE_SWAP_CONTRACT = '0x3593564c';
 
 export function useDappSwapComparisonInfo() {
+  const { dappSwapQa } = useSelector(getRemoteFeatureFlags) as {
+    dappSwapQa: { enabled: boolean };
+  };
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const {
+    quotes,
+    latency: quoteResponseLatency,
+    commands: parsedCommands,
+    error: quoteFetchError,
+    tokenAddresses,
+  } = useSelector((state: ConfirmMetamaskState) => {
+    return selectDappSwapComparisonData(
+      state,
+      currentConfirmation?.securityAlertResponse?.securityAlertId ?? '',
+    );
+  }) ?? { quotes: undefined };
+
   const {
     chainId,
     gasUsed,
     gasLimitNoBuffer,
-    id: transactionId,
     simulationData,
     txParams,
     nestedTransactions,
@@ -35,34 +55,26 @@ export function useDappSwapComparisonInfo() {
     txParams: {},
   };
   const { data, gas } = txParams ?? {};
-  const { updateTransactionEventFragment } = useTransactionEventFragment();
   const {
     requestDetectionLatency,
-    quoteRequestLatency,
-    quoteResponseLatency,
-    swapComparisonLatency,
     updateRequestDetectionLatency,
-    updateQuoteRequestLatency,
-    updateQuoteResponseLatency,
     updateSwapComparisonLatency,
   } = useDappSwapComparisonLatencyMetrics();
 
-  const captureDappSwapComparisonMetricsProperties = useCallback(
-    (params: {
-      properties: Record<string, string>;
-      sensitiveProperties?: Record<string, string>;
-    }) => {
-      updateTransactionEventFragment(
-        {
-          ...params,
-        },
-        transactionId,
-      );
-    },
-    [transactionId, updateTransactionEventFragment],
-  );
+  const {
+    captureDappSwapComparisonFailed,
+    captureDappSwapComparisonLoading,
+    captureDappSwapComparisonMetricsProperties,
+  } = useDappSwapComparisonMetrics();
 
-  const { quotesInput, amountMin, tokenAddresses } = useMemo(() => {
+  useEffect(() => {
+    if (quoteFetchError) {
+      captureDappSwapComparisonFailed(quoteFetchError, parsedCommands);
+    }
+  }, [captureDappSwapComparisonFailed, quoteFetchError, parsedCommands]);
+
+  const { commands, quotesInput, amountMin } = useMemo(() => {
+    let dataCommands = '';
     try {
       let transactionData = data;
       if (nestedTransactions?.length) {
@@ -70,20 +82,45 @@ export function useDappSwapComparisonInfo() {
           trxnData?.startsWith(FOUR_BYTE_EXECUTE_SWAP_CONTRACT),
         )?.data;
       }
-      const result = getDataFromSwap(chainId, transactionData);
-      updateRequestDetectionLatency();
-      return result;
+      const parsedTransactionData = parseTransactionData(transactionData);
+      dataCommands = parsedTransactionData.commands;
+      const result = getDataFromSwap(
+        chainId,
+        parsedTransactionData.commandBytes,
+        parsedTransactionData.inputs,
+      );
+      if (result.quotesInput) {
+        checkValidSingleOrBatchTransaction(
+          nestedTransactions,
+          result.quotesInput?.srcTokenAddress as Hex,
+        );
+        updateRequestDetectionLatency();
+        captureDappSwapComparisonLoading(dataCommands);
+      }
+      return { ...result, commands: dataCommands };
     } catch (error) {
       captureException(error);
+      captureDappSwapComparisonFailed(
+        `Error getting data from swap: ${(error as Error).toString()}`,
+        dataCommands,
+      );
       return {
+        commands: undefined,
         quotesInput: undefined,
         amountMin: undefined,
-        tokenAddresses: [],
       };
     }
-  }, [chainId, data, nestedTransactions, updateRequestDetectionLatency]);
+  }, [
+    captureDappSwapComparisonFailed,
+    captureDappSwapComparisonLoading,
+    chainId,
+    data,
+    nestedTransactions,
+    updateRequestDetectionLatency,
+  ]);
 
   const {
+    fiatRates,
     getGasUSDValue,
     getTokenUSDValue,
     getDestinationTokenUSDValue,
@@ -94,50 +131,50 @@ export function useDappSwapComparisonInfo() {
     destTokenAddress: quotesInput?.destTokenAddress as Hex,
   });
 
-  const { value: quotes } = useAsyncResult<
-    QuoteResponse[] | undefined
-  >(async () => {
-    if (!quotesInput) {
-      return undefined;
+  const { bestQuote, selectedQuote } = useMemo(() => {
+    try {
+      if (amountMin === undefined || !quotes?.length || tokenInfoPending) {
+        return { bestQuote: undefined, selectedQuote: undefined };
+      }
+
+      const { bestQuote: bestAvailableQuote, bestFilteredQuote } = getBestQuote(
+        quotes,
+        amountMin,
+        getDestinationTokenUSDValue,
+        getGasUSDValue,
+      );
+
+      const selectedBestQuote =
+        bestFilteredQuote ||
+        (dappSwapQa?.enabled ? bestAvailableQuote : undefined);
+
+      return {
+        bestQuote: bestAvailableQuote,
+        selectedQuote: selectedBestQuote,
+      };
+    } catch (error) {
+      captureException(error);
+      captureDappSwapComparisonFailed(
+        `Error getting best quote: ${(error as Error).toString()}`,
+        commands,
+      );
+      return { bestQuote: undefined, selectedQuote: undefined };
     }
-
-    captureDappSwapComparisonMetricsProperties({
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        dapp_swap_comparison: 'loading',
-      },
-    });
-
-    const startTime = new Date().getTime();
-    updateQuoteRequestLatency();
-
-    const quotesList = await fetchQuotes(quotesInput);
-
-    updateQuoteResponseLatency(startTime);
-    return quotesList;
   }, [
-    captureDappSwapComparisonMetricsProperties,
-    quotesInput,
-    requestDetectionLatency,
+    amountMin,
+    commands,
+    captureDappSwapComparisonFailed,
+    dappSwapQa?.enabled,
+    getGasUSDValue,
+    getDestinationTokenUSDValue,
+    quotes,
+    tokenInfoPending,
   ]);
-
-  const { bestQuote, bestFilteredQuote } = useMemo(() => {
-    if (!amountMin || !quotes?.length || tokenInfoPending) {
-      return { bestQuote: undefined, bestFilteredQuote: undefined };
-    }
-
-    return getBestQuote(
-      quotes,
-      amountMin,
-      getDestinationTokenUSDValue,
-      getGasUSDValue,
-    );
-  }, [amountMin, getGasUSDValue, getDestinationTokenUSDValue, quotes]);
 
   useEffect(() => {
     try {
       if (
-        !amountMin ||
+        amountMin === undefined ||
         !bestQuote ||
         !quotesInput ||
         !simulationData ||
@@ -146,7 +183,7 @@ export function useDappSwapComparisonInfo() {
         return;
       }
 
-      updateSwapComparisonLatency();
+      const swapComparisonLatency = updateSwapComparisonLatency();
 
       const { destTokenAddress, srcTokenAmount, srcTokenAddress } = quotesInput;
       const {
@@ -178,63 +215,45 @@ export function useDappSwapComparisonInfo() {
 
       captureDappSwapComparisonMetricsProperties({
         properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          dapp_swap_comparison: 'completed',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
+          swap_dapp_comparison: 'completed',
+          swap_dapp_commands: commands,
           swap_dapp_from_token_simulated_value_usd: getTokenUSDValue(
             srcTokenAmount,
             srcTokenAddress as Hex,
           ),
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_dapp_to_token_simulated_value_usd: getDestinationTokenUSDValue(
             destTokenBalanceChange,
           ),
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_dapp_minimum_received_value_usd:
             getDestinationTokenUSDValue(amountMin),
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_dapp_network_fee_usd: confirmationGasUsd,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_mm_from_token_simulated_value_usd: getTokenUSDValue(
             srcTokenAmount,
             srcTokenAddress as Hex,
           ),
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_mm_to_token_simulated_value_usd:
             getDestinationTokenUSDValue(destTokenAmount),
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_mm_minimum_received_value_usd:
             getDestinationTokenUSDValue(minDestTokenAmount),
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_mm_slippage: (bestQuote.quote as unknown as { slippage: string })
             .slippage,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_mm_quote_provider: (
             bestQuote.quote as unknown as { aggregator: string }
           ).aggregator,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_mm_network_fee_usd: totalGasInQuote,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_comparison_total_latency_ms: swapComparisonLatency,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_dapp_request_detection_latency_ms: requestDetectionLatency,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          swap_mm_quote_request_latency_ms: quoteRequestLatency,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          swap_mm_quote_response_latency_ms: quoteResponseLatency,
+          swap_mm_quote_response_latency_ms:
+            quoteResponseLatency?.toString() ?? 'N_A',
         },
         sensitiveProperties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_from_token_contract: srcTokenAddress,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_from_token_symbol:
             getTokenValueFromRecord<TokenStandAndDetails>(
               tokenDetails,
               srcTokenAddress as Hex,
             )?.symbol ?? 'N/A',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_to_token_contract: destTokenAddress,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_to_token_symbol:
             getTokenValueFromRecord<TokenStandAndDetails>(
               tokenDetails,
@@ -244,10 +263,16 @@ export function useDappSwapComparisonInfo() {
       });
     } catch (error) {
       captureException(error);
+      captureDappSwapComparisonFailed(
+        `Error calculating metrics values: ${(error as Error).toString()}`,
+        commands,
+      );
     }
   }, [
     amountMin,
     bestQuote,
+    captureDappSwapComparisonFailed,
+    commands,
     captureDappSwapComparisonMetricsProperties,
     gas,
     gasLimitNoBuffer,
@@ -257,15 +282,107 @@ export function useDappSwapComparisonInfo() {
     getTokenUSDValue,
     quotes,
     quotesInput,
-    quoteRequestLatency,
     quoteResponseLatency,
     requestDetectionLatency,
     updateSwapComparisonLatency,
     simulationData,
-    swapComparisonLatency,
     tokenDetails,
     tokenInfoPending,
   ]);
 
-  return { selectedQuote: bestFilteredQuote };
+  const {
+    selectedQuoteValueDifference = 0,
+    gasDifference = 0,
+    tokenAmountDifference = 0,
+  } = useMemo(() => {
+    if (!selectedQuote || !quotesInput || !simulationData || !tokenDetails) {
+      return {};
+    }
+
+    const { destTokenAddress } = quotesInput;
+    const {
+      approval,
+      quote: { destTokenAmount },
+      trade,
+    } = selectedQuote;
+
+    const totalGasInQuote = new BigNumber(
+      getGasUSDValue(
+        new BigNumber(
+          ((approval as TxData)?.effectiveGas ??
+            (approval as TxData)?.gasLimit ??
+            0) +
+            ((trade as TxData)?.effectiveGas ??
+              (trade as TxData)?.gasLimit ??
+              0),
+          10,
+        ),
+      ),
+    );
+
+    const destinationTokenAmountInQuote = new BigNumber(
+      getDestinationTokenUSDValue(destTokenAmount),
+    );
+
+    const totalAmountInQuote =
+      destinationTokenAmountInQuote.minus(totalGasInQuote);
+
+    const totalGasInConfirmation = new BigNumber(
+      getGasUSDValue(
+        new BigNumber(gasUsed ?? gasLimitNoBuffer ?? gas ?? '0x0', 16),
+      ),
+    );
+
+    const destinationTokenAmountInConfirmation = new BigNumber(
+      getDestinationTokenUSDValue(
+        getBalanceChangeFromSimulationData(
+          destTokenAddress as Hex,
+          simulationData,
+        ),
+      ),
+    );
+
+    const totalAmountInConfirmation =
+      destinationTokenAmountInConfirmation.minus(totalGasInConfirmation);
+
+    const selectedQuoteValueDiff = totalAmountInQuote
+      .minus(totalAmountInConfirmation)
+      .toNumber();
+
+    const gasDiff = totalGasInConfirmation.minus(totalGasInQuote).toNumber();
+
+    const tokenAmountDiff = destinationTokenAmountInQuote
+      .minus(destinationTokenAmountInConfirmation)
+      .toNumber();
+
+    return {
+      selectedQuoteValueDifference: selectedQuoteValueDiff,
+      gasDifference: gasDiff,
+      tokenAmountDifference: tokenAmountDiff,
+    };
+  }, [
+    selectedQuote,
+    getDestinationTokenUSDValue,
+    getGasUSDValue,
+    gas,
+    gasLimitNoBuffer,
+    gasUsed,
+    quotesInput,
+    simulationData,
+    tokenDetails,
+  ]);
+
+  return {
+    fiatRates,
+    gasDifference,
+    minDestTokenAmountInUSD: getDestinationTokenUSDValue(
+      selectedQuote?.quote?.minDestTokenAmount ?? '0',
+      2,
+    ),
+    selectedQuote,
+    selectedQuoteValueDifference,
+    sourceTokenAmount: quotesInput?.srcTokenAmount,
+    tokenAmountDifference,
+    tokenDetails,
+  };
 }

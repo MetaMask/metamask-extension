@@ -27,7 +27,7 @@ import {
   getIsStxEnabled,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
+import { formatNetworkFee, formatTokenAmount } from '../utils/quote';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
   IconColor,
@@ -41,6 +41,10 @@ import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
 import { formatPriceImpact } from '../utils/price-impact';
 import { type DestinationAccount } from '../prepare/types';
+import { useRewards } from '../../../hooks/bridge/useRewards';
+import { RewardsBadge } from '../../../components/app/rewards/RewardsBadge';
+import AddRewardsAccount from '../../../components/app/rewards/AddRewardsAccount';
+import { Skeleton } from '../../../components/component-library/skeleton';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
 const getTimerColor = (timeInSeconds: number) => {
@@ -65,7 +69,11 @@ export const MultichainBridgeQuoteCard = ({
   onOpenRecipientModal: () => void;
 }) => {
   const t = useI18nContext();
-  const { activeQuote, isQuoteGoingToRefresh } = useSelector(getBridgeQuotes);
+  const {
+    activeQuote,
+    isQuoteGoingToRefresh,
+    isLoading: isQuoteLoading,
+  } = useSelector(getBridgeQuotes);
   const currency = useSelector(getCurrentCurrency);
 
   const { insufficientBal } = useSelector(getQuoteRequest);
@@ -88,7 +96,12 @@ export const MultichainBridgeQuoteCard = ({
   const priceImpact = activeQuote?.quote?.priceData?.priceImpact;
   const gasIncluded = activeQuote?.quote?.gasIncluded ?? false;
   const gasIncluded7702 = activeQuote?.quote?.gasIncluded7702 ?? false;
-  const isGasless = gasIncluded7702 || gasIncluded;
+  const gasSponsored = activeQuote?.quote?.gasSponsored ?? false;
+  const isGasless = gasIncluded7702 || gasIncluded || gasSponsored;
+
+  const nativeTokenSymbol = fromChain
+    ? getNativeAssetForChainId(fromChain.chainId).symbol
+    : '';
 
   const shouldRenderPriceImpactRow = useMemo(() => {
     const priceImpactThreshold = priceImpactThresholds;
@@ -117,6 +130,17 @@ export const MultichainBridgeQuoteCard = ({
   ]);
 
   const secondsUntilNextRefresh = useCountdownTimer();
+
+  const {
+    isLoading: isRewardsLoading,
+    estimatedPoints,
+    shouldShowRewardsRow,
+    hasError: hasRewardsError,
+    rewardsAccountScope,
+    accountOptedIn: rewardsAccountOptedIn,
+  } = useRewards({
+    activeQuote: isQuoteLoading ? null : (activeQuote?.quote ?? null),
+  });
 
   if (!activeQuote) {
     return null;
@@ -222,64 +246,82 @@ export const MultichainBridgeQuoteCard = ({
           </Row>
         </Row>
 
-        {/* Network Fee */}
-        <Row justifyContent={JustifyContent.spaceBetween}>
-          <Row gap={2}>
-            <Text
-              variant={TextVariant.bodySm}
-              color={TextColor.textAlternative}
-            >
-              {t('networkFee')}
-            </Text>
-            <Tooltip
-              title={t('networkFeeExplanationTitle')}
-              position={PopoverPosition.TopStart}
-              offset={[-16, 16]}
-            >
-              {t('networkFeeExplanation')}
-            </Tooltip>
-          </Row>
-          {activeQuote.quote.gasIncluded && (
-            <Row gap={1} data-testid="network-fees-included">
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
-                style={{ textDecoration: 'line-through' }}
-              >
-                {activeQuote.includedTxFees?.valueInCurrency
-                  ? formatCurrencyAmount(
-                      activeQuote.includedTxFees.valueInCurrency,
-                      currency,
-                      2,
-                    )
-                  : formatCurrencyAmount(
-                      activeQuote.totalNetworkFee?.valueInCurrency,
-                      currency,
-                      2,
-                    )}
-              </Text>
+        {/* Network Fee - Hide if zero/undefined for non-EVM chains (e.g., Bitcoin with no gas.) */}
+        {(!isToOrFromNonEvm ||
+          (activeQuote.totalNetworkFee?.valueInCurrency &&
+            activeQuote.totalNetworkFee.valueInCurrency !== '0')) && (
+          <Row justifyContent={JustifyContent.spaceBetween}>
+            <Row gap={2}>
               <Text
                 variant={TextVariant.bodySm}
                 color={TextColor.textAlternative}
               >
-                {t('swapGasFeesIncluded')}
+                {t('networkFee')}
               </Text>
+              <Tooltip
+                title={t('networkFeeExplanationTitle')}
+                position={PopoverPosition.TopStart}
+                offset={[-16, 16]}
+              >
+                {t('networkFeeExplanation')}
+              </Tooltip>
             </Row>
-          )}
-          {!activeQuote.quote.gasIncluded && (
-            <Text
-              variant={TextVariant.bodySm}
-              color={TextColor.textAlternative}
-              data-testid="network-fees"
-            >
-              {formatCurrencyAmount(
-                activeQuote.totalNetworkFee?.valueInCurrency,
-                currency,
-                2,
-              )}
-            </Text>
-          )}
-        </Row>
+            {gasSponsored && (
+              <Row gap={1} data-testid="network-fees-sponsored">
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.textDefault}
+                >
+                  {t('swapGasFeesSponsored')}
+                </Text>
+                <Tooltip
+                  title={t('swapGasFeesSponsored')}
+                  position={PopoverPosition.TopStart}
+                  offset={[-16, 16]}
+                >
+                  {t('swapGasFeesSponsoredExplanation', [nativeTokenSymbol])}
+                </Tooltip>
+              </Row>
+            )}
+            {!gasSponsored && activeQuote.quote.gasIncluded && (
+              <Row gap={1} data-testid="network-fees-included">
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.textAlternative}
+                  style={{ textDecoration: 'line-through' }}
+                >
+                  {activeQuote.includedTxFees?.valueInCurrency
+                    ? formatNetworkFee(
+                        activeQuote.includedTxFees.valueInCurrency,
+                        currency,
+                      )
+                    : formatNetworkFee(
+                        activeQuote.totalNetworkFee?.valueInCurrency,
+                        currency,
+                      )}
+                </Text>
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.textAlternative}
+                >
+                  {t('swapGasFeesIncluded')}
+                </Text>
+              </Row>
+            )}
+            {!gasSponsored && !activeQuote.quote.gasIncluded && (
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+                data-testid="network-fees"
+              >
+                {formatNetworkFee(
+                  activeQuote.totalNetworkFee?.valueInCurrency,
+                  currency,
+                )}
+              </Text>
+            )}
+          </Row>
+        )}
 
         {/* Slippage */}
         <Row justifyContent={JustifyContent.spaceBetween}>
@@ -319,7 +361,7 @@ export const MultichainBridgeQuoteCard = ({
         </Row>
 
         {/* Minimum Received */}
-        {activeQuote.minToTokenAmount.valueInCurrency && (
+        {activeQuote.minToTokenAmount.amount && (
           <Row justifyContent={JustifyContent.spaceBetween}>
             <Row gap={2}>
               <Text
@@ -342,10 +384,10 @@ export const MultichainBridgeQuoteCard = ({
               color={TextColor.textAlternative}
               data-testid="minimum-received"
             >
-              {formatCurrencyAmount(
-                activeQuote.minToTokenAmount.valueInCurrency,
-                currency,
-                2,
+              {formatTokenAmount(
+                locale,
+                activeQuote.minToTokenAmount.amount,
+                activeQuote.quote.destAsset.symbol,
               )}
             </Text>
           </Row>
@@ -410,6 +452,77 @@ export const MultichainBridgeQuoteCard = ({
                 ariaLabel={t('recipientEditAriaLabel')}
                 data-testid="recipient-edit-button"
               />
+            </Row>
+          </Row>
+        )}
+
+        {/* Estimated Rewards Points */}
+        {shouldShowRewardsRow && (
+          <Row
+            justifyContent={JustifyContent.spaceBetween}
+            data-testid="rewards-row"
+          >
+            <Row gap={2}>
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+              >
+                {t('bridgePoints')}
+              </Text>
+              <Tooltip
+                title={t('bridgePoints_tooltip')}
+                position={PopoverPosition.TopStart}
+                offset={[-16, 16]}
+              >
+                {`${t('bridgePoints_tooltip_content_1')}\n\n${t('bridgePoints_tooltip_content_2')}`}
+              </Tooltip>
+            </Row>
+            <Row gap={1}>
+              {isRewardsLoading || isQuoteLoading ? (
+                <Skeleton
+                  width={100}
+                  height={16}
+                  data-testid="rewards-loading-skeleton"
+                />
+              ) : null}
+              {!isRewardsLoading && !isQuoteLoading && hasRewardsError && (
+                <Row data-testid="rewards-error-state">
+                  <RewardsBadge
+                    formattedPoints={t('bridgePoints_couldntLoad')}
+                    withPointsSuffix={false}
+                    boxClassName="gap-1 bg-background-transparent"
+                    textClassName="text-alternative"
+                    useAlternativeIconColor
+                  />
+                  <Tooltip
+                    title={t('bridgePoints_error')}
+                    iconName={IconName.Warning}
+                    color={IconColor.warningDefault}
+                    position={PopoverPosition.TopEnd}
+                    offset={[-16, 16]}
+                    style={{ width: 350 }}
+                  >
+                    {t('bridgePoints_error_content')}
+                  </Tooltip>
+                </Row>
+              )}
+              {!isRewardsLoading && !isQuoteLoading && !hasRewardsError && (
+                <>
+                  {rewardsAccountScope && rewardsAccountOptedIn === false ? (
+                    <AddRewardsAccount account={rewardsAccountScope} />
+                  ) : (
+                    <RewardsBadge
+                      formattedPoints={new Intl.NumberFormat(locale).format(
+                        estimatedPoints ?? 0,
+                      )}
+                      withPointsSuffix={false}
+                      boxClassName="gap-1 bg-background-transparent"
+                      textClassName="text-alternative"
+                      useAlternativeIconColor={!estimatedPoints}
+                    />
+                  )}
+                </>
+              )}
             </Row>
           </Row>
         )}

@@ -2,10 +2,9 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import nock from 'nock';
-import { MemoryRouter } from 'react-router-dom';
-
 import { setBackgroundConnection } from '../../store/background-connection';
-import { renderWithProvider, MOCKS, CONSTANTS } from '../../../test/jest';
+import { MOCKS, CONSTANTS } from '../../../test/jest';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import {
   CROSS_CHAIN_SWAP_ROUTE,
@@ -34,6 +33,20 @@ setBackgroundConnection({
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 } as any);
+
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+    useLocation: () => ({
+      pathname: '/cross-chain/swaps/prepare-swap-page',
+      search: '',
+      hash: '',
+      state: null,
+    }),
+  };
+});
 
 describe('Bridge', () => {
   beforeEach(() => {
@@ -92,12 +105,9 @@ describe('Bridge', () => {
     const store = configureMockStore(middleware)(bridgeMockStore);
 
     const { container, getByText } = renderWithProvider(
-      <MemoryRouter
-        initialEntries={[CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE]}
-      >
-        <CrossChainSwap />
-      </MemoryRouter>,
+      <CrossChainSwap />,
       store,
+      CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE,
     );
 
     expect(getByText('Swap')).toBeInTheDocument();

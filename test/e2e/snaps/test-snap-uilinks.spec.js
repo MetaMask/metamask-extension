@@ -1,11 +1,10 @@
 const { emptyHtmlPage } = require('../mock-e2e');
-
+const { DAPP_PATH, DAPP_URL } = require('../constants');
 const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
+const FixtureBuilder = require('../fixtures/fixture-builder');
 const {
   mockDialogSnap,
 } = require('../mock-response-data/snaps/snap-binary-mocks');
-const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 async function mockSnapsWebsite(mockServer) {
   return await mockServer
@@ -26,8 +25,11 @@ describe('Test Snap UI Links', function () {
   it('test link in confirmation snap_dialog type', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         failOnConsoleError: false,
+        fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockSnapBinaryAndWebsite,
         title: this.test.fullTitle(),
       },
@@ -35,7 +37,7 @@ describe('Test Snap UI Links', function () {
         await unlockWallet(driver);
 
         // navigate to test snaps page
-        await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
+        await driver.openNewPage(DAPP_URL);
 
         // wait for page to load
         await driver.waitForSelector({

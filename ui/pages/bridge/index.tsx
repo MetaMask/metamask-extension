@@ -1,10 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Route, Switch, useHistory, useLocation } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom-v5-compat';
 import {
   UnifiedSwapBridgeEventName,
-  // TODO: update this with all non-EVM chains when bitcoin added.
-  isSolanaChainId,
+  isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import { I18nContext } from '../../contexts/i18n';
 import { clearSwapsState } from '../../ducks/swaps/swaps';
@@ -41,24 +40,31 @@ import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
 import { TextVariant } from '../../helpers/constants/design-system';
 import { useTxAlerts } from '../../hooks/bridge/useTxAlerts';
 import { getFromChain, getBridgeQuotes } from '../../ducks/bridge/selectors';
+import { useSafeNavigation } from '../../hooks/useSafeNavigation';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
 import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
 import { BridgeTransactionSettingsModal } from './prepare/bridge-transaction-settings-modal';
 
-const CrossChainSwap = () => {
+type CrossChainSwapProps = {
+  location?: {
+    search?: string;
+  };
+};
+
+const CrossChainSwap = ({ location }: CrossChainSwapProps) => {
   const t = useContext(I18nContext);
 
   // Load swaps feature flags so that we can use smart transactions
   useSwapsFeatureFlags();
   useBridging();
 
-  const history = useHistory();
+  const { navigate } = useSafeNavigation();
   const dispatch = useDispatch();
 
-  const { search } = useLocation();
+  const { search } = location ?? {};
 
-  const isFromTransactionShield = new URLSearchParams(search).get(
+  const isFromTransactionShield = new URLSearchParams(search || '').get(
     'isFromTransactionShield',
   );
 
@@ -72,10 +78,10 @@ const CrossChainSwap = () => {
 
   // Get chain information to determine if we need gas estimates
   const fromChain = useSelector(getFromChain);
-  // Only fetch gas estimates if the source chain is EVM (not Solana)
+
+  // Only fetch gas estimates if the source chain is EVM (not Solana, Bitcoin, or Tron)
   const shouldFetchGasEstimates =
-    // TODO: update this with all non-EVM chains when bitcoin added.
-    fromChain?.chainId && !isSolanaChainId(fromChain.chainId);
+    fromChain?.chainId && !isNonEvmChainId(fromChain.chainId);
 
   useEffect(() => {
     dispatch(
@@ -110,14 +116,9 @@ const CrossChainSwap = () => {
   const redirectToDefaultRoute = async () => {
     await resetControllerAndInputStates();
     if (isFromTransactionShield) {
-      history.push({
-        pathname: TRANSACTION_SHIELD_ROUTE,
-      });
+      navigate(TRANSACTION_SHIELD_ROUTE);
     } else {
-      history.push({
-        pathname: DEFAULT_ROUTE,
-        state: { stayOnHomePage: true },
-      });
+      navigate(DEFAULT_ROUTE, { state: { stayOnHomePage: true } });
     }
     dispatch(clearSwapsState());
     await dispatch(resetBackgroundSwapsState());
@@ -144,6 +145,7 @@ const CrossChainSwap = () => {
             iconName={IconName.Setting}
             size={ButtonIconSize.Sm}
             ariaLabel={t('settings')}
+            data-testid="bridge__header-settings-button"
             onClick={() => {
               setIsSettingsModalOpen(true);
             }}
@@ -153,27 +155,37 @@ const CrossChainSwap = () => {
         {t('swap')}
       </Header>
       <Content padding={0}>
-        <Switch>
-          <Route path={CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE}>
-            <BridgeTransactionSettingsModal
-              isOpen={isSettingsModalOpen}
-              onClose={() => {
-                setIsSettingsModalOpen(false);
-              }}
-            />
-            <PrepareBridgePage
-              onOpenSettings={() => setIsSettingsModalOpen(true)}
-            />
-          </Route>
-          <Route path={CROSS_CHAIN_SWAP_ROUTE + AWAITING_SIGNATURES_ROUTE}>
-            <Content>
-              <AwaitingSignatures />
-            </Content>
-            <Footer>
-              <AwaitingSignaturesCancelButton />
-            </Footer>
-          </Route>
-        </Switch>
+        <Routes>
+          <Route
+            path={CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE}
+            element={
+              <>
+                <BridgeTransactionSettingsModal
+                  isOpen={isSettingsModalOpen}
+                  onClose={() => {
+                    setIsSettingsModalOpen(false);
+                  }}
+                />
+                <PrepareBridgePage
+                  onOpenSettings={() => setIsSettingsModalOpen(true)}
+                />
+              </>
+            }
+          />
+          <Route
+            path={CROSS_CHAIN_SWAP_ROUTE + AWAITING_SIGNATURES_ROUTE}
+            element={
+              <>
+                <Content>
+                  <AwaitingSignatures />
+                </Content>
+                <Footer>
+                  <AwaitingSignaturesCancelButton />
+                </Footer>
+              </>
+            }
+          />
+        </Routes>
       </Content>
     </Page>
   );

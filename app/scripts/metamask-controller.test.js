@@ -122,6 +122,20 @@ function* ulidGenerator(ulids = mockULIDs) {
 }
 
 /**
+ * Utility function that waits for all pending promises to be resolved.
+ * This is necessary when testing asynchronous execution flows that are
+ * initiated by synchronous calls.
+ *
+ * @returns A promise that resolves when all pending promises are completed.
+ */
+async function waitForAllPromises() {
+  // Wait for next tick to flush all pending promises. It's requires since
+  // we are testing some asynchronous execution flows that are started by
+  // synchronous calls.
+  await new Promise(process.nextTick);
+}
+
+/**
  * Generate mock patches for a complete state replacement.
  *
  * @returns A list of mock patches.
@@ -725,6 +739,34 @@ describe('MetaMaskController', () => {
         // + 1 in `createNewVaultAndKeychain` (onboarding)
         // + 1 in `submitPassword`
         expect(accountsControllerSpy).toHaveBeenCalledTimes(2);
+      });
+    });
+
+    describe('#submitPasswordOrEncryptionKey', () => {
+      const password = 'a-fake-password';
+
+      it('should call resyncAccounts and alignWallets asynchronously when submitPasswordOrEncryptionKey is called', async () => {
+        const mockAlignWallets = jest.fn();
+        const mockResyncAccounts = jest.fn();
+
+        // We only trigger this behavior when the feature flag is enabled.
+        jest
+          .spyOn(metamaskController, 'isMultichainAccountsFeatureState2Enabled')
+          .mockReturnValue(true);
+
+        metamaskController.multichainAccountService = {
+          init: jest.fn(),
+          resyncAccounts: mockResyncAccounts,
+          alignWallets: mockAlignWallets,
+        };
+
+        await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
+        await metamaskController.submitPasswordOrEncryptionKey({ password });
+
+        await waitForAllPromises();
+
+        expect(mockResyncAccounts).toHaveBeenCalled();
+        expect(mockAlignWallets).toHaveBeenCalled();
       });
     });
 
@@ -3497,7 +3539,8 @@ describe('MetaMaskController', () => {
         // Assert that discoverAccounts was called correctly:
         // - 1 time for Bitcoin
         // - 3 times for Solana (twice with discovered accounts, once with empty array)
-        expect(mockDiscoverAccounts).toHaveBeenCalledTimes(1 + 3);
+        // - 1 time for Tron (newly supported)
+        expect(mockDiscoverAccounts).toHaveBeenCalledTimes(1 + 3 + 1);
 
         // All calls should include the solana scopes
         expect(mockDiscoverAccounts.mock.calls[1][0]).toStrictEqual([
@@ -3582,7 +3625,8 @@ describe('MetaMaskController', () => {
         // Assert that discoverAccounts was called correctly:
         // - 3 times for Bitcoin (twice with discovered accounts, once with empty array)
         // - 1 time for Solana
-        expect(mockDiscoverAccounts).toHaveBeenCalledTimes(3 + 1);
+        // - 1 time for Tron (newly supported)
+        expect(mockDiscoverAccounts).toHaveBeenCalledTimes(3 + 1 + 1);
 
         // All calls should include the solana scopes
         expect(mockDiscoverAccounts.mock.calls[0][0]).toStrictEqual([
@@ -5010,7 +5054,7 @@ describe('MetaMaskController', () => {
       );
 
       expect(wallet.discoverAccounts).toHaveBeenCalledTimes(1);
-      expect(result).toStrictEqual({ Bitcoin: 0, Solana: 1 });
+      expect(result).toStrictEqual({ Bitcoin: 0, Solana: 1, Tron: 0 });
     });
 
     it('passes provided keyring id to wallet getter', async () => {
@@ -5037,7 +5081,7 @@ describe('MetaMaskController', () => {
         { entropySource: providedId },
       );
 
-      expect(result).toStrictEqual({ Bitcoin: 0, Solana: 1 });
+      expect(result).toStrictEqual({ Bitcoin: 0, Solana: 1, Tron: 0 });
     });
 
     it('returns zero counts and warns when no HD keyring can be derived (no keyring id provided or HD keyring found)', async () => {
@@ -5050,7 +5094,7 @@ describe('MetaMaskController', () => {
 
       const result = await metamaskController.discoverAndCreateAccounts();
 
-      expect(result).toStrictEqual({ Bitcoin: 0, Solana: 0 });
+      expect(result).toStrictEqual({ Bitcoin: 0, Solana: 0, Tron: 0 });
       expect(warnSpy).toHaveBeenCalledWith(
         'Failed to add accounts with balance. Error: No keyring id to discover accounts for',
       );
@@ -5074,7 +5118,7 @@ describe('MetaMaskController', () => {
       const warnSpy = jest.spyOn(log, 'warn');
 
       const result = await metamaskController.discoverAndCreateAccounts();
-      expect(result).toStrictEqual({ Bitcoin: 0, Solana: 0 });
+      expect(result).toStrictEqual({ Bitcoin: 0, Solana: 0, Tron: 0 });
       expect(warnSpy).toHaveBeenCalledWith(
         'Failed to add accounts with balance. Error: boom',
       );

@@ -14,7 +14,7 @@ import {
   toMultichainAccountWalletId,
 } from '@metamask/account-api';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { ConsolidatedWallets } from '../../../selectors/multichain-accounts/account-tree.types';

@@ -1,26 +1,21 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import log from 'loglevel';
 import {
   ChainPaymentInfo,
-  PAYMENT_TYPES,
   PaymentType,
   PricingPaymentMethod,
   PricingResponse,
-  PRODUCT_TYPES,
   ProductPrice,
   ProductType,
-  RECURRING_INTERVALS,
   TokenPaymentInfo,
 } from '@metamask/subscription-controller';
 import { Hex } from '@metamask/utils';
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { getSubscriptionPricing } from '../../selectors/subscription';
 import {
   getSubscriptionCryptoApprovalAmount,
   getSubscriptionPricing as getSubscriptionPricingAction,
 } from '../../store/actions';
-import { getSelectedAccount } from '../../selectors';
 import { getTokenBalancesEvm } from '../../selectors/assets';
 import { useTokenBalances as pollAndUpdateEvmBalances } from '../useTokenBalances';
 import {
@@ -30,6 +25,12 @@ import {
 } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
 import { AssetType } from '../../../shared/constants/transaction';
 import { useAsyncResult } from '../useAsync';
+import {
+  getAccountGroupsByAddress,
+  getInternalAccountByGroupAndCaip,
+  getSelectedAccountGroup,
+} from '../../selectors/multichain-accounts/account-tree';
+import { MultichainAccountsState } from '../../selectors/multichain-accounts/account-tree.types';
 
 export type TokenWithApprovalAmount = (
   | AssetWithDisplayData<ERC20Asset>
@@ -47,7 +48,11 @@ export const useAvailableTokenBalances = (params: {
   paymentChains?: ChainPaymentInfo[];
   price?: ProductPrice;
   productType: ProductType;
-}): TokenWithApprovalAmount[] => {
+}): {
+  availableTokenBalances: TokenWithApprovalAmount[];
+  pending: boolean;
+  error: Error | undefined;
+} => {
   const { paymentChains, price, productType } = params;
 
   const paymentChainIds = useMemo(
@@ -66,17 +71,23 @@ export const useAvailableTokenBalances = (params: {
     [paymentChains],
   );
 
-  const selectedAccount = useSelector(getSelectedAccount);
+  // Use accountAddress's account group if it exists, otherwise use the selected account group
+  const selectedAccountGroup = useSelector(getSelectedAccountGroup);
+  const [requestedAccountGroup] = useSelector((state) =>
+    getAccountGroupsByAddress(state as MultichainAccountsState, ['']),
+  );
+  const accountGroupIdToUse = requestedAccountGroup?.id ?? selectedAccountGroup;
+
+  // Get internal account to use for each supported scope
+  const evmAccount = useSelector((state) =>
+    getInternalAccountByGroupAndCaip(state, accountGroupIdToUse, 'eip155:1'),
+  );
   const evmBalances = useSelector((state) =>
-    getTokenBalancesEvm(state, selectedAccount.address),
+    getTokenBalancesEvm(state, evmAccount?.address),
   );
 
   // Poll and update evm balances for payment chains
   pollAndUpdateEvmBalances({ chainIds: paymentChainIds });
-
-  const [availableTokenBalances, setAvailableTokenBalances] = useState<
-    TokenWithApprovalAmount[]
-  >([]);
 
   const validTokenBalances = useMemo(() => {
     return evmBalances.filter((token) => {
@@ -100,74 +111,83 @@ export const useAvailableTokenBalances = (params: {
     });
   }, [evmBalances, paymentChainTokenMap]);
 
-  useEffect(() => {
+  const {
+    value: availableTokenBalances,
+    pending,
+    error,
+  } = useAsyncResult(async (): Promise<TokenWithApprovalAmount[]> => {
     if (!price || !paymentChainTokenMap) {
-      return;
+      return [];
     }
 
-    const getAvailableTokenBalances = async () => {
-      const availableTokens: TokenWithApprovalAmount[] = [];
+    const availableTokens: TokenWithApprovalAmount[] = [];
 
-      const cryptoApprovalAmounts = await Promise.all(
-        validTokenBalances.map((token) => {
-          const tokenPaymentInfo = paymentChainTokenMap?.[
-            token.chainId as Hex
-          ]?.find(
-            (t) => t.address.toLowerCase() === token.address.toLowerCase(),
+    const cryptoApprovalAmounts = await Promise.all(
+      validTokenBalances.map((token) => {
+        const tokenPaymentInfo = paymentChainTokenMap?.[
+          token.chainId as Hex
+        ]?.find((t) => t.address.toLowerCase() === token.address.toLowerCase());
+        if (!tokenPaymentInfo) {
+          log.error(
+            '[useAvailableTokenBalances] tokenPaymentInfo not found',
+            token,
           );
-          if (!tokenPaymentInfo) {
-            log.error(
-              '[useAvailableTokenBalances] tokenPaymentInfo not found',
-              token,
-            );
-            return null;
-          }
-          return getSubscriptionCryptoApprovalAmount({
+          return null;
+        }
+        return getSubscriptionCryptoApprovalAmount({
+          chainId: token.chainId as Hex,
+          paymentTokenAddress: token.address as Hex,
+          productType,
+          interval: price.interval,
+        });
+      }),
+    );
+
+    cryptoApprovalAmounts.forEach((amount, index) => {
+      const token = validTokenBalances[index];
+      if (!token.balance) {
+        return;
+      }
+      // NOTE: we are using stable coin for subscription atm, so we need to scale the balance by the decimals
+      const scaledFactor = 10n ** 6n;
+      const scaledBalance =
+        BigInt(Math.round(Number(token.balance) * Number(scaledFactor))) /
+        scaledFactor;
+      const tokenHasEnoughBalance =
+        amount &&
+        scaledBalance * BigInt(10 ** token.decimals) >=
+          BigInt(amount.approveAmount);
+      if (tokenHasEnoughBalance) {
+        availableTokens.push({
+          ...token,
+          approvalAmount: {
+            approveAmount: amount.approveAmount,
             chainId: token.chainId as Hex,
-            paymentTokenAddress: token.address as Hex,
-            productType,
-            interval: price.interval,
-          });
-        }),
-      );
+            paymentAddress: amount.paymentAddress,
+            paymentTokenAddress: amount.paymentTokenAddress,
+          },
+          type: token.isNative ? AssetType.native : AssetType.token,
+        } as TokenWithApprovalAmount);
+      }
+    });
 
-      cryptoApprovalAmounts.forEach((amount, index) => {
-        const token = validTokenBalances[index];
-        if (!token.balance) {
-          return;
-        }
-        // NOTE: we are using stable coin for subscription atm, so we need to scale the balance by the decimals
-        const scaledFactor = 10n ** 6n;
-        const scaledBalance =
-          BigInt(Math.round(Number(token.balance) * Number(scaledFactor))) /
-          scaledFactor;
-        const tokenHasEnoughBalance =
-          amount &&
-          scaledBalance * BigInt(10 ** token.decimals) >=
-            BigInt(amount.approveAmount);
-        if (tokenHasEnoughBalance) {
-          availableTokens.push({
-            ...token,
-            approvalAmount: {
-              approveAmount: amount.approveAmount,
-              chainId: token.chainId as Hex,
-              paymentAddress: amount.paymentAddress,
-              paymentTokenAddress: amount.paymentTokenAddress,
-            },
-            type: token.isNative ? AssetType.native : AssetType.token,
-          } as TokenWithApprovalAmount);
-        }
-      });
-
-      setAvailableTokenBalances(availableTokens);
-    };
-
-    getAvailableTokenBalances();
+    return availableTokens;
   }, [price, productType, paymentChainTokenMap, validTokenBalances]);
 
-  return availableTokenBalances;
+  return {
+    availableTokenBalances: availableTokenBalances ?? [],
+    pending,
+    error,
+  };
 };
 
+/**
+ * Use this hook to get the subscription pricing.
+ *
+ * @param options - The options for the hook.
+ * @param options.refetch - Whether to refetch the subscription pricing from api.
+ * @returns The subscription pricing.
+ */
 export const useSubscriptionPricing = (
   { refetch }: { refetch?: boolean } = { refetch: false },
 ) => {
@@ -206,84 +226,4 @@ export const useSubscriptionPaymentMethods = (
       ),
     [pricing, paymentType],
   );
-};
-
-/**
- * Use this hook to get the shield subscription price derived from transaction data.
- *
- * @param params - The parameters for the hook.
- * @param params.transactionMeta - The transaction meta.
- * @param params.decodedApprovalAmount - The decoded approval amount.
- * @returns The product price.
- */
-export const useShieldSubscriptionPricingFromTokenApproval = ({
-  transactionMeta,
-  decodedApprovalAmount,
-}: {
-  transactionMeta?: TransactionMeta;
-  decodedApprovalAmount?: string;
-}) => {
-  const { subscriptionPricing } = useSubscriptionPricing();
-  const pricingPlans = useSubscriptionProductPlans(
-    PRODUCT_TYPES.SHIELD,
-    subscriptionPricing,
-  );
-  const cryptoPaymentMethod = useSubscriptionPaymentMethods(
-    PAYMENT_TYPES.byCrypto,
-    subscriptionPricing,
-  );
-  const selectedTokenPrice = useMemo(() => {
-    return cryptoPaymentMethod?.chains
-      ?.find(
-        (chain) =>
-          chain.chainId.toLowerCase() ===
-          transactionMeta?.chainId.toLowerCase(),
-      )
-      ?.tokens.find(
-        (token) =>
-          token.address.toLowerCase() ===
-          transactionMeta?.txParams?.to?.toLowerCase(),
-      );
-  }, [cryptoPaymentMethod, transactionMeta]);
-
-  // need to do async here since `getSubscriptionCryptoApprovalAmount` make call to background script
-  const { value: productPrice, pending } = useAsyncResult(async (): Promise<
-    ProductPrice | undefined
-  > => {
-    if (selectedTokenPrice) {
-      const params = {
-        chainId: transactionMeta?.chainId as Hex,
-        paymentTokenAddress: selectedTokenPrice.address as Hex,
-        productType: PRODUCT_TYPES.SHIELD,
-      };
-      // Get all intervals from RECURRING_INTERVALS
-      const intervals = Object.values(RECURRING_INTERVALS);
-
-      // Fetch approval amounts for all intervals
-      const approvalAmounts = await Promise.all(
-        intervals.map((interval) =>
-          getSubscriptionCryptoApprovalAmount({
-            ...params,
-            interval,
-          }),
-        ),
-      );
-
-      // Find the matching plan by comparing approval amounts
-      for (let i = 0; i < approvalAmounts.length; i++) {
-        if (approvalAmounts[i]?.approveAmount === decodedApprovalAmount) {
-          return pricingPlans?.find((plan) => plan.interval === intervals[i]);
-        }
-      }
-    }
-
-    return undefined;
-  }, [
-    transactionMeta,
-    selectedTokenPrice,
-    decodedApprovalAmount,
-    pricingPlans,
-  ]);
-
-  return { productPrice, pending, selectedTokenPrice };
 };

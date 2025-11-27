@@ -1,5 +1,6 @@
 import React, { useContext, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import classnames from 'classnames';
 import { CaipChainId } from '@metamask/utils';
 import type { Hex } from '@metamask/utils';
@@ -16,9 +17,15 @@ import {
 } from '../../../../shared/constants/metametrics';
 
 import { I18nContext } from '../../../contexts/i18n';
+import { MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
+import {
+  AddressListQueryParams,
+  AddressListSource,
+} from '../../../pages/multichain-accounts/multichain-account-address-list-page';
 import Tooltip from '../../ui/tooltip';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
+import { trace, TraceName } from '../../../../shared/lib/trace';
 import {
   getPreferences,
   getShouldHideZeroBalanceTokens,
@@ -42,6 +49,7 @@ import { AccountGroupBalanceChange } from '../assets/account-group-balance-chang
 import {
   getMultichainIsEvm,
   getMultichainShouldShowFiat,
+  getMultichainIsTestnet,
 } from '../../../selectors/multichain';
 import { setPrivacyMode } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -52,6 +60,11 @@ import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { AggregatedBalance } from '../../ui/aggregated-balance/aggregated-balance';
 import { Skeleton } from '../../component-library/skeleton';
 import { isZeroAmount } from '../../../helpers/utils/number-utils';
+import { RewardsPointsBalance } from '../rewards/RewardsPointsBalance';
+import { selectRewardsEnabled } from '../../../ducks/rewards/selectors';
+import { BalanceEmptyState } from '../balance-empty-state';
+import { selectAccountGroupBalanceForEmptyState } from '../../../selectors/assets';
+import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 import {
@@ -202,9 +215,12 @@ export const CoinOverview = ({
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { privacyMode, showNativeTokenAsMainBalance } =
     useSelector(getPreferences);
+
+  const selectedAccountGroup = useSelector(getSelectedAccountGroup);
 
   const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
     getIsTokenNetworkFilterEqualCurrentNetwork,
@@ -220,6 +236,16 @@ export const CoinOverview = ({
   const anyEnabledNetworksAreAvailable = useSelector(
     selectAnyEnabledNetworksAreAvailable,
   );
+  const isRewardsEnabled = useSelector(selectRewardsEnabled);
+
+  const hasBalance = useSelector(selectAccountGroupBalanceForEmptyState);
+  const isTestnet = useSelector(getMultichainIsTestnet);
+
+  const shouldShowBalanceEmptyState =
+    isMultichainAccountsState2Enabled &&
+    !isTestnet &&
+    !balanceIsCached &&
+    !hasBalance;
 
   const handleSensitiveToggle = () => {
     dispatch(setPrivacyMode(!privacyMode));
@@ -244,8 +270,39 @@ export const CoinOverview = ({
     });
   }, [isMarketingEnabled, isMetaMetricsEnabled, metaMetricsId, trackEvent]);
 
+  const handleReceiveOnClick = useCallback(() => {
+    trace({ name: TraceName.ReceiveModal });
+    trackEvent({
+      event: MetaMetricsEventName.NavReceiveButtonClicked,
+      category: MetaMetricsEventCategory.Navigation,
+      properties: {
+        text: 'Receive',
+        location: 'balance_empty_state',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        chain_id: chainId,
+      },
+    });
+
+    if (isMultichainAccountsState2Enabled && selectedAccountGroup) {
+      // Navigate to the multichain address list page with receive source
+      navigate(
+        `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(selectedAccountGroup)}?${AddressListQueryParams.Source}=${AddressListSource.Receive}`,
+      );
+    }
+  }, [
+    isMultichainAccountsState2Enabled,
+    selectedAccountGroup,
+    navigate,
+    trackEvent,
+    chainId,
+  ]);
+
   const renderPercentageAndAmountChange = () => {
-    const renderPortfolioButton = () => {
+    const renderPercentageAndAmountChangeTrail = () => {
+      if (isRewardsEnabled) {
+        return <RewardsPointsBalance />;
+      }
       return (
         <ButtonLink
           endIconName={IconName.Export}
@@ -257,7 +314,6 @@ export const CoinOverview = ({
           {t('discover')}
         </ButtonLink>
       );
-      return null;
     };
 
     const renderNativeTokenView = () => {
@@ -270,7 +326,7 @@ export const CoinOverview = ({
         >
           <Box className="wallet-overview__currency-wrapper">
             <PercentageAndAmountChange value={value} />
-            {renderPortfolioButton()}
+            {renderPercentageAndAmountChangeTrail()}
           </Box>
         </Skeleton>
       );
@@ -280,11 +336,11 @@ export const CoinOverview = ({
       <Box className="wallet-overview__currency-wrapper">
         {isTokenNetworkFilterEqualCurrentNetwork ? (
           <AggregatedPercentageOverview
-            portfolioButton={renderPortfolioButton}
+            trailingChild={renderPercentageAndAmountChangeTrail}
           />
         ) : (
           <AggregatedPercentageOverviewCrossChains
-            portfolioButton={renderPortfolioButton}
+            trailingChild={renderPercentageAndAmountChangeTrail}
           />
         )}
       </Box>
@@ -294,7 +350,7 @@ export const CoinOverview = ({
       <Box className="wallet-overview__currency-wrapper">
         <AggregatedMultichainPercentageOverview
           privacyMode={privacyMode}
-          portfolioButton={renderPortfolioButton}
+          trailingChild={renderPercentageAndAmountChangeTrail}
         />
       </Box>
     );
@@ -305,7 +361,7 @@ export const CoinOverview = ({
         <Box className="wallet-overview__currency-wrapper">
           <AccountGroupBalanceChange
             period="1d"
-            portfolioButton={renderPortfolioButton}
+            trailingChild={renderPercentageAndAmountChangeTrail}
           />
         </Box>
       );
@@ -354,25 +410,34 @@ export const CoinOverview = ({
   return (
     <WalletOverview
       balance={
-        <Tooltip
-          position="top"
-          title={t('balanceOutdated')}
-          disabled={!balanceIsCached}
-        >
-          <div
-            className={`${classPrefix}-overview__balance [.wallet-overview-fullscreen_&]:items-center`}
+        shouldShowBalanceEmptyState ? (
+          <BalanceEmptyState
+            className="w-full max-w-[420px]"
+            data-testid="coin-overview-balance-empty-state"
+            onClickReceive={handleReceiveOnClick}
+          />
+        ) : (
+          <Tooltip
+            position="top"
+            title={t('balanceOutdated')}
+            disabled={!balanceIsCached}
           >
-            <div className={`${classPrefix}-overview__primary-container`}>
-              {balanceSection}
-              {balanceIsCached && (
-                <span className={`${classPrefix}-overview__cached-star`}>
-                  *
-                </span>
-              )}
+            <div
+              className={`${classPrefix}-overview__balance [.wallet-overview-fullscreen_&]:items-center`}
+            >
+              <div className={`${classPrefix}-overview__primary-container`}>
+                {balanceSection}
+                {balanceIsCached && !shouldShowBalanceEmptyState && (
+                  <span className={`${classPrefix}-overview__cached-star`}>
+                    *
+                  </span>
+                )}
+              </div>
+              {!shouldShowBalanceEmptyState &&
+                renderPercentageAndAmountChange()}
             </div>
-            {renderPercentageAndAmountChange()}
-          </div>
-        </Tooltip>
+          </Tooltip>
+        )
       }
       buttons={
         <CoinButtons

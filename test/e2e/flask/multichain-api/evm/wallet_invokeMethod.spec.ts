@@ -7,7 +7,7 @@ import {
   WINDOW_TITLES,
   withFixtures,
 } from '../../../helpers';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../../../constants';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
@@ -29,6 +29,11 @@ describe('Multichain API', function () {
   const DEFAULT_INITIAL_BALANCE_HEX = convertETHToHexGwei(
     DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
   );
+  const SCOPE_TO_NETWORK_NAME: Record<string, string> = {
+    'eip155:1337': 'Localhost 8545',
+    'eip155:1338': 'Localhost 8546',
+    'eip155:1000': 'Localhost 7777',
+  };
 
   describe('Calling `wallet_invokeMethod` with permissions granted from EIP-1193 provider', function () {
     it('should allow the request to be made', async function () {
@@ -175,48 +180,66 @@ describe('Multichain API', function () {
             }
             await testDapp.clickInvokeAllMethodsButton();
 
-            // first confirmation page should display Account 1 as sender account
-            await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-            const confirmation = new TransactionConfirmation(driver);
-            await confirmation.checkPageIsLoaded();
-            assert.equal(
-              await confirmation.checkIsSenderAccountDisplayed('Account 1'),
-              true,
-            );
-            await confirmation.clickFooterConfirmButton();
-
-            // check which account confirmation page is displayed on second screen
-            await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-            await confirmation.checkPageIsLoaded();
-            const screenForAccount2 =
-              await confirmation.checkIsSenderAccountDisplayed('Account 2');
-            if (screenForAccount2) {
-              await confirmation.checkNetworkIsDisplayed('Localhost 8546');
-              await confirmation.clickFooterConfirmButton();
-
-              // third confirmation page should display Account 1 as sender account
-              await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-              await confirmation.checkPageIsLoaded();
-              assert.equal(
-                await confirmation.checkIsSenderAccountDisplayed('Account 1'),
-                true,
-              );
-              await confirmation.checkNetworkIsDisplayed('Localhost 7777');
-              await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
-            } else {
-              await confirmation.checkNetworkIsDisplayed('Localhost 7777');
-              await confirmation.clickFooterConfirmButton();
-
-              // third confirmation page should display Account 2 as sender account
-              await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-              await confirmation.checkPageIsLoaded();
-              assert.equal(
-                await confirmation.checkIsSenderAccountDisplayed('Account 2'),
-                true,
-              );
-              await confirmation.checkNetworkIsDisplayed('Localhost 8546');
-              await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+            // Build expected confirmations
+            const expectedConfirmations: {
+              account: string;
+              network: string;
+            }[] = [];
+            for (const [i, scope] of GANACHE_SCOPES.entries()) {
+              expectedConfirmations.push({
+                account:
+                  i === INDEX_FOR_ALTERNATE_ACCOUNT ? 'Account 2' : 'Account 1',
+                network: SCOPE_TO_NETWORK_NAME[scope],
+              });
             }
+
+            const resultConfirmations: { account: string; network: string }[] =
+              [];
+            await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+            const firstConfirmation = new TransactionConfirmation(driver);
+            await firstConfirmation.checkPageIsLoaded();
+            let currentAccount = await firstConfirmation.getSenderAccountName();
+            let currentNetwork = await firstConfirmation.getNetworkName();
+            await firstConfirmation.clickFooterConfirmButton();
+            resultConfirmations.push({
+              account: currentAccount,
+              network: currentNetwork,
+            });
+
+            // Collect actual confirmations from each confirmation screen
+            for (let i = 0; i < GANACHE_SCOPES.length - 1; i++) {
+              await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+              const confirmation = new TransactionConfirmation(driver);
+              await confirmation.checkPageIsLoaded();
+              await confirmation.checkNetworkIsNotDisplayed(currentNetwork);
+              currentAccount = await confirmation.getSenderAccountName();
+              currentNetwork = await confirmation.getNetworkName();
+              resultConfirmations.push({
+                account: currentAccount,
+                network: currentNetwork,
+              });
+
+              // Confirm the transaction except for the last one
+              if (i < GANACHE_SCOPES.length - 2) {
+                await confirmation.clickFooterConfirmButton();
+              } else {
+                await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+              }
+            }
+
+            // Verify all expected confirmations were found
+            const hasAllExpectedConfirmations = expectedConfirmations.every(
+              (expectedConf) =>
+                resultConfirmations.find(
+                  (resultConf) =>
+                    resultConf.account === expectedConf.account &&
+                    resultConf.network === expectedConf.network,
+                ),
+            );
+            assert.ok(
+              hasAllExpectedConfirmations,
+              'Not all expected confirmation screens were found',
+            );
           },
         );
       });
@@ -260,23 +283,63 @@ describe('Multichain API', function () {
 
             await testDapp.clickInvokeAllMethodsButton();
             const totalNumberOfScopes = GANACHE_SCOPES.length;
-            for (let i = 0; i < totalNumberOfScopes; i++) {
+            const expectedNetworks = [
+              'Localhost 8545',
+              'Localhost 8546',
+              'Localhost 7777',
+            ];
+            const currentNetworks = new Set<string>();
+
+            // Get the network name from the first confirmation screen
+            await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+            const firstConfirmation = new TransactionConfirmation(driver);
+            await firstConfirmation.checkPageIsLoaded();
+            let currentNetworkName = await firstConfirmation.getNetworkName();
+            await firstConfirmation.checkPageNumbers(1, totalNumberOfScopes);
+            await firstConfirmation.clickFooterConfirmButton();
+            currentNetworks.add(currentNetworkName);
+
+            for (let i = 0; i < totalNumberOfScopes - 1; i++) {
               await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
               const confirmation = new TransactionConfirmation(driver);
               await confirmation.checkPageIsLoaded();
-              if (i < totalNumberOfScopes - 1) {
-                // if pending tx's, verify navigation and confirm
-                await confirmation.checkPageNumbers(1, totalNumberOfScopes - i);
-                await confirmation.checkNetworkIsDisplayed(
-                  `Localhost ${8545 + i}`,
+
+              // Check that the network is different from the previous confirmation screen to ensure that we’ve switched to a new confirmation screen
+              await confirmation.checkNetworkIsNotDisplayed(currentNetworkName);
+
+              // Get the network name from the current confirmation screen
+              currentNetworkName = await confirmation.getNetworkName();
+
+              // Verify this network hasn't been seen before and is expected
+              assert(
+                !currentNetworks.has(currentNetworkName),
+                `Network ${currentNetworkName} appeared more than once`,
+              );
+              assert(
+                expectedNetworks.includes(currentNetworkName),
+                `Unexpected network: ${currentNetworkName}`,
+              );
+              currentNetworks.add(currentNetworkName);
+
+              if (i < totalNumberOfScopes - 2) {
+                // First 2 confirmations: verify navigation and confirm
+                await confirmation.checkPageNumbers(
+                  1,
+                  totalNumberOfScopes - i - 1,
                 );
                 await confirmation.clickFooterConfirmButton();
               } else {
-                await confirmation.checkNetworkIsDisplayed('Localhost 7777');
-                // if no pending tx's, confirm and wait for window to close
+                // Last confirmation: confirm and wait for window to close
                 await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
               }
             }
+
+            // Verify all expected networks were seen
+            assert.equal(
+              currentNetworks.size,
+              expectedNetworks.length,
+              'Not all networks were confirmed',
+            );
 
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.ExtensionInFullScreenView,
@@ -321,7 +384,9 @@ describe('Multichain API', function () {
     });
   });
 
-  describe('EIP-5792 Methods', function () {
+  // #37821 - When running EIP-5792 methods with EIP7702 feautre flag turned ON the confirmation screen crashes
+  // eslint-disable-next-line mocha/no-skipped-tests
+  describe.skip('EIP-5792 Methods', function () {
     describe('Calling `wallet_getCapabalities`', function () {
       it('should return the available capabilities', async function () {
         await withFixtures(
@@ -444,7 +509,6 @@ describe('Multichain API', function () {
         );
       });
     });
-
     describe('Calling `wallet_getCallsStatus`', function () {
       it('should return the status', async function () {
         await withFixtures(

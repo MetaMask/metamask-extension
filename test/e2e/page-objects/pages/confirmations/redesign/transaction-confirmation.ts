@@ -70,17 +70,25 @@ class TransactionConfirmation extends Confirmation {
   private readonly gasLimitInput: RawLocator =
     '[data-testid="gas-limit-input"]';
 
+  private readonly headerAccountName: RawLocator =
+    '[data-testid="header-account-name"]';
+
+  private readonly networkName: RawLocator =
+    '[data-testid="confirmation__details-network-name"]';
+
   private readonly saveButton: RawLocator = { tag: 'button', text: 'Save' };
 
   private readonly senderAccount: RawLocator = '[data-testid="sender-address"]';
-
-  private readonly transactionDetails: RawLocator =
-    '[data-testid="confirmation__token-details-section"]';
 
   private readonly walletInitiatedHeadingTitle: RawLocator = {
     css: 'h4',
     text: tEn('review') as string,
   };
+
+  private readonly shieldFooterCoverageIndicator = (status: string) => ({
+    css: '[data-alert-key="shieldFooterCoverageIndicator"]',
+    text: status,
+  });
 
   private readonly simulationDetailsLayout: RawLocator =
     '[data-testid="simulation-details-layout"]';
@@ -215,6 +223,16 @@ class TransactionConfirmation extends Confirmation {
     });
   }
 
+  async checkHeaderAccountNameIsDisplayed(account: string): Promise<void> {
+    console.log(
+      `Checking header account name ${account} on transaction confirmation page.`,
+    );
+    await this.driver.waitForSelector({
+      css: this.headerAccountName,
+      text: account,
+    });
+  }
+
   async checkPaidByMetaMask() {
     await this.driver.findElement({
       css: this.paidByMetaMaskNotice,
@@ -223,26 +241,18 @@ class TransactionConfirmation extends Confirmation {
   }
 
   /**
-   * Checks if the sender account is displayed in the transaction confirmation page.
+   * Checks that the sender account is displayed on the transaction confirmation page.
    *
    * @param account - The sender account to check.
    */
-  async checkIsSenderAccountDisplayed(account: string): Promise<boolean> {
+  async checkSenderAccountIsDisplayed(account: string): Promise<void> {
     console.log(
       `Checking sender account ${account} on transaction confirmation page.`,
     );
-    try {
-      await this.driver.waitForSelector({
-        css: this.senderAccount,
-        text: account,
-      });
-      return true;
-    } catch (err) {
-      console.log(
-        `Sender account ${account} is not displayed on transaction confirmation page.`,
-      );
-      return false;
-    }
+    await this.driver.waitForSelector({
+      css: this.senderAccount,
+      text: account,
+    });
   }
 
   /**
@@ -259,9 +269,21 @@ class TransactionConfirmation extends Confirmation {
       `Checking network ${network} is displayed on transaction confirmation page.`,
     );
     await this.driver.waitForSelector({
-      css: this.transactionDetails,
+      css: this.networkName,
       text: network,
     });
+  }
+
+  async checkNetworkIsNotDisplayed(network: string): Promise<void> {
+    console.log(
+      `Checking network ${network} is not displayed on transaction confirmation page.`,
+    );
+    await this.driver.assertElementNotPresent(
+      { css: this.networkName, text: network },
+      {
+        waitAtLeastGuard: 1000,
+      },
+    );
   }
 
   async checkNoAlertMessageIsDisplayed() {
@@ -353,6 +375,45 @@ class TransactionConfirmation extends Confirmation {
 
   async fillCustomNonce(nonce: string) {
     await this.driver.fill(this.customNonceInput, nonce);
+  }
+
+  /**
+   * Gets the network name displayed on the transaction confirmation page.
+   *
+   * IMPORTANT: Make sure the transaction confirmation screen is fully loaded
+   * before calling this method to avoid race conditions, as the network name element
+   * might not be present or updated correctly immediately after navigation.
+   *
+   * @returns The network name.
+   */
+  async getNetworkName(): Promise<string> {
+    const networkNameElement = await this.driver.findElement(this.networkName);
+    const networkName = await networkNameElement.getText();
+    console.log(
+      'Current network name displayed on transaction confirmation page: ',
+      networkName,
+    );
+    return networkName;
+  }
+
+  /**
+   * Gets the sender account name displayed on the transaction confirmation page.
+   *
+   * IMPORTANT: Make sure the transaction confirmation screen is fully loaded
+   * before calling this method to avoid race conditions.
+   *
+   * @returns The sender account name.
+   */
+  async getSenderAccountName(): Promise<string> {
+    const senderAccountElement = await this.driver.findElement(
+      this.senderAccount,
+    );
+    const senderAccountName = await senderAccountElement.getText();
+    console.log(
+      'Current sender account name displayed on transaction confirmation page: ',
+      senderAccountName,
+    );
+    return senderAccountName;
   }
 
   async setCustomNonce(nonce: string) {
@@ -464,6 +525,19 @@ class TransactionConfirmation extends Confirmation {
           this.clickScrollToBottomButton();
         }
       }),
+    );
+  }
+
+  async checkShieldCoverage(
+    status: 'covered' | 'not_covered' | 'malicious',
+  ): Promise<void> {
+    const statusText =
+      status === 'covered'
+        ? (tEn('shieldCovered') as string)
+        : (tEn('shieldNotCovered') as string);
+    console.log(`Checking if shield coverage indicator shows "${statusText}"`);
+    await this.driver.waitForSelector(
+      this.shieldFooterCoverageIndicator(statusText),
     );
   }
 }

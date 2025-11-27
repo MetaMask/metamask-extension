@@ -10,7 +10,7 @@ import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { TestSuiteArguments } from './shared';
 
 const { withFixtures } = require('../../../helpers');
-const FixtureBuilder = require('../../../fixture-builder');
+const FixtureBuilder = require('../../../fixtures/fixture-builder');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
 describe('Confirmation Redesign Contract Interaction Transaction Decoding', function () {
@@ -217,10 +217,13 @@ async function mockedSourcifyResponse(mockServer: MockttpServer) {
     .forGet(
       'https://sourcify.dev/server/files/any/1337/0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947',
     )
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: SOURCIFY_RESPONSE,
-    }));
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: SOURCIFY_RESPONSE,
+      };
+    });
 }
 
 async function mockTokensAndInfura(mockServer: MockttpServer) {

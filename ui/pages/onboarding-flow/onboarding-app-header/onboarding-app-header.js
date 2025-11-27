@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom-v5-compat';
 import classnames from 'classnames';
 import MetaFoxLogo from '../../../components/ui/metafox-logo';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -33,11 +32,10 @@ import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
-import { ThemeType } from '../../../../shared/constants/preferences';
 
-export default function OnboardingAppHeader({ isWelcomePage }) {
+export default function OnboardingAppHeader({ isWelcomePage, location }) {
   const dispatch = useDispatch();
-  const { pathname } = useLocation();
+  const { pathname, search } = location;
   const t = useI18nContext();
   const currentLocale = useSelector(getCurrentLocale);
   const localeOptions = locales.map((locale) => {
@@ -46,6 +44,11 @@ export default function OnboardingAppHeader({ isWelcomePage }) {
       value: locale.code,
     };
   });
+
+  const searchParams = new URLSearchParams(search);
+  const isFromReminder = searchParams.get('isFromReminder');
+  const isFromSettingsSecurity = searchParams.get('isFromSettingsSecurity');
+  const isFromSettingsSRPBackup = isFromReminder || isFromSettingsSecurity;
 
   return (
     <Box
@@ -61,18 +64,19 @@ export default function OnboardingAppHeader({ isWelcomePage }) {
       <Box
         display={Display.Flex}
         width={BlockSize.Full}
-        justifyContent={JustifyContent.spaceBetween}
+        justifyContent={
+          pathname === ONBOARDING_WELCOME_ROUTE
+            ? JustifyContent.flexEnd
+            : JustifyContent.spaceBetween
+        }
         className="onboarding-app-header__contents"
       >
-        <MetaFoxLogo
-          theme={
-            pathname === ONBOARDING_WELCOME_ROUTE ? ThemeType.light : undefined
-          }
-          unsetIconHeight
-          isOnboarding
-        />
+        {pathname !== ONBOARDING_WELCOME_ROUTE && (
+          <MetaFoxLogo unsetIconHeight isOnboarding />
+        )}
 
-        {pathname === ONBOARDING_COMPLETION_ROUTE ? (
+        {pathname === ONBOARDING_COMPLETION_ROUTE &&
+        !isFromSettingsSRPBackup ? (
           <Box
             paddingTop={12}
             className="onboarding-app-header__banner-tip-container"
@@ -136,4 +140,5 @@ export default function OnboardingAppHeader({ isWelcomePage }) {
 
 OnboardingAppHeader.propTypes = {
   isWelcomePage: PropTypes.bool,
+  location: PropTypes.object.isRequired,
 };

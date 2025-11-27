@@ -5,8 +5,9 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
 import { Tooltip } from 'react-tippy';
 import { I18nContext } from '../../../../contexts/i18n';
 import {
@@ -72,7 +73,10 @@ import {
   SendPageRecipientInput,
 } from './components';
 
-export const SendPage = () => {
+export const SendPage = ({
+  navigate: navigateProp,
+  location: locationProp,
+} = {}) => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
 
@@ -92,8 +96,13 @@ export const SendPage = () => {
   const sendStage = useSelector(getSendStage);
   const isSwapAndSend = getIsDraftSwapAndSend(draftTransaction);
 
-  const history = useHistory();
-  const location = useLocation();
+  // Use v5-compat hooks as fallback (works in test environment with CompatRouter)
+  // In production, props are provided by createV5CompatRoute
+  const navigateHook = useNavigate();
+  const locationHook = useLocation();
+  const navigate = navigateProp || navigateHook;
+  const location = locationProp || locationHook;
+
   const trackEvent = useContext(MetaMetricsContext);
   const sendAnalytics = useSelector(getSendAnalyticProperties);
 
@@ -168,9 +177,9 @@ export const SendPage = () => {
         },
         { excludeMetaMetricsId: false },
       );
-      history.push(SEND_ROUTE);
+      navigate(SEND_ROUTE);
     },
-    [dispatch, history, sendAnalytics, trackEvent],
+    [dispatch, navigate, sendAnalytics, trackEvent],
   );
 
   const handleAssetPickerClick = useCallback(
@@ -256,7 +265,7 @@ export const SendPage = () => {
 
     const nextRoute =
       sendStage === SEND_STAGES.EDIT ? DEFAULT_ROUTE : mostRecentOverviewPage;
-    history.push(nextRoute);
+    navigate(nextRoute);
   };
 
   useEffect(() => {
@@ -276,7 +285,6 @@ export const SendPage = () => {
       );
     }
     // sendAnalytics should not result in the event refiring
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trackEvent, swapQuotesError]);
 
   const onSubmit = async (event) => {
@@ -291,7 +299,7 @@ export const SendPage = () => {
           name: TraceName.SendCompleted,
         },
         async () => {
-          await dispatch(signTransaction(history));
+          await dispatch(signTransaction(navigate));
         },
       );
       trackEvent({
@@ -455,4 +463,9 @@ export const SendPage = () => {
       </Footer>
     </Page>
   );
+};
+
+SendPage.propTypes = {
+  navigate: PropTypes.func,
+  location: PropTypes.object,
 };

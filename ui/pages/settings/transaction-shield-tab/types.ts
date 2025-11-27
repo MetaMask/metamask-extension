@@ -1,3 +1,4 @@
+import { AccountWalletId } from '@metamask/account-api';
 import {
   PAYMENT_TYPES,
   SubscriptionCardPaymentMethod,
@@ -45,12 +46,14 @@ export const SUBMIT_CLAIM_ERROR_CODES = {
   SUBMISSION_WINDOW_EXPIRED: 'E103',
   TRANSACTION_NOT_COVERED: 'E104',
   COVERAGE_VALIDATION_FAILED: 'E105',
+  SIGNATURE_COVERAGE_NOT_COVERED: 'E106',
 
   // Claims Validation (E200-E299)
   CLAIM_VALIDATION_FAILED: 'E201',
   MAX_CLAIMS_LIMIT_EXCEEDED: 'E202',
   DUPLICATE_CLAIM_EXISTS: 'E203',
   INVALID_WALLET_ADDRESSES: 'E204',
+  SIGNATURE_VERIFICATION_FAILED: 'E205',
 
   // Field Validation Errors (E250-E299)
   FIELD_REQUIRED: 'E250',
@@ -68,6 +71,12 @@ export const SUBMIT_CLAIM_ERROR_CODES = {
   FILES_SIZE_EXCEEDED: 'E301',
   FILES_COUNT_EXCEEDED: 'E302',
   INVALID_FILES_TYPE: 'E303',
+
+  // Chains (E400-E499)
+  CHAIN_NOT_SUPPORTED: 'E401',
+  TRANSACTION_NOT_FOUND: 'E402',
+  TRANSACTION_NOT_FROM_WALLET_ADDRESS: 'E403',
+  TRANSACTION_NOT_SUCCESSFUL: 'E404',
 } as const;
 
 export type SubmitClaimErrorCode =
@@ -83,3 +92,25 @@ export type SubmitClaimErrorResponse = {
     errorCode: SubmitClaimErrorCode;
   }[];
 };
+
+export type AccountSelectorAccount = {
+  id: string;
+  name: string;
+  address: string;
+  type: string;
+  seedIcon?: string;
+};
+
+export type AccountSelectorWallet = {
+  id: AccountWalletId;
+  name: string;
+  accounts: AccountSelectorAccount[];
+};
+
+export const SHIELD_ICON_ARTBOARD_NAMES = {
+  PROTECTION: 'Protection',
+  PRIORITY: 'Priority',
+} as const;
+
+export type ShieldIconArtboardName =
+  (typeof SHIELD_ICON_ARTBOARD_NAMES)[keyof typeof SHIELD_ICON_ARTBOARD_NAMES];

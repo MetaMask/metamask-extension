@@ -1,5 +1,15 @@
-import { CaipAccountId, CaipAssetType } from '@metamask/utils';
+import { CaipAccountId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import {
+  EstimatedPointsDto,
+  EstimatePointsDto,
+  OptInStatusDto,
+  OptInStatusInputDto,
+  RewardsGeoMetadata,
+  SeasonDtoState,
+  SeasonRewardType,
+  SeasonStatusState,
+} from '../../../../shared/types/rewards';
 
 export type LoginResponseDto = {
   sessionId: string;
@@ -14,6 +24,8 @@ export type SubscriptionDto = {
     address: string;
     chainId: number;
   }[];
+  createdAt: string;
+  candidateAt?: string;
 };
 
 export type MobileLoginDto = {
@@ -68,107 +80,6 @@ export type MobileOptinDto = {
    */
   referralCode?: string;
 };
-
-export type EstimateAssetDto = {
-  /**
-   * Asset identifier in CAIP-19 format
-   *
-   * @example 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'
-   */
-  id: CaipAssetType;
-  /**
-   * Amount of the asset as a string
-   *
-   * @example '25739959426'
-   */
-  amount: string;
-  /**
-   * Asset price in USD PER TOKEN. Using ETH as an example, 1 ETH = 4493.23 USD at the time of writing. If provided, this will be used instead of doing a network call to get the current price.
-   *
-   * @example '4512.34'
-   */
-  usdPrice?: string;
-};
-
-export type EstimateSwapContextDto = {
-  /**
-   * Source asset information, in caip19 format
-   *
-   * @example {
-   *   id: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-   *   amount: '25739959426'
-   * }
-   */
-  srcAsset: EstimateAssetDto;
-
-  /**
-   * Destination asset information, in caip19 format.
-   *
-   * @example {
-   *   id: 'eip155:1/slip44:60',
-   *   amount: '9912500000000000000'
-   * }
-   */
-  destAsset: EstimateAssetDto;
-
-  /**
-   * Fee asset information, in caip19 format
-   *
-   * @example {
-   *   id: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-   *   amount: '100'
-   * }
-   */
-  feeAsset: EstimateAssetDto;
-};
-
-export type EstimatePerpsContextDto = {
-  /**
-   * Type of the PERPS action (open position, close position, stop/loss, take profit, ...)
-   *
-   * @example 'OPEN_POSITION'
-   */
-  type: 'OPEN_POSITION' | 'CLOSE_POSITION' | 'STOP_LOSS' | 'TAKE_PROFIT';
-
-  /**
-   * USD fee value
-   *
-   * @example '12.34'
-   */
-  usdFeeValue: string;
-
-  /**
-   * Asset symbol (e.g., "ETH", "BTC")
-   *
-   * @example 'ETH'
-   */
-  coin: string;
-};
-
-export type EstimatePointsContextDto = {
-  /**
-   * Swap context data, must be present for SWAP activity
-   */
-  swapContext?: EstimateSwapContextDto;
-
-  /**
-   * PERPS context data, must be present for PERPS activity
-   */
-  perpsContext?: EstimatePerpsContextDto;
-};
-
-/**
- * Type of point earning activity. Swap is for swaps and bridges. PERPS is for perps activities.
- *
- * @example 'SWAP'
- */
-export type PointsEventEarnType =
-  | 'SWAP'
-  | 'PERPS'
-  | 'REFERRAL'
-  | 'SIGN_UP_BONUS'
-  | 'LOYALTY_BONUS'
-  | 'ONE_TIME_BONUS';
 
 export type GetPointsEventsDto = {
   seasonId: string;
@@ -351,43 +262,6 @@ export type PointsEventDto = BasePointsEventDto &
       }
   );
 
-export type EstimatePointsDto = {
-  /**
-   * Type of point earning activity
-   *
-   * @example 'SWAP'
-   */
-  activityType: PointsEventEarnType;
-
-  /**
-   * Account address performing the activity in CAIP-10 format
-   *
-   * @example 'eip155:1:0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6'
-   */
-  account: CaipAccountId;
-
-  /**
-   * Context data specific to the activity type
-   */
-  activityContext: EstimatePointsContextDto;
-};
-
-export type EstimatedPointsDto = {
-  /**
-   * Earnable for the activity
-   *
-   * @example 100
-   */
-  pointsEstimate: number;
-
-  /**
-   * Bonus applied to the points estimate, in basis points. 100 = 1%
-   *
-   * @example 200
-   */
-  bonusBips: number;
-};
-
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type SeasonTierDto = {
   id: string;
@@ -409,13 +283,6 @@ export type SeasonRewardDto = {
   iconName: string;
   rewardType: SeasonRewardType;
 };
-
-export enum SeasonRewardType {
-  Generic = 'Generic',
-  PerpsDiscount = 'PerpsDiscount',
-  PointsBoost = 'PointsBoost',
-  AlphaFoxInvite = 'AlphaFoxInvite',
-}
 
 export type SeasonDto = {
   id: string;
@@ -607,68 +474,6 @@ export type ThemeImage = {
   darkModeUrl: string;
 };
 
-export type ClaimRewardDto = {
-  data?: Record<string, string>;
-};
-
-// Serializable versions for state storage (Date objects converted to timestamps)
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export type SeasonRewardDtoState = {
-  id: string;
-  name: string;
-  shortDescription: string;
-  longDescription: string;
-  shortUnlockedDescription: string;
-  longUnlockedDescription: string;
-  claimUrl?: string;
-  iconName: string;
-  rewardType: SeasonRewardType;
-};
-
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export type SeasonTierDtoState = {
-  id: string;
-  name: string;
-  pointsNeeded: number;
-  image: {
-    lightModeUrl: string;
-    darkModeUrl: string;
-  };
-  levelNumber: string;
-  rewards: SeasonRewardDtoState[];
-};
-
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export type SeasonDtoState = {
-  id: string;
-  name: string;
-  startDate: number; // timestamp
-  endDate: number; // timestamp
-  tiers: SeasonTierDtoState[];
-  lastFetched?: number;
-};
-
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export type SeasonStatusBalanceDtoState = {
-  total: number;
-  updatedAt?: number; // timestamp
-};
-
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export type SeasonTierState = {
-  currentTier: SeasonTierDtoState;
-  nextTier: SeasonTierDtoState | null;
-  nextTierPointsNeeded: number | null;
-};
-
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export type SeasonStatusState = {
-  season: SeasonDtoState;
-  balance: SeasonStatusBalanceDtoState;
-  tier: SeasonTierState;
-  lastFetched?: number;
-};
-
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export type RewardsAccountState = {
   account: CaipAccountId;
@@ -716,7 +521,10 @@ export type Patch = {
  */
 export type RewardsControllerOptInAction = {
   type: 'RewardsController:optIn';
-  handler: (referralCode?: string) => Promise<string | null>;
+  handler: (
+    accounts: InternalAccount[],
+    referralCode?: string,
+  ) => Promise<string | null>;
 };
 
 /**
@@ -745,20 +553,6 @@ export type PerpsDiscountData = {
    * @example 550
    */
   discountBips: number;
-};
-
-/**
- * Geo rewards metadata containing location and support info
- */
-export type GeoRewardsMetadata = {
-  /**
-   * The geographic location string (e.g., 'US', 'CA-ON', 'FR')
-   */
-  geoLocation: string;
-  /**
-   * Whether the location is allowed for opt-in
-   */
-  optinAllowedForGeo: boolean;
 };
 
 /**
@@ -824,7 +618,7 @@ export type RewardsControllerLinkAccountsToSubscriptionCandidateAction = {
  */
 export type RewardsControllerGetGeoRewardsMetadataAction = {
   type: 'RewardsController:getGeoRewardsMetadata';
-  handler: () => Promise<GeoRewardsMetadata>;
+  handler: () => Promise<RewardsGeoMetadata>;
 };
 
 /**
@@ -852,14 +646,6 @@ export type RewardsControllerGetActualSubscriptionIdAction = {
 };
 
 /**
- * Action for getting the first subscription ID
- */
-export type RewardsControllerGetFirstSubscriptionIdAction = {
-  type: 'RewardsController:getFirstSubscriptionId';
-  handler: () => string | null;
-};
-
-/**
  * Action for getting season metadata
  */
 export type RewardsControllerGetSeasonMetadataAction = {
@@ -876,51 +662,4 @@ export type RewardsControllerGetSeasonStatusAction = {
     subscriptionId: string,
     seasonId: string,
   ) => Promise<SeasonStatusState | null>;
-};
-
-/**
- * Input DTO for getting opt-in status of multiple addresses
- */
-export type OptInStatusInputDto = {
-  /**
-   * The addresses to check opt-in status for
-   *
-   * @example [
-   *   '0xDE37C32E8dbD1CD325B8023a00550a5beA97eF13',
-   *   '0xDE37C32E8dbD1CD325B8023a00550a5beA97eF14',
-   *   '0xDE37C32E8dbD1CD325B8023a00550a5beA97eF15'
-   * ]
-   */
-  addresses: string[];
-};
-
-/**
- * Response DTO for opt-in status of multiple addresses
- */
-export type OptInStatusDto = {
-  /**
-   * The opt-in status of the addresses in the same order as the input
-   *
-   * @example [true, true, false]
-   */
-  ois: boolean[];
-
-  /**
-   * The subscription IDs of the addresses in the same order as the input
-   *
-   * @example ['sub_123', 'sub_456', null]
-   */
-  sids: (string | null)[];
-};
-
-/**
- * Response DTO for opt-out operation
- */
-export type OptOutDto = {
-  /**
-   * Whether the opt-out operation was successful
-   *
-   * @example true
-   */
-  success: boolean;
 };

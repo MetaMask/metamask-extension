@@ -15,7 +15,7 @@ import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
 
 const { ERROR, LOADING } = ALERT_STATE;
 
-const InvalidCustomNetworkAlert = ({ history }) => {
+const InvalidCustomNetworkAlert = ({ navigate }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const alertState = useSelector(getAlertState);
@@ -43,7 +43,7 @@ const InvalidCustomNetworkAlert = ({ history }) => {
           disabled={alertState === LOADING}
           onClick={async () => {
             await onClose();
-            history.push(NETWORKS_ROUTE);
+            navigate(NETWORKS_ROUTE);
           }}
           variant={ButtonVariant.Primary}
           className="invalid-custom-network-alert__footer-row-button"
@@ -82,7 +82,7 @@ const InvalidCustomNetworkAlert = ({ history }) => {
 };
 
 InvalidCustomNetworkAlert.propTypes = {
-  history: PropTypes.object.isRequired,
+  navigate: PropTypes.func.isRequired,
 };
 
 export default InvalidCustomNetworkAlert;

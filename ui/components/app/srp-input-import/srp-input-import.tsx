@@ -56,16 +56,41 @@ export default function SrpInputImport({
   const t = useI18nContext();
   const [draftSrp, setDraftSrp] = useState<DraftSrp[]>([]);
   const [firstWord, setFirstWord] = useState('');
-  const [misSpelledWords, setMisSpelledWords] = useState<string[]>([]);
+  const [misSpelledWords, setMisSpelledWords] = useState<DraftSrp[]>([]);
 
   const srpRefs = useRef<ListOfTextFieldRefs>({});
 
+  const checkForInvalidWords = useCallback(
+    (srp?: DraftSrp[]) => {
+      const draftSrpToCheck = srp ?? draftSrp;
+      draftSrpToCheck.forEach((word) => {
+        const isInWordlist = wordlist.includes(word.word);
+        const alreadyInMisspelled = misSpelledWords.some(
+          (w) => w.id === word.id,
+        );
+        if (isInWordlist && alreadyInMisspelled) {
+          setMisSpelledWords((prev) => prev.filter((w) => w.id !== word.id));
+        } else if (!isInWordlist && !alreadyInMisspelled && word.word !== '') {
+          setMisSpelledWords((prev) => [...prev, word]);
+        }
+      });
+    },
+    [draftSrp, misSpelledWords],
+  );
+
   const initializeSrp = () => {
+    const firstWordId = uuidv4();
     setDraftSrp([
-      { word: firstWord, id: uuidv4(), active: false },
+      { word: firstWord, id: firstWordId, active: false },
       { word: '', id: uuidv4(), active: true },
     ]);
     setFirstWord('');
+    if (!wordlist.includes(firstWord)) {
+      setMisSpelledWords((prev) => [
+        ...prev,
+        { word: firstWord, id: firstWordId, active: false },
+      ]);
+    }
   };
 
   const onSrpPaste = (rawSrp: string) => {
@@ -90,6 +115,7 @@ export default function SrpInputImport({
       });
     }
 
+    checkForInvalidWords(newDraftSrp);
     setDraftSrp(newDraftSrp);
   };
 
@@ -103,6 +129,10 @@ export default function SrpInputImport({
 
   const handleChange = useCallback(
     (id: string, value: string) => {
+      if (value === ' ') {
+        return;
+      }
+
       const newDraftSrp = [...draftSrp];
       const targetIndex = newDraftSrp.findIndex((word) => word.id === id);
       newDraftSrp[targetIndex] = { ...newDraftSrp[targetIndex], word: value };
@@ -118,6 +148,10 @@ export default function SrpInputImport({
         (word) => word.id === currentWordId,
       );
       const isLastWord = currentWordIndex === draftSrp.length - 1;
+
+      if (isLastWord) {
+        checkForInvalidWords();
+      }
 
       if (
         (SRP_LENGTHS.includes(draftSrp.length) &&
@@ -147,12 +181,18 @@ export default function SrpInputImport({
       // set next word to active
       setDraftSrp(setWordActive(draftSrp, draftSrp[currentWordIndex + 1].id));
     },
-    [draftSrp],
+    [checkForInvalidWords, draftSrp],
   );
 
   const deleteWord = useCallback(
     (wordId: string) => {
       const currentWordIndex = draftSrp.findIndex((word) => word.id === wordId);
+
+      const updatedMisSpelledWords = misSpelledWords.filter(
+        (word) => word.id !== wordId,
+      );
+      setMisSpelledWords(updatedMisSpelledWords);
+
       const previousWordId = draftSrp[currentWordIndex - 1]?.id;
       const newDraftSrp = [...draftSrp];
       newDraftSrp.splice(currentWordIndex, 1);
@@ -163,7 +203,7 @@ export default function SrpInputImport({
         setDraftSrp([]);
       }
     },
-    [draftSrp],
+    [draftSrp, misSpelledWords],
   );
 
   const handleOnKeyDown = (ev: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -224,6 +264,7 @@ export default function SrpInputImport({
   };
 
   const onTriggerPaste = async () => {
+    setMisSpelledWords([]);
     if (getBrowserName() === PLATFORM_FIREFOX) {
       await requestPermissionAndTriggerPasteFireFox();
       return;
@@ -250,23 +291,30 @@ export default function SrpInputImport({
       srpRefs.current[activeWord.id]?.focus();
     }
 
-    const wordsNotInWordList = draftSrp
-      .filter((word) => word.word !== '' && !wordlist.includes(word.word))
-      .map((word) => word.word);
-    setMisSpelledWords(wordsNotInWordList);
-
     // if srp length is valid and no empty word trigger onChange
     if (
       SRP_LENGTHS.includes(draftSrp.length) &&
-      !draftSrp.some((word) => word.word.length === 0) &&
-      wordsNotInWordList.length === 0
+      !draftSrp.some((word) => word.word.length === 0)
     ) {
-      const stringSrp = draftSrp.map((word) => word.word).join(' ');
-      onChange(stringSrp);
+      const hasInvalidWords = draftSrp.some(
+        (word) => word.word !== '' && !wordlist.includes(word.word),
+      );
+
+      if (hasInvalidWords) {
+        onChange('');
+      } else {
+        const stringSrp = draftSrp.map((word) => word.word).join(' ');
+        onChange(stringSrp);
+      }
     } else {
       onChange('');
     }
   }, [draftSrp, onChange]);
+
+  const misSpelledWordsList = useCallback(
+    () => misSpelledWords.map((word) => word.word),
+    [misSpelledWords],
+  );
 
   return (
     <>
@@ -297,10 +345,13 @@ export default function SrpInputImport({
                       }}
                       testId={`import-srp__srp-word-${index}`}
                       key={word.id}
-                      error={misSpelledWords.includes(word.word)}
+                      error={
+                        !word.active &&
+                        misSpelledWordsList().includes(word.word)
+                      }
                       value={word.word}
                       type={
-                        word.active || misSpelledWords.includes(word.word)
+                        word.active || misSpelledWordsList().includes(word.word)
                           ? TextFieldType.Text
                           : TextFieldType.Password
                       }
@@ -319,9 +370,13 @@ export default function SrpInputImport({
                       onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
                         if (e.key === 'Enter' || e.key === ' ') {
                           e.preventDefault();
-                          nextWord(word.id);
-                        }
-                        if (e.key === 'Backspace' && word.word.length === 0) {
+                          if (word.word.trim() !== '') {
+                            nextWord(word.id);
+                          }
+                        } else if (
+                          e.key === 'Backspace' &&
+                          word.word.length === 0
+                        ) {
                           e.preventDefault();
                           deleteWord(word.id);
                         }
@@ -331,6 +386,7 @@ export default function SrpInputImport({
                       }}
                       onBlur={() => {
                         setWordInactive(word.id);
+                        checkForInvalidWords();
                       }}
                     />
                   );
@@ -360,6 +416,7 @@ export default function SrpInputImport({
                 onChange={(e) => setFirstWord(e.target.value)}
                 onKeyDown={handleOnKeyDown}
                 onPaste={handleOnPaste}
+                autoFocus
               />
             </Box>
           )}
@@ -375,6 +432,7 @@ export default function SrpInputImport({
               variant={ButtonVariant.Link}
               onClick={async () => {
                 setDraftSrp([]);
+                setMisSpelledWords([]);
                 onClearCallback?.();
               }}
             >

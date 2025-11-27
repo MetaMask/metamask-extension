@@ -9,7 +9,7 @@ import {
 } from '@metamask/utils';
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
@@ -64,7 +64,7 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
   );
   const isEvm = isEvmChainId(chainId);
 
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
 
@@ -141,10 +141,9 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
       optionsButton={
         <AssetOptions
           isNativeAsset={false}
-          isEvm={isEvm}
           onRemove={() =>
             dispatch(
-              showModal({ name: 'HIDE_TOKEN_CONFIRMATION', token, history }),
+              showModal({ name: 'HIDE_TOKEN_CONFIRMATION', token, navigate }),
             )
           }
           onClickBlockExplorer={() => {

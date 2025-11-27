@@ -30,6 +30,11 @@ import {
 } from '../../controller-init/messengers';
 import { getRootMessenger } from '../../lib/messenger';
 import {
+  EstimatedPointsDto,
+  EstimatePointsDto,
+  SeasonDtoState,
+} from '../../../../shared/types/rewards';
+import {
   RewardsController,
   getRewardsControllerDefaultState,
   wrapWithCache,
@@ -39,18 +44,16 @@ import type {
   RewardsControllerState,
   SeasonTierDto,
   LoginResponseDto,
-  SubscriptionDto,
-  EstimatePointsDto,
-  EstimatedPointsDto,
-  SeasonDtoState,
   DiscoverSeasonsDto,
   SeasonMetadataDto,
   SeasonStateDto,
+  SubscriptionDto,
 } from './rewards-controller.types';
 import {
   InvalidTimestampError,
   AccountAlreadyRegisteredError,
   AuthorizationFailedError,
+  SeasonNotFoundError,
 } from './rewards-data-service';
 import {
   RewardsDataServiceEstimatePointsAction,
@@ -73,8 +76,6 @@ type AllEvents = MessengerEvents<RewardsControllerMessenger>;
 jest.mock('loglevel', () => ({
   error: jest.fn(),
   warn: jest.fn(),
-  info: jest.fn(),
-  log: jest.fn(),
   debug: jest.fn(),
 }));
 
@@ -84,7 +85,6 @@ const MOCK_ACCOUNT_ADDRESS_ALT = '0x1234567890123456789012345678901234567891';
 const MOCK_CAIP_ACCOUNT: CaipAccountId =
   'eip155:1:0x1234567890123456789012345678901234567890' as CaipAccountId;
 const MOCK_SUBSCRIPTION_ID = 'sub_12345';
-const MOCK_SUBSCRIPTION_ID_2 = 'sub_67890';
 const MOCK_SESSION_TOKEN = 'session_token_123';
 const MOCK_SEASON_ID = 'season_123';
 
@@ -113,6 +113,8 @@ const MOCK_SUBSCRIPTION: SubscriptionDto = {
       chainId: 1,
     },
   ],
+  createdAt: new Date().toISOString(),
+  candidateAt: new Date().toISOString(),
 };
 
 const MOCK_LOGIN_RESPONSE: LoginResponseDto = {
@@ -572,34 +574,6 @@ describe('RewardsController', () => {
     });
   });
 
-  describe('getFirstSubscriptionId', () => {
-    it('should return first subscription ID', async () => {
-      const state: Partial<RewardsControllerState> = {
-        rewardsSubscriptions: {
-          [MOCK_SUBSCRIPTION_ID]: MOCK_SUBSCRIPTION,
-          [MOCK_SUBSCRIPTION_ID_2]: {
-            ...MOCK_SUBSCRIPTION,
-            id: MOCK_SUBSCRIPTION_ID_2,
-          },
-        },
-      };
-
-      await withController({ state, isDisabled: false }, ({ controller }) => {
-        const result = controller.getFirstSubscriptionId();
-
-        expect(result).toBe(MOCK_SUBSCRIPTION_ID);
-      });
-    });
-
-    it('should return null when no subscriptions exist', async () => {
-      await withController({ isDisabled: false }, ({ controller }) => {
-        const result = controller.getFirstSubscriptionId();
-
-        expect(result).toBeNull();
-      });
-    });
-  });
-
   describe('performSilentAuth', () => {
     it('should set rewardsActiveAccount to null when no internal account provided', async () => {
       await withController({ isDisabled: false }, async ({ controller }) => {
@@ -641,7 +615,10 @@ describe('RewardsController', () => {
               return Promise.resolve('0xmocksignature');
             }
             if (actionType === 'RewardsDataService:login') {
-              return Promise.resolve(MOCK_LOGIN_RESPONSE);
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: { ...MOCK_SUBSCRIPTION },
+              });
             }
             if (actionType === 'RewardsDataService:getOptInStatus') {
               return Promise.resolve({
@@ -714,7 +691,10 @@ describe('RewardsController', () => {
                   Math.floor(Date.now() / 1000),
                 );
               }
-              return Promise.resolve(MOCK_LOGIN_RESPONSE);
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: { ...MOCK_SUBSCRIPTION },
+              });
             }
             if (actionType === 'RewardsDataService:getOptInStatus') {
               return Promise.resolve({
@@ -733,6 +713,176 @@ describe('RewardsController', () => {
 
           expect(result).toBe(MOCK_SUBSCRIPTION_ID);
           expect(loginAttempts).toBe(2);
+        },
+      );
+    });
+
+    it('should set candidateAt to INITIAL_DEVICE_SUBSCRIPTION_CANDIDATE_AT when no existing subscriptions', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          const subscriptionWithoutCandidateAt: SubscriptionDto = {
+            ...MOCK_SUBSCRIPTION,
+            candidateAt: undefined,
+          };
+
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'KeyringController:signPersonalMessage') {
+              return Promise.resolve('0xmocksignature');
+            }
+            if (actionType === 'RewardsDataService:login') {
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: subscriptionWithoutCandidateAt,
+              });
+            }
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [true],
+                sids: [MOCK_SUBSCRIPTION_ID],
+              });
+            }
+            return undefined;
+          });
+
+          const result = await controller.performSilentAuth(
+            MOCK_INTERNAL_ACCOUNT,
+            true,
+            false,
+          );
+
+          expect(result).toBe(MOCK_SUBSCRIPTION_ID);
+          const storedSubscription =
+            controller.state.rewardsSubscriptions[MOCK_SUBSCRIPTION_ID];
+          expect(storedSubscription?.candidateAt).toBe(
+            '2025-10-27T00:00:00.000Z',
+          );
+        },
+      );
+    });
+
+    it('should set candidateAt to current date when existing subscriptions are present', async () => {
+      const existingSubscriptionId = 'existing_sub_123';
+      const existingSubscription: SubscriptionDto = {
+        id: existingSubscriptionId,
+        referralCode: 'REF456',
+        accounts: [],
+        createdAt: new Date().toISOString(),
+        candidateAt: new Date().toISOString(),
+      };
+
+      await withController(
+        {
+          isDisabled: false,
+          state: {
+            rewardsSubscriptions: {
+              [existingSubscriptionId]: existingSubscription,
+            },
+          },
+        },
+        async ({ controller, mockMessengerCall }) => {
+          const subscriptionWithoutCandidateAt: SubscriptionDto = {
+            ...MOCK_SUBSCRIPTION,
+            candidateAt: undefined,
+          };
+
+          const beforeAuth = Date.now();
+
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'KeyringController:signPersonalMessage') {
+              return Promise.resolve('0xmocksignature');
+            }
+            if (actionType === 'RewardsDataService:login') {
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: subscriptionWithoutCandidateAt,
+              });
+            }
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [true],
+                sids: [MOCK_SUBSCRIPTION_ID],
+              });
+            }
+            return undefined;
+          });
+
+          const result = await controller.performSilentAuth(
+            MOCK_INTERNAL_ACCOUNT,
+            true,
+            false,
+          );
+
+          const afterAuth = Date.now();
+
+          expect(result).toBe(MOCK_SUBSCRIPTION_ID);
+          const storedSubscription =
+            controller.state.rewardsSubscriptions[MOCK_SUBSCRIPTION_ID];
+          expect(storedSubscription?.candidateAt).toBeDefined();
+          const candidateAtTime = new Date(
+            storedSubscription?.candidateAt as string,
+          ).getTime();
+          expect(candidateAtTime).toBeGreaterThanOrEqual(beforeAuth);
+          expect(candidateAtTime).toBeLessThanOrEqual(afterAuth);
+        },
+      );
+    });
+
+    it('should not set candidateAt when subscription already has candidateAt in state', async () => {
+      const existingCandidateAt = '2024-01-01T00:00:00.000Z';
+      const existingSubscription: SubscriptionDto = {
+        ...MOCK_SUBSCRIPTION,
+        candidateAt: existingCandidateAt,
+      };
+
+      await withController(
+        {
+          isDisabled: false,
+          state: {
+            rewardsSubscriptions: {
+              [MOCK_SUBSCRIPTION_ID]: existingSubscription,
+            },
+          },
+        },
+        async ({ controller, mockMessengerCall }) => {
+          const subscriptionWithCandidateAt: SubscriptionDto = {
+            ...MOCK_SUBSCRIPTION,
+            candidateAt: '2024-06-01T00:00:00.000Z',
+          };
+
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'KeyringController:signPersonalMessage') {
+              return Promise.resolve('0xmocksignature');
+            }
+            if (actionType === 'RewardsDataService:login') {
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: subscriptionWithCandidateAt,
+              });
+            }
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [true],
+                sids: [MOCK_SUBSCRIPTION_ID],
+              });
+            }
+            return undefined;
+          });
+
+          const result = await controller.performSilentAuth(
+            MOCK_INTERNAL_ACCOUNT,
+            true,
+            false,
+          );
+
+          expect(result).toBe(MOCK_SUBSCRIPTION_ID);
+          const storedSubscription =
+            controller.state.rewardsSubscriptions[MOCK_SUBSCRIPTION_ID];
+          // When state already has candidateAt, the code doesn't modify the subscription object's candidateAt
+          // The subscription object from login response is stored as-is
+          expect(storedSubscription?.candidateAt).toBe(
+            '2024-06-01T00:00:00.000Z',
+          );
         },
       );
     });
@@ -771,30 +921,36 @@ describe('RewardsController', () => {
       );
     });
 
-    it('should fetch opt-in status when not cached', async () => {
-      await withController(
-        { isDisabled: false },
-        async ({ controller, mockMessengerCall }) => {
-          mockMessengerCall.mockImplementation((actionType) => {
-            if (actionType === 'RewardsDataService:getOptInStatus') {
-              return Promise.resolve({
-                ois: [true],
-                sids: [MOCK_SUBSCRIPTION_ID],
-              });
-            } else if (
-              actionType === 'AccountsController:listMultichainAccounts'
-            ) {
-              return [MOCK_INTERNAL_ACCOUNT];
-            }
-            return undefined;
-          });
+    it('should return false when account has not opted in', async () => {
+      const state: Partial<RewardsControllerState> = {
+        rewardsAccounts: {
+          [MOCK_CAIP_ACCOUNT]: {
+            account: MOCK_CAIP_ACCOUNT,
+            hasOptedIn: false,
+            subscriptionId: null,
+            perpsFeeDiscount: null,
+            lastPerpsDiscountRateFetched: null,
+          },
+        },
+      };
 
+      await withController(
+        { state, isDisabled: false },
+        async ({ controller }) => {
           const result =
             await controller.getHasAccountOptedIn(MOCK_CAIP_ACCOUNT);
 
-          expect(result).toBe(true);
+          expect(result).toBe(false);
         },
       );
+    });
+
+    it('should return false when account is not in state', async () => {
+      await withController({ isDisabled: false }, async ({ controller }) => {
+        const result = await controller.getHasAccountOptedIn(MOCK_CAIP_ACCOUNT);
+
+        expect(result).toBe(false);
+      });
     });
   });
 
@@ -1075,12 +1231,58 @@ describe('RewardsController', () => {
         );
       });
     });
+
+    it('should throw AuthorizationFailedError when subscription token is missing', async () => {
+      const state: Partial<RewardsControllerState> = {
+        rewardsSeasons: {
+          [MOCK_SEASON_ID]: {
+            id: MOCK_SEASON_ID,
+            name: 'Season 1',
+            startDate: new Date('2024-01-01').getTime(),
+            endDate: new Date('2024-12-31').getTime(),
+            tiers: MOCK_SEASON_TIERS,
+          },
+        },
+      };
+
+      await withController(
+        { state, isDisabled: false },
+        async ({ controller }) => {
+          await expect(
+            controller.getSeasonStatus(MOCK_SUBSCRIPTION_ID, MOCK_SEASON_ID),
+          ).rejects.toThrow(
+            `No subscription token found for subscription ID: ${MOCK_SUBSCRIPTION_ID}`,
+          );
+          await expect(
+            controller.getSeasonStatus(MOCK_SUBSCRIPTION_ID, MOCK_SEASON_ID),
+          ).rejects.toBeInstanceOf(AuthorizationFailedError);
+        },
+      );
+    });
   });
 
   describe('optIn', () => {
     it('should return null when rewards are disabled', async () => {
       await withController({ isDisabled: true }, async ({ controller }) => {
-        const result = await controller.optIn();
+        const result = await controller.optIn([MOCK_INTERNAL_ACCOUNT]);
+
+        expect(result).toBeNull();
+      });
+    });
+
+    it('should return null when accounts is null', async () => {
+      await withController({ isDisabled: false }, async ({ controller }) => {
+        const result = await controller.optIn(
+          null as unknown as InternalAccount[],
+        );
+
+        expect(result).toBeNull();
+      });
+    });
+
+    it('should return null when accounts is empty array', async () => {
+      await withController({ isDisabled: false }, async ({ controller }) => {
+        const result = await controller.optIn([]);
 
         expect(result).toBeNull();
       });
@@ -1091,22 +1293,22 @@ describe('RewardsController', () => {
         { isDisabled: false },
         async ({ controller, mockMessengerCall }) => {
           mockMessengerCall.mockImplementation((actionType) => {
-            if (
-              actionType ===
-              'AccountTreeController:getAccountsFromSelectedAccountGroup'
-            ) {
-              return [MOCK_INTERNAL_ACCOUNT];
-            }
             if (actionType === 'KeyringController:signPersonalMessage') {
               return Promise.resolve('0xmocksignature');
             }
             if (actionType === 'RewardsDataService:mobileOptin') {
-              return Promise.resolve(MOCK_LOGIN_RESPONSE);
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: { ...MOCK_SUBSCRIPTION },
+              });
             }
             return undefined;
           });
 
-          const result = await controller.optIn('REF123');
+          const result = await controller.optIn(
+            [MOCK_INTERNAL_ACCOUNT],
+            'REF123',
+          );
 
           expect(result).toBe(MOCK_SUBSCRIPTION_ID);
           expect(
@@ -1119,13 +1321,42 @@ describe('RewardsController', () => {
       );
     });
 
-    it('should handle account already registered error', async () => {
+    it('should throw error when all accounts fail to opt in', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'KeyringController:signPersonalMessage') {
+              return Promise.resolve('0xmocksignature');
+            }
+            if (actionType === 'RewardsDataService:mobileOptin') {
+              return Promise.reject(new Error('Opt-in failed'));
+            }
+            return undefined;
+          });
+
+          await expect(
+            controller.optIn([MOCK_INTERNAL_ACCOUNT]),
+          ).rejects.toThrow(
+            'Failed to opt in any account from the account group',
+          );
+        },
+      );
+    });
+
+    it('should link remaining accounts when one account succeeds', async () => {
+      const account2: InternalAccount = {
+        ...MOCK_INTERNAL_ACCOUNT,
+        id: 'account-2',
+        address: MOCK_ACCOUNT_ADDRESS_ALT,
+      };
+
       await withController(
         {
           isDisabled: false,
           state: {
             rewardsSubscriptions: {
-              [MOCK_SUBSCRIPTION_ID]: MOCK_SUBSCRIPTION,
+              [MOCK_SUBSCRIPTION_ID]: { ...MOCK_SUBSCRIPTION },
             },
             rewardsSubscriptionTokens: {
               [MOCK_SUBSCRIPTION_ID]: MOCK_SESSION_TOKEN,
@@ -1133,36 +1364,218 @@ describe('RewardsController', () => {
           },
         },
         async ({ controller, mockMessengerCall }) => {
+          let optInCallCount = 0;
           mockMessengerCall.mockImplementation((actionType) => {
-            if (
-              actionType ===
-              'AccountTreeController:getAccountsFromSelectedAccountGroup'
-            ) {
-              return [MOCK_INTERNAL_ACCOUNT];
-            }
             if (actionType === 'KeyringController:signPersonalMessage') {
               return Promise.resolve('0xmocksignature');
             }
             if (actionType === 'RewardsDataService:mobileOptin') {
-              throw new AccountAlreadyRegisteredError(
-                'Account already registered',
-              );
-            }
-            if (actionType === 'RewardsDataService:login') {
-              return Promise.resolve(MOCK_LOGIN_RESPONSE);
-            }
-            if (actionType === 'RewardsDataService:getOptInStatus') {
+              optInCallCount += 1;
+              if (optInCallCount === 1) {
+                // First account fails
+                return Promise.reject(new Error('First account failed'));
+              }
+              // Second account succeeds
               return Promise.resolve({
-                ois: [true],
-                sids: [MOCK_SUBSCRIPTION_ID],
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: { ...MOCK_SUBSCRIPTION },
+              });
+            }
+            if (actionType === 'RewardsDataService:mobileJoin') {
+              return Promise.resolve({ ...MOCK_SUBSCRIPTION });
+            }
+            return undefined;
+          });
+
+          const result = await controller.optIn([
+            MOCK_INTERNAL_ACCOUNT,
+            account2,
+          ]);
+
+          expect(result).toBe(MOCK_SUBSCRIPTION_ID);
+          expect(optInCallCount).toBe(2);
+        },
+      );
+    });
+
+    it('should opt in with multiple accounts and link remaining ones', async () => {
+      const account2: InternalAccount = {
+        ...MOCK_INTERNAL_ACCOUNT,
+        id: 'account-2',
+        address: MOCK_ACCOUNT_ADDRESS_ALT,
+      };
+
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'KeyringController:signPersonalMessage') {
+              return Promise.resolve('0xmocksignature');
+            }
+            if (actionType === 'RewardsDataService:mobileOptin') {
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: { ...MOCK_SUBSCRIPTION },
+              });
+            }
+            if (actionType === 'RewardsDataService:mobileJoin') {
+              return Promise.resolve({ ...MOCK_SUBSCRIPTION });
+            }
+            return undefined;
+          });
+
+          const result = await controller.optIn(
+            [MOCK_INTERNAL_ACCOUNT, account2],
+            'REF123',
+          );
+
+          expect(result).toBe(MOCK_SUBSCRIPTION_ID);
+          expect(
+            controller.state.rewardsAccounts[MOCK_CAIP_ACCOUNT],
+          ).toMatchObject({
+            hasOptedIn: true,
+            subscriptionId: MOCK_SUBSCRIPTION_ID,
+          });
+        },
+      );
+    });
+
+    it('should set candidateAt to INITIAL_DEVICE_SUBSCRIPTION_CANDIDATE_AT when no existing subscriptions', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          const subscriptionWithoutCandidateAt: SubscriptionDto = {
+            ...MOCK_SUBSCRIPTION,
+            candidateAt: undefined,
+          };
+
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'KeyringController:signPersonalMessage') {
+              return Promise.resolve('0xmocksignature');
+            }
+            if (actionType === 'RewardsDataService:mobileOptin') {
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: subscriptionWithoutCandidateAt,
               });
             }
             return undefined;
           });
 
-          const result = await controller.optIn();
+          const result = await controller.optIn([MOCK_INTERNAL_ACCOUNT]);
 
           expect(result).toBe(MOCK_SUBSCRIPTION_ID);
+          const storedSubscription =
+            controller.state.rewardsSubscriptions[MOCK_SUBSCRIPTION_ID];
+          expect(storedSubscription?.candidateAt).toBe(
+            '2025-10-27T00:00:00.000Z',
+          );
+        },
+      );
+    });
+
+    it('should set candidateAt to current date when existing subscriptions are present', async () => {
+      const existingSubscriptionId = 'existing_sub_123';
+      const existingSubscription: SubscriptionDto = {
+        id: existingSubscriptionId,
+        referralCode: 'REF456',
+        accounts: [],
+        createdAt: new Date().toISOString(),
+        candidateAt: new Date().toISOString(),
+      };
+
+      await withController(
+        {
+          isDisabled: false,
+          state: {
+            rewardsSubscriptions: {
+              [existingSubscriptionId]: existingSubscription,
+            },
+          },
+        },
+        async ({ controller, mockMessengerCall }) => {
+          const subscriptionWithoutCandidateAt: SubscriptionDto = {
+            ...MOCK_SUBSCRIPTION,
+            candidateAt: undefined,
+          };
+
+          const beforeOptIn = Date.now();
+
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'KeyringController:signPersonalMessage') {
+              return Promise.resolve('0xmocksignature');
+            }
+            if (actionType === 'RewardsDataService:mobileOptin') {
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: subscriptionWithoutCandidateAt,
+              });
+            }
+            return undefined;
+          });
+
+          const result = await controller.optIn([MOCK_INTERNAL_ACCOUNT]);
+
+          const afterOptIn = Date.now();
+
+          expect(result).toBe(MOCK_SUBSCRIPTION_ID);
+          const storedSubscription =
+            controller.state.rewardsSubscriptions[MOCK_SUBSCRIPTION_ID];
+          expect(storedSubscription?.candidateAt).toBeDefined();
+          const candidateAtTime = new Date(
+            storedSubscription?.candidateAt as string,
+          ).getTime();
+          expect(candidateAtTime).toBeGreaterThanOrEqual(beforeOptIn);
+          expect(candidateAtTime).toBeLessThanOrEqual(afterOptIn);
+        },
+      );
+    });
+
+    it('should not set candidateAt when subscription already has candidateAt in state', async () => {
+      const existingCandidateAt = '2024-01-01T00:00:00.000Z';
+      const existingSubscription: SubscriptionDto = {
+        ...MOCK_SUBSCRIPTION,
+        candidateAt: existingCandidateAt,
+      };
+
+      await withController(
+        {
+          isDisabled: false,
+          state: {
+            rewardsSubscriptions: {
+              [MOCK_SUBSCRIPTION_ID]: existingSubscription,
+            },
+          },
+        },
+        async ({ controller, mockMessengerCall }) => {
+          const subscriptionWithCandidateAt: SubscriptionDto = {
+            ...MOCK_SUBSCRIPTION,
+            candidateAt: '2024-06-01T00:00:00.000Z',
+          };
+
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'KeyringController:signPersonalMessage') {
+              return Promise.resolve('0xmocksignature');
+            }
+            if (actionType === 'RewardsDataService:mobileOptin') {
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: subscriptionWithCandidateAt,
+              });
+            }
+            return undefined;
+          });
+
+          const result = await controller.optIn([MOCK_INTERNAL_ACCOUNT]);
+
+          expect(result).toBe(MOCK_SUBSCRIPTION_ID);
+          const storedSubscription =
+            controller.state.rewardsSubscriptions[MOCK_SUBSCRIPTION_ID];
+          // When state already has candidateAt, the code doesn't modify the subscription object's candidateAt
+          // The subscription object from opt-in response is stored as-is
+          expect(storedSubscription?.candidateAt).toBe(
+            '2024-06-01T00:00:00.000Z',
+          );
         },
       );
     });
@@ -1171,7 +1584,7 @@ describe('RewardsController', () => {
   describe('getGeoRewardsMetadata', () => {
     it('should return unknown location when rewards are disabled', async () => {
       await withController({ isDisabled: true }, async ({ controller }) => {
-        const result = await controller.getGeoRewardsMetadata();
+        const result = await controller.getRewardsGeoMetadata();
 
         expect(result).toEqual({
           geoLocation: 'UNKNOWN',
@@ -1191,7 +1604,7 @@ describe('RewardsController', () => {
             return undefined;
           });
 
-          const result = await controller.getGeoRewardsMetadata();
+          const result = await controller.getRewardsGeoMetadata();
 
           expect(result).toEqual({
             geoLocation: 'US',
@@ -1199,7 +1612,7 @@ describe('RewardsController', () => {
           });
 
           // Verify caching - second call should not fetch again
-          const cachedResult = await controller.getGeoRewardsMetadata();
+          const cachedResult = await controller.getRewardsGeoMetadata();
           expect(cachedResult).toEqual(result);
         },
       );
@@ -1216,7 +1629,7 @@ describe('RewardsController', () => {
             return undefined;
           });
 
-          const result = await controller.getGeoRewardsMetadata();
+          const result = await controller.getRewardsGeoMetadata();
 
           expect(result).toEqual({
             geoLocation: 'UK',
@@ -1304,7 +1717,7 @@ describe('RewardsController', () => {
               return Promise.resolve('0xmocksignature');
             }
             if (actionType === 'RewardsDataService:mobileJoin') {
-              return Promise.resolve(MOCK_SUBSCRIPTION);
+              return Promise.resolve({ ...MOCK_SUBSCRIPTION });
             }
             return undefined;
           });
@@ -1568,6 +1981,134 @@ describe('RewardsController', () => {
         },
       );
     });
+
+    it('should return earliest subscription ID when multiple subscriptions exist (sorted by candidateAt)', async () => {
+      const earlierDate = new Date('2025-01-01T00:00:00.000Z').toISOString();
+      const laterDate = new Date('2025-01-02T00:00:00.000Z').toISOString();
+      const earliestDate = new Date('2024-12-31T00:00:00.000Z').toISOString();
+
+      const earliestSubscription: SubscriptionDto = {
+        ...MOCK_SUBSCRIPTION,
+        id: 'sub_earliest',
+        candidateAt: earliestDate,
+      };
+      const earlierSubscription: SubscriptionDto = {
+        ...MOCK_SUBSCRIPTION,
+        id: 'sub_earlier',
+        candidateAt: earlierDate,
+      };
+      const laterSubscription: SubscriptionDto = {
+        ...MOCK_SUBSCRIPTION,
+        id: 'sub_later',
+        candidateAt: laterDate,
+      };
+
+      const state: Partial<RewardsControllerState> = {
+        rewardsSubscriptions: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          sub_later: laterSubscription,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          sub_earlier: earlierSubscription,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          sub_earliest: earliestSubscription,
+        },
+      };
+
+      await withController(
+        { state, isDisabled: false },
+        async ({ controller }) => {
+          const result = await controller.getCandidateSubscriptionId();
+
+          expect(result).toBe('sub_earliest');
+        },
+      );
+    });
+
+    it('should return earliest subscription ID when multiple subscriptions exist (sorted by createdAt when candidateAt missing)', async () => {
+      const earlierDate = new Date('2025-01-01T00:00:00.000Z').toISOString();
+      const laterDate = new Date('2025-01-02T00:00:00.000Z').toISOString();
+      const earliestDate = new Date('2024-12-31T00:00:00.000Z').toISOString();
+
+      const earliestSubscription: SubscriptionDto = {
+        ...MOCK_SUBSCRIPTION,
+        id: 'sub_earliest',
+        createdAt: earliestDate,
+        candidateAt: undefined,
+      };
+      const earlierSubscription: SubscriptionDto = {
+        ...MOCK_SUBSCRIPTION,
+        id: 'sub_earlier',
+        createdAt: earlierDate,
+        candidateAt: undefined,
+      };
+      const laterSubscription: SubscriptionDto = {
+        ...MOCK_SUBSCRIPTION,
+        id: 'sub_later',
+        createdAt: laterDate,
+        candidateAt: undefined,
+      };
+
+      const state: Partial<RewardsControllerState> = {
+        rewardsSubscriptions: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          sub_later: laterSubscription,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          sub_earlier: earlierSubscription,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          sub_earliest: earliestSubscription,
+        },
+      };
+
+      await withController(
+        { state, isDisabled: false },
+        async ({ controller }) => {
+          const result = await controller.getCandidateSubscriptionId();
+
+          expect(result).toBe('sub_earliest');
+        },
+      );
+    });
+
+    it('should prioritize candidateAt over createdAt when both exist', async () => {
+      const candidateAtDate = new Date(
+        '2024-12-31T00:00:00.000Z',
+      ).toISOString();
+      const createdAtDate = new Date('2025-01-01T00:00:00.000Z').toISOString();
+      const laterCreatedAtDate = new Date(
+        '2025-01-02T00:00:00.000Z',
+      ).toISOString();
+
+      const subscriptionWithCandidateAt: SubscriptionDto = {
+        ...MOCK_SUBSCRIPTION,
+        id: 'sub_with_candidate',
+        candidateAt: candidateAtDate,
+        createdAt: createdAtDate,
+      };
+      const subscriptionWithoutCandidateAt: SubscriptionDto = {
+        ...MOCK_SUBSCRIPTION,
+        id: 'sub_without_candidate',
+        candidateAt: undefined,
+        createdAt: laterCreatedAtDate,
+      };
+
+      const state: Partial<RewardsControllerState> = {
+        rewardsSubscriptions: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          sub_without_candidate: subscriptionWithoutCandidateAt,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          sub_with_candidate: subscriptionWithCandidateAt,
+        },
+      };
+
+      await withController(
+        { state, isDisabled: false },
+        async ({ controller }) => {
+          const result = await controller.getCandidateSubscriptionId();
+
+          expect(result).toBe('sub_with_candidate');
+        },
+      );
+    });
   });
 
   describe('linkAccountsToSubscriptionCandidate', () => {
@@ -1607,7 +2148,7 @@ describe('RewardsController', () => {
               return Promise.resolve('0xmocksignature');
             }
             if (actionType === 'RewardsDataService:mobileJoin') {
-              return Promise.resolve(MOCK_SUBSCRIPTION);
+              return Promise.resolve({ ...MOCK_SUBSCRIPTION });
             }
             if (actionType === 'AccountsController:listMultichainAccounts') {
               return [account2];
@@ -1676,6 +2217,102 @@ describe('RewardsController', () => {
         expect(result.addressesNeedingFresh).toEqual([MOCK_ACCOUNT_ADDRESS]);
       });
     });
+
+    it('should force fresh check for not-opted-in accounts checked more than 60 minutes ago', async () => {
+      const state: Partial<RewardsControllerState> = {
+        rewardsAccounts: {
+          [MOCK_CAIP_ACCOUNT]: {
+            account: MOCK_CAIP_ACCOUNT,
+            hasOptedIn: false,
+            subscriptionId: null,
+            perpsFeeDiscount: null,
+            lastPerpsDiscountRateFetched: null,
+            lastFreshOptInStatusCheck: Date.now() - 1000 * 60 * 61, // 61 minutes ago (exceeds 60 minute threshold)
+          },
+        },
+      };
+
+      await withController({ state, isDisabled: false }, ({ controller }) => {
+        const addressToAccountMap = new Map<string, InternalAccount>();
+        addressToAccountMap.set(
+          MOCK_ACCOUNT_ADDRESS.toLowerCase(),
+          MOCK_INTERNAL_ACCOUNT,
+        );
+
+        const result = controller.checkOptInStatusAgainstCache(
+          [MOCK_ACCOUNT_ADDRESS],
+          addressToAccountMap,
+        );
+
+        expect(result.cachedOptInResults).toEqual([null]);
+        expect(result.cachedSubscriptionIds).toEqual([null]);
+        expect(result.addressesNeedingFresh).toEqual([MOCK_ACCOUNT_ADDRESS]);
+      });
+    });
+
+    it('should use cached data for not-opted-in accounts checked within 60 minutes', async () => {
+      const state: Partial<RewardsControllerState> = {
+        rewardsAccounts: {
+          [MOCK_CAIP_ACCOUNT]: {
+            account: MOCK_CAIP_ACCOUNT,
+            hasOptedIn: false,
+            subscriptionId: null,
+            perpsFeeDiscount: null,
+            lastPerpsDiscountRateFetched: null,
+            lastFreshOptInStatusCheck: Date.now() - 1000 * 60 * 30, // 30 minutes ago (within 60 minute threshold)
+          },
+        },
+      };
+
+      await withController({ state, isDisabled: false }, ({ controller }) => {
+        const addressToAccountMap = new Map<string, InternalAccount>();
+        addressToAccountMap.set(
+          MOCK_ACCOUNT_ADDRESS.toLowerCase(),
+          MOCK_INTERNAL_ACCOUNT,
+        );
+
+        const result = controller.checkOptInStatusAgainstCache(
+          [MOCK_ACCOUNT_ADDRESS],
+          addressToAccountMap,
+        );
+
+        expect(result.cachedOptInResults).toEqual([false]);
+        expect(result.cachedSubscriptionIds).toEqual([null]);
+        expect(result.addressesNeedingFresh).toEqual([]);
+      });
+    });
+
+    it('should force fresh check for not-opted-in accounts without lastFreshOptInStatusCheck', async () => {
+      const state: Partial<RewardsControllerState> = {
+        rewardsAccounts: {
+          [MOCK_CAIP_ACCOUNT]: {
+            account: MOCK_CAIP_ACCOUNT,
+            hasOptedIn: false,
+            subscriptionId: null,
+            perpsFeeDiscount: null,
+            lastPerpsDiscountRateFetched: null,
+            lastFreshOptInStatusCheck: undefined,
+          },
+        },
+      };
+
+      await withController({ state, isDisabled: false }, ({ controller }) => {
+        const addressToAccountMap = new Map<string, InternalAccount>();
+        addressToAccountMap.set(
+          MOCK_ACCOUNT_ADDRESS.toLowerCase(),
+          MOCK_INTERNAL_ACCOUNT,
+        );
+
+        const result = controller.checkOptInStatusAgainstCache(
+          [MOCK_ACCOUNT_ADDRESS],
+          addressToAccountMap,
+        );
+
+        expect(result.cachedOptInResults).toEqual([null]);
+        expect(result.cachedSubscriptionIds).toEqual([null]);
+        expect(result.addressesNeedingFresh).toEqual([MOCK_ACCOUNT_ADDRESS]);
+      });
+    });
   });
 
   describe('shouldSkipSilentAuth', () => {
@@ -1724,6 +2361,30 @@ describe('RewardsController', () => {
       });
     });
 
+    it('should skip for not-opted-in accounts checked within 60 minutes', async () => {
+      const state: Partial<RewardsControllerState> = {
+        rewardsAccounts: {
+          [MOCK_CAIP_ACCOUNT]: {
+            account: MOCK_CAIP_ACCOUNT,
+            hasOptedIn: false,
+            subscriptionId: null,
+            perpsFeeDiscount: null,
+            lastPerpsDiscountRateFetched: null,
+            lastFreshOptInStatusCheck: Date.now() - 1000 * 60 * 30, // 30 minutes ago (within 60 minute threshold)
+          },
+        },
+      };
+
+      await withController({ state, isDisabled: false }, ({ controller }) => {
+        const result = controller.shouldSkipSilentAuth(
+          MOCK_CAIP_ACCOUNT,
+          MOCK_INTERNAL_ACCOUNT,
+        );
+
+        expect(result).toBe(true);
+      });
+    });
+
     it('should not skip for stale not-opted-in accounts', async () => {
       const state: Partial<RewardsControllerState> = {
         rewardsAccounts: {
@@ -1733,7 +2394,7 @@ describe('RewardsController', () => {
             subscriptionId: null,
             perpsFeeDiscount: null,
             lastPerpsDiscountRateFetched: null,
-            lastFreshOptInStatusCheck: Date.now() - 1000 * 60 * 60 * 24 * 2, // 2 days ago
+            lastFreshOptInStatusCheck: Date.now() - 1000 * 60 * 61, // 61 minutes ago (exceeds 60 minute threshold)
           },
         },
       };
@@ -1966,7 +2627,10 @@ describe('Additional RewardsController edge cases', () => {
               return Promise.resolve('0xmocksignature');
             }
             if (actionType === 'RewardsDataService:login') {
-              return Promise.resolve(MOCK_LOGIN_RESPONSE);
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: { ...MOCK_SUBSCRIPTION },
+              });
             }
             if (actionType === 'RewardsDataService:getOptInStatus') {
               return Promise.resolve({
@@ -2000,6 +2664,9 @@ describe('Additional RewardsController edge cases', () => {
             lastPerpsDiscountRateFetched: null,
           },
         },
+        rewardsSubscriptionTokens: {
+          [MOCK_SUBSCRIPTION_ID]: MOCK_SESSION_TOKEN,
+        },
       };
 
       await withController(
@@ -2012,6 +2679,60 @@ describe('Additional RewardsController edge cases', () => {
           );
 
           expect(result).toBe(MOCK_SUBSCRIPTION_ID);
+        },
+      );
+    });
+
+    it('should perform silent auth when account is opted-in but no subscription token available', async () => {
+      const state: Partial<RewardsControllerState> = {
+        rewardsAccounts: {
+          [MOCK_CAIP_ACCOUNT]: {
+            account: MOCK_CAIP_ACCOUNT,
+            hasOptedIn: true,
+            subscriptionId: MOCK_SUBSCRIPTION_ID,
+            perpsFeeDiscount: null,
+            lastPerpsDiscountRateFetched: null,
+          },
+        },
+      };
+
+      await withController(
+        { state, isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'KeyringController:signPersonalMessage') {
+              return Promise.resolve('0xmocksignature');
+            }
+            if (actionType === 'RewardsDataService:login') {
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: { ...MOCK_SUBSCRIPTION },
+              });
+            }
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [true],
+                sids: [MOCK_SUBSCRIPTION_ID],
+              });
+            }
+            return undefined;
+          });
+
+          const result = await controller.performSilentAuth(
+            MOCK_INTERNAL_ACCOUNT,
+            true,
+            true,
+          );
+
+          expect(result).toBe(MOCK_SUBSCRIPTION_ID);
+          expect(controller.state.rewardsActiveAccount).toMatchObject({
+            account: MOCK_CAIP_ACCOUNT,
+            hasOptedIn: true,
+            subscriptionId: MOCK_SUBSCRIPTION_ID,
+          });
+          expect(
+            controller.state.rewardsSubscriptionTokens[MOCK_SUBSCRIPTION_ID],
+          ).toBe(MOCK_SESSION_TOKEN);
         },
       );
     });
@@ -2094,7 +2815,10 @@ describe('Additional RewardsController edge cases', () => {
               return Promise.resolve('0xmocksignature');
             }
             if (actionType === 'RewardsDataService:login') {
-              return Promise.resolve(MOCK_LOGIN_RESPONSE);
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: { ...MOCK_SUBSCRIPTION },
+              });
             }
             return undefined;
           });
@@ -2251,28 +2975,113 @@ describe('Additional RewardsController edge cases', () => {
         },
       );
     });
-  });
 
-  describe('optIn - edge cases', () => {
-    it('should return null when no accounts in account group', async () => {
+    it('should handle SeasonNotFoundError and clear seasons', async () => {
+      const state: Partial<RewardsControllerState> = {
+        rewardsSeasons: {
+          [MOCK_SEASON_ID]: {
+            id: MOCK_SEASON_ID,
+            name: 'Season 1',
+            startDate: new Date('2024-01-01').getTime(),
+            endDate: new Date('2024-12-31').getTime(),
+            tiers: MOCK_SEASON_TIERS,
+          },
+        },
+        rewardsActiveAccount: {
+          account: MOCK_CAIP_ACCOUNT,
+          hasOptedIn: true,
+          subscriptionId: MOCK_SUBSCRIPTION_ID,
+          perpsFeeDiscount: null,
+          lastPerpsDiscountRateFetched: null,
+        },
+        rewardsSubscriptionTokens: {
+          [MOCK_SUBSCRIPTION_ID]: MOCK_SESSION_TOKEN,
+        },
+        rewardsAccounts: {
+          [MOCK_CAIP_ACCOUNT]: {
+            account: MOCK_CAIP_ACCOUNT,
+            hasOptedIn: true,
+            subscriptionId: MOCK_SUBSCRIPTION_ID,
+            perpsFeeDiscount: null,
+            lastPerpsDiscountRateFetched: null,
+          },
+        },
+        rewardsSubscriptions: {
+          [MOCK_SUBSCRIPTION_ID]: MOCK_SUBSCRIPTION,
+        },
+        rewardsSeasonStatuses: {
+          [`${MOCK_SEASON_ID}:${MOCK_SUBSCRIPTION_ID}`]: {
+            season: {
+              id: MOCK_SEASON_ID,
+              name: 'Season 1',
+              startDate: new Date('2024-01-01').getTime(),
+              endDate: new Date('2024-12-31').getTime(),
+              tiers: MOCK_SEASON_TIERS,
+            },
+            balance: { total: 100 },
+            tier: {
+              currentTier: MOCK_SEASON_TIERS[0],
+              nextTier: MOCK_SEASON_TIERS[1],
+              nextTierPointsNeeded: 50,
+            },
+            // Set lastFetched to an old timestamp to make cache stale
+            // Cache TTL is 1 minute, so use 2 minutes ago to ensure cache miss
+            lastFetched: Date.now() - 2 * 60 * 1000,
+          },
+        },
+      };
+
       await withController(
-        { isDisabled: false },
+        { state, isDisabled: false },
         async ({ controller, mockMessengerCall }) => {
           mockMessengerCall.mockImplementation((actionType) => {
-            if (
-              actionType ===
-              'AccountTreeController:getAccountsFromSelectedAccountGroup'
-            ) {
-              return null;
+            if (actionType === 'RewardsDataService:getSeasonStatus') {
+              throw new SeasonNotFoundError('Season not found');
             }
             return undefined;
           });
 
-          const result = await controller.optIn();
+          await expect(
+            controller.getSeasonStatus(MOCK_SUBSCRIPTION_ID, MOCK_SEASON_ID),
+          ).rejects.toThrow(SeasonNotFoundError);
 
-          expect(result).toBeNull();
+          // Verify that rewardsSeasons was cleared
+          expect(controller.state.rewardsSeasons).toEqual({});
+
+          // Verify that accounts and subscriptions were NOT invalidated
+          expect(controller.state.rewardsAccounts).toEqual({
+            [MOCK_CAIP_ACCOUNT]: {
+              account: MOCK_CAIP_ACCOUNT,
+              hasOptedIn: true,
+              subscriptionId: MOCK_SUBSCRIPTION_ID,
+              perpsFeeDiscount: null,
+              lastPerpsDiscountRateFetched: null,
+            },
+          });
+          expect(controller.state.rewardsSubscriptions).toEqual({
+            [MOCK_SUBSCRIPTION_ID]: MOCK_SUBSCRIPTION,
+          });
+          expect(controller.state.rewardsSubscriptionTokens).toEqual({
+            [MOCK_SUBSCRIPTION_ID]: MOCK_SESSION_TOKEN,
+          });
+
+          // Verify that rewardsActiveAccount was NOT invalidated
+          expect(controller.state.rewardsActiveAccount?.hasOptedIn).toBe(true);
+          expect(controller.state.rewardsActiveAccount?.subscriptionId).toBe(
+            MOCK_SUBSCRIPTION_ID,
+          );
         },
       );
+    });
+  });
+
+  describe('optIn - edge cases', () => {
+    it('should return null when no accounts in account group', async () => {
+      await withController({ isDisabled: false }, async ({ controller }) => {
+        const result = await controller.optIn([]);
+
+        expect(result).toBeNull();
+      });
     });
 
     it('should throw error when all accounts fail to opt in', async () => {
@@ -2280,19 +3089,15 @@ describe('Additional RewardsController edge cases', () => {
         { isDisabled: false },
         async ({ controller, mockMessengerCall }) => {
           mockMessengerCall.mockImplementation((actionType) => {
-            if (
-              actionType ===
-              'AccountTreeController:getAccountsFromSelectedAccountGroup'
-            ) {
-              return [MOCK_INTERNAL_ACCOUNT];
-            }
             if (actionType === 'KeyringController:signPersonalMessage') {
               return Promise.reject(new Error('Signature failed'));
             }
             return undefined;
           });
 
-          await expect(controller.optIn()).rejects.toThrow(
+          await expect(
+            controller.optIn([MOCK_INTERNAL_ACCOUNT]),
+          ).rejects.toThrow(
             'Failed to opt in any account from the account group',
           );
         },
@@ -2310,25 +3115,25 @@ describe('Additional RewardsController edge cases', () => {
         { isDisabled: false },
         async ({ controller, mockMessengerCall }) => {
           mockMessengerCall.mockImplementation((actionType) => {
-            if (
-              actionType ===
-              'AccountTreeController:getAccountsFromSelectedAccountGroup'
-            ) {
-              return [MOCK_INTERNAL_ACCOUNT, account2];
-            }
             if (actionType === 'KeyringController:signPersonalMessage') {
               return Promise.resolve('0xmocksignature');
             }
             if (actionType === 'RewardsDataService:mobileOptin') {
-              return Promise.resolve(MOCK_LOGIN_RESPONSE);
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: { ...MOCK_SUBSCRIPTION },
+              });
             }
             if (actionType === 'RewardsDataService:mobileJoin') {
-              return Promise.resolve(MOCK_SUBSCRIPTION);
+              return Promise.resolve({ ...MOCK_SUBSCRIPTION });
             }
             return undefined;
           });
 
-          const result = await controller.optIn('REF123');
+          const result = await controller.optIn(
+            [MOCK_INTERNAL_ACCOUNT, account2],
+            'REF123',
+          );
 
           expect(result).toBe(MOCK_SUBSCRIPTION_ID);
         },
@@ -2403,7 +3208,7 @@ describe('Additional RewardsController edge cases', () => {
                   Math.floor(Date.now() / 1000),
                 );
               }
-              return Promise.resolve(MOCK_SUBSCRIPTION);
+              return Promise.resolve({ ...MOCK_SUBSCRIPTION });
             }
             return undefined;
           });
@@ -2509,7 +3314,10 @@ describe('Additional RewardsController edge cases', () => {
               throw new AccountAlreadyRegisteredError('Already registered');
             }
             if (actionType === 'RewardsDataService:login') {
-              return Promise.resolve(MOCK_LOGIN_RESPONSE);
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: { ...MOCK_SUBSCRIPTION },
+              });
             }
             if (actionType === 'RewardsDataService:getOptInStatus') {
               return Promise.resolve({
@@ -2532,10 +3340,13 @@ describe('Additional RewardsController edge cases', () => {
   });
 
   describe('getCandidateSubscriptionId - error scenarios', () => {
-    it('should return subscription ID from cache if session token exists', async () => {
+    it('should return subscription ID from cache if session token and subscription exist', async () => {
       const state: Partial<RewardsControllerState> = {
         rewardsSubscriptionTokens: {
           [MOCK_SUBSCRIPTION_ID]: MOCK_SESSION_TOKEN,
+        },
+        rewardsSubscriptions: {
+          [MOCK_SUBSCRIPTION_ID]: MOCK_SUBSCRIPTION,
         },
       };
 
@@ -2576,6 +3387,45 @@ describe('Additional RewardsController edge cases', () => {
           const result = await controller.getCandidateSubscriptionId();
 
           expect(result).toBeNull();
+        },
+      );
+    });
+
+    it('should continue to silent auth when subscription exists but session token is missing', async () => {
+      const state: Partial<RewardsControllerState> = {
+        rewardsSubscriptions: {
+          [MOCK_SUBSCRIPTION_ID]: MOCK_SUBSCRIPTION,
+        },
+      };
+
+      await withController(
+        { state, isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'AccountsController:listMultichainAccounts') {
+              return [MOCK_INTERNAL_ACCOUNT];
+            }
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              return Promise.resolve({
+                ois: [true],
+                sids: [MOCK_SUBSCRIPTION_ID],
+              });
+            }
+            if (actionType === 'KeyringController:signPersonalMessage') {
+              return Promise.resolve('0xmocksignature');
+            }
+            if (actionType === 'RewardsDataService:login') {
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: { ...MOCK_SUBSCRIPTION },
+              });
+            }
+            return undefined;
+          });
+
+          const result = await controller.getCandidateSubscriptionId();
+
+          expect(result).toBe(MOCK_SUBSCRIPTION_ID);
         },
       );
     });
@@ -2662,7 +3512,7 @@ describe('Additional RewardsController edge cases', () => {
               if (callCount === 1) {
                 return Promise.reject(new Error('Failed'));
               }
-              return Promise.resolve(MOCK_SUBSCRIPTION);
+              return Promise.resolve({ ...MOCK_SUBSCRIPTION });
             }
             if (actionType === 'AccountsController:listMultichainAccounts') {
               return [MOCK_INTERNAL_ACCOUNT, account2];
@@ -2704,7 +3554,7 @@ describe('Additional RewardsController edge cases', () => {
             return undefined;
           });
 
-          const result = await controller.getGeoRewardsMetadata();
+          const result = await controller.getRewardsGeoMetadata();
 
           expect(result).toEqual({
             geoLocation: 'UNKNOWN',
@@ -2741,7 +3591,7 @@ describe('Additional RewardsController edge cases', () => {
   });
 
   describe('handleAuthenticationTrigger - additional scenarios', () => {
-    it('should try all accounts until one succeeds', async () => {
+    it('should set active account to first account when no accounts succeed but account state exists', async () => {
       const account2: InternalAccount = {
         id: 'account-2',
         address: MOCK_ACCOUNT_ADDRESS_ALT,
@@ -2758,11 +3608,21 @@ describe('Additional RewardsController edge cases', () => {
         },
       };
 
-      await withController(
-        { isDisabled: false },
-        async ({ controller, mockMessengerCall }) => {
-          let attemptCount = 0;
+      const state: Partial<RewardsControllerState> = {
+        rewardsAccounts: {
+          [MOCK_CAIP_ACCOUNT]: {
+            account: MOCK_CAIP_ACCOUNT,
+            hasOptedIn: false,
+            subscriptionId: null,
+            perpsFeeDiscount: null,
+            lastPerpsDiscountRateFetched: null,
+          },
+        },
+      };
 
+      await withController(
+        { state, isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
           mockMessengerCall.mockImplementation((actionType) => {
             if (
               actionType ===
@@ -2770,23 +3630,13 @@ describe('Additional RewardsController edge cases', () => {
             ) {
               return [MOCK_INTERNAL_ACCOUNT, account2];
             }
-            if (actionType === 'AccountsController:listMultichainAccounts') {
-              return [MOCK_INTERNAL_ACCOUNT, account2];
-            }
             if (actionType === 'KeyringController:signPersonalMessage') {
-              return Promise.resolve('0xmocksignature');
-            }
-            if (actionType === 'RewardsDataService:login') {
-              attemptCount += 1;
-              if (attemptCount === 1) {
-                return Promise.reject(new Error('First account failed'));
-              }
-              return Promise.resolve(MOCK_LOGIN_RESPONSE);
+              return Promise.reject(new Error('All accounts failed'));
             }
             if (actionType === 'RewardsDataService:getOptInStatus') {
               return Promise.resolve({
-                ois: [true],
-                sids: [MOCK_SUBSCRIPTION_ID],
+                ois: [false, false],
+                sids: [null, null],
               });
             }
             return undefined;
@@ -2794,7 +3644,39 @@ describe('Additional RewardsController edge cases', () => {
 
           await controller.handleAuthenticationTrigger('Test trigger');
 
-          expect(attemptCount).toBe(2);
+          // Should set active account to first account since it has account state
+          expect(controller.state.rewardsActiveAccount).toMatchObject({
+            account: MOCK_CAIP_ACCOUNT,
+            hasOptedIn: undefined, // as we had an error when trying to signPersonalMessage
+            subscriptionId: null,
+          });
+        },
+      );
+    });
+
+    it('should not set active account when successful account has no account state after conversion fails', async () => {
+      const invalidAccount: InternalAccount = {
+        ...MOCK_INTERNAL_ACCOUNT,
+        scopes: [], // Invalid scope to make conversion fail
+      };
+
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (
+              actionType ===
+              'AccountTreeController:getAccountsFromSelectedAccountGroup'
+            ) {
+              return [invalidAccount];
+            }
+            return undefined;
+          });
+
+          await controller.handleAuthenticationTrigger('Test trigger');
+
+          // Should not set active account since conversion fails
+          expect(controller.state.rewardsActiveAccount).toBeNull();
         },
       );
     });
@@ -2816,6 +3698,61 @@ describe('Additional RewardsController edge cases', () => {
           await expect(
             controller.handleAuthenticationTrigger('Test trigger'),
           ).resolves.not.toThrow();
+        },
+      );
+    });
+
+    it('should handle getOptInStatus error gracefully and continue authentication flow', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          let getOptInStatusCallCount = 0;
+          let loginCallCount = 0;
+
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (
+              actionType ===
+              'AccountTreeController:getAccountsFromSelectedAccountGroup'
+            ) {
+              return [MOCK_INTERNAL_ACCOUNT];
+            }
+            if (actionType === 'AccountsController:listMultichainAccounts') {
+              return [MOCK_INTERNAL_ACCOUNT];
+            }
+            if (actionType === 'RewardsDataService:getOptInStatus') {
+              getOptInStatusCallCount += 1;
+              // Throw error on getOptInStatus call from performSilentAuth
+              // Error should be caught silently and login should proceed
+              throw new Error('Failed to get opt-in status');
+            }
+            if (actionType === 'KeyringController:signPersonalMessage') {
+              return Promise.resolve('0xmocksignature');
+            }
+            if (actionType === 'RewardsDataService:login') {
+              loginCallCount += 1;
+              return Promise.resolve({
+                ...MOCK_LOGIN_RESPONSE,
+                subscription: { ...MOCK_SUBSCRIPTION },
+              });
+            }
+            return undefined;
+          });
+
+          await expect(
+            controller.handleAuthenticationTrigger('Test trigger'),
+          ).resolves.not.toThrow();
+
+          // Verify getOptInStatus was called from performSilentAuth
+          // Error should be caught silently
+          expect(getOptInStatusCallCount).toBeGreaterThanOrEqual(1);
+          // Verify that login still proceeded despite getOptInStatus errors
+          expect(loginCallCount).toBe(1);
+          // Verify that authentication succeeded and active account was set
+          expect(controller.state.rewardsActiveAccount).toMatchObject({
+            account: MOCK_CAIP_ACCOUNT,
+            hasOptedIn: true,
+            subscriptionId: MOCK_SUBSCRIPTION_ID,
+          });
         },
       );
     });

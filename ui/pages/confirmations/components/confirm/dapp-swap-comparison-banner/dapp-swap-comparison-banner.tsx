@@ -1,113 +1,237 @@
-import React, { useState } from 'react';
+/* eslint-disable @typescript-eslint/naming-convention */
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Box,
-  BoxBorderColor,
-  Button,
-  ButtonSize,
-  ButtonVariant,
-  TextButton,
+  BoxBackgroundColor,
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
+  Text,
+  TextColor,
+  TextVariant,
 } from '@metamask/design-system-react';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import { QuoteResponse } from '@metamask/bridge-controller';
 import { useSelector } from 'react-redux';
 
 import { getRemoteFeatureFlags } from '../../../../../selectors/remote-feature-flags';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useConfirmContext } from '../../../context/confirm';
+import { ConfirmInfoSection } from '../../../../../components/app/confirm/info/row/section';
+import { Tab, Tabs } from '../../../../../components/ui/tabs';
 import { useDappSwapComparisonInfo } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonInfo';
+import { useDappSwapComparisonMetrics } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonMetrics';
+import { useDappSwapCheck } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapCheck';
+import { useDappSwapComparisonRewardText } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonRewardText';
+import { useDappSwapContext } from '../../../context/dapp-swap';
+import { QuoteSwapSimulationDetails } from '../../transactions/quote-swap-simulation-details/quote-swap-simulation-details';
+import { NetworkRow } from '../info/shared/network-row/network-row';
 
-const DAPP_SWAP_COMPARISON_ORIGIN = 'https://app.uniswap.org';
+const DAPP_SWAP_THRESHOLD = 0.01;
+
+type DappSwapUiFlag = {
+  enabled: boolean;
+  threshold: number;
+};
 
 const enum SwapType {
   Current = 'current',
   Metamask = 'metamask',
 }
 
-const enum SwapButtonType {
-  Text = 'text',
-  ButtonType = 'button',
-}
+// Swaps tabs are memoized to prevent animation jitter in MMSwap tab
+const SwapTabs = React.memo(
+  ({
+    onTabClick,
+    activeTabKey,
+  }: {
+    onTabClick: (key: SwapType) => void;
+    activeTabKey: SwapType;
+  }) => {
+    const t = useI18nContext();
 
-const SwapButton = ({
-  type,
-  label,
-  onClick,
-}: {
-  type: SwapButtonType;
-  label: string;
-  onClick: () => void;
-}) => {
-  if (type === SwapButtonType.ButtonType) {
     return (
-      <Button
-        className="dapp-swap_highlighted-button"
-        size={ButtonSize.Md}
-        variant={ButtonVariant.Secondary}
-        onClick={onClick}
+      <Tabs
+        defaultActiveTabKey={activeTabKey}
+        activeTabKey={activeTabKey}
+        onTabClick={onTabClick}
+        tabListProps={{
+          className: 'dapp-swap__tabs',
+        }}
       >
-        {label}
-      </Button>
+        <Tab
+          tabKey={SwapType.Current}
+          name={t('marketRate')}
+          className="flex-1"
+          data-testid="market-rate-tab"
+        />
+        <Tab
+          tabKey={SwapType.Metamask}
+          name={t('metamaskSwap')}
+          className="flex-1 animate-mm-swap-text"
+          data-testid="metamask-swap-tab"
+        />
+      </Tabs>
     );
-  }
-  return (
-    <TextButton className="dapp-swap_text-button" onClick={onClick}>
-      {label}
-    </TextButton>
-  );
-};
+  },
+);
 
 const DappSwapComparisonInner = () => {
   const t = useI18nContext();
-  const { selectedQuote } = useDappSwapComparisonInfo();
+  const {
+    fiatRates,
+    gasDifference,
+    minDestTokenAmountInUSD,
+    selectedQuote,
+    selectedQuoteValueDifference,
+    sourceTokenAmount,
+    tokenAmountDifference,
+    tokenDetails,
+  } = useDappSwapComparisonInfo();
+  const { captureDappSwapComparisonDisplayProperties } =
+    useDappSwapComparisonMetrics();
+  const { dappSwapUi, dappSwapQa } = useSelector(getRemoteFeatureFlags) as {
+    dappSwapUi: DappSwapUiFlag;
+    dappSwapQa: { enabled: boolean };
+  };
+  const { setQuotedSwapDisplayedInInfo, setSelectedQuote } =
+    useDappSwapContext();
+  const rewards = useDappSwapComparisonRewardText();
   const [selectedSwapType, setSelectedSwapType] = useState<SwapType>(
     SwapType.Current,
   );
+  const [showDappSwapComparisonBanner, setShowDappSwapComparisonBanner] =
+    useState<boolean>(true);
 
-  if (
-    process.env.DAPP_SWAP_SHIELD_ENABLED?.toString() !== 'true' ||
-    !selectedQuote
-  ) {
+  const hideDappSwapComparisonBanner = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      event.stopPropagation();
+      setShowDappSwapComparisonBanner(false);
+    },
+    [setShowDappSwapComparisonBanner],
+  );
+
+  const updateSwapToCurrent = useCallback(() => {
+    setQuotedSwapDisplayedInInfo(false);
+    setSelectedSwapType(SwapType.Current);
+  }, [setQuotedSwapDisplayedInInfo, setSelectedSwapType]);
+
+  const updateSwapToSelectedQuote = useCallback(() => {
+    setQuotedSwapDisplayedInInfo(true);
+    captureDappSwapComparisonDisplayProperties({
+      swap_mm_opened: 'true',
+    });
+    setSelectedSwapType(SwapType.Metamask);
+    setShowDappSwapComparisonBanner(false);
+  }, [
+    captureDappSwapComparisonDisplayProperties,
+    setQuotedSwapDisplayedInInfo,
+    setSelectedSwapType,
+    setShowDappSwapComparisonBanner,
+    selectedQuote,
+  ]);
+
+  const onTabClick = useCallback(
+    (tabKey: SwapType) => {
+      if (tabKey === SwapType.Current) {
+        updateSwapToCurrent();
+      } else if (tabKey === SwapType.Metamask) {
+        updateSwapToSelectedQuote();
+      }
+    },
+    [updateSwapToCurrent, updateSwapToSelectedQuote],
+  );
+
+  const swapComparisonDisplayed =
+    dappSwapUi?.enabled &&
+    (selectedQuoteValueDifference >=
+      (dappSwapUi?.threshold ?? DAPP_SWAP_THRESHOLD) ||
+      (dappSwapQa?.enabled && selectedQuote));
+
+  useEffect(() => {
+    if (swapComparisonDisplayed) {
+      captureDappSwapComparisonDisplayProperties({
+        swap_mm_cta_displayed: 'true',
+      });
+    }
+  }, [captureDappSwapComparisonDisplayProperties, swapComparisonDisplayed]);
+
+  useEffect(() => {
+    setSelectedQuote(selectedQuote);
+  }, [selectedQuote, setSelectedQuote]);
+
+  if (!swapComparisonDisplayed) {
     return null;
   }
 
+  const dappTypeSelected = selectedSwapType === SwapType.Current;
+
   return (
-    <Box
-      borderColor={BoxBorderColor.BorderMuted}
-      borderWidth={1}
-      className="dapp-swap_wrapper"
-      marginBottom={4}
-      marginTop={2}
-      padding={1}
-    >
-      <SwapButton
-        type={
-          selectedSwapType === SwapType.Current
-            ? SwapButtonType.ButtonType
-            : SwapButtonType.Text
-        }
-        onClick={() => setSelectedSwapType(SwapType.Current)}
-        label={t('current')}
-      />
-      <SwapButton
-        type={
-          selectedSwapType === SwapType.Metamask
-            ? SwapButtonType.ButtonType
-            : SwapButtonType.Text
-        }
-        onClick={() => setSelectedSwapType(SwapType.Metamask)}
-        label={t('saveAndEarn')}
-      />
+    <Box>
+      <SwapTabs onTabClick={onTabClick} activeTabKey={selectedSwapType} />
+      {showDappSwapComparisonBanner && dappTypeSelected && (
+        <Box
+          className="dapp-swap_callout"
+          backgroundColor={BoxBackgroundColor.BackgroundSection}
+          marginBottom={4}
+          padding={3}
+          role="button"
+          onClick={updateSwapToSelectedQuote}
+        >
+          <ButtonIcon
+            className="dapp-swap_close-button"
+            iconName={IconName.Close}
+            size={ButtonIconSize.Sm}
+            onClick={hideDappSwapComparisonBanner}
+            ariaLabel="close-dapp-swap-comparison-banner"
+          />
+          <div className="dapp-swap_callout-arrow" />
+          <Text
+            className="dapp-swap_callout-text"
+            color={TextColor.TextDefault}
+            variant={TextVariant.BodySm}
+          >
+            {rewards ? t('dappSwapAdvantage') : t('dappSwapAdvantageSaveOnly')}
+          </Text>
+          <Text
+            className="dapp-swap_text-save"
+            color={TextColor.TextAlternative}
+            variant={TextVariant.BodyXs}
+          >
+            {t('dappSwapQuoteDifference', [
+              `$${(gasDifference + tokenAmountDifference).toFixed(2)}`,
+            ])}
+            {rewards && <span>{` • ${rewards.text}`}</span>}
+          </Text>
+          <Text color={TextColor.TextAlternative} variant={TextVariant.BodyXs}>
+            {t('dappSwapBenefits')}
+          </Text>
+        </Box>
+      )}
+      {selectedSwapType === SwapType.Metamask && (
+        <>
+          <QuoteSwapSimulationDetails
+            fiatRates={fiatRates}
+            quote={selectedQuote as QuoteResponse}
+            tokenDetails={tokenDetails}
+            sourceTokenAmount={sourceTokenAmount}
+            tokenAmountDifference={tokenAmountDifference}
+            minDestTokenAmountInUSD={minDestTokenAmountInUSD}
+          />
+          <ConfirmInfoSection data-testid="transaction-details-section">
+            <NetworkRow />
+          </ConfirmInfoSection>
+        </>
+      )}
     </Box>
   );
 };
 
 export const DappSwapComparisonBanner = () => {
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
   const { dappSwapMetrics } = useSelector(getRemoteFeatureFlags);
+  const { isSwapToBeCompared } = useDappSwapCheck();
 
   const dappSwapMetricsEnabled =
     (dappSwapMetrics as { enabled: boolean })?.enabled === true &&
-    transactionMeta.origin === DAPP_SWAP_COMPARISON_ORIGIN;
+    isSwapToBeCompared;
 
   if (!dappSwapMetricsEnabled) {
     return null;
