@@ -423,8 +423,7 @@ export default function OnboardingWelcome() {
           dispatch(setParticipateInMetaMetrics(true));
           // Set pna25Acknowledged for social login users who are automatically opted into metrics
           // They skip the metametrics page, so we need to set it here
-          const isPna25Enabled = process.env.EXTENSION_UX_PNA25 === 'true';
-          if (isPna25Enabled) {
+          if (process.env.EXTENSION_UX_PNA25) {
             dispatch(setPna25Acknowledged(true));
           }
         }
