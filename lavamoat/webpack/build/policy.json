@@ -1795,6 +1795,7 @@
       },
       "packages": {
         "$root$": true,
+        "@lavamoat/webpack": true,
         "css-loader": true,
         "html-bundler-webpack-plugin": true,
         "postcss-loader": true,
@@ -2892,6 +2893,7 @@
       },
       "packages": {
         "$root$": true,
+        "@lavamoat/webpack": true,
         "webpack>@webassemblyjs/ast": true,
         "webpack>@webassemblyjs/wasm-edit": true,
         "webpack>@webassemblyjs/wasm-parser": true,
