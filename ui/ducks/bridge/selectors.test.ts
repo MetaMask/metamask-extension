@@ -30,7 +30,6 @@ import {
   getFromTokenBalance,
   getFromAccount,
 } from './selectors';
-import { toBridgeToken } from './utils';
 
 describe('Bridge selectors', () => {
   describe('getFromChain', () => {
@@ -285,7 +284,6 @@ describe('Bridge selectors', () => {
         image: './images/eth_logo.svg',
         name: 'Ether',
         symbol: 'ETH',
-        string: '0',
         balance: '0',
       });
     });
@@ -305,7 +303,6 @@ describe('Bridge selectors', () => {
         name: 'Ether',
         symbol: 'ETH',
         balance: '0',
-        string: '0',
       });
     });
   });
@@ -358,7 +355,6 @@ describe('Bridge selectors', () => {
         image:
           'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xaca92e438df0b2401ff60da7e4337b687a2435da.png',
         name: 'MetaMask USD',
-        string: '0',
         symbol: 'mUSD',
       });
     });
@@ -448,7 +444,6 @@ describe('Bridge selectors', () => {
         iconUrl: '',
         image: './images/eth_logo.svg',
         name: 'Ether',
-        string: '0',
         symbol: 'ETH',
       });
     });

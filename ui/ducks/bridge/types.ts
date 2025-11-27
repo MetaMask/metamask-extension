@@ -17,8 +17,6 @@ export type BridgeToken = {
   decimals: number;
   chainId: number | Hex | ChainId | CaipChainId;
   balance: string; // raw balance
-  // TODO deprecate this field and use balance instead
-  string: string | undefined; // normalized balance as a stringified number
   tokenFiatAmount?: number | null;
   occurrences?: number;
   aggregators?: string[];
@@ -62,7 +60,6 @@ export type TokenPayload = {
     decimals: number;
     chainId: Exclude<ChainIdPayload['payload'], null>;
     balance?: string;
-    string?: string;
     image?: string;
     iconUrl?: string | null;
     icon?: string | null;

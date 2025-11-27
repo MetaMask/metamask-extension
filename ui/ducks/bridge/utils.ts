@@ -297,7 +297,6 @@ export const toBridgeToken = (
   return {
     ...payload,
     balance: payload.balance ?? '0',
-    string: payload.string ?? '0',
     chainId: payload.chainId,
     image: getTokenImage(payload),
     assetId: payload.assetId ?? toAssetId(payload.address, caipChainId),

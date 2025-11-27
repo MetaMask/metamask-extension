@@ -543,7 +543,7 @@ export const getFromTokenBalance = createSelector(
       const caipAssetType = getNonEvmNativeAssetType(chainId, address, assetId);
       return (
         nonEvmBalancesByAccountId?.[id]?.[caipAssetType]?.amount ??
-        fromToken.string ??
+        fromToken.balance ??
         null
       );
     }
