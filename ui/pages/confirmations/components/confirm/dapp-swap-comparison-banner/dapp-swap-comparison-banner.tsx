@@ -182,7 +182,7 @@ const DappSwapComparisonInner = () => {
             color={TextColor.TextDefault}
             variant={TextVariant.BodySm}
           >
-            {t('dappSwapAdvantage')}
+            {rewards ? t('dappSwapAdvantage') : t('dappSwapAdvantageSaveOnly')}
           </Text>
           <Text
             className="dapp-swap_text-save"

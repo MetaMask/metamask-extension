@@ -25,7 +25,6 @@ jest.mock('../../../../../hooks/useMultiPolling', () => ({
 }));
 
 jest.mock('../../../../../store/actions', () => ({
-  setAccountDetailsAddress: jest.fn(),
   setSmartAccountOptIn: jest.fn(),
 }));
 
