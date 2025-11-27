@@ -11,6 +11,7 @@ describe('Add hide token', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
+          .withEnabledNetworks({ eip155: { '0x539': true } })
           .withTokensController({
             allTokens: {
               [toHex(1337)]: {

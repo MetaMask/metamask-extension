@@ -13,6 +13,7 @@ describe('Multiple ERC20 Watch Asset', function () {
       {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
+          .withEnabledNetworks({ eip155: { '0x539': true } })
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         smartContract: [tokenContract, tokenContract, tokenContract],
