@@ -59,6 +59,7 @@ import { EntryModalSourceEnum } from '../../../shared/constants/subscriptions';
 import { DefaultSubscriptionPaymentOptions } from '../../../shared/types';
 import {
   getLatestSubscriptionStatus,
+  getShieldMarketingUtmParamsForMetrics,
   getUserBalanceCategory,
 } from '../../../shared/modules/shield';
 import { openWindow } from '../../helpers/utils/window';
@@ -313,7 +314,12 @@ export const useUpdateSubscriptionCardPaymentMethod = ({
   ]);
 };
 
-export const useSubscriptionCryptoApprovalTransaction = () => {
+export const useSubscriptionCryptoApprovalTransaction = (
+  selectedToken?: Pick<
+    TokenWithApprovalAmount,
+    'chainId' | 'address' | 'approvalAmount'
+  >,
+) => {
   const navigate = useNavigate();
   const { subscriptionPricing } = useSubscriptionPricing();
   const evmInternalAccount = useSelector((state) =>
@@ -337,58 +343,51 @@ export const useSubscriptionCryptoApprovalTransaction = () => {
     }
   }, [hasPendingApprovals, shieldTransactionDispatched, navigate]);
 
-  const handler = useCallback(
-    async (
-      selectedToken: Pick<
-        TokenWithApprovalAmount,
-        'chainId' | 'address' | 'approvalAmount'
-      >,
-    ) => {
-      if (!subscriptionPricing) {
-        throw new Error('Subscription pricing not found');
-      }
+  const handler = useCallback(async () => {
+    if (!subscriptionPricing) {
+      throw new Error('Subscription pricing not found');
+    }
 
-      if (!selectedToken) {
-        throw new Error('No token selected');
-      }
+    if (!selectedToken) {
+      throw new Error('No token selected');
+    }
 
-      const networkConfiguration =
-        networkConfigurationsByChainId[selectedToken.chainId as Hex];
-      const networkClientId =
-        networkConfiguration?.rpcEndpoints[
-          networkConfiguration.defaultRpcEndpointIndex ?? 0
-        ]?.networkClientId;
+    const networkConfiguration =
+      networkConfigurationsByChainId[selectedToken.chainId as Hex];
+    const networkClientId =
+      networkConfiguration?.rpcEndpoints[
+        networkConfiguration.defaultRpcEndpointIndex ?? 0
+      ]?.networkClientId;
 
-      const spenderAddress = subscriptionPricing?.paymentMethods
-        ?.find((method) => method.type === PAYMENT_TYPES.byCrypto)
-        ?.chains?.find(
-          (chain) => chain.chainId === selectedToken?.chainId,
-        )?.paymentAddress;
-      const approvalData = generateERC20ApprovalData({
-        spenderAddress,
-        amount: decimalToHex(selectedToken.approvalAmount.approveAmount),
-      });
-      const transactionParams: TransactionParams = {
-        from: evmInternalAccount?.address as Hex,
-        to: selectedToken.address as Hex,
-        value: '0x0',
-        data: approvalData,
-      };
-      transactionParams.gas = await estimateGas(transactionParams);
-      const transactionOptions = {
-        type: TransactionType.shieldSubscriptionApprove,
-        networkClientId: networkClientId as string,
-      };
-      await addTransaction(transactionParams, transactionOptions);
-      setShieldTransactionDispatched(true);
-    },
-    [
-      setShieldTransactionDispatched,
-      subscriptionPricing,
-      evmInternalAccount,
-      networkConfigurationsByChainId,
-    ],
-  );
+    const spenderAddress = subscriptionPricing?.paymentMethods
+      ?.find((method) => method.type === PAYMENT_TYPES.byCrypto)
+      ?.chains?.find(
+        (chain) => chain.chainId === selectedToken?.chainId,
+      )?.paymentAddress;
+    const approvalData = generateERC20ApprovalData({
+      spenderAddress,
+      amount: decimalToHex(selectedToken.approvalAmount.approveAmount),
+    });
+    const transactionParams: TransactionParams = {
+      from: evmInternalAccount?.address as Hex,
+      to: selectedToken.address as Hex,
+      value: '0x0',
+      data: approvalData,
+    };
+    transactionParams.gas = await estimateGas(transactionParams);
+    const transactionOptions = {
+      type: TransactionType.shieldSubscriptionApprove,
+      networkClientId: networkClientId as string,
+    };
+    await addTransaction(transactionParams, transactionOptions);
+    setShieldTransactionDispatched(true);
+  }, [
+    setShieldTransactionDispatched,
+    subscriptionPricing,
+    evmInternalAccount,
+    networkConfigurationsByChainId,
+    selectedToken,
+  ]);
 
   return {
     execute: handler,
@@ -486,7 +485,7 @@ export const useHandleSubscription = ({
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const { search } = useLocation();
   const { execute: executeSubscriptionCryptoApprovalTransaction } =
-    useSubscriptionCryptoApprovalTransaction();
+    useSubscriptionCryptoApprovalTransaction(selectedToken);
   const { subscriptions, lastSubscription } = useUserSubscriptions();
   const {
     captureShieldSubscriptionRequestEvent,
@@ -497,19 +496,10 @@ export const useHandleSubscription = ({
   const latestSubscriptionStatus =
     getLatestSubscriptionStatus(subscriptions, lastSubscription) || 'none';
 
-  const getMarketingUtmId = useCallback(() => {
-    const searchParams = new URLSearchParams(search);
-    const utmId = searchParams.get('utm_id');
-    if (utmId) {
-      return utmId;
-    }
-    return undefined;
-  }, [search]);
-
   const determineSubscriptionRequestSource =
     useCallback((): EntryModalSourceEnum => {
-      const marketingUtmId = getMarketingUtmId();
-      if (marketingUtmId) {
+      const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
+      if (Object.keys(marketingUtmParams).length > 0) {
         return EntryModalSourceEnum.Marketing;
       }
       const sourceParam = new URLSearchParams(search).get('source');
@@ -528,7 +518,7 @@ export const useHandleSubscription = ({
         default:
           return EntryModalSourceEnum.Settings;
       }
-    }, [getMarketingUtmId, search]);
+    }, [search]);
 
   const [handleSubscription, subscriptionResult] =
     useAsyncCallback(async () => {
@@ -543,6 +533,8 @@ export const useHandleSubscription = ({
         }),
       );
 
+      const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
+
       // We need to pass the default payment options & some metrics properties to the background app state controller
       // as these properties are not accessible in the background directly.
       // Shield subscription metrics requests can use them for the metrics capture
@@ -550,7 +542,7 @@ export const useHandleSubscription = ({
       await dispatch(setDefaultSubscriptionPaymentOptions(defaultOptions));
       await setShieldSubscriptionMetricsPropsToBackground({
         source: determineSubscriptionRequestSource(),
-        marketingUtmId: getMarketingUtmId(),
+        marketingUtmParams,
       });
 
       const source = determineSubscriptionRequestSource();
@@ -569,7 +561,7 @@ export const useHandleSubscription = ({
         billingInterval: selectedPlan,
         source,
         type: modalType,
-        marketingUtmId: getMarketingUtmId(),
+        marketingUtmParams,
       };
 
       if (selectedPaymentMethod === PAYMENT_TYPES.byCard) {
@@ -588,10 +580,7 @@ export const useHandleSubscription = ({
           }),
         );
       } else if (selectedPaymentMethod === PAYMENT_TYPES.byCrypto) {
-        if (!selectedToken) {
-          throw new Error('No token selected');
-        }
-        await executeSubscriptionCryptoApprovalTransaction(selectedToken);
+        await executeSubscriptionCryptoApprovalTransaction();
       }
     }, [
       dispatch,
@@ -606,7 +595,7 @@ export const useHandleSubscription = ({
       latestSubscriptionStatus,
       modalType,
       determineSubscriptionRequestSource,
-      getMarketingUtmId,
+      search,
     ]);
 
   return {
@@ -651,35 +640,49 @@ export const useHandleSubscriptionSupportAction = () => {
 
 export const useUpdateSubscriptionCryptoPaymentMethod = ({
   subscription,
+  selectedToken,
 }: {
   subscription?: Subscription;
+  selectedToken?: Pick<
+    TokenWithApprovalAmount,
+    'chainId' | 'address' | 'approvalAmount' | 'symbol'
+  >;
 }) => {
+  const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const { execute: executeSubscriptionCryptoApprovalTransaction } =
-    useSubscriptionCryptoApprovalTransaction();
+    useSubscriptionCryptoApprovalTransaction(selectedToken);
   // This update the subscription payment method to crypto
   // and trigger the approval transaction flow
-  const handler = useCallback(
-    async (
-      selectedToken: Pick<
-        TokenWithApprovalAmount,
-        'chainId' | 'address' | 'approvalAmount'
-      >,
-    ) => {
-      if (!subscription) {
-        throw new Error('No subscription exist');
-      }
-      // only allow update payment method to crypto -> crypto atm
-      if (!isCryptoPaymentMethod(subscription.paymentMethod)) {
-        throw new Error('Subscription is not a crypto payment method');
-      }
-      if (!selectedToken) {
-        throw new Error('No token selected');
-      }
-      await executeSubscriptionCryptoApprovalTransaction(selectedToken);
-    },
-    [subscription, executeSubscriptionCryptoApprovalTransaction],
-  );
+  const [handler, result] = useAsyncCallback(async () => {
+    if (!subscription) {
+      throw new Error('No subscription exist');
+    }
+    // only allow update payment method to crypto -> crypto atm
+    if (!isCryptoPaymentMethod(subscription.paymentMethod)) {
+      throw new Error('Subscription is not a crypto payment method');
+    }
+    if (!selectedToken) {
+      throw new Error('No token selected');
+    }
+
+    // save the changing payment method as last used subscription payment method and plan to Redux store
+    await dispatch(
+      setLastUsedSubscriptionPaymentDetails(PRODUCT_TYPES.SHIELD, {
+        type: PAYMENT_TYPES.byCrypto,
+        paymentTokenAddress: selectedToken.address as Hex,
+        paymentTokenSymbol: selectedToken.symbol,
+        plan: subscription.interval,
+      }),
+    );
+    await executeSubscriptionCryptoApprovalTransaction();
+  }, [
+    subscription,
+    executeSubscriptionCryptoApprovalTransaction,
+    dispatch,
+    selectedToken,
+  ]);
   return {
     execute: handler,
+    result,
   };
 };

@@ -10,7 +10,6 @@ import {
 import {
   Box,
   ButtonLink,
-  Icon,
   IconName,
   IconSize,
   Text,
@@ -31,6 +30,7 @@ import Name from '../../../components/app/name';
 import Tooltip from '../../../components/ui/tooltip';
 import { ShieldPaymentModal } from '../../shield-plan/shield-payment-modal';
 import {
+  getIsShieldSubscriptionCanChangePaymentMethodToCard,
   getIsShieldSubscriptionEndingSoon,
 } from '../../../../shared/lib/shield';
 import { isCryptoPaymentMethod } from './types';
@@ -59,6 +59,15 @@ export const PaymentMethodRow = ({
 }: PaymentMethodRowProps) => {
   const t = useI18nContext();
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+
+  const canChangePaymentMethodToCard = useMemo(() => {
+    if (!displayedShieldSubscription) {
+      return false;
+    }
+    return getIsShieldSubscriptionCanChangePaymentMethodToCard(
+      displayedShieldSubscription,
+    );
+  }, [displayedShieldSubscription]);
 
   // Derive isCryptoPayment from subscription
   const isCryptoPayment = useMemo(() => {
@@ -103,8 +112,26 @@ export const PaymentMethodRow = ({
     price: selectedProductPrice,
     productType: PRODUCT_TYPES.SHIELD,
   });
+  // change crypto payment method shouldn't change to current token
+  const availableTokenBalancesWithoutCurrentToken = useMemo(() => {
+    if (
+      !displayedShieldSubscription ||
+      !isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)
+    ) {
+      return availableTokenBalances;
+    }
 
-  const hasAvailableToken = availableTokenBalances.length > 0;
+    return availableTokenBalances.filter(
+      (token) =>
+        token.symbol !==
+        (
+          displayedShieldSubscription.paymentMethod as SubscriptionCryptoPaymentMethod
+        ).crypto.tokenSymbol,
+    );
+  }, [availableTokenBalances, displayedShieldSubscription]);
+
+  const hasAvailableToken =
+    availableTokenBalancesWithoutCurrentToken.length > 0;
 
   // Compute tokensSupported
   const tokensSupported = useMemo(() => {
@@ -129,23 +156,23 @@ export const PaymentMethodRow = ({
   // Derive selectedToken from subscription or first available
   const selectedToken = useMemo<TokenWithApprovalAmount | undefined>(() => {
     if (!displayedShieldSubscription) {
-      return availableTokenBalances[0];
+      return availableTokenBalancesWithoutCurrentToken[0];
     }
 
     if (isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)) {
       const tokenInfo = (
         displayedShieldSubscription.paymentMethod as SubscriptionCryptoPaymentMethod
       ).crypto;
-      const token = availableTokenBalances.find(
+      const token = availableTokenBalancesWithoutCurrentToken.find(
         (at) =>
           at.symbol === tokenInfo.tokenSymbol &&
           at.chainId === tokenInfo.chainId,
       );
-      return token || availableTokenBalances[0];
+      return token || availableTokenBalancesWithoutCurrentToken[0];
     }
 
-    return availableTokenBalances[0];
-  }, [displayedShieldSubscription, availableTokenBalances]);
+    return availableTokenBalancesWithoutCurrentToken[0];
+  }, [displayedShieldSubscription, availableTokenBalancesWithoutCurrentToken]);
 
   const handleClose = useCallback(() => {
     setShowPaymentModal(false);
@@ -153,9 +180,13 @@ export const PaymentMethodRow = ({
 
   const handlePaymentMethodChangeInternal = useCallback(
     (newPaymentMethod: PaymentType) => {
-      onPaymentMethodChange(newPaymentMethod, selectedToken);
+      // only trigger payment method change if it's card payment
+      // crypto payment method change will be triggered by handleTokenChange
+      if (newPaymentMethod === PAYMENT_TYPES.byCard) {
+        onPaymentMethodChange(newPaymentMethod);
+      }
     },
-    [onPaymentMethodChange, selectedToken],
+    [onPaymentMethodChange],
   );
 
   const handleTokenChange = useCallback(
@@ -270,11 +301,12 @@ export const PaymentMethodRow = ({
         {paymentMethodDisplay}
       </Box>
       <ShieldPaymentModal
+        disableCardOption={!canChangePaymentMethodToCard}
         isOpen={showPaymentModal}
         onClose={handleClose}
         selectedPaymentMethod={selectedPaymentMethod}
         setSelectedPaymentMethod={handlePaymentMethodChangeInternal}
-        availableTokenBalances={availableTokenBalances}
+        availableTokenBalances={availableTokenBalancesWithoutCurrentToken}
         selectedToken={selectedToken}
         onAssetChange={handleTokenChange}
         hasStableTokenWithBalance={hasAvailableToken}

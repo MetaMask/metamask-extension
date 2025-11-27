@@ -55,6 +55,7 @@ export const ShieldPaymentModal = ({
   onAssetChange,
   hasStableTokenWithBalance,
   tokensSupported,
+  disableCardOption,
 }: {
   isOpen: boolean;
   onClose: () => void;
@@ -65,6 +66,7 @@ export const ShieldPaymentModal = ({
   onAssetChange: (asset: TokenWithApprovalAmount) => void;
   hasStableTokenWithBalance: boolean;
   tokensSupported: string[];
+  disableCardOption?: boolean;
 }) => {
   const t = useI18nContext();
   const [showAssetPickerModal, setShowAssetPickerModal] = useState(false);
@@ -239,62 +241,67 @@ export const ShieldPaymentModal = ({
               )}
             </Box>
           </Box>
-          <Box
-            data-testid="shield-payment-method-card-button"
-            as="button"
-            className={classnames('payment-method-item', {
-              'payment-method-item--selected':
-                selectedPaymentMethod === PAYMENT_TYPES.byCard,
-            })}
-            padding={4}
-            gap={4}
-            backgroundColor={
-              selectedPaymentMethod === PAYMENT_TYPES.byCard
-                ? BackgroundColor.primaryMuted
-                : BackgroundColor.transparent
-            }
-            display={Display.Flex}
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.spaceBetween}
-            width={BlockSize.Full}
-            onClick={() => selectPaymentMethod(PAYMENT_TYPES.byCard)}
-          >
-            {selectedPaymentMethod === PAYMENT_TYPES.byCard && (
-              <Box
-                className="payment-method-item__selected-indicator"
-                borderRadius={BorderRadius.pill}
-                backgroundColor={BackgroundColor.primaryDefault}
-              />
-            )}
+          {!disableCardOption && (
             <Box
+              data-testid="shield-payment-method-card-button"
+              as="button"
+              className={classnames('payment-method-item', {
+                'payment-method-item--selected':
+                  selectedPaymentMethod === PAYMENT_TYPES.byCard,
+              })}
+              padding={4}
+              gap={4}
+              backgroundColor={
+                selectedPaymentMethod === PAYMENT_TYPES.byCard
+                  ? BackgroundColor.primaryMuted
+                  : BackgroundColor.transparent
+              }
               display={Display.Flex}
               alignItems={AlignItems.center}
               justifyContent={JustifyContent.spaceBetween}
               width={BlockSize.Full}
+              onClick={() => selectPaymentMethod(PAYMENT_TYPES.byCard)}
             >
+              {selectedPaymentMethod === PAYMENT_TYPES.byCard && (
+                <Box
+                  className="payment-method-item__selected-indicator"
+                  borderRadius={BorderRadius.pill}
+                  backgroundColor={BackgroundColor.primaryDefault}
+                />
+              )}
               <Box
                 display={Display.Flex}
                 alignItems={AlignItems.center}
-                gap={4}
+                justifyContent={JustifyContent.spaceBetween}
+                width={BlockSize.Full}
               >
-                <Icon size={IconSize.Xl} name={IconName.Card} />
-                <Box textAlign={TextAlign.Left}>
-                  <Text variant={TextVariant.bodyMdMedium}>
-                    {t('shieldPlanPayWithCard')}
-                  </Text>
-                  <Box
-                    display={Display.Flex}
-                    gap={1}
-                    alignItems={AlignItems.center}
-                  >
-                    <img src="./images/card-mc.svg" alt="Mastercard" />
-                    <img src="./images/card-visa.svg" alt="Visa" />
-                    <img src="./images/card-amex.svg" alt="American Express" />
+                <Box
+                  display={Display.Flex}
+                  alignItems={AlignItems.center}
+                  gap={4}
+                >
+                  <Icon size={IconSize.Xl} name={IconName.Card} />
+                  <Box textAlign={TextAlign.Left}>
+                    <Text variant={TextVariant.bodyMdMedium}>
+                      {t('shieldPlanPayWithCard')}
+                    </Text>
+                    <Box
+                      display={Display.Flex}
+                      gap={1}
+                      alignItems={AlignItems.center}
+                    >
+                      <img src="./images/card-mc.svg" alt="Mastercard" />
+                      <img src="./images/card-visa.svg" alt="Visa" />
+                      <img
+                        src="./images/card-amex.svg"
+                        alt="American Express"
+                      />
+                    </Box>
                   </Box>
                 </Box>
               </Box>
             </Box>
-          </Box>
+          )}
         </Box>
         <AssetPickerModal
           isOpen={showAssetPickerModal}

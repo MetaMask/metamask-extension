@@ -76,6 +76,7 @@ import {
   GATOR_PERMISSIONS,
   TOKEN_TRANSFER_ROUTE,
   REVIEW_GATOR_PERMISSIONS_ROUTE,
+  REWARDS_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import {
@@ -116,6 +117,7 @@ import {
   getIsUnlocked,
 } from '../../ducks/metamask/metamask';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import RewardsPage from '../rewards';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import { getConfirmationRoute } from '../confirmations/hooks/useConfirmationNavigation';
 import {
@@ -828,14 +830,17 @@ export default function Routes() {
               paramsAsProps: false,
             })}
           </RouteWithLayout>
-          <Route path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}>
+          <RouteWithLayout
+            path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
+            layout={LegacyLayout}
+          >
             {createV5CompatRoute<{ id?: string }>(ConfirmTransaction, {
               wrapper: AuthenticatedV5Compat,
               includeLocation: true,
               includeParams: true,
               paramsAsProps: false,
             })}
-          </Route>
+          </RouteWithLayout>
           <RouteWithLayout path={SWAPS_ROUTE} layout={LegacyLayout}>
             {createV5CompatRoute(Swaps, {
               wrapper: AuthenticatedV5Compat,
@@ -867,33 +872,36 @@ export default function Routes() {
               includeLocation: true,
             })}
           </RouteWithLayout>
-          <Route path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}>
+          <RouteWithLayout
+            path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}
+            layout={LegacyLayout}
+          >
             {createV5CompatRoute(ConfirmAddSuggestedTokenPage, {
               wrapper: AuthenticatedV5Compat,
               includeNavigate: true,
               includeLocation: true,
             })}
-          </Route>
-          <Route path={CONFIRM_ADD_SUGGESTED_NFT_ROUTE}>
+          </RouteWithLayout>
+          <RouteWithLayout
+            path={CONFIRM_ADD_SUGGESTED_NFT_ROUTE}
+            layout={LegacyLayout}
+          >
             {createV5CompatRoute(ConfirmAddSuggestedNftPage, {
               wrapper: AuthenticatedV5Compat,
               includeNavigate: true,
               includeLocation: true,
             })}
-          </Route>
-          <Route path={`${CONFIRMATION_V_NEXT_ROUTE}/:id?`}>
-            {(props: RouteComponentProps<{ id?: string }>) => {
-              const renderFn = createV5CompatRoute<{ id?: string }>(
-                ConfirmationPage,
-                {
-                  wrapper: AuthenticatedV5Compat,
-                  includeParams: true,
-                  paramsAsProps: false,
-                },
-              );
-              return renderFn(props);
-            }}
-          </Route>
+          </RouteWithLayout>
+          <RouteWithLayout
+            path={`${CONFIRMATION_V_NEXT_ROUTE}/:id?`}
+            layout={LegacyLayout}
+          >
+            {createV5CompatRoute<{ id?: string }>(ConfirmationPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              paramsAsProps: false,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout
             authenticated
             path={NEW_ACCOUNT_ROUTE}
@@ -994,14 +1002,29 @@ export default function Routes() {
             layout={LegacyLayout}
           />
           <RouteWithLayout
-            authenticated
             path={TOKEN_TRANSFER_ROUTE}
-            component={TokenTransferPage}
             exact
             layout={LegacyLayout}
-          />
+          >
+            {createV5CompatRoute(TokenTransferPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeNavigate: true,
+              paramsAsProps: false,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout
-            authenticated
+            path={`${TOKEN_TRANSFER_ROUTE}/:origin`}
+            exact
+            layout={LegacyLayout}
+          >
+            {createV5CompatRoute<{ origin: string }>(TokenTransferPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              includeNavigate: true,
+              paramsAsProps: false,
+            })}
+          </RouteWithLayout>
+          <RouteWithLayout
             path={`${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName`}
             exact
             layout={LegacyLayout}
@@ -1009,6 +1032,22 @@ export default function Routes() {
             {createV5CompatRoute<{
               chainId: string;
               permissionGroupName: string;
+            }>(ReviewGatorPermissionsPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              includeNavigate: true,
+              paramsAsProps: false,
+            })}
+          </RouteWithLayout>
+          <RouteWithLayout
+            path={`${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName/:origin`}
+            exact
+            layout={LegacyLayout}
+          >
+            {createV5CompatRoute<{
+              chainId: string;
+              permissionGroupName: string;
+              origin: string;
             }>(ReviewGatorPermissionsPage, {
               wrapper: AuthenticatedV5Compat,
               includeParams: true,
@@ -1154,13 +1193,19 @@ export default function Routes() {
             component={NonEvmBalanceCheck}
             layout={LegacyLayout}
           />
-
           <RouteWithLayout
             authenticated
             path={SHIELD_PLAN_ROUTE}
             component={ShieldPlan}
             layout={LegacyLayout}
           />
+          <RouteWithLayout path={REWARDS_ROUTE} layout={RootLayout}>
+            {createV5CompatRoute(RewardsPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeNavigate: true,
+              includeLocation: true,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout path={DEFAULT_ROUTE} layout={RootLayout}>
             {createV5CompatRoute(Home, {
               wrapper: AuthenticatedV5Compat,

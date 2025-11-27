@@ -12,7 +12,6 @@ import {
   TokenPaymentInfo,
 } from '@metamask/subscription-controller';
 import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
-import { useSelector } from 'react-redux';
 import {
   BannerAlert,
   BannerAlertSeverity,
@@ -72,12 +71,14 @@ import { ConfirmInfoRowAddress } from '../../../components/app/confirm/info/row'
 import {
   getIsShieldSubscriptionEndingSoon,
   getIsShieldSubscriptionPaused,
+  getIsShieldSubscriptionTrialing,
 } from '../../../../shared/lib/shield';
 import { useAsyncResult } from '../../../hooks/useAsync';
 import { useTimeout } from '../../../hooks/useTimeout';
 import { MINUTE } from '../../../../shared/constants/time';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
 import {
+  EntryModalSourceEnum,
   ShieldCtaActionClickedEnum,
   ShieldCtaSourceEnum,
   ShieldErrorStateActionClickedEnum,
@@ -85,7 +86,8 @@ import {
   ShieldErrorStateViewEnum,
 } from '../../../../shared/constants/subscriptions';
 import { ThemeType } from '../../../../shared/constants/preferences';
-import { getTheme } from '../../../selectors';
+import { useTheme } from '../../../hooks/useTheme';
+import ApiErrorHandler from '../../../components/app/api-error-handler';
 import CancelMembershipModal from './cancel-membership-modal';
 import { isCardPaymentMethod, isCryptoPaymentMethod } from './types';
 import ShieldBannerAnimation from './shield-banner-animation';
@@ -107,7 +109,7 @@ const TransactionShield = () => {
   }, [search]);
 
   const { formatCurrency } = useFormatters();
-  const theme = useSelector(getTheme);
+  const theme = useTheme();
   const isLightTheme = theme === ThemeType.light;
 
   const {
@@ -115,6 +117,7 @@ const TransactionShield = () => {
     subscriptions,
     lastSubscription,
     loading: subscriptionsLoading,
+    error: subscriptionsError,
   } = useUserSubscriptions({
     refetch: !shouldWaitForSubscriptionCreation, // always fetch latest subscriptions state in settings screen unless we are waiting for subscription creation (subscription is refetch in background)
   });
@@ -163,10 +166,13 @@ const TransactionShield = () => {
     }
   }, [shouldWaitForSubscriptionCreation, startSubscriptionCreationTimeout]);
 
-  const { subscriptionPricing, loading: subscriptionPricingLoading } =
-    useSubscriptionPricing({
-      refetch: true, // need to refetch here in case user already subscribed and doesn't go through shield plan screen
-    });
+  const {
+    subscriptionPricing,
+    loading: subscriptionPricingLoading,
+    error: subscriptionPricingError,
+  } = useSubscriptionPricing({
+    refetch: true, // need to refetch here in case user already subscribed and doesn't go through shield plan screen
+  });
   const cryptoPaymentMethod = useSubscriptionPaymentMethods(
     PAYMENT_TYPES.byCrypto,
     subscriptionPricing,
@@ -175,6 +181,7 @@ const TransactionShield = () => {
   const isCancelled =
     displayedShieldSubscription?.status === SUBSCRIPTION_STATUSES.canceled;
   const isPaused = getIsShieldSubscriptionPaused(subscriptions);
+  const isTrialing = getIsShieldSubscriptionTrialing(subscriptions);
   const isMembershipInactive = isCancelled || isPaused;
   const isSubscriptionEndingSoon =
     getIsShieldSubscriptionEndingSoon(subscriptions);
@@ -214,6 +221,14 @@ const TransactionShield = () => {
     newRecurringInterval: currentShieldSubscription?.interval,
   });
 
+  const hasApiError =
+    subscriptionsError ||
+    subscriptionPricingError ||
+    cancelSubscriptionResult.error ||
+    unCancelSubscriptionResult.error ||
+    openGetSubscriptionBillingPortalResult.error ||
+    updateSubscriptionCardPaymentMethodResult.error;
+
   const isWaitingForSubscriptionCreation =
     shouldWaitForSubscriptionCreation && !currentShieldSubscription;
 
@@ -225,7 +240,10 @@ const TransactionShield = () => {
   // redirect to shield plan page if user doesn't have a subscription
   useEffect(() => {
     if (!shouldWaitForSubscriptionCreation && !displayedShieldSubscription) {
-      navigate(SHIELD_PLAN_ROUTE);
+      navigate({
+        pathname: SHIELD_PLAN_ROUTE,
+        search: `?source=${EntryModalSourceEnum.Settings}`,
+      });
     }
   }, [
     shouldWaitForSubscriptionCreation,
@@ -366,7 +384,13 @@ const TransactionShield = () => {
       return amount;
     }, [currentToken, displayedShieldSubscription]);
 
-  const paymentToken = useMemo(() => {
+  const paymentToken = useMemo<
+    | Pick<
+        TokenWithApprovalAmount,
+        'chainId' | 'address' | 'approvalAmount' | 'symbol'
+      >
+    | undefined
+  >(() => {
     if (
       !displayedShieldSubscription ||
       !currentToken ||
@@ -381,6 +405,7 @@ const TransactionShield = () => {
     return {
       chainId: displayedShieldSubscription.paymentMethod.crypto.chainId,
       address: currentToken.address,
+      symbol: currentToken.symbol,
       approvalAmount: {
         approveAmount: subscriptionCryptoApprovalAmount.approveAmount,
         chainId: displayedShieldSubscription.paymentMethod.crypto.chainId,
@@ -397,15 +422,36 @@ const TransactionShield = () => {
   ]);
 
   const { execute: executeSubscriptionCryptoApprovalTransaction } =
-    useSubscriptionCryptoApprovalTransaction();
+    useSubscriptionCryptoApprovalTransaction(paymentToken);
 
-  const { execute: executeUpdateSubscriptionCryptoPaymentMethod } =
-    useUpdateSubscriptionCryptoPaymentMethod({
-      subscription: currentShieldSubscription,
-    });
+  const [selectedChangePaymentToken, setSelectedChangePaymentToken] = useState<
+    | Pick<
+        TokenWithApprovalAmount,
+        'chainId' | 'address' | 'approvalAmount' | 'symbol'
+      >
+    | undefined
+  >();
 
-  const [paymetMethodChangeSubmitting, setPaymetMethodChangeSubmitting] =
-    useState(false);
+  const {
+    execute: executeUpdateSubscriptionCryptoPaymentMethod,
+    result: updateSubscriptionCryptoPaymentMethodResult,
+  } = useUpdateSubscriptionCryptoPaymentMethod({
+    subscription: currentShieldSubscription,
+    selectedToken: selectedChangePaymentToken,
+  });
+
+  // trigger update subscription crypto payment method when selected change payment token changes
+  useEffect(() => {
+    if (selectedChangePaymentToken) {
+      executeUpdateSubscriptionCryptoPaymentMethod().then(() => {
+        // reset selected change payment token after update subscription crypto payment method succeeded
+        setSelectedChangePaymentToken(undefined);
+      });
+    }
+  }, [
+    selectedChangePaymentToken,
+    executeUpdateSubscriptionCryptoPaymentMethod,
+  ]);
 
   const handlePaymentMethodChange = useCallback(
     async (
@@ -413,26 +459,19 @@ const TransactionShield = () => {
       selectedToken?: TokenWithApprovalAmount,
     ) => {
       try {
-        setPaymetMethodChangeSubmitting(true);
         if (paymentType === PAYMENT_TYPES.byCard) {
           await executeUpdateSubscriptionCardPaymentMethod();
         } else if (paymentType === PAYMENT_TYPES.byCrypto) {
-          // For now, this is a placeholder
           if (!selectedToken) {
             throw new Error('No token selected');
           }
-          await executeUpdateSubscriptionCryptoPaymentMethod(selectedToken);
+          setSelectedChangePaymentToken(selectedToken);
         }
       } catch (error) {
         console.error('Error changing payment method', error);
-      } finally {
-        setPaymetMethodChangeSubmitting(false);
       }
     },
-    [
-      executeUpdateSubscriptionCardPaymentMethod,
-      executeUpdateSubscriptionCryptoPaymentMethod,
-    ],
+    [executeUpdateSubscriptionCardPaymentMethod, setSelectedChangePaymentToken],
   );
 
   const loading =
@@ -440,7 +479,7 @@ const TransactionShield = () => {
     unCancelSubscriptionResult.pending ||
     openGetSubscriptionBillingPortalResult.pending ||
     updateSubscriptionCardPaymentMethodResult.pending ||
-    paymetMethodChangeSubmitting;
+    updateSubscriptionCryptoPaymentMethodResult.pending;
 
   const isCardPayment =
     currentShieldSubscription &&
@@ -485,7 +524,10 @@ const TransactionShield = () => {
 
     if (isCancelled) {
       // go to shield plan page to renew subscription for cancelled subscription
-      navigate(SHIELD_PLAN_ROUTE);
+      navigate({
+        pathname: SHIELD_PLAN_ROUTE,
+        search: `?source=${EntryModalSourceEnum.Settings}`,
+      });
     } else if (isUnexpectedErrorCryptoPayment) {
       // handle support action
       handleClickContactSupport();
@@ -502,10 +544,7 @@ const TransactionShield = () => {
         //   rawTransaction: undefined // no raw transaction to trigger server to check for new funded balance
         // }))
       } else if (isAllowanceNeededCrypto) {
-        if (!paymentToken) {
-          throw new Error('No payment token');
-        }
-        await executeSubscriptionCryptoApprovalTransaction(paymentToken);
+        await executeSubscriptionCryptoApprovalTransaction();
       } else {
         throw new Error('Unknown crypto error action');
       }
@@ -524,7 +563,6 @@ const TransactionShield = () => {
     setIsAddFundsModalOpen,
     executeSubscriptionCryptoApprovalTransaction,
     captureShieldErrorStateClickedEvent,
-    paymentToken,
   ]);
 
   const membershipErrorBanner = useMemo(() => {
@@ -589,6 +627,19 @@ const TransactionShield = () => {
     });
   }, [captureShieldCtaClickedEvent]);
 
+  if (!loading && hasApiError) {
+    return (
+      <Box
+        className="transaction-shield-page"
+        data-testid="transaction-shield-page"
+        width={BlockSize.Full}
+        padding={4}
+      >
+        <ApiErrorHandler className="transaction-shield-page__error-content mx-auto" />
+      </Box>
+    );
+  }
+
   return (
     <Box
       className="transaction-shield-page"
@@ -622,6 +673,7 @@ const TransactionShield = () => {
       {membershipErrorBanner}
       <Box className="transaction-shield-page__container" marginBottom={4}>
         <Box
+          data-theme={isMembershipInactive ? theme : ThemeType.dark}
           className={classnames(
             'transaction-shield-page__row transaction-shield-page__membership',
             {
@@ -663,8 +715,7 @@ const TransactionShield = () => {
                     ? t('shieldTxMembershipInactive')
                     : t('shieldTxMembershipActive')}
                 </Text>
-                {currentShieldSubscription?.status ===
-                  SUBSCRIPTION_STATUSES.trialing && (
+                {isTrialing && (
                   <Tag
                     label={t('shieldTxMembershipFreeTrial')}
                     labelProps={{
