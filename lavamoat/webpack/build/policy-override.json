@@ -92,7 +92,8 @@
       },
       "packages": {
         "postcss": true,
-        "postcss-loader>cosmiconfig": true
+        "postcss-loader>cosmiconfig": true,
+        "tailwindcss>jiti": true
       }
     },
     "postcss-loader>cosmiconfig": {
@@ -105,6 +106,9 @@
       },
       "packages": {
         "postcss-loader>cosmiconfig>env-paths": true
+      },
+      "globals": {
+        "process.cwd": true
       }
     },
     "postcss-loader>cosmiconfig>env-paths": {
@@ -154,17 +158,32 @@
         "process.platform": true,
         "process.arch": true,
         "process.cwd": true,
-        "URL": true
+        "URL": true,
+        "Buffer": true
       }
     },
     "sass-embedded>@bufbuild/protobuf": {
       "globals": {
-        "TextDecoder": true
+        "TextDecoder": true,
+        "TextEncoder": true
       }
     },
     "sass-embedded>buffer-builder": {
       "globals": {
         "Buffer": true
+      }
+    },
+    "wait-on>rxjs": {
+      "globals": {
+        "setTimeout": true
+      }
+    },
+    "depcheck>cosmiconfig>parse-json>error-ex": {
+      "builtin": {
+        "util": true
+      },
+      "packages": {
+        "depcheck>cosmiconfig>parse-json>error-ex>is-arrayish": true
       }
     }
   }

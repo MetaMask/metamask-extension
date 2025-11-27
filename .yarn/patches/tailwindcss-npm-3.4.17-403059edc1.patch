@@ -1,0 +1,18 @@
+diff --git a/lib/lib/setupTrackingContext.js b/lib/lib/setupTrackingContext.js
+index d3f71387a5fb7efffb16491e00ec1d1bdaca4a2c..38d938b1d4ef54dc37cf738a961228b26a6ad926 100644
+--- a/lib/lib/setupTrackingContext.js
++++ b/lib/lib/setupTrackingContext.js
+@@ -65,9 +65,10 @@ function getTailwindConfig(configOrPath) {
+             ];
+         }
+         // It has changed (based on timestamps), or first run
+-        for (let file of newDeps){
+-            delete require.cache[file];
+-        }
++        // LavaMoat will never allow this
++        // for (let file of newDeps){
++            // delete require.cache[file];
++        // }
+         let newConfig = (0, _validateConfig.validateConfig)((0, _resolveconfig.default)((0, _loadconfig.loadConfig)(userConfigPath)));
+         let newHash = (0, _hashConfig.default)(newConfig);
+         configPathCache.set(userConfigPath, [
