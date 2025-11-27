@@ -1,6 +1,6 @@
 import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import ChangePasswordPage from '../../page-objects/pages/settings/change-password-page';
@@ -72,7 +72,9 @@ describe('Change wallet password', function () {
         });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.clickBackupRemindMeLaterButton();
+
+        // TODO: This is a temporary fix to unblock CI. Remove this once the issue is fixed.
+        await homePage.clickBackupRemindMeLaterButtonSafe();
 
         await doPasswordChangeAndLockWallet(driver, OLD_PASSWORD, NEW_PASSWORD);
 

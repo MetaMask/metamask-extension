@@ -2470,9 +2470,6 @@
   "exploreDefi": {
     "message": "Suriin ang DeFi"
   },
-  "exploreweb3": {
-    "message": "Tuklasin ang web3"
-  },
   "exportYourData": {
     "message": "I-export ang data mo"
   },
@@ -7510,18 +7507,8 @@
   "walletConnectionGuide": {
     "message": "ang aming gabay sa pagkonekta ng wallet na hardware"
   },
-  "walletDetails": {
-    "message": "Mga detalye ng wallet"
-  },
   "walletName": {
     "message": "Pangalan ng wallet"
-  },
-  "walletNotFoundDescription": {
-    "message": "Hindi nahanap ang wallet na may ID na $1.",
-    "description": "$1 is the wallet ID"
-  },
-  "walletNotFoundTitle": {
-    "message": "Hindi nahanap ang wallet"
   },
   "walletReadyLearn": {
     "message": "$1 maaari mong panatiling ligtas ang pariralang ito nang sa gayon hindi mawawala ang access mo sa iyong pera.",
