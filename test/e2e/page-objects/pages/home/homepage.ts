@@ -49,6 +49,9 @@ class HomePage {
     testId: 'asset-list-control-bar-action-button',
   };
 
+  private readonly fundYourWalletBanner = {
+    text: 'Fund your wallet',
+  }
   private readonly loadingOverlay = {
     text: 'Connecting to Localhost 8545',
   };
@@ -346,6 +349,10 @@ class HomePage {
     expectedBalance: string = '25',
     symbol: string = 'ETH',
   ): Promise<void> {
+    if (expectedBalance === '0') {
+      await this.driver.waitForSelector(this.fundYourWalletBanner);
+      return;
+    }
     try {
       await this.driver.waitForSelector({
         css: this.balance,
