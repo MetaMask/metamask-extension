@@ -27,7 +27,6 @@ import {
   updateQuoteRequestParams,
   resetBridgeState,
   trackUnifiedSwapBridgeEvent,
-  setFromChain,
 } from '../../../ducks/bridge/actions';
 import {
   getBridgeQuotes,
@@ -504,9 +503,6 @@ const PrepareBridgePage = ({
             };
             dispatch(setFromToken(bridgeToken));
             dispatch(setFromTokenInputValue(null));
-            if (token.address === toToken?.address) {
-              dispatch(setToToken(null));
-            }
           }}
           networkProps={{
             // @ts-expect-error other network fields are not used by the asset picker
@@ -516,9 +512,7 @@ const PrepareBridgePage = ({
             onNetworkChange: (networkConfig) => {
               enableMissingNetwork(networkConfig.chainId);
               dispatch(
-                setFromChain({
-                  chainId: networkConfig.chainId,
-                }),
+                setFromToken(getNativeAssetForChainId(networkConfig.chainId)),
               );
             },
             header: t('yourNetworks'),
@@ -643,16 +637,7 @@ const PrepareBridgePage = ({
 
                 setRotateSwitchTokens(!rotateSwitchTokens);
 
-                if (isSwap) {
-                  dispatch(setFromToken(toToken));
-                } else {
-                  dispatch(
-                    setFromChain({
-                      chainId: toChain.chainId,
-                      token: toToken,
-                    }),
-                  );
-                }
+                toToken && dispatch(setFromToken(toToken));
                 dispatch(setToToken(fromToken));
               }}
             />

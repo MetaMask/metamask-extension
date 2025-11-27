@@ -25,7 +25,7 @@ jest.mock('react-redux', () => ({
 const mockSetFromChain = jest.fn();
 jest.mock('../../ducks/bridge/actions', () => ({
   ...jest.requireActual('../../ducks/bridge/actions'),
-  setFromChain: () => mockSetFromChain(),
+  setFromToken: () => mockSetFromChain(),
 }));
 
 const MOCK_METAMETRICS_ID = '0xtestMetaMetricsId';
