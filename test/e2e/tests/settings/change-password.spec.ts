@@ -53,7 +53,7 @@ async function doPasswordChangeAndLockWallet(
   await headerNavbar.lockMetaMask();
 }
 
-describe('Change wallet password TEST', function () {
+describe('Change wallet password', function () {
   const OLD_PASSWORD = WALLET_PASSWORD;
   const NEW_PASSWORD = 'newPassword';
 
@@ -116,6 +116,7 @@ describe('Change wallet password TEST', function () {
 
         // TODO: This is a temporary fix to unblock CI. Remove this once the issue is fixed.
         await homePage.clickBackupRemindMeLaterButtonSafe();
+
         await doPasswordChangeAndLockWallet(
           driver,
           OLD_PASSWORD,
