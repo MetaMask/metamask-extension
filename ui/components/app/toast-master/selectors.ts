@@ -242,29 +242,29 @@ export function selectShowShieldEndingToast(
 /**
  * Determines if the PNA25 banner should be shown based on:
  * - User has completed onboarding (completedOnboarding === true)
- * - LaunchDarkly feature flag (extension-ux-pna25) is enabled (boolean)
+ * - LaunchDarkly flag (extensionUxPna25) is enabled for existing users
+ * - Build-time environment variable (EXTENSION_UX_PNA25) is enabled
  * - User has opted into metrics (participateInMetaMetrics === true)
- * - User is an EXISTING user (pna25Acknowledged === false)
- * New users will have pna25Acknowledged = true (saw updated policy during onboarding)
- * Existing users will have pna25Acknowledged = false (default, need to show banner)
+ * - User hasn't acknowledged the banner yet (pna25Acknowledged === false)
+ *
+ * Regular new users: Go through metametrics page → pna25Acknowledged = true → don't see banner
+ * Social login users: Skip metametrics page → pna25Acknowledged = false → see banner
+ * Existing users: pna25Acknowledged = false (default) → see banner
  *
  * @param state - The application state containing the banner data.
  * @returns Boolean indicating whether to show the banner
  */
 export function selectShowPna25Banner(state: Pick<State, 'metamask'>): boolean {
-  const {
-    completedOnboarding,
-    participateInMetaMetrics,
-    pna25Acknowledged,
-    remoteFeatureFlags,
-  } = state.metamask || {};
+  const { completedOnboarding, participateInMetaMetrics, pna25Acknowledged } =
+    state.metamask || {};
 
   // Only show to users who have completed onboarding
   if (!completedOnboarding) {
     return false; // User hasn't completed onboarding yet
   }
 
-  const isPna25Enabled = remoteFeatureFlags?.extensionUxPna25;
+  // Check if the PNA25 feature is enabled via build-time environment variable
+  const isPna25Enabled = process.env.EXTENSION_UX_PNA25 === 'true';
 
   // Check all conditions
   if (!isPna25Enabled) {
