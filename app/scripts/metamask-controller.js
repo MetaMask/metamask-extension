@@ -431,6 +431,7 @@ import {
   ClaimsControllerInit,
   ClaimsServiceInit,
 } from './controller-init/claims';
+import { getQuotesForConfirmation } from './lib/dapp-swap/dapp-swap-util';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -982,8 +983,8 @@ export default class MetamaskController extends EventEmitter {
           ),
         }),
       ),
-      wallet_sendCalls: createAsyncMiddleware(async (req, res) =>
-        walletSendCalls(req, res, {
+      wallet_sendCalls: createAsyncMiddleware(async (req, res) => {
+        return await walletSendCalls(req, res, {
           getAccounts,
           processSendCalls: processSendCalls.bind(
             null,
@@ -1001,8 +1002,30 @@ export default class MetamaskController extends EventEmitter {
                 this.txController.isAtomicBatchSupported.bind(
                   this.txController,
                 ),
-              validateSecurity: (securityAlertId, request, chainId) =>
-                validateRequestWithPPOM({
+              validateSecurity: (securityAlertId, request, chainId) => {
+                // Code below to get quote is placed here as securityAlertId is not available in the middleware
+                // this needs to be cleaned up
+                // https://github.com/MetaMask/MetaMask-planning/issues/6345
+                getQuotesForConfirmation({
+                  req,
+                  fetchQuotes: this.controllerMessenger.call.bind(
+                    this.controllerMessenger,
+                    `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.FETCH_QUOTES}`,
+                  ),
+                  setDappSwapComparisonData:
+                    this.appStateController.setDappSwapComparisonData.bind(
+                      this.appStateController,
+                    ),
+                  getNetworkConfigurationByNetworkClientId:
+                    this.networkController.getNetworkConfigurationByNetworkClientId.bind(
+                      this.networkController,
+                    ),
+                  dappSwapMetricsFlag:
+                    this.remoteFeatureFlagController?.state?.remoteFeatureFlags
+                      ?.dappSwapMetrics,
+                  securityAlertId,
+                });
+                return validateRequestWithPPOM({
                   chainId,
                   ppomController: this.ppomController,
                   request,
@@ -1011,14 +1034,15 @@ export default class MetamaskController extends EventEmitter {
                     this.updateSecurityAlertResponse.bind(this),
                   getSecurityAlertsConfig:
                     this.getSecurityAlertsConfig.bind(this),
-                }),
+                });
+              },
               isAuxiliaryFundsSupported: (chainId) =>
                 ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId),
             },
             this.controllerMessenger,
           ),
-        }),
-      ),
+        });
+      }),
       wallet_getCallsStatus: createAsyncMiddleware(async (req, res) =>
         walletGetCallsStatus(req, res, {
           getCallsStatus: getCallsStatus.bind(null, this.controllerMessenger),
@@ -5212,12 +5236,13 @@ export default class MetamaskController extends EventEmitter {
     }
 
     await this.accountsController.updateAccounts();
-    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+
     // Init multichain accounts after creating internal accounts.
     await this.multichainAccountService.init();
-    ///: END:ONLY_INCLUDE_IF
+
     // Force account-tree refresh after all accounts have been updated.
     this.accountTreeController.init();
+
     // TODO: Move this logic to the SnapKeyring directly.
     // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
     await this.forwardSelectedAccountGroupToSnapKeyring(
@@ -5226,12 +5251,23 @@ export default class MetamaskController extends EventEmitter {
     );
 
     if (this.isMultichainAccountsFeatureState2Enabled()) {
-      // This allows to create missing accounts if new account providers have been added.
+      const resyncAndAlignAccounts = async () => {
+        // READ THIS CAREFULLY:
+        // There is/was a bug with Snap accounts that can be desynchronized (Solana). To
+        // automatically "fix" this corrupted state, we run this method which will re-sync
+        // MetaMask accounts and Snap accounts upon login.
+        // BUG: https://github.com/MetaMask/metamask-extension/issues/37228
+        await this.multichainAccountService.resyncAccounts();
+
+        // This allows to create missing accounts if new account providers have been added.
+        await this.multichainAccountService.alignWallets();
+      };
+
       // FIXME: We might wanna run discovery + alignment asynchronously here, like we do
-      // for mobile, but for now, this easy fix should cover new provider accounts.
+      // for mobile.
       // NOTE: We run this asynchronously on purpose, see FIXME^.
       // eslint-disable-next-line no-void
-      void this.multichainAccountService.alignWallets();
+      void resyncAndAlignAccounts();
     }
   }
 
@@ -7056,9 +7092,17 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.FETCH_QUOTES}`,
         ),
-        setSwapQuotes: this.appStateController.setDappSwapComparisonData.bind(
-          this.appStateController,
-        ),
+        setDappSwapComparisonData:
+          this.appStateController.setDappSwapComparisonData.bind(
+            this.appStateController,
+          ),
+        getNetworkConfigurationByNetworkClientId:
+          this.networkController.getNetworkConfigurationByNetworkClientId.bind(
+            this.networkController,
+          ),
+        dappSwapMetricsFlag:
+          this.remoteFeatureFlagController?.state?.remoteFeatureFlags
+            ?.dappSwapMetrics,
       }),
     );
 
