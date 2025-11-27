@@ -111,8 +111,7 @@ export const ConfirmationHandler = () => {
   );
 
   const skipHandler =
-    isFullscreen &&
-    (hasSmartTransactionStatus || (!hasSnapApproval && !hasApprovalFlows));
+    isFullscreen && (hasSmartTransactionStatus || !hasSnapApproval);
 
   useEffect(() => {
     // Only run when on home/default page (for now)
