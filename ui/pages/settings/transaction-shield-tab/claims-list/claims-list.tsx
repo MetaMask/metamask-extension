@@ -3,78 +3,38 @@ import {
   Box,
   BoxBackgroundColor,
   Text,
-  TextColor as DsTextColor,
   TextVariant,
-  Icon,
   IconName,
   IconSize,
   IconColor,
   TextAlign,
+  FontWeight,
+  TextColor,
+  ButtonSize,
+  ButtonVariant,
+  Button,
+  Icon,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom-v5-compat';
-import { Claim, ClaimStatusEnum } from '@metamask/claims-controller';
+import { Claim } from '@metamask/claims-controller';
 import LoadingScreen from '../../../../components/ui/loading-screen';
-import { Tag } from '../../../../components/component-library';
-import {
-  BackgroundColor,
-  BorderRadius,
-  BorderStyle,
-  TextColor,
-} from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useClaims } from '../../../../contexts/claims/claims';
 import { TRANSACTION_SHIELD_CLAIM_ROUTES } from '../../../../helpers/constants/routes';
-
-const CLAIM_STATUS_MAP: Record<
-  ClaimStatusEnum,
-  { label: string; backgroundColor: BackgroundColor; textColor: TextColor }
-> = {
-  [ClaimStatusEnum.CREATED]: {
-    label: 'shieldClaimStatusCreated',
-    backgroundColor: BackgroundColor.warningMuted,
-    textColor: TextColor.warningDefault,
-  },
-  [ClaimStatusEnum.SUBMITTED]: {
-    label: 'shieldClaimStatusSubmitted',
-    backgroundColor: BackgroundColor.warningMuted,
-    textColor: TextColor.warningDefault,
-  },
-  [ClaimStatusEnum.IN_PROGRESS]: {
-    label: 'shieldClaimStatusInProgress',
-    backgroundColor: BackgroundColor.warningMuted,
-    textColor: TextColor.warningDefault,
-  },
-  [ClaimStatusEnum.WAITING_FOR_CUSTOMER]: {
-    label: 'shieldClaimStatusWaitingForCustomer',
-    backgroundColor: BackgroundColor.warningMuted,
-    textColor: TextColor.warningDefault,
-  },
-  [ClaimStatusEnum.APPROVED]: {
-    label: 'shieldClaimStatusApproved',
-    backgroundColor: BackgroundColor.successMuted,
-    textColor: TextColor.successDefault,
-  },
-  [ClaimStatusEnum.REJECTED]: {
-    label: 'shieldClaimStatusRejected',
-    backgroundColor: BackgroundColor.errorMuted,
-    textColor: TextColor.errorDefault,
-  },
-  [ClaimStatusEnum.UNKNOWN]: {
-    label: 'shieldClaimStatusUnknown',
-    backgroundColor: BackgroundColor.warningMuted,
-    textColor: TextColor.warningDefault,
-  },
-};
+import { Tab, Tabs } from '../../../../components/ui/tabs';
+import { getShortDateFormatterV2 } from '../../../asset/util';
 
 const ClaimsList = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const { pendingClaims, historyClaims, isLoading } = useClaims();
+  const { pendingClaims, completedClaims, rejectedClaims, isLoading } =
+    useClaims();
 
   const claimItem = useCallback(
     (claim: Claim) => {
-      // add leading zero to claim number if it is less than 1000
-      const claimNumber = claim.shortId.toString().padStart(3, '0');
+      const formattedDate = getShortDateFormatterV2().format(
+        new Date(claim.createdAt),
+      );
       return (
         <Box
           asChild
@@ -89,38 +49,28 @@ const ClaimsList = () => {
           }}
         >
           <button>
-            <Box className="flex items-center gap-2">
-              <Text variant={TextVariant.BodyMd} textAlign={TextAlign.Left}>
-                {t('shieldClaimsNumber', [claimNumber])}
-              </Text>
-              {claim.status && (
-                <Tag
-                  borderStyle={BorderStyle.none}
-                  borderRadius={BorderRadius.SM}
-                  label={t(CLAIM_STATUS_MAP[claim.status].label)}
-                  backgroundColor={
-                    CLAIM_STATUS_MAP[claim.status].backgroundColor
-                  }
-                  labelProps={{
-                    color: CLAIM_STATUS_MAP[claim.status]?.textColor,
-                  }}
-                />
-              )}
-            </Box>
-
-            <Box className="flex items-center gap-2">
+            <Box>
               <Text
                 variant={TextVariant.BodyMd}
-                color={DsTextColor.TextAlternative}
+                fontWeight={FontWeight.Medium}
+                textAlign={TextAlign.Left}
               >
-                {t('viewDetails')}
+                {t('shieldClaimsNumber', [claim.shortId])}
               </Text>
-              <Icon
-                name={IconName.ArrowRight}
-                size={IconSize.Md}
-                color={IconColor.IconAlternative}
-              />
+              <Text
+                variant={TextVariant.BodySm}
+                textAlign={TextAlign.Left}
+                color={TextColor.TextAlternative}
+              >
+                {formattedDate}
+              </Text>
             </Box>
+
+            <Icon
+              name={IconName.ArrowRight}
+              size={IconSize.Md}
+              color={IconColor.IconDefault}
+            />
           </button>
         </Box>
       );
@@ -128,38 +78,133 @@ const ClaimsList = () => {
     [navigate, t],
   );
 
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
+
   return (
-    <Box className="claims-list-page w-full" data-testid="claims-list-page">
-      {pendingClaims.length > 0 && (
-        <Box className="pt-4 px-4 pb-0">
-          <Text
-            className="mb-2 uppercase"
-            variant={TextVariant.BodyMd}
-            color={DsTextColor.TextAlternative}
-          >
-            {t('shieldClaimsPendingTitle')}
-          </Text>
-          <Box className="flex flex-col gap-2">
-            {pendingClaims.map((claim) => claimItem(claim))}
+    <Tabs
+      className="h-full flex flex-col overflow-y-hidden"
+      tabListProps={{
+        className: 'px-4',
+      }}
+      tabContentProps={{
+        className: 'flex-1 overflow-y-hidden',
+      }}
+    >
+      <Tab
+        name={t('shieldClaimsTabPending')}
+        className="flex-1 px-4 py-2"
+        tabKey="pending"
+      >
+        {pendingClaims.length > 0 ? (
+          <Box className="h-full flex flex-col justify-between">
+            <Box className="flex-1 overflow-y-auto">
+              <Box padding={4} className="flex flex-col gap-4">
+                {/* Active claims */}
+                <Box>
+                  <Text
+                    variant={TextVariant.HeadingSm}
+                    fontWeight={FontWeight.Medium}
+                    className="mb-3"
+                  >
+                    {t('shieldClaimGroupActive')}
+                  </Text>
+                  <Box className="flex flex-col gap-2">
+                    {pendingClaims.map((claim) => claimItem(claim))}
+                  </Box>
+                </Box>
+              </Box>
+            </Box>
+            <Box className="p-4">
+              <Button
+                className="w-full"
+                variant={ButtonVariant.Primary}
+                size={ButtonSize.Lg}
+                onClick={() => {
+                  navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL);
+                }}
+              >
+                {t('shieldClaimSubmit')}
+              </Button>
+            </Box>
           </Box>
-        </Box>
-      )}
-      {historyClaims.length > 0 && (
-        <Box className="pt-4 px-4 pb-0">
-          <Text
-            className="mb-2 uppercase"
-            variant={TextVariant.BodyMd}
-            color={DsTextColor.TextAlternative}
-          >
-            {t('shieldClaimsHistoryTitle')}
-          </Text>
-          <Box className="flex flex-col gap-2">
-            {historyClaims.map((claim) => claimItem(claim))}
+        ) : (
+          <Box className="h-full flex justify-center items-center">
+            <Box className="text-center">
+              <img
+                src="/images/activity.svg"
+                alt={t('activity')}
+                className="mb-2 mx-auto"
+                width={72}
+                height={72}
+              />
+              <Text
+                variant={TextVariant.HeadingSm}
+                color={TextColor.TextAlternative}
+                className="mb-2"
+              >
+                {t('shieldClaimGroupNoOpenClaims')}
+              </Text>
+              <Text
+                variant={TextVariant.BodyMd}
+                color={TextColor.TextAlternative}
+                className="mb-4"
+              >
+                {t('shieldClaimGroupNoOpenClaimsDescription')}
+              </Text>
+              <Button
+                variant={ButtonVariant.Secondary}
+                size={ButtonSize.Lg}
+                onClick={() => {
+                  navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL);
+                }}
+              >
+                {t('shieldClaimSubmit')}
+              </Button>
+            </Box>
           </Box>
+        )}
+      </Tab>
+      <Tab
+        name={t('shieldClaimsTabHistory')}
+        className="flex-1 px-4 py-2"
+        tabKey="history"
+      >
+        <Box padding={4} className="flex flex-col gap-4">
+          {/* Completed claims */}
+          {completedClaims.length > 0 && (
+            <Box>
+              <Text
+                variant={TextVariant.HeadingSm}
+                fontWeight={FontWeight.Medium}
+                className="mb-3"
+              >
+                {t('shieldClaimGroupCompleted')}
+              </Text>
+              <Box className="flex flex-col gap-2">
+                {completedClaims.map((claim) => claimItem(claim))}
+              </Box>
+            </Box>
+          )}
+          {/* Rejected claims */}
+          {rejectedClaims.length > 0 && (
+            <Box>
+              <Text
+                variant={TextVariant.HeadingSm}
+                fontWeight={FontWeight.Medium}
+                className="mb-3"
+              >
+                {t('shieldClaimGroupRejected')}
+              </Text>
+              <Box className="flex flex-col gap-2">
+                {rejectedClaims.map((claim) => claimItem(claim))}
+              </Box>
+            </Box>
+          )}
         </Box>
-      )}
-      {isLoading && <LoadingScreen />}
-    </Box>
+      </Tab>
+    </Tabs>
   );
 };
 

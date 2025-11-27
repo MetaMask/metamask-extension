@@ -853,7 +853,7 @@ const TransactionShield = () => {
           buttonRow(
             t('shieldTxMembershipSubmitCase'),
             () => {
-              navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL);
+              navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);
             },
             'shield-detail-submit-case-button',
           )}

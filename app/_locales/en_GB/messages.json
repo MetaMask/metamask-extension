@@ -6053,8 +6053,11 @@
     "message": "Provide a brief summary of the incident"
   },
   "shieldClaimDetails": {
-    "message": "You may file a single claim per incident within $1 days of the incident. View the full list of what’s covered $2.",
+    "message": "You may file a single claim per incident within $1 days of the incident. $2",
     "description": "The $1 is the number of days and $2 is a link to the full coverage policy"
+  },
+  "shieldClaimDetailsGuide": {
+    "message": "View guide"
   },
   "shieldClaimDetailsViewClaims": {
     "message": "This claim is being reviewed by our team. We will notify you when it has been approved by email. View the full coverage policy $1.",
@@ -6087,6 +6090,21 @@
   },
   "shieldClaimFileUploaderHelpText": {
     "message": "If you have any additional evidence, please upload it here."
+  },
+  "shieldClaimGroupActive": {
+    "message": "Active claims"
+  },
+  "shieldClaimGroupCompleted": {
+    "message": "Completed claims"
+  },
+  "shieldClaimGroupNoOpenClaims": {
+    "message": "No open claims"
+  },
+  "shieldClaimGroupNoOpenClaimsDescription": {
+    "message": "Track the status of your claims here."
+  },
+  "shieldClaimGroupRejected": {
+    "message": "Rejected claims"
   },
   "shieldClaimImpactedTxHash": {
     "message": "Impacted transaction hash"
@@ -6148,24 +6166,6 @@
   "shieldClaimSignatureCoverageNotCovered": {
     "message": "Signature coverage not found for the given transaction hash."
   },
-  "shieldClaimStatusApproved": {
-    "message": "Approved"
-  },
-  "shieldClaimStatusCreated": {
-    "message": "Created"
-  },
-  "shieldClaimStatusInProgress": {
-    "message": "In progress"
-  },
-  "shieldClaimStatusRejected": {
-    "message": "Rejected"
-  },
-  "shieldClaimStatusSubmitted": {
-    "message": "Submitted"
-  },
-  "shieldClaimStatusWaitingForCustomer": {
-    "message": "Waiting for customer"
-  },
   "shieldClaimSubmissionWindowExpired": {
     "message": "Submission window expired. Claims must be filed within $1 days of the incident.",
     "description": "The $1 is the number of days"
@@ -6194,27 +6194,18 @@
   "shieldClaimWalletOwnershipValidationFailed": {
     "message": "Wallet ownership validation failed."
   },
-  "shieldClaimsHistoryTitle": {
-    "message": "CLAIM HISTORY"
-  },
   "shieldClaimsListTitle": {
-    "message": "Claim details"
+    "message": "Claims"
   },
   "shieldClaimsNumber": {
     "message": "Claim #$1",
     "description": "The $1 is the claim number"
   },
-  "shieldClaimsPendingAlertActionButtonLabel": {
-    "message": "View claims"
+  "shieldClaimsTabHistory": {
+    "message": "Claim history"
   },
-  "shieldClaimsPendingAlertDescription": {
-    "message": "Your claims is being reviewed by our team. We will notify you when it has been approved by email."
-  },
-  "shieldClaimsPendingAlertTitle": {
-    "message": "You have claims that are pending approval."
-  },
-  "shieldClaimsPendingTitle": {
-    "message": "PENDING CLAIMS"
+  "shieldClaimsTabPending": {
+    "message": "Claims"
   },
   "shieldConfirmMembership": {
     "message": "Confirm plan"

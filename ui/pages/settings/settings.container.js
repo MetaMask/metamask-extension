@@ -151,11 +151,11 @@ const mapStateToProps = (state, ownProps) => {
   } else if (isRevealSrpListPage || isPasswordChangePage) {
     backRoute = SECURITY_ROUTE;
   } else if (isShieldClaimNewPage) {
-    backRoute = TRANSACTION_SHIELD_ROUTE;
+    backRoute = TRANSACTION_SHIELD_CLAIM_ROUTES.BASE;
   } else if (isShieldClaimViewPage) {
     backRoute = TRANSACTION_SHIELD_CLAIM_ROUTES.BASE;
   } else if (isShieldClaimBasePage) {
-    backRoute = TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL;
+    backRoute = TRANSACTION_SHIELD_ROUTE;
   }
 
   const addressName = getAddressBookEntryOrAccountName(
