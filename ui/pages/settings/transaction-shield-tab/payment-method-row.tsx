@@ -9,16 +9,13 @@ import {
 } from '@metamask/subscription-controller';
 import {
   Box,
-  ButtonLink,
+  FontWeight,
   IconName,
   IconSize,
   Text,
-} from '../../../components/component-library';
-import {
-  IconColor,
-  TextColor,
+  TextButton,
   TextVariant,
-} from '../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   useAvailableTokenBalances,
@@ -214,62 +211,51 @@ export const PaymentMethodRow = ({
 
       return (
         <Tooltip position="top" title={t(tooltipText)}>
-          <ButtonLink
+          <TextButton
+            className="text-error-default decoration-error-default hover:decoration-error-default hover:text-error-default"
             startIconName={IconName.Danger}
-            startIconProps={{
-              size: IconSize.Md,
-            }}
+            startIconProps={{ size: IconSize.Md }}
             onClick={handlePaymentError}
-            danger
           >
             {t(buttonText, [
               isCryptoPaymentMethod(displayedShieldSubscription?.paymentMethod)
                 ? displayedShieldSubscription.paymentMethod.crypto.tokenSymbol
                 : '',
             ])}
-          </ButtonLink>
+          </TextButton>
         </Tooltip>
       );
     }
     if (isSubscriptionEndingSoon && displayedShieldSubscription) {
       return (
-        <ButtonLink
-          className="warning-button"
+        <TextButton
+          className="text-warning-default decoration-warning-default hover:decoration-warning-default hover:text-warning-default"
           startIconName={IconName.Danger}
           startIconProps={{
             size: IconSize.Md,
-            color: IconColor.warningDefault,
           }}
-          color={TextColor.warningDefault}
           onClick={handlePaymentError}
         >
           {isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)
             ? displayedShieldSubscription.paymentMethod.crypto.tokenSymbol
             : ''}
-        </ButtonLink>
+        </TextButton>
       );
     }
 
-    const paymentMethodText = isCryptoPaymentMethod(
-      displayedShieldSubscription.paymentMethod,
-    )
-      ? displayedShieldSubscription.paymentMethod.crypto.tokenSymbol
-      : // display card info for card payment method
-        `${displayedShieldSubscription.paymentMethod.card.brand.charAt(0).toUpperCase() + displayedShieldSubscription.paymentMethod.card.brand.slice(1)} - ${displayedShieldSubscription.paymentMethod.card.last4}`;
+    if (isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)) {
+      return (
+        <TextButton
+          className="text-default decoration-text-default hover:decoration-text-default hover:text-default"
+          onClick={() => setShowPaymentModal(true)}
+          endIconName={IconName.ArrowRight}
+        >
+          {displayedShieldSubscription.paymentMethod.crypto.tokenSymbol}
+        </TextButton>
+      );
+    }
 
-    return (
-      <ButtonLink
-        className="neutral-button"
-        onClick={() => setShowPaymentModal(true)}
-        endIconName={IconName.ArrowRight}
-        color={TextColor.textDefault}
-        endIconProps={{
-          color: IconColor.iconDefault,
-        }}
-      >
-        {paymentMethodText}
-      </ButtonLink>
-    );
+    return `${displayedShieldSubscription.paymentMethod.card.brand.charAt(0).toUpperCase() + displayedShieldSubscription.paymentMethod.card.brand.slice(1)} - ${displayedShieldSubscription.paymentMethod.card.last4}`;
   }, [
     displayedShieldSubscription,
     isPaused,
@@ -281,7 +267,11 @@ export const PaymentMethodRow = ({
   ]);
 
   if (showSkeletonLoader) {
-    return <Text variant={TextVariant.bodyMdMedium}>-</Text>;
+    return (
+      <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+        -
+      </Text>
+    );
   }
 
   // For error states, return the error button (not clickable for modal)

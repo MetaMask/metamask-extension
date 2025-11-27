@@ -147,9 +147,6 @@ const ShieldEntryModal = ({
     // Ensure handleOnClose completes before redirecting
     await handleOnClose(ShieldCtaActionClickedEnum.Start14DayTrial);
 
-    // add source to marketing UTM params
-    marketingUtmParams.source = source;
-
     navigate({
       pathname: SHIELD_PLAN_ROUTE,
       search:
