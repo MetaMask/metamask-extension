@@ -56,7 +56,7 @@ This table shows the token list sizes after implementing the new occurrence floo
 
 ## Key Observations
 
-1. **Size Increases**: Most chains saw significant size increases when moving from occurrenceFloor 3 to 2, indicating that many tokens with occurrence = 2 are now being included.
+1. **Size Increases**: Most chains saw significant size increases when moving from occurrenceFloor 3 to 2.
 
 2. **Major Size Changes**:
    - **Base**: 470.34 KB → 749.80 KB (+59% increase)
@@ -66,6 +66,7 @@ This table shows the token list sizes after implementing the new occurrence floo
 
 3. **Chains with OccurrenceFloor = 1**: These chains now include tokens that appear on only 1 aggregator, making them more inclusive for newer or less established tokens.
 
-4. **New Entries**: ApeChain now has tokens (was previously empty), and some token counts have changed significantly.
+4. **New Entries**: ApeChain now has tokens (was previously empty)
 
 5. **Performance Impact**: The total data transferred has increased substantially, which may impact loading times and bandwidth usage.
+(This issue is currently being discussed/impl in early stages with mobile team)
