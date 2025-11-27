@@ -1,3 +1,26 @@
+diff --git a/src/Common/VMScript.js b/src/Common/VMScript.js
+index f83d758d92d67528ada004b0a3d4379fb3afcec4..50b09389fe61019d9a69fbcd53193d7e3fc8d3c9 100644
+--- a/src/Common/VMScript.js
++++ b/src/Common/VMScript.js
+@@ -35,6 +35,18 @@ class VMScript {
+     }
+ 
+     try {
++      const sourceMapImport = 'import ___CSS_LOADER_API_SOURCEMAP_IMPORT___ from "../../node_modules/css-loader/dist/runtime/sourceMaps.js";'
++      if (code.includes(sourceMapImport)){
++        code = code.replace(sourceMapImport, `var ___CSS_LOADER_API_SOURCEMAP_IMPORT___ = require('../../node_modules/css-loader/dist/runtime/sourceMaps.js');`)
++      }
++      const apiImport = 'import ___CSS_LOADER_API_IMPORT___ from "../../node_modules/css-loader/dist/runtime/api.js";'
++      if (code.includes(apiImport)){
++        code = code.replace(apiImport, `var ___CSS_LOADER_API_IMPORT___ = require('../../node_modules/css-loader/dist/runtime/api.js');`)
++      }
++      const getUrlImport = 'import ___CSS_LOADER_GET_URL_IMPORT___ from "../../node_modules/css-loader/dist/runtime/getUrl.js";'
++      if (code.includes(getUrlImport)){
++        code = code.replace(getUrlImport, `var ___CSS_LOADER_GET_URL_IMPORT___ = require('../../node_modules/css-loader/dist/runtime/getUrl.js');`)
++      }
+       const script = new vm.Script(code, { filename });
+       let result = script.runInContext(this.context);
+ 
 diff --git a/src/Plugin/PluginService.js b/src/Plugin/PluginService.js
 index b4c434959c9cb6b56b65f2a8fe578d2dcc0466b9..01771bba8d9fa44cbb6bd7eda473352fe7beca26 100644
 --- a/src/Plugin/PluginService.js
