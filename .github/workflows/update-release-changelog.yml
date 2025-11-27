@@ -42,15 +42,16 @@ jobs:
     name: Update changelog
     needs: validate-branch
     if: needs.validate-branch.outputs.is-valid-release == 'true'
+    runs-on: ubuntu-latest
     permissions:
       contents: write
       pull-requests: write
-    uses: MetaMask/github-tools/.github/workflows/update-release-changelog.yml@36dc168896c1b496f35fc880ee8a3625b4b837ba
-    with:
-      release-branch: ${{ github.ref_name }}
-      repository-url: ${{ github.server_url }}/${{ github.repository }}
-      platform: extension
-      github-tools-version: 36dc168896c1b496f35fc880ee8a3625b4b837ba
-      previous-version-ref: null
-    secrets:
-      github-token: ${{ secrets.PR_TOKEN }}
+    steps:
+      - name: Update Release Changelog
+        uses: MetaMask/github-tools/.github/actions/update-release-changelog@v1.1.0
+        with:
+          release-branch: ${{ github.ref_name }}
+          repository-url: ${{ github.server_url }}/${{ github.repository }}
+          platform: extension
+          previous-version-ref: 'null'
+          github-token: ${{ secrets.PR_TOKEN }}
