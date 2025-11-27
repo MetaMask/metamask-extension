@@ -77,7 +77,7 @@ type ReviewGatorPermissionItemProps = {
   /**
    * Whether this permission has a pending revoke click (temporary UI state)
    */
-  isPendingRevokeClick?: boolean;
+  hasRevokeBeenClicked?: boolean;
 };
 
 type PermissionExpandedDetails = Record<
@@ -107,7 +107,7 @@ export const ReviewGatorPermissionItem = ({
   networkName,
   gatorPermission,
   onRevokeClick,
-  isPendingRevokeClick = false,
+  hasRevokeBeenClicked = false,
 }: ReviewGatorPermissionItemProps) => {
   const t = useI18nContext();
   const { permissionResponse, siteOrigin } = gatorPermission;
@@ -158,12 +158,12 @@ export const ReviewGatorPermissionItem = ({
 
   const isPendingRevocation = useMemo(() => {
     return (
-      isPendingRevokeClick ||
+      hasRevokeBeenClicked ||
       pendingRevocations.some(
         (revocation) => revocation.permissionContext === permissionContext,
       )
     );
-  }, [pendingRevocations, permissionContext, isPendingRevokeClick]);
+  }, [pendingRevocations, permissionContext, hasRevokeBeenClicked]);
 
   /**
    * Handles the click event for the expand/collapse button

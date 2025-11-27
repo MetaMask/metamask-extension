@@ -141,11 +141,6 @@ export const ReviewGatorPermissionsPage = ({
       try {
         await revokeGatorPermission(permission);
 
-        // Clear any existing timeout for this context
-        const existingTimeout = revokeTimeoutsRef.current.get(context);
-        clearTimeout(existingTimeout);
-        revokeTimeoutsRef.current.delete(context);
-
         // Delay clearing to prevent visual flash before transaction window shows
         const timeoutId = setTimeout(() => {
           removePendingContext(context);
@@ -180,7 +175,7 @@ export const ReviewGatorPermissionsPage = ({
         networkName={networkName}
         gatorPermission={permission}
         onRevokeClick={() => handleRevokeClick(permission)}
-        isPendingRevokeClick={pendingRevokeClicks.has(
+        hasRevokeBeenClicked={pendingRevokeClicks.has(
           permission.permissionResponse.context,
         )}
       />
