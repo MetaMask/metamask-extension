@@ -172,8 +172,7 @@
         "setTimeout": true
       },
       "packages": {
-        "@lydell/node-pty>@lydell/node-pty-darwin-arm64": true,
-        "@lydell/node-pty>@lydell": true
+        "@lydell/node-pty>@lydell/node-pty-darwin-arm64": true
       }
     },
     "@lydell/node-pty>@lydell/node-pty-darwin-arm64": {
@@ -284,7 +283,8 @@
         "process.report.getReport": true
       },
       "packages": {
-        "@swc/core>@swc/core-darwin-arm64": true
+        "@swc/core>@swc/core-darwin-arm64": true,
+        "@swc/core>@swc/core-linux-x64-gnu": true
       }
     },
     "@swc/core>@swc/core-darwin-arm64": {
@@ -626,7 +626,6 @@
       "packages": {
         "chokidar>anymatch": true,
         "chokidar>braces": true,
-        "tsx>fsevents": true,
         "eslint>glob-parent": true,
         "chokidar>is-binary-path": true,
         "del>is-glob": true,
@@ -1351,13 +1350,6 @@
       "packages": {
         "gulp>undertaker>object.reduce>for-own>for-in": true
       }
-    },
-    "tsx>fsevents": {
-      "globals": {
-        "console.assert": true,
-        "process.platform": true
-      },
-      "native": true
     },
     "string.prototype.matchall>get-intrinsic": {
       "globals": {
