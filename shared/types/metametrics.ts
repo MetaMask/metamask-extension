@@ -103,5 +103,5 @@ export type DefaultSubscriptionPaymentOptions = {
 export type ShieldSubscriptionMetricsPropsFromUI = {
   userBalanceInUSD: number;
   source: EntryModalSourceEnum;
-  marketingUtmId?: string;
+  marketingUtmParams?: Record<string, string>;
 };
