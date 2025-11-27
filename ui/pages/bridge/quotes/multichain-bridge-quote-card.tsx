@@ -46,6 +46,7 @@ import { RewardsBadge } from '../../../components/app/rewards/RewardsBadge';
 import AddRewardsAccount from '../../../components/app/rewards/AddRewardsAccount';
 import { Skeleton } from '../../../components/component-library/skeleton';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
+import { getGasFeesSponsoredNetworkEnabled } from '../../../selectors/selectors';
 
 const getTimerColor = (timeInSeconds: number) => {
   if (timeInSeconds <= 3) {
@@ -87,6 +88,9 @@ export const MultichainBridgeQuoteCard = ({
   const dispatch = useDispatch();
 
   const isToOrFromNonEvm = useSelector(getIsToOrFromNonEvm);
+  const gasFeesSponsoredNetworkEnabled = useSelector(
+    getGasFeesSponsoredNetworkEnabled,
+  );
 
   const [showAllQuotes, setShowAllQuotes] = useState(false);
 
@@ -97,7 +101,24 @@ export const MultichainBridgeQuoteCard = ({
   const gasIncluded = activeQuote?.quote?.gasIncluded ?? false;
   const gasIncluded7702 = activeQuote?.quote?.gasIncluded7702 ?? false;
   const gasSponsored = activeQuote?.quote?.gasSponsored ?? false;
-  const isGasless = gasIncluded7702 || gasIncluded || gasSponsored;
+  const isGasless = gasIncluded7702 || gasIncluded;
+
+  const isCurrentNetworkGasSponsored = useMemo(() => {
+    if (!fromChain?.chainId || !gasFeesSponsoredNetworkEnabled) {
+      return false;
+    }
+    return Boolean(
+      gasFeesSponsoredNetworkEnabled[
+        fromChain.chainId as keyof typeof gasFeesSponsoredNetworkEnabled
+      ],
+    );
+  }, [fromChain?.chainId, gasFeesSponsoredNetworkEnabled]);
+
+
+  const shouldShowGasSponsored =
+    gasSponsored || (insufficientBal && isCurrentNetworkGasSponsored);
+
+
 
   const nativeTokenSymbol = fromChain
     ? getNativeAssetForChainId(fromChain.chainId).symbol
@@ -266,7 +287,7 @@ export const MultichainBridgeQuoteCard = ({
                 {t('networkFeeExplanation')}
               </Tooltip>
             </Row>
-            {gasSponsored && (
+            {shouldShowGasSponsored && (
               <Row gap={1} data-testid="network-fees-sponsored">
                 <Text
                   variant={TextVariant.bodySm}
@@ -283,7 +304,7 @@ export const MultichainBridgeQuoteCard = ({
                 </Tooltip>
               </Row>
             )}
-            {!gasSponsored && activeQuote.quote.gasIncluded && (
+            {!shouldShowGasSponsored && activeQuote.quote.gasIncluded && (
               <Row gap={1} data-testid="network-fees-included">
                 <Text
                   variant={TextVariant.bodySm}
@@ -308,7 +329,7 @@ export const MultichainBridgeQuoteCard = ({
                 </Text>
               </Row>
             )}
-            {!gasSponsored && !activeQuote.quote.gasIncluded && (
+            {!shouldShowGasSponsored && !activeQuote.quote.gasIncluded && (
               <Text
                 variant={TextVariant.bodySm}
                 color={TextColor.textAlternative}
