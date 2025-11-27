@@ -384,7 +384,13 @@ const TransactionShield = () => {
       return amount;
     }, [currentToken, displayedShieldSubscription]);
 
-  const paymentToken = useMemo(() => {
+  const paymentToken = useMemo<
+    | Pick<
+        TokenWithApprovalAmount,
+        'chainId' | 'address' | 'approvalAmount' | 'symbol'
+      >
+    | undefined
+  >(() => {
     if (
       !displayedShieldSubscription ||
       !currentToken ||
@@ -399,6 +405,7 @@ const TransactionShield = () => {
     return {
       chainId: displayedShieldSubscription.paymentMethod.crypto.chainId,
       address: currentToken.address,
+      symbol: currentToken.symbol,
       approvalAmount: {
         approveAmount: subscriptionCryptoApprovalAmount.approveAmount,
         chainId: displayedShieldSubscription.paymentMethod.crypto.chainId,
@@ -415,15 +422,36 @@ const TransactionShield = () => {
   ]);
 
   const { execute: executeSubscriptionCryptoApprovalTransaction } =
-    useSubscriptionCryptoApprovalTransaction();
+    useSubscriptionCryptoApprovalTransaction(paymentToken);
 
-  const { execute: executeUpdateSubscriptionCryptoPaymentMethod } =
-    useUpdateSubscriptionCryptoPaymentMethod({
-      subscription: currentShieldSubscription,
-    });
+  const [selectedChangePaymentToken, setSelectedChangePaymentToken] = useState<
+    | Pick<
+        TokenWithApprovalAmount,
+        'chainId' | 'address' | 'approvalAmount' | 'symbol'
+      >
+    | undefined
+  >();
 
-  const [paymetMethodChangeSubmitting, setPaymetMethodChangeSubmitting] =
-    useState(false);
+  const {
+    execute: executeUpdateSubscriptionCryptoPaymentMethod,
+    result: updateSubscriptionCryptoPaymentMethodResult,
+  } = useUpdateSubscriptionCryptoPaymentMethod({
+    subscription: currentShieldSubscription,
+    selectedToken: selectedChangePaymentToken,
+  });
+
+  // trigger update subscription crypto payment method when selected change payment token changes
+  useEffect(() => {
+    if (selectedChangePaymentToken) {
+      executeUpdateSubscriptionCryptoPaymentMethod().then(() => {
+        // reset selected change payment token after update subscription crypto payment method succeeded
+        setSelectedChangePaymentToken(undefined);
+      });
+    }
+  }, [
+    selectedChangePaymentToken,
+    executeUpdateSubscriptionCryptoPaymentMethod,
+  ]);
 
   const handlePaymentMethodChange = useCallback(
     async (
@@ -431,26 +459,19 @@ const TransactionShield = () => {
       selectedToken?: TokenWithApprovalAmount,
     ) => {
       try {
-        setPaymetMethodChangeSubmitting(true);
         if (paymentType === PAYMENT_TYPES.byCard) {
           await executeUpdateSubscriptionCardPaymentMethod();
         } else if (paymentType === PAYMENT_TYPES.byCrypto) {
-          // For now, this is a placeholder
           if (!selectedToken) {
             throw new Error('No token selected');
           }
-          await executeUpdateSubscriptionCryptoPaymentMethod(selectedToken);
+          setSelectedChangePaymentToken(selectedToken);
         }
       } catch (error) {
         console.error('Error changing payment method', error);
-      } finally {
-        setPaymetMethodChangeSubmitting(false);
       }
     },
-    [
-      executeUpdateSubscriptionCardPaymentMethod,
-      executeUpdateSubscriptionCryptoPaymentMethod,
-    ],
+    [executeUpdateSubscriptionCardPaymentMethod, setSelectedChangePaymentToken],
   );
 
   const loading =
@@ -458,7 +479,7 @@ const TransactionShield = () => {
     unCancelSubscriptionResult.pending ||
     openGetSubscriptionBillingPortalResult.pending ||
     updateSubscriptionCardPaymentMethodResult.pending ||
-    paymetMethodChangeSubmitting;
+    updateSubscriptionCryptoPaymentMethodResult.pending;
 
   const isCardPayment =
     currentShieldSubscription &&
@@ -523,10 +544,7 @@ const TransactionShield = () => {
         //   rawTransaction: undefined // no raw transaction to trigger server to check for new funded balance
         // }))
       } else if (isAllowanceNeededCrypto) {
-        if (!paymentToken) {
-          throw new Error('No payment token');
-        }
-        await executeSubscriptionCryptoApprovalTransaction(paymentToken);
+        await executeSubscriptionCryptoApprovalTransaction();
       } else {
         throw new Error('Unknown crypto error action');
       }
@@ -545,7 +563,6 @@ const TransactionShield = () => {
     setIsAddFundsModalOpen,
     executeSubscriptionCryptoApprovalTransaction,
     captureShieldErrorStateClickedEvent,
-    paymentToken,
   ]);
 
   const membershipErrorBanner = useMemo(() => {

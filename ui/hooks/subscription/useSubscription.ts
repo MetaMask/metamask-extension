@@ -314,7 +314,12 @@ export const useUpdateSubscriptionCardPaymentMethod = ({
   ]);
 };
 
-export const useSubscriptionCryptoApprovalTransaction = () => {
+export const useSubscriptionCryptoApprovalTransaction = (
+  selectedToken?: Pick<
+    TokenWithApprovalAmount,
+    'chainId' | 'address' | 'approvalAmount'
+  >,
+) => {
   const navigate = useNavigate();
   const { subscriptionPricing } = useSubscriptionPricing();
   const evmInternalAccount = useSelector((state) =>
@@ -338,58 +343,51 @@ export const useSubscriptionCryptoApprovalTransaction = () => {
     }
   }, [hasPendingApprovals, shieldTransactionDispatched, navigate]);
 
-  const handler = useCallback(
-    async (
-      selectedToken: Pick<
-        TokenWithApprovalAmount,
-        'chainId' | 'address' | 'approvalAmount'
-      >,
-    ) => {
-      if (!subscriptionPricing) {
-        throw new Error('Subscription pricing not found');
-      }
+  const handler = useCallback(async () => {
+    if (!subscriptionPricing) {
+      throw new Error('Subscription pricing not found');
+    }
 
-      if (!selectedToken) {
-        throw new Error('No token selected');
-      }
+    if (!selectedToken) {
+      throw new Error('No token selected');
+    }
 
-      const networkConfiguration =
-        networkConfigurationsByChainId[selectedToken.chainId as Hex];
-      const networkClientId =
-        networkConfiguration?.rpcEndpoints[
-          networkConfiguration.defaultRpcEndpointIndex ?? 0
-        ]?.networkClientId;
+    const networkConfiguration =
+      networkConfigurationsByChainId[selectedToken.chainId as Hex];
+    const networkClientId =
+      networkConfiguration?.rpcEndpoints[
+        networkConfiguration.defaultRpcEndpointIndex ?? 0
+      ]?.networkClientId;
 
-      const spenderAddress = subscriptionPricing?.paymentMethods
-        ?.find((method) => method.type === PAYMENT_TYPES.byCrypto)
-        ?.chains?.find(
-          (chain) => chain.chainId === selectedToken?.chainId,
-        )?.paymentAddress;
-      const approvalData = generateERC20ApprovalData({
-        spenderAddress,
-        amount: decimalToHex(selectedToken.approvalAmount.approveAmount),
-      });
-      const transactionParams: TransactionParams = {
-        from: evmInternalAccount?.address as Hex,
-        to: selectedToken.address as Hex,
-        value: '0x0',
-        data: approvalData,
-      };
-      transactionParams.gas = await estimateGas(transactionParams);
-      const transactionOptions = {
-        type: TransactionType.shieldSubscriptionApprove,
-        networkClientId: networkClientId as string,
-      };
-      await addTransaction(transactionParams, transactionOptions);
-      setShieldTransactionDispatched(true);
-    },
-    [
-      setShieldTransactionDispatched,
-      subscriptionPricing,
-      evmInternalAccount,
-      networkConfigurationsByChainId,
-    ],
-  );
+    const spenderAddress = subscriptionPricing?.paymentMethods
+      ?.find((method) => method.type === PAYMENT_TYPES.byCrypto)
+      ?.chains?.find(
+        (chain) => chain.chainId === selectedToken?.chainId,
+      )?.paymentAddress;
+    const approvalData = generateERC20ApprovalData({
+      spenderAddress,
+      amount: decimalToHex(selectedToken.approvalAmount.approveAmount),
+    });
+    const transactionParams: TransactionParams = {
+      from: evmInternalAccount?.address as Hex,
+      to: selectedToken.address as Hex,
+      value: '0x0',
+      data: approvalData,
+    };
+    transactionParams.gas = await estimateGas(transactionParams);
+    const transactionOptions = {
+      type: TransactionType.shieldSubscriptionApprove,
+      networkClientId: networkClientId as string,
+    };
+    await addTransaction(transactionParams, transactionOptions);
+    setShieldTransactionDispatched(true);
+  }, [
+    setShieldTransactionDispatched,
+    subscriptionPricing,
+    evmInternalAccount,
+    networkConfigurationsByChainId,
+    selectedToken,
+  ]);
 
   return {
     execute: handler,
@@ -487,7 +485,7 @@ export const useHandleSubscription = ({
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const { search } = useLocation();
   const { execute: executeSubscriptionCryptoApprovalTransaction } =
-    useSubscriptionCryptoApprovalTransaction();
+    useSubscriptionCryptoApprovalTransaction(selectedToken);
   const { subscriptions, lastSubscription } = useUserSubscriptions();
   const {
     captureShieldSubscriptionRequestEvent,
@@ -582,10 +580,7 @@ export const useHandleSubscription = ({
           }),
         );
       } else if (selectedPaymentMethod === PAYMENT_TYPES.byCrypto) {
-        if (!selectedToken) {
-          throw new Error('No token selected');
-        }
-        await executeSubscriptionCryptoApprovalTransaction(selectedToken);
+        await executeSubscriptionCryptoApprovalTransaction();
       }
     }, [
       dispatch,
@@ -645,46 +640,49 @@ export const useHandleSubscriptionSupportAction = () => {
 
 export const useUpdateSubscriptionCryptoPaymentMethod = ({
   subscription,
+  selectedToken,
 }: {
   subscription?: Subscription;
+  selectedToken?: Pick<
+    TokenWithApprovalAmount,
+    'chainId' | 'address' | 'approvalAmount' | 'symbol'
+  >;
 }) => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const { execute: executeSubscriptionCryptoApprovalTransaction } =
-    useSubscriptionCryptoApprovalTransaction();
+    useSubscriptionCryptoApprovalTransaction(selectedToken);
   // This update the subscription payment method to crypto
   // and trigger the approval transaction flow
-  const handler = useCallback(
-    async (
-      selectedToken: Pick<
-        TokenWithApprovalAmount,
-        'chainId' | 'address' | 'approvalAmount' | 'symbol'
-      >,
-    ) => {
-      if (!subscription) {
-        throw new Error('No subscription exist');
-      }
-      // only allow update payment method to crypto -> crypto atm
-      if (!isCryptoPaymentMethod(subscription.paymentMethod)) {
-        throw new Error('Subscription is not a crypto payment method');
-      }
-      if (!selectedToken) {
-        throw new Error('No token selected');
-      }
+  const [handler, result] = useAsyncCallback(async () => {
+    if (!subscription) {
+      throw new Error('No subscription exist');
+    }
+    // only allow update payment method to crypto -> crypto atm
+    if (!isCryptoPaymentMethod(subscription.paymentMethod)) {
+      throw new Error('Subscription is not a crypto payment method');
+    }
+    if (!selectedToken) {
+      throw new Error('No token selected');
+    }
 
-      // save the changing payment method as last used subscription payment method and plan to Redux store
-      await dispatch(
-        setLastUsedSubscriptionPaymentDetails(PRODUCT_TYPES.SHIELD, {
-          type: PAYMENT_TYPES.byCrypto,
-          paymentTokenAddress: selectedToken.address as Hex,
-          paymentTokenSymbol: selectedToken.symbol,
-          plan: subscription.interval,
-        }),
-      );
-      await executeSubscriptionCryptoApprovalTransaction(selectedToken);
-    },
-    [subscription, executeSubscriptionCryptoApprovalTransaction, dispatch],
-  );
+    // save the changing payment method as last used subscription payment method and plan to Redux store
+    await dispatch(
+      setLastUsedSubscriptionPaymentDetails(PRODUCT_TYPES.SHIELD, {
+        type: PAYMENT_TYPES.byCrypto,
+        paymentTokenAddress: selectedToken.address as Hex,
+        paymentTokenSymbol: selectedToken.symbol,
+        plan: subscription.interval,
+      }),
+    );
+    await executeSubscriptionCryptoApprovalTransaction();
+  }, [
+    subscription,
+    executeSubscriptionCryptoApprovalTransaction,
+    dispatch,
+    selectedToken,
+  ]);
   return {
     execute: handler,
+    result,
   };
 };
