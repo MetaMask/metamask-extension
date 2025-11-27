@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { useSyncEqualityCheck } from './useSyncEqualityCheck';
 
 type UsePollingOptions<PollingInput> = {
   callback?: (pollingToken: string) => (pollingToken: string) => void;
@@ -13,58 +14,50 @@ const usePolling = <PollingInput>(
 ) => {
   const pollTokenRef = useRef<null | string>(null);
   const cleanupRef = useRef<null | ((pollingToken: string) => void)>(null);
+  const pollingInput = useSyncEqualityCheck(usePollingOptions.input);
 
-  const prevPollingInputStringified = useRef<string | null>(null);
-  const hasPollingInputChanged =
-    JSON.stringify(usePollingOptions.input) !==
-    prevPollingInputStringified.current;
-
-  const isMounted = useRef(false);
+  const isMounted = useRef(true);
   useEffect(() => {
-    isMounted.current = true;
     return () => {
       isMounted.current = false;
     };
   }, []);
 
   useEffect(() => {
-    if (usePollingOptions.enabled === false || !hasPollingInputChanged) {
+    const cleanup = () => {
+      if (pollTokenRef.current) {
+        usePollingOptions.stopPollingByPollingToken(pollTokenRef.current);
+        cleanupRef.current?.(pollTokenRef.current);
+        pollTokenRef.current = null;
+        cleanupRef.current = null;
+      }
+    };
+
+    if (usePollingOptions.enabled === false) {
+      // Stop polling if it was previously enabled
+      if (pollTokenRef.current) {
+        cleanup();
+      }
       return () => {
         // noop
       };
     }
 
-    const cleanup = () => {
-      if (pollTokenRef.current) {
-        usePollingOptions.stopPollingByPollingToken(pollTokenRef.current);
-        cleanupRef.current?.(pollTokenRef.current);
-      }
-    };
-
     // Start polling when the component mounts
-    usePollingOptions
-      .startPolling(usePollingOptions.input)
-      .then((pollToken) => {
-        pollTokenRef.current = pollToken;
-        cleanupRef.current = usePollingOptions.callback?.(pollToken) ?? null;
-        if (!isMounted.current) {
-          cleanup();
-        }
-      });
+    usePollingOptions.startPolling(pollingInput).then((pollToken) => {
+      pollTokenRef.current = pollToken;
+      cleanupRef.current = usePollingOptions.callback?.(pollToken) ?? null;
+      if (!isMounted.current) {
+        cleanup();
+      }
+    });
 
-    prevPollingInputStringified.current = JSON.stringify(
-      usePollingOptions.input,
-    );
-
-    // Return a cleanup function to stop polling when the component unmounts
-    return () => {
-      prevPollingInputStringified.current = null;
-      cleanup();
-    };
+    // Return a cleanup function to stop polling when the component unmounts or dependencies change
+    return cleanup;
   }, [
-    usePollingOptions.input,
-    hasPollingInputChanged,
+    pollingInput,
     usePollingOptions.enabled,
+    usePollingOptions.stopPollingByPollingToken,
   ]);
 };
 
