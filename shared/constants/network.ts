@@ -208,6 +208,7 @@ export const CHAIN_IDS = {
   INJECTIVE: '0x6f0',
   MONAD: '0x8f',
   HYPE: '0x3e7',
+  XONE: '0xe89',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -370,6 +371,7 @@ export const PLASMA_DISPLAY_NAME = 'Plasma';
 export const LUKSO_DISPLAY_NAME = 'Lukso';
 export const INJECTIVE_DISPLAY_NAME = 'Injective';
 export const HYPEREVM_DISPLAY_NAME = 'HyperEVM';
+export const XONE_DISPLAY_NAME = 'Xone Mainnet';
 
 // If `network.ts` is being run in the Node.js environment, `infura-project-id.ts` will not be imported,
 // so we need to look at process.env.INFURA_PROJECT_ID instead.
@@ -404,6 +406,7 @@ export const LINEA_MAINNET_RPC_URL = getRpcUrl({
 export const LOCALHOST_RPC_URL = 'http://localhost:8545';
 export const MEGAETH_TESTNET_RPC_URL = 'https://carrot.megaeth.com/rpc';
 export const MONAD_TESTNET_RPC_URL = 'https://testnet-rpc.monad.xyz';
+export const XONE_RPC_URL = 'https://rpc.xone.org';
 
 /**
  * An object containing the token symbols for various tokens that are either
@@ -455,6 +458,7 @@ export const CURRENCY_SYMBOLS = {
   LUKSO: 'LYX',
   INJECTIVE: 'INJ',
   HYPE: 'HYPE',
+  XONE: 'XOC',
 } as const;
 
 // Non-EVM currency symbols
@@ -677,6 +681,8 @@ export const LUKSO_IMAGE_URL = './images/lukso.svg';
 export const LUKSO_NATIVE_TOKEN_IMAGE_URL = './images/lukso-native.svg';
 export const INJECTIVE_IMAGE_URL = './images/injective.svg';
 export const HYPEREVM_IMAGE_URL = './images/hyperevm.svg';
+export const XONE_IMAGE_URL = './images/xone.svg';
+export const XONE_NATIVE_TOKEN_IMAGE_URL = './images/xone-native.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -839,6 +845,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.LUKSO]: LUKSO_DISPLAY_NAME,
   [CHAIN_IDS.INJECTIVE]: INJECTIVE_DISPLAY_NAME,
   [CHAIN_IDS.HYPE]: HYPEREVM_DISPLAY_NAME,
+  [CHAIN_IDS.XONE]: XONE_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -997,6 +1004,7 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.LUKSO]: CURRENCY_SYMBOLS.LUKSO,
   [CHAIN_IDS.INJECTIVE]: CURRENCY_SYMBOLS.INJECTIVE,
   [CHAIN_IDS.HYPE]: CURRENCY_SYMBOLS.HYPE,
+  [CHAIN_IDS.XONE]: CURRENCY_SYMBOLS.XONE,
 } as const;
 
 /**
@@ -1043,6 +1051,7 @@ export const CHAIN_ID_TO_RPC_URL_MAP = {
   [CHAIN_IDS.LOCALHOST]: LOCALHOST_RPC_URL,
   [CHAIN_IDS.MEGAETH_TESTNET]: MEGAETH_TESTNET_RPC_URL,
   [CHAIN_IDS.MONAD_TESTNET]: MONAD_TESTNET_RPC_URL,
+  [CHAIN_IDS.XONE]: XONE_RPC_URL,
 } as const;
 
 export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
@@ -1174,6 +1183,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.LUKSO]: LUKSO_IMAGE_URL,
   [CHAIN_IDS.INJECTIVE]: INJECTIVE_IMAGE_URL,
   [CHAIN_IDS.HYPE]: HYPEREVM_IMAGE_URL,
+  [CHAIN_IDS.XONE]: XONE_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1257,6 +1267,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.LUKSO]: LUKSO_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.INJECTIVE]: INJECTIVE_IMAGE_URL,
   [CHAIN_IDS.HYPE]: HYPEREVM_IMAGE_URL,
+  [CHAIN_IDS.XONE]: XONE_NATIVE_TOKEN_IMAGE_URL,
   [MultichainNetworks.SOLANA]: SOLANA_IMAGE_URL,
   [MultichainNetworks.SOLANA_TESTNET]: SOLANA_TESTNET_IMAGE_URL,
   [MultichainNetworks.SOLANA_DEVNET]: SOLANA_DEVNET_IMAGE_URL,
@@ -1581,6 +1592,20 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     ],
     defaultRpcEndpointIndex: 0,
     blockExplorerUrls: ['https://basescan.org'],
+    defaultBlockExplorerUrlIndex: 0,
+  },
+  {
+    chainId: CHAIN_IDS.XONE,
+    name: XONE_DISPLAY_NAME,
+    nativeCurrency: CURRENCY_SYMBOLS.XONE,
+    rpcEndpoints: [
+      {
+        url: `https://rpc.xone.org`,
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://xonescan.com'],
     defaultBlockExplorerUrlIndex: 0,
   },
 ];
