@@ -127,7 +127,7 @@ export const MultichainEditAccountsPage: React.FC<
   return (
     <Page
       data-testid="modal-page"
-      className="main-container connect-page"
+      className="main-container connect-page multichain-edit-accounts-page"
       backgroundColor={BackgroundColor.backgroundDefault}
     >
       {!isSnapsPermissionsRequest && (
@@ -162,7 +162,7 @@ export const MultichainEditAccountsPage: React.FC<
           />
         </Box>
       </Content>
-      <Footer>
+      <Footer className="multichain-edit-accounts-page__footer">
         <ButtonSecondary
           data-testid="connect-more-accounts-button"
           onClick={handleConnect}
