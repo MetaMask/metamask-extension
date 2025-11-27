@@ -27720,7 +27720,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"html-bundler-webpack-plugin@npm:^4.21.1":
+"html-bundler-webpack-plugin@npm:4.21.1":
   version: 4.21.1
   resolution: "html-bundler-webpack-plugin@npm:4.21.1"
   dependencies:
@@ -27766,6 +27766,55 @@ __metadata:
     twig:
       optional: true
   checksum: 10/8c32e3a74448b44d14052c74f6951d8531cf3893589bcc2eaeaae5d38eff2256833565baf3d700dbdcf7f6b5a0af8361b401df2212fa434066b0cf76b39ab52b
+  languageName: node
+  linkType: hard
+
+"html-bundler-webpack-plugin@patch:html-bundler-webpack-plugin@npm%3A4.21.1#~/.yarn/patches/html-bundler-webpack-plugin-npm-4.21.1-c5b80fbfd7.patch":
+  version: 4.21.1
+  resolution: "html-bundler-webpack-plugin@patch:html-bundler-webpack-plugin@npm%3A4.21.1#~/.yarn/patches/html-bundler-webpack-plugin-npm-4.21.1-c5b80fbfd7.patch::version=4.21.1&hash=c14c0a"
+  dependencies:
+    "@types/html-minifier-terser": "npm:^7.0.2"
+    ansis: "npm:4.1.0"
+    enhanced-resolve: "npm:>=5.7.0"
+    eta: "npm:^3.5.0"
+    html-minifier-terser: "npm:^7.2.0"
+  peerDependencies:
+    ejs: ">=3.1.10"
+    favicons: ">=7.2.0"
+    handlebars: ">=4.7.8"
+    liquidjs: ">=10.17.0"
+    markdown-it: ">=12"
+    mustache: ">=4.2.0"
+    nunjucks: ">=3.2.3"
+    parse5: ">=7.1.2"
+    prismjs: ">=1.29.0"
+    pug: ">=3.0.3"
+    twig: ">=1.17.1"
+    webpack: ">=5.81.0"
+  peerDependenciesMeta:
+    ejs:
+      optional: true
+    favicons:
+      optional: true
+    handlebars:
+      optional: true
+    liquidjs:
+      optional: true
+    markdown-it:
+      optional: true
+    mustache:
+      optional: true
+    nunjucks:
+      optional: true
+    parse5:
+      optional: true
+    prismjs:
+      optional: true
+    pug:
+      optional: true
+    twig:
+      optional: true
+  checksum: 10/70de19ba970c53a78f104cc940c37d58f8c3b65d9f2b2ff1d24612b4d73b6b1d77183876987864bc46d1b50a485144d3313c16582d647143ddc9d9bd93b5d429
   languageName: node
   linkType: hard
 
@@ -32934,7 +32983,7 @@ __metadata:
     gulp-zip: "npm:^5.1.0"
     he: "npm:^1.2.0"
     history: "npm:^5.3.0"
-    html-bundler-webpack-plugin: "npm:^4.21.1"
+    html-bundler-webpack-plugin: "patch:html-bundler-webpack-plugin@npm%3A4.21.1#~/.yarn/patches/html-bundler-webpack-plugin-npm-4.21.1-c5b80fbfd7.patch"
     http-server: "npm:^14.1.1"
     https-browserify: "npm:^1.0.0"
     human-standard-token-abi: "npm:^2.0.0"

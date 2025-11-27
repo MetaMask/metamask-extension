@@ -1,0 +1,18 @@
+diff --git a/src/Plugin/PluginService.js b/src/Plugin/PluginService.js
+index b4c434959c9cb6b56b65f2a8fe578d2dcc0466b9..01771bba8d9fa44cbb6bd7eda473352fe7beca26 100644
+--- a/src/Plugin/PluginService.js
++++ b/src/Plugin/PluginService.js
+@@ -48,10 +48,10 @@ class PluginService {
+       // add reference for the preprocessor option into the loader options
+       if (pluginOptions.preprocessor != null && loaderOptions.preprocessor == null) {
+         loaderOptions.preprocessor = pluginOptions.preprocessor;
++      }
+ 
+-        if (pluginOptions.preprocessorOptions && !loaderOptions.preprocessorOptions) {
+-          loaderOptions.preprocessorOptions = pluginOptions.preprocessorOptions;
+-        }
++      if (pluginOptions.preprocessorOptions && !loaderOptions.preprocessorOptions) {
++        loaderOptions.preprocessorOptions = pluginOptions.preprocessorOptions;
+       }
+ 
+       context = {
