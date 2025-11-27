@@ -15,7 +15,7 @@ import {
   mockSpotPrices,
 } from './utils/mocks';
 
-describe('Token Details TEST', function () {
+describe('Token Details', function () {
   const chainId = CHAIN_IDS.MAINNET;
   const tokenAddress = '0x2EFA2Cb29C2341d8E5Ba7D3262C9e9d6f1Bf3711';
   const symbol = 'foo';
