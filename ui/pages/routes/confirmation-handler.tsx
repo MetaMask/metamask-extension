@@ -38,7 +38,7 @@ const APPROVAL_TYPES = [
   ///: END:ONLY_INCLUDE_IF
   // 'wallet_installSnap',
   // 'wallet_updateSnap',
-  // 'wallet_installSnapResult',
+  'wallet_installSnapResult',
 ];
 
 export const ConfirmationHandler = () => {
@@ -138,6 +138,20 @@ export const ConfirmationHandler = () => {
     checkStatusAndNavigate();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Run only once on mount
+
+  // Snap-specific: Handle wallet-initiated snap install/update result approvals in fullscreen
+  // const hasWalletSnapResult = pendingApprovals.some(
+  //   (approval) =>
+  //     approval.type === 'wallet_installSnapResult' &&
+  //     (approval.origin === 'metamask' || approval.origin === 'MetaMask'),
+  // );
+
+  // useEffect(() => {
+  //   if (hasWalletSnapResult && pathname === DEFAULT_ROUTE) {
+  //     console.log('>>> Snap-specific: wallet snap result detected, navigating');
+  //     checkStatusAndNavigate();
+  //   }
+  // }, [hasWalletSnapResult, pathname, checkStatusAndNavigate]);
 
   // Ported from home.component - componendDidUpdate()
   useEffect(() => {
