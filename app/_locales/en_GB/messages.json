@@ -421,6 +421,12 @@
   "advancedGasPriceTitle": {
     "message": "Gas price"
   },
+  "advancedPermissionSmallCase": {
+    "message": "advanced permission"
+  },
+  "advancedPermissionsSmallCase": {
+    "message": "advanced permissions"
+  },
   "advancedPriorityFeeToolTip": {
     "message": "Priority fee (aka “miner tip”) goes directly to miners and incentivizes them to prioritize your transaction."
   },
@@ -590,10 +596,10 @@
     "message": "All popular networks"
   },
   "allTimeHigh": {
-    "message": "All time high"
+    "message": "All-time high"
   },
   "allTimeLow": {
-    "message": "All time low"
+    "message": "All-time low"
   },
   "allowAddRpc": {
     "message": "Add RPC"
@@ -947,7 +953,7 @@
     "message": "You'll need to allow access to $1 $2 for bridging, and then approve bridging to $3. This will require two separate confirmations."
   },
   "bridgeBlockExplorerLinkCopied": {
-    "message": "Block explorer link copied!"
+    "message": "Block explorer link copied"
   },
   "bridgeCalculatingAmount": {
     "message": "Calculating..."
@@ -1028,7 +1034,7 @@
     "message": "Price impact reflects how your swap affects the market price. If you don't have enough for gas, some of your tokens are used to cover fees, which raises price impact. MetaMask doesn't set or control this."
   },
   "bridgePriceImpactTooltipTitle": {
-    "message": "Price Impact"
+    "message": "Price impact"
   },
   "bridgePriceImpactWarningTitle": {
     "message": "Price Impact Warning"
@@ -1480,7 +1486,7 @@
     "message": "You're switching back to a standard account (EOA)."
   },
   "confirmTitleDescDelegationUpgrade": {
-    "message": "You're switching to a smart account"
+    "message": "You're switching to a smart account."
   },
   "confirmTitleDescDeployContract": {
     "message": "This site wants you to deploy a contract"
@@ -2614,9 +2620,6 @@
   "exploreDefi": {
     "message": "Explore DeFi"
   },
-  "exploreweb3": {
-    "message": "Explore web3"
-  },
   "exportYourData": {
     "message": "Export your data"
   },
@@ -2758,9 +2761,6 @@
   "fundYourWallet": {
     "message": "Fund your wallet",
     "description": "Title for the balance empty state component encouraging users to add funds"
-  },
-  "fundingMethod": {
-    "message": "Funding method"
   },
   "gas": {
     "message": "Gas"
@@ -3404,7 +3404,7 @@
     "message": "Learn more"
   },
   "learnMoreUpperCaseWithDot": {
-    "message": "Learn more."
+    "message": "Learn more"
   },
   "learnScamRisk": {
     "message": "scams and security risks."
@@ -3685,7 +3685,7 @@
     "message": "Wallet notifications are currently not active."
   },
   "metamaskSwap": {
-    "message": "Metamask Swap"
+    "message": "MetaMask Swap"
   },
   "metamaskSwapsOfflineDescription": {
     "message": "MetaMask Swaps is undergoing maintenance. Please check back later."
@@ -4168,7 +4168,7 @@
     "message": "NFT autodetection enabled"
   },
   "nftDisclaimer": {
-    "message": "Disclaimer: MetaMask pulls the media file from the source url. This url sometimes gets changed by the marketplace on which the NFT was minted."
+    "message": "Disclaimer: MetaMask pulls the media file from the source URL. This URL sometimes gets changed by the marketplace on which the NFT was minted."
   },
   "nftEmptyDescription": {
     "message": "There's a world of NFTs out there. Start your collection today."
@@ -4569,7 +4569,7 @@
     "description": "$1 is the browser name"
   },
   "onboardingPinExtensionTitle": {
-    "message": "Installation is complete!"
+    "message": "Installation is complete"
   },
   "onboardingSignInWith": {
     "message": "Sign in with $1",
@@ -5645,6 +5645,12 @@
   "rewardsOnboardingIntroStepConfirm": {
     "message": "Claim 250 points"
   },
+  "rewardsOnboardingIntroStepConfirmLoadingEligibility": {
+    "message": "Checking eligiblity..."
+  },
+  "rewardsOnboardingIntroStepConfirmLoadingRegion": {
+    "message": "Checking region.."
+  },
   "rewardsOnboardingIntroStepSkip": {
     "message": "Not now"
   },
@@ -5716,6 +5722,10 @@
   },
   "rewardsOnboardingStepOptIn": {
     "message": "Claim points"
+  },
+  "rewardsOptInVerifyingReferralCode": {
+    "message": "Verifying referral code...",
+    "description": "Text shown while verifying a referral code during rewards opt-in"
   },
   "rewardsPointsBalance": {
     "message": "$1 points",
@@ -5943,7 +5953,7 @@
     "message": "Select Secret Recovery Phrase"
   },
   "selectType": {
-    "message": "Select Type"
+    "message": "Select type"
   },
   "selectedAccountMismatch": {
     "message": "Different account selected"
@@ -6219,7 +6229,7 @@
     "message": "This chain is not supported, so it isn't protected by MetaMask Transaction Shield. $1"
   },
   "shieldCoverageAlertMessageLearnHowCoverageWorks": {
-    "message": "See What's Covered"
+    "message": "See what's Covered"
   },
   "shieldCoverageAlertMessagePaused": {
     "message": "There was an issue with your MetaMask Transaction Shield plan payment. Please update your payment method to resume coverage."
@@ -6252,7 +6262,7 @@
     "message": "This token shows strong signs of malicious behavior. Continuing may result in loss of funds. $1."
   },
   "shieldCoverageAlertMessageTxTypeNotSupported": {
-    "message": "This transaction type is not supported, so it isn't protected by MetaMask Transaction Shield. $1."
+    "message": "This transaction type is not supported, so it isn't protected by MetaMask Transaction Shield. $1"
   },
   "shieldCoverageAlertMessageUnknown": {
     "message": "This request can't be verified, so it isn't protected by MetaMask Transaction Shield. $1."
@@ -6349,6 +6359,9 @@
   },
   "shieldPlanDetails3": {
     "message": "24/7 access to priority live chat support"
+  },
+  "shieldPlanErrorText": {
+    "message": "Couldn’t connect to Transaction Shield"
   },
   "shieldPlanFooterNoteMonthly": {
     "message": "Billed monthly, cancel anytime"
@@ -7870,12 +7883,6 @@
   },
   "time": {
     "message": "Time"
-  },
-  "tipsForUsingAWallet": {
-    "message": "Tips for using a wallet"
-  },
-  "tipsForUsingAWalletDescription": {
-    "message": "Adding tokens unlocks more ways to use web3."
   },
   "to": {
     "message": "To"
