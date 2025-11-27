@@ -291,10 +291,7 @@ class AssetListPage {
       this.customNetworkSelectedOption(networkName),
     );
     await this.driver.clickElement(this.customTokenModalOption);
-    await this.driver.assertElementNotPresent(this.tokenSearchInput, {
-      waitAtLeastGuard: 1000,
-    });
-    await this.driver.waitForSelector(this.modalWarningBanner);
+    await this.driver.findVisibleElement(this.modalWarningBanner);
     await this.driver.fill(this.tokenAddressInput, tokenAddress);
     await this.driver.waitForSelector(this.tokenSymbolTitle);
 
