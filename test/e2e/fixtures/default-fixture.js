@@ -1,6 +1,6 @@
-const { mockNetworkStateOld } = require('../stub/networks');
-const { CHAIN_IDS } = require('../../shared/constants/network');
-const { FirstTimeFlowType } = require('../../shared/constants/onboarding');
+const { mockNetworkStateOld } = require('../../stub/networks');
+const { CHAIN_IDS } = require('../../../shared/constants/network');
+const { FirstTimeFlowType } = require('../../../shared/constants/onboarding');
 
 // TODO: Should we bump this?
 // The e2e tests currently configure state in the schema of migration 74.
