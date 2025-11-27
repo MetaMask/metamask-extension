@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import classnames from 'classnames';
 import {
   PAYMENT_TYPES,
@@ -7,9 +7,10 @@ import {
   RECURRING_INTERVALS,
   RecurringInterval,
 } from '@metamask/subscription-controller';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
 import { Checkbox, TextVariant } from '@metamask/design-system-react';
+import { Hex } from '@metamask/utils';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
@@ -82,6 +83,8 @@ import {
   getIsTrialedSubscription,
 } from '../../../shared/modules/shield';
 import ApiErrorHandler from '../../components/app/api-error-handler';
+import { MetaMaskReduxDispatch } from '../../store/store';
+import { setLastUsedSubscriptionPaymentDetails } from '../../store/actions';
 import { ShieldPaymentModal } from './shield-payment-modal';
 import { Plan } from './types';
 import { getProductPrice } from './utils';
@@ -271,6 +274,24 @@ const ShieldPlan = () => {
     isTrialed,
     useTestClock: enableStripeTestClock,
   });
+
+  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const handleUserChangeToken = useCallback(
+    async (token: TokenWithApprovalAmount) => {
+      setSelectedToken(token);
+      // update last used subscription payment details everytime user select token
+      await dispatch(
+        setLastUsedSubscriptionPaymentDetails(PRODUCT_TYPES.SHIELD, {
+          type: PAYMENT_TYPES.byCrypto,
+          paymentTokenAddress: token.address as Hex,
+          paymentTokenSymbol: token.symbol,
+          plan: selectedPlan,
+          useTestClock: enableStripeTestClock,
+        }),
+      );
+    },
+    [dispatch, selectedPlan, enableStripeTestClock, setSelectedToken],
+  );
 
   const loading =
     subscriptionsLoading ||
@@ -535,7 +556,7 @@ const ShieldPlan = () => {
                 selectedPaymentMethod={selectedPaymentMethod}
                 hasStableTokenWithBalance={hasAvailableToken}
                 setSelectedPaymentMethod={setSelectedPaymentMethod}
-                onAssetChange={setSelectedToken}
+                onAssetChange={handleUserChangeToken}
                 availableTokenBalances={availableTokenBalances}
                 tokensSupported={tokensSupported}
               />

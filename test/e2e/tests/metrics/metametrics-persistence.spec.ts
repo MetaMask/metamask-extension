@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { getCleanAppState, withFixtures } from '../../helpers';
 import HomePage from '../../page-objects/pages/home/homepage';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
