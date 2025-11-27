@@ -2222,8 +2222,7 @@
       "packages": {
         "@metamask/rpc-errors": true,
         "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "luxon": true
+        "@metamask/utils": true
       }
     },
     "@metamask/snaps-utils": {

@@ -10,6 +10,11 @@
         "SuppressedError": true
       }
     },
+    "@date-io/luxon": {
+      "packages": {
+        "luxon": true
+      }
+    },
     "@ensdomains/content-hash": {
       "globals": {
         "Buffer.from": true,
@@ -706,6 +711,7 @@
         "getSelection": true,
         "performance.now": true,
         "removeEventListener": true,
+        "requestAnimationFrame": true,
         "setInterval": true,
         "setTimeout": true
       },
@@ -721,6 +727,24 @@
         "react-dom": true,
         "@material-ui/core>react-is": true,
         "react-transition-group": true
+      }
+    },
+    "@material-ui/pickers": {
+      "globals": {
+        "addEventListener": true,
+        "innerHeight": true,
+        "orientation": true,
+        "removeEventListener": true,
+        "screen": true
+      },
+      "packages": {
+        "@babel/runtime": true,
+        "@material-ui/core": true,
+        "@material-ui/pickers>clsx": true,
+        "prop-types": true,
+        "react": true,
+        "react-transition-group": true,
+        "@material-ui/pickers>rifm": true
       }
     },
     "@material-ui/core>@material-ui/styles": {
@@ -5548,6 +5572,17 @@
       },
       "packages": {
         "buffer": true
+      }
+    },
+    "@material-ui/pickers>rifm": {
+      "globals": {
+        "console.error": true,
+        "document.addEventListener": true,
+        "document.removeEventListener": true
+      },
+      "packages": {
+        "@babel/runtime": true,
+        "react": true
       }
     },
     "ethereumjs-util>create-hash>ripemd160": {
