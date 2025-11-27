@@ -2620,9 +2620,6 @@
   "exploreDefi": {
     "message": "Explore DeFi"
   },
-  "exploreweb3": {
-    "message": "Explore web3"
-  },
   "exportYourData": {
     "message": "Export your data"
   },
@@ -2764,9 +2761,6 @@
   "fundYourWallet": {
     "message": "Fund your wallet",
     "description": "Title for the balance empty state component encouraging users to add funds"
-  },
-  "fundingMethod": {
-    "message": "Funding method"
   },
   "gas": {
     "message": "Gas"
@@ -5651,6 +5645,12 @@
   "rewardsOnboardingIntroStepConfirm": {
     "message": "Claim 250 points"
   },
+  "rewardsOnboardingIntroStepConfirmLoadingEligibility": {
+    "message": "Checking eligiblity..."
+  },
+  "rewardsOnboardingIntroStepConfirmLoadingRegion": {
+    "message": "Checking region.."
+  },
   "rewardsOnboardingIntroStepSkip": {
     "message": "Not now"
   },
@@ -5722,6 +5722,10 @@
   },
   "rewardsOnboardingStepOptIn": {
     "message": "Claim points"
+  },
+  "rewardsOptInVerifyingReferralCode": {
+    "message": "Verifying referral code...",
+    "description": "Text shown while verifying a referral code during rewards opt-in"
   },
   "rewardsPointsBalance": {
     "message": "$1 points",
@@ -6225,7 +6229,7 @@
     "message": "This chain is not supported, so it isn't protected by MetaMask Transaction Shield. $1"
   },
   "shieldCoverageAlertMessageLearnHowCoverageWorks": {
-    "message": "See What's Covered"
+    "message": "See what's Covered"
   },
   "shieldCoverageAlertMessagePaused": {
     "message": "There was an issue with your MetaMask Transaction Shield plan payment. Please update your payment method to resume coverage."
@@ -6258,7 +6262,7 @@
     "message": "This token shows strong signs of malicious behavior. Continuing may result in loss of funds. $1."
   },
   "shieldCoverageAlertMessageTxTypeNotSupported": {
-    "message": "This transaction type is not supported, so it isn't protected by MetaMask Transaction Shield. $1."
+    "message": "This transaction type is not supported, so it isn't protected by MetaMask Transaction Shield. $1"
   },
   "shieldCoverageAlertMessageUnknown": {
     "message": "This request can't be verified, so it isn't protected by MetaMask Transaction Shield. $1."
@@ -6355,6 +6359,9 @@
   },
   "shieldPlanDetails3": {
     "message": "24/7 access to priority live chat support"
+  },
+  "shieldPlanErrorText": {
+    "message": "Couldn’t connect to Transaction Shield"
   },
   "shieldPlanFooterNoteMonthly": {
     "message": "Billed monthly, cancel anytime"
@@ -7876,12 +7883,6 @@
   },
   "time": {
     "message": "Time"
-  },
-  "tipsForUsingAWallet": {
-    "message": "Tips for using a wallet"
-  },
-  "tipsForUsingAWalletDescription": {
-    "message": "Adding tokens unlocks more ways to use web3."
   },
   "to": {
     "message": "To"

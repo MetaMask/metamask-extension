@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { validate as isUuid } from 'uuid';
 
 import useAlerts from '../../../hooks/useAlerts';
@@ -55,7 +55,31 @@ function getAlertName(alertKey: string): string {
 export function useConfirmationAlertMetrics() {
   const { currentConfirmation } = useConfirmContext();
   const ownerId = currentConfirmation?.id ?? '';
+
   const { alerts, isAlertConfirmed } = useAlerts(ownerId);
+  const alertsProperties = useMemo(() => {
+    return alerts.length > 0
+      ? {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          alert_triggered_count: alerts.length,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          alert_triggered: getAlertNames(alerts),
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          alert_resolved_count: alerts.filter((alert) =>
+            isAlertConfirmed(alert.key),
+          ).length,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          alert_resolved: getAlertNames(
+            alerts.filter((alert) => isAlertConfirmed(alert.key)),
+          ),
+        }
+      : undefined;
+  }, [alerts, isAlertConfirmed]);
+
   const { updateSignatureEventFragment } = useSignatureEventFragment();
   const { updateTransactionEventFragment } = useTransactionEventFragment();
 
@@ -75,28 +99,11 @@ export function useConfirmationAlertMetrics() {
       alert_action_clicked: [],
     });
 
-  const properties =
-    alerts.length > 0
-      ? {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          alert_triggered_count: alerts.length,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          alert_triggered: getAlertNames(alerts),
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          alert_resolved_count: alerts.filter((alert) =>
-            isAlertConfirmed(alert.key),
-          ).length,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          alert_resolved: getAlertNames(
-            alerts.filter((alert) => isAlertConfirmed(alert.key)),
-          ),
-          ...metricsProperties,
-        }
+  const properties = useMemo(() => {
+    return alertsProperties
+      ? { ...alertsProperties, ...metricsProperties }
       : undefined;
+  }, [alertsProperties, metricsProperties]);
 
   const trackAlertRender = useCallback((alertKey: string) => {
     setMetricsProperties((prevState) => {
@@ -145,7 +152,13 @@ export function useConfirmationAlertMetrics() {
     } else {
       updateTransactionEventFragment({ properties }, ownerId);
     }
-  }, [JSON.stringify(properties), updateTransactionEventFragment, ownerId]);
+  }, [
+    updateSignatureEventFragment,
+    updateTransactionEventFragment,
+    ownerId,
+    properties,
+    currentConfirmation,
+  ]);
 
   useEffect(() => {
     updateAlertMetrics();

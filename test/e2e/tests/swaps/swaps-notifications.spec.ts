@@ -2,7 +2,7 @@
 import { Mockttp } from 'mockttp';
 import { withFixtures, unlockWallet } from '../../helpers';
 import { SWAP_TEST_ETH_USDC_TRADES_MOCK } from '../../../data/mock-data';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { buildQuote, reviewQuote, checkNotification } from './shared';
 
 async function mockSwapsTransactionQuote(mockServer: Mockttp) {

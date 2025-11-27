@@ -5,7 +5,7 @@ import {
 } from '@metamask/account-tree-controller';
 import { PAGES } from '../../../webdriver/driver';
 import { withFixtures, unlockWallet } from '../../../helpers';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
