@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "downlevelIteration": true,
+    "esModuleInterop": true,
+    "noEmitOnError": true,
+    "outDir": "../.webpack",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "incremental": true
+  },
+  "exclude": ["test"]
+}
