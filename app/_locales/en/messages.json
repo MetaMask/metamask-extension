@@ -6180,10 +6180,10 @@
     "message": "Claim submission failed"
   },
   "shieldClaimSubmitSuccess": {
-    "message": "Claim submitted successfully"
+    "message": "Claim submission received"
   },
   "shieldClaimSubmitSuccessDescription": {
-    "message": "Your claim is under review. We will notify you via email within 3-5 business days with any updates."
+    "message": "Your claim has been submitted. We'll review it and provide updates by email."
   },
   "shieldClaimTransactionNotFound": {
     "message": "Transaction not found on chain."
