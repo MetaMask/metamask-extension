@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.11.0]
 
+### Uncategorized
+
+- Remove 38259 changes as they were added twice when doing the stable sync
+- Update Attributions
+- None - dependency bump (#37902)
+- Null (#37912)
+
 ### Added
 
 - feat: added metrics for advanced expanded view (#37969)
@@ -35,6 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- fix: properly include PR 38261
 - Removed Sei from default networks and added QuickNode fallback RPC (#37681)
 - Remove all usage of crypto compare (#37884)
 - Detect network filter chainId correctly in order to set default Swap src token (#37985)
