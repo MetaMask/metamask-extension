@@ -2095,7 +2095,7 @@
     "message": "Got it"
   },
   "deprecatedNetworkDescription": {
-    "message": "The network you're trying to connect to is no longer supported by Metamask. $1"
+    "message": "The network you're trying to connect to is no longer supported by MetaMask. $1"
   },
   "description": {
     "message": "Description"
@@ -2500,7 +2500,7 @@
     "message": "Enter password to continue"
   },
   "enterYourPasswordSocialLoginFlow": {
-    "message": "Enter Metamask Password"
+    "message": "Enter MetaMask Password"
   },
   "errorCode": {
     "message": "Code: $1",
@@ -3556,13 +3556,13 @@
     "description": "$1 is the key 'loginErrorGenericSupport'"
   },
   "loginErrorGenericSupport": {
-    "message": "Metamask Support"
+    "message": "MetaMask Support"
   },
   "loginErrorGenericTitle": {
     "message": "Something went wrong"
   },
   "loginErrorResetWalletDescription": {
-    "message": "An issue occurred while unlocking. Re-login with $1 and your Metamask password.",
+    "message": "An issue occurred while unlocking. Re-login with $1 and your MetaMask password.",
     "description": "$1 is the social login method"
   },
   "loginErrorSessionExpiredButton": {
@@ -6220,7 +6220,7 @@
     "message": "Confirm plan"
   },
   "shieldCoverageAlertCovered": {
-    "message": "You're protected up to $2 with Metamask Transaction Shield. $1."
+    "message": "You're protected up to $2 with MetaMask Transaction Shield. $1."
   },
   "shieldCoverageAlertHighRiskTransaction": {
     "message": "This is a high risk transaction, so it isn't protected by MetaMask Transaction Shield. $1."
@@ -7550,19 +7550,19 @@
   },
   "swapIncludesGasAndMetaMaskFee": {
     "message": "Includes gas and a $1% MetaMask fee",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFee": {
     "message": "Includes a $1% MetaMask fee.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFeeAlt": {
     "message": "Quote reflects $1% MetaMask fee",
-    "description": "Provides information about the fee that metamask takes for swaps using the latest copy. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
     "message": "Includes a $1% MetaMask fee – $2",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
   },
   "swapLearnMore": {
     "message": "Learn more about Swaps"
@@ -7581,7 +7581,7 @@
   },
   "swapMetaMaskFeeDescription": {
     "message": "The fee of $1% is automatically factored into this quote. You pay it in exchange for a license to use MetaMask's liquidity provider information aggregation software.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapNQuotesWithDot": {
     "message": "$1 quotes.",
