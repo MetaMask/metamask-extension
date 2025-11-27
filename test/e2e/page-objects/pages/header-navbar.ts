@@ -113,8 +113,9 @@ class HeaderNavbar {
     if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
       await this.driver.clickElementUsingMouseMove(this.threeDotMenuButton);
     } else {
-      this.driver.clickElement(this.threeDotMenuButton);
+      await this.driver.clickElement(this.threeDotMenuButton);
     }
+    await this.driver.delay(3000);
   }
 
   async mouseClickOnThreeDotMenu(): Promise<void> {
