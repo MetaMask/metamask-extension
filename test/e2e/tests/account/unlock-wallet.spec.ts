@@ -1,7 +1,7 @@
 import { Mockttp } from 'mockttp';
 import { Browser } from 'selenium-webdriver';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { Driver } from '../../webdriver/driver';
 import { Anvil } from '../../seeder/anvil';
 import { Ganache } from '../../seeder/ganache';

@@ -66,6 +66,8 @@ export default function useTokenExchangeRate(
       contractExchangeRates[tokenAddress] || exchangeRates[tokenAddress];
 
     if (!contractExchangeRate) {
+      // TODO: Fix "Calling setState from useMemo may trigger an infinite loop"
+      // eslint-disable-next-line react-compiler/react-compiler
       setExchangeRates((prev) => ({
         ...prev,
         [tokenAddress]: LOADING,
