@@ -1,3 +1,6 @@
+'use no memo';
+// TODO: Enable React Compiler once this has been migrated to a functional component.
+
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 

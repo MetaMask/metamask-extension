@@ -2,7 +2,7 @@ import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures, unlockWallet } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import HomePage from '../../page-objects/pages/home/homepage';

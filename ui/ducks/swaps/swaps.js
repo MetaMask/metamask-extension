@@ -1511,13 +1511,11 @@ export function cancelSwapsSmartTransaction(uuid) {
   };
 }
 
-export const getIsEstimatedReturnLow = ({ usedQuote, rawNetworkFees }) => {
+export const useGetIsEstimatedReturnLow = ({ usedQuote, rawNetworkFees }) => {
   const sourceTokenAmount = calcTokenAmount(
     usedQuote?.sourceAmount,
     usedQuote?.sourceTokenInfo?.decimals,
   );
-  // Disabled because it's not a hook
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const sourceTokenFiatAmount = useTokenFiatAmount(
     usedQuote?.sourceTokenInfo?.address,
     sourceTokenAmount || 0,
@@ -1534,7 +1532,6 @@ export const getIsEstimatedReturnLow = ({ usedQuote, rawNetworkFees }) => {
     usedQuote?.destinationTokenInfo?.decimals,
   );
   // Disabled because it's not a hook
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const destinationTokenFiatAmount = useTokenFiatAmount(
     usedQuote?.destinationTokenInfo?.address,
     destinationTokenAmount || 0,

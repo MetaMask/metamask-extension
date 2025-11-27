@@ -1,5 +1,5 @@
 import { Suite } from 'mocha';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { unlockWallet, withFixtures } from '../../helpers';
 import { DAPP_URL, WINDOW_TITLES } from '../../constants';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
