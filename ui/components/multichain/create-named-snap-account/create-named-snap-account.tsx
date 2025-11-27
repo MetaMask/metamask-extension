@@ -76,7 +76,6 @@ export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
         onActionComplete={rejectAction}
         onCreateAccount={onCreateAccount}
         getNextAvailableAccountName={getNextAccountName}
-        redirectToOverview={false}
       />
     </Box>
   );
