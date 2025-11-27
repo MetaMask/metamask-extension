@@ -45,8 +45,8 @@ import { useRewards } from '../../../hooks/bridge/useRewards';
 import { RewardsBadge } from '../../../components/app/rewards/RewardsBadge';
 import AddRewardsAccount from '../../../components/app/rewards/AddRewardsAccount';
 import { Skeleton } from '../../../components/component-library/skeleton';
-import { BridgeQuotesModal } from './bridge-quotes-modal';
 import { getGasFeesSponsoredNetworkEnabled } from '../../../selectors/selectors';
+import { BridgeQuotesModal } from './bridge-quotes-modal';
 
 const getTimerColor = (timeInSeconds: number) => {
   if (timeInSeconds <= 3) {
@@ -114,11 +114,29 @@ export const MultichainBridgeQuoteCard = ({
     );
   }, [fromChain?.chainId, gasFeesSponsoredNetworkEnabled]);
 
+  const shouldShowGasSponsored = useMemo(() => {
+    if (gasSponsored) {
+      return true;
+    }
 
-  const shouldShowGasSponsored =
-    gasSponsored || (insufficientBal && isCurrentNetworkGasSponsored);
+    // For the insufficientBal workaround, validate it's a same-chain swap
+    if (insufficientBal && isCurrentNetworkGasSponsored) {
+      // Gas sponsorship only applies to same-chain swaps, not cross-chain bridges
+      const isSameChain =
+        fromToken?.chainId &&
+        toToken?.chainId &&
+        fromToken.chainId === toToken.chainId;
+      return Boolean(isSameChain);
+    }
 
-
+    return false;
+  }, [
+    gasSponsored,
+    insufficientBal,
+    isCurrentNetworkGasSponsored,
+    fromToken?.chainId,
+    toToken?.chainId,
+  ]);
 
   const nativeTokenSymbol = fromChain
     ? getNativeAssetForChainId(fromChain.chainId).symbol
