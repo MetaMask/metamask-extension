@@ -101,7 +101,6 @@ export const MultichainBridgeQuoteCard = ({
   const gasIncluded = activeQuote?.quote?.gasIncluded ?? false;
   const gasIncluded7702 = activeQuote?.quote?.gasIncluded7702 ?? false;
   const gasSponsored = activeQuote?.quote?.gasSponsored ?? false;
-  const isGasless = gasIncluded7702 || gasIncluded || gasSponsored;
 
   const isCurrentNetworkGasSponsored = useMemo(() => {
     if (!fromChain?.chainId || !gasFeesSponsoredNetworkEnabled) {
@@ -137,6 +136,8 @@ export const MultichainBridgeQuoteCard = ({
     fromToken?.chainId,
     toToken?.chainId,
   ]);
+
+  const isGasless = gasIncluded7702 || gasIncluded || shouldShowGasSponsored;
 
   const nativeTokenSymbol = fromChain
     ? getNativeAssetForChainId(fromChain.chainId).symbol
