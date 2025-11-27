@@ -29,6 +29,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added a new Token Insights modal to enhance token verification accessibility (#37469)
 - Added sidepanel icon (#37777)
 - Add QrCode View to Rewards onboarding (#37959)
+- Show onboarding tour when signing up for rewards (#38052)
+- Add animation to shield entry modal (#38001)
+- Adds animation to Settings shield banner (#37998)
 
 ### Fixed
 
@@ -46,13 +49,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix shield plan default payment method not work first time select (#37935)
 - Notification screen back handling (#37921)
 - Fixed `Invalid Access Token` error during the rehydrate/create with social login (#37387)
-  updated `@metamask/seedless-onboarding-controller` to
-  `v6`.
+  updated `@metamask/seedless-onboarding-controller` to `v6`.
 - Fixed a rare issue where Snaps updating state rapidly would lose data (#37971)
 - Updates the logos so they appear consistently as squares (#37932)
-
-## **Related issues**
-
 - Fixed glitching effect after restarting shield plan (#37904)
 - Recipient address overflow (#37813)
 - Fix token list hover (#37863)
@@ -64,6 +63,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed deep link page design inconsistencies (#37872)
 - Fix error message when trying to import an SRP with an account that is already imported via private key (#37743)
 - Change available value text to total fiat value when fiat mode is enabled (#37749)
+- Prevents token list from fetching balances for all accounts (#38065)
+- Update dapp swap comparison banner UI (#38006)
+- Fixes issue with Tron resources not displaying in the details page (#38101)
+- Fixes dapp-swap comparison fiat rate fetching for polygon (#38102)
+- Fixes Shield subscription feature to properly handle multichain scenarios where non-EVM accounts (Bitcoin, Solana) are selected (#38155)
+- Fixes incorrect balances shown when multiple accounts are tied to different reward subscriptions (#38130)
+- Fixes broken uniswap shield middleware unable to find quote because of chainId derivation (#38057)
+- Automatically re-sync accounts between Snaps and MetaMask (#37987)
+- Prevents any dialogs for multichain wallet Snaps (Solana, Bitcoin, Tron) (#38061)
+- Fixes missing native token balances in wallet balance (#38126)
+- Enable metametrics toggle for active shield subscribers (#38176)
+- Fixes social login authentication validation in rehydrate (#38170)
+- Fixes loading indicators alignment on the deep link page (#38152)
+- Fixes wrong Tron balance (#38151)
+- Fixes marketing parameters in the shield metrics (#38202)
+- Quote request should only be triggered for valid swaps (#38121)
+- Fixes send flow for some Tron assets (#38206)
+- Fixed an issue where Shield subscription approval amounts were not displayed correctly (#38285)
+  for tokens using underscored parameter names in their approval functions.
+  Updates the Shield Terms of Use URL to include the privacy notice link.
+- Fixes ui regression of removed LegacyLayout wrapper for CONFIRMATION_V_NEXT_ROUTE (#38239)
+- Fixes tron quote display issue (#38266)
+- Fixes broken rewards deeplink that no does not trigger onboarding or populate referral code (#38164)
+- Fixes non-evm account balances not found errors (#38318)
 
 ## [13.10.4]
 
