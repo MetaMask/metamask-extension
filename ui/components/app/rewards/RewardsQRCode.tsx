@@ -13,6 +13,11 @@ import { getSocialLoginType } from '../../../selectors/seedless-onboarding/socia
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setOnboardingModalOpen } from '../../../ducks/rewards';
 import { ModalBody } from '../../component-library/modal-body/modal-body';
+import {
+  APPLE_ONBOARDING_URL,
+  GOOGLE_ONBOARDING_URL,
+  SRP_ONBOARDING_URL,
+} from './utils/constants';
 
 const QrCodeView = ({ data }: { data: string }) => {
   const qrImage = qrCode(0, 'M');
@@ -48,11 +53,12 @@ export default function RewardsQRCode() {
   }, [dispatch]);
 
   const dataToEncode = useMemo(() => {
-    if (socialType) {
-      return `https://link.metamask.io/onboarding?type=${socialType}&existing=true`;
+    if (socialType === 'apple') {
+      return APPLE_ONBOARDING_URL;
+    } else if (socialType === 'google') {
+      return GOOGLE_ONBOARDING_URL;
     }
-
-    return `https://link.metamask.io/onboarding?type=srp`;
+    return SRP_ONBOARDING_URL;
   }, [socialType]);
 
   return (

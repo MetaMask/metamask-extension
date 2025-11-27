@@ -9,7 +9,7 @@ import SwapPage from '../../page-objects/pages/swap/swap-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import RewardsPage from '../../page-objects/pages/rewards/rewards-page';
 import { emptyHtmlPage } from '../../mock-e2e';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { BaseUrl } from '../../../../shared/constants/urls';
 import { REWARDS_ROUTE } from '../../../../ui/helpers/constants/routes';
 import type { Anvil } from '../../seeder/anvil';
