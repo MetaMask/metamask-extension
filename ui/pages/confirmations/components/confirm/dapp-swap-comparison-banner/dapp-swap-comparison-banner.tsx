@@ -135,6 +135,7 @@ const DappSwapComparisonInner = () => {
 
   const swapComparisonDisplayed =
     process.env.ENABLE_DAPP_SWAP_COMPARISON_UI === 'true' &&
+    dappSwapUi?.enabled &&
     (selectedQuoteValueDifference >=
       (dappSwapUi?.threshold ?? DAPP_SWAP_THRESHOLD) ||
       (dappSwapQa?.enabled && selectedQuote));
