@@ -110,7 +110,7 @@ export const SnapUIDateTimePicker: FunctionComponent<
 
   return (
     <Box
-      className={classnames('snap-ui-datetime-picker', {
+      className={classnames('snap-ui-renderer__date-time-picker', {
         'snap-ui-renderer__field': label !== undefined,
       })}
     >

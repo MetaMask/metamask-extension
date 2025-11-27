@@ -14,6 +14,7 @@ export const dateTimePicker: UIComponentFactory<DateTimePickerElement> = ({
       placeholder: element.props.placeholder,
       disabled: element.props.disabled,
       disablePast: element.props.disablePast,
+      disableFuture: element.props.disableFuture,
     },
   };
 };
