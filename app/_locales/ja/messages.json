@@ -7507,18 +7507,8 @@
   "walletConnectionGuide": {
     "message": "弊社のハードウェアウォレット接続ガイド"
   },
-  "walletDetails": {
-    "message": "ウォレットの詳細"
-  },
   "walletName": {
     "message": "ウォレット名"
-  },
-  "walletNotFoundDescription": {
-    "message": "IDが$1のウォレットは見つかりませんでした。",
-    "description": "$1 is the wallet ID"
-  },
-  "walletNotFoundTitle": {
-    "message": "ウォレットが見つかりません"
   },
   "walletReadyLearn": {
     "message": "$1 ご自身の資金にアクセスできなくなることを防ぐため、このフレーズは安全に保管しましょう。",
