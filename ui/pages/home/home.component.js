@@ -166,7 +166,6 @@ export default class Home extends PureComponent {
     fetchBuyableChains: PropTypes.func.isRequired,
     redirectAfterDefaultPage: PropTypes.object,
     clearRedirectAfterDefaultPage: PropTypes.func,
-    setAccountDetailsAddress: PropTypes.func,
     isSeedlessPasswordOutdated: PropTypes.bool,
     isPrimarySeedPhraseBackedUp: PropTypes.bool,
     showShieldEntryModal: PropTypes.bool,
@@ -259,18 +258,12 @@ export default class Home extends PureComponent {
       redirectAfterDefaultPage,
       navigate,
       clearRedirectAfterDefaultPage,
-      setAccountDetailsAddress,
     } = this.props;
 
     if (
       redirectAfterDefaultPage?.shouldRedirect &&
       redirectAfterDefaultPage?.path
     ) {
-      // Set the account details address if provided
-      if (redirectAfterDefaultPage?.address) {
-        setAccountDetailsAddress(redirectAfterDefaultPage.address);
-      }
-
       navigate(redirectAfterDefaultPage.path);
       clearRedirectAfterDefaultPage();
     }

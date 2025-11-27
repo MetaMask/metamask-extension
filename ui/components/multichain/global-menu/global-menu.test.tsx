@@ -51,10 +51,9 @@ jest.mock('react-router-dom', () => ({
 }));
 
 const mockLockMetaMask = jest.fn();
-const mockSetAccountDetailsAddress = jest.fn();
+
 jest.mock('../../../store/actions', () => ({
   lockMetamask: () => mockLockMetaMask,
-  setAccountDetailsAddress: () => mockSetAccountDetailsAddress,
 }));
 
 jest.mock('../../../../shared/modules/environment');

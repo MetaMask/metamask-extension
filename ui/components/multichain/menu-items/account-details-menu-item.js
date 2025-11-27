@@ -1,10 +1,7 @@
 import React, { useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
-
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { setAccountDetailsAddress } from '../../../store/actions';
-
 import { MenuItem } from '../../ui/menu';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -14,38 +11,23 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { IconName, Text } from '../../component-library';
 import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
-import { getHDEntropyIndex } from '../../../selectors/selectors';
-import {
-  getIsMultichainAccountsState1Enabled,
-  getIsMultichainAccountsState2Enabled,
-} from '../../../selectors/multichain-accounts/feature-flags';
-import {
-  ACCOUNT_DETAILS_ROUTE,
-  MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
-} from '../../../helpers/constants/routes';
+import { getHDEntropyIndex } from '../../../selectors';
+import { MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE } from '../../../helpers/constants/routes';
 
 export const AccountDetailsMenuItem = ({
   metricsLocation,
   closeMenu,
-  address,
   textProps,
 }) => {
   const t = useI18nContext();
-  const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const selectedAccountGroup = useSelector(getSelectedAccountGroup);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const navigate = useNavigate();
-  const isMultichainAccountsState1Enabled = useSelector(
-    getIsMultichainAccountsState1Enabled,
-  );
-  const isMultichainAccountsState2Enabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
+
   const LABEL = t('accountDetails');
 
   const handleNavigation = useCallback(() => {
-    dispatch(setAccountDetailsAddress(address));
     trackEvent({
       event: MetaMetricsEventName.AccountDetailsOpened,
       category: MetaMetricsEventCategory.Navigation,
@@ -54,22 +36,16 @@ export const AccountDetailsMenuItem = ({
         hd_entropy_index: hdEntropyIndex,
       },
     });
-    if (isMultichainAccountsState2Enabled) {
-      navigate(
-        `${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/${encodeURIComponent(selectedAccountGroup)}`,
-      );
-    } else if (isMultichainAccountsState1Enabled) {
-      navigate(`${ACCOUNT_DETAILS_ROUTE}/${address}`);
-    }
+
+    navigate(
+      `${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/${encodeURIComponent(selectedAccountGroup)}`,
+    );
+
     closeMenu?.();
   }, [
-    address,
     closeMenu,
-    dispatch,
     hdEntropyIndex,
     navigate,
-    isMultichainAccountsState1Enabled,
-    isMultichainAccountsState2Enabled,
     metricsLocation,
     selectedAccountGroup,
     trackEvent,

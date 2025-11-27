@@ -24,11 +24,7 @@ import {
   getMetaMaskAccountsOrdered,
   getMetaMaskKeyrings,
 } from '../../../selectors';
-import {
-  clearAccountDetails,
-  hideWarning,
-  setAccountDetailsAddress,
-} from '../../../store/actions';
+import { clearAccountDetails, hideWarning } from '../../../store/actions';
 import HoldToRevealModal from '../../app/modals/hold-to-reveal-modal/hold-to-reveal-modal';
 import {
   Box,
@@ -104,7 +100,6 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
   const [privateKey, setPrivateKey] = useState('');
 
   const onClose = useCallback(() => {
-    dispatch(setAccountDetailsAddress(''));
     dispatch(clearAccountDetails());
     dispatch(hideWarning());
   }, [dispatch]);
