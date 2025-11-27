@@ -182,7 +182,7 @@ export const CHAIN_IDS = {
   GSYS_TESTNET: '0xa5c8',
   MODE_SEPOLIA: '0x397',
   MODE: '0x868b',
-  MEGAETH_TESTNET: '0x18c6',
+  MEGAETH_TESTNET: '0x18c7',
   MEGAETH_MAINNET: '0x10e6',
   XRPLEVM_TESTNET: '0x161c28',
   LENS: '0xe8',
@@ -332,7 +332,7 @@ export const OP_BNB_DISPLAY_NAME = 'opBNB';
 export const BERACHAIN_DISPLAY_NAME = 'Berachain';
 export const METACHAIN_ONE_DISPLAY_NAME = 'Metachain One Mainnet';
 export const MEGAETH_TESTNET_DISPLAY_NAME = 'Mega Testnet';
-export const MEGAETH_MAINNET_DISPLAY_NAME = 'Mega Mainnet';
+export const MEGAETH_MAINNET_DISPLAY_NAME = 'MegaETH';
 export const LISK_DISPLAY_NAME = 'Lisk';
 export const LISK_SEPOLIA_DISPLAY_NAME = 'Lisk Sepolia';
 export const INK_SEPOLIA_DISPLAY_NAME = 'Ink Sepolia';
@@ -402,7 +402,7 @@ export const LINEA_MAINNET_RPC_URL = getRpcUrl({
   network: NETWORK_TYPES.LINEA_MAINNET,
 });
 export const LOCALHOST_RPC_URL = 'http://localhost:8545';
-export const MEGAETH_TESTNET_RPC_URL = 'https://carrot.megaeth.com/rpc';
+export const MEGAETH_TESTNET_RPC_URL = 'https://timothy.megaeth.com/rpc';
 export const MONAD_TESTNET_RPC_URL = 'https://testnet-rpc.monad.xyz';
 
 /**
@@ -1581,6 +1581,20 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     ],
     defaultRpcEndpointIndex: 0,
     blockExplorerUrls: ['https://basescan.org'],
+    defaultBlockExplorerUrlIndex: 0,
+  },
+  {
+    chainId: CHAIN_IDS.MEGAETH_MAINNET,
+    name: MEGAETH_MAINNET_DISPLAY_NAME,
+    nativeCurrency: CURRENCY_SYMBOLS.ETH,
+    rpcEndpoints: [
+      {
+        url: `https://mainnet.megaeth.com/rpc`,
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://megaexplorer.xyz/'],
     defaultBlockExplorerUrlIndex: 0,
   },
 ];

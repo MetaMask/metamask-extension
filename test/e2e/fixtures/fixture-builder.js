@@ -300,7 +300,7 @@ class FixtureBuilder {
         'megaeth-testnet': {
           chainId: CHAIN_IDS.MEGAETH_TESTNET,
           nickname: 'Mega Testnet',
-          rpcUrl: 'https://carrot.megaeth.com/rpc',
+          rpcUrl: 'https://timothy.megaeth.com/rpc',
           ticker: 'MegaETH',
           rpcPrefs: {
             blockExplorerUrl: 'https://testnet.megaeth.com',
