@@ -67,8 +67,7 @@ export default function OnboardingMetametrics() {
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
   // Check if the PNA25 feature is enabled
-  const isPna25Enabled = process.env.EXTENSION_UX_PNA25 === 'true';
-
+  const isPna25Enabled = process.env.EXTENSION_UX_PNA25;
   const [
     isParticipateInMetaMetricsChecked,
     setIsParticipateInMetaMetricsChecked,

@@ -145,12 +145,6 @@ export default function reduceMetamask(state = initialState, action) {
         dataCollectionForMarketing: action.value,
       };
 
-    case actionConstants.SET_PNA25_ACKNOWLEDGED:
-      return {
-        ...metamaskState,
-        pna25Acknowledged: action.value,
-      };
-
     case actionConstants.COMPLETE_ONBOARDING: {
       return {
         ...metamaskState,
