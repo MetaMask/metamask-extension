@@ -298,6 +298,7 @@ class AssetListPage {
     await this.driver.waitForSelector(this.modalWarningBanner);
     // Wait for the input to be present and stable after modal content re-renders
     await this.driver.waitForSelector(this.tokenAddressInput);
+    await this.driver.delay(1000);
     await this.driver.fill(this.tokenAddressInput, tokenAddress);
     await this.driver.waitForSelector(this.tokenSymbolTitle);
 
