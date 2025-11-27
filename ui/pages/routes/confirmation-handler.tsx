@@ -136,7 +136,6 @@ export const ConfirmationHandler = () => {
   // Ported from home.component - componentDidMount()
   useEffect(() => {
     checkStatusAndNavigate();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Run only once on mount
 
   // Snap-specific: Handle wallet-initiated snap install/update result approvals in fullscreen
