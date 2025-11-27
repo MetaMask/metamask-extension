@@ -59,7 +59,7 @@ const DeFiPage = () => {
   const protocolPosition =
     chainId && protocolId
       ? defiPositions[selectedAccount.address]?.[
-      chainId as keyof (typeof defiPositions)[string]
+          chainId as keyof (typeof defiPositions)[string]
         ]?.protocols[protocolId]
       : undefined;
 

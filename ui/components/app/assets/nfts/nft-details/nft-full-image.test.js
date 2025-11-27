@@ -71,10 +71,7 @@ describe('NFT full image', () => {
   });
 
   it('should match snapshot', async () => {
-    const { container } = renderWithProvider(
-      <NftFullImage />,
-      mockStore,
-    );
+    const { container } = renderWithProvider(<NftFullImage />, mockStore);
 
     await waitFor(() => {
       expect(container).toMatchSnapshot();
@@ -94,10 +91,7 @@ describe('NFT full image', () => {
 
     nfts[0].image = images;
 
-    const { findByTestId } = renderWithProvider(
-      <NftFullImage />,
-      mockStore,
-    );
+    const { findByTestId } = renderWithProvider(<NftFullImage />, mockStore);
 
     const imageElem = await findByTestId('nft-image');
     expect(imageElem).toHaveAttribute('src', mockImageUrl);

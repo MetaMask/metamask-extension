@@ -104,7 +104,11 @@ export function renderHookWithProvider(
 ) {
   const store = state ? configureStore(state) : undefined;
 
-  const ProviderWrapper = createProviderWrapper(store, pathname, getMockTrackEvent);
+  const ProviderWrapper = createProviderWrapper(
+    store,
+    pathname,
+    getMockTrackEvent,
+  );
 
   const wrapper = Container
     ? ({ children }) => (
