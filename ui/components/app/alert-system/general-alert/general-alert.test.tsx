@@ -43,5 +43,6 @@ describe('GeneralAlert', () => {
     );
 
     expect(getByText('Security Alert')).toBeInTheDocument();
+    expect(getByText('Powered by')).toBeInTheDocument();
   });
 });
