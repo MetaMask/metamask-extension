@@ -3,6 +3,7 @@ import { isEmpty } from 'lodash';
 import { RuntimeObject, hasProperty, isObject } from '@metamask/utils';
 import { captureException } from '../../../../shared/lib/sentry';
 import { MISSING_VAULT_ERROR } from '../../../../shared/constants/errors';
+import { getManifestFlags } from '../../../../shared/lib/manifestFlags';
 import { IndexedDBStore } from './indexeddb-store';
 import type {
   MetaMaskStateType,
@@ -10,7 +11,6 @@ import type {
   BaseStore,
   MetaData,
 } from './base-store';
-import { getManifestFlags } from '../../../../shared/lib/manifestFlags';
 
 export type StorageKind = 'data' | 'split';
 
@@ -120,9 +120,10 @@ const STATE_LOCK = 'state-lock';
  * state, managing metadata, and handling cleanup tasks.
  */
 export class PersistenceManager {
-  static readonly DEFAULT_STORAGE_KIND = ((process.env.IN_TEST ?
-    getManifestFlags().testing?.storageKind : null) ??
-    'split') as StorageKind;
+  static readonly DEFAULT_STORAGE_KIND = ((process.env.IN_TEST
+    ? getManifestFlags().testing?.storageKind
+    : null) ?? 'split') as StorageKind;
+
   /**
    * dataPersistenceFailing is a boolean that is set to true if the storage
    * system attempts to write state and the write operation fails. This is only

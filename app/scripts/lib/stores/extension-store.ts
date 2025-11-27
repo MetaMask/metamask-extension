@@ -32,7 +32,6 @@ export default class ExtensionStore implements BaseStore {
       log.error('Storage local API not available.');
       return null;
     }
-debugger;
     const { local } = browser.storage;
     console.time('[ExtensionStore] Reading from local store');
     // don't fetch more than we need, incase extra stuff was put in the db
@@ -56,7 +55,7 @@ debugger;
     // don't fetch more than we need, in case extra stuff was put in the db
     // by testing or users playing with the db
     const solidResponse = await local.get(['data', 'meta']);
-    for(const key of Object.keys(solidResponse)) {
+    for (const key of Object.keys(solidResponse)) {
       // we loop because we don't always have all the keys (like on a brand new
       // install and sometimes due to apparent state corruption)
       this.#manifest.add(key);
@@ -102,7 +101,6 @@ debugger;
     if (updateManifest) {
       toSet.manifest = Array.from(this.#manifest);
     }
-debugger;
     console.time('[ExtensionStore] Writing to local store');
     log.info(
       `[ExtensionStore] Writing ${Object.keys(toSet).length} keys to local store`,

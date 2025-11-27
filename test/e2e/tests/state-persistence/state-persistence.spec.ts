@@ -212,7 +212,7 @@ const runScriptThenReloadExtension = async (
     const callback = arguments[arguments.length - 1];
     const browser = globalThis.browser ?? globalThis.chrome;
     try {
-      const result = await (${runScript ? runScript : 'Promise.resolve()'});
+      const result = await (${runScript || 'Promise.resolve()'});
       callback({ result });
     } catch (error) {
       callback({ error: error?.message ?? error?.toString?.() ?? error });

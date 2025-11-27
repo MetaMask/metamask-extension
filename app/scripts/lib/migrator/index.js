@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
 import log from 'loglevel';
-import { PersistenceManager } from '../../lib/stores/persistence-manager';
+import { PersistenceManager } from '../stores/persistence-manager';
 
 /**
  * @typedef {object} Migration

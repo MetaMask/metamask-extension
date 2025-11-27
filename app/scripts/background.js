@@ -978,7 +978,9 @@ export async function loadStateFromPersistence(backup) {
       `MetaMask - migrator metadata version has invalid type '${typeof versionedData
         .meta.version}'`,
     );
-  } else if (!['data', 'split', undefined].includes(versionedData.meta.storageKind)) {
+  } else if (
+    !['data', 'split', undefined].includes(versionedData.meta.storageKind)
+  ) {
     throw new Error(
       `MetaMask - migrator metadata storageKind has invalid value '${versionedData.meta.storageKind}'`,
     );

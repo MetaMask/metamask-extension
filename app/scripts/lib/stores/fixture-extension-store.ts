@@ -53,10 +53,10 @@ export class FixtureExtensionStore extends ExtensionStore {
           // fixtures use old state, so we need to translate them to split state
           // here
           const kvs = new Map(Object.entries(state.data));
-          kvs.set("meta", state.meta);
+          kvs.set('meta', state.meta);
           await this.setKeyValues(kvs);
         } else {
-        await super.set(state);
+          await super.set(state);
         }
       } else {
         log.debug(
