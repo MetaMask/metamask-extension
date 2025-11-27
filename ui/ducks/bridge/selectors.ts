@@ -677,15 +677,6 @@ export const getBridgeQuotes = createSelector(
     }),
 );
 
-export const getIsBridgeTx = createDeepEqualSelector(
-  getFromChain,
-  getToChain,
-  (fromChain, toChain) =>
-    toChain && fromChain?.chainId
-      ? fromChain.chainId !== toChain.chainId
-      : false,
-);
-
 export const getIsSwap = createDeepEqualSelector(
   getQuoteRequest,
   ({ srcChainId, destChainId }) =>

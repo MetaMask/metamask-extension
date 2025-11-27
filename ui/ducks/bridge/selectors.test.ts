@@ -21,7 +21,6 @@ import {
   getFromChain,
   getFromChains,
   getFromToken,
-  getIsBridgeTx,
   getIsSwap,
   getToChain,
   getToChains,
@@ -255,83 +254,6 @@ describe('Bridge selectors', () => {
       const result = getToChains(state as never);
 
       expect(result).toHaveLength(0);
-    });
-  });
-
-  describe('getIsBridgeTx', () => {
-    it('returns false if toChainId is null', () => {
-      const state = createBridgeMockStore({
-        featureFlagOverrides: {
-          extensionConfig: {
-            support: true,
-            chains: {
-              '0x1': { isActiveSrc: true, isActiveDest: true },
-            },
-          },
-        },
-        bridgeSliceOverrides: { toChainId: null },
-        metamaskStateOverrides: {
-          ...mockNetworkState({ chainId: '0x1' }),
-        },
-      });
-
-      const result = getIsBridgeTx(state as never);
-
-      expect(result).toBe(false);
-    });
-
-    it('returns false if fromChain and toChainId have the same chainId', () => {
-      const state = createBridgeMockStore({
-        featureFlagOverrides: {
-          extensionConfig: {
-            support: true,
-            chains: {
-              '0x1': { isActiveSrc: true, isActiveDest: true },
-            },
-          },
-        },
-        bridgeSliceOverrides: { toChainId: formatChainIdToCaip('0x1') },
-        metamaskStateOverrides: {
-          ...mockNetworkState({ chainId: '0x1' }),
-        },
-      });
-
-      const result = getIsBridgeTx(state as never);
-
-      expect(result).toBe(false);
-    });
-
-    it('returns true if fromChain and toChainId have different chainIds', () => {
-      const state = createBridgeMockStore({
-        featureFlagOverrides: {
-          extensionConfig: {
-            support: true,
-            chains: {
-              '0x1': { isActiveSrc: true, isActiveDest: false },
-              [CHAIN_IDS.LINEA_MAINNET]: {
-                isActiveSrc: false,
-                isActiveDest: true,
-              },
-            },
-          },
-        },
-        bridgeSliceOverrides: {
-          toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
-        },
-        metamaskStateOverrides: {
-          ...mockNetworkState(
-            { chainId: CHAIN_IDS.MAINNET },
-            ...FEATURED_RPCS.filter(
-              (network) => network.chainId !== CHAIN_IDS.LINEA_MAINNET, // Linea is both a built in network, as well as featured RPC
-            ),
-          ),
-          useExternalServices: true,
-        },
-      });
-
-      const result = getIsBridgeTx(state as never);
-
-      expect(result).toBe(true);
     });
   });
 
