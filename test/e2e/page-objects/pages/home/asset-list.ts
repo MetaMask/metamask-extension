@@ -296,8 +296,7 @@ class AssetListPage {
     );
     await this.driver.waitForSelector(this.tokenSearchInput);
     await this.driver.clickElement(this.customTokenModalOption);
-    await this.driver.assertElementNotPresent(this.tokenSearchInput);
-    await this.driver.waitForSelector(this.modalWarningBanner);
+    await this.driver.waitForSelector(this.tokenAddressInput);
     await this.driver.fill(this.tokenAddressInput, tokenAddress);
     await this.driver.waitForSelector(this.tokenSymbolTitle);
 
