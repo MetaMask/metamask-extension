@@ -40,9 +40,9 @@ export async function forwardRequestToSnap(
     throw new InternalError(`No origin specified for method ${method}`);
   }
 
-  onBeforeRequest?.();
-
   try {
+    onBeforeRequest?.();
+
     const response = (await handleRequest({
       snapId,
       origin,

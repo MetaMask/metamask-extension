@@ -3,6 +3,7 @@ import type {
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
 } from '@metamask/json-rpc-engine';
+import { providerErrors } from '@metamask/rpc-errors';
 import { SnapId } from '@metamask/snaps-sdk';
 import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
 
@@ -34,7 +35,7 @@ export default function createRpcBlockingMiddleware({
     const { origin } = req;
 
     if (isBlocked && !isSnapPreinstalled(origin as SnapId)) {
-      end(new Error(errorMessage));
+      end(providerErrors.unauthorized(errorMessage));
       return;
     }
 

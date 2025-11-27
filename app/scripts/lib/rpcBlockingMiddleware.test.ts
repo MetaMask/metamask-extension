@@ -1,4 +1,5 @@
 import type { Json, JsonRpcResponse } from '@metamask/utils';
+import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
 import createRpcBlockingMiddleware, {
   type ExtendedJsonRpcRequest,
 } from './rpcBlockingMiddleware';
@@ -7,13 +8,13 @@ jest.mock('../../../shared/lib/snaps/snaps', () => ({
   isSnapPreinstalled: jest.fn(),
 }));
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { isSnapPreinstalled } = require('../../../shared/lib/snaps/snaps');
-
 describe('createRpcBlockingMiddleware', () => {
+  const isSnapPreinstalledMock = jest.mocked(isSnapPreinstalled);
+
   beforeEach(() => {
     jest.resetAllMocks();
-    isSnapPreinstalled.mockReturnValue(false);
+
+    isSnapPreinstalledMock.mockReturnValue(false);
   });
 
   const createRequest = (origin = 'https://example.com') =>
@@ -53,7 +54,7 @@ describe('createRpcBlockingMiddleware', () => {
   });
 
   it('calls next when blocked but origin is a preinstalled snap', async () => {
-    isSnapPreinstalled.mockReturnValue(true);
+    isSnapPreinstalledMock.mockReturnValue(true);
 
     const { setIsBlocked, middleware } = createRpcBlockingMiddleware();
     setIsBlocked(true);
