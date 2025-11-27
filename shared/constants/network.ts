@@ -1594,7 +1594,7 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
       },
     ],
     defaultRpcEndpointIndex: 0,
-    blockExplorerUrls: ['https://megaexplorer.xyz/'],
+    blockExplorerUrls: ['https://explorer.megaeth.com/'],
     defaultBlockExplorerUrlIndex: 0,
   },
 ];

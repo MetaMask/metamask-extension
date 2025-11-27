@@ -153,7 +153,7 @@ describe('useEIP7702Networks', () => {
 
     // Verify the corresponding decimal values are in ascending order
     const decimalChainIds = chainIds.map((id: string) => parseInt(id, 16));
-    expect(decimalChainIds).toEqual([1, 5, 6342, 11155111]);
+    expect(decimalChainIds).toEqual([1, 5, 6343, 11155111]);
   });
 
   it('returns the correct values for non-EVM accounts', () => {
