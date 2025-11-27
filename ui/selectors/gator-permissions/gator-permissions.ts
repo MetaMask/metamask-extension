@@ -86,10 +86,10 @@ function sortGatorPermissionsByStartTime<
   order: GatorSortOrder = GatorSortOrder.Ascending,
 ): TPermission[] {
   return [...permissions].sort((a, b) => {
-    const aStartTime = a.permissionResponse.permission.data.startTime as
+    const aStartTime = a.permissionResponse.permission.data?.startTime as
       | number
       | undefined;
-    const bStartTime = b.permissionResponse.permission.data.startTime as
+    const bStartTime = b.permissionResponse.permission.data?.startTime as
       | number
       | undefined;
 
