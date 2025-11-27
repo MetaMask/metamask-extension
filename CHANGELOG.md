@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update Attributions
 - Remove 38259 changes as they were added twice when doing the stable sync
 - Update Attributions
+- Remove 38259 changes as they were added twice when doing the stable sync
+- Update Attributions
 - None - dependency bump (#37902)
 - Null (#37912)
 
@@ -44,6 +46,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- fix: properly include PR 38261
 - fix: properly include PR 38261
 - fix: properly include PR 38261
 - Removed Sei from default networks and added QuickNode fallback RPC (#37681)
