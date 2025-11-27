@@ -7504,18 +7504,8 @@
   "walletConnectionGuide": {
     "message": "我们的硬件钱包连接指南"
   },
-  "walletDetails": {
-    "message": "钱包详情"
-  },
   "walletName": {
     "message": "钱包名称"
-  },
-  "walletNotFoundDescription": {
-    "message": "未找到 ID 为 $1 的钱包。",
-    "description": "$1 is the wallet ID"
-  },
-  "walletNotFoundTitle": {
-    "message": "未找到钱包"
   },
   "walletReadyLearn": {
     "message": "$1 您需要妥善保管该助记词，这样永远不会失去对您的资金的访问权限。",

@@ -7614,18 +7614,8 @@
   "walletConnectionGuide": {
     "message": "ár dtreoir nasctha sparán crua-earraí"
   },
-  "walletDetails": {
-    "message": "Sonraí sparán"
-  },
   "walletName": {
     "message": "Ainm an sparáin"
-  },
-  "walletNotFoundDescription": {
-    "message": "Níor aimsíodh an sparán leis an ID $1.",
-    "description": "$1 is the wallet ID"
-  },
-  "walletNotFoundTitle": {
-    "message": "Níor aimsíodh an sparán"
   },
   "walletReadyLearn": {
     "message": "$1 is féidir leat an frása seo a choinneáil slán ionas nach gcaillfidh tú rochtain ar do chuid airgid choíche.",

@@ -7507,18 +7507,8 @@
   "walletConnectionGuide": {
     "message": "unsere Hardware-Wallet-Verbindungsanleitung"
   },
-  "walletDetails": {
-    "message": "Wallet-Details"
-  },
   "walletName": {
     "message": "Wallet-Name"
-  },
-  "walletNotFoundDescription": {
-    "message": "Die Wallet mit der ID $1 wurde nicht gefunden.",
-    "description": "$1 is the wallet ID"
-  },
-  "walletNotFoundTitle": {
-    "message": "Wallet nicht gefunden"
   },
   "walletReadyLearn": {
     "message": "$1 Sie können diese Phrase sicher aufbewahren, damit Sie nie den Zugriff auf Ihr Geld verlieren.",

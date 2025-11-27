@@ -7507,18 +7507,8 @@
   "walletConnectionGuide": {
     "message": "notre guide de connexion des portefeuilles matériels"
   },
-  "walletDetails": {
-    "message": "Détails du portefeuille"
-  },
   "walletName": {
     "message": "Nom du portefeuille"
-  },
-  "walletNotFoundDescription": {
-    "message": "Le portefeuille avec l’identifiant $1 n’a pas été trouvé.",
-    "description": "$1 is the wallet ID"
-  },
-  "walletNotFoundTitle": {
-    "message": "Portefeuille introuvable"
   },
   "walletReadyLearn": {
     "message": "$1 conservez cette phrase en lieu sûr pour ne jamais perdre l’accès à votre argent.",

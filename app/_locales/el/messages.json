@@ -7507,18 +7507,8 @@
   "walletConnectionGuide": {
     "message": "ο οδηγός μας σύνδεσης πορτοφολιού υλικού"
   },
-  "walletDetails": {
-    "message": "Λεπτομέρειες πορτοφολιού"
-  },
   "walletName": {
     "message": "Όνομα πορτοφολιού"
-  },
-  "walletNotFoundDescription": {
-    "message": "Το πορτοφόλι με αρ. $1 δεν βρέθηκε.",
-    "description": "$1 is the wallet ID"
-  },
-  "walletNotFoundTitle": {
-    "message": "Το πορτοφόλι δεν βρέθηκε"
   },
   "walletReadyLearn": {
     "message": "$1 να φυλάξετε σε ασφαλές μέρος τη μυστική φράση για να διασφαλίσετε την πρόσβαση στα χρήματά σας.",
