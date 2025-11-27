@@ -193,7 +193,7 @@ describe('Vault Decryptor Page', function () {
         // go to privacy settings page
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkBalanceEmptyStateIsDisplayed();
+        await homePage.checkExpectedBalanceIsDisplayed('0');
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
@@ -256,7 +256,7 @@ describe('Vault Decryptor Page', function () {
         // go to privacy settings page
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkBalanceEmptyStateIsDisplayed();
+        await homePage.checkExpectedBalanceIsDisplayed('0');
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();

@@ -9,14 +9,11 @@ import {
   selectAssetsBySelectedAccountGroup,
 } from '@metamask/assets-controllers';
 import { CaipAssetId, TrxScope } from '@metamask/keyring-api';
-import { toHex } from '@metamask/controller-utils';
 import {
   CaipAssetType,
   CaipChainId,
   Hex,
-  KnownCaipNamespace,
   parseCaipAssetType,
-  parseCaipChainId,
 } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import { groupBy } from 'lodash';
@@ -49,7 +46,6 @@ import {
   TRON_RESOURCE_SYMBOLS_SET,
   TronResourceSymbol,
 } from '../../shared/constants/multichain/assets';
-import { getNonTestNetworks } from '../../shared/modules/selectors/networks';
 import { getSelectedInternalAccount } from './accounts';
 import { getMultichainBalances } from './multichain';
 import { EMPTY_OBJECT } from './shared';
@@ -90,7 +86,6 @@ export type BalanceCalculationState = {
     Partial<CurrencyRateState> & {
       conversionRates?: Record<string, unknown>;
       historicalPrices?: Record<string, unknown>;
-      networkConfigurationsByChainId?: Record<string, unknown>;
     };
 };
 
@@ -939,108 +934,6 @@ export const selectBalanceChangeBySelectedAccountGroup = (
       );
     },
   );
-
-/**
- * Creates an enabledNetworkMap from all non-test networks for balance calculations.
- * This selector combines EVM and non-EVM mainnet networks (excluding testnets and custom testnets)
- * and formats them into the enabledNetworkMap structure expected by calculateBalanceForAllWallets.
- *
- * @param state - Redux state containing network configurations.
- * @returns EnabledNetworkMap with all non-test networks enabled across all namespaces.
- */
-const selectAllMainnetNetworksEnabledMap = createSelector(
-  [getNonTestNetworks],
-  (nonTestNetworks) => {
-    const enabledNetworkMap: Record<string, Record<string, boolean>> = {};
-
-    nonTestNetworks.forEach((network) => {
-      const { caipChainId } = network;
-      const { namespace, reference } = parseCaipChainId(caipChainId);
-
-      if (!enabledNetworkMap[namespace]) {
-        enabledNetworkMap[namespace] = {};
-      }
-
-      // Fix: Convert reference to proper format for calculateBalanceForAllWallets
-      if (namespace === KnownCaipNamespace.Eip155) {
-        // For EVM chains, use hex format (e.g., "1" → "0x1")
-        const chainIdHex = toHex(reference);
-        enabledNetworkMap[namespace][chainIdHex] = true;
-      } else {
-        // For non-EVM chains, use full CAIP chainId as key
-        enabledNetworkMap[namespace][caipChainId] = true;
-      }
-    });
-
-    return enabledNetworkMap;
-  },
-);
-
-/**
- * Determines whether the selected account group has a balance greater than zero.
- * This selector returns a boolean to prevent unnecessary re-renders - it only changes
- * when the balance crosses the zero threshold, not on every balance update.
- *
- * @param state - Redux state containing all required controller states for balance calculation.
- * @returns true if the account group has a balance > 0, false otherwise.
- */
-export const selectAccountGroupBalanceForEmptyState = createSelector(
-  [
-    selectAccountTreeStateForBalances,
-    selectAccountsStateForBalances,
-    selectTokenBalancesStateForBalances,
-    selectTokenRatesStateForBalances,
-    selectMultichainRatesStateForBalances,
-    selectMultichainBalancesStateForBalances,
-    selectMultichainAssetsStateForBalances,
-    selectTokensStateForBalances,
-    selectCurrencyRateStateForBalances,
-    selectAllMainnetNetworksEnabledMap,
-  ],
-  (
-    accountTreeState,
-    accountsState,
-    tokenBalancesState,
-    tokenRatesState,
-    multichainRatesState,
-    multichainBalancesState,
-    multichainAssetsState,
-    tokensState,
-    currencyRateState,
-    allMainnetNetworksMap,
-  ): boolean => {
-    const selectedGroupId = accountTreeState?.accountTree?.selectedAccountGroup;
-    if (!selectedGroupId) {
-      return false;
-    }
-
-    // Use the pre-computed memoized network map for better performance
-    const allBalances = calculateBalanceForAllWallets(
-      accountTreeState as AccountTreeControllerState,
-      accountsState,
-      tokenBalancesState,
-      tokenRatesState,
-      multichainRatesState,
-      multichainBalancesState,
-      multichainAssetsState,
-      tokensState,
-      currencyRateState,
-      allMainnetNetworksMap,
-    );
-
-    // Extract the selected account group balance
-    const walletId = selectedGroupId.split('/')[0];
-    const wallet = allBalances.wallets[walletId] ?? null;
-
-    if (!wallet?.groups[selectedGroupId]) {
-      return false;
-    }
-
-    const balance = wallet.groups[selectedGroupId].totalBalanceInUserCurrency;
-
-    return balance > 0;
-  },
-);
 
 /**
  * Selects the selected account group's balance entry from the aggregated

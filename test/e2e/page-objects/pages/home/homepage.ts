@@ -99,9 +99,6 @@ class HomePage {
   private readonly shieldEntryModalSkip =
     '[data-testid="shield-entry-modal-close-button"]';
 
-  private readonly emptyBalance =
-    '[data-testid="coin-overview-balance-empty-state"]';
-
   constructor(driver: Driver) {
     this.driver = driver;
     this.headerNavbar = new HeaderNavbar(driver);
@@ -356,19 +353,6 @@ class HomePage {
     console.log(
       `Expected balance ${expectedBalance} ${symbol} is displayed on homepage`,
     );
-  }
-
-  /**
-   * Checks if the balance empty state is displayed on homepage.
-   * Criteria:
-   * - The account group has a zero balance across all aggregated mainnet networks.
-   * - The account group is not on a test network
-   * - The account group is not in a cached state
-   * Not a replacement for checkExpectedBalanceIsDisplayed('0') this is still valid in certain cases.
-   */
-  async checkBalanceEmptyStateIsDisplayed(): Promise<void> {
-    console.log('Check balance empty state is displayed on homepage');
-    await this.driver.waitForSelector(this.emptyBalance);
   }
 
   /**
