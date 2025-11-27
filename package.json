@@ -135,6 +135,7 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
+    "@metamask/subscription-controller@^4.2.2": "npm:@metamask-previews/subscription-controller@5.0.0-preview-93c103b6",
     "http-cache-semantics": "^4.1.1",
     "semver-regex": "^3.1.4",
     "base-x@^3.0.x": "^3.0.11",

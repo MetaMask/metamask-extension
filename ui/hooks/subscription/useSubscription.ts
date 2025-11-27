@@ -648,6 +648,7 @@ export const useUpdateSubscriptionCryptoPaymentMethod = ({
 }: {
   subscription?: Subscription;
 }) => {
+  const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const { execute: executeSubscriptionCryptoApprovalTransaction } =
     useSubscriptionCryptoApprovalTransaction();
   // This update the subscription payment method to crypto
@@ -656,7 +657,7 @@ export const useUpdateSubscriptionCryptoPaymentMethod = ({
     async (
       selectedToken: Pick<
         TokenWithApprovalAmount,
-        'chainId' | 'address' | 'approvalAmount'
+        'chainId' | 'address' | 'approvalAmount' | 'symbol'
       >,
     ) => {
       if (!subscription) {
@@ -669,9 +670,19 @@ export const useUpdateSubscriptionCryptoPaymentMethod = ({
       if (!selectedToken) {
         throw new Error('No token selected');
       }
+
+      // save the changing payment method as last used subscription payment method and plan to Redux store
+      await dispatch(
+        setLastUsedSubscriptionPaymentDetails(PRODUCT_TYPES.SHIELD, {
+          type: PAYMENT_TYPES.byCrypto,
+          paymentTokenAddress: selectedToken.address as Hex,
+          paymentTokenSymbol: selectedToken.symbol,
+          plan: subscription.interval,
+        }),
+      );
       await executeSubscriptionCryptoApprovalTransaction(selectedToken);
     },
-    [subscription, executeSubscriptionCryptoApprovalTransaction],
+    [subscription, executeSubscriptionCryptoApprovalTransaction, dispatch],
   );
   return {
     execute: handler,
