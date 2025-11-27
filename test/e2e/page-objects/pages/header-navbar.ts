@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { Browser, Key } from 'selenium-webdriver';
+import { Browser } from 'selenium-webdriver';
 import { Driver } from '../../webdriver/driver';
 
 class HeaderNavbar {
@@ -107,11 +107,11 @@ class HeaderNavbar {
 
   async openThreeDotMenu(): Promise<void> {
     console.log('Open account options menu');
-    const menu = await this.driver.waitForSelector(this.threeDotMenuButton, {
+    await this.driver.waitForSelector(this.threeDotMenuButton, {
       state: 'enabled',
     });
     if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
-      await menu.sendKeys(Key.ENTER);
+      await this.driver.clickElementUsingMouseMove(this.threeDotMenuButton);
     } else {
       this.driver.clickElement(this.threeDotMenuButton);
     }
