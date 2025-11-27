@@ -21,6 +21,7 @@ const useMultiPolling = <PollingInput>(
 
   const isMounted = useRef(true);
   useEffect(() => {
+    isMounted.current = true;
     return () => {
       // stop all polling on dismount
       for (const token of pollingTokens.current.values()) {
