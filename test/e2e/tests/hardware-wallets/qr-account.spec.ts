@@ -1,4 +1,4 @@
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { withFixtures } from '../../helpers';
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
 import { KNOWN_QR_ACCOUNTS } from '../../../stub/keyring-bridge';

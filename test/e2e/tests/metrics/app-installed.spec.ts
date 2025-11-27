@@ -2,7 +2,7 @@ import { strict as assert } from 'assert';
 import { Browser } from 'selenium-webdriver';
 import { Mockttp } from 'mockttp';
 import { getEventPayloads, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import OnboardingMetricsPage from '../../page-objects/pages/onboarding/onboarding-metrics-page';
 import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboarding-page';
 import { MOCK_META_METRICS_ID, WALLET_PASSWORD } from '../../constants';
