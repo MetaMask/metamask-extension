@@ -17,7 +17,9 @@ describe('Hide tokens without balance', function (this: Suite) {
     const smartContract = SMART_CONTRACTS.HST;
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder()
+          .withEnabledNetworks({ eip155: { '0x539': true } })
+          .build(),
         title: this.test?.fullTitle(),
         smartContract,
       },
