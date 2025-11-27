@@ -127,11 +127,11 @@ describe('NetworkControllerInit', () => {
               },
             ],
           },
-          "0x18c7": {
+          "0x18c6": {
             "blockExplorerUrls": [
               "https://megaexplorer.xyz",
             ],
-            "chainId": "0x18c7",
+            "chainId": "0x18c6",
             "defaultBlockExplorerUrlIndex": 0,
             "defaultRpcEndpointIndex": 0,
             "name": "Mega Testnet",
@@ -141,7 +141,7 @@ describe('NetworkControllerInit', () => {
                 "failoverUrls": [],
                 "networkClientId": "megaeth-testnet",
                 "type": "custom",
-                "url": "https://timothy.megaeth.com/rpc",
+                "url": "https://carrot.megaeth.com/rpc",
               },
             ],
           },

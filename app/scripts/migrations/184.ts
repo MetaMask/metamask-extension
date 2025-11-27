@@ -104,7 +104,7 @@ function transformState(state: Record<string, unknown>) {
     typeof networkState.selectedNetworkClientId === 'string'
   ) {
     const wasOnOldChain = (
-      oldNetworkConfig.rpcEndpoints as Array<{ networkClientId?: string }>
+      oldNetworkConfig.rpcEndpoints as { networkClientId?: string }[]
     ).some(
       (endpoint) =>
         endpoint.networkClientId === networkState.selectedNetworkClientId,

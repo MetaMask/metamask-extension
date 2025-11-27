@@ -211,7 +211,7 @@ describe(`migration #${version}`, () => {
       const networkConfigurationsByChainId =
         networkController.networkConfigurationsByChainId as Record<
           string,
-          { rpcEndpoints: Array<{ url: string; networkClientId: string }> }
+          { rpcEndpoints: { url: string; networkClientId: string }[] }
         >;
 
       // Old chain ID should be removed
