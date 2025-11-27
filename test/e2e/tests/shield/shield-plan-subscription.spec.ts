@@ -1,6 +1,6 @@
 import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import ShieldPlanPage from '../../page-objects/pages/settings/shield/shield-plan-page';
 import HomePage from '../../page-objects/pages/home/homepage';

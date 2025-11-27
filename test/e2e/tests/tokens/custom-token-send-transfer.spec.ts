@@ -1,7 +1,7 @@
 import { Mockttp } from 'mockttp';
 import { mockedSourcifyTokenSend } from '../confirmations/helpers';
 import { DAPP_URL, WINDOW_TITLES, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
