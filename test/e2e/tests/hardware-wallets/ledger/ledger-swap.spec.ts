@@ -1,5 +1,5 @@
 import { Browser } from 'selenium-webdriver';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { WINDOW_TITLES, withFixtures } from '../../../helpers';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import { checkActivityTransaction } from '../../swaps/shared';

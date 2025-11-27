@@ -184,7 +184,7 @@ describe('Send - utils', () => {
   });
 
   describe('navigateToSendRoute', () => {
-    it('call history.push with send route', () => {
+    it('call useNavigate with send route', () => {
       const mockUseNavigate = jest.fn();
       navigateToSendRoute(mockUseNavigate, false);
       expect(mockUseNavigate).toHaveBeenCalled();

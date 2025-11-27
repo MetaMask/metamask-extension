@@ -110,7 +110,7 @@ describe('ConfirmTitle', () => {
 
     expect(getByText('Account update')).toBeInTheDocument();
     expect(
-      getByText("You're switching to a smart account"),
+      getByText("You're switching to a smart account."),
     ).toBeInTheDocument();
   });
 
