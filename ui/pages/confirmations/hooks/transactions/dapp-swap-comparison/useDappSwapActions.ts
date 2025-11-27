@@ -15,13 +15,13 @@ import { useDappSwapComparisonMetrics } from './useDappSwapComparisonMetrics';
 
 export function useDappSwapActions() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { selectedQuote } = useDappSwapContext();
+  const { isQuotedSwapDisplayedInInfo, selectedQuote } = useDappSwapContext();
   const { captureSwapSubmit } = useDappSwapComparisonMetrics();
 
   const updateSwapWithQuoteDetails = useCallback(
     (transactionMeta: TransactionMeta) => {
       captureSwapSubmit();
-      if (!selectedQuote) {
+      if (!isQuotedSwapDisplayedInInfo) {
         return;
       }
       const { value, gasLimit, data, to } = selectedQuote?.trade as TxData;
@@ -56,7 +56,7 @@ export function useDappSwapActions() {
       transactionMeta.batchTransactionsOptions = {};
       transactionMeta.nestedTransactions = undefined;
     },
-    [captureSwapSubmit, selectedQuote],
+    [captureSwapSubmit, isQuotedSwapDisplayedInInfo, selectedQuote],
   );
 
   const onDappSwapCompleted = useCallback(() => {
