@@ -31,8 +31,6 @@ import {
 import { useNavState } from '../../contexts/navigation-state';
 
 const SNAP_APPROVAL_TYPES = [
-  'wallet_installSnap',
-  'wallet_updateSnap',
   'wallet_installSnapResult',
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
