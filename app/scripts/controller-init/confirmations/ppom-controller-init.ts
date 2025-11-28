@@ -24,6 +24,8 @@ export const PPOMControllerInit: ControllerInitFunction<
   const controller = new PPOMController({
     messenger: controllerMessenger,
     storageBackend: new IndexedDBPPOMStorage('PPOMDB', 1),
+    // @ts-expect-error: PPOMController expects `provider` to be defined, but it
+    // can be `undefined` here.
     provider,
     ppomProvider: {
       // @ts-expect-error Controller and PPOM wrapper have different argument types in `new` and `validateJsonRpc`

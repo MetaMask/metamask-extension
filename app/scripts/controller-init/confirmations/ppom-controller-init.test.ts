@@ -79,10 +79,8 @@ function buildInitRequestMock(): jest.Mocked<
   baseControllerMessenger.registerActionHandler(
     'NetworkController:getSelectedNetworkClient',
     () => ({
-      provider: {},
-
       // @ts-expect-error: Partial mock.
-      blockTracker: {},
+      provider: {},
     }),
   );
 

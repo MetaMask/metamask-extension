@@ -26,7 +26,7 @@ export async function getContractProxyAddress(
   );
 
   const result = responses.find(
-    (response: string) => stripHexPrefix(response) !== EMPTY_RESULT,
+    (response) => stripHexPrefix(response) !== EMPTY_RESULT,
   );
 
   return result && (addHexPrefix(result.slice(26)) as Hex | undefined);
