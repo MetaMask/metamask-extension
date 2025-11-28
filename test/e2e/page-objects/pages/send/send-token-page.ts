@@ -239,10 +239,19 @@ class SendTokenPage {
     await this.driver.pasteIntoField(this.hexInput, hex);
   }
 
-  async getHexInputValue(): Promise<string> {
+  async waitForHexDataCleared(): Promise<string> {
     console.log('Getting value from hex input');
     const hexInputElement = await this.driver.waitForSelector(this.hexInput);
-    await this.driver.waitForNonEmptyElement(hexInputElement);
+    await this.driver.waitUntil(
+      async () => {
+        const value = await hexInputElement.getAttribute('value');
+        return value === '';
+      },
+      {
+        timeout: 5000,
+        interval: 500,
+      },
+    );
     const value = await hexInputElement.getAttribute('value');
     console.log(`Hex input value: ${value}`);
     return value;

@@ -232,12 +232,7 @@ describe('Change assets', function () {
         await sendTokenPage.fillAmount('2');
 
         // Make sure hex data is cleared after switching assets
-        const hexDataValue = await sendTokenPage.getHexInputValue();
-        assert.equal(
-          hexDataValue,
-          '',
-          'Hex data has not been cleared after switching assets.',
-        );
+        await sendTokenPage.waitForHexDataCleared();
 
         // Make sure gas is updated by resetting amount and hex data
         // Note: this is needed until the race condition is fixed on the wallet level (issue #25243)
