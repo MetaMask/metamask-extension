@@ -16,6 +16,9 @@ export const selectOnboardingActiveStep = (state: MetaMaskReduxState) =>
 export const selectOnboardingModalRendered = (state: MetaMaskReduxState) =>
   state.rewards.onboardingModalRendered;
 
+export const selectOnboardingReferralCode = (state: MetaMaskReduxState) =>
+  state.rewards.onboardingReferralCode;
+
 export const selectOptinAllowedForGeo = (state: MetaMaskReduxState) =>
   state.rewards.optinAllowedForGeo;
 
@@ -61,5 +64,35 @@ export const selectRewardsEnabled = createSelector(
   },
 );
 
+export const selectRewardsOnboardingEnabled = createSelector(
+  getRemoteFeatureFlags,
+  getUseExternalServices,
+  (remoteFeatureFlags, useExternalServices): boolean => {
+    const rewardsFeatureFlag = remoteFeatureFlags?.rewardsOnboardingEnabled as
+      | VersionGatedFeatureFlag
+      | boolean
+      | undefined;
+
+    const resolveFlag = (flag: unknown): boolean => {
+      if (typeof flag === 'boolean') {
+        return flag;
+      }
+      return Boolean(
+        validatedVersionGatedFeatureFlag(flag as VersionGatedFeatureFlag),
+      );
+    };
+
+    const featureFlagEnabled = resolveFlag(rewardsFeatureFlag);
+    return featureFlagEnabled && Boolean(useExternalServices);
+  },
+);
+
 export const selectErrorToast = (state: MetaMaskReduxState) =>
   state.rewards.errorToast;
+
+export const selectRewardsBadgeHidden = (state: MetaMaskReduxState) =>
+  state.rewards.rewardsBadgeHidden;
+
+export const selectRewardsAccountLinkedTimestamp = (
+  state: MetaMaskReduxState,
+) => state.rewards?.accountLinkedTimestamp ?? null;

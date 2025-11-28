@@ -1,5 +1,5 @@
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { withFixtures } from '../../helpers';
 import { MockedEndpoint, Mockttp } from '../../mock-e2e';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
@@ -609,6 +609,20 @@ export async function mockDeFiPositionFeatureFlag(mockServer: Mockttp) {
               },
             },
           ],
+        };
+      }),
+    await mockServer
+      .forGet('https://price.api.cx.metamask.io/v2/chains/1/spot-prices')
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            '0x0000000000000000000000000000000000000000': {
+              price: 1700,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
+          },
         };
       }),
   ];

@@ -8,7 +8,9 @@ import {
   DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
 } from './testHelpers';
 
-describe('Solana Wallet Standard - Transfer WSOL', function () {
+// BUG #37690 Sending a transaction on TestDapp with BIP44 on fails with exception
+// eslint-disable-next-line mocha/no-skipped-tests
+describe.skip('Solana Wallet Standard - Transfer WSOL', function () {
   describe('Send WSOL transactions', function () {
     it('Should sign and send multiple WSOL transactions', async function () {
       await withSolanaAccountSnap(

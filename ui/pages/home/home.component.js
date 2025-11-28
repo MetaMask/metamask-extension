@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Redirect, Route } from 'react-router-dom';
+import { Navigate } from 'react-router-dom-v5-compat';
 import { Text, TextVariant, TextColor } from '@metamask/design-system-react';
 import { COHORT_NAMES } from '@metamask/subscription-controller';
 import {
@@ -64,11 +64,12 @@ import {
   SUPPORT_LINK,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/lib/ui-utils';
-import { AccountOverview } from '../../components/multichain/account-overview';
+import { AccountOverview } from '../../components/multichain';
 import { setEditedNetwork } from '../../store/actions';
-import { navigateToConfirmation } from '../confirmations/hooks/useConfirmationNavigation';
+import { getConfirmationRoute } from '../confirmations/hooks/useConfirmationNavigation';
 import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
 import ShieldEntryModal from '../../components/app/shield-entry-modal';
+import RewardsOnboardingModal from '../../components/app/rewards/onboarding/OnboardingModal';
 ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
 import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IF
@@ -98,7 +99,7 @@ export default class Home extends PureComponent {
   };
 
   static propTypes = {
-    history: PropTypes.object,
+    navigate: PropTypes.func,
     forgottenPassword: PropTypes.bool,
     setConnectedStatusPopoverHasBeenShown: PropTypes.func,
     shouldShowSeedPhraseReminder: PropTypes.bool.isRequired,
@@ -165,7 +166,6 @@ export default class Home extends PureComponent {
     fetchBuyableChains: PropTypes.func.isRequired,
     redirectAfterDefaultPage: PropTypes.object,
     clearRedirectAfterDefaultPage: PropTypes.func,
-    setAccountDetailsAddress: PropTypes.func,
     isSeedlessPasswordOutdated: PropTypes.bool,
     isPrimarySeedPhraseBackedUp: PropTypes.bool,
     showShieldEntryModal: PropTypes.bool,
@@ -176,6 +176,8 @@ export default class Home extends PureComponent {
     pendingShieldCohort: PropTypes.string,
     setPendingShieldCohort: PropTypes.func,
     isSignedIn: PropTypes.bool,
+    rewardsEnabled: PropTypes.bool,
+    rewardsOnboardingEnabled: PropTypes.bool,
   };
 
   state = {
@@ -221,7 +223,7 @@ export default class Home extends PureComponent {
 
   checkStatusAndNavigate() {
     const {
-      history,
+      navigate,
       isNotification,
       haveSwapsQuotes,
       haveBridgeQuotes,
@@ -239,39 +241,37 @@ export default class Home extends PureComponent {
 
     const canRedirect = !isNotification && !stayOnHomePage;
     if (canRedirect && showAwaitingSwapScreen) {
-      history.push(AWAITING_SWAP_ROUTE);
+      navigate(AWAITING_SWAP_ROUTE);
     } else if (canRedirect && (haveSwapsQuotes || swapsFetchParams)) {
-      history.push(PREPARE_SWAP_ROUTE);
+      navigate(PREPARE_SWAP_ROUTE);
     } else if (canRedirect && haveBridgeQuotes) {
-      history.push(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
+      navigate(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
     } else if (pendingApprovals.length || hasApprovalFlows) {
-      navigateToConfirmation(
+      const url = getConfirmationRoute(
         pendingApprovals?.[0]?.id,
         pendingApprovals,
         hasApprovalFlows,
-        history,
+        '', // queryString
       );
+
+      if (url) {
+        navigate(url, { replace: true });
+      }
     }
   }
 
   checkRedirectAfterDefaultPage() {
     const {
       redirectAfterDefaultPage,
-      history,
+      navigate,
       clearRedirectAfterDefaultPage,
-      setAccountDetailsAddress,
     } = this.props;
 
     if (
       redirectAfterDefaultPage?.shouldRedirect &&
       redirectAfterDefaultPage?.path
     ) {
-      // Set the account details address if provided
-      if (redirectAfterDefaultPage?.address) {
-        setAccountDetailsAddress(redirectAfterDefaultPage.address);
-      }
-
-      history.push(redirectAfterDefaultPage.path);
+      navigate(redirectAfterDefaultPage.path);
       clearRedirectAfterDefaultPage();
     }
   }
@@ -294,7 +294,8 @@ export default class Home extends PureComponent {
   }
 
   static getDerivedStateFromProps(props) {
-    if (shouldCloseNotificationPopup(props)) {
+    const shouldClose = shouldCloseNotificationPopup(props);
+    if (shouldClose) {
       return { notificationClosing: true };
     }
     return null;
@@ -395,7 +396,7 @@ export default class Home extends PureComponent {
     const { t } = this.context;
 
     const {
-      history,
+      navigate,
       shouldShowSeedPhraseReminder,
       isPopup,
       shouldShowWeb3ShimUsageNotification,
@@ -658,7 +659,7 @@ export default class Home extends PureComponent {
             if (isPopup) {
               global.platform.openExtensionInBrowser(backUpSRPRoute);
             } else {
-              history.push(backUpSRPRoute);
+              navigate(backUpSRPRoute);
             }
           }}
           infoText={t('backupApprovalInfo')}
@@ -866,10 +867,12 @@ export default class Home extends PureComponent {
       isPrimarySeedPhraseBackedUp,
       showShieldEntryModal,
       isSocialLoginFlow,
+      rewardsEnabled,
+      rewardsOnboardingEnabled,
     } = this.props;
 
     if (forgottenPassword) {
-      return <Redirect to={{ pathname: RESTORE_VAULT_ROUTE }} />;
+      return <Navigate to={RESTORE_VAULT_ROUTE} replace />;
     } else if (this.state.notificationClosing || this.state.redirecting) {
       return null;
     }
@@ -904,14 +907,45 @@ export default class Home extends PureComponent {
       showTermsOfUsePopup &&
       !isSocialLoginFlow;
 
+    const showRecoveryPhrase =
+      !showWhatsNew &&
+      showRecoveryPhraseReminder &&
+      !isPrimarySeedPhraseBackedUp;
+
+    const showRewardsModal =
+      rewardsEnabled &&
+      rewardsOnboardingEnabled &&
+      canSeeModals &&
+      !showTermsOfUse &&
+      !showWhatsNew &&
+      !showMultiRpcEditModal &&
+      !displayUpdateModal &&
+      !isSeedlessPasswordOutdated &&
+      !showShieldEntryModal &&
+      !showRecoveryPhrase;
+
+    const { location } = this.props;
+
+    // Handle connected routes
+    if (location?.pathname === CONNECTED_ROUTE) {
+      return (
+        <ScrollContainer className="main-container main-container--has-shadow">
+          <ConnectedSites navigate={this.props.navigate} />
+        </ScrollContainer>
+      );
+    }
+
+    if (location?.pathname === CONNECTED_ACCOUNTS_ROUTE) {
+      return (
+        <ScrollContainer className="main-container main-container--has-shadow">
+          <ConnectedAccounts navigate={this.props.navigate} />
+        </ScrollContainer>
+      );
+    }
+
+    // Render normal home content
     return (
       <ScrollContainer className="main-container main-container--has-shadow">
-        <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />
-        <Route
-          path={CONNECTED_ACCOUNTS_ROUTE}
-          component={ConnectedAccounts}
-          exact
-        />
         <div className="home__container">
           {dataCollectionForMarketing === null &&
           participateInMetaMetrics === true
@@ -921,9 +955,7 @@ export default class Home extends PureComponent {
           {showMultiRpcEditModal && <MultiRpcEditModal />}
           {displayUpdateModal && <UpdateModal />}
           {showWhatsNew ? <WhatsNewModal onClose={hideWhatsNewPopup} /> : null}
-          {!showWhatsNew &&
-          showRecoveryPhraseReminder &&
-          !isPrimarySeedPhraseBackedUp ? (
+          {showRecoveryPhrase ? (
             <RecoveryPhraseReminder
               onConfirm={this.onRecoveryPhraseReminderClose}
             />
@@ -932,6 +964,7 @@ export default class Home extends PureComponent {
             <TermsOfUsePopup onAccept={this.onAcceptTermsOfUse} />
           ) : null}
           {showShieldEntryModal && <ShieldEntryModal />}
+          {showRewardsModal && <RewardsOnboardingModal />}
           {isPopup && !connectedStatusPopoverHasBeenShown
             ? this.renderPopover()
             : null}
@@ -944,7 +977,7 @@ export default class Home extends PureComponent {
               defaultHomeActiveTabName={defaultHomeActiveTabName}
               useExternalServices={useExternalServices}
               setBasicFunctionalityModalOpen={setBasicFunctionalityModalOpen}
-            ></AccountOverview>
+            />
             {
               ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
               <div className="home__support">

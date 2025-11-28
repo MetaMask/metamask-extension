@@ -5,7 +5,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
   selectCandidateSubscriptionId,
   selectOnboardingModalRendered,
+  selectRewardsBadgeHidden,
   selectRewardsEnabled,
+  selectRewardsOnboardingEnabled,
   selectSeasonStatus,
   selectSeasonStatusError,
 } from '../../../ducks/rewards/selectors';
@@ -111,6 +113,8 @@ describe('RewardsPointsBalance', () => {
   const setSelectorValues = ({
     locale = 'en-US',
     rewardsEnabled = true,
+    rewardsOnboardingEnabled = true,
+    rewardsBadgeHidden = false,
     candidateSubscriptionId = 'test-subscription-id',
     seasonStatus = mockSeasonStatus,
     seasonStatusError = null,
@@ -120,6 +124,8 @@ describe('RewardsPointsBalance', () => {
   }: {
     locale?: string;
     rewardsEnabled?: boolean;
+    rewardsOnboardingEnabled?: boolean;
+    rewardsBadgeHidden?: boolean;
     candidateSubscriptionId?: string | null;
     seasonStatus?: typeof mockSeasonStatus | null;
     seasonStatusError?: string | null;
@@ -134,6 +140,12 @@ describe('RewardsPointsBalance', () => {
       if (selector === selectRewardsEnabled) {
         return rewardsEnabled;
       }
+      if (selector === selectRewardsOnboardingEnabled) {
+        return rewardsOnboardingEnabled;
+      }
+      if (selector === selectRewardsBadgeHidden) {
+        return rewardsBadgeHidden;
+      }
       if (selector === selectCandidateSubscriptionId) {
         return candidateSubscriptionId;
       }
@@ -145,6 +157,9 @@ describe('RewardsPointsBalance', () => {
       }
       if (selector === selectOnboardingModalRendered) {
         return onboardingModalRendered;
+      }
+      if (selector === selectSeasonStatusError) {
+        return seasonStatusError;
       }
       return undefined;
     });
@@ -190,7 +205,12 @@ describe('RewardsPointsBalance', () => {
   });
 
   it('should render sign-up badge when candidateSubscriptionId is null', () => {
-    setSelectorValues({ candidateSubscriptionId: null, seasonStatus: null });
+    setSelectorValues({
+      candidateSubscriptionId: null,
+      seasonStatus: null,
+      rewardsOnboardingEnabled: true,
+      rewardsBadgeHidden: false,
+    });
     render(<RewardsPointsBalance />);
     const container = screen.getByTestId('rewards-points-balance');
     expect(container).toBeInTheDocument();

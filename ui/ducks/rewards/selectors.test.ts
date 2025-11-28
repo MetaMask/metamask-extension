@@ -1,6 +1,7 @@
 import {
   selectOnboardingModalOpen,
   selectOnboardingActiveStep,
+  selectOnboardingReferralCode,
   selectOptinAllowedForGeo,
   selectOptinAllowedForGeoLoading,
   selectOptinAllowedForGeoError,
@@ -10,6 +11,7 @@ import {
   selectSeasonStatusError,
   selectErrorToast,
   selectRewardsEnabled,
+  selectRewardsBadgeHidden,
 } from './selectors';
 import { OnboardingStep } from './types';
 import { initialState as rewardsInitialState } from '.';
@@ -52,6 +54,13 @@ describe('rewards selectors', () => {
         rewards: { onboardingActiveStep: OnboardingStep.STEP1 },
       });
       expect(selectOnboardingActiveStep(state)).toBe(OnboardingStep.STEP1);
+    });
+
+    it('selectOnboardingReferralCode returns referral code', () => {
+      const state = buildState({
+        rewards: { onboardingReferralCode: ' ABC123 ' },
+      });
+      expect(selectOnboardingReferralCode(state)).toBe(' ABC123 ');
     });
 
     it('selectOptinAllowedForGeo returns geo eligibility', () => {
@@ -114,6 +123,13 @@ describe('rewards selectors', () => {
         rewards: { errorToast },
       });
       expect(selectErrorToast(state)).toBe(errorToast);
+    });
+
+    it('selectRewardsBadgeHidden returns hidden state', () => {
+      const state = buildState({
+        rewards: { rewardsBadgeHidden: true },
+      });
+      expect(selectRewardsBadgeHidden(state)).toBe(true);
     });
   });
 

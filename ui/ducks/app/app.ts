@@ -112,6 +112,7 @@ type AppState = {
         nickname?: string;
         editCompleted?: boolean;
         newNetwork?: boolean;
+        trackRpcUpdateFromBanner?: boolean;
       }
     | undefined;
   newNetworkAddedConfigurationId: string;
@@ -139,6 +140,10 @@ type AppState = {
     shouldSubmitEvents: boolean;
     modalType?: ModalType;
     triggeringCohort?: string;
+    /**
+     * Whether the user has interacted with the modal.
+     */
+    hasUserInteractedWithModal?: boolean;
   };
 };
 
@@ -420,13 +425,6 @@ export default function reduceApp(
         alertOpen: false,
         alertMessage: null,
       };
-
-    case actionConstants.SET_ACCOUNT_DETAILS_ADDRESS: {
-      return {
-        ...appState,
-        accountDetailsAddress: action.payload,
-      };
-    }
 
     // qr scanner methods
     case actionConstants.QR_CODE_DETECTED:
@@ -797,7 +795,7 @@ export default function reduceApp(
         showSupportDataConsentModal: action.payload,
       };
 
-    case actionConstants.SET_SHOW_SHIELD_ENTRY_MODAL_ONCE:
+    case actionConstants.SET_SHIELD_ENTRY_MODAL_STATUS:
       return {
         ...appState,
         shieldEntryModal: {

@@ -11,6 +11,7 @@ import {
   useHistory,
   useLocation,
 } from 'react-router-dom';
+import type { To } from 'react-router-dom-v5-compat';
 import IdleTimer from 'react-idle-timer';
 import type { ApprovalType } from '@metamask/controller-utils';
 
@@ -22,9 +23,7 @@ import Loading from '../../components/ui/loading-screen';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
 import {
-  AccountListMenu,
   NetworkListMenu,
-  AccountDetails,
   ImportNftsModal,
   ImportTokensModal,
 } from '../../components/multichain';
@@ -60,9 +59,6 @@ import {
   DEFI_ROUTE,
   DEEP_LINK_ROUTE,
   SMART_ACCOUNT_UPDATE,
-  WALLET_DETAILS_ROUTE,
-  ACCOUNT_DETAILS_ROUTE,
-  ACCOUNT_DETAILS_QR_CODE_ROUTE,
   ACCOUNT_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE,
@@ -75,6 +71,7 @@ import {
   GATOR_PERMISSIONS,
   TOKEN_TRANSFER_ROUTE,
   REVIEW_GATOR_PERMISSIONS_ROUTE,
+  REWARDS_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import {
@@ -90,7 +87,6 @@ import {
   oldestPendingConfirmationSelector,
   getUnapprovedTransactions,
   getPendingApprovals,
-  getIsMultichainAccountsState1Enabled,
 } from '../../selectors';
 import { getApprovalFlows } from '../../selectors/approvals';
 
@@ -115,8 +111,9 @@ import {
   getIsUnlocked,
 } from '../../ducks/metamask/metamask';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import RewardsPage from '../rewards';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
-import { navigateToConfirmation } from '../confirmations/hooks/useConfirmationNavigation';
+import { getConfirmationRoute } from '../confirmations/hooks/useConfirmationNavigation';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
@@ -147,8 +144,6 @@ import {
 } from '../../../shared/lib/confirmation.utils';
 import { type Confirmation } from '../confirmations/types/confirm';
 import { SmartAccountUpdate } from '../confirmations/components/confirm/smart-account-update';
-import { MultichainAccountDetails } from '../multichain-accounts/account-details';
-import { AddressQRCode } from '../multichain-accounts/address-qr-code';
 import { MultichainAccountAddressListPage } from '../multichain-accounts/multichain-account-address-list-page';
 import { MultichainAccountPrivateKeyListPage } from '../multichain-accounts/multichain-account-private-key-list-page';
 import MultichainAccountIntroModalContainer from '../../components/app/modals/multichain-accounts/intro-modal';
@@ -158,6 +153,7 @@ import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
 import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
 import { ReviewPermissions } from '../../components/multichain/pages/review-permissions-page/review-permissions-page';
 import { MultichainReviewPermissions } from '../../components/multichain-accounts/permissions/permission-review-page/multichain-review-permissions-page';
+import { State2Wrapper } from '../../components/multichain-accounts/state2-wrapper/state2-wrapper';
 import { RootLayout } from '../../layouts/root-layout';
 import { LegacyLayout } from '../../layouts/legacy-layout';
 import { RouteWithLayout } from '../../layouts/route-with-layout';
@@ -167,14 +163,28 @@ import {
   setTheme,
 } from './utils';
 
-// V5-compat navigate function type for bridging v5 routes with v5-compat components
-type V5CompatNavigate = (
-  to: string | number,
-  options?: {
-    replace?: boolean;
-    state?: Record<string, unknown>;
-  },
-) => void;
+/**
+ * V5-to-v5-compat navigation function that bridges react-router-dom v5 history
+ * with v5-compat components expecting the newer navigate API.
+ *
+ * Supports two call signatures:
+ * - Navigate to a route: `navigate(path, options)`
+ * - Navigate in history: `navigate(delta)` (e.g., -1 to go back)
+ *
+ * @example
+ * // Navigate to a new route
+ * navigate('/settings', { replace: true });
+ * @example
+ * // Go back in history
+ * navigate(-1);
+ */
+type V5CompatNavigate = {
+  (
+    to: To,
+    options?: { replace?: boolean; state?: Record<string, unknown> },
+  ): void;
+  (delta: number): void;
+};
 
 /**
  * Creates a v5-compat navigate function from v5 history
@@ -185,13 +195,16 @@ type V5CompatNavigate = (
 const createV5CompatNavigate = (
   history: RouteComponentProps['history'],
 ): V5CompatNavigate => {
-  return (to, options = {}) => {
+  return (
+    to: To | number,
+    options?: { replace?: boolean; state?: Record<string, unknown> },
+  ) => {
     if (typeof to === 'number') {
       history.go(to);
-    } else if (options.replace) {
-      history.replace(to, options.state);
+    } else if (options?.replace) {
+      history.replace(to as string, options.state);
     } else {
-      history.push(to, options.state);
+      history.push(to as string, options?.state);
     }
   };
 };
@@ -413,13 +426,6 @@ const Connections = mmLazy(
       '../../components/multichain/pages/connections/index.js'
     )) as unknown as DynamicImportType,
 );
-const State2Wrapper = mmLazy(
-  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
-  (() =>
-    import(
-      '../../components/multichain-accounts/state2-wrapper/state2-wrapper.tsx'
-    )) as unknown as DynamicImportType,
-);
 
 const Home = mmLazy(
   (() => import('../home/index.js')) as unknown as DynamicImportType,
@@ -428,12 +434,6 @@ const Home = mmLazy(
 const DeepLink = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
   (() => import('../deep-link/deep-link.tsx')) as unknown as DynamicImportType,
-);
-const WalletDetails = mmLazy(
-  (() =>
-    import(
-      '../multichain-accounts/wallet-details/index.ts'
-    )) as unknown as DynamicImportType,
 );
 
 const MultichainAccountDetailsPage = mmLazy(
@@ -463,11 +463,19 @@ const ShieldPlan = mmLazy(
 // End Lazy Routes
 
 const MemoizedReviewPermissionsWrapper = React.memo(
-  (props: RouteComponentProps) => (
+  (props: {
+    params?: { origin: string };
+    navigate?: (
+      to: string | number,
+      options?: { replace?: boolean; state?: Record<string, unknown> },
+    ) => void;
+  }) => (
     <State2Wrapper
       {...props}
-      state1Component={ReviewPermissions}
-      state2Component={MultichainReviewPermissions}
+      state1Component={ReviewPermissions as React.ComponentType<unknown>}
+      state2Component={
+        MultichainReviewPermissions as React.ComponentType<unknown>
+      }
     />
   ),
 );
@@ -531,9 +539,6 @@ export default function Routes() {
   const isDeprecatedNetworkModalOpen = useAppSelector(
     (state) => state.appState.deprecatedNetworkModalOpen,
   );
-  const accountDetailsAddress = useAppSelector(
-    (state) => state.appState.accountDetailsAddress,
-  );
   const isImportNftsModalOpen = useAppSelector(
     (state) => state.appState.importNftsModal.open,
   );
@@ -555,10 +560,6 @@ export default function Routes() {
   const hideShowKeyringSnapRemovalResultModal = () =>
     dispatch(hideKeyringRemovalResultModal());
   ///: END:ONLY_INCLUDE_IF
-
-  const isMultichainAccountsState1Enabled = useAppSelector(
-    getIsMultichainAccountsState1Enabled,
-  );
 
   // Multichain intro modal logic (extracted to custom hook)
   const { showMultichainIntroModal, setShowMultichainIntroModal } =
@@ -672,12 +673,16 @@ export default function Routes() {
       isUnlocked &&
       (pendingApprovals.length > 0 || approvalFlows?.length > 0)
     ) {
-      navigateToConfirmation(
+      const url = getConfirmationRoute(
         pendingApprovals[0]?.id,
         pendingApprovals,
         Boolean(approvalFlows?.length),
-        history,
+        '', // queryString
       );
+
+      if (url) {
+        history.replace(url);
+      }
     }
   }, [isUnlocked, pendingApprovals, approvalFlows, history, location.pathname]);
 
@@ -763,40 +768,58 @@ export default function Routes() {
           <RouteWithLayout
             authenticated
             path={`${NOTIFICATIONS_ROUTE}/:uuid`}
-            component={NotificationDetails}
             layout={RootLayout}
-          />
+            exact
+          >
+            {createV5CompatRoute<{ uuid: string }>(NotificationDetails, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              includeNavigate: true,
+              paramsAsProps: false,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout
             authenticated
             path={NOTIFICATIONS_ROUTE}
             component={Notifications}
             layout={RootLayout}
           />
+          <RouteWithLayout path={SNAPS_ROUTE} exact layout={LegacyLayout}>
+            {createV5CompatRoute(SnapList, {
+              wrapper: AuthenticatedV5Compat,
+              includeNavigate: true,
+              includeLocation: true,
+            })}
+          </RouteWithLayout>
+          <RouteWithLayout path={SNAPS_VIEW_ROUTE} layout={LegacyLayout}>
+            {createV5CompatRoute(SnapView, {
+              wrapper: AuthenticatedV5Compat,
+              includeNavigate: true,
+              includeLocation: true,
+              includeParams: true,
+              paramsAsProps: false,
+            })}
+          </RouteWithLayout>
+          <RouteWithLayout path={`${SEND_ROUTE}/:page?`} layout={RootLayout}>
+            {createV5CompatRoute<{ page?: string }>(SendPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              includeNavigate: true,
+              includeLocation: true,
+              paramsAsProps: false,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout
-            authenticated
-            path={SNAPS_ROUTE}
-            component={SnapList}
-            exact
-            layout={LegacyLayout}
-          />
-          <RouteWithLayout
-            authenticated
-            path={SNAPS_VIEW_ROUTE}
-            component={SnapView}
-            layout={LegacyLayout}
-          />
-          <RouteWithLayout
-            authenticated
             path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
-            component={ConfirmTransaction}
             layout={LegacyLayout}
-          />
-          <RouteWithLayout
-            authenticated
-            path={`${SEND_ROUTE}/:page?`}
-            component={SendPage}
-            layout={RootLayout}
-          />
+          >
+            {createV5CompatRoute<{ id?: string }>(ConfirmTransaction, {
+              wrapper: AuthenticatedV5Compat,
+              includeLocation: true,
+              includeParams: true,
+              paramsAsProps: false,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout path={SWAPS_ROUTE} layout={LegacyLayout}>
             {createV5CompatRoute(Swaps, {
               wrapper: AuthenticatedV5Compat,
@@ -829,25 +852,35 @@ export default function Routes() {
             })}
           </RouteWithLayout>
           <RouteWithLayout
-            authenticated
             path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}
-            component={ConfirmAddSuggestedTokenPage}
-            exact
             layout={LegacyLayout}
-          />
+          >
+            {createV5CompatRoute(ConfirmAddSuggestedTokenPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeNavigate: true,
+              includeLocation: true,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout
-            authenticated
             path={CONFIRM_ADD_SUGGESTED_NFT_ROUTE}
-            component={ConfirmAddSuggestedNftPage}
-            exact
             layout={LegacyLayout}
-          />
+          >
+            {createV5CompatRoute(ConfirmAddSuggestedNftPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeNavigate: true,
+              includeLocation: true,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout
-            authenticated
             path={`${CONFIRMATION_V_NEXT_ROUTE}/:id?`}
-            component={ConfirmationPage}
             layout={LegacyLayout}
-          />
+          >
+            {createV5CompatRoute<{ id?: string }>(ConfirmationPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              paramsAsProps: false,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout
             authenticated
             path={NEW_ACCOUNT_ROUTE}
@@ -923,9 +956,16 @@ export default function Routes() {
           <RouteWithLayout
             authenticated
             path={`${CONNECTIONS}/:origin`}
-            component={Connections}
             layout={LegacyLayout}
-          />
+            exact
+          >
+            {createV5CompatRoute<{ origin: string }>(Connections, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              includeNavigate: true,
+              paramsAsProps: false,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout
             authenticated
             path={PERMISSIONS}
@@ -941,115 +981,181 @@ export default function Routes() {
             layout={LegacyLayout}
           />
           <RouteWithLayout
-            authenticated
             path={TOKEN_TRANSFER_ROUTE}
-            component={TokenTransferPage}
             exact
             layout={LegacyLayout}
-          />
+          >
+            {createV5CompatRoute(TokenTransferPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeNavigate: true,
+              paramsAsProps: false,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout
-            authenticated
-            path={`${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName`}
-            component={ReviewGatorPermissionsPage}
+            path={`${TOKEN_TRANSFER_ROUTE}/:origin`}
             exact
             layout={LegacyLayout}
-          />
+          >
+            {createV5CompatRoute<{ origin: string }>(TokenTransferPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              includeNavigate: true,
+              paramsAsProps: false,
+            })}
+          </RouteWithLayout>
+          <RouteWithLayout
+            path={`${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName`}
+            exact
+            layout={LegacyLayout}
+          >
+            {createV5CompatRoute<{
+              chainId: string;
+              permissionGroupName: string;
+            }>(ReviewGatorPermissionsPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              includeNavigate: true,
+              paramsAsProps: false,
+            })}
+          </RouteWithLayout>
+          <RouteWithLayout
+            path={`${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName/:origin`}
+            exact
+            layout={LegacyLayout}
+          >
+            {createV5CompatRoute<{
+              chainId: string;
+              permissionGroupName: string;
+              origin: string;
+            }>(ReviewGatorPermissionsPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              includeNavigate: true,
+              paramsAsProps: false,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout
             authenticated
             path={`${REVIEW_PERMISSIONS}/:origin`}
-            component={MemoizedReviewPermissionsWrapper}
             exact
             layout={LegacyLayout}
-          />
+          >
+            {createV5CompatRoute<{ origin: string }>(
+              MemoizedReviewPermissionsWrapper,
+              {
+                wrapper: AuthenticatedV5Compat,
+                includeParams: true,
+                includeNavigate: true,
+                paramsAsProps: false,
+              },
+            )}
+          </RouteWithLayout>
           <RouteWithLayout
-            authenticated
             path={ACCOUNT_LIST_PAGE_ROUTE}
-            component={AccountList}
             exact
             layout={RootLayout}
-          />
+          >
+            {createV5CompatRoute(AccountList, {
+              wrapper: AuthenticatedV5Compat,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout
-            authenticated
             path={`${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/:accountGroupId`}
-            component={MultichainAccountAddressListPage}
             exact
             layout={RootLayout}
-          />
+          >
+            {createV5CompatRoute<{ accountGroupId: string }>(
+              MultichainAccountAddressListPage,
+              {
+                wrapper: AuthenticatedV5Compat,
+                includeLocation: true,
+                includeParams: true,
+                paramsAsProps: false,
+              },
+            )}
+          </RouteWithLayout>
           <RouteWithLayout
-            authenticated
             path={`${MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE}/:accountGroupId`}
-            component={MultichainAccountPrivateKeyListPage}
             exact
             layout={LegacyLayout}
-          />
+          >
+            {createV5CompatRoute<{ accountGroupId: string }>(
+              MultichainAccountPrivateKeyListPage,
+              {
+                wrapper: AuthenticatedV5Compat,
+                includeParams: true,
+                paramsAsProps: false,
+              },
+            )}
+          </RouteWithLayout>
           <RouteWithLayout
-            authenticated
             path={ADD_WALLET_PAGE_ROUTE}
-            component={AddWalletPage}
             exact
             layout={RootLayout}
-          />
+          >
+            {createV5CompatRoute(AddWalletPage, {
+              wrapper: AuthenticatedV5Compat,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout
-            authenticated
             path={`${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/:id`}
-            component={MultichainAccountDetailsPage}
             exact
             layout={RootLayout}
-          />
+          >
+            {createV5CompatRoute<{ id: string }>(MultichainAccountDetailsPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              paramsAsProps: true,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout
-            authenticated
             path={`${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/:address`}
-            component={SmartAccountPage}
             exact
             layout={RootLayout}
-          />
+          >
+            {createV5CompatRoute<{ address: string }>(SmartAccountPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              paramsAsProps: false,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout
-            authenticated
             path={`${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/:id`}
-            component={WalletDetailsPage}
             exact
             layout={RootLayout}
-          />
-          <RouteWithLayout
-            authenticated
-            path={WALLET_DETAILS_ROUTE}
-            component={WalletDetails}
-            exact
-            layout={LegacyLayout}
-          />
-          <RouteWithLayout
-            authenticated
-            path={`${ACCOUNT_DETAILS_ROUTE}/:address`}
-            component={MultichainAccountDetails}
-            exact
-            layout={LegacyLayout}
-          />
-          <RouteWithLayout
-            authenticated
-            path={`${ACCOUNT_DETAILS_QR_CODE_ROUTE}/:address`}
-            component={AddressQRCode}
-            exact
-            layout={LegacyLayout}
-          />
+          >
+            {createV5CompatRoute<{ id: string }>(WalletDetailsPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeParams: true,
+              paramsAsProps: false,
+            })}
+          </RouteWithLayout>
           <RouteWithLayout
             authenticated
             path={NONEVM_BALANCE_CHECK_ROUTE}
             component={NonEvmBalanceCheck}
             layout={LegacyLayout}
           />
-
           <RouteWithLayout
             authenticated
             path={SHIELD_PLAN_ROUTE}
             component={ShieldPlan}
             layout={LegacyLayout}
           />
-          <RouteWithLayout
-            authenticated
-            path={DEFAULT_ROUTE}
-            component={Home}
-            layout={RootLayout}
-          />
+          <RouteWithLayout path={REWARDS_ROUTE} layout={RootLayout}>
+            {createV5CompatRoute(RewardsPage, {
+              wrapper: AuthenticatedV5Compat,
+              includeNavigate: true,
+              includeLocation: true,
+            })}
+          </RouteWithLayout>
+          <RouteWithLayout path={DEFAULT_ROUTE} layout={RootLayout}>
+            {createV5CompatRoute(Home, {
+              wrapper: AuthenticatedV5Compat,
+              includeNavigate: true,
+              includeLocation: true,
+            })}
+          </RouteWithLayout>
         </Switch>
       </Suspense>
     );
@@ -1069,13 +1175,6 @@ export default function Routes() {
   }, [autoLockTimeLimit, forgottenPassword, dispatch]);
 
   const t = useI18nContext();
-
-  const renderAccountDetails = () => {
-    if (!accountDetailsAddress || isMultichainAccountsState1Enabled) {
-      return null;
-    }
-    return <AccountDetails address={accountDetailsAddress} />;
-  };
 
   const loadMessage = loadingMessage
     ? getConnectingLabel(loadingMessage, { providerType, providerId }, { t })
@@ -1115,13 +1214,8 @@ export default function Routes() {
     // is already a fullscreen interface.
     !isShowingDeepLinkRoute;
 
-  const accountListMenu = isMultichainAccountsState1Enabled ? (
+  const accountListMenu = (
     <MultichainAccountListMenu
-      onClose={() => dispatch(toggleAccountMenu())}
-      privacyMode={privacyMode}
-    />
-  ) : (
-    <AccountListMenu
       onClose={() => dispatch(toggleAccountMenu())}
       privacyMode={privacyMode}
     />
@@ -1154,7 +1248,6 @@ export default function Routes() {
         />
       ) : null}
       <NetworkConfirmationPopover />
-      {renderAccountDetails()}
       {isImportNftsModalOpen ? (
         <ImportNftsModal onClose={() => dispatch(hideImportNftsModal())} />
       ) : null}
@@ -1192,7 +1285,9 @@ export default function Routes() {
 
       {renderRoutes()}
 
-      {isUnlocked ? <Alerts history={history} /> : null}
+      {isUnlocked ? (
+        <Alerts navigate={createV5CompatNavigate(history)} />
+      ) : null}
       {React.createElement(
         ToastMaster as React.ComponentType<{
           location: RouteComponentProps['location'];

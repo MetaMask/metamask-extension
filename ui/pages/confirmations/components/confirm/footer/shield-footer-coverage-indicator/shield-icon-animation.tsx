@@ -14,6 +14,8 @@ import {
 } from '../../../../../../contexts/rive-wasm';
 import { AlertSeverity } from '../../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../../helpers/constants/design-system';
+import { useTheme } from '../../../../../../hooks/useTheme';
+import { ThemeType } from '../../../../../../../shared/constants/preferences';
 
 /**
  * Toggle input names in the Rive state machine
@@ -91,7 +93,7 @@ const ShieldIconAnimation = ({
   severity?: AlertSeverity;
   playAnimation?: boolean;
 }) => {
-  const isTestEnvironment = Boolean(process.env.IN_TEST);
+  const theme = useTheme();
   const context = useRiveWasmContext();
   const { isWasmReady, error: wasmError } = context;
   const {
@@ -147,6 +149,13 @@ const ShieldIconAnimation = ({
       if (inputs) {
         updateSeverity(inputs);
 
+        const darkToggle = inputs.find((input) => input.name === 'Dark');
+        if (darkToggle && theme === ThemeType.dark) {
+          darkToggle.value = true;
+        } else if (darkToggle) {
+          darkToggle.value = false;
+        }
+
         // Play the state machine
         if (playAnimation) {
           const startTrigger = inputs.find((input) => input.name === 'Start');
@@ -165,6 +174,7 @@ const ShieldIconAnimation = ({
     severity,
     playAnimation,
     updateSeverity,
+    theme,
   ]);
 
   // Don't render Rive component until WASM and buffer are ready to avoid errors
@@ -173,7 +183,6 @@ const ShieldIconAnimation = ({
     bufferLoading ||
     !buffer ||
     status === 'loading' ||
-    isTestEnvironment ||
     status === 'failed'
   ) {
     return <Box className="riv-animation__shield-icon-container"></Box>;

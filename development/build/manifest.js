@@ -90,6 +90,10 @@ function createManifestTasks({
 
         applyLockdownContentScripts(result);
 
+        if (isManifestV3) {
+          applyServiceWorkerScript(result);
+        }
+
         const dir = path.join('.', 'dist', platform);
         await fs.mkdir(dir, { recursive: true });
         await writeJson(result, path.join(dir, 'manifest.json'));
@@ -231,6 +235,10 @@ function createManifestTasks({
       'scripts/lockdown-run.js',
       'scripts/lockdown-more.js',
     );
+  }
+
+  function applyServiceWorkerScript(manifest) {
+    manifest.background.service_worker = 'scripts/app-init.js';
   }
 }
 

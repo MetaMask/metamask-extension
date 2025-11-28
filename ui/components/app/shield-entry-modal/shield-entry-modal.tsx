@@ -53,6 +53,8 @@ import {
 } from '../../../helpers/constants/design-system';
 import { TRANSACTION_SHIELD_LINK } from '../../../helpers/constants/common';
 import { ThemeType } from '../../../../shared/constants/preferences';
+import { getShieldMarketingUtmParamsForMetrics } from '../../../../shared/modules/shield';
+import ShieldIllustrationAnimation from './shield-illustration-animation';
 
 const ShieldEntryModal = ({
   skipEventSubmission = false,
@@ -73,18 +75,9 @@ const ShieldEntryModal = ({
   const modalType: ModalType = useSelector(getModalTypeForShieldEntryModal);
   const triggeringCohort = useSelector(getShieldEntryModalTriggeringCohort);
 
-  const getMarketingUtmId = useCallback(() => {
-    const searchParams = new URLSearchParams(search);
-    const utmId = searchParams.get('utm_id');
-    if (utmId) {
-      return utmId;
-    }
-    return undefined;
-  }, [search]);
-
   const determineEntryModalSource = useCallback((): EntryModalSourceEnum => {
-    const marketingUtmId = getMarketingUtmId();
-    if (marketingUtmId) {
+    const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
+    if (Object.keys(marketingUtmParams).length > 0) {
       return EntryModalSourceEnum.Marketing;
     } else if (triggeringCohort === COHORT_NAMES.POST_TX) {
       return EntryModalSourceEnum.PostTransaction;
@@ -97,25 +90,25 @@ const ShieldEntryModal = ({
     // TODO: Add logics for other entry modal sources, Carousel and Notification.
 
     return EntryModalSourceEnum.Homepage;
-  }, [triggeringCohort, pathname, getMarketingUtmId]);
+  }, [triggeringCohort, pathname, search]);
 
-  const handleOnClose = (
+  const handleOnClose = async (
     ctaActionClicked: ShieldCtaActionClickedEnum = ShieldCtaActionClickedEnum.Dismiss,
   ) => {
     const source = determineEntryModalSource();
-    const marketingUtmId = getMarketingUtmId();
+    const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
     captureShieldEntryModalEvent({
       source,
       type: modalType,
       modalCtaActionClicked: ctaActionClicked,
-      marketingUtmId,
+      marketingUtmParams,
     });
 
     if (ctaActionClicked === ShieldCtaActionClickedEnum.Dismiss) {
       captureShieldCtaClickedEvent({
         source: ShieldCtaSourceEnum.Homepage, // FIXME: get the correct source
         ctaActionClicked: ShieldCtaActionClickedEnum.Dismiss,
-        marketingUtmId,
+        marketingUtmParams,
       });
     }
 
@@ -123,7 +116,7 @@ const ShieldEntryModal = ({
       onClose?.();
       return;
     } else if (shouldSubmitEvent) {
-      dispatch(
+      await dispatch(
         submitSubscriptionUserEvents({
           event: SubscriptionUserEvent.ShieldEntryModalViewed,
           cohort: triggeringCohort,
@@ -131,36 +124,45 @@ const ShieldEntryModal = ({
       );
     }
 
-    dispatch(setShowShieldEntryModalOnce(false));
+    await dispatch(
+      setShowShieldEntryModalOnce({
+        show: false,
+        hasUserInteractedWithModal: true,
+      }),
+    );
   };
 
-  const handleOnGetStarted = () => {
+  const handleOnGetStarted = async () => {
     const source = determineEntryModalSource();
-    const marketingUtmId = getMarketingUtmId();
+    const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
 
     captureShieldCtaClickedEvent({
       // ShieldCtaSourceEnum & EntryModalSourceEnum are the same enum, so we can cast it to ShieldCtaSourceEnum
       source: source as unknown as ShieldCtaSourceEnum,
       ctaActionClicked: ShieldCtaActionClickedEnum.Start14DayTrial,
       redirectToPage: SHIELD_PLAN_ROUTE,
-      marketingUtmId,
+      marketingUtmParams,
     });
 
-    handleOnClose(ShieldCtaActionClickedEnum.Start14DayTrial);
+    // Ensure handleOnClose completes before redirecting
+    await handleOnClose(ShieldCtaActionClickedEnum.Start14DayTrial);
 
     navigate({
       pathname: SHIELD_PLAN_ROUTE,
-      search: marketingUtmId
-        ? `?utm_id=${marketingUtmId}`
-        : `?source=${source}`,
+      search:
+        Object.keys(marketingUtmParams).length > 0
+          ? `?${new URLSearchParams(marketingUtmParams).toString()}`
+          : `?source=${source}`,
     });
   };
 
   const handleOnLearnMoreClick = () => {
+    const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
     captureShieldCtaClickedEvent({
       source: ShieldCtaSourceEnum.Homepage, // FIXME: get the correct source
       ctaActionClicked: ShieldCtaActionClickedEnum.LearnMore,
       redirectToUrl: TRANSACTION_SHIELD_LINK,
+      marketingUtmParams,
     });
 
     window.open(TRANSACTION_SHIELD_LINK, '_blank', 'noopener,noreferrer');
@@ -173,7 +175,7 @@ const ShieldEntryModal = ({
       autoFocus={false}
       isClosedOnOutsideClick={false}
       isClosedOnEscapeKey={false}
-      onClose={handleOnClose}
+      onClose={() => handleOnClose()}
       className="shield-entry-modal"
       data-theme={ThemeType.dark}
     >
@@ -185,7 +187,7 @@ const ShieldEntryModal = ({
         className="shield-entry-modal__content"
       >
         <ModalHeader
-          onClose={handleOnClose}
+          onClose={() => handleOnClose()}
           closeButtonProps={{
             'data-testid': 'shield-entry-modal-close-button',
             className: 'absolute top-2 right-2',
@@ -195,14 +197,13 @@ const ShieldEntryModal = ({
           display={Display.Flex}
           alignItems={AlignItems.center}
           flexDirection={FlexDirection.Column}
-          gap={3}
           paddingTop={4}
           height={BlockSize.Full}
         >
           <Text
             fontFamily={FontFamily.Hero}
             fontWeight={FontWeight.Regular}
-            className="shield-entry-modal__title text-center text-accent04-light"
+            className="shield-entry-modal__title text-center text-accent04-light mb-3"
           >
             {modalType === MODAL_TYPE.A
               ? t('shieldEntryModalTitleA')
@@ -211,23 +212,23 @@ const ShieldEntryModal = ({
           <Text
             variant={TextVariant.BodyMd}
             fontWeight={FontWeight.Medium}
-            className="text-center"
+            className="text-center text-accent04-light"
           >
             {modalType === MODAL_TYPE.A
               ? t('shieldEntryModalSubtitleA', ['$10,000'])
               : t('shieldEntryModalSubtitleB', ['$10,000'])}
           </Text>
-          <Box className="shield-entry-modal-sheild-image flex-1 flex items-center justify-center">
-            <img
-              src="/images/transaction-shield-modal.png"
-              alt="Shield Entry Illustration"
-              className="mx-auto h-full w-full object-contain"
+          <Box className="flex-1 flex items-center justify-center">
+            <ShieldIllustrationAnimation
+              containerClassName="shield-entry-modal-shield-illustration__container"
+              canvasClassName="shield-entry-modal-shield-illustration__canvas"
             />
           </Box>
         </ModalBody>
         <ModalFooter
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
+          paddingTop={0}
           className="shield-entry-modal__footer"
         >
           <Button

@@ -5,8 +5,8 @@
 const E2E_TESTS_REGEX =
   /^(test\/e2e|development\/fitness-functions|development\/webpack).*\.(js|ts|jsx|tsx)$/u;
 
-// include JS and JSX files only in the app, offscreen, shared, and ui directories
-const JS_REGEX = /^(app|offscreen|shared|ui)\/.*\.(js|jsx)$/u;
+// include JS and JSX files only in the app, shared, and ui directories
+const JS_REGEX = /^(app|shared|ui)\/.*\.(js|jsx)$/u;
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention

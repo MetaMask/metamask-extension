@@ -9,6 +9,11 @@ jest.mock('../../../hooks/useI18nContext', () => ({
   useI18nContext: jest.fn(),
 }));
 
+// Mock react-redux dispatch to avoid requiring a Provider
+jest.mock('react-redux', () => ({
+  useDispatch: jest.fn(() => jest.fn()),
+}));
+
 const mockUseI18nContext = useI18nContext as jest.MockedFunction<
   typeof useI18nContext
 >;

@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import FixtureBuilder from '../fixture-builder';
+import FixtureBuilder from '../fixtures/fixture-builder';
 import { withFixtures } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import AccountDetailsModal from '../page-objects/pages/dialog/account-details-modal';
@@ -17,7 +17,9 @@ const EOA_ADDRESS = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045';
 const SHORTENED_EOA_ADDRESS = '0xd8dA6...96045';
 const DEFAULT_WATCHED_ACCOUNT_NAME = 'Watched Account 1';
 
-describe('Account-watcher snap', function (this: Suite) {
+// #37563 - Creating a watch account with EOA address is not possible with BIP44 at the moment
+// eslint-disable-next-line mocha/no-skipped-tests
+describe.skip('Account-watcher snap', function (this: Suite) {
   describe('Adding watched accounts', function () {
     it('adds watch account with valid EOA address', async function () {
       await withFixtures(

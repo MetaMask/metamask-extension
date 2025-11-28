@@ -10,7 +10,7 @@ import { openTestSnapClickButtonAndInstall } from '../../page-objects/flows/inst
 import SignTypedData from '../../page-objects/pages/confirmations/redesign/sign-typed-data-confirmation';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
 import { DAPP_ONE_URL, DAPP_PATH, MOCK_META_METRICS_ID } from '../../constants';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { mockDialogSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 import { withTransactionEnvelopeTypeFixtures } from './helpers';
 

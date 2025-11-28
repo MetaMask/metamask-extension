@@ -221,7 +221,7 @@ export function getNewNetworkAdded(state) {
 
 /**
  * @param state
- * @returns {{ chainId: import('@metamask/utils').Hex; nickname: string; editCompleted: boolean} | undefined}
+ * @returns {{ chainId: import('@metamask/utils').Hex; nickname?: string; editCompleted?: boolean; newNetwork?: boolean; trackRpcUpdateFromBanner?: boolean} | undefined}
  */
 export function getEditedNetwork(state) {
   return state.appState.editedNetwork;
@@ -290,7 +290,10 @@ export function getKeyringSnapRemovalResult(state) {
 export const getPendingTokens = (state) => state.appState.pendingTokens;
 
 export function getShowShieldEntryModal(state) {
-  return state.appState.shieldEntryModal?.show;
+  const { show, hasUserInteractedWithModal } =
+    state.appState.shieldEntryModal || {};
+  // only show the modal if `show` is true and user has not interacted with the modal
+  return Boolean(show) && !hasUserInteractedWithModal;
 }
 
 export function getPendingShieldCohort(state) {
@@ -479,7 +482,7 @@ export const getMetaMaskAccounts = createDeepEqualSelector(
           }
         } else {
           const multichainNetwork = multichainNetworkProviders.find((network) =>
-            network.isAddressCompatible(internalAccount.address),
+            internalAccount.scopes.some((scope) => scope === network.chainId),
           );
           account = {
             ...account,
@@ -3302,6 +3305,18 @@ export function getNetworkDiscoverButtonEnabled(state) {
   return neNetworkDiscoverButton;
 }
 
+/**
+ * Get the state of the `gasFeesSponsoredNetwork` remote feature flag.
+ * This flag determines whether the user should see a `Gas sponsored` label on the network menu list.
+ *
+ * @param {*} state
+ * @returns The state of the `gasFeesSponsoredNetwork` remote feature flag.
+ */
+export function getGasFeesSponsoredNetworkEnabled(state) {
+  const { gasFeesSponsoredNetwork } = getRemoteFeatureFlags(state);
+  return gasFeesSponsoredNetwork;
+}
+
 export function getBlockExplorerLinkText(
   state,
   accountDetailsModalComponent = false,
@@ -3483,7 +3498,7 @@ export const getUpdatedAndSortedAccountsWithCaipAccountId =
     });
   });
 
-export const useSafeChainsListValidationSelector = (state) => {
+export const getUseSafeChainsListValidation = (state) => {
   return state.metamask.useSafeChainsListValidation;
 };
 
