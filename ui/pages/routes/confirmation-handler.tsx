@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 
-// import { ApprovalType } from '@metamask/controller-utils';
 import {
   AWAITING_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
@@ -42,8 +41,6 @@ const APPROVAL_TYPES = [
 ];
 
 export const ConfirmationHandler = () => {
-  'use no memo';
-
   const navigate = useNavigate();
   const location = useLocation();
   const { pathname } = location;
