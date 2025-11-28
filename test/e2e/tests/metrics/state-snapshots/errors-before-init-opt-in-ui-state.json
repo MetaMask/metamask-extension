@@ -139,7 +139,9 @@
     "NameController": { "nameSources": "object", "names": "object" },
     "NetworkController": {
       "networkConfigurationsByChainId": "object",
-      "networksMetadata": "object",
+      "networksMetadata": {
+        "networkConfigurationId": { "EIPS": {}, "status": "unknown" }
+      },
       "selectedNetworkClientId": "string"
     },
     "NetworkEnablementController": {

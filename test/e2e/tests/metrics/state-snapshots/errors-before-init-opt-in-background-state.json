@@ -94,7 +94,9 @@
     "NetworkController": {
       "selectedNetworkClientId": "string",
       "networkConfigurations": "object",
-      "networksMetadata": "object",
+      "networksMetadata": {
+        "networkConfigurationId": { "EIPS": {}, "status": "available" }
+      },
       "providerConfig": "object"
     },
     "OnboardingController": {

@@ -202,7 +202,12 @@
     "isEvmSelected": "boolean",
     "networksWithTransactionActivity": "object",
     "selectedNetworkClientId": "string",
-    "networksMetadata": "object",
+    "networksMetadata": {
+      "networkConfigurationId": {
+        "EIPS": { "1559": true },
+        "status": "available"
+      }
+    },
     "networkConfigurationsByChainId": "object",
     "keyrings": "object",
     "addSnapAccountEnabled": "boolean",
