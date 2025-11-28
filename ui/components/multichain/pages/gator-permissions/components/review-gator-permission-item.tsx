@@ -523,7 +523,7 @@ export const ReviewGatorPermissionItem = ({
                   color={TextColor.TextAlternative}
                   variant={TextVariant.BodyMd}
                 >
-                  Justification
+                  {t('gatorPermissionsJustification')}
                 </Text>
                 <Box
                   flexDirection={BoxFlexDirection.Row}

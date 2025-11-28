@@ -2892,6 +2892,10 @@
     "message": "Streaming amount",
     "description": "Label for the stream rate of a permission"
   },
+  "gatorPermissionsJustification": {
+    "message": "Justification",
+    "description": "Label for the justification"
+  },
   "general": {
     "message": "General"
   },
