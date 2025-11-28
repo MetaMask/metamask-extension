@@ -1,25 +1,36 @@
-import { renderHookWithProvider } from "../../test/lib/render-helpers";
-import { useMultichainAccountsIntroModal, BIP44_ACCOUNTS_INTRODUCTION_VERSION } from "./useMultichainAccountsIntroModal";
+import { renderHookWithProvider } from '../../test/lib/render-helpers';
+import {
+  useMultichainAccountsIntroModal,
+  BIP44_ACCOUNTS_INTRODUCTION_VERSION,
+} from './useMultichainAccountsIntroModal';
 
 describe('useMultichainAccountsIntroModal', () => {
-
-  const renderHook = (isUnlocked: boolean, isMultichainAccountsEnabled: boolean,
+  const renderHook = (
+    isUnlocked: boolean,
+    isMultichainAccountsEnabled: boolean,
     hasShownMultichainAccountsIntroModal: boolean,
     lastUpdatedAt: number | null,
     previousAppVersion: string | null,
-    pathname: string
+    pathname: string,
   ) => {
-    return renderHookWithProvider(() => useMultichainAccountsIntroModal(isUnlocked, { pathname }), {
-      metamask: {
-        remoteFeatureFlags: {
-          enableMultichainAccountsState2: { enabled: isMultichainAccountsEnabled, featureVersion: "2", minimumVersion: BIP44_ACCOUNTS_INTRODUCTION_VERSION },
+    return renderHookWithProvider(
+      () => useMultichainAccountsIntroModal(isUnlocked, { pathname }),
+      {
+        metamask: {
+          remoteFeatureFlags: {
+            enableMultichainAccountsState2: {
+              enabled: isMultichainAccountsEnabled,
+              featureVersion: '2',
+              minimumVersion: BIP44_ACCOUNTS_INTRODUCTION_VERSION,
+            },
+          },
+          hasShownMultichainAccountsIntroModal,
+          previousAppVersion,
+          lastUpdatedAt,
         },
-        hasShownMultichainAccountsIntroModal,
-        previousAppVersion,
-        lastUpdatedAt,
-      }
-    });
-  }
+      },
+    );
+  };
 
   describe('shows banner correctly', () => {
     const baseParams = {
@@ -117,14 +128,7 @@ describe('useMultichainAccountsIntroModal', () => {
     });
 
     it('does NOT show for fresh install (no previous version)', () => {
-      const { result } = renderHook(
-        true,
-        true,
-        false,
-        Date.now(),
-        null,
-        '/',
-      );
+      const { result } = renderHook(true, true, false, Date.now(), null, '/');
       expect(result.current.showMultichainIntroModal).toBe(false);
     });
 
@@ -177,14 +181,7 @@ describe('useMultichainAccountsIntroModal', () => {
     });
 
     it('does NOT show for fresh install (lastUpdatedAt is null)', () => {
-      const { result } = renderHook(
-        true,
-        true,
-        false,
-        null,
-        '13.4.0',
-        '/',
-      );
+      const { result } = renderHook(true, true, false, null, '13.4.0', '/');
       expect(result.current.showMultichainIntroModal).toBe(false);
     });
   });
