@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { JsonRpcResponseStruct } from '@metamask/utils';
 
 import { flushPromises } from '../../../../test/lib/timer-helpers';

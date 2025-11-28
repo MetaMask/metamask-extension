@@ -34,8 +34,6 @@ export type DappSwapMiddlewareRequest<
 };
 
 const FOUR_BYTE_EXECUTE_SWAP_CONTRACT = '0x3593564c';
-const DAPP_SWAP_COMPARISON_ORIGIN = 'https://app.uniswap.org';
-const TEST_DAPP_ORIGIN = 'https://metamask.github.io';
 
 const getSwapDetails = (params: DappSwapMiddlewareRequest['params']) => {
   if (!params?.length) {
@@ -89,9 +87,9 @@ export function getQuotesForConfirmation({
 }) {
   let commands = '';
   try {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     const {
       enabled: dappSwapEnabled,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       bridge_quote_fees: bridgeQuoteFees,
       origins,
     } = dappSwapMetricsFlag;
