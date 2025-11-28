@@ -26,7 +26,9 @@ export const handleSidepanelPostOnboarding = async (
   driver: Driver,
 ): Promise<void> => {
   // AND we're not running on Firefox (which doesn't support sidepanel)
-  const isSidepanelEnabled = process.env.IS_SIDEPANEL;
+  const isSidepanelEnabled =
+    process.env.IS_SIDEPANEL &&
+    process.env.SELENIUM_BROWSER !== Browser.FIREFOX;
 
   if (isSidepanelEnabled) {
     // Give the onboarding completion time to process (needed for sidepanel)
