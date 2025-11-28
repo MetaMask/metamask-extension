@@ -2353,7 +2353,7 @@
     "message": "Nhập mật khẩu để tiếp tục"
   },
   "enterYourPasswordSocialLoginFlow": {
-    "message": "Nhập Mật khẩu Metamask"
+    "message": "Nhập Mật khẩu MetaMask"
   },
   "errorCode": {
     "message": "Mã: $1",
@@ -2469,9 +2469,6 @@
   },
   "exploreDefi": {
     "message": "Khám phá DeFi"
-  },
-  "exploreweb3": {
-    "message": "Khám phá web3"
   },
   "exportYourData": {
     "message": "Xuất dữ liệu của bạn"
@@ -6674,19 +6671,19 @@
   },
   "swapIncludesGasAndMetaMaskFee": {
     "message": "Bao gồm phí gas và $1% phí của MetaMask",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFee": {
     "message": "Bao gồm $1% phí của MetaMask.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFeeAlt": {
     "message": "Báo giá thể hiện khoản phí $1% của MetaMask",
-    "description": "Provides information about the fee that metamask takes for swaps using the latest copy. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
     "message": "Bao gồm $1% phí của MetaMask – $2",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
   },
   "swapLearnMore": {
     "message": "Tìm hiểu thêm về Hoán đổi"
@@ -6705,7 +6702,7 @@
   },
   "swapMetaMaskFeeDescription": {
     "message": "Khoản phí $1% sẽ tự động được tính vào báo giá này. Bạn trả tiền để đổi lấy giấy phép sử dụng phần mềm tổng hợp thông tin từ nhà cung cấp thanh khoản của MetaMask.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapNQuotesWithDot": {
     "message": "$1 báo giá.",
@@ -7510,18 +7507,8 @@
   "walletConnectionGuide": {
     "message": "hướng dẫn của chúng tôi về cách kết nối ví cứng"
   },
-  "walletDetails": {
-    "message": "Chi tiết ví"
-  },
   "walletName": {
     "message": "Tên ví"
-  },
-  "walletNotFoundDescription": {
-    "message": "Không tìm thấy ví có ID $1.",
-    "description": "$1 is the wallet ID"
-  },
-  "walletNotFoundTitle": {
-    "message": "Không tìm thấy ví"
   },
   "walletReadyLearn": {
     "message": "$1 bạn có thể lưu giữ cụm từ này ở nơi an toàn để không bao giờ mất quyền truy cập vào tiền của mình.",

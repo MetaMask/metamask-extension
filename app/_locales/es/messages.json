@@ -1954,7 +1954,7 @@
     "message": "Entendido"
   },
   "deprecatedNetworkDescription": {
-    "message": "La red a la que está intentando conectarse ya no es compatible con Metamask. $1"
+    "message": "La red a la que está intentando conectarse ya no es compatible con MetaMask. $1"
   },
   "description": {
     "message": "Descripción"
@@ -2353,7 +2353,7 @@
     "message": "Escribir contraseña para continuar"
   },
   "enterYourPasswordSocialLoginFlow": {
-    "message": "Ingresa la contraseña de Metamask"
+    "message": "Ingresa la contraseña de MetaMask"
   },
   "errorCode": {
     "message": "Código: $1",
@@ -2469,9 +2469,6 @@
   },
   "exploreDefi": {
     "message": "Explora DeFi"
-  },
-  "exploreweb3": {
-    "message": "Explorar la Web3"
   },
   "exportYourData": {
     "message": "Exporte sus datos"
@@ -6674,19 +6671,19 @@
   },
   "swapIncludesGasAndMetaMaskFee": {
     "message": "Incluye gas y una tasa de MetaMask del $1%",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFee": {
     "message": "Incluye una tasa de MetaMask del $1%.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFeeAlt": {
     "message": "La cotización refleja la tarifa de MetaMask del $1 %",
-    "description": "Provides information about the fee that metamask takes for swaps using the latest copy. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
     "message": "Incluye una tarifa MetaMask de $1% - $2",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
   },
   "swapLearnMore": {
     "message": "Más información sobre los intercambios"
@@ -6705,7 +6702,7 @@
   },
   "swapMetaMaskFeeDescription": {
     "message": "La tarifa de $1% se incluye automáticamente en esta cotización. Lo paga a cambio de una licencia para usar el software de agregación de información del proveedor de liquidez de MetaMask.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapNQuotesWithDot": {
     "message": "$1 cotizaciones.",
@@ -7510,18 +7507,8 @@
   "walletConnectionGuide": {
     "message": "nuestra guía de conexión del monedero físico"
   },
-  "walletDetails": {
-    "message": "Detalles de la billetera"
-  },
   "walletName": {
     "message": "Nombre de la billetera"
-  },
-  "walletNotFoundDescription": {
-    "message": "No se encontró la billetera con ID $1.",
-    "description": "$1 is the wallet ID"
-  },
-  "walletNotFoundTitle": {
-    "message": "Billetera no encontrada"
   },
   "walletReadyLearn": {
     "message": "$1 puedes guardar esta frase de forma segura para nunca perder el acceso a tu dinero.",

@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { withFixtures, WALLET_PASSWORD } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountDetailsModal from '../../page-objects/pages/dialog/account-details-modal';
@@ -128,7 +128,6 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
         {
           fixtures: new FixtureBuilder().build(),
           title: this.test?.fullTitle(),
-          forceBip44Version: 2,
         },
         async ({ driver }) => {
           await loginWithoutBalanceValidation(driver);
