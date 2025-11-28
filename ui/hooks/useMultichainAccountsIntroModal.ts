@@ -44,7 +44,7 @@ export function useMultichainAccountsIntroModal(
     // Strip prerelease versions as they just indicate build types.
     const strippedLastVersion = parsedLastVersion
       ? `${parsedLastVersion.major}.${parsedLastVersion.minor}.${parsedLastVersion.patch}`
-      : parsedLastVersion;
+      : null;
 
     // Check if this is an upgrade from a version lower than BIP-44 introduction version
     const isUpgradeFromLowerThanBip44Version = Boolean(
