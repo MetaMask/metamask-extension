@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Null (#38319)
 - Add subscription retry button to notify server check when user balance is sufficient (#36847)
 - Align shield illustration to bottom in popup mode (#38340)
 - Default to BIP-44 UI for account & wallet details (#37984)
@@ -39,7 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Show correct balance values in fiat for gas tokens (#38249)
 - Added ability to view Gator permissions filtered by specific site origin (#37736)
 - Fixed the Lattice hardware wallet flow to reuse cached credentials instead of asking users to reconnect every time (#37781)
-- Reverts "refactor: extract confirmation handler (#38189)" (#38189)
+- Reverts "refactor: extract confirmation handler" (#38189)
 - Custom swap slippage validation allows invalid inputs (#38066)
 - Changed minimum received amount to be the token amount (#38150)
 - Removed the `isTestEnvironment` checks from all Rive animation–related files (#38110)
