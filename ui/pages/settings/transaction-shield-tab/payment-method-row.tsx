@@ -117,12 +117,14 @@ export const PaymentMethodRow = ({
       return availableTokenBalances;
     }
 
+    const cryptoPayment =
+      displayedShieldSubscription.paymentMethod as SubscriptionCryptoPaymentMethod;
+
     return availableTokenBalances.filter(
       (token) =>
-        token.symbol !==
-        (
-          displayedShieldSubscription.paymentMethod as SubscriptionCryptoPaymentMethod
-        ).crypto.tokenSymbol,
+        token.symbol !== cryptoPayment.crypto.tokenSymbol &&
+        token.chainId.toLowerCase() !==
+          cryptoPayment.crypto.chainId.toLowerCase(),
     );
   }, [availableTokenBalances, displayedShieldSubscription]);
 

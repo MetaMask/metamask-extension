@@ -221,14 +221,6 @@ const TransactionShield = () => {
     newRecurringInterval: currentShieldSubscription?.interval,
   });
 
-  const hasApiError =
-    subscriptionsError ||
-    subscriptionPricingError ||
-    cancelSubscriptionResult.error ||
-    unCancelSubscriptionResult.error ||
-    openGetSubscriptionBillingPortalResult.error ||
-    updateSubscriptionCardPaymentMethodResult.error;
-
   const isWaitingForSubscriptionCreation =
     shouldWaitForSubscriptionCreation && !currentShieldSubscription;
 
@@ -473,6 +465,15 @@ const TransactionShield = () => {
     },
     [executeUpdateSubscriptionCardPaymentMethod, setSelectedChangePaymentToken],
   );
+
+  const hasApiError =
+    subscriptionsError ||
+    subscriptionPricingError ||
+    cancelSubscriptionResult.error ||
+    unCancelSubscriptionResult.error ||
+    openGetSubscriptionBillingPortalResult.error ||
+    updateSubscriptionCardPaymentMethodResult.error ||
+    updateSubscriptionCryptoPaymentMethodResult.error;
 
   const loading =
     cancelSubscriptionResult.pending ||
