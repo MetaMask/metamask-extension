@@ -2986,6 +2986,8 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setShieldEndingToastLastClickedOrClosed.bind(
           appStateController,
         ),
+      setPna25Acknowledged:
+        appStateController.setPna25Acknowledged.bind(appStateController),
       setAppActiveTab:
         appStateController.setAppActiveTab.bind(appStateController),
       setDefaultSubscriptionPaymentOptions:
@@ -8162,6 +8164,12 @@ export default class MetamaskController extends EventEmitter {
           console.error('Error getting RPC URL:', error);
           return 'unknown';
         }
+      },
+      getFeatureFlags: () => {
+        return this.remoteFeatureFlagController?.state?.remoteFeatureFlags;
+      },
+      getPna25Acknowledged: () => {
+        return this.appStateController?.state?.pna25Acknowledged;
       },
     };
 
