@@ -562,16 +562,13 @@ describe('Permission List Item', () => {
 
         expect(getByTestId('review-gator-permission-item')).toBeInTheDocument();
 
-        // Verify that when token metadata is loading, it shows a spinner instead of text
-        const amountSection = container.querySelector(
-          '[data-testid="review-gator-permission-amount-label"]',
-        );
-        // The spinner should be present, not the text element
-        expect(amountSection).not.toBeInTheDocument();
+        // Verify that when token metadata is loading, it shows a skeleton
+        const skeletons = container.querySelectorAll('.mm-skeleton');
+        expect(skeletons.length).toBeGreaterThan(0);
 
-        // Verify the spinner icon is present
-        const spinnerIcons = container.querySelectorAll('svg[style*="spin"]');
-        expect(spinnerIcons.length).toBeGreaterThan(0);
+        // The amount label should still be in the DOM but wrapped by skeleton
+        const amountLabel = getByTestId('review-gator-permission-amount-label');
+        expect(amountLabel).toBeInTheDocument();
 
         // Expand to see more details
         const expandButton = container.querySelector('[aria-label="expand"]');
@@ -579,23 +576,23 @@ describe('Permission List Item', () => {
           fireEvent.click(expandButton);
         }
 
-        // Verify initial allowance shows spinner
-        const initialAllowance = container.querySelector(
-          '[data-testid="review-gator-permission-initial-allowance"]',
+        // When loading, these fields should still exist but wrapped in skeletons
+        const initialAllowance = getByTestId(
+          'review-gator-permission-initial-allowance',
         );
-        expect(initialAllowance).not.toBeInTheDocument();
+        expect(initialAllowance).toBeInTheDocument();
 
-        // Verify max allowance shows spinner
-        const maxAllowance = container.querySelector(
-          '[data-testid="review-gator-permission-max-allowance"]',
+        const maxAllowance = getByTestId(
+          'review-gator-permission-max-allowance',
         );
-        expect(maxAllowance).not.toBeInTheDocument();
+        expect(maxAllowance).toBeInTheDocument();
 
-        // Verify stream rate shows spinner
-        const streamRate = container.querySelector(
-          '[data-testid="review-gator-permission-stream-rate"]',
-        );
-        expect(streamRate).not.toBeInTheDocument();
+        const streamRate = getByTestId('review-gator-permission-stream-rate');
+        expect(streamRate).toBeInTheDocument();
+
+        // Verify that more skeletons are present after expanding
+        const expandedSkeletons = container.querySelectorAll('.mm-skeleton');
+        expect(expandedSkeletons.length).toBeGreaterThan(skeletons.length);
       });
     });
   });

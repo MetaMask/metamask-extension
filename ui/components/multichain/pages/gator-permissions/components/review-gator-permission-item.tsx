@@ -17,8 +17,6 @@ import {
   ButtonIconSize,
   IconName,
   Button,
-  Icon,
-  IconSize,
 } from '@metamask/design-system-react';
 import {
   Erc20TokenPeriodicPermission,
@@ -47,6 +45,7 @@ import { BackgroundColor } from '../../../../../helpers/constants/design-system'
 import { getPendingRevocations } from '../../../../../selectors/gator-permissions/gator-permissions';
 import { useGatorPermissionTokenInfo } from '../../../../../hooks/gator-permissions/useGatorPermissionTokenInfo';
 import { CopyIcon } from '../../../../app/confirm/info/row/copy-icon';
+import { Skeleton } from '../../../../component-library/skeleton';
 
 type ReviewGatorPermissionItemProps = {
   /**
@@ -181,9 +180,7 @@ export const ReviewGatorPermissionItem = ({
       return {
         amountLabel: {
           translationKey: 'gatorPermissionsStreamingAmountLabel',
-          value: loading
-            ? t('gatorPermissionUnknownTokenAmount')
-            : `${getDecimalizedHexValue(amountPerPeriod, decimals)} ${symbol}`,
+          value: `${getDecimalizedHexValue(amountPerPeriod, decimals)} ${symbol}`,
           testId: 'review-gator-permission-amount-label',
         },
         frequencyLabel: {
@@ -194,22 +191,18 @@ export const ReviewGatorPermissionItem = ({
         expandedDetails: {
           initialAllowance: {
             translationKey: 'gatorPermissionsInitialAllowance',
-            value: loading
-              ? t('gatorPermissionUnknownTokenAmount')
-              : `${getDecimalizedHexValue(
-                  permission.data.initialAmount || '0x0',
-                  decimals,
-                )} ${symbol}`,
+            value: `${getDecimalizedHexValue(
+              permission.data.initialAmount || '0x0',
+              decimals,
+            )} ${symbol}`,
             testId: 'review-gator-permission-initial-allowance',
           },
           maxAllowance: {
             translationKey: 'gatorPermissionsMaxAllowance',
-            value: loading
-              ? t('gatorPermissionUnknownTokenAmount')
-              : `${getDecimalizedHexValue(
-                  permission.data.maxAmount || '0x0',
-                  decimals,
-                )} ${symbol}`,
+            value: `${getDecimalizedHexValue(
+              permission.data.maxAmount || '0x0',
+              decimals,
+            )} ${symbol}`,
             testId: 'review-gator-permission-max-allowance',
           },
           startDate: {
@@ -230,18 +223,16 @@ export const ReviewGatorPermissionItem = ({
           },
           streamRate: {
             translationKey: 'gatorPermissionsStreamRate',
-            value: loading
-              ? t('gatorPermissionUnknownTokenAmount')
-              : `${getDecimalizedHexValue(
-                  permission.data.amountPerSecond,
-                  decimals,
-                )} ${symbol}/sec`,
+            value: `${getDecimalizedHexValue(
+              permission.data.amountPerSecond,
+              decimals,
+            )} ${symbol}/sec`,
             testId: 'review-gator-permission-stream-rate',
           },
         },
       };
     },
-    [tokenMetadata, loading, t, getExpirationDate],
+    [tokenMetadata, getExpirationDate],
   );
 
   /**
@@ -258,12 +249,10 @@ export const ReviewGatorPermissionItem = ({
       return {
         amountLabel: {
           translationKey: 'amount',
-          value: loading
-            ? t('gatorPermissionUnknownTokenAmount')
-            : `${getDecimalizedHexValue(
-                permission.data.periodAmount,
-                decimals,
-              )} ${symbol}`,
+          value: `${getDecimalizedHexValue(
+            permission.data.periodAmount,
+            decimals,
+          )} ${symbol}`,
           testId: 'review-gator-permission-amount-label',
         },
         frequencyLabel: {
@@ -293,7 +282,7 @@ export const ReviewGatorPermissionItem = ({
         },
       };
     },
-    [tokenMetadata, loading, t, getExpirationDate],
+    [tokenMetadata, getExpirationDate],
   );
 
   /**
@@ -389,14 +378,7 @@ export const ReviewGatorPermissionItem = ({
             gap={2}
             alignItems={BoxAlignItems.Center}
           >
-            {loading ? (
-              <Icon
-                name={IconName.Loading}
-                color={IconColor.IconMuted}
-                size={IconSize.Sm}
-                style={{ animation: 'spin 1.2s linear infinite' }}
-              />
-            ) : (
+            <Skeleton isLoading={loading} width="100px" height="16px">
               <Text
                 variant={TextVariant.BodyMd}
                 color={TextColor.TextAlternative}
@@ -404,7 +386,7 @@ export const ReviewGatorPermissionItem = ({
               >
                 {permissionDetails.amountLabel.value}
               </Text>
-            )}
+            </Skeleton>
           </Box>
         </Box>
 
@@ -604,14 +586,11 @@ export const ReviewGatorPermissionItem = ({
                     >
                       {t(detail.translationKey)}
                     </Text>
-                    {isLoadingValue ? (
-                      <Icon
-                        name={IconName.Loading}
-                        color={IconColor.IconMuted}
-                        size={IconSize.Sm}
-                        style={{ animation: 'spin 1.2s linear infinite' }}
-                      />
-                    ) : (
+                    <Skeleton
+                      isLoading={isLoadingValue}
+                      width="100px"
+                      height="16px"
+                    >
                       <Text
                         textAlign={TextAlign.Right}
                         color={TextColor.TextAlternative}
@@ -620,7 +599,7 @@ export const ReviewGatorPermissionItem = ({
                       >
                         {detail.value}
                       </Text>
-                    )}
+                    </Skeleton>
                   </Box>
                 );
               },
