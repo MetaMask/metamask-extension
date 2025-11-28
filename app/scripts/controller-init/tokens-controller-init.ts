@@ -16,14 +16,13 @@ export const TokensControllerInit: ControllerInitFunction<
     initMessenger.call('NetworkController:getSelectedNetworkClient') ?? {};
   assert(provider, 'Provider is required to initialize TokensController.');
 
+  // TODO: Fix TokensControllerMessenger type - add TokensControllerActions & TokensControllerEvents
+  // TODO: Bump @metamask/network-controller, @metamask/accounts-controller, @metamask/keyring-controller to match assets-controllers
   const controller = new TokensController({
+    // @ts-expect-error - Messenger type mismatch due to missing controller actions/events and dependency version mismatch
     messenger: controllerMessenger,
     state: persistedState.TokensController,
-    // TODO: Remove @ts-expect-error once @metamask/network-controller is bumped in
-    // @metamask/assets-controllers. The provider from NetworkController:getSelectedNetworkClient
-    // is a SwappableProxy that's runtime-compatible with Provider but TypeScript can't verify
-    // the private field requirement due to version mismatch.
-    // @ts-expect-error - Provider type mismatch between SwappableProxy and InternalProvider
+    // @ts-expect-error - Provider type mismatch between SwappableProxy and InternalProvider due to network-controller version mismatch
     provider,
     chainId: getGlobalChainId(initMessenger),
   });
