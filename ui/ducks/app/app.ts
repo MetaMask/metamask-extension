@@ -426,13 +426,6 @@ export default function reduceApp(
         alertMessage: null,
       };
 
-    case actionConstants.SET_ACCOUNT_DETAILS_ADDRESS: {
-      return {
-        ...appState,
-        accountDetailsAddress: action.payload,
-      };
-    }
-
     // qr scanner methods
     case actionConstants.QR_CODE_DETECTED:
       return {

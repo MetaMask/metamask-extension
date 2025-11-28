@@ -49,6 +49,15 @@ describe('Tabs', () => {
     expect(getByText('Tab 2 Content')).toBeInTheDocument();
   });
 
+  it('renders with activeTabKey', () => {
+    const { getByText, queryByText } = renderTabs({
+      activeTabKey: 'tab2',
+    });
+
+    expect(queryByText('Tab 1 Content')).not.toBeInTheDocument();
+    expect(getByText('Tab 2 Content')).toBeInTheDocument();
+  });
+
   it('calls onTabClick when tab is clicked', () => {
     const onTabClick = jest.fn();
     const { getByText } = renderTabs({ onTabClick });
