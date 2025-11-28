@@ -17,6 +17,7 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
+import classnames from 'classnames';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Modal,
@@ -54,6 +55,10 @@ import {
 import { TRANSACTION_SHIELD_LINK } from '../../../helpers/constants/common';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { getShieldMarketingUtmParamsForMetrics } from '../../../../shared/modules/shield';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import ShieldIllustrationAnimation from './shield-illustration-animation';
 
 const ShieldEntryModal = ({
@@ -75,6 +80,8 @@ const ShieldEntryModal = ({
   const modalType: ModalType = useSelector(getModalTypeForShieldEntryModal);
   const triggeringCohort = useSelector(getShieldEntryModalTriggeringCohort);
 
+  const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
+
   const determineEntryModalSource = useCallback((): EntryModalSourceEnum => {
     const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
     if (Object.keys(marketingUtmParams).length > 0) {
@@ -92,7 +99,7 @@ const ShieldEntryModal = ({
     return EntryModalSourceEnum.Homepage;
   }, [triggeringCohort, pathname, search]);
 
-  const handleOnClose = (
+  const handleOnClose = async (
     ctaActionClicked: ShieldCtaActionClickedEnum = ShieldCtaActionClickedEnum.Dismiss,
   ) => {
     const source = determineEntryModalSource();
@@ -116,7 +123,7 @@ const ShieldEntryModal = ({
       onClose?.();
       return;
     } else if (shouldSubmitEvent) {
-      dispatch(
+      await dispatch(
         submitSubscriptionUserEvents({
           event: SubscriptionUserEvent.ShieldEntryModalViewed,
           cohort: triggeringCohort,
@@ -124,7 +131,7 @@ const ShieldEntryModal = ({
       );
     }
 
-    dispatch(
+    await dispatch(
       setShowShieldEntryModalOnce({
         show: false,
         hasUserInteractedWithModal: true,
@@ -132,7 +139,7 @@ const ShieldEntryModal = ({
     );
   };
 
-  const handleOnGetStarted = () => {
+  const handleOnGetStarted = async () => {
     const source = determineEntryModalSource();
     const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
 
@@ -144,7 +151,8 @@ const ShieldEntryModal = ({
       marketingUtmParams,
     });
 
-    handleOnClose(ShieldCtaActionClickedEnum.Start14DayTrial);
+    // Ensure handleOnClose completes before redirecting
+    await handleOnClose(ShieldCtaActionClickedEnum.Start14DayTrial);
 
     navigate({
       pathname: SHIELD_PLAN_ROUTE,
@@ -217,7 +225,12 @@ const ShieldEntryModal = ({
               ? t('shieldEntryModalSubtitleA', ['$10,000'])
               : t('shieldEntryModalSubtitleB', ['$10,000'])}
           </Text>
-          <Box className="flex-1 flex items-center justify-center">
+          <Box
+            className={classnames(
+              'flex-1 flex justify-center',
+              isPopup ? 'items-end' : 'items-center',
+            )}
+          >
             <ShieldIllustrationAnimation
               containerClassName="shield-entry-modal-shield-illustration__container"
               canvasClassName="shield-entry-modal-shield-illustration__canvas"
