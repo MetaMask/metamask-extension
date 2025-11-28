@@ -28,8 +28,5 @@
   "tailwindCSS.classFunctions": ["classnames", "classNames"],
   "tailwindCSS.lint.cssConflict": "error",
   "tailwindCSS.validate": true,
-  "typescript.tsdk": "node_modules/typescript/lib",
-  "[typescript]": {
-    "editor.defaultFormatter": "vscode.typescript-language-features"
-  }
+  "typescript.tsdk": "node_modules/typescript/lib"
 }
