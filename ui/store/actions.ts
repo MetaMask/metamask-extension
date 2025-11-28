@@ -420,7 +420,7 @@ export function subscriptionsStartPolling(): ThunkAction<
         'subscriptionsStartPolling',
         [],
       );
-      return { pollingToken, randomId };
+      return pollingToken;
     } catch (error) {
       log.error('[subscriptionsStartPolling] error', error);
       dispatch(displayWarning(error));
