@@ -914,7 +914,7 @@ async function setupMocking(
 
   // Price API: Spot prices for native token (ETH)
   // Uses zero address (0x0000000000000000000000000000000000000000) to represent native token
-  // API format: v2/chains/{chainId}/spot-prices?tokenAddresses={address}&vsCurrency=usd&includeMarketData=true
+  // API format: v3/spot-prices?assetIds={assetIds}&vsCurrency=usd&includeMarketData=true
   await server
     .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
     .withQuery({
