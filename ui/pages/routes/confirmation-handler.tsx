@@ -7,7 +7,13 @@ import {
   AWAITING_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
-  DEFAULT_ROUTE,
+  ACCOUNT_LIST_PAGE_ROUTE,
+  UNLOCK_ROUTE,
+  CONNECT_ROUTE,
+  CONFIRMATION_V_NEXT_ROUTE,
+  CONFIRM_TRANSACTION_ROUTE,
+  CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
+  CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
 } from '../../helpers/constants/routes';
 import { getConfirmationRoute } from '../confirmations/hooks/useConfirmationNavigation';
 // eslint-disable-next-line import/no-restricted-paths
@@ -28,6 +34,20 @@ import {
   selectShowAwaitingSwapScreen,
 } from '../../ducks/swaps/swaps';
 import { useNavState } from '../../contexts/navigation-state';
+import { useModalState } from '../../hooks/useModalState';
+
+const EXEMPTED_ROUTES = [
+  ACCOUNT_LIST_PAGE_ROUTE,
+  AWAITING_SWAP_ROUTE,
+  PREPARE_SWAP_ROUTE,
+  CROSS_CHAIN_SWAP_ROUTE,
+  UNLOCK_ROUTE,
+  CONNECT_ROUTE,
+  CONFIRMATION_V_NEXT_ROUTE,
+  CONFIRM_TRANSACTION_ROUTE,
+  CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
+  CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
+];
 
 const SNAP_APPROVAL_TYPES = [
   'wallet_installSnapResult',
@@ -44,6 +64,7 @@ export const ConfirmationHandler = () => {
   const location = useLocation();
   const { pathname } = location;
   const navState = useNavState();
+  const { closeModals } = useModalState();
 
   const envType = getEnvironmentType();
   const isFullscreen = envType === ENVIRONMENT_TYPE_FULLSCREEN;
@@ -66,10 +87,13 @@ export const ConfirmationHandler = () => {
   // Ported from home.component - checkStatusAndNavigate()
   const checkStatusAndNavigate = useCallback(() => {
     if (canRedirect && showAwaitingSwapScreen) {
+      closeModals();
       navigate(AWAITING_SWAP_ROUTE);
     } else if (canRedirect && (hasSwapsQuotes || swapsFetchParams)) {
+      closeModals();
       navigate(PREPARE_SWAP_ROUTE);
     } else if (canRedirect && hasBridgeQuotes) {
+      closeModals();
       navigate(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
     } else if (pendingApprovals.length || hasApprovalFlows) {
       const url = getConfirmationRoute(
@@ -80,11 +104,13 @@ export const ConfirmationHandler = () => {
       );
 
       if (url) {
+        closeModals();
         navigate(url, { replace: true });
       }
     }
   }, [
     canRedirect,
+    closeModals,
     hasApprovalFlows,
     hasBridgeQuotes,
     hasSwapsQuotes,
@@ -94,13 +120,16 @@ export const ConfirmationHandler = () => {
     swapsFetchParams,
   ]);
 
+  const isExemptedRoute = EXEMPTED_ROUTES.some((route) =>
+    pathname.startsWith(route),
+  );
+
   const hasAllowedPopupRedirectApprovals = pendingApprovals.some((approval) =>
     SNAP_APPROVAL_TYPES.includes(approval.type),
   );
 
   useEffect(() => {
-    // Only run when on home/default page (for now)
-    if (pathname !== DEFAULT_ROUTE) {
+    if (isExemptedRoute) {
       return;
     }
 
@@ -112,8 +141,8 @@ export const ConfirmationHandler = () => {
   }, [
     checkStatusAndNavigate,
     hasAllowedPopupRedirectApprovals,
+    isExemptedRoute,
     isFullscreen,
-    pathname,
   ]);
 
   return null;
