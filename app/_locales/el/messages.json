@@ -4991,9 +4991,6 @@
   "recipientEditAriaLabel": {
     "message": "Επεξεργασία παραλήπτη"
   },
-  "recipientPlaceholder": {
-    "message": "Εισάγετε ή επικολλήστε μια έγκυρη διεύθυνση"
-  },
   "recoveryPhraseReminderBackupStart": {
     "message": "Δημιουργήστε αντίγραφο ασφαλείας τώρα"
   },
