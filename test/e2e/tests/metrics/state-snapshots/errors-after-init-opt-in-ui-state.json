@@ -428,7 +428,7 @@
     "gatorPermissionsProviderSnapId": "string",
     "srpSessionData": "object",
     "syncQueue": "object",
-    "firstSyncCompleted": "boolean"
+    "initialEnqueueCompleted": "boolean"
   },
   "ramps": "object",
   "rewards": "object",

@@ -1946,7 +1946,7 @@
       "watchEthereumAccountEnabled": false
     },
     "ProfileMetricsController": {
-      "firstSyncCompleted": false,
+      "initialEnqueueCompleted": false,
       "syncQueue": {}
     },
     "RemoteFeatureFlagController": {
