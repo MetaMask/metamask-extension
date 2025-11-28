@@ -1954,7 +1954,7 @@
     "message": "Понятно!"
   },
   "deprecatedNetworkDescription": {
-    "message": "Сеть, к которой вы пытаетесь подключиться, больше не поддерживается Metamask. $1"
+    "message": "Сеть, к которой вы пытаетесь подключиться, больше не поддерживается MetaMask. $1"
   },
   "description": {
     "message": "Описание"
@@ -4474,11 +4474,11 @@
     "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."
   },
   "permission_assets": {
-    "message": "Показать активы счета в Metamask.",
+    "message": "Показать активы счета в MetaMask.",
     "description": "The description for the `endowment:assets` permission."
   },
   "permission_assetsDescription": {
-    "message": "Разрешить $1 предоставить информацию об активах клиенту Metamask. Активы могут быть в блокчейне или вне него.",
+    "message": "Разрешить $1 предоставить информацию об активах клиенту MetaMask. Активы могут быть в блокчейне или вне него.",
     "description": "An extended description for the `endowment:assets` permission. $1 is the name of the Snap."
   },
   "permission_cronjob": {
@@ -4990,9 +4990,6 @@
   },
   "recipientEditAriaLabel": {
     "message": "Изменить получателя"
-  },
-  "recipientPlaceholder": {
-    "message": "Введите или вставьте действительный адрес"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Создать резервную копию сейчас"
@@ -6671,19 +6668,19 @@
   },
   "swapIncludesGasAndMetaMaskFee": {
     "message": "Включает плату за газ и комиссию MetaMask в размере $1%",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFee": {
     "message": "Включает комиссию MetaMask в размере $1%.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFeeAlt": {
     "message": "Котировка с учетом комиссии MetaMask в размере $1 %",
-    "description": "Provides information about the fee that metamask takes for swaps using the latest copy. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
     "message": "Включает комиссию MetaMask в размере $1% — $2.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
   },
   "swapLearnMore": {
     "message": "Узнайте больше о свопах"
@@ -6702,7 +6699,7 @@
   },
   "swapMetaMaskFeeDescription": {
     "message": "В этой котировке автоматически учитывается комиссия в размере $1%. Вы платите ее в обмен на лицензию на использование программного обеспечения MetaMask для сбора информации о поставщиках ликвидности.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapNQuotesWithDot": {
     "message": "Котировок: $1.",
@@ -7507,18 +7504,8 @@
   "walletConnectionGuide": {
     "message": "наше руководство по подключению аппаратного кошелька"
   },
-  "walletDetails": {
-    "message": "Реквизиты кошелька"
-  },
   "walletName": {
     "message": "Имя кошелька"
-  },
-  "walletNotFoundDescription": {
-    "message": "Кошелек с идентификатором $1 не найден.",
-    "description": "$1 is the wallet ID"
-  },
-  "walletNotFoundTitle": {
-    "message": "Кошелек не найден"
   },
   "walletReadyLearn": {
     "message": "$1 Вы можете сохранить эту фразу в надежном месте, чтобы никогда не потерять доступ к своим деньгам.",
