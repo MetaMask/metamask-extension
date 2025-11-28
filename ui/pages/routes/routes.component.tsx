@@ -24,7 +24,6 @@ import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
 import {
   AccountListMenu,
-  NetworkListMenu,
   AccountDetails,
   ImportNftsModal,
   ImportTokensModal,
@@ -101,14 +100,12 @@ import {
   setCurrentCurrency,
   setLastActiveTime,
   toggleAccountMenu,
-  toggleNetworkMenu,
   hideImportTokensModal,
   hideDeprecatedNetworkModal,
   automaticallySwitchNetwork,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   hideKeyringRemovalResultModal,
   ///: END:ONLY_INCLUDE_IF
-  setEditedNetwork,
 } from '../../store/actions';
 import { pageChanged } from '../../ducks/history/history';
 import {
@@ -169,6 +166,7 @@ import {
   setTheme,
 } from './utils';
 import { ConfirmationHandler } from './confirmation-handler';
+import { Modals } from './modals';
 
 /**
  * V5-to-v5-compat navigation function that bridges react-router-dom v5 history
@@ -539,9 +537,7 @@ export default function Routes() {
   const isAccountMenuOpen = useAppSelector(
     (state) => state.appState.isAccountMenuOpen,
   );
-  const isNetworkMenuOpen = useAppSelector(
-    (state) => state.appState.isNetworkMenuOpen,
-  );
+
   const isImportTokensModalOpen = useAppSelector(
     (state) => state.appState.importTokensModalOpen,
   );
@@ -1272,14 +1268,7 @@ export default function Routes() {
         <MultichainMetaFoxLogo />
       )}
       {isAccountMenuOpen ? accountListMenu : null}
-      {isNetworkMenuOpen ? (
-        <NetworkListMenu
-          onClose={() => {
-            dispatch(toggleNetworkMenu());
-            dispatch(setEditedNetwork());
-          }}
-        />
-      ) : null}
+
       <NetworkConfirmationPopover />
       {renderAccountDetails()}
       {isImportNftsModalOpen ? (
@@ -1328,6 +1317,8 @@ export default function Routes() {
         }>,
         { location },
       )}
+
+      <Modals />
     </div>
   );
 }

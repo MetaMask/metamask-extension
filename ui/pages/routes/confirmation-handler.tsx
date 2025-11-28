@@ -35,6 +35,7 @@ import {
   selectShowAwaitingSwapScreen,
 } from '../../ducks/swaps/swaps';
 import { useNavState } from '../../contexts/navigation-state';
+import { useModalState } from '../../hooks/useModalState';
 
 const EXEMPTED_ROUTES = [
   ACCOUNT_LIST_PAGE_ROUTE,
@@ -62,6 +63,7 @@ export const ConfirmationHandler = () => {
   const location = useLocation();
   const { pathname } = location;
   const navState = useNavState();
+  const { closeModals } = useModalState();
 
   const envType = getEnvironmentType();
   const isFullscreen = envType === ENVIRONMENT_TYPE_FULLSCREEN;
@@ -84,10 +86,13 @@ export const ConfirmationHandler = () => {
   // Ported from home.component - checkStatusAndNavigate()
   const checkStatusAndNavigate = useCallback(() => {
     if (canRedirect && showAwaitingSwapScreen) {
+      closeModals();
       navigate(AWAITING_SWAP_ROUTE);
     } else if (canRedirect && (hasSwapsQuotes || swapsFetchParams)) {
+      closeModals();
       navigate(PREPARE_SWAP_ROUTE);
     } else if (canRedirect && hasBridgeQuotes) {
+      closeModals();
       navigate(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
     } else if (pendingApprovals.length || hasApprovalFlows) {
       const url = getConfirmationRoute(
@@ -98,11 +103,13 @@ export const ConfirmationHandler = () => {
       );
 
       if (url) {
+        closeModals();
         navigate(url, { replace: true });
       }
     }
   }, [
     canRedirect,
+    closeModals,
     hasApprovalFlows,
     hasBridgeQuotes,
     hasSwapsQuotes,
