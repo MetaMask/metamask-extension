@@ -2969,6 +2969,7 @@
       "packages": {
         "@babel/core": true,
         "@babel/core>@babel/parser": true,
+        "eslint-plugin-react-hooks>hermes-parser": true,
         "eslint-plugin-react-hooks>zod-validation-error": true,
         "eslint-plugin-react-hooks>zod": true
       }
@@ -3985,6 +3986,32 @@
     "eslint-plugin-react>hasown": {
       "packages": {
         "browserify>has>function-bind": true
+      }
+    },
+    "eslint-plugin-react-hooks>hermes-parser": {
+      "builtin": {
+        "fs.readFile": true,
+        "fs.readFileSync": true,
+        "path.dirname": true,
+        "path.normalize": true
+      },
+      "globals": {
+        "Buffer.from": true,
+        "TextDecoder": true,
+        "URL": true,
+        "WebAssembly": true,
+        "__dirname": true,
+        "__filename": true,
+        "atob": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console": true,
+        "define": true,
+        "document": true,
+        "navigator": true,
+        "performance.now": true,
+        "process": true,
+        "setTimeout": true
       }
     },
     "stylelint>postcss-html>htmlparser2": {
