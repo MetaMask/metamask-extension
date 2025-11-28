@@ -34,10 +34,7 @@ import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
 import { getCodeFenceLoader } from './utils/loaders/codeFenceLoader';
 import { getSwcLoader } from './utils/loaders/swcLoader';
-import {
-  getReactCompilerLoader,
-  getReactCompilerLogger,
-} from './utils/loaders/reactCompilerLoader';
+import { getReactCompilerLoader } from './utils/loaders/reactCompilerLoader';
 import { getVariables } from './utils/config';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import { getLatestCommit } from './utils/git';
@@ -216,16 +213,11 @@ if (args.progress) {
   const { ProgressPlugin } = require('webpack');
   plugins.push(new ProgressPlugin());
 }
-
 if (args.reactCompilerVerbose) {
-  plugins.push({
-    apply(compiler) {
-      compiler.hooks.done.tap('ReactCompilerStatsPlugin', () => {
-        const logger = getReactCompilerLogger();
-        logger.logSummary();
-      });
-    },
-  } as WebpackPluginInstance);
+  const {
+    ReactCompilerPlugin,
+  } = require('./utils/plugins/ReactCompilerPlugin');
+  plugins.push(new ReactCompilerPlugin());
 }
 
 // #endregion plugins
