@@ -5,6 +5,7 @@ import stringify from 'fast-json-stable-stringify';
  * Synchronous version of `useEqualityCheck` that provides referential stability without triggering unnecessary re-renders.
  *
  * Uses JSON serialization to detect changes (including mutations).
+ * Calls `stringify` on every render, `JSON.parse` only when a mutation is detected.
  * Returns a new reference only when the serialized value differs.
  * Suitable for small objects/arrays. For large data, consider `useEqualityCheck` or `useMemo`.
  *
@@ -26,8 +27,8 @@ export function useSyncEqualityCheck<Value>(value: Value): Value {
 
   const currentSnapshot = stringify(value);
   if (currentSnapshot !== snapshotRef.current) {
+    valueRef.current = JSON.parse(currentSnapshot) as Value;
     snapshotRef.current = currentSnapshot;
-    valueRef.current = value;
   }
 
   return valueRef.current;
