@@ -182,7 +182,7 @@ export const CHAIN_IDS = {
   GSYS_TESTNET: '0xa5c8',
   MODE_SEPOLIA: '0x397',
   MODE: '0x868b',
-  MEGAETH_TESTNET: '0x18c7',
+  MEGAETH_TESTNET: '0x18c6',
   MEGAETH_MAINNET: '0x10e6',
   XRPLEVM_TESTNET: '0x161c28',
   LENS: '0xe8',
@@ -402,7 +402,7 @@ export const LINEA_MAINNET_RPC_URL = getRpcUrl({
   network: NETWORK_TYPES.LINEA_MAINNET,
 });
 export const LOCALHOST_RPC_URL = 'http://localhost:8545';
-export const MEGAETH_TESTNET_RPC_URL = 'https://timothy.megaeth.com/rpc';
+export const MEGAETH_TESTNET_RPC_URL = 'https://carrot.megaeth.com/rpc';
 export const MONAD_TESTNET_RPC_URL = 'https://testnet-rpc.monad.xyz';
 
 /**

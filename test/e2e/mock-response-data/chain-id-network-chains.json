@@ -200,12 +200,12 @@
       "symbol": "ETH",
       "decimals": 18
     },
-    "rpc": ["https://timothy.megaeth.com/rpc", "wss://timothy.megaeth.com/ws"],
+    "rpc": ["https://carrot.megaeth.com/rpc", "wss://carrot.megaeth.com/ws"],
     "faucets": [],
     "infoURL": "https://testnet.megaeth.com",
     "shortName": "megatest",
-    "chainId": 6343,
-    "networkId": 6343,
+    "chainId": 6342,
+    "networkId": 6342,
     "slip44": 1
   },
   {

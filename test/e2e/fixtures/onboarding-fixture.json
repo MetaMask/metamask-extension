@@ -335,9 +335,9 @@
             }
           ]
         },
-        "0x18c7": {
+        "0x18c6": {
           "blockExplorerUrls": ["https://megaexplorer.xyz"],
-          "chainId": "0x18c7",
+          "chainId": "0x18c6",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
           "name": "Mega Testnet",
@@ -347,7 +347,7 @@
               "failoverUrls": [],
               "networkClientId": "megaeth-testnet",
               "type": "custom",
-              "url": "https://timothy.megaeth.com/rpc"
+              "url": "https://carrot.megaeth.com/rpc"
             }
           ]
         },
@@ -525,7 +525,7 @@
         },
         "eip155": {
           "0x1": true,
-          "0x18c7": false,
+          "0x18c6": false,
           "0x2105": true,
           "0x279f": false,
           "0x38": true,
