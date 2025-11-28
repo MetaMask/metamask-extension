@@ -58,7 +58,9 @@ const usePolling = <PollingInput>(
   }, [
     pollingInput,
     usePollingOptions.enabled,
+    usePollingOptions.startPolling,
     usePollingOptions.stopPollingByPollingToken,
+    usePollingOptions.callback,
   ]);
 };
 
