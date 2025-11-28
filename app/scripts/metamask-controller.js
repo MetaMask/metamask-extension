@@ -8190,6 +8190,8 @@ export default class MetamaskController extends EventEmitter {
     } else {
       this.tokenDetectionController.disable();
       this.gasFeeController.disableNonRPCGasFeeApis();
+      // stop polling for the subscriptions if external services are disabled
+      this.subscriptionController.stopAllPolling();
     }
   }
 
@@ -8277,6 +8279,7 @@ export default class MetamaskController extends EventEmitter {
       this.appStateController.clearPollingTokens();
       this.accountTrackerController.stopAllPolling();
       this.deFiPositionsController.stopAllPolling();
+      this.subscriptionController.stopAllPolling();
     } catch (error) {
       console.error(error);
     }
@@ -8308,6 +8311,8 @@ export default class MetamaskController extends EventEmitter {
         appStatePollingTokenType,
       );
     });
+    // stop polling for the subscriptions
+    this.subscriptionController.stopAllPolling();
   }
 
   /**

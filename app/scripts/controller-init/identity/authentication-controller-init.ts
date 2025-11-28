@@ -2,12 +2,13 @@ import {
   AuthenticationControllerState,
   Controller as AuthenticationController,
 } from '@metamask/profile-sync-controller/auth';
-import { Platform } from '@metamask/profile-sync-controller/sdk';
+import { Env, Platform } from '@metamask/profile-sync-controller/sdk';
 import { ControllerInitFunction } from '../types';
 import {
   AuthenticationControllerInitMessenger,
   AuthenticationControllerMessenger,
 } from '../messengers/identity';
+import { isProduction } from '../../../../shared/modules/environment';
 
 /**
  * Initialize the Authentication controller.
@@ -25,6 +26,9 @@ export const AuthenticationControllerInit: ControllerInitFunction<
 > = ({ controllerMessenger, initMessenger, persistedState }) => {
   const controller = new AuthenticationController({
     messenger: controllerMessenger,
+    config: {
+      env: isProduction() ? Env.PRD : Env.DEV,
+    },
     state:
       persistedState.AuthenticationController as AuthenticationControllerState,
     metametrics: {
