@@ -31680,9 +31680,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat@git+https://github.com/LavaMoat/LavaMoat.git#head=main&workspace=lavamoat":
-  version: 10.0.2
-  resolution: "lavamoat@https://github.com/LavaMoat/LavaMoat.git#workspace=lavamoat&commit=f2eecedbcf6f501e4f7163f47b97821b9e5dc8a1"
+"lavamoat@npm:10.0.3":
+  version: 10.0.3
+  resolution: "lavamoat@npm:10.0.3"
   dependencies:
     "@babel/code-frame": "npm:7.27.1"
     "@babel/highlight": "npm:7.25.9"
@@ -31698,7 +31698,7 @@ __metadata:
   bin:
     lavamoat: src/cli.js
     lavamoat-run-command: src/run-command.js
-  checksum: 10/91dc25b1071f021510ccd8a87ecb8edbbb27320e98dfac3dfb8304384bbddf0304ff91d29b9bdb31b1518a565358cded415563482483dce9357371388f72d46c
+  checksum: 10/ff509c7bf73823e7e6ee6d1619a9988d8dd022e9d51f2124bd6141407830c1b244303beb926bd581457faf2e05f3ca23e25524d2847082c49d64da7150bd1592
   languageName: node
   linkType: hard
 
@@ -33188,7 +33188,7 @@ __metadata:
     jsonwebtoken: "npm:^9.0.2"
     koa: "npm:^3.1.1"
     labeled-stream-splicer: "npm:^2.0.2"
-    lavamoat: "git+https://github.com/LavaMoat/LavaMoat.git#head=main&workspace=lavamoat"
+    lavamoat: "npm:10.0.3"
     lavamoat-browserify: "npm:^19.0.2"
     lavamoat-viz: "npm:^7.0.5"
     level: "npm:^8.0.1"

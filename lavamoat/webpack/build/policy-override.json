@@ -1,8 +1,21 @@
 {
   "resources": {
+    "chokidar": {
+      "packages": {
+        "tsx>fsevents": true
+      }
+    },
+    "tsx>fsevents": {
+      "globals": {
+        "console.assert": true,
+        "process.platform": true
+      },
+      "native": true
+    },
     "@swc/core": {
       "packages": {
-        "@swc/core>@swc/core-darwin-arm64": true
+        "@swc/core>@swc/core-darwin-arm64": true,
+        "@swc/core>@swc/core-linux-x64-gnu": true
       }
     },
     "@swc/core>@swc/core-linux-x64-gnu": {
@@ -13,7 +26,8 @@
     },
     "@lydell/node-pty": {
       "packages": {
-        "@lydell/node-pty>@lydell/node-pty-darwin-arm64": true
+        "@lydell/node-pty>@lydell/node-pty-darwin-arm64": true,
+        "@lydell/node-pty>@lydell": true
       }
     },
     "@lydell/node-pty>@lydell/node-pty-darwin-arm64": {
