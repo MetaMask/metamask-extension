@@ -4991,9 +4991,6 @@
   "recipientEditAriaLabel": {
     "message": "受取人を編集"
   },
-  "recipientPlaceholder": {
-    "message": "有効なアドレスを入力するか貼り付けてください"
-  },
   "recoveryPhraseReminderBackupStart": {
     "message": "今すぐバックアップ"
   },
@@ -6671,19 +6668,19 @@
   },
   "swapIncludesGasAndMetaMaskFee": {
     "message": "ガス代と$1%のMetaMask手数料が含まれています",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFee": {
     "message": "$1%のMetaMask手数料が含まれています.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFeeAlt": {
     "message": "クォートには$1%のMetaMask手数料が含まれています",
-    "description": "Provides information about the fee that metamask takes for swaps using the latest copy. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
     "message": "$1%のMetaMask手数料が含まれています – $2",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
   },
   "swapLearnMore": {
     "message": "Swapsの詳細"
@@ -6702,7 +6699,7 @@
   },
   "swapMetaMaskFeeDescription": {
     "message": "このクォートには、$1%の手数料が自動的に含まれています。この手数料は、MetaMaskの流動性プロバイダーの情報集積ソフトウェアの使用ライセンスの代金として支払うものです。",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapNQuotesWithDot": {
     "message": "$1 の見積もり.",
@@ -7507,18 +7504,8 @@
   "walletConnectionGuide": {
     "message": "弊社のハードウェアウォレット接続ガイド"
   },
-  "walletDetails": {
-    "message": "ウォレットの詳細"
-  },
   "walletName": {
     "message": "ウォレット名"
-  },
-  "walletNotFoundDescription": {
-    "message": "IDが$1のウォレットは見つかりませんでした。",
-    "description": "$1 is the wallet ID"
-  },
-  "walletNotFoundTitle": {
-    "message": "ウォレットが見つかりません"
   },
   "walletReadyLearn": {
     "message": "$1 ご自身の資金にアクセスできなくなることを防ぐため、このフレーズは安全に保管しましょう。",
