@@ -5,6 +5,7 @@ import {
   AvatarNetwork,
   AvatarNetworkSize,
   AvatarToken,
+  AvatarTokenSize,
   BadgeWrapper,
   Box,
   Icon,
@@ -43,7 +44,7 @@ import {
   ERC20Asset,
   NativeAsset,
 } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
-import { SUBSCRIPTION_DEFAULT_PAYMENT_TOKEN } from '../../../shared/constants/subscriptions';
+import { SUPPORTED_PAYMENT_TOKEN_IMAGES } from '../../../shared/constants/subscriptions';
 
 export const ShieldPaymentModal = ({
   isOpen,
@@ -55,7 +56,6 @@ export const ShieldPaymentModal = ({
   onAssetChange,
   hasStableTokenWithBalance,
   tokensSupported,
-  minimumAmountRequired,
 }: {
   isOpen: boolean;
   onClose: () => void;
@@ -66,7 +66,6 @@ export const ShieldPaymentModal = ({
   onAssetChange: (asset: TokenWithApprovalAmount) => void;
   hasStableTokenWithBalance: boolean;
   tokensSupported: string[];
-  minimumAmountRequired: string;
 }) => {
   const t = useI18nContext();
   const [showAssetPickerModal, setShowAssetPickerModal] = useState(false);
@@ -119,24 +118,29 @@ export const ShieldPaymentModal = ({
     };
   }, [availableTokenBalances]);
 
-  const noCryptoFundsText = useMemo(() => {
-    const tokensSupportedCopy = [...tokensSupported];
-    const lastToken = tokensSupportedCopy.pop();
-
-    // multiple tokens to display eg. Insufficient USDC, USDT or mUSD
-    if (tokensSupportedCopy.length > 0) {
-      return t('shieldPlanNoFunds', [
-        minimumAmountRequired,
-        tokensSupportedCopy.join(', '),
-        lastToken,
-      ]);
-    }
-    // single token to display eg. Insufficient USDC
-    return t('shieldPlanNoFundsOneToken', [
-      minimumAmountRequired,
-      lastToken ?? SUBSCRIPTION_DEFAULT_PAYMENT_TOKEN,
-    ]);
-  }, [tokensSupported, t, minimumAmountRequired]);
+  const supportedTokens = useMemo(() => {
+    return [...tokensSupported].map((token) => {
+      return (
+        <BadgeWrapper
+          key={token}
+          badge={
+            <AvatarNetwork
+              size={AvatarNetworkSize.Xs}
+              name={NETWORK_TO_NAME_MAP[CHAIN_IDS.MAINNET]}
+              src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[CHAIN_IDS.MAINNET]}
+              borderColor={BorderColor.borderMuted}
+            />
+          }
+        >
+          <AvatarToken
+            name={token}
+            src={SUPPORTED_PAYMENT_TOKEN_IMAGES[token]}
+            size={AvatarTokenSize.Sm}
+          />
+        </BadgeWrapper>
+      );
+    });
+  }, [tokensSupported]);
 
   return (
     <Modal
@@ -232,9 +236,13 @@ export const ShieldPaymentModal = ({
                     variant={TextVariant.bodySm}
                     color={TextColor.textAlternative}
                   >
-                    {hasStableTokenWithBalance
-                      ? `${t('balance')}: ${selectedToken?.string ?? ''} ${selectedToken?.symbol ?? ''}`
-                      : noCryptoFundsText}
+                    {hasStableTokenWithBalance ? (
+                      `${t('balance')}: ${selectedToken?.string ?? ''} ${selectedToken?.symbol ?? ''}`
+                    ) : (
+                      <Box display={Display.Flex} gap={2}>
+                        {supportedTokens}
+                      </Box>
+                    )}
                   </Text>
                 </Box>
               </Box>

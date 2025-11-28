@@ -19,7 +19,6 @@ export const DefaultStory = () => {
         hasStableTokenWithBalance={true}
         availableTokenBalances={[]}
         tokensSupported={['USDC', 'USDT', 'mUSD']}
-        minimumAmountRequired="9.99"
       />
     </div>
   );

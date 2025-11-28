@@ -6379,14 +6379,6 @@
     "message": "$1/month",
     "description": "The $1 is the price of the monthly plan"
   },
-  "shieldPlanNoFunds": {
-    "message": "Requires $1 $2 or $3",
-    "description": "$1 is the minimum amount, $2 or $3 shows the supported token eg. USDC, USDT or mUSD"
-  },
-  "shieldPlanNoFundsOneToken": {
-    "message": "Requires $1 $2",
-    "description": "$1 is the minimum amount, $2 shows the supported token eg. mUSD"
-  },
   "shieldPlanPayWith": {
     "message": "Pay with"
   },

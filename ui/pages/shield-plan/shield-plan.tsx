@@ -153,15 +153,6 @@ const ShieldPlan = () => {
     return pricingPlans?.find((plan) => plan.interval === selectedPlan);
   }, [pricingPlans, selectedPlan]);
 
-  // minimum token amount required
-  const minimumAmountRequired = useMemo(() => {
-    if (!selectedProductPrice) {
-      return '';
-    }
-
-    return `${getProductPrice(selectedProductPrice)}`;
-  }, [selectedProductPrice]);
-
   const {
     availableTokenBalances,
     pending: pendingAvailableTokenBalances,
@@ -568,7 +559,6 @@ const ShieldPlan = () => {
                 onAssetChange={handleUserChangeToken}
                 availableTokenBalances={availableTokenBalances}
                 tokensSupported={tokensSupported}
-                minimumAmountRequired={minimumAmountRequired}
               />
             </Content>
             <Footer

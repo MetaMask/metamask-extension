@@ -82,7 +82,6 @@ describe('Change payment method', () => {
         hasStableTokenWithBalance={true}
         availableTokenBalances={[]}
         tokensSupported={['USDC', 'USDT', 'mUSD']}
-        minimumAmountRequired="9.99"
       />,
       mockStore,
     );
@@ -99,7 +98,6 @@ describe('Change payment method', () => {
         hasStableTokenWithBalance={true}
         availableTokenBalances={mockAvailableTokenBalances}
         tokensSupported={['USDC', 'USDT', 'mUSD']}
-        minimumAmountRequired="9.99"
       />,
       mockStore,
     );
@@ -122,7 +120,6 @@ describe('Change payment method', () => {
         hasStableTokenWithBalance={true}
         availableTokenBalances={[]}
         tokensSupported={['USDC', 'USDT', 'mUSD']}
-        minimumAmountRequired="9.99"
       />,
       mockStore,
     );
