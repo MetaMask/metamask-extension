@@ -1702,7 +1702,7 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "fast-json-stable-stringify": true,
         "uuid": true
       }
     },
@@ -2012,7 +2012,7 @@
         "@scure/base": true,
         "chalk": true,
         "cron-parser": true,
-        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "fast-json-stable-stringify": true,
         "@metamask/snaps-utils>fast-xml-parser": true,
         "luxon": true,
         "@metamask/snaps-utils>marked": true,
@@ -2744,7 +2744,7 @@
       },
       "packages": {
         "eslint>fast-deep-equal": true,
-        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "fast-json-stable-stringify": true,
         "eslint>ajv>json-schema-traverse": true,
         "uri-js": true
       }

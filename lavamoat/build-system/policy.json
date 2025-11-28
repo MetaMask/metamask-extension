@@ -1311,7 +1311,7 @@
       },
       "packages": {
         "eslint>fast-deep-equal": true,
-        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "fast-json-stable-stringify": true,
         "eslint>ajv>json-schema-traverse": true,
         "uri-js": true
       }
