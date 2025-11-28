@@ -9,7 +9,10 @@ import {
 } from '@metamask/bridge-controller';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { SolAccountType, SolScope } from '@metamask/keyring-api';
-import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
+import {
+  createBridgeMockStore,
+  MOCK_BITCOIN_ACCOUNT,
+} from '../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import mockErc20Erc20Quotes from '../../../test/data/bridge/mock-quotes-erc20-erc20.json';
@@ -312,7 +315,7 @@ describe('Bridge selectors', () => {
     it('returns selected toToken', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
-          fromToken: { address: '0x123', symbol: 'TEST' },
+          fromToken: { address: '0x123', symbol: 'TEST', chainId: '0x1' },
           toChainId: formatChainIdToCaip(1),
           toToken: { address: '0x567', symbol: 'DEST' },
         },
@@ -333,7 +336,7 @@ describe('Bridge selectors', () => {
     it('returns default token if toToken is not set', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
-          fromToken: { address: '0x123', symbol: 'TEST' },
+          fromToken: { address: '0x123', symbol: 'TEST', chainId: '0x1' },
           toChainId: formatChainIdToCaip(1),
         },
         featureFlagOverrides: {
@@ -420,6 +423,10 @@ describe('Bridge selectors', () => {
                 isActiveSrc: true,
                 isActiveDest: true,
               },
+              [MultichainNetworks.BITCOIN]: {
+                isActiveSrc: true,
+                isActiveDest: true,
+              },
             },
             bip44DefaultPairs: {
               bip122: {
@@ -428,6 +435,18 @@ describe('Bridge selectors', () => {
                     'eip155:1/slip44:60',
                 },
                 other: {},
+              },
+            },
+          },
+        },
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: MOCK_BITCOIN_ACCOUNT.id,
+          },
+          balances: {
+            [MOCK_BITCOIN_ACCOUNT.id]: {
+              [getNativeAssetForChainId(ChainId.BTC).assetId]: {
+                amount: '2',
               },
             },
           },
@@ -1721,6 +1740,7 @@ describe('Bridge selectors', () => {
           fromToken: {
             address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
             decimals: 6,
+            chainId: '0x1',
           },
         },
         featureFlagOverrides: {
@@ -1756,6 +1776,7 @@ describe('Bridge selectors', () => {
           fromToken: {
             address: zeroAddress(),
             decimals: 18,
+            chainId: '0x1',
           },
         },
         featureFlagOverrides: {
@@ -1813,6 +1834,7 @@ describe('Bridge selectors', () => {
             decimals: 6,
             assetId:
               'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+            chainId: MultichainNetworks.SOLANA,
           },
         },
         featureFlagOverrides: {
@@ -1866,6 +1888,7 @@ describe('Bridge selectors', () => {
           fromToken: {
             address: zeroAddress(),
             decimals: 18,
+            chainId: MultichainNetworks.SOLANA,
           },
         },
         featureFlagOverrides: {

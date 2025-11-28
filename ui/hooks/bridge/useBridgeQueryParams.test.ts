@@ -59,9 +59,26 @@ describe('useBridgeQueryParams', () => {
       featureFlagOverrides: {
         bridgeConfig: {
           chains: {
+            [CHAIN_IDS.MAINNET]: {
+              isActiveSrc: true,
+              isActiveDest: true,
+            },
             [ChainId.SOLANA]: {
               isActiveSrc: true,
               isActiveDest: true,
+            },
+          },
+        },
+      },
+      metamaskStateOverrides: {
+        internalAccounts: {
+          selectedAccount: 'bf13d52c-d6e8-40ea-9726-07d7149a3ca5',
+        },
+        balances: {
+          'bf13d52c-d6e8-40ea-9726-07d7149a3ca5': {
+            [bridgeControllerUtils.getNativeAssetForChainId(ChainId.SOLANA)
+              .assetId]: {
+              amount: '2',
             },
           },
         },

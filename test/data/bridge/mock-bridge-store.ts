@@ -77,6 +77,47 @@ export const MOCK_SOLANA_ACCOUNT = {
   },
 };
 
+export const MOCK_BITCOIN_ACCOUNT = {
+  type: 'bip122:p2wpkh',
+  scopes: ['bip122:000000000019d6689c085ae165831e93'],
+  id: '40b25442-ed7e-4b94-9f9f-ea8ff06d03b3',
+  address: 'bc1q2pxsagdzfdn6k6umvf9gj3eme7a27p7acym9g2',
+  options: {
+    entropySource: '01K8NT6Z7XDKEKX9MFSZ5EPFMW',
+    exportable: false,
+    entropy: {
+      type: 'mnemonic',
+      id: '01K8NT6Z7XDKEKX9MFSZ5EPFMW',
+      derivationPath: "m/84'/0'/0'",
+      groupIndex: 0,
+    },
+  },
+  methods: [
+    'signPsbt',
+    'computeFee',
+    'fillPsbt',
+    'broadcastPsbt',
+    'sendTransfer',
+    'getUtxo',
+    'listUtxos',
+    'publicDescriptor',
+    'signMessage',
+  ],
+  metadata: {
+    name: 'Snap Account 9',
+    importTime: 1763417984346,
+    keyring: {
+      type: 'Snap Keyring',
+    },
+    snap: {
+      id: 'npm:@metamask/bitcoin-wallet-snap',
+      name: 'Bitcoin',
+      enabled: true,
+    },
+    lastSelected: 1764203245474,
+  },
+};
+
 export const MOCK_EVM_ACCOUNT = {
   address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
   id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
@@ -161,6 +202,7 @@ export const createBridgeMockStore = ({
       ...(internalAccountsOverrides?.accounts ?? {}),
       [MOCK_LEDGER_ACCOUNT.id]: MOCK_LEDGER_ACCOUNT,
       [MOCK_SOLANA_ACCOUNT.id]: MOCK_SOLANA_ACCOUNT,
+      [MOCK_BITCOIN_ACCOUNT.id]: MOCK_BITCOIN_ACCOUNT,
       [MOCK_EVM_ACCOUNT.id]: MOCK_EVM_ACCOUNT,
       [MOCK_EVM_ACCOUNT_2.id]: MOCK_EVM_ACCOUNT_2,
     },
@@ -257,7 +299,11 @@ export const createBridgeMockStore = ({
                     groupIndex: 0,
                   },
                 },
-                accounts: [MOCK_EVM_ACCOUNT.id, MOCK_SOLANA_ACCOUNT.id],
+                accounts: [
+                  MOCK_EVM_ACCOUNT.id,
+                  MOCK_SOLANA_ACCOUNT.id,
+                  MOCK_BITCOIN_ACCOUNT.id,
+                ],
               },
               'entropy:01K2FF18CTTXJYD34R78X4N1N1/1': {
                 type: 'multichain-account',
@@ -320,6 +366,14 @@ export const createBridgeMockStore = ({
           accounts: [MOCK_SOLANA_ACCOUNT.address],
           metadata: {
             id: '01K6GQ6SXDB9GKP6CAPSRV5AJF',
+            name: '',
+          },
+        },
+        {
+          type: KeyringType.snap,
+          accounts: [MOCK_BITCOIN_ACCOUNT.address],
+          metadata: {
+            id: '01K6GQ6SXDB9GKP6CAPSRV5AJG',
             name: '',
           },
         },

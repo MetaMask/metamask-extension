@@ -13,6 +13,7 @@ import {
   selectBridgeFeatureFlags,
   selectMinimumBalanceForRentExemptionInSOL,
   isValidQuoteRequest,
+  isCrossChain,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import {
@@ -287,15 +288,53 @@ export const getLastSelectedChainId = createSelector(
 );
 
 // This returns undefined if the selected chain is not supported by swap/bridge (i.e, testnets)
-export const getFromChain = createDeepEqualSelector(
-  [getFromChains, getMultichainProviderConfig],
-  (fromChains, providerConfig) => {
+export const getFromToken = createSelector(
+  [
+    (state: BridgeAppState) => state.bridge?.fromToken,
+    getFromChains,
+    getMultichainProviderConfig,
+  ],
+  (fromToken, fromChains, providerConfig) => {
     // When the page loads the global network always matches the network filter
     // Because useBridging checks whether the lastSelectedNetwork matches the provider config
     // Then useBridgeQueryParams sets the global network to lastSelectedNetwork as needed
     // TODO remove providerConfig references and just use getLastSelectedChainId
-    return fromChains.find(
+    const fromChain = fromChains.find(
       ({ chainId }) => chainId === providerConfig?.chainId,
+    );
+    // If selected network is not supported by swap/bridge, return ETH
+    if (!fromChain) {
+      return toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET));
+    }
+    const fromChainId = fromChain.chainId;
+    if (
+      fromToken &&
+      fromToken.address &&
+      !isCrossChain(fromToken.chainId, fromChainId)
+    ) {
+      return fromToken;
+    }
+    const { iconUrl, ...nativeAsset } = getNativeAssetForChainId(fromChainId);
+    const newToToken = toBridgeToken(nativeAsset);
+    return newToToken
+      ? {
+          ...newToToken,
+          chainId: formatChainIdToCaip(fromChainId),
+        }
+      : newToToken;
+  },
+);
+
+// Return's the chain matching the fromToken's chainId
+export const getFromChain = createSelector(
+  [getFromToken, getFromChains],
+  (fromToken, fromChains) => {
+    if (!fromToken) {
+      return undefined;
+    }
+    return fromChains.find(
+      ({ chainId }) =>
+        formatChainIdToCaip(chainId) === formatChainIdToCaip(fromToken.chainId),
     );
   },
 );
@@ -386,29 +425,6 @@ export const getToChain = createSelector(
 
     // For all other chains, default to same chain (swap mode)
     return fromChain;
-  },
-);
-
-export const getFromToken = createSelector(
-  [
-    (state: BridgeAppState) => state.bridge.fromToken,
-    (state: BridgeAppState) => getFromChain(state)?.chainId,
-  ],
-  (fromToken, fromChainId) => {
-    if (!fromChainId) {
-      return null;
-    }
-    if (fromToken?.address) {
-      return fromToken;
-    }
-    const { iconUrl, ...nativeAsset } = getNativeAssetForChainId(fromChainId);
-    const newToToken = toBridgeToken(nativeAsset);
-    return newToToken
-      ? {
-          ...newToToken,
-          chainId: formatChainIdToCaip(fromChainId),
-        }
-      : newToToken;
   },
 );
 
