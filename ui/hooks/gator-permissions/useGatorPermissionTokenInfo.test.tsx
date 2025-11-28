@@ -7,10 +7,8 @@ import type { Store } from 'redux';
 import { Hex } from '@metamask/utils';
 import { fetchAssetMetadata } from '../../../shared/lib/asset-utils';
 import { getTokenStandardAndDetailsByChain } from '../../store/actions';
-import {
-  useGatorPermissionTokenInfo,
-  tokenInfoPromiseCache,
-} from './useGatorPermissionTokenInfo';
+import { clearTokenInfoCaches } from '../../../shared/lib/gator-permissions/gator-permissions-utils';
+import { useGatorPermissionTokenInfo } from './useGatorPermissionTokenInfo';
 
 // Mock dependencies
 jest.mock('../../../shared/lib/asset-utils');
@@ -68,7 +66,7 @@ describe('useGatorPermissionTokenInfo', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    tokenInfoPromiseCache.clear();
+    clearTokenInfoCaches();
   });
 
   describe('native token handling', () => {

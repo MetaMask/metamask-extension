@@ -1,12 +1,12 @@
 import { Hex } from '@metamask/utils';
 import { fetchAssetMetadata } from '../asset-utils';
 import {
-  fetchGatorErc20TokenInfo,
   getGatorErc20TokenInfo,
   getGatorPermissionTokenInfo,
   formatGatorAmountLabel,
   getGatorPermissionDisplayMetadata,
   GetTokenStandardAndDetailsByChain,
+  clearTokenInfoCaches,
 } from './gator-permissions-utils';
 
 // Mock dependencies
@@ -22,127 +22,7 @@ const mockFetchAssetMetadata = fetchAssetMetadata as jest.MockedFunction<
 describe('gator-permissions-utils', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-  });
-
-  describe('fetchGatorErc20TokenInfo', () => {
-    const mockAddress = '0x1234567890123456789012345678901234567890';
-    const mockChainId = '0x1' as Hex;
-
-    it('should fetch token info from external services when enabled', async () => {
-      mockFetchAssetMetadata.mockResolvedValue({
-        symbol: 'TEST',
-        decimals: 18,
-        image: 'https://example.com/image.png',
-        assetId: 'eip155:1/erc20:0x1234567890123456789012345678901234567890',
-        address: mockAddress,
-        chainId: mockChainId,
-      });
-
-      const result = await fetchGatorErc20TokenInfo(
-        mockAddress,
-        mockChainId,
-        true,
-      );
-
-      expect(result).toStrictEqual({ symbol: 'TEST', decimals: 18 });
-      expect(mockFetchAssetMetadata).toHaveBeenCalledWith(
-        mockAddress,
-        mockChainId,
-      );
-    });
-
-    it('should use fallback when external services are disabled', async () => {
-      const mockGetTokenDetails: GetTokenStandardAndDetailsByChain = jest
-        .fn()
-        .mockResolvedValue({
-          symbol: 'FALLBACK',
-          decimals: 6,
-        });
-
-      const result = await fetchGatorErc20TokenInfo(
-        mockAddress,
-        mockChainId,
-        false,
-        mockGetTokenDetails,
-      );
-
-      expect(result).toStrictEqual({ symbol: 'FALLBACK', decimals: 6 });
-      expect(mockGetTokenDetails).toHaveBeenCalledWith(
-        mockAddress,
-        undefined,
-        undefined,
-        mockChainId,
-      );
-    });
-
-    it('should use fallback when external services return incomplete data', async () => {
-      mockFetchAssetMetadata.mockResolvedValue(undefined);
-
-      const mockGetTokenDetails: GetTokenStandardAndDetailsByChain = jest
-        .fn()
-        .mockResolvedValue({
-          symbol: 'FALLBACK',
-          decimals: 12,
-        });
-
-      const result = await fetchGatorErc20TokenInfo(
-        mockAddress,
-        mockChainId,
-        true,
-        mockGetTokenDetails,
-      );
-
-      expect(result).toStrictEqual({ symbol: 'FALLBACK', decimals: 12 });
-    });
-
-    it('should parse decimal as base-10 string when returned as string', async () => {
-      mockFetchAssetMetadata.mockResolvedValue(undefined);
-
-      const mockGetTokenDetails: GetTokenStandardAndDetailsByChain = jest
-        .fn()
-        .mockResolvedValue({
-          symbol: 'TOKEN',
-          decimals: '18',
-        });
-
-      const result = await fetchGatorErc20TokenInfo(
-        mockAddress,
-        mockChainId,
-        true,
-        mockGetTokenDetails,
-      );
-
-      expect(result).toStrictEqual({ symbol: 'TOKEN', decimals: 18 });
-    });
-
-    it('should return default values when no data is available', async () => {
-      mockFetchAssetMetadata.mockResolvedValue(undefined);
-
-      const result = await fetchGatorErc20TokenInfo(
-        mockAddress,
-        mockChainId,
-        true,
-      );
-
-      expect(result).toStrictEqual({ symbol: 'Unknown Token', decimals: 18 });
-    });
-
-    it('should return default values when fallback throws error', async () => {
-      mockFetchAssetMetadata.mockResolvedValue(undefined);
-
-      const mockGetTokenDetails: GetTokenStandardAndDetailsByChain = jest
-        .fn()
-        .mockRejectedValue(new Error('Network error'));
-
-      const result = await fetchGatorErc20TokenInfo(
-        mockAddress,
-        mockChainId,
-        false,
-        mockGetTokenDetails,
-      );
-
-      expect(result).toStrictEqual({ symbol: 'Unknown Token', decimals: 18 });
-    });
+    clearTokenInfoCaches();
   });
 
   describe('getGatorErc20TokenInfo', () => {
@@ -170,8 +50,22 @@ describe('gator-permissions-utils', () => {
         true,
       );
 
-      expect(result1).toStrictEqual({ symbol: 'CACHED', decimals: 18 });
-      expect(result2).toStrictEqual({ symbol: 'CACHED', decimals: 18 });
+      expect(result1).toStrictEqual({
+        symbol: 'CACHED',
+        decimals: 18,
+        name: undefined,
+        image: 'https://example.com/image.png',
+        address: mockAddress,
+        chainId: mockChainId,
+      });
+      expect(result2).toStrictEqual({
+        symbol: 'CACHED',
+        decimals: 18,
+        name: undefined,
+        image: 'https://example.com/image.png',
+        address: mockAddress,
+        chainId: mockChainId,
+      });
       // Should only fetch once due to caching
       expect(mockFetchAssetMetadata).toHaveBeenCalledTimes(1);
     });
@@ -210,8 +104,22 @@ describe('gator-permissions-utils', () => {
         true,
       );
 
-      expect(result1).toStrictEqual({ symbol: 'ETH_TOKEN', decimals: 18 });
-      expect(result2).toStrictEqual({ symbol: 'POLY_TOKEN', decimals: 6 });
+      expect(result1).toStrictEqual({
+        symbol: 'ETH_TOKEN',
+        decimals: 18,
+        name: undefined,
+        image: 'https://example.com/image1.png',
+        address: mockAddress,
+        chainId: mockChainId,
+      });
+      expect(result2).toStrictEqual({
+        symbol: 'POLY_TOKEN',
+        decimals: 6,
+        name: undefined,
+        image: 'https://example.com/image2.png',
+        address: mockAddress,
+        chainId: mockChainId2,
+      });
       expect(mockFetchAssetMetadata).toHaveBeenCalledTimes(2);
     });
 
@@ -239,8 +147,22 @@ describe('gator-permissions-utils', () => {
         true,
       );
 
-      expect(result1).toStrictEqual({ symbol: 'CASE_TEST', decimals: 18 });
-      expect(result2).toStrictEqual({ symbol: 'CASE_TEST', decimals: 18 });
+      expect(result1).toStrictEqual({
+        symbol: 'CASE_TEST',
+        decimals: 18,
+        name: undefined,
+        image: 'https://example.com/image.png',
+        address: mockAddress.toLowerCase(),
+        chainId: mockChainId,
+      });
+      expect(result2).toStrictEqual({
+        symbol: 'CASE_TEST',
+        decimals: 18,
+        name: undefined,
+        image: 'https://example.com/image.png',
+        address: mockAddress.toLowerCase(),
+        chainId: mockChainId,
+      });
       // Should only fetch once due to case-insensitive caching
       expect(mockFetchAssetMetadata).toHaveBeenCalledTimes(1);
     });
@@ -278,9 +200,17 @@ describe('gator-permissions-utils', () => {
         promise3,
       ]);
 
-      expect(result1).toStrictEqual({ symbol: 'DEDUPED', decimals: 18 });
-      expect(result2).toStrictEqual({ symbol: 'DEDUPED', decimals: 18 });
-      expect(result3).toStrictEqual({ symbol: 'DEDUPED', decimals: 18 });
+      const expectedResult = {
+        symbol: 'DEDUPED',
+        decimals: 18,
+        name: undefined,
+        image: 'https://example.com/image.png',
+        address: mockAddress,
+        chainId: mockChainId,
+      };
+      expect(result1).toStrictEqual(expectedResult);
+      expect(result2).toStrictEqual(expectedResult);
+      expect(result3).toStrictEqual(expectedResult);
       // Should only fetch once even with multiple simultaneous calls
       expect(mockFetchAssetMetadata).toHaveBeenCalledTimes(1);
     });
@@ -297,7 +227,11 @@ describe('gator-permissions-utils', () => {
         allowExternalServices: true,
       });
 
-      expect(result).toStrictEqual({ symbol: 'ETH', decimals: 18 });
+      expect(result).toStrictEqual({
+        symbol: 'ETH',
+        decimals: 18,
+        chainId: mockChainId,
+      });
     });
 
     it('should use networkConfig nativeCurrency for native token', async () => {
@@ -308,7 +242,11 @@ describe('gator-permissions-utils', () => {
         allowExternalServices: true,
       });
 
-      expect(result).toStrictEqual({ symbol: 'MATIC', decimals: 18 });
+      expect(result).toStrictEqual({
+        symbol: 'MATIC',
+        decimals: 18,
+        chainId: mockChainId,
+      });
     });
 
     it('should fall back to CHAIN_ID_TO_CURRENCY_SYMBOL_MAP for native token', async () => {
@@ -319,7 +257,11 @@ describe('gator-permissions-utils', () => {
         allowExternalServices: true,
       });
 
-      expect(result).toStrictEqual({ symbol: 'ETH', decimals: 18 });
+      expect(result).toStrictEqual({
+        symbol: 'ETH',
+        decimals: 18,
+        chainId: mockChainId,
+      });
     });
 
     it('should fetch ERC20 token info for erc20-token permission type', async () => {
@@ -340,7 +282,14 @@ describe('gator-permissions-utils', () => {
         allowExternalServices: true,
       });
 
-      expect(result).toStrictEqual({ symbol: 'USDC', decimals: 6 });
+      expect(result).toStrictEqual({
+        symbol: 'USDC',
+        decimals: 6,
+        name: undefined,
+        image: 'https://example.com/image.png',
+        address: mockTokenAddress,
+        chainId: mockChainId,
+      });
     });
 
     it('should return Unknown Token when tokenAddress is missing', async () => {
@@ -351,7 +300,11 @@ describe('gator-permissions-utils', () => {
         allowExternalServices: true,
       });
 
-      expect(result).toStrictEqual({ symbol: 'Unknown Token', decimals: 18 });
+      expect(result).toStrictEqual({
+        symbol: 'Unknown Token',
+        decimals: 18,
+        chainId: mockChainId,
+      });
     });
 
     it('should pass getTokenStandardAndDetailsByChain to token fetcher', async () => {
@@ -373,7 +326,14 @@ describe('gator-permissions-utils', () => {
         getTokenStandardAndDetailsByChain: mockGetTokenDetails,
       });
 
-      expect(result).toStrictEqual({ symbol: 'CUSTOM', decimals: 12 });
+      expect(result).toStrictEqual({
+        symbol: 'CUSTOM',
+        decimals: 12,
+        name: undefined,
+        image: undefined,
+        address: mockTokenAddress,
+        chainId: mockChainId,
+      });
       expect(mockGetTokenDetails).toHaveBeenCalled();
     });
   });

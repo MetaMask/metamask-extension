@@ -1,4 +1,9 @@
-import { Hex } from '@metamask/utils';
+import {
+  Hex,
+  hexToNumber,
+  KnownCaipNamespace,
+  CaipChainId,
+} from '@metamask/utils';
 import log from 'loglevel';
 import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../constants/network';
 import { fetchAssetMetadata } from '../asset-utils';
@@ -9,7 +14,14 @@ import {
 } from './numbers-utils';
 
 // Token info type used across helpers
-export type GatorTokenInfo = { symbol: string; decimals: number };
+export type GatorTokenInfo = {
+  symbol: string;
+  decimals: number;
+  name?: string;
+  image?: string;
+  address?: string;
+  chainId: Hex;
+};
 
 // Type for the token details function that can be injected from UI
 export type GetTokenStandardAndDetailsByChain = (
@@ -33,23 +45,191 @@ export type GatorPermissionData = {
   [key: string]: unknown;
 };
 
+// Types for cache and imported token structures from Redux state
+export type CachedTokenData = {
+  symbol: string;
+  decimals: number;
+  name?: string;
+  iconUrl?: string;
+};
+
+export type CachedTokensByChain = {
+  [chainId: string]: {
+    data?: {
+      [address: string]: CachedTokenData;
+    };
+  };
+};
+
+export type ImportedToken = {
+  address?: string;
+  symbol: string;
+  decimals: number;
+  name?: string;
+  image?: string;
+};
+
+export type ImportedTokensByChain = {
+  [chainId: string]: {
+    [accountAddress: string]: ImportedToken[];
+  };
+};
+
+export type NetworkConfiguration = {
+  nativeCurrency?: string;
+  name?: string;
+  chainId?: string;
+};
+
+export type NetworkConfigurationsByCaipChainId = {
+  [caipChainId: string]: NetworkConfiguration;
+};
+
 // Shared promise cache to dedupe and reuse token info fetches per chainId:address
 const gatorTokenInfoPromiseCache = new Map<string, Promise<GatorTokenInfo>>();
 
 /**
- * Fetch ERC-20 token info (symbol as name, decimals) without caching.
+ * Clear all token info caches. Useful for testing.
+ */
+export function clearTokenInfoCaches(): void {
+  gatorTokenInfoPromiseCache.clear();
+}
+
+/**
+ * Resolve native token information from network configuration.
+ *
+ * @param chainId - The chain ID in hex format
+ * @param networkConfigurationsByCaipChainId - Network configurations indexed by CAIP chain ID
+ * @returns Native token info with symbol and decimals, or null if not a native token context
+ */
+export function resolveNativeTokenInfo(
+  chainId: Hex,
+  networkConfigurationsByCaipChainId?: NetworkConfigurationsByCaipChainId,
+): GatorTokenInfo {
+  const caipChainId: CaipChainId = `${KnownCaipNamespace.Eip155}:${hexToNumber(chainId)}`;
+  const networkConfig = networkConfigurationsByCaipChainId?.[caipChainId];
+
+  const nativeSymbol =
+    networkConfig?.nativeCurrency ||
+    CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
+      chainId as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
+    ] ||
+    'ETH';
+
+  return {
+    symbol: nativeSymbol,
+    decimals: 18,
+    chainId,
+  };
+}
+
+/**
+ * Look up token info from cache (tokensChainsCache) or imported tokens.
+ * Prioritizes cache over imported tokens.
+ *
+ * @param tokenAddress - The token contract address
+ * @param chainId - The chain ID in hex format
+ * @param erc20TokensByChain - Cached tokens from tokensChainsCache
+ * @param allTokens - User's imported tokens
+ * @returns Token info if found in cache or imported tokens, null otherwise
+ */
+export function lookupCachedOrImportedTokenInfo(
+  tokenAddress: string,
+  chainId: Hex,
+  erc20TokensByChain?: CachedTokensByChain,
+  allTokens?: ImportedTokensByChain,
+): GatorTokenInfo | null {
+  const normalizedAddress = tokenAddress.toLowerCase();
+
+  // Check tokensChainsCache first (API cache)
+  const cachedToken = erc20TokensByChain?.[chainId]?.data?.[normalizedAddress];
+  if (cachedToken) {
+    return {
+      symbol: cachedToken.symbol,
+      decimals: cachedToken.decimals,
+      name: cachedToken.name,
+      image: cachedToken.iconUrl,
+      address: tokenAddress,
+      chainId,
+    };
+  }
+
+  // Check user's imported tokens
+  const importedTokens = allTokens?.[chainId];
+  if (importedTokens) {
+    // allTokens structure: { [chainId]: { [address]: Token[] } }
+    for (const accountTokens of Object.values(importedTokens)) {
+      if (Array.isArray(accountTokens)) {
+        const foundToken = accountTokens.find(
+          (token) => token.address?.toLowerCase() === normalizedAddress,
+        );
+        if (foundToken) {
+          return {
+            symbol: foundToken.symbol,
+            decimals: foundToken.decimals,
+            name: foundToken.name,
+            image: foundToken.image,
+            address: tokenAddress,
+            chainId,
+          };
+        }
+      }
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Parse decimals from various formats (number, decimal string, hex string).
+ *
+ * @param decRaw - The raw decimals value
+ * @returns Parsed decimals as a number, or undefined if invalid
+ */
+function parseDecimals(
+  decRaw: string | number | undefined,
+): number | undefined {
+  if (typeof decRaw === 'number') {
+    return decRaw;
+  }
+
+  if (typeof decRaw === 'string') {
+    const trimmed = decRaw.trim();
+
+    try {
+      // Use hexToNumber for hex strings (handles 0x prefix automatically)
+      if (trimmed.startsWith('0x') || trimmed.startsWith('0X')) {
+        const parsed = hexToNumber(trimmed as Hex);
+        return Number.isFinite(parsed) && parsed >= 0 ? parsed : undefined;
+      }
+
+      // Parse as decimal for non-hex strings
+      const parsed = parseInt(trimmed, 10);
+      return Number.isFinite(parsed) && parsed >= 0 ? parsed : undefined;
+    } catch {
+      // hexToNumber throws for invalid hex strings
+      return undefined;
+    }
+  }
+
+  return undefined;
+}
+
+/**
+ * Fetch ERC-20 token info with extended metadata (symbol, decimals, name, image) without caching.
  *
  * Behavior:
  * - If external services are enabled, attempts the MetaMask token metadata API first.
  * - If missing data or disabled, falls back to background on-chain details by chain.
- * - Returns a best-effort `{ name, decimals }` (defaults: name='Unknown Token', decimals=18).
+ * - Returns extended info including image from API when available.
  *
- * @param address
- * @param chainId
- * @param allowExternalServices
- * @param getTokenStandardAndDetailsByChain
+ * @param address - Token contract address
+ * @param chainId - Chain ID in hex format
+ * @param allowExternalServices - Whether to use external API services
+ * @param getTokenStandardAndDetailsByChain - Optional function to fetch on-chain token details
+ * @returns Extended token info with defaults: symbol='Unknown Token', decimals=18
  */
-export async function fetchGatorErc20TokenInfo(
+async function fetchGatorErc20TokenInfo(
   address: string,
   chainId: Hex,
   allowExternalServices: boolean,
@@ -57,13 +237,29 @@ export async function fetchGatorErc20TokenInfo(
 ): Promise<GatorTokenInfo> {
   let symbol: string | undefined;
   let decimals: number | undefined;
+  let name: string | undefined;
+  let image: string | undefined;
 
+  // Tier 1: Try API if external services are allowed
   if (allowExternalServices) {
-    const metadata = await fetchAssetMetadata(address, chainId);
-    symbol = metadata?.symbol;
-    decimals = metadata?.decimals;
+    try {
+      const metadata = await fetchAssetMetadata(address, chainId);
+      if (metadata) {
+        symbol = metadata.symbol;
+        decimals = metadata.decimals;
+        // Note: fetchAssetMetadata returns 'address' and 'image', not 'name'
+        image = metadata.image;
+      }
+    } catch (error) {
+      log.warn('Failed to fetch token metadata from API', {
+        address,
+        chainId,
+        error: error instanceof Error ? error.message : String(error),
+      });
+    }
   }
 
+  // Tier 2: Fall back to on-chain data if needed
   if (!symbol || decimals === null || decimals === undefined) {
     if (getTokenStandardAndDetailsByChain) {
       try {
@@ -73,27 +269,10 @@ export async function fetchGatorErc20TokenInfo(
           undefined,
           chainId,
         );
-        const decRaw = details?.decimals as string | number | undefined;
-        if (typeof decRaw === 'number') {
-          decimals = decRaw;
-        } else if (typeof decRaw === 'string') {
-          // Handle hex strings (with 0x prefix) or decimal strings
-          const trimmed = decRaw.trim();
-          let parsed: number;
 
-          if (trimmed.startsWith('0x') || trimmed.startsWith('0X')) {
-            // Parse as hex (strip the 0x prefix)
-            parsed = parseInt(trimmed.slice(2), 16);
-          } else {
-            // Parse as decimal
-            parsed = parseInt(trimmed, 10);
-          }
-
-          // Only accept valid, finite, non-negative integers
-          if (Number.isFinite(parsed) && parsed >= 0) {
-            decimals = parsed;
-          }
-        }
+        decimals =
+          parseDecimals(details?.decimals as string | number | undefined) ??
+          decimals;
         symbol = details?.symbol ?? symbol;
       } catch (error) {
         log.error('Failed to fetch token details from blockchain', {
@@ -101,7 +280,6 @@ export async function fetchGatorErc20TokenInfo(
           chainId,
           error: error instanceof Error ? error.message : String(error),
         });
-        // ignore and keep fallbacks
       }
     }
   }
@@ -109,7 +287,11 @@ export async function fetchGatorErc20TokenInfo(
   return {
     symbol: symbol || 'Unknown Token',
     decimals: decimals ?? 18,
-  } as const;
+    name,
+    image,
+    address,
+    chainId,
+  };
 }
 
 /**
@@ -121,10 +303,11 @@ export async function fetchGatorErc20TokenInfo(
  * - If a request for the same key is in-flight, returns the same promise.
  * - Otherwise, calls `fetchGatorErc20TokenInfo` and caches the result.
  *
- * @param address
- * @param chainId
- * @param allowExternalServices
- * @param getTokenStandardAndDetailsByChain
+ * @param address - Token contract address
+ * @param chainId - Chain ID in hex format
+ * @param allowExternalServices - Whether to use external API services
+ * @param getTokenStandardAndDetailsByChain - Optional function to fetch on-chain token details
+ * @returns Basic token info with symbol and decimals
  */
 export async function getGatorErc20TokenInfo(
   address: string,
@@ -185,12 +368,12 @@ export async function getGatorPermissionTokenInfo(params: {
         chainId as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
       ] ||
       'ETH';
-    return { symbol: nativeSymbol, decimals: 18 };
+    return { symbol: nativeSymbol, decimals: 18, chainId: chainId as Hex };
   }
 
   const tokenAddress = permissionData?.tokenAddress;
   if (!tokenAddress) {
-    return { symbol: 'Unknown Token', decimals: 18 };
+    return { symbol: 'Unknown Token', decimals: 18, chainId: chainId as Hex };
   }
   return await getGatorErc20TokenInfo(
     tokenAddress,
