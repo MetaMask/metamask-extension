@@ -1410,6 +1410,23 @@
         "@metamask/keyring-controller>ulid": true
       }
     },
+    "@metamask/profile-metrics-controller>@metamask/keyring-controller": {
+      "globals": {
+        "console.error": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/base-controller": true,
+        "@metamask/keyring-controller>@metamask/eth-hd-keyring": true,
+        "@metamask/eth-sig-util": true,
+        "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
+        "@metamask/utils": true,
+        "@metamask/eth-qr-keyring>async-mutex": true,
+        "@metamask/keyring-controller>ethereumjs-wallet": true,
+        "lodash": true,
+        "@metamask/keyring-controller>ulid": true
+      }
+    },
     "@metamask/keyring-internal-api": {
       "packages": {
         "@metamask/keyring-api": true,
@@ -1758,6 +1775,7 @@
       "packages": {
         "@metamask/controller-utils": true,
         "@metamask/profile-metrics-controller>@metamask/polling-controller": true,
+        "@metamask/profile-metrics-controller>@metamask/profile-sync-controller": true,
         "@metamask/eth-qr-keyring>async-mutex": true
       }
     },
@@ -1780,6 +1798,31 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/keyring-controller": true,
+        "@noble/ciphers": true,
+        "@noble/hashes": true,
+        "browserify>buffer": true,
+        "@metamask/profile-sync-controller>siwe": true
+      }
+    },
+    "@metamask/profile-metrics-controller>@metamask/profile-sync-controller": {
+      "globals": {
+        "Event": true,
+        "Headers": true,
+        "TextDecoder": true,
+        "TextEncoder": true,
+        "URL": true,
+        "URLSearchParams": true,
+        "addEventListener": true,
+        "console.error": true,
+        "console.warn": true,
+        "dispatchEvent": true,
+        "fetch": true,
+        "removeEventListener": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/profile-metrics-controller>@metamask/keyring-controller": true,
         "@noble/ciphers": true,
         "@noble/hashes": true,
         "browserify>buffer": true,
