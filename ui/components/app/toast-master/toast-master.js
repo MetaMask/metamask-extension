@@ -38,10 +38,7 @@ import {
   getUseNftDetection,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import {
   addPermittedAccount,
@@ -766,15 +763,19 @@ function Pna25Banner() {
 
   const showPna25Banner = useSelector(selectShowPna25Banner);
 
+  useEffect(() => {
+    if (showPna25Banner) {
+      trackEvent({
+        event: MetaMetricsEventName.ToastDisplayed,
+        properties: {
+          toast_name: 'pna25',
+          closed: false,
+        },
+      });
+    }
+  }, [showPna25Banner, trackEvent]);
+
   const handleLearnMore = () => {
-    trackEvent({
-      event: MetaMetricsEventName.DappViewed,
-      category: MetaMetricsEventCategory.Banner,
-      properties: {
-        toast_name: 'pna25',
-        closed: false,
-      },
-    });
     // Open MetaMetrics settings help page and acknowledge
     global.platform.openTab({
       url: METAMETRICS_SETTINGS_LINK,
@@ -784,7 +785,6 @@ function Pna25Banner() {
   const handleClose = () => {
     trackEvent({
       event: MetaMetricsEventName.ToastDisplayed,
-      category: MetaMetricsEventCategory.Banner,
       properties: {
         toast_name: 'pna25',
         closed: true,
