@@ -3,14 +3,12 @@ import {
   type BridgeController,
   BridgeUserAction,
   formatChainIdToCaip,
-  isNativeAddress,
   type RequiredEventContextFromClient,
   UnifiedSwapBridgeEventName,
   formatChainIdToHex,
   isCrossChain,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
-import { trace, TraceName } from '../../../shared/lib/trace';
 import { selectDefaultNetworkClientIdsByChainId } from '../../../shared/modules/selectors/networks';
 import {
   forceUpdateMetamaskState,
@@ -117,14 +115,6 @@ export const setEVMSrcTokenBalance = (
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
     if (token) {
-      trace({
-        name: TraceName.BridgeBalancesUpdated,
-        data: {
-          srcChainId: formatChainIdToCaip(token.chainId),
-          isNative: isNativeAddress(token.address),
-        },
-        startTime: Date.now(),
-      });
       await dispatch(
         setEVMSrcTokenBalance_({
           selectedAddress,

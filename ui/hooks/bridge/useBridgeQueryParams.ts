@@ -17,7 +17,6 @@ import {
 } from '../../../shared/lib/asset-utils';
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
-import { trace, TraceName } from '../../../shared/lib/trace';
 import {
   setEVMSrcTokenBalance,
   setEVMSrcNativeBalance,
@@ -273,23 +272,7 @@ export const useBridgeQueryParams = () => {
       !isCrossChain(fromToken.chainId, fromChain?.chainId) &&
       selectedAccount
     ) {
-      trace({
-        name: TraceName.BridgeBalancesUpdated,
-        data: {
-          srcChainId: formatChainIdToCaip(fromToken.chainId),
-          isNative: isNativeAddress(fromToken.address),
-        },
-        startTime: Date.now(),
-      });
       dispatch(setEVMSrcTokenBalance(fromToken, selectedAccount.address));
-      trace({
-        name: TraceName.BridgeBalancesUpdated,
-        data: {
-          srcChainId: formatChainIdToCaip(fromToken.chainId),
-          isNative: true,
-        },
-        startTime: Date.now(),
-      });
       dispatch(
         setEVMSrcNativeBalance({
           selectedAddress: selectedAccount.address,
