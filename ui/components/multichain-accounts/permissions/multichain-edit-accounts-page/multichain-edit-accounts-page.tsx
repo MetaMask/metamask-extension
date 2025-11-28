@@ -35,7 +35,7 @@ type MultichainEditAccountsPageProps = {
   supportedAccountGroups: AccountGroupWithInternalAccounts[];
   onSubmit: (accountGroups: AccountGroupId[]) => void;
   onClose: () => void;
-  isSnapsPermissionsRequest: boolean;
+  isSnapsPermissionsRequest?: boolean;
 };
 
 export const MultichainEditAccountsPage: React.FC<
