@@ -14,6 +14,13 @@ class TransactionDetailsPage {
     };
   };
 
+  private readonly transactionGasPrice = (gasPrice: string) => {
+    return {
+      testId: 'transaction-breakdown__gas-price',
+      text: gasPrice,
+    };
+  };
+
   private readonly transactionHashLink = (txHash: string) => {
     return {
       tag: 'a',
@@ -29,6 +36,10 @@ class TransactionDetailsPage {
     text: `Status`,
     tag: 'span',
   };
+
+  async checkTransactionGasPrice(gasPrice: string): Promise<void> {
+    await this.driver.waitForSelector(this.transactionGasPrice(gasPrice));
+  }
 
   async checkTransactionStatus(status: string): Promise<void> {
     await this.driver.waitForSelector({
