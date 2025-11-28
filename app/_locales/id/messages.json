@@ -4991,9 +4991,6 @@
   "recipientEditAriaLabel": {
     "message": "Edit penerima"
   },
-  "recipientPlaceholder": {
-    "message": "Masukkan atau tempel alamat yang valid"
-  },
   "recoveryPhraseReminderBackupStart": {
     "message": "Cadangkan sekarang"
   },

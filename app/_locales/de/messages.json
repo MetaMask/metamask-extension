@@ -4991,9 +4991,6 @@
   "recipientEditAriaLabel": {
     "message": "Empfänger bearbeiten"
   },
-  "recipientPlaceholder": {
-    "message": "Gültige Adresse eingeben oder einfügen"
-  },
   "recoveryPhraseReminderBackupStart": {
     "message": "Jetzt sichern"
   },
