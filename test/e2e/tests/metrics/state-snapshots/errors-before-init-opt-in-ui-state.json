@@ -239,6 +239,7 @@
       "watchEthereumAccountEnabled": "boolean"
     },
     "ProfileMetricsController": "object",
+    "ProfileMetricsService": "undefined",
     "RemoteFeatureFlagController": {
       "cacheTimestamp": "number",
       "remoteFeatureFlags": {

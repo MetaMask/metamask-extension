@@ -780,7 +780,6 @@ export default class MetamaskController extends EventEmitter {
     this.claimsController = controllersByName.ClaimsController;
     this.claimsService = controllersByName.ClaimsService;
     this.profileMetricsController = controllersByName.ProfileMetricsController;
-    this.profileMetricsService = controllersByName.ProfileMetricsService;
     this.backup = new Backup({
       preferencesController: this.preferencesController,
       addressBookController: this.addressBookController,
@@ -1279,9 +1278,9 @@ export default class MetamaskController extends EventEmitter {
         ShieldController: this.shieldController,
         ClaimsController: this.claimsController,
         ClaimsService: this.claimsService,
+        ProfileMetricsController: this.profileMetricsController,
         ...resetOnRestartStore,
         ...controllerMemState,
-        ProfileMetricsController: this.profileMetricsController,
       },
       controllerMessenger: this.controllerMessenger,
     });
