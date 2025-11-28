@@ -69,7 +69,6 @@ export function useGatorPermissionTokenInfo(
   chainId: Hex | undefined,
   permissionType?: string,
 ): UseGatorPermissionTokenInfoResult {
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [fetchedTokenInfo, setFetchedTokenInfo] = useState<{
     tokenInfo: GatorTokenInfo;
@@ -145,6 +144,9 @@ export function useGatorPermissionTokenInfo(
     };
   }, [tokenAddress, chainId, erc20TokensByChain, allTokens, isNativeToken]);
 
+  // Track if we're actively fetching token info (for async operations)
+  const [isFetching, setIsFetching] = useState(false);
+
   // Tier 2 & 3: Fetch using API and on-chain fallback if not in cache/imported (only for ERC-20 tokens)
   useEffect(() => {
     let cancelled = false;
@@ -153,7 +155,7 @@ export function useGatorPermissionTokenInfo(
       // If this is a native token, no need to fetch
       if (isNativeToken) {
         setFetchedTokenInfo(null);
-        setLoading(false);
+        setIsFetching(false);
         setError(null);
         return;
       }
@@ -161,18 +163,18 @@ export function useGatorPermissionTokenInfo(
       // If we found it in cache or imported tokens, no need to fetch
       if (cachedOrImportedTokenInfo) {
         setFetchedTokenInfo(null);
-        setLoading(false);
+        setIsFetching(false);
         setError(null);
         return;
       }
 
       if (!tokenAddress || !chainId) {
-        setLoading(false);
+        setIsFetching(false);
         return;
       }
 
       try {
-        setLoading(true);
+        setIsFetching(true);
         setError(null);
 
         // Fetch token info with API and on-chain fallback using shared utility
@@ -197,7 +199,7 @@ export function useGatorPermissionTokenInfo(
         }
       } finally {
         if (!cancelled) {
-          setLoading(false);
+          setIsFetching(false);
         }
       }
     };
@@ -214,6 +216,17 @@ export function useGatorPermissionTokenInfo(
     allowExternalServices,
     isNativeToken,
   ]);
+
+  // Compute loading state: false if we have immediate data, otherwise based on fetch state
+  // This prevents UI flicker for native and cached/imported tokens
+  const loading = useMemo(() => {
+    // If we have immediate data (native or cached/imported), we're not loading
+    if (nativeTokenInfo !== null || cachedOrImportedTokenInfo !== null) {
+      return false;
+    }
+    // Otherwise, loading state depends on whether we're fetching
+    return isFetching;
+  }, [nativeTokenInfo, cachedOrImportedTokenInfo, isFetching]);
 
   // Determine the final token info and source
   const result = useMemo(() => {
