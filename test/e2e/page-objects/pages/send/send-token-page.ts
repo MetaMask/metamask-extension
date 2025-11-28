@@ -242,7 +242,7 @@ class SendTokenPage {
   async getHexInputValue(): Promise<string> {
     console.log('Getting value from hex input');
     const hexInputElement = await this.driver.waitForSelector(this.hexInput);
-    await this.driver.waitForNonEmptyElement(hexInputElement);
+    this.driver.waitForNonEmptyElement(hexInputElement);
     const value = await hexInputElement.getAttribute('value');
     console.log(`Hex input value: ${value}`);
     return value;

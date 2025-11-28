@@ -24,17 +24,17 @@ class ConfirmAlertModal {
   }
 
   async rejectFromAlertModal() {
-    await this.driver.clickElement(this.alertModalCancelButton);
+    this.driver.clickElement(this.alertModalCancelButton);
   }
 
   async confirmFromAlertModal() {
-    await this.driver.clickElement(this.alertModalAcknowledgeCheckBox);
-    await this.driver.clickElement(this.alertModalSubmitButton);
+    this.driver.clickElement(this.alertModalAcknowledgeCheckBox);
+    this.driver.clickElement(this.alertModalSubmitButton);
   }
 
   async acknowledgeAlert() {
-    await this.driver.clickElement(this.alertModalAcknowledgeCheckBox);
-    await this.driver.clickElement(this.alertModalButton);
+    this.driver.clickElement(this.alertModalAcknowledgeCheckBox);
+    this.driver.clickElement(this.alertModalButton);
   }
 
   async verifyNetworkDisplay(networkName: string): Promise<void> {
