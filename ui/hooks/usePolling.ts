@@ -16,6 +16,9 @@ const usePolling = <PollingInput>(
   const cleanupRef = useRef<null | ((pollingToken: string) => void)>(null);
   const pollingInput = useSyncEqualityCheck(usePollingOptions.input);
 
+  // Track effect call generation to handle race conditions with pending promises
+  const callIdRef = useRef(0);
+
   const isMounted = useRef(true);
   useEffect(() => {
     isMounted.current = true;
@@ -30,6 +33,8 @@ const usePolling = <PollingInput>(
         // noop
       };
     }
+    callIdRef.current += 1;
+    const currentCallId = callIdRef.current;
 
     const cleanup = () => {
       if (pollTokenRef.current) {
@@ -42,6 +47,13 @@ const usePolling = <PollingInput>(
 
     // Start polling when the component mounts
     usePollingOptions.startPolling(pollingInput).then((pollToken) => {
+      // Check if this is still the current call (handles race conditions)
+      if (currentCallId !== callIdRef.current) {
+        // Stale call - stop the poll immediately to prevent orphaned tokens
+        usePollingOptions.stopPollingByPollingToken(pollToken);
+        return;
+      }
+
       pollTokenRef.current = pollToken;
       cleanupRef.current = usePollingOptions.callback?.(pollToken) ?? null;
       if (!isMounted.current) {
