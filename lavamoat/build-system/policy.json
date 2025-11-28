@@ -2956,8 +2956,21 @@
       }
     },
     "eslint-plugin-react-hooks": {
+      "builtin": {
+        "crypto.createHmac": true,
+        "util.isDeepStrictEqual": true
+      },
       "globals": {
-        "process.env.NODE_ENV": true
+        "console": true,
+        "performance.mark": true,
+        "performance.measure": true,
+        "process": true
+      },
+      "packages": {
+        "@babel/core": true,
+        "@babel/core>@babel/parser": true,
+        "eslint-plugin-react-hooks>zod-validation-error": true,
+        "eslint-plugin-react-hooks>zod": true
       }
     },
     "eslint>eslint-scope": {
@@ -8899,6 +8912,22 @@
       },
       "packages": {
         "gulp-zip>yazl>buffer-crc32": true
+      }
+    },
+    "eslint-plugin-react-hooks>zod-validation-error": {
+      "packages": {
+        "eslint-plugin-react-hooks>zod": true
+      }
+    },
+    "eslint-plugin-react-hooks>zod": {
+      "globals": {
+        "File": true,
+        "URL": true,
+        "__zod_globalRegistry": true,
+        "atob": true,
+        "btoa": true,
+        "console.warn": true,
+        "navigator": true
       }
     }
   }
