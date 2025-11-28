@@ -23,15 +23,20 @@ Instructions for AI coding agents working on MetaMask Browser Extension.
 5. **NEVER use class components** (use functional components with hooks)
 6. **NEVER modify git config** or run destructive git operations
 7. **NEVER commit** unless explicitly requested by user
-8. **NEVER create inline functions/objects in JSX** (especially in lists)
-9. **NEVER use array index as key** in dynamic lists (use unique IDs)
+8. **NEVER stage changes** unless explicitly requested by user
+9. **NEVER create inline functions/objects in JSX** (especially in lists)
+10. **NEVER use array index as key** in dynamic lists (use unique IDs)
 
 ### Comprehensive Guidelines Location
 
 Read these files for detailed coding standards:
 - Controller patterns: `.cursor/rules/controller-guidelines.mdc`
 - Testing standards: `.cursor/rules/unit-testing-guidelines.mdc`
-- React performance: `.cursor/rules/react-performance-guidelines.mdc`
+- Front-end performance:
+  - `.cursor/rules/front-end-performance-rendering.mdc` (rendering performance - start here)
+  - `.cursor/rules/front-end-performance-hooks-effects.mdc` (hooks & effects)
+  - `.cursor/rules/front-end-performance-react-compiler.mdc` (React Compiler & anti-patterns)
+  - `.cursor/rules/front-end-performance-state-management.mdc` (Redux & state management)
 - PR workflow: `.cursor/rules/pull-request-guidelines.mdc`
 - Code style: `.cursor/rules/coding-guidelines.mdc`
 - Official guidelines: `.github/guidelines/CODING_GUIDELINES.md`
@@ -364,6 +369,173 @@ yarn test:unit app/scripts/controllers/your-controller/your-controller.test.ts
 yarn lint:changed:fix
 ```
 
+### Controller Development Patterns
+
+When creating a controller, follow these critical patterns from `.cursor/rules/controller-guidelines.mdc`:
+
+#### State Metadata Requirements
+
+**Every state property MUST have metadata with these properties:**
+
+| Property | Type | Purpose | Example Value |
+|----------|------|---------|---------------|
+| `anonymous` OR `includeInDebugSnapshot` | boolean | Safe for Sentry? (no PII) | `anonymous: true` |
+| `includeInStateLogs` | boolean | Include in state logs? | `false` for sensitive data |
+| `persist` | boolean | Save to storage? | `true` for user data |
+| `usedInUi` | boolean | Used by UI? | `true` if rendered |
+
+**Example:**
+```typescript
+const tokensControllerMetadata = {
+  tokens: {
+    anonymous: true,           // No PII, safe for Sentry
+    includeInStateLogs: true,  // Safe to include in logs
+    persist: true,             // Should be saved
+    usedInUi: true,           // Rendered in UI
+  },
+  apiKey: {
+    anonymous: false,          // Sensitive
+    includeInStateLogs: false, // Must exclude from logs
+    persist: true,             // But should be saved
+    usedInUi: false,          // Backend only
+  },
+};
+```
+
+#### Default State Function Pattern
+
+**ALWAYS export function, NEVER export object:**
+
+```typescript
+✅ CORRECT: Returns new object each time
+export function getDefaultTokensControllerState(): TokensControllerState {
+  return {
+    tokens: [],
+    lastUpdated: 0,
+  };
+}
+
+❌ WRONG: Shared object reference (mutation risk)
+export const defaultTokensControllerState = {
+  tokens: [],
+  lastUpdated: 0,
+};
+```
+
+#### Constructor Single Options Bag
+
+**ALWAYS use single options object, NO positional arguments:**
+
+```typescript
+✅ CORRECT:
+constructor({
+  messenger,
+  state = {},
+  apiKey,        // All options in one bag
+  isEnabled,
+}: TokensControllerOptions) {
+  super({
+    name: 'TokensController',
+    metadata: tokensControllerMetadata,
+    messenger,
+    state: { ...getDefaultTokensControllerState(), ...state },
+  });
+}
+
+❌ WRONG:
+constructor(
+  options: ControllerOptions,
+  apiKey: string,     // Separate positional arg - BAD
+  isEnabled: boolean, // Separate positional arg - BAD
+) { }
+```
+
+#### Action Methods (Not Setters)
+
+**Model high-level user actions, not property changes:**
+
+```typescript
+❌ WRONG: Generic setters
+setTokenData(data: any) { }
+updateField(field: string, value: any) { }
+
+✅ CORRECT: Action-based methods
+addToken(token: Token) {
+  if (!token.address) {
+    throw new Error('Token address required');
+  }
+
+  this.update((state) => {
+    state.tokens.push(token);
+    state.lastUpdated = Date.now();
+  });
+}
+
+removeToken(address: string) {
+  this.update((state) => {
+    state.tokens = state.tokens.filter(t => t.address !== address);
+    state.lastUpdated = Date.now();
+  });
+}
+```
+
+#### Keep State Minimal - Use Selectors
+
+**NEVER store derived values in state:**
+
+```typescript
+❌ WRONG: Derived values in state
+type State = {
+  tokens: Token[];
+  tokenCount: number;  // DON'T STORE - derive it!
+  hasTokens: boolean;  // DON'T STORE - derive it!
+};
+
+✅ CORRECT: Minimal state + selectors
+type State = {
+  tokens: Token[];  // Only essential data
+};
+
+// Export selectors for derived values
+export const tokensControllerSelectors = {
+  selectTokens: (state: State) => state.tokens,
+  selectTokenCount: (state: State) => state.tokens.length,
+  selectHasTokens: (state: State) => state.tokens.length > 0,
+};
+```
+
+#### Cleanup with destroy()
+
+**Implement if controller has background tasks:**
+
+```typescript
+class TokensController extends BaseController</*...*/> {
+  #pollInterval: NodeJS.Timeout | null = null;
+
+  constructor(options: Options) {
+    super(/* ... */);
+    if (options.enablePolling) {
+      this.#startPolling();
+    }
+  }
+
+  destroy() {
+    // Clean up resources
+    if (this.#pollInterval) {
+      clearInterval(this.#pollInterval);
+      this.#pollInterval = null;
+    }
+
+    // Call super to clean up messenger
+    super.destroy();
+  }
+}
+```
+
+**See `.cursor/rules/controller-guidelines.mdc` for complete patterns with detailed examples.**
+
+---
+
 ### Decision: Which Test Build to Use?
 
 ```
@@ -498,7 +670,7 @@ metamask-extension/
 - No inline functions/objects in JSX (especially in lists)
 - Unique IDs as keys (not array index for dynamic lists)
 - Organized in component folders with tests, styles, and types
-- See `.cursor/rules/coding-guidelines.mdc` and `.cursor/rules/react-performance-guidelines.mdc`
+- See `.cursor/rules/coding-guidelines.mdc` and `.cursor/rules/front-end-performance-rendering.mdc`
 
 **Testing**:
 - Unit tests colocated with source files (`.test.ts`)
@@ -868,18 +1040,50 @@ function transformData(state: any): void {
 
 ### Creating a PR
 
-**Write a Comprehensive Description:**
-- **Context:** What's the background?
-- **Problem:** What needs to be fixed/added?
-- **Solution:** How do your changes address it?
-- **Screenshots/Videos:** For UI changes
+**Reference:** Follow the [PR template](https://github.com/MetaMask/metamask-extension/blob/main/.github/pull-request-template.md) when creating pull requests.
 
 **PR Title Format:**
 - Clear and descriptive
 - Will be used in squash commit message
 - Example: "Add token validation for custom networks"
 
-**Add PR Comments:**
+**Description Section:**
+- **Context:** What's the background?
+- **Problem:** What needs to be fixed/added?
+- **Solution:** How do your changes address it?
+- Answer: "What is the reason for the change?" and "What is the improvement/solution?"
+
+**Changelog Entry:**
+- If End-User-Facing: Write a short user-facing description in past tense
+  - Example: `CHANGELOG entry: Added a new tab for users to see their NFTs`
+  - Example: `CHANGELOG entry: Fixed a bug that was causing some NFTs to flicker`
+- If not End-User-Facing: Write `CHANGELOG entry: null` or label with `no-changelog`
+
+**Related Issues:**
+- List all related issues using `Fixes: #issue-number` format
+- Link to related PRs if applicable
+
+**Manual Testing Steps:**
+- Provide numbered steps to test the changes
+- Include specific pages/features to test
+- Example:
+  1. Go to this page...
+  2. Click this button...
+  3. Verify this behavior...
+
+**Screenshots/Recordings:**
+- **Before:** Screenshots/videos showing the previous state (for UI changes)
+- **After:** Screenshots/videos showing the new state (for UI changes)
+- Required for all UI changes
+
+**Pre-merge Author Checklist:**
+- [ ] Followed [MetaMask Contributor Docs](https://github.com/MetaMask/contributor-docs) and [MetaMask Extension Coding Standards](https://github.com/MetaMask/metamask-extension/blob/main/.github/guidelines/CODING_GUIDELINES.md)
+- [ ] Completed the PR template to the best of ability
+- [ ] Included tests if applicable
+- [ ] Documented code using [JSDoc](https://jsdoc.app/) format if applicable
+- [ ] Applied the right labels on the PR (see [labeling guidelines](https://github.com/MetaMask/metamask-extension/blob/main/.github/guidelines/LABELING_GUIDELINES.md))
+
+**Additional PR Comments:**
 - Call out non-obvious changes
 - Explain complex logic inline
 - Link to related issues/PRs
@@ -1010,7 +1214,11 @@ useEffect(() => {
 
 **Detailed Guidelines:**
 - General coding: `.cursor/rules/coding-guidelines.mdc`
-- Performance optimization: `.cursor/rules/react-performance-guidelines.mdc`
+- Performance optimization:
+  - `.cursor/rules/front-end-performance-rendering.mdc` (rendering performance)
+  - `.cursor/rules/front-end-performance-hooks-effects.mdc` (hooks & effects)
+  - `.cursor/rules/front-end-performance-react-compiler.mdc` (React Compiler & anti-patterns)
+  - `.cursor/rules/front-end-performance-state-management.mdc` (Redux & state management)
 
 ---
 
@@ -1148,7 +1356,11 @@ Before marking a component complete:
 
 **Rule of thumb:** Profile first with React DevTools, then optimize what matters.
 
-**See:** `.cursor/rules/react-performance-guidelines.mdc` for complete guide with 50+ examples.
+**See:**
+- `.cursor/rules/front-end-performance-rendering.mdc` - Rendering performance (keys, memoization, virtualization)
+- `.cursor/rules/front-end-performance-hooks-effects.mdc` - Hooks & effects optimization
+- `.cursor/rules/front-end-performance-react-compiler.mdc` - React Compiler considerations & anti-patterns
+- `.cursor/rules/front-end-performance-state-management.mdc` - Redux & state management optimization
 
 ---
 
@@ -1409,7 +1621,11 @@ Performance Checks (React Components):
 
 - **Controller Patterns:** [.cursor/rules/controller-guidelines.mdc](./.cursor/rules/controller-guidelines.mdc)
 - **Unit Testing:** [.cursor/rules/unit-testing-guidelines.mdc](./.cursor/rules/unit-testing-guidelines.mdc)
-- **React Performance:** [.cursor/rules/react-performance-guidelines.mdc](./.cursor/rules/react-performance-guidelines.mdc)
+- **Front-End Performance:**
+  - [Rendering Performance](.cursor/rules/front-end-performance-rendering.mdc) - Start here (keys, memoization, virtualization)
+  - [Hooks & Effects](.cursor/rules/front-end-performance-hooks-effects.mdc) - useEffect best practices
+  - [React Compiler & Anti-Patterns](.cursor/rules/front-end-performance-react-compiler.mdc) - React Compiler considerations
+  - [State Management](.cursor/rules/front-end-performance-state-management.mdc) - Redux optimization
 - **Pull Requests:** [.cursor/rules/pull-request-guidelines.mdc](./.cursor/rules/pull-request-guidelines.mdc)
 - **General Coding:** [.cursor/rules/coding-guidelines.mdc](./.cursor/rules/coding-guidelines.mdc)
 - **Official Guidelines:** [.github/guidelines/CODING_GUIDELINES.md](./.github/guidelines/CODING_GUIDELINES.md)

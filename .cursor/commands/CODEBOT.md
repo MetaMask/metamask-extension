@@ -13,6 +13,13 @@ Automated code quality enforcement that analyzes only the changes in your curren
 3. **Applies relevant rules** from cursor guidelines
 4. **Reports violations** with severity levels and fix suggestions
 5. **Provides actionable feedback** for PR readiness
+6. **Optional Deep Mode:** Performs exhaustive checks against all detailed guidelines when requested
+
+## Arguments
+
+| Argument | Description |
+|----------|-------------|
+| `--deep` | **Deep Analysis Mode:** Reads full rule files, checks architectural patterns, treats "Medium" issues as "High", and verifies edge cases. |
 
 ## Execution Steps
 
@@ -40,56 +47,72 @@ For each changed file, determine its type:
 
 ### Step 3: Load Applicable Guidelines
 
-For each file type, reference these cursor rules:
+For each file type, reference these cursor rules.
+
+**If `--deep` argument is present:** You MUST use `read_file` to fetch the full content of the relevant rule files below. Do not rely solely on the checklists.
 
 - **All files**: `.cursor/rules/coding-guidelines.mdc`
 - **Test files**: `.cursor/rules/unit-testing-guidelines.mdc`
 - **Controller files**: `.cursor/rules/controller-guidelines.mdc`
-- **Redux files**: `.cursor/rules/redux-guidelines.mdc`
-- **Components**: React guidelines from `.cursor/rules/coding-guidelines.mdc` + `.cursor/rules/react-performance-guidelines.mdc`
+- **Redux files**: `.cursor/rules/front-end-performance-state-management.mdc`
+- **Components**:
+  - `.cursor/rules/coding-guidelines.mdc` (general React patterns)
+  - `.cursor/rules/front-end-performance-rendering.mdc` (rendering performance - keys, memoization, virtualization)
+  - `.cursor/rules/front-end-performance-hooks-effects.mdc` (hooks & effects)
+  - `.cursor/rules/front-end-performance-react-compiler.mdc` (React Compiler considerations)
 
 ### Step 4: Analyze Each Changed File
 
-For each file, check for violations across severity levels:
+For each file, check for violations across severity levels. **Reference `.cursor/rules/` files for comprehensive guidelines and examples.**
+
+**Deep Mode Instructions:**
+If running with `--deep`:
+1. Check for architectural consistency (does this file match the patterns of surrounding files?).
+2. Verify "Medium" priority checks as if they were "High".
+3. Explicitly verify all naming conventions and type definitions.
+4. Check for edge cases mentioned in the full rule files.
 
 #### 🔴 CRITICAL (FAIL - Blocks Merge)
 
-**Test Files:**
-- [ ] No "should" in test names
-- [ ] AAA pattern (Arrange, Act, Assert) followed
+**Test Files** → See `.cursor/rules/unit-testing-guidelines.mdc` for details:
+- [ ] No "should" in test names (present tense only)
+- [ ] AAA pattern (Arrange, Act, Assert) with clear separation
 - [ ] Each test has one clear purpose
 - [ ] No `any` types
-- [ ] External dependencies mocked
-- [ ] Jest mocks used (not Sinon)
+- [ ] External dependencies mocked (Jest mocks, not Sinon)
+- [ ] async/await used (not done() callbacks)
 
-**Controller Files:**
+**Controller Files** → See `.cursor/rules/controller-guidelines.mdc` for details:
 - [ ] Extends `BaseController`
-- [ ] Exports `getDefault${ControllerName}State`
-- [ ] State metadata defined (persist, anonymous, usedInUi)
-- [ ] All state updates use `this.update()`
-- [ ] No direct state mutations
-- [ ] Messenger types defined
-- [ ] No callbacks in constructor
+- [ ] Exports `getDefault${ControllerName}State` function
+- [ ] State metadata defined (persist, anonymous/includeInDebugSnapshot, includeInStateLogs, usedInUi)
+- [ ] All state updates use `this.update()` (no direct mutations)
+- [ ] Messenger types defined (no callbacks in constructor)
 
-**Redux Files:**
-- [ ] No state mutations in reducers
+**Redux Files** → See `.cursor/rules/front-end-performance-state-management.mdc` for details:
+- [ ] No state mutations in reducers (unless Redux Toolkit with Immer)
 - [ ] No side effects in reducers
-- [ ] No non-serializable values
 - [ ] Using Redux Toolkit (`createSlice`)
 - [ ] Proper TypeScript types
+- [ ] No non-serializable values in state (no Promises, functions, Maps/Sets)
+- [ ] **No inline selector functions** in useSelector (extract to memoized selectors)
+- [ ] **No multiple useSelector calls** for same state slice (combine into one)
 
-**Component Files:**
+**Component Files** → See `.cursor/rules/front-end-performance-rendering.mdc`, `.cursor/rules/front-end-performance-hooks-effects.mdc`, `.cursor/rules/front-end-performance-react-compiler.mdc`, and `.cursor/rules/coding-guidelines.mdc` for details:
 - [ ] TypeScript (not JavaScript)
 - [ ] Functional components (not classes)
-- [ ] Props destructured
+- [ ] Props destructured in function parameters
 - [ ] No `any` types
 - [ ] No console.logs
-- [ ] No inline function creation in JSX (especially in lists)
-- [ ] No inline object creation in JSX
-- [ ] No index as key in dynamic lists
-- [ ] No class components (must use functional with hooks)
+- [ ] **No inline functions in JSX** (especially in `.map()`)
+- [ ] **No inline objects in JSX** (style={{}}, options={{}})
+- [ ] **No index as key** in dynamic lists (use unique IDs)
+- [ ] **No JSON.stringify in useEffect dependencies** (use useEqualityCheck or normalize to primitives)
+- [ ] **All dependencies included** in useEffect/useMemo/useCallback (no missing deps)
+- [ ] **Hooks called unconditionally** (not inside conditionals/loops)
+- [ ] **useEffect cleanup** for subscriptions/intervals/fetch requests
 
-**All Files:**
+**All Files** → See `.cursor/rules/coding-guidelines.mdc` for details:
 - [ ] TypeScript for new code
 - [ ] No `@ts-ignore` without explanation
 - [ ] Explicit types for function params and returns
@@ -98,43 +121,49 @@ For each file, check for violations across severity levels:
 
 #### 🟡 HIGH (Should Fix Before Merge)
 
-**Test Files:**
-- Tests are independent
-- Test data is realistic
-- Edge cases tested
-- Error paths tested
+**Test Files** → See `.cursor/rules/unit-testing-guidelines.mdc`:
+- [ ] Tests are independent
+- [ ] Test data is realistic and inline
+- [ ] Edge cases and error paths tested
 
-**Controller Files:**
-- Selectors exported (not getter methods)
-- Methods are actions (not setters)
-- State is minimal
-- Has `destroy()` if cleanup needed
+**Controller Files** → See `.cursor/rules/controller-guidelines.mdc`:
+- [ ] Selectors exported (not getter methods)
+- [ ] Methods are actions (not setters)
+- [ ] State is minimal (no derived values)
+- [ ] Has `destroy()` if cleanup needed
 
-**Redux Files:**
-- State is normalized
-- Selectors use `select` prefix
-- Using `createAsyncThunk` for async
-- Actions follow Flux Standard Action
+**Redux Files** → See `.cursor/rules/front-end-performance-state-management.mdc`:
+- [ ] State is normalized (byId/allIds pattern for complex data)
+- [ ] Selectors use `select` prefix
+- [ ] Using `createAsyncThunk` for async operations
+- [ ] No identity functions in selectors (always transform data)
+- [ ] Granular input selectors (not deep property access)
+- [ ] Selectors select only needed properties (not entire state slices)
+- [ ] Combined related selectors into one memoized selector (reduce subscriptions)
 
-**Component Files:**
-- Component size reasonable (<200 lines)
-- `useMemo` for expensive computations (sorting, filtering large arrays)
-- `useCallback` for callbacks passed to children
-- `useEffect` has proper cleanup
-- Memoized components (React.memo) for frequently rendered items
-- No expensive calculations without memoization
-- Static objects/styles defined outside component
-- List virtualization for 100+ items
+**Component Files** → See `.cursor/rules/front-end-performance-rendering.mdc` and `.cursor/rules/front-end-performance-hooks-effects.mdc`:
+- [ ] Component size reasonable (<200 lines)
+- [ ] `useMemo` for expensive computations (sorting/filtering large arrays)
+- [ ] `useCallback` for callbacks passed to children
+- [ ] `useEffect` has proper cleanup (intervals, subscriptions, AbortController)
+- [ ] React.memo for frequently rendered components
+- [ ] Static objects/styles defined outside component
+- [ ] List virtualization for 100+ items
+- [ ] No cascading useEffect chains (combine or compute during render)
+- [ ] No useEffect for derived state (calculate during render)
+- [ ] Manual memoization for cross-file dependencies (Redux, external hooks)
+- [ ] Prevent state updates after unmount (cancelled flag pattern)
 
 #### 🔵 MEDIUM (Consider Fixing)
 
-**All Files:**
-- Functions are focused
-- No deep nesting (max 3-4 levels)
-- Early returns used
-- TSDoc comments on public APIs
-- Naming follows conventions
-- No duplicated code (DRY)
+**All Files** → See `.cursor/rules/coding-guidelines.mdc`:
+- [ ] Functions are focused (single responsibility)
+- [ ] No deep nesting (max 3-4 levels, use early returns)
+- [ ] TSDoc comments on public APIs
+- [ ] Naming follows conventions (PascalCase components, camelCase functions, `use` prefix hooks, `with` prefix HOCs)
+- [ ] No duplicated code (DRY principle)
+- [ ] File organization follows standard structure (component folder with types, tests, styles)
+- [ ] External packages evaluated (Snyk Advisor, maintenance status, security)
 
 ### Step 5: Generate Report
 
@@ -257,247 +286,147 @@ PR Readiness: [READY ✅ | NEEDS WORK ❌]
 
 ## Analysis Rules by File Type
 
+CODEBOT references detailed guidelines in `.cursor/rules/` for comprehensive rules and examples. This section provides quick checklists for what CODEBOT analyzes.
+
 ### Test Files (*.test.ts, *.test.tsx)
 
-**Check for:**
-1. Test naming: No "should", present tense, action-oriented
-2. Test structure: AAA pattern with blank lines
-3. Test focus: One assertion per test
-4. Mocking: Jest mocks, all externals mocked
-5. Async handling: Proper async/await, no dangling promises
-6. Test data: Realistic, not foo/bar/test
-7. Coverage: Happy path, error cases, edge cases
+**Reference:** `.cursor/rules/unit-testing-guidelines.mdc`
 
-**Example violations:**
+**CRITICAL Checks:**
+- [ ] No "should" in test names (use present tense)
+- [ ] AAA pattern (Arrange, Act, Assert) with clear separation
+- [ ] Each test has one clear purpose
+- [ ] No `any` types
+- [ ] External dependencies mocked
+- [ ] Jest mocks used (not Sinon)
+- [ ] async/await used (not done() callbacks)
+- [ ] Test data is realistic and inline
 
-```typescript
-❌ WRONG:
-it('should render correctly', () => { ... });
+**HIGH Priority Checks:**
+- [ ] Tests are independent
+- [ ] Edge cases tested
+- [ ] Error paths tested
+- [ ] Snapshot tests named "render matches snapshot"
+- [ ] Test data factories used for complex objects (not shared mutable state)
+- [ ] Timer mocking used for time-dependent code (jest.useFakeTimers)
 
-✅ CORRECT:
-it('renders token list with balances', () => { ... });
+**See `.cursor/rules/unit-testing-guidelines.mdc` for:**
+- Detailed examples of correct vs incorrect test patterns
+- Controller-specific testing patterns
+- Mocking strategies
+- Async testing best practices
 
-❌ WRONG:
-it('updates state', () => {
-  const result = updateState();
-  expect(result).toBeDefined();
-  expect(result.count).toBe(1);
-  expect(result.items).toHaveLength(2);
-});
+### Controller Files (*Controller.ts, *-controller.ts)
 
-✅ CORRECT:
-it('updates state count', () => {
-  const result = updateState();
-  expect(result.count).toBe(1);
-});
+**Reference:** `.cursor/rules/controller-guidelines.mdc`
 
-it('adds items to state', () => {
-  const result = updateState();
-  expect(result.items).toHaveLength(2);
-});
-```
+**CRITICAL Checks:**
+- [ ] Extends `BaseController`
+- [ ] Exports `getDefault${ControllerName}State` function
+- [ ] State metadata defined (persist, anonymous/includeInDebugSnapshot, includeInStateLogs, usedInUi)
+- [ ] All state updates use `this.update()`
+- [ ] No direct state mutations
+- [ ] Messenger types defined
+- [ ] No callbacks in constructor (use messenger)
 
-### Controller Files (*Controller.ts)
+**HIGH Priority Checks:**
+- [ ] Selectors exported (not getter methods)
+- [ ] Methods are actions (not setters)
+- [ ] State is minimal (no derived values)
+- [ ] Has `destroy()` if cleanup needed
+- [ ] Single options bag pattern in constructor
+- [ ] Action methods validate inputs and throw descriptive errors
+- [ ] Controller lifecycle properly handled (initialization, cleanup)
 
-**Check for:**
-1. Extends BaseController
-2. Has `getDefault${Name}State` function
-3. State metadata defined
-4. Uses `this.update()` for state changes
-5. No direct mutations
-6. Messenger instead of callbacks
-7. Selectors instead of getters
-8. Action methods instead of setters
+**See `.cursor/rules/controller-guidelines.mdc` for:**
+- Complete controller architecture patterns
+- State metadata examples
+- Messenger usage patterns
+- Selector implementation examples
 
-**Example violations:**
+### Redux Files (*reducer.ts, *slice.ts, *actions.ts, *selectors.ts)
 
-```typescript
-❌ WRONG:
-class TokensController {
-  constructor(options) {
-    this.state = options.state || {};
-  }
+**Reference:** `.cursor/rules/front-end-performance-state-management.mdc` (for Redux patterns)
 
-  addToken(token) {
-    this.state.tokens.push(token); // Direct mutation!
-  }
-}
+**CRITICAL Checks:**
+- [ ] No state mutations in reducers (unless using Redux Toolkit with Immer)
+- [ ] No side effects in reducers
+- [ ] Using Redux Toolkit (`createSlice`)
+- [ ] Proper TypeScript types
+- [ ] No non-serializable values in state
 
-✅ CORRECT:
-class TokensController extends BaseController<...> {
-  constructor(options) {
-    super({
-      name: 'TokensController',
-      metadata: tokensControllerMetadata,
-      messenger: options.messenger,
-      state: { ...getDefaultTokensControllerState(), ...options.state },
-    });
-  }
+**HIGH Priority Checks:**
+- [ ] State is normalized
+- [ ] Selectors use `select` prefix
+- [ ] Using `createAsyncThunk` for async
+- [ ] Actions follow Flux Standard Action pattern
 
-  addToken(token: Token) {
-    this.update((state) => {
-      state.tokens.push(token); // Immer makes this safe
-    });
-  }
-}
-
-export function getDefaultTokensControllerState() {
-  return { tokens: [] };
-}
-```
-
-### Redux Files (*reducer.ts, *slice.ts)
-
-**Check for:**
-1. No state mutations (unless using Redux Toolkit)
-2. No side effects in reducers
-3. Using Redux Toolkit (createSlice)
-4. Proper action types (domain/eventName)
-5. Selectors with `select` prefix
-6. Normalized state for complex data
-7. No form state in Redux
-
-**Example violations:**
-
-```typescript
-❌ WRONG:
-function todosReducer(state = [], action) {
-  switch (action.type) {
-    case 'ADD_TODO':
-      state.push(action.payload); // Mutation!
-      return state;
-  }
-}
-
-✅ CORRECT:
-const todosSlice = createSlice({
-  name: 'todos',
-  initialState: [],
-  reducers: {
-    todoAdded: (state, action) => {
-      state.push(action.payload); // Safe with Immer
-    },
-  },
-});
-```
+**See `.cursor/rules/front-end-performance-state-management.mdc` for:**
+- Redux optimization patterns
+- Selector memoization strategies
+- State normalization examples
 
 ### Component Files (*.tsx, *.jsx)
 
-**Check for:**
-1. TypeScript (not JavaScript)
-2. Functional components (not classes)
-3. Props destructured
-4. Proper hook usage
-5. Memoization where needed
-6. No unnecessary useEffect
-7. Proper cleanup in useEffect
-8. **Performance optimizations** (see React Performance Guidelines)
+**Reference:**
+- `.cursor/rules/coding-guidelines.mdc` (general React patterns)
+- `.cursor/rules/front-end-performance-rendering.mdc` (rendering performance)
+- `.cursor/rules/front-end-performance-hooks-effects.mdc` (hooks & effects)
+- `.cursor/rules/front-end-performance-react-compiler.mdc` (React Compiler considerations)
 
-**Example violations:**
+**CRITICAL Checks:**
+- [ ] TypeScript (not JavaScript)
+- [ ] Functional components (not classes)
+- [ ] Props destructured in function parameters
+- [ ] No `any` types
+- [ ] No console.logs
+- [ ] **No inline function creation in JSX** (especially in lists)
+- [ ] **No inline object creation in JSX**
+- [ ] **No index as key in dynamic lists** (use unique IDs)
+- [ ] No class components
 
-```typescript
-❌ WRONG:
-class TokenList extends React.Component {
-  render() {
-    return <div>{this.props.tokens.map(...)}</div>;
-  }
-}
+**HIGH Priority Performance Checks:**
+- [ ] Component size reasonable (<200 lines)
+- [ ] `useMemo` for expensive computations (sorting, filtering large arrays)
+- [ ] `useCallback` for callbacks passed to children
+- [ ] `useEffect` has proper cleanup
+- [ ] Memoized components (React.memo) for frequently rendered items
+- [ ] Static objects/styles defined outside component
+- [ ] List virtualization for 100+ items
 
-✅ CORRECT:
-const TokenList = ({ tokens }: TokenListProps) => {
-  return <div>{tokens.map(...)}</div>;
-};
+**MEDIUM Priority Performance Checks:**
+- [ ] Components that could benefit from code splitting (React.lazy)
+- [ ] No `useEffect` for derived state (calculate during render)
+- [ ] Proper dependency arrays in hooks (all dependencies included)
+- [ ] Component composition to prevent re-renders (move state down, pass children)
+- [ ] useRef for persistent values (not regular variables)
+- [ ] Minimize useEffect dependencies (move values to default params when possible)
+- [ ] React Compiler: Manual memoization for cross-file dependencies (Redux, external hooks)
+- [ ] React Compiler: Keep existing useMemo/useCallback for effect dependencies
 
-❌ WRONG:
-const TokenList = (props: TokenListProps) => {
-  return <div>{props.tokens.map(...)}</div>;
-};
+**See `.cursor/rules/front-end-performance-rendering.mdc` for:**
+- Detailed examples of inline function/object violations
+- Key usage patterns
+- Virtualization examples
+- React.memo usage guidelines
 
-✅ CORRECT:
-const TokenList = ({ tokens }: TokenListProps) => {
-  return <div>{tokens.map(...)}</div>;
-};
-```
+**See `.cursor/rules/front-end-performance-hooks-effects.mdc` for:**
+- useEffect best practices
+- When NOT to use useEffect
+- Cleanup patterns
 
-### React Performance Checks (*.tsx, *.jsx)
+**See `.cursor/rules/front-end-performance-react-compiler.mdc` for:**
+- React Compiler capabilities and limitations
+- When manual memoization is still required (cross-file dependencies, Redux, external libraries)
+- Decision tree for manual memoization needs
+- Keep existing useMemo/useCallback for effect dependencies
 
-Reference: `.cursor/rules/react-performance-guidelines.mdc`
-
-**CRITICAL Performance Violations:**
-
-1. **Inline Functions in Lists** - Creates new function on every render
-   ```typescript
-   ❌ WRONG:
-   {items.map(item => (
-     <Item onClick={() => handleClick(item.id)} />
-   ))}
-
-   ✅ CORRECT:
-   const handleClick = useCallback((id) => { /* ... */ }, []);
-   {items.map(item => (
-     <Item onClick={handleClick} itemId={item.id} />
-   ))}
-   ```
-
-2. **Inline Objects in JSX** - Creates new object on every render
-   ```typescript
-   ❌ WRONG:
-   <Box style={{ padding: 16, margin: 8 }} />
-
-   ✅ CORRECT:
-   const BOX_STYLE = { padding: 16, margin: 8 };
-   <Box style={BOX_STYLE} />
-   ```
-
-3. **Index as Key in Dynamic Lists** - Breaks React reconciliation
-   ```typescript
-   ❌ WRONG:
-   {items.map((item, index) => <Item key={index} />)}
-
-   ✅ CORRECT:
-   {items.map(item => <Item key={item.id} />)}
-   ```
-
-4. **Missing Memoization for Expensive Operations**
-   ```typescript
-   ❌ WRONG:
-   const sorted = items.sort((a, b) => a.value - b.value);
-
-   ✅ CORRECT:
-   const sorted = useMemo(
-     () => items.sort((a, b) => a.value - b.value),
-     [items]
-   );
-   ```
-
-5. **useEffect for Derived State** - Should calculate during render
-   ```typescript
-   ❌ WRONG:
-   const [displayName, setDisplayName] = useState('');
-   useEffect(() => {
-     setDisplayName(`${token.symbol} (${token.name})`);
-   }, [token]);
-
-   ✅ CORRECT:
-   const displayName = `${token.symbol} (${token.name})`;
-   ```
-
-**HIGH Priority Performance Issues:**
-
-- Component size >200 lines (should be broken down)
-- Missing React.memo on frequently rendered components
-- Missing useCallback for callbacks passed to children
-- No virtualization for lists with 100+ items
-- Expensive calculations in component body without useMemo
-- Large state objects that should be split
-- Context values not memoized
-
-**MEDIUM Priority Performance Issues:**
-
-- Components that could benefit from code splitting
-- Missing cleanup in useEffect
-- Too many dependencies in useMemo/useCallback
-- Premature optimization (memoizing simple operations)
+**See `.cursor/rules/coding-guidelines.mdc` for:**
+- Component structure patterns
+- Props destructuring examples
+- General React best practices
+- File organization standards
+- Naming conventions
 
 ## Usage Instructions
 
@@ -511,6 +440,7 @@ Simply type:
 Or be more specific:
 ```
 @CODEBOT analyze my changes
+@CODEBOT --deep
 @CODEBOT check PR readiness
 @CODEBOT what violations do I have?
 ```
@@ -565,35 +495,53 @@ CODEBOT will:
 
 ### Common Violations & Fixes
 
-| Violation | Fix |
-|-----------|-----|
-| Test name has "should" | Remove "should", use present tense |
-| Direct state mutation | Use `this.update()` in controllers |
-| Missing BaseController | Extend from BaseController |
-| Using `any` type | Add explicit types |
-| Class component | Convert to functional component |
-| Props not destructured | Destructure in function params |
-| Console.log in code | Remove debug statements |
-| No state metadata | Add metadata with persist/anonymous/usedInUi |
-| Getter method in controller | Export as selector function |
-| Redux state mutation | Use Redux Toolkit or immutable updates |
-| Inline function in list | Use useCallback, pass stable reference |
-| Inline object in JSX | Define constant outside component or use useMemo |
-| Index as key | Use unique ID from data (item.id, item.address) |
-| Missing memoization | Wrap expensive calculation in useMemo |
-| useEffect for derived state | Calculate during render instead |
-| Class component | Convert to functional component with hooks |
+| Violation | Fix | Reference |
+|-----------|-----|-----------|
+| Test name has "should" | Remove "should", use present tense | `.cursor/rules/unit-testing-guidelines.mdc` |
+| Direct state mutation | Use `this.update()` in controllers | `.cursor/rules/controller-guidelines.mdc` |
+| Missing BaseController | Extend from BaseController | `.cursor/rules/controller-guidelines.mdc` |
+| Using `any` type | Add explicit types | `.cursor/rules/coding-guidelines.mdc` |
+| Class component | Convert to functional component | `.cursor/rules/coding-guidelines.mdc` |
+| Props not destructured | Destructure in function params | `.cursor/rules/coding-guidelines.mdc` |
+| Console.log in code | Remove debug statements | `.cursor/rules/coding-guidelines.mdc` |
+| No state metadata | Add metadata with persist/anonymous/usedInUi | `.cursor/rules/controller-guidelines.mdc` |
+| Getter method in controller | Export as selector function | `.cursor/rules/controller-guidelines.mdc` |
+| Redux state mutation | Use Redux Toolkit or immutable updates | `.cursor/rules/front-end-performance-state-management.mdc` |
+| Inline function in list | Use useCallback, pass stable reference | `.cursor/rules/front-end-performance-rendering.mdc` |
+| Inline object in JSX | Define constant outside component or use useMemo | `.cursor/rules/front-end-performance-rendering.mdc` |
+| Index as key | Use unique ID from data (item.id, item.address) | `.cursor/rules/front-end-performance-rendering.mdc` |
+| Missing memoization | Wrap expensive calculation in useMemo | `.cursor/rules/front-end-performance-rendering.mdc` |
+| useEffect for derived state | Calculate during render instead | `.cursor/rules/front-end-performance-hooks-effects.mdc` |
+| JSON.stringify in dependencies | Use useEqualityCheck or normalize to primitives | `.cursor/rules/front-end-performance-hooks-effects.mdc` |
+| Missing dependencies in hooks | Include all dependencies (use ESLint rule) | `.cursor/rules/front-end-performance-hooks-effects.mdc` |
+| Hooks called conditionally | Call hooks unconditionally, use conditional logic inside | `.cursor/rules/front-end-performance-hooks-effects.mdc` |
+| No useEffect cleanup | Add cleanup for intervals/subscriptions/fetch | `.cursor/rules/front-end-performance-hooks-effects.mdc` |
+| Inline selector functions | Extract to memoized selectors | `.cursor/rules/front-end-performance-state-management.mdc` |
+| Multiple useSelector calls | Combine into single selector | `.cursor/rules/front-end-performance-state-management.mdc` |
+| Identity function selector | Always transform data in selector | `.cursor/rules/front-end-performance-state-management.mdc` |
+| Cascading useEffect chains | Combine effects or compute during render | `.cursor/rules/front-end-performance-hooks-effects.mdc` |
+
+**Note:** For detailed examples and comprehensive guidelines, see the referenced rule files in `.cursor/rules/`.
 
 ## Configuration
 
 CODEBOT automatically:
-- ✅ Loads relevant cursor rules
+- ✅ Loads relevant cursor rules from `.cursor/rules/`
 - ✅ Identifies file types
-- ✅ Applies appropriate checks
-- ✅ Provides contextual feedback
+- ✅ Applies appropriate checks based on rule files
+- ✅ Provides contextual feedback with references to detailed guidelines
 - ✅ Suggests actionable fixes
 
-No configuration needed - it just works!
+**Rule Files Reference:**
+- `.cursor/rules/coding-guidelines.mdc` - General coding standards
+- `.cursor/rules/unit-testing-guidelines.mdc` - Test patterns and best practices
+- `.cursor/rules/controller-guidelines.mdc` - Controller architecture patterns
+- `.cursor/rules/front-end-performance-rendering.mdc` - Rendering performance (keys, memoization, virtualization)
+- `.cursor/rules/front-end-performance-hooks-effects.mdc` - Hooks & effects optimization
+- `.cursor/rules/front-end-performance-react-compiler.mdc` - React Compiler considerations
+- `.cursor/rules/front-end-performance-state-management.mdc` - Redux & state management
+
+No configuration needed - it just works! When rules are updated in `.cursor/rules/`, CODEBOT automatically uses the latest guidelines.
 
 ## Tips for Best Results
 
