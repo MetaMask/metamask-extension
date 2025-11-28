@@ -11,6 +11,7 @@ import { MILLISECOND, SECOND } from '../../../../shared/constants/time';
 import {
   PRIVACY_POLICY_LINK,
   SURVEY_LINK,
+  METAMETRICS_SETTINGS_LINK,
 } from '../../../../shared/lib/ui-utils';
 import {
   BorderColor,
@@ -40,6 +41,7 @@ import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/
 import {
   addPermittedAccount,
   hidePermittedNetworkToast,
+  setPna25Acknowledged,
 } from '../../../store/actions';
 import {
   AvatarNetwork,
@@ -94,6 +96,7 @@ import {
   selectClaimSubmitToast,
   selectShowShieldPausedToast,
   selectShowShieldEndingToast,
+  selectShowPna25Banner,
 } from './selectors';
 import {
   setNewPrivacyPolicyToastClickedOrClosed,
@@ -129,6 +132,7 @@ export function ToastMaster({ location } = {}) {
         )}
         <SurveyToastMayDelete />
         <PrivacyPolicyToast />
+        <Pna25Banner />
         <NftEnablementToast />
         <PermittedNetworkToast />
         <NewSrpAddedToast />
@@ -745,6 +749,42 @@ function ShieldEndingToast() {
           />
         }
         onClose={() => setShieldEndingToastLastClickedOrClosed(Date.now())}
+      />
+    )
+  );
+}
+
+function Pna25Banner() {
+  const t = useI18nContext();
+  const dispatch = useDispatch();
+
+  const showPna25Banner = useSelector(selectShowPna25Banner);
+
+  const handleLearnMore = () => {
+    // Open MetaMetrics settings help page and acknowledge
+    global.platform.openTab({
+      url: METAMETRICS_SETTINGS_LINK,
+    });
+  };
+
+  const handleClose = () => {
+    // Just acknowledge without opening link
+    dispatch(setPna25Acknowledged(true));
+  };
+
+  return (
+    showPna25Banner && (
+      <Toast
+        key="pna25-banner"
+        dataTestId="pna25-banner"
+        startAdornment={
+          <Icon name={IconName.Info} color={IconColor.infoDefault} />
+        }
+        text={t('pna25BannerTitle')}
+        textVariant={TextVariant.bodySm}
+        actionText={t('learnMoreUpperCase')}
+        onActionClick={handleLearnMore}
+        onClose={handleClose}
       />
     )
   );
