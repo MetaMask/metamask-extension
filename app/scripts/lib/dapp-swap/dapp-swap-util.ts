@@ -77,9 +77,9 @@ export function getQuotesForConfirmation({
   getNetworkConfigurationByNetworkClientId: (
     networkClientId: NetworkClientId,
   ) => NetworkConfiguration | undefined;
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   dappSwapMetricsFlag: {
     enabled: boolean;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     bridge_quote_fees: number;
     origins: string[];
   };
