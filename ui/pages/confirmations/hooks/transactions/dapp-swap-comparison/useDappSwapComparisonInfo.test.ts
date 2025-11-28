@@ -31,9 +31,8 @@ jest.mock('../../../../../store/controller-actions/bridge-controller', () => ({
 
 const mockUseDappSwapComparisonLatencyMetricsResponse = {
   requestDetectionLatency: '1200',
-  swapComparisonLatency: '1500',
   updateRequestDetectionLatency: jest.fn(),
-  updateSwapComparisonLatency: jest.fn(),
+  updateSwapComparisonLatency: jest.fn().mockReturnValue('1500'),
 };
 
 jest.mock('./useDappSwapComparisonLatencyMetrics', () => ({
@@ -66,7 +65,8 @@ async function runHook() {
 describe('useDappSwapComparisonInfo', () => {
   it('initially call updateTransactionEventFragment with loading', async () => {
     await runHook();
-    expect(mockUpdateTransactionEventFragment).toHaveBeenLastCalledWith(
+    expect(mockUpdateTransactionEventFragment).toHaveBeenNthCalledWith(
+      1,
       {
         properties: {
           swap_dapp_comparison: 'loading',
@@ -145,7 +145,6 @@ describe('useDappSwapComparisonInfo', () => {
 
     const {
       fiatRates,
-      destinationTokenSymbol,
       gasDifference,
       selectedQuote,
       selectedQuoteValueDifference,
@@ -157,7 +156,6 @@ describe('useDappSwapComparisonInfo', () => {
     expect(selectedQuoteValueDifference).toBe(0.012494042894187605);
     expect(gasDifference).toBe(0.005686377458187605);
     expect(tokenAmountDifference).toBe(0.006807665436);
-    expect(destinationTokenSymbol).toBe('USDC');
     expect(sourceTokenAmount).toBe('0x0de0b6b3a7640000');
     expect(tokenDetails).toEqual({
       '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913': {

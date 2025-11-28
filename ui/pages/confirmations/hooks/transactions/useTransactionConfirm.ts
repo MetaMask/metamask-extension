@@ -19,7 +19,7 @@ export function useTransactionConfirm() {
   const dispatch = useDispatch();
   const customNonceValue = useSelector(getCustomNonceValue);
   const selectedGasFeeToken = useSelectedGasFeeToken();
-  const { currentConfirmation: transactionMeta, isQuotedSwapDisplayedInInfo } =
+  const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
   const { isSupported: isGaslessSupportedSTX } =
@@ -115,7 +115,6 @@ export function useTransactionConfirm() {
     handleSmartTransaction,
     handleGasless7702,
     selectedGasFeeToken,
-    isQuotedSwapDisplayedInInfo,
     handleShieldSubscriptionApprovalTransactionAfterConfirm,
     handleShieldSubscriptionApprovalTransactionAfterConfirmErr,
     onDappSwapCompleted,

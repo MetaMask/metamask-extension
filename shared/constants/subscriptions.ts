@@ -46,6 +46,8 @@ export enum ShieldUserAccountCategoryEnum {
 export enum ShieldUserAccountTypeEnum {
   EOA = 'EOA',
   ERC4337 = 'SmartAccount',
+  // in case user current selected account could be non evm like bitcoin, solana
+  OTHER = 'Other',
 }
 
 export enum ShieldCtaActionClickedEnum {
@@ -72,4 +74,10 @@ export enum ShieldErrorStateLocationEnum {
 export enum ShieldErrorStateViewEnum {
   Banner = 'banner',
   Toast = 'toast',
+}
+
+export enum ShieldUnexpectedErrorEventLocationEnum {
+  TransactionShieldTab = 'transaction_shield_tab',
+  ShieldPlanPage = 'shield_plan_page',
+  Other = 'other',
 }

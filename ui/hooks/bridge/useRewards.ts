@@ -1,4 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
+'use no memo';
+
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 import {
@@ -14,6 +16,7 @@ import {
 } from '@metamask/utils';
 import log from 'loglevel';
 import { debounce } from 'lodash';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   getFromToken,
   getToToken,
@@ -25,6 +28,8 @@ import { useMultichainSelector } from '../useMultichainSelector';
 import {
   getRewardsHasAccountOptedIn,
   estimateRewardsPoints,
+  rewardsIsOptInSupported,
+  getRewardsCandidateSubscriptionId,
 } from '../../store/actions';
 import {
   EstimateAssetDto,
@@ -33,7 +38,10 @@ import {
 } from '../../../shared/types/rewards';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
-import { selectRewardsEnabled } from '../../ducks/rewards/selectors';
+import {
+  selectRewardsAccountLinkedTimestamp,
+  selectRewardsEnabled,
+} from '../../ducks/rewards/selectors';
 
 /**
  *
@@ -74,6 +82,8 @@ type UseRewardsResult = {
   isLoading: boolean;
   estimatedPoints: number | null;
   hasError: boolean;
+  accountOptedIn: boolean | null;
+  rewardsAccountScope: InternalAccount | null;
 };
 
 /**
@@ -110,6 +120,7 @@ type UseRewardsWithQuoteParams = {
     NonNullable<ReturnType<typeof selectBridgeQuotes>['activeQuote']>['quote']
   > | null;
   fromAddress: string | null | undefined;
+  fromAddressAccount?: InternalAccount | null;
   chainId: string | null | undefined;
 };
 
@@ -120,12 +131,14 @@ type UseRewardsWithQuoteParams = {
  * @param options - The hook parameters
  * @param options.quote - The bridge quote to estimate rewards for
  * @param options.fromAddress - The address sending the transaction
+ * @param options.fromAddressAccount - The account sending the transaction
  * @param options.chainId - The chain ID for the transaction
  * @returns An object containing rewards estimation state
  */
 export const useRewardsWithQuote = ({
   quote,
   fromAddress,
+  fromAddressAccount,
   chainId,
 }: UseRewardsWithQuoteParams): UseRewardsResult => {
   const dispatch = useDispatch();
@@ -134,10 +147,20 @@ export const useRewardsWithQuote = ({
   const [shouldShowRewardsRow, setShouldShowRewardsRow] = useState(false);
   const [hasError, setHasError] = useState(false);
   const prevRequestId = usePrevious(quote?.requestId);
+  const [accountOptedIn, setAccountOptedIn] = useState<boolean | null>(null);
   const rewardsEnabled = useSelector(selectRewardsEnabled);
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const rewardsAccountLinkedTimestamp = useSelector(
+    selectRewardsAccountLinkedTimestamp,
+  );
+  // Track linked timestamp per account address to prevent triggering for accounts that weren't linked
+  const localRewardsAccountLinkedTimestamp = useRef<Map<string, number | null>>(
+    new Map(),
+  );
+  // Track the current account's linked timestamp to trigger useEffect when it changes
+  const [currentAccountLinkedTimestamp, setCurrentAccountLinkedTimestamp] =
+    useState<number | null>(null);
   const debouncedEstimatePoints = useCallback(
+    // eslint-disable-next-line react-compiler/react-compiler
     debounce(
       async (
         estimationQuoteArg:
@@ -236,38 +259,69 @@ export const useRewardsWithQuote = ({
       if (!estimationQuoteArg || !fromAddress || !chainId || !rewardsEnabled) {
         setEstimatedPoints(null);
         setShouldShowRewardsRow(false);
+        setAccountOptedIn(null);
         setIsLoading(false);
         setHasError(false);
         return;
       }
 
+      setIsLoading(true);
+      setHasError(false);
+
       let caipAccount: CaipAccountId | null = null;
 
       try {
+        // Check if there's a subscription first
+        const candidateSubscriptionId = (await dispatch(
+          getRewardsCandidateSubscriptionId(),
+        )) as unknown as string | null;
+
+        if (!candidateSubscriptionId) {
+          setEstimatedPoints(null);
+          setShouldShowRewardsRow(false);
+          setAccountOptedIn(null);
+          setHasError(false);
+          setIsLoading(false);
+          return;
+        }
+
         // Format account to CAIP-10
         caipAccount = formatAccountToCaipAccountId(fromAddress, chainId);
 
         if (!caipAccount) {
+          setEstimatedPoints(null);
+          setHasError(false);
+          setShouldShowRewardsRow(false);
+          setAccountOptedIn(null);
+          setIsLoading(false);
           return;
         }
 
         // Check if account has opted in
-        const hasOptedIn = await dispatch(
+        const hasOptedIn = (await dispatch(
           getRewardsHasAccountOptedIn(caipAccount),
-        );
+        )) as unknown as boolean;
 
-        if (!hasOptedIn) {
-          setIsLoading(false);
-          setShouldShowRewardsRow(false);
-          setEstimatedPoints(null);
-          setHasError(false);
-          return;
+        setAccountOptedIn(hasOptedIn);
+
+        // Determine if we should show the rewards row
+        // Show row if: opted in OR (not opted in AND opt-in is supported)
+        let shouldShow = hasOptedIn;
+        if (!hasOptedIn && fromAddressAccount) {
+          const isOptInSupported = (await dispatch(
+            rewardsIsOptInSupported({ account: fromAddressAccount }),
+          )) as unknown as boolean;
+          shouldShow = isOptInSupported;
         }
 
-        setIsLoading(true);
-        setShouldShowRewardsRow(true);
+        setShouldShowRewardsRow(shouldShow);
         setEstimatedPoints(null);
         setHasError(false);
+
+        if (!shouldShow || !hasOptedIn) {
+          setIsLoading(false);
+          return;
+        }
 
         await debouncedEstimatePoints(estimationQuoteArg, caipAccount);
       } catch {
@@ -275,10 +329,18 @@ export const useRewardsWithQuote = ({
         setIsLoading(false);
         setShouldShowRewardsRow(false);
         setEstimatedPoints(null);
+        setAccountOptedIn(null);
         setHasError(false);
       }
     },
-    [fromAddress, chainId, rewardsEnabled, debouncedEstimatePoints, dispatch],
+    [
+      fromAddress,
+      chainId,
+      rewardsEnabled,
+      dispatch,
+      fromAddressAccount,
+      debouncedEstimatePoints,
+    ],
   );
 
   // Estimate points when dependencies change
@@ -294,11 +356,42 @@ export const useRewardsWithQuote = ({
     prevRequestId,
   ]);
 
+  // Update the local map when the global timestamp changes for the current account
+  useEffect(() => {
+    if (fromAddress && rewardsAccountLinkedTimestamp !== null) {
+      localRewardsAccountLinkedTimestamp.current.set(
+        fromAddress,
+        rewardsAccountLinkedTimestamp,
+      );
+      setCurrentAccountLinkedTimestamp(rewardsAccountLinkedTimestamp);
+    } else if (fromAddress) {
+      // When account changes, get the stored timestamp for this account
+      const storedTimestamp =
+        localRewardsAccountLinkedTimestamp.current.get(fromAddress);
+      setCurrentAccountLinkedTimestamp(storedTimestamp ?? null);
+    } else {
+      setCurrentAccountLinkedTimestamp(null);
+    }
+  }, [rewardsAccountLinkedTimestamp, fromAddress]);
+
+  // Re-estimate points when account linked timestamp changes and account has opted in False
+  // Only trigger if the current account has a linked timestamp (was actually linked)
+  useEffect(() => {
+    if (currentAccountLinkedTimestamp !== null && accountOptedIn === false) {
+      estimatePoints(quote);
+    }
+  }, [currentAccountLinkedTimestamp, accountOptedIn, estimatePoints, quote]);
+
   return {
     shouldShowRewardsRow,
     isLoading,
     estimatedPoints,
     hasError,
+    accountOptedIn,
+    rewardsAccountScope:
+      quote && shouldShowRewardsRow
+        ? (fromAddressAccount as InternalAccount | null)
+        : null,
   };
 };
 
@@ -338,6 +431,7 @@ export const useRewards = ({
   return useRewardsWithQuote({
     quote: hasRequiredBridgeData ? activeQuote : null,
     fromAddress: selectedAccount?.address,
+    fromAddressAccount: selectedAccount,
     chainId: currentChainId?.toString(),
   });
 };

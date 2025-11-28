@@ -2,7 +2,7 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { useRewardsWithQuote } from '../../../../../hooks/bridge/useRewards';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
-import { useDappSwapComparisonInfo } from './useDappSwapComparisonInfo';
+import { useDappSwapContext } from '../../../context/dapp-swap';
 
 export const useDappSwapComparisonRewardText = (): {
   text: string;
@@ -10,17 +10,22 @@ export const useDappSwapComparisonRewardText = (): {
 } | null => {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
-  const { selectedQuote } = useDappSwapComparisonInfo();
+  const { selectedQuote } = useDappSwapContext();
   const t = useI18nContext();
 
-  const { shouldShowRewardsRow, isLoading, estimatedPoints, hasError } =
-    useRewardsWithQuote({
-      quote: selectedQuote?.quote ?? null,
-      fromAddress: transactionMeta?.txParams?.from ?? '',
-      chainId: transactionMeta?.chainId ?? '',
-    });
+  const {
+    shouldShowRewardsRow,
+    isLoading,
+    estimatedPoints,
+    hasError,
+    accountOptedIn,
+  } = useRewardsWithQuote({
+    quote: selectedQuote?.quote ?? null,
+    fromAddress: transactionMeta?.txParams?.from ?? '',
+    chainId: transactionMeta?.chainId ?? '',
+  });
 
-  if (!shouldShowRewardsRow || hasError || isLoading) {
+  if (!shouldShowRewardsRow || hasError || isLoading || !accountOptedIn) {
     return null;
   }
 

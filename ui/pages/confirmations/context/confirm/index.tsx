@@ -2,15 +2,10 @@ import React, {
   ReactElement,
   createContext,
   useContext,
-  useEffect,
   useMemo,
   useState,
 } from 'react';
-import { TransactionType } from '@metamask/transaction-controller';
-import { QuoteResponse } from '@metamask/bridge-controller';
-import { useDispatch } from 'react-redux';
 
-import { setAccountDetailsAddress } from '../../../../store/actions';
 import useCurrentConfirmation from '../../hooks/useCurrentConfirmation';
 import useSyncConfirmPath from '../../hooks/useSyncConfirmPath';
 import { Confirmation } from '../../types/confirm';
@@ -18,10 +13,7 @@ import { Confirmation } from '../../types/confirm';
 export type ConfirmContextType = {
   currentConfirmation: Confirmation;
   isScrollToBottomCompleted: boolean;
-  isQuotedSwapDisplayedInInfo: boolean;
-  quoteSelectedForMMSwap: QuoteResponse | undefined;
   setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
-  setQuoteSelectedForMMSwap: (selectedQuote: QuoteResponse | undefined) => void;
 };
 
 export const ConfirmContext = createContext<ConfirmContextType | undefined>(
@@ -36,54 +28,26 @@ export const ConfirmContextProvider: React.FC<{
     useState(true);
   const { currentConfirmation } = useCurrentConfirmation(confirmationId);
   useSyncConfirmPath(currentConfirmation, confirmationId);
-  const [quoteSelectedForMMSwap, setQuoteSelectedForMMSwap] = useState<
-    QuoteResponse | undefined
-  >(undefined);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    setQuoteSelectedForMMSwap(undefined);
-  }, [currentConfirmation?.id, setQuoteSelectedForMMSwap]);
 
   const value = useMemo(
     () => ({
       currentConfirmation,
       isScrollToBottomCompleted,
-      isQuotedSwapDisplayedInInfo: Boolean(quoteSelectedForMMSwap),
-      quoteSelectedForMMSwap,
-      setQuoteSelectedForMMSwap,
       setIsScrollToBottomCompleted,
     }),
     [
       currentConfirmation,
       isScrollToBottomCompleted,
-      quoteSelectedForMMSwap,
       setIsScrollToBottomCompleted,
-      setQuoteSelectedForMMSwap,
     ],
   );
-
-  // The code below is added to close address details modal when opening confirmation from account details modal
-  // The was account details modal is build has a complexity in routing and closing it from within account details modal
-  // routes it back to home page which also closes confirmation modal.
-  useEffect(() => {
-    if (
-      currentConfirmation &&
-      (currentConfirmation.type === TransactionType.revokeDelegation ||
-        currentConfirmation.type === TransactionType.batch)
-    ) {
-      dispatch(setAccountDetailsAddress(''));
-    }
-  }, [dispatch, currentConfirmation]);
 
   return (
     <ConfirmContext.Provider value={value}>{children}</ConfirmContext.Provider>
   );
 };
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
-export const useConfirmContext = <T = Confirmation,>() => {
+export const useConfirmContext = <CurrentConfirmation = Confirmation,>() => {
   const context = useContext(ConfirmContext);
   if (!context) {
     throw new Error(
@@ -91,13 +55,8 @@ export const useConfirmContext = <T = Confirmation,>() => {
     );
   }
   return context as {
-    currentConfirmation: T;
+    currentConfirmation: CurrentConfirmation;
     isScrollToBottomCompleted: boolean;
-    isQuotedSwapDisplayedInInfo: boolean;
-    quoteSelectedForMMSwap: QuoteResponse | undefined;
     setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
-    setQuoteSelectedForMMSwap: (
-      selectedQuote: QuoteResponse | undefined,
-    ) => void;
   };
 };

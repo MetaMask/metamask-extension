@@ -4,39 +4,65 @@ import { getTheme } from '../selectors';
 import { ThemeType } from '../../shared/constants/preferences';
 
 /**
- * List of valid themes. Should return an array with only the values ThemeType.light and ThemeType.dark
- * unless there is a future we add more themes.
+ * List of valid themes.
  */
 const validThemes = Object.values(ThemeType).filter((theme) => {
   return theme !== ThemeType.os;
 });
 
 /**
+ * Resolves the theme based on the user's theme setting.
+ *
+ * @param settingTheme - The theme setting from user preferences
+ * @returns The resolved theme (light or dark)
+ */
+function resolveTheme(
+  settingTheme: string | undefined,
+): ThemeType.light | ThemeType.dark {
+  const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
+    ? ThemeType.dark
+    : ThemeType.light;
+
+  const documentTheme = document.documentElement.getAttribute('data-theme');
+
+  let resolvedTheme;
+  if (settingTheme === ThemeType.os) {
+    resolvedTheme = systemTheme;
+  } else if (settingTheme) {
+    resolvedTheme = settingTheme;
+  } else {
+    // Initial load
+    resolvedTheme = documentTheme || systemTheme;
+  }
+
+  const isValidTheme = validThemes.includes(
+    resolvedTheme as ThemeType.light | ThemeType.dark,
+  );
+
+  if (!isValidTheme) {
+    console.warn(
+      `useTheme: Invalid theme resolved to "${resolvedTheme}". Defaulting to "${ThemeType.light}".`,
+    );
+    return ThemeType.light;
+  }
+
+  return resolvedTheme as ThemeType.light | ThemeType.dark;
+}
+
+/**
  * Returns the current theme based on the user's theme setting.
  *
  * @returns theme
  */
-export function useTheme() {
+export function useTheme(): ThemeType.light | ThemeType.dark {
   const settingTheme = useSelector(getTheme);
-  const [theme, setTheme] = useState(settingTheme);
+  const [theme, setTheme] = useState<ThemeType.light | ThemeType.dark>(() =>
+    resolveTheme(settingTheme),
+  );
 
   useEffect(() => {
-    const result =
-      !settingTheme || settingTheme === ThemeType.os
-        ? document.documentElement.getAttribute('data-theme')
-        : settingTheme;
-    const isValidTheme = validThemes.includes(
-      result as ThemeType.light | ThemeType.dark,
-    );
-
-    if (!isValidTheme) {
-      console.warn(
-        `useTheme: Invalid theme resolved to "${result}". Defaulting to "${ThemeType.light}".`,
-      );
-      setTheme(ThemeType.light);
-    }
-
-    setTheme(result);
+    const resolved = resolveTheme(settingTheme);
+    setTheme(resolved);
   }, [settingTheme]);
 
   return theme;

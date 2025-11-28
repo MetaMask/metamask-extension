@@ -1,21 +1,21 @@
 import { BigNumber } from 'bignumber.js';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
-import {
-  getNativeAssetForChainId,
-  isNativeAddress,
-} from '@metamask/bridge-controller';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import { getNativeAssetForChainId } from '@metamask/bridge-controller';
+import { CHAIN_IDS, TransactionMeta } from '@metamask/transaction-controller';
 import { useCallback } from 'react';
 
 import { TokenStandAndDetails } from '../../../../../store/actions';
 import { fetchTokenExchangeRates } from '../../../../../helpers/utils/util';
 import { useAsyncResult } from '../../../../../hooks/useAsync';
+import { isNativeAddress } from '../../../../../helpers/utils/token-insights';
 import {
   fetchAllTokenDetails,
   getTokenValueFromRecord,
 } from '../../../utils/token';
 import { useConfirmContext } from '../../../context/confirm';
+
+const POLYGON_NATIVE_ASSET = '0x0000000000000000000000000000000000001010';
 
 export function useDappSwapUSDValues({
   tokenAddresses = [],
@@ -32,10 +32,23 @@ export function useDappSwapUSDValues({
 
   const { value: fiatRates, pending: fiatRatesPending } = useAsyncResult<
     Record<Hex, number | undefined>
-  >(
-    () => fetchTokenExchangeRates('usd', tokenAddresses as Hex[], chainId),
-    [chainId, tokenAddresses?.length],
-  );
+  >(async () => {
+    const addresses = tokenAddresses.filter(
+      (tokenAddress) => !isNativeAddress(tokenAddress),
+    );
+    const exchangeRates = await fetchTokenExchangeRates(
+      'usd',
+      addresses as Hex[],
+      chainId,
+    );
+
+    if (chainId === CHAIN_IDS.POLYGON) {
+      const nativeAddress = getNativeAssetForChainId(chainId).address;
+      exchangeRates[nativeAddress] = exchangeRates[POLYGON_NATIVE_ASSET];
+    }
+
+    return exchangeRates;
+  }, [chainId, tokenAddresses?.length]);
 
   const { value: tokenDetails, pending: tokenDetailsPending } = useAsyncResult<
     Record<Hex, TokenStandAndDetails>

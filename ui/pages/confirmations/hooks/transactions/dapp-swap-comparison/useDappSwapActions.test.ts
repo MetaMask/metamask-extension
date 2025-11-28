@@ -9,7 +9,7 @@ import {
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { deleteDappSwapComparisonData } from '../../../../../store/actions';
 import { Confirmation } from '../../../types/confirm';
-import * as ConfirmContext from '../../../context/confirm';
+import * as DappSwapContext from '../../../context/dapp-swap';
 import { useDappSwapActions } from './useDappSwapActions';
 
 jest.mock('../../../../../store/actions', () => ({
@@ -41,11 +41,12 @@ async function runHook(mockConfirmation?: Confirmation) {
 describe('useDappSwapActions', () => {
   describe('updateSwapWithQuoteDetails', () => {
     it('updates transactionMeta with MM quote if available', async () => {
-      jest.spyOn(ConfirmContext, 'useConfirmContext').mockReturnValue({
-        quoteSelectedForMMSwap: mockBridgeQuotes[0] as unknown as QuoteResponse,
-        currentConfirmation: mockSwapConfirmation,
+      jest.spyOn(DappSwapContext, 'useDappSwapContext').mockReturnValue({
+        selectedQuote: mockBridgeQuotes[0] as unknown as QuoteResponse,
+        setSelectedQuote: jest.fn(),
+        setQuotedSwapDisplayedInInfo: jest.fn(),
         isQuotedSwapDisplayedInInfo: true,
-      } as ReturnType<typeof ConfirmContext.useConfirmContext>);
+      } as unknown as ReturnType<typeof DappSwapContext.useDappSwapContext>);
 
       const mockTransactionMeta = { txParams: {} };
       const { updateSwapWithQuoteDetails } = await runHook();
@@ -75,15 +76,17 @@ describe('useDappSwapActions', () => {
           },
         }),
       );
+      expect(mockCaptureSwapSubmit).toHaveBeenCalled();
     });
   });
 
   describe('onDappSwapCompleted', () => {
     it('should delete the dapp swap comparison data and capture the swap submit', async () => {
-      jest.spyOn(ConfirmContext, 'useConfirmContext').mockReturnValue({
-        currentConfirmation: mockSwapConfirmation,
-        quoteSelectedForMMSwap: {} as QuoteResponse,
-      } as unknown as ReturnType<typeof ConfirmContext.useConfirmContext>);
+      jest.spyOn(DappSwapContext, 'useDappSwapContext').mockReturnValue({
+        selectedQuote: undefined,
+        setSelectedQuote: jest.fn(),
+        setQuotedSwapDisplayedInInfo: jest.fn(),
+      } as unknown as ReturnType<typeof DappSwapContext.useDappSwapContext>);
 
       const { onDappSwapCompleted } = await runHook();
       onDappSwapCompleted();
@@ -91,7 +94,6 @@ describe('useDappSwapActions', () => {
       expect(deleteDappSwapComparisonData).toHaveBeenCalledWith(
         'f8172040-b3d0-11f0-a882-3f99aa2e9f0c',
       );
-      expect(mockCaptureSwapSubmit).toHaveBeenCalled();
     });
   });
 });

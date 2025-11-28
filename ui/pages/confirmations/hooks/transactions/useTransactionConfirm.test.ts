@@ -14,7 +14,7 @@ import { getMockConfirmStateForTransaction } from '../../../../../test/data/conf
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import { updateAndApproveTx } from '../../../../store/actions';
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../test/data/confirmations/gas';
-import * as ConfirmContext from '../../context/confirm';
+import * as DappSwapContext from '../../context/dapp-swap';
 import { useIsGaslessSupported } from '../gas/useIsGaslessSupported';
 import { useGaslessSupportedSmartTransactions } from '../gas/useGaslessSupportedSmartTransactions';
 import { useTransactionConfirm } from './useTransactionConfirm';
@@ -356,12 +356,12 @@ describe('useTransactionConfirm', () => {
   });
 
   it('updates swap with MM quote if available', async () => {
-    const confirmation = genUnapprovedContractInteractionConfirmation();
-    jest.spyOn(ConfirmContext, 'useConfirmContext').mockReturnValue({
-      quoteSelectedForMMSwap: mockBridgeQuotes[0] as unknown as QuoteResponse,
-      currentConfirmation: confirmation,
+    jest.spyOn(DappSwapContext, 'useDappSwapContext').mockReturnValue({
       isQuotedSwapDisplayedInInfo: true,
-    } as ReturnType<typeof ConfirmContext.useConfirmContext>);
+      selectedQuote: mockBridgeQuotes[0] as unknown as QuoteResponse,
+      setSelectedQuote: jest.fn(),
+      setQuotedSwapDisplayedInInfo: jest.fn(),
+    } as unknown as ReturnType<typeof DappSwapContext.useDappSwapContext>);
 
     useGaslessSupportedSmartTransactionsMock.mockReturnValue({
       isSupported: true,
@@ -382,9 +382,9 @@ describe('useTransactionConfirm', () => {
         authorizationList: undefined,
         data: '',
         from: '0x2e0d7e8c45221fca00d74a3609a0f7097035d09b',
-        gas: '0x619f7',
-        maxFeePerGas: '0xaa350353',
-        maxPriorityFeePerGas: '0x59682f00',
+        gas: '0x3',
+        maxFeePerGas: '0x4',
+        maxPriorityFeePerGas: '0x5',
         to: '0x9dDA6Ef3D919c9bC8885D5560999A3640431e8e6',
         value: '0x0',
       }),

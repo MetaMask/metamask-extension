@@ -27,11 +27,7 @@ import {
   getIsStxEnabled,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  formatCurrencyAmount,
-  formatNetworkFee,
-  formatTokenAmount,
-} from '../utils/quote';
+import { formatNetworkFee, formatTokenAmount } from '../utils/quote';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
   IconColor,
@@ -47,7 +43,9 @@ import { formatPriceImpact } from '../utils/price-impact';
 import { type DestinationAccount } from '../prepare/types';
 import { useRewards } from '../../../hooks/bridge/useRewards';
 import { RewardsBadge } from '../../../components/app/rewards/RewardsBadge';
+import AddRewardsAccount from '../../../components/app/rewards/AddRewardsAccount';
 import { Skeleton } from '../../../components/component-library/skeleton';
+import { getGasFeesSponsoredNetworkEnabled } from '../../../selectors/selectors';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
 const getTimerColor = (timeInSeconds: number) => {
@@ -90,6 +88,9 @@ export const MultichainBridgeQuoteCard = ({
   const dispatch = useDispatch();
 
   const isToOrFromNonEvm = useSelector(getIsToOrFromNonEvm);
+  const gasFeesSponsoredNetworkEnabled = useSelector(
+    getGasFeesSponsoredNetworkEnabled,
+  );
 
   const [showAllQuotes, setShowAllQuotes] = useState(false);
 
@@ -100,7 +101,43 @@ export const MultichainBridgeQuoteCard = ({
   const gasIncluded = activeQuote?.quote?.gasIncluded ?? false;
   const gasIncluded7702 = activeQuote?.quote?.gasIncluded7702 ?? false;
   const gasSponsored = activeQuote?.quote?.gasSponsored ?? false;
-  const isGasless = gasIncluded7702 || gasIncluded || gasSponsored;
+
+  const isCurrentNetworkGasSponsored = useMemo(() => {
+    if (!fromChain?.chainId || !gasFeesSponsoredNetworkEnabled) {
+      return false;
+    }
+    return Boolean(
+      gasFeesSponsoredNetworkEnabled[
+        fromChain.chainId as keyof typeof gasFeesSponsoredNetworkEnabled
+      ],
+    );
+  }, [fromChain?.chainId, gasFeesSponsoredNetworkEnabled]);
+
+  const shouldShowGasSponsored = useMemo(() => {
+    if (gasSponsored) {
+      return true;
+    }
+
+    // For the insufficientBal workaround, validate it's a same-chain swap
+    if (insufficientBal && isCurrentNetworkGasSponsored) {
+      // Gas sponsorship only applies to same-chain swaps, not cross-chain bridges
+      const isSameChain =
+        fromToken?.chainId &&
+        toToken?.chainId &&
+        fromToken.chainId === toToken.chainId;
+      return Boolean(isSameChain);
+    }
+
+    return false;
+  }, [
+    gasSponsored,
+    insufficientBal,
+    isCurrentNetworkGasSponsored,
+    fromToken?.chainId,
+    toToken?.chainId,
+  ]);
+
+  const isGasless = gasIncluded7702 || gasIncluded || shouldShowGasSponsored;
 
   const nativeTokenSymbol = fromChain
     ? getNativeAssetForChainId(fromChain.chainId).symbol
@@ -139,7 +176,11 @@ export const MultichainBridgeQuoteCard = ({
     estimatedPoints,
     shouldShowRewardsRow,
     hasError: hasRewardsError,
-  } = useRewards({ activeQuote: activeQuote?.quote ?? null });
+    rewardsAccountScope,
+    accountOptedIn: rewardsAccountOptedIn,
+  } = useRewards({
+    activeQuote: isQuoteLoading ? null : (activeQuote?.quote ?? null),
+  });
 
   if (!activeQuote) {
     return null;
@@ -265,7 +306,7 @@ export const MultichainBridgeQuoteCard = ({
                 {t('networkFeeExplanation')}
               </Tooltip>
             </Row>
-            {gasSponsored && (
+            {shouldShowGasSponsored && (
               <Row gap={1} data-testid="network-fees-sponsored">
                 <Text
                   variant={TextVariant.bodySm}
@@ -282,7 +323,7 @@ export const MultichainBridgeQuoteCard = ({
                 </Tooltip>
               </Row>
             )}
-            {!gasSponsored && activeQuote.quote.gasIncluded && (
+            {!shouldShowGasSponsored && activeQuote.quote.gasIncluded && (
               <Row gap={1} data-testid="network-fees-included">
                 <Text
                   variant={TextVariant.bodySm}
@@ -307,7 +348,7 @@ export const MultichainBridgeQuoteCard = ({
                 </Text>
               </Row>
             )}
-            {!gasSponsored && !activeQuote.quote.gasIncluded && (
+            {!shouldShowGasSponsored && !activeQuote.quote.gasIncluded && (
               <Text
                 variant={TextVariant.bodySm}
                 color={TextColor.textAlternative}
@@ -360,7 +401,7 @@ export const MultichainBridgeQuoteCard = ({
         </Row>
 
         {/* Minimum Received */}
-        {activeQuote.minToTokenAmount.valueInCurrency && (
+        {activeQuote.minToTokenAmount.amount && (
           <Row justifyContent={JustifyContent.spaceBetween}>
             <Row gap={2}>
               <Text
@@ -383,10 +424,10 @@ export const MultichainBridgeQuoteCard = ({
               color={TextColor.textAlternative}
               data-testid="minimum-received"
             >
-              {formatCurrencyAmount(
-                activeQuote.minToTokenAmount.valueInCurrency,
-                currency,
-                2,
+              {formatTokenAmount(
+                locale,
+                activeQuote.minToTokenAmount.amount,
+                activeQuote.quote.destAsset.symbol,
               )}
             </Text>
           </Row>
@@ -457,7 +498,10 @@ export const MultichainBridgeQuoteCard = ({
 
         {/* Estimated Rewards Points */}
         {shouldShowRewardsRow && (
-          <Row justifyContent={JustifyContent.spaceBetween}>
+          <Row
+            justifyContent={JustifyContent.spaceBetween}
+            data-testid="rewards-row"
+          >
             <Row gap={2}>
               <Text
                 variant={TextVariant.bodySm}
@@ -475,10 +519,14 @@ export const MultichainBridgeQuoteCard = ({
             </Row>
             <Row gap={1}>
               {isRewardsLoading || isQuoteLoading ? (
-                <Skeleton width={100} height={16} />
+                <Skeleton
+                  width={100}
+                  height={16}
+                  data-testid="rewards-loading-skeleton"
+                />
               ) : null}
               {!isRewardsLoading && !isQuoteLoading && hasRewardsError && (
-                <>
+                <Row data-testid="rewards-error-state">
                   <RewardsBadge
                     formattedPoints={t('bridgePoints_couldntLoad')}
                     withPointsSuffix={false}
@@ -496,22 +544,25 @@ export const MultichainBridgeQuoteCard = ({
                   >
                     {t('bridgePoints_error_content')}
                   </Tooltip>
+                </Row>
+              )}
+              {!isRewardsLoading && !isQuoteLoading && !hasRewardsError && (
+                <>
+                  {rewardsAccountScope && rewardsAccountOptedIn === false ? (
+                    <AddRewardsAccount account={rewardsAccountScope} />
+                  ) : (
+                    <RewardsBadge
+                      formattedPoints={new Intl.NumberFormat(locale).format(
+                        estimatedPoints ?? 0,
+                      )}
+                      withPointsSuffix={false}
+                      boxClassName="gap-1 bg-background-transparent"
+                      textClassName="text-alternative"
+                      useAlternativeIconColor={!estimatedPoints}
+                    />
+                  )}
                 </>
               )}
-              {!isRewardsLoading &&
-                !isQuoteLoading &&
-                !hasRewardsError &&
-                estimatedPoints !== null && (
-                  <RewardsBadge
-                    formattedPoints={new Intl.NumberFormat(locale).format(
-                      estimatedPoints,
-                    )}
-                    withPointsSuffix={false}
-                    boxClassName="gap-1 bg-background-transparent"
-                    textClassName="text-alternative"
-                    useAlternativeIconColor={!estimatedPoints}
-                  />
-                )}
             </Row>
           </Row>
         )}
