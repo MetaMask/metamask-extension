@@ -25,11 +25,8 @@ import TermsOfUseUpdateModal from '../pages/dialog/terms-of-use-update-modal';
 export const handleSidepanelPostOnboarding = async (
   driver: Driver,
 ): Promise<void> => {
-  // Check if sidepanel is enabled via build configuration
   // AND we're not running on Firefox (which doesn't support sidepanel)
-  const isSidepanelEnabled =
-    process.env.IS_SIDEPANEL === 'true' &&
-    process.env.SELENIUM_BROWSER !== Browser.FIREFOX;
+  const isSidepanelEnabled = process.env.IS_SIDEPANEL;
 
   if (isSidepanelEnabled) {
     // Give the onboarding completion time to process (needed for sidepanel)
