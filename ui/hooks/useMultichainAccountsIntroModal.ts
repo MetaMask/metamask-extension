@@ -5,7 +5,7 @@ import { getIsMultichainAccountsState2Enabled } from '../selectors/multichain-ac
 import { DEFAULT_ROUTE } from '../helpers/constants/routes';
 
 // Version threshold for BIP-44 multichain accounts introduction
-const BIP44_ACCOUNTS_INTRODUCTION_VERSION = '13.5.0';
+export const BIP44_ACCOUNTS_INTRODUCTION_VERSION = '13.5.0';
 
 /**
  * Hook to manage the multichain accounts intro modal display logic
