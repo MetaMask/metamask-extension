@@ -24,7 +24,7 @@ async function mockSegment(mockServer: Mockttp) {
   ];
 }
 
-describe('Port Stream Chunking', function () {
+describe('Port Stream Chunking TEST', function () {
   it('can load the wallet UI with a huge background state (~128MB)', async function () {
     // add MOCK_TRANSACTION_BY_TYPE.HUGE to an array a bunch of times
     const hugeTx = {
