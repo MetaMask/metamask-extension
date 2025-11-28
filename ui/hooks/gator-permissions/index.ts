@@ -4,6 +4,6 @@ export type { RevokeGatorPermissionsMultiChainResults } from './useRevokeGatorPe
 export { extractDelegationFromGatorPermissionContext } from './utils';
 export {
   useGatorPermissionTokenInfo,
-  type TokenInfo,
+  type GatorTokenInfo,
   type UseGatorPermissionTokenInfoResult,
 } from './useGatorPermissionTokenInfo';

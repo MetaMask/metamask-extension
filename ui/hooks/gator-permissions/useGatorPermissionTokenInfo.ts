@@ -18,14 +18,21 @@ import {
   type NetworkConfigurationsByCaipChainId,
 } from '../../../shared/lib/gator-permissions/gator-permissions-utils';
 
-// Re-export GatorTokenInfo as TokenInfo for backward compatibility
-export type TokenInfo = GatorTokenInfo;
+export type { GatorTokenInfo } from '../../../shared/lib/gator-permissions/gator-permissions-utils';
+
+type TokenInfoSource =
+  | 'native'
+  | 'cache'
+  | 'imported'
+  | 'api'
+  | 'onchain'
+  | null;
 
 export type UseGatorPermissionTokenInfoResult = {
   /**
    * Token information including symbol, decimals, name, and image
    */
-  tokenInfo: TokenInfo;
+  tokenInfo: GatorTokenInfo;
   /**
    * True when fetching token information
    */
@@ -42,7 +49,7 @@ export type UseGatorPermissionTokenInfoResult = {
    * - 'api': From external API
    * - 'onchain': From on-chain data
    */
-  source: 'native' | 'cache' | 'imported' | 'api' | 'onchain' | null;
+  source: TokenInfoSource;
 };
 
 /**
@@ -62,10 +69,10 @@ export function useGatorPermissionTokenInfo(
   chainId: Hex | undefined,
   permissionType?: string,
 ): UseGatorPermissionTokenInfoResult {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [fetchedTokenInfo, setFetchedTokenInfo] = useState<{
-    tokenInfo: TokenInfo;
+    tokenInfo: GatorTokenInfo;
     source: 'api' | 'onchain';
   } | null>(null);
 
@@ -131,11 +138,10 @@ export function useGatorPermissionTokenInfo(
     }
 
     // Determine source based on whether it was found in cache
-    const source: 'cache' | 'imported' = cachedToken ? 'cache' : 'imported';
 
     return {
       tokenInfo,
-      source,
+      source: cachedToken ? 'cache' : 'imported',
     };
   }, [tokenAddress, chainId, erc20TokensByChain, allTokens, isNativeToken]);
 
@@ -179,8 +185,10 @@ export function useGatorPermissionTokenInfo(
 
         if (!cancelled) {
           // Determine source based on whether we have image data (typically from API)
-          const source: 'api' | 'onchain' = tokenInfo.image ? 'api' : 'onchain';
-          setFetchedTokenInfo({ tokenInfo, source });
+          setFetchedTokenInfo({
+            tokenInfo,
+            source: tokenInfo.image ? 'api' : 'onchain',
+          });
         }
       } catch (err) {
         if (!cancelled) {
@@ -245,6 +253,6 @@ export function useGatorPermissionTokenInfo(
     tokenInfo: result.tokenInfo,
     loading,
     error,
-    source: result.source,
+    source: result.source as TokenInfoSource,
   };
 }
