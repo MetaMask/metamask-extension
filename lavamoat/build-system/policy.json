@@ -795,18 +795,18 @@
         "nock>debug": true
       }
     },
-    "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/traverse": {
+    "lavamoat>lavamoat-tofu>@babel/traverse": {
       "globals": {
         "console.log": true
       },
       "packages": {
         "@babel/code-frame": true,
         "@babel/core>@babel/generator": true,
-        "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/traverse>@babel/parser": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/parser": true,
         "@babel/core>@babel/template": true,
-        "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/traverse>@babel/types": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true,
         "nock>debug": true,
-        "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/traverse>globals": true
+        "lavamoat>lavamoat-tofu>@babel/traverse>globals": true
       }
     },
     "@babel/core>@babel/types": {
@@ -819,7 +819,7 @@
         "@babel/code-frame>@babel/helper-validator-identifier": true
       }
     },
-    "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/traverse>@babel/types": {
+    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": {
       "globals": {
         "console.warn": true,
         "process.env.BABEL_TYPES_8_BREAKING": true
@@ -1019,7 +1019,7 @@
         "@lavamoat/lavapack>combine-source-map": true,
         "eslint>espree": true,
         "@lavamoat/webpack>json-stable-stringify": true,
-        "@lavamoat/webpack>lavamoat-core": true,
+        "lavamoat>lavamoat-core": true,
         "readable-stream": true,
         "through2": true,
         "@lavamoat/lavapack>umd": true
@@ -4536,12 +4536,12 @@
         "browserify>browser-resolve": true,
         "lavamoat-browserify>concat-stream": true,
         "duplexify": true,
-        "@lavamoat/webpack>lavamoat-core": true,
+        "lavamoat>lavamoat-core": true,
         "readable-stream": true,
         "through2": true
       }
     },
-    "@lavamoat/webpack>lavamoat-core": {
+    "lavamoat>lavamoat-core": {
       "builtin": {
         "node:events": true,
         "node:fs.readFileSync": true,
@@ -4556,17 +4556,17 @@
       },
       "packages": {
         "@lavamoat/webpack>json-stable-stringify": true,
-        "@lavamoat/webpack>lavamoat-core>lavamoat-tofu": true,
+        "lavamoat>lavamoat-tofu": true,
         "lavamoat>lavamoat-core>merge-deep": true
       }
     },
-    "@lavamoat/webpack>lavamoat-core>lavamoat-tofu": {
+    "lavamoat>lavamoat-tofu": {
       "globals": {
         "console.log": true
       },
       "packages": {
-        "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/parser": true,
-        "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/traverse": true
+        "lavamoat>lavamoat-tofu>@babel/parser": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse": true
       }
     },
     "lavamoat>lavamoat-core>merge-deep>clone-deep>lazy-cache": {
