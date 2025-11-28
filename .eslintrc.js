@@ -314,14 +314,16 @@ module.exports = {
         'test/jest/rendering.js',
         'ui/**/*.js',
       ],
-      extends: ['plugin:react/recommended', 'plugin:react-hooks/recommended'],
+      extends: ['plugin:react/recommended'],
       parserOptions: {
         ecmaFeatures: {
           jsx: true,
         },
       },
-      plugins: ['react', 'react-compiler'],
+      plugins: ['react', 'react-hooks', 'react-compiler'],
       rules: {
+        'react-hooks/rules-of-hooks': 'error',
+        'react-hooks/exhaustive-deps': 'warn',
         'react-compiler/react-compiler': 'error',
         'react/no-unused-prop-types': 'error',
         'react/no-unused-state': 'error',
@@ -357,14 +359,16 @@ module.exports = {
      */
     {
       files: ['ui/**/*.ts', 'ui/**/*.tsx'],
-      extends: ['plugin:react/recommended', 'plugin:react-hooks/recommended'],
+      extends: ['plugin:react/recommended'],
       parserOptions: {
         ecmaFeatures: {
           jsx: true,
         },
       },
-      plugins: ['react', 'react-compiler'],
+      plugins: ['react', 'react-hooks', 'react-compiler'],
       rules: {
+        'react-hooks/rules-of-hooks': 'error',
+        'react-hooks/exhaustive-deps': 'warn',
         'react-compiler/react-compiler': 'error',
         'react/no-unused-prop-types': 'warn',
         'react/no-unused-state': 'warn',
@@ -378,7 +382,6 @@ module.exports = {
         'react/prop-types': 'off',
         'react/no-children-prop': 'off',
         'react/jsx-key': 'warn', // TODO - increase this into 'error' level
-        'react-hooks/rules-of-hooks': 'error',
       },
       settings: {
         react: {
