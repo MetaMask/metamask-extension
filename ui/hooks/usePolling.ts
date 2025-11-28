@@ -25,6 +25,12 @@ const usePolling = <PollingInput>(
   }, []);
 
   useEffect(() => {
+    if (usePollingOptions.enabled === false || !hasPollingInputChanged) {
+      return () => {
+        // noop
+      };
+    }
+
     const cleanup = () => {
       if (pollTokenRef.current) {
         usePollingOptions.stopPollingByPollingToken(pollTokenRef.current);
@@ -33,16 +39,6 @@ const usePolling = <PollingInput>(
         cleanupRef.current = null;
       }
     };
-
-    if (usePollingOptions.enabled === false) {
-      // Stop polling if it was previously enabled
-      if (pollTokenRef.current) {
-        cleanup();
-      }
-      return () => {
-        // noop
-      };
-    }
 
     // Start polling when the component mounts
     usePollingOptions.startPolling(pollingInput).then((pollToken) => {
