@@ -5,6 +5,7 @@ import {
   PricingResponse,
   PRODUCT_TYPES,
   Subscription,
+  SUBSCRIPTION_STATUSES,
   SubscriptionCryptoPaymentMethod,
 } from '@metamask/subscription-controller';
 import {
@@ -251,6 +252,10 @@ export const PaymentMethodRow = ({
           className="text-default decoration-text-default hover:decoration-text-default hover:text-default"
           onClick={() => setShowPaymentModal(true)}
           endIconName={IconName.ArrowRight}
+          disabled={
+            displayedShieldSubscription.status ===
+            SUBSCRIPTION_STATUSES.canceled
+          }
         >
           {displayedShieldSubscription.paymentMethod.crypto.tokenSymbol}
         </TextButton>
