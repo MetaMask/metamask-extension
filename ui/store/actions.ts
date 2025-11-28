@@ -4722,6 +4722,12 @@ export function toggleNetworkMenu(payload?: {
   };
 }
 
+export function closeNetworkMenu() {
+  return {
+    type: actionConstants.CLOSE_NETWORK_MENU,
+  };
+}
+
 export function setParticipateInMetaMetrics(
   participationPreference: boolean,
 ): ThunkAction<
