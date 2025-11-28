@@ -14,6 +14,7 @@ import {
 import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20.json';
 import {
   formatChainIdToCaip,
+  QuoteResponse,
   RequestStatus,
 } from '@metamask/bridge-controller';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
@@ -89,17 +90,7 @@ DefaultStory.decorators = [
           bridgeSliceOverrides: mockBridgeSlice,
           bridgeStateOverrides: {
             quotes: [],
-            destTokens: {
-              '0x1234': { symbol: 'USDC', address: '0x1234', decimals: 6 },
-            },
-            srcTokens: {
-              '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85': {
-                symbol: 'USDC',
-                address: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
-                decimals: 6,
-              },
-            },
-            quotesLastFetchedMs: Date.now(),
+            quotesLastFetched: Date.now(),
           },
           metamaskStateOverrides: {
             useExternalServices: true,
@@ -142,16 +133,6 @@ LoadingStory.decorators = [
               quotes: [],
               quotesLastFetched: 134,
               quotesLoadingStatus: RequestStatus.LOADING,
-              destTokens: {
-                '0x1234': { symbol: 'USDC', address: '0x1234', decimals: 6 },
-              },
-              srcTokens: {
-                '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85': {
-                  symbol: 'USDC',
-                  address: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
-                  decimals: 6,
-                },
-              },
             },
             metamaskStateOverrides: {
               useExternalServices: true,
@@ -193,13 +174,11 @@ NoQuotesStory.decorators = [
               quoteRequest: {
                 srcChainId: CHAIN_IDS.MAINNET,
                 destChainId: CHAIN_IDS.LINEA_MAINNET,
-                srcToken: {
-                  address: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
-                },
+                srcTokenAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
                 srcTokenAmount: '1',
                 destTokenAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
                 destWalletAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
-                slippage: '1',
+                slippage: 1,
                 walletAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
                 gasIncluded: true,
                 insufficientBal: false,
@@ -245,19 +224,9 @@ QuotesFetchedStory.decorators = [
             featureFlagOverrides: mockFeatureFlags,
             bridgeSliceOverrides: mockBridgeSlice,
             bridgeStateOverrides: {
-              quotes: mockBridgeQuotesErc20Erc20,
+              quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
               quotesLastFetched: Date.now(),
               quotesLoadingStatus: RequestStatus.FETCHED,
-              destTokens: {
-                '0x1234': { symbol: 'USDC', address: '0x1234', decimals: 6 },
-              },
-              srcTokens: {
-                '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85': {
-                  symbol: 'USDC',
-                  address: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
-                  decimals: 6,
-                },
-              },
             },
             metamaskStateOverrides: {
               useExternalServices: true,
@@ -312,7 +281,7 @@ AlertsPresentStory.decorators = [
               },
             },
             bridgeStateOverrides: {
-              quotes: mockBridgeQuotesErc20Erc20,
+              quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
               quotesLastFetched: Date.now(),
               quotesLoadingStatus: RequestStatus.FETCHED,
               quoteRequest: {
@@ -322,7 +291,7 @@ AlertsPresentStory.decorators = [
                 destTokenAddress: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
                 srcTokenAmount: '1',
                 destWalletAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
-                slippage: '1',
+                slippage: 1,
                 walletAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
                 gasIncluded: true,
                 insufficientBal: false,

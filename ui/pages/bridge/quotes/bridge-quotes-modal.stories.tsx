@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import configureStore from '../../../store/store';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20.json';
-import { SortOrder } from '@metamask/bridge-controller';
+import { QuoteResponse, SortOrder } from '@metamask/bridge-controller';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 
 const storybook = {
@@ -20,7 +20,9 @@ NoTokenPricesAvailableStory.decorators = [
     <Provider
       store={configureStore(
         createBridgeMockStore({
-          bridgeStateOverrides: { quotes: mockBridgeQuotesErc20Erc20 },
+          bridgeStateOverrides: {
+            quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+          },
         }),
       )}
     >
@@ -42,7 +44,9 @@ DefaultStory.decorators = [
             fromTokenExchangeRate: 0.99,
             sortOrder: SortOrder.COST_ASC,
           },
-          bridgeStateOverrides: { quotes: mockBridgeQuotesErc20Erc20 },
+          bridgeStateOverrides: {
+            quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+          },
           metamaskStateOverrides: {
             currencyRates: {
               ETH: { conversionRate: 2514.5 }, //1
@@ -76,7 +80,9 @@ PositiveArbitrage.decorators = [
           bridgeSliceOverrides: {
             fromTokenExchangeRate: 0.99,
           },
-          bridgeStateOverrides: { quotes: mockBridgeQuotesErc20Erc20 },
+          bridgeStateOverrides: {
+            quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+          },
           metamaskStateOverrides: {
             currencyRates: {
               ETH: { conversionRate: 2514.5 },

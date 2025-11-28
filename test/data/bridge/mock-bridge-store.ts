@@ -2,6 +2,7 @@ import {
   getDefaultBridgeControllerState,
   formatChainIdToCaip,
   FeatureFlagResponse,
+  BridgeControllerState,
 } from '@metamask/bridge-controller';
 import { DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE } from '@metamask/bridge-status-controller';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
@@ -127,14 +128,12 @@ export const createBridgeMockStore = ({
   stateOverrides = {},
 }: {
   featureFlagOverrides?: { bridgeConfig: Partial<FeatureFlagResponse> };
-  // bridgeStateOverrides?: Partial<BridgeControllerState>;
+  bridgeStateOverrides?: Partial<BridgeControllerState>;
   // bridgeStatusStateOverrides?: Partial<BridgeStatusState>;
   // metamaskStateOverrides?: Partial<BridgeAppState['metamask']>;
   // TODO replace these with correct types
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   bridgeSliceOverrides?: Record<string, any>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  bridgeStateOverrides?: Record<string, any>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   bridgeStatusStateOverrides?: Record<string, any>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

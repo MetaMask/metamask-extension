@@ -495,13 +495,10 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
-          quotes: mockErc20Erc20Quotes,
-          quotesFetchStatus: 1,
+          quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
           quotesRefreshCount: 5,
           quotesLastFetched: 100,
           quotesInitialLoadTime: 11000,
-          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
-          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
         },
         metamaskStateOverrides: {
           currencyRates: {
@@ -578,13 +575,10 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
-          quotes: mockErc20Erc20Quotes,
-          quotesFetchStatus: 1,
+          quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
           quotesRefreshCount: 2,
           quotesInitialLoadTime: 11000,
           quotesLastFetched: 100,
-          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
-          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
         },
         metamaskStateOverrides: {
           currencyRates: {
@@ -677,13 +671,10 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
-          quotes: mockErc20Erc20Quotes,
-          quotesFetchStatus: 1,
+          quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
           quotesRefreshCount: 1,
           quotesLastFetched: 100,
           quotesInitialLoadTime: 11000,
-          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
-          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
         },
         metamaskStateOverrides: {
           currencyRates: {
@@ -776,7 +767,9 @@ describe('Bridge selectors', () => {
 
     it('should sort quotes by adjustedReturn', () => {
       const state = createBridgeMockStore({
-        bridgeStateOverrides: { quotes: mockBridgeQuotesNativeErc20 },
+        bridgeStateOverrides: {
+          quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
+        },
       });
 
       const { activeQuote, recommendedQuote, sortedQuotes } = getBridgeQuotes(
@@ -821,12 +814,13 @@ describe('Bridge selectors', () => {
         bridgeSliceOverrides: { sortOrder: SortOrder.ETA_ASC },
         bridgeStateOverrides: {
           quotes: [
-            ...mockBridgeQuotesNativeErc20,
+            ...(mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[]),
             {
               ...mockBridgeQuotesNativeErc20[0],
               estimatedProcessingTimeInSeconds: 1,
               quote: {
-                ...mockBridgeQuotesNativeErc20[0].quote,
+                ...(mockBridgeQuotesNativeErc20[0]
+                  .quote as unknown as QuoteResponse['quote']),
                 requestId: 'fastestQuote',
               },
             },
@@ -864,8 +858,6 @@ describe('Bridge selectors', () => {
             walletAddress: '0x1234',
             destTokenAddress: zeroAddress(),
           },
-          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
-          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
           quotes: [],
           quotesLastFetched: Date.now(),
           quotesRefreshCount: 1,
@@ -888,8 +880,6 @@ describe('Bridge selectors', () => {
             walletAddress: '0x1234',
             destTokenAddress: '0x1234',
           },
-          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
-          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
           quotes: [],
           quotesLastFetched: Date.now(),
           quotesRefreshCount: 1,
@@ -904,8 +894,6 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: { toChainId: formatChainIdToCaip('0x1') },
         bridgeStateOverrides: {
-          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
-          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
           quotes: [],
         },
       });
@@ -926,9 +914,7 @@ describe('Bridge selectors', () => {
           fromTokenBalance: '990',
         },
         bridgeStateOverrides: {
-          minimumBalanceForRentExemption: '890880',
-          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
-          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
+          minimumBalanceForRentExemptionInLamports: '890880',
           quotesLastFetched: Date.now(),
           quoteRequest: { srcTokenAmount: '1000' },
         },
@@ -1133,8 +1119,6 @@ describe('Bridge selectors', () => {
           fromTokenBalance: '990',
         },
         bridgeStateOverrides: {
-          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
-          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
           quotesLastFetched: Date.now(),
         },
       });
@@ -1150,8 +1134,6 @@ describe('Bridge selectors', () => {
           fromTokenBalance: null,
         },
         bridgeStateOverrides: {
-          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
-          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
           quotesLastFetched: Date.now(),
         },
       });
@@ -1172,8 +1154,6 @@ describe('Bridge selectors', () => {
           fromTokenBalance: '0',
         },
         bridgeStateOverrides: {
-          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
-          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
           quotesLastFetched: Date.now(),
           quoteRequest: { srcTokenAmount: '1000' },
         },
@@ -1196,8 +1176,6 @@ describe('Bridge selectors', () => {
           fromNativeBalance: '10000000000000000',
         },
         bridgeStateOverrides: {
-          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
-          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
           quotesLastFetched: Date.now(),
           quoteRequest: { srcTokenAmount: '10000000000000000' },
         },
@@ -1225,8 +1203,6 @@ describe('Bridge selectors', () => {
           fromNativeBalance: '0',
         },
         bridgeStateOverrides: {
-          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
-          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
           quotesLastFetched: Date.now(),
           quoteRequest: { srcTokenAmount: '100000000' },
         },
@@ -1257,8 +1233,6 @@ describe('Bridge selectors', () => {
           fromNativeBalance: '0',
         },
         bridgeStateOverrides: {
-          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
-          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
           quotesLastFetched: Date.now(),
           quoteRequest: {},
         },
@@ -1276,10 +1250,8 @@ describe('Bridge selectors', () => {
           fromNativeBalance: '0',
         },
         bridgeStateOverrides: {
-          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
-          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
           quotesLastFetched: Date.now(),
-          quotes: mockErc20Erc20Quotes,
+          quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
         },
       });
       const result = getValidationErrors(state as never);
@@ -1307,10 +1279,8 @@ describe('Bridge selectors', () => {
           fromNativeBalance: '1000000000000000',
         },
         bridgeStateOverrides: {
-          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
-          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
           quotesLastFetched: Date.now(),
-          quotes: mockBridgeQuotesNativeErc20,
+          quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
         },
       });
       const result = getValidationErrors(state as never);
@@ -1337,10 +1307,8 @@ describe('Bridge selectors', () => {
           fromNativeBalance: '1000000000000000000',
         },
         bridgeStateOverrides: {
-          srcTokens: { '0x00': { address: '0x00', symbol: 'TEST' } },
-          srcTopAssets: [{ address: '0x00', symbol: 'TEST' }],
           quotesLastFetched: Date.now(),
-          quotes: mockBridgeQuotesNativeErc20,
+          quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
         },
       });
       const result = getValidationErrors(state as never);
@@ -1383,7 +1351,7 @@ describe('Bridge selectors', () => {
           fromTokenExchangeRate: 2524.25,
         },
         bridgeStateOverrides: {
-          quotes: mockBridgeQuotesNativeErc20,
+          quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
           quoteRequest: {
             srcChainId: 10,
             srcTokenAddress: zeroAddress(),
@@ -1460,7 +1428,7 @@ describe('Bridge selectors', () => {
             destChainId: '0x89',
             destTokenAddress: zeroAddress(),
           },
-          quotes: mockBridgeQuotesNativeErc20,
+          quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
         },
         metamaskStateOverrides: {
           currencyRates: {

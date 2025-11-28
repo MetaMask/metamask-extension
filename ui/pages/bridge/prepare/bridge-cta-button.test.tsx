@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  QuoteResponse,
   RequestStatus,
   formatChainIdToCaip,
   getNativeAssetForChainId,
@@ -23,7 +24,7 @@ describe('BridgeCTAButton', () => {
           },
         },
       },
-      bridgeSliceOverrides: { fromTokenInputValue: 1 },
+      bridgeSliceOverrides: { fromTokenInputValue: '1' },
     });
     const { container, getByText } = renderWithProvider(
       <BridgeCTAButton onFetchNewQuotes={jest.fn()} />,
@@ -51,8 +52,8 @@ describe('BridgeCTAButton', () => {
       },
       bridgeSliceOverrides: {
         fromTokenInputValue: null,
-        fromToken: 'ETH',
-        toToken: 'ETH',
+        // fromToken: 'ETH',
+        // toToken: 'ETH',
         toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
       },
     });
@@ -151,7 +152,7 @@ describe('BridgeCTAButton', () => {
         toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
       },
       bridgeStateOverrides: {
-        quotes: mockBridgeQuotesNativeErc20,
+        quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
         quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
       },
@@ -250,7 +251,7 @@ describe('BridgeCTAButton', () => {
           toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
         },
         bridgeStateOverrides: {
-          quotes: mockBridgeQuotesNativeErc20,
+          quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
           quotesLastFetched: Date.now(),
           quotesLoadingStatus: RequestStatus.LOADING,
         },
@@ -305,7 +306,7 @@ describe('BridgeCTAButton', () => {
         toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
       },
       bridgeStateOverrides: {
-        quotes: mockBridgeQuotesNativeErc20,
+        quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
         quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.LOADING,
       },
