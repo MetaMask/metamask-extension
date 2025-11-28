@@ -811,12 +811,21 @@ export default class MetamaskController extends EventEmitter {
         const hasActiveShieldSubscription = getIsShieldSubscriptionActive(
           state.subscriptions,
         );
-
         if (hasActiveShieldSubscription) {
           // fetch claims configurations when shield subscription is active
           this.claimsController.fetchClaimsConfigurations().catch((err) => {
             log.error('Error fetching claims configurations', err);
           });
+          const preferencesState = this.controllerMessenger.call(
+            'PreferencesController:getState',
+          );
+          const hasBasicFunctionalityEnabled =
+            preferencesState.useExternalServices;
+          // shield coverage use security alerts, phish detect and transaction simulations, which is only available when basic functionality is enabled
+          if (!hasBasicFunctionalityEnabled) {
+            return;
+          }
+
           // update preferences and metrics optin status after shield subscription is active
           updatePreferencesAndMetricsForShieldSubscription(
             this.metaMetricsController,
@@ -827,35 +836,6 @@ export default class MetamaskController extends EventEmitter {
           this.shieldController.stop();
         }
       },
-    );
-    // on/off shield controller based on preferences useExternalServices flag (basic functionality toggle)
-    // since shield coverage use security alerts, phish detect and transaction simulations, which is only available when basic functionality is enabled
-    this.controllerMessenger.subscribe(
-      'PreferencesController:stateChange',
-      previousValueComparator(async (prevState, currState) => {
-        const { useExternalServices: prevUseExternalServices } = prevState;
-        const { useExternalServices: currUseExternalServices } = currState;
-        const hasChanged = currUseExternalServices !== prevUseExternalServices;
-        if (!hasChanged) {
-          return;
-        }
-
-        const subscriptionState = this.controllerMessenger.call(
-          'SubscriptionController:getState',
-        );
-        const hasActiveShieldSubscription = getIsShieldSubscriptionActive(
-          subscriptionState.subscriptions,
-        );
-        // if there is no active shield subscription, do nothing
-        if (!hasActiveShieldSubscription) {
-          return;
-        }
-        if (currUseExternalServices) {
-          this.shieldController.start();
-        } else {
-          this.shieldController.stop();
-        }
-      }, this.preferencesController.state),
     );
 
     const petnamesBridgeMessenger = new Messenger({
@@ -8208,12 +8188,24 @@ export default class MetamaskController extends EventEmitter {
   toggleExternalServices(useExternal) {
     this.preferencesController.toggleExternalServices(useExternal);
     this.tokenListController.updatePreventPollingOnNetworkRestart(!useExternal);
+    const subscriptionState = this.controllerMessenger.call(
+      'SubscriptionController:getState',
+    );
+    const hasActiveShieldSubscription = getIsShieldSubscriptionActive(
+      subscriptionState.subscriptions,
+    );
     if (useExternal) {
       this.tokenDetectionController.enable();
       this.gasFeeController.enableNonRPCGasFeeApis();
+      if (hasActiveShieldSubscription) {
+        this.shieldController.start();
+      }
     } else {
       this.tokenDetectionController.disable();
       this.gasFeeController.disableNonRPCGasFeeApis();
+      if (hasActiveShieldSubscription) {
+        this.shieldController.stop();
+      }
     }
   }
 
