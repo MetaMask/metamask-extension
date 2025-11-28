@@ -45,7 +45,7 @@ const Wrapper = ({ children }) => (
 
 const mockFeatureFlags = {
   extensionSupport: true,
-  extensionConfig: {
+  bridgeConfig: {
     refreshRate: 30000,
     priceImpactThreshold: {
       normal: 1,

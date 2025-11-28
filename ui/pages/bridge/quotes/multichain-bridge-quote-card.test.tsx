@@ -42,7 +42,7 @@ describe('MultichainBridgeQuoteCard', () => {
   it('should render the recommended quote (no MM fee)', async () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        extensionConfig: {
+        bridgeConfig: {
           maxRefreshCount: 5,
           refreshRate: 30000,
           chains: {
@@ -119,7 +119,7 @@ describe('MultichainBridgeQuoteCard', () => {
   it('should render a quote with MM fee', async () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        extensionConfig: {
+        bridgeConfig: {
           maxRefreshCount: 5,
           refreshRate: 30000,
           chains: {
@@ -211,7 +211,7 @@ describe('MultichainBridgeQuoteCard', () => {
   it('should render the recommended quote while loading new quotes', async () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        extensionConfig: {
+        bridgeConfig: {
           chains: {
             [CHAIN_IDS.MAINNET]: { isActiveSrc: false, isActiveDest: false },
             [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: true },
@@ -287,7 +287,7 @@ describe('MultichainBridgeQuoteCard', () => {
   it('should not render when there is no quote', async () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        extensionConfig: {
+        bridgeConfig: {
           chains: {
             [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: false },
             [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: true },
@@ -316,7 +316,7 @@ describe('MultichainBridgeQuoteCard', () => {
   it('should not render when there is a quote fetch error', async () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        extensionConfig: {
+        bridgeConfig: {
           chains: {
             [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: false },
             [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: true },
@@ -346,7 +346,7 @@ describe('MultichainBridgeQuoteCard', () => {
     const createMockStoreWithQuote = () =>
       createBridgeMockStore({
         featureFlagOverrides: {
-          extensionConfig: {
+          bridgeConfig: {
             maxRefreshCount: 5,
             refreshRate: 30000,
             chains: {
@@ -582,7 +582,7 @@ describe('MultichainBridgeQuoteCard', () => {
   it('should render gas sponsored text when gasSponsored is true', async () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        extensionConfig: {
+        bridgeConfig: {
           maxRefreshCount: 5,
           refreshRate: 30000,
           chains: {

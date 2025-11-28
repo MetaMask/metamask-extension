@@ -1209,7 +1209,6 @@ describe('Bridge selectors', () => {
 
     it('should return isInsufficientGasBalance=true when balance is 0 and fromToken is erc20', () => {
       const state = createBridgeMockStore({
-        featureFlagOverrides: { destNetworkAllowlist: ['0x89'] },
         bridgeSliceOverrides: {
           toChainId: formatChainIdToCaip('0x89'),
           toToken: {

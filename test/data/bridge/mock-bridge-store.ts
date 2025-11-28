@@ -1,6 +1,7 @@
 import {
   getDefaultBridgeControllerState,
   formatChainIdToCaip,
+  FeatureFlagResponse,
 } from '@metamask/bridge-controller';
 import { DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE } from '@metamask/bridge-status-controller';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
@@ -118,20 +119,18 @@ export const MOCK_EVM_ACCOUNT_2 = {
 };
 
 export const createBridgeMockStore = ({
-  featureFlagOverrides = {},
+  featureFlagOverrides = { bridgeConfig: {} },
   bridgeSliceOverrides = {},
   bridgeStateOverrides = {},
   bridgeStatusStateOverrides = {},
   metamaskStateOverrides = {},
   stateOverrides = {},
 }: {
-  // featureFlagOverrides?: Partial<BridgeControllerState['bridgeFeatureFlags']>;
+  featureFlagOverrides?: { bridgeConfig: Partial<FeatureFlagResponse> };
   // bridgeStateOverrides?: Partial<BridgeControllerState>;
   // bridgeStatusStateOverrides?: Partial<BridgeStatusState>;
   // metamaskStateOverrides?: Partial<BridgeAppState['metamask']>;
   // TODO replace these with correct types
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  featureFlagOverrides?: Record<string, any>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   bridgeSliceOverrides?: Record<string, any>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -352,7 +351,6 @@ export const createBridgeMockStore = ({
             support: false,
             refreshRate: 5000,
             maxRefreshCount: 5,
-            ...featureFlagOverrides?.extensionConfig,
             ...featureFlagOverrides?.bridgeConfig,
             chains: {
               [formatChainIdToCaip('0x1')]: {
@@ -361,9 +359,7 @@ export const createBridgeMockStore = ({
               },
               ...Object.fromEntries(
                 Object.entries(
-                  featureFlagOverrides?.extensionConfig?.chains ??
-                    featureFlagOverrides?.bridgeConfig?.chains ??
-                    {},
+                  featureFlagOverrides?.bridgeConfig?.chains ?? {},
                 ).map(([chainId, config]) => [
                   formatChainIdToCaip(chainId),
                   config,

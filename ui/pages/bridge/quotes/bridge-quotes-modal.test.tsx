@@ -12,7 +12,7 @@ describe('BridgeQuotesModal', () => {
   it('should render the modal', () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        extensionConfig: {
+        bridgeConfig: {
           chains: {
             '0x1': { isActiveSrc: true, isActiveDest: false },
             '0xa': { isActiveSrc: true, isActiveDest: false },
