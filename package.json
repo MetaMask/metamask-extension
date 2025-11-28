@@ -659,7 +659,7 @@
     "json-schema-to-ts": "^3.0.1",
     "jsonwebtoken": "^9.0.2",
     "koa": "^3.1.1",
-    "lavamoat": "patch:lavamoat@npm%3A10.0.0#~/.yarn/patches/lavamoat-npm-10.0.0-9a132772a6.patch",
+    "lavamoat": "git+https://github.com/LavaMoat/LavaMoat.git#head=main&workspace=lavamoat",
     "lavamoat-viz": "^7.0.5",
     "level": "^8.0.1",
     "lockfile-lint": "^4.10.6",

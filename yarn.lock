@@ -31585,7 +31585,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-core@npm:^17.0.0, lavamoat-core@npm:^17.0.1":
+"lavamoat-core@npm:^17.0.1":
   version: 17.0.1
   resolution: "lavamoat-core@npm:17.0.1"
   dependencies:
@@ -31598,6 +31598,22 @@ __metadata:
   bin:
     lavamoat-sort-policy: src/policy-sort-cli.js
   checksum: 10/216db62524b416ba5670ae237ccdb94d07a04a84294c9193c3f8cd245dc883f37f993bdecefb22f99f8d742e7297303b9dca430631e4a74547c8b9dc94592e2f
+  languageName: node
+  linkType: hard
+
+"lavamoat-core@npm:^17.1.0":
+  version: 17.1.0
+  resolution: "lavamoat-core@npm:17.1.0"
+  dependencies:
+    "@babel/types": "npm:7.27.3"
+    "@lavamoat/types": "npm:^0.1.0"
+    json-stable-stringify: "npm:1.3.0"
+    lavamoat-tofu: "npm:^8.1.0"
+    merge-deep: "npm:3.0.3"
+    ses: "npm:1.14.0"
+  bin:
+    lavamoat-sort-policy: src/policy-sort-cli.js
+  checksum: 10/bc45feddf10ecc563a938df315b639100874bcd0e22a388fe2047f1f93579f8f9967653aff6e416d0079f9cd11240e2bc9a45c698ec781070bb525fb3584af27
   languageName: node
   linkType: hard
 
@@ -31632,6 +31648,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lavamoat-tofu@npm:^8.1.0":
+  version: 8.1.0
+  resolution: "lavamoat-tofu@npm:8.1.0"
+  dependencies:
+    "@babel/parser": "npm:7.27.3"
+    "@babel/traverse": "npm:7.27.3"
+    "@babel/types": "npm:7.27.3"
+    "@lavamoat/types": "npm:^0.1.0"
+    "@types/babel__traverse": "npm:7.20.7"
+    type-fest: "npm:4.41.0"
+  peerDependencies:
+    lavamoat-core: ">15.4.0"
+  checksum: 10/ed96ddf284af0051179a4f46bc6432fb32d05f5055ae94fe3f469a7d7f17c62e834854bf2ed26fb55ff012a02789b8b0bee3cb760aab24d04d8714dba3d43b3f
+  languageName: node
+  linkType: hard
+
 "lavamoat-viz@npm:^7.0.5":
   version: 7.0.5
   resolution: "lavamoat-viz@npm:7.0.5"
@@ -31648,9 +31680,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat@npm:10.0.0":
-  version: 10.0.0
-  resolution: "lavamoat@npm:10.0.0"
+"lavamoat@git+https://github.com/LavaMoat/LavaMoat.git#head=main&workspace=lavamoat":
+  version: 10.0.2
+  resolution: "lavamoat@https://github.com/LavaMoat/LavaMoat.git#workspace=lavamoat&commit=f2eecedbcf6f501e4f7163f47b97821b9e5dc8a1"
   dependencies:
     "@babel/code-frame": "npm:7.27.1"
     "@babel/highlight": "npm:7.25.9"
@@ -31658,37 +31690,15 @@ __metadata:
     bindings: "npm:1.5.0"
     corepack: "npm:0.33.0"
     htmlescape: "npm:1.1.1"
-    lavamoat-core: "npm:^17.0.0"
-    lavamoat-tofu: "npm:^8.0.11"
+    lavamoat-core: "npm:^17.1.0"
+    lavamoat-tofu: "npm:^8.1.0"
     node-gyp-build: "npm:4.8.4"
     resolve: "npm:1.22.10"
     yargs: "npm:17.7.2"
   bin:
     lavamoat: src/cli.js
     lavamoat-run-command: src/run-command.js
-  checksum: 10/3a6e995289a6fe5007f020b7288d22ea98c0eaee8d609cfc172c9a81ab7db1cec7fd7dffb84eb58ddbcefd73195e84a103df27ea76539eded5d77c4356454c5f
-  languageName: node
-  linkType: hard
-
-"lavamoat@patch:lavamoat@npm%3A10.0.0#~/.yarn/patches/lavamoat-npm-10.0.0-9a132772a6.patch":
-  version: 10.0.0
-  resolution: "lavamoat@patch:lavamoat@npm%3A10.0.0#~/.yarn/patches/lavamoat-npm-10.0.0-9a132772a6.patch::version=10.0.0&hash=3339bc"
-  dependencies:
-    "@babel/code-frame": "npm:7.27.1"
-    "@babel/highlight": "npm:7.25.9"
-    "@lavamoat/aa": "npm:^4.3.4"
-    bindings: "npm:1.5.0"
-    corepack: "npm:0.33.0"
-    htmlescape: "npm:1.1.1"
-    lavamoat-core: "npm:^17.0.0"
-    lavamoat-tofu: "npm:^8.0.11"
-    node-gyp-build: "npm:4.8.4"
-    resolve: "npm:1.22.10"
-    yargs: "npm:17.7.2"
-  bin:
-    lavamoat: src/cli.js
-    lavamoat-run-command: src/run-command.js
-  checksum: 10/ff676dbee8f865000a072e33d5922d31ef448cbdd25ef08c01982c2baec0b06f3ea664f5aa0b820d735134605d154e521b32be81dde7eb419b81fceee3fda992
+  checksum: 10/91dc25b1071f021510ccd8a87ecb8edbbb27320e98dfac3dfb8304384bbddf0304ff91d29b9bdb31b1518a565358cded415563482483dce9357371388f72d46c
   languageName: node
   linkType: hard
 
@@ -33178,7 +33188,7 @@ __metadata:
     jsonwebtoken: "npm:^9.0.2"
     koa: "npm:^3.1.1"
     labeled-stream-splicer: "npm:^2.0.2"
-    lavamoat: "patch:lavamoat@npm%3A10.0.0#~/.yarn/patches/lavamoat-npm-10.0.0-9a132772a6.patch"
+    lavamoat: "git+https://github.com/LavaMoat/LavaMoat.git#head=main&workspace=lavamoat"
     lavamoat-browserify: "npm:^19.0.2"
     lavamoat-viz: "npm:^7.0.5"
     level: "npm:^8.0.1"
