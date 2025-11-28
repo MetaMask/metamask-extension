@@ -3,7 +3,7 @@ import { Driver } from '../../../webdriver/driver';
 import { Ganache } from '../../../seeder/ganache';
 import { Anvil } from '../../../seeder/anvil';
 import HeaderNavbar from '../header-navbar';
-import { getCleanAppState } from '../../../helpers';
+import { getCleanAppState, regularDelayMs } from '../../../helpers';
 
 class HomePage {
   protected driver: Driver;
@@ -17,6 +17,11 @@ class HomePage {
   private readonly backupSecretRecoveryPhraseButton = {
     text: 'Back up now',
     css: '.home-notification__accept-button',
+  };
+
+  private readonly backupRemindMeLaterButton = {
+    tag: 'button',
+    text: 'Remind me later',
   };
 
   private readonly backupSecretRecoveryPhraseNotification = {
@@ -61,13 +66,12 @@ class HomePage {
   private readonly portfolioLink = '[data-testid="portfolio-link"]';
 
   private readonly privacyBalanceToggle = {
-    testId: 'sensitive-toggle',
+    testId: 'account-value-and-suffix',
   };
 
   protected readonly sendButton: string = '[data-testid="eth-overview-send"]';
 
-  protected readonly swapButton: string =
-    '[data-testid="token-overview-button-swap"]';
+  protected readonly swapButton: string = '[data-testid="eth-overview-swap"]';
 
   private readonly refreshErc20Tokens = {
     testId: 'refreshList',
@@ -86,6 +90,17 @@ class HomePage {
 
   private readonly connectionsRemovedModal =
     '[data-testid="connections-removed-modal"]';
+
+  private readonly shieldEntryModal = '[data-testid="shield-entry-modal"]';
+
+  private readonly shieldEntryModalGetStarted =
+    '[data-testid="shield-entry-modal-get-started-button"]';
+
+  private readonly shieldEntryModalSkip =
+    '[data-testid="shield-entry-modal-close-button"]';
+
+  private readonly emptyBalance =
+    '[data-testid="coin-overview-balance-empty-state"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -106,6 +121,65 @@ class HomePage {
     console.log('Home page is loaded');
   }
 
+  async waitForNetworkAndDOMReady(): Promise<void> {
+    console.log(
+      'Waiting for network idle, DOM loaded, page completed, and Redux state ready',
+    );
+    try {
+      // Wait for DOM to be ready
+      await this.driver.executeScript(`
+        return new Promise((resolve) => {
+          if (document.readyState === 'complete') {
+            resolve();
+          } else {
+            window.addEventListener('load', () => resolve(), { once: true });
+          }
+        });
+      `);
+
+      // Wait for Redux state to be ready
+      await this.driver.executeAsyncScript(`
+        const callback = arguments[arguments.length - 1];
+        const maxAttempts = 50;
+        let attempts = 0;
+
+        const checkReduxReady = () => {
+          attempts++;
+
+          if (window.stateHooks?.getCleanAppState) {
+            try {
+              const state = window.stateHooks.getCleanAppState();
+
+              if (state && typeof state === 'object') {
+                if (state.metamask && typeof state.metamask === 'object') {
+                  console.log('Redux state is ready');
+                  callback();
+                  return;
+                }
+              }
+            } catch (e) {
+              console.log('Redux state not ready yet, attempt ' + attempts);
+            }
+          }
+
+          if (attempts >= maxAttempts) {
+            console.log('Redux state check timeout, continuing anyway');
+            callback();
+            return;
+          }
+          setTimeout(checkReduxReady, 100);
+        };
+        checkReduxReady();
+      `);
+
+      console.log(
+        'Network idle, DOM loaded, page completed, and Redux state ready',
+      );
+    } catch (e) {
+      console.log('Error waiting for network, DOM, and Redux ready', e);
+    }
+  }
+
   async checkPageIsNotLoaded(): Promise<void> {
     console.log('Check home page is not loaded');
     await this.driver.assertElementNotPresent(this.activityTab, {
@@ -114,6 +188,17 @@ class HomePage {
     await this.driver.assertElementNotPresent(this.tokensTab, {
       waitAtLeastGuard: 500,
     });
+  }
+
+  async clickBackupRemindMeLaterButton(): Promise<void> {
+    await this.driver.clickElementAndWaitToDisappear(
+      this.backupRemindMeLaterButton,
+    );
+  }
+
+  async clickBackupRemindMeLaterButtonSafe(): Promise<void> {
+    await this.driver.clickElementSafe(this.backupRemindMeLaterButton);
+    await this.driver.assertElementNotPresent(this.backupRemindMeLaterButton);
   }
 
   async closeSurveyToast(surveyName: string): Promise<void> {
@@ -279,6 +364,19 @@ class HomePage {
   }
 
   /**
+   * Checks if the balance empty state is displayed on homepage.
+   * Criteria:
+   * - The account group has a zero balance across all aggregated mainnet networks.
+   * - The account group is not on a test network
+   * - The account group is not in a cached state
+   * Not a replacement for checkExpectedBalanceIsDisplayed('0') this is still valid in certain cases.
+   */
+  async checkBalanceEmptyStateIsDisplayed(): Promise<void> {
+    console.log('Check balance empty state is displayed on homepage');
+    await this.driver.waitForSelector(this.emptyBalance);
+  }
+
+  /**
    * Checks if the expected token balance is displayed on homepage.
    *
    * @param expectedTokenBalance - The expected balance to be displayed.
@@ -409,6 +507,36 @@ class HomePage {
 
   async checkConnectionsRemovedModalIsDisplayed(): Promise<void> {
     await this.driver.waitForSelector(this.connectionsRemovedModal);
+  }
+
+  async checkShieldEntryModalIsDisplayed(): Promise<void> {
+    console.log('Check shield entry modal is displayed on homepage');
+    await this.driver.waitForSelector(this.shieldEntryModal);
+  }
+
+  async clickOnShieldEntryModalGetStarted(): Promise<void> {
+    console.log('Click on shield entry modal get started');
+    await this.driver.clickElement(this.shieldEntryModalGetStarted);
+  }
+
+  async clickOnShieldEntryModalSkip(): Promise<void> {
+    console.log('Click on shield entry modal skip');
+    await this.driver.clickElement(this.shieldEntryModalSkip);
+  }
+
+  async checkNoShieldEntryModalIsDisplayed(): Promise<void> {
+    console.log('Check no shield entry modal is displayed on homepage');
+    await this.driver.assertElementNotPresent(this.shieldEntryModal, {
+      waitAtLeastGuard: regularDelayMs,
+    });
+  }
+
+  async checkShieldEntryModalNotPresent(): Promise<void> {
+    console.log('Check shield entry modal is not present on homepage');
+    await this.driver.assertElementNotPresent(this.shieldEntryModal, {
+      waitAtLeastGuard: regularDelayMs,
+      timeout: 2000,
+    });
   }
 }
 

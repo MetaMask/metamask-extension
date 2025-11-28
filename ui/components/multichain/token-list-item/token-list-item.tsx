@@ -1,14 +1,14 @@
 import React, { useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import classnames from 'classnames';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { type Hex } from '@metamask/utils';
+import { type KeyringAccountType } from '@metamask/keyring-api';
 import {
   AlignItems,
   BackgroundColor,
   BlockSize,
-  BorderRadius,
   Display,
   FlexDirection,
   FontWeight,
@@ -18,6 +18,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { TokenInsightsModal } from '../../../pages/bridge/token-insights-modal';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -36,6 +37,7 @@ import {
   ModalOverlay,
   SensitiveText,
   SensitiveTextLength,
+  Tag,
   Text,
 } from '../../component-library';
 import { getMarketData, getCurrencyRates } from '../../../selectors';
@@ -56,6 +58,7 @@ import { setEditedNetwork } from '../../../store/actions';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { selectNoFeeAssets } from '../../../ducks/bridge/selectors';
+import { ACCOUNT_TYPE_LABELS } from '../../app/assets/constants';
 import { PercentageChange } from './price/percentage-change/percentage-change';
 import { StakeableLink } from './stakeable-link';
 
@@ -79,6 +82,7 @@ type TokenListItemProps = {
   privacyMode?: boolean;
   nativeCurrencySymbol?: string;
   isDestinationToken?: boolean;
+  accountType?: KeyringAccountType;
 };
 
 export const TokenListItemComponent = ({
@@ -98,6 +102,7 @@ export const TokenListItemComponent = ({
   isTitleHidden = false,
   address = null,
   showPercentage = false,
+  accountType,
   privacyMode = false,
   nativeCurrencySymbol,
   isDestinationToken = false,
@@ -120,7 +125,8 @@ export const TokenListItemComponent = ({
 
   const dispatch = useDispatch();
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
-  const history = useHistory();
+  const navigate = useNavigate();
+  const [showTokenInsights, setShowTokenInsights] = useState(false);
 
   const getTokenTitle = () => {
     if (isTitleNetworkName) {
@@ -279,32 +285,10 @@ export const TokenListItemComponent = ({
                   )}
                 </Text>
               )}
-              {isNoFeeAsset && (
-                <Box
-                  backgroundColor={BackgroundColor.backgroundSection}
-                  borderRadius={BorderRadius.SM}
-                  paddingInline={1}
-                  paddingTop={0}
-                  paddingBottom={0}
-                  style={{
-                    height: '20px',
-                    display: 'flex',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Text
-                    variant={TextVariant.bodySm}
-                    fontWeight={FontWeight.Medium}
-                    color={TextColor.textAlternative}
-                    style={{
-                      lineHeight: '20px',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    {t('bridgeNoMMFee')}
-                  </Text>
-                </Box>
+              {accountType && ACCOUNT_TYPE_LABELS[accountType] && (
+                <Tag label={ACCOUNT_TYPE_LABELS[accountType]} />
               )}
+              {isNoFeeAsset && <Tag label={t('bridgeNoMMFee')} />}
             </Box>
 
             {showScamWarning ? (
@@ -394,6 +378,21 @@ export const TokenListItemComponent = ({
             )}
           </Box>
         </Box>
+
+        {isDestinationToken && (
+          <ButtonIcon
+            iconName={IconName.Info}
+            size={ButtonIconSize.Sm}
+            onClick={(e: React.MouseEvent) => {
+              e.stopPropagation();
+              e.preventDefault();
+              setShowTokenInsights(true);
+            }}
+            className="multichain-token-list-item__info-icon"
+            color={IconColor.iconAlternative}
+            ariaLabel={t('viewTokenDetails')}
+          />
+        )}
       </Box>
       {isEvm && showScamWarningModal ? (
         <Modal isOpen onClose={() => setShowScamWarningModal(false)}>
@@ -415,7 +414,7 @@ export const TokenListItemComponent = ({
               <ButtonSecondary
                 onClick={() => {
                   dispatch(setEditedNetwork({ chainId }));
-                  history.push(NETWORKS_ROUTE);
+                  navigate(NETWORKS_ROUTE);
                 }}
                 block
               >
@@ -425,6 +424,20 @@ export const TokenListItemComponent = ({
           </ModalContent>
         </Modal>
       ) : null}
+
+      {showTokenInsights && (
+        <TokenInsightsModal
+          isOpen={showTokenInsights}
+          onClose={() => setShowTokenInsights(false)}
+          token={{
+            address,
+            symbol: tokenSymbol || title,
+            name: title,
+            chainId,
+            iconUrl: tokenImage,
+          }}
+        />
+      )}
     </Box>
   );
 };

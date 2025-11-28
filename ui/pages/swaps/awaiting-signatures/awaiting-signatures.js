@@ -1,8 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import isEqual from 'lodash/isEqual';
-
 import { I18nContext } from '../../../contexts/i18n';
 import {
   getFetchParams,
@@ -18,10 +17,7 @@ import {
   getSmartTransactionsEnabled,
   getSmartTransactionsOptInStatusForMetrics,
 } from '../../../../shared/modules/selectors';
-import {
-  DEFAULT_ROUTE,
-  PREPARE_SWAP_ROUTE,
-} from '../../../helpers/constants/routes';
+import { PREPARE_SWAP_ROUTE } from '../../../helpers/constants/routes';
 import PulseLoader from '../../../components/ui/pulse-loader';
 import Box from '../../../components/ui/box';
 import {
@@ -39,7 +35,7 @@ import SwapStepIcon from './swap-step-icon';
 
 export default function AwaitingSignatures() {
   const t = useContext(I18nContext);
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const fetchParams = useSelector(getFetchParams, isEqual);
   const { destinationTokenInfo, sourceTokenInfo } = fetchParams?.metaData || {};
@@ -75,7 +71,6 @@ export default function AwaitingSignatures() {
         stx_user_opt_in: smartTransactionsOptInStatus,
       },
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const headerText = needsTwoConfirmations
@@ -147,10 +142,8 @@ export default function AwaitingSignatures() {
       <SwapsFooter
         onSubmit={async () => {
           await dispatch(prepareToLeaveSwaps());
-          // Go to the default route and then to the build quote route in order to clean up
-          // the `inputValue` local state in `pages/swaps/index.js`
-          history.push(DEFAULT_ROUTE);
-          history.push(PREPARE_SWAP_ROUTE);
+          // prepareToLeaveSwaps() clears all swaps state, so we can navigate directly
+          navigate(PREPARE_SWAP_ROUTE);
         }}
         submitText={t('cancel')}
         hideCancel

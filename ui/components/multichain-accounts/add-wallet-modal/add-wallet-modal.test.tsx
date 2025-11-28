@@ -1,24 +1,28 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 import { useSelector } from 'react-redux';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
   ADD_WALLET_PAGE_ROUTE,
   CONNECT_HARDWARE_ROUTE,
   IMPORT_SRP_ROUTE,
 } from '../../../helpers/constants/routes';
+import {
+  getIsAddSnapAccountEnabled,
+  getIsWatchEthereumAccountEnabled,
+} from '../../../selectors';
 import { AddWalletModal } from './add-wallet-modal';
 
-const mockHistoryPush = jest.fn();
 const mockOpenExtensionInBrowser = jest.fn();
 const mockUseSelector = useSelector as jest.MockedFunction<typeof useSelector>;
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockHistoryPush,
-  }),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -38,9 +42,7 @@ describe('AddWalletModal', () => {
   const mockOnClose = jest.fn();
 
   beforeEach(() => {
-    mockOnClose.mockClear();
-    mockHistoryPush.mockClear();
-    mockOpenExtensionInBrowser.mockClear();
+    jest.clearAllMocks();
 
     // Mock useSelector to return false for manageInstitutionalWallets by default
     mockUseSelector.mockReturnValue(false);
@@ -71,7 +73,7 @@ describe('AddWalletModal', () => {
     fireEvent.click(screen.getByText('importAWallet'));
 
     expect(mockOnClose).toHaveBeenCalledTimes(1);
-    expect(mockHistoryPush).toHaveBeenCalledWith(IMPORT_SRP_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(IMPORT_SRP_ROUTE);
   });
 
   it('calls onClose and navigates when import account option is clicked', () => {
@@ -80,7 +82,7 @@ describe('AddWalletModal', () => {
     fireEvent.click(screen.getByText('importAnAccount'));
 
     expect(mockOnClose).toHaveBeenCalledTimes(1);
-    expect(mockHistoryPush).toHaveBeenCalledWith(ADD_WALLET_PAGE_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(ADD_WALLET_PAGE_ROUTE);
   });
 
   it('calls onClose and opens hardware wallet route in expanded view', () => {
@@ -92,7 +94,7 @@ describe('AddWalletModal', () => {
     expect(mockOpenExtensionInBrowser).toHaveBeenCalledWith(
       CONNECT_HARDWARE_ROUTE,
     );
-    expect(mockHistoryPush).not.toHaveBeenCalled();
+    expect(mockUseNavigate).not.toHaveBeenCalled();
   });
 
   it('does not render when isOpen is false', () => {
@@ -119,5 +121,46 @@ describe('AddWalletModal', () => {
     renderWithProvider(<AddWalletModal isOpen={true} onClose={mockOnClose} />);
 
     expect(screen.getByText('manageInstitutionalWallets')).toBeInTheDocument();
+  });
+
+  it('renders the add snap account option when addSnapAccountEnabled is true', () => {
+    mockUseSelector.mockImplementation((selector) => {
+      return selector === getIsAddSnapAccountEnabled;
+    });
+
+    // Mock platform.openTab
+    // @ts-expect-error mocking platform
+    global.platform = {
+      ...global.platform,
+      openTab: jest.fn(),
+    };
+
+    renderWithProvider(<AddWalletModal isOpen={true} onClose={mockOnClose} />);
+
+    const snapAccountOption = screen.getByTestId(
+      'add-wallet-modal-snap-account',
+    );
+
+    expect(snapAccountOption).toBeInTheDocument();
+    expect(screen.getByText('settingAddSnapAccount')).toBeInTheDocument();
+
+    fireEvent.click(snapAccountOption);
+
+    expect(global.platform.openTab).toHaveBeenCalled();
+  });
+
+  it('renders the watch Ethereum account option when isAddWatchEthereumAccountEnabled is true', () => {
+    mockUseSelector.mockImplementation((selector) => {
+      return selector === getIsWatchEthereumAccountEnabled;
+    });
+
+    renderWithProvider(<AddWalletModal isOpen={true} onClose={mockOnClose} />);
+
+    const watchAccountOption = screen.getByTestId(
+      'add-wallet-modal-watch-ethereum-account',
+    );
+
+    expect(watchAccountOption).toBeInTheDocument();
+    expect(screen.getByText('addEthereumWatchOnlyAccount')).toBeInTheDocument();
   });
 });

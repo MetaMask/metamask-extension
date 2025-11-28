@@ -19,7 +19,11 @@
     },
     "AnnouncementController": { "announcements": "object" },
     "NetworkOrderController": {
-      "orderedNetworkList": { "0": "object", "1": "object", "2": "object" }
+      "orderedNetworkList": {
+        "0": "object",
+        "1": "object",
+        "2": "object"
+      }
     },
     "NetworkEnablementController": {
       "enabledNetworkMap": { "eip155": "object", "solana": "object" }
@@ -45,7 +49,12 @@
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
       "newPrivacyPolicyToastShownDate": "number",
       "snapsInstallPrivacyWarningShown": true,
-      "hasShownMultichainAccountsIntroModal": "boolean"
+      "hasShownMultichainAccountsIntroModal": "boolean",
+      "showShieldEntryModalOnce": "boolean",
+      "pendingShieldCohort": null,
+      "pendingShieldCohortTxType": null,
+      "pna25Acknowledged": "boolean",
+      "appActiveTab": "object"
     },
     "BridgeController": {},
     "CurrencyController": {
@@ -82,7 +91,6 @@
       "metaMetricsDataDeletionId": null,
       "metaMetricsDataDeletionTimestamp": 0
     },
-    "MultichainAccountService": "object",
     "NetworkController": {
       "selectedNetworkClientId": "string",
       "networkConfigurations": "object",
@@ -135,7 +143,6 @@
       "useCurrencyRateCheck": true,
       "useMultiAccountBalanceChecker": true,
       "isMultiAccountBalancesEnabled": "boolean",
-      "showIncomingTransactions": "object",
       "referrals": "object"
     },
     "SelectedNetworkController": { "domains": "object" },
@@ -154,6 +161,7 @@
       "allIgnoredTokens": {},
       "allTokens": {}
     },
+    "MultichainAccountService": "object",
     "TransactionController": { "transactions": "object" },
     "config": "object",
     "firstTimeInfo": "object"

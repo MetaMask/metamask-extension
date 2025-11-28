@@ -3,6 +3,7 @@ import React, { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
 import { AvatarAccountSize } from '@metamask/design-system-react';
+import type { To } from 'react-router-dom-v5-compat';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
@@ -13,6 +14,7 @@ import {
   AlignItems,
   Display,
   FlexDirection,
+  JustifyContent,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -22,11 +24,7 @@ import {
   getMetaMaskAccountsOrdered,
   getMetaMaskKeyrings,
 } from '../../../selectors';
-import {
-  clearAccountDetails,
-  hideWarning,
-  setAccountDetailsAddress,
-} from '../../../store/actions';
+import { clearAccountDetails, hideWarning } from '../../../store/actions';
 import HoldToRevealModal from '../../app/modals/hold-to-reveal-modal/hold-to-reveal-modal';
 import {
   Box,
@@ -48,9 +46,18 @@ import { AccountDetailsAuthenticate } from './account-details-authenticate';
 import { AccountDetailsDisplay } from './account-details-display';
 import { AccountDetailsKey } from './account-details-key';
 
-type AccountDetailsProps = { address: string };
+type AccountDetailsProps = {
+  address: string;
+  navigate?: {
+    (
+      to: To,
+      options?: { replace?: boolean; state?: Record<string, unknown> },
+    ): void;
+    (delta: number): void;
+  };
+};
 
-export const AccountDetails = ({ address }: AccountDetailsProps) => {
+export const AccountDetails = ({ address, navigate }: AccountDetailsProps) => {
   const dispatch = useDispatch();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -99,7 +106,6 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
   const [privateKey, setPrivateKey] = useState('');
 
   const onClose = useCallback(() => {
-    dispatch(setAccountDetailsAddress(''));
     dispatch(clearAccountDetails());
     dispatch(hideWarning());
   }, [dispatch]);
@@ -108,7 +114,7 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
     <PreferredAvatar
       address={address}
       size={AvatarAccountSize.Lg}
-      style={{ margin: '0 auto' }}
+      className="mx-auto"
     />
   );
 
@@ -132,6 +138,10 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
               } else if (attemptingExport === AttemptExportState.None) {
                 onClose();
               }
+            }}
+            childrenWrapperProps={{
+              display: Display.Flex,
+              justifyContent: JustifyContent.center,
             }}
           >
             {attemptingExport === AttemptExportState.PrivateKey
@@ -214,7 +224,7 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
         }}
         holdToRevealType="PrivateKey"
       />
-      {displayExportSrpQuiz && (
+      {displayExportSrpQuiz && navigate && (
         <SRPQuiz
           keyringId={keyringId}
           isOpen={srpQuizModalVisible}
@@ -223,6 +233,7 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
             onClose();
           }}
           closeAfterCompleting
+          navigate={navigate}
         />
       )}
     </>

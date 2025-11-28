@@ -8,7 +8,7 @@ import {
   withFixtures,
 } from '../../helpers';
 import { TestSuiteArguments } from '../confirmations/transactions/shared';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { MOCK_META_METRICS_ID } from '../../constants';
 import HomePage from '../../page-objects/pages/home/homepage';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
@@ -45,8 +45,9 @@ describe('Marketing cookieId', function (this: Suite) {
   it('should be send to segment when preferences are enabled', async function () {
     await withFixtures(
       {
-        dapp: true,
-        dappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
+        dappOptions: {
+          customDappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
+        },
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
@@ -90,8 +91,9 @@ describe('Marketing cookieId', function (this: Suite) {
   it('should not be send to segment when dataCollectionForMarketing is never toggled on', async function () {
     await withFixtures(
       {
-        dapp: true,
-        dappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
+        dappOptions: {
+          customDappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
+        },
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
@@ -135,8 +137,9 @@ describe('Marketing cookieId', function (this: Suite) {
   it('should not be send to segment when participateInMetaMetrics is never toggled on ', async function () {
     await withFixtures(
       {
-        dapp: true,
-        dappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
+        dappOptions: {
+          customDappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
+        },
         fixtures: new FixtureBuilder().withMetaMetricsController().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSegment,
@@ -173,8 +176,9 @@ describe('Marketing cookieId', function (this: Suite) {
   it('should updates marketingCampaignCookieId to null when dataCollectionForMarketing is toggled off ', async function () {
     await withFixtures(
       {
-        dapp: true,
-        dappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
+        dappOptions: {
+          customDappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
+        },
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,

@@ -1,6 +1,6 @@
 import { MockttpServer } from 'mockttp';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import Homepage from '../../page-objects/pages/home/homepage';
@@ -25,7 +25,7 @@ describe('Settings', function () {
   it('Shows nft default image when IPFS toggle is off and restore image once we toggle the ipfs modal', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().withNftControllerERC1155().build(),
         smartContract,
         title: this.test?.fullTitle(),

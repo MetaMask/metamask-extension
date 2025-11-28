@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import TestDappPage from '../../../page-objects/pages/test-dapp';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { DAPP_URL, WINDOW_TITLES, withFixtures } from '../../../helpers';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
@@ -19,6 +19,7 @@ describe('Trezor Hardware', function (this: Suite) {
   it('deploys an ERC-721 token', async function () {
     await withFixtures(
       {
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withTrezorAccount()
           .withPermissionControllerConnectedToTestDapp({
@@ -27,7 +28,6 @@ describe('Trezor Hardware', function (this: Suite) {
           .build(),
         title: this.test?.fullTitle(),
         smartContract,
-        dapp: true,
       },
       async ({ driver, localNodes }) => {
         await localNodes?.[0]?.setAccountBalance(
@@ -61,6 +61,7 @@ describe('Trezor Hardware', function (this: Suite) {
   it('mints an ERC-721 token', async function () {
     await withFixtures(
       {
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withTrezorAccount()
           .withPermissionControllerConnectedToTestDapp({
@@ -69,7 +70,6 @@ describe('Trezor Hardware', function (this: Suite) {
           .build(),
         title: this.test?.fullTitle(),
         smartContract,
-        dapp: true,
       },
       async ({ driver, localNodes, contractRegistry }: TestSuiteArguments) => {
         await localNodes?.[0]?.setAccountBalance(
@@ -117,6 +117,7 @@ describe('Trezor Hardware', function (this: Suite) {
   it('approves an ERC-721 token', async function () {
     await withFixtures(
       {
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withTrezorAccount()
           .withPermissionControllerConnectedToTestDapp({
@@ -124,7 +125,6 @@ describe('Trezor Hardware', function (this: Suite) {
           })
           .build(),
         title: this.test?.fullTitle(),
-        dapp: true,
         smartContract: [
           {
             name: smartContract,
@@ -180,6 +180,7 @@ describe('Trezor Hardware', function (this: Suite) {
   it('sets approval for all an ERC-721 token', async function () {
     await withFixtures(
       {
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withTrezorAccount()
           .withPermissionControllerConnectedToTestDapp({
@@ -188,7 +189,6 @@ describe('Trezor Hardware', function (this: Suite) {
           .build(),
         title: this.test?.fullTitle(),
         smartContract,
-        dapp: true,
       },
       async ({ driver, localNodes, contractRegistry }: TestSuiteArguments) => {
         await localNodes?.[0]?.setAccountBalance(

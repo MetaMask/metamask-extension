@@ -1,14 +1,14 @@
 const { strict: assert } = require('assert');
 const { withFixtures, unlockWallet } = require('../../helpers');
 const { DAPP_URL, WINDOW_TITLES } = require('../../constants');
-const FixtureBuilder = require('../../fixture-builder');
+const FixtureBuilder = require('../../fixtures/fixture-builder');
 
 describe('PPOM Settings', function () {
   // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('should not show the PPOM warning when toggle is off', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()
@@ -45,7 +45,7 @@ describe('PPOM Settings', function () {
   it.skip('should show the PPOM warning when the toggle is on', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()

@@ -26,6 +26,7 @@ const REMOVE_KEYS = [
   'phishingLists',
   'stalelistLastFetched',
   'whitelist',
+  'whitelistPaths',
 
   // SeedlessOnboardingController
   'accessToken',

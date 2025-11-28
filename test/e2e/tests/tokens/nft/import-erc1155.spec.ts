@@ -1,6 +1,6 @@
 import { withFixtures } from '../../../helpers';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import Homepage from '../../../page-objects/pages/home/homepage';
 import NftListPage from '../../../page-objects/pages/home/nft-list';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
@@ -11,7 +11,7 @@ describe('Import ERC1155 NFT', function () {
   it('should be able to import an ERC1155 NFT that user owns', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -39,7 +39,7 @@ describe('Import ERC1155 NFT', function () {
   it('should not be able to import an ERC1155 NFT that does not belong to user', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),

@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`<BaseTransactionInfo /> does not render if required data is not present in the transaction 1`] = `<div />`;
 
@@ -52,7 +52,7 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
           </div>
         </div>
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          class="mm-box mm-text mm-text--body-md mm-text--text-align-right mm-box--width-11/12 mm-box--color-text-default"
         >
           No changes
         </p>
@@ -145,7 +145,7 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+          class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
             class="name name__clickable name__missing"

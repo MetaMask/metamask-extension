@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import TestDappPage from '../../../page-objects/pages/test-dapp';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { WINDOW_TITLES, withFixtures } from '../../../helpers';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
@@ -16,6 +16,7 @@ describe('Ledger Hardware', function (this: Suite) {
   it('can create an ERC20 token', async function () {
     await withFixtures(
       {
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withLedgerAccount()
           .withPermissionControllerConnectedToTestDapp({
@@ -23,7 +24,6 @@ describe('Ledger Hardware', function (this: Suite) {
           })
           .build(),
         title: this.test?.fullTitle(),
-        dapp: true,
       },
       async ({ driver, localNodes }) => {
         const symbol = 'TST';
@@ -68,6 +68,7 @@ describe('Ledger Hardware', function (this: Suite) {
     const erc20 = SMART_CONTRACTS.HST;
     await withFixtures(
       {
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withLedgerAccount()
           .withPermissionControllerConnectedToTestDapp({
@@ -76,7 +77,6 @@ describe('Ledger Hardware', function (this: Suite) {
 
           .build(),
         title: this.test?.fullTitle(),
-        dapp: true,
         smartContract: [
           {
             name: erc20,
@@ -137,6 +137,7 @@ describe('Ledger Hardware', function (this: Suite) {
     const erc20 = SMART_CONTRACTS.HST;
     await withFixtures(
       {
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withLedgerAccount()
           .withPermissionControllerConnectedToTestDapp({
@@ -144,7 +145,6 @@ describe('Ledger Hardware', function (this: Suite) {
           })
           .build(),
         title: this.test?.fullTitle(),
-        dapp: true,
         smartContract: [
           {
             name: erc20,
@@ -196,6 +196,7 @@ describe('Ledger Hardware', function (this: Suite) {
     const erc20 = SMART_CONTRACTS.HST;
     await withFixtures(
       {
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withLedgerAccount()
           .withPermissionControllerConnectedToTestDapp({
@@ -203,7 +204,6 @@ describe('Ledger Hardware', function (this: Suite) {
           })
           .build(),
         title: this.test?.fullTitle(),
-        dapp: true,
         smartContract: [
           {
             name: erc20,

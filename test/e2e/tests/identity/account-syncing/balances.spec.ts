@@ -1,7 +1,7 @@
 import { Mockttp } from 'mockttp';
 
-import { E2E_SRP } from '../../../default-fixture';
-import FixtureBuilder from '../../../fixture-builder';
+import { E2E_SRP } from '../../../fixtures/default-fixture';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { withFixtures, unlockWallet, WALLET_PASSWORD } from '../../../helpers';
 import {
   UserStorageMockttpController,
@@ -97,7 +97,15 @@ describe('Account syncing - Accounts with Balances', function () {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        fixtures: new FixtureBuilder({ onboarding: true })
+          .withRemoteFeatureFlags({
+            enableMultichainAccountsState2: {
+              enabled: true,
+              featureVersion: '2',
+              minimumVersion: '13.5.0',
+            },
+          })
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: phase2MockSetup,
       },

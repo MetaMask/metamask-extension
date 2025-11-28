@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { WINDOW_TITLES, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { DAPP_URL } from '../../constants';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
@@ -15,7 +15,7 @@ describe('Request Queue SwitchChain -> WatchAsset', function (this: Suite) {
     const chainId = 1338;
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .build(),

@@ -1,0 +1,2144 @@
+{
+  "data": {
+    "AccountOrderController": {
+      "hiddenAccountList": [],
+      "pinnedAccountList": []
+    },
+    "AccountTracker": {
+      "accountsByChainId": {
+        "0x1": {}
+      }
+    },
+    "AccountTreeController": {
+      "accountGroupsMetadata": {},
+      "accountWalletsMetadata": {},
+      "hasAccountTreeSyncingSyncedAtLeastOnce": false
+    },
+    "AccountsController": {
+      "internalAccounts": {
+        "accounts": {},
+        "selectedAccount": ""
+      }
+    },
+    "AddressBookController": {
+      "addressBook": {}
+    },
+    "AlertController": {
+      "alertEnabledness": {
+        "smartTransactionsMigration": true,
+        "unconnectedAccount": true,
+        "web3ShimUsage": true
+      },
+      "unconnectedAccountAlertShownOrigins": {},
+      "web3ShimUsageOrigins": {}
+    },
+    "AnnouncementController": {
+      "announcements": {}
+    },
+    "AppMetadataController": {
+      "currentAppVersion": "13.12.0",
+      "currentMigrationVersion": 183,
+      "previousAppVersion": "",
+      "previousMigrationVersion": 0
+    },
+    "AppStateController": {
+      "browserEnvironment": {
+        "browser": "chrome",
+        "os": "mac"
+      },
+      "canTrackWalletFundsObtained": true,
+      "connectedStatusPopoverHasBeenShown": true,
+      "defaultHomeActiveTabName": null,
+      "enableEnforcedSimulations": true,
+      "enforcedSimulationsSlippage": 10,
+      "hadAdvancedGasFeesSetPriorToMigration92_3": false,
+      "hasShownMultichainAccountsIntroModal": false,
+      "isRampCardClosed": false,
+      "isWalletResetInProgress": false,
+      "lastUpdatedAt": null,
+      "lastUpdatedFromVersion": null,
+      "lastViewedUserSurvey": null,
+      "newPrivacyPolicyToastClickedOrClosed": null,
+      "newPrivacyPolicyToastShownDate": 1764061390419,
+      "nftsDetectionNoticeDismissed": false,
+      "onboardingDate": 1764061390455,
+      "outdatedBrowserWarningLastShown": null,
+      "pendingShieldCohortTxType": null,
+      "productTour": "accountIcon",
+      "recoveryPhraseReminderHasBeenShown": false,
+      "recoveryPhraseReminderLastShown": 1764061389868,
+      "shieldEndingToastLastClickedOrClosed": null,
+      "shieldPausedToastLastClickedOrClosed": null,
+      "showAccountBanner": true,
+      "showBetaHeader": false,
+      "showDownloadMobileAppSlide": true,
+      "showNetworkBanner": true,
+      "showPermissionsTour": true,
+      "showShieldEntryModalOnce": null,
+      "showTestnetMessageInDropdown": true,
+      "slides": [],
+      "surveyLinkLastClickedOrClosed": null,
+      "timeoutMinutes": 0,
+      "trezorModel": null,
+      "updateModalLastDismissedAt": null
+    },
+    "ApprovalController": {},
+    "AuthenticationController": {
+      "isSignedIn": false
+    },
+    "BridgeController": {},
+    "BridgeStatusController": {
+      "txHistory": {}
+    },
+    "ClaimsController": {
+      "claims": [],
+      "claimsConfigurations": {
+        "supportedNetworks": ["0x1", "0xe708"],
+        "validSubmissionWindowDays": 21
+      }
+    },
+    "CurrencyController": {
+      "currencyRates": {
+        "ETH": {
+          "conversionDate": 0,
+          "conversionRate": 0,
+          "usdConversionRate": null
+        }
+      },
+      "currentCurrency": "usd"
+    },
+    "DeFiPositionsController": {},
+    "DecryptMessageController": {},
+    "DelegationController": {
+      "delegations": {}
+    },
+    "EncryptionPublicKeyController": {},
+    "EnsController": {
+      "ensEntries": {
+        "0x1": {
+          ".": {
+            "address": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
+            "chainId": "0x1",
+            "ensName": "."
+          }
+        },
+        "0x3": {
+          ".": {
+            "address": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
+            "chainId": "0x3",
+            "ensName": "."
+          }
+        },
+        "0x4": {
+          ".": {
+            "address": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
+            "chainId": "0x4",
+            "ensName": "."
+          }
+        },
+        "0x4268": {
+          ".": {
+            "address": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
+            "chainId": "0x4268",
+            "ensName": "."
+          }
+        },
+        "0x5": {
+          ".": {
+            "address": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
+            "chainId": "0x5",
+            "ensName": "."
+          }
+        },
+        "0xaa36a7": {
+          ".": {
+            "address": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
+            "chainId": "0xaa36a7",
+            "ensName": "."
+          }
+        }
+      },
+      "ensResolutionsByAddress": {}
+    },
+    "GasFeeController": {
+      "estimatedGasFeeTimeBounds": {},
+      "gasEstimateType": "none",
+      "gasFeeEstimates": {},
+      "gasFeeEstimatesByChainId": {},
+      "nonRPCGasFeeApisDisabled": false
+    },
+    "GatorPermissionsController": {
+      "gatorPermissionsMapSerialized": "{\"native-token-stream\":{},\"native-token-periodic\":{},\"erc20-token-stream\":{},\"erc20-token-periodic\":{},\"other\":{}}",
+      "isGatorPermissionsEnabled": false
+    },
+    "KeyringController": {},
+    "LoggingController": {
+      "logs": {}
+    },
+    "MetaMetricsController": {
+      "dataCollectionForMarketing": null,
+      "eventsBeforeMetricsOptIn": [
+        {
+          "category": "App",
+          "event": "App Installed",
+          "properties": {}
+        }
+      ],
+      "fragments": {},
+      "latestNonAnonymousEventTimestamp": 0,
+      "marketingCampaignCookieId": null,
+      "metaMetricsId": null,
+      "participateInMetaMetrics": null,
+      "segmentApiCalls": {},
+      "tracesBeforeMetricsOptIn": [
+        {
+          "request": {
+            "name": "Onboarding - Overall Journey",
+            "op": "onboarding.user_journey",
+            "startTime": 1764061390458
+          },
+          "type": "start"
+        }
+      ],
+      "traits": {
+        "install_date_ext": "2025-11-25"
+      }
+    },
+    "MetaMetricsDataDeletionController": {
+      "metaMetricsDataDeletionId": null,
+      "metaMetricsDataDeletionTimestamp": 0
+    },
+    "MultichainAssetsController": {
+      "accountsAssets": {},
+      "allIgnoredAssets": {},
+      "assetsMetadata": {}
+    },
+    "MultichainAssetsRatesController": {
+      "conversionRates": {}
+    },
+    "MultichainBalancesController": {
+      "balances": {}
+    },
+    "MultichainNetworkController": {
+      "isEvmSelected": true,
+      "multichainNetworkConfigurationsByChainId": {
+        "bip122:000000000019d6689c085ae165831e93": {
+          "chainId": "bip122:000000000019d6689c085ae165831e93",
+          "isEvm": false,
+          "name": "Bitcoin",
+          "nativeCurrency": "bip122:000000000019d6689c085ae165831e93/slip44:0"
+        },
+        "bip122:000000000933ea01ad0ee984209779ba": {
+          "chainId": "bip122:000000000933ea01ad0ee984209779ba",
+          "isEvm": false,
+          "name": "Bitcoin Testnet",
+          "nativeCurrency": "bip122:000000000933ea01ad0ee984209779ba/slip44:0"
+        },
+        "bip122:00000000da84f2bafbbc53dee25a72ae": {
+          "chainId": "bip122:00000000da84f2bafbbc53dee25a72ae",
+          "isEvm": false,
+          "name": "Bitcoin Testnet4",
+          "nativeCurrency": "bip122:00000000da84f2bafbbc53dee25a72ae/slip44:0"
+        },
+        "bip122:00000008819873e925422c1ff0f99f7c": {
+          "chainId": "bip122:00000008819873e925422c1ff0f99f7c",
+          "isEvm": false,
+          "name": "Bitcoin Mutinynet",
+          "nativeCurrency": "bip122:00000008819873e925422c1ff0f99f7c/slip44:0"
+        },
+        "bip122:regtest": {
+          "chainId": "bip122:regtest",
+          "isEvm": false,
+          "name": "Bitcoin Regtest",
+          "nativeCurrency": "bip122:regtest/slip44:0"
+        },
+        "solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z": {
+          "chainId": "solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z",
+          "isEvm": false,
+          "name": "Solana Testnet",
+          "nativeCurrency": "solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z/slip44:501"
+        },
+        "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": {
+          "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+          "isEvm": false,
+          "name": "Solana",
+          "nativeCurrency": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501"
+        },
+        "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1": {
+          "chainId": "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1",
+          "isEvm": false,
+          "name": "Solana Devnet",
+          "nativeCurrency": "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1/slip44:501"
+        },
+        "tron:2494104990": {
+          "chainId": "tron:2494104990",
+          "isEvm": false,
+          "name": "Tron Shasta",
+          "nativeCurrency": "tron:2494104990/slip44:195"
+        },
+        "tron:3448148188": {
+          "chainId": "tron:3448148188",
+          "isEvm": false,
+          "name": "Tron Nile",
+          "nativeCurrency": "tron:3448148188/slip44:195"
+        },
+        "tron:728126428": {
+          "chainId": "tron:728126428",
+          "isEvm": false,
+          "name": "Tron",
+          "nativeCurrency": "tron:728126428/slip44:195"
+        }
+      },
+      "networksWithTransactionActivity": {},
+      "selectedMultichainNetworkChainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"
+    },
+    "MultichainRatesController": {
+      "cryptocurrencies": ["btc", "sol"],
+      "fiatCurrency": "usd",
+      "rates": {
+        "btc": {
+          "conversionDate": 0,
+          "conversionRate": 0
+        },
+        "sol": {
+          "conversionDate": 0,
+          "conversionRate": 0
+        }
+      }
+    },
+    "MultichainTransactionsController": {
+      "nonEvmTransactions": {}
+    },
+    "NameController": {
+      "nameSources": {},
+      "names": {
+        "ethereumAddress": {}
+      }
+    },
+    "NetworkController": {
+      "networkConfigurationsByChainId": {
+        "0x1": {
+          "blockExplorerUrls": ["https://etherscan.io"],
+          "chainId": "0x1",
+          "defaultBlockExplorerUrlIndex": 0,
+          "defaultRpcEndpointIndex": 0,
+          "name": "Ethereum",
+          "nativeCurrency": "ETH",
+          "rpcEndpoints": [
+            {
+              "failoverUrls": [
+                "https://dimensional-special-breeze.quiknode.pro/d5e2d185c1561ef5ecb9aadf1ae7cc58863f4fa4/"
+              ],
+              "networkClientId": "mainnet",
+              "type": "infura",
+              "url": "https://mainnet.infura.io/v3/{infuraProjectId}"
+            }
+          ]
+        },
+        "0x18c6": {
+          "blockExplorerUrls": ["https://megaexplorer.xyz"],
+          "chainId": "0x18c6",
+          "defaultBlockExplorerUrlIndex": 0,
+          "defaultRpcEndpointIndex": 0,
+          "name": "Mega Testnet",
+          "nativeCurrency": "MegaETH",
+          "rpcEndpoints": [
+            {
+              "failoverUrls": [],
+              "networkClientId": "megaeth-testnet",
+              "type": "custom",
+              "url": "https://carrot.megaeth.com/rpc"
+            }
+          ]
+        },
+        "0x2105": {
+          "blockExplorerUrls": ["https://basescan.org"],
+          "chainId": "0x2105",
+          "defaultBlockExplorerUrlIndex": 0,
+          "defaultRpcEndpointIndex": 0,
+          "name": "Base",
+          "nativeCurrency": "ETH",
+          "rpcEndpoints": [
+            {
+              "failoverUrls": [
+                "https://ancient-quaint-water.base-mainnet.quiknode.pro/a2cb04635063b578dba24f656fe376a55e8d9939/"
+              ],
+              "networkClientId": "base-mainnet",
+              "type": "infura",
+              "url": "https://base-mainnet.infura.io/v3/{infuraProjectId}"
+            }
+          ]
+        },
+        "0x279f": {
+          "blockExplorerUrls": ["https://testnet.monadexplorer.com"],
+          "chainId": "0x279f",
+          "defaultBlockExplorerUrlIndex": 0,
+          "defaultRpcEndpointIndex": 0,
+          "name": "Monad Testnet",
+          "nativeCurrency": "MON",
+          "rpcEndpoints": [
+            {
+              "failoverUrls": [],
+              "networkClientId": "monad-testnet",
+              "type": "custom",
+              "url": "https://testnet-rpc.monad.xyz"
+            }
+          ]
+        },
+        "0x38": {
+          "blockExplorerUrls": ["https://bscscan.com"],
+          "chainId": "0x38",
+          "defaultBlockExplorerUrlIndex": 0,
+          "defaultRpcEndpointIndex": 0,
+          "name": "BNB Chain",
+          "nativeCurrency": "BNB",
+          "rpcEndpoints": [
+            {
+              "failoverUrls": [],
+              "networkClientId": "bsc-mainnet",
+              "type": "infura",
+              "url": "https://bsc-mainnet.infura.io/v3/{infuraProjectId}"
+            }
+          ]
+        },
+        "0x89": {
+          "blockExplorerUrls": ["https://polygonscan.com"],
+          "chainId": "0x89",
+          "defaultBlockExplorerUrlIndex": 0,
+          "defaultRpcEndpointIndex": 0,
+          "name": "Polygon",
+          "nativeCurrency": "POL",
+          "rpcEndpoints": [
+            {
+              "failoverUrls": [
+                "https://powerful-radial-aura.matic.quiknode.pro/edaa1cc73ef2a19230e2e715e766b6783ad8126a/"
+              ],
+              "networkClientId": "polygon-mainnet",
+              "type": "infura",
+              "url": "https://polygon-mainnet.infura.io/v3/{infuraProjectId}"
+            }
+          ]
+        },
+        "0xa": {
+          "blockExplorerUrls": ["https://optimistic.etherscan.io"],
+          "chainId": "0xa",
+          "defaultBlockExplorerUrlIndex": 0,
+          "defaultRpcEndpointIndex": 0,
+          "name": "OP",
+          "nativeCurrency": "ETH",
+          "rpcEndpoints": [
+            {
+              "failoverUrls": [
+                "https://holy-convincing-diagram.optimism.quiknode.pro/4804f72f80b7566982ad24a7a1d8e1ae48bca208/"
+              ],
+              "networkClientId": "optimism-mainnet",
+              "type": "infura",
+              "url": "https://optimism-mainnet.infura.io/v3/{infuraProjectId}"
+            }
+          ]
+        },
+        "0xa4b1": {
+          "blockExplorerUrls": ["https://arbiscan.io"],
+          "chainId": "0xa4b1",
+          "defaultBlockExplorerUrlIndex": 0,
+          "defaultRpcEndpointIndex": 0,
+          "name": "Arbitrum",
+          "nativeCurrency": "ETH",
+          "rpcEndpoints": [
+            {
+              "failoverUrls": [
+                "https://purple-young-mansion.arbitrum-mainnet.quiknode.pro/f48c5cbfd1f5b39f0e5542d3b23c181b4085a2b5/"
+              ],
+              "networkClientId": "arbitrum-mainnet",
+              "type": "infura",
+              "url": "https://arbitrum-mainnet.infura.io/v3/{infuraProjectId}"
+            }
+          ]
+        },
+        "0xaa36a7": {
+          "blockExplorerUrls": ["https://sepolia.etherscan.io"],
+          "chainId": "0xaa36a7",
+          "defaultBlockExplorerUrlIndex": 0,
+          "defaultRpcEndpointIndex": 0,
+          "name": "Sepolia",
+          "nativeCurrency": "SepoliaETH",
+          "rpcEndpoints": [
+            {
+              "failoverUrls": [],
+              "networkClientId": "sepolia",
+              "type": "infura",
+              "url": "https://sepolia.infura.io/v3/{infuraProjectId}"
+            }
+          ]
+        },
+        "0xe705": {
+          "blockExplorerUrls": ["https://sepolia.lineascan.build"],
+          "chainId": "0xe705",
+          "defaultBlockExplorerUrlIndex": 0,
+          "defaultRpcEndpointIndex": 0,
+          "name": "Linea Sepolia",
+          "nativeCurrency": "LineaETH",
+          "rpcEndpoints": [
+            {
+              "failoverUrls": [],
+              "networkClientId": "linea-sepolia",
+              "type": "infura",
+              "url": "https://linea-sepolia.infura.io/v3/{infuraProjectId}"
+            }
+          ]
+        },
+        "0xe708": {
+          "blockExplorerUrls": ["https://lineascan.build"],
+          "chainId": "0xe708",
+          "defaultBlockExplorerUrlIndex": 0,
+          "defaultRpcEndpointIndex": 0,
+          "name": "Linea",
+          "nativeCurrency": "ETH",
+          "rpcEndpoints": [
+            {
+              "failoverUrls": [
+                "https://patient-sleek-daylight.linea-mainnet.quiknode.pro/d0e608bf5f231ef9ae6756de4d7876cb0f5ece55/"
+              ],
+              "networkClientId": "linea-mainnet",
+              "type": "infura",
+              "url": "https://linea-mainnet.infura.io/v3/{infuraProjectId}"
+            }
+          ]
+        }
+      },
+      "networksMetadata": {
+        "mainnet": {
+          "EIPS": {},
+          "status": "unknown"
+        }
+      },
+      "selectedNetworkClientId": "mainnet"
+    },
+    "NetworkEnablementController": {
+      "enabledNetworkMap": {
+        "bip122": {
+          "bip122:000000000019d6689c085ae165831e93": true,
+          "bip122:000000000933ea01ad0ee984209779ba": false,
+          "bip122:00000000da84f2bafbbc53dee25a72ae": false,
+          "bip122:00000008819873e925422c1ff0f99f7c": false,
+          "bip122:regtest": false
+        },
+        "eip155": {
+          "0x1": true,
+          "0x18c6": false,
+          "0x2105": true,
+          "0x279f": false,
+          "0x38": true,
+          "0x89": true,
+          "0xa": true,
+          "0xa4b1": true,
+          "0xaa36a7": false,
+          "0xe705": false,
+          "0xe708": true
+        },
+        "solana": {
+          "solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z": false,
+          "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": true,
+          "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1": false
+        },
+        "tron": {
+          "tron:2494104990": false,
+          "tron:3448148188": false,
+          "tron:728126428": true
+        }
+      }
+    },
+    "NetworkOrderController": {
+      "orderedNetworkList": []
+    },
+    "NftController": {
+      "allNftContracts": {},
+      "allNfts": {},
+      "ignoredNfts": []
+    },
+    "NotificationServicesController": {
+      "isFeatureAnnouncementsEnabled": false,
+      "isMetamaskNotificationsFeatureSeen": false,
+      "isNotificationServicesEnabled": false,
+      "metamaskNotificationsList": [],
+      "metamaskNotificationsReadList": [],
+      "subscriptionAccountsSeen": []
+    },
+    "NotificationServicesPushController": {
+      "fcmToken": "",
+      "isPushEnabled": true
+    },
+    "OnboardingController": {
+      "completedOnboarding": false,
+      "firstTimeFlowType": null,
+      "seedPhraseBackedUp": null
+    },
+    "PPOMController": {
+      "storageMetadata": [],
+      "versionInfo": []
+    },
+    "PermissionController": {
+      "subjects": {
+        "http://localhost:3000": {
+          "origin": "http://localhost:3000",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/institutional-wallet-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389882,
+              "id": "jhd9UNjo8ODWAV2iy_Ir7",
+              "invoker": "http://localhost:3000",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
+        "http://localhost:8000": {
+          "origin": "http://localhost:8000",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/institutional-wallet-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389882,
+              "id": "aZbz1rktoFGnqND2wqSCw",
+              "invoker": "http://localhost:8000",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
+        "https://alpha.mycactus.io": {
+          "origin": "https://alpha.mycactus.io",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/institutional-wallet-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389885,
+              "id": "MESnGgj_JsysGkw6Et-_s",
+              "invoker": "https://alpha.mycactus.io",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
+        "https://app.bitgo-test.com": {
+          "origin": "https://app.bitgo-test.com",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/institutional-wallet-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389884,
+              "id": "UJoc3SbEoOUfCrFdt-NN5",
+              "invoker": "https://app.bitgo-test.com",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
+        "https://app.bitgo.com": {
+          "origin": "https://app.bitgo.com",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/institutional-wallet-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389884,
+              "id": "7BE6pedVgFZ5EDErCZdmn",
+              "invoker": "https://app.bitgo.com",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
+        "https://app.metamask.io": {
+          "origin": "https://app.metamask.io",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/message-signing-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389877,
+              "id": "fYsfFXNA_41cOKy-O4dN0",
+              "invoker": "https://app.metamask.io",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
+        "https://apps-portal.safe.global": {
+          "origin": "https://apps-portal.safe.global",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/institutional-wallet-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389885,
+              "id": "NOrkSaWWNK4vxhCHa8gT9",
+              "invoker": "https://apps-portal.safe.global",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
+        "https://console.dev.mpcvault.com": {
+          "origin": "https://console.dev.mpcvault.com",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/institutional-wallet-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389884,
+              "id": "r51FvcE0sk-4ivdsPKhAM",
+              "invoker": "https://console.dev.mpcvault.com",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
+        "https://console.fireblocks.io": {
+          "origin": "https://console.fireblocks.io",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/institutional-wallet-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389883,
+              "id": "dz4k_w8Y-hnSgsBkj-h0T",
+              "invoker": "https://console.fireblocks.io",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
+        "https://console.mpcvault.com": {
+          "origin": "https://console.mpcvault.com",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/institutional-wallet-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389884,
+              "id": "EEmUYoGtEjV91wg4J_x1S",
+              "invoker": "https://console.mpcvault.com",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
+        "https://debug.mycactus.dev:1443": {
+          "origin": "https://debug.mycactus.dev:1443",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/institutional-wallet-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389885,
+              "id": "dzW1QUb4IhX4IhA6kmnq6",
+              "invoker": "https://debug.mycactus.dev:1443",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
+        "https://dev10-console.waterballoons.xyz": {
+          "origin": "https://dev10-console.waterballoons.xyz",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/institutional-wallet-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389884,
+              "id": "BDtrzw9Z2Rw7-gPx0pwX9",
+              "invoker": "https://dev10-console.waterballoons.xyz",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
+        "https://dev4-console.waterballoons.xyz": {
+          "origin": "https://dev4-console.waterballoons.xyz",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/institutional-wallet-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389884,
+              "id": "3ujqOhlsg03F6u_goGSCU",
+              "invoker": "https://dev4-console.waterballoons.xyz",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
+        "https://developer.metamask.io": {
+          "origin": "https://developer.metamask.io",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/message-signing-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389878,
+              "id": "bfINOzA4uykf8SzTWot38",
+              "invoker": "https://developer.metamask.io",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
+        "https://docs.metamask.io": {
+          "origin": "https://docs.metamask.io",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/message-signing-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389877,
+              "id": "-NzTLBxNAie7bAXimXptV",
+              "invoker": "https://docs.metamask.io",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
+        "https://eu-console.fireblocks.io": {
+          "origin": "https://eu-console.fireblocks.io",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/institutional-wallet-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389883,
+              "id": "7TLSxUx6BEtY2PXQpkm98",
+              "invoker": "https://eu-console.fireblocks.io",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
+        "https://eu2-console.fireblocks.io": {
+          "origin": "https://eu2-console.fireblocks.io",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/institutional-wallet-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389883,
+              "id": "MXXsufmLFG-oSHgQh3Q10",
+              "invoker": "https://eu2-console.fireblocks.io",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
+        "https://local.waterballoons.xyz:4200": {
+          "origin": "https://local.waterballoons.xyz:4200",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/institutional-wallet-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389883,
+              "id": "5NBYRl51NE1rt79Z2oLHz",
+              "invoker": "https://local.waterballoons.xyz:4200",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
+        "https://localhost:3000": {
+          "origin": "https://localhost:3000",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/institutional-wallet-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389882,
+              "id": "u2wx6NlWgb9f08E7VJVv5",
+              "invoker": "https://localhost:3000",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
+        "https://neptune-custody-ui.metamask-institutional.io": {
+          "origin": "https://neptune-custody-ui.metamask-institutional.io",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/institutional-wallet-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389882,
+              "id": "dMC3k0iQ08ppqmfWjXe-p",
+              "invoker": "https://neptune-custody-ui.metamask-institutional.io",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
+        "https://portfolio-builds.metafi-dev.codefi.network": {
+          "origin": "https://portfolio-builds.metafi-dev.codefi.network",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/message-signing-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389877,
+              "id": "PTjIbijRl-DcUdwylgdgH",
+              "invoker": "https://portfolio-builds.metafi-dev.codefi.network",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
+        "https://portfolio.metamask.io": {
+          "origin": "https://portfolio.metamask.io",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/message-signing-snap": {},
+                    "npm:@metamask/solana-wallet-snap": {},
+                    "npm:@metamask/tron-wallet-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389877,
+              "id": "v7Le9coHUEN5BEGHvzvVg",
+              "invoker": "https://portfolio.metamask.io",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
+        "https://pre.mycactus.com": {
+          "origin": "https://pre.mycactus.com",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/institutional-wallet-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389885,
+              "id": "u6f3XRClnFjzJgF_GfJvu",
+              "invoker": "https://pre.mycactus.com",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
+        "https://sandbox.fireblocks.io": {
+          "origin": "https://sandbox.fireblocks.io",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/institutional-wallet-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389883,
+              "id": "JocFBtJeBM37jLCnWKCgT",
+              "invoker": "https://sandbox.fireblocks.io",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
+        "https://saturn-custody-ui.metamask-institutional.io": {
+          "origin": "https://saturn-custody-ui.metamask-institutional.io",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/institutional-wallet-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389884,
+              "id": "_LlYwTWBCHa-P52sWybAl",
+              "invoker": "https://saturn-custody-ui.metamask-institutional.io",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
+        "https://ui-preprod-v2.qa.zodia.io": {
+          "origin": "https://ui-preprod-v2.qa.zodia.io",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/institutional-wallet-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389883,
+              "id": "A5Q8B6IFW5d6pa_8DaLJI",
+              "invoker": "https://ui-preprod-v2.qa.zodia.io",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
+        "https://ui-preprod-v2.uat.zodia.io": {
+          "origin": "https://ui-preprod-v2.uat.zodia.io",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/institutional-wallet-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389883,
+              "id": "8-kzqjTGuBYpjpRrwOL8S",
+              "invoker": "https://ui-preprod-v2.uat.zodia.io",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
+        "https://ui-v2.qa.zodia.io": {
+          "origin": "https://ui-v2.qa.zodia.io",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/institutional-wallet-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389883,
+              "id": "K5wauVhfKHwOxNvU6To_n",
+              "invoker": "https://ui-v2.qa.zodia.io",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
+        "https://ui-v2.sit.zodia.io": {
+          "origin": "https://ui-v2.sit.zodia.io",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/institutional-wallet-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389882,
+              "id": "oWlQcu2GKeDM9hQcYu5cC",
+              "invoker": "https://ui-v2.sit.zodia.io",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
+        "https://v2.custody.zodia.io": {
+          "origin": "https://v2.custody.zodia.io",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/institutional-wallet-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389883,
+              "id": "_cA4fG-H-ikQGFsHe9tOt",
+              "invoker": "https://v2.custody.zodia.io",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
+        "https://www.mycactus.com": {
+          "origin": "https://www.mycactus.com",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/institutional-wallet-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389885,
+              "id": "k6qPaTjMd6RSkC0clOIdO",
+              "invoker": "https://www.mycactus.com",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
+        "https://www.mycactus.dev": {
+          "origin": "https://www.mycactus.dev",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/institutional-wallet-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389885,
+              "id": "jch7JFImk_KHgWS-RJQVA",
+              "invoker": "https://www.mycactus.dev",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
+        "localhost:8000": {
+          "origin": "localhost:8000",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/institutional-wallet-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389882,
+              "id": "sJ_ygDK55u69EvJBp3hUe",
+              "invoker": "localhost:8000",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
+        "npm:@metamask/bitcoin-wallet-snap": {
+          "origin": "npm:@metamask/bitcoin-wallet-snap",
+          "permissions": {
+            "endowment:assets": {
+              "caveats": [
+                {
+                  "type": "chainIds",
+                  "value": [
+                    "bip122:000000000019d6689c085ae165831e93",
+                    "bip122:000000000933ea01ad0ee984209779ba",
+                    "bip122:00000000da84f2bafbbc53dee25a72ae",
+                    "bip122:00000008819873e925422c1ff0f99f7c",
+                    "bip122:regtest"
+                  ]
+                }
+              ],
+              "date": 1764061389895,
+              "id": "yc8JfgpoCqnMCNKwbYNKj",
+              "invoker": "npm:@metamask/bitcoin-wallet-snap",
+              "parentCapability": "endowment:assets"
+            },
+            "endowment:cronjob": {
+              "caveats": [
+                {
+                  "type": "snapCronjob",
+                  "value": {
+                    "jobs": [
+                      {
+                        "duration": "PT30S",
+                        "request": {
+                          "method": "synchronizeAccounts"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "date": 1764061389895,
+              "id": "sIBiQ1G6Uq6ShpA1DXh8H",
+              "invoker": "npm:@metamask/bitcoin-wallet-snap",
+              "parentCapability": "endowment:cronjob"
+            },
+            "endowment:keyring": {
+              "caveats": [
+                {
+                  "type": "keyringOrigin",
+                  "value": {}
+                }
+              ],
+              "date": 1764061389895,
+              "id": "95yCWbjxUqXMp3kFCRPjV",
+              "invoker": "npm:@metamask/bitcoin-wallet-snap",
+              "parentCapability": "endowment:keyring"
+            },
+            "endowment:lifecycle-hooks": {
+              "caveats": null,
+              "date": 1764061389895,
+              "id": "IdJRG1stVP2SBQLnyy1im",
+              "invoker": "npm:@metamask/bitcoin-wallet-snap",
+              "parentCapability": "endowment:lifecycle-hooks"
+            },
+            "endowment:network-access": {
+              "caveats": null,
+              "date": 1764061389895,
+              "id": "O_ba7U1sX_nkWbAu2wwrE",
+              "invoker": "npm:@metamask/bitcoin-wallet-snap",
+              "parentCapability": "endowment:network-access"
+            },
+            "endowment:rpc": {
+              "caveats": [
+                {
+                  "type": "rpcOrigin",
+                  "value": {
+                    "dapps": true,
+                    "snaps": false
+                  }
+                }
+              ],
+              "date": 1764061389895,
+              "id": "aHIZtJ2MvslVAUxLcbZHi",
+              "invoker": "npm:@metamask/bitcoin-wallet-snap",
+              "parentCapability": "endowment:rpc"
+            },
+            "endowment:webassembly": {
+              "caveats": null,
+              "date": 1764061389895,
+              "id": "jd8lG6zRuKTNuPYAxBkQX",
+              "invoker": "npm:@metamask/bitcoin-wallet-snap",
+              "parentCapability": "endowment:webassembly"
+            },
+            "snap_dialog": {
+              "caveats": null,
+              "date": 1764061389895,
+              "id": "0UKi16_qKXVWrYxquXC8A",
+              "invoker": "npm:@metamask/bitcoin-wallet-snap",
+              "parentCapability": "snap_dialog"
+            },
+            "snap_getBip32Entropy": {
+              "caveats": [
+                {
+                  "type": "permittedDerivationPaths",
+                  "value": [
+                    {
+                      "curve": "secp256k1",
+                      "path": ["m", "44'", "0'"]
+                    },
+                    {
+                      "curve": "secp256k1",
+                      "path": ["m", "44'", "1'"]
+                    },
+                    {
+                      "curve": "secp256k1",
+                      "path": ["m", "49'", "0'"]
+                    },
+                    {
+                      "curve": "secp256k1",
+                      "path": ["m", "49'", "1'"]
+                    },
+                    {
+                      "curve": "secp256k1",
+                      "path": ["m", "84'", "0'"]
+                    },
+                    {
+                      "curve": "secp256k1",
+                      "path": ["m", "84'", "1'"]
+                    },
+                    {
+                      "curve": "secp256k1",
+                      "path": ["m", "86'", "0'"]
+                    },
+                    {
+                      "curve": "secp256k1",
+                      "path": ["m", "86'", "1'"]
+                    }
+                  ]
+                }
+              ],
+              "date": 1764061389895,
+              "id": "8gTRjqUkgxiDA-fx--q1e",
+              "invoker": "npm:@metamask/bitcoin-wallet-snap",
+              "parentCapability": "snap_getBip32Entropy"
+            },
+            "snap_getPreferences": {
+              "caveats": null,
+              "date": 1764061389895,
+              "id": "D79JuTdxTyAF0W0vr-QDm",
+              "invoker": "npm:@metamask/bitcoin-wallet-snap",
+              "parentCapability": "snap_getPreferences"
+            },
+            "snap_manageAccounts": {
+              "caveats": null,
+              "date": 1764061389895,
+              "id": "QE4C7l8UvVuy00U4kcOWt",
+              "invoker": "npm:@metamask/bitcoin-wallet-snap",
+              "parentCapability": "snap_manageAccounts"
+            },
+            "snap_manageState": {
+              "caveats": null,
+              "date": 1764061389895,
+              "id": "qi6Rh1wxuP49hiD-H8b3e",
+              "invoker": "npm:@metamask/bitcoin-wallet-snap",
+              "parentCapability": "snap_manageState"
+            }
+          }
+        },
+        "npm:@metamask/ens-resolver-snap": {
+          "origin": "npm:@metamask/ens-resolver-snap",
+          "permissions": {
+            "endowment:ethereum-provider": {
+              "caveats": null,
+              "date": 1764061389878,
+              "id": "Bi1H2aZ3gpz8bO7fvhIBm",
+              "invoker": "npm:@metamask/ens-resolver-snap",
+              "parentCapability": "endowment:ethereum-provider"
+            },
+            "endowment:name-lookup": {
+              "caveats": null,
+              "date": 1764061389878,
+              "id": "Mb3ye5CIzaneLUP5cBWJX",
+              "invoker": "npm:@metamask/ens-resolver-snap",
+              "parentCapability": "endowment:name-lookup"
+            },
+            "endowment:network-access": {
+              "caveats": null,
+              "date": 1764061389878,
+              "id": "ni7Cr5p8EjYt1VsTxSy6l",
+              "invoker": "npm:@metamask/ens-resolver-snap",
+              "parentCapability": "endowment:network-access"
+            }
+          }
+        },
+        "npm:@metamask/gator-permissions-snap": {
+          "origin": "npm:@metamask/gator-permissions-snap",
+          "permissions": {
+            "wallet_snap": {
+              "caveats": [
+                {
+                  "type": "snapIds",
+                  "value": {
+                    "npm:@metamask/message-signing-snap": {}
+                  }
+                }
+              ],
+              "date": 1764061389878,
+              "id": "henkI7uGEsPTHMAE6T3BC",
+              "invoker": "npm:@metamask/gator-permissions-snap",
+              "parentCapability": "wallet_snap"
+            }
+          }
+        },
+        "npm:@metamask/institutional-wallet-snap": {
+          "origin": "npm:@metamask/institutional-wallet-snap",
+          "permissions": {
+            "endowment:cronjob": {
+              "caveats": [
+                {
+                  "type": "snapCronjob",
+                  "value": {
+                    "jobs": [
+                      {
+                        "expression": "5/15 * * * * *",
+                        "request": {
+                          "method": "execute"
+                        }
+                      },
+                      {
+                        "expression": "* * * * *",
+                        "request": {
+                          "method": "manageSleepState"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "date": 1764061389881,
+              "id": "LLSWgD-M8-IWr0YFMI5U6",
+              "invoker": "npm:@metamask/institutional-wallet-snap",
+              "parentCapability": "endowment:cronjob"
+            },
+            "endowment:ethereum-provider": {
+              "caveats": null,
+              "date": 1764061389881,
+              "id": "25IP6pd5N1lUAzA7Ngrjp",
+              "invoker": "npm:@metamask/institutional-wallet-snap",
+              "parentCapability": "endowment:ethereum-provider"
+            },
+            "endowment:keyring": {
+              "caveats": [
+                {
+                  "type": "keyringOrigin",
+                  "value": {
+                    "allowedOrigins": [
+                      "localhost:8000",
+                      "http://localhost:8000"
+                    ]
+                  }
+                }
+              ],
+              "date": 1764061389881,
+              "id": "8lQZkbr9lyuUEe4oVMIXQ",
+              "invoker": "npm:@metamask/institutional-wallet-snap",
+              "parentCapability": "endowment:keyring"
+            },
+            "endowment:network-access": {
+              "caveats": null,
+              "date": 1764061389881,
+              "id": "y5F-p8KklvjaXtbZJbz7N",
+              "invoker": "npm:@metamask/institutional-wallet-snap",
+              "parentCapability": "endowment:network-access"
+            },
+            "endowment:page-home": {
+              "caveats": null,
+              "date": 1764061389882,
+              "id": "lyuyyI6cJ8Xta7wRIZNhR",
+              "invoker": "npm:@metamask/institutional-wallet-snap",
+              "parentCapability": "endowment:page-home"
+            },
+            "endowment:rpc": {
+              "caveats": [
+                {
+                  "type": "rpcOrigin",
+                  "value": {
+                    "allowedOrigins": [
+                      "localhost:8000",
+                      "http://localhost:8000",
+                      "localhost:3000",
+                      "https://localhost:3000",
+                      "http://localhost:3000",
+                      "https://neptune-custody-ui.metamask-institutional.io",
+                      "https://zodia.io",
+                      "https://ui-v2.sit.zodia.io",
+                      "https://ui-v2.qa.zodia.io",
+                      "https://ui-preprod-v2.qa.zodia.io",
+                      "https://ui-preprod-v2.uat.zodia.io",
+                      "https://v2.custody.zodia.io",
+                      "https://console.fireblocks.io",
+                      "https://eu-console.fireblocks.io",
+                      "https://eu2-console.fireblocks.io",
+                      "https://sandbox.fireblocks.io",
+                      "https://local.waterballoons.xyz:4200",
+                      "https://dev4-console.waterballoons.xyz",
+                      "https://dev10-console.waterballoons.xyz",
+                      "https://console.dev.mpcvault.com",
+                      "https://saturn-custody-ui.metamask-institutional.io",
+                      "https://console.mpcvault.com",
+                      "https://app.bitgo.com",
+                      "https://app.bitgo-test.com",
+                      "https://apps-portal.safe.global",
+                      "https://alpha.mycactus.io",
+                      "https://pre.mycactus.com",
+                      "https://www.mycactus.dev",
+                      "https://debug.mycactus.dev:1443",
+                      "https://www.mycactus.com"
+                    ]
+                  }
+                }
+              ],
+              "date": 1764061389881,
+              "id": "5hJmzGcmTdHwMhouO_VC2",
+              "invoker": "npm:@metamask/institutional-wallet-snap",
+              "parentCapability": "endowment:rpc"
+            },
+            "snap_dialog": {
+              "caveats": null,
+              "date": 1764061389882,
+              "id": "AO0l0ZfwjJ_kQ8-wdjRMN",
+              "invoker": "npm:@metamask/institutional-wallet-snap",
+              "parentCapability": "snap_dialog"
+            },
+            "snap_manageAccounts": {
+              "caveats": null,
+              "date": 1764061389882,
+              "id": "yWVwVp3m2T1HXpK9fbxvg",
+              "invoker": "npm:@metamask/institutional-wallet-snap",
+              "parentCapability": "snap_manageAccounts"
+            },
+            "snap_manageState": {
+              "caveats": null,
+              "date": 1764061389882,
+              "id": "yD5ZTSSZGmOQKDJbESQj9",
+              "invoker": "npm:@metamask/institutional-wallet-snap",
+              "parentCapability": "snap_manageState"
+            },
+            "snap_notify": {
+              "caveats": null,
+              "date": 1764061389881,
+              "id": "O8rLXJpp7-KBVT9YnpgDl",
+              "invoker": "npm:@metamask/institutional-wallet-snap",
+              "parentCapability": "snap_notify"
+            }
+          }
+        },
+        "npm:@metamask/message-signing-snap": {
+          "origin": "npm:@metamask/message-signing-snap",
+          "permissions": {
+            "endowment:rpc": {
+              "caveats": [
+                {
+                  "type": "rpcOrigin",
+                  "value": {
+                    "dapps": true,
+                    "snaps": true
+                  }
+                }
+              ],
+              "date": 1764061389876,
+              "id": "OpSK7ZNouHUKfoTXHfOEY",
+              "invoker": "npm:@metamask/message-signing-snap",
+              "parentCapability": "endowment:rpc"
+            },
+            "snap_getEntropy": {
+              "caveats": null,
+              "date": 1764061389876,
+              "id": "G5LIG8YQu_PhSdnu2r6-H",
+              "invoker": "npm:@metamask/message-signing-snap",
+              "parentCapability": "snap_getEntropy"
+            }
+          }
+        },
+        "npm:@metamask/solana-wallet-snap": {
+          "origin": "npm:@metamask/solana-wallet-snap",
+          "permissions": {
+            "endowment:assets": {
+              "caveats": [
+                {
+                  "type": "chainIds",
+                  "value": [
+                    "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+                    "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1"
+                  ]
+                }
+              ],
+              "date": 1764061389897,
+              "id": "D9XrNUBAnpoUUufrE-Qgf",
+              "invoker": "npm:@metamask/solana-wallet-snap",
+              "parentCapability": "endowment:assets"
+            },
+            "endowment:cronjob": {
+              "caveats": [
+                {
+                  "type": "snapCronjob",
+                  "value": {
+                    "jobs": []
+                  }
+                }
+              ],
+              "date": 1764061389897,
+              "id": "8F75H-WFseKVjJWU8fxJ6",
+              "invoker": "npm:@metamask/solana-wallet-snap",
+              "parentCapability": "endowment:cronjob"
+            },
+            "endowment:ethereum-provider": {
+              "caveats": null,
+              "date": 1764061389897,
+              "id": "3zIMEvpLri-t0vbw1BOcg",
+              "invoker": "npm:@metamask/solana-wallet-snap",
+              "parentCapability": "endowment:ethereum-provider"
+            },
+            "endowment:keyring": {
+              "caveats": [
+                {
+                  "type": "keyringOrigin",
+                  "value": {
+                    "allowedOrigins": ["https://portfolio.metamask.io"]
+                  }
+                }
+              ],
+              "date": 1764061389897,
+              "id": "M_c-zKHTqCgsLJnjXScUO",
+              "invoker": "npm:@metamask/solana-wallet-snap",
+              "parentCapability": "endowment:keyring"
+            },
+            "endowment:lifecycle-hooks": {
+              "caveats": null,
+              "date": 1764061389897,
+              "id": "Au4kA6IyG-VCoMTXQHTXo",
+              "invoker": "npm:@metamask/solana-wallet-snap",
+              "parentCapability": "endowment:lifecycle-hooks"
+            },
+            "endowment:name-lookup": {
+              "caveats": [
+                {
+                  "type": "chainIds",
+                  "value": [
+                    "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+                    "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1"
+                  ]
+                }
+              ],
+              "date": 1764061389897,
+              "id": "K7XuKSDbnWYxtwyTNhzpV",
+              "invoker": "npm:@metamask/solana-wallet-snap",
+              "parentCapability": "endowment:name-lookup"
+            },
+            "endowment:network-access": {
+              "caveats": null,
+              "date": 1764061389897,
+              "id": "nj2-sPZ6c6XsukTT02KBK",
+              "invoker": "npm:@metamask/solana-wallet-snap",
+              "parentCapability": "endowment:network-access"
+            },
+            "endowment:protocol": {
+              "caveats": [
+                {
+                  "type": "protocolSnapScopes",
+                  "value": {
+                    "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": {
+                      "methods": [
+                        "getGenesisHash",
+                        "getLatestBlockhash",
+                        "getMinimumBalanceForRentExemption"
+                      ]
+                    },
+                    "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1": {
+                      "methods": [
+                        "getGenesisHash",
+                        "getLatestBlockhash",
+                        "getMinimumBalanceForRentExemption"
+                      ]
+                    }
+                  }
+                }
+              ],
+              "date": 1764061389897,
+              "id": "XCPv8ZXC7EV4uqLV-palJ",
+              "invoker": "npm:@metamask/solana-wallet-snap",
+              "parentCapability": "endowment:protocol"
+            },
+            "endowment:rpc": {
+              "caveats": [
+                {
+                  "type": "rpcOrigin",
+                  "value": {
+                    "dapps": true,
+                    "snaps": false
+                  }
+                }
+              ],
+              "date": 1764061389897,
+              "id": "hBv_-kvX8FkItghjQssbU",
+              "invoker": "npm:@metamask/solana-wallet-snap",
+              "parentCapability": "endowment:rpc"
+            },
+            "snap_dialog": {
+              "caveats": null,
+              "date": 1764061389897,
+              "id": "ejG_nZg2xl1dNwhqlz2OG",
+              "invoker": "npm:@metamask/solana-wallet-snap",
+              "parentCapability": "snap_dialog"
+            },
+            "snap_getBip32Entropy": {
+              "caveats": [
+                {
+                  "type": "permittedDerivationPaths",
+                  "value": [
+                    {
+                      "curve": "ed25519",
+                      "path": ["m", "44'", "501'"]
+                    }
+                  ]
+                }
+              ],
+              "date": 1764061389897,
+              "id": "4V9DSZIY_TLRg1F6yCg96",
+              "invoker": "npm:@metamask/solana-wallet-snap",
+              "parentCapability": "snap_getBip32Entropy"
+            },
+            "snap_getPreferences": {
+              "caveats": null,
+              "date": 1764061389897,
+              "id": "u-p2iyzu0uwKCkaNzaZMC",
+              "invoker": "npm:@metamask/solana-wallet-snap",
+              "parentCapability": "snap_getPreferences"
+            },
+            "snap_manageAccounts": {
+              "caveats": null,
+              "date": 1764061389897,
+              "id": "xC0Q5eIeXNoHUAN0A26MJ",
+              "invoker": "npm:@metamask/solana-wallet-snap",
+              "parentCapability": "snap_manageAccounts"
+            },
+            "snap_manageState": {
+              "caveats": null,
+              "date": 1764061389897,
+              "id": "wZRSCoJ8R2U76GbLqcyeJ",
+              "invoker": "npm:@metamask/solana-wallet-snap",
+              "parentCapability": "snap_manageState"
+            }
+          }
+        },
+        "npm:@metamask/tron-wallet-snap": {
+          "origin": "npm:@metamask/tron-wallet-snap",
+          "permissions": {
+            "endowment:assets": {
+              "caveats": [
+                {
+                  "type": "chainIds",
+                  "value": ["tron:728126428"]
+                }
+              ],
+              "date": 1764061389898,
+              "id": "qLZ8t-zdDEI15o6hhwENt",
+              "invoker": "npm:@metamask/tron-wallet-snap",
+              "parentCapability": "endowment:assets"
+            },
+            "endowment:cronjob": {
+              "caveats": null,
+              "date": 1764061389898,
+              "id": "N350vEClrUxYB0SCiJNCM",
+              "invoker": "npm:@metamask/tron-wallet-snap",
+              "parentCapability": "endowment:cronjob"
+            },
+            "endowment:keyring": {
+              "caveats": [
+                {
+                  "type": "keyringOrigin",
+                  "value": {
+                    "allowedOrigins": ["https://portfolio.metamask.io"]
+                  }
+                }
+              ],
+              "date": 1764061389898,
+              "id": "NF_UNUiQrqeMzhvjUpetP",
+              "invoker": "npm:@metamask/tron-wallet-snap",
+              "parentCapability": "endowment:keyring"
+            },
+            "endowment:network-access": {
+              "caveats": null,
+              "date": 1764061389898,
+              "id": "6ftFC-DJ-hTdl9KNBUJHD",
+              "invoker": "npm:@metamask/tron-wallet-snap",
+              "parentCapability": "endowment:network-access"
+            },
+            "endowment:rpc": {
+              "caveats": [
+                {
+                  "type": "rpcOrigin",
+                  "value": {
+                    "dapps": true,
+                    "snaps": false
+                  }
+                }
+              ],
+              "date": 1764061389898,
+              "id": "Ev5mw5oFsz_TJ0DAX0RVQ",
+              "invoker": "npm:@metamask/tron-wallet-snap",
+              "parentCapability": "endowment:rpc"
+            },
+            "snap_dialog": {
+              "caveats": null,
+              "date": 1764061389898,
+              "id": "3Qz9awmY7gqxDuEDVec5b",
+              "invoker": "npm:@metamask/tron-wallet-snap",
+              "parentCapability": "snap_dialog"
+            },
+            "snap_getBip32Entropy": {
+              "caveats": [
+                {
+                  "type": "permittedDerivationPaths",
+                  "value": [
+                    {
+                      "curve": "secp256k1",
+                      "path": ["m", "44'", "195'"]
+                    }
+                  ]
+                }
+              ],
+              "date": 1764061389898,
+              "id": "TE-SVfyz81vRQH52zOnn0",
+              "invoker": "npm:@metamask/tron-wallet-snap",
+              "parentCapability": "snap_getBip32Entropy"
+            },
+            "snap_getPreferences": {
+              "caveats": null,
+              "date": 1764061389898,
+              "id": "-Xzv8v6VExuesI41PgH0g",
+              "invoker": "npm:@metamask/tron-wallet-snap",
+              "parentCapability": "snap_getPreferences"
+            },
+            "snap_manageAccounts": {
+              "caveats": null,
+              "date": 1764061389898,
+              "id": "uAUmchDx0EhCeXAMi5cUc",
+              "invoker": "npm:@metamask/tron-wallet-snap",
+              "parentCapability": "snap_manageAccounts"
+            },
+            "snap_manageState": {
+              "caveats": null,
+              "date": 1764061389898,
+              "id": "7Oa1WdlzQ0kR1SMJ2o-vs",
+              "invoker": "npm:@metamask/tron-wallet-snap",
+              "parentCapability": "snap_manageState"
+            }
+          }
+        }
+      }
+    },
+    "PermissionLogController": {
+      "permissionHistory": {}
+    },
+    "PhishingController": {
+      "c2DomainBlocklistLastFetched": 0,
+      "hotlistLastFetched": 0,
+      "phishingLists": [],
+      "stalelistLastFetched": 0,
+      "tokenScanCache": {},
+      "urlScanCache": {},
+      "whitelist": [],
+      "whitelistPaths": {}
+    },
+    "PreferencesController": {
+      "addSnapAccountEnabled": false,
+      "advancedGasFee": {},
+      "currentLocale": "en",
+      "dismissSeedBackUpReminder": false,
+      "enableMV3TimestampSave": true,
+      "featureFlags": {},
+      "forgottenPassword": false,
+      "identities": {},
+      "ipfsGateway": "dweb.link",
+      "isIpfsGatewayEnabled": true,
+      "isMultiAccountBalancesEnabled": true,
+      "knownMethodData": {},
+      "ledgerTransportType": "webhid",
+      "lostIdentities": {},
+      "manageInstitutionalWallets": false,
+      "openSeaEnabled": true,
+      "overrideContentSecurityPolicyHeader": true,
+      "preferences": {
+        "avatarType": "maskicon",
+        "dismissSmartAccountSuggestionEnabled": false,
+        "featureNotificationsEnabled": false,
+        "hideZeroBalanceTokens": false,
+        "petnamesEnabled": true,
+        "privacyMode": false,
+        "showConfirmationAdvancedDetails": false,
+        "showExtensionInFullSizeView": false,
+        "showFiatInTestnets": false,
+        "showMultiRpcModal": false,
+        "showNativeTokenAsMainBalance": false,
+        "showTestNetworks": false,
+        "skipDeepLinkInterstitial": false,
+        "smartAccountOptIn": true,
+        "smartTransactionsMigrationApplied": false,
+        "smartTransactionsOptInStatus": true,
+        "tokenNetworkFilter": {},
+        "tokenSortConfig": {
+          "key": "tokenFiatAmount",
+          "order": "dsc",
+          "sortCallback": "stringNumeric"
+        },
+        "useNativeCurrencyAsPrimaryCurrency": true,
+        "useSidePanelAsDefault": false
+      },
+      "referrals": {
+        "hyperliquid": {}
+      },
+      "securityAlertsEnabled": true,
+      "selectedAddress": "",
+      "snapRegistryList": {},
+      "snapsAddSnapAccountModalDismissed": false,
+      "theme": "os",
+      "use4ByteResolution": true,
+      "useAddressBarEnsResolution": true,
+      "useBlockie": false,
+      "useCurrencyRateCheck": true,
+      "useExternalNameSources": true,
+      "useExternalServices": true,
+      "useMultiAccountBalanceChecker": true,
+      "useNftDetection": true,
+      "usePhishDetect": true,
+      "useSafeChainsListValidation": true,
+      "useTokenDetection": true,
+      "useTransactionSimulations": true,
+      "watchEthereumAccountEnabled": false
+    },
+    "RemoteFeatureFlagController": {
+      "cacheTimestamp": 0,
+      "remoteFeatureFlags": {}
+    },
+    "RewardsController": {
+      "rewardsAccounts": {},
+      "rewardsActiveAccount": null,
+      "rewardsSeasonStatuses": {},
+      "rewardsSeasons": {},
+      "rewardsSubscriptionTokens": {},
+      "rewardsSubscriptions": {}
+    },
+    "SeedlessOnboardingController": {
+      "isSeedlessOnboardingUserAuthenticated": false,
+      "socialBackupsMetadata": []
+    },
+    "SelectedNetworkController": {
+      "domains": {
+        "http://localhost:3000": "mainnet",
+        "http://localhost:8000": "mainnet",
+        "https://alpha.mycactus.io": "mainnet",
+        "https://app.bitgo-test.com": "mainnet",
+        "https://app.bitgo.com": "mainnet",
+        "https://app.metamask.io": "mainnet",
+        "https://apps-portal.safe.global": "mainnet",
+        "https://console.dev.mpcvault.com": "mainnet",
+        "https://console.fireblocks.io": "mainnet",
+        "https://console.mpcvault.com": "mainnet",
+        "https://debug.mycactus.dev:1443": "mainnet",
+        "https://dev10-console.waterballoons.xyz": "mainnet",
+        "https://dev4-console.waterballoons.xyz": "mainnet",
+        "https://developer.metamask.io": "mainnet",
+        "https://docs.metamask.io": "mainnet",
+        "https://eu-console.fireblocks.io": "mainnet",
+        "https://eu2-console.fireblocks.io": "mainnet",
+        "https://local.waterballoons.xyz:4200": "mainnet",
+        "https://localhost:3000": "mainnet",
+        "https://neptune-custody-ui.metamask-institutional.io": "mainnet",
+        "https://portfolio-builds.metafi-dev.codefi.network": "mainnet",
+        "https://portfolio.metamask.io": "mainnet",
+        "https://pre.mycactus.com": "mainnet",
+        "https://sandbox.fireblocks.io": "mainnet",
+        "https://saturn-custody-ui.metamask-institutional.io": "mainnet",
+        "https://ui-preprod-v2.qa.zodia.io": "mainnet",
+        "https://ui-preprod-v2.uat.zodia.io": "mainnet",
+        "https://ui-v2.qa.zodia.io": "mainnet",
+        "https://ui-v2.sit.zodia.io": "mainnet",
+        "https://v2.custody.zodia.io": "mainnet",
+        "https://www.mycactus.com": "mainnet",
+        "https://www.mycactus.dev": "mainnet",
+        "localhost:8000": "mainnet",
+        "npm:@metamask/bitcoin-wallet-snap": "mainnet",
+        "npm:@metamask/ens-resolver-snap": "mainnet",
+        "npm:@metamask/gator-permissions-snap": "mainnet",
+        "npm:@metamask/institutional-wallet-snap": "mainnet",
+        "npm:@metamask/message-signing-snap": "mainnet",
+        "npm:@metamask/solana-wallet-snap": "mainnet",
+        "npm:@metamask/tron-wallet-snap": "mainnet"
+      }
+    },
+    "ShieldController": {
+      "coverageResults": {},
+      "orderedTransactionHistory": []
+    },
+    "SignatureController": {},
+    "SmartTransactionsController": {},
+    "SnapController": {
+      "snapStates": {},
+      "snaps": {},
+      "unencryptedSnapStates": {}
+    },
+    "SnapInsightsController": {},
+    "SnapInterfaceController": {
+      "interfaces": {}
+    },
+    "SnapsRegistry": {
+      "database": null,
+      "databaseUnavailable": false,
+      "lastUpdated": null
+    },
+    "SubjectMetadataController": {
+      "subjectMetadata": {
+        "https://metamask.github.io": {
+          "extensionId": null,
+          "iconUrl": null,
+          "name": "MetaMask < = > Ledger Bridge",
+          "origin": "https://metamask.github.io",
+          "subjectType": "website"
+        },
+        "https://seaona.github.io": {
+          "extensionId": null,
+          "iconUrl": null,
+          "name": "MetaMask State Diff",
+          "origin": "https://seaona.github.io",
+          "subjectType": "website"
+        },
+        "npm:@metamask/bitcoin-wallet-snap": {
+          "extensionId": null,
+          "iconUrl": null,
+          "name": "Bitcoin",
+          "origin": "npm:@metamask/bitcoin-wallet-snap",
+          "subjectType": "snap",
+          "svgIcon": "<svg width=\"40\" height=\"40\" viewBox=\"0 0 40 40\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n<circle cx=\"20\" cy=\"20.0002\" r=\"18.8889\" fill=\"url(#paint0_linear_69_841)\"/>\n<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M24.8152 12.1716C27.4342 13.1325 29.3206 14.5561 28.8882 17.2879C28.5609 19.2765 27.5188 20.2485 26.1106 20.5915C27.9845 21.6404 28.8865 23.2325 27.9216 26.0252C26.7217 29.5278 24.0359 29.8455 20.4784 29.167L19.5625 32.8636L17.4955 32.3513L18.4113 28.6548C18.1864 28.5949 17.9494 28.5397 17.7063 28.4831C17.3815 28.4075 17.0458 28.3293 16.7136 28.2339L15.7977 31.9307L13.7345 31.4193L14.6503 27.7226L10.5403 26.6032L11.5619 23.9894C11.5619 23.9894 13.1132 24.4161 13.0891 24.3893C13.6645 24.5292 13.9459 24.1273 14.0611 23.8458L15.5278 17.9197L16.5951 13.7077C16.6413 13.2524 16.4987 12.6568 15.658 12.4302C15.7152 12.3966 14.1445 12.0551 14.1445 12.0551L14.7566 9.57797L18.9926 10.6278L19.8897 7.00684L22.0237 7.53573L21.1266 11.1567C21.5415 11.2469 21.947 11.3518 22.3568 11.4578L22.357 11.4578C22.4915 11.4926 22.6265 11.5275 22.7624 11.5621L23.6595 7.94112L25.7359 8.45571L24.8152 12.1716ZM19.1525 17.994C19.1848 18.0036 19.2194 18.014 19.2561 18.025C20.497 18.398 24.1766 19.5037 24.7964 17.0417C25.3735 14.7014 22.1857 13.9866 20.7045 13.6544C20.5296 13.6152 20.3784 13.5813 20.2601 13.5507L19.1525 17.994ZM17.5196 25.2939C17.4544 25.2744 17.3943 25.2567 17.3398 25.2406L18.4474 20.7974C18.5783 20.8314 18.7438 20.8703 18.9352 20.9152C20.6813 21.3255 24.5813 22.242 23.9751 24.5954C23.3868 27.039 19.0484 25.7487 17.5196 25.2939Z\" fill=\"white\"/>\n<defs>\n<linearGradient id=\"paint0_linear_69_841\" x1=\"20\" y1=\"1.11133\" x2=\"20\" y2=\"38.8891\" gradientUnits=\"userSpaceOnUse\">\n<stop stop-color=\"#FFB60A\"/>\n<stop offset=\"1\" stop-color=\"#F58300\"/>\n</linearGradient>\n</defs>\n</svg>\n",
+          "version": "1.6.0"
+        },
+        "npm:@metamask/ens-resolver-snap": {
+          "extensionId": null,
+          "iconUrl": null,
+          "name": "Ethereum Name Service resolver",
+          "origin": "npm:@metamask/ens-resolver-snap",
+          "subjectType": "snap",
+          "svgIcon": "<svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 24 24\" height=\"3rem\">\n  <path fill=\"url(#ENSWithGradient_svg__a)\"\n        d=\"M4.049 5.663a2.9 2.9 0 0 1 .942-1.038L11.611 0 4.828 11.222s-.592-1.002-.823-1.51a4.8 4.8 0 0 1 .044-4.05m-2.732 7.74a7.55 7.55 0 0 0 2.963 5.489L11.602 24s-4.58-6.606-8.445-13.178a6.6 6.6 0 0 1-.776-2.242 3.6 3.6 0 0 1 0-1.076c-.101.187-.297.57-.297.57a8.7 8.7 0 0 0-.79 2.534c-.077.93-.07 1.867.023 2.796m18.668.89c-.237-.507-.824-1.509-.824-1.509L12.391 24l6.62-4.622c.394-.263.717-.62.942-1.038a4.8 4.8 0 0 0 .044-4.05zm2.688-3.694a7.55 7.55 0 0 0-2.963-5.488L12.4 0s4.577 6.606 8.445 13.179a6.6 6.6 0 0 1 .773 2.24c.054.358.054.72 0 1.077.1-.187.296-.57.296-.57.392-.799.659-1.654.791-2.534.078-.93.07-1.866-.02-2.796z\"/>\n  <defs>\n    <linearGradient id=\"ENSWithGradient_svg__a\" x1=\"15.574\" x2=\"-8.982\" y1=\"26.845\" y2=\"-11.906\"\n                    gradientUnits=\"userSpaceOnUse\">\n      <stop stop-color=\"#44BCF0\"/>\n      <stop offset=\"0.428\" stop-color=\"#628BF3\"/>\n      <stop offset=\"1\" stop-color=\"#A099FF\"/>\n    </linearGradient>\n  </defs>\n</svg>\n",
+          "version": "1.0.0"
+        },
+        "npm:@metamask/institutional-wallet-snap": {
+          "extensionId": null,
+          "iconUrl": null,
+          "name": "Institutional Wallet",
+          "origin": "npm:@metamask/institutional-wallet-snap",
+          "subjectType": "snap",
+          "svgIcon": "<svg width=\"24\" height=\"25\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M17.037 0H6.975C2.605 0 0 2.617 0 6.987v10.05c0 4.37 2.605 6.975 6.975 6.975h10.05c4.37 0 6.975-2.605 6.975-6.976V6.988C24.012 2.617 21.407 0 17.037 0ZM11.49 17.757c0 .36-.18.684-.492.876a.975.975 0 0 1-.54.156 1.11 1.11 0 0 1-.469-.108l-4.202-2.1a1.811 1.811 0 0 1-.985-1.61v-3.973c0-.36.18-.685.493-.877a1.04 1.04 0 0 1 1.008-.048l4.202 2.101a1.8 1.8 0 0 1 .997 1.609v3.974h-.012Zm-.252-6.423L6.723 8.896a1.045 1.045 0 0 1-.528-.924c0-.384.204-.744.528-.924l4.515-2.438a1.631 1.631 0 0 1 1.524 0l4.515 2.438c.324.18.528.528.528.924s-.204.744-.528.924l-4.515 2.438c-.24.132-.504.192-.768.192a1.54 1.54 0 0 1-.756-.192Zm7.972 3.638c0 .684-.385 1.308-.997 1.608l-4.202 2.101c-.144.072-.3.108-.468.108a.975.975 0 0 1-.54-.156 1.017 1.017 0 0 1-.493-.876v-3.974c0-.684.384-1.309.997-1.609l4.202-2.101a1.04 1.04 0 0 1 1.008.048c.313.192.493.516.493.877v3.974Z\" fill=\"#24272A\"/></svg>\n",
+          "version": "1.3.4"
+        },
+        "npm:@metamask/message-signing-snap": {
+          "extensionId": null,
+          "iconUrl": null,
+          "name": "Sign in with MetaMask",
+          "origin": "npm:@metamask/message-signing-snap",
+          "subjectType": "snap",
+          "svgIcon": "<svg width=\"500\" height=\"500\" viewBox=\"0 0 500 500\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n<rect width=\"500\" height=\"500\" fill=\"black\"/>\n<g filter=\"url(#filter0_f_8_91)\">\n<path d=\"M249.444 373.519C249.444 373.519 364.118 343.192 364.118 257.188L378.333 248.251L364.118 239.314L378.333 230.378L364.118 221.441V203.568V185.695V149.948V114.202L301.639 132.596C267.566 142.628 231.323 142.628 197.25 132.596L134.771 114.202V149.948V167.821V185.695V203.568V221.441L120.556 230.378L134.771 239.314L120.556 248.251L134.771 257.188C134.771 343.192 249.444 373.519 249.444 373.519Z\" fill=\"#F1CA77\"/>\n</g>\n<path d=\"M249.445 406.215C249.445 406.215 364.118 348.879 364.118 262.874L378.333 253.937L364.118 245.001L378.333 236.064L364.118 227.127V209.254V191.381V155.634V119.888L249.445 162.179L134.771 119.888V155.634V173.508V191.381V209.254V227.127L120.556 236.064L134.771 245.001L120.556 253.937L134.771 262.874C134.771 348.879 249.445 406.215 249.445 406.215Z\" fill=\"#233447\"/>\n<path d=\"M249.445 399.107C249.445 399.107 364.118 348.879 364.118 262.874L378.333 253.937L364.118 245.001L378.333 236.064L364.118 227.127V209.254V191.381V155.634V119.888L249.445 162.179L134.771 119.888V155.634V173.508V191.381V209.254V227.127L120.556 236.064L134.771 245.001L120.556 253.937L134.771 262.874C134.771 348.879 249.445 399.107 249.445 399.107Z\" fill=\"#123AF0\"/>\n<path d=\"M249.445 392C249.445 392 364.118 348.879 364.118 262.874L378.333 253.937L364.118 245.001L378.333 236.064L364.118 227.127V209.254V191.381V155.634V119.888L249.445 162.179L134.771 119.888V155.634V173.508V191.381V209.254V227.127L120.556 236.064L134.771 245.001L120.556 253.937L134.771 262.874C134.771 348.879 249.445 392 249.445 392Z\" fill=\"#CD6116\"/>\n<path d=\"M249.445 382.049C249.445 382.049 364.118 348.879 364.118 262.874L378.333 253.937L364.118 245.001L378.333 236.064L364.118 227.127V209.254V191.381V155.634V119.888L249.445 162.179L134.771 119.888V155.634V173.508V191.381V209.254V227.127L120.556 236.064L134.771 245.001L120.556 253.937L134.771 262.874C134.771 348.879 249.445 382.049 249.445 382.049Z\" fill=\"#E4751F\"/>\n<path d=\"M249.445 370.676C249.445 370.676 364.118 348.879 364.118 262.874L378.333 253.937L364.118 245.001L378.333 236.064L364.118 227.127V209.254V191.381V155.634V119.888L249.445 162.179L134.771 119.888V155.634V173.508V191.381V209.254V227.127L120.556 236.064L134.771 245.001L120.556 253.937L134.771 262.874C134.771 348.879 249.445 370.676 249.445 370.676Z\" fill=\"#F6851B\"/>\n<path d=\"M249.445 352.196C249.445 352.196 364.118 348.879 364.118 262.874L378.333 253.937L364.118 245.001L378.333 236.064L364.118 227.127V209.254V191.381V155.634V119.888C290.105 147.184 208.784 147.184 134.771 119.888V155.634V173.508V191.381V209.254V227.127L120.556 236.064L134.771 245.001L120.556 253.937L134.771 262.874C134.771 348.879 249.445 352.196 249.445 352.196Z\" fill=\"url(#paint0_linear_8_91)\"/>\n<defs>\n<filter id=\"filter0_f_8_91\" x=\"94.9674\" y=\"88.6133\" width=\"308.954\" height=\"310.494\" filterUnits=\"userSpaceOnUse\" color-interpolation-filters=\"sRGB\">\n<feFlood flood-opacity=\"0\" result=\"BackgroundImageFix\"/>\n<feBlend mode=\"normal\" in=\"SourceGraphic\" in2=\"BackgroundImageFix\" result=\"shape\"/>\n<feGaussianBlur stdDeviation=\"12.7941\" result=\"effect1_foregroundBlur_8_91\"/>\n</filter>\n<linearGradient id=\"paint0_linear_8_91\" x1=\"144.012\" y1=\"132.09\" x2=\"425.482\" y2=\"446.967\" gradientUnits=\"userSpaceOnUse\">\n<stop stop-color=\"#F1CA77\"/>\n<stop offset=\"1\" stop-color=\"#F6851B\"/>\n</linearGradient>\n</defs>\n</svg>\n",
+          "version": "1.1.4"
+        },
+        "npm:@metamask/solana-wallet-snap": {
+          "extensionId": null,
+          "iconUrl": null,
+          "name": "Solana",
+          "origin": "npm:@metamask/solana-wallet-snap",
+          "subjectType": "snap",
+          "svgIcon": "<svg width=\"101\" height=\"101\" viewBox=\"0 0 101 101\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n<path d=\"M100.48 69.3817L83.8068 86.8015C83.4444 87.1799 83.0058 87.4816 82.5185 87.6878C82.0312 87.894 81.5055 88.0003 80.9743 88H1.93563C1.55849 88 1.18957 87.8926 0.874202 87.6912C0.558829 87.4897 0.31074 87.2029 0.160416 86.8659C0.0100923 86.529 -0.0359181 86.1566 0.0280382 85.7945C0.0919944 85.4324 0.263131 85.0964 0.520422 84.8278L17.2061 67.408C17.5676 67.0306 18.0047 66.7295 18.4904 66.5234C18.9762 66.3172 19.5002 66.2104 20.0301 66.2095H99.0644C99.4415 66.2095 99.8104 66.3169 100.126 66.5183C100.441 66.7198 100.689 67.0067 100.84 67.3436C100.99 67.6806 101.036 68.0529 100.972 68.415C100.908 68.7771 100.737 69.1131 100.48 69.3817ZM83.8068 34.3032C83.4444 33.9248 83.0058 33.6231 82.5185 33.4169C82.0312 33.2108 81.5055 33.1045 80.9743 33.1048H1.93563C1.55849 33.1048 1.18957 33.2121 0.874202 33.4136C0.558829 33.6151 0.31074 33.9019 0.160416 34.2388C0.0100923 34.5758 -0.0359181 34.9482 0.0280382 35.3103C0.0919944 35.6723 0.263131 36.0083 0.520422 36.277L17.2061 53.6968C17.5676 54.0742 18.0047 54.3752 18.4904 54.5814C18.9762 54.7875 19.5002 54.8944 20.0301 54.8952H99.0644C99.4415 54.8952 99.8104 54.7879 100.126 54.5864C100.441 54.3849 100.689 54.0981 100.84 53.7612C100.99 53.4242 101.036 53.0518 100.972 52.6897C100.908 52.3277 100.737 51.9917 100.48 51.723L83.8068 34.3032ZM1.93563 21.7905H80.9743C81.5055 21.7907 82.0312 21.6845 82.5185 21.4783C83.0058 21.2721 83.4444 20.9704 83.8068 20.592L100.48 3.17219C100.737 2.90357 100.908 2.56758 100.972 2.2055C101.036 1.84342 100.99 1.47103 100.84 1.13408C100.689 0.79713 100.441 0.510296 100.126 0.308823C99.8104 0.107349 99.4415 1.24074e-05 99.0644 0L20.0301 0C19.5002 0.000878397 18.9762 0.107699 18.4904 0.313848C18.0047 0.519998 17.5676 0.821087 17.2061 1.19848L0.524723 18.6183C0.267681 18.8866 0.0966198 19.2223 0.0325185 19.5839C-0.0315829 19.9456 0.0140624 20.3177 0.163856 20.6545C0.31365 20.9913 0.561081 21.2781 0.875804 21.4799C1.19053 21.6817 1.55886 21.7896 1.93563 21.7905Z\" fill=\"url(#paint0_linear_174_4403)\"/>\n<defs>\n<linearGradient id=\"paint0_linear_174_4403\" x1=\"8.52558\" y1=\"90.0973\" x2=\"88.9933\" y2=\"-3.01622\" gradientUnits=\"userSpaceOnUse\">\n<stop offset=\"0.08\" stop-color=\"#9945FF\"/>\n<stop offset=\"0.3\" stop-color=\"#8752F3\"/>\n<stop offset=\"0.5\" stop-color=\"#5497D5\"/>\n<stop offset=\"0.6\" stop-color=\"#43B4CA\"/>\n<stop offset=\"0.72\" stop-color=\"#28E0B9\"/>\n<stop offset=\"0.97\" stop-color=\"#19FB9B\"/>\n</linearGradient>\n</defs>\n</svg>\n",
+          "version": "2.4.6"
+        },
+        "npm:@metamask/tron-wallet-snap": {
+          "extensionId": null,
+          "iconUrl": null,
+          "name": "Tron",
+          "origin": "npm:@metamask/tron-wallet-snap",
+          "subjectType": "snap",
+          "svgIcon": "<svg xmlns=\"http://www.w3.org/2000/svg\" xml:space=\"preserve\" style=\"enable-background:new 0 0 2680.2 2915.7\" viewBox=\"0 0 2680.2 2915.7\"><path d=\"M1929.1 757.7 332 463.8l840.5 2114.9 1171.1-1426.8-414.5-394.2zm-25.7 129.5 244.3 232.2-668.2 121 423.9-353.2zm-569 329L630.1 632.1l1151.1 211.8-446.8 372.3zm-50.2 103.3-114.8 949.4L550.2 710.7l734 608.8zm106.3 50.4 739.9-134-848.7 1034 108.8-900z\" style=\"fill:#eb0029\"/></svg>",
+          "version": "1.10.0"
+        }
+      }
+    },
+    "SubscriptionController": {
+      "subscriptions": [],
+      "trialedProducts": []
+    },
+    "SwapsController": {},
+    "TokenBalancesController": {
+      "tokenBalances": {}
+    },
+    "TokenListController": {
+      "preventPollingOnNetworkRestart": false,
+      "tokensChainsCache": {}
+    },
+    "TokenRatesController": {
+      "marketData": {}
+    },
+    "TokensController": {
+      "allDetectedTokens": {},
+      "allIgnoredTokens": {},
+      "allTokens": {}
+    },
+    "TransactionController": {
+      "lastFetchedBlockNumbers": {},
+      "methodData": {},
+      "submitHistory": [],
+      "transactionBatches": [],
+      "transactions": []
+    },
+    "UserOperationController": {
+      "userOperations": {}
+    },
+    "UserStorageController": {
+      "isAccountSyncingEnabled": true,
+      "isBackupAndSyncEnabled": true,
+      "isContactSyncingEnabled": true
+    },
+    "config": {},
+    "firstTimeInfo": {
+      "date": 1764061389865,
+      "version": "13.12.0"
+    }
+  },
+  "meta": {
+    "version": 183
+  }
+}

@@ -239,10 +239,19 @@ class SendTokenPage {
     await this.driver.pasteIntoField(this.hexInput, hex);
   }
 
-  async getHexInputValue(): Promise<string> {
+  async waitForHexDataCleared(): Promise<string> {
     console.log('Getting value from hex input');
     const hexInputElement = await this.driver.waitForSelector(this.hexInput);
-    this.driver.waitForNonEmptyElement(hexInputElement);
+    await this.driver.waitUntil(
+      async () => {
+        const value = await hexInputElement.getAttribute('value');
+        return value === '';
+      },
+      {
+        timeout: 5000,
+        interval: 500,
+      },
+    );
     const value = await hexInputElement.getAttribute('value');
     console.log(`Hex input value: ${value}`);
     return value;
@@ -388,16 +397,10 @@ class SendTokenPage {
     tokenId?: string,
   ): Promise<void> {
     console.log(`Checking if token symbol "${tokenSymbol}" is displayed`);
-    const assetPickerSymbol = await this.driver.waitForSelector(
-      this.assetPickerSymbol,
-    );
-    this.driver.waitForNonEmptyElement(assetPickerSymbol);
-    const text = await assetPickerSymbol.getText();
-    assert.equal(
-      text,
-      tokenSymbol,
-      `Expected token symbol to be ${tokenSymbol}, got ${text}`,
-    );
+    await this.driver.waitForSelector({
+      css: this.assetPickerSymbol,
+      text: tokenSymbol,
+    });
 
     if (tokenId) {
       const id = `#${tokenId}`;

@@ -1,7 +1,7 @@
 import { Mockttp } from 'mockttp';
 import { mockedSourcifyTokenSend } from '../confirmations/helpers';
 import { DAPP_URL, WINDOW_TITLES, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
@@ -24,7 +24,7 @@ describe('Transfer custom tokens', function () {
     it('send custom tokens from extension customizing gas values', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder().withTokensControllerERC20().build(),
           localNodeOptions: { hardfork: 'muirGlacier' },
           smartContract,
@@ -77,7 +77,7 @@ describe('Transfer custom tokens', function () {
     it('transfer custom tokens from dapp customizing gas values', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .withTokensControllerERC20()
@@ -145,7 +145,7 @@ describe('Transfer custom tokens', function () {
     it('transfer custom tokens from dapp without specifying gas', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .withTokensControllerERC20()

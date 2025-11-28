@@ -15,13 +15,13 @@ on:
 jobs:
   create-release-pr:
     name: Create Release Pull Request using Github Tools
-    uses: MetaMask/github-tools/.github/workflows/create-release-pr.yml@fc6fe1a3fb591f6afa61f0dbbe7698bd50fab9c7
+    uses: MetaMask/github-tools/.github/workflows/create-release-pr.yml@3b4244a675e7bb1eec7309a11e89697f53a25d9a
     with:
       platform: extension
       base-branch: ${{ inputs.base-branch }}
       semver-version: ${{ inputs.semver-version }}
       previous-version-tag: release/${{ inputs.previous-semver-version }}
-      github-tools-version: fc6fe1a3fb591f6afa61f0dbbe7698bd50fab9c7
+      github-tools-version: 3b4244a675e7bb1eec7309a11e89697f53a25d9a
     secrets:
       # This token needs write permissions to metamask-extension & read permissions to metamask-planning
       github-token: ${{ secrets.PR_TOKEN }}

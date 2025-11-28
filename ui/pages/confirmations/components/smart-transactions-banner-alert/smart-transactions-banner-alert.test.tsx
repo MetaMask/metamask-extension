@@ -2,7 +2,7 @@ import React from 'react';
 import type { Store } from '@reduxjs/toolkit';
 import { screen } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
-import { ConfirmContext } from '../../context/confirm';
+import { ConfirmContext, ConfirmContextType } from '../../context/confirm';
 import type { Confirmation, SignatureRequestType } from '../../types/confirm';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
 import configureStore from '../../../../store/store';
@@ -43,7 +43,9 @@ const renderWithConfirmContext = (
   },
 ) => {
   return renderWithProvider(
-    <ConfirmContext.Provider value={confirmationValue}>
+    <ConfirmContext.Provider
+      value={confirmationValue as unknown as ConfirmContextType}
+    >
       {component}
     </ConfirmContext.Provider>,
     store,

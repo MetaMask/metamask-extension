@@ -4,9 +4,10 @@ import {
   WINDOW_TITLES,
   convertETHToHexGwei,
 } from '../helpers';
-import FixtureBuilder from '../fixture-builder';
+import FixtureBuilder from '../fixtures/fixture-builder';
 import {
   BUNDLER_URL,
+  DAPP_PATH,
   DAPP_URL,
   ENTRYPOINT,
   ERC_4337_ACCOUNT,
@@ -22,7 +23,7 @@ import { Bundler } from '../bundler';
 import { SWAP_TEST_ETH_USDC_TRADES_MOCK } from '../../data/mock-data';
 import { Mockttp } from '../mock-e2e';
 import TestDapp from '../page-objects/pages/test-dapp';
-import { mockAccountAbstractionKeyringSnap } from '../mock-response-data/snaps/snap-binary-mocks';
+import { mockSnapAccountAbstractionKeyRingAndSite } from '../mock-response-data/snaps/snap-local-sites/account-abstraction-keyring-site-mocks';
 import SendTokenPage from '../page-objects/pages/send/send-token-page';
 import HomePage from '../page-objects/pages/home/homepage';
 
@@ -41,13 +42,11 @@ async function installExampleSnap(driver: Driver) {
   });
   await driver.findElement({ text: 'Add to MetaMask', tag: 'h3' });
   await driver.clickElementSafe('[data-testid="snap-install-scroll"]', 200);
-  await driver.waitForSelector({ text: 'Confirm' });
   await driver.clickElement({
     text: 'Confirm',
     tag: 'button',
   });
-  await driver.waitForSelector({ text: 'OK' });
-  await driver.clickElement({
+  await driver.clickElementAndWaitForWindowToClose({
     text: 'OK',
     tag: 'button',
   });
@@ -183,8 +182,8 @@ async function mockSwapsTransactionQuote(mockServer: Mockttp) {
 }
 async function mockSnapAndSwaps(mockServer: Mockttp) {
   return [
+    ...(await mockSnapAccountAbstractionKeyRingAndSite(mockServer, 8081)),
     await mockSwapsTransactionQuote(mockServer),
-    await mockAccountAbstractionKeyringSnap(mockServer),
   ];
 }
 
@@ -202,7 +201,13 @@ async function withAccountSnap(
       title,
       useBundler: true,
       usePaymaster: Boolean(paymaster),
-      dapp: true,
+      dappOptions: {
+        numberOfTestDapps: 1,
+        customDappPaths: [
+          DAPP_PATH.SNAP_ACCOUNT_ABSTRACTION_KEYRING,
+          DAPP_PATH.TEST_SNAPS,
+        ],
+      },
       localNodeOptions: localNodeOptions || {
         hardfork: 'london',
         mnemonic:
@@ -246,7 +251,9 @@ async function withAccountSnap(
   );
 }
 
-describe('User Operations', function () {
+// Bug #37823 When sending a transaction to dApp the confirmation dialog crashes
+// eslint-disable-next-line mocha/no-skipped-tests
+describe.skip('User Operations', function () {
   it('from dApp transaction', async function () {
     await withAccountSnap({ title: this.test?.fullTitle() }, async (driver) => {
       const transaction = {

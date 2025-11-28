@@ -9,7 +9,7 @@ import {
 } from '@metamask/utils';
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
@@ -34,7 +34,7 @@ import AssetOptions from './asset-options';
 import AssetPage from './asset-page';
 
 const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
-  const { address, symbol, isERC721, image } = token;
+  const { address, symbol, decimals, isERC721, image } = token;
 
   const tokenList = useSelector(getTokenList);
   const allNetworks: {
@@ -64,7 +64,7 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
   );
   const isEvm = isEvmChainId(chainId);
 
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
 
@@ -88,7 +88,16 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
   const {
     tokensWithBalances,
   }: { tokensWithBalances: { string: string; balance: string }[] } =
-    useTokenTracker({ tokens: [token], address: undefined });
+    useTokenTracker({
+      tokens: [
+        {
+          address,
+          symbol,
+          decimals,
+        },
+      ],
+      address: undefined,
+    });
 
   const balance = tokensWithBalances?.[0];
   const fiat = useTokenFiatAmount(address, balance?.string, symbol, {}, false);
@@ -132,10 +141,9 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
       optionsButton={
         <AssetOptions
           isNativeAsset={false}
-          isEvm={isEvm}
           onRemove={() =>
             dispatch(
-              showModal({ name: 'HIDE_TOKEN_CONFIRMATION', token, history }),
+              showModal({ name: 'HIDE_TOKEN_CONFIRMATION', token, navigate }),
             )
           }
           onClickBlockExplorer={() => {
@@ -154,7 +162,7 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
             });
             global.platform.openTab({ url: blockExplorerLink });
           }}
-          tokenSymbol={token.symbol}
+          token={token}
         />
       }
     />

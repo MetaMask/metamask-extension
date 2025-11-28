@@ -12,7 +12,7 @@ import { TestSuiteArguments } from '../transactions/shared';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import PersonalSignConfirmation from '../../../page-objects/pages/confirmations/redesign/personal-sign-confirmation';
 import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../../constants';
 import {
   assertAccountDetailsMetrics,
@@ -104,7 +104,7 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
   it('can queue multiple personal signs and confirm', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),

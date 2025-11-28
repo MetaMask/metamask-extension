@@ -1,7 +1,7 @@
 import SignTypedData from '../../../page-objects/pages/confirmations/redesign/sign-typed-data-confirmation';
 
 import { withFixtures, unlockWallet } from '../../../helpers';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { Driver } from '../../../webdriver/driver';
 import {
@@ -32,7 +32,7 @@ describe('Sign Typed Data Signature Request', function () {
     it(`can queue multiple Signature Requests of ${data.type} and confirm`, async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
@@ -80,7 +80,7 @@ describe('Sign Typed Data Signature Request', function () {
     it(`can queue multiple Signature Requests of ${data.type} and reject`, async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),

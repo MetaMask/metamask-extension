@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
 import { toHex } from '@metamask/controller-utils';
 import {
   isCaipChainId,
@@ -18,16 +18,12 @@ import { ChainId } from '../../../../shared/constants/network';
 
 import { I18nContext } from '../../../contexts/i18n';
 
-import {
-  PREPARE_SWAP_ROUTE,
-  MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
-} from '../../../helpers/constants/routes';
+import { MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import {
   AddressListQueryParams,
   AddressListSource,
 } from '../../../pages/multichain-accounts/multichain-account-address-list-page';
 import {
-  getCurrentKeyring,
   getUseExternalServices,
   getNetworkConfigurationIdByChainId,
   isNonEvmAccount,
@@ -36,8 +32,6 @@ import {
 import { getIsMultichainAccountsState2Enabled } from '../../../selectors/multichain-accounts/feature-flags';
 import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
 import Tooltip from '../../ui/tooltip';
-import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
-import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -56,17 +50,14 @@ import { Box, Icon, IconName, IconSize } from '../../component-library';
 import IconButton from '../../ui/icon-button';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import useBridging from '../../../hooks/bridge/useBridging';
-import { getIsUnifiedUIEnabled } from '../../../ducks/bridge/selectors';
 import { ReceiveModal } from '../../multichain/receive-modal';
 import { setActiveNetworkWithError } from '../../../store/actions';
 import {
-  getMultichainIsTestnet,
   getMultichainNativeCurrency,
   getMultichainNetwork,
 } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../../shared/constants/bridge';
 import { trace, TraceName } from '../../../../shared/lib/trace';
 import { navigateToSendRoute } from '../../../pages/confirmations/utils/send';
@@ -104,7 +95,7 @@ const CoinButtons = ({
   const [showReceiveModal, setShowReceiveModal] = useState(false);
 
   const { address: selectedAddress } = account;
-  const history = useHistory();
+  const navigate = useNavigate();
   const networks = useSelector(getNetworkConfigurationIdByChainId) as Record<
     string,
     string
@@ -133,8 +124,6 @@ const CoinButtons = ({
   ///: END:ONLY_INCLUDE_IF
 
   const location = useLocation();
-  const keyring = useSelector(getCurrentKeyring);
-  const usingHardwareWallet = isHardwareKeyring(keyring?.type);
 
   // Initially, those events were using a "ETH" as `token_symbol`, so we keep this behavior
   // for EVM, no matter the currently selected native token (e.g. SepoliaETH if you are on Sepolia
@@ -150,8 +139,6 @@ const CoinButtons = ({
   const nativeToken = isEvmNetwork ? 'ETH' : multichainNativeToken;
 
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
-
-  const isTestnet = useSelector(getMultichainIsTestnet);
 
   const isNonEvmAccountWithoutExternalServices =
     !isExternalServicesEnabled && isNonEvmAccount(account);
@@ -226,8 +213,6 @@ const CoinButtons = ({
 
   const { openBridgeExperience } = useBridging();
 
-  const isUnifiedUIEnabled = useSelector(getIsUnifiedUIEnabled);
-
   const setCorrectChain = useCallback(async () => {
     if (
       currentChainId !== chainId &&
@@ -295,7 +280,7 @@ const CoinButtons = ({
     if (trackingLocation !== 'home') {
       params = { chainId: chainId.toString() };
     }
-    navigateToSendRoute(history, isSendRedesignEnabled, params);
+    navigateToSendRoute(navigate, isSendRedesignEnabled, params);
   }, [
     chainId,
     account,
@@ -329,82 +314,24 @@ const CoinButtons = ({
     });
   }, [chainId, defaultSwapsToken]);
 
-  const handleBridgeOnClick = useCallback(
-    async (isSwap: boolean) => {
-      // Determine the chainId to use in the Swap experience using the url
-      const urlSuffix = location.pathname.split('/').filter(Boolean).at(-1);
-      const hexChainOrAssetId = urlSuffix
-        ? decodeURIComponent(urlSuffix)
-        : undefined;
-      const chainIdToUse = isCaipAssetType(hexChainOrAssetId)
-        ? parseCaipAssetType(hexChainOrAssetId).chainId
-        : hexChainOrAssetId;
-
-      // Handle clicking from the wallet or native asset overview page
-      openBridgeExperience(
-        MetaMetricsSwapsEventSource.MainView,
-        chainIdToUse && ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainIdToUse)
-          ? getNativeAssetForChainId(chainIdToUse)
-          : undefined,
-        isSwap,
-      );
-    },
-    [location, openBridgeExperience],
-  );
-
   const handleSwapOnClick = useCallback(async () => {
-    if (isUnifiedUIEnabled) {
-      handleBridgeOnClick(true);
-      return;
-    }
-    if (multichainChainId === MultichainNetworks.SOLANA) {
-      handleBridgeOnClick(true);
-      return;
-    }
-    if (
-      isMultichainAccountsState2Enabled &&
-      chainId === MultichainNetworks.SOLANA
-    ) {
-      handleBridgeOnClick(true);
-      return;
-    }
+    // Determine the chainId to use in the Swap experience using the url
+    const urlSuffix = location.pathname.split('/').filter(Boolean).at(-1);
+    const hexChainOrAssetId = urlSuffix
+      ? decodeURIComponent(urlSuffix)
+      : undefined;
+    const chainIdToUse = isCaipAssetType(hexChainOrAssetId)
+      ? parseCaipAssetType(hexChainOrAssetId).chainId
+      : hexChainOrAssetId;
 
-    await setCorrectChain();
-
-    if (isSwapsChain) {
-      trackEvent({
-        event: MetaMetricsEventName.NavSwapButtonClicked,
-        category: MetaMetricsEventCategory.Swaps,
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_symbol: 'ETH',
-          location: MetaMetricsSwapsEventSource.MainView,
-          text: 'Swap',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: chainId,
-        },
-      });
-      dispatch(setSwapsFromToken(defaultSwapsToken));
-      if (usingHardwareWallet) {
-        if (global.platform.openExtensionInBrowser) {
-          global.platform.openExtensionInBrowser(PREPARE_SWAP_ROUTE);
-        }
-      } else {
-        history.push(PREPARE_SWAP_ROUTE);
-      }
-    }
-  }, [
-    setCorrectChain,
-    isSwapsChain,
-    chainId,
-    isMultichainAccountsState2Enabled,
-    multichainChainId,
-    isUnifiedUIEnabled,
-    usingHardwareWallet,
-    defaultSwapsToken,
-  ]);
+    // Handle clicking from the wallet or native asset overview page
+    openBridgeExperience(
+      MetaMetricsSwapsEventSource.MainView,
+      chainIdToUse && ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainIdToUse)
+        ? getNativeAssetForChainId(chainIdToUse)
+        : undefined,
+    );
+  }, [location, openBridgeExperience]);
 
   const handleReceiveOnClick = useCallback(() => {
     trace({ name: TraceName.ReceiveModal });
@@ -422,7 +349,7 @@ const CoinButtons = ({
 
     if (isMultichainAccountsState2Enabled && selectedAccountGroup) {
       // Navigate to the multichain address list page with receive source
-      history.push(
+      navigate(
         `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(selectedAccountGroup)}?${AddressListQueryParams.Source}=${AddressListSource.Receive}`,
       );
     } else {
@@ -432,7 +359,7 @@ const CoinButtons = ({
   }, [
     isMultichainAccountsState2Enabled,
     selectedAccountGroup,
-    history,
+    navigate,
     trackEvent,
     trackingLocation,
     chainId,
@@ -493,43 +420,12 @@ const CoinButtons = ({
         }
         onClick={handleSwapOnClick}
         label={t('swap')}
-        data-testid="token-overview-button-swap"
+        data-testid={`${classPrefix}-overview-swap`}
         width={BlockSize.Full}
         tooltipRender={(contents: React.ReactElement) =>
           generateTooltip('swapButton', contents)
         }
       />
-      {/* the bridge button is redundant if unified ui is enabled, testnet or non-bridge chain (unsupported) */}
-      {isUnifiedUIEnabled ||
-      isTestnet ||
-      isNonEvmAccountWithoutExternalServices ? null : (
-        <IconButton
-          className={`${classPrefix}-overview__button`}
-          disabled={!isSigningEnabled || isNonEvmAccountWithoutExternalServices}
-          data-testid={`${classPrefix}-overview-bridge`}
-          Icon={
-            displayNewIconButtons ? (
-              <Icon
-                name={IconName.Bridge}
-                color={IconColor.iconAlternative}
-                size={IconSize.Md}
-              />
-            ) : (
-              <Icon
-                name={IconName.Bridge}
-                color={IconColor.iconDefault}
-                size={IconSize.Sm}
-              />
-            )
-          }
-          label={t('bridge')}
-          onClick={() => handleBridgeOnClick(false)}
-          width={BlockSize.Full}
-          tooltipRender={(contents: React.ReactElement) =>
-            generateTooltip('bridgeButton', contents)
-          }
-        />
-      )}
       <IconButton
         className={`${classPrefix}-overview__button`}
         data-testid={`${classPrefix}-overview-send`}

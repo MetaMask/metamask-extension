@@ -1,6 +1,6 @@
 import { withFixtures, unlockWallet } from '../../helpers';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -13,7 +13,7 @@ describe('Send ERC20 token to contract address', function () {
   it('should display the token contract warning to the user', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().withTokensControllerERC20().build(),
         smartContract,
         title: this.test?.fullTitle(),

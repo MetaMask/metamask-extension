@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { withFixtures, unlockWallet, WINDOW_TITLES } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { DAPP_URL, DAPP_ONE_URL } from '../../constants';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
@@ -15,11 +15,10 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks revok
 
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 2 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .build(),
-        dappOptions: { numberOfDapps: 2 },
         localNodeOptions: [
           {
             type: 'anvil',

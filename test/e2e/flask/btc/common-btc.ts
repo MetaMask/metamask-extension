@@ -5,7 +5,7 @@ import { Driver } from '../../webdriver/driver';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import {
   mockBitcoinFeatureFlag,
@@ -32,7 +32,7 @@ export async function withBtcAccountSnap(
         })
         .build(),
       title,
-      dapp: true,
+      dappOptions: { numberOfTestDapps: 1 },
       testSpecificMock: async (mockServer: Mockttp) => [
         await mockBitcoinFeatureFlag(mockServer),
         await mockInitialFullScan(mockServer),

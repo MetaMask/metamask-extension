@@ -11,11 +11,17 @@ import {
   SignatureController,
   SignatureControllerState,
   SignatureRequest,
+  SignatureRequestType,
   SignatureStateChange,
 } from '@metamask/signature-controller';
 import { Hex, JsonRpcRequest } from '@metamask/utils';
 import { PPOM } from '@blockaid/ppom_release';
-import { Messenger } from '@metamask/base-controller';
+import { isSnapId } from '@metamask/snaps-utils';
+import {
+  MOCK_ANY_NAMESPACE,
+  MockAnyNamespace,
+  Messenger,
+} from '@metamask/messenger';
 import {
   BlockaidReason,
   BlockaidResultType,
@@ -24,9 +30,10 @@ import {
 } from '../../../../shared/constants/security-provider';
 import { AppStateController } from '../../controllers/app-state-controller';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
+import { isSnapPreinstalled } from '../../../../shared/lib/snaps/snaps';
+import { RootMessenger } from '../messenger';
 import {
   generateSecurityAlertId,
-  PPOMMessenger,
   updateSecurityAlertResponse,
   validateRequestWithPPOM,
 } from './ppom-util';
@@ -38,11 +45,25 @@ jest.mock('@metamask/transaction-controller', () => ({
   normalizeTransactionParams: jest.fn(),
 }));
 
+jest.mock('@metamask/snaps-utils', () => ({
+  ...jest.requireActual('@metamask/snaps-utils'),
+  isSnapId: jest.fn(),
+}));
+
+jest.mock('../../../../shared/lib/snaps/snaps', () => ({
+  ...jest.requireActual('../../../../shared/lib/snaps/snaps'),
+  isSnapPreinstalled: jest.fn(),
+}));
+
 const SECURITY_ALERT_ID_MOCK = '1234-5678';
 const TRANSACTION_ID_MOCK = '123';
 const CHAIN_ID_MOCK = '0x1' as Hex;
 const GAS_MOCK = '0x1234';
 const GAS_PRICE_MOCK = '0x5678';
+
+// Mock data for permission origin tests
+const PERMISSION_ORIGIN_MOCK = 'https://malicious-site.com';
+const GATOR_SNAP_ORIGIN_MOCK = 'npm:@metamask/gator-permissions-snap';
 
 const REQUEST_MOCK = {
   method: 'eth_signTypedData_v4',
@@ -77,7 +98,7 @@ const TRANSACTION_PARAMS_MOCK_2: TransactionParams = {
 
 const MESSENGER_MOCK = {
   subscribe: jest.fn(),
-} as unknown as PPOMMessenger;
+} as unknown as RootMessenger;
 
 function createPPOMMock() {
   return {
@@ -125,9 +146,12 @@ function createTransactionControllerMock(
 
 function createMessengerMock() {
   return new Messenger<
+    MockAnyNamespace,
     never,
     SignatureStateChange | TransactionControllerUnapprovedTransactionAddedEvent
-  >();
+  >({
+    namespace: MOCK_ANY_NAMESPACE,
+  });
 }
 
 describe('PPOM Utils', () => {
@@ -139,6 +163,8 @@ describe('PPOM Utils', () => {
   const normalizeTransactionParamsMock = jest.mocked(
     normalizeTransactionParams,
   );
+  const isSnapIdMock = jest.mocked(isSnapId);
+  const isSnapPreinstalledMock = jest.mocked(isSnapPreinstalled);
 
   const validateRequestWithPPOMOptionsBase = {
     request: REQUEST_MOCK,
@@ -164,6 +190,10 @@ describe('PPOM Utils', () => {
     normalizeTransactionParamsMock.mockImplementation(
       (params: TransactionParams) => params,
     );
+
+    // Reset snap utility mocks
+    isSnapIdMock.mockReturnValue(false);
+    isSnapPreinstalledMock.mockReturnValue(false);
   });
 
   describe('validateRequestWithPPOM', () => {
@@ -473,6 +503,343 @@ describe('PPOM Utils', () => {
         ...request,
         test1: undefined,
         test2: undefined,
+      });
+    });
+
+    describe('permission origin handling', () => {
+      it('uses decodedPermission.origin for permission requests from preinstalled snaps', async () => {
+        // Mock snap validation functions
+        isSnapIdMock.mockReturnValue(true);
+        isSnapPreinstalledMock.mockReturnValue(true);
+
+        const request = {
+          ...REQUEST_MOCK,
+          method: 'eth_signTypedData_v4',
+          origin: GATOR_SNAP_ORIGIN_MOCK, // Gator snap origin
+          params: [
+            SIGN_TYPED_DATA_PARAMS_MOCK_1,
+            SIGN_TYPED_DATA_PARAMS_MOCK_2,
+          ],
+        };
+
+        const signatureRequestWithPermission = {
+          id: 'test-id',
+          chainId: '0x1',
+          networkClientId: 'test-network',
+          status: 'unapproved',
+          time: Date.now(),
+          type: SignatureRequestType.TypedSign,
+          messageParams: {
+            from: '0x123',
+            data: 'test-data',
+          },
+          decodedPermission: {
+            origin: PERMISSION_ORIGIN_MOCK, // Actual malicious domain
+            permission: {
+              type: 'native-token-stream',
+              data: {
+                initialAmount: '0x1234',
+                maxAmount: '0x1234',
+                amountPerSecond: '0x1234',
+                startTime: 123456789,
+              },
+              justification: 'Test permission',
+            },
+            chainId: '0x1',
+            signer: {
+              type: 'account',
+              data: { address: '0x123' },
+            },
+            expiry: 123456789,
+          },
+        } as SignatureRequest;
+
+        updateSecurityAlertResponseMock.mockResolvedValue(
+          signatureRequestWithPermission,
+        );
+
+        await validateRequestWithPPOM({
+          ...validateRequestWithPPOMOptionsBase,
+          ppomController,
+          request,
+        });
+
+        expect(isSnapIdMock).toHaveBeenCalledWith(GATOR_SNAP_ORIGIN_MOCK);
+        expect(isSnapPreinstalledMock).toHaveBeenCalledWith(
+          GATOR_SNAP_ORIGIN_MOCK,
+        );
+        expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
+        expect(ppom.validateJsonRpc).toHaveBeenCalledWith(
+          expect.objectContaining({
+            origin: PERMISSION_ORIGIN_MOCK, // Should use permission origin
+          }),
+        );
+        expect(ppom.validateJsonRpc).toHaveBeenCalledWith(
+          expect.not.objectContaining({
+            origin: GATOR_SNAP_ORIGIN_MOCK, // Should not use Gator snap origin
+          }),
+        );
+      });
+
+      it('rejects origin override for non-preinstalled snaps', async () => {
+        // Mock snap validation functions - snap is not preinstalled
+        isSnapIdMock.mockReturnValue(true);
+        isSnapPreinstalledMock.mockReturnValue(false);
+
+        const nonPreinstalledSnapOrigin = 'npm:@metamask/fake-permissions-snap';
+
+        const request = {
+          ...REQUEST_MOCK,
+          method: 'eth_signTypedData_v4',
+          origin: nonPreinstalledSnapOrigin, // non preinstalled snap origin
+          params: [
+            SIGN_TYPED_DATA_PARAMS_MOCK_1,
+            SIGN_TYPED_DATA_PARAMS_MOCK_2,
+          ],
+        };
+
+        const signatureRequestWithPermission = {
+          id: 'test-id',
+          chainId: '0x1',
+          networkClientId: 'test-network',
+          status: 'unapproved',
+          time: Date.now(),
+          type: SignatureRequestType.TypedSign,
+          messageParams: {
+            from: '0x123',
+            data: 'test-data',
+          },
+          decodedPermission: {
+            origin: 'https://legitimate-domain.com', // Actual malicious domain
+            permission: {
+              type: 'native-token-stream',
+              data: {
+                initialAmount: '0x1234',
+                maxAmount: '0x1234',
+                amountPerSecond: '0x1234',
+                startTime: 123456789,
+              },
+              justification: 'Test permission',
+            },
+            chainId: '0x1',
+            signer: {
+              type: 'account',
+              data: { address: '0x123' },
+            },
+            expiry: 123456789,
+          },
+        } as SignatureRequest;
+
+        updateSecurityAlertResponseMock.mockResolvedValue(
+          signatureRequestWithPermission,
+        );
+
+        await validateRequestWithPPOM({
+          ...validateRequestWithPPOMOptionsBase,
+          ppomController,
+          request,
+        });
+
+        expect(isSnapIdMock).toHaveBeenCalledWith(nonPreinstalledSnapOrigin);
+        expect(isSnapPreinstalledMock).toHaveBeenCalledWith(
+          nonPreinstalledSnapOrigin,
+        );
+        expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
+        expect(ppom.validateJsonRpc).toHaveBeenCalledWith(
+          expect.objectContaining({
+            origin: nonPreinstalledSnapOrigin, // Should use snap origin, not permission origin
+          }),
+        );
+        expect(ppom.validateJsonRpc).toHaveBeenCalledWith(
+          expect.not.objectContaining({
+            origin: 'https://legitimate-domain.com', // Should not use permission origin
+          }),
+        );
+      });
+
+      it('rejects origin override for non-snap requests', async () => {
+        // Mock snap validation functions - not a snap
+        isSnapIdMock.mockReturnValue(false);
+
+        const request = {
+          ...REQUEST_MOCK,
+          method: 'eth_signTypedData_v4',
+          origin: 'https://malicious-site.com', // Not a snap
+          params: [
+            SIGN_TYPED_DATA_PARAMS_MOCK_1,
+            SIGN_TYPED_DATA_PARAMS_MOCK_2,
+          ],
+        };
+
+        const signatureRequestWithPermission = {
+          id: 'test-id',
+          chainId: '0x1',
+          networkClientId: 'test-network',
+          status: 'unapproved',
+          time: Date.now(),
+          type: SignatureRequestType.TypedSign,
+          messageParams: {
+            from: '0x123',
+            data: 'test-data',
+          },
+          decodedPermission: {
+            origin: 'https://legitimate-domain.com', // Different from request origin
+            permission: {
+              type: 'native-token-stream',
+              data: {
+                initialAmount: '0x1234',
+                maxAmount: '0x1234',
+                amountPerSecond: '0x1234',
+                startTime: 123456789,
+              },
+              justification: 'Test permission',
+            },
+            chainId: '0x1',
+            signer: {
+              type: 'account',
+              data: { address: '0x123' },
+            },
+            expiry: 123456789,
+          },
+        } as SignatureRequest;
+
+        updateSecurityAlertResponseMock.mockResolvedValue(
+          signatureRequestWithPermission,
+        );
+
+        await validateRequestWithPPOM({
+          ...validateRequestWithPPOMOptionsBase,
+          ppomController,
+          request,
+        });
+
+        expect(isSnapIdMock).toHaveBeenCalledWith('https://malicious-site.com');
+        expect(isSnapPreinstalledMock).not.toHaveBeenCalled();
+        expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
+        expect(ppom.validateJsonRpc).toHaveBeenCalledWith(
+          expect.objectContaining({
+            origin: 'https://malicious-site.com', // Should use request origin, not permission origin
+          }),
+        );
+        expect(ppom.validateJsonRpc).toHaveBeenCalledWith(
+          expect.not.objectContaining({
+            origin: 'https://legitimate-domain.com', // Should not use permission origin
+          }),
+        );
+      });
+
+      it('falls back to request origin for non-permission requests', async () => {
+        const requestOrigin = 'https://dapp.com';
+        const request = {
+          ...REQUEST_MOCK,
+          method: 'eth_signTypedData_v4',
+          origin: requestOrigin,
+          params: [
+            SIGN_TYPED_DATA_PARAMS_MOCK_1,
+            SIGN_TYPED_DATA_PARAMS_MOCK_2,
+          ],
+        };
+
+        const signatureRequestWithoutPermission = {
+          id: 'test-id',
+          chainId: '0x1',
+          networkClientId: 'test-network',
+          status: 'unapproved',
+          time: Date.now(),
+          type: SignatureRequestType.TypedSign,
+          messageParams: {
+            from: '0x123',
+            data: 'test-data',
+          },
+          // No decodedPermission
+        } as SignatureRequest;
+
+        updateSecurityAlertResponseMock.mockResolvedValue(
+          signatureRequestWithoutPermission,
+        );
+
+        await validateRequestWithPPOM({
+          ...validateRequestWithPPOMOptionsBase,
+          ppomController,
+          request,
+        });
+
+        expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
+        expect(ppom.validateJsonRpc).toHaveBeenCalledWith(
+          expect.objectContaining({
+            origin: requestOrigin, // Should use request origin
+          }),
+        );
+      });
+
+      it('handles malicious domain detection for permission requests from preinstalled snaps', async () => {
+        // Mock snap validation functions
+        isSnapIdMock.mockReturnValue(true);
+        isSnapPreinstalledMock.mockReturnValue(true);
+
+        const maliciousDomain = 'https://phishing-site.com';
+        const request = {
+          ...REQUEST_MOCK,
+          method: 'eth_signTypedData_v4',
+          origin: GATOR_SNAP_ORIGIN_MOCK,
+          params: [
+            SIGN_TYPED_DATA_PARAMS_MOCK_1,
+            SIGN_TYPED_DATA_PARAMS_MOCK_2,
+          ],
+        };
+
+        const signatureRequestWithMaliciousPermission = {
+          id: 'test-id',
+          chainId: '0x1',
+          networkClientId: 'test-network',
+          status: 'unapproved',
+          time: Date.now(),
+          type: SignatureRequestType.TypedSign,
+          messageParams: {
+            from: '0x123',
+            data: 'test-data',
+          },
+          decodedPermission: {
+            origin: maliciousDomain, // Malicious domain
+            permission: {
+              type: 'native-token-stream',
+              data: {
+                initialAmount: '0x1234',
+                maxAmount: '0x1234',
+                amountPerSecond: '0x1234',
+                startTime: 123456789,
+              },
+              justification: 'Suspicious permission request',
+            },
+            chainId: '0x1',
+            signer: {
+              type: 'account',
+              data: { address: '0x123' },
+            },
+            expiry: 123456789,
+          },
+        } as SignatureRequest;
+
+        updateSecurityAlertResponseMock.mockResolvedValue(
+          signatureRequestWithMaliciousPermission,
+        );
+
+        await validateRequestWithPPOM({
+          ...validateRequestWithPPOMOptionsBase,
+          ppomController,
+          request,
+        });
+
+        expect(isSnapIdMock).toHaveBeenCalledWith(GATOR_SNAP_ORIGIN_MOCK);
+        expect(isSnapPreinstalledMock).toHaveBeenCalledWith(
+          GATOR_SNAP_ORIGIN_MOCK,
+        );
+        expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
+        expect(ppom.validateJsonRpc).toHaveBeenCalledWith(
+          expect.objectContaining({
+            origin: maliciousDomain, // Should validate against malicious domain
+          }),
+        );
       });
     });
   });

@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import {
   withFixtures,
   DAPP_URL,
@@ -19,7 +19,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
     const chainId = 1338;
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 2 },
         fixtures: new FixtureBuilder()
           .withEnabledNetworks({
             eip155: {
@@ -29,7 +29,6 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
           .withNetworkControllerDoubleNode()
           .withSelectedNetworkControllerPerDomain()
           .build(),
-        dappOptions: { numberOfDapps: 2 },
         localNodeOptions: [
           {
             type: 'anvil',

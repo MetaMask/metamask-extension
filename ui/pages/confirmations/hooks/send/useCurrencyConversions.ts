@@ -31,7 +31,7 @@ const getFiatDisplayValueFn = ({
   currentCurrency,
 }: ConversionArgs) => {
   if (!amount) {
-    return `${getCurrencySymbol(currentCurrency)} 0.00`;
+    return `${getCurrencySymbol(currentCurrency)}0.00`;
   }
   const amt = amount
     ? formatToFixedDecimals(
@@ -40,7 +40,7 @@ const getFiatDisplayValueFn = ({
         false,
       )
     : '0.00';
-  return `${getCurrencySymbol(currentCurrency)} ${amt}`;
+  return `${getCurrencySymbol(currentCurrency)}${amt}`;
 };
 
 const getNativeValueFn = ({
@@ -132,6 +132,7 @@ export const useCurrencyConversions = () => {
       asset?.standard !== ERC1155 &&
       asset?.standard !== ERC721,
     fiatCurrencySymbol: getCurrencySymbol(currentCurrency),
+    fiatCurrencyName: currentCurrency,
     getFiatValue,
     getFiatDisplayValue,
     getNativeValue,

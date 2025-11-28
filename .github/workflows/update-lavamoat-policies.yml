@@ -9,6 +9,7 @@ jobs:
     name: Determine whether this issue comment was on a pull request from a fork
     if: ${{ github.event.issue.pull_request && startsWith(github.event.comment.body, '@metamaskbot update-policies') }}
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     outputs:
       IS_FORK: ${{ steps.is-fork.outputs.IS_FORK }}
     steps:
@@ -24,6 +25,7 @@ jobs:
   react-to-comment:
     name: React to the comment
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: is-fork-pull-request
     # Early exit if this is a fork, since later steps are skipped for forks
     if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
@@ -46,6 +48,7 @@ jobs:
   prepare:
     name: Prepare dependencies
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs: is-fork-pull-request
     # Early exit if this is a fork, since later steps are skipped for forks
     if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
@@ -75,6 +78,7 @@ jobs:
   update-lavamoat-build-policy:
     name: Update LavaMoat build policy
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs:
       - prepare
     steps:
@@ -111,6 +115,7 @@ jobs:
         build-type: [main, beta, experimental, flask]
     name: Update LavaMoat ${{ matrix.build-type }} application policy
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs:
       - prepare
       - update-lavamoat-build-policy
@@ -146,6 +151,8 @@ jobs:
           APPLE_PROD_CLIENT_ID: 00000000000
           GOOGLE_BETA_CLIENT_ID: 00000000000
           APPLE_BETA_CLIENT_ID: 00000000000
+          GOOGLE_EXPERIMENTAL_CLIENT_ID: 00000000000
+          APPLE_EXPERIMENTAL_CLIENT_ID: 00000000000
           GOOGLE_FLASK_CLIENT_ID: 00000000000
           APPLE_FLASK_CLIENT_ID: 00000000000
 
@@ -155,9 +162,47 @@ jobs:
           path: lavamoat/browserify/${{ matrix.build-type }}
           key: cache-${{ matrix.build-type }}-${{ needs.prepare.outputs.COMMIT_SHA }}
 
+  update-lavamoat-webpack-policy-mv2:
+    name: Update LavaMoat webpack MV2 policy
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs:
+      - prepare
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Checkout pull request
+        run: gh pr checkout "${PR_NUMBER}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+          use-yarn-hydrate: true
+
+      - name: Update LavaMoat webpack MV2 policy
+        run: yarn webpack --env production --no-cache --generatePolicy -v 2
+        env:
+          INFURA_PROD_PROJECT_ID: 00000000000
+          SEGMENT_PROD_WRITE_KEY: 00000000000
+          GOOGLE_PROD_CLIENT_ID: 00000000000
+          APPLE_PROD_CLIENT_ID: 00000000000
+
+      - name: Cache webpack MV2 policy
+        uses: actions/cache/save@v4
+        with:
+          path: lavamoat/webpack/mv2
+          key: cache-webpack-mv2-${{ needs.prepare.outputs.COMMIT_SHA }}
+
   update-lavamoat-webpack-policy:
     name: Update LavaMoat webpack policy
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs:
       - prepare
     steps:
@@ -188,17 +233,19 @@ jobs:
       - name: Cache webpack policy
         uses: actions/cache/save@v4
         with:
-          path: lavamoat/webpack
+          path: lavamoat/webpack/mv3
           key: cache-webpack-${{ needs.prepare.outputs.COMMIT_SHA }}
 
   commit-updated-policies:
     name: Commit the updated LavaMoat policies
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs:
       - prepare
       - is-fork-pull-request
       - update-lavamoat-build-policy
       - update-lavamoat-webapp-policy
+      - update-lavamoat-webpack-policy-mv2
       - update-lavamoat-webpack-policy
     # Ensure forks don't get access to the LavaMoat update token
     if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
@@ -257,10 +304,17 @@ jobs:
           key: cache-experimental-${{ needs.prepare.outputs.COMMIT_SHA }}
           fail-on-cache-miss: true
 
+      - name: Restore webpack MV2 policy
+        uses: actions/cache/restore@v4
+        with:
+          path: lavamoat/webpack/mv2
+          key: cache-webpack-mv2-${{ needs.prepare.outputs.COMMIT_SHA }}
+          fail-on-cache-miss: true
+
       - name: Restore webpack policy
         uses: actions/cache/restore@v4
         with:
-          path: lavamoat/webpack
+          path: lavamoat/webpack/mv3
           key: cache-webpack-${{ needs.prepare.outputs.COMMIT_SHA }}
           fail-on-cache-miss: true
 
@@ -321,6 +375,7 @@ jobs:
   check-status:
     name: Check whether the policy update succeeded
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs:
       - commit-updated-policies
     outputs:
@@ -334,6 +389,7 @@ jobs:
     name: Comment about the policy update failure
     if: ${{ !cancelled() && needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs:
       - is-fork-pull-request
       - check-status

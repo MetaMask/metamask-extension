@@ -1,5 +1,5 @@
 import { withFixtures, WINDOW_TITLES } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import {
   ACCOUNT_TYPE,
   DEFAULT_FIXTURE_ACCOUNT,
@@ -19,7 +19,7 @@ describe('Edit Accounts Permissions', function () {
   it('should be able to edit accounts', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },

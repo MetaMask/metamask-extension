@@ -1,12 +1,13 @@
 import assert from 'assert';
 import { Mockttp, MockedEndpoint } from 'mockttp';
 import { withFixtures, regularDelayMs } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import {
   importSRPOnboardingFlow,
   createNewWalletOnboardingFlow,
+  handleSidepanelPostOnboarding,
 } from '../../page-objects/flows/onboarding.flow';
 
 // Mock function implementation for Token Price requests
@@ -64,6 +65,10 @@ describe('MetaMask onboarding', function () {
         const onboardingCompletePage = new OnboardingCompletePage(driver);
         await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.completeOnboarding();
+
+        // Handle sidepanel navigation if needed
+        await handleSidepanelPostOnboarding(driver);
+
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
@@ -118,6 +123,10 @@ describe('MetaMask onboarding', function () {
         const onboardingCompletePage = new OnboardingCompletePage(driver);
         await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.completeOnboarding();
+
+        // Handle sidepanel navigation if needed
+        await handleSidepanelPostOnboarding(driver);
+
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 

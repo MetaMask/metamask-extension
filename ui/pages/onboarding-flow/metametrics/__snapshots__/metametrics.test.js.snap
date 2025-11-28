@@ -7,16 +7,16 @@ exports[`Onboarding Metametrics Component renders match snapshot 1`] = `
     data-testid="onboarding-metametrics"
   >
     <h2
-      class="mm-box mm-text mm-text--heading-lg mm-text--font-weight-bold mm-text--text-align-left mm-box--margin-bottom-4 mm-box--color-text-default"
+      class="mm-box mm-text mm-text--heading-lg mm-text--font-weight-bold mm-text--text-align-left mm-box--color-text-default"
     >
-      Help us improve MetaMask
+      Help improve MetaMask
     </h2>
     <div
       class="mm-box onboarding-metametrics__user-control mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
     >
       <img
         alt="User control"
-        height="200"
+        height="175"
         src="images/user-control.png"
         width="200"
       />
@@ -120,16 +120,16 @@ exports[`Onboarding Metametrics Component renders match snapshot after new polic
     data-testid="onboarding-metametrics"
   >
     <h2
-      class="mm-box mm-text mm-text--heading-lg mm-text--font-weight-bold mm-text--text-align-left mm-box--margin-bottom-4 mm-box--color-text-default"
+      class="mm-box mm-text mm-text--heading-lg mm-text--font-weight-bold mm-text--text-align-left mm-box--color-text-default"
     >
-      Help us improve MetaMask
+      Help improve MetaMask
     </h2>
     <div
       class="mm-box onboarding-metametrics__user-control mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
     >
       <img
         alt="User control"
-        height="200"
+        height="175"
         src="images/user-control.png"
         width="200"
       />

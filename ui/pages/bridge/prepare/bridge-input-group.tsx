@@ -17,7 +17,11 @@ import { AssetPicker } from '../../../components/multichain/asset-picker-amount/
 import { TabName } from '../../../components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal-tabs';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
-import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
+import {
+  formatCurrencyAmount,
+  formatTokenAmount,
+  sanitizeAmountInput,
+} from '../utils/quote';
 import { Column, Row } from '../layout';
 import {
   Display,
@@ -36,7 +40,6 @@ import { shortenString } from '../../../helpers/utils/util';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import {
   MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP,
   MultichainNetworks,
@@ -45,17 +48,6 @@ import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain
 import type { BridgeToken } from '../../../ducks/bridge/types';
 import { getMultichainCurrentChainId } from '../../../selectors/multichain';
 import { BridgeAssetPickerButton } from './components/bridge-asset-picker-button';
-
-const sanitizeAmountInput = (textToSanitize: string) => {
-  // Remove characters that are not numbers or decimal points if rendering a controlled or pasted value
-  return (
-    textToSanitize
-      .replace(/[^\d.]+/gu, '')
-      // Only allow one decimal point, ignore digits after second decimal point
-      .split('.', 2)
-      .join('.')
-  );
-};
 
 export const BridgeInputGroup = ({
   header,
@@ -129,8 +121,6 @@ export const BridgeInputGroup = ({
       inputRef.current = null;
     };
   }, []);
-
-  const isSwap = useIsMultichainSwap();
 
   const handleAddressClick = () => {
     if (token && selectedChainId) {
@@ -256,7 +246,7 @@ export const BridgeInputGroup = ({
                 fontWeight={FontWeight.Normal}
                 style={{ whiteSpace: 'nowrap' }}
               >
-                {isSwap ? t('swapSwapTo') : t('bridgeTo')}
+                {t('swapSwapTo')}
               </Button>
             ) : (
               <BridgeAssetPickerButton

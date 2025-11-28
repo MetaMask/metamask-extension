@@ -1,14 +1,14 @@
 import { strict as assert } from 'assert';
 import { withFixtures } from '../helpers';
 import { Driver } from '../webdriver/driver';
-import FixtureBuilder from '../fixture-builder';
+import FixtureBuilder from '../fixtures/fixture-builder';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 
 describe('eth_accounts', function () {
   it('returns permitted eth accounts when wallet is unlocked', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withKeyringControllerAdditionalAccountVault()
           .withPreferencesControllerAdditionalAccountIdentities()
@@ -43,7 +43,7 @@ describe('eth_accounts', function () {
   it('returns permitted eth accounts when wallet is locked', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withKeyringControllerAdditionalAccountVault()
           .withPreferencesControllerAdditionalAccountIdentities()

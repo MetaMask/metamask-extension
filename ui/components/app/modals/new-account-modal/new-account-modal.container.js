@@ -9,7 +9,7 @@ import NewAccountModal from './new-account-modal.component';
 
 function mapStateToProps(state) {
   return {
-    ...(state.appState.modal.modalState.props || {}),
+    ...state.appState.modal.modalState.props,
   };
 }
 

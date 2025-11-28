@@ -1,11 +1,33 @@
-import { RestrictedMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import {
   PAYMENT_TYPES,
+  PRODUCT_TYPES,
   StartSubscriptionRequest,
   UpdatePaymentMethodOpts,
 } from '@metamask/subscription-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
+import log from 'loglevel';
+import { KeyringTypes } from '@metamask/keyring-controller';
+import { Json } from '@metamask/utils';
 import ExtensionPlatform from '../../platforms/extension';
 import { WebAuthenticator } from '../oauth/types';
+import { isSendBundleSupported } from '../../lib/transaction/sentinel-api';
+import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
+// TODO: Migrate to shared directory and remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { fetchSwapsFeatureFlags } from '../../../../ui/pages/swaps/swaps.util';
+import { SwapsControllerState } from '../../controllers/swaps/swaps.types';
+import {
+  getSubscriptionRequestTrackingProps,
+  getUserAccountTypeAndCategory,
+} from '../../../../shared/modules/shield/metrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import {
   SubscriptionServiceAction,
   SubscriptionServiceEvent,
@@ -20,12 +42,10 @@ export class SubscriptionService {
 
   state = null;
 
-  #messenger: RestrictedMessenger<
+  #messenger: Messenger<
     typeof SERVICE_NAME,
     SubscriptionServiceAction,
-    SubscriptionServiceEvent,
-    SubscriptionServiceAction['type'],
-    SubscriptionServiceEvent['type']
+    SubscriptionServiceEvent
   >;
 
   #platform: ExtensionPlatform;
@@ -40,10 +60,15 @@ export class SubscriptionService {
     this.#messenger = messenger;
     this.#platform = platform;
     this.#webAuthenticator = webAuthenticator;
+
+    this.#messenger.registerActionHandler(
+      `${SERVICE_NAME}:submitSubscriptionSponsorshipIntent`,
+      this.submitSubscriptionSponsorshipIntent.bind(this),
+    );
   }
 
   async updateSubscriptionCardPaymentMethod(
-    params: UpdatePaymentMethodOpts,
+    params: Extract<UpdatePaymentMethodOpts, { paymentType: 'card' }>,
     currentTabId?: number,
   ) {
     const { paymentType } = params;
@@ -61,15 +86,38 @@ export class SubscriptionService {
       },
     )) as { redirectUrl: string };
 
-    await this.#openAndWaitForTabToClose({
-      url: checkoutSessionUrl,
-      successUrl: redirectUrl,
-    });
+    // skipping redirect and open new tab in test environment
+    if (!process.env.IN_TEST) {
+      await this.#openAndWaitForTabToClose({
+        url: checkoutSessionUrl,
+        successUrl: redirectUrl,
+      });
 
-    if (!currentTabId) {
-      // open extension browser shield settings if open from pop up (no current tab)
-      this.#platform.openExtensionInBrowser('/settings/transaction-shield');
+      if (!currentTabId) {
+        // open extension browser shield settings if open from pop up (no current tab)
+        this.#platform.openExtensionInBrowser('/settings/transaction-shield');
+      }
     }
+
+    const subscriptions = await this.#messenger.call(
+      'SubscriptionController:getSubscriptions',
+    );
+
+    return subscriptions;
+  }
+
+  async updateSubscriptionCryptoPaymentMethod(
+    params: Extract<UpdatePaymentMethodOpts, { paymentType: 'crypto' }>,
+  ) {
+    const { paymentType } = params;
+    if (paymentType !== PAYMENT_TYPES.byCrypto) {
+      throw new Error('Only crypto payment type is supported');
+    }
+
+    await this.#messenger.call(
+      'SubscriptionController:updatePaymentMethod',
+      params,
+    );
 
     const subscriptions = await this.#messenger.call(
       'SubscriptionController:getSubscriptions',
@@ -82,30 +130,135 @@ export class SubscriptionService {
     params: StartSubscriptionRequest,
     currentTabId?: number,
   ) {
-    const redirectUrl = this.#webAuthenticator.getRedirectURL();
+    try {
+      const redirectUrl = this.#webAuthenticator.getRedirectURL();
 
-    const { checkoutSessionUrl } = await this.#messenger.call(
-      'SubscriptionController:startShieldSubscriptionWithCard',
-      {
-        ...params,
-        successUrl: redirectUrl,
-      },
-    );
+      const { checkoutSessionUrl } = await this.#messenger.call(
+        'SubscriptionController:startShieldSubscriptionWithCard',
+        {
+          ...params,
+          successUrl: redirectUrl,
+        },
+      );
 
-    await this.#openAndWaitForTabToClose({
-      url: checkoutSessionUrl,
-      successUrl: redirectUrl,
-    });
+      // skipping redirect and open new tab in test environment
+      if (!process.env.IN_TEST) {
+        await this.#openAndWaitForTabToClose({
+          url: checkoutSessionUrl,
+          successUrl: redirectUrl,
+        });
 
-    if (!currentTabId) {
-      // open extension browser shield settings if open from pop up (no current tab)
-      this.#platform.openExtensionInBrowser('/settings/transaction-shield');
+        if (!currentTabId) {
+          // open extension browser shield settings if open from pop up (no current tab)
+          this.#platform.openExtensionInBrowser(
+            // need `waitForSubscriptionCreation` param to wait for subscription creation happen in the background and not redirect to the shield plan page immediately
+            '/settings/transaction-shield?waitForSubscriptionCreation=true',
+          );
+        }
+      }
+
+      const subscriptions = await this.#messenger.call(
+        'SubscriptionController:getSubscriptions',
+      );
+      this.trackSubscriptionRequestEvent('completed');
+      return subscriptions;
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+      this.trackSubscriptionRequestEvent('failed', undefined, {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        error_message: errorMessage,
+      });
+      throw error;
+    }
+  }
+
+  async submitSubscriptionSponsorshipIntent(txMeta: TransactionMeta) {
+    const { chainId, type, txParams, actionId, id } = txMeta;
+    if (type !== TransactionType.shieldSubscriptionApprove) {
+      return;
     }
 
-    const subscriptions = await this.#messenger.call(
-      'SubscriptionController:getSubscriptions',
+    const transactions =
+      this.#messenger.call('TransactionController:getTransactions') || [];
+    const existingTxMeta = transactions?.find(
+      (tx) => (actionId && tx.actionId === actionId) || tx.id === id,
     );
-    return subscriptions;
+    // If the transaction already exists, we don't need to submit the sponsorship intent again
+    if (existingTxMeta) {
+      return;
+    }
+
+    const isSmartTransactionEnabled =
+      await this.#getIsSmartTransactionEnabled(chainId);
+    if (!isSmartTransactionEnabled) {
+      return;
+    }
+
+    try {
+      await this.#messenger.call(
+        'SubscriptionController:submitSponsorshipIntents',
+        {
+          chainId,
+          address: txParams.from as `0x${string}`,
+          products: [PRODUCT_TYPES.SHIELD],
+        },
+      );
+    } catch (error) {
+      log.error('Failed to submit sponsorship intent', error);
+    }
+  }
+
+  /**
+   * Track the subscription request event.
+   *
+   * @param requestStatus - The request status.
+   * @param transactionMeta - The transaction meta (for crypto subscription requests).
+   * @param extrasProps - The extra properties.
+   */
+  trackSubscriptionRequestEvent(
+    requestStatus: 'started' | 'completed' | 'failed',
+    transactionMeta?: TransactionMeta,
+    extrasProps?: Record<string, Json>,
+  ) {
+    if (
+      transactionMeta &&
+      transactionMeta.type !== TransactionType.shieldSubscriptionApprove
+    ) {
+      return;
+    }
+
+    const subscriptionControllerState = this.#messenger.call(
+      'SubscriptionController:getState',
+    );
+    const appStateControllerState = this.#messenger.call(
+      'AppStateController:getState',
+    );
+    const {
+      defaultSubscriptionPaymentOptions,
+      shieldSubscriptionMetricsProps,
+    } = appStateControllerState;
+
+    const accountTypeAndCategory = this.#getAccountTypeAndCategoryForMetrics();
+
+    const trackingProps = getSubscriptionRequestTrackingProps(
+      subscriptionControllerState,
+      defaultSubscriptionPaymentOptions,
+      shieldSubscriptionMetricsProps,
+      transactionMeta,
+    );
+
+    this.#messenger.call('MetaMetricsController:trackEvent', {
+      event: MetaMetricsEventName.ShieldSubscriptionRequest,
+      category: MetaMetricsEventCategory.Shield,
+      properties: {
+        ...accountTypeAndCategory,
+        ...trackingProps,
+        ...extrasProps,
+        status: requestStatus,
+      },
+    });
   }
 
   async #openAndWaitForTabToClose(params: { url: string; successUrl: string }) {
@@ -119,16 +272,17 @@ export class SubscriptionService {
         changeInfo: { url: string },
       ) => {
         // We only care about updates to our specific checkout tab
-        if (tabId === openedTab.id && changeInfo.url) {
-          if (changeInfo.url.startsWith(params.successUrl)) {
-            // Payment was successful!
-            succeeded = true;
+        if (
+          tabId === openedTab.id &&
+          changeInfo.url?.startsWith(params.successUrl)
+        ) {
+          // Payment was successful!
+          succeeded = true;
 
-            // Clean up: close the tab
-            this.#platform.closeTab(tabId);
-          }
-          // TODO: handle cancel url ?
+          // Clean up: close the tab
+          this.#platform.closeTab(tabId);
         }
+        // TODO: handle cancel url ?
       };
       this.#platform.addTabUpdatedListener(onTabUpdatedListener);
 
@@ -149,5 +303,68 @@ export class SubscriptionService {
       };
       this.#platform.addTabRemovedListener(onTabRemovedListener);
     });
+  }
+
+  async #getIsSmartTransactionEnabled(chainId: `0x${string}`) {
+    const swapsControllerState = await this.#getSwapsFeatureFlagsFromNetwork();
+    const uiState = {
+      metamask: {
+        ...swapsControllerState,
+        ...this.#messenger.call('AccountsController:getState'),
+        ...this.#messenger.call('PreferencesController:getState'),
+        ...this.#messenger.call('SmartTransactionsController:getState'),
+        ...this.#messenger.call('NetworkController:getState'),
+      },
+    };
+    // @ts-expect-error Smart transaction selector types does not match controller state
+    const isSmartTransaction = getIsSmartTransaction(uiState, chainId);
+    const isSendBundleSupportedChain = await isSendBundleSupported(chainId);
+
+    return isSendBundleSupportedChain && isSmartTransaction;
+  }
+
+  async #getSwapsFeatureFlagsFromNetwork(): Promise<
+    SwapsControllerState | undefined
+  > {
+    const swapsControllerState = this.#messenger.call(
+      'SwapsController:getState',
+    );
+    const { swapsFeatureFlags } = swapsControllerState.swapsState;
+    try {
+      if (!swapsFeatureFlags || Object.keys(swapsFeatureFlags).length === 0) {
+        const updatedSwapsFeatureFlags = await fetchSwapsFeatureFlags();
+        if (!updatedSwapsFeatureFlags) {
+          return swapsControllerState;
+        }
+        return {
+          ...swapsControllerState,
+          swapsState: {
+            ...swapsControllerState.swapsState,
+            swapsFeatureFlags: updatedSwapsFeatureFlags,
+          },
+        };
+      }
+    } catch (error) {
+      log.error('Failed to fetch swaps feature flags', error);
+      return swapsControllerState;
+    }
+    return swapsControllerState;
+  }
+
+  #getAccountTypeAndCategoryForMetrics() {
+    const { internalAccounts } = this.#messenger.call(
+      'AccountsController:getState',
+    );
+    const selectedInternalAccount =
+      internalAccounts.accounts[internalAccounts.selectedAccount];
+    const keyringsMetadata = this.#messenger.call('KeyringController:getState');
+    const hdKeyringsMetadata = keyringsMetadata.keyrings.filter(
+      (keyring) => keyring.type === KeyringTypes.hd,
+    );
+
+    return getUserAccountTypeAndCategory(
+      selectedInternalAccount,
+      hdKeyringsMetadata,
+    );
   }
 }

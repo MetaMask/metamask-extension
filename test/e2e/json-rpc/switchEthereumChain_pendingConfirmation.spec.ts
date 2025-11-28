@@ -1,5 +1,5 @@
 import { withFixtures, WINDOW_TITLES } from '../helpers';
-import FixtureBuilder from '../fixture-builder';
+import FixtureBuilder from '../fixtures/fixture-builder';
 import Confirmation from '../page-objects/pages/confirmations/redesign/confirmation';
 import NetworkSwitchAlertModal from '../page-objects/pages/dialog/network-switch-alert-modal';
 import ReviewPermissionsConfirmation from '../page-objects/pages/confirmations/redesign/review-permissions-confirmation';
@@ -11,12 +11,11 @@ describe('Switch Ethereum Chain for two dapps with pending confirmation in the o
   it('show alerts on permission network if user does not have permission on new network', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 2 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
           .build(),
-        dappOptions: { numberOfDapps: 2 },
         localNodeOptions: [
           {
             type: 'anvil',
@@ -89,7 +88,7 @@ describe('Switch Ethereum Chain for two dapps with pending confirmation in the o
   it('show alerts on switch network page if user does has permission on new network', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 2 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .withPermissionControllerConnectedToTestDappWithChains([
@@ -97,7 +96,6 @@ describe('Switch Ethereum Chain for two dapps with pending confirmation in the o
             '0x53a',
           ])
           .build(),
-        dappOptions: { numberOfDapps: 2 },
         localNodeOptions: [
           {
             type: 'anvil',

@@ -6,7 +6,7 @@ import { ACCOUNT_TYPE } from '../../constants';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import LocalWebSocketServer from '../../websocket-server';
 
 describe('Solana Web Socket', function (this: Suite) {
@@ -17,7 +17,7 @@ describe('Solana Web Socket', function (this: Suite) {
         title: this.test?.fullTitle(),
         manifestFlags: {
           remoteFeatureFlags: {
-            addSolanaAccount: true,
+            solanaAccounts: { enabled: true, minimumVersion: '13.6.0' },
           },
         },
       },
@@ -51,7 +51,7 @@ describe('Solana Web Socket', function (this: Suite) {
         title: this.test?.fullTitle(),
         manifestFlags: {
           remoteFeatureFlags: {
-            addSolanaAccount: true,
+            solanaAccounts: { enabled: true, minimumVersion: '13.6.0' },
           },
         },
       },
@@ -95,7 +95,7 @@ describe('Solana Web Socket', function (this: Suite) {
         title: this.test?.fullTitle(),
         manifestFlags: {
           remoteFeatureFlags: {
-            addSolanaAccount: true,
+            solanaAccounts: { enabled: true, minimumVersion: '13.6.0' },
           },
         },
       },

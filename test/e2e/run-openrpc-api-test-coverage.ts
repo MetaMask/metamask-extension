@@ -12,7 +12,7 @@ import { Driver, PAGES } from './webdriver/driver';
 
 import { createDriverTransport } from './api-specs/helpers';
 
-import FixtureBuilder from './fixture-builder';
+import FixtureBuilder from './fixtures/fixture-builder';
 import { withFixtures, unlockWallet } from './helpers';
 import { DAPP_URL, ACCOUNT_1 } from './constants';
 import transformOpenRPCDocument from './api-specs/transform';
@@ -25,7 +25,7 @@ async function main() {
   const chainId = 1337;
   await withFixtures(
     {
-      dapp: true,
+      dappOptions: { numberOfTestDapps: 1 },
       fixtures: new FixtureBuilder().build(),
       localNodeOptions: 'none',
       title: 'api-specs coverage',

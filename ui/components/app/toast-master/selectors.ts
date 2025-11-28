@@ -18,7 +18,10 @@ import {
   isSolanaAccount,
 } from '../../../selectors';
 import { MetaMaskReduxState } from '../../../store/store';
-import { PasswordChangeToastType } from '../../../../shared/constants/app-state';
+import {
+  PasswordChangeToastType,
+  ClaimSubmitToastType,
+} from '../../../../shared/constants/app-state';
 import { AccountGroupWithInternalAccounts } from '../../../selectors/multichain-accounts/account-tree.types';
 import { getCaip25CaveatValueFromPermissions } from '../../../pages/permissions-connect/connect-page/utils';
 import { supportsChainIds } from '../../../hooks/useAccountGroupsForPermissions';
@@ -32,6 +35,7 @@ type State = {
       | 'showNewSrpAddedToast'
       | 'showPasswordChangeToast'
       | 'showCopyAddressToast'
+      | 'showClaimSubmitToast'
     >
   >;
   metamask: Partial<
@@ -41,6 +45,12 @@ type State = {
       | 'newPrivacyPolicyToastShownDate'
       | 'onboardingDate'
       | 'surveyLinkLastClickedOrClosed'
+      | 'shieldEndingToastLastClickedOrClosed'
+      | 'shieldPausedToastLastClickedOrClosed'
+      | 'participateInMetaMetrics'
+      | 'remoteFeatureFlags'
+      | 'pna25Acknowledged'
+      | 'completedOnboarding'
     >
   >;
 };
@@ -191,4 +201,87 @@ export function selectShowCopyAddressToast(
   state: Pick<State, 'appState'>,
 ): boolean {
   return Boolean(state.appState.showCopyAddressToast);
+}
+
+/**
+ * Retrieves the state for the "Claim Submit" toast
+ *
+ * @param state - Redux state object.
+ * @returns ClaimSubmitToastType or null
+ */
+export function selectClaimSubmitToast(
+  state: Pick<State, 'appState'>,
+): ClaimSubmitToastType | null {
+  return state.appState.showClaimSubmitToast || null;
+}
+
+/**
+ * Retrieves user preference to see the "Shield Payment Declined" toast
+ *
+ * @param state - Redux state object.
+ * @returns Boolean preference value
+ */
+export function selectShowShieldPausedToast(
+  state: Pick<State, 'metamask'>,
+): boolean {
+  return !state.metamask.shieldPausedToastLastClickedOrClosed;
+}
+
+/**
+ * Retrieves user preference to see the "Shield Coverage Ending" toast
+ *
+ * @param state - Redux state object.
+ * @returns Boolean preference value
+ */
+export function selectShowShieldEndingToast(
+  state: Pick<State, 'metamask'>,
+): boolean {
+  return !state.metamask.shieldEndingToastLastClickedOrClosed;
+}
+
+/**
+ * Determines if the PNA25 banner should be shown based on:
+ * - User has completed onboarding (completedOnboarding === true)
+ * - LaunchDarkly feature flag (extensionUxPna25) is enabled
+ * - User has opted into metrics (participateInMetaMetrics === true)
+ * - User hasn't acknowledged the banner yet (pna25Acknowledged === false)
+ *
+ * Regular new users: Go through metametrics page → pna25Acknowledged = true → don't see banner
+ * Social login users: Skip metametrics page → pna25Acknowledged = false → see banner
+ * Existing users: pna25Acknowledged = false (default) → see banner
+ *
+ * @param state - The application state containing the banner data.
+ * @returns Boolean indicating whether to show the banner
+ */
+export function selectShowPna25Banner(state: Pick<State, 'metamask'>): boolean {
+  const {
+    completedOnboarding,
+    participateInMetaMetrics,
+    pna25Acknowledged,
+    remoteFeatureFlags,
+  } = state.metamask || {};
+
+  // Only show to users who have completed onboarding
+  if (!completedOnboarding) {
+    return false; // User hasn't completed onboarding yet
+  }
+
+  // For onboarding screen, we use local flag and for existing users, we use LaunchDarkly flag
+  const isPna25Enabled = remoteFeatureFlags?.extensionUxPna25;
+
+  // Check all conditions
+  if (!isPna25Enabled) {
+    return false; // LD flag not enabled
+  }
+
+  if (participateInMetaMetrics !== true) {
+    return false; // User hasn't opted into metrics
+  }
+
+  if (pna25Acknowledged === true) {
+    return false; // User already acknowledged
+  }
+
+  // Only show banner if explicitly false (existing users who haven't acknowledged)
+  return pna25Acknowledged === false;
 }

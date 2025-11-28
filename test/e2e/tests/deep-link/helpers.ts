@@ -1,4 +1,8 @@
 import { canonicalize } from '../../../../shared/lib/deep-links/canonicalize';
+import {
+  SIG_PARAM,
+  SIG_PARAMS_PARAM,
+} from '../../../../shared/lib/deep-links/constants';
 
 /**
  * Generates an ECDSA key pair for signing deep links for testing purposes.
@@ -15,24 +19,38 @@ export async function generateECDSAKeyPair() {
 }
 
 /**
- * Signs a URL using the ECDSA key pair. Same implementation as in the server
- * side signing application.
+ * Signs a URL using the ECDSA key pair.
  *
  * @param key
  * @param url - The URL to sign.
- * @returns A signed URL with the `sig` query parameter appended, and the
+ * @param withSigParams - Whether to include the `sig_params` query parameter.
+ * @returns A signed URL with the `sig` and `sig_params` query parameters appended, and the
  * params sorted and canonicalized.
  */
-export async function signDeepLink(key: CryptoKey, url: string) {
-  const canonical = canonicalize(new URL(url));
+export async function signDeepLink(
+  key: CryptoKey,
+  url: string,
+  withSigParams = true,
+) {
+  const canonicalUrl = canonicalize(new URL(url));
+  const signedUrl = new URL(canonicalUrl);
+
+  if (withSigParams) {
+    const sigParams = [...new Set(signedUrl.searchParams.keys())];
+
+    signedUrl.searchParams.append(SIG_PARAMS_PARAM, sigParams.join(','));
+    signedUrl.searchParams.sort();
+  }
+
   const signed = await crypto.subtle.sign(
     { name: 'ECDSA', hash: 'SHA-256' },
     key,
-    new TextEncoder().encode(canonical),
+    new TextEncoder().encode(signedUrl.toString()),
   );
   const sig = bytesToB64Url(signed);
-  const signedUrl = new URL(canonical);
-  signedUrl.searchParams.append('sig', sig);
+
+  signedUrl.searchParams.append(SIG_PARAM, sig);
+
   return signedUrl.toString();
 }
 
@@ -73,4 +91,10 @@ export function cartesianProduct<T extends unknown[][]>(...sets: T) {
   ) as {
     [K in keyof T]: T[K] extends (infer U)[] ? U : never;
   }[];
+}
+
+export function getHashParams(url: URL) {
+  const hash = url.hash.slice(1); // remove leading '#'
+  const hashQuery = hash.split('?')[1] ?? '';
+  return new URLSearchParams(hashQuery);
 }

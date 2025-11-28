@@ -12,6 +12,11 @@ import {
   LINEA_MAINNET_DISPLAY_NAME,
   LOCALHOST_DISPLAY_NAME,
   MAINNET_DISPLAY_NAME,
+  ARBITRUM_DISPLAY_NAME,
+  BSC_DISPLAY_NAME,
+  POLYGON_DISPLAY_NAME,
+  OPTIMISM_DISPLAY_NAME,
+  SEI_DISPLAY_NAME,
 } from '../../../../shared/constants/network';
 import Homepage from '../../page-objects/pages/home/homepage';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
@@ -20,7 +25,7 @@ import TestDapp from '../../page-objects/pages/test-dapp';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import { withSolanaAccountSnap } from '../solana/common-solana';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import {
   connectSolanaTestDapp,
@@ -173,7 +178,7 @@ describe('Multiple Standard Dapp Connections', function () {
   it('should default account selection to already permitted account(s) plus the selected account (if not already permissioned) when `wallet_requestPermissions` is called with no accounts specified', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withKeyringControllerAdditionalAccountVault()
           .withPreferencesControllerAdditionalAccountIdentities()
@@ -223,7 +228,7 @@ describe('Multiple Standard Dapp Connections', function () {
   it('should default account selection to both accounts when `wallet_requestPermissions` is called with specific account while another is already connected', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withKeyringControllerAdditionalAccountVault()
           .withPreferencesControllerAdditionalAccountIdentities()
@@ -262,7 +267,7 @@ describe('Multiple Standard Dapp Connections', function () {
 
         await checkIsAccountDisplayed(driver, EVM_ACCOUNT_LABEL_TWO);
 
-        await await connectAccountConfirmation.confirmConnect();
+        await connectAccountConfirmation.confirmConnect();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
@@ -347,7 +352,7 @@ describe('Multiple Standard Dapp Connections', function () {
         );
 
         await sitePermissionPage.checkConnectedAccountsNumber(2);
-        await sitePermissionPage.checkConnectedNetworksNumber(4);
+        await sitePermissionPage.checkConnectedNetworksNumber(9);
 
         await checkAccountsAndNetworksDisplayed(
           driver,
@@ -356,6 +361,11 @@ describe('Multiple Standard Dapp Connections', function () {
             MAINNET_DISPLAY_NAME,
             LINEA_MAINNET_DISPLAY_NAME,
             BASE_DISPLAY_NAME,
+            ARBITRUM_DISPLAY_NAME,
+            BSC_DISPLAY_NAME,
+            POLYGON_DISPLAY_NAME,
+            OPTIMISM_DISPLAY_NAME,
+            SEI_DISPLAY_NAME,
             'Solana',
           ],
           [EVM_ACCOUNT_LABEL_ONE, SOLANA_ACCOUNT_LABEL_ONE],
@@ -416,7 +426,7 @@ describe('Multiple Standard Dapp Connections', function () {
         );
 
         await sitePermissionPage.checkConnectedAccountsNumber(2);
-        await sitePermissionPage.checkConnectedNetworksNumber(4);
+        await sitePermissionPage.checkConnectedNetworksNumber(9);
 
         await checkAccountsAndNetworksDisplayed(
           driver,
@@ -425,6 +435,11 @@ describe('Multiple Standard Dapp Connections', function () {
             MAINNET_DISPLAY_NAME,
             LINEA_MAINNET_DISPLAY_NAME,
             BASE_DISPLAY_NAME,
+            ARBITRUM_DISPLAY_NAME,
+            BSC_DISPLAY_NAME,
+            POLYGON_DISPLAY_NAME,
+            OPTIMISM_DISPLAY_NAME,
+            SEI_DISPLAY_NAME,
             'Solana',
           ],
           [EVM_ACCOUNT_LABEL_TWO, SOLANA_ACCOUNT_LABEL_ONE],

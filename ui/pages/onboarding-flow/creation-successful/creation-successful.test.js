@@ -20,6 +20,11 @@ jest.mock('react-router-dom-v5-compat', () => {
   };
 });
 
+jest.mock('./wallet-ready-animation', () => ({
+  __esModule: true,
+  default: () => <div data-testid="wallet-ready-animation" />,
+}));
+
 describe('Wallet Ready Page', () => {
   const mockState = {
     metamask: {
@@ -56,14 +61,9 @@ describe('Wallet Ready Page', () => {
     const { getByText } = renderWithProvider(<CreationSuccessful />, mockStore);
 
     expect(getByText('Your wallet is ready!')).toBeInTheDocument();
-    expect(
-      getByText(
-        /If you lose your Secret Recovery Phrase, you won’t be able to use your wallet./u,
-      ),
-    ).toBeInTheDocument();
   });
 
-  it('should render the remind you later content if the seed phrase is not backed up', () => {
+  it('should render the wallet ready content if the seed phrase is not backed up', () => {
     const mockStore = configureMockStore([thunk])({
       ...mockState,
       metamask: {
@@ -73,13 +73,7 @@ describe('Wallet Ready Page', () => {
     });
     const { getByText } = renderWithProvider(<CreationSuccessful />, mockStore);
 
-    expect(getByText('We’ll remind you later')).toBeInTheDocument();
-
-    expect(
-      getByText(
-        /You can back up your wallets or see your Secret Recovery Phrase in Settings > Security & Password./u,
-      ),
-    ).toBeInTheDocument();
+    expect(getByText('Your wallet is ready!')).toBeInTheDocument();
   });
 
   it('should redirect to privacy-settings view when "Manage default settings" button is clicked', () => {

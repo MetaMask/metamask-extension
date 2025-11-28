@@ -4,11 +4,8 @@ import configureMockStore from 'redux-mock-store';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import { act } from '@testing-library/react';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
-import {
-  renderWithProvider,
-  waitFor,
-  fireEvent,
-} from '../../../../../test/jest';
+import { waitFor, fireEvent } from '../../../../../test/jest';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { domainInitialState } from '../../../../ducks/domains';
 import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../../../test/jest/mocks';
 import { GasEstimateTypes } from '../../../../../shared/constants/gas';
@@ -94,6 +91,10 @@ const baseStore = {
     },
   },
   metamask: {
+    accountTree: {
+      wallets: {},
+      selectedAccountGroup: '',
+    },
     accountsByChainId: {},
     permissionHistory: {},
     transactions: [

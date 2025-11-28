@@ -6,9 +6,9 @@ exports[`Token Cell should match snapshot 1`] = `
     class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full mm-box--height-full"
   >
     <a
-      class="mm-box mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row mm-box--width-full"
+      class="mm-box hover:bg-hover cursor-pointer mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row mm-box--width-full"
       data-testid="multichain-token-list-button"
-      style="height: 62px; cursor: pointer; background-color: transparent; transition: background-color 0.2s ease-in-out;"
+      style="height: 62px;"
     >
       <div
         class="mm-box mm-badge-wrapper mm-box--margin-right-4 mm-box--display-inline-block"
@@ -45,14 +45,18 @@ exports[`Token Cell should match snapshot 1`] = `
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
         >
           <div
-            class="mm-box mm-box--display-flex"
+            class="flex flex-row min-w-0"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
-              data-testid="multichain-token-list-item-token-name"
+            <div
+              class="flex flex-row gap-2 min-w-0"
             >
-              TEST
-            </p>
+              <p
+                class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                data-testid="multichain-token-list-item-token-name"
+              >
+                TEST
+              </p>
+            </div>
           </div>
           <p
             class="mm-box mm-text mm-text--body-sm mm-text--font-weight-normal mm-text--text-align-end mm-box--color-text-default"

@@ -7,13 +7,13 @@ import {
   formatChainIdToCaip,
   formatChainIdToHex,
   getNativeAssetForChainId,
-  isSolanaChainId,
+  isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../shared/constants/common';
 import { type ChainInfo } from '../../pages/bridge/utils/tx-details';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../shared/constants/bridge';
-import { SOLANA_BLOCK_EXPLORER_URL } from '../../../shared/constants/multichain/networks';
+import { MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP } from '../../../shared/constants/multichain/networks';
 
 const getSourceAndDestChainIds = ({ quote }: BridgeHistoryItem) => {
   const { srcChainId, destChainId } = quote;
@@ -75,7 +75,7 @@ export default function useBridgeChainInfo({
   }
 
   // Source chain info
-  const normalizedSrcChainId = isSolanaChainId(srcChainId)
+  const normalizedSrcChainId = isNonEvmChainId(srcChainId)
     ? srcChainIdInCaip
     : formatChainIdToHex(srcChainId);
 
@@ -88,11 +88,13 @@ export default function useBridgeChainInfo({
 
   const srcNetwork = {
     ...commonSrcNetworkFields,
-    ...(isSolanaChainId(srcChainIdInCaip)
+    ...(isNonEvmChainId(srcChainIdInCaip)
       ? ({
           isEvm: false,
           nativeCurrency: srcNativeAsset?.assetId,
-          blockExplorerUrl: SOLANA_BLOCK_EXPLORER_URL,
+          blockExplorerUrl:
+            MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[srcChainIdInCaip]
+              ?.url,
         } as const)
       : {
           defaultBlockExplorerUrlIndex: 0,
@@ -107,7 +109,7 @@ export default function useBridgeChainInfo({
   };
 
   // Dest chain info
-  const normalizedDestChainId = isSolanaChainId(destChainId)
+  const normalizedDestChainId = isNonEvmChainId(destChainId)
     ? destChainIdInCaip
     : formatChainIdToHex(destChainId);
 
@@ -120,11 +122,13 @@ export default function useBridgeChainInfo({
 
   const destNetwork = {
     ...commonDestNetworkFields,
-    ...(isSolanaChainId(destChainIdInCaip)
+    ...(isNonEvmChainId(destChainIdInCaip)
       ? ({
           isEvm: false,
           nativeCurrency: destNativeAsset?.assetId,
-          blockExplorerUrl: SOLANA_BLOCK_EXPLORER_URL,
+          blockExplorerUrl:
+            MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[destChainIdInCaip]
+              ?.url,
         } as const)
       : {
           defaultBlockExplorerUrlIndex: 0,

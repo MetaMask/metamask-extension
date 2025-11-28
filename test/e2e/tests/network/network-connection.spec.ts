@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { Hex } from '@metamask/utils';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { withFixtures, WINDOW_TITLES } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
@@ -62,7 +62,7 @@ networkConfigs.forEach((config) => {
     it(`should connect dapp to ${config.name} and verify ${config.tokenSymbol} network and tokens`, async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: config
             .fixtureMethod(new FixtureBuilder())
             .withPermissionControllerConnectedToTestDapp()

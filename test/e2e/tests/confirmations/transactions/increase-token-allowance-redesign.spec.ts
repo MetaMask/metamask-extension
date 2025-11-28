@@ -1,4 +1,4 @@
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { WINDOW_TITLES, withFixtures } from '../../../helpers';
 import { Mockttp } from '../../../mock-e2e';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
@@ -88,7 +88,7 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
 
 function generateFixtureOptionsForLegacyTx(mochaContext: Mocha.Context) {
   return {
-    dapp: true,
+    dappOptions: { numberOfTestDapps: 1 },
     fixtures: new FixtureBuilder()
       .withPermissionControllerConnectedToTestDapp()
       .build(),
@@ -103,7 +103,7 @@ function generateFixtureOptionsForLegacyTx(mochaContext: Mocha.Context) {
 
 function generateFixtureOptionsForEIP1559Tx(mochaContext: Mocha.Context) {
   return {
-    dapp: true,
+    dappOptions: { numberOfTestDapps: 1 },
     fixtures: new FixtureBuilder()
       .withPermissionControllerConnectedToTestDapp()
       .build(),

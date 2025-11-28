@@ -1,6 +1,6 @@
 const { withFixtures } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
-const FixtureBuilder = require('../../fixture-builder');
+const FixtureBuilder = require('../../fixtures/fixture-builder');
 const {
   loginWithBalanceValidation,
 } = require('../../page-objects/flows/login.flow');
@@ -104,7 +104,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
   it('should ensure the address is prefixed with 0x when pasted and should send TST to a valid hexadecimal address', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPreferencesControllerPetnamesDisabled()
           .withTokensControllerERC20()
@@ -166,7 +166,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
   it('should ensure the address is prefixed with 0x when typed and should send TST to a valid hexadecimal address', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPreferencesControllerPetnamesDisabled()
           .withTokensControllerERC20()

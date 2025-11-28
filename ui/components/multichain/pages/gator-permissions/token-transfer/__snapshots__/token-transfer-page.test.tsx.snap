@@ -19,26 +19,49 @@ exports[`Token Transfer Page render renders correctly 1`] = `
         >
           <button
             aria-label="Back"
-            class="mm-box mm-button-icon mm-button-icon--size-sm connections-header__start-accessory mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+            class="inline-flex items-center justify-center p-0 h-6 w-6 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default connections-header__start-accessory"
+            color="text-icon-default"
           >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-              style="mask-image: url('./images/icons/arrow-left.svg');"
-            />
+            <svg
+              class="inline-block w-4 h-4 text-inherit"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="m15.112 21.886-10-10 10-10 1.775 1.775-8.225 8.224 8.225 8.226z"
+              />
+            </svg>
           </button>
         </div>
         <div
           class="mm-box"
         >
-          <p
-            class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-2 mm-box--padding-inline-end-2 mm-box--display-block mm-box--color-text-default"
+          <h3
+            class="mm-box mm-text mm-text--heading-md mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-2 mm-box--padding-inline-end-2 mm-box--display-block mm-box--color-text-default"
+            data-testid="token-transfer-page-title"
           >
-            <span
-              class="mm-box mm-text mm-text--heading-md mm-text--text-align-center mm-box--color-text-default"
-              data-testid="token-transfer-page-title"
-            >
-              Token transfer
-            </span>
+            Token transfer
+          </h3>
+        </div>
+      </div>
+      <div
+        class="mm-box multichain-page-content mm-box--padding-0 mm-box--padding-top-0 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
+        style="overflow: auto;"
+      >
+        <div
+          class="flex flex-col gap-2 justify-center p-4"
+          data-testid="no-connections"
+        >
+          <p
+            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center"
+          >
+            Nothing to see here
+          </p>
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center"
+          >
+            This is where you can see the permissions you've given to installed Snaps or connected sites.
           </p>
         </div>
       </div>

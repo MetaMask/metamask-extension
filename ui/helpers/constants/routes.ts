@@ -7,6 +7,7 @@ type AppRoute = {
 };
 
 export const DEFAULT_ROUTE = '/';
+export const PREVIOUS_ROUTE = -1;
 export const UNLOCK_ROUTE = '/unlock';
 export const LOCK_ROUTE = '/lock';
 export const ASSET_ROUTE = '/asset';
@@ -16,6 +17,19 @@ export const ADVANCED_ROUTE = '/settings/advanced';
 export const DEVELOPER_OPTIONS_ROUTE = '/settings/developer-options';
 export const EXPERIMENTAL_ROUTE = '/settings/experimental';
 export const TRANSACTION_SHIELD_ROUTE = '/settings/transaction-shield';
+export const TRANSACTION_SHIELD_CLAIMS = '/settings/transaction-shield/claims';
+// Transaction Shield Claims routes
+export const TRANSACTION_SHIELD_CLAIM_ROUTES = {
+  BASE: TRANSACTION_SHIELD_CLAIMS,
+  NEW: {
+    FULL: `${TRANSACTION_SHIELD_CLAIMS}/new-claim`,
+    RELATIVE: '/new-claim',
+  },
+  VIEW: {
+    FULL: `${TRANSACTION_SHIELD_CLAIMS}/view-claim`,
+    RELATIVE: '/view-claim',
+  },
+} as const;
 export const SECURITY_ROUTE = '/settings/security';
 export const ABOUT_US_ROUTE = '/settings/about-us';
 export const NETWORKS_ROUTE = '/settings/networks';
@@ -54,8 +68,6 @@ export const MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE =
   '/multichain-wallet-details-page';
 export const MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE = '/multichain-smart-account';
 export const NEW_ACCOUNT_ROUTE = '/new-account';
-export const ACCOUNT_DETAILS_ROUTE = '/account-details';
-export const ACCOUNT_DETAILS_QR_CODE_ROUTE = '/account-details/qr-code';
 export const CONFIRM_ADD_SUGGESTED_NFT_ROUTE = '/confirm-add-suggested-nft';
 export const CONNECT_HARDWARE_ROUTE = '/new-account/connect';
 export const SEND_ROUTE = '/send';
@@ -67,6 +79,7 @@ export const CONNECTIONS = '/connections';
 export const PERMISSIONS = '/permissions';
 export const GATOR_PERMISSIONS = '/gator-permissions';
 export const TOKEN_TRANSFER_ROUTE = '/gator-permissions/token-transfer';
+export const REVIEW_GATOR_PERMISSIONS_ROUTE = '/review-gator-permissions';
 export const REVIEW_PERMISSIONS = '/review-permissions';
 export const CONNECT_ROUTE = '/connect';
 export const CONNECT_CONFIRM_PERMISSIONS_ROUTE = '/confirm-permissions';
@@ -132,16 +145,17 @@ export const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
 ///: END:ONLY_INCLUDE_IF
 
 export const DEEP_LINK_ROUTE = '/link';
-export const WALLET_DETAILS_ROUTE = '/wallet-details/:id';
 export const DEFI_ROUTE = '/defi';
 
 export const SHIELD_PLAN_ROUTE = '/shield-plan';
+export const REWARDS_ROUTE = '/rewards';
 
 export const ROUTES = [
   { path: DEFAULT_ROUTE, label: 'Home', trackInAnalytics: true },
   { path: '', label: 'Home', trackInAnalytics: true }, // "" is an alias for the Home route
   { path: UNLOCK_ROUTE, label: 'Unlock Page', trackInAnalytics: true },
   { path: LOCK_ROUTE, label: 'Lock Page', trackInAnalytics: true },
+  { path: REWARDS_ROUTE, label: 'Rewards Page', trackInAnalytics: true },
   {
     path: ACCOUNT_LIST_PAGE_ROUTE,
     label: 'Account List Page',
@@ -312,16 +326,6 @@ export const ROUTES = [
   {
     path: NEW_ACCOUNT_ROUTE,
     label: 'New Account Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: ACCOUNT_DETAILS_ROUTE,
-    label: 'Account Details Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: ACCOUNT_DETAILS_QR_CODE_ROUTE,
-    label: 'Account Details QR Code Page',
     trackInAnalytics: true,
   },
   {
@@ -525,11 +529,6 @@ export const ROUTES = [
     label: 'Deep link Redirect Page',
     trackInAnalytics: true,
   },
-  {
-    path: WALLET_DETAILS_ROUTE,
-    label: 'Wallet Details Page',
-    trackInAnalytics: true,
-  },
   // Onboarding routes
   { path: ONBOARDING_ROUTE, label: 'Onboarding', trackInAnalytics: false },
   {
@@ -654,6 +653,11 @@ export const ROUTES = [
   {
     path: TOKEN_TRANSFER_ROUTE,
     label: 'Gator Permissions Token Transfer',
+    trackInAnalytics: false,
+  },
+  {
+    path: `${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName`,
+    label: 'Review Gator Permissions',
     trackInAnalytics: false,
   },
 ] as const satisfies AppRoute[];

@@ -1,5 +1,5 @@
-import React, { useCallback, useContext, useState } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
 import { AccountGroupId, AccountWalletType } from '@metamask/account-api';
 import classnames from 'classnames';
@@ -40,31 +40,36 @@ import {
   MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE,
   MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE,
   DEFAULT_ROUTE,
+  PREVIOUS_ROUTE,
 } from '../../../helpers/constants/routes';
 import { MultichainSrpBackup } from '../../../components/multichain-accounts/multichain-srp-backup';
 import { useWalletInfo } from '../../../hooks/multichain-accounts/useWalletInfo';
 import { MultichainAccountEditModal } from '../../../components/multichain-accounts/multichain-account-edit-modal';
 import { AccountRemoveModal } from '../../../components/multichain-accounts/account-remove-modal';
-import {
-  removeAccount,
-  setAccountDetailsAddress,
-} from '../../../store/actions';
+import { removeAccount } from '../../../store/actions';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 
-export const MultichainAccountDetailsPage = () => {
+export const MultichainAccountDetailsPage = ({
+  id: idProp,
+}: { id?: string } = {}) => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
-  const { id } = useParams();
-  const accountGroupId = decodeURIComponent(id as string) as AccountGroupId;
+  const { id: idFromParams } = useParams();
+
+  // Use prop if provided (from createV5CompatRoute), otherwise fall back to hook
+  const id = idProp || idFromParams;
+
+  const accountGroupId = decodeURIComponent(id ?? '') as AccountGroupId;
   const multichainAccount = useSelector((state) =>
     getMultichainAccountGroupById(state, accountGroupId),
   );
+
   const walletId = extractWalletIdFromGroupId(accountGroupId);
   const wallet = useSelector((state) => getWallet(state, walletId));
   const { keyringId, isSRPBackedUp } = useWalletInfo(walletId);
@@ -96,13 +101,13 @@ export const MultichainAccountDetailsPage = () => {
   const shouldShowBackupReminder = isSRPBackedUp === false;
 
   const handleAddressesClick = () => {
-    history.push(
+    navigate(
       `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(accountGroupId)}`,
     );
   };
 
   const handlePrivateKeysClick = () => {
-    history.push(
+    navigate(
       `${MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE}/${encodeURIComponent(accountGroupId)}`,
     );
   };
@@ -110,7 +115,7 @@ export const MultichainAccountDetailsPage = () => {
   const handleSmartAccountClick = () => {
     const evmAccountAddress = evmInternalAccount?.address;
     if (evmAccountAddress) {
-      history.push(
+      navigate(
         `${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/${encodeURIComponent(evmAccountAddress)}`,
       );
     }
@@ -135,16 +140,22 @@ export const MultichainAccountDetailsPage = () => {
         },
       });
 
-      dispatch(setAccountDetailsAddress(''));
-      history.push(DEFAULT_ROUTE);
+      navigate(DEFAULT_ROUTE);
     }
-  }, [dispatch, trackEvent, history, wallet?.type, accountsWithAddresses]);
+  }, [dispatch, trackEvent, navigate, wallet?.type, accountsWithAddresses]);
 
   const handleWalletAction = () => {
-    history.push(walletRoute);
+    navigate(walletRoute);
   };
 
-  return (
+  useEffect(() => {
+    // Redirect if account doesn't exist
+    if (!id || !multichainAccount) {
+      navigate(DEFAULT_ROUTE);
+    }
+  }, [id, multichainAccount, navigate]);
+
+  return id && multichainAccount ? (
     <Page className="multichain-account-details-page">
       <Header
         textProps={{
@@ -155,7 +166,7 @@ export const MultichainAccountDetailsPage = () => {
             size={ButtonIconSize.Md}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            onClick={() => history.goBack()}
+            onClick={() => navigate(PREVIOUS_ROUTE)}
             data-testid="back-button"
           />
         }
@@ -303,5 +314,5 @@ export const MultichainAccountDetailsPage = () => {
         )}
       </Content>
     </Page>
-  );
+  ) : null;
 };

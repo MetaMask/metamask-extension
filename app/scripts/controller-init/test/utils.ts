@@ -16,6 +16,7 @@ export function buildControllerInitRequestMock(): jest.Mocked<
   >
 > {
   return {
+    currentMigrationVersion: 0,
     // @ts-expect-error: Partial mock.
     extension: {},
     platform: new ExtensionPlatform(),
@@ -25,13 +26,14 @@ export function buildControllerInitRequestMock(): jest.Mocked<
     getPermittedAccounts: jest.fn(),
     getProvider: jest.fn(),
     getTransactionMetricsRequest: jest.fn(),
-    updateAccountBalanceForTransactionNetwork: jest.fn(),
+    getUIState: jest.fn(),
     offscreenPromise: Promise.resolve(),
     persistedState: {},
     removeAllConnections: jest.fn(),
     setupUntrustedCommunicationEip1193: jest.fn(),
     setLocked: jest.fn(),
     showNotification: jest.fn(),
+    showUserConfirmation: jest.fn(),
     preinstalledSnaps: [],
   };
 }

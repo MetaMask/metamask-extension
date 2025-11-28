@@ -1,7 +1,14 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+  lazy,
+  Suspense,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
-import log from 'loglevel';
+import { Box } from '../../../components/component-library';
 import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
@@ -16,7 +23,7 @@ import {
   getCurrentKeyring,
   getFirstTimeFlowType,
   getIsParticipateInMetaMetricsSet,
-  getIsSocialLoginUserAuthenticated,
+  getIsSocialLoginFlow,
 } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -24,8 +31,9 @@ import {
   setFirstTimeFlowType,
   startOAuthLogin,
   setParticipateInMetaMetrics,
+  setPna25Acknowledged,
+  getIsSeedlessOnboardingUserAuthenticated,
 } from '../../../store/actions';
-import LoadingScreen from '../../../components/ui/loading-screen';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
@@ -34,11 +42,29 @@ import {
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
-import { OAuthErrorMessages } from '../../../../shared/modules/error';
+import {
+  isUserCancelledLoginError,
+  OAuthErrorMessages,
+} from '../../../../shared/modules/error';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
+import {
+  AlignItems,
+  Display,
+  FlexDirection,
+  JustifyContent,
+  BlockSize,
+} from '../../../helpers/constants/design-system';
+import { useRiveWasmContext } from '../../../contexts/rive-wasm';
+import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
 import WelcomeLogin from './welcome-login';
 import { LOGIN_ERROR, LOGIN_OPTION, LOGIN_TYPE } from './types';
 import LoginErrorModal from './login-error-modal';
+
+// Lazy load animation components for better initial load performance
+const MetaMaskWordMarkAnimation = lazy(
+  () => import('./metamask-wordmark-animation'),
+);
+const FoxAppearAnimation = lazy(() => import('./fox-appear-animation'));
 
 export default function OnboardingWelcome() {
   const dispatch = useDispatch();
@@ -47,9 +73,8 @@ export default function OnboardingWelcome() {
   const isSeedlessOnboardingFeatureEnabled =
     getIsSeedlessOnboardingFeatureEnabled();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-  const isUserAuthenticatedWithSocialLogin = useSelector(
-    getIsSocialLoginUserAuthenticated,
-  );
+  const isWalletResetInProgress = useSelector(getIsWalletResetInProgress);
+  const isSocialLoginFLow = useSelector(getIsSocialLoginFlow);
   const isParticipateInMetaMetricsSet = useSelector(
     getIsParticipateInMetaMetricsSet,
   );
@@ -59,11 +84,38 @@ export default function OnboardingWelcome() {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [loginError, setLoginError] = useState(null);
 
+  const { animationCompleted } = useRiveWasmContext();
+  const shouldSkipAnimation = Boolean(
+    animationCompleted?.MetamaskWordMarkAnimation,
+  );
+
+  // In test environments or when returning from another page, skip animations
+  const [isAnimationComplete, setIsAnimationComplete] =
+    useState(shouldSkipAnimation);
+
   const isFireFox = getBrowserName() === PLATFORM_FIREFOX;
+
+  const getIsUserAuthenticatedWithSocialLogin = useCallback(async () => {
+    if (!isSocialLoginFLow) {
+      return true;
+    }
+
+    const isSeedlessOnboardingUserAuthenticated = await dispatch(
+      getIsSeedlessOnboardingUserAuthenticated(),
+    );
+    return isSeedlessOnboardingUserAuthenticated;
+  }, [dispatch, isSocialLoginFLow]);
+
   // Don't allow users to come back to this screen after they
   // have already imported or created a wallet
   useEffect(() => {
-    if (currentKeyring && !newAccountCreationInProgress) {
+    let isMounted = true;
+
+    if (
+      currentKeyring &&
+      !newAccountCreationInProgress &&
+      !isWalletResetInProgress
+    ) {
       if (
         firstTimeFlowType === FirstTimeFlowType.import ||
         firstTimeFlowType === FirstTimeFlowType.restore
@@ -79,21 +131,33 @@ export default function OnboardingWelcome() {
       } else {
         navigate(ONBOARDING_REVIEW_SRP_ROUTE, { replace: true });
       }
-    } else if (isUserAuthenticatedWithSocialLogin) {
-      if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
-        navigate(ONBOARDING_CREATE_PASSWORD_ROUTE, { replace: true });
-      } else {
-        navigate(ONBOARDING_UNLOCK_ROUTE, { replace: true });
-      }
+    } else if (isSocialLoginFLow) {
+      (async () => {
+        const isUserAuthenticatedWithSocialLogin =
+          await getIsUserAuthenticatedWithSocialLogin();
+        if (isMounted && isUserAuthenticatedWithSocialLogin) {
+          if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
+            navigate(ONBOARDING_CREATE_PASSWORD_ROUTE, { replace: true });
+          } else {
+            navigate(ONBOARDING_UNLOCK_ROUTE, { replace: true });
+          }
+        }
+      })();
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [
     currentKeyring,
     navigate,
     firstTimeFlowType,
     newAccountCreationInProgress,
     isParticipateInMetaMetricsSet,
-    isUserAuthenticatedWithSocialLogin,
+    getIsUserAuthenticatedWithSocialLogin,
     isFireFox,
+    isWalletResetInProgress,
+    isSocialLoginFLow,
   ]);
 
   const trackEvent = useContext(MetaMetricsContext);
@@ -153,6 +217,7 @@ export default function OnboardingWelcome() {
             socialConnectionType,
             bufferedTrace,
             bufferedEndTrace,
+            trackEvent,
           ),
         );
         bufferedEndTrace?.({ name: TraceName.OnboardingSocialLoginAttempt });
@@ -166,6 +231,7 @@ export default function OnboardingWelcome() {
       onboardingParentContext,
       bufferedTrace,
       bufferedEndTrace,
+      trackEvent,
     ],
   );
 
@@ -175,7 +241,7 @@ export default function OnboardingWelcome() {
         error instanceof Error ? error.message : 'Unknown error';
 
       // Map raw OAuth error messages to UI modal-friendly constants
-      if (errorMessage === OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR) {
+      if (isUserCancelledLoginError(error)) {
         setLoginError(null);
         return;
       }
@@ -214,7 +280,6 @@ export default function OnboardingWelcome() {
     async (socialConnectionType) => {
       setIsLoggingIn(true);
       setNewAccountCreationInProgress(true);
-      await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
 
       trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
@@ -241,8 +306,10 @@ export default function OnboardingWelcome() {
             op: TraceOperation.OnboardingUserJourney,
             parentContext: onboardingParentContext.current,
           });
+          await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
           navigate(ONBOARDING_CREATE_PASSWORD_ROUTE, { replace: true });
         } else {
+          await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialImport));
           navigate(ONBOARDING_ACCOUNT_EXIST, { replace: true });
         }
       } catch (error) {
@@ -265,8 +332,6 @@ export default function OnboardingWelcome() {
   const onSocialLoginImportClick = useCallback(
     async (socialConnectionType) => {
       setIsLoggingIn(true);
-      dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialImport));
-
       trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.WalletImportStarted,
@@ -288,6 +353,7 @@ export default function OnboardingWelcome() {
         });
 
         if (isNewUser) {
+          await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
           navigate(ONBOARDING_ACCOUNT_NOT_FOUND);
         } else {
           bufferedTrace?.({
@@ -295,6 +361,7 @@ export default function OnboardingWelcome() {
             op: TraceOperation.OnboardingUserJourney,
             parentContext: onboardingParentContext.current,
           });
+          await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialImport));
           navigate(ONBOARDING_UNLOCK_ROUTE);
         }
       } catch (error) {
@@ -304,20 +371,18 @@ export default function OnboardingWelcome() {
       }
     },
     [
-      dispatch,
       handleSocialLogin,
       trackEvent,
       navigate,
       onboardingParentContext,
       handleSocialLoginError,
       bufferedTrace,
+      dispatch,
     ],
   );
 
   const handleLoginError = useCallback((error) => {
-    log.error('handleLoginError::error', error);
-    const errorMessage = error.message;
-    if (errorMessage === OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR) {
+    if (isUserCancelledLoginError(error)) {
       setLoginError(null);
     } else {
       setLoginError(LOGIN_ERROR.GENERIC);
@@ -356,6 +421,10 @@ export default function OnboardingWelcome() {
         if (!isFireFox) {
           // automatically set participate in meta metrics to true for social login users in chrome
           dispatch(setParticipateInMetaMetrics(true));
+          // Set pna25Acknowledged to true for social login users if feature flag is enabled
+          if (process.env.EXTENSION_UX_PNA25) {
+            dispatch(setPna25Acknowledged(true));
+          }
         }
       } catch (error) {
         handleLoginError(error);
@@ -374,17 +443,53 @@ export default function OnboardingWelcome() {
   );
 
   return (
-    <>
-      <WelcomeLogin onLogin={handleLogin} />
-
-      {isLoggingIn && <LoadingScreen />}
-
-      {loginError !== null && (
-        <LoginErrorModal
-          onClose={() => setLoginError(null)}
-          loginError={loginError}
-        />
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      justifyContent={JustifyContent.center}
+      alignItems={AlignItems.center}
+      height={BlockSize.Full}
+      width={BlockSize.Full}
+      className="welcome-container"
+    >
+      {!isLoggingIn && (
+        <Suspense fallback={<Box />}>
+          <MetaMaskWordMarkAnimation
+            setIsAnimationComplete={setIsAnimationComplete}
+            isAnimationComplete={isAnimationComplete}
+            skipTransition={shouldSkipAnimation}
+          />
+        </Suspense>
       )}
-    </>
+
+      {!isLoggingIn && (
+        <>
+          <WelcomeLogin
+            onLogin={handleLogin}
+            isAnimationComplete={isAnimationComplete}
+            skipTransition={shouldSkipAnimation}
+          />
+
+          {isAnimationComplete && (
+            <Suspense fallback={<Box />}>
+              <FoxAppearAnimation skipTransition={shouldSkipAnimation} />
+            </Suspense>
+          )}
+
+          {loginError !== null && (
+            <LoginErrorModal
+              onDone={() => setLoginError(null)}
+              loginError={loginError}
+            />
+          )}
+        </>
+      )}
+
+      {isLoggingIn && (
+        <Suspense fallback={<Box />}>
+          <FoxAppearAnimation isLoader />
+        </Suspense>
+      )}
+    </Box>
   );
 }

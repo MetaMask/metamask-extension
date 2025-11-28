@@ -50,7 +50,6 @@ jest.mock('../info/approve/hooks/use-is-nft', () => ({
 
 jest.mock('../../../../../store/actions', () => ({
   getContractMethodData: jest.fn().mockReturnValue({ type: 'dummy' }),
-  setAccountDetailsAddress: jest.fn().mockReturnValue({ type: 'dummy' }),
 }));
 
 describe('ConfirmTitle', () => {
@@ -110,7 +109,7 @@ describe('ConfirmTitle', () => {
 
     expect(getByText('Account update')).toBeInTheDocument();
     expect(
-      getByText("You're switching to a smart account"),
+      getByText("You're switching to a smart account."),
     ).toBeInTheDocument();
   });
 

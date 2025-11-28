@@ -7,6 +7,7 @@ import { isSolanaAddress } from '../../../../shared/lib/multichain/accounts';
 import { getTokenStandardAndDetailsByChain } from '../../../store/actions';
 import {
   findConfusablesInRecipient,
+  validateBtcAddress,
   validateEvmHexAddress,
   validateSolanaAddress,
 } from './sendValidations';
@@ -117,16 +118,6 @@ describe('SendValidations', () => {
       });
     });
 
-    it('rejects dead address', async () => {
-      expect(
-        await validateEvmHexAddress(
-          '0x000000000000000000000000000000000000dead',
-        ),
-      ).toEqual({
-        error: 'invalidAddress',
-      });
-    });
-
     it('rejects ERC721 token address', async () => {
       mockGetTokenStandardAndDetailsByChain.mockResolvedValue({
         standard: 'ERC721',
@@ -179,6 +170,15 @@ describe('SendValidations', () => {
 
       const invalidAddress = 'invalid-address';
       expect(validateSolanaAddress(invalidAddress)).toEqual({
+        error: 'invalidAddress',
+      });
+    });
+  });
+
+  describe('validateBtcAddress', () => {
+    it('returns error for invalid Bitcoin address', async () => {
+      const invalidAddress = 'invalid-address';
+      expect(validateBtcAddress(invalidAddress)).toEqual({
         error: 'invalidAddress',
       });
     });

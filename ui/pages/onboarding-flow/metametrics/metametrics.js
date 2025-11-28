@@ -20,6 +20,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   setParticipateInMetaMetrics,
   setDataCollectionForMarketing,
+  setPna25Acknowledged,
 } from '../../../store/actions';
 import {
   getCurrentKeyring,
@@ -65,7 +66,8 @@ export default function OnboardingMetametrics() {
   );
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
   const dataCollectionForMarketing = useSelector(getDataCollectionForMarketing);
-
+  // Check if the PNA25 feature is enabled
+  const isPna25Enabled = process.env.EXTENSION_UX_PNA25;
   const [
     isParticipateInMetaMetricsChecked,
     setIsParticipateInMetaMetricsChecked,
@@ -112,6 +114,18 @@ export default function OnboardingMetametrics() {
   const handleContinue = async (e) => {
     e.preventDefault();
     try {
+      // Set pna25Acknowledged to true for all new users who complete onboarding
+      // This indicates they saw the updated policy during onboarding
+      // Only set if feature flag is enabled, as the banner only shows when flag is enabled
+      if (isPna25Enabled) {
+        try {
+          await dispatch(setPna25Acknowledged(true));
+        } catch (error) {
+          // Log error but don't block onboarding if state update fails
+          log.error('Error setting pna25Acknowledged:', error);
+        }
+      }
+
       if (isParticipateInMetaMetricsChecked) {
         dispatch(
           setDataCollectionForMarketing(isDataCollectionForMarketingChecked),
@@ -160,7 +174,6 @@ export default function OnboardingMetametrics() {
         variant={TextVariant.headingLg}
         textAlign={TextAlign.Left}
         fontWeight={FontWeight.Bold}
-        marginBottom={4}
       >
         {t('onboardingMetametricsTitle')}
       </Text>
@@ -175,7 +188,7 @@ export default function OnboardingMetametrics() {
         <img
           src="images/user-control.png"
           alt="User control"
-          height={200}
+          height={175}
           width={200}
         />
       </Box>
@@ -230,7 +243,9 @@ export default function OnboardingMetametrics() {
           color={TextColor.textAlternative}
           textAlign={TextAlign.Left}
         >
-          {t('onboardingMetametricCheckboxDescriptionOne')}
+          {isPna25Enabled
+            ? t('onboardingMetametricCheckboxDescriptionOneUpdated')
+            : t('onboardingMetametricCheckboxDescriptionOne')}
         </Text>
       </Box>
 

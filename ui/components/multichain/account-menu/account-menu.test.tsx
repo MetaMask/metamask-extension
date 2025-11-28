@@ -1,12 +1,10 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
-import reactRouterDom from 'react-router-dom';
 import { merge } from 'lodash';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { fireEvent, waitFor } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import messages from '../../../../app/_locales/en/messages.json';
@@ -15,12 +13,10 @@ import {
   CONNECT_HARDWARE_ROUTE,
   IMPORT_SRP_ROUTE,
 } from '../../../helpers/constants/routes';
-///: END:ONLY_INCLUDE_IF
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { AccountMenu } from '.';
 
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 const mockOnClose = jest.fn();
 const mockGetEnvironmentType = jest.fn();
 const mockNextAccountName = jest.fn().mockReturnValue('Test Account 2');
@@ -32,7 +28,6 @@ jest.mock('../../../../app/scripts/lib/util', () => ({
   ...jest.requireActual('../../../../app/scripts/lib/util'),
   getEnvironmentType: () => () => mockGetEnvironmentType(),
 }));
-///: END:ONLY_INCLUDE_IF
 
 jest.mock('../../../store/actions', () => {
   return {
@@ -42,10 +37,13 @@ jest.mock('../../../store/actions', () => {
   };
 });
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: jest.fn(() => []),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 jest.mock('../../../hooks/accounts/useMultichainWalletSnapClient', () => ({
   ...jest.requireActual(
@@ -73,7 +71,7 @@ const render = (
     metamask: {
       ...mockState.metamask,
       remoteFeatureFlags: {
-        addBitcoinAccount: true,
+        bitcoinAccounts: { enabled: true, minimumVersion: '13.6.0' },
       },
       permissionHistory: {
         'https://test.dapp': {
@@ -129,15 +127,6 @@ const render = (
 };
 
 describe('AccountMenu', () => {
-  const historyPushMock = jest.fn();
-
-  beforeEach(() => {
-    jest
-      .spyOn(reactRouterDom, 'useHistory')
-      .mockImplementation()
-      .mockReturnValue({ push: historyPushMock });
-  });
-
   afterEach(() => {
     jest.resetAllMocks();
     jest.clearAllMocks();
@@ -217,10 +206,9 @@ describe('AccountMenu', () => {
     button.click();
 
     fireEvent.click(getByText('Hardware wallet'));
-    expect(historyPushMock).toHaveBeenCalledWith(CONNECT_HARDWARE_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(CONNECT_HARDWARE_ROUTE);
   });
 
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   describe('addSnapAccountButton', () => {
     const renderWithState = (
       state: { addSnapAccountEnabled: boolean },
@@ -341,7 +329,6 @@ describe('AccountMenu', () => {
       expect(global.platform.openTab).toHaveBeenCalledTimes(1);
     });
   });
-  ///: END:ONLY_INCLUDE_IF
 
   describe('BTC account creation', () => {
     afterEach(() => {
@@ -390,7 +377,7 @@ describe('AccountMenu', () => {
       const addBtcAccountButton = getByTestId('submit-add-account-with-name');
       addBtcAccountButton.click();
 
-      expect(historyPushMock).toHaveBeenCalledWith(CONFIRMATION_V_NEXT_ROUTE);
+      expect(mockUseNavigate).toHaveBeenCalledWith(CONFIRMATION_V_NEXT_ROUTE);
       expect(mockBitcoinClientCreateAccount).toHaveBeenCalled();
     });
   });
@@ -409,7 +396,7 @@ describe('AccountMenu', () => {
       );
       addAccountButton.click();
 
-      expect(historyPushMock).toHaveBeenCalledWith(IMPORT_SRP_ROUTE);
+      expect(mockUseNavigate).toHaveBeenCalledWith(IMPORT_SRP_ROUTE);
     });
 
     it('shows srp list if there are multiple srps when adding a new account', async () => {

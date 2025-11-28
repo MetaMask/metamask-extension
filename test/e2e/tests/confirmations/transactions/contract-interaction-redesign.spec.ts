@@ -23,7 +23,7 @@ const { WINDOW_TITLES, withFixtures } = require('../../../helpers');
 const {
   KNOWN_PUBLIC_KEY_ADDRESSES,
 } = require('../../../../stub/keyring-bridge');
-const FixtureBuilder = require('../../../fixture-builder');
+const FixtureBuilder = require('../../../fixtures/fixture-builder');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 const { CHAIN_IDS } = require('../../../../../shared/constants/network');
 
@@ -34,7 +34,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
     it(`Sends a contract interaction type 0 transaction (Legacy)`, async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
@@ -67,7 +67,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
     it(`Sends a contract interaction type 2 transaction (EIP1559)`, async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
@@ -97,7 +97,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
     it(`Sends a contract interaction type 0 transaction (Legacy) with a Trezor account`, async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withTrezorAccount()
             .withPermissionControllerConnectedToTestDapp({
@@ -149,7 +149,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
     it(`Opens a contract interaction type 2 transaction that includes layer 1 fees breakdown on a layer 2`, async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.OPTIMISM })
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
@@ -192,7 +192,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
     it('Sends a contract interaction type 2 transaction without custom nonce editing (EIP1559)', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
@@ -221,7 +221,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
     it('Sends a contract interaction type 2 transaction with custom nonce editing (EIP1559)', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
@@ -254,7 +254,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
     it('Sends a contract interaction type 2 transaction (EIP1559) and checks the advanced gas details', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
@@ -284,7 +284,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
     it('If hex data is enabled, advanced details are shown', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),

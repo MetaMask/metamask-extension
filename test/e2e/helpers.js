@@ -10,7 +10,7 @@ const { setupMocking } = require('./mock-e2e');
 const { setupMockingPassThrough } = require('./mock-e2e-pass-through');
 const { Anvil } = require('./seeder/anvil');
 const { Ganache } = require('./seeder/ganache');
-const FixtureServer = require('./fixture-server');
+const FixtureServer = require('./fixtures/fixture-server');
 const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
 const { PAGES } = require('./webdriver/driver');
@@ -33,6 +33,7 @@ const {
   ACCOUNT_2,
   WALLET_PASSWORD,
   WINDOW_TITLES,
+  DAPP_PATHS,
 } = require('./constants');
 const {
   getServerMochaToBackground,
@@ -54,6 +55,11 @@ const createDownloadFolder = async (downloadsFolder) => {
 const convertToHexValue = (val) => `0x${new BigNumber(val, 10).toString(16)}`;
 
 const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
+
+const {
+  mockMultichainAccountsFeatureFlagStateOne,
+  mockMultichainAccountsFeatureFlagStateTwo,
+} = require('./tests/multichain-accounts/feature-flag-mocks');
 
 /**
  * Normalizes the localNodeOptions into a consistent format to handle different data structures.
@@ -149,7 +155,6 @@ function normalizeSmartContracts(smartContract) {
  */
 async function withFixtures(options, testSuite) {
   const {
-    dapp,
     fixtures,
     localNodeOptions = 'anvil',
     smartContract,
@@ -158,9 +163,7 @@ async function withFixtures(options, testSuite) {
     staticServerOptions,
     title,
     ignoredConsoleErrors = [],
-    dappPath = undefined,
     disableServerMochaToBackground = false,
-    dappPaths,
     testSpecificMock = function () {
       // do nothing.
     },
@@ -171,6 +174,7 @@ async function withFixtures(options, testSuite) {
     monConversionInUsd,
     manifestFlags,
     solanaWebSocketSpecificMocks = [],
+    forceBip44Version = 0,
   } = options;
 
   // Normalize localNodeOptions
@@ -181,7 +185,17 @@ async function withFixtures(options, testSuite) {
   const bundlerServer = new Bundler();
   const https = await mockttp.generateCACertificate();
   const mockServer = mockttp.getLocal({ https, cors: true });
-  let numberOfDapps = dapp ? 1 : 0;
+  const dappOpts = dappOptions || {};
+  const hasCustomPaths =
+    Array.isArray(dappOpts.customDappPaths) &&
+    dappOpts.customDappPaths.length > 0;
+  const customCount = hasCustomPaths ? dappOpts.customDappPaths.length : 0;
+  const defaultCount =
+    typeof dappOpts.numberOfTestDapps === 'number' &&
+    dappOpts.numberOfTestDapps > 0
+      ? dappOpts.numberOfTestDapps
+      : 0;
+  const numberOfDapps = customCount + defaultCount;
   const dappServer = [];
   const phishingPageServer = new PhishingWarningPageServer();
 
@@ -276,29 +290,38 @@ async function withFixtures(options, testSuite) {
     }
 
     await phishingPageServer.start();
-    if (dapp) {
-      if (dappOptions?.numberOfDapps) {
-        numberOfDapps = dappOptions.numberOfDapps;
-      }
+    if (numberOfDapps > 0) {
+      // Ensure the default test dapp occupies the lowest ports first (e.g., 8080),
+      // then any custom dapps follow (e.g., 8081, 8082, ...).
       for (let i = 0; i < numberOfDapps; i++) {
         let dappDirectory;
-        if (dappPath || (dappPaths && dappPaths[i])) {
-          dappDirectory = path.resolve(__dirname, dappPath || dappPaths[i]);
+        let currentDappPath;
+        if (i < defaultCount) {
+          // First spin up the default test-dapp instances
+          currentDappPath = 'test-dapp';
+        } else if (hasCustomPaths) {
+          // Then start custom dapps on subsequent ports
+          currentDappPath = dappOpts.customDappPaths[i - defaultCount];
         } else {
+          currentDappPath = 'test-dapp';
+        }
+
+        if (DAPP_PATHS && DAPP_PATHS[currentDappPath]) {
           dappDirectory = path.resolve(
             __dirname,
-            '..',
-            '..',
-            'node_modules',
-            '@metamask',
-            'test-dapp',
-            'dist',
+            ...DAPP_PATHS[currentDappPath],
           );
+        } else {
+          dappDirectory = path.resolve(__dirname, currentDappPath);
         }
         dappServer.push(
           createStaticServer({ public: dappDirectory, ...staticServerOptions }),
         );
-        dappServer[i].listen(`${dappBasePort + i}`);
+        const basePort =
+          typeof dappOpts.basePort === 'number'
+            ? dappOpts.basePort
+            : dappBasePort;
+        dappServer[i].listen(`${basePort + i}`);
         await new Promise((resolve, reject) => {
           dappServer[i].on('listening', resolve);
           dappServer[i].on('error', reject);
@@ -311,21 +334,39 @@ async function withFixtures(options, testSuite) {
     webSocketServer.start();
     await setupSolanaWebsocketMocks(solanaWebSocketSpecificMocks);
 
+    // The feature flag wrapper chooses state 2 by default
+    // but we want most tests to be able to run with state 0 (bip-44 disabled)
+    // So the default argument is 0
+    // and doing nothing here means we get state 2
+
+    if (forceBip44Version === 0) {
+      console.log('Applying multichain accounts feature flag disabled mock');
+    } else if (forceBip44Version === 1) {
+      console.log(
+        'Applying multichain accounts state 1 feature state 1 enabled mock',
+      );
+      await mockMultichainAccountsFeatureFlagStateOne(mockServer);
+    } else {
+      console.log('BIP-44 state 2 enabled');
+      await mockMultichainAccountsFeatureFlagStateTwo(mockServer);
+    }
+
     // Decide between the regular setupMocking and the passThrough version
     const mockingSetupFunction = useMockingPassThrough
       ? setupMockingPassThrough
       : setupMocking;
 
     // Use the mockingSetupFunction we just chose
-    const { mockedEndpoint, getPrivacyReport } = await mockingSetupFunction(
-      mockServer,
-      testSpecificMock,
-      {
-        chainId: localNodeOptsNormalized[0]?.options.chainId || 1337,
-        ethConversionInUsd,
-        monConversionInUsd,
-      },
-    );
+    const {
+      mockedEndpoint,
+      getPrivacyReport,
+      getNetworkReport,
+      clearNetworkReport,
+    } = await mockingSetupFunction(mockServer, testSpecificMock, {
+      chainId: localNodeOptsNormalized[0]?.options.chainId || 1337,
+      ethConversionInUsd,
+      monConversionInUsd,
+    });
 
     if ((await detectPort(8000)) !== 8000) {
       throw new Error(
@@ -379,6 +420,8 @@ async function withFixtures(options, testSuite) {
       mockedEndpoint,
       mockServer,
       extensionId,
+      getNetworkReport,
+      clearNetworkReport,
     });
 
     const errorsAndExceptions = driver.summarizeErrorsAndExceptions();
@@ -467,7 +510,7 @@ async function withFixtures(options, testSuite) {
       if (webDriver) {
         shutdownTasks.push(driver.quit());
       }
-      if (dapp) {
+      if (numberOfDapps > 0) {
         for (let i = 0; i < numberOfDapps; i++) {
           if (dappServer[i] && dappServer[i].listening) {
             shutdownTasks.push(

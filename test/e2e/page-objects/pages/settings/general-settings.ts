@@ -13,6 +13,9 @@ class GeneralSettings {
     tag: 'h4',
   };
 
+  private readonly hideTokensWithoutBalanceToggle =
+    '[id="toggle-zero-balance"] .toggle-button';
+
   private readonly jazziconsAccountIdenticon = {
     tag: 'h6',
     text: 'Jazzicons',
@@ -99,6 +102,10 @@ class GeneralSettings {
 
   async checkNoLoadingOverlaySpinner(): Promise<void> {
     await this.driver.assertElementNotPresent(this.loadingOverlaySpinner);
+  }
+
+  async toggleHideTokensWithoutBalance(): Promise<void> {
+    await this.driver.clickElement(this.hideTokensWithoutBalanceToggle);
   }
 }
 

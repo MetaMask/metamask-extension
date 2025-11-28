@@ -1,6 +1,6 @@
 import { withFixtures } from '../../../helpers';
 
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import Homepage from '../../../page-objects/pages/home/homepage';
 
 import DeFiTab from '../../../page-objects/pages/defi-tab';
@@ -14,7 +14,7 @@ describe('Check DeFi empty state when no defi positions', function () {
   it('user should be able to view empty', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockNoDeFiPositionFeatureFlag,

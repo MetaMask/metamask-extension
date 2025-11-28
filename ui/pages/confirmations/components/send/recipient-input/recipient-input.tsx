@@ -29,6 +29,7 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useRecipientValidation } from '../../../hooks/send/useRecipientValidation';
 import { useRecipients } from '../../../hooks/send/useRecipients';
+import { useAccountAddressSeedIconMap } from '../../../hooks/send/useAccountAddressSeedIconMap';
 import { useRecipientSelectionMetrics } from '../../../hooks/send/metrics/useRecipientSelectionMetrics';
 import { useSendContext } from '../../../context/send';
 import { ConfusableRecipientName } from './confusable-recipient-name';
@@ -47,12 +48,18 @@ export const RecipientInput = ({
   const recipients = useRecipients();
   const t = useI18nContext();
   const { to, updateTo } = useSendContext();
+  const { accountAddressSeedIconMap } = useAccountAddressSeedIconMap();
   const {
     recipientConfusableCharacters,
     recipientError,
     recipientResolvedLookup,
     toAddressValidated,
   } = recipientValidationResult;
+  const avatarSeedAddress =
+    accountAddressSeedIconMap.get(to?.toLowerCase() as string) ||
+    recipientResolvedLookup ||
+    to ||
+    '';
 
   const onToChange = useCallback(
     (e) => {
@@ -105,7 +112,7 @@ export const RecipientInput = ({
         >
           <Box alignItems={AlignItems.center} display={Display.Flex}>
             <PreferredAvatar
-              address={resolvedAddress}
+              address={avatarSeedAddress}
               size={AvatarAccountSize.Md}
             />
             <Box
@@ -155,7 +162,7 @@ export const RecipientInput = ({
             ) : null
           }
           onChange={onToChange}
-          placeholder={t('recipientPlaceholder')}
+          placeholder={t('recipientPlaceholderText')}
           ref={recipientInputRef}
           value={to}
           width={BlockSize.Full}

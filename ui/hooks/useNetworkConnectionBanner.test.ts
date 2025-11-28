@@ -138,6 +138,7 @@ describe('useNetworkConnectionBanner', () => {
             networkName: 'Ethereum Mainnet',
             networkClientId: 'mainnet',
             chainId: '0x1',
+            isInfuraEndpoint: true,
           });
           mockGetNetworkConnectionBanner.mockReturnValue({ status: 'unknown' });
 
@@ -154,6 +155,7 @@ describe('useNetworkConnectionBanner', () => {
             networkName: 'Ethereum Mainnet',
             networkClientId: 'mainnet',
             chainId: '0x1',
+            isInfuraEndpoint: true,
           });
         });
 
@@ -162,6 +164,7 @@ describe('useNetworkConnectionBanner', () => {
             networkName: 'Ethereum Mainnet',
             networkClientId: 'mainnet',
             chainId: '0x1',
+            isInfuraEndpoint: true,
           });
           mockGetNetworkConnectionBanner.mockReturnValue({ status: 'unknown' });
           const mockTrackEvent = jest.fn();
@@ -185,6 +188,7 @@ describe('useNetworkConnectionBanner', () => {
               /* eslint-disable @typescript-eslint/naming-convention */
               banner_type: 'degraded',
               chain_id_caip: 'eip155:1',
+              rpc_domain: 'mainnet.infura.io',
               rpc_endpoint_url: 'mainnet.infura.io',
               /* eslint-enable @typescript-eslint/naming-convention */
             },
@@ -199,6 +203,7 @@ describe('useNetworkConnectionBanner', () => {
           networkName: 'Ethereum Mainnet',
           networkClientId: 'mainnet',
           chainId: '0x1',
+          isInfuraEndpoint: true,
         });
         mockGetNetworkConnectionBanner.mockReturnValue({
           status: 'available',
@@ -217,6 +222,7 @@ describe('useNetworkConnectionBanner', () => {
           networkName: 'Ethereum Mainnet',
           networkClientId: 'mainnet',
           chainId: '0x1',
+          isInfuraEndpoint: true,
         });
       });
     });
@@ -227,12 +233,14 @@ describe('useNetworkConnectionBanner', () => {
           networkName: 'Ethereum Mainnet',
           networkClientId: 'mainnet',
           chainId: '0x1',
+          isInfuraEndpoint: true,
         });
         mockGetNetworkConnectionBanner.mockReturnValue({
           status: 'degraded',
           networkName: 'Ethereum Mainnet',
           networkClientId: 'mainnet',
           chainId: '0x1',
+          isInfuraEndpoint: true,
         });
 
         renderHookWithProviderTyped(
@@ -248,6 +256,7 @@ describe('useNetworkConnectionBanner', () => {
           networkName: 'Ethereum Mainnet',
           networkClientId: 'mainnet',
           chainId: '0x1',
+          isInfuraEndpoint: true,
         });
       });
 
@@ -256,12 +265,14 @@ describe('useNetworkConnectionBanner', () => {
           networkName: 'Ethereum Mainnet',
           networkClientId: 'mainnet',
           chainId: '0x1',
+          isInfuraEndpoint: true,
         });
         mockGetNetworkConnectionBanner.mockReturnValue({
           status: 'degraded',
           networkName: 'Ethereum Mainnet',
           networkClientId: 'mainnet',
           chainId: '0x1',
+          isInfuraEndpoint: true,
         });
         const mockTrackEvent = jest.fn();
 
@@ -284,6 +295,7 @@ describe('useNetworkConnectionBanner', () => {
             /* eslint-disable @typescript-eslint/naming-convention */
             banner_type: 'unavailable',
             chain_id_caip: 'eip155:1',
+            rpc_domain: 'mainnet.infura.io',
             rpc_endpoint_url: 'mainnet.infura.io',
             /* eslint-enable @typescript-eslint/naming-convention */
           },
@@ -298,6 +310,7 @@ describe('useNetworkConnectionBanner', () => {
         networkName: 'Ethereum Mainnet',
         networkClientId: 'mainnet',
         chainId: '0x1',
+        isInfuraEndpoint: true,
       });
       mockGetNetworkConnectionBanner.mockReturnValue({ status: 'unknown' });
 
@@ -324,6 +337,7 @@ describe('useNetworkConnectionBanner', () => {
         networkName: 'Ethereum Mainnet',
         networkClientId: 'mainnet',
         chainId: '0x1',
+        isInfuraEndpoint: true,
       });
       mockGetNetworkConnectionBanner.mockReturnValue({ status: 'unknown' });
 

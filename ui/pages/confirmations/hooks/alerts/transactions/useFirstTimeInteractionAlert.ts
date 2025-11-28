@@ -1,3 +1,5 @@
+'use no memo';
+
 import { useMemo } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { NameType } from '@metamask/name-controller';
@@ -33,6 +35,7 @@ export function useFirstTimeInteractionAlert(): Alert[] {
   const { state: trustSignalDisplayState } = useTrustSignal(
     recipient || '',
     NameType.ETHEREUM_ADDRESS,
+    chainId,
   );
 
   const isVerifiedAddress =

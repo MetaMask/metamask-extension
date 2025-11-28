@@ -1,5 +1,5 @@
 import { withFixtures, WINDOW_TITLES } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
@@ -16,7 +16,7 @@ describe('Petnames - Transactions', function () {
   it('can save petnames for addresses in dapp send transactions', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withNoNames()

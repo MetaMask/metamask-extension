@@ -1,6 +1,6 @@
 import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { withFixtures } from '../../helpers';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -24,10 +24,10 @@ export async function withMultiSrp(
 ) {
   await withFixtures(
     {
+      dappOptions: { numberOfTestDapps: 1 },
       fixtures: new FixtureBuilder().build(),
       testSpecificMock,
       title,
-      dapp: true,
     },
     async ({ driver }: { driver: Driver; mockServer: Mockttp }) => {
       await loginWithBalanceValidation(driver);

@@ -1,13 +1,4 @@
-import { LavaDomeDebug } from '@lavamoat/lavadome-core';
-import { tEn } from '../../../../lib/i18n-helpers';
 import { Driver } from '../../../webdriver/driver';
-import { WALLET_PASSWORD } from '../../../constants';
-
-type RevealPrivateKeyOptions = {
-  expectedPrivateKey: string;
-  password?: string;
-  expectedPasswordError?: boolean;
-};
 
 class AccountDetailsModal {
   private driver: Driver;
@@ -15,10 +6,8 @@ class AccountDetailsModal {
   private readonly accountAddressText =
     '[data-testid="account-address-shortened"]';
 
-  private readonly accountAuthenticateInput = '#account-details-authenticate';
-
   private readonly accountPrivateKeyText =
-    '[data-testid="account-details-key"]';
+    '[data-testid="multichain-address-row-address"]';
 
   private readonly accountQrCodeImage = '.qr-code__wrapper';
 
@@ -31,22 +20,13 @@ class AccountDetailsModal {
   private readonly editableLabelButton =
     '[data-testid="editable-label-button"]';
 
-  private readonly detailsTabButton = '[data-testid="editable-label-button"]';
-
   private readonly editableLabelInput = '[data-testid="editable-input"] input';
-
-  private readonly errorMessageForIncorrectPassword = {
-    css: '.mm-help-text',
-    text: 'Incorrect Password.',
-  };
-
-  private readonly holdToRevealPrivateKeyButton = {
-    text: tEn('holdToRevealPrivateKey'),
-    tag: 'span',
-  };
 
   private readonly saveAccountLabelButton =
     '[data-testid="save-account-label-input"]';
+
+  private readonly copyPrivateKeyButton =
+    '[data-testid="multichain-address-row-copy-button"]';
 
   private readonly showPrivateKeyButton = {
     css: 'button',
@@ -84,6 +64,15 @@ class AccountDetailsModal {
   }
 
   /**
+   * Click on copy private key button.
+   *
+   */
+  async clickCopyPrivateKeyButton(): Promise<void> {
+    console.log(`Click on copy private key button`);
+    await this.driver.clickElement(this.copyPrivateKeyButton);
+  }
+
+  /**
    * Change the label of the account in the account details modal.
    *
    * @param newLabel - The new label to set for the account.
@@ -109,51 +98,6 @@ class AccountDetailsModal {
   }
 
   /**
-   * Reveal the private key of the account and verify it is correct in account details modal.
-   *
-   * @param options - The options object.
-   * @param options.expectedPrivateKey - The expected private key to verify.
-   * @param options.password - The password to authenticate with. Defaults to the default wallet password.
-   * @param options.expectedPasswordError - Whether to expect a password error. Defaults to false.
-   */
-  async revealPrivateKeyAndVerify({
-    expectedPrivateKey,
-    password = WALLET_PASSWORD,
-    expectedPasswordError = false,
-  }: RevealPrivateKeyOptions): Promise<void> {
-    console.log(
-      `Reveal private key and verify it is correct in account details modal`,
-    );
-    await this.driver.clickElement(this.showPrivateKeyButton);
-    await this.driver.fill(this.accountAuthenticateInput, password);
-    await this.driver.press(
-      this.accountAuthenticateInput,
-      this.driver.Key.ENTER,
-    );
-    if (expectedPasswordError) {
-      await this.driver.waitForSelector(this.errorMessageForIncorrectPassword);
-      await this.driver.assertElementNotPresent(
-        this.holdToRevealPrivateKeyButton,
-      );
-    } else {
-      await this.driver.holdMouseDownOnElement(
-        this.holdToRevealPrivateKeyButton,
-        2000,
-      );
-      // Verify the private key is expected
-      await this.driver.wait(async () => {
-        const privateKey = await this.driver.findElement(
-          this.accountPrivateKeyText,
-        );
-        const displayedPrivateKey = LavaDomeDebug.stripDistractionFromText(
-          await privateKey.getText(),
-        );
-        return displayedPrivateKey === expectedPrivateKey;
-      });
-    }
-  }
-
-  /**
    * Check that the correct address is displayed in the account details modal.
    *
    * @param expectedAddress - The expected address to check.
@@ -168,6 +112,18 @@ class AccountDetailsModal {
     await this.driver.waitForSelector({
       css: this.accountAddressText,
       text: expectedAddress,
+    });
+  }
+
+  /**
+   * Check that private key has been copied.
+   *
+   */
+  async checkAddressIsCopied(): Promise<void> {
+    console.log(`Check that private key has been copied`);
+    await this.driver.waitForSelector({
+      css: this.accountPrivateKeyText,
+      text: 'Private key copied',
     });
   }
 

@@ -27,11 +27,12 @@ import { DAppInitiatedHeader } from './dapp-initiated-header';
 import HeaderInfo from './header-info';
 import { WalletInitiatedHeader } from './wallet-initiated-header';
 
-const CONFIRMATIONS_WITH_NEW_HEADER = [
+const CONFIRMATIONS_WITH_ALT_HEADER = [
+  TransactionType.simpleSend,
+  TransactionType.shieldSubscriptionApprove,
+  TransactionType.tokenMethodSafeTransferFrom,
   TransactionType.tokenMethodTransfer,
   TransactionType.tokenMethodTransferFrom,
-  TransactionType.tokenMethodSafeTransferFrom,
-  TransactionType.simpleSend,
 ];
 
 const Header = () => {
@@ -106,14 +107,20 @@ const Header = () => {
   // addresses as well.
   const isConfirmationWithNewHeader =
     currentConfirmation?.type &&
-    CONFIRMATIONS_WITH_NEW_HEADER.includes(currentConfirmation.type);
+    CONFIRMATIONS_WITH_ALT_HEADER.includes(currentConfirmation.type);
   const isWalletInitiated =
     (currentConfirmation as TransactionMeta)?.origin === ORIGIN_METAMASK;
+
   if (isConfirmationWithNewHeader && isWalletInitiated) {
     return <WalletInitiatedHeader />;
   } else if (isConfirmationWithNewHeader && !isWalletInitiated) {
     return <DAppInitiatedHeader />;
   }
+
+  if (!fromName && !secondaryText) {
+    return null;
+  }
+
   return DefaultHeader;
 };
 

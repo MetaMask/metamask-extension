@@ -33,6 +33,7 @@ import {
   getToTokenConversionRate,
   getFromTokenBalance,
   getFromAccount,
+  getIsGasIncluded,
 } from './selectors';
 import { toBridgeToken } from './utils';
 
@@ -180,14 +181,13 @@ describe('Bridge selectors', () => {
       });
       const result = getAllBridgeableNetworks(state as never);
 
-      expect(result).toHaveLength(10);
-      expect(result[0]).toStrictEqual(
-        expect.objectContaining({ chainId: FEATURED_RPCS[0].chainId }),
+      // Only FEATURED_RPCS that are explicitly allowed for bridging
+      const allowedFeaturedRpcs = FEATURED_RPCS.filter(({ chainId }) =>
+        (ALLOWED_BRIDGE_CHAIN_IDS as readonly string[]).includes(chainId),
       );
-      expect(result[1]).toStrictEqual(
-        expect.objectContaining({ chainId: FEATURED_RPCS[1].chainId }),
-      );
-      FEATURED_RPCS.forEach((rpcDefinition, idx) => {
+
+      // Ensure all allowed FEATURED_RPCS networks are present and correctly shaped
+      allowedFeaturedRpcs.forEach((rpcDefinition, idx) => {
         expect(result[idx]).toStrictEqual(
           expect.objectContaining({
             ...rpcDefinition,
@@ -223,7 +223,7 @@ describe('Bridge selectors', () => {
       };
       const result = getAllBridgeableNetworks(state as never);
 
-      expect(result).toHaveLength(3);
+      expect(result).toHaveLength(5);
       expect(result[0]).toStrictEqual(
         expect.objectContaining({ chainId: CHAIN_IDS.MAINNET }),
       );
@@ -506,7 +506,7 @@ describe('Bridge selectors', () => {
         assetId: 'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da',
         balance: '0',
         chainId: 'eip155:1',
-        decimals: 18,
+        decimals: 6,
         image:
           'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xaca92e438df0b2401ff60da7e4337b687a2435da.png',
         name: 'MetaMask USD',
@@ -554,6 +554,55 @@ describe('Bridge selectors', () => {
       const result = getToToken(state as never);
 
       expect(result).toStrictEqual(null);
+    });
+
+    it('returns ETH as default token when bridging from Bitcoin', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          fromToken: {
+            address: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh', // Bitcoin native address
+            symbol: 'BTC',
+            chainId: MultichainNetworks.BITCOIN,
+            decimals: 8,
+          },
+          toChainId: formatChainIdToCaip(CHAIN_IDS.MAINNET),
+        },
+        featureFlagOverrides: {
+          extensionConfig: {
+            support: true,
+            chains: {
+              [toEvmCaipChainId(CHAIN_IDS.MAINNET)]: {
+                isActiveSrc: true,
+                isActiveDest: true,
+              },
+            },
+            bip44DefaultPairs: {
+              bip122: {
+                standard: {
+                  'bip122:000000000019d6689c085ae165831e93/slip44:0':
+                    'eip155:1/slip44:60',
+                },
+                other: {},
+              },
+            },
+          },
+        },
+      });
+      const result = getToToken(state as never);
+
+      // Should return ETH (native token) instead of mUSD for Bitcoin bridges
+      expect(result).toStrictEqual({
+        address: zeroAddress(),
+        assetId: 'eip155:1/slip44:60',
+        balance: '0',
+        chainId: 'eip155:1',
+        decimals: 18,
+        iconUrl: '',
+        image: './images/eth_logo.svg',
+        name: 'Ether',
+        string: '0',
+        symbol: 'ETH',
+      });
     });
   });
 
@@ -2280,6 +2329,119 @@ describe('Bridge selectors', () => {
         usd: 1.2,
         valueInCurrency: 1.1,
       });
+    });
+  });
+
+  describe('getIsGasIncluded', () => {
+    it('returns true when both smart transactions are enabled and chain supports gas-included swaps', () => {
+      const state = createBridgeMockStore({
+        metamaskStateOverrides: {
+          ...mockNetworkState({
+            id: 'network-configuration-id-1',
+            chainId: CHAIN_IDS.MAINNET,
+            rpcUrl: 'https://mainnet.infura.io/v3/',
+          }),
+          accounts: {
+            '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+              address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+              balance: '0x15f6f0b9d4f8d000',
+            },
+          },
+          preferences: {
+            smartTransactionsOptInStatus: true,
+          },
+          smartTransactionsState: {
+            liveness: true,
+          },
+          swapsState: {
+            swapsFeatureFlags: {
+              ethereum: {
+                extensionActive: true,
+                mobileActive: true,
+                smartTransactions: {
+                  expectedDeadline: 45,
+                  maxDeadline: 150,
+                  returnTxHashAsap: false,
+                  extensionActive: true,
+                },
+              },
+              smartTransactions: {
+                expectedDeadline: 45,
+                maxDeadline: 150,
+                returnTxHashAsap: false,
+                extensionActive: true,
+              },
+            },
+          },
+        },
+      });
+
+      const result = getIsGasIncluded(state as never, true);
+      expect(result).toBe(true);
+    });
+
+    it('returns false when smart transactions are enabled but chain does not support gas-included swaps', () => {
+      const state = createBridgeMockStore({
+        metamaskStateOverrides: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          preferences: {
+            smartTransactionsOptInStatus: true,
+          },
+          smartTransactionsState: {
+            liveness: true,
+          },
+          swapsState: {
+            swapsFeatureFlags: {
+              ethereum: {
+                extensionActive: true,
+                mobileActive: true,
+                smartTransactions: {
+                  expectedDeadline: 45,
+                  maxDeadline: 150,
+                  returnTxHashAsap: false,
+                  extensionActive: true,
+                },
+              },
+              smartTransactions: {
+                expectedDeadline: 45,
+                maxDeadline: 150,
+                returnTxHashAsap: false,
+              },
+            },
+          },
+        },
+      });
+
+      const result = getIsGasIncluded(state as never, false);
+      expect(result).toBe(false);
+    });
+
+    it('returns false when smart transactions are disabled but chain supports gas-included swaps', () => {
+      const state = createBridgeMockStore({
+        metamaskStateOverrides: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          preferences: {
+            smartTransactionsOptInStatus: false,
+          },
+        },
+      });
+
+      const result = getIsGasIncluded(state as never, true);
+      expect(result).toBe(false);
+    });
+
+    it('returns false when both smart transactions are disabled and chain does not support gas-included swaps', () => {
+      const state = createBridgeMockStore({
+        metamaskStateOverrides: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          preferences: {
+            smartTransactionsOptInStatus: false,
+          },
+        },
+      });
+
+      const result = getIsGasIncluded(state as never, false);
+      expect(result).toBe(false);
     });
   });
 });

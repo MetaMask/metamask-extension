@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext, useMemo } from 'react';
+import PropTypes from 'prop-types';
 import {
   Routes as Switch,
   Route,
@@ -86,13 +87,24 @@ import AccountNotFound from './account-not-found/account-not-found';
 import RevealRecoveryPhrase from './recovery-phrase/reveal-recovery-phrase';
 import OnboardingDownloadApp from './download-app/download-app';
 
-export default function OnboardingFlow() {
+export default function OnboardingFlow({
+  navigate: navigateProp,
+  location: locationProp,
+} = {}) {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
-  const { pathname, search } = useLocation();
-  const navigate = useNavigate();
+  const hookLocation = useLocation();
+  const hookNavigate = useNavigate();
+
+  // Use passed props if they exist, otherwise fall back to hooks
+  const location = locationProp ?? hookLocation;
+  const navigate = navigateProp ?? hookNavigate;
+  const { pathname, search } = location;
   const completedOnboarding = useSelector(getCompletedOnboarding);
+  const openedWithSidepanel = useSelector(
+    (state) => state.metamask.openedWithSidepanel,
+  );
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterUnlock);
   const isFromReminder = new URLSearchParams(search).get('isFromReminder');
   const isFromSettingsSecurity = new URLSearchParams(search).get(
@@ -123,10 +135,10 @@ export default function OnboardingFlow() {
   }, []);
 
   useEffect(() => {
-    if (completedOnboarding && !isFromReminder) {
+    if (completedOnboarding && !isFromReminder && !openedWithSidepanel) {
       navigate(DEFAULT_ROUTE);
     }
-  }, [navigate, completedOnboarding, isFromReminder]);
+  }, [navigate, completedOnboarding, isFromReminder, openedWithSidepanel]);
 
   useEffect(() => {
     const isSRPBackupRoute = [
@@ -160,12 +172,16 @@ export default function OnboardingFlow() {
   ]);
 
   useEffect(() => {
-    const trace = bufferedTrace?.({
+    bufferedTrace?.({
       name: TraceName.OnboardingJourneyOverall,
       op: TraceOperation.OnboardingUserJourney,
     });
     if (onboardingParentContext) {
-      onboardingParentContext.current = trace;
+      // Intentionally mutating ref object
+      // eslint-disable-next-line react-compiler/react-compiler
+      onboardingParentContext.current = {
+        _name: TraceName.OnboardingJourneyOverall,
+      };
     }
   }, [onboardingParentContext, bufferedTrace]);
 
@@ -249,7 +265,12 @@ export default function OnboardingFlow() {
         'onboarding-flow--welcome-login': isWelcomePage,
       })}
     >
-      {!isPopup && <OnboardingAppHeader isWelcomePage={isWelcomePage} />}
+      {!isPopup && (
+        <OnboardingAppHeader
+          isWelcomePage={isWelcomePage}
+          location={location}
+        />
+      )}
       <Box
         className={classnames('onboarding-flow__container', {
           'onboarding-flow__container--full': isFullPage,
@@ -315,7 +336,13 @@ export default function OnboardingFlow() {
           />
           <Route
             path={ONBOARDING_UNLOCK_ROUTE}
-            element={<Unlock onSubmit={handleUnlock} />}
+            element={
+              <Unlock
+                onSubmit={handleUnlock}
+                navigate={navigate}
+                location={location}
+              />
+            }
           />
           <Route
             path={ONBOARDING_PRIVACY_SETTINGS_ROUTE}
@@ -358,6 +385,11 @@ export default function OnboardingFlow() {
     </Box>
   );
 }
+
+OnboardingFlow.propTypes = {
+  navigate: PropTypes.func,
+  location: PropTypes.object,
+};
 
 function setOnboardingDate() {
   submitRequestToBackgroundAndCatch('setOnboardingDate');

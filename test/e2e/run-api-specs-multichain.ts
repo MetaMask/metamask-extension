@@ -19,7 +19,7 @@ import {
   createMultichainDriverTransport,
 } from './api-specs/helpers';
 
-import FixtureBuilder from './fixture-builder';
+import FixtureBuilder from './fixtures/fixture-builder';
 import { withFixtures, unlockWallet } from './helpers';
 import { ACCOUNT_1, DAPP_URL } from './constants';
 import transformOpenRPCDocument from './api-specs/transform';
@@ -98,7 +98,7 @@ async function main() {
   // Multichain API excluding `wallet_invokeMethod`
   await withFixtures(
     {
-      dapp: true,
+      dappOptions: { numberOfTestDapps: 1 },
       fixtures: new FixtureBuilder().build(),
       localNodeOptions: 'none',
       title: 'api-specs-multichain coverage',
@@ -163,7 +163,7 @@ async function main() {
   // requests made via wallet_invokeMethod
   await withFixtures(
     {
-      dapp: true,
+      dappOptions: { numberOfTestDapps: 1 },
       fixtures: new FixtureBuilder()
         .withPermissionControllerConnectedToMultichainTestDapp()
         .build(),

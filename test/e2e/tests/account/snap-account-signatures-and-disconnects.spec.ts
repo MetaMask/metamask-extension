@@ -1,7 +1,9 @@
 import { Suite } from 'mocha';
+import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
 import { WINDOW_TITLES, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import { DAPP_PATH } from '../../constants';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
@@ -11,15 +13,24 @@ import {
   signTypedDataV3WithSnapAccount,
   signTypedDataV4WithSnapAccount,
 } from '../../page-objects/flows/sign.flow';
-import { mockSimpleKeyringSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
+import { mockSnapSimpleKeyringAndSite } from './snap-keyring-site-mocks';
 
 describe('Snap Account Signatures and Disconnects', function (this: Suite) {
   it('can connect to the Test Dapp, then #signTypedDataV3, disconnect then connect, then #signTypedDataV4 (async flow approve)', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: {
+          numberOfTestDapps: 1,
+          customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
+        },
         fixtures: new FixtureBuilder().build(),
-        testSpecificMock: mockSimpleKeyringSnap,
+        testSpecificMock: async (mockServer: Mockttp) => {
+          const snapMocks = await mockSnapSimpleKeyringAndSite(
+            mockServer,
+            8081,
+          );
+          return snapMocks;
+        },
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {

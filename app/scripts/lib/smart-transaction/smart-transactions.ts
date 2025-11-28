@@ -5,16 +5,14 @@ import {
   StartFlow,
   UpdateRequestState,
 } from '@metamask/approval-controller';
-import { RestrictedMessenger } from '@metamask/base-controller';
-import SmartTransactionsController, {
-  SmartTransactionsControllerSmartTransactionEvent,
-} from '@metamask/smart-transactions-controller';
 import {
-  Fee,
-  Fees,
-  SmartTransaction,
+  SmartTransactionsController,
+  SmartTransactionsControllerSmartTransactionEvent,
   SmartTransactionStatuses,
-} from '@metamask/smart-transactions-controller/dist/types';
+  type Fee,
+  type Fees,
+  type SmartTransaction,
+} from '@metamask/smart-transactions-controller';
 import {
   TransactionController,
   TransactionMeta,
@@ -24,7 +22,7 @@ import {
 } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import log from 'loglevel';
-
+import { Messenger } from '@metamask/messenger';
 import {
   ORIGIN_METAMASK,
   SMART_TRANSACTION_CONFIRMATION_TYPES,
@@ -38,10 +36,6 @@ import {
 } from '../../../../shared/modules/selectors';
 import { isLegacyTransaction } from '../../../../shared/modules/transaction.utils';
 import { ControllerFlatState } from '../../controller-init/controller-list';
-import { TransactionControllerInitMessenger } from '../../controller-init/messengers/transaction-controller-messenger';
-import { Delegation7702PublishHook } from '../transaction/hooks/delegation-7702-publish';
-import { isSendBundleSupported } from '../transaction/sentinel-api';
-import { getTransactionById } from '../transaction/util';
 
 const namespace = 'SmartTransactions';
 
@@ -53,12 +47,10 @@ export type AllowedActions =
   | EndFlow;
 export type AllowedEvents = SmartTransactionsControllerSmartTransactionEvent;
 
-export type SmartTransactionHookMessenger = RestrictedMessenger<
+export type SmartTransactionHookMessenger = Messenger<
   typeof namespace,
   AllowedActions,
-  AllowedEvents,
-  AllowedActions['type'],
-  AllowedEvents['type']
+  AllowedEvents
 >;
 
 export type FeatureFlags = {
@@ -68,6 +60,7 @@ export type FeatureFlags = {
     expectedDeadline?: number;
     maxDeadline?: number;
     extensionReturnTxHashAsap?: boolean;
+    extensionReturnTxHashAsapBatch?: boolean;
   };
 };
 
@@ -101,6 +94,7 @@ class SmartTransactionHook {
       expectedDeadline?: number;
       maxDeadline?: number;
       extensionReturnTxHashAsap?: boolean;
+      extensionReturnTxHashAsapBatch?: boolean;
     };
   };
 
@@ -147,7 +141,8 @@ class SmartTransactionHook {
     this.#txParams = transactionMeta.txParams;
     this.#transactions = transactions;
     this.#shouldShowStatusPage = Boolean(
-      transactionMeta.type !== TransactionType.bridge ||
+      (transactionMeta.type !== TransactionType.bridge &&
+        transactionMeta.type !== TransactionType.shieldSubscriptionApprove) ||
         (this.#transactions && this.#transactions.length > 0),
     );
   }
@@ -175,20 +170,27 @@ class SmartTransactionHook {
     if (this.#shouldShowStatusPage) {
       await this.#startApprovalFlow();
     }
+
     let getFeesResponse;
-    try {
-      getFeesResponse = await this.#smartTransactionsController.getFees(
-        { ...this.#txParams, chainId: this.#chainId },
-        undefined,
-        { networkClientId: this.#transactionMeta.networkClientId },
-      );
-    } catch (error) {
-      log.error(
-        'Error in smart transaction publish hook, falling back to regular transaction submission',
-        error,
-      );
-      this.#onApproveOrReject();
-      return useRegularTransactionSubmit; // Fallback to regular transaction submission.
+    // Skip getting fees if the tx is signed and sponsored
+    if (
+      !this.#signedTransactionInHex ||
+      !this.#transactionMeta.isGasFeeSponsored
+    ) {
+      try {
+        getFeesResponse = await this.#smartTransactionsController.getFees(
+          { ...this.#txParams, chainId: this.#chainId },
+          undefined,
+          { networkClientId: this.#transactionMeta.networkClientId },
+        );
+      } catch (error) {
+        log.error(
+          'Error in smart transaction publish hook, falling back to regular transaction submission',
+          error,
+        );
+        this.#onApproveOrReject();
+        return useRegularTransactionSubmit; // Fallback to regular transaction submission.
+      }
     }
     try {
       const submitTransactionResponse = await this.#signAndSubmitTransactions({
@@ -249,16 +251,6 @@ class SmartTransactionHook {
 
       await this.#processApprovalIfNeeded(uuid);
 
-      const transactionHash = await this.#waitForTransactionHash({
-        uuid,
-      });
-
-      if (transactionHash === null) {
-        throw new Error(
-          'submitBatch: Transaction does not have a transaction hash, there was a problem',
-        );
-      }
-
       let submitBatchResponse;
       if (submitTransactionResponse?.txHashes) {
         submitBatchResponse = {
@@ -270,6 +262,26 @@ class SmartTransactionHook {
         submitBatchResponse = {
           results: [],
         };
+      }
+
+      const extensionReturnTxHashAsapBatch =
+        this.#featureFlags?.smartTransactions?.extensionReturnTxHashAsapBatch;
+
+      if (
+        extensionReturnTxHashAsapBatch &&
+        submitBatchResponse?.results?.length > 0
+      ) {
+        return submitBatchResponse;
+      }
+
+      const transactionHash = await this.#waitForTransactionHash({
+        uuid,
+      });
+
+      if (transactionHash === null) {
+        throw new Error(
+          'submitBatch: Transaction does not have a transaction hash, there was a problem',
+        );
       }
 
       return submitBatchResponse;
@@ -367,6 +379,7 @@ class SmartTransactionHook {
               status: SmartTransactionStatuses.PENDING,
               creationTime: Date.now(),
               uuid,
+              chainId: this.#chainId,
             },
             isDapp: this.#isDapp,
             txId: this.#transactionMeta.id,
@@ -546,7 +559,7 @@ function getUIState(flatState: ControllerFlatState) {
   return { metamask: flatState };
 }
 
-function getSmartTransactionCommonParams(
+export function getSmartTransactionCommonParams(
   flatState: ControllerFlatState,
   chainId?: string,
 ) {
@@ -567,108 +580,4 @@ function getSmartTransactionCommonParams(
     featureFlags,
     isHardwareWalletAccount,
   };
-}
-
-export async function publishHook({
-  flatState,
-  initMessenger,
-  signedTx,
-  smartTransactionsController,
-  transactionController,
-  transactionMeta,
-}: {
-  flatState: ControllerFlatState;
-  initMessenger: TransactionControllerInitMessenger;
-  signedTx: string;
-  smartTransactionsController: SmartTransactionsController;
-  transactionController: TransactionController;
-  transactionMeta: TransactionMeta;
-}) {
-  const { isSmartTransaction, featureFlags, isHardwareWalletAccount } =
-    getSmartTransactionCommonParams(flatState, transactionMeta.chainId);
-  const sendBundleSupport = await isSendBundleSupported(
-    transactionMeta.chainId,
-  );
-
-  if (!isSmartTransaction || !sendBundleSupport) {
-    const hook = new Delegation7702PublishHook({
-      isAtomicBatchSupported: transactionController.isAtomicBatchSupported.bind(
-        transactionController,
-      ),
-      messenger: initMessenger,
-    }).getHook();
-
-    return await hook(transactionMeta, signedTx);
-  }
-
-  if (
-    isSmartTransaction &&
-    (sendBundleSupport || transactionMeta.selectedGasFeeToken !== undefined)
-  ) {
-    const result = await submitSmartTransactionHook({
-      transactionMeta,
-      signedTransactionInHex: signedTx as Hex,
-      transactionController,
-      smartTransactionsController,
-      controllerMessenger: initMessenger,
-      isSmartTransaction,
-      isHardwareWallet: isHardwareWalletAccount,
-      // @ts-expect-error Smart transaction selector return type does not match FeatureFlags type from hook
-      featureFlags,
-    });
-
-    if (result?.transactionHash) {
-      return result;
-    }
-  }
-
-  // Default: fall back to regular transaction submission
-  return { transactionHash: undefined };
-}
-
-export function publishBatchHook({
-  transactionController,
-  smartTransactionsController,
-  hookControllerMessenger,
-  flatState,
-  transactions,
-}: {
-  transactionController: TransactionController;
-  smartTransactionsController: SmartTransactionsController;
-  hookControllerMessenger: SmartTransactionHookMessenger;
-  flatState: ControllerFlatState;
-  transactions: PublishBatchHookTransaction[];
-}) {
-  // Get transactionMeta based on the last transaction ID
-  const lastTransaction = transactions[transactions.length - 1];
-  const transactionMeta = getTransactionById(
-    lastTransaction.id ?? '',
-    transactionController,
-  );
-
-  // If we couldn't find the transaction, we should handle that gracefully
-  if (!transactionMeta) {
-    throw new Error(
-      `publishBatchSmartTransactionHook: Could not find transaction with id ${lastTransaction.id}`,
-    );
-  }
-
-  const { isSmartTransaction, featureFlags, isHardwareWalletAccount } =
-    getSmartTransactionCommonParams(flatState, transactionMeta.chainId);
-
-  if (!isSmartTransaction) {
-    return undefined;
-  }
-
-  return submitBatchSmartTransactionHook({
-    transactions,
-    transactionController,
-    smartTransactionsController,
-    controllerMessenger: hookControllerMessenger,
-    isSmartTransaction,
-    isHardwareWallet: isHardwareWalletAccount,
-    // @ts-expect-error Smart transaction selector return type does not match FeatureFlags type from hook
-    featureFlags,
-    transactionMeta,
-  });
 }

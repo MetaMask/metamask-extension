@@ -62,7 +62,7 @@ export const useNetworkConnectionBanner =
     const clearTimers = useCallback(() => {
       clearDegradedTimer();
       clearUnavailableTimer();
-    }, []);
+    }, [clearDegradedTimer, clearUnavailableTimer]);
 
     const trackNetworkBannerEvent = useCallback(
       ({
@@ -117,7 +117,8 @@ export const useNetworkConnectionBanner =
           properties: {
             banner_type: bannerType,
             chain_id_caip: `eip155:${chainIdAsDecimal}`,
-            rpc_endpoint_url: sanitizedRpcUrl,
+            rpc_domain: sanitizedRpcUrl,
+            rpc_endpoint_url: sanitizedRpcUrl, // @deprecated - Will be removed in a future release.
           },
           /* eslint-enable @typescript-eslint/naming-convention */
         });
@@ -141,6 +142,7 @@ export const useNetworkConnectionBanner =
               networkName: firstUnavailableEvmNetwork.networkName,
               networkClientId: firstUnavailableEvmNetwork.networkClientId,
               chainId: firstUnavailableEvmNetwork.chainId,
+              isInfuraEndpoint: firstUnavailableEvmNetwork.isInfuraEndpoint,
             }),
           );
         }
@@ -168,6 +170,7 @@ export const useNetworkConnectionBanner =
               networkName: firstUnavailableEvmNetwork.networkName,
               networkClientId: firstUnavailableEvmNetwork.networkClientId,
               chainId: firstUnavailableEvmNetwork.chainId,
+              isInfuraEndpoint: firstUnavailableEvmNetwork.isInfuraEndpoint,
             }),
           );
 

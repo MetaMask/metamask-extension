@@ -3,13 +3,13 @@ name: Auto-update for PR targeting release branch
 on:
   pull_request:
     branches:
-      - Version-v*
       - release/*
 
 jobs:
   auto-update:
     name: Auto-update
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     env:
       YARN_ENABLE_IMMUTABLE_INSTALLS: false
       YARN_ENABLE_HARDENED_MODE: false

@@ -5,7 +5,7 @@ import { waitFor } from '@testing-library/react';
 
 import { KeyringTypes } from '@metamask/keyring-controller';
 import Confirmation from '../confirmation';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../../shared/constants/app';
 import mockState from '../../../../../test/data/mock-state.json';
 import { ETH_EOA_METHODS } from '../../../../../shared/constants/eth-methods';
@@ -58,13 +58,6 @@ const mockBaseStore = {
   metamask: {
     ...mockState.metamask,
     keyrings: updatedKeyrings,
-    accounts: {
-      ...mockState.metamask.accounts,
-      [mockTemporaryAccount.address]: {
-        balance: mockTemporaryAccount.balance,
-        address: mockTemporaryAccount.address,
-      },
-    },
     internalAccounts: {
       ...mockState.metamask.internalAccounts,
       accounts: {
@@ -90,6 +83,14 @@ const mockBaseStore = {
     subjectMetadata: {},
   },
 };
+
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 const render = (approval = mockApproval) => {
   const testStore = {

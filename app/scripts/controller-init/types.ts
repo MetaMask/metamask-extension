@@ -1,13 +1,11 @@
-import {
-  ActionConstraint,
+import type {
   Messenger,
+  ActionConstraint,
   EventConstraint,
-  RestrictedMessenger,
-} from '@metamask/base-controller';
+} from '@metamask/messenger';
 import { Duplex } from 'readable-stream';
 import { SubjectType } from '@metamask/permission-controller';
 import { PreinstalledSnap } from '@metamask/snaps-controllers';
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { Browser } from 'webextension-polyfill';
 import { ExportableKeyEncryptor } from '@metamask/keyring-controller';
 import { KeyringClass } from '@metamask/keyring-utils';
@@ -17,6 +15,9 @@ import { MessageSender } from '../../../types/global';
 import type { CronjobControllerStorageManager } from '../lib/CronjobControllerStorageManager';
 import { HardwareTransportBridgeClass } from '../lib/hardware-keyring-builder-factory';
 import ExtensionPlatform from '../platforms/extension';
+// This import is only used for the type.
+// eslint-disable-next-line import/no-restricted-paths
+import type { MetaMaskReduxState } from '../../../ui/store/store';
 import { Controller, ControllerFlatState } from './controller-list';
 
 /** The supported controller names. */
@@ -41,17 +42,16 @@ export type ControllerPersistedState = Partial<{
 
 /** Generic controller messenger using base template types. */
 export type BaseControllerMessenger = Messenger<
+  string,
   ActionConstraint,
   EventConstraint
 >;
 
 /** Generic restricted controller messenger using base template types. */
-export type BaseRestrictedControllerMessenger = RestrictedMessenger<
+export type BaseRestrictedControllerMessenger = Messenger<
   string,
   ActionConstraint,
-  EventConstraint,
-  string,
-  string
+  EventConstraint
 >;
 
 type SnapSender = {
@@ -73,6 +73,11 @@ export type ControllerInitRequest<
    * Generated using the callback specified in `getControllerMessengerCallback`.
    */
   controllerMessenger: ControllerMessengerType;
+
+  /**
+   * The current version of the extension, used for migrations.
+   */
+  currentMigrationVersion: number;
 
   /**
    * An instance of an encryptor to use for encrypting and decrypting
@@ -127,6 +132,11 @@ export type ControllerInitRequest<
   getTransactionMetricsRequest(): TransactionMetricsRequest;
 
   /**
+   * Get the MetaMask state of the client available to the UI.
+   */
+  getUIState(): MetaMaskReduxState['metamask'];
+
+  /**
    * Overrides for the keyrings.
    */
   keyringOverrides?: {
@@ -142,13 +152,6 @@ export type ControllerInitRequest<
    * The Infura project ID to use for the network controller.
    */
   infuraProjectId: string;
-
-  /**
-   * Function to update account balance for network of the transaction
-   */
-  updateAccountBalanceForTransactionNetwork(
-    transactionMeta: TransactionMeta,
-  ): void;
 
   /**
    * A promise that resolves when the offscreen document is ready.
@@ -208,6 +211,11 @@ export type ControllerInitRequest<
     message: string,
     url?: string,
   ) => Promise<void>;
+
+  /**
+   * Show the confirmation UI to the user.
+   */
+  showUserConfirmation: () => void | Promise<void>;
 
   /**
    * A list of preinstalled Snaps loaded from disk during boot.

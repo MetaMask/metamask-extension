@@ -3,8 +3,10 @@ import { useNavigate } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
 import { Carousel } from 'react-responsive-carousel';
 import classnames from 'classnames';
+import browser from 'webextension-polyfill';
 import {
   setCompletedOnboarding,
+  setCompletedOnboardingWithSidepanel,
   toggleExternalServices,
 } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -19,10 +21,7 @@ import {
   IconColor,
   AlignItems,
 } from '../../../helpers/constants/design-system';
-import {
-  DEFAULT_ROUTE,
-  ONBOARDING_WELCOME_ROUTE,
-} from '../../../helpers/constants/routes';
+import { ONBOARDING_WELCOME_ROUTE } from '../../../helpers/constants/routes';
 import {
   Box,
   Button,
@@ -45,6 +44,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
 
 export default function OnboardingPinExtension() {
   const t = useI18nContext();
@@ -54,6 +54,7 @@ export default function OnboardingPinExtension() {
   const trackEvent = useContext(MetaMetricsContext);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const currentKeyring = useSelector(getCurrentKeyring);
+  const isSidePanelEnabled = useSidePanelEnabled();
 
   const externalServicesOnboardingToggleState = useSelector(
     getExternalServicesOnboardingToggleState,
@@ -63,7 +64,6 @@ export default function OnboardingPinExtension() {
     await dispatch(
       toggleExternalServices(externalServicesOnboardingToggleState),
     );
-    await dispatch(setCompletedOnboarding());
 
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
@@ -74,7 +74,29 @@ export default function OnboardingPinExtension() {
         new_wallet: firstTimeFlowType === FirstTimeFlowType.create,
       },
     });
-    navigate(DEFAULT_ROUTE);
+
+    // Side Panel - only if feature flag is enabled and not in test mode
+    if (isSidePanelEnabled) {
+      try {
+        if (browser?.sidePanel?.open) {
+          const tabs = await browser.tabs.query({
+            active: true,
+            currentWindow: true,
+          });
+          if (tabs && tabs.length > 0) {
+            await browser.sidePanel.open({ windowId: tabs[0].windowId });
+            // Use the sidepanel-specific action - no navigation needed, sidepanel is already open
+            await dispatch(setCompletedOnboardingWithSidepanel());
+            return;
+          }
+        }
+      } catch (error) {
+        console.error('Error opening side panel:', error);
+        // Fall through to regular onboarding
+      }
+    }
+    // Fallback to regular onboarding completion
+    await dispatch(setCompletedOnboarding());
   };
 
   useEffect(() => {

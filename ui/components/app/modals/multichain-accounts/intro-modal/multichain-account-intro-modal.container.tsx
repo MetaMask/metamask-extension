@@ -6,7 +6,7 @@ import React, {
   useMemo,
 } from 'react';
 import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 
 import { captureException } from '../../../../../../shared/lib/sentry';
 
@@ -28,7 +28,7 @@ export const MultichainAccountIntroModalContainer: React.FC<ContainerProps> = ({
   onClose,
 }) => {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const isClosingRef = useRef(false);
 
@@ -78,8 +78,8 @@ export const MultichainAccountIntroModalContainer: React.FC<ContainerProps> = ({
     onClose();
 
     // Navigate to account list
-    history.push(ACCOUNT_LIST_PAGE_ROUTE);
-  }, [alignmentPromise, dispatch, history, onClose]);
+    navigate(ACCOUNT_LIST_PAGE_ROUTE);
+  }, [alignmentPromise, dispatch, navigate, onClose]);
 
   const handleLearnMore = useCallback(() => {
     // Open multichain accounts support page

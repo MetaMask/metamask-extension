@@ -114,7 +114,6 @@ module.exports = {
         'shared/**/*.js',
         'shared/**/*.ts',
         'ui/**/*.js',
-        'offscreen/**/*.ts',
         '**/*.test.js',
         'test/lib/**/*.js',
         'test/mocks/**/*.js',
@@ -321,8 +320,9 @@ module.exports = {
           jsx: true,
         },
       },
-      plugins: ['react'],
+      plugins: ['react', 'react-compiler'],
       rules: {
+        'react-compiler/react-compiler': 'error',
         'react/no-unused-prop-types': 'error',
         'react/no-unused-state': 'error',
         'react/jsx-boolean-value': 'error',
@@ -363,8 +363,9 @@ module.exports = {
           jsx: true,
         },
       },
-      plugins: ['react'],
+      plugins: ['react', 'react-compiler'],
       rules: {
+        'react-compiler/react-compiler': 'error',
         'react/no-unused-prop-types': 'warn',
         'react/no-unused-state': 'warn',
         'react/jsx-boolean-value': 'off',
@@ -377,7 +378,7 @@ module.exports = {
         'react/prop-types': 'off',
         'react/no-children-prop': 'off',
         'react/jsx-key': 'warn', // TODO - increase this into 'error' level
-        'react-hooks/rules-of-hooks': 'warn', // TODO - increase this into 'error' level
+        'react-hooks/rules-of-hooks': 'error',
       },
       settings: {
         react: {
@@ -533,11 +534,7 @@ module.exports = {
      * `process.exit` to exit).
      */
     {
-      files: [
-        'development/**/*.js',
-        'test/e2e/benchmark.js',
-        'test/helpers/setup-helper.js',
-      ],
+      files: ['development/**/*.js', 'test/helpers/setup-helper.js'],
       rules: {
         'node/no-process-exit': 'off',
         'node/shebang': 'off',

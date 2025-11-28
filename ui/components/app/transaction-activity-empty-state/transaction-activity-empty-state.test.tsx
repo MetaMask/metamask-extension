@@ -272,7 +272,6 @@ describe('TransactionActivityEmptyState', () => {
       expect(mockOpenBridgeExperience).toHaveBeenCalledWith(
         'Activity Tab Empty State',
         undefined, // No specific token
-        true, // isSwap = true
       );
     });
   });

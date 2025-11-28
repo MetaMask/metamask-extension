@@ -62,6 +62,7 @@
         "@babel/core>@babel/template": true,
         "depcheck>@babel/traverse": true,
         "@babel/core>@babel/types": true,
+        "babel-plugin-react-compiler": true,
         "@babel/core>convert-source-map": true,
         "nock>debug": true,
         "@babel/core>gensync": true,
@@ -786,15 +787,39 @@
       "packages": {
         "@babel/code-frame": true,
         "@babel/core>@babel/generator": true,
+        "depcheck>@babel/traverse>@babel/helper-globals": true,
         "@babel/core>@babel/parser": true,
         "@babel/core>@babel/template": true,
         "@babel/core>@babel/types": true,
         "babel/preset-env>b@babel/types": true,
+        "nock>debug": true
+      }
+    },
+    "lavamoat>lavamoat-tofu>@babel/traverse": {
+      "globals": {
+        "console.log": true
+      },
+      "packages": {
+        "@babel/code-frame": true,
+        "@babel/core>@babel/generator": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/parser": true,
+        "@babel/core>@babel/template": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true,
         "nock>debug": true,
-        "depcheck>@babel/traverse>globals": true
+        "lavamoat>lavamoat-tofu>@babel/traverse>globals": true
       }
     },
     "@babel/core>@babel/types": {
+      "globals": {
+        "console.warn": true,
+        "process.env.BABEL_TYPES_8_BREAKING": true
+      },
+      "packages": {
+        "@babel/core>@babel/types>@babel/helper-string-parser": true,
+        "@babel/code-frame>@babel/helper-validator-identifier": true
+      }
+    },
+    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": {
       "globals": {
         "console.warn": true,
         "process.env.BABEL_TYPES_8_BREAKING": true
@@ -995,7 +1020,7 @@
         "eslint>espree": true,
         "@lavamoat/webpack>json-stable-stringify": true,
         "lavamoat>lavamoat-core": true,
-        "@lavamoat/lavapack>readable-stream": true,
+        "readable-stream": true,
         "through2": true,
         "@lavamoat/lavapack>umd": true
       }
@@ -1019,7 +1044,7 @@
       "packages": {
         "@metamask/superstruct": true,
         "@noble/hashes": true,
-        "@metamask/utils>@scure/base": true,
+        "@scure/base": true,
         "nock>debug": true,
         "@metamask/utils>pony-cause": true,
         "semver": true
@@ -1027,7 +1052,7 @@
     },
     "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals": {
       "packages": {
-        "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals>eslint-scope": true
+        "webpack>eslint-scope": true
       }
     },
     "@noble/hashes": {
@@ -1089,7 +1114,7 @@
         "process.cwd": true
       }
     },
-    "@metamask/utils>@scure/base": {
+    "@scure/base": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
@@ -1196,7 +1221,6 @@
         "eslint-plugin-jest>@typescript-eslint/utils>@typescript-eslint/types": true,
         "@typescript-eslint/parser>@typescript-eslint": true,
         "eslint": true,
-        "eslint-plugin-jest>@typescript-eslint/utils>eslint-scope": true,
         "eslint>eslint-scope": true,
         "webpack>eslint-scope": true,
         "eslint-plugin-jest>@typescript-eslint/utils>webpack>eslint-scope": true,
@@ -1227,9 +1251,9 @@
         "browserify>JSONStream>through": true
       }
     },
-    "@lavamoat/lavapack>readable-stream>abort-controller": {
+    "readable-stream>abort-controller": {
       "packages": {
-        "@lavamoat/lavapack>readable-stream>abort-controller>event-target-shim": true
+        "readable-stream>abort-controller>event-target-shim": true
       }
     },
     "eslint>espree>acorn-jsx": {
@@ -1385,10 +1409,13 @@
     "eslint-plugin-react>array-includes": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>call-bound": true,
         "string.prototype.matchall>define-properties": true,
         "string.prototype.matchall>es-abstract": true,
+        "string.prototype.matchall>es-object-atoms": true,
         "string.prototype.matchall>get-intrinsic": true,
-        "eslint-plugin-react>array-includes>is-string": true
+        "eslint-plugin-react>array-includes>is-string": true,
+        "eslint-plugin-react>array-includes>math-intrinsics": true
       }
     },
     "gulp>undertaker>bach>array-initial": {
@@ -1400,6 +1427,16 @@
     "gulp>undertaker>bach>array-last": {
       "packages": {
         "gulp>undertaker>bach>array-last>is-number": true
+      }
+    },
+    "eslint-plugin-react>array.prototype.findlast": {
+      "packages": {
+        "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>define-properties": true,
+        "string.prototype.matchall>es-abstract": true,
+        "string.prototype.matchall>es-errors": true,
+        "string.prototype.matchall>es-object-atoms": true,
+        "eslint-plugin-react>array.prototype.flatmap>es-shim-unscopables": true
       }
     },
     "eslint-plugin-import>array.prototype.flat": {
@@ -1415,6 +1452,15 @@
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>define-properties": true,
         "string.prototype.matchall>es-abstract": true,
+        "eslint-plugin-react>array.prototype.flatmap>es-shim-unscopables": true
+      }
+    },
+    "eslint-plugin-react>array.prototype.tosorted": {
+      "packages": {
+        "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>define-properties": true,
+        "string.prototype.matchall>es-abstract": true,
+        "string.prototype.matchall>es-errors": true,
         "eslint-plugin-react>array.prototype.flatmap>es-shim-unscopables": true
       }
     },
@@ -1491,6 +1537,40 @@
         "@babel/preset-env>babel-plugin-polyfill-corejs2>@babel/helper-define-polyfill-provider": true
       }
     },
+    "babel-plugin-react-compiler": {
+      "builtin": {
+        "buffer": true,
+        "crypto": true,
+        "fs": true,
+        "os.homedir": true,
+        "os.release": true,
+        "path": true,
+        "tty": true,
+        "util": true
+      },
+      "globals": {
+        "Buffer": true,
+        "File": true,
+        "TextDecoder": true,
+        "URL": true,
+        "__DEV__": true,
+        "atob": true,
+        "btoa": true,
+        "compile": true,
+        "console": true,
+        "define": true,
+        "document": true,
+        "findDirectiveEnablingMemoization": true,
+        "localStorage": true,
+        "navigator": true,
+        "performance.mark": true,
+        "performance.measure": true,
+        "process": true
+      },
+      "packages": {
+        "@babel/core>@babel/types": true
+      }
+    },
     "babelify": {
       "builtin": {
         "path.extname": true,
@@ -1534,6 +1614,13 @@
         "gulp>gulp-cli>isobject": true,
         "gulp>gulp-cli>matchdep>micromatch>snapdragon>base>mixin-deep": true,
         "gulp>gulp-cli>matchdep>micromatch>snapdragon>base>pascalcase": true
+      }
+    },
+    "browserslist>baseline-browser-mapping": {
+      "globals": {
+        "console.log": true,
+        "console.warn": true,
+        "process.exit": true
       }
     },
     "bify-module-groups": {
@@ -1676,6 +1763,7 @@
         "path.basename": true,
         "path.dirname": true,
         "path.join": true,
+        "path.posix.join": true,
         "path.relative": true,
         "path.resolve": true
       },
@@ -1685,6 +1773,7 @@
         "process.versions.node": true
       },
       "packages": {
+        "browserslist>baseline-browser-mapping": true,
         "autoprefixer>caniuse-lite": true,
         "browserslist>electron-to-chromium": true,
         "browserslist>node-releases": true
@@ -1733,7 +1822,7 @@
     },
     "string.prototype.matchall>call-bind>call-bind-apply-helpers": {
       "packages": {
-        "string.prototype.matchall>es-abstract>es-errors": true,
+        "string.prototype.matchall>es-errors": true,
         "browserify>has>function-bind": true
       }
     },
@@ -1745,7 +1834,7 @@
         "string.prototype.matchall>call-bind>set-function-length": true
       }
     },
-    "@lavamoat/webpack>json-stable-stringify>call-bound": {
+    "string.prototype.matchall>call-bound": {
       "packages": {
         "string.prototype.matchall>call-bind>call-bind-apply-helpers": true,
         "string.prototype.matchall>get-intrinsic": true
@@ -2270,14 +2359,14 @@
     "string.prototype.matchall>define-properties>define-data-property": {
       "packages": {
         "string.prototype.matchall>call-bind>es-define-property": true,
-        "string.prototype.matchall>es-abstract>es-errors": true,
-        "string.prototype.matchall>es-abstract>gopd": true
+        "string.prototype.matchall>es-errors": true,
+        "string.prototype.matchall>gopd": true
       }
     },
     "string.prototype.matchall>define-properties": {
       "packages": {
         "string.prototype.matchall>define-properties>define-data-property": true,
-        "string.prototype.matchall>es-abstract>has-property-descriptors": true,
+        "eslint-plugin-react>es-iterator-helpers>has-property-descriptors": true,
         "@lavamoat/webpack>json-stable-stringify>object-keys": true
       }
     },
@@ -2371,7 +2460,7 @@
         "didYouMean": "write"
       }
     },
-    "ts-node>diff": {
+    "sinon>diff": {
       "globals": {
         "setTimeout": true
       }
@@ -2431,10 +2520,11 @@
         "stylelint>postcss-html>htmlparser2>domelementtype": true
       }
     },
-    "string.prototype.matchall>get-intrinsic>get-proto>dunder-proto": {
+    "eslint-plugin-react>es-iterator-helpers>has-proto>dunder-proto": {
       "packages": {
         "string.prototype.matchall>call-bind>call-bind-apply-helpers": true,
-        "string.prototype.matchall>es-abstract>gopd": true
+        "string.prototype.matchall>es-errors": true,
+        "string.prototype.matchall>gopd": true
       }
     },
     "unzipper>duplexer2": {
@@ -2455,7 +2545,7 @@
       "packages": {
         "duplexify>end-of-stream": true,
         "pumpify>inherits": true,
-        "readable-stream": true,
+        "duplexify>readable-stream": true,
         "duplexify>stream-shift": true
       }
     },
@@ -2511,42 +2601,66 @@
     "string.prototype.matchall>es-abstract": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>call-bound": true,
         "string.prototype.matchall>call-bind>es-define-property": true,
-        "string.prototype.matchall>es-abstract>es-errors": true,
-        "string.prototype.matchall>es-abstract>es-object-atoms": true,
+        "string.prototype.matchall>es-errors": true,
+        "string.prototype.matchall>es-object-atoms": true,
         "axios>form-data>es-set-tostringtag": true,
         "string.prototype.matchall>es-abstract>es-to-primitive": true,
+        "string.prototype.matchall>es-abstract>function.prototype.name": true,
         "string.prototype.matchall>get-intrinsic": true,
-        "string.prototype.matchall>es-abstract>gopd": true,
-        "string.prototype.matchall>es-abstract>has-property-descriptors": true,
-        "string.prototype.matchall>es-abstract>has-proto": true,
+        "string.prototype.matchall>gopd": true,
+        "eslint-plugin-react>es-iterator-helpers>has-property-descriptors": true,
+        "eslint-plugin-react>es-iterator-helpers>has-proto": true,
         "string.prototype.matchall>has-symbols": true,
-        "axios>form-data>hasown": true,
+        "eslint-plugin-react>hasown": true,
         "string.prototype.matchall>internal-slot": true,
         "string.prototype.matchall>es-abstract>is-callable": true,
         "string.prototype.matchall>es-abstract>is-regex": true,
         "eslint-plugin-react>array-includes>is-string": true,
+        "eslint-plugin-react>array-includes>math-intrinsics": true,
         "string.prototype.matchall>es-abstract>object-inspect": true,
         "string.prototype.matchall>es-abstract>safe-regex-test": true,
+        "string.prototype.matchall>es-abstract>set-proto": true,
         "string.prototype.matchall>es-abstract>string.prototype.trim": true
       }
     },
-    "string.prototype.matchall>es-abstract>es-object-atoms": {
+    "eslint-plugin-react>es-iterator-helpers": {
+      "globals": {
+        "Iterator": true
+      },
       "packages": {
-        "string.prototype.matchall>es-abstract>es-errors": true
+        "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>call-bound": true,
+        "string.prototype.matchall>define-properties": true,
+        "string.prototype.matchall>es-abstract": true,
+        "string.prototype.matchall>es-errors": true,
+        "axios>form-data>es-set-tostringtag": true,
+        "string.prototype.matchall>get-intrinsic": true,
+        "eslint-plugin-react>es-iterator-helpers>globalthis": true,
+        "eslint-plugin-react>es-iterator-helpers>has-property-descriptors": true,
+        "eslint-plugin-react>es-iterator-helpers>has-proto": true,
+        "string.prototype.matchall>internal-slot": true,
+        "eslint-plugin-react>es-iterator-helpers>iterator.prototype": true,
+        "eslint-plugin-react>es-iterator-helpers>safe-array-concat": true
+      }
+    },
+    "string.prototype.matchall>es-object-atoms": {
+      "packages": {
+        "string.prototype.matchall>es-errors": true
       }
     },
     "axios>form-data>es-set-tostringtag": {
       "packages": {
-        "string.prototype.matchall>es-abstract>es-errors": true,
+        "string.prototype.matchall>es-errors": true,
         "string.prototype.matchall>get-intrinsic": true,
-        "koa>is-generator-function>has-tostringtag": true,
-        "axios>form-data>hasown": true
+        "axios>form-data>es-set-tostringtag>has-tostringtag": true,
+        "eslint-plugin-react>hasown": true
       }
     },
     "eslint-plugin-react>array.prototype.flatmap>es-shim-unscopables": {
       "packages": {
-        "browserify>has": true
+        "eslint-plugin-react>hasown": true
       }
     },
     "string.prototype.matchall>es-abstract>es-to-primitive": {
@@ -2742,7 +2856,7 @@
         "depcheck>is-core-module": true,
         "del>is-glob": true,
         "eslint>minimatch": true,
-        "eslint-plugin-react>object.values": true,
+        "eslint-plugin-import>object.values": true,
         "eslint-plugin-import>tsconfig-paths": true,
         "typescript": true
       }
@@ -2815,48 +2929,35 @@
       "globals": {
         "console.error": true,
         "console.log": true,
+        "console.warn": true,
         "process.argv.join": true,
         "process.cwd": true
       },
       "packages": {
         "eslint-plugin-react>array-includes": true,
+        "eslint-plugin-react>array.prototype.findlast": true,
         "eslint-plugin-react>array.prototype.flatmap": true,
+        "eslint-plugin-react>array.prototype.tosorted": true,
         "eslint-plugin-react>doctrine": true,
+        "eslint-plugin-react>es-iterator-helpers": true,
         "eslint": true,
         "eslint-plugin-react>estraverse": true,
+        "eslint-plugin-react>hasown": true,
         "eslint-plugin-react>jsx-ast-utils": true,
         "eslint>minimatch": true,
         "eslint-plugin-react>object.entries": true,
         "eslint-plugin-react>object.fromentries": true,
-        "eslint-plugin-react>object.hasown": true,
         "eslint-plugin-react>object.values": true,
         "prop-types": true,
         "eslint-plugin-react>resolve": true,
         "eslint-plugin-react>semver": true,
-        "string.prototype.matchall": true
+        "string.prototype.matchall": true,
+        "eslint-plugin-react>string.prototype.repeat": true
       }
     },
     "eslint-plugin-react-hooks": {
       "globals": {
         "process.env.NODE_ENV": true
-      }
-    },
-    "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals>eslint-scope": {
-      "builtin": {
-        "assert": true
-      },
-      "packages": {
-        "eslint>eslint-scope>esrecurse": true,
-        "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals>eslint-scope>estraverse": true
-      }
-    },
-    "eslint-plugin-jest>@typescript-eslint/utils>eslint-scope": {
-      "builtin": {
-        "assert": true
-      },
-      "packages": {
-        "eslint>eslint-scope>esrecurse": true,
-        "eslint-plugin-jest>@typescript-eslint/utils>eslint-scope>estraverse": true
       }
     },
     "eslint>eslint-scope": {
@@ -2953,7 +3054,7 @@
         "browserify>JSONStream>through": true
       }
     },
-    "@lavamoat/lavapack>readable-stream>abort-controller>event-target-shim": {
+    "readable-stream>abort-controller>event-target-shim": {
       "globals": {
         "Event": true,
         "EventTarget": true,
@@ -3397,6 +3498,19 @@
         "gulp-watch>chokidar>fsevents>node-pre-gyp": true
       }
     },
+    "string.prototype.matchall>es-abstract>function.prototype.name": {
+      "globals": {
+        "document": true
+      },
+      "packages": {
+        "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>call-bound": true,
+        "string.prototype.matchall>define-properties": true,
+        "string.prototype.matchall>set-function-name>functions-have-names": true,
+        "eslint-plugin-react>hasown": true,
+        "string.prototype.matchall>es-abstract>is-callable": true
+      }
+    },
     "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge": {
       "builtin": {
         "util.format": true
@@ -3431,22 +3545,25 @@
         "WeakRef": true
       },
       "packages": {
+        "string.prototype.matchall>get-intrinsic>async-function": true,
+        "string.prototype.matchall>get-intrinsic>async-generator-function": true,
         "string.prototype.matchall>call-bind>call-bind-apply-helpers": true,
         "string.prototype.matchall>call-bind>es-define-property": true,
-        "string.prototype.matchall>es-abstract>es-errors": true,
-        "string.prototype.matchall>es-abstract>es-object-atoms": true,
+        "string.prototype.matchall>es-errors": true,
+        "string.prototype.matchall>es-object-atoms": true,
         "browserify>has>function-bind": true,
-        "string.prototype.matchall>get-intrinsic>get-proto": true,
-        "string.prototype.matchall>es-abstract>gopd": true,
+        "string.prototype.matchall>get-intrinsic>generator-function": true,
+        "string.prototype.matchall>es-abstract>get-proto": true,
+        "string.prototype.matchall>gopd": true,
         "string.prototype.matchall>has-symbols": true,
-        "axios>form-data>hasown": true,
-        "string.prototype.matchall>get-intrinsic>math-intrinsics": true
+        "eslint-plugin-react>hasown": true,
+        "eslint-plugin-react>array-includes>math-intrinsics": true
       }
     },
-    "string.prototype.matchall>get-intrinsic>get-proto": {
+    "string.prototype.matchall>es-abstract>get-proto": {
       "packages": {
-        "string.prototype.matchall>get-intrinsic>get-proto>dunder-proto": true,
-        "string.prototype.matchall>es-abstract>es-object-atoms": true
+        "eslint-plugin-react>es-iterator-helpers>has-proto>dunder-proto": true,
+        "string.prototype.matchall>es-object-atoms": true
       }
     },
     "gulp-zip>get-stream": {
@@ -3566,6 +3683,12 @@
       "packages": {
         "stylelint>global-modules>global-prefix>ini": true,
         "stylelint>global-modules>global-prefix>which": true
+      }
+    },
+    "eslint-plugin-react>es-iterator-helpers>globalthis": {
+      "packages": {
+        "string.prototype.matchall>define-properties": true,
+        "string.prototype.matchall>gopd": true
       }
     },
     "globby": {
@@ -3801,12 +3924,12 @@
         "process.argv": true
       }
     },
-    "string.prototype.matchall>es-abstract>has-property-descriptors": {
+    "eslint-plugin-react>es-iterator-helpers>has-property-descriptors": {
       "packages": {
         "string.prototype.matchall>call-bind>es-define-property": true
       }
     },
-    "koa>is-generator-function>has-tostringtag": {
+    "axios>form-data>es-set-tostringtag>has-tostringtag": {
       "packages": {
         "string.prototype.matchall>has-symbols": true
       }
@@ -3846,7 +3969,7 @@
         "browserify>has>function-bind": true
       }
     },
-    "axios>form-data>hasown": {
+    "eslint-plugin-react>hasown": {
       "packages": {
         "browserify>has>function-bind": true
       }
@@ -3863,7 +3986,7 @@
         "stylelint>postcss-html>htmlparser2>domutils": true,
         "stylelint>postcss-html>htmlparser2>entities": true,
         "pumpify>inherits": true,
-        "readable-stream": true
+        "stylelint>postcss-html>htmlparser2>readable-stream": true
       }
     },
     "webpack-dev-server>sockjs>websocket-driver>http-parser-js": {
@@ -3950,8 +4073,8 @@
     },
     "string.prototype.matchall>internal-slot": {
       "packages": {
-        "string.prototype.matchall>es-abstract>es-errors": true,
-        "axios>form-data>hasown": true,
+        "string.prototype.matchall>es-errors": true,
+        "eslint-plugin-react>hasown": true,
         "string.prototype.matchall>side-channel": true
       }
     },
@@ -4000,7 +4123,7 @@
         "process.versions": true
       },
       "packages": {
-        "axios>form-data>hasown": true
+        "eslint-plugin-react>hasown": true
       }
     },
     "gulp>glob-watcher>anymatch>micromatch>extglob>expand-brackets>define-property>is-descriptor>is-data-descriptor": {
@@ -4020,7 +4143,8 @@
     },
     "@metamask/eth-token-tracker>deep-equal>is-date-object": {
       "packages": {
-        "koa>is-generator-function>has-tostringtag": true
+        "string.prototype.matchall>call-bound": true,
+        "axios>form-data>es-set-tostringtag>has-tostringtag": true
       }
     },
     "gulp>glob-watcher>anymatch>micromatch>extglob>expand-brackets>define-property>is-descriptor": {
@@ -4122,8 +4246,10 @@
     },
     "string.prototype.matchall>es-abstract>is-regex": {
       "packages": {
-        "string.prototype.matchall>call-bind": true,
-        "koa>is-generator-function>has-tostringtag": true
+        "string.prototype.matchall>call-bound": true,
+        "string.prototype.matchall>gopd": true,
+        "axios>form-data>es-set-tostringtag>has-tostringtag": true,
+        "eslint-plugin-react>hasown": true
       }
     },
     "gulp>gulp-cli>replace-homedir>is-absolute>is-relative": {
@@ -4133,12 +4259,15 @@
     },
     "eslint-plugin-react>array-includes>is-string": {
       "packages": {
-        "koa>is-generator-function>has-tostringtag": true
+        "string.prototype.matchall>call-bound": true,
+        "axios>form-data>es-set-tostringtag>has-tostringtag": true
       }
     },
     "string.prototype.matchall>es-abstract>es-to-primitive>is-symbol": {
       "packages": {
-        "string.prototype.matchall>has-symbols": true
+        "string.prototype.matchall>call-bound": true,
+        "string.prototype.matchall>has-symbols": true,
+        "string.prototype.matchall>es-abstract>safe-regex-test": true
       }
     },
     "gulp>gulp-cli>replace-homedir>is-absolute>is-relative>is-unc-path": {
@@ -4182,6 +4311,16 @@
     "gulp>gulp-cli>matchdep>micromatch>snapdragon>base>cache-base>unset-value>has-value>isobject": {
       "packages": {
         "gulp>gulp-cli>matchdep>micromatch>snapdragon>base>cache-base>unset-value>has-value>isobject>isarray": true
+      }
+    },
+    "eslint-plugin-react>es-iterator-helpers>iterator.prototype": {
+      "packages": {
+        "string.prototype.matchall>define-properties>define-data-property": true,
+        "string.prototype.matchall>es-object-atoms": true,
+        "string.prototype.matchall>get-intrinsic": true,
+        "string.prototype.matchall>es-abstract>get-proto": true,
+        "string.prototype.matchall>has-symbols": true,
+        "string.prototype.matchall>set-function-name": true
       }
     },
     "tailwindcss>jiti": {
@@ -4238,7 +4377,7 @@
     "@lavamoat/webpack>json-stable-stringify": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
-        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
+        "string.prototype.matchall>call-bound": true,
         "@lavamoat/webpack>json-stable-stringify>isarray": true,
         "@lavamoat/webpack>json-stable-stringify>jsonify": true,
         "@lavamoat/webpack>json-stable-stringify>object-keys": true
@@ -4390,7 +4529,7 @@
         "lavamoat-browserify>concat-stream": true,
         "duplexify": true,
         "lavamoat>lavamoat-core": true,
-        "lavamoat-browserify>readable-stream": true,
+        "readable-stream": true,
         "through2": true
       }
     },
@@ -4398,7 +4537,6 @@
       "builtin": {
         "node:events": true,
         "node:fs.readFileSync": true,
-        "node:fs/promises.writeFile": true,
         "node:path.extname": true,
         "node:path.join": true
       },
@@ -4420,7 +4558,7 @@
       },
       "packages": {
         "lavamoat>lavamoat-tofu>@babel/parser": true,
-        "depcheck>@babel/traverse": true
+        "lavamoat>lavamoat-tofu>@babel/traverse": true
       }
     },
     "lavamoat>lavamoat-core>merge-deep>clone-deep>lazy-cache": {
@@ -4891,7 +5029,9 @@
     "gulp>vinyl-fs>object.assign": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>call-bound": true,
         "string.prototype.matchall>define-properties": true,
+        "string.prototype.matchall>es-object-atoms": true,
         "string.prototype.matchall>has-symbols": true,
         "@lavamoat/webpack>json-stable-stringify>object-keys": true
       }
@@ -4907,20 +5047,17 @@
     "eslint-plugin-react>object.entries": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>call-bound": true,
         "string.prototype.matchall>define-properties": true,
-        "string.prototype.matchall>es-abstract": true
+        "string.prototype.matchall>es-object-atoms": true
       }
     },
     "eslint-plugin-react>object.fromentries": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>define-properties": true,
-        "string.prototype.matchall>es-abstract": true
-      }
-    },
-    "eslint-plugin-react>object.hasown": {
-      "packages": {
-        "string.prototype.matchall>es-abstract": true
+        "string.prototype.matchall>es-abstract": true,
+        "string.prototype.matchall>es-object-atoms": true
       }
     },
     "gulp-watch>anymatch>micromatch>object.omit": {
@@ -4938,6 +5075,14 @@
       "packages": {
         "gulp>undertaker>object.reduce>for-own": true,
         "gulp>undertaker>arr-map>make-iterator": true
+      }
+    },
+    "eslint-plugin-react>object.values": {
+      "packages": {
+        "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>call-bound": true,
+        "string.prototype.matchall>define-properties": true,
+        "string.prototype.matchall>es-object-atoms": true
       }
     },
     "@metamask/object-multiplex>once": {
@@ -5332,7 +5477,7 @@
     "stylelint>postcss-selector-parser": {
       "packages": {
         "stylelint>postcss-selector-parser>cssesc": true,
-        "readable-stream>util-deprecate": true
+        "@storybook/react>util-deprecate": true
       }
     },
     "stylelint>postcss-syntax": {
@@ -5606,25 +5751,6 @@
     },
     "readable-stream": {
       "builtin": {
-        "buffer.Buffer": true,
-        "events.EventEmitter": true,
-        "stream": true,
-        "util": true
-      },
-      "globals": {
-        "process.env.READABLE_STREAM": true,
-        "process.nextTick": true,
-        "process.stderr": true,
-        "process.stdout": true
-      },
-      "packages": {
-        "pumpify>inherits": true,
-        "browserify>string_decoder": true,
-        "readable-stream>util-deprecate": true
-      }
-    },
-    "@lavamoat/lavapack>readable-stream": {
-      "builtin": {
         "buffer.Blob": true,
         "buffer.Buffer": true,
         "events.EventEmitter": true,
@@ -5640,7 +5766,7 @@
         "queueMicrotask": true
       },
       "packages": {
-        "@lavamoat/lavapack>readable-stream>abort-controller": true,
+        "readable-stream>abort-controller": true,
         "process": true,
         "browserify>string_decoder": true
       }
@@ -5666,7 +5792,7 @@
         "readable-stream-2>process-nextick-args": true,
         "vinyl-buffer>bl>readable-stream>safe-buffer": true,
         "vinyl-buffer>bl>readable-stream>string_decoder": true,
-        "readable-stream>util-deprecate": true
+        "@storybook/react>util-deprecate": true
       }
     },
     "browserify>readable-stream": {
@@ -5690,7 +5816,7 @@
         "readable-stream-2>process-nextick-args": true,
         "browserify>readable-stream>safe-buffer": true,
         "browserify>readable-stream>string_decoder": true,
-        "readable-stream>util-deprecate": true
+        "@storybook/react>util-deprecate": true
       }
     },
     "browserify>concat-stream>readable-stream": {
@@ -5714,7 +5840,7 @@
         "readable-stream-2>process-nextick-args": true,
         "browserify>concat-stream>readable-stream>safe-buffer": true,
         "browserify>concat-stream>readable-stream>string_decoder": true,
-        "readable-stream>util-deprecate": true
+        "@storybook/react>util-deprecate": true
       }
     },
     "lavamoat-browserify>concat-stream>readable-stream": {
@@ -5733,7 +5859,7 @@
       "packages": {
         "pumpify>inherits": true,
         "browserify>string_decoder": true,
-        "readable-stream>util-deprecate": true
+        "@storybook/react>util-deprecate": true
       }
     },
     "unzipper>duplexer2>readable-stream": {
@@ -5757,7 +5883,26 @@
         "readable-stream-2>process-nextick-args": true,
         "unzipper>duplexer2>readable-stream>safe-buffer": true,
         "unzipper>duplexer2>readable-stream>string_decoder": true,
-        "readable-stream>util-deprecate": true
+        "@storybook/react>util-deprecate": true
+      }
+    },
+    "duplexify>readable-stream": {
+      "builtin": {
+        "buffer.Buffer": true,
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.env.READABLE_STREAM": true,
+        "process.nextTick": true,
+        "process.stderr": true,
+        "process.stdout": true
+      },
+      "packages": {
+        "pumpify>inherits": true,
+        "browserify>string_decoder": true,
+        "@storybook/react>util-deprecate": true
       }
     },
     "gulp-watch>vinyl-file>strip-bom-stream>first-chunk-stream>readable-stream": {
@@ -5781,7 +5926,7 @@
         "readable-stream-2>process-nextick-args": true,
         "gulp-watch>vinyl-file>strip-bom-stream>first-chunk-stream>readable-stream>safe-buffer": true,
         "gulp-watch>vinyl-file>strip-bom-stream>first-chunk-stream>readable-stream>string_decoder": true,
-        "readable-stream>util-deprecate": true
+        "@storybook/react>util-deprecate": true
       }
     },
     "gulp>vinyl-fs>lead>flush-write-stream>readable-stream": {
@@ -5805,7 +5950,7 @@
         "readable-stream-2>process-nextick-args": true,
         "gulp>vinyl-fs>lead>flush-write-stream>readable-stream>safe-buffer": true,
         "gulp>vinyl-fs>lead>flush-write-stream>readable-stream>string_decoder": true,
-        "readable-stream>util-deprecate": true
+        "@storybook/react>util-deprecate": true
       }
     },
     "gulp>vinyl-fs>glob-stream>readable-stream": {
@@ -5829,7 +5974,7 @@
         "readable-stream-2>process-nextick-args": true,
         "gulp>vinyl-fs>glob-stream>readable-stream>safe-buffer": true,
         "gulp>vinyl-fs>glob-stream>readable-stream>string_decoder": true,
-        "readable-stream>util-deprecate": true
+        "@storybook/react>util-deprecate": true
       }
     },
     "gulp-watch>readable-stream": {
@@ -5853,29 +5998,26 @@
         "readable-stream-2>process-nextick-args": true,
         "gulp-watch>readable-stream>safe-buffer": true,
         "gulp-watch>readable-stream>string_decoder": true,
-        "readable-stream>util-deprecate": true
+        "@storybook/react>util-deprecate": true
       }
     },
-    "lavamoat-browserify>readable-stream": {
+    "stylelint>postcss-html>htmlparser2>readable-stream": {
       "builtin": {
-        "buffer.Blob": true,
         "buffer.Buffer": true,
         "events.EventEmitter": true,
-        "events.addAbortListener": true,
-        "stream": true
+        "stream": true,
+        "util": true
       },
       "globals": {
-        "AbortController": true,
-        "AbortSignal": true,
-        "AggregateError": true,
-        "Blob": true,
         "process.env.READABLE_STREAM": true,
-        "queueMicrotask": true
+        "process.nextTick": true,
+        "process.stderr": true,
+        "process.stdout": true
       },
       "packages": {
-        "@lavamoat/lavapack>readable-stream>abort-controller": true,
-        "process": true,
-        "browserify>string_decoder": true
+        "pumpify>inherits": true,
+        "browserify>string_decoder": true,
+        "@storybook/react>util-deprecate": true
       }
     },
     "gulp>vinyl-fs>lazystream>readable-stream": {
@@ -5899,7 +6041,7 @@
         "readable-stream-2>process-nextick-args": true,
         "gulp>vinyl-fs>lazystream>readable-stream>safe-buffer": true,
         "gulp>vinyl-fs>lazystream>readable-stream>string_decoder": true,
-        "readable-stream>util-deprecate": true
+        "@storybook/react>util-deprecate": true
       }
     },
     "browserify>module-deps>readable-stream": {
@@ -5923,7 +6065,7 @@
         "readable-stream-2>process-nextick-args": true,
         "browserify>module-deps>readable-stream>safe-buffer": true,
         "browserify>module-deps>readable-stream>string_decoder": true,
-        "readable-stream>util-deprecate": true
+        "@storybook/react>util-deprecate": true
       }
     },
     "gulp>vinyl-fs>glob-stream>ordered-read-streams>readable-stream": {
@@ -5947,7 +6089,7 @@
         "readable-stream-2>process-nextick-args": true,
         "gulp>vinyl-fs>glob-stream>ordered-read-streams>readable-stream>safe-buffer": true,
         "gulp>vinyl-fs>glob-stream>ordered-read-streams>readable-stream>string_decoder": true,
-        "readable-stream>util-deprecate": true
+        "@storybook/react>util-deprecate": true
       }
     },
     "browserify>read-only-stream>readable-stream": {
@@ -5971,7 +6113,7 @@
         "readable-stream-2>process-nextick-args": true,
         "browserify>read-only-stream>readable-stream>safe-buffer": true,
         "browserify>read-only-stream>readable-stream>string_decoder": true,
-        "readable-stream>util-deprecate": true
+        "@storybook/react>util-deprecate": true
       }
     },
     "browserify>module-deps>stream-combiner2>readable-stream": {
@@ -5995,7 +6137,7 @@
         "readable-stream-2>process-nextick-args": true,
         "browserify>module-deps>stream-combiner2>readable-stream>safe-buffer": true,
         "browserify>module-deps>stream-combiner2>readable-stream>string_decoder": true,
-        "readable-stream>util-deprecate": true
+        "@storybook/react>util-deprecate": true
       }
     },
     "labeled-stream-splicer>stream-splicer>readable-stream": {
@@ -6019,7 +6161,45 @@
         "readable-stream-2>process-nextick-args": true,
         "labeled-stream-splicer>stream-splicer>readable-stream>safe-buffer": true,
         "labeled-stream-splicer>stream-splicer>readable-stream>string_decoder": true,
-        "readable-stream>util-deprecate": true
+        "@storybook/react>util-deprecate": true
+      }
+    },
+    "through2>readable-stream": {
+      "builtin": {
+        "buffer.Buffer": true,
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.env.READABLE_STREAM": true,
+        "process.nextTick": true,
+        "process.stderr": true,
+        "process.stdout": true
+      },
+      "packages": {
+        "pumpify>inherits": true,
+        "browserify>string_decoder": true,
+        "@storybook/react>util-deprecate": true
+      }
+    },
+    "gulp-sourcemaps>@gulp-sourcemaps/identity-map>through2>readable-stream": {
+      "builtin": {
+        "buffer.Buffer": true,
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.env.READABLE_STREAM": true,
+        "process.nextTick": true,
+        "process.stderr": true,
+        "process.stdout": true
+      },
+      "packages": {
+        "pumpify>inherits": true,
+        "browserify>string_decoder": true,
+        "@storybook/react>util-deprecate": true
       }
     },
     "gulp-sourcemaps>@gulp-sourcemaps/map-sources>through2>readable-stream": {
@@ -6043,7 +6223,26 @@
         "readable-stream-2>process-nextick-args": true,
         "gulp-sourcemaps>@gulp-sourcemaps/map-sources>through2>readable-stream>safe-buffer": true,
         "gulp-sourcemaps>@gulp-sourcemaps/map-sources>through2>readable-stream>string_decoder": true,
-        "readable-stream>util-deprecate": true
+        "@storybook/react>util-deprecate": true
+      }
+    },
+    "bify-module-groups>through2>readable-stream": {
+      "builtin": {
+        "buffer.Buffer": true,
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.env.READABLE_STREAM": true,
+        "process.nextTick": true,
+        "process.stderr": true,
+        "process.stdout": true
+      },
+      "packages": {
+        "pumpify>inherits": true,
+        "browserify>string_decoder": true,
+        "@storybook/react>util-deprecate": true
       }
     },
     "browserify>browser-pack>through2>readable-stream": {
@@ -6067,7 +6266,7 @@
         "readable-stream-2>process-nextick-args": true,
         "browserify>browser-pack>through2>readable-stream>safe-buffer": true,
         "browserify>browser-pack>through2>readable-stream>string_decoder": true,
-        "readable-stream>util-deprecate": true
+        "@storybook/react>util-deprecate": true
       }
     },
     "vinyl>cloneable-readable>through2>readable-stream": {
@@ -6091,7 +6290,7 @@
         "vinyl>cloneable-readable>through2>readable-stream>process-nextick-args": true,
         "vinyl>cloneable-readable>through2>readable-stream>safe-buffer": true,
         "vinyl>cloneable-readable>through2>readable-stream>string_decoder": true,
-        "readable-stream>util-deprecate": true
+        "@storybook/react>util-deprecate": true
       }
     },
     "browserify>deps-sort>through2>readable-stream": {
@@ -6115,7 +6314,7 @@
         "readable-stream-2>process-nextick-args": true,
         "browserify>deps-sort>through2>readable-stream>safe-buffer": true,
         "browserify>deps-sort>through2>readable-stream>string_decoder": true,
-        "readable-stream>util-deprecate": true
+        "@storybook/react>util-deprecate": true
       }
     },
     "gulp>vinyl-fs>fs-mkdirp-stream>through2>readable-stream": {
@@ -6139,7 +6338,7 @@
         "readable-stream-2>process-nextick-args": true,
         "gulp>vinyl-fs>fs-mkdirp-stream>through2>readable-stream>safe-buffer": true,
         "gulp>vinyl-fs>fs-mkdirp-stream>through2>readable-stream>string_decoder": true,
-        "readable-stream>util-deprecate": true
+        "@storybook/react>util-deprecate": true
       }
     },
     "gulp-sort>through2>readable-stream": {
@@ -6163,7 +6362,7 @@
         "readable-stream-2>process-nextick-args": true,
         "gulp-sort>through2>readable-stream>safe-buffer": true,
         "gulp-sort>through2>readable-stream>string_decoder": true,
-        "readable-stream>util-deprecate": true
+        "@storybook/react>util-deprecate": true
       }
     },
     "gulp-sourcemaps>through2>readable-stream": {
@@ -6187,7 +6386,45 @@
         "readable-stream-2>process-nextick-args": true,
         "gulp-sourcemaps>through2>readable-stream>safe-buffer": true,
         "gulp-sourcemaps>through2>readable-stream>string_decoder": true,
-        "readable-stream>util-deprecate": true
+        "@storybook/react>util-deprecate": true
+      }
+    },
+    "gulp-stylelint>through2>readable-stream": {
+      "builtin": {
+        "buffer.Buffer": true,
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.env.READABLE_STREAM": true,
+        "process.nextTick": true,
+        "process.stderr": true,
+        "process.stdout": true
+      },
+      "packages": {
+        "pumpify>inherits": true,
+        "browserify>string_decoder": true,
+        "@storybook/react>util-deprecate": true
+      }
+    },
+    "gulp-zip>through2>readable-stream": {
+      "builtin": {
+        "buffer.Buffer": true,
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.env.READABLE_STREAM": true,
+        "process.nextTick": true,
+        "process.stderr": true,
+        "process.stdout": true
+      },
+      "packages": {
+        "pumpify>inherits": true,
+        "browserify>string_decoder": true,
+        "@storybook/react>util-deprecate": true
       }
     },
     "browserify>insert-module-globals>through2>readable-stream": {
@@ -6211,7 +6448,7 @@
         "readable-stream-2>process-nextick-args": true,
         "browserify>insert-module-globals>through2>readable-stream>safe-buffer": true,
         "browserify>insert-module-globals>through2>readable-stream>string_decoder": true,
-        "readable-stream>util-deprecate": true
+        "@storybook/react>util-deprecate": true
       }
     },
     "gulp>vinyl-fs>remove-bom-stream>through2>readable-stream": {
@@ -6235,7 +6472,7 @@
         "readable-stream-2>process-nextick-args": true,
         "gulp>vinyl-fs>remove-bom-stream>through2>readable-stream>safe-buffer": true,
         "gulp>vinyl-fs>remove-bom-stream>through2>readable-stream>string_decoder": true,
-        "readable-stream>util-deprecate": true
+        "@storybook/react>util-deprecate": true
       }
     },
     "gulp>vinyl-fs>glob-stream>unique-stream>through2-filter>through2>readable-stream": {
@@ -6259,7 +6496,7 @@
         "readable-stream-2>process-nextick-args": true,
         "gulp>vinyl-fs>glob-stream>unique-stream>through2-filter>through2>readable-stream>safe-buffer": true,
         "gulp>vinyl-fs>glob-stream>unique-stream>through2-filter>through2>readable-stream>string_decoder": true,
-        "readable-stream>util-deprecate": true
+        "@storybook/react>util-deprecate": true
       }
     },
     "gulp>vinyl-fs>to-through>through2>readable-stream": {
@@ -6283,7 +6520,7 @@
         "readable-stream-2>process-nextick-args": true,
         "gulp>vinyl-fs>to-through>through2>readable-stream>safe-buffer": true,
         "gulp>vinyl-fs>to-through>through2>readable-stream>string_decoder": true,
-        "readable-stream>util-deprecate": true
+        "@storybook/react>util-deprecate": true
       }
     },
     "vinyl-source-stream>through2>readable-stream": {
@@ -6307,7 +6544,7 @@
         "readable-stream-2>process-nextick-args": true,
         "vinyl-source-stream>through2>readable-stream>safe-buffer": true,
         "vinyl-source-stream>through2>readable-stream>string_decoder": true,
-        "readable-stream>util-deprecate": true
+        "@storybook/react>util-deprecate": true
       }
     },
     "gulp>vinyl-fs>readable-stream": {
@@ -6331,7 +6568,7 @@
         "readable-stream-2>process-nextick-args": true,
         "gulp>vinyl-fs>readable-stream>safe-buffer": true,
         "gulp>vinyl-fs>readable-stream>string_decoder": true,
-        "readable-stream>util-deprecate": true
+        "@storybook/react>util-deprecate": true
       }
     },
     "chokidar>readdirp": {
@@ -6381,10 +6618,10 @@
       "packages": {
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>define-properties": true,
-        "string.prototype.matchall>es-abstract>es-errors": true,
-        "string.prototype.matchall>get-intrinsic>get-proto": true,
-        "string.prototype.matchall>es-abstract>gopd": true,
-        "string.prototype.matchall>regexp.prototype.flags>set-function-name": true
+        "string.prototype.matchall>es-errors": true,
+        "string.prototype.matchall>es-abstract>get-proto": true,
+        "string.prototype.matchall>gopd": true,
+        "string.prototype.matchall>set-function-name": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-dotall-regex>@babel/helper-create-regexp-features-plugin>regexpu-core": {
@@ -6669,6 +6906,15 @@
         "setTimeout.apply": true
       }
     },
+    "eslint-plugin-react>es-iterator-helpers>safe-array-concat": {
+      "packages": {
+        "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>call-bound": true,
+        "string.prototype.matchall>get-intrinsic": true,
+        "string.prototype.matchall>has-symbols": true,
+        "@lavamoat/webpack>json-stable-stringify>isarray": true
+      }
+    },
     "koa>content-disposition>safe-buffer": {
       "builtin": {
         "buffer": true
@@ -6826,8 +7072,8 @@
     },
     "string.prototype.matchall>es-abstract>safe-regex-test": {
       "packages": {
-        "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>es-abstract>es-errors": true,
+        "string.prototype.matchall>call-bound": true,
+        "string.prototype.matchall>es-errors": true,
         "string.prototype.matchall>es-abstract>is-regex": true
       }
     },
@@ -6967,18 +7213,25 @@
     "string.prototype.matchall>call-bind>set-function-length": {
       "packages": {
         "string.prototype.matchall>define-properties>define-data-property": true,
-        "string.prototype.matchall>es-abstract>es-errors": true,
+        "string.prototype.matchall>es-errors": true,
         "string.prototype.matchall>get-intrinsic": true,
-        "string.prototype.matchall>es-abstract>gopd": true,
-        "string.prototype.matchall>es-abstract>has-property-descriptors": true
+        "string.prototype.matchall>gopd": true,
+        "eslint-plugin-react>es-iterator-helpers>has-property-descriptors": true
       }
     },
-    "string.prototype.matchall>regexp.prototype.flags>set-function-name": {
+    "string.prototype.matchall>set-function-name": {
       "packages": {
         "string.prototype.matchall>define-properties>define-data-property": true,
-        "string.prototype.matchall>es-abstract>es-errors": true,
-        "string.prototype.matchall>es-abstract>function.prototype.name>functions-have-names": true,
-        "string.prototype.matchall>es-abstract>has-property-descriptors": true
+        "string.prototype.matchall>es-errors": true,
+        "string.prototype.matchall>set-function-name>functions-have-names": true,
+        "eslint-plugin-react>es-iterator-helpers>has-property-descriptors": true
+      }
+    },
+    "string.prototype.matchall>es-abstract>set-proto": {
+      "packages": {
+        "eslint-plugin-react>es-iterator-helpers>has-proto>dunder-proto": true,
+        "string.prototype.matchall>es-errors": true,
+        "string.prototype.matchall>es-object-atoms": true
       }
     },
     "gulp>gulp-cli>matchdep>micromatch>snapdragon>base>cache-base>set-value": {
@@ -7010,22 +7263,22 @@
     },
     "string.prototype.matchall>side-channel>side-channel-list": {
       "packages": {
-        "string.prototype.matchall>es-abstract>es-errors": true,
+        "string.prototype.matchall>es-errors": true,
         "string.prototype.matchall>es-abstract>object-inspect": true
       }
     },
     "string.prototype.matchall>side-channel>side-channel-map": {
       "packages": {
-        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
-        "string.prototype.matchall>es-abstract>es-errors": true,
+        "string.prototype.matchall>call-bound": true,
+        "string.prototype.matchall>es-errors": true,
         "string.prototype.matchall>get-intrinsic": true,
         "string.prototype.matchall>es-abstract>object-inspect": true
       }
     },
     "string.prototype.matchall>side-channel>side-channel-weakmap": {
       "packages": {
-        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
-        "string.prototype.matchall>es-abstract>es-errors": true,
+        "string.prototype.matchall>call-bound": true,
+        "string.prototype.matchall>es-errors": true,
         "string.prototype.matchall>get-intrinsic": true,
         "string.prototype.matchall>es-abstract>object-inspect": true,
         "string.prototype.matchall>side-channel>side-channel-map": true
@@ -7033,7 +7286,7 @@
     },
     "string.prototype.matchall>side-channel": {
       "packages": {
-        "string.prototype.matchall>es-abstract>es-errors": true,
+        "string.prototype.matchall>es-errors": true,
         "string.prototype.matchall>es-abstract>object-inspect": true,
         "string.prototype.matchall>side-channel>side-channel-list": true,
         "string.prototype.matchall>side-channel>side-channel-map": true,
@@ -7244,18 +7497,33 @@
     "string.prototype.matchall": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>call-bound": true,
         "string.prototype.matchall>define-properties": true,
         "string.prototype.matchall>es-abstract": true,
+        "string.prototype.matchall>es-errors": true,
+        "string.prototype.matchall>es-object-atoms": true,
+        "string.prototype.matchall>get-intrinsic": true,
+        "string.prototype.matchall>gopd": true,
         "string.prototype.matchall>has-symbols": true,
-        "string.prototype.matchall>regexp.prototype.flags": true
+        "string.prototype.matchall>regexp.prototype.flags": true,
+        "string.prototype.matchall>set-function-name": true
+      }
+    },
+    "eslint-plugin-react>string.prototype.repeat": {
+      "packages": {
+        "string.prototype.matchall>define-properties": true,
+        "string.prototype.matchall>es-abstract": true
       }
     },
     "string.prototype.matchall>es-abstract>string.prototype.trim": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>call-bound": true,
+        "string.prototype.matchall>define-properties>define-data-property": true,
         "string.prototype.matchall>define-properties": true,
         "string.prototype.matchall>es-abstract": true,
-        "string.prototype.matchall>es-abstract>es-object-atoms": true
+        "string.prototype.matchall>es-object-atoms": true,
+        "eslint-plugin-react>es-iterator-helpers>has-property-descriptors": true
       }
     },
     "browserify>string_decoder": {
@@ -7676,7 +7944,7 @@
     },
     "through2": {
       "packages": {
-        "readable-stream": true
+        "through2>readable-stream": true
       }
     },
     "gulp>vinyl-fs>glob-stream>unique-stream>through2-filter": {
@@ -7693,7 +7961,7 @@
         "process.nextTick": true
       },
       "packages": {
-        "readable-stream": true
+        "gulp-sourcemaps>@gulp-sourcemaps/identity-map>through2>readable-stream": true
       }
     },
     "gulp-sourcemaps>@gulp-sourcemaps/map-sources>through2": {
@@ -7716,7 +7984,7 @@
         "process.nextTick": true
       },
       "packages": {
-        "readable-stream": true
+        "bify-module-groups>through2>readable-stream": true
       }
     },
     "browserify>browser-pack>through2": {
@@ -7811,7 +8079,7 @@
         "process.nextTick": true
       },
       "packages": {
-        "readable-stream": true
+        "gulp-stylelint>through2>readable-stream": true
       }
     },
     "gulp-zip>through2": {
@@ -7822,7 +8090,7 @@
         "process.nextTick": true
       },
       "packages": {
-        "readable-stream": true
+        "gulp-zip>through2>readable-stream": true
       }
     },
     "browserify>insert-module-globals>through2": {
@@ -8039,7 +8307,7 @@
         "jsdom>acorn": true,
         "ts-node>arg": true,
         "ts-node>create-require": true,
-        "ts-node>diff": true,
+        "sinon>diff": true,
         "ts-node>make-error": true,
         "ts-node>v8-compile-cache-lib": true,
         "ts-node>yn": true
@@ -8231,7 +8499,7 @@
         "@babel/register>clone-deep>kind-of": true
       }
     },
-    "readable-stream>util-deprecate": {
+    "@storybook/react>util-deprecate": {
       "builtin": {
         "util.deprecate": true
       }

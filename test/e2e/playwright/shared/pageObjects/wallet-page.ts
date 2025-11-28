@@ -25,7 +25,7 @@ export class WalletPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.swapButton = this.page.getByTestId('token-overview-button-swap');
+    this.swapButton = this.page.getByTestId('coin-overview-swap');
     this.importTokensButton = this.page.getByText('Import tokens').first();
     this.accountMenu = this.page.getByTestId('account-menu-icon');
     this.importAccountButton = this.page.getByText('Private Key');

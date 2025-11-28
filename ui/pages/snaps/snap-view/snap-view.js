@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { hasProperty } from '@metamask/utils';
+import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
 import {
   AlignItems,
   BackgroundColor,
@@ -21,9 +22,14 @@ import SnapHomeMenu from '../../../components/app/snaps/snap-home-menu';
 import { SnapHomeRenderer } from '../../../components/app/snaps/snap-home-page/snap-home-renderer';
 import SnapSettings from './snap-settings';
 
-function SnapView() {
-  const history = useHistory();
-  const location = useLocation();
+function SnapView({ navigate: navigateProp, location: locationProp }) {
+  const hookNavigate = useNavigate();
+  const hookLocation = useLocation();
+
+  // Use passed props if they exist, otherwise fall back to hooks
+  const navigate = navigateProp ?? hookNavigate;
+  const location = locationProp ?? hookLocation;
+
   const { pathname } = location;
   // The snap ID is in URI-encoded form in the last path segment of the URL.
   const snapId = decodeURIComponent(pathname.match(/[^/]+$/u)[0]);
@@ -34,9 +40,9 @@ function SnapView() {
 
   useEffect(() => {
     if (!snap) {
-      history.push(SNAPS_ROUTE);
+      navigate(SNAPS_ROUTE);
     }
-  }, [history, snap]);
+  }, [navigate, snap]);
 
   const permissions = useSelector(
     (state) => snap && getPermissions(state, snap.id),
@@ -66,11 +72,11 @@ function SnapView() {
 
   const handleBackClick = () => {
     if (snap.preinstalled && snap.hidden) {
-      history.push(DEFAULT_ROUTE);
+      navigate(DEFAULT_ROUTE);
     } else if (showSettings && hasHomePage) {
       setShowSettings(false);
     } else {
-      history.push(SNAPS_ROUTE);
+      navigate(SNAPS_ROUTE);
     }
   };
 
@@ -131,5 +137,10 @@ function SnapView() {
     </div>
   );
 }
+
+SnapView.propTypes = {
+  navigate: PropTypes.func,
+  location: PropTypes.object,
+};
 
 export default SnapView;

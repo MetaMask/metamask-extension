@@ -167,6 +167,13 @@ class SelectNetwork {
     await this.driver.assertElementNotPresent('.loading-overlay');
   }
 
+  async selectNetworkByChainId(chainId: string): Promise<void> {
+    console.log(`Click ${chainId}`);
+    const networkNameItem = `[data-testid="network-list-item-${chainId}"]`;
+    await this.driver.clickElementAndWaitToDisappear(networkNameItem);
+    await this.driver.assertElementNotPresent('.loading-overlay');
+  }
+
   async selectRPC(rpcName: string): Promise<void> {
     console.log(`Select RPC ${rpcName} for network`);
     await this.driver.waitForSelector(this.selectRpcMessage);

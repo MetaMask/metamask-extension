@@ -13,7 +13,7 @@ import {
 } from './shared';
 
 const { withFixtures } = require('../../../helpers');
-const FixtureBuilder = require('../../../fixture-builder');
+const FixtureBuilder = require('../../../fixtures/fixture-builder');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
 describe('Confirmation Redesign ERC20 Revoke Allowance', function () {
@@ -23,7 +23,7 @@ describe('Confirmation Redesign ERC20 Revoke Allowance', function () {
     it('Sends a type 0 transaction (Legacy)', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
@@ -66,7 +66,7 @@ describe('Confirmation Redesign ERC20 Revoke Allowance', function () {
     it('Sends a type 2 transaction (EIP1559)', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),

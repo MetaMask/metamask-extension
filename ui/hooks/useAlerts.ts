@@ -32,6 +32,18 @@ const useAlerts = (ownerId: string) => {
     useSelector((state) => selectFieldAlerts(state as AlertsState, ownerId)),
   );
 
+  const navigableAlerts = alerts.filter(
+    (alert) => !alert.hideFromAlertNavigation,
+  );
+
+  const navigableGeneralAlerts = generalAlerts.filter(
+    (alert) => !alert.hideFromAlertNavigation,
+  );
+
+  const navigableFieldAlerts = fieldAlerts.filter(
+    (alert) => !alert.hideFromAlertNavigation,
+  );
+
   const getFieldAlerts = useCallback(
     (field: string | undefined) => {
       if (!field) {
@@ -43,11 +55,24 @@ const useAlerts = (ownerId: string) => {
     [alerts],
   );
 
+  const getNavigableFieldAlerts = useCallback(
+    (field: string | undefined) => {
+      if (!field) {
+        return [];
+      }
+
+      return alerts.filter(
+        (alert) => alert.field === field && !alert.hideFromAlertNavigation,
+      );
+    },
+    [alerts],
+  );
+
   const setAlertConfirmed = useCallback(
     (alertKey: string, isConfirmed: boolean) => {
       dispatch(setAlertConfirmedAction(ownerId, alertKey, isConfirmed));
     },
-    [dispatch, setAlertConfirmedAction, ownerId],
+    [dispatch, ownerId],
   );
 
   const isAlertConfirmed = useCallback(
@@ -59,7 +84,9 @@ const useAlerts = (ownerId: string) => {
 
   const unconfirmedDangerAlerts = alerts.filter(
     (alert) =>
-      !isAlertConfirmed(alert.key) && alert.severity === Severity.Danger,
+      !isAlertConfirmed(alert.key) &&
+      alert.severity === Severity.Danger &&
+      !alert.acknowledgeBypass,
   );
 
   const hasAlerts = alerts.length > 0;
@@ -72,7 +99,9 @@ const useAlerts = (ownerId: string) => {
 
   const unconfirmedFieldDangerAlerts = fieldAlerts.filter(
     (alert) =>
-      !isAlertConfirmed(alert.key) && alert.severity === Severity.Danger,
+      !isAlertConfirmed(alert.key) &&
+      alert.severity === Severity.Danger &&
+      !alert.acknowledgeBypass,
   );
 
   return {
@@ -80,11 +109,15 @@ const useAlerts = (ownerId: string) => {
     fieldAlerts,
     generalAlerts,
     getFieldAlerts,
+    getNavigableFieldAlerts,
     hasAlerts,
     dangerAlerts,
     hasDangerAlerts: dangerAlerts?.length > 0,
     hasUnconfirmedDangerAlerts,
     isAlertConfirmed,
+    navigableAlerts,
+    navigableFieldAlerts,
+    navigableGeneralAlerts,
     setAlertConfirmed,
     unconfirmedDangerAlerts,
     unconfirmedFieldDangerAlerts,
@@ -97,9 +130,11 @@ function sortAlertsBySeverity(alerts: Alert[]): Alert[] {
     [Severity.Danger]: 3,
     [Severity.Warning]: 2,
     [Severity.Info]: 1,
+    [Severity.Success]: 0,
+    [Severity.Disabled]: 0,
   };
 
-  return alerts.sort(
+  return [...alerts].sort(
     (a, b) => severityOrder[b.severity] - severityOrder[a.severity],
   );
 }

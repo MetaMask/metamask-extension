@@ -1,4 +1,4 @@
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { withFixtures, WINDOW_TITLES } from '../../../helpers';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import { TestSuiteArguments } from '../transactions/shared';
@@ -15,7 +15,7 @@ describe('Alert for insufficient funds', function () {
     };
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),

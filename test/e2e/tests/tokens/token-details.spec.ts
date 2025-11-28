@@ -2,7 +2,7 @@ import { Mockttp } from 'mockttp';
 import { Context } from 'mocha';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { formatCurrency } from '../../../../ui/helpers/utils/confirm-tx.util';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -81,6 +81,11 @@ describe('Token Details', function () {
         ethConversionInUsd,
         testSpecificMock: async (mockServer: Mockttp) => [
           await mockSpotPrices(mockServer, chainId, {
+            '0x0000000000000000000000000000000000000000': {
+              price: 10000,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
             [tokenAddress.toLowerCase()]: marketData,
           }),
           await mockHistoricalPrices(mockServer, {
@@ -127,6 +132,15 @@ describe('Token Details', function () {
       {
         ...fixtures,
         title: (this as Context).test?.fullTitle(),
+        testSpecificMock: async (mockServer: Mockttp) => [
+          await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
+            '0x0000000000000000000000000000000000000000': {
+              price: 1700,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
+          }),
+        ],
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);

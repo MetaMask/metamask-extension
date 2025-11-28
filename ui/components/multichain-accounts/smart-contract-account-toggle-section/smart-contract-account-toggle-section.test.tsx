@@ -1,7 +1,7 @@
 import React from 'react';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { Hex } from '@metamask/utils';
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import {
   useEIP7702Networks,
@@ -112,12 +112,10 @@ describe('SmartContractAccountToggleSection', () => {
       const { container } = render();
 
       expect(screen.getByTestId('network-loader')).toBeInTheDocument();
-      expect(
-        screen.getByText('Enable smart contract account'),
-      ).toBeInTheDocument();
+      expect(screen.getByText('Use smart account')).toBeInTheDocument();
       expect(
         screen.getByText(
-          'You can enable smart account features on supported networks.',
+          'Unlock faster transactions, lower network fees, and added security on supported networks.',
         ),
       ).toBeInTheDocument();
       expect(container).toMatchSnapshot();

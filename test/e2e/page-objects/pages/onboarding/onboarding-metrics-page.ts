@@ -21,7 +21,7 @@ class OnboardingMetricsPage {
     '.mm-checkbox__input#metametrics-opt-in';
 
   private readonly metametricsMessage = {
-    text: 'Help us improve MetaMask',
+    text: 'Help improve MetaMask',
     tag: 'h2',
   };
 

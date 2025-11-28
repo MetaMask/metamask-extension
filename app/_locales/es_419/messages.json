@@ -697,9 +697,6 @@
   "etherscanViewOn": {
     "message": "Ver en Etherscan"
   },
-  "expandView": {
-    "message": "Expandir vista"
-  },
   "experimental": {
     "message": "Experimental"
   },
@@ -750,10 +747,6 @@
   },
   "from": {
     "message": "De"
-  },
-  "fromAddress": {
-    "message": "De: $1",
-    "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
   },
   "gas": {
     "message": "Gas"
@@ -1718,7 +1711,7 @@
   },
   "swapIncludesMMFee": {
     "message": "Incluye una tasa de MetaMask del $1%.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapMaxSlippage": {
     "message": "Desfase máximo"
@@ -1728,7 +1721,7 @@
   },
   "swapMetaMaskFeeDescription": {
     "message": "Buscamos el mejor precio en las fuentes de liquidez más importantes, todo el tiempo. Se incorpora de manera automática a esta cotización una cuota del $1 %.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapNQuotesWithDot": {
     "message": "$1 cotizaciones.",
@@ -1891,10 +1884,6 @@
   },
   "to": {
     "message": "Para"
-  },
-  "toAddress": {
-    "message": "Para: $1",
-    "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
   "token": {
     "message": "Token"
@@ -2090,9 +2079,6 @@
   },
   "welcomeBack": {
     "message": "¡Bienvenido de nuevo!"
-  },
-  "welcomeToMetaMask": {
-    "message": "Comencemos"
   },
   "whatsThis": {
     "message": "¿Qué es esto?"

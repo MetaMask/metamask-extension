@@ -1,7 +1,7 @@
 import { withFixtures } from '../../../helpers';
 import { ACCOUNT_TYPE } from '../../../constants';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import Homepage from '../../../page-objects/pages/home/homepage';
@@ -14,7 +14,7 @@ describe('Import NFT', function () {
   it('should be able to import an NFT that user owns', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -39,7 +39,7 @@ describe('Import NFT', function () {
   it('should continue to display an imported NFT after importing, adding a new account, and switching back', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -85,7 +85,7 @@ describe('Import NFT', function () {
   it('should not be able to import an NFT that does not belong to user', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),

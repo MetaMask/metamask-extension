@@ -14,10 +14,7 @@ export const SENTRY_BACKGROUND_STATE = {
     },
   },
   AccountTracker: {
-    accounts: false,
     accountsByChainId: false,
-    currentBlockGasLimit: true,
-    currentBlockGasLimitByChainId: true,
   },
   AddressBookController: {
     addressBook: false,
@@ -68,6 +65,7 @@ export const SENTRY_BACKGROUND_STATE = {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     hadAdvancedGasFeesSetPriorToMigration92_3: true,
+    canTrackWalletFundsObtained: true,
     isRampCardClosed: true,
     nftsDetectionNoticeDismissed: true,
     nftsDropdownState: true,
@@ -92,6 +90,10 @@ export const SENTRY_BACKGROUND_STATE = {
     isUpdateAvailable: true,
     updateModalLastDismissedAt: true,
     lastUpdatedAt: true,
+    shieldEndingToastLastClickedOrClosed: true,
+    shieldPausedToastLastClickedOrClosed: true,
+    isWalletResetInProgress: false,
+    pna25Acknowledged: false,
   },
   MultichainBalancesController: {
     balances: false,
@@ -99,6 +101,7 @@ export const SENTRY_BACKGROUND_STATE = {
   MultichainAssetsController: {
     accountsAssets: false,
     assetsMetadata: false,
+    allIgnoredAssets: false,
   },
   MultichainAssetsRatesController: {
     assetsRates: false,
@@ -268,6 +271,14 @@ export const SENTRY_BACKGROUND_STATE = {
     remoteFeatureFlags: true,
     cacheTimestamp: false,
   },
+  RewardsController: {
+    rewardsActiveAccount: false,
+    rewardsAccounts: false,
+    rewardsSubscriptions: false,
+    rewardsSeasons: false,
+    rewardsSeasonStatuses: false,
+    rewardsSubscriptionTokens: false,
+  },
   NotificationServicesPushController: {
     fcmToken: false,
   },
@@ -387,14 +398,11 @@ export const SENTRY_BACKGROUND_STATE = {
   },
 };
 
-const flattenedBackgroundStateMask = Object.values(
-  SENTRY_BACKGROUND_STATE,
-).reduce((partialBackgroundState, controllerState: object) => {
-  return {
-    ...partialBackgroundState,
-    ...controllerState,
-  };
-}, {});
+const flattenedBackgroundStateMask: Record<string, unknown> = {};
+
+for (const controllerState of Object.values(SENTRY_BACKGROUND_STATE)) {
+  Object.assign(flattenedBackgroundStateMask, controllerState);
+}
 
 // This describes the subset of Redux state attached to errors sent to Sentry
 // These properties have some potential to be useful for debugging, and they do
