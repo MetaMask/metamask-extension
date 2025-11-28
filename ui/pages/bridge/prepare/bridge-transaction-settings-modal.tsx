@@ -31,6 +31,7 @@ import { getIsSolanaSwap, getSlippage } from '../../../ducks/bridge/selectors';
 import { setSlippage } from '../../../ducks/bridge/actions';
 import { SlippageValue } from '../utils/slippage-service';
 import { Column, Row, Tooltip } from '../layout';
+import { sanitizeAmountInput } from '../utils/quote';
 
 const HARDCODED_SLIPPAGE_OPTIONS = [
   SlippageValue.EvmStablecoin,
@@ -44,53 +45,37 @@ export const BridgeTransactionSettingsModal = ({
   const t = useI18nContext();
 
   const dispatch = useDispatch();
-  const isSolanaSwap = useSelector(getIsSolanaSwap);
+  /**
+   * The current slippage value in the quote request
+   */
   const slippage = useSelector(getSlippage);
 
-  // AUTO option should only show for Solana-to-Solana swaps
-  const shouldShowAutoOption = isSolanaSwap;
+  const [showCustomInput, setShowCustomInput] = useState(false);
+  const [inputValue, setInputValue] = useState<string>('');
 
-  const [localSlippage, setLocalSlippage] = useState<number | undefined>(
+  /**
+   * AUTO option should only show for Solana-to-Solana swaps
+   */
+  const shouldShowAutoOption = useSelector(getIsSolanaSwap);
+
+  const [slippageValue, setSlippageValue] = useState<number | undefined>(
     undefined,
   );
-  const [customSlippage, setCustomSlippage] = useState<string | undefined>(
-    undefined,
-  );
-  const [showCustomButton, setShowCustomButton] = useState(true);
-  const [isAutoSelected, setIsAutoSelected] = useState(false);
 
-  // Initialize state when modal opens
+  // Initialize UI state when modal opens
   useEffect(() => {
     if (isOpen) {
-      // Simply display what's in the state
-      if (shouldShowAutoOption && slippage === undefined) {
-        setIsAutoSelected(true);
-        setLocalSlippage(undefined);
-        setCustomSlippage(undefined);
-      } else {
-        setIsAutoSelected(false);
-        if (!slippage || slippage === 0) {
-          // Default to first option if no slippage set, null, or 0
-          // This handles undefined, null, 0, and other falsy values
-          setLocalSlippage(SlippageValue.BridgeDefault);
-          setCustomSlippage(undefined);
-        } else if (HARDCODED_SLIPPAGE_OPTIONS.includes(slippage)) {
-          setLocalSlippage(slippage);
-          setCustomSlippage(undefined);
-        } else {
-          setLocalSlippage(undefined);
-          setCustomSlippage(slippage.toString());
-        }
-      }
+      setSlippageValue(slippage);
+      setInputValue('');
+      setShowCustomInput(false);
     }
   }, [slippage, shouldShowAutoOption, isOpen]);
 
   const getNotificationConfig = () => {
-    if (!customSlippage) {
+    if (slippageValue === undefined) {
       return null;
     }
 
-    const slippageValue = Number(customSlippage.replace(',', '.'));
     if (slippageValue < 0.5) {
       return {
         severity: SEVERITIES.WARNING,
@@ -102,13 +87,46 @@ export const BridgeTransactionSettingsModal = ({
     return null;
   };
 
+  /**
+   * Handles input field changes.
+   * When the input field blurs, slippageValue is updated to the input's value.
+   * The `bridge.slippage` state is only updated when the user clicks the Submit button
+   *
+   * @param event - The event that triggered the change
+   * @param value - The incoming slippage value to validate and use
+   */
+  const handleCustomSlippage = (
+    event:
+      | React.ClipboardEvent<HTMLInputElement>
+      | React.KeyboardEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLInputElement>,
+    value: string,
+  ) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const sanitizedValue = sanitizeAmountInput(value, false);
+    setInputValue(sanitizedValue);
+  };
+
+  const isCustomSlippage = !(
+    slippageValue === undefined ||
+    HARDCODED_SLIPPAGE_OPTIONS.includes(slippageValue)
+  );
+
   const notificationConfig = getNotificationConfig();
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} className="bridge-settings-modal">
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader onClose={onClose}>{t('transactionSettings')}</ModalHeader>
+        <ModalHeader
+          onClose={onClose}
+          closeButtonProps={{
+            'data-testid': 'bridge__tx-settings-modal-close-button',
+          }}
+        >
+          {t('transactionSettings')}
+        </ModalHeader>
         <Column gap={3} paddingInline={4} paddingBottom={4}>
           <Row gap={1} justifyContent={JustifyContent.flexStart}>
             <Text variant={TextVariant.bodyMdMedium}>
@@ -123,24 +141,21 @@ export const BridgeTransactionSettingsModal = ({
               <Button
                 size={ButtonSize.Md}
                 variant={
-                  isAutoSelected
+                  slippageValue === undefined
                     ? ButtonVariant.Primary
                     : ButtonVariant.Secondary
                 }
                 onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  setLocalSlippage(undefined);
-                  setCustomSlippage(undefined);
-                  setIsAutoSelected(true);
+                  setSlippageValue(undefined);
                 }}
               >
                 {t('swapSlippageAutoDescription')}
               </Button>
             )}
             {HARDCODED_SLIPPAGE_OPTIONS.map((hardcodedSlippage) => {
-              const isSelected =
-                !isAutoSelected && localSlippage === hardcodedSlippage;
+              const isSelected = slippageValue === hardcodedSlippage;
               return (
                 <Button
                   key={hardcodedSlippage}
@@ -151,56 +166,65 @@ export const BridgeTransactionSettingsModal = ({
                   onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    setLocalSlippage(hardcodedSlippage);
-                    setCustomSlippage(undefined);
-                    setIsAutoSelected(false);
+                    setSlippageValue(hardcodedSlippage);
                   }}
                 >
                   {hardcodedSlippage}%
                 </Button>
               );
             })}
-            {showCustomButton && (
+            {!showCustomInput && (
               <Button
                 size={ButtonSize.Md}
+                data-testid="bridge__tx-settings-modal-custom-button"
                 variant={
-                  customSlippage === undefined
-                    ? ButtonVariant.Secondary
-                    : ButtonVariant.Primary
+                  isCustomSlippage
+                    ? ButtonVariant.Primary
+                    : ButtonVariant.Secondary
                 }
                 onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  setShowCustomButton(false);
-                  setIsAutoSelected(false);
+                  setInputValue(slippageValue?.toString() || '');
+                  setShowCustomInput(true);
                 }}
               >
-                {customSlippage === undefined
-                  ? t('customSlippage')
-                  : `${customSlippage}%`}
+                {isCustomSlippage ? `${slippageValue}%` : t('customSlippage')}
               </Button>
             )}
-            {!showCustomButton && (
+            {showCustomInput && (
               <TextField
                 size={TextFieldSize.Md}
                 borderColor={BorderColor.borderMuted}
+                testId="bridge__tx-settings-modal-custom-input"
                 borderRadius={BorderRadius.XL}
                 type={TextFieldType.Text}
-                value={customSlippage}
-                onChange={(e) => {
-                  const { value } = e.target;
-                  if (value === '' || /^\d*[.,]?\d*$/u.test(value)) {
-                    setLocalSlippage(undefined);
-                    setCustomSlippage(value);
-                    setIsAutoSelected(false);
+                value={inputValue}
+                onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => {
+                  handleCustomSlippage(e, e.clipboardData.getData('text'));
+                }}
+                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                  // Only allows digits and decimal points
+                  if (!sanitizeAmountInput(e.key) && e.key.length === 1) {
+                    e.preventDefault();
+                    e.stopPropagation();
                   }
+                }}
+                onChange={(e) => {
+                  handleCustomSlippage(e, e.target.value);
                 }}
                 autoFocus={true}
                 onBlur={() => {
-                  setShowCustomButton(true);
+                  // If the user clicks outside the input, show the custom button
+                  setShowCustomInput(false);
+                  const newSlippage = Number(inputValue);
+                  if (!isNaN(newSlippage) && inputValue.length > 0) {
+                    setSlippageValue(newSlippage);
+                  }
+                  setInputValue('');
                 }}
                 onFocus={() => {
-                  setShowCustomButton(false);
+                  setShowCustomInput(true);
                 }}
                 endAccessory={<Text variant={TextVariant.bodyMd}>%</Text>}
               />
@@ -223,27 +247,17 @@ export const BridgeTransactionSettingsModal = ({
             width={BlockSize.Full}
             size={ButtonSize.Lg}
             variant={ButtonVariant.Primary}
-            disabled={(() => {
-              // Calculate what the new slippage would be
-              const newSlippage = isAutoSelected
-                ? undefined
-                : (localSlippage ??
-                  (customSlippage
-                    ? Number(customSlippage.replace(',', '.'))
-                    : undefined));
-
-              // Button is disabled if nothing has changed
-              return newSlippage === slippage;
-            })()}
+            data-testid="bridge__tx-settings-modal-submit-button"
+            disabled={
+              // Disable Submit if there is no change in slippage value
+              slippageValue === slippage ||
+              // Disable Submit if custom input is shown and value is invalid
+              (showCustomInput &&
+                (isNaN(Number(inputValue)) || inputValue === ''))
+            }
             onClick={() => {
-              const newSlippage = isAutoSelected
-                ? undefined
-                : (localSlippage ?? Number(customSlippage?.replace(',', '.')));
-
-              if (newSlippage !== slippage) {
-                dispatch(setSlippage(newSlippage));
-                onClose();
-              }
+              dispatch(setSlippage(slippageValue));
+              onClose();
             }}
           >
             {t('submit')}

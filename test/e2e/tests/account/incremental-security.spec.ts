@@ -4,7 +4,7 @@ import { Mockttp } from 'mockttp';
 import { Anvil } from '../../seeder/anvil';
 import { withFixtures } from '../../helpers';
 import { WALLET_PASSWORD, WINDOW_TITLES } from '../../constants';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
@@ -113,7 +113,7 @@ describe('Incremental Security', function (this: Suite) {
         await homePage.checkPageIsLoaded();
         // to update balance faster and avoid timeout error
         await driver.refresh();
-        await homePage.checkExpectedBalanceIsDisplayed('3,400.00', '$');
+        await homePage.checkExpectedBalanceIsDisplayed('5,100.00', '$');
 
         // backup reminder is displayed and it directs user to the backup SRP page
         await homePage.goToBackupSRPPage();
@@ -128,7 +128,7 @@ describe('Incremental Security', function (this: Suite) {
 
         // check the balance is correct after revealing and confirming the SRP
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed('3,400.00', '$');
+        await homePage.checkExpectedBalanceIsDisplayed('5,100.00', '$');
 
         // check backup reminder is not displayed on homepage
         await homePage.checkBackupReminderIsNotDisplayed();

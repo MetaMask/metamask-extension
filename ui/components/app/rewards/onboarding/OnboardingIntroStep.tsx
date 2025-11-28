@@ -11,6 +11,7 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
+import { useTheme } from '../../../../hooks/useTheme';
 import { OnboardingStep } from '../../../../ducks/rewards/types';
 import {
   setErrorToast,
@@ -41,6 +42,7 @@ import { isHardwareWallet } from '../../../../../shared/modules/selectors';
 const OnboardingIntroStep: React.FC = () => {
   const dispatch = useDispatch();
   const t = useI18nContext();
+  const theme = useTheme();
 
   const setHasSeenRewardsIntroModal = useCallback(async () => {
     await setStorageItem(REWARDS_GTM_MODAL_SHOWN, 'true');
@@ -232,7 +234,7 @@ const OnboardingIntroStep: React.FC = () => {
           candidateSubscriptionId === 'retry'
         }
         onClick={handleNext}
-        className="w-full my-2 bg-white hover:bg-default-hover"
+        className={`w-full my-2 bg-white ${theme === 'light' ? 'hover:bg-default-hover' : 'hover:bg-icon-default-hover'}`}
       >
         <Text variant={TextVariant.BodyMd} className="text-black font-medium">
           {t('rewardsOnboardingIntroStepConfirm')}

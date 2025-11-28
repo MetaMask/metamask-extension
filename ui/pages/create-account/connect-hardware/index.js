@@ -1,3 +1,6 @@
+'use no memo';
+// TODO: Enable React Compiler once this has been migrated to a functional component.
+
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -78,8 +81,9 @@ const HD_PATHS = {
 };
 
 const getErrorMessage = (errorCode, t) => {
-  if (Object.keys(LEDGER_ERRORS_CODES).includes(errorCode)) {
-    return t(LEDGER_ERRORS_CODES[errorCode]);
+  const errorCodeLocalized = LEDGER_ERRORS_CODES[errorCode];
+  if (errorCodeLocalized !== undefined) {
+    return t(errorCodeLocalized);
   }
 
   return errorCode;
@@ -419,7 +423,6 @@ class ConnectHardwareForm extends Component {
           <>
             <Text color={TextColor.warningDefault} margin={[5, 5, 2]}>
               {this.context.t('troubleConnectingToLedgerU2FOnFirefox', [
-                // eslint-disable-next-line react/jsx-key
                 <Button
                   variant={BUTTON_VARIANT.LINK}
                   href={ZENDESK_URLS.HARDWARE_CONNECTION}
@@ -438,7 +441,6 @@ class ConnectHardwareForm extends Component {
               {this.context.t(
                 'troubleConnectingToLedgerU2FOnFirefoxLedgerSolution',
                 [
-                  // eslint-disable-next-line react/jsx-key
                   <Button
                     variant={BUTTON_VARIANT.LINK}
                     href={ZENDESK_URLS.LEDGER_FIREFOX_U2F_GUIDE}
@@ -462,7 +464,7 @@ class ConnectHardwareForm extends Component {
         <Text color={TextColor.warningDefault} margin={[5, 5, 2]}>
           {this.context.t('troubleConnectingToWallet', [
             this.state.device,
-            // eslint-disable-next-line react/jsx-key
+
             <Button
               variant={BUTTON_VARIANT.LINK}
               href={ZENDESK_URLS.HARDWARE_CONNECTION}
