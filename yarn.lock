@@ -29707,6 +29707,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jest-clean-console-reporter@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "jest-clean-console-reporter@npm:0.3.0"
+  dependencies:
+    chalk: "npm:>=3.0.0"
+  peerDependencies:
+    jest: ">=25.1.0"
+  checksum: 10/91972d3287643d76f99a2f4b5830fc26c72eb5c2b13e3244c59461438f81462ee44346d9bc949dbd565dcd78e0a5b7d1efb7c1dd40b87f4d0eced05ffd925097
+  languageName: node
+  linkType: hard
+
 "jest-cli@npm:^29.7.0":
   version: 29.7.0
   resolution: "jest-cli@npm:29.7.0"
@@ -32490,6 +32501,7 @@ __metadata:
     "@ethersproject/providers": "npm:^5.7.2"
     "@fortawesome/fontawesome-free": "npm:^5.13.0"
     "@jest/globals": "npm:^29.7.0"
+    "@jest/reporters": "npm:^29.7.0"
     "@keystonehq/bc-ur-registry-eth": "npm:^0.21.0"
     "@lavamoat/allow-scripts": "npm:^3.4.0"
     "@lavamoat/lavadome-core": "npm:0.0.20"
@@ -32818,6 +32830,7 @@ __metadata:
     is-retry-allowed: "npm:^2.2.0"
     jest: "npm:^29.7.0"
     jest-canvas-mock: "npm:^2.3.1"
+    jest-clean-console-reporter: "npm:^0.3.0"
     jest-environment-jsdom: "patch:jest-environment-jsdom@npm%3A29.7.0#~/.yarn/patches/jest-environment-jsdom-npm-29.7.0-0b72dd0e0b.patch"
     jest-fixed-jsdom: "npm:^0.0.9"
     jest-junit: "npm:^14.0.1"

@@ -132,6 +132,7 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
+    "jest-clean-console-reporter/chalk": "^4.1.2",
     "http-cache-semantics": "^4.1.1",
     "semver-regex": "^3.1.4",
     "base-x@^3.0.x": "^3.0.11",
@@ -470,6 +471,7 @@
     "@babel/preset-typescript": "^7.25.9",
     "@babel/register": "^7.25.9",
     "@jest/globals": "^29.7.0",
+    "@jest/reporters": "^29.7.0",
     "@lavamoat/allow-scripts": "^3.4.0",
     "@lavamoat/lavadome-core": "0.0.20",
     "@lavamoat/lavapack": "^7.0.17",
@@ -641,6 +643,7 @@
     "ini": "^3.0.0",
     "jest": "^29.7.0",
     "jest-canvas-mock": "^2.3.1",
+    "jest-clean-console-reporter": "^0.3.0",
     "jest-environment-jsdom": "patch:jest-environment-jsdom@npm%3A29.7.0#~/.yarn/patches/jest-environment-jsdom-npm-29.7.0-0b72dd0e0b.patch",
     "jest-fixed-jsdom": "^0.0.9",
     "jest-preview": "^0.3.1",
