@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
-import { lt as semverLt } from 'semver';
+import { lt as semverLt, parse as semverParse } from 'semver';
 import { useAppSelector } from '../store/store';
 import { getIsMultichainAccountsState2Enabled } from '../selectors/multichain-accounts/feature-flags';
-import { getLastUpdatedFromVersion } from '../selectors/selectors';
 import { DEFAULT_ROUTE } from '../helpers/constants/routes';
 
 // Version threshold for BIP-44 multichain accounts introduction
@@ -33,17 +32,24 @@ export function useMultichainAccountsIntroModal(
   );
 
   const lastUpdatedAt = useAppSelector((state) => state.metamask.lastUpdatedAt);
-  const lastUpdatedFromVersion = useAppSelector(getLastUpdatedFromVersion);
+  const lastUpdatedFromVersion = useAppSelector(
+    (state) => state.metamask.previousAppVersion,
+  );
 
   useEffect(() => {
     // Only show modal on the main wallet/home route
     const isMainWalletArea = location.pathname === DEFAULT_ROUTE;
 
+    const parsedLastVersion = semverParse(lastUpdatedFromVersion);
+    // Strip prerelease versions as they just indicate build types.
+    const strippedLastVersion = parsedLastVersion
+      ? `${parsedLastVersion.major}.${parsedLastVersion.minor}.${parsedLastVersion.patch}`
+      : parsedLastVersion;
+
     // Check if this is an upgrade from a version lower than BIP-44 introduction version
     const isUpgradeFromLowerThanBip44Version = Boolean(
-      lastUpdatedFromVersion &&
-        typeof lastUpdatedFromVersion === 'string' &&
-        semverLt(lastUpdatedFromVersion, BIP44_ACCOUNTS_INTRODUCTION_VERSION),
+      strippedLastVersion &&
+        semverLt(strippedLastVersion, BIP44_ACCOUNTS_INTRODUCTION_VERSION),
     );
 
     // Show modal only for upgrades from versions < BIP-44 introduction version
