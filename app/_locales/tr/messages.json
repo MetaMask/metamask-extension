@@ -4991,9 +4991,6 @@
   "recipientEditAriaLabel": {
     "message": "Alıcıyı düzenle"
   },
-  "recipientPlaceholder": {
-    "message": "Geçerli bir adres girin veya yapıştırın"
-  },
   "recoveryPhraseReminderBackupStart": {
     "message": "Şimdi yedekle"
   },
