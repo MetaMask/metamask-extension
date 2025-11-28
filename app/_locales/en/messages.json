@@ -4006,8 +4006,17 @@
   "networkNameBitcoin": {
     "message": "Bitcoin"
   },
+  "networkNameBitcoinLegacy": {
+    "message": "Legacy"
+  },
+  "networkNameBitcoinNestedSegwit": {
+    "message": "Nested SegWit"
+  },
   "networkNameBitcoinSegwit": {
-    "message": "Bitcoin Native SegWit"
+    "message": "Native SegWit"
+  },
+  "networkNameBitcoinTaproot": {
+    "message": "Taproot"
   },
   "networkNameDefinition": {
     "message": "The name associated with this network."
