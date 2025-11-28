@@ -29,7 +29,6 @@ import {
   BaseController,
   type ControllerGetStateAction,
   type ControllerStateChangeEvent,
-  type RestrictedMessenger,
   type StateMetadata,
 } from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
