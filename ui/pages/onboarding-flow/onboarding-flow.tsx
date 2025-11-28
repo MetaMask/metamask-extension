@@ -23,7 +23,6 @@ import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
-  ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_METAMETRICS,
   ONBOARDING_ACCOUNT_EXIST,
   ONBOARDING_ACCOUNT_NOT_FOUND,
@@ -73,6 +72,7 @@ import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/modules/environment';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import LoadingScreen from '../../components/ui/loading-screen';
+import type { MetaMaskReduxDispatch } from '../../store/store';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -81,7 +81,6 @@ import PrivacySettings from './privacy-settings/privacy-settings';
 import CreationSuccessful from './creation-successful/creation-successful';
 import OnboardingWelcome from './welcome/welcome';
 import ImportSRP from './import-srp/import-srp';
-import OnboardingPinExtension from './pin-extension/pin-extension';
 import MetaMetricsComponent from './metametrics/metametrics';
 import OnboardingAppHeader from './onboarding-app-header/onboarding-app-header';
 import AccountExist from './account-exist/account-exist';
@@ -102,7 +101,7 @@ export default function OnboardingFlow({
 }: OnboardingFlowProps) {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const hookLocation = useLocation();
   const hookNavigate = useNavigate();
 
@@ -110,7 +109,7 @@ export default function OnboardingFlow({
   const location = locationProp ?? hookLocation;
   const navigate = navigateProp ?? hookNavigate;
   const { pathname, search } = location;
-  const completedOnboarding = useSelector(getCompletedOnboarding);
+  const completedOnboarding: boolean = useSelector(getCompletedOnboarding);
   const openedWithSidepanel = useSelector(getOpenedWithSidepanel);
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterUnlock);
   const isFromReminder = new URLSearchParams(search).get('isFromReminder');
@@ -195,7 +194,7 @@ export default function OnboardingFlow({
   const handleCreateNewAccount = async (password: string) => {
     try {
       setIsLoading(true);
-      let newSecretRecoveryPhrase;
+      let newSecretRecoveryPhrase: string | undefined;
       if (
         isSeedlessOnboardingFeatureEnabled &&
         firstTimeFlowType === FirstTimeFlowType.socialCreate
@@ -209,7 +208,9 @@ export default function OnboardingFlow({
         );
       }
 
-      setSecretRecoveryPhrase(newSecretRecoveryPhrase as unknown as string);
+      if (newSecretRecoveryPhrase) {
+        setSecretRecoveryPhrase(newSecretRecoveryPhrase);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -218,7 +219,7 @@ export default function OnboardingFlow({
   const handleUnlock = async (password: string) => {
     try {
       setIsLoading(true);
-      let retrievedSecretRecoveryPhrase;
+      let retrievedSecretRecoveryPhrase: string | undefined;
 
       if (
         isSeedlessOnboardingFeatureEnabled &&
@@ -233,9 +234,9 @@ export default function OnboardingFlow({
         );
       }
 
-      setSecretRecoveryPhrase(
-        retrievedSecretRecoveryPhrase as unknown as string,
-      );
+      if (retrievedSecretRecoveryPhrase) {
+        setSecretRecoveryPhrase(retrievedSecretRecoveryPhrase);
+      }
       if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
         await dispatch(setCompletedOnboarding());
       }
@@ -367,10 +368,6 @@ export default function OnboardingFlow({
           <Route
             path={ONBOARDING_WELCOME_ROUTE}
             element={<OnboardingWelcome />}
-          />
-          <Route
-            path={ONBOARDING_PIN_EXTENSION_ROUTE}
-            element={<OnboardingPinExtension />}
           />
           <Route
             path={ONBOARDING_METAMETRICS}

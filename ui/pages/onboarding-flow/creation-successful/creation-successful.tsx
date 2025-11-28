@@ -54,6 +54,7 @@ import {
 } from '../../../store/actions';
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
 import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
+import type { BrowserWithSidePanel } from '../../../../shared/types';
 import WalletReadyAnimation from './wallet-ready-animation';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -162,11 +163,7 @@ export default function CreationSuccessful() {
     if (isSidePanelEnabled) {
       try {
         // Type assertion needed as webextension-polyfill doesn't include sidePanel API types yet
-        const browserWithSidePanel = browser as typeof browser & {
-          sidePanel?: {
-            open: (options: { windowId?: number }) => Promise<void>;
-          };
-        };
+        const browserWithSidePanel = browser as BrowserWithSidePanel;
         if (browserWithSidePanel?.sidePanel?.open) {
           const tabs = await browser.tabs.query({
             active: true,

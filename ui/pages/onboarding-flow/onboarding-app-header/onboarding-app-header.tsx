@@ -35,8 +35,8 @@ import {
 } from '../../../helpers/constants/routes';
 
 type OnboardingAppHeaderProps = {
-  isWelcomePage?: boolean;
-  location?: RouterLocation;
+  isWelcomePage: boolean;
+  location: RouterLocation;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -46,7 +46,7 @@ export default function OnboardingAppHeader({
   location,
 }: OnboardingAppHeaderProps) {
   const dispatch = useDispatch();
-  const { pathname, search } = location || { pathname: '', search: '' };
+  const { pathname, search } = location;
   const t = useI18nContext();
   const currentLocale = useSelector(getCurrentLocale);
   const localeOptions = locales.map((locale) => {

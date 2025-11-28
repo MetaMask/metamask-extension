@@ -14,7 +14,6 @@ import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
-  ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_METAMETRICS,
   ONBOARDING_REVEAL_SRP_ROUTE,
   ONBOARDING_ROUTE,
@@ -338,42 +337,6 @@ describe('Onboarding Flow', () => {
     });
 
     jest.clearAllMocks();
-  });
-
-  it('should render onboarding pin extension screen', () => {
-    const mockStateWithCurrentKeyring = {
-      ...mockState,
-      metamask: {
-        ...mockState.metamask,
-        internalAccounts: {
-          accounts: {
-            accountId: {
-              address: '0x0000000000000000000000000000000000000000',
-              metadata: {
-                keyring: {
-                  type: 'HD Key Tree',
-                  accounts: ['0x0000000000000000000000000000000000000000'],
-                },
-              },
-            },
-          },
-          selectedAccount: 'accountId',
-        },
-      },
-    };
-
-    const mockStoreWithCurrentKeyring = configureMockStore([thunk])(
-      mockStateWithCurrentKeyring,
-    );
-
-    const { queryByTestId } = renderWithProvider(
-      <OnboardingFlow />,
-      mockStoreWithCurrentKeyring,
-      ONBOARDING_PIN_EXTENSION_ROUTE,
-    );
-
-    const pinExtension = queryByTestId('onboarding-pin-extension');
-    expect(pinExtension).toBeInTheDocument();
   });
 
   it('should render onboarding metametrics screen', () => {

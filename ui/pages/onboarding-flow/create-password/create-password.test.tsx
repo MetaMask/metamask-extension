@@ -34,7 +34,8 @@ describe('Onboarding Create Password', () => {
     },
   };
 
-  const mockCreateNewAccount = jest.fn().mockResolvedValue('password');
+  const mockCreateNewAccount = jest.fn().mockResolvedValue('');
+  const mockImportWithRecoveryPhrase = jest.fn().mockResolvedValue('');
 
   afterEach(() => {
     jest.clearAllMocks();
@@ -44,7 +45,14 @@ describe('Onboarding Create Password', () => {
     it('should route to secure your wallet when keyring is present but not imported first time flow type', () => {
       const mockStore = configureMockStore([thunk])(initializedMockState);
 
-      renderWithProvider(<CreatePassword />, mockStore);
+      renderWithProvider(
+        <CreatePassword
+          createNewAccount={mockCreateNewAccount}
+          importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
+          secretRecoveryPhrase="SRP"
+        />,
+        mockStore,
+      );
       expect(mockUseNavigate).toHaveBeenCalledWith(
         ONBOARDING_REVIEW_SRP_ROUTE,
         { replace: true },
@@ -62,7 +70,14 @@ describe('Onboarding Create Password', () => {
       };
       const mockStore = configureMockStore([thunk])(importFirstTimeFlowState);
 
-      renderWithProvider(<CreatePassword />, mockStore);
+      renderWithProvider(
+        <CreatePassword
+          createNewAccount={mockCreateNewAccount}
+          importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
+          secretRecoveryPhrase="SRP"
+        />,
+        mockStore,
+      );
       expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_METAMETRICS, {
         replace: true,
       });
@@ -78,7 +93,14 @@ describe('Onboarding Create Password', () => {
         },
       };
       const mockStore = configureMockStore([thunk])(importFirstTimeFlowState);
-      renderWithProvider(<CreatePassword />, mockStore);
+      renderWithProvider(
+        <CreatePassword
+          createNewAccount={mockCreateNewAccount}
+          importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
+          secretRecoveryPhrase="SRP"
+        />,
+        mockStore,
+      );
 
       expect(mockUseNavigate).toHaveBeenCalledWith(
         ONBOARDING_COMPLETION_ROUTE,
@@ -90,7 +112,14 @@ describe('Onboarding Create Password', () => {
   describe('Render', () => {
     it('should match snapshot', () => {
       const mockStore = configureMockStore([thunk])(mockState);
-      const { container } = renderWithProvider(<CreatePassword />, mockStore);
+      const { container } = renderWithProvider(
+        <CreatePassword
+          createNewAccount={mockCreateNewAccount}
+          importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
+          secretRecoveryPhrase="SRP"
+        />,
+        mockStore,
+      );
 
       expect(container).toMatchSnapshot();
     });
@@ -100,7 +129,11 @@ describe('Onboarding Create Password', () => {
     it('should show password as text when click Show under password', () => {
       const mockStore = configureMockStore([thunk])(mockState);
       const { queryByTestId } = renderWithProvider(
-        <CreatePassword />,
+        <CreatePassword
+          createNewAccount={mockCreateNewAccount}
+          importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
+          secretRecoveryPhrase="SRP"
+        />,
         mockStore,
       );
 
@@ -123,7 +156,11 @@ describe('Onboarding Create Password', () => {
     it('should disable create new account button and show short password error with password length of 7', () => {
       const mockStore = configureMockStore([thunk])(mockState);
       const { queryByTestId } = renderWithProvider(
-        <CreatePassword createNewAccount={mockCreateNewAccount} />,
+        <CreatePassword
+          createNewAccount={mockCreateNewAccount}
+          importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
+          secretRecoveryPhrase="SRP"
+        />,
         mockStore,
       );
 
@@ -150,7 +187,11 @@ describe('Onboarding Create Password', () => {
     it('should show mismatch password error', () => {
       const mockStore = configureMockStore([thunk])(mockState);
       const { queryByTestId, queryByText } = renderWithProvider(
-        <CreatePassword createNewAccount={mockCreateNewAccount} />,
+        <CreatePassword
+          createNewAccount={mockCreateNewAccount}
+          importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
+          secretRecoveryPhrase="SRP"
+        />,
         mockStore,
       );
 
@@ -192,7 +233,11 @@ describe('Onboarding Create Password', () => {
     it('should not create new wallet without terms checked when its social login flow', () => {
       const mockStore = configureMockStore([thunk])(mockState);
       const { queryByTestId } = renderWithProvider(
-        <CreatePassword createNewAccount={mockCreateNewAccount} />,
+        <CreatePassword
+          createNewAccount={mockCreateNewAccount}
+          importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
+          secretRecoveryPhrase="SRP"
+        />,
         mockStore,
       );
 
@@ -240,7 +285,11 @@ describe('Onboarding Create Password', () => {
         },
       });
       const { queryByTestId } = renderWithProvider(
-        <CreatePassword createNewAccount={mockCreateNewAccount} />,
+        <CreatePassword
+          createNewAccount={mockCreateNewAccount}
+          importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
+          secretRecoveryPhrase="SRP"
+        />,
         mockStore,
       );
 
@@ -290,7 +339,11 @@ describe('Onboarding Create Password', () => {
         },
       });
       const { queryByTestId } = renderWithProvider(
-        <CreatePassword createNewAccount={mockCreateNewAccount} />,
+        <CreatePassword
+          createNewAccount={mockCreateNewAccount}
+          importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
+          secretRecoveryPhrase="SRP"
+        />,
         mockStore,
       );
 
@@ -355,6 +408,7 @@ describe('Onboarding Create Password', () => {
       const props = {
         importWithRecoveryPhrase: jest.fn().mockResolvedValue('password'),
         secretRecoveryPhrase: 'SRP',
+        createNewAccount: jest.fn().mockResolvedValue(''),
       };
 
       const { queryByTestId } = renderWithProvider(
@@ -416,7 +470,11 @@ describe('Onboarding Create Password', () => {
       };
       const mockStore = configureMockStore([thunk])(state);
       const { queryByTestId } = renderWithProvider(
-        <CreatePassword />,
+        <CreatePassword
+          createNewAccount={mockCreateNewAccount}
+          importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
+          secretRecoveryPhrase="SRP"
+        />,
         mockStore,
       );
       expect(queryByTestId('create-password-iframe')).toBeInTheDocument();
@@ -432,7 +490,11 @@ describe('Onboarding Create Password', () => {
       };
       const mockStore = configureMockStore()(state);
       const { queryByTestId } = renderWithProvider(
-        <CreatePassword />,
+        <CreatePassword
+          createNewAccount={mockCreateNewAccount}
+          importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
+          secretRecoveryPhrase="SRP"
+        />,
         mockStore,
       );
       expect(queryByTestId('create-password-iframe')).not.toBeInTheDocument();
@@ -451,7 +513,11 @@ describe('Onboarding Create Password', () => {
       },
     });
     renderWithProvider(
-      <CreatePassword createNewAccount={mockCreateNewAccount} />,
+      <CreatePassword
+        createNewAccount={mockCreateNewAccount}
+        importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
+        secretRecoveryPhrase="SRP"
+      />,
       mockStore,
     );
 

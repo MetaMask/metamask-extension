@@ -374,7 +374,7 @@ export function resetOAuthLoginState() {
  */
 export function createNewVaultAndSyncWithSocial(
   password: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       const primaryKeyring = await createNewVault(password);
@@ -817,7 +817,7 @@ export function setShieldSubscriptionMetricsProps(
  */
 export function restoreSocialBackupAndGetSeedPhrase(
   password: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       // restore the vault using the seed phrase
@@ -1109,7 +1109,7 @@ export function generateNewMnemonicAndAddToVault(): ThunkAction<
 }
 export function createNewVaultAndGetSeedPhrase(
   password: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -1134,7 +1134,7 @@ export function createNewVaultAndGetSeedPhrase(
 
 export function unlockAndGetSeedPhrase(
   password: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {

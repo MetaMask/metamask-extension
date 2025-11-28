@@ -64,12 +64,12 @@ import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
 
 type CreatePasswordProps = {
-  createNewAccount?: (password: string) => void;
-  importWithRecoveryPhrase?: (
+  createNewAccount: (password: string) => void;
+  importWithRecoveryPhrase: (
     password: string,
     secretRecoveryPhrase: string,
   ) => void;
-  secretRecoveryPhrase?: string;
+  secretRecoveryPhrase: string;
 };
 
 const isFirefox = getBrowserName() === PLATFORM_FIREFOX;

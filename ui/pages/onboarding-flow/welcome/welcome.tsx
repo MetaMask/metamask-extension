@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-  Suspense,
-} from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import { Box } from '../../../components/component-library';
@@ -451,13 +445,11 @@ export default function OnboardingWelcome() {
       className="welcome-container"
     >
       {!isLoggingIn && (
-        <Suspense fallback={<Box />}>
-          <MetaMaskWordMarkAnimation
-            setIsAnimationComplete={setIsAnimationComplete}
-            isAnimationComplete={isAnimationComplete}
-            skipTransition={shouldSkipAnimation}
-          />
-        </Suspense>
+        <MetaMaskWordMarkAnimation
+          setIsAnimationComplete={setIsAnimationComplete}
+          isAnimationComplete={isAnimationComplete}
+          skipTransition={shouldSkipAnimation}
+        />
       )}
 
       {!isLoggingIn && (
@@ -469,9 +461,7 @@ export default function OnboardingWelcome() {
           />
 
           {isAnimationComplete && (
-            <Suspense fallback={<Box />}>
-              <FoxAppearAnimation skipTransition={shouldSkipAnimation} />
-            </Suspense>
+            <FoxAppearAnimation skipTransition={shouldSkipAnimation} />
           )}
 
           {loginError !== null && (
@@ -483,11 +473,7 @@ export default function OnboardingWelcome() {
         </>
       )}
 
-      {isLoggingIn && (
-        <Suspense fallback={<Box />}>
-          <FoxAppearAnimation isLoader />
-        </Suspense>
-      )}
+      {isLoggingIn && <FoxAppearAnimation isLoader />}
     </Box>
   );
 }

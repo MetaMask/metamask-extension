@@ -35,7 +35,7 @@ describe('OnboardingAppHeader', () => {
 
   it('should match snapshot', () => {
     const { container } = renderWithProvider(
-      <OnboardingAppHeader location={mockLocation} />,
+      <OnboardingAppHeader isWelcomePage={false} location={mockLocation} />,
       store,
     );
 
@@ -44,7 +44,7 @@ describe('OnboardingAppHeader', () => {
 
   it('should call updateCurrentLocale action', () => {
     const { getByRole } = renderWithProvider(
-      <OnboardingAppHeader location={mockLocation} />,
+      <OnboardingAppHeader isWelcomePage={false} location={mockLocation} />,
       store,
     );
 
@@ -60,7 +60,10 @@ describe('OnboardingAppHeader', () => {
       pathname: ONBOARDING_COMPLETION_ROUTE,
     };
     const { container } = renderWithProvider(
-      <OnboardingAppHeader location={completionLocation} />,
+      <OnboardingAppHeader
+        isWelcomePage={false}
+        location={completionLocation}
+      />,
       store,
     );
     expect(container).toMatchSnapshot();
@@ -72,7 +75,10 @@ describe('OnboardingAppHeader', () => {
       pathname: ONBOARDING_COMPLETION_ROUTE,
     };
     const { getByText } = renderWithProvider(
-      <OnboardingAppHeader location={completionLocation} />,
+      <OnboardingAppHeader
+        isWelcomePage={false}
+        location={completionLocation}
+      />,
       store,
     );
     expect(getByText('Pin the MetaMask extension')).toBeInTheDocument();

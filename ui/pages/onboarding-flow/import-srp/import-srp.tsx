@@ -41,8 +41,7 @@ import SrpInputForm from '../../srp-input-form';
 import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
 
 type ImportSRPProps = {
-  onClearCallback?: () => void;
-  submitSecretRecoveryPhrase?: (secretRecoveryPhrase: string) => void;
+  submitSecretRecoveryPhrase: (secretRecoveryPhrase: string) => void;
 };
 
 const hasUpperCase = (draftSrp: string) => {
@@ -52,7 +51,6 @@ const hasUpperCase = (draftSrp: string) => {
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function ImportSRP({
-  onClearCallback,
   submitSecretRecoveryPhrase,
 }: ImportSRPProps) {
   const dispatch = useDispatch();
@@ -146,7 +144,7 @@ export default function ImportSRP({
         <SrpInputForm
           error={srpError}
           setSecretRecoveryPhrase={setSecretRecoveryPhrase}
-          onClearCallback={() => onClearCallback?.()}
+          onClearCallback={() => setSrpError('')}
         />
       </Box>
       <Box

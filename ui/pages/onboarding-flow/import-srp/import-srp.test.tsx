@@ -21,6 +21,8 @@ jest.mock('react-router-dom-v5-compat', () => {
   };
 });
 
+const mockSubmitSecretRecoveryPhrase = jest.fn();
+
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
 
@@ -48,7 +50,10 @@ describe('Import SRP', () => {
 
   it('should route to create password route when keyring is already initialized', () => {
     const mockStore = configureMockStore()(initializedMockState);
-    renderWithProvider(<ImportSrp />, mockStore);
+    renderWithProvider(
+      <ImportSrp submitSecretRecoveryPhrase={mockSubmitSecretRecoveryPhrase} />,
+      mockStore,
+    );
 
     expect(mockUseNavigate).toHaveBeenCalledWith(
       ONBOARDING_CREATE_PASSWORD_ROUTE,
@@ -60,7 +65,10 @@ describe('Import SRP', () => {
 
   it('should render import srp and disable confirm srp button', () => {
     const mockStore = configureMockStore()(mockState);
-    const { queryByTestId } = renderWithProvider(<ImportSrp />, mockStore);
+    const { queryByTestId } = renderWithProvider(
+      <ImportSrp submitSecretRecoveryPhrase={mockSubmitSecretRecoveryPhrase} />,
+      mockStore,
+    );
 
     const importSrpTestId = queryByTestId('import-srp');
     expect(importSrpTestId).toBeInTheDocument();
@@ -72,7 +80,6 @@ describe('Import SRP', () => {
 
   it('should paste and submit srp', async () => {
     const mockStore = configureMockStore()(mockState);
-    const mockSubmitSecretRecoveryPhrase = jest.fn();
 
     const { queryByTestId } = renderWithProvider(
       <ImportSrp submitSecretRecoveryPhrase={mockSubmitSecretRecoveryPhrase} />,
@@ -100,7 +107,6 @@ describe('Import SRP', () => {
 
   it('should input and submit srp', async () => {
     const mockStore = configureMockStore()(mockState);
-    const mockSubmitSecretRecoveryPhrase = jest.fn();
 
     const { queryByTestId } = renderWithProvider(
       <ImportSrp submitSecretRecoveryPhrase={mockSubmitSecretRecoveryPhrase} />,
@@ -133,7 +139,6 @@ describe('Import SRP', () => {
       .mockReturnValue(jest.fn().mockResolvedValueOnce(null));
 
     const mockStore = configureMockStore([thunk])(mockState);
-    const mockSubmitSecretRecoveryPhrase = jest.fn();
 
     const { queryByTestId } = renderWithProvider(
       <ImportSrp submitSecretRecoveryPhrase={mockSubmitSecretRecoveryPhrase} />,
