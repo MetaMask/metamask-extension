@@ -4869,7 +4869,12 @@ export default class MetamaskController extends EventEmitter {
       );
 
       if (completedOnboarding) {
-        if (this.isMultichainAccountsFeatureState2Enabled()) {
+        // check if external services are enabled
+        const { useExternalServices } = this.preferencesController.state;
+        if (
+          this.isMultichainAccountsFeatureState2Enabled() &&
+          useExternalServices // skip the account sync if external services are disabled
+        ) {
           ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
           await this.getSnapKeyring();
           ///: END:ONLY_INCLUDE_IF
