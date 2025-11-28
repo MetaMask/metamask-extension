@@ -767,11 +767,6 @@ function Pna25Banner() {
   const showPna25Banner = useSelector(selectShowPna25Banner);
 
   const handleLearnMore = () => {
-    // Open MetaMetrics settings help page and acknowledge
-    global.platform.openTab({
-      url: METAMETRICS_SETTINGS_LINK,
-    });
-
     trackEvent({
       event: MetaMetricsEventName.DappViewed,
       category: MetaMetricsEventCategory.Banner,
@@ -780,12 +775,13 @@ function Pna25Banner() {
         closed: false,
       },
     });
+    // Open MetaMetrics settings help page and acknowledge
+    global.platform.openTab({
+      url: METAMETRICS_SETTINGS_LINK,
+    });
   };
 
   const handleClose = () => {
-    // Just acknowledge without opening link
-    dispatch(setPna25Acknowledged(true));
-
     trackEvent({
       event: MetaMetricsEventName.ToastDisplayed,
       category: MetaMetricsEventCategory.Banner,
@@ -794,6 +790,8 @@ function Pna25Banner() {
         closed: true,
       },
     });
+    // Just acknowledge without opening link
+    dispatch(setPna25Acknowledged(true));
   };
 
   return (
