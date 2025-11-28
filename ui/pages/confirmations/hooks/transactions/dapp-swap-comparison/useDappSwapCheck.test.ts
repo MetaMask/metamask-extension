@@ -7,11 +7,25 @@ import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib
 import { Confirmation } from '../../../types/confirm';
 import { useDappSwapCheck } from './useDappSwapCheck';
 
-async function runHook(mockConfirmation?: Confirmation) {
+async function runHook(
+  mockConfirmation?: Confirmation,
+  dappSwapMetrics: { enabled?: boolean; origins?: string[] } = {},
+) {
   const response = renderHookWithConfirmContextProvider(
     useDappSwapCheck,
     getMockConfirmStateForTransaction(
       mockConfirmation ?? (mockSwapConfirmation as Confirmation),
+      {
+        metamask: {
+          remoteFeatureFlags: {
+            dappSwapMetrics: {
+              enabled: true,
+              origins: ['https://metamask.github.io'],
+              ...dappSwapMetrics,
+            },
+          },
+        },
+      },
     ),
   );
 
@@ -23,7 +37,7 @@ async function runHook(mockConfirmation?: Confirmation) {
 }
 
 describe('useDappSwapCheck', () => {
-  it('return correct value for isSwapToBeCompared', async () => {
+  it('return true if dappSwapMetrics is enabled and origin is in the list of allowed origins and type is contract interaction or batch', async () => {
     const mockConfirmation = {
       ...mockSwapConfirmation,
       origin: 'https://metamask.github.io',
@@ -35,7 +49,7 @@ describe('useDappSwapCheck', () => {
     expect(isSwapToBeCompared).toBe(true);
   });
 
-  it('return correct value for isSwapToBeCompared', async () => {
+  it('return false if dappSwapMetrics is not enabled', async () => {
     const mockConfirmation = {
       ...mockSwapConfirmation,
       origin: 'https://metamask.github.io',
@@ -43,7 +57,33 @@ describe('useDappSwapCheck', () => {
     };
     const { isSwapToBeCompared } = await runHook(
       mockConfirmation as Confirmation,
+      { enabled: false },
     );
-    expect(isSwapToBeCompared).toBe(true);
+    expect(isSwapToBeCompared).toBe(false);
+  });
+
+  it('return false if origin is not in the list of allowed origins', async () => {
+    const mockConfirmation = {
+      ...mockSwapConfirmation,
+      origin: 'https://test.com',
+      type: TransactionType.contractInteraction,
+    };
+    const { isSwapToBeCompared } = await runHook(
+      mockConfirmation as Confirmation,
+      { origins: ['https://metamask.github.io'] },
+    );
+    expect(isSwapToBeCompared).toBe(false);
+  });
+
+  it('return false if type is not contract interaction or batch', async () => {
+    const mockConfirmation = {
+      ...mockSwapConfirmation,
+      origin: 'https://test.com',
+      type: TransactionType.contractInteraction,
+    };
+    const { isSwapToBeCompared } = await runHook(
+      mockConfirmation as Confirmation,
+    );
+    expect(isSwapToBeCompared).toBe(false);
   });
 });
