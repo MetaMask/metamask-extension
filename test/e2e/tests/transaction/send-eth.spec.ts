@@ -1,19 +1,17 @@
+import assert from 'node:assert';
+import { Mockttp } from 'mockttp';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TransactionDetailsPage from '../../page-objects/pages/home/transaction-details';
 import SendTokenConfirmPage from '../../page-objects/pages/send/send-token-confirmation-page';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
-
-const { strict: assert } = require('assert');
-const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
-const {
-  loginWithBalanceValidation,
-} = require('../../page-objects/flows/login.flow');
-const { withFixtures, WINDOW_TITLES, DAPP_URL } = require('../../helpers');
-const FixtureBuilder = require('../../fixtures/fixture-builder');
-const { CHAIN_IDS } = require('../../../../shared/constants/network');
-const { mockSpotPrices } = require('../tokens/utils/mocks');
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { DAPP_URL, WINDOW_TITLES, withFixtures } from '../../helpers';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { mockSpotPrices } from '../tokens/utils/mocks';
 
 const PREFERENCES_STATE_MOCK = {
   preferences: {
@@ -29,7 +27,7 @@ describe('Send ETH', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          title: this.test.fullTitle(),
+          title: this.test?.fullTitle(),
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
@@ -37,14 +35,15 @@ describe('Send ETH', function () {
           const homePage = new HomePage(driver);
           await homePage.startSendFlow();
 
-          // user should land on send token screen to fill recipient and amount
           const sendTokenPage = new SendTokenPage(driver);
           await sendTokenPage.checkPageIsLoaded();
           await sendTokenPage.fillRecipient('0x2f318C334780961FB129D2a6c30D0763d9a5C970');
+
+          // Verify Insufficient funds error message is displayed
           await sendTokenPage.fillAmount('10000');
           await sendTokenPage.checkInsufficientFundsErrorIsDisplayed();
 
-          // clear value
+          // Clear amount
           await sendTokenPage.clickMaxClearAmountButton();
 
           await sendTokenPage.fillAmount('1');
@@ -75,7 +74,7 @@ describe('Send ETH', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          title: this.test.fullTitle(),
+          title: this.test?.fullTitle(),
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
@@ -83,16 +82,11 @@ describe('Send ETH', function () {
           const homePage = new HomePage(driver);
           await homePage.startSendFlow();
 
-          // user should land on send token screen to fill recipient and amount
           const sendTokenPage = new SendTokenPage(driver);
           await sendTokenPage.checkPageIsLoaded();
           await sendTokenPage.fillRecipient('0x2f318C334780961FB129D2a6c30D0763d9a5C970');
           await sendTokenPage.fillAmount('1');
-
-          // Continue to next screen
           await sendTokenPage.goToNextScreen();
-
-          // Transaction Amount
           const sendTokenConfirmationPage = new SendTokenConfirmPage(driver);
           await sendTokenConfirmationPage.checkPageIsLoaded();
 
@@ -123,17 +117,16 @@ describe('Send ETH', function () {
         {
           fixtures: new FixtureBuilder().build(),
           smartContract,
-          title: this.test.fullTitle(),
+          title: this.test?.fullTitle(),
         },
         async ({ driver, contractRegistry, localNodes }) => {
           const contractAddress =
             await contractRegistry.getContractAddress(smartContract);
           await loginWithBalanceValidation(driver, localNodes[0]);
 
-            const homePage = new HomePage(driver);
+          const homePage = new HomePage(driver);
           await homePage.startSendFlow();
 
-          // user should land on send token screen to fill recipient and amount
           const sendTokenPage = new SendTokenPage(driver);
           await sendTokenPage.checkPageIsLoaded();
           await sendTokenPage.fillRecipient(contractAddress);
@@ -157,7 +150,7 @@ describe('Send ETH', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          title: this.test.fullTitle(),
+          title: this.test?.fullTitle(),
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
@@ -165,7 +158,6 @@ describe('Send ETH', function () {
           const homePage = new HomePage(driver);
           await homePage.startSendFlow();
 
-          // user should land on send token screen to fill recipient and amount
           const sendTokenPage = new SendTokenPage(driver);
           await sendTokenPage.checkPageIsLoaded();
 
@@ -180,7 +172,7 @@ describe('Send ETH', function () {
     });
 
     describe('from dapp using advanced gas controls', function () {
-      it.only('should display the correct gas price on the legacy transaction', async function () {
+      it('should display the correct gas price on the legacy transaction', async function () {
         await withFixtures(
           {
             dappOptions: { numberOfTestDapps: 1 },
@@ -188,11 +180,11 @@ describe('Send ETH', function () {
               .withPermissionControllerConnectedToTestDapp()
               .withPreferencesController(PREFERENCES_STATE_MOCK)
               .build(),
-            title: this.test.fullTitle(),
+            title: this.test?.fullTitle(),
             localNodeOptions: {
               hardfork: 'muirGlacier',
             },
-            testSpecificMock: async (mockServer) => {
+            testSpecificMock: async (mockServer: Mockttp) => {
               await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
                 '0x0000000000000000000000000000000000000000': {
                   price: 1700,
@@ -288,8 +280,8 @@ describe('Send ETH', function () {
               .withPermissionControllerConnectedToTestDapp()
               .withPreferencesController(PREFERENCES_STATE_MOCK)
               .build(),
-            title: this.test.fullTitle(),
-            testSpecificMock: async (mockServer) => {
+            title: this.test?.fullTitle(),
+            testSpecificMock: async (mockServer: Mockttp) => {
               await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
                 '0x0000000000000000000000000000000000000000': {
                   price: 1700,
@@ -401,7 +393,7 @@ describe('Send ETH', function () {
               })
               .withPreferencesControllerPetnamesDisabled()
               .build(),
-            title: this.test.fullTitle(),
+            title: this.test?.fullTitle(),
           },
           async ({ driver }) => {
             await loginWithBalanceValidation(driver);
