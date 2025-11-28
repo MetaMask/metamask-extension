@@ -85,7 +85,9 @@ import {
 import ApiErrorHandler from '../../components/app/api-error-handler';
 import { MetaMaskReduxDispatch } from '../../store/store';
 import { setLastUsedSubscriptionPaymentDetails } from '../../store/actions';
+import { RewardsBadge } from '../../components/app/rewards/RewardsBadge';
 import { ShieldPaymentModal } from './shield-payment-modal';
+import { ShieldRewardsModal } from './shield-rewards-modal';
 import { Plan } from './types';
 import { getProductPrice } from './utils';
 
@@ -343,7 +345,16 @@ const ShieldPlan = () => {
     return details;
   }, [t, isTrialed, selectedProductPrice]);
 
+  const planDetailsRewardsText = useMemo(() => {
+    const points =
+      selectedPlan === RECURRING_INTERVALS.year ? '10,000' : '1,000';
+    const interval =
+      selectedPlan === RECURRING_INTERVALS.year ? 'year' : 'month';
+    return t('shieldPlanDetailsRewards', [points, interval]);
+  }, [t, selectedPlan]);
+
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showRewardsModal, setShowRewardsModal] = useState(false);
 
   const handleBack = () => {
     const source = new URLSearchParams(search).get('source');
@@ -536,6 +547,17 @@ const ShieldPlan = () => {
                         <Text variant={DSTextVariant.bodyMd}>{detail}</Text>
                       </Box>
                     ))}
+                    <Box>
+                      <RewardsBadge
+                        boxClassName="gap-1 px-2 py-0.5 bg-background-muted rounded-lg w-fit"
+                        textClassName="font-medium"
+                        withPointsSuffix={false}
+                        formattedPoints={`+${planDetailsRewardsText}`}
+                        onClick={() => {
+                          setShowRewardsModal(true);
+                        }}
+                      />
+                    </Box>
                   </Box>
                 </Box>
                 {selectedPaymentMethod === PAYMENT_TYPES.byCrypto &&
@@ -559,6 +581,11 @@ const ShieldPlan = () => {
                 onAssetChange={handleUserChangeToken}
                 availableTokenBalances={availableTokenBalances}
                 tokensSupported={tokensSupported}
+              />
+              <ShieldRewardsModal
+                isOpen={showRewardsModal}
+                rewardsText={planDetailsRewardsText}
+                onClose={() => setShowRewardsModal(false)}
               />
             </Content>
             <Footer
