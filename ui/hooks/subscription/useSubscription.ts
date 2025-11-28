@@ -61,6 +61,7 @@ import {
   getLatestSubscriptionStatus,
   getShieldMarketingUtmParamsForMetrics,
   getUserBalanceCategory,
+  SHIELD_SUBSCRIPTION_CARD_TAB_ACTION_ERROR_MESSAGE,
 } from '../../../shared/modules/shield';
 import { openWindow } from '../../helpers/utils/window';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
@@ -571,14 +572,30 @@ export const useHandleSubscription = ({
           paymentCurrency: 'USD',
           requestStatus: 'started',
         });
-        await dispatch(
-          startSubscriptionWithCard({
-            products: [PRODUCT_TYPES.SHIELD],
-            isTrialRequested: !isTrialed,
-            recurringInterval: selectedPlan,
-            useTestClock,
-          }),
-        );
+        try {
+          await dispatch(
+            startSubscriptionWithCard({
+              products: [PRODUCT_TYPES.SHIELD],
+              isTrialRequested: !isTrialed,
+              recurringInterval: selectedPlan,
+              useTestClock,
+            }),
+          );
+        } catch (e) {
+          if (
+            e instanceof Error &&
+            e.message
+              .toLowerCase()
+              .includes(
+                SHIELD_SUBSCRIPTION_CARD_TAB_ACTION_ERROR_MESSAGE.toLowerCase(),
+              )
+          ) {
+            // tab action failed is not api error, only log it here
+            console.error('[useHandleSubscription error]:', e);
+          } else {
+            throw e;
+          }
+        }
       } else if (selectedPaymentMethod === PAYMENT_TYPES.byCrypto) {
         await executeSubscriptionCryptoApprovalTransaction();
       }

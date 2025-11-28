@@ -75,3 +75,9 @@ export enum ShieldErrorStateViewEnum {
   Banner = 'banner',
   Toast = 'toast',
 }
+
+export enum ShieldUnexpectedErrorEventLocationEnum {
+  TransactionShieldTab = 'transaction_shield_tab',
+  ShieldPlanPage = 'shield_plan_page',
+  Other = 'other',
+}

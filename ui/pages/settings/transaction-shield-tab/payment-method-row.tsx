@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import {
+  CRYPTO_PAYMENT_METHOD_ERRORS,
   PAYMENT_TYPES,
   PaymentType,
   PricingResponse,
@@ -40,9 +41,11 @@ type PaymentMethodRowProps = {
     token?: TokenWithApprovalAmount,
   ) => void;
   showSkeletonLoader: boolean;
+  isCheckSubscriptionInsufficientFundsDisabled?: boolean;
   isPaused?: boolean;
   isUnexpectedErrorCryptoPayment?: boolean;
   handlePaymentError: () => void;
+  handlePaymentErrorInsufficientFunds: () => void;
 };
 
 export const PaymentMethodRow = ({
@@ -50,9 +53,11 @@ export const PaymentMethodRow = ({
   subscriptionPricing,
   onPaymentMethodChange,
   showSkeletonLoader,
+  isCheckSubscriptionInsufficientFundsDisabled,
   isPaused,
   isUnexpectedErrorCryptoPayment,
   handlePaymentError,
+  handlePaymentErrorInsufficientFunds,
 }: PaymentMethodRowProps) => {
   const t = useI18nContext();
   const [showPaymentModal, setShowPaymentModal] = useState(false);
@@ -132,6 +137,12 @@ export const PaymentMethodRow = ({
   const hasAvailableToken =
     availableTokenBalancesWithoutCurrentToken.length > 0;
 
+  const isInsufficientFundsCrypto =
+    displayedShieldSubscription &&
+    isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod) &&
+    displayedShieldSubscription.paymentMethod.crypto.error ===
+      CRYPTO_PAYMENT_METHOD_ERRORS.INSUFFICIENT_BALANCE;
+
   // Compute tokensSupported
   const tokensSupported = useMemo(() => {
     const chainsAndTokensSupported = cryptoPaymentMethod?.chains ?? [];
@@ -203,9 +214,18 @@ export const PaymentMethodRow = ({
     if (isPaused && !isUnexpectedErrorCryptoPayment) {
       let tooltipText = '';
       let buttonText = '';
+      let buttonDisabled = false;
+      let buttonOnClick = handlePaymentError;
       if (isCryptoPayment) {
         tooltipText = 'shieldTxMembershipErrorPausedCryptoTooltip';
         buttonText = 'shieldTxMembershipErrorInsufficientToken';
+        if (isInsufficientFundsCrypto) {
+          buttonOnClick = handlePaymentErrorInsufficientFunds;
+          // disable button if insufficient funds and not enough token balance to trigger subscription check
+          if (isCheckSubscriptionInsufficientFundsDisabled) {
+            buttonDisabled = true;
+          }
+        }
       } else {
         // card payment error case
         tooltipText = 'shieldTxMembershipErrorPausedCardTooltip';
@@ -218,7 +238,8 @@ export const PaymentMethodRow = ({
             className="text-error-default decoration-error-default hover:decoration-error-default hover:text-error-default"
             startIconName={IconName.Danger}
             startIconProps={{ size: IconSize.Md }}
-            onClick={handlePaymentError}
+            onClick={buttonOnClick}
+            disabled={buttonDisabled}
           >
             {t(buttonText, [
               isCryptoPaymentMethod(displayedShieldSubscription?.paymentMethod)
@@ -271,6 +292,9 @@ export const PaymentMethodRow = ({
     isSubscriptionEndingSoon,
     t,
     handlePaymentError,
+    isCheckSubscriptionInsufficientFundsDisabled,
+    handlePaymentErrorInsufficientFunds,
+    isInsufficientFundsCrypto,
   ]);
 
   if (showSkeletonLoader) {

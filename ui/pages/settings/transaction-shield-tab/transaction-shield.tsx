@@ -76,6 +76,10 @@ import {
 import { useAsyncResult } from '../../../hooks/useAsync';
 import { useTimeout } from '../../../hooks/useTimeout';
 import { MINUTE } from '../../../../shared/constants/time';
+import {
+  useHandleShieldAddFundTrigger,
+  useShieldSubscriptionCryptoSufficientBalanceCheck,
+} from '../../../hooks/subscription/useAddFundTrigger';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
 import {
   EntryModalSourceEnum,
@@ -84,6 +88,7 @@ import {
   ShieldErrorStateActionClickedEnum,
   ShieldErrorStateLocationEnum,
   ShieldErrorStateViewEnum,
+  ShieldUnexpectedErrorEventLocationEnum,
 } from '../../../../shared/constants/subscriptions';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { useTheme } from '../../../hooks/useTheme';
@@ -132,6 +137,17 @@ const TransactionShield = () => {
   // show current active shield subscription or last subscription if no active subscription
   const displayedShieldSubscription =
     currentShieldSubscription ?? lastShieldSubscription;
+
+  // watch handle add fund trigger server check subscription paused because of insufficient funds
+  const {
+    hasAvailableSelectedToken:
+      hasAvailableSelectedTokenToTriggerCheckInsufficientFunds,
+  } = useShieldSubscriptionCryptoSufficientBalanceCheck();
+  const {
+    handleTriggerSubscriptionCheck:
+      handleTriggerSubscriptionCheckInsufficientFunds,
+    result: resultTriggerSubscriptionCheckInsufficientFunds,
+  } = useHandleShieldAddFundTrigger();
 
   const [timeoutCancelled, setTimeoutCancelled] = useState(false);
   useEffect(() => {
@@ -473,14 +489,16 @@ const TransactionShield = () => {
     unCancelSubscriptionResult.error ||
     openGetSubscriptionBillingPortalResult.error ||
     updateSubscriptionCardPaymentMethodResult.error ||
-    updateSubscriptionCryptoPaymentMethodResult.error;
+    updateSubscriptionCryptoPaymentMethodResult.error ||
+    resultTriggerSubscriptionCheckInsufficientFunds.error;
 
   const loading =
     cancelSubscriptionResult.pending ||
     unCancelSubscriptionResult.pending ||
     openGetSubscriptionBillingPortalResult.pending ||
     updateSubscriptionCardPaymentMethodResult.pending ||
-    updateSubscriptionCryptoPaymentMethodResult.pending;
+    updateSubscriptionCryptoPaymentMethodResult.pending ||
+    resultTriggerSubscriptionCheckInsufficientFunds.pending;
 
   const isCardPayment =
     currentShieldSubscription &&
@@ -566,6 +584,23 @@ const TransactionShield = () => {
     captureShieldErrorStateClickedEvent,
   ]);
 
+  // handle payment error for insufficient funds crypto payment
+  // need separate handler to not mistake with handlePaymentError for membership error banner
+  const handlePaymentErrorInsufficientFunds = useCallback(async () => {
+    if (
+      !isInsufficientFundsCrypto ||
+      !hasAvailableSelectedTokenToTriggerCheckInsufficientFunds
+    ) {
+      return;
+    }
+
+    await handleTriggerSubscriptionCheckInsufficientFunds();
+  }, [
+    isInsufficientFundsCrypto,
+    hasAvailableSelectedTokenToTriggerCheckInsufficientFunds,
+    handleTriggerSubscriptionCheckInsufficientFunds,
+  ]);
+
   const membershipErrorBanner = useMemo(() => {
     // This is the number of hours it might takes for the payment to be updated
     const PAYMENT_UPDATE_HOURS = 24;
@@ -636,7 +671,11 @@ const TransactionShield = () => {
         width={BlockSize.Full}
         padding={4}
       >
-        <ApiErrorHandler className="transaction-shield-page__error-content mx-auto" />
+        <ApiErrorHandler
+          className="transaction-shield-page__error-content mx-auto"
+          error={hasApiError}
+          location={ShieldUnexpectedErrorEventLocationEnum.TransactionShieldTab}
+        />
       </Box>
     );
   }
@@ -923,6 +962,12 @@ const TransactionShield = () => {
                   subscriptionPricing={subscriptionPricing}
                   onPaymentMethodChange={handlePaymentMethodChange}
                   showSkeletonLoader={showSkeletonLoader}
+                  isCheckSubscriptionInsufficientFundsDisabled={
+                    !hasAvailableSelectedTokenToTriggerCheckInsufficientFunds
+                  }
+                  handlePaymentErrorInsufficientFunds={
+                    handlePaymentErrorInsufficientFunds
+                  }
                   isPaused={isPaused}
                   isUnexpectedErrorCryptoPayment={
                     isUnexpectedErrorCryptoPayment
