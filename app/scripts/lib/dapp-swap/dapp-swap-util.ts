@@ -104,7 +104,7 @@ export function getQuotesForConfirmation({
       if (data && securityAlertId && chainId) {
         const parsedTransactionData = parseTransactionData(data);
         commands = parsedTransactionData.commands;
-        const { quotesInput, tokenAddresses } = getDataFromSwap(
+        const { quotesInput, amountMin } = getDataFromSwap(
           chainId as Hex,
           parsedTransactionData.commandBytes,
           parsedTransactionData.inputs,
@@ -114,6 +114,14 @@ export function getQuotesForConfirmation({
             params[0].calls as NestedTransactionMetadata[],
             quotesInput?.srcTokenAddress as Hex,
           );
+          setDappSwapComparisonData(securityAlertId, {
+            swapInfo: {
+              srcTokenAddress: quotesInput?.srcTokenAddress as Hex,
+              destTokenAddress: quotesInput?.destTokenAddress as Hex,
+              srcTokenAmount: quotesInput?.srcTokenAmount as Hex,
+              destTokenAmountMin: amountMin as Hex,
+            },
+          });
           const startTime = new Date().getTime();
           fetchQuotes({
             ...quotesInput,
@@ -127,7 +135,6 @@ export function getQuotesForConfirmation({
                 setDappSwapComparisonData(securityAlertId, {
                   quotes,
                   latency,
-                  tokenAddresses: tokenAddresses as Hex[],
                 });
               }
             })
