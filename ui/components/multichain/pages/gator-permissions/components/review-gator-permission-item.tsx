@@ -199,10 +199,12 @@ export const ReviewGatorPermissionItem = ({
           },
           maxAllowance: {
             translationKey: 'gatorPermissionsMaxAllowance',
-            value: `${getDecimalizedHexValue(
-              permission.data.maxAmount || '0x0',
-              decimals,
-            )} ${symbol}`,
+            value: permission.data.maxAmount
+              ? `${getDecimalizedHexValue(
+                  permission.data.maxAmount,
+                  decimals,
+                )} ${symbol}`
+              : t('unlimited'),
             testId: 'review-gator-permission-max-allowance',
           },
           startDate: {
@@ -232,7 +234,7 @@ export const ReviewGatorPermissionItem = ({
         },
       };
     },
-    [tokenMetadata, getExpirationDate],
+    [tokenMetadata, t, getExpirationDate],
   );
 
   /**

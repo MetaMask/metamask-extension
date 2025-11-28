@@ -2852,10 +2852,6 @@
     "message": "Period",
     "description": "Label for the period of a token stream permission"
   },
-  "gatorPermissionUnknownTokenAmount": {
-    "message": "Unknown amount",
-    "description": "Text for an unknown amount with no decimals"
-  },
   "gatorPermissionWeeklyFrequency": {
     "message": "Weekly",
     "description": "Time period for weekly recurring permissions redemption"
