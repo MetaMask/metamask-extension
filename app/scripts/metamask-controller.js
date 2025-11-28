@@ -812,19 +812,17 @@ export default class MetamaskController extends EventEmitter {
           state.subscriptions,
         );
         if (hasActiveShieldSubscription) {
-          // fetch claims configurations when shield subscription is active
-          this.claimsController.fetchClaimsConfigurations().catch((err) => {
-            log.error('Error fetching claims configurations', err);
-          });
-          const preferencesState = this.controllerMessenger.call(
-            'PreferencesController:getState',
-          );
-          const hasBasicFunctionalityEnabled =
-            preferencesState.useExternalServices;
+          const { useExternalServices: hasBasicFunctionalityEnabled } =
+            this.preferencesController.state;
           // shield coverage use security alerts, phish detect and transaction simulations, which is only available when basic functionality is enabled
           if (!hasBasicFunctionalityEnabled) {
             return;
           }
+
+          // fetch claims configurations when shield subscription is active
+          this.claimsController.fetchClaimsConfigurations().catch((err) => {
+            log.error('Error fetching claims configurations', err);
+          });
 
           // update preferences and metrics optin status after shield subscription is active
           updatePreferencesAndMetricsForShieldSubscription(
