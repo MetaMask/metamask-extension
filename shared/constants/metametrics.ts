@@ -1001,6 +1001,7 @@ export enum MetaMetricsEventName {
   ShieldPrioritySupportClicked = 'Shield Priority Support Clicked',
   ShieldEligibilityCohortAssigned = 'Shield Eligibility Cohort Assigned',
   ShieldEligibilityCohortTimeout = 'Shield Eligibility Cohort Timeout',
+  ShieldSubscriptionUnexpectedErrorEvent = 'Shield Subscription Unexpected Error',
 }
 
 export enum MetaMetricsEventAccountType {
