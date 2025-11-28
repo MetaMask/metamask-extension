@@ -5325,8 +5325,8 @@
   "recipientEditAriaLabel": {
     "message": "Edit recipient"
   },
-  "recipientPlaceholder": {
-    "message": "Enter or paste a valid address"
+  "recipientPlaceholderText": {
+    "message": "Enter or paste an address or name"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Back up now"
@@ -6056,7 +6056,7 @@
     "message": "Provide a brief summary of the incident"
   },
   "shieldClaimDetails": {
-    "message": "You may file a single claim per incident within $1 days of the incident. View the full list of what’s covered $2.",
+    "message": "You may file a single claim per incident within $1 days of the incident. $2",
     "description": "The $1 is the number of days and $2 is a link to the full coverage policy"
   },
   "shieldClaimDetailsViewClaims": {
@@ -6180,10 +6180,10 @@
     "message": "Claim submission failed"
   },
   "shieldClaimSubmitSuccess": {
-    "message": "Claim submitted successfully"
+    "message": "Claim submission received"
   },
   "shieldClaimSubmitSuccessDescription": {
-    "message": "Your claim is under review. We will notify you via email within 3-5 business days with any updates."
+    "message": "Your claim has been submitted. We'll review it and provide updates by email."
   },
   "shieldClaimTransactionNotFound": {
     "message": "Transaction not found on chain."
@@ -6193,6 +6193,9 @@
   },
   "shieldClaimTransactionNotSuccessful": {
     "message": "Transaction not successful on chain."
+  },
+  "shieldClaimViewGuidelines": {
+    "message": "View guide"
   },
   "shieldClaimWalletOwnershipValidationFailed": {
     "message": "Wallet ownership validation failed."

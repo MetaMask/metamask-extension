@@ -198,6 +198,7 @@ class HomePage {
 
   async clickBackupRemindMeLaterButtonSafe(): Promise<void> {
     await this.driver.clickElementSafe(this.backupRemindMeLaterButton);
+    await this.driver.assertElementNotPresent(this.backupRemindMeLaterButton);
   }
 
   async closeSurveyToast(surveyName: string): Promise<void> {
