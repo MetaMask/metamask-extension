@@ -11,7 +11,12 @@ import {
   AcceptRequest,
   AddApprovalRequest,
 } from '@metamask/approval-controller';
-import { DeferredPromise, Json, createDeferredPromise } from '@metamask/utils';
+import {
+  DeferredPromise,
+  Hex,
+  Json,
+  createDeferredPromise,
+} from '@metamask/utils';
 import type { QrScanRequest, SerializedUR } from '@metamask/eth-qr-keyring';
 import type { Messenger } from '@metamask/messenger';
 import { Browser } from 'webextension-polyfill';
@@ -60,6 +65,14 @@ import type {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
 } from './preferences-controller';
+
+export type DappSwapComparisonData = {
+  quotes?: QuoteResponse[];
+  latency?: number;
+  commands?: string;
+  error?: string;
+  tokenAddresses?: Hex[];
+};
 
 export type AppStateControllerState = {
   activeQrCodeScanRequest: QrScanRequest | null;
@@ -134,7 +147,7 @@ export type AppStateControllerState = {
   pendingShieldCohortTxType: string | null;
   defaultSubscriptionPaymentOptions?: DefaultSubscriptionPaymentOptions;
   dappSwapComparisonData?: {
-    [uniqueId: string]: { quotes?: QuoteResponse[]; latency?: number };
+    [uniqueId: string]: DappSwapComparisonData;
   };
 
   /**
@@ -1650,7 +1663,7 @@ export class AppStateController extends BaseController<
 
   setDappSwapComparisonData(
     uniqueId: string,
-    info: { quotes?: QuoteResponse[]; latency?: number },
+    info: DappSwapComparisonData,
   ): void {
     this.update((state) => {
       state.dappSwapComparisonData = {
@@ -1660,12 +1673,9 @@ export class AppStateController extends BaseController<
     });
   }
 
-  getDappSwapComparisonData(uniqueId: string):
-    | {
-        quotes?: QuoteResponse[];
-        latency?: number;
-      }
-    | undefined {
+  getDappSwapComparisonData(
+    uniqueId: string,
+  ): DappSwapComparisonData | undefined {
     return this.state.dappSwapComparisonData?.[uniqueId] ?? undefined;
   }
 }
