@@ -9,6 +9,7 @@ import { getUseExternalServices } from '../../../../selectors';
 
 export const useEnableShieldCoverageChecks = () => {
   const { subscriptions } = useUserSubscriptions();
+  // shield coverage use security alerts, phish detect and transaction simulations, which is only available when basic functionality is enabled
   const isBasicFunctionalityEnabled = useSelector(getUseExternalServices);
 
   const isShieldSubscriptionActive = useMemo(() => {

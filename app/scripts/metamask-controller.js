@@ -828,6 +828,35 @@ export default class MetamaskController extends EventEmitter {
         }
       },
     );
+    // on/off shield controller based on preferences useExternalServices flag (basic functionality toggle)
+    // since shield coverage use security alerts, phish detect and transaction simulations, which is only available when basic functionality is enabled
+    this.controllerMessenger.subscribe(
+      'PreferencesController:stateChange',
+      previousValueComparator(async (prevState, currState) => {
+        const { useExternalServices: prevUseExternalServices } = prevState;
+        const { useExternalServices: currUseExternalServices } = currState;
+        const hasChanged = currUseExternalServices !== prevUseExternalServices;
+        if (!hasChanged) {
+          return;
+        }
+
+        const subscriptionState = this.controllerMessenger.call(
+          'SubscriptionController:getState',
+        );
+        const hasActiveShieldSubscription = getIsShieldSubscriptionActive(
+          subscriptionState.subscriptions,
+        );
+        // if there is no active shield subscription, do nothing
+        if (!hasActiveShieldSubscription) {
+          return;
+        }
+        if (currUseExternalServices) {
+          this.shieldController.start();
+        } else {
+          this.shieldController.stop();
+        }
+      }, this.preferencesController.state),
+    );
 
     const petnamesBridgeMessenger = new Messenger({
       namespace: 'PetnamesBridge',
