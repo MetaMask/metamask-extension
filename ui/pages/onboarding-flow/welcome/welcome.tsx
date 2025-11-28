@@ -1,4 +1,12 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, {
+  lazy,
+  Suspense,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+  type ComponentType,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import { Box } from '../../../components/component-library';
@@ -52,8 +60,29 @@ import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
 import WelcomeLogin from './welcome-login';
 import { LOGIN_ERROR, LOGIN_OPTION, LOGIN_TYPE, LoginErrorType } from './types';
 import LoginErrorModal from './login-error-modal';
-import MetaMaskWordMarkAnimation from './metamask-wordmark-animation';
-import FoxAppearAnimation from './fox-appear-animation';
+
+const MetaMaskWordMarkAnimation = lazy(
+  () =>
+    // @ts-expect-error - TypeScript expects .js extension for ESM, but Jest needs the actual .tsx file
+    import('./metamask-wordmark-animation') as unknown as Promise<{
+      default: ComponentType<{
+        setIsAnimationComplete: (isAnimationComplete: boolean) => void;
+        isAnimationComplete?: boolean;
+        skipTransition?: boolean;
+      }>;
+    }>,
+);
+
+const FoxAppearAnimation = lazy(
+  () =>
+    // @ts-expect-error - TypeScript expects .js extension for ESM, but Jest needs the actual .tsx file
+    import('./fox-appear-animation') as unknown as Promise<{
+      default: ComponentType<{
+        isLoader?: boolean;
+        skipTransition?: boolean;
+      }>;
+    }>,
+);
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -450,11 +479,13 @@ export default function OnboardingWelcome() {
       className="welcome-container"
     >
       {!isLoggingIn && (
-        <MetaMaskWordMarkAnimation
-          setIsAnimationComplete={setIsAnimationComplete}
-          isAnimationComplete={isAnimationComplete}
-          skipTransition={shouldSkipAnimation}
-        />
+        <Suspense fallback={<Box />}>
+          <MetaMaskWordMarkAnimation
+            setIsAnimationComplete={setIsAnimationComplete}
+            isAnimationComplete={isAnimationComplete}
+            skipTransition={shouldSkipAnimation}
+          />
+        </Suspense>
       )}
 
       {!isLoggingIn && (
@@ -466,7 +497,9 @@ export default function OnboardingWelcome() {
           />
 
           {isAnimationComplete && (
-            <FoxAppearAnimation skipTransition={shouldSkipAnimation} />
+            <Suspense fallback={<Box />}>
+              <FoxAppearAnimation skipTransition={shouldSkipAnimation} />
+            </Suspense>
           )}
 
           {loginError !== null && (
@@ -478,7 +511,11 @@ export default function OnboardingWelcome() {
         </>
       )}
 
-      {isLoggingIn && <FoxAppearAnimation isLoader />}
+      {isLoggingIn && (
+        <Suspense fallback={<Box />}>
+          <FoxAppearAnimation isLoader />
+        </Suspense>
+      )}
     </Box>
   );
 }

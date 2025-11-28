@@ -6,7 +6,7 @@ exports[`Welcome Page render matches snapshot 1`] = `
     class="mm-box welcome-container mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--height-full"
   >
     <div
-      data-testid="metamask-wordmark-animation"
+      class="mm-box"
     />
     <div
       class="mm-box welcome-login"
