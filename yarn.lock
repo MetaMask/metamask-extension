@@ -7810,9 +7810,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-metrics-controller@npm:@metamask-previews/profile-metrics-controller@0.0.0-preview-bc80feb8":
-  version: 0.0.0-preview-bc80feb8
-  resolution: "@metamask-previews/profile-metrics-controller@npm:0.0.0-preview-bc80feb8"
+"@metamask/profile-metrics-controller@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/profile-metrics-controller@npm:1.0.0"
   dependencies:
     "@metamask/accounts-controller": "npm:^35.0.0"
     "@metamask/base-controller": "npm:^9.0.0"
@@ -7823,7 +7823,7 @@ __metadata:
     "@metamask/profile-sync-controller": "npm:^27.0.0"
     "@metamask/utils": "npm:^11.8.1"
     async-mutex: "npm:^0.5.0"
-  checksum: 10/f3fe26c452f8e7dd6acd18e1a99981771708ce4a6285fb3a9e63b71a46a41dd41cc969d16e3ebcb32dfc1ee0ed7ec49379b9e4eb7b784a9cf1ac9a1d5f62cd03
+  checksum: 10/187ceb47a7247b0c801148313f6f6dd1c58d1bc5572f85ae6b8447c9fcea1feccf9a470074234cace0a4f4699a9c71cf3f1d180ddfcc08218e2615ee79cf3214
   languageName: node
   linkType: hard
 
