@@ -4972,9 +4972,6 @@
   "recipientEditAriaLabel": {
     "message": "Chỉnh sửa người nhận"
   },
-  "recipientPlaceholder": {
-    "message": "Nhập hoặc dán địa chỉ hợp lệ"
-  },
   "recoveryPhraseReminderBackupStart": {
     "message": "Sao lưu ngay"
   },

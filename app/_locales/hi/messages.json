@@ -4969,9 +4969,6 @@
   "recipientEditAriaLabel": {
     "message": "प्राप्तकर्ता बदलें"
   },
-  "recipientPlaceholder": {
-    "message": "मान्य एड्रेस दर्ज करें या पेस्ट करें"
-  },
   "recoveryPhraseReminderBackupStart": {
     "message": "अभी बैकअप लें"
   },

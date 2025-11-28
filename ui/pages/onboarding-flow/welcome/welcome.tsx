@@ -24,6 +24,7 @@ import {
   setFirstTimeFlowType,
   startOAuthLogin,
   setParticipateInMetaMetrics,
+  setPna25Acknowledged,
   getIsSeedlessOnboardingUserAuthenticated,
 } from '../../../store/actions';
 import {
@@ -417,6 +418,10 @@ export default function OnboardingWelcome() {
         if (!isFireFox) {
           // automatically set participate in meta metrics to true for social login users in chrome
           dispatch(setParticipateInMetaMetrics(true));
+          // Set pna25Acknowledged to true for social login users if feature flag is enabled
+          if (process.env.EXTENSION_UX_PNA25) {
+            dispatch(setPna25Acknowledged(true));
+          }
         }
       } catch (error) {
         handleLoginError(error);

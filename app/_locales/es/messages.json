@@ -4972,9 +4972,6 @@
   "recipientEditAriaLabel": {
     "message": "Editar destinatario"
   },
-  "recipientPlaceholder": {
-    "message": "Ingresa o pega una dirección válida"
-  },
   "recoveryPhraseReminderBackupStart": {
     "message": "Respaldar ahora"
   },

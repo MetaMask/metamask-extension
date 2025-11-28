@@ -716,6 +716,11 @@ export default function reduceApp(
         ),
         isNetworkMenuOpen: !appState.isNetworkMenuOpen,
       };
+    case actionConstants.CLOSE_NETWORK_MENU:
+      return {
+        ...appState,
+        isNetworkMenuOpen: false,
+      };
     case actionConstants.DELETE_METAMETRICS_DATA_MODAL_OPEN:
       return {
         ...appState,
