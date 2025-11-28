@@ -14,14 +14,14 @@ describe('Add existing token using search', function () {
       await mockServer
         .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
         .withQuery({
-          tokenAddresses: '0x0d8775f648430679a709e98d2b0cb6250d2887ef',
+          assetIds: 'eip155:1/erc20:0x0d8775f648430679a709e98d2b0cb6250d2887ef',
           vsCurrency: 'ETH',
         })
         .thenCallback(() => {
           return {
             statusCode: 200,
             json: {
-              '0x0d8775f648430679a709e98d2b0cb6250d2887ef': {
+              'eip155:1/erc20:0x0d8775f648430679a709e98d2b0cb6250d2887ef': {
                 eth: 0.0001,
               },
             },
