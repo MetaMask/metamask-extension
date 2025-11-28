@@ -159,7 +159,7 @@ const ShieldPlan = () => {
       return '';
     }
 
-    return `${selectedProductPrice.unitAmount / 10 ** selectedProductPrice.unitDecimals}`;
+    return `${getProductPrice(selectedProductPrice)}`;
   }, [selectedProductPrice]);
 
   const {
