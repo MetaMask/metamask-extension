@@ -176,7 +176,7 @@ const MOCK_CLAIM_ID_2 = 'test_claim_id_00002';
 
 export const SUBMIT_CLAIMS_RESPONSE = {
   status: 'success',
-  message: 'Claim submitted successfully',
+  message: 'Claim submission received',
   claimId: MOCK_CLAIM_ID_2,
 };
 
