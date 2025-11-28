@@ -1,4 +1,8 @@
 .transaction-shield-page {
+  &__error-content {
+    margin-top: 120px;
+  }
+
   &__row {
     margin-bottom: 1px;
 
@@ -15,22 +19,16 @@
   }
 
   &__membership {
-    background-size: 85px;
     height: 85px;
-    background-image: url('/images/shield-membership-shadow.png');
-    background-repeat: no-repeat;
-    background-position: right -10px center;
-
-    .transaction-shield-page__membership-text {
-      color: var(--color-accent03-light);
-    }
+    position: relative;
+    overflow: hidden;
 
     &--active {
       background-color: var(--color-accent03-dark);
     }
 
     &--loading {
-      background: var(--color-border-muted);
+      background-color: var(--color-border-muted);
     }
 
     &--inactive {
@@ -39,11 +37,15 @@
       &-light {
         background-color: var(--shield-membership-inactive-light);
       }
-
-      .transaction-shield-page__membership-text {
-        color: var(--color-text-default);
-      }
     }
+  }
+
+  &__membership-text {
+    color: var(--color-accent03-light);
+  }
+
+  &__membership--inactive &__membership-text {
+    color: var(--color-text-default);
   }
 
   .warning-button:hover {
@@ -58,10 +60,13 @@
     }
   }
 
-  &-shield-illustration {
+  &-shield-banner {
     &__container {
-      height: 85px;
-      width: 85px;
+      position: absolute;
+      top: -4px;
+      right: 0;
+      height: 93px;
+      width: 93px;
     }
 
     &__canvas {

@@ -122,6 +122,20 @@ function* ulidGenerator(ulids = mockULIDs) {
 }
 
 /**
+ * Utility function that waits for all pending promises to be resolved.
+ * This is necessary when testing asynchronous execution flows that are
+ * initiated by synchronous calls.
+ *
+ * @returns A promise that resolves when all pending promises are completed.
+ */
+async function waitForAllPromises() {
+  // Wait for next tick to flush all pending promises. It's requires since
+  // we are testing some asynchronous execution flows that are started by
+  // synchronous calls.
+  await new Promise(process.nextTick);
+}
+
+/**
  * Generate mock patches for a complete state replacement.
  *
  * @returns A list of mock patches.
@@ -729,6 +743,34 @@ describe('MetaMaskController', () => {
       });
     });
 
+    describe('#submitPasswordOrEncryptionKey', () => {
+      const password = 'a-fake-password';
+
+      it('should call resyncAccounts and alignWallets asynchronously when submitPasswordOrEncryptionKey is called', async () => {
+        const mockAlignWallets = jest.fn();
+        const mockResyncAccounts = jest.fn();
+
+        // We only trigger this behavior when the feature flag is enabled.
+        jest
+          .spyOn(metamaskController, 'isMultichainAccountsFeatureState2Enabled')
+          .mockReturnValue(true);
+
+        metamaskController.multichainAccountService = {
+          init: jest.fn(),
+          resyncAccounts: mockResyncAccounts,
+          alignWallets: mockAlignWallets,
+        };
+
+        await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
+        await metamaskController.submitPasswordOrEncryptionKey({ password });
+
+        await waitForAllPromises();
+
+        expect(mockResyncAccounts).toHaveBeenCalled();
+        expect(mockAlignWallets).toHaveBeenCalled();
+      });
+    });
+
     describe('setLocked', () => {
       it('should lock KeyringController', async () => {
         await metamaskController.createNewVaultAndKeychain('password');
@@ -927,6 +969,12 @@ describe('MetaMaskController', () => {
         jest
           .spyOn(metamaskController.onboardingController, 'state', 'get')
           .mockReturnValue({ completedOnboarding: true });
+
+        jest
+          .spyOn(metamaskController.preferencesController, 'state', 'get')
+          .mockReturnValue({
+            useExternalServices: true,
+          });
 
         jest
           .spyOn(metamaskController, 'discoverAndCreateAccounts')

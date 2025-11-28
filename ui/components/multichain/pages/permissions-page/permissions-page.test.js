@@ -5,7 +5,7 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/modules/environment';
-import { PermissionsPage } from './permissions-page';
+import PermissionsPage from './permissions-page';
 
 mockState.metamask.subjectMetadata = {
   'https://metamask.github.io': {

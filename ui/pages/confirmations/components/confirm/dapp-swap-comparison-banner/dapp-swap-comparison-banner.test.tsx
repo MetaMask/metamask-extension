@@ -130,8 +130,8 @@ describe('<DappSwapComparisonBanner />', () => {
     } as unknown as ReturnType<typeof useDappSwapComparisonInfo>);
     const { getByText } = render();
     expect(getByText('Market rate')).toBeInTheDocument();
-    expect(getByText('Metamask Swap')).toBeInTheDocument();
-    expect(getByText('Save and earn with MetaMask Swaps')).toBeInTheDocument();
+    expect(getByText('MetaMask Swap')).toBeInTheDocument();
+    expect(getByText('Save with MetaMask Swaps')).toBeInTheDocument();
     expect(getByText('Save $0.02')).toBeInTheDocument();
     expect(
       getByText('Network fees refunded on failed swaps'),
@@ -166,7 +166,7 @@ describe('<DappSwapComparisonBanner />', () => {
       tokenAmountDifference: 0.01,
     } as unknown as ReturnType<typeof useDappSwapComparisonInfo>);
     const { getByText } = render();
-    const quoteSwapButton = getByText('Metamask Swap');
+    const quoteSwapButton = getByText('MetaMask Swap');
     fireEvent.click(quoteSwapButton);
     expect(mockSetQuotedSwapDisplayedInInfo).toHaveBeenCalledTimes(1);
     expect(
@@ -197,18 +197,28 @@ describe('<DappSwapComparisonBanner />', () => {
       selectedQuoteValueDifference: 0.1,
       gasDifference: 0.01,
       tokenAmountDifference: 0.01,
+      destinationTokenSymbol: 'TEST',
     } as unknown as ReturnType<typeof useDappSwapComparisonInfo>);
-    const { getByText } = render();
-    const quoteSwapButton = getByText('Market rate');
-    fireEvent.click(quoteSwapButton);
-    expect(mockSetQuotedSwapDisplayedInInfo).toHaveBeenCalledTimes(1);
+    const { getByTestId } = render();
+    const metamaskSwapTab = getByTestId('metamask-swap-tab');
+    fireEvent.click(metamaskSwapTab);
+    const marketRateTab = getByTestId('market-rate-tab');
+    fireEvent.click(marketRateTab);
+    expect(mockSetQuotedSwapDisplayedInInfo).toHaveBeenCalledTimes(2);
+    expect(mockSetQuotedSwapDisplayedInInfo).toHaveBeenNthCalledWith(1, true);
+    expect(mockSetQuotedSwapDisplayedInInfo).toHaveBeenNthCalledWith(2, false);
     expect(
       mockCaptureDappSwapComparisonDisplayProperties,
-    ).toHaveBeenCalledTimes(1);
+    ).toHaveBeenCalledTimes(2);
     expect(
       mockCaptureDappSwapComparisonDisplayProperties,
     ).toHaveBeenNthCalledWith(1, {
       swap_mm_cta_displayed: 'true',
+    });
+    expect(
+      mockCaptureDappSwapComparisonDisplayProperties,
+    ).toHaveBeenNthCalledWith(2, {
+      swap_mm_opened: 'true',
     });
   });
 
@@ -219,5 +229,6 @@ describe('<DappSwapComparisonBanner />', () => {
     });
     const { getByText } = render();
     expect(getByText(/Earn 100 points/u)).toBeInTheDocument();
+    expect(getByText('Save and earn with MetaMask Swaps')).toBeInTheDocument();
   });
 });
