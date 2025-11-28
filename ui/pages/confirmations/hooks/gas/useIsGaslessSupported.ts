@@ -49,9 +49,12 @@ export function useIsGaslessSupported() {
     isSmartTransactionAndBundleSupported || is7702Supported,
   );
 
+  const isPending =
+    smartTransactionPending || (shouldCheck7702Eligibility && relayPending);
+
   return {
     isSupported,
     isSmartTransaction,
-    pending: Boolean(smartTransactionPending || relayPending),
+    pending: isPending,
   };
 }

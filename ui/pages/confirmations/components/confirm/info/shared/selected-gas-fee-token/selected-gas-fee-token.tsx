@@ -23,7 +23,7 @@ import { GasFeeTokenModal } from '../gas-fee-token-modal';
 import { useSelectedGasFeeToken } from '../../hooks/useGasFeeToken';
 import { GasFeeTokenIcon, GasFeeTokenIconSize } from '../gas-fee-token-icon';
 import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
-import { useHasInsufficientBalance } from '../../../../../hooks/useHasInsufficientBalance';
+import { useIsInsufficientBalance } from '../../../../../hooks/useIsInsufficientBalance';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -36,13 +36,13 @@ export function SelectedGasFeeToken() {
   const { isSupported: isGaslessSupported, isSmartTransaction } =
     useIsGaslessSupported();
 
-  const { hasInsufficientBalance } = useHasInsufficientBalance();
+  const hasInsufficientNative = useIsInsufficientBalance();
 
   const hasOnlyFutureNativeToken =
     gasFeeTokens?.length === 1 &&
     gasFeeTokens[0].tokenAddress === NATIVE_TOKEN_ADDRESS;
 
-  const supportsFutureNative = hasInsufficientBalance && isSmartTransaction;
+  const supportsFutureNative = hasInsufficientNative && isSmartTransaction;
 
   const hasGasFeeTokens =
     !isQuotedSwapDisplayedInInfo &&
