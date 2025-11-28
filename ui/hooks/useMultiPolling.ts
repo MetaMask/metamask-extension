@@ -37,10 +37,6 @@ const useMultiPolling = <PollingInput>(
   useEffect(() => {
     isMounted.current = true;
     return () => {
-      // stop all polling on dismount
-      for (const token of pollingTokens.current.values()) {
-        usePollingOptions.stopPollingByPollingToken(token);
-      }
       isMounted.current = false;
       // Stop all polling on unmount - use ref to get latest function
       const tokens = pollingTokens.current;

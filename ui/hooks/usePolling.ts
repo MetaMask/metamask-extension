@@ -25,7 +25,7 @@ const usePolling = <PollingInput>(
   }, []);
 
   useEffect(() => {
-    if (usePollingOptions.enabled === false || !hasPollingInputChanged) {
+    if (usePollingOptions.enabled === false) {
       return () => {
         // noop
       };
