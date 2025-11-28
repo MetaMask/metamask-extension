@@ -3,7 +3,7 @@ const {
   createInternalTransactionWithMaxAmount,
   reviewTransaction,
 } = require('../../page-objects/flows/transaction');
-const FixtureBuilder = require('../../fixture-builder');
+const FixtureBuilder = require('../../fixtures/fixture-builder');
 const { GAS_API_BASE_URL } = require('../../../../shared/constants/swaps');
 const {
   loginWithBalanceValidation,
@@ -11,6 +11,8 @@ const {
 const {
   validateTransaction,
 } = require('../../page-objects/flows/send-transaction.flow');
+const { CHAIN_IDS } = require('../../../../shared/constants/network');
+const { mockSpotPrices } = require('../tokens/utils/mocks');
 
 const PREFERENCES_STATE_MOCK = {
   preferences: {
@@ -32,6 +34,15 @@ describe('Sending with max amount', function () {
         localNodeOptions: { hardfork: 'london' },
         driverOptions: { timeOut: 15000 },
         title: this.test.fullTitle(),
+        testSpecificMock: async (mockServer) => {
+          await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
+            '0x0000000000000000000000000000000000000000': {
+              price: 1700,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
+          });
+        },
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
@@ -57,6 +68,15 @@ describe('Sending with max amount', function () {
             .build(),
           localNodeOptions: { hardfork: 'london' },
           title: this.test.fullTitle(),
+          testSpecificMock: async (mockServer) => {
+            await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
+              '0x0000000000000000000000000000000000000000': {
+                price: 1700,
+                marketCap: 382623505141,
+                pricePercentChange1d: 0,
+              },
+            });
+          },
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
@@ -120,6 +140,15 @@ describe('Sending with max amount', function () {
             .build(),
           localNodeOptions: { hardfork: 'london' },
           title: this.test.fullTitle(),
+          testSpecificMock: async (mockServer) => {
+            await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
+              '0x0000000000000000000000000000000000000000': {
+                price: 1700,
+                marketCap: 382623505141,
+                pricePercentChange1d: 0,
+              },
+            });
+          },
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
@@ -172,6 +201,15 @@ describe('Sending with max amount', function () {
         localNodeOptions: { hardfork: 'london' },
         driverOptions: { timeOut: 15000 },
         title: this.test.fullTitle(),
+        testSpecificMock: async (mockServer) => {
+          await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
+            '0x0000000000000000000000000000000000000000': {
+              price: 1700,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
+          });
+        },
       },
       async ({ driver, mockServer }) => {
         await loginWithBalanceValidation(driver);
@@ -242,6 +280,15 @@ describe('Sending with max amount', function () {
           .build(),
         localNodeOptions: { hardfork: 'london' },
         title: this.test.fullTitle(),
+        testSpecificMock: async (mockServer) => {
+          await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
+            '0x0000000000000000000000000000000000000000': {
+              price: 1700,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
+          });
+        },
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);

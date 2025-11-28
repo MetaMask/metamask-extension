@@ -675,9 +675,6 @@
   "attributions": {
     "message": "Admhálacha"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "Níl URL RPC Infura ag tacú le Aurora a thuilleadh."
-  },
   "authorizedPermissions": {
     "message": "Tá na ceadanna seo a leanas údaraithe agat"
   },
@@ -910,7 +907,7 @@
     "message": "Tá tú ag ceadú rochtana ar $1 $2. Ní bheidh rochtain ag an gconradh ar aon chistí breise."
   },
   "bridgeApprovalWarningForHardware": {
-    "message": "Beidh ort rochtain a cheadú ar $1 $2 le haghaidh droichid, agus ansin droichid go $2 a cheadú. Beidh dhá dheimhniú ar leith ag teastáil chuige seo."
+    "message": "Beidh ort rochtain a cheadú ar $1 $2 le haghaidh droichid, agus ansin droichid go $3 a cheadú. Beidh dhá dheimhniú ar leith ag teastáil chuige seo."
   },
   "bridgeBlockExplorerLinkCopied": {
     "message": "Nasc taiscéalaí blocála cóipeáilte!"
@@ -1716,14 +1713,8 @@
   "customToken": {
     "message": "Comhartha saincheaptha"
   },
-  "customTokenWarningInNonTokenDetectionNetwork": {
-    "message": "Níl braiteadh comharthaí ar fáil ar an líonra seo go fóill. Iompórtáil an comhartha de láimh agus déan cinnte go bhfuil muinín agat as. Foghlaim faoi $1"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Is féidir le duine ar bith comhartha a chruthú, lena n-áirítear leaganacha bréige de chomharthaí atá ann cheana a chruthú. Foghlaim faoi $1"
-  },
-  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
-    "message": "Déan cinnte go bhfuil muinín agat as comhartha sula ndéanann tú é a allmhairiú. Foghlaim conas $1 a sheachaint. Is féidir leat braiteadh comharthaí $2 a chumasú freisin."
   },
   "customerSupport": {
     "message": "tacaíocht do chustaiméirí"
@@ -1937,9 +1928,6 @@
   "depositCrypto": {
     "message": "Taisce cripte ó chuntas eile le seoladh sparán nó cód QR."
   },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "Mar gheall ar nuashonruithe ar chóras Ethereum, cuirfear deireadh de réir a chéile le líonra tástála Goerli go luath."
-  },
   "deprecatedNetwork": {
     "message": "Tá an líonra seo imithe i léig"
   },
@@ -1947,7 +1935,7 @@
     "message": "Tuigim é."
   },
   "deprecatedNetworkDescription": {
-    "message": "Ní thacaíonn Metamask leis an líonra atá tú ag iarraidh ceangal leis a thuilleadh. $1"
+    "message": "Ní thacaíonn MetaMask leis an líonra atá tú ag iarraidh ceangal leis a thuilleadh. $1"
   },
   "description": {
     "message": "Cur síos"
@@ -2352,7 +2340,7 @@
     "message": "Cuir isteach focal faire le leanúint ar aghaidh"
   },
   "enterYourPasswordSocialLoginFlow": {
-    "message": "Cuir isteach Pasfhocal Metamask"
+    "message": "Cuir isteach Pasfhocal MetaMask"
   },
   "errorCode": {
     "message": "Cód: $1",
@@ -2463,17 +2451,11 @@
   "existingChainId": {
     "message": "Tá an fhaisnéis atá curtha isteach agat bainteach le haitheantas slabhra atá ann cheana féin."
   },
-  "expandView": {
-    "message": "Leathnaigh an radharc"
-  },
   "experimental": {
     "message": "Turgnamhach"
   },
   "exploreDefi": {
     "message": "Déan iniúchadh ar Defi"
-  },
-  "exploreweb3": {
-    "message": "Iniúchadh gréasáin3"
   },
   "exportYourData": {
     "message": "Easpórtáil do shonraí"
@@ -2612,9 +2594,6 @@
   },
   "function": {
     "message": "Feidhm: $1"
-  },
-  "fundingMethod": {
-    "message": "Modh maoinithe"
   },
   "gas": {
     "message": "Gás"
@@ -2950,9 +2929,6 @@
   "imported": {
     "message": "Iompórtáilte",
     "description": "status showing that an account has been fully loaded into the keyring"
-  },
-  "inYourSettings": {
-    "message": "i do Shocruithe"
   },
   "included": {
     "message": "san áireamh"
@@ -3328,7 +3304,7 @@
     "description": "$1 is the key 'loginErrorGenericSupport'"
   },
   "loginErrorGenericSupport": {
-    "message": "Tacaíocht Metamask"
+    "message": "Tacaíocht MetaMask"
   },
   "loginErrorGenericTitle": {
     "message": "Chuaigh rud éigin mícheart"
@@ -3709,13 +3685,6 @@
   },
   "network": {
     "message": "Líonra"
-  },
-  "networkAddress": {
-    "message": "1 seoladh líonra"
-  },
-  "networkAddresses": {
-    "message": "Seoltaí líonra $1",
-    "description": "$1 is the number of accounts"
   },
   "networkChanged": {
     "message": "Athraíodh an líonra"
@@ -5022,9 +4991,6 @@
   "recipientEditAriaLabel": {
     "message": "Cuir an faighteoir in eagar"
   },
-  "recipientPlaceholder": {
-    "message": "Cuir isteach nó greamaigh seoladh bailí"
-  },
   "recoveryPhraseReminderBackupStart": {
     "message": "Cúltaca anois"
   },
@@ -5650,7 +5616,7 @@
     "message": "Níl an t-idirbheart seo clúdaithe"
   },
   "shieldCoverageAlertMessageTxTypeNotSupported": {
-    "message": "Ní thacaítear leis an gcineál idirbhirt seo, mar sin níl sé faoi chosaint ag Transaction Shield. $1."
+    "message": "Ní thacaítear leis an gcineál idirbhirt seo, mar sin níl sé faoi chosaint ag Transaction Shield. $1"
   },
   "shieldCoverageAlertMessageUnknown": {
     "message": "Ní féidir an t-iarratas seo a fhíorú, mar sin níl sé faoi chosaint ag Transaction Shield. $1."
@@ -5658,28 +5624,8 @@
   "shieldCovered": {
     "message": "Clúdaithe"
   },
-  "shieldEntryModalAssetCoverage": {
-    "message": "Clúdach sócmhainne $1 in aghaidh an idirbhirt",
-    "description": "The $1 is the amount of asset coverage per transaction"
-  },
-  "shieldEntryModalDescription": {
-    "message": "Athnuaitear ar $1/mí, cealaítear am ar bith. $2",
-    "description": "The $1 is the price of the shield and $2 is a link to the learn more page"
-  },
   "shieldEntryModalGetStarted": {
     "message": "Tosaigh"
-  },
-  "shieldEntryModalProtection": {
-    "message": "Cosaint ar fud do chuntais uile"
-  },
-  "shieldEntryModalSkip": {
-    "message": "Scipeáil"
-  },
-  "shieldEntryModalSubtitle": {
-    "message": "Sciath Idirbhirt, saor in aisce ar feadh 14 lá."
-  },
-  "shieldEntryModalSupport": {
-    "message": "Tacaíocht do chustaiméirí tosaíochta"
   },
   "shieldFooterAgreement": {
     "message": "Trí leanúint ar aghaidh, aontaím le Sciath Idirbhirt $1."
@@ -5703,9 +5649,6 @@
   "shieldPlanDetails1": {
     "message": "Gan aon táille anois, bain triail as saor in aisce ar feadh $1 lá",
     "description": "The $1 is the number of days"
-  },
-  "shieldPlanDetails2Card": {
-    "message": "Athnuaitear an plean go huathoibríoch ag deireadh na téarma"
   },
   "shieldPlanDetails3": {
     "message": "Cosnaíonn sé do shócmhainní ó idirbhearta contúirteacha"
@@ -5790,19 +5733,9 @@
     "message": "Cuirfear do bhallra�ocht ar ceal ar $1.",
     "description": "The $1 is the date"
   },
-  "shieldTxMembershipErrorAddFunds": {
-    "message": "Cuir cistí leis"
-  },
-  "shieldTxMembershipErrorInsufficientFunds": {
-    "message": "Gan dóthain airgid le haghaidh d'athnuachana an 18 Aibreán. Coinnigh rochtain gníomhach trí airgead a chur leis.",
-    "description": "The $1 is the date"
-  },
   "shieldTxMembershipErrorInsufficientToken": {
     "message": "$1 neamhleor",
     "description": "The $1 is the token symbol"
-  },
-  "shieldTxMembershipErrorPaused": {
-    "message": "Ballraíocht curtha ar sos mar gheall ar easpa cistí. Atosófar an clúdach tar éis nuashonrú íocaíochta."
   },
   "shieldTxMembershipErrorPausedCardTooltip": {
     "message": "Diúltaíodh do d’íocaíocht. Nuashonraigh do mhodh íocaíochta le go leanfaidh do chlúdach ar aghaidh."
@@ -5812,9 +5745,6 @@
   },
   "shieldTxMembershipErrorUpdateCard": {
     "message": "Nuashonraigh sonraí cárta"
-  },
-  "shieldTxMembershipErrorUpdatePayment": {
-    "message": "Nuashonraigh an íocaíocht"
   },
   "shieldTxMembershipFreeTrial": {
     "message": "Triail saor in aisce"
@@ -6842,19 +6772,19 @@
   },
   "swapIncludesGasAndMetaMaskFee": {
     "message": "Áirítear gásailín agus táille $1% MetaMask",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFee": {
     "message": "Áirítear táille $1% le haghaidh MetaMask.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFeeAlt": {
     "message": "Léiríonn an luachan táille $1% do MetaMask",
-    "description": "Provides information about the fee that metamask takes for swaps using the latest copy. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
     "message": "Áirítear táille $1% ar MetaMask – $2",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
   },
   "swapLearnMore": {
     "message": "Foghlaim tuilleadh faoi Mhalartuithe"
@@ -6873,7 +6803,7 @@
   },
   "swapMetaMaskFeeDescription": {
     "message": "Cuirtear an táille $1% san áireamh go huathoibríoch sa luachan seo. Íocann tú í mar mhalairt ar cheadúnas chun bogearraí comhiomlánaithe faisnéise soláthraí leachtachta MetaMask a úsáid.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapNQuotesWithDot": {
     "message": "Sleachta $1.",
@@ -7109,10 +7039,6 @@
   "switchNetwork": {
     "message": "Athraigh líonra"
   },
-  "switchToNetwork": {
-    "message": "Lasc go $1",
-    "description": "$1 represents the custom network that has previously been added"
-  },
   "switchToThisAccount": {
     "message": "Lasc chuig an gcuntas seo"
   },
@@ -7174,12 +7100,6 @@
   "time": {
     "message": "Am"
   },
-  "tipsForUsingAWallet": {
-    "message": "Leideanna maidir le sparán a úsáid"
-  },
-  "tipsForUsingAWalletDescription": {
-    "message": "Trí chomharthaí a chur leis, díghlasáiltear níos mó bealaí chun web3 a úsáid."
-  },
   "to": {
     "message": "Chuig"
   },
@@ -7232,9 +7152,6 @@
   "tokenPermissionsCount": {
     "message": "Ceadanna comhartha $1",
     "description": "$1 is the count of token permissions (plural form)"
-  },
-  "tokenScamSecurityRisk": {
-    "message": "camscéimeanna comharthaí agus rioscaí slándála"
   },
   "tokenStandard": {
     "message": "Caighdeán comharthaí"
@@ -7694,18 +7611,8 @@
   "walletConnectionGuide": {
     "message": "ár dtreoir nasctha sparán crua-earraí"
   },
-  "walletDetails": {
-    "message": "Sonraí sparán"
-  },
   "walletName": {
     "message": "Ainm an sparáin"
-  },
-  "walletNotFoundDescription": {
-    "message": "Níor aimsíodh an sparán leis an ID $1.",
-    "description": "$1 is the wallet ID"
-  },
-  "walletNotFoundTitle": {
-    "message": "Níor aimsíodh an sparán"
   },
   "walletReadyLearn": {
     "message": "$1 is féidir leat an frása seo a choinneáil slán ionas nach gcaillfidh tú rochtain ar do chuid airgid choíche.",

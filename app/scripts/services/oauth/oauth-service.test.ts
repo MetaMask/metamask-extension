@@ -72,6 +72,9 @@ const mockWebAuthenticator: WebAuthenticator = {
 
 const mockBufferedTrace = jest.fn();
 const mockBufferedEndTrace = jest.fn();
+const mockTrackEvent = jest.fn();
+const mockAddEventBeforeMetricsOptIn = jest.fn();
+const mockGetParticipateInMetaMetrics = jest.fn().mockReturnValue(true);
 
 describe('OAuthService - startOAuthLogin', () => {
   beforeAll(() => {
@@ -112,6 +115,9 @@ describe('OAuthService - startOAuthLogin', () => {
       webAuthenticator: mockWebAuthenticator,
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
+      trackEvent: mockTrackEvent,
+      addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
+      getParticipateInMetaMetrics: mockGetParticipateInMetaMetrics,
     });
 
     await oauthService.startOAuthLogin(AuthConnection.Google);
@@ -145,6 +151,9 @@ describe('OAuthService - startOAuthLogin', () => {
       webAuthenticator: mockWebAuthenticator,
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
+      trackEvent: mockTrackEvent,
+      addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
+      getParticipateInMetaMetrics: mockGetParticipateInMetaMetrics,
     });
 
     await oauthService.startOAuthLogin(AuthConnection.Apple);
@@ -181,6 +190,9 @@ describe('OAuthService - startOAuthLogin', () => {
       },
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
+      trackEvent: mockTrackEvent,
+      addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
+      getParticipateInMetaMetrics: mockGetParticipateInMetaMetrics,
     });
 
     await expect(
@@ -201,6 +213,9 @@ describe('OAuthService - startOAuthLogin', () => {
         webAuthenticator: mockWebAuthenticator,
         bufferedTrace: mockBufferedTrace,
         bufferedEndTrace: mockBufferedEndTrace,
+        trackEvent: mockTrackEvent,
+        addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
+        getParticipateInMetaMetrics: mockGetParticipateInMetaMetrics,
       });
 
       await messenger.call(
@@ -260,6 +275,9 @@ describe('OAuthService - getNewRefreshToken', () => {
       webAuthenticator: mockWebAuthenticator,
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
+      trackEvent: mockTrackEvent,
+      addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
+      getParticipateInMetaMetrics: mockGetParticipateInMetaMetrics,
     });
 
     const result = await oauthService.getNewRefreshToken({
@@ -314,6 +332,9 @@ describe('OAuthService - getNewRefreshToken', () => {
       webAuthenticator: mockWebAuthenticator,
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
+      trackEvent: mockTrackEvent,
+      addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
+      getParticipateInMetaMetrics: mockGetParticipateInMetaMetrics,
     });
 
     await expect(
@@ -353,6 +374,9 @@ describe('OAuthService - getNewRefreshToken', () => {
         webAuthenticator: mockWebAuthenticator,
         bufferedTrace: mockBufferedTrace,
         bufferedEndTrace: mockBufferedEndTrace,
+        trackEvent: mockTrackEvent,
+        addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
+        getParticipateInMetaMetrics: mockGetParticipateInMetaMetrics,
       });
 
       const result = await messenger.call('OAuthService:getNewRefreshToken', {
@@ -397,6 +421,9 @@ describe('OAuthService - renewRefreshToken', () => {
       webAuthenticator: mockWebAuthenticator,
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
+      trackEvent: mockTrackEvent,
+      addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
+      getParticipateInMetaMetrics: mockGetParticipateInMetaMetrics,
     });
     const oauthConfig = loadOAuthConfig();
 
@@ -443,6 +470,9 @@ describe('OAuthService - renewRefreshToken', () => {
       webAuthenticator: mockWebAuthenticator,
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
+      trackEvent: mockTrackEvent,
+      addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
+      getParticipateInMetaMetrics: mockGetParticipateInMetaMetrics,
     });
 
     await expect(
@@ -478,6 +508,9 @@ describe('OAuthService - revokeRefreshToken', () => {
       webAuthenticator: mockWebAuthenticator,
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
+      trackEvent: mockTrackEvent,
+      addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
+      getParticipateInMetaMetrics: mockGetParticipateInMetaMetrics,
     });
     const oauthConfig = loadOAuthConfig();
 
@@ -520,6 +553,9 @@ describe('OAuthService - revokeRefreshToken', () => {
       webAuthenticator: mockWebAuthenticator,
       bufferedTrace: mockBufferedTrace,
       bufferedEndTrace: mockBufferedEndTrace,
+      trackEvent: mockTrackEvent,
+      addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
+      getParticipateInMetaMetrics: mockGetParticipateInMetaMetrics,
     });
 
     await expect(
@@ -559,6 +595,9 @@ describe('OAuthService - revokeRefreshToken', () => {
         webAuthenticator: mockWebAuthenticator,
         bufferedTrace: mockBufferedTrace,
         bufferedEndTrace: mockBufferedEndTrace,
+        trackEvent: mockTrackEvent,
+        addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
+        getParticipateInMetaMetrics: mockGetParticipateInMetaMetrics,
       });
 
       const result = await messenger.call('OAuthService:renewRefreshToken', {

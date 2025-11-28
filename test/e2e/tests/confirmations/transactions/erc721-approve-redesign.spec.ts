@@ -7,7 +7,7 @@ import { loginWithBalanceValidation } from '../../../page-objects/flows/login.fl
 import { scrollAndConfirmAndAssertConfirm } from '../helpers';
 import { TestSuiteArguments, toggleAdvancedDetails } from './shared';
 
-const FixtureBuilder = require('../../../fixture-builder');
+const FixtureBuilder = require('../../../fixtures/fixture-builder');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
 describe('Confirmation Redesign ERC721 Approve Component', function () {

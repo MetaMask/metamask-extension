@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { withFixtures, WINDOW_TITLES } from '../../helpers';
 import { mockMultiNetworkBalancePolling } from '../../mock-balance-polling/mock-balance-polling';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -11,7 +11,6 @@ import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.fl
 import { mockServerJsonRpc } from './mocks/mock-server-json-rpc';
 import { SECURITY_ALERTS_PROD_API_BASE_URL } from './constants';
 
-const mockMaliciousAddress = '0x5fbdb2315678afecb367f032d93f642f64180aa3';
 const mockBenignAddress = '0x50587E46C5B96a3F6f9792922EC647F13E6EFAE4';
 
 const expectedMaliciousTitle = 'This is a deceptive request';
@@ -24,7 +23,7 @@ const SEND_REQUEST_BASE_MOCK = {
     {
       from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
       data: '0x',
-      to: mockMaliciousAddress,
+      to: mockBenignAddress.toLowerCase(),
       value: '0xde0b6b3a7640000',
     },
   ],
