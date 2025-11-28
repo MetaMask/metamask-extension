@@ -1,8 +1,8 @@
 import {
-  Env,
   ProfileMetricsService,
   ProfileMetricsServiceMessenger,
 } from '@metamask/profile-metrics-controller';
+import { SDK } from '@metamask/profile-sync-controller';
 import { ControllerInitFunction } from './types';
 
 /**
@@ -17,7 +17,7 @@ export const ProfileMetricsServiceInit: ControllerInitFunction<
   ProfileMetricsServiceMessenger
 > = ({ controllerMessenger }) => {
   // The environment must be the same used by AuthenticationController.
-  const env = Env.PRD;
+  const env = SDK.Env.PRD;
 
   const controller = new ProfileMetricsService({
     messenger: controllerMessenger,

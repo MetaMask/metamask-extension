@@ -33,7 +33,7 @@ export function getProfileMetricsControllerMessenger(
     messenger: controllerMessenger,
     actions: [
       'AccountsController:listAccounts',
-      'ProfileMetricsService:updateProfile',
+      'ProfileMetricsService:submitMetrics',
     ],
     events: [
       'AccountsController:accountAdded',
