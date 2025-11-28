@@ -1,10 +1,10 @@
 import { useRef } from 'react';
+import stringify from 'fast-json-stable-stringify';
 
 /**
  * Synchronous version of `useEqualityCheck` that provides referential stability without triggering unnecessary re-renders.
  *
  * Uses JSON serialization to detect changes (including mutations).
- * Calls `JSON.stringify` on every render, `JSON.parse` only on change.
  * Returns a new reference only when the serialized value differs.
  * Suitable for small objects/arrays. For large data, consider `useEqualityCheck` or `useMemo`.
  *
@@ -21,13 +21,13 @@ import { useRef } from 'react';
  * ```
  */
 export function useSyncEqualityCheck<Value>(value: Value): Value {
-  const snapshotRef = useRef<string>(JSON.stringify(value));
-  const valueRef = useRef<Value>(JSON.parse(snapshotRef.current) as Value);
+  const snapshotRef = useRef<string>(stringify(value));
+  const valueRef = useRef<Value>(value);
 
-  const currentSnapshot = JSON.stringify(value);
+  const currentSnapshot = stringify(value);
   if (currentSnapshot !== snapshotRef.current) {
     snapshotRef.current = currentSnapshot;
-    valueRef.current = JSON.parse(currentSnapshot) as Value;
+    valueRef.current = value;
   }
 
   return valueRef.current;
