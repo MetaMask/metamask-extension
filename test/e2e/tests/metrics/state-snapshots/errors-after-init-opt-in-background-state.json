@@ -52,6 +52,7 @@
     "outdatedBrowserWarningLastShown": "object",
     "pendingShieldCohort": null,
     "pendingShieldCohortTxType": null,
+    "pna25Acknowledged": "boolean",
     "popupGasPollTokens": "object",
     "productTour": "accountIcon",
     "recoveryPhraseReminderHasBeenShown": true,
