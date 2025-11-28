@@ -68,8 +68,6 @@ export const MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE =
   '/multichain-wallet-details-page';
 export const MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE = '/multichain-smart-account';
 export const NEW_ACCOUNT_ROUTE = '/new-account';
-export const ACCOUNT_DETAILS_ROUTE = '/account-details';
-export const ACCOUNT_DETAILS_QR_CODE_ROUTE = '/account-details/qr-code';
 export const CONFIRM_ADD_SUGGESTED_NFT_ROUTE = '/confirm-add-suggested-nft';
 export const CONNECT_HARDWARE_ROUTE = '/new-account/connect';
 export const SEND_ROUTE = '/send';
@@ -147,7 +145,6 @@ export const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
 ///: END:ONLY_INCLUDE_IF
 
 export const DEEP_LINK_ROUTE = '/link';
-export const WALLET_DETAILS_ROUTE = '/wallet-details/:id';
 export const DEFI_ROUTE = '/defi';
 
 export const SHIELD_PLAN_ROUTE = '/shield-plan';
@@ -329,16 +326,6 @@ export const ROUTES = [
   {
     path: NEW_ACCOUNT_ROUTE,
     label: 'New Account Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: ACCOUNT_DETAILS_ROUTE,
-    label: 'Account Details Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: ACCOUNT_DETAILS_QR_CODE_ROUTE,
-    label: 'Account Details QR Code Page',
     trackInAnalytics: true,
   },
   {
@@ -540,11 +527,6 @@ export const ROUTES = [
   {
     path: DEEP_LINK_ROUTE,
     label: 'Deep link Redirect Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: WALLET_DETAILS_ROUTE,
-    label: 'Wallet Details Page',
     trackInAnalytics: true,
   },
   // Onboarding routes
