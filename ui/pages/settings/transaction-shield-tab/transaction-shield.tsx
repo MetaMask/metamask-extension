@@ -85,6 +85,7 @@ import {
   ShieldErrorStateActionClickedEnum,
   ShieldErrorStateLocationEnum,
   ShieldErrorStateViewEnum,
+  ShieldUnexpectedErrorEventLocationEnum,
 } from '../../../../shared/constants/subscriptions';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { useTheme } from '../../../hooks/useTheme';
@@ -665,7 +666,11 @@ const TransactionShield = () => {
         width={BlockSize.Full}
         padding={4}
       >
-        <ApiErrorHandler className="transaction-shield-page__error-content mx-auto" />
+        <ApiErrorHandler
+          className="transaction-shield-page__error-content mx-auto"
+          error={hasApiError}
+          location={ShieldUnexpectedErrorEventLocationEnum.TransactionShieldTab}
+        />
       </Box>
     );
   }
