@@ -78,8 +78,8 @@ describe('useDappSwapCheck', () => {
   it('return false if type is not contract interaction or batch', async () => {
     const mockConfirmation = {
       ...mockSwapConfirmation,
-      origin: 'https://test.com',
-      type: TransactionType.contractInteraction,
+      origin: 'https://metamask.github.io',
+      type: TransactionType.bridge,
     };
     const { isSwapToBeCompared } = await runHook(
       mockConfirmation as Confirmation,

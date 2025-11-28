@@ -22,7 +22,7 @@ export function useDappSwapCheck() {
   const isSwapToBeCompared = useMemo(() => {
     return (
       dappSwapMetricsEnabled &&
-      origin &&
+      origin !== undefined &&
       origins.includes(origin) &&
       (type === TransactionType.contractInteraction ||
         type === TransactionType.batch)
