@@ -27,7 +27,9 @@ export function useSyncEqualityCheck<Value>(value: Value): Value {
 
   const currentSnapshot = stringify(value);
   if (currentSnapshot !== snapshotRef.current) {
-    valueRef.current = JSON.parse(currentSnapshot) as Value;
+    valueRef.current = Object.is(value, valueRef.current)
+      ? (JSON.parse(currentSnapshot) as Value)
+      : value;
     snapshotRef.current = currentSnapshot;
   }
 
