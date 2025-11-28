@@ -285,12 +285,12 @@ export const mockSwapsApi =
         };
       });
     await mockServer
-      .forGet('https://price.api.cx.metamask.io/v2/chains/1/spot-prices')
+      .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
       .thenCallback(() => {
         return {
           statusCode: 200,
           json: {
-            '0x0000000000000000000000000000000000000000': {
+            'eip155:1/slip44:60': {
               price: 3010,
               marketCap: 382623505141,
               pricePercentChange1d: 0,

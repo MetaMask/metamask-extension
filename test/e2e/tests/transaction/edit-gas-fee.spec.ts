@@ -8,7 +8,6 @@ import { withFixtures, WINDOW_TITLES } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import SendTokenConfirmPage from '../../page-objects/pages/send/send-token-confirmation-page';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { mockSpotPrices } from '../tokens/utils/mocks';
 
 const PREFERENCES_STATE_MOCK = {
@@ -78,8 +77,8 @@ describe('Editing Confirm Transaction', function () {
         localNodeOptions: { hardfork: 'london' },
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: MockttpServer) => {
-          await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
-            '0x0000000000000000000000000000000000000000': {
+          await mockSpotPrices(mockServer, {
+            'eip155:1/slip44:60': {
               price: 1700,
               marketCap: 382623505141,
               pricePercentChange1d: 0,
@@ -143,8 +142,8 @@ describe('Editing Confirm Transaction', function () {
         localNodeOptions: { hardfork: 'london' },
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: MockttpServer) => {
-          await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
-            '0x0000000000000000000000000000000000000000': {
+          await mockSpotPrices(mockServer, {
+            'eip155:1/slip44:60': {
               price: 1700,
               marketCap: 382623505141,
               pricePercentChange1d: 0,

@@ -10,11 +10,11 @@ import { NATIVE_TOKEN_SYMBOL, SwapSendPage } from './swap-send-test-utils';
 async function mockSwapQuotes(mockServer: MockttpServer) {
   return [
     await mockServer
-      .forGet('https://price.api.cx.metamask.io/v2/chains/1/spot-prices')
+      .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
       .thenCallback(() => ({
         statusCode: 200,
         json: {
-          '0x0000000000000000000000000000000000000000': {
+          'eip155:1/slip44:60': {
             id: 'ethereum',
             price: 1700, // Default ETH price for swap tests
             marketCap: 382623505141,
