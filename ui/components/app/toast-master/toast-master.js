@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types -- TODO: upgrade to TypeScript */
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import classnames from 'classnames';
@@ -37,6 +37,11 @@ import {
   getSelectedAccount,
   getUseNftDetection,
 } from '../../../selectors';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import {
   addPermittedAccount,
@@ -757,6 +762,7 @@ function ShieldEndingToast() {
 function Pna25Banner() {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const trackEvent = useContext(MetaMetricsContext);
 
   const showPna25Banner = useSelector(selectShowPna25Banner);
 
@@ -765,11 +771,29 @@ function Pna25Banner() {
     global.platform.openTab({
       url: METAMETRICS_SETTINGS_LINK,
     });
+
+    trackEvent({
+      event: MetaMetricsEventName.DappViewed,
+      category: MetaMetricsEventCategory.Banner,
+      properties: {
+        toast_name: 'pna25',
+        closed: false,
+      },
+    });
   };
 
   const handleClose = () => {
     // Just acknowledge without opening link
     dispatch(setPna25Acknowledged(true));
+
+    trackEvent({
+      event: MetaMetricsEventName.ToastDisplayed,
+      category: MetaMetricsEventCategory.Banner,
+      properties: {
+        toast_name: 'pna25',
+        closed: true,
+      },
+    });
   };
 
   return (
