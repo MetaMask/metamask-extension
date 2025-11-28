@@ -16,7 +16,7 @@ import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import { assertAdvancedGasDetails } from './shared';
 
 const { withFixtures, getEventPayloads } = require('../../../helpers');
-const FixtureBuilder = require('../../../fixture-builder');
+const FixtureBuilder = require('../../../fixtures/fixture-builder');
 
 // Type definition for event structure
 type MetricsEvent = {
