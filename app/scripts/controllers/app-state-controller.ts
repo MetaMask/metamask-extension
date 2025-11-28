@@ -11,7 +11,12 @@ import {
   AcceptRequest,
   AddApprovalRequest,
 } from '@metamask/approval-controller';
-import { DeferredPromise, Json, createDeferredPromise } from '@metamask/utils';
+import {
+  DeferredPromise,
+  Hex,
+  Json,
+  createDeferredPromise,
+} from '@metamask/utils';
 import type { QrScanRequest, SerializedUR } from '@metamask/eth-qr-keyring';
 import type { Messenger } from '@metamask/messenger';
 import { Browser } from 'webextension-polyfill';
@@ -19,6 +24,8 @@ import {
   KeyringControllerGetStateAction,
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
+import { QuoteResponse } from '@metamask/bridge-controller';
+
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
@@ -58,6 +65,14 @@ import type {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
 } from './preferences-controller';
+
+export type DappSwapComparisonData = {
+  quotes?: QuoteResponse[];
+  latency?: number;
+  commands?: string;
+  error?: string;
+  tokenAddresses?: Hex[];
+};
 
 export type AppStateControllerState = {
   activeQrCodeScanRequest: QrScanRequest | null;
@@ -130,6 +145,9 @@ export type AppStateControllerState = {
   pendingShieldCohort: string | null;
   pendingShieldCohortTxType: string | null;
   defaultSubscriptionPaymentOptions?: DefaultSubscriptionPaymentOptions;
+  dappSwapComparisonData?: {
+    [uniqueId: string]: DappSwapComparisonData;
+  };
 
   /**
    * The properties for the Shield subscription metrics.
@@ -291,7 +309,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   pendingShieldCohort: null,
   pendingShieldCohortTxType: null,
   isWalletResetInProgress: false,
-
+  dappSwapComparisonData: {},
   ...getInitialStateOverrides(),
 });
 
@@ -658,6 +676,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     persist: true,
     includeInDebugSnapshot: false,
     usedInUi: false,
+  },
+  dappSwapComparisonData: {
+    includeInStateLogs: false,
+    persist: false,
+    includeInDebugSnapshot: false,
+    usedInUi: true,
   },
 };
 
@@ -1612,5 +1636,32 @@ export class AppStateController extends BaseController<
     this.update((state) => {
       state.shieldSubscriptionMetricsProps = shieldSubscriptionMetricsProps;
     });
+  }
+
+  deleteDappSwapComparisonData(uniqueId: string): void {
+    this.update((state) => {
+      delete state.dappSwapComparisonData?.[uniqueId];
+      state.dappSwapComparisonData = {
+        ...state.dappSwapComparisonData,
+      };
+    });
+  }
+
+  setDappSwapComparisonData(
+    uniqueId: string,
+    info: DappSwapComparisonData,
+  ): void {
+    this.update((state) => {
+      state.dappSwapComparisonData = {
+        ...state.dappSwapComparisonData,
+        [uniqueId]: info,
+      };
+    });
+  }
+
+  getDappSwapComparisonData(
+    uniqueId: string,
+  ): DappSwapComparisonData | undefined {
+    return this.state.dappSwapComparisonData?.[uniqueId] ?? undefined;
   }
 }

@@ -8,7 +8,10 @@ import {
 import { screen, fireEvent } from '@testing-library/react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { MOCK_ACCOUNT_SOLANA_MAINNET } from '../../../../test/data/mock-accounts';
+import {
+  MOCK_ACCOUNT_SOLANA_MAINNET,
+  MOCK_ACCOUNT_BIP122_P2WPKH,
+} from '../../../../test/data/mock-accounts';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MULTICHAIN_PROVIDER_CONFIGS,
@@ -18,6 +21,7 @@ import {
 } from '../../../../shared/constants/multichain/networks';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
+import { shortenAddress as utilShortenAddress } from '../../../helpers/utils/util';
 import { MultichainTransactionDetailsModal } from './multichain-transaction-details-modal';
 import {
   getAddressUrl,
@@ -343,5 +347,57 @@ describe('MultichainTransactionDetailsModal', () => {
     expect(feeElement).not.toBeNull();
     expect(feeElement?.textContent).toContain('0.000005');
     expect(feeElement?.textContent).toContain('SOL');
+  });
+
+  it('displays the correct from address for Bitcoin send transaction', () => {
+    const btcTransaction = {
+      ...mockTransaction,
+      account: MOCK_ACCOUNT_BIP122_P2WPKH.id,
+    };
+
+    const modifiedMockState = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        internalAccounts: {
+          ...mockState.metamask.internalAccounts,
+          accounts: {
+            ...mockState.metamask.internalAccounts.accounts,
+            [MOCK_ACCOUNT_BIP122_P2WPKH.id]: MOCK_ACCOUNT_BIP122_P2WPKH,
+          },
+        },
+      },
+    };
+
+    const store = configureStore(modifiedMockState.metamask);
+    const props = {
+      transaction: btcTransaction,
+      onClose: jest.fn(),
+      userAddress: MOCK_ACCOUNT_BIP122_P2WPKH.address,
+      networkConfig: MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN],
+    };
+
+    renderWithProvider(
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <MultichainTransactionDetailsModal {...props} />
+      </MetaMetricsContext.Provider>,
+      store,
+    );
+
+    const fromLabel = screen.getByText('from');
+    expect(fromLabel).toBeInTheDocument();
+
+    const shortenedFromAddress = utilShortenAddress(
+      MOCK_ACCOUNT_BIP122_P2WPKH.address,
+    );
+    const fromAddressElement = screen.getByText(shortenedFromAddress);
+    expect(fromAddressElement).toBeInTheDocument();
+
+    const expectedHref = getAddressUrl(
+      MOCK_ACCOUNT_BIP122_P2WPKH.address,
+      MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN].chainId,
+    );
+    const fromLink = fromAddressElement.closest('a');
+    expect(fromLink).toHaveAttribute('href', expectedHref);
   });
 });

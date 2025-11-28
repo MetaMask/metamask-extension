@@ -1,5 +1,6 @@
 import { Suite } from 'mocha';
 import { Browser } from 'selenium-webdriver';
+import { Mockttp } from 'mockttp';
 import { Anvil } from '../../seeder/anvil';
 import { withFixtures } from '../../helpers';
 import { WALLET_PASSWORD, WINDOW_TITLES } from '../../constants';
@@ -14,6 +15,24 @@ import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboa
 import TestDappSendEthWithPrivateKey from '../../page-objects/pages/test-dapp-send-eth-with-private-key';
 import { handleSidepanelPostOnboarding } from '../../page-objects/flows/onboarding.flow';
 
+async function mockSpotPrices(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(
+      /^https:\/\/price\.api\.cx\.metamask\.io\/v2\/chains\/\d+\/spot-prices/u,
+    )
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        '0x0000000000000000000000000000000000000000': {
+          id: 'ethereum',
+          price: 1700,
+          marketCap: 382623505141,
+          pricePercentChange1d: 0,
+        },
+      },
+    }));
+}
+
 describe('Incremental Security', function (this: Suite) {
   it('Back up Secret Recovery Phrase from backup reminder', async function () {
     await withFixtures(
@@ -22,6 +41,7 @@ describe('Incremental Security', function (this: Suite) {
           customDappPaths: ['./send-eth-with-private-key-test'],
         },
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        testSpecificMock: mockSpotPrices,
         title: this.test?.fullTitle(),
       },
       async ({
@@ -76,7 +96,8 @@ describe('Incremental Security', function (this: Suite) {
         // copy the wallet address
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.clickBackupRemindMeLaterButton();
+        // TODO: This is a temporary fix to unblock CI. Remove this once the issue is fixed.
+        await homePage.clickBackupRemindMeLaterButtonSafe();
         await homePage.headerNavbar.clickAddressCopyButton();
 
         // switched to Dapp and send eth to the current account

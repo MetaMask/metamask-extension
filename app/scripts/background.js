@@ -64,6 +64,7 @@ import ExtensionStore from './lib/stores/extension-store';
 import ReadOnlyNetworkStore from './lib/stores/read-only-network-store';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
+import { updateRemoteFeatureFlags } from './lib/update-remote-feature-flags';
 import ExtensionPlatform from './platforms/extension';
 import { SENTRY_BACKGROUND_STATE } from './constants/sentry-state';
 
@@ -79,6 +80,7 @@ import { getPlatform, shouldEmitDappViewedEvent } from './lib/util';
 import { createOffscreen } from './offscreen';
 import { setupMultiplex } from './lib/stream-utils';
 import rawFirstTimeState from './first-time-state';
+import { onUpdate } from './on-update';
 
 /* eslint-enable import/first */
 
@@ -100,7 +102,7 @@ import { HyperliquidPermissionTriggerType } from './lib/createHyperliquidReferra
  * @typedef {import('./lib/stores/persistence-manager').Backup} Backup
  */
 
-// MV3 configures the ExtensionLazyListener in app-init.js and sets it on globalThis.stateHooks,
+// MV3 configures the ExtensionLazyListener in service-worker.ts and sets it on globalThis.stateHooks,
 // but in MV2 we don't need to do that, so we create it here (and we don't add any lazy listeners,
 // as it doesn't need them).
 const lazyListener =
@@ -119,6 +121,9 @@ const localStore = useReadOnlyNetworkStore
   ? new ReadOnlyNetworkStore()
   : new ExtensionStore();
 const persistenceManager = new PersistenceManager({ localStore });
+
+const { update, requestSafeReload } = getRequestSafeReload(persistenceManager);
+
 // Setup global hook for improved Sentry state snapshots during initialization
 global.stateHooks.getMostRecentPersistedState = () =>
   persistenceManager.mostRecentRetrievedState;
@@ -509,7 +514,7 @@ const handleOnConnect = async (port) => {
 
   try {
     // `handleOnConnect` can be called asynchronously, well after the `onConnect`
-    // event was emitted, due to the lazy listener setup in `app-init.js`, so we
+    // event was emitted, due to the lazy listener setup in `service-worker.ts`, so we
     // might not be able to send this message if the window has already closed.
     port.postMessage({
       data: {
@@ -725,9 +730,6 @@ async function initialize(backup) {
   const cronjobControllerStorageManager = new CronjobControllerStorageManager();
   await cronjobControllerStorageManager.init();
 
-  const { update, requestSafeReload } =
-    getRequestSafeReload(persistenceManager);
-
   setupController(
     initState,
     initLangCode,
@@ -736,7 +738,6 @@ async function initialize(backup) {
     initData.meta,
     offscreenPromise,
     preinstalledSnaps,
-    requestSafeReload,
     cronjobControllerStorageManager,
   );
 
@@ -1106,7 +1107,6 @@ function trackAppOpened(environment) {
  * @param {object} stateMetadata - Metadata about the initial state and migrations, including the most recent migration version
  * @param {Promise<void>} offscreenPromise - A promise that resolves when the offscreen document has finished initialization.
  * @param {Array} preinstalledSnaps - A list of preinstalled Snaps loaded from disk during boot.
- * @param {() => Promise<void>)} requestSafeReload - A function that requests a safe reload of the extension.
  * @param {CronjobControllerStorageManager} cronjobControllerStorageManager - A storage manager for the CronjobController.
  */
 export function setupController(
@@ -1117,7 +1117,6 @@ export function setupController(
   stateMetadata,
   offscreenPromise,
   preinstalledSnaps,
-  requestSafeReload,
   cronjobControllerStorageManager,
 ) {
   //
@@ -1245,7 +1244,8 @@ export function setupController(
       controller.setupTrustedCommunication(portStream, remotePort.sender);
       trackAppOpened(processName);
 
-      initializeRemoteFeatureFlags();
+      // lazily update the remote feature flags every time the UI is opened.
+      updateRemoteFeatureFlags(controller);
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         openPopupCount += 1;
@@ -1484,22 +1484,6 @@ export function setupController(
     }
   }
 
-  /**
-   * Initializes remote feature flags by making a request to fetch them from the clientConfigApi.
-   * This function is called when MM is during internal process.
-   * If the request fails, the error will be logged but won't interrupt extension initialization.
-   *
-   * @returns {Promise<void>} A promise that resolves when the remote feature flags have been updated.
-   */
-  async function initializeRemoteFeatureFlags() {
-    try {
-      // initialize the request to fetch remote feature flags
-      await controller.remoteFeatureFlagController.updateRemoteFeatureFlags();
-    } catch (error) {
-      log.error('Error initializing remote feature flags:', error);
-    }
-  }
-
   function getPendingApprovalCount() {
     try {
       const pendingApprovalCount =
@@ -1654,15 +1638,16 @@ const addAppInstalledEvent = () => {
  *
  * @param {[chrome.runtime.InstalledDetails]} params - Array containing a single installation details object.
  */
-function handleOnInstalled([details]) {
+async function handleOnInstalled([details]) {
   if (details.reason === 'install') {
     onInstall();
-  } else if (
-    details.reason === 'update' &&
-    details.previousVersion &&
-    details.previousVersion !== platform.getVersion()
-  ) {
-    onUpdate(details.previousVersion);
+  } else if (details.reason === 'update') {
+    const { previousVersion } = details;
+    if (!previousVersion || previousVersion === platform.getVersion()) {
+      return;
+    }
+    await isInitialized;
+    onUpdate(controller, platform, previousVersion, requestSafeReload);
   }
 }
 
@@ -1684,33 +1669,6 @@ function onInstall() {
 async function handleSidePanelContextMenu() {
   await isInitialized;
   await initSidePanelContextMenu(controller);
-}
-
-// // On first install, open a new tab with MetaMask
-// async function onInstall() {
-//   const storeAlreadyExisted = Boolean(await localStore.get());
-//   // If the store doesn't exist, then this is the first time running this script,
-//   // and is therefore an install
-//   if (process.env.IN_TEST) {
-//     addAppInstalledEvent();
-//   } else if (!storeAlreadyExisted && !process.env.METAMASK_DEBUG) {
-//     addAppInstalledEvent();
-//     platform.openExtensionInBrowser();
-//   }
-// }
-
-/**
- * Trigger actions that should happen only upon update installation
- *
- * @param previousVersion
- */
-async function onUpdate(previousVersion) {
-  await isInitialized;
-  log.debug('Update installation detected');
-  controller.appStateController.setLastUpdatedAt(Date.now());
-  if (previousVersion) {
-    controller.appStateController.setLastUpdatedFromVersion(previousVersion);
-  }
 }
 
 /**
