@@ -2864,6 +2864,10 @@
     "message": "Initial allowance",
     "description": "Label for the initial allowance of a permission"
   },
+  "gatorPermissionsJustification": {
+    "message": "Justification",
+    "description": "Label for the justification"
+  },
   "gatorPermissionsMaxAllowance": {
     "message": "Max allowance",
     "description": "Label for the max allowance of a permission"
@@ -2887,10 +2891,6 @@
   "gatorPermissionsStreamingAmountLabel": {
     "message": "Streaming amount",
     "description": "Label for the stream rate of a permission"
-  },
-  "gatorPermissionsJustification": {
-    "message": "Justification",
-    "description": "Label for the justification"
   },
   "general": {
     "message": "General"
