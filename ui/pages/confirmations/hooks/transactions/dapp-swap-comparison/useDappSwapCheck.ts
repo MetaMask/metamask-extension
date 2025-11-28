@@ -27,7 +27,7 @@ export function useDappSwapCheck() {
       (type === TransactionType.contractInteraction ||
         type === TransactionType.batch)
     );
-  }, [origin, type]);
+  }, [dappSwapMetricsEnabled, origin, origins, type]);
 
   return {
     isSwapToBeCompared,
