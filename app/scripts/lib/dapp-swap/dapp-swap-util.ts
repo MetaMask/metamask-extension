@@ -115,6 +115,7 @@ export function getQuotesForConfirmation({
             quotesInput?.srcTokenAddress as Hex,
           );
           setDappSwapComparisonData(securityAlertId, {
+            commands,
             swapInfo: {
               srcTokenAddress: quotesInput?.srcTokenAddress as Hex,
               destTokenAddress: quotesInput?.destTokenAddress as Hex,
