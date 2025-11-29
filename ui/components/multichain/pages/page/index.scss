@@ -7,13 +7,6 @@
 
   transition: padding-top 0.3s ease-in-out, padding-bottom 0.3s ease-in-out;
 
-  &:not(.multichain-page--has-app-header) {
-    @media screen and (min-width: design-system.$screen-sm-min) and (min-height: $height-screen-sm-min) {
-      padding-top: 32px;
-      padding-bottom: 32px;
-    }
-  }
-
   &--has-app-header {
     & .multichain-page__inner-container {
       border-radius: 0 0 2px 2px;

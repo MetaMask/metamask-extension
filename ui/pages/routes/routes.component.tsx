@@ -700,7 +700,7 @@ export default function Routes() {
             authenticated
             path={IMPORT_SRP_ROUTE}
             component={ImportSrpPage}
-            layout={LegacyLayout}
+            layout={RootLayout}
           />
           <RouteWithLayout
             authenticated
