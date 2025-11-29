@@ -54,6 +54,10 @@ export function getApprovalFlows(state: ApprovalsMetaMaskState) {
   return state.metamask.approvalFlows;
 }
 
+export function selectHasApprovalFlows(state: ApprovalsMetaMaskState) {
+  return (state.metamask.approvalFlows?.length ?? 0) > 0;
+}
+
 export function getPendingApprovals(state: ApprovalsMetaMaskState) {
   return Object.values(state.metamask.pendingApprovals ?? {});
 }
@@ -101,7 +105,7 @@ export const selectPendingApproval = createDeepEqualSelector(
 
 export const getApprovalsByOrigin = (
   state: ApprovalsMetaMaskState,
-  origin: string,
+  origin: string | undefined,
 ) => {
   const pendingApprovals = getPendingApprovals(state);
 
