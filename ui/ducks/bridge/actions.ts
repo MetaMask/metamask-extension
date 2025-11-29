@@ -20,11 +20,11 @@ import {
   bridgeSlice,
   setSrcTokenExchangeRates,
   setTxAlerts,
-  setEVMSrcTokenBalance as setEVMSrcTokenBalance_,
+  setEVMSrcTokenBalance,
   setEVMSrcNativeBalance,
 } from './bridge';
 import { type TokenPayload } from './types';
-import { type BridgeAppState, getFromChain } from './selectors';
+import { type BridgeAppState, getFromAccount, getFromChain } from './selectors';
 
 const {
   setToChainId,
@@ -50,7 +50,6 @@ export {
   setWasTxDeclined,
   setSlippage,
   setTxAlerts,
-  setEVMSrcNativeBalance,
   restoreQuoteRequestFromState,
 };
 
@@ -109,20 +108,31 @@ export const updateQuoteRequestParams = (
   };
 };
 
-export const setEVMSrcTokenBalance = (
-  token: TokenPayload['payload'],
-  selectedAddress?: string,
-) => {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    if (token) {
-      await dispatch(
-        setEVMSrcTokenBalance_({
-          selectedAddress,
-          tokenAddress: token.address,
-          chainId: token.chainId,
-        }),
-      );
+export const setEvmBalances = (token: {
+  chainId: string | number;
+  address: string;
+}) => {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => BridgeAppState,
+  ) => {
+    const selectedAddress = getFromAccount(getState())?.address;
+    if (!selectedAddress) {
+      return;
     }
+    await dispatch(
+      setEVMSrcTokenBalance({
+        selectedAddress,
+        tokenAddress: token.address,
+        chainId: token.chainId,
+      }),
+    );
+    await dispatch(
+      setEVMSrcNativeBalance({
+        selectedAddress,
+        chainId: token.chainId,
+      }),
+    );
   };
 };
 

@@ -18,19 +18,12 @@ import {
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import {
-  setEVMSrcTokenBalance,
-  setEVMSrcNativeBalance,
+  setEvmBalances,
   setFromToken,
   setFromTokenInputValue,
   setToToken,
 } from '../../ducks/bridge/actions';
-import {
-  getFromAccount,
-  getFromChain,
-  getFromChains,
-  getFromToken,
-} from '../../ducks/bridge/selectors';
-import { type BridgeNetwork } from '../../ducks/bridge/types';
+import { getFromChain, getFromToken } from '../../ducks/bridge/selectors';
 
 const parseAsset = (assetId: string | null) => {
   if (!assetId) {
@@ -77,10 +70,8 @@ const fetchAssetMetadata = async (
  */
 export const useBridgeQueryParams = () => {
   const dispatch = useDispatch();
-  const fromChains = useSelector(getFromChains);
   const fromChain = useSelector(getFromChain);
   const fromToken = useSelector(getFromToken);
-  const selectedAccount = useSelector(getFromAccount);
 
   const abortController = useRef<AbortController>(new AbortController());
 
@@ -208,7 +199,7 @@ export const useBridgeQueryParams = () => {
 
   // Main effect to orchestrate the parameter processing
   useEffect(() => {
-    if (!parsedFromAssetId || !assetMetadataByAssetId || !fromChains.length) {
+    if (!parsedFromAssetId || !assetMetadataByAssetId) {
       return;
     }
 
@@ -220,7 +211,7 @@ export const useBridgeQueryParams = () => {
 
     // Process from chain/token first
     setFromChainAndToken(fromTokenMetadata);
-  }, [assetMetadataByAssetId, parsedFromAssetId, fromChains]);
+  }, [assetMetadataByAssetId, parsedFromAssetId]);
 
   // Set toChainId and toToken
   useEffect(() => {
@@ -267,18 +258,17 @@ export const useBridgeQueryParams = () => {
       // Wait for url params to be applied
       !parsedFromAssetId &&
       !searchParams.get(BridgeQueryParams.FROM) &&
-      fromToken &&
+      fromToken?.chainId &&
       // Wait for network to be changed if needed
-      !isCrossChain(fromToken.chainId, fromChain?.chainId) &&
-      selectedAccount
+      !isCrossChain(fromToken.chainId, fromChain?.chainId)
     ) {
-      dispatch(setEVMSrcTokenBalance(fromToken, selectedAccount.address));
-      dispatch(
-        setEVMSrcNativeBalance({
-          selectedAddress: selectedAccount.address,
-          chainId: fromToken.chainId,
-        }),
-      );
+      dispatch(setEvmBalances(fromToken));
     }
-  }, [parsedFromAssetId, selectedAccount, fromToken, fromChain, searchParams]);
+  }, [
+    parsedFromAssetId,
+    fromToken?.chainId,
+    fromToken?.address,
+    fromChain?.chainId,
+    searchParams,
+  ]);
 };
