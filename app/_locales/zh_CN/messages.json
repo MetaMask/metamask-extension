@@ -4988,9 +4988,6 @@
   "recipientEditAriaLabel": {
     "message": "编辑收款人"
   },
-  "recipientPlaceholder": {
-    "message": "输入或粘贴有效地址"
-  },
   "recoveryPhraseReminderBackupStart": {
     "message": "立即备份"
   },
