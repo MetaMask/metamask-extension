@@ -4,7 +4,7 @@ import {
   WINDOW_TITLES,
   convertETHToHexGwei,
 } from '../helpers';
-import FixtureBuilder from '../fixture-builder';
+import FixtureBuilder from '../fixtures/fixture-builder';
 import {
   BUNDLER_URL,
   DAPP_PATH,
