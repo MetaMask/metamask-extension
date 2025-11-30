@@ -169,7 +169,9 @@ export function useGatorPermissionTokenInfo(
       }
 
       if (!tokenAddress || !chainId) {
+        setFetchedTokenInfo(null);
         setIsFetching(false);
+        setError(null);
         return;
       }
 
