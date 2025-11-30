@@ -1,5 +1,10 @@
 {
   "resources": {
+    "react-router-dom": {
+      "globals": {
+        "history": true
+      }
+    },
     "@metamask/snaps-execution-environments": {
       "packages": {
         "@metamask/post-message-stream": true,

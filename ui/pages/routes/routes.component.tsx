@@ -18,7 +18,6 @@ import Loading from '../../components/ui/loading-screen';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
 import {
-  NetworkListMenu,
   ImportNftsModal,
   ImportTokensModal,
 } from '../../components/multichain';
@@ -83,7 +82,6 @@ import {
   getUnapprovedTransactions,
   getPendingApprovals,
 } from '../../selectors';
-import { getApprovalFlows } from '../../selectors/approvals';
 
 import {
   hideImportNftsModal,
@@ -91,14 +89,12 @@ import {
   setCurrentCurrency,
   setLastActiveTime,
   toggleAccountMenu,
-  toggleNetworkMenu,
   hideImportTokensModal,
   hideDeprecatedNetworkModal,
   automaticallySwitchNetwork,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   hideKeyringRemovalResultModal,
   ///: END:ONLY_INCLUDE_IF
-  setEditedNetwork,
 } from '../../store/actions';
 import { pageChanged } from '../../ducks/history/history';
 import {
@@ -108,7 +104,6 @@ import {
 import { useI18nContext } from '../../hooks/useI18nContext';
 import RewardsPage from '../rewards';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
-import { getConfirmationRoute } from '../confirmations/hooks/useConfirmationNavigation';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
@@ -157,6 +152,8 @@ import {
   isConfirmTransactionRoute,
   setTheme,
 } from './utils';
+import { ConfirmationHandler } from './confirmation-handler';
+import { Modals } from './modals';
 
 // TODO: Fix `as unknown as` casting once `mmLazy` is updated to handle named exports, wrapped components, and other React module types.
 // Casting is preferable over `@ts-expect-error` annotations in this case,
@@ -372,7 +369,6 @@ export default function RoutesComponent() {
   );
   const pendingApprovals = useAppSelector(getPendingApprovals);
   const transactionsMetadata = useAppSelector(getUnapprovedTransactions);
-  const approvalFlows = useAppSelector(getApprovalFlows);
 
   const textDirection = useAppSelector((state) => state.metamask.textDirection);
   const isUnlocked = useAppSelector(getIsUnlocked);
@@ -395,9 +391,7 @@ export default function RoutesComponent() {
   const isAccountMenuOpen = useAppSelector(
     (state) => state.appState.isAccountMenuOpen,
   );
-  const isNetworkMenuOpen = useAppSelector(
-    (state) => state.appState.isNetworkMenuOpen,
-  );
+
   const isImportTokensModalOpen = useAppSelector(
     (state) => state.appState.importTokensModalOpen,
   );
@@ -508,52 +502,6 @@ export default function RoutesComponent() {
       dispatch(setCurrentCurrency('usd'));
     }
   }, [currentCurrency, dispatch]);
-
-  // Navigate to confirmations when there are pending approvals and user is on asset details page
-  // This behavior is only enabled in sidepanel to avoid interfering with popup/extension flows
-  useEffect(() => {
-    const windowType = getEnvironmentType();
-
-    // Only run this navigation logic in sidepanel
-    if (windowType !== ENVIRONMENT_TYPE_SIDEPANEL) {
-      return;
-    }
-
-    // Only navigate to confirmations when user is on an asset details page
-    const isOnAssetDetailsPage = location.pathname.startsWith(ASSET_ROUTE);
-
-    // Network operations (addEthereumChain, switchEthereumChain) have their own UI
-    // and shouldn't trigger auto-navigation
-    const hasNonNavigableApprovals = pendingApprovals.some(
-      (approval) =>
-        approval.type === 'wallet_addEthereumChain' ||
-        approval.type === 'wallet_switchEthereumChain',
-    );
-
-    if (
-      isOnAssetDetailsPage &&
-      !hasNonNavigableApprovals &&
-      isUnlocked &&
-      (pendingApprovals.length > 0 || approvalFlows?.length > 0)
-    ) {
-      const url = getConfirmationRoute(
-        pendingApprovals[0]?.id,
-        pendingApprovals,
-        Boolean(approvalFlows?.length),
-        '', // queryString
-      );
-
-      if (url) {
-        navigate(url, { replace: true });
-      }
-    }
-  }, [
-    isUnlocked,
-    pendingApprovals,
-    approvalFlows,
-    navigate,
-    location.pathname,
-  ]);
 
   // Define all routes using createRouteWithLayout
   const routeConfig = useMemo(
@@ -925,6 +873,7 @@ export default function RoutesComponent() {
       })}
       dir={textDirection}
     >
+      <ConfirmationHandler />
       <QRHardwarePopover />
       <Modal />
       <Alert visible={alertOpen} msg={alertMessage} />
@@ -932,14 +881,7 @@ export default function RoutesComponent() {
         <MultichainMetaFoxLogo />
       )}
       {isAccountMenuOpen ? accountListMenu : null}
-      {isNetworkMenuOpen ? (
-        <NetworkListMenu
-          onClose={() => {
-            dispatch(toggleNetworkMenu());
-            dispatch(setEditedNetwork());
-          }}
-        />
-      ) : null}
+
       <NetworkConfirmationPopover />
       {isImportNftsModalOpen ? (
         <ImportNftsModal onClose={() => dispatch(hideImportNftsModal())} />
@@ -980,6 +922,7 @@ export default function RoutesComponent() {
 
       {isUnlocked ? <Alerts /> : null}
       <ToastMaster />
+      <Modals />
     </div>
   );
 }

@@ -25,7 +25,6 @@ import {
   hasPendingApprovals,
   getSelectedInternalAccount,
   getEditedNetwork,
-  selectPendingApprovalsForNavigation,
   getShowUpdateModal,
   getIsSocialLoginFlow,
   getShowShieldEntryModal,
@@ -75,7 +74,6 @@ import { getIsBrowserDeprecated } from '../../helpers/utils/util';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
-  ENVIRONMENT_TYPE_SIDEPANEL,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
   ///: END:ONLY_INCLUDE_IF
@@ -97,8 +95,6 @@ const mapStateToProps = (state) => {
     seedPhraseBackedUp,
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
-    swapsState,
-    quotes,
     dataCollectionForMarketing,
     participateInMetaMetrics,
     firstTimeFlowType,
@@ -109,13 +105,11 @@ const mapStateToProps = (state) => {
   const { address: selectedAddress } = selectedAccount;
   const totalUnapprovedCount = getTotalUnapprovedCount(state);
   const swapsEnabled = getSwapsFeatureIsLive(state);
-  const pendingApprovals = selectPendingApprovalsForNavigation(state);
   const redirectAfterDefaultPage = getRedirectAfterDefaultPage(state);
 
   const envType = getEnvironmentType();
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
   const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
-  const isSidepanel = envType === ENVIRONMENT_TYPE_SIDEPANEL;
 
   const originOfCurrentTab = getOriginOfCurrentTab(state);
   const shouldShowWeb3ShimUsageNotification =
@@ -152,7 +146,6 @@ const mapStateToProps = (state) => {
     isPopup,
     isNotification,
     dataCollectionForMarketing,
-    isSidepanel,
     selectedAddress,
     totalUnapprovedCount,
     participateInMetaMetrics,
@@ -161,14 +154,9 @@ const mapStateToProps = (state) => {
     defaultHomeActiveTabName,
     firstTimeFlowType,
     completedOnboarding,
-    haveSwapsQuotes: Boolean(Object.values(swapsState.quotes || {}).length),
-    swapsFetchParams: swapsState.fetchParams,
-    showAwaitingSwapScreen: swapsState.routeState === 'awaiting',
-    haveBridgeQuotes: Boolean(Object.values(quotes || {}).length),
     isMainnet: getIsMainnet(state),
     originOfCurrentTab,
     shouldShowWeb3ShimUsageNotification,
-    pendingApprovals,
     infuraBlocked: getInfuraBlocked(state),
     announcementsToShow: getSortedAnnouncementsToShow(state).length > 0,
     showWhatsNewPopup,

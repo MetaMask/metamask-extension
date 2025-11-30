@@ -865,7 +865,7 @@
         "@metamask/keyring-snap-client": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/phishing-controller": true,
-        "@metamask/bridge-controller>@metamask/polling-controller": true,
+        "@metamask/assets-controllers>@metamask/polling-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
@@ -1751,6 +1751,18 @@
         "@ethereumjs/tx>ethereum-cryptography": true,
         "webpack-cli>fastest-levenshtein": true,
         "punycode": true
+      }
+    },
+    "@metamask/assets-controllers>@metamask/polling-controller": {
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "uuid": true
       }
     },
     "@metamask/bridge-controller>@metamask/polling-controller": {
@@ -5030,7 +5042,7 @@
         "addEventListener": true,
         "confirm": true,
         "document": true,
-        "history": true,
+        "history.scrollRestoration": true,
         "location.href": true,
         "removeEventListener": true,
         "scrollTo": true,

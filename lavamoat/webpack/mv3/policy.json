@@ -3555,7 +3555,7 @@
         "addEventListener": true,
         "confirm": true,
         "document": true,
-        "history": true,
+        "history.scrollRestoration": true,
         "location.href": true,
         "removeEventListener": true,
         "scrollTo": true,

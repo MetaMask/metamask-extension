@@ -1641,6 +1641,9 @@ const selectSnapId = (_state, snapId) => snapId;
  */
 export const selectInstalledSnaps = (state) => state.metamask.snaps;
 
+export const selectIsNetworkMenuOpen = (state) =>
+  state.appState.isNetworkMenuOpen;
+
 /**
  * Retrieve registry data for requested Snap.
  *
@@ -1984,6 +1987,10 @@ export function getIsSwapsChain(state, overrideChainId) {
   return isDevelopment
     ? ALLOWED_DEV_SWAPS_CHAIN_IDS.includes(chainId)
     : ALLOWED_PROD_SWAPS_CHAIN_IDS.includes(chainId);
+}
+
+export function selectHasBridgeQuotes(state) {
+  return Boolean(Object.values(state.metamask.quotes || {}).length);
 }
 
 /**
