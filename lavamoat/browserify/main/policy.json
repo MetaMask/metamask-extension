@@ -4690,7 +4690,7 @@
         "confirm": true,
         "define": true,
         "document": true,
-        "history.scrollRestoration": true,
+        "history": true,
         "location.href": true,
         "removeEventListener": true,
         "scrollTo": true,

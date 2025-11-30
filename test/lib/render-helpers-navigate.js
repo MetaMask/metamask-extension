@@ -147,7 +147,8 @@ export const renderHookWithProviderTyped = (
   pathname = '/',
   Container,
   getMockTrackEvent = () => () => Promise.resolve(),
-) => renderHookWithProvider(hook, state, pathname, Container, getMockTrackEvent);
+) =>
+  renderHookWithProvider(hook, state, pathname, Container, getMockTrackEvent);
 
 export function renderWithLocalization(component) {
   const Wrapper = ({ children }) => (
