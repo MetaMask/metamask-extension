@@ -44,7 +44,7 @@ export const PermissionItem: React.FC<PermissionItemProps> = ({
   const networkConfig = networkConfigurationsByCaipChainId?.[caipChainId];
 
   // Use the hook to fetch token information (handles both native and ERC-20 tokens)
-  const { tokenInfo, loading } = useGatorPermissionTokenInfo(
+  const { tokenInfo } = useGatorPermissionTokenInfo(
     permissionData.tokenAddress as string | undefined,
     permission.chainId,
     permission.permissionType,
@@ -52,7 +52,7 @@ export const PermissionItem: React.FC<PermissionItemProps> = ({
 
   // Extract symbol and decimals from tokenInfo for backward compatibility
   const resolvedTokenInfo = {
-    symbol: loading ? 'Unknown amount' : tokenInfo.symbol,
+    symbol: tokenInfo.symbol,
     decimals: tokenInfo.decimals,
   };
 
