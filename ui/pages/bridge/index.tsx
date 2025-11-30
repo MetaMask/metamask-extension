@@ -13,6 +13,7 @@ import {
   AWAITING_SIGNATURES_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
+import { toRelativeRoutePath } from '../routes/utils';
 import { resetBackgroundSwapsState } from '../../store/actions';
 import {
   ButtonIcon,
@@ -147,7 +148,7 @@ const CrossChainSwap = () => {
       <Content padding={0}>
         <Routes>
           <Route
-            path={PREPARE_SWAP_ROUTE}
+            path={toRelativeRoutePath(PREPARE_SWAP_ROUTE)}
             element={
               <>
                 <BridgeTransactionSettingsModal
@@ -163,7 +164,7 @@ const CrossChainSwap = () => {
             }
           />
           <Route
-            path={AWAITING_SIGNATURES_ROUTE}
+            path={toRelativeRoutePath(AWAITING_SIGNATURES_ROUTE)}
             element={
               <>
                 <Content>

@@ -426,6 +426,23 @@ export function getRelativeLocationForNestedRoutes(location, basePath) {
 }
 
 /**
+ * Converts an absolute route path to a relative path for use with nested Routes.
+ *
+ * When using nested `<Routes>` components inside a parent route with `/*`,
+ * child routes need to use relative paths (without the parent's base path prefix).
+ * This function strips the base path and leading slash to create a truly relative path.
+ *
+ * @param {string} absolutePath - The full absolute path (e.g., '/onboarding/completion')
+ * @param {string} [basePath] - The base path to remove (e.g., '/onboarding'). Defaults to empty string.
+ * @returns {string} The relative path suitable for nested Route matching
+ * (e.g., 'completion' or '/' for the base route)
+ */
+export function toRelativeRoutePath(absolutePath, basePath = '') {
+  const relativePath = absolutePath.replace(basePath, '').replace(/^\//u, '');
+  return relativePath || '/';
+}
+
+/**
  * Extracts the transaction ID from a URL pathname.
  *
  * @param {string} pathname - The URL pathname (e.g., '/confirm-transaction/123?query=foo').

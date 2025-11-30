@@ -172,6 +172,11 @@
         "history": true
       }
     },
+    "react-router-dom>@remix-run/router": {
+      "globals": {
+        "history": true
+      }
+    },
     "@metamask/multichain-network-controller": {
       "packages": {
         "@metamask/multichain-network-controller>@metamask/keyring-api": true

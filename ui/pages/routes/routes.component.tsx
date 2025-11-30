@@ -4,12 +4,7 @@
 import classnames from 'classnames';
 import React, { Suspense, useEffect, useMemo, useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import {
-  useRoutes,
-  useNavigate,
-  useLocation,
-  useNavigationType,
-} from 'react-router-dom';
+import { useRoutes, useLocation, useNavigationType } from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
 import type { ApprovalType } from '@metamask/controller-utils';
 
@@ -347,7 +342,6 @@ const MemoizedReviewPermissionsWrapper = React.memo(() => (
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function RoutesComponent() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const location = useLocation();
   const navType = useNavigationType();
 
@@ -594,7 +588,7 @@ export default function RoutesComponent() {
         authenticated: true,
       }),
       createRouteWithLayout({
-        path: `${CONFIRM_TRANSACTION_ROUTE}/:id?`,
+        path: `${CONFIRM_TRANSACTION_ROUTE}/:id?/*`,
         component: ConfirmTransaction,
         layout: LegacyLayout,
         authenticated: true,

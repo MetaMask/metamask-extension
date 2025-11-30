@@ -2275,7 +2275,8 @@
         "URL": true,
         "URLSearchParams": true,
         "console": true,
-        "document.defaultView": true
+        "document.defaultView": true,
+        "history": true
       }
     },
     "@rive-app/react-canvas>@rive-app/canvas": {
@@ -3783,6 +3784,11 @@
     "he": {
       "globals": {
         "define": true
+      }
+    },
+    "history": {
+      "globals": {
+        "history": true
       }
     },
     "@toruslabs/eccrypto>elliptic>hmac-drbg": {

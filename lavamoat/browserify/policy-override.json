@@ -1,6 +1,16 @@
 {
   "resources": {
+    "history": {
+      "globals": {
+        "history": true
+      }
+    },
     "react-router-dom": {
+      "globals": {
+        "history": true
+      }
+    },
+    "react-router-dom>@remix-run/router": {
       "globals": {
         "history": true
       }

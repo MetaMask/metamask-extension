@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext, useMemo } from 'react';
 import {
-  Routes as Switch,
+  Routes,
   Route,
   useNavigate,
   useLocation,
@@ -18,6 +18,7 @@ import {
   ONBOARDING_UNLOCK_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
   DEFAULT_ROUTE,
+  ONBOARDING_ROUTE,
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
@@ -29,6 +30,7 @@ import {
   ONBOARDING_REVEAL_SRP_ROUTE,
   ONBOARDING_DOWNLOAD_APP_ROUTE,
 } from '../../helpers/constants/routes';
+import { toRelativeRoutePath } from '../routes/utils';
 import {
   getCompletedOnboarding,
   getIsPrimarySeedPhraseBackedUp,
@@ -85,6 +87,9 @@ import AccountExist from './account-exist/account-exist';
 import AccountNotFound from './account-not-found/account-not-found';
 import RevealRecoveryPhrase from './recovery-phrase/reveal-recovery-phrase';
 import OnboardingDownloadApp from './download-app/download-app';
+
+// Helper to convert onboarding paths to relative paths for nested route matching
+const toRelativePath = (path) => toRelativeRoutePath(path, ONBOARDING_ROUTE);
 
 export default function OnboardingFlow() {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
@@ -280,14 +285,17 @@ export default function OnboardingFlow() {
         marginInline="auto"
         borderColor={BorderColor.borderMuted}
       >
-        <Switch>
-          <Route path={ONBOARDING_ACCOUNT_EXIST} element={<AccountExist />} />
+        <Routes>
           <Route
-            path={ONBOARDING_ACCOUNT_NOT_FOUND}
+            path={toRelativePath(ONBOARDING_ACCOUNT_EXIST)}
+            element={<AccountExist />}
+          />
+          <Route
+            path={toRelativePath(ONBOARDING_ACCOUNT_NOT_FOUND)}
             element={<AccountNotFound />}
           />
           <Route
-            path={ONBOARDING_CREATE_PASSWORD_ROUTE}
+            path={toRelativePath(ONBOARDING_CREATE_PASSWORD_ROUTE)}
             element={
               <CreatePassword
                 createNewAccount={handleCreateNewAccount}
@@ -297,7 +305,7 @@ export default function OnboardingFlow() {
             }
           />
           <Route
-            path={ONBOARDING_REVEAL_SRP_ROUTE}
+            path={toRelativePath(ONBOARDING_REVEAL_SRP_ROUTE)}
             element={
               <RevealRecoveryPhrase
                 setSecretRecoveryPhrase={setSecretRecoveryPhrase}
@@ -305,7 +313,7 @@ export default function OnboardingFlow() {
             }
           />
           <Route
-            path={ONBOARDING_REVIEW_SRP_ROUTE}
+            path={toRelativePath(ONBOARDING_REVIEW_SRP_ROUTE)}
             element={
               <ReviewRecoveryPhrase
                 secretRecoveryPhrase={secretRecoveryPhrase}
@@ -313,7 +321,7 @@ export default function OnboardingFlow() {
             }
           />
           <Route
-            path={ONBOARDING_CONFIRM_SRP_ROUTE}
+            path={toRelativePath(ONBOARDING_CONFIRM_SRP_ROUTE)}
             element={
               <ConfirmRecoveryPhrase
                 secretRecoveryPhrase={secretRecoveryPhrase}
@@ -321,57 +329,51 @@ export default function OnboardingFlow() {
             }
           />
           <Route
-            path={ONBOARDING_IMPORT_WITH_SRP_ROUTE}
+            path={toRelativePath(ONBOARDING_IMPORT_WITH_SRP_ROUTE)}
             element={
               <ImportSRP submitSecretRecoveryPhrase={setSecretRecoveryPhrase} />
             }
           />
           <Route
-            path={ONBOARDING_UNLOCK_ROUTE}
-            element={
-              <Unlock
-                onSubmit={handleUnlock}
-                navigate={navigate}
-                location={location}
-              />
-            }
+            path={toRelativePath(ONBOARDING_UNLOCK_ROUTE)}
+            element={<Unlock onSubmit={handleUnlock} />}
           />
           <Route
-            path={ONBOARDING_PRIVACY_SETTINGS_ROUTE}
+            path={toRelativePath(ONBOARDING_PRIVACY_SETTINGS_ROUTE)}
             element={<PrivacySettings />}
           />
           <Route
-            path={ONBOARDING_COMPLETION_ROUTE}
+            path={toRelativePath(ONBOARDING_COMPLETION_ROUTE)}
             element={<CreationSuccessful />}
           />
           <Route
-            path={ONBOARDING_WELCOME_ROUTE}
+            path={toRelativePath(ONBOARDING_WELCOME_ROUTE)}
             element={<OnboardingWelcome />}
           />
           <Route
-            path={ONBOARDING_PIN_EXTENSION_ROUTE}
+            path={toRelativePath(ONBOARDING_PIN_EXTENSION_ROUTE)}
             element={<OnboardingPinExtension />}
           />
           <Route
-            path={ONBOARDING_METAMETRICS}
+            path={toRelativePath(ONBOARDING_METAMETRICS)}
             element={<MetaMetricsComponent />}
           />
           <Route
-            path={ONBOARDING_DOWNLOAD_APP_ROUTE}
+            path={toRelativePath(ONBOARDING_DOWNLOAD_APP_ROUTE)}
             element={<OnboardingDownloadApp />}
           />
           {
             ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
           }
           <Route
-            path={ONBOARDING_EXPERIMENTAL_AREA}
+            path={toRelativePath(ONBOARDING_EXPERIMENTAL_AREA)}
             element={<ExperimentalArea redirectTo={ONBOARDING_WELCOME_ROUTE} />}
           />
           {
             ///: END:ONLY_INCLUDE_IF
           }
           <Route path="*" element={<OnboardingFlowSwitch />} />
-        </Switch>
+        </Routes>
       </Box>
       {isLoading && <LoadingScreen />}
     </Box>
