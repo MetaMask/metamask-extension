@@ -6315,6 +6315,9 @@
   "shieldFooterAgreement": {
     "message": "By continuing, I agree to Transaction Shield $1."
   },
+  "shieldManagePlan": {
+    "message": "Manage plan"
+  },
   "shieldNotCovered": {
     "message": "Not covered"
   },

@@ -55,6 +55,7 @@ import {
   DEFAULT_ROUTE,
   SHIELD_PLAN_ROUTE,
   TRANSACTION_SHIELD_CLAIM_ROUTES,
+  TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE,
 } from '../../../helpers/constants/routes';
 import { TRANSACTION_SHIELD_LINK } from '../../../helpers/constants/common';
 import { getProductPrice } from '../../shield-plan/utils';
@@ -931,6 +932,13 @@ const TransactionShield = () => {
             handlePaymentError,
             'shield-detail-renew-button',
           )}
+        {buttonRow(
+          t('shieldManagePlan'),
+          () => {
+            navigate(TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE);
+          },
+          'shield-detail-manage-plan-button',
+        )}
       </Box>
 
       <Box className="transaction-shield-page__container">
