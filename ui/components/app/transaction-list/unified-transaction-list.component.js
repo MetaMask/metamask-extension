@@ -15,12 +15,10 @@ import { TransactionType as KeyringTransactionType } from '@metamask/keyring-api
 import {
   nonceSortedCompletedTransactionsSelectorAllChains,
   nonceSortedPendingTransactionsSelectorAllChains,
+  getAllNetworkTransactions,
+  groupAndSortTransactionsByNonce,
 } from '../../../selectors/transactions';
-import {
-  getSelectedAccount,
-  getSelectedMultichainNetworkChainId,
-  getEnabledNetworks,
-} from '../../../selectors';
+import { getSelectedAccount, getEnabledNetworks } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import MultichainBridgeTransactionListItem from '../multichain-bridge-transaction-list-item/multichain-bridge-transaction-list-item';
 import MultichainBridgeTransactionDetailsModal from '../multichain-bridge-transaction-details-modal/multichain-bridge-transaction-details-modal';
@@ -34,12 +32,9 @@ import {
 } from '../../../helpers/constants/transactions';
 import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants/swaps';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
-import {
-  getAllEnabledNetworksForAllNamespaces,
-  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-  getSelectedMultichainNetworkConfiguration,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../../selectors/multichain/networks';
+///: BEGIN:ONLY_INCLUDE_IF(multichain)
+import { getSelectedMultichainNetworkConfiguration } from '../../../selectors/multichain/networks';
+///: END:ONLY_INCLUDE_IF
 
 import {
   Box,
@@ -92,7 +87,10 @@ import {
   selectBridgeHistoryForAccountGroup,
   selectBridgeHistoryItemForTxMetaId,
 } from '../../../ducks/bridge-status/selectors';
-import { getSelectedAccountGroupMultichainTransactions } from '../../../selectors/multichain-transactions';
+import {
+  getSelectedAccountGroupMultichainTransactions,
+  getSelectedAccountGroupEvmAddresses,
+} from '../../../selectors/multichain-transactions';
 import { TransactionActivityEmptyState } from '../transaction-activity-empty-state';
 
 const PAGE_DAYS_INCREMENT = 10;
@@ -283,6 +281,7 @@ export const filterNonEvmTxByToken = (
 };
 
 function filterNonEvmTxByChainIds(nonEvmTransactions, chainIds) {
+  // If no chain IDs are specified, return empty (respect the filter)
   if (!chainIds || chainIds.length === 0) {
     return { transactions: [] };
   }
@@ -382,13 +381,22 @@ function getFilteredChainIds(enabledNetworks, tokenChainIdOverride) {
     };
   }
 
-  const filteredUniqueEVMChainIds = Object.keys(enabledNetworks?.eip155) ?? [];
+  // Only include chain IDs where enabled is true
+  const eip155Networks = enabledNetworks?.eip155 ?? {};
+  const filteredUniqueEVMChainIds = Object.entries(eip155Networks)
+    .filter(([, enabled]) => enabled)
+    .map(([chainId]) => chainId);
+
   const filteredUniqueNonEvmChainIds = [
     ...new Set(
-      Object.keys(enabledNetworks)
+      Object.keys(enabledNetworks ?? {})
         .filter((namespace) => namespace !== 'eip155')
         .reduce((acc, namespace) => {
-          return [...acc, ...Object.keys(enabledNetworks[namespace])];
+          const namespaceNetworks = enabledNetworks[namespace] ?? {};
+          const enabledChainIds = Object.entries(namespaceNetworks)
+            .filter(([, enabled]) => enabled)
+            .map(([chainId]) => chainId);
+          return [...acc, ...enabledChainIds];
         }, []),
     ),
   ];
@@ -416,6 +424,13 @@ export default function UnifiedTransactionList({
     tokenChainIdOverride,
   );
 
+  // Get all EVM addresses in the selected account group
+  // This allows us to show transactions from all EVM accounts in the group,
+  // not just the currently selected account (which might be non-EVM)
+  const accountGroupEvmAddresses = useSelector(
+    getSelectedAccountGroupEvmAddresses,
+  );
+
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const [selectedTransaction, setSelectedTransaction] = useState(null);
 
@@ -429,59 +444,103 @@ export default function UnifiedTransactionList({
   );
   ///: END:ONLY_INCLUDE_IF
 
+  // Get all EVM transactions (not filtered by selected account)
+  const allEvmTransactions = useSelector(getAllNetworkTransactions);
+
   const unfilteredPendingTransactionsAllChains = useSelector(
     nonceSortedPendingTransactionsSelectorAllChains,
   );
 
+  // Filter pending transactions by account group and enabled chains
   const unfilteredPendingTransactions = useMemo(() => {
+    // If no EVM networks are enabled, return empty (respect the filter)
+    if (evmChainIds.length === 0) {
+      return [];
+    }
+
+    if (accountGroupEvmAddresses.length > 0) {
+      // Filter all transactions to only pending ones from account group and enabled chains
+      const pendingFromGroup = allEvmTransactions.filter((tx) => {
+        const fromAddress = tx.txParams?.from?.toLowerCase();
+        const isPending =
+          tx.status === 'submitted' ||
+          tx.status === 'approved' ||
+          tx.status === 'signed' ||
+          tx.status === 'unapproved';
+        const isEnabledChain = evmChainIds.includes(tx.chainId);
+        return (
+          accountGroupEvmAddresses.includes(fromAddress) &&
+          isPending &&
+          isEnabledChain
+        );
+      });
+      return groupAndSortTransactionsByNonce(pendingFromGroup);
+    }
     return unfilteredPendingTransactionsAllChains;
-  }, [unfilteredPendingTransactionsAllChains]);
+  }, [
+    evmChainIds,
+    accountGroupEvmAddresses,
+    allEvmTransactions,
+    unfilteredPendingTransactionsAllChains,
+  ]);
 
   const unfilteredCompletedTransactionsAllChains = useSelector(
     nonceSortedCompletedTransactionsSelectorAllChains,
   );
 
-  const enabledNetworksForAllNamespaces = useSelector(
-    getAllEnabledNetworksForAllNamespaces,
-  );
-  const currentMultichainChainId = useSelector(
-    getSelectedMultichainNetworkChainId,
-  );
-
-  const enabledNetworksFilteredCompletedTransactions = useMemo(() => {
-    if (!currentMultichainChainId) {
-      return unfilteredCompletedTransactionsAllChains;
+  // Filter completed EVM transactions to include those from ANY account in the group
+  // This is important when a non-EVM account is selected - we still want to show
+  // EVM transactions from the EVM accounts in the same account group
+  const accountGroupFilteredCompletedTransactions = useMemo(() => {
+    // If we have account group addresses, use all EVM transactions filtered by those addresses
+    if (accountGroupEvmAddresses.length > 0) {
+      return allEvmTransactions.filter((tx) => {
+        const fromAddress = tx.txParams?.from?.toLowerCase();
+        return accountGroupEvmAddresses.includes(fromAddress);
+      });
     }
-
-    // If no networks are enabled for this namespace, return empty array
-    if (enabledNetworksForAllNamespaces.length === 0) {
-      return [];
-    }
-
-    const transactionsToFilter = unfilteredCompletedTransactionsAllChains;
-
-    // Filter transactions to only include those from enabled networks
-    const filteredTransactions = transactionsToFilter.filter(
-      (transactionGroup) => {
-        const transactionChainId = transactionGroup.initialTransaction?.chainId;
-        const isIncluded =
-          enabledNetworksForAllNamespaces.includes(transactionChainId);
-        return isIncluded;
-      },
-    );
-
-    return filteredTransactions;
+    // Fallback to the selector-filtered transactions if no account group addresses
+    return unfilteredCompletedTransactionsAllChains
+      .flatMap((group) => group.transactions || [group.initialTransaction])
+      .filter(Boolean);
   }, [
-    enabledNetworksForAllNamespaces,
-    currentMultichainChainId,
+    accountGroupEvmAddresses,
+    allEvmTransactions,
     unfilteredCompletedTransactionsAllChains,
   ]);
 
+  const enabledNetworksFilteredCompletedTransactions = useMemo(() => {
+    // If no EVM networks are enabled in the filter, return empty (respect the filter)
+    if (evmChainIds.length === 0) {
+      return [];
+    }
+
+    // Get transactions from account group and filter by enabled chains
+    const transactionsToFilter =
+      accountGroupEvmAddresses.length > 0
+        ? accountGroupFilteredCompletedTransactions
+        : unfilteredCompletedTransactionsAllChains.flatMap(
+            (group) => group.transactions || [group.initialTransaction],
+          );
+
+    const filteredTransactions = transactionsToFilter.filter((tx) => {
+      const transactionChainId = tx?.chainId;
+      return evmChainIds.includes(transactionChainId);
+    });
+
+    return groupAndSortTransactionsByNonce(filteredTransactions);
+  }, [
+    evmChainIds,
+    accountGroupEvmAddresses,
+    accountGroupFilteredCompletedTransactions,
+    unfilteredCompletedTransactionsAllChains,
+  ]);
+
+  // Pass the enabled non-EVM chain IDs to buildUnifiedActivityItems for filtering
+  // If empty, filterNonEvmTxByChainIds will return no transactions (respects the filter)
   const enabledNonEvmChainIds = useMemo(() => {
-    return nonEvmChainIds.filter((chainId) =>
-      enabledNetworksForAllNamespaces.includes(chainId),
-    );
-  }, [nonEvmChainIds, enabledNetworksForAllNamespaces]);
+    return nonEvmChainIds;
+  }, [nonEvmChainIds]);
 
   const unifiedActivityItems = useMemo(() => {
     return buildUnifiedActivityItems(

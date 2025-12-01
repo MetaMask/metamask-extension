@@ -1,4 +1,4 @@
-import { Transaction } from '@metamask/keyring-api';
+import { Transaction, isEvmAccountType } from '@metamask/keyring-api';
 import type { DefaultRootState } from 'react-redux';
 import type { MultichainState } from './multichain';
 import {
@@ -21,6 +21,37 @@ type NonEvmTransactionsMap = Record<
 >;
 
 type RootState = MultichainState & MultichainAccountsState & DefaultRootState;
+
+/**
+ * Gets all EVM account addresses from the selected account group.
+ * This is useful for filtering EVM transactions to show transactions
+ * from all EVM accounts in the group, not just the selected account.
+ *
+ * @param state - The Redux state
+ * @returns An array of EVM addresses in the selected account group
+ */
+export function getSelectedAccountGroupEvmAddresses(
+  state: MultichainAccountsState,
+): string[] {
+  const selectedGroupId = getSelectedAccountGroup(state);
+
+  const groupsWithAccounts = getAccountGroupWithInternalAccounts(
+    state,
+  ) as AccountGroupWithInternalAccounts[];
+
+  const selectedGroup = groupsWithAccounts.find(
+    (group) => group.id === selectedGroupId,
+  );
+
+  if (!selectedGroup?.accounts) {
+    return [];
+  }
+
+  // Filter to only EVM accounts and get their addresses
+  return selectedGroup.accounts
+    .filter((account) => isEvmAccountType(account.type))
+    .map((account) => account.address.toLowerCase());
+}
 
 export function getSelectedAccountGroupMultichainTransactions(
   state: RootState,
