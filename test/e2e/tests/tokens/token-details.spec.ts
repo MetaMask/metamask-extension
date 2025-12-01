@@ -33,7 +33,7 @@ describe('Token Details', function () {
         ...fixtures,
         title: (this as Context).test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => [
-          await mockEmptyPrices(mockServer, chainId),
+          await mockEmptyPrices(mockServer),
           await mockEmptyHistoricalPrices(mockServer, tokenAddress, chainId),
         ],
       },
@@ -80,13 +80,13 @@ describe('Token Details', function () {
         title: (this as Context).test?.fullTitle(),
         ethConversionInUsd,
         testSpecificMock: async (mockServer: Mockttp) => [
-          await mockSpotPrices(mockServer, chainId, {
-            '0x0000000000000000000000000000000000000000': {
+          await mockSpotPrices(mockServer, {
+            'eip155:1/slip44:60': {
               price: 10000,
               marketCap: 382623505141,
               pricePercentChange1d: 0,
             },
-            [tokenAddress.toLowerCase()]: marketData,
+            [`eip155:1/erc20:${tokenAddress.toLowerCase()}`]: marketData,
           }),
           await mockHistoricalPrices(mockServer, {
             address: tokenAddress,
@@ -133,8 +133,8 @@ describe('Token Details', function () {
         ...fixtures,
         title: (this as Context).test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => [
-          await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
-            '0x0000000000000000000000000000000000000000': {
+          await mockSpotPrices(mockServer, {
+            'eip155:1/slip44:60': {
               price: 1700,
               marketCap: 382623505141,
               pricePercentChange1d: 0,
