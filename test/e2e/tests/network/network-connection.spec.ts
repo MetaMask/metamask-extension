@@ -33,7 +33,7 @@ const networkConfigs: NetworkConfig[] = [
     tokenSymbol: 'ETH',
     fixtureMethod: (builder) => builder.withNetworkControllerOnMegaETH(),
     testTitle: 'MegaETH Network Connection Tests',
-    chainId: CHAIN_IDS.MEGAETH_TESTNET,
+    chainId: CHAIN_IDS.MEGAETH_TESTNET_V2,
   },
   {
     name: 'Sei',
