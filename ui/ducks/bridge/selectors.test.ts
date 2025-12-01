@@ -16,6 +16,7 @@ import {
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import mockErc20Erc20Quotes from '../../../test/data/bridge/mock-quotes-erc20-erc20.json';
+import { ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP } from '../../../shared/constants/bridge';
 import mockBridgeQuotesNativeErc20 from '../../../test/data/bridge/mock-quotes-native-erc20.json';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import {
@@ -41,9 +42,7 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
           bridgeConfig: {
-            chains: {
-              [CHAIN_IDS.ARBITRUM]: { isActiveSrc: true, isActiveDest: false },
-            },
+            chainRanking: [{ chainId: formatChainIdToCaip(ChainId.ARBITRUM) }],
           },
         },
         bridgeSliceOverrides: { toChainId: formatChainIdToCaip('0xe708') },
@@ -74,12 +73,7 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
           bridgeConfig: {
-            chains: {
-              [MultichainNetworks.SOLANA]: {
-                isActiveSrc: true,
-                isActiveDest: true,
-              },
-            },
+            chainRanking: [{ chainId: MultichainNetworks.SOLANA }],
           },
         },
         metamaskStateOverrides: {
@@ -110,9 +104,7 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
           bridgeConfig: {
-            chains: {
-              '0xe708': { isActiveSrc: false, isActiveDest: true },
-            },
+            chainRanking: [{ chainId: formatChainIdToCaip(ChainId.LINEA) }],
           },
         },
         bridgeSliceOverrides: { toChainId: formatChainIdToCaip('0xe708') },
@@ -121,16 +113,16 @@ describe('Bridge selectors', () => {
       const result = getToChain(state as never);
 
       expect(result).toStrictEqual({
-        blockExplorerUrls: ['https://localhost/blockExplorer/0xe708'],
+        blockExplorerUrls: ['https://lineascan.build/'],
         chainId: '0xe708',
         defaultBlockExplorerUrlIndex: 0,
         defaultRpcEndpointIndex: 0,
         name: 'Linea',
         rpcEndpoints: [
           {
-            networkClientId: expect.anything(),
+            failoverUrls: [],
             type: 'custom',
-            url: 'https://localhost/rpc/0xe708',
+            url: 'https://linea-mainnet.infura.io/v3/undefined',
           },
         ],
         nativeCurrency: 'ETH',
@@ -141,10 +133,10 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
           bridgeConfig: {
-            chains: {
-              '0x1': { isActiveSrc: true, isActiveDest: true },
-              '0xe708': { isActiveSrc: false, isActiveDest: true },
-            },
+            chainRanking: [
+              { chainId: formatChainIdToCaip(ChainId.ETH) },
+              { chainId: formatChainIdToCaip(ChainId.LINEA) },
+            ],
           },
         },
         bridgeSliceOverrides: { toChainId: null },
@@ -175,15 +167,12 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
           bridgeConfig: {
-            chains: {
-              [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: false },
-              [CHAIN_IDS.LINEA_MAINNET]: {
-                isActiveSrc: true,
-                isActiveDest: false,
-              },
-              [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: false },
-              [CHAIN_IDS.POLYGON]: { isActiveSrc: true, isActiveDest: false },
-            },
+            chainRanking: [
+              { chainId: formatChainIdToCaip(ChainId.ETH) },
+              { chainId: formatChainIdToCaip(ChainId.LINEA) },
+              { chainId: formatChainIdToCaip(ChainId.OPTIMISM) },
+              { chainId: formatChainIdToCaip(ChainId.POLYGON) },
+            ],
           },
         },
         bridgeSliceOverrides: {
@@ -205,15 +194,85 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
           bridgeConfig: {
-            chains: {
-              [CHAIN_IDS.MAINNET]: { isActiveSrc: false, isActiveDest: true },
-            },
+            chainRanking: [],
           },
         },
       });
       const result = getFromChains(state as never);
 
       expect(result).toHaveLength(0);
+    });
+
+    it('returns sorted fromChains list when chainRanking is set', () => {
+      const chainRanking = [
+        1,
+        56,
+        8453,
+        43114,
+        ChainId.SOLANA,
+        42161,
+        13421,
+        10,
+        59144,
+        137,
+        10,
+      ].map((c) => ({
+        chainId: formatChainIdToCaip(c),
+      }));
+      const state = createBridgeMockStore({
+        metamaskStateOverrides: {
+          ...mockNetworkState(
+            { chainId: CHAIN_IDS.MAINNET }, // eth
+            FEATURED_RPCS[0], // linea
+            FEATURED_RPCS[1], // arb
+            FEATURED_RPCS[3], // bsc
+            FEATURED_RPCS[4], // opt
+          ),
+          internalAccounts: {
+            selectedAccount: 'bf13d52c-d6e8-40ea-9726-07d7149a3ca5',
+          },
+          balances: {
+            'bf13d52c-d6e8-40ea-9726-07d7149a3ca5': {
+              [getNativeAssetForChainId(MultichainNetworks.SOLANA).assetId]: {
+                amount: '2',
+              },
+            },
+          },
+        },
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chainRanking,
+          },
+        },
+      });
+      const result = getFromChains(state as never);
+      const resultsInCaip = result
+        .map((r) => formatChainIdToCaip(r.chainId))
+        .filter(Boolean);
+      // Check that there are no duplicates
+      expect(resultsInCaip.length).toBe(new Set(resultsInCaip).size);
+      // Check that the results are in the correct order
+      expect(resultsInCaip).toStrictEqual([
+        'eip155:1',
+        'eip155:56',
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+        'eip155:42161',
+        'eip155:10',
+        'eip155:59144',
+      ]);
+      expect(result).toHaveLength(6);
+      expect(result.map((r) => r.chainId)).toMatchInlineSnapshot(`
+        [
+          "0x1",
+          "0x38",
+          "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+          "0xa4b1",
+          "0xa",
+          "0xe708",
+        ]
+      `);
+      expect(result).not.toContain(undefined);
+      expect(result).not.toContain(null);
     });
   });
 
@@ -222,16 +281,13 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
           bridgeConfig: {
-            chains: {
-              [CHAIN_IDS.ARBITRUM]: { isActiveSrc: false, isActiveDest: true },
-              [CHAIN_IDS.LINEA_MAINNET]: {
-                isActiveSrc: false,
-                isActiveDest: true,
-              },
-              [CHAIN_IDS.OPTIMISM]: { isActiveSrc: false, isActiveDest: true },
-              [CHAIN_IDS.POLYGON]: { isActiveSrc: false, isActiveDest: true },
-              [CHAIN_IDS.BSC]: { isActiveSrc: false, isActiveDest: true },
-            },
+            chainRanking: [
+              { chainId: formatChainIdToCaip(ChainId.LINEA) },
+              { chainId: formatChainIdToCaip(ChainId.ARBITRUM) },
+              { chainId: formatChainIdToCaip(ChainId.BSC) },
+              { chainId: formatChainIdToCaip(ChainId.OPTIMISM) },
+              { chainId: formatChainIdToCaip(ChainId.POLYGON) },
+            ],
           },
         },
         metamaskStateOverrides: {
@@ -253,10 +309,94 @@ describe('Bridge selectors', () => {
     });
 
     it('returns empty list when bridgeFeatureFlags are not set', () => {
-      const state = createBridgeMockStore();
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chainRanking: [],
+          },
+        },
+      });
       const result = getToChains(state as never);
 
       expect(result).toHaveLength(0);
+    });
+
+    it('returns sorted toChains list when chainRanking is set', () => {
+      const chainRanking = [
+        1,
+        56,
+        8453,
+        43114,
+        ChainId.SOLANA,
+        42161,
+        13421,
+        10,
+        59144,
+        137,
+        10,
+      ].map((c) => ({
+        chainId: formatChainIdToCaip(c),
+      }));
+      const state = createBridgeMockStore({
+        metamaskStateOverrides: {
+          ...mockNetworkState(
+            { chainId: CHAIN_IDS.MAINNET }, // eth
+            FEATURED_RPCS[0], // linea
+            FEATURED_RPCS[1], // arb
+            FEATURED_RPCS[3], // bsc
+            FEATURED_RPCS[4], // opt
+          ),
+          internalAccounts: {
+            selectedAccount: 'bf13d52c-d6e8-40ea-9726-07d7149a3ca5',
+          },
+          balances: {
+            'bf13d52c-d6e8-40ea-9726-07d7149a3ca5': {
+              [getNativeAssetForChainId(MultichainNetworks.SOLANA).assetId]: {
+                amount: '2',
+              },
+            },
+          },
+        },
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chainRanking,
+          },
+        },
+      });
+      const result = getToChains(state as never);
+      const resultsInCaip = result
+        .map((r) => formatChainIdToCaip(r.chainId))
+        .filter(Boolean);
+      // Check that there are no duplicates
+      expect(resultsInCaip.length).toBe(new Set(resultsInCaip).size);
+      // Check that the results are in the correct order
+      expect(resultsInCaip).toStrictEqual([
+        'eip155:1',
+        'eip155:56',
+        'eip155:8453',
+        'eip155:43114',
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+        'eip155:42161',
+        'eip155:10',
+        'eip155:59144',
+        'eip155:137',
+      ]);
+      expect(result).toHaveLength(9);
+      expect(result.map((r) => r?.name)).toMatchInlineSnapshot(`
+        [
+          "Ethereum",
+          "BNB Chain",
+          "Base",
+          "Avalanche",
+          "Solana",
+          "Arbitrum",
+          "OP",
+          "Linea",
+          "Polygon",
+        ]
+      `);
+      expect(result).not.toContain(undefined);
+      expect(result).not.toContain(null);
     });
   });
 
@@ -319,14 +459,6 @@ describe('Bridge selectors', () => {
           toChainId: formatChainIdToCaip(1),
           toToken: { address: '0x567', symbol: 'DEST' },
         },
-        featureFlagOverrides: {
-          bridgeConfig: {
-            support: true,
-            chains: {
-              '0x1': { isActiveSrc: true, isActiveDest: true },
-            },
-          },
-        },
       });
       const result = getToToken(state as never);
 
@@ -338,14 +470,6 @@ describe('Bridge selectors', () => {
         bridgeSliceOverrides: {
           fromToken: { address: '0x123', symbol: 'TEST', chainId: '0x1' },
           toChainId: formatChainIdToCaip(1),
-        },
-        featureFlagOverrides: {
-          bridgeConfig: {
-            support: true,
-            chains: {
-              '0x1': { isActiveSrc: true, isActiveDest: true },
-            },
-          },
         },
       });
       const result = getToToken(state as never);
@@ -363,56 +487,12 @@ describe('Bridge selectors', () => {
       });
     });
 
-    it('returns null if fromToken is null', () => {
-      const state = createBridgeMockStore({
-        featureFlagOverrides: {
-          bridgeConfig: {
-            support: true,
-            chains: {
-              '0x1': { isActiveSrc: false, isActiveDest: true },
-            },
-          },
-        },
-        bridgeSliceOverrides: {
-          fromToken: null,
-          toChainId: formatChainIdToCaip(1),
-          toToken: { address: '0x123', symbol: 'TEST' },
-        },
-      });
-      const result = getToToken(state as never);
-
-      expect(result).toStrictEqual(null);
-    });
-
-    it('returns null if fromChain is not defined', () => {
-      const state = createBridgeMockStore({
-        bridgeSliceOverrides: {
-          fromToken: { address: '0x123', symbol: 'TEST' },
-          toToken: { address: '0x456', symbol: 'DEST' },
-        },
-        featureFlagOverrides: {
-          bridgeConfig: {
-            support: true,
-            chains: {
-              '0x1': { isActiveSrc: false, isActiveDest: true },
-            },
-          },
-        },
-      });
-      const result = getToToken(state as never);
-
-      expect(result).toStrictEqual(null);
-    });
-
     it('returns ETH as default token when bridging from Bitcoin', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
-          fromToken: {
-            address: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh', // Bitcoin native address
-            symbol: 'BTC',
-            chainId: MultichainNetworks.BITCOIN,
-            decimals: 8,
-          },
+          fromToken: toBridgeToken(
+            getNativeAssetForChainId(MultichainNetworks.BITCOIN),
+          ),
           toChainId: formatChainIdToCaip(CHAIN_IDS.MAINNET),
         },
         featureFlagOverrides: {
@@ -495,10 +575,10 @@ describe('Bridge selectors', () => {
         featureFlagOverrides: {
           bridgeConfig: {
             maxRefreshCount: 5,
-            chains: {
-              '0xa': { isActiveSrc: true, isActiveDest: false },
-              '0x89': { isActiveSrc: false, isActiveDest: true },
-            },
+            chainRanking: [
+              { chainId: formatChainIdToCaip(ChainId.OPTIMISM) },
+              { chainId: formatChainIdToCaip(ChainId.POLYGON) },
+            ],
           },
         },
         bridgeSliceOverrides: {
@@ -575,10 +655,10 @@ describe('Bridge selectors', () => {
         featureFlagOverrides: {
           bridgeConfig: {
             maxRefreshCount: 5,
-            chains: {
-              '0xa': { isActiveSrc: true, isActiveDest: false },
-              '0x89': { isActiveSrc: false, isActiveDest: true },
-            },
+            chainRanking: [
+              { chainId: formatChainIdToCaip(ChainId.OPTIMISM) },
+              { chainId: formatChainIdToCaip(ChainId.POLYGON) },
+            ],
           },
         },
         bridgeSliceOverrides: {
@@ -671,10 +751,10 @@ describe('Bridge selectors', () => {
         featureFlagOverrides: {
           bridgeConfig: {
             maxRefreshCount: 5,
-            chains: {
-              '0xa': { isActiveSrc: true, isActiveDest: false },
-              '0x89': { isActiveSrc: false, isActiveDest: true },
-            },
+            chainRanking: [
+              { chainId: formatChainIdToCaip(ChainId.OPTIMISM) },
+              { chainId: formatChainIdToCaip(ChainId.POLYGON) },
+            ],
           },
         },
         bridgeSliceOverrides: {
@@ -1029,12 +1109,7 @@ describe('Bridge selectors', () => {
         },
         featureFlagOverrides: {
           bridgeConfig: {
-            chains: {
-              [MultichainNetworks.SOLANA]: {
-                isActiveSrc: true,
-                isActiveDest: true,
-              },
-            },
+            chainRanking: [{ chainId: MultichainNetworks.SOLANA }],
           },
         },
       });
@@ -1045,6 +1120,11 @@ describe('Bridge selectors', () => {
 
     it('should return isInsufficientGasBalance=false when balance > minimumBalanceForRentExemption + srcTokenAmount', () => {
       const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chainRanking: [{ chainId: MultichainNetworks.SOLANA }],
+          },
+        },
         bridgeSliceOverrides: {
           toChainId: formatChainIdToCaip('0x1'),
           fromToken: { decimals: 9, address: zeroAddress(), chainId: '0x1' },
@@ -1281,13 +1361,6 @@ describe('Bridge selectors', () => {
 
     it('should return isInsufficientGasForQuote=true when balance is less than required network fees in quote', () => {
       const state = createBridgeMockStore({
-        featureFlagOverrides: {
-          bridgeConfig: {
-            chains: {
-              '0x1': { isActiveSrc: true, isActiveDest: false },
-            },
-          },
-        },
         bridgeSliceOverrides: {
           toChainId: formatChainIdToCaip('0x1'),
           fromTokenInputValue: '0.001',
@@ -1349,11 +1422,11 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
           bridgeConfig: {
-            chains: {
-              '0x1': { isActiveSrc: true, isActiveDest: false },
-              '0xa': { isActiveSrc: true, isActiveDest: false },
-              '0x89': { isActiveSrc: false, isActiveDest: true },
-            },
+            chainRanking: [
+              { chainId: formatChainIdToCaip(ChainId.ETH) },
+              { chainId: formatChainIdToCaip(ChainId.OPTIMISM) },
+              { chainId: formatChainIdToCaip(ChainId.POLYGON) },
+            ],
           },
         },
         bridgeSliceOverrides: {
@@ -1422,11 +1495,11 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
           bridgeConfig: {
-            chains: {
-              '0x1': { isActiveSrc: true, isActiveDest: false },
-              '0xa': { isActiveSrc: true, isActiveDest: false },
-              '0x89': { isActiveSrc: false, isActiveDest: true },
-            },
+            chainRanking: [
+              { chainId: formatChainIdToCaip(ChainId.ETH) },
+              { chainId: formatChainIdToCaip(ChainId.OPTIMISM) },
+              { chainId: formatChainIdToCaip(ChainId.POLYGON) },
+            ],
           },
         },
         bridgeSliceOverrides: {
@@ -1511,12 +1584,7 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
           bridgeConfig: {
-            chains: {
-              [MultichainNetworks.SOLANA]: {
-                isActiveSrc: true,
-                isActiveDest: true,
-              },
-            },
+            chainRanking: [{ chainId: MultichainNetworks.SOLANA }],
           },
         },
         metamaskStateOverrides: {
@@ -1558,12 +1626,7 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
           bridgeConfig: {
-            chains: {
-              [MultichainNetworks.SOLANA]: {
-                isActiveSrc: true,
-                isActiveDest: true,
-              },
-            },
+            chainRanking: [{ chainId: MultichainNetworks.SOLANA }],
           },
         },
         metamaskStateOverrides: {
@@ -1603,12 +1666,10 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
           bridgeConfig: {
-            chains: {
-              [MultichainNetworks.SOLANA]: {
-                isActiveSrc: true,
-                isActiveDest: true,
-              },
-            },
+            chainRanking: [
+              { chainId: MultichainNetworks.SOLANA },
+              { chainId: formatChainIdToCaip(ChainId.ETH) },
+            ],
           },
         },
         metamaskStateOverrides: {
@@ -1743,13 +1804,6 @@ describe('Bridge selectors', () => {
             chainId: '0x1',
           },
         },
-        featureFlagOverrides: {
-          bridgeConfig: {
-            chains: {
-              'eip155:1': { isActiveSrc: true, isActiveDest: false },
-            },
-          },
-        },
       });
 
       const result = getFromTokenConversionRate(state);
@@ -1777,13 +1831,6 @@ describe('Bridge selectors', () => {
             address: zeroAddress(),
             decimals: 18,
             chainId: '0x1',
-          },
-        },
-        featureFlagOverrides: {
-          bridgeConfig: {
-            chains: {
-              'eip155:1': { isActiveSrc: true, isActiveDest: false },
-            },
           },
         },
       });
@@ -1839,12 +1886,7 @@ describe('Bridge selectors', () => {
         },
         featureFlagOverrides: {
           bridgeConfig: {
-            chains: {
-              [MultichainNetworks.SOLANA]: {
-                isActiveSrc: true,
-                isActiveDest: false,
-              },
-            },
+            chainRanking: [{ chainId: formatChainIdToCaip(ChainId.SOLANA) }],
           },
         },
       });
@@ -1885,20 +1927,11 @@ describe('Bridge selectors', () => {
         },
         bridgeSliceOverrides: {
           fromTokenExchangeRate: 1.0,
-          fromToken: {
-            address: zeroAddress(),
-            decimals: 18,
-            chainId: MultichainNetworks.SOLANA,
-          },
+          fromToken: toBridgeToken(getNativeAssetForChainId(ChainId.SOLANA)),
         },
         featureFlagOverrides: {
           bridgeConfig: {
-            chains: {
-              [MultichainNetworks.SOLANA]: {
-                isActiveSrc: true,
-                isActiveDest: false,
-              },
-            },
+            chainRanking: [{ chainId: formatChainIdToCaip(ChainId.SOLANA) }],
           },
         },
       });

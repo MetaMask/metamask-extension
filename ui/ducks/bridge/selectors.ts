@@ -22,7 +22,6 @@ import {
   TrxAccountType,
 } from '@metamask/keyring-api';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
-import { uniqBy } from 'lodash';
 import { createSelector } from 'reselect';
 import type { GasFeeState } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
@@ -211,7 +210,14 @@ const getBridgeFeatureFlags = createDeepEqualSelector(
     const validatedFlags = selectBridgeFeatureFlags({
       remoteFeatureFlags: { bridgeConfig },
     });
-    return validatedFlags;
+
+    return {
+      ...validatedFlags,
+      // @ts-expect-error - chainRanking is not typed yet. remove this after updating controller types
+      chainRanking: bridgeConfig?.chainRanking as {
+        chainId: CaipChainId;
+      }[],
+    };
   },
 );
 
@@ -223,27 +229,36 @@ export const getPriceImpactThresholds = createDeepEqualSelector(
   (priceImpactThreshold) => priceImpactThreshold,
 );
 
+const getChainRanking = (state: BridgeAppState) => {
+  const chainRanking = getBridgeFeatureFlags(state)?.chainRanking?.map(
+    ({ chainId }) => chainId,
+  );
+  // Remove duplicates
+  return (
+    chainRanking?.filter(
+      (value, index, self) => self.indexOf(value) === index,
+    ) ?? []
+  );
+};
+
 export const getFromChains = createDeepEqualSelector(
   [
     getAllBridgeableNetworks,
-    (state: BridgeAppState) => getBridgeFeatureFlags(state).chains,
+    getChainRanking,
     (state: BridgeAppState) => hasSolanaAccounts(state),
     (state: BridgeAppState) => hasBitcoinAccounts(state),
     (state: BridgeAppState) => hasTronAccounts(state),
   ],
   (
     allBridgeableNetworks,
-    chainsConfig,
+    chainRanking,
     hasSolanaAccount,
     hasBitcoinAccount,
     hasTronAccount,
   ) => {
     const filteredNetworks: BridgeNetwork[] = [];
-    Object.entries(chainsConfig).forEach(([chainId, { isActiveSrc }]) => {
-      if (!isActiveSrc) {
-        return;
-      }
-      // Determine if non-evm chains should be added to the list
+    // Apply the standard filter for active source chains
+    chainRanking.forEach((chainId) => {
       const shouldAddSolana = isSolanaChainId(chainId)
         ? hasSolanaAccount
         : true;
@@ -340,18 +355,21 @@ export const getFromChain = createSelector(
 );
 
 export const getToChains = createDeepEqualSelector(
-  [getAllBridgeableNetworks, getBridgeFeatureFlags],
-  (allBridgeableNetworks, bridgeFeatureFlags) => {
-    const availableChains = uniqBy(
-      [...Object.values(allBridgeableNetworks), ...FEATURED_RPCS],
-      'chainId',
-    ).filter(
-      ({ chainId }) =>
-        bridgeFeatureFlags?.chains?.[formatChainIdToCaip(chainId)]
-          ?.isActiveDest,
-    );
-
-    return availableChains;
+  [getAllBridgeableNetworks, getChainRanking],
+  (allBridgeableNetworks, chainRanking) => {
+    const allChains = {
+      ...allBridgeableNetworks,
+      ...Object.fromEntries(
+        FEATURED_RPCS.map((rpc) => [formatChainIdToCaip(rpc.chainId), rpc]),
+      ),
+    };
+    const filteredChains: BridgeNetwork[] = [];
+    chainRanking.forEach((chainId) => {
+      if (allChains[chainId]) {
+        filteredChains.push(allChains[chainId]);
+      }
+    });
+    return filteredChains;
   },
 );
 

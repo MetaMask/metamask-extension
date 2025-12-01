@@ -106,12 +106,13 @@ const bridgeSlice = createSlice({
     setFromToken: (state, { payload }: TokenPayload) => {
       state.fromToken = toBridgeToken(payload);
       state.fromTokenBalance = null;
+      state.fromTokenInputValue = null;
       // Unset toToken if it's the same as the fromToken
       if (
         state.fromToken?.assetId &&
         state.toToken?.assetId &&
-        state.fromToken.assetId?.toLowerCase() ===
-          state.toToken.assetId?.toLowerCase()
+        state.fromToken.assetId.toLowerCase() ===
+          state.toToken.assetId.toLowerCase()
       ) {
         state.toToken = null;
       }
