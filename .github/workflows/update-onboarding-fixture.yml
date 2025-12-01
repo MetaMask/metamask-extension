@@ -125,7 +125,7 @@ jobs:
         run: Xvfb -ac :99 -screen 0 1280x1024x16 &
 
       - name: Run wallet fixture export
-        run: yarn test:e2e:single test/e2e/fixtures/wallet-fixture-export.spec.ts --browser chrome --retries 1
+        run: yarn test:e2e:single test/e2e/dist/wallet-fixture-export.spec.ts --browser chrome --retries 1
 
       - name: Run prettier
         run: yarn lint:prettier:fix
