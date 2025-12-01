@@ -17,12 +17,7 @@ import {
   isCrossChain,
   isBitcoinChainId,
 } from '@metamask/bridge-controller';
-import {
-  type CaipChainId,
-  type Hex,
-  isStrictHexString,
-  parseCaipChainId,
-} from '@metamask/utils';
+import { type CaipChainId, type Hex, isStrictHexString } from '@metamask/utils';
 import {
   setFromToken,
   setFromTokenInputValue,
