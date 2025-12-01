@@ -13,7 +13,6 @@ import {
   selectBridgeFeatureFlags,
   selectMinimumBalanceForRentExemptionInSOL,
   isValidQuoteRequest,
-  isCrossChain,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import {
@@ -952,16 +951,14 @@ export const selectNoFeeAssets = createSelector(
 const getIsGasIncludedSwapSupported = createSelector(
   [
     (state: BridgeAppState) => getFromChain(state)?.chainId,
-    (state: BridgeAppState) => getToChain(state)?.chainId,
     (_, isSendBundleSupportedForChain: boolean) =>
       isSendBundleSupportedForChain,
   ],
-  (fromChainId, toChainId, isSendBundleSupportedForChain) => {
+  (fromChainId, isSendBundleSupportedForChain) => {
     if (!fromChainId) {
       return false;
     }
-    const isSwap = !isCrossChain(fromChainId, toChainId);
-    return isSwap && isSendBundleSupportedForChain;
+    return isSendBundleSupportedForChain;
   },
 );
 
