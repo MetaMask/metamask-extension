@@ -309,6 +309,7 @@
     "SnapInsightsController": {},
     "SnapInterfaceController": { "interfaces": "object" },
     "PPOMController": { "storageMetadata": {} },
+    "TransactionPayController": {},
     "AccountTreeController": {
       "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean",
       "accountGroupsMetadata": "object",
