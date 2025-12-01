@@ -14,11 +14,11 @@ import {
   UnifiedSwapBridgeEventName,
   type BridgeController,
   isCrossChain,
-  formatChainIdToHex,
   isBitcoinChainId,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
 import { type CaipChainId, type Hex } from '@metamask/utils';
+import { type NetworkConfiguration } from '@metamask/network-controller';
 import {
   setFromToken,
   setFromTokenInputValue,

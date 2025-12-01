@@ -9,8 +9,8 @@ import {
 import { type CaipChainId, type Hex } from '@metamask/utils';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
+import type { BridgeToken } from '../../../ducks/bridge/types';
 import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
-import type { BridgeNetwork, BridgeToken } from '../../../ducks/bridge/types';
 
 export const formatTokenAmount = (
   locale: string,

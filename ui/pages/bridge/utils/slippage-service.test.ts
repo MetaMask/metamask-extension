@@ -42,7 +42,8 @@ describe('Slippage Service', () => {
   const mockSolanaToken: BridgeToken = {
     chainId: MultichainNetworks.SOLANA,
     address: 'So11111111111111111111111111111111111111112',
-    assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:So11111111111111111111111111111111111111112',
+    assetId:
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:So11111111111111111111111111111111111111112',
     symbol: 'SOL',
     decimals: 9,
     image: '',
