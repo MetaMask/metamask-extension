@@ -41,6 +41,7 @@ describe('Incremental Security', function (this: Suite) {
           customDappPaths: ['./send-eth-with-private-key-test'],
         },
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        ignoredConsoleErrors: ['GL Context was lost'],
         testSpecificMock: mockSpotPrices,
         title: this.test?.fullTitle(),
       },
