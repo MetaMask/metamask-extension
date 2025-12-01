@@ -8,7 +8,7 @@ import StartOnboardingPage from '../pages/onboarding/start-onboarding-page';
 import SecureWalletPage from '../pages/onboarding/secure-wallet-page';
 import OnboardingCompletePage from '../pages/onboarding/onboarding-complete-page';
 import OnboardingPrivacySettingsPage from '../pages/onboarding/onboarding-privacy-settings-page';
-import { WALLET_PASSWORD } from '../../helpers';
+import { WALLET_PASSWORD, isSidePanelEnabled } from '../../helpers';
 import { E2E_SRP } from '../../fixtures/default-fixture';
 import HomePage from '../pages/home/homepage';
 import LoginPage from '../pages/login-page';
@@ -31,15 +31,19 @@ export const handleSidepanelPostOnboarding = async (
     return;
   }
 
-  const manifest = await driver.executeScript(
-    'return chrome.runtime.getManifest();',
-  );
-  const hasSidePanelPermission = manifest?.permissions?.includes('sidePanel');
-  if (hasSidePanelPermission) {
-    console.log(
-      'Sidepanel detected - navigating main window to home page for testing',
-    );
-    await driver.driver.get(`${driver.extensionUrl}/home.html`);
+  if (await isSidePanelEnabled(driver)) {
+    const currentUrl = await driver.getCurrentUrl();
+    // Only navigate if still on the completion page
+    // Avoid duplicate navigation if already on home page
+    if (currentUrl.includes('#onboarding/completion')) {
+      await driver.driver.get(`${driver.extensionUrl}/home.html`);
+    } else if (currentUrl.includes('/home.html')) {
+      // Already on home page, skip navigation
+    } else {
+      await driver.driver.get(`${driver.extensionUrl}/home.html`);
+    }
+
+    // Wait for home page to be ready
     await driver.waitForMultipleSelectors([
       '[data-testid="eth-overview-send"]', // send button
       '[data-testid="account-overview__activity-tab"]', // activity tab

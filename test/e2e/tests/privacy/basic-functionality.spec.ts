@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
-import { withFixtures } from '../../helpers';
+import { withFixtures, isSidePanelEnabled } from '../../helpers';
 import { METAMASK_STALELIST_URL } from '../phishing-controller/helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -178,6 +178,15 @@ describe('MetaMask onboarding', function () {
           ),
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
+        // Check if sidepanel is enabled - skip test if it is
+        if (await isSidePanelEnabled(driver)) {
+          console.log(
+            'Skipping test for sidepanel build - cannot accurately count requests',
+          );
+          this.skip();
+          return;
+        }
+
         await completeImportSRPOnboardingFlow({ driver });
 
         const homePage = new HomePage(driver);

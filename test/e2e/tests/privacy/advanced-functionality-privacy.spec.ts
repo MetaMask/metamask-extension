@@ -1,7 +1,7 @@
 import assert from 'assert';
 import { Mockttp, MockedEndpoint } from 'mockttp';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
-import { withFixtures } from '../../helpers';
+import { withFixtures, isSidePanelEnabled } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import AccountList from '../../page-objects/pages/account-list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -111,6 +111,16 @@ describe('MetaMask onboarding ', function () {
   });
 
   it('should not prevent network requests to advanced functionality endpoints when the advanced assets functionality toggle is on', async function () {
+    // Skip for sidepanel builds - cannot accurately count requests
+    if (process.env.IS_SIDEPANEL) {
+      console.log(
+        'Skipping test for sidepanel builds',
+        process.env.IS_SIDEPANEL,
+      );
+      this.skip();
+      return;
+    }
+
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true })
@@ -126,6 +136,15 @@ describe('MetaMask onboarding ', function () {
         testSpecificMock: mockApis,
       },
       async ({ driver, mockedEndpoint }) => {
+        // Check if sidepanel is enabled - skip test if it is
+        if (await isSidePanelEnabled(driver)) {
+          console.log(
+            'Skipping test for sidepanel build - cannot accurately count requests',
+          );
+          this.skip();
+          return;
+        }
+
         await completeImportSRPOnboardingFlow({ driver });
 
         // Refresh tokens before asserting to mitigate flakiness
