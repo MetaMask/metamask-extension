@@ -37,7 +37,7 @@
     },
     "AppMetadataController": {
       "currentAppVersion": "13.12.0",
-      "currentMigrationVersion": 183,
+      "currentMigrationVersion": 184,
       "previousAppVersion": "",
       "previousMigrationVersion": 0
     },
@@ -2139,6 +2139,6 @@
     }
   },
   "meta": {
-    "version": 183
+    "version": 184
   }
 }
