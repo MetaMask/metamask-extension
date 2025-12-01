@@ -77,7 +77,7 @@ This table shows the token list sizes after implementing the new occurrence floo
 
 To address security concerns with the increased token list sizes after loosening occurrence floor requirements, we implemented a trusted asset filtering mechanism that validates tokens against the Trust Wallet Assets repository:
 
-**Method**: Before adding tokens to the final tokenList, each token address is verified against Trust Wallet's public GitHub repository by making HTTP requests to `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/[chain]/assets/[tokenAddress]/info.json`. Only tokens that have corresponding asset entries in the Trust Wallet repository are included in the final token list. This approach replaces the previous filesystem-based validation to ensure browser compatibility.
+**Method**: Before adding tokens to the final tokenList, each token address is verified against Trust Wallet's public GitHub repository by making HTTP requests to `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/[chain]/assets/[tokenAddress]/info.json`. Only tokens that have corresponding asset entries in the Trust Wallet repository are included in the final token list.
 
 **Chain Coverage**: Filtering was implemented **only for the specific chains** analyzed in this document, not all possible blockchain networks:
 - Ethereum (0x1), Linea (0xe708), Base (0x2105), Arbitrum (0xa4b1)
