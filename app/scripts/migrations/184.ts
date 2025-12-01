@@ -78,7 +78,8 @@ function transformState(state: Record<string, unknown>) {
   const { networkConfigurationsByChainId } = networkState;
 
   // Get Monad network configuration
-  const monadNetworkConfiguration = networkConfigurationsByChainId[MONAD_CHAIN_ID];
+  const monadNetworkConfiguration =
+    networkConfigurationsByChainId[MONAD_CHAIN_ID];
 
   if (!monadNetworkConfiguration) {
     // Monad network doesn't exist, nothing to migrate
@@ -133,4 +134,3 @@ function transformState(state: Record<string, unknown>) {
 
   return state;
 }
-

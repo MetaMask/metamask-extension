@@ -199,4 +199,3 @@ describe(`migration #${VERSION}`, () => {
     expect(newStorage).toStrictEqual(expectedStorage);
   });
 });
-
