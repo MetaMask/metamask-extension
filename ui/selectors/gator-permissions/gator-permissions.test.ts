@@ -1855,6 +1855,236 @@ describe('Gator Permissions Selectors', () => {
       expect(permissionTypes).toContain('native-token-periodic');
     });
 
+    it('should return permissions sorted by startTime in ascending order', () => {
+      const mockStateWithSortedPermissions = {
+        metamask: {
+          gatorPermissionsMapSerialized: JSON.stringify({
+            'native-token-stream': {
+              [MOCK_CHAIN_ID_MAINNET]: [
+                {
+                  permissionResponse: {
+                    chainId: MOCK_CHAIN_ID_MAINNET as Hex,
+                    address: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
+                    permission: {
+                      type: 'native-token-stream',
+                      data: {
+                        maxAmount: '0x22b1c8c1227a0000',
+                        initialAmount: '0x6f05b59d3b20000',
+                        amountPerSecond: '0x6f05b59d3b20000',
+                        startTime: 1747699300, // Latest
+                        justification: 'Test justification',
+                      },
+                    },
+                    context: '0x00000000',
+                    signerMeta: {
+                      delegationManager:
+                        '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
+                    },
+                  },
+                  siteOrigin: 'http://localhost:8000',
+                },
+              ],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            'erc20-token-stream': {
+              [MOCK_CHAIN_ID_MAINNET]: [
+                {
+                  permissionResponse: {
+                    chainId: MOCK_CHAIN_ID_MAINNET as Hex,
+                    address: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
+                    permission: {
+                      type: 'erc20-token-stream',
+                      data: {
+                        initialAmount: '0x22b1c8c1227a0000',
+                        maxAmount: '0x6f05b59d3b20000',
+                        amountPerSecond: '0x6f05b59d3b20000',
+                        startTime: 1747699100, // Earliest
+                        tokenAddress:
+                          '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
+                        justification: 'Test justification',
+                      },
+                    },
+                    context: '0x00000000',
+                    signerMeta: {
+                      delegationManager:
+                        '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
+                    },
+                  },
+                  siteOrigin: 'http://localhost:8000',
+                },
+              ],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            'native-token-periodic': {
+              [MOCK_CHAIN_ID_MAINNET]: [
+                {
+                  permissionResponse: {
+                    chainId: MOCK_CHAIN_ID_MAINNET as Hex,
+                    address: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
+                    permission: {
+                      type: 'native-token-periodic',
+                      data: {
+                        periodAmount: '0x22b1c8c1227a0000',
+                        periodDuration: 1747699200,
+                        startTime: 1747699200, // Middle
+                        justification: 'Test justification',
+                      },
+                    },
+                    context: '0x00000000',
+                    signerMeta: {
+                      delegationManager:
+                        '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
+                    },
+                  },
+                  siteOrigin: 'http://localhost:8000',
+                },
+              ],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            'erc20-token-periodic': {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            other: {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+          }),
+          isGatorPermissionsEnabled: true,
+          isFetchingGatorPermissions: false,
+          gatorPermissionsProviderSnapId:
+            'local:http://localhost:8080/' as SnapId,
+          pendingRevocations: [],
+        },
+      };
+
+      const result = getAggregatedGatorPermissionByChainId(
+        mockStateWithSortedPermissions,
+        {
+          aggregatedPermissionType: 'token-transfer',
+          chainId: MOCK_CHAIN_ID_MAINNET,
+        },
+      );
+
+      expect(result).toHaveLength(3);
+      // Verify they are sorted by startTime in ascending order
+      expect(result[0].permissionResponse.permission.data.startTime).toBe(
+        1747699100,
+      );
+      expect(result[1].permissionResponse.permission.data.startTime).toBe(
+        1747699200,
+      );
+      expect(result[2].permissionResponse.permission.data.startTime).toBe(
+        1747699300,
+      );
+    });
+
+    it('should handle permissions with undefined startTime and place them first', () => {
+      const mockStateWithUndefinedStartTime = {
+        metamask: {
+          gatorPermissionsMapSerialized: JSON.stringify({
+            'native-token-stream': {
+              [MOCK_CHAIN_ID_MAINNET]: [
+                {
+                  permissionResponse: {
+                    chainId: MOCK_CHAIN_ID_MAINNET as Hex,
+                    address: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
+                    permission: {
+                      type: 'native-token-stream',
+                      data: {
+                        maxAmount: '0x22b1c8c1227a0000',
+                        initialAmount: '0x6f05b59d3b20000',
+                        amountPerSecond: '0x6f05b59d3b20000',
+                        startTime: 1747699200, // Has startTime
+                        justification: 'Test justification',
+                      },
+                    },
+                    context: '0x00000000',
+                    signerMeta: {
+                      delegationManager:
+                        '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
+                    },
+                  },
+                  siteOrigin: 'http://localhost:8000',
+                },
+              ],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            'erc20-token-stream': {
+              [MOCK_CHAIN_ID_MAINNET]: [
+                {
+                  permissionResponse: {
+                    chainId: MOCK_CHAIN_ID_MAINNET as Hex,
+                    address: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
+                    permission: {
+                      type: 'erc20-token-stream',
+                      data: {
+                        initialAmount: '0x22b1c8c1227a0000',
+                        maxAmount: '0x6f05b59d3b20000',
+                        amountPerSecond: '0x6f05b59d3b20000',
+                        // No startTime - should be placed first
+                        tokenAddress:
+                          '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
+                        justification: 'Test justification',
+                      },
+                    },
+                    context: '0x00000000',
+                    signerMeta: {
+                      delegationManager:
+                        '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
+                    },
+                  },
+                  siteOrigin: 'http://localhost:8000',
+                },
+              ],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            'native-token-periodic': {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            'erc20-token-periodic': {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            other: {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+          }),
+          isGatorPermissionsEnabled: true,
+          isFetchingGatorPermissions: false,
+          gatorPermissionsProviderSnapId:
+            'local:http://localhost:8080/' as SnapId,
+          pendingRevocations: [],
+        },
+      };
+
+      const result = getAggregatedGatorPermissionByChainId(
+        mockStateWithUndefinedStartTime,
+        {
+          aggregatedPermissionType: 'token-transfer',
+          chainId: MOCK_CHAIN_ID_MAINNET,
+        },
+      );
+
+      expect(result).toHaveLength(2);
+      // Verify permission without startTime is placed first
+      expect(result[0].permissionResponse.permission.type).toBe(
+        'erc20-token-stream',
+      );
+      expect(result[0].permissionResponse.permission.data.startTime).toBe(
+        undefined,
+      );
+      // Verify permission with startTime is placed after
+      expect(result[1].permissionResponse.permission.type).toBe(
+        'native-token-stream',
+      );
+      expect(result[1].permissionResponse.permission.data.startTime).toBe(
+        1747699200,
+      );
+    });
+
     it('should return aggregated token-transfer permissions for a different chainId', () => {
       const result = getAggregatedGatorPermissionByChainId(mockState, {
         aggregatedPermissionType: 'token-transfer',

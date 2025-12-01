@@ -2986,6 +2986,8 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setShieldEndingToastLastClickedOrClosed.bind(
           appStateController,
         ),
+      setPna25Acknowledged:
+        appStateController.setPna25Acknowledged.bind(appStateController),
       setAppActiveTab:
         appStateController.setAppActiveTab.bind(appStateController),
       setDefaultSubscriptionPaymentOptions:
@@ -8163,6 +8165,12 @@ export default class MetamaskController extends EventEmitter {
           return 'unknown';
         }
       },
+      getFeatureFlags: () => {
+        return this.remoteFeatureFlagController?.state?.remoteFeatureFlags;
+      },
+      getPna25Acknowledged: () => {
+        return this.appStateController?.state?.pna25Acknowledged;
+      },
     };
 
     const snapAndHardwareMessenger = new Messenger({
@@ -8206,6 +8214,8 @@ export default class MetamaskController extends EventEmitter {
     } else {
       this.tokenDetectionController.disable();
       this.gasFeeController.disableNonRPCGasFeeApis();
+      // stop polling for the subscriptions if external services are disabled
+      this.subscriptionController.stopAllPolling();
       if (hasActiveShieldSubscription) {
         this.shieldController.stop();
       }
@@ -8296,6 +8306,7 @@ export default class MetamaskController extends EventEmitter {
       this.appStateController.clearPollingTokens();
       this.accountTrackerController.stopAllPolling();
       this.deFiPositionsController.stopAllPolling();
+      this.subscriptionController.stopAllPolling();
     } catch (error) {
       console.error(error);
     }
@@ -8327,6 +8338,8 @@ export default class MetamaskController extends EventEmitter {
         appStatePollingTokenType,
       );
     });
+    // stop polling for the subscriptions
+    this.subscriptionController.stopAllPolling();
   }
 
   /**
