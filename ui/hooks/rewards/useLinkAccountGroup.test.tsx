@@ -8,7 +8,7 @@ import {
   AccountWalletStatus,
 } from '@metamask/account-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { renderHookWithProvider } from '../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
 import { createMockMultichainAccountsState } from '../../selectors/multichain-accounts/test-utils';

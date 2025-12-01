@@ -27,6 +27,7 @@ import {
   CONNECT_SNAP_UPDATE_ROUTE,
   CONNECT_SNAP_RESULT_ROUTE,
 } from '../../helpers/constants/routes';
+import { toRelativeRoutePath } from '../routes/utils';
 import PermissionPageContainer from '../../components/app/permission-page-container';
 import { Box } from '../../components/component-library';
 import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header/snap-authorship-header';
@@ -492,7 +493,7 @@ export default class PermissionConnect extends Component {
               })()}
             />
             <Route
-              path={CONNECT_CONFIRM_PERMISSIONS_ROUTE}
+              path={toRelativeRoutePath(CONNECT_CONFIRM_PERMISSIONS_ROUTE)}
               element={
                 <PermissionPageContainer
                   request={permissionsRequest || {}}
@@ -522,7 +523,7 @@ export default class PermissionConnect extends Component {
               }
             />
             <Route
-              path={CONNECT_SNAPS_CONNECT_ROUTE}
+              path={toRelativeRoutePath(CONNECT_SNAPS_CONNECT_ROUTE)}
               element={
                 <SnapsConnect
                   request={permissionsRequest || {}}
@@ -541,7 +542,7 @@ export default class PermissionConnect extends Component {
               }
             />
             <Route
-              path={CONNECT_SNAP_INSTALL_ROUTE}
+              path={toRelativeRoutePath(CONNECT_SNAP_INSTALL_ROUTE)}
               element={
                 <SnapInstall
                   request={permissionsRequest || {}}
@@ -566,7 +567,7 @@ export default class PermissionConnect extends Component {
               }
             />
             <Route
-              path={CONNECT_SNAP_UPDATE_ROUTE}
+              path={toRelativeRoutePath(CONNECT_SNAP_UPDATE_ROUTE)}
               element={
                 <SnapUpdate
                   request={permissionsRequest || {}}
@@ -591,7 +592,7 @@ export default class PermissionConnect extends Component {
               }
             />
             <Route
-              path={CONNECT_SNAP_RESULT_ROUTE}
+              path={toRelativeRoutePath(CONNECT_SNAP_RESULT_ROUTE)}
               element={
                 <SnapResult
                   request={permissionsRequest || {}}

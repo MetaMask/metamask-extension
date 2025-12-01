@@ -1,10 +1,5 @@
 import React, { useEffect, useState, useContext, useMemo } from 'react';
-import {
-  Routes,
-  Route,
-  useNavigate,
-  useLocation,
-} from 'react-router-dom';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
 import Unlock from '../unlock-page';

@@ -20,17 +20,8 @@ type RenderInterfaceOptions = {
   metamaskState?: DeepPartial<MetaMaskReduxState>;
 };
 
-// The return type from renderWithProvider includes RenderResult plus a history property
-type RenderWithProviderResult = RenderResult & {
-  history: {
-    location: {
-      pathname: string;
-    };
-  };
-};
-
 // Combine the renderWithProvider result with our custom properties
-type RenderInterfaceResult = RenderWithProviderResult & {
+type RenderInterfaceResult = RenderResult & {
   updateInterface: (
     newContent: JSXElement,
     newState?: Record<string, unknown> | null,
@@ -126,7 +117,7 @@ export function renderInterface(
       PERF_DEBUG
     />,
     store,
-  ) as RenderWithProviderResult;
+  );
 
   const getRenderCount = () =>
     parseInt(

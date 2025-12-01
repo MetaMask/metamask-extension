@@ -34,13 +34,7 @@ const RewardsPage: React.FC = () => {
     }
 
     navigate(DEFAULT_ROUTE, { replace: true });
-  }, [
-    navigate,
-    dispatch,
-    rewardsEnabled,
-    rewardsOnboardingEnabled,
-    location,
-  ]);
+  }, [navigate, dispatch, rewardsEnabled, rewardsOnboardingEnabled, location]);
 
   return (
     <Box className="flex justify-center items-center flex-1">

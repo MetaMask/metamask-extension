@@ -64,6 +64,7 @@ import {
   SWAPS_NOTIFICATION_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
 } from '../../helpers/constants/routes';
+import { toRelativeRoutePath } from '../routes/utils';
 import {
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
@@ -410,9 +411,10 @@ export default function Swap() {
           </Box>
         </div>
         <div className="swaps__content">
+          {/* Using relative paths for nested routes inside parent /swaps/* */}
           <Routes>
             <Route
-              path={PREPARE_SWAP_ROUTE}
+              path={toRelativeRoutePath(PREPARE_SWAP_ROUTE)}
               element={
                 <FeatureToggledRoute
                   redirectRoute={SWAPS_MAINTENANCE_ROUTE}
@@ -427,7 +429,7 @@ export default function Swap() {
               }
             />
             <Route
-              path={SWAPS_ERROR_ROUTE}
+              path={toRelativeRoutePath(SWAPS_ERROR_ROUTE)}
               element={
                 swapsErrorKey ? (
                   <AwaitingSwap
@@ -443,7 +445,7 @@ export default function Swap() {
               }
             />
             <Route
-              path={SWAPS_NOTIFICATION_ROUTE}
+              path={toRelativeRoutePath(SWAPS_NOTIFICATION_ROUTE)}
               element={
                 swapsErrorKey ? (
                   <NotificationPage notificationKey={swapsErrorKey} />
@@ -453,7 +455,7 @@ export default function Swap() {
               }
             />
             <Route
-              path={LOADING_QUOTES_ROUTE}
+              path={toRelativeRoutePath(LOADING_QUOTES_ROUTE)}
               element={
                 <FeatureToggledRoute
                   redirectRoute={SWAPS_MAINTENANCE_ROUTE}
@@ -489,7 +491,7 @@ export default function Swap() {
               }
             />
             <Route
-              path={SWAPS_MAINTENANCE_ROUTE}
+              path={toRelativeRoutePath(SWAPS_MAINTENANCE_ROUTE)}
               element={
                 swapsEnabled === false ? (
                   <AwaitingSwap errorKey={OFFLINE_FOR_MAINTENANCE} />
@@ -499,15 +501,15 @@ export default function Swap() {
               }
             />
             <Route
-              path={AWAITING_SIGNATURES_ROUTE}
+              path={toRelativeRoutePath(AWAITING_SIGNATURES_ROUTE)}
               element={<AwaitingSignatures />}
             />
             <Route
-              path={SMART_TRANSACTION_STATUS_ROUTE}
+              path={toRelativeRoutePath(SMART_TRANSACTION_STATUS_ROUTE)}
               element={<SmartTransactionStatus txId={tradeTxData?.id} />}
             />
             <Route
-              path={AWAITING_SWAP_ROUTE}
+              path={toRelativeRoutePath(AWAITING_SWAP_ROUTE)}
               element={
                 routeState === 'awaiting' || tradeTxData ? (
                   <AwaitingSwap
