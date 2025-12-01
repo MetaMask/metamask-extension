@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "13.11.1",
+  "version": "13.11.2",
   "private": true,
   "repository": {
     "type": "git",
@@ -276,7 +276,7 @@
     "@metamask/approval-controller": "^8.0.0",
     "@metamask/assets-controllers": "patch:@metamask/assets-controllers@patch%3A@metamask/assets-controllers@npm%253A89.0.1%23~/.yarn/patches/@metamask-assets-controllers-npm-89.0.1-02fa7acd54.patch%3A%3Aversion=89.0.1&hash=6be0d3#~/.yarn/patches/@metamask-assets-controllers-patch-7c7d711c8c.patch",
     "@metamask/base-controller": "^9.0.0",
-    "@metamask/bitcoin-wallet-snap": "^1.6.0",
+    "@metamask/bitcoin-wallet-snap": "^1.8.0",
     "@metamask/bridge-controller": "^61.0.0",
     "@metamask/bridge-status-controller": "^61.0.0",
     "@metamask/browser-passworder": "^4.3.0",
