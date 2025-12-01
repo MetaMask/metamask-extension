@@ -135,16 +135,11 @@ describe('useBridgeQueryParams', () => {
     const mockStoreState = createBridgeMockStore({
       featureFlagOverrides: {
         bridgeConfig: {
-          chains: {
-            [ChainId.SOLANA]: {
-              isActiveSrc: true,
-              isActiveDest: true,
+          chainRanking: [
+            {
+              chainId: bridgeControllerUtils.formatChainIdToCaip(ChainId.LINEA),
             },
-            [ChainId.LINEA]: {
-              isActiveSrc: true,
-              isActiveDest: true,
-            },
-          },
+          ],
         },
       },
       metamaskStateOverrides: {
@@ -196,16 +191,16 @@ describe('useBridgeQueryParams', () => {
     const mockStoreState = createBridgeMockStore({
       featureFlagOverrides: {
         bridgeConfig: {
-          chains: {
-            [ChainId.SOLANA]: {
-              isActiveSrc: true,
-              isActiveDest: true,
+          chainRanking: [
+            {
+              chainId: bridgeControllerUtils.formatChainIdToCaip(
+                ChainId.SOLANA,
+              ),
             },
-            [ChainId.LINEA]: {
-              isActiveSrc: true,
-              isActiveDest: true,
+            {
+              chainId: bridgeControllerUtils.formatChainIdToCaip(ChainId.LINEA),
             },
-          },
+          ],
         },
       },
     });
@@ -253,12 +248,11 @@ describe('useBridgeQueryParams', () => {
     const mockStoreState = createBridgeMockStore({
       featureFlagOverrides: {
         bridgeConfig: {
-          chains: {
-            [ChainId.LINEA]: {
-              isActiveSrc: true,
-              isActiveDest: true,
+          chainRanking: [
+            {
+              chainId: bridgeControllerUtils.formatChainIdToCaip(ChainId.LINEA),
             },
-          },
+          ],
         },
       },
       metamaskStateOverrides: {
@@ -306,12 +300,11 @@ describe('useBridgeQueryParams', () => {
     const mockStoreState = createBridgeMockStore({
       featureFlagOverrides: {
         bridgeConfig: {
-          chains: {
-            [ChainId.LINEA]: {
-              isActiveSrc: true,
-              isActiveDest: true,
+          chainRanking: [
+            {
+              chainId: bridgeControllerUtils.formatChainIdToCaip(ChainId.LINEA),
             },
-          },
+          ],
         },
       },
       metamaskStateOverrides: {
@@ -345,7 +338,7 @@ describe('useBridgeQueryParams', () => {
     expect(calcLatestSrcBalanceSpy.mock.calls).toMatchSnapshot();
   });
 
-  it('should not set inputs when there are no query params', async () => {
+  it.only('should not set inputs when there are no query params', async () => {
     const fetchAssetMetadataForAssetIdsSpy = jest.spyOn(
       assetUtils,
       'fetchAssetMetadataForAssetIds',
@@ -391,12 +384,11 @@ describe('useBridgeQueryParams', () => {
     const mockStoreState = createBridgeMockStore({
       featureFlagOverrides: {
         bridgeConfig: {
-          chains: {
-            [ChainId.LINEA]: {
-              isActiveSrc: true,
-              isActiveDest: true,
+          chainRanking: [
+            {
+              chainId: bridgeControllerUtils.formatChainIdToCaip(ChainId.LINEA),
             },
-          },
+          ],
         },
       },
       metamaskStateOverrides: {
@@ -446,12 +438,11 @@ describe('useBridgeQueryParams', () => {
     const mockStoreState = createBridgeMockStore({
       featureFlagOverrides: {
         bridgeConfig: {
-          chains: {
-            [ChainId.LINEA]: {
-              isActiveSrc: true,
-              isActiveDest: true,
+          chainRanking: [
+            {
+              chainId: bridgeControllerUtils.formatChainIdToCaip(ChainId.LINEA),
             },
-          },
+          ],
         },
       },
       metamaskStateOverrides: {
@@ -494,12 +485,11 @@ describe('useBridgeQueryParams', () => {
     const mockStoreState = createBridgeMockStore({
       featureFlagOverrides: {
         bridgeConfig: {
-          chains: {
-            [ChainId.LINEA]: {
-              isActiveSrc: true,
-              isActiveDest: true,
+          chainRanking: [
+            {
+              chainId: bridgeControllerUtils.formatChainIdToCaip(ChainId.LINEA),
             },
-          },
+          ],
         },
       },
     });

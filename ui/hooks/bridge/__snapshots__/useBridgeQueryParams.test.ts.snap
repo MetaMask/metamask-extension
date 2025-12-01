@@ -158,7 +158,7 @@ exports[`useBridgeQueryParams should set src token after navigating from ERC20 a
     "name": "USDC",
     "symbol": "USDC",
   },
-  "fromTokenInputValue": undefined,
+  "fromTokenInputValue": null,
   "toChainId": null,
   "toToken": undefined,
 }

@@ -369,15 +369,13 @@ async function mockFeatureFlags(
   mockServer: Mockttp,
   featureFlags: Partial<FeatureFlagResponse>,
 ) {
-  await mockServer
-    .forGet('https://client-config.api.cx.metamask.io/v1/flags')
-    .thenCallback(() => {
-      return {
-        ok: true,
-        statusCode: 200,
-        json: [{ bridgeConfig: featureFlags }],
-      };
-    });
+  await mockServer.forGet(/flags/u).thenCallback(() => {
+    return {
+      ok: true,
+      statusCode: 200,
+      json: [{ bridgeConfig: featureFlags }],
+    };
+  });
 }
 
 async function mockSwapETHtoMUSD(mockServer: Mockttp) {

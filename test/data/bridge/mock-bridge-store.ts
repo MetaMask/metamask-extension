@@ -407,6 +407,14 @@ export const createBridgeMockStore = ({
             refreshRate: 5000,
             maxRefreshCount: 5,
             ...featureFlagOverrides?.bridgeConfig,
+            chainRanking: [
+              { chainId: formatChainIdToCaip('0x1') },
+              ...Object.keys(
+                featureFlagOverrides?.bridgeConfig?.chains ?? [],
+              ).map((chainId) => ({
+                chainId: formatChainIdToCaip(chainId),
+              })),
+            ],
             chains: {
               [formatChainIdToCaip('0x1')]: {
                 isActiveSrc: true,
@@ -421,6 +429,7 @@ export const createBridgeMockStore = ({
                 ]),
               ),
             },
+            ...featureFlagOverrides?.bridgeConfig,
           },
         },
       },
