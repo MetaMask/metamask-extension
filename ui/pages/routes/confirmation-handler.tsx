@@ -133,7 +133,12 @@ export const ConfirmationHandler = () => {
       return;
     }
 
-    if (isFullscreen && !hasAllowedPopupRedirectApprovals) {
+    if (
+      isFullscreen &&
+      !hasAllowedPopupRedirectApprovals &&
+      !pendingApprovals.length &&
+      !hasApprovalFlows
+    ) {
       return;
     }
 
@@ -143,6 +148,8 @@ export const ConfirmationHandler = () => {
     hasAllowedPopupRedirectApprovals,
     isExemptedRoute,
     isFullscreen,
+    pendingApprovals.length,
+    hasApprovalFlows,
   ]);
 
   return null;
