@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import classnames from 'classnames';
 import {
   CRYPTO_PAYMENT_METHOD_ERRORS,
   PAYMENT_TYPES,
@@ -21,7 +20,6 @@ import {
   Icon,
   IconName,
   IconSize,
-  Tag,
   Text,
 } from '../../../components/component-library';
 import {
@@ -29,7 +27,6 @@ import {
   BackgroundColor,
   BlockSize,
   BorderRadius,
-  BorderStyle,
   Display,
   FlexDirection,
   IconColor,
@@ -92,12 +89,10 @@ import {
   ShieldErrorStateViewEnum,
   ShieldUnexpectedErrorEventLocationEnum,
 } from '../../../../shared/constants/subscriptions';
-import { ThemeType } from '../../../../shared/constants/preferences';
-import { useTheme } from '../../../hooks/useTheme';
 import ApiErrorHandler from '../../../components/app/api-error-handler';
 import CancelMembershipModal from './cancel-membership-modal';
 import { isCardPaymentMethod, isCryptoPaymentMethod } from './types';
-import ShieldBannerAnimation from './shield-banner-animation';
+import { MembershipHeader } from './components';
 
 const TransactionShield = () => {
   const t = useI18nContext();
@@ -115,8 +110,6 @@ const TransactionShield = () => {
   }, [search]);
 
   const { formatCurrency } = useFormatters();
-  const theme = useTheme();
-  const isLightTheme = theme === ThemeType.light;
 
   const {
     customerId,
@@ -754,96 +747,16 @@ const TransactionShield = () => {
       )}
       {membershipErrorBanner}
       <Box className="transaction-shield-page__container" marginBottom={4}>
-        <Box
-          data-theme={isMembershipInactive ? theme : ThemeType.dark}
-          className={classnames(
-            'transaction-shield-page__row transaction-shield-page__membership',
-            {
-              'transaction-shield-page__membership--loading':
-                showSkeletonLoader,
-              'transaction-shield-page__membership--inactive':
-                isMembershipInactive && !showSkeletonLoader,
-              'transaction-shield-page__membership--active':
-                !isMembershipInactive && !showSkeletonLoader,
-              'transaction-shield-page__membership--inactive-light':
-                isLightTheme && isMembershipInactive && !showSkeletonLoader,
-            },
-          )}
-          {...rowsStyleProps}
-          alignItems={AlignItems.center}
-          justifyContent={JustifyContent.spaceBetween}
-          paddingRight={2}
-        >
-          <Box
-            width={BlockSize.Full}
-            gap={showSkeletonLoader ? 2 : 0}
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-          >
-            {showSkeletonLoader ? (
-              <Skeleton width="60%" height={20} />
-            ) : (
-              <Box
-                display={Display.Flex}
-                alignItems={AlignItems.center}
-                gap={3}
-              >
-                <Text
-                  variant={TextVariant.bodyMdBold}
-                  className="transaction-shield-page__membership-text"
-                  data-testid="shield-detail-membership-status"
-                >
-                  {isMembershipInactive
-                    ? t('shieldTxMembershipInactive')
-                    : t('shieldTxMembershipActive')}
-                </Text>
-                {isTrialing && (
-                  <Tag
-                    label={t('shieldTxMembershipFreeTrial')}
-                    labelProps={{
-                      variant: TextVariant.bodySmMedium,
-                      color: TextColor.successDefault,
-                    }}
-                    borderStyle={BorderStyle.none}
-                    borderRadius={BorderRadius.SM}
-                    backgroundColor={BackgroundColor.successMuted}
-                    data-testid="shield-detail-trial-tag"
-                  />
-                )}
-                {isPaused && (
-                  <Tag
-                    label={t('shieldTxMembershipPaused')}
-                    labelProps={{
-                      variant: TextVariant.bodySmMedium,
-                      color: TextColor.textAlternative,
-                    }}
-                    borderStyle={BorderStyle.none}
-                    borderRadius={BorderRadius.SM}
-                    backgroundColor={BackgroundColor.backgroundMuted}
-                    data-testid="shield-detail-paused-tag"
-                  />
-                )}
-              </Box>
-            )}
-            {showSkeletonLoader ? (
-              <Skeleton width="60%" height={16} />
-            ) : (
-              <Text
-                variant={TextVariant.bodyXs}
-                className="transaction-shield-page__membership-text"
-                data-testid="shield-detail-customer-id"
-              >
-                {t('shieldTxMembershipId')}: {customerId}
-              </Text>
-            )}
-          </Box>
-          {!showSkeletonLoader && (
-            <ShieldBannerAnimation
-              containerClassName="transaction-shield-page-shield-banner__container"
-              canvasClassName="transaction-shield-page-shield-banner__canvas"
-            />
-          )}
-        </Box>
+        <MembershipHeader
+          isInactive={isMembershipInactive}
+          showSkeletonLoader={showSkeletonLoader}
+          isTrialing={isTrialing}
+          isPaused={isPaused}
+          customerId={customerId}
+          startDate={displayedShieldSubscription?.currentPeriodStart}
+          endDate={displayedShieldSubscription?.currentPeriodEnd}
+          trialEndDate={displayedShieldSubscription?.trialEnd}
+        />
 
         <Box
           className="transaction-shield-page__row"

@@ -19,7 +19,7 @@
   }
 
   &__membership {
-    height: 85px;
+    height: 128px;
     position: relative;
     overflow: hidden;
 
@@ -41,7 +41,7 @@
   }
 
   &__membership-text {
-    color: var(--color-accent03-light);
+    color: var(--color-accent04-light);
   }
 
   &__membership--inactive &__membership-text {
@@ -63,10 +63,10 @@
   &-shield-banner {
     &__container {
       position: absolute;
-      top: -4px;
+      top: -6px;
       right: 0;
-      height: 93px;
-      width: 93px;
+      height: 140px;
+      width: 140px;
     }
 
     &__canvas {
