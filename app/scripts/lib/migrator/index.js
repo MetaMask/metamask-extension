@@ -1,6 +1,7 @@
 import EventEmitter from 'events';
 import log from 'loglevel';
 import { PersistenceManager } from '../stores/persistence-manager';
+import { isObject } from "@metamask/utils";
 
 /**
  * @typedef {object} Migration
@@ -34,11 +35,11 @@ export default class Migrator extends EventEmitter {
 
   // run all pending migrations on meta in place
   async migrateData(initialData = this.generateInitialState()) {
-    // legacy migrations (before 177) don't track changed controllers,
+    // legacy migrations (before MIGRATION_V2_START_VERSION) don't track changed controllers,
     // so we assume all controllers changed
     /** @type {Set<string>} */
     const changedControllers =
-      initialData.meta.version < MIGRATION_V2_START_VERSION
+      isObject(initialData.data) && initialData.meta.version < MIGRATION_V2_START_VERSION
         ? new Set(Object.keys(initialData.data))
         : new Set();
 
