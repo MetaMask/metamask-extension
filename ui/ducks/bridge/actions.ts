@@ -159,7 +159,7 @@ export const setFromChain = ({
       const networkId =
         networkConfig.defaultRpcEndpointIndex !== undefined
           ? networkConfig.rpcEndpoints?.[networkConfig.defaultRpcEndpointIndex]
-              .networkClientId
+              ?.networkClientId
           : null;
       if (networkId) {
         dispatch(setActiveNetworkWithError(networkId));
