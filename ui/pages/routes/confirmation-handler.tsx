@@ -22,7 +22,6 @@ import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_NOTIFICATION,
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
-  SMART_TRANSACTION_CONFIRMATION_TYPES,
 } from '../../../shared/constants/app';
 import {
   selectHasApprovalFlows,
@@ -129,13 +128,6 @@ export const ConfirmationHandler = () => {
     SNAP_APPROVAL_TYPES.includes(approval.type),
   );
 
-  // Check if there are Smart Transaction status page approvals
-  const hasStxStatusPageApproval = pendingApprovals.some(
-    (approval) =>
-      approval.type ===
-      SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage,
-  );
-
   // Check if there are swap-related navigation needs
   const hasSwapRelatedNavigation =
     showAwaitingSwapScreen ||
@@ -151,7 +143,6 @@ export const ConfirmationHandler = () => {
     if (
       isFullscreen &&
       !hasAllowedPopupRedirectApprovals &&
-      !hasStxStatusPageApproval &&
       !hasSwapRelatedNavigation
     ) {
       return;
@@ -161,7 +152,6 @@ export const ConfirmationHandler = () => {
   }, [
     checkStatusAndNavigate,
     hasAllowedPopupRedirectApprovals,
-    hasStxStatusPageApproval,
     hasSwapRelatedNavigation,
     isExemptedRoute,
     isFullscreen,
