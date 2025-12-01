@@ -5,9 +5,7 @@ import { DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS } from '../../flask/solana-wal
 import { withSolanaAccountSnap } from '../solana/common-solana';
 import { mockSendRedesignFeatureFlag } from './common';
 
-// BUG #37824 With BIP44 turned on balance on Solana is always zero even when it is mocked
-// eslint-disable-next-line mocha/no-skipped-tests
-describe.skip('Send Solana', function () {
+describe('Send Solana', function () {
   it('it should be possible to send SOL', async function () {
     await withSolanaAccountSnap(
       {
@@ -22,6 +20,8 @@ describe.skip('Send Solana', function () {
         const snapTransactionConfirmation = new SnapTransactionConfirmation(
           driver,
         );
+
+        await driver.delay(5000);
 
         await nonEvmHomepage.clickOnSendButton();
 

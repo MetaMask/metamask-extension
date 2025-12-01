@@ -83,9 +83,7 @@ describe('Check balance', function (this: Suite) {
       },
     );
   });
-  // BUG #37824 With BIP44 turned on mocking Solana network responses no longer works
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('For a non 0 balance account - USD balance', async function () {
+  it('For a non 0 balance account - USD balance', async function () {
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),
@@ -95,13 +93,12 @@ describe('Check balance', function (this: Suite) {
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
+        await driver.delay(5000);
         await homePage.checkGetBalance('$5,643.50', 'USD');
       },
     );
   });
-  // BUG #37824 With BIP44 turned on mocking Solana network responses no longer works
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('For a non 0 balance account - SOL balance', async function () {
+  it('For a non 0 balance account - SOL balance', async function () {
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),
@@ -109,6 +106,7 @@ describe('Check balance', function (this: Suite) {
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
+        await driver.delay(5000);
         await homePage.checkGetBalance('50', 'SOL');
       },
     );

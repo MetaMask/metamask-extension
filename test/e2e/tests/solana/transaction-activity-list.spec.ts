@@ -9,9 +9,7 @@ import {
   withSolanaAccountSnap,
 } from './common-solana';
 
-// BUG #37824 - With BIP44 turned on mocking Solana network responses no longer works
-// eslint-disable-next-line mocha/no-skipped-tests
-describe.skip('Transaction activity list', function (this: Suite) {
+describe('Transaction activity list', function (this: Suite) {
   it('user can see activity list and a confirmed transaction details', async function () {
     this.timeout(120000);
     await withSolanaAccountSnap(
@@ -24,6 +22,7 @@ describe.skip('Transaction activity list', function (this: Suite) {
         const homePage = new NonEvmHomepage(driver);
         await homePage.goToActivityList();
 
+        await driver.delay(5000);
         const activityList = new ActivityListPage(driver);
         await activityList.checkTxAction({ action: 'Sent' });
         await activityList.checkTxAmountInActivity('-0.00708 SOL', 1);
@@ -61,6 +60,8 @@ describe.skip('Transaction activity list', function (this: Suite) {
         const homePage = new NonEvmHomepage(driver);
         await homePage.checkPageIsLoaded('50');
         await homePage.goToActivityList();
+
+        await driver.delay(5000);
         const activityList = new ActivityListPage(driver);
         await activityList.checkFailedTxNumberDisplayedInActivity(1);
         await activityList.checkTxAction({ action: 'Interaction' });
