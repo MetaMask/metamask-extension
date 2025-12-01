@@ -255,4 +255,4 @@ if (blockchainFolderName && CHAIN_ID_TO_BLOCKCHAIN_FOLDER[chainId]) {
 **Performance Benefits**: Final token list sizes are significantly smaller than unfiltered lists, improving load times and reducing bandwidth usage while maintaining security standards.
 
 
-(This analysis covers the chains listed in the table above; extending the filtering to additional chains may yield different results based on their respective token ecosystem maturity in Trust Wallet's repository)
+(This analysis covers the chains listed in the table above; extending the filtering to additional chains may yield different results)
