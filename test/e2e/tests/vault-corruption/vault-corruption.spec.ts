@@ -10,7 +10,6 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import AccountAddressModal from '../../page-objects/pages/multichain/account-address-modal';
 import LoginPage from '../../page-objects/pages/login-page';
-import MultichainAccountDetailsPage from '../../page-objects/pages/multichain/multichain-account-details-page';
 import AddressListModal from '../../page-objects/pages/multichain/address-list-modal';
 
 // Skipping these tests temporarily until BIP44 is turned on using FF
