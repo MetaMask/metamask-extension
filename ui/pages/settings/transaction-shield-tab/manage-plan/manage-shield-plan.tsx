@@ -6,7 +6,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { ButtonRow, ButtonRowContainer } from '../button-row';
+import { ButtonRow, ButtonRowContainer } from '../components';
 const ManageShieldPlan = () => {
   const t = useI18nContext();
 
