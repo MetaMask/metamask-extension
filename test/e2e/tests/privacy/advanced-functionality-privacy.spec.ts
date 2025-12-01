@@ -111,16 +111,6 @@ describe('MetaMask onboarding ', function () {
   });
 
   it('should not prevent network requests to advanced functionality endpoints when the advanced assets functionality toggle is on', async function () {
-    // Skip for sidepanel builds - cannot accurately count requests
-    if (process.env.IS_SIDEPANEL) {
-      console.log(
-        'Skipping test for sidepanel builds',
-        process.env.IS_SIDEPANEL,
-      );
-      this.skip();
-      return;
-    }
-
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true })
@@ -136,15 +126,6 @@ describe('MetaMask onboarding ', function () {
         testSpecificMock: mockApis,
       },
       async ({ driver, mockedEndpoint }) => {
-        // Check if sidepanel is enabled - skip test if it is
-        if (await isSidePanelEnabled(driver)) {
-          console.log(
-            'Skipping test for sidepanel build - cannot accurately count requests',
-          );
-          this.skip();
-          return;
-        }
-
         await completeImportSRPOnboardingFlow({ driver });
 
         // Refresh tokens before asserting to mitigate flakiness
@@ -156,11 +137,23 @@ describe('MetaMask onboarding ', function () {
         await homePage.headerNavbar.openAccountMenu();
         await new AccountList(driver).checkPageIsLoaded();
 
+        // Check if sidepanel is enabled
+        const hasSidepanel = await isSidePanelEnabled(driver);
+
         // intended delay to allow for network requests to complete
         await driver.delay(1000);
         for (const m of mockedEndpoint) {
           const requests = await m.getSeenRequests();
           const mockUrl = m.toString();
+
+          if (hasSidepanel) {
+            // Skip assertion for sidepanel builds - cannot accurately count requests
+            // when sidepanel loads home.html in parallel with the main test window
+            console.log(
+              `Skipping request count assertion for sidepanel build - ${m}`,
+            );
+            continue;
+          }
 
           // Spot-prices endpoint may be called multiple times (initial load + refresh)
           if (mockUrl.includes('spot-prices')) {

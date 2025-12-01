@@ -811,11 +811,11 @@ const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;
 async function isSidePanelEnabled(driver) {
   try {
     const manifest = await driver.executeScript(
-      'return chrome.runtime.getManifest();',
+      'try { return chrome?.runtime?.getManifest?.(); } catch (e) { return null; }',
     );
     return manifest?.permissions?.includes('sidePanel') || false;
   } catch (error) {
-    // Chrome API not accessible (e.g., LavaMoat scuttling mode)
+    // Chrome API not accessible (e.g., LavaMoat scuttling mode, Firefox)
     return false;
   }
 }
