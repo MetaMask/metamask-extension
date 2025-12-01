@@ -1947,6 +1947,18 @@
         "uuid": true
       }
     },
+    "@metamask/subscription-controller>@metamask/polling-controller": {
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "uuid": true
+      }
+    },
     "@metamask/user-operation-controller>@metamask/polling-controller": {
       "globals": {
         "clearTimeout": true,
@@ -2280,7 +2292,7 @@
       },
       "packages": {
         "@metamask/controller-utils": true,
-        "@metamask/assets-controllers>@metamask/polling-controller": true,
+        "@metamask/subscription-controller>@metamask/polling-controller": true,
         "@metamask/transaction-controller": true,
         "@metamask/subscription-controller>bignumber.js": true
       }
