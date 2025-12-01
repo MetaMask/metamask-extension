@@ -6034,27 +6034,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:^11.16.0":
-  version: 11.16.0
-  resolution: "@metamask/controller-utils@npm:11.16.0"
-  dependencies:
-    "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/ethjs-unit": "npm:^0.3.0"
-    "@metamask/utils": "npm:^11.8.1"
-    "@spruceid/siwe-parser": "npm:2.1.0"
-    "@types/bn.js": "npm:^5.1.5"
-    bignumber.js: "npm:^9.1.2"
-    bn.js: "npm:^5.2.1"
-    cockatiel: "npm:^3.1.2"
-    eth-ens-namehash: "npm:^2.0.8"
-    fast-deep-equal: "npm:^3.1.3"
-    lodash: "npm:^4.17.21"
-  peerDependencies:
-    "@babel/runtime": ^7.0.0
-  checksum: 10/ff364f3655edf0cd0c00743c1bf2ed3d66e057dbac6df9976146ad9bc176ce60e3b5e3765d9dd0aca5af68bbd6aad85779be97bae2aafc860bb56fa2deb69e7f
-  languageName: node
-  linkType: hard
-
 "@metamask/core-backend@npm:^4.1.0":
   version: 4.1.0
   resolution: "@metamask/core-backend@npm:4.1.0"
@@ -6942,18 +6921,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/json-rpc-engine@npm:^10.0.0, @metamask/json-rpc-engine@npm:^10.0.2, @metamask/json-rpc-engine@npm:^10.0.3, @metamask/json-rpc-engine@npm:^10.1.0, @metamask/json-rpc-engine@npm:^10.1.1":
-  version: 10.1.1
-  resolution: "@metamask/json-rpc-engine@npm:10.1.1"
-  dependencies:
-    "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/safe-event-emitter": "npm:^3.0.0"
-    "@metamask/utils": "npm:^11.8.1"
-  checksum: 10/ad28e430543ca93d4487ff3f9c2d2247013ed9bc1d73867b06f2cea09b0e864207c856cc90ef945e7323e3dacc03205ffdbaddce34fc6c9165cd96bd55dc7bd0
-  languageName: node
-  linkType: hard
-
-"@metamask/json-rpc-engine@npm:^10.2.0":
+"@metamask/json-rpc-engine@npm:^10.0.0, @metamask/json-rpc-engine@npm:^10.0.2, @metamask/json-rpc-engine@npm:^10.0.3, @metamask/json-rpc-engine@npm:^10.1.0, @metamask/json-rpc-engine@npm:^10.1.1, @metamask/json-rpc-engine@npm:^10.2.0":
   version: 10.2.0
   resolution: "@metamask/json-rpc-engine@npm:10.2.0"
   dependencies:
@@ -7356,23 +7324,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/message-manager@npm:^14.0.0":
-  version: 14.0.0
-  resolution: "@metamask/message-manager@npm:14.0.0"
-  dependencies:
-    "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/controller-utils": "npm:^11.14.1"
-    "@metamask/eth-sig-util": "npm:^8.2.0"
-    "@metamask/messenger": "npm:^0.3.0"
-    "@metamask/utils": "npm:^11.8.1"
-    "@types/uuid": "npm:^8.3.0"
-    jsonschema: "npm:^1.4.1"
-    uuid: "npm:^8.3.2"
-  checksum: 10/4767f12b04ac0f792edf2ebbc052dd8bd4afdd0cda05f0d3edd4d5b877b59df7bdea86434d75aa382f09d71a392a2f841e68c475807169d4532c9d30ba45e554
-  languageName: node
-  linkType: hard
-
-"@metamask/message-manager@npm:^14.1.0":
+"@metamask/message-manager@npm:^14.0.0, @metamask/message-manager@npm:^14.1.0":
   version: 14.1.0
   resolution: "@metamask/message-manager@npm:14.1.0"
   dependencies:
@@ -8075,20 +8027,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/remote-feature-flag-controller@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/remote-feature-flag-controller@npm:2.0.0"
-  dependencies:
-    "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/controller-utils": "npm:^11.14.1"
-    "@metamask/messenger": "npm:^0.3.0"
-    "@metamask/utils": "npm:^11.8.1"
-    uuid: "npm:^8.3.2"
-  checksum: 10/a5d72c8532dbb93ae3039d4231cf9e76e67ea5c587749b00a72a48e6014af6f68620967c88bcaef7a80cf85bff65d9b4281a32d03b32508fc54a6c08b2a9df6a
-  languageName: node
-  linkType: hard
-
-"@metamask/remote-feature-flag-controller@npm:^2.0.1":
+"@metamask/remote-feature-flag-controller@npm:^2.0.0, @metamask/remote-feature-flag-controller@npm:^2.0.1":
   version: 2.0.1
   resolution: "@metamask/remote-feature-flag-controller@npm:2.0.1"
   dependencies:
@@ -8535,9 +8474,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/subscription-controller@npm:@metamask-previews/subscription-controller@5.1.0-preview-1104ab5":
-  version: 5.1.0-preview-1104ab5
-  resolution: "@metamask-previews/subscription-controller@npm:5.1.0-preview-1104ab5"
+"@metamask/subscription-controller@npm:^5.2.0":
+  version: 5.2.0
+  resolution: "@metamask/subscription-controller@npm:5.2.0"
   dependencies:
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/controller-utils": "npm:^11.16.0"
@@ -8547,7 +8486,7 @@ __metadata:
     "@metamask/transaction-controller": "npm:^62.3.1"
     "@metamask/utils": "npm:^11.8.1"
     bignumber.js: "npm:^9.1.2"
-  checksum: 10/7f7f684fb0c8f61e577baf06a8d541a6be154931e5cc662700f20b64e424810c3243bb91a51460951996ba9ffc5b3779722e9afa5c277a021ce9b3e800512dac
+  checksum: 10/fdfd90524f7129c4a0a40412e892a4ddda1381153233a0e5b8d1c11421ba924e4ebe4500fa5738e5a66e0dbc48fac42e674a1ea5537487c812d098554449bb69
   languageName: node
   linkType: hard
 
@@ -33139,7 +33078,7 @@ __metadata:
     "@metamask/solana-wallet-snap": "npm:^2.5.0"
     "@metamask/solana-wallet-standard": "npm:^0.6.0"
     "@metamask/streams": "npm:^0.4.0"
-    "@metamask/subscription-controller": "npm:^4.2.2"
+    "@metamask/subscription-controller": "npm:^5.2.0"
     "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.3.0"
