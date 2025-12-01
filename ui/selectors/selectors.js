@@ -1641,6 +1641,9 @@ const selectSnapId = (_state, snapId) => snapId;
  */
 export const selectInstalledSnaps = (state) => state.metamask.snaps;
 
+export const selectIsNetworkMenuOpen = (state) =>
+  state.appState.isNetworkMenuOpen;
+
 /**
  * Retrieve registry data for requested Snap.
  *

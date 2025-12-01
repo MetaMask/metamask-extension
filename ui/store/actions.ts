@@ -4764,6 +4764,12 @@ export function toggleNetworkMenu(payload?: {
   };
 }
 
+export function closeNetworkMenu() {
+  return {
+    type: actionConstants.CLOSE_NETWORK_MENU,
+  };
+}
+
 export function setParticipateInMetaMetrics(
   participationPreference: boolean,
 ): ThunkAction<
@@ -4815,6 +4821,15 @@ export function setDataCollectionForMarketing(
       type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
       value: dataCollectionPreference,
     });
+  };
+}
+
+export function setPna25Acknowledged(
+  acknowledged: boolean,
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    log.debug(`background.setPna25Acknowledged`);
+    await submitRequestToBackground('setPna25Acknowledged', [acknowledged]);
   };
 }
 

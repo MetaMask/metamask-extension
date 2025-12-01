@@ -4991,9 +4991,6 @@
   "recipientEditAriaLabel": {
     "message": "수취인 편집"
   },
-  "recipientPlaceholder": {
-    "message": "유효한 주소를 입력하거나 붙여 넣으세요"
-  },
   "recoveryPhraseReminderBackupStart": {
     "message": "지금 백업"
   },
