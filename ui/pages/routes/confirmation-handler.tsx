@@ -135,27 +135,22 @@ export const ConfirmationHandler = () => {
     swapsFetchParams ||
     hasBridgeQuotes;
 
+  const isFullscreenExemption =
+    isFullscreen &&
+    !hasAllowedPopupRedirectApprovals &&
+    !hasSwapRelatedNavigation;
+
   useEffect(() => {
     if (isExemptedRoute) {
       return;
     }
 
-    if (
-      isFullscreen &&
-      !hasAllowedPopupRedirectApprovals &&
-      !hasSwapRelatedNavigation
-    ) {
+    if (isFullscreenExemption) {
       return;
     }
 
     checkStatusAndNavigate();
-  }, [
-    checkStatusAndNavigate,
-    hasAllowedPopupRedirectApprovals,
-    hasSwapRelatedNavigation,
-    isExemptedRoute,
-    isFullscreen,
-  ]);
+  }, [checkStatusAndNavigate, isExemptedRoute, isFullscreenExemption]);
 
   return null;
 };
