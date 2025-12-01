@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import classnames from 'classnames';
 import {
   CRYPTO_PAYMENT_METHOD_ERRORS,
@@ -17,7 +11,6 @@ import {
   TokenPaymentInfo,
 } from '@metamask/subscription-controller';
 import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
-import { useDispatch, useSelector } from 'react-redux';
 import { NameType } from '@metamask/name-controller';
 import {
   BannerAlert,
@@ -48,10 +41,12 @@ import { Skeleton } from '../../../components/component-library/skeleton';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   useCancelSubscription,
+  useHandleSubscriptionSupportAction,
   useOpenGetSubscriptionBillingPortal,
   useSubscriptionCryptoApprovalTransaction,
   useUnCancelSubscription,
   useUpdateSubscriptionCardPaymentMethod,
+  useUserLastSubscriptionByProduct,
   useUserSubscriptionByProduct,
   useUserSubscriptions,
 } from '../../../hooks/subscription/useSubscription';
@@ -64,7 +59,6 @@ import {
 import { TRANSACTION_SHIELD_LINK } from '../../../helpers/constants/common';
 import { getProductPrice } from '../../shield-plan/utils';
 import Tooltip from '../../../components/ui/tooltip';
-import { ThemeType } from '../../../../shared/constants/preferences';
 import { useFormatters } from '../../../hooks/useFormatters';
 import LoadingScreen from '../../../components/ui/loading-screen';
 import AddFundsModal from '../../../components/app/modals/add-funds-modal/add-funds-modal';
@@ -72,38 +66,44 @@ import {
   useSubscriptionPaymentMethods,
   useSubscriptionPricing,
 } from '../../../hooks/subscription/useSubscriptionPricing';
-import {
-  getSubscriptionCryptoApprovalAmount,
-  setSecurityAlertsEnabled,
-  setUsePhishDetect,
-  setUseTransactionSimulations,
-} from '../../../store/actions';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  getIsSecurityAlertsEnabled,
-  getUsePhishDetect,
-  getUseTransactionSimulations,
-} from '../../../selectors/selectors';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
+import { getSubscriptionCryptoApprovalAmount } from '../../../store/actions';
 import { ConfirmInfoRowAddress } from '../../../components/app/confirm/info/row';
 import {
   getIsShieldSubscriptionEndingSoon,
   getIsShieldSubscriptionPaused,
+  getIsShieldSubscriptionTrialing,
 } from '../../../../shared/lib/shield';
 import { useAsyncResult } from '../../../hooks/useAsync';
 import { useTimeout } from '../../../hooks/useTimeout';
 import { MINUTE } from '../../../../shared/constants/time';
 import Name from '../../../components/app/name';
+import {
+  useHandleShieldAddFundTrigger,
+  useShieldSubscriptionCryptoSufficientBalanceCheck,
+} from '../../../hooks/subscription/useAddFundTrigger';
+import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
+import {
+  EntryModalSourceEnum,
+  ShieldCtaActionClickedEnum,
+  ShieldCtaSourceEnum,
+  ShieldErrorStateActionClickedEnum,
+  ShieldErrorStateLocationEnum,
+  ShieldErrorStateViewEnum,
+  ShieldUnexpectedErrorEventLocationEnum,
+} from '../../../../shared/constants/subscriptions';
+import { ThemeType } from '../../../../shared/constants/preferences';
+import { useTheme } from '../../../hooks/useTheme';
+import ApiErrorHandler from '../../../components/app/api-error-handler';
 import CancelMembershipModal from './cancel-membership-modal';
-import { isCryptoPaymentMethod } from './types';
+import { isCardPaymentMethod, isCryptoPaymentMethod } from './types';
+import ShieldBannerAnimation from './shield-banner-animation';
 
 const TransactionShield = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const { search } = useLocation();
+  const { captureShieldCtaClickedEvent, captureShieldErrorStateClickedEvent } =
+    useSubscriptionMetrics();
   const shouldWaitForSubscriptionCreation = useMemo(() => {
     const searchParams = new URLSearchParams(search);
     // param to wait for subscription creation happen in the background
@@ -114,26 +114,40 @@ const TransactionShield = () => {
   }, [search]);
 
   const { formatCurrency } = useFormatters();
-
-  const trackEvent = useContext(MetaMetricsContext);
-
-  const securityAlertsEnabled = useSelector(getIsSecurityAlertsEnabled);
-  const usePhishDetect = useSelector(getUsePhishDetect);
-  const useTransactionSimulations = useSelector(getUseTransactionSimulations);
-
-  const dispatch = useDispatch();
+  const theme = useTheme();
+  const isLightTheme = theme === ThemeType.light;
 
   const {
     customerId,
     subscriptions,
+    lastSubscription,
     loading: subscriptionsLoading,
+    error: subscriptionsError,
   } = useUserSubscriptions({
     refetch: !shouldWaitForSubscriptionCreation, // always fetch latest subscriptions state in settings screen unless we are waiting for subscription creation (subscription is refetch in background)
   });
-  const shieldSubscription = useUserSubscriptionByProduct(
+  const currentShieldSubscription = useUserSubscriptionByProduct(
     PRODUCT_TYPES.SHIELD,
     subscriptions,
   );
+  const lastShieldSubscription = useUserLastSubscriptionByProduct(
+    PRODUCT_TYPES.SHIELD,
+    lastSubscription,
+  );
+  // show current active shield subscription or last subscription if no active subscription
+  const displayedShieldSubscription =
+    currentShieldSubscription ?? lastShieldSubscription;
+
+  // watch handle add fund trigger server check subscription paused because of insufficient funds
+  const {
+    hasAvailableSelectedToken:
+      hasAvailableSelectedTokenToTriggerCheckInsufficientFunds,
+  } = useShieldSubscriptionCryptoSufficientBalanceCheck();
+  const {
+    handleTriggerSubscriptionCheck:
+      handleTriggerSubscriptionCheckInsufficientFunds,
+    result: resultTriggerSubscriptionCheckInsufficientFunds,
+  } = useHandleShieldAddFundTrigger();
 
   const [timeoutCancelled, setTimeoutCancelled] = useState(false);
   useEffect(() => {
@@ -144,10 +158,10 @@ const TransactionShield = () => {
   }, []);
   useEffect(() => {
     // cancel timeout when subscription is created
-    if (shieldSubscription) {
+    if (currentShieldSubscription) {
       setTimeoutCancelled(true);
     }
-  }, [shieldSubscription]);
+  }, [currentShieldSubscription]);
 
   const startSubscriptionCreationTimeout = useTimeout(
     () => {
@@ -168,62 +182,74 @@ const TransactionShield = () => {
     }
   }, [shouldWaitForSubscriptionCreation, startSubscriptionCreationTimeout]);
 
-  const { subscriptionPricing, loading: subscriptionPricingLoading } =
-    useSubscriptionPricing({
-      refetch: true, // need to refetch here in case user already subscribed and doesn't go through shield plan screen
-    });
+  const {
+    subscriptionPricing,
+    loading: subscriptionPricingLoading,
+    error: subscriptionPricingError,
+  } = useSubscriptionPricing({
+    refetch: true, // need to refetch here in case user already subscribed and doesn't go through shield plan screen
+  });
   const cryptoPaymentMethod = useSubscriptionPaymentMethods(
     PAYMENT_TYPES.byCrypto,
     subscriptionPricing,
   );
 
   const isCancelled =
-    shieldSubscription?.status === SUBSCRIPTION_STATUSES.canceled;
+    displayedShieldSubscription?.status === SUBSCRIPTION_STATUSES.canceled;
   const isPaused = getIsShieldSubscriptionPaused(subscriptions);
+  const isTrialing = getIsShieldSubscriptionTrialing(subscriptions);
   const isMembershipInactive = isCancelled || isPaused;
   const isSubscriptionEndingSoon =
     getIsShieldSubscriptionEndingSoon(subscriptions);
 
-  // user can cancel subscription if not canceled and not cancel at period end
-  const canCancel = !isCancelled && !shieldSubscription?.cancelAtPeriodEnd;
+  // user can cancel subscription if not canceled and current subscription not cancel at period end
+  const canCancel =
+    !isCancelled && !currentShieldSubscription?.cancelAtPeriodEnd;
 
   const isCryptoPayment =
-    shieldSubscription?.paymentMethod &&
-    isCryptoPaymentMethod(shieldSubscription?.paymentMethod);
+    displayedShieldSubscription?.paymentMethod &&
+    isCryptoPaymentMethod(displayedShieldSubscription?.paymentMethod);
 
   const productInfo = useMemo(
     () =>
-      shieldSubscription?.products.find((p) => p.name === PRODUCT_TYPES.SHIELD),
-    [shieldSubscription],
+      displayedShieldSubscription?.products.find(
+        (p) => p.name === PRODUCT_TYPES.SHIELD,
+      ),
+    [displayedShieldSubscription],
   );
 
   const [executeCancelSubscription, cancelSubscriptionResult] =
-    useCancelSubscription({
-      subscriptionId: shieldSubscription?.id,
-    });
+    useCancelSubscription(currentShieldSubscription);
 
   const [executeUnCancelSubscription, unCancelSubscriptionResult] =
-    useUnCancelSubscription({
-      subscriptionId: shieldSubscription?.id,
-    });
+    useUnCancelSubscription(currentShieldSubscription);
 
   const [
     executeOpenGetSubscriptionBillingPortal,
     openGetSubscriptionBillingPortalResult,
-  ] = useOpenGetSubscriptionBillingPortal();
+  ] = useOpenGetSubscriptionBillingPortal(displayedShieldSubscription);
 
   const [
     executeUpdateSubscriptionCardPaymentMethod,
     updateSubscriptionCardPaymentMethodResult,
   ] = useUpdateSubscriptionCardPaymentMethod({
-    subscriptionId: shieldSubscription?.id,
-    recurringInterval: shieldSubscription?.interval,
+    subscription: currentShieldSubscription,
+    newRecurringInterval: currentShieldSubscription?.interval,
   });
 
+  const hasApiError =
+    subscriptionsError ||
+    subscriptionPricingError ||
+    cancelSubscriptionResult.error ||
+    unCancelSubscriptionResult.error ||
+    openGetSubscriptionBillingPortalResult.error ||
+    updateSubscriptionCardPaymentMethodResult.error;
+
   const isWaitingForSubscriptionCreation =
-    shouldWaitForSubscriptionCreation && !shieldSubscription;
+    shouldWaitForSubscriptionCreation && !currentShieldSubscription;
 
   const loading =
+    resultTriggerSubscriptionCheckInsufficientFunds.pending ||
     cancelSubscriptionResult.pending ||
     unCancelSubscriptionResult.pending ||
     openGetSubscriptionBillingPortalResult.pending ||
@@ -234,43 +260,18 @@ const TransactionShield = () => {
     subscriptionsLoading ||
     subscriptionPricingLoading;
 
+  // redirect to shield plan page if user doesn't have a subscription
   useEffect(() => {
-    if (shieldSubscription) {
-      // set security alerts enabled to true
-      if (!securityAlertsEnabled) {
-        trackEvent({
-          category: MetaMetricsEventCategory.Settings,
-          event: MetaMetricsEventName.SettingsUpdated,
-          properties: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            blockaid_alerts_enabled: true,
-          },
-        });
-        setSecurityAlertsEnabled(true);
-      }
-
-      // set phishing detection to true
-      if (!usePhishDetect) {
-        dispatch(setUsePhishDetect(true));
-      }
-
-      // set transaction simulations to true
-      if (!useTransactionSimulations) {
-        setUseTransactionSimulations(true);
-      }
-    } else if (!shouldWaitForSubscriptionCreation) {
-      // redirect to shield plan page if user doesn't have a subscription
-      navigate(SHIELD_PLAN_ROUTE);
+    if (!shouldWaitForSubscriptionCreation && !displayedShieldSubscription) {
+      navigate({
+        pathname: SHIELD_PLAN_ROUTE,
+        search: `?source=${EntryModalSourceEnum.Settings}`,
+      });
     }
   }, [
     shouldWaitForSubscriptionCreation,
     navigate,
-    shieldSubscription,
-    securityAlertsEnabled,
-    usePhishDetect,
-    useTransactionSimulations,
-    dispatch,
-    trackEvent,
+    displayedShieldSubscription,
   ]);
 
   const [isCancelMembershipModalOpen, setIsCancelMembershipModalOpen] =
@@ -299,27 +300,29 @@ const TransactionShield = () => {
 
   const currentToken = useMemo((): TokenPaymentInfo | undefined => {
     if (
-      !shieldSubscription ||
-      !isCryptoPaymentMethod(shieldSubscription.paymentMethod)
+      !displayedShieldSubscription ||
+      !isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)
     ) {
       return undefined;
     }
     const chainPaymentInfo = cryptoPaymentMethod?.chains?.find(
       (chain) =>
         chain.chainId ===
-        (shieldSubscription.paymentMethod as SubscriptionCryptoPaymentMethod)
-          .crypto.chainId,
+        (
+          displayedShieldSubscription.paymentMethod as SubscriptionCryptoPaymentMethod
+        ).crypto.chainId,
     );
 
     const token = chainPaymentInfo?.tokens.find(
       (paymentToken) =>
         paymentToken.symbol ===
-        (shieldSubscription.paymentMethod as SubscriptionCryptoPaymentMethod)
-          .crypto.tokenSymbol,
+        (
+          displayedShieldSubscription.paymentMethod as SubscriptionCryptoPaymentMethod
+        ).crypto.tokenSymbol,
     );
 
     return token;
-  }, [cryptoPaymentMethod, shieldSubscription]);
+  }, [cryptoPaymentMethod, displayedShieldSubscription]);
 
   const buttonRow = (label: string, onClick: () => void, id?: string) => {
     return (
@@ -367,57 +370,49 @@ const TransactionShield = () => {
         {showSkeletonLoader ? (
           <Skeleton width="40%" height={24} />
         ) : (
-          <Text variant={TextVariant.bodyMdMedium}>{key}</Text>
+          <Text
+            variant={TextVariant.bodyMdMedium}
+            color={TextColor.textAlternative}
+          >
+            {key}
+          </Text>
         )}
         {showSkeletonLoader ? (
           <Skeleton width="30%" height={24} />
         ) : (
-          <Text variant={TextVariant.bodyMdMedium}>{value}</Text>
+          <Text variant={TextVariant.bodyMdMedium} className="flex-shrink-0">
+            {value}
+          </Text>
         )}
       </Box>
     );
   };
-  const isInsufficientFundsCrypto =
-    shieldSubscription &&
-    isCryptoPaymentMethod(shieldSubscription.paymentMethod) &&
-    shieldSubscription.paymentMethod.crypto.error === 'insufficient_balance';
-  const isAllowanceNeededCrypto =
-    shieldSubscription &&
-    isCryptoPaymentMethod(shieldSubscription.paymentMethod) &&
-    (shieldSubscription.paymentMethod.crypto.error ===
-      CRYPTO_PAYMENT_METHOD_ERRORS.INSUFFICIENT_ALLOWANCE ||
-      shieldSubscription?.paymentMethod.crypto.error ===
-        CRYPTO_PAYMENT_METHOD_ERRORS.APPROVAL_TRANSACTION_TOO_OLD ||
-      shieldSubscription?.paymentMethod.crypto.error ===
-        CRYPTO_PAYMENT_METHOD_ERRORS.APPROVAL_TRANSACTION_REVERTED ||
-      shieldSubscription?.paymentMethod.crypto.error ===
-        CRYPTO_PAYMENT_METHOD_ERRORS.APPROVAL_TRANSACTION_MAX_VERIFICATION_ATTEMPTS_REACHED);
 
   const { value: subscriptionCryptoApprovalAmount } =
     useAsyncResult(async () => {
       if (
         !currentToken ||
-        !shieldSubscription ||
-        !isCryptoPaymentMethod(shieldSubscription.paymentMethod)
+        !displayedShieldSubscription ||
+        !isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)
       ) {
         return undefined;
       }
       const amount = await getSubscriptionCryptoApprovalAmount({
-        chainId: shieldSubscription.paymentMethod.crypto.chainId,
+        chainId: displayedShieldSubscription.paymentMethod.crypto.chainId,
         paymentTokenAddress: currentToken.address,
         productType: PRODUCT_TYPES.SHIELD,
-        interval: shieldSubscription.interval,
+        interval: displayedShieldSubscription.interval,
       });
 
       return amount;
-    }, [currentToken, shieldSubscription]);
+    }, [currentToken, displayedShieldSubscription]);
 
   const paymentToken = useMemo(() => {
     if (
-      !shieldSubscription ||
+      !displayedShieldSubscription ||
       !currentToken ||
-      !isCryptoPaymentMethod(shieldSubscription.paymentMethod) ||
-      !shieldSubscription.endDate ||
+      !isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod) ||
+      !displayedShieldSubscription.endDate ||
       !productInfo ||
       !subscriptionCryptoApprovalAmount
     ) {
@@ -425,29 +420,79 @@ const TransactionShield = () => {
     }
 
     return {
-      chainId: shieldSubscription.paymentMethod.crypto.chainId,
+      chainId: displayedShieldSubscription.paymentMethod.crypto.chainId,
       address: currentToken.address,
       approvalAmount: {
         approveAmount: subscriptionCryptoApprovalAmount.approveAmount,
-        chainId: shieldSubscription.paymentMethod.crypto.chainId,
-        paymentAddress: shieldSubscription.paymentMethod.crypto.payerAddress,
+        chainId: displayedShieldSubscription.paymentMethod.crypto.chainId,
+        paymentAddress:
+          displayedShieldSubscription.paymentMethod.crypto.payerAddress,
         paymentTokenAddress: currentToken.address,
       },
     };
   }, [
     productInfo,
     currentToken,
-    shieldSubscription,
+    displayedShieldSubscription,
     subscriptionCryptoApprovalAmount,
   ]);
 
   const { execute: executeSubscriptionCryptoApprovalTransaction } =
     useSubscriptionCryptoApprovalTransaction(paymentToken);
 
+  const isCardPayment =
+    currentShieldSubscription &&
+    isCardPaymentMethod(currentShieldSubscription.paymentMethod);
+  const isUnexpectedErrorCryptoPayment =
+    currentShieldSubscription &&
+    isPaused &&
+    isCryptoPaymentMethod(currentShieldSubscription.paymentMethod) &&
+    !currentShieldSubscription.paymentMethod.crypto.error;
+  const isInsufficientFundsCrypto =
+    currentShieldSubscription &&
+    isCryptoPaymentMethod(currentShieldSubscription.paymentMethod) &&
+    currentShieldSubscription.paymentMethod.crypto.error ===
+      CRYPTO_PAYMENT_METHOD_ERRORS.INSUFFICIENT_BALANCE;
+  const isAllowanceNeededCrypto =
+    currentShieldSubscription &&
+    isCryptoPaymentMethod(currentShieldSubscription.paymentMethod) &&
+    (currentShieldSubscription.paymentMethod.crypto.error ===
+      CRYPTO_PAYMENT_METHOD_ERRORS.INSUFFICIENT_ALLOWANCE ||
+      currentShieldSubscription?.paymentMethod.crypto.error ===
+        CRYPTO_PAYMENT_METHOD_ERRORS.APPROVAL_TRANSACTION_TOO_OLD ||
+      currentShieldSubscription?.paymentMethod.crypto.error ===
+        CRYPTO_PAYMENT_METHOD_ERRORS.APPROVAL_TRANSACTION_REVERTED ||
+      currentShieldSubscription?.paymentMethod.crypto.error ===
+        CRYPTO_PAYMENT_METHOD_ERRORS.APPROVAL_TRANSACTION_MAX_VERIFICATION_ATTEMPTS_REACHED);
+
+  const { handleClickContactSupport } = useHandleSubscriptionSupportAction();
+
   const handlePaymentError = useCallback(async () => {
-    if (
-      shieldSubscription &&
-      isCryptoPaymentMethod(shieldSubscription.paymentMethod)
+    if (currentShieldSubscription) {
+      // capture error state clicked event
+      captureShieldErrorStateClickedEvent({
+        subscriptionStatus: currentShieldSubscription.status,
+        paymentType: currentShieldSubscription.paymentMethod.type,
+        billingInterval: currentShieldSubscription.interval,
+        errorCause: 'payment_error',
+        actionClicked: ShieldErrorStateActionClickedEnum.Cta,
+        location: ShieldErrorStateLocationEnum.Settings,
+        view: ShieldErrorStateViewEnum.Banner,
+      });
+    }
+
+    if (isCancelled) {
+      // go to shield plan page to renew subscription for cancelled subscription
+      navigate({
+        pathname: SHIELD_PLAN_ROUTE,
+        search: `?source=${EntryModalSourceEnum.Settings}`,
+      });
+    } else if (isUnexpectedErrorCryptoPayment) {
+      // handle support action
+      handleClickContactSupport();
+    } else if (
+      currentShieldSubscription &&
+      isCryptoPaymentMethod(currentShieldSubscription.paymentMethod)
     ) {
       if (isInsufficientFundsCrypto) {
         // TODO: handle add funds crypto
@@ -466,45 +511,73 @@ const TransactionShield = () => {
       await executeUpdateSubscriptionCardPaymentMethod();
     }
   }, [
-    shieldSubscription,
+    handleClickContactSupport,
+    isUnexpectedErrorCryptoPayment,
+    isCancelled,
+    navigate,
+    currentShieldSubscription,
     isInsufficientFundsCrypto,
     isAllowanceNeededCrypto,
     executeUpdateSubscriptionCardPaymentMethod,
     setIsAddFundsModalOpen,
     executeSubscriptionCryptoApprovalTransaction,
+    captureShieldErrorStateClickedEvent,
+  ]);
+
+  // handle payment error for insufficient funds crypto payment
+  // need separate handler to not mistake with handlePaymentError for membership error banner
+  const handlePaymentErrorInsufficientFunds = useCallback(async () => {
+    if (
+      !isInsufficientFundsCrypto ||
+      !hasAvailableSelectedTokenToTriggerCheckInsufficientFunds
+    ) {
+      return;
+    }
+
+    await handleTriggerSubscriptionCheckInsufficientFunds();
+  }, [
+    isInsufficientFundsCrypto,
+    hasAvailableSelectedTokenToTriggerCheckInsufficientFunds,
+    handleTriggerSubscriptionCheckInsufficientFunds,
   ]);
 
   const membershipErrorBanner = useMemo(() => {
+    // This is the number of hours it might takes for the payment to be updated
+    const PAYMENT_UPDATE_HOURS = 24;
     if (isPaused) {
+      // default text to unexpected error case
+      let descriptionText = 'shieldTxMembershipErrorPausedUnexpected';
+      let actionButtonLabel = 'shieldTxMembershipErrorPausedUnexpectedAction';
+      if (isCryptoPayment) {
+        descriptionText =
+          'shieldTxMembershipErrorPausedCryptoInsufficientFunds';
+        actionButtonLabel =
+          'shieldTxMembershipErrorPausedCryptoInsufficientFundsAction';
+      } else if (isCardPayment) {
+        descriptionText = 'shieldTxMembershipErrorPausedCard';
+        actionButtonLabel = 'shieldTxMembershipErrorPausedCardAction';
+      }
       return (
         <BannerAlert
-          description={t('shieldTxMembershipErrorPaused')}
+          description={t(descriptionText, [PAYMENT_UPDATE_HOURS])}
           severity={BannerAlertSeverity.Danger}
           marginBottom={4}
-          actionButtonLabel={t(
-            isCryptoPayment && isInsufficientFundsCrypto
-              ? 'shieldTxMembershipErrorAddFunds'
-              : 'shieldTxMembershipErrorUpdatePayment',
-          )}
+          actionButtonLabel={t(actionButtonLabel)}
           actionButtonOnClick={handlePaymentError}
         />
       );
     }
-    if (isSubscriptionEndingSoon && shieldSubscription) {
+    if (currentShieldSubscription && isSubscriptionEndingSoon) {
       return (
         <BannerAlert
           description={t('shieldTxMembershipErrorInsufficientFunds', [
             getShortDateFormatterV2().format(
-              new Date(shieldSubscription.currentPeriodEnd),
+              new Date(currentShieldSubscription.currentPeriodEnd),
             ),
           ])}
           severity={BannerAlertSeverity.Warning}
           marginBottom={4}
-          actionButtonLabel={
-            isAllowanceNeededCrypto
-              ? t('shieldTxMembershipRenew')
-              : t('shieldTxMembershipErrorAddFunds')
-          }
+          actionButtonLabel={t('shieldTxMembershipRenew')}
           actionButtonOnClick={handlePaymentError}
         />
       );
@@ -514,51 +587,59 @@ const TransactionShield = () => {
   }, [
     isPaused,
     isSubscriptionEndingSoon,
-    shieldSubscription,
+    currentShieldSubscription,
     t,
+    isCardPayment,
     isCryptoPayment,
-    isInsufficientFundsCrypto,
-    isAllowanceNeededCrypto,
     handlePaymentError,
   ]);
 
   const paymentMethod = useMemo(() => {
-    if (!shieldSubscription) {
+    if (!displayedShieldSubscription) {
       return '';
     }
-    if (isPaused) {
+    if (isPaused && !isUnexpectedErrorCryptoPayment) {
+      let tooltipText = '';
+      let buttonText = '';
+      let buttonDisabled = false;
+      let buttonOnClick = handlePaymentError;
+      if (isCryptoPayment) {
+        tooltipText = 'shieldTxMembershipErrorPausedCryptoTooltip';
+        buttonText = 'shieldTxMembershipErrorInsufficientToken';
+        if (isInsufficientFundsCrypto) {
+          buttonOnClick = handlePaymentErrorInsufficientFunds;
+          // disable button if insufficient funds and not enough token balance to trigger subscription check
+          if (!hasAvailableSelectedTokenToTriggerCheckInsufficientFunds) {
+            buttonDisabled = true;
+          }
+        }
+      } else {
+        // card payment error case
+        tooltipText = 'shieldTxMembershipErrorPausedCardTooltip';
+        buttonText = 'shieldTxMembershipErrorUpdateCard';
+      }
+
       return (
-        <Tooltip
-          position="top"
-          title={t(
-            isCryptoPayment
-              ? 'shieldTxMembershipErrorPausedCryptoTooltip'
-              : 'shieldTxMembershipErrorPausedCardTooltip',
-          )}
-        >
+        <Tooltip position="top" title={t(tooltipText)}>
           <ButtonLink
             startIconName={IconName.Danger}
             startIconProps={{
               size: IconSize.Md,
             }}
-            onClick={handlePaymentError}
+            onClick={buttonOnClick}
+            disabled={buttonDisabled}
             danger
           >
-            {t(
-              isCryptoPayment
-                ? 'shieldTxMembershipErrorInsufficientToken'
-                : 'shieldTxMembershipErrorUpdateCard',
-              [
-                isCryptoPaymentMethod(shieldSubscription?.paymentMethod)
-                  ? shieldSubscription.paymentMethod.crypto.tokenSymbol
-                  : '',
-              ],
-            )}
+            {t(buttonText, [
+              isCryptoPaymentMethod(displayedShieldSubscription?.paymentMethod)
+                ? displayedShieldSubscription.paymentMethod.crypto.tokenSymbol
+                : '',
+            ])}
           </ButtonLink>
         </Tooltip>
       );
     }
-    if (isSubscriptionEndingSoon && shieldSubscription) {
+    if (isSubscriptionEndingSoon && displayedShieldSubscription) {
       return (
         <ButtonLink
           className="warning-button"
@@ -570,15 +651,15 @@ const TransactionShield = () => {
           color={TextColor.warningDefault}
           onClick={handlePaymentError}
         >
-          {isCryptoPaymentMethod(shieldSubscription.paymentMethod)
-            ? shieldSubscription.paymentMethod.crypto.tokenSymbol
+          {isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)
+            ? displayedShieldSubscription.paymentMethod.crypto.tokenSymbol
             : ''}
         </ButtonLink>
       );
     }
 
-    if (isCryptoPaymentMethod(shieldSubscription.paymentMethod)) {
-      const tokenInfo = shieldSubscription.paymentMethod.crypto;
+    if (isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)) {
+      const tokenInfo = displayedShieldSubscription.paymentMethod.crypto;
       const tokenAddress = cryptoPaymentMethod?.chains
         ?.find((chain) => chain.chainId === tokenInfo.chainId)
         ?.tokens.find(
@@ -599,16 +680,46 @@ const TransactionShield = () => {
       );
     }
 
-    return `${shieldSubscription.paymentMethod.card.brand.charAt(0).toUpperCase() + shieldSubscription.paymentMethod.card.brand.slice(1)} - ${shieldSubscription.paymentMethod.card.last4}`; // display card info for card payment method;
+    return `${displayedShieldSubscription.paymentMethod.card.brand.charAt(0).toUpperCase() + displayedShieldSubscription.paymentMethod.card.brand.slice(1)} - ${displayedShieldSubscription.paymentMethod.card.last4}`; // display card info for card payment method;
   }, [
     isPaused,
-    shieldSubscription,
+    isUnexpectedErrorCryptoPayment,
+    displayedShieldSubscription,
     isCryptoPayment,
+    isInsufficientFundsCrypto,
+    hasAvailableSelectedTokenToTriggerCheckInsufficientFunds,
+    handlePaymentErrorInsufficientFunds,
     isSubscriptionEndingSoon,
     t,
     handlePaymentError,
     cryptoPaymentMethod,
   ]);
+
+  const handleViewFullBenefitsClicked = useCallback(() => {
+    window.open(TRANSACTION_SHIELD_LINK, '_blank', 'noopener noreferrer');
+    captureShieldCtaClickedEvent({
+      source: ShieldCtaSourceEnum.Settings,
+      ctaActionClicked: ShieldCtaActionClickedEnum.ViewFullBenefits,
+      redirectToUrl: TRANSACTION_SHIELD_LINK,
+    });
+  }, [captureShieldCtaClickedEvent]);
+
+  if (!loading && hasApiError) {
+    return (
+      <Box
+        className="transaction-shield-page"
+        data-testid="transaction-shield-page"
+        width={BlockSize.Full}
+        padding={4}
+      >
+        <ApiErrorHandler
+          className="transaction-shield-page__error-content mx-auto"
+          error={hasApiError}
+          location={ShieldUnexpectedErrorEventLocationEnum.TransactionShieldTab}
+        />
+      </Box>
+    );
+  }
 
   return (
     <Box
@@ -618,7 +729,7 @@ const TransactionShield = () => {
       flexDirection={FlexDirection.Column}
       padding={4}
     >
-      {shieldSubscription?.cancelAtPeriodEnd && (
+      {currentShieldSubscription?.cancelAtPeriodEnd && (
         <Box
           className="transaction-shield-page__notification-banner"
           backgroundColor={BackgroundColor.warningMuted}
@@ -634,7 +745,7 @@ const TransactionShield = () => {
           <Text variant={TextVariant.bodySm}>
             {t('shieldTxMembershipCancelNotification', [
               getShortDateFormatterV2().format(
-                new Date(shieldSubscription.currentPeriodEnd),
+                new Date(currentShieldSubscription.currentPeriodEnd),
               ),
             ])}
           </Text>
@@ -643,7 +754,7 @@ const TransactionShield = () => {
       {membershipErrorBanner}
       <Box className="transaction-shield-page__container" marginBottom={4}>
         <Box
-          data-theme={ThemeType.dark}
+          data-theme={isMembershipInactive ? theme : ThemeType.dark}
           className={classnames(
             'transaction-shield-page__row transaction-shield-page__membership',
             {
@@ -653,11 +764,14 @@ const TransactionShield = () => {
                 isMembershipInactive && !showSkeletonLoader,
               'transaction-shield-page__membership--active':
                 !isMembershipInactive && !showSkeletonLoader,
+              'transaction-shield-page__membership--inactive-light':
+                isLightTheme && isMembershipInactive && !showSkeletonLoader,
             },
           )}
           {...rowsStyleProps}
           alignItems={AlignItems.center}
           justifyContent={JustifyContent.spaceBetween}
+          paddingRight={2}
         >
           <Box
             width={BlockSize.Full}
@@ -682,17 +796,16 @@ const TransactionShield = () => {
                     ? t('shieldTxMembershipInactive')
                     : t('shieldTxMembershipActive')}
                 </Text>
-                {shieldSubscription?.status ===
-                  SUBSCRIPTION_STATUSES.trialing && (
+                {isTrialing && (
                   <Tag
                     label={t('shieldTxMembershipFreeTrial')}
                     labelProps={{
                       variant: TextVariant.bodySmMedium,
-                      color: TextColor.textAlternative,
+                      color: TextColor.successDefault,
                     }}
                     borderStyle={BorderStyle.none}
                     borderRadius={BorderRadius.SM}
-                    backgroundColor={BackgroundColor.backgroundMuted}
+                    backgroundColor={BackgroundColor.successMuted}
                     data-testid="shield-detail-trial-tag"
                   />
                 )}
@@ -723,6 +836,12 @@ const TransactionShield = () => {
               </Text>
             )}
           </Box>
+          {!showSkeletonLoader && (
+            <ShieldBannerAnimation
+              containerClassName="transaction-shield-page-shield-banner__container"
+              canvasClassName="transaction-shield-page-shield-banner__canvas"
+            />
+          )}
         </Box>
 
         <Box
@@ -778,17 +897,10 @@ const TransactionShield = () => {
         </Box>
         {buttonRow(
           t('shieldTxMembershipViewFullBenefits'),
-          () => {
-            window.open(
-              TRANSACTION_SHIELD_LINK,
-              '_blank',
-              'noopener noreferrer',
-            );
-          },
+          handleViewFullBenefitsClicked,
           'shield-detail-view-benefits-button',
         )}
-        {/* TODO: implement logic to allow submitting case until after 21 days of last active subscription */}
-        {!isCancelled &&
+        {displayedShieldSubscription?.isEligibleForSupport &&
           buttonRow(
             t('shieldTxMembershipSubmitCase'),
             () => {
@@ -797,7 +909,7 @@ const TransactionShield = () => {
             'shield-detail-submit-case-button',
           )}
         {!isMembershipInactive &&
-          shieldSubscription?.cancelAtPeriodEnd &&
+          currentShieldSubscription?.cancelAtPeriodEnd &&
           buttonRow(
             t('shieldTxMembershipResubscribe'),
             () => {
@@ -816,14 +928,7 @@ const TransactionShield = () => {
         {isCancelled &&
           buttonRow(
             t('shieldTxMembershipRenew'),
-            async () => {
-              if (isCryptoPayment) {
-                // TODO: handle renew membership crypto
-                console.log('renew membership');
-              } else {
-                await executeUpdateSubscriptionCardPaymentMethod();
-              }
-            },
+            handlePaymentError,
             'shield-detail-renew-button',
           )}
       </Box>
@@ -845,39 +950,46 @@ const TransactionShield = () => {
               {t('shieldTxMembershipBillingDetails')}
             </Text>
           )}
-          {shieldSubscription ? (
+          {displayedShieldSubscription ? (
             <>
               {billingDetails(
                 t('shieldTxMembershipBillingDetailsNextBilling'),
-                shieldSubscription?.cancelAtPeriodEnd
+                isCancelled || displayedShieldSubscription?.cancelAtPeriodEnd
                   ? '-'
                   : getShortDateFormatterV2().format(
-                      new Date(shieldSubscription.currentPeriodEnd),
+                      new Date(displayedShieldSubscription.currentPeriodEnd),
                     ),
                 'shield-detail-next-billing',
               )}
               {billingDetails(
                 t('shieldTxMembershipBillingDetailsCharges'),
-                isCryptoPayment
-                  ? `${getProductPrice(productInfo as Product)} ${productInfo?.currency.toUpperCase()} (${shieldSubscription.interval === RECURRING_INTERVALS.year ? t('shieldPlanAnnual') : t('shieldPlanMonthly')})`
+                isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)
+                  ? `${getProductPrice(productInfo as Product)} ${displayedShieldSubscription.paymentMethod.crypto.tokenSymbol.toUpperCase()} (${displayedShieldSubscription.interval === RECURRING_INTERVALS.year ? t('shieldPlanAnnual') : t('shieldPlanMonthly')})`
                   : `${formatCurrency(
                       getProductPrice(productInfo as Product),
                       productInfo?.currency.toUpperCase(),
                       {
-                        maximumFractionDigits: 0,
+                        maximumFractionDigits: 2,
+                        minimumFractionDigits: 0,
                       },
-                    )} (${shieldSubscription.interval === RECURRING_INTERVALS.year ? t('shieldPlanAnnual') : t('shieldPlanMonthly')})`,
+                    )} (${displayedShieldSubscription.interval === RECURRING_INTERVALS.year ? t('shieldPlanAnnual') : t('shieldPlanMonthly')})`,
                 'shield-detail-charges',
               )}
               {isCryptoPayment &&
                 billingDetails(
                   t('shieldTxMembershipBillingDetailsBillingAccount'),
-                  isCryptoPaymentMethod(shieldSubscription.paymentMethod) ? (
+                  isCryptoPaymentMethod(
+                    displayedShieldSubscription.paymentMethod,
+                  ) ? (
                     <ConfirmInfoRowAddress
                       address={
-                        shieldSubscription.paymentMethod.crypto.payerAddress
+                        displayedShieldSubscription.paymentMethod.crypto
+                          .payerAddress
                       }
-                      chainId={shieldSubscription.paymentMethod.crypto.chainId}
+                      chainId={
+                        displayedShieldSubscription.paymentMethod.crypto.chainId
+                      }
+                      showFullName
                     />
                   ) : (
                     ''
@@ -894,35 +1006,38 @@ const TransactionShield = () => {
             <Skeleton width="60%" height={24} />
           )}
         </Box>
-        {shieldSubscription?.status !== SUBSCRIPTION_STATUSES.provisional &&
+        {displayedShieldSubscription?.status !==
+          SUBSCRIPTION_STATUSES.provisional &&
           buttonRow(
             t('shieldTxMembershipBillingDetailsViewBillingHistory'),
             executeOpenGetSubscriptionBillingPortal,
             'shield-detail-view-billing-history-button',
           )}
       </Box>
-      {shieldSubscription && isCancelMembershipModalOpen && (
+      {currentShieldSubscription && isCancelMembershipModalOpen && (
         <CancelMembershipModal
           onClose={() => setIsCancelMembershipModalOpen(false)}
           onConfirm={async () => {
             setIsCancelMembershipModalOpen(false);
             await executeCancelSubscription();
           }}
-          subscription={shieldSubscription}
+          subscription={currentShieldSubscription}
         />
       )}
       {loading && <LoadingScreen />}
       {currentToken &&
         isAddFundsModalOpen &&
-        shieldSubscription &&
-        isCryptoPaymentMethod(shieldSubscription.paymentMethod) && (
+        currentShieldSubscription &&
+        isCryptoPaymentMethod(currentShieldSubscription.paymentMethod) && (
           <AddFundsModal
             onClose={() => {
               setIsAddFundsModalOpen(false);
             }}
             token={currentToken}
-            chainId={shieldSubscription.paymentMethod.crypto.chainId}
-            payerAddress={shieldSubscription.paymentMethod.crypto.payerAddress}
+            chainId={currentShieldSubscription.paymentMethod.crypto.chainId}
+            payerAddress={
+              currentShieldSubscription.paymentMethod.crypto.payerAddress
+            }
           />
         )}
     </Box>

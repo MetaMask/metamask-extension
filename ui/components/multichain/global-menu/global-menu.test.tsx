@@ -1,16 +1,15 @@
 import React from 'react';
-import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
+import { fireEvent, waitFor } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import {
   GATOR_PERMISSIONS,
   PERMISSIONS,
 } from '../../../helpers/constants/routes';
-import {
-  isGatorPermissionsRevocationFeatureEnabled,
-  getIsSidePanelFeatureEnabled,
-} from '../../../../shared/modules/environment';
+import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/modules/environment';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
 import {
   ENVIRONMENT_TYPE_POPUP,
   PLATFORM_FIREFOX,
@@ -34,7 +33,10 @@ const render = (metamaskStateChanges = {}) => {
   );
 };
 
+const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom-v5-compat', () => ({
+  ...jest.requireActual('react-router-dom-v5-compat'),
+  useNavigate: () => mockUseNavigate,
   Link: ({
     children,
     to,
@@ -49,13 +51,16 @@ jest.mock('react-router-dom-v5-compat', () => ({
 }));
 
 const mockLockMetaMask = jest.fn();
-const mockSetAccountDetailsAddress = jest.fn();
+
 jest.mock('../../../store/actions', () => ({
   lockMetamask: () => mockLockMetaMask,
-  setAccountDetailsAddress: () => mockSetAccountDetailsAddress,
 }));
 
 jest.mock('../../../../shared/modules/environment');
+
+jest.mock('../../../hooks/useSidePanelEnabled', () => ({
+  useSidePanelEnabled: jest.fn(() => false),
+}));
 
 jest.mock('../../../../app/scripts/lib/util', () => ({
   ...jest.requireActual('../../../../app/scripts/lib/util'),
@@ -122,7 +127,7 @@ describe('Global Menu', () => {
     );
     jest.mocked(getBrowserName).mockReturnValue(PLATFORM_FIREFOX);
     jest.mocked(getEnvironmentType).mockReturnValue(ENVIRONMENT_TYPE_POPUP);
-    jest.mocked(getIsSidePanelFeatureEnabled).mockReturnValue(true);
+    jest.mocked(useSidePanelEnabled).mockReturnValue(true);
 
     // @ts-expect-error mocking platform
     global.platform = {

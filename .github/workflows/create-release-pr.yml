@@ -69,7 +69,7 @@ jobs:
         shell: bash
         env:
           SEMVER: ${{ inputs.semver-version }}
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           .github/scripts/resolve-previous-ref.sh
 

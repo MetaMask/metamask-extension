@@ -77,7 +77,7 @@ describe('useBridging', () => {
         false,
       ],
       [
-        '/cross-chain/swaps/prepare-swap-page?',
+        '/cross-chain/swaps/prepare-swap-page?from=eip155:1/slip44:60',
         {
           ...getNativeAssetForChainId(CHAIN_IDS.MAINNET),
           chainId: 243,

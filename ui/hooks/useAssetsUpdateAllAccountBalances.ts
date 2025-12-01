@@ -37,7 +37,7 @@ export const useAssetsUpdateAllAccountBalances = (): {
         // Update balance state for ALL accounts across all enabled EVM chains
         // TokenBalancesController is configured with queryMultipleAccounts: true
         // so this will update balances for all accounts, not just the selected one
-        await dispatch(updateBalancesFoAccounts(enabledChainIds, true));
+        await dispatch(updateBalancesFoAccounts(enabledChainIds, false));
       }
     } catch (error) {
       console.warn('Error updating balances state for all accounts', error);

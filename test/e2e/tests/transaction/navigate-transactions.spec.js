@@ -7,7 +7,7 @@ const {
 
 const { withFixtures } = require('../../helpers');
 const { DAPP_URL, WINDOW_TITLES } = require('../../constants');
-const FixtureBuilder = require('../../fixture-builder');
+const FixtureBuilder = require('../../fixtures/fixture-builder');
 const {
   loginWithBalanceValidation,
 } = require('../../page-objects/flows/login.flow');

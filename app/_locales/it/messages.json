@@ -644,9 +644,6 @@
   "etherscanView": {
     "message": "Vedi account su Etherscan"
   },
-  "expandView": {
-    "message": "Espandi Vista"
-  },
   "externalExtension": {
     "message": "Estensione Esterna"
   },
@@ -1224,7 +1221,7 @@
   },
   "swapMetaMaskFeeDescription": {
     "message": "Troviamo i migliori prezzi dalle sorgenti di liquidità migliori, sempre. Una tassa del $1% è automaticamente aggiunta ad ogni quotazione, ciò serve a supportare lo sviluppo in modo da rendere MetaMask sempre migliore.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapNewQuoteIn": {
     "message": "Nuove quotazioni in $1",

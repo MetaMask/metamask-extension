@@ -110,9 +110,7 @@ import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { DAY } from '../../shared/constants/time';
 import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   ENVIRONMENT_TYPE_SIDEPANEL,
-  ///: END:ONLY_INCLUDE_IF
   ENVIRONMENT_TYPE_POPUP,
 } from '../../shared/constants/app';
 import {
@@ -223,7 +221,7 @@ export function getNewNetworkAdded(state) {
 
 /**
  * @param state
- * @returns {{ chainId: import('@metamask/utils').Hex; nickname: string; editCompleted: boolean} | undefined}
+ * @returns {{ chainId: import('@metamask/utils').Hex; nickname?: string; editCompleted?: boolean; newNetwork?: boolean; trackRpcUpdateFromBanner?: boolean} | undefined}
  */
 export function getEditedNetwork(state) {
   return state.appState.editedNetwork;
@@ -291,16 +289,31 @@ export function getKeyringSnapRemovalResult(state) {
 
 export const getPendingTokens = (state) => state.appState.pendingTokens;
 
-export function getShowConnectionsRemovedModal(state) {
-  return state.appState.showConnectionsRemovedModal;
+export function getShowShieldEntryModal(state) {
+  const { show, hasUserInteractedWithModal } =
+    state.appState.shieldEntryModal || {};
+  // only show the modal if `show` is true and user has not interacted with the modal
+  return Boolean(show) && !hasUserInteractedWithModal;
 }
 
-export function getShowShieldEntryModal(state) {
-  return state.appState.shieldEntryModal?.show;
+export function getPendingShieldCohort(state) {
+  return state.metamask.pendingShieldCohort;
+}
+
+export function getPendingShieldCohortTxType(state) {
+  return state.metamask.pendingShieldCohortTxType;
 }
 
 export function getShouldSubmitEventsForShieldEntryModal(state) {
   return state.appState.shieldEntryModal?.shouldSubmitEvents;
+}
+
+export function getModalTypeForShieldEntryModal(state) {
+  return state.appState.shieldEntryModal?.modalType;
+}
+
+export function getShieldEntryModalTriggeringCohort(state) {
+  return state.appState.shieldEntryModal?.triggeringCohort;
 }
 
 /** `metamask` slice selectors */
@@ -469,7 +482,7 @@ export const getMetaMaskAccounts = createDeepEqualSelector(
           }
         } else {
           const multichainNetwork = multichainNetworkProviders.find((network) =>
-            network.isAddressCompatible(internalAccount.address),
+            internalAccount.scopes.some((scope) => scope === network.chainId),
           );
           account = {
             ...account,
@@ -1628,6 +1641,9 @@ const selectSnapId = (_state, snapId) => snapId;
  */
 export const selectInstalledSnaps = (state) => state.metamask.snaps;
 
+export const selectIsNetworkMenuOpen = (state) =>
+  state.appState.isNetworkMenuOpen;
+
 /**
  * Retrieve registry data for requested Snap.
  *
@@ -1851,13 +1867,11 @@ export function getAppActiveTab(state) {
 }
 
 export function getOriginOfCurrentTab(state) {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   // For sidepanel, always use appActiveTab
   if (getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) {
     const appActiveTab = getAppActiveTab(state);
     return appActiveTab?.origin;
   }
-  ///: END:ONLY_INCLUDE_IF
   // For all other cases, use activeTab
   return state.activeTab.origin;
 }
@@ -1973,6 +1987,10 @@ export function getIsSwapsChain(state, overrideChainId) {
   return isDevelopment
     ? ALLOWED_DEV_SWAPS_CHAIN_IDS.includes(chainId)
     : ALLOWED_PROD_SWAPS_CHAIN_IDS.includes(chainId);
+}
+
+export function selectHasBridgeQuotes(state) {
+  return Boolean(Object.values(state.metamask.quotes || {}).length);
 }
 
 /**
@@ -3191,6 +3209,17 @@ export function getIsBitcoinTestnetSupportEnabled(state) {
   return Boolean(bitcoinTestnetsEnabled);
 }
 
+/**
+ * Get the state of the `tronTestnetsEnabled` remote feature flag.
+ *
+ * @param {*} state
+ * @returns The state of the `tronTestnetsEnabled` remote feature flag.
+ */
+export function getIsTronTestnetSupportEnabled(state) {
+  const { tronTestnetsEnabled } = getRemoteFeatureFlags(state);
+  return Boolean(tronTestnetsEnabled);
+}
+
 export function getIsWatchEthereumAccountEnabled(state) {
   return state.metamask.watchEthereumAccountEnabled;
 }
@@ -3223,6 +3252,21 @@ export function getIsBitcoinSupportEnabled(
 export function getIsSolanaSupportEnabled(state) {
   const { solanaAccounts } = getRemoteFeatureFlags(state);
   return isMultichainFeatureEnabled(solanaAccounts);
+}
+
+/**
+ * Get the state of the `tronSupportEnabled` remote feature flag.
+ *
+ * @param {*} _state
+ * @returns The state of the `tronSupportEnabled` remote feature flag.
+ */
+export function getIsTronSupportEnabled(_state) {
+  let enabled = false;
+  ///: BEGIN:ONLY_INCLUDE_IF(tron)
+  const { tronAccounts } = getRemoteFeatureFlags(_state);
+  enabled = isMultichainFeatureEnabled(tronAccounts);
+  ///: END:ONLY_INCLUDE_IF
+  return enabled;
 }
 
 /**
@@ -3266,6 +3310,18 @@ export function getIsCustomNetwork(state) {
 export function getNetworkDiscoverButtonEnabled(state) {
   const { neNetworkDiscoverButton } = getRemoteFeatureFlags(state);
   return neNetworkDiscoverButton;
+}
+
+/**
+ * Get the state of the `gasFeesSponsoredNetwork` remote feature flag.
+ * This flag determines whether the user should see a `Gas sponsored` label on the network menu list.
+ *
+ * @param {*} state
+ * @returns The state of the `gasFeesSponsoredNetwork` remote feature flag.
+ */
+export function getGasFeesSponsoredNetworkEnabled(state) {
+  const { gasFeesSponsoredNetwork } = getRemoteFeatureFlags(state);
+  return gasFeesSponsoredNetwork;
 }
 
 export function getBlockExplorerLinkText(
@@ -3449,7 +3505,7 @@ export const getUpdatedAndSortedAccountsWithCaipAccountId =
     });
   });
 
-export const useSafeChainsListValidationSelector = (state) => {
+export const getUseSafeChainsListValidation = (state) => {
   return state.metamask.useSafeChainsListValidation;
 };
 

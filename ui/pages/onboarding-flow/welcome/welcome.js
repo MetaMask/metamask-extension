@@ -8,7 +8,6 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
-import log from 'loglevel';
 import { Box } from '../../../components/component-library';
 import {
   ONBOARDING_COMPLETION_ROUTE,
@@ -24,7 +23,7 @@ import {
   getCurrentKeyring,
   getFirstTimeFlowType,
   getIsParticipateInMetaMetricsSet,
-  getIsSocialLoginUserAuthenticated,
+  getIsSocialLoginFlow,
 } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -32,6 +31,8 @@ import {
   setFirstTimeFlowType,
   startOAuthLogin,
   setParticipateInMetaMetrics,
+  setPna25Acknowledged,
+  getIsSeedlessOnboardingUserAuthenticated,
 } from '../../../store/actions';
 import {
   MetaMetricsEventAccountType,
@@ -41,7 +42,10 @@ import {
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
-import { OAuthErrorMessages } from '../../../../shared/modules/error';
+import {
+  isUserCancelledLoginError,
+  OAuthErrorMessages,
+} from '../../../../shared/modules/error';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import {
   AlignItems,
@@ -70,9 +74,7 @@ export default function OnboardingWelcome() {
     getIsSeedlessOnboardingFeatureEnabled();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isWalletResetInProgress = useSelector(getIsWalletResetInProgress);
-  const isUserAuthenticatedWithSocialLogin = useSelector(
-    getIsSocialLoginUserAuthenticated,
-  );
+  const isSocialLoginFLow = useSelector(getIsSocialLoginFlow);
   const isParticipateInMetaMetricsSet = useSelector(
     getIsParticipateInMetaMetricsSet,
   );
@@ -81,7 +83,6 @@ export default function OnboardingWelcome() {
 
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [loginError, setLoginError] = useState(null);
-  const isTestEnvironment = Boolean(process.env.IN_TEST);
 
   const { animationCompleted } = useRiveWasmContext();
   const shouldSkipAnimation = Boolean(
@@ -89,14 +90,27 @@ export default function OnboardingWelcome() {
   );
 
   // In test environments or when returning from another page, skip animations
-  const [isAnimationComplete, setIsAnimationComplete] = useState(
-    isTestEnvironment || shouldSkipAnimation,
-  );
+  const [isAnimationComplete, setIsAnimationComplete] =
+    useState(shouldSkipAnimation);
 
   const isFireFox = getBrowserName() === PLATFORM_FIREFOX;
+
+  const getIsUserAuthenticatedWithSocialLogin = useCallback(async () => {
+    if (!isSocialLoginFLow) {
+      return true;
+    }
+
+    const isSeedlessOnboardingUserAuthenticated = await dispatch(
+      getIsSeedlessOnboardingUserAuthenticated(),
+    );
+    return isSeedlessOnboardingUserAuthenticated;
+  }, [dispatch, isSocialLoginFLow]);
+
   // Don't allow users to come back to this screen after they
   // have already imported or created a wallet
   useEffect(() => {
+    let isMounted = true;
+
     if (
       currentKeyring &&
       !newAccountCreationInProgress &&
@@ -117,22 +131,33 @@ export default function OnboardingWelcome() {
       } else {
         navigate(ONBOARDING_REVIEW_SRP_ROUTE, { replace: true });
       }
-    } else if (isUserAuthenticatedWithSocialLogin) {
-      if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
-        navigate(ONBOARDING_CREATE_PASSWORD_ROUTE, { replace: true });
-      } else {
-        navigate(ONBOARDING_UNLOCK_ROUTE, { replace: true });
-      }
+    } else if (isSocialLoginFLow) {
+      (async () => {
+        const isUserAuthenticatedWithSocialLogin =
+          await getIsUserAuthenticatedWithSocialLogin();
+        if (isMounted && isUserAuthenticatedWithSocialLogin) {
+          if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
+            navigate(ONBOARDING_CREATE_PASSWORD_ROUTE, { replace: true });
+          } else {
+            navigate(ONBOARDING_UNLOCK_ROUTE, { replace: true });
+          }
+        }
+      })();
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [
     currentKeyring,
     navigate,
     firstTimeFlowType,
     newAccountCreationInProgress,
     isParticipateInMetaMetricsSet,
-    isUserAuthenticatedWithSocialLogin,
+    getIsUserAuthenticatedWithSocialLogin,
     isFireFox,
     isWalletResetInProgress,
+    isSocialLoginFLow,
   ]);
 
   const trackEvent = useContext(MetaMetricsContext);
@@ -192,6 +217,7 @@ export default function OnboardingWelcome() {
             socialConnectionType,
             bufferedTrace,
             bufferedEndTrace,
+            trackEvent,
           ),
         );
         bufferedEndTrace?.({ name: TraceName.OnboardingSocialLoginAttempt });
@@ -205,6 +231,7 @@ export default function OnboardingWelcome() {
       onboardingParentContext,
       bufferedTrace,
       bufferedEndTrace,
+      trackEvent,
     ],
   );
 
@@ -214,7 +241,7 @@ export default function OnboardingWelcome() {
         error instanceof Error ? error.message : 'Unknown error';
 
       // Map raw OAuth error messages to UI modal-friendly constants
-      if (errorMessage === OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR) {
+      if (isUserCancelledLoginError(error)) {
         setLoginError(null);
         return;
       }
@@ -253,7 +280,6 @@ export default function OnboardingWelcome() {
     async (socialConnectionType) => {
       setIsLoggingIn(true);
       setNewAccountCreationInProgress(true);
-      await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
 
       trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
@@ -280,8 +306,10 @@ export default function OnboardingWelcome() {
             op: TraceOperation.OnboardingUserJourney,
             parentContext: onboardingParentContext.current,
           });
+          await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
           navigate(ONBOARDING_CREATE_PASSWORD_ROUTE, { replace: true });
         } else {
+          await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialImport));
           navigate(ONBOARDING_ACCOUNT_EXIST, { replace: true });
         }
       } catch (error) {
@@ -304,8 +332,6 @@ export default function OnboardingWelcome() {
   const onSocialLoginImportClick = useCallback(
     async (socialConnectionType) => {
       setIsLoggingIn(true);
-      dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialImport));
-
       trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.WalletImportStarted,
@@ -327,6 +353,7 @@ export default function OnboardingWelcome() {
         });
 
         if (isNewUser) {
+          await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
           navigate(ONBOARDING_ACCOUNT_NOT_FOUND);
         } else {
           bufferedTrace?.({
@@ -334,6 +361,7 @@ export default function OnboardingWelcome() {
             op: TraceOperation.OnboardingUserJourney,
             parentContext: onboardingParentContext.current,
           });
+          await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialImport));
           navigate(ONBOARDING_UNLOCK_ROUTE);
         }
       } catch (error) {
@@ -343,20 +371,18 @@ export default function OnboardingWelcome() {
       }
     },
     [
-      dispatch,
       handleSocialLogin,
       trackEvent,
       navigate,
       onboardingParentContext,
       handleSocialLoginError,
       bufferedTrace,
+      dispatch,
     ],
   );
 
   const handleLoginError = useCallback((error) => {
-    log.error('handleLoginError::error', error);
-    const errorMessage = error.message;
-    if (errorMessage === OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR) {
+    if (isUserCancelledLoginError(error)) {
       setLoginError(null);
     } else {
       setLoginError(LOGIN_ERROR.GENERIC);
@@ -395,6 +421,10 @@ export default function OnboardingWelcome() {
         if (!isFireFox) {
           // automatically set participate in meta metrics to true for social login users in chrome
           dispatch(setParticipateInMetaMetrics(true));
+          // Set pna25Acknowledged to true for social login users if feature flag is enabled
+          if (process.env.EXTENSION_UX_PNA25) {
+            dispatch(setPna25Acknowledged(true));
+          }
         }
       } catch (error) {
         handleLoginError(error);
@@ -422,7 +452,7 @@ export default function OnboardingWelcome() {
       width={BlockSize.Full}
       className="welcome-container"
     >
-      {!isLoggingIn && !isTestEnvironment && (
+      {!isLoggingIn && (
         <Suspense fallback={<Box />}>
           <MetaMaskWordMarkAnimation
             setIsAnimationComplete={setIsAnimationComplete}
@@ -440,7 +470,7 @@ export default function OnboardingWelcome() {
             skipTransition={shouldSkipAnimation}
           />
 
-          {!isTestEnvironment && isAnimationComplete && (
+          {isAnimationComplete && (
             <Suspense fallback={<Box />}>
               <FoxAppearAnimation skipTransition={shouldSkipAnimation} />
             </Suspense>
@@ -455,7 +485,7 @@ export default function OnboardingWelcome() {
         </>
       )}
 
-      {!isTestEnvironment && isLoggingIn && (
+      {isLoggingIn && (
         <Suspense fallback={<Box />}>
           <FoxAppearAnimation isLoader />
         </Suspense>
