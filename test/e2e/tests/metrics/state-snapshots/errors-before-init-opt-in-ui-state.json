@@ -41,6 +41,7 @@
       "lastViewedUserSurvey": null,
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
       "newPrivacyPolicyToastShownDate": "number",
+      "pna25Acknowledged": "boolean",
       "nftsDetectionNoticeDismissed": false,
       "onboardingDate": null,
       "outdatedBrowserWarningLastShown": "object",
