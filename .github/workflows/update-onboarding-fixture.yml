@@ -40,7 +40,7 @@ jobs:
             -f content='+1'
         env:
           COMMENT_ID: ${{ github.event.comment.id }}
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
           REPO: ${{ github.repository }}
 
   update-onboarding-fixture:
@@ -64,20 +64,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          token: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
           fetch-depth: 0
 
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
         env:
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
 
       - name: Determine branch name
         id: pr
         run: echo "BRANCH=$(gh pr view "${PR_NUMBER}" --json headRefName --jq '.headRefName')" >> "$GITHUB_OUTPUT"
         env:
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
 
       - name: Checkout and setup environment
@@ -102,7 +102,7 @@ jobs:
           echo "RUN_ID=$RUN_ID" >> "$GITHUB_OUTPUT"
         env:
           BRANCH: ${{ steps.pr.outputs.BRANCH }}
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
 
       - name: Download dist artifact
@@ -111,7 +111,7 @@ jobs:
           name: build-dist-browserify
           path: build-dist-browserify
           run-id: ${{ steps.main-run.outputs.RUN_ID }}
-          github-token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          github-token: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
 
       - name: Prepare dist assets
         run: |
@@ -154,20 +154,20 @@ jobs:
           git commit -m "Update onboarding fixture"
           git push
         env:
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
 
       - name: Comment that onboarding fixture was updated
         if: steps.fixture-changes.outputs.HAS_CHANGES == 'true'
         run: gh pr comment "${PR_NUMBER}" --body 'Onboarding fixture updated.'
         env:
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
 
       - name: Comment that no fixture changes were detected
         if: steps.fixture-changes.outputs.HAS_CHANGES != 'true'
         run: gh pr comment "${PR_NUMBER}" --body 'No onboarding fixture changes detected.'
         env:
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
 
   failure-comment:
@@ -186,6 +186,6 @@ jobs:
           fi
         env:
           ACTION_RUN_URL: '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
-          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
           GH_REPO: ${{ github.repository }}
           PR_NUMBER: ${{ github.event.issue.number }}
