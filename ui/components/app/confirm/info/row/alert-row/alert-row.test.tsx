@@ -194,8 +194,8 @@ describe('AlertRow', () => {
       );
     });
 
-    it('returns TextColor.textDefault for undefined severity', () => {
-      expect(getAlertTextColors()).toBe(TextColor.textDefault);
+    it('returns TextColor.textAlternative for undefined severity', () => {
+      expect(getAlertTextColors()).toBe(TextColor.textAlternative);
     });
   });
 });

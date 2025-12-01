@@ -86,8 +86,8 @@ export const BalanceChangeRow: React.FC<{
     return (
       <Text
         style={{ whiteSpace: 'nowrap' }}
-        color={labelColor}
-        variant={TextVariant.bodyMd}
+        color={labelColor ?? TextColor.textAlternative}
+        variant={TextVariant.bodyMdMedium}
       >
         {label}
       </Text>
