@@ -61,6 +61,7 @@ import {
   DefaultSubscriptionPaymentOptions,
   ShieldSubscriptionMetricsPropsFromUI,
 } from '../../../shared/types';
+import type { DeferredDeepLink } from '../../../shared/lib/deep-links/types';
 import type {
   Preferences,
   PreferencesControllerGetStateAction,
@@ -156,6 +157,7 @@ export type AppStateControllerState = {
   dappSwapComparisonData?: {
     [uniqueId: string]: DappSwapComparisonData;
   };
+  deferredDeepLink?: DeferredDeepLink;
 
   /**
    * The properties for the Shield subscription metrics.
@@ -724,6 +726,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInStateLogs: true,
     persist: false,
     includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  deferredDeepLink: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
 };
@@ -1746,5 +1754,18 @@ export class AppStateController extends BaseController<
     uniqueId: string,
   ): DappSwapComparisonData | undefined {
     return this.state.dappSwapComparisonData?.[uniqueId] ?? undefined;
+  }
+
+  /**
+   * Updates state with deferred deep link data.
+   *
+   * @param deferredDeepLink - Deferred deep link data.
+   */
+  async setDeferredDeepLink(deferredDeepLink: DeferredDeepLink): Promise<void> {
+    if (deferredDeepLink) {
+      this.update((state) => {
+        state.deferredDeepLink = deferredDeepLink;
+      });
+    }
   }
 }

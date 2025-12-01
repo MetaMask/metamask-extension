@@ -1223,6 +1223,15 @@ class Driver {
   }
 
   /**
+   * Retrieves the handle of the current active window or tab.
+   *
+   * @returns {Promise<string>} A promise that resolves with the current window handle.
+   */
+  async getCurrentWindowHandle() {
+    return await this.driver.getWindowHandle();
+  }
+
+  /**
    * Function that aims to simulate a click action on a specified web element
    * within a web page and waits for the current window to close.
    *

@@ -350,4 +350,143 @@ describe('MetaMask onboarding', function () {
       },
     );
   });
+
+  it('Navigates to a route using deferred deep link after onboarding completes', async function () {
+    const referringLink =
+      'https://link.metamask.io/swap?amount=22000000000000000&from=eip155%3A1%2Fslip44%3A60&sig_params=amount%2Cfrom%2Cto&to=eip155%3A59144%2Ferc20%3A0x176211869cA2b568f2A7D4EE941E073a821EE1ff&sig=KYoYO9beWAlLIT6GUATcHj98hoDiO9h3UZC76ZcMfreKsJcFtCp_vJCWqa9s8-6aO4FLPgoMI02k03t2WcL5bA';
+    const expectedPath = '/cross-chain/swaps/prepare-swap-page';
+
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder({ onboarding: true })
+          .withAppStateController({
+            deferredDeepLink: {
+              createdAt: Date.now(),
+              referringLink,
+            },
+          })
+          .build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await importSRPOnboardingFlow({
+          driver,
+          seedPhrase: TEST_SEED_PHRASE,
+        });
+
+        const onboardingCompletePage = new OnboardingCompletePage(driver);
+        await onboardingCompletePage.checkPageIsLoaded();
+        await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
+
+        // This click triggers deferred deep link navigation
+        await onboardingCompletePage.completeOnboarding();
+
+        let lastUrl = await driver.getCurrentUrl();
+
+        await driver.waitUntil(
+          async () => {
+            lastUrl = await driver.getCurrentUrl();
+            return lastUrl.includes(expectedPath);
+          },
+          { interval: 200, timeout: 10000 },
+        );
+
+        if (!lastUrl.includes(expectedPath)) {
+          throw new Error(
+            `Expected to navigate to swaps route after onboarding, but current URL was: ${lastUrl}`,
+          );
+        }
+      },
+    );
+  });
+
+  it('Navigates to an external web page using deferred deep link after onboarding completes', async function () {
+    const referringLink =
+      'https://link.metamask.io/buy?address=0xacA92E438df0B2401fF60dA7E4337B687a2435DA&amount=100&chainId=1&sig=aagQN9osZ1tfoYIEKvU6t5i8FVaW4Gi6EGimMcZ0VTDmAlPDk800-Nx3131QlDTmO3UF2JCmR2Y2RAJhceNOYw';
+    const expectedUrlOpened =
+      'https://app.metamask.io/buy?address=0xacA92E438df0B2401fF60dA7E4337B687a2435DA&amount=100&chainId=1';
+
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder({ onboarding: true })
+          .withAppStateController({
+            deferredDeepLink: {
+              createdAt: Date.now(),
+              referringLink,
+            },
+          })
+          .build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await importSRPOnboardingFlow({
+          driver,
+          seedPhrase: TEST_SEED_PHRASE,
+        });
+
+        const onboardingCompletePage = new OnboardingCompletePage(driver);
+        await onboardingCompletePage.checkPageIsLoaded();
+        await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
+
+        const originalHandle = await driver.getCurrentWindowHandle();
+
+        // This click triggers deferred deep link navigation
+        await onboardingCompletePage.completeOnboarding();
+
+        // Wait until ANY tab/window has the expected URL
+        // This will make the test compatible with both, Chrome and Firefox
+        await driver.waitUntil(
+          async () => {
+            const handles = await driver.getAllWindowHandles();
+
+            for (const handle of handles) {
+              try {
+                await driver.switchToWindow(handle);
+                const url = await driver.getCurrentUrl();
+                if (url.includes(expectedUrlOpened)) {
+                  return true;
+                }
+              } catch {
+                // Handle may have closed or be in a transient state; ignore and keep searching.
+              }
+            }
+
+            // Restore focus so we don't leave the driver in a random tab each poll cycle.
+            try {
+              await driver.switchToWindow(originalHandle);
+            } catch {
+              // ignore
+            }
+
+            return false;
+          },
+          { interval: 200, timeout: 10000 },
+        );
+
+        // At this point, we know at least one handle matches.
+        // Switch to the matching handle again and assert.
+        const finalHandles = await driver.getAllWindowHandles();
+        let foundUrl: string | null = null;
+
+        for (const handle of finalHandles) {
+          try {
+            await driver.switchToWindow(handle);
+            const url = await driver.getCurrentUrl();
+            if (url.includes(expectedUrlOpened)) {
+              foundUrl = url;
+              break;
+            }
+          } catch {
+            // ignore
+          }
+        }
+
+        if (!foundUrl) {
+          throw new Error(
+            `Expected to find a tab with URL containing '${expectedUrlOpened}', but none matched.`,
+          );
+        }
+      },
+    );
+  });
 });

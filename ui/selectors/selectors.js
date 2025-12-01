@@ -4152,3 +4152,13 @@ export function getNetworkConnectionBanner(state) {
 export function getIsDeviceOffline(state) {
   return state.metamask.connectivityStatus === 'offline';
 }
+
+/**
+ * Retrieves the deferred deep link from the MetaMask state.
+ *
+ * @param {MetaMaskReduxState} state - The Redux state object.
+ * @returns {object | null} The deferred deep link object if available, null otherwise.
+ */
+export function getDeferredDeepLink(state) {
+  return state.metamask?.deferredDeepLink || null;
+}

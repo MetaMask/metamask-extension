@@ -8,6 +8,9 @@ import {
   DEFAULT_ROUTE,
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
 } from '../../../helpers/constants/routes';
+import { DeferredDeepLinkRouteType } from '../../../../shared/lib/deep-links/types';
+import * as deepLinkUtils from '../../../../shared/lib/deep-links/utils';
+import * as useSidePanelEnabledHook from '../../../hooks/useSidePanelEnabled';
 import CreationSuccessful from './creation-successful';
 
 const mockUseNavigate = jest.fn();
@@ -25,6 +28,18 @@ jest.mock('./wallet-ready-animation', () => ({
   __esModule: true,
   default: () => <div data-testid="wallet-ready-animation" />,
 }));
+
+jest.mock('webextension-polyfill', () => ({
+  tabs: {
+    query: jest.fn(),
+  },
+  sidePanel: {
+    open: jest.fn(),
+  },
+}));
+
+jest.mock('../../../../shared/lib/deep-links/utils');
+jest.mock('../../../hooks/useSidePanelEnabled');
 
 describe('Wallet Ready Page', () => {
   const mockState = {
@@ -51,11 +66,17 @@ describe('Wallet Ready Page', () => {
       ],
       firstTimeFlowType: FirstTimeFlowType.create,
       seedPhraseBackedUp: true,
+      deferredDeepLink: null,
     },
     appState: {
       externalServicesOnboardingToggleState: true,
     },
   };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockUseNavigate.mockClear();
+  });
 
   it('should render the wallet ready content if the seed phrase is backed up', () => {
     const mockStore = configureMockStore([thunk])(mockState);
@@ -97,6 +118,276 @@ describe('Wallet Ready Page', () => {
     fireEvent.click(doneButton);
     await waitFor(() => {
       expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    });
+  });
+
+  describe('Deferred Deep Link - Side Panel Enabled', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+      mockUseNavigate.mockClear();
+      (
+        useSidePanelEnabledHook.useSidePanelEnabled as jest.Mock
+      ).mockReturnValue(true);
+    });
+
+    it('should open side panel and redirect to external URL with _self target when deferred deep link has Redirect type', async () => {
+      const externalUrl = 'https://external-app.com/callback';
+      (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue({
+        type: DeferredDeepLinkRouteType.Redirect,
+        url: externalUrl,
+      });
+
+      const mockAssign = jest.fn();
+      Object.defineProperty(window, 'location', {
+        value: {
+          assign: mockAssign,
+        },
+        writable: true,
+      });
+
+      const browserMock = jest.requireMock('webextension-polyfill');
+      (browserMock.tabs.query as jest.Mock).mockResolvedValue([
+        { windowId: 1, id: 1 },
+      ]);
+      (browserMock.sidePanel.open as jest.Mock).mockResolvedValue(undefined);
+
+      const mockStore = configureMockStore([thunk])({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          deferredDeepLink: {
+            createdAt: Date.now(),
+            referringLink:
+              'https://example.com/deferred?redirectTo=https://external-app.com/callback',
+          },
+        },
+      });
+
+      const { getByTestId } = renderWithProvider(
+        <CreationSuccessful />,
+        mockStore,
+      );
+
+      const doneButton = getByTestId('onboarding-complete-done');
+      fireEvent.click(doneButton);
+
+      await waitFor(() => {
+        expect(browserMock.sidePanel.open).toHaveBeenCalledWith({
+          windowId: 1,
+        });
+        expect(mockAssign).toHaveBeenCalledWith(externalUrl);
+      });
+    });
+
+    it('should skip side panel opening when deferred deep link with Navigate type is present', async () => {
+      const testRoute = '/home';
+      (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue({
+        type: DeferredDeepLinkRouteType.Navigate,
+        route: testRoute,
+      });
+
+      const browserMock = jest.requireMock('webextension-polyfill');
+      (browserMock.tabs.query as jest.Mock).mockResolvedValue([
+        { windowId: 1, id: 1 },
+      ]);
+      (browserMock.sidePanel.open as jest.Mock).mockResolvedValue(undefined);
+
+      const mockStore = configureMockStore([thunk])({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          deferredDeepLink: {
+            createdAt: Date.now(),
+            referringLink: 'https://example.com/deferred?path=/home',
+          },
+        },
+      });
+
+      const { getByTestId } = renderWithProvider(
+        <CreationSuccessful />,
+        mockStore,
+      );
+
+      const doneButton = getByTestId('onboarding-complete-done');
+      fireEvent.click(doneButton);
+
+      await waitFor(() => {
+        // The side panel should NOT be opened when a deferred deep link has the 'Navigate' type
+        expect(browserMock.sidePanel.open).not.toHaveBeenCalled();
+        expect(mockUseNavigate).toHaveBeenCalledWith(testRoute);
+      });
+    });
+
+    it('should open side panel when deferred deep link route result is null', async () => {
+      (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue(
+        null,
+      );
+
+      const browserMock = jest.requireMock('webextension-polyfill');
+      (browserMock.tabs.query as jest.Mock).mockResolvedValue([
+        { windowId: 1, id: 1 },
+      ]);
+      (browserMock.sidePanel.open as jest.Mock).mockResolvedValue(undefined);
+
+      const mockStore = configureMockStore([thunk])({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          deferredDeepLink: {
+            createdAt: Date.now() - 2 * 60 * 60 * 1000, // Expired link
+            referringLink: 'https://example.com/deferred',
+          },
+        },
+      });
+
+      const { getByTestId } = renderWithProvider(
+        <CreationSuccessful />,
+        mockStore,
+      );
+
+      const doneButton = getByTestId('onboarding-complete-done');
+      fireEvent.click(doneButton);
+
+      await waitFor(() => {
+        // Side panel should be opened when deferred deep link is null
+        expect(browserMock.sidePanel.open).toHaveBeenCalledWith({
+          windowId: 1,
+        });
+        expect(mockUseNavigate).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('Deferred Deep Link - Side Panel Disabled', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+      mockUseNavigate.mockClear();
+      (
+        useSidePanelEnabledHook.useSidePanelEnabled as jest.Mock
+      ).mockReturnValue(false);
+    });
+
+    it('should redirect to external URL with _blank target when deferred deep link has Redirect type and side panel is disabled', async () => {
+      const externalUrl = 'https://external-app.com/callback';
+      (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue({
+        type: DeferredDeepLinkRouteType.Redirect,
+        url: externalUrl,
+      });
+
+      const windowOpenSpy = jest
+        .spyOn(window, 'open')
+        .mockImplementation(() => null);
+
+      const mockStore = configureMockStore([thunk])({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          deferredDeepLink: {
+            createdAt: Date.now(),
+            referringLink: 'https://link.metamask.io/buy',
+          },
+        },
+      });
+
+      const { getByTestId } = renderWithProvider(
+        <CreationSuccessful />,
+        mockStore,
+      );
+
+      const doneButton = getByTestId('onboarding-complete-done');
+      fireEvent.click(doneButton);
+
+      await waitFor(() => {
+        expect(windowOpenSpy).toHaveBeenCalledWith(externalUrl, '_blank');
+      });
+
+      windowOpenSpy.mockRestore();
+    });
+
+    it('should navigate to internal route when deferred deep link has Navigate type and side panel is disabled', async () => {
+      const testRoute = '/swap';
+      (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue({
+        type: DeferredDeepLinkRouteType.Navigate,
+        route: testRoute,
+      });
+
+      const mockStore = configureMockStore([thunk])({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          deferredDeepLink: {
+            createdAt: Date.now(),
+            referringLink: 'https://link.metamask.io/swap',
+          },
+        },
+      });
+
+      const { getByTestId } = renderWithProvider(
+        <CreationSuccessful />,
+        mockStore,
+      );
+
+      const doneButton = getByTestId('onboarding-complete-done');
+      fireEvent.click(doneButton);
+
+      await waitFor(() => {
+        expect(mockUseNavigate).toHaveBeenCalledWith(testRoute);
+      });
+    });
+
+    it('should navigate to DEFAULT_ROUTE when deferred deep link result is null and side panel is disabled', async () => {
+      (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue(
+        null,
+      );
+
+      const mockStore = configureMockStore([thunk])({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          deferredDeepLink: {
+            createdAt: Date.now() - 2 * 60 * 60 * 1000, // Expired link
+            referringLink: 'https://link.metamask.io/swap',
+          },
+        },
+      });
+
+      const { getByTestId } = renderWithProvider(
+        <CreationSuccessful />,
+        mockStore,
+      );
+
+      const doneButton = getByTestId('onboarding-complete-done');
+      fireEvent.click(doneButton);
+
+      await waitFor(() => {
+        expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+      });
+    });
+
+    it('should navigate to DEFAULT_ROUTE when no deferred deep link is available and side panel is disabled', async () => {
+      (deepLinkUtils.getDeferredDeepLinkRoute as jest.Mock).mockResolvedValue(
+        null,
+      );
+
+      const mockStore = configureMockStore([thunk])({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          deferredDeepLink: null,
+        },
+      });
+
+      const { getByTestId } = renderWithProvider(
+        <CreationSuccessful />,
+        mockStore,
+      );
+
+      const doneButton = getByTestId('onboarding-complete-done');
+      fireEvent.click(doneButton);
+
+      await waitFor(() => {
+        expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+      });
     });
   });
 });
