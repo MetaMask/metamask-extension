@@ -120,21 +120,23 @@ export const ConfirmationHandler = () => {
     swapsFetchParams,
   ]);
 
+  // Runs on all routes (not just home), so skip navigation on exempted routes
   const isExemptedRoute = EXEMPTED_ROUTES.some((route) =>
     pathname.startsWith(route),
   );
 
+  // Ported from home.component - hasAllowedPopupRedirectApprovals()
   const hasAllowedPopupRedirectApprovals = pendingApprovals.some((approval) =>
     SNAP_APPROVAL_TYPES.includes(approval.type),
   );
 
-  // Check if there are swap-related navigation needs
   const hasSwapRelatedNavigation =
     showAwaitingSwapScreen ||
     hasSwapsQuotes ||
     swapsFetchParams ||
     hasBridgeQuotes;
 
+  // Ported from home.component - componentDidUpdate()
   useEffect(() => {
     if (isExemptedRoute) {
       return;
