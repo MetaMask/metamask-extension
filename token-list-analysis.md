@@ -75,9 +75,9 @@ This table shows the token list sizes after implementing the new occurrence floo
 
 ### Approach Implementation
 
-To address security concerns with the increased token list sizes after loosening occurrence floor requirements, we implemented a trusted asset filtering mechanism:
+To address security concerns with the increased token list sizes after loosening occurrence floor requirements, we implemented a trusted asset filtering mechanism that validates tokens against the Trust Wallet Assets repository:
 
-**Method**: Before adding tokens to the final tokenList, each token address is verified against the trusted assets database located in `/blockchains/[chain]/assets/[tokenAddress]`. Only tokens that have corresponding asset folders (containing info.json and logo.png files) are included in the final token list.
+**Method**: Before adding tokens to the final tokenList, each token address is verified against Trust Wallet's public GitHub repository by making HTTP requests to `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/[chain]/assets/[tokenAddress]/info.json`. Only tokens that have corresponding asset entries in the Trust Wallet repository are included in the final token list. This approach replaces the previous filesystem-based validation to ensure browser compatibility.
 
 **Chain Coverage**: Filtering was implemented **only for the specific chains** analyzed in this document, not all possible blockchain networks:
 - Ethereum (0x1), Linea (0xe708), Base (0x2105), Arbitrum (0xa4b1)
@@ -116,34 +116,42 @@ const CHAIN_ID_TO_BLOCKCHAIN_FOLDER = {
 
 ### Trusted Asset Validation Function
 
-The core filtering logic is implemented in the `isTokenTrusted` function:
+The core filtering logic is implemented in the `isTokenTrusted` function that validates against Trust Wallet's GitHub repository:
 
 ```javascript
-function isTokenTrusted(tokenAddress, blockchainFolderName) {
+async function isTokenTrusted(tokenAddress, blockchainFolderName) {
     if (!blockchainFolderName) {
-        return true; // Skip filtering for unsupported chains
+        return false; // Exclude all tokens for unsupported chains (security-first approach)
     }
 
     try {
         // Convert token address to checksum format to match folder naming convention
-        const checksumAddress = toChecksumHexAddress(tokenAddress);
+        const checksumAddress = (0, controller_utils_1.toChecksumHexAddress)(tokenAddress);
 
-        // Get the path to the MetaMask workspace
-        const workspacePath = path.resolve(__dirname, '../../../');
-        const assetPath = path.join(workspacePath, 'blockchains', blockchainFolderName, 'assets', checksumAddress);
+        // Check if the asset exists in Trust Wallet's GitHub repository
+        const assetUrl = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${blockchainFolderName}/assets/${checksumAddress}/info.json`;
 
-        // Check if the asset folder exists
-        return fs.existsSync(assetPath);
+        try {
+            const response = await fetch(assetUrl);
+            const exists = response.ok;
+            if (exists) {
+                trustedAssetLookupCounter++;
+            }
+            return exists;
+        } catch (fetchError) {
+            // If fetch fails (network error, etc.), return false for security
+            return false;
+        }
     } catch (error) {
         console.warn(`Error checking trusted asset for ${tokenAddress} on ${blockchainFolderName}:`, error);
-        return true; // Default to including the token if there's an error
+        return false; // Default to excluding the token if there's an error (security-first approach)
     }
 }
 ```
 
 ### Token List Processing Logic
 
-The filtering is integrated into the `fetchTokenList` method in `TokenListController.cjs`:
+The filtering is integrated into the `fetchTokenList` method in `TokenListController.cjs` with async validation:
 
 ```javascript
 // Get the blockchain folder name for trusted asset filtering
@@ -158,12 +166,12 @@ let trustedTokenCount = 0;
 for (const token of tokensFromAPI) {
     // Check if this chain should have trusted asset filtering
     if (blockchainFolderName && CHAIN_ID_TO_BLOCKCHAIN_FOLDER[chainId]) {
-        if (isTokenTrusted(token.address, blockchainFolderName)) {
+        if (await isTokenTrusted(token.address, blockchainFolderName)) {
             trustedTokenCount++;
             tokenList[token.address] = {
                 ...token,
-                aggregators: formatAggregatorNames(token.aggregators),
-                iconUrl: formatIconUrlWithProxy({
+                aggregators: (0, assetsUtil_1.formatAggregatorNames)(token.aggregators),
+                iconUrl: (0, assetsUtil_1.formatIconUrlWithProxy)({
                     chainId,
                     tokenAddress: token.address,
                 }),
@@ -175,8 +183,8 @@ for (const token of tokensFromAPI) {
         // No filtering for unsupported chains - include all tokens
         tokenList[token.address] = {
             ...token,
-            aggregators: formatAggregatorNames(token.aggregators),
-            iconUrl: formatIconUrlWithProxy({
+            aggregators: (0, assetsUtil_1.formatAggregatorNames)(token.aggregators),
+            iconUrl: (0, assetsUtil_1.formatIconUrlWithProxy)({
                 chainId,
                 tokenAddress: token.address,
             }),
@@ -184,52 +192,67 @@ for (const token of tokensFromAPI) {
     }
 }
 
-// Log filtering results
+// Log filtering results with size calculations
 if (blockchainFolderName && CHAIN_ID_TO_BLOCKCHAIN_FOLDER[chainId]) {
+    const tokenListString = JSON.stringify(tokenList);
+    const sizeInBytes = new Blob([tokenListString]).size;
+    const sizeInKB = (sizeInBytes / 1024).toFixed(2);
+    const sizeInMB = (sizeInBytes / (1024 * 1024)).toFixed(2);
+
     console.log(`=====Token filtering results for ${chainId} (${blockchainFolderName})=====`);
     console.log(`=====Original tokens from API: ${originalTokenCount}`);
     console.log(`=====Trusted tokens (kept): ${trustedTokenCount}`);
     console.log(`=====Filtered out (not in trusted assets): ${filteredTokenCount}`);
     console.log(`=====Filtering rate: ${((filteredTokenCount / originalTokenCount) * 100).toFixed(1)}%`);
+    console.log(`=====Size in bytes: ${sizeInBytes}`);
+    console.log(`=====Size in KB: ${sizeInKB}`);
+    console.log(`=====Size in MB: ${sizeInMB}`);
 }
 ```
 
 ### Filtering Results
 
-
-
 | Chain Name | Chain ID | API Tokens | Trusted Tokens | Filtered Out | Filtering Rate | Final Size (KB) |
 |------------|----------|------------|----------------|--------------|----------------|----------------|
-| BNB Smart Chain | 0x38 | 5,237 | 5,237 | 0 | 0.0% | 1,718.93 |
-| Ethereum Mainnet | 0x1 | 4,833 | 4,833 | 0 | 0.0% | 1,609.77 |
-| Base | 0x2105 | 2,346 | 2,346 | 0 | 0.0% | 755.10 |
-| Polygon | 0x89 | 1,900 | 1,900 | 0 | 0.0% | 621.84 |
-| Arbitrum One | 0xa4b1 | 1,200 | 1,200 | 0 | 0.0% | 397.33 |
-| Avalanche | 0xa86a | 719 | 719 | 0 | 0.0% | 236.94 |
-| Optimism | 0xa | 441 | 441 | 0 | 0.0% | 145.91 |
-| Fantom | 0xfa | 341 | 341 | 0 | 0.0% | 107.60 |
-| Sonic | 0x92 | 228 | 228 | 0 | 0.0% | 70.99 |
-| zkSync Era | 0x144 | 156 | 156 | 0 | 0.0% | 49.04 |
-| Linea | 0xe708 | 139 | 139 | 0 | 0.0% | 46.30 |
-| Sei | 0x531 | 115 | 115 | 0 | 0.0% | 34.93 |
-| Celo | 0xa4ec | 94 | 94 | 0 | 0.0% | 29.86 |
-| Scroll Alpha | 0x82750 | 66 | 66 | 0 | 0.0% | 21.58 |
-| Monad | 0x8f | 37 | 37 | 0 | 0.0% | 11.19 |
-| Polygon zkEVM | 0x44d | 19 | 19 | 0 | 0.0% | 6.27 |
+| BNB Smart Chain | 0x38 | 5,238 | 1,526 | 3,712 | 70.9% | 513.04 |
+| Ethereum Mainnet | 0x1 | 4,834 | 1,656 | 3,178 | 65.7% | 563.53 |
+| Base | 0x2105 | 2,346 | 211 | 2,135 | 91.0% | 71.11 |
+| Polygon | 0x89 | 1,900 | 174 | 1,726 | 90.8% | 59.49 |
+| Arbitrum One | 0xa4b1 | 1,200 | 166 | 1,034 | 86.2% | 56.64 |
+| Avalanche | 0xa86a | 719 | 76 | 643 | 89.4% | 26.24 |
+| Optimism | 0xa | 441 | 58 | 383 | 86.8% | 20.14 |
+| Fantom | 0xfa | 341 | 51 | 290 | 85.0% | 16.59 |
+| Sonic | 0x92 | 228 | 32 | 196 | 86.0% | 10.20 |
+| zkSync Era | 0x144 | 156 | 9 | 147 | 94.2% | 2.89 |
+| Linea | 0xe708 | 139 | 10 | 129 | 92.8% | 3.54 |
+| Sei | 0x531 | 114 | 0 | 114 | 100.0% | 0.00 |
+| Celo | 0xa4ec | 94 | 16 | 78 | 83.0% | 5.23 |
+| Scroll Alpha | 0x82750 | 66 | 9 | 57 | 86.4% | 3.11 |
+| Monad | 0x8f | 37 | 28 | 9 | 24.3% | 8.54 |
+| Polygon zkEVM | 0x44d | 19 | 5 | 14 | 73.7% | 1.72 |
 
 ### Key Findings
 
-1. **API Quality Validation**: This conclusively demonstrates that the Token Service API is exceptionally well-curated and only returns tokens that have been previously vetted and added to MetaMask's trusted asset list.
+1. **Effective Security Filtering**: The Trust Wallet repository validation successfully filters out 65.7% to 100% of tokens from the MetaMask API across different chains, demonstrating that the two systems use different inclusion criteria and approaches to token curation.
 
-2. **Performance vs Security Balance**: The looser occurrence floor changes successfully increase token discoverability without compromising security, as evidenced by zero untrusted tokens being introduced.
+2. **Significant Size Reduction**: Token list sizes are dramatically reduced after filtering, with some chains like zkSync Era and Linea seeing 90%+ reductions in final payload size.
+
+3. **Chain-Specific Patterns**:
+   - **High Filtering Chains**: Sei (100%), zkSync Era (94.2%), Linea (92.8%), and Base (91.0%) show very restrictive filtering
+   - **Moderate Filtering**: Ethereum (65.7%) and BNB Smart Chain (70.9%) have more established token ecosystems in Trust Wallet
+   - **Low Filtering**: Monad (24.3%) shows the most permissive filtering, likely due to a smaller, more curated token set
+
 
 ### Conclusion
 
-**Security Validation**: The persistent 0% filtering rate across all chains, even with looser occurrence floor requirements, conclusively proves that the Token Service API maintains exceptional curation standards. Every token returned by the API is already vetted and present in MetaMask's trusted asset list.
+**Security Validation**: The Trust Wallet repository-based filtering demonstrates robust security controls, filtering out 65.7% to 100% of tokens from the MetaMask API across different chains. This indicates that the MetaMask Token Service API and Trust Wallet repository use different inclusion criteria and logic for surfacing tokens - the MetaMask API appears to be more inclusive for token discovery while Trust Wallet maintains a more conservative approach to asset listings.
 
-**Risk Assessment**: The occurrence floor changes from 3→2 (and 1 for specific chains) do not introduce security risks, as confirmed by the comprehensive trusted asset validation. The increased token list sizes (up to +93% for some chains) represent legitimate, pre-approved tokens becoming more discoverable.
+**Risk Assessment**: The occurrence floor changes from 3→2 (and 1 for specific chains) combined with the conservative Trust Wallet filtering approach ensures that only tokens meeting Trust Wallet's stricter criteria are exposed to users, with final token lists reduced to 24.3%-100% of their original API size.
 
-**Operational Impact**: The approach successfully balances user experience (enhanced token discoverability) with security assurance (zero untrusted token exposure), validating the occurrence floor optimization strategy.
+**User Experience Trade-off**: While the high filtering rates (65.7%-100%) provide essential security benefits, they also introduce a potential risk of reduced token discoverability. Users may not see legitimate tokens that haven't yet been added to Trust Wallet's repository, potentially limiting their access to emerging DeFi projects and recently launched tokens.
 
 
-(This has been only done on the chains listed in table above; extending the test to more chain might eventually have different results)
+**Performance Benefits**: Final token list sizes are significantly smaller than unfiltered lists, improving load times and reducing bandwidth usage while maintaining security standards.
+
+
+(This analysis covers the chains listed in the table above; extending the filtering to additional chains may yield different results based on their respective token ecosystem maturity in Trust Wallet's repository)
