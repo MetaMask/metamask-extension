@@ -239,6 +239,8 @@ async function fetchGatorErc20TokenInfo(
   let decimals: number | undefined;
   let name: string | undefined;
   let image: string | undefined;
+  let apiError: Error | undefined;
+  let onchainError: Error | undefined;
 
   // Tier 1: Try API if external services are allowed
   if (allowExternalServices) {
@@ -251,6 +253,7 @@ async function fetchGatorErc20TokenInfo(
         image = metadata.image;
       }
     } catch (error) {
+      apiError = error as Error;
       log.warn('Failed to fetch token metadata from API', {
         address,
         chainId,
@@ -275,6 +278,7 @@ async function fetchGatorErc20TokenInfo(
           decimals;
         symbol = details?.symbol ?? symbol;
       } catch (error) {
+        onchainError = error as Error;
         log.error('Failed to fetch token details from blockchain', {
           address,
           chainId,
@@ -282,6 +286,14 @@ async function fetchGatorErc20TokenInfo(
         });
       }
     }
+  }
+
+  // If both API and on-chain failed, throw the on-chain error
+  if (
+    (!symbol || decimals === null || decimals === undefined) &&
+    onchainError
+  ) {
+    throw onchainError;
   }
 
   return {
