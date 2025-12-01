@@ -44,6 +44,7 @@ import {
 import {
   getExternalServicesOnboardingToggleState,
   getFirstTimeFlowType,
+  getDeferredDeepLink,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -61,6 +62,11 @@ import {
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
 import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
 import type { BrowserWithSidePanel } from '../../../../shared/types';
+import { getDeferredDeepLinkRoute } from '../../../../shared/lib/deep-links/utils';
+import {
+  DeferredDeepLink,
+  DeferredDeepLinkRouteType,
+} from '../../../../shared/lib/deep-links/types';
 import WalletReadyAnimation from './wallet-ready-animation';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -77,6 +83,7 @@ export default function CreationSuccessful() {
   const trackEvent = useContext(MetaMetricsContext);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isSidePanelEnabled = useSidePanelEnabled();
+  const deferredDeepLink = useSelector(getDeferredDeepLink) as DeferredDeepLink;
 
   const learnMoreLink =
     'https://support.metamask.io/stay-safe/safety-in-web3/basic-safety-and-security-tips-for-metamask/';
@@ -175,6 +182,11 @@ export default function CreationSuccessful() {
   }, [navigate, t]);
 
   const onDone = useCallback(async () => {
+    const deferredDeepLinkResult =
+      await getDeferredDeepLinkRoute(deferredDeepLink);
+    const shouldOpenSidePanel =
+      deferredDeepLinkResult?.type !== DeferredDeepLinkRouteType.Navigate;
+
     if (isWalletReady) {
       trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
@@ -209,13 +221,32 @@ export default function CreationSuccessful() {
             currentWindow: true,
           });
           if (tabs && tabs.length > 0) {
-            await browserWithSidePanel.sidePanel.open({
-              windowId: tabs[0].windowId,
-            });
+            // We deliberately skip the opening of the side panel
+            // if a user is coming from a deep link
+            if (shouldOpenSidePanel) {
+              await browserWithSidePanel.sidePanel.open({
+                windowId: tabs[0].windowId,
+              });
+              setIsSidePanelOpen(true);
+            }
             await dispatch(setUseSidePanelAsDefault(true));
             // Use the sidepanel-specific action - no navigation needed, sidepanel is already open
             await dispatch(setCompletedOnboardingWithSidepanel());
-            setIsSidePanelOpen(true);
+
+            if (deferredDeepLinkResult) {
+              if (
+                deferredDeepLinkResult.type ===
+                DeferredDeepLinkRouteType.Redirect
+              ) {
+                window.open(deferredDeepLinkResult.url, '_self');
+              } else if (
+                deferredDeepLinkResult.type ===
+                DeferredDeepLinkRouteType.Navigate
+              ) {
+                navigate(deferredDeepLinkResult.route);
+              }
+            }
+
             return;
           }
         }
@@ -227,7 +258,19 @@ export default function CreationSuccessful() {
     // Fallback to regular onboarding completion
     await dispatch(setCompletedOnboarding());
 
-    navigate(DEFAULT_ROUTE);
+    if (deferredDeepLinkResult) {
+      if (deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Redirect) {
+        window.open(deferredDeepLinkResult.url, '_blank');
+      } else if (
+        deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Navigate
+      ) {
+        navigate(deferredDeepLinkResult.route);
+      } else {
+        navigate(DEFAULT_ROUTE);
+      }
+    } else {
+      navigate(DEFAULT_ROUTE);
+    }
   }, [
     isWalletReady,
     isFromReminder,
@@ -238,6 +281,7 @@ export default function CreationSuccessful() {
     firstTimeFlowType,
     isFromSettingsSecurity,
     isSidePanelEnabled,
+    deferredDeepLink,
   ]);
 
   const renderDoneButton = () => {

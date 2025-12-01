@@ -14,6 +14,7 @@ import {
 } from '../../../shared/constants/app';
 import { AccountOverviewTabKey } from '../../../shared/constants/app-state';
 import { MINUTE } from '../../../shared/constants/time';
+import * as deepLinkUtils from '../../../shared/lib/deep-links/utils';
 import { AppStateController } from './app-state-controller';
 import type {
   AppStateControllerMessenger,
@@ -29,6 +30,7 @@ type RootMessenger = Messenger<
 >;
 
 jest.mock('webextension-polyfill');
+jest.mock('../../../shared/lib/deep-links/utils');
 
 const mockIsManifestV3 = jest.fn().mockReturnValue(false);
 jest.mock('../../../shared/modules/mv3.utils', () => ({
@@ -1080,6 +1082,40 @@ describe('AppStateController', () => {
           `);
         },
       );
+    });
+  });
+
+  describe('setDeferredDeepLink', () => {
+    it('updates the state when deferred deep link is available', async () => {
+      await withController(async ({ controller }) => {
+        const mockDeepLinkData = {
+          createdAt: 1765465337256,
+          referringLink: 'https://link.metamask.io/deep-link',
+        };
+
+        jest
+          .spyOn(deepLinkUtils, 'getDeferredDeepLinkFromCookie')
+          .mockResolvedValue(mockDeepLinkData);
+
+        const deferredDeepLinkResult = await controller.setDeferredDeepLink();
+
+        expect(controller.state.deferredDeepLink).toStrictEqual(
+          mockDeepLinkData,
+        );
+        expect(deferredDeepLinkResult).toStrictEqual(mockDeepLinkData);
+      });
+    });
+
+    it('does not update the state when deferred deep link is not available', async () => {
+      await withController(async ({ controller }) => {
+        jest
+          .spyOn(deepLinkUtils, 'getDeferredDeepLinkFromCookie')
+          .mockResolvedValue(null);
+
+        await controller.setDeferredDeepLink();
+
+        expect(controller.state.deferredDeepLink).toBeUndefined();
+      });
     });
   });
 });
