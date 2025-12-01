@@ -50,12 +50,6 @@ export const PermissionItem: React.FC<PermissionItemProps> = ({
     permission.permissionType,
   );
 
-  // Extract symbol and decimals from tokenInfo for backward compatibility
-  const resolvedTokenInfo = {
-    symbol: tokenInfo.symbol,
-    decimals: tokenInfo.decimals,
-  };
-
   // Format amount description for this permission
   const formatAmountDescription = useCallback(
     (
@@ -109,9 +103,9 @@ export const PermissionItem: React.FC<PermissionItemProps> = ({
   const formattedDescription = useMemo(() => {
     let description = formatAmountDescription(
       amount,
-      resolvedTokenInfo.symbol,
+      tokenInfo.symbol,
       frequency,
-      resolvedTokenInfo.decimals,
+      tokenInfo.decimals,
     );
 
     // Append account information to the formatted description
@@ -123,8 +117,8 @@ export const PermissionItem: React.FC<PermissionItemProps> = ({
     return description;
   }, [
     amount,
-    resolvedTokenInfo.symbol,
-    resolvedTokenInfo.decimals,
+    tokenInfo.symbol,
+    tokenInfo.decimals,
     frequency,
     signerAddress,
     accountName,

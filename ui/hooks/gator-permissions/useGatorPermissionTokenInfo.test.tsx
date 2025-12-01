@@ -339,6 +339,7 @@ describe('useGatorPermissionTokenInfo', () => {
       expect(result.current.tokenInfo?.symbol).toBe('ONCHAIN');
       expect(result.current.tokenInfo?.decimals).toBe(6);
       expect(result.current.source).toBe('onchain');
+      expect(result.current.error).toBeNull();
     });
 
     it('should parse decimals from decimal string', async () => {
@@ -395,6 +396,8 @@ describe('useGatorPermissionTokenInfo', () => {
 
       expect(result.current.tokenInfo?.symbol).toBe('Unknown Token');
       expect(result.current.tokenInfo?.decimals).toBe(18);
+      expect(result.current.error).toBeInstanceOf(Error);
+      expect(result.current.error?.message).toBe('On-chain Error');
     });
   });
 

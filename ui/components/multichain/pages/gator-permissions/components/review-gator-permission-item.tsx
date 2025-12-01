@@ -488,7 +488,9 @@ export const ReviewGatorPermissionItem = ({
             onClick={handleExpandClick}
           >
             <Text color={TextColor.PrimaryDefault} variant={TextVariant.BodyMd}>
-              {isExpanded ? 'Hide Details' : 'Show Details'}
+              {isExpanded
+                ? t('gatorPermissionsHideDetails')
+                : t('gatorPermissionsShowDetails')}
             </Text>
             <ButtonIcon
               iconName={isExpanded ? IconName.ArrowUp : IconName.ArrowDown}

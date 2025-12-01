@@ -100,7 +100,7 @@ export function clearTokenInfoCaches(): void {
  *
  * @param chainId - The chain ID in hex format
  * @param networkConfigurationsByCaipChainId - Network configurations indexed by CAIP chain ID
- * @returns Native token info with symbol and decimals, or null if not a native token context
+ * @returns Native token info with symbol and decimals (always returns a value, defaults to ETH with 18 decimals)
  */
 export function resolveNativeTokenInfo(
   chainId: Hex,
