@@ -1,4 +1,5 @@
 import { ApprovalType } from '@metamask/controller-utils';
+import { KnownCaipNamespace } from '@metamask/utils';
 import {
   BtcAccountType,
   EthAccountType,
@@ -23,7 +24,6 @@ import {
   SOLANA_WALLET_SNAP_ID,
 } from '../../shared/lib/accounts';
 import * as selectors from './selectors';
-import { KnownCaipNamespace } from '@metamask/utils';
 
 jest.mock('../../shared/modules/selectors/networks', () => ({
   ...jest.requireActual('../../shared/modules/selectors/networks'),
