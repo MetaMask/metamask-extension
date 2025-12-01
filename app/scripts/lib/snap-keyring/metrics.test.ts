@@ -219,7 +219,7 @@ describe('getSnapAndHardwareInfoForMetrics', () => {
       expect(result).toEqual({
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: 'hardwareType',
+        account_type: 'accountType',
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         device_model: 'deviceModel',
