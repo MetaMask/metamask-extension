@@ -10,12 +10,13 @@ import {
   isNonEvmChainId,
   isValidQuoteRequest,
   BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
-  getNativeAssetForChainId,
   isNativeAddress,
   UnifiedSwapBridgeEventName,
   type BridgeController,
   isCrossChain,
+  formatChainIdToHex,
   isBitcoinChainId,
+  getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
 import { type CaipChainId, type Hex, isStrictHexString } from '@metamask/utils';
 import {
@@ -81,7 +82,6 @@ import {
   isQuoteExpiredOrInvalid as isQuoteExpiredOrInvalidUtil,
   safeAmountForCalc,
 } from '../utils/quote';
-import { isNetworkAdded } from '../../../ducks/bridge/utils';
 import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
 import { Column } from '../layout';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
@@ -105,7 +105,6 @@ import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import {
   TOKEN_OCCURRENCES_MAP,
   MINIMUM_TOKEN_OCCURRENCES,
-  type ChainId,
 } from '../../../../shared/constants/network';
 import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams';
 import { useSmartSlippage } from '../../../hooks/bridge/useSmartSlippage';
@@ -115,6 +114,7 @@ import { useEnableMissingNetwork } from '../hooks/useEnableMissingNetwork';
 import { BridgeInputGroup } from './bridge-input-group';
 import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
 import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
+import { isNetworkAdded } from '../../../ducks/bridge/utils';
 
 const PrepareBridgePage = ({
   onOpenSettings,
@@ -473,7 +473,8 @@ const PrepareBridgePage = ({
       return MINIMUM_TOKEN_OCCURRENCES;
     }
     return (
-      TOKEN_OCCURRENCES_MAP[chainId as ChainId] ?? MINIMUM_TOKEN_OCCURRENCES
+      TOKEN_OCCURRENCES_MAP[chainId as keyof typeof TOKEN_OCCURRENCES_MAP] ??
+      MINIMUM_TOKEN_OCCURRENCES
     );
   };
 
@@ -502,7 +503,6 @@ const PrepareBridgePage = ({
               address: token.address ?? zeroAddress(),
             };
             dispatch(setFromToken(bridgeToken));
-            dispatch(setFromTokenInputValue(null));
           }}
           networkProps={{
             // @ts-expect-error other network fields are not used by the asset picker
@@ -610,10 +610,10 @@ const PrepareBridgePage = ({
                       {
                         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                         // eslint-disable-next-line @typescript-eslint/naming-convention
-                        token_symbol_source: toToken?.symbol ?? null,
+                        token_symbol_source: toToken.symbol,
                         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                         // eslint-disable-next-line @typescript-eslint/naming-convention
-                        token_symbol_destination: fromToken?.symbol ?? null,
+                        token_symbol_destination: fromToken.symbol,
                         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                         // eslint-disable-next-line @typescript-eslint/naming-convention
                         token_address_source: toToken?.assetId,
@@ -667,12 +667,7 @@ const PrepareBridgePage = ({
               // @ts-expect-error other network fields are not used by the asset picker
               networks: toChains,
               onNetworkChange: (networkConfig) => {
-                if (
-                  isNetworkAdded(fromChains, networkConfig.chainId) &&
-                  isStrictHexString(networkConfig.chainId)
-                ) {
-                  enableMissingNetwork(networkConfig.chainId);
-                }
+                enableMissingNetwork(networkConfig.chainId);
                 dispatch(setToChainId(networkConfig.chainId));
               },
               header: t('yourNetworks'),
