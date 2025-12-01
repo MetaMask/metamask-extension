@@ -9,7 +9,21 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import { setManifestFlags } from '../../set-manifest-flags';
 import { PAGES, type Driver } from '../../webdriver/driver';
 
-type StoredState = Record<string, any>;
+type DataStorage = {
+  meta: {
+    version:string,
+    storageKind?: 'data',
+    platformSplitStateGradualRolloutAttempted?: true,
+  };
+  data: Record<string, Record<string, unknown>>;
+};
+
+type SplitStateStorage = (Record<string, unknown> & {
+  meta: { version:string, storageKind?: 'split' };
+  manifest?: ("meta" | string)[];
+})
+
+type StoredState = SplitStateStorage | DataStorage;
 
 const SPLIT_FLAG = { value: { enabled: true } };
 const BASE_MANIFEST_TESTING_FLAGS = { forceExtensionStore: true };
@@ -62,7 +76,7 @@ const readStorage = async (driver: Driver) => {
   return (result?.value ?? {}) as StoredState;
 };
 
-const assertSplitStateStorage = (storage: StoredState) => {
+const assertSplitStateStorage = (storage: SplitStateStorage) => {
   assert.ok(
     Array.isArray(storage.manifest),
     'manifest should be written in split state storage',
@@ -119,7 +133,7 @@ const waitForKeyringControllerToBeSaved = async (driver: Driver) => {
     }`);
 };
 
-const assertDataStateStorage = (storage: StoredState) => {
+const assertDataStateStorage = (storage: DataStorage) => {
   assert.ok(storage.meta, 'meta should be present in data storage');
   assert.ok('data' in storage, 'data key should be present in data storage');
   assert.ok(
@@ -144,7 +158,7 @@ const assertDataStateStorage = (storage: StoredState) => {
  */
 const expectSplitStateStorage = async (driver: Driver) => {
   const storage = await readStorage(driver);
-  assertSplitStateStorage(storage);
+  assertSplitStateStorage(storage as SplitStateStorage);
   return storage;
 };
 
@@ -156,7 +170,7 @@ const expectSplitStateStorage = async (driver: Driver) => {
  */
 const expectDataStateStorage = async (driver: Driver) => {
   const storage = await readStorage(driver);
-  assertDataStateStorage(storage);
+  assertDataStateStorage(storage as DataStorage);
   return storage;
 };
 
@@ -373,10 +387,11 @@ describe('State Persistence', function () {
           // proceed if not for the attempted flag.
           await runScriptThenReloadExtension(
             ensureSplitFlagPersisted({
-              _platformSplitStateGradualRolloutAttempted: true,
-              // a migration would set `_platformSplitStateGradualRolloutAttempted`
-              // if it proceeded, and then failed, so we set this extra bit
-              // just so we have something unique to check.
+              platformSplitStateGradualRolloutAttempted: true,
+              // an attempted migration would set `platformSplitStateGradualRolloutAttempted`
+              // itself, if it erroneously attempted to migrate (its not supposed to try in this test)
+              // and then failed, so we are setting this extra `canary` property just so we have something
+              // unique.
               canary: 'test-canary',
             }),
             driver,
@@ -384,9 +399,9 @@ describe('State Persistence', function () {
 
           const storage1 = await expectDataStateStorage(driver);
           assert.equal(
-            storage1.meta._platformSplitStateGradualRolloutAttempted,
+            (storage1 as DataStorage).meta.platformSplitStateGradualRolloutAttempted,
             true,
-            'precondition: _platformSplitStateGradualRolloutAttempted should be true',
+            'precondition: platformSplitStateGradualRolloutAttempted should be true',
           );
 
           // Set the manifest flags to use split state so the migration would be
@@ -404,12 +419,13 @@ describe('State Persistence', function () {
           // Ensure we are still using the data state and have not migrated.
           const storage = await expectDataStateStorage(driver);
           // additionally, ensure the attempted flag is still set
-          // and the canary value is untouched
           assert.equal(
-            storage.meta._platformSplitStateGradualRolloutAttempted,
+            (storage as DataStorage).meta.platformSplitStateGradualRolloutAttempted,
             true,
           );
-          assert.equal(storage.meta.canary, 'test-canary');
+          // and the canary value is untouched (just making sure OUR test state
+          // is actually being used)
+          assert.equal((storage.meta as any).canary, 'test-canary');
         },
       );
     });

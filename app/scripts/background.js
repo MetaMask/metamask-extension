@@ -1003,10 +1003,10 @@ export async function loadStateFromPersistence(backup) {
       'value' in flag &&
       flag.value?.enabled === true &&
       // if we've already tried, don't try again.
-      versionedData.meta._platformSplitStateGradualRolloutAttempted !== true;
+      versionedData.meta.platformSplitStateGradualRolloutAttempted !== true;
     if (useSplitStateStorage) {
       // a sigil to mark that we *tried* to migrate to split state storage
-      versionedData.meta._platformSplitStateGradualRolloutAttempted = true;
+      versionedData.meta.platformSplitStateGradualRolloutAttempted = true;
       persistenceManager.setMetadata(versionedData.meta);
     }
 
@@ -1015,7 +1015,7 @@ export async function loadStateFromPersistence(backup) {
 
     if (useSplitStateStorage) {
       await persistenceManager.migrateToSplitState(versionedData.data);
-      delete versionedData.meta._platformSplitStateGradualRolloutAttempted;
+      delete versionedData.meta.platformSplitStateGradualRolloutAttempted;
       persistenceManager.setMetadata(versionedData.meta);
     }
   } else if (persistenceManager.storageKind === 'split') {

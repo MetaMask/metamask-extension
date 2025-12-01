@@ -120,7 +120,13 @@ const STATE_LOCK = 'state-lock';
  * state, managing metadata, and handling cleanup tasks.
  */
 export class PersistenceManager {
-  static readonly DEFAULT_STORAGE_KIND = ((process.env.IN_TEST
+  /**
+   * DefaultStorageKind is a static property that defines the default storage
+   * kind to be used by the PersistenceManager. It checks if the code is running
+   * in a test environment and retrieves the storage kind from manifest flags
+   * if available; otherwise, it defaults to 'split'.
+   */
+  static readonly DefaultStorageKind = ((process.env.IN_TEST
     ? getManifestFlags().testing?.storageKind
     : null) ?? 'split') as StorageKind;
 
@@ -212,7 +218,7 @@ export class PersistenceManager {
 
   #pendingPairs = new Map<string, unknown>();
 
-  storageKind: StorageKind = PersistenceManager.DEFAULT_STORAGE_KIND;
+  storageKind: StorageKind = PersistenceManager.DefaultStorageKind;
 
   /**
    * Sets the state in the local store.

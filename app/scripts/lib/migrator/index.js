@@ -160,7 +160,7 @@ export default class Migrator extends EventEmitter {
     return {
       data,
       meta: {
-        storageKind: PersistenceManager.DEFAULT_STORAGE_KIND,
+        storageKind: PersistenceManager.DefaultStorageKind,
         version: this.defaultVersion,
       },
     };
