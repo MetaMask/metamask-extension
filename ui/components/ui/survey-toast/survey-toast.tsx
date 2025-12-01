@@ -14,7 +14,6 @@ import {
   getMetaMetricsId,
   getParticipateInMetaMetrics,
 } from '../../../selectors';
-import { ACCOUNTS_API_BASE_URL } from '../../../../shared/constants/accounts';
 import { setLastViewedUserSurvey } from '../../../store/actions';
 import { Toast } from '../../multichain';
 
@@ -38,7 +37,9 @@ export function SurveyToast() {
   const metaMetricsId = useSelector(getMetaMetricsId);
 
   const surveyUrl = useMemo(
-    () => `${ACCOUNTS_API_BASE_URL}/v1/users/${metaMetricsId}/surveys`,
+    () =>
+      `https://accounts.dev-api.cx.metamask.io/v1/users/${metaMetricsId}/surveys`,
+    // () => `https://gist.githubusercontent.com/Prithpal-Sooriya/AAAA/test.json`,
     [metaMetricsId],
   );
 
