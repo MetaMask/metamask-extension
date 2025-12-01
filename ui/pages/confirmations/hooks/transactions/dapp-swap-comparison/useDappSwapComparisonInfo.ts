@@ -265,13 +265,6 @@ export function useDappSwapComparisonInfo() {
         .minus(destinationTokenAmountInConfirmation)
         .toNumber();
 
-      console.log(
-        '**********321',
-        selectedQuoteValueDiff,
-        tokenAmountDiff,
-        totalGasInConfirmation.minus(totalGasInQuote).toNumber(),
-      );
-
       return {
         selectedQuoteValueDifference: selectedQuoteValueDiff,
         tokenAmountDifference: tokenAmountDiff,

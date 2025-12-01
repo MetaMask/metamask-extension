@@ -24,9 +24,6 @@ export function useDappSwapActions() {
       if (!isQuotedSwapDisplayedInInfo) {
         return;
       }
-      console.log(
-        '--------------------------------------------------- 3 updating transaction',
-      );
       const { value, gasLimit, data, to } = selectedQuote?.trade as TxData;
       transactionMeta.txParams = {
         ...transactionMeta.txParams,
@@ -63,9 +60,6 @@ export function useDappSwapActions() {
   );
 
   const onDappSwapCompleted = useCallback(() => {
-    console.log(
-      '--------------------------------------------------- 4 onDappSwapCompleted',
-    );
     const uniqueId = currentConfirmation.securityAlertResponse?.securityAlertId;
     if (uniqueId) {
       deleteDappSwapComparisonData(uniqueId);
