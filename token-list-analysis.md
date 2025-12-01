@@ -87,6 +87,113 @@ To address security concerns with the increased token list sizes after loosening
 
 **Note**: Other blockchain networks supported by MetaMask that are not listed above will continue to use the original token filtering behavior without trusted asset validation.
 
+## Technical Implementation
+
+### Chain ID to Blockchain Folder Mapping
+
+The implementation uses a mapping to associate hex chain IDs with their corresponding blockchain folder names in the `/blockchains/` directory:
+
+```javascript
+const CHAIN_ID_TO_BLOCKCHAIN_FOLDER = {
+    '0x1': 'ethereum',           // Ethereum Mainnet
+    '0xe708': 'linea',           // Linea
+    '0x2105': 'base',            // Base
+    '0xa4b1': 'arbitrum',        // Arbitrum One
+    '0x38': 'smartchain',        // BNB Smart Chain
+    '0xa': 'optimism',           // Optimism
+    '0x89': 'polygon',           // Polygon
+    '0x531': 'sei',              // Sei
+    '0xa86a': 'avalanchec',      // Avalanche
+    '0x8f': 'monad',             // Monad
+    '0x144': 'zksync',           // zkSync Era
+    '0xfa': 'fantom',            // Fantom
+    '0xa4ec': 'celo',            // Celo
+    '0x82750': 'scroll',         // Scroll Alpha
+    '0x44d': 'polygonzkevm',     // Polygon zkEVM
+    '0x92': 'sonic',             // Sonic
+};
+```
+
+### Trusted Asset Validation Function
+
+The core filtering logic is implemented in the `isTokenTrusted` function:
+
+```javascript
+function isTokenTrusted(tokenAddress, blockchainFolderName) {
+    if (!blockchainFolderName) {
+        return true; // Skip filtering for unsupported chains
+    }
+
+    try {
+        // Convert token address to checksum format to match folder naming convention
+        const checksumAddress = toChecksumHexAddress(tokenAddress);
+
+        // Get the path to the MetaMask workspace
+        const workspacePath = path.resolve(__dirname, '../../../');
+        const assetPath = path.join(workspacePath, 'blockchains', blockchainFolderName, 'assets', checksumAddress);
+
+        // Check if the asset folder exists
+        return fs.existsSync(assetPath);
+    } catch (error) {
+        console.warn(`Error checking trusted asset for ${tokenAddress} on ${blockchainFolderName}:`, error);
+        return true; // Default to including the token if there's an error
+    }
+}
+```
+
+### Token List Processing Logic
+
+The filtering is integrated into the `fetchTokenList` method in `TokenListController.cjs`:
+
+```javascript
+// Get the blockchain folder name for trusted asset filtering
+const blockchainFolderName = CHAIN_ID_TO_BLOCKCHAIN_FOLDER[chainId];
+
+// Format tokens from API (HTTP) and update tokenList with trusted asset filtering
+const tokenList = {};
+let originalTokenCount = tokensFromAPI.length;
+let filteredTokenCount = 0;
+let trustedTokenCount = 0;
+
+for (const token of tokensFromAPI) {
+    // Check if this chain should have trusted asset filtering
+    if (blockchainFolderName && CHAIN_ID_TO_BLOCKCHAIN_FOLDER[chainId]) {
+        if (isTokenTrusted(token.address, blockchainFolderName)) {
+            trustedTokenCount++;
+            tokenList[token.address] = {
+                ...token,
+                aggregators: formatAggregatorNames(token.aggregators),
+                iconUrl: formatIconUrlWithProxy({
+                    chainId,
+                    tokenAddress: token.address,
+                }),
+            };
+        } else {
+            filteredTokenCount++;
+        }
+    } else {
+        // No filtering for unsupported chains - include all tokens
+        tokenList[token.address] = {
+            ...token,
+            aggregators: formatAggregatorNames(token.aggregators),
+            iconUrl: formatIconUrlWithProxy({
+                chainId,
+                tokenAddress: token.address,
+            }),
+        };
+    }
+}
+
+// Log filtering results
+if (blockchainFolderName && CHAIN_ID_TO_BLOCKCHAIN_FOLDER[chainId]) {
+    console.log(`=====Token filtering results for ${chainId} (${blockchainFolderName})=====`);
+    console.log(`=====Original tokens from API: ${originalTokenCount}`);
+    console.log(`=====Trusted tokens (kept): ${trustedTokenCount}`);
+    console.log(`=====Filtered out (not in trusted assets): ${filteredTokenCount}`);
+    console.log(`=====Filtering rate: ${((filteredTokenCount / originalTokenCount) * 100).toFixed(1)}%`);
+}
+```
+
 ### Filtering Results
 
 
