@@ -142,6 +142,7 @@ app/scripts/lib/transaction/util.*                                              
 ui/pages/confirmations                                                              @MetaMask/confirmations
 ui/components/multichain/pages/send                                                 @MetaMask/confirmations
 ui/pages/confirmations/components/confirm/footer                                    @MetaMask/confirmations @MetaMask/web3auth
+ui/pages/confirmations/components/confirm/info/shield-subscription-approve          @MetaMask/confirmations @MetaMask/web3auth
 ui/pages/confirmations/hooks/alerts/useShieldCoverageAlert.test.ts                  @MetaMask/confirmations @MetaMask/web3auth
 ui/pages/confirmations/hooks/alerts/useShieldCoverageAlert.ts                       @MetaMask/confirmations @MetaMask/web3auth
 ui/pages/confirmations/hooks/alerts/transactions/ShieldCoverageAlertMessage.tsx     @MetaMask/confirmations @MetaMask/web3auth
