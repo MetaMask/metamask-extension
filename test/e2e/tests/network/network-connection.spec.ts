@@ -29,7 +29,7 @@ const networkConfigs: NetworkConfig[] = [
     chainId: CHAIN_IDS.MONAD_TESTNET,
   },
   {
-    name: 'Mega Testnet',
+    name: 'MegaETH Testnet',
     tokenSymbol: 'ETH',
     fixtureMethod: (builder) => builder.withNetworkControllerOnMegaETH(),
     testTitle: 'MegaETH Network Connection Tests',
