@@ -151,8 +151,8 @@ import {
 
 import {
   HardwareDeviceNames,
-  HardwareKeyringType,
   LedgerTransportTypes,
+  DEVICE_KEYRING_MAP,
 } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
 import { RestrictedMethods } from '../../shared/constants/permissions';
@@ -5446,7 +5446,7 @@ export default class MetamaskController extends EventEmitter {
   async getHardwareTypeForMetric(address) {
     return await this.keyringController.withKeyring(
       { address },
-      ({ keyring }) => HardwareKeyringType[keyring.type],
+      ({ keyring }) => DEVICE_KEYRING_MAP[keyring.type],
     );
   }
 

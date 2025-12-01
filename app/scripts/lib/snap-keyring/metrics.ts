@@ -53,10 +53,21 @@ export async function getSnapAndHardwareInfoForMetrics(
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
       device_model: await getDeviceModel(selectedAddress),
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      account_hardware_type: await getHardwareTypeForMetric(selectedAddress),
     };
+
+    const hardwareType = await getHardwareTypeForMetric(selectedAddress);
+
+    if (hardwareType) {
+      keyringAccountInfo = {
+        ...keyringAccountInfo,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_hardware_type: hardwareType,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_type: hardwareType,
+      };
+    }
   }
 
   return {
