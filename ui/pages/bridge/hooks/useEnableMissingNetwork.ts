@@ -1,10 +1,10 @@
+import { useCallback } from 'react';
 import {
   formatChainIdToCaip,
   formatChainIdToHex,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
-import { CaipChainId, Hex, parseCaipChainId } from '@metamask/utils';
-import { useCallback } from 'react';
+import { type CaipChainId, type Hex, parseCaipChainId } from '@metamask/utils';
 import { useSelector, useDispatch } from 'react-redux';
 import { getEnabledNetworksByNamespace } from '../../../selectors';
 import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../shared/constants/network';
