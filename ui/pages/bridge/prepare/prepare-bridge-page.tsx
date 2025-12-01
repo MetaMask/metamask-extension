@@ -23,7 +23,12 @@ import {
   isCrossChain,
   isBitcoinChainId,
 } from '@metamask/bridge-controller';
-import { Hex, parseCaipChainId } from '@metamask/utils';
+import {
+  type CaipChainId,
+  type Hex,
+  isStrictHexString,
+  parseCaipChainId,
+} from '@metamask/utils';
 import {
   setFromToken,
   setFromTokenInputValue,
@@ -561,7 +566,10 @@ const PrepareBridgePage = ({
             // @ts-expect-error other network fields are not used by the asset picker
             networks: fromChains,
             onNetworkChange: (networkConfig) => {
-              if (isNetworkAdded(networkConfig)) {
+              if (
+                isNetworkAdded(fromChains, networkConfig.chainId) &&
+                isStrictHexString(networkConfig.chainId)
+              ) {
                 enableMissingNetwork(networkConfig.chainId);
               }
               dispatch(
@@ -742,7 +750,10 @@ const PrepareBridgePage = ({
               // @ts-expect-error other network fields are not used by the asset picker
               networks: toChains,
               onNetworkChange: (networkConfig) => {
-                if (isNetworkAdded(fromChains, networkConfig.chainId)) {
+                if (
+                  isNetworkAdded(fromChains, networkConfig.chainId) &&
+                  isStrictHexString(networkConfig.chainId)
+                ) {
                   enableMissingNetwork(networkConfig.chainId);
                 }
                 dispatch(setToChainId(networkConfig.chainId));

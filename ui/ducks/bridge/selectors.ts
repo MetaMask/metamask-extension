@@ -929,10 +929,7 @@ export const getHardwareWalletName = (state: BridgeAppState) => {
 };
 
 export const selectNoFeeAssets = createSelector(
-  [
-    getBridgeFeatureFlags,
-    (_state: BridgeAppState, chainId?: string) => chainId,
-  ],
+  [getBridgeFeatureFlags, (_state, chainId?: string) => chainId],
   (bridgeFeatureFlags, chainId): string[] => {
     if (!chainId) {
       return [];

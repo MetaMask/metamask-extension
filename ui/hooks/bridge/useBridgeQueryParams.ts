@@ -13,7 +13,6 @@ import {
   isNativeAddress,
 } from '@metamask/bridge-controller';
 import { type InternalAccount } from '@metamask/keyring-internal-api';
-import { type NetworkConfiguration } from '@metamask/network-controller';
 import {
   type AssetMetadata,
   fetchAssetMetadataForAssetIds,
@@ -34,6 +33,7 @@ import {
   getFromChains,
   getFromToken,
 } from '../../ducks/bridge/selectors';
+import { type BridgeNetwork } from '../../ducks/bridge/types';
 
 const parseAsset = (assetId: string | null) => {
   if (!assetId) {
@@ -172,9 +172,9 @@ export const useBridgeQueryParams = () => {
     (
       fromTokenMetadata,
       fromAsset,
-      networks: NetworkConfiguration[],
+      networks: BridgeNetwork[],
       account: InternalAccount | null,
-      network?: NetworkConfiguration,
+      network?: BridgeNetwork,
     ) => {
       const { chainId: assetChainId } = fromAsset;
 
