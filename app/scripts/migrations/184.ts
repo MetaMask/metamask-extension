@@ -30,7 +30,7 @@ export const MEGAETH_TESTNET_V2_CONFIG = {
 };
 
 /**
- * This migration add MegaETH Testnet v2 to the network controller
+ * This migration adds MegaETH Testnet v2 to the network controller
  * as a default Testnet.
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly
@@ -100,6 +100,16 @@ function transformState(state: Record<string, unknown>) {
   // If the MegaETH Testnet v1 network configuration exists, then remove it.
   if (networkConfigurationsByChainId[MEGAETH_TESTNET_V1_CHAIN_ID]) {
     delete networkConfigurationsByChainId[MEGAETH_TESTNET_V1_CHAIN_ID];
+  }
+
+  // If the selected network client id is the old MegaETH Testnet v1,
+  // then update it to the new MegaETH Testnet v2.
+  if (
+    hasProperty(networkState, 'selectedNetworkClientId') &&
+    typeof networkState.selectedNetworkClientId === 'string' &&
+    networkState.selectedNetworkClientId === 'megaeth-testnet'
+  ) {
+    networkState.selectedNetworkClientId = 'megaeth-testnet-v2';
   }
 
   return state;
