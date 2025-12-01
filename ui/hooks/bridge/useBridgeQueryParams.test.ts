@@ -357,16 +357,23 @@ describe('useBridgeQueryParams', () => {
 
     expect(result.current.location.search).toBe('');
     expect(store).toBeDefined();
-    const { fromToken, toToken, toChainId, fromTokenInputValue } =
-      store?.getState().bridge ?? {};
+    const {
+      fromToken,
+      toToken,
+      toChainId,
+      fromTokenInputValue,
+      fromTokenBalance,
+      fromNativeBalance,
+    } = store?.getState().bridge ?? {};
     expect({
       fromToken,
       toToken,
       toChainId,
       fromTokenInputValue,
+      fromTokenBalance,
+      fromNativeBalance,
     }).toMatchSnapshot();
     expect(fetchAssetMetadataForAssetIdsSpy).not.toHaveBeenCalled();
-    expect(calcLatestSrcBalanceSpy.mock.calls).toMatchSnapshot();
   });
 
   it('should only set dest token', async () => {

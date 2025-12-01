@@ -2,28 +2,13 @@
 
 exports[`useBridgeQueryParams should not set inputs when there are no query params 1`] = `
 {
+  "fromNativeBalance": undefined,
   "fromToken": undefined,
+  "fromTokenBalance": undefined,
   "fromTokenInputValue": undefined,
   "toChainId": null,
   "toToken": undefined,
 }
-`;
-
-exports[`useBridgeQueryParams should not set inputs when there are no query params 2`] = `
-[
-  [
-    undefined,
-    "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
-    "0x0000000000000000000000000000000000000000",
-    "0x1",
-  ],
-  [
-    undefined,
-    "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
-    "0x0000000000000000000000000000000000000000",
-    "0x1",
-  ],
-]
 `;
 
 exports[`useBridgeQueryParams should not set params when fetchAssetMetadataForAssetIds fails 1`] = `

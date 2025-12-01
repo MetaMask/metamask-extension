@@ -83,12 +83,14 @@ export const MOCK_BITCOIN_ACCOUNT = {
   id: '40b25442-ed7e-4b94-9f9f-ea8ff06d03b3',
   address: 'bc1q2pxsagdzfdn6k6umvf9gj3eme7a27p7acym9g2',
   options: {
-    entropySource: '01K8NT6Z7XDKEKX9MFSZ5EPFMW',
+    derivationPath: "m/44'/501'/0'/0'",
+    synchronize: true,
+    index: 0,
     exportable: false,
     entropy: {
       type: 'mnemonic',
-      id: '01K8NT6Z7XDKEKX9MFSZ5EPFMW',
-      derivationPath: "m/84'/0'/0'",
+      id: '01K2FF18CTTXJYD34R78X4N1N1',
+      derivationPath: "m/44'/501'/0'/0'",
       groupIndex: 0,
     },
   },

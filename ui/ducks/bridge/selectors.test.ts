@@ -1047,7 +1047,7 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
           toChainId: formatChainIdToCaip('0x1'),
-          fromToken: { decimals: 9, address: zeroAddress() },
+          fromToken: { decimals: 9, address: zeroAddress(), chainId: '0x1' },
           fromChain: { chainId: formatChainIdToCaip(ChainId.SOLANA) },
           srcTokenInputValue: '1000000000',
         },
