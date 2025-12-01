@@ -27,22 +27,8 @@ describe('Wallet State', function () {
         const startOnboardingPage = new StartOnboardingPage(driver);
         await startOnboardingPage.checkLoginPageIsLoaded();
 
-        // wait for a non-empty persisted state
-        await driver.waitUntil(
-          async () => {
-            const state = await driver.executeScript(
-              'return window.stateHooks.getPersistedState()',
-            );
-            if (typeof state?.data !== 'object') {
-              return false;
-            }
-            const dataKeys = Object.keys(state.data).filter(
-              (k) => k !== 'config',
-            );
-            return dataKeys.length > 0;
-          },
-          { interval: 1000, timeout: 10000 },
-        );
+        // Add hardcoded delay to stabilize the test and ensure values for properties are loaded
+        await driver.delay(10000);
 
         const persistedState = (await driver.executeScript(
           'return window.stateHooks.getPersistedState()',
