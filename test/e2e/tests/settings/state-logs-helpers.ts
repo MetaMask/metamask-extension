@@ -187,7 +187,10 @@ const getIgnoredKeys = (): string[] => [
   'metamask.verifiedSnaps',
 ];
 
-const shouldIgnoreKey = (key: string, ignoredKeys: string[]): boolean => {
+export const shouldIgnoreKey = (
+  key: string,
+  ignoredKeys: string[],
+): boolean => {
   const hasNonZeroArrayIndex = key.split('.').some((part) => {
     const matches = part.match(/\[(\d+)\]/gu);
     return (

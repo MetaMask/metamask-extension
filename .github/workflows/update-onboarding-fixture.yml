@@ -1,0 +1,191 @@
+name: Update onboarding fixture
+
+on:
+  issue_comment:
+    types:
+      - created
+
+jobs:
+  is-fork-pull-request:
+    name: Determine whether this issue comment was on a pull request from a fork
+    if: ${{ github.event.issue.pull_request && startsWith(github.event.comment.body, '@metamaskbot update-e2e-fixture') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      IS_FORK: ${{ steps.is-fork.outputs.IS_FORK }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Determine whether this PR is from a fork
+        id: is-fork
+        run: echo "IS_FORK=$(gh pr view --json isCrossRepository --jq '.isCrossRepository' "${PR_NUMBER}" )" >> "$GITHUB_OUTPUT"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+
+  react-to-comment:
+    name: React to the comment
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: is-fork-pull-request
+    if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
+    steps:
+      - name: React to the comment
+        run: |
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "/repos/${REPO}/issues/comments/${COMMENT_ID}/reactions" \
+            -f content='+1'
+        env:
+          COMMENT_ID: ${{ github.event.comment.id }}
+          GITHUB_TOKEN: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
+          REPO: ${{ github.repository }}
+
+  update-onboarding-fixture:
+    name: Update onboarding fixture
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs:
+      - is-fork-pull-request
+    if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
+    container:
+      image: ghcr.io/metamask/metamask-extension-e2e-image:v24.11.0
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    env:
+      DISPLAY: :99
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      PR_NUMBER: ${{ github.event.issue.number }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
+          fetch-depth: 0
+
+      - name: Checkout pull request
+        run: gh pr checkout "${PR_NUMBER}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+
+      - name: Determine branch name
+        id: pr
+        run: echo "BRANCH=$(gh pr view "${PR_NUMBER}" --json headRefName --jq '.headRefName')" >> "$GITHUB_OUTPUT"
+        env:
+          GITHUB_TOKEN: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+          use-yarn-hydrate: true
+
+      - name: Find latest successful Main workflow run
+        id: main-run
+        run: |
+          if [ -z "${BRANCH}" ]; then
+            echo "Branch name not found for PR ${PR_NUMBER}"
+            exit 1
+          fi
+          RUN_ID=$(gh run list --workflow "Main" --branch "${BRANCH}" --json databaseId,status,conclusion --limit 20 --jq 'map(select(.status=="completed" and .conclusion=="success")) | first | .databaseId')
+          if [ -z "$RUN_ID" ]; then
+            echo "No successful 'Main' workflow run found for branch ${BRANCH}"
+            exit 1
+          fi
+          echo "RUN_ID=$RUN_ID" >> "$GITHUB_OUTPUT"
+        env:
+          BRANCH: ${{ steps.pr.outputs.BRANCH }}
+          GITHUB_TOKEN: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+
+      - name: Download dist artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-dist-browserify
+          path: build-dist-browserify
+          run-id: ${{ steps.main-run.outputs.RUN_ID }}
+          github-token: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
+
+      - name: Prepare dist assets
+        run: |
+          rm -rf dist builds
+          cp -R build-dist-browserify/dist ./dist
+          if [ -d build-dist-browserify/builds ]; then
+            cp -R build-dist-browserify/builds ./builds
+          fi
+
+      - name: Start Xvfb
+        run: Xvfb -ac :99 -screen 0 1280x1024x16 &
+
+      - name: Run wallet fixture export
+        run: yarn test:e2e:single test/e2e/dist/wallet-fixture-export.spec.ts --browser chrome --retries 1
+
+      - name: Run prettier
+        run: yarn lint:prettier:fix
+
+      - name: Stage onboarding fixture
+        run: git add test/e2e/fixtures/onboarding-fixture.json
+
+      - name: Check for onboarding fixture changes
+        id: fixture-changes
+        run: |
+          if git diff --cached --quiet -- test/e2e/fixtures/onboarding-fixture.json; then
+            echo "HAS_CHANGES=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "HAS_CHANGES=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Configure git author
+        if: steps.fixture-changes.outputs.HAS_CHANGES == 'true'
+        run: |
+          git config --global user.name 'MetaMask Bot'
+          git config --global user.email 'metamaskbot@users.noreply.github.com'
+
+      - name: Commit onboarding fixture
+        if: steps.fixture-changes.outputs.HAS_CHANGES == 'true'
+        run: |
+          git commit -m "Update onboarding fixture"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
+
+      - name: Comment that onboarding fixture was updated
+        if: steps.fixture-changes.outputs.HAS_CHANGES == 'true'
+        run: gh pr comment "${PR_NUMBER}" --body 'Onboarding fixture updated.'
+        env:
+          GITHUB_TOKEN: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+
+      - name: Comment that no fixture changes were detected
+        if: steps.fixture-changes.outputs.HAS_CHANGES != 'true'
+        run: gh pr comment "${PR_NUMBER}" --body 'No onboarding fixture changes detected.'
+        env:
+          GITHUB_TOKEN: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+
+  failure-comment:
+    name: Comment about the onboarding fixture update failure
+    if: ${{ !cancelled() && needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs:
+      - is-fork-pull-request
+      - update-onboarding-fixture
+    steps:
+      - name: Post comment if the update failed
+        run: |
+          if [[ "${{ needs.update-onboarding-fixture.result }}" != "success" ]]; then
+            gh pr comment "${PR_NUMBER}" --body "Onboarding fixture update failed. You can [review the logs or retry the fixture update here](${ACTION_RUN_URL})"
+          fi
+        env:
+          ACTION_RUN_URL: '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+          GITHUB_TOKEN: ${{ secrets.FIXTURE_UPDATE_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.issue.number }}
