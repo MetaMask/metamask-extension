@@ -810,12 +810,26 @@ const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;
  */
 async function isSidePanelEnabled(driver) {
   try {
-    const manifest = await driver.executeScript(
-      'try { return chrome?.runtime?.getManifest?.(); } catch (e) { return null; }',
-    );
-    return manifest?.permissions?.includes('sidePanel') || false;
+    const manifest = await driver.executeScript(`
+      try {
+        if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getManifest) {
+          return chrome.runtime.getManifest();
+        }
+        return null;
+      } catch (e) {
+        return null;
+      }
+    `);
+
+    const hasSidepanel = Boolean(manifest?.permissions?.includes('sidePanel'));
+
+    // Log for debugging
+    console.log(`Sidepanel check: ${hasSidepanel ? 'enabled' : 'disabled'}`);
+
+    return hasSidepanel;
   } catch (error) {
     // Chrome API not accessible (e.g., LavaMoat scuttling mode, Firefox)
+    console.log('Sidepanel check failed:', error.message);
     return false;
   }
 }
