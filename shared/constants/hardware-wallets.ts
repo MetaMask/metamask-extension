@@ -147,6 +147,14 @@ export const DEVICE_KEYRING_MAP = {
   [HardwareDeviceNames.qr]: KeyringTypes.qr,
 };
 
+export const KEYRING_DEVICE_PROPERTY_MAP = {
+  [KeyringTypes.ledger]: 'Ledger',
+  [KeyringTypes.trezor]: 'Trezor',
+  [KeyringTypes.oneKey]: 'OneKey',
+  [KeyringTypes.lattice]: 'Lattice',
+  [KeyringTypes.qr]: 'QR Hardware',
+}
+
 export const U2F_ERROR = 'U2F';
 
 export const LEDGER_ERRORS_CODES = {

@@ -63,9 +63,6 @@ export async function getSnapAndHardwareInfoForMetrics(
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         account_hardware_type: hardwareType,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: hardwareType,
       };
     }
   }
