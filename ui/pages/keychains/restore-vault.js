@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { compose } from 'redux';
 import {
   createNewVaultAndRestore,
   resetOAuthLoginState,
@@ -38,6 +39,9 @@ import { getIsSocialLoginFlow } from '../../selectors';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import SrpInputForm from '../srp-input-form';
 import CreatePasswordForm from '../create-password-form';
+import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
+
+let isImportingVault = false;
 
 class RestoreVaultPage extends Component {
   static contextTypes = {
@@ -51,6 +55,7 @@ class RestoreVaultPage extends Component {
     setFirstTimeFlowType: PropTypes.func,
     resetOAuthLoginState: PropTypes.func,
     history: PropTypes.object,
+    navigate: PropTypes.func,
     isSocialLoginFlow: PropTypes.bool,
   };
 
@@ -59,7 +64,17 @@ class RestoreVaultPage extends Component {
     secretRecoveryPhrase: '',
     openSrpDetailsModal: false,
     showPasswordInput: false,
+    loading: false,
   };
+
+  componentDidMount() {
+    if (isImportingVault) {
+      this.setState({
+        loading: true,
+        showPasswordInput: true,
+      });
+    }
+  }
 
   handleImport = async (password, termsChecked) => {
     if (!termsChecked) {
@@ -71,30 +86,46 @@ class RestoreVaultPage extends Component {
       setFirstTimeFlowType: propsSetFirstTimeFlowType,
       resetOAuthLoginState: propsResetOAuthLoginState,
       leaveImportSeedScreenState,
-      history,
+      navigate,
       isSocialLoginFlow: propsIsSocialLoginFlow,
     } = this.props;
 
-    leaveImportSeedScreenState();
+    isImportingVault = true;
 
-    if (propsIsSocialLoginFlow) {
-      // reset oauth and onboarding state
-      await propsResetOAuthLoginState();
-    }
-
-    // update the first time flow type to restore
-    await propsSetFirstTimeFlowType(FirstTimeFlowType.restore);
-
-    // import the seed phrase and create a new vault
-    await propsCreateNewVaultAndRestore(
-      password,
-      this.state.secretRecoveryPhrase,
-    );
-    this.context.trackEvent({
-      category: MetaMetricsEventCategory.Retention,
-      event: MetaMetricsEventName.WalletRestored,
+    await new Promise((resolve) => {
+      this.setState({ loading: true }, resolve);
     });
-    history.push(DEFAULT_ROUTE);
+
+    try {
+      leaveImportSeedScreenState();
+
+      if (propsIsSocialLoginFlow) {
+        // reset oauth and onboarding state
+        await propsResetOAuthLoginState();
+      }
+
+      // update the first time flow type to restore
+      await propsSetFirstTimeFlowType(FirstTimeFlowType.restore);
+
+      // import the seed phrase and create a new vault
+      await propsCreateNewVaultAndRestore(
+        password,
+        this.state.secretRecoveryPhrase,
+      );
+
+      this.context.trackEvent({
+        category: MetaMetricsEventCategory.Retention,
+        event: MetaMetricsEventName.WalletRestored,
+      });
+      isImportingVault = false;
+
+      navigate(DEFAULT_ROUTE);
+    } catch (error) {
+      isImportingVault = false;
+
+      this.setState({ loading: false, showPasswordInput: false });
+      console.error('[RestoreVault] Error during import:', error);
+    }
   };
 
   handleContinue = () => {
@@ -102,11 +133,17 @@ class RestoreVaultPage extends Component {
   };
 
   handleBack = () => {
+    if (this.state.loading) {
+      return;
+    }
     this.setState((prevState) => ({ ...prevState, showPasswordInput: false }));
   };
 
   render() {
     const { t } = this.context;
+
+    const shouldShowPasswordForm =
+      this.state.showPasswordInput || this.state.loading;
 
     return (
       <Box
@@ -120,11 +157,12 @@ class RestoreVaultPage extends Component {
         borderRadius={BorderRadius.LG}
         borderColor={BorderColor.borderMuted}
       >
-        {this.state.showPasswordInput ? (
+        {shouldShowPasswordForm ? (
           <CreatePasswordForm
             isSocialLoginFlow={this.props.isSocialLoginFlow}
             onSubmit={this.handleImport}
             onBack={this.handleBack}
+            loading={this.state.loading}
           />
         ) : (
           <>
@@ -211,20 +249,23 @@ class RestoreVaultPage extends Component {
   }
 }
 
-export default connect(
-  (state) => {
-    return {
-      isLoading: state.appState.isLoading,
-      isSocialLoginFlow: getIsSocialLoginFlow(state),
-    };
-  },
-  (dispatch) => ({
-    leaveImportSeedScreenState: () => {
-      dispatch(unMarkPasswordForgotten());
+export default compose(
+  withRouterHooks,
+  connect(
+    (state) => {
+      return {
+        isLoading: state.appState.isLoading,
+        isSocialLoginFlow: getIsSocialLoginFlow(state),
+      };
     },
-    createNewVaultAndRestore: (pw, seed) =>
-      dispatch(createNewVaultAndRestore(pw, seed)),
-    setFirstTimeFlowType: (type) => dispatch(setFirstTimeFlowType(type)),
-    resetOAuthLoginState: () => dispatch(resetOAuthLoginState()),
-  }),
+    (dispatch) => ({
+      leaveImportSeedScreenState: () => {
+        dispatch(unMarkPasswordForgotten());
+      },
+      createNewVaultAndRestore: (pw, seed) =>
+        dispatch(createNewVaultAndRestore(pw, seed)),
+      setFirstTimeFlowType: (type) => dispatch(setFirstTimeFlowType(type)),
+      resetOAuthLoginState: () => dispatch(resetOAuthLoginState()),
+    }),
+  ),
 )(RestoreVaultPage);

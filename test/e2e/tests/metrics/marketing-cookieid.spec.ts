@@ -8,7 +8,7 @@ import {
   withFixtures,
 } from '../../helpers';
 import { TestSuiteArguments } from '../confirmations/transactions/shared';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { MOCK_META_METRICS_ID } from '../../constants';
 import HomePage from '../../page-objects/pages/home/homepage';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';

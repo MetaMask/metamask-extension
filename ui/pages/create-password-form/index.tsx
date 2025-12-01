@@ -35,12 +35,14 @@ type CreatePasswordFormProps = {
   isSocialLoginFlow: boolean;
   onSubmit: (password: string, termsChecked: boolean) => void;
   onBack: () => void;
+  loading?: boolean;
 };
 
 const CreatePasswordForm = ({
   isSocialLoginFlow,
   onSubmit,
   onBack,
+  loading = false,
 }: CreatePasswordFormProps) => {
   const t = useI18nContext();
   const [password, setPassword] = useState('');
@@ -111,6 +113,7 @@ const CreatePasswordForm = ({
             type="button"
             onClick={onBack}
             ariaLabel={t('back')}
+            disabled={loading}
           />
         </Box>
         <Box
@@ -184,7 +187,10 @@ const CreatePasswordForm = ({
           width={BlockSize.Full}
           size={ButtonSize.Lg}
           className="create-password__form--submit-button"
-          disabled={!password || (!isSocialLoginFlow && !termsChecked)}
+          disabled={
+            !password || (!isSocialLoginFlow && !termsChecked) || loading
+          }
+          loading={loading}
         >
           {t('createPasswordCreate')}
         </Button>

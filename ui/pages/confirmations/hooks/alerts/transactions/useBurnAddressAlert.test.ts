@@ -26,8 +26,7 @@ const { useI18nContext } = jest.requireMock(
 
 const ACCOUNT_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' as Hex;
 const REGULAR_ADDRESS = '0x1234567890123456789012345678901234567890' as Hex;
-const BURN_ADDRESS_1 = LOWER_CASED_BURN_ADDRESSES[0] as Hex;
-const BURN_ADDRESS_2 = LOWER_CASED_BURN_ADDRESSES[1] as Hex;
+const BURN_ADDRESS = LOWER_CASED_BURN_ADDRESSES[0] as Hex;
 
 const mockT = (key: string) => key;
 
@@ -145,30 +144,7 @@ describe('useBurnAddressAlert', () => {
         currentConfirmation: {
           txParams: {
             from: ACCOUNT_ADDRESS,
-            to: BURN_ADDRESS_1,
-          },
-          type: TransactionType.simpleSend,
-        },
-      });
-
-      expect(alerts).toEqual([
-        {
-          key: AlertActionKey.InteractingWith,
-          field: RowAlertKey.InteractingWith,
-          message: 'alertMessageBurnAddress',
-          reason: 'alertActionBurnAddress',
-          severity: Severity.Danger,
-          isBlocking: true,
-        },
-      ]);
-    });
-
-    it('returns alert for second burn address (0x...dead)', () => {
-      const alerts = runHook({
-        currentConfirmation: {
-          txParams: {
-            from: ACCOUNT_ADDRESS,
-            to: BURN_ADDRESS_2,
+            to: BURN_ADDRESS,
           },
           type: TransactionType.simpleSend,
         },
@@ -191,7 +167,7 @@ describe('useBurnAddressAlert', () => {
         currentConfirmation: {
           txParams: {
             from: ACCOUNT_ADDRESS,
-            to: BURN_ADDRESS_1.toUpperCase() as Hex,
+            to: BURN_ADDRESS.toUpperCase() as Hex,
           },
           type: TransactionType.simpleSend,
         },
@@ -240,7 +216,7 @@ describe('useBurnAddressAlert', () => {
 
   describe('when nested transaction recipient is a burn address', () => {
     it('returns alert for burn address in single nested transaction', () => {
-      const nestedTransactions = [createMockNestedTransaction(BURN_ADDRESS_1)];
+      const nestedTransactions = [createMockNestedTransaction(BURN_ADDRESS)];
 
       const alerts = runHook({
         currentConfirmation: {
@@ -265,33 +241,8 @@ describe('useBurnAddressAlert', () => {
     it('returns alert for burn address in multiple nested transactions', () => {
       const nestedTransactions = [
         createMockNestedTransaction(REGULAR_ADDRESS),
-        createMockNestedTransaction(BURN_ADDRESS_1),
+        createMockNestedTransaction(BURN_ADDRESS),
         createMockNestedTransaction(REGULAR_ADDRESS),
-      ];
-
-      const alerts = runHook({
-        currentConfirmation: {
-          txParams: { from: ACCOUNT_ADDRESS },
-          chainId: '0x5',
-        },
-        nestedTransactions,
-      });
-
-      expect(alerts).toEqual([
-        {
-          key: AlertActionKey.InteractingWith,
-          field: RowAlertKey.InteractingWith,
-          message: 'alertMessageBurnAddress',
-          reason: 'alertActionBurnAddress',
-          severity: Severity.Danger,
-          isBlocking: true,
-        },
-      ]);
-    });
-
-    it('returns alert when burn address in nested transaction (uppercase)', () => {
-      const nestedTransactions = [
-        createMockNestedTransaction(BURN_ADDRESS_2.toUpperCase() as Hex),
       ];
 
       const alerts = runHook({
@@ -334,42 +285,13 @@ describe('useBurnAddressAlert', () => {
 
   describe('when both transactionMeta and nested transaction have burn addresses', () => {
     it('returns single alert (not duplicated)', () => {
-      const nestedTransactions = [createMockNestedTransaction(BURN_ADDRESS_2)];
+      const nestedTransactions = [createMockNestedTransaction(BURN_ADDRESS)];
 
       const alerts = runHook({
         currentConfirmation: {
           txParams: {
             from: ACCOUNT_ADDRESS,
-            to: BURN_ADDRESS_1,
-          },
-          type: TransactionType.simpleSend,
-        },
-        nestedTransactions,
-      });
-
-      expect(alerts).toEqual([
-        {
-          key: AlertActionKey.InteractingWith,
-          field: RowAlertKey.InteractingWith,
-          message: 'alertMessageBurnAddress',
-          reason: 'alertActionBurnAddress',
-          severity: Severity.Danger,
-          isBlocking: true,
-        },
-      ]);
-    });
-
-    it('returns single alert when multiple nested transactions have burn addresses', () => {
-      const nestedTransactions = [
-        createMockNestedTransaction(BURN_ADDRESS_1),
-        createMockNestedTransaction(BURN_ADDRESS_2),
-      ];
-
-      const alerts = runHook({
-        currentConfirmation: {
-          txParams: {
-            from: ACCOUNT_ADDRESS,
-            to: BURN_ADDRESS_1,
+            to: BURN_ADDRESS,
           },
           type: TransactionType.simpleSend,
         },

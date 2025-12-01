@@ -62,11 +62,13 @@ describe('SnapControllerInit', () => {
         rejectInvalidPlatformVersion: false,
         requireAllowlist: false,
         forcePreinstalledSnaps: false,
+        autoUpdatePreinstalledSnaps: false,
       },
       getFeatureFlags: expect.any(Function),
       getMnemonicSeed: expect.any(Function),
       preinstalledSnaps: expect.any(Array),
       trackEvent: expect.any(Function),
+      ensureOnboardingComplete: expect.any(Function),
     });
   });
 

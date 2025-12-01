@@ -48,7 +48,8 @@ export default function ResetPasswordModal({
 
   const dispatch = useDispatch();
 
-  const handleResetWallet = () => {
+  const handleResetWallet = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     setResetWallet((prev) => !prev);
   };
 
@@ -130,6 +131,7 @@ export default function ResetPasswordModal({
           size={ButtonSize.Lg}
           block
           color={TextColor.primaryDefault}
+          role="button"
         >
           {t('forgotPasswordModalButtonLink')}
         </Button>
@@ -162,6 +164,7 @@ export default function ResetPasswordModal({
           size={ButtonSize.Lg}
           block
           color={TextColor.primaryDefault}
+          role="button"
         >
           {t('forgotPasswordModalButtonLink')}
         </Button>

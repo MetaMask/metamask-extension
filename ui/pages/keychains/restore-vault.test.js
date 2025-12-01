@@ -13,6 +13,12 @@ const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
 
 describe('Restore vault Component', () => {
+  it('clicks imports seed button', () => {
+    const props = {
+      navigate: jest.fn(),
+    };
+
+describe('Restore vault Component', () => {
   const mockStore = configureMockStore([thunk]);
 
   const props = {

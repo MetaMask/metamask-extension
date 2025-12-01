@@ -1,13 +1,27 @@
 import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import { useUserSubscriptions } from '../../../../hooks/subscription/useSubscription';
-import { getIsShieldSubscriptionActive } from '../../../../../shared/lib/shield';
+import {
+  getIsShieldSubscriptionActive,
+  getIsShieldSubscriptionPaused,
+} from '../../../../../shared/lib/shield';
+import { getUseExternalServices } from '../../../../selectors';
 
 export const useEnableShieldCoverageChecks = () => {
   const { subscriptions } = useUserSubscriptions();
+  // shield coverage use security alerts, phish detect and transaction simulations, which is only available when basic functionality is enabled
+  const isBasicFunctionalityEnabled = useSelector(getUseExternalServices);
 
-  const hasUserSubscribedToShield = useMemo(() => {
+  const isShieldSubscriptionActive = useMemo(() => {
     return getIsShieldSubscriptionActive(subscriptions);
   }, [subscriptions]);
 
-  return hasUserSubscribedToShield;
+  const isShieldSubscriptionPaused = useMemo(() => {
+    return getIsShieldSubscriptionPaused(subscriptions);
+  }, [subscriptions]);
+
+  return {
+    isEnabled: isBasicFunctionalityEnabled && isShieldSubscriptionActive,
+    isPaused: isShieldSubscriptionPaused,
+  };
 };

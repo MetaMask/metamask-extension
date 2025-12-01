@@ -3,8 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Route, Routes } from 'react-router-dom-v5-compat';
 import {
   UnifiedSwapBridgeEventName,
-  // TODO: update this with all non-EVM chains when bitcoin added.
-  isSolanaChainId,
+  isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import { I18nContext } from '../../contexts/i18n';
 import { clearSwapsState } from '../../ducks/swaps/swaps';
@@ -79,10 +78,10 @@ const CrossChainSwap = ({ location }: CrossChainSwapProps) => {
 
   // Get chain information to determine if we need gas estimates
   const fromChain = useSelector(getFromChain);
-  // Only fetch gas estimates if the source chain is EVM (not Solana)
+
+  // Only fetch gas estimates if the source chain is EVM (not Solana, Bitcoin, or Tron)
   const shouldFetchGasEstimates =
-    // TODO: update this with all non-EVM chains when bitcoin added.
-    fromChain?.chainId && !isSolanaChainId(fromChain.chainId);
+    fromChain?.chainId && !isNonEvmChainId(fromChain.chainId);
 
   useEffect(() => {
     dispatch(
@@ -146,6 +145,7 @@ const CrossChainSwap = ({ location }: CrossChainSwapProps) => {
             iconName={IconName.Setting}
             size={ButtonIconSize.Sm}
             ariaLabel={t('settings')}
+            data-testid="bridge__header-settings-button"
             onClick={() => {
               setIsSettingsModalOpen(true);
             }}

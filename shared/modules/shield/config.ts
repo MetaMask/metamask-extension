@@ -84,14 +84,26 @@ export const ShieldConfigMap: Record<BuildType, ShieldEnvConfig> = {
 };
 
 /**
- * Check if the build is a Development or Test build.
+ * Check if the environment is a Development or Test environment.
  *
- * @returns true if the build is a Development or Test build, false otherwise
+ * @returns true if the environment is a Development or Test environment, false otherwise
  */
-export function isDevOrTestBuild() {
+export function isDevOrTestEnvironment() {
   return (
     process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.DEVELOPMENT ||
     process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.TESTING
+  );
+}
+
+/**
+ * Check if the build type is a UAT or DEV build.
+ *
+ * @returns true if the build type is a UAT or DEV build, false otherwise
+ */
+export function isDevOrUatBuild() {
+  return (
+    process.env.METAMASK_BUILD_TYPE === BUILD_TYPE.uat ||
+    process.env.METAMASK_BUILD_TYPE === BUILD_TYPE.dev
   );
 }
 
@@ -104,7 +116,7 @@ export function loadShieldConfig(): ShieldEnvConfig {
   const buildType = process.env.METAMASK_BUILD_TYPE;
 
   let buildTypeEnv: BuildType = BUILD_TYPE.main;
-  if (isDevOrTestBuild()) {
+  if (isDevOrTestEnvironment()) {
     buildTypeEnv = BUILD_TYPE.dev;
   } else if (buildType === 'experimental') {
     buildTypeEnv = BUILD_TYPE.experimental;

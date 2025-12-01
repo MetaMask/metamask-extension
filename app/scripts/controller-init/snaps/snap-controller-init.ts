@@ -1,5 +1,5 @@
 import { SnapController } from '@metamask/snaps-controllers';
-import { hasProperty, Json } from '@metamask/utils';
+import { createDeferredPromise, hasProperty, Json } from '@metamask/utils';
 import { ControllerInitFunction } from '../types';
 import {
   EndowmentPermissions,
@@ -13,6 +13,7 @@ import {
   SnapControllerMessenger,
 } from '../messengers/snaps';
 import { getBooleanFlag } from '../../lib/util';
+import { OnboardingControllerState } from '../../controllers/onboarding';
 
 // Copied from `@metamask/snaps-controllers`, since it is not exported.
 type TrackingEventPayload = {
@@ -53,6 +54,9 @@ export const SnapControllerInit: ControllerInitFunction<
   const rejectInvalidPlatformVersion = getBooleanFlag(
     process.env.REJECT_INVALID_SNAPS_PLATFORM_VERSION,
   );
+  const autoUpdatePreinstalledSnaps = getBooleanFlag(
+    process.env.AUTO_UPDATE_PREINSTALLED_SNAPS,
+  );
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   const forcePreinstalledSnaps = getBooleanFlag(
@@ -90,6 +94,34 @@ export const SnapControllerInit: ControllerInitFunction<
     };
   }
 
+  /**
+   * Async function that resolves when onboarding has been completed.
+   *
+   * @returns A promise that resolves when onboarding is complete.
+   */
+  async function ensureOnboardingComplete() {
+    const { completedOnboarding } = initMessenger.call(
+      'OnboardingController:getState',
+    );
+
+    if (completedOnboarding) {
+      return;
+    }
+
+    const { promise, resolve } = createDeferredPromise();
+
+    const listener = (state: OnboardingControllerState) => {
+      if (state.completedOnboarding) {
+        resolve();
+        initMessenger.unsubscribe('OnboardingController:stateChange', listener);
+      }
+    };
+
+    initMessenger.subscribe('OnboardingController:stateChange', listener);
+
+    await promise;
+  }
+
   const controller = new SnapController({
     environmentEndowmentPermissions: Object.values(EndowmentPermissions),
     excludedPermissions: {
@@ -112,6 +144,7 @@ export const SnapControllerInit: ControllerInitFunction<
       allowLocalSnaps,
       requireAllowlist,
       rejectInvalidPlatformVersion,
+      autoUpdatePreinstalledSnaps,
       ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       forcePreinstalledSnaps,
       ///: END:ONLY_INCLUDE_IF
@@ -126,6 +159,8 @@ export const SnapControllerInit: ControllerInitFunction<
 
     preinstalledSnaps,
     getFeatureFlags,
+
+    ensureOnboardingComplete,
 
     // `TrackEventHook` from `snaps-controllers` uses `Json | undefined` for
     // properties, but `MetaMetricsEventPayload` uses `Json`, even though
