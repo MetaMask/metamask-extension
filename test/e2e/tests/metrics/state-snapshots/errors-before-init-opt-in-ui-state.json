@@ -293,6 +293,7 @@
       "transactionBatches": "object",
       "transactions": "object"
     },
+    "TransactionPayController": {},
     "UserOperationController": { "userOperations": "object" },
     "UserStorageController": {
       "isAccountSyncingEnabled": true,
