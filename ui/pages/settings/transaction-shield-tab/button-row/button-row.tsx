@@ -16,6 +16,7 @@ import {
 type ButtonRowProps = {
   title: string;
   description?: string;
+  startAccessory?: React.ReactNode;
   rightIconProps?: IconProps;
   onClick?: () => void;
   'data-testid'?: string;
@@ -25,6 +26,7 @@ type ButtonRowProps = {
 const ButtonRow = ({
   title,
   description,
+  startAccessory,
   rightIconProps,
   onClick,
   'data-testid': dataTestId,
@@ -35,11 +37,15 @@ const ButtonRow = ({
   return (
     <Box
       asChild
-      className={twMerge('button-row flex w-full items-center px-4', className)}
+      className={twMerge(
+        'button-row flex w-full items-center px-4 gap-4',
+        className,
+      )}
       data-testid={dataTestId}
       onClick={onClick}
     >
       <Component className="button-row__button">
+        {startAccessory && <Box>{startAccessory}</Box>}
         <Box className="text-left">
           <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
             {title}
