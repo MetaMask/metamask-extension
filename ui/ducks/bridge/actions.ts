@@ -7,9 +7,11 @@ import {
   getNativeAssetForChainId,
   type RequiredEventContextFromClient,
   UnifiedSwapBridgeEventName,
+  isCrossChain,
+  formatChainIdToHex,
 } from '@metamask/bridge-controller';
 import { type InternalAccount } from '@metamask/keyring-internal-api';
-import { type Hex, type CaipChainId } from '@metamask/utils';
+import { selectDefaultNetworkClientIdsByChainId } from '../../../shared/modules/selectors/networks';
 import { trace, TraceName } from '../../../shared/lib/trace';
 import {
   forceUpdateMetamaskState,
@@ -24,8 +26,9 @@ import {
   setEVMSrcTokenBalance as setEVMSrcTokenBalance_,
   setEVMSrcNativeBalance,
 } from './bridge';
-import type { TokenPayload } from './types';
+import type { BridgeNetwork, TokenPayload } from './types';
 import { isNonEvmChain } from './utils';
+import { BridgeAppState, getFromChain } from './selectors';
 
 const {
   setToChainId,
@@ -141,25 +144,37 @@ export const setFromChain = ({
   selectedAccount,
   token = null,
 }: {
-  networkConfig?: { chainId: Hex | CaipChainId; id?: string };
+  networkConfig?: BridgeNetwork;
   selectedAccount: InternalAccount | null;
   token?: TokenPayload['payload'];
 }) => {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => BridgeAppState,
+  ) => {
     if (!networkConfig) {
       return;
     }
+
+    const currentChainId = getFromChain(getState())?.chainId;
+    const shouldSetNetwork = currentChainId
+      ? isCrossChain(currentChainId, networkConfig.chainId)
+      : true;
 
     // Check for ALL non-EVM chains
     const isNonEvm = isNonEvmChain(networkConfig.chainId);
 
     // Set the src network
-    if (isNonEvm) {
-      dispatch(setActiveNetworkWithError(networkConfig.chainId));
-    } else {
-      const networkId = networkConfig.id;
-      if (networkId) {
-        dispatch(setActiveNetworkWithError(networkId));
+    if (shouldSetNetwork) {
+      if (isNonEvm) {
+        dispatch(setActiveNetworkWithError(networkConfig.chainId));
+      } else {
+        const hexChainId = formatChainIdToHex(networkConfig.chainId);
+        const networkId =
+          selectDefaultNetworkClientIdsByChainId(getState())[hexChainId];
+        if (networkId) {
+          dispatch(setActiveNetworkWithError(networkId));
+        }
       }
     }
 
