@@ -11,6 +11,7 @@ import {
 import { PPOMController } from '@metamask/ppom-validator';
 import { SmartTransactionsController } from '@metamask/smart-transactions-controller';
 import { TransactionController } from '@metamask/transaction-controller';
+import { TransactionPayController } from '@metamask/transaction-pay-controller';
 import { AccountsController } from '@metamask/accounts-controller';
 import {
   AccountTrackerController,
@@ -186,6 +187,7 @@ export type Controller =
   | TokenListController
   | TokensController
   | TransactionController
+  | TransactionPayController
   | InstitutionalSnapController
   | UserOperationController
   | UserStorageController
@@ -267,6 +269,7 @@ export type ControllerFlatState = AccountOrderController['state'] &
   TokenListController['state'] &
   TokensController['state'] &
   TransactionController['state'] &
+  TransactionPayController['state'] &
   UserOperationController['state'] &
   UserStorageController['state'] &
   TokenRatesController['state'] &

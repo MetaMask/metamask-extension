@@ -989,6 +989,7 @@
       "install_date_ext": "string"
     },
     "transactionBatches": [],
+    "transactionData": {},
     "transactions": [],
     "trezorModel": "null",
     "trialedProducts": [],
