@@ -4,7 +4,7 @@ import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 import { userEvent } from '@testing-library/user-event';
 import { fireEvent, waitFor } from '@testing-library/react';
-import { renderWithProvider } from '../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import * as actions from '../../store/actions';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import RestoreVaultPage from './restore-vault';
@@ -13,19 +13,18 @@ const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
 
 describe('Restore vault Component', () => {
-  it('clicks imports seed button', () => {
-    const props = {
-      navigate: jest.fn(),
-    };
-
-describe('Restore vault Component', () => {
   const mockStore = configureMockStore([thunk]);
 
   const props = {
-    history: {
-      push: sinon.spy(),
-    },
+    navigate: jest.fn(),
+    location: { pathname: '/restore-vault' },
+    params: {},
   };
+
+  beforeEach(() => {
+    // Reset mocks before each test
+    props.navigate.mockClear();
+  });
 
   it('renders match snapshot', () => {
     const { container } = renderWithProvider(
@@ -164,7 +163,7 @@ describe('Restore vault Component', () => {
     actions.createNewVaultAndRestore.restore();
     actions.setFirstTimeFlowType.restore();
 
-    // Verify navigation to default route
-    expect(props.history.push.calledWith(DEFAULT_ROUTE)).toBe(true);
+    // Verify navigation to default route - component uses navigate, not history.push
+    expect(props.navigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 });

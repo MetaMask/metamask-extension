@@ -54,7 +54,6 @@ class RestoreVaultPage extends Component {
     leaveImportSeedScreenState: PropTypes.func,
     setFirstTimeFlowType: PropTypes.func,
     resetOAuthLoginState: PropTypes.func,
-    history: PropTypes.object,
     navigate: PropTypes.func,
     isSocialLoginFlow: PropTypes.bool,
   };
@@ -176,7 +175,7 @@ class RestoreVaultPage extends Component {
                   onClick={(e) => {
                     e.preventDefault();
                     this.props.leaveImportSeedScreenState();
-                    this.props.history.push(DEFAULT_ROUTE);
+                    this.props.navigate(DEFAULT_ROUTE);
                   }}
                   ariaLabel={t('back')}
                 />
