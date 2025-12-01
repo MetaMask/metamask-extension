@@ -23,6 +23,7 @@ import {
   SOLANA_WALLET_SNAP_ID,
 } from '../../shared/lib/accounts';
 import * as selectors from './selectors';
+import { KnownCaipNamespace } from '@metamask/utils';
 
 jest.mock('../../shared/modules/selectors/networks', () => ({
   ...jest.requireActual('../../shared/modules/selectors/networks'),
@@ -3035,5 +3036,92 @@ describe('getGasFeesSponsoredNetworkEnabled', () => {
     expect(result).toStrictEqual(gasFeesSponsoredNetwork);
     expect(result['0x1']).toBe(true);
     expect(result['0x2']).toBe(false);
+  });
+});
+
+describe('getHasAnyEvmNetworkEnabled', () => {
+  it('returns true when at least one EVM network is enabled', () => {
+    const state = {
+      metamask: {
+        enabledNetworkMap: {
+          [KnownCaipNamespace.Eip155]: {
+            '0x1': true,
+            '0x5': false,
+          },
+        },
+      },
+    };
+    expect(selectors.getHasAnyEvmNetworkEnabled(state)).toBe(true);
+  });
+
+  it('returns false when no EVM networks are enabled', () => {
+    const state = {
+      metamask: {
+        enabledNetworkMap: {
+          [KnownCaipNamespace.Eip155]: {
+            '0x1': false,
+            '0x5': false,
+          },
+        },
+      },
+    };
+    expect(selectors.getHasAnyEvmNetworkEnabled(state)).toBe(false);
+  });
+
+  it('returns false when EVM namespace is empty', () => {
+    const state = {
+      metamask: {
+        enabledNetworkMap: {
+          [KnownCaipNamespace.Eip155]: {},
+        },
+      },
+    };
+    expect(selectors.getHasAnyEvmNetworkEnabled(state)).toBe(false);
+  });
+
+  it('returns false when EVM namespace is not present', () => {
+    const state = {
+      metamask: {
+        enabledNetworkMap: {
+          [KnownCaipNamespace.Solana]: {
+            'solana:mainnet': true,
+          },
+        },
+      },
+    };
+    expect(selectors.getHasAnyEvmNetworkEnabled(state)).toBe(false);
+  });
+
+  it('returns true when multiple EVM networks are enabled', () => {
+    const state = {
+      metamask: {
+        enabledNetworkMap: {
+          [KnownCaipNamespace.Eip155]: {
+            '0x1': true,
+            '0x89': true,
+            '0xa': true,
+          },
+        },
+      },
+    };
+    expect(selectors.getHasAnyEvmNetworkEnabled(state)).toBe(true);
+  });
+
+  it('returns true when mixed enabled/disabled EVM networks with at least one enabled', () => {
+    const state = {
+      metamask: {
+        enabledNetworkMap: {
+          [KnownCaipNamespace.Eip155]: {
+            '0x1': false,
+            '0x89': true,
+            '0xa': false,
+          },
+          [KnownCaipNamespace.Solana]: {
+            'solana:mainnet': true,
+          },
+        },
+      },
+    };
+    expect(selectors.getHasAnyEvmNetworkEnabled(state)).toBe(true);
   });
 });
