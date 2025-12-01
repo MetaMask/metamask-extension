@@ -16,9 +16,9 @@ import TermsOfUseUpdateModal from '../pages/dialog/terms-of-use-update-modal';
 
 /**
  * Helper function to handle post-onboarding navigation for sidepanel builds.
- * When sidepanel is enabled, clicking "Done" doesn't navigate the current window,
- * so we need to manually navigate to home.html.
- * This function detects sidepanel by checking the manifest at runtime.
+ * When sidepanel is enabled, clicking "Done" opens the home page in the sidepanel,
+ * but the main window remains on the onboarding completion page.
+ * This function navigates the current window to the actual home page.
  * Note: Sidepanel is only supported on Chrome-based browsers, not Firefox.
  *
  * @param driver - The WebDriver instance
@@ -31,19 +31,20 @@ export const handleSidepanelPostOnboarding = async (
     return;
   }
 
-  // Check if the built extension has sidepanel by checking for sidePanel permission in manifest
   const manifest = await driver.executeScript(
     'return chrome.runtime.getManifest();',
   );
   const hasSidePanelPermission = manifest?.permissions?.includes('sidePanel');
-
   if (hasSidePanelPermission) {
-    // Navigate directly to home page in current window
-    // With sidepanel enabled, this ensures we load home page in the test window
+    console.log(
+      'Sidepanel detected - navigating main window to home page for testing',
+    );
     await driver.driver.get(`${driver.extensionUrl}/home.html`);
-
-    // Wait for the home page to fully load
-    await driver.waitForSelector('[data-testid="account-menu-icon"]');
+    await driver.waitForMultipleSelectors([
+      '[data-testid="eth-overview-send"]', // send button
+      '[data-testid="account-overview__activity-tab"]', // activity tab
+      '[data-testid="account-overview__asset-tab"]', // tokens tab
+    ]);
   }
 };
 
