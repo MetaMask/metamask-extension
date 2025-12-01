@@ -1954,7 +1954,7 @@
     "message": "Nakuha ko"
   },
   "deprecatedNetworkDescription": {
-    "message": "Ang network na sinusubukan mong ikonekta ay hindi na suportado ng Metamask. $1"
+    "message": "Ang network na sinusubukan mong ikonekta ay hindi na suportado ng MetaMask. $1"
   },
   "description": {
     "message": "Deskripsyon"
@@ -2470,9 +2470,6 @@
   "exploreDefi": {
     "message": "Suriin ang DeFi"
   },
-  "exploreweb3": {
-    "message": "Tuklasin ang web3"
-  },
   "exportYourData": {
     "message": "I-export ang data mo"
   },
@@ -2600,9 +2597,6 @@
   },
   "function": {
     "message": "Function: $1"
-  },
-  "fundingMethod": {
-    "message": "Paraan ng pagpopondo"
   },
   "gas": {
     "message": "Gas"
@@ -3313,7 +3307,7 @@
     "description": "$1 is the key 'loginErrorGenericSupport'"
   },
   "loginErrorGenericSupport": {
-    "message": "Suporta sa Metamask"
+    "message": "Suporta sa MetaMask"
   },
   "loginErrorGenericTitle": {
     "message": "Mayroong nang mali"
@@ -4997,9 +4991,6 @@
   "recipientEditAriaLabel": {
     "message": "I-edit ang tatanggap"
   },
-  "recipientPlaceholder": {
-    "message": "I-type o i-paste ang tamang address"
-  },
   "recoveryPhraseReminderBackupStart": {
     "message": "I-back up na"
   },
@@ -6096,11 +6087,11 @@
     "message": "Walang insight na ipapakita"
   },
   "snapsPrivacyWarningFirstMessage": {
-    "message": "Kinikilala mo na anumang snap na i-install mo ay isang Serbisyong Third Party, maliban kung tinukoy, ayon sa depenisyon sa $1 ng Consensys. Ang iyong paggamit ng mga Serbisyong Third Party ay pinapamahalaan ng hiwalay na mga tuntunin at kundisyon na itinakda ng tagapagbigay ng Serbisyong Third Party. Iyong ina-access, pinagbabatayan, o ginagamit mo ang Serbisyong Third Party sa sarili mong panganib. Itinatanggi ng Consensys ang lahat ng responsibilidad at pananagutan para sa anumang pagkalugi sa account dahil sa iyong paggamit ng mga Serbisyo ng Third Party.",
+    "message": "Kinikilala mo na anumang snap na i-install mo ay isang Serbisyong third-party, maliban kung tinukoy, ayon sa depenisyon sa $1 ng Consensys. Ang iyong paggamit ng mga Serbisyong third-party ay pinapamahalaan ng hiwalay na mga tuntunin at kundisyon na itinakda ng tagapagbigay ng Serbisyong third-party. Iyong ina-access, pinagbabatayan, o ginagamit mo ang Serbisyong third-party sa sarili mong panganib. Itinatanggi ng Consensys ang lahat ng responsibilidad at pananagutan para sa anumang pagkalugi sa account dahil sa iyong paggamit ng mga Serbisyo ng third-party.",
     "description": "First part of a message in popup modal displayed when installing a snap for the first time. $1 is terms of use link."
   },
   "snapsPrivacyWarningSecondMessage": {
-    "message": "Ang anumang impormasyong ibinabahagi mo sa mga Serbisyo ng Third Party ay direktang kokolektahin ng mga Serbisyo ng Third Party na iyon alinsunod sa kanilang mga patakaran sa pagkapribado. Pakitingnan ang kanilang mga patakaran sa pagkapribado para sa higit pang impormasyon.",
+    "message": "Ang anumang impormasyong ibinabahagi mo sa mga Serbisyo ng third-party ay direktang kokolektahin ng mga Serbisyo ng third-party na iyon alinsunod sa kanilang mga patakaran sa pagkapribado. Pakitingnan ang kanilang mga patakaran sa pagkapribado para sa higit pang impormasyon.",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
   },
   "snapsPrivacyWarningThirdMessage": {
@@ -6677,19 +6668,19 @@
   },
   "swapIncludesGasAndMetaMaskFee": {
     "message": "Kasama ang gas at $1% bayad sa MetaMask",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFee": {
     "message": "Kabilang ang $1% na bayad sa MetaMask.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFeeAlt": {
     "message": "Kasama sa quote ang $1% bayad sa MetaMask",
-    "description": "Provides information about the fee that metamask takes for swaps using the latest copy. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
     "message": "Kabilang ang $1% na bayad sa MetaMask – $2",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
   },
   "swapLearnMore": {
     "message": "Alamin pa ang tungkol sa mga Swap"
@@ -6708,7 +6699,7 @@
   },
   "swapMetaMaskFeeDescription": {
     "message": "Ang bayad na $1% ay awtomatikong isinasali sa quote na ito. Babayaran mo ito bilang kapalit ng isang lisensya para gamitin ang software ng pagsasama-sama ng impormasyon ng tagapagbigay ng liquidity ng MetaMask.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapNQuotesWithDot": {
     "message": "$1 quote.",
@@ -7004,12 +6995,6 @@
   },
   "time": {
     "message": "Oras"
-  },
-  "tipsForUsingAWallet": {
-    "message": "Mga tip sa paggamit ng wallet"
-  },
-  "tipsForUsingAWalletDescription": {
-    "message": "Kapag nagdagdag ka ng mga token, magkakaroon ka ng mas maraming paraan para magamit ang web3."
   },
   "to": {
     "message": "Sa/Kay"
@@ -7519,18 +7504,8 @@
   "walletConnectionGuide": {
     "message": "ang aming gabay sa pagkonekta ng wallet na hardware"
   },
-  "walletDetails": {
-    "message": "Mga detalye ng wallet"
-  },
   "walletName": {
     "message": "Pangalan ng wallet"
-  },
-  "walletNotFoundDescription": {
-    "message": "Hindi nahanap ang wallet na may ID na $1.",
-    "description": "$1 is the wallet ID"
-  },
-  "walletNotFoundTitle": {
-    "message": "Hindi nahanap ang wallet"
   },
   "walletReadyLearn": {
     "message": "$1 maaari mong panatiling ligtas ang pariralang ito nang sa gayon hindi mawawala ang access mo sa iyong pera.",

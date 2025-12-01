@@ -414,6 +414,17 @@
     "ensResolutionsByAddress": {},
     "estimatedGasFeeTimeBounds": {},
     "events": {
+      "cronjob-npm:@metamask/tron-wallet-snap-0": {
+        "date": "string",
+        "id": "string",
+        "recurring": "boolean",
+        "request": {
+          "method": "string"
+        },
+        "schedule": "string",
+        "scheduledAt": "string",
+        "snapId": "string"
+      },
       "cronjob-npm:@metamask/bitcoin-wallet-snap-0": {
         "date": "string",
         "id": "string",
@@ -698,6 +709,7 @@
     "pendingRevocations": [],
     "pendingShieldCohort": "null",
     "pendingShieldCohortTxType": "null",
+    "pna25Acknowledged": "boolean",
     "permissionActivityLog": [
       {
         "id": "number",
@@ -709,15 +721,7 @@
         "success": "boolean"
       }
     ],
-    "permissionHistory": {
-      "npm:@metamask/solana-wallet-snap": {
-        "eth_accounts": {
-          "accounts": {
-            "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": "number"
-          }
-        }
-      }
-    },
+    "permissionHistory": {},
     "pinnedAccountList": [],
     "popupGasPollTokens": [],
     "preferences": {
@@ -977,6 +981,7 @@
       "install_date_ext": "string"
     },
     "transactionBatches": [],
+    "transactionData": {},
     "transactions": [],
     "trezorModel": "null",
     "trialedProducts": [],
@@ -1031,6 +1036,7 @@
     "onboardingModalOpen": "boolean",
     "onboardingActiveStep": "string",
     "onboardingModalRendered": "boolean",
+    "onboardingReferralCode": "string",
     "geoLocation": "null",
     "optinAllowedForGeo": "null",
     "optinAllowedForGeoLoading": "boolean",

@@ -1,6 +1,6 @@
 const { DAPP_PATH, DAPP_URL } = require('../constants');
 const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
+const FixtureBuilder = require('../fixtures/fixture-builder');
 const {
   mockNotificationSnap,
 } = require('../mock-response-data/snaps/snap-binary-mocks');

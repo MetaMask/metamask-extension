@@ -352,7 +352,7 @@ export const getSwapsQuotePrefetchingRefreshTime = (state) =>
 export const getBackgroundSwapRouteState = (state) =>
   state.metamask.swapsState.routeState;
 
-export const getShowAwaitingSwapScreen = (state) =>
+export const selectShowAwaitingSwapScreen = (state) =>
   state.metamask.swapsState.routeState === 'awaiting';
 
 export const getCustomSwapsGas = (state) =>
@@ -374,7 +374,7 @@ export const getFetchParams = (state) => state.metamask.swapsState.fetchParams;
 
 export const getQuotes = (state) => state.metamask.swapsState.quotes;
 
-export const getHasSwapsQuotes = (state) =>
+export const selectHasSwapsQuotes = (state) =>
   Boolean(Object.values(state.metamask.swapsState.quotes || {}).length);
 
 export const getQuotesLastFetched = (state) =>
@@ -1511,13 +1511,11 @@ export function cancelSwapsSmartTransaction(uuid) {
   };
 }
 
-export const getIsEstimatedReturnLow = ({ usedQuote, rawNetworkFees }) => {
+export const useGetIsEstimatedReturnLow = ({ usedQuote, rawNetworkFees }) => {
   const sourceTokenAmount = calcTokenAmount(
     usedQuote?.sourceAmount,
     usedQuote?.sourceTokenInfo?.decimals,
   );
-  // Disabled because it's not a hook
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const sourceTokenFiatAmount = useTokenFiatAmount(
     usedQuote?.sourceTokenInfo?.address,
     sourceTokenAmount || 0,
@@ -1534,7 +1532,6 @@ export const getIsEstimatedReturnLow = ({ usedQuote, rawNetworkFees }) => {
     usedQuote?.destinationTokenInfo?.decimals,
   );
   // Disabled because it's not a hook
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const destinationTokenFiatAmount = useTokenFiatAmount(
     usedQuote?.destinationTokenInfo?.address,
     destinationTokenAmount || 0,

@@ -5,7 +5,7 @@ import {
   DAPP_HOST_ADDRESS,
   DEFAULT_FIXTURE_ACCOUNT,
 } from '../../constants';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import AddNetworkConfirmation from '../../page-objects/pages/confirmations/redesign/add-network-confirmations';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
 import Homepage from '../../page-objects/pages/home/homepage';

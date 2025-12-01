@@ -482,7 +482,7 @@ export const getMetaMaskAccounts = createDeepEqualSelector(
           }
         } else {
           const multichainNetwork = multichainNetworkProviders.find((network) =>
-            network.isAddressCompatible(internalAccount.address),
+            internalAccount.scopes.some((scope) => scope === network.chainId),
           );
           account = {
             ...account,
@@ -1641,6 +1641,9 @@ const selectSnapId = (_state, snapId) => snapId;
  */
 export const selectInstalledSnaps = (state) => state.metamask.snaps;
 
+export const selectIsNetworkMenuOpen = (state) =>
+  state.appState.isNetworkMenuOpen;
+
 /**
  * Retrieve registry data for requested Snap.
  *
@@ -1986,7 +1989,7 @@ export function getIsSwapsChain(state, overrideChainId) {
     : ALLOWED_PROD_SWAPS_CHAIN_IDS.includes(chainId);
 }
 
-export function getHasBridgeQuotes(state) {
+export function selectHasBridgeQuotes(state) {
   return Boolean(Object.values(state.metamask.quotes || {}).length);
 }
 
@@ -3291,6 +3294,20 @@ export function getIsDefiPositionsEnabled(state) {
   return Boolean(assetsDefiPositionsEnabled);
 }
 
+/**
+ * Returns true if any EVM networks are enabled in the network filter.
+ *
+ * @param {*} state
+ * @returns {boolean} True if at least one EVM network is enabled.
+ */
+export function getHasAnyEvmNetworkEnabled(state) {
+  const enabledNetworks = getEnabledNetworks(state);
+  const enabledEvmNetworks = enabledNetworks[KnownCaipNamespace.Eip155] ?? {};
+  return Object.values(enabledEvmNetworks).some(
+    (isEnabled) => isEnabled === true,
+  );
+}
+
 export function getIsCustomNetwork(state) {
   const chainId = getCurrentChainId(state);
 
@@ -3502,7 +3519,7 @@ export const getUpdatedAndSortedAccountsWithCaipAccountId =
     });
   });
 
-export const useSafeChainsListValidationSelector = (state) => {
+export const getUseSafeChainsListValidation = (state) => {
   return state.metamask.useSafeChainsListValidation;
 };
 

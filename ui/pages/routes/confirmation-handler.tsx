@@ -1,101 +1,99 @@
-import { useEffect, useMemo } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
+import { useCallback, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 
 import {
   AWAITING_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
-  DEFAULT_ROUTE,
+  ACCOUNT_LIST_PAGE_ROUTE,
+  UNLOCK_ROUTE,
+  CONNECT_ROUTE,
+  CONFIRMATION_V_NEXT_ROUTE,
+  CONFIRM_TRANSACTION_ROUTE,
+  CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
+  CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
 } from '../../helpers/constants/routes';
 import { getConfirmationRoute } from '../confirmations/hooks/useConfirmationNavigation';
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import {
-  ENVIRONMENT_TYPE_NOTIFICATION,
-  ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
 } from '../../../shared/constants/app';
 import {
-  getHasApprovalFlows,
-  getHasBridgeQuotes,
+  selectHasApprovalFlows,
+  selectHasBridgeQuotes,
   selectPendingApprovalsForNavigation,
 } from '../../selectors';
 import {
   getFetchParams,
-  getHasSwapsQuotes,
-  getShowAwaitingSwapScreen,
+  selectHasSwapsQuotes,
+  selectShowAwaitingSwapScreen,
 } from '../../ducks/swaps/swaps';
 import { useNavState } from '../../contexts/navigation-state';
+import { useModalState } from '../../hooks/useModalState';
+
+const EXEMPTED_ROUTES = [
+  ACCOUNT_LIST_PAGE_ROUTE,
+  AWAITING_SWAP_ROUTE,
+  PREPARE_SWAP_ROUTE,
+  CROSS_CHAIN_SWAP_ROUTE,
+  UNLOCK_ROUTE,
+  CONNECT_ROUTE,
+  CONFIRMATION_V_NEXT_ROUTE,
+  CONFIRM_TRANSACTION_ROUTE,
+  CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
+  CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
+];
+
+const SNAP_APPROVAL_TYPES = [
+  'wallet_installSnapResult',
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval,
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
+  ///: END:ONLY_INCLUDE_IF
+];
 
 export const ConfirmationHandler = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { pathname } = location;
   const navState = useNavState();
+  const { closeModals } = useModalState();
 
   const envType = getEnvironmentType();
-  const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
-  const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
   const isFullscreen = envType === ENVIRONMENT_TYPE_FULLSCREEN;
+  const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
 
-  const showAwaitingSwapScreen = useSelector(getShowAwaitingSwapScreen);
-  const hasSwapsQuotes = useSelector(getHasSwapsQuotes);
-  const hasBridgeQuotes = useSelector(getHasBridgeQuotes);
+  const showAwaitingSwapScreen = useSelector(selectShowAwaitingSwapScreen);
+  const hasSwapsQuotes = useSelector(selectHasSwapsQuotes);
+  const hasBridgeQuotes = useSelector(selectHasBridgeQuotes);
   const swapsFetchParams = useSelector(getFetchParams);
   const pendingApprovals = useSelector(selectPendingApprovalsForNavigation);
-  const hasApprovalFlows = useSelector(getHasApprovalFlows);
+  const hasApprovalFlows = useSelector(selectHasApprovalFlows);
 
   // Read stayOnHomePage from both v5 location.state and v5-compat navState
-  const stayOnHomePage = useMemo(
-    () =>
-      Boolean(location.state?.stayOnHomePage) ||
-      Boolean(navState?.stayOnHomePage),
-    [location.state, navState],
-  );
+  const stayOnHomePage =
+    Boolean(location.state?.stayOnHomePage) ||
+    Boolean(navState?.stayOnHomePage);
 
   const canRedirect = !isNotification && !stayOnHomePage;
 
-  // Flows that *should* navigate in fullscreen, based on E2E specs
-  const hasWalletInitiatedSnapApproval = pendingApprovals.some(
-    (approval) =>
-      approval.type === 'wallet_installSnap' ||
-      approval.type === 'wallet_updateSnap' ||
-      approval.type === 'wallet_installSnapResult' ||
-      approval.type === 'snap_manageAccounts:showSnapAccountRedirect' ||
-      approval.type === 'snap_manageAccounts:confirmAccountCreation' ||
-      approval.type === 'snap_manageAccounts:confirmAccountRemoval' ||
-      approval.type === 'snap_manageAccounts:showNameSnapAccount',
-  );
-
-  // Flows that *should not* navigate in fullscreen, based on E2E specs
-  const hasDappSmartTransactionStatus = pendingApprovals.some(
-    (approval) =>
-      approval.type === 'smartTransaction:showSmartTransactionStatusPage' &&
-      approval.origin !== 'metamask' &&
-      approval.origin !== 'MetaMask',
-  );
-
   // Ported from home.component - checkStatusAndNavigate()
-  useEffect(() => {
-    if (isFullscreen && hasDappSmartTransactionStatus) {
-      return;
-    }
-
-    if (isFullscreen && !hasWalletInitiatedSnapApproval && !hasApprovalFlows) {
-      return;
-    }
-
-    // Only run when on home/default page (for now)
-    if (pathname !== DEFAULT_ROUTE) {
-      return;
-    }
-
+  const checkStatusAndNavigate = useCallback(() => {
     if (canRedirect && showAwaitingSwapScreen) {
+      closeModals();
       navigate(AWAITING_SWAP_ROUTE);
     } else if (canRedirect && (hasSwapsQuotes || swapsFetchParams)) {
+      closeModals();
       navigate(PREPARE_SWAP_ROUTE);
     } else if (canRedirect && hasBridgeQuotes) {
+      closeModals();
       navigate(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
     } else if (pendingApprovals.length || hasApprovalFlows) {
       const url = getConfirmationRoute(
@@ -106,24 +104,45 @@ export const ConfirmationHandler = () => {
       );
 
       if (url) {
+        closeModals();
         navigate(url, { replace: true });
       }
     }
   }, [
     canRedirect,
-    hasBridgeQuotes,
-    hasDappSmartTransactionStatus,
+    closeModals,
     hasApprovalFlows,
+    hasBridgeQuotes,
     hasSwapsQuotes,
-    hasWalletInitiatedSnapApproval,
-    isFullscreen,
-    isNotification,
-    isPopup,
     navigate,
-    pathname,
     pendingApprovals,
     showAwaitingSwapScreen,
     swapsFetchParams,
+  ]);
+
+  const isExemptedRoute = EXEMPTED_ROUTES.some((route) =>
+    pathname.startsWith(route),
+  );
+
+  const hasAllowedPopupRedirectApprovals = pendingApprovals.some((approval) =>
+    SNAP_APPROVAL_TYPES.includes(approval.type),
+  );
+
+  useEffect(() => {
+    if (isExemptedRoute) {
+      return;
+    }
+
+    if (isFullscreen && !hasAllowedPopupRedirectApprovals) {
+      return;
+    }
+
+    checkStatusAndNavigate();
+  }, [
+    checkStatusAndNavigate,
+    hasAllowedPopupRedirectApprovals,
+    isExemptedRoute,
+    isFullscreen,
   ]);
 
   return null;
