@@ -19,6 +19,10 @@ export function useDappSwapComparisonMetrics() {
       properties: Record<string, string>;
       sensitiveProperties?: Record<string, string>;
     }) => {
+      console.log(
+        '--------------------------------------------------- 1',
+        params,
+      );
       swapDappComparison.current = params.properties.swap_dapp_comparison;
       updateTransactionEventFragment(params, transactionId);
     },
