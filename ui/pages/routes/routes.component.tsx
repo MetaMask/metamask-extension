@@ -992,7 +992,7 @@ export default function Routes() {
             authenticated
             path={`${REVIEW_PERMISSIONS}/:origin`}
             exact
-            layout={LegacyLayout}
+            layout={RootLayout}
           >
             {createV5CompatRoute<{ origin: string }>(
               MemoizedReviewPermissionsWrapper,
