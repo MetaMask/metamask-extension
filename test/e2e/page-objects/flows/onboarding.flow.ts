@@ -18,6 +18,7 @@ import TermsOfUseUpdateModal from '../pages/dialog/terms-of-use-update-modal';
  * Helper function to handle post-onboarding navigation for sidepanel builds.
  * When sidepanel is enabled, clicking "Done" doesn't navigate the current window,
  * so we need to manually navigate to home.html.
+ * This function detects sidepanel by checking the manifest at runtime.
  * Note: Sidepanel is only supported on Chrome-based browsers, not Firefox.
  *
  * @param driver - The WebDriver instance
@@ -25,15 +26,18 @@ import TermsOfUseUpdateModal from '../pages/dialog/terms-of-use-update-modal';
 export const handleSidepanelPostOnboarding = async (
   driver: Driver,
 ): Promise<void> => {
-  // AND we're not running on Firefox (which doesn't support sidepanel)
-  const isSidepanelEnabled =
-    process.env.IS_SIDEPANEL &&
-    process.env.SELENIUM_BROWSER !== Browser.FIREFOX;
+  // Only run on Chrome-based browsers (Firefox doesn't support sidepanel)
+  if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+    return;
+  }
 
-  if (isSidepanelEnabled) {
-    // Give the onboarding completion time to process (needed for sidepanel)
-    await driver.delay(2000);
+  // Check if the built extension has sidepanel by checking for sidePanel permission in manifest
+  const manifest = await driver.executeScript(
+    'return chrome.runtime.getManifest();',
+  );
+  const hasSidePanelPermission = manifest?.permissions?.includes('sidePanel');
 
+  if (hasSidePanelPermission) {
     // Navigate directly to home page in current window
     // With sidepanel enabled, this ensures we load home page in the test window
     await driver.driver.get(`${driver.extensionUrl}/home.html`);
