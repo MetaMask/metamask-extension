@@ -2350,8 +2350,7 @@
         "URL": true,
         "URLSearchParams": true,
         "console": true,
-        "document.defaultView": true,
-        "history": true
+        "document.defaultView": true
       }
     },
     "@rive-app/react-canvas>@rive-app/canvas": {
@@ -5043,7 +5042,7 @@
         "addEventListener": true,
         "confirm": true,
         "document": true,
-        "history": true,
+        "history.scrollRestoration": true,
         "location.href": true,
         "removeEventListener": true,
         "scrollTo": true,
