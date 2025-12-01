@@ -82,12 +82,12 @@ describe('TransactionAccountDetails', () => {
       nestedTransactions: [{ to: FROM_MOCK }],
     });
 
-    expect(getByText('Switching To')).toBeInTheDocument();
+    expect(getByText('Switching to')).toBeInTheDocument();
   });
 
   it('renders required data for upgrade request with nested transactions', () => {
     const { getByText } = renderConfirmation(upgradeAccountConfirmation);
-    expect(getByText('Switching To')).toBeInTheDocument();
+    expect(getByText('Switching to')).toBeInTheDocument();
     expect(getByText('Smart contract')).toBeInTheDocument();
   });
 

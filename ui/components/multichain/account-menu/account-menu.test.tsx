@@ -464,6 +464,6 @@ describe('AccountMenu', () => {
     );
     actionButton.click();
 
-    expect(getByText('Manage Institutional Wallets')).toBeInTheDocument();
+    expect(getByText('Manage institutional wallets')).toBeInTheDocument();
   });
 });

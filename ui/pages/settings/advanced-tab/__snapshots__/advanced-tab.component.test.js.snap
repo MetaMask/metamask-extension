@@ -496,7 +496,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
         class="settings-page__content-item"
       >
         <span>
-          Manage Institutional Wallets
+          Manage institutional wallets
         </span>
         <div
           class="settings-page__content-description"

@@ -95,7 +95,7 @@ const t = (key) => {
     case 'localhost':
       return 'Localhost 8545';
     case 'developerOptions':
-      return 'Developer Options';
+      return 'Developer options';
     case 'experimental':
       return 'Experimental';
     case 'autoDetectTokens':
@@ -196,7 +196,7 @@ describe('Settings Search Utils', () => {
       );
     });
 
-    it('returns 0 "Developer Options" section count when env flag is disabled', () => {
+    it('returns 0 "Developer options" section count when env flag is disabled', () => {
       expect(
         getNumberOfSettingRoutesInTab(t, t('developerOptions')),
       ).toStrictEqual(0);
