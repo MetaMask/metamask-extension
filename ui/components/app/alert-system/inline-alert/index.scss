@@ -28,4 +28,8 @@
     padding: 2px 5px;
     border-radius: 6px;
   }
+
+  &__transparent-background {
+    background-color: transparent !important;
+  }
 }
