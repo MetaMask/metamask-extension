@@ -1,6 +1,6 @@
 import React from 'react';
 import { act } from '@testing-library/react';
-import * as reactRouterUtils from 'react-router-dom-v5-compat';
+import * as reactRouterUtils from 'react-router-dom';
 import { userEvent } from '@testing-library/user-event';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';

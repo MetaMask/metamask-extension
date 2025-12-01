@@ -576,7 +576,7 @@ export default function RoutesComponent() {
         authenticated: true,
       }),
       createRouteWithLayout({
-        path: SNAPS_VIEW_ROUTE,
+        path: `${SNAPS_VIEW_ROUTE}/*`,
         component: SnapView,
         layout: LegacyLayout,
         authenticated: true,
