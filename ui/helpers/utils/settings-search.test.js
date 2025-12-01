@@ -119,9 +119,9 @@ const t = (key) => {
     case 'links':
       return 'Links';
     case 'privacyMsg':
-      return 'Privacy policy';
+      return 'Privacy Policy';
     case 'terms':
-      return 'Terms of use';
+      return 'Terms of Use';
     case 'attributions':
       return 'Attributions';
     case 'supportCenter':
