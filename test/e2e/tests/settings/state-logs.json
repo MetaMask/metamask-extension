@@ -491,6 +491,7 @@
       }
     },
     "ignoredNfts": [],
+    "initialEnqueueCompleted": "boolean",
     "insights": {},
     "interfaces": {},
     "internalAccounts": {
@@ -814,6 +815,13 @@
     "showTestnetMessageInDropdown": "boolean",
     "signatureRequests": {},
     "signatureSecurityAlertResponses": {},
+    "syncQueue": {
+      "null": [
+        {
+          "address": "string"
+        }
+      ]
+    },
     "slides": [],
     "smartTransactionsState": {
       "fees": {},
