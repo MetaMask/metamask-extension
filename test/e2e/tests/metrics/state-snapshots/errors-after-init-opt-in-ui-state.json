@@ -283,6 +283,7 @@
     "allIgnoredTokens": {},
     "allDetectedTokens": {},
     "tokenBalances": "object",
+    "transactionData": "object",
     "smartTransactionsState": {
       "fees": {},
       "feesByChainId": "object",

@@ -400,6 +400,7 @@
     "allIgnoredTokens": {},
     "allDetectedTokens": {}
   },
+  "TransactionPayController": { "transactionData": "object" },
   "TxController": {
     "methodData": "object",
     "transactions": "object",

@@ -887,7 +887,6 @@
         "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,
         "@metamask/utils": true,
-        "deep-freeze-strict": true,
         "@metamask/json-rpc-engine>klona": true
       }
     },
