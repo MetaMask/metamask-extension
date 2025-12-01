@@ -113,30 +113,39 @@ export const ConfirmationHandler = () => {
     swapsFetchParams,
   ]);
 
+  // Runs on all routes (not just home), so skip navigation on exempted routes
   const isExemptedRoute = EXEMPTED_ROUTES.some((route) =>
     pathname.startsWith(route),
   );
 
+  // Ported from home.component - hasAllowedPopupRedirectApprovals()
   const hasAllowedPopupRedirectApprovals = pendingApprovals.some((approval) =>
     SNAP_APPROVAL_TYPES.includes(approval.type),
   );
 
+  const hasSwapRelatedNavigation =
+    showAwaitingSwapScreen ||
+    hasSwapsQuotes ||
+    swapsFetchParams ||
+    hasBridgeQuotes;
+
+  const isFullscreenExemption =
+    isFullscreen &&
+    !hasAllowedPopupRedirectApprovals &&
+    !hasSwapRelatedNavigation;
+
+  // Ported from home.component - componentDidUpdate()
   useEffect(() => {
     if (isExemptedRoute) {
       return;
     }
 
-    if (isFullscreen && !hasAllowedPopupRedirectApprovals) {
+    if (isFullscreenExemption) {
       return;
     }
 
     checkStatusAndNavigate();
-  }, [
-    checkStatusAndNavigate,
-    hasAllowedPopupRedirectApprovals,
-    isExemptedRoute,
-    isFullscreen,
-  ]);
+  }, [checkStatusAndNavigate, isExemptedRoute, isFullscreenExemption]);
 
   return null;
 };
