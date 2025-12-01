@@ -132,6 +132,8 @@ describe('Snap Account Transfers', function (this: Suite) {
           amount: '1',
           isSyncFlow: false,
         });
+        // intended delay to allow for network requests to complete
+        await driver.delay(1000);
         const activityList = new ActivityListPage(driver);
         await activityList.checkTxAmountInActivity('-1 ETH');
         await activityList.waitPendingTxToNotBeVisible();
