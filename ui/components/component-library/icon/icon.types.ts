@@ -274,7 +274,6 @@ export enum IconName {
   ThumbUp = 'thumb-up',
   Tint = 'tint',
   Tooltip = 'tooltip',
-  TransactionShield = 'transaction-shield',
   Translate = 'translate',
   Trash = 'trash',
   TrendDown = 'trend-down',

@@ -307,7 +307,7 @@ export function useShieldCoverageAlert(): Alert[] {
         inlineAlertTextBackgroundColor,
         alertDetailsBackgroundColor: BackgroundColor.backgroundDefault,
         inlineAlertIconRight: true,
-        iconName: IconName.TransactionShield,
+        iconName: IconName.Security,
         iconColor,
         showArrow: false,
         isOpenModalOnClick: true,
