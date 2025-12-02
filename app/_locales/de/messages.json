@@ -5628,7 +5628,8 @@
     "description": "The $1 is the date subscription ends"
   },
   "shieldTxDetails2Description": {
-    "message": "Nutzen Sie jederzeit einen schnelleren, engagierten Support"
+    "message": "Nutzen Sie jederzeit einen schnelleren, engagierten Support",
+    "description": "The $1 is interval and the $2 is the date of next billing"
   },
   "shieldTxDetails2Title": {
     "message": "Prioritärer Support"
@@ -5662,9 +5663,6 @@
   },
   "shieldTxMembershipSubmitCase": {
     "message": "Anspruch einreichen"
-  },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "Gesamte Vorteile anzeigen"
   },
   "show": {
     "message": "Anzeigen"

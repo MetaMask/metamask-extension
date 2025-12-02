@@ -7,9 +7,9 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
+import classnames from 'classnames';
 import { ThemeType } from '../../../../../shared/constants/preferences';
 import { useTheme } from '../../../../hooks/useTheme';
-import classnames from 'classnames';
 import { Skeleton } from '../../../../components/component-library/skeleton';
 import {
   BackgroundColor,
@@ -31,7 +31,7 @@ type MembershipHeaderProps = {
   customerId?: string;
   startDate?: string;
   endDate?: string;
-  trialEndDate?: string;
+  trialDaysLeft?: string;
 };
 
 const MembershipHeader = ({
@@ -42,7 +42,7 @@ const MembershipHeader = ({
   customerId,
   startDate,
   endDate,
-  trialEndDate,
+  trialDaysLeft,
 }: MembershipHeaderProps) => {
   const t = useI18nContext();
   const theme = useTheme();
@@ -61,16 +61,12 @@ const MembershipHeader = ({
     return `${startDateFormatted} - ${endDateFormatted}`;
   }, [startDate, endDate]);
 
-  const trialDaysLeft = useMemo(() => {
-    if (!isTrialing || !trialEndDate) {
+  const trialDaysLeftText = useMemo(() => {
+    if (!isTrialing || !trialDaysLeft) {
       return '';
     }
-    const today = new Date();
-    const trialEndDateDate = new Date(trialEndDate);
-    const diffTime = Math.abs(trialEndDateDate.getTime() - today.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return t('shieldTxMembershipFreeTrialDaysLeft', [diffDays]);
-  }, [isTrialing, trialEndDate, t]);
+    return t('shieldTxMembershipFreeTrialDaysLeft', [trialDaysLeft]);
+  }, [isTrialing, t, trialDaysLeft]);
 
   return (
     <Box
@@ -142,7 +138,7 @@ const MembershipHeader = ({
               className="transaction-shield-page__membership-text"
               data-testid="shield-detail-note"
             >
-              {trialDaysLeft || membershipPeriod}
+              {trialDaysLeftText || membershipPeriod}
             </Text>
           )}
         </Box>

@@ -12,6 +12,11 @@ import {
 import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
 import { NameType } from '@metamask/name-controller';
 import {
+  Button,
+  ButtonVariant,
+  IconName as DsIconName,
+} from '@metamask/design-system-react';
+import {
   BannerAlert,
   BannerAlertSeverity,
   Box,
@@ -26,7 +31,6 @@ import {
   AlignItems,
   BackgroundColor,
   BlockSize,
-  BorderRadius,
   Display,
   FlexDirection,
   IconColor,
@@ -87,8 +91,9 @@ import {
   ShieldUnexpectedErrorEventLocationEnum,
 } from '../../../../shared/constants/subscriptions';
 import ApiErrorHandler from '../../../components/app/api-error-handler';
+import { shortenAddress } from '../../../helpers/utils/util';
 import { isCardPaymentMethod, isCryptoPaymentMethod } from './types';
-import { MembershipHeader } from './components';
+import { ButtonRow, ButtonRowContainer, MembershipHeader } from './components';
 
 const TransactionShield = () => {
   const t = useI18nContext();
@@ -245,19 +250,6 @@ const TransactionShield = () => {
 
   const [isAddFundsModalOpen, setIsAddFundsModalOpen] = useState(false);
 
-  const shieldDetails = [
-    {
-      icon: IconName.ShieldLock,
-      title: t('shieldTxDetails1Title'),
-      description: t('shieldTxDetails1Description'),
-    },
-    {
-      icon: IconName.Flash,
-      title: t('shieldTxDetails2Title'),
-      description: t('shieldTxDetails2Description'),
-    },
-  ];
-
   const rowsStyleProps: BoxProps<'div'> = {
     display: Display.Flex,
     backgroundColor: BackgroundColor.backgroundSection,
@@ -289,36 +281,6 @@ const TransactionShield = () => {
 
     return token;
   }, [cryptoPaymentMethod, displayedShieldSubscription]);
-
-  const buttonRow = (label: string, onClick: () => void, id?: string) => {
-    return (
-      <Box
-        as="button"
-        data-testid={id}
-        className="transaction-shield-page__row"
-        {...rowsStyleProps}
-        justifyContent={JustifyContent.spaceBetween}
-        alignItems={AlignItems.center}
-        width={BlockSize.Full}
-        onClick={onClick}
-      >
-        {showSkeletonLoader ? (
-          <Skeleton width="50%" height={20} />
-        ) : (
-          <Text variant={TextVariant.bodyMdMedium}>{label}</Text>
-        )}
-        {showSkeletonLoader ? (
-          <Skeleton width={24} height={24} borderRadius={BorderRadius.full} />
-        ) : (
-          <Icon
-            name={IconName.ArrowRight}
-            size={IconSize.Lg}
-            color={IconColor.iconAlternative}
-          />
-        )}
-      </Box>
-    );
-  };
 
   const billingDetails = (
     key: string,
@@ -653,6 +615,67 @@ const TransactionShield = () => {
     cryptoPaymentMethod,
   ]);
 
+  const trialDaysLeft = useMemo(() => {
+    if (!isTrialing || !displayedShieldSubscription?.trialEnd) {
+      return '';
+    }
+    const today = new Date();
+    const trialEndDateDate = new Date(displayedShieldSubscription.trialEnd);
+    const diffTime = Math.abs(trialEndDateDate.getTime() - today.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays.toString();
+  }, [displayedShieldSubscription, isTrialing]);
+
+  const amountDetails = useMemo(() => {
+    if (!displayedShieldSubscription) {
+      return '';
+    }
+    const interval =
+      displayedShieldSubscription.interval === RECURRING_INTERVALS.year
+        ? t('year')
+        : t('month');
+    const price = isCryptoPaymentMethod(
+      displayedShieldSubscription.paymentMethod,
+    )
+      ? `${getProductPrice(productInfo as Product)} ${displayedShieldSubscription.paymentMethod.crypto.tokenSymbol.toUpperCase()}`
+      : formatCurrency(
+          getProductPrice(productInfo as Product),
+          productInfo?.currency.toUpperCase(),
+          {
+            maximumFractionDigits: 2,
+            minimumFractionDigits: 0,
+          },
+        );
+
+    const priceDetails = t('shieldTxDetails1Description', [price, interval]);
+
+    return isTrialing
+      ? t('shieldTxDetails1DescriptionTrial', [trialDaysLeft, priceDetails])
+      : priceDetails;
+  }, [
+    displayedShieldSubscription,
+    formatCurrency,
+    isTrialing,
+    productInfo,
+    t,
+    trialDaysLeft,
+  ]);
+
+  const paymentMethodDetails = useMemo(() => {
+    if (!displayedShieldSubscription) {
+      return '';
+    }
+    if (isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)) {
+      return t('shieldTxDetails3DescriptionCrypto', [
+        displayedShieldSubscription.paymentMethod.crypto.tokenSymbol.toUpperCase(),
+        shortenAddress(
+          displayedShieldSubscription.paymentMethod.crypto.payerAddress,
+        ),
+      ]);
+    }
+    return t('shieldPlanCard');
+  }, [displayedShieldSubscription, t]);
+
   const handleViewFullBenefitsClicked = useCallback(() => {
     window.open(TRANSACTION_SHIELD_LINK, '_blank', 'noopener noreferrer');
     captureShieldCtaClickedEvent({
@@ -719,79 +742,144 @@ const TransactionShield = () => {
           customerId={customerId}
           startDate={displayedShieldSubscription?.currentPeriodStart}
           endDate={displayedShieldSubscription?.currentPeriodEnd}
-          trialEndDate={displayedShieldSubscription?.trialEnd}
+          trialDaysLeft={trialDaysLeft}
         />
-
-        <Box
-          className="transaction-shield-page__row"
-          {...rowsStyleProps}
-          flexDirection={FlexDirection.Column}
-          paddingTop={2}
-          paddingBottom={2}
-        >
-          {shieldDetails.map((detail, index) => (
+        {displayedShieldSubscription && (
+          <Box className="mt-4">
             <Box
-              key={index}
               display={Display.Flex}
+              justifyContent={JustifyContent.spaceBetween}
               alignItems={AlignItems.center}
               gap={2}
-              paddingTop={2}
-              paddingBottom={2}
+              paddingInline={4}
+              marginBottom={2}
             >
               {showSkeletonLoader ? (
-                <Skeleton
-                  width={32}
-                  height={32}
-                  borderRadius={BorderRadius.full}
-                  style={{ flexShrink: 0 }}
-                />
+                <Skeleton width="40%" height={20} />
               ) : (
-                <Icon name={detail.icon} size={IconSize.Xl} />
+                <Text variant={TextVariant.headingSm}>
+                  {t('shieldTxDetailsTitle')}
+                </Text>
               )}
-              <Box
-                width={BlockSize.Full}
-                display={Display.Flex}
-                flexDirection={FlexDirection.Column}
-                gap={showSkeletonLoader ? 2 : 0}
-              >
-                {showSkeletonLoader ? (
-                  <Skeleton width="100%" height={18} />
-                ) : (
-                  <Text variant={TextVariant.bodySmBold}>{detail.title}</Text>
-                )}
-                {showSkeletonLoader ? (
-                  <Skeleton width="100%" height={18} />
-                ) : (
-                  <Text
-                    variant={TextVariant.bodySm}
-                    color={TextColor.textAlternative}
-                  >
-                    {detail.description}
-                  </Text>
-                )}
-              </Box>
+              {showSkeletonLoader ? (
+                <Skeleton width="30%" height={20} />
+              ) : (
+                <ButtonLink
+                  className="neutral-button"
+                  endIconName={IconName.ArrowRight}
+                  endIconProps={{
+                    size: IconSize.Sm,
+                    color: IconColor.iconAlternative,
+                  }}
+                  color={TextColor.textAlternative}
+                  onClick={() => {
+                    navigate(TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE);
+                  }}
+                >
+                  {t('shieldTxDetailsManage')}
+                </ButtonLink>
+              )}
             </Box>
-          ))}
-        </Box>
-        {buttonRow(
-          t('shieldTxMembershipViewFullBenefits'),
-          handleViewFullBenefitsClicked,
-          'shield-detail-view-benefits-button',
+            <ButtonRowContainer>
+              <ButtonRow
+                startIconName={DsIconName.SecurityTick}
+                title={t('shieldTxDetails1Title')}
+                description={amountDetails}
+                loading={showSkeletonLoader}
+              />
+              <ButtonRow
+                startIconName={DsIconName.Calendar}
+                title={t('shieldTxDetails2Title')}
+                description={t('shieldTxDetails2Description', [
+                  displayedShieldSubscription?.interval ===
+                  RECURRING_INTERVALS.year
+                    ? t('shieldPlanAnnual')
+                    : t('shieldPlanMonthly'),
+                  getShortDateFormatterV2().format(
+                    new Date(displayedShieldSubscription?.currentPeriodEnd),
+                  ),
+                ])}
+                loading={showSkeletonLoader}
+              />
+              <ButtonRow
+                startIconName={DsIconName.Card}
+                title={t('shieldTxDetails3Title')}
+                description={paymentMethodDetails}
+                loading={showSkeletonLoader}
+              />
+            </ButtonRowContainer>
+          </Box>
         )}
-        {displayedShieldSubscription?.isEligibleForSupport &&
-          buttonRow(
-            t('shieldTxMembershipSubmitCase'),
-            () => {
+        <Box className="border-t border-muted my-4 w-full h-px" />
+        <Box>
+          <Box
+            display={Display.Flex}
+            justifyContent={JustifyContent.spaceBetween}
+            alignItems={AlignItems.center}
+            gap={2}
+            paddingInline={4}
+            marginBottom={2}
+          >
+            {showSkeletonLoader ? (
+              <Skeleton width="40%" height={20} />
+            ) : (
+              <Text variant={TextVariant.headingSm}>
+                {t('shieldTxMembershipBenefits')}
+              </Text>
+            )}
+            {showSkeletonLoader ? (
+              <Skeleton width="30%" height={20} />
+            ) : (
+              <ButtonLink
+                data-testid="shield-detail-view-benefits-button"
+                className="neutral-button"
+                endIconName={IconName.ArrowRight}
+                endIconProps={{
+                  size: IconSize.Sm,
+                  color: IconColor.iconAlternative,
+                }}
+                color={TextColor.textAlternative}
+                onClick={() => {
+                  handleViewFullBenefitsClicked();
+                }}
+              >
+                {t('shieldTxMembershipBenefitsViewAll')}
+              </ButtonLink>
+            )}
+          </Box>
+          <ButtonRowContainer>
+            <ButtonRow
+              startIconName={DsIconName.Cash}
+              title={t('shieldTxMembershipBenefits1Title')}
+              description={t('shieldTxMembershipBenefits1Description')}
+              loading={showSkeletonLoader}
+            />
+            <ButtonRow
+              startIconName={DsIconName.Sms}
+              title={t('shieldTxMembershipBenefits2Title')}
+              description={t('shieldTxMembershipBenefits2Description')}
+              loading={showSkeletonLoader}
+            />
+            <ButtonRow
+              startIconName={DsIconName.MetamaskFoxOutline}
+              title={t('shieldTxMembershipBenefits3Title')}
+              description={t('shieldTxMembershipBenefits3Description')}
+              loading={showSkeletonLoader}
+            />
+          </ButtonRowContainer>
+        </Box>
+
+        {displayedShieldSubscription?.isEligibleForSupport && (
+          <Button
+            data-testid="shield-detail-submit-case-button"
+            className="w-full mt-4"
+            variant={ButtonVariant.Secondary}
+            onClick={() => {
               navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL);
-            },
-            'shield-detail-submit-case-button',
-          )}
-        {buttonRow(
-          t('shieldManagePlan'),
-          () => {
-            navigate(TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE);
-          },
-          'shield-detail-manage-plan-button',
+            }}
+          >
+            {t('shieldTxMembershipSubmitCase')}
+          </Button>
         )}
       </Box>
 

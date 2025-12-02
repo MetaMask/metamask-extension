@@ -5625,7 +5625,8 @@
     "description": "The $1 is the date subscription ends"
   },
   "shieldTxDetails2Description": {
-    "message": "कभी भी तेज़ और समर्पित सपोर्ट प्राप्त करें"
+    "message": "कभी भी तेज़ और समर्पित सपोर्ट प्राप्त करें",
+    "description": "The $1 is interval and the $2 is the date of next billing"
   },
   "shieldTxDetails2Title": {
     "message": "प्राथमिक सपोर्ट"
@@ -5659,9 +5660,6 @@
   },
   "shieldTxMembershipSubmitCase": {
     "message": "क्लेम सबमिट करें"
-  },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "संपूर्ण लाभ देखें"
   },
   "show": {
     "message": "दिखाएं"

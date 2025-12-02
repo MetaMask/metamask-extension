@@ -1,36 +1,41 @@
 import React from 'react';
 import {
+  AvatarIcon,
+  AvatarIconSize,
   Box,
   FontWeight,
   Icon,
   IconColor,
   IconName,
-  IconProps,
   IconSize,
   Text,
   TextColor,
   TextVariant,
   twMerge,
 } from '@metamask/design-system-react';
+import { BorderRadius } from '../../../../helpers/constants/design-system';
+import { Skeleton } from '../../../../components/component-library/skeleton';
 
 type ButtonRowProps = {
   title: string;
   description?: string;
-  startAccessory?: React.ReactNode;
-  rightIconProps?: IconProps;
+  startIconName?: IconName;
+  endIconName?: IconName;
   onClick?: () => void;
   'data-testid'?: string;
   className?: string;
+  loading?: boolean;
 };
 
 const ButtonRow = ({
   title,
   description,
-  startAccessory,
-  rightIconProps,
+  startIconName,
+  endIconName,
   onClick,
   'data-testid': dataTestId,
   className = '',
+  loading = false,
 }: ButtonRowProps) => {
   const Component = onClick ? 'button' : 'div';
 
@@ -45,27 +50,47 @@ const ButtonRow = ({
       onClick={onClick}
     >
       <Component className="button-row__button">
-        {startAccessory && <Box>{startAccessory}</Box>}
-        <Box className="text-left">
-          <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-            {title}
-          </Text>
-          {description && (
-            <Text
-              variant={TextVariant.BodyMd}
-              color={TextColor.TextAlternative}
-            >
-              {description}
+        {startIconName &&
+          (loading ? (
+            <Skeleton
+              width={40}
+              height={40}
+              borderRadius={BorderRadius.full}
+              style={{ flexShrink: 0 }}
+            />
+          ) : (
+            <AvatarIcon
+              iconName={startIconName}
+              size={AvatarIconSize.Lg}
+              color={IconColor.IconAlternative}
+            />
+          ))}
+        <Box className="flex flex-col text-left w-full" gap={loading ? 2 : 0}>
+          {loading ? (
+            <Skeleton width="100%" height={20} />
+          ) : (
+            <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+              {title}
             </Text>
           )}
+          {description &&
+            (loading ? (
+              <Skeleton width="100%" height={20} />
+            ) : (
+              <Text
+                variant={TextVariant.BodyMd}
+                color={TextColor.TextAlternative}
+              >
+                {description}
+              </Text>
+            ))}
         </Box>
-        {onClick && (
+        {onClick && !loading && (
           <Icon
-            name={IconName.ArrowDown}
+            name={endIconName ?? IconName.ArrowDown}
             size={IconSize.Sm}
             color={IconColor.IconAlternative}
-            {...rightIconProps}
-            className={twMerge('ml-auto', rightIconProps?.className)}
+            className="ml-auto"
           />
         )}
       </Component>

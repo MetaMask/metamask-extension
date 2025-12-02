@@ -5628,7 +5628,8 @@
     "description": "The $1 is the date subscription ends"
   },
   "shieldTxDetails2Description": {
-    "message": "언제든지 신속히 전담 지원을 받으세요"
+    "message": "언제든지 신속히 전담 지원을 받으세요",
+    "description": "The $1 is interval and the $2 is the date of next billing"
   },
   "shieldTxDetails2Title": {
     "message": "우선 지원"
@@ -5662,9 +5663,6 @@
   },
   "shieldTxMembershipSubmitCase": {
     "message": "청구하기"
-  },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "전체 혜택 보기"
   },
   "show": {
     "message": "표시"
