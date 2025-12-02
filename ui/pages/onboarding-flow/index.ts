@@ -1,1 +1,1 @@
-export { default as OnboardingFlow } from './onboarding-flow';
+export { default } from './onboarding-flow';
