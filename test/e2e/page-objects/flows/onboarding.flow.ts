@@ -31,10 +31,15 @@ export const handleSidepanelPostOnboarding = async (
     return;
   }
 
-  const currentUrl = await driver.getCurrentUrl();
-  console.log('currentUrl in handleSidepanelPostOnboarding is: ', currentUrl);
+  // Give the onboarding completion time to process (needed for sidepanel)
+  await driver.delay(2000);
+
+  // Navigate directly to home page in current window
+  // With sidepanel enabled, this ensures we load home page in the test window
   await driver.driver.get(`${driver.extensionUrl}/home.html`);
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+
+  // Wait for the home page to fully load
+  await driver.waitForSelector('[data-testid="account-menu-icon"]');
 };
 
 /**

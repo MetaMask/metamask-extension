@@ -1,5 +1,3 @@
-// import { getIsSidePanelFeatureEnabled } from '../../shared/modules/environment';
-
 /**
  * Custom hook to check if sidepanel feature is enabled.
  * Checks the build-time environment flag.
