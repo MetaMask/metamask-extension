@@ -122,6 +122,12 @@ export const lavamoatPlugin = (args: Args) =>
         'setTimeout',
         'clearTimeout',
         'ResizeObserver',
+        'requestAnimationFrame',
+        'cancelAnimationFrame',
+        'scrollBy',
+        'scrollTo',
+        'PerformanceObserver',
+        'MutationObserver',
         // globals sentry needs to function
         '__SENTRY__',
         'appState',

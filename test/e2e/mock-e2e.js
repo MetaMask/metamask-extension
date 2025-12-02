@@ -161,7 +161,7 @@ async function setupMocking(
         };
       } else if (ALLOWLISTED_URLS.includes(url)) {
         // If the URL or the host is in the allowlist, we pass the request as it is, to the live server.
-        console.log('Request going to a live server ============', url);
+        // Silenced: Request going to a live server
         return {};
       }
       console.log('Request redirected to the catch all mock ============', url);
@@ -1024,6 +1024,57 @@ async function setupMocking(
         },
       };
     });
+
+  // Mock RPC endpoint for Localhost 8546 (chain ID 1338 / 0x53a)
+  // Used by onboarding test and benchmark tests
+  await server.forPost('http://127.0.0.1:8546').thenCallback((request) => {
+    const body = request.body.json;
+    // Handle eth_chainId requests
+    if (body && body.method === 'eth_chainId') {
+      return {
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: body.id || '1',
+          result: '0x53a', // Chain ID 1338 in hex
+        },
+      };
+    }
+    // Handle other RPC methods (return generic success)
+    return {
+      statusCode: 200,
+      json: {
+        jsonrpc: '2.0',
+        id: body?.id || '1',
+        result: '0x0',
+      },
+    };
+  });
+
+  // Also mock localhost:8546 (without 127.0.0.1) for consistency
+  await server.forPost('http://localhost:8546').thenCallback((request) => {
+    const body = request.body.json;
+    // Handle eth_chainId requests
+    if (body && body.method === 'eth_chainId') {
+      return {
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: body.id || '1',
+          result: '0x53a', // Chain ID 1338 in hex
+        },
+      };
+    }
+    // Handle other RPC methods (return generic success)
+    return {
+      statusCode: 200,
+      json: {
+        jsonrpc: '2.0',
+        id: body?.id || '1',
+        result: '0x0',
+      },
+    };
+  });
 
   await mockLensNameProvider(server);
   await mockTokenNameProvider(server, chainId);
