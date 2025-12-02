@@ -39,7 +39,7 @@ export const AddWalletPage = () => {
   );
 
   return (
-    <Page className="max-w-[600px]">
+    <Page>
       <Header
         textProps={{
           variant: LegacyTextVariant.headingSm,
