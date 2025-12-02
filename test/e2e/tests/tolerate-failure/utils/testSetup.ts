@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import Timers, { type TimerWithId } from '../../../../timers/Timers.js';
+import Timers, { TimerWithId } from '../../../../timers/Timers';
 
 export type TimerTestResult = {
   testName: string;

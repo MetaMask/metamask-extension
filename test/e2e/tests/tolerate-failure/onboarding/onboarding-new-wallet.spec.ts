@@ -63,8 +63,6 @@ describe('MetaMask onboarding', function () {
 
         await driver.navigate();
         const startOnboardingPage = new StartOnboardingPage(driver);
-        const metrics = await driver.collectMetrics();
-        console.log('Metrics:', metrics);
         await startOnboardingPage.checkLoginPageIsLoaded();
         await startOnboardingPage.createWalletWithSrp(false);
         timer1.startTimer();

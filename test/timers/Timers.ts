@@ -1,8 +1,4 @@
-import { Timer } from './Timer.js';
-
-// Re-export Timer for convenience
-export { Timer } from './Timer.ts';
-
+import { Timer } from './Timer';
 /**
  * Type for timer data with ID (used for serialization)
  */
