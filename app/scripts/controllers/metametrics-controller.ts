@@ -1391,7 +1391,9 @@ export default class MetaMetricsController extends BaseController<
         ...Object.keys(metamaskState.networkConfigurationsByChainId).map(
           (hexChainId) => `eip155:${parseInt(hexChainId, 16)}`,
         ),
-        ...Object.keys(metamaskState.multichainNetworkConfigurationsByChainId), // the state here is already caip-2 formatted
+        ...Object.keys(
+          metamaskState?.multichainNetworkConfigurationsByChainId || {},
+        ), // the state here is already caip-2 formatted
       ],
       [MetaMetricsUserTrait.NftAutodetectionEnabled]:
         metamaskState.useNftDetection,
