@@ -810,19 +810,18 @@ const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;
  */
 async function isSidePanelEnabled(driver) {
   try {
-    const manifest = await driver.executeScript(`
-      try {
-        if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getManifest) {
-          return chrome.runtime.getManifest();
-        }
-        return null;
-      } catch (e) {
-        return null;
-      }
-    `);
+    // const manifest = await driver.executeScript(`
+    //   try {
+    //     if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getManifest) {
+    //       return chrome.runtime.getManifest();
+    //     }
+    //     return null;
+    //   } catch (e) {
+    //     return null;
+    //   }
+    // `);
 
-    const hasSidepanel = Boolean(manifest?.permissions?.includes('sidePanel')) || process.env.IS_SIDEPANEL?.toString() === 'true';
-
+    const hasSidepanel = process.env.IS_SIDEPANEL?.toString() === 'true';
     // Log for debugging
     console.log(`Sidepanel check: ${hasSidepanel ? 'enabled' : 'disabled'}`);
 
