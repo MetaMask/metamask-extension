@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = function (api) {
   api.cache(false);
   const slash = `\\${path.sep}`;
-  const uiPath = path.join(__dirname, 'ui').replace(/\\/g, '\\\\');
+  const uiPath = path.join(__dirname, 'ui').replace(/\\/gu, '\\\\');
   return {
     parserOpts: {
       strictMode: true,

@@ -1,7 +1,7 @@
 import EventEmitter from 'events';
 import log from 'loglevel';
+import { isObject } from '@metamask/utils';
 import { PersistenceManager } from '../stores/persistence-manager';
-import { isObject } from "@metamask/utils";
 
 /**
  * @typedef {object} Migration
@@ -15,7 +15,7 @@ import { isObject } from "@metamask/utils";
  * @property {number} [defaultVersion] - The version to use in the initial state
  */
 
-const MIGRATION_V2_START_VERSION = 183;
+const MIGRATION_V2_START_VERSION = 184;
 
 export default class Migrator extends EventEmitter {
   /**
@@ -39,7 +39,8 @@ export default class Migrator extends EventEmitter {
     // so we assume all controllers changed
     /** @type {Set<string>} */
     const changedControllers =
-      isObject(initialData.data) && initialData.meta.version < MIGRATION_V2_START_VERSION
+      isObject(initialData.data) &&
+      initialData.meta.version < MIGRATION_V2_START_VERSION
         ? new Set(Object.keys(initialData.data))
         : new Set();
 
@@ -160,7 +161,7 @@ export default class Migrator extends EventEmitter {
     return {
       data,
       meta: {
-        storageKind: PersistenceManager.DefaultStorageKind,
+        storageKind: PersistenceManager.defaultStorageKind,
         version: this.defaultVersion,
       },
     };

@@ -995,8 +995,13 @@ export async function loadStateFromPersistence(backup) {
   persistenceManager.setMetadata(versionedData.meta);
 
   if (persistenceManager.storageKind === 'data') {
-    const alreadyTried = versionedData.meta.platformSplitStateGradualRolloutAttempted !== true;
-    const shouldUseSplitStateStorage = !alreadyTried && useSplitStateStorage(versionedData.data.RemoteFeatureFlagController?.state);
+    const alreadyTried =
+      versionedData.meta.platformSplitStateGradualRolloutAttempted !== true;
+    const shouldUseSplitStateStorage =
+      !alreadyTried &&
+      useSplitStateStorage(
+        versionedData.data.RemoteFeatureFlagController?.state,
+      );
     if (shouldUseSplitStateStorage) {
       // a sigil to mark that we *tried* to migrate to split state storage
       versionedData.meta.platformSplitStateGradualRolloutAttempted = true;

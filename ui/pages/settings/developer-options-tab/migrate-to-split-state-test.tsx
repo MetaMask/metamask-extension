@@ -7,6 +7,7 @@ const MigrateToSplitStateTest = () => {
 
   const handleMigrate = async () => {
     if (
+      // eslint-disable-next-line no-alert
       confirm(
         "Are you sure you want to migrate to split state? You can't undo this action.",
       )

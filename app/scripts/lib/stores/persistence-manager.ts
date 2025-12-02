@@ -126,7 +126,7 @@ export class PersistenceManager {
    * in a test environment and retrieves the storage kind from manifest flags
    * if available; otherwise, it defaults to 'split'.
    */
-  static readonly DefaultStorageKind = ((process.env.IN_TEST
+  static readonly defaultStorageKind = ((process.env.IN_TEST
     ? getManifestFlags().testing?.storageKind
     : null) ?? 'split') as StorageKind;
 
@@ -218,7 +218,7 @@ export class PersistenceManager {
 
   #pendingPairs = new Map<string, unknown>();
 
-  storageKind: StorageKind = PersistenceManager.DefaultStorageKind;
+  storageKind: StorageKind = PersistenceManager.defaultStorageKind;
 
   /**
    * Sets the state in the local store.

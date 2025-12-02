@@ -1,10 +1,6 @@
 import { Messenger } from '@metamask/messenger';
-import {
-  AccountsControllerGetStateAction,
-} from '@metamask/accounts-controller';
-import {
-  NetworkControllerGetStateAction,
-} from '@metamask/network-controller';
+import { AccountsControllerGetStateAction } from '@metamask/accounts-controller';
+import { NetworkControllerGetStateAction } from '@metamask/network-controller';
 import {
   RemoteFeatureFlagControllerGetStateAction,
   RemoteFeatureFlagControllerState,
@@ -70,4 +66,3 @@ export function useSplitStateStorage(
     networkCount <= flag.value.maxNetworks
   );
 }
-

@@ -429,7 +429,10 @@ describe('State Persistence', function () {
           );
           // and the canary value is untouched (just making sure OUR test state
           // is actually being used)
-          assert.equal((storage.meta as any).canary, 'test-canary');
+          assert.equal(
+            (storage.meta as unknown as { canary: string }).canary,
+            'test-canary',
+          );
         },
       );
     });
