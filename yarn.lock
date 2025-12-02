@@ -5032,20 +5032,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/webpack@npm:1.5.3":
-  version: 1.5.3
-  resolution: "@lavamoat/webpack@npm:1.5.3"
+"@lavamoat/webpack@npm:1.5.6":
+  version: 1.5.6
+  resolution: "@lavamoat/webpack@npm:1.5.6"
   dependencies:
     "@babel/parser": "npm:7.28.3"
     "@lavamoat/aa": "npm:^4.3.4"
     "@lavamoat/types": "npm:^0.1.0"
     browser-resolve: "npm:2.0.0"
     json-stable-stringify: "npm:1.3.0"
-    lavamoat-core: "npm:^17.0.1"
+    lavamoat-core: "npm:^17.1.2"
     ses: "npm:1.14.0"
   peerDependencies:
     webpack: ^5.80.2
-  checksum: 10/3cbc9416f2e2e654636a66f83908d0d8d0fdaf26789e8a848f8cd22acb86b072c893cf10977d45a456504741d341ca3ecfdeb14a51ecced327c8d421e2c74465
+  checksum: 10/eb3f84a6ce143f154e430fc37ad757e594f3e1d5987398b59ddcf86d0371f23b2c671d5339ad63cd2d7e3e2305956c65bebfc5eb31d91fad994939a906bcb1be
   languageName: node
   linkType: hard
 
@@ -31581,7 +31581,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-core@npm:^17.0.1, lavamoat-core@npm:^17.1.0":
+"lavamoat-core@npm:^17.0.1":
   version: 17.1.0
   resolution: "lavamoat-core@npm:17.1.0"
   dependencies:
@@ -31594,6 +31594,22 @@ __metadata:
   bin:
     lavamoat-sort-policy: src/policy-sort-cli.js
   checksum: 10/bc45feddf10ecc563a938df315b639100874bcd0e22a388fe2047f1f93579f8f9967653aff6e416d0079f9cd11240e2bc9a45c698ec781070bb525fb3584af27
+  languageName: node
+  linkType: hard
+
+"lavamoat-core@npm:^17.1.2":
+  version: 17.1.2
+  resolution: "lavamoat-core@npm:17.1.2"
+  dependencies:
+    "@babel/types": "npm:7.27.3"
+    "@lavamoat/types": "npm:^0.1.0"
+    json-stable-stringify: "npm:1.3.0"
+    lavamoat-tofu: "npm:^8.1.0"
+    merge-deep: "npm:3.0.3"
+    ses: "npm:1.14.0"
+  bin:
+    lavamoat-sort-policy: src/policy-sort-cli.js
+  checksum: 10/accdedcdabc84b5f4b95b7f9cecf0638be95d1df8068adec0402e5a3177367e442839ca8fc4c20904646f31f75e5dbc0dc9dcde54d26ac16dedd0fe401c75dfb
   languageName: node
   linkType: hard
 
@@ -31644,9 +31660,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat@npm:10.0.3":
-  version: 10.0.3
-  resolution: "lavamoat@npm:10.0.3"
+"lavamoat@npm:10.0.5":
+  version: 10.0.5
+  resolution: "lavamoat@npm:10.0.5"
   dependencies:
     "@babel/code-frame": "npm:7.27.1"
     "@babel/highlight": "npm:7.25.9"
@@ -31654,7 +31670,7 @@ __metadata:
     bindings: "npm:1.5.0"
     corepack: "npm:0.33.0"
     htmlescape: "npm:1.1.1"
-    lavamoat-core: "npm:^17.1.0"
+    lavamoat-core: "npm:^17.1.2"
     lavamoat-tofu: "npm:^8.1.0"
     node-gyp-build: "npm:4.8.4"
     resolve: "npm:1.22.10"
@@ -31662,7 +31678,7 @@ __metadata:
   bin:
     lavamoat: src/cli.js
     lavamoat-run-command: src/run-command.js
-  checksum: 10/ff509c7bf73823e7e6ee6d1619a9988d8dd022e9d51f2124bd6141407830c1b244303beb926bd581457faf2e05f3ca23e25524d2847082c49d64da7150bd1592
+  checksum: 10/b5f980ebe8a09e0b75bbf3663a0d4643521b4864aaccd158fc0f9ddb5c98ae6e34a41fc3ba97f19993665e7a06762fd76b4734dd8fffad8ca5578b2eac4aa2c6
   languageName: node
   linkType: hard
 
@@ -32819,7 +32835,7 @@ __metadata:
     "@lavamoat/lavadome-react": "npm:0.0.20"
     "@lavamoat/lavapack": "npm:^7.0.17"
     "@lavamoat/snow": "npm:^2.0.4"
-    "@lavamoat/webpack": "npm:1.5.3"
+    "@lavamoat/webpack": "npm:1.5.6"
     "@ledgerhq/errors": "npm:^6.21.0"
     "@lydell/node-pty": "npm:^1.1.0"
     "@material-ui/core": "npm:^4.12.4"
@@ -33152,7 +33168,7 @@ __metadata:
     jsonwebtoken: "npm:^9.0.2"
     koa: "npm:^3.1.1"
     labeled-stream-splicer: "npm:^2.0.2"
-    lavamoat: "npm:10.0.3"
+    lavamoat: "npm:10.0.5"
     lavamoat-browserify: "npm:^19.0.2"
     lavamoat-viz: "npm:^7.0.5"
     level: "npm:^8.0.1"
