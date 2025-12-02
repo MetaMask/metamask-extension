@@ -120,19 +120,22 @@ const waitForKeyringControllerToBeSaved = async (driver: Driver) => {
   await driver.executeAsyncScript(`
     const callback = arguments[arguments.length - 1];
     const browser = globalThis.browser ?? globalThis.chrome;
-    // read the db until there is a data with data in iteratively
-    while (true) {
-      const { data = {}, KeyringController = {} } = await browser.storage.local.get(['data', 'KeyringController']);
-      if (
-      (data.KeyringController && Object.keys(data.KeyringController).length > 0) ||
-      (Object.keys(KeyringController).length > 0)
-      ) {
-        callback();
-        break;
+    (async function(){
+      // read the db until there is some Onboarding-related data
+      while (true) {
+        const { data = {}, KeyringController = {} } = await browser.storage.local.get(['data', 'KeyringController']);
+        if (
+        (data.KeyringController && Object.keys(data.KeyringController).length > 0) ||
+        (Object.keys(KeyringController).length > 0)
+        ) {
+          callback();
+          break;
+        }
+        console.log("waiting");
+        await new Promise((resolve) => setTimeout(resolve, 1000));
       }
-      console.log("waiting");
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    }`);
+    })();
+  `);
 };
 
 const assertDataStateStorage = (storage: DataStorage) => {
