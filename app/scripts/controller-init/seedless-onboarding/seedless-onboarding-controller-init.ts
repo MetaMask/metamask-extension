@@ -24,7 +24,9 @@ export const SeedlessOnboardingControllerInit: ControllerInitFunction<
 
   const network = loadWeb3AuthNetwork();
 
-  const controller = new SeedlessOnboardingController<EncryptionKey>({
+  const controller = new SeedlessOnboardingController<
+    CryptoKey | EncryptionKey
+  >({
     messenger: controllerMessenger,
     state: persistedState.SeedlessOnboardingController,
     network,
