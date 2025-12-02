@@ -6,6 +6,7 @@ import {
   WALLET_PASSWORD,
   withFixtures,
   unlockWallet,
+  isSidePanelEnabled,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixtures/fixture-builder';
@@ -190,7 +191,7 @@ describe('MetaMask onboarding', function () {
     );
   });
 
-  it.skip('User can add custom network during onboarding', async function () {
+  it('User can add custom network during onboarding', async function () {
     const networkName = 'Localhost 8546';
     const networkUrl = 'http://127.0.0.1:8546';
     const currencySymbol = 'ETH';
@@ -251,7 +252,15 @@ describe('MetaMask onboarding', function () {
 
         // Fiat value should be displayed as we mock the price and that is not a 'test network'
         await homePage.checkExpectedBalanceIsDisplayed('17,000.00', '$');
-        await homePage.checkAddNetworkMessageIsDisplayed(networkName);
+        // await homePage.checkAddNetworkMessageIsDisplayed(networkName);
+
+        if (await isSidePanelEnabled()) {
+          console.log(
+            `Skipping toast check for sidepanel build - network '${networkName}' added successfully (verified by balance display)`,
+          );
+        } else {
+          await homePage.checkAddNetworkMessageIsDisplayed(networkName);
+        }
       },
     );
   });
