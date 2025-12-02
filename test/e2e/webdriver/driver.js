@@ -1421,6 +1421,37 @@ class Driver {
   }
 
   /**
+   * Switches to the sidepanel window after onboarding completion.
+   * When sidepanel is enabled, clicking "Done" opens a new sidepanel window.
+   * This function waits for and switches to the sidepanel window by checking for a window
+   * with URL containing 'sidepanel.html'.
+   *
+   * @returns {Promise<void>} Promise that resolves once switched to sidepanel
+   */
+  async switchToSidepanel() {
+    console.log('Waiting for sidepanel window to open');
+
+    // Wait for sidepanel window to appear
+    await this.delay(1000);
+
+    const windowHandles = await this.driver.getAllWindowHandles();
+
+    // Find sidepanel window by checking URL of each window
+    for (const handle of windowHandles) {
+      await this.driver.switchTo().window(handle);
+      const currentUrl = await this.driver.getCurrentUrl();
+
+      // Check if this is the sidepanel window
+      if (currentUrl.includes('sidepanel.html')) {
+        console.log(`Found sidepanel window with URL: ${currentUrl}`);
+        return;
+      }
+    }
+
+    throw new Error('Could not find sidepanel window');
+  }
+
+  /**
    * Waits until the current URL matches the specified URL.
    *
    * @param {object} options - Parameters for the function.

@@ -291,8 +291,10 @@ describe('MetaMask onboarding', function () {
         await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.completeOnboarding();
 
-        // Handle sidepanel navigation if needed
-        await handleSidepanelPostOnboarding(driver);
+        // Switch to sidepanel if enabled
+        if (await isSidePanelEnabled()) {
+          await driver.switchToSidepanel();
+        }
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
