@@ -26,6 +26,8 @@ export const ProfileMetricsServiceInit: ControllerInitFunction<
   });
 
   return {
+    persistedStateKey: null,
+    memStateKey: null,
     controller,
   };
 };
