@@ -158,6 +158,14 @@ class MultichainAccountDetailsPage {
   }
 
   /**
+   * Check that the "show private key" button is not displayed
+   */
+  async checkShowPrivateKeyButtonIsNotDisplayed(): Promise<void> {
+    console.log('Check that show private key button is not displayed');
+    await this.driver.assertElementNotPresent(this.privateKeyRow);
+  }
+
+  /**
    * Click on the private key row
    */
   async clickPrivateKeyRow(): Promise<void> {
