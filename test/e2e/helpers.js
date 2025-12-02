@@ -5,6 +5,7 @@ const mockttp = require('mockttp');
 const detectPort = require('detect-port');
 const { difference } = require('lodash');
 const WebSocket = require('ws');
+const { Browser } = require('selenium-webdriver');
 const createStaticServer = require('../../development/create-static-server');
 const { setupMocking } = require('./mock-e2e');
 const { setupMockingPassThrough } = require('./mock-e2e-pass-through');
@@ -809,7 +810,10 @@ const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;
  */
 async function isSidePanelEnabled() {
   try {
-    const hasSidepanel = process.env.IS_SIDEPANEL?.toString() === 'true';
+    const hasSidepanel =
+      process.env.SELENIUM_BROWSER === Browser.CHROME &&
+      process.env.IS_SIDEPANEL === 'true';
+
     // Log for debugging
     console.log(`Sidepanel check: ${hasSidepanel ? 'enabled' : 'disabled'}`);
 
