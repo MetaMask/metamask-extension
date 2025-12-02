@@ -5,6 +5,7 @@ import type {
   BaseStore,
   MetaData,
 } from './base-store';
+import { hasProperty, isObject } from '@metamask/utils';
 
 /**
  * An implementation of the MetaMask Extension BaseStore system that uses the
@@ -37,7 +38,11 @@ export default class ExtensionStore implements BaseStore {
     // don't fetch more than we need, incase extra stuff was put in the db
     // by testing or users playing with the db
     const response = await local.get(['manifest']);
-    if (response.manifest && Array.isArray(response.manifest)) {
+    if (
+      isObject(response) &&
+      hasProperty(response, 'manifest') &&
+      Array.isArray(response.manifest)
+    ) {
       const keys = response.manifest;
 
       // get all keys from the manifest, and load those keys
@@ -55,10 +60,12 @@ export default class ExtensionStore implements BaseStore {
     // don't fetch more than we need, in case extra stuff was put in the db
     // by testing or users playing with the db
     const solidResponse = await local.get(['data', 'meta']);
-    for (const key of Object.keys(solidResponse)) {
-      // we loop because we don't always have all the keys (like on a brand new
-      // install and sometimes due to apparent state corruption)
-      this.#manifest.add(key);
+    if (isObject(solidResponse)) {
+      for (const key of Object.keys(solidResponse)) {
+        // we loop because we don't always have all the keys (like on a brand new
+        // install and sometimes due to apparent state corruption)
+        this.#manifest.add(key);
+      }
     }
     console.timeEnd('[ExtensionStore] Reading from local store');
     return solidResponse;
