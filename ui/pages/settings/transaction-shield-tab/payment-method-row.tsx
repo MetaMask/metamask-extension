@@ -128,7 +128,7 @@ export const PaymentMethodRow = ({
 
     return availableTokenBalances.filter(
       (token) =>
-        token.symbol !== cryptoPayment.crypto.tokenSymbol &&
+        token.symbol !== cryptoPayment.crypto.tokenSymbol ||
         token.chainId.toLowerCase() !==
           cryptoPayment.crypto.chainId.toLowerCase(),
     );
