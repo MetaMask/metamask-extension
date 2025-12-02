@@ -33,7 +33,8 @@ export const handleSidepanelPostOnboarding = async (
 
   const currentUrl = await driver.getCurrentUrl();
   console.log('currentUrl in handleSidepanelPostOnboarding is: ', currentUrl);
-  await driver.driver.get(`${driver.extensionUrl}/home.html`);
+  await driver.delay(1000);
+  await driver.navigate();
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
 };
 
