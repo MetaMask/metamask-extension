@@ -9,7 +9,7 @@ import HomePage from '../page-objects/pages/home/homepage';
 import PrivacySettings from '../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../page-objects/pages/settings/settings-page';
 import VaultDecryptorPage from '../page-objects/pages/vault-decryptor-page';
-import { completeCreateNewWalletOnboardingFlowWithCustomSettings } from '../page-objects/flows/onboarding.flow';
+import { completeCreateNewWalletOnboardingFlowWithCustomSettings, handleSidepanelPostOnboarding } from '../page-objects/flows/onboarding.flow';
 
 const VAULT_DECRYPTOR_PAGE = 'https://metamask.github.io/vault-decryptor';
 
@@ -177,6 +177,7 @@ describe('Vault Decryptor Page', function () {
       },
       async ({ driver }) => {
         console.log('IS_SIDEPANEL', process.env.IS_SIDEPANEL);
+        await handleSidepanelPostOnboarding(driver);
         // we don't need to use navigate since MM will automatically open a new window in prod build
         await driver.waitAndSwitchToWindowWithTitle(
           2,

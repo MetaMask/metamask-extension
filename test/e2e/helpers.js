@@ -821,7 +821,7 @@ async function isSidePanelEnabled(driver) {
       }
     `);
 
-    const hasSidepanel = Boolean(manifest?.permissions?.includes('sidePanel'));
+    const hasSidepanel = Boolean(manifest?.permissions?.includes('sidePanel')) || process.env.IS_SIDEPANEL?.toString() === 'true';
 
     // Log for debugging
     console.log(`Sidepanel check: ${hasSidepanel ? 'enabled' : 'disabled'}`);
