@@ -476,7 +476,12 @@ export default function UnifiedTransactionList({
       });
       return groupAndSortTransactionsByNonce(pendingFromGroup);
     }
-    return unfilteredPendingTransactionsAllChains;
+
+    // Fallback: filter by enabled chain IDs to match completed transactions behavior
+    return unfilteredPendingTransactionsAllChains.filter((group) => {
+      const chainId = group.initialTransaction?.chainId;
+      return evmChainIds.includes(chainId);
+    });
   }, [
     evmChainIds,
     accountGroupEvmAddresses,
