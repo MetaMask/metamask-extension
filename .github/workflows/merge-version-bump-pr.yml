@@ -1,0 +1,25 @@
+name: Merge Version Bump PR
+
+on:
+  # Trigger the workflow when a comment is created on an issue or pull request
+  issue_comment:
+    types: [created]
+
+jobs:
+  merge-pr:
+    # Only run if the comment is on a PR and the comment body matches exactly "Merge my PR"
+    if: >-
+      github.event.issue.pull_request &&
+      github.event.comment.body == 'Merge my PR' &&
+      (
+        github.event.comment.author_association == 'MEMBER' ||
+        github.event.comment.author_association == 'OWNER'
+      )
+    uses: MetaMask/github-tools/.github/workflows/merge-approved-pr.yml@INFRA-3000-MergeVersionBumpPRs
+    with:
+      pr-number: ${{ github.event.issue.number }}
+      # Merge PRs from version-bump/X.Y.Z into main
+      required-base-branch: 'main'
+      head-branch-pattern: '^version-bump/[0-9]+\.[0-9]+\.[0-9]+$'
+    secrets:
+      github-token: ${{ secrets.METAMASK_MOBILE_BRANCH_SYNC_TOKEN }}
