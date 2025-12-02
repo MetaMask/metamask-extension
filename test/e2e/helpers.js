@@ -813,7 +813,7 @@ async function isSidePanelEnabled() {
   try {
     const hasSidepanel =
       process.env.SELENIUM_BROWSER === Browser.CHROME &&
-      process.env.IS_SIDEPANEL;
+      process.env.IS_SIDEPANEL === 'true';
 
     // Log for debugging
     console.log(`Sidepanel check: ${hasSidepanel ? 'enabled' : 'disabled'}`);
