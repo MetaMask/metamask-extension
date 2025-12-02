@@ -94,48 +94,4 @@ describe(`migration #${VERSION}`, () => {
 
     expect(newStorage).toStrictEqual(expectedStorage);
   });
-
-  it('updates the selected network client id to the new MegaETH Testnet v2 if the selected network client id is the old MegaETH Testnet v1', async () => {
-    const oldStorage = {
-      meta: { version: oldVersion },
-      data: {
-        NetworkController: {
-          selectedNetworkClientId: 'megaeth-testnet',
-          networkConfigurationsByChainId: {
-            [MEGAETH_TESTNET_V1_CHAIN_ID]: {
-              chainId: MEGAETH_TESTNET_V1_CHAIN_ID,
-              name: 'Mega Testnet',
-              nativeCurrency: 'MegaETH',
-              blockExplorerUrls: ['https://explorer.com'],
-              defaultRpcEndpointIndex: 0,
-              defaultBlockExplorerUrlIndex: 0,
-              rpcEndpoints: [
-                {
-                  networkClientId: 'megaeth-testnet',
-                  type: RpcEndpointType.Custom,
-                  url: 'https://rpc.com',
-                },
-              ],
-            },
-          },
-        },
-      },
-    };
-
-    const expectedStorage = {
-      meta: { version: VERSION },
-      data: {
-        NetworkController: {
-          selectedNetworkClientId: 'megaeth-testnet-v2',
-          networkConfigurationsByChainId: {
-            [MEGAETH_TESTNET_V2_CONFIG.chainId]: MEGAETH_TESTNET_V2_CONFIG,
-          },
-        },
-      },
-    };
-
-    const newStorage = await migrate(oldStorage);
-
-    expect(newStorage).toStrictEqual(expectedStorage);
-  });
 });

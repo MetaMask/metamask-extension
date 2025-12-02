@@ -102,15 +102,5 @@ function transformState(state: Record<string, unknown>) {
     delete networkConfigurationsByChainId[MEGAETH_TESTNET_V1_CHAIN_ID];
   }
 
-  // If the selected network client id is the old MegaETH Testnet v1,
-  // then update it to the new MegaETH Testnet v2.
-  if (
-    hasProperty(networkState, 'selectedNetworkClientId') &&
-    typeof networkState.selectedNetworkClientId === 'string' &&
-    networkState.selectedNetworkClientId === 'megaeth-testnet'
-  ) {
-    networkState.selectedNetworkClientId = 'megaeth-testnet-v2';
-  }
-
   return state;
 }
