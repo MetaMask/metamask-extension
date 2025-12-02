@@ -38,7 +38,6 @@ import { Skeleton } from '../../../components/component-library/skeleton';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   useHandleSubscriptionSupportAction,
-  useOpenGetSubscriptionBillingPortal,
   useSubscriptionCryptoApprovalTransaction,
   useUpdateSubscriptionCardPaymentMethod,
   useUserLastSubscriptionByProduct,
@@ -206,11 +205,6 @@ const TransactionShield = () => {
   );
 
   const [
-    executeOpenGetSubscriptionBillingPortal,
-    openGetSubscriptionBillingPortalResult,
-  ] = useOpenGetSubscriptionBillingPortal(displayedShieldSubscription);
-
-  const [
     executeUpdateSubscriptionCardPaymentMethod,
     updateSubscriptionCardPaymentMethodResult,
   ] = useUpdateSubscriptionCardPaymentMethod({
@@ -221,7 +215,6 @@ const TransactionShield = () => {
   const hasApiError =
     subscriptionsError ||
     subscriptionPricingError ||
-    openGetSubscriptionBillingPortalResult.error ||
     updateSubscriptionCardPaymentMethodResult.error;
 
   const isWaitingForSubscriptionCreation =
@@ -229,7 +222,6 @@ const TransactionShield = () => {
 
   const loading =
     resultTriggerSubscriptionCheckInsufficientFunds.pending ||
-    openGetSubscriptionBillingPortalResult.pending ||
     updateSubscriptionCardPaymentMethodResult.pending;
 
   const showSkeletonLoader =
@@ -876,13 +868,6 @@ const TransactionShield = () => {
             <Skeleton width="60%" height={24} />
           )}
         </Box>
-        {displayedShieldSubscription?.status !==
-          SUBSCRIPTION_STATUSES.provisional &&
-          buttonRow(
-            t('shieldTxMembershipBillingDetailsViewBillingHistory'),
-            executeOpenGetSubscriptionBillingPortal,
-            'shield-detail-view-billing-history-button',
-          )}
       </Box>
       {loading && <LoadingScreen />}
       {currentToken &&

@@ -16,6 +16,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { ButtonRow, ButtonRowContainer } from '../components';
 import {
   useCancelSubscription,
+  useOpenGetSubscriptionBillingPortal,
   useUnCancelSubscription,
   useUserLastSubscriptionByProduct,
   useUserSubscriptionByProduct,
@@ -66,10 +67,19 @@ const ManageShieldPlan = () => {
   const [executeUnCancelSubscription, unCancelSubscriptionResult] =
     useUnCancelSubscription(currentShieldSubscription);
 
+  const [
+    executeOpenGetSubscriptionBillingPortal,
+    openGetSubscriptionBillingPortalResult,
+  ] = useOpenGetSubscriptionBillingPortal(displayedShieldSubscription);
+
   const hasApiError =
-    cancelSubscriptionResult.error || unCancelSubscriptionResult.error;
+    cancelSubscriptionResult.error ||
+    unCancelSubscriptionResult.error ||
+    openGetSubscriptionBillingPortalResult.error;
   const loading =
-    cancelSubscriptionResult.pending || unCancelSubscriptionResult.pending;
+    cancelSubscriptionResult.pending ||
+    unCancelSubscriptionResult.pending ||
+    openGetSubscriptionBillingPortalResult.pending;
 
   const [isCancelMembershipModalOpen, setIsCancelMembershipModalOpen] =
     useState(false);
@@ -139,16 +149,22 @@ const ManageShieldPlan = () => {
               console.log('Payment method');
             }}
           />
-          <Box className="border-t border-muted w-full h-px" />
-          <ButtonRow
-            title="Manage billing"
-            rightIconProps={{
-              name: IconName.ArrowRight,
-            }}
-            onClick={() => {
-              console.log('Manage billing');
-            }}
-          />
+          {displayedShieldSubscription?.status !==
+            SUBSCRIPTION_STATUSES.provisional && (
+            <>
+              <Box className="border-t border-muted w-full h-px" />
+              <ButtonRow
+                data-testid="shield-detail-view-billing-history-button"
+                title={t('shieldTxMembershipBillingDetailsViewBillingHistory')}
+                rightIconProps={{
+                  name: IconName.ArrowRight,
+                }}
+                onClick={() => {
+                  executeOpenGetSubscriptionBillingPortal();
+                }}
+              />
+            </>
+          )}
         </ButtonRowContainer>
       </Box>
       <Box className="p-4">
