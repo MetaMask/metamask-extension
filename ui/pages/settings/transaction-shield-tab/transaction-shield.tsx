@@ -883,32 +883,40 @@ const TransactionShield = () => {
               description={t('shieldTxMembershipBenefits3Description')}
               loading={showSkeletonLoader}
               endAccessory={
-                <Button
-                  variant={ButtonVariant.Secondary}
-                  size={ButtonSize.Md}
-                  onClick={() => {
-                    console.log('sign up to rewards');
-                  }}
-                >
-                  {t('shieldTxMembershipBenefits3SignUp')}
-                </Button>
+                showSkeletonLoader ? (
+                  <Skeleton width="100%" height={40} />
+                ) : (
+                  <Button
+                    variant={ButtonVariant.Secondary}
+                    size={ButtonSize.Md}
+                    onClick={() => {
+                      console.log('sign up to rewards');
+                    }}
+                  >
+                    {t('shieldTxMembershipBenefits3SignUp')}
+                  </Button>
+                )
               }
             />
           </ButtonRowContainer>
         </Box>
 
         {displayedShieldSubscription?.isEligibleForSupport && (
-          <Box className="px-4">
-            <Button
-              data-testid="shield-detail-submit-case-button"
-              className="w-full mt-4"
-              variant={ButtonVariant.Secondary}
-              onClick={() => {
-                navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL);
-              }}
-            >
-              {t('shieldTxMembershipSubmitCase')}
-            </Button>
+          <Box className="px-4 mt-4">
+            {showSkeletonLoader ? (
+              <Skeleton width="100%" height={40} />
+            ) : (
+              <Button
+                data-testid="shield-detail-submit-case-button"
+                className="w-full"
+                variant={ButtonVariant.Secondary}
+                onClick={() => {
+                  navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL);
+                }}
+              >
+                {t('shieldTxMembershipSubmitCase')}
+              </Button>
+            )}
           </Box>
         )}
       </Box>
