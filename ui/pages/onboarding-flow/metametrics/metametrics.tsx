@@ -54,6 +54,8 @@ import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils
 
 const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function OnboardingMetametrics() {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -77,8 +79,8 @@ export default function OnboardingMetametrics() {
     setIsDataCollectionForMarketingChecked,
   ] = useState(false);
 
-  const participateCheckboxRef = useRef(null);
-  const marketingCheckboxRef = useRef(null);
+  const participateCheckboxRef = useRef<HTMLInputElement>(null);
+  const marketingCheckboxRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (participateInMetaMetricsSet) {
@@ -111,7 +113,7 @@ export default function OnboardingMetametrics() {
     }
   }
 
-  const handleContinue = async (e) => {
+  const handleContinue = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
       // Set pna25Acknowledged to true for all new users who complete onboarding
@@ -140,7 +142,9 @@ export default function OnboardingMetametrics() {
           category: MetaMetricsEventCategory.Onboarding,
           event: MetaMetricsEventName.AnalyticsPreferenceSelected,
           properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             is_metrics_opted_in: true,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             has_marketing_consent: Boolean(isDataCollectionForMarketingChecked),
             location: 'onboarding_metametrics',
           },
@@ -214,7 +218,7 @@ export default function OnboardingMetametrics() {
         onClick={() => {
           participateCheckboxRef.current?.click();
         }}
-        onKeyDown={(e) => {
+        onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
           if (e.key === ' ' || e.key === 'Enter') {
             e.preventDefault();
             participateCheckboxRef.current?.click();
@@ -227,9 +231,12 @@ export default function OnboardingMetametrics() {
           isChecked={isParticipateInMetaMetricsChecked}
           onChange={handleParticipateInMetaMetricsChange}
           inputRef={participateCheckboxRef}
-          onClick={(e) => e.stopPropagation()}
+          onClick={(e: React.MouseEvent<HTMLInputElement>) =>
+            e.stopPropagation()
+          }
           inputProps={{
-            onClick: (e) => e.stopPropagation(),
+            onClick: (e: React.MouseEvent<HTMLInputElement>) =>
+              e.stopPropagation(),
           }}
           label={
             <Text variant={TextVariant.bodyMdMedium}>
@@ -257,7 +264,6 @@ export default function OnboardingMetametrics() {
         borderRadius={BorderRadius.LG}
         backgroundColor={BackgroundColor.backgroundMuted}
         className={`${isParticipateInMetaMetricsChecked ? 'onboarding-metametrics__checkbox' : 'onboarding-metametrics__checkbox-disabled'}`}
-        disabled={!isParticipateInMetaMetricsChecked}
         role={isParticipateInMetaMetricsChecked ? 'button' : undefined}
         tabIndex={isParticipateInMetaMetricsChecked ? 0 : undefined}
         onClick={
@@ -267,15 +273,15 @@ export default function OnboardingMetametrics() {
               }
             : undefined
         }
-        onKeyDown={
-          isParticipateInMetaMetricsChecked &&
-          ((e) => {
-            if (e.key === ' ' || e.key === 'Enter') {
-              e.preventDefault();
-              marketingCheckboxRef.current?.click();
-            }
-          })
-        }
+        onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
+          if (
+            (e.key === ' ' || e.key === 'Enter') &&
+            isParticipateInMetaMetricsChecked
+          ) {
+            e.preventDefault();
+            marketingCheckboxRef.current?.click();
+          }
+        }}
       >
         <Checkbox
           id="metametrics-datacollection-opt-in"
@@ -289,9 +295,12 @@ export default function OnboardingMetametrics() {
             setIsDataCollectionForMarketingChecked((prev) => !prev);
           }}
           inputRef={marketingCheckboxRef}
-          onClick={(e) => e.stopPropagation()}
+          onClick={(e: React.MouseEvent<HTMLInputElement>) =>
+            e.stopPropagation()
+          }
           inputProps={{
-            onClick: (e) => e.stopPropagation(),
+            onClick: (e: React.MouseEvent<HTMLInputElement>) =>
+              e.stopPropagation(),
           }}
           label={
             <Text variant={TextVariant.bodyMdMedium}>

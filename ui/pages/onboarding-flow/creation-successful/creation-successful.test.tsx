@@ -21,6 +21,7 @@ jest.mock('react-router-dom-v5-compat', () => {
 });
 
 jest.mock('./wallet-ready-animation', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: () => <div data-testid="wallet-ready-animation" />,
 }));
