@@ -360,7 +360,7 @@ describe('MultiRpc:', function (this: Suite) {
         await homePage.checkPageIsLoaded();
 
         // Check for edit network toast (may not appear with sidepanel due to appState loss)
-        if (await isSidePanelEnabled(driver)) {
+        if (await isSidePanelEnabled()) {
           console.log('Skipping edit network toast check for sidepanel build');
         } else {
           await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum');
@@ -505,7 +505,7 @@ describe('MultiRpc:', function (this: Suite) {
         await homePage.checkPageIsLoaded();
 
         // Check for edit network toast (may not appear with sidepanel due to appState loss)
-        if (await isSidePanelEnabled(driver)) {
+        if (await isSidePanelEnabled()) {
           console.log('Skipping edit network toast check for sidepanel build');
         } else {
           await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum');

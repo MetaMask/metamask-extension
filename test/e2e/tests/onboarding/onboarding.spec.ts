@@ -257,7 +257,7 @@ describe('MetaMask onboarding', function () {
         // Note: With sidepanel enabled, appState is lost during page reload,
         // so the toast notification won't appear. The successful balance display
         // above confirms the network was added correctly.
-        if (await isSidePanelEnabled(driver)) {
+        if (await isSidePanelEnabled()) {
           console.log(
             `Skipping toast check for sidepanel build - network '${networkName}' added successfully (verified by balance display)`,
           );
