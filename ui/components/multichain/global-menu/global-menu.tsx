@@ -167,8 +167,8 @@ export const GlobalMenu = ({
   const preferences = useSelector(getPreferences);
   const isSidePanelDefault = preferences?.useSidePanelAsDefault ?? false;
 
-  // Check if sidepanel feature is enabled (both build flag and LaunchDarkly flag)
-  const isSidePanelEnabled = process.env.IS_SIDEPANEL;
+  // Check if sidepanel feature is enabled
+  const isSidePanelEnabled = process.env.IS_SIDEPANEL?.toString() === 'true';
 
   const showPriorityTag = useMemo(
     () =>

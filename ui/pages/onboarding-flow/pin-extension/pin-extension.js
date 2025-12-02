@@ -74,7 +74,7 @@ export default function OnboardingPinExtension() {
     });
 
     // Side Panel - only if feature flag is enabled and not in test mode
-    if (process.env.IS_SIDEPANEL) {
+    if (process.env.IS_SIDEPANEL?.toString() === 'true') {
       try {
         if (browser?.sidePanel?.open) {
           const tabs = await browser.tabs.query({

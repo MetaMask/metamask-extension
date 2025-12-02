@@ -69,7 +69,7 @@ export default function CreationSuccessful() {
   );
   const trackEvent = useContext(MetaMetricsContext);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-  const isSidePanelEnabled = process.env.IS_SIDEPANEL;
+  const isSidePanelEnabled = process.env.IS_SIDEPANEL?.toString() === 'true';
 
   const learnMoreLink =
     'https://support.metamask.io/stay-safe/safety-in-web3/basic-safety-and-security-tips-for-metamask/';
