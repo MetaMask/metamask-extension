@@ -759,6 +759,22 @@ class AssetListPage {
   }
 
   /**
+   * Waits for a token to be displayed in the token list
+   * This is done due to the snap delay.
+   *
+   * @param tokenName - The name of the token to wait for
+   */
+  async waitForTokenToBeDisplayed(tokenName: string): Promise<void> {
+    await this.driver.waitForSelector(
+      {
+        css: this.tokenListItem,
+        text: tokenName,
+      },
+      { timeout: 30000 },
+    );
+  }
+
+  /**
    * Checks if the token list prices are displayed and no "No conversion rate available" message is displayed
    *
    * @throws Error if a "No conversion rate available" message is displayed

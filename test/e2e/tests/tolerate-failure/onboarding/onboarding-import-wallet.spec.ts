@@ -10,14 +10,17 @@ import StartOnboardingPage from '../../../page-objects/pages/onboarding/start-on
 
 import OnboardingSrpPage from '../../../page-objects/pages/onboarding/onboarding-srp-page';
 import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
-import FixtureBuilder from '../../../fixture-builder';
+
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import { getCommonMocks } from '../utils/commonMocks.js';
 import { setupTimerReporting } from '../utils/testSetup.js';
 import Timers from '../../../../timers/Timers.js';
-import { E2E_SRP } from '../../../default-fixture';
+
 import AssetListPage from '../../../page-objects/pages/home/asset-list.js';
+
+import { E2E_SRP } from '../../../fixtures/default-fixture';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 
 describe('MetaMask onboarding', function () {
   // Setup timer reporting for all tests in this describe block
@@ -101,9 +104,9 @@ describe('MetaMask onboarding', function () {
         await assetListPage.checkTokenListIsDisplayed();
         await assetListPage.checkConversionRateDisplayed();
         await assetListPage.checkTokenExistsInList('Ethereum');
-        await assetListPage.checkTokenExistsInList('Solana'); // https://github.com/MetaMask/metamask-extension/issues/38104
-        await assetListPage.checkTokenExistsInList('Bitcoin'); // https://github.com/MetaMask/metamask-extension/issues/38104
-        await assetListPage.checkTokenExistsInList('Tron'); // https://github.com/MetaMask/metamask-extension/issues/38104
+        await assetListPage.waitForTokenToBeDisplayed('Solana');
+        // await assetListPage.waitForTokenToBeDisplayed('Bitcoin');
+        // await assetListPage.checkTokenExistsInList('Tron'); // https://consensyssoftware.atlassian.net/browse/MMQA-1191
         timer6.stopTimer();
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountsPage();

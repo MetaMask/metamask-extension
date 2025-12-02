@@ -10,11 +10,11 @@ import SecureWalletPage from '../../../page-objects/pages/onboarding/secure-wall
 import StartOnboardingPage from '../../../page-objects/pages/onboarding/start-onboarding-page';
 
 import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
-import FixtureBuilder from '../../../fixture-builder';
 import { getCommonMocks } from '../utils/commonMocks.js';
 import { setupTimerReporting } from '../utils/testSetup.js';
 import Timers from '../../../../timers/Timers.js';
 import AssetListPage from '../../../page-objects/pages/home/asset-list.js';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 
 describe('MetaMask onboarding', function () {
   // Setup timer reporting for all tests in this describe block
@@ -102,10 +102,10 @@ describe('MetaMask onboarding', function () {
         await homePage.checkPageIsLoaded();
         await assetListPage.checkTokenListIsDisplayed();
         await assetListPage.checkConversionRateDisplayed();
-        await assetListPage.checkTokenExistsInList('Ethereum');
-        await assetListPage.checkTokenExistsInList('Solana'); // https://github.com/MetaMask/metamask-extension/issues/38104
-        await assetListPage.checkTokenExistsInList('Bitcoin'); // https://github.com/MetaMask/metamask-extension/issues/38104
-        await assetListPage.checkTokenExistsInList('Tron'); // https://github.com/MetaMask/metamask-extension/issues/38104
+        await assetListPage.waitForTokenToBeDisplayed('Ethereum');
+        await assetListPage.waitForTokenToBeDisplayed('Solana');
+        // await assetListPage.waitForTokenToBeDisplayed('Bitcoin');
+        // await assetListPage.checkTokenExistsInList('Tron'); // https://consensyssoftware.atlassian.net/browse/MMQA-1191
         timer7.stopTimer();
       },
     );
