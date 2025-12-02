@@ -176,6 +176,7 @@ describe('Vault Decryptor Page', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
+        console.log('IS_SIDEPANEL', process.env.IS_SIDEPANEL);
         // we don't need to use navigate since MM will automatically open a new window in prod build
         await driver.waitAndSwitchToWindowWithTitle(
           2,
