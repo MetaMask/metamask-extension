@@ -93,6 +93,7 @@ export const SENTRY_BACKGROUND_STATE = {
     shieldEndingToastLastClickedOrClosed: true,
     shieldPausedToastLastClickedOrClosed: true,
     isWalletResetInProgress: false,
+    pna25Acknowledged: false,
   },
   MultichainBalancesController: {
     balances: false,
@@ -382,6 +383,9 @@ export const SENTRY_BACKGROUND_STATE = {
     transactions: false,
     lastFetchedBlockNumbers: false,
     methodData: false,
+  },
+  TransactionPayController: {
+    transactionData: false,
   },
   TxController: {
     transactions: false,
