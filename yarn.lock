@@ -8418,19 +8418,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/shield-controller@npm:^2.1.1":
-  version: 2.1.1
-  resolution: "@metamask/shield-controller@npm:2.1.1"
+"@metamask/shield-controller@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "@metamask/shield-controller@npm:3.1.0"
   dependencies:
     "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/controller-utils": "npm:^11.15.0"
+    "@metamask/controller-utils": "npm:^11.16.0"
     "@metamask/messenger": "npm:^0.3.0"
+    "@metamask/signature-controller": "npm:^37.0.0"
+    "@metamask/transaction-controller": "npm:^62.3.0"
     "@metamask/utils": "npm:^11.8.1"
     cockatiel: "npm:^3.1.2"
-  peerDependencies:
-    "@metamask/signature-controller": ^36.0.0
-    "@metamask/transaction-controller": ^61.0.0
-  checksum: 10/3abb2c55ce6bbe241bbf42549de499e8769fc7a991268996dcf0921ad9708fefef5a5828a2ae4328252c1faa795c6877418989e1a885e7f0a8b965c121004369
+  checksum: 10/ba4c31e992380572f1e0898ab51bd0e8805d0fc8f56d2c3f3517b2944190a40013ec86ec2ef0dc5a52a2cdc5b547d1b749ab1c4fe961454732ff2c01fce7b111
   languageName: node
   linkType: hard
 
@@ -8454,6 +8453,29 @@ __metadata:
     "@metamask/logging-controller": ^7.0.0
     "@metamask/network-controller": ^25.0.0
   checksum: 10/aef26b1453c286a96a0ceead056e07518fc0880ff5f9b08cf896f6e072a1e44886786ceb8abbbc2ee1186f1224ff315bf27a99d937d9587c1c60bf4dde5183d3
+  languageName: node
+  linkType: hard
+
+"@metamask/signature-controller@npm:^37.0.0":
+  version: 37.0.0
+  resolution: "@metamask/signature-controller@npm:37.0.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^9.0.0"
+    "@metamask/controller-utils": "npm:^11.16.0"
+    "@metamask/eth-sig-util": "npm:^8.2.0"
+    "@metamask/messenger": "npm:^0.3.0"
+    "@metamask/utils": "npm:^11.8.1"
+    jsonschema: "npm:^1.4.1"
+    lodash: "npm:^4.17.21"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/accounts-controller": ^35.0.0
+    "@metamask/approval-controller": ^8.0.0
+    "@metamask/gator-permissions-controller": ^0.6.0
+    "@metamask/keyring-controller": ^25.0.0
+    "@metamask/logging-controller": ^7.0.0
+    "@metamask/network-controller": ^26.0.0
+  checksum: 10/759ce954a8713daf9132a4ec2321eba94a577d512cdaba2b303f33ed01aaadd9921a8668e1be0725a00b0ba5f3719cb0478456ed410f73089f94524077755b6c
   languageName: node
   linkType: hard
 
@@ -33436,7 +33458,7 @@ __metadata:
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/seedless-onboarding-controller": "npm:^6.1.0"
     "@metamask/selected-network-controller": "npm:^25.0.0"
-    "@metamask/shield-controller": "npm:^2.1.1"
+    "@metamask/shield-controller": "npm:^3.1.0"
     "@metamask/signature-controller": "npm:^35.0.0"
     "@metamask/smart-transactions-controller": "npm:^20.0.0"
     "@metamask/snap-account-abstraction-keyring-site": "npm:^1.0.0"
