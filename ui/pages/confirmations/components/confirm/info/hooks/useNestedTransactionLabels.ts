@@ -12,7 +12,7 @@ export function useNestedTransactionLabels({
   const t = useI18nContext();
 
   return nestedTransactions
-    ?.filter((nestedTransaction) => !!nestedTransaction)
+    ?.filter((nestedTransaction) => nestedTransaction !== undefined)
     .map((nestedTransaction, index) => {
       const { data, to } = nestedTransaction;
       // It's safe to call useFourByte here because the length of nestedTransactions
