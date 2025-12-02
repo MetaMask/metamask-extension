@@ -24,6 +24,7 @@ import { PreferencesControllerGetStateAction } from '../../controllers/preferenc
 import { SwapsControllerGetStateAction } from '../../controllers/swaps/swaps.types';
 import { AppStateControllerGetStateAction } from '../../controllers/app-state-controller';
 import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller';
+import { RewardsControllerGetSeasonStatusAction } from '../../controllers/rewards/rewards-controller.types';
 
 export const SERVICE_NAME = 'SubscriptionService';
 
@@ -53,7 +54,8 @@ export type SubscriptionServiceAction =
   | AuthenticationControllerGetBearerToken
   | AppStateControllerGetStateAction
   | MetaMetricsControllerTrackEventAction
-  | KeyringControllerGetStateAction; // For metrics, to get the HD Keyrings metadata
+  | KeyringControllerGetStateAction // For metrics, to get the HD Keyrings metadata
+  | RewardsControllerGetSeasonStatusAction; // For rewards, to get the season status for claiming points with the shield subscription
 
 export type SubscriptionServiceEvent = never;
 

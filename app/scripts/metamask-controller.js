@@ -2607,10 +2607,6 @@ export default class MetamaskController extends EventEmitter {
         this.subscriptionService.updateSubscriptionCardPaymentMethod.bind(
           this.subscriptionService,
         ),
-      startSubscriptionWithCrypto:
-        this.subscriptionController.startSubscriptionWithCrypto.bind(
-          this.subscriptionController,
-        ),
       updateSubscriptionCryptoPaymentMethod:
         this.subscriptionService.updateSubscriptionCryptoPaymentMethod.bind(
           this.subscriptionService,

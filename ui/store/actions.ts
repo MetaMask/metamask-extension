@@ -616,24 +616,6 @@ export function updateSubscriptionCardPaymentMethod(params: {
   };
 }
 
-export function startSubscriptionWithCrypto(params: {
-  products: ProductType[];
-  isTrialRequested: boolean;
-  recurringInterval: RecurringInterval;
-  billingCycles: number;
-  chainId: Hex;
-  payerAddress: Hex;
-  tokenSymbol: string;
-  rawTransaction: Hex;
-}): ThunkAction<Subscription[], MetaMaskReduxState, unknown, AnyAction> {
-  return async (_dispatch: MetaMaskReduxDispatch) => {
-    return await submitRequestToBackground<Subscription[]>(
-      'startSubscriptionWithCrypto',
-      [params],
-    );
-  };
-}
-
 export function updateSubscriptionCryptoPaymentMethod(
   params: Extract<UpdatePaymentMethodOpts, { paymentType: 'crypto' }>,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
