@@ -1,11 +1,11 @@
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
+import { hasProperty, isObject } from '@metamask/utils';
 import type {
   MetaMaskStorageStructure,
   BaseStore,
   MetaData,
 } from './base-store';
-import { hasProperty, isObject } from '@metamask/utils';
 
 /**
  * An implementation of the MetaMask Extension BaseStore system that uses the
