@@ -13,6 +13,7 @@ const { Ganache } = require('./seeder/ganache');
 const FixtureServer = require('./fixtures/fixture-server');
 const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
+import { Browser } from 'selenium-webdriver';
 const { PAGES } = require('./webdriver/driver');
 const AnvilSeeder = require('./seeder/anvil-seeder');
 const GanacheSeeder = require('./seeder/ganache-seeder');
@@ -810,7 +811,9 @@ const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;
  */
 async function isSidePanelEnabled() {
   try {
-    const hasSidepanel = process.env.IS_SIDEPANEL?.toString() === 'true';
+    const hasSidepanel =
+      process.env.SELENIUM_BROWSER === Browser.CHROME &&
+      process.env.IS_SIDEPANEL;
 
     // Log for debugging
     console.log(`Sidepanel check: ${hasSidepanel ? 'enabled' : 'disabled'}`);
