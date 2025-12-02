@@ -647,14 +647,19 @@ export default function UnifiedTransactionList({
     [bridgeHistoryItems, multichainNetworkConfig, toggleShowDetails],
   );
 
-  // Remove transactions within each date group that are incoming transactions
-  // to a user that not the current one.
+  // Remove incoming transactions not addressed to any account in the group
   const removeIncomingTxsButToAnotherAddressUnified = useCallback(
     (dateGroup) => {
-      const isIncomingTxsButToAnotherAddress = (transaction) =>
-        transaction.type === TransactionType.incoming &&
-        transaction.txParams.to.toLowerCase() !==
-          selectedAccount.address.toLowerCase();
+      const isIncomingTxToAnotherAddress = (transaction) => {
+        if (transaction.type !== TransactionType.incoming) {
+          return false;
+        }
+        const toAddress = transaction.txParams.to?.toLowerCase();
+        const isToGroupOrSelected =
+          accountGroupEvmAddresses.includes(toAddress) ||
+          toAddress === selectedAccount.address.toLowerCase();
+        return !isToGroupOrSelected;
+      };
 
       dateGroup.transactionGroups = dateGroup.transactionGroups.map((item) => {
         if (item?.kind !== TransactionKind.EVM) {
@@ -662,14 +667,14 @@ export default function UnifiedTransactionList({
         }
         const { transactionGroup } = item;
         transactionGroup.transactions = transactionGroup.transactions.filter(
-          (transaction) => !isIncomingTxsButToAnotherAddress(transaction),
+          (transaction) => !isIncomingTxToAnotherAddress(transaction),
         );
         return item;
       });
 
       return dateGroup;
     },
-    [selectedAccount],
+    [selectedAccount, accountGroupEvmAddresses],
   );
 
   const removeEmptyEvmItemsFromUnifiedDateGroup = useCallback((dateGroup) => {
