@@ -87,10 +87,8 @@ import {
   selectBridgeHistoryForAccountGroup,
   selectBridgeHistoryItemForTxMetaId,
 } from '../../../ducks/bridge-status/selectors';
-import {
-  getSelectedAccountGroupMultichainTransactions,
-  getSelectedAccountGroupEvmAddresses,
-} from '../../../selectors/multichain-transactions';
+import { getSelectedAccountGroupMultichainTransactions } from '../../../selectors/multichain-transactions';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import { TransactionActivityEmptyState } from '../transaction-activity-empty-state';
 
 const PAGE_DAYS_INCREMENT = 10;
@@ -422,10 +420,11 @@ export default function UnifiedTransactionList({
     tokenChainIdOverride,
   );
 
-  // Show transactions from all EVM accounts in the group, not just the selected account
-  const accountGroupEvmAddresses = useSelector(
-    getSelectedAccountGroupEvmAddresses,
+  // Get the EVM account from the group to show its transactions even when non-EVM account is selected
+  const accountGroupEvmAccount = useSelector((state) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(state, 'eip155:1'),
   );
+  const accountGroupEvmAddress = accountGroupEvmAccount?.address?.toLowerCase();
 
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const [selectedTransaction, setSelectedTransaction] = useState(null);
@@ -452,15 +451,15 @@ export default function UnifiedTransactionList({
       return [];
     }
 
-    if (accountGroupEvmAddresses.length > 0) {
+    if (accountGroupEvmAddress) {
       const pendingStatuses = ['submitted', 'approved', 'signed', 'unapproved'];
       const pendingFromGroup = allEvmTransactions.filter((tx) => {
         const fromAddress = tx.txParams?.from?.toLowerCase();
         const toAddress = tx.txParams?.to?.toLowerCase();
-        const isFromGroup = accountGroupEvmAddresses.includes(fromAddress);
+        const isFromGroup = accountGroupEvmAddress === fromAddress;
         const isIncomingToGroup =
           tx.type === TransactionType.incoming &&
-          accountGroupEvmAddresses.includes(toAddress);
+          accountGroupEvmAddress === toAddress;
         const isPending = pendingStatuses.includes(tx.status);
         const isEnabledChain = evmChainIds.includes(tx.chainId);
         return (
@@ -476,7 +475,7 @@ export default function UnifiedTransactionList({
     });
   }, [
     evmChainIds,
-    accountGroupEvmAddresses,
+    accountGroupEvmAddress,
     allEvmTransactions,
     unfilteredPendingTransactionsAllChains,
   ]);
@@ -486,15 +485,15 @@ export default function UnifiedTransactionList({
   );
 
   const accountGroupFilteredCompletedTransactions = useMemo(() => {
-    if (accountGroupEvmAddresses.length > 0) {
+    if (accountGroupEvmAddress) {
       const pendingStatuses = ['submitted', 'approved', 'signed', 'unapproved'];
       return allEvmTransactions.filter((tx) => {
         const fromAddress = tx.txParams?.from?.toLowerCase();
         const toAddress = tx.txParams?.to?.toLowerCase();
-        const isFromGroup = accountGroupEvmAddresses.includes(fromAddress);
+        const isFromGroup = accountGroupEvmAddress === fromAddress;
         const isIncomingToGroup =
           tx.type === TransactionType.incoming &&
-          accountGroupEvmAddresses.includes(toAddress);
+          accountGroupEvmAddress === toAddress;
         const isCompleted = !pendingStatuses.includes(tx.status);
         return (isFromGroup || isIncomingToGroup) && isCompleted;
       });
@@ -503,7 +502,7 @@ export default function UnifiedTransactionList({
       .flatMap((group) => group.transactions || [group.initialTransaction])
       .filter(Boolean);
   }, [
-    accountGroupEvmAddresses,
+    accountGroupEvmAddress,
     allEvmTransactions,
     unfilteredCompletedTransactionsAllChains,
   ]);
@@ -513,19 +512,18 @@ export default function UnifiedTransactionList({
       return [];
     }
 
-    const transactionsToFilter =
-      accountGroupEvmAddresses.length > 0
-        ? accountGroupFilteredCompletedTransactions
-        : unfilteredCompletedTransactionsAllChains.flatMap(
-            (group) => group.transactions || [group.initialTransaction],
-          );
+    const transactionsToFilter = accountGroupEvmAddress
+      ? accountGroupFilteredCompletedTransactions
+      : unfilteredCompletedTransactionsAllChains.flatMap(
+          (group) => group.transactions || [group.initialTransaction],
+        );
 
     return groupAndSortTransactionsByNonce(
       transactionsToFilter.filter((tx) => evmChainIds.includes(tx?.chainId)),
     );
   }, [
     evmChainIds,
-    accountGroupEvmAddresses,
+    accountGroupEvmAddress,
     accountGroupFilteredCompletedTransactions,
     unfilteredCompletedTransactionsAllChains,
   ]);
@@ -656,7 +654,7 @@ export default function UnifiedTransactionList({
         }
         const toAddress = transaction.txParams.to?.toLowerCase();
         const isToGroupOrSelected =
-          accountGroupEvmAddresses.includes(toAddress) ||
+          accountGroupEvmAddress === toAddress ||
           toAddress === selectedAccount.address.toLowerCase();
         return !isToGroupOrSelected;
       };
@@ -674,7 +672,7 @@ export default function UnifiedTransactionList({
 
       return dateGroup;
     },
-    [selectedAccount, accountGroupEvmAddresses],
+    [selectedAccount, accountGroupEvmAddress],
   );
 
   const removeEmptyEvmItemsFromUnifiedDateGroup = useCallback((dateGroup) => {
