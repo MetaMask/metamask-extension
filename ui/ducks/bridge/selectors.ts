@@ -48,7 +48,6 @@ import {
   type AccountGroupObject,
   type AccountTreeControllerState,
 } from '@metamask/account-tree-controller';
-import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { getHardwareWalletType } from '../../selectors/selectors';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
@@ -239,27 +238,34 @@ export const getFromChains = createDeepEqualSelector(
     hasBitcoinAccount,
     hasTronAccount,
   ) => {
-    const filteredNetworks: Record<CaipChainId, BridgeNetwork> = {};
-    // Apply the standard filter for active source chains
+    const filteredNetworks: BridgeNetwork[] = [];
     Object.entries(chainsConfig).forEach(([chainId, { isActiveSrc }]) => {
-      if (isActiveSrc) {
-        const caipChainId = formatChainIdToCaip(chainId);
-        filteredNetworks[caipChainId] = allBridgeableNetworks[caipChainId];
+      if (!isActiveSrc) {
+        return;
+      }
+      // Determine if non-evm chains should be added to the list
+      const shouldAddSolana = isSolanaChainId(chainId)
+        ? hasSolanaAccount
+        : true;
+      const shouldAddBitcoin = isBitcoinChainId(chainId)
+        ? hasBitcoinAccount
+        : true;
+      const shouldAddTron = isTronChainId(chainId) ? hasTronAccount : true;
+      const matchedNetwork =
+        allBridgeableNetworks[formatChainIdToCaip(chainId)];
+      // If all conditions are met, add the network to the list
+      if (
+        [
+          shouldAddSolana,
+          shouldAddBitcoin,
+          shouldAddTron,
+          matchedNetwork,
+        ].every(Boolean)
+      ) {
+        filteredNetworks.push(matchedNetwork);
       }
     });
-    // First filter out Solana from source chains if no Solana account exists
-    if (!hasSolanaAccount) {
-      delete filteredNetworks[MultichainNetworks.SOLANA];
-    }
-    // Then filter out Bitcoin from source chains if no Bitcoin account exists
-    if (!hasBitcoinAccount) {
-      delete filteredNetworks[MultichainNetworks.BITCOIN];
-    }
-    // Then filter out Tron from source chains if no Tron account exists
-    if (!hasTronAccount) {
-      delete filteredNetworks[MultichainNetworks.TRON];
-    }
-    return Object.values(filteredNetworks).filter(Boolean);
+    return filteredNetworks;
   },
 );
 
