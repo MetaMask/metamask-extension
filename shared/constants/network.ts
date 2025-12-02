@@ -208,7 +208,7 @@ export const CHAIN_IDS = {
   INJECTIVE: '0x6f0',
   MONAD: '0x8f',
   HYPE: '0x3e7',
-  X_LAYER: '0xC4',
+  X_LAYER: '0xc4',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
