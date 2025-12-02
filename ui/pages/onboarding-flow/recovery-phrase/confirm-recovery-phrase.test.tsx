@@ -30,14 +30,14 @@ jest.mock('react-router-dom', () => {
 });
 
 // click and answer the srp quiz
-const clickAndAnswerSrpQuiz = (quizUnansweredChips) => {
+const clickAndAnswerSrpQuiz = (quizUnansweredChips: HTMLElement[]) => {
   // sort the unanswered chips by testId
   const sortedQuizWords = quizUnansweredChips
-    .map((chipElm) => {
+    .map((chipElm: HTMLElement) => {
       // extract the testId number from the data-testid attribute, sample testId -> recovery-phrase-quiz-unanswered-[number]
-      const testIdNumber = chipElm.getAttribute('data-testid').split('-')[4];
+      const testIdNumber = chipElm?.getAttribute('data-testid')?.split('-')[4];
       return {
-        id: testIdNumber,
+        id: Number(testIdNumber),
         elm: chipElm,
       };
     })
@@ -196,7 +196,7 @@ describe('Confirm Recovery Phrase Component', () => {
       'recovery-phrase-confirm',
     );
     expect(confirmRecoveryPhraseButton).not.toBeDisabled();
-    fireEvent.click(confirmRecoveryPhraseButton);
+    fireEvent.click(confirmRecoveryPhraseButton as HTMLElement);
 
     const gotItButton = getByText('Got it');
     expect(gotItButton).toBeInTheDocument();
@@ -234,7 +234,7 @@ describe('Confirm Recovery Phrase Component', () => {
       'recovery-phrase-confirm',
     );
 
-    fireEvent.click(confirmRecoveryPhraseButton);
+    fireEvent.click(confirmRecoveryPhraseButton as HTMLElement);
     fireEvent.click(getByText('Got it'));
 
     expect(setSeedPhraseBackedUp).toHaveBeenCalledWith(true);

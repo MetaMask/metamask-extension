@@ -3,7 +3,7 @@
 exports[`Review Recovery Phrase Component renders match snapshot when isFromReminder and isFromSettingsSecurity are present in the search params 1`] = `
 <div>
   <div
-    class="mm-box recovery-phrase mm-box--display-flex mm-box--gap-6 mm-box--flex-direction-column mm-box--justify-content-space-between mm-box--height-full"
+    class="mm-box recovery-phrase mm-box--display-flex mm-box--gap-6 mm-box--flex-direction-column mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full"
     data-testid="recovery-phrase"
   >
     <div
@@ -309,7 +309,7 @@ exports[`Review Recovery Phrase Component renders match snapshot when isFromRemi
 exports[`Review Recovery Phrase Component should match snapshot 1`] = `
 <div>
   <div
-    class="mm-box recovery-phrase mm-box--display-flex mm-box--gap-6 mm-box--flex-direction-column mm-box--justify-content-space-between mm-box--height-full"
+    class="mm-box recovery-phrase mm-box--display-flex mm-box--gap-6 mm-box--flex-direction-column mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full"
     data-testid="recovery-phrase"
   >
     <div
@@ -602,7 +602,7 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
 exports[`Review Recovery Phrase Component should match snapshot after reveal recovery button is clicked 1`] = `
 <div>
   <div
-    class="mm-box recovery-phrase mm-box--display-flex mm-box--gap-6 mm-box--flex-direction-column mm-box--justify-content-space-between mm-box--height-full"
+    class="mm-box recovery-phrase mm-box--display-flex mm-box--gap-6 mm-box--flex-direction-column mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full"
     data-testid="recovery-phrase"
   >
     <div

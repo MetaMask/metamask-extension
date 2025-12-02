@@ -83,7 +83,10 @@ import SnapInstall from './snaps/snap-install';
 import SnapUpdate from './snaps/snap-update';
 import SnapResult from './snaps/snap-result';
 import { ConnectPage } from './connect-page/connect-page';
-import {getCaip25CaveatValueFromPermissions, PermissionsRequest} from './connect-page/utils';
+import {
+  getCaip25CaveatValueFromPermissions,
+  PermissionsRequest,
+} from './connect-page/utils';
 
 const APPROVE_TIMEOUT = MILLISECOND * 1200;
 
@@ -114,6 +117,7 @@ function getRequestedChainIds(permissions: PermissionsRequest | undefined) {
   return getPermittedEthChainIds(requestedCaip25CaveatValue);
 }
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function PermissionsConnect() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -133,18 +137,25 @@ function PermissionsConnect() {
   const { address: currentAddress } = useSelector(getSelectedInternalAccount);
 
   const permissionsRequest = permissionsRequests.find(
-    req => req.metadata?.id === permissionsRequestId,
-  );
+    (req: Record<string, unknown>) =>
+      (req.metadata as Record<string, unknown>)?.id === permissionsRequestId,
+  ) as Record<string, unknown> | undefined;
 
   const { metadata = {}, diff = {} } = permissionsRequest || {};
-  const { origin: originFromRequest } = (metadata || {}) as Record<string, string>;
+  const { origin: originFromRequest } = (metadata || {}) as Record<
+    string,
+    string
+  >;
   const nativeCurrency = useSelector(getNativeCurrency);
 
   const isRequestApprovalPermittedChains = Boolean(
     (diff as Record<string, unknown>)?.permissionDiffMap,
   );
+  const permissions = permissionsRequest?.permissions as
+    | Record<string, unknown>
+    | undefined;
   const isRequestingAccounts = Boolean(
-    permissionsRequest?.permissions?.[Caip25EndowmentPermissionName] &&
+    permissions?.[Caip25EndowmentPermissionName] &&
       !isRequestApprovalPermittedChains,
   );
 
@@ -173,8 +184,8 @@ function PermissionsConnect() {
   // Any other request gets pushed to the normal permission connect flow.
   if (
     permissionsRequest &&
-    Object.keys(permissionsRequest.permissions || {}).length === 1 &&
-    permissionsRequest.permissions?.[WALLET_SNAP_PERMISSION_KEY]
+    Object.keys(permissions || {}).length === 1 &&
+    permissions?.[WALLET_SNAP_PERMISSION_KEY]
   ) {
     requestType = 'wallet_connectSnaps';
   }
@@ -185,7 +196,7 @@ function PermissionsConnect() {
   // We only consider EVM accounts.
   // Connections with non-EVM accounts (Bitcoin only for now) are used implicitly and handled by the Bitcoin Snap itself.
   const accountsWithLabels = useSelector(getAccountsWithLabels).filter(
-    account => isEvmAccountType(account.type),
+    (account: { type: string }) => isEvmAccountType(account.type),
   );
 
   const accountGroups = useSelector(getAccountGroupWithInternalAccounts);
@@ -227,11 +238,14 @@ function PermissionsConnect() {
   // Local state
   const [redirecting, setRedirecting] = useState(false);
   const [selectedAccountAddresses, setSelectedAccountAddresses] = useState(() =>
-    getDefaultSelectedAccounts(currentAddress, permissionsRequest?.permissions),
+    getDefaultSelectedAccounts(
+      currentAddress,
+      permissions as PermissionsRequest,
+    ),
   );
-  const [permissionsApproved, setPermissionsApproved] = useState<boolean | null>(
-    null,
-  );
+  const [permissionsApproved, setPermissionsApproved] = useState<
+    boolean | null
+  >(null);
   const [origin] = useState<string>(originFromRequest);
   const [targetSubjectMetadata, setTargetSubjectMetadata] = useState(
     targetSubjectMetadataProp || {},
@@ -240,9 +254,11 @@ function PermissionsConnect() {
     snapsInstallPrivacyWarningShownProp,
   );
 
-  const prevPermissionsRequestRef = useRef();
-  const prevTargetSubjectMetadataRef = useRef();
-  const prevLastConnectedInfoRef = useRef();
+  const prevPermissionsRequestRef =
+    useRef<typeof permissionsRequest>(undefined);
+  const prevTargetSubjectMetadataRef =
+    useRef<typeof targetSubjectMetadataProp>(undefined);
+  const prevLastConnectedInfoRef = useRef<typeof lastConnectedInfo>(undefined);
 
   // Define redirect function before it's used in effects
   const redirect = useCallback(
@@ -250,8 +266,7 @@ function PermissionsConnect() {
       let shouldRedirect = true;
 
       const isRequestingSnap =
-        permissionsRequest?.permissions &&
-        Object.keys(permissionsRequest.permissions).includes('wallet_snap');
+        permissions && Object.keys(permissions).includes('wallet_snap');
 
       shouldRedirect = !isRequestingSnap;
 
@@ -264,7 +279,7 @@ function PermissionsConnect() {
       }
       navigate(DEFAULT_ROUTE);
     },
-    [permissionsRequest, navigate],
+    [permissions, navigate],
   );
 
   // Handle initial navigation on mount
@@ -315,10 +330,19 @@ function PermissionsConnect() {
       prevPermissionsRequestRef.current &&
       !redirecting
     ) {
+      const lastConnectedForOrigin = lastConnectedInfo[origin] as
+        | { lastApproved?: number; accounts?: Record<string, number> }
+        | undefined;
+      const prevLastConnectedForOrigin = prevLastConnectedInfoRef.current?.[
+        origin
+      ] as
+        | { lastApproved?: number; accounts?: Record<string, number> }
+        | undefined;
+
       const accountsLastApprovedTime =
-        (lastConnectedInfo[origin])?.lastApproved || 0;
+        lastConnectedForOrigin?.lastApproved || 0;
       const initialAccountsLastApprovedTime =
-        (prevLastConnectedInfoRef.current?.[origin])?.lastApproved || 0;
+        prevLastConnectedForOrigin?.lastApproved || 0;
 
       const approved =
         accountsLastApprovedTime > initialAccountsLastApprovedTime;
@@ -373,15 +397,25 @@ function PermissionsConnect() {
   );
 
   const approveConnection = useCallback(
-    (requestId, requestData) => {
-      dispatch(approvePermissionsRequestAction(requestId, requestData));
+    (request: Record<string, unknown>) => {
+      dispatch(
+        approvePermissionsRequestAction(
+          request.metadata as Record<string, unknown>,
+        ),
+      );
       redirect(true);
     },
     [dispatch, redirect],
   );
 
   const showNewAccountModal = useCallback(
-    ({ onCreateNewAccount, newAccountNumber: accountNumber }) => {
+    ({
+      onCreateNewAccount,
+      newAccountNumber: accountNumber,
+    }: {
+      onCreateNewAccount: (address: string) => void;
+      newAccountNumber: number;
+    }) => {
       return dispatch(
         showModal({
           name: 'NEW_ACCOUNT',
@@ -394,19 +428,21 @@ function PermissionsConnect() {
   );
 
   const setSnapsInstallPrivacyWarningShownStatus = useCallback(
-    (shown) => {
+    (shown: boolean) => {
       dispatch(setSnapsInstallPrivacyWarningShownStatusAction(shown));
     },
     [dispatch],
   );
 
   const approvePendingApproval = useCallback(
-    (id: string, value?: unknown) => dispatch(resolvePendingApproval(id, value)),
+    (id: string, value?: unknown) =>
+      dispatch(resolvePendingApproval(id, value)),
     [dispatch],
   );
 
   const rejectPendingApproval = useCallback(
-    (id: string, error: unknown) => dispatch(rejectPendingApprovalAction(id, error)),
+    (id: string, error: unknown) =>
+      dispatch(rejectPendingApprovalAction(id, error)),
     [dispatch],
   );
 
@@ -416,9 +452,12 @@ function PermissionsConnect() {
         accounts={accountsWithLabels}
         nativeCurrency={nativeCurrency}
         selectAccounts={(addresses) => selectAccounts(addresses)}
-        selectNewAccountViaModal={handleAccountClick => {
+        selectNewAccountViaModal={(
+          handleAccountClick: (address: string) => void,
+        ) => {
           showNewAccountModal({
-            onCreateNewAccount: (address: string) => handleAccountClick(address),
+            onCreateNewAccount: (address: string) =>
+              handleAccountClick(address),
             newAccountNumber,
           });
         }}
@@ -446,10 +485,10 @@ function PermissionsConnect() {
 
   const renderSnapChooseAccountState2 = useCallback(() => {
     const requestedCaip25CaveatValue = getCaip25CaveatValueFromPermissions(
-      permissionsRequest?.permissions,
+      permissions as PermissionsRequest | undefined,
     );
 
-    const caipChainIdsToUse: string[] = [];
+    const caipChainIdsToUse: `${string}:${string}`[] = [];
 
     const requestedCaipChainIds = getAllScopesFromCaip25CaveatValue(
       requestedCaip25CaveatValue,
@@ -474,7 +513,7 @@ function PermissionsConnect() {
     return (
       <MultichainEditAccountsPageWrapper
         title={t('connectWithMetaMask')}
-        permissions={permissionsRequest?.permissions}
+        permissions={permissions as PermissionsRequest}
         onSubmit={(accountGroupIds: string[]) => {
           const filteredAccountGroups = accountGroups.filter(
             (group) =>
@@ -489,11 +528,11 @@ function PermissionsConnect() {
           );
           selectAccounts(new Set(addresses));
         }}
-        onClose={() => cancelPermissionsRequest(permissionsRequestId)}
+        onClose={() => cancelPermissionsRequest(permissionsRequestId || '')}
       />
     );
   }, [
-    permissionsRequest,
+    permissions,
     accountGroups,
     t,
     selectAccounts,
@@ -544,16 +583,17 @@ function PermissionsConnect() {
   ]);
 
   const renderTopBar = useCallback(
-    (requestId) => {
+    (requestId: string) => {
       const handleCancelFromHeader = () => {
         cancelPermissionsRequest(requestId);
       };
       return (
         <Box
           style={{
-            boxShadow: targetSubjectMetadata.subjectType === SubjectType.Snap
-              ? 'var(--shadow-size-lg) var(--color-shadow-default)'
-              : undefined,
+            boxShadow:
+              targetSubjectMetadata.subjectType === SubjectType.Snap
+                ? 'var(--shadow-size-lg) var(--color-shadow-default)'
+                : undefined,
           }}
         >
           {targetSubjectMetadata.subjectType === SubjectType.Snap && (
@@ -570,7 +610,7 @@ function PermissionsConnect() {
   );
 
   const isRequestingSnap = isSnapId(
-    (permissionsRequest?.metadata)?.origin,
+    (metadata as Record<string, string>)?.origin,
   );
 
   return (
@@ -605,20 +645,23 @@ function PermissionsConnect() {
               <PermissionPageContainer
                 request={permissionsRequest || {}}
                 approvePermissionsRequest={(
-                  requestId,
-                  requestData,
+                  requestId: string,
+                  requestData: unknown,
                 ) => {
-                  dispatch(approvePermissionsRequestAction(requestId, requestData));
+                  dispatch(
+                    approvePermissionsRequestAction(requestId, requestData),
+                  );
                   redirect(true);
                 }}
                 rejectPermissionsRequest={(requestId: string) =>
                   cancelPermissionsRequest(requestId)
                 }
-                selectedAccounts={accountsWithLabels.filter((account) =>
-                  selectedAccountAddresses.has(account.address),
+                selectedAccounts={accountsWithLabels.filter(
+                  (account: { address: string }) =>
+                    selectedAccountAddresses.has(account.address),
                 )}
                 requestedChainIds={getRequestedChainIds(
-                  permissionsRequest?.permissions,
+                  permissions as PermissionsRequest | undefined,
                 )}
                 targetSubjectMetadata={targetSubjectMetadata}
                 navigate={navigate}

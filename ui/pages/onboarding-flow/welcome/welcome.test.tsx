@@ -26,13 +26,19 @@ jest.mock('react-router-dom', () => {
 });
 
 jest.mock('./fox-appear-animation', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: () => <div data-testid="fox-appear-animation" />,
 }));
 
 jest.mock('./metamask-wordmark-animation', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
-  default: ({ setIsAnimationComplete }) => {
+  default: ({
+    setIsAnimationComplete,
+  }: {
+    setIsAnimationComplete: (isAnimationComplete: boolean) => void;
+  }) => {
     // Simulate animation completion immediately using setTimeout
     setTimeout(() => setIsAnimationComplete(true), 0);
     return <div data-testid="metamask-wordmark-animation" />;
@@ -59,8 +65,8 @@ describe('Welcome Page', () => {
   };
   const mockStore = configureMockStore([thunk])(mockState);
   const mockTrackEvent = jest.fn();
-  let startOAuthLoginSpy;
-  let enabledMetricsSpy;
+  let startOAuthLoginSpy: jest.SpyInstance;
+  let enabledMetricsSpy: jest.SpyInstance;
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -175,6 +181,7 @@ describe('Welcome Page', () => {
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.WalletSetupStarted,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: `${MetaMetricsEventAccountType.Default}_google`,
         },
       });
@@ -184,6 +191,7 @@ describe('Welcome Page', () => {
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.SocialLoginCompleted,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: `${MetaMetricsEventAccountType.Default}_google`,
         },
       });
@@ -239,6 +247,7 @@ describe('Welcome Page', () => {
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.WalletImportStarted,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: `${MetaMetricsEventAccountType.Imported}_google`,
         },
       });
@@ -248,6 +257,7 @@ describe('Welcome Page', () => {
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.SocialLoginCompleted,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: `${MetaMetricsEventAccountType.Imported}_google`,
         },
       });
@@ -307,6 +317,7 @@ describe('Welcome Page', () => {
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.WalletImportStarted,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: `${MetaMetricsEventAccountType.Imported}_google`,
         },
       });
@@ -316,6 +327,7 @@ describe('Welcome Page', () => {
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.SocialLoginCompleted,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: `${MetaMetricsEventAccountType.Imported}_google`,
         },
       });
@@ -371,6 +383,7 @@ describe('Welcome Page', () => {
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.WalletSetupStarted,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: MetaMetricsEventAccountType.Default,
         },
       });

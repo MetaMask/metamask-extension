@@ -30,6 +30,7 @@ import {
   getCompletedOnboarding,
   getIsPrimarySeedPhraseBackedUp,
   getIsUnlocked,
+  getOpenedWithSidepanel,
 } from '../../ducks/metamask/metamask';
 import {
   createNewVaultAndGetSeedPhrase,
@@ -67,6 +68,7 @@ import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/modules/environment';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import LoadingScreen from '../../components/ui/loading-screen';
+import type { MetaMaskReduxDispatch } from '../../store/store';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -89,14 +91,11 @@ const toRelativePath = (path) => toRelativeRoutePath(path, ONBOARDING_ROUTE);
 export default function OnboardingFlow() {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const dispatch = useDispatch();
-  const location = useLocation();
+  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const { pathname, search } = useLocation;
   const navigate = useNavigate();
-  const { pathname, search } = location;
-  const completedOnboarding = useSelector(getCompletedOnboarding);
-  const openedWithSidepanel = useSelector(
-    (state) => state.metamask.openedWithSidepanel,
-  );
+  const completedOnboarding: boolean = useSelector(getCompletedOnboarding);
+  const openedWithSidepanel = useSelector(getOpenedWithSidepanel);
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterUnlock);
   const isFromReminder = new URLSearchParams(search).get('isFromReminder');
   const isFromSettingsSecurity = new URLSearchParams(search).get(
@@ -170,17 +169,17 @@ export default function OnboardingFlow() {
     });
     if (onboardingParentContext) {
       // Intentionally mutating ref object
-      // eslint-disable-next-line react-compiler/react-compiler
       onboardingParentContext.current = {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         _name: TraceName.OnboardingJourneyOverall,
       };
     }
   }, [onboardingParentContext, bufferedTrace]);
 
-  const handleCreateNewAccount = async (password) => {
+  const handleCreateNewAccount = async (password: string) => {
     try {
       setIsLoading(true);
-      let newSecretRecoveryPhrase;
+      let newSecretRecoveryPhrase: string | undefined;
       if (
         isSeedlessOnboardingFeatureEnabled &&
         firstTimeFlowType === FirstTimeFlowType.socialCreate
@@ -194,16 +193,18 @@ export default function OnboardingFlow() {
         );
       }
 
-      setSecretRecoveryPhrase(newSecretRecoveryPhrase);
+      if (newSecretRecoveryPhrase) {
+        setSecretRecoveryPhrase(newSecretRecoveryPhrase);
+      }
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleUnlock = async (password) => {
+  const handleUnlock = async (password: string) => {
     try {
       setIsLoading(true);
-      let retrievedSecretRecoveryPhrase;
+      let retrievedSecretRecoveryPhrase: string | undefined;
 
       if (
         isSeedlessOnboardingFeatureEnabled &&
@@ -218,7 +219,9 @@ export default function OnboardingFlow() {
         );
       }
 
-      setSecretRecoveryPhrase(retrievedSecretRecoveryPhrase);
+      if (retrievedSecretRecoveryPhrase) {
+        setSecretRecoveryPhrase(retrievedSecretRecoveryPhrase);
+      }
       if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
         await dispatch(setCompletedOnboarding());
       }
@@ -228,7 +231,10 @@ export default function OnboardingFlow() {
     }
   };
 
-  const handleImportWithRecoveryPhrase = async (password, srp) => {
+  const handleImportWithRecoveryPhrase = async (
+    password: string,
+    srp: string,
+  ) => {
     return await dispatch(createNewVaultAndRestore(password, srp));
   };
 

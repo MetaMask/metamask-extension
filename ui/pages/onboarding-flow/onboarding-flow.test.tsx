@@ -14,7 +14,6 @@ import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
-  ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_METAMETRICS,
   ONBOARDING_REVEAL_SRP_ROUTE,
   ONBOARDING_ROUTE,
@@ -39,13 +38,19 @@ jest.mock('react-router-dom', () => ({
 
 // Mock Rive animation components
 jest.mock('./welcome/fox-appear-animation', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: () => <div data-testid="fox-appear-animation" />,
 }));
 
 jest.mock('./welcome/metamask-wordmark-animation', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
-  default: ({ setIsAnimationComplete }) => {
+  default: ({
+    setIsAnimationComplete,
+  }: {
+    setIsAnimationComplete: (isAnimationComplete: boolean) => void;
+  }) => {
     // Simulate animation completion immediately using setTimeout
     setTimeout(() => setIsAnimationComplete(true), 0);
     return <div data-testid="metamask-wordmark-animation" />;
@@ -53,6 +58,7 @@ jest.mock('./welcome/metamask-wordmark-animation', () => ({
 }));
 
 jest.mock('./creation-successful/wallet-ready-animation', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: () => <div data-testid="wallet-ready-animation" />,
 }));
@@ -206,10 +212,14 @@ describe('Onboarding Flow', () => {
       const confirmPassword = queryByTestId('create-password-confirm-input');
       const createPasswordWallet = queryByTestId('create-password-submit');
 
-      fireEvent.click(checkTerms);
-      fireEvent.change(createPassword, { target: { value: password } });
-      fireEvent.change(confirmPassword, { target: { value: password } });
-      fireEvent.click(createPasswordWallet);
+      fireEvent.click(checkTerms as HTMLElement);
+      fireEvent.change(createPassword as HTMLElement, {
+        target: { value: password },
+      });
+      fireEvent.change(confirmPassword as HTMLElement, {
+        target: { value: password },
+      });
+      fireEvent.click(createPasswordWallet as HTMLElement);
 
       await waitFor(() =>
         expect(createNewVaultAndGetSeedPhrase).toHaveBeenCalled(),
@@ -327,42 +337,6 @@ describe('Onboarding Flow', () => {
     });
 
     jest.clearAllMocks();
-  });
-
-  it('should render onboarding pin extension screen', () => {
-    const mockStateWithCurrentKeyring = {
-      ...mockState,
-      metamask: {
-        ...mockState.metamask,
-        internalAccounts: {
-          accounts: {
-            accountId: {
-              address: '0x0000000000000000000000000000000000000000',
-              metadata: {
-                keyring: {
-                  type: 'HD Key Tree',
-                  accounts: ['0x0000000000000000000000000000000000000000'],
-                },
-              },
-            },
-          },
-          selectedAccount: 'accountId',
-        },
-      },
-    };
-
-    const mockStoreWithCurrentKeyring = configureMockStore([thunk])(
-      mockStateWithCurrentKeyring,
-    );
-
-    const { queryByTestId } = renderWithProvider(
-      <OnboardingFlow />,
-      mockStoreWithCurrentKeyring,
-      ONBOARDING_PIN_EXTENSION_ROUTE,
-    );
-
-    const pinExtension = queryByTestId('onboarding-pin-extension');
-    expect(pinExtension).toBeInTheDocument();
   });
 
   it('should render onboarding metametrics screen', () => {

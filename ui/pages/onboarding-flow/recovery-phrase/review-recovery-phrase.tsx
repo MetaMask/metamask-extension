@@ -47,7 +47,15 @@ import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
-export default function RecoveryPhrase({ secretRecoveryPhrase }) {
+type RecoveryPhraseProps = {
+  secretRecoveryPhrase: string;
+};
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export default function RecoveryPhrase({
+  secretRecoveryPhrase,
+}: RecoveryPhraseProps) {
   const navigate = useNavigate();
   const t = useI18nContext();
   const { search } = useLocation();
@@ -90,6 +98,8 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.OnboardingWalletSecurityPhraseWrittenDown,
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         hd_entropy_index: hdEntropyIndex,
       },
     });
@@ -118,7 +128,6 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.OnboardingWalletSecuritySkipConfirmed,
       properties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         hd_entropy_index: hdEntropyIndex,
       },
@@ -161,7 +170,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
       justifyContent={JustifyContent.spaceBetween}
-      alignItems={AlignItems.Center}
+      alignItems={AlignItems.center}
       height={BlockSize.Full}
       gap={6}
       className="recovery-phrase"
@@ -237,6 +246,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
               event:
                 MetaMetricsEventName.OnboardingWalletSecurityPhraseRevealed,
               properties: {
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 hd_entropy_index: hdEntropyIndex,
               },
             });

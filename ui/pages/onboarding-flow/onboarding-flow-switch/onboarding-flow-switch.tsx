@@ -34,6 +34,8 @@ import {
 } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function OnboardingFlowSwitch() {
   /* eslint-disable prefer-const */
   const completedOnboarding = useSelector(getCompletedOnboarding);

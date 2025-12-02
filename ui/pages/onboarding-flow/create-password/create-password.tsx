@@ -1,5 +1,4 @@
 import React, { useState, useContext, useEffect, useCallback } from 'react';
-import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -64,13 +63,24 @@ import {
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
 
+type CreatePasswordProps = {
+  createNewAccount: (password: string) => void;
+  importWithRecoveryPhrase: (
+    password: string,
+    secretRecoveryPhrase: string,
+  ) => void;
+  secretRecoveryPhrase: string;
+};
+
 const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function CreatePassword({
   createNewAccount,
   importWithRecoveryPhrase,
   secretRecoveryPhrase,
-}) {
+}: CreatePasswordProps) {
   const t = useI18nContext();
   const [password, setPassword] = useState('');
   const [termsChecked, setTermsChecked] = useState(false);
@@ -102,9 +112,8 @@ export default function CreatePassword({
     mmi: base64MetametricsId,
     env: 'production',
   };
-  const analyticsIframeUrl = `https://start.metamask.io/?${new URLSearchParams(
-    analyticsIframeQuery,
-  )}`;
+  const urlSearchParams = new URLSearchParams(analyticsIframeQuery);
+  const analyticsIframeUrl = `https://start.metamask.io/?${urlSearchParams.toString()}`;
 
   const validateSocialLoginAuthenticatedState = useCallback(async () => {
     const isSeedlessOnboardingUserAuthenticated = await dispatch(
@@ -170,7 +179,7 @@ export default function CreatePassword({
     })();
   }, [isSocialLoginFlow, validateSocialLoginAuthenticatedState]);
 
-  const handleLearnMoreClick = (event) => {
+  const handleLearnMoreClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
     event.stopPropagation();
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
@@ -184,7 +193,10 @@ export default function CreatePassword({
   };
 
   // Helper function to determine account type for analytics
-  const getAccountType = (baseType, includesSocialLogin = false) => {
+  const getAccountType = (
+    baseType: MetaMetricsEventAccountType,
+    includesSocialLogin: boolean = false,
+  ) => {
     if (includesSocialLogin && socialLoginType) {
       const socialProvider = String(socialLoginType).toLowerCase();
       return `${baseType}_${socialProvider}`;
@@ -207,6 +219,7 @@ export default function CreatePassword({
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.WalletImported,
       properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         biometrics_enabled: false,
       },
     });
@@ -215,8 +228,11 @@ export default function CreatePassword({
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.WalletSetupCompleted,
       properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         wallet_setup_type: 'import',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         new_wallet: false,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         account_type: getAccountType(
           MetaMetricsEventAccountType.Imported,
           isSocialLoginFlow,
@@ -236,6 +252,7 @@ export default function CreatePassword({
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.WalletCreationAttempted,
       properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         account_type: getAccountType(
           MetaMetricsEventAccountType.Default,
           isSocialLoginFlow,
@@ -243,10 +260,8 @@ export default function CreatePassword({
       },
     });
 
-    if (createNewAccount) {
-      setNewAccountCreationInProgress(true);
-      await createNewAccount(password);
-    }
+    setNewAccountCreationInProgress(true);
+    await createNewAccount(password);
 
     if (isSocialLoginFlow) {
       bufferedEndTrace?.({ name: TraceName.OnboardingNewSocialCreateWallet });
@@ -257,7 +272,9 @@ export default function CreatePassword({
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.WalletCreated,
       properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         biometrics_enabled: false,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         account_type: getAccountType(
           MetaMetricsEventAccountType.Default,
           isSocialLoginFlow,
@@ -269,8 +286,11 @@ export default function CreatePassword({
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.WalletSetupCompleted,
       properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         wallet_setup_type: 'new',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         new_wallet: true,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         account_type: getAccountType(
           MetaMetricsEventAccountType.Default,
           isSocialLoginFlow,
@@ -299,7 +319,9 @@ export default function CreatePassword({
     };
   }, [onboardingParentContext, bufferedTrace, bufferedEndTrace]);
 
-  const handleBackClick = async (event) => {
+  const handleBackClick = async (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
     event.preventDefault();
 
     if (firstTimeFlowType === FirstTimeFlowType.import) {
@@ -314,14 +336,14 @@ export default function CreatePassword({
     }
   };
 
-  const handlePasswordSetupError = (error) => {
+  const handlePasswordSetupError = (error: unknown) => {
     const errorMessage =
       error instanceof Error ? error.message : 'Unknown error';
 
     bufferedTrace?.({
       name: TraceName.OnboardingPasswordSetupError,
       op: TraceOperation.OnboardingUserJourney,
-      parentContext: onboardingParentContext.current,
+      parentContext: onboardingParentContext?.current,
       tags: { errorMessage },
     });
     bufferedEndTrace?.({ name: TraceName.OnboardingPasswordSetupError });
@@ -329,7 +351,9 @@ export default function CreatePassword({
     console.error(error);
   };
 
-  const handleCreatePassword = async (event) => {
+  const handleCreatePassword = async (
+    event: React.FormEvent<HTMLFormElement>,
+  ) => {
     event?.preventDefault();
 
     if (!password) {
@@ -489,9 +513,3 @@ export default function CreatePassword({
     </Box>
   );
 }
-
-CreatePassword.propTypes = {
-  createNewAccount: PropTypes.func,
-  importWithRecoveryPhrase: PropTypes.func,
-  secretRecoveryPhrase: PropTypes.string,
-};

@@ -1,5 +1,6 @@
 import React from 'react';
 import { fireEvent, waitFor, act } from '@testing-library/react';
+import type { Dispatch, Store } from 'redux';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
 import {
@@ -31,11 +32,11 @@ jest.mock('react-router-dom', () => {
 jest.mock('../../../store/actions.ts', () => {
   const actionConstants = jest.requireActual('../../../store/actionConstants');
   return {
-    setParticipateInMetaMetrics: jest.fn((value) => (dispatch) => {
+    setParticipateInMetaMetrics: jest.fn((value) => (dispatch: Dispatch) => {
       dispatch({ type: actionConstants.SET_PARTICIPATE_IN_METAMETRICS, value });
       return Promise.resolve([value]);
     }),
-    setDataCollectionForMarketing: jest.fn((value) => (dispatch) => {
+    setDataCollectionForMarketing: jest.fn((value) => (dispatch: Dispatch) => {
       dispatch({
         type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
         value,
@@ -46,7 +47,7 @@ jest.mock('../../../store/actions.ts', () => {
 });
 
 describe('Onboarding Metametrics Component', () => {
-  let store;
+  let store: Store;
 
   const mockState = {
     metamask: {

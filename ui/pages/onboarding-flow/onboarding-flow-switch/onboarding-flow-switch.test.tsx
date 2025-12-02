@@ -12,8 +12,14 @@ import {
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import OnboardingFlowSwitch from './onboarding-flow-switch';
 
+type LocationCaptureProps = {
+  onLocationChange: (path: string) => void;
+};
+
 // Test component to capture the current location
-function LocationCapture({ onLocationChange }) {
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function LocationCapture({ onLocationChange }: LocationCaptureProps) {
   const location = useLocation();
   React.useEffect(() => {
     onLocationChange(location.pathname);
@@ -26,7 +32,7 @@ LocationCapture.propTypes = {
 };
 
 describe('Onboaring Flow Switch Component', () => {
-  let currentPath;
+  let currentPath: string;
 
   it('should route to default route when completed onboarding', () => {
     const mockState = {

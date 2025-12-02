@@ -1,10 +1,11 @@
 import React, {
+  lazy,
+  Suspense,
   useCallback,
   useContext,
   useEffect,
   useState,
-  lazy,
-  Suspense,
+  type ComponentType,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -57,15 +58,34 @@ import {
 import { useRiveWasmContext } from '../../../contexts/rive-wasm';
 import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
 import WelcomeLogin from './welcome-login';
-import { LOGIN_ERROR, LOGIN_OPTION, LOGIN_TYPE } from './types';
+import { LOGIN_ERROR, LOGIN_OPTION, LOGIN_TYPE, LoginErrorType } from './types';
 import LoginErrorModal from './login-error-modal';
 
-// Lazy load animation components for better initial load performance
 const MetaMaskWordMarkAnimation = lazy(
-  () => import('./metamask-wordmark-animation'),
+  () =>
+    // @ts-expect-error - TypeScript expects .js extension for ESM, but Jest needs the actual .tsx file
+    import('./metamask-wordmark-animation') as unknown as Promise<{
+      default: ComponentType<{
+        setIsAnimationComplete: (isAnimationComplete: boolean) => void;
+        isAnimationComplete?: boolean;
+        skipTransition?: boolean;
+      }>;
+    }>,
 );
-const FoxAppearAnimation = lazy(() => import('./fox-appear-animation'));
 
+const FoxAppearAnimation = lazy(
+  () =>
+    // @ts-expect-error - TypeScript expects .js extension for ESM, but Jest needs the actual .tsx file
+    import('./fox-appear-animation') as unknown as Promise<{
+      default: ComponentType<{
+        isLoader?: boolean;
+        skipTransition?: boolean;
+      }>;
+    }>,
+);
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function OnboardingWelcome() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -82,7 +102,7 @@ export default function OnboardingWelcome() {
     useState(false);
 
   const [isLoggingIn, setIsLoggingIn] = useState(false);
-  const [loginError, setLoginError] = useState(null);
+  const [loginError, setLoginError] = useState<LoginErrorType | null>(null);
 
   const { animationCompleted } = useRiveWasmContext();
   const shouldSkipAnimation = Boolean(
@@ -172,6 +192,7 @@ export default function OnboardingWelcome() {
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.WalletSetupStarted,
       properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         account_type: MetaMetricsEventAccountType.Default,
       },
     });
@@ -191,6 +212,7 @@ export default function OnboardingWelcome() {
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.WalletImportStarted,
       properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         account_type: MetaMetricsEventAccountType.Imported,
       },
     });
@@ -250,7 +272,7 @@ export default function OnboardingWelcome() {
         name: TraceName.OnboardingSocialLoginError,
         op: TraceOperation.OnboardingError,
         tags: { provider: socialConnectionType, errorMessage },
-        parentContext: onboardingParentContext.current,
+        parentContext: onboardingParentContext?.current,
       });
       bufferedEndTrace?.({ name: TraceName.OnboardingSocialLoginError });
       bufferedEndTrace?.({
@@ -285,6 +307,7 @@ export default function OnboardingWelcome() {
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.WalletSetupStarted,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: `${MetaMetricsEventAccountType.Default}_${socialConnectionType}`,
         },
       });
@@ -297,6 +320,7 @@ export default function OnboardingWelcome() {
           category: MetaMetricsEventCategory.Onboarding,
           event: MetaMetricsEventName.SocialLoginCompleted,
           properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             account_type: `${MetaMetricsEventAccountType.Default}_${socialConnectionType}`,
           },
         });
@@ -304,7 +328,7 @@ export default function OnboardingWelcome() {
           bufferedTrace?.({
             name: TraceName.OnboardingNewSocialCreateWallet,
             op: TraceOperation.OnboardingUserJourney,
-            parentContext: onboardingParentContext.current,
+            parentContext: onboardingParentContext?.current,
           });
           await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
           navigate(ONBOARDING_CREATE_PASSWORD_ROUTE, { replace: true });
@@ -336,6 +360,7 @@ export default function OnboardingWelcome() {
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.WalletImportStarted,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: `${MetaMetricsEventAccountType.Imported}_${socialConnectionType}`,
         },
       });
@@ -348,6 +373,7 @@ export default function OnboardingWelcome() {
           category: MetaMetricsEventCategory.Onboarding,
           event: MetaMetricsEventName.SocialLoginCompleted,
           properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             account_type: `${MetaMetricsEventAccountType.Imported}_${socialConnectionType}`,
           },
         });
@@ -359,7 +385,7 @@ export default function OnboardingWelcome() {
           bufferedTrace?.({
             name: TraceName.OnboardingExistingSocialLogin,
             op: TraceOperation.OnboardingUserJourney,
-            parentContext: onboardingParentContext.current,
+            parentContext: onboardingParentContext?.current,
           });
           await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialImport));
           navigate(ONBOARDING_UNLOCK_ROUTE);

@@ -151,10 +151,7 @@ import { Modals } from './modals';
 
 // Begin Lazy Routes
 const OnboardingFlow = mmLazy(
-  (() =>
-    import(
-      '../onboarding-flow/onboarding-flow.js'
-    )) as unknown as DynamicImportType,
+  (() => import('../onboarding-flow/index.ts')) as unknown as DynamicImportType,
 );
 const Lock = mmLazy(
   (() => import('../lock/index.js')) as unknown as DynamicImportType,
