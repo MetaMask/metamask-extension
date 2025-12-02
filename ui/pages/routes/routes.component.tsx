@@ -128,7 +128,6 @@ import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-r
 import { MultichainAccountListMenu } from '../../components/multichain-accounts/multichain-account-list-menu';
 
 import { DeprecatedNetworkModal } from '../settings/deprecated-network-modal/DeprecatedNetworkModal';
-import { MultichainMetaFoxLogo } from '../../components/multichain/app-header/multichain-meta-fox-logo';
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
 import { type DynamicImportType, mmLazy } from '../../helpers/utils/mm-lazy';
@@ -152,11 +151,7 @@ import { State2Wrapper } from '../../components/multichain-accounts/state2-wrapp
 import { RootLayout } from '../../layouts/root-layout';
 import { LegacyLayout } from '../../layouts/legacy-layout';
 import { RouteWithLayout } from '../../layouts/route-with-layout';
-import {
-  getConnectingLabel,
-  isConfirmTransactionRoute,
-  setTheme,
-} from './utils';
+import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationHandler } from './confirmation-handler';
 import { Modals } from './modals';
 
@@ -705,7 +700,7 @@ export default function Routes() {
             authenticated
             path={IMPORT_SRP_ROUTE}
             component={ImportSrpPage}
-            layout={LegacyLayout}
+            layout={RootLayout}
           />
           <RouteWithLayout
             authenticated
@@ -765,7 +760,7 @@ export default function Routes() {
           </RouteWithLayout>
           <RouteWithLayout
             path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
-            layout={LegacyLayout}
+            layout={RootLayout}
           >
             {createV5CompatRoute<{ id?: string }>(ConfirmTransaction, {
               wrapper: AuthenticatedV5Compat,
@@ -827,7 +822,7 @@ export default function Routes() {
           </RouteWithLayout>
           <RouteWithLayout
             path={`${CONFIRMATION_V_NEXT_ROUTE}/:id?`}
-            layout={LegacyLayout}
+            layout={RootLayout}
           >
             {createV5CompatRoute<{ id?: string }>(ConfirmationPage, {
               wrapper: AuthenticatedV5Compat,
@@ -992,7 +987,7 @@ export default function Routes() {
             authenticated
             path={`${REVIEW_PERMISSIONS}/:origin`}
             exact
-            layout={LegacyLayout}
+            layout={RootLayout}
           >
             {createV5CompatRoute<{ origin: string }>(
               MemoizedReviewPermissionsWrapper,
@@ -1190,9 +1185,7 @@ export default function Routes() {
       <QRHardwarePopover />
       <Modal />
       <Alert visible={alertOpen} msg={alertMessage} />
-      {isConfirmTransactionRoute(location.pathname) && (
-        <MultichainMetaFoxLogo />
-      )}
+
       {isAccountMenuOpen ? accountListMenu : null}
 
       <NetworkConfirmationPopover />
