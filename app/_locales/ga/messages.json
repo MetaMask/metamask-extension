@@ -5709,15 +5709,6 @@
   "shieldTxMembershipBillingDetails": {
     "message": "Sonraí billeála"
   },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "Cuntas billeála"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "Muirir"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "An chéad bhilleáil eile"
-  },
   "shieldTxMembershipBillingDetailsPaymentMethod": {
     "message": "Modh íocaíochta"
   },

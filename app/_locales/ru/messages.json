@@ -5637,15 +5637,6 @@
   "shieldTxMembershipBillingDetails": {
     "message": "Сведения для биллинга"
   },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "Биллинговый счет"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "Сборы"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "Следующее выставление счетов"
-  },
   "shieldTxMembershipBillingDetailsPaymentMethod": {
     "message": "Способ оплаты"
   },

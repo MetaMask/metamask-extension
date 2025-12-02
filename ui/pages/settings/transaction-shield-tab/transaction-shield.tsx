@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   CRYPTO_PAYMENT_METHOD_ERRORS,
   PAYMENT_TYPES,
@@ -66,7 +67,6 @@ import {
   useSubscriptionPricing,
 } from '../../../hooks/subscription/useSubscriptionPricing';
 import { getSubscriptionCryptoApprovalAmount } from '../../../store/actions';
-import { ConfirmInfoRowAddress } from '../../../components/app/confirm/info/row';
 import {
   getIsShieldSubscriptionEndingSoon,
   getIsShieldSubscriptionPaused,
@@ -92,6 +92,7 @@ import {
 } from '../../../../shared/constants/subscriptions';
 import ApiErrorHandler from '../../../components/app/api-error-handler';
 import { shortenAddress } from '../../../helpers/utils/util';
+import { getAccountName, getInternalAccounts } from '../../../selectors';
 import { isCardPaymentMethod, isCryptoPaymentMethod } from './types';
 import { ButtonRow, ButtonRowContainer, MembershipHeader } from './components';
 
@@ -99,6 +100,7 @@ const TransactionShield = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const { search } = useLocation();
+  const internalAccounts = useSelector(getInternalAccounts);
   const { captureShieldCtaClickedEvent, captureShieldErrorStateClickedEvent } =
     useSubscriptionMetrics();
   const shouldWaitForSubscriptionCreation = useMemo(() => {
@@ -661,20 +663,35 @@ const TransactionShield = () => {
     trialDaysLeft,
   ]);
 
+  const payerAccountName = useMemo(() => {
+    if (
+      !displayedShieldSubscription ||
+      !isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)
+    ) {
+      return '';
+    }
+    return (
+      getAccountName(
+        internalAccounts,
+        displayedShieldSubscription.paymentMethod.crypto.payerAddress,
+      ) || ''
+    );
+  }, [displayedShieldSubscription, internalAccounts]);
+
   const paymentMethodDetails = useMemo(() => {
     if (!displayedShieldSubscription) {
       return '';
     }
     if (isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)) {
+      const { payerAddress } = displayedShieldSubscription.paymentMethod.crypto;
+      const displayName = payerAccountName || shortenAddress(payerAddress);
       return t('shieldTxDetails3DescriptionCrypto', [
         displayedShieldSubscription.paymentMethod.crypto.tokenSymbol.toUpperCase(),
-        shortenAddress(
-          displayedShieldSubscription.paymentMethod.crypto.payerAddress,
-        ),
+        displayName,
       ]);
     }
     return t('shieldPlanCard');
-  }, [displayedShieldSubscription, t]);
+  }, [displayedShieldSubscription, payerAccountName, t]);
 
   const handleViewFullBenefitsClicked = useCallback(() => {
     window.open(TRANSACTION_SHIELD_LINK, '_blank', 'noopener noreferrer');
@@ -902,50 +919,6 @@ const TransactionShield = () => {
           )}
           {displayedShieldSubscription ? (
             <>
-              {billingDetails(
-                t('shieldTxMembershipBillingDetailsNextBilling'),
-                isCancelled || displayedShieldSubscription?.cancelAtPeriodEnd
-                  ? '-'
-                  : getShortDateFormatterV2().format(
-                      new Date(displayedShieldSubscription.currentPeriodEnd),
-                    ),
-                'shield-detail-next-billing',
-              )}
-              {billingDetails(
-                t('shieldTxMembershipBillingDetailsCharges'),
-                isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)
-                  ? `${getProductPrice(productInfo as Product)} ${displayedShieldSubscription.paymentMethod.crypto.tokenSymbol.toUpperCase()} (${displayedShieldSubscription.interval === RECURRING_INTERVALS.year ? t('shieldPlanAnnual') : t('shieldPlanMonthly')})`
-                  : `${formatCurrency(
-                      getProductPrice(productInfo as Product),
-                      productInfo?.currency.toUpperCase(),
-                      {
-                        maximumFractionDigits: 2,
-                        minimumFractionDigits: 0,
-                      },
-                    )} (${displayedShieldSubscription.interval === RECURRING_INTERVALS.year ? t('shieldPlanAnnual') : t('shieldPlanMonthly')})`,
-                'shield-detail-charges',
-              )}
-              {isCryptoPayment &&
-                billingDetails(
-                  t('shieldTxMembershipBillingDetailsBillingAccount'),
-                  isCryptoPaymentMethod(
-                    displayedShieldSubscription.paymentMethod,
-                  ) ? (
-                    <ConfirmInfoRowAddress
-                      address={
-                        displayedShieldSubscription.paymentMethod.crypto
-                          .payerAddress
-                      }
-                      chainId={
-                        displayedShieldSubscription.paymentMethod.crypto.chainId
-                      }
-                      showFullName
-                    />
-                  ) : (
-                    ''
-                  ),
-                  'shield-detail-billing-account',
-                )}
               {billingDetails(
                 t('shieldTxMembershipBillingDetailsPaymentMethod'),
                 paymentMethod,

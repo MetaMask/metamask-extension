@@ -5637,15 +5637,6 @@
   "shieldTxMembershipBillingDetails": {
     "message": "Faturalandırma bilgileri"
   },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "Faturalandırılacak hesap"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "Ücretler"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "Sonraki faturalandırma"
-  },
   "shieldTxMembershipBillingDetailsPaymentMethod": {
     "message": "Ödeme yöntemi"
   },

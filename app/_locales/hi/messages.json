@@ -5634,15 +5634,6 @@
   "shieldTxMembershipBillingDetails": {
     "message": "बिलिंग विवरण"
   },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "बिलिंग अकाउंट"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "शुल्क"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "अगला बिलिंग"
-  },
   "shieldTxMembershipBillingDetailsPaymentMethod": {
     "message": "भुगतान का तरीका"
   },

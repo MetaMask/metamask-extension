@@ -5634,15 +5634,6 @@
   "shieldTxMembershipBillingDetails": {
     "message": "账单详情"
   },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "账单账户"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "费用"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "下次账单日期"
-  },
   "shieldTxMembershipBillingDetailsPaymentMethod": {
     "message": "支付方式"
   },

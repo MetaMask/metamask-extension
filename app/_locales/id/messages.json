@@ -5637,15 +5637,6 @@
   "shieldTxMembershipBillingDetails": {
     "message": "Detail penagihan"
   },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "Akun penagihan"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "Biaya"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "Penagihan berikutnya"
-  },
   "shieldTxMembershipBillingDetailsPaymentMethod": {
     "message": "Metode pembayaran"
   },

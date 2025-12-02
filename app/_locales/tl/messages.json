@@ -5637,15 +5637,6 @@
   "shieldTxMembershipBillingDetails": {
     "message": "Mga detalye ng paniningil"
   },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "Billing account"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "Mga bayad"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "Susunod na paniningil"
-  },
   "shieldTxMembershipBillingDetailsPaymentMethod": {
     "message": "Paraan ng pagbabayad"
   },

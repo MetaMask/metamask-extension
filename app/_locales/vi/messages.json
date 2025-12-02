@@ -5637,15 +5637,6 @@
   "shieldTxMembershipBillingDetails": {
     "message": "Chi tiết thanh toán"
   },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "Tài khoản thanh toán"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "Phí"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "Lần thanh toán tiếp theo"
-  },
   "shieldTxMembershipBillingDetailsPaymentMethod": {
     "message": "Phương thức thanh toán"
   },

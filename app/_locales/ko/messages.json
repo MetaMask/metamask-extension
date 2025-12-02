@@ -5637,15 +5637,6 @@
   "shieldTxMembershipBillingDetails": {
     "message": "청구 세부 정보"
   },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "청구 계정"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "요금"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "다음 청구"
-  },
   "shieldTxMembershipBillingDetailsPaymentMethod": {
     "message": "결제 수단"
   },

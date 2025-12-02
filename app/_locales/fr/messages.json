@@ -5637,15 +5637,6 @@
   "shieldTxMembershipBillingDetails": {
     "message": "Informations de facturation"
   },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "Compte de facturation"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "Frais"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "Prochaine facturation"
-  },
   "shieldTxMembershipBillingDetailsPaymentMethod": {
     "message": "Mode de paiement"
   },

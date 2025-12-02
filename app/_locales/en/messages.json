@@ -6490,15 +6490,6 @@
   "shieldTxMembershipBillingDetails": {
     "message": "Billing details"
   },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "Billing account"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "Charges"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "Next billing"
-  },
   "shieldTxMembershipBillingDetailsPaymentMethod": {
     "message": "Payment method"
   },
