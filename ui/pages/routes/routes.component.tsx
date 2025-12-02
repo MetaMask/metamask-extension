@@ -981,7 +981,6 @@ export default function Routes() {
             })}
           </RouteWithLayout>
           <RouteWithLayout
-            authenticated
             path={`${REVIEW_PERMISSIONS}/:origin`}
             exact
             layout={RootLayout}
