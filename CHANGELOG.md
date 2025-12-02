@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.11.2]
+
+### Fixed
+
+- fix: upgrade bitcoin snap (#38437)
+
+## [13.11.1]
+
+### Fixed
+
+- Fixes a crash when updating Flask (#38382)
+
 ## [13.11.0]
 
 ### Added
@@ -1328,7 +1340,9 @@ authorized by the user.` error until the user fully revoked dapp
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.11.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.11.2...HEAD
+[13.11.2]: https://github.com/MetaMask/metamask-extension/compare/v13.11.1...v13.11.2
+[13.11.1]: https://github.com/MetaMask/metamask-extension/compare/v13.11.0...v13.11.1
 [13.11.0]: https://github.com/MetaMask/metamask-extension/compare/v13.10.4...v13.11.0
 [13.10.4]: https://github.com/MetaMask/metamask-extension/compare/v13.10.3...v13.10.4
 [13.10.3]: https://github.com/MetaMask/metamask-extension/compare/v13.10.2...v13.10.3
