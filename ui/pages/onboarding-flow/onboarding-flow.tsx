@@ -86,13 +86,16 @@ import RevealRecoveryPhrase from './recovery-phrase/reveal-recovery-phrase';
 import OnboardingDownloadApp from './download-app/download-app';
 
 // Helper to convert onboarding paths to relative paths for nested route matching
-const toRelativePath = (path) => toRelativeRoutePath(path, ONBOARDING_ROUTE);
+const toRelativePath = (path: string) =>
+  toRelativeRoutePath(path, ONBOARDING_ROUTE);
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function OnboardingFlow() {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
-  const { pathname, search } = useLocation;
+  const location = useLocation();
+  const { pathname, search } = location;
   const navigate = useNavigate();
   const completedOnboarding: boolean = useSelector(getCompletedOnboarding);
   const openedWithSidepanel = useSelector(getOpenedWithSidepanel);

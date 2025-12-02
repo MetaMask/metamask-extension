@@ -273,7 +273,12 @@ function PermissionsConnect() {
       setRedirecting(shouldRedirect);
       setPermissionsApproved(approved);
 
-      if (shouldRedirect && approved) {
+      // If requesting a snap, don't navigate - wait for the snap install request
+      if (!shouldRedirect) {
+        return;
+      }
+
+      if (approved) {
         setTimeout(() => navigate(DEFAULT_ROUTE), APPROVE_TIMEOUT);
         return;
       }
@@ -398,11 +403,7 @@ function PermissionsConnect() {
 
   const approveConnection = useCallback(
     (request: Record<string, unknown>) => {
-      dispatch(
-        approvePermissionsRequestAction(
-          request.metadata as Record<string, unknown>,
-        ),
-      );
+      dispatch(approvePermissionsRequestAction(request as PermissionsRequest));
       redirect(true);
     },
     [dispatch, redirect],
@@ -612,7 +613,7 @@ function PermissionsConnect() {
   const isRequestingSnap = isSnapId(
     (metadata as Record<string, string>)?.origin,
   );
-
+  
   return (
     <div className="permissions-connect">
       {!hideTopBar && renderTopBar(permissionsRequestId)}
