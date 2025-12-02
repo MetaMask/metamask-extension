@@ -6,7 +6,6 @@ import {
   WALLET_PASSWORD,
   withFixtures,
   unlockWallet,
-  isSidePanelEnabled,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixtures/fixture-builder';
@@ -257,7 +256,7 @@ describe('MetaMask onboarding', function () {
         // Note: With sidepanel enabled, appState is lost during page reload,
         // so the toast notification won't appear. The successful balance display
         // above confirms the network was added correctly.
-        if (process.env.SELENIUM_BROWSER = 'chrome') {
+        if (process.env.SELENIUM_BROWSER === Browser.CHROME) {
           console.log(
             `Skipping toast check for sidepanel build - network '${networkName}' added successfully (verified by balance display)`,
           );
