@@ -4,7 +4,6 @@ const BigNumber = require('bignumber.js');
 const mockttp = require('mockttp');
 const detectPort = require('detect-port');
 const { difference } = require('lodash');
-const { Browser } = require('selenium-webdriver');
 const WebSocket = require('ws');
 const createStaticServer = require('../../development/create-static-server');
 const { setupMocking } = require('./mock-e2e');
@@ -812,7 +811,7 @@ const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;
 async function isSidePanelEnabled() {
   try {
     const hasSidepanel =
-      process.env.SELENIUM_BROWSER === Browser.CHROME &&
+      process.env.SELENIUM_BROWSER === 'chrome' &&
       process.env.IS_SIDEPANEL === 'true';
 
     // Log for debugging
