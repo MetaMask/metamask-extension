@@ -8,7 +8,7 @@ import StartOnboardingPage from '../pages/onboarding/start-onboarding-page';
 import SecureWalletPage from '../pages/onboarding/secure-wallet-page';
 import OnboardingCompletePage from '../pages/onboarding/onboarding-complete-page';
 import OnboardingPrivacySettingsPage from '../pages/onboarding/onboarding-privacy-settings-page';
-import { WALLET_PASSWORD } from '../../helpers';
+import { WALLET_PASSWORD, WINDOW_TITLES } from '../../helpers';
 import { E2E_SRP } from '../../fixtures/default-fixture';
 import HomePage from '../pages/home/homepage';
 import LoginPage from '../pages/login-page';
@@ -32,6 +32,7 @@ export const handleSidepanelPostOnboarding = async (
   }
 
   await driver.driver.get(`${driver.extensionUrl}/home.html`);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
 };
 
 /**
