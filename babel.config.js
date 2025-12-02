@@ -3,6 +3,7 @@ const path = require('path');
 module.exports = function (api) {
   api.cache(false);
   const slash = `\\${path.sep}`;
+  const uiPath = path.join(__dirname, 'ui').replace(/\\/g, '\\\\');
   return {
     parserOpts: {
       strictMode: true,
@@ -13,7 +14,7 @@ module.exports = function (api) {
     overrides: [
       {
         test: new RegExp(
-          `^${path.join(__dirname, 'ui')}${slash}(?:components|contexts|hooks|layouts|pages)${slash}(?:.(?!\\.(?:test|stories|container)))+\\.(?:m?[jt]s|[jt]sx)$`,
+          `^${uiPath}${slash}(?:components|contexts|hooks|layouts|pages)${slash}(?:.(?!\\.(?:test|stories|container)))+\\.(?:m?[jt]s|[jt]sx)$`,
           'u',
         ),
         plugins: [['babel-plugin-react-compiler', { target: '17' }]],
