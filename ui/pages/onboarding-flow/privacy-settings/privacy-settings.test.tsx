@@ -50,12 +50,14 @@ describe('Privacy Settings Onboarding View', () => {
   const store = configureMockStore([thunk])(mockStore);
   const setFeatureFlagStub = jest.fn();
   const setUse4ByteResolutionStub = jest.fn();
-  const setUseTokenDetectionStub = jest.fn().mockResolvedValue();
-  const setUseCurrencyRateCheckStub = jest.fn().mockResolvedValue();
-  const setIpfsGatewayStub = jest.fn().mockResolvedValue();
-  const completeOnboardingStub = jest.fn().mockResolvedValue();
-  const setUseMultiAccountBalanceCheckerStub = jest.fn().mockResolvedValue();
-  const setUseAddressBarEnsResolutionStub = jest.fn().mockResolvedValue();
+  const setUseTokenDetectionStub = jest.fn().mockResolvedValue(true);
+  const setUseCurrencyRateCheckStub = jest.fn().mockResolvedValue(true);
+  const setIpfsGatewayStub = jest.fn().mockResolvedValue('test.link');
+  const completeOnboardingStub = jest.fn().mockResolvedValue(true);
+  const setUseMultiAccountBalanceCheckerStub = jest
+    .fn()
+    .mockResolvedValue(true);
+  const setUseAddressBarEnsResolutionStub = jest.fn().mockResolvedValue(true);
   const onboardingToggleBasicFunctionalityOnStub = jest.fn();
   const toggleExternalServicesStub = jest.fn();
   const setUseTransactionSimulationsStub = jest.fn();
@@ -75,7 +77,8 @@ describe('Privacy Settings Onboarding View', () => {
       onboardingToggleBasicFunctionalityOnStub,
     setUseTransactionSimulations: setUseTransactionSimulationsStub,
     setPreference: setPreferenceStub,
-  });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } as any);
 
   it('should update the default settings from each category', () => {
     const { container, queryByTestId } = renderWithProvider(
@@ -95,7 +98,7 @@ describe('Privacy Settings Onboarding View', () => {
     // Default Settings - General category
     const itemCategoryGeneral = queryByTestId('category-item-General');
     expect(itemCategoryGeneral).toBeInTheDocument();
-    fireEvent.click(itemCategoryGeneral);
+    fireEvent.click(itemCategoryGeneral as HTMLElement);
 
     let toggles = container.querySelectorAll('input[type=checkbox]');
     const backButton = queryByTestId('privacy-settings-back-button');
@@ -104,7 +107,7 @@ describe('Privacy Settings Onboarding View', () => {
 
     // Default Settings - Assets category
     const itemCategoryAssets = queryByTestId('category-item-Assets');
-    fireEvent.click(itemCategoryAssets);
+    fireEvent.click(itemCategoryAssets as HTMLElement);
 
     toggles = container.querySelectorAll('input[type=checkbox]');
 
@@ -117,14 +120,14 @@ describe('Privacy Settings Onboarding View', () => {
 
     // Default Settings - Security category
     const itemCategorySecurity = queryByTestId('category-item-Security');
-    fireEvent.click(itemCategorySecurity);
+    fireEvent.click(itemCategorySecurity as HTMLElement);
 
     toggles = container.querySelectorAll('input[type=checkbox]');
 
     fireEvent.click(toggles[0]); // setUse4ByteResolutionStub
     fireEvent.click(toggles[1]); // setPreferenceStub
 
-    fireEvent.click(backButton);
+    fireEvent.click(backButton as HTMLElement);
 
     expect(setUseTokenDetectionStub).toHaveBeenCalledTimes(1);
     expect(setUseTokenDetectionStub.mock.calls[0][0]).toStrictEqual(true);
@@ -176,7 +179,7 @@ describe('Privacy Settings Onboarding View', () => {
       );
 
       const itemCategoryAssets = queryByTestId('category-item-Assets');
-      fireEvent.click(itemCategoryAssets);
+      fireEvent.click(itemCategoryAssets as HTMLElement);
 
       const ipfsInput = queryByTestId('ipfs-input');
       const ipfsEvent = {
@@ -185,13 +188,13 @@ describe('Privacy Settings Onboarding View', () => {
         },
       };
 
-      fireEvent.change(ipfsInput, ipfsEvent);
+      fireEvent.change(ipfsInput as HTMLElement, ipfsEvent);
 
       const validIpfsUrl = queryByText('IPFS gateway URL is valid');
       expect(validIpfsUrl).toBeInTheDocument();
 
       const backButton = queryByTestId('privacy-settings-back-button');
-      fireEvent.click(backButton);
+      fireEvent.click(backButton as HTMLElement);
 
       expect(setIpfsGatewayStub).toHaveBeenCalled();
     });
@@ -203,7 +206,7 @@ describe('Privacy Settings Onboarding View', () => {
       );
 
       const itemCategoryAssets = queryByTestId('category-item-Assets');
-      fireEvent.click(itemCategoryAssets);
+      fireEvent.click(itemCategoryAssets as HTMLElement);
 
       const ipfsInput = queryByTestId('ipfs-input');
       const ipfsEvent = {
@@ -212,7 +215,7 @@ describe('Privacy Settings Onboarding View', () => {
         },
       };
 
-      fireEvent.change(ipfsInput, ipfsEvent);
+      fireEvent.change(ipfsInput as HTMLElement, ipfsEvent);
 
       const invalidErrorMsg = queryByText('Please enter a valid URL');
 
@@ -226,7 +229,7 @@ describe('Privacy Settings Onboarding View', () => {
       );
 
       const itemCategoryAssets = queryByTestId('category-item-Assets');
-      fireEvent.click(itemCategoryAssets);
+      fireEvent.click(itemCategoryAssets as HTMLElement);
 
       const ipfsInput = queryByTestId('ipfs-input');
       const ipfsEvent = {
@@ -235,7 +238,7 @@ describe('Privacy Settings Onboarding View', () => {
         },
       };
 
-      fireEvent.change(ipfsInput, ipfsEvent);
+      fireEvent.change(ipfsInput as HTMLElement, ipfsEvent);
 
       const invalidErrorMsg = queryByText('Please enter a valid URL');
 
