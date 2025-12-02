@@ -172,7 +172,6 @@ describe('Vault Decryptor Page', function () {
     await withFixtures(
       {
         disableServerMochaToBackground: true,
-        ignoredConsoleErrors: ['GL Context was lost'],
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -240,7 +239,6 @@ describe('Vault Decryptor Page', function () {
     await withFixtures(
       {
         disableServerMochaToBackground: true,
-        ignoredConsoleErrors: ['GL Context was lost'],
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {

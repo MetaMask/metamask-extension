@@ -53,11 +53,8 @@ export const handleSidepanelPostOnboarding = async (
     }
 
     // Wait for home page to be ready
-    await driver.waitForMultipleSelectors([
-      '[data-testid="eth-overview-send"]', // send button
-      '[data-testid="account-overview__activity-tab"]', // activity tab
-      '[data-testid="account-overview__asset-tab"]', // tokens tab
-    ]);
+    const homePage = new HomePage(driver);
+    await homePage.checkPageIsLoaded();
   } catch (error) {
     // If sidepanel handling fails, continue without it
     // The test may still work if the main window navigated correctly

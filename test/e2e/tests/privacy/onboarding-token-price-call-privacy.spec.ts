@@ -37,7 +37,6 @@ describe('MetaMask onboarding', function () {
             },
           })
           .build(),
-        ignoredConsoleErrors: ['GL Context was lost'],
         title: this.test?.fullTitle(),
         testSpecificMock: mockTokenPriceApi,
       },
@@ -102,7 +101,6 @@ describe('MetaMask onboarding', function () {
             },
           })
           .build(),
-        ignoredConsoleErrors: ['GL Context was lost'],
         title: this.test?.fullTitle(),
         testSpecificMock: mockTokenPriceApi,
       },

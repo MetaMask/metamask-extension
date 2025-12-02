@@ -188,7 +188,6 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ignoredConsoleErrors: ['GL Context was lost'],
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
       },

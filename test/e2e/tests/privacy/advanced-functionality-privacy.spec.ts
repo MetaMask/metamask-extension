@@ -65,7 +65,6 @@ describe('MetaMask onboarding ', function () {
         fixtures: new FixtureBuilder({ onboarding: true })
           .withNetworkControllerOnMainnet()
           .build(),
-        ignoredConsoleErrors: ['GL Context was lost'],
         title: this.test?.fullTitle(),
         testSpecificMock: mockApis,
       },
@@ -121,7 +120,6 @@ describe('MetaMask onboarding ', function () {
             },
           })
           .build(),
-        ignoredConsoleErrors: ['GL Context was lost'],
         title: this.test?.fullTitle(),
         testSpecificMock: mockApis,
       },

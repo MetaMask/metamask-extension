@@ -802,26 +802,15 @@ async function initBundler(
 const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;
 
 /**
- * Check if sidepanel is enabled by examining the manifest at runtime.
+ * Check if sidepanel is enabled by examining the build flag at runtime.
  * Only works on Chrome-based browsers (Firefox doesn't support sidepanel).
+ * Use this check for now in case we need to disable sidepanel in future.
  *
- * @param {Driver} driver - The WebDriver instance
  * @returns {Promise<boolean>} True if sidepanel permission is present in manifest
  */
-async function isSidePanelEnabled(driver) {
+async function isSidePanelEnabled() {
   try {
-    const manifest = await driver.executeScript(`
-      try {
-        if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getManifest) {
-          return chrome.runtime.getManifest();
-        }
-        return null;
-      } catch (e) {
-        return null;
-      }
-    `);
-
-    const hasSidepanel = Boolean(manifest?.permissions?.includes('sidePanel'));
+    const hasSidepanel = process.env.IS_SIDEPANEL?.toString() === 'true';
 
     // Log for debugging
     console.log(`Sidepanel check: ${hasSidepanel ? 'enabled' : 'disabled'}`);
