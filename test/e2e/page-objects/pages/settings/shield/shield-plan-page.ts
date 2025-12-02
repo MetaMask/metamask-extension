@@ -12,8 +12,10 @@ export default class ShieldPlanPage {
   private readonly continueButton =
     '[data-testid="shield-plan-continue-button"]';
 
-  private readonly monthlyPlanButton =
-    '[data-testid="shield-plan-monthly-button"]';
+  private readonly monthlyPlanButton = (paymentMethod: 'card' | 'crypto') =>
+    paymentMethod === 'crypto'
+      ? '[data-testid="shield-plan-monthly*-button"]'
+      : '[data-testid="shield-plan-monthly-button"]';
 
   private readonly shieldPlanPageAnnualPlan = {
     text: 'Annual',
@@ -58,9 +60,11 @@ export default class ShieldPlanPage {
     await this.driver.clickElement(this.annualPlanButton);
   }
 
-  async selectMonthlyPlan(): Promise<void> {
-    console.log('Selecting Monthly plan');
-    await this.driver.clickElement(this.monthlyPlanButton);
+  async selectMonthlyPlan(
+    paymentMethod: 'card' | 'crypto' = 'card',
+  ): Promise<void> {
+    console.log(`Selecting Monthly plan (${paymentMethod})`);
+    await this.driver.clickElement(this.monthlyPlanButton(paymentMethod));
   }
 
   async clickContinueButton(): Promise<void> {
@@ -68,26 +72,21 @@ export default class ShieldPlanPage {
     await this.driver.clickElement(this.continueButton);
   }
 
-  /**
-   * Complete the shield plan subscription flow
-   * Selects a plan, clicks continue, and handles window switching after checkout opens
-   *
-   * @param plan - The subscription plan to select ('annual' or 'monthly')
-   */
   async completeShieldPlanSubscriptionFlow(
     plan: 'annual' | 'monthly',
+    paymentMethod: 'card' | 'crypto',
   ): Promise<void> {
-    console.log(`Completing shield plan subscription flow for ${plan} plan`);
+    console.log(
+      `Completing shield plan subscription flow with ${paymentMethod} payment for ${plan} plan`,
+    );
     await this.checkPageIsLoaded();
 
     if (plan === 'annual') {
       await this.selectAnnualPlan();
     } else {
-      await this.selectMonthlyPlan();
+      await this.selectMonthlyPlan(paymentMethod);
     }
 
     await this.clickContinueButton();
-
-    console.log(`Shield plan subscription flow completed for ${plan} plan`);
   }
 }

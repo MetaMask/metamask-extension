@@ -1,4 +1,4 @@
-import { EthScope, SolScope, TrxScope } from '@metamask/keyring-api';
+import { EthScope, SolScope } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { cloneDeep } from 'lodash';
@@ -32,6 +32,7 @@ import {
   getAssetsBySelectedAccountGroup,
   getAsset,
   getAllIgnoredAssets,
+  getAssetsBySelectedAccountGroupWithTronResources,
 } from './assets';
 
 jest.mock('@metamask/assets-controllers', () => {
@@ -51,7 +52,7 @@ jest.mock('@metamask/assets-controllers', () => {
       percentChange: 0,
       userCurrency: 'usd',
     })),
-    selectAssetsBySelectedAccountGroup: jest.fn(),
+    selectAssetsBySelectedAccountGroup: jest.fn(() => ({})), // Returns empty object by default
   };
 });
 
@@ -1072,57 +1073,54 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
     };
   };
 
-  const createMockBalanceResult = (balance = 750.25) => ({
-    wallets: {
-      'entropy:wallet1': {
-        totalBalanceInUserCurrency: balance * 2,
-        groups: {
-          'entropy:wallet1/group1': {
-            walletId: 'entropy:wallet1',
-            groupId: 'entropy:wallet1/group1',
-            totalBalanceInUserCurrency: balance,
-            userCurrency: 'usd',
-          },
-        },
-      },
-    },
-    userCurrency: 'usd',
-  });
-
   it('should return true when balance is greater than 0 for EVM networks', () => {
     const state = createMockStateWithEVMNetworks();
-    const expectedBalance = 750.25;
-    const mockResult = createMockBalanceResult(expectedBalance);
-    (calculateBalanceForAllWallets as jest.Mock).mockReturnValueOnce(
-      mockResult,
-    );
+
+    // Add accountsByChainId with non-zero EVM balance
+    state.metamask.accountsByChainId = {
+      '0x1': {
+        '0x0': {
+          address: '0x0',
+          balance: '0x8ac7230489e80000', // 10 ETH
+        },
+      },
+    };
 
     const result = selectAccountGroupBalanceForEmptyState(state);
 
     expect(result).toBe(true);
-    expect(calculateBalanceForAllWallets).toHaveBeenCalledTimes(1);
   });
 
   it('should return true when balance is greater than 0 for non-EVM networks like Solana', () => {
     const state = createMockStateWithNonEVMNetworks();
-    const expectedBalance = 500.5;
-    const mockResult = createMockBalanceResult(expectedBalance);
-    (calculateBalanceForAllWallets as jest.Mock).mockReturnValueOnce(
-      mockResult,
-    );
+
+    // Add multichainBalancesState with non-zero Solana balance
+    state.metamask.balances = {
+      account2: {
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+          amount: '10.5',
+          unit: 'SOL',
+        },
+      },
+    };
 
     const result = selectAccountGroupBalanceForEmptyState(state);
 
     expect(result).toBe(true);
-    expect(calculateBalanceForAllWallets).toHaveBeenCalledTimes(1);
   });
 
   it('should return false when balance is 0', () => {
     const state = createMockStateWithEVMNetworks();
-    const mockResult = createMockBalanceResult(0);
-    (calculateBalanceForAllWallets as jest.Mock).mockReturnValueOnce(
-      mockResult,
-    );
+
+    // Add accountsByChainId with zero EVM balance
+    state.metamask.accountsByChainId = {
+      '0x1': {
+        '0x0': {
+          address: '0x0',
+          balance: '0x0',
+        },
+      },
+    };
 
     const result = selectAccountGroupBalanceForEmptyState(state);
 
@@ -1131,22 +1129,28 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
 
   it('should return true for small positive balances', () => {
     const state = createMockStateWithEVMNetworks();
-    const mockResult = createMockBalanceResult(0.01);
-    (calculateBalanceForAllWallets as jest.Mock).mockReturnValueOnce(
-      mockResult,
-    );
+
+    // Add accountsByChainId with small positive EVM balance
+    state.metamask.accountsByChainId = {
+      '0x1': {
+        '0x0': {
+          address: '0x0',
+          balance: '0x2386f26fc10000', // 0.01 ETH
+        },
+      },
+    };
 
     const result = selectAccountGroupBalanceForEmptyState(state);
 
     expect(result).toBe(true);
   });
 
-  it('should return false for negative balances', () => {
+  it('should return false when no balances are set', () => {
     const state = createMockStateWithEVMNetworks();
-    const mockResult = createMockBalanceResult(-10);
-    (calculateBalanceForAllWallets as jest.Mock).mockReturnValueOnce(
-      mockResult,
-    );
+
+    // No balances set at all
+    state.metamask.accountsByChainId = {};
+    state.metamask.balances = {};
 
     const result = selectAccountGroupBalanceForEmptyState(state);
 
@@ -1155,47 +1159,161 @@ describe('selectAccountGroupBalanceForEmptyState', () => {
 
   it('should exclude EVM testnets from balance calculation', () => {
     const state = createMockStateWithEVMNetworks(true); // Include EVM testnets
-    const mockResult = createMockBalanceResult();
-    (calculateBalanceForAllWallets as jest.Mock).mockReturnValueOnce(
-      mockResult,
-    );
 
-    selectAccountGroupBalanceForEmptyState(state);
+    // Add balances for both mainnet and testnet
+    state.metamask.accountsByChainId = {
+      '0x1': {
+        // Ethereum mainnet
+        '0x0': {
+          address: '0x0',
+          balance: '0x0', // Zero on mainnet
+        },
+      },
+      '0xaa36a7': {
+        // Sepolia testnet (should be ignored)
+        '0x0': {
+          address: '0x0',
+          balance: '0x8ac7230489e80000', // 10 ETH on testnet
+        },
+      },
+    };
 
-    const callArgs = (calculateBalanceForAllWallets as jest.Mock).mock.calls[0];
-    const enabledNetworkMap = callArgs[9]; // 10th argument is the network map
+    const result = selectAccountGroupBalanceForEmptyState(state);
 
-    // Should not include Sepolia (0xaa36a7) or Linea Sepolia (0xe705)
-    expect(enabledNetworkMap?.eip155).not.toHaveProperty('0xaa36a7');
-    expect(enabledNetworkMap?.eip155).not.toHaveProperty('0xe705');
-    // Should include mainnet networks
-    expect(enabledNetworkMap?.eip155).toHaveProperty('0x1');
-    expect(enabledNetworkMap?.eip155).toHaveProperty('0x89');
+    // Should return false because testnet balance is ignored
+    expect(result).toBe(false);
   });
 
   it('should exclude non-EVM testnets like Solana from balance calculation', () => {
     const state = createMockStateWithNonEVMNetworks(true); // Include non-EVM testnets
-    const mockResult = createMockBalanceResult();
-    (calculateBalanceForAllWallets as jest.Mock).mockReturnValueOnce(
-      mockResult,
-    );
 
-    selectAccountGroupBalanceForEmptyState(state);
+    // Add balances for both mainnet and testnet
+    state.metamask.balances = {
+      account2: {
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+          // Mainnet
+          amount: '0',
+          unit: 'SOL',
+        },
+        'solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z/slip44:501': {
+          // Testnet (should be ignored)
+          amount: '10.5',
+          unit: 'SOL',
+        },
+      },
+    };
 
-    const callArgs = (calculateBalanceForAllWallets as jest.Mock).mock.calls[0];
-    const enabledNetworkMap = callArgs[9];
+    const result = selectAccountGroupBalanceForEmptyState(state);
 
-    // Should not include Solana testnet or devnet
-    expect(enabledNetworkMap?.solana).not.toHaveProperty(
-      'solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
-    );
-    expect(enabledNetworkMap?.solana).not.toHaveProperty(
-      'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
-    );
-    // Should include Solana mainnet
-    expect(enabledNetworkMap?.solana).toHaveProperty(
-      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-    );
+    // Should return false because testnet balance is ignored
+    expect(result).toBe(false);
+  });
+
+  describe('native token balance checks', () => {
+    it('should return true when EVM native token balance exists', () => {
+      const state = createMockStateWithEVMNetworks();
+
+      // Add accountsByChainId with non-zero EVM balance
+      state.metamask.accountsByChainId = {
+        '0x1': {
+          '0x0': {
+            address: '0x0',
+            balance: '0x8ac7230489e80000', // 10 ETH
+          },
+        },
+      };
+
+      const result = selectAccountGroupBalanceForEmptyState(state);
+
+      expect(result).toBe(true);
+    });
+
+    it('should return true when non-EVM native token balance exists', () => {
+      const state = createMockStateWithNonEVMNetworks();
+
+      // Add multichainBalancesState with non-zero Solana balance
+      state.metamask.balances = {
+        account2: {
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+            amount: '10.5',
+            unit: 'SOL',
+          },
+        },
+      };
+
+      const result = selectAccountGroupBalanceForEmptyState(state);
+
+      expect(result).toBe(true);
+    });
+
+    it('should return false when no native token balances exist', () => {
+      const state = createMockStateWithEVMNetworks();
+
+      // Add accountsByChainId with zero EVM balance
+      state.metamask.accountsByChainId = {
+        '0x1': {
+          '0x0': {
+            address: '0x0',
+            balance: '0x0',
+          },
+        },
+      };
+
+      // Add multichainBalancesState with zero balance
+      state.metamask.balances = {};
+
+      const result = selectAccountGroupBalanceForEmptyState(state);
+
+      expect(result).toBe(false);
+    });
+
+    it('should return false when non-EVM balance is decimal zero like "0.0" or "0.00"', () => {
+      const state = createMockStateWithNonEVMNetworks();
+
+      // Add multichainBalancesState with decimal zero Solana balance
+      state.metamask.balances = {
+        account2: {
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+            amount: '0.00', // Decimal zero
+            unit: 'SOL',
+          },
+        },
+      };
+
+      const result = selectAccountGroupBalanceForEmptyState(state);
+
+      expect(result).toBe(false);
+    });
+
+    it('should return true when user has ERC-20 tokens but no native tokens', () => {
+      const state = createMockStateWithEVMNetworks();
+
+      // Add accountsByChainId with zero EVM balance
+      state.metamask.accountsByChainId = {
+        '0x1': {
+          '0x0': {
+            address: '0x0',
+            balance: '0x0', // No ETH
+          },
+        },
+      };
+
+      // Add tokenBalances with ERC-20 tokens
+      state.metamask.tokenBalances = {
+        '0x0': {
+          // account address
+          '0x1': {
+            // Ethereum mainnet
+            '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': '0xde0b6b3a7640000', // USDC balance
+          },
+        },
+      };
+
+      const result = selectAccountGroupBalanceForEmptyState(state);
+
+      // Should return true because user has non-native tokens
+      expect(result).toBe(true);
+    });
   });
 });
 
@@ -1235,344 +1353,45 @@ describe('getAssetsBySelectedAccountGroup', () => {
     expect(selectorMock).toHaveBeenCalledWith(mockState.metamask);
     expect(result).toStrictEqual(selectorMockResult);
   });
+});
 
-  it('filters out tron staked bandwidth and energy', () => {
+describe('getAssetsBySelectedAccountGroupWithTronResources', () => {
+  beforeEach(() => {
+    getAssetsBySelectedAccountGroupWithTronResources.clearCache();
+    getAssetsBySelectedAccountGroupWithTronResources.memoizedResultFunc.clearCache();
+  });
+
+  const mockState = {
+    metamask: {
+      accountTree: 'mockAccountTree',
+      internalAccounts: 'mockInternalAccounts',
+      allTokens: 'mockAllTokens',
+      allIgnoredTokens: 'mockAllIgnoredTokens',
+      tokenBalances: 'mockTokenBalances',
+      marketData: 'mockMarketData',
+      currencyRates: 'mockCurrencyRates',
+      currentCurrency: 'mockCurrentCurrency',
+      networkConfigurationsByChainId: 'mockNetworkConfigurationsByChainId',
+      accountsByChainId: 'mockAccountsByChainId',
+      accountsAssets: 'mockAccountsAssets',
+      assetsMetadata: 'mockAssetsMetadata',
+      allIgnoredAssets: 'mockAllIgnoredAssets',
+      balances: 'mockBalances',
+      conversionRates: 'mockConversionRates',
+    },
+  };
+
+  it('calls selector with option to not filter tron resources', () => {
     const selectorMock = jest
       .mocked(selectAssetsBySelectedAccountGroup)
-      .mockReturnValue({
-        'tron:728126428': [
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:728126428/slip44:195',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Tron',
-            symbol: 'TRX',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 6,
-            rawBalance: '0x0',
-            balance: '0',
-            fiat: {
-              balance: 0,
-              currency: 'usd',
-              conversionRate: 0.28516,
-            },
-            chainId: 'tron:728126428',
-          },
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:728126428/slip44:195-staked-for-bandwidth',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Staked for Bandwidth',
-            symbol: 'sTRX-BANDWIDTH',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 6,
-            rawBalance: '0x0',
-            balance: '0',
-            chainId: 'tron:728126428',
-            fiat: undefined,
-          },
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:728126428/slip44:195-staked-for-energy',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Staked for Energy',
-            symbol: 'sTRX-ENERGY',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 6,
-            rawBalance: '0x0',
-            balance: '0',
-            chainId: 'tron:728126428',
-            fiat: undefined,
-          },
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:728126428/slip44:bandwidth',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Bandwidth',
-            symbol: 'BANDWIDTH',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 0,
-            rawBalance: '0x0',
-            balance: '0',
-            chainId: 'tron:728126428',
-            fiat: undefined,
-          },
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:728126428/slip44:maximum-bandwidth',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Max Bandwidth',
-            symbol: 'MAX-BANDWIDTH',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 0,
-            rawBalance: '0x0',
-            balance: '0',
-            chainId: 'tron:728126428',
-            fiat: undefined,
-          },
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:728126428/slip44:energy',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Energy',
-            symbol: 'ENERGY',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 0,
-            rawBalance: '0x0',
-            balance: '0',
-            chainId: 'tron:728126428',
-            fiat: undefined,
-          },
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:728126428/slip44:maximum-energy',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Max Energy',
-            symbol: 'MAX-ENERGY',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 0,
-            rawBalance: '0x0',
-            balance: '0',
-            chainId: 'tron:728126428',
-            fiat: undefined,
-          },
-        ],
-        'tron:3448148188': [
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:3448148188/slip44:195',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Tron',
-            symbol: 'TRX',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 6,
-            rawBalance: '0x0',
-            balance: '0',
-            chainId: 'tron:3448148188',
-            fiat: undefined,
-          },
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:3448148188/slip44:195-staked-for-bandwidth',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Staked for Bandwidth',
-            symbol: 'sTRX-BANDWIDTH',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 6,
-            rawBalance: '0x0',
-            balance: '0',
-            chainId: 'tron:3448148188',
-            fiat: undefined,
-          },
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:3448148188/slip44:195-staked-for-energy',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Staked for Energy',
-            symbol: 'sTRX-ENERGY',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 6,
-            rawBalance: '0x0',
-            balance: '0',
-            chainId: 'tron:3448148188',
-            fiat: undefined,
-          },
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:3448148188/slip44:bandwidth',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Bandwidth',
-            symbol: 'BANDWIDTH',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 0,
-            rawBalance: '0x0',
-            balance: '0',
-            chainId: 'tron:3448148188',
-            fiat: undefined,
-          },
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:3448148188/slip44:maximum-bandwidth',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Max Bandwidth',
-            symbol: 'MAX-BANDWIDTH',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 0,
-            rawBalance: '0x0',
-            balance: '0',
-            chainId: 'tron:3448148188',
-            fiat: undefined,
-          },
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:3448148188/slip44:energy',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Energy',
-            symbol: 'ENERGY',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 0,
-            rawBalance: '0x0',
-            balance: '0',
-            chainId: 'tron:3448148188',
-            fiat: undefined,
-          },
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:3448148188/slip44:maximum-energy',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Max Energy',
-            symbol: 'MAX-ENERGY',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 0,
-            rawBalance: '0x0',
-            balance: '0',
-            chainId: 'tron:3448148188',
-            fiat: undefined,
-          },
-        ],
-        'tron:2494104990': [
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:2494104990/slip44:195',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Tron',
-            symbol: 'TRX',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 6,
-            rawBalance: '0x0',
-            balance: '0',
-            chainId: 'tron:2494104990',
-            fiat: undefined,
-          },
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:2494104990/slip44:195-staked-for-bandwidth',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Staked for Bandwidth',
-            symbol: 'sTRX-BANDWIDTH',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 6,
-            rawBalance: '0x0',
-            balance: '0',
-            chainId: 'tron:2494104990',
-            fiat: undefined,
-          },
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:2494104990/slip44:195-staked-for-energy',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Staked for Energy',
-            symbol: 'sTRX-ENERGY',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 6,
-            rawBalance: '0x0',
-            balance: '0',
-            chainId: 'tron:2494104990',
-            fiat: undefined,
-          },
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:2494104990/slip44:bandwidth',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Bandwidth',
-            symbol: 'BANDWIDTH',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 0,
-            rawBalance: '0x0',
-            balance: '0',
-            chainId: 'tron:2494104990',
-            fiat: undefined,
-          },
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:2494104990/slip44:maximum-bandwidth',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Max Bandwidth',
-            symbol: 'MAX-BANDWIDTH',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 0,
-            rawBalance: '0x0',
-            balance: '0',
-            chainId: 'tron:2494104990',
-            fiat: undefined,
-          },
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:2494104990/slip44:energy',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Energy',
-            symbol: 'ENERGY',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 0,
-            rawBalance: '0x0',
-            balance: '0',
-            chainId: 'tron:2494104990',
-            fiat: undefined,
-          },
-          {
-            accountType: 'tron:eoa',
-            assetId: 'tron:2494104990/slip44:maximum-energy',
-            isNative: true,
-            image:
-              'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/tron/info/logo.png',
-            name: 'Max Energy',
-            symbol: 'MAX-ENERGY',
-            accountId: 'de5c3465-d01e-4091-a219-232903e982bb',
-            decimals: 0,
-            rawBalance: '0x0',
-            balance: '0',
-            chainId: 'tron:2494104990',
-            fiat: undefined,
-          },
-        ],
-      });
+      .mockReturnValue({});
 
-    const result = getAssetsBySelectedAccountGroup(mockState);
+    const result = getAssetsBySelectedAccountGroupWithTronResources(mockState);
 
-    expect(selectorMock).toHaveBeenCalled();
-    expect(result[TrxScope.Mainnet]).toHaveLength(1);
-    expect(result[TrxScope.Nile]).toHaveLength(1);
-    expect(result[TrxScope.Shasta]).toHaveLength(1);
+    expect(selectorMock).toHaveBeenCalledWith(mockState.metamask, {
+      filterTronStakedTokens: false,
+    });
+    expect(result).toStrictEqual({});
   });
 });
 

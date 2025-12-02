@@ -23,9 +23,6 @@ import Loading from '../../components/ui/loading-screen';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
 import {
-  AccountListMenu,
-  NetworkListMenu,
-  AccountDetails,
   ImportNftsModal,
   ImportTokensModal,
 } from '../../components/multichain';
@@ -61,9 +58,6 @@ import {
   DEFI_ROUTE,
   DEEP_LINK_ROUTE,
   SMART_ACCOUNT_UPDATE,
-  WALLET_DETAILS_ROUTE,
-  ACCOUNT_DETAILS_ROUTE,
-  ACCOUNT_DETAILS_QR_CODE_ROUTE,
   ACCOUNT_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
   MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE,
@@ -92,9 +86,7 @@ import {
   oldestPendingConfirmationSelector,
   getUnapprovedTransactions,
   getPendingApprovals,
-  getIsMultichainAccountsState1Enabled,
 } from '../../selectors';
-import { getApprovalFlows } from '../../selectors/approvals';
 
 import {
   hideImportNftsModal,
@@ -102,14 +94,12 @@ import {
   setCurrentCurrency,
   setLastActiveTime,
   toggleAccountMenu,
-  toggleNetworkMenu,
   hideImportTokensModal,
   hideDeprecatedNetworkModal,
   automaticallySwitchNetwork,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   hideKeyringRemovalResultModal,
   ///: END:ONLY_INCLUDE_IF
-  setEditedNetwork,
 } from '../../store/actions';
 import { pageChanged } from '../../ducks/history/history';
 import {
@@ -119,7 +109,6 @@ import {
 import { useI18nContext } from '../../hooks/useI18nContext';
 import RewardsPage from '../rewards';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
-import { getConfirmationRoute } from '../confirmations/hooks/useConfirmationNavigation';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
@@ -139,7 +128,6 @@ import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-r
 import { MultichainAccountListMenu } from '../../components/multichain-accounts/multichain-account-list-menu';
 
 import { DeprecatedNetworkModal } from '../settings/deprecated-network-modal/DeprecatedNetworkModal';
-import { MultichainMetaFoxLogo } from '../../components/multichain/app-header/multichain-meta-fox-logo';
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
 import { type DynamicImportType, mmLazy } from '../../helpers/utils/mm-lazy';
@@ -150,8 +138,6 @@ import {
 } from '../../../shared/lib/confirmation.utils';
 import { type Confirmation } from '../confirmations/types/confirm';
 import { SmartAccountUpdate } from '../confirmations/components/confirm/smart-account-update';
-import { MultichainAccountDetails } from '../multichain-accounts/account-details';
-import { AddressQRCode } from '../multichain-accounts/address-qr-code';
 import { MultichainAccountAddressListPage } from '../multichain-accounts/multichain-account-address-list-page';
 import { MultichainAccountPrivateKeyListPage } from '../multichain-accounts/multichain-account-private-key-list-page';
 import MultichainAccountIntroModalContainer from '../../components/app/modals/multichain-accounts/intro-modal';
@@ -165,11 +151,9 @@ import { State2Wrapper } from '../../components/multichain-accounts/state2-wrapp
 import { RootLayout } from '../../layouts/root-layout';
 import { LegacyLayout } from '../../layouts/legacy-layout';
 import { RouteWithLayout } from '../../layouts/route-with-layout';
-import {
-  getConnectingLabel,
-  isConfirmTransactionRoute,
-  setTheme,
-} from './utils';
+import { getConnectingLabel, setTheme } from './utils';
+import { ConfirmationHandler } from './confirmation-handler';
+import { Modals } from './modals';
 
 /**
  * V5-to-v5-compat navigation function that bridges react-router-dom v5 history
@@ -296,10 +280,7 @@ const createV5CompatRoute = <
 
 // Begin Lazy Routes
 const OnboardingFlow = mmLazy(
-  (() =>
-    import(
-      '../onboarding-flow/onboarding-flow.js'
-    )) as unknown as DynamicImportType,
+  (() => import('../onboarding-flow/index.ts')) as unknown as DynamicImportType,
 );
 const Lock = mmLazy(
   (() => import('../lock/index.js')) as unknown as DynamicImportType,
@@ -443,12 +424,6 @@ const DeepLink = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
   (() => import('../deep-link/deep-link.tsx')) as unknown as DynamicImportType,
 );
-const WalletDetails = mmLazy(
-  (() =>
-    import(
-      '../multichain-accounts/wallet-details/index.ts'
-    )) as unknown as DynamicImportType,
-);
 
 const MultichainAccountDetailsPage = mmLazy(
   (() =>
@@ -518,7 +493,6 @@ export default function Routes() {
   );
   const pendingApprovals = useAppSelector(getPendingApprovals);
   const transactionsMetadata = useAppSelector(getUnapprovedTransactions);
-  const approvalFlows = useAppSelector(getApprovalFlows);
 
   const textDirection = useAppSelector((state) => state.metamask.textDirection);
   const isUnlocked = useAppSelector(getIsUnlocked);
@@ -541,9 +515,7 @@ export default function Routes() {
   const isAccountMenuOpen = useAppSelector(
     (state) => state.appState.isAccountMenuOpen,
   );
-  const isNetworkMenuOpen = useAppSelector(
-    (state) => state.appState.isNetworkMenuOpen,
-  );
+
   const isImportTokensModalOpen = useAppSelector(
     (state) => state.appState.importTokensModalOpen,
   );
@@ -552,9 +524,6 @@ export default function Routes() {
   );
   const isDeprecatedNetworkModalOpen = useAppSelector(
     (state) => state.appState.deprecatedNetworkModalOpen,
-  );
-  const accountDetailsAddress = useAppSelector(
-    (state) => state.appState.accountDetailsAddress,
   );
   const isImportNftsModalOpen = useAppSelector(
     (state) => state.appState.importNftsModal.open,
@@ -577,10 +546,6 @@ export default function Routes() {
   const hideShowKeyringSnapRemovalResultModal = () =>
     dispatch(hideKeyringRemovalResultModal());
   ///: END:ONLY_INCLUDE_IF
-
-  const isMultichainAccountsState1Enabled = useAppSelector(
-    getIsMultichainAccountsState1Enabled,
-  );
 
   // Multichain intro modal logic (extracted to custom hook)
   const { showMultichainIntroModal, setShowMultichainIntroModal } =
@@ -667,46 +632,6 @@ export default function Routes() {
     }
   }, [currentCurrency, dispatch]);
 
-  // Navigate to confirmations when there are pending approvals and user is on asset details page
-  // This behavior is only enabled in sidepanel to avoid interfering with popup/extension flows
-  useEffect(() => {
-    const windowType = getEnvironmentType();
-
-    // Only run this navigation logic in sidepanel
-    if (windowType !== ENVIRONMENT_TYPE_SIDEPANEL) {
-      return;
-    }
-
-    // Only navigate to confirmations when user is on an asset details page
-    const isOnAssetDetailsPage = location.pathname.startsWith(ASSET_ROUTE);
-
-    // Network operations (addEthereumChain, switchEthereumChain) have their own UI
-    // and shouldn't trigger auto-navigation
-    const hasNonNavigableApprovals = pendingApprovals.some(
-      (approval) =>
-        approval.type === 'wallet_addEthereumChain' ||
-        approval.type === 'wallet_switchEthereumChain',
-    );
-
-    if (
-      isOnAssetDetailsPage &&
-      !hasNonNavigableApprovals &&
-      isUnlocked &&
-      (pendingApprovals.length > 0 || approvalFlows?.length > 0)
-    ) {
-      const url = getConfirmationRoute(
-        pendingApprovals[0]?.id,
-        pendingApprovals,
-        Boolean(approvalFlows?.length),
-        '', // queryString
-      );
-
-      if (url) {
-        history.replace(url);
-      }
-    }
-  }, [isUnlocked, pendingApprovals, approvalFlows, history, location.pathname]);
-
   const renderRoutes = useCallback(() => {
     const RestoreVaultComponent = forgottenPassword ? Route : Initialized;
 
@@ -772,7 +697,7 @@ export default function Routes() {
             authenticated
             path={IMPORT_SRP_ROUTE}
             component={ImportSrpPage}
-            layout={LegacyLayout}
+            layout={RootLayout}
           />
           <RouteWithLayout
             authenticated
@@ -832,7 +757,7 @@ export default function Routes() {
           </RouteWithLayout>
           <RouteWithLayout
             path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
-            layout={LegacyLayout}
+            layout={RootLayout}
           >
             {createV5CompatRoute<{ id?: string }>(ConfirmTransaction, {
               wrapper: AuthenticatedV5Compat,
@@ -894,7 +819,7 @@ export default function Routes() {
           </RouteWithLayout>
           <RouteWithLayout
             path={`${CONFIRMATION_V_NEXT_ROUTE}/:id?`}
-            layout={LegacyLayout}
+            layout={RootLayout}
           >
             {createV5CompatRoute<{ id?: string }>(ConfirmationPage, {
               wrapper: AuthenticatedV5Compat,
@@ -1059,7 +984,7 @@ export default function Routes() {
             authenticated
             path={`${REVIEW_PERMISSIONS}/:origin`}
             exact
-            layout={LegacyLayout}
+            layout={RootLayout}
           >
             {createV5CompatRoute<{ origin: string }>(
               MemoizedReviewPermissionsWrapper,
@@ -1152,42 +1077,6 @@ export default function Routes() {
             })}
           </RouteWithLayout>
           <RouteWithLayout
-            path={WALLET_DETAILS_ROUTE}
-            exact
-            layout={LegacyLayout}
-          >
-            {createV5CompatRoute<{ id: string }>(WalletDetails, {
-              wrapper: AuthenticatedV5Compat,
-              includeParams: true,
-              paramsAsProps: false,
-            })}
-          </RouteWithLayout>
-          <RouteWithLayout
-            path={`${ACCOUNT_DETAILS_ROUTE}/:address`}
-            exact
-            layout={LegacyLayout}
-          >
-            {createV5CompatRoute<{ address: string }>(
-              MultichainAccountDetails,
-              {
-                wrapper: AuthenticatedV5Compat,
-                includeParams: true,
-                paramsAsProps: false,
-              },
-            )}
-          </RouteWithLayout>
-          <RouteWithLayout
-            path={`${ACCOUNT_DETAILS_QR_CODE_ROUTE}/:address`}
-            exact
-            layout={LegacyLayout}
-          >
-            {createV5CompatRoute<{ address: string }>(AddressQRCode, {
-              wrapper: AuthenticatedV5Compat,
-              includeParams: true,
-              paramsAsProps: false,
-            })}
-          </RouteWithLayout>
-          <RouteWithLayout
             authenticated
             path={NONEVM_BALANCE_CHECK_ROUTE}
             component={NonEvmBalanceCheck}
@@ -1233,18 +1122,6 @@ export default function Routes() {
 
   const t = useI18nContext();
 
-  const renderAccountDetails = () => {
-    if (!accountDetailsAddress || isMultichainAccountsState1Enabled) {
-      return null;
-    }
-    return (
-      <AccountDetails
-        address={accountDetailsAddress}
-        navigate={createV5CompatNavigate(history)}
-      />
-    );
-  };
-
   const loadMessage = loadingMessage
     ? getConnectingLabel(loadingMessage, { providerType, providerId }, { t })
     : null;
@@ -1283,13 +1160,8 @@ export default function Routes() {
     // is already a fullscreen interface.
     !isShowingDeepLinkRoute;
 
-  const accountListMenu = isMultichainAccountsState1Enabled ? (
+  const accountListMenu = (
     <MultichainAccountListMenu
-      onClose={() => dispatch(toggleAccountMenu())}
-      privacyMode={privacyMode}
-    />
-  ) : (
-    <AccountListMenu
       onClose={() => dispatch(toggleAccountMenu())}
       privacyMode={privacyMode}
     />
@@ -1306,23 +1178,14 @@ export default function Routes() {
       })}
       dir={textDirection}
     >
+      <ConfirmationHandler />
       <QRHardwarePopover />
       <Modal />
       <Alert visible={alertOpen} msg={alertMessage} />
-      {isConfirmTransactionRoute(location.pathname) && (
-        <MultichainMetaFoxLogo />
-      )}
+
       {isAccountMenuOpen ? accountListMenu : null}
-      {isNetworkMenuOpen ? (
-        <NetworkListMenu
-          onClose={() => {
-            dispatch(toggleNetworkMenu());
-            dispatch(setEditedNetwork());
-          }}
-        />
-      ) : null}
+
       <NetworkConfirmationPopover />
-      {renderAccountDetails()}
       {isImportNftsModalOpen ? (
         <ImportNftsModal onClose={() => dispatch(hideImportNftsModal())} />
       ) : null}
@@ -1369,6 +1232,8 @@ export default function Routes() {
         }>,
         { location },
       )}
+
+      <Modals />
     </div>
   );
 }
