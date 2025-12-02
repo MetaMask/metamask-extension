@@ -3556,6 +3556,7 @@
     },
     "react-responsive-carousel": {
       "globals": {
+        "HTMLElement": true,
         "clearTimeout": true,
         "console.warn": true,
         "document": true,
@@ -3565,6 +3566,7 @@
       "packages": {
         "classnames": true,
         "react": true,
+        "react-dom": true,
         "react-responsive-carousel>react-easy-swipe": true
       }
     },

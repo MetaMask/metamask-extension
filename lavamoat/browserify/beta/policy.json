@@ -5039,6 +5039,7 @@
     },
     "react-responsive-carousel": {
       "globals": {
+        "HTMLElement": true,
         "addEventListener": true,
         "clearTimeout": true,
         "console.warn": true,
@@ -5050,6 +5051,7 @@
       "packages": {
         "classnames": true,
         "react": true,
+        "react-dom": true,
         "react-responsive-carousel>react-easy-swipe": true
       }
     },
