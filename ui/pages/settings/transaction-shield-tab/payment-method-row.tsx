@@ -275,7 +275,9 @@ export const PaymentMethodRow = ({
           endIconName={IconName.ArrowRight}
           disabled={
             displayedShieldSubscription.status ===
-            SUBSCRIPTION_STATUSES.canceled
+              SUBSCRIPTION_STATUSES.canceled || // can't change payment method if subscription is canceled
+            displayedShieldSubscription.status ===
+              SUBSCRIPTION_STATUSES.provisional // payment method crypto verifying, can't change yet
           }
         >
           {displayedShieldSubscription.paymentMethod.crypto.tokenSymbol}
