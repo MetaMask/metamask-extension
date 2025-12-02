@@ -1,7 +1,7 @@
 import { Suite } from 'mocha';
 import { mockNetworkStateOld } from '../../../stub/networks';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-network';
 import AddNetworkRpcUrlModal from '../../page-objects/pages/dialog/add-network-rpc-url';
 import Homepage from '../../page-objects/pages/home/homepage';
