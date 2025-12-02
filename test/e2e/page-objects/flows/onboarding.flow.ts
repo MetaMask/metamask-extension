@@ -31,38 +31,7 @@ export const handleSidepanelPostOnboarding = async (
     return;
   }
 
-  try {
-    const hasSidepanel = await isSidePanelEnabled();
-
-    // Skip if sidepanel is not enabled
-    if (!hasSidepanel) {
-      return;
-    }
-
-    const currentUrl = await driver.getCurrentUrl();
-
-    // Only navigate if still on the completion page
-    // Avoid duplicate navigation if already on home page
-    if (currentUrl.includes('#onboarding/completion')) {
-      await driver.driver.get(`${driver.extensionUrl}/home.html`);
-    } else if (currentUrl.includes('/home.html')) {
-      // Already on home page, skip navigation
-      return;
-    } else {
-      await driver.driver.get(`${driver.extensionUrl}/home.html`);
-    }
-
-    // Wait for home page to be ready
-    const homePage = new HomePage(driver);
-    await homePage.checkPageIsLoaded();
-  } catch (error) {
-    // If sidepanel handling fails, continue without it
-    // The test may still work if the main window navigated correctly
-    console.log(
-      'Sidepanel handling skipped or failed:',
-      error instanceof Error ? error.message : String(error),
-    );
-  }
+  await driver.driver.get(`${driver.extensionUrl}/home.html`);
 };
 
 /**
