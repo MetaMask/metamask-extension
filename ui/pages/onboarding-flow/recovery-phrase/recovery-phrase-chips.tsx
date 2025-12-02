@@ -11,6 +11,7 @@ import {
   IconSize,
   Text,
   TextField,
+  TextFieldType,
 } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -28,6 +29,14 @@ import {
   BorderColor,
 } from '../../../helpers/constants/design-system';
 
+type RecoveryPhraseChipsProps = {
+  secretRecoveryPhrase: string[];
+  phraseRevealed?: boolean;
+  revealPhrase?: () => void;
+  confirmPhase?: boolean;
+  quizWords?: { index: number; word: string }[];
+  setInputValue?: (inputValue: { index: number; word: string }[]) => void;
+};
 // this was Truffle's original dev recovery phrase from ~2017
 export const fakeSeedPhraseWords = [
   'candy',
@@ -44,6 +53,8 @@ export const fakeSeedPhraseWords = [
   'treat',
 ];
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function RecoveryPhraseChips({
   secretRecoveryPhrase,
   phraseRevealed = true,
@@ -51,7 +62,7 @@ export default function RecoveryPhraseChips({
   confirmPhase,
   quizWords = [],
   setInputValue,
-}) {
+}: RecoveryPhraseChipsProps) {
   const t = useI18nContext();
   const indicesToCheck = useMemo(
     () => quizWords.map((word) => word.index),
@@ -65,13 +76,18 @@ export default function RecoveryPhraseChips({
     })),
   );
 
-  const setNextTargetIndex = (newQuizAnswers) => {
-    const emptyAnswers = newQuizAnswers.reduce((acc, answer) => {
-      if (answer.word === '') {
-        acc.push(answer.index);
-      }
-      return acc;
-    }, []);
+  const setNextTargetIndex = (
+    newQuizAnswers: { index: number; word: string }[],
+  ) => {
+    const emptyAnswers = newQuizAnswers.reduce(
+      (acc: number[], answer: { index: number; word: string }) => {
+        if (answer.word === '') {
+          acc.push(answer.index);
+        }
+        return acc;
+      },
+      [],
+    );
     const firstEmpty = emptyAnswers.length ? Math.min(...emptyAnswers) : -1;
 
     return firstEmpty;
@@ -219,7 +235,7 @@ export default function RecoveryPhraseChips({
                     {index + 1}.
                   </Text>
                 }
-                type="password"
+                type={TextFieldType.Password}
                 disabled
                 readOnly
               />

@@ -54,8 +54,11 @@ import {
 } from '../../../store/actions';
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
 import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
+import type { BrowserWithSidePanel } from '../../../../shared/types';
 import WalletReadyAnimation from './wallet-ready-animation';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function CreationSuccessful() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -159,13 +162,17 @@ export default function CreationSuccessful() {
     // Side Panel - only if feature flag is enabled
     if (isSidePanelEnabled) {
       try {
-        if (browser?.sidePanel?.open) {
+        // Type assertion needed as webextension-polyfill doesn't include sidePanel API types yet
+        const browserWithSidePanel = browser as BrowserWithSidePanel;
+        if (browserWithSidePanel?.sidePanel?.open) {
           const tabs = await browser.tabs.query({
             active: true,
             currentWindow: true,
           });
           if (tabs && tabs.length > 0) {
-            await browser.sidePanel.open({ windowId: tabs[0].windowId });
+            await browserWithSidePanel.sidePanel.open({
+              windowId: tabs[0].windowId,
+            });
             await dispatch(setUseSidePanelAsDefault(true));
             // Use the sidepanel-specific action - no navigation needed, sidepanel is already open
             await dispatch(setCompletedOnboardingWithSidepanel());
