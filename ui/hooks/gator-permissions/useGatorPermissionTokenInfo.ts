@@ -253,7 +253,13 @@ export function useGatorPermissionTokenInfo(
       source: null,
       loading: isFetching,
     };
-  }, [nativeTokenInfo, cachedOrImportedTokenInfo, fetchedTokenInfo, chainId, isFetching]);
+  }, [
+    nativeTokenInfo,
+    cachedOrImportedTokenInfo,
+    fetchedTokenInfo,
+    chainId,
+    isFetching,
+  ]);
 
   return {
     tokenInfo: result.tokenInfo,
