@@ -118,7 +118,6 @@ import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-r
 import { MultichainAccountListMenu } from '../../components/multichain-accounts/multichain-account-list-menu';
 
 import { DeprecatedNetworkModal } from '../settings/deprecated-network-modal/DeprecatedNetworkModal';
-import { MultichainMetaFoxLogo } from '../../components/multichain/app-header/multichain-meta-fox-logo';
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
 import { type DynamicImportType, mmLazy } from '../../helpers/utils/mm-lazy';
@@ -142,11 +141,7 @@ import { State2Wrapper } from '../../components/multichain-accounts/state2-wrapp
 import { RootLayout } from '../../layouts/root-layout';
 import { LegacyLayout } from '../../layouts/legacy-layout';
 import { createRouteWithLayout } from '../../layouts/route-with-layout';
-import {
-  getConnectingLabel,
-  isConfirmTransactionRoute,
-  setTheme,
-} from './utils';
+import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationHandler } from './confirmation-handler';
 import { Modals } from './modals';
 
@@ -871,9 +866,7 @@ export default function RoutesComponent() {
       <QRHardwarePopover />
       <Modal />
       <Alert visible={alertOpen} msg={alertMessage} />
-      {isConfirmTransactionRoute(location.pathname) && (
-        <MultichainMetaFoxLogo />
-      )}
+
       {isAccountMenuOpen ? accountListMenu : null}
 
       <NetworkConfirmationPopover />
