@@ -40,6 +40,7 @@ jobs:
       ARTIFACT_NAME: build-test${{ matrix.browser == 'firefox' && '-mv2' || '' }}-${{ matrix.buildType }}
       OUTPUT_NAME: benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      SENTRY_DSN_PERFORMANCE: ${{ vars.SENTRY_DSN_PERFORMANCE }}
     continue-on-error: true
     steps:
       - name: Checkout and setup environment
