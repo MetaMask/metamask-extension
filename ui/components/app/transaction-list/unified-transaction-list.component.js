@@ -422,9 +422,7 @@ export default function UnifiedTransactionList({
     tokenChainIdOverride,
   );
 
-  // Get all EVM addresses in the selected account group
-  // This allows us to show transactions from all EVM accounts in the group,
-  // not just the currently selected account (which might be non-EVM)
+  // Show transactions from all EVM accounts in the group, not just the selected account
   const accountGroupEvmAddresses = useSelector(
     getSelectedAccountGroupEvmAddresses,
   );
@@ -458,12 +456,15 @@ export default function UnifiedTransactionList({
       const pendingStatuses = ['submitted', 'approved', 'signed', 'unapproved'];
       const pendingFromGroup = allEvmTransactions.filter((tx) => {
         const fromAddress = tx.txParams?.from?.toLowerCase();
+        const toAddress = tx.txParams?.to?.toLowerCase();
+        const isFromGroup = accountGroupEvmAddresses.includes(fromAddress);
+        const isIncomingToGroup =
+          tx.type === TransactionType.incoming &&
+          accountGroupEvmAddresses.includes(toAddress);
         const isPending = pendingStatuses.includes(tx.status);
         const isEnabledChain = evmChainIds.includes(tx.chainId);
         return (
-          accountGroupEvmAddresses.includes(fromAddress) &&
-          isPending &&
-          isEnabledChain
+          (isFromGroup || isIncomingToGroup) && isPending && isEnabledChain
         );
       });
       return groupAndSortTransactionsByNonce(pendingFromGroup);
@@ -489,8 +490,13 @@ export default function UnifiedTransactionList({
       const pendingStatuses = ['submitted', 'approved', 'signed', 'unapproved'];
       return allEvmTransactions.filter((tx) => {
         const fromAddress = tx.txParams?.from?.toLowerCase();
+        const toAddress = tx.txParams?.to?.toLowerCase();
+        const isFromGroup = accountGroupEvmAddresses.includes(fromAddress);
+        const isIncomingToGroup =
+          tx.type === TransactionType.incoming &&
+          accountGroupEvmAddresses.includes(toAddress);
         const isCompleted = !pendingStatuses.includes(tx.status);
-        return accountGroupEvmAddresses.includes(fromAddress) && isCompleted;
+        return (isFromGroup || isIncomingToGroup) && isCompleted;
       });
     }
     return unfilteredCompletedTransactionsAllChains
