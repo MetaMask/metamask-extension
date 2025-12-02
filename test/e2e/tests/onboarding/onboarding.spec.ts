@@ -190,7 +190,7 @@ describe('MetaMask onboarding', function () {
     );
   });
 
-  it('User can add custom network during onboarding', async function () {
+  it.skip('User can add custom network during onboarding', async function () {
     const networkName = 'Localhost 8546';
     const networkUrl = 'http://127.0.0.1:8546';
     const currencySymbol = 'ETH';

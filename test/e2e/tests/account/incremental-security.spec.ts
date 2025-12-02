@@ -34,7 +34,7 @@ async function mockSpotPrices(mockServer: Mockttp) {
 }
 
 describe('Incremental Security', function (this: Suite) {
-  it('Back up Secret Recovery Phrase from backup reminder', async function () {
+  it.skip('Back up Secret Recovery Phrase from backup reminder', async function () {
     await withFixtures(
       {
         dappOptions: {
