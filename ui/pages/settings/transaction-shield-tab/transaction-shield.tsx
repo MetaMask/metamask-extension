@@ -37,11 +37,9 @@ import {
 import { Skeleton } from '../../../components/component-library/skeleton';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  useCancelSubscription,
   useHandleSubscriptionSupportAction,
   useOpenGetSubscriptionBillingPortal,
   useSubscriptionCryptoApprovalTransaction,
-  useUnCancelSubscription,
   useUpdateSubscriptionCardPaymentMethod,
   useUserLastSubscriptionByProduct,
   useUserSubscriptionByProduct,
@@ -90,7 +88,6 @@ import {
   ShieldUnexpectedErrorEventLocationEnum,
 } from '../../../../shared/constants/subscriptions';
 import ApiErrorHandler from '../../../components/app/api-error-handler';
-import CancelMembershipModal from './cancel-membership-modal';
 import { isCardPaymentMethod, isCryptoPaymentMethod } from './types';
 import { MembershipHeader } from './components';
 
@@ -196,10 +193,6 @@ const TransactionShield = () => {
   const isSubscriptionEndingSoon =
     getIsShieldSubscriptionEndingSoon(subscriptions);
 
-  // user can cancel subscription if not canceled and current subscription not cancel at period end
-  const canCancel =
-    !isCancelled && !currentShieldSubscription?.cancelAtPeriodEnd;
-
   const isCryptoPayment =
     displayedShieldSubscription?.paymentMethod &&
     isCryptoPaymentMethod(displayedShieldSubscription?.paymentMethod);
@@ -211,12 +204,6 @@ const TransactionShield = () => {
       ),
     [displayedShieldSubscription],
   );
-
-  const [executeCancelSubscription, cancelSubscriptionResult] =
-    useCancelSubscription(currentShieldSubscription);
-
-  const [executeUnCancelSubscription, unCancelSubscriptionResult] =
-    useUnCancelSubscription(currentShieldSubscription);
 
   const [
     executeOpenGetSubscriptionBillingPortal,
@@ -234,8 +221,6 @@ const TransactionShield = () => {
   const hasApiError =
     subscriptionsError ||
     subscriptionPricingError ||
-    cancelSubscriptionResult.error ||
-    unCancelSubscriptionResult.error ||
     openGetSubscriptionBillingPortalResult.error ||
     updateSubscriptionCardPaymentMethodResult.error;
 
@@ -244,8 +229,6 @@ const TransactionShield = () => {
 
   const loading =
     resultTriggerSubscriptionCheckInsufficientFunds.pending ||
-    cancelSubscriptionResult.pending ||
-    unCancelSubscriptionResult.pending ||
     openGetSubscriptionBillingPortalResult.pending ||
     updateSubscriptionCardPaymentMethodResult.pending;
 
@@ -267,9 +250,6 @@ const TransactionShield = () => {
     navigate,
     displayedShieldSubscription,
   ]);
-
-  const [isCancelMembershipModalOpen, setIsCancelMembershipModalOpen] =
-    useState(false);
 
   const [isAddFundsModalOpen, setIsAddFundsModalOpen] = useState(false);
 
@@ -475,13 +455,7 @@ const TransactionShield = () => {
       });
     }
 
-    if (isCancelled) {
-      // go to shield plan page to renew subscription for cancelled subscription
-      navigate({
-        pathname: SHIELD_PLAN_ROUTE,
-        search: `?source=${EntryModalSourceEnum.Settings}`,
-      });
-    } else if (isUnexpectedErrorCryptoPayment) {
+    if (isUnexpectedErrorCryptoPayment) {
       // handle support action
       handleClickContactSupport();
     } else if (
@@ -507,8 +481,6 @@ const TransactionShield = () => {
   }, [
     handleClickContactSupport,
     isUnexpectedErrorCryptoPayment,
-    isCancelled,
-    navigate,
     currentShieldSubscription,
     isInsufficientFundsCrypto,
     isAllowanceNeededCrypto,
@@ -822,29 +794,6 @@ const TransactionShield = () => {
             },
             'shield-detail-submit-case-button',
           )}
-        {!isMembershipInactive &&
-          currentShieldSubscription?.cancelAtPeriodEnd &&
-          buttonRow(
-            t('shieldTxMembershipResubscribe'),
-            () => {
-              executeUnCancelSubscription();
-            },
-            'shield-tx-membership-uncancel-button',
-          )}
-        {canCancel &&
-          buttonRow(
-            t('shieldTxMembershipCancel'),
-            () => {
-              setIsCancelMembershipModalOpen(true);
-            },
-            'shield-tx-membership-cancel-button',
-          )}
-        {isCancelled &&
-          buttonRow(
-            t('shieldTxMembershipRenew'),
-            handlePaymentError,
-            'shield-detail-renew-button',
-          )}
         {buttonRow(
           t('shieldManagePlan'),
           () => {
@@ -935,16 +884,6 @@ const TransactionShield = () => {
             'shield-detail-view-billing-history-button',
           )}
       </Box>
-      {currentShieldSubscription && isCancelMembershipModalOpen && (
-        <CancelMembershipModal
-          onClose={() => setIsCancelMembershipModalOpen(false)}
-          onConfirm={async () => {
-            setIsCancelMembershipModalOpen(false);
-            await executeCancelSubscription();
-          }}
-          subscription={currentShieldSubscription}
-        />
-      )}
       {loading && <LoadingScreen />}
       {currentToken &&
         isAddFundsModalOpen &&
