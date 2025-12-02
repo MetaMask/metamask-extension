@@ -51,13 +51,15 @@ export const TransactionData = ({
   nestedTransactionIndex?: number;
 } = {}) => {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { isQuotedSwapDisplayedInInfo, selectedQuote } = useDappSwapContext();
+  const { isQuotedSwapDisplayedInInfo } = useDappSwapContext();
   const { nestedTransactions, txParams } = currentConfirmation ?? {};
   const { data: currentData, to: currentTo } = txParams ?? {};
-  let transactionData = data ?? (currentData as Hex);
-  if (isQuotedSwapDisplayedInInfo) {
-    transactionData = (selectedQuote?.trade as TxData)?.data as Hex;
+  const transactionData = data ?? (currentData as Hex);
+
+  if (nestedTransactionIndex === undefined && isQuotedSwapDisplayedInInfo) {
+    return null;
   }
+
   const transactionTo = to ?? (currentTo as Hex);
 
   const decodeResponse = useDecodedTransactionData({
