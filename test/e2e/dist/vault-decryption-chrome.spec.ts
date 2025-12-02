@@ -164,7 +164,7 @@ async function closePopoverIfPresent(driver: Driver) {
 }
 
 describe('Vault Decryptor Page', function () {
-  it.only('is able to decrypt the vault uploading the log file in the vault-decryptor webapp', async function () {
+  it('is able to decrypt the vault uploading the log file in the vault-decryptor webapp', async function () {
     if (process.env.SELENIUM_BROWSER !== 'chrome') {
       // TODO: Get this working on Firefox
       this.skip();
