@@ -47,6 +47,62 @@ import { useGatorPermissionTokenInfo } from '../../../../../hooks/gator-permissi
 import { CopyIcon } from '../../../../app/confirm/info/row/copy-icon';
 import { Skeleton } from '../../../../component-library/skeleton';
 
+// Shared row style for permission details
+const rowStyle = { flex: '1', alignSelf: 'center' } as const;
+
+type PermissionDetailRowProps = {
+  label: string;
+  value: React.ReactNode;
+  testId?: string;
+  isLoading?: boolean;
+};
+
+/**
+ * Reusable row component for permission details
+ */
+function PermissionDetailRow({
+  label,
+  value,
+  testId,
+  isLoading = false,
+}: PermissionDetailRowProps): JSX.Element {
+  return (
+    <Box
+      flexDirection={BoxFlexDirection.Row}
+      justifyContent={BoxJustifyContent.Between}
+      style={rowStyle}
+      gap={4}
+      marginTop={2}
+    >
+      <Text
+        textAlign={TextAlign.Left}
+        color={TextColor.TextAlternative}
+        variant={TextVariant.BodyMd}
+      >
+        {label}
+      </Text>
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.End}
+        style={rowStyle}
+        gap={2}
+        alignItems={BoxAlignItems.Center}
+      >
+        <Skeleton isLoading={isLoading} width="100px" height="16px">
+          <Text
+            variant={TextVariant.BodyMd}
+            color={TextColor.TextAlternative}
+            textAlign={TextAlign.Right}
+            data-testid={testId}
+          >
+            {value}
+          </Text>
+        </Skeleton>
+      </Box>
+    </Box>
+  );
+}
+
 type ReviewGatorPermissionItemProps = {
   /**
    * The network name to display
@@ -154,16 +210,10 @@ export const ReviewGatorPermissionItem = ({
 
   /**
    * Returns the expiration date from the rules
-   *
-   * @param rules - The rules to extract the expiration from
-   * @returns The expiration date
    */
   const getExpirationDate = useCallback(
     (rules: GatorPermissionRule[]): string => {
-      if (!rules) {
-        return t('gatorPermissionNoExpiration');
-      }
-      if (rules.length === 0) {
+      if (!rules?.length) {
         return t('gatorPermissionNoExpiration');
       }
       return extractExpiryToReadableDate(rules);
@@ -367,77 +417,22 @@ export const ReviewGatorPermissionItem = ({
 
       {/* Permission details */}
       <Box backgroundColor={BoxBackgroundColor.BackgroundDefault}>
-        {/* Amount Row */}
+        <PermissionDetailRow
+          label={t(permissionDetails.amountLabel.translationKey)}
+          value={permissionDetails.amountLabel.value}
+          testId={permissionDetails.amountLabel.testId}
+          isLoading={loading}
+        />
+        <PermissionDetailRow
+          label={t(permissionDetails.frequencyLabel.translationKey)}
+          value={t(permissionDetails.frequencyLabel.valueTranslationKey)}
+          testId={permissionDetails.frequencyLabel.testId}
+        />
+        {/* Account row - custom layout with avatar and copy icon */}
         <Box
           flexDirection={BoxFlexDirection.Row}
           justifyContent={BoxJustifyContent.Between}
-          style={{ flex: '1', alignSelf: 'center' }}
-          gap={4}
-          marginTop={2}
-        >
-          <Text
-            textAlign={TextAlign.Left}
-            color={TextColor.TextAlternative}
-            variant={TextVariant.BodyMd}
-          >
-            {t(permissionDetails.amountLabel.translationKey)}
-          </Text>
-          <Box
-            flexDirection={BoxFlexDirection.Row}
-            justifyContent={BoxJustifyContent.End}
-            style={{ flex: '1', alignSelf: 'center' }}
-            gap={2}
-            alignItems={BoxAlignItems.Center}
-          >
-            <Skeleton isLoading={loading} width="100px" height="16px">
-              <Text
-                variant={TextVariant.BodyMd}
-                color={TextColor.TextAlternative}
-                data-testid={permissionDetails.amountLabel.testId}
-              >
-                {permissionDetails.amountLabel.value}
-              </Text>
-            </Skeleton>
-          </Box>
-        </Box>
-
-        {/* Frequency Row */}
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          justifyContent={BoxJustifyContent.Between}
-          style={{ flex: '1', alignSelf: 'center' }}
-          gap={4}
-          marginTop={2}
-        >
-          <Text
-            textAlign={TextAlign.Left}
-            color={TextColor.TextAlternative}
-            variant={TextVariant.BodyMd}
-          >
-            {t(permissionDetails.frequencyLabel.translationKey)}
-          </Text>
-          <Box
-            flexDirection={BoxFlexDirection.Row}
-            justifyContent={BoxJustifyContent.End}
-            style={{ flex: '1', alignSelf: 'center' }}
-            gap={2}
-            alignItems={BoxAlignItems.Center}
-          >
-            <Text
-              variant={TextVariant.BodyMd}
-              color={TextColor.TextAlternative}
-              data-testid={permissionDetails.frequencyLabel.testId}
-            >
-              {t(permissionDetails.frequencyLabel.valueTranslationKey)}
-            </Text>
-          </Box>
-        </Box>
-
-        {/* Account row */}
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          justifyContent={BoxJustifyContent.Between}
-          style={{ flex: '1', alignSelf: 'center' }}
+          style={rowStyle}
           gap={4}
           marginTop={2}
         >
@@ -451,7 +446,7 @@ export const ReviewGatorPermissionItem = ({
           <Box
             flexDirection={BoxFlexDirection.Row}
             justifyContent={BoxJustifyContent.End}
-            style={{ flex: '1', alignSelf: 'center' }}
+            style={rowStyle}
             gap={2}
             alignItems={BoxAlignItems.Center}
           >
@@ -504,45 +499,19 @@ export const ReviewGatorPermissionItem = ({
 
         {isExpanded && (
           <>
-            {/* Justification row */}
             {justification && (
-              <Box
-                flexDirection={BoxFlexDirection.Row}
-                justifyContent={BoxJustifyContent.Between}
-                style={{ flex: '1', alignSelf: 'center' }}
-                gap={4}
-                marginTop={2}
-              >
-                <Text
-                  textAlign={TextAlign.Left}
-                  color={TextColor.TextAlternative}
-                  variant={TextVariant.BodyMd}
-                >
-                  {t('gatorPermissionsJustification')}
-                </Text>
-                <Box
-                  flexDirection={BoxFlexDirection.Row}
-                  justifyContent={BoxJustifyContent.End}
-                  style={{ flex: '1', alignSelf: 'center' }}
-                  gap={2}
-                >
-                  <Text
-                    variant={TextVariant.BodyMd}
-                    color={TextColor.TextAlternative}
-                    textAlign={TextAlign.Right}
-                    data-testid="review-gator-permission-justification"
-                  >
-                    {justification}
-                  </Text>
-                </Box>
-              </Box>
+              <PermissionDetailRow
+                label={t('gatorPermissionsJustification')}
+                value={justification}
+                testId="review-gator-permission-justification"
+              />
             )}
 
-            {/* Network name row */}
+            {/* Network name row - custom layout with avatar */}
             <Box
               flexDirection={BoxFlexDirection.Row}
               justifyContent={BoxJustifyContent.Between}
-              style={{ flex: '1', alignSelf: 'center' }}
+              style={rowStyle}
               gap={4}
               marginTop={2}
             >
@@ -557,7 +526,7 @@ export const ReviewGatorPermissionItem = ({
                 flexDirection={BoxFlexDirection.Row}
                 alignItems={BoxAlignItems.Baseline}
                 justifyContent={BoxJustifyContent.End}
-                style={{ flex: '1', alignSelf: 'center' }}
+                style={rowStyle}
                 gap={2}
               >
                 <AvatarNetwork
@@ -584,36 +553,13 @@ export const ReviewGatorPermissionItem = ({
                     key,
                   );
                 return (
-                  <Box
+                  <PermissionDetailRow
                     key={key}
-                    flexDirection={BoxFlexDirection.Row}
-                    justifyContent={BoxJustifyContent.Between}
-                    style={{ flex: '1', alignSelf: 'center' }}
-                    gap={4}
-                    marginTop={2}
-                  >
-                    <Text
-                      textAlign={TextAlign.Left}
-                      color={TextColor.TextAlternative}
-                      variant={TextVariant.BodyMd}
-                    >
-                      {t(detail.translationKey)}
-                    </Text>
-                    <Skeleton
-                      isLoading={isLoadingValue}
-                      width="100px"
-                      height="16px"
-                    >
-                      <Text
-                        textAlign={TextAlign.Right}
-                        color={TextColor.TextAlternative}
-                        variant={TextVariant.BodyMd}
-                        data-testid={detail.testId}
-                      >
-                        {detail.value}
-                      </Text>
-                    </Skeleton>
-                  </Box>
+                    label={t(detail.translationKey)}
+                    value={detail.value}
+                    testId={detail.testId}
+                    isLoading={isLoadingValue}
+                  />
                 );
               },
             )}

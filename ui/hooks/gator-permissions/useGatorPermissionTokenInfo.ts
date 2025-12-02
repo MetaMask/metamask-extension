@@ -111,20 +111,10 @@ export function useGatorPermissionTokenInfo(
 
   // Tier 1: Check cache and imported tokens (only for ERC-20 tokens) using shared utility
   const cachedOrImportedTokenInfo = useMemo(() => {
-    // Skip if native token
-    if (isNativeToken) {
+    if (isNativeToken || !tokenAddress || !chainId) {
       return null;
     }
 
-    if (!tokenAddress || !chainId) {
-      return null;
-    }
-
-    // First check cache to determine source
-    const normalizedAddress = tokenAddress.toLowerCase();
-    const cachedToken = erc20TokensByChain[chainId]?.data?.[normalizedAddress];
-
-    // Look up token info (handles both cache and imported tokens)
     const tokenInfo = lookupCachedOrImportedTokenInfo(
       tokenAddress,
       chainId,
@@ -136,11 +126,15 @@ export function useGatorPermissionTokenInfo(
       return null;
     }
 
-    // Determine source based on whether it was found in cache
+    // Determine source: cache if found in erc20TokensByChain, otherwise imported
+    const normalizedAddress = tokenAddress.toLowerCase();
+    const isFromCache = Boolean(
+      erc20TokensByChain[chainId]?.data?.[normalizedAddress],
+    );
 
     return {
       tokenInfo,
-      source: cachedToken ? 'cache' : 'imported',
+      source: isFromCache ? 'cache' : 'imported',
     };
   }, [tokenAddress, chainId, erc20TokensByChain, allTokens, isNativeToken]);
 
@@ -219,31 +213,26 @@ export function useGatorPermissionTokenInfo(
     isNativeToken,
   ]);
 
-  // Compute loading state: false if we have immediate data, otherwise based on fetch state
-  // This prevents UI flicker for native and cached/imported tokens
-  const loading = useMemo(() => {
-    // If we have immediate data (native or cached/imported), we're not loading
-    if (nativeTokenInfo !== null || cachedOrImportedTokenInfo !== null) {
-      return false;
-    }
-    // Otherwise, loading state depends on whether we're fetching
-    return isFetching;
-  }, [nativeTokenInfo, cachedOrImportedTokenInfo, isFetching]);
-
-  // Determine the final token info and source
-  const result = useMemo(() => {
-    // Prioritize native token info
+  // Determine the final token info, source, and loading state
+  // Prioritize: native > cached/imported > fetched > default
+  const result = useMemo((): {
+    tokenInfo: GatorTokenInfo;
+    source: TokenInfoSource;
+    loading: boolean;
+  } => {
     if (nativeTokenInfo) {
       return {
         tokenInfo: nativeTokenInfo.tokenInfo,
         source: nativeTokenInfo.source,
+        loading: false,
       };
     }
 
     if (cachedOrImportedTokenInfo) {
       return {
         tokenInfo: cachedOrImportedTokenInfo.tokenInfo,
-        source: cachedOrImportedTokenInfo.source,
+        source: cachedOrImportedTokenInfo.source as TokenInfoSource,
+        loading: false,
       };
     }
 
@@ -251,6 +240,7 @@ export function useGatorPermissionTokenInfo(
       return {
         tokenInfo: fetchedTokenInfo.tokenInfo,
         source: fetchedTokenInfo.source,
+        loading: false,
       };
     }
 
@@ -258,16 +248,17 @@ export function useGatorPermissionTokenInfo(
       tokenInfo: {
         symbol: 'Unknown Token',
         decimals: 18,
-        chainId: chainId || '0x0',
+        chainId: chainId || ('0x0' as const),
       },
       source: null,
+      loading: isFetching,
     };
-  }, [nativeTokenInfo, cachedOrImportedTokenInfo, fetchedTokenInfo, chainId]);
+  }, [nativeTokenInfo, cachedOrImportedTokenInfo, fetchedTokenInfo, chainId, isFetching]);
 
   return {
     tokenInfo: result.tokenInfo,
-    loading,
+    loading: result.loading,
     error,
-    source: result.source as TokenInfoSource,
+    source: result.source,
   };
 }

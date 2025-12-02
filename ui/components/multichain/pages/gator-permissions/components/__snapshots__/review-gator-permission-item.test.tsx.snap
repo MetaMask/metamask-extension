@@ -48,7 +48,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
           style="flex: 1; align-self: center;"
         >
           <p
-            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
             data-testid="review-gator-permission-amount-label"
           >
             0.5 WBTC
@@ -69,7 +69,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
           style="flex: 1; align-self: center;"
         >
           <p
-            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
             data-testid="review-gator-permission-frequency-label"
           >
             Weekly
@@ -242,7 +242,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
             style="height: 16px; width: 100px;"
           >
             <p
-              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
               data-testid="review-gator-permission-amount-label"
             >
               0.00003024 Unknown Token
@@ -264,7 +264,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
           style="flex: 1; align-self: center;"
         >
           <p
-            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
             data-testid="review-gator-permission-frequency-label"
           >
             Weekly
@@ -433,7 +433,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
           style="flex: 1; align-self: center;"
         >
           <p
-            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
             data-testid="review-gator-permission-amount-label"
           >
             302400 WBTC
@@ -454,7 +454,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
           style="flex: 1; align-self: center;"
         >
           <p
-            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
             data-testid="review-gator-permission-frequency-label"
           >
             Weekly
@@ -623,7 +623,7 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
           style="flex: 1; align-self: center;"
         >
           <p
-            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
             data-testid="review-gator-permission-amount-label"
           >
             0.5 ETH
@@ -644,7 +644,7 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
           style="flex: 1; align-self: center;"
         >
           <p
-            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
             data-testid="review-gator-permission-frequency-label"
           >
             Weekly
@@ -813,7 +813,7 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
           style="flex: 1; align-self: center;"
         >
           <p
-            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
             data-testid="review-gator-permission-amount-label"
           >
             302400 ETH
@@ -834,7 +834,7 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
           style="flex: 1; align-self: center;"
         >
           <p
-            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
             data-testid="review-gator-permission-frequency-label"
           >
             Weekly

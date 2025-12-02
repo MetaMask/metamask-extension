@@ -261,7 +261,7 @@ async function fetchGatorErc20TokenInfo(
   }
 
   // Tier 2: Fall back to on-chain data if needed
-  if (!symbol || decimals === null || decimals === undefined) {
+  if (!symbol || decimals === undefined) {
     if (getTokenStandardAndDetailsByChain) {
       try {
         const details = await getTokenStandardAndDetailsByChain(
@@ -287,10 +287,7 @@ async function fetchGatorErc20TokenInfo(
   }
 
   // If both API and on-chain failed, throw the on-chain error
-  if (
-    (!symbol || decimals === null || decimals === undefined) &&
-    onchainError
-  ) {
+  if ((!symbol || decimals === undefined) && onchainError) {
     throw onchainError;
   }
 
@@ -335,7 +332,11 @@ export async function getGatorErc20TokenInfo(
     chainId,
     allowExternalServices,
     getTokenStandardAndDetailsByChain,
-  );
+  ).catch((error) => {
+    // Remove from cache on failure to allow retries
+    gatorTokenInfoPromiseCache.delete(key);
+    throw error;
+  });
   gatorTokenInfoPromiseCache.set(key, promise);
   return promise;
 }
