@@ -29,6 +29,7 @@ jobs:
     timeout-minutes: 30
     needs: is-fork-pull-request
     if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
+    environment: default-branch
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -52,6 +53,7 @@ jobs:
     timeout-minutes: 30
     needs: is-fork-pull-request
     if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
+    environment: default-branch
     outputs:
       COMMIT_SHA: ${{ steps.commit-sha.outputs.COMMIT_SHA }}
       BRANCH: ${{ steps.branch.outputs.BRANCH }}
@@ -185,6 +187,7 @@ jobs:
       - is-fork-pull-request
       - update-onboarding-fixture
     if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
+    environment: default-branch
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -256,6 +259,7 @@ jobs:
     needs:
       - is-fork-pull-request
       - check-status
+    environment: default-branch
     steps:
       - uses: actions/checkout@v4
         with:
