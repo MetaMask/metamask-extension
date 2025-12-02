@@ -10,6 +10,7 @@ import { type InternalAccount } from '@metamask/keyring-internal-api';
 import { BigNumber } from 'bignumber.js';
 import { AssetType } from '../../shared/constants/transaction';
 import {
+  SLIP44_ASSET_NAMESPACE,
   TRON_RESOURCE_SYMBOLS_SET,
   type TronResourceSymbol,
 } from '../../shared/constants/multichain/assets';
@@ -64,7 +65,7 @@ const useNonEvmAssetsWithBalances = (
           symbol: assetMetadataById[caipAssetId]?.symbol ?? '',
           assetId: caipAssetId,
           address: assetReference,
-          isNative: assetNamespace === 'slip44',
+          isNative: assetNamespace === SLIP44_ASSET_NAMESPACE,
           string: balancesByAssetId[caipAssetId]?.amount ?? '0',
           balance: balancesByAssetId[caipAssetId]?.amount ?? '0',
           decimals: assetMetadataById[caipAssetId]?.units[0]?.decimals,
