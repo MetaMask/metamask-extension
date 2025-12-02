@@ -13,7 +13,7 @@ const { Ganache } = require('./seeder/ganache');
 const FixtureServer = require('./fixtures/fixture-server');
 const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
-import { Browser } from 'selenium-webdriver';
+const { Browser } = require('selenium-webdriver');
 const { PAGES } = require('./webdriver/driver');
 const AnvilSeeder = require('./seeder/anvil-seeder');
 const GanacheSeeder = require('./seeder/ganache-seeder');
