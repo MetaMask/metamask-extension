@@ -801,6 +801,23 @@ async function initBundler(
 
 const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;
 
+async function isSidePanelEnabled() {
+  try {
+    const hasSidepanel =
+      process.env.SELENIUM_BROWSER === 'chrome' &&
+      process.env.IS_SIDEPANEL === 'true';
+
+    // Log for debugging
+    console.log(`Sidepanel check: ${hasSidepanel ? 'enabled' : 'disabled'}`);
+
+    return hasSidepanel;
+  } catch (error) {
+    // Chrome API not accessible (e.g., LavaMoat scuttling mode, Firefox)
+    console.log('Sidepanel check failed:', error.message);
+    return false;
+  }
+}
+
 module.exports = {
   DAPP_HOST_ADDRESS,
   DAPP_URL,
@@ -833,4 +850,5 @@ module.exports = {
   clickNestedButton,
   sentryRegEx,
   createWebSocketConnection,
+  isSidePanelEnabled,
 };
