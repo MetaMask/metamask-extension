@@ -29,6 +29,7 @@ import SmartTransactionListItem from '../transaction-list-item/smart-transaction
 import {
   TOKEN_CATEGORY_HASH,
   TransactionKind,
+  PENDING_STATUS_HASH,
 } from '../../../helpers/constants/transactions';
 import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants/swaps';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
@@ -452,7 +453,6 @@ export default function UnifiedTransactionList({
     }
 
     if (accountGroupEvmAddress) {
-      const pendingStatuses = ['submitted', 'approved', 'signed', 'unapproved'];
       const pendingFromGroup = allEvmTransactions.filter((tx) => {
         const fromAddress = tx.txParams?.from?.toLowerCase();
         const toAddress = tx.txParams?.to?.toLowerCase();
@@ -460,7 +460,7 @@ export default function UnifiedTransactionList({
         const isIncomingToGroup =
           tx.type === TransactionType.incoming &&
           accountGroupEvmAddress === toAddress;
-        const isPending = pendingStatuses.includes(tx.status);
+        const isPending = tx.status in PENDING_STATUS_HASH;
         const isEnabledChain = evmChainIds.includes(tx.chainId);
         return (
           (isFromGroup || isIncomingToGroup) && isPending && isEnabledChain
@@ -486,7 +486,6 @@ export default function UnifiedTransactionList({
 
   const accountGroupFilteredCompletedTransactions = useMemo(() => {
     if (accountGroupEvmAddress) {
-      const pendingStatuses = ['submitted', 'approved', 'signed', 'unapproved'];
       return allEvmTransactions.filter((tx) => {
         const fromAddress = tx.txParams?.from?.toLowerCase();
         const toAddress = tx.txParams?.to?.toLowerCase();
@@ -494,7 +493,7 @@ export default function UnifiedTransactionList({
         const isIncomingToGroup =
           tx.type === TransactionType.incoming &&
           accountGroupEvmAddress === toAddress;
-        const isCompleted = !pendingStatuses.includes(tx.status);
+        const isCompleted = !(tx.status in PENDING_STATUS_HASH);
         return (isFromGroup || isIncomingToGroup) && isCompleted;
       });
     }
