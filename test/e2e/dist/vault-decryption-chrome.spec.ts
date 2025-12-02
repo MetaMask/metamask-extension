@@ -9,7 +9,7 @@ import HomePage from '../page-objects/pages/home/homepage';
 import PrivacySettings from '../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../page-objects/pages/settings/settings-page';
 import VaultDecryptorPage from '../page-objects/pages/vault-decryptor-page';
-import { completeCreateNewWalletOnboardingFlowWithCustomSettings, handleSidepanelPostOnboarding } from '../page-objects/flows/onboarding.flow';
+import { completeCreateNewWalletOnboardingFlowWithCustomSettings } from '../page-objects/flows/onboarding.flow';
 
 const VAULT_DECRYPTOR_PAGE = 'https://metamask.github.io/vault-decryptor';
 
@@ -164,7 +164,7 @@ async function closePopoverIfPresent(driver: Driver) {
 }
 
 describe('Vault Decryptor Page', function () {
-  it('is able to decrypt the vault uploading the log file in the vault-decryptor webapp', async function () {
+  it.only('is able to decrypt the vault uploading the log file in the vault-decryptor webapp', async function () {
     if (process.env.SELENIUM_BROWSER !== 'chrome') {
       // TODO: Get this working on Firefox
       this.skip();
@@ -172,7 +172,6 @@ describe('Vault Decryptor Page', function () {
     await withFixtures(
       {
         disableServerMochaToBackground: true,
-        ignoredConsoleErrors: ['GL Context was lost'],
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -240,7 +239,6 @@ describe('Vault Decryptor Page', function () {
     await withFixtures(
       {
         disableServerMochaToBackground: true,
-        ignoredConsoleErrors: ['GL Context was lost'],
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {

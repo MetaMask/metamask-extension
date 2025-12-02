@@ -101,7 +101,6 @@ describe('MetaMask onboarding', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ignoredConsoleErrors: ['GL Context was lost'],
         title: this.test?.fullTitle(),
         manifestFlags: {
           remoteFeatureFlags: {
@@ -168,7 +167,6 @@ describe('MetaMask onboarding', function () {
             },
           })
           .build(),
-        ignoredConsoleErrors: ['GL Context was lost'],
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) =>
           mockApis(

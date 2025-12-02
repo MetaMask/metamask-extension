@@ -53,7 +53,6 @@ describe('MetaMask onboarding', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ignoredConsoleErrors: ['GL Context was lost'],
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -93,7 +92,6 @@ describe('MetaMask onboarding', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ignoredConsoleErrors: ['GL Context was lost'],
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -111,7 +109,6 @@ describe('MetaMask onboarding', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ignoredConsoleErrors: ['GL Context was lost'],
         testSpecificMock: mockSpotPrices,
         title: this.test?.fullTitle(),
       },
@@ -128,7 +125,6 @@ describe('MetaMask onboarding', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ignoredConsoleErrors: ['GL Context was lost'],
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -163,7 +159,6 @@ describe('MetaMask onboarding', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ignoredConsoleErrors: ['GL Context was lost'],
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -205,7 +200,6 @@ describe('MetaMask onboarding', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ignoredConsoleErrors: ['GL Context was lost'],
         localNodeOptions: [
           {
             type: 'anvil',
@@ -278,7 +272,6 @@ describe('MetaMask onboarding', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        ignoredConsoleErrors: ['GL Context was lost'],
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {

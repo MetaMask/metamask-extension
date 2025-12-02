@@ -808,19 +808,8 @@ const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;
  * @param {Driver} driver - The WebDriver instance
  * @returns {Promise<boolean>} True if sidepanel permission is present in manifest
  */
-async function isSidePanelEnabled(driver) {
+async function isSidePanelEnabled() {
   try {
-    // const manifest = await driver.executeScript(`
-    //   try {
-    //     if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getManifest) {
-    //       return chrome.runtime.getManifest();
-    //     }
-    //     return null;
-    //   } catch (e) {
-    //     return null;
-    //   }
-    // `);
-
     const hasSidepanel = process.env.IS_SIDEPANEL?.toString() === 'true';
     // Log for debugging
     console.log(`Sidepanel check: ${hasSidepanel ? 'enabled' : 'disabled'}`);

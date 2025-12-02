@@ -124,7 +124,6 @@ describe('MultiRpc:', function (this: Suite) {
             selectedNetworkClientId: 'mainnet',
           })
           .build(),
-        ignoredConsoleErrors: ['GL Context was lost'],
         title: this.test?.fullTitle(),
         testSpecificMock: mockRPCURLAndChainId,
       },
@@ -470,7 +469,6 @@ describe('MultiRpc:', function (this: Suite) {
             selectedNetworkClientId: 'networkConfigurationId',
           })
           .build(),
-        ignoredConsoleErrors: ['GL Context was lost'],
         title: this.test?.fullTitle(),
         testSpecificMock: mockRPCURLAndChainId,
       },
