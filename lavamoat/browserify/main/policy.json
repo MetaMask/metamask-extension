@@ -841,8 +841,8 @@
         "@metamask/keyring-api": true,
         "@metamask/keyring-snap-client": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/phishing-controller": true,
-        "@metamask/assets-controllers>@metamask/polling-controller": true,
+        "@metamask/assets-controllers>@metamask/phishing-controller": true,
+        "@metamask/bridge-controller>@metamask/polling-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
@@ -930,7 +930,7 @@
       "packages": {
         "@metamask/bridge-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/bridge-status-controller>@metamask/polling-controller": true,
+        "@metamask/bridge-controller>@metamask/polling-controller": true,
         "@metamask/superstruct": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true,
@@ -1347,7 +1347,7 @@
       "packages": {
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/gas-fee-controller>@metamask/polling-controller": true,
+        "@metamask/bridge-controller>@metamask/polling-controller": true,
         "bn.js": true,
         "uuid": true
       }
@@ -1718,16 +1718,21 @@
         "punycode": true
       }
     },
-    "@metamask/assets-controllers>@metamask/polling-controller": {
+    "@metamask/assets-controllers>@metamask/phishing-controller": {
       "globals": {
-        "clearTimeout": true,
+        "TextEncoder": true,
+        "URL": true,
         "console.error": true,
-        "setTimeout": true
+        "console.warn": true,
+        "fetch": true
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/snaps-utils>fast-json-stable-stringify": true,
-        "uuid": true
+        "@metamask/controller-utils": true,
+        "@noble/hashes": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
+        "webpack-cli>fastest-levenshtein": true,
+        "punycode": true
       }
     },
     "@metamask/bridge-controller>@metamask/polling-controller": {
@@ -1742,7 +1747,7 @@
         "uuid": true
       }
     },
-    "@metamask/bridge-status-controller>@metamask/polling-controller": {
+    "@metamask/smart-transactions-controller>@metamask/polling-controller": {
       "globals": {
         "clearTimeout": true,
         "console.error": true,
@@ -1754,7 +1759,7 @@
         "uuid": true
       }
     },
-    "@metamask/gas-fee-controller>@metamask/polling-controller": {
+    "@metamask/user-operation-controller>@metamask/polling-controller": {
       "globals": {
         "clearTimeout": true,
         "console.error": true,
@@ -1956,7 +1961,7 @@
         "ethers>@ethersproject/transactions": true,
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/assets-controllers>@metamask/polling-controller": true,
+        "@metamask/smart-transactions-controller>@metamask/polling-controller": true,
         "@metamask/transaction-controller": true,
         "@metamask/smart-transactions-controller>bignumber.js": true,
         "fast-json-patch": true,
@@ -2087,8 +2092,8 @@
       },
       "packages": {
         "@metamask/controller-utils": true,
-        "@metamask/assets-controllers>@metamask/polling-controller": true,
-        "@metamask/subscription-controller>@metamask/transaction-controller": true,
+        "@metamask/bridge-controller>@metamask/polling-controller": true,
+        "@metamask/transaction-controller": true,
         "@metamask/subscription-controller>bignumber.js": true
       }
     },
@@ -2177,37 +2182,21 @@
         "uuid": true
       }
     },
-    "@metamask/subscription-controller>@metamask/transaction-controller": {
+    "@metamask/transaction-pay-controller": {
       "globals": {
         "clearTimeout": true,
-        "console.error": true,
-        "fetch": true,
         "setTimeout": true
       },
       "packages": {
-        "@ethereumjs/tx>@ethereumjs/common": true,
-        "@ethereumjs/tx": true,
         "@ethersproject/abi": true,
-        "@ethersproject/contracts": true,
-        "@ethersproject/providers": true,
-        "ethers>@ethersproject/wallet": true,
         "@metamask/base-controller": true,
+        "@metamask/bridge-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/gas-fee-controller": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/network-controller": true,
-        "@metamask/transaction-controller>@metamask/nonce-tracker": true,
-        "@metamask/rpc-errors": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true,
-        "@metamask/eth-qr-keyring>async-mutex": true,
-        "bn.js": true,
-        "browserify>buffer": true,
-        "eth-method-registry": true,
-        "webpack>events": true,
-        "fast-json-patch": true,
-        "lodash": true,
-        "uuid": true
+        "@metamask/transaction-pay-controller>bignumber.js": true,
+        "lodash": true
       }
     },
     "@metamask/user-operation-controller": {
@@ -2219,7 +2208,7 @@
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/gas-fee-controller": true,
-        "@metamask/assets-controllers>@metamask/polling-controller": true,
+        "@metamask/user-operation-controller>@metamask/polling-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/superstruct": true,
         "@metamask/transaction-controller": true,
@@ -3024,6 +3013,12 @@
       }
     },
     "@metamask/transaction-controller>bignumber.js": {
+      "globals": {
+        "crypto": true,
+        "define": true
+      }
+    },
+    "@metamask/transaction-pay-controller>bignumber.js": {
       "globals": {
         "crypto": true,
         "define": true
