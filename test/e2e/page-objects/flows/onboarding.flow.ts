@@ -499,7 +499,7 @@ export const completeCreateNewWalletOnboardingFlowWithCustomSettings = async ({
   await onboardingCompletePage.checkPageIsLoaded();
 
   await onboardingCompletePage.completeOnboarding();
-  if (process.env.SELENIUM_BROWSER !== Browser.CHROME) {
+  if (process.env.SELENIUM_BROWSER === Browser.CHROME) {
     // wait for the sidepanel to open
     await driver.delay(3000);
   }

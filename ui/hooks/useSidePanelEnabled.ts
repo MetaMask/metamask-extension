@@ -1,4 +1,4 @@
-import { getIsSidePanelFeatureEnabled } from '../../shared/modules/environment';
+// import { getIsSidePanelFeatureEnabled } from '../../shared/modules/environment';
 
 /**
  * Custom hook to check if sidepanel feature is enabled.
@@ -7,5 +7,5 @@ import { getIsSidePanelFeatureEnabled } from '../../shared/modules/environment';
  * @returns boolean - True if sidepanel feature is enabled, false otherwise
  */
 export const useSidePanelEnabled = (): boolean => {
-  return getIsSidePanelFeatureEnabled();
+  return process.env.IS_SIDEPANEL?.toString() === 'true';
 };
