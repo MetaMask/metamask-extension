@@ -6481,6 +6481,9 @@
   "shieldTxMembershipBenefits3Description": {
     "message": "Get 1,000 points/month"
   },
+  "shieldTxMembershipBenefits3SignUp": {
+    "message": "Sign up"
+  },
   "shieldTxMembershipBenefits3Title": {
     "message": "Earn during rewards season"
   },

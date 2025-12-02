@@ -1,4 +1,8 @@
 .transaction-shield-page {
+  @include design-system.screen-sm-min {
+    padding: 16px;
+  }
+
   &__error-content {
     margin-top: 120px;
   }

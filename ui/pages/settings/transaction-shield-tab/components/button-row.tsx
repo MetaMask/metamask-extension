@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   AvatarIcon,
   AvatarIconSize,
@@ -21,6 +21,7 @@ type ButtonRowProps = {
   description?: string;
   startIconName?: IconName;
   endIconName?: IconName;
+  endAccessory?: React.ReactNode;
   onClick?: () => void;
   'data-testid'?: string;
   className?: string;
@@ -32,12 +33,30 @@ const ButtonRow = ({
   description,
   startIconName,
   endIconName,
+  endAccessory,
   onClick,
   'data-testid': dataTestId,
   className = '',
   loading = false,
 }: ButtonRowProps) => {
   const Component = onClick ? 'button' : 'div';
+
+  const endElement = useMemo(() => {
+    if (endAccessory) {
+      return <Box className="ml-auto flex-shrink-0">{endAccessory}</Box>;
+    }
+    if (onClick && !loading) {
+      return (
+        <Icon
+          name={endIconName ?? IconName.ArrowDown}
+          size={IconSize.Sm}
+          color={IconColor.IconAlternative}
+          className="ml-auto"
+        />
+      );
+    }
+    return null;
+  }, [endAccessory, endIconName, onClick, loading]);
 
   return (
     <Box
@@ -85,14 +104,7 @@ const ButtonRow = ({
               </Text>
             ))}
         </Box>
-        {onClick && !loading && (
-          <Icon
-            name={endIconName ?? IconName.ArrowDown}
-            size={IconSize.Sm}
-            color={IconColor.IconAlternative}
-            className="ml-auto"
-          />
-        )}
+        {endElement}
       </Component>
     </Box>
   );
