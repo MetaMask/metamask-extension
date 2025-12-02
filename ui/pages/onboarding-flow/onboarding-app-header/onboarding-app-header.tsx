@@ -1,6 +1,6 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
+import type { Location as RouterLocation } from 'react-router-dom-v5-compat';
 import classnames from 'classnames';
 import MetaFoxLogo from '../../../components/ui/metafox-logo';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -27,13 +27,24 @@ import {
   BorderColor,
   TextColor,
   TextVariant,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
 
-export default function OnboardingAppHeader({ isWelcomePage, location }) {
+type OnboardingAppHeaderProps = {
+  isWelcomePage: boolean;
+  location: RouterLocation;
+};
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export default function OnboardingAppHeader({
+  isWelcomePage = false,
+  location,
+}: OnboardingAppHeaderProps) {
   const dispatch = useDispatch();
   const { pathname, search } = location;
   const t = useI18nContext();
@@ -105,14 +116,14 @@ export default function OnboardingAppHeader({ isWelcomePage, location }) {
                   <Icon
                     name={IconName.Extension}
                     key="extension"
-                    color={TextColor.textDefault}
+                    color={IconColor.iconDefault}
                     size={IconSize.Md}
                     className="onboarding-app-header__banner-tip-icon"
                   />,
                   <Icon
                     name={IconName.Keep}
                     key="keep"
-                    color={TextColor.textDefault}
+                    color={IconColor.iconDefault}
                     size={IconSize.Md}
                     className="onboarding-app-header__banner-tip-icon"
                   />,
@@ -137,8 +148,3 @@ export default function OnboardingAppHeader({ isWelcomePage, location }) {
     </Box>
   );
 }
-
-OnboardingAppHeader.propTypes = {
-  isWelcomePage: PropTypes.bool,
-  location: PropTypes.object.isRequired,
-};
