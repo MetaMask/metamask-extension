@@ -14,6 +14,8 @@ export const getParticipateInMetaMetrics = (state) =>
 export const getIsParticipateInMetaMetricsSet = (state) =>
   state.metamask.participateInMetaMetrics !== null;
 
+export const getPna25Acknowledged = (state) => state.metamask.pna25Acknowledged;
+
 export const getLatestMetricsEventTimestamp = (state) =>
   state.metamask.latestNonAnonymousEventTimestamp;
 
