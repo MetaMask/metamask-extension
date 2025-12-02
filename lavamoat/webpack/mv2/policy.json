@@ -864,7 +864,7 @@
         "@metamask/keyring-api": true,
         "@metamask/keyring-snap-client": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/phishing-controller": true,
+        "@metamask/assets-controllers>@metamask/phishing-controller": true,
         "@metamask/assets-controllers>@metamask/polling-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/snaps-utils": true,
@@ -1847,6 +1847,18 @@
         "uuid": true
       }
     },
+    "@metamask/subscription-controller>@metamask/polling-controller": {
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "uuid": true
+      }
+    },
     "@metamask/user-operation-controller>@metamask/polling-controller": {
       "packages": {
         "@metamask/base-controller": true,
@@ -2178,7 +2190,7 @@
       },
       "packages": {
         "@metamask/controller-utils": true,
-        "@metamask/assets-controllers>@metamask/polling-controller": true,
+        "@metamask/subscription-controller>@metamask/polling-controller": true,
         "@metamask/transaction-controller": true,
         "@metamask/subscription-controller>bignumber.js": true
       }

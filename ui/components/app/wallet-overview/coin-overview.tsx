@@ -412,7 +412,7 @@ export const CoinOverview = ({
       balance={
         shouldShowBalanceEmptyState ? (
           <BalanceEmptyState
-            className="w-full max-w-[420px]"
+            className="w-full max-w-[460px] self-center"
             data-testid="coin-overview-balance-empty-state"
             onClickReceive={handleReceiveOnClick}
           />

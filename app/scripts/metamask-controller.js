@@ -7356,7 +7356,7 @@ export default class MetamaskController extends EventEmitter {
             'KeyringController:getState',
           );
 
-          return this._isClientOpen && isUnlocked;
+          return Boolean(this._isClientOpen && isUnlocked);
         },
         getVersion: () => {
           return process.env.METAMASK_VERSION;
