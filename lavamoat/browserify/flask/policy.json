@@ -2121,7 +2121,7 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/signature-controller": true,
+        "@metamask/shield-controller>@metamask/signature-controller": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "cockatiel": true,
@@ -2129,6 +2129,24 @@
       }
     },
     "@metamask/signature-controller": {
+      "globals": {
+        "fetch": true
+      },
+      "packages": {
+        "@metamask/approval-controller": true,
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
+        "@metamask/eth-sig-util": true,
+        "@metamask/keyring-controller": true,
+        "@metamask/logging-controller": true,
+        "@metamask/utils": true,
+        "browserify>buffer": true,
+        "webpack>events": true,
+        "@metamask/message-manager>jsonschema": true,
+        "uuid": true
+      }
+    },
+    "@metamask/shield-controller>@metamask/signature-controller": {
       "globals": {
         "fetch": true
       },
