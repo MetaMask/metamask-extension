@@ -1,0 +1,41 @@
+.onboarding-pin-extension {
+  .carousel {
+    .control-dots {
+      bottom: -12px;
+
+      .dot {
+        background: var(--color-icon-muted);
+        box-shadow: none;
+
+        &.selected {
+          background: var(--color-icon-default);
+        }
+      }
+    }
+
+    .slide .onboarding-pin-extension__image-container {
+      height: 200px;
+
+      img {
+        object-fit: contain;
+        width: auto;
+        height: 200px;
+      }
+    }
+  }
+
+  &__arrow {
+    position: absolute;
+    z-index: 2;
+    top: calc(50% - 15px);
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    left: 0;
+  }
+
+  &__arrow--next {
+    right: 0;
+    left: unset;
+  }
+}
