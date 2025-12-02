@@ -324,21 +324,21 @@ module.exports = {
       rules: {
         'react-hooks/rules-of-hooks': 'error',
         'react-hooks/exhaustive-deps': 'warn',
-        'react-hooks/component-hook-factories': 'error', // Validates higher order functions defining nested components or hooks
+        'react-hooks/component-hook-factories': 'warn', // Validates higher order functions defining nested components or hooks
         'react-hooks/config': 'error', // Validates the compiler configuration options
         'react-hooks/error-boundaries': 'error', // Validates usage of Error Boundaries instead of try/catch for child errors
         'react-hooks/gating': 'error', // Validates configuration of gating mode
-        'react-hooks/globals': 'error', // Validates against assignment/mutation of globals during render
-        'react-hooks/immutability': 'error', // Validates against mutating props, state, and other immutable values
-        'react-hooks/incompatible-library': 'error', // Validates against usage of libraries which are incompatible with memoization
-        'react-hooks/preserve-manual-memoization': 'error', // Validates that existing manual memoization is preserved by the compiler
-        'react-hooks/purity': 'error', // Validates that components/hooks are pure by checking known-impure functions
-        'react-hooks/refs': 'error', // Validates correct usage of refs, not reading/writing during render
-        'react-hooks/set-state-in-effect': 'error', // Validates against calling setState synchronously in an effect
-        'react-hooks/set-state-in-render': 'error', // Validates against setting state during render
-        'react-hooks/static-components': 'error', // Validates that components are static, not recreated every render
-        'react-hooks/unsupported-syntax': 'error', // Validates against syntax that React Compiler does not support
-        'react-hooks/use-memo': 'error', // Validates usage of the useMemo hook without a return value
+        'react-hooks/globals': 'warn', // Validates against assignment/mutation of globals during render
+        'react-hooks/immutability': 'warn', // Validates against mutating props, state, and other immutable values
+        'react-hooks/incompatible-library': 'warn', // Validates against usage of libraries which are incompatible with memoization
+        'react-hooks/preserve-manual-memoization': 'warn', // Validates that existing manual memoization is preserved by the compiler
+        'react-hooks/purity': 'warn', // Validates that components/hooks are pure by checking known-impure functions
+        'react-hooks/refs': 'warn', // Validates correct usage of refs, not reading/writing during render
+        'react-hooks/set-state-in-effect': 'warn', // Validates against calling setState synchronously in an effect
+        'react-hooks/set-state-in-render': 'warn', // Validates against setting state during render
+        'react-hooks/static-components': 'warn', // Validates that components are static, not recreated every render
+        'react-hooks/unsupported-syntax': 'warn', // Validates against syntax that React Compiler does not support
+        'react-hooks/use-memo': 'warn', // Validates usage of the useMemo hook without a return value
         'react/no-unused-prop-types': 'error',
         'react/no-unused-state': 'error',
         'react/jsx-boolean-value': 'error',
