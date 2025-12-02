@@ -33300,7 +33300,7 @@ __metadata:
     "@metamask/test-dapp-multichain": "npm:^0.17.0"
     "@metamask/test-dapp-solana": "npm:^0.3.1"
     "@metamask/test-snaps": "npm:^3.0.0"
-    "@metamask/transaction-controller": "npm:^62.3.0"
+    "@metamask/transaction-controller": "npm:^62.3.1"
     "@metamask/transaction-pay-controller": "npm:^10.2.0"
     "@metamask/tron-wallet-snap": "npm:^1.13.0"
     "@metamask/user-operation-controller": "npm:^40.0.0"
