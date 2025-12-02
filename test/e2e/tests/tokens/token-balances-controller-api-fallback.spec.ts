@@ -13,17 +13,19 @@ describe('TokenBalancesController - Account API v4 with RPC Fallback', function 
   /**
    * Mock successful Account API v4 balances endpoint
    * This simulates a working Account API that returns token balances
+   *
+   * @param mockServer - Mockttp server instance
    */
-async function mockAccountApiV4Success(
-  mockServer: Mockttp,
-): Promise<MockedEndpoint[]> {
-  return [
-    await mockServer
-      .forGet('https://accounts.api.cx.metamask.io/v4/multiaccount/balances')
-      .withQuery({
-        accountAddresses: `eip155:1:${DEFAULT_FIXTURE_ACCOUNT}`,
-      })
-      .thenCallback(() => {
+  async function mockAccountApiV4Success(
+    mockServer: Mockttp,
+  ): Promise<MockedEndpoint[]> {
+    return [
+      await mockServer
+        .forGet('https://accounts.api.cx.metamask.io/v4/multiaccount/balances')
+        .withQuery({
+          accountAddresses: `eip155:1:${DEFAULT_FIXTURE_ACCOUNT}`,
+        })
+        .thenCallback(() => {
           return {
             statusCode: 200,
             json: {
@@ -62,6 +64,8 @@ async function mockAccountApiV4Success(
   /**
    * Mock failed Account API v4 balances endpoint
    * This simulates an API failure to test RPC fallback behavior
+   *
+   * @param mockServer - Mockttp server instance
    */
   async function mockAccountApiV4Failure(
     mockServer: Mockttp,
@@ -88,6 +92,8 @@ async function mockAccountApiV4Success(
    * Mock RPC balance calls for fallback
    * These mocks handle the eth_getBalance and eth_call requests that
    * MetaMask makes when the Account API fails
+   *
+   * @param mockServer - Mockttp server instance
    */
   async function mockRpcBalanceFallback(
     mockServer: Mockttp,
@@ -166,10 +172,10 @@ async function mockAccountApiV4Success(
 
   /**
    * Mock price API for token valuations
+   *
+   * @param mockServer - Mockttp server instance
    */
-  async function mockPriceApi(
-    mockServer: Mockttp,
-  ): Promise<MockedEndpoint[]> {
+  async function mockPriceApi(mockServer: Mockttp): Promise<MockedEndpoint[]> {
     return [
       await mockServer
         .forGet('https://price.api.cx.metamask.io/v2/chains/1/spot-prices')
@@ -333,8 +339,6 @@ async function mockAccountApiV4Success(
           password: WALLET_PASSWORD,
         });
 
-        const assetListPage = new AssetListPage(driver);
-
         // Wait for the TokenBalancesController to poll and fetch balances
         // Controller polls every 30 seconds, adding buffer for completion
         await driver.delay(35000);
@@ -430,8 +434,6 @@ async function mockAccountApiV4Success(
           password: WALLET_PASSWORD,
         });
 
-        const assetListPage = new AssetListPage(driver);
-
         // Wait for the TokenBalancesController to poll and fetch balances via RPC
         // Controller polls every 30 seconds, adding buffer for completion
         await driver.delay(35000);
@@ -471,4 +473,3 @@ async function mockAccountApiV4Success(
     );
   });
 });
-
