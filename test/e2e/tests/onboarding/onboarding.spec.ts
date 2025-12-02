@@ -268,7 +268,7 @@ describe('MetaMask onboarding', function () {
     );
   });
 
-  it.only('User can turn off basic functionality in default settings', async function () {
+  it('User can turn off basic functionality in default settings', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
