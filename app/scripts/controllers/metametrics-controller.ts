@@ -885,8 +885,9 @@ export default class MetaMetricsController extends BaseController<
 
   // It sets an uninstall URL ("Sorry to see you go!" page),
   // which is opened if a user uninstalls the extension.
+  // This method should only be called after the user has made a decision about MetaMetrics participation.
   updateExtensionUninstallUrl(
-    participateInMetaMetrics: boolean | null,
+    participateInMetaMetrics: boolean,
     metaMetricsId: string,
   ): void {
     const query: {
@@ -946,7 +947,8 @@ export default class MetaMetricsController extends BaseController<
     ///: BEGIN:ONLY_INCLUDE_IF(build-main)
     if (
       this.#environment !== ENVIRONMENT.DEVELOPMENT &&
-      metaMetricsId !== null
+      metaMetricsId !== null &&
+      participateInMetaMetrics !== null
     ) {
       this.updateExtensionUninstallUrl(participateInMetaMetrics, metaMetricsId);
     }
