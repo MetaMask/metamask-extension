@@ -805,7 +805,6 @@ const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;
  * Check if sidepanel is enabled by examining the manifest at runtime.
  * Only works on Chrome-based browsers (Firefox doesn't support sidepanel).
  *
- * @param {Driver} driver - The WebDriver instance
  * @returns {Promise<boolean>} True if sidepanel permission is present in manifest
  */
 async function isSidePanelEnabled() {
