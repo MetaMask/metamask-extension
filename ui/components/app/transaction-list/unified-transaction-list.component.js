@@ -281,7 +281,6 @@ export const filterNonEvmTxByToken = (
 };
 
 function filterNonEvmTxByChainIds(nonEvmTransactions, chainIds) {
-  // If no chain IDs are specified, return empty (respect the filter)
   if (!chainIds || chainIds.length === 0) {
     return { transactions: [] };
   }
@@ -381,7 +380,6 @@ function getFilteredChainIds(enabledNetworks, tokenChainIdOverride) {
     };
   }
 
-  // Only include chain IDs where enabled is true
   const eip155Networks = enabledNetworks?.eip155 ?? {};
   const filteredUniqueEVMChainIds = Object.entries(eip155Networks)
     .filter(([, enabled]) => enabled)
@@ -451,22 +449,16 @@ export default function UnifiedTransactionList({
     nonceSortedPendingTransactionsSelectorAllChains,
   );
 
-  // Filter pending transactions by account group and enabled chains
   const unfilteredPendingTransactions = useMemo(() => {
-    // If no EVM networks are enabled, return empty (respect the filter)
     if (evmChainIds.length === 0) {
       return [];
     }
 
     if (accountGroupEvmAddresses.length > 0) {
-      // Filter all transactions to only pending ones from account group and enabled chains
+      const pendingStatuses = ['submitted', 'approved', 'signed', 'unapproved'];
       const pendingFromGroup = allEvmTransactions.filter((tx) => {
         const fromAddress = tx.txParams?.from?.toLowerCase();
-        const isPending =
-          tx.status === 'submitted' ||
-          tx.status === 'approved' ||
-          tx.status === 'signed' ||
-          tx.status === 'unapproved';
+        const isPending = pendingStatuses.includes(tx.status);
         const isEnabledChain = evmChainIds.includes(tx.chainId);
         return (
           accountGroupEvmAddresses.includes(fromAddress) &&
@@ -477,7 +469,6 @@ export default function UnifiedTransactionList({
       return groupAndSortTransactionsByNonce(pendingFromGroup);
     }
 
-    // Fallback: filter by enabled chain IDs to match completed transactions behavior
     return unfilteredPendingTransactionsAllChains.filter((group) => {
       const chainId = group.initialTransaction?.chainId;
       return evmChainIds.includes(chainId);
@@ -493,22 +484,15 @@ export default function UnifiedTransactionList({
     nonceSortedCompletedTransactionsSelectorAllChains,
   );
 
-  // Filter completed EVM transactions to include those from ANY account in the group
-  // This is important when a non-EVM account is selected - we still want to show
-  // EVM transactions from the EVM accounts in the same account group
   const accountGroupFilteredCompletedTransactions = useMemo(() => {
-    // Pending statuses to exclude from completed transactions
-    const pendingStatuses = ['submitted', 'approved', 'signed', 'unapproved'];
-
-    // If we have account group addresses, use all EVM transactions filtered by those addresses
     if (accountGroupEvmAddresses.length > 0) {
+      const pendingStatuses = ['submitted', 'approved', 'signed', 'unapproved'];
       return allEvmTransactions.filter((tx) => {
         const fromAddress = tx.txParams?.from?.toLowerCase();
         const isCompleted = !pendingStatuses.includes(tx.status);
         return accountGroupEvmAddresses.includes(fromAddress) && isCompleted;
       });
     }
-    // Fallback to the selector-filtered transactions if no account group addresses
     return unfilteredCompletedTransactionsAllChains
       .flatMap((group) => group.transactions || [group.initialTransaction])
       .filter(Boolean);
@@ -519,12 +503,10 @@ export default function UnifiedTransactionList({
   ]);
 
   const enabledNetworksFilteredCompletedTransactions = useMemo(() => {
-    // If no EVM networks are enabled in the filter, return empty (respect the filter)
     if (evmChainIds.length === 0) {
       return [];
     }
 
-    // Get transactions from account group and filter by enabled chains
     const transactionsToFilter =
       accountGroupEvmAddresses.length > 0
         ? accountGroupFilteredCompletedTransactions
@@ -532,24 +514,15 @@ export default function UnifiedTransactionList({
             (group) => group.transactions || [group.initialTransaction],
           );
 
-    const filteredTransactions = transactionsToFilter.filter((tx) => {
-      const transactionChainId = tx?.chainId;
-      return evmChainIds.includes(transactionChainId);
-    });
-
-    return groupAndSortTransactionsByNonce(filteredTransactions);
+    return groupAndSortTransactionsByNonce(
+      transactionsToFilter.filter((tx) => evmChainIds.includes(tx?.chainId)),
+    );
   }, [
     evmChainIds,
     accountGroupEvmAddresses,
     accountGroupFilteredCompletedTransactions,
     unfilteredCompletedTransactionsAllChains,
   ]);
-
-  // Pass the enabled non-EVM chain IDs to buildUnifiedActivityItems for filtering
-  // If empty, filterNonEvmTxByChainIds will return no transactions (respects the filter)
-  const enabledNonEvmChainIds = useMemo(() => {
-    return nonEvmChainIds;
-  }, [nonEvmChainIds]);
 
   const unifiedActivityItems = useMemo(() => {
     return buildUnifiedActivityItems(
@@ -560,7 +533,7 @@ export default function UnifiedTransactionList({
         hideTokenTransactions,
         tokenAddress,
         evmChainIds,
-        nonEvmChainIds: enabledNonEvmChainIds,
+        nonEvmChainIds,
       },
     );
   }, [
@@ -570,7 +543,7 @@ export default function UnifiedTransactionList({
     hideTokenTransactions,
     tokenAddress,
     evmChainIds,
-    enabledNonEvmChainIds,
+    nonEvmChainIds,
   ]);
   const groupedUnifiedActivityItems =
     groupAnyTransactionsByDate(unifiedActivityItems);
