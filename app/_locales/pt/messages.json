@@ -4272,6 +4272,25 @@
     "message": "Ícone $1",
     "description": "$1 is the icon name"
   },
+  "onboardingPinExtensionAltLaunch": {
+    "message": "Iniciar extensão"
+  },
+  "onboardingPinExtensionAltPin": {
+    "message": "Fixar extensão"
+  },
+  "onboardingPinExtensionDescription": {
+    "message": "Fixe a MetaMask no seu navegador para torná-la acessível e facilitar a visualização das confirmações de transações."
+  },
+  "onboardingPinExtensionDescription2": {
+    "message": "Acesse sua carteira MetaMask com 1 clique na extensão."
+  },
+  "onboardingPinExtensionDescription3": {
+    "message": "Clique no ícone da extensão do $1 para acessá-la instantaneamente",
+    "description": "$1 is the browser name"
+  },
+  "onboardingPinExtensionTitle": {
+    "message": "Instalação concluída!"
+  },
   "onboardingSignInWith": {
     "message": "Fazer login com $1",
     "description": "$1 is the type of login used Google, Apple, etc"

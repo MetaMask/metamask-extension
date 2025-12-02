@@ -38286,13 +38286,13 @@ __metadata:
   linkType: hard
 
 "react-responsive-carousel@npm:^3.2.21":
-  version: 3.2.23
-  resolution: "react-responsive-carousel@npm:3.2.23"
+  version: 3.2.21
+  resolution: "react-responsive-carousel@npm:3.2.21"
   dependencies:
     classnames: "npm:^2.2.5"
     prop-types: "npm:^15.5.8"
     react-easy-swipe: "npm:^0.0.21"
-  checksum: 10/1c4883e3085af3a6c242f3f4375f9532bd7ba2b0dde17b2abc6954e80cbcbf074721f61c28781403139eb0453a2a0d0213bdd3d9cb999206309ef05e141ce961
+  checksum: 10/84c497bddd507b830fd38a9a21fbb3ea32446e2662166a542ec67978da066400b00a5baef351373165bc7159d4dbc2c47c8d4a50ff917b906409547b83ffac53
   languageName: node
   linkType: hard
 

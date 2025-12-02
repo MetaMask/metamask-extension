@@ -4269,6 +4269,25 @@
     "message": "$1 आइकन",
     "description": "$1 is the icon name"
   },
+  "onboardingPinExtensionAltLaunch": {
+    "message": "एक्सटेंशन लॉन्च करें"
+  },
+  "onboardingPinExtensionAltPin": {
+    "message": "एक्सटेंशन को पिन करें"
+  },
+  "onboardingPinExtensionDescription": {
+    "message": "अपने ब्राउज़र पर MetaMask को पिन करें ताकि इस तक पहुंच आसान हो और ट्रांसेक्शन के कन्फर्मेशन को देखना आसान हो सके।"
+  },
+  "onboardingPinExtensionDescription2": {
+    "message": "एक्सटेंशन पर क्लिक करके 1 क्लिक से अपने MetaMask वॉलेट तक पहुंचें।"
+  },
+  "onboardingPinExtensionDescription3": {
+    "message": "इस तक तुरंत पहुंचने के लिए $1 एक्सटेंशन आइकन पर क्लिक करें",
+    "description": "$1 is the browser name"
+  },
+  "onboardingPinExtensionTitle": {
+    "message": "इंस्टॉलेशन पूरा हुआ!"
+  },
   "onboardingSignInWith": {
     "message": "$1 के साथ साइन इन करें",
     "description": "$1 is the type of login used Google, Apple, etc"

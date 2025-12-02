@@ -1234,6 +1234,19 @@
   "onboardingImportWallet": {
     "message": "Importar uma carteira existente"
   },
+  "onboardingPinExtensionDescription": {
+    "message": "Fixe a MetaMask no seu navegador de modo que seja acessível e fácil de visualizar as confirmações das transações."
+  },
+  "onboardingPinExtensionDescription2": {
+    "message": "Você pode abrir a MetaMask clicando na extensão e acessando a sua carteira com apenas um clique."
+  },
+  "onboardingPinExtensionDescription3": {
+    "message": "Clique no ícone da extensão do navegador para acessá-la instantaneamente",
+    "description": "$1 is the browser name"
+  },
+  "onboardingPinExtensionTitle": {
+    "message": "Sua instalação da MetaMask está concluída!"
+  },
   "onlyConnectTrust": {
     "message": "Conecte-se somente com sites em que você confia.",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
