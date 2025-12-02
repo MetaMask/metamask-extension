@@ -185,7 +185,7 @@ describe('MetaMask onboarding', function () {
         await homePage.refreshErc20TokenList();
 
         // Check if sidepanel is enabled
-        const hasSidepanel = await isSidePanelEnabled(driver);
+        const hasSidepanel = await isSidePanelEnabled();
 
         // intended delay to allow for network requests to complete
         await driver.delay(1000);

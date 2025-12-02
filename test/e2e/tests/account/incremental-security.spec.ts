@@ -94,7 +94,7 @@ describe('Incremental Security', function (this: Suite) {
         await handleSidepanelPostOnboarding(driver);
 
         // Check if sidepanel - backup flow won't work with sidepanel
-        const hasSidepanel = await isSidePanelEnabled(driver);
+        const hasSidepanel = await isSidePanelEnabled();
         if (hasSidepanel) {
           console.log(
             'Skipping test for sidepanel build - backup reminder state lost after page reload',

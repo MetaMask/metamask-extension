@@ -136,7 +136,7 @@ describe('MetaMask onboarding ', function () {
         await new AccountList(driver).checkPageIsLoaded();
 
         // Check if sidepanel is enabled
-        const hasSidepanel = await isSidePanelEnabled(driver);
+        const hasSidepanel = await isSidePanelEnabled();
 
         // intended delay to allow for network requests to complete
         await driver.delay(1000);
