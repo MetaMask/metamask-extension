@@ -59,13 +59,20 @@ type PermissionDetailRowProps = {
 
 /**
  * Reusable row component for permission details
+ *
+ * @param options - The component options
+ * @param options.label - The label text to display
+ * @param options.value - The value to display
+ * @param options.testId - Optional test ID for the value element
+ * @param options.isLoading - Whether to show a loading skeleton
+ * @returns The permission detail row component
  */
-function PermissionDetailRow({
+const PermissionDetailRow = ({
   label,
   value,
   testId,
   isLoading = false,
-}: PermissionDetailRowProps): JSX.Element {
+}: PermissionDetailRowProps): JSX.Element => {
   return (
     <Box
       flexDirection={BoxFlexDirection.Row}
@@ -101,7 +108,7 @@ function PermissionDetailRow({
       </Box>
     </Box>
   );
-}
+};
 
 type ReviewGatorPermissionItemProps = {
   /**
