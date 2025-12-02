@@ -11,12 +11,8 @@ import { useDappSwapContext } from '../../../../../context/dapp-swap';
 import { useNestedTransactionLabels } from '../../hooks/useNestedTransactionLabels';
 import { TransactionData } from '../transaction-data/transaction-data';
 
-export function QuotedSwapTransactionData() {
+export const QuotedSwapTransactionData = () => {
   const { isQuotedSwapDisplayedInInfo, selectedQuote } = useDappSwapContext();
-
-  if (!isQuotedSwapDisplayedInInfo) {
-    return null;
-  }
 
   const { approval, trade } = selectedQuote ?? {};
 
@@ -29,6 +25,10 @@ export function QuotedSwapTransactionData() {
     nestedTransactions: [trade as BatchTransactionParams],
     useIndex: 0,
   })[0];
+
+  if (!isQuotedSwapDisplayedInInfo) {
+    return null;
+  }
 
   return (
     <Box>
@@ -64,4 +64,4 @@ export function QuotedSwapTransactionData() {
       </ConfirmInfoSection>
     </Box>
   );
-}
+};

@@ -5,7 +5,6 @@ import { hexStripZeros } from '@ethersproject/bytes';
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import _ from 'lodash';
 import { Hex } from '@metamask/utils';
-import { TxData } from '@metamask/bridge-controller';
 
 import { APPROVAL_METHOD_NAMES } from '../../../../../../../../shared/constants/transaction';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
@@ -55,17 +54,16 @@ export const TransactionData = ({
   const { nestedTransactions, txParams } = currentConfirmation ?? {};
   const { data: currentData, to: currentTo } = txParams ?? {};
   const transactionData = data ?? (currentData as Hex);
-
-  if (nestedTransactionIndex === undefined && isQuotedSwapDisplayedInInfo) {
-    return null;
-  }
-
   const transactionTo = to ?? (currentTo as Hex);
 
   const decodeResponse = useDecodedTransactionData({
     data: transactionData,
     to: transactionTo,
   });
+
+  if (nestedTransactionIndex === undefined && isQuotedSwapDisplayedInInfo) {
+    return null;
+  }
 
   const { value, pending } = decodeResponse;
 
