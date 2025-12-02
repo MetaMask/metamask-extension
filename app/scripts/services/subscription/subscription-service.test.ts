@@ -65,6 +65,8 @@ const mockGetAppStateControllerState = jest.fn();
 const mockGetMetaMetricsControllerState = jest.fn();
 const mockGetSubscriptionControllerState = jest.fn();
 const mockGetKeyringControllerState = jest.fn();
+const mockGetRewardSeasonMetadata = jest.fn();
+const mockGetRewardActualSubscriptionId = jest.fn();
 
 const rootMessenger: RootMessenger = new Messenger({
   namespace: MOCK_ANY_NAMESPACE,
@@ -121,6 +123,14 @@ rootMessenger.registerActionHandler(
   'KeyringController:getState',
   mockGetKeyringControllerState,
 );
+rootMessenger.registerActionHandler(
+  'RewardsController:getSeasonMetadata',
+  mockGetRewardSeasonMetadata,
+);
+rootMessenger.registerActionHandler(
+  'RewardsController:getActualSubscriptionId',
+  mockGetRewardActualSubscriptionId,
+);
 
 const messenger: SubscriptionServiceMessenger = new Messenger({
   namespace: 'SubscriptionService',
@@ -142,6 +152,9 @@ rootMessenger.delegate({
     'MetaMetricsController:trackEvent',
     'SubscriptionController:getState',
     'KeyringController:getState',
+    'RewardsController:getActualSubscriptionId',
+    'RewardsController:getSeasonMetadata',
+    'RewardsController:getSeasonStatus',
   ],
 });
 
@@ -162,6 +175,7 @@ const originalEnv = process.env;
 
 describe('SubscriptionService - startSubscriptionWithCard', () => {
   const MOCK_STATE = createSwapsMockStore().metamask;
+  const MOCK_REWARD_SUBSCRIPTION_ID = 'reward_subscription_id';
 
   beforeAll(() => {
     process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.TESTING;
@@ -169,6 +183,7 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
 
   beforeEach(() => {
     process.env = { ...originalEnv };
+    delete process.env.IN_TEST; // unset IN_TEST environment variable
 
     mockStartShieldSubscriptionWithCard.mockResolvedValue({
       checkoutSessionUrl: mockCheckoutSessionUrl,
@@ -192,12 +207,19 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
       subscriptions: [],
       lastSubscription: undefined,
     });
-    mockGetAccountsState.mockReturnValueOnce({
+    mockGetAccountsState.mockReturnValue({
       internalAccounts: MOCK_STATE.internalAccounts,
     });
-    mockGetKeyringControllerState.mockReturnValueOnce({
+    mockGetKeyringControllerState.mockReturnValue({
       keyrings: MOCK_STATE.keyrings,
     });
+    mockGetRewardSeasonMetadata.mockResolvedValueOnce({
+      startDate: Date.now() - 1000,
+      endDate: Date.now() + 1000,
+    });
+    mockGetRewardActualSubscriptionId.mockResolvedValueOnce(
+      MOCK_REWARD_SUBSCRIPTION_ID,
+    );
 
     jest.spyOn(mockPlatform, 'openTab').mockResolvedValue({
       id: 1,
@@ -224,8 +246,6 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
   });
 
   it('should start the subscription with card', async () => {
-    delete process.env.IN_TEST; // unset IN_TEST environment variable
-
     await subscriptionService.startSubscriptionWithCard({
       products: [PRODUCT_TYPES.SHIELD],
       isTrialRequested: false,
@@ -244,6 +264,93 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
     expect(mockPlatform.openTab).toHaveBeenCalledWith({
       url: mockCheckoutSessionUrl,
     });
+  });
+
+  it('should include the reward subscription id if the primary account is opted in to rewards and the season is active', async () => {
+    mockGetAccountsState.mockRestore();
+
+    mockGetAccountsState.mockReturnValue({
+      internalAccounts: {
+        ...MOCK_STATE.internalAccounts,
+        accounts: {
+          ...MOCK_STATE.internalAccounts.accounts,
+          [MOCK_STATE.internalAccounts.selectedAccount]: {
+            // @ts-expect-error mock account
+            ...MOCK_STATE.internalAccounts.accounts[
+              MOCK_STATE.internalAccounts.selectedAccount
+            ],
+            options: {
+              entropySource: MOCK_STATE.keyrings[0].metadata.id,
+            },
+          },
+        },
+      },
+    });
+
+    await subscriptionService.startSubscriptionWithCard({
+      products: [PRODUCT_TYPES.SHIELD],
+      isTrialRequested: false,
+      recurringInterval: RECURRING_INTERVALS.month,
+    });
+
+    expect(mockStartShieldSubscriptionWithCard).toHaveBeenCalledWith({
+      products: [PRODUCT_TYPES.SHIELD],
+      isTrialRequested: false,
+      recurringInterval: RECURRING_INTERVALS.month,
+      successUrl: MOCK_REDIRECT_URI,
+      rewardSubscriptionId: MOCK_REWARD_SUBSCRIPTION_ID,
+    });
+
+    expect(mockGetRewardSeasonMetadata).toHaveBeenCalledWith('current');
+
+    expect(mockGetRewardActualSubscriptionId).toHaveBeenCalled();
+  });
+
+  it('should not include the reward subscription id if the account is not opted in to rewards', async () => {
+    mockGetRewardActualSubscriptionId.mockRestore();
+    mockGetRewardActualSubscriptionId.mockResolvedValueOnce(undefined);
+
+    await subscriptionService.startSubscriptionWithCard({
+      products: [PRODUCT_TYPES.SHIELD],
+      isTrialRequested: false,
+      recurringInterval: RECURRING_INTERVALS.month,
+    });
+
+    expect(mockStartShieldSubscriptionWithCard).toHaveBeenCalledWith({
+      products: [PRODUCT_TYPES.SHIELD],
+      isTrialRequested: false,
+      recurringInterval: RECURRING_INTERVALS.month,
+      successUrl: MOCK_REDIRECT_URI,
+    });
+  });
+
+  it('should not include the reward subscription id if the season is not active', async () => {
+    mockGetRewardSeasonMetadata.mockRestore();
+
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() + 1);
+    const endDate = new Date();
+    endDate.setDate(endDate.getDate() + 3);
+    mockGetRewardSeasonMetadata.mockResolvedValueOnce({
+      startDate: startDate.getTime(),
+      endDate: endDate.getTime(),
+    });
+    await subscriptionService.startSubscriptionWithCard({
+      products: [PRODUCT_TYPES.SHIELD],
+      isTrialRequested: false,
+      recurringInterval: RECURRING_INTERVALS.month,
+    });
+
+    expect(mockStartShieldSubscriptionWithCard).toHaveBeenCalledWith({
+      products: [PRODUCT_TYPES.SHIELD],
+      isTrialRequested: false,
+      recurringInterval: RECURRING_INTERVALS.month,
+      successUrl: MOCK_REDIRECT_URI,
+      rewardSubscriptionId: undefined,
+    });
+
+    expect(mockGetRewardSeasonMetadata).toHaveBeenCalledWith('current');
+    expect(mockGetRewardActualSubscriptionId).not.toHaveBeenCalled();
   });
 });
 

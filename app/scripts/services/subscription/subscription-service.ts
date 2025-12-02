@@ -11,7 +11,13 @@ import {
 } from '@metamask/transaction-controller';
 import log from 'loglevel';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { Json } from '@metamask/utils';
+import {
+  CaipAccountId,
+  Json,
+  parseCaipChainId,
+  toCaipAccountId,
+} from '@metamask/utils';
+import { isEqualCaseInsensitive } from '@metamask/controller-utils';
 import ExtensionPlatform from '../../platforms/extension';
 import { WebAuthenticator } from '../oauth/types';
 import { isSendBundleSupported } from '../../lib/transaction/sentinel-api';
@@ -133,11 +139,15 @@ export class SubscriptionService {
     try {
       const redirectUrl = this.#webAuthenticator.getRedirectURL();
 
+      // check if the account is opted in to rewards
+      const rewardSubscriptionId = await this.#getRewardSubscriptionId();
+
       const { checkoutSessionUrl } = await this.#messenger.call(
         'SubscriptionController:startShieldSubscriptionWithCard',
         {
           ...params,
           successUrl: redirectUrl,
+          rewardSubscriptionId,
         },
       );
 
@@ -365,6 +375,78 @@ export class SubscriptionService {
     return getUserAccountTypeAndCategory(
       selectedInternalAccount,
       hdKeyringsMetadata,
+    );
+  }
+
+  /**
+   * Get the reward subscription ID for the current season.
+   *
+   * @returns Promise<string | undefined> - The reward subscription ID or undefined if the season is not active.
+   */
+  async #getRewardSubscriptionId(): Promise<string | undefined> {
+    try {
+      const currentSeasonMetadata = await this.#messenger.call(
+        'RewardsController:getSeasonMetadata',
+        'current',
+      );
+      const { startDate, endDate } = currentSeasonMetadata;
+      const currentTimeStamp = Date.now();
+      if (currentTimeStamp < startDate || currentTimeStamp > endDate) {
+        return undefined;
+      }
+
+      const primaryCaipAccountId = await this.#getPrimaryCaipAccountId();
+      if (!primaryCaipAccountId) {
+        return undefined;
+      }
+
+      const rewardSubscriptionId = this.#messenger.call(
+        'RewardsController:getActualSubscriptionId',
+        primaryCaipAccountId,
+      );
+      return rewardSubscriptionId || undefined;
+    } catch (error) {
+      log.warn('Failed to get reward season metadata', error);
+      return undefined;
+    }
+  }
+
+  async #getPrimaryCaipAccountId(): Promise<CaipAccountId | undefined> {
+    const keyringsMetadata = this.#messenger.call('KeyringController:getState');
+    const primaryHdKeyring = keyringsMetadata.keyrings.find(
+      (keyring) => keyring.type === KeyringTypes.hd,
+    );
+    if (!primaryHdKeyring) {
+      return undefined;
+    }
+
+    const { internalAccounts } = this.#messenger.call(
+      'AccountsController:getState',
+    );
+    const primaryInternalAccount = Object.values(
+      internalAccounts.accounts,
+    ).find((account) => {
+      const entropySource = account.options?.entropySource;
+      if (typeof entropySource === 'string') {
+        return isEqualCaseInsensitive(
+          entropySource,
+          primaryHdKeyring.metadata.id,
+        );
+      }
+      return false;
+    });
+    if (!primaryInternalAccount) {
+      return undefined;
+    }
+
+    const { namespace, reference } = parseCaipChainId(
+      primaryInternalAccount.scopes[0],
+    );
+
+    return toCaipAccountId(
+      namespace,
+      reference,
+      primaryInternalAccount.address,
     );
   }
 }

@@ -50,6 +50,10 @@ export function getSubscriptionServiceMessenger(
       'SwapsController:getState',
       'MetaMetricsController:trackEvent',
       'KeyringController:getState',
+      // Rewards Integration
+      'RewardsController:getSeasonStatus',
+      'RewardsController:getSeasonMetadata',
+      'RewardsController:getActualSubscriptionId',
     ],
   });
   return serviceMessenger;
