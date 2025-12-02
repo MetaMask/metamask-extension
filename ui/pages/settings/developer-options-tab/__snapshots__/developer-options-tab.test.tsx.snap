@@ -15,7 +15,7 @@ exports[`Develop options tab should match snapshot 1`] = `
     >
       Current States
     </p>
-    <div
+    <pre
       class="settings-page__content-padded"
     >
       <div
@@ -40,7 +40,7 @@ exports[`Develop options tab should match snapshot 1`] = `
           {"feature1":"value1"}
         </div>
       </div>
-    </div>
+    </pre>
     <p
       class="mm-box mm-text settings-page__security-tab-sub-header mm-text--body-md mm-box--padding-top-6 mm-box--color-text-alternative"
     >
@@ -504,6 +504,15 @@ exports[`Develop options tab should match snapshot 1`] = `
           </div>
         </div>
       </div>
+    </div>
+    <hr />
+    <div>
+      <button
+        class="button btn-primary"
+        style="margin-top: 16px;"
+      >
+        Migrate to Split State
+      </button>
     </div>
   </div>
 </div>
