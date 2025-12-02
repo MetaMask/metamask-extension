@@ -210,7 +210,7 @@ export default function CreatePassword({
       event: MetaMetricsEventName.WalletImportAttempted,
     });
 
-    await importWithRecoveryPhrase?.(password, secretRecoveryPhrase ?? '');
+    await importWithRecoveryPhrase(password, secretRecoveryPhrase);
 
     bufferedEndTrace?.({ name: TraceName.OnboardingExistingSrpImport });
     bufferedEndTrace?.({ name: TraceName.OnboardingJourneyOverall });
@@ -260,10 +260,8 @@ export default function CreatePassword({
       },
     });
 
-    if (createNewAccount) {
-      setNewAccountCreationInProgress(true);
-      await createNewAccount(password);
-    }
+    setNewAccountCreationInProgress(true);
+    await createNewAccount(password);
 
     if (isSocialLoginFlow) {
       bufferedEndTrace?.({ name: TraceName.OnboardingNewSocialCreateWallet });
