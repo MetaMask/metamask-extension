@@ -158,7 +158,6 @@ class UnlockPage extends Component {
     if (isUnlocked) {
       // Redirect to the intended route if available, otherwise DEFAULT_ROUTE
       let redirectTo = DEFAULT_ROUTE;
-      // Read from location.state (React Router v6)
       const fromLocation = location.state?.from;
       if (fromLocation?.pathname) {
         const search = fromLocation.search || '';
@@ -501,7 +500,6 @@ class UnlockPage extends Component {
 
     const needHelpText = t('needHelpLinkText');
     const isRehydrationFlow = isSocialLoginFlow && !isOnboardingCompleted;
-    const isTestEnvironment = Boolean(process.env.IN_TEST);
 
     return (
       <Box
@@ -671,7 +669,7 @@ class UnlockPage extends Component {
             </Text>
           </Box>
         </Box>
-        {!isTestEnvironment && !isRehydrationFlow && (
+        {!isRehydrationFlow && (
           <Suspense fallback={<Box />}>
             <FoxAppearAnimation />
           </Suspense>

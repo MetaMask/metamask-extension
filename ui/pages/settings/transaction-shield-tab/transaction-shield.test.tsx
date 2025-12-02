@@ -9,7 +9,7 @@ import {
   Subscription,
   SUBSCRIPTION_STATUSES,
 } from '@metamask/subscription-controller';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import TransactionShield from './transaction-shield';
 

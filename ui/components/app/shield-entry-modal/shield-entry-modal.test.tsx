@@ -3,7 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { SubscriptionUserEvent } from '@metamask/subscription-controller';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import * as actions from '../../../store/actions';
 import { SHIELD_PLAN_ROUTE } from '../../../helpers/constants/routes';
 import MockState from '../../../../test/data/mock-state.json';

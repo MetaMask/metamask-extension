@@ -17,7 +17,7 @@ import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { SubjectType } from '@metamask/permission-controller';
 import { isSnapId } from '@metamask/snaps-utils';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
-import { isEvmAccountType } from '@metamask/keyring-api';
+import { isEvmAccountType, KeyringAccountType } from '@metamask/keyring-api';
 import {
   Caip25EndowmentPermissionName,
   getAllNamespacesFromCaip25CaveatValue,
@@ -196,7 +196,8 @@ function PermissionsConnect() {
   // We only consider EVM accounts.
   // Connections with non-EVM accounts (Bitcoin only for now) are used implicitly and handled by the Bitcoin Snap itself.
   const accountsWithLabels = useSelector(getAccountsWithLabels).filter(
-    (account: { type: string }) => isEvmAccountType(account.type),
+    (account: { type: string }) =>
+      isEvmAccountType(account.type as KeyringAccountType),
   );
 
   const accountGroups = useSelector(getAccountGroupWithInternalAccounts);
@@ -254,11 +255,15 @@ function PermissionsConnect() {
     snapsInstallPrivacyWarningShownProp,
   );
 
-  const prevPermissionsRequestRef =
-    useRef<typeof permissionsRequest>(undefined);
-  const prevTargetSubjectMetadataRef =
-    useRef<typeof targetSubjectMetadataProp>(undefined);
-  const prevLastConnectedInfoRef = useRef<typeof lastConnectedInfo>(undefined);
+  const prevPermissionsRequestRef = useRef<typeof permissionsRequest | null>(
+    null,
+  );
+  const prevTargetSubjectMetadataRef = useRef<
+    typeof targetSubjectMetadataProp | null
+  >(null);
+  const prevLastConnectedInfoRef = useRef<typeof lastConnectedInfo | null>(
+    null,
+  );
 
   // Define redirect function before it's used in effects
   const redirect = useCallback(
@@ -403,7 +408,12 @@ function PermissionsConnect() {
 
   const approveConnection = useCallback(
     (request: Record<string, unknown>) => {
-      dispatch(approvePermissionsRequestAction(request as PermissionsRequest));
+      // Cast through unknown to satisfy both local and controller types
+      dispatch(
+        approvePermissionsRequestAction(
+          request as unknown as PermissionsRequest,
+        ),
+      );
       redirect(true);
     },
     [dispatch, redirect],
@@ -613,10 +623,12 @@ function PermissionsConnect() {
   const isRequestingSnap = isSnapId(
     (metadata as Record<string, string>)?.origin,
   );
-  
+
   return (
     <div className="permissions-connect">
-      {!hideTopBar && renderTopBar(permissionsRequestId)}
+      {!hideTopBar &&
+        permissionsRequestId &&
+        renderTopBar(permissionsRequestId)}
       {redirecting && permissionsApproved ? (
         <PermissionsRedirect subjectMetadata={targetSubjectMetadata} />
       ) : (
@@ -645,12 +657,11 @@ function PermissionsConnect() {
             element={
               <PermissionPageContainer
                 request={permissionsRequest || {}}
-                approvePermissionsRequest={(
-                  requestId: string,
-                  requestData: unknown,
-                ) => {
+                approvePermissionsRequest={(request: unknown) => {
                   dispatch(
-                    approvePermissionsRequestAction(requestId, requestData),
+                    approvePermissionsRequestAction(
+                      request as unknown as PermissionsRequest,
+                    ),
                   );
                   redirect(true);
                 }}

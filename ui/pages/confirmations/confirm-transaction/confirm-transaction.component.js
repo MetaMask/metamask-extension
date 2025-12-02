@@ -208,13 +208,13 @@ const ConfirmTransaction = () => {
   // support URLs of /confirm-transaction or /confirm-transaction/<transactionId>
   if (isValidTransactionId) {
     return (
-      <Routes location={location}>
+      <Routes>
         <Route
-          path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${DECRYPT_MESSAGE_REQUEST_PATH}`}
+          path={DECRYPT_MESSAGE_REQUEST_PATH.slice(1)}
           element={<ConfirmDecryptMessage />}
         />
         <Route
-          path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`}
+          path={ENCRYPTION_PUBLIC_KEY_REQUEST_PATH.slice(1)}
           element={<ConfirmEncryptionPublicKey />}
         />
         <Route path="*" element={<ConfirmTransactionSwitch />} />

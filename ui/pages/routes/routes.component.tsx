@@ -622,7 +622,7 @@ export default function RoutesComponent() {
         authenticated: true,
       }),
       createRouteWithLayout({
-        path: NEW_ACCOUNT_ROUTE,
+        path: `${NEW_ACCOUNT_ROUTE}/*`,
         component: CreateAccountPage,
         layout: LegacyLayout,
         authenticated: true,
