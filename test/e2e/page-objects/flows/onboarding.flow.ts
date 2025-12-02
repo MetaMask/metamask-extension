@@ -32,7 +32,7 @@ export const handleSidepanelPostOnboarding = async (
   }
 
   try {
-    const hasSidepanel = await isSidePanelEnabled(driver);
+    const hasSidepanel = await isSidePanelEnabled();
 
     // Skip if sidepanel is not enabled
     if (!hasSidepanel) {
