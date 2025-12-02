@@ -53,7 +53,6 @@ import {
   setUseSidePanelAsDefault,
 } from '../../../store/actions';
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
-import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
 import type { BrowserWithSidePanel } from '../../../../shared/types';
 import WalletReadyAnimation from './wallet-ready-animation';
 
@@ -70,7 +69,7 @@ export default function CreationSuccessful() {
   );
   const trackEvent = useContext(MetaMetricsContext);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-  const isSidePanelEnabled = useSidePanelEnabled();
+  const isSidePanelEnabled = process.env.IS_SIDEPANEL;
 
   const learnMoreLink =
     'https://support.metamask.io/stay-safe/safety-in-web3/basic-safety-and-security-tips-for-metamask/';

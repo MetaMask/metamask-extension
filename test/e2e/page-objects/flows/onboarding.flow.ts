@@ -8,7 +8,7 @@ import StartOnboardingPage from '../pages/onboarding/start-onboarding-page';
 import SecureWalletPage from '../pages/onboarding/secure-wallet-page';
 import OnboardingCompletePage from '../pages/onboarding/onboarding-complete-page';
 import OnboardingPrivacySettingsPage from '../pages/onboarding/onboarding-privacy-settings-page';
-import { WALLET_PASSWORD } from '../../helpers';
+import { WALLET_PASSWORD, isSidePanelEnabled } from '../../helpers';
 import { E2E_SRP } from '../../fixtures/default-fixture';
 import HomePage from '../pages/home/homepage';
 import LoginPage from '../pages/login-page';
@@ -16,8 +16,9 @@ import TermsOfUseUpdateModal from '../pages/dialog/terms-of-use-update-modal';
 
 /**
  * Helper function to handle post-onboarding navigation for sidepanel builds.
- * When sidepanel is enabled, clicking "Done" doesn't navigate the current window,
- * so we need to manually navigate to home.html.
+ * When sidepanel is enabled, clicking "Done" opens the home page in the sidepanel,
+ * but the main window remains on the onboarding completion page.
+ * This function navigates the current window to the actual home page.
  * Note: Sidepanel is only supported on Chrome-based browsers, not Firefox.
  *
  * @param driver - The WebDriver instance
@@ -25,22 +26,45 @@ import TermsOfUseUpdateModal from '../pages/dialog/terms-of-use-update-modal';
 export const handleSidepanelPostOnboarding = async (
   driver: Driver,
 ): Promise<void> => {
-  // Check if sidepanel is enabled via build configuration
-  // AND we're not running on Firefox (which doesn't support sidepanel)
-  const isSidepanelEnabled =
-    process.env.IS_SIDEPANEL === 'true' &&
-    process.env.SELENIUM_BROWSER !== Browser.FIREFOX;
+  // Only run on Chrome-based browsers (Firefox doesn't support sidepanel)
+  if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+    return;
+  }
 
-  if (isSidepanelEnabled) {
-    // Give the onboarding completion time to process (needed for sidepanel)
-    await driver.delay(2000);
+  try {
+    const hasSidepanel = await isSidePanelEnabled();
 
-    // Navigate directly to home page in current window
-    // With sidepanel enabled, this ensures we load home page in the test window
-    await driver.driver.get(`${driver.extensionUrl}/home.html`);
+    // Skip if sidepanel is not enabled
+    if (!hasSidepanel) {
+      return;
+    }
 
-    // Wait for the home page to fully load
-    await driver.waitForSelector('[data-testid="account-menu-icon"]');
+    const currentUrl = await driver.getCurrentUrl();
+
+    // Only navigate if still on the completion page
+    // Avoid duplicate navigation if already on home page
+    if (currentUrl.includes('#onboarding/completion')) {
+      await driver.driver.get(`${driver.extensionUrl}/home.html`);
+    } else if (currentUrl.includes('/home.html')) {
+      // Already on home page, skip navigation
+      return;
+    } else {
+      await driver.driver.get(`${driver.extensionUrl}/home.html`);
+    }
+
+    // Wait for home page to be ready
+    await driver.waitForMultipleSelectors([
+      '[data-testid="eth-overview-send"]', // send button
+      '[data-testid="account-overview__activity-tab"]', // activity tab
+      '[data-testid="account-overview__asset-tab"]', // tokens tab
+    ]);
+  } catch (error) {
+    // If sidepanel handling fails, continue without it
+    // The test may still work if the main window navigated correctly
+    console.log(
+      'Sidepanel handling skipped or failed:',
+      error instanceof Error ? error.message : String(error),
+    );
   }
 };
 

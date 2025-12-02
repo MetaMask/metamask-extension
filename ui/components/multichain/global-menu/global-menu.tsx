@@ -25,7 +25,6 @@ import {
 } from '../../../store/actions';
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/modules/environment';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
 import {
   selectIsMetamaskNotificationsEnabled,
   selectIsMetamaskNotificationsFeatureSeen,
@@ -169,7 +168,7 @@ export const GlobalMenu = ({
   const isSidePanelDefault = preferences?.useSidePanelAsDefault ?? false;
 
   // Check if sidepanel feature is enabled (both build flag and LaunchDarkly flag)
-  const isSidePanelEnabled = useSidePanelEnabled();
+  const isSidePanelEnabled = process.env.IS_SIDEPANEL;
 
   const showPriorityTag = useMemo(
     () =>
