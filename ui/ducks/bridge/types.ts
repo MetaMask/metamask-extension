@@ -7,8 +7,8 @@ import {
   type GenericQuoteRequest,
 } from '@metamask/bridge-controller';
 import { type KeyringAccountType } from '@metamask/keyring-api';
-import { type TxAlert } from '../../../shared/types/security-alerts-api';
 import { type NetworkConfiguration } from '@metamask/network-controller';
+import { type TxAlert } from '../../../shared/types/security-alerts-api';
 
 export type BridgeToken = {
   address: string;
