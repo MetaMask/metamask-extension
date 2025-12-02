@@ -518,8 +518,7 @@ const PrepareBridgePage = ({
               enableMissingNetwork(networkConfig.chainId);
               dispatch(
                 setFromChain({
-                  networkConfig,
-                  selectedAccount,
+                  chainId: networkConfig.chainId,
                 }),
               );
             },
@@ -606,9 +605,11 @@ const PrepareBridgePage = ({
               }
               onClick={() => {
                 dispatch(setSelectedQuote(null));
+                if (!toChain) {
+                  return;
+                }
                 // Track the flip event
-                toChain?.chainId &&
-                  fromToken &&
+                fromToken &&
                   toToken &&
                   dispatch(
                     trackUnifiedSwapBridgeEvent(
@@ -656,12 +657,10 @@ const PrepareBridgePage = ({
                 if (isSwap) {
                   dispatch(setFromToken(toToken));
                 } else {
-                  // Handle account switching for Solana
                   dispatch(
                     setFromChain({
-                      networkConfig: toChain,
+                      chainId: toChain.chainId,
                       token: toToken,
-                      selectedAccount,
                     }),
                   );
                 }

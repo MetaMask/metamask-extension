@@ -12,7 +12,6 @@ import {
   isCrossChain,
   isNativeAddress,
 } from '@metamask/bridge-controller';
-import { type InternalAccount } from '@metamask/keyring-internal-api';
 import {
   type AssetMetadata,
   fetchAssetMetadataForAssetIds,
@@ -173,7 +172,6 @@ export const useBridgeQueryParams = () => {
       fromTokenMetadata,
       fromAsset,
       networks: BridgeNetwork[],
-      account: InternalAccount | null,
       network?: BridgeNetwork,
     ) => {
       const { chainId: assetChainId } = fromAsset;
@@ -204,8 +202,7 @@ export const useBridgeQueryParams = () => {
           if (targetChain) {
             dispatch(
               setFromChain({
-                networkConfig: targetChain,
-                selectedAccount: account,
+                chainId: targetChain.chainId,
                 token,
               }),
             );
@@ -251,16 +248,9 @@ export const useBridgeQueryParams = () => {
       fromTokenMetadata,
       parsedFromAssetId,
       fromChains,
-      selectedAccount,
       fromChain,
     );
-  }, [
-    assetMetadataByAssetId,
-    parsedFromAssetId,
-    fromChains,
-    fromChain,
-    selectedAccount,
-  ]);
+  }, [assetMetadataByAssetId, parsedFromAssetId, fromChains, fromChain]);
 
   // Set toChainId and toToken
   useEffect(() => {
