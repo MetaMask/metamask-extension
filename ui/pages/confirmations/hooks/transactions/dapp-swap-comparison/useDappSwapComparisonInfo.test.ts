@@ -65,7 +65,8 @@ async function runHook() {
 describe('useDappSwapComparisonInfo', () => {
   it('initially call updateTransactionEventFragment with loading', async () => {
     await runHook();
-    expect(mockUpdateTransactionEventFragment).toHaveBeenLastCalledWith(
+    expect(mockUpdateTransactionEventFragment).toHaveBeenNthCalledWith(
+      1,
       {
         properties: {
           swap_dapp_comparison: 'loading',

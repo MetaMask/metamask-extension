@@ -13,8 +13,7 @@ import {
   JustifyContent,
 } from '../../helpers/constants/design-system';
 import { NOTIFICATIONS_ROUTE } from '../../helpers/constants/routes';
-import { NotificationsPage } from '../../components/multichain';
-import { Content } from '../../components/multichain/pages/page';
+import { Content, Page } from '../../components/multichain/pages/page';
 import { useMarkNotificationAsRead } from '../../hooks/metamask-notifications/useNotifications';
 import { getMetamaskNotificationById } from '../../selectors/metamask-notifications/metamask-notifications';
 import {
@@ -100,7 +99,7 @@ export default function NotificationDetails({
   }
 
   return (
-    <NotificationsPage>
+    <Page>
       <NotificationDetailsHeader
         onClickBack={() => navigate(NOTIFICATIONS_ROUTE)}
       >
@@ -125,6 +124,6 @@ export default function NotificationDetails({
           />
         </Box>
       </Content>
-    </NotificationsPage>
+    </Page>
   );
 }

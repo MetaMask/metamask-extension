@@ -1954,7 +1954,7 @@
     "message": "Mengerti"
   },
   "deprecatedNetworkDescription": {
-    "message": "Jaringan yang Anda coba hubungkan tidak lagi didukung oleh Metamask. $1"
+    "message": "Jaringan yang Anda coba hubungkan tidak lagi didukung oleh MetaMask. $1"
   },
   "description": {
     "message": "Deskripsi"
@@ -2353,7 +2353,7 @@
     "message": "Masukkan kata sandi untuk melanjutkan"
   },
   "enterYourPasswordSocialLoginFlow": {
-    "message": "Masukkan Kata Sandi Metamask"
+    "message": "Masukkan Kata Sandi MetaMask"
   },
   "errorCode": {
     "message": "Kode: $1",
@@ -4991,9 +4991,6 @@
   "recipientEditAriaLabel": {
     "message": "Edit penerima"
   },
-  "recipientPlaceholder": {
-    "message": "Masukkan atau tempel alamat yang valid"
-  },
   "recoveryPhraseReminderBackupStart": {
     "message": "Cadangkan sekarang"
   },
@@ -6671,19 +6668,19 @@
   },
   "swapIncludesGasAndMetaMaskFee": {
     "message": "Termasuk biaya gas dan MetaMask sebesar $1%",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFee": {
     "message": "Termasuk $1% biaya MetaMask.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFeeAlt": {
     "message": "Kuotasi mencerminkan biaya MetaMask sebesar $1%",
-    "description": "Provides information about the fee that metamask takes for swaps using the latest copy. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
     "message": "Termasuk $1% biaya MetaMask – $2",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
   },
   "swapLearnMore": {
     "message": "Pelajari selengkapnya seputar Swap"
@@ -6702,7 +6699,7 @@
   },
   "swapMetaMaskFeeDescription": {
     "message": "Biaya sebesar $1% otomatis diperhitungkan ke dalam kuotasi ini. Anda membayarnya sebagai ganti lisensi untuk menggunakan perangkat lunak pengumpul informasi penyedia likuiditas MetaMask.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapNQuotesWithDot": {
     "message": "$1 kuota.",
@@ -7507,18 +7504,8 @@
   "walletConnectionGuide": {
     "message": "panduan koneksi dompet perangkat keras kami"
   },
-  "walletDetails": {
-    "message": "Detail dompet"
-  },
   "walletName": {
     "message": "Nama dompet"
-  },
-  "walletNotFoundDescription": {
-    "message": "Dompet dengan ID $1 tidak ditemukan.",
-    "description": "$1 is the wallet ID"
-  },
-  "walletNotFoundTitle": {
-    "message": "Dompet tidak ditemukan"
   },
   "walletReadyLearn": {
     "message": "$1 Anda dapat menyimpan frasa ini dengan aman sehingga Anda tidak akan pernah kehilangan akses ke uang Anda.",

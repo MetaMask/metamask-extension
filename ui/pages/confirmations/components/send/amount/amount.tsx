@@ -69,6 +69,12 @@ export const Amount = ({
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = event.target.value;
       const fractionSize = getFractionLength(newValue);
+
+      const numericRegex = /^\d*\.?\d*$/u;
+      if (!numericRegex.test(newValue)) {
+        return;
+      }
+
       if (
         (fiatMode && fractionSize > 2) ||
         (!fiatMode && fractionSize > (asset?.decimals ?? 0))

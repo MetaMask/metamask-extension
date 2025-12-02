@@ -128,7 +128,6 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
         {
           fixtures: new FixtureBuilder().build(),
           title: this.test?.fullTitle(),
-          forceBip44Version: 2,
         },
         async ({ driver }) => {
           await loginWithoutBalanceValidation(driver);

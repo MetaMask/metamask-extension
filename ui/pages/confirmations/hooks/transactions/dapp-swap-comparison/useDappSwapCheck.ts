@@ -18,7 +18,8 @@ export function useDappSwapCheck() {
   const isSwapToBeCompared = useMemo(() => {
     return (
       (origin === DAPP_SWAP_COMPARISON_ORIGIN || origin === TEST_DAPP_ORIGIN) &&
-      type === TransactionType.contractInteraction
+      (type === TransactionType.contractInteraction ||
+        type === TransactionType.batch)
     );
   }, [origin, type]);
 

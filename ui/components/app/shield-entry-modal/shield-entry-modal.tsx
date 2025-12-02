@@ -17,6 +17,7 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
+import classnames from 'classnames';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Modal,
@@ -54,6 +55,10 @@ import {
 import { TRANSACTION_SHIELD_LINK } from '../../../helpers/constants/common';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { getShieldMarketingUtmParamsForMetrics } from '../../../../shared/modules/shield';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import ShieldIllustrationAnimation from './shield-illustration-animation';
 
 const ShieldEntryModal = ({
@@ -74,6 +79,8 @@ const ShieldEntryModal = ({
   );
   const modalType: ModalType = useSelector(getModalTypeForShieldEntryModal);
   const triggeringCohort = useSelector(getShieldEntryModalTriggeringCohort);
+
+  const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
 
   const determineEntryModalSource = useCallback((): EntryModalSourceEnum => {
     const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
@@ -218,7 +225,12 @@ const ShieldEntryModal = ({
               ? t('shieldEntryModalSubtitleA', ['$10,000'])
               : t('shieldEntryModalSubtitleB', ['$10,000'])}
           </Text>
-          <Box className="flex-1 flex items-center justify-center">
+          <Box
+            className={classnames(
+              'flex-1 flex justify-center',
+              isPopup ? 'items-end' : 'items-center',
+            )}
+          >
             <ShieldIllustrationAnimation
               containerClassName="shield-entry-modal-shield-illustration__container"
               canvasClassName="shield-entry-modal-shield-illustration__canvas"

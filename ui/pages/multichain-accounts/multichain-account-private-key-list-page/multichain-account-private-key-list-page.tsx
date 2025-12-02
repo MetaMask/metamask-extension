@@ -75,7 +75,7 @@ export const MultichainAccountPrivateKeyListPage = ({
   );
 
   return (
-    <Page className="max-w-[600px]">
+    <Page>
       <Header
         textProps={{
           variant: TextVariant.headingSm,

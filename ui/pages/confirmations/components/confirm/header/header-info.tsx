@@ -109,6 +109,7 @@ const HeaderInfo = () => {
       <Box
         display={Display.Flex}
         justifyContent={JustifyContent.flexEnd}
+        gap={4}
         style={{
           alignSelf: 'flex-end',
         }}

@@ -23,8 +23,7 @@ import {
   TextVariant,
   TextColor,
 } from '../../helpers/constants/design-system';
-import { NotificationsPage } from '../../components/multichain';
-import { Content, Header } from '../../components/multichain/pages/page';
+import { Content, Header, Page } from '../../components/multichain/pages/page';
 import {
   selectIsMetamaskNotificationsEnabled,
   getIsUpdatingMetamaskNotifications,
@@ -89,7 +88,7 @@ export default function NotificationsSettings() {
   };
 
   return (
-    <NotificationsPage>
+    <Page>
       <Header
         startAccessory={
           <ButtonIcon
@@ -188,6 +187,6 @@ export default function NotificationsSettings() {
           </>
         )}
       </Content>
-    </NotificationsPage>
+    </Page>
   );
 }

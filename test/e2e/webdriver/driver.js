@@ -1047,14 +1047,19 @@ class Driver {
    * @param {object} [options] - optional parameter to specify additional options.
    * @param {boolean} [options.waitForControllers] - optional parameter to specify whether to wait for the controllers to be loaded.
    * Defaults to true.
+   * @param {number} [options.waitForControllersTimeout] - optional parameter to specify the timeout in milliseconds for waiting
+   * for the controllers to be loaded. Defaults to 10000 (10 seconds).
    * @returns {Promise} promise resolves when the page has finished loading
    * @throws {Error} Will throw an error if the navigation fails or the page does not load within the timeout period.
    */
-  async navigate(page = PAGES.HOME, { waitForControllers = true } = {}) {
+  async navigate(
+    page = PAGES.HOME,
+    { waitForControllers = true, waitForControllersTimeout = 10000 } = {},
+  ) {
     const response = await this.driver.get(`${this.extensionUrl}/${page}.html`);
     // Wait for asynchronous JavaScript to load
     if (waitForControllers) {
-      await this.waitForControllersLoaded();
+      await this.waitForControllersLoaded(waitForControllersTimeout);
     }
     return response;
   }
@@ -1065,13 +1070,15 @@ class Driver {
    * This function waits until an element with the class 'controller-loaded' is located,
    * indicating that the controllers have finished loading.
    *
+   * @param {number} [timeout] - optional timeout in milliseconds for waiting for the controllers to be loaded.
+   * Defaults to 10000 (10 seconds).
    * @returns {Promise<void>} A promise that resolves when the controllers are loaded.
    * @throws {Error} Will throw an error if the element is not located within the timeout period.
    */
-  async waitForControllersLoaded() {
+  async waitForControllersLoaded(timeout = 10000) {
     await this.driver.wait(
       until.elementLocated(this.buildLocator('.controller-loaded')),
-      10 * 1000,
+      timeout,
     );
   }
 

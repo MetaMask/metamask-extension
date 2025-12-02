@@ -24,6 +24,10 @@ import {
   getTransactionControllerInitMessenger,
 } from './transaction-controller-messenger';
 import {
+  getTransactionPayControllerMessenger,
+  getTransactionPayControllerInitMessenger,
+} from './transaction-pay-controller-messenger';
+import {
   getBackendWebSocketServiceMessenger,
   getBackendWebSocketServiceInitMessenger,
   getAccountActivityServiceMessenger,
@@ -392,6 +396,11 @@ export {
   getTokensControllerMessenger,
   getTokensControllerInitMessenger,
 } from './tokens-controller-messenger';
+export type { TransactionPayControllerInitMessenger } from './transaction-pay-controller-messenger';
+export {
+  getTransactionPayControllerMessenger,
+  getTransactionPayControllerInitMessenger,
+} from './transaction-pay-controller-messenger';
 export type {
   UserOperationControllerMessenger,
   UserOperationControllerInitMessenger,
@@ -695,6 +704,10 @@ export const CONTROLLER_MESSENGERS = {
   TransactionController: {
     getMessenger: getTransactionControllerMessenger,
     getInitMessenger: getTransactionControllerInitMessenger,
+  },
+  TransactionPayController: {
+    getMessenger: getTransactionPayControllerMessenger,
+    getInitMessenger: getTransactionPayControllerInitMessenger,
   },
   UserOperationController: {
     getMessenger: getUserOperationControllerMessenger,

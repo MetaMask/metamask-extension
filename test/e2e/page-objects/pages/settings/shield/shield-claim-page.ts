@@ -15,7 +15,7 @@ export default class ShieldClaimPage {
   });
 
   private readonly claimSuccessToast = {
-    text: 'Claim submitted successfully',
+    text: 'Claim submission received',
     tag: 'p',
   };
 

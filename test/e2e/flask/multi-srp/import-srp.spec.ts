@@ -8,6 +8,7 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
+import MultichainAccountDetailsPage from '../../page-objects/pages/multichain/multichain-account-details-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import {
   SECOND_TEST_E2E_SRP,
@@ -56,7 +57,11 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
 
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
-        await accountListPage.startExportSrpForAccount('Account 2');
+        await accountListPage.openAccountDetailsModal('Account 2');
+
+        const accountDetailsPage = new MultichainAccountDetailsPage(driver);
+        await accountDetailsPage.checkPageIsLoaded();
+        await accountDetailsPage.clickSecretRecoveryPhraseRow();
 
         const privacySettings = new PrivacySettings(driver);
         await privacySettings.completeRevealSrpQuiz();

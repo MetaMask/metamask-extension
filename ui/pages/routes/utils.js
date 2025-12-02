@@ -24,9 +24,6 @@ import {
   SEND_ROUTE,
   SNAPS_VIEW_ROUTE,
   DEEP_LINK_ROUTE,
-  WALLET_DETAILS_ROUTE,
-  ACCOUNT_DETAILS_ROUTE,
-  ACCOUNT_DETAILS_QR_CODE_ROUTE,
   MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
   SHIELD_PLAN_ROUTE,
   MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
@@ -262,19 +259,6 @@ export function hideAppHeader(props) {
     return true;
   }
 
-  const isWalletDetailsPage = Boolean(
-    matchPath(
-      {
-        path: WALLET_DETAILS_ROUTE,
-        end: false,
-      },
-      location.pathname,
-    ),
-  );
-  if (isWalletDetailsPage) {
-    return true;
-  }
-
   const isSnapsHome = Boolean(
     matchPath(
       {
@@ -312,34 +296,6 @@ export function hideAppHeader(props) {
   );
 
   if (isAssetsPage) {
-    return true;
-  }
-
-  const isMultichainAccountDetailsPage = Boolean(
-    matchPath(
-      {
-        path: ACCOUNT_DETAILS_ROUTE,
-        end: false,
-      },
-      location.pathname,
-    ),
-  );
-
-  if (isMultichainAccountDetailsPage) {
-    return true;
-  }
-
-  const isMultichainAccountDetailsQRCodePage = Boolean(
-    matchPath(
-      {
-        path: ACCOUNT_DETAILS_QR_CODE_ROUTE,
-        end: false,
-      },
-      location.pathname,
-    ),
-  );
-
-  if (isMultichainAccountDetailsQRCodePage) {
     return true;
   }
 

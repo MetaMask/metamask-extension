@@ -74,6 +74,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { getLastUsedShieldSubscriptionPaymentDetails } from '../../selectors/subscription';
 import {
   EntryModalSourceEnum,
+  ShieldUnexpectedErrorEventLocationEnum,
   SUBSCRIPTION_DEFAULT_TRIAL_PERIOD_DAYS,
 } from '../../../shared/constants/subscriptions';
 import {
@@ -387,7 +388,11 @@ const ShieldPlan = () => {
           justifyContent={JustifyContent.flexStart}
           alignItems={AlignItems.center}
         >
-          <ApiErrorHandler className="shield-plan-page__error-content" />
+          <ApiErrorHandler
+            className="shield-plan-page__error-content"
+            error={hasApiError}
+            location={ShieldUnexpectedErrorEventLocationEnum.ShieldPlanPage}
+          />
         </Content>
       ) : (
         subscriptionPricing && (

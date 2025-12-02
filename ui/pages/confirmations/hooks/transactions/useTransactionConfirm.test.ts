@@ -357,6 +357,7 @@ describe('useTransactionConfirm', () => {
 
   it('updates swap with MM quote if available', async () => {
     jest.spyOn(DappSwapContext, 'useDappSwapContext').mockReturnValue({
+      isQuotedSwapDisplayedInInfo: true,
       selectedQuote: mockBridgeQuotes[0] as unknown as QuoteResponse,
       setSelectedQuote: jest.fn(),
       setQuotedSwapDisplayedInInfo: jest.fn(),

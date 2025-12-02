@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import {
   Box,
   BoxBackgroundColor,
@@ -10,6 +10,7 @@ import { TabsProps, TabChild } from './tabs.types';
 
 export const Tabs = <TKey extends string = string>({
   defaultActiveTabKey,
+  activeTabKey,
   onTabClick,
   children,
   subHeader = null,
@@ -33,16 +34,28 @@ export const Tabs = <TKey extends string = string>({
    *
    * @param tabKey
    */
-  const findChildByKey = (tabKey?: TKey): number => {
-    if (!tabKey) {
-      return -1;
-    }
-    return getValidChildren.findIndex((child) => child.props.tabKey === tabKey);
-  };
+  const findChildByKey = useCallback(
+    (tabKey?: TKey): number => {
+      if (!tabKey) {
+        return -1;
+      }
+      return getValidChildren.findIndex(
+        (child) => child.props.tabKey === tabKey,
+      );
+    },
+    [getValidChildren],
+  );
 
   const [activeTabIndex, setActiveTabIndex] = useState<number>(() =>
     Math.max(findChildByKey(defaultActiveTabKey), 0),
   );
+
+  useEffect(() => {
+    const childIndex = findChildByKey(activeTabKey);
+    if (childIndex >= 0 && activeTabIndex !== childIndex) {
+      setActiveTabIndex(childIndex);
+    }
+  }, [activeTabKey, findChildByKey, activeTabIndex]);
 
   const handleTabClick = (tabIndex: number, tabKey: TKey): void => {
     if (tabIndex !== activeTabIndex) {

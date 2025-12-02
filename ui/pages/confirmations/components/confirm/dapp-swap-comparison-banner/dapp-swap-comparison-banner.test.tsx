@@ -131,7 +131,7 @@ describe('<DappSwapComparisonBanner />', () => {
     const { getByText } = render();
     expect(getByText('Market rate')).toBeInTheDocument();
     expect(getByText('MetaMask Swap')).toBeInTheDocument();
-    expect(getByText('Save and earn with MetaMask Swaps')).toBeInTheDocument();
+    expect(getByText('Save with MetaMask Swaps')).toBeInTheDocument();
     expect(getByText('Save $0.02')).toBeInTheDocument();
     expect(
       getByText('Network fees refunded on failed swaps'),
@@ -229,5 +229,6 @@ describe('<DappSwapComparisonBanner />', () => {
     });
     const { getByText } = render();
     expect(getByText(/Earn 100 points/u)).toBeInTheDocument();
+    expect(getByText('Save and earn with MetaMask Swaps')).toBeInTheDocument();
   });
 });

@@ -72,6 +72,8 @@ export type TransactionMetricsRequest = {
   getIsConfirmationAdvancedDetailsOpen: () => boolean;
   getHDEntropyIndex: () => number;
   getNetworkRpcUrl: (chainId: Hex) => string;
+  getFeatureFlags: () => Record<string, unknown>;
+  getPna25Acknowledged: () => boolean;
 };
 
 export type TransactionEventPayload = {
