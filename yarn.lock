@@ -32139,23 +32139,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-core@npm:^17.0.1":
-  version: 17.1.0
-  resolution: "lavamoat-core@npm:17.1.0"
-  dependencies:
-    "@babel/types": "npm:7.27.3"
-    "@lavamoat/types": "npm:^0.1.0"
-    json-stable-stringify: "npm:1.3.0"
-    lavamoat-tofu: "npm:^8.1.0"
-    merge-deep: "npm:3.0.3"
-    ses: "npm:1.14.0"
-  bin:
-    lavamoat-sort-policy: src/policy-sort-cli.js
-  checksum: 10/bc45feddf10ecc563a938df315b639100874bcd0e22a388fe2047f1f93579f8f9967653aff6e416d0079f9cd11240e2bc9a45c698ec781070bb525fb3584af27
-  languageName: node
-  linkType: hard
-
-"lavamoat-core@npm:^17.1.2":
+"lavamoat-core@npm:^17.0.1, lavamoat-core@npm:^17.1.2":
   version: 17.1.2
   resolution: "lavamoat-core@npm:17.1.2"
   dependencies:
