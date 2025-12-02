@@ -1,7 +1,7 @@
 import React from 'react';
 import { StoryObj, Meta } from '@storybook/react';
 import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom-v5-compat';
 import Home from './home.component';
 import mockState from '../../../test/data/mock-state.json';
 import configureStore from '../../store/store';
@@ -20,7 +20,7 @@ interface WrapperProps {
 // Wrapper component to provide necessary providers
 const Wrapper: React.FC<WrapperProps> = ({ children }) => (
   <Provider store={store}>
-    <MemoryRouter initialEntries={['/']}>{children}</MemoryRouter>
+    {children}
   </Provider>
 );
 
@@ -36,6 +36,9 @@ const meta: Meta<typeof Home> = {
       </Wrapper>
     ),
   ],
+  parameters: {
+    initialEntries: ['/'],
+  },
   args: {
     connectedStatusPopoverHasBeenShown: true,
     showRecoveryPhraseReminder: false,
@@ -79,6 +82,7 @@ const meta: Meta<typeof Home> = {
     isSocialLoginFlow: false,
 
     // Function props (mocked)
+    navigate: () => {},
     setConnectedStatusPopoverHasBeenShown: () => {},
     hideWhatsNewPopup: () => {},
     onTabClick: () => {},
@@ -100,7 +104,6 @@ const meta: Meta<typeof Home> = {
     setBasicFunctionalityModalOpen: () => {},
     fetchBuyableChains: () => {},
     clearRedirectAfterDefaultPage: () => {},
-    setAccountDetailsAddress: () => {},
     lookupSelectedNetworks: () => {},
   },
 };

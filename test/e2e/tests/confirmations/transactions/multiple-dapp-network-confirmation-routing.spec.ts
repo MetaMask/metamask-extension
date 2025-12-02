@@ -1,6 +1,6 @@
 import { By } from 'selenium-webdriver';
 
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import {
   DAPP_ONE_URL,
   DAPP_URL,

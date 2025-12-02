@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { withFixtures, WINDOW_TITLES } from '../../helpers';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import HomePage from '../../page-objects/pages/home/homepage';

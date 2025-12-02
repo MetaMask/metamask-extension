@@ -31,9 +31,8 @@ jest.mock('../../../../../store/controller-actions/bridge-controller', () => ({
 
 const mockUseDappSwapComparisonLatencyMetricsResponse = {
   requestDetectionLatency: '1200',
-  swapComparisonLatency: '1500',
   updateRequestDetectionLatency: jest.fn(),
-  updateSwapComparisonLatency: jest.fn(),
+  updateSwapComparisonLatency: jest.fn().mockReturnValue('1500'),
 };
 
 jest.mock('./useDappSwapComparisonLatencyMetrics', () => ({
@@ -66,7 +65,8 @@ async function runHook() {
 describe('useDappSwapComparisonInfo', () => {
   it('initially call updateTransactionEventFragment with loading', async () => {
     await runHook();
-    expect(mockUpdateTransactionEventFragment).toHaveBeenLastCalledWith(
+    expect(mockUpdateTransactionEventFragment).toHaveBeenNthCalledWith(
+      1,
       {
         properties: {
           swap_dapp_comparison: 'loading',
