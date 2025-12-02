@@ -9,6 +9,7 @@ import {
 } from '@metamask/design-system-react';
 import {
   PRODUCT_TYPES,
+  RECURRING_INTERVALS,
   SUBSCRIPTION_STATUSES,
 } from '@metamask/subscription-controller';
 import { useNavigate } from 'react-router-dom-v5-compat';
@@ -35,6 +36,7 @@ import LoadingScreen from '../../../../components/ui/loading-screen';
 import { useSubscriptionMetrics } from '../../../../hooks/shield/metrics/useSubscriptionMetrics';
 import { SHIELD_PLAN_ROUTE } from '../../../../helpers/constants/routes';
 import { getIsShieldSubscriptionPaused } from '../../../../../shared/lib/shield';
+import { getShortDateFormatterV2 } from '../../../asset/util';
 
 const ManageShieldPlan = () => {
   const t = useI18nContext();
@@ -137,35 +139,45 @@ const ManageShieldPlan = () => {
         <Text variant={TextVariant.HeadingMd} className="px-4 mb-4">
           {t('shieldManagePlan')}
         </Text>
-        <ButtonRowContainer>
-          <ButtonRow
-            title="Plan type"
-            description="Monthly, next billing on 10 May 2025"
-          />
-          <ButtonRow
-            title="Payment method"
-            description="Card"
-            onClick={() => {
-              console.log('Payment method');
-            }}
-          />
-          {displayedShieldSubscription?.status !==
-            SUBSCRIPTION_STATUSES.provisional && (
-            <>
-              <Box className="border-t border-muted w-full h-px" />
-              <ButtonRow
-                data-testid="shield-detail-view-billing-history-button"
-                title={t('shieldTxMembershipBillingDetailsViewBillingHistory')}
-                rightIconProps={{
-                  name: IconName.ArrowRight,
-                }}
-                onClick={() => {
-                  executeOpenGetSubscriptionBillingPortal();
-                }}
-              />
-            </>
-          )}
-        </ButtonRowContainer>
+        {displayedShieldSubscription && (
+          <ButtonRowContainer>
+            <ButtonRow
+              title={t('shieldTxDetails2Title')}
+              description={t('shieldTxDetails2Description', [
+                displayedShieldSubscription?.interval ===
+                RECURRING_INTERVALS.year
+                  ? t('shieldPlanAnnual')
+                  : t('shieldPlanMonthly'),
+                getShortDateFormatterV2().format(
+                  new Date(displayedShieldSubscription?.currentPeriodEnd),
+                ),
+              ])}
+            />
+            <ButtonRow
+              title={t('shieldTxDetails3Title')}
+              description="Card"
+              onClick={() => {
+                console.log('Payment method');
+              }}
+            />
+            {displayedShieldSubscription?.status !==
+              SUBSCRIPTION_STATUSES.provisional && (
+              <>
+                <Box className="border-t border-muted w-full h-px" />
+                <ButtonRow
+                  data-testid="shield-detail-view-billing-history-button"
+                  title={t(
+                    'shieldTxMembershipBillingDetailsViewBillingHistory',
+                  )}
+                  endIconName={IconName.ArrowRight}
+                  onClick={() => {
+                    executeOpenGetSubscriptionBillingPortal();
+                  }}
+                />
+              </>
+            )}
+          </ButtonRowContainer>
+        )}
       </Box>
       <Box className="p-4">
         {!isMembershipInactive &&

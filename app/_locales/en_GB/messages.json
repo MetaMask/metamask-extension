@@ -6445,7 +6445,7 @@
     "description": "The $1 is interval and the $2 is the date of next billing"
   },
   "shieldTxDetails2Title": {
-    "message": "Plan type"
+    "message": "Billing cycle"
   },
   "shieldTxDetails3DescriptionCrypto": {
     "message": "Crypto ($1), $2",

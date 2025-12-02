@@ -6445,7 +6445,7 @@
     "description": "The $1 is interval and the $2 is the date of next billing"
   },
   "shieldTxDetails2Title": {
-    "message": "Plan type"
+    "message": "Billing cycle"
   },
   "shieldTxDetails3DescriptionCrypto": {
     "message": "Crypto ($1), $2",
@@ -6479,7 +6479,8 @@
     "message": "Priority support"
   },
   "shieldTxMembershipBenefits3Description": {
-    "message": "Get 1,000 points/month"
+    "message": "Get $1 points/$2",
+    "description": "The $1 is the number of points and the $2 is the interval"
   },
   "shieldTxMembershipBenefits3SignUp": {
     "message": "Sign up"
