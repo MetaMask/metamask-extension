@@ -62,6 +62,7 @@ import {
 } from './lib/stores/persistence-manager';
 import ExtensionStore from './lib/stores/extension-store';
 import { FixtureExtensionStore } from './lib/stores/fixture-extension-store';
+import { useSplitStateStorage } from './lib/use-split-state-storage';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import { updateRemoteFeatureFlags } from './lib/update-remote-feature-flags';
@@ -994,17 +995,9 @@ export async function loadStateFromPersistence(backup) {
   persistenceManager.setMetadata(versionedData.meta);
 
   if (persistenceManager.storageKind === 'data') {
-    const flag =
-      versionedData.data.RemoteFeatureFlagController?.state?.remoteFeatureFlags
-        ?.platformSplitStateGradualRollout;
-    const useSplitStateStorage =
-      flag &&
-      typeof flag === 'object' &&
-      'value' in flag &&
-      flag.value?.enabled === true &&
-      // if we've already tried, don't try again.
-      versionedData.meta.platformSplitStateGradualRolloutAttempted !== true;
-    if (useSplitStateStorage) {
+    const alreadyTried = versionedData.meta.platformSplitStateGradualRolloutAttempted !== true;
+    const shouldUseSplitStateStorage = !alreadyTried && useSplitStateStorage(versionedData.data.RemoteFeatureFlagController?.state);
+    if (shouldUseSplitStateStorage) {
       // a sigil to mark that we *tried* to migrate to split state storage
       versionedData.meta.platformSplitStateGradualRolloutAttempted = true;
       persistenceManager.setMetadata(versionedData.meta);
@@ -1013,7 +1006,7 @@ export async function loadStateFromPersistence(backup) {
     // write to disk
     await persistenceManager.set(versionedData.data);
 
-    if (useSplitStateStorage) {
+    if (shouldUseSplitStateStorage) {
       await persistenceManager.migrateToSplitState(versionedData.data);
       delete versionedData.meta.platformSplitStateGradualRolloutAttempted;
       persistenceManager.setMetadata(versionedData.meta);

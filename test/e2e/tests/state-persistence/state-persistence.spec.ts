@@ -11,21 +11,23 @@ import { PAGES, type Driver } from '../../webdriver/driver';
 
 type DataStorage = {
   meta: {
-    version:string,
-    storageKind?: 'data',
-    platformSplitStateGradualRolloutAttempted?: true,
+    version: string;
+    storageKind?: 'data';
+    platformSplitStateGradualRolloutAttempted?: true;
   };
   data: Record<string, Record<string, unknown>>;
 };
 
-type SplitStateStorage = (Record<string, unknown> & {
-  meta: { version:string, storageKind?: 'split' };
-  manifest?: ("meta" | string)[];
-})
+type SplitStateStorage = Record<string, unknown> & {
+  meta: { version: string; storageKind?: 'split' };
+  manifest?: ('meta' | string)[];
+};
 
 type StoredState = SplitStateStorage | DataStorage;
 
-const SPLIT_FLAG = { value: { enabled: true } };
+const SPLIT_FLAG = {
+  value: { enabled: 1, maxAccounts: 0, maxNetworks: 0 },
+};
 const BASE_MANIFEST_TESTING_FLAGS = { forceExtensionStore: true };
 
 /**
@@ -399,7 +401,8 @@ describe('State Persistence', function () {
 
           const storage1 = await expectDataStateStorage(driver);
           assert.equal(
-            (storage1 as DataStorage).meta.platformSplitStateGradualRolloutAttempted,
+            (storage1 as DataStorage).meta
+              .platformSplitStateGradualRolloutAttempted,
             true,
             'precondition: platformSplitStateGradualRolloutAttempted should be true',
           );
@@ -420,7 +423,8 @@ describe('State Persistence', function () {
           const storage = await expectDataStateStorage(driver);
           // additionally, ensure the attempted flag is still set
           assert.equal(
-            (storage as DataStorage).meta.platformSplitStateGradualRolloutAttempted,
+            (storage as DataStorage).meta
+              .platformSplitStateGradualRolloutAttempted,
             true,
           );
           // and the canary value is untouched (just making sure OUR test state
