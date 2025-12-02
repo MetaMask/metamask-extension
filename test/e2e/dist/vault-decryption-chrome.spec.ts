@@ -190,6 +190,11 @@ describe('Vault Decryptor Page', function () {
         // close popover if any (Announcements etc..)
         await closePopoverIfPresent(driver);
 
+        // Ensure we're on the main extension window after onboarding
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+
         // go to privacy settings page
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -252,6 +257,11 @@ describe('Vault Decryptor Page', function () {
         });
         // close popover if any (Announcements etc..)
         await closePopoverIfPresent(driver);
+
+        // Ensure we're on the main extension window after onboarding
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
 
         // go to privacy settings page
         const homePage = new HomePage(driver);
