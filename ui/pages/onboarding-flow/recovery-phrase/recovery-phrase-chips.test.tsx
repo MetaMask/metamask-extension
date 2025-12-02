@@ -51,7 +51,7 @@ describe('Recovery Phrase Chips Component', () => {
 
     const recoveryPhraseChips = queryByTestId('recovery-phrase-chips');
 
-    const phraseWords = Array.from(recoveryPhraseChips.childNodes)
+    const phraseWords = Array.from(recoveryPhraseChips?.childNodes || [])
       .map((text) => text.textContent)
       .join(' ');
     expect(phraseWords).toBe(
