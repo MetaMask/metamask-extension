@@ -492,11 +492,15 @@ export default function UnifiedTransactionList({
   // This is important when a non-EVM account is selected - we still want to show
   // EVM transactions from the EVM accounts in the same account group
   const accountGroupFilteredCompletedTransactions = useMemo(() => {
+    // Pending statuses to exclude from completed transactions
+    const pendingStatuses = ['submitted', 'approved', 'signed', 'unapproved'];
+
     // If we have account group addresses, use all EVM transactions filtered by those addresses
     if (accountGroupEvmAddresses.length > 0) {
       return allEvmTransactions.filter((tx) => {
         const fromAddress = tx.txParams?.from?.toLowerCase();
-        return accountGroupEvmAddresses.includes(fromAddress);
+        const isCompleted = !pendingStatuses.includes(tx.status);
+        return accountGroupEvmAddresses.includes(fromAddress) && isCompleted;
       });
     }
     // Fallback to the selector-filtered transactions if no account group addresses
