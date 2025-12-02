@@ -525,7 +525,6 @@
         },
         "eip155": {
           "0x1": true,
-          "0x18c6": false,
           "0x18c7": false,
           "0x2105": true,
           "0x279f": false,
