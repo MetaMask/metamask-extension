@@ -994,20 +994,29 @@ export async function loadStateFromPersistence(backup) {
   // this initializes the meta/version data as a class variable to be used for future writes
   persistenceManager.setMetadata(versionedData.meta);
 
+  console.log(
+    "[Split State]: Loaded data from persistence with storageKind '%s'",
+    persistenceManager.storageKind,
+  );
   if (persistenceManager.storageKind === 'data') {
     const alreadyTried =
-      versionedData.meta.platformSplitStateGradualRolloutAttempted !== true;
+      versionedData.meta.platformSplitStateGradualRolloutAttempted === true;
     const shouldUseSplitStateStorage =
-      !alreadyTried &&
-      useSplitStateStorage(
-        versionedData.data.RemoteFeatureFlagController?.state,
-      );
+      !alreadyTried && (await useSplitStateStorage(versionedData.data));
+    console.log(
+      '[Split State]: shouldUseSplitStateStorage: %s (alreadyTried: %s)',
+      shouldUseSplitStateStorage,
+      alreadyTried,
+    );
     if (shouldUseSplitStateStorage) {
       // a sigil to mark that we *tried* to migrate to split state storage
       versionedData.meta.platformSplitStateGradualRolloutAttempted = true;
       persistenceManager.setMetadata(versionedData.meta);
     }
 
+    console.log(
+      "[Split State]: Writing data to persistence with storageKind 'data'",
+    );
     // write to disk
     await persistenceManager.set(versionedData.data);
 
@@ -1034,6 +1043,7 @@ export async function loadStateFromPersistence(backup) {
       `MetaMask - persistenceManager has invalid storageKind '${persistenceManager.storageKind}'`,
     );
   }
+  console.log('[Split State]: Load complete.');
 
   // return just the data
   return versionedData;

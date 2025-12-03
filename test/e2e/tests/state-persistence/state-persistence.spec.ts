@@ -26,8 +26,13 @@ type SplitStateStorage = Record<string, unknown> & {
 type StoredState = SplitStateStorage | DataStorage;
 
 const SPLIT_FLAG = {
-  value: { enabled: 1, maxAccounts: 0, maxNetworks: 0 },
+  value: { enabled: 1, maxAccounts: 9999999, maxNetworks: 9999999 },
 };
+const MIGRATION_OVERRIDE_KEYS = [
+  'splitStateMigrationEnabled',
+  'splitStateMigrationMaxAccounts',
+  'splitStateMigrationMaxNetworks',
+];
 const BASE_MANIFEST_TESTING_FLAGS = { forceExtensionStore: true };
 
 /**
@@ -49,6 +54,37 @@ const getFixtureOptions = (
     },
   },
 });
+
+/**
+ * Seeds the split-state migration flags directly into extension storage.
+ *
+ * @param driver - WebDriver instance.
+ */
+const setLocalStorageFlags = async (driver: Driver) => {
+  const migrationFlags = JSON.stringify({
+    splitStateMigrationEnabled: SPLIT_FLAG.value.enabled.toString(),
+    splitStateMigrationMaxAccounts: SPLIT_FLAG.value.maxAccounts.toString(),
+    splitStateMigrationMaxNetworks: SPLIT_FLAG.value.maxNetworks.toString(),
+  });
+
+  const result = await driver.executeAsyncScript(`
+    const callback = arguments[arguments.length - 1];
+    const browser = globalThis.browser ?? globalThis.chrome;
+
+    browser.storage.local
+      .set(${migrationFlags})
+      .then(() => callback({ ok: true }))
+      .catch((error) =>
+        callback({
+          error: error?.message ?? error?.toString?.() ?? error,
+        }),
+      );
+  `);
+
+  if (result?.error) {
+    throw new Error(result.error);
+  }
+};
 
 /**
  * Reads extension storage from the opened page.
@@ -78,6 +114,11 @@ const readStorage = async (driver: Driver) => {
   return (result?.value ?? {}) as StoredState;
 };
 
+/**
+ * Validates the expected shape of split state storage.
+ *
+ * @param storage - Parsed storage snapshot.
+ */
 const assertSplitStateStorage = (storage: SplitStateStorage) => {
   assert.ok(
     Array.isArray(storage.manifest),
@@ -88,10 +129,13 @@ const assertSplitStateStorage = (storage: SplitStateStorage) => {
     'split',
     'meta.storageKind should be split',
   );
-  assert.ok(!('data' in storage), 'data key should be removed in split state');
+  assert.ok(
+    !('data' in storage),
+    `data key should be removed in split state; keys: ${Object.keys(storage).join(', ')}`,
+  );
   assert.ok(
     storage.manifest.includes('meta'),
-    'meta should be part of the manifest',
+    `meta should be part of the manifest; manifest: ${JSON.stringify(storage.manifest)}`,
   );
 
   for (const key of storage.manifest) {
@@ -110,6 +154,9 @@ const assertSplitStateStorage = (storage: SplitStateStorage) => {
   }
 
   for (const key of Object.keys(storage)) {
+    if (MIGRATION_OVERRIDE_KEYS.includes(key)) {
+      continue; // these are testing-only keys
+    }
     assert.ok(
       key === 'manifest' || storage.manifest.includes(key),
       `storage key ${key} should be present in manifest`,
@@ -117,6 +164,11 @@ const assertSplitStateStorage = (storage: SplitStateStorage) => {
   }
 };
 
+/**
+ * Polls extension storage until onboarding/keyring data is written.
+ *
+ * @param driver - WebDriver instance.
+ */
 const waitForKeyringControllerToBeSaved = async (driver: Driver) => {
   await driver.executeAsyncScript(`
     const callback = arguments[arguments.length - 1];
@@ -132,27 +184,33 @@ const waitForKeyringControllerToBeSaved = async (driver: Driver) => {
           callback();
           break;
         }
-        console.log("waiting");
         await new Promise((resolve) => setTimeout(resolve, 1000));
       }
     })();
   `);
 };
 
+/**
+ * Validates the expected shape of data state storage.
+ *
+ * @param storage - Parsed storage snapshot.
+ */
 const assertDataStateStorage = (storage: DataStorage) => {
   assert.ok(storage.meta, 'meta should be present in data storage');
   assert.ok('data' in storage, 'data key should be present in data storage');
+  const keyringLength = Object.keys(storage.data.KeyringController).length;
   assert.ok(
-    Object.keys(storage.data.KeyringController).length > 0,
-    'KeyringContttroller shouldn',
+    keyringLength > 0,
+    `KeyringController should contain persisted data; length=${keyringLength}`,
   );
   assert.ok(
     !('manifest' in storage),
     'manifest should NOT be present in data storage',
   );
-  assert.ok(
-    storage.meta?.storageKind === 'data',
-    'meta.storageKind should not be split for data storage',
+  assert.equal(
+    storage.meta?.storageKind,
+    'data',
+    `meta.storageKind should be data for data storage`,
   );
 };
 
@@ -218,7 +276,7 @@ const ensureHomeReady = async (driver: Driver) => {
  *
  * @param runScript - Stringified async script to execute before reload.
  * @param driver - WebDriver instance.
- * @returns Result object or error from the executed script.
+ * @returns Result object from the executed script.
  */
 const runScriptThenReloadExtension = async (
   runScript: string | null,
@@ -230,13 +288,14 @@ const runScriptThenReloadExtension = async (
   await driver.switchToWindow(extensionWindow);
   const result = await driver.executeAsyncScript(`
     const callback = arguments[arguments.length - 1];
-    const browser = globalThis.browser ?? globalThis.chrome;
-    try {
-      const result = await (${runScript || 'Promise.resolve()'});
-      callback({ result });
-    } catch (error) {
-      callback({ error: error?.message ?? error?.toString?.() ?? error });
-    }
+    (async () => {
+      try {
+        const output = await (${runScript || 'Promise.resolve()'});
+        callback({ result: output });
+      } catch (error) {
+        callback({ error: error?.message ?? error?.toString?.() ?? error });
+      }
+    })();
   `);
   await driver.executeScript(
     `(globalThis.browser ?? globalThis.chrome).runtime.reload()`,
@@ -244,7 +303,12 @@ const runScriptThenReloadExtension = async (
 
   await driver.switchToWindow(blankWindow);
   await waitForRestart(driver);
-  return result;
+
+  if (result?.error) {
+    throw new Error(result.error);
+  }
+
+  return result?.result;
 };
 
 /**
@@ -265,25 +329,16 @@ const reloadAndUnlock = async (
 /**
  * Stringifies a script that persists the split flag into stored state.
  *
- * @param extra - Optional extra meta values to merge.
+ * @param meta - extra meta values to merge with the current meta.
  * @returns Stringified async script to execute.
  */
-const ensureSplitFlagPersisted = (extra = {}) => {
-  return `(globalThis.browser ?? chrome).storage.local
-      .get(['data', 'meta'])
-      .then(({ data = {}, meta = {} }) => {
-        const controller = data.RemoteFeatureFlagController ?? {};
-        const state = controller.state ?? {};
-        const flags = state.remoteFeatureFlags ?? {};
-        flags.platformSplitStateGradualRollout = ${JSON.stringify(SPLIT_FLAG)};
-        controller.state = {
-          ...state,
-          remoteFeatureFlags: flags,
-        };
-        data.RemoteFeatureFlagController = controller;
-        return (globalThis.browser ?? chrome).storage.local.set({ data, meta: {...meta, ...${JSON.stringify(extra)}} });
-      })
-      .then(() => ({ ok: true }))`;
+const setMeta = (meta = {}) => {
+  return `(async () => {
+    const browser = globalThis.browser ?? globalThis.chrome;
+    const { meta: existingMeta = {} } = await browser.storage.local.get(['meta']);
+    await browser.storage.local.set({ meta: { ...existingMeta, ...${JSON.stringify(meta)} } });
+    return { ok: true };
+  })()`;
 };
 
 /**
@@ -364,7 +419,8 @@ describe('State Persistence', function () {
 
           await expectDataStateStorage(driver);
 
-          await reloadAndUnlock(driver, ensureSplitFlagPersisted());
+          await setLocalStorageFlags(driver);
+          await reloadAndUnlock(driver);
           await assertAccountVisible(
             headerNavbar,
             accountListPage,
@@ -389,10 +445,15 @@ describe('State Persistence', function () {
         async ({ driver }) => {
           await completeOnboardingAndSync(driver);
 
+          // sanity
+          await expectDataStateStorage(driver);
+
           // Seed a failed prior attempt and the remote flag so the migration would
           // proceed if not for the attempted flag.
+          await setLocalStorageFlags(driver);
+
           await runScriptThenReloadExtension(
-            ensureSplitFlagPersisted({
+            setMeta({
               platformSplitStateGradualRolloutAttempted: true,
               // an attempted migration would set `platformSplitStateGradualRolloutAttempted`
               // itself, if it erroneously attempted to migrate (its not supposed to try in this test)

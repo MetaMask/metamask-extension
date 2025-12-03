@@ -1,22 +1,15 @@
-import { Messenger } from '@metamask/messenger';
-import { AccountsControllerGetStateAction } from '@metamask/accounts-controller';
-import { NetworkControllerGetStateAction } from '@metamask/network-controller';
-import {
-  RemoteFeatureFlagControllerGetStateAction,
-  RemoteFeatureFlagControllerState,
-} from '@metamask/remote-feature-flag-controller';
+import browser from 'webextension-polyfill';
+import { AccountsControllerState } from '@metamask/accounts-controller';
+import { NetworkState } from '@metamask/network-controller';
+import { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { hasProperty, isObject, Json } from '@metamask/utils';
+import { getIsSettingsPageDevOptionsEnabled } from '../../../shared/modules/environment';
 
-type SplitStateStorageMessenger = Pick<
-  Messenger<
-    string,
-    | RemoteFeatureFlagControllerGetStateAction
-    | AccountsControllerGetStateAction
-    | NetworkControllerGetStateAction,
-    never
-  >,
-  'call'
->;
+type State = {
+  RemoteFeatureFlagController?: RemoteFeatureFlagControllerState;
+  AccountsController?: AccountsControllerState;
+  NetworkController?: NetworkState;
+};
 
 function isFlagValid(flag?: Json): flag is {
   value: {
@@ -38,28 +31,83 @@ function isFlagValid(flag?: Json): flag is {
   );
 }
 
-export function useSplitStateStorage(
-  messenger: SplitStateStorageMessenger,
-): boolean {
-  const remoteFeatureFlagControllerState: RemoteFeatureFlagControllerState =
-    messenger.call('RemoteFeatureFlagController:getState');
+async function developerOverrides() {
+  const {
+    splitStateMigrationEnabled,
+    splitStateMigrationMaxAccounts,
+    splitStateMigrationMaxNetworks,
+  } = await browser.storage.local.get([
+    'splitStateMigrationEnabled',
+    'splitStateMigrationMaxAccounts',
+    'splitStateMigrationMaxNetworks',
+  ]);
+
+  return {
+    enabled:
+      splitStateMigrationEnabled === null
+        ? null
+        : splitStateMigrationEnabled === '1',
+    maxAccounts:
+      splitStateMigrationMaxAccounts === null
+        ? 0
+        : Number(splitStateMigrationMaxAccounts),
+    maxNetworks:
+      splitStateMigrationMaxNetworks === null
+        ? 0
+        : Number(splitStateMigrationMaxNetworks),
+  };
+}
+
+/**
+ * Get current account and network counts from the messenger
+ *
+ * @param messenger The SplitStateStorageMessenger instance
+ * @returns The account and network counts
+ */
+function getCounts(state: State) {
+  const accountsState = state.AccountsController;
+  const accountCount = Object.keys(
+    accountsState?.internalAccounts?.accounts ?? {},
+  ).length;
+
+  const networkState = state.NetworkController;
+  const networkCount = Object.keys(
+    networkState?.networkConfigurationsByChainId ?? {},
+  ).length;
+
+  return {
+    accountCount,
+    networkCount,
+  };
+}
+
+export async function useSplitStateStorage(state: State): Promise<boolean> {
+  if (getIsSettingsPageDevOptionsEnabled() || process.env.IN_TEST) {
+    const overrides = await developerOverrides();
+    if (overrides.enabled !== null) {
+      if (overrides.enabled === false) {
+        return false;
+      }
+
+      const { accountCount, networkCount } = getCounts(state);
+
+      return (
+        accountCount <= overrides.maxAccounts &&
+        networkCount <= overrides.maxNetworks
+      );
+    }
+  }
+
+  const remoteFeatureFlagControllerState = state.RemoteFeatureFlagController;
   const flag =
-    remoteFeatureFlagControllerState.remoteFeatureFlags
+    remoteFeatureFlagControllerState?.remoteFeatureFlags
       ?.platformSplitStateGradualRollout;
 
   if (!isFlagValid(flag) || flag.value.enabled <= 0) {
     return false;
   }
 
-  const accountsState = messenger.call('AccountsController:getState');
-  const accountCount = Object.keys(
-    accountsState?.internalAccounts?.accounts ?? {},
-  ).length;
-
-  const networkState = messenger.call('NetworkController:getState');
-  const networkCount = Object.keys(
-    networkState?.networkConfigurationsByChainId ?? {},
-  ).length;
+  const { accountCount, networkCount } = getCounts(state);
 
   return (
     accountCount <= flag.value.maxAccounts &&
