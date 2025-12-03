@@ -253,16 +253,16 @@ export const AppHeaderUnlockedContent = ({
             paddingBottom={1}
             style={{ width: 'fit-content' }}
             data-testid="networks-subtitle-test-id"
-            onClick={() => {
-              trace({
-                name: TraceName.ShowAccountAddressList,
-                op: TraceOperation.AccountUi,
-              });
-            }}
           >
             <MultichainHoveredAddressRowsList
               groupId={selectedMultichainAccountId}
               showAccountHeaderAndBalance={false}
+              onViewAllClick={() => {
+                trace({
+                  name: TraceName.ShowAccountAddressList,
+                  op: TraceOperation.AccountUi,
+                });
+              }}
             >
               <MultichainAccountNetworkGroup
                 groupId={selectedMultichainAccountId}
