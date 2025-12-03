@@ -8,10 +8,7 @@ import React, {
 import { isCrossChain } from '@metamask/bridge-controller';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import {
-  TransactionType,
-  TransactionStatus,
-} from '@metamask/transaction-controller';
+import { TransactionType } from '@metamask/transaction-controller';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { TransactionType as KeyringTransactionType } from '@metamask/keyring-api';
 ///: END:ONLY_INCLUDE_IF
@@ -40,6 +37,10 @@ import {
   TransactionKind,
   PENDING_STATUS_HASH,
 } from '../../../helpers/constants/transactions';
+import {
+  SmartTransactionStatus,
+  TransactionGroupCategory,
+} from '../../../../shared/constants/transaction';
 import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants/swaps';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import {
@@ -83,7 +84,6 @@ import {
   KEYRING_TRANSACTION_STATUS_KEY,
   useMultichainTransactionDisplay,
 } from '../../../hooks/useMultichainTransactionDisplay';
-import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 ///: END:ONLY_INCLUDE_IF
 
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
@@ -484,21 +484,14 @@ export default function UnifiedTransactionList({
       return fromAddress === groupEvmAddress && isSwapType;
     });
 
-    return filtered.map((stx) => {
-      let { status } = stx;
-      if (status?.startsWith('cancelled')) {
-        status = 'failed';
-      } else if (status === 'success' || status === 'completed') {
-        status = TransactionStatus.confirmed;
-      }
-
-      return {
-        ...stx,
-        id: stx.uuid,
-        isSmartTransaction: true,
-        status,
-      };
-    });
+    return filtered.map((stx) => ({
+      ...stx,
+      id: stx.uuid,
+      isSmartTransaction: true,
+      status: stx.status?.startsWith('cancelled')
+        ? SmartTransactionStatus.cancelled
+        : stx.status,
+    }));
   }, [
     needsGroupEvmTransactions,
     smartTransactionsForSelected,
@@ -536,7 +529,10 @@ export default function UnifiedTransactionList({
         .filter((tx) => tx.txParams?.from?.toLowerCase() === groupEvmAddress)
         .filter((tx) => tx.type !== TransactionType.incoming)
         .filter((tx) => !(tx.status in PENDING_STATUS_HASH))
-        .filter((tx) => !smartTxNonces.has(tx.txParams?.nonce));
+        .filter(
+          (tx) =>
+            tx.isSmartTransaction || !smartTxNonces.has(tx.txParams?.nonce),
+        );
 
       return groupAndSortTransactionsByNonce(evmTxs);
     }
