@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import classnames from 'classnames';
 import {
   PAYMENT_TYPES,
   Product,
@@ -11,22 +10,26 @@ import {
 } from '@metamask/subscription-controller';
 import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
 import {
+  Button,
+  ButtonSize,
+  ButtonVariant,
+  IconName as DsIconName,
+} from '@metamask/design-system-react';
+import { useSelector } from 'react-redux';
+import {
   BannerAlert,
   BannerAlertSeverity,
   Box,
-  BoxProps,
+  ButtonLink,
   Icon,
   IconName,
   IconSize,
-  Tag,
   Text,
 } from '../../../components/component-library';
 import {
   AlignItems,
   BackgroundColor,
   BlockSize,
-  BorderRadius,
-  BorderStyle,
   Display,
   FlexDirection,
   IconColor,
@@ -37,9 +40,6 @@ import {
 import { Skeleton } from '../../../components/component-library/skeleton';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  useCancelSubscription,
-  useOpenGetSubscriptionBillingPortal,
-  useUnCancelSubscription,
   useUserLastSubscriptionByProduct,
   useUserSubscriptionByProduct,
   useUserSubscriptions,
@@ -49,6 +49,7 @@ import {
   DEFAULT_ROUTE,
   SHIELD_PLAN_ROUTE,
   TRANSACTION_SHIELD_CLAIM_ROUTES,
+  TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE,
 } from '../../../helpers/constants/routes';
 import { TRANSACTION_SHIELD_LINK } from '../../../helpers/constants/common';
 import { getProductPrice } from '../../shield-plan/utils';
@@ -61,7 +62,6 @@ import {
   TokenWithApprovalAmount,
 } from '../../../hooks/subscription/useSubscriptionPricing';
 import { getSubscriptionCryptoApprovalAmount } from '../../../store/actions';
-import { ConfirmInfoRowAddress } from '../../../components/app/confirm/info/row';
 import {
   getIsShieldSubscriptionEndingSoon,
   getIsShieldSubscriptionPaused,
@@ -77,19 +77,18 @@ import {
   ShieldCtaSourceEnum,
   ShieldUnexpectedErrorEventLocationEnum,
 } from '../../../../shared/constants/subscriptions';
-import { ThemeType } from '../../../../shared/constants/preferences';
-import { useTheme } from '../../../hooks/useTheme';
 import ApiErrorHandler from '../../../components/app/api-error-handler';
+import { shortenAddress } from '../../../helpers/utils/util';
+import { getAccountName, getInternalAccounts } from '../../../selectors';
 import { useHandlePayment } from '../../../hooks/subscription/useHandlePayment';
-import CancelMembershipModal from './cancel-membership-modal';
 import { isCardPaymentMethod, isCryptoPaymentMethod } from './types';
-import ShieldBannerAnimation from './shield-banner-animation';
-import { PaymentMethodRow } from './payment-method-row';
+import { ButtonRow, ButtonRowContainer, MembershipHeader } from './components';
 
 const TransactionShield = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const { search } = useLocation();
+  const internalAccounts = useSelector(getInternalAccounts);
   const { captureShieldCtaClickedEvent } = useSubscriptionMetrics();
   const shouldWaitForSubscriptionCreation = useMemo(() => {
     const searchParams = new URLSearchParams(search);
@@ -101,8 +100,6 @@ const TransactionShield = () => {
   }, [search]);
 
   const { formatCurrency } = useFormatters();
-  const theme = useTheme();
-  const isLightTheme = theme === ThemeType.light;
 
   const {
     customerId,
@@ -178,10 +175,6 @@ const TransactionShield = () => {
   const isSubscriptionEndingSoon =
     getIsShieldSubscriptionEndingSoon(subscriptions);
 
-  // user can cancel subscription if not canceled and current subscription not cancel at period end
-  const canCancel =
-    !isCancelled && !currentShieldSubscription?.cancelAtPeriodEnd;
-
   const isCryptoPayment =
     displayedShieldSubscription?.paymentMethod &&
     isCryptoPaymentMethod(displayedShieldSubscription?.paymentMethod);
@@ -193,17 +186,6 @@ const TransactionShield = () => {
       ),
     [displayedShieldSubscription],
   );
-
-  const [executeCancelSubscription, cancelSubscriptionResult] =
-    useCancelSubscription(currentShieldSubscription);
-
-  const [executeUnCancelSubscription, unCancelSubscriptionResult] =
-    useUnCancelSubscription(currentShieldSubscription);
-
-  const [
-    executeOpenGetSubscriptionBillingPortal,
-    openGetSubscriptionBillingPortalResult,
-  ] = useOpenGetSubscriptionBillingPortal(displayedShieldSubscription);
 
   const isWaitingForSubscriptionCreation =
     shouldWaitForSubscriptionCreation && !currentShieldSubscription;
@@ -227,29 +209,7 @@ const TransactionShield = () => {
     displayedShieldSubscription,
   ]);
 
-  const [isCancelMembershipModalOpen, setIsCancelMembershipModalOpen] =
-    useState(false);
-
   const [isAddFundsModalOpen, setIsAddFundsModalOpen] = useState(false);
-
-  const shieldDetails = [
-    {
-      icon: IconName.ShieldLock,
-      title: t('shieldTxDetails1Title'),
-      description: t('shieldTxDetails1Description'),
-    },
-    {
-      icon: IconName.Flash,
-      title: t('shieldTxDetails2Title'),
-      description: t('shieldTxDetails2Description'),
-    },
-  ];
-
-  const rowsStyleProps: BoxProps<'div'> = {
-    display: Display.Flex,
-    backgroundColor: BackgroundColor.backgroundSection,
-    padding: 4,
-  };
 
   const currentToken = useMemo((): TokenPaymentInfo | undefined => {
     if (
@@ -277,69 +237,81 @@ const TransactionShield = () => {
     return token;
   }, [cryptoPaymentMethod, displayedShieldSubscription]);
 
-  const buttonRow = (label: string, onClick: () => void, id?: string) => {
-    return (
-      <Box
-        as="button"
-        data-testid={id}
-        className="transaction-shield-page__row"
-        {...rowsStyleProps}
-        justifyContent={JustifyContent.spaceBetween}
-        alignItems={AlignItems.center}
-        width={BlockSize.Full}
-        onClick={onClick}
-      >
-        {showSkeletonLoader ? (
-          <Skeleton width="50%" height={20} />
-        ) : (
-          <Text variant={TextVariant.bodyMdMedium}>{label}</Text>
-        )}
-        {showSkeletonLoader ? (
-          <Skeleton width={24} height={24} borderRadius={BorderRadius.full} />
-        ) : (
-          <Icon
-            name={IconName.ArrowRight}
-            size={IconSize.Lg}
-            color={IconColor.iconAlternative}
-          />
-        )}
-      </Box>
-    );
-  };
+  const trialDaysLeft = useMemo(() => {
+    if (!isTrialing || !displayedShieldSubscription?.trialEnd) {
+      return '';
+    }
+    const today = new Date();
+    const trialEndDateDate = new Date(displayedShieldSubscription.trialEnd);
+    const diffTime = Math.abs(trialEndDateDate.getTime() - today.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays.toString();
+  }, [displayedShieldSubscription, isTrialing]);
 
-  const billingDetails = (
-    key: string,
-    value: string | React.ReactNode,
-    testId?: string,
-  ) => {
+  const amountDetails = useMemo(() => {
+    if (!displayedShieldSubscription) {
+      return '';
+    }
+    const interval =
+      displayedShieldSubscription.interval === RECURRING_INTERVALS.year
+        ? t('year')
+        : t('month');
+    const price = isCryptoPaymentMethod(
+      displayedShieldSubscription.paymentMethod,
+    )
+      ? `${getProductPrice(productInfo as Product)} ${displayedShieldSubscription.paymentMethod.crypto.tokenSymbol.toUpperCase()}`
+      : formatCurrency(
+          getProductPrice(productInfo as Product),
+          productInfo?.currency.toUpperCase(),
+          {
+            maximumFractionDigits: 2,
+            minimumFractionDigits: 0,
+          },
+        );
+
+    const priceDetails = t('shieldTxDetails1Description', [price, interval]);
+
+    return isTrialing
+      ? t('shieldTxDetails1DescriptionTrial', [trialDaysLeft, priceDetails])
+      : priceDetails;
+  }, [
+    displayedShieldSubscription,
+    formatCurrency,
+    isTrialing,
+    productInfo,
+    t,
+    trialDaysLeft,
+  ]);
+
+  const payerAccountName = useMemo(() => {
+    if (
+      !displayedShieldSubscription ||
+      !isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)
+    ) {
+      return '';
+    }
     return (
-      <Box
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        gap={2}
-        justifyContent={JustifyContent.spaceBetween}
-        data-testid={testId}
-      >
-        {showSkeletonLoader ? (
-          <Skeleton width="40%" height={24} />
-        ) : (
-          <Text
-            variant={TextVariant.bodyMdMedium}
-            color={TextColor.textAlternative}
-          >
-            {key}
-          </Text>
-        )}
-        {showSkeletonLoader ? (
-          <Skeleton width="30%" height={24} />
-        ) : (
-          <Text variant={TextVariant.bodyMdMedium} className="flex-shrink-0">
-            {value}
-          </Text>
-        )}
-      </Box>
+      getAccountName(
+        internalAccounts,
+        displayedShieldSubscription.paymentMethod.crypto.payerAddress,
+      ) || ''
     );
-  };
+  }, [displayedShieldSubscription, internalAccounts]);
+
+  const paymentMethodDetails = useMemo(() => {
+    if (!displayedShieldSubscription) {
+      return '';
+    }
+    if (isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)) {
+      const { payerAddress } = displayedShieldSubscription.paymentMethod.crypto;
+      const displayName = payerAccountName || shortenAddress(payerAddress);
+      return t('shieldTxDetails3DescriptionCrypto', [
+        displayedShieldSubscription.paymentMethod.crypto.tokenSymbol.toUpperCase(),
+        displayName,
+      ]);
+    }
+    return t('shieldPlanCard');
+  }, [displayedShieldSubscription, payerAccountName, t]);
 
   const { value: subscriptionCryptoApprovalAmount } =
     useAsyncResult(async () => {
@@ -403,11 +375,6 @@ const TransactionShield = () => {
 
   const {
     handlePaymentError,
-    handlePaymentErrorInsufficientFunds,
-    handlePaymentMethodChange,
-    isUnexpectedErrorCryptoPayment,
-    hasAvailableSelectedTokenToTriggerCheckInsufficientFunds,
-    resultTriggerSubscriptionCheckInsufficientFunds,
     updateSubscriptionCardPaymentMethodResult,
     updateSubscriptionCryptoPaymentMethodResult,
   } = useHandlePayment({
@@ -421,20 +388,12 @@ const TransactionShield = () => {
   const hasApiError =
     subscriptionsError ||
     subscriptionPricingError ||
-    cancelSubscriptionResult.error ||
-    unCancelSubscriptionResult.error ||
-    openGetSubscriptionBillingPortalResult.error ||
     updateSubscriptionCardPaymentMethodResult.error ||
-    updateSubscriptionCryptoPaymentMethodResult.error ||
-    resultTriggerSubscriptionCheckInsufficientFunds.error;
+    updateSubscriptionCryptoPaymentMethodResult.error;
 
   const loading =
-    cancelSubscriptionResult.pending ||
-    unCancelSubscriptionResult.pending ||
-    openGetSubscriptionBillingPortalResult.pending ||
     updateSubscriptionCardPaymentMethodResult.pending ||
-    updateSubscriptionCryptoPaymentMethodResult.pending ||
-    resultTriggerSubscriptionCheckInsufficientFunds.pending;
+    updateSubscriptionCryptoPaymentMethodResult.pending;
 
   const membershipErrorBanner = useMemo(() => {
     // This is the number of hours it might takes for the payment to be updated
@@ -521,7 +480,6 @@ const TransactionShield = () => {
       data-testid="transaction-shield-page"
       width={BlockSize.Full}
       flexDirection={FlexDirection.Column}
-      padding={4}
     >
       {currentShieldSubscription?.cancelAtPeriodEnd && (
         <Box
@@ -547,293 +505,181 @@ const TransactionShield = () => {
       )}
       {membershipErrorBanner}
       <Box className="transaction-shield-page__container" marginBottom={4}>
-        <Box
-          data-theme={isMembershipInactive ? theme : ThemeType.dark}
-          className={classnames(
-            'transaction-shield-page__row transaction-shield-page__membership',
-            {
-              'transaction-shield-page__membership--loading':
-                showSkeletonLoader,
-              'transaction-shield-page__membership--inactive':
-                isMembershipInactive && !showSkeletonLoader,
-              'transaction-shield-page__membership--active':
-                !isMembershipInactive && !showSkeletonLoader,
-              'transaction-shield-page__membership--inactive-light':
-                isLightTheme && isMembershipInactive && !showSkeletonLoader,
-            },
-          )}
-          {...rowsStyleProps}
-          alignItems={AlignItems.center}
-          justifyContent={JustifyContent.spaceBetween}
-          paddingRight={2}
-        >
-          <Box
-            width={BlockSize.Full}
-            gap={showSkeletonLoader ? 2 : 0}
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-          >
-            {showSkeletonLoader ? (
-              <Skeleton width="60%" height={20} />
-            ) : (
-              <Box
-                display={Display.Flex}
-                alignItems={AlignItems.center}
-                gap={3}
-              >
-                <Text
-                  variant={TextVariant.bodyMdBold}
-                  className="transaction-shield-page__membership-text"
-                  data-testid="shield-detail-membership-status"
-                >
-                  {isMembershipInactive
-                    ? t('shieldTxMembershipInactive')
-                    : t('shieldTxMembershipActive')}
-                </Text>
-                {isTrialing && (
-                  <Tag
-                    label={t('shieldTxMembershipFreeTrial')}
-                    labelProps={{
-                      variant: TextVariant.bodySmMedium,
-                      color: TextColor.successDefault,
-                    }}
-                    borderStyle={BorderStyle.none}
-                    borderRadius={BorderRadius.SM}
-                    backgroundColor={BackgroundColor.successMuted}
-                    data-testid="shield-detail-trial-tag"
-                  />
-                )}
-                {isPaused && (
-                  <Tag
-                    label={t('shieldTxMembershipPaused')}
-                    labelProps={{
-                      variant: TextVariant.bodySmMedium,
-                      color: TextColor.textAlternative,
-                    }}
-                    borderStyle={BorderStyle.none}
-                    borderRadius={BorderRadius.SM}
-                    backgroundColor={BackgroundColor.backgroundMuted}
-                    data-testid="shield-detail-paused-tag"
-                  />
-                )}
-              </Box>
-            )}
-            {showSkeletonLoader ? (
-              <Skeleton width="60%" height={16} />
-            ) : (
-              <Text
-                variant={TextVariant.bodyXs}
-                className="transaction-shield-page__membership-text"
-                data-testid="shield-detail-customer-id"
-              >
-                {t('shieldTxMembershipId')}: {customerId}
-              </Text>
-            )}
-          </Box>
-          {!showSkeletonLoader && (
-            <ShieldBannerAnimation
-              containerClassName="transaction-shield-page-shield-banner__container"
-              canvasClassName="transaction-shield-page-shield-banner__canvas"
-            />
-          )}
-        </Box>
-
-        <Box
-          className="transaction-shield-page__row"
-          {...rowsStyleProps}
-          flexDirection={FlexDirection.Column}
-          paddingTop={2}
-          paddingBottom={2}
-        >
-          {shieldDetails.map((detail, index) => (
+        <MembershipHeader
+          isInactive={isMembershipInactive}
+          showSkeletonLoader={showSkeletonLoader}
+          isTrialing={isTrialing}
+          isPaused={isPaused}
+          customerId={customerId}
+          startDate={displayedShieldSubscription?.currentPeriodStart}
+          endDate={displayedShieldSubscription?.currentPeriodEnd}
+          trialDaysLeft={trialDaysLeft}
+        />
+        {displayedShieldSubscription && (
+          <Box className="mt-4">
             <Box
-              key={index}
               display={Display.Flex}
+              justifyContent={JustifyContent.spaceBetween}
               alignItems={AlignItems.center}
               gap={2}
-              paddingTop={2}
-              paddingBottom={2}
+              paddingInline={4}
+              marginBottom={2}
             >
               {showSkeletonLoader ? (
-                <Skeleton
-                  width={32}
-                  height={32}
-                  borderRadius={BorderRadius.full}
-                  style={{ flexShrink: 0 }}
-                />
+                <Skeleton width="40%" height={20} />
               ) : (
-                <Icon name={detail.icon} size={IconSize.Xl} />
+                <Text variant={TextVariant.headingSm}>
+                  {t('shieldTxDetailsTitle')}
+                </Text>
               )}
-              <Box
-                width={BlockSize.Full}
-                display={Display.Flex}
-                flexDirection={FlexDirection.Column}
-                gap={showSkeletonLoader ? 2 : 0}
-              >
-                {showSkeletonLoader ? (
-                  <Skeleton width="100%" height={18} />
-                ) : (
-                  <Text variant={TextVariant.bodySmBold}>{detail.title}</Text>
-                )}
-                {showSkeletonLoader ? (
-                  <Skeleton width="100%" height={18} />
-                ) : (
-                  <Text
-                    variant={TextVariant.bodySm}
-                    color={TextColor.textAlternative}
-                  >
-                    {detail.description}
-                  </Text>
-                )}
-              </Box>
+              {showSkeletonLoader ? (
+                <Skeleton width="30%" height={20} />
+              ) : (
+                <ButtonLink
+                  className="neutral-button"
+                  endIconName={IconName.ArrowRight}
+                  endIconProps={{
+                    size: IconSize.Sm,
+                    color: IconColor.iconAlternative,
+                  }}
+                  color={TextColor.textAlternative}
+                  onClick={() => {
+                    navigate(TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE);
+                  }}
+                >
+                  {t('shieldTxDetailsManage')}
+                </ButtonLink>
+              )}
             </Box>
-          ))}
+            <ButtonRowContainer>
+              <ButtonRow
+                startIconName={DsIconName.SecurityTick}
+                title={t('shieldTxDetails1Title')}
+                description={amountDetails}
+                loading={showSkeletonLoader}
+              />
+              <ButtonRow
+                startIconName={DsIconName.Calendar}
+                title={t('shieldTxDetails2Title')}
+                description={t('shieldTxDetails2Description', [
+                  displayedShieldSubscription?.interval ===
+                  RECURRING_INTERVALS.year
+                    ? t('shieldPlanAnnual')
+                    : t('shieldPlanMonthly'),
+                  getShortDateFormatterV2().format(
+                    new Date(displayedShieldSubscription?.currentPeriodEnd),
+                  ),
+                ])}
+                loading={showSkeletonLoader}
+              />
+              <ButtonRow
+                startIconName={DsIconName.Card}
+                title={t('shieldTxDetails3Title')}
+                description={paymentMethodDetails}
+                loading={showSkeletonLoader}
+              />
+            </ButtonRowContainer>
+          </Box>
+        )}{' '}
+        <Box className="border-t border-muted my-4 w-full h-px" />
+        <Box>
+          <Box
+            display={Display.Flex}
+            justifyContent={JustifyContent.spaceBetween}
+            alignItems={AlignItems.center}
+            gap={2}
+            paddingInline={4}
+            marginBottom={2}
+          >
+            {showSkeletonLoader ? (
+              <Skeleton width="40%" height={20} />
+            ) : (
+              <Text variant={TextVariant.headingSm}>
+                {t('shieldTxMembershipBenefits')}
+              </Text>
+            )}
+            {showSkeletonLoader ? (
+              <Skeleton width="30%" height={20} />
+            ) : (
+              <ButtonLink
+                data-testid="shield-detail-view-benefits-button"
+                className="neutral-button"
+                endIconName={IconName.ArrowRight}
+                endIconProps={{
+                  size: IconSize.Sm,
+                  color: IconColor.iconAlternative,
+                }}
+                color={TextColor.textAlternative}
+                onClick={() => {
+                  handleViewFullBenefitsClicked();
+                }}
+              >
+                {t('shieldTxMembershipBenefitsViewAll')}
+              </ButtonLink>
+            )}
+          </Box>
+          <ButtonRowContainer>
+            <ButtonRow
+              startIconName={DsIconName.Cash}
+              title={t('shieldTxMembershipBenefits1Title')}
+              description={t('shieldTxMembershipBenefits1Description')}
+              loading={showSkeletonLoader}
+            />
+            <ButtonRow
+              startIconName={DsIconName.Sms}
+              title={t('shieldTxMembershipBenefits2Title')}
+              description={t('shieldTxMembershipBenefits2Description')}
+              loading={showSkeletonLoader}
+            />
+            <ButtonRow
+              startIconName={DsIconName.MetamaskFoxOutline}
+              title={t('shieldTxMembershipBenefits3Title')}
+              description={t('shieldTxMembershipBenefits3Description', [
+                displayedShieldSubscription?.interval ===
+                RECURRING_INTERVALS.year
+                  ? '1,000'
+                  : '10,000',
+                displayedShieldSubscription?.interval,
+              ])}
+              loading={showSkeletonLoader}
+              endAccessory={
+                showSkeletonLoader ? (
+                  <Skeleton width="100%" height={40} />
+                ) : (
+                  <Button
+                    variant={ButtonVariant.Secondary}
+                    size={ButtonSize.Md}
+                    onClick={() => {
+                      console.log('sign up to rewards');
+                    }}
+                  >
+                    {t('shieldTxMembershipBenefits3SignUp')}
+                  </Button>
+                )
+              }
+            />
+          </ButtonRowContainer>
         </Box>
-        {buttonRow(
-          t('shieldTxMembershipViewFullBenefits'),
-          handleViewFullBenefitsClicked,
-          'shield-detail-view-benefits-button',
+        {displayedShieldSubscription?.isEligibleForSupport && (
+          <Box className="px-4 mt-4">
+            {showSkeletonLoader ? (
+              <Skeleton width="100%" height={40} />
+            ) : (
+              <Button
+                data-testid="shield-detail-submit-case-button"
+                className="w-full"
+                variant={ButtonVariant.Secondary}
+                onClick={() => {
+                  navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL);
+                }}
+              >
+                {t('shieldTxMembershipSubmitCase')}
+              </Button>
+            )}
+          </Box>
         )}
-        {displayedShieldSubscription?.isEligibleForSupport &&
-          buttonRow(
-            t('shieldTxMembershipSubmitCase'),
-            () => {
-              navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL);
-            },
-            'shield-detail-submit-case-button',
-          )}
-        {!isMembershipInactive &&
-          currentShieldSubscription?.cancelAtPeriodEnd &&
-          buttonRow(
-            t('shieldTxMembershipResubscribe'),
-            () => {
-              executeUnCancelSubscription();
-            },
-            'shield-tx-membership-uncancel-button',
-          )}
-        {canCancel &&
-          buttonRow(
-            t('shieldTxMembershipCancel'),
-            () => {
-              setIsCancelMembershipModalOpen(true);
-            },
-            'shield-tx-membership-cancel-button',
-          )}
-        {isCancelled &&
-          buttonRow(
-            t('shieldTxMembershipRenew'),
-            handlePaymentError,
-            'shield-detail-renew-button',
-          )}
       </Box>
 
-      <Box className="transaction-shield-page__container">
-        <Box
-          className="transaction-shield-page__row"
-          {...rowsStyleProps}
-          flexDirection={FlexDirection.Column}
-          gap={2}
-        >
-          {showSkeletonLoader ? (
-            <Skeleton width="60%" height={24} />
-          ) : (
-            <Text
-              variant={TextVariant.headingSm}
-              data-testid="shield-detail-billing-details-title"
-            >
-              {t('shieldTxMembershipBillingDetails')}
-            </Text>
-          )}
-          {displayedShieldSubscription ? (
-            <>
-              {billingDetails(
-                t('shieldTxMembershipBillingDetailsNextBilling'),
-                isCancelled || displayedShieldSubscription?.cancelAtPeriodEnd
-                  ? '-'
-                  : getShortDateFormatterV2().format(
-                      new Date(displayedShieldSubscription.currentPeriodEnd),
-                    ),
-                'shield-detail-next-billing',
-              )}
-              {billingDetails(
-                t('shieldTxMembershipBillingDetailsCharges'),
-                isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)
-                  ? `${getProductPrice(productInfo as Product)} ${displayedShieldSubscription.paymentMethod.crypto.tokenSymbol.toUpperCase()} (${displayedShieldSubscription.interval === RECURRING_INTERVALS.year ? t('shieldPlanAnnual') : t('shieldPlanMonthly')})`
-                  : `${formatCurrency(
-                      getProductPrice(productInfo as Product),
-                      productInfo?.currency.toUpperCase(),
-                      {
-                        maximumFractionDigits: 2,
-                        minimumFractionDigits: 0,
-                      },
-                    )} (${displayedShieldSubscription.interval === RECURRING_INTERVALS.year ? t('shieldPlanAnnual') : t('shieldPlanMonthly')})`,
-                'shield-detail-charges',
-              )}
-              {isCryptoPayment &&
-                billingDetails(
-                  t('shieldTxMembershipBillingDetailsBillingAccount'),
-                  isCryptoPaymentMethod(
-                    displayedShieldSubscription.paymentMethod,
-                  ) ? (
-                    <ConfirmInfoRowAddress
-                      address={
-                        displayedShieldSubscription.paymentMethod.crypto
-                          .payerAddress
-                      }
-                      chainId={
-                        displayedShieldSubscription.paymentMethod.crypto.chainId
-                      }
-                      showFullName
-                    />
-                  ) : (
-                    ''
-                  ),
-                  'shield-detail-billing-account',
-                )}
-              {billingDetails(
-                t('shieldTxMembershipBillingDetailsPaymentMethod'),
-                <PaymentMethodRow
-                  displayedShieldSubscription={displayedShieldSubscription}
-                  subscriptionPricing={subscriptionPricing}
-                  onPaymentMethodChange={handlePaymentMethodChange}
-                  showSkeletonLoader={showSkeletonLoader}
-                  isCheckSubscriptionInsufficientFundsDisabled={
-                    !hasAvailableSelectedTokenToTriggerCheckInsufficientFunds
-                  }
-                  handlePaymentErrorInsufficientFunds={
-                    handlePaymentErrorInsufficientFunds
-                  }
-                  isPaused={isPaused}
-                  isUnexpectedErrorCryptoPayment={
-                    isUnexpectedErrorCryptoPayment
-                  }
-                  handlePaymentError={handlePaymentError}
-                />,
-                'shield-detail-payment-method',
-              )}
-            </>
-          ) : (
-            <Skeleton width="60%" height={24} />
-          )}
-        </Box>
-        {displayedShieldSubscription?.status !==
-          SUBSCRIPTION_STATUSES.provisional &&
-          buttonRow(
-            t('shieldTxMembershipBillingDetailsViewBillingHistory'),
-            executeOpenGetSubscriptionBillingPortal,
-            'shield-detail-view-billing-history-button',
-          )}
-      </Box>
-      {currentShieldSubscription && isCancelMembershipModalOpen && (
-        <CancelMembershipModal
-          onClose={() => setIsCancelMembershipModalOpen(false)}
-          onConfirm={async () => {
-            setIsCancelMembershipModalOpen(false);
-            await executeCancelSubscription();
-          }}
-          subscription={currentShieldSubscription}
-        />
-      )}
       {loading && <LoadingScreen />}
       {currentToken &&
         isAddFundsModalOpen &&
