@@ -221,64 +221,67 @@ describe(`migration #${VERSION}`, () => {
   });
 
   // @ts-expect-error 'each' function is not recognized by TypeScript types
-  it.each([('megaeth-testnet'), ('random-network-client-id')])('switchs to mainnet when the selected network client id is in MegaETH Testnet v1 - %s', async (selectedNetworkClientId) => {
-    const oldStorage = {
-      meta: { version: oldVersion },
-      data: {
-        NetworkController: {
-          networkConfigurationsByChainId: {
-            [MEGAETH_TESTNET_V1_CHAIN_ID]: {
-              chainId: MEGAETH_TESTNET_V1_CHAIN_ID,
-              name: 'Mega Testnet',
-              nativeCurrency: 'MegaETH',
-              blockExplorerUrls: ['https://explorer.com'],
-              defaultRpcEndpointIndex: 0,
-              defaultBlockExplorerUrlIndex: 0,
-              rpcEndpoints: [
-                {
-                  networkClientId: selectedNetworkClientId,
-                  type: RpcEndpointType.Custom,
-                  url: 'https://rpc.com',
-                },
-              ],
+  it.each(['megaeth-testnet', 'random-network-client-id'])(
+    'switchs to mainnet when the selected network client id is in MegaETH Testnet v1 - %s',
+    async (selectedNetworkClientId) => {
+      const oldStorage = {
+        meta: { version: oldVersion },
+        data: {
+          NetworkController: {
+            networkConfigurationsByChainId: {
+              [MEGAETH_TESTNET_V1_CHAIN_ID]: {
+                chainId: MEGAETH_TESTNET_V1_CHAIN_ID,
+                name: 'Mega Testnet',
+                nativeCurrency: 'MegaETH',
+                blockExplorerUrls: ['https://explorer.com'],
+                defaultRpcEndpointIndex: 0,
+                defaultBlockExplorerUrlIndex: 0,
+                rpcEndpoints: [
+                  {
+                    networkClientId: selectedNetworkClientId,
+                    type: RpcEndpointType.Custom,
+                    url: 'https://rpc.com',
+                  },
+                ],
+              },
             },
+            selectedNetworkClientId,
           },
-          selectedNetworkClientId: selectedNetworkClientId,
-        },
-        NetworkEnablementController: {
-          enabledNetworkMap: {
-            [KnownCaipNamespace.Eip155]: {
-              [MEGAETH_TESTNET_V1_CHAIN_ID]: false,
-              // to simulate the mainnet is not being enabled
-              '0x1': false,
-            },
-          },
-        },
-      },
-    };
-
-    const expectedStorage = {
-      meta: { version: VERSION },
-      data: {
-        NetworkController: {
-          networkConfigurationsByChainId: {
-            [MEGAETH_TESTNET_V2_CONFIG.chainId]: MEGAETH_TESTNET_V2_CONFIG,
-          },
-          selectedNetworkClientId: 'mainnet',
-        },
-        NetworkEnablementController: {
-          enabledNetworkMap: {
-            [KnownCaipNamespace.Eip155]: {
-              [MEGAETH_TESTNET_V2_CONFIG.chainId]: false,
-              '0x1': true,
+          NetworkEnablementController: {
+            enabledNetworkMap: {
+              [KnownCaipNamespace.Eip155]: {
+                [MEGAETH_TESTNET_V1_CHAIN_ID]: false,
+                // to simulate the mainnet is not being enabled
+                '0x1': false,
+              },
             },
           },
         },
-      },
-    };
+      };
 
-    const newStorage = await migrate(oldStorage);
+      const expectedStorage = {
+        meta: { version: VERSION },
+        data: {
+          NetworkController: {
+            networkConfigurationsByChainId: {
+              [MEGAETH_TESTNET_V2_CONFIG.chainId]: MEGAETH_TESTNET_V2_CONFIG,
+            },
+            selectedNetworkClientId: 'mainnet',
+          },
+          NetworkEnablementController: {
+            enabledNetworkMap: {
+              [KnownCaipNamespace.Eip155]: {
+                [MEGAETH_TESTNET_V2_CONFIG.chainId]: false,
+                '0x1': true,
+              },
+            },
+          },
+        },
+      };
 
-    expect(newStorage).toStrictEqual(expectedStorage);
-  });
+      const newStorage = await migrate(oldStorage);
+
+      expect(newStorage).toStrictEqual(expectedStorage);
+    },
+  );
 });
