@@ -62,17 +62,20 @@ export const AddMultichainAccount = ({
       return;
     }
 
-    trace({
-      name: TraceName.CreateMultichainAccount,
-      op: TraceOperation.AccountCreate,
-    });
+    try {
+      trace({
+        name: TraceName.CreateMultichainAccount,
+        op: TraceOperation.AccountCreate,
+      });
 
-    setIsLoading(true);
-    await dispatch(createNextMultichainAccountGroup(walletId));
-    setIsLoading(false);
-    endTrace({
-      name: TraceName.CreateMultichainAccount,
-    });
+      setIsLoading(true);
+      await dispatch(createNextMultichainAccountGroup(walletId));
+    } finally {
+      setIsLoading(false);
+      endTrace({
+        name: TraceName.CreateMultichainAccount,
+      });
+    }
   };
 
   return (
