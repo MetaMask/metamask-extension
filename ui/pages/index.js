@@ -46,7 +46,7 @@ class Index extends PureComponent {
 
     return (
       <Provider store={store}>
-        <HashRouter hashType="noslash">
+        <HashRouter>
           <MetaMetricsProvider>
             <LegacyMetaMetricsProvider>
               <I18nProvider>

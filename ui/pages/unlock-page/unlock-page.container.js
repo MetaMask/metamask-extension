@@ -58,7 +58,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     navigate,
     onSubmit: ownPropsSubmit,
     location,
-    navState,
     ...restOwnProps
   } = ownProps;
 
@@ -77,8 +76,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     await propsTryUnlockMetamask(password);
     // Redirect to the intended route if available, otherwise DEFAULT_ROUTE
     let redirectTo = DEFAULT_ROUTE;
-    // Read from both v5 location.state and v5-compat navState
-    const fromLocation = location.state?.from || navState?.from;
+    const fromLocation = location.state?.from;
     if (fromLocation?.pathname) {
       const search = fromLocation.search || '';
       redirectTo = fromLocation.pathname + search;

@@ -1,6 +1,6 @@
 import React from 'react';
-
-import { renderWithProvider, fireEvent } from '../../../../test/jest';
+import { fireEvent } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import SelectedToken from './selected-token';
 
 const createProps = (customProps = {}) => {

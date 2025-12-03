@@ -1,12 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  Routes,
-  Route,
-  useNavigate,
-  useParams,
-  useLocation,
-} from 'react-router-dom';
+import { Routes, Route, useNavigate, useParams } from 'react-router-dom';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ORIGIN_METAMASK,
@@ -21,11 +15,11 @@ import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { getSendTo } from '../../../ducks/send';
 import { getSelectedNetworkClientId } from '../../../../shared/modules/selectors/networks';
 import {
-  CONFIRM_TRANSACTION_ROUTE,
   DECRYPT_MESSAGE_REQUEST_PATH,
   DEFAULT_ROUTE,
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
 } from '../../../helpers/constants/routes';
+import { toRelativeRoutePath } from '../../routes/utils';
 import { isTokenMethodAction } from '../../../helpers/utils/transactions.util';
 import usePolling from '../../../hooks/usePolling';
 import { usePrevious } from '../../../hooks/usePrevious';
@@ -57,7 +51,6 @@ const ConfirmTransaction = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const urlParams = useParams();
-  const location = useLocation();
 
   const { id: paramsTransactionId } = urlParams;
 
@@ -210,11 +203,11 @@ const ConfirmTransaction = () => {
     return (
       <Routes>
         <Route
-          path={DECRYPT_MESSAGE_REQUEST_PATH.slice(1)}
+          path={toRelativeRoutePath(DECRYPT_MESSAGE_REQUEST_PATH)}
           element={<ConfirmDecryptMessage />}
         />
         <Route
-          path={ENCRYPTION_PUBLIC_KEY_REQUEST_PATH.slice(1)}
+          path={toRelativeRoutePath(ENCRYPTION_PUBLIC_KEY_REQUEST_PATH)}
           element={<ConfirmEncryptionPublicKey />}
         />
         <Route path="*" element={<ConfirmTransactionSwitch />} />

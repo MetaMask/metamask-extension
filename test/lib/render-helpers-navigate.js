@@ -15,6 +15,7 @@ import {
 import { getMessage } from '../../ui/helpers/utils/i18n-helper';
 import * as en from '../../app/_locales/en/messages.json';
 import { setupInitialStore } from '../../ui';
+import { setBackgroundConnection } from '../../ui/store/background-connection';
 import Root from '../../ui/pages';
 
 // Mock MetaMetrics context for tests
@@ -211,9 +212,12 @@ export async function integrationTestRender(extendedRenderOptions) {
     ...renderOptions
   } = extendedRenderOptions;
 
-  const store = await setupInitialStore(preloadedState, backgroundConnection, {
-    activeTab,
-  });
+  // Set up background connection if provided
+  if (backgroundConnection) {
+    await setBackgroundConnection(backgroundConnection);
+  }
+
+  const store = await setupInitialStore(preloadedState, activeTab);
 
   return {
     ...render(<Root store={store} />, { ...renderOptions }),
