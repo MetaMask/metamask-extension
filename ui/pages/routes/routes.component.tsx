@@ -1022,7 +1022,7 @@ export default function Routes() {
           <RouteWithLayout
             path={`${MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE}/:accountGroupId`}
             exact
-            layout={LegacyLayout}
+            layout={RootLayout}
           >
             {createV5CompatRoute<{ accountGroupId: string }>(
               MultichainAccountPrivateKeyListPage,
