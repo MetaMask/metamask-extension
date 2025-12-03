@@ -215,7 +215,7 @@ export const TronDailyResources = ({
           {t('tronDailyResources')}
         </Text>
         <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
-          {t('tronDailyResourcesDescription')}
+          {t('tronDailyResourcesDescription', [formatValue(bandwidth.max)])}
         </Text>
       </Box>
 

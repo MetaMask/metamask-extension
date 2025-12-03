@@ -60,7 +60,7 @@ describe('TronDailyResources', () => {
 
       expect(screen.getByText('tronDailyResources')).toBeInTheDocument();
       expect(
-        screen.getByText('tronDailyResourcesDescription'),
+        screen.getByText('tronDailyResourcesDescription-5,000'),
       ).toBeInTheDocument();
       expect(screen.getByText('tronEnergy')).toBeInTheDocument();
       expect(screen.getByText('tronBandwidth')).toBeInTheDocument();
