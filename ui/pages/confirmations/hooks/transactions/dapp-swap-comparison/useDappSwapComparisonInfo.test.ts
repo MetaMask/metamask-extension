@@ -40,7 +40,7 @@ jest.mock('./useDappSwapComparisonLatencyMetrics', () => ({
     mockUseDappSwapComparisonLatencyMetricsResponse,
 }));
 
-async function runHook() {
+async function runHook(args: Record<string, unknown> = {}) {
   const response = renderHookWithConfirmContextProvider(
     () => useDappSwapComparisonInfo(),
     getMockConfirmStateForTransaction(mockSwapConfirmation as Confirmation, {
@@ -49,6 +49,14 @@ async function runHook() {
           'f8172040-b3d0-11f0-a882-3f99aa2e9f0c': {
             quotes: mockBridgeQuotes,
             latency: 3600,
+            commands: '0x0a100604',
+            swapInfo: {
+              srcTokenAddress: '0xfdcc3dd6671eab0709a4c0f3f53de9a333d80798',
+              destTokenAddress: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+              srcTokenAmount: '0x0de0b6b3a7640000',
+              destTokenAmountMin: '0x0de0b6b3a7640000',
+            },
+            ...args,
           },
         },
       },
@@ -102,9 +110,8 @@ describe('useDappSwapComparisonInfo', () => {
           swap_dapp_commands: '0x0a100604',
           swap_comparison_total_latency_ms: '1500',
           swap_dapp_from_token_simulated_value_usd: '1',
-          swap_dapp_minimum_received_value_usd: '0.000000000000972677317872',
+          swap_dapp_minimum_received_value_usd: '0.999804',
           swap_dapp_network_fee_usd: '0.01119466650091628514',
-          swap_dapp_request_detection_latency_ms: '1200',
           swap_dapp_to_token_simulated_value_usd: '0.000000000000996995550564',
           swap_mm_from_token_simulated_value_usd: '1',
           swap_mm_minimum_received_value_usd: '0.00000000000097267931748',
@@ -151,7 +158,14 @@ describe('useDappSwapComparisonInfo', () => {
       sourceTokenAmount,
       tokenAmountDifference,
       tokenDetails,
-    } = await runHook();
+    } = await runHook({
+      swapInfo: {
+        srcTokenAddress: '0xfdcc3dd6671eab0709a4c0f3f53de9a333d80798',
+        destTokenAddress: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+        srcTokenAmount: '0x0de0b6b3a7640000',
+        destTokenAmountMin: '0x0',
+      },
+    });
     expect(selectedQuote).toEqual(mockBridgeQuotes[3]);
     expect(selectedQuoteValueDifference).toBe(0.012494042894187605);
     expect(gasDifference).toBe(0.005686377458187605);
