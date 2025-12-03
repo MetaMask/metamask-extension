@@ -5,7 +5,9 @@ import {
   PAYMENT_TYPES,
   PaymentType,
   PRODUCT_TYPES,
+  PricingResponse,
   Subscription,
+  SubscriptionCryptoPaymentMethod,
   TokenPaymentInfo,
 } from '@metamask/subscription-controller';
 import { getIsShieldSubscriptionPaused } from '../../../shared/lib/shield';
@@ -18,7 +20,10 @@ import {
 } from '../../../shared/constants/subscriptions';
 import { SHIELD_PLAN_ROUTE } from '../../helpers/constants/routes';
 import { isCryptoPaymentMethod } from '../../pages/settings/transaction-shield-tab/types';
-import { TokenWithApprovalAmount } from './useSubscriptionPricing';
+import {
+  TokenWithApprovalAmount,
+  useSubscriptionPaymentMethods,
+} from './useSubscriptionPricing';
 import {
   useHandleShieldAddFundTrigger,
   useShieldSubscriptionCryptoSufficientBalanceCheck,
@@ -40,27 +45,58 @@ import { getSubscriptionCryptoApprovalAmount } from '../../store/actions';
  * @param options.subscriptions - The list of subscriptions to check paused status.
  * @param options.isCancelled - Whether the subscription is cancelled.
  * @param options.onOpenAddFundsModal - Callback to open the add funds modal.
- * @param options.currentToken - The current token for crypto payment.
+ * @param options.subscriptionPricing - The subscription pricing data.
  * @param options.displayedShieldSubscription - The displayed shield subscription.
- * @returns An object containing the handlePaymentError function, handlePaymentErrorInsufficientFunds function, handlePaymentMethodChange function, and payment error flags.
+ * @returns An object containing the handlePaymentError function, handlePaymentErrorInsufficientFunds function, handlePaymentMethodChange function, payment error flags, and currentToken.
  */
 export const useHandlePayment = ({
   currentShieldSubscription,
   displayedShieldSubscription,
   subscriptions,
   isCancelled,
-  currentToken,
+  subscriptionPricing,
   onOpenAddFundsModal,
 }: {
   currentShieldSubscription?: Subscription;
   displayedShieldSubscription?: Subscription;
   subscriptions?: Subscription[];
   isCancelled: boolean;
-  currentToken?: TokenPaymentInfo;
+  subscriptionPricing?: PricingResponse;
   onOpenAddFundsModal: () => void;
 }) => {
   const navigate = useNavigate();
   const { captureShieldErrorStateClickedEvent } = useSubscriptionMetrics();
+
+  const cryptoPaymentMethod = useSubscriptionPaymentMethods(
+    PAYMENT_TYPES.byCrypto,
+    subscriptionPricing,
+  );
+
+  const currentToken = useMemo((): TokenPaymentInfo | undefined => {
+    if (
+      !displayedShieldSubscription ||
+      !isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)
+    ) {
+      return undefined;
+    }
+    const chainPaymentInfo = cryptoPaymentMethod?.chains?.find(
+      (chain) =>
+        chain.chainId ===
+        (
+          displayedShieldSubscription.paymentMethod as SubscriptionCryptoPaymentMethod
+        ).crypto.chainId,
+    );
+
+    const token = chainPaymentInfo?.tokens.find(
+      (chainPaymentToken) =>
+        chainPaymentToken.symbol ===
+        (
+          displayedShieldSubscription.paymentMethod as SubscriptionCryptoPaymentMethod
+        ).crypto.tokenSymbol,
+    );
+
+    return token;
+  }, [cryptoPaymentMethod, displayedShieldSubscription]);
 
   // watch handle add fund trigger server check subscription paused because of insufficient funds
   const {
@@ -311,5 +347,6 @@ export const useHandlePayment = ({
     resultTriggerSubscriptionCheckInsufficientFunds,
     updateSubscriptionCardPaymentMethodResult,
     updateSubscriptionCryptoPaymentMethodResult,
+    currentToken,
   };
 };

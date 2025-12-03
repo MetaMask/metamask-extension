@@ -1,13 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import classnames from 'classnames';
 import {
-  PAYMENT_TYPES,
   Product,
   PRODUCT_TYPES,
   RECURRING_INTERVALS,
   SUBSCRIPTION_STATUSES,
-  SubscriptionCryptoPaymentMethod,
-  TokenPaymentInfo,
 } from '@metamask/subscription-controller';
 import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
 import {
@@ -55,10 +52,7 @@ import { getProductPrice } from '../../shield-plan/utils';
 import { useFormatters } from '../../../hooks/useFormatters';
 import LoadingScreen from '../../../components/ui/loading-screen';
 import AddFundsModal from '../../../components/app/modals/add-funds-modal/add-funds-modal';
-import {
-  useSubscriptionPaymentMethods,
-  useSubscriptionPricing,
-} from '../../../hooks/subscription/useSubscriptionPricing';
+import { useSubscriptionPricing } from '../../../hooks/subscription/useSubscriptionPricing';
 import { ConfirmInfoRowAddress } from '../../../components/app/confirm/info/row';
 import {
   getIsShieldSubscriptionEndingSoon,
@@ -162,10 +156,6 @@ const TransactionShield = () => {
   } = useSubscriptionPricing({
     refetch: true, // need to refetch here in case user already subscribed and doesn't go through shield plan screen
   });
-  const cryptoPaymentMethod = useSubscriptionPaymentMethods(
-    PAYMENT_TYPES.byCrypto,
-    subscriptionPricing,
-  );
 
   const isCancelled =
     displayedShieldSubscription?.status === SUBSCRIPTION_STATUSES.canceled;
@@ -248,32 +238,6 @@ const TransactionShield = () => {
     padding: 4,
   };
 
-  const currentToken = useMemo((): TokenPaymentInfo | undefined => {
-    if (
-      !displayedShieldSubscription ||
-      !isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)
-    ) {
-      return undefined;
-    }
-    const chainPaymentInfo = cryptoPaymentMethod?.chains?.find(
-      (chain) =>
-        chain.chainId ===
-        (
-          displayedShieldSubscription.paymentMethod as SubscriptionCryptoPaymentMethod
-        ).crypto.chainId,
-    );
-
-    const token = chainPaymentInfo?.tokens.find(
-      (chainPaymentToken) =>
-        chainPaymentToken.symbol ===
-        (
-          displayedShieldSubscription.paymentMethod as SubscriptionCryptoPaymentMethod
-        ).crypto.tokenSymbol,
-    );
-
-    return token;
-  }, [cryptoPaymentMethod, displayedShieldSubscription]);
-
   const buttonRow = (label: string, onClick: () => void, id?: string) => {
     return (
       <Box
@@ -351,12 +315,13 @@ const TransactionShield = () => {
     resultTriggerSubscriptionCheckInsufficientFunds,
     updateSubscriptionCardPaymentMethodResult,
     updateSubscriptionCryptoPaymentMethodResult,
+    currentToken,
   } = useHandlePayment({
     currentShieldSubscription,
     displayedShieldSubscription,
     subscriptions,
     isCancelled: isCancelled ?? false,
-    currentToken,
+    subscriptionPricing,
     onOpenAddFundsModal: () => setIsAddFundsModalOpen(true),
   });
 
