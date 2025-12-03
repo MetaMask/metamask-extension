@@ -135,9 +135,14 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
       <Column
         gap={1}
         data-testid={selected ? 'selected-to-account' : undefined}
+        style={{ overflow: 'hidden', flex: 1, minWidth: 0 }}
       >
-        <Row gap={1} style={{ maxWidth: 'min-content' }}>
-          <Text variant={TextVariant.bodyMdMedium} ellipsis>
+        <Row gap={1} style={{ overflow: 'hidden' }}>
+          <Text
+            variant={TextVariant.bodyMdMedium}
+            ellipsis
+            style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}
+          >
             {account.displayName}
           </Text>
           {selected && (
@@ -145,6 +150,7 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
               name={IconName.CheckBold}
               size={IconSize.Md}
               color={IconColor.PrimaryDefault}
+              style={{ flexShrink: 0 }}
             />
           )}
         </Row>
