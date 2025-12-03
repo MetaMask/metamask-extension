@@ -2179,7 +2179,7 @@
       "packages": {
         "@metamask/controller-utils": true,
         "@metamask/subscription-controller>@metamask/polling-controller": true,
-        "@metamask/transaction-controller": true,
+        "@metamask/subscription-controller>@metamask/transaction-controller": true,
         "@metamask/subscription-controller>bignumber.js": true
       }
     },
