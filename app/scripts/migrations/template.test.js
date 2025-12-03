@@ -2,7 +2,9 @@ import { migrate, version } from './template';
 
 const storage = {
   meta: { version: -1 },
-  data: {},
+  data: {
+    ControllerKey: {},
+  },
 };
 
 describe('storage is migrated successfully', () => {
@@ -10,6 +12,9 @@ describe('storage is migrated successfully', () => {
     const changedKeys = new Set();
     await migrate(storage, changedKeys);
     expect(storage.meta.version).toStrictEqual(version);
-    expect([...changedKeys.keys()]).toBe(['ControllerKey', 'OldControllerKey']);
+    // ensure changedKeys has only 'ControllerKey' and 'OldControllerKey'
+    expect(changedKeys).toStrictEqual(
+      new Set(['ControllerKey', 'OldControllerKey']),
+    );
   });
 });
