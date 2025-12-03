@@ -1,6 +1,5 @@
 import { Box, DateTimePicker, Field } from '@metamask/snaps-sdk/jsx';
 import { renderInterface } from '../test-utils';
-import { fireEvent } from '@testing-library/react';
 
 describe('SnapUIDateTimePicker', () => {
   it('renders a date time picker', () => {
