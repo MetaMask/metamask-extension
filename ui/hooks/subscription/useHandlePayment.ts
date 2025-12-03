@@ -40,13 +40,13 @@ import {
  * @returns An object containing the handlePaymentError function, handlePaymentErrorInsufficientFunds function, handlePaymentMethodChange function, and payment error flags.
  */
 export const useHandlePayment = ({
-  subscription,
+  currentShieldSubscription,
   subscriptions,
   isCancelled,
   paymentToken,
   onOpenAddFundsModal,
 }: {
-  subscription?: Subscription;
+  currentShieldSubscription?: Subscription;
   subscriptions?: Subscription[];
   isCancelled: boolean;
   paymentToken?: Pick<
@@ -73,8 +73,8 @@ export const useHandlePayment = ({
     executeUpdateSubscriptionCardPaymentMethod,
     updateSubscriptionCardPaymentMethodResult,
   ] = useUpdateSubscriptionCardPaymentMethod({
-    subscription,
-    newRecurringInterval: subscription?.interval,
+    subscription: currentShieldSubscription,
+    newRecurringInterval: currentShieldSubscription?.interval,
   });
 
   const { execute: executeSubscriptionCryptoApprovalTransaction } =
@@ -84,7 +84,7 @@ export const useHandlePayment = ({
     execute: executeUpdateSubscriptionCryptoPaymentMethod,
     result: updateSubscriptionCryptoPaymentMethodResult,
   } = useUpdateSubscriptionCryptoPaymentMethod({
-    subscription,
+    subscription: currentShieldSubscription,
   });
 
   const { handleClickContactSupport } = useHandleSubscriptionSupportAction();
@@ -94,31 +94,31 @@ export const useHandlePayment = ({
   }, [subscriptions]);
 
   const isUnexpectedErrorCryptoPayment = useMemo(() => {
-    if (!subscription) {
+    if (!currentShieldSubscription) {
       return false;
     }
     return (
       isPaused &&
-      isCryptoPaymentMethod(subscription.paymentMethod) &&
-      !subscription.paymentMethod.crypto.error
+      isCryptoPaymentMethod(currentShieldSubscription.paymentMethod) &&
+      !currentShieldSubscription.paymentMethod.crypto.error
     );
-  }, [subscription, isPaused]);
+  }, [currentShieldSubscription, isPaused]);
 
   const isInsufficientFundsCrypto = useMemo(() => {
-    if (!subscription || !isCryptoPaymentMethod(subscription.paymentMethod)) {
+    if (!currentShieldSubscription || !isCryptoPaymentMethod(currentShieldSubscription.paymentMethod)) {
       return false;
     }
     return (
-      subscription.paymentMethod.crypto.error ===
+      currentShieldSubscription.paymentMethod.crypto.error ===
       CRYPTO_PAYMENT_METHOD_ERRORS.INSUFFICIENT_BALANCE
     );
-  }, [subscription]);
+  }, [currentShieldSubscription]);
 
   const isAllowanceNeededCrypto = useMemo(() => {
-    if (!subscription || !isCryptoPaymentMethod(subscription.paymentMethod)) {
+    if (!currentShieldSubscription || !isCryptoPaymentMethod(currentShieldSubscription.paymentMethod)) {
       return false;
     }
-    const { error } = subscription.paymentMethod.crypto;
+    const { error } = currentShieldSubscription.paymentMethod.crypto;
     return (
       error === CRYPTO_PAYMENT_METHOD_ERRORS.INSUFFICIENT_ALLOWANCE ||
       error === CRYPTO_PAYMENT_METHOD_ERRORS.APPROVAL_TRANSACTION_TOO_OLD ||
@@ -126,15 +126,15 @@ export const useHandlePayment = ({
       error ===
         CRYPTO_PAYMENT_METHOD_ERRORS.APPROVAL_TRANSACTION_MAX_VERIFICATION_ATTEMPTS_REACHED
     );
-  }, [subscription]);
+  }, [currentShieldSubscription]);
 
   const handlePaymentError = useCallback(async () => {
-    if (subscription) {
+    if (currentShieldSubscription) {
       // capture error state clicked event
       captureShieldErrorStateClickedEvent({
-        subscriptionStatus: subscription.status,
-        paymentType: subscription.paymentMethod.type,
-        billingInterval: subscription.interval,
+        subscriptionStatus: currentShieldSubscription.status,
+        paymentType: currentShieldSubscription.paymentMethod.type,
+        billingInterval: currentShieldSubscription.interval,
         errorCause: 'payment_error',
         actionClicked: ShieldErrorStateActionClickedEnum.Cta,
         location: ShieldErrorStateLocationEnum.Settings,
@@ -152,8 +152,8 @@ export const useHandlePayment = ({
       // handle support action
       handleClickContactSupport();
     } else if (
-      subscription &&
-      isCryptoPaymentMethod(subscription.paymentMethod)
+      currentShieldSubscription &&
+      isCryptoPaymentMethod(currentShieldSubscription.paymentMethod)
     ) {
       if (isInsufficientFundsCrypto) {
         // TODO: handle add funds crypto
@@ -172,7 +172,7 @@ export const useHandlePayment = ({
       await executeUpdateSubscriptionCardPaymentMethod();
     }
   }, [
-    subscription,
+    currentShieldSubscription,
     isCancelled,
     isUnexpectedErrorCryptoPayment,
     isInsufficientFundsCrypto,

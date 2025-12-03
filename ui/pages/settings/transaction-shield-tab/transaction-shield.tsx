@@ -411,7 +411,7 @@ const TransactionShield = () => {
     updateSubscriptionCardPaymentMethodResult,
     updateSubscriptionCryptoPaymentMethodResult,
   } = useHandlePayment({
-    subscription: currentShieldSubscription,
+    currentShieldSubscription,
     subscriptions,
     isCancelled: isCancelled ?? false,
     paymentToken,
