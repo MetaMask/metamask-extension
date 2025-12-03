@@ -218,7 +218,7 @@ const DappSwapComparisonInner = () => {
                   className="dapp-swap_text-rewards"
                   variant={TextVariant.BodyXs}
                 >
-                  ${rewards.text}
+                  {rewards.text}
                 </Text>
               </>
             )}
