@@ -552,7 +552,7 @@ const ShieldPlan = () => {
                         boxClassName="gap-1 px-2 py-0.5 bg-background-muted rounded-lg w-fit"
                         textClassName="font-medium"
                         withPointsSuffix={false}
-                        formattedPoints={`+${planDetailsRewardsText}`}
+                        formattedPoints={planDetailsRewardsText}
                         onClick={() => {
                           setShowRewardsModal(true);
                         }}

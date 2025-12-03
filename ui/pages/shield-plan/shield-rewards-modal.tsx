@@ -64,7 +64,7 @@ export const ShieldRewardsModal = ({
           />
 
           <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-            {t('shieldPlanDetailsRewardsDescription', [rewardsText])}
+            {t('shieldPlanDetailsRewardsDescription')}
           </Text>
 
           <Button
