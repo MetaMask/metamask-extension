@@ -6241,7 +6241,7 @@
     "message": "This chain is not supported, so it isn't protected by MetaMask Transaction Shield. $1"
   },
   "shieldCoverageAlertMessageLearnHowCoverageWorks": {
-    "message": "See what's Covered"
+    "message": "See what's covered"
   },
   "shieldCoverageAlertMessagePaused": {
     "message": "There was an issue with your MetaMask Transaction Shield plan payment. Please update your payment method to resume coverage."

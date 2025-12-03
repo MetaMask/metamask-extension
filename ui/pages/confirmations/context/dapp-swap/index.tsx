@@ -37,6 +37,12 @@ export const DappSwapContextProvider: React.FC<{
     setQuotedSwapDisplayedInInfo(false);
   }, [currentConfirmation?.id, setSelectedQuote, setQuotedSwapDisplayedInInfo]);
 
+  useEffect(() => {
+    if (!selectedQuote) {
+      setQuotedSwapDisplayedInInfo(false);
+    }
+  }, [selectedQuote, setQuotedSwapDisplayedInInfo]);
+
   const value = useMemo(
     () => ({
       isQuotedSwapDisplayedInInfo,
