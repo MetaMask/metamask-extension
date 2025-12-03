@@ -4,7 +4,10 @@ import {
   isObject,
   KnownCaipNamespace,
 } from '@metamask/utils';
-import { RpcEndpointType } from '@metamask/network-controller';
+import {
+  NetworkConfiguration,
+  RpcEndpointType,
+} from '@metamask/network-controller';
 import { cloneDeep } from 'lodash';
 import { captureException } from '../../../shared/lib/sentry';
 
@@ -167,6 +170,10 @@ function transformState(state: Record<string, unknown>) {
     enabledNetworkMap: { [KnownCaipNamespace.Eip155]: eip155NetworkMap },
   } = networkEnablementState;
 
+  const megaethTestnetV1ConfigurationSnapShot = cloneDeep(
+    networkConfigurationsByChainId[MEGAETH_TESTNET_V1_CHAIN_ID],
+  ) as unknown as NetworkConfiguration;
+
   // Add the MegaETH Testnet v2 network configuration.
   networkConfigurationsByChainId[MEGAETH_TESTNET_V2_CONFIG.chainId] =
     MEGAETH_TESTNET_V2_CONFIG;
@@ -189,7 +196,12 @@ function transformState(state: Record<string, unknown>) {
   if (
     hasProperty(networkState, 'selectedNetworkClientId') &&
     typeof networkState.selectedNetworkClientId === 'string' &&
-    networkState.selectedNetworkClientId === 'megaeth-testnet'
+    hasProperty(megaethTestnetV1ConfigurationSnapShot, 'rpcEndpoints') &&
+    Array.isArray(megaethTestnetV1ConfigurationSnapShot.rpcEndpoints) &&
+    megaethTestnetV1ConfigurationSnapShot.rpcEndpoints.some(
+      (rpcEndpoint) =>
+        rpcEndpoint.networkClientId === networkState.selectedNetworkClientId,
+    )
   ) {
     networkState.selectedNetworkClientId = 'mainnet';
     // force mainnet to be enabled

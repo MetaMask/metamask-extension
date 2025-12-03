@@ -220,7 +220,8 @@ describe(`migration #${VERSION}`, () => {
     expect(newStorage).toStrictEqual(expectedStorage);
   });
 
-  it('selects mainnet when the selected network client id is megaeth-testnet', async () => {
+  // @ts-expect-error 'each' function is not recognized by TypeScript types
+  it.each([('megaeth-testnet'), ('random-network-client-id')])('switchs to mainnet when the selected network client id is in MegaETH Testnet v1 - %s', async (selectedNetworkClientId) => {
     const oldStorage = {
       meta: { version: oldVersion },
       data: {
@@ -235,14 +236,14 @@ describe(`migration #${VERSION}`, () => {
               defaultBlockExplorerUrlIndex: 0,
               rpcEndpoints: [
                 {
-                  networkClientId: 'megaeth-testnet',
+                  networkClientId: selectedNetworkClientId,
                   type: RpcEndpointType.Custom,
                   url: 'https://rpc.com',
                 },
               ],
             },
           },
-          selectedNetworkClientId: 'megaeth-testnet',
+          selectedNetworkClientId: selectedNetworkClientId,
         },
         NetworkEnablementController: {
           enabledNetworkMap: {
