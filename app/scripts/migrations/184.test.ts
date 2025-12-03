@@ -223,7 +223,7 @@ describe(`migration #${VERSION}`, () => {
   // @ts-expect-error 'each' function is not recognized by TypeScript types
   it.each(['megaeth-testnet', 'random-network-client-id'])(
     'switchs to mainnet when the selected network client id is in MegaETH Testnet v1 - %s',
-    async (selectedNetworkClientId) => {
+    async (selectedNetworkClientId: string) => {
       const oldStorage = {
         meta: { version: oldVersion },
         data: {
