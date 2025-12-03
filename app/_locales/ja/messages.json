@@ -4991,9 +4991,6 @@
   "recipientEditAriaLabel": {
     "message": "受取人を編集"
   },
-  "recipientPlaceholder": {
-    "message": "有効なアドレスを入力するか貼り付けてください"
-  },
   "recoveryPhraseReminderBackupStart": {
     "message": "今すぐバックアップ"
   },

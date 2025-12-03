@@ -176,7 +176,7 @@ const MOCK_CLAIM_ID_2 = 'test_claim_id_00002';
 
 export const SUBMIT_CLAIMS_RESPONSE = {
   status: 'success',
-  message: 'Claim submitted successfully',
+  message: 'Claim submission received',
   claimId: MOCK_CLAIM_ID_2,
 };
 
@@ -219,7 +219,13 @@ export const MOCK_CLAIM_2 = {
     '0x55da3eaee9bbefd762a33413b764ee2c025ff4a2cc0a49a05896ceb24c95712f',
   reimbursementWalletAddress: '0x88069b650422308bf8b472beaf790189f3f28309',
   description: 'I got scammed. Please help me get my money back. T_T @_@',
-  attachments: [],
+  attachments: [
+    {
+      originalname: 'test-document.pdf',
+      publicUrl: 'https://mock-storage-url.com/claims/test-document.pdf',
+      contentType: 'application/pdf',
+    },
+  ],
   intercomId: `intercom_${MOCK_CLAIM_ID_2}`,
   status: 'created',
 };
