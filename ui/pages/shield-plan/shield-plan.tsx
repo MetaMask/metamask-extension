@@ -354,7 +354,7 @@ const ShieldPlan = () => {
     const points =
       selectedPlan === RECURRING_INTERVALS.year ? '10,000' : '1,000';
     const interval =
-      selectedPlan === RECURRING_INTERVALS.year ? 'year' : 'month';
+      selectedPlan === RECURRING_INTERVALS.year ? t('year') : t('month');
     return t('shieldPlanDetailsRewards', [points, interval]);
   }, [t, selectedPlan]);
 

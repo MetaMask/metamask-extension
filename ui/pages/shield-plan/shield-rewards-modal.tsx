@@ -43,7 +43,9 @@ export const ShieldRewardsModal = ({
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader onClose={onClose}>Rewards</ModalHeader>
+        <ModalHeader onClose={onClose}>
+          {t('shieldPlanDetailsRewardsTitle')}
+        </ModalHeader>
         <ModalBody
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
@@ -53,7 +55,7 @@ export const ShieldRewardsModal = ({
           <img
             src="./images/shield-reward.png"
             style={{ width: 'auto', height: '170px' }}
-            alt="Rewards"
+            alt={t('shieldPlanDetailsRewardsTitle')}
           />
 
           <RewardsBadge
