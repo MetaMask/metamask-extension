@@ -88,6 +88,7 @@ import {
   getRedirectAfterDefaultPage,
   clearRedirectAfterDefaultPage,
 } from '../../ducks/history/history';
+import { AppHeader } from '../../components/multichain/app-header';
 
 import Home from './home.component';
 
@@ -248,6 +249,8 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
+const removeGns = Boolean(process.env.REMOVE_GNS);
+
 // Strip unused 'match' prop from withRouter
 // It causes cascading, unnecessary re-renders
 // Also inject navState from NavigationStateContext for v5-compat navigation
@@ -256,6 +259,24 @@ const HomeWithRouter = ({ match: _match, ...props }) => {
   const navState = useNavState();
   const { evaluateCohortEligibility } = useShieldSubscriptionContext();
 
+  if (removeGns) {
+    return (
+      <>
+        {/* Note: Consider a sticky header instead of overflow */}
+        <AppHeader />
+
+        <div className="flex flex-col flex-1 min-h-0">
+          <Home
+            {...props}
+            navState={navState}
+            evaluateCohortEligibility={evaluateCohortEligibility}
+          />
+        </div>
+      </>
+    );
+  }
+
+  // Note: Remove this once REMOVE_GNS flag is resolved
   return (
     <Home
       {...props}

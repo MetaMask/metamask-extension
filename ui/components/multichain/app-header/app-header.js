@@ -72,11 +72,11 @@ export const AppHeader = ({ location }) => {
         path: CONFIRM_TRANSACTION_ROUTE,
         end: false,
       },
-      location.pathname,
+      location?.pathname || '',
     ),
   );
   const isSwapsPage = Boolean(
-    matchPath({ path: SWAPS_ROUTE, end: false }, location.pathname),
+    matchPath({ path: SWAPS_ROUTE, end: false }, location?.pathname || ''),
   );
 
   const unapprovedTransactions = useSelector(getUnapprovedTransactions);
