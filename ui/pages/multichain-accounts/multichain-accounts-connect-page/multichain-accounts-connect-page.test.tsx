@@ -22,6 +22,7 @@ import {
 } from '../../../../shared/modules/selectors/networks';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import {
   MultichainAccountsConnectPage,
   MultichainConnectPageProps,

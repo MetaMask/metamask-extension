@@ -131,6 +131,7 @@ import {
 } from '@metamask/seedless-onboarding-controller';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { isSnapId } from '@metamask/snaps-utils';
+import { address } from '@solana/addresses';
 import {
   findAtomicBatchSupportForChain,
   checkEip7702Support,
@@ -1658,12 +1659,21 @@ export default class MetamaskController extends EventEmitter {
   setupControllerEventSubscriptions() {
     let lastSelectedAddress;
     let lastSelectedSolanaAccountAddress;
+    let lastSelectedTronAccountAddress;
 
-    // this throws if there is no solana account... perhaps we should handle this better at the controller level
+    // this throws if there is no solana or Tron account... perhaps we should handle this better at the controller level
     try {
       lastSelectedSolanaAccountAddress =
         this.accountsController.getSelectedMultichainAccount(
           MultichainNetworks.SOLANA,
+        )?.address;
+    } catch {
+      // noop
+    }
+    try {
+      lastSelectedTronAccountAddress =
+        this.accountsController.getSelectedMultichainAccount(
+          MultichainNetworks.TRON,
         )?.address;
     } catch {
       // noop
@@ -1956,6 +1966,194 @@ export default class MetamaskController extends EventEmitter {
                 originsWithSolanaAccountChangedNotifications[origin]
               ) {
                 this._notifySolanaAccountChange(origin, [account.address]);
+              }
+            }
+          }
+        }
+      },
+    );
+
+    // wallet_notify for tron accountChanged when permission changes
+    this.controllerMessenger.subscribe(
+      `${this.permissionController.name}:stateChange`,
+      async (currentValue, previousValue) => {
+        const origins = uniq([...previousValue.keys(), ...currentValue.keys()]);
+        origins.forEach((origin) => {
+          const previousCaveatValue = previousValue.get(origin);
+          const currentCaveatValue = currentValue.get(origin);
+
+          const previousTronAccountChangedNotificationsEnabled = Boolean(
+            previousCaveatValue?.sessionProperties?.[
+              KnownSessionProperties.TronAccountChangedNotifications
+            ],
+          );
+          const currentTronAccountChangedNotificationsEnabled = Boolean(
+            currentCaveatValue?.sessionProperties?.[
+              KnownSessionProperties.TronAccountChangedNotifications
+            ],
+          );
+
+          if (
+            !previousTronAccountChangedNotificationsEnabled &&
+            !currentTronAccountChangedNotificationsEnabled
+          ) {
+            return;
+          }
+
+          const previousTronCaipAccountIds = previousCaveatValue
+            ? getPermittedAccountsForScopes(previousCaveatValue, [
+                MultichainNetworks.TRON,
+                MultichainNetworks.TRON_SHASTA,
+                MultichainNetworks.TRON_NILE,
+              ])
+            : [];
+          const previousNonUniqueTronHexAccountAddresses =
+            previousTronCaipAccountIds.map((caipAccountId) => {
+              const { address } = parseCaipAccountId(caipAccountId);
+              return address;
+            });
+          const previousTronHexAccountAddresses = uniq(
+            previousNonUniqueTronHexAccountAddresses,
+          );
+          const [previousSelectedTronAccountAddress] =
+            this.sortMultichainAccountsByLastSelected(
+              previousTronHexAccountAddresses,
+            );
+
+          const currentTronCaipAccountIds = currentCaveatValue
+            ? getPermittedAccountsForScopes(currentCaveatValue, [
+                MultichainNetworks.TRON,
+                MultichainNetworks.TRON_SHASTA,
+                MultichainNetworks.TRON_NILE,
+              ])
+            : [];
+          const currentNonUniqueTronHexAccountAddresses =
+            currentTronCaipAccountIds.map((caipAccountId) => {
+              const { address } = parseCaipAccountId(caipAccountId);
+              return address;
+            });
+          const currentTronHexAccountAddresses = uniq(
+            currentNonUniqueTronHexAccountAddresses,
+          );
+          const [currentSelectedTronAccountAddress] =
+            this.sortMultichainAccountsByLastSelected(
+              currentTronHexAccountAddresses,
+            );
+
+          if (
+            previousSelectedTronAccountAddress !==
+            currentSelectedTronAccountAddress
+          ) {
+            this._notifyTronAccountChange(
+              origin,
+              currentSelectedTronAccountAddress
+                ? [currentSelectedTronAccountAddress]
+                : [],
+            );
+          }
+        });
+      },
+      getAuthorizedScopesByOrigin,
+    );
+
+    // TODO: To be removed when state 2 is fully transitioned.
+    // wallet_notify for tron accountChanged when selected account changes
+    this.controllerMessenger.subscribe(
+      `${this.accountsController.name}:selectedAccountChange`,
+      async (account) => {
+        if (
+          account.type === TrxAccountType.Eoa &&
+          account.address !== lastSelectedTronAccountAddress
+        ) {
+          lastSelectedTronAccountAddress = account.address;
+
+          const originsWithTronAccountChangedNotifications =
+            getOriginsWithSessionProperty(
+              this.permissionController.state,
+              KnownSessionProperties.TronAccountChangedNotifications,
+            );
+
+          // returns a map of origins to permitted tron accounts
+          const tronAccounts = getPermittedAccountsForScopesByOrigin(
+            this.permissionController.state,
+            [
+              MultichainNetworks.TRON,
+              MultichainNetworks.TRON_SHASTA,
+              MultichainNetworks.TRON_NILE,
+            ],
+          );
+
+          if (tronAccounts.size > 0) {
+            for (const [origin, accounts] of tronAccounts.entries()) {
+              const parsedTronAddresses = accounts.map((caipAccountId) => {
+                const { address } = parseCaipAccountId(caipAccountId);
+                return address;
+              });
+
+              if (
+                parsedTronAddresses.includes(account.address) &&
+                originsWithTronAccountChangedNotifications[origin]
+              ) {
+                this._notifyTronAccountChange(origin, [account.address]);
+              }
+            }
+          }
+        }
+      },
+    );
+
+    // wallet_notify for tron accountChanged when selected account group changes
+    this.controllerMessenger.subscribe(
+      `${this.accountTreeController.name}:selectedAccountGroupChange`,
+      (groupId) => {
+        // TODO: Move this logic to the SnapKeyring directly.
+        // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
+        // eslint-disable-next-line no-void
+        void this.forwardSelectedAccountGroupToSnapKeyring(
+          this.getSnapKeyringIfAvailable(),
+          groupId,
+        );
+
+        const [account] =
+          this.accountTreeController.getAccountsFromSelectedAccountGroup({
+            scopes: [TrxScope.Mainnet],
+          });
+        if (
+          account &&
+          account.type === TrxAccountType.Eoa &&
+          account.address !== lastSelectedTronAccountAddress
+        ) {
+          lastSelectedTronAccountAddress = account.address;
+
+          const originsWithTronAccountChangedNotifications =
+            getOriginsWithSessionProperty(
+              this.permissionController.state,
+              KnownSessionProperties.TronAccountChangedNotifications,
+            );
+
+          // returns a map of origins to permitted tron accounts
+          const tronAccounts = getPermittedAccountsForScopesByOrigin(
+            this.permissionController.state,
+            [
+              MultichainNetworks.TRON,
+              MultichainNetworks.TRON_SHASTA,
+              MultichainNetworks.TRON_NILE,
+            ],
+          );
+
+          if (tronAccounts.size > 0) {
+            for (const [origin, accounts] of tronAccounts.entries()) {
+              const parsedTronAddresses = accounts.map((caipAccountId) => {
+                const { address } = parseCaipAccountId(caipAccountId);
+                return address;
+              });
+
+              if (
+                parsedTronAddresses.includes(account.address) &&
+                originsWithTronAccountChangedNotifications[origin]
+                // originsWithTronAccountChangedNotifications[origin]
+              ) {
+                this._notifyTronAccountChange(origin, [account.address]);
               }
             }
           }
@@ -6279,13 +6477,13 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * For origins with a solana scope permitted, sends a wallet_notify -> metamask_accountChanged
-   * event to fire for the solana scope with the currently selected solana account if any are
+   * For origins with a solana or tron scope permitted, sends a wallet_notify -> metamask_accountChanged
+   * event to fire for the scope with the currently selected account if any are
    * permitted or empty array otherwise.
    *
-   * @param {string} origin - The origin to notify with the current solana account
+   * @param {string} origin - The origin to notify with the current account
    */
-  notifySolanaAccountChangedForCurrentAccount(origin) {
+  notifyNonEVMAccountChangedForCurrentAccount(origin) {
     let caip25Caveat;
     try {
       caip25Caveat = this.permissionController.getCaveat(
@@ -6312,10 +6510,16 @@ export default class MetamaskController extends EventEmitter {
         KnownSessionProperties.SolanaAccountChangedNotifications
       ];
 
+    const tronAccountsChangedNotifications =
+      caip25Caveat.value.sessionProperties?.[
+        KnownSessionProperties.TronAccountChangedNotifications
+      ];
+
     const sessionScopes = getSessionScopes(caip25Caveat.value, {
       getNonEvmSupportedMethods: this.getNonEvmSupportedMethods.bind(this),
     });
 
+    // Handle Solana account notifications
     const solanaScope =
       sessionScopes[MultichainNetworks.SOLANA] ||
       sessionScopes[MultichainNetworks.SOLANA_DEVNET] ||
@@ -6336,9 +6540,29 @@ export default class MetamaskController extends EventEmitter {
         this._notifySolanaAccountChange(origin, [accountAddressToEmit]);
       }
     }
-  }
 
-  // ---------------------------------------------------------------------------
+    // Handle Tron account notifications
+    const tronScope =
+      sessionScopes[MultichainNetworks.TRON] ||
+      sessionScopes[MultichainNetworks.TRON_DEVNET] ||
+      sessionScopes[MultichainNetworks.TRON_TESTNET];
+
+    if (tronAccountsChangedNotifications && tronScope) {
+      const { accounts } = tronScope;
+      const parsedPermittedTronAddresses = accounts.map((caipAccountId) => {
+        const { address } = parseCaipAccountId(caipAccountId);
+        return address;
+      });
+
+      const [accountAddressToEmit] = this.sortMultichainAccountsByLastSelected(
+        parsedPermittedTronAddresses,
+      );
+
+      if (accountAddressToEmit) {
+        this._notifyTronAccountChange(origin, [accountAddressToEmit]);
+      }
+    }
+  } // ---------------------------------------------------------------------------
   // Identity Management (signature operations)
 
   getAddTransactionRequest({
@@ -6952,13 +7176,13 @@ export default class MetamaskController extends EventEmitter {
       engine,
     });
 
-    // solana account changed notifications
+    // solana and Tron account changed notifications
     // This delay is needed because it's possible for a dapp to not have listeners
     // setup in time right after a connection is established.
     // This can be resolved if we amend the caip standards to include a liveliness
     // handshake as part of the initial connection.
     setTimeout(
-      () => this.notifySolanaAccountChangedForCurrentAccount(origin),
+      () => this.notifyNonEVMAccountChangedForCurrentAccount(origin),
       500,
     );
 
@@ -8687,6 +8911,23 @@ export default class MetamaskController extends EventEmitter {
         method: MultichainApiNotifications.walletNotify,
         params: {
           scope: MultichainNetworks.SOLANA,
+          notification: {
+            method: NOTIFICATION_NAMES.accountsChanged,
+            params: accountAddressArray,
+          },
+        },
+      },
+      API_TYPE.CAIP_MULTICHAIN,
+    );
+  }
+
+  async _notifyTronAccountChange(origin, accountAddressArray) {
+    this.notifyConnections(
+      origin,
+      {
+        method: MultichainApiNotifications.walletNotify,
+        params: {
+          scope: MultichainNetworks.TRON,
           notification: {
             method: NOTIFICATION_NAMES.accountsChanged,
             params: accountAddressArray,

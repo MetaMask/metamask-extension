@@ -7,6 +7,8 @@ import {
   EthScope,
   SolAccountType,
   SolMethod,
+  TrxAccountType,
+  TrxMethod,
 } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
@@ -255,6 +257,14 @@ export function createMockInternalAccount({
         MultichainNetworks.SOLANA_DEVNET,
       ];
       methods = [SolMethod.SendAndConfirmTransaction];
+      break;
+    case TrxAccountType.Eoa:
+      scopes = [
+        MultichainNetworks.TRON,
+        MultichainNetworks.TRON_SHASTA,
+        MultichainNetworks.TRON_NILE,
+      ];
+      methods = [TrxMethod.SignMessage, TrxMethod.SignTransaction];
       break;
     default:
       throw new Error(`Unknown account type: ${type}`);
