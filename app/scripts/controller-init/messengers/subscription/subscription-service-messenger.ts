@@ -40,6 +40,7 @@ export function getSubscriptionServiceMessenger(
       'SubscriptionController:getBillingPortalUrl',
       'SubscriptionController:submitSponsorshipIntents',
       'SubscriptionController:getState',
+      'SubscriptionController:linkRewards',
       'AppStateController:getState',
       'AuthenticationController:getBearerToken',
       'TransactionController:getTransactions',

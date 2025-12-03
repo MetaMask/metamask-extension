@@ -8,6 +8,7 @@ import {
   SubscriptionControllerUpdatePaymentMethodAction,
   SubscriptionControllerSubmitSponsorshipIntentsAction,
   SubscriptionControllerGetStateAction,
+  SubscriptionControllerLinkRewardsAction,
 } from '@metamask/subscription-controller';
 import { AuthenticationControllerGetBearerToken } from '@metamask/profile-sync-controller/auth';
 import {
@@ -49,6 +50,7 @@ export type SubscriptionServiceAction =
   | SubscriptionControllerSubmitSponsorshipIntentsAction
   | SubscriptionServiceSubmitSubscriptionSponsorshipIntentAction
   | SubscriptionControllerGetStateAction
+  | SubscriptionControllerLinkRewardsAction
   | TransactionControllerGetTransactionsAction
   | PreferencesControllerGetStateAction
   | AccountsControllerGetStateAction

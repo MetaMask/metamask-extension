@@ -2615,6 +2615,10 @@ export default class MetamaskController extends EventEmitter {
         this.subscriptionController.submitUserEvent.bind(
           this.subscriptionController,
         ),
+      linkRewardToShieldSubscription:
+        this.subscriptionService.linkRewardToExistingSubscription.bind(
+          this.subscriptionService,
+        ),
 
       // rewards
       getRewardsCandidateSubscriptionId:

@@ -221,6 +221,28 @@ export class SubscriptionService {
   }
 
   /**
+   * Link the reward to the existing shield subscription.
+   *
+   * @param subscriptionId - Shield subscription ID to link the reward to.
+   * @returns Promise<void> - The reward subscription ID or undefined if the season is not active or the primary account is not opted in to rewards.
+   */
+  async linkRewardToExistingSubscription(subscriptionId: string) {
+    try {
+      const rewardSubscriptionId = await this.#getRewardSubscriptionId();
+      if (!rewardSubscriptionId) {
+        return;
+      }
+
+      await this.#messenger.call('SubscriptionController:linkRewards', {
+        subscriptionId,
+        rewardSubscriptionId,
+      });
+    } catch (error) {
+      log.error('Failed to link reward to existing subscription', error);
+    }
+  }
+
+  /**
    * Track the subscription request event.
    *
    * @param requestStatus - The request status.
@@ -411,6 +433,11 @@ export class SubscriptionService {
     }
   }
 
+  /**
+   * Get the primary CAIP account ID.
+   *
+   * @returns Promise<CaipAccountId | undefined> - The primary CAIP account ID.
+   */
   async #getPrimaryCaipAccountId(): Promise<CaipAccountId | undefined> {
     const keyringsMetadata = this.#messenger.call('KeyringController:getState');
     const primaryHdKeyring = keyringsMetadata.keyrings.find(
