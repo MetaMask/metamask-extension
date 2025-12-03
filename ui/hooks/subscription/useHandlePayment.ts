@@ -20,6 +20,8 @@ import {
 } from '../../../shared/constants/subscriptions';
 import { SHIELD_PLAN_ROUTE } from '../../helpers/constants/routes';
 import { isCryptoPaymentMethod } from '../../pages/settings/transaction-shield-tab/types';
+import { useAsyncResult } from '../useAsync';
+import { getSubscriptionCryptoApprovalAmount } from '../../store/actions';
 import {
   TokenWithApprovalAmount,
   useSubscriptionPaymentMethods,
@@ -34,19 +36,17 @@ import {
   useUpdateSubscriptionCryptoPaymentMethod,
   useHandleSubscriptionSupportAction,
 } from './useSubscription';
-import { useAsyncResult } from '../../hooks/useAsync';
-import { getSubscriptionCryptoApprovalAmount } from '../../store/actions';
 
 /**
  * Hook to handle payment errors for subscriptions.
  *
  * @param options - The options for the hook.
- * @param options.subscription - The current subscription.
+ * @param options.currentShieldSubscription - The current shield subscription.
+ * @param options.displayedShieldSubscription - The displayed shield subscription.
  * @param options.subscriptions - The list of subscriptions to check paused status.
  * @param options.isCancelled - Whether the subscription is cancelled.
  * @param options.onOpenAddFundsModal - Callback to open the add funds modal.
  * @param options.subscriptionPricing - The subscription pricing data.
- * @param options.displayedShieldSubscription - The displayed shield subscription.
  * @returns An object containing the handlePaymentError function, handlePaymentErrorInsufficientFunds function, handlePaymentMethodChange function, payment error flags, and currentToken.
  */
 export const useHandlePayment = ({
