@@ -774,7 +774,7 @@ export default function Routes() {
           </RouteWithLayout>
           <RouteWithLayout
             path={`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:srcTxMetaId`}
-            layout={LegacyLayout}
+            layout={RootLayout}
             // v5 Route supports exact with render props, but TS types don't recognize it
             // Using spread operator with type assertion to bypass incorrect type definitions
             // eslint-disable-next-line @typescript-eslint/no-explicit-any

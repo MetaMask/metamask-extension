@@ -227,7 +227,7 @@ const CrossChainSwapTxDetails = ({
   );
 
   return (
-    <div className="bridge__container">
+    <div className="bridge__container bg-background-default">
       <Header
         className="bridge__header"
         startAccessory={
