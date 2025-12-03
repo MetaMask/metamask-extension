@@ -831,7 +831,7 @@ export default function Routes() {
             authenticated
             path={NEW_ACCOUNT_ROUTE}
             component={CreateAccountPage}
-            layout={LegacyLayout}
+            layout={RootLayout}
           />
           <RouteWithLayout path={`${CONNECT_ROUTE}/:id`} layout={RootLayout}>
             {createV5CompatRoute<{ id: string }>(PermissionsConnect, {
