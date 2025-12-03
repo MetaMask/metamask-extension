@@ -55,8 +55,7 @@ export default function ResetPasswordModal({
 
   const dispatch = useDispatch();
 
-  const handleResetWallet = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+  const handleResetWallet = () => {
     setResetWallet((prev) => !prev);
   };
 
@@ -302,15 +301,6 @@ export default function ResetPasswordModal({
           >
             {t('resetWalletButton')}
           </Button>
-          <Button
-            data-testid="reset-password-modal-button-link"
-            variant={ButtonVariant.Secondary}
-            onClick={handleResetWallet}
-            size={ButtonSize.Lg}
-            block
-          >
-            {t('resetWalletButtonCancel')}
-          </Button>
         </Box>
       </Box>
     );
@@ -330,12 +320,18 @@ export default function ResetPasswordModal({
       <ModalContent alignItems={AlignItems.center}>
         <ModalHeader
           onClose={onClose}
+          onBack={handleResetWallet}
           childrenWrapperProps={{
             display: Display.Flex,
             flexDirection: FlexDirection.Column,
             alignItems: AlignItems.center,
             justifyContent: JustifyContent.center,
             gap: 4,
+          }}
+          backButtonProps={{
+            style: {
+              display: resetWallet ? 'block' : 'none',
+            },
           }}
         >
           {resetWallet && (
