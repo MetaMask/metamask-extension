@@ -4548,7 +4548,6 @@ export default class MetamaskController extends EventEmitter {
     } finally {
       endTrace({
         name: TraceName.DiscoverAccounts,
-        op: TraceOperation.AccountDiscover,
       });
     }
   }
