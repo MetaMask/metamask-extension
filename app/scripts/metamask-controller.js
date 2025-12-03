@@ -1146,7 +1146,7 @@ export default class MetamaskController extends EventEmitter {
           const permissionType = param?.permission?.type;
           if (!enabledTypes.includes(permissionType)) {
             throw rpcErrors.methodNotSupported(
-              `Permission type '${permissionType || ''}' is not enabled`,
+              `Permission type '${permissionType ?? 'unknown'}' is not enabled`,
             );
           }
         }
