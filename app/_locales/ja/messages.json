@@ -5633,15 +5633,6 @@
   "shieldTxMembershipBillingDetails": {
     "message": "請求の詳細"
   },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "請求アカウント\n\nCharges"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "請求額"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "次回の請求"
-  },
   "shieldTxMembershipBillingDetailsPaymentMethod": {
     "message": "支払方法"
   },

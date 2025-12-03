@@ -5633,15 +5633,6 @@
   "shieldTxMembershipBillingDetails": {
     "message": "Abrechnungsdetails"
   },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "Abrechnungskonto"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "Belastungen"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "Nächste Abrechnung"
-  },
   "shieldTxMembershipBillingDetailsPaymentMethod": {
     "message": "Zahlungsmethode"
   },

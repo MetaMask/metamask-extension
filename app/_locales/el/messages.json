@@ -5633,15 +5633,6 @@
   "shieldTxMembershipBillingDetails": {
     "message": "Στοιχεία χρέωσης"
   },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "Λογαριασμός χρέωσης"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "Χρεώσεις"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "Επόμενη χρέωση"
-  },
   "shieldTxMembershipBillingDetailsPaymentMethod": {
     "message": "Τρόπος πληρωμής"
   },

@@ -72,7 +72,6 @@ import {
   TokenWithApprovalAmount,
 } from '../../../hooks/subscription/useSubscriptionPricing';
 import { getSubscriptionCryptoApprovalAmount } from '../../../store/actions';
-import { ConfirmInfoRowAddress } from '../../../components/app/confirm/info/row';
 import {
   getIsShieldSubscriptionEndingSoon,
   getIsShieldSubscriptionPaused,
@@ -927,14 +926,24 @@ const TransactionShield = () => {
             />
           </ButtonRowContainer>
         </Box>
-        {displayedShieldSubscription?.isEligibleForSupport &&
-          buttonRow(
-            t('shieldTxMembershipSubmitCase'),
-            () => {
-              navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL);
-            },
-            'shield-detail-submit-case-button',
-          )}
+        {displayedShieldSubscription?.isEligibleForSupport && (
+          <Box className="px-4 mt-4">
+            {showSkeletonLoader ? (
+              <Skeleton width="100%" height={40} />
+            ) : (
+              <Button
+                data-testid="shield-detail-submit-case-button"
+                className="w-full"
+                variant={ButtonVariant.Secondary}
+                onClick={() => {
+                  navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL);
+                }}
+              >
+                {t('shieldTxMembershipSubmitCase')}
+              </Button>
+            )}
+          </Box>
+        )}
         {!isMembershipInactive &&
           currentShieldSubscription?.cancelAtPeriodEnd &&
           buttonRow(
@@ -979,50 +988,6 @@ const TransactionShield = () => {
           )}
           {displayedShieldSubscription ? (
             <>
-              {billingDetails(
-                t('shieldTxMembershipBillingDetailsNextBilling'),
-                isCancelled || displayedShieldSubscription?.cancelAtPeriodEnd
-                  ? '-'
-                  : getShortDateFormatterV2().format(
-                      new Date(displayedShieldSubscription.currentPeriodEnd),
-                    ),
-                'shield-detail-next-billing',
-              )}
-              {billingDetails(
-                t('shieldTxMembershipBillingDetailsCharges'),
-                isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)
-                  ? `${getProductPrice(productInfo as Product)} ${displayedShieldSubscription.paymentMethod.crypto.tokenSymbol.toUpperCase()} (${displayedShieldSubscription.interval === RECURRING_INTERVALS.year ? t('shieldPlanAnnual') : t('shieldPlanMonthly')})`
-                  : `${formatCurrency(
-                      getProductPrice(productInfo as Product),
-                      productInfo?.currency.toUpperCase(),
-                      {
-                        maximumFractionDigits: 2,
-                        minimumFractionDigits: 0,
-                      },
-                    )} (${displayedShieldSubscription.interval === RECURRING_INTERVALS.year ? t('shieldPlanAnnual') : t('shieldPlanMonthly')})`,
-                'shield-detail-charges',
-              )}
-              {isCryptoPayment &&
-                billingDetails(
-                  t('shieldTxMembershipBillingDetailsBillingAccount'),
-                  isCryptoPaymentMethod(
-                    displayedShieldSubscription.paymentMethod,
-                  ) ? (
-                    <ConfirmInfoRowAddress
-                      address={
-                        displayedShieldSubscription.paymentMethod.crypto
-                          .payerAddress
-                      }
-                      chainId={
-                        displayedShieldSubscription.paymentMethod.crypto.chainId
-                      }
-                      showFullName
-                    />
-                  ) : (
-                    ''
-                  ),
-                  'shield-detail-billing-account',
-                )}
               {billingDetails(
                 t('shieldTxMembershipBillingDetailsPaymentMethod'),
                 <PaymentMethodRow
