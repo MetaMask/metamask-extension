@@ -68,6 +68,7 @@ const mockGetKeyringControllerState = jest.fn();
 const mockGetRewardSeasonMetadata = jest.fn();
 const mockGetRewardActualSubscriptionId = jest.fn();
 const mockLinkRewards = jest.fn();
+const mockSubmitShieldSubscriptionCryptoApproval = jest.fn();
 
 const rootMessenger: RootMessenger = new Messenger({
   namespace: MOCK_ANY_NAMESPACE,
@@ -136,6 +137,10 @@ rootMessenger.registerActionHandler(
   'SubscriptionController:linkRewards',
   mockLinkRewards,
 );
+rootMessenger.registerActionHandler(
+  'SubscriptionController:submitShieldSubscriptionCryptoApproval',
+  mockSubmitShieldSubscriptionCryptoApproval,
+);
 
 const messenger: SubscriptionServiceMessenger = new Messenger({
   namespace: 'SubscriptionService',
@@ -148,6 +153,7 @@ rootMessenger.delegate({
     'SubscriptionController:getSubscriptions',
     'SubscriptionController:submitSponsorshipIntents',
     'SubscriptionController:linkRewards',
+    'SubscriptionController:submitShieldSubscriptionCryptoApproval',
     'TransactionController:getTransactions',
     'PreferencesController:getState',
     'AccountsController:getState',
@@ -357,6 +363,156 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
 
     expect(mockGetRewardSeasonMetadata).toHaveBeenCalledWith('current');
     expect(mockGetRewardActualSubscriptionId).not.toHaveBeenCalled();
+  });
+});
+
+describe('SubscriptionService - handlePostTransaction', () => {
+  const fetchMock: jest.MockedFunction<ReturnType<typeof getFetchWithTimeout>> =
+    jest.fn();
+  const MOCK_STATE = createSwapsMockStore().metamask;
+  const MOCK_TX_META = {
+    id: '1',
+    type: TransactionType.shieldSubscriptionApprove,
+    chainId: '0x1',
+  };
+  const MOCK_REWARD_SUBSCRIPTION_ID = 'reward_subscription_id';
+
+  beforeEach(() => {
+    jest.resetAllMocks();
+
+    jest.mocked(getFetchWithTimeout).mockReturnValue(fetchMock);
+    fetchMock.mockResolvedValueOnce({
+      json: async () => ({
+        '1': MAINNET_BASE,
+      }),
+      ok: true,
+    } as Response);
+
+    mockGetAppStateControllerState.mockReturnValue({
+      defaultSubscriptionPaymentOptions: {
+        defaultBillingInterval: RECURRING_INTERVALS.month,
+        defaultPaymentType: PAYMENT_TYPES.byCard,
+        defaultPaymentCurrency: 'usd',
+        defaultPaymentChain: '0x1',
+      },
+    });
+    mockGetSubscriptionControllerState.mockReturnValue({
+      lastSelectedPaymentMethod: {
+        shield: {
+          plan: RECURRING_INTERVALS.year,
+          type: PAYMENT_TYPES.byCard,
+        },
+      },
+      trialedProducts: [],
+      subscriptions: [],
+      lastSubscription: undefined,
+    });
+    mockGetAccountsState.mockReturnValue({
+      internalAccounts: MOCK_STATE.internalAccounts,
+    });
+    mockGetSmartTransactionsState.mockReturnValueOnce({
+      smartTransactionsState: {
+        userOptIn: true,
+        userOptInV2: true,
+        liveness: true,
+        livenessByChainId: {
+          '0x1': true,
+        },
+      },
+    });
+    mockGetPreferencesState.mockReturnValueOnce({
+      preferences: MOCK_STATE.preferences,
+    });
+    mockGetSwapsControllerState.mockReturnValueOnce({
+      swapsState: MOCK_STATE.swapsState,
+    });
+    mockGetTransactions.mockReturnValueOnce([]);
+    mockGetNetworkControllerState.mockReturnValueOnce({
+      networkConfigurationsByChainId: MOCK_STATE.networkConfigurationsByChainId,
+      networksMetadata: MOCK_STATE.networksMetadata,
+    });
+    mockGetKeyringControllerState.mockReturnValue({
+      keyrings: MOCK_STATE.keyrings,
+    });
+    mockGetRewardSeasonMetadata.mockResolvedValueOnce({
+      startDate: Date.now() - 1000,
+      endDate: Date.now() + 1000,
+    });
+    mockGetRewardActualSubscriptionId.mockResolvedValueOnce(
+      MOCK_REWARD_SUBSCRIPTION_ID,
+    );
+  });
+
+  it('should handle the crypto approval transaction', async () => {
+    const txMeta = {
+      ...MOCK_TX_META,
+      isGasFeeSponsored: true,
+      txParams: {
+        from: '0xdeadbeef1234567890abcdef',
+      },
+    };
+    // @ts-expect-error mock tx meta
+    await subscriptionService.handlePostTransaction(txMeta);
+
+    expect(mockSubmitShieldSubscriptionCryptoApproval).toHaveBeenCalledWith(
+      txMeta,
+      true,
+      undefined, // no reward subscription id
+    );
+  });
+
+  it('should handle the crypto approval transaction with reward subscription id for a payer account', async () => {
+    const from = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+    const txMeta = {
+      ...MOCK_TX_META,
+      txParams: {
+        from,
+      },
+    };
+    // @ts-expect-error mock tx meta
+    await subscriptionService.handlePostTransaction(txMeta);
+    expect(mockSubmitShieldSubscriptionCryptoApproval).toHaveBeenCalledWith(
+      txMeta,
+      false,
+      MOCK_REWARD_SUBSCRIPTION_ID,
+    );
+  });
+
+  it('should handle the crypto approval transaction with reward subscription id for a primary account as a fallback', async () => {
+    const from = '0x88069b650422308bf8b472beaf790189f3f28309';
+    const txMeta = {
+      ...MOCK_TX_META,
+      txParams: {
+        from,
+      },
+    };
+
+    mockGetAccountsState.mockRestore();
+    mockGetAccountsState.mockReturnValue({
+      internalAccounts: {
+        ...MOCK_STATE.internalAccounts,
+        accounts: {
+          ...MOCK_STATE.internalAccounts.accounts,
+          [MOCK_STATE.internalAccounts.selectedAccount]: {
+            // @ts-expect-error mock account
+            ...MOCK_STATE.internalAccounts.accounts[
+              MOCK_STATE.internalAccounts.selectedAccount
+            ],
+            options: {
+              entropySource: MOCK_STATE.keyrings[0].metadata.id,
+            },
+          },
+        },
+      },
+    });
+
+    // @ts-expect-error mock tx meta
+    await subscriptionService.handlePostTransaction(txMeta);
+    expect(mockSubmitShieldSubscriptionCryptoApproval).toHaveBeenCalledWith(
+      txMeta,
+      false,
+      MOCK_REWARD_SUBSCRIPTION_ID,
+    );
   });
 });
 
