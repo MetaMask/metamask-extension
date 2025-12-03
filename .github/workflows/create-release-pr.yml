@@ -82,7 +82,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Create Release PR
-        uses: MetaMask/github-tools/.github/actions/create-release-pr@v1.1.0
+        uses: MetaMask/github-tools/.github/actions/create-release-pr@feat/auto-changelog-flag
         with:
           platform: extension
           checkout-base-branch: ${{ needs.resolve-bases.outputs.checkout_base }}
@@ -94,3 +94,4 @@ jobs:
           # (this is due to github limitations on fetching secrets from called workflows).
           github-token: ${{ github.event_name == 'workflow_dispatch' && secrets.PR_TOKEN || secrets.github-token }}
           google-application-creds-base64: ${{ github.event_name == 'workflow_dispatch' && secrets.GCP_RLS_SHEET_ACCOUNT_BASE64 || secrets.google-application-creds-base64 }}
+          require-pr-numbers: 'true'

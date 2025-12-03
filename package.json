@@ -480,7 +480,7 @@
     "@lavamoat/lavapack": "^7.0.17",
     "@lydell/node-pty": "^1.1.0",
     "@metamask/api-specs": "^0.13.0",
-    "@metamask/auto-changelog": "^5.1.0",
+    "@metamask/auto-changelog": "^5.3.0",
     "@metamask/build-utils": "^3.0.0",
     "@metamask/eslint-config": "^9.0.0",
     "@metamask/eslint-config-jest": "^9.0.0",
