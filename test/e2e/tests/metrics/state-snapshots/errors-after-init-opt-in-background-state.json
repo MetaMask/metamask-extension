@@ -113,8 +113,8 @@
     "currencyRates": {
       "ETH": {
         "conversionDate": "number",
-        "conversionRate": 1700,
-        "usdConversionRate": 1700
+        "conversionRate": 1700.0000000000002,
+        "usdConversionRate": 1700.0000000000002
       },
       "MON": {
         "conversionDate": "number",
