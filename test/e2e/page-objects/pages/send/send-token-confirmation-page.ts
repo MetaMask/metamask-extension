@@ -231,7 +231,7 @@ class SendTokenConfirmPage {
 
   async clickMetaMaskDialogConfirm(): Promise<void> {
     console.log('Clicking on Confirm button');
-    await this.driver.clickElement(this.confirmButton);
+    await this.driver.clickElementAndWaitForWindowToClose(this.confirmButton);
   }
 
   async clickOnSave(): Promise<void> {

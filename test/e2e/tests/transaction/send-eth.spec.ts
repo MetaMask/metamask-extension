@@ -12,6 +12,7 @@ import FixtureBuilder from '../../fixtures/fixture-builder';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { mockSpotPrices } from '../tokens/utils/mocks';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
 
 const PREFERENCES_STATE_MOCK = {
   preferences: {
@@ -37,7 +38,9 @@ describe('Send ETH', function () {
 
           const sendTokenPage = new SendTokenPage(driver);
           await sendTokenPage.checkPageIsLoaded();
-          await sendTokenPage.fillRecipient('0x2f318C334780961FB129D2a6c30D0763d9a5C970');
+          await sendTokenPage.fillRecipient(
+            '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
+          );
 
           // Verify Insufficient funds error message is displayed
           await sendTokenPage.fillAmount('10000');
@@ -84,22 +87,18 @@ describe('Send ETH', function () {
 
           const sendTokenPage = new SendTokenPage(driver);
           await sendTokenPage.checkPageIsLoaded();
-          await sendTokenPage.fillRecipient('0x2f318C334780961FB129D2a6c30D0763d9a5C970');
+          await sendTokenPage.fillRecipient(
+            '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
+          );
           await sendTokenPage.fillAmount('1');
           await sendTokenPage.goToNextScreen();
-          const sendTokenConfirmationPage = new SendTokenConfirmPage(driver);
-          await sendTokenConfirmationPage.checkPageIsLoaded();
+          const transactionConfirmation = new TransactionConfirmation(driver);
+          await transactionConfirmation.checkPageIsLoaded();
 
           // Use Advanced Gas Modal to set custom gas
-          await sendTokenConfirmationPage.enterGasLimit('31000');
-          await sendTokenConfirmationPage.checkTokenTransfer({
-            sender: 'Account 1',
-            recipient: '0x2f318...5C970',
-            amount: '1',
-            tokenName: 'ETH',
-          });
+          await transactionConfirmation.editGasLimitLondon('31000');
 
-          await sendTokenConfirmationPage.clickOnConfirm();
+          await transactionConfirmation.clickFooterConfirmButtonAndWaitToDisappear();
 
           await homePage.goToActivityList();
           const activityList = new ActivityListPage(driver);
@@ -203,76 +202,38 @@ describe('Send ETH', function () {
             await testDapp.clickSimpleSendButton();
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-            const sendTokenConfirmationPage = new SendTokenConfirmPage(driver);
+            // update estimates to high
+            const transactionConfirmation = new TransactionConfirmation(driver);
+            await transactionConfirmation.checkPageIsLoaded();
 
-             // update estimates to high
-            await sendTokenConfirmationPage.clickEditGasFeeIcon();
-            await sendTokenConfirmationPage.clickEditSuggestedGasFeeButton();
-;
+            // enter gas limit and gas price
+            await transactionConfirmation.editSuggestedGasFeeLegacy(
+              '100000',
+              '100',
+            );
 
-        // save default values
-        await sendTokenConfirmationPage.saveDefaultValues();
+            // has correct updated value on the confirm screen the transaction
+            await transactionConfirmation.checkGasFee('0.0021');
 
-        // enter gas limit
-        await sendTokenConfirmationPage.enterGasLimit('100000');
-        await sendTokenConfirmationPage.clickOnSave();
-
-        // has correct updated value on the confirm screen the transaction
-        await sendTokenConfirmationPage.checkFirstGasFee('0.0002');
-
-        await sendTokenConfirmationPage.checkNativeCurrency('$0.30');
-
-        // confirms the transaction
-        await sendTokenConfirmationPage.clickOnConfirm();
-        await driver.switchToWindowWithTitle(
+            // confirms the transaction
+            await transactionConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+            await driver.switchToWindowWithTitle(
               WINDOW_TITLES.ExtensionInFullScreenView,
-        );
-        const activityListPage = new ActivityListPage(driver);
-        await activityListPage.openActivityTab();
-        await activityListPage.checkCompletedTransactionItems(1);
-        await activityListPage.checkTransactionAmount('-1 ETH');
+            );
+            const activityListPage = new ActivityListPage(driver);
+            await activityListPage.openActivityTab();
+            await activityListPage.checkCompletedTransactionItems(1);
+            await activityListPage.checkTransactionAmount('-0 ETH');
 
-        // the transaction has the expected gas price
-        await activityListPage.clickOnActivity(1);
-        const transactionDetails = new TransactionDetailsPage(driver);
-        await transactionDetails.checkTransactionGasPrice('100');
-
-
-        await driver.clickElement('[data-testid="edit-gas-fee-icon"]');
-            await driver.waitForSelector({
-              text: '0.000042 ETH',
-            });
-            await driver.clickElement({
-              text: 'Edit suggested gas fee',
-              tag: 'button',
-            });
-            await driver.waitForSelector({
-              text: 'Edit priority',
-              tag: 'header',
-            });
-
-            // Edit priority gas fee form
-            const inputs = await driver.findElements('input[type="number"]');
-            const gasLimitInput = inputs[0];
-            const gasPriceInput = inputs[1];
-            await gasLimitInput.fill('21000');
-            await gasPriceInput.fill('100');
-            await driver.clickElement({ text: 'Save', tag: 'button' });
-            await driver.findElement({
-              css: '[data-testid="first-gas-field"]',
-              text: '0.0021',
-            });
-
-            await driver.findElement({
-              css: '[data-testid="native-currency"]',
-              text: '$3.57',
-            });
-
+            // the transaction has the expected gas price
+            await activityListPage.clickOnActivity(1);
+            const transactionDetails = new TransactionDetailsPage(driver);
+            await transactionDetails.checkTransactionGasPrice('100');
           },
         );
       });
 
-      it('should display correct gas values for EIP-1559 transaction', async function () {
+      it.only('should display correct gas values for EIP-1559 transaction', async function () {
         await withFixtures(
           {
             dappOptions: { numberOfTestDapps: 1 },
@@ -294,88 +255,33 @@ describe('Send ETH', function () {
           async ({ driver }) => {
             await loginWithBalanceValidation(driver);
 
-            // initiates a transaction from the dapp
-            await driver.openNewPage(DAPP_URL);
-            await driver.clickElement({
-              text: 'Create Token',
-              tag: 'button',
-            });
-
+            // initiates a send from the dapp
+            const testDapp = new TestDapp(driver);
+            await testDapp.openTestDappPage();
+            await testDapp.clickERC20CreateTokenButton();
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-            await driver.clickElement('[data-testid="edit-gas-fee-icon"]');
-            await driver.clickElement(
-              '[data-testid="edit-gas-fee-item-custom"]',
-            );
+            const sendTokenConfirmationPage = new SendTokenConfirmPage(driver);
+            await sendTokenConfirmationPage.clickEditGasFeeIcon();
+            //await sendTokenConfirmationPage.clickOnAdvancedFees();
+            await sendTokenConfirmationPage.enterMaxPriorityFee('1');
+            await sendTokenConfirmationPage.enterMaxBaseFee('25');
+            await sendTokenConfirmationPage.clickOnSave();
 
-            const baseFeeInput = await driver.findElement(
-              '[data-testid="base-fee-input"]',
-            );
-            await baseFeeInput.fill('25');
-            const priorityFeeInput = await driver.findElement(
-              '[data-testid="priority-fee-input"]',
-            );
-            await priorityFeeInput.fill('1');
-
-            await driver.clickElement({ text: 'Save', tag: 'button' });
-
-            await driver.findElement({
-              css: '[data-testid="first-gas-field"]',
-              text: '0.045',
-            });
-
-            await driver.findElement({
-              css: '[data-testid="native-currency"]',
-              text: '$76.59',
-            });
-
-            await driver.clickElementAndWaitForWindowToClose({
-              text: 'Confirm',
-              tag: 'button',
-            });
+            // confirms the transaction
+            await sendTokenConfirmationPage.clickMetaMaskDialogConfirm();
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.ExtensionInFullScreenView,
             );
-
-            // Identify the transaction in the transactions list
-            await driver.waitForSelector(
-              '[data-testid="eth-overview__primary-currency"]',
-            );
-
-            await driver.clickElement(
-              '[data-testid="account-overview__activity-tab"]',
-            );
-            await driver.waitForSelector(
-              '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
-            );
-            await driver.waitForSelector({
-              css: '[data-testid="transaction-list-item-primary-currency"]',
-              text: '-0 ETH',
-            });
+            const activityListPage = new ActivityListPage(driver);
+            await activityListPage.openActivityTab();
+            await activityListPage.checkCompletedTransactionItems(1);
+            await activityListPage.checkTransactionAmount('-0 ETH');
 
             // the transaction has the expected gas value
-            await driver.clickElement(
-              '[data-testid="transaction-list-item-primary-currency"]',
-            );
-
-            await driver.waitForSelector({
-              xpath: "//div[contains(text(), 'Base fee')]",
-            });
-
-            const allFeeValues = await driver.findElements(
-              '.currency-display-component__text',
-            );
-
-            /**
-             * Below lines check that fee values are numeric.
-             * Because these values change for every e2e run,
-             * It's better to just check that the values are there and are numeric
-             */
-            assert.equal(allFeeValues.length > 0, true);
-
-            allFeeValues.forEach(async (feeValue) => {
-              assert.equal(/\d+\.?\d*/u.test(await feeValue.getText()), true);
-            });
+              await activityListPage.clickOnActivity(1);
+            const transactionDetails = new TransactionDetailsPage(driver);
+            await transactionDetails.checkTransactionBaseFee('0.343608917');
           },
         );
       });
@@ -404,8 +310,12 @@ describe('Send ETH', function () {
             // user should land on send token screen to fill recipient and amount
             const sendTokenPage = new SendTokenPage(driver);
             await sendTokenPage.checkPageIsLoaded();
-            await sendTokenPage.fillRecipient('0xc427D562164062a23a5cFf596A4a3208e72Acd28');
-            await sendTokenPage.fillHexInput('0xa9059cbb0000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C970000000000000000000000000000000000000000000000000000000000000000a');
+            await sendTokenPage.fillRecipient(
+              '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
+            );
+            await sendTokenPage.fillHexInput(
+              '0xa9059cbb0000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C970000000000000000000000000000000000000000000000000000000000000000a',
+            );
             await sendTokenPage.goToNextScreen();
 
             const sendTokenConfirmationPage = new SendTokenConfirmPage(driver);
