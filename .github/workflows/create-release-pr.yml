@@ -94,4 +94,3 @@ jobs:
           # (this is due to github limitations on fetching secrets from called workflows).
           github-token: ${{ github.event_name == 'workflow_dispatch' && secrets.PR_TOKEN || secrets.github-token }}
           google-application-creds-base64: ${{ github.event_name == 'workflow_dispatch' && secrets.GCP_RLS_SHEET_ACCOUNT_BASE64 || secrets.google-application-creds-base64 }}
-          require-pr-numbers: 'true'

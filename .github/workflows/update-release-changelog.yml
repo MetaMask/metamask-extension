@@ -56,4 +56,3 @@ jobs:
           previous-version-ref: 'null'
           github-tools-version: feat/auto-changelog-flag
           github-token: ${{ secrets.PR_TOKEN }}
-          require-pr-numbers: 'true'
