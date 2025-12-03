@@ -1022,8 +1022,12 @@ export async function loadStateFromPersistence(backup) {
 
     if (shouldUseSplitStateStorage) {
       await persistenceManager.migrateToSplitState(versionedData.data);
+      versionedData.meta = persistenceManager.getMetaData();
       delete versionedData.meta.platformSplitStateGradualRolloutAttempted;
+      // persist the new metadata one more time
+      debugger;
       persistenceManager.setMetadata(versionedData.meta);
+      await persistenceManager.persist();
     }
   } else if (persistenceManager.storageKind === 'split') {
     if (writeAllKeysToState) {

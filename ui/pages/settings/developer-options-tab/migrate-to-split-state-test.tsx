@@ -1,3 +1,5 @@
+import { Text } from '@metamask/design-system-react';
+import TextField from '../../../components/ui/text-field';
 import browser from 'webextension-polyfill';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -9,6 +11,7 @@ const MigrateToSplitStateTest = () => {
   const [enabled, setEnabled] = useState<string | null>(null);
   const [maxAccounts, setMaxAccounts] = useState<string>('');
   const [maxNetworks, setMaxNetworks] = useState<string>('');
+  const [storageKind, setStorageKind] = useState<string>('unknown');
 
   const toEnabledString = (value: unknown): string | null => {
     if (value === undefined || value === null) {
@@ -33,10 +36,12 @@ const MigrateToSplitStateTest = () => {
         splitStateMigrationEnabled,
         splitStateMigrationMaxAccounts,
         splitStateMigrationMaxNetworks,
+        meta,
       } = await browser.storage.local.get([
         'splitStateMigrationEnabled',
         'splitStateMigrationMaxAccounts',
         'splitStateMigrationMaxNetworks',
+        'meta',
       ]);
 
       if (!isMounted) {
@@ -44,6 +49,9 @@ const MigrateToSplitStateTest = () => {
       }
 
       setEnabled(toEnabledString(splitStateMigrationEnabled));
+      setStorageKind(
+        typeof meta?.storageKind === 'string' ? meta.storageKind : 'unknown',
+      );
       setMaxAccounts(
         splitStateMigrationMaxAccounts === undefined
           ? ''
@@ -67,6 +75,17 @@ const MigrateToSplitStateTest = () => {
       if (changes.splitStateMigrationEnabled) {
         const newValue = changes.splitStateMigrationEnabled.newValue;
         setEnabled(toEnabledString(newValue));
+      }
+
+      if (changes.meta) {
+        const newValue = changes.meta.newValue as
+          | { storageKind?: string }
+          | undefined;
+        setStorageKind(
+          typeof newValue?.storageKind === 'string'
+            ? newValue.storageKind
+            : 'unknown',
+        );
       }
 
       if (changes.splitStateMigrationMaxAccounts) {
@@ -140,6 +159,11 @@ const MigrateToSplitStateTest = () => {
   };
   return (
     <div>
+      <Text>Split State Migration</Text>
+      <div style={{ marginTop: '8px', marginBottom: '8px' }}>
+        <strong>Current storage kind: {storageKind}</strong>
+      </div>
+      <hr></hr>
       <button
         className="button btn-primary"
         style={{ marginTop: '16px' }}
@@ -185,22 +209,30 @@ const MigrateToSplitStateTest = () => {
           </label>
         </div>
       </label>
-      <label>
-        <span>Max Accounts flag:</span>
-        <input
-          type="number"
-          value={maxAccounts}
-          onChange={handleMaxAccountsChange}
-        />
-      </label>
-      <label>
-        <span>Max Networks flag:</span>
-        <input
-          type="number"
-          value={maxNetworks}
-          onChange={handleMaxNetworksChange}
-        />
-      </label>
+      <div>
+        <label>
+          <span>Max Accounts flag:</span>
+          <TextField
+            min="0"
+            max="99999999"
+            type="number"
+            value={maxAccounts}
+            onChange={handleMaxAccountsChange}
+          />
+        </label>
+      </div>
+      <div>
+        <label>
+          <span>Max Networks flag:</span>
+          <TextField
+            min="0"
+            max="99999999"
+            type="number"
+            value={maxNetworks}
+            onChange={handleMaxNetworksChange}
+          />
+        </label>
+      </div>
     </div>
   );
 };

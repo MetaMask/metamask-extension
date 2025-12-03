@@ -199,6 +199,15 @@ export class PersistenceManager {
     }
   }
 
+  /**
+   * Retrieves a clone of the current metadata.
+   *
+   * @returns A clone of the current metadata object.
+   */
+  getMetaData(): MetaData | undefined {
+    return structuredClone(this.#metadata);
+  }
+
   setMetadata(metadata: MetaData) {
     // don't rewrite if nothing has changed
     // this is a cheap comparison since metadata is small.
