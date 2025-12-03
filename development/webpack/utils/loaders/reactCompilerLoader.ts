@@ -134,7 +134,7 @@ export const getReactCompilerLoader = (
   const reactCompilerOptions = {
     target,
     logger: verbose ? (reactCompilerLogger as Logger) : undefined,
-    panicThreshold: debug === 'none' ? debug : `${debug}_errors`,
+    panicThreshold: debug === 'none' ? undefined : `${debug}_errors`,
   } as const satisfies ReactCompilerLoaderOption;
 
   return {
