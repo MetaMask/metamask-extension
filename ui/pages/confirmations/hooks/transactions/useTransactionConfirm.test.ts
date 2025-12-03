@@ -323,7 +323,7 @@ describe('useTransactionConfirm', () => {
     const mockOnDappSwapCompleted = jest.fn();
     jest.spyOn(DappSwapActions, 'useDappSwapActions').mockReturnValue({
       onDappSwapCompleted: mockOnDappSwapCompleted,
-      updateSwapWithQuoteDetails: jest.fn(),
+      updateSwapWithQuoteDetailsIfRequired: jest.fn(),
     } as unknown as ReturnType<typeof DappSwapActions.useDappSwapActions>);
 
     const { onTransactionConfirm } = runHook({ customNonceValue: '1234' });
@@ -357,6 +357,7 @@ describe('useTransactionConfirm', () => {
 
   it('updates swap with MM quote if available', async () => {
     jest.spyOn(DappSwapContext, 'useDappSwapContext').mockReturnValue({
+      isQuotedSwapDisplayedInInfo: true,
       selectedQuote: mockBridgeQuotes[0] as unknown as QuoteResponse,
       setSelectedQuote: jest.fn(),
       setQuotedSwapDisplayedInInfo: jest.fn(),

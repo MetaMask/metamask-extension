@@ -332,7 +332,7 @@ export const OP_BNB_DISPLAY_NAME = 'opBNB';
 export const BERACHAIN_DISPLAY_NAME = 'Berachain';
 export const METACHAIN_ONE_DISPLAY_NAME = 'Metachain One Mainnet';
 export const MEGAETH_TESTNET_DISPLAY_NAME = 'Mega Testnet';
-export const MEGAETH_MAINNET_DISPLAY_NAME = 'Mega Mainnet';
+export const MEGAETH_MAINNET_DISPLAY_NAME = 'MegaETH';
 export const LISK_DISPLAY_NAME = 'Lisk';
 export const LISK_SEPOLIA_DISPLAY_NAME = 'Lisk Sepolia';
 export const INK_SEPOLIA_DISPLAY_NAME = 'Ink Sepolia';
@@ -839,6 +839,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.LUKSO]: LUKSO_DISPLAY_NAME,
   [CHAIN_IDS.INJECTIVE]: INJECTIVE_DISPLAY_NAME,
   [CHAIN_IDS.HYPE]: HYPEREVM_DISPLAY_NAME,
+  [CHAIN_IDS.CRONOS]: CRONOS_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -1257,6 +1258,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.LUKSO]: LUKSO_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.INJECTIVE]: INJECTIVE_IMAGE_URL,
   [CHAIN_IDS.HYPE]: HYPEREVM_IMAGE_URL,
+  [CHAIN_IDS.CRONOS]: CRONOS_IMAGE_URL,
   [MultichainNetworks.SOLANA]: SOLANA_IMAGE_URL,
   [MultichainNetworks.SOLANA_TESTNET]: SOLANA_TESTNET_IMAGE_URL,
   [MultichainNetworks.SOLANA_DEVNET]: SOLANA_DEVNET_IMAGE_URL,
@@ -1581,6 +1583,20 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     ],
     defaultRpcEndpointIndex: 0,
     blockExplorerUrls: ['https://basescan.org'],
+    defaultBlockExplorerUrlIndex: 0,
+  },
+  {
+    chainId: CHAIN_IDS.MEGAETH_MAINNET,
+    name: MEGAETH_MAINNET_DISPLAY_NAME,
+    nativeCurrency: CURRENCY_SYMBOLS.ETH,
+    rpcEndpoints: [
+      {
+        url: `https://mainnet.megaeth.com/rpc`,
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://explorer.megaeth.com/'],
     defaultBlockExplorerUrlIndex: 0,
   },
 ];

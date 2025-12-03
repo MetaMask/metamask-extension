@@ -8,7 +8,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { getCustomNonceValue } from '../../../../selectors';
 import { useConfirmContext } from '../../context/confirm';
-import { useDappSwapContext } from '../../context/dapp-swap';
 import { useSelectedGasFeeToken } from '../../components/confirm/info/hooks/useGasFeeToken';
 import { updateAndApproveTx } from '../../../../store/actions';
 import { useIsGaslessSupported } from '../gas/useIsGaslessSupported';
@@ -22,12 +21,11 @@ export function useTransactionConfirm() {
   const selectedGasFeeToken = useSelectedGasFeeToken();
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
-  const { isQuotedSwapDisplayedInInfo } = useDappSwapContext();
 
   const { isSupported: isGaslessSupportedSTX } =
     useGaslessSupportedSmartTransactions();
   const { isSupported: isGaslessSupported } = useIsGaslessSupported();
-  const { onDappSwapCompleted, updateSwapWithQuoteDetails } =
+  const { onDappSwapCompleted, updateSwapWithQuoteDetailsIfRequired } =
     useDappSwapActions();
 
   const newTransactionMeta = useMemo(
@@ -88,7 +86,7 @@ export function useTransactionConfirm() {
   const onTransactionConfirm = useCallback(async () => {
     newTransactionMeta.customNonceValue = customNonceValue;
 
-    updateSwapWithQuoteDetails(newTransactionMeta);
+    updateSwapWithQuoteDetailsIfRequired(newTransactionMeta);
 
     if (isGaslessSupportedSTX) {
       handleSmartTransaction();
@@ -117,11 +115,10 @@ export function useTransactionConfirm() {
     handleSmartTransaction,
     handleGasless7702,
     selectedGasFeeToken,
-    isQuotedSwapDisplayedInInfo,
     handleShieldSubscriptionApprovalTransactionAfterConfirm,
     handleShieldSubscriptionApprovalTransactionAfterConfirmErr,
     onDappSwapCompleted,
-    updateSwapWithQuoteDetails,
+    updateSwapWithQuoteDetailsIfRequired,
   ]);
 
   return {

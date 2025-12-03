@@ -5,7 +5,7 @@ import {
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
 import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
 import { ConfirmAlertModal } from '../../../../../components/app/alert-system/confirm-alert-modal';
@@ -34,6 +34,7 @@ import { useIsGaslessLoading } from '../../../hooks/gas/useIsGaslessLoading';
 import { useEnableShieldCoverageChecks } from '../../../hooks/transactions/useEnableShieldCoverageChecks';
 import { useTransactionConfirm } from '../../../hooks/transactions/useTransactionConfirm';
 import { useConfirmActions } from '../../../hooks/useConfirmActions';
+import { useDappSwapActions } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapActions';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
 import {
   isAddEthereumChainType,
@@ -203,7 +204,8 @@ const CancelButton = ({
 
 const Footer = () => {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
+  const { onDappSwapCompleted } = useDappSwapActions();
   const { onTransactionConfirm } = useTransactionConfirm();
   const { navigateNext } = useConfirmationNavigation();
   const { onSubmit: onAddEthereumChain } = useAddEthereumChain();
@@ -245,7 +247,7 @@ const Footer = () => {
 
     if (isAddEthereumChain) {
       await onAddEthereumChain();
-      history.push(DEFAULT_ROUTE);
+      navigate(DEFAULT_ROUTE);
     } else if (isTransactionConfirmation) {
       await onTransactionConfirm();
       navigateNext(currentConfirmation.id);
@@ -258,7 +260,7 @@ const Footer = () => {
   }, [
     currentConfirmation,
     dispatch,
-    history,
+    navigate,
     isTransactionConfirmation,
     isAddEthereumChain,
     navigateNext,
@@ -275,8 +277,9 @@ const Footer = () => {
 
     await onCancel({ location: MetaMetricsEventLocation.Confirmation });
 
+    onDappSwapCompleted();
     if (isAddEthereumChain) {
-      history.push(DEFAULT_ROUTE);
+      navigate(DEFAULT_ROUTE);
     } else {
       navigateNext(currentConfirmation.id);
     }
@@ -286,7 +289,8 @@ const Footer = () => {
     shouldThrottleOrigin,
     currentConfirmation,
     isAddEthereumChain,
-    history,
+    navigate,
+    onDappSwapCompleted,
   ]);
 
   const { isEnabled, isPaused } = useEnableShieldCoverageChecks();

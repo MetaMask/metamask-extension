@@ -1,4 +1,8 @@
 .transaction-shield-page {
+  &__error-content {
+    margin-top: 120px;
+  }
+
   &__row {
     margin-bottom: 1px;
 
@@ -42,10 +46,6 @@
 
   &__membership--inactive &__membership-text {
     color: var(--color-text-default);
-  }
-
-  .warning-button:hover {
-    color: var(--color-warning-default);
   }
 
   &__notification-banner {

@@ -11,7 +11,12 @@ import {
   AcceptRequest,
   AddApprovalRequest,
 } from '@metamask/approval-controller';
-import { DeferredPromise, Json, createDeferredPromise } from '@metamask/utils';
+import {
+  DeferredPromise,
+  Hex,
+  Json,
+  createDeferredPromise,
+} from '@metamask/utils';
 import type { QrScanRequest, SerializedUR } from '@metamask/eth-qr-keyring';
 import type { Messenger } from '@metamask/messenger';
 import { Browser } from 'webextension-polyfill';
@@ -61,6 +66,19 @@ import type {
   PreferencesControllerStateChangeEvent,
 } from './preferences-controller';
 
+export type DappSwapComparisonData = {
+  quotes?: QuoteResponse[];
+  latency?: number;
+  commands?: string;
+  error?: string;
+  swapInfo?: {
+    srcTokenAddress: Hex;
+    destTokenAddress: Hex;
+    srcTokenAmount: Hex;
+    destTokenAmountMin: Hex;
+  };
+};
+
 export type AppStateControllerState = {
   activeQrCodeScanRequest: QrScanRequest | null;
   addressSecurityAlertResponses: Record<string, CachedScanAddressResponse>;
@@ -101,6 +119,7 @@ export type AppStateControllerState = {
   networkConnectionBanner: NetworkConnectionBanner;
   newPrivacyPolicyToastClickedOrClosed: boolean | null;
   newPrivacyPolicyToastShownDate: number | null;
+  pna25Acknowledged: boolean;
   nftsDetectionNoticeDismissed: boolean;
   nftsDropdownState: Json;
   notificationGasPollTokens: string[];
@@ -133,7 +152,7 @@ export type AppStateControllerState = {
   pendingShieldCohortTxType: string | null;
   defaultSubscriptionPaymentOptions?: DefaultSubscriptionPaymentOptions;
   dappSwapComparisonData?: {
-    [uniqueId: string]: { quotes?: QuoteResponse[]; latency?: number };
+    [uniqueId: string]: DappSwapComparisonData;
   };
 
   /**
@@ -269,6 +288,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   lastViewedUserSurvey: null,
   newPrivacyPolicyToastClickedOrClosed: null,
   newPrivacyPolicyToastShownDate: null,
+  pna25Acknowledged: false,
   nftsDetectionNoticeDismissed: false,
   notificationGasPollTokens: [],
   onboardingDate: null,
@@ -461,6 +481,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     usedInUi: true,
   },
   newPrivacyPolicyToastShownDate: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  pna25Acknowledged: {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: true,
@@ -871,6 +897,12 @@ export class AppStateController extends BaseController<
   setNewPrivacyPolicyToastShownDate(time: number): void {
     this.update((state) => {
       state.newPrivacyPolicyToastShownDate = time;
+    });
+  }
+
+  setPna25Acknowledged(acknowledged: boolean): void {
+    this.update((state) => {
+      state.pna25Acknowledged = acknowledged;
     });
   }
 
@@ -1636,22 +1668,22 @@ export class AppStateController extends BaseController<
 
   setDappSwapComparisonData(
     uniqueId: string,
-    info: { quotes?: QuoteResponse[]; latency?: number },
+    info: DappSwapComparisonData,
   ): void {
     this.update((state) => {
       state.dappSwapComparisonData = {
         ...state.dappSwapComparisonData,
-        [uniqueId]: info,
+        [uniqueId]: {
+          ...(state.dappSwapComparisonData?.[uniqueId] ?? {}),
+          ...info,
+        },
       };
     });
   }
 
-  getDappSwapComparisonData(uniqueId: string):
-    | {
-        quotes?: QuoteResponse[];
-        latency?: number;
-      }
-    | undefined {
+  getDappSwapComparisonData(
+    uniqueId: string,
+  ): DappSwapComparisonData | undefined {
     return this.state.dappSwapComparisonData?.[uniqueId] ?? undefined;
   }
 }

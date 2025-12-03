@@ -17,7 +17,7 @@ import {
 import { ConsolidatedWallets } from '../../../selectors/multichain-accounts/account-tree.types';
 import { MergedInternalAccount } from '../../../selectors/selectors.types';
 import { HiddenAccountList } from '../../multichain/account-list-menu/hidden-account-list';
-import { WALLET_DETAILS_ROUTE } from '../../../helpers/constants/routes';
+import { MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import { matchesSearchPattern } from './utils';
 
 export type MultichainAccountsTreeProps = {
@@ -50,7 +50,7 @@ export const MultichainAccountsTree = ({
   const handleWalletDetailsClick = useCallback(
     (walletId: string) => {
       navigate(
-        WALLET_DETAILS_ROUTE.replace(':id', encodeURIComponent(walletId)),
+        `${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/${encodeURIComponent(walletId)}`,
       );
       onClose();
     },

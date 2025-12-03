@@ -39,7 +39,7 @@ async function runHook(mockConfirmation?: Confirmation) {
 }
 
 describe('useDappSwapActions', () => {
-  describe('updateSwapWithQuoteDetails', () => {
+  describe('updateSwapWithQuoteDetailsIfRequired', () => {
     it('updates transactionMeta with MM quote if available', async () => {
       jest.spyOn(DappSwapContext, 'useDappSwapContext').mockReturnValue({
         selectedQuote: mockBridgeQuotes[0] as unknown as QuoteResponse,
@@ -49,8 +49,8 @@ describe('useDappSwapActions', () => {
       } as unknown as ReturnType<typeof DappSwapContext.useDappSwapContext>);
 
       const mockTransactionMeta = { txParams: {} };
-      const { updateSwapWithQuoteDetails } = await runHook();
-      updateSwapWithQuoteDetails(mockTransactionMeta);
+      const { updateSwapWithQuoteDetailsIfRequired } = await runHook();
+      updateSwapWithQuoteDetailsIfRequired(mockTransactionMeta);
 
       expect(mockTransactionMeta).toStrictEqual(
         expect.objectContaining({
@@ -76,6 +76,7 @@ describe('useDappSwapActions', () => {
           },
         }),
       );
+      expect(mockCaptureSwapSubmit).toHaveBeenCalled();
     });
   });
 
@@ -93,7 +94,6 @@ describe('useDappSwapActions', () => {
       expect(deleteDappSwapComparisonData).toHaveBeenCalledWith(
         'f8172040-b3d0-11f0-a882-3f99aa2e9f0c',
       );
-      expect(mockCaptureSwapSubmit).toHaveBeenCalled();
     });
   });
 });

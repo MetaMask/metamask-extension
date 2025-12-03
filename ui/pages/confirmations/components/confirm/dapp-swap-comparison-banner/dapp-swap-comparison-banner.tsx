@@ -25,8 +25,6 @@ import { useDappSwapContext } from '../../../context/dapp-swap';
 import { QuoteSwapSimulationDetails } from '../../transactions/quote-swap-simulation-details/quote-swap-simulation-details';
 import { NetworkRow } from '../info/shared/network-row/network-row';
 
-const DAPP_SWAP_THRESHOLD = 0.01;
-
 type DappSwapUiFlag = {
   enabled: boolean;
   threshold: number;
@@ -39,25 +37,32 @@ const enum SwapType {
 
 // Swaps tabs are memoized to prevent animation jitter in MMSwap tab
 const SwapTabs = React.memo(
-  ({ onTabClick }: { onTabClick: (key: string) => void }) => {
+  ({
+    onTabClick,
+    activeTabKey,
+  }: {
+    onTabClick: (key: SwapType) => void;
+    activeTabKey: SwapType;
+  }) => {
     const t = useI18nContext();
 
     return (
       <Tabs
-        defaultActiveTabKey="marketRate"
+        defaultActiveTabKey={activeTabKey}
+        activeTabKey={activeTabKey}
         onTabClick={onTabClick}
         tabListProps={{
           className: 'dapp-swap__tabs',
         }}
       >
         <Tab
-          tabKey="marketRate"
+          tabKey={SwapType.Current}
           name={t('marketRate')}
           className="flex-1"
           data-testid="market-rate-tab"
         />
         <Tab
-          tabKey="mmswap"
+          tabKey={SwapType.Metamask}
           name={t('metamaskSwap')}
           className="flex-1 animate-mm-swap-text"
           data-testid="metamask-swap-tab"
@@ -71,7 +76,6 @@ const DappSwapComparisonInner = () => {
   const t = useI18nContext();
   const {
     fiatRates,
-    gasDifference,
     minDestTokenAmountInUSD,
     selectedQuote,
     selectedQuoteValueDifference,
@@ -123,10 +127,10 @@ const DappSwapComparisonInner = () => {
   ]);
 
   const onTabClick = useCallback(
-    (tabKey: string) => {
-      if (tabKey === 'marketRate') {
+    (tabKey: SwapType) => {
+      if (tabKey === SwapType.Current) {
         updateSwapToCurrent();
-      } else if (tabKey === 'mmswap') {
+      } else if (tabKey === SwapType.Metamask) {
         updateSwapToSelectedQuote();
       }
     },
@@ -135,18 +139,15 @@ const DappSwapComparisonInner = () => {
 
   const swapComparisonDisplayed =
     dappSwapUi?.enabled &&
-    (selectedQuoteValueDifference >=
-      (dappSwapUi?.threshold ?? DAPP_SWAP_THRESHOLD) ||
+    (selectedQuoteValueDifference >= dappSwapUi?.threshold ||
       (dappSwapQa?.enabled && selectedQuote));
 
   useEffect(() => {
-    let dappSwapComparisonDisplayed = false;
     if (swapComparisonDisplayed) {
-      dappSwapComparisonDisplayed = true;
+      captureDappSwapComparisonDisplayProperties({
+        swap_mm_cta_displayed: 'true',
+      });
     }
-    captureDappSwapComparisonDisplayProperties({
-      swap_mm_cta_displayed: dappSwapComparisonDisplayed.toString(),
-    });
   }, [captureDappSwapComparisonDisplayProperties, swapComparisonDisplayed]);
 
   useEffect(() => {
@@ -161,7 +162,7 @@ const DappSwapComparisonInner = () => {
 
   return (
     <Box>
-      <SwapTabs onTabClick={onTabClick} />
+      <SwapTabs onTabClick={onTabClick} activeTabKey={selectedSwapType} />
       {showDappSwapComparisonBanner && dappTypeSelected && (
         <Box
           className="dapp-swap_callout"
@@ -184,7 +185,7 @@ const DappSwapComparisonInner = () => {
             color={TextColor.TextDefault}
             variant={TextVariant.BodySm}
           >
-            {t('dappSwapAdvantage')}
+            {rewards ? t('dappSwapAdvantage') : t('dappSwapAdvantageSaveOnly')}
           </Text>
           <Text
             className="dapp-swap_text-save"
@@ -192,7 +193,7 @@ const DappSwapComparisonInner = () => {
             variant={TextVariant.BodyXs}
           >
             {t('dappSwapQuoteDifference', [
-              `$${(gasDifference + tokenAmountDifference).toFixed(2)}`,
+              `$${selectedQuoteValueDifference.toFixed(2)}`,
             ])}
             {rewards && <span>{` • ${rewards.text}`}</span>}
           </Text>
@@ -221,14 +222,9 @@ const DappSwapComparisonInner = () => {
 };
 
 export const DappSwapComparisonBanner = () => {
-  const { dappSwapMetrics } = useSelector(getRemoteFeatureFlags);
   const { isSwapToBeCompared } = useDappSwapCheck();
 
-  const dappSwapMetricsEnabled =
-    (dappSwapMetrics as { enabled: boolean })?.enabled === true &&
-    isSwapToBeCompared;
-
-  if (!dappSwapMetricsEnabled) {
+  if (!isSwapToBeCompared) {
     return null;
   }
 

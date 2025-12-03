@@ -1,124 +1,62 @@
-import log from 'loglevel';
-import {
-  Hex,
-  Json,
-  JsonRpcParams,
-  JsonRpcRequest,
-  JsonRpcResponse,
-} from '@metamask/utils';
-import {
-  NetworkClientId,
-  NetworkConfiguration,
-} from '@metamask/network-controller';
+import { Json, JsonRpcResponse } from '@metamask/utils';
 import {
   GenericQuoteRequest,
   QuoteResponse,
 } from '@metamask/bridge-controller';
+import {
+  NetworkClientId,
+  NetworkConfiguration,
+} from '@metamask/network-controller';
 
-import { captureException } from '../../../../shared/lib/sentry';
-import { getDataFromSwap } from '../../../../shared/modules/dapp-swap-comparison/dapp-swap-comparison-utils';
-import { SecurityAlertResponse } from '../ppom/types';
-
-export type DappSwapMiddlewareRequest<
-  Params extends JsonRpcParams = JsonRpcParams,
-> = Required<JsonRpcRequest<Params>> & {
-  origin?: string;
-  securityAlertResponse?: SecurityAlertResponse | undefined;
-  networkClientId: NetworkClientId;
-  params: {
-    data: string;
-    from: string;
-    calls: { data: string; from: string }[];
-  }[];
-};
-
-const FOUR_BYTE_EXECUTE_SWAP_CONTRACT = '0x3593564c';
-const DAPP_SWAP_COMPARISON_ORIGIN = 'https://app.uniswap.org';
-const TEST_DAPP_ORIGIN = 'https://metamask.github.io';
-
-const getSwapDetails = (params: DappSwapMiddlewareRequest['params']) => {
-  if (!params?.length) {
-    return {
-      data: undefined,
-      from: undefined,
-      chainId: undefined,
-    };
-  }
-  const { calls, data, from } = params[0];
-  let transactionData = data;
-  if (calls?.length) {
-    const executeSwapCall = calls?.find(({ data: trxnData }) =>
-      trxnData?.startsWith(FOUR_BYTE_EXECUTE_SWAP_CONTRACT),
-    );
-    if (executeSwapCall) {
-      transactionData = executeSwapCall?.data;
-    }
-  }
-  return {
-    data: transactionData,
-    from,
-  };
-};
+import { DappSwapComparisonData } from '../../controllers/app-state-controller';
+import {
+  DappSwapMiddlewareRequest,
+  getQuotesForConfirmation,
+} from './dapp-swap-util';
 
 export function createDappSwapMiddleware<
   Params extends (string | { to: string })[],
   Result extends Json,
 >({
   fetchQuotes,
-  setSwapQuotes,
+  setDappSwapComparisonData,
   getNetworkConfigurationByNetworkClientId,
+  dappSwapMetricsFlag,
 }: {
   fetchQuotes: (quotesInput: GenericQuoteRequest) => Promise<QuoteResponse[]>;
-  setSwapQuotes: (
+  setDappSwapComparisonData: (
     uniqueId: string,
-    info: { quotes?: QuoteResponse[]; latency?: number },
+    info: DappSwapComparisonData,
   ) => void;
   getNetworkConfigurationByNetworkClientId: (
     networkClientId: NetworkClientId,
   ) => NetworkConfiguration | undefined;
+  dappSwapMetricsFlag: {
+    enabled: boolean;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    bridge_quote_fees: number;
+    origins: string[];
+  };
 }) {
   return async (
     req: DappSwapMiddlewareRequest<Params>,
     _res: JsonRpcResponse<Result>,
     next: () => void,
   ) => {
-    try {
-      const { securityAlertResponse, params, origin } = req;
-      const { securityAlertId } = securityAlertResponse ?? {};
+    const { securityAlertResponse } = req;
+    const { securityAlertId } = securityAlertResponse ?? {};
 
-      if (
-        (req.method === 'eth_sendTransaction' ||
-          req.method === 'wallet_sendCalls') &&
-        (origin === DAPP_SWAP_COMPARISON_ORIGIN || origin === TEST_DAPP_ORIGIN)
-      ) {
-        const { chainId } =
-          getNetworkConfigurationByNetworkClientId(req.networkClientId) ?? {};
-
-        const { data, from } = getSwapDetails(params);
-        if (data && securityAlertId && chainId) {
-          const { quotesInput } = getDataFromSwap(chainId as Hex, data, from);
-          if (quotesInput) {
-            const startTime = new Date().getTime();
-            fetchQuotes(quotesInput)
-              .then((quotes) => {
-                const endTime = new Date().getTime();
-                const latency = endTime - startTime;
-                if (quotes) {
-                  setSwapQuotes(securityAlertId, { quotes, latency });
-                }
-              })
-              .catch((error) => {
-                log.error('Error fetching dapp swap quotes', error);
-                captureException(error);
-              });
-          }
-        }
-      }
-    } catch (error) {
-      log.error('Error fetching dapp swap quotes', error);
-      captureException(error);
-    } finally {
-      next();
+    if (securityAlertId && req.method === 'eth_sendTransaction') {
+      getQuotesForConfirmation({
+        req,
+        fetchQuotes,
+        setDappSwapComparisonData,
+        getNetworkConfigurationByNetworkClientId,
+        dappSwapMetricsFlag,
+        securityAlertId,
+      });
     }
+
+    next();
   };
 }

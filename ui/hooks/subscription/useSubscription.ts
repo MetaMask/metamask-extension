@@ -52,7 +52,6 @@ import {
   getMetaMetricsId,
   getModalTypeForShieldEntryModal,
   getUnapprovedConfirmations,
-  selectNetworkConfigurationByChainId,
 } from '../../selectors';
 import { useSubscriptionMetrics } from '../shield/metrics/useSubscriptionMetrics';
 import { CaptureShieldSubscriptionRequestParams } from '../shield/metrics/types';
@@ -60,12 +59,16 @@ import { EntryModalSourceEnum } from '../../../shared/constants/subscriptions';
 import { DefaultSubscriptionPaymentOptions } from '../../../shared/types';
 import {
   getLatestSubscriptionStatus,
+  getShieldMarketingUtmParamsForMetrics,
   getUserBalanceCategory,
+  SHIELD_SUBSCRIPTION_CARD_TAB_ACTION_ERROR_MESSAGE,
 } from '../../../shared/modules/shield';
 import { openWindow } from '../../helpers/utils/window';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import { useAccountTotalFiatBalance } from '../useAccountTotalFiatBalance';
+import { getNetworkConfigurationsByChainId } from '../../../shared/modules/selectors/networks';
+import { isCryptoPaymentMethod } from '../../pages/settings/transaction-shield-tab/types';
 import {
   TokenWithApprovalAmount,
   useSubscriptionPricing,
@@ -324,13 +327,9 @@ export const useSubscriptionCryptoApprovalTransaction = (
     // Account address will be the same for all EVM accounts
     getInternalAccountBySelectedAccountGroupAndCaip(state, 'eip155:1'),
   );
-  const networkConfiguration = useSelector((state) =>
-    selectNetworkConfigurationByChainId(state, selectedToken?.chainId as Hex),
+  const networkConfigurationsByChainId = useSelector(
+    getNetworkConfigurationsByChainId,
   );
-  const networkClientId =
-    networkConfiguration?.rpcEndpoints[
-      networkConfiguration.defaultRpcEndpointIndex ?? 0
-    ]?.networkClientId;
 
   const hasPendingApprovals =
     useSelector(getUnapprovedConfirmations).length > 0;
@@ -353,6 +352,13 @@ export const useSubscriptionCryptoApprovalTransaction = (
     if (!selectedToken) {
       throw new Error('No token selected');
     }
+
+    const networkConfiguration =
+      networkConfigurationsByChainId[selectedToken.chainId as Hex];
+    const networkClientId =
+      networkConfiguration?.rpcEndpoints[
+        networkConfiguration.defaultRpcEndpointIndex ?? 0
+      ]?.networkClientId;
 
     const spenderAddress = subscriptionPricing?.paymentMethods
       ?.find((method) => method.type === PAYMENT_TYPES.byCrypto)
@@ -380,8 +386,8 @@ export const useSubscriptionCryptoApprovalTransaction = (
     setShieldTransactionDispatched,
     subscriptionPricing,
     evmInternalAccount,
+    networkConfigurationsByChainId,
     selectedToken,
-    networkClientId,
   ]);
 
   return {
@@ -491,19 +497,10 @@ export const useHandleSubscription = ({
   const latestSubscriptionStatus =
     getLatestSubscriptionStatus(subscriptions, lastSubscription) || 'none';
 
-  const getMarketingUtmId = useCallback(() => {
-    const searchParams = new URLSearchParams(search);
-    const utmId = searchParams.get('utm_id');
-    if (utmId) {
-      return utmId;
-    }
-    return undefined;
-  }, [search]);
-
   const determineSubscriptionRequestSource =
     useCallback((): EntryModalSourceEnum => {
-      const marketingUtmId = getMarketingUtmId();
-      if (marketingUtmId) {
+      const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
+      if (Object.keys(marketingUtmParams).length > 0) {
         return EntryModalSourceEnum.Marketing;
       }
       const sourceParam = new URLSearchParams(search).get('source');
@@ -522,7 +519,7 @@ export const useHandleSubscription = ({
         default:
           return EntryModalSourceEnum.Settings;
       }
-    }, [getMarketingUtmId, search]);
+    }, [search]);
 
   const [handleSubscription, subscriptionResult] =
     useAsyncCallback(async () => {
@@ -537,6 +534,8 @@ export const useHandleSubscription = ({
         }),
       );
 
+      const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
+
       // We need to pass the default payment options & some metrics properties to the background app state controller
       // as these properties are not accessible in the background directly.
       // Shield subscription metrics requests can use them for the metrics capture
@@ -544,7 +543,7 @@ export const useHandleSubscription = ({
       await dispatch(setDefaultSubscriptionPaymentOptions(defaultOptions));
       await setShieldSubscriptionMetricsPropsToBackground({
         source: determineSubscriptionRequestSource(),
-        marketingUtmId: getMarketingUtmId(),
+        marketingUtmParams,
       });
 
       const source = determineSubscriptionRequestSource();
@@ -563,7 +562,7 @@ export const useHandleSubscription = ({
         billingInterval: selectedPlan,
         source,
         type: modalType,
-        marketingUtmId: getMarketingUtmId(),
+        marketingUtmParams,
       };
 
       if (selectedPaymentMethod === PAYMENT_TYPES.byCard) {
@@ -573,14 +572,30 @@ export const useHandleSubscription = ({
           paymentCurrency: 'USD',
           requestStatus: 'started',
         });
-        await dispatch(
-          startSubscriptionWithCard({
-            products: [PRODUCT_TYPES.SHIELD],
-            isTrialRequested: !isTrialed,
-            recurringInterval: selectedPlan,
-            useTestClock,
-          }),
-        );
+        try {
+          await dispatch(
+            startSubscriptionWithCard({
+              products: [PRODUCT_TYPES.SHIELD],
+              isTrialRequested: !isTrialed,
+              recurringInterval: selectedPlan,
+              useTestClock,
+            }),
+          );
+        } catch (e) {
+          if (
+            e instanceof Error &&
+            e.message
+              .toLowerCase()
+              .includes(
+                SHIELD_SUBSCRIPTION_CARD_TAB_ACTION_ERROR_MESSAGE.toLowerCase(),
+              )
+          ) {
+            // tab action failed is not api error, only log it here
+            console.error('[useHandleSubscription error]:', e);
+          } else {
+            throw e;
+          }
+        }
       } else if (selectedPaymentMethod === PAYMENT_TYPES.byCrypto) {
         await executeSubscriptionCryptoApprovalTransaction();
       }
@@ -597,7 +612,7 @@ export const useHandleSubscription = ({
       latestSubscriptionStatus,
       modalType,
       determineSubscriptionRequestSource,
-      getMarketingUtmId,
+      search,
     ]);
 
   return {
@@ -637,5 +652,86 @@ export const useHandleSubscriptionSupportAction = () => {
 
   return {
     handleClickContactSupport,
+  };
+};
+
+export const useUpdateSubscriptionCryptoPaymentMethod = ({
+  subscription,
+}: {
+  subscription?: Subscription;
+}) => {
+  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const [selectedChangePaymentToken, setSelectedChangePaymentToken] = useState<
+    | Pick<
+        TokenWithApprovalAmount,
+        'chainId' | 'address' | 'approvalAmount' | 'symbol'
+      >
+    | undefined
+  >();
+
+  const { execute: executeSubscriptionCryptoApprovalTransaction } =
+    useSubscriptionCryptoApprovalTransaction(selectedChangePaymentToken);
+
+  // This update the subscription payment method to crypto
+  // and trigger the approval transaction flow
+  const [handler, result] = useAsyncCallback(async () => {
+    if (!subscription) {
+      throw new Error('No subscription exist');
+    }
+    // only allow update payment method to crypto -> crypto atm
+    if (!isCryptoPaymentMethod(subscription.paymentMethod)) {
+      throw new Error('Subscription is not a crypto payment method');
+    }
+    if (!selectedChangePaymentToken) {
+      throw new Error('No token selected');
+    }
+
+    // save the changing payment method as last used subscription payment method and plan to Redux store
+    await dispatch(
+      setLastUsedSubscriptionPaymentDetails(PRODUCT_TYPES.SHIELD, {
+        type: PAYMENT_TYPES.byCrypto,
+        paymentTokenAddress: selectedChangePaymentToken.address as Hex,
+        paymentTokenSymbol: selectedChangePaymentToken.symbol,
+        plan: subscription.interval,
+      }),
+    );
+    await executeSubscriptionCryptoApprovalTransaction();
+  }, [
+    subscription,
+    executeSubscriptionCryptoApprovalTransaction,
+    dispatch,
+    selectedChangePaymentToken,
+  ]);
+
+  const selectedPaymentTokenAddress = selectedChangePaymentToken?.address;
+  // trigger update subscription crypto payment method when selected change payment token changes
+  useEffect(() => {
+    if (selectedPaymentTokenAddress) {
+      handler().then(() => {
+        // reset selected change payment token after update subscription crypto payment method succeeded
+        setSelectedChangePaymentToken(undefined);
+      });
+    }
+  }, [selectedPaymentTokenAddress, handler]);
+
+  // execute update subscription crypto payment method with new token by settings state with useEffect above to workaround useAsyncCallback hook not accepting callback parameter
+  const execute = useCallback(
+    (
+      newToken: Pick<
+        TokenWithApprovalAmount,
+        'chainId' | 'address' | 'approvalAmount' | 'symbol'
+      >,
+    ) => {
+      if (!newToken) {
+        throw new Error('No token selected');
+      }
+      setSelectedChangePaymentToken(newToken);
+    },
+    [setSelectedChangePaymentToken],
+  );
+
+  return {
+    execute,
+    result,
   };
 };

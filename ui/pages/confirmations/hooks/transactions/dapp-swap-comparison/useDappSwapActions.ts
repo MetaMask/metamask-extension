@@ -11,18 +11,17 @@ import { useCallback } from 'react';
 import { deleteDappSwapComparisonData } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
 import { useDappSwapContext } from '../../../context/dapp-swap';
-import { useDappSwapCheck } from './useDappSwapCheck';
 import { useDappSwapComparisonMetrics } from './useDappSwapComparisonMetrics';
 
 export function useDappSwapActions() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { selectedQuote } = useDappSwapContext();
+  const { isQuotedSwapDisplayedInInfo, selectedQuote } = useDappSwapContext();
   const { captureSwapSubmit } = useDappSwapComparisonMetrics();
-  const { isSwapToBeCompared } = useDappSwapCheck();
 
-  const updateSwapWithQuoteDetails = useCallback(
+  const updateSwapWithQuoteDetailsIfRequired = useCallback(
     (transactionMeta: TransactionMeta) => {
-      if (!selectedQuote) {
+      captureSwapSubmit();
+      if (!isQuotedSwapDisplayedInInfo) {
         return;
       }
       const { value, gasLimit, data, to } = selectedQuote?.trade as TxData;
@@ -57,25 +56,18 @@ export function useDappSwapActions() {
       transactionMeta.batchTransactionsOptions = {};
       transactionMeta.nestedTransactions = undefined;
     },
-    [selectedQuote],
+    [captureSwapSubmit, isQuotedSwapDisplayedInInfo, selectedQuote],
   );
 
   const onDappSwapCompleted = useCallback(() => {
-    if (!isSwapToBeCompared) {
-      return;
-    }
     const uniqueId = currentConfirmation.securityAlertResponse?.securityAlertId;
     if (uniqueId) {
       deleteDappSwapComparisonData(uniqueId);
     }
-    captureSwapSubmit();
-  }, [
-    isSwapToBeCompared,
-    currentConfirmation?.securityAlertResponse?.securityAlertId,
-  ]);
+  }, [currentConfirmation?.securityAlertResponse?.securityAlertId]);
 
   return {
-    updateSwapWithQuoteDetails,
+    updateSwapWithQuoteDetailsIfRequired,
     onDappSwapCompleted,
   };
 }
