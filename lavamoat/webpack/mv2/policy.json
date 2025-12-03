@@ -725,7 +725,7 @@
         "prop-types": true,
         "react": true,
         "react-dom": true,
-        "@material-ui/core>react-is": true,
+        "react-redux>react-is": true,
         "react-transition-group": true
       }
     },
@@ -2109,6 +2109,11 @@
       }
     },
     "@metamask/snaps-rpc-methods": {
+      "meta": {
+        "webpack-optimization": [
+          "Dependency '@metamask/snaps-utils' reexports from '@metamask/snaps-sdk' and webpack collapsed that to a direct import."
+        ]
+      },
       "packages": {
         "@metamask/snaps-sdk>@metamask/key-tree": true,
         "@metamask/permission-controller": true,
@@ -2130,7 +2135,8 @@
         "@metamask/rpc-errors": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "@swc/helpers": true
+        "@swc/helpers": true,
+        "luxon": true
       }
     },
     "@metamask/snaps-utils": {
@@ -5095,7 +5101,7 @@
         "prop-types": true,
         "react-markdown>property-information": true,
         "react": true,
-        "react-markdown>react-is": true,
+        "react-redux>react-is": true,
         "react-markdown>remark-parse": true,
         "react-markdown>remark-rehype": true,
         "react-markdown>space-separated-tokens": true,
