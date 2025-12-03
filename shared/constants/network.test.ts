@@ -37,6 +37,7 @@ describe('NetworkConstants', () => {
         Sei: CHAIN_IDS.SEI,
         Monad: CHAIN_IDS.MONAD,
         HyperEVM: CHAIN_IDS.HYPE,
+        'Xone Mainnet': CHAIN_IDS.XONE,
       };
 
       FEATURED_RPCS.forEach((rpc) => {
@@ -93,6 +94,14 @@ describe('NetworkConstants', () => {
         (rpc) => rpc.chainId === CHAIN_IDS.BASE,
       );
       expect(baseRpc.rpcEndpoints[0].url).toContain('infura.io');
+    });
+
+    it('xone entry should not use Infura and should use the correct RPC URL', () => {
+      const [xoneRpc] = FEATURED_RPCS.filter(
+        (rpc) => rpc.chainId === CHAIN_IDS.XONE,
+      );
+      expect(xoneRpc.rpcEndpoints[0].url).toBe('https://rpc.xone.org');
+      expect(xoneRpc.rpcEndpoints[0].url).not.toContain('infura.io');
     });
   });
 });
