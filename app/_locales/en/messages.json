@@ -6100,8 +6100,17 @@
   "shieldClaimGroupActive": {
     "message": "Active claims"
   },
+  "shieldClaimGroupActiveNote": {
+    "message": "Note: You can have a maximum of 3 active claims at a single time."
+  },
   "shieldClaimGroupCompleted": {
     "message": "Completed claims"
+  },
+  "shieldClaimGroupNoCompletedClaims": {
+    "message": "No completed claims"
+  },
+  "shieldClaimGroupNoCompletedClaimsDescription": {
+    "message": "Track your completed claims here."
   },
   "shieldClaimGroupNoOpenClaims": {
     "message": "No open claims"
@@ -6207,7 +6216,7 @@
     "message": "Claims"
   },
   "shieldClaimsNumber": {
-    "message": "Claim #$1",
+    "message": "Claims #$1",
     "description": "The $1 is the claim number"
   },
   "shieldClaimsTabHistory": {

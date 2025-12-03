@@ -24,6 +24,13 @@ import { TRANSACTION_SHIELD_CLAIM_ROUTES } from '../../../../helpers/constants/r
 import { Tab, Tabs } from '../../../../components/ui/tabs';
 import { getShortDateFormatterV2 } from '../../../asset/util';
 
+const CLAIMS_TAB_KEYS = {
+  PENDING: 'pending',
+  HISTORY: 'history',
+} as const;
+
+type ClaimsTabKey = (typeof CLAIMS_TAB_KEYS)[keyof typeof CLAIMS_TAB_KEYS];
+
 const ClaimsList = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
@@ -78,6 +85,54 @@ const ClaimsList = () => {
     [navigate, t],
   );
 
+  const emptyClaimsView = useCallback(
+    (tabKey: ClaimsTabKey) => {
+      return (
+        <Box className="h-full flex justify-center items-center">
+          <Box className="text-center">
+            <img
+              src="/images/activity.svg"
+              alt={t('activity')}
+              className="mb-2 mx-auto"
+              width={72}
+              height={72}
+            />
+            <Text
+              variant={TextVariant.HeadingSm}
+              color={TextColor.TextAlternative}
+              className="mb-2"
+            >
+              {tabKey === CLAIMS_TAB_KEYS.PENDING
+                ? t('shieldClaimGroupNoOpenClaims')
+                : t('shieldClaimGroupNoCompletedClaims')}
+            </Text>
+            <Text
+              variant={TextVariant.BodyMd}
+              color={TextColor.TextAlternative}
+              className="mb-4"
+            >
+              {tabKey === CLAIMS_TAB_KEYS.PENDING
+                ? t('shieldClaimGroupNoOpenClaimsDescription')
+                : t('shieldClaimGroupNoCompletedClaimsDescription')}
+            </Text>
+            {tabKey === CLAIMS_TAB_KEYS.PENDING && (
+              <Button
+                variant={ButtonVariant.Secondary}
+                size={ButtonSize.Lg}
+                onClick={() => {
+                  navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL);
+                }}
+              >
+                {t('shieldClaimSubmit')}
+              </Button>
+            )}
+          </Box>
+        </Box>
+      );
+    },
+    [navigate, t],
+  );
+
   if (isLoading) {
     return <LoadingScreen />;
   }
@@ -114,6 +169,12 @@ const ClaimsList = () => {
                     {pendingClaims.map((claim) => claimItem(claim))}
                   </Box>
                 </Box>
+                <Text
+                  variant={TextVariant.BodySm}
+                  color={TextColor.TextAlternative}
+                >
+                  {t('shieldClaimGroupActiveNote')}
+                </Text>
               </Box>
             </Box>
             <Box className="p-4">
@@ -130,40 +191,7 @@ const ClaimsList = () => {
             </Box>
           </Box>
         ) : (
-          <Box className="h-full flex justify-center items-center">
-            <Box className="text-center">
-              <img
-                src="/images/activity.svg"
-                alt={t('activity')}
-                className="mb-2 mx-auto"
-                width={72}
-                height={72}
-              />
-              <Text
-                variant={TextVariant.HeadingSm}
-                color={TextColor.TextAlternative}
-                className="mb-2"
-              >
-                {t('shieldClaimGroupNoOpenClaims')}
-              </Text>
-              <Text
-                variant={TextVariant.BodyMd}
-                color={TextColor.TextAlternative}
-                className="mb-4"
-              >
-                {t('shieldClaimGroupNoOpenClaimsDescription')}
-              </Text>
-              <Button
-                variant={ButtonVariant.Secondary}
-                size={ButtonSize.Lg}
-                onClick={() => {
-                  navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL);
-                }}
-              >
-                {t('shieldClaimSubmit')}
-              </Button>
-            </Box>
-          </Box>
+          emptyClaimsView(CLAIMS_TAB_KEYS.PENDING)
         )}
       </Tab>
       <Tab
@@ -171,38 +199,42 @@ const ClaimsList = () => {
         className="flex-1 px-4 py-2"
         tabKey="history"
       >
-        <Box padding={4} className="flex flex-col gap-4">
-          {/* Completed claims */}
-          {completedClaims.length > 0 && (
-            <Box>
-              <Text
-                variant={TextVariant.HeadingSm}
-                fontWeight={FontWeight.Medium}
-                className="mb-3"
-              >
-                {t('shieldClaimGroupCompleted')}
-              </Text>
-              <Box className="flex flex-col gap-2">
-                {completedClaims.map((claim) => claimItem(claim))}
+        {completedClaims.length > 0 || rejectedClaims.length > 0 ? (
+          <Box padding={4} className="flex flex-col gap-4">
+            {/* Completed claims */}
+            {completedClaims.length > 0 && (
+              <Box>
+                <Text
+                  variant={TextVariant.HeadingSm}
+                  fontWeight={FontWeight.Medium}
+                  className="mb-3"
+                >
+                  {t('shieldClaimGroupCompleted')}
+                </Text>
+                <Box className="flex flex-col gap-2">
+                  {completedClaims.map((claim) => claimItem(claim))}
+                </Box>
               </Box>
-            </Box>
-          )}
-          {/* Rejected claims */}
-          {rejectedClaims.length > 0 && (
-            <Box>
-              <Text
-                variant={TextVariant.HeadingSm}
-                fontWeight={FontWeight.Medium}
-                className="mb-3"
-              >
-                {t('shieldClaimGroupRejected')}
-              </Text>
-              <Box className="flex flex-col gap-2">
-                {rejectedClaims.map((claim) => claimItem(claim))}
+            )}
+            {/* Rejected claims */}
+            {rejectedClaims.length > 0 && (
+              <Box>
+                <Text
+                  variant={TextVariant.HeadingSm}
+                  fontWeight={FontWeight.Medium}
+                  className="mb-3"
+                >
+                  {t('shieldClaimGroupRejected')}
+                </Text>
+                <Box className="flex flex-col gap-2">
+                  {rejectedClaims.map((claim) => claimItem(claim))}
+                </Box>
               </Box>
-            </Box>
-          )}
-        </Box>
+            )}
+          </Box>
+        ) : (
+          emptyClaimsView(CLAIMS_TAB_KEYS.HISTORY)
+        )}
       </Tab>
     </Tabs>
   );
