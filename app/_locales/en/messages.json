@@ -5483,9 +5483,6 @@
   "resetWalletButton": {
     "message": "Yes, reset wallet"
   },
-  "resetWalletButtonCancel": {
-    "message": "Cancel"
-  },
   "resetWalletDescriptionOne": {
     "message": "We can’t recover your Secret Recovery Phrase. You can reset the wallet to create a new one and import your accounts using private keys."
   },
