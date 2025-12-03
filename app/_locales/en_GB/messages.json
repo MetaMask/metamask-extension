@@ -6222,7 +6222,7 @@
     "message": "This chain is not supported, so it isn't protected by MetaMask Transaction Shield. $1"
   },
   "shieldCoverageAlertMessageLearnHowCoverageWorks": {
-    "message": "See what's Covered"
+    "message": "See what's covered"
   },
   "shieldCoverageAlertMessagePaused": {
     "message": "There was an issue with your MetaMask Transaction Shield plan payment. Please update your payment method to resume coverage."
@@ -8077,22 +8077,29 @@
   "tronBandwidth": {
     "message": "Bandwidth"
   },
-  "tronBandwidthCoverageDescription": {
-    "message": "Sufficient to cover ~$1 TRX transfers",
+  "tronBandwidthCoverageDescriptionPlural": {
+    "message": "Covers ~$1 TRX transfers",
     "description": "$1 is the number of TRX transfers"
+  },
+  "tronBandwidthCoverageDescriptionSingular": {
+    "message": "Covers 1 TRX transfer"
   },
   "tronDailyResources": {
     "message": "Daily resource"
   },
   "tronDailyResourcesDescription": {
-    "message": "This is your daily allowance based on your staked TRX. You get 600 bandwidth for free daily."
+    "message": "This is your daily allowance based on your staked TRX. You get $1 bandwidth for free daily.",
+    "description": "$1 is the maximum bandwidth value"
   },
   "tronEnergy": {
     "message": "Energy"
   },
-  "tronEnergyCoverageDescription": {
-    "message": "Sufficient to cover ~$1 USDT",
+  "tronEnergyCoverageDescriptionPlural": {
+    "message": "Covers ~$1 USDT transfers",
     "description": "$1 is the number of USDT transfers"
+  },
+  "tronEnergyCoverageDescriptionSingular": {
+    "message": "Covers 1 USDT transfer"
   },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "We're having trouble connecting your Ledger. $1",

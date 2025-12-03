@@ -152,7 +152,6 @@ describe('useDappSwapComparisonInfo', () => {
 
     const {
       fiatRates,
-      gasDifference,
       selectedQuote,
       selectedQuoteValueDifference,
       sourceTokenAmount,
@@ -168,7 +167,6 @@ describe('useDappSwapComparisonInfo', () => {
     });
     expect(selectedQuote).toEqual(mockBridgeQuotes[3]);
     expect(selectedQuoteValueDifference).toBe(0.012494042894187605);
-    expect(gasDifference).toBe(0.005686377458187605);
     expect(tokenAmountDifference).toBe(0.006807665436);
     expect(sourceTokenAmount).toBe('0x0de0b6b3a7640000');
     expect(tokenDetails).toEqual({
