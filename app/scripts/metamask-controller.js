@@ -1445,8 +1445,14 @@ export default class MetamaskController extends EventEmitter {
         (snap) => !snap.preinstalled,
       )
     ) {
-      this.snapController.updateRegistry().catch(() => {
-        // Ignore
+      this.snapController.updateRegistry().catch((error) => {
+        if (
+          !error.message.includes(
+            'The Snaps platform requires basic functionality to be used.',
+          )
+        ) {
+          console.error(error);
+        }
       });
     }
   }
