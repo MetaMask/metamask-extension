@@ -432,34 +432,12 @@ const TransactionShield = () => {
   const { execute: executeSubscriptionCryptoApprovalTransaction } =
     useSubscriptionCryptoApprovalTransaction(paymentToken);
 
-  const [selectedChangePaymentToken, setSelectedChangePaymentToken] = useState<
-    | Pick<
-        TokenWithApprovalAmount,
-        'chainId' | 'address' | 'approvalAmount' | 'symbol'
-      >
-    | undefined
-  >();
-
   const {
     execute: executeUpdateSubscriptionCryptoPaymentMethod,
     result: updateSubscriptionCryptoPaymentMethodResult,
   } = useUpdateSubscriptionCryptoPaymentMethod({
     subscription: currentShieldSubscription,
-    selectedToken: selectedChangePaymentToken,
   });
-
-  // trigger update subscription crypto payment method when selected change payment token changes
-  useEffect(() => {
-    if (selectedChangePaymentToken) {
-      executeUpdateSubscriptionCryptoPaymentMethod().then(() => {
-        // reset selected change payment token after update subscription crypto payment method succeeded
-        setSelectedChangePaymentToken(undefined);
-      });
-    }
-  }, [
-    selectedChangePaymentToken,
-    executeUpdateSubscriptionCryptoPaymentMethod,
-  ]);
 
   const handlePaymentMethodChange = useCallback(
     async (
@@ -473,13 +451,16 @@ const TransactionShield = () => {
           if (!selectedToken) {
             throw new Error('No token selected');
           }
-          setSelectedChangePaymentToken(selectedToken);
+          executeUpdateSubscriptionCryptoPaymentMethod(selectedToken);
         }
       } catch (error) {
         console.error('Error changing payment method', error);
       }
     },
-    [executeUpdateSubscriptionCardPaymentMethod, setSelectedChangePaymentToken],
+    [
+      executeUpdateSubscriptionCardPaymentMethod,
+      executeUpdateSubscriptionCryptoPaymentMethod,
+    ],
   );
 
   const hasApiError =
