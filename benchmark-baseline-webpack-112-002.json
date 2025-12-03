@@ -1,0 +1,138 @@
+{
+  "Power User: Tab Switching": {
+    "mean": {
+      "numNetworkReqs": 63,
+      "inp": 1346.4000000059605,
+      "inpCount": 8,
+      "renderCount": 547,
+      "renderTime": 1218.5000003576279,
+      "averageRenderTime": 2.2276051194837803,
+      "interactionLatency": 8140,
+      "fcp": 405.69999998807907,
+      "tbt": 1029
+    },
+    "min": {
+      "numNetworkReqs": 63,
+      "inp": 1346.4000000059605,
+      "inpCount": 8,
+      "renderCount": 547,
+      "renderTime": 1218.5000003576279,
+      "averageRenderTime": 2.2276051194837803,
+      "interactionLatency": 8140,
+      "fcp": 405.69999998807907,
+      "tbt": 1029
+    },
+    "max": {
+      "numNetworkReqs": 63,
+      "inp": 1346.4000000059605,
+      "inpCount": 8,
+      "renderCount": 547,
+      "renderTime": 1218.5000003576279,
+      "averageRenderTime": 2.2276051194837803,
+      "interactionLatency": 8140,
+      "fcp": 405.69999998807907,
+      "tbt": 1029
+    },
+    "stdDev": {
+      "numNetworkReqs": 0,
+      "inp": 0,
+      "inpCount": 0,
+      "renderCount": 0,
+      "renderTime": 0,
+      "averageRenderTime": 0,
+      "interactionLatency": 0,
+      "fcp": 0,
+      "tbt": 0
+    },
+    "p75": {
+      "numNetworkReqs": 63,
+      "inp": 1346.4000000059605,
+      "inpCount": 8,
+      "renderCount": 547,
+      "renderTime": 1218.5000003576279,
+      "averageRenderTime": 2.2276051194837803,
+      "interactionLatency": 8140,
+      "fcp": 405.69999998807907,
+      "tbt": 1029
+    },
+    "p95": {
+      "numNetworkReqs": 63,
+      "inp": 1346.4000000059605,
+      "inpCount": 8,
+      "renderCount": 547,
+      "renderTime": 1218.5000003576279,
+      "averageRenderTime": 2.2276051194837803,
+      "interactionLatency": 8140,
+      "fcp": 405.69999998807907,
+      "tbt": 1029
+    }
+  },
+  "Power User: Account Switching": {
+    "mean": {
+      "numNetworkReqs": 168,
+      "inp": 193.69999998807907,
+      "inpCount": 12,
+      "renderCount": 256,
+      "renderTime": 407.8000001311302,
+      "averageRenderTime": 1.5929687505122274,
+      "interactionLatency": 5742,
+      "fcp": 199.59999999403954,
+      "tbt": 152
+    },
+    "min": {
+      "numNetworkReqs": 168,
+      "inp": 193.69999998807907,
+      "inpCount": 12,
+      "renderCount": 256,
+      "renderTime": 407.8000001311302,
+      "averageRenderTime": 1.5929687505122274,
+      "interactionLatency": 5742,
+      "fcp": 199.59999999403954,
+      "tbt": 152
+    },
+    "max": {
+      "numNetworkReqs": 168,
+      "inp": 193.69999998807907,
+      "inpCount": 12,
+      "renderCount": 256,
+      "renderTime": 407.8000001311302,
+      "averageRenderTime": 1.5929687505122274,
+      "interactionLatency": 5742,
+      "fcp": 199.59999999403954,
+      "tbt": 152
+    },
+    "stdDev": {
+      "numNetworkReqs": 0,
+      "inp": 0,
+      "inpCount": 0,
+      "renderCount": 0,
+      "renderTime": 0,
+      "averageRenderTime": 0,
+      "interactionLatency": 0,
+      "fcp": 0,
+      "tbt": 0
+    },
+    "p75": {
+      "numNetworkReqs": 168,
+      "inp": 193.69999998807907,
+      "inpCount": 12,
+      "renderCount": 256,
+      "renderTime": 407.8000001311302,
+      "averageRenderTime": 1.5929687505122274,
+      "interactionLatency": 5742,
+      "fcp": 199.59999999403954,
+      "tbt": 152
+    },
+    "p95": {
+      "numNetworkReqs": 168,
+      "inp": 193.69999998807907,
+      "inpCount": 12,
+      "renderCount": 256,
+      "renderTime": 407.8000001311302,
+      "averageRenderTime": 1.5929687505122274,
+      "interactionLatency": 5742,
+      "fcp": 199.59999999403954,
+      "tbt": 152
+    }
+  }
+}

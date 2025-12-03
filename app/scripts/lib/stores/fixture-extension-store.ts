@@ -6,7 +6,12 @@ import type { MetaMaskStorageStructure } from './base-store';
 const fetchWithTimeout = getFetchWithTimeout();
 
 const FIXTURE_SERVER_HOST = 'localhost';
-const FIXTURE_SERVER_PORT = 12345;
+const DEFAULT_FIXTURE_SERVER_PORT = 12345;
+// Support port offset for concurrent benchmark runs via environment variable
+const portOffset = process.env.FIXTURE_SERVER_PORT_OFFSET
+  ? parseInt(process.env.FIXTURE_SERVER_PORT_OFFSET, 10)
+  : 0;
+const FIXTURE_SERVER_PORT = DEFAULT_FIXTURE_SERVER_PORT + portOffset;
 const FIXTURE_SERVER_URL = `http://${FIXTURE_SERVER_HOST}:${FIXTURE_SERVER_PORT}/state.json`;
 
 /**

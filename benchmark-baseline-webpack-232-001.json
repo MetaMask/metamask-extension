@@ -1,0 +1,705 @@
+{
+  "report": {
+    "startTime": "2025-12-02T11:23:02.605Z",
+    "endTime": "2025-12-02T11:58:22.914Z",
+    "durationMs": 2120309,
+    "flowReports": [
+      {
+        "flowName": "tab-switching",
+        "status": "success",
+        "retriesUsed": 0,
+        "totalRetries": 2,
+        "errors": [],
+        "warnings": [],
+        "iterationsCompleted": 5,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 2,
+        "browserLoadsRequested": 2
+      },
+      {
+        "flowName": "account-switching",
+        "status": "success",
+        "retriesUsed": 0,
+        "totalRetries": 2,
+        "errors": [],
+        "warnings": [],
+        "iterationsCompleted": 6,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 2,
+        "browserLoadsRequested": 2
+      },
+      {
+        "flowName": "network-switching",
+        "status": "success",
+        "retriesUsed": 0,
+        "totalRetries": 2,
+        "errors": [],
+        "warnings": [],
+        "iterationsCompleted": 6,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 2,
+        "browserLoadsRequested": 2
+      },
+      {
+        "flowName": "network-adding",
+        "status": "success",
+        "retriesUsed": 1,
+        "totalRetries": 2,
+        "errors": [],
+        "warnings": [
+          "Browser load 2: Attempt 1: Waiting for element to be located By(css selector, .controller-loaded)\nWait timed out after 10198ms"
+        ],
+        "iterationsCompleted": 6,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 2,
+        "browserLoadsRequested": 2
+      },
+      {
+        "flowName": "import-srp",
+        "status": "failed",
+        "retriesUsed": 2,
+        "totalRetries": 2,
+        "errors": [
+          "Browser load 1: All iterations failed for flow import-srp. No results to return.",
+          "Browser load 2: All iterations failed for flow import-srp. No results to return.",
+          "No successful results obtained"
+        ],
+        "warnings": [],
+        "iterationsCompleted": 0,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 0,
+        "browserLoadsRequested": 2
+      },
+      {
+        "flowName": "token-search",
+        "status": "success",
+        "retriesUsed": 0,
+        "totalRetries": 2,
+        "errors": [],
+        "warnings": [],
+        "iterationsCompleted": 6,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 2,
+        "browserLoadsRequested": 2
+      },
+      {
+        "flowName": "token-send",
+        "status": "success",
+        "retriesUsed": 0,
+        "totalRetries": 2,
+        "errors": [],
+        "warnings": [],
+        "iterationsCompleted": 6,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 2,
+        "browserLoadsRequested": 2
+      },
+      {
+        "flowName": "tokens-list-scrolling",
+        "status": "success",
+        "retriesUsed": 0,
+        "totalRetries": 2,
+        "errors": [],
+        "warnings": [],
+        "iterationsCompleted": 6,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 2,
+        "browserLoadsRequested": 2
+      },
+      {
+        "flowName": "nft-list-scrolling",
+        "status": "success",
+        "retriesUsed": 0,
+        "totalRetries": 2,
+        "errors": [],
+        "warnings": [],
+        "iterationsCompleted": 6,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 2,
+        "browserLoadsRequested": 2
+      }
+    ],
+    "summary": {
+      "totalFlows": 9,
+      "successfulFlows": 8,
+      "failedFlows": 1,
+      "skippedFlows": 0
+    }
+  },
+  "results": {
+    "Power User: Tab Switching": {
+      "mean": {
+        "numNetworkReqs": 63,
+        "inp": 399.9999999940395,
+        "inpCount": 8.2,
+        "renderCount": 542.2,
+        "renderTime": 866.020000487566,
+        "averageRenderTime": 1.5975044873768407,
+        "interactionLatency": 3670.6,
+        "fcp": 351.31999999284744,
+        "tbt": 575.4
+      },
+      "min": {
+        "numNetworkReqs": 52,
+        "inp": 244.7999999821186,
+        "inpCount": 8,
+        "renderCount": 541,
+        "renderTime": 690.1000003814697,
+        "averageRenderTime": 1.2732472331761433,
+        "interactionLatency": 3283,
+        "fcp": 168.19999998807907,
+        "tbt": 399
+      },
+      "max": {
+        "numNetworkReqs": 76,
+        "inp": 856,
+        "inpCount": 9,
+        "renderCount": 544,
+        "renderTime": 1141.6000009775162,
+        "averageRenderTime": 2.1101663604020633,
+        "interactionLatency": 4152,
+        "fcp": 778.5,
+        "tbt": 881
+      },
+      "stdDev": {
+        "numNetworkReqs": 10.69579356569675,
+        "inp": 232.4444363745526,
+        "inpCount": 0.4,
+        "renderCount": 1.1661903789690602,
+        "renderTime": 151.92623764293486,
+        "averageRenderTime": 0.2821288132839576,
+        "interactionLatency": 292.81570996106063,
+        "fcp": 218.07255123379534,
+        "tbt": 163.99707314461438
+      },
+      "p75": {
+        "numNetworkReqs": 76,
+        "inp": 372.59999999403954,
+        "inpCount": 8,
+        "renderCount": 543,
+        "renderTime": 867.3000007271767,
+        "averageRenderTime": 1.603142330364467,
+        "interactionLatency": 3780,
+        "fcp": 291.59999999403954,
+        "tbt": 573
+      },
+      "p95": {
+        "numNetworkReqs": 76,
+        "inp": 856,
+        "inpCount": 9,
+        "renderCount": 544,
+        "renderTime": 1141.6000009775162,
+        "averageRenderTime": 2.1101663604020633,
+        "interactionLatency": 4152,
+        "fcp": 778.5,
+        "tbt": 881
+      }
+    },
+    "Power User: Account Switching": {
+      "mean": {
+        "numNetworkReqs": 150,
+        "inp": 35.81666667262713,
+        "inpCount": 6,
+        "renderCount": 254.5,
+        "renderTime": 277.7500000447035,
+        "averageRenderTime": 1.0914774648094412,
+        "interactionLatency": 5037.666666666667,
+        "fcp": 227.81666666269302,
+        "tbt": 6.333333333333333
+      },
+      "min": {
+        "numNetworkReqs": 144,
+        "inp": 27.900000005960464,
+        "inpCount": 6,
+        "renderCount": 251,
+        "renderTime": 266.5000000298023,
+        "averageRenderTime": 1.049212598542529,
+        "interactionLatency": 4970,
+        "fcp": 117,
+        "tbt": 0
+      },
+      "max": {
+        "numNetworkReqs": 156,
+        "inp": 60.69999998807907,
+        "inpCount": 6,
+        "renderCount": 257,
+        "renderTime": 287.4999998807907,
+        "averageRenderTime": 1.1386454184929213,
+        "interactionLatency": 5077,
+        "fcp": 550.2999999821186,
+        "tbt": 34
+      },
+      "stdDev": {
+        "numNetworkReqs": 4.725815626252608,
+        "inp": 11.809377151101657,
+        "inpCount": 0,
+        "renderCount": 2.0615528128088303,
+        "renderTime": 8.977518186362015,
+        "averageRenderTime": 0.03786728864164819,
+        "interactionLatency": 33.95421754199159,
+        "fcp": 155.84025385220127,
+        "tbt": 12.39175353029407
+      },
+      "p75": {
+        "numNetworkReqs": 156,
+        "inp": 39.400000005960464,
+        "inpCount": 6,
+        "renderCount": 257,
+        "renderTime": 286.6000001132488,
+        "averageRenderTime": 1.128346457138775,
+        "interactionLatency": 5060,
+        "fcp": 290.90000000596046,
+        "tbt": 2
+      },
+      "p95": {
+        "numNetworkReqs": 156,
+        "inp": 60.69999998807907,
+        "inpCount": 6,
+        "renderCount": 257,
+        "renderTime": 287.4999998807907,
+        "averageRenderTime": 1.1386454184929213,
+        "interactionLatency": 5077,
+        "fcp": 550.2999999821186,
+        "tbt": 34
+      }
+    },
+    "Power User: Network Switching": {
+      "mean": {
+        "numNetworkReqs": 61,
+        "inp": 11.900000005960464,
+        "inpCount": 4,
+        "renderCount": 60,
+        "renderTime": 238.53333328167597,
+        "averageRenderTime": 3.969145941991105,
+        "interactionLatency": 80202.83333333333,
+        "fcp": 186.80000000198683,
+        "tbt": 8.166666666666666
+      },
+      "min": {
+        "numNetworkReqs": 57,
+        "inp": 4.199999988079071,
+        "inpCount": 4,
+        "renderCount": 57,
+        "renderTime": 194.39999994635582,
+        "averageRenderTime": 3.410526314848348,
+        "interactionLatency": 80079,
+        "fcp": 125.10000002384186,
+        "tbt": 0
+      },
+      "max": {
+        "numNetworkReqs": 70,
+        "inp": 19.80000001192093,
+        "inpCount": 4,
+        "renderCount": 62,
+        "renderTime": 262.49999994039536,
+        "averageRenderTime": 4.23387096678057,
+        "interactionLatency": 80385,
+        "fcp": 222.30000001192093,
+        "tbt": 16
+      },
+      "stdDev": {
+        "numNetworkReqs": 5.686240703077327,
+        "inp": 6.357934681638771,
+        "inpCount": 0,
+        "renderCount": 1.632993161855452,
+        "renderTime": 21.42729308777843,
+        "averageRenderTime": 0.26556590112713363,
+        "interactionLatency": 119.60687921501655,
+        "fcp": 35.933828070172005,
+        "tbt": 6.066758241067098
+      },
+      "p75": {
+        "numNetworkReqs": 68,
+        "inp": 17.400000005960464,
+        "inpCount": 4,
+        "renderCount": 61,
+        "renderTime": 252.9000000357628,
+        "averageRenderTime": 4.145901639930537,
+        "interactionLatency": 80344,
+        "fcp": 220.09999999403954,
+        "tbt": 12
+      },
+      "p95": {
+        "numNetworkReqs": 70,
+        "inp": 19.80000001192093,
+        "inpCount": 4,
+        "renderCount": 62,
+        "renderTime": 262.49999994039536,
+        "averageRenderTime": 4.23387096678057,
+        "interactionLatency": 80385,
+        "fcp": 222.30000001192093,
+        "tbt": 16
+      }
+    },
+    "Power User: Network Adding": {
+      "mean": {
+        "numNetworkReqs": 31.5,
+        "inp": 12880.949999998013,
+        "inpCount": 74.83333333333333,
+        "renderCount": 164.5,
+        "renderTime": 312.08333344260853,
+        "averageRenderTime": 2.150879700742982,
+        "interactionLatency": 32415.666666666668,
+        "fcp": 11207.53333334128,
+        "tbt": 4.833333333333333
+      },
+      "min": {
+        "numNetworkReqs": 7,
+        "inp": 31.600000023841858,
+        "inpCount": 3,
+        "renderCount": 27,
+        "renderTime": 105.5,
+        "averageRenderTime": 1.237037037037037,
+        "interactionLatency": 25972,
+        "fcp": 128.40000000596046,
+        "tbt": 0
+      },
+      "max": {
+        "numNetworkReqs": 51,
+        "inp": 29814.79999998212,
+        "inpCount": 92,
+        "renderCount": 220,
+        "renderTime": 452.90000009536743,
+        "averageRenderTime": 3.9074074074074074,
+        "interactionLatency": 48296,
+        "fcp": 41683.30000001192,
+        "tbt": 13
+      },
+      "stdDev": {
+        "numNetworkReqs": 18.1636083052533,
+        "inp": 13300.622221245847,
+        "inpCount": 32.173574387824694,
+        "renderCount": 67.3071318657986,
+        "renderTime": 128.27526940181437,
+        "averageRenderTime": 0.8330425858434015,
+        "interactionLatency": 7471.055495860154,
+        "fcp": 15159.361317867466,
+        "tbt": 5.241395064505462
+      },
+      "p75": {
+        "numNetworkReqs": 47,
+        "inp": 28523,
+        "inpCount": 90,
+        "renderCount": 211,
+        "renderTime": 397.70000022649765,
+        "averageRenderTime": 2.071354167846342,
+        "interactionLatency": 32838,
+        "fcp": 19184.80000001192,
+        "tbt": 10
+      },
+      "p95": {
+        "numNetworkReqs": 51,
+        "inp": 29814.79999998212,
+        "inpCount": 92,
+        "renderCount": 220,
+        "renderTime": 452.90000009536743,
+        "averageRenderTime": 3.9074074074074074,
+        "interactionLatency": 48296,
+        "fcp": 41683.30000001192,
+        "tbt": 13
+      }
+    },
+    "Power User: Token Search": {
+      "mean": {
+        "numNetworkReqs": 4.666666666666667,
+        "inp": 15.500000004967054,
+        "inpCount": 8,
+        "renderCount": 29,
+        "renderTime": 87.96666666865349,
+        "averageRenderTime": 3.030431897753942,
+        "interactionLatency": 10979.666666666666,
+        "fcp": 224.0666666676601,
+        "tbt": 0
+      },
+      "min": {
+        "numNetworkReqs": 3,
+        "inp": 11.699999988079071,
+        "inpCount": 8,
+        "renderCount": 27,
+        "renderTime": 73.69999998807907,
+        "averageRenderTime": 2.7296296291881137,
+        "interactionLatency": 10951,
+        "fcp": 87.80000001192093,
+        "tbt": 0
+      },
+      "max": {
+        "numNetworkReqs": 8,
+        "inp": 26.5,
+        "inpCount": 8,
+        "renderCount": 31,
+        "renderTime": 96.09999999403954,
+        "averageRenderTime": 3.313793103242743,
+        "interactionLatency": 10997,
+        "fcp": 506.09999999403954,
+        "tbt": 0
+      },
+      "stdDev": {
+        "numNetworkReqs": 2.357022603955158,
+        "inp": 5.016638980602412,
+        "inpCount": 0,
+        "renderCount": 1.2909944487358056,
+        "renderTime": 7.588953957987827,
+        "averageRenderTime": 0.18958101545711442,
+        "interactionLatency": 17.10425548089,
+        "fcp": 145.54154809169128,
+        "tbt": 0
+      },
+      "p75": {
+        "numNetworkReqs": 8,
+        "inp": 14.600000023841858,
+        "inpCount": 8,
+        "renderCount": 30,
+        "renderTime": 95.30000001192093,
+        "averageRenderTime": 3.176666667064031,
+        "interactionLatency": 10994,
+        "fcp": 312.5,
+        "tbt": 0
+      },
+      "p95": {
+        "numNetworkReqs": 8,
+        "inp": 26.5,
+        "inpCount": 8,
+        "renderCount": 31,
+        "renderTime": 96.09999999403954,
+        "averageRenderTime": 3.313793103242743,
+        "interactionLatency": 10997,
+        "fcp": 506.09999999403954,
+        "tbt": 0
+      }
+    },
+    "Power User: Token Send": {
+      "mean": {
+        "numNetworkReqs": 4.666666666666667,
+        "inp": 12.416666666666666,
+        "inpCount": 2,
+        "renderCount": 31.166666666666668,
+        "renderTime": 94.94999997317791,
+        "averageRenderTime": 3.0449630367916782,
+        "interactionLatency": 9301.333333333334,
+        "fcp": 197.63333333532015,
+        "tbt": 0
+      },
+      "min": {
+        "numNetworkReqs": 3,
+        "inp": 10.799999982118607,
+        "inpCount": 2,
+        "renderCount": 30,
+        "renderTime": 82.79999995231628,
+        "averageRenderTime": 2.7599999984105428,
+        "interactionLatency": 9232,
+        "fcp": 102.5,
+        "tbt": 0
+      },
+      "max": {
+        "numNetworkReqs": 8,
+        "inp": 15.400000005960464,
+        "inpCount": 2,
+        "renderCount": 32,
+        "renderTime": 104.79999992251396,
+        "averageRenderTime": 3.2749999975785613,
+        "interactionLatency": 9373,
+        "fcp": 443.59999999403954,
+        "tbt": 0
+      },
+      "stdDev": {
+        "numNetworkReqs": 2.357022603955158,
+        "inp": 1.684652955062273,
+        "inpCount": 0,
+        "renderCount": 0.6871842709362768,
+        "renderTime": 6.9887409530741555,
+        "averageRenderTime": 0.19182175777304605,
+        "interactionLatency": 47.60835594258171,
+        "fcp": 115.28897990735598,
+        "tbt": 0
+      },
+      "p75": {
+        "numNetworkReqs": 8,
+        "inp": 13.700000017881393,
+        "inpCount": 2,
+        "renderCount": 32,
+        "renderTime": 99.69999998807907,
+        "averageRenderTime": 3.2161290318735185,
+        "interactionLatency": 9340,
+        "fcp": 218,
+        "tbt": 0
+      },
+      "p95": {
+        "numNetworkReqs": 8,
+        "inp": 15.400000005960464,
+        "inpCount": 2,
+        "renderCount": 32,
+        "renderTime": 104.79999992251396,
+        "averageRenderTime": 3.2749999975785613,
+        "interactionLatency": 9373,
+        "fcp": 443.59999999403954,
+        "tbt": 0
+      }
+    },
+    "Power User: Tokens List Scrolling": {
+      "mean": {
+        "numNetworkReqs": 28.166666666666668,
+        "inp": 43.5,
+        "inpCount": 0.8333333333333334,
+        "renderCount": 446,
+        "renderTime": 2489.3666667143502,
+        "averageRenderTime": 5.509512312128483,
+        "interactionLatency": 12988.166666666666,
+        "fcp": 204.375,
+        "tbt": 2567.3333333333335
+      },
+      "min": {
+        "numNetworkReqs": 21,
+        "inp": 0,
+        "inpCount": 0,
+        "renderCount": 411,
+        "renderTime": 905.000000089407,
+        "averageRenderTime": 2.129411764916252,
+        "interactionLatency": 12541,
+        "fcp": 130.09999999403954,
+        "tbt": 694
+      },
+      "max": {
+        "numNetworkReqs": 38,
+        "inp": 205.69999998807907,
+        "inpCount": 2,
+        "renderCount": 472,
+        "renderTime": 3483.500000268221,
+        "averageRenderTime": 7.672907489577579,
+        "interactionLatency": 14193,
+        "fcp": 299.90000000596046,
+        "tbt": 3627
+      },
+      "stdDev": {
+        "numNetworkReqs": 5.927806414592913,
+        "inp": 74.90456149411614,
+        "inpCount": 0.8975274678557505,
+        "renderCount": 21.01586702153082,
+        "renderTime": 919.7392740259518,
+        "averageRenderTime": 1.893623190717011,
+        "interactionLatency": 566.6525733541575,
+        "fcp": 61.44718769350939,
+        "tbt": 1072.443264492605
+      },
+      "p75": {
+        "numNetworkReqs": 31,
+        "inp": 51.900000005960464,
+        "inpCount": 2,
+        "renderCount": 458,
+        "renderTime": 3190.6999995410442,
+        "averageRenderTime": 6.759957626146281,
+        "interactionLatency": 13098,
+        "fcp": 299.90000000596046,
+        "tbt": 3293
+      },
+      "p95": {
+        "numNetworkReqs": 38,
+        "inp": 205.69999998807907,
+        "inpCount": 2,
+        "renderCount": 472,
+        "renderTime": 3483.500000268221,
+        "averageRenderTime": 7.672907489577579,
+        "interactionLatency": 14193,
+        "fcp": 299.90000000596046,
+        "tbt": 3627
+      }
+    },
+    "Power User: Nft List Scrolling": {
+      "mean": {
+        "numNetworkReqs": 103.5,
+        "inp": 1214.4333333273728,
+        "inpCount": 1,
+        "renderCount": 535.1666666666666,
+        "renderTime": 2637.8666664411626,
+        "averageRenderTime": 4.892891869663984,
+        "interactionLatency": 12787.333333333334,
+        "fcp": 4205.10000000149,
+        "tbt": 2715.3333333333335,
+        "scrollToLoadLatency": 5103.333333333333,
+        "scrollEventCount": 2,
+        "totalScrollDistance": 0,
+        "assetsLoadedPerScroll": 0,
+        "cumulativeLoadTime": 10206.666666666666
+      },
+      "min": {
+        "numNetworkReqs": 66,
+        "inp": 0,
+        "inpCount": 0,
+        "renderCount": 522,
+        "renderTime": 924.9999994337559,
+        "averageRenderTime": 1.7720306502562373,
+        "interactionLatency": 12459,
+        "fcp": 181,
+        "tbt": 491,
+        "scrollToLoadLatency": 5034,
+        "scrollEventCount": 2,
+        "totalScrollDistance": 0,
+        "assetsLoadedPerScroll": 0,
+        "cumulativeLoadTime": 10068
+      },
+      "max": {
+        "numNetworkReqs": 129,
+        "inp": 6648.0999999940395,
+        "inpCount": 2,
+        "renderCount": 543,
+        "renderTime": 4167.900000035763,
+        "averageRenderTime": 7.675690607800668,
+        "interactionLatency": 13304,
+        "fcp": 15241.40000000596,
+        "tbt": 4624,
+        "scrollToLoadLatency": 5297,
+        "scrollEventCount": 2,
+        "totalScrollDistance": 0,
+        "assetsLoadedPerScroll": 0,
+        "cumulativeLoadTime": 10594
+      },
+      "stdDev": {
+        "numNetworkReqs": 23.606143268225754,
+        "inp": 2437.348801236049,
+        "inpCount": 0.816496580927726,
+        "renderCount": 8.668269082630562,
+        "renderTime": 1248.025720676791,
+        "averageRenderTime": 2.2748667688695114,
+        "interactionLatency": 291.82053084425405,
+        "fcp": 6375.366013809143,
+        "tbt": 1639.4553634938916,
+        "scrollToLoadLatency": 90.87155159283289,
+        "scrollEventCount": 0,
+        "totalScrollDistance": 0,
+        "assetsLoadedPerScroll": 0,
+        "cumulativeLoadTime": 181.74310318566577
+      },
+      "p75": {
+        "numNetworkReqs": 118,
+        "inp": 539.2999999821186,
+        "inpCount": 2,
+        "renderCount": 541,
+        "renderTime": 3450.5999999046326,
+        "averageRenderTime": 6.37818853956494,
+        "interactionLatency": 12994,
+        "fcp": 15241.40000000596,
+        "tbt": 4150,
+        "scrollToLoadLatency": 5118,
+        "scrollEventCount": 2,
+        "totalScrollDistance": 0,
+        "assetsLoadedPerScroll": 0,
+        "cumulativeLoadTime": 10236
+      },
+      "p95": {
+        "numNetworkReqs": 129,
+        "inp": 6648.0999999940395,
+        "inpCount": 2,
+        "renderCount": 543,
+        "renderTime": 4167.900000035763,
+        "averageRenderTime": 7.675690607800668,
+        "interactionLatency": 13304,
+        "fcp": 15241.40000000596,
+        "tbt": 4624,
+        "scrollToLoadLatency": 5297,
+        "scrollEventCount": 2,
+        "totalScrollDistance": 0,
+        "assetsLoadedPerScroll": 0,
+        "cumulativeLoadTime": 10594
+      }
+    }
+  }
+}

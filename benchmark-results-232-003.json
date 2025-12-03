@@ -1,0 +1,4526 @@
+{
+  "beforeFile": "./benchmark-baseline-webpack-232-003.json",
+  "afterFile": "./benchmark-compiler-webpack-232-003.json",
+  "timestamp": 1764704997644,
+  "beforeReport": {
+    "startTime": "2025-12-02T18:14:18.966Z",
+    "endTime": "2025-12-02T19:49:08.285Z",
+    "durationMs": 5689319,
+    "flowReports": [
+      {
+        "flowName": "tab-switching",
+        "status": "success",
+        "retriesUsed": 2,
+        "totalRetries": 2,
+        "errors": [
+          "Browser load 1: JsonRpcError: Failed to fetch\nJsonRpcError: Failed to fetch"
+        ],
+        "warnings": [],
+        "iterationsCompleted": 3,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 1,
+        "browserLoadsRequested": 2
+      },
+      {
+        "flowName": "account-switching",
+        "status": "success",
+        "retriesUsed": 0,
+        "totalRetries": 2,
+        "errors": [],
+        "warnings": [],
+        "iterationsCompleted": 6,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 2,
+        "browserLoadsRequested": 2
+      },
+      {
+        "flowName": "network-switching",
+        "status": "success",
+        "retriesUsed": 0,
+        "totalRetries": 2,
+        "errors": [],
+        "warnings": [],
+        "iterationsCompleted": 6,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 2,
+        "browserLoadsRequested": 2
+      },
+      {
+        "flowName": "network-adding",
+        "status": "success",
+        "retriesUsed": 2,
+        "totalRetries": 2,
+        "errors": [],
+        "warnings": [
+          "Browser load 1: Attempt 1: All iterations failed for flow network-adding. No results to return.",
+          "Browser load 1: Attempt 2: JsonRpcError: Failed to fetch\nJsonRpcError: Failed to fetch",
+          "Browser load 2: Attempt 1: All iterations failed for flow network-adding. No results to return.",
+          "Browser load 2: Attempt 2: Waiting for element to be located By(css selector, .controller-loaded)\nWait timed out after 10144ms"
+        ],
+        "iterationsCompleted": 5,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 2,
+        "browserLoadsRequested": 2
+      },
+      {
+        "flowName": "import-srp",
+        "status": "success",
+        "retriesUsed": 1,
+        "totalRetries": 2,
+        "errors": [],
+        "warnings": [
+          "Browser load 2: Attempt 1: All iterations failed for flow import-srp. No results to return."
+        ],
+        "iterationsCompleted": 2,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 2,
+        "browserLoadsRequested": 2
+      },
+      {
+        "flowName": "token-search",
+        "status": "success",
+        "retriesUsed": 2,
+        "totalRetries": 2,
+        "errors": [
+          "Browser load 1: -32603, undefined, Unable to enable notifications\n-32603, undefined, Unable to enable notifications\nfailed to generate nonce: Failed to fetch\nfailed to generate nonce: Failed to fetch\n-32002, Error: RPC endpoint returned too many errors, retr…kipeoacjioc/8063.2cdd3aec164d29ca4fca.js:16179:13, RPC endpoint returned too many errors, retrying in…minutes. Consider using a different RPC endpoint.\n-32603, undefined, Unable to enable notifications\n-32603, undefined, Unable to enable notifications\n-32002, Error: RPC endpoint returned too many errors, retr…kipeoacjioc/8063.2cdd3aec164d29ca4fca.js:16179:13, RPC endpoint returned too many errors, retrying in…minutes. Consider using a different RPC endpoint.\n-32603, undefined, Unable to enable notifications\n-32603, undefined, Unable to enable notifications\n-32002, Error: RPC endpoint returned too many errors, retr…kipeoacjioc/8063.2cdd3aec164d29ca4fca.js:16179:13, RPC endpoint returned too many errors, retrying in…minutes. Consider using a different RPC endpoint.\n-32603, undefined, Unable to enable notifications\n-32603, undefined, Unable to enable notifications\n-32002, Error: RPC endpoint returned too many errors, retr…kipeoacjioc/8063.2cdd3aec164d29ca4fca.js:16179:13, RPC endpoint returned too many errors, retrying in…minutes. Consider using a different RPC endpoint.\n-32603, undefined, Unable to enable notifications\n-32603, undefined, Unable to enable notifications"
+        ],
+        "warnings": [
+          "Browser load 2: Attempt 1: -32603, undefined, Unable to enable notifications\n-32603, undefined, Unable to enable notifications\nfailed to generate nonce: Failed to fetch\nfailed to generate nonce: Failed to fetch\n-32002, Error: RPC endpoint returned too many errors, retr…kipeoacjioc/8063.2cdd3aec164d29ca4fca.js:16179:13, RPC endpoint returned too many errors, retrying in…minutes. Consider using a different RPC endpoint.\n-32603, undefined, Unable to enable notifications\n-32603, undefined, Unable to enable notifications\n-32002, Error: RPC endpoint returned too many errors, retr…kipeoacjioc/8063.2cdd3aec164d29ca4fca.js:16179:13, RPC endpoint returned too many errors, retrying in…minutes. Consider using a different RPC endpoint.\n-32603, undefined, Unable to enable notifications\n-32603, undefined, Unable to enable notifications\n-32002, Error: RPC endpoint returned too many errors, retr…kipeoacjioc/8063.2cdd3aec164d29ca4fca.js:16179:13, RPC endpoint returned too many errors, retrying in…minutes. Consider using a different RPC endpoint.\n-32603, undefined, Unable to enable notifications\n-32603, undefined, Unable to enable notifications\n-32002, Error: RPC endpoint returned too many errors, retr…kipeoacjioc/8063.2cdd3aec164d29ca4fca.js:16179:13, RPC endpoint returned too many errors, retrying in…minutes. Consider using a different RPC endpoint.\n-32603, undefined, Unable to enable notifications\n-32603, undefined, Unable to enable notifications",
+          "Browser load 2: Attempt 2: -32603, undefined, Unable to enable notifications\n-32603, undefined, Unable to enable notifications\nfailed to generate nonce: Failed to fetch\nfailed to generate nonce: Failed to fetch\n-32002, Error: RPC endpoint returned too many errors, retr…kipeoacjioc/8063.2cdd3aec164d29ca4fca.js:16179:13, RPC endpoint returned too many errors, retrying in…minutes. Consider using a different RPC endpoint.\n-32603, undefined, Unable to enable notifications\n-32603, undefined, Unable to enable notifications\n-32002, Error: RPC endpoint returned too many errors, retr…kipeoacjioc/8063.2cdd3aec164d29ca4fca.js:16179:13, RPC endpoint returned too many errors, retrying in…minutes. Consider using a different RPC endpoint.\n-32603, undefined, Unable to enable notifications\n-32603, undefined, Unable to enable notifications\n-32002, Error: RPC endpoint returned too many errors, retr…kipeoacjioc/8063.2cdd3aec164d29ca4fca.js:16179:13, RPC endpoint returned too many errors, retrying in…minutes. Consider using a different RPC endpoint.\n-32603, undefined, Unable to enable notifications\n-32603, undefined, Unable to enable notifications\n-32002, Error: RPC endpoint returned too many errors, retr…kipeoacjioc/8063.2cdd3aec164d29ca4fca.js:16179:13, RPC endpoint returned too many errors, retrying in…minutes. Consider using a different RPC endpoint."
+        ],
+        "iterationsCompleted": 3,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 1,
+        "browserLoadsRequested": 2
+      },
+      {
+        "flowName": "token-send",
+        "status": "success",
+        "retriesUsed": 1,
+        "totalRetries": 2,
+        "errors": [],
+        "warnings": [
+          "Browser load 1: Attempt 1: Waiting for element to be located By(css selector, .controller-loaded)\nWait timed out after 10016ms",
+          "Browser load 2: Attempt 1: failed to get profile lineage: Failed to fetch"
+        ],
+        "iterationsCompleted": 6,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 2,
+        "browserLoadsRequested": 2
+      },
+      {
+        "flowName": "tokens-list-scrolling",
+        "status": "success",
+        "retriesUsed": 2,
+        "totalRetries": 2,
+        "errors": [],
+        "warnings": [
+          "Browser load 2: Attempt 1: Waiting for element to be located By(css selector, .controller-loaded)\nWait timed out after 10035ms",
+          "Browser load 2: Attempt 2: -32603, undefined, Unable to enable notifications\n-32603, undefined, Unable to enable notifications\nfailed to generate nonce: Failed to fetch\nfailed to generate nonce: Failed to fetch"
+        ],
+        "iterationsCompleted": 6,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 2,
+        "browserLoadsRequested": 2
+      },
+      {
+        "flowName": "nft-list-scrolling",
+        "status": "success",
+        "retriesUsed": 2,
+        "totalRetries": 2,
+        "errors": [
+          "Browser load 2: -32603, undefined, Unable to enable notifications\n-32603, undefined, Unable to enable notifications\nfailed to generate nonce: Failed to fetch\nfailed to generate nonce: Failed to fetch"
+        ],
+        "warnings": [
+          "Browser load 1: Attempt 1: JsonRpcError: Failed to fetch",
+          "Browser load 1: Attempt 2: Waiting for element to be located By(css selector, .controller-loaded)\nWait timed out after 10035ms"
+        ],
+        "iterationsCompleted": 3,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 1,
+        "browserLoadsRequested": 2
+      }
+    ],
+    "summary": {
+      "totalFlows": 9,
+      "successfulFlows": 9,
+      "failedFlows": 0,
+      "skippedFlows": 0
+    }
+  },
+  "afterReport": {
+    "startTime": "2025-12-02T18:14:11.708Z",
+    "endTime": "2025-12-02T19:07:09.200Z",
+    "durationMs": 3177492,
+    "flowReports": [
+      {
+        "flowName": "tab-switching",
+        "status": "success",
+        "retriesUsed": 0,
+        "totalRetries": 2,
+        "errors": [],
+        "warnings": [],
+        "iterationsCompleted": 6,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 2,
+        "browserLoadsRequested": 2
+      },
+      {
+        "flowName": "account-switching",
+        "status": "success",
+        "retriesUsed": 1,
+        "totalRetries": 2,
+        "errors": [],
+        "warnings": [
+          "Browser load 1: Attempt 1: Waiting for element to be located By(css selector, .controller-loaded)\nWait timed out after 10087ms"
+        ],
+        "iterationsCompleted": 6,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 2,
+        "browserLoadsRequested": 2
+      },
+      {
+        "flowName": "network-switching",
+        "status": "success",
+        "retriesUsed": 0,
+        "totalRetries": 2,
+        "errors": [],
+        "warnings": [],
+        "iterationsCompleted": 6,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 2,
+        "browserLoadsRequested": 2
+      },
+      {
+        "flowName": "network-adding",
+        "status": "success",
+        "retriesUsed": 1,
+        "totalRetries": 2,
+        "errors": [],
+        "warnings": [
+          "Browser load 2: Attempt 1: All iterations failed for flow network-adding. No results to return."
+        ],
+        "iterationsCompleted": 3,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 2,
+        "browserLoadsRequested": 2
+      },
+      {
+        "flowName": "import-srp",
+        "status": "success",
+        "retriesUsed": 0,
+        "totalRetries": 2,
+        "errors": [],
+        "warnings": [],
+        "iterationsCompleted": 2,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 2,
+        "browserLoadsRequested": 2
+      },
+      {
+        "flowName": "token-search",
+        "status": "success",
+        "retriesUsed": 0,
+        "totalRetries": 2,
+        "errors": [],
+        "warnings": [],
+        "iterationsCompleted": 6,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 2,
+        "browserLoadsRequested": 2
+      },
+      {
+        "flowName": "token-send",
+        "status": "success",
+        "retriesUsed": 0,
+        "totalRetries": 2,
+        "errors": [],
+        "warnings": [],
+        "iterationsCompleted": 6,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 2,
+        "browserLoadsRequested": 2
+      },
+      {
+        "flowName": "tokens-list-scrolling",
+        "status": "success",
+        "retriesUsed": 0,
+        "totalRetries": 2,
+        "errors": [],
+        "warnings": [],
+        "iterationsCompleted": 6,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 2,
+        "browserLoadsRequested": 2
+      },
+      {
+        "flowName": "nft-list-scrolling",
+        "status": "success",
+        "retriesUsed": 0,
+        "totalRetries": 2,
+        "errors": [],
+        "warnings": [],
+        "iterationsCompleted": 6,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 2,
+        "browserLoadsRequested": 2
+      }
+    ],
+    "summary": {
+      "totalFlows": 9,
+      "successfulFlows": 9,
+      "failedFlows": 0,
+      "skippedFlows": 0
+    }
+  },
+  "flows": [
+    {
+      "flowName": "Power User: Tab Switching",
+      "metrics": [
+        {
+          "metric": "numNetworkReqs",
+          "before": 0,
+          "after": 54.5,
+          "change": 54.5,
+          "changePercent": 0,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "Minimal change in network requests (0.0%).",
+          "beforeAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 0
+          },
+          "afterAssessment": {
+            "rating": "needsWork",
+            "emoji": "🟠",
+            "label": "Needs Work",
+            "percentOfGood": 109.00000000000001
+          },
+          "beforeCommentary": "🟢 **0.0 requests** is excellent (target: <20 requests)",
+          "afterCommentary": "🟠 **54.5 requests** needs improvement (+9% over target 50 requests)",
+          "metricDescription": "Number of network requests during flow",
+          "uxImpact": "More requests = more latency, especially on slow connections.",
+          "businessImpact": "Affects data costs for mobile users and server load.",
+          "dataQuality": {
+            "beforeCV": 0,
+            "afterCV": 12.8767604106589,
+            "isStatisticallySignificant": true,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "inp",
+          "before": 223,
+          "after": 225.91999998688698,
+          "change": 2.919999986886978,
+          "changePercent": 1.3094170344784657,
+          "improvement": "worse",
+          "impact": "low",
+          "explanation": "3ms slower Interaction to Next Paint (INP) - investigate potential performance regression.",
+          "beforeAssessment": {
+            "rating": "good",
+            "emoji": "🟡",
+            "label": "Good",
+            "percentOfGood": 44.6
+          },
+          "afterAssessment": {
+            "rating": "good",
+            "emoji": "🟡",
+            "label": "Good",
+            "percentOfGood": 45.18399999737739
+          },
+          "beforeCommentary": "🟡 **223.0 ms** is acceptable (target: <500 ms)",
+          "afterCommentary": "🟡 **225.9 ms** is acceptable (target: <500 ms)",
+          "metricDescription": "Time from user interaction to visual feedback",
+          "uxImpact": "Directly affects perceived responsiveness. Users notice delays >100ms.",
+          "businessImpact": "Poor INP correlates with higher bounce rates and lower engagement.",
+          "dataQuality": {
+            "beforeCV": 3.143707791704213,
+            "afterCV": 7.570909310257978,
+            "isStatisticallySignificant": false,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "inpCount",
+          "before": 8,
+          "after": 8,
+          "change": 0,
+          "changePercent": 0,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "INP interaction count decreased by 0.0% (informational metric).",
+          "beforeCommentary": "",
+          "afterCommentary": "",
+          "dataQuality": {
+            "beforeCV": 0,
+            "afterCV": 0,
+            "isStatisticallySignificant": false,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "renderCount",
+          "before": 542.3333333333334,
+          "after": 541.8333333333334,
+          "change": -0.5,
+          "changePercent": -0.09219422249539029,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "Minimal change in React component renders (-0.1%).",
+          "beforeAssessment": {
+            "rating": "good",
+            "emoji": "🟡",
+            "label": "Good",
+            "percentOfGood": 90.3888888888889
+          },
+          "afterAssessment": {
+            "rating": "good",
+            "emoji": "🟡",
+            "label": "Good",
+            "percentOfGood": 90.30555555555556
+          },
+          "beforeCommentary": "🟡 **542.3 renders** is acceptable (target: <600 renders)",
+          "afterCommentary": "🟡 **541.8 renders** is acceptable (target: <600 renders)",
+          "metricDescription": "Number of React component re-renders during flow",
+          "uxImpact": "Excessive re-renders cause jank and slow interactions.",
+          "businessImpact": "React Compiler should reduce this significantly via auto-memoization.",
+          "dataQuality": {
+            "beforeCV": 0.3134000930296733,
+            "afterCV": 0.2901870542004491,
+            "isStatisticallySignificant": false,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "renderTime",
+          "before": 899.0666671792666,
+          "after": 729.5399998068809,
+          "change": -169.52666737238565,
+          "changePercent": -18.85585057938572,
+          "improvement": "better",
+          "impact": "medium",
+          "explanation": "18.9% reduction in total render time indicates React Compiler is successfully memoizing components and reducing unnecessary re-renders.",
+          "beforeAssessment": {
+            "rating": "needsWork",
+            "emoji": "🟠",
+            "label": "Needs Work",
+            "percentOfGood": 179.8133334358533
+          },
+          "afterAssessment": {
+            "rating": "needsWork",
+            "emoji": "🟠",
+            "label": "Needs Work",
+            "percentOfGood": 145.9079999613762
+          },
+          "beforeCommentary": "🟠 **899.1 ms** needs improvement (+80% over target 500 ms)",
+          "afterCommentary": "🟠 **729.5 ms** needs improvement (+46% over target 500 ms)",
+          "metricDescription": "Total time spent in React render phase",
+          "uxImpact": "Long render times block the main thread.",
+          "businessImpact": "Key metric for React Compiler effectiveness.",
+          "dataQuality": {
+            "beforeCV": 20.47583982214185,
+            "afterCV": 4.394077043402933,
+            "isStatisticallySignificant": false,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "averageRenderTime",
+          "before": 1.6570608255840558,
+          "after": 1.347548403332943,
+          "change": -0.30951242225111275,
+          "changePercent": -18.678398370924043,
+          "improvement": "better",
+          "impact": "high",
+          "explanation": "18.7% reduction in average render time indicates React Compiler is successfully memoizing components and reducing unnecessary re-renders.",
+          "beforeAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 33.141216511681115
+          },
+          "afterAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 26.95096806665886
+          },
+          "beforeCommentary": "🟢 **1.7 ms/render** is excellent (target: <2 ms/render)",
+          "afterCommentary": "🟢 **1.3 ms/render** is excellent (target: <2 ms/render)",
+          "metricDescription": "Average time per component render",
+          "uxImpact": "Indicates component complexity and optimization.",
+          "businessImpact": "High values suggest components need optimization.",
+          "dataQuality": {
+            "beforeCV": 20.238426530115213,
+            "afterCV": 4.459513039403048,
+            "isStatisticallySignificant": false,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "interactionLatency",
+          "before": 3490.6666666666665,
+          "after": 3218.6,
+          "change": -272.0666666666666,
+          "changePercent": -7.7941176470588225,
+          "improvement": "better",
+          "impact": "low",
+          "explanation": "272ms improvement in interaction latency means faster, more responsive interactions.",
+          "beforeAssessment": {
+            "rating": "good",
+            "emoji": "🟡",
+            "label": "Good",
+            "percentOfGood": 69.81333333333333
+          },
+          "afterAssessment": {
+            "rating": "good",
+            "emoji": "🟡",
+            "label": "Good",
+            "percentOfGood": 64.372
+          },
+          "beforeCommentary": "🟡 **3490.7 ms** is acceptable (target: <5000 ms)",
+          "afterCommentary": "🟡 **3218.6 ms** is acceptable (target: <5000 ms)",
+          "metricDescription": "Total time for user flow completion",
+          "uxImpact": "Overall task completion time affects satisfaction.",
+          "businessImpact": "Faster flows = better user retention and task completion.",
+          "dataQuality": {
+            "beforeCV": 8.15688028825347,
+            "afterCV": 1.9118772356428237,
+            "isStatisticallySignificant": false,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "fcp",
+          "before": 332.8666666646798,
+          "after": 293.01666666567326,
+          "change": -39.84999999900657,
+          "changePercent": -11.971760464423523,
+          "improvement": "better",
+          "impact": "low",
+          "explanation": "40ms improvement in First Contentful Paint (FCP) means faster, more responsive interactions.",
+          "beforeAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 11.095555555489328
+          },
+          "afterAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 9.767222222189108
+          },
+          "beforeCommentary": "🟢 **332.9 ms** is excellent (target: <1800 ms)",
+          "afterCommentary": "🟢 **293.0 ms** is excellent (target: <1800 ms)",
+          "metricDescription": "Time until first content appears on screen",
+          "uxImpact": "Users perceive blank screens >1s as slow loading.",
+          "businessImpact": "Every 100ms delay in FCP can reduce conversions by 1-2%.",
+          "dataQuality": {
+            "beforeCV": 7.025403966677249,
+            "afterCV": 45.7185207744691,
+            "isStatisticallySignificant": false,
+            "reliability": "partial"
+          }
+        },
+        {
+          "metric": "tbt",
+          "before": 556,
+          "after": 430.8333333333333,
+          "change": -125.16666666666669,
+          "changePercent": -22.511990407673864,
+          "improvement": "better",
+          "impact": "medium",
+          "explanation": "125ms improvement in Total Blocking Time (TBT) means faster, more responsive interactions.",
+          "beforeAssessment": {
+            "rating": "good",
+            "emoji": "🟡",
+            "label": "Good",
+            "percentOfGood": 92.66666666666666
+          },
+          "afterAssessment": {
+            "rating": "good",
+            "emoji": "🟡",
+            "label": "Good",
+            "percentOfGood": 71.80555555555556
+          },
+          "beforeCommentary": "🟡 **556.0 ms** is acceptable (target: <600 ms)",
+          "afterCommentary": "🟡 **430.8 ms** is acceptable (target: <600 ms)",
+          "metricDescription": "Total time main thread was blocked during load",
+          "uxImpact": "Blocked thread = unresponsive UI. Users may think app is frozen.",
+          "businessImpact": "High TBT causes user frustration and abandonment.",
+          "dataQuality": {
+            "beforeCV": 39.54544792032176,
+            "afterCV": 17.812160564819767,
+            "isStatisticallySignificant": false,
+            "reliability": "partial"
+          }
+        }
+      ],
+      "overallImpact": "high",
+      "summary": "5 metrics improved, 1 regressed.",
+      "recommendations": [
+        "Investigate 1 metric regression(s) in this flow.",
+        "React Compiler optimization is effective - 5 metric(s) improved.",
+        "Focus on high-impact metrics: averageRenderTime."
+      ],
+      "dataQuality": {
+        "beforeQuality": {
+          "numNetworkReqs": {
+            "coefficientOfVariation": 0,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 3,
+            "qualityLevel": "good",
+            "warnings": [
+              "Only 3 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "inp": {
+            "coefficientOfVariation": 3.143707791704213,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 3,
+            "qualityLevel": "good",
+            "warnings": [
+              "Only 3 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "inpCount": {
+            "coefficientOfVariation": 0,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 3,
+            "qualityLevel": "good",
+            "warnings": [
+              "Only 3 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "renderCount": {
+            "coefficientOfVariation": 0.3134000930296733,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 3,
+            "qualityLevel": "good",
+            "warnings": [
+              "Only 3 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "renderTime": {
+            "coefficientOfVariation": 20.47583982214185,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 3,
+            "qualityLevel": "acceptable",
+            "warnings": [
+              "Only 3 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "averageRenderTime": {
+            "coefficientOfVariation": 20.238426530115213,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 3,
+            "qualityLevel": "acceptable",
+            "warnings": [
+              "Only 3 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "interactionLatency": {
+            "coefficientOfVariation": 8.15688028825347,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 3,
+            "qualityLevel": "good",
+            "warnings": [
+              "Only 3 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "fcp": {
+            "coefficientOfVariation": 7.025403966677249,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 3,
+            "qualityLevel": "good",
+            "warnings": [
+              "Only 3 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "tbt": {
+            "coefficientOfVariation": 39.54544792032176,
+            "isReliable": false,
+            "hasOutliers": false,
+            "sampleSize": 3,
+            "qualityLevel": "poor",
+            "warnings": [
+              "Only 3 iterations completed (minimum 4 recommended)",
+              "High variance detected (CV: 39.5%)"
+            ]
+          }
+        },
+        "afterQuality": {
+          "numNetworkReqs": {
+            "coefficientOfVariation": 12.8767604106589,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "inp": {
+            "coefficientOfVariation": 7.570909310257978,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "inpCount": {
+            "coefficientOfVariation": 0,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "renderCount": {
+            "coefficientOfVariation": 0.2901870542004491,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "renderTime": {
+            "coefficientOfVariation": 4.394077043402933,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "averageRenderTime": {
+            "coefficientOfVariation": 4.459513039403048,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "interactionLatency": {
+            "coefficientOfVariation": 1.9118772356428237,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "fcp": {
+            "coefficientOfVariation": 45.7185207744691,
+            "isReliable": false,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "poor",
+            "warnings": [
+              "High variance detected (CV: 45.7%)"
+            ]
+          },
+          "tbt": {
+            "coefficientOfVariation": 17.812160564819767,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "acceptable",
+            "warnings": []
+          }
+        },
+        "isComparable": true,
+        "overallReliability": "reliable",
+        "warnings": [
+          "Baseline has insufficient iterations (3/4 minimum)",
+          "Baseline had 1 error(s)"
+        ]
+      }
+    },
+    {
+      "flowName": "Power User: Account Switching",
+      "metrics": [
+        {
+          "metric": "numNetworkReqs",
+          "before": 0,
+          "after": 233.5,
+          "change": 233.5,
+          "changePercent": 0,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "Minimal change in network requests (0.0%).",
+          "beforeAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 0
+          },
+          "afterAssessment": {
+            "rating": "poor",
+            "emoji": "🔴",
+            "label": "Poor",
+            "percentOfGood": 467
+          },
+          "beforeCommentary": "🟢 **0.0 requests** is excellent (target: <20 requests)",
+          "afterCommentary": "🔴 **233.5 requests** is poor (+134% over threshold 100 requests)",
+          "metricDescription": "Number of network requests during flow",
+          "uxImpact": "More requests = more latency, especially on slow connections.",
+          "businessImpact": "Affects data costs for mobile users and server load.",
+          "dataQuality": {
+            "beforeCV": 0,
+            "afterCV": 23.02931241945632,
+            "isStatisticallySignificant": true,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "inp",
+          "before": 39.14999999602636,
+          "after": 35.016666665673256,
+          "change": -4.1333333303531035,
+          "changePercent": -10.557684114361757,
+          "improvement": "better",
+          "impact": "low",
+          "explanation": "4ms improvement in Interaction to Next Paint (INP) means faster, more responsive interactions.",
+          "beforeAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 7.829999999205271
+          },
+          "afterAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 7.003333333134651
+          },
+          "beforeCommentary": "🟢 **39.1 ms** is excellent (target: <200 ms)",
+          "afterCommentary": "🟢 **35.0 ms** is excellent (target: <200 ms)",
+          "metricDescription": "Time from user interaction to visual feedback",
+          "uxImpact": "Directly affects perceived responsiveness. Users notice delays >100ms.",
+          "businessImpact": "Poor INP correlates with higher bounce rates and lower engagement.",
+          "dataQuality": {
+            "beforeCV": 29.452484209544398,
+            "afterCV": 32.68693491444942,
+            "isStatisticallySignificant": false,
+            "reliability": "partial"
+          }
+        },
+        {
+          "metric": "inpCount",
+          "before": 6,
+          "after": 6,
+          "change": 0,
+          "changePercent": 0,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "INP interaction count decreased by 0.0% (informational metric).",
+          "beforeCommentary": "",
+          "afterCommentary": "",
+          "dataQuality": {
+            "beforeCV": 0,
+            "afterCV": 0,
+            "isStatisticallySignificant": false,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "renderCount",
+          "before": 256.1666666666667,
+          "after": 254.8,
+          "change": -1.3666666666666742,
+          "changePercent": -0.5335068314899183,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "Minimal change in React component renders (-0.5%).",
+          "beforeAssessment": {
+            "rating": "needsWork",
+            "emoji": "🟠",
+            "label": "Needs Work",
+            "percentOfGood": 128.08333333333334
+          },
+          "afterAssessment": {
+            "rating": "needsWork",
+            "emoji": "🟠",
+            "label": "Needs Work",
+            "percentOfGood": 127.4
+          },
+          "beforeCommentary": "🟠 **256.2 renders** needs improvement (+28% over target 200 renders)",
+          "afterCommentary": "🟠 **254.8 renders** needs improvement (+27% over target 200 renders)",
+          "metricDescription": "Number of React component re-renders during flow",
+          "uxImpact": "Excessive re-renders cause jank and slow interactions.",
+          "businessImpact": "React Compiler should reduce this significantly via auto-memoization.",
+          "dataQuality": {
+            "beforeCV": 0.9405876574366274,
+            "afterCV": 0.8380752160150166,
+            "isStatisticallySignificant": false,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "renderTime",
+          "before": 309.75000005960464,
+          "after": 294.0333333859841,
+          "change": -15.716666673620523,
+          "changePercent": -5.073984397286906,
+          "improvement": "better",
+          "impact": "low",
+          "explanation": "5.1% reduction in total render time indicates React Compiler is successfully memoizing components and reducing unnecessary re-renders.",
+          "beforeAssessment": {
+            "rating": "good",
+            "emoji": "🟡",
+            "label": "Good",
+            "percentOfGood": 61.95000001192093
+          },
+          "afterAssessment": {
+            "rating": "good",
+            "emoji": "🟡",
+            "label": "Good",
+            "percentOfGood": 58.80666667719683
+          },
+          "beforeCommentary": "🟡 **309.8 ms** is acceptable (target: <500 ms)",
+          "afterCommentary": "🟡 **294.0 ms** is acceptable (target: <500 ms)",
+          "metricDescription": "Total time spent in React render phase",
+          "uxImpact": "Long render times block the main thread.",
+          "businessImpact": "Key metric for React Compiler effectiveness.",
+          "dataQuality": {
+            "beforeCV": 6.6843356708044475,
+            "afterCV": 8.390319996880027,
+            "isStatisticallySignificant": false,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "averageRenderTime",
+          "before": 1.2087951174119882,
+          "after": 1.1377102338119325,
+          "change": -0.07108488360005571,
+          "changePercent": -5.880639537347516,
+          "improvement": "better",
+          "impact": "low",
+          "explanation": "5.9% reduction in average render time indicates React Compiler is successfully memoizing components and reducing unnecessary re-renders.",
+          "beforeAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 24.175902348239763
+          },
+          "afterAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 22.754204676238647
+          },
+          "beforeCommentary": "🟢 **1.2 ms/render** is excellent (target: <2 ms/render)",
+          "afterCommentary": "🟢 **1.1 ms/render** is excellent (target: <2 ms/render)",
+          "metricDescription": "Average time per component render",
+          "uxImpact": "Indicates component complexity and optimization.",
+          "businessImpact": "High values suggest components need optimization.",
+          "dataQuality": {
+            "beforeCV": 6.126498367329434,
+            "afterCV": 7.184095033396708,
+            "isStatisticallySignificant": false,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "interactionLatency",
+          "before": 5107.333333333333,
+          "after": 5048.4,
+          "change": -58.933333333333394,
+          "changePercent": -1.153896358177785,
+          "improvement": "better",
+          "impact": "low",
+          "explanation": "59ms improvement in interaction latency means faster, more responsive interactions.",
+          "beforeAssessment": {
+            "rating": "good",
+            "emoji": "🟡",
+            "label": "Good",
+            "percentOfGood": 34.04888888888888
+          },
+          "afterAssessment": {
+            "rating": "good",
+            "emoji": "🟡",
+            "label": "Good",
+            "percentOfGood": 33.656
+          },
+          "beforeCommentary": "🟡 **5107.3 ms** is acceptable (target: <15000 ms)",
+          "afterCommentary": "🟡 **5048.4 ms** is acceptable (target: <15000 ms)",
+          "metricDescription": "Total time for user flow completion",
+          "uxImpact": "Overall task completion time affects satisfaction.",
+          "businessImpact": "Faster flows = better user retention and task completion.",
+          "dataQuality": {
+            "beforeCV": 0.858807423763022,
+            "afterCV": 1.1324780352036328,
+            "isStatisticallySignificant": false,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "fcp",
+          "before": 169.11999998688697,
+          "after": 155.8199999988079,
+          "change": -13.299999988079065,
+          "changePercent": -7.864238404156993,
+          "improvement": "better",
+          "impact": "low",
+          "explanation": "13ms improvement in First Contentful Paint (FCP) means faster, more responsive interactions.",
+          "beforeAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 5.637333332896232
+          },
+          "afterAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 5.193999999960263
+          },
+          "beforeCommentary": "🟢 **169.1 ms** is excellent (target: <1800 ms)",
+          "afterCommentary": "🟢 **155.8 ms** is excellent (target: <1800 ms)",
+          "metricDescription": "Time until first content appears on screen",
+          "uxImpact": "Users perceive blank screens >1s as slow loading.",
+          "businessImpact": "Every 100ms delay in FCP can reduce conversions by 1-2%.",
+          "dataQuality": {
+            "beforeCV": 24.325534350987716,
+            "afterCV": 22.138435329887336,
+            "isStatisticallySignificant": false,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "tbt",
+          "before": 21,
+          "after": 16.666666666666668,
+          "change": -4.333333333333332,
+          "changePercent": -20.63492063492063,
+          "improvement": "better",
+          "impact": "low",
+          "explanation": "4ms improvement in Total Blocking Time (TBT) means faster, more responsive interactions.",
+          "beforeAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 3.5000000000000004
+          },
+          "afterAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 2.777777777777778
+          },
+          "beforeCommentary": "🟢 **21.0 ms** is excellent (target: <200 ms)",
+          "afterCommentary": "🟢 **16.7 ms** is excellent (target: <200 ms)",
+          "metricDescription": "Total time main thread was blocked during load",
+          "uxImpact": "Blocked thread = unresponsive UI. Users may think app is frozen.",
+          "businessImpact": "High TBT causes user frustration and abandonment.",
+          "dataQuality": {
+            "beforeCV": 12.046772038736684,
+            "afterCV": 68.81860213634101,
+            "isStatisticallySignificant": false,
+            "reliability": "partial"
+          }
+        }
+      ],
+      "overallImpact": "low",
+      "summary": "6 metrics improved, 0 regressed.",
+      "recommendations": [
+        "React Compiler optimization is effective - 6 metric(s) improved."
+      ],
+      "dataQuality": {
+        "beforeQuality": {
+          "numNetworkReqs": {
+            "coefficientOfVariation": 0,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "inp": {
+            "coefficientOfVariation": 29.452484209544398,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "acceptable",
+            "warnings": []
+          },
+          "inpCount": {
+            "coefficientOfVariation": 0,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "renderCount": {
+            "coefficientOfVariation": 0.9405876574366274,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "renderTime": {
+            "coefficientOfVariation": 6.6843356708044475,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "averageRenderTime": {
+            "coefficientOfVariation": 6.126498367329434,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "interactionLatency": {
+            "coefficientOfVariation": 0.858807423763022,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "fcp": {
+            "coefficientOfVariation": 24.325534350987716,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "acceptable",
+            "warnings": []
+          },
+          "tbt": {
+            "coefficientOfVariation": 12.046772038736684,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          }
+        },
+        "afterQuality": {
+          "numNetworkReqs": {
+            "coefficientOfVariation": 23.02931241945632,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "acceptable",
+            "warnings": []
+          },
+          "inp": {
+            "coefficientOfVariation": 32.68693491444942,
+            "isReliable": false,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "poor",
+            "warnings": [
+              "High variance detected (CV: 32.7%)"
+            ]
+          },
+          "inpCount": {
+            "coefficientOfVariation": 0,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "renderCount": {
+            "coefficientOfVariation": 0.8380752160150166,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "renderTime": {
+            "coefficientOfVariation": 8.390319996880027,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "averageRenderTime": {
+            "coefficientOfVariation": 7.184095033396708,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "interactionLatency": {
+            "coefficientOfVariation": 1.1324780352036328,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "fcp": {
+            "coefficientOfVariation": 22.138435329887336,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "acceptable",
+            "warnings": []
+          },
+          "tbt": {
+            "coefficientOfVariation": 68.81860213634101,
+            "isReliable": false,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "unreliable",
+            "warnings": [
+              "Unreliable data - extremely high variance (CV: 68.8%)"
+            ]
+          }
+        },
+        "isComparable": true,
+        "overallReliability": "reliable",
+        "warnings": []
+      }
+    },
+    {
+      "flowName": "Power User: Network Switching",
+      "metrics": [
+        {
+          "metric": "numNetworkReqs",
+          "before": 0,
+          "after": 187.66666666666666,
+          "change": 187.66666666666666,
+          "changePercent": 0,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "Minimal change in network requests (0.0%).",
+          "beforeAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 0
+          },
+          "afterAssessment": {
+            "rating": "poor",
+            "emoji": "🔴",
+            "label": "Poor",
+            "percentOfGood": 312.77777777777777
+          },
+          "beforeCommentary": "🟢 **0.0 requests** is excellent (target: <30 requests)",
+          "afterCommentary": "🔴 **187.7 requests** is poor (+88% over threshold 100 requests)",
+          "metricDescription": "Number of network requests during flow",
+          "uxImpact": "More requests = more latency, especially on slow connections.",
+          "businessImpact": "Affects data costs for mobile users and server load.",
+          "dataQuality": {
+            "beforeCV": 0,
+            "afterCV": 59.46235478833615,
+            "isStatisticallySignificant": true,
+            "reliability": "partial"
+          }
+        },
+        {
+          "metric": "inp",
+          "before": 4.919999998807907,
+          "after": 8.819999998807907,
+          "change": 3.8999999999999995,
+          "changePercent": 79.26829270213315,
+          "improvement": "worse",
+          "impact": "low",
+          "explanation": "4ms slower Interaction to Next Paint (INP) - investigate potential performance regression.",
+          "beforeAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 0.9839999997615815
+          },
+          "afterAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 1.7639999997615812
+          },
+          "beforeCommentary": "🟢 **4.9 ms** is excellent (target: <200 ms)",
+          "afterCommentary": "🟢 **8.8 ms** is excellent (target: <200 ms)",
+          "metricDescription": "Time from user interaction to visual feedback",
+          "uxImpact": "Directly affects perceived responsiveness. Users notice delays >100ms.",
+          "businessImpact": "Poor INP correlates with higher bounce rates and lower engagement.",
+          "dataQuality": {
+            "beforeCV": 200,
+            "afterCV": 87.5835480016865,
+            "isStatisticallySignificant": false,
+            "reliability": "unreliable"
+          }
+        },
+        {
+          "metric": "inpCount",
+          "before": 0.8333333333333334,
+          "after": 2,
+          "change": 1.1666666666666665,
+          "changePercent": 139.99999999999997,
+          "improvement": "neutral",
+          "impact": "high",
+          "explanation": "INP interaction count increased by 140.0% (informational metric).",
+          "beforeCommentary": "",
+          "afterCommentary": "",
+          "dataQuality": {
+            "beforeCV": 145.60219778561037,
+            "afterCV": 70.71067811865476,
+            "isStatisticallySignificant": false,
+            "reliability": "unreliable"
+          }
+        },
+        {
+          "metric": "renderCount",
+          "before": 20.666666666666668,
+          "after": 21.2,
+          "change": 0.5333333333333314,
+          "changePercent": 2.580645161290313,
+          "improvement": "worse",
+          "impact": "low",
+          "explanation": "2.6% increase in React component renders suggests potential regression in component memoization.",
+          "beforeAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 10.333333333333334
+          },
+          "afterAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 10.6
+          },
+          "beforeCommentary": "🟢 **20.7 renders** is excellent (target: <50 renders)",
+          "afterCommentary": "🟢 **21.2 renders** is excellent (target: <50 renders)",
+          "metricDescription": "Number of React component re-renders during flow",
+          "uxImpact": "Excessive re-renders cause jank and slow interactions.",
+          "businessImpact": "React Compiler should reduce this significantly via auto-memoization.",
+          "dataQuality": {
+            "beforeCV": 6.650170363899452,
+            "afterCV": 3.5298654592206997,
+            "isStatisticallySignificant": false,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "renderTime",
+          "before": 87.74000000357628,
+          "after": 86.7200000166893,
+          "change": -1.0199999868869867,
+          "changePercent": -1.1625256289553356,
+          "improvement": "better",
+          "impact": "low",
+          "explanation": "1.2% reduction in total render time indicates React Compiler is successfully memoizing components and reducing unnecessary re-renders.",
+          "beforeAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 17.54800000071526
+          },
+          "afterAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 17.344000003337857
+          },
+          "beforeCommentary": "🟢 **87.7 ms** is excellent (target: <100 ms)",
+          "afterCommentary": "🟢 **86.7 ms** is excellent (target: <100 ms)",
+          "metricDescription": "Total time spent in React render phase",
+          "uxImpact": "Long render times block the main thread.",
+          "businessImpact": "Key metric for React Compiler effectiveness.",
+          "dataQuality": {
+            "beforeCV": 16.523285621859007,
+            "afterCV": 4.596605258711644,
+            "isStatisticallySignificant": false,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "averageRenderTime",
+          "before": 4.164679842097721,
+          "after": 3.984322511514415,
+          "change": -0.18035733058330594,
+          "changePercent": -4.330640947719553,
+          "improvement": "better",
+          "impact": "low",
+          "explanation": "4.3% reduction in average render time indicates React Compiler is successfully memoizing components and reducing unnecessary re-renders.",
+          "beforeAssessment": {
+            "rating": "good",
+            "emoji": "🟡",
+            "label": "Good",
+            "percentOfGood": 83.29359684195443
+          },
+          "afterAssessment": {
+            "rating": "good",
+            "emoji": "🟡",
+            "label": "Good",
+            "percentOfGood": 79.6864502302883
+          },
+          "beforeCommentary": "🟡 **4.2 ms/render** is acceptable (target: <5 ms/render)",
+          "afterCommentary": "🟡 **4.0 ms/render** is acceptable (target: <5 ms/render)",
+          "metricDescription": "Average time per component render",
+          "uxImpact": "Indicates component complexity and optimization.",
+          "businessImpact": "High values suggest components need optimization.",
+          "dataQuality": {
+            "beforeCV": 13.218952943857646,
+            "afterCV": 4.047190147309788,
+            "isStatisticallySignificant": false,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "fcp",
+          "before": 267.95000000298023,
+          "after": 277.67500000447035,
+          "change": 9.725000001490116,
+          "changePercent": 3.6294084722455504,
+          "improvement": "worse",
+          "impact": "low",
+          "explanation": "10ms slower First Contentful Paint (FCP) - investigate potential performance regression.",
+          "beforeAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 8.931666666766008
+          },
+          "afterAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 9.255833333482345
+          },
+          "beforeCommentary": "🟢 **268.0 ms** is excellent (target: <1800 ms)",
+          "afterCommentary": "🟢 **277.7 ms** is excellent (target: <1800 ms)",
+          "metricDescription": "Time until first content appears on screen",
+          "uxImpact": "Users perceive blank screens >1s as slow loading.",
+          "businessImpact": "Every 100ms delay in FCP can reduce conversions by 1-2%.",
+          "dataQuality": {
+            "beforeCV": 27.075947003624872,
+            "afterCV": 7.442237681804068,
+            "isStatisticallySignificant": false,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "tbt",
+          "before": 5.4,
+          "after": 6.4,
+          "change": 1,
+          "changePercent": 18.51851851851852,
+          "improvement": "worse",
+          "impact": "low",
+          "explanation": "18.5% regression in Total Blocking Time (TBT).",
+          "beforeAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 0.9000000000000001
+          },
+          "afterAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 1.0666666666666669
+          },
+          "beforeCommentary": "🟢 **5.4 ms** is excellent (target: <200 ms)",
+          "afterCommentary": "🟢 **6.4 ms** is excellent (target: <200 ms)",
+          "metricDescription": "Total time main thread was blocked during load",
+          "uxImpact": "Blocked thread = unresponsive UI. Users may think app is frozen.",
+          "businessImpact": "High TBT causes user frustration and abandonment.",
+          "dataQuality": {
+            "beforeCV": 200,
+            "afterCV": 93.0179754133576,
+            "isStatisticallySignificant": false,
+            "reliability": "unreliable"
+          }
+        }
+      ],
+      "overallImpact": "high",
+      "summary": "2 metrics improved, 4 regressed.",
+      "recommendations": [
+        "⚠️ Some metrics have high variance - interpret results with caution.",
+        "Investigate 2 metric regression(s) in this flow.",
+        "React Compiler optimization is effective - 2 metric(s) improved."
+      ],
+      "dataQuality": {
+        "beforeQuality": {
+          "numNetworkReqs": {
+            "coefficientOfVariation": 0,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "inp": {
+            "coefficientOfVariation": 200,
+            "isReliable": false,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "unreliable",
+            "warnings": [
+              "Unreliable data - extremely high variance (CV: 200.0%)"
+            ]
+          },
+          "inpCount": {
+            "coefficientOfVariation": 145.60219778561037,
+            "isReliable": false,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "unreliable",
+            "warnings": [
+              "Unreliable data - extremely high variance (CV: 145.6%)"
+            ]
+          },
+          "renderCount": {
+            "coefficientOfVariation": 6.650170363899452,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "renderTime": {
+            "coefficientOfVariation": 16.523285621859007,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "acceptable",
+            "warnings": []
+          },
+          "averageRenderTime": {
+            "coefficientOfVariation": 13.218952943857646,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "fcp": {
+            "coefficientOfVariation": 27.075947003624872,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "acceptable",
+            "warnings": []
+          },
+          "tbt": {
+            "coefficientOfVariation": 200,
+            "isReliable": false,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "unreliable",
+            "warnings": [
+              "Unreliable data - extremely high variance (CV: 200.0%)"
+            ]
+          }
+        },
+        "afterQuality": {
+          "numNetworkReqs": {
+            "coefficientOfVariation": 59.46235478833615,
+            "isReliable": false,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "unreliable",
+            "warnings": [
+              "Unreliable data - extremely high variance (CV: 59.5%)"
+            ]
+          },
+          "inp": {
+            "coefficientOfVariation": 87.5835480016865,
+            "isReliable": false,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "unreliable",
+            "warnings": [
+              "Unreliable data - extremely high variance (CV: 87.6%)"
+            ]
+          },
+          "inpCount": {
+            "coefficientOfVariation": 70.71067811865476,
+            "isReliable": false,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "unreliable",
+            "warnings": [
+              "Unreliable data - extremely high variance (CV: 70.7%)"
+            ]
+          },
+          "renderCount": {
+            "coefficientOfVariation": 3.5298654592206997,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "renderTime": {
+            "coefficientOfVariation": 4.596605258711644,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "averageRenderTime": {
+            "coefficientOfVariation": 4.047190147309788,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "fcp": {
+            "coefficientOfVariation": 7.442237681804068,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "tbt": {
+            "coefficientOfVariation": 93.0179754133576,
+            "isReliable": false,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "unreliable",
+            "warnings": [
+              "Unreliable data - extremely high variance (CV: 93.0%)"
+            ]
+          }
+        },
+        "isComparable": true,
+        "overallReliability": "partial",
+        "warnings": []
+      }
+    },
+    {
+      "flowName": "Power User: Network Adding",
+      "metrics": [
+        {
+          "metric": "numNetworkReqs",
+          "before": 0,
+          "after": 221,
+          "change": 221,
+          "changePercent": 0,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "Minimal change in network requests (0.0%).",
+          "beforeAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 0
+          },
+          "afterAssessment": {
+            "rating": "poor",
+            "emoji": "🔴",
+            "label": "Poor",
+            "percentOfGood": 442
+          },
+          "beforeCommentary": "🟢 **0.0 requests** is excellent (target: <20 requests)",
+          "afterCommentary": "🔴 **221.0 requests** is poor (+121% over threshold 100 requests)",
+          "metricDescription": "Number of network requests during flow",
+          "uxImpact": "More requests = more latency, especially on slow connections.",
+          "businessImpact": "Affects data costs for mobile users and server load.",
+          "dataQuality": {
+            "beforeCV": 0,
+            "afterCV": 52.29720103340934,
+            "isStatisticallySignificant": true,
+            "reliability": "partial"
+          }
+        },
+        {
+          "metric": "inp",
+          "before": 23.500000005960466,
+          "after": 1754.1000000039737,
+          "change": 1730.5999999980133,
+          "changePercent": 7364.255317272635,
+          "improvement": "worse",
+          "impact": "high",
+          "explanation": "1731ms slower Interaction to Next Paint (INP) - investigate potential performance regression.",
+          "beforeAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 4.700000001192093
+          },
+          "afterAssessment": {
+            "rating": "poor",
+            "emoji": "🔴",
+            "label": "Poor",
+            "percentOfGood": 350.8200000007947
+          },
+          "beforeCommentary": "🟢 **23.5 ms** is excellent (target: <200 ms)",
+          "afterCommentary": "🔴 **1754.1 ms** is poor (+75% over threshold 1000 ms)",
+          "metricDescription": "Time from user interaction to visual feedback",
+          "uxImpact": "Directly affects perceived responsiveness. Users notice delays >100ms.",
+          "businessImpact": "Poor INP correlates with higher bounce rates and lower engagement.",
+          "dataQuality": {
+            "beforeCV": 18.686617652974107,
+            "afterCV": 139.32136711691066,
+            "isStatisticallySignificant": false,
+            "reliability": "partial"
+          }
+        },
+        {
+          "metric": "inpCount",
+          "before": 95,
+          "after": 93,
+          "change": -2,
+          "changePercent": -2.1052631578947367,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "INP interaction count decreased by 2.1% (informational metric).",
+          "beforeCommentary": "",
+          "afterCommentary": "",
+          "dataQuality": {
+            "beforeCV": 0,
+            "afterCV": 1.520659744487199,
+            "isStatisticallySignificant": false,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "renderCount",
+          "before": 249.5,
+          "after": 244,
+          "change": -5.5,
+          "changePercent": -2.2044088176352705,
+          "improvement": "better",
+          "impact": "low",
+          "explanation": "2.2% reduction in React component renders indicates React Compiler is successfully memoizing components and reducing unnecessary re-renders.",
+          "beforeAssessment": {
+            "rating": "needsWork",
+            "emoji": "🟠",
+            "label": "Needs Work",
+            "percentOfGood": 124.75
+          },
+          "afterAssessment": {
+            "rating": "needsWork",
+            "emoji": "🟠",
+            "label": "Needs Work",
+            "percentOfGood": 122
+          },
+          "beforeCommentary": "🟠 **249.5 renders** needs improvement (+25% over target 200 renders)",
+          "afterCommentary": "🟠 **244.0 renders** needs improvement (+22% over target 200 renders)",
+          "metricDescription": "Number of React component re-renders during flow",
+          "uxImpact": "Excessive re-renders cause jank and slow interactions.",
+          "businessImpact": "React Compiler should reduce this significantly via auto-memoization.",
+          "dataQuality": {
+            "beforeCV": 0.44810981513021836,
+            "afterCV": 3.7710857218148255,
+            "isStatisticallySignificant": false,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "renderTime",
+          "before": 672.6749999523163,
+          "after": 575.8000000516573,
+          "change": -96.87499990065896,
+          "changePercent": -14.401456856212302,
+          "improvement": "better",
+          "impact": "medium",
+          "explanation": "14.4% reduction in total render time indicates React Compiler is successfully memoizing components and reducing unnecessary re-renders.",
+          "beforeAssessment": {
+            "rating": "needsWork",
+            "emoji": "🟠",
+            "label": "Needs Work",
+            "percentOfGood": 134.53499999046326
+          },
+          "afterAssessment": {
+            "rating": "needsWork",
+            "emoji": "🟠",
+            "label": "Needs Work",
+            "percentOfGood": 115.16000001033146
+          },
+          "beforeCommentary": "🟠 **672.7 ms** needs improvement (+35% over target 500 ms)",
+          "afterCommentary": "🟠 **575.8 ms** needs improvement (+15% over target 500 ms)",
+          "metricDescription": "Total time spent in React render phase",
+          "uxImpact": "Long render times block the main thread.",
+          "businessImpact": "Key metric for React Compiler effectiveness.",
+          "dataQuality": {
+            "beforeCV": 3.5920650470653563,
+            "afterCV": 6.526348985620843,
+            "isStatisticallySignificant": true,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "averageRenderTime",
+          "before": 2.69575292535178,
+          "after": 2.358720385625324,
+          "change": -0.33703253972645575,
+          "changePercent": -12.502352740003984,
+          "improvement": "better",
+          "impact": "medium",
+          "explanation": "12.5% reduction in average render time indicates React Compiler is successfully memoizing components and reducing unnecessary re-renders.",
+          "beforeAssessment": {
+            "rating": "good",
+            "emoji": "🟡",
+            "label": "Good",
+            "percentOfGood": 53.915058507035596
+          },
+          "afterAssessment": {
+            "rating": "good",
+            "emoji": "🟡",
+            "label": "Good",
+            "percentOfGood": 47.174407712506486
+          },
+          "beforeCommentary": "🟡 **2.7 ms/render** is acceptable (target: <5 ms/render)",
+          "afterCommentary": "🟡 **2.4 ms/render** is acceptable (target: <5 ms/render)",
+          "metricDescription": "Average time per component render",
+          "uxImpact": "Indicates component complexity and optimization.",
+          "businessImpact": "High values suggest components need optimization.",
+          "dataQuality": {
+            "beforeCV": 3.1965900807508203,
+            "afterCV": 4.307879641196778,
+            "isStatisticallySignificant": true,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "fcp",
+          "before": 376.44999999552965,
+          "after": 387.6999999980132,
+          "change": 11.250000002483546,
+          "changePercent": 2.988444681263684,
+          "improvement": "worse",
+          "impact": "low",
+          "explanation": "11ms slower First Contentful Paint (FCP) - investigate potential performance regression.",
+          "beforeAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 12.548333333184322
+          },
+          "afterAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 12.923333333267106
+          },
+          "beforeCommentary": "🟢 **376.4 ms** is excellent (target: <1800 ms)",
+          "afterCommentary": "🟢 **387.7 ms** is excellent (target: <1800 ms)",
+          "metricDescription": "Time until first content appears on screen",
+          "uxImpact": "Users perceive blank screens >1s as slow loading.",
+          "businessImpact": "Every 100ms delay in FCP can reduce conversions by 1-2%.",
+          "dataQuality": {
+            "beforeCV": 13.910300775424716,
+            "afterCV": 46.60722443818676,
+            "isStatisticallySignificant": false,
+            "reliability": "partial"
+          }
+        },
+        {
+          "metric": "tbt",
+          "before": 64.2,
+          "after": 47.333333333333336,
+          "change": -16.866666666666667,
+          "changePercent": -26.272066458982344,
+          "improvement": "better",
+          "impact": "low",
+          "explanation": "17ms improvement in Total Blocking Time (TBT) means faster, more responsive interactions.",
+          "beforeAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 10.7
+          },
+          "afterAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 7.888888888888889
+          },
+          "beforeCommentary": "🟢 **64.2 ms** is excellent (target: <200 ms)",
+          "afterCommentary": "🟢 **47.3 ms** is excellent (target: <200 ms)",
+          "metricDescription": "Total time main thread was blocked during load",
+          "uxImpact": "Blocked thread = unresponsive UI. Users may think app is frozen.",
+          "businessImpact": "High TBT causes user frustration and abandonment.",
+          "dataQuality": {
+            "beforeCV": 40.09383312946086,
+            "afterCV": 97.58540936334174,
+            "isStatisticallySignificant": false,
+            "reliability": "unreliable"
+          }
+        }
+      ],
+      "overallImpact": "high",
+      "summary": "4 metrics improved, 2 regressed.",
+      "recommendations": [
+        "⚠️ Some metrics have high variance - interpret results with caution.",
+        "Investigate 2 metric regression(s) in this flow.",
+        "React Compiler optimization is effective - 3 metric(s) improved.",
+        "Focus on high-impact metrics: inp."
+      ],
+      "dataQuality": {
+        "beforeQuality": {
+          "numNetworkReqs": {
+            "coefficientOfVariation": 0,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 5,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "inp": {
+            "coefficientOfVariation": 18.686617652974107,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 5,
+            "qualityLevel": "acceptable",
+            "warnings": []
+          },
+          "inpCount": {
+            "coefficientOfVariation": 0,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 5,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "renderCount": {
+            "coefficientOfVariation": 0.44810981513021836,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 5,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "renderTime": {
+            "coefficientOfVariation": 3.5920650470653563,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 5,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "averageRenderTime": {
+            "coefficientOfVariation": 3.1965900807508203,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 5,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "fcp": {
+            "coefficientOfVariation": 13.910300775424716,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 5,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "tbt": {
+            "coefficientOfVariation": 40.09383312946086,
+            "isReliable": false,
+            "hasOutliers": false,
+            "sampleSize": 5,
+            "qualityLevel": "poor",
+            "warnings": [
+              "High variance detected (CV: 40.1%)"
+            ]
+          }
+        },
+        "afterQuality": {
+          "numNetworkReqs": {
+            "coefficientOfVariation": 52.29720103340934,
+            "isReliable": false,
+            "hasOutliers": false,
+            "sampleSize": 3,
+            "qualityLevel": "unreliable",
+            "warnings": [
+              "Only 3 iterations completed (minimum 4 recommended)",
+              "Unreliable data - extremely high variance (CV: 52.3%)"
+            ]
+          },
+          "inp": {
+            "coefficientOfVariation": 139.32136711691066,
+            "isReliable": false,
+            "hasOutliers": false,
+            "sampleSize": 3,
+            "qualityLevel": "unreliable",
+            "warnings": [
+              "Only 3 iterations completed (minimum 4 recommended)",
+              "Unreliable data - extremely high variance (CV: 139.3%)"
+            ]
+          },
+          "inpCount": {
+            "coefficientOfVariation": 1.520659744487199,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 3,
+            "qualityLevel": "good",
+            "warnings": [
+              "Only 3 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "renderCount": {
+            "coefficientOfVariation": 3.7710857218148255,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 3,
+            "qualityLevel": "good",
+            "warnings": [
+              "Only 3 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "renderTime": {
+            "coefficientOfVariation": 6.526348985620843,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 3,
+            "qualityLevel": "good",
+            "warnings": [
+              "Only 3 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "averageRenderTime": {
+            "coefficientOfVariation": 4.307879641196778,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 3,
+            "qualityLevel": "good",
+            "warnings": [
+              "Only 3 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "fcp": {
+            "coefficientOfVariation": 46.60722443818676,
+            "isReliable": false,
+            "hasOutliers": false,
+            "sampleSize": 3,
+            "qualityLevel": "poor",
+            "warnings": [
+              "Only 3 iterations completed (minimum 4 recommended)",
+              "High variance detected (CV: 46.6%)"
+            ]
+          },
+          "tbt": {
+            "coefficientOfVariation": 97.58540936334174,
+            "isReliable": false,
+            "hasOutliers": false,
+            "sampleSize": 3,
+            "qualityLevel": "unreliable",
+            "warnings": [
+              "Only 3 iterations completed (minimum 4 recommended)",
+              "Unreliable data - extremely high variance (CV: 97.6%)"
+            ]
+          }
+        },
+        "isComparable": true,
+        "overallReliability": "partial",
+        "warnings": [
+          "Compiler has insufficient iterations (3/4 minimum)"
+        ]
+      }
+    },
+    {
+      "flowName": "Power User: Import Srp",
+      "metrics": [
+        {
+          "metric": "numNetworkReqs",
+          "before": 0,
+          "after": 143,
+          "change": 143,
+          "changePercent": 0,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "Minimal change in network requests (0.0%).",
+          "beforeAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 0
+          },
+          "afterAssessment": {
+            "rating": "poor",
+            "emoji": "🔴",
+            "label": "Poor",
+            "percentOfGood": 286
+          },
+          "beforeCommentary": "🟢 **0.0 requests** is excellent (target: <20 requests)",
+          "afterCommentary": "🔴 **143.0 requests** is poor (+43% over threshold 100 requests)",
+          "metricDescription": "Number of network requests during flow",
+          "uxImpact": "More requests = more latency, especially on slow connections.",
+          "businessImpact": "Affects data costs for mobile users and server load.",
+          "dataQuality": {
+            "beforeCV": 0,
+            "afterCV": 6.993006993006993,
+            "isStatisticallySignificant": true,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "inp",
+          "before": 0,
+          "after": 0,
+          "change": 0,
+          "changePercent": 0,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "Minimal change in Interaction to Next Paint (INP) (0.0%).",
+          "beforeAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 0
+          },
+          "afterAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 0
+          },
+          "beforeCommentary": "🟢 **0.0 ms** is excellent (target: <200 ms)",
+          "afterCommentary": "🟢 **0.0 ms** is excellent (target: <200 ms)",
+          "metricDescription": "Time from user interaction to visual feedback",
+          "uxImpact": "Directly affects perceived responsiveness. Users notice delays >100ms.",
+          "businessImpact": "Poor INP correlates with higher bounce rates and lower engagement.",
+          "dataQuality": {
+            "beforeCV": 0,
+            "afterCV": 0,
+            "isStatisticallySignificant": false,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "inpCount",
+          "before": 0,
+          "after": 0,
+          "change": 0,
+          "changePercent": 0,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "INP interaction count decreased by 0.0% (informational metric).",
+          "beforeCommentary": "",
+          "afterCommentary": "",
+          "dataQuality": {
+            "beforeCV": 0,
+            "afterCV": 0,
+            "isStatisticallySignificant": false,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "renderCount",
+          "before": 227,
+          "after": 225.5,
+          "change": -1.5,
+          "changePercent": -0.6607929515418502,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "Minimal change in React component renders (-0.7%).",
+          "beforeAssessment": {
+            "rating": "needsWork",
+            "emoji": "🟠",
+            "label": "Needs Work",
+            "percentOfGood": 113.5
+          },
+          "afterAssessment": {
+            "rating": "needsWork",
+            "emoji": "🟠",
+            "label": "Needs Work",
+            "percentOfGood": 112.75
+          },
+          "beforeCommentary": "🟠 **227.0 renders** needs improvement (+14% over target 200 renders)",
+          "afterCommentary": "🟠 **225.5 renders** needs improvement (+13% over target 200 renders)",
+          "metricDescription": "Number of React component re-renders during flow",
+          "uxImpact": "Excessive re-renders cause jank and slow interactions.",
+          "businessImpact": "React Compiler should reduce this significantly via auto-memoization.",
+          "dataQuality": {
+            "beforeCV": 2.643171806167401,
+            "afterCV": 3.325942350332594,
+            "isStatisticallySignificant": false,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "renderTime",
+          "before": 344.05000026524067,
+          "after": 269.4499999731779,
+          "change": -74.60000029206276,
+          "changePercent": -21.682894996236275,
+          "improvement": "better",
+          "impact": "high",
+          "explanation": "21.7% reduction in total render time indicates React Compiler is successfully memoizing components and reducing unnecessary re-renders.",
+          "beforeAssessment": {
+            "rating": "good",
+            "emoji": "🟡",
+            "label": "Good",
+            "percentOfGood": 68.81000005304814
+          },
+          "afterAssessment": {
+            "rating": "good",
+            "emoji": "🟡",
+            "label": "Good",
+            "percentOfGood": 53.88999999463559
+          },
+          "beforeCommentary": "🟡 **344.1 ms** is acceptable (target: <500 ms)",
+          "afterCommentary": "🟡 **269.4 ms** is acceptable (target: <500 ms)",
+          "metricDescription": "Total time spent in React render phase",
+          "uxImpact": "Long render times block the main thread.",
+          "businessImpact": "Key metric for React Compiler effectiveness.",
+          "dataQuality": {
+            "beforeCV": 18.994332276407086,
+            "afterCV": 10.261644043274226,
+            "isStatisticallySignificant": false,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "averageRenderTime",
+          "before": 1.5243130146174002,
+          "after": 1.1921408039318178,
+          "change": -0.33217221068558245,
+          "changePercent": -21.791601036021927,
+          "improvement": "better",
+          "impact": "high",
+          "explanation": "21.8% reduction in average render time indicates React Compiler is successfully memoizing components and reducing unnecessary re-renders.",
+          "beforeAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 30.486260292348007
+          },
+          "afterAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 23.842816078636357
+          },
+          "beforeCommentary": "🟢 **1.5 ms/render** is excellent (target: <2 ms/render)",
+          "afterCommentary": "🟢 **1.2 ms/render** is excellent (target: <2 ms/render)",
+          "metricDescription": "Average time per component render",
+          "uxImpact": "Indicates component complexity and optimization.",
+          "businessImpact": "High values suggest components need optimization.",
+          "dataQuality": {
+            "beforeCV": 21.529415043880174,
+            "afterCV": 6.959454056666142,
+            "isStatisticallySignificant": false,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "interactionLatency",
+          "before": 10007,
+          "after": 10856,
+          "change": 849,
+          "changePercent": 8.484061157189968,
+          "improvement": "worse",
+          "impact": "low",
+          "explanation": "849ms slower interaction latency - investigate potential performance regression.",
+          "beforeAssessment": {
+            "rating": "good",
+            "emoji": "🟡",
+            "label": "Good",
+            "percentOfGood": 66.71333333333334
+          },
+          "afterAssessment": {
+            "rating": "good",
+            "emoji": "🟡",
+            "label": "Good",
+            "percentOfGood": 72.37333333333333
+          },
+          "beforeCommentary": "🟡 **10007.0 ms** is acceptable (target: <15000 ms)",
+          "afterCommentary": "🟡 **10856.0 ms** is acceptable (target: <15000 ms)",
+          "metricDescription": "Total time for user flow completion",
+          "uxImpact": "Overall task completion time affects satisfaction.",
+          "businessImpact": "Faster flows = better user retention and task completion.",
+          "dataQuality": {
+            "beforeCV": 2.8280203857299893,
+            "afterCV": 0.211864406779661,
+            "isStatisticallySignificant": true,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "fcp",
+          "before": 689.5499999970198,
+          "after": 830.1000000089407,
+          "change": 140.55000001192093,
+          "changePercent": 20.38285838772074,
+          "improvement": "worse",
+          "impact": "medium",
+          "explanation": "141ms slower First Contentful Paint (FCP) - investigate potential performance regression.",
+          "beforeAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 22.98499999990066
+          },
+          "afterAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 27.670000000298025
+          },
+          "beforeCommentary": "🟢 **689.5 ms** is excellent (target: <1800 ms)",
+          "afterCommentary": "🟢 **830.1 ms** is excellent (target: <1800 ms)",
+          "metricDescription": "Time until first content appears on screen",
+          "uxImpact": "Users perceive blank screens >1s as slow loading.",
+          "businessImpact": "Every 100ms delay in FCP can reduce conversions by 1-2%.",
+          "dataQuality": {
+            "beforeCV": 10.941918643072485,
+            "afterCV": 78.82182869412992,
+            "isStatisticallySignificant": false,
+            "reliability": "partial"
+          }
+        },
+        {
+          "metric": "tbt",
+          "before": 0,
+          "after": 0,
+          "change": 0,
+          "changePercent": 0,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "Minimal change in Total Blocking Time (TBT) (0.0%).",
+          "beforeAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 0
+          },
+          "afterAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 0
+          },
+          "beforeCommentary": "🟢 **0.0 ms** is excellent (target: <200 ms)",
+          "afterCommentary": "🟢 **0.0 ms** is excellent (target: <200 ms)",
+          "metricDescription": "Total time main thread was blocked during load",
+          "uxImpact": "Blocked thread = unresponsive UI. Users may think app is frozen.",
+          "businessImpact": "High TBT causes user frustration and abandonment.",
+          "dataQuality": {
+            "beforeCV": 0,
+            "afterCV": 0,
+            "isStatisticallySignificant": false,
+            "reliability": "reliable"
+          }
+        }
+      ],
+      "overallImpact": "high",
+      "summary": "2 metrics improved, 2 regressed.",
+      "recommendations": [
+        "Investigate 2 metric regression(s) in this flow.",
+        "React Compiler optimization is effective - 2 metric(s) improved.",
+        "Focus on high-impact metrics: renderTime, averageRenderTime."
+      ],
+      "dataQuality": {
+        "beforeQuality": {
+          "numNetworkReqs": {
+            "coefficientOfVariation": 0,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 2,
+            "qualityLevel": "good",
+            "warnings": [
+              "Only 2 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "inp": {
+            "coefficientOfVariation": 0,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 2,
+            "qualityLevel": "good",
+            "warnings": [
+              "Only 2 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "inpCount": {
+            "coefficientOfVariation": 0,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 2,
+            "qualityLevel": "good",
+            "warnings": [
+              "Only 2 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "renderCount": {
+            "coefficientOfVariation": 2.643171806167401,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 2,
+            "qualityLevel": "good",
+            "warnings": [
+              "Only 2 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "renderTime": {
+            "coefficientOfVariation": 18.994332276407086,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 2,
+            "qualityLevel": "acceptable",
+            "warnings": [
+              "Only 2 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "averageRenderTime": {
+            "coefficientOfVariation": 21.529415043880174,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 2,
+            "qualityLevel": "acceptable",
+            "warnings": [
+              "Only 2 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "interactionLatency": {
+            "coefficientOfVariation": 2.8280203857299893,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 2,
+            "qualityLevel": "good",
+            "warnings": [
+              "Max value (10290ms) exceeds timeout threshold - likely includes error iterations",
+              "Only 2 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "fcp": {
+            "coefficientOfVariation": 10.941918643072485,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 2,
+            "qualityLevel": "good",
+            "warnings": [
+              "Only 2 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "tbt": {
+            "coefficientOfVariation": 0,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 2,
+            "qualityLevel": "good",
+            "warnings": [
+              "Only 2 iterations completed (minimum 4 recommended)"
+            ]
+          }
+        },
+        "afterQuality": {
+          "numNetworkReqs": {
+            "coefficientOfVariation": 6.993006993006993,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 2,
+            "qualityLevel": "good",
+            "warnings": [
+              "Only 2 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "inp": {
+            "coefficientOfVariation": 0,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 2,
+            "qualityLevel": "good",
+            "warnings": [
+              "Only 2 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "inpCount": {
+            "coefficientOfVariation": 0,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 2,
+            "qualityLevel": "good",
+            "warnings": [
+              "Only 2 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "renderCount": {
+            "coefficientOfVariation": 3.325942350332594,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 2,
+            "qualityLevel": "good",
+            "warnings": [
+              "Only 2 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "renderTime": {
+            "coefficientOfVariation": 10.261644043274226,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 2,
+            "qualityLevel": "good",
+            "warnings": [
+              "Only 2 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "averageRenderTime": {
+            "coefficientOfVariation": 6.959454056666142,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 2,
+            "qualityLevel": "good",
+            "warnings": [
+              "Only 2 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "interactionLatency": {
+            "coefficientOfVariation": 0.211864406779661,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 2,
+            "qualityLevel": "good",
+            "warnings": [
+              "Max value (10879ms) exceeds timeout threshold - likely includes error iterations",
+              "Only 2 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "fcp": {
+            "coefficientOfVariation": 78.82182869412992,
+            "isReliable": false,
+            "hasOutliers": false,
+            "sampleSize": 2,
+            "qualityLevel": "unreliable",
+            "warnings": [
+              "Only 2 iterations completed (minimum 4 recommended)",
+              "Unreliable data - extremely high variance (CV: 78.8%)"
+            ]
+          },
+          "tbt": {
+            "coefficientOfVariation": 0,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 2,
+            "qualityLevel": "good",
+            "warnings": [
+              "Only 2 iterations completed (minimum 4 recommended)"
+            ]
+          }
+        },
+        "isComparable": true,
+        "overallReliability": "reliable",
+        "warnings": [
+          "Baseline has insufficient iterations (2/4 minimum)",
+          "Compiler has insufficient iterations (2/4 minimum)"
+        ]
+      }
+    },
+    {
+      "flowName": "Power User: Token Search",
+      "metrics": [
+        {
+          "metric": "numNetworkReqs",
+          "before": 0,
+          "after": 22.666666666666668,
+          "change": 22.666666666666668,
+          "changePercent": 0,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "Minimal change in network requests (0.0%).",
+          "beforeAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 0
+          },
+          "afterAssessment": {
+            "rating": "good",
+            "emoji": "🟡",
+            "label": "Good",
+            "percentOfGood": 45.333333333333336
+          },
+          "beforeCommentary": "🟢 **0.0 requests** is excellent (target: <20 requests)",
+          "afterCommentary": "🟡 **22.7 requests** is acceptable (target: <50 requests)",
+          "metricDescription": "Number of network requests during flow",
+          "uxImpact": "More requests = more latency, especially on slow connections.",
+          "businessImpact": "Affects data costs for mobile users and server load.",
+          "dataQuality": {
+            "beforeCV": 0,
+            "afterCV": 48.23888078487272,
+            "isStatisticallySignificant": true,
+            "reliability": "partial"
+          }
+        },
+        {
+          "metric": "inp",
+          "before": 240.36666666467985,
+          "after": 14.32000000476837,
+          "change": -226.0466666599115,
+          "changePercent": -94.04243516645955,
+          "improvement": "better",
+          "impact": "high",
+          "explanation": "226ms improvement in Interaction to Next Paint (INP) means faster, more responsive interactions.",
+          "beforeAssessment": {
+            "rating": "good",
+            "emoji": "🟡",
+            "label": "Good",
+            "percentOfGood": 48.07333333293597
+          },
+          "afterAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 2.8640000009536744
+          },
+          "beforeCommentary": "🟡 **240.4 ms** is acceptable (target: <500 ms)",
+          "afterCommentary": "🟢 **14.3 ms** is excellent (target: <200 ms)",
+          "metricDescription": "Time from user interaction to visual feedback",
+          "uxImpact": "Directly affects perceived responsiveness. Users notice delays >100ms.",
+          "businessImpact": "Poor INP correlates with higher bounce rates and lower engagement.",
+          "dataQuality": {
+            "beforeCV": 141.42135623730948,
+            "afterCV": 9.226337738405087,
+            "isStatisticallySignificant": false,
+            "reliability": "partial"
+          }
+        },
+        {
+          "metric": "inpCount",
+          "before": 3.6666666666666665,
+          "after": 20,
+          "change": 16.333333333333332,
+          "changePercent": 445.45454545454544,
+          "improvement": "neutral",
+          "impact": "high",
+          "explanation": "INP interaction count increased by 445.5% (informational metric).",
+          "beforeCommentary": "",
+          "afterCommentary": "",
+          "dataQuality": {
+            "beforeCV": 141.4213562373095,
+            "afterCV": 0,
+            "isStatisticallySignificant": true,
+            "reliability": "partial"
+          }
+        },
+        {
+          "metric": "renderCount",
+          "before": 33.333333333333336,
+          "after": 32,
+          "change": -1.3333333333333357,
+          "changePercent": -4.000000000000007,
+          "improvement": "better",
+          "impact": "low",
+          "explanation": "4.0% reduction in React component renders indicates React Compiler is successfully memoizing components and reducing unnecessary re-renders.",
+          "beforeAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 16.666666666666668
+          },
+          "afterAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 16
+          },
+          "beforeCommentary": "🟢 **33.3 renders** is excellent (target: <50 renders)",
+          "afterCommentary": "🟢 **32.0 renders** is excellent (target: <50 renders)",
+          "metricDescription": "Number of React component re-renders during flow",
+          "uxImpact": "Excessive re-renders cause jank and slow interactions.",
+          "businessImpact": "React Compiler should reduce this significantly via auto-memoization.",
+          "dataQuality": {
+            "beforeCV": 1.414213562373095,
+            "afterCV": 1.976423537605237,
+            "isStatisticallySignificant": true,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "renderTime",
+          "before": 157.90000001589456,
+          "after": 105.66000001430511,
+          "change": -52.24000000158945,
+          "changePercent": -33.08423052332543,
+          "improvement": "better",
+          "impact": "high",
+          "explanation": "33.1% reduction in total render time indicates React Compiler is successfully memoizing components and reducing unnecessary re-renders.",
+          "beforeAssessment": {
+            "rating": "good",
+            "emoji": "🟡",
+            "label": "Good",
+            "percentOfGood": 31.580000003178917
+          },
+          "afterAssessment": {
+            "rating": "good",
+            "emoji": "🟡",
+            "label": "Good",
+            "percentOfGood": 21.132000002861023
+          },
+          "beforeCommentary": "🟡 **157.9 ms** is acceptable (target: <500 ms)",
+          "afterCommentary": "🟡 **105.7 ms** is acceptable (target: <500 ms)",
+          "metricDescription": "Total time spent in React render phase",
+          "uxImpact": "Long render times block the main thread.",
+          "businessImpact": "Key metric for React Compiler effectiveness.",
+          "dataQuality": {
+            "beforeCV": 16.751397612210603,
+            "afterCV": 4.28038432028465,
+            "isStatisticallySignificant": true,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "averageRenderTime",
+          "before": 4.735204991553061,
+          "after": 3.2108155218167034,
+          "change": -1.524389469736358,
+          "changePercent": -32.19268167810378,
+          "improvement": "better",
+          "impact": "high",
+          "explanation": "32.2% reduction in average render time indicates React Compiler is successfully memoizing components and reducing unnecessary re-renders.",
+          "beforeAssessment": {
+            "rating": "good",
+            "emoji": "🟡",
+            "label": "Good",
+            "percentOfGood": 94.70409983106123
+          },
+          "afterAssessment": {
+            "rating": "good",
+            "emoji": "🟡",
+            "label": "Good",
+            "percentOfGood": 64.21631043633407
+          },
+          "beforeCommentary": "🟡 **4.7 ms/render** is acceptable (target: <5 ms/render)",
+          "afterCommentary": "🟡 **3.2 ms/render** is acceptable (target: <5 ms/render)",
+          "metricDescription": "Average time per component render",
+          "uxImpact": "Indicates component complexity and optimization.",
+          "businessImpact": "High values suggest components need optimization.",
+          "dataQuality": {
+            "beforeCV": 16.624597839347892,
+            "afterCV": 7.595159549793812,
+            "isStatisticallySignificant": true,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "interactionLatency",
+          "before": 14046.333333333334,
+          "after": 13614.666666666666,
+          "change": -431.6666666666679,
+          "changePercent": -3.073162628443968,
+          "improvement": "better",
+          "impact": "low",
+          "explanation": "432ms improvement in interaction latency means faster, more responsive interactions.",
+          "beforeAssessment": {
+            "rating": "good",
+            "emoji": "🟡",
+            "label": "Good",
+            "percentOfGood": 93.64222222222223
+          },
+          "afterAssessment": {
+            "rating": "good",
+            "emoji": "🟡",
+            "label": "Good",
+            "percentOfGood": 90.76444444444444
+          },
+          "beforeCommentary": "🟡 **14046.3 ms** is acceptable (target: <15000 ms)",
+          "afterCommentary": "🟡 **13614.7 ms** is acceptable (target: <15000 ms)",
+          "metricDescription": "Total time for user flow completion",
+          "uxImpact": "Overall task completion time affects satisfaction.",
+          "businessImpact": "Faster flows = better user retention and task completion.",
+          "dataQuality": {
+            "beforeCV": 3.3971517109111815,
+            "afterCV": 0.3523994042174593,
+            "isStatisticallySignificant": false,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "fcp",
+          "before": 14799.749999985099,
+          "after": 200.8499999990066,
+          "change": -14598.899999986092,
+          "changePercent": -98.64288248112834,
+          "improvement": "better",
+          "impact": "high",
+          "explanation": "14599ms improvement in First Contentful Paint (FCP) means faster, more responsive interactions.",
+          "beforeAssessment": {
+            "rating": "poor",
+            "emoji": "🔴",
+            "label": "Poor",
+            "percentOfGood": 493.32499999950323
+          },
+          "afterAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 6.694999999966887
+          },
+          "beforeCommentary": "🔴 **14799.7 ms** is poor (+196% over threshold 5000 ms)",
+          "afterCommentary": "🟢 **200.8 ms** is excellent (target: <1800 ms)",
+          "metricDescription": "Time until first content appears on screen",
+          "uxImpact": "Users perceive blank screens >1s as slow loading.",
+          "businessImpact": "Every 100ms delay in FCP can reduce conversions by 1-2%.",
+          "dataQuality": {
+            "beforeCV": 42.17672595823108,
+            "afterCV": 37.18143246640363,
+            "isStatisticallySignificant": true,
+            "reliability": "unreliable"
+          }
+        },
+        {
+          "metric": "tbt",
+          "before": 38.666666666666664,
+          "after": 0,
+          "change": -38.666666666666664,
+          "changePercent": -100,
+          "improvement": "better",
+          "impact": "low",
+          "explanation": "39ms improvement in Total Blocking Time (TBT) means faster, more responsive interactions.",
+          "beforeAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 6.444444444444445
+          },
+          "afterAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 0
+          },
+          "beforeCommentary": "🟢 **38.7 ms** is excellent (target: <200 ms)",
+          "afterCommentary": "🟢 **0.0 ms** is excellent (target: <200 ms)",
+          "metricDescription": "Total time main thread was blocked during load",
+          "uxImpact": "Blocked thread = unresponsive UI. Users may think app is frozen.",
+          "businessImpact": "High TBT causes user frustration and abandonment.",
+          "dataQuality": {
+            "beforeCV": 46.51978470080015,
+            "afterCV": 0,
+            "isStatisticallySignificant": true,
+            "reliability": "partial"
+          }
+        }
+      ],
+      "overallImpact": "high",
+      "summary": "7 metrics improved, 0 regressed.",
+      "recommendations": [
+        "⚠️ Some metrics have high variance - interpret results with caution.",
+        "React Compiler optimization is effective - 6 metric(s) improved.",
+        "Focus on high-impact metrics: inp, inpCount, renderTime, averageRenderTime."
+      ],
+      "dataQuality": {
+        "beforeQuality": {
+          "numNetworkReqs": {
+            "coefficientOfVariation": 0,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 3,
+            "qualityLevel": "good",
+            "warnings": [
+              "Only 3 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "inp": {
+            "coefficientOfVariation": 141.42135623730948,
+            "isReliable": false,
+            "hasOutliers": false,
+            "sampleSize": 3,
+            "qualityLevel": "unreliable",
+            "warnings": [
+              "Only 3 iterations completed (minimum 4 recommended)",
+              "Unreliable data - extremely high variance (CV: 141.4%)"
+            ]
+          },
+          "inpCount": {
+            "coefficientOfVariation": 141.4213562373095,
+            "isReliable": false,
+            "hasOutliers": false,
+            "sampleSize": 3,
+            "qualityLevel": "unreliable",
+            "warnings": [
+              "Only 3 iterations completed (minimum 4 recommended)",
+              "Unreliable data - extremely high variance (CV: 141.4%)"
+            ]
+          },
+          "renderCount": {
+            "coefficientOfVariation": 1.414213562373095,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 3,
+            "qualityLevel": "good",
+            "warnings": [
+              "Only 3 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "renderTime": {
+            "coefficientOfVariation": 16.751397612210603,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 3,
+            "qualityLevel": "acceptable",
+            "warnings": [
+              "Only 3 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "averageRenderTime": {
+            "coefficientOfVariation": 16.624597839347892,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 3,
+            "qualityLevel": "acceptable",
+            "warnings": [
+              "Only 3 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "interactionLatency": {
+            "coefficientOfVariation": 3.3971517109111815,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 3,
+            "qualityLevel": "good",
+            "warnings": [
+              "Max value (14718ms) exceeds timeout threshold - likely includes error iterations",
+              "Only 3 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "fcp": {
+            "coefficientOfVariation": 42.17672595823108,
+            "isReliable": false,
+            "hasOutliers": false,
+            "sampleSize": 3,
+            "qualityLevel": "poor",
+            "warnings": [
+              "Max value (21042ms) exceeds timeout threshold - likely includes error iterations",
+              "Only 3 iterations completed (minimum 4 recommended)",
+              "High variance detected (CV: 42.2%)"
+            ]
+          },
+          "tbt": {
+            "coefficientOfVariation": 46.51978470080015,
+            "isReliable": false,
+            "hasOutliers": false,
+            "sampleSize": 3,
+            "qualityLevel": "poor",
+            "warnings": [
+              "Only 3 iterations completed (minimum 4 recommended)",
+              "High variance detected (CV: 46.5%)"
+            ]
+          }
+        },
+        "afterQuality": {
+          "numNetworkReqs": {
+            "coefficientOfVariation": 48.23888078487272,
+            "isReliable": false,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "poor",
+            "warnings": [
+              "High variance detected (CV: 48.2%)"
+            ]
+          },
+          "inp": {
+            "coefficientOfVariation": 9.226337738405087,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "inpCount": {
+            "coefficientOfVariation": 0,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "renderCount": {
+            "coefficientOfVariation": 1.976423537605237,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "renderTime": {
+            "coefficientOfVariation": 4.28038432028465,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "averageRenderTime": {
+            "coefficientOfVariation": 7.595159549793812,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "interactionLatency": {
+            "coefficientOfVariation": 0.3523994042174593,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": [
+              "Max value (13689ms) exceeds timeout threshold - likely includes error iterations"
+            ]
+          },
+          "fcp": {
+            "coefficientOfVariation": 37.18143246640363,
+            "isReliable": false,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "poor",
+            "warnings": [
+              "High variance detected (CV: 37.2%)"
+            ]
+          },
+          "tbt": {
+            "coefficientOfVariation": 0,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          }
+        },
+        "isComparable": true,
+        "overallReliability": "partial",
+        "warnings": [
+          "Baseline has insufficient iterations (3/4 minimum)",
+          "Baseline had 1 error(s)"
+        ]
+      }
+    },
+    {
+      "flowName": "Power User: Token Send",
+      "metrics": [
+        {
+          "metric": "numNetworkReqs",
+          "before": 0,
+          "after": 12,
+          "change": 12,
+          "changePercent": 0,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "Minimal change in network requests (0.0%).",
+          "beforeAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 0
+          },
+          "afterAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 24
+          },
+          "beforeCommentary": "🟢 **0.0 requests** is excellent (target: <20 requests)",
+          "afterCommentary": "🟢 **12.0 requests** is excellent (target: <20 requests)",
+          "metricDescription": "Number of network requests during flow",
+          "uxImpact": "More requests = more latency, especially on slow connections.",
+          "businessImpact": "Affects data costs for mobile users and server load.",
+          "dataQuality": {
+            "beforeCV": 0,
+            "afterCV": 74.06828681096323,
+            "isStatisticallySignificant": true,
+            "reliability": "partial"
+          }
+        },
+        {
+          "metric": "inp",
+          "before": 0,
+          "after": 1190.316666662693,
+          "change": 1190.316666662693,
+          "changePercent": 0,
+          "improvement": "neutral",
+          "impact": "high",
+          "explanation": "Minimal change in Interaction to Next Paint (INP) (0.0%).",
+          "beforeAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 0
+          },
+          "afterAssessment": {
+            "rating": "poor",
+            "emoji": "🔴",
+            "label": "Poor",
+            "percentOfGood": 238.0633333325386
+          },
+          "beforeCommentary": "🟢 **0.0 ms** is excellent (target: <200 ms)",
+          "afterCommentary": "🔴 **1190.3 ms** is poor (+19% over threshold 1000 ms)",
+          "metricDescription": "Time from user interaction to visual feedback",
+          "uxImpact": "Directly affects perceived responsiveness. Users notice delays >100ms.",
+          "businessImpact": "Poor INP correlates with higher bounce rates and lower engagement.",
+          "dataQuality": {
+            "beforeCV": 0,
+            "afterCV": 150.71030971595457,
+            "isStatisticallySignificant": false,
+            "reliability": "partial"
+          }
+        },
+        {
+          "metric": "inpCount",
+          "before": 0,
+          "after": 3,
+          "change": 3,
+          "changePercent": 0,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "INP interaction count increased by 0.0% (informational metric).",
+          "beforeCommentary": "",
+          "afterCommentary": "",
+          "dataQuality": {
+            "beforeCV": 0,
+            "afterCV": 0,
+            "isStatisticallySignificant": true,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "renderCount",
+          "before": 32,
+          "after": 31.5,
+          "change": -0.5,
+          "changePercent": -1.5625,
+          "improvement": "better",
+          "impact": "low",
+          "explanation": "1.6% reduction in React component renders indicates React Compiler is successfully memoizing components and reducing unnecessary re-renders.",
+          "beforeAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 16
+          },
+          "afterAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 15.75
+          },
+          "beforeCommentary": "🟢 **32.0 renders** is excellent (target: <50 renders)",
+          "afterCommentary": "🟢 **31.5 renders** is excellent (target: <50 renders)",
+          "metricDescription": "Number of React component re-renders during flow",
+          "uxImpact": "Excessive re-renders cause jank and slow interactions.",
+          "businessImpact": "React Compiler should reduce this significantly via auto-memoization.",
+          "dataQuality": {
+            "beforeCV": 0,
+            "afterCV": 1.5873015873015872,
+            "isStatisticallySignificant": false,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "renderTime",
+          "before": 124.29999999701977,
+          "after": 107.36666671931744,
+          "change": -16.93333327770233,
+          "changePercent": -13.622955171446764,
+          "improvement": "better",
+          "impact": "medium",
+          "explanation": "13.6% reduction in total render time indicates React Compiler is successfully memoizing components and reducing unnecessary re-renders.",
+          "beforeAssessment": {
+            "rating": "good",
+            "emoji": "🟡",
+            "label": "Good",
+            "percentOfGood": 24.859999999403954
+          },
+          "afterAssessment": {
+            "rating": "good",
+            "emoji": "🟡",
+            "label": "Good",
+            "percentOfGood": 21.473333343863487
+          },
+          "beforeCommentary": "🟡 **124.3 ms** is acceptable (target: <500 ms)",
+          "afterCommentary": "🟡 **107.4 ms** is acceptable (target: <500 ms)",
+          "metricDescription": "Total time spent in React render phase",
+          "uxImpact": "Long render times block the main thread.",
+          "businessImpact": "Key metric for React Compiler effectiveness.",
+          "dataQuality": {
+            "beforeCV": 4.565168407248922,
+            "afterCV": 12.161141008904059,
+            "isStatisticallySignificant": true,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "averageRenderTime",
+          "before": 3.6832337490327562,
+          "after": 3.2365725822326157,
+          "change": -0.44666116680014056,
+          "changePercent": -12.12687538273771,
+          "improvement": "better",
+          "impact": "medium",
+          "explanation": "12.1% reduction in average render time indicates React Compiler is successfully memoizing components and reducing unnecessary re-renders.",
+          "beforeAssessment": {
+            "rating": "good",
+            "emoji": "🟡",
+            "label": "Good",
+            "percentOfGood": 73.66467498065512
+          },
+          "afterAssessment": {
+            "rating": "good",
+            "emoji": "🟡",
+            "label": "Good",
+            "percentOfGood": 64.73145164465231
+          },
+          "beforeCommentary": "🟡 **3.7 ms/render** is acceptable (target: <5 ms/render)",
+          "afterCommentary": "🟡 **3.2 ms/render** is acceptable (target: <5 ms/render)",
+          "metricDescription": "Average time per component render",
+          "uxImpact": "Indicates component complexity and optimization.",
+          "businessImpact": "High values suggest components need optimization.",
+          "dataQuality": {
+            "beforeCV": 10.905871719919572,
+            "afterCV": 5.770430747907584,
+            "isStatisticallySignificant": false,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "interactionLatency",
+          "before": 19933.833333333332,
+          "after": 19869.5,
+          "change": -64.33333333333212,
+          "changePercent": -0.3227343795724127,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "Minimal change in interaction latency (-0.3%).",
+          "beforeAssessment": {
+            "rating": "needsWork",
+            "emoji": "🟠",
+            "label": "Needs Work",
+            "percentOfGood": 132.89222222222222
+          },
+          "afterAssessment": {
+            "rating": "needsWork",
+            "emoji": "🟠",
+            "label": "Needs Work",
+            "percentOfGood": 132.46333333333334
+          },
+          "beforeCommentary": "🟠 **19933.8 ms** needs improvement (+33% over target 15000 ms)",
+          "afterCommentary": "🟠 **19869.5 ms** needs improvement (+32% over target 15000 ms)",
+          "metricDescription": "Total time for user flow completion",
+          "uxImpact": "Overall task completion time affects satisfaction.",
+          "businessImpact": "Faster flows = better user retention and task completion.",
+          "dataQuality": {
+            "beforeCV": 0.3811889074386809,
+            "afterCV": 0.3824267979743649,
+            "isStatisticallySignificant": false,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "tbt",
+          "before": 5.6,
+          "after": 3.6666666666666665,
+          "change": -1.9333333333333331,
+          "changePercent": -34.523809523809526,
+          "improvement": "better",
+          "impact": "low",
+          "explanation": "2ms improvement in Total Blocking Time (TBT) means faster, more responsive interactions.",
+          "beforeAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 0.9333333333333332
+          },
+          "afterAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 0.611111111111111
+          },
+          "beforeCommentary": "🟢 **5.6 ms** is excellent (target: <200 ms)",
+          "afterCommentary": "🟢 **3.7 ms** is excellent (target: <200 ms)",
+          "metricDescription": "Total time main thread was blocked during load",
+          "uxImpact": "Blocked thread = unresponsive UI. Users may think app is frozen.",
+          "businessImpact": "High TBT causes user frustration and abandonment.",
+          "dataQuality": {
+            "beforeCV": 58.24823725107176,
+            "afterCV": 142.29523493180483,
+            "isStatisticallySignificant": false,
+            "reliability": "unreliable"
+          }
+        }
+      ],
+      "overallImpact": "high",
+      "summary": "4 metrics improved, 0 regressed.",
+      "recommendations": [
+        "⚠️ Some metrics have high variance - interpret results with caution.",
+        "React Compiler optimization is effective - 3 metric(s) improved.",
+        "Focus on high-impact metrics: inp."
+      ],
+      "dataQuality": {
+        "beforeQuality": {
+          "numNetworkReqs": {
+            "coefficientOfVariation": 0,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "inp": {
+            "coefficientOfVariation": 0,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "inpCount": {
+            "coefficientOfVariation": 0,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "renderCount": {
+            "coefficientOfVariation": 0,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "renderTime": {
+            "coefficientOfVariation": 4.565168407248922,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "averageRenderTime": {
+            "coefficientOfVariation": 10.905871719919572,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "interactionLatency": {
+            "coefficientOfVariation": 0.3811889074386809,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": [
+              "Max value (20071ms) exceeds timeout threshold - likely includes error iterations"
+            ]
+          },
+          "tbt": {
+            "coefficientOfVariation": 58.24823725107176,
+            "isReliable": false,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "unreliable",
+            "warnings": [
+              "Unreliable data - extremely high variance (CV: 58.2%)"
+            ]
+          }
+        },
+        "afterQuality": {
+          "numNetworkReqs": {
+            "coefficientOfVariation": 74.06828681096323,
+            "isReliable": false,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "unreliable",
+            "warnings": [
+              "Unreliable data - extremely high variance (CV: 74.1%)"
+            ]
+          },
+          "inp": {
+            "coefficientOfVariation": 150.71030971595457,
+            "isReliable": false,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "unreliable",
+            "warnings": [
+              "Unreliable data - extremely high variance (CV: 150.7%)"
+            ]
+          },
+          "inpCount": {
+            "coefficientOfVariation": 0,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "renderCount": {
+            "coefficientOfVariation": 1.5873015873015872,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "renderTime": {
+            "coefficientOfVariation": 12.161141008904059,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "averageRenderTime": {
+            "coefficientOfVariation": 5.770430747907584,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "interactionLatency": {
+            "coefficientOfVariation": 0.3824267979743649,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": [
+              "Max value (19966ms) exceeds timeout threshold - likely includes error iterations"
+            ]
+          },
+          "tbt": {
+            "coefficientOfVariation": 142.29523493180483,
+            "isReliable": false,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "unreliable",
+            "warnings": [
+              "Unreliable data - extremely high variance (CV: 142.3%)"
+            ]
+          }
+        },
+        "isComparable": true,
+        "overallReliability": "partial",
+        "warnings": []
+      }
+    },
+    {
+      "flowName": "Power User: Tokens List Scrolling",
+      "metrics": [
+        {
+          "metric": "numNetworkReqs",
+          "before": 0,
+          "after": 42.333333333333336,
+          "change": 42.333333333333336,
+          "changePercent": 0,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "Minimal change in network requests (0.0%).",
+          "beforeAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 0
+          },
+          "afterAssessment": {
+            "rating": "good",
+            "emoji": "🟡",
+            "label": "Good",
+            "percentOfGood": 84.66666666666667
+          },
+          "beforeCommentary": "🟢 **0.0 requests** is excellent (target: <20 requests)",
+          "afterCommentary": "🟡 **42.3 requests** is acceptable (target: <50 requests)",
+          "metricDescription": "Number of network requests during flow",
+          "uxImpact": "More requests = more latency, especially on slow connections.",
+          "businessImpact": "Affects data costs for mobile users and server load.",
+          "dataQuality": {
+            "beforeCV": 0,
+            "afterCV": 44.604752876436365,
+            "isStatisticallySignificant": true,
+            "reliability": "partial"
+          }
+        },
+        {
+          "metric": "inp",
+          "before": 0,
+          "after": 195.9666666686535,
+          "change": 195.9666666686535,
+          "changePercent": 0,
+          "improvement": "neutral",
+          "impact": "high",
+          "explanation": "Minimal change in Interaction to Next Paint (INP) (0.0%).",
+          "beforeAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 0
+          },
+          "afterAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 39.19333333373069
+          },
+          "beforeCommentary": "🟢 **0.0 ms** is excellent (target: <200 ms)",
+          "afterCommentary": "🟢 **196.0 ms** is excellent (target: <200 ms)",
+          "metricDescription": "Time from user interaction to visual feedback",
+          "uxImpact": "Directly affects perceived responsiveness. Users notice delays >100ms.",
+          "businessImpact": "Poor INP correlates with higher bounce rates and lower engagement.",
+          "dataQuality": {
+            "beforeCV": 0,
+            "afterCV": 80.2303379140046,
+            "isStatisticallySignificant": true,
+            "reliability": "partial"
+          }
+        },
+        {
+          "metric": "inpCount",
+          "before": 0,
+          "after": 2,
+          "change": 2,
+          "changePercent": 0,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "INP interaction count increased by 0.0% (informational metric).",
+          "beforeCommentary": "",
+          "afterCommentary": "",
+          "dataQuality": {
+            "beforeCV": 0,
+            "afterCV": 0,
+            "isStatisticallySignificant": true,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "renderCount",
+          "before": 453.6,
+          "after": 461.1666666666667,
+          "change": 7.566666666666663,
+          "changePercent": 1.6681363903586117,
+          "improvement": "worse",
+          "impact": "low",
+          "explanation": "1.7% increase in React component renders suggests potential regression in component memoization.",
+          "beforeAssessment": {
+            "rating": "good",
+            "emoji": "🟡",
+            "label": "Good",
+            "percentOfGood": 90.72
+          },
+          "afterAssessment": {
+            "rating": "good",
+            "emoji": "🟡",
+            "label": "Good",
+            "percentOfGood": 92.23333333333333
+          },
+          "beforeCommentary": "🟡 **453.6 renders** is acceptable (target: <500 renders)",
+          "afterCommentary": "🟡 **461.2 renders** is acceptable (target: <500 renders)",
+          "metricDescription": "Number of React component re-renders during flow",
+          "uxImpact": "Excessive re-renders cause jank and slow interactions.",
+          "businessImpact": "React Compiler should reduce this significantly via auto-memoization.",
+          "dataQuality": {
+            "beforeCV": 0.2990445318838302,
+            "afterCV": 1.7986797453023926,
+            "isStatisticallySignificant": false,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "renderTime",
+          "before": 3645.516666943828,
+          "after": 3390.8833332508802,
+          "change": -254.63333369294787,
+          "changePercent": -6.984835263595611,
+          "improvement": "better",
+          "impact": "low",
+          "explanation": "7.0% reduction in total render time indicates React Compiler is successfully memoizing components and reducing unnecessary re-renders.",
+          "beforeAssessment": {
+            "rating": "poor",
+            "emoji": "🔴",
+            "label": "Poor",
+            "percentOfGood": 729.1033333887656
+          },
+          "afterAssessment": {
+            "rating": "poor",
+            "emoji": "🔴",
+            "label": "Poor",
+            "percentOfGood": 678.1766666501761
+          },
+          "beforeCommentary": "🔴 **3645.5 ms** is poor (+265% over threshold 1000 ms)",
+          "afterCommentary": "🔴 **3390.9 ms** is poor (+239% over threshold 1000 ms)",
+          "metricDescription": "Total time spent in React render phase",
+          "uxImpact": "Long render times block the main thread.",
+          "businessImpact": "Key metric for React Compiler effectiveness.",
+          "dataQuality": {
+            "beforeCV": 8.837118631752148,
+            "afterCV": 12.923544031435558,
+            "isStatisticallySignificant": false,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "averageRenderTime",
+          "before": 8.055198774932379,
+          "after": 7.349150626304907,
+          "change": -0.7060481486274712,
+          "changePercent": -8.765123845542822,
+          "improvement": "better",
+          "impact": "medium",
+          "explanation": "8.8% reduction in average render time indicates React Compiler is successfully memoizing components and reducing unnecessary re-renders.",
+          "beforeAssessment": {
+            "rating": "needsWork",
+            "emoji": "🟠",
+            "label": "Needs Work",
+            "percentOfGood": 161.10397549864757
+          },
+          "afterAssessment": {
+            "rating": "needsWork",
+            "emoji": "🟠",
+            "label": "Needs Work",
+            "percentOfGood": 146.98301252609815
+          },
+          "beforeCommentary": "🟠 **8.1 ms/render** needs improvement (+61% over target 5 ms/render)",
+          "afterCommentary": "🟠 **7.3 ms/render** needs improvement (+47% over target 5 ms/render)",
+          "metricDescription": "Average time per component render",
+          "uxImpact": "Indicates component complexity and optimization.",
+          "businessImpact": "High values suggest components need optimization.",
+          "dataQuality": {
+            "beforeCV": 9.08041369167797,
+            "afterCV": 12.400179303368764,
+            "isStatisticallySignificant": false,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "interactionLatency",
+          "before": 13192.2,
+          "after": 13442.333333333334,
+          "change": 250.1333333333332,
+          "changePercent": 1.8960698998903383,
+          "improvement": "worse",
+          "impact": "low",
+          "explanation": "250ms slower interaction latency - investigate potential performance regression.",
+          "beforeAssessment": {
+            "rating": "good",
+            "emoji": "🟡",
+            "label": "Good",
+            "percentOfGood": 87.94800000000001
+          },
+          "afterAssessment": {
+            "rating": "good",
+            "emoji": "🟡",
+            "label": "Good",
+            "percentOfGood": 89.61555555555556
+          },
+          "beforeCommentary": "🟡 **13192.2 ms** is acceptable (target: <15000 ms)",
+          "afterCommentary": "🟡 **13442.3 ms** is acceptable (target: <15000 ms)",
+          "metricDescription": "Total time for user flow completion",
+          "uxImpact": "Overall task completion time affects satisfaction.",
+          "businessImpact": "Faster flows = better user retention and task completion.",
+          "dataQuality": {
+            "beforeCV": 1.6649444439073464,
+            "afterCV": 5.880265966106328,
+            "isStatisticallySignificant": false,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "fcp",
+          "before": 7143.9000000059605,
+          "after": 1006.6799999952316,
+          "change": -6137.220000010729,
+          "changePercent": -85.90853735362488,
+          "improvement": "better",
+          "impact": "high",
+          "explanation": "6137ms improvement in First Contentful Paint (FCP) means faster, more responsive interactions.",
+          "beforeAssessment": {
+            "rating": "poor",
+            "emoji": "🔴",
+            "label": "Poor",
+            "percentOfGood": 238.1300000001987
+          },
+          "afterAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 33.55599999984105
+          },
+          "beforeCommentary": "🔴 **7143.9 ms** is poor (+43% over threshold 5000 ms)",
+          "afterCommentary": "🟢 **1006.7 ms** is excellent (target: <1800 ms)",
+          "metricDescription": "Time until first content appears on screen",
+          "uxImpact": "Users perceive blank screens >1s as slow loading.",
+          "businessImpact": "Every 100ms delay in FCP can reduce conversions by 1-2%.",
+          "dataQuality": {
+            "beforeCV": 97.96189756304095,
+            "afterCV": 95.12544535511428,
+            "isStatisticallySignificant": false,
+            "reliability": "unreliable"
+          }
+        },
+        {
+          "metric": "tbt",
+          "before": 4416.666666666667,
+          "after": 3877,
+          "change": -539.666666666667,
+          "changePercent": -12.218867924528308,
+          "improvement": "better",
+          "impact": "high",
+          "explanation": "540ms improvement in Total Blocking Time (TBT) means faster, more responsive interactions.",
+          "beforeAssessment": {
+            "rating": "needsWork",
+            "emoji": "🟠",
+            "label": "Needs Work",
+            "percentOfGood": 147.22222222222223
+          },
+          "afterAssessment": {
+            "rating": "needsWork",
+            "emoji": "🟠",
+            "label": "Needs Work",
+            "percentOfGood": 129.23333333333332
+          },
+          "beforeCommentary": "🟠 **4416.7 ms** needs improvement (+47% over target 3000 ms)",
+          "afterCommentary": "🟠 **3877.0 ms** needs improvement (+29% over target 3000 ms)",
+          "metricDescription": "Total time main thread was blocked during load",
+          "uxImpact": "Blocked thread = unresponsive UI. Users may think app is frozen.",
+          "businessImpact": "High TBT causes user frustration and abandonment.",
+          "dataQuality": {
+            "beforeCV": 14.14139250017736,
+            "afterCV": 7.308230032269456,
+            "isStatisticallySignificant": false,
+            "reliability": "reliable"
+          }
+        }
+      ],
+      "overallImpact": "high",
+      "summary": "4 metrics improved, 2 regressed.",
+      "recommendations": [
+        "⚠️ Some metrics have high variance - interpret results with caution.",
+        "Investigate 2 metric regression(s) in this flow.",
+        "React Compiler optimization is effective - 3 metric(s) improved.",
+        "Focus on high-impact metrics: inp, tbt."
+      ],
+      "dataQuality": {
+        "beforeQuality": {
+          "numNetworkReqs": {
+            "coefficientOfVariation": 0,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "inp": {
+            "coefficientOfVariation": 0,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "inpCount": {
+            "coefficientOfVariation": 0,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "renderCount": {
+            "coefficientOfVariation": 0.2990445318838302,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "renderTime": {
+            "coefficientOfVariation": 8.837118631752148,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "averageRenderTime": {
+            "coefficientOfVariation": 9.08041369167797,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "interactionLatency": {
+            "coefficientOfVariation": 1.6649444439073464,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": [
+              "Max value (13483ms) exceeds timeout threshold - likely includes error iterations"
+            ]
+          },
+          "fcp": {
+            "coefficientOfVariation": 97.96189756304095,
+            "isReliable": false,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "unreliable",
+            "warnings": [
+              "Max value (14142ms) exceeds timeout threshold - likely includes error iterations",
+              "Unreliable data - extremely high variance (CV: 98.0%)"
+            ]
+          },
+          "tbt": {
+            "coefficientOfVariation": 14.14139250017736,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          }
+        },
+        "afterQuality": {
+          "numNetworkReqs": {
+            "coefficientOfVariation": 44.604752876436365,
+            "isReliable": false,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "poor",
+            "warnings": [
+              "High variance detected (CV: 44.6%)"
+            ]
+          },
+          "inp": {
+            "coefficientOfVariation": 80.2303379140046,
+            "isReliable": false,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "unreliable",
+            "warnings": [
+              "Unreliable data - extremely high variance (CV: 80.2%)"
+            ]
+          },
+          "inpCount": {
+            "coefficientOfVariation": 0,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "renderCount": {
+            "coefficientOfVariation": 1.7986797453023926,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "renderTime": {
+            "coefficientOfVariation": 12.923544031435558,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "averageRenderTime": {
+            "coefficientOfVariation": 12.400179303368764,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "interactionLatency": {
+            "coefficientOfVariation": 5.880265966106328,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": [
+              "Max value (14847ms) exceeds timeout threshold - likely includes error iterations"
+            ]
+          },
+          "fcp": {
+            "coefficientOfVariation": 95.12544535511428,
+            "isReliable": false,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "unreliable",
+            "warnings": [
+              "Unreliable data - extremely high variance (CV: 95.1%)"
+            ]
+          },
+          "tbt": {
+            "coefficientOfVariation": 7.308230032269456,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          }
+        },
+        "isComparable": true,
+        "overallReliability": "partial",
+        "warnings": []
+      }
+    },
+    {
+      "flowName": "Power User: Nft List Scrolling",
+      "metrics": [
+        {
+          "metric": "numNetworkReqs",
+          "before": 0,
+          "after": 125.25,
+          "change": 125.25,
+          "changePercent": 0,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "Minimal change in network requests (0.0%).",
+          "beforeAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 0
+          },
+          "afterAssessment": {
+            "rating": "needsWork",
+            "emoji": "🟠",
+            "label": "Needs Work",
+            "percentOfGood": 104.375
+          },
+          "beforeCommentary": "🟢 **0.0 requests** is excellent (target: <80 requests)",
+          "afterCommentary": "🟠 **125.3 requests** needs improvement (+4% over target 120 requests)",
+          "metricDescription": "Number of network requests during flow",
+          "uxImpact": "More requests = more latency, especially on slow connections.",
+          "businessImpact": "Affects data costs for mobile users and server load.",
+          "dataQuality": {
+            "beforeCV": 0,
+            "afterCV": 1.9860028684762874,
+            "isStatisticallySignificant": true,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "inp",
+          "before": 0,
+          "after": 25.239999997615815,
+          "change": 25.239999997615815,
+          "changePercent": 0,
+          "improvement": "neutral",
+          "impact": "medium",
+          "explanation": "Minimal change in Interaction to Next Paint (INP) (0.0%).",
+          "beforeAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 0
+          },
+          "afterAssessment": {
+            "rating": "excellent",
+            "emoji": "🟢",
+            "label": "Excellent",
+            "percentOfGood": 5.047999999523163
+          },
+          "beforeCommentary": "🟢 **0.0 ms** is excellent (target: <200 ms)",
+          "afterCommentary": "🟢 **25.2 ms** is excellent (target: <200 ms)",
+          "metricDescription": "Time from user interaction to visual feedback",
+          "uxImpact": "Directly affects perceived responsiveness. Users notice delays >100ms.",
+          "businessImpact": "Poor INP correlates with higher bounce rates and lower engagement.",
+          "dataQuality": {
+            "beforeCV": 0,
+            "afterCV": 122.47858840942267,
+            "isStatisticallySignificant": false,
+            "reliability": "partial"
+          }
+        },
+        {
+          "metric": "inpCount",
+          "before": 0,
+          "after": 1,
+          "change": 1,
+          "changePercent": 0,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "INP interaction count increased by 0.0% (informational metric).",
+          "beforeCommentary": "",
+          "afterCommentary": "",
+          "dataQuality": {
+            "beforeCV": 0,
+            "afterCV": 100,
+            "isStatisticallySignificant": false,
+            "reliability": "partial"
+          }
+        },
+        {
+          "metric": "renderCount",
+          "before": 542.6666666666666,
+          "after": 539.8333333333334,
+          "change": -2.8333333333332575,
+          "changePercent": -0.5221130221130083,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "Minimal change in React component renders (-0.5%).",
+          "beforeAssessment": {
+            "rating": "good",
+            "emoji": "🟡",
+            "label": "Good",
+            "percentOfGood": 90.44444444444444
+          },
+          "afterAssessment": {
+            "rating": "good",
+            "emoji": "🟡",
+            "label": "Good",
+            "percentOfGood": 89.97222222222223
+          },
+          "beforeCommentary": "🟡 **542.7 renders** is acceptable (target: <600 renders)",
+          "afterCommentary": "🟡 **539.8 renders** is acceptable (target: <600 renders)",
+          "metricDescription": "Number of React component re-renders during flow",
+          "uxImpact": "Excessive re-renders cause jank and slow interactions.",
+          "businessImpact": "React Compiler should reduce this significantly via auto-memoization.",
+          "dataQuality": {
+            "beforeCV": 0.31320758683002364,
+            "afterCV": 0.4832502575640175,
+            "isStatisticallySignificant": false,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "renderTime",
+          "before": 3887.199999998013,
+          "after": 3404.079999881983,
+          "change": -483.12000011603004,
+          "changePercent": -12.42848322999272,
+          "improvement": "better",
+          "impact": "medium",
+          "explanation": "12.4% reduction in total render time indicates React Compiler is successfully memoizing components and reducing unnecessary re-renders.",
+          "beforeAssessment": {
+            "rating": "poor",
+            "emoji": "🔴",
+            "label": "Poor",
+            "percentOfGood": 777.4399999996026
+          },
+          "afterAssessment": {
+            "rating": "poor",
+            "emoji": "🔴",
+            "label": "Poor",
+            "percentOfGood": 680.8159999763966
+          },
+          "beforeCommentary": "🔴 **3887.2 ms** is poor (+289% over threshold 1000 ms)",
+          "afterCommentary": "🔴 **3404.1 ms** is poor (+240% over threshold 1000 ms)",
+          "metricDescription": "Total time spent in React render phase",
+          "uxImpact": "Long render times block the main thread.",
+          "businessImpact": "Key metric for React Compiler effectiveness.",
+          "dataQuality": {
+            "beforeCV": 5.350522942470453,
+            "afterCV": 5.616568451747014,
+            "isStatisticallySignificant": true,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "averageRenderTime",
+          "before": 7.16441186861821,
+          "after": 6.297432939077558,
+          "change": -0.866978929540652,
+          "changePercent": -12.101187723980825,
+          "improvement": "better",
+          "impact": "medium",
+          "explanation": "12.1% reduction in average render time indicates React Compiler is successfully memoizing components and reducing unnecessary re-renders.",
+          "beforeAssessment": {
+            "rating": "needsWork",
+            "emoji": "🟠",
+            "label": "Needs Work",
+            "percentOfGood": 143.2882373723642
+          },
+          "afterAssessment": {
+            "rating": "needsWork",
+            "emoji": "🟠",
+            "label": "Needs Work",
+            "percentOfGood": 125.94865878155115
+          },
+          "beforeCommentary": "🟠 **7.2 ms/render** needs improvement (+43% over target 5 ms/render)",
+          "afterCommentary": "🟠 **6.3 ms/render** needs improvement (+26% over target 5 ms/render)",
+          "metricDescription": "Average time per component render",
+          "uxImpact": "Indicates component complexity and optimization.",
+          "businessImpact": "High values suggest components need optimization.",
+          "dataQuality": {
+            "beforeCV": 5.652285715815086,
+            "afterCV": 5.759063986665111,
+            "isStatisticallySignificant": true,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "interactionLatency",
+          "before": 13107,
+          "after": 13026.166666666666,
+          "change": -80.83333333333394,
+          "changePercent": -0.6167188016581517,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "Minimal change in interaction latency (-0.6%).",
+          "beforeAssessment": {
+            "rating": "good",
+            "emoji": "🟡",
+            "label": "Good",
+            "percentOfGood": 87.38
+          },
+          "afterAssessment": {
+            "rating": "good",
+            "emoji": "🟡",
+            "label": "Good",
+            "percentOfGood": 86.8411111111111
+          },
+          "beforeCommentary": "🟡 **13107.0 ms** is acceptable (target: <15000 ms)",
+          "afterCommentary": "🟡 **13026.2 ms** is acceptable (target: <15000 ms)",
+          "metricDescription": "Total time for user flow completion",
+          "uxImpact": "Overall task completion time affects satisfaction.",
+          "businessImpact": "Faster flows = better user retention and task completion.",
+          "dataQuality": {
+            "beforeCV": 2.845695082018953,
+            "afterCV": 2.127391437320493,
+            "isStatisticallySignificant": false,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "tbt",
+          "before": 3999.3333333333335,
+          "after": 3874.5,
+          "change": -124.83333333333348,
+          "changePercent": -3.1213535589264914,
+          "improvement": "better",
+          "impact": "medium",
+          "explanation": "125ms improvement in Total Blocking Time (TBT) means faster, more responsive interactions.",
+          "beforeAssessment": {
+            "rating": "needsWork",
+            "emoji": "🟠",
+            "label": "Needs Work",
+            "percentOfGood": 133.3111111111111
+          },
+          "afterAssessment": {
+            "rating": "needsWork",
+            "emoji": "🟠",
+            "label": "Needs Work",
+            "percentOfGood": 129.15
+          },
+          "beforeCommentary": "🟠 **3999.3 ms** needs improvement (+33% over target 3000 ms)",
+          "afterCommentary": "🟠 **3874.5 ms** needs improvement (+29% over target 3000 ms)",
+          "metricDescription": "Total time main thread was blocked during load",
+          "uxImpact": "Blocked thread = unresponsive UI. Users may think app is frozen.",
+          "businessImpact": "High TBT causes user frustration and abandonment.",
+          "dataQuality": {
+            "beforeCV": 8.313257908596633,
+            "afterCV": 15.536307858680292,
+            "isStatisticallySignificant": false,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "scrollToLoadLatency",
+          "before": 5080.333333333333,
+          "after": 5110.166666666667,
+          "change": 29.83333333333394,
+          "changePercent": 0.5872318089364335,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "Minimal change in scroll-to-load latency (+0.6%).",
+          "beforeAssessment": {
+            "rating": "poor",
+            "emoji": "🔴",
+            "label": "Poor",
+            "percentOfGood": 338.68888888888887
+          },
+          "afterAssessment": {
+            "rating": "poor",
+            "emoji": "🔴",
+            "label": "Poor",
+            "percentOfGood": 340.6777777777778
+          },
+          "beforeCommentary": "🔴 **5080.3 ms** is poor (+69% over threshold 3000 ms)",
+          "afterCommentary": "🔴 **5110.2 ms** is poor (+70% over threshold 3000 ms)",
+          "metricDescription": "Time from scroll to content appearing",
+          "uxImpact": "Affects infinite scroll and lazy-loading experiences.",
+          "businessImpact": "Slow scroll-to-load reduces content engagement.",
+          "dataQuality": {
+            "beforeCV": 0.5179440359506613,
+            "afterCV": 1.0400005984683995,
+            "isStatisticallySignificant": false,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "scrollEventCount",
+          "before": 2,
+          "after": 2,
+          "change": 0,
+          "changePercent": 0,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "scrollEventCount decreased by 0.0% (informational metric).",
+          "beforeCommentary": "",
+          "afterCommentary": "",
+          "dataQuality": {
+            "beforeCV": 0,
+            "afterCV": 0,
+            "isStatisticallySignificant": false,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "totalScrollDistance",
+          "before": 0,
+          "after": 0,
+          "change": 0,
+          "changePercent": 0,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "totalScrollDistance decreased by 0.0% (informational metric).",
+          "beforeCommentary": "",
+          "afterCommentary": "",
+          "dataQuality": {
+            "beforeCV": 0,
+            "afterCV": 0,
+            "isStatisticallySignificant": false,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "assetsLoadedPerScroll",
+          "before": 0,
+          "after": 0,
+          "change": 0,
+          "changePercent": 0,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "assetsLoadedPerScroll decreased by 0.0% (informational metric).",
+          "beforeCommentary": "",
+          "afterCommentary": "",
+          "dataQuality": {
+            "beforeCV": 0,
+            "afterCV": 0,
+            "isStatisticallySignificant": false,
+            "reliability": "reliable"
+          }
+        },
+        {
+          "metric": "cumulativeLoadTime",
+          "before": 10160.666666666666,
+          "after": 10220.333333333334,
+          "change": 59.66666666666788,
+          "changePercent": 0.5872318089364335,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "Minimal change in cumulative load time (+0.6%).",
+          "beforeAssessment": {
+            "rating": "needsWork",
+            "emoji": "🟠",
+            "label": "Needs Work",
+            "percentOfGood": 127.00833333333333
+          },
+          "afterAssessment": {
+            "rating": "needsWork",
+            "emoji": "🟠",
+            "label": "Needs Work",
+            "percentOfGood": 127.75416666666668
+          },
+          "beforeCommentary": "🟠 **10160.7 ms** needs improvement (+27% over target 8000 ms)",
+          "afterCommentary": "🟠 **10220.3 ms** needs improvement (+28% over target 8000 ms)",
+          "metricDescription": "Total time loading all assets during flow",
+          "uxImpact": "Affects overall flow experience.",
+          "businessImpact": "High cumulative load times indicate optimization opportunities.",
+          "dataQuality": {
+            "beforeCV": 0.5179440359506613,
+            "afterCV": 1.0400005984683995,
+            "isStatisticallySignificant": false,
+            "reliability": "reliable"
+          }
+        }
+      ],
+      "overallImpact": "medium",
+      "summary": "3 metrics improved, 0 regressed.",
+      "recommendations": [
+        "React Compiler optimization is effective - 3 metric(s) improved."
+      ],
+      "dataQuality": {
+        "beforeQuality": {
+          "numNetworkReqs": {
+            "coefficientOfVariation": 0,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 3,
+            "qualityLevel": "good",
+            "warnings": [
+              "Only 3 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "inp": {
+            "coefficientOfVariation": 0,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 3,
+            "qualityLevel": "good",
+            "warnings": [
+              "Only 3 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "inpCount": {
+            "coefficientOfVariation": 0,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 3,
+            "qualityLevel": "good",
+            "warnings": [
+              "Only 3 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "renderCount": {
+            "coefficientOfVariation": 0.31320758683002364,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 3,
+            "qualityLevel": "good",
+            "warnings": [
+              "Only 3 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "renderTime": {
+            "coefficientOfVariation": 5.350522942470453,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 3,
+            "qualityLevel": "good",
+            "warnings": [
+              "Only 3 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "averageRenderTime": {
+            "coefficientOfVariation": 5.652285715815086,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 3,
+            "qualityLevel": "good",
+            "warnings": [
+              "Only 3 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "interactionLatency": {
+            "coefficientOfVariation": 2.845695082018953,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 3,
+            "qualityLevel": "good",
+            "warnings": [
+              "Max value (13535ms) exceeds timeout threshold - likely includes error iterations",
+              "Only 3 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "tbt": {
+            "coefficientOfVariation": 8.313257908596633,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 3,
+            "qualityLevel": "good",
+            "warnings": [
+              "Only 3 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "scrollToLoadLatency": {
+            "coefficientOfVariation": 0.5179440359506613,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 3,
+            "qualityLevel": "good",
+            "warnings": [
+              "Only 3 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "scrollEventCount": {
+            "coefficientOfVariation": 0,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 3,
+            "qualityLevel": "good",
+            "warnings": [
+              "Only 3 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "totalScrollDistance": {
+            "coefficientOfVariation": 0,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 3,
+            "qualityLevel": "good",
+            "warnings": [
+              "Only 3 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "assetsLoadedPerScroll": {
+            "coefficientOfVariation": 0,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 3,
+            "qualityLevel": "good",
+            "warnings": [
+              "Only 3 iterations completed (minimum 4 recommended)"
+            ]
+          },
+          "cumulativeLoadTime": {
+            "coefficientOfVariation": 0.5179440359506613,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 3,
+            "qualityLevel": "good",
+            "warnings": [
+              "Only 3 iterations completed (minimum 4 recommended)"
+            ]
+          }
+        },
+        "afterQuality": {
+          "numNetworkReqs": {
+            "coefficientOfVariation": 1.9860028684762874,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "inp": {
+            "coefficientOfVariation": 122.47858840942267,
+            "isReliable": false,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "unreliable",
+            "warnings": [
+              "Unreliable data - extremely high variance (CV: 122.5%)"
+            ]
+          },
+          "inpCount": {
+            "coefficientOfVariation": 100,
+            "isReliable": false,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "unreliable",
+            "warnings": [
+              "Unreliable data - extremely high variance (CV: 100.0%)"
+            ]
+          },
+          "renderCount": {
+            "coefficientOfVariation": 0.4832502575640175,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "renderTime": {
+            "coefficientOfVariation": 5.616568451747014,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "averageRenderTime": {
+            "coefficientOfVariation": 5.759063986665111,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "interactionLatency": {
+            "coefficientOfVariation": 2.127391437320493,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": [
+              "Max value (13334ms) exceeds timeout threshold - likely includes error iterations"
+            ]
+          },
+          "tbt": {
+            "coefficientOfVariation": 15.536307858680292,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "acceptable",
+            "warnings": []
+          },
+          "scrollToLoadLatency": {
+            "coefficientOfVariation": 1.0400005984683995,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "scrollEventCount": {
+            "coefficientOfVariation": 0,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "totalScrollDistance": {
+            "coefficientOfVariation": 0,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "assetsLoadedPerScroll": {
+            "coefficientOfVariation": 0,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          },
+          "cumulativeLoadTime": {
+            "coefficientOfVariation": 1.0400005984683995,
+            "isReliable": true,
+            "hasOutliers": false,
+            "sampleSize": 6,
+            "qualityLevel": "good",
+            "warnings": []
+          }
+        },
+        "isComparable": true,
+        "overallReliability": "reliable",
+        "warnings": [
+          "Baseline has insufficient iterations (3/4 minimum)",
+          "Baseline had 1 error(s)"
+        ]
+      }
+    }
+  ],
+  "overallSummary": "Overall: 37 metrics improved across 9 flows, 11 regressions detected. Data quality: 4 reliable, 5 partial, 0 unreliable flows.",
+  "keyFindings": [
+    "Power User: Tab Switching: 18.7% improvement in averageRenderTime (1.66 → 1.35)",
+    "⚠️ Power User: Network Adding: 7364.3% regression in inp (24ms → 1.75s) (⚠️ partial data)",
+    "Power User: Import Srp: 21.7% improvement in renderTime (344ms → 269ms)",
+    "Power User: Import Srp: 21.8% improvement in averageRenderTime (1.52 → 1.19)",
+    "Power User: Token Search: 94.0% improvement in inp (240ms → 14ms) (⚠️ partial data)",
+    "Power User: Token Search: 33.1% improvement in renderTime (158ms → 106ms)",
+    "Power User: Token Search: 32.2% improvement in averageRenderTime (4.74 → 3.21)",
+    "Power User: Tokens List Scrolling: 12.2% improvement in tbt (4.42s → 3.88s)"
+  ],
+  "dataQualityWarnings": [
+    "Power User: Tab Switching: Baseline only has 3 iterations",
+    "Power User: Network Adding: Compiler only has 3 iterations",
+    "Power User: Import Srp: Baseline only has 2 iterations",
+    "Power User: Import Srp: Compiler only has 2 iterations",
+    "Power User: Token Search: Baseline only has 3 iterations",
+    "Power User: Token Search: fcp shows 98.6% change (14.80s → 201ms) but data is UNRELIABLE (CV: baseline 42%, compiler 37%)",
+    "Power User: Tokens List Scrolling: fcp shows 85.9% change (7.14s → 1.01s) but data is UNRELIABLE (CV: baseline 98%, compiler 95%)",
+    "Power User: Nft List Scrolling: Baseline only has 3 iterations"
+  ]
+}

@@ -1,0 +1,1132 @@
+{
+  "beforeFile": "./benchmark-baseline-webpack-232-001.json",
+  "afterFile": "./benchmark-compiler-webpack-232-001.json",
+  "timestamp": 1764680775505,
+  "beforeReport": {
+    "startTime": "2025-12-02T11:23:02.605Z",
+    "endTime": "2025-12-02T11:58:22.914Z",
+    "durationMs": 2120309,
+    "flowReports": [
+      {
+        "flowName": "tab-switching",
+        "status": "success",
+        "retriesUsed": 0,
+        "totalRetries": 2,
+        "errors": [],
+        "warnings": [],
+        "iterationsCompleted": 5,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 2,
+        "browserLoadsRequested": 2
+      },
+      {
+        "flowName": "account-switching",
+        "status": "success",
+        "retriesUsed": 0,
+        "totalRetries": 2,
+        "errors": [],
+        "warnings": [],
+        "iterationsCompleted": 6,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 2,
+        "browserLoadsRequested": 2
+      },
+      {
+        "flowName": "network-switching",
+        "status": "success",
+        "retriesUsed": 0,
+        "totalRetries": 2,
+        "errors": [],
+        "warnings": [],
+        "iterationsCompleted": 6,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 2,
+        "browserLoadsRequested": 2
+      },
+      {
+        "flowName": "network-adding",
+        "status": "success",
+        "retriesUsed": 1,
+        "totalRetries": 2,
+        "errors": [],
+        "warnings": [
+          "Browser load 2: Attempt 1: Waiting for element to be located By(css selector, .controller-loaded)\nWait timed out after 10198ms"
+        ],
+        "iterationsCompleted": 6,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 2,
+        "browserLoadsRequested": 2
+      },
+      {
+        "flowName": "import-srp",
+        "status": "failed",
+        "retriesUsed": 2,
+        "totalRetries": 2,
+        "errors": [
+          "Browser load 1: All iterations failed for flow import-srp. No results to return.",
+          "Browser load 2: All iterations failed for flow import-srp. No results to return.",
+          "No successful results obtained"
+        ],
+        "warnings": [],
+        "iterationsCompleted": 0,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 0,
+        "browserLoadsRequested": 2
+      },
+      {
+        "flowName": "token-search",
+        "status": "success",
+        "retriesUsed": 0,
+        "totalRetries": 2,
+        "errors": [],
+        "warnings": [],
+        "iterationsCompleted": 6,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 2,
+        "browserLoadsRequested": 2
+      },
+      {
+        "flowName": "token-send",
+        "status": "success",
+        "retriesUsed": 0,
+        "totalRetries": 2,
+        "errors": [],
+        "warnings": [],
+        "iterationsCompleted": 6,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 2,
+        "browserLoadsRequested": 2
+      },
+      {
+        "flowName": "tokens-list-scrolling",
+        "status": "success",
+        "retriesUsed": 0,
+        "totalRetries": 2,
+        "errors": [],
+        "warnings": [],
+        "iterationsCompleted": 6,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 2,
+        "browserLoadsRequested": 2
+      },
+      {
+        "flowName": "nft-list-scrolling",
+        "status": "success",
+        "retriesUsed": 0,
+        "totalRetries": 2,
+        "errors": [],
+        "warnings": [],
+        "iterationsCompleted": 6,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 2,
+        "browserLoadsRequested": 2
+      }
+    ],
+    "summary": {
+      "totalFlows": 9,
+      "successfulFlows": 8,
+      "failedFlows": 1,
+      "skippedFlows": 0
+    }
+  },
+  "afterReport": {
+    "startTime": "2025-12-02T10:44:14.155Z",
+    "endTime": "2025-12-02T11:19:25.102Z",
+    "durationMs": 2110947,
+    "flowReports": [
+      {
+        "flowName": "tab-switching",
+        "status": "success",
+        "retriesUsed": 0,
+        "totalRetries": 2,
+        "errors": [],
+        "warnings": [],
+        "iterationsCompleted": 6,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 2,
+        "browserLoadsRequested": 2
+      },
+      {
+        "flowName": "account-switching",
+        "status": "success",
+        "retriesUsed": 0,
+        "totalRetries": 2,
+        "errors": [],
+        "warnings": [],
+        "iterationsCompleted": 6,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 2,
+        "browserLoadsRequested": 2
+      },
+      {
+        "flowName": "network-switching",
+        "status": "success",
+        "retriesUsed": 0,
+        "totalRetries": 2,
+        "errors": [],
+        "warnings": [],
+        "iterationsCompleted": 6,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 2,
+        "browserLoadsRequested": 2
+      },
+      {
+        "flowName": "network-adding",
+        "status": "success",
+        "retriesUsed": 0,
+        "totalRetries": 2,
+        "errors": [],
+        "warnings": [],
+        "iterationsCompleted": 6,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 2,
+        "browserLoadsRequested": 2
+      },
+      {
+        "flowName": "import-srp",
+        "status": "success",
+        "retriesUsed": 0,
+        "totalRetries": 2,
+        "errors": [],
+        "warnings": [],
+        "iterationsCompleted": 2,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 2,
+        "browserLoadsRequested": 2
+      },
+      {
+        "flowName": "token-search",
+        "status": "success",
+        "retriesUsed": 0,
+        "totalRetries": 2,
+        "errors": [],
+        "warnings": [],
+        "iterationsCompleted": 6,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 2,
+        "browserLoadsRequested": 2
+      },
+      {
+        "flowName": "token-send",
+        "status": "success",
+        "retriesUsed": 0,
+        "totalRetries": 2,
+        "errors": [],
+        "warnings": [],
+        "iterationsCompleted": 6,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 2,
+        "browserLoadsRequested": 2
+      },
+      {
+        "flowName": "tokens-list-scrolling",
+        "status": "success",
+        "retriesUsed": 2,
+        "totalRetries": 2,
+        "errors": [
+          "Browser load 1: -32603, undefined, Unable to enable notifications\n-32603, undefined, Unable to enable notifications\nfailed to generate nonce: Unexpected token 'E', \"Error: get\"... is not valid JSON\nfailed to generate nonce: Unexpected token 'E', \"Error: get\"... is not valid JSON\n-32603, undefined, Unable to enable notifications\n-32603, undefined, Unable to enable notifications\n-32603, undefined, Unable to enable notifications\n-32603, undefined, Unable to enable notifications\n-32603, undefined, Unable to enable notifications\n-32603, undefined, Unable to enable notifications"
+        ],
+        "warnings": [
+          "Browser load 2: Attempt 1: -32603, undefined, Unable to enable notifications\n-32603, undefined, Unable to enable notifications\nfailed to generate nonce: Unexpected token 'E', \"Error: get\"... is not valid JSON\nfailed to generate nonce: Unexpected token 'E', \"Error: get\"... is not valid JSON"
+        ],
+        "iterationsCompleted": 3,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 1,
+        "browserLoadsRequested": 2
+      },
+      {
+        "flowName": "nft-list-scrolling",
+        "status": "success",
+        "retriesUsed": 0,
+        "totalRetries": 2,
+        "errors": [],
+        "warnings": [],
+        "iterationsCompleted": 6,
+        "iterationsRequested": 3,
+        "browserLoadsCompleted": 2,
+        "browserLoadsRequested": 2
+      }
+    ],
+    "summary": {
+      "totalFlows": 9,
+      "successfulFlows": 9,
+      "failedFlows": 0,
+      "skippedFlows": 0
+    }
+  },
+  "flows": [
+    {
+      "flowName": "Power User: Tab Switching",
+      "metrics": [
+        {
+          "metric": "numNetworkReqs",
+          "before": 63,
+          "after": 47.166666666666664,
+          "change": -15.833333333333336,
+          "changePercent": -25.132275132275133,
+          "improvement": "better",
+          "impact": "high",
+          "explanation": "25.1% fewer network requests indicates improved efficiency and reduced overhead."
+        },
+        {
+          "metric": "inp",
+          "before": 399.9999999940395,
+          "after": 212.26666666567326,
+          "change": -187.73333332836626,
+          "changePercent": -46.93333333279093,
+          "improvement": "better",
+          "impact": "high",
+          "explanation": "188ms improvement in Interaction to Next Paint (INP) means faster, more responsive interactions."
+        },
+        {
+          "metric": "inpCount",
+          "before": 8.2,
+          "after": 8,
+          "change": -0.1999999999999993,
+          "changePercent": -2.439024390243894,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "INP interaction count decreased by 2.4% (informational metric)."
+        },
+        {
+          "metric": "renderCount",
+          "before": 542.2,
+          "after": 543.5,
+          "change": 1.2999999999999545,
+          "changePercent": 0.23976392475100597,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "Minimal change in React component renders (+0.2%)."
+        },
+        {
+          "metric": "renderTime",
+          "before": 866.020000487566,
+          "after": 706.6333334892988,
+          "change": -159.38666699826717,
+          "changePercent": -18.40450184851771,
+          "improvement": "better",
+          "impact": "medium",
+          "explanation": "18.4% reduction in total render time indicates React Compiler is successfully memoizing components and reducing unnecessary re-renders."
+        },
+        {
+          "metric": "averageRenderTime",
+          "before": 1.5975044873768407,
+          "after": 1.3004999188289068,
+          "change": -0.2970045685479339,
+          "changePercent": -18.59178305255505,
+          "improvement": "better",
+          "impact": "high",
+          "explanation": "18.6% reduction in average render time indicates React Compiler is successfully memoizing components and reducing unnecessary re-renders."
+        },
+        {
+          "metric": "interactionLatency",
+          "before": 3670.6,
+          "after": 3227,
+          "change": -443.5999999999999,
+          "changePercent": -12.08521767558437,
+          "improvement": "better",
+          "impact": "medium",
+          "explanation": "444ms improvement in interaction latency means faster, more responsive interactions."
+        },
+        {
+          "metric": "fcp",
+          "before": 351.31999999284744,
+          "after": 318.59999999900657,
+          "change": -32.71999999384087,
+          "changePercent": -9.313446429041052,
+          "improvement": "better",
+          "impact": "low",
+          "explanation": "33ms improvement in First Contentful Paint (FCP) means faster, more responsive interactions."
+        },
+        {
+          "metric": "tbt",
+          "before": 575.4,
+          "after": 411.5,
+          "change": -163.89999999999998,
+          "changePercent": -28.48453249913104,
+          "improvement": "better",
+          "impact": "medium",
+          "explanation": "164ms improvement in Total Blocking Time (TBT) means faster, more responsive interactions."
+        }
+      ],
+      "overallImpact": "high",
+      "summary": "7 metrics improved, 0 regressed.",
+      "recommendations": [
+        "React Compiler optimization is effective - 7 metric(s) improved.",
+        "Focus on high-impact metrics: numNetworkReqs, inp, averageRenderTime."
+      ]
+    },
+    {
+      "flowName": "Power User: Account Switching",
+      "metrics": [
+        {
+          "metric": "numNetworkReqs",
+          "before": 150,
+          "after": 149.16666666666666,
+          "change": -0.8333333333333428,
+          "changePercent": -0.5555555555555619,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "Minimal change in network requests (-0.6%)."
+        },
+        {
+          "metric": "inp",
+          "before": 35.81666667262713,
+          "after": 35.166666666666664,
+          "change": -0.6500000059604645,
+          "changePercent": -1.8147975966094763,
+          "improvement": "better",
+          "impact": "low",
+          "explanation": "1.8% improvement in Interaction to Next Paint (INP)."
+        },
+        {
+          "metric": "inpCount",
+          "before": 6,
+          "after": 6,
+          "change": 0,
+          "changePercent": 0,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "INP interaction count decreased by 0.0% (informational metric)."
+        },
+        {
+          "metric": "renderCount",
+          "before": 254.5,
+          "after": 254.33333333333334,
+          "change": -0.1666666666666572,
+          "changePercent": -0.06548788474131913,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "Minimal change in React component renders (-0.1%)."
+        },
+        {
+          "metric": "renderTime",
+          "before": 277.7500000447035,
+          "after": 273.5500000367562,
+          "change": -4.200000007947267,
+          "changePercent": -1.5121512177394358,
+          "improvement": "better",
+          "impact": "low",
+          "explanation": "1.5% reduction in total render time indicates React Compiler is successfully memoizing components and reducing unnecessary re-renders."
+        },
+        {
+          "metric": "averageRenderTime",
+          "before": 1.0914774648094412,
+          "after": 1.0752188088372885,
+          "change": -0.016258655972152702,
+          "changePercent": -1.4896007014667285,
+          "improvement": "better",
+          "impact": "low",
+          "explanation": "1.5% reduction in average render time indicates React Compiler is successfully memoizing components and reducing unnecessary re-renders."
+        },
+        {
+          "metric": "interactionLatency",
+          "before": 5037.666666666667,
+          "after": 5022.166666666667,
+          "change": -15.5,
+          "changePercent": -0.30768212796929795,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "Minimal change in interaction latency (-0.3%)."
+        },
+        {
+          "metric": "fcp",
+          "before": 227.81666666269302,
+          "after": 159.59999999403954,
+          "change": -68.21666666865349,
+          "changePercent": -29.943668155611974,
+          "improvement": "better",
+          "impact": "low",
+          "explanation": "68ms improvement in First Contentful Paint (FCP) means faster, more responsive interactions."
+        },
+        {
+          "metric": "tbt",
+          "before": 6.333333333333333,
+          "after": 1.3333333333333333,
+          "change": -5,
+          "changePercent": -78.94736842105263,
+          "improvement": "better",
+          "impact": "low",
+          "explanation": "5ms improvement in Total Blocking Time (TBT) means faster, more responsive interactions."
+        }
+      ],
+      "overallImpact": "low",
+      "summary": "5 metrics improved, 0 regressed.",
+      "recommendations": [
+        "React Compiler optimization is effective - 5 metric(s) improved."
+      ]
+    },
+    {
+      "flowName": "Power User: Network Switching",
+      "metrics": [
+        {
+          "metric": "numNetworkReqs",
+          "before": 61,
+          "after": 35,
+          "change": -26,
+          "changePercent": -42.62295081967213,
+          "improvement": "better",
+          "impact": "high",
+          "explanation": "42.6% fewer network requests indicates improved efficiency and reduced overhead."
+        },
+        {
+          "metric": "inp",
+          "before": 11.900000005960464,
+          "after": 9.449999993046125,
+          "change": -2.450000012914339,
+          "changePercent": -20.58823539232928,
+          "improvement": "better",
+          "impact": "low",
+          "explanation": "2ms improvement in Interaction to Next Paint (INP) means faster, more responsive interactions."
+        },
+        {
+          "metric": "inpCount",
+          "before": 4,
+          "after": 2,
+          "change": -2,
+          "changePercent": -50,
+          "improvement": "neutral",
+          "impact": "high",
+          "explanation": "INP interaction count decreased by 50.0% (informational metric)."
+        },
+        {
+          "metric": "renderCount",
+          "before": 60,
+          "after": 22.333333333333332,
+          "change": -37.66666666666667,
+          "changePercent": -62.777777777777786,
+          "improvement": "better",
+          "impact": "high",
+          "explanation": "62.8% reduction in React component renders indicates React Compiler is successfully memoizing components and reducing unnecessary re-renders."
+        },
+        {
+          "metric": "renderTime",
+          "before": 238.53333328167597,
+          "after": 81.06666661302249,
+          "change": -157.4666666686535,
+          "changePercent": -66.01453327393301,
+          "improvement": "better",
+          "impact": "high",
+          "explanation": "66.0% reduction in total render time indicates React Compiler is successfully memoizing components and reducing unnecessary re-renders."
+        },
+        {
+          "metric": "averageRenderTime",
+          "before": 3.969145941991105,
+          "after": 3.6320099014327436,
+          "change": -0.3371360405583612,
+          "changePercent": -8.49391898120124,
+          "improvement": "better",
+          "impact": "medium",
+          "explanation": "8.5% reduction in average render time indicates React Compiler is successfully memoizing components and reducing unnecessary re-renders."
+        },
+        {
+          "metric": "interactionLatency",
+          "before": 80202.83333333333,
+          "after": 47883.5,
+          "change": -32319.33333333333,
+          "changePercent": -40.29699698888443,
+          "improvement": "better",
+          "impact": "high",
+          "explanation": "32319ms improvement in interaction latency means faster, more responsive interactions."
+        },
+        {
+          "metric": "fcp",
+          "before": 186.80000000198683,
+          "after": 164.85000000397363,
+          "change": -21.949999998013197,
+          "changePercent": -11.750535330717202,
+          "improvement": "better",
+          "impact": "low",
+          "explanation": "22ms improvement in First Contentful Paint (FCP) means faster, more responsive interactions."
+        },
+        {
+          "metric": "tbt",
+          "before": 8.166666666666666,
+          "after": 0,
+          "change": -8.166666666666666,
+          "changePercent": -100,
+          "improvement": "better",
+          "impact": "low",
+          "explanation": "8ms improvement in Total Blocking Time (TBT) means faster, more responsive interactions."
+        }
+      ],
+      "overallImpact": "high",
+      "summary": "8 metrics improved, 0 regressed.",
+      "recommendations": [
+        "React Compiler optimization is effective - 8 metric(s) improved.",
+        "Focus on high-impact metrics: numNetworkReqs, inpCount, renderCount, renderTime, interactionLatency."
+      ]
+    },
+    {
+      "flowName": "Power User: Network Adding",
+      "metrics": [
+        {
+          "metric": "numNetworkReqs",
+          "before": 31.5,
+          "after": 44.833333333333336,
+          "change": 13.333333333333336,
+          "changePercent": 42.328042328042336,
+          "improvement": "worse",
+          "impact": "high",
+          "explanation": "42.3% more network requests may indicate additional API calls or inefficient data fetching."
+        },
+        {
+          "metric": "inp",
+          "before": 12880.949999998013,
+          "after": 24.716666668653488,
+          "change": -12856.233333329359,
+          "changePercent": -99.80811456710369,
+          "improvement": "better",
+          "impact": "high",
+          "explanation": "12856ms improvement in Interaction to Next Paint (INP) means faster, more responsive interactions."
+        },
+        {
+          "metric": "inpCount",
+          "before": 74.83333333333333,
+          "after": 92,
+          "change": 17.16666666666667,
+          "changePercent": 22.939866369710476,
+          "improvement": "neutral",
+          "impact": "high",
+          "explanation": "INP interaction count increased by 22.9% (informational metric)."
+        },
+        {
+          "metric": "renderCount",
+          "before": 164.5,
+          "after": 212.83333333333334,
+          "change": 48.33333333333334,
+          "changePercent": 29.381965552178325,
+          "improvement": "worse",
+          "impact": "high",
+          "explanation": "29.4% increase in React component renders suggests potential regression in component memoization."
+        },
+        {
+          "metric": "renderTime",
+          "before": 312.08333344260853,
+          "after": 424.91666663686436,
+          "change": 112.83333319425583,
+          "changePercent": 36.1548731069952,
+          "improvement": "worse",
+          "impact": "high",
+          "explanation": "36.2% increase in total render time suggests potential regression in component memoization."
+        },
+        {
+          "metric": "averageRenderTime",
+          "before": 2.150879700742982,
+          "after": 1.996854256138598,
+          "change": -0.15402544460438405,
+          "changePercent": -7.161044132369597,
+          "improvement": "better",
+          "impact": "low",
+          "explanation": "7.2% reduction in average render time indicates React Compiler is successfully memoizing components and reducing unnecessary re-renders."
+        },
+        {
+          "metric": "interactionLatency",
+          "before": 32415.666666666668,
+          "after": 27173.5,
+          "change": -5242.166666666668,
+          "changePercent": -16.171707096362873,
+          "improvement": "better",
+          "impact": "medium",
+          "explanation": "5242ms improvement in interaction latency means faster, more responsive interactions."
+        },
+        {
+          "metric": "fcp",
+          "before": 11207.53333334128,
+          "after": 172.74999998509884,
+          "change": -11034.783333356181,
+          "changePercent": -98.4586260433312,
+          "improvement": "better",
+          "impact": "high",
+          "explanation": "11035ms improvement in First Contentful Paint (FCP) means faster, more responsive interactions."
+        },
+        {
+          "metric": "tbt",
+          "before": 4.833333333333333,
+          "after": 5.666666666666667,
+          "change": 0.8333333333333339,
+          "changePercent": 17.24137931034484,
+          "improvement": "worse",
+          "impact": "low",
+          "explanation": "17.2% regression in Total Blocking Time (TBT)."
+        }
+      ],
+      "overallImpact": "high",
+      "summary": "4 metrics improved, 4 regressed.",
+      "recommendations": [
+        "Investigate 4 metric regression(s) in this flow.",
+        "React Compiler optimization is effective - 4 metric(s) improved.",
+        "Focus on high-impact metrics: numNetworkReqs, inp, inpCount, renderCount, renderTime, fcp."
+      ]
+    },
+    {
+      "flowName": "Power User: Token Search",
+      "metrics": [
+        {
+          "metric": "numNetworkReqs",
+          "before": 4.666666666666667,
+          "after": 4,
+          "change": -0.666666666666667,
+          "changePercent": -14.28571428571429,
+          "improvement": "better",
+          "impact": "medium",
+          "explanation": "14.3% fewer network requests indicates improved efficiency and reduced overhead."
+        },
+        {
+          "metric": "inp",
+          "before": 15.500000004967054,
+          "after": 14.816666667660078,
+          "change": -0.6833333373069763,
+          "changePercent": -4.408602174761281,
+          "improvement": "better",
+          "impact": "low",
+          "explanation": "4.4% improvement in Interaction to Next Paint (INP)."
+        },
+        {
+          "metric": "inpCount",
+          "before": 8,
+          "after": 8,
+          "change": 0,
+          "changePercent": 0,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "INP interaction count decreased by 0.0% (informational metric)."
+        },
+        {
+          "metric": "renderCount",
+          "before": 29,
+          "after": 27,
+          "change": -2,
+          "changePercent": -6.896551724137931,
+          "improvement": "better",
+          "impact": "low",
+          "explanation": "6.9% reduction in React component renders indicates React Compiler is successfully memoizing components and reducing unnecessary re-renders."
+        },
+        {
+          "metric": "renderTime",
+          "before": 87.96666666865349,
+          "after": 84.64999996622403,
+          "change": -3.3166667024294583,
+          "changePercent": -3.7703676040407896,
+          "improvement": "better",
+          "impact": "low",
+          "explanation": "3.8% reduction in total render time indicates React Compiler is successfully memoizing components and reducing unnecessary re-renders."
+        },
+        {
+          "metric": "averageRenderTime",
+          "before": 3.030431897753942,
+          "after": 3.129709332574398,
+          "change": 0.09927743482045592,
+          "changePercent": 3.276016032369417,
+          "improvement": "worse",
+          "impact": "low",
+          "explanation": "3.3% increase in average render time suggests potential regression in component memoization."
+        },
+        {
+          "metric": "interactionLatency",
+          "before": 10979.666666666666,
+          "after": 10982.833333333334,
+          "change": 3.1666666666678793,
+          "changePercent": 0.02884119129300719,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "Minimal change in interaction latency (+0.0%)."
+        },
+        {
+          "metric": "fcp",
+          "before": 224.0666666676601,
+          "after": 219.9666666686535,
+          "change": -4.099999999006599,
+          "changePercent": -1.8298125553355047,
+          "improvement": "better",
+          "impact": "low",
+          "explanation": "4ms improvement in First Contentful Paint (FCP) means faster, more responsive interactions."
+        },
+        {
+          "metric": "tbt",
+          "before": 0,
+          "after": 0,
+          "change": 0,
+          "changePercent": 0,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "Minimal change in Total Blocking Time (TBT) (0.0%)."
+        }
+      ],
+      "overallImpact": "medium",
+      "summary": "5 metrics improved, 1 regressed.",
+      "recommendations": [
+        "Investigate 1 metric regression(s) in this flow.",
+        "React Compiler optimization is effective - 5 metric(s) improved."
+      ]
+    },
+    {
+      "flowName": "Power User: Token Send",
+      "metrics": [
+        {
+          "metric": "numNetworkReqs",
+          "before": 4.666666666666667,
+          "after": 4,
+          "change": -0.666666666666667,
+          "changePercent": -14.28571428571429,
+          "improvement": "better",
+          "impact": "medium",
+          "explanation": "14.3% fewer network requests indicates improved efficiency and reduced overhead."
+        },
+        {
+          "metric": "inp",
+          "before": 12.416666666666666,
+          "after": 13.650000005960464,
+          "change": 1.2333333392937984,
+          "changePercent": 9.932885954044014,
+          "improvement": "worse",
+          "impact": "low",
+          "explanation": "1ms slower Interaction to Next Paint (INP) - investigate potential performance regression."
+        },
+        {
+          "metric": "inpCount",
+          "before": 2,
+          "after": 2,
+          "change": 0,
+          "changePercent": 0,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "INP interaction count decreased by 0.0% (informational metric)."
+        },
+        {
+          "metric": "renderCount",
+          "before": 31.166666666666668,
+          "after": 31.166666666666668,
+          "change": 0,
+          "changePercent": 0,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "Minimal change in React component renders (0.0%)."
+        },
+        {
+          "metric": "renderTime",
+          "before": 94.94999997317791,
+          "after": 96.43333336214225,
+          "change": 1.4833333889643399,
+          "changePercent": 1.5622257918729452,
+          "improvement": "worse",
+          "impact": "low",
+          "explanation": "1.6% increase in total render time suggests potential regression in component memoization."
+        },
+        {
+          "metric": "averageRenderTime",
+          "before": 3.0449630367916782,
+          "after": 3.095791235020202,
+          "change": 0.05082819822852391,
+          "changePercent": 1.669255016050342,
+          "improvement": "worse",
+          "impact": "low",
+          "explanation": "1.7% increase in average render time suggests potential regression in component memoization."
+        },
+        {
+          "metric": "interactionLatency",
+          "before": 9301.333333333334,
+          "after": 9283.5,
+          "change": -17.83333333333394,
+          "changePercent": -0.19172878440367622,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "Minimal change in interaction latency (-0.2%)."
+        },
+        {
+          "metric": "fcp",
+          "before": 197.63333333532015,
+          "after": 214.41666666169962,
+          "change": 16.783333326379477,
+          "changePercent": 8.492157189851959,
+          "improvement": "worse",
+          "impact": "low",
+          "explanation": "17ms slower First Contentful Paint (FCP) - investigate potential performance regression."
+        },
+        {
+          "metric": "tbt",
+          "before": 0,
+          "after": 0,
+          "change": 0,
+          "changePercent": 0,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "Minimal change in Total Blocking Time (TBT) (0.0%)."
+        }
+      ],
+      "overallImpact": "medium",
+      "summary": "1 metrics improved, 4 regressed.",
+      "recommendations": [
+        "Investigate 4 metric regression(s) in this flow.",
+        "React Compiler optimization is effective - 1 metric(s) improved."
+      ]
+    },
+    {
+      "flowName": "Power User: Tokens List Scrolling",
+      "metrics": [
+        {
+          "metric": "numNetworkReqs",
+          "before": 28.166666666666668,
+          "after": 33.333333333333336,
+          "change": 5.166666666666668,
+          "changePercent": 18.34319526627219,
+          "improvement": "worse",
+          "impact": "medium",
+          "explanation": "18.3% more network requests may indicate additional API calls or inefficient data fetching."
+        },
+        {
+          "metric": "inp",
+          "before": 43.5,
+          "after": 52.7666666607062,
+          "change": 9.2666666607062,
+          "changePercent": 21.30268197863494,
+          "improvement": "worse",
+          "impact": "low",
+          "explanation": "9ms slower Interaction to Next Paint (INP) - investigate potential performance regression."
+        },
+        {
+          "metric": "inpCount",
+          "before": 0.8333333333333334,
+          "after": 2,
+          "change": 1.1666666666666665,
+          "changePercent": 139.99999999999997,
+          "improvement": "neutral",
+          "impact": "high",
+          "explanation": "INP interaction count increased by 140.0% (informational metric)."
+        },
+        {
+          "metric": "renderCount",
+          "before": 446,
+          "after": 454.6666666666667,
+          "change": 8.666666666666686,
+          "changePercent": 1.9431988041853556,
+          "improvement": "worse",
+          "impact": "low",
+          "explanation": "1.9% increase in React component renders suggests potential regression in component memoization."
+        },
+        {
+          "metric": "renderTime",
+          "before": 2489.3666667143502,
+          "after": 2365.999999990066,
+          "change": -123.36666672428419,
+          "changePercent": -4.955745104722263,
+          "improvement": "better",
+          "impact": "low",
+          "explanation": "5.0% reduction in total render time indicates React Compiler is successfully memoizing components and reducing unnecessary re-renders."
+        },
+        {
+          "metric": "averageRenderTime",
+          "before": 5.509512312128483,
+          "after": 5.100802157637056,
+          "change": -0.4087101544914269,
+          "changePercent": -7.418263747078013,
+          "improvement": "better",
+          "impact": "low",
+          "explanation": "7.4% reduction in average render time indicates React Compiler is successfully memoizing components and reducing unnecessary re-renders."
+        },
+        {
+          "metric": "interactionLatency",
+          "before": 12988.166666666666,
+          "after": 12566,
+          "change": -422.16666666666606,
+          "changePercent": -3.250394589947255,
+          "improvement": "better",
+          "impact": "low",
+          "explanation": "422ms improvement in interaction latency means faster, more responsive interactions."
+        },
+        {
+          "metric": "fcp",
+          "before": 204.375,
+          "after": 215.7333333392938,
+          "change": 11.358333339293807,
+          "changePercent": 5.5575942944556855,
+          "improvement": "worse",
+          "impact": "low",
+          "explanation": "11ms slower First Contentful Paint (FCP) - investigate potential performance regression."
+        },
+        {
+          "metric": "tbt",
+          "before": 2567.3333333333335,
+          "after": 2411.3333333333335,
+          "change": -156,
+          "changePercent": -6.076343806803427,
+          "improvement": "better",
+          "impact": "medium",
+          "explanation": "156ms improvement in Total Blocking Time (TBT) means faster, more responsive interactions."
+        }
+      ],
+      "overallImpact": "high",
+      "summary": "4 metrics improved, 4 regressed.",
+      "recommendations": [
+        "Investigate 4 metric regression(s) in this flow.",
+        "React Compiler optimization is effective - 4 metric(s) improved.",
+        "Focus on high-impact metrics: inpCount."
+      ]
+    },
+    {
+      "flowName": "Power User: Nft List Scrolling",
+      "metrics": [
+        {
+          "metric": "numNetworkReqs",
+          "before": 103.5,
+          "after": 123.16666666666667,
+          "change": 19.66666666666667,
+          "changePercent": 19.001610305958135,
+          "improvement": "worse",
+          "impact": "medium",
+          "explanation": "19.0% more network requests may indicate additional API calls or inefficient data fetching."
+        },
+        {
+          "metric": "inp",
+          "before": 1214.4333333273728,
+          "after": 89.25,
+          "change": -1125.1833333273728,
+          "changePercent": -92.65089342076377,
+          "improvement": "better",
+          "impact": "high",
+          "explanation": "1125ms improvement in Interaction to Next Paint (INP) means faster, more responsive interactions."
+        },
+        {
+          "metric": "inpCount",
+          "before": 1,
+          "after": 2,
+          "change": 1,
+          "changePercent": 100,
+          "improvement": "neutral",
+          "impact": "high",
+          "explanation": "INP interaction count increased by 100.0% (informational metric)."
+        },
+        {
+          "metric": "renderCount",
+          "before": 535.1666666666666,
+          "after": 536.3333333333334,
+          "change": 1.1666666666667425,
+          "changePercent": 0.21800062285893662,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "Minimal change in React component renders (+0.2%)."
+        },
+        {
+          "metric": "renderTime",
+          "before": 2637.8666664411626,
+          "after": 2688.9500000278153,
+          "change": 51.08333358665277,
+          "changePercent": 1.9365396377509507,
+          "improvement": "worse",
+          "impact": "low",
+          "explanation": "1.9% increase in total render time suggests potential regression in component memoization."
+        },
+        {
+          "metric": "averageRenderTime",
+          "before": 4.892891869663984,
+          "after": 4.973502112907499,
+          "change": 0.08061024324351518,
+          "changePercent": 1.647496928008978,
+          "improvement": "worse",
+          "impact": "low",
+          "explanation": "1.6% increase in average render time suggests potential regression in component memoization."
+        },
+        {
+          "metric": "interactionLatency",
+          "before": 12787.333333333334,
+          "after": 13003.333333333334,
+          "change": 216,
+          "changePercent": 1.6891715760387882,
+          "improvement": "worse",
+          "impact": "low",
+          "explanation": "216ms slower interaction latency - investigate potential performance regression."
+        },
+        {
+          "metric": "fcp",
+          "before": 4205.10000000149,
+          "after": 269.6666666616996,
+          "change": -3935.4333333397904,
+          "changePercent": -93.58715210906746,
+          "improvement": "better",
+          "impact": "high",
+          "explanation": "3935ms improvement in First Contentful Paint (FCP) means faster, more responsive interactions."
+        },
+        {
+          "metric": "tbt",
+          "before": 2715.3333333333335,
+          "after": 2569,
+          "change": -146.33333333333348,
+          "changePercent": -5.389148048121783,
+          "improvement": "better",
+          "impact": "medium",
+          "explanation": "146ms improvement in Total Blocking Time (TBT) means faster, more responsive interactions."
+        },
+        {
+          "metric": "scrollToLoadLatency",
+          "before": 5103.333333333333,
+          "after": 5194.916666666667,
+          "change": 91.58333333333394,
+          "changePercent": 1.794578706727641,
+          "improvement": "worse",
+          "impact": "low",
+          "explanation": "1.8% regression in scroll-to-load latency."
+        },
+        {
+          "metric": "scrollEventCount",
+          "before": 2,
+          "after": 2,
+          "change": 0,
+          "changePercent": 0,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "scrollEventCount decreased by 0.0% (informational metric)."
+        },
+        {
+          "metric": "totalScrollDistance",
+          "before": 0,
+          "after": 0,
+          "change": 0,
+          "changePercent": 0,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "totalScrollDistance decreased by 0.0% (informational metric)."
+        },
+        {
+          "metric": "assetsLoadedPerScroll",
+          "before": 0,
+          "after": 0,
+          "change": 0,
+          "changePercent": 0,
+          "improvement": "neutral",
+          "impact": "low",
+          "explanation": "assetsLoadedPerScroll decreased by 0.0% (informational metric)."
+        },
+        {
+          "metric": "cumulativeLoadTime",
+          "before": 10206.666666666666,
+          "after": 10389.833333333334,
+          "change": 183.16666666666788,
+          "changePercent": 1.794578706727641,
+          "improvement": "worse",
+          "impact": "low",
+          "explanation": "1.8% regression in cumulative load time."
+        }
+      ],
+      "overallImpact": "high",
+      "summary": "3 metrics improved, 6 regressed.",
+      "recommendations": [
+        "Investigate 6 metric regression(s) in this flow.",
+        "React Compiler optimization is effective - 3 metric(s) improved.",
+        "Focus on high-impact metrics: inp, inpCount, fcp."
+      ]
+    }
+  ],
+  "overallSummary": "Overall: 37 metrics improved across 8 flows, 19 regressions detected.",
+  "keyFindings": [
+    "Power User: Tab Switching: 25.1% improvement in numNetworkReqs",
+    "Power User: Tab Switching: 46.9% improvement in inp",
+    "Power User: Tab Switching: 18.6% improvement in averageRenderTime",
+    "Power User: Network Switching: 42.6% improvement in numNetworkReqs",
+    "Power User: Network Switching: 62.8% improvement in renderCount",
+    "Power User: Network Switching: 66.0% improvement in renderTime",
+    "Power User: Network Switching: 40.3% improvement in interactionLatency",
+    "⚠️ Power User: Network Adding: 42.3% regression in numNetworkReqs",
+    "Power User: Network Adding: 99.8% improvement in inp",
+    "⚠️ Power User: Network Adding: 29.4% regression in renderCount"
+  ]
+}
