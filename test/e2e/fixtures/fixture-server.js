@@ -5,7 +5,7 @@ const CURRENT_STATE_KEY = '__CURRENT__';
 const DEFAULT_STATE_KEY = '__DEFAULT__';
 
 const FIXTURE_SERVER_HOST = 'localhost';
-const FIXTURE_SERVER_PORT = 12345;
+const DEFAULT_FIXTURE_SERVER_PORT = 12345;
 
 const fixtureSubstitutionPrefix = '__FIXTURE_SUBSTITUTION__';
 const CONTRACT_KEY = 'CONTRACT';
@@ -64,9 +64,15 @@ function performStateSubstitutions(rawState, contractRegistry) {
 }
 
 class FixtureServer {
-  constructor() {
+  /**
+   * Create a new FixtureServer
+   *
+   * @param {number} portOffset - Port offset for concurrent runs (default: 0)
+   */
+  constructor(portOffset = 0) {
     this._app = new Koa();
     this._stateMap = new Map([[DEFAULT_STATE_KEY, Object.create(null)]]);
+    this._port = DEFAULT_FIXTURE_SERVER_PORT + portOffset;
 
     this._app.use(async (ctx) => {
       // Firefox is _super_ strict about needing CORS headers
@@ -80,7 +86,7 @@ class FixtureServer {
   async start() {
     const options = {
       host: FIXTURE_SERVER_HOST,
-      port: FIXTURE_SERVER_PORT,
+      port: this._port,
       exclusive: true,
     };
 

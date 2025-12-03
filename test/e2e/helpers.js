@@ -96,7 +96,16 @@ function normalizeLocalNodeOptions(localNodeOptions) {
     });
   }
   if (typeof localNodeOptions === 'object' && localNodeOptions !== null) {
-    // Case 4: Passing an options object without type
+    // Case 4a: Object with type and options (e.g., { type: 'anvil', options: { port: 8545 } })
+    if (localNodeOptions.type) {
+      return [
+        {
+          type: localNodeOptions.type,
+          options: localNodeOptions.options || {},
+        },
+      ];
+    }
+    // Case 4b: Passing an options object without type (legacy format)
     return [
       {
         type: 'anvil',
@@ -175,12 +184,13 @@ async function withFixtures(options, testSuite) {
     manifestFlags,
     solanaWebSocketSpecificMocks = [],
     forceBip44Version = 0,
+    portOffset = 0,
   } = options;
 
   // Normalize localNodeOptions
   const localNodeOptsNormalized = normalizeLocalNodeOptions(localNodeOptions);
 
-  const fixtureServer = new FixtureServer();
+  const fixtureServer = new FixtureServer(portOffset);
 
   const bundlerServer = new Bundler();
   const https = await mockttp.generateCACertificate();
@@ -289,7 +299,7 @@ async function withFixtures(options, testSuite) {
       );
     }
 
-    await phishingPageServer.start();
+    await phishingPageServer.start({ port: 9999 + portOffset });
     if (numberOfDapps > 0) {
       // Ensure the default test dapp occupies the lowest ports first (e.g., 8080),
       // then any custom dapps follow (e.g., 8081, 8082, ...).
@@ -320,7 +330,7 @@ async function withFixtures(options, testSuite) {
         const basePort =
           typeof dappOpts.basePort === 'number'
             ? dappOpts.basePort
-            : dappBasePort;
+            : dappBasePort + portOffset;
         dappServer[i].listen(`${basePort + i}`);
         await new Promise((resolve, reject) => {
           dappServer[i].on('listening', resolve);
@@ -330,7 +340,7 @@ async function withFixtures(options, testSuite) {
     }
 
     // Start WebSocket server and apply Solana mocks (defaults + overrides)
-    webSocketServer = LocalWebSocketServer.getServerInstance();
+    webSocketServer = LocalWebSocketServer.getServerInstance(portOffset);
     webSocketServer.start();
     await setupSolanaWebsocketMocks(solanaWebSocketSpecificMocks);
 
@@ -368,18 +378,20 @@ async function withFixtures(options, testSuite) {
       monConversionInUsd,
     });
 
-    if ((await detectPort(8000)) !== 8000) {
+    const mockServerPort = 8000 + portOffset;
+    if ((await detectPort(mockServerPort)) !== mockServerPort) {
       throw new Error(
-        'Failed to set up mock server, something else may be running on port 8000.',
+        `Failed to set up mock server, something else may be running on port ${mockServerPort}.`,
       );
     }
-    await mockServer.start(8000);
+    await mockServer.start(mockServerPort);
 
     await setManifestFlags(manifestFlags);
 
     const wd = await buildWebDriver({
       ...driverOptions,
       disableServerMochaToBackground,
+      proxyPort: mockServerPort, // Pass offset port so browser routes to correct mock server
     });
     driver = wd.driver;
     extensionId = wd.extensionId;

@@ -111,10 +111,10 @@ Results are saved incrementally to the specified JSON file as each flow complete
 **Available Flows:**
 - O`tab-switching` - Tests switching between different tabs in the UI
 - O`account-switching` - Tests switching between different accounts
-- X`network-switching` - Tests switching between different networks
-- O`network-adding` - Tests the network adding flow
+- O`network-switching` - Tests switching between different networks
+- X`network-adding` - Tests the network adding flow
 - O`import-srp` - Tests onboarding flow and app load time when importing SRP
-- X`token-search` - Tests token search functionality in asset picker
+- O`token-search` - Tests token search functionality in asset picker
 - X`token-send` - Tests token send flow performance, measuring delays to access Send page and Next button clicks
 - O`tokens-list-scrolling` - Tests scrolling through the tokens list
 - O`nft-list-scrolling` - Tests scrolling through the NFT list

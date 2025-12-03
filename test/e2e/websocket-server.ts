@@ -6,19 +6,27 @@ class LocalWebSocketServer {
 
   private server: WebSocketServer | null = null; // WebSocket server instance
 
-  private static readonly port = 8088;
+  private static readonly DEFAULT_PORT = 8088;
+
+  private currentPort: number = LocalWebSocketServer.DEFAULT_PORT;
 
   private websocketConnections: WebSocket[] = []; // Track active connections
 
   /**
    * Get the singleton instance of the LocalWebSocketServer
    *
+   * @param portOffset - Optional port offset for concurrent runs (default: 0)
    * @returns The singleton instance of LocalWebSocketServer
    */
-  public static getServerInstance(): LocalWebSocketServer {
+  public static getServerInstance(
+    portOffset: number = 0,
+  ): LocalWebSocketServer {
     if (!LocalWebSocketServer.instance) {
       LocalWebSocketServer.instance = new LocalWebSocketServer();
     }
+    // Update port with offset
+    LocalWebSocketServer.instance.currentPort =
+      LocalWebSocketServer.DEFAULT_PORT + portOffset;
     return LocalWebSocketServer.instance;
   }
 
@@ -35,12 +43,12 @@ class LocalWebSocketServer {
   public start(): void {
     if (this.server) {
       console.log(
-        `WebSocket server is already running on ws://localhost:${LocalWebSocketServer.port}`,
+        `WebSocket server is already running on ws://localhost:${this.currentPort}`,
       );
       return; // Do nothing if the server is already running
     }
 
-    this.server = new WebSocketServer({ port: LocalWebSocketServer.port });
+    this.server = new WebSocketServer({ port: this.currentPort });
 
     this.server.on('connection', (socket: WebSocket) => {
       console.log('Client connected to the WebSocket server');
@@ -63,7 +71,7 @@ class LocalWebSocketServer {
     });
 
     console.log(
-      `WebSocket server running on ws://localhost:${LocalWebSocketServer.port}`,
+      `WebSocket server running on ws://localhost:${this.currentPort}`,
     );
   }
 
@@ -74,13 +82,22 @@ class LocalWebSocketServer {
     if (this.server) {
       this.server.close(() => {
         console.log(
-          `WebSocket server stopped on ws://localhost:${LocalWebSocketServer.port}`,
+          `WebSocket server stopped on ws://localhost:${this.currentPort}`,
         );
       });
       this.server = null;
     } else {
       console.log('WebSocket server is not running');
     }
+  }
+
+  /**
+   * Get the current port number
+   *
+   * @returns The current port number
+   */
+  public getPort(): number {
+    return this.currentPort;
   }
 
   public sendMessage(message: string): void {

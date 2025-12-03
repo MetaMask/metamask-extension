@@ -3,13 +3,14 @@ import path from 'path';
 import { capitalize } from 'lodash';
 import get from 'lodash/get';
 import { hideBin } from 'yargs/helpers';
+import { Key } from 'selenium-webdriver';
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const yargs = require('yargs/yargs');
 import { generateWalletState } from '../../../app/scripts/fixtures/generate-wallet-state';
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const FixtureBuilder = require('../fixtures/fixture-builder');
 import { exitWithError } from '../../../development/lib/exit-with-error';
-// retry imported but using custom retryWithTracking for reporting
+import { retry } from '../../../development/lib/retry';
 import {
   getFirstParentDirectoryThatExists,
   isWritable,
@@ -18,6 +19,7 @@ import { unlockWallet, withFixtures } from '../helpers';
 import AccountListPage from '../page-objects/pages/account-list-page';
 import HeaderNavbar from '../page-objects/pages/header-navbar';
 import HomePage from '../page-objects/pages/home/homepage';
+import AssetListPage from '../page-objects/pages/home/asset-list';
 import AssetPicker from '../page-objects/pages/asset-picker';
 import SendTokenPage from '../page-objects/pages/send/send-token-page';
 import SelectNetwork from '../page-objects/pages/dialog/select-network';
@@ -25,9 +27,11 @@ import NetworkManager from '../page-objects/pages/network-manager';
 import NetworkSwitchAlertModal from '../page-objects/pages/dialog/network-switch-alert-modal';
 import AddEditNetworkModal from '../page-objects/pages/dialog/add-edit-network';
 import AddNetworkRpcUrlModal from '../page-objects/pages/dialog/add-network-rpc-url';
+import SettingsPage from '../page-objects/pages/settings/settings-page';
 import { Driver } from '../webdriver/driver';
 import { completeImportSRPOnboardingFlow } from '../page-objects/flows/onboarding.flow';
 import {
+  BenchmarkArguments,
   BenchmarkResults,
   Metrics,
   StatisticalResult,
@@ -86,45 +90,6 @@ export type FlowBenchmarkArguments = {
   iterations: number;
   out?: string;
   retries: number;
-};
-
-/**
- * Flow run status for reporting
- */
-export type FlowRunStatus = 'success' | 'failed' | 'skipped';
-
-/**
- * Individual flow run report
- */
-export type FlowRunReport = {
-  flowName: string;
-  status: FlowRunStatus;
-  retriesUsed: number;
-  totalRetries: number;
-  errors: string[];
-  warnings: string[];
-  iterationsCompleted: number;
-  iterationsRequested: number;
-  browserLoadsCompleted: number;
-  browserLoadsRequested: number;
-};
-
-/**
- * Complete benchmark run report
- */
-export type BenchmarkRunReport = {
-  startTime: Date;
-  endTime: Date;
-  durationMs: number;
-  exitCode: number;
-  flowReports: FlowRunReport[];
-  globalWarnings: string[];
-  summary: {
-    totalFlows: number;
-    successfulFlows: number;
-    failedFlows: number;
-    skippedFlows: number;
-  };
 };
 
 /**
@@ -656,10 +621,6 @@ async function networkSwitchingFlow(driver: Driver): Promise<void> {
   const selectNetwork = new SelectNetwork(driver);
   const networkManager = new NetworkManager(driver);
   const homePage = new HomePage(driver);
-
-  // Dismiss any network error modals that may have appeared (e.g., from failed RPC requests)
-  // These modals can block the send button and cause checkPageIsLoaded() to time out
-  await dismissNetworkErrorModal(driver);
 
   // Ensure home page is loaded and network is ready
   await homePage.checkPageIsLoaded();
@@ -1566,12 +1527,9 @@ async function tokenSendFlow(driver: Driver): Promise<void> {
       console.log('Detected new send redesign');
 
       // Wait for the asset page to load
-      await driver.waitForSelector(
-        '[data-testid="asset-filter-search-input"]',
-        {
-          timeout: 15000,
-        },
-      );
+      await driver.waitForSelector('[data-testid="asset-filter-search-input"]', {
+        timeout: 15000,
+      });
       console.log('Send asset page is loaded');
 
       // Select the first token in the list to proceed to amount/recipient page
@@ -1749,7 +1707,8 @@ async function tokenSearchFlow(driver: Driver): Promise<void> {
       console.log('Detected new send redesign - using asset filter search');
 
       // Wait for the asset filter search input
-      const searchInputSelector = '[data-testid="asset-filter-search-input"]';
+      const searchInputSelector =
+        '[data-testid="asset-filter-search-input"]';
       await driver.waitForSelector(searchInputSelector, {
         timeout: 15000,
       });
@@ -2694,50 +2653,7 @@ function pResult(
 }
 
 /**
- * Retry wrapper that tracks the number of attempts used
- *
- * @param options - Retry options
- * @param options.retries - Maximum number of retries
- * @param fn - Function to retry
- * @returns Result with retry tracking info
- */
-async function retryWithTracking<ResultType>(
-  options: { retries: number },
-  fn: () => Promise<ResultType>,
-): Promise<{ result: ResultType; retriesUsed: number; errors: string[] }> {
-  const errors: string[] = [];
-  let attempts = 0;
-
-  while (attempts <= options.retries) {
-    try {
-      const result = await fn();
-      return { result, retriesUsed: attempts, errors };
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : String(error);
-      errors.push(`Attempt ${attempts + 1}: ${errorMessage}`);
-      attempts += 1;
-
-      if (attempts > options.retries) {
-        throw error;
-      }
-      console.log('Ready to retry() again');
-    }
-  }
-
-  // This should never be reached, but TypeScript needs it
-  throw new Error('Retry limit exceeded');
-}
-
-/**
  * Profiles user flows and calculates statistics
- *
- * @param flows - Array of flow names to benchmark
- * @param browserLoads - Number of browser loads per flow
- * @param iterations - Number of iterations per browser load
- * @param retries - Maximum number of retries per browser load
- * @param outputCallback - Optional callback for incremental results
- * @returns Results and flow reports
  */
 async function profileFlows(
   flows: string[],
@@ -2745,12 +2661,8 @@ async function profileFlows(
   iterations: number,
   retries: number,
   outputCallback?: (flowName: string, results: BenchmarkResults) => void,
-): Promise<{
-  results: Record<string, BenchmarkResults>;
-  flowReports: FlowRunReport[];
-}> {
+): Promise<Record<string, BenchmarkResults>> {
   const results: Record<string, BenchmarkResults> = {};
-  const flowReports: FlowRunReport[] = [];
 
   // Map flow names to functions
   const flowMap: Record<string, (driver: Driver) => Promise<void>> = {
@@ -2767,25 +2679,7 @@ async function profileFlows(
 
   for (const flowName of flows) {
     const flowFunction = flowMap[flowName];
-
-    // Initialize flow report
-    const flowReport: FlowRunReport = {
-      flowName,
-      status: 'pending' as FlowRunStatus,
-      retriesUsed: 0,
-      totalRetries: retries,
-      errors: [],
-      warnings: [],
-      iterationsCompleted: 0,
-      iterationsRequested: iterations,
-      browserLoadsCompleted: 0,
-      browserLoadsRequested: browserLoads,
-    };
-
     if (!flowFunction) {
-      flowReport.status = 'skipped';
-      flowReport.warnings.push(`Unknown flow: ${flowName}`);
-      flowReports.push(flowReport);
       console.warn(`Unknown flow: ${flowName}, skipping`);
       continue;
     }
@@ -2795,59 +2689,31 @@ async function profileFlows(
       let runResults: FlowBenchmarkResult[] = [];
 
       let hasBrowserLoadErrors = false;
-      let maxRetriesUsed = 0;
-
       for (let i = 0; i < browserLoads; i += 1) {
         console.log(`Browser load ${i + 1}/${browserLoads}`);
         try {
-          const {
-            result,
-            retriesUsed,
-            errors: retryErrors,
-          } = await retryWithTracking({ retries }, () =>
+          const result = await retry({ retries }, () =>
             measureFlowMultiple(flowName, flowFunction, iterations),
           );
-
-          maxRetriesUsed = Math.max(maxRetriesUsed, retriesUsed);
-          if (retryErrors.length > 0) {
-            flowReport.warnings.push(
-              ...retryErrors.map((e) => `Browser load ${i + 1}: ${e}`),
-            );
-          }
-
           if (result && result.length > 0) {
             runResults = runResults.concat(result);
-            flowReport.browserLoadsCompleted++;
-            flowReport.iterationsCompleted += result.length;
           } else {
-            flowReport.warnings.push(
-              `Browser load ${i + 1} completed but returned no results`,
-            );
             console.warn(
               `Browser load ${i + 1} completed but returned no results`,
             );
             hasBrowserLoadErrors = true;
           }
         } catch (error) {
-          const errorMessage =
-            error instanceof Error ? error.message : String(error);
-          flowReport.errors.push(`Browser load ${i + 1}: ${errorMessage}`);
           console.error(
             `Error in browser load ${i + 1} for flow ${flowName}:`,
             error,
           );
           hasBrowserLoadErrors = true;
-          maxRetriesUsed = retries; // All retries were used if we got here
           // Continue with next browser load
         }
       }
 
-      flowReport.retriesUsed = maxRetriesUsed;
-
       if (runResults.length === 0) {
-        flowReport.status = 'failed';
-        flowReport.errors.push('No successful results obtained');
-        flowReports.push(flowReport);
         console.error(
           `No successful results for flow ${flowName}, skipping statistics`,
         );
@@ -2939,7 +2805,6 @@ async function profileFlows(
 
       // Output results for this flow only if we have valid results
       if (runResults.length > 0) {
-        flowReport.status = 'success';
         console.log(`\n=== Results for ${flowName} ===`);
         console.log(
           JSON.stringify({ [reportingFlowName]: flowResults }, null, 2),
@@ -2950,265 +2815,18 @@ async function profileFlows(
           outputCallback(reportingFlowName, flowResults);
         }
       } else {
-        flowReport.status = 'failed';
-        flowReport.errors.push('No valid results to output');
         console.error(
           `No valid results to output for flow ${flowName}, skipping`,
         );
       }
-
-      flowReports.push(flowReport);
     } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : String(error);
-      flowReport.status = 'failed';
-      flowReport.errors.push(`Unhandled error: ${errorMessage}`);
-      flowReports.push(flowReport);
       console.error(`\nError processing flow ${flowName}:`, error);
       console.log(`Continuing to next flow...\n`);
       // Continue to next flow
     }
   }
 
-  return { results, flowReports };
-}
-
-/**
- * Gets status icon for a flow status
- *
- * @param status - The flow run status
- * @returns The icon string
- */
-function getStatusIcon(status: FlowRunStatus): string {
-  if (status === 'success') {
-    return '✅';
-  }
-  if (status === 'failed') {
-    return '❌';
-  }
-  return '⏭️';
-}
-
-/**
- * Generates a formatted summary report
- *
- * @param flowReports - Array of flow run reports
- * @param results - Benchmark results by flow name
- * @param startTime - When the benchmark started
- * @param endTime - When the benchmark ended
- * @returns Formatted report string
- */
-function generateSummaryReport(
-  flowReports: FlowRunReport[],
-  results: Record<string, BenchmarkResults>,
-  startTime: Date,
-  endTime: Date,
-): string {
-  const durationMs = endTime.getTime() - startTime.getTime();
-  const durationFormatted = formatDuration(durationMs);
-
-  const successCount = flowReports.filter((r) => r.status === 'success').length;
-  const failedCount = flowReports.filter((r) => r.status === 'failed').length;
-  const skippedCount = flowReports.filter((r) => r.status === 'skipped').length;
-  const totalCount = flowReports.length;
-
-  const lines: string[] = [];
-
-  // Header
-  lines.push('');
-  lines.push(
-    '╔══════════════════════════════════════════════════════════════════════════════╗',
-  );
-  lines.push(
-    '║                         BENCHMARK RUN REPORT                                 ║',
-  );
-  lines.push(
-    '╚══════════════════════════════════════════════════════════════════════════════╝',
-  );
-  lines.push('');
-
-  // Overall Status
-  const overallStatus = failedCount === 0 ? '✅ SUCCESS' : '❌ FAILED';
-  lines.push(`Overall Result: ${overallStatus}`);
-  lines.push(`Duration: ${durationFormatted}`);
-  lines.push(`Completed: ${new Date(endTime).toISOString()}`);
-  lines.push('');
-
-  // Summary counts
-  lines.push(
-    '┌─────────────────────────────────────────────────────────────────────────────┐',
-  );
-  lines.push(
-    '│                              FLOW SUMMARY                                   │',
-  );
-  lines.push(
-    '├─────────────────────────────────────────────────────────────────────────────┤',
-  );
-  lines.push(
-    `│ Total: ${totalCount.toString().padEnd(3)} │ ✅ Success: ${successCount.toString().padEnd(3)} │ ❌ Failed: ${failedCount.toString().padEnd(3)} │ ⏭️  Skipped: ${skippedCount.toString().padEnd(3)} │`,
-  );
-  lines.push(
-    '└─────────────────────────────────────────────────────────────────────────────┘',
-  );
-  lines.push('');
-
-  // Flow details table
-  lines.push(
-    '┌───────────────────────────────┬──────────┬─────────────┬──────────────────┐',
-  );
-  lines.push(
-    '│ Flow                          │ Status   │ Retries     │ Iterations       │',
-  );
-  lines.push(
-    '├───────────────────────────────┼──────────┼─────────────┼──────────────────┤',
-  );
-
-  for (const report of flowReports) {
-    const statusIcon = getStatusIcon(report.status);
-    const flowNamePadded = report.flowName.padEnd(28).slice(0, 28);
-    const statusPadded = `${statusIcon} ${report.status}`.padEnd(9).slice(0, 9);
-    const retriesPadded = `${report.retriesUsed}/${report.totalRetries}`.padEnd(
-      12,
-    );
-    const iterationsPadded =
-      `${report.iterationsCompleted}/${report.iterationsRequested}`.padEnd(17);
-    lines.push(
-      `│ ${flowNamePadded} │ ${statusPadded}│ ${retriesPadded}│ ${iterationsPadded}│`,
-    );
-  }
-  lines.push(
-    '└───────────────────────────────┴──────────┴─────────────┴──────────────────┘',
-  );
-  lines.push('');
-
-  // Errors section (if any)
-  const flowsWithErrors = flowReports.filter((r) => r.errors.length > 0);
-  if (flowsWithErrors.length > 0) {
-    lines.push(
-      '┌─────────────────────────────────────────────────────────────────────────────┐',
-    );
-    lines.push(
-      '│                              ERRORS                                         │',
-    );
-    lines.push(
-      '└─────────────────────────────────────────────────────────────────────────────┘',
-    );
-    for (const report of flowsWithErrors) {
-      lines.push(`  ${report.flowName}:`);
-      for (const error of report.errors) {
-        lines.push(`    ❌ ${error}`);
-      }
-    }
-    lines.push('');
-  }
-
-  // Warnings section (if any)
-  const flowsWithWarnings = flowReports.filter((r) => r.warnings.length > 0);
-  if (flowsWithWarnings.length > 0) {
-    lines.push(
-      '┌─────────────────────────────────────────────────────────────────────────────┐',
-    );
-    lines.push(
-      '│                              WARNINGS                                       │',
-    );
-    lines.push(
-      '└─────────────────────────────────────────────────────────────────────────────┘',
-    );
-    for (const report of flowsWithWarnings) {
-      lines.push(`  ${report.flowName}:`);
-      for (const warning of report.warnings) {
-        lines.push(`    ⚠️  ${warning}`);
-      }
-    }
-    lines.push('');
-  }
-
-  // Results summary table
-  const successfulFlows = flowReports.filter((r) => r.status === 'success');
-  if (successfulFlows.length > 0) {
-    lines.push(
-      '┌─────────────────────────────────────────────────────────────────────────────┐',
-    );
-    lines.push(
-      '│                           METRICS SUMMARY                                   │',
-    );
-    lines.push(
-      '└─────────────────────────────────────────────────────────────────────────────┘',
-    );
-    lines.push('');
-    lines.push(
-      '┌───────────────────────────────┬────────────┬────────────┬────────────┬────────────┬────────────┐',
-    );
-    lines.push(
-      '│ Flow                          │ Renders    │ Render(ms) │ FCP(ms)    │ TBT(ms)    │ INP(ms)    │',
-    );
-    lines.push(
-      '├───────────────────────────────┼────────────┼────────────┼────────────┼────────────┼────────────┤',
-    );
-
-    for (const report of successfulFlows) {
-      const formattedName = `Power User: ${report.flowName
-        .split('-')
-        .map((w) => capitalize(w))
-        .join(' ')}`;
-      const flowResult = results[formattedName];
-
-      if (flowResult) {
-        const flowNamePadded = report.flowName.padEnd(28).slice(0, 28);
-        const renders = formatNumber(flowResult.mean.renderCount, 10);
-        const renderTime = formatNumber(flowResult.mean.renderTime, 10);
-        const fcp = formatNumber(flowResult.mean.fcp, 10);
-        const tbt = formatNumber(flowResult.mean.tbt, 10);
-        const inp = formatNumber(flowResult.mean.inp, 10);
-
-        lines.push(
-          `│ ${flowNamePadded} │ ${renders} │ ${renderTime} │ ${fcp} │ ${tbt} │ ${inp} │`,
-        );
-      }
-    }
-    lines.push(
-      '└───────────────────────────────┴────────────┴────────────┴────────────┴────────────┴────────────┘',
-    );
-    lines.push('');
-  }
-
-  return lines.join('\n');
-}
-
-/**
- * Format duration in human-readable format
- *
- * @param ms - Duration in milliseconds
- * @returns Formatted duration string
- */
-function formatDuration(ms: number): string {
-  const seconds = Math.floor(ms / 1000);
-  const minutes = Math.floor(seconds / 60);
-  const hours = Math.floor(minutes / 60);
-
-  if (hours > 0) {
-    return `${hours}h ${minutes % 60}m ${seconds % 60}s`;
-  }
-  if (minutes > 0) {
-    return `${minutes}m ${seconds % 60}s`;
-  }
-  return `${seconds}s`;
-}
-
-/**
- * Format number for table display
- *
- * @param value - Number to format
- * @param width - Width to pad to
- * @returns Formatted number string
- */
-function formatNumber(value: number | undefined, width: number): string {
-  if (value === undefined || value === null) {
-    return '-'.padStart(width);
-  }
-  const formatted =
-    value < 10 ? value.toFixed(2) : Math.round(value).toString();
-  return formatted.padStart(width);
+  return results;
 }
 
 async function main(): Promise<void> {
@@ -3288,9 +2906,6 @@ async function main(): Promise<void> {
     outputFile = out;
   }
 
-  // Track start time
-  const startTime = new Date();
-
   // Accumulate results as flows complete
   const allResults: Record<string, BenchmarkResults> = {};
 
@@ -3313,69 +2928,14 @@ async function main(): Promise<void> {
   };
 
   // Process flows with error handling
-  const { results, flowReports } = await profileFlows(
-    flows,
-    browserLoads,
-    iterations,
-    retries,
-    saveFlowResults,
-  );
+  await profileFlows(flows, browserLoads, iterations, retries, saveFlowResults);
 
-  const endTime = new Date();
-
-  // Merge any results we may have collected via callback
-  Object.assign(allResults, results);
-
-  // Generate and output the summary report
-  const summaryReport = generateSummaryReport(
-    flowReports,
-    allResults,
-    startTime,
-    endTime,
-  );
-  console.log(summaryReport);
-
-  // Output detailed JSON results
-  console.log('\n=== Detailed Results (JSON) ===');
+  // Output final summary
+  console.log('\n=== Final Summary ===');
   if (Object.keys(allResults).length > 0) {
     console.log(JSON.stringify(allResults, null, 2));
   } else {
     console.log('No flows completed successfully.');
-  }
-
-  // Save final report to file if specified
-  if (outputFile) {
-    try {
-      // Save both the report and detailed results
-      const outputData = {
-        report: {
-          startTime: startTime.toISOString(),
-          endTime: endTime.toISOString(),
-          durationMs: endTime.getTime() - startTime.getTime(),
-          flowReports,
-          summary: {
-            totalFlows: flowReports.length,
-            successfulFlows: flowReports.filter((r) => r.status === 'success')
-              .length,
-            failedFlows: flowReports.filter((r) => r.status === 'failed')
-              .length,
-            skippedFlows: flowReports.filter((r) => r.status === 'skipped')
-              .length,
-          },
-        },
-        results: allResults,
-      };
-      await fs.writeFile(outputFile, JSON.stringify(outputData, null, 2));
-      console.log(`\nFull report saved to ${outputFile}`);
-    } catch (error) {
-      console.error(`Error saving final report to file:`, error);
-    }
-  }
-
-  // Exit with error code if any flows failed
-  const failedCount = flowReports.filter((r) => r.status === 'failed').length;
-  if (failedCount > 0) {
-    process.exitCode = 1;
   }
 }
 
