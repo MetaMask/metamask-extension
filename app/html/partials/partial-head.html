@@ -1,5 +1,17 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="<%= it?.viewport ?? "width=device-width, initial-scale=1, user-scalable=no" %>" />
 <title><%= it?.title ?? "MetaMask" %></title>
+<style>
+  .loading-logo,
+  .loading-spinner {
+    opacity: 0;
+    animation: fadeIn 0.2s ease-out forwards;
+    animation-delay: 1500ms; /* Only show if loading takes > 500ms */
+  }
+
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+</style>
 <link rel="preload" href="/_locales/en/messages.json" as="fetch" type="application/json" crossorigin="anonymous" />
 <link rel="stylesheet" href="../../../ui/css/index.scss" />
