@@ -2573,7 +2573,8 @@
     "message": "Esqueceu sua senha?"
   },
   "forgotPasswordSocialDescription": {
-    "message": "A MetaMask não consegue recuperar sua senha para você."
+    "message": "A MetaMask não consegue recuperar sua senha para você.",
+    "description": "$1 is the support link"
   },
   "forgotPasswordSocialStep1": {
     "message": "Se você estiver conectado à MetaMask em um dispositivo com $1 (como Face ID), sua senha pode ser redefinida nele.",
@@ -4960,12 +4961,6 @@
   "rateIncludesMMFee": {
     "message": "Inclui taxa de $1% da MM."
   },
-  "reAddAccounts": {
-    "message": "readicione outras contas"
-  },
-  "reAdded": {
-    "message": "readicionar"
-  },
   "readdToken": {
     "message": "Você pode adicionar esse token novamente no futuro indo até “Importar token” no menu de opções das suas contas."
   },
@@ -5122,33 +5117,6 @@
   },
   "resetWallet": {
     "message": "Redefina sua carteira"
-  },
-  "resetWalletSubHeader": {
-    "message": "A MetaMask não mantém cópia de sua senha. Se estiver enfrentando problemas para desbloquear sua conta, você precisará redefinir sua carteira. É possível fazer isso informando a Frase de Recuperação Secreta usada ao configurar sua carteira."
-  },
-  "resetWalletSubHeaderSocial": {
-    "message": "A MetaMask não guarda uma cópia da sua senha. Caso você encontre algum problema para desbloquear sua conta, será necessário redefinir sua carteira. Se você tiver uma Frase de Recuperação Secreta, poderá usá-la para excluir sua carteira atual deste dispositivo, juntamente com a lista de suas contas."
-  },
-  "resetWalletUsingSRP": {
-    "message": "Essa ação excluirá sua carteira atual e a Frase de Recuperação Secreta deste dispositivo, juntamente com a lista de contas que você tem curadoria. Após redefinir com a Frase de Recuperação Secreta, você verá uma lista de contas baseadas na Frase de Recuperação Secreta que você usou para redefinir. Essa nova lista incluirá automaticamente novas contas que tenham saldo. Você também poderá $1 criadas anteriormente. Contas personalizadas importadas precisarão ser $2, e quaisquer tokens personalizados adicionados a uma conta também precisarão ser $3."
-  },
-  "resetWalletUsingSRPSocial": {
-    "message": "Após a redefinição usando uma Frase de Recuperação Secreta, você verá uma nova lista de contas. Essa lista incluirá contas com saldo. Você pode $1 que tenha criado antes, mas precisará readicionar quaisquer $2 e $3 que tiver importado. "
-  },
-  "resetWalletUsingSRPSocialAccounts": {
-    "message": "readicionar quaisquer outras contas"
-  },
-  "resetWalletUsingSRPSocialCustomAccounts": {
-    "message": "contas personalizadas"
-  },
-  "resetWalletUsingSRPSocialCustomTokens": {
-    "message": "tokens personalizados"
-  },
-  "resetWalletWarning": {
-    "message": "Certifique-se de usar a frase secreta de recuperação correta antes de prosseguir. Você não poderá desfazer isso."
-  },
-  "resetWalletWarningSocial": {
-    "message": "Certifique-se de usar a Frase de Recuperação Secreta correta antes de efetuar a redefinição. Essa ação não pode ser desfeita."
   },
   "resolutionProtocol": {
     "message": "Endereço resolvido via $1",

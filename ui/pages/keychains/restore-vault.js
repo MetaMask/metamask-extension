@@ -76,10 +76,6 @@ class RestoreVaultPage extends Component {
   }
 
   handleImport = async (password, termsChecked) => {
-    if (!termsChecked) {
-      return;
-    }
-
     const {
       createNewVaultAndRestore: propsCreateNewVaultAndRestore,
       setFirstTimeFlowType: propsSetFirstTimeFlowType,
@@ -88,6 +84,12 @@ class RestoreVaultPage extends Component {
       navigate,
       isSocialLoginFlow: propsIsSocialLoginFlow,
     } = this.props;
+
+    // For non-social login flows, termsChecked is required
+    // For social login flows, termsChecked is optional (used only for marketing consent)
+    if (!propsIsSocialLoginFlow && !termsChecked) {
+      return;
+    }
 
     isImportingVault = true;
 
@@ -158,7 +160,7 @@ class RestoreVaultPage extends Component {
       >
         {shouldShowPasswordForm ? (
           <CreatePasswordForm
-            isSocialLoginFlow={this.props.isSocialLoginFlow}
+            isSocialLoginFlow={false}
             onSubmit={this.handleImport}
             onBack={this.handleBack}
             loading={this.state.loading}

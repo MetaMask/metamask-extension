@@ -1,15 +1,14 @@
 import React from 'react';
-import { render } from '@testing-library/react';
-import CreatePasswordForm from './index';
-import { fireEvent, waitFor } from '@testing-library/react';
+import { render, fireEvent, waitFor } from '@testing-library/react';
+import CreatePasswordForm from '.';
 
 describe('CreatePasswordForm', () => {
   it('renders match snapshot', () => {
     const { container } = render(
       <CreatePasswordForm
         isSocialLoginFlow={false}
-        onSubmit={() => {}}
-        onBack={() => {}}
+        onSubmit={jest.fn()}
+        onBack={jest.fn()}
       />,
     );
     expect(container).toMatchSnapshot();
@@ -21,7 +20,7 @@ describe('CreatePasswordForm', () => {
       <CreatePasswordForm
         isSocialLoginFlow={false}
         onSubmit={onSubmit}
-        onBack={() => {}}
+        onBack={jest.fn()}
       />,
     );
 

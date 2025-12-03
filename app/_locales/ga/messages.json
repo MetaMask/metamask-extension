@@ -2566,7 +2566,8 @@
     "message": "An ndearna tú dearmad ar do phasfhocal?"
   },
   "forgotPasswordSocialDescription": {
-    "message": "Ní féidir le MetaMask do phasfhocal a aisghabháil duit."
+    "message": "Ní féidir le MetaMask do phasfhocal a aisghabháil duit.",
+    "description": "$1 is the support link"
   },
   "forgotPasswordSocialStep1": {
     "message": "Má tá tú logáilte isteach i MetaMask ar ghléas le $1 (cosúil le Face ID), is féidir leat do phasfhocal a athshocrú ansin.",

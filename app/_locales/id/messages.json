@@ -2573,7 +2573,8 @@
     "message": "Lupa kata sandi Anda?"
   },
   "forgotPasswordSocialDescription": {
-    "message": "MetaMask tidak dapat memulihkan kata sandi Anda."
+    "message": "MetaMask tidak dapat memulihkan kata sandi Anda.",
+    "description": "$1 is the support link"
   },
   "forgotPasswordSocialStep1": {
     "message": "Jika masuk ke MetaMask pada perangkat dengan $1 (seperti Face ID), Anda dapat mereset kata sandi di sana.",
@@ -4960,12 +4961,6 @@
   "rateIncludesMMFee": {
     "message": "Termasuk biaya MM sebesar $1%."
   },
-  "reAddAccounts": {
-    "message": "tambahkan kembali akun lain"
-  },
-  "reAdded": {
-    "message": "ditambahkan kembali"
-  },
   "readdToken": {
     "message": "Anda dapat menambahkan token ini kembali di masa mendatang dengan membuka “Impor token” di menu opsi akun Anda."
   },
@@ -5122,33 +5117,6 @@
   },
   "resetWallet": {
     "message": "Reset dompet Anda"
-  },
-  "resetWalletSubHeader": {
-    "message": "MetaMask tidak menyimpan salinan kata sandi Anda. Jika terjadi masalah saat membuka akun, reset dompet Anda. Anda dapat melakukannya dengan memberikan Frasa Pemulihan Rahasia yang digunakan saat mengatur dompet."
-  },
-  "resetWalletSubHeaderSocial": {
-    "message": "MetaMask tidak menyimpan salinan kata sandi Anda. Jika Anda kesulitan membuka akun, reset dompet. Jika memiliki Frasa Pemulihan Rahasia, Anda dapat menggunakannya untuk menghapus dompet saat ini dari perangkat ini, beserta daftar akun."
-  },
-  "resetWalletUsingSRP": {
-    "message": "Tindakan ini akan menghapus dompet saat ini dan Frasa Pemulihan Rahasia dari perangkat ini, bersama dengan daftar akun yang telah Anda kelola. Setelah direset dengan Frasa Pemulihan Rahasia, Anda akan melihat daftar akun berdasarkan Frasa Pemulihan Rahasia yang Anda gunakan untuk mereset. Daftar baru ini secara otomatis akan menyertakan akun yang memiliki saldo. Anda juga dapat $1 yang telah dibuat sebelumnya. Akun khusus yang Anda impor harus $2, serta token khusus yang Anda tambahkan ke akun harus $3."
-  },
-  "resetWalletUsingSRPSocial": {
-    "message": "Setelah mereset dengan Frasa Pemulihan Rahasia, Anda akan melihat daftar akun baru. Daftar ini akan mencakup akun-akun yang memiliki saldo. Anda dapat $1 yang dibuat sebelumnya. Namun, Anda perlu menambahkan kembali $2 dan $3 yang telah diimpor. "
-  },
-  "resetWalletUsingSRPSocialAccounts": {
-    "message": "tambahkan kembali akun lain"
-  },
-  "resetWalletUsingSRPSocialCustomAccounts": {
-    "message": "akun khusus"
-  },
-  "resetWalletUsingSRPSocialCustomTokens": {
-    "message": "token khusus"
-  },
-  "resetWalletWarning": {
-    "message": "Pastikan Anda menggunakan Frasa Pemulihan Rahasia yang benar sebelum melanjutkan. Anda tidak dapat membatalkan tindakan ini."
-  },
-  "resetWalletWarningSocial": {
-    "message": "Pastikan Anda menggunakan Frasa Pemulihan Rahasia yang tepat sebelum mereset. Tindakan ini tidak dapat dibatalkan."
   },
   "resolutionProtocol": {
     "message": "Alamat diselesaikan melalui $1",

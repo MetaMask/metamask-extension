@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -30,6 +30,13 @@ import {
 import { getIsSocialLoginFlow } from '../../selectors';
 import { resetWallet as resetWalletAction } from '../../store/actions';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import {
+  MetaMetricsContextProp,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
+import { SUPPORT_LINK } from '../../helpers/constants/common';
+import { MetaMetricsContext } from '../../contexts/metametrics';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -41,7 +48,7 @@ export default function ResetPasswordModal({
   onRestore: () => void;
 }) {
   const t = useI18nContext();
-
+  const trackEvent = useContext(MetaMetricsContext);
   const isSocialLoginEnabled = useSelector(getIsSocialLoginFlow);
   const [resetWallet, setResetWallet] = useState(false);
   const history = useHistory();
@@ -59,11 +66,43 @@ export default function ResetPasswordModal({
     history.push(DEFAULT_ROUTE);
   };
 
+  const handleContactSupportTrackEvent = () => {
+    trackEvent(
+      {
+        category: MetaMetricsEventCategory.Navigation,
+        event: MetaMetricsEventName.SupportLinkClicked,
+        properties: {
+          url: SUPPORT_LINK,
+        },
+      },
+      {
+        contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
+      },
+    );
+  };
+
   const socialLoginContent = () => {
     return (
       <Box paddingInline={4}>
-        <Text variant={TextVariant.bodyMd} marginBottom={4}>
-          {t('forgotPasswordSocialDescription')}
+        <Text
+          variant={TextVariant.bodyMd}
+          marginBottom={4}
+          color={TextColor.textAlternative}
+        >
+          {t('forgotPasswordSocialDescription', [
+            <Button
+              variant={ButtonVariant.Link}
+              color={TextColor.primaryDefault}
+              href={SUPPORT_LINK}
+              type="button"
+              target="_blank"
+              rel="noopener noreferrer"
+              key="need-help-link"
+              onClick={handleContactSupportTrackEvent}
+            >
+              {t('forgotPasswordModalContactSupportLink')}
+            </Button>,
+          ])}
         </Text>
         <Box
           as="ul"
@@ -76,17 +115,20 @@ export default function ResetPasswordModal({
             <Icon
               name={IconName.FaceId}
               size={IconSize.Md}
-              color={IconColor.iconMuted}
+              color={IconColor.iconAlternative}
               style={{
                 marginTop: '2px',
               }}
             />
-            <Text variant={TextVariant.bodyMd}>
+            <Text
+              variant={TextVariant.bodyMd}
+              color={TextColor.textAlternative}
+            >
               {t('forgotPasswordSocialStep1', [
                 <Text
                   variant={TextVariant.inherit}
-                  fontWeight={FontWeight.Bold}
                   key="reset-password-step-1-biometrics"
+                  color={TextColor.textAlternative}
                 >
                   {t('forgotPasswordSocialStep1Biometrics')}
                 </Text>,
@@ -97,17 +139,20 @@ export default function ResetPasswordModal({
             <Icon
               name={IconName.SecurityKey}
               size={IconSize.Md}
-              color={IconColor.iconMuted}
+              color={IconColor.iconAlternative}
               style={{
                 marginTop: '2px',
               }}
             />
-            <Text variant={TextVariant.bodyMd}>
+            <Text
+              variant={TextVariant.bodyMd}
+              color={TextColor.textAlternative}
+            >
               {t('forgotPasswordSocialStep2', [
                 <Text
                   variant={TextVariant.inherit}
-                  fontWeight={FontWeight.Bold}
                   key="reset-password-step-2-srp"
+                  color={TextColor.textAlternative}
                 >
                   {t('secretRecoveryPhrase')}
                 </Text>,
@@ -115,26 +160,30 @@ export default function ResetPasswordModal({
             </Text>
           </Box>
         </Box>
-        <Button
-          data-testid="reset-password-modal-button"
-          variant={ButtonVariant.Primary}
-          onClick={onRestore}
-          size={ButtonSize.Lg}
-          block
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          gap={3}
         >
-          {t('forgotPasswordModalButton')}
-        </Button>
-        <Button
-          data-testid="reset-password-modal-button-link"
-          variant={ButtonVariant.Link}
-          onClick={handleResetWallet}
-          size={ButtonSize.Lg}
-          block
-          color={TextColor.primaryDefault}
-          role="button"
-        >
-          {t('forgotPasswordModalButtonLink')}
-        </Button>
+          <Button
+            data-testid="reset-password-modal-button"
+            variant={ButtonVariant.Primary}
+            onClick={onRestore}
+            size={ButtonSize.Lg}
+            block
+          >
+            {t('forgotPasswordModalButton')}
+          </Button>
+          <Button
+            data-testid="reset-password-modal-button-link"
+            variant={ButtonVariant.Secondary}
+            onClick={handleResetWallet}
+            size={ButtonSize.Lg}
+            block
+          >
+            {t('forgotPasswordModalButtonLink')}
+          </Button>
+        </Box>
       </Box>
     );
   };
@@ -142,32 +191,64 @@ export default function ResetPasswordModal({
   const srpLoginContent = () => {
     return (
       <Box paddingInline={4}>
-        <Text variant={TextVariant.bodyMd} marginBottom={4}>
+        <Text
+          variant={TextVariant.bodyMd}
+          marginBottom={4}
+          color={TextColor.textAlternative}
+        >
           {t('forgotPasswordModalDescription1')}
         </Text>
-        <Text variant={TextVariant.bodyMd} marginBottom={6}>
+        <Text
+          variant={TextVariant.bodyMd}
+          marginBottom={4}
+          color={TextColor.textAlternative}
+        >
           {t('forgotPasswordModalDescription2')}
         </Text>
-        <Button
-          data-testid="reset-password-modal-button"
-          variant={ButtonVariant.Primary}
-          onClick={onRestore}
-          size={ButtonSize.Lg}
-          block
+        <Text
+          variant={TextVariant.bodyMd}
+          marginBottom={6}
+          color={TextColor.textAlternative}
         >
-          {t('forgotPasswordModalButton')}
-        </Button>
-        <Button
-          data-testid="reset-password-modal-button-link"
-          variant={ButtonVariant.Link}
-          onClick={handleResetWallet}
-          size={ButtonSize.Lg}
-          block
-          color={TextColor.primaryDefault}
-          role="button"
+          {t('forgotPasswordModalContactSupport', [
+            <Button
+              variant={ButtonVariant.Link}
+              color={TextColor.primaryDefault}
+              href={SUPPORT_LINK}
+              type="button"
+              target="_blank"
+              rel="noopener noreferrer"
+              key="need-help-link"
+              onClick={handleContactSupportTrackEvent}
+            >
+              {t('forgotPasswordModalContactSupportLink')}
+            </Button>,
+          ])}
+        </Text>
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          gap={3}
         >
-          {t('forgotPasswordModalButtonLink')}
-        </Button>
+          <Button
+            data-testid="reset-password-modal-button"
+            variant={ButtonVariant.Primary}
+            onClick={onRestore}
+            size={ButtonSize.Lg}
+            block
+          >
+            {t('forgotPasswordModalButton')}
+          </Button>
+          <Button
+            data-testid="reset-password-modal-button-link"
+            variant={ButtonVariant.Secondary}
+            onClick={handleResetWallet}
+            size={ButtonSize.Lg}
+            block
+          >
+            {t('forgotPasswordModalButtonLink')}
+          </Button>
+        </Box>
       </Box>
     );
   };
@@ -177,21 +258,22 @@ export default function ResetPasswordModal({
       <Box paddingInline={4}>
         <Text
           variant={TextVariant.bodyMd}
-          marginBottom={4}
-          color={TextColor.textDefault}
+          marginBottom={6}
+          color={TextColor.textAlternative}
         >
           {t('resetWalletDescriptionOne')}
         </Text>
         <Text
           variant={TextVariant.bodyMd}
-          marginBottom={4}
-          color={TextColor.textDefault}
+          marginBottom={6}
+          color={TextColor.textAlternative}
         >
           {t('resetWalletDescriptionTwo', [
             <Text
               variant={TextVariant.inherit}
               fontWeight={FontWeight.Bold}
               key="reset-wallet-bold-text-one"
+              color={TextColor.textAlternative}
             >
               {t('resetWalletBoldTextOne')}
             </Text>,
@@ -199,6 +281,7 @@ export default function ResetPasswordModal({
               variant={TextVariant.inherit}
               fontWeight={FontWeight.Bold}
               key="reset-wallet-bold-text-two"
+              color={TextColor.textAlternative}
             >
               {t('resetWalletBoldTextTwo')}
             </Text>,

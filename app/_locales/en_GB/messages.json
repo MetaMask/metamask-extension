@@ -2723,7 +2723,14 @@
     "message": "Import wallet"
   },
   "forgotPasswordModalButtonLink": {
-    "message": "I don’t know my Secret Recovery Phrase"
+    "message": "I don’t know my phrase"
+  },
+  "forgotPasswordModalContactSupport": {
+    "message": "$1 if you need help.",
+    "description": "$1 is the support link"
+  },
+  "forgotPasswordModalContactSupportLink": {
+    "message": "Contact support"
   },
   "forgotPasswordModalDescription1": {
     "message": "We can’t recover your password for you."
@@ -2735,7 +2742,8 @@
     "message": "Forgot your password?"
   },
   "forgotPasswordSocialDescription": {
-    "message": "We can’t recover your password, but there are ways you can regain access to your wallet."
+    "message": "We can’t recover your password, but there are ways you can regain access to your wallet. $1 if you need help.",
+    "description": "$1 is the support link"
   },
   "forgotPasswordSocialStep1": {
     "message": "$1 If you’re logged in on a device with Touch or Face ID, reset your password there.",
@@ -2745,7 +2753,7 @@
     "message": "Touch/Face ID:"
   },
   "forgotPasswordSocialStep2": {
-    "message": "$1 If you have your Secret Recovery Phrase, you can use it to import your wallet to this device.",
+    "message": "$1: If you have your Secret Recovery Phrase, you can use it to import your wallet to this device.",
     "description": "$1 is bold Secret Recovery Phrase"
   },
   "form": {

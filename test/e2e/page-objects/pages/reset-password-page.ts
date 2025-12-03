@@ -11,19 +11,25 @@ class ResetPasswordPage {
 
   private restoreButton: string;
 
+  private srpWordInputContinueButton: string;
+
+  private createPasswordTermsCheckbox: string;
+
   constructor(driver: Driver) {
     this.driver = driver;
-    this.seedPhraseInput = '[data-testid="import-srp__srp-word-0"]';
-    this.passwordInput = '[data-testid="create-vault-password"]';
-    this.confirmPasswordInput = '[data-testid="create-vault-confirm-password"]';
-    this.restoreButton = '[data-testid="create-new-vault-submit-button"]';
+    this.seedPhraseInput = '[data-testid="srp-input-import__srp-note"]';
+    this.passwordInput = '[data-testid="create-password-new-input"]';
+    this.confirmPasswordInput = '[data-testid="create-password-confirm-input"]';
+    this.restoreButton = '[data-testid="create-password-submit"]';
+    this.srpWordInputContinueButton = '[data-testid="import-srp-confirm"]';
+    this.createPasswordTermsCheckbox = '[data-testid="create-password-terms"]';
   }
 
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
-        this.passwordInput,
-        this.confirmPasswordInput,
+        this.seedPhraseInput,
+        this.srpWordInputContinueButton,
       ]);
     } catch (e) {
       console.log(
@@ -44,8 +50,16 @@ class ResetPasswordPage {
   async resetPassword(seedPhrase: string, newPassword: string): Promise<void> {
     console.log(`Resetting password with new password: ${newPassword}`);
     await this.driver.pasteIntoField(this.seedPhraseInput, seedPhrase);
+    await this.driver.clickElement(this.srpWordInputContinueButton);
+    await this.driver.waitForMultipleSelectors([
+      this.passwordInput,
+      this.confirmPasswordInput,
+      this.createPasswordTermsCheckbox,
+      this.restoreButton,
+    ]);
     await this.driver.fill(this.passwordInput, newPassword);
     await this.driver.fill(this.confirmPasswordInput, newPassword);
+    await this.driver.clickElement(this.createPasswordTermsCheckbox);
     await this.driver.clickElement(this.restoreButton);
   }
 

@@ -107,7 +107,7 @@ const CreatePasswordForm = ({
         >
           <ButtonIcon
             iconName={IconName.ArrowLeft}
-            color={IconColor.iconDefault}
+            color={loading ? IconColor.iconMuted : IconColor.iconDefault}
             size={ButtonIconSize.Md}
             data-testid="create-password-back-button"
             type="button"
@@ -149,7 +149,10 @@ const CreatePasswordForm = ({
             </Text>
           )}
         </Box>
-        <PasswordForm onChange={(newPassword) => setPassword(newPassword)} />
+        <PasswordForm
+          onChange={(newPassword) => setPassword(newPassword)}
+          disabled={loading}
+        />
         <Box
           className="create-password__terms-container"
           alignItems={AlignItems.center}
@@ -163,6 +166,7 @@ const CreatePasswordForm = ({
             inputProps={{ 'data-testid': 'create-password-terms' }}
             alignItems={AlignItems.flexStart}
             isChecked={termsChecked}
+            isDisabled={loading}
             onChange={() => {
               setTermsChecked(!termsChecked);
             }}
