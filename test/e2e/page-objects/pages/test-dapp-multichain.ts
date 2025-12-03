@@ -205,10 +205,10 @@ class TestDappMultichain {
     await this.clickWalletGetSessionButton();
     await this.clickFirstResultSummary();
 
-    await this.driver.waitForSelector(this.firstSessionMethodResult);
     const getSessionRawResult = await this.driver.waitForSelector(
       this.firstSessionMethodResult,
     );
+    await this.driver.delay(veryLargeDelayMs);
     return JSON.parse(await getSessionRawResult.getText());
   }
 
