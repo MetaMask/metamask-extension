@@ -204,9 +204,9 @@ class TestDappMultichain {
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
     await this.clickWalletGetSessionButton();
     await this.clickFirstResultSummary();
-    await this.driver.delay(largeDelayMs);
+
     await this.driver.waitForSelector(this.firstSessionMethodResult);
-    const getSessionRawResult = await this.driver.findElement(
+    const getSessionRawResult = await this.driver.waitForSelector(
       this.firstSessionMethodResult,
     );
     return JSON.parse(await getSessionRawResult.getText());
