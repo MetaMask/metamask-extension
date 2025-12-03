@@ -1445,11 +1445,15 @@ export default class MetamaskController extends EventEmitter {
         (snap) => !snap.preinstalled,
       )
     ) {
-      try {
-        this.snapController.updateRegistry();
-      } catch {
-        // Ignore
-      }
+      this.snapController.updateRegistry().catch((error) => {
+        if (
+          !error.message.includes(
+            'The Snaps platform requires basic functionality to be used.',
+          )
+        ) {
+          console.error(error);
+        }
+      });
     }
   }
 
@@ -7349,7 +7353,7 @@ export default class MetamaskController extends EventEmitter {
             'KeyringController:getState',
           );
 
-          return this._isClientOpen && isUnlocked;
+          return Boolean(this._isClientOpen && isUnlocked);
         },
         getVersion: () => {
           return process.env.METAMASK_VERSION;

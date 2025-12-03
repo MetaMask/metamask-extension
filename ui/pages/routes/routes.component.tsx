@@ -791,7 +791,7 @@ export default function Routes() {
               },
             )}
           </RouteWithLayout>
-          <RouteWithLayout path={CROSS_CHAIN_SWAP_ROUTE} layout={LegacyLayout}>
+          <RouteWithLayout path={CROSS_CHAIN_SWAP_ROUTE} layout={RootLayout}>
             {createV5CompatRoute(CrossChainSwap, {
               wrapper: AuthenticatedV5Compat,
               includeLocation: true,
@@ -981,7 +981,6 @@ export default function Routes() {
             })}
           </RouteWithLayout>
           <RouteWithLayout
-            authenticated
             path={`${REVIEW_PERMISSIONS}/:origin`}
             exact
             layout={RootLayout}
