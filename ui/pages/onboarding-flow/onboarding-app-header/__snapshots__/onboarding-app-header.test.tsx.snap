@@ -61,12 +61,12 @@ exports[`OnboardingAppHeader shoul match snapshot on onboarding completion page 
                  
                 Click on 
                 <span
-                  class="mm-box onboarding-app-header__banner-tip-icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-text-default"
+                  class="mm-box onboarding-app-header__banner-tip-icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-default"
                   style="mask-image: url('./images/icons/extension.svg');"
                 />
                  and then 
                 <span
-                  class="mm-box onboarding-app-header__banner-tip-icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-text-default"
+                  class="mm-box onboarding-app-header__banner-tip-icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-default"
                   style="mask-image: url('./images/icons/keep.svg');"
                 />
                  to pin it.
