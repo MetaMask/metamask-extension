@@ -36,11 +36,13 @@ describe('getEnabledAdvancedPermissions', () => {
   let originalGatorEnabledPermissionTypes: string | undefined;
 
   beforeAll(() => {
-    originalGatorEnabledPermissionTypes = process.env.GATOR_ENABLED_PERMISSION_TYPES;
+    originalGatorEnabledPermissionTypes =
+      process.env.GATOR_ENABLED_PERMISSION_TYPES;
   });
 
   afterAll(() => {
-    process.env.GATOR_ENABLED_PERMISSION_TYPES = originalGatorEnabledPermissionTypes;
+    process.env.GATOR_ENABLED_PERMISSION_TYPES =
+      originalGatorEnabledPermissionTypes;
   });
 
   it('should return an empty array when GATOR_ENABLED_PERMISSION_TYPES is not set', () => {
