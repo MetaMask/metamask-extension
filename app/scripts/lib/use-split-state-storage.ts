@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import browser from 'webextension-polyfill';
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import { NetworkState } from '@metamask/network-controller';
@@ -61,7 +62,7 @@ async function developerOverrides() {
 /**
  * Get current account and network counts from the messenger
  *
- * @param messenger The SplitStateStorageMessenger instance
+ * @param state - The current state
  * @returns The account and network counts
  */
 function getCounts(state: State) {

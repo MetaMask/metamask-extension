@@ -1,13 +1,9 @@
 import { Text } from '@metamask/design-system-react';
-import TextField from '../../../components/ui/text-field';
 import browser from 'webextension-polyfill';
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { migrateToSplitState } from '../../../store/actions';
+import TextField from '../../../components/ui/text-field';
 
 const MigrateToSplitStateTest = () => {
-  const dispatch = useDispatch();
-
   const [enabled, setEnabled] = useState<string | null>(null);
   const [maxAccounts, setMaxAccounts] = useState<string>('');
   const [maxNetworks, setMaxNetworks] = useState<string>('');
@@ -73,7 +69,7 @@ const MigrateToSplitStateTest = () => {
       }
 
       if (changes.splitStateMigrationEnabled) {
-        const newValue = changes.splitStateMigrationEnabled.newValue;
+        const { newValue } = changes.splitStateMigrationEnabled;
         setEnabled(toEnabledString(newValue));
       }
 
@@ -89,17 +85,17 @@ const MigrateToSplitStateTest = () => {
       }
 
       if (changes.splitStateMigrationMaxAccounts) {
-        const newValue = changes.splitStateMigrationMaxAccounts.newValue;
+        const { newValue } = changes.splitStateMigrationMaxAccounts;
         setMaxAccounts(newValue === undefined ? '' : String(newValue));
       }
 
       if (changes.splitStateMigrationMaxNetworks) {
-        const newValue = changes.splitStateMigrationMaxNetworks.newValue;
+        const { newValue } = changes.splitStateMigrationMaxNetworks;
         setMaxNetworks(newValue === undefined ? '' : String(newValue));
       }
     };
 
-    void loadFromStorage();
+    loadFromStorage();
     browser.storage.onChanged.addListener(handleStorageChange);
 
     return () => {
@@ -122,7 +118,7 @@ const MigrateToSplitStateTest = () => {
   const handleMaxAccountsChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    const value = event.target.value;
+    const { value } = event.target;
     setMaxAccounts(value);
     if (value === '') {
       await browser.storage.local.remove('splitStateMigrationMaxAccounts');
@@ -136,7 +132,7 @@ const MigrateToSplitStateTest = () => {
   const handleMaxNetworksChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    const value = event.target.value;
+    const { value } = event.target;
     setMaxNetworks(value);
     if (value === '') {
       await browser.storage.local.remove('splitStateMigrationMaxNetworks');
@@ -147,16 +143,6 @@ const MigrateToSplitStateTest = () => {
     }
   };
 
-  const handleMigrate = async () => {
-    if (
-      // eslint-disable-next-line no-alert
-      confirm(
-        "Are you sure you want to migrate to split state? You can't undo this action.",
-      )
-    ) {
-      await dispatch(migrateToSplitState());
-    }
-  };
   return (
     <div>
       <Text>Split State Migration</Text>
@@ -164,14 +150,6 @@ const MigrateToSplitStateTest = () => {
         <strong>Current storage kind: {storageKind}</strong>
       </div>
       <hr></hr>
-      <button
-        className="button btn-primary"
-        style={{ marginTop: '16px' }}
-        onClick={handleMigrate}
-      >
-        Migrate to Split State
-      </button>
-      <hr />
       <h2>Split State Migration Flags</h2>
       <label>
         <span>Migration Enabled flag:</span>

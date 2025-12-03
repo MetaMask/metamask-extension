@@ -731,18 +731,6 @@ async function initialize(backup) {
   const cronjobControllerStorageManager = new CronjobControllerStorageManager();
   await cronjobControllerStorageManager.init();
 
-  /**
-   * Can be used in the UI to force a migration to "split" state storage.
-   *
-   * The mechanism will cause a full extension reload.
-   */
-  const migrateToSplitState = async () => {
-    await requestSafeReload(async () => {
-      const state = controller.store.getState();
-      return await persistenceManager.migrateToSplitState(state);
-    });
-  };
-
   setupController(
     initState,
     initLangCode,
@@ -752,7 +740,6 @@ async function initialize(backup) {
     offscreenPromise,
     preinstalledSnaps,
     cronjobControllerStorageManager,
-    migrateToSplitState,
   );
 
   if (persistenceManager.storageKind === 'split') {
@@ -1025,7 +1012,6 @@ export async function loadStateFromPersistence(backup) {
       versionedData.meta = persistenceManager.getMetaData();
       delete versionedData.meta.platformSplitStateGradualRolloutAttempted;
       // persist the new metadata one more time
-      debugger;
       persistenceManager.setMetadata(versionedData.meta);
       await persistenceManager.persist();
     }
@@ -1196,7 +1182,6 @@ function trackAppOpened(environment) {
  * @param {Promise<void>} offscreenPromise - A promise that resolves when the offscreen document has finished initialization.
  * @param {Array} preinstalledSnaps - A list of preinstalled Snaps loaded from disk during boot.
  * @param {CronjobControllerStorageManager} cronjobControllerStorageManager - A storage manager for the CronjobController.
- * @param {typeof migrateToSplitState} migrateToSplitState
  */
 export function setupController(
   initState,
@@ -1207,7 +1192,6 @@ export function setupController(
   offscreenPromise,
   preinstalledSnaps,
   cronjobControllerStorageManager,
-  migrateToSplitState,
 ) {
   //
   // MetaMask Controller
@@ -1238,7 +1222,6 @@ export function setupController(
     preinstalledSnaps,
     requestSafeReload,
     cronjobControllerStorageManager,
-    migrateToSplitState,
   });
 
   setupEnsIpfsResolver({

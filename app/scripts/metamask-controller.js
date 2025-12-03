@@ -484,8 +484,6 @@ export default class MetamaskController extends EventEmitter {
     this.opts = opts;
     this.requestSafeReload =
       opts.requestSafeReload ?? (() => Promise.resolve());
-    this.migrateToSplitState =
-      opts.migrateToSplitState ?? (() => Promise.resolve());
     this.extension = opts.browser;
     this.platform = opts.platform;
     this.notificationManager = opts.notificationManager;
@@ -3649,7 +3647,6 @@ export default class MetamaskController extends EventEmitter {
           ),
         }),
       lookupSelectedNetworks: this.lookupSelectedNetworks.bind(this),
-      migrateToSplitState: this.migrateToSplitState.bind(this),
       resetWallet: this.resetWallet.bind(this),
     };
   }

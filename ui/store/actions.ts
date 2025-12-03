@@ -8116,13 +8116,6 @@ export async function submitShieldClaim(
 }
 
 /**
- * Migrates the state to a split state structure.
- */
-export async function migrateToSplitState() {
-  await submitRequestToBackground('migrateToSplitState');
-}
-
-/**
  * Fetches all shield claims, relates to the current user profile ID.
  *
  * @returns The shield claims.

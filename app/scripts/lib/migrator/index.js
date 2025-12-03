@@ -61,8 +61,9 @@ export default class Migrator extends EventEmitter {
           migratedData = await migration.migrate(state);
           assertValidShape(migratedData, migration);
         } else {
-          // in version two we expect migrations to report which controllers
-          // changed, and two directly mutate the `versionedData` object
+          // when we have split state we require migrations to report which
+          // controllers changed, and to directly mutate the `versionedData`
+          // object
           migratedData = structuredClone(state);
           /** @type {Set<string>} */
           const localChangedControllers = new Set();
@@ -70,10 +71,10 @@ export default class Migrator extends EventEmitter {
             migratedData,
             localChangedControllers,
           );
-
-          // migrations should mutate in place and must not return new state
           assertValidShape(migratedData, migration);
 
+          // migrations should mutate in place and must not return new state
+          // sanity check to ensure a migration isn't returning a state object
           if (typeof returnValue !== 'undefined') {
             throw new Error(
               'Migrator - migration returned value when none expected',
