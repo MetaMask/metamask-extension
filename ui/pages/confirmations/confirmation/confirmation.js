@@ -515,7 +515,7 @@ export default function ConfirmationPage({
         confirmationId={pendingConfirmation.id}
         onSubmit={!templatedValues.hideSubmitButton && handleSubmit}
       >
-        <div className="confirmation-page">
+        <div className="confirmation-page h-full">
           <Header
             confirmation={pendingConfirmation}
             isSnapCustomUIDialog={isSnapCustomUIDialog}

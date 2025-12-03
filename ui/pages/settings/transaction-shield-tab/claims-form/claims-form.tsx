@@ -559,7 +559,11 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
         }}
         helpText={
           errors.impactedTxHash ? (
-            <Text variant={TextVariant.BodySm} color={TextColor.Inherit}>
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.Inherit}
+              data-testid="shield-claim-impacted-tx-hash-error"
+            >
               {`${t(errors.impactedTxHash?.msg, errors.impactedTxHash?.params)} `}
               <TextButton
                 size={TextButtonSize.BodySm}
