@@ -657,17 +657,21 @@ export const useHandleSubscriptionSupportAction = () => {
 
 export const useUpdateSubscriptionCryptoPaymentMethod = ({
   subscription,
-  selectedToken,
 }: {
   subscription?: Subscription;
-  selectedToken?: Pick<
-    TokenWithApprovalAmount,
-    'chainId' | 'address' | 'approvalAmount' | 'symbol'
-  >;
 }) => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const [selectedChangePaymentToken, setSelectedChangePaymentToken] = useState<
+    | Pick<
+        TokenWithApprovalAmount,
+        'chainId' | 'address' | 'approvalAmount' | 'symbol'
+      >
+    | undefined
+  >();
+
   const { execute: executeSubscriptionCryptoApprovalTransaction } =
-    useSubscriptionCryptoApprovalTransaction(selectedToken);
+    useSubscriptionCryptoApprovalTransaction(selectedChangePaymentToken);
+
   // This update the subscription payment method to crypto
   // and trigger the approval transaction flow
   const [handler, result] = useAsyncCallback(async () => {
@@ -678,7 +682,7 @@ export const useUpdateSubscriptionCryptoPaymentMethod = ({
     if (!isCryptoPaymentMethod(subscription.paymentMethod)) {
       throw new Error('Subscription is not a crypto payment method');
     }
-    if (!selectedToken) {
+    if (!selectedChangePaymentToken) {
       throw new Error('No token selected');
     }
 
@@ -686,8 +690,8 @@ export const useUpdateSubscriptionCryptoPaymentMethod = ({
     await dispatch(
       setLastUsedSubscriptionPaymentDetails(PRODUCT_TYPES.SHIELD, {
         type: PAYMENT_TYPES.byCrypto,
-        paymentTokenAddress: selectedToken.address as Hex,
-        paymentTokenSymbol: selectedToken.symbol,
+        paymentTokenAddress: selectedChangePaymentToken.address as Hex,
+        paymentTokenSymbol: selectedChangePaymentToken.symbol,
         plan: subscription.interval,
       }),
     );
@@ -696,10 +700,38 @@ export const useUpdateSubscriptionCryptoPaymentMethod = ({
     subscription,
     executeSubscriptionCryptoApprovalTransaction,
     dispatch,
-    selectedToken,
+    selectedChangePaymentToken,
   ]);
+
+  const selectedPaymentTokenAddress = selectedChangePaymentToken?.address;
+  // trigger update subscription crypto payment method when selected change payment token changes
+  useEffect(() => {
+    if (selectedPaymentTokenAddress) {
+      handler().then(() => {
+        // reset selected change payment token after update subscription crypto payment method succeeded
+        setSelectedChangePaymentToken(undefined);
+      });
+    }
+  }, [selectedPaymentTokenAddress, handler]);
+
+  // execute update subscription crypto payment method with new token by settings state with useEffect above to workaround useAsyncCallback hook not accepting callback parameter
+  const execute = useCallback(
+    (
+      newToken: Pick<
+        TokenWithApprovalAmount,
+        'chainId' | 'address' | 'approvalAmount' | 'symbol'
+      >,
+    ) => {
+      if (!newToken) {
+        throw new Error('No token selected');
+      }
+      setSelectedChangePaymentToken(newToken);
+    },
+    [setSelectedChangePaymentToken],
+  );
+
   return {
-    execute: handler,
+    execute,
     result,
   };
 };

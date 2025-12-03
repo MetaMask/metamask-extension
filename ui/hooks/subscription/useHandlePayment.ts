@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import {
   CRYPTO_PAYMENT_METHOD_ERRORS,
@@ -16,9 +16,7 @@ import {
 } from '../../../shared/constants/subscriptions';
 import { SHIELD_PLAN_ROUTE } from '../../helpers/constants/routes';
 import { isCryptoPaymentMethod } from '../../pages/settings/transaction-shield-tab/types';
-import {
-  TokenWithApprovalAmount,
-} from './useSubscriptionPricing';
+import { TokenWithApprovalAmount } from './useSubscriptionPricing';
 import {
   useHandleShieldAddFundTrigger,
   useShieldSubscriptionCryptoSufficientBalanceCheck,
@@ -82,35 +80,12 @@ export const useHandlePayment = ({
   const { execute: executeSubscriptionCryptoApprovalTransaction } =
     useSubscriptionCryptoApprovalTransaction(paymentToken);
 
-  const [selectedChangePaymentToken, setSelectedChangePaymentToken] = useState<
-    | Pick<
-        TokenWithApprovalAmount,
-        'chainId' | 'address' | 'approvalAmount' | 'symbol'
-      >
-    | undefined
-  >();
-
   const {
     execute: executeUpdateSubscriptionCryptoPaymentMethod,
     result: updateSubscriptionCryptoPaymentMethodResult,
   } = useUpdateSubscriptionCryptoPaymentMethod({
     subscription,
-    selectedToken: selectedChangePaymentToken,
   });
-
-  // trigger update subscription crypto payment method when selected change payment token changes
-  useEffect(() => {
-    if (selectedChangePaymentToken) {
-      executeUpdateSubscriptionCryptoPaymentMethod().then(() => {
-        // reset selected change payment token after update subscription crypto payment method succeeded
-        setSelectedChangePaymentToken(undefined);
-      });
-    }
-  }, [
-    selectedChangePaymentToken,
-    executeUpdateSubscriptionCryptoPaymentMethod,
-    setSelectedChangePaymentToken,
-  ]);
 
   const { handleClickContactSupport } = useHandleSubscriptionSupportAction();
 
@@ -239,13 +214,16 @@ export const useHandlePayment = ({
           if (!selectedToken) {
             throw new Error('No token selected');
           }
-          setSelectedChangePaymentToken(selectedToken);
+          executeUpdateSubscriptionCryptoPaymentMethod(selectedToken);
         }
       } catch (error) {
         console.error('Error changing payment method', error);
       }
     },
-    [executeUpdateSubscriptionCardPaymentMethod, setSelectedChangePaymentToken],
+    [
+      executeUpdateSubscriptionCardPaymentMethod,
+      executeUpdateSubscriptionCryptoPaymentMethod,
+    ],
   );
 
   return {
@@ -261,4 +239,3 @@ export const useHandlePayment = ({
     updateSubscriptionCryptoPaymentMethodResult,
   };
 };
-
