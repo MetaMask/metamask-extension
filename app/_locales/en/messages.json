@@ -1887,6 +1887,9 @@
   "dappSwapAdvantage": {
     "message": "Save and earn with MetaMask Swaps"
   },
+  "dappSwapAdvantageSaveOnly": {
+    "message": "Save with MetaMask Swaps"
+  },
   "dappSwapBenefits": {
     "message": "Network fees refunded on failed swaps"
   },
@@ -2095,7 +2098,7 @@
     "message": "Got it"
   },
   "deprecatedNetworkDescription": {
-    "message": "The network you're trying to connect to is no longer supported by Metamask. $1"
+    "message": "The network you're trying to connect to is no longer supported by MetaMask. $1"
   },
   "description": {
     "message": "Description"
@@ -2500,7 +2503,7 @@
     "message": "Enter password to continue"
   },
   "enterYourPasswordSocialLoginFlow": {
-    "message": "Enter Metamask Password"
+    "message": "Enter MetaMask Password"
   },
   "errorCode": {
     "message": "Code: $1",
@@ -2619,9 +2622,6 @@
   },
   "exploreDefi": {
     "message": "Explore DeFi"
-  },
-  "exploreweb3": {
-    "message": "Explore web3"
   },
   "exportYourData": {
     "message": "Export your data"
@@ -3559,13 +3559,13 @@
     "description": "$1 is the key 'loginErrorGenericSupport'"
   },
   "loginErrorGenericSupport": {
-    "message": "Metamask Support"
+    "message": "MetaMask Support"
   },
   "loginErrorGenericTitle": {
     "message": "Something went wrong"
   },
   "loginErrorResetWalletDescription": {
-    "message": "An issue occurred while unlocking. Re-login with $1 and your Metamask password.",
+    "message": "An issue occurred while unlocking. Re-login with $1 and your MetaMask password.",
     "description": "$1 is the social login method"
   },
   "loginErrorSessionExpiredButton": {
@@ -4533,6 +4533,9 @@
   "onboardingMetametricCheckboxDescriptionOne": {
     "message": "We’ll collect basic product usage data like general location, clicks, and views. No other information will be stored."
   },
+  "onboardingMetametricCheckboxDescriptionOneUpdated": {
+    "message": "We’ll collect basic product usage data. We may associate this information with on-chain data."
+  },
   "onboardingMetametricCheckboxDescriptionTwo": {
     "message": "We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features)."
   },
@@ -5051,6 +5054,9 @@
     "message": "+ $1 more",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
+  "pna25BannerTitle": {
+    "message": "We’re updating MetaMetrics. We'll associate some in-app activity to on-chain data to better understand usage. You can opt out via Settings."
+  },
   "popularNetworkAddToolTip": {
     "message": "Some of these networks rely on third parties. The connections may be less reliable or enable third-parties to track activity.",
     "description": "Learn more link"
@@ -5325,8 +5331,8 @@
   "recipientEditAriaLabel": {
     "message": "Edit recipient"
   },
-  "recipientPlaceholder": {
-    "message": "Enter or paste a valid address"
+  "recipientPlaceholderText": {
+    "message": "Enter or paste an address or name"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Back up now"
@@ -6056,7 +6062,7 @@
     "message": "Provide a brief summary of the incident"
   },
   "shieldClaimDetails": {
-    "message": "You may file a single claim per incident within $1 days of the incident. View the full list of what’s covered $2.",
+    "message": "You may file a single claim per incident within $1 days of the incident. $2",
     "description": "The $1 is the number of days and $2 is a link to the full coverage policy"
   },
   "shieldClaimDetailsViewClaims": {
@@ -6180,10 +6186,10 @@
     "message": "Claim submission failed"
   },
   "shieldClaimSubmitSuccess": {
-    "message": "Claim submitted successfully"
+    "message": "Claim submission received"
   },
   "shieldClaimSubmitSuccessDescription": {
-    "message": "Your claim is under review. We will notify you via email within 3-5 business days with any updates."
+    "message": "Your claim has been submitted. We'll review it and provide updates by email."
   },
   "shieldClaimTransactionNotFound": {
     "message": "Transaction not found on chain."
@@ -6193,6 +6199,9 @@
   },
   "shieldClaimTransactionNotSuccessful": {
     "message": "Transaction not successful on chain."
+  },
+  "shieldClaimViewGuidelines": {
+    "message": "View guide"
   },
   "shieldClaimWalletOwnershipValidationFailed": {
     "message": "Wallet ownership validation failed."
@@ -6223,7 +6232,7 @@
     "message": "Confirm plan"
   },
   "shieldCoverageAlertCovered": {
-    "message": "You're protected up to $2 with Metamask Transaction Shield. $1."
+    "message": "You're protected up to $2 with MetaMask Transaction Shield. $1."
   },
   "shieldCoverageAlertHighRiskTransaction": {
     "message": "This is a high risk transaction, so it isn't protected by MetaMask Transaction Shield. $1."
@@ -6232,7 +6241,7 @@
     "message": "This chain is not supported, so it isn't protected by MetaMask Transaction Shield. $1"
   },
   "shieldCoverageAlertMessageLearnHowCoverageWorks": {
-    "message": "See What's Covered"
+    "message": "See what's Covered"
   },
   "shieldCoverageAlertMessagePaused": {
     "message": "There was an issue with your MetaMask Transaction Shield plan payment. Please update your payment method to resume coverage."
@@ -6265,7 +6274,7 @@
     "message": "This token shows strong signs of malicious behavior. Continuing may result in loss of funds. $1."
   },
   "shieldCoverageAlertMessageTxTypeNotSupported": {
-    "message": "This transaction type is not supported, so it isn't protected by MetaMask Transaction Shield. $1."
+    "message": "This transaction type is not supported, so it isn't protected by MetaMask Transaction Shield. $1"
   },
   "shieldCoverageAlertMessageUnknown": {
     "message": "This request can't be verified, so it isn't protected by MetaMask Transaction Shield. $1."
@@ -6363,6 +6372,9 @@
   "shieldPlanDetails3": {
     "message": "24/7 access to priority live chat support"
   },
+  "shieldPlanErrorText": {
+    "message": "Couldn’t connect to Transaction Shield"
+  },
   "shieldPlanFooterNoteMonthly": {
     "message": "Billed monthly, cancel anytime"
   },
@@ -6375,14 +6387,6 @@
   "shieldPlanMonthlyPrice": {
     "message": "$1/month",
     "description": "The $1 is the price of the monthly plan"
-  },
-  "shieldPlanNoFunds": {
-    "message": "Insufficient $1 or $2",
-    "description": "$1 or $2 shows the supported token eg. USDC, USDT or mUSD"
-  },
-  "shieldPlanNoFundsOneToken": {
-    "message": "Insufficient $1",
-    "description": "$1 is the one token supported"
   },
   "shieldPlanPayWith": {
     "message": "Pay with"
@@ -6957,15 +6961,15 @@
     "message": "No insight to show"
   },
   "snapsPrivacyWarningFirstMessage": {
-    "message": "You acknowledge that any Snap that you install is a Third Party Service, unless otherwise identified, as defined in the Consensys $1. Your use of Third Party Services is governed by separate terms and conditions set forth by the Third Party Service provider. Consensys does not recommend the use of any Snap by any particular person for any particular reason. You access, rely upon or use the Third Party Service at your own risk. Consensys disclaims all responsibility and liability for any losses on account of your use of Third Party Services.",
+    "message": "You acknowledge that any Snap that you install is a third-party service, unless otherwise identified, as defined in the Consensys $1. Your use of third-party services is governed by separate terms and conditions set forth by the third-party service provider. Consensys does not recommend the use of any Snap by any particular person for any particular reason. You access, rely upon or use the third-party service at your own risk. Consensys disclaims all responsibility and liability for any losses on account of your use of third-party services.",
     "description": "First part of a message in popup modal displayed when installing a snap for the first time. $1 is terms of use link."
   },
   "snapsPrivacyWarningSecondMessage": {
-    "message": "Any information you share with Third Party Services will be collected directly by those Third Party Services in accordance with their privacy policies. Please refer to their privacy policies for more information.",
+    "message": "Any information you share with third-party services will be collected directly by those third-party services in accordance with their privacy policies. Please refer to their privacy policies for more information.",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
   },
   "snapsPrivacyWarningThirdMessage": {
-    "message": "Consensys has no access to information you share with Third Party Services.",
+    "message": "Consensys has no access to information you share with third-party services.",
     "description": "Third part of a message in popup modal displayed when installing a snap for the first time."
   },
   "snapsSettings": {
@@ -7550,19 +7554,19 @@
   },
   "swapIncludesGasAndMetaMaskFee": {
     "message": "Includes gas and a $1% MetaMask fee",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFee": {
     "message": "Includes a $1% MetaMask fee.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFeeAlt": {
     "message": "Quote reflects $1% MetaMask fee",
-    "description": "Provides information about the fee that metamask takes for swaps using the latest copy. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
     "message": "Includes a $1% MetaMask fee – $2",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
   },
   "swapLearnMore": {
     "message": "Learn more about Swaps"
@@ -7581,7 +7585,7 @@
   },
   "swapMetaMaskFeeDescription": {
     "message": "The fee of $1% is automatically factored into this quote. You pay it in exchange for a license to use MetaMask's liquidity provider information aggregation software.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapNQuotesWithDot": {
     "message": "$1 quotes.",
@@ -8435,18 +8439,8 @@
   "walletConnectionGuide": {
     "message": "our hardware wallet connection guide"
   },
-  "walletDetails": {
-    "message": "Wallet details"
-  },
   "walletName": {
     "message": "Wallet name"
-  },
-  "walletNotFoundDescription": {
-    "message": "The wallet with ID $1 was not found.",
-    "description": "$1 is the wallet ID"
-  },
-  "walletNotFoundTitle": {
-    "message": "Wallet not found"
   },
   "walletReadyLearn": {
     "message": "$1 you can keep this phrase safe so you never lose access to your money.",

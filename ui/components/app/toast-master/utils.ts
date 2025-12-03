@@ -117,3 +117,7 @@ export function setShieldEndingToastLastClickedOrClosed(time: number) {
     time,
   ]);
 }
+
+export function setPna25Acknowledged(acknowledged: boolean) {
+  submitRequestToBackgroundAndCatch('setPna25Acknowledged', [acknowledged]);
+}

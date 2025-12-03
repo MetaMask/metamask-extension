@@ -220,16 +220,10 @@ describe('MultichainAccountDetailsPage', () => {
     fireEvent.click(removeButton);
 
     // Verify that dispatch was called with removeAccount action
-    expect(mockDispatch).toHaveBeenCalledTimes(2);
+    expect(mockDispatch).toHaveBeenCalledTimes(1);
 
     // First call should be the removeAccount thunk (AsyncFunction)
     expect(mockDispatch).toHaveBeenNthCalledWith(1, expect.any(Function));
-
-    // Second call should be setAccountDetailsAddress action
-    expect(mockDispatch).toHaveBeenNthCalledWith(2, {
-      type: 'SET_ACCOUNT_DETAILS_ADDRESS',
-      payload: '',
-    });
   });
 
   describe('tracing', () => {

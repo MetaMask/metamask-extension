@@ -986,6 +986,12 @@ describe('MetaMaskController', () => {
           .mockReturnValue({ completedOnboarding: true });
 
         jest
+          .spyOn(metamaskController.preferencesController, 'state', 'get')
+          .mockReturnValue({
+            useExternalServices: true,
+          });
+
+        jest
           .spyOn(metamaskController, 'discoverAndCreateAccounts')
           .mockResolvedValue({});
 
