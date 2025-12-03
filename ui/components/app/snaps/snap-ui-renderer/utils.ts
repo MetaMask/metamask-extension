@@ -5,7 +5,7 @@ import { sha256 } from '@noble/hashes/sha256';
 import { NonEmptyArray, bytesToHex, remove0x } from '@metamask/utils';
 import { unescape as unescapeEntities } from 'he';
 import { ChangeEvent as ReactChangeEvent } from 'react';
-import { createTheme, ThemeOptions } from '@material-ui/core';
+import { createTheme, ThemeOptions } from '@material-ui/core/styles';
 import { MuiPickersOverrides } from '@material-ui/pickers/typings/overrides';
 import {
   BackgroundColor,
