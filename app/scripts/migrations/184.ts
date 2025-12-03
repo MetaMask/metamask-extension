@@ -196,6 +196,8 @@ function transformState(state: Record<string, unknown>) {
   if (
     hasProperty(networkState, 'selectedNetworkClientId') &&
     typeof networkState.selectedNetworkClientId === 'string' &&
+    megaethTestnetV1ConfigurationSnapShot &&
+    isObject(megaethTestnetV1ConfigurationSnapShot) &&
     hasProperty(megaethTestnetV1ConfigurationSnapShot, 'rpcEndpoints') &&
     Array.isArray(megaethTestnetV1ConfigurationSnapShot.rpcEndpoints) &&
     megaethTestnetV1ConfigurationSnapShot.rpcEndpoints.some(
