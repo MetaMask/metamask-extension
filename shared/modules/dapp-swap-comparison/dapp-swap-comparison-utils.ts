@@ -75,20 +75,7 @@ export function getDataFromSwap(
   commandBytes: string[],
   inputs: string[],
 ) {
-  const { amountMin, quotesInput } = getCommandValues(
-    commandBytes,
-    inputs,
-    chainId,
-  );
-
-  return {
-    amountMin,
-    quotesInput,
-    tokenAddresses: [
-      quotesInput?.destTokenAddress,
-      quotesInput?.srcTokenAddress,
-    ],
-  };
+  return getCommandValues(commandBytes, inputs, chainId);
 }
 
 export function getBestQuote(
