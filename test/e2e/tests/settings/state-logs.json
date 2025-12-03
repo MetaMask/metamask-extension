@@ -172,7 +172,8 @@
     "accountsByChainId": {
       "0x1": {
         "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
-          "balance": "string"
+          "balance": "string",
+          "stakedBalance": "string"
         }
       },
       "0x18c7": {
