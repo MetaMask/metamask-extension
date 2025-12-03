@@ -226,14 +226,9 @@ const DappSwapComparisonInner = () => {
 };
 
 export const DappSwapComparisonBanner = () => {
-  const { dappSwapMetrics } = useSelector(getRemoteFeatureFlags);
   const { isSwapToBeCompared } = useDappSwapCheck();
 
-  const dappSwapMetricsEnabled =
-    (dappSwapMetrics as { enabled: boolean })?.enabled === true &&
-    isSwapToBeCompared;
-
-  if (!dappSwapMetricsEnabled) {
+  if (!isSwapToBeCompared) {
     return null;
   }
 
