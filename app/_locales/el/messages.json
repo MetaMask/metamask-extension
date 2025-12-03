@@ -5630,12 +5630,6 @@
   "shieldTxDetails2Title": {
     "message": "Υποστήριξη με προτεραιότητα"
   },
-  "shieldTxMembershipBillingDetails": {
-    "message": "Στοιχεία χρέωσης"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "Τρόπος πληρωμής"
-  },
   "shieldTxMembershipErrorPausedCardTooltip": {
     "message": "Η πληρωμή σας απορρίφθηκε. Ενημερώστε τον τρόπο πληρωμής σας ώστε να συνεχιστεί η κάλυψη."
   },

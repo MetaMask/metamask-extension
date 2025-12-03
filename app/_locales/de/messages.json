@@ -5630,12 +5630,6 @@
   "shieldTxDetails2Title": {
     "message": "Prioritärer Support"
   },
-  "shieldTxMembershipBillingDetails": {
-    "message": "Abrechnungsdetails"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "Zahlungsmethode"
-  },
   "shieldTxMembershipErrorPausedCardTooltip": {
     "message": "Ihre Zahlung wurde abgelehnt. Bitte aktualisieren Sie Ihre Zahlungsmethode, um Ihre Abdeckung beizubehalten."
   },

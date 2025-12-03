@@ -5630,12 +5630,6 @@
   "shieldTxDetails2Title": {
     "message": "優先サポート"
   },
-  "shieldTxMembershipBillingDetails": {
-    "message": "請求の詳細"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "支払方法"
-  },
   "shieldTxMembershipErrorPausedCardTooltip": {
     "message": "支払いが拒否されました。補償を継続するには、支払方法を更新してください。"
   },

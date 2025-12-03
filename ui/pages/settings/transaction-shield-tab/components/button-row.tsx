@@ -9,7 +9,6 @@ import {
   IconName,
   IconSize,
   Text,
-  TextColor,
   TextVariant,
   twMerge,
 } from '@metamask/design-system-react';
@@ -19,6 +18,7 @@ import { Skeleton } from '../../../../components/component-library/skeleton';
 type ButtonRowProps = {
   title: string;
   description?: string;
+  descriptionClassName?: string;
   startIconName?: IconName;
   endIconName?: IconName;
   endAccessory?: React.ReactNode;
@@ -26,11 +26,13 @@ type ButtonRowProps = {
   'data-testid'?: string;
   className?: string;
   loading?: boolean;
+  disabled?: boolean;
 };
 
 const ButtonRow = ({
   title,
   description,
+  descriptionClassName,
   startIconName,
   endIconName,
   endAccessory,
@@ -38,6 +40,7 @@ const ButtonRow = ({
   'data-testid': dataTestId,
   className = '',
   loading = false,
+  disabled = false,
 }: ButtonRowProps) => {
   const Component = onClick ? 'button' : 'div';
 
@@ -68,7 +71,10 @@ const ButtonRow = ({
       data-testid={dataTestId}
       onClick={onClick}
     >
-      <Component className="button-row__button">
+      <Component
+        className="button-row__button"
+        {...(Component === 'button' ? { disabled } : {})}
+      >
         {startIconName &&
           (loading ? (
             <Skeleton
@@ -98,7 +104,10 @@ const ButtonRow = ({
             ) : (
               <Text
                 variant={TextVariant.BodyMd}
-                color={TextColor.TextAlternative}
+                className={twMerge(
+                  'text-text-alternative',
+                  descriptionClassName,
+                )}
               >
                 {description}
               </Text>

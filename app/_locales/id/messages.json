@@ -5630,12 +5630,6 @@
   "shieldTxDetails2Title": {
     "message": "Dukungan prioritas"
   },
-  "shieldTxMembershipBillingDetails": {
-    "message": "Detail penagihan"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "Metode pembayaran"
-  },
   "shieldTxMembershipErrorPausedCardTooltip": {
     "message": "Pembayaran Anda ditolak. Perbarui metode pembayaran untuk melanjutkan pertanggungan."
   },

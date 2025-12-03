@@ -5630,12 +5630,6 @@
   "shieldTxDetails2Title": {
     "message": "우선 지원"
   },
-  "shieldTxMembershipBillingDetails": {
-    "message": "청구 세부 정보"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "결제 수단"
-  },
   "shieldTxMembershipErrorPausedCardTooltip": {
     "message": "결제가 거부되었습니다. 보장을 유지하려면 결제 수단을 업데이트하세요."
   },

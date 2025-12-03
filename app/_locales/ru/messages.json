@@ -5630,12 +5630,6 @@
   "shieldTxDetails2Title": {
     "message": "Приоритетная поддержка"
   },
-  "shieldTxMembershipBillingDetails": {
-    "message": "Сведения для биллинга"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "Способ оплаты"
-  },
   "shieldTxMembershipErrorPausedCardTooltip": {
     "message": "Ваш платёж отклонён. Обновите способ оплаты, чтобы продолжить страховку."
   },

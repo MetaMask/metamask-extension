@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -8,6 +8,9 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import {
+  CRYPTO_PAYMENT_METHOD_ERRORS,
+  PAYMENT_TYPES,
+  PaymentType,
   PRODUCT_TYPES,
   RECURRING_INTERVALS,
   SUBSCRIPTION_STATUSES,
@@ -19,6 +22,8 @@ import {
   useCancelSubscription,
   useOpenGetSubscriptionBillingPortal,
   useUnCancelSubscription,
+  useUpdateSubscriptionCardPaymentMethod,
+  useUpdateSubscriptionCryptoPaymentMethod,
   useUserLastSubscriptionByProduct,
   useUserSubscriptionByProduct,
   useUserSubscriptions,
@@ -37,6 +42,16 @@ import { useSubscriptionMetrics } from '../../../../hooks/shield/metrics/useSubs
 import { SHIELD_PLAN_ROUTE } from '../../../../helpers/constants/routes';
 import { getIsShieldSubscriptionPaused } from '../../../../../shared/lib/shield';
 import { getShortDateFormatterV2 } from '../../../asset/util';
+import { PaymentMethodRow } from '../payment-method-row';
+import {
+  TokenWithApprovalAmount,
+  useSubscriptionPricing,
+} from '../../../../hooks/subscription/useSubscriptionPricing';
+import {
+  useHandleShieldAddFundTrigger,
+  useShieldSubscriptionCryptoSufficientBalanceCheck,
+} from '../../../../hooks/subscription/useAddFundTrigger';
+import { isCryptoPaymentMethod } from '../types';
 
 const ManageShieldPlan = () => {
   const t = useI18nContext();
@@ -55,13 +70,77 @@ const ManageShieldPlan = () => {
   // show current active shield subscription or last subscription if no active subscription
   const displayedShieldSubscription =
     currentShieldSubscription ?? lastShieldSubscription;
+
+  // watch handle add fund trigger server check subscription paused because of insufficient funds
+  const {
+    hasAvailableSelectedToken:
+      hasAvailableSelectedTokenToTriggerCheckInsufficientFunds,
+  } = useShieldSubscriptionCryptoSufficientBalanceCheck();
+
+  const {
+    subscriptionPricing,
+    loading: subscriptionPricingLoading,
+    error: subscriptionPricingError,
+  } = useSubscriptionPricing({
+    refetch: true, // need to refetch here in case user already subscribed and doesn't go through shield plan screen
+  });
+
   const isCancelled =
     displayedShieldSubscription?.status === SUBSCRIPTION_STATUSES.canceled;
   const isPaused = getIsShieldSubscriptionPaused(subscriptions);
   const isMembershipInactive = isCancelled || isPaused;
+  const isInsufficientFundsCrypto =
+    currentShieldSubscription &&
+    isCryptoPaymentMethod(currentShieldSubscription.paymentMethod) &&
+    currentShieldSubscription.paymentMethod.crypto.error ===
+      CRYPTO_PAYMENT_METHOD_ERRORS.INSUFFICIENT_BALANCE;
+
+  const {
+    handleTriggerSubscriptionCheck:
+      handleTriggerSubscriptionCheckInsufficientFunds,
+    result: resultTriggerSubscriptionCheckInsufficientFunds,
+  } = useHandleShieldAddFundTrigger();
+
   // user can cancel subscription if not canceled and current subscription not cancel at period end
   const canCancel =
     !isCancelled && !currentShieldSubscription?.cancelAtPeriodEnd;
+
+  const [selectedChangePaymentToken, setSelectedChangePaymentToken] = useState<
+    | Pick<
+        TokenWithApprovalAmount,
+        'chainId' | 'address' | 'approvalAmount' | 'symbol'
+      >
+    | undefined
+  >();
+
+  const {
+    execute: executeUpdateSubscriptionCryptoPaymentMethod,
+    result: updateSubscriptionCryptoPaymentMethodResult,
+  } = useUpdateSubscriptionCryptoPaymentMethod({
+    subscription: currentShieldSubscription,
+    selectedToken: selectedChangePaymentToken,
+  });
+
+  // trigger update subscription crypto payment method when selected change payment token changes
+  useEffect(() => {
+    if (selectedChangePaymentToken) {
+      executeUpdateSubscriptionCryptoPaymentMethod().then(() => {
+        // reset selected change payment token after update subscription crypto payment method succeeded
+        setSelectedChangePaymentToken(undefined);
+      });
+    }
+  }, [
+    selectedChangePaymentToken,
+    executeUpdateSubscriptionCryptoPaymentMethod,
+  ]);
+
+  const [
+    executeUpdateSubscriptionCardPaymentMethod,
+    updateSubscriptionCardPaymentMethodResult,
+  ] = useUpdateSubscriptionCardPaymentMethod({
+    subscription: currentShieldSubscription,
+    newRecurringInterval: currentShieldSubscription?.interval,
+  });
 
   const [executeCancelSubscription, cancelSubscriptionResult] =
     useCancelSubscription(currentShieldSubscription);
@@ -74,19 +153,70 @@ const ManageShieldPlan = () => {
     openGetSubscriptionBillingPortalResult,
   ] = useOpenGetSubscriptionBillingPortal(displayedShieldSubscription);
 
+  const handlePaymentMethodChange = useCallback(
+    async (
+      paymentType: PaymentType,
+      selectedToken?: TokenWithApprovalAmount,
+    ) => {
+      try {
+        if (paymentType === PAYMENT_TYPES.byCard) {
+          await executeUpdateSubscriptionCardPaymentMethod();
+        } else if (paymentType === PAYMENT_TYPES.byCrypto) {
+          if (!selectedToken) {
+            throw new Error('No token selected');
+          }
+          setSelectedChangePaymentToken(selectedToken);
+        }
+      } catch (error) {
+        console.error('Error changing payment method', error);
+      }
+    },
+    [executeUpdateSubscriptionCardPaymentMethod, setSelectedChangePaymentToken],
+  );
+
   const hasApiError =
     cancelSubscriptionResult.error ||
     unCancelSubscriptionResult.error ||
-    openGetSubscriptionBillingPortalResult.error;
+    openGetSubscriptionBillingPortalResult.error ||
+    subscriptionPricingError ||
+    updateSubscriptionCardPaymentMethodResult.error ||
+    updateSubscriptionCryptoPaymentMethodResult.error ||
+    resultTriggerSubscriptionCheckInsufficientFunds.error;
   const loading =
     cancelSubscriptionResult.pending ||
     unCancelSubscriptionResult.pending ||
-    openGetSubscriptionBillingPortalResult.pending;
+    openGetSubscriptionBillingPortalResult.pending ||
+    subscriptionPricingLoading ||
+    updateSubscriptionCardPaymentMethodResult.pending ||
+    updateSubscriptionCryptoPaymentMethodResult.pending ||
+    resultTriggerSubscriptionCheckInsufficientFunds.pending;
+  const isUnexpectedErrorCryptoPayment =
+    currentShieldSubscription &&
+    isPaused &&
+    isCryptoPaymentMethod(currentShieldSubscription.paymentMethod) &&
+    !currentShieldSubscription.paymentMethod.crypto.error;
 
   const [isCancelMembershipModalOpen, setIsCancelMembershipModalOpen] =
     useState(false);
 
-  const handleRenewSubscription = useCallback(async () => {
+  // handle payment error for insufficient funds crypto payment
+  // need separate handler to not mistake with handlePaymentError for membership error banner
+  const handlePaymentErrorInsufficientFunds = useCallback(async () => {
+    if (
+      !isInsufficientFundsCrypto ||
+      !hasAvailableSelectedTokenToTriggerCheckInsufficientFunds
+    ) {
+      return;
+    }
+
+    await handleTriggerSubscriptionCheckInsufficientFunds();
+  }, [
+    isInsufficientFundsCrypto,
+    hasAvailableSelectedTokenToTriggerCheckInsufficientFunds,
+    handleTriggerSubscriptionCheckInsufficientFunds,
+  ]);
+
+  const handlePaymentError = useCallback(async () => {
     if (currentShieldSubscription) {
       // capture error state clicked event
       captureShieldErrorStateClickedEvent({
@@ -153,12 +283,19 @@ const ManageShieldPlan = () => {
                 ),
               ])}
             />
-            <ButtonRow
-              title={t('shieldTxDetails3Title')}
-              description="Card"
-              onClick={() => {
-                console.log('Payment method');
-              }}
+            <PaymentMethodRow
+              displayedShieldSubscription={displayedShieldSubscription}
+              subscriptionPricing={subscriptionPricing}
+              onPaymentMethodChange={handlePaymentMethodChange}
+              isCheckSubscriptionInsufficientFundsDisabled={
+                !hasAvailableSelectedTokenToTriggerCheckInsufficientFunds
+              }
+              handlePaymentErrorInsufficientFunds={
+                handlePaymentErrorInsufficientFunds
+              }
+              isPaused={isPaused}
+              isUnexpectedErrorCryptoPayment={isUnexpectedErrorCryptoPayment}
+              handlePaymentError={handlePaymentError}
             />
             {displayedShieldSubscription?.status !==
               SUBSCRIPTION_STATUSES.provisional && (
@@ -199,7 +336,7 @@ const ManageShieldPlan = () => {
             variant={ButtonVariant.Secondary}
             className="w-full"
             onClick={() => {
-              handleRenewSubscription();
+              handlePaymentError();
             }}
           >
             {t('shieldTxMembershipRenew')}

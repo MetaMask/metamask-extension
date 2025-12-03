@@ -5698,12 +5698,6 @@
   "shieldTxMembershipActive": {
     "message": "Ballraíocht ghníomhach"
   },
-  "shieldTxMembershipBillingDetails": {
-    "message": "Sonraí billeála"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "Modh íocaíochta"
-  },
   "shieldTxMembershipBillingDetailsViewBillingHistory": {
     "message": "Féach ar stair billeála"
   },

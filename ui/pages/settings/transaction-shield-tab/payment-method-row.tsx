@@ -12,10 +12,7 @@ import {
 import {
   Box,
   FontWeight,
-  IconName,
-  IconSize,
   Text,
-  TextButton,
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -32,6 +29,11 @@ import {
   getIsShieldSubscriptionEndingSoon,
 } from '../../../../shared/lib/shield';
 import { isCryptoPaymentMethod } from './types';
+import { ButtonRow } from './components';
+import { shortenAddress } from '../../../helpers/utils/util';
+import { getAccountName } from '../../../selectors/selectors';
+import { useSelector } from 'react-redux';
+import { getInternalAccounts } from '../../../selectors';
 
 type PaymentMethodRowProps = {
   displayedShieldSubscription?: Subscription;
@@ -40,7 +42,7 @@ type PaymentMethodRowProps = {
     paymentType: PaymentType,
     token?: TokenWithApprovalAmount,
   ) => void;
-  showSkeletonLoader: boolean;
+  showSkeletonLoader?: boolean;
   isCheckSubscriptionInsufficientFundsDisabled?: boolean;
   isPaused?: boolean;
   isUnexpectedErrorCryptoPayment?: boolean;
@@ -52,7 +54,7 @@ export const PaymentMethodRow = ({
   displayedShieldSubscription,
   subscriptionPricing,
   onPaymentMethodChange,
-  showSkeletonLoader,
+  showSkeletonLoader = false,
   isCheckSubscriptionInsufficientFundsDisabled,
   isPaused,
   isUnexpectedErrorCryptoPayment,
@@ -60,6 +62,7 @@ export const PaymentMethodRow = ({
   handlePaymentErrorInsufficientFunds,
 }: PaymentMethodRowProps) => {
   const t = useI18nContext();
+  const internalAccounts = useSelector(getInternalAccounts);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   const canChangePaymentMethodToCard = useMemo(() => {
@@ -207,6 +210,21 @@ export const PaymentMethodRow = ({
     [onPaymentMethodChange],
   );
 
+  const payerAccountName = useMemo(() => {
+    if (
+      !displayedShieldSubscription ||
+      !isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)
+    ) {
+      return '';
+    }
+    return (
+      getAccountName(
+        internalAccounts,
+        displayedShieldSubscription.paymentMethod.crypto.payerAddress,
+      ) || ''
+    );
+  }, [displayedShieldSubscription, internalAccounts]);
+
   const paymentMethodDisplay = useMemo(() => {
     if (!displayedShieldSubscription) {
       return '';
@@ -234,64 +252,70 @@ export const PaymentMethodRow = ({
 
       return (
         <Tooltip position="top" title={t(tooltipText)}>
-          <TextButton
-            className="text-error-default decoration-error-default hover:decoration-error-default hover:text-error-default"
-            startIconName={IconName.Danger}
-            startIconProps={{ size: IconSize.Md }}
-            onClick={buttonOnClick}
-            disabled={buttonDisabled}
-          >
-            {t(buttonText, [
+          <ButtonRow
+            title={t('shieldTxDetails3Title')}
+            description={t(buttonText, [
               isCryptoPaymentMethod(displayedShieldSubscription?.paymentMethod)
                 ? displayedShieldSubscription.paymentMethod.crypto.tokenSymbol
                 : '',
             ])}
-          </TextButton>
+            descriptionClassName="text-error-default"
+            onClick={buttonOnClick}
+            disabled={buttonDisabled}
+          />
         </Tooltip>
       );
     }
     if (isSubscriptionEndingSoon && displayedShieldSubscription) {
       return (
-        <TextButton
-          className="text-warning-default decoration-warning-default hover:decoration-warning-default hover:text-warning-default"
-          startIconName={IconName.Danger}
-          startIconProps={{
-            size: IconSize.Md,
-          }}
+        <ButtonRow
+          title={t('shieldTxDetails3Title')}
+          description={
+            isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)
+              ? displayedShieldSubscription.paymentMethod.crypto.tokenSymbol
+              : ''
+          }
+          descriptionClassName="text-warning-default"
           onClick={handlePaymentError}
-        >
-          {isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)
-            ? displayedShieldSubscription.paymentMethod.crypto.tokenSymbol
-            : ''}
-        </TextButton>
+        />
       );
     }
 
     if (isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)) {
+      const { payerAddress } = displayedShieldSubscription.paymentMethod.crypto;
+      const displayName = payerAccountName || shortenAddress(payerAddress);
+      const cryptoDetails = t('shieldTxDetails3DescriptionCrypto', [
+        displayedShieldSubscription.paymentMethod.crypto.tokenSymbol.toUpperCase(),
+        displayName,
+      ]);
       return (
-        <TextButton
-          className="text-default decoration-text-default hover:decoration-text-default hover:text-default"
-          onClick={() => setShowPaymentModal(true)}
-          endIconName={IconName.ArrowRight}
+        <ButtonRow
+          title={t('shieldTxDetails3Title')}
+          description={cryptoDetails}
           disabled={
             displayedShieldSubscription.status ===
               SUBSCRIPTION_STATUSES.canceled || // can't change payment method if subscription is canceled
             displayedShieldSubscription.status ===
               SUBSCRIPTION_STATUSES.provisional // payment method crypto verifying, can't change yet
           }
-        >
-          {displayedShieldSubscription.paymentMethod.crypto.tokenSymbol}
-        </TextButton>
+          onClick={() => setShowPaymentModal(true)}
+        />
       );
     }
 
-    return `${displayedShieldSubscription.paymentMethod.card.brand.charAt(0).toUpperCase() + displayedShieldSubscription.paymentMethod.card.brand.slice(1)} - ${displayedShieldSubscription.paymentMethod.card.last4}`;
+    return (
+      <ButtonRow
+        title={t('shieldTxDetails3Title')}
+        description={t('shieldPlanCard')}
+      />
+    );
   }, [
     displayedShieldSubscription,
     isPaused,
     isUnexpectedErrorCryptoPayment,
     isCryptoPayment,
     isSubscriptionEndingSoon,
+    payerAccountName,
     t,
     handlePaymentError,
     isCheckSubscriptionInsufficientFundsDisabled,

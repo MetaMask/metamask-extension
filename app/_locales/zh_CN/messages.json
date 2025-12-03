@@ -5627,12 +5627,6 @@
   "shieldTxDetails2Title": {
     "message": "优先支持"
   },
-  "shieldTxMembershipBillingDetails": {
-    "message": "账单详情"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "支付方式"
-  },
   "shieldTxMembershipErrorPausedCardTooltip": {
     "message": "您的付款已被拒绝。请更新支付方式以继续使用保障服务。"
   },

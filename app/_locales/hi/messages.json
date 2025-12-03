@@ -5627,12 +5627,6 @@
   "shieldTxDetails2Title": {
     "message": "प्राथमिक सपोर्ट"
   },
-  "shieldTxMembershipBillingDetails": {
-    "message": "बिलिंग विवरण"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "भुगतान का तरीका"
-  },
   "shieldTxMembershipErrorPausedCardTooltip": {
     "message": "आपका भुगतान अस्वीकार कर दिया गया। कृपया अपनी भुगतान विधि अपडेट करें ताकि आपका कवरेज जारी रह सके।"
   },

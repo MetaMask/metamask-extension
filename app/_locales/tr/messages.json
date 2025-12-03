@@ -5630,12 +5630,6 @@
   "shieldTxDetails2Title": {
     "message": "Öncelikli destek"
   },
-  "shieldTxMembershipBillingDetails": {
-    "message": "Faturalandırma bilgileri"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "Ödeme yöntemi"
-  },
   "shieldTxMembershipErrorPausedCardTooltip": {
     "message": "Ödemeniz reddedildi. Koruma kapsamınızı sürdürmek için lütfen ödeme yönteminizi güncelleyin."
   },

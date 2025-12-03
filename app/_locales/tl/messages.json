@@ -5630,12 +5630,6 @@
   "shieldTxDetails2Title": {
     "message": "Suporta para sa priority"
   },
-  "shieldTxMembershipBillingDetails": {
-    "message": "Mga detalye ng paniningil"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "Paraan ng pagbabayad"
-  },
   "shieldTxMembershipErrorPausedCardTooltip": {
     "message": "Hindi tinanggap ang iyong pagbabayad. I-update ang iyong paraan ng pagbabayad para ipagpatuloy ang iyong coverage."
   },

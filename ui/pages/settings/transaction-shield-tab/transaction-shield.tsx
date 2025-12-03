@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   CRYPTO_PAYMENT_METHOD_ERRORS,
   PAYMENT_TYPES,
-  PaymentType,
   Product,
   PRODUCT_TYPES,
   RECURRING_INTERVALS,
@@ -22,7 +21,6 @@ import {
   BannerAlert,
   BannerAlertSeverity,
   Box,
-  BoxProps,
   ButtonLink,
   Icon,
   IconName,
@@ -77,10 +75,6 @@ import {
 import { useAsyncResult } from '../../../hooks/useAsync';
 import { useTimeout } from '../../../hooks/useTimeout';
 import { MINUTE } from '../../../../shared/constants/time';
-import {
-  useHandleShieldAddFundTrigger,
-  useShieldSubscriptionCryptoSufficientBalanceCheck,
-} from '../../../hooks/subscription/useAddFundTrigger';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
 import {
   EntryModalSourceEnum,
@@ -95,7 +89,6 @@ import ApiErrorHandler from '../../../components/app/api-error-handler';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { getAccountName, getInternalAccounts } from '../../../selectors';
 import { isCardPaymentMethod, isCryptoPaymentMethod } from './types';
-import { PaymentMethodRow } from './payment-method-row';
 import { ButtonRow, ButtonRowContainer, MembershipHeader } from './components';
 
 const TransactionShield = () => {
@@ -136,17 +129,6 @@ const TransactionShield = () => {
   // show current active shield subscription or last subscription if no active subscription
   const displayedShieldSubscription =
     currentShieldSubscription ?? lastShieldSubscription;
-
-  // watch handle add fund trigger server check subscription paused because of insufficient funds
-  const {
-    hasAvailableSelectedToken:
-      hasAvailableSelectedTokenToTriggerCheckInsufficientFunds,
-  } = useShieldSubscriptionCryptoSufficientBalanceCheck();
-  const {
-    handleTriggerSubscriptionCheck:
-      handleTriggerSubscriptionCheckInsufficientFunds,
-    result: resultTriggerSubscriptionCheckInsufficientFunds,
-  } = useHandleShieldAddFundTrigger();
 
   const [timeoutCancelled, setTimeoutCancelled] = useState(false);
   useEffect(() => {
@@ -245,12 +227,6 @@ const TransactionShield = () => {
 
   const [isAddFundsModalOpen, setIsAddFundsModalOpen] = useState(false);
 
-  const rowsStyleProps: BoxProps<'div'> = {
-    display: Display.Flex,
-    backgroundColor: BackgroundColor.backgroundSection,
-    padding: 4,
-  };
-
   const currentToken = useMemo((): TokenPaymentInfo | undefined => {
     if (
       !displayedShieldSubscription ||
@@ -276,40 +252,6 @@ const TransactionShield = () => {
 
     return token;
   }, [cryptoPaymentMethod, displayedShieldSubscription]);
-
-  const billingDetails = (
-    key: string,
-    value: string | React.ReactNode,
-    testId?: string,
-  ) => {
-    return (
-      <Box
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        gap={2}
-        justifyContent={JustifyContent.spaceBetween}
-        data-testid={testId}
-      >
-        {showSkeletonLoader ? (
-          <Skeleton width="40%" height={24} />
-        ) : (
-          <Text
-            variant={TextVariant.bodyMdMedium}
-            color={TextColor.textAlternative}
-          >
-            {key}
-          </Text>
-        )}
-        {showSkeletonLoader ? (
-          <Skeleton width="30%" height={24} />
-        ) : (
-          <Text variant={TextVariant.bodyMdMedium} className="flex-shrink-0">
-            {value}
-          </Text>
-        )}
-      </Box>
-    );
-  };
 
   const trialDaysLeft = useMemo(() => {
     if (!isTrialing || !displayedShieldSubscription?.trialEnd) {
@@ -475,38 +417,15 @@ const TransactionShield = () => {
     executeUpdateSubscriptionCryptoPaymentMethod,
   ]);
 
-  const handlePaymentMethodChange = useCallback(
-    async (
-      paymentType: PaymentType,
-      selectedToken?: TokenWithApprovalAmount,
-    ) => {
-      try {
-        if (paymentType === PAYMENT_TYPES.byCard) {
-          await executeUpdateSubscriptionCardPaymentMethod();
-        } else if (paymentType === PAYMENT_TYPES.byCrypto) {
-          if (!selectedToken) {
-            throw new Error('No token selected');
-          }
-          setSelectedChangePaymentToken(selectedToken);
-        }
-      } catch (error) {
-        console.error('Error changing payment method', error);
-      }
-    },
-    [executeUpdateSubscriptionCardPaymentMethod, setSelectedChangePaymentToken],
-  );
-
   const hasApiError =
     subscriptionsError ||
     subscriptionPricingError ||
     updateSubscriptionCardPaymentMethodResult.error ||
-    updateSubscriptionCryptoPaymentMethodResult.error ||
-    resultTriggerSubscriptionCheckInsufficientFunds.error;
+    updateSubscriptionCryptoPaymentMethodResult.error;
 
   const loading =
     updateSubscriptionCardPaymentMethodResult.pending ||
-    updateSubscriptionCryptoPaymentMethodResult.pending ||
-    resultTriggerSubscriptionCheckInsufficientFunds.pending;
+    updateSubscriptionCryptoPaymentMethodResult.pending;
 
   const isCardPayment =
     currentShieldSubscription &&
@@ -582,23 +501,6 @@ const TransactionShield = () => {
     setIsAddFundsModalOpen,
     executeSubscriptionCryptoApprovalTransaction,
     captureShieldErrorStateClickedEvent,
-  ]);
-
-  // handle payment error for insufficient funds crypto payment
-  // need separate handler to not mistake with handlePaymentError for membership error banner
-  const handlePaymentErrorInsufficientFunds = useCallback(async () => {
-    if (
-      !isInsufficientFundsCrypto ||
-      !hasAvailableSelectedTokenToTriggerCheckInsufficientFunds
-    ) {
-      return;
-    }
-
-    await handleTriggerSubscriptionCheckInsufficientFunds();
-  }, [
-    isInsufficientFundsCrypto,
-    hasAvailableSelectedTokenToTriggerCheckInsufficientFunds,
-    handleTriggerSubscriptionCheckInsufficientFunds,
   ]);
 
   const membershipErrorBanner = useMemo(() => {
@@ -840,7 +742,13 @@ const TransactionShield = () => {
             <ButtonRow
               startIconName={DsIconName.MetamaskFoxOutline}
               title={t('shieldTxMembershipBenefits3Title')}
-              description={t('shieldTxMembershipBenefits3Description')}
+              description={t('shieldTxMembershipBenefits3Description', [
+                displayedShieldSubscription?.interval ===
+                RECURRING_INTERVALS.year
+                  ? '1,000'
+                  : '10,000',
+                displayedShieldSubscription?.interval,
+              ])}
               loading={showSkeletonLoader}
               endAccessory={
                 showSkeletonLoader ? (
@@ -880,52 +788,6 @@ const TransactionShield = () => {
         )}
       </Box>
 
-      <Box className="transaction-shield-page__container">
-        <Box
-          className="transaction-shield-page__row"
-          {...rowsStyleProps}
-          flexDirection={FlexDirection.Column}
-          gap={2}
-        >
-          {showSkeletonLoader ? (
-            <Skeleton width="60%" height={24} />
-          ) : (
-            <Text
-              variant={TextVariant.headingSm}
-              data-testid="shield-detail-billing-details-title"
-            >
-              {t('shieldTxMembershipBillingDetails')}
-            </Text>
-          )}
-          {displayedShieldSubscription ? (
-            <>
-              {billingDetails(
-                t('shieldTxMembershipBillingDetailsPaymentMethod'),
-                <PaymentMethodRow
-                  displayedShieldSubscription={displayedShieldSubscription}
-                  subscriptionPricing={subscriptionPricing}
-                  onPaymentMethodChange={handlePaymentMethodChange}
-                  showSkeletonLoader={showSkeletonLoader}
-                  isCheckSubscriptionInsufficientFundsDisabled={
-                    !hasAvailableSelectedTokenToTriggerCheckInsufficientFunds
-                  }
-                  handlePaymentErrorInsufficientFunds={
-                    handlePaymentErrorInsufficientFunds
-                  }
-                  isPaused={isPaused}
-                  isUnexpectedErrorCryptoPayment={
-                    isUnexpectedErrorCryptoPayment
-                  }
-                  handlePaymentError={handlePaymentError}
-                />,
-                'shield-detail-payment-method',
-              )}
-            </>
-          ) : (
-            <Skeleton width="60%" height={24} />
-          )}
-        </Box>
-      </Box>
       {loading && <LoadingScreen />}
       {currentToken &&
         isAddFundsModalOpen &&
