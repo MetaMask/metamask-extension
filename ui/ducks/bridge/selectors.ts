@@ -71,6 +71,8 @@ import {
   getIsSmartTransaction,
   type SmartTransactionsMetaMaskState,
 } from '../../../shared/modules/selectors';
+import { calcTokenValue } from '../../../shared/lib/swaps-utils';
+import { safeAmountForCalc } from '../../pages/bridge/utils/quote';
 import {
   getInternalAccountsByScope,
   getSelectedInternalAccount,
@@ -693,15 +695,26 @@ export const getIsSwap = createDeepEqualSelector(
     ),
 );
 
+export const getValidatedFromValue = createSelector(
+  [getFromToken, getFromAmount],
+  (fromToken, unvalidatedInputValue) =>
+    unvalidatedInputValue && fromToken?.decimals
+      ? calcTokenValue(
+          safeAmountForCalc(unvalidatedInputValue),
+          fromToken.decimals,
+        )
+          .toFixed()
+          // Length of decimal part cannot exceed token.decimals
+          .split('.')[0]
+      : undefined,
+);
+
 const _getValidatedSrcAmount = createSelector(
-  [
-    getFromToken,
-    (state: BridgeAppState) => state.metamask.quoteRequest.srcTokenAmount,
-  ],
+  [getFromToken, getValidatedFromValue],
   (fromToken, srcTokenAmount) =>
     srcTokenAmount && fromToken?.decimals
       ? calcTokenAmount(srcTokenAmount, Number(fromToken.decimals)).toString()
-      : null,
+      : undefined,
 );
 
 export const getFromAmountInCurrency = createSelector(

@@ -849,10 +849,12 @@ describe('Bridge selectors', () => {
   describe('getValidationErrors', () => {
     it('should return isNoQuotesAvailable=false when quote request is invalid', () => {
       const state = createBridgeMockStore({
-        bridgeSliceOverrides: { toChainId: formatChainIdToCaip('0x1') },
+        bridgeSliceOverrides: {
+          toChainId: formatChainIdToCaip('0x1'),
+          fromTokenInputValue: '1000',
+        },
         bridgeStateOverrides: {
           quoteRequest: {
-            srcTokenAmount: '1000',
             srcChainId: CHAIN_IDS.MAINNET,
             destChainId: ChainId.SOLANA,
             srcTokenAddress: zeroAddress(),
@@ -871,7 +873,10 @@ describe('Bridge selectors', () => {
 
     it('should return isNoQuotesAvailable=true when swapping on EVM', () => {
       const state = createBridgeMockStore({
-        bridgeSliceOverrides: { toChainId: formatChainIdToCaip('0x1') },
+        bridgeSliceOverrides: {
+          toChainId: formatChainIdToCaip('0x1'),
+          fromTokenInputValue: '.000000000000001000',
+        },
         bridgeStateOverrides: {
           quoteRequest: {
             srcTokenAmount: '1000',
@@ -912,12 +917,12 @@ describe('Bridge selectors', () => {
             address: zeroAddress(),
             chainId: CHAIN_IDS.MAINNET,
           },
+          fromTokenInputValue: '1000',
           fromTokenBalance: '990',
         },
         bridgeStateOverrides: {
           minimumBalanceForRentExemptionInLamports: '890880',
           quotesLastFetched: Date.now(),
-          quoteRequest: { srcTokenAmount: '1000' },
         },
       });
       const result = getValidationErrors(state as never);
@@ -934,14 +939,13 @@ describe('Bridge selectors', () => {
             address: zeroAddress(),
             chainId: formatChainIdToCaip(ChainId.SOLANA),
           },
-          srcTokenInputValue: '1000000000',
+          fromTokenInputValue: '1000000000',
           fromNativeBalance: '2000000000',
         },
         bridgeStateOverrides: {
           minimumBalanceForRentExemptionInLamports: '1000000000',
           quotesLastFetched: Date.now(),
           quoteRequest: {
-            srcTokenAmount: '1000000000',
             srcChainId: ChainId.SOLANA,
           },
         },
@@ -1147,6 +1151,7 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
           toChainId: formatChainIdToCaip('0x1'),
+          fromTokenInputValue: '.001000',
           fromToken: {
             decimals: 6,
             address: zeroAddress(),
@@ -1168,7 +1173,7 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
           toChainId: formatChainIdToCaip('0x1'),
-          fromTokenInputValue: '0.001',
+          fromTokenInputValue: '.010000000000000000',
           fromToken: {
             address: zeroAddress(),
             decimals: 18,
@@ -1230,7 +1235,6 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
           toChainId: formatChainIdToCaip('0x1'),
-          fromTokenInputValue: '0.001',
           fromNativeBalance: '0',
         },
         bridgeStateOverrides: {
@@ -1420,7 +1424,7 @@ describe('Bridge selectors', () => {
           },
           toToken: { address: zeroAddress(), symbol: 'TEST' },
           fromTokenExchangeRate: 2524.25,
-          fromTokenInputValue: 1,
+          fromTokenInputValue: '1',
         },
         bridgeStateOverrides: {
           quoteRequest: {

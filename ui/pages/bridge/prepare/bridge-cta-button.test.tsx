@@ -146,7 +146,7 @@ describe('BridgeCTAButton', () => {
         },
       },
       bridgeSliceOverrides: {
-        fromTokenInputValue: 1,
+        fromTokenInputValue: '1',
         fromToken: 'ETH',
         toToken: 'ETH',
         toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
@@ -187,7 +187,7 @@ describe('BridgeCTAButton', () => {
         },
       },
       bridgeSliceOverrides: {
-        fromTokenInputValue: 1,
+        fromTokenInputValue: '1',
         fromToken: 'ETH',
         toToken: 'ETH',
         toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
@@ -245,7 +245,7 @@ describe('BridgeCTAButton', () => {
           },
         },
         bridgeSliceOverrides: {
-          fromTokenInputValue: 1,
+          fromTokenInputValue: '1',
           fromToken: 'ETH',
           toToken: 'ETH',
           toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
@@ -300,7 +300,7 @@ describe('BridgeCTAButton', () => {
         },
       },
       bridgeSliceOverrides: {
-        fromTokenInputValue: 1,
+        fromTokenInputValue: '1',
         fromToken: 'ETH',
         toToken: 'ETH',
         toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),

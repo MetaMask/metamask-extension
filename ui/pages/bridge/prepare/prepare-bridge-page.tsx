@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { BigNumber } from 'bignumber.js';
 import { useSelector, useDispatch } from 'react-redux';
 import classnames from 'classnames';
 import { debounce } from 'lodash';
@@ -51,7 +50,7 @@ import {
   getFromAccount,
   getIsStxEnabled,
   getIsGasIncluded,
-  getFromTokenBalance,
+  getValidatedFromValue,
 } from '../../../ducks/bridge/selectors';
 import {
   AvatarFavicon,
@@ -75,11 +74,9 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTokensWithFiltering } from '../../../hooks/bridge/useTokensWithFiltering';
-import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import {
   formatTokenAmount,
   isQuoteExpiredOrInvalid as isQuoteExpiredOrInvalidUtil,
-  safeAmountForCalc,
 } from '../utils/quote';
 import { isNetworkAdded } from '../../../ducks/bridge/utils';
 import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
@@ -154,6 +151,7 @@ const PrepareBridgePage = ({
   }, [fromTokens, fromChain]);
 
   const fromAmount = useSelector(getFromAmount);
+  const validatedFromValue = useSelector(getValidatedFromValue);
   const fromAmountInCurrency = useSelector(getFromAmountInCurrency);
 
   const smartTransactionsEnabled = useSelector(getIsStxEnabled);
@@ -162,7 +160,6 @@ const PrepareBridgePage = ({
   const slippage = useSelector(getSlippage);
 
   const quoteRequest = useSelector(getQuoteRequest);
-  const fromTokenBalance = useSelector(getFromTokenBalance);
   const {
     isLoading,
     // This quote may be older than the refresh rate, but we keep it for display purposes
@@ -309,19 +306,6 @@ const PrepareBridgePage = ({
 
   const isToOrFromNonEvm = useSelector(getIsToOrFromNonEvm);
 
-  const insufficientBalOverride = useMemo(() => {
-    if (
-      !fromChain ||
-      !isNonEvmChainId(fromChain.chainId) ||
-      !fromAmount ||
-      !fromTokenBalance
-    ) {
-      return undefined;
-    }
-
-    return new BigNumber(fromTokenBalance).lt(safeAmountForCalc(fromAmount));
-  }, [fromAmount, fromChain, fromTokenBalance]);
-
   const quoteParams:
     | Parameters<BridgeController['updateBridgeQuoteRequestParams']>[0]
     | undefined = useMemo(
@@ -330,16 +314,7 @@ const PrepareBridgePage = ({
         ? {
             srcTokenAddress: fromToken?.address,
             destTokenAddress: toToken?.address,
-            srcTokenAmount:
-              fromAmount && fromToken?.decimals
-                ? calcTokenValue(
-                    safeAmountForCalc(fromAmount),
-                    fromToken.decimals,
-                  )
-                    .toFixed()
-                    // Length of decimal part cannot exceed token.decimals
-                    .split('.')[0]
-                : undefined,
+            srcTokenAmount: validatedFromValue,
             srcChainId: fromChain?.chainId,
             destChainId: toChain?.chainId,
             // This override allows quotes to be returned when the rpcUrl is a forked network
@@ -347,7 +322,7 @@ const PrepareBridgePage = ({
             // balance is less than the tenderly balance
             insufficientBal: providerConfig?.rpcUrl?.includes('localhost')
               ? true
-              : insufficientBalOverride,
+              : isInsufficientBalance,
             slippage,
             walletAddress: selectedAccount.address,
             destWalletAddress: selectedDestinationAccount?.address,
@@ -357,9 +332,8 @@ const PrepareBridgePage = ({
         : undefined,
     [
       fromToken?.address,
-      fromToken?.decimals,
       toToken?.address,
-      fromAmount,
+      validatedFromValue,
       fromChain?.chainId,
       toChain?.chainId,
       slippage,
@@ -368,7 +342,7 @@ const PrepareBridgePage = ({
       providerConfig?.rpcUrl,
       gasIncluded,
       gasIncluded7702,
-      insufficientBalOverride,
+      isInsufficientBalance,
     ],
   );
 
@@ -740,13 +714,17 @@ const PrepareBridgePage = ({
                 selectedDestinationAccount={selectedDestinationAccount}
               />
             )}
-            {isNoQuotesAvailable && !isQuoteExpired && (
-              <BannerAlert
-                severity={BannerAlertSeverity.Danger}
-                description={t('noOptionsAvailableMessage')}
-                textAlign={TextAlign.Left}
-              />
-            )}
+            {isNoQuotesAvailable &&
+              !isQuoteExpired &&
+              quoteParams &&
+              // Only show banner if quoteParams (inputs) are valid
+              isValidQuoteRequest(quoteParams, true) && (
+                <BannerAlert
+                  severity={BannerAlertSeverity.Danger}
+                  description={t('noOptionsAvailableMessage')}
+                  textAlign={TextAlign.Left}
+                />
+              )}
             {isLoading && !unvalidatedQuote ? (
               <>
                 <Text
