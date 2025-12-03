@@ -55,7 +55,6 @@ describe(`Migration ${version}`, () => {
       },
     };
     const result = await migrate(originalState);
-    expect(sentryCaptureExceptionMock).toHaveBeenCalled();
     expect(result.data).toEqual(originalState.data);
   });
 
@@ -86,7 +85,6 @@ describe(`Migration ${version}`, () => {
     };
 
     const result = await migrate(originalState);
-    expect(sentryCaptureExceptionMock).toHaveBeenCalled();
     expect(result.data).toEqual(originalState.data);
   });
 

@@ -73,7 +73,7 @@ describe('Review Recovery Phrase Component', () => {
 
     const revealRecoveryPhraseButton = queryByTestId('recovery-phrase-reveal');
 
-    fireEvent.click(revealRecoveryPhraseButton);
+    fireEvent.click(revealRecoveryPhraseButton as HTMLElement);
 
     expect(container).toMatchSnapshot();
   });
@@ -87,7 +87,7 @@ describe('Review Recovery Phrase Component', () => {
     const revealRecoveryPhraseButton = queryByTestId('recovery-phrase-reveal');
     const revealButton = queryByText('Tap to reveal');
 
-    fireEvent.click(revealRecoveryPhraseButton);
+    fireEvent.click(revealRecoveryPhraseButton as HTMLElement);
 
     expect(revealButton).not.toBeInTheDocument();
   });
@@ -100,11 +100,11 @@ describe('Review Recovery Phrase Component', () => {
 
     const revealRecoveryPhraseButton = queryByTestId('recovery-phrase-reveal');
 
-    fireEvent.click(revealRecoveryPhraseButton);
+    fireEvent.click(revealRecoveryPhraseButton as HTMLElement);
 
     const nextButton = queryByTestId('recovery-phrase-continue');
 
-    fireEvent.click(nextButton);
+    fireEvent.click(nextButton as HTMLElement);
 
     expect(mockUseNavigate).toHaveBeenCalledWith({
       pathname: ONBOARDING_CONFIRM_SRP_ROUTE,
@@ -125,11 +125,11 @@ describe('Review Recovery Phrase Component', () => {
 
     const revealRecoveryPhraseButton = queryByTestId('recovery-phrase-reveal');
 
-    fireEvent.click(revealRecoveryPhraseButton);
+    fireEvent.click(revealRecoveryPhraseButton as HTMLElement);
 
     const nextButton = queryByTestId('recovery-phrase-continue');
 
-    fireEvent.click(nextButton);
+    fireEvent.click(nextButton as HTMLElement);
 
     expect(mockUseNavigate).toHaveBeenCalledWith({
       pathname: ONBOARDING_CONFIRM_SRP_ROUTE,

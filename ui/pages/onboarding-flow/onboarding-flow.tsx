@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useContext, useMemo } from 'react';
-import PropTypes from 'prop-types';
 import {
   Routes as Switch,
   Route,
   useNavigate,
   useLocation,
+  type NavigateFunction,
+  type Location as RouterLocation,
 } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
@@ -34,6 +35,7 @@ import {
   getCompletedOnboarding,
   getIsPrimarySeedPhraseBackedUp,
   getIsUnlocked,
+  getOpenedWithSidepanel,
 } from '../../ducks/metamask/metamask';
 import {
   createNewVaultAndGetSeedPhrase,
@@ -71,6 +73,7 @@ import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/modules/environment';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import LoadingScreen from '../../components/ui/loading-screen';
+import type { MetaMaskReduxDispatch } from '../../store/store';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -87,13 +90,20 @@ import AccountNotFound from './account-not-found/account-not-found';
 import RevealRecoveryPhrase from './recovery-phrase/reveal-recovery-phrase';
 import OnboardingDownloadApp from './download-app/download-app';
 
+type OnboardingFlowProps = {
+  navigate?: NavigateFunction;
+  location?: RouterLocation;
+};
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function OnboardingFlow({
   navigate: navigateProp,
   location: locationProp,
-} = {}) {
+}: OnboardingFlowProps) {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const hookLocation = useLocation();
   const hookNavigate = useNavigate();
 
@@ -101,10 +111,8 @@ export default function OnboardingFlow({
   const location = locationProp ?? hookLocation;
   const navigate = navigateProp ?? hookNavigate;
   const { pathname, search } = location;
-  const completedOnboarding = useSelector(getCompletedOnboarding);
-  const openedWithSidepanel = useSelector(
-    (state) => state.metamask.openedWithSidepanel,
-  );
+  const completedOnboarding: boolean = useSelector(getCompletedOnboarding);
+  const openedWithSidepanel = useSelector(getOpenedWithSidepanel);
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterUnlock);
   const isFromReminder = new URLSearchParams(search).get('isFromReminder');
   const isFromSettingsSecurity = new URLSearchParams(search).get(
@@ -178,17 +186,17 @@ export default function OnboardingFlow({
     });
     if (onboardingParentContext) {
       // Intentionally mutating ref object
-      // eslint-disable-next-line react-compiler/react-compiler
       onboardingParentContext.current = {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         _name: TraceName.OnboardingJourneyOverall,
       };
     }
   }, [onboardingParentContext, bufferedTrace]);
 
-  const handleCreateNewAccount = async (password) => {
+  const handleCreateNewAccount = async (password: string) => {
     try {
       setIsLoading(true);
-      let newSecretRecoveryPhrase;
+      let newSecretRecoveryPhrase: string | undefined;
       if (
         isSeedlessOnboardingFeatureEnabled &&
         firstTimeFlowType === FirstTimeFlowType.socialCreate
@@ -202,16 +210,18 @@ export default function OnboardingFlow({
         );
       }
 
-      setSecretRecoveryPhrase(newSecretRecoveryPhrase);
+      if (newSecretRecoveryPhrase) {
+        setSecretRecoveryPhrase(newSecretRecoveryPhrase);
+      }
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleUnlock = async (password) => {
+  const handleUnlock = async (password: string) => {
     try {
       setIsLoading(true);
-      let retrievedSecretRecoveryPhrase;
+      let retrievedSecretRecoveryPhrase: string | undefined;
 
       if (
         isSeedlessOnboardingFeatureEnabled &&
@@ -226,7 +236,9 @@ export default function OnboardingFlow({
         );
       }
 
-      setSecretRecoveryPhrase(retrievedSecretRecoveryPhrase);
+      if (retrievedSecretRecoveryPhrase) {
+        setSecretRecoveryPhrase(retrievedSecretRecoveryPhrase);
+      }
       if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
         await dispatch(setCompletedOnboarding());
       }
@@ -236,7 +248,10 @@ export default function OnboardingFlow({
     }
   };
 
-  const handleImportWithRecoveryPhrase = async (password, srp) => {
+  const handleImportWithRecoveryPhrase = async (
+    password: string,
+    srp: string,
+  ) => {
     return await dispatch(createNewVaultAndRestore(password, srp));
   };
 
@@ -385,11 +400,6 @@ export default function OnboardingFlow({
     </Box>
   );
 }
-
-OnboardingFlow.propTypes = {
-  navigate: PropTypes.func,
-  location: PropTypes.object,
-};
 
 function setOnboardingDate() {
   submitRequestToBackgroundAndCatch('setOnboardingDate');

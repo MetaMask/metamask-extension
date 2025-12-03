@@ -374,7 +374,7 @@ export function resetOAuthLoginState() {
  */
 export function createNewVaultAndSyncWithSocial(
   password: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       const primaryKeyring = await createNewVault(password);
@@ -825,7 +825,7 @@ export function linkRewardToShieldSubscription(
  */
 export function restoreSocialBackupAndGetSeedPhrase(
   password: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       // restore the vault using the seed phrase
@@ -1117,7 +1117,7 @@ export function generateNewMnemonicAndAddToVault(): ThunkAction<
 }
 export function createNewVaultAndGetSeedPhrase(
   password: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -1142,7 +1142,7 @@ export function createNewVaultAndGetSeedPhrase(
 
 export function unlockAndGetSeedPhrase(
   password: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -4758,7 +4758,7 @@ export function toggleAccountMenu() {
 
 export function toggleNetworkMenu(payload?: {
   isAddingNewNetwork: boolean;
-  isMultiRpcOnboarding: boolean;
+  isMultiRpcOnboarding?: boolean;
   isAccessedFromDappConnectedSitePopover?: boolean;
 }) {
   return {
@@ -4774,7 +4774,7 @@ export function closeNetworkMenu() {
 }
 
 export function setParticipateInMetaMetrics(
-  participationPreference: boolean,
+  participationPreference: boolean | null,
 ): ThunkAction<
   Promise<[boolean, string]>,
   MetaMaskReduxState,
@@ -5142,7 +5142,7 @@ export function setIsIpfsGatewayEnabled(
 }
 
 export function setUseAddressBarEnsResolution(
-  val: string,
+  val: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.setUseAddressBarEnsResolution`);
