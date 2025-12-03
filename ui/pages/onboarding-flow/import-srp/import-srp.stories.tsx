@@ -50,9 +50,7 @@ const Wrapper = ({ children }) => (
 
 const meta: Meta<typeof ImportSRP> = {
   title: 'Pages/OnboardingFlow/ImportSRP',
-  component: ImportSRP as ComponentType<{
-    submitSecretRecoveryPhrase: (secretRecoveryPhrase: string) => void;
-  }>,
+  component: ImportSRP,
   decorators: [
     (Story) => (
       <Wrapper>
