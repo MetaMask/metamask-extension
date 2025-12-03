@@ -83,6 +83,10 @@ export const ShieldConfigMap: Record<BuildType, ShieldEnvConfig> = {
   },
 };
 
+export function isTestEnvironment() {
+  return process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.TESTING;
+}
+
 /**
  * Check if the environment is a Development or Test environment.
  *
@@ -91,7 +95,7 @@ export const ShieldConfigMap: Record<BuildType, ShieldEnvConfig> = {
 export function isDevOrTestEnvironment() {
   return (
     process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.DEVELOPMENT ||
-    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.TESTING
+    isTestEnvironment()
   );
 }
 
@@ -116,7 +120,7 @@ export function loadShieldConfig(): ShieldEnvConfig {
   const buildType = process.env.METAMASK_BUILD_TYPE;
 
   let buildTypeEnv: BuildType = BUILD_TYPE.main;
-  if (isDevOrTestEnvironment()) {
+  if (isTestEnvironment()) {
     buildTypeEnv = BUILD_TYPE.dev;
   } else if (buildType === 'experimental') {
     buildTypeEnv = BUILD_TYPE.experimental;
