@@ -107,6 +107,8 @@ const mockTransactionMetricsRequest = {
   getNetworkRpcUrl: jest.fn(),
   getFeatureFlags: jest.fn(),
   getPna25Acknowledged: jest.fn(),
+  getAddressSecurityAlertResponse: jest.fn(),
+  getSecurityAlertsEnabled: jest.fn(),
 } as TransactionMetricsRequest;
 
 describe('Transaction metrics', () => {
