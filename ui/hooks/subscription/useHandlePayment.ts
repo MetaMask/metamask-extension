@@ -105,7 +105,10 @@ export const useHandlePayment = ({
   }, [currentShieldSubscription, isPaused]);
 
   const isInsufficientFundsCrypto = useMemo(() => {
-    if (!currentShieldSubscription || !isCryptoPaymentMethod(currentShieldSubscription.paymentMethod)) {
+    if (
+      !currentShieldSubscription ||
+      !isCryptoPaymentMethod(currentShieldSubscription.paymentMethod)
+    ) {
       return false;
     }
     return (
@@ -115,7 +118,10 @@ export const useHandlePayment = ({
   }, [currentShieldSubscription]);
 
   const isAllowanceNeededCrypto = useMemo(() => {
-    if (!currentShieldSubscription || !isCryptoPaymentMethod(currentShieldSubscription.paymentMethod)) {
+    if (
+      !currentShieldSubscription ||
+      !isCryptoPaymentMethod(currentShieldSubscription.paymentMethod)
+    ) {
       return false;
     }
     const { error } = currentShieldSubscription.paymentMethod.crypto;
