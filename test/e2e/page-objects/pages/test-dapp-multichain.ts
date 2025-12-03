@@ -209,7 +209,11 @@ class TestDappMultichain {
     const getSessionRawResult = await this.driver.findElement(
       this.firstSessionMethodResult,
     );
-    return JSON.parse(await getSessionRawResult.getText());
+    const text = await getSessionRawResult.getText();
+    console.log(`Empty = ${text === ''}`);
+    console.log(JSON.stringify(text));
+    return JSON.parse(text);
+
   }
 
   /**
