@@ -33,7 +33,6 @@ import {
   AlignItems,
   BackgroundColor,
   BlockSize,
-  BorderRadius,
   Display,
   FlexDirection,
   IconColor,
@@ -44,11 +43,8 @@ import {
 import { Skeleton } from '../../../components/component-library/skeleton';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  useCancelSubscription,
   useHandleSubscriptionSupportAction,
-  useOpenGetSubscriptionBillingPortal,
   useSubscriptionCryptoApprovalTransaction,
-  useUnCancelSubscription,
   useUpdateSubscriptionCardPaymentMethod,
   useUpdateSubscriptionCryptoPaymentMethod,
   useUserLastSubscriptionByProduct,
@@ -60,6 +56,7 @@ import {
   DEFAULT_ROUTE,
   SHIELD_PLAN_ROUTE,
   TRANSACTION_SHIELD_CLAIM_ROUTES,
+  TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE,
 } from '../../../helpers/constants/routes';
 import { TRANSACTION_SHIELD_LINK } from '../../../helpers/constants/common';
 import { getProductPrice } from '../../shield-plan/utils';
@@ -97,7 +94,6 @@ import {
 import ApiErrorHandler from '../../../components/app/api-error-handler';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { getAccountName, getInternalAccounts } from '../../../selectors';
-import CancelMembershipModal from './cancel-membership-modal';
 import { isCardPaymentMethod, isCryptoPaymentMethod } from './types';
 import { PaymentMethodRow } from './payment-method-row';
 import { ButtonRow, ButtonRowContainer, MembershipHeader } from './components';
@@ -205,10 +201,6 @@ const TransactionShield = () => {
   const isSubscriptionEndingSoon =
     getIsShieldSubscriptionEndingSoon(subscriptions);
 
-  // user can cancel subscription if not canceled and current subscription not cancel at period end
-  const canCancel =
-    !isCancelled && !currentShieldSubscription?.cancelAtPeriodEnd;
-
   const isCryptoPayment =
     displayedShieldSubscription?.paymentMethod &&
     isCryptoPaymentMethod(displayedShieldSubscription?.paymentMethod);
@@ -220,17 +212,6 @@ const TransactionShield = () => {
       ),
     [displayedShieldSubscription],
   );
-
-  const [executeCancelSubscription, cancelSubscriptionResult] =
-    useCancelSubscription(currentShieldSubscription);
-
-  const [executeUnCancelSubscription, unCancelSubscriptionResult] =
-    useUnCancelSubscription(currentShieldSubscription);
-
-  const [
-    executeOpenGetSubscriptionBillingPortal,
-    openGetSubscriptionBillingPortalResult,
-  ] = useOpenGetSubscriptionBillingPortal(displayedShieldSubscription);
 
   const [
     executeUpdateSubscriptionCardPaymentMethod,
@@ -261,9 +242,6 @@ const TransactionShield = () => {
     navigate,
     displayedShieldSubscription,
   ]);
-
-  const [isCancelMembershipModalOpen, setIsCancelMembershipModalOpen] =
-    useState(false);
 
   const [isAddFundsModalOpen, setIsAddFundsModalOpen] = useState(false);
 
@@ -298,36 +276,6 @@ const TransactionShield = () => {
 
     return token;
   }, [cryptoPaymentMethod, displayedShieldSubscription]);
-
-  const buttonRow = (label: string, onClick: () => void, id?: string) => {
-    return (
-      <Box
-        as="button"
-        data-testid={id}
-        className="transaction-shield-page__row"
-        {...rowsStyleProps}
-        justifyContent={JustifyContent.spaceBetween}
-        alignItems={AlignItems.center}
-        width={BlockSize.Full}
-        onClick={onClick}
-      >
-        {showSkeletonLoader ? (
-          <Skeleton width="50%" height={20} />
-        ) : (
-          <Text variant={TextVariant.bodyMdMedium}>{label}</Text>
-        )}
-        {showSkeletonLoader ? (
-          <Skeleton width={24} height={24} borderRadius={BorderRadius.full} />
-        ) : (
-          <Icon
-            name={IconName.ArrowRight}
-            size={IconSize.Lg}
-            color={IconColor.iconAlternative}
-          />
-        )}
-      </Box>
-    );
-  };
 
   const billingDetails = (
     key: string,
@@ -551,17 +499,11 @@ const TransactionShield = () => {
   const hasApiError =
     subscriptionsError ||
     subscriptionPricingError ||
-    cancelSubscriptionResult.error ||
-    unCancelSubscriptionResult.error ||
-    openGetSubscriptionBillingPortalResult.error ||
     updateSubscriptionCardPaymentMethodResult.error ||
     updateSubscriptionCryptoPaymentMethodResult.error ||
     resultTriggerSubscriptionCheckInsufficientFunds.error;
 
   const loading =
-    cancelSubscriptionResult.pending ||
-    unCancelSubscriptionResult.pending ||
-    openGetSubscriptionBillingPortalResult.pending ||
     updateSubscriptionCardPaymentMethodResult.pending ||
     updateSubscriptionCryptoPaymentMethodResult.pending ||
     resultTriggerSubscriptionCheckInsufficientFunds.pending;
@@ -607,13 +549,7 @@ const TransactionShield = () => {
       });
     }
 
-    if (isCancelled) {
-      // go to shield plan page to renew subscription for cancelled subscription
-      navigate({
-        pathname: SHIELD_PLAN_ROUTE,
-        search: `?source=${EntryModalSourceEnum.Settings}`,
-      });
-    } else if (isUnexpectedErrorCryptoPayment) {
+    if (isUnexpectedErrorCryptoPayment) {
       // handle support action
       handleClickContactSupport();
     } else if (
@@ -639,8 +575,6 @@ const TransactionShield = () => {
   }, [
     handleClickContactSupport,
     isUnexpectedErrorCryptoPayment,
-    isCancelled,
-    navigate,
     currentShieldSubscription,
     isInsufficientFundsCrypto,
     isAllowanceNeededCrypto,
@@ -816,7 +750,7 @@ const TransactionShield = () => {
                   }}
                   color={TextColor.textAlternative}
                   onClick={() => {
-                    console.log('manage plan');
+                    navigate(TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE);
                   }}
                 >
                   {t('shieldTxDetailsManage')}
@@ -944,29 +878,6 @@ const TransactionShield = () => {
             )}
           </Box>
         )}
-        {!isMembershipInactive &&
-          currentShieldSubscription?.cancelAtPeriodEnd &&
-          buttonRow(
-            t('shieldTxMembershipResubscribe'),
-            () => {
-              executeUnCancelSubscription();
-            },
-            'shield-tx-membership-uncancel-button',
-          )}
-        {canCancel &&
-          buttonRow(
-            t('shieldTxMembershipCancel'),
-            () => {
-              setIsCancelMembershipModalOpen(true);
-            },
-            'shield-tx-membership-cancel-button',
-          )}
-        {isCancelled &&
-          buttonRow(
-            t('shieldTxMembershipRenew'),
-            handlePaymentError,
-            'shield-detail-renew-button',
-          )}
       </Box>
 
       <Box className="transaction-shield-page__container">
@@ -1014,24 +925,7 @@ const TransactionShield = () => {
             <Skeleton width="60%" height={24} />
           )}
         </Box>
-        {displayedShieldSubscription?.status !==
-          SUBSCRIPTION_STATUSES.provisional &&
-          buttonRow(
-            t('shieldTxMembershipBillingDetailsViewBillingHistory'),
-            executeOpenGetSubscriptionBillingPortal,
-            'shield-detail-view-billing-history-button',
-          )}
       </Box>
-      {currentShieldSubscription && isCancelMembershipModalOpen && (
-        <CancelMembershipModal
-          onClose={() => setIsCancelMembershipModalOpen(false)}
-          onConfirm={async () => {
-            setIsCancelMembershipModalOpen(false);
-            await executeCancelSubscription();
-          }}
-          subscription={currentShieldSubscription}
-        />
-      )}
       {loading && <LoadingScreen />}
       {currentToken &&
         isAddFundsModalOpen &&

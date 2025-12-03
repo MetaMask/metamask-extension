@@ -88,3 +88,9 @@
 .button-row {
   min-height: 60px;
 }
+
+.manage-plan-page {
+  @include design-system.screen-sm-min {
+    padding: 16px;
+  }
+}
