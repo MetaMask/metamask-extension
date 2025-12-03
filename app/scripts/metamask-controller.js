@@ -333,6 +333,7 @@ import {
   TokenRatesControllerInit,
 } from './controller-init/assets';
 import { TransactionControllerInit } from './controller-init/confirmations/transaction-controller-init';
+import { TransactionPayControllerInit } from './controller-init/transaction-pay-controller-init';
 import { PPOMControllerInit } from './controller-init/confirmations/ppom-controller-init';
 import { SmartTransactionsControllerInit } from './controller-init/smart-transactions/smart-transactions-controller-init';
 import { initControllers } from './controller-init/utils';
@@ -609,6 +610,7 @@ export default class MetamaskController extends EventEmitter {
       PhishingController: PhishingControllerInit,
       AccountTrackerController: AccountTrackerControllerInit,
       TransactionController: TransactionControllerInit,
+      TransactionPayController: TransactionPayControllerInit,
       SmartTransactionsController: SmartTransactionsControllerInit,
       SwapsController: SwapsControllerInit,
       BridgeController: BridgeControllerInit,
@@ -1443,11 +1445,15 @@ export default class MetamaskController extends EventEmitter {
         (snap) => !snap.preinstalled,
       )
     ) {
-      try {
-        this.snapController.updateRegistry();
-      } catch {
-        // Ignore
-      }
+      this.snapController.updateRegistry().catch((error) => {
+        if (
+          !error.message.includes(
+            'The Snaps platform requires basic functionality to be used.',
+          )
+        ) {
+          console.error(error);
+        }
+      });
     }
   }
 
@@ -7347,7 +7353,7 @@ export default class MetamaskController extends EventEmitter {
             'KeyringController:getState',
           );
 
-          return this._isClientOpen && isUnlocked;
+          return Boolean(this._isClientOpen && isUnlocked);
         },
         getVersion: () => {
           return process.env.METAMASK_VERSION;

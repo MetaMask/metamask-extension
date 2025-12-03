@@ -3,7 +3,7 @@
 exports[`remove-snap-account confirmation should match snapshot 1`] = `
 <div>
   <div
-    class="confirmation-page"
+    class="confirmation-page h-full"
   >
     <div
       class="mm-box confirmation-page__content mm-box--padding-0"

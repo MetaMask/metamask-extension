@@ -26,6 +26,11 @@ const useMultiPolling = <PollingInput>(
   useEffect(() => {
     isMounted.current = true;
     return () => {
+      // stop all polling on dismount
+      for (const token of pollingTokens.current.values()) {
+        usePollingOptions.stopPollingByPollingToken(token);
+      }
+      prevPollingInputStringified.current = null;
       isMounted.current = false;
     };
   }, []);
@@ -33,7 +38,7 @@ const useMultiPolling = <PollingInput>(
   useEffect(() => {
     if (!completedOnboarding || !hasPollingInputChanged) {
       // don't start polling if no selected account, or onboarding is incomplete, or polling inputs haven't changed
-      return () => undefined;
+      return;
     }
 
     // start new polls
@@ -63,14 +68,6 @@ const useMultiPolling = <PollingInput>(
     prevPollingInputStringified.current = JSON.stringify(
       usePollingOptions.input,
     );
-
-    // stop all polling on dismount
-    return () => {
-      for (const token of pollingTokens.current.values()) {
-        usePollingOptions.stopPollingByPollingToken(token);
-      }
-      prevPollingInputStringified.current = null;
-    };
   }, [usePollingOptions, hasPollingInputChanged, completedOnboarding]);
 };
 
