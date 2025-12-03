@@ -1506,23 +1506,6 @@
         "@metamask/keyring-controller>ulid": true
       }
     },
-    "@metamask/profile-metrics-controller>@metamask/keyring-controller": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/base-controller": true,
-        "@metamask/keyring-controller>@metamask/eth-hd-keyring": true,
-        "@metamask/eth-sig-util": true,
-        "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
-        "@metamask/utils": true,
-        "@metamask/eth-qr-keyring>async-mutex": true,
-        "@metamask/keyring-controller>ethereumjs-wallet": true,
-        "lodash": true,
-        "@metamask/keyring-controller>ulid": true
-      }
-    },
     "@metamask/keyring-internal-api": {
       "packages": {
         "@metamask/keyring-api": true,
@@ -2074,7 +2057,7 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/profile-metrics-controller>@metamask/keyring-controller": true,
+        "@metamask/keyring-controller": true,
         "@noble/ciphers": true,
         "@noble/hashes": true,
         "browserify>buffer": true,
