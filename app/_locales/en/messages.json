@@ -6065,9 +6065,6 @@
     "message": "You may file a single claim per incident within $1 days of the incident. $2",
     "description": "The $1 is the number of days and $2 is a link to the full coverage policy"
   },
-  "shieldClaimDetailsGuide": {
-    "message": "View guide"
-  },
   "shieldClaimDetailsViewClaims": {
     "message": "This claim is being reviewed by our team. We will notify you when it has been approved by email. View the full coverage policy $1.",
     "description": "The $1 is a link to the full coverage policy"
