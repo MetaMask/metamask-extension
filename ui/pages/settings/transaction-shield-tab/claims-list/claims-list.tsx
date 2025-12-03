@@ -117,6 +117,7 @@ const ClaimsList = () => {
             </Text>
             {tabKey === CLAIMS_TAB_KEYS.PENDING && (
               <Button
+                data-testid="claims-list-empty-new-claim-button"
                 variant={ButtonVariant.Secondary}
                 size={ButtonSize.Lg}
                 onClick={() => {
@@ -139,6 +140,7 @@ const ClaimsList = () => {
 
   return (
     <Tabs
+      data-testid="claims-list-page"
       className="h-full flex flex-col overflow-y-hidden"
       tabListProps={{
         className: 'px-4',
@@ -179,6 +181,7 @@ const ClaimsList = () => {
             </Box>
             <Box className="p-4">
               <Button
+                data-testid="claims-list-submit-claim-button"
                 className="w-full"
                 variant={ButtonVariant.Primary}
                 size={ButtonSize.Lg}
