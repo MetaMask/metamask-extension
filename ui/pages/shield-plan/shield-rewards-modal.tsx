@@ -1,5 +1,13 @@
 import React from 'react';
 import {
+  Button,
+  ButtonSize,
+  ButtonVariant,
+  Text,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
+import {
   Modal,
   ModalBody,
   ModalContent,
@@ -8,14 +16,6 @@ import {
 } from '../../components/component-library';
 import { RewardsBadge } from '../../components/app/rewards/RewardsBadge';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import {
-  Button,
-  ButtonSize,
-  ButtonVariant,
-  Text,
-  TextColor,
-  TextVariant,
-} from '@metamask/design-system-react';
 import {
   AlignItems,
   Display,
