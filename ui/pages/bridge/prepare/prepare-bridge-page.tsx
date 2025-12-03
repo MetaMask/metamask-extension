@@ -383,6 +383,9 @@ const PrepareBridgePage = ({
       security_warnings: [txAlert?.descriptionId, tokenAlert?.titleId].filter(
         Boolean,
       ) as string[],
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      usd_amount_source: fromAmountInCurrency.usd.toNumber(),
     };
     debouncedUpdateQuoteRequestInController.current(
       quoteParams,
@@ -754,6 +757,9 @@ const PrepareBridgePage = ({
                     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                     // eslint-disable-next-line @typescript-eslint/naming-convention
                     security_warnings: [], // TODO populate security warnings
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    usd_amount_source: fromAmountInCurrency.usd.toNumber(),
                   });
                 }}
                 needsDestinationAddress={
