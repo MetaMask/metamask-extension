@@ -8096,9 +8096,12 @@
   "tronBandwidth": {
     "message": "Bandwidth"
   },
-  "tronBandwidthCoverageDescription": {
-    "message": "Sufficient to cover ~$1 TRX transfers",
+  "tronBandwidthCoverageDescriptionPlural": {
+    "message": "Covers ~$1 TRX transfers",
     "description": "$1 is the number of TRX transfers"
+  },
+  "tronBandwidthCoverageDescriptionSingular": {
+    "message": "Covers 1 TRX transfer"
   },
   "tronDailyResources": {
     "message": "Daily resource"
@@ -8109,9 +8112,12 @@
   "tronEnergy": {
     "message": "Energy"
   },
-  "tronEnergyCoverageDescription": {
-    "message": "Sufficient to cover ~$1 USDT",
+  "tronEnergyCoverageDescriptionPlural": {
+    "message": "Covers ~$1 USDT transfers",
     "description": "$1 is the number of USDT transfers"
+  },
+  "tronEnergyCoverageDescriptionSingular": {
+    "message": "Covers 1 USDT transfer"
   },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "We're having trouble connecting your Ledger. $1",
