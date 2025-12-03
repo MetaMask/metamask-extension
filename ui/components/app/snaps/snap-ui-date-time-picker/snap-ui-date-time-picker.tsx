@@ -3,7 +3,7 @@ import { DatePicker, DateTimePicker, TimePicker } from '@material-ui/pickers';
 import { Box } from '@metamask/design-system-react';
 import classnames from 'classnames';
 import { DateTime } from 'luxon';
-import { makeStyles } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import { HelpText, HelpTextSeverity, Label } from '../../../component-library';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
