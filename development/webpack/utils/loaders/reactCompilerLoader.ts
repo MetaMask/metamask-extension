@@ -89,6 +89,21 @@ class ReactCompilerLogger {
     console.log(`   🔍 Unsupported: ${stats.unsupported} files`);
     console.log(`   📦 Total processed: ${stats.total} files`);
   }
+
+  /**
+   * Reset all statistics. Should be called after each build in watch mode
+   * to prevent accumulation across rebuilds.
+   */
+  reset() {
+    this.compiledCount = 0;
+    this.skippedCount = 0;
+    this.errorCount = 0;
+    this.todoCount = 0;
+    this.compiledFiles = [];
+    this.skippedFiles = [];
+    this.errorFiles = [];
+    this.todoFiles = [];
+  }
 }
 
 const reactCompilerLogger = new ReactCompilerLogger();

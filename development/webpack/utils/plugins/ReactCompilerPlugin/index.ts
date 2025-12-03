@@ -6,6 +6,8 @@ export class ReactCompilerPlugin {
     compiler.hooks.afterEmit.tap(ReactCompilerPlugin.name, () => {
       const logger = getReactCompilerLogger();
       logger.logSummary();
+      // Reset statistics after logging to prevent accumulation in watch mode
+      logger.reset();
     });
   }
 }
