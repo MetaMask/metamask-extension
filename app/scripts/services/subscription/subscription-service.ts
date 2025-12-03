@@ -1,5 +1,6 @@
 import { Messenger } from '@metamask/messenger';
 import {
+  COHORT_NAMES,
   PAYMENT_TYPES,
   PRODUCT_TYPES,
   StartSubscriptionRequest,
@@ -29,6 +30,7 @@ import { SwapsControllerState } from '../../controllers/swaps/swaps.types';
 import {
   getSubscriptionRequestTrackingProps,
   getUserAccountTypeAndCategory,
+  getUserBalanceCategory,
 } from '../../../../shared/modules/shield/metrics';
 import {
   MetaMetricsEventCategory,
@@ -176,6 +178,53 @@ export class SubscriptionService {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
       this.trackSubscriptionRequestEvent('failed', undefined, {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        error_message: errorMessage,
+      });
+      throw error;
+    }
+  }
+
+  /**
+   * Handles the shield subscription approval transaction after confirm
+   *
+   * @param txMeta - The transaction metadata.
+   * @returns Promise<void> - resolves when the transaction is submitted successfully.
+   */
+  async handleShieldSubscriptionApproveTransaction(txMeta: TransactionMeta) {
+    const { isGasFeeSponsored, chainId } = txMeta;
+    const bundlerSupported = await isSendBundleSupported(chainId);
+    const isSponsored = isGasFeeSponsored && bundlerSupported;
+
+    try {
+      this.trackSubscriptionRequestEvent('started', txMeta, {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        has_sufficient_crypto_balance: true,
+      });
+
+      const rewardSubscriptionId = await this.#getRewardSubscriptionId();
+
+      await this.#messenger.call(
+        'SubscriptionController:submitShieldSubscriptionCryptoApproval',
+        txMeta,
+        isSponsored,
+        rewardSubscriptionId,
+      );
+
+      this.#assignPostTxCohort(txMeta);
+
+      this.trackSubscriptionRequestEvent('completed', txMeta, {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        gas_sponsored: isSponsored || false,
+      });
+    } catch (error) {
+      log.error('Error on Shield subscription approval transaction', error);
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+      this.trackSubscriptionRequestEvent('failed', txMeta, {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         error_message: errorMessage,
@@ -475,5 +524,55 @@ export class SubscriptionService {
       reference,
       primaryInternalAccount.address,
     );
+  }
+
+  /**
+   * Assign the post tx cohort after the transaction is confirmed.
+   *
+   * @param txMeta - The transaction metadata.
+   */
+  #assignPostTxCohort(txMeta: TransactionMeta) {
+    try {
+      if (!txMeta.type) {
+        return;
+      }
+
+      // Mark send/transfer/swap transactions for Shield post_tx cohort evaluation
+      const isPostTxTransaction = [
+        TransactionType.simpleSend,
+        TransactionType.tokenMethodTransfer,
+        TransactionType.swap,
+        TransactionType.swapAndSend,
+      ].includes(txMeta.type);
+
+      const { pendingShieldCohort, shieldSubscriptionMetricsProps } =
+        this.#messenger.call('AppStateController:getState');
+      if (isPostTxTransaction && !pendingShieldCohort) {
+        this.#messenger.call(
+          'AppStateController:setPendingShieldCohort',
+          COHORT_NAMES.POST_TX,
+          txMeta.type,
+        );
+
+        // Track the Shield eligibility cohort assigned event
+        this.#messenger.call('MetaMetricsController:trackEvent', {
+          event: MetaMetricsEventName.ShieldEligibilityCohortAssigned,
+          category: MetaMetricsEventCategory.Shield,
+          properties: {
+            ...this.#getAccountTypeAndCategoryForMetrics(),
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            multi_chain_balance_category: getUserBalanceCategory(
+              shieldSubscriptionMetricsProps?.userBalanceInUSD ?? 0,
+            ),
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            assigned_cohort: COHORT_NAMES.POST_TX,
+          },
+        });
+      }
+    } catch (error) {
+      log.error('Failed to assign post tx cohort', error);
+    }
   }
 }
