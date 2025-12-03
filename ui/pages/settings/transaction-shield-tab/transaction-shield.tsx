@@ -58,16 +58,13 @@ import AddFundsModal from '../../../components/app/modals/add-funds-modal/add-fu
 import {
   useSubscriptionPaymentMethods,
   useSubscriptionPricing,
-  TokenWithApprovalAmount,
 } from '../../../hooks/subscription/useSubscriptionPricing';
-import { getSubscriptionCryptoApprovalAmount } from '../../../store/actions';
 import { ConfirmInfoRowAddress } from '../../../components/app/confirm/info/row';
 import {
   getIsShieldSubscriptionEndingSoon,
   getIsShieldSubscriptionPaused,
   getIsShieldSubscriptionTrialing,
 } from '../../../../shared/lib/shield';
-import { useAsyncResult } from '../../../hooks/useAsync';
 import { useTimeout } from '../../../hooks/useTimeout';
 import { MINUTE } from '../../../../shared/constants/time';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
@@ -267,8 +264,8 @@ const TransactionShield = () => {
     );
 
     const token = chainPaymentInfo?.tokens.find(
-      (paymentToken) =>
-        paymentToken.symbol ===
+      (chainPaymentToken) =>
+        chainPaymentToken.symbol ===
         (
           displayedShieldSubscription.paymentMethod as SubscriptionCryptoPaymentMethod
         ).crypto.tokenSymbol,
@@ -341,62 +338,6 @@ const TransactionShield = () => {
     );
   };
 
-  const { value: subscriptionCryptoApprovalAmount } =
-    useAsyncResult(async () => {
-      if (
-        !currentToken ||
-        !displayedShieldSubscription ||
-        !isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)
-      ) {
-        return undefined;
-      }
-      const amount = await getSubscriptionCryptoApprovalAmount({
-        chainId: displayedShieldSubscription.paymentMethod.crypto.chainId,
-        paymentTokenAddress: currentToken.address,
-        productType: PRODUCT_TYPES.SHIELD,
-        interval: displayedShieldSubscription.interval,
-      });
-
-      return amount;
-    }, [currentToken, displayedShieldSubscription]);
-
-  const paymentToken = useMemo<
-    | Pick<
-        TokenWithApprovalAmount,
-        'chainId' | 'address' | 'approvalAmount' | 'symbol'
-      >
-    | undefined
-  >(() => {
-    if (
-      !displayedShieldSubscription ||
-      !currentToken ||
-      !isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod) ||
-      !displayedShieldSubscription.endDate ||
-      !productInfo ||
-      !subscriptionCryptoApprovalAmount
-    ) {
-      return undefined;
-    }
-
-    return {
-      chainId: displayedShieldSubscription.paymentMethod.crypto.chainId,
-      address: currentToken.address,
-      symbol: currentToken.symbol,
-      approvalAmount: {
-        approveAmount: subscriptionCryptoApprovalAmount.approveAmount,
-        chainId: displayedShieldSubscription.paymentMethod.crypto.chainId,
-        paymentAddress:
-          displayedShieldSubscription.paymentMethod.crypto.payerAddress,
-        paymentTokenAddress: currentToken.address,
-      },
-    };
-  }, [
-    productInfo,
-    currentToken,
-    displayedShieldSubscription,
-    subscriptionCryptoApprovalAmount,
-  ]);
-
   const isCardPayment =
     currentShieldSubscription &&
     isCardPaymentMethod(currentShieldSubscription.paymentMethod);
@@ -412,9 +353,10 @@ const TransactionShield = () => {
     updateSubscriptionCryptoPaymentMethodResult,
   } = useHandlePayment({
     currentShieldSubscription,
+    displayedShieldSubscription,
     subscriptions,
     isCancelled: isCancelled ?? false,
-    paymentToken,
+    currentToken,
     onOpenAddFundsModal: () => setIsAddFundsModalOpen(true),
   });
 

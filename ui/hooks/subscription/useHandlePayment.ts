@@ -4,7 +4,9 @@ import {
   CRYPTO_PAYMENT_METHOD_ERRORS,
   PAYMENT_TYPES,
   PaymentType,
+  PRODUCT_TYPES,
   Subscription,
+  TokenPaymentInfo,
 } from '@metamask/subscription-controller';
 import { getIsShieldSubscriptionPaused } from '../../../shared/lib/shield';
 import { useSubscriptionMetrics } from '../shield/metrics/useSubscriptionMetrics';
@@ -27,6 +29,8 @@ import {
   useUpdateSubscriptionCryptoPaymentMethod,
   useHandleSubscriptionSupportAction,
 } from './useSubscription';
+import { useAsyncResult } from '../../hooks/useAsync';
+import { getSubscriptionCryptoApprovalAmount } from '../../store/actions';
 
 /**
  * Hook to handle payment errors for subscriptions.
@@ -36,23 +40,23 @@ import {
  * @param options.subscriptions - The list of subscriptions to check paused status.
  * @param options.isCancelled - Whether the subscription is cancelled.
  * @param options.onOpenAddFundsModal - Callback to open the add funds modal.
- * @param options.paymentToken
+ * @param options.currentToken - The current token for crypto payment.
+ * @param options.displayedShieldSubscription - The displayed shield subscription.
  * @returns An object containing the handlePaymentError function, handlePaymentErrorInsufficientFunds function, handlePaymentMethodChange function, and payment error flags.
  */
 export const useHandlePayment = ({
   currentShieldSubscription,
+  displayedShieldSubscription,
   subscriptions,
   isCancelled,
-  paymentToken,
+  currentToken,
   onOpenAddFundsModal,
 }: {
   currentShieldSubscription?: Subscription;
+  displayedShieldSubscription?: Subscription;
   subscriptions?: Subscription[];
   isCancelled: boolean;
-  paymentToken?: Pick<
-    TokenWithApprovalAmount,
-    'chainId' | 'address' | 'approvalAmount' | 'symbol'
-  >;
+  currentToken?: TokenPaymentInfo;
   onOpenAddFundsModal: () => void;
 }) => {
   const navigate = useNavigate();
@@ -77,6 +81,72 @@ export const useHandlePayment = ({
     newRecurringInterval: currentShieldSubscription?.interval,
   });
 
+  const { handleClickContactSupport } = useHandleSubscriptionSupportAction();
+
+  const productInfo = useMemo(
+    () =>
+      displayedShieldSubscription?.products.find(
+        (p) => p.name === PRODUCT_TYPES.SHIELD,
+      ),
+    [displayedShieldSubscription],
+  );
+
+  const { value: subscriptionCryptoApprovalAmount } =
+    useAsyncResult(async () => {
+      if (
+        !currentToken ||
+        !displayedShieldSubscription ||
+        !isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)
+      ) {
+        return undefined;
+      }
+      const amount = await getSubscriptionCryptoApprovalAmount({
+        chainId: displayedShieldSubscription.paymentMethod.crypto.chainId,
+        paymentTokenAddress: currentToken.address,
+        productType: PRODUCT_TYPES.SHIELD,
+        interval: displayedShieldSubscription.interval,
+      });
+
+      return amount;
+    }, [currentToken, displayedShieldSubscription]);
+
+  const paymentToken = useMemo<
+    | Pick<
+        TokenWithApprovalAmount,
+        'chainId' | 'address' | 'approvalAmount' | 'symbol'
+      >
+    | undefined
+  >(() => {
+    if (
+      !displayedShieldSubscription ||
+      !currentToken ||
+      !isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod) ||
+      !displayedShieldSubscription.endDate ||
+      !productInfo ||
+      !subscriptionCryptoApprovalAmount
+    ) {
+      return undefined;
+    }
+
+    return {
+      chainId: displayedShieldSubscription.paymentMethod.crypto.chainId,
+      address: currentToken.address,
+      symbol: currentToken.symbol,
+      approvalAmount: {
+        approveAmount: subscriptionCryptoApprovalAmount.approveAmount,
+        chainId: displayedShieldSubscription.paymentMethod.crypto.chainId,
+        paymentAddress:
+          displayedShieldSubscription.paymentMethod.crypto.payerAddress,
+        paymentTokenAddress: currentToken.address,
+      },
+    };
+  }, [
+    productInfo,
+    currentToken,
+    displayedShieldSubscription,
+    subscriptionCryptoApprovalAmount,
+  ]);
+
   const { execute: executeSubscriptionCryptoApprovalTransaction } =
     useSubscriptionCryptoApprovalTransaction(paymentToken);
 
@@ -86,8 +156,6 @@ export const useHandlePayment = ({
   } = useUpdateSubscriptionCryptoPaymentMethod({
     subscription: currentShieldSubscription,
   });
-
-  const { handleClickContactSupport } = useHandleSubscriptionSupportAction();
 
   const isPaused = useMemo(() => {
     return getIsShieldSubscriptionPaused(subscriptions ?? []);
