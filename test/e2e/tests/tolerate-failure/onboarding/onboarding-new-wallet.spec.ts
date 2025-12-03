@@ -54,10 +54,10 @@ describe('MetaMask onboarding', function () {
         const timer5 = Timers.createTimer(
           'Time since the user clicks on "I agree" button until "Onboarding Success" screen is visible',
         );
-        const timer6 = Timers.createTimer(
-          'Time since the user clicks on "Done" button until "Home" screen is visible',
-        );
         const timer7 = Timers.createTimer(
+          'Time since the user clicks on "Skip backup" button until "Home" screen is visible',
+        );
+        const timer6 = Timers.createTimer(
           'Time since the user clicks on "Done" button until "Skip backup" screen and assets list are visible',
         );
 
