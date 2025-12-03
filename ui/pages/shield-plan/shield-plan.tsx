@@ -72,6 +72,7 @@ import {
 } from '../../hooks/subscription/useSubscription';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { getLastUsedShieldSubscriptionPaymentDetails } from '../../selectors/subscription';
+import { useRewardsSeasonCheck } from '../../hooks/rewards/useSeasonStatus';
 import {
   EntryModalSourceEnum,
   ShieldUnexpectedErrorEventLocationEnum,
@@ -95,10 +96,14 @@ const ShieldPlan = () => {
   const navigate = useNavigate();
   const { search } = useLocation();
   const t = useI18nContext();
+  const dispatch = useDispatch<MetaMaskReduxDispatch>();
 
   const lastUsedPaymentDetails = useSelector(
     getLastUsedShieldSubscriptionPaymentDetails,
   );
+
+  const { isRewardsSeason, pending: isSeasonMetadataLoading } =
+    useRewardsSeasonCheck();
 
   // Stripe Test clocks
   const [enableStripeTestClock, setEnableStripeTestClock] = useState(
@@ -277,7 +282,6 @@ const ShieldPlan = () => {
     useTestClock: enableStripeTestClock,
   });
 
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const handleUserChangeToken = useCallback(
     async (token: TokenWithApprovalAmount) => {
       setSelectedToken(token);
@@ -298,7 +302,8 @@ const ShieldPlan = () => {
   const loading =
     subscriptionsLoading ||
     subscriptionPricingLoading ||
-    subscriptionResult.pending;
+    subscriptionResult.pending ||
+    isSeasonMetadataLoading;
 
   const hasApiError =
     subscriptionsError ||
@@ -547,17 +552,19 @@ const ShieldPlan = () => {
                         <Text variant={DSTextVariant.bodyMd}>{detail}</Text>
                       </Box>
                     ))}
-                    <Box>
-                      <RewardsBadge
-                        boxClassName="gap-1 px-2 py-0.5 bg-background-muted rounded-lg w-fit"
-                        textClassName="font-medium"
-                        withPointsSuffix={false}
-                        formattedPoints={planDetailsRewardsText}
-                        onClick={() => {
-                          setShowRewardsModal(true);
-                        }}
-                      />
-                    </Box>
+                    {isRewardsSeason && (
+                      <Box>
+                        <RewardsBadge
+                          boxClassName="gap-1 px-2 py-0.5 bg-background-muted rounded-lg w-fit"
+                          textClassName="font-medium"
+                          withPointsSuffix={false}
+                          formattedPoints={planDetailsRewardsText}
+                          onClick={() => {
+                            setShowRewardsModal(true);
+                          }}
+                        />
+                      </Box>
+                    )}
                   </Box>
                 </Box>
                 {selectedPaymentMethod === PAYMENT_TYPES.byCrypto &&

@@ -17,6 +17,7 @@ import {
 } from '../../ducks/rewards';
 import { CandidateSubscriptionId } from '../../ducks/rewards/types';
 import { REWARDS_ERROR_MESSAGES } from '../../../shared/constants/rewards';
+import { useAsyncResult } from '../useAsync';
 
 type UseSeasonStatusOptions = {
   subscriptionId: CandidateSubscriptionId;
@@ -114,5 +115,27 @@ export const useSeasonStatus = ({
 
   return {
     fetchSeasonStatus,
+  };
+};
+
+/**
+ * Hook to check if it's currently rewards season
+ * Returns the season metadata, loading state, and a boolean indicating if it's rewards season
+ */
+export const useRewardsSeasonCheck = () => {
+  const dispatch = useDispatch();
+
+  const { value: seasonMetadata, pending } =
+    useAsyncResult<SeasonDtoState | null>(async () => {
+      return (await dispatch(
+        getRewardsSeasonMetadata('current'),
+      )) as unknown as SeasonDtoState | null;
+    }, [dispatch]);
+
+  const isRewardsSeason = seasonMetadata !== null;
+
+  return {
+    pending,
+    isRewardsSeason,
   };
 };
