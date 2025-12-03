@@ -83,8 +83,9 @@ const assertSplitStateStorage = (storage: SplitStateStorage) => {
     Array.isArray(storage.manifest),
     'manifest should be written in split state storage',
   );
-  assert.ok(
-    storage.meta?.storageKind === 'split',
+  assert.equal(
+    storage.meta?.storageKind,
+    'split',
     'meta.storageKind should be split',
   );
   assert.ok(!('data' in storage), 'data key should be removed in split state');
@@ -330,10 +331,10 @@ describe('State Persistence', function () {
   this.timeout(120000);
 
   describe('split state', function () {
-    it('should default to the split state storage', async function () {
+    it('should default to the data state storage', async function () {
       await withFixtures(getFixtureOptions(this), async ({ driver }) => {
         await completeOnboardingAndSync(driver);
-        await expectSplitStateStorage(driver);
+        await expectDataStateStorage(driver);
       });
     });
 
