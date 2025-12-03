@@ -8,13 +8,18 @@ import {
 } from '@metamask/subscription-controller';
 import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
 import {
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
+  TextButton,
+  TextButtonSize,
+} from '@metamask/design-system-react';
+import {
   BannerAlert,
   BannerAlertSeverity,
   Box,
   BoxProps,
-  Icon,
-  IconName,
-  IconSize,
   Tag,
   Text,
 } from '../../../components/component-library';
@@ -26,7 +31,6 @@ import {
   BorderStyle,
   Display,
   FlexDirection,
-  IconColor,
   JustifyContent,
   TextColor,
   TextVariant,
@@ -230,6 +234,30 @@ const TransactionShield = () => {
       title: t('shieldTxDetails2Title'),
       description: t('shieldTxDetails2Description'),
     },
+    {
+      icon: IconName.MetamaskFoxOutline,
+      title: t('shieldTxDetails3Title'),
+      description: t('shieldTxDetails3Description', [
+        displayedShieldSubscription?.interval === RECURRING_INTERVALS.year
+          ? '10,000'
+          : '1,000',
+        displayedShieldSubscription?.interval === RECURRING_INTERVALS.year
+          ? t('year')
+          : t('month'),
+        <TextButton
+          key="sign-up-button"
+          size={TextButtonSize.BodySm}
+          textProps={{
+            className: 'font-regular',
+          }}
+          onClick={() => {
+            console.log('sign up');
+          }}
+        >
+          {t('shieldTxDetails3DescriptionSignUp')}
+        </TextButton>,
+      ]),
+    },
   ];
 
   const rowsStyleProps: BoxProps<'div'> = {
@@ -261,7 +289,7 @@ const TransactionShield = () => {
           <Icon
             name={IconName.ArrowRight}
             size={IconSize.Lg}
-            color={IconColor.iconAlternative}
+            color={IconColor.IconAlternative}
           />
         )}
       </Box>
