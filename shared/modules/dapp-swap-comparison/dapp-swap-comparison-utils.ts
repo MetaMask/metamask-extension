@@ -75,20 +75,7 @@ export function getDataFromSwap(
   commandBytes: string[],
   inputs: string[],
 ) {
-  const { amountMin, quotesInput } = getCommandValues(
-    commandBytes,
-    inputs,
-    chainId,
-  );
-
-  return {
-    amountMin,
-    quotesInput,
-    tokenAddresses: [
-      quotesInput?.destTokenAddress,
-      quotesInput?.srcTokenAddress,
-    ],
-  };
+  return getCommandValues(commandBytes, inputs, chainId);
 }
 
 export function getBestQuote(
@@ -191,6 +178,7 @@ export function checkValidSingleOrBatchTransaction(
   if (!nestedTransactions || nestedTransactions?.length === 0) {
     return;
   }
+
   if (nestedTransactions.length > 3) {
     throw new Error(
       'Error getting data from swap: invalid batch transaction maximum 3 nested transactions allowed',
@@ -215,7 +203,7 @@ export function checkValidSingleOrBatchTransaction(
   );
   if (trade?.length !== 1) {
     throw new Error(
-      'Error getting data from swap: invalid batch transaction, trade needed',
+      `Error getting data from swap: invalid batch transaction, ${trade?.length} trade(s) found.`,
     );
   }
 

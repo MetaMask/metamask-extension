@@ -978,7 +978,7 @@
         "crypto.subtle.importKey": true
       },
       "packages": {
-        "@metamask/browser-passworder>@metamask/utils": true,
+        "@metamask/utils": true,
         "browserify>buffer": true
       }
     },
@@ -1530,7 +1530,6 @@
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/base-controller": true,
-        "@metamask/browser-passworder": true,
         "@metamask/keyring-controller>@metamask/eth-hd-keyring": true,
         "@metamask/eth-sig-util": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
@@ -2182,7 +2181,7 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/signature-controller": true,
+        "@metamask/shield-controller>@metamask/signature-controller": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "cockatiel": true,
@@ -2190,6 +2189,24 @@
       }
     },
     "@metamask/signature-controller": {
+      "globals": {
+        "fetch": true
+      },
+      "packages": {
+        "@metamask/approval-controller": true,
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
+        "@metamask/eth-sig-util": true,
+        "@metamask/keyring-controller": true,
+        "@metamask/logging-controller": true,
+        "@metamask/utils": true,
+        "browserify>buffer": true,
+        "webpack>events": true,
+        "@metamask/message-manager>jsonschema": true,
+        "uuid": true
+      }
+    },
+    "@metamask/shield-controller>@metamask/signature-controller": {
       "globals": {
         "fetch": true
       },
@@ -2531,21 +2548,6 @@
       }
     },
     "@metamask/assets-controllers>@metamask/abi-utils>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/superstruct": true,
-        "@noble/hashes": true,
-        "@scure/base": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "@metamask/utils>pony-cause": true,
-        "semver": true
-      }
-    },
-    "@metamask/browser-passworder>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
