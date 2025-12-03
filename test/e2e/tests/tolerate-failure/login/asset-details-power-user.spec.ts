@@ -6,8 +6,8 @@ import AssetListPage from '../../../page-objects/pages/home/asset-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import NetworkManager from '../../../page-objects/pages/network-manager';
 import { Driver } from '../../../webdriver/driver';
-import { setupTimerReporting } from '../utils/testSetup.js';
-import Timers from '../../../../timers/Timers.js';
+import { setupTimerReporting } from '../utils/testSetup';
+import Timers from '../../../../timers/Timers';
 
 const USDC_TOKEN_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
 describe('Power user persona', function () {

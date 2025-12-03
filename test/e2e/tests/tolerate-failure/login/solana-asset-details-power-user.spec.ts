@@ -8,8 +8,8 @@ import HomePage from '../../../page-objects/pages/home/homepage';
 import NetworkManager from '../../../page-objects/pages/network-manager';
 import { Driver } from '../../../webdriver/driver';
 
-import { setupTimerReporting } from '../utils/testSetup.js';
-import Timers from '../../../../timers/Timers.js';
+import { setupTimerReporting } from '../utils/testSetup';
+import Timers from '../../../../timers/Timers';
 
 const SOL_TOKEN_ADDRESS = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
 describe('Power user persona', function () {

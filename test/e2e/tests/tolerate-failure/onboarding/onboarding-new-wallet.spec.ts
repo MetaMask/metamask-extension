@@ -10,10 +10,10 @@ import SecureWalletPage from '../../../page-objects/pages/onboarding/secure-wall
 import StartOnboardingPage from '../../../page-objects/pages/onboarding/start-onboarding-page';
 
 import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
-import { getCommonMocks } from '../utils/commonMocks.js';
-import { setupTimerReporting } from '../utils/testSetup.js';
-import Timers from '../../../../timers/Timers.js';
-import AssetListPage from '../../../page-objects/pages/home/asset-list.js';
+import { getCommonMocks } from '../utils/commonMocks';
+import { setupTimerReporting } from '../utils/testSetup';
+import Timers from '../../../../timers/Timers';
+import AssetListPage from '../../../page-objects/pages/home/asset-list';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
 
 describe('MetaMask onboarding', function () {

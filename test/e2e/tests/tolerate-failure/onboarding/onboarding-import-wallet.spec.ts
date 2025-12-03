@@ -13,11 +13,11 @@ import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-n
 
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
-import { getCommonMocks } from '../utils/commonMocks.js';
-import { setupTimerReporting } from '../utils/testSetup.js';
-import Timers from '../../../../timers/Timers.js';
+import { getCommonMocks } from '../utils/commonMocks';
+import { setupTimerReporting } from '../utils/testSetup';
+import Timers from '../../../../timers/Timers';
 
-import AssetListPage from '../../../page-objects/pages/home/asset-list.js';
+import AssetListPage from '../../../page-objects/pages/home/asset-list';
 
 import { E2E_SRP } from '../../../fixtures/default-fixture';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
