@@ -62,11 +62,9 @@ const ShieldBannerAnimation = ({
     if (rive && isWasmReady && !bufferLoading && buffer) {
       const inputs = rive.stateMachineInputs('shield_banner_illustration');
       if (inputs) {
-        if (isInactive) {
-          const darkToggle = inputs.find((input) => input.name === 'Dark');
-          if (darkToggle) {
-            darkToggle.value = true;
-          }
+        const darkToggle = inputs.find((input) => input.name === 'Dark');
+        if (darkToggle) {
+          darkToggle.value = isInactive;
         }
 
         const startTrigger = inputs.find((input) => input.name === 'Start');
@@ -76,11 +74,6 @@ const ShieldBannerAnimation = ({
         rive.play();
       }
     }
-    return () => {
-      if (rive) {
-        rive.stop();
-      }
-    };
   }, [rive, isWasmReady, bufferLoading, buffer, isInactive]);
 
   // Don't render Rive component until WASM and buffer are ready to avoid errors
