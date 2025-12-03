@@ -19,13 +19,11 @@ class TransactionDetailsPage {
     text: fee,
   });
 
-  private readonly fromToLink = (fromToAddress: string) => ({
-    css: `a[href='${this.solanaExplorerUrl}/account/${fromToAddress}']`,
-  });
+  private readonly fromToLink = (fromToAddress: string) =>
+    `a[href='${this.solanaExplorerUrl}/account/${fromToAddress}']`;
 
-  private readonly hashLink = (txHash: string) => ({
-    css: `a[href='${this.solanaExplorerUrl}/tx/${txHash}']`,
-  });
+  private readonly hashLink = (txHash: string) =>
+    `a[href='${this.solanaExplorerUrl}/tx/${txHash}']`;
 
   private readonly status = (status: string) => ({
     tag: 'p',
