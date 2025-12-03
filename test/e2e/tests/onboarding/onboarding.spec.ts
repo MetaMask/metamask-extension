@@ -268,7 +268,7 @@ describe('MetaMask onboarding', function () {
         await homePage.checkPageIsLoaded();
 
         // Fiat value should be displayed as we mock the price and that is not a 'test network'
-        await homePage.checkExpectedBalanceIsDisplayed('17,000.00', '$');
+        await homePage.checkExpectedBalanceIsDisplayed('10', 'ETH');
 
         // Check for network addition toast
         // Note: With sidepanel enabled, appState is lost during page reload,
