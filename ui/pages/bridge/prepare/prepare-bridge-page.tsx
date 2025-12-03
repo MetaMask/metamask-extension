@@ -17,7 +17,7 @@ import {
   isCrossChain,
   isBitcoinChainId,
 } from '@metamask/bridge-controller';
-import type { Hex } from '@metamask/utils';
+import { type CaipChainId, type Hex, isStrictHexString } from '@metamask/utils';
 import {
   setFromToken,
   setFromTokenInputValue,
@@ -182,8 +182,8 @@ const PrepareBridgePage = ({
   const isQuoteExpiredOrInvalid = isQuoteExpiredOrInvalidUtil({
     activeQuote: unvalidatedQuote,
     toToken,
-    toChain,
-    fromChain,
+    toChainId: toChain?.chainId,
+    fromChainId: fromChain?.chainId,
     isQuoteExpired,
     insufficientBal: quoteRequest.insufficientBal,
   });
@@ -468,8 +468,10 @@ const PrepareBridgePage = ({
     return t('swapSelectToken');
   };
 
-  const getTokenOccurrences = (chainId: Hex | undefined): number => {
-    if (!chainId) {
+  const getTokenOccurrences = (
+    chainId: Hex | CaipChainId | undefined,
+  ): number => {
+    if (!chainId || isNonEvmChainId(chainId)) {
       return MINIMUM_TOKEN_OCCURRENCES;
     }
     return (
@@ -508,14 +510,15 @@ const PrepareBridgePage = ({
             }
           }}
           networkProps={{
+            // @ts-expect-error other network fields are not used by the asset picker
             network: fromChain,
+            // @ts-expect-error other network fields are not used by the asset picker
             networks: fromChains,
             onNetworkChange: (networkConfig) => {
               enableMissingNetwork(networkConfig.chainId);
               dispatch(
                 setFromChain({
-                  networkConfig,
-                  selectedAccount,
+                  chainId: networkConfig.chainId,
                 }),
               );
             },
@@ -598,13 +601,15 @@ const PrepareBridgePage = ({
               disabled={
                 isSwitchingTemporarilyDisabled ||
                 !isValidQuoteRequest(quoteRequest, false) ||
-                (toChain && !isNetworkAdded(toChain))
+                (toChain && !isNetworkAdded(fromChains, toChain.chainId))
               }
               onClick={() => {
                 dispatch(setSelectedQuote(null));
+                if (!toChain) {
+                  return;
+                }
                 // Track the flip event
-                toChain?.chainId &&
-                  fromToken &&
+                fromToken &&
                   toToken &&
                   dispatch(
                     trackUnifiedSwapBridgeEvent(
@@ -619,6 +624,7 @@ const PrepareBridgePage = ({
                         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                         // eslint-disable-next-line @typescript-eslint/naming-convention
                         token_address_source:
+                          toToken?.assetId ??
                           toAssetId(
                             toToken.address ?? '',
                             formatChainIdToCaip(toToken.chainId ?? ''),
@@ -651,12 +657,10 @@ const PrepareBridgePage = ({
                 if (isSwap) {
                   dispatch(setFromToken(toToken));
                 } else {
-                  // Handle account switching for Solana
                   dispatch(
                     setFromChain({
-                      networkConfig: toChain,
+                      chainId: toChain.chainId,
                       token: toToken,
-                      selectedAccount,
                     }),
                   );
                 }
@@ -684,10 +688,15 @@ const PrepareBridgePage = ({
               dispatch(setToToken(bridgeToken));
             }}
             networkProps={{
+              // @ts-expect-error other network fields are not used by the asset picker
               network: toChain,
+              // @ts-expect-error other network fields are not used by the asset picker
               networks: toChains,
               onNetworkChange: (networkConfig) => {
-                if (isNetworkAdded(networkConfig)) {
+                if (
+                  isNetworkAdded(fromChains, networkConfig.chainId) &&
+                  isStrictHexString(networkConfig.chainId)
+                ) {
                   enableMissingNetwork(networkConfig.chainId);
                 }
                 dispatch(setToChainId(networkConfig.chainId));
