@@ -119,23 +119,32 @@ export const useSeasonStatus = ({
 };
 
 /**
- * Hook to check if it's currently rewards season
- * Returns the season metadata, loading state, and a boolean indicating if it's rewards season
+ * Hook to check if it's currently rewards season.
+ * Returns a loading state and a boolean indicating if it's rewards season
+ * (based on current timestamp being within the season's start and end dates).
  */
 export const useRewardsSeasonCheck = () => {
   const dispatch = useDispatch();
 
-  const { value: seasonMetadata, pending } =
-    useAsyncResult<SeasonDtoState | null>(async () => {
-      return (await dispatch(
+  const { value: isRewardsSeason, pending } =
+    useAsyncResult<boolean>(async () => {
+      const seasonMetadata = (await dispatch(
         getRewardsSeasonMetadata('current'),
       )) as unknown as SeasonDtoState | null;
-    }, [dispatch]);
 
-  const isRewardsSeason = seasonMetadata !== null;
+      if (!seasonMetadata) {
+        return false;
+      }
+
+      const currentTimestamp = Date.now();
+      return (
+        currentTimestamp >= seasonMetadata.startDate &&
+        currentTimestamp <= seasonMetadata.endDate
+      );
+    }, [dispatch]);
 
   return {
     pending,
-    isRewardsSeason,
+    isRewardsSeason: isRewardsSeason ?? false,
   };
 };
