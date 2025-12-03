@@ -7,17 +7,17 @@ class TransactionDetailsPage {
 
   private readonly solanaExplorerUrl = 'https://solscan.io';
 
-  private readonly transactionFromToLink = (accountAddress: string) => {
+  private readonly transactionBaseFee = (baseFee: string) => {
     return {
-      tag: 'a',
-      href: `${this.solanaExplorerUrl}/account/${accountAddress}`,
+      testId: 'transaction-breakdown__base-fee',
+      text: baseFee,
     };
-  };
+  }
 
-  private readonly transactionHashLink = (txHash: string) => {
+  private readonly transactionGasPrice = (gasPrice: string) => {
     return {
-      tag: 'a',
-      href: `${this.solanaExplorerUrl}/tx/${txHash}`,
+      testId: 'transaction-breakdown__gas-price',
+      text: gasPrice,
     };
   };
 
@@ -25,10 +25,9 @@ class TransactionDetailsPage {
     this.driver = driver;
   }
 
-  private readonly transactionDetail = {
-    text: `Status`,
-    tag: 'span',
-  };
+  async checkTransactionGasPrice(gasPrice: string): Promise<void> {
+    await this.driver.waitForSelector(this.transactionGasPrice(gasPrice));
+  }
 
   async checkTransactionStatus(status: string): Promise<void> {
     await this.driver.waitForSelector({
@@ -45,12 +44,8 @@ class TransactionDetailsPage {
     assert.equal(transactionAmountText, amount);
   }
 
-  async checkTransactionNetworkFee(networkFee: string): Promise<void> {
-    const transactionAmount = await this.driver.findElement(
-      By.css('[data-testid="transaction-base-fee"]'),
-    );
-    const transactionAmountText = await transactionAmount.getText();
-    assert.equal(transactionAmountText, networkFee);
+  async checkTransactionBaseFee(baseFee: string): Promise<void> {
+    await this.driver.waitForSelector(this.transactionBaseFee(baseFee));
   }
 
   async checkTransactionFromToLink(fromToAddress: string): Promise<void> {

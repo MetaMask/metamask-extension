@@ -31,7 +31,7 @@ export const createInternalTransactionWithMaxAmount = async (
   const sendToPage = new SendTokenPage(driver);
   await sendToPage.checkPageIsLoaded();
   await sendToPage.fillRecipient('0x2f318C334780961FB129D2a6c30D0763d9a5C970');
-  await sendToPage.clickMaxAmountButton();
+  await sendToPage.clickMaxClearAmountButton();
   await sendToPage.goToNextScreen();
 };
 

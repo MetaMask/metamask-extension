@@ -16,6 +16,11 @@ class SendTokenPage {
   private readonly backButton =
     '[data-testid="wallet-initiated-header-back-button"]';
 
+  private readonly cancelScanButton = {
+    text: 'Cancel',
+    tag: 'button',
+  };
+
   private readonly contactsButton = { css: 'button', text: 'Contacts' };
 
   private readonly contactListItem = '[data-testid="address-list-item-label"]';
@@ -53,6 +58,11 @@ class SendTokenPage {
 
   private readonly inputRecipient = '[data-testid="ens-input"]';
 
+  private readonly insufficientFundsMessage = {
+    css: '[data-testid="send-page-amount-error"]',
+    text: '. Insufficient funds.',
+  };
+
   private readonly nftTab = { css: 'button', text: 'NFTs' };
 
   private readonly nftListItem = '[data-testid="nft-wrapper"]';
@@ -61,6 +71,13 @@ class SendTokenPage {
     '.multichain-account-list-item__account-name__button';
 
   private readonly scanButton = '[data-testid="ens-qr-scan-button"]';
+
+  private readonly scanModal = '[data-testid="qr-scanner-modal"]';
+
+  private readonly scanCameraError = {
+    css: '.qr-scanner__error',
+    text: "We couldn't access your camera. Please give it another try.",
+  };
 
   private readonly tokenListButton =
     '[data-testid="multichain-token-list-button"]';
@@ -114,12 +131,35 @@ class SendTokenPage {
     console.log('Send token screen is loaded');
   }
 
+  async checkInsufficientFundsErrorIsDisplayed(): Promise<void> {
+    console.log('Checking if insufficient funds error is displayed');
+    await this.driver.waitForSelector(this.insufficientFundsMessage);
+    console.log('Insufficient funds error is displayed');
+  }
+
+  async checkScanModalIsDisplayed(): Promise<void> {
+    console.log('Checking if scan modal and camera access error are displayed');
+    await this.driver.waitForSelector(this.scanModal);
+    await this.driver.waitForSelector(this.scanCameraError);
+    console.log('Scan modal is displayed');
+  }
+
   async clickAssetPickerButton() {
     await this.driver.clickElement(this.assetPickerButton);
   }
 
+  async clickCancelScanButton(): Promise<void> {
+    console.log('Clicking on cancel button on scan modal');
+    await this.driver.clickElementAndWaitToDisappear(this.cancelScanButton);
+  }
+
   async clickMultichainAssetPickerNetwork() {
     await this.driver.clickElement(this.multichainAssetPickerNetwork);
+  }
+
+  async clickScanButton(): Promise<void> {
+    console.log('Clicking on scan button on send token screen');
+    await this.driver.clickElement(this.scanButton);
   }
 
   async clickSendFlowBackButton() {
@@ -257,7 +297,7 @@ class SendTokenPage {
     return value;
   }
 
-  async clickMaxAmountButton(): Promise<void> {
+  async clickMaxClearAmountButton(): Promise<void> {
     await this.driver.clickElement(this.maxAmountButton);
   }
 

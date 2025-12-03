@@ -45,6 +45,11 @@ class TransactionConfirmation extends Confirmation {
   private readonly editGasFeeItemCustom: RawLocator =
     '[data-testid="edit-gas-fee-item-custom"]';
 
+  private readonly editSuggestedGasFeeButton: RawLocator = {
+    tag: 'button',
+    text: 'Edit suggested gas fee',
+  };
+
   private readonly gasFeeCloseToastMessage: RawLocator =
     '.toasts-container__banner-base button[aria-label="Close"]';
 
@@ -321,6 +326,12 @@ class TransactionConfirmation extends Confirmation {
     await this.driver.clickElement(this.customNonceButton);
   }
 
+  async clickEditSuggestedGasFee(): Promise<void> {
+    await this.driver.clickElementAndWaitToDisappear(
+      this.editSuggestedGasFeeButton,
+    );
+  }
+
   async clickGasFeeTokenPill() {
     await this.driver.clickElement(this.gasFeeTokenArrow);
   }
@@ -344,6 +355,34 @@ class TransactionConfirmation extends Confirmation {
     console.log('Editing gas fee values');
 
     await this.driver.clickElement(this.editGasFeeIcon);
+
+    const inputs = await this.driver.findElements(this.gasInputs);
+    const [gasLimitInput, gasPriceInput] = inputs;
+
+    await gasLimitInput.clear();
+    await gasLimitInput.sendKeys(gasLimit);
+    await gasPriceInput.clear();
+    await gasPriceInput.sendKeys(gasPrice);
+
+    await this.driver.clickElement(this.saveButton);
+
+    console.log('Gas fee values updated successfully');
+  }
+
+  /**
+   * Edits the suggested gas fee by setting custom gas limit and price values
+   *
+   * @param gasLimit - The gas limit value to set
+   * @param gasPrice - The gas price value to set
+   */
+  async editSuggestedGasFeeLegacy(
+    gasLimit: string,
+    gasPrice: string,
+  ): Promise<void> {
+    console.log('Editing gas fee values');
+
+    await this.driver.clickElement(this.editGasFeeIcon);
+    await this.driver.clickElement(this.editSuggestedGasFeeButton);
 
     const inputs = await this.driver.findElements(this.gasInputs);
     const [gasLimitInput, gasPriceInput] = inputs;
