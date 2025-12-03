@@ -153,7 +153,7 @@ export const KEYRING_DEVICE_PROPERTY_MAP = {
   [KeyringTypes.oneKey]: 'OneKey',
   [KeyringTypes.lattice]: 'Lattice',
   [KeyringTypes.qr]: 'QR Hardware',
-}
+};
 
 export const U2F_ERROR = 'U2F';
 
