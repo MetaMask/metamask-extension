@@ -81,6 +81,7 @@ class TestDappMultichain {
   }
 
   async clickFirstResultSummary() {
+    await this.driver.waitForSelector(this.resultSummary);
     const resultSummaries = await this.driver.findElements(this.resultSummary);
     const firstResultSummary = resultSummaries[0];
     await firstResultSummary.click();
