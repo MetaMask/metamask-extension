@@ -192,45 +192,16 @@ export class SubscriptionService {
    * @param txMeta - The transaction metadata.
    * @returns Promise<void> - resolves when the transaction is submitted successfully.
    */
-  async handleShieldSubscriptionApproveTransaction(txMeta: TransactionMeta) {
-    const { isGasFeeSponsored, chainId } = txMeta;
-    const bundlerSupported = await isSendBundleSupported(chainId);
-    const isSponsored = isGasFeeSponsored && bundlerSupported;
+  async handlePostTransaction(txMeta: TransactionMeta) {
+    // Assign the shield eligibility cohort if the conditions are met
+    this.#assignPostTxCohort(txMeta);
 
-    try {
-      this.trackSubscriptionRequestEvent('started', txMeta, {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        has_sufficient_crypto_balance: true,
-      });
-
-      const rewardSubscriptionId = await this.#getRewardSubscriptionId();
-
-      await this.#messenger.call(
-        'SubscriptionController:submitShieldSubscriptionCryptoApproval',
-        txMeta,
-        isSponsored,
-        rewardSubscriptionId,
-      );
-
-      this.#assignPostTxCohort(txMeta);
-
-      this.trackSubscriptionRequestEvent('completed', txMeta, {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        gas_sponsored: isSponsored || false,
-      });
-    } catch (error) {
-      log.error('Error on Shield subscription approval transaction', error);
-      const errorMessage =
-        error instanceof Error ? error.message : 'Unknown error';
-      this.trackSubscriptionRequestEvent('failed', txMeta, {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        error_message: errorMessage,
-      });
-      throw error;
+    if (txMeta.type !== TransactionType.shieldSubscriptionApprove) {
+      return;
     }
+
+    // handle shield subscription approval transaction
+    await this.#handleShieldSubscriptionApproveTransaction(txMeta);
   }
 
   async submitSubscriptionSponsorshipIntent(txMeta: TransactionMeta) {
@@ -386,6 +357,45 @@ export class SubscriptionService {
     });
   }
 
+  async #handleShieldSubscriptionApproveTransaction(txMeta: TransactionMeta) {
+    const { isGasFeeSponsored, chainId } = txMeta;
+    const bundlerSupported = await isSendBundleSupported(chainId);
+    const isSponsored = isGasFeeSponsored && bundlerSupported;
+
+    try {
+      this.trackSubscriptionRequestEvent('started', txMeta, {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        has_sufficient_crypto_balance: true,
+      });
+
+      const rewardSubscriptionId = await this.#getRewardSubscriptionId();
+
+      await this.#messenger.call(
+        'SubscriptionController:submitShieldSubscriptionCryptoApproval',
+        txMeta,
+        isSponsored,
+        rewardSubscriptionId,
+      );
+
+      this.trackSubscriptionRequestEvent('completed', txMeta, {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        gas_sponsored: isSponsored || false,
+      });
+    } catch (error) {
+      log.error('Error on Shield subscription approval transaction', error);
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+      this.trackSubscriptionRequestEvent('failed', txMeta, {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        error_message: errorMessage,
+      });
+      throw error;
+    }
+  }
+
   async #getIsSmartTransactionEnabled(chainId: `0x${string}`) {
     const swapsControllerState = await this.#getSwapsFeatureFlagsFromNetwork();
     const uiState = {
@@ -488,42 +498,52 @@ export class SubscriptionService {
    * @returns Promise<CaipAccountId | undefined> - The primary CAIP account ID.
    */
   async #getPrimaryCaipAccountId(): Promise<CaipAccountId | undefined> {
-    const keyringsMetadata = this.#messenger.call('KeyringController:getState');
-    const primaryHdKeyring = keyringsMetadata.keyrings.find(
-      (keyring) => keyring.type === KeyringTypes.hd,
-    );
-    if (!primaryHdKeyring) {
-      return undefined;
-    }
-
-    const { internalAccounts } = this.#messenger.call(
-      'AccountsController:getState',
-    );
-    const primaryInternalAccount = Object.values(
-      internalAccounts.accounts,
-    ).find((account) => {
-      const entropySource = account.options?.entropySource;
-      if (typeof entropySource === 'string') {
-        return isEqualCaseInsensitive(
-          entropySource,
-          primaryHdKeyring.metadata.id,
-        );
+    try {
+      const keyringsMetadata = this.#messenger.call(
+        'KeyringController:getState',
+      );
+      const primaryHdKeyring = keyringsMetadata.keyrings.find(
+        (keyring) => keyring.type === KeyringTypes.hd,
+      );
+      if (!primaryHdKeyring) {
+        return undefined;
       }
-      return false;
-    });
-    if (!primaryInternalAccount) {
+
+      const { internalAccounts } = this.#messenger.call(
+        'AccountsController:getState',
+      );
+      const primaryInternalAccount = Object.values(
+        internalAccounts.accounts,
+      ).find((account) => {
+        const entropySource = account.options?.entropySource;
+        if (typeof entropySource === 'string') {
+          return isEqualCaseInsensitive(
+            entropySource,
+            primaryHdKeyring.metadata.id,
+          );
+        }
+        return false;
+      });
+      if (!primaryInternalAccount) {
+        return undefined;
+      }
+
+      const { namespace, reference } = parseCaipChainId(
+        primaryInternalAccount.scopes[0],
+      );
+
+      return toCaipAccountId(
+        namespace,
+        reference,
+        primaryInternalAccount.address,
+      );
+    } catch (error) {
+      log.warn(
+        '[getPrimaryCaipAccountId] Failed to get primary CAIP account ID',
+        error,
+      );
       return undefined;
     }
-
-    const { namespace, reference } = parseCaipChainId(
-      primaryInternalAccount.scopes[0],
-    );
-
-    return toCaipAccountId(
-      namespace,
-      reference,
-      primaryInternalAccount.address,
-    );
   }
 
   /**
