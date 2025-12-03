@@ -799,7 +799,7 @@ export default function Routes() {
           </RouteWithLayout>
           <RouteWithLayout
             path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}
-            layout={LegacyLayout}
+            layout={RootLayout}
           >
             {createV5CompatRoute(ConfirmAddSuggestedTokenPage, {
               wrapper: AuthenticatedV5Compat,
@@ -809,7 +809,7 @@ export default function Routes() {
           </RouteWithLayout>
           <RouteWithLayout
             path={CONFIRM_ADD_SUGGESTED_NFT_ROUTE}
-            layout={LegacyLayout}
+            layout={RootLayout}
           >
             {createV5CompatRoute(ConfirmAddSuggestedNftPage, {
               wrapper: AuthenticatedV5Compat,
