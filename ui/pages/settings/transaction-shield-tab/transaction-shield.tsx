@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
-  CRYPTO_PAYMENT_METHOD_ERRORS,
   PAYMENT_TYPES,
   Product,
   PRODUCT_TYPES,
@@ -41,10 +40,6 @@ import {
 import { Skeleton } from '../../../components/component-library/skeleton';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  useHandleSubscriptionSupportAction,
-  useSubscriptionCryptoApprovalTransaction,
-  useUpdateSubscriptionCardPaymentMethod,
-  useUpdateSubscriptionCryptoPaymentMethod,
   useUserLastSubscriptionByProduct,
   useUserSubscriptionByProduct,
   useUserSubscriptions,
@@ -80,14 +75,12 @@ import {
   EntryModalSourceEnum,
   ShieldCtaActionClickedEnum,
   ShieldCtaSourceEnum,
-  ShieldErrorStateActionClickedEnum,
-  ShieldErrorStateLocationEnum,
-  ShieldErrorStateViewEnum,
   ShieldUnexpectedErrorEventLocationEnum,
 } from '../../../../shared/constants/subscriptions';
 import ApiErrorHandler from '../../../components/app/api-error-handler';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { getAccountName, getInternalAccounts } from '../../../selectors';
+import { useHandlePayment } from '../../../hooks/subscription/useHandlePayment';
 import { isCardPaymentMethod, isCryptoPaymentMethod } from './types';
 import { ButtonRow, ButtonRowContainer, MembershipHeader } from './components';
 
@@ -96,8 +89,7 @@ const TransactionShield = () => {
   const navigate = useNavigate();
   const { search } = useLocation();
   const internalAccounts = useSelector(getInternalAccounts);
-  const { captureShieldCtaClickedEvent, captureShieldErrorStateClickedEvent } =
-    useSubscriptionMetrics();
+  const { captureShieldCtaClickedEvent } = useSubscriptionMetrics();
   const shouldWaitForSubscriptionCreation = useMemo(() => {
     const searchParams = new URLSearchParams(search);
     // param to wait for subscription creation happen in the background
@@ -194,14 +186,6 @@ const TransactionShield = () => {
       ),
     [displayedShieldSubscription],
   );
-
-  const [
-    executeUpdateSubscriptionCardPaymentMethod,
-    updateSubscriptionCardPaymentMethodResult,
-  ] = useUpdateSubscriptionCardPaymentMethod({
-    subscription: currentShieldSubscription,
-    newRecurringInterval: currentShieldSubscription?.interval,
-  });
 
   const isWaitingForSubscriptionCreation =
     shouldWaitForSubscriptionCreation && !currentShieldSubscription;
@@ -385,37 +369,21 @@ const TransactionShield = () => {
     subscriptionCryptoApprovalAmount,
   ]);
 
-  const { execute: executeSubscriptionCryptoApprovalTransaction } =
-    useSubscriptionCryptoApprovalTransaction(paymentToken);
-
-  const [selectedChangePaymentToken, setSelectedChangePaymentToken] = useState<
-    | Pick<
-        TokenWithApprovalAmount,
-        'chainId' | 'address' | 'approvalAmount' | 'symbol'
-      >
-    | undefined
-  >();
+  const isCardPayment =
+    currentShieldSubscription &&
+    isCardPaymentMethod(currentShieldSubscription.paymentMethod);
 
   const {
-    execute: executeUpdateSubscriptionCryptoPaymentMethod,
-    result: updateSubscriptionCryptoPaymentMethodResult,
-  } = useUpdateSubscriptionCryptoPaymentMethod({
+    handlePaymentError,
+    updateSubscriptionCardPaymentMethodResult,
+    updateSubscriptionCryptoPaymentMethodResult,
+  } = useHandlePayment({
     subscription: currentShieldSubscription,
-    selectedToken: selectedChangePaymentToken,
+    subscriptions,
+    isCancelled: isCancelled ?? false,
+    paymentToken,
+    onOpenAddFundsModal: () => setIsAddFundsModalOpen(true),
   });
-
-  // trigger update subscription crypto payment method when selected change payment token changes
-  useEffect(() => {
-    if (selectedChangePaymentToken) {
-      executeUpdateSubscriptionCryptoPaymentMethod().then(() => {
-        // reset selected change payment token after update subscription crypto payment method succeeded
-        setSelectedChangePaymentToken(undefined);
-      });
-    }
-  }, [
-    selectedChangePaymentToken,
-    executeUpdateSubscriptionCryptoPaymentMethod,
-  ]);
 
   const hasApiError =
     subscriptionsError ||
@@ -426,82 +394,6 @@ const TransactionShield = () => {
   const loading =
     updateSubscriptionCardPaymentMethodResult.pending ||
     updateSubscriptionCryptoPaymentMethodResult.pending;
-
-  const isCardPayment =
-    currentShieldSubscription &&
-    isCardPaymentMethod(currentShieldSubscription.paymentMethod);
-  const isUnexpectedErrorCryptoPayment =
-    currentShieldSubscription &&
-    isPaused &&
-    isCryptoPaymentMethod(currentShieldSubscription.paymentMethod) &&
-    !currentShieldSubscription.paymentMethod.crypto.error;
-  const isInsufficientFundsCrypto =
-    currentShieldSubscription &&
-    isCryptoPaymentMethod(currentShieldSubscription.paymentMethod) &&
-    currentShieldSubscription.paymentMethod.crypto.error ===
-      CRYPTO_PAYMENT_METHOD_ERRORS.INSUFFICIENT_BALANCE;
-  const isAllowanceNeededCrypto =
-    currentShieldSubscription &&
-    isCryptoPaymentMethod(currentShieldSubscription.paymentMethod) &&
-    (currentShieldSubscription.paymentMethod.crypto.error ===
-      CRYPTO_PAYMENT_METHOD_ERRORS.INSUFFICIENT_ALLOWANCE ||
-      currentShieldSubscription?.paymentMethod.crypto.error ===
-        CRYPTO_PAYMENT_METHOD_ERRORS.APPROVAL_TRANSACTION_TOO_OLD ||
-      currentShieldSubscription?.paymentMethod.crypto.error ===
-        CRYPTO_PAYMENT_METHOD_ERRORS.APPROVAL_TRANSACTION_REVERTED ||
-      currentShieldSubscription?.paymentMethod.crypto.error ===
-        CRYPTO_PAYMENT_METHOD_ERRORS.APPROVAL_TRANSACTION_MAX_VERIFICATION_ATTEMPTS_REACHED);
-
-  const { handleClickContactSupport } = useHandleSubscriptionSupportAction();
-
-  const handlePaymentError = useCallback(async () => {
-    if (currentShieldSubscription) {
-      // capture error state clicked event
-      captureShieldErrorStateClickedEvent({
-        subscriptionStatus: currentShieldSubscription.status,
-        paymentType: currentShieldSubscription.paymentMethod.type,
-        billingInterval: currentShieldSubscription.interval,
-        errorCause: 'payment_error',
-        actionClicked: ShieldErrorStateActionClickedEnum.Cta,
-        location: ShieldErrorStateLocationEnum.Settings,
-        view: ShieldErrorStateViewEnum.Banner,
-      });
-    }
-
-    if (isUnexpectedErrorCryptoPayment) {
-      // handle support action
-      handleClickContactSupport();
-    } else if (
-      currentShieldSubscription &&
-      isCryptoPaymentMethod(currentShieldSubscription.paymentMethod)
-    ) {
-      if (isInsufficientFundsCrypto) {
-        // TODO: handle add funds crypto
-        // then use subscription controller to trigger subscription check
-        setIsAddFundsModalOpen(true);
-        // await dispatch(updateSubscriptionCryptoPaymentMethod({
-        //   ...params,
-        //   rawTransaction: undefined // no raw transaction to trigger server to check for new funded balance
-        // }))
-      } else if (isAllowanceNeededCrypto) {
-        await executeSubscriptionCryptoApprovalTransaction();
-      } else {
-        throw new Error('Unknown crypto error action');
-      }
-    } else {
-      await executeUpdateSubscriptionCardPaymentMethod();
-    }
-  }, [
-    handleClickContactSupport,
-    isUnexpectedErrorCryptoPayment,
-    currentShieldSubscription,
-    isInsufficientFundsCrypto,
-    isAllowanceNeededCrypto,
-    executeUpdateSubscriptionCardPaymentMethod,
-    setIsAddFundsModalOpen,
-    executeSubscriptionCryptoApprovalTransaction,
-    captureShieldErrorStateClickedEvent,
-  ]);
 
   const membershipErrorBanner = useMemo(() => {
     // This is the number of hours it might takes for the payment to be updated
