@@ -978,7 +978,7 @@
         "crypto.subtle.importKey": true
       },
       "packages": {
-        "@metamask/browser-passworder>@metamask/utils": true,
+        "@metamask/utils": true,
         "browserify>buffer": true
       }
     },
@@ -1496,7 +1496,6 @@
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/base-controller": true,
-        "@metamask/browser-passworder": true,
         "@metamask/keyring-controller>@metamask/eth-hd-keyring": true,
         "@metamask/eth-sig-util": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
@@ -2436,21 +2435,6 @@
       }
     },
     "@metamask/assets-controllers>@metamask/abi-utils>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/superstruct": true,
-        "@noble/hashes": true,
-        "@scure/base": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "@metamask/utils>pony-cause": true,
-        "semver": true
-      }
-    },
-    "@metamask/browser-passworder>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
