@@ -202,9 +202,11 @@ class TestDappMultichain {
     sessionScopes: Record<string, NormalizedScopeObject>;
   }> {
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
+        await this.driver.delay(2000);
     await this.clickWalletGetSessionButton();
+        await this.driver.delay(2000);
     await this.clickFirstResultSummary();
-    await this.driver.delay(largeDelayMs);
+    await this.driver.delay(2000);
     await this.driver.waitForSelector(this.firstSessionMethodResult);
     const getSessionRawResult = await this.driver.findElement(
       this.firstSessionMethodResult,
