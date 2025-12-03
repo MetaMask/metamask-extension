@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import configureStore from '../../../store/store';
 import mockDefaultState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
@@ -73,7 +73,7 @@ describe('AppHeaderUnlockedContent trace', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/account-list');
   });
 
-  it('calls trace ShowAccountAddressList when networks subtitle is clicked', () => {
+  it('calls trace ShowAccountAddressList when View All button is clicked in address popover', async () => {
     const store = configureStore(buildStateWithState2());
     const menuRef = { current: null } as React.RefObject<HTMLButtonElement>;
     renderWithProvider(
@@ -84,10 +84,19 @@ describe('AppHeaderUnlockedContent trace', () => {
       store,
     );
 
-    const networksSubtitleLink = screen.getByTestId(
-      'networks-subtitle-test-id',
-    );
-    fireEvent.click(networksSubtitleLink);
+    const networksSubtitle = screen.getByTestId('networks-subtitle-test-id');
+    // The hover handler is on the first child Box inside MultichainHoveredAddressRowsList
+    const hoverTarget = networksSubtitle.firstElementChild as HTMLElement;
+    fireEvent.mouseEnter(hoverTarget);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('multichain-address-rows-list'),
+      ).toBeInTheDocument();
+    });
+
+    const viewAllButton = screen.getByText('View all');
+    fireEvent.click(viewAllButton);
 
     const traceLib = jest.requireMock('../../../../shared/lib/trace');
     expect(traceLib.trace).toHaveBeenCalledWith(
