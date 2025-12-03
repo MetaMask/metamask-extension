@@ -87,7 +87,6 @@ export enum TraceName {
   CreateMultichainAccount = 'Create Multichain Account',
   DiscoverAccounts = 'Discover Accounts',
   EvmDiscoverAccounts = 'EVM Discover Accounts',
-  SnapDiscoverAccounts = 'Snap Discover Accounts',
 }
 
 /**
