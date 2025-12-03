@@ -272,7 +272,7 @@ export function startOAuthLogin(
         submitRequestToBackground<OAuthLoginResult>('startOAuthLogin', [
           authConnection,
         ]),
-        submitRequestToBackground('getToprfNodeDetails'), // fetch the toprf node details for seedless authentication in parallel
+        submitRequestToBackground('preloadToprfNodeDetails'), // fetch the toprf node details for seedless authentication in parallel
       ]);
 
       let seedlessAuthSuccess = false;
