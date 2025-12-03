@@ -259,9 +259,9 @@ const DeveloperOptionsTab = () => {
       >
         Current States
       </Text>
-      <pre className="settings-page__content-padded">
+      <div className="settings-page__content-padded">
         {renderRemoteFeatureFlags()}
-      </pre>
+      </div>
       <Text
         className="settings-page__security-tab-sub-header"
         color={TextColor.textAlternative}

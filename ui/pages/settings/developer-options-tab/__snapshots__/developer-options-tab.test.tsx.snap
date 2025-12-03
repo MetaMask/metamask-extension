@@ -15,7 +15,7 @@ exports[`Develop options tab should match snapshot 1`] = `
     >
       Current States
     </p>
-    <pre
+    <div
       class="settings-page__content-padded"
     >
       <div
@@ -40,7 +40,7 @@ exports[`Develop options tab should match snapshot 1`] = `
           {"feature1":"value1"}
         </div>
       </div>
-    </pre>
+    </div>
     <p
       class="mm-box mm-text settings-page__security-tab-sub-header mm-text--body-md mm-box--padding-top-6 mm-box--color-text-alternative"
     >
@@ -507,12 +507,104 @@ exports[`Develop options tab should match snapshot 1`] = `
     </div>
     <hr />
     <div>
-      <button
-        class="button btn-primary"
-        style="margin-top: 16px;"
+      <p
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
       >
-        Migrate to Split State
-      </button>
+        Split State Migration
+      </p>
+      <div
+        style="margin-top: 8px; margin-bottom: 8px;"
+      >
+        <strong>
+          Current storage kind: 
+          unknown
+        </strong>
+      </div>
+      <hr />
+      <h2>
+        Split State Migration Flags
+      </h2>
+      <label>
+        <span>
+          Migration Enabled flag:
+        </span>
+        <div>
+          <label>
+            <input
+              checked=""
+              name="split-state-migration-enabled"
+              type="radio"
+            />
+            Unset (uses remote feature flags)
+          </label>
+        </div>
+        <div>
+          <label>
+            <input
+              name="split-state-migration-enabled"
+              type="radio"
+            />
+            0 (Off)
+          </label>
+        </div>
+        <div>
+          <label>
+            <input
+              name="split-state-migration-enabled"
+              type="radio"
+            />
+            1 (On)
+          </label>
+        </div>
+      </label>
+      <div>
+        <label>
+          <span>
+            Max Accounts flag:
+          </span>
+          <div
+            class="MuiFormControl-root MuiTextField-root"
+          >
+            <div
+              class="MuiInputBase-root MuiInput-root TextField-inputRoot-12 MuiInputBase-formControl MuiInput-formControl"
+            >
+              <input
+                aria-invalid="false"
+                class="MuiInputBase-input MuiInput-input"
+                dir="auto"
+                max="99999999"
+                min="0"
+                type="number"
+                value=""
+              />
+            </div>
+          </div>
+        </label>
+      </div>
+      <div>
+        <label>
+          <span>
+            Max Networks flag:
+          </span>
+          <div
+            class="MuiFormControl-root MuiTextField-root"
+          >
+            <div
+              class="MuiInputBase-root MuiInput-root TextField-inputRoot-12 MuiInputBase-formControl MuiInput-formControl"
+            >
+              <input
+                aria-invalid="false"
+                class="MuiInputBase-input MuiInput-input"
+                dir="auto"
+                max="99999999"
+                min="0"
+                type="number"
+                value=""
+              />
+            </div>
+          </div>
+        </label>
+      </div>
     </div>
   </div>
 </div>
