@@ -5627,9 +5627,6 @@
     "message": "Si vous résiliez votre abonnement, votre portefeuille et vos transactions ne seront plus couverts à compter du $1.",
     "description": "The $1 is the date subscription ends"
   },
-  "shieldTxDetails2Description": {
-    "message": "Bénéficiez d’une assistance dédiée plus rapide à tout moment"
-  },
   "shieldTxDetails2Title": {
     "message": "Assistance prioritaire"
   },

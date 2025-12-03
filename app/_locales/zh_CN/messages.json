@@ -5624,9 +5624,6 @@
     "message": "如果您取消，自 $1 起您的钱包和交易将不再受保护。",
     "description": "The $1 is the date subscription ends"
   },
-  "shieldTxDetails2Description": {
-    "message": "随时获取更快捷的专属支持"
-  },
   "shieldTxDetails2Title": {
     "message": "优先支持"
   },

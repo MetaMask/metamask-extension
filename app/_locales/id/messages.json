@@ -5627,9 +5627,6 @@
     "message": "Jika dibatalkan, dompet dan transaksi Anda tidak akan terlindungi mulai $1.",
     "description": "The $1 is the date subscription ends"
   },
-  "shieldTxDetails2Description": {
-    "message": "Dapatkan dukungan khusus yang lebih cepat setiap saat"
-  },
   "shieldTxDetails2Title": {
     "message": "Dukungan prioritas"
   },

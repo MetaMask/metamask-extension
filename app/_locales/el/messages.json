@@ -5627,9 +5627,6 @@
     "message": "Εάν ακυρώσετε, το πορτοφόλι και οι συναλλαγές σας δεν θα προστατεύονται από τις $1.",
     "description": "The $1 is the date subscription ends"
   },
-  "shieldTxDetails2Description": {
-    "message": "Ταχύτερη και εξειδικευμένη υποστήριξη, οποιαδήποτε στιγμή"
-  },
   "shieldTxDetails2Title": {
     "message": "Υποστήριξη με προτεραιότητα"
   },

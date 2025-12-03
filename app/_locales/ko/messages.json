@@ -5627,9 +5627,6 @@
     "message": "취소하면 $1부터 지갑과 트랜잭션이 보호되지 않습니다.",
     "description": "The $1 is the date subscription ends"
   },
-  "shieldTxDetails2Description": {
-    "message": "언제든지 신속히 전담 지원을 받으세요"
-  },
   "shieldTxDetails2Title": {
     "message": "우선 지원"
   },

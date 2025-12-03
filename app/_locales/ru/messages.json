@@ -5627,9 +5627,6 @@
     "message": "В случае отмены ваш кошелек и транзакции не будут застрахованы, начиная с $1.",
     "description": "The $1 is the date subscription ends"
   },
-  "shieldTxDetails2Description": {
-    "message": "Получайте более быструю и специализированную поддержку в любое время"
-  },
   "shieldTxDetails2Title": {
     "message": "Приоритетная поддержка"
   },

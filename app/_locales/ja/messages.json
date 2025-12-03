@@ -5627,9 +5627,6 @@
     "message": "キャンセルすると、$1からウォレットおよび取引が補償対象外となります。",
     "description": "The $1 is the date subscription ends"
   },
-  "shieldTxDetails2Description": {
-    "message": "いつでもすぐに専任のサポートを受けられます"
-  },
   "shieldTxDetails2Title": {
     "message": "優先サポート"
   },

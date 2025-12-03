@@ -5627,9 +5627,6 @@
     "message": "Wenn Sie stornieren, werden Ihre Wallet und Transaktionen ab $1 nicht mehr abgedeckt.",
     "description": "The $1 is the date subscription ends"
   },
-  "shieldTxDetails2Description": {
-    "message": "Nutzen Sie jederzeit einen schnelleren, engagierten Support"
-  },
   "shieldTxDetails2Title": {
     "message": "Prioritärer Support"
   },
