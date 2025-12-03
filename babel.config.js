@@ -13,7 +13,7 @@ module.exports = function (api) {
     overrides: [
       {
         test: new RegExp(
-          `^${path.join(__dirname, 'ui')}${slash}(?:components|contexts|hooks|layouts|pages)${slash}(?:.(?!\\.(?:test|stories|container)))+\\.(?:m?[jt]s|[jt]sx)$`,
+          `^${path.join(__dirname, 'ui')}${slash}(?:components|contexts|hooks|layouts|pages)${slash}(?!.*\\.(?:test|stories|container)\\.)(?:.*)\\.(?:m?[jt]s|[jt]sx)$`,
           'u',
         ),
         plugins: [['babel-plugin-react-compiler', { target: '17' }]],
