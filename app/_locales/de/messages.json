@@ -5660,9 +5660,6 @@
   "shieldTxMembershipSubmitCase": {
     "message": "Anspruch einreichen"
   },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "Gesamte Vorteile anzeigen"
-  },
   "show": {
     "message": "Anzeigen"
   },

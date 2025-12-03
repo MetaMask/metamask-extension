@@ -5660,9 +5660,6 @@
   "shieldTxMembershipSubmitCase": {
     "message": "Отправить претензию"
   },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "Просмотреть все преимущества"
-  },
   "show": {
     "message": "Показать"
   },

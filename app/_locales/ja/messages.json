@@ -5660,9 +5660,6 @@
   "shieldTxMembershipSubmitCase": {
     "message": "請求を送信"
   },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "特典をすべて見る"
-  },
   "show": {
     "message": "表示"
   },

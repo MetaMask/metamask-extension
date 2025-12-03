@@ -11,7 +11,12 @@ import {
   TokenPaymentInfo,
 } from '@metamask/subscription-controller';
 import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
-import { IconName as DsIconName } from '@metamask/design-system-react';
+import {
+  Button,
+  ButtonSize,
+  ButtonVariant,
+  IconName as DsIconName,
+} from '@metamask/design-system-react';
 import { useSelector } from 'react-redux';
 import {
   BannerAlert,
@@ -783,7 +788,6 @@ const TransactionShield = () => {
           endDate={displayedShieldSubscription?.currentPeriodEnd}
           trialDaysLeft={trialDaysLeft}
         />
-
         {displayedShieldSubscription && (
           <Box className="mt-4">
             <Box
@@ -849,12 +853,80 @@ const TransactionShield = () => {
               />
             </ButtonRowContainer>
           </Box>
-        )}
-        {buttonRow(
-          t('shieldTxMembershipViewFullBenefits'),
-          handleViewFullBenefitsClicked,
-          'shield-detail-view-benefits-button',
-        )}
+        )}{' '}
+        <Box className="border-t border-muted my-4 w-full h-px" />
+        <Box>
+          <Box
+            display={Display.Flex}
+            justifyContent={JustifyContent.spaceBetween}
+            alignItems={AlignItems.center}
+            gap={2}
+            paddingInline={4}
+            marginBottom={2}
+          >
+            {showSkeletonLoader ? (
+              <Skeleton width="40%" height={20} />
+            ) : (
+              <Text variant={TextVariant.headingSm}>
+                {t('shieldTxMembershipBenefits')}
+              </Text>
+            )}
+            {showSkeletonLoader ? (
+              <Skeleton width="30%" height={20} />
+            ) : (
+              <ButtonLink
+                data-testid="shield-detail-view-benefits-button"
+                className="neutral-button"
+                endIconName={IconName.ArrowRight}
+                endIconProps={{
+                  size: IconSize.Sm,
+                  color: IconColor.iconAlternative,
+                }}
+                color={TextColor.textAlternative}
+                onClick={() => {
+                  handleViewFullBenefitsClicked();
+                }}
+              >
+                {t('shieldTxMembershipBenefitsViewAll')}
+              </ButtonLink>
+            )}
+          </Box>
+          <ButtonRowContainer>
+            <ButtonRow
+              startIconName={DsIconName.Cash}
+              title={t('shieldTxMembershipBenefits1Title')}
+              description={t('shieldTxMembershipBenefits1Description')}
+              loading={showSkeletonLoader}
+            />
+            <ButtonRow
+              startIconName={DsIconName.Sms}
+              title={t('shieldTxMembershipBenefits2Title')}
+              description={t('shieldTxMembershipBenefits2Description')}
+              loading={showSkeletonLoader}
+            />
+            <ButtonRow
+              startIconName={DsIconName.MetamaskFoxOutline}
+              title={t('shieldTxMembershipBenefits3Title')}
+              description={t('shieldTxMembershipBenefits3Description')}
+              loading={showSkeletonLoader}
+              endAccessory={
+                showSkeletonLoader ? (
+                  <Skeleton width="100%" height={40} />
+                ) : (
+                  <Button
+                    variant={ButtonVariant.Secondary}
+                    size={ButtonSize.Md}
+                    onClick={() => {
+                      console.log('sign up to rewards');
+                    }}
+                  >
+                    {t('shieldTxMembershipBenefits3SignUp')}
+                  </Button>
+                )
+              }
+            />
+          </ButtonRowContainer>
+        </Box>
         {displayedShieldSubscription?.isEligibleForSupport &&
           buttonRow(
             t('shieldTxMembershipSubmitCase'),

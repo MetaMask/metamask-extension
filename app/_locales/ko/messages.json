@@ -5660,9 +5660,6 @@
   "shieldTxMembershipSubmitCase": {
     "message": "청구하기"
   },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "전체 혜택 보기"
-  },
   "show": {
     "message": "표시"
   },

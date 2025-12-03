@@ -5657,9 +5657,6 @@
   "shieldTxMembershipSubmitCase": {
     "message": "提交索赔"
   },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "查看完整权益"
-  },
   "show": {
     "message": "显示"
   },

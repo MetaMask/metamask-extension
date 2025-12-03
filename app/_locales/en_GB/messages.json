@@ -6460,6 +6460,34 @@
   "shieldTxMembershipActive": {
     "message": "Active plan"
   },
+  "shieldTxMembershipBenefits": {
+    "message": "Your benefits"
+  },
+  "shieldTxMembershipBenefits1Description": {
+    "message": "Secures assets on covered transactions"
+  },
+  "shieldTxMembershipBenefits1Title": {
+    "message": "Up to $10,000 transaction protection"
+  },
+  "shieldTxMembershipBenefits2Description": {
+    "message": "Get faster, dedicated support anytime"
+  },
+  "shieldTxMembershipBenefits2Title": {
+    "message": "Priority support"
+  },
+  "shieldTxMembershipBenefits3Description": {
+    "message": "Get $1 points/$2",
+    "description": "The $1 is the number of points and the $2 is the interval"
+  },
+  "shieldTxMembershipBenefits3SignUp": {
+    "message": "Sign up"
+  },
+  "shieldTxMembershipBenefits3Title": {
+    "message": "Earn during rewards season"
+  },
+  "shieldTxMembershipBenefitsViewAll": {
+    "message": "View all"
+  },
   "shieldTxMembershipBillingDetails": {
     "message": "Billing details"
   },
@@ -6544,9 +6572,6 @@
   },
   "shieldTxMembershipSubmitCase": {
     "message": "Submit a claim"
-  },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "View full benefits"
   },
   "show": {
     "message": "Show"
