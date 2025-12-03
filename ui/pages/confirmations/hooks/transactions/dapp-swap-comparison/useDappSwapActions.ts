@@ -18,7 +18,7 @@ export function useDappSwapActions() {
   const { isQuotedSwapDisplayedInInfo, selectedQuote } = useDappSwapContext();
   const { captureSwapSubmit } = useDappSwapComparisonMetrics();
 
-  const updateSwapWithQuoteDetails = useCallback(
+  const updateSwapWithQuoteDetailsIfRequired = useCallback(
     (transactionMeta: TransactionMeta) => {
       captureSwapSubmit();
       if (!isQuotedSwapDisplayedInInfo) {
@@ -67,7 +67,7 @@ export function useDappSwapActions() {
   }, [currentConfirmation?.securityAlertResponse?.securityAlertId]);
 
   return {
-    updateSwapWithQuoteDetails,
+    updateSwapWithQuoteDetailsIfRequired,
     onDappSwapCompleted,
   };
 }

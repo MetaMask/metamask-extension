@@ -153,12 +153,12 @@ export function getQuotesForConfirmation({
   } catch (error) {
     if (securityAlertId) {
       setDappSwapComparisonData(securityAlertId, {
-        error: `Error fetching bridge quotes: ${(error as Error).toString()}`,
+        error: `Error fetching bridge quotes: ${(error as Error).message}`,
         commands,
       });
     }
     captureException(
-      `Error fetching bridge quotes: ${(error as Error).toString()}`,
+      `Error fetching bridge quotes: ${(error as Error).message}`,
     );
   }
 }
