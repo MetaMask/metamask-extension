@@ -22,12 +22,11 @@ import { useDappSwapUSDValues } from './useDappSwapUSDValues';
 
 const getGasFromQuote = (quote: QuoteResponse) => {
   const { approval, trade } = quote;
-  return new BigNumber(
-    ((approval as TxData)?.effectiveGas ??
-      (approval as TxData)?.gasLimit ??
-      0) +
-      ((trade as TxData)?.effectiveGas ?? (trade as TxData)?.gasLimit ?? 0),
-  );
+  const approvalGas =
+    (approval as TxData)?.effectiveGas ?? (approval as TxData)?.gasLimit ?? 0;
+  const tradeGas =
+    (trade as TxData)?.effectiveGas ?? (trade as TxData)?.gasLimit ?? 0;
+  return new BigNumber(approvalGas + tradeGas);
 };
 
 export function useDappSwapComparisonInfo() {
