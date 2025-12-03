@@ -8,6 +8,7 @@ import type {
   NetworkControllerGetStateAction,
   NetworkControllerStateChangeEvent,
 } from '@metamask/network-controller';
+import { AuthenticationController } from '@metamask/profile-sync-controller';
 import {
   AccountsControllerGetSelectedAccountAction,
   AccountsControllerListAccountsAction,
@@ -52,7 +53,8 @@ type AllowedActions =
   | NetworkControllerGetStateAction
   | PreferencesControllerGetStateAction
   | TokensControllerGetStateAction
-  | TokenDetectionControllerAddDetectedTokensViaWsAction;
+  | TokenDetectionControllerAddDetectedTokensViaWsAction
+  | AuthenticationController.AuthenticationControllerGetBearerToken;
 
 type AllowedEvents =
   | KeyringControllerAccountRemovedEvent
@@ -98,6 +100,7 @@ export function getTokenBalancesControllerMessenger(
       'AccountTrackerController:updateNativeBalances',
       'AccountTrackerController:updateStakedBalances',
       'TokenDetectionController:addDetectedTokensViaWs',
+      'AuthenticationController:getBearerToken',
     ],
     events: [
       'PreferencesController:stateChange',

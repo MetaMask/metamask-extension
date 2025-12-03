@@ -34,7 +34,7 @@ import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 type CreatePasswordFormProps = {
   isSocialLoginFlow: boolean;
   onSubmit: (password: string, termsChecked: boolean) => void;
-  onBack: () => void;
+  onBack: (event: React.MouseEvent<HTMLButtonElement>) => void;
   loading?: boolean;
 };
 

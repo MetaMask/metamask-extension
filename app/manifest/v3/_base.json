@@ -88,8 +88,7 @@
     "webRequest",
     "offscreen",
     "identity",
-    "sidePanel",
-    "contextMenus"
+    "sidePanel"
   ],
   "sandbox": {
     "pages": ["snaps/index.html"]

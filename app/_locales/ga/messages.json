@@ -5627,10 +5627,6 @@
     "message": "$1/mí",
     "description": "The $1 is the price of the monthly plan"
   },
-  "shieldPlanNoFunds": {
-    "message": "Gan aon chistí ar fáil",
-    "description": "$1 or $2 shows the supported token eg. USDC, USDT or mUSD"
-  },
   "shieldPlanPayWith": {
     "message": "Íoc le"
   },
