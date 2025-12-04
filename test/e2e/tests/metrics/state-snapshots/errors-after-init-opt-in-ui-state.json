@@ -428,7 +428,9 @@
     "rewardsSeasons": "object",
     "rewardsSeasonStatuses": "object",
     "rewardsSubscriptionTokens": "object",
-    "srpSessionData": "object"
+    "srpSessionData": "object",
+    "syncQueue": "object",
+    "initialEnqueueCompleted": "boolean"
   },
   "ramps": "object",
   "rewards": "object",
