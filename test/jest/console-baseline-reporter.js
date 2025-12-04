@@ -78,6 +78,9 @@ class ConsoleBaselineReporter {
     this.violations = [];
     this.improvements = [];
     this.newFiles = [];
+
+    // Store error to return from getLastError()
+    this._error = null;
   }
 
   // ===========================================================================
@@ -276,15 +279,12 @@ class ConsoleBaselineReporter {
   /**
    * Called once after ALL tests complete.
    * Handles both capture and enforce modes.
-   *
-   * @param {object} _contexts - Test contexts (unused)
-   * @param {object} results - Test results (can modify results.success to fail)
    */
-  onRunComplete(_contexts, results) {
+  onRunComplete() {
     if (this._options.mode === 'capture') {
       this._writeBaseline();
     } else if (this._options.mode === 'enforce') {
-      this._enforceBaseline(results);
+      this._enforceBaseline();
     } else {
       throw new Error(
         `Invalid mode (${this._options.mode}): must be 'capture' or 'enforce'`,
@@ -294,11 +294,12 @@ class ConsoleBaselineReporter {
 
   /**
    * Jest calls this to check for errors.
+   * Returns an error if baseline violations were detected.
    *
-   * @returns {null} Always returns null (we use results.success instead)
+   * @returns {Error|null} Error if violations detected, null otherwise
    */
   getLastError() {
-    return null;
+    return this._error;
   }
 
   // ===========================================================================
@@ -307,19 +308,20 @@ class ConsoleBaselineReporter {
 
   /**
    * Enforce baseline - compare current warnings and report violations.
-   *
-   * @param {object} results - Jest results object
    */
-  _enforceBaseline(results) {
+  _enforceBaseline() {
     // Compare against baseline (per file)
     this._compareWithBaseline();
 
     // Print results
     this._printResults();
 
-    // Fail if violations found
+    // Fail if violations found (getLastError() will return this error to Jest)
     if (this._options.failOnViolation && this.violations.length > 0) {
-      results.success = false;
+      this._error = new Error(
+        `Console baseline violated: ${this.violations.length} violation(s) detected. ` +
+          'Fix the warnings or update the baseline.',
+      );
     }
   }
 
