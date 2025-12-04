@@ -39,7 +39,7 @@ describe('PrepareBridgePage', () => {
       .mockReturnValue([{ get: () => null }] as never);
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        extensionConfig: {
+        bridgeConfig: {
           chains: {
             [CHAIN_IDS.MAINNET]: {
               isActiveSrc: true,
@@ -97,7 +97,7 @@ describe('PrepareBridgePage', () => {
       .mockReturnValue([{ get: () => '0x3103910' }, jest.fn()] as never);
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        extensionConfig: {
+        bridgeConfig: {
           support: true,
           chains: {
             [CHAIN_IDS.MAINNET]: {
@@ -108,14 +108,6 @@ describe('PrepareBridgePage', () => {
               isActiveSrc: true,
               isActiveDest: true,
             },
-          },
-        },
-        destTokens: {
-          '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': {
-            iconUrl: 'http://url',
-            symbol: 'UNI',
-            address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
-            decimals: 6,
           },
         },
       },
@@ -182,7 +174,7 @@ describe('PrepareBridgePage', () => {
   it('should throw an error if token decimals are not defined', async () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        extensionConfig: {
+        bridgeConfig: {
           chains: {
             [CHAIN_IDS.MAINNET]: {
               isActiveSrc: true,
@@ -222,7 +214,7 @@ describe('PrepareBridgePage', () => {
       .mockReturnValue([{ get: () => null }] as never);
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        extensionConfig: {
+        bridgeConfig: {
           chains: {
             [CHAIN_IDS.MAINNET]: {
               isActiveSrc: true,
