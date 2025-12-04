@@ -186,7 +186,7 @@ export class MetaRPCClient<Api extends FunctionRegistry<Api>> {
         if (payload.method === 'getState') {
           timer = setTimeout(() => {
             this.requests.delete(payload.id);
-            reject(new Error('No response from RPC'));
+            reject(new Error(`Background 'getState' call exceeded timeout`));
           }, SIXTEEN_SECONDS_AS_MILLISECONDS);
         }
         this.requests.set(payload.id, { resolve, reject, timer });
