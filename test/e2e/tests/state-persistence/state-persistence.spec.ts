@@ -150,7 +150,7 @@ const assertSplitStateStorage = (storage: SplitStateStorage) => {
       'Yay! You removed temp-cronjob-storage from the db. Now update this test by removing this block.',
     );
   } else {
-    delete storage['temp-cronjob-storage']; // <- don't forget to delete this line if if you remove temp-cronjob-storage
+    delete storage['temp-cronjob-storage']; // <- don't forget to delete this line if you remove temp-cronjob-storage
   }
 
   for (const key of Object.keys(storage)) {

@@ -81,7 +81,7 @@ export default class Migrator extends EventEmitter {
             );
           }
           // a migration that doesn't change any controllers is invalid
-          if (changedControllers.size === 0) {
+          if (localChangedControllers.size === 0) {
             throw new Error(
               'Migrator - migration did not report any changed controllers',
             );

@@ -789,20 +789,30 @@ async function initialize(backup) {
  */
 async function loadPreinstalledSnaps() {
   const fetchWithTimeout = getFetchWithTimeout();
+
   const promises = PREINSTALLED_SNAPS_URLS.map(async (url) => {
-    const response = await fetchWithTimeout(url);
+    try {
+      const response = await fetchWithTimeout(url);
 
-    // If the Snap is compressed, decompress it
-    if (url.pathname.endsWith('.json.gz')) {
-      const ds = new DecompressionStream('gzip');
-      const decompressedStream = response.body.pipeThrough(ds);
-      return await new Response(decompressedStream).json();
+      // If the Snap is compressed, decompress it
+      if (url.pathname.endsWith('.json.gz')) {
+        const ds = new DecompressionStream('gzip');
+        const decompressedStream = response.body.pipeThrough(ds);
+        return await new Response(decompressedStream).json();
+      }
+
+      return await response.json();
+    } catch (e) {
+      log.error(`Failed to load preinstalled Snap from ${url.href}:`, e);
+      throw e;
     }
-
-    return await response.json();
   });
 
-  return Promise.all(promises);
+  return Promise.all(promises).catch((error) => {
+    log.error('Failed to load preinstalled Snaps:', error);
+    sentry?.captureException(error);
+    return [];
+  });
 }
 
 /**
@@ -1011,8 +1021,11 @@ export async function loadStateFromPersistence(backup) {
       await persistenceManager.migrateToSplitState(versionedData.data);
       versionedData.meta = persistenceManager.getMetaData();
       delete versionedData.meta.platformSplitStateGradualRolloutAttempted;
-      // persist the new metadata one more time
-      persistenceManager.setMetadata(versionedData.meta);
+      if (versionedData.meta !== undefined) {
+        delete versionedData.meta.platformSplitStateGradualRolloutAttempted;
+        // persist the new metadata one more time
+        persistenceManager.setMetadata(versionedData.meta);
+      }
       await persistenceManager.persist();
     }
   } else if (persistenceManager.storageKind === 'split') {

@@ -45,15 +45,15 @@ async function developerOverrides() {
 
   return {
     enabled:
-      splitStateMigrationEnabled === null
+      splitStateMigrationEnabled === undefined
         ? null
         : splitStateMigrationEnabled === '1',
     maxAccounts:
-      splitStateMigrationMaxAccounts === null
+      splitStateMigrationMaxAccounts === undefined
         ? 0
         : Number(splitStateMigrationMaxAccounts),
     maxNetworks:
-      splitStateMigrationMaxNetworks === null
+      splitStateMigrationMaxNetworks === undefined
         ? 0
         : Number(splitStateMigrationMaxNetworks),
   };

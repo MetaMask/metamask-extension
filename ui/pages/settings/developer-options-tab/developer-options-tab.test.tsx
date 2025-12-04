@@ -24,7 +24,7 @@ jest.mock('webextension-polyfill', () => ({
       get: jest.fn().mockResolvedValue({}),
       set: jest.fn().mockResolvedValue({}),
     },
-    onChanged: { addListener: jest.fn() },
+    onChanged: { addListener: jest.fn(), removeListener: jest.fn() },
   },
 }));
 

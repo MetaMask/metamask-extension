@@ -278,7 +278,7 @@ const DeveloperOptionsTab = () => {
 
       <BackupAndSyncDevSettings />
       <SentryTest />
-      <hr></hr>
+      <hr />
       <MigrateToSplitStateTest />
     </div>
   );

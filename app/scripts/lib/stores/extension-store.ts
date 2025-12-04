@@ -35,7 +35,7 @@ export default class ExtensionStore implements BaseStore {
     }
     const { local } = browser.storage;
     console.time('[ExtensionStore] Reading from local store');
-    // don't fetch more than we need, incase extra stuff was put in the db
+    // don't fetch more than we need, in case extra stuff was put in the db
     // by testing or users playing with the db
     const response = await local.get(['manifest']);
     if (
@@ -74,7 +74,7 @@ export default class ExtensionStore implements BaseStore {
   async setKeyValues(pairs: Map<string, unknown>): Promise<void> {
     if (!this.isSupported) {
       throw new Error(
-        'Metamask- cannot persist state to local store as this browser does not support this action',
+        'MetaMask - cannot persist state to local store as this browser does not support this action',
       );
     }
 
@@ -130,12 +130,16 @@ export default class ExtensionStore implements BaseStore {
   async set({ data, meta }: Required<MetaMaskStorageStructure>): Promise<void> {
     if (!this.isSupported) {
       throw new Error(
-        'Metamask- cannot persist state to local store as this browser does not support this action',
+        'MetaMask - cannot persist state to local store as this browser does not support this action',
       );
     }
     const { local } = browser.storage;
     console.time('[ExtensionStore] Overwriting local store');
     await local.set({ data, meta });
+    // we ensure we keep track of data and meta in the manifest if we need to
+    // reset later
+    this.#manifest.add('data');
+    this.#manifest.add('meta');
     console.timeEnd('[ExtensionStore] Overwriting local store');
   }
 
@@ -146,10 +150,10 @@ export default class ExtensionStore implements BaseStore {
   async reset(): Promise<void> {
     if (!this.isSupported) {
       throw new Error(
-        'Metamask- cannot persist state to local store as this browser does not support this action',
+        'MetaMask - cannot persist state to local store as this browser does not support this action',
       );
     }
     const { local } = browser.storage;
-    return await local.remove([...this.#manifest.keys()]);
+    return await local.remove([...this.#manifest]);
   }
 }
