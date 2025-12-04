@@ -4269,25 +4269,6 @@
     "message": "$1アイコン",
     "description": "$1 is the icon name"
   },
-  "onboardingPinExtensionAltLaunch": {
-    "message": "拡張機能を起動する"
-  },
-  "onboardingPinExtensionAltPin": {
-    "message": "拡張機能をピン留めする"
-  },
-  "onboardingPinExtensionDescription": {
-    "message": "MetaMaskをブラウザにピン留めすることで、アクセスしやすくなり、トランザクションの承認を簡単に表示できるようになります。"
-  },
-  "onboardingPinExtensionDescription2": {
-    "message": "拡張機能をクリックすれば、ワンクリックでMetaMaskウォレットにアクセスできます。"
-  },
-  "onboardingPinExtensionDescription3": {
-    "message": "$1の拡張機能アイコンをクリックすると、すぐにアクセスできます",
-    "description": "$1 is the browser name"
-  },
-  "onboardingPinExtensionTitle": {
-    "message": "インストールが完了しました！"
-  },
   "onboardingSignInWith": {
     "message": "$1でサインイン",
     "description": "$1 is the type of login used Google, Apple, etc"

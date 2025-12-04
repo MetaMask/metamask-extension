@@ -4269,25 +4269,6 @@
     "message": "Ikon $1",
     "description": "$1 is the icon name"
   },
-  "onboardingPinExtensionAltLaunch": {
-    "message": "Luncurkan ekstensi"
-  },
-  "onboardingPinExtensionAltPin": {
-    "message": "Sematkan ekstensi"
-  },
-  "onboardingPinExtensionDescription": {
-    "message": "Sematkan MetaMask pada browser agar dapat diakses dan memudahkan dalam melihat konfirmasi transaksi."
-  },
-  "onboardingPinExtensionDescription2": {
-    "message": "Akses dompet MetaMask hanya 1 klik dengan mengklik ekstensi."
-  },
-  "onboardingPinExtensionDescription3": {
-    "message": "Klik ikon ekstensi $1 untuk mengaksesnya secara instan",
-    "description": "$1 is the browser name"
-  },
-  "onboardingPinExtensionTitle": {
-    "message": "Instalasi selesai!"
-  },
   "onboardingSignInWith": {
     "message": "Masuk dengan $1",
     "description": "$1 is the type of login used Google, Apple, etc"
