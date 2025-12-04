@@ -1,0 +1,24 @@
+{
+  "duringOnboarding": [
+    "accounts.google.com",
+    "metamask.github.io"
+  ],
+  "untilOnboardingComplete": [
+    "accounts.google.com",
+    "arbitrum-mainnet.infura.io",
+    "base-mainnet.infura.io",
+    "bridge.api.cx.metamask.io",
+    "bsc-mainnet.infura.io",
+    "linea-mainnet.infura.io",
+    "mainnet.infura.io",
+    "metamask.github.io",
+    "optimism-mainnet.infura.io",
+    "polygon-mainnet.infura.io",
+    "sei-mainnet.infura.io"
+  ],
+  "toBeRemoved": {
+    "accounts.google.com": "Should be removed - web3auth team - will only call during social login",
+    "bridge.api.cx.metamask.io": "Should be removed - STX team - when move to remote feature flag"
+  }
+}
+
