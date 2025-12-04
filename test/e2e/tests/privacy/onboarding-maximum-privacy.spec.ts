@@ -26,13 +26,11 @@ import {
 
 const ALLOWLIST_FILE_NAME = 'privacy-max-allowlist-onboarding.json';
 
-async function mockApis(
-  mockServer: Mockttp,
-): Promise<MockedEndpoint[]> {
+async function mockApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
   return [
     // Mock Infura RPC endpoints
     await mockServer
-      .forPost(/https:\/\/.*\.infura\.io\/v3\/.*/)
+      .forPost(/https:\/\/.*\.infura\.io\/v3\/.*/u)
       .thenCallback(() => ({
         statusCode: 200,
         json: {
@@ -50,10 +48,10 @@ async function mockApis(
   ];
 }
 
-interface OnboardingAllowlist {
+type OnboardingAllowlist = {
   duringOnboarding: string[];
   untilOnboardingComplete: string[];
-}
+};
 
 async function loadAllowlist(): Promise<OnboardingAllowlist> {
   const allowlistPath = path.join(__dirname, ALLOWLIST_FILE_NAME);
@@ -79,7 +77,7 @@ describe('Onboarding with Maximum Privacy Settings', function () {
         mockServer.on(
           'request-initiated',
           (request: { headers: { host: string }; url: string }) => {
-            const host = request.headers.host;
+            const { host } = request.headers;
             if (host) {
               capturedCalls.add(host);
             }
@@ -96,8 +94,9 @@ describe('Onboarding with Maximum Privacy Settings', function () {
         // Navigate to privacy settings and toggle them OFF (maximum privacy)
         await onboardingCompletePage.navigateToDefaultPrivacySettings();
 
-        const onboardingPrivacySettingsPage =
-          new OnboardingPrivacySettingsPage(driver);
+        const onboardingPrivacySettingsPage = new OnboardingPrivacySettingsPage(
+          driver,
+        );
         await onboardingPrivacySettingsPage.checkPageIsLoaded();
         await onboardingPrivacySettingsPage.toggleBasicFunctionalitySettings();
         await onboardingPrivacySettingsPage.toggleAssetsSettings();
@@ -115,7 +114,10 @@ describe('Onboarding with Maximum Privacy Settings', function () {
 
         console.log('Checking calls until complete onboarding screen');
         console.log('Total calls made during onboarding:', capturedCalls.size);
-        console.log('Calls made during onboarding:', JSON.stringify([...capturedCalls].sort(), null, 2));
+        console.log(
+          'Calls made during onboarding:',
+          JSON.stringify([...capturedCalls].sort(), null, 2),
+        );
 
         // Assert no unexpected hosts during onboarding
         assert.equal(
@@ -123,7 +125,9 @@ describe('Onboarding with Maximum Privacy Settings', function () {
           0,
           `Unexpected network calls during onboarding:\n${unexpectedCallsDuringOnboarding
             .map((host) => `  - ${host}`)
-            .join('\n')}\n\nThese hosts are NOT in the duringOnboarding allowlist.\nIf these are expected, add them to privacy-max-allowlist-onboarding.json`,
+            .join(
+              '\n',
+            )}\n\nThese hosts are NOT in the duringOnboarding allowlist.\nIf these are expected, add them to privacy-max-allowlist-onboarding.json`,
         );
 
         // Complete onboarding and go to homepage
@@ -137,13 +141,19 @@ describe('Onboarding with Maximum Privacy Settings', function () {
         await driver.delay(veryLargeDelayMs);
 
         // Check Phase 2: All calls (including previous ones) should be in untilOnboardingComplete allowlist
-        const unexpectedCallsAfterOnboardingComplete = [...capturedCalls].filter(
-          (host) => !allowlist.untilOnboardingComplete.includes(host),
-        );
+        const unexpectedCallsAfterOnboardingComplete = [
+          ...capturedCalls,
+        ].filter((host) => !allowlist.untilOnboardingComplete.includes(host));
 
         console.log('Checking calls until homepage');
-        console.log('Total calls made until landing on homepage:', capturedCalls.size);
-        console.log('Calls made until landing on homepage:', JSON.stringify([...capturedCalls].sort(), null, 2));
+        console.log(
+          'Total calls made until landing on homepage:',
+          capturedCalls.size,
+        );
+        console.log(
+          'Calls made until landing on homepage:',
+          JSON.stringify([...capturedCalls].sort(), null, 2),
+        );
 
         // Assert no unexpected hosts after onboarding complete
         assert.equal(
@@ -151,7 +161,9 @@ describe('Onboarding with Maximum Privacy Settings', function () {
           0,
           `Unexpected network calls after onboarding complete:\n${unexpectedCallsAfterOnboardingComplete
             .map((host) => `  - ${host}`)
-            .join('\n')}\n\nThese hosts are NOT in the untilOnboardingComplete allowlist.\nIf these are expected, add them to privacy-max-allowlist-onboarding.json`,
+            .join(
+              '\n',
+            )}\n\nThese hosts are NOT in the untilOnboardingComplete allowlist.\nIf these are expected, add them to privacy-max-allowlist-onboarding.json`,
         );
       },
     );
@@ -172,7 +184,7 @@ describe('Onboarding with Maximum Privacy Settings', function () {
         mockServer.on(
           'request-initiated',
           (request: { headers: { host: string }; url: string }) => {
-            const host = request.headers.host;
+            const { host } = request.headers;
             if (host) {
               capturedCalls.add(host);
             }
@@ -189,8 +201,9 @@ describe('Onboarding with Maximum Privacy Settings', function () {
         // Navigate to privacy settings and toggle them OFF (maximum privacy)
         await onboardingCompletePage.navigateToDefaultPrivacySettings();
 
-        const onboardingPrivacySettingsPage =
-          new OnboardingPrivacySettingsPage(driver);
+        const onboardingPrivacySettingsPage = new OnboardingPrivacySettingsPage(
+          driver,
+        );
         await onboardingPrivacySettingsPage.checkPageIsLoaded();
         await onboardingPrivacySettingsPage.toggleBasicFunctionalitySettings();
         await onboardingPrivacySettingsPage.toggleAssetsSettings();
@@ -208,7 +221,10 @@ describe('Onboarding with Maximum Privacy Settings', function () {
 
         console.log('Checking calls until complete onboarding screen');
         console.log('Total calls made during onboarding:', capturedCalls.size);
-        console.log('Calls made during onboarding:', JSON.stringify([...capturedCalls].sort(), null, 2));
+        console.log(
+          'Calls made during onboarding:',
+          JSON.stringify([...capturedCalls].sort(), null, 2),
+        );
 
         // Assert no unexpected hosts during onboarding
         assert.equal(
@@ -216,7 +232,9 @@ describe('Onboarding with Maximum Privacy Settings', function () {
           0,
           `Unexpected network calls during onboarding:\n${unexpectedCallsDuringOnboarding
             .map((host) => `  - ${host}`)
-            .join('\n')}\n\nThese hosts are NOT in the duringOnboarding allowlist.\nIf these are expected, add them to privacy-max-allowlist-onboarding.json`,
+            .join(
+              '\n',
+            )}\n\nThese hosts are NOT in the duringOnboarding allowlist.\nIf these are expected, add them to privacy-max-allowlist-onboarding.json`,
         );
 
         // Complete onboarding and go to homepage
@@ -230,13 +248,19 @@ describe('Onboarding with Maximum Privacy Settings', function () {
         await driver.delay(veryLargeDelayMs);
 
         // Check Phase 2: All calls (including previous ones) should be in untilOnboardingComplete allowlist
-        const unexpectedCallsAfterOnboardingComplete = [...capturedCalls].filter(
-          (host) => !allowlist.untilOnboardingComplete.includes(host),
-        );
+        const unexpectedCallsAfterOnboardingComplete = [
+          ...capturedCalls,
+        ].filter((host) => !allowlist.untilOnboardingComplete.includes(host));
 
         console.log('Checking calls until homepage');
-        console.log('Total calls made until landing on homepage:', capturedCalls.size);
-        console.log('Calls made until landing on homepage:', JSON.stringify([...capturedCalls].sort(), null, 2));
+        console.log(
+          'Total calls made until landing on homepage:',
+          capturedCalls.size,
+        );
+        console.log(
+          'Calls made until landing on homepage:',
+          JSON.stringify([...capturedCalls].sort(), null, 2),
+        );
 
         // Assert no unexpected hosts after onboarding complete
         assert.equal(
@@ -244,7 +268,9 @@ describe('Onboarding with Maximum Privacy Settings', function () {
           0,
           `Unexpected network calls after onboarding complete:\n${unexpectedCallsAfterOnboardingComplete
             .map((host) => `  - ${host}`)
-            .join('\n')}\n\nThese hosts are NOT in the untilOnboardingComplete allowlist.\nIf these are expected, add them to privacy-max-allowlist-onboarding.json`,
+            .join(
+              '\n',
+            )}\n\nThese hosts are NOT in the untilOnboardingComplete allowlist.\nIf these are expected, add them to privacy-max-allowlist-onboarding.json`,
         );
       },
     );
