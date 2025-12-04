@@ -14,7 +14,6 @@
       "MetaMask: Balance not found warnings": 18
     },
     "ui/pages/bridge/prepare/prepare-bridge-page.test.tsx": {
-      "Third-party: Bindings failed, using pure JS": 1,
       "µWebSockets: Compatibility warnings": 1,
       "µWebSockets: Fallback to Node implementation": 1,
       "Reselect: Identity function warnings": 3,
@@ -70,7 +69,6 @@
       "Reselect: Input stability warnings": 1
     },
     "app/scripts/metamask-controller.test.js": {
-      "Third-party: Bindings failed, using pure JS": 1,
       "µWebSockets: Compatibility warnings": 1,
       "µWebSockets: Fallback to Node implementation": 1,
       "error: This browser doesn't support cancelAnimationFrame.": 1,
@@ -119,7 +117,6 @@
       "React: Act warnings (component updates not wrapped)": 25
     },
     "app/scripts/controllers/swaps/swaps.test.ts": {
-      "Third-party: Bindings failed, using pure JS": 1,
       "µWebSockets: Compatibility warnings": 1,
       "µWebSockets: Fallback to Node implementation": 1
     },
@@ -304,7 +301,6 @@
     },
     "app/scripts/metamask-controller.actions.test.js": {
       "error: This browser doesn't support cancelAnimationFrame.": 1,
-      "Third-party: Bindings failed, using pure JS": 1,
       "µWebSockets: Compatibility warnings": 1,
       "µWebSockets: Fallback to Node implementation": 1,
       "MetaMask: Chain processing errors": 2,
@@ -607,9 +603,7 @@
     },
     "ui/pages/swaps/index.test.js": {
       "Reselect: Identity function warnings": 4,
-      "Reselect: Input stability warnings": 1,
-      "error: background[method] is not a function": 1,
-      "error: Failed to fetch Swaps feature": 1
+      "Reselect: Input stability warnings": 1
     },
     "ui/pages/confirm-encryption-public-key/confirm-encryption-public-key.component.test.js": {
       "Reselect: Identity function warnings": 2,
@@ -1002,7 +996,6 @@
       "React: DOM nesting violations": 1
     },
     "test/e2e/helpers.test.js": {
-      "Third-party: Bindings failed, using pure JS": 1,
       "µWebSockets: Compatibility warnings": 1,
       "µWebSockets: Fallback to Node implementation": 1
     },
@@ -1112,7 +1105,6 @@
       "warn: No tokens found for chainId:": 1
     },
     "shared/modules/transaction.utils.test.js": {
-      "Third-party: Bindings failed, using pure JS": 1,
       "µWebSockets: Compatibility warnings": 1,
       "µWebSockets: Fallback to Node implementation": 1
     },
@@ -1756,7 +1748,6 @@
       "React: Act warnings (component updates not wrapped)": 1
     },
     "app/scripts/lib/transaction/metrics.test.ts": {
-      "Third-party: Bindings failed, using pure JS": 1,
       "µWebSockets: Compatibility warnings": 1,
       "µWebSockets: Fallback to Node implementation": 1
     },
@@ -1771,7 +1762,6 @@
       "Reselect: Identity function warnings": 1
     },
     "shared/modules/contract-utils.test.js": {
-      "Third-party: Bindings failed, using pure JS": 1,
       "µWebSockets: Compatibility warnings": 1,
       "µWebSockets: Fallback to Node implementation": 1
     },
@@ -1844,7 +1834,6 @@
       "Reselect: Input stability warnings": 1
     },
     "shared/modules/metametrics.test.ts": {
-      "Third-party: Bindings failed, using pure JS": 1,
       "µWebSockets: Compatibility warnings": 1,
       "µWebSockets: Fallback to Node implementation": 1
     },
@@ -2136,9 +2125,10 @@
     "ui/pages/bridge/prepare/bridge-transaction-settings-modal.test.tsx": {
       "Reselect: Identity function warnings": 3,
       "Reselect: Input stability warnings": 1,
-      "MetaMask: Background connection not initialized": 908,
+      "MetaMask: Background connection not initialized": 972,
       "error: Warning: You seem to have": 2,
-      "Test errors: Fetch failures": 36
+      "Test errors: Fetch failures": 36,
+      "React: Act warnings (component updates not wrapped)": 2
     },
     "ui/pages/bridge/hooks/useEnableMissingNetwork.test.ts": {
       "MetaMask: Background connection not initialized": 1
@@ -2159,110 +2149,8 @@
     },
     "ui/components/app/rewards/onboarding/OnboardingIntroStep.test.tsx": {
       "error: Warning: React does not recognize": 1
-    },
-    "app/scripts/controllers/permissions/background-api.test.js": {
-      "warn: REVIEWER_TEST: This warning should be": 45
     }
   },
   "generated": "2025-12-04T10:54:13.456Z",
-  "nodeVersion": "v24.11.1",
-  "summary": {
-    "totalWarnings": 7601,
-    "totalFilesWithWarnings": 509,
-    "byCategory": {
-      "Reselect: Identity function warnings": 1199,
-      "Reselect: Input stability warnings": 542,
-      "React: Act warnings (component updates not wrapped)": 1140,
-      "React: PropTypes validation failures": 49,
-      "MetaMask: Invalid theme warnings": 50,
-      "MetaMask: Background connection not initialized": 4125,
-      "warn: Could not find asset type": 9,
-      "MetaMask: Balance not found warnings": 20,
-      "Third-party: Bindings failed, using pure JS": 9,
-      "µWebSockets: Compatibility warnings": 9,
-      "µWebSockets: Fallback to Node implementation": 9,
-      "error: Warning: A component is changing": 3,
-      "Test errors: Uncaught TypeErrors": 12,
-      "React: DOM nesting violations": 28,
-      "warn: LavaDome: Initiated with \"unsafeOpenModeShadow\" set": 1,
-      "warn: LavaDomeDebug(getTextByRoot): Call/include this function for": 1,
-      "error: Warning: Encountered two children with": 5,
-      "error: This browser doesn't support cancelAnimationFrame.": 2,
-      "error: TypeError: Cannot convert undefined or": 2,
-      "error: Error: invalid address (argument=\"address\", value=\"0x\",": 2,
-      "MetaMask: Chain processing errors": 4,
-      "Test errors: Fetch failures": 46,
-      "ObjectMultiplex: Malformed chunk warnings": 1,
-      "error: { name: 'controller', data: {": 1,
-      "MetaMask: MetaMetrics invalid trait types": 6,
-      "error: Error: invalid address (argument=\"address\", value=\"\",": 1,
-      "MetaMask: Sentry initialization warnings": 1,
-      "error: Error: NetworkController state is invalid:": 1,
-      "React: componentWill* lifecycle deprecations": 20,
-      "React: Missing key props in lists": 22,
-      "React: State updates on unmounted components": 5,
-      "Test errors: Uncaught Errors": 20,
-      "MetaMask: Chain fetch failures": 8,
-      "error: Warning: Function components cannot be": 2,
-      "error: Error: Not implemented: window.open": 2,
-      "React: Act usage warnings (incorrect await)": 42,
-      "error: Unexpected key \"DNS\" found in": 2,
-      "error: Error: Insufficient number of substitutions": 4,
-      "MetaMask: Token metadata warnings": 2,
-      "error: Mock Error": 2,
-      "error: Error checking send bundle support:": 1,
-      "error: background[method] is not a function": 6,
-      "error: Failed to fetch Swaps feature": 1,
-      "warn: ConfirmEncryptionPublicKey Page: Missing txData prop.": 1,
-      "error: Warning: Received `true` for a": 2,
-      "error: Warning: React does not recognize": 40,
-      "warn: ConfirmDecryptMessage Page: Missing messageData prop.": 1,
-      "MetaMask: RPC middleware errors": 10,
-      "React: Component update warnings": 1,
-      "error: Error: Actions must be plain": 2,
-      "error: Warning: Expected `onKeyDown` listener to": 4,
-      "error: Unexpected keys \"allTokens\", \"enableEnforcedSimulations\", \"e...": 1,
-      "MetaMask: XChain Swaps warnings": 4,
-      "error: Warning: React.createElement: type is invalid": 1,
-      "error: TypeError: background[method] is not a": 5,
-      "warn: No tokens found for chainId:": 1,
-      "error: Unexpected key \"internalAccounts\" found in": 1,
-      "error: Warning: Received `false` for a": 4,
-      "error: Actions must be plain objects.": 1,
-      "error: Unexpected key \"processAction\" found in": 1,
-      "error: Unexpected key \"state\" found in": 1,
-      "warn: Migration 139: typeof state.SelectedNetworkController is": 1,
-      "MetaMask: Migration state warnings": 8,
-      "warn: newState.NftController must be present": 2,
-      "error: Error: No INFURA_PROJECT_ID set!": 2,
-      "MetaMask: Migration skipped warnings": 6,
-      "error: Unexpected keys \"data\", \"to\", \"chainId\"": 1,
-      "error: The above error occurred in": 4,
-      "Material-UI: JSS warnings": 4,
-      "error: Error: A handler for SnapController:setClientActive": 2,
-      "error: Error occurred while creating snap": 1,
-      "MetaMask: Backend WebSocket warnings": 1,
-      "warn: MetaMetricsController#_identify: No userTraits found": 1,
-      "error: Failed to detect if URL": 1,
-      "error: Failed to get bearer token": 1,
-      "warn: Missing token alert translation for": 1,
-      "MetaMask: Multiple instances warning": 1,
-      "error: Error: Missing NetworkController state": 1,
-      "error: Error: Expected state.NetworkController to be": 1,
-      "error: Error: Missing state.NetworkController.networkConfigurations...": 1,
-      "error: Error: Expected state.NetworkController.networkConfiguration...": 1,
-      "MetaMask: Permission type warnings": 2,
-      "warn: Invalid length provided: invalid. Falling": 1,
-      "error: Error: No metadata found for": 1,
-      "error: Migration 120.5: Invalid SelectedNetworkController state": 1,
-      "error: Migration 120.5: Missing SelectedNetworkController domains": 1,
-      "error: Migration 120.5: Invalid SelectedNetworkController domains": 1,
-      "error: Error: Migration 120.5: Invalid NetworkController": 2,
-      "error: Error: Migration 120.5: Invalid networkConfigurationId": 1,
-      "error: Migration 126.1: Invalid PhishingController.phishingLists st...": 1,
-      "error: Migration 120.2: Invalid SelectedNetworkController state": 4,
-      "error: Warning: You seem to have": 2,
-      "warn: REVIEWER_TEST: This warning should be": 45
-    }
-  }
+  "nodeVersion": "v24.11.1"
 }

@@ -159,26 +159,10 @@ class ConsoleBaselineReporter {
       // Files that didn't run are preserved as-is
     }
 
-    // Recalculate summary from merged files
-    let totalWarnings = 0;
-    const categoryCounts = {};
-
-    for (const [, warnings] of Object.entries(mergedFiles)) {
-      for (const [category, count] of Object.entries(warnings)) {
-        totalWarnings += count;
-        categoryCounts[category] = (categoryCounts[category] || 0) + count;
-      }
-    }
-
     const baseline = {
       generated: new Date().toISOString(),
       nodeVersion: process.version,
       files: mergedFiles,
-      summary: {
-        totalWarnings,
-        totalFilesWithWarnings: Object.keys(mergedFiles).length,
-        byCategory: categoryCounts,
-      },
     };
 
     // Format with Prettier to ensure consistent output that passes lint

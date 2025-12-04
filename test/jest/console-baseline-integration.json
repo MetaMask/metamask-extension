@@ -96,19 +96,5 @@
     }
   },
   "generated": "2025-12-04T10:47:12.530Z",
-  "nodeVersion": "v24.11.1",
-  "summary": {
-    "totalWarnings": 436,
-    "totalFilesWithWarnings": 21,
-    "byCategory": {
-      "Reselect: Identity function warnings": 253,
-      "Reselect: Input stability warnings": 168,
-      "React Router: Duplicate navigation warnings": 2,
-      "React: Act warnings (component updates not wrapped)": 2,
-      "warn: REVIEWER_TEST: This warning should be": 5,
-      "React: State updates on unmounted components": 2,
-      "React: DOM nesting violations": 3,
-      "React: componentWill* lifecycle deprecations": 1
-    }
-  }
+  "nodeVersion": "v24.11.1"
 }
