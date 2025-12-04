@@ -52,6 +52,7 @@ import { getIsMetaMaskShieldFeatureEnabled } from '../../../shared/modules/envir
 import { getHasSubscribedToShield } from '../../selectors/subscription/subscription';
 import { SHIELD_QUERY_PARAMS } from '../../../shared/lib/deep-links/routes/shield';
 import Settings from './settings.component';
+import { CLAIMS_TAB_KEYS } from './transaction-shield-tab/types';
 
 const ROUTES_TO_I18N_KEYS = {
   [ABOUT_US_ROUTE]: 'about',
@@ -114,8 +115,11 @@ const mapStateToProps = (state, ownProps) => {
   const isShieldClaimNewPage = Boolean(
     pathname.match(TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL),
   );
-  const isShieldClaimViewPage = Boolean(
-    pathname.startsWith(TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW.FULL),
+  const isShieldClaimViewActivePage = Boolean(
+    pathname.startsWith(TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW_PENDING.FULL),
+  );
+  const isShieldClaimViewCompletedPage = Boolean(
+    pathname.startsWith(TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW_HISTORY.FULL),
   );
   const isShieldClaimBasePage = Boolean(
     pathname.startsWith(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE),
@@ -134,8 +138,8 @@ const mapStateToProps = (state, ownProps) => {
     pathnameI18nKey = 'securitySrpWalletRecovery';
   }
 
-  // If pathname is `TRANSACTION_SHIELD_CLAIM_VIEW_ROUTE` rename the tab title to "Claim details"
-  if (pathname.startsWith(TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW.FULL)) {
+  // If pathname is view claim route rename the tab title to "Claim details"
+  if (isShieldClaimViewActivePage || isShieldClaimViewCompletedPage) {
     pathnameI18nKey = 'shieldClaimsListTitle';
   }
 
@@ -152,8 +156,10 @@ const mapStateToProps = (state, ownProps) => {
     backRoute = SECURITY_ROUTE;
   } else if (isShieldClaimNewPage) {
     backRoute = TRANSACTION_SHIELD_CLAIM_ROUTES.BASE;
-  } else if (isShieldClaimViewPage) {
-    backRoute = TRANSACTION_SHIELD_CLAIM_ROUTES.BASE;
+  } else if (isShieldClaimViewActivePage) {
+    backRoute = `${TRANSACTION_SHIELD_CLAIM_ROUTES.BASE}?tab=${CLAIMS_TAB_KEYS.PENDING}`;
+  } else if (isShieldClaimViewCompletedPage) {
+    backRoute = `${TRANSACTION_SHIELD_CLAIM_ROUTES.BASE}?tab=${CLAIMS_TAB_KEYS.HISTORY}`;
   } else if (isShieldClaimBasePage) {
     backRoute = TRANSACTION_SHIELD_ROUTE;
   }

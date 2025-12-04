@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Box,
   BoxBackgroundColor,
@@ -15,7 +15,7 @@ import {
   Button,
   Icon,
 } from '@metamask/design-system-react';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate, useSearchParams } from 'react-router-dom-v5-compat';
 import { Claim } from '@metamask/claims-controller';
 import LoadingScreen from '../../../../components/ui/loading-screen';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -25,23 +25,37 @@ import { Tab, Tabs } from '../../../../components/ui/tabs';
 import { getShortDateFormatterV2 } from '../../../asset/util';
 import { ThemeType } from '../../../../../shared/constants/preferences';
 import { useTheme } from '../../../../hooks/useTheme';
-
-const CLAIMS_TAB_KEYS = {
-  PENDING: 'pending',
-  HISTORY: 'history',
-} as const;
-
-type ClaimsTabKey = (typeof CLAIMS_TAB_KEYS)[keyof typeof CLAIMS_TAB_KEYS];
+import { CLAIMS_TAB_KEYS, ClaimsTabKey } from '../types';
 
 const ClaimsList = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const theme = useTheme();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { pendingClaims, completedClaims, rejectedClaims, isLoading } =
     useClaims();
 
+  const [defaultTab] = useState(() => {
+    const tabParam = searchParams.get('tab');
+    if (
+      tabParam === CLAIMS_TAB_KEYS.PENDING ||
+      tabParam === CLAIMS_TAB_KEYS.HISTORY
+    ) {
+      return tabParam;
+    }
+    return undefined;
+  });
+
+  // Clear the tab param from the URL after reading it
+  useEffect(() => {
+    if (searchParams.has('tab')) {
+      searchParams.delete('tab');
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
+
   const claimItem = useCallback(
-    (claim: Claim) => {
+    (claim: Claim, tabKey: ClaimsTabKey) => {
       const formattedDate = getShortDateFormatterV2().format(
         new Date(claim.createdAt),
       );
@@ -53,9 +67,11 @@ const ClaimsList = () => {
           backgroundColor={BoxBackgroundColor.BackgroundSection}
           className="claim-item flex items-center justify-between w-full p-4 rounded-lg"
           onClick={() => {
-            navigate(
-              `${TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW.FULL}/${claim.id}`,
-            );
+            const viewRoute =
+              tabKey === CLAIMS_TAB_KEYS.PENDING
+                ? TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW_PENDING.FULL
+                : TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW_HISTORY.FULL;
+            navigate(`${viewRoute}/${claim.id}`);
           }}
         >
           <button>
@@ -149,6 +165,7 @@ const ClaimsList = () => {
   return (
     <Tabs
       data-testid="claims-list-page"
+      defaultActiveTabKey={defaultTab}
       className="h-full flex flex-col overflow-y-hidden"
       tabListProps={{
         className: 'px-4',
@@ -176,7 +193,9 @@ const ClaimsList = () => {
                     {t('shieldClaimGroupActive')}
                   </Text>
                   <Box className="flex flex-col gap-2">
-                    {pendingClaims.map((claim) => claimItem(claim))}
+                    {pendingClaims.map((claim) =>
+                      claimItem(claim, CLAIMS_TAB_KEYS.PENDING),
+                    )}
                   </Box>
                 </Box>
                 <Text
@@ -223,7 +242,9 @@ const ClaimsList = () => {
                   {t('shieldClaimGroupCompleted')}
                 </Text>
                 <Box className="flex flex-col gap-2">
-                  {completedClaims.map((claim) => claimItem(claim))}
+                  {completedClaims.map((claim) =>
+                    claimItem(claim, CLAIMS_TAB_KEYS.HISTORY),
+                  )}
                 </Box>
               </Box>
             )}
@@ -238,7 +259,9 @@ const ClaimsList = () => {
                   {t('shieldClaimGroupRejected')}
                 </Text>
                 <Box className="flex flex-col gap-2">
-                  {rejectedClaims.map((claim) => claimItem(claim))}
+                  {rejectedClaims.map((claim) =>
+                    claimItem(claim, CLAIMS_TAB_KEYS.HISTORY),
+                  )}
                 </Box>
               </Box>
             )}
