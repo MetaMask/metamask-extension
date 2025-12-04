@@ -1,6 +1,7 @@
 import { useEffect, useCallback, useRef, useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Hex, hexToNumber } from '@metamask/utils';
+import { NetworkStatus } from '@metamask/network-controller';
 import { selectFirstUnavailableEvmNetwork } from '../selectors/multichain/networks';
 import { getNetworkConnectionBanner } from '../selectors/selectors';
 import { updateNetworkConnectionBanner } from '../store/actions';
@@ -10,7 +11,10 @@ import {
   MetaMetricsEventName,
 } from '../../shared/constants/metametrics';
 import { infuraProjectId } from '../../shared/constants/network';
-import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
+import {
+  getNetworkConfigurationsByChainId,
+  getNetworksMetadata,
+} from '../../shared/modules/selectors/networks';
 import { onlyKeepHost } from '../../shared/lib/only-keep-host';
 import { isPublicEndpointUrl } from '../../shared/lib/network-utils';
 import { NetworkConnectionBanner } from '../../shared/constants/app-state';
@@ -39,6 +43,7 @@ export const useNetworkConnectionBanner =
     const networkConfigurationsByChainId = useSelector(
       getNetworkConfigurationsByChainId,
     );
+    const networksMetadata = useSelector(getNetworksMetadata);
 
     const timersRef = useRef<{
       degradedTimer?: NodeJS.Timeout;
@@ -189,17 +194,34 @@ export const useNetworkConnectionBanner =
     // If the first unavailable network changes, reset all timers and change the status
 
     useEffect(() => {
-      if (firstUnavailableEvmNetwork) {
-        if (networkConnectionBannerState.status === 'degraded') {
-          startUnavailableTimer();
-        } else if (
-          networkConnectionBannerState.status === 'unknown' ||
-          networkConnectionBannerState.status === 'available'
-        ) {
-          startDegradedTimer();
+      // Check if the network currently shown in the banner has become available again
+      let networkRecovered = false;
+      if (
+        networkConnectionBannerState.status === 'degraded' ||
+        networkConnectionBannerState.status === 'unavailable'
+      ) {
+        const currentNetworkMetadata =
+          networksMetadata[networkConnectionBannerState.networkClientId];
+        if (currentNetworkMetadata?.status === NetworkStatus.Available) {
+          clearTimers();
+          dispatch(updateNetworkConnectionBanner({ status: 'available' }));
+          networkRecovered = true;
         }
-      } else if (networkConnectionBannerState.status !== 'available') {
-        dispatch(updateNetworkConnectionBanner({ status: 'available' }));
+      }
+
+      if (!networkRecovered) {
+        if (firstUnavailableEvmNetwork) {
+          if (networkConnectionBannerState.status === 'degraded') {
+            startUnavailableTimer();
+          } else if (
+            networkConnectionBannerState.status === 'unknown' ||
+            networkConnectionBannerState.status === 'available'
+          ) {
+            startDegradedTimer();
+          }
+        } else if (networkConnectionBannerState.status !== 'available') {
+          dispatch(updateNetworkConnectionBanner({ status: 'available' }));
+        }
       }
 
       return () => {
@@ -209,7 +231,8 @@ export const useNetworkConnectionBanner =
       firstUnavailableEvmNetwork,
       clearTimers,
       dispatch,
-      networkConnectionBannerState.status,
+      networkConnectionBannerState,
+      networksMetadata,
       startDegradedTimer,
       startUnavailableTimer,
     ]);

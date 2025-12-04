@@ -1,12 +1,15 @@
 import { act } from '@testing-library/react';
-import { RpcEndpointType } from '@metamask/network-controller';
+import { NetworkStatus, RpcEndpointType } from '@metamask/network-controller';
 import { renderHookWithProviderTyped } from '../../test/lib/render-helpers';
 import { selectFirstUnavailableEvmNetwork } from '../selectors/multichain/networks';
 import { getNetworkConnectionBanner } from '../selectors/selectors';
 import { updateNetworkConnectionBanner } from '../store/actions';
 import mockState from '../../test/data/mock-state.json';
 import { MetaMetricsEventName } from '../../shared/constants/metametrics';
-import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
+import {
+  getNetworkConfigurationsByChainId,
+  getNetworksMetadata,
+} from '../../shared/modules/selectors/networks';
 import { useNetworkConnectionBanner } from './useNetworkConnectionBanner';
 
 jest.mock('../../shared/constants/network', () => {
@@ -43,6 +46,7 @@ jest.mock('../../shared/modules/selectors/networks', () => {
   return {
     ...jest.requireActual('../../shared/modules/selectors/networks'),
     getNetworkConfigurationsByChainId: jest.fn(),
+    getNetworksMetadata: jest.fn(),
   };
 });
 
@@ -56,6 +60,7 @@ const mockUpdateNetworkConnectionBanner = jest.mocked(
 const mockGetNetworkConfigurationsByChainId = jest.mocked(
   getNetworkConfigurationsByChainId,
 );
+const mockGetNetworksMetadata = jest.mocked(getNetworksMetadata);
 
 describe('useNetworkConnectionBanner', () => {
   beforeEach(() => {
@@ -78,6 +83,11 @@ describe('useNetworkConnectionBanner', () => {
         blockExplorerUrls: ['https://etherscan.io'],
       },
     });
+
+    // The hook uses `networksMetadata[networkClientId]` to check if a network came back online.
+    // We need to provide at least an empty object to prevent TypeError when accessing properties.
+    // Tests that need specific metadata behavior will override this default.
+    mockGetNetworksMetadata.mockReturnValue({});
   });
 
   afterEach(() => {
@@ -352,6 +362,168 @@ describe('useNetworkConnectionBanner', () => {
 
       // Would have updated status to "degraded" if not for resetting timers
       expect(mockUpdateNetworkConnectionBanner).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('when the network shown in the banner becomes available again', () => {
+    describe('if the banner status is "degraded"', () => {
+      it('updates the status of the banner to "available" immediately when metadata shows network is available', () => {
+        // Set up: banner is showing degraded, but network metadata says it's actually available
+        mockGetNetworksMetadata.mockReturnValue({
+          mainnet: {
+            status: NetworkStatus.Available,
+            EIPS: {},
+          },
+        });
+        mockSelectFirstUnavailableEvmNetwork.mockReturnValue(null);
+        mockGetNetworkConnectionBanner.mockReturnValue({
+          status: 'degraded',
+          networkName: 'Ethereum Mainnet',
+          networkClientId: 'mainnet',
+          chainId: '0x1',
+          isInfuraEndpoint: true,
+        });
+
+        renderHookWithProviderTyped(
+          () => useNetworkConnectionBanner(),
+          mockState,
+        );
+
+        expect(mockUpdateNetworkConnectionBanner).toHaveBeenCalledWith({
+          status: 'available',
+        });
+      });
+
+      it('clears timers and updates status when network becomes available', () => {
+        // Set up: banner is showing degraded, but network metadata says it's actually available
+        mockGetNetworksMetadata.mockReturnValue({
+          mainnet: {
+            status: NetworkStatus.Available,
+            EIPS: {},
+          },
+        });
+        mockSelectFirstUnavailableEvmNetwork.mockReturnValue(null);
+        mockGetNetworkConnectionBanner.mockReturnValue({
+          status: 'degraded',
+          networkName: 'Ethereum Mainnet',
+          networkClientId: 'mainnet',
+          chainId: '0x1',
+          isInfuraEndpoint: true,
+        });
+
+        renderHookWithProviderTyped(
+          () => useNetworkConnectionBanner(),
+          mockState,
+        );
+
+        // The banner should be updated to available
+        expect(mockUpdateNetworkConnectionBanner).toHaveBeenCalledWith({
+          status: 'available',
+        });
+
+        // Advance timers - should not trigger any additional banner updates since timers were cleared
+        mockUpdateNetworkConnectionBanner.mockClear();
+        act(() => {
+          jest.advanceTimersByTime(30000);
+        });
+
+        expect(mockUpdateNetworkConnectionBanner).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('if the banner status is "unavailable"', () => {
+      it('updates the status of the banner to "available" when metadata shows network is available', () => {
+        // Set up: banner is showing unavailable, but network metadata says it's actually available
+        mockGetNetworksMetadata.mockReturnValue({
+          mainnet: {
+            status: NetworkStatus.Available,
+            EIPS: {},
+          },
+        });
+        mockSelectFirstUnavailableEvmNetwork.mockReturnValue(null);
+        mockGetNetworkConnectionBanner.mockReturnValue({
+          status: 'unavailable',
+          networkName: 'Ethereum Mainnet',
+          networkClientId: 'mainnet',
+          chainId: '0x1',
+          isInfuraEndpoint: true,
+        });
+
+        renderHookWithProviderTyped(
+          () => useNetworkConnectionBanner(),
+          mockState,
+        );
+
+        expect(mockUpdateNetworkConnectionBanner).toHaveBeenCalledWith({
+          status: 'available',
+        });
+      });
+    });
+
+    describe('when metadata status is not Available', () => {
+      it('does not update banner if metadata status is Unknown', () => {
+        mockGetNetworksMetadata.mockReturnValue({
+          mainnet: {
+            status: NetworkStatus.Unknown,
+            EIPS: {},
+          },
+        });
+        mockSelectFirstUnavailableEvmNetwork.mockReturnValue({
+          networkName: 'Ethereum Mainnet',
+          networkClientId: 'mainnet',
+          chainId: '0x1',
+          isInfuraEndpoint: true,
+        });
+        mockGetNetworkConnectionBanner.mockReturnValue({
+          status: 'degraded',
+          networkName: 'Ethereum Mainnet',
+          networkClientId: 'mainnet',
+          chainId: '0x1',
+          isInfuraEndpoint: true,
+        });
+
+        renderHookWithProviderTyped(
+          () => useNetworkConnectionBanner(),
+          mockState,
+        );
+
+        // Should not update to available since metadata status is Unknown, not Available
+        expect(mockUpdateNetworkConnectionBanner).not.toHaveBeenCalledWith({
+          status: 'available',
+        });
+      });
+
+      it('does not update banner if metadata status is Blocked', () => {
+        mockGetNetworksMetadata.mockReturnValue({
+          mainnet: {
+            status: NetworkStatus.Blocked,
+            EIPS: {},
+          },
+        });
+        mockSelectFirstUnavailableEvmNetwork.mockReturnValue({
+          networkName: 'Ethereum Mainnet',
+          networkClientId: 'mainnet',
+          chainId: '0x1',
+          isInfuraEndpoint: true,
+        });
+        mockGetNetworkConnectionBanner.mockReturnValue({
+          status: 'unavailable',
+          networkName: 'Ethereum Mainnet',
+          networkClientId: 'mainnet',
+          chainId: '0x1',
+          isInfuraEndpoint: true,
+        });
+
+        renderHookWithProviderTyped(
+          () => useNetworkConnectionBanner(),
+          mockState,
+        );
+
+        // Should not update to available since metadata status is Blocked, not Available
+        expect(mockUpdateNetworkConnectionBanner).not.toHaveBeenCalledWith({
+          status: 'available',
+        });
+      });
     });
   });
 });
