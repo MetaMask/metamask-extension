@@ -9,13 +9,14 @@ import {
   hasProperty,
 } from '@metamask/utils';
 import { JsonRpcError } from '@metamask/rpc-errors';
-import { TEN_SECONDS_IN_MILLISECONDS } from '../../../shared/lib/transactions-controller-utils';
 import getNextId from '../../../shared/modules/random-id';
 // It *is* used: in TypeDoc comment, you silly goose.
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type MetamaskController from '../metamask-controller';
 
 const JSON_RPC_VERSION = '2.0' as const;
+
+const SIXTEEN_SECONDS_AS_MILLISECONDS = 16000;
 
 type Timer = ReturnType<typeof setTimeout>;
 
@@ -186,7 +187,7 @@ export class MetaRPCClient<Api extends FunctionRegistry<Api>> {
           timer = setTimeout(() => {
             this.requests.delete(payload.id);
             reject(new Error('No response from RPC'));
-          }, TEN_SECONDS_IN_MILLISECONDS);
+          }, SIXTEEN_SECONDS_AS_MILLISECONDS);
         }
         this.requests.set(payload.id, { resolve, reject, timer });
         this.#connectionStream.write(payload);

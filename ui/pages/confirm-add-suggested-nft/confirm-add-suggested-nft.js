@@ -71,9 +71,12 @@ const ConfirmAddSuggestedNFT = () => {
 
   const hasAppHeader = location?.pathname ? !hideAppHeader({ location }) : true;
 
-  const classNames = classnames('confirm-add-suggested-nft page-container', {
-    'confirm-add-suggested-nft--has-app-header-multichain': hasAppHeader,
-  });
+  const classNames = classnames(
+    'confirm-add-suggested-nft page-container h-full',
+    {
+      'confirm-add-suggested-nft--has-app-header-multichain': hasAppHeader,
+    },
+  );
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const suggestedNftsNotSorted = useSelector(getSuggestedNfts);
