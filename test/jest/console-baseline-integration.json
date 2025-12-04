@@ -1,0 +1,138 @@
+{
+  "generated": "2025-12-03T18:56:44.397Z",
+  "nodeVersion": "v24.11.1",
+  "files": {
+    "test/integration/onboarding/wallet-created.test.tsx": {
+      "Reselect: Identity function warnings": 6,
+      "Reselect: Input stability warnings": 6,
+      "React: Act warnings (component updates not wrapped)": 1,
+      "React: PropTypes validation failures": 2,
+      "React Router: Duplicate navigation warnings": 1
+    },
+    "test/integration/notifications&auth/notifications-activation.test.tsx": {
+      "Reselect: Identity function warnings": 10,
+      "Reselect: Input stability warnings": 9,
+      "MetaMask: Invalid theme warnings": 1
+    },
+    "test/integration/confirmations/transactions/set-approval-for-all.test.tsx": {
+      "Reselect: Identity function warnings": 12,
+      "Reselect: Input stability warnings": 8,
+      "MetaMask: Invalid theme warnings": 1,
+      "React: Act warnings (component updates not wrapped)": 1
+    },
+    "test/integration/confirmations/transactions/increase-allowance.test.tsx": {
+      "Reselect: Identity function warnings": 12,
+      "Reselect: Input stability warnings": 8,
+      "MetaMask: Invalid theme warnings": 1,
+      "React: Act warnings (component updates not wrapped)": 1
+    },
+    "test/integration/confirmations/transactions/erc20-approve.test.tsx": {
+      "Reselect: Identity function warnings": 12,
+      "Reselect: Input stability warnings": 8,
+      "MetaMask: Invalid theme warnings": 1,
+      "React: Act warnings (component updates not wrapped)": 1
+    },
+    "test/integration/confirmations/transactions/erc721-approve.test.tsx": {
+      "Reselect: Identity function warnings": 12,
+      "Reselect: Input stability warnings": 8,
+      "MetaMask: Invalid theme warnings": 1
+    },
+    "test/integration/confirmations/transactions/alerts.test.tsx": {
+      "Reselect: Identity function warnings": 12,
+      "Reselect: Input stability warnings": 8,
+      "MetaMask: Invalid theme warnings": 1
+    },
+    "test/integration/onboarding/import-wallet.test.tsx": {
+      "Reselect: Identity function warnings": 6,
+      "Reselect: Input stability warnings": 6,
+      "React: Act warnings (component updates not wrapped)": 1,
+      "React: PropTypes validation failures": 2,
+      "React Router: Duplicate navigation warnings": 1
+    },
+    "test/integration/confirmations/signatures/permit.test.tsx": {
+      "Reselect: Identity function warnings": 12,
+      "Reselect: Input stability warnings": 8,
+      "MetaMask: Invalid theme warnings": 1
+    },
+    "test/integration/confirmations/transactions/set-approval-for-all-revoke.test.tsx": {
+      "Reselect: Identity function warnings": 12,
+      "Reselect: Input stability warnings": 8,
+      "MetaMask: Invalid theme warnings": 1
+    },
+    "test/integration/notifications&auth/notifications-list.test.tsx": {
+      "Reselect: Identity function warnings": 10,
+      "Reselect: Input stability warnings": 8,
+      "MetaMask: Invalid theme warnings": 1,
+      "React: State updates on unmounted components": 1
+    },
+    "test/integration/nfts/nfts.test.tsx": {
+      "Reselect: Identity function warnings": 10,
+      "Reselect: Input stability warnings": 8,
+      "MetaMask: Invalid theme warnings": 1,
+      "React: DOM nesting violations": 2
+    },
+    "test/integration/defi/defi-positions.test.tsx": {
+      "Reselect: Identity function warnings": 11,
+      "Reselect: Input stability warnings": 8,
+      "MetaMask: Invalid theme warnings": 1,
+      "React: DOM nesting violations": 1,
+      "React: State updates on unmounted components": 1
+    },
+    "test/integration/confirmations/signatures/permit-batch.test.tsx": {
+      "Reselect: Identity function warnings": 12,
+      "Reselect: Input stability warnings": 8,
+      "MetaMask: Invalid theme warnings": 1
+    },
+    "test/integration/confirmations/signatures/permit-tradeOrder.test.tsx": {
+      "Reselect: Identity function warnings": 12,
+      "Reselect: Input stability warnings": 8,
+      "MetaMask: Invalid theme warnings": 1
+    },
+    "test/integration/confirmations/signatures/personalSign.test.tsx": {
+      "Reselect: Identity function warnings": 11,
+      "Reselect: Input stability warnings": 8,
+      "MetaMask: Invalid theme warnings": 1
+    },
+    "test/integration/confirmations/transactions/contract-interaction.test.tsx": {
+      "Reselect: Identity function warnings": 12,
+      "Reselect: Input stability warnings": 8,
+      "MetaMask: Invalid theme warnings": 1
+    },
+    "test/integration/confirmations/signatures/permit-single.test.tsx": {
+      "Reselect: Identity function warnings": 12,
+      "Reselect: Input stability warnings": 8,
+      "MetaMask: Invalid theme warnings": 1
+    },
+    "test/integration/confirmations/transactions/contract-deployment.test.tsx": {
+      "Reselect: Identity function warnings": 12,
+      "Reselect: Input stability warnings": 8,
+      "MetaMask: Invalid theme warnings": 1
+    },
+    "test/integration/notifications&auth/notifications-toggle.test.tsx": {
+      "Reselect: Identity function warnings": 10,
+      "Reselect: Input stability warnings": 11,
+      "MetaMask: Invalid theme warnings": 1,
+      "React: componentWill* lifecycle deprecations": 1
+    },
+    "test/integration/confirmations/signatures/permit-seaport.test.tsx": {
+      "Reselect: Identity function warnings": 12,
+      "Reselect: Input stability warnings": 8,
+      "MetaMask: Invalid theme warnings": 1
+    }
+  },
+  "summary": {
+    "totalWarnings": 434,
+    "totalFilesWithWarnings": 21,
+    "byCategory": {
+      "Reselect: Identity function warnings": 230,
+      "Reselect: Input stability warnings": 168,
+      "React: Act warnings (component updates not wrapped)": 5,
+      "React: PropTypes validation failures": 4,
+      "React Router: Duplicate navigation warnings": 2,
+      "MetaMask: Invalid theme warnings": 19,
+      "React: State updates on unmounted components": 2,
+      "React: DOM nesting violations": 3,
+      "React: componentWill* lifecycle deprecations": 1
+    }
+  }
+}
