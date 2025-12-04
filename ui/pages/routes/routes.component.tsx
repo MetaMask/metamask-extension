@@ -534,7 +534,7 @@ export default function RoutesComponent() {
       createRouteWithLayout({
         path: IMPORT_SRP_ROUTE,
         component: ImportSrpPage,
-        layout: LegacyLayout,
+        layout: RootLayout,
         authenticated: true,
       }),
       createRouteWithLayout({
@@ -582,7 +582,7 @@ export default function RoutesComponent() {
       createRouteWithLayout({
         path: `${CONFIRM_TRANSACTION_ROUTE}/:id?/*`,
         component: ConfirmTransaction,
-        layout: LegacyLayout,
+        layout: RootLayout,
         authenticated: true,
       }),
       createRouteWithLayout({
@@ -600,7 +600,7 @@ export default function RoutesComponent() {
       createRouteWithLayout({
         path: `${CROSS_CHAIN_SWAP_ROUTE}/*`,
         component: CrossChainSwap,
-        layout: LegacyLayout,
+        layout: RootLayout,
         authenticated: true,
       }),
       createRouteWithLayout({
@@ -618,7 +618,7 @@ export default function RoutesComponent() {
       createRouteWithLayout({
         path: `${CONFIRMATION_V_NEXT_ROUTE}/:id?`,
         component: ConfirmationPage,
-        layout: LegacyLayout,
+        layout: RootLayout,
         authenticated: true,
       }),
       createRouteWithLayout({
@@ -708,7 +708,7 @@ export default function RoutesComponent() {
       createRouteWithLayout({
         path: `${REVIEW_PERMISSIONS}/:origin`,
         component: MemoizedReviewPermissionsWrapper,
-        layout: LegacyLayout,
+        layout: RootLayout,
         authenticated: true,
       }),
       createRouteWithLayout({
