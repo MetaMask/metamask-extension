@@ -24,6 +24,7 @@ import {
   cancelSubscription,
   estimateGas,
   estimateRewardsPoints,
+  getRewardsHasAccountOptedIn,
   getRewardsSeasonMetadata,
   getSubscriptionBillingPortalUrl,
   getSubscriptions,
@@ -741,7 +742,13 @@ export const useUpdateSubscriptionCryptoPaymentMethod = ({
   };
 };
 
-export const useShieldRewards = () => {
+export const useShieldRewards = (): {
+  pending: boolean;
+  pointsMonthly: number | null;
+  pointsYearly: number | null;
+  isRewardsSeason: boolean;
+  hasAccountOptedIn: boolean;
+} => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const [primaryKeyring] = useSelector(getMetaMaskHdKeyrings);
   const accountsWithCaipChainId = useSelector(
@@ -770,6 +777,17 @@ export const useShieldRewards = () => {
     }
     return primaryAccountWithCaipChainId.caipAccountId;
   }, [primaryKeyring, accountsWithCaipChainId]);
+
+  const {
+    value: hasAccountOptedIn,
+    pending: hasAccountOptedInResultPending,
+    error: hasAccountOptedInResultError,
+  } = useAsyncResult<boolean>(async () => {
+    if (!caipAccountId) {
+      return false;
+    }
+    return await dispatch(getRewardsHasAccountOptedIn(caipAccountId));
+  }, [caipAccountId]);
 
   const {
     value: pointsValue,
@@ -833,25 +851,30 @@ export const useShieldRewards = () => {
   }, [dispatch]);
 
   // if there is an error, return null values for points and season so it will not block the UI
-  if (pointsError || seasonError) {
+  if (pointsError || seasonError || hasAccountOptedInResultError) {
     if (pointsError) {
       console.error('[useShieldRewards error]:', pointsError);
     }
     if (seasonError) {
       console.error('[useShieldRewards error]:', seasonError);
     }
+    if (hasAccountOptedInResultError) {
+      console.error('[useShieldRewards error]:', hasAccountOptedInResultError);
+    }
     return {
       pending: false,
       pointsMonthly: null,
       pointsYearly: null,
       isRewardsSeason: false,
+      hasAccountOptedIn: false,
     };
   }
 
   return {
-    pending: pointsPending || seasonPending,
+    pending: pointsPending || seasonPending || hasAccountOptedInResultPending,
     pointsMonthly: pointsValue?.monthly ?? null,
     pointsYearly: pointsValue?.yearly ?? null,
     isRewardsSeason: isRewardsSeason ?? false,
+    hasAccountOptedIn: hasAccountOptedIn ?? false,
   };
 };
