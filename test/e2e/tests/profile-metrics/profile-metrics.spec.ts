@@ -167,19 +167,19 @@ describe('Profile Metrics', function () {
 
   [
     {
-      title: 'MetaMetrics is disabled',
+      title: 'when MetaMetrics is disabled',
       participateInMetaMetrics: false,
       featureFlag: true,
       pna25Acknowledged: true,
     },
     {
-      title: 'feature flag is off',
+      title: 'when the relevant feature flag is off',
       participateInMetaMetrics: true,
       featureFlag: false,
       pna25Acknowledged: true,
     },
     {
-      title: 'user has not acknowledged the privacy change',
+      title: 'when the user has not acknowledged the privacy change',
       participateInMetaMetrics: true,
       featureFlag: true,
       pna25Acknowledged: false,
