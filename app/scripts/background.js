@@ -747,6 +747,22 @@ async function initialize(backup) {
       'stateChange',
       async ({ controllerKey, newState, _oldState, _patches }) => {
         persistenceManager.update(controllerKey, newState);
+
+        // if this key is one of the `backedUpStateKeys` we must always
+        // re-persist all of the other `backedUpStateKeys`, as they must always
+        // stored in the backup DB together.
+        if (backedUpStateKeys.includes(controllerKey)) {
+          backedUpStateKeys.forEach((key) => {
+            if (key === controllerKey) {
+              // already updated this one
+              return;
+            }
+            const state = controller.controllerMessenger.call(
+              `${key}:getState`,
+            );
+            persistenceManager.update(key, state);
+          });
+        }
         await persist();
       },
     );
