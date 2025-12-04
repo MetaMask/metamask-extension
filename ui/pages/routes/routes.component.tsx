@@ -280,10 +280,7 @@ const createV5CompatRoute = <
 
 // Begin Lazy Routes
 const OnboardingFlow = mmLazy(
-  (() =>
-    import(
-      '../onboarding-flow/onboarding-flow.js'
-    )) as unknown as DynamicImportType,
+  (() => import('../onboarding-flow/index.ts')) as unknown as DynamicImportType,
 );
 const Lock = mmLazy(
   (() => import('../lock/index.js')) as unknown as DynamicImportType,
@@ -794,7 +791,7 @@ export default function Routes() {
               },
             )}
           </RouteWithLayout>
-          <RouteWithLayout path={CROSS_CHAIN_SWAP_ROUTE} layout={LegacyLayout}>
+          <RouteWithLayout path={CROSS_CHAIN_SWAP_ROUTE} layout={RootLayout}>
             {createV5CompatRoute(CrossChainSwap, {
               wrapper: AuthenticatedV5Compat,
               includeLocation: true,
@@ -984,7 +981,6 @@ export default function Routes() {
             })}
           </RouteWithLayout>
           <RouteWithLayout
-            authenticated
             path={`${REVIEW_PERMISSIONS}/:origin`}
             exact
             layout={RootLayout}

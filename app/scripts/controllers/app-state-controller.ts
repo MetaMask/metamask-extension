@@ -71,7 +71,12 @@ export type DappSwapComparisonData = {
   latency?: number;
   commands?: string;
   error?: string;
-  tokenAddresses?: Hex[];
+  swapInfo?: {
+    srcTokenAddress: Hex;
+    destTokenAddress: Hex;
+    srcTokenAmount: Hex;
+    destTokenAmountMin: Hex;
+  };
 };
 
 export type AppStateControllerState = {
@@ -1693,7 +1698,10 @@ export class AppStateController extends BaseController<
     this.update((state) => {
       state.dappSwapComparisonData = {
         ...state.dappSwapComparisonData,
-        [uniqueId]: info,
+        [uniqueId]: {
+          ...(state.dappSwapComparisonData?.[uniqueId] ?? {}),
+          ...info,
+        },
       };
     });
   }

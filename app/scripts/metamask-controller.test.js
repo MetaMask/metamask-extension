@@ -50,7 +50,7 @@ import { KeyringTypes } from '@metamask/keyring-controller';
 import { createTestProviderTools } from '../../test/stub/provider';
 import {
   HardwareDeviceNames,
-  HardwareKeyringType,
+  KEYRING_DEVICE_PROPERTY_MAP,
 } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
 import { LOG_EVENT } from '../../shared/constants/logs';
@@ -1705,7 +1705,7 @@ describe('MetaMaskController', () => {
             const result =
               await metamaskController.getHardwareTypeForMetric('0x123');
 
-            expect(result).toBe(HardwareKeyringType[type]);
+            expect(result).toBe(KEYRING_DEVICE_PROPERTY_MAP[type]);
           },
         );
       });
