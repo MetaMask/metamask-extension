@@ -748,13 +748,25 @@ export const useShieldRewards = () => {
     if (!selectedAccount?.scopes?.[0]) {
       return null;
     }
-    const { namespace, reference } = parseCaipChainId(
-      selectedAccount.scopes[0],
-    );
-    return `${namespace}:${reference}:${selectedAccount.address}` as CaipAccountId;
+    try {
+      const { namespace, reference } = parseCaipChainId(
+        selectedAccount.scopes[0],
+      );
+      return `${namespace}:${reference}:${selectedAccount.address}` as CaipAccountId;
+    } catch {
+      console.error(
+        '[useShieldRewards] Failed to parse CAIP chain ID:',
+        selectedAccount.scopes[0],
+      );
+      return null;
+    }
   }, [selectedAccount]);
 
-  const { value: pointsValue, pending: pointsPending } = useAsyncResult<{
+  const {
+    value: pointsValue,
+    pending: pointsPending,
+    error: pointsError,
+  } = useAsyncResult<{
     monthly: number | null;
     yearly: number | null;
   }>(async () => {
@@ -793,22 +805,39 @@ export const useShieldRewards = () => {
     };
   }, [dispatch, caipAccountId]);
 
-  const { value: isRewardsSeason, pending: seasonPending } =
-    useAsyncResult<boolean>(async () => {
-      const seasonMetadata = await dispatch(
-        getRewardsSeasonMetadata('current'),
-      );
+  const {
+    value: isRewardsSeason,
+    pending: seasonPending,
+    error: seasonError,
+  } = useAsyncResult<boolean>(async () => {
+    const seasonMetadata = await dispatch(getRewardsSeasonMetadata('current'));
 
-      if (!seasonMetadata) {
-        return false;
-      }
+    if (!seasonMetadata) {
+      return false;
+    }
 
-      const currentTimestamp = Date.now();
-      return (
-        currentTimestamp >= seasonMetadata.startDate &&
-        currentTimestamp <= seasonMetadata.endDate
-      );
-    }, [dispatch]);
+    const currentTimestamp = Date.now();
+    return (
+      currentTimestamp >= seasonMetadata.startDate &&
+      currentTimestamp <= seasonMetadata.endDate
+    );
+  }, [dispatch]);
+
+  // if there is an error, return null values for points and season so it will not block the UI
+  if (pointsError || seasonError) {
+    if (pointsError) {
+      console.error('[useShieldRewards error]:', pointsError);
+    }
+    if (seasonError) {
+      console.error('[useShieldRewards error]:', seasonError);
+    }
+    return {
+      pending: false,
+      pointsMonthly: null,
+      pointsYearly: null,
+      isRewardsSeason: false,
+    };
+  }
 
   return {
     pending: pointsPending || seasonPending,
