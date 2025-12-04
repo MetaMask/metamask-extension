@@ -122,8 +122,8 @@
     "currencyRates": {
       "ETH": {
         "conversionDate": "number",
-        "conversionRate": 1700,
-        "usdConversionRate": 1700
+        "conversionRate": 1700.0000000000002,
+        "usdConversionRate": 1700.0000000000002
       },
       "MON": {
         "conversionDate": "number",
@@ -423,7 +423,9 @@
     "rewardsSeasons": "object",
     "rewardsSeasonStatuses": "object",
     "rewardsSubscriptionTokens": "object",
-    "srpSessionData": "object"
+    "srpSessionData": "object",
+    "syncQueue": "object",
+    "initialEnqueueCompleted": "boolean"
   },
   "ramps": "object",
   "rewards": "object",

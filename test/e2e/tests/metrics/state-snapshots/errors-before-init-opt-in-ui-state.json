@@ -245,6 +245,7 @@
       "useTransactionSimulations": true,
       "watchEthereumAccountEnabled": "boolean"
     },
+    "ProfileMetricsController": "object",
     "RemoteFeatureFlagController": {
       "cacheTimestamp": "number",
       "remoteFeatureFlags": {
