@@ -74,7 +74,7 @@ jobs:
       RUN_ID: ${{ github.run_id }}
       PR_NUMBER: ${{ github.event.pull_request.number || '' }}
       TEST_SUITE_NAME: ${{ inputs.test-suite-name }}
-      IS_SIDEPANEL: true
+      IS_SIDEPANEL: false
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
