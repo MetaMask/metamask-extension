@@ -306,6 +306,10 @@ const runScriptThenReloadExtension = async (
   );
 
   await driver.switchToWindow(blankWindow);
+
+  // get a new tab ready to use (required for Firefox)
+  await driver.openNewPage('about:blank');
+
   await waitForRestart(driver);
 
   if (result?.error) {
