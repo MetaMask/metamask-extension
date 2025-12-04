@@ -281,6 +281,10 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       TransactionController: {
         transactions: {},
       },
+      ProfileMetricsController: {
+        initialEnqueueCompleted: false,
+        syncQueue: {},
+      },
       config: {},
       firstTimeInfo: {
         date: 1665507600000,

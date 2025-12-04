@@ -23,7 +23,6 @@ import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
-  ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_METAMETRICS,
   ONBOARDING_ACCOUNT_EXIST,
   ONBOARDING_ACCOUNT_NOT_FOUND,
@@ -82,7 +81,6 @@ import PrivacySettings from './privacy-settings/privacy-settings';
 import CreationSuccessful from './creation-successful/creation-successful';
 import OnboardingWelcome from './welcome/welcome';
 import ImportSRP from './import-srp/import-srp';
-import OnboardingPinExtension from './pin-extension/pin-extension';
 import MetaMetricsComponent from './metametrics/metametrics';
 import OnboardingAppHeader from './onboarding-app-header/onboarding-app-header';
 import AccountExist from './account-exist/account-exist';
@@ -370,10 +368,6 @@ export default function OnboardingFlow({
           <Route
             path={ONBOARDING_WELCOME_ROUTE}
             element={<OnboardingWelcome />}
-          />
-          <Route
-            path={ONBOARDING_PIN_EXTENSION_ROUTE}
-            element={<OnboardingPinExtension />}
           />
           <Route
             path={ONBOARDING_METAMETRICS}

@@ -83,6 +83,10 @@ import {
   BackendWebSocketService,
 } from '@metamask/core-backend';
 import { ClaimsController, ClaimsService } from '@metamask/claims-controller';
+import {
+  ProfileMetricsController,
+  ProfileMetricsService,
+} from '@metamask/profile-metrics-controller';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -197,7 +201,9 @@ export type Controller =
   | AccountActivityService
   | MultichainAccountService
   | NetworkEnablementController
-  | ClaimsService;
+  | ClaimsService
+  | ProfileMetricsController
+  | ProfileMetricsService;
 
 /**
  * Flat state object for all controllers supporting or required by modular initialization.
@@ -270,4 +276,5 @@ export type ControllerFlatState = AccountOrderController['state'] &
   NftController['state'] &
   NftDetectionController['state'] &
   NetworkEnablementController['state'] &
-  AccountTrackerController['state'];
+  AccountTrackerController['state'] &
+  ProfileMetricsController['state'];

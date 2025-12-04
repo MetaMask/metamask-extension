@@ -145,6 +145,7 @@
       "isMultiAccountBalancesEnabled": "boolean",
       "referrals": "object"
     },
+    "ProfileMetricsController": "object",
     "SelectedNetworkController": { "domains": "object" },
     "SmartTransactionsController": {
       "smartTransactionsState": {

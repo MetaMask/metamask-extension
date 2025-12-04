@@ -23,6 +23,8 @@ import {
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MultichainAddressRow } from '../multichain-address-row/multichain-address-row';
 import { getInternalAccountListSpreadByScopesByGroupId } from '../../../selectors/multichain-accounts/account-tree';
+// eslint-disable-next-line import/no-restricted-paths
+import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 
 // Priority networks that should appear first (using CAIP chain IDs)
 const PRIORITY_CHAIN_IDS: CaipChainId[] = [
@@ -62,9 +64,9 @@ export const MultichainAddressRowsList = ({
   );
 
   const sortByPriorityNetworks = useCallback(
-    (items: typeof getAccountsSpreadByNetworkByGroupId) => {
-      const priorityItems: typeof items = [];
-      const otherItems: typeof items = [];
+    <ItemType extends { scope: CaipChainId }>(items: ItemType[]) => {
+      const priorityItems: ItemType[] = [];
+      const otherItems: ItemType[] = [];
 
       items.forEach((item) => {
         const priorityIndex = PRIORITY_CHAIN_IDS.findIndex(
@@ -85,27 +87,31 @@ export const MultichainAddressRowsList = ({
     [],
   );
 
+  // Normalize addresses once for all items for performance
+  const itemsWithNormalizedAddresses = useMemo(() => {
+    return getAccountsSpreadByNetworkByGroupId.map((item) => ({
+      ...item,
+      normalizedAddress: normalizeSafeAddress(item.account.address),
+    }));
+  }, [getAccountsSpreadByNetworkByGroupId]);
+
   const filteredItems = useMemo(() => {
-    let items = getAccountsSpreadByNetworkByGroupId;
+    let items = itemsWithNormalizedAddresses;
 
     // Apply search filter if there's a search pattern
     if (searchPattern.trim()) {
       const pattern = searchPattern.toLowerCase();
-      items = items.filter(({ networkName, account }) => {
+      items = items.filter(({ networkName, normalizedAddress }) => {
         return (
           networkName.toLowerCase().includes(pattern) ||
-          account.address.toLowerCase().includes(pattern)
+          normalizedAddress.toLowerCase().includes(pattern)
         );
       });
     }
 
     // Sort by priority networks
     return sortByPriorityNetworks(items);
-  }, [
-    getAccountsSpreadByNetworkByGroupId,
-    searchPattern,
-    sortByPriorityNetworks,
-  ]);
+  }, [itemsWithNormalizedAddresses, searchPattern, sortByPriorityNetworks]);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchPattern(event.target.value);
@@ -121,11 +127,12 @@ export const MultichainAddressRowsList = ({
         scope: CaipChainId;
         account: InternalAccount;
         networkName: string;
+        normalizedAddress: string;
       },
       index: number,
     ): React.JSX.Element => {
       const handleCopyClick = () => {
-        handleCopy(item.account.address);
+        handleCopy(item.normalizedAddress);
       };
 
       return (
@@ -133,7 +140,7 @@ export const MultichainAddressRowsList = ({
           key={`${item.account.address}-${item.scope}-${index}`}
           chainId={item.scope}
           networkName={item.networkName}
-          address={item.account.address}
+          address={item.normalizedAddress}
           copyActionParams={{
             message: t('multichainAccountAddressCopied'),
             callback: handleCopyClick,

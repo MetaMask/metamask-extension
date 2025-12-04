@@ -117,12 +117,6 @@
         "SharedArrayBuffer": true
       }
     },
-    "react-responsive-carousel": {
-      "globals": {
-        "addEventListener": true,
-        "removeEventListener": true
-      }
-    },
     "react-toggle-button": {
       "globals": {
         "requestAnimationFrame": true,

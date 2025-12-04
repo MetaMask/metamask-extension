@@ -6,6 +6,17 @@ import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { MultichainAccountAddressListPage } from './multichain-account-address-list-page';
 
+jest.mock('../../../../shared/lib/trace', () => {
+  const actual = jest.requireActual('../../../../shared/lib/trace');
+  return {
+    ...actual,
+    endTrace: jest.fn(),
+  };
+});
+
+const mockUseNavigate = jest.fn();
+const mockUseParams = jest.fn();
+const mockUseLocation = jest.fn();
 const addressRowsListSearchTestId = 'multichain-address-rows-list-search';
 const addressRowsListTestId = 'multichain-address-rows-list';
 const backButtonTestId = 'multichain-account-address-list-page-back-button';
@@ -13,10 +24,6 @@ const backButtonTestId = 'multichain-account-address-list-page-back-button';
 // Use actual group IDs from mock-state.json
 const MOCK_GROUP_ID = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0' as AccountGroupId;
 const MOCK_GROUP_NAME = 'Account 1';
-
-const mockUseNavigate = jest.fn();
-const mockUseParams = jest.fn();
-const mockUseLocation = jest.fn();
 jest.mock('react-router-dom-v5-compat', () => {
   return {
     ...jest.requireActual('react-router-dom-v5-compat'),
@@ -60,7 +67,7 @@ describe('MultichainAccountAddressListPage', () => {
     expect(screen.getByTestId(addressRowsListSearchTestId)).toBeInTheDocument();
   });
 
-  it('handles back button click', () => {
+  it('navigates back when back button is clicked', () => {
     mockUseParams.mockReturnValue({
       accountGroupId: MOCK_GROUP_ID,
     });
@@ -79,7 +86,7 @@ describe('MultichainAccountAddressListPage', () => {
     expect(mockUseNavigate).toHaveBeenCalledWith(-1);
   });
 
-  it('handles non-existent account group gracefully', () => {
+  it('displays fallback text when account group does not exist', () => {
     mockUseParams.mockReturnValue({
       accountGroupId: 'non-existent-group',
     });
@@ -99,7 +106,7 @@ describe('MultichainAccountAddressListPage', () => {
     expect(screen.getByTestId(addressRowsListTestId)).toBeInTheDocument();
   });
 
-  it('handles encoded account group ID', () => {
+  it('decodes and renders account group with encoded ID', () => {
     const encodedGroupId = encodeURIComponent(MOCK_GROUP_ID);
 
     mockUseParams.mockReturnValue({
@@ -167,7 +174,7 @@ describe('MultichainAccountAddressListPage', () => {
     expect(screen.getByTestId(addressRowsListTestId)).toBeInTheDocument();
   });
 
-  it('handles special characters in group ID', () => {
+  it('decodes and renders account group with special characters in ID', () => {
     const specialGroupId =
       'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0' as AccountGroupId;
     const encodedSpecialGroupId = encodeURIComponent(specialGroupId);
@@ -211,7 +218,7 @@ describe('MultichainAccountAddressListPage', () => {
     expect(screen.queryByText('Receiving address')).not.toBeInTheDocument();
   });
 
-  it('handles null account group ID', () => {
+  it('displays fallback text when account group ID is null', () => {
     mockUseParams.mockReturnValue({
       accountGroupId: null,
     });
@@ -228,7 +235,7 @@ describe('MultichainAccountAddressListPage', () => {
     expect(screen.getByText('Account / Addresses')).toBeInTheDocument();
   });
 
-  it('handles undefined account group ID', () => {
+  it('displays fallback text when account group ID is undefined', () => {
     mockUseParams.mockReturnValue({
       accountGroupId: undefined,
     });
@@ -243,5 +250,24 @@ describe('MultichainAccountAddressListPage', () => {
 
     // Should show fallback text
     expect(screen.getByText('Account / Addresses')).toBeInTheDocument();
+  });
+
+  describe('tracing', () => {
+    it('ends ShowAccountAddressList trace on mount', () => {
+      mockUseParams.mockReturnValue({
+        accountGroupId: MOCK_GROUP_ID,
+      });
+
+      const store = configureStore(mockState);
+
+      renderWithProvider(<MultichainAccountAddressListPage />, store);
+
+      const traceLib = jest.requireMock('../../../../shared/lib/trace');
+      expect(traceLib.endTrace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: traceLib.TraceName.ShowAccountAddressList,
+        }),
+      );
+    });
   });
 });

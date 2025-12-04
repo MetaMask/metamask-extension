@@ -4272,25 +4272,6 @@
     "message": "εικονίδιο $1",
     "description": "$1 is the icon name"
   },
-  "onboardingPinExtensionAltLaunch": {
-    "message": "Ανοίξτε την επέκταση"
-  },
-  "onboardingPinExtensionAltPin": {
-    "message": "Καρφιτσώστε την επέκταση"
-  },
-  "onboardingPinExtensionDescription": {
-    "message": "Προσθέστε το MetaMask στο πρόγραμμα περιήγησής σας για πιο εύκολη πρόσβαση και προβολή επιβεβαιώσεων συναλλαγών."
-  },
-  "onboardingPinExtensionDescription2": {
-    "message": "Με 1 απλό κλικ στην επέκταση, έχετε πρόσβαση στο πορτοφόλι σας στο MetaMask."
-  },
-  "onboardingPinExtensionDescription3": {
-    "message": "Κάντε κλικ στο εικονίδιο της επέκτασης $1 για άμεση πρόσβαση",
-    "description": "$1 is the browser name"
-  },
-  "onboardingPinExtensionTitle": {
-    "message": "Η εγκατάσταση ολοκληρώθηκε!"
-  },
   "onboardingSignInWith": {
     "message": "Συνδεθείτε με το $1",
     "description": "$1 is the type of login used Google, Apple, etc"

@@ -157,8 +157,10 @@ export function getQuotesForConfirmation({
         commands,
       });
     }
-    captureException(
-      `Error fetching bridge quotes: ${(error as Error).message}`,
-    );
+    // The error capturing to be uncommented as we address this issue:
+    // https://github.com/MetaMask/MetaMask-planning/issues/6387
+    // captureException(
+    //   `Error fetching bridge quotes: ${(error as Error).toString()}`,
+    // );
   }
 }
