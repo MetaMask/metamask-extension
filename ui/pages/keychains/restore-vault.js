@@ -42,19 +42,8 @@ import SrpInputForm from '../srp-input-form';
 import CreatePasswordForm from '../create-password-form';
 import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 
-// persist data across component remounts during async import
+// Only track import state
 let isImportingVault = false;
-let newPassword = '';
-let confirmPassword = '';
-let checkedTermsOfUse = false;
-let savedSecretRecoveryPhrase = '';
-
-const clearSensitiveModuleData = () => {
-  newPassword = '';
-  confirmPassword = '';
-  checkedTermsOfUse = false;
-  savedSecretRecoveryPhrase = '';
-};
 
 class RestoreVaultPage extends Component {
   static contextTypes = {
@@ -80,18 +69,9 @@ class RestoreVaultPage extends Component {
   };
 
   componentDidMount() {
+    // If we remount during import, show loading and wait for navigation
     if (isImportingVault) {
-      this.setState({
-        loading: true,
-        showPasswordInput: true,
-        secretRecoveryPhrase: savedSecretRecoveryPhrase,
-      });
-    }
-  }
-
-  componentWillUnmount() {
-    if (!isImportingVault) {
-      clearSensitiveModuleData();
+      this.setState({ loading: true, showPasswordInput: true });
     }
   }
 
@@ -100,7 +80,6 @@ class RestoreVaultPage extends Component {
       createNewVaultAndRestore: propsCreateNewVaultAndRestore,
       setFirstTimeFlowType: propsSetFirstTimeFlowType,
       resetOAuthLoginState: propsResetOAuthLoginState,
-      leaveImportSeedScreenState,
       navigate,
       isSocialLoginFlow: propsIsSocialLoginFlow,
     } = this.props;
@@ -109,32 +88,22 @@ class RestoreVaultPage extends Component {
       return;
     }
 
+    const { secretRecoveryPhrase } = this.state;
+
     isImportingVault = true;
-    newPassword = password;
-    confirmPassword = password;
-    checkedTermsOfUse = termsChecked;
-    savedSecretRecoveryPhrase = this.state.secretRecoveryPhrase;
 
     await new Promise((resolve) => {
       this.setState({ loading: true }, resolve);
     });
 
     try {
-      leaveImportSeedScreenState();
-
       if (propsIsSocialLoginFlow) {
-        // reset oauth and onboarding state
         await propsResetOAuthLoginState();
       }
 
-      // update the first time flow type to restore
       await propsSetFirstTimeFlowType(FirstTimeFlowType.restore);
 
-      // import the seed phrase and create a new vault
-      await propsCreateNewVaultAndRestore(
-        password,
-        this.state.secretRecoveryPhrase,
-      );
+      await propsCreateNewVaultAndRestore(password, secretRecoveryPhrase);
 
       this.context.trackEvent({
         category: MetaMetricsEventCategory.Retention,
@@ -142,12 +111,9 @@ class RestoreVaultPage extends Component {
       });
 
       isImportingVault = false;
-      clearSensitiveModuleData();
-
       navigate(DEFAULT_ROUTE, { replace: true });
     } catch (error) {
       isImportingVault = false;
-      clearSensitiveModuleData();
       this.setState({ loading: false, showPasswordInput: false });
       console.error('[RestoreVault] Error during import:', error);
     }
@@ -189,9 +155,6 @@ class RestoreVaultPage extends Component {
             onSubmit={this.handleImport}
             onBack={this.handleBack}
             loading={this.state.loading}
-            initialPassword={newPassword}
-            initialConfirmPassword={confirmPassword}
-            initialTermsChecked={checkedTermsOfUse}
           />
         ) : (
           <>
@@ -282,7 +245,6 @@ export default compose(
   connect(
     (state) => {
       return {
-        isLoading: state.appState.isLoading,
         isSocialLoginFlow: getIsSocialLoginFlow(state),
       };
     },

@@ -67,37 +67,4 @@ describe('CreatePasswordForm', () => {
       expect(onSubmit).toHaveBeenCalledWith(password, true);
     });
   });
-
-  it('initial passwords and terms checked are set correctly', () => {
-    const { queryByTestId } = render(
-      <CreatePasswordForm
-        isSocialLoginFlow={false}
-        onSubmit={jest.fn()}
-        onBack={jest.fn()}
-        initialPassword="12345678"
-        initialConfirmPassword="12345678"
-        initialTermsChecked={true}
-      />,
-    );
-
-    const createPasswordInput = queryByTestId('create-password-new-input');
-    const confirmPasswordInput = queryByTestId('create-password-confirm-input');
-    const terms = queryByTestId('create-password-terms');
-
-    expect(createPasswordInput).toHaveValue('12345678');
-    expect(confirmPasswordInput).toHaveValue('12345678');
-    expect(terms).toBeChecked();
-
-    fireEvent.change(createPasswordInput as HTMLInputElement, {
-      target: { value: '87654321' },
-    });
-    fireEvent.change(confirmPasswordInput as HTMLInputElement, {
-      target: { value: '87654321' },
-    });
-    fireEvent.click(terms as HTMLInputElement);
-
-    expect(createPasswordInput).toHaveValue('87654321');
-    expect(confirmPasswordInput).toHaveValue('87654321');
-    expect(terms).not.toBeChecked();
-  });
 });

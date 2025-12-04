@@ -36,9 +36,6 @@ type CreatePasswordFormProps = {
   onSubmit: (password: string, termsChecked: boolean) => void;
   onBack: (event: React.MouseEvent<HTMLButtonElement>) => void;
   loading?: boolean;
-  initialPassword?: string;
-  initialConfirmPassword?: string;
-  initialTermsChecked?: boolean;
 };
 
 const CreatePasswordForm = ({
@@ -46,13 +43,10 @@ const CreatePasswordForm = ({
   onSubmit,
   onBack,
   loading = false,
-  initialPassword = '',
-  initialConfirmPassword = '',
-  initialTermsChecked = false,
 }: CreatePasswordFormProps) => {
   const t = useI18nContext();
-  const [password, setPassword] = useState(initialPassword);
-  const [termsChecked, setTermsChecked] = useState(initialTermsChecked);
+  const [password, setPassword] = useState('');
+  const [termsChecked, setTermsChecked] = useState(false);
 
   const trackEvent = useContext(MetaMetricsContext);
 
@@ -157,8 +151,6 @@ const CreatePasswordForm = ({
         </Box>
         <PasswordForm
           onChange={(newPassword) => setPassword(newPassword)}
-          initialPassword={initialPassword}
-          initialConfirmPassword={initialConfirmPassword}
           disabled={loading}
         />
         <Box

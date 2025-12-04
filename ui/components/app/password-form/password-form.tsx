@@ -16,8 +16,6 @@ type PasswordFormProps = {
   pwdInputTestId?: string;
   confirmPwdInputTestId?: string;
   disabled?: boolean;
-  initialPassword?: string;
-  initialConfirmPassword?: string;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -27,17 +25,13 @@ export default function PasswordForm({
   pwdInputTestId,
   confirmPwdInputTestId,
   disabled = false,
-  initialPassword = '',
-  initialConfirmPassword = '',
 }: PasswordFormProps) {
   const t = useI18nContext();
 
-  const [password, setPassword] = useState(initialPassword);
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  const [confirmPassword, setConfirmPassword] = useState(
-    initialConfirmPassword,
-  );
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const [passwordLengthError, setPasswordLengthError] = useState(false);
