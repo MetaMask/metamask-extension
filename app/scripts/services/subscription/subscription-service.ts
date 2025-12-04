@@ -137,7 +137,6 @@ export class SubscriptionService {
   async startSubscriptionWithCard(
     params: StartSubscriptionRequest,
     currentTabId?: number,
-    rewardPoints?: number,
   ) {
     try {
       const redirectUrl = this.#webAuthenticator.getRedirectURL();
@@ -176,11 +175,8 @@ export class SubscriptionService {
       this.trackSubscriptionRequestEvent('completed');
 
       // Track the shield opt in rewards event if the reward account id and reward points are provided
-      if (rewardAccountId && rewardPoints) {
-        this.#trackShieldOptInRewardsEvent(
-          rewardPoints,
-          'create_new_subscription',
-        );
+      if (rewardAccountId) {
+        this.#trackShieldOptInRewardsEvent('create_new_subscription');
       }
       return subscriptions;
     } catch (error) {
@@ -273,8 +269,8 @@ export class SubscriptionService {
 
       if (rewardAccountId && rewardPoints) {
         this.#trackShieldOptInRewardsEvent(
-          rewardPoints,
           'link_existing_subscription',
+          rewardPoints,
         );
       }
     } catch (error) {
@@ -618,14 +614,20 @@ export class SubscriptionService {
   }
 
   #trackShieldOptInRewardsEvent(
-    rewardPoints: number,
     rewardsOptInType: 'create_new_subscription' | 'link_existing_subscription',
+    rewardPoints?: number,
   ) {
     const accountTypeAndCategory = this.#getAccountTypeAndCategoryForMetrics();
 
     const { shieldSubscriptionMetricsProps } = this.#messenger.call(
       'AppStateController:getState',
     );
+
+    const claimedRewardPoints =
+      rewardPoints ?? shieldSubscriptionMetricsProps?.rewardPoints;
+    if (!claimedRewardPoints) {
+      return;
+    }
 
     this.#messenger.call('MetaMetricsController:trackEvent', {
       event: MetaMetricsEventName.ShieldOptInRewards,
@@ -639,7 +641,7 @@ export class SubscriptionService {
         ),
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        rewards_point: rewardPoints,
+        rewards_point: claimedRewardPoints,
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         rewards_opt_in_type: rewardsOptInType,
