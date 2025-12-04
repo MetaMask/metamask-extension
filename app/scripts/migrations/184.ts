@@ -38,8 +38,10 @@ export const MEGAETH_TESTNET_V2_CONFIG = {
 };
 
 /**
- * This migration adds MegaETH Testnet v2 to the network controller
- * as a default Testnet.
+ * This migration does:
+ * - Add MegaETH Testnet v2 to the network controller
+ * - Update the selected network client id to mainnet if it is the old MegaETH Testnet v1.
+ * - Remove the old MegaETH Testnet v1 network configuration.
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly
  * what we persist to disk.
@@ -67,7 +69,7 @@ export async function migrate(originalVersionedData: VersionedData) {
 
 function transformState(state: Record<string, unknown>) {
   if (!hasProperty(state, 'NetworkController')) {
-    global.sentry?.captureException?.(
+    captureException(
       new Error(`Migration ${version}: NetworkController not found.`),
     );
     return state;
@@ -76,7 +78,7 @@ function transformState(state: Record<string, unknown>) {
   const networkState = state.NetworkController;
 
   if (!isObject(networkState)) {
-    global.sentry?.captureException?.(
+    captureException(
       new Error(
         `Migration ${version}: NetworkController is not an object: ${typeof networkState}`,
       ),
@@ -85,7 +87,7 @@ function transformState(state: Record<string, unknown>) {
   }
 
   if (!hasProperty(networkState, 'networkConfigurationsByChainId')) {
-    global.sentry?.captureException?.(
+    captureException(
       new Error(
         `Migration ${version}: NetworkController missing property networkConfigurationsByChainId.`,
       ),
@@ -94,7 +96,7 @@ function transformState(state: Record<string, unknown>) {
   }
 
   if (!isObject(networkState.networkConfigurationsByChainId)) {
-    global.sentry?.captureException?.(
+    captureException(
       new Error(
         `Migration ${version}: NetworkController.networkConfigurationsByChainId is not an object: ${typeof networkState.networkConfigurationsByChainId}.`,
       ),
@@ -103,7 +105,7 @@ function transformState(state: Record<string, unknown>) {
   }
 
   if (!hasProperty(state, 'NetworkEnablementController')) {
-    global.sentry?.captureException?.(
+    captureException(
       new Error(`Migration ${version}: NetworkEnablementController not found.`),
     );
     return state;
@@ -112,7 +114,7 @@ function transformState(state: Record<string, unknown>) {
   const networkEnablementState = state.NetworkEnablementController;
 
   if (!isObject(networkEnablementState)) {
-    global.sentry?.captureException?.(
+    captureException(
       new Error(
         `Migration ${version}: NetworkEnablementController is not an object: ${typeof networkEnablementState}`,
       ),
@@ -121,7 +123,7 @@ function transformState(state: Record<string, unknown>) {
   }
 
   if (!hasProperty(networkEnablementState, 'enabledNetworkMap')) {
-    global.sentry?.captureException?.(
+    captureException(
       new Error(
         `Migration ${version}: NetworkEnablementController missing property enabledNetworkMap.`,
       ),
@@ -130,7 +132,7 @@ function transformState(state: Record<string, unknown>) {
   }
 
   if (!isObject(networkEnablementState.enabledNetworkMap)) {
-    global.sentry?.captureException?.(
+    captureException(
       new Error(
         `Migration ${version}: NetworkEnablementController.enabledNetworkMap is not an object: ${typeof networkEnablementState.enabledNetworkMap}.`,
       ),
@@ -144,7 +146,7 @@ function transformState(state: Record<string, unknown>) {
       KnownCaipNamespace.Eip155,
     )
   ) {
-    global.sentry?.captureException?.(
+    captureException(
       new Error(
         `Migration ${version}: NetworkEnablementController.enabledNetworkMap missing property Eip155.`,
       ),
@@ -157,7 +159,7 @@ function transformState(state: Record<string, unknown>) {
       networkEnablementState.enabledNetworkMap[KnownCaipNamespace.Eip155],
     )
   ) {
-    global.sentry?.captureException?.(
+    captureException(
       new Error(
         `Migration ${version}: NetworkEnablementController.enabledNetworkMap[Eip155] is not an object: ${typeof networkEnablementState.enabledNetworkMap[KnownCaipNamespace.Eip155]}.`,
       ),
@@ -199,7 +201,7 @@ function transformState(state: Record<string, unknown>) {
     // force mainnet to be enabled
     eip155NetworkMap['0x1'] = true;
   }
-  // If the MegaETH Testnet v1 network configuration is enabled, then remove it.
+  // If the MegaETH Testnet v1 network configuration exists, then remove it.
   if (hasProperty(eip155NetworkMap, MEGAETH_TESTNET_V1_CHAIN_ID)) {
     delete eip155NetworkMap[MEGAETH_TESTNET_V1_CHAIN_ID];
   }
