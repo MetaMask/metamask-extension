@@ -82,9 +82,6 @@ export const TransactionControllerInit: ControllerInitFunction<
       gasFeeController().fetchGasFeeEstimates(...args),
     getNetworkClientRegistry: (...args) =>
       networkController().getNetworkClientRegistry(...args),
-    // @ts-expect-error Type mismatch due to @metamask/network-controller version mismatch.
-    // The latest version (v27.0.0+) adds NetworkStatus.Degraded enum value
-    // See: https://github.com/MetaMask/core/pull/7186
     getNetworkState: () => networkController().state,
     // @ts-expect-error Controller type does not support undefined return value
     getPermittedAccounts,
