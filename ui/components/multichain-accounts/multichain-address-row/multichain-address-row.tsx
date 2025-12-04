@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { CaipChainId, KnownCaipNamespace } from '@metamask/utils';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import {
@@ -26,6 +26,8 @@ import { shortenAddress } from '../../../helpers/utils/util';
 import { getImageForChainId } from '../../../selectors/multichain';
 import { convertCaipToHexChainId } from '../../../../shared/modules/network.utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+// eslint-disable-next-line import/no-restricted-paths
+import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 
 export type CopyParams = {
   /**
@@ -92,7 +94,11 @@ export const MultichainAddressRow = ({
       : chainId,
   );
 
-  const truncatedAddress = shortenAddress(address); // Shorten address for display
+  const formattedAddress = useMemo(() => {
+    return normalizeSafeAddress(address);
+  }, [address]);
+
+  const truncatedAddress = shortenAddress(formattedAddress); // Shorten address for display
   const [subText, setSubText] = useState(truncatedAddress); // Message below the network name
   const [copyIcon, setCopyIcon] = useState(IconName.Copy); // Default copy icon state
   const [addressCopied, setAddressCopied] = useState(false);
@@ -141,7 +147,7 @@ export const MultichainAddressRow = ({
   // Handle "QR Code" button click
   const handleQrClick = () => {
     qrActionParams?.callback(
-      address,
+      formattedAddress,
       networkName,
       formatChainIdToCaip(chainId),
       networkImageSrc,
