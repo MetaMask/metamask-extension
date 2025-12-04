@@ -15,6 +15,7 @@ import {
   TextButton,
   TextButtonSize,
 } from '@metamask/design-system-react';
+import { useDispatch } from 'react-redux';
 import {
   BannerAlert,
   BannerAlertSeverity,
@@ -58,6 +59,7 @@ import LoadingScreen from '../../../components/ui/loading-screen';
 import AddFundsModal from '../../../components/app/modals/add-funds-modal/add-funds-modal';
 import { useSubscriptionPricing } from '../../../hooks/subscription/useSubscriptionPricing';
 import { ConfirmInfoRowAddress } from '../../../components/app/confirm/info/row';
+import RewardsOnboardingModal from '../../../components/app/rewards/onboarding/OnboardingModal';
 import {
   getIsShieldSubscriptionEndingSoon,
   getIsShieldSubscriptionPaused,
@@ -76,6 +78,8 @@ import { ThemeType } from '../../../../shared/constants/preferences';
 import { useTheme } from '../../../hooks/useTheme';
 import ApiErrorHandler from '../../../components/app/api-error-handler';
 import { useHandlePayment } from '../../../hooks/subscription/useHandlePayment';
+import { MetaMaskReduxDispatch } from '../../../store/store';
+import { setOnboardingModalOpen } from '../../../ducks/rewards';
 import CancelMembershipModal from './cancel-membership-modal';
 import { isCardPaymentMethod, isCryptoPaymentMethod } from './types';
 import ShieldBannerAnimation from './shield-banner-animation';
@@ -83,6 +87,7 @@ import { PaymentMethodRow } from './payment-method-row';
 
 const TransactionShield = () => {
   const t = useI18nContext();
+  const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const navigate = useNavigate();
   const { search } = useLocation();
   const { captureShieldCtaClickedEvent } = useSubscriptionMetrics();
@@ -223,6 +228,10 @@ const TransactionShield = () => {
 
   const [isAddFundsModalOpen, setIsAddFundsModalOpen] = useState(false);
 
+  const openRewardsOnboardingModal = useCallback(() => {
+    dispatch(setOnboardingModalOpen(true));
+  }, [dispatch]);
+
   const shieldDetails = [
     {
       icon: IconName.ShieldLock,
@@ -251,7 +260,7 @@ const TransactionShield = () => {
             className: 'font-regular',
           }}
           onClick={() => {
-            console.log('sign up');
+            openRewardsOnboardingModal();
           }}
         >
           {t('shieldTxDetails3DescriptionSignUp')}
@@ -785,6 +794,7 @@ const TransactionShield = () => {
             }
           />
         )}
+      <RewardsOnboardingModal />
     </Box>
   );
 };
