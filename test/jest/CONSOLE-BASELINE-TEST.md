@@ -92,7 +92,6 @@ Remove the test warning from `app/scripts/controllers/permissions/background-api
 ```javascript
 describe('permission background API methods', () => {
   // DELETE the beforeEach block with the REVIEWER_TEST warning
-
   // ... rest of the tests
 });
 ```
@@ -187,11 +186,11 @@ yarn test:integration:update-baseline test/integration/confirmations/signatures/
 
 All test types follow the same pattern:
 
-| Step | Action | Result |
-|------|--------|--------|
-| 1 | Add warning | ❌ Test fails |
-| 2 | Update baseline | Warning added to JSON |
-| 3 | Re-run test | ✅ Test passes |
-| 4 | Clean up | Remove test code |
+| Step | Action          | Result                |
+| ---- | --------------- | --------------------- |
+| 1    | Add warning     | ❌ Test fails         |
+| 2    | Update baseline | Warning added to JSON |
+| 3    | Re-run test     | ✅ Test passes        |
+| 4    | Clean up        | Remove test code      |
 
 This demonstrates the baseline system correctly detects, stores, and validates console warnings!

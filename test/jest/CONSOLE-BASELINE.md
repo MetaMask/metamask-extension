@@ -4,14 +4,14 @@ Prevents new console warnings/errors from being introduced. Baseline is tracked 
 
 ## Quick Reference
 
-| Command | Description |
-|---------|-------------|
-| `yarn test:unit` | Run tests with baseline enforcement |
-| `yarn test:unit:update-baseline` | Update baseline (all files) |
-| `yarn test:unit:update-baseline path/to/file` | Update baseline (single file) |
-| `yarn test:integration` | Run integration tests with enforcement |
-| `yarn test:integration:update-baseline` | Update integration baseline |
-| `yarn test:integration:update-baseline path/to/file` | Update baseline (single file) |
+| Command                                              | Description                            |
+| ---------------------------------------------------- | -------------------------------------- |
+| `yarn test:unit`                                     | Run tests with baseline enforcement    |
+| `yarn test:unit:update-baseline`                     | Update baseline (all files)            |
+| `yarn test:unit:update-baseline path/to/file`        | Update baseline (single file)          |
+| `yarn test:integration`                              | Run integration tests with enforcement |
+| `yarn test:integration:update-baseline`              | Update integration baseline            |
+| `yarn test:integration:update-baseline path/to/file` | Update baseline (single file)          |
 
 ## How It Works
 
@@ -54,12 +54,15 @@ In `jest.config.js`:
 
 ```javascript
 reporters: [
-  ['<rootDir>/test/jest/console-baseline-reporter.js', {
-    testType: 'unit',        // 'unit' or 'integration'
-    failOnViolation: true,   // Fail on increased warnings
-    showImprovements: true,  // Show reduced warnings
-  }],
-]
+  [
+    '<rootDir>/test/jest/console-baseline-reporter.js',
+    {
+      testType: 'unit', // 'unit' or 'integration'
+      failOnViolation: true, // Fail on increased warnings
+      showImprovements: true, // Show reduced warnings
+    },
+  ],
+];
 ```
 
 ## Baseline Files
@@ -68,6 +71,7 @@ reporters: [
 - `test/jest/console-baseline-integration.json` - Integration test baseline
 
 Structure:
+
 ```json
 {
   "files": {

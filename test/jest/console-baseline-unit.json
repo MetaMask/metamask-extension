@@ -1,6 +1,4 @@
 {
-  "generated": "2025-12-03T18:40:47.169Z",
-  "nodeVersion": "v24.11.1",
   "files": {
     "ui/components/app/assets/account-group-balance/account-group-balance.test.tsx": {
       "Reselect: Identity function warnings": 1
@@ -2134,6 +2132,8 @@
       "MetaMask: Migration state warnings": 3
     }
   },
+  "generated": "2025-12-03T18:40:47.169Z",
+  "nodeVersion": "v24.11.1",
   "summary": {
     "totalWarnings": 6302,
     "totalFilesWithWarnings": 495,

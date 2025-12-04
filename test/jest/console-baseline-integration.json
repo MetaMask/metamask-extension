@@ -1,6 +1,4 @@
 {
-  "generated": "2025-12-03T18:56:44.397Z",
-  "nodeVersion": "v24.11.1",
   "files": {
     "test/integration/onboarding/wallet-created.test.tsx": {
       "Reselect: Identity function warnings": 6,
@@ -120,6 +118,8 @@
       "MetaMask: Invalid theme warnings": 1
     }
   },
+  "generated": "2025-12-03T18:56:44.397Z",
+  "nodeVersion": "v24.11.1",
   "summary": {
     "totalWarnings": 434,
     "totalFilesWithWarnings": 21,
