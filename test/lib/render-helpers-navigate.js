@@ -136,7 +136,6 @@ export function renderHookWithProvider(
  * @template {Parameters<Hook>} HookParams
  * @template {ReturnType<Hook>} HookReturn
  * @template {import('@testing-library/react-hooks').RenderHookResult<HookParams, HookReturn>} RenderHookResult
- * @template {import('history').History} History
  * @param {Hook} hook - The hook to be rendered.
  * @param [state] - The initial state for the store.
  * @param [pathname] - The initial pathname for the history.

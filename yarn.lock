@@ -21330,7 +21330,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"classnames@npm:^2.2.5, classnames@npm:^2.2.6, classnames@npm:^2.3.2":
+"classnames@npm:^2.2.6, classnames@npm:^2.3.2":
   version: 2.5.1
   resolution: "classnames@npm:2.5.1"
   checksum: 10/58eb394e8817021b153bb6e7d782cfb667e4ab390cb2e9dac2fc7c6b979d1cc2b2a733093955fc5c94aa79ef5c8c89f11ab77780894509be6afbb91dddd79d15
@@ -28444,15 +28444,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"history@npm:^5.3.0":
-  version: 5.3.0
-  resolution: "history@npm:5.3.0"
-  dependencies:
-    "@babel/runtime": "npm:^7.7.6"
-  checksum: 10/52ba685b842ca6438ff11ef459951eb13d413ae715866a8dc5f7c3b1ea0cdeb8db6aabf7254551b85f56abc205e6e2d7e1d5afb36b711b401cdaff4f2cf187e9
-  languageName: node
-  linkType: hard
-
 "hmac-drbg@npm:^1.0.1":
   version: 1.0.1
   resolution: "hmac-drbg@npm:1.0.1"
@@ -33737,7 +33728,6 @@ __metadata:
     gulp-watch: "npm:^5.0.1"
     gulp-zip: "npm:^5.1.0"
     he: "npm:^1.2.0"
-    history: "npm:^5.3.0"
     html-bundler-webpack-plugin: "npm:^4.21.1"
     http-server: "npm:^14.1.1"
     https-browserify: "npm:^1.0.0"
@@ -33810,7 +33800,6 @@ __metadata:
     react-markdown: "npm:^6.0.3"
     react-popper: "npm:^2.2.3"
     react-redux: "npm:^7.2.9"
-    react-responsive-carousel: "npm:^3.2.21"
     react-router-dom: "npm:^6.28.0"
     react-simple-file-input: "npm:^2.0.0"
     react-syntax-highlighter: "npm:^15.5.0"
@@ -38037,15 +38026,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-easy-swipe@npm:^0.0.21":
-  version: 0.0.21
-  resolution: "react-easy-swipe@npm:0.0.21"
-  dependencies:
-    prop-types: "npm:^15.5.8"
-  checksum: 10/69bb2d366d412441b024c802f03b524f63d494d7b72632380ecce485aa1c08eb87cc9a5ffffa23c7e8dcd190834d15b76458f59ca91c8710d12aa27c084a111d
-  languageName: node
-  linkType: hard
-
 "react-element-to-jsx-string@npm:^15.0.0":
   version: 15.0.0
   resolution: "react-element-to-jsx-string@npm:15.0.0"
@@ -38376,17 +38356,6 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 10/15f606482a614a92f8f65692cf27a1c1621d77a63c36f53a7bc4f2243799f2b04770083b313c4b3c2ed76f47d4046f52e86f95280ad5599389818fb882de7d6b
-  languageName: node
-  linkType: hard
-
-"react-responsive-carousel@npm:^3.2.21":
-  version: 3.2.21
-  resolution: "react-responsive-carousel@npm:3.2.21"
-  dependencies:
-    classnames: "npm:^2.2.5"
-    prop-types: "npm:^15.5.8"
-    react-easy-swipe: "npm:^0.0.21"
-  checksum: 10/84c497bddd507b830fd38a9a21fbb3ea32446e2662166a542ec67978da066400b00a5baef351373165bc7159d4dbc2c47c8d4a50ff917b906409547b83ffac53
   languageName: node
   linkType: hard
 
