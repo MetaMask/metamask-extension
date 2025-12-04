@@ -7,6 +7,7 @@ import { renderHook } from '@testing-library/react-hooks';
 import { userEvent } from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { noop } from 'lodash';
 import configureStore from '../../ui/store/store';
 import { I18nContext, LegacyI18nProvider } from '../../ui/contexts/i18n';
 import {
@@ -218,12 +219,12 @@ export async function integrationTestRender(extendedRenderOptions) {
   } = extendedRenderOptions;
 
   // Dynamically import to avoid triggering full UI import chain during test setup
-  const { setupInitialStore } = await import('../../ui');
+  const { setupInitialStore, connectToBackground } = await import('../../ui');
   const { default: Root } = await import('../../ui/pages');
 
-  const store = await setupInitialStore(preloadedState, backgroundConnection, {
-    activeTab,
-  });
+  connectToBackground(backgroundConnection, noop);
+
+  const store = await setupInitialStore(preloadedState, activeTab);
 
   return {
     ...render(<Root store={store} />, { ...renderOptions }),
