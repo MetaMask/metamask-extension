@@ -471,6 +471,7 @@ export const useSubscriptionEligibility = (product: ProductType) => {
  * @param options.defaultOptions - The default options for the subscription request.
  * @param options.isTrialed - Whether the user is trialing the subscription.
  * @param options.useTestClock - Whether to use a test clock for the subscription.
+ * @param options.rewardPoints
  * @returns An object with the handleSubscription function and the subscription result.
  */
 export const useHandleSubscription = ({
@@ -480,6 +481,7 @@ export const useHandleSubscription = ({
   defaultOptions,
   isTrialed,
   useTestClock = false,
+  rewardPoints,
 }: {
   defaultOptions: DefaultSubscriptionPaymentOptions;
   subscriptionState?: SubscriptionStatus;
@@ -488,6 +490,7 @@ export const useHandleSubscription = ({
   isTrialed: boolean;
   selectedToken?: TokenWithApprovalAmount;
   useTestClock?: boolean;
+  rewardPoints?: number;
 }) => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const { search } = useLocation();
@@ -550,6 +553,7 @@ export const useHandleSubscription = ({
       await setShieldSubscriptionMetricsPropsToBackground({
         source: determineSubscriptionRequestSource(),
         marketingUtmParams,
+        rewardPoints,
       });
 
       const source = determineSubscriptionRequestSource();
