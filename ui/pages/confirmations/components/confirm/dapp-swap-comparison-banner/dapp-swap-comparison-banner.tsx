@@ -25,8 +25,6 @@ import { useDappSwapContext } from '../../../context/dapp-swap';
 import { QuoteSwapSimulationDetails } from '../../transactions/quote-swap-simulation-details/quote-swap-simulation-details';
 import { NetworkRow } from '../info/shared/network-row/network-row';
 
-const DAPP_SWAP_THRESHOLD = 0.01;
-
 type DappSwapUiFlag = {
   enabled: boolean;
   threshold: number;
@@ -78,7 +76,6 @@ const DappSwapComparisonInner = () => {
   const t = useI18nContext();
   const {
     fiatRates,
-    gasDifference,
     minDestTokenAmountInUSD,
     selectedQuote,
     selectedQuoteValueDifference,
@@ -142,8 +139,7 @@ const DappSwapComparisonInner = () => {
 
   const swapComparisonDisplayed =
     dappSwapUi?.enabled &&
-    (selectedQuoteValueDifference >=
-      (dappSwapUi?.threshold ?? DAPP_SWAP_THRESHOLD) ||
+    (selectedQuoteValueDifference >= dappSwapUi?.threshold ||
       (dappSwapQa?.enabled && selectedQuote));
 
   useEffect(() => {
@@ -197,7 +193,7 @@ const DappSwapComparisonInner = () => {
             variant={TextVariant.BodyXs}
           >
             {t('dappSwapQuoteDifference', [
-              `$${(gasDifference + tokenAmountDifference).toFixed(2)}`,
+              `$${selectedQuoteValueDifference.toFixed(2)}`,
             ])}
             {rewards && <span>{` • ${rewards.text}`}</span>}
           </Text>
@@ -226,14 +222,9 @@ const DappSwapComparisonInner = () => {
 };
 
 export const DappSwapComparisonBanner = () => {
-  const { dappSwapMetrics } = useSelector(getRemoteFeatureFlags);
   const { isSwapToBeCompared } = useDappSwapCheck();
 
-  const dappSwapMetricsEnabled =
-    (dappSwapMetrics as { enabled: boolean })?.enabled === true &&
-    isSwapToBeCompared;
-
-  if (!dappSwapMetricsEnabled) {
+  if (!isSwapToBeCompared) {
     return null;
   }
 
