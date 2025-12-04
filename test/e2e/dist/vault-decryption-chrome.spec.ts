@@ -131,8 +131,7 @@ async function waitUntilFileIsWritten({
 }
 
 describe('Vault Decryptor Page', function () {
-  this.timeout(160000);
-  it('is able to decrypt the vault uploading the log file in the vault-decryptor webapp', async function () {
+  it.only('is able to decrypt the vault uploading the log file in the vault-decryptor webapp', async function () {
     if (process.env.SELENIUM_BROWSER !== 'chrome') {
       // TODO: Get this working on Firefox
       this.skip();
@@ -157,43 +156,55 @@ describe('Vault Decryptor Page', function () {
         });
 
         // Retry-logic to ensure the file is ready before uploading it to mitigate flakiness when Chrome hasn't finished writing
+        const extensionPath = await getExtensionStorageFilePath(driver);
         await waitUntilFileIsWritten({ driver });
 
-        // navigate to the Vault decryptor webapp and fill the input field with storage recovered from filesystem
-        await driver.openNewPage(VAULT_DECRYPTOR_PAGE);
-        const vaultDecryptorPage = new VaultDecryptorPage(driver);
-        await vaultDecryptorPage.checkPageIsLoaded();
-        const extensionPath = await getExtensionStorageFilePath(driver);
-        const extensionLogFile = getExtensionLogFile(extensionPath);
-        await vaultDecryptorPage.uploadLogFile(extensionLogFile);
+        // copy log file to a temp location, to avoid reading it while the browser is writing it
+        let copiedDir;
+        try {
+          copiedDir = await copyDirectoryToTmp(extensionPath);
+          const extensionLogFileCopy = getExtensionLogFile(copiedDir);
 
-        // fill the password and decrypt
-        await vaultDecryptorPage.fillPassword();
-        await vaultDecryptorPage.confirmDecrypt();
+          // navigate to the Vault decryptor webapp and fill the input field with storage recovered from filesystem
+          await driver.openNewPage(VAULT_DECRYPTOR_PAGE);
+          const vaultDecryptorPage = new VaultDecryptorPage(driver);
+          await vaultDecryptorPage.checkPageIsLoaded();
+          await vaultDecryptorPage.uploadLogFile(extensionLogFileCopy);
 
-        // Ensure we're on the main extension window after onboarding
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
+          // fill the password and decrypt
+          await vaultDecryptorPage.fillPassword();
+          await vaultDecryptorPage.confirmDecrypt();
 
-        // go to privacy settings page
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-        await homePage.checkBalanceEmptyStateIsDisplayed();
-        await new HeaderNavbar(driver).openSettingsPage();
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToPrivacySettings();
+          // go back to MetaMask
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
 
-        // fill password to reveal SRP and get the SRP
-        const privacySettings = new PrivacySettings(driver);
-        await privacySettings.checkPageIsLoaded();
-        await privacySettings.openRevealSrpQuiz();
-        await privacySettings.completeRevealSrpQuiz();
-        await privacySettings.fillPasswordToRevealSrp(WALLET_PASSWORD);
-        const seedPhrase = await privacySettings.getSrpInRevealSrpDialog();
-        await driver.switchToWindowWithTitle('MetaMask Vault Decryptor');
-        await vaultDecryptorPage.checkVaultIsDecrypted(seedPhrase);
+          // go to privacy settings page
+          const homePage = new HomePage(driver);
+          await homePage.checkPageIsLoaded();
+          await homePage.checkBalanceEmptyStateIsDisplayed();
+          await new HeaderNavbar(driver).openSettingsPage();
+          const settingsPage = new SettingsPage(driver);
+          await settingsPage.checkPageIsLoaded();
+          await settingsPage.goToPrivacySettings();
+
+          // fill password to reveal SRP and get the SRP
+          const privacySettings = new PrivacySettings(driver);
+          await privacySettings.checkPageIsLoaded();
+          await privacySettings.openRevealSrpQuiz();
+          await privacySettings.completeRevealSrpQuiz();
+          await privacySettings.fillPasswordToRevealSrp(WALLET_PASSWORD);
+          const seedPhrase = await privacySettings.getSrpInRevealSrpDialog();
+
+          // compare the SRP values
+          await driver.switchToWindowWithTitle('MetaMask Vault Decryptor');
+          await vaultDecryptorPage.checkVaultIsDecrypted(seedPhrase);
+        } finally {
+          if (copiedDir) {
+            await fs.remove(copiedDir);
+          }
+        }
       },
     );
   });
