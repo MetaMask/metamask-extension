@@ -9,8 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.12.0]
 
+### Uncategorized
+
+- Update Attributions
+
 ### Added
 
+- Show minimum token amount required on payment methods (#38461)
+- Null (#38319)
 - Add subscription retry button to notify server check when user balance is sufficient (#36847)
 - Align shield illustration to bottom in popup mode (#38340)
 - Default to BIP-44 UI for account & wallet details (#37984)
