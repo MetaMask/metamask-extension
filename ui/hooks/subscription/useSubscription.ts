@@ -751,6 +751,10 @@ export const useFetchShieldRewardsPoints = () => {
     monthly: number | null;
     yearly: number | null;
   }>(async () => {
+    if (!selectedAccount) {
+      return { monthly: null, yearly: null };
+    }
+
     // get the caip account id for the current selected account
     const selectedAccountWithCaipAccountId = accounts.find(
       (account) => account.address === selectedAccount.address,
