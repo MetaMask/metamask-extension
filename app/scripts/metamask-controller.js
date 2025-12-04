@@ -129,7 +129,7 @@ import {
   SecretType,
   RecoveryError,
 } from '@metamask/seedless-onboarding-controller';
-import { COHORT_NAMES, PRODUCT_TYPES } from '@metamask/subscription-controller';
+import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { isSnapId } from '@metamask/snaps-utils';
 import {
   findAtomicBatchSupportForChain,
@@ -432,6 +432,8 @@ import {
   ClaimsControllerInit,
   ClaimsServiceInit,
 } from './controller-init/claims';
+import { ProfileMetricsControllerInit } from './controller-init/profile-metrics-controller-init';
+import { ProfileMetricsServiceInit } from './controller-init/profile-metrics-service-init';
 import { getQuotesForConfirmation } from './lib/dapp-swap/dapp-swap-util';
 
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -664,6 +666,8 @@ export default class MetamaskController extends EventEmitter {
       AnnouncementController: AnnouncementControllerInit,
       RewardsDataService: RewardsDataServiceInit,
       RewardsController: RewardsControllerInit,
+      ProfileMetricsController: ProfileMetricsControllerInit,
+      ProfileMetricsService: ProfileMetricsServiceInit,
     };
 
     const {
@@ -777,6 +781,7 @@ export default class MetamaskController extends EventEmitter {
     this.rewardsController = controllersByName.RewardsController;
     this.claimsController = controllersByName.ClaimsController;
     this.claimsService = controllersByName.ClaimsService;
+    this.profileMetricsController = controllersByName.ProfileMetricsController;
     this.backup = new Backup({
       preferencesController: this.preferencesController,
       addressBookController: this.addressBookController,
@@ -911,11 +916,11 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       'TransactionController:transactionSubmitted',
       ({ transactionMeta }) => {
-        this._onShieldSubscriptionApprovalTransaction(transactionMeta).catch(
-          (err) => {
+        this.subscriptionService
+          .handlePostTransaction(transactionMeta)
+          .catch((err) => {
             console.error('Error onShieldSubscriptionApprovalTransaction', err);
-          },
-        );
+          });
       },
     );
 
@@ -1210,6 +1215,7 @@ export default class MetamaskController extends EventEmitter {
         this.notificationServicesPushController,
       RemoteFeatureFlagController: this.remoteFeatureFlagController,
       DeFiPositionsController: this.deFiPositionsController,
+      ProfileMetricsController: this.profileMetricsController,
       ...resetOnRestartStore,
       ...controllerPersistedState,
     });
@@ -1274,6 +1280,7 @@ export default class MetamaskController extends EventEmitter {
         ShieldController: this.shieldController,
         ClaimsController: this.claimsController,
         ClaimsService: this.claimsService,
+        ProfileMetricsController: this.profileMetricsController,
         ...resetOnRestartStore,
         ...controllerMemState,
       },
@@ -2611,10 +2618,6 @@ export default class MetamaskController extends EventEmitter {
         this.subscriptionService.updateSubscriptionCardPaymentMethod.bind(
           this.subscriptionService,
         ),
-      startSubscriptionWithCrypto:
-        this.subscriptionController.startSubscriptionWithCrypto.bind(
-          this.subscriptionController,
-        ),
       updateSubscriptionCryptoPaymentMethod:
         this.subscriptionService.updateSubscriptionCryptoPaymentMethod.bind(
           this.subscriptionService,
@@ -2622,6 +2625,10 @@ export default class MetamaskController extends EventEmitter {
       submitSubscriptionUserEvents:
         this.subscriptionController.submitUserEvent.bind(
           this.subscriptionController,
+        ),
+      linkRewardToShieldSubscription:
+        this.subscriptionService.linkRewardToExistingSubscription.bind(
+          this.subscriptionService,
         ),
 
       // rewards
@@ -8649,66 +8656,6 @@ export default class MetamaskController extends EventEmitter {
       method: NOTIFICATION_NAMES.chainChanged,
       params: await this.getProviderNetworkState({ origin }),
     });
-  }
-
-  /**
-   * Handles the shield subscription approval transaction after confirm
-   * NOTE: This doesn't subscribe to messenger internally inside controller because we need more info from the client as params
-   *
-   * @param transactionMeta - The transaction metadata.
-   */
-  async _onShieldSubscriptionApprovalTransaction(transactionMeta) {
-    const { isGasFeeSponsored, chainId } = transactionMeta;
-    const bundlerSupported = await isSendBundleSupported(chainId);
-    const isSponsored = isGasFeeSponsored && bundlerSupported;
-
-    try {
-      this.subscriptionService.trackSubscriptionRequestEvent(
-        'started',
-        transactionMeta,
-        {
-          has_sufficient_crypto_balance: true,
-        },
-      );
-
-      await this.subscriptionController.submitShieldSubscriptionCryptoApproval(
-        transactionMeta,
-        isSponsored,
-      );
-
-      // Mark send/transfer/swap transactions for Shield post_tx cohort evaluation
-      const isPostTxTransaction = [
-        TransactionType.simpleSend,
-        TransactionType.tokenMethodTransfer,
-        TransactionType.swap,
-        TransactionType.swapAndSend,
-      ].includes(transactionMeta.type);
-
-      const { pendingShieldCohort } = this.appStateController.state;
-      if (isPostTxTransaction && !pendingShieldCohort) {
-        this.appStateController.setPendingShieldCohort(
-          COHORT_NAMES.POST_TX,
-          transactionMeta.type,
-        );
-      }
-      this.subscriptionService.trackSubscriptionRequestEvent(
-        'completed',
-        transactionMeta,
-        {
-          gas_sponsored: isSponsored,
-        },
-      );
-    } catch (error) {
-      log.error('Error on Shield subscription approval transaction', error);
-      this.subscriptionService.trackSubscriptionRequestEvent(
-        'failed',
-        transactionMeta,
-        {
-          error_message: error.message,
-        },
-      );
-      throw error;
-    }
   }
 
   /**
