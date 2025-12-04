@@ -41,8 +41,8 @@ import { Skeleton } from '../../../components/component-library/skeleton';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   useCancelSubscription,
-  useFetchShieldRewardsPoints,
   useOpenGetSubscriptionBillingPortal,
+  useShieldRewards,
   useUnCancelSubscription,
   useUserLastSubscriptionByProduct,
   useUserSubscriptionByProduct,
@@ -208,8 +208,9 @@ const TransactionShield = () => {
   const {
     pointsMonthly,
     pointsYearly,
-    pending: pendingPoints,
-  } = useFetchShieldRewardsPoints();
+    isRewardsSeason,
+    pending: pendingShieldRewards,
+  } = useShieldRewards();
 
   const isWaitingForSubscriptionCreation =
     shouldWaitForSubscriptionCreation && !currentShieldSubscription;
@@ -218,7 +219,7 @@ const TransactionShield = () => {
     isWaitingForSubscriptionCreation ||
     subscriptionsLoading ||
     subscriptionPricingLoading ||
-    pendingPoints;
+    pendingShieldRewards;
 
   // redirect to shield plan page if user doesn't have a subscription
   useEffect(() => {
@@ -249,11 +250,16 @@ const TransactionShield = () => {
         ? pointsYearly
         : pointsMonthly;
 
-    return new Intl.NumberFormat(locale).format(points ?? 0);
+    if (!points || !isRewardsSeason) {
+      return '';
+    }
+
+    return new Intl.NumberFormat(locale).format(points);
   }, [
     displayedShieldSubscription?.interval,
     pointsYearly,
     pointsMonthly,
+    isRewardsSeason,
     locale,
   ]);
 
@@ -634,70 +640,72 @@ const TransactionShield = () => {
               </Box>
             </Box>
           ))}
-          <Box
-            display={Display.Flex}
-            alignItems={AlignItems.center}
-            gap={2}
-            paddingTop={2}
-            paddingBottom={2}
-          >
-            {showSkeletonLoader ? (
-              <Skeleton
-                width={32}
-                height={32}
-                borderRadius={BorderRadius.full}
-                style={{ flexShrink: 0 }}
-              />
-            ) : (
-              <Icon name={IconName.MetamaskFoxOutline} size={IconSize.Xl} />
-            )}
+          {formattedRewardsPoints && (
             <Box
-              width={BlockSize.Full}
               display={Display.Flex}
-              flexDirection={FlexDirection.Column}
-              gap={showSkeletonLoader ? 2 : 0}
+              alignItems={AlignItems.center}
+              gap={2}
+              paddingTop={2}
+              paddingBottom={2}
             >
               {showSkeletonLoader ? (
-                <Skeleton width="100%" height={18} />
+                <Skeleton
+                  width={32}
+                  height={32}
+                  borderRadius={BorderRadius.full}
+                  style={{ flexShrink: 0 }}
+                />
               ) : (
-                <Text variant={TextVariant.bodySmBold}>
-                  {t('shieldTxDetails3Title')}
-                </Text>
+                <Icon name={IconName.MetamaskFoxOutline} size={IconSize.Xl} />
               )}
-              {showSkeletonLoader ? (
-                <Skeleton width="100%" height={18} />
-              ) : (
-                <Text
-                  variant={TextVariant.bodySm}
-                  color={TextColor.textAlternative}
-                >
-                  {t('shieldTxDetails3Description', [
-                    formattedRewardsPoints,
-                    displayedShieldSubscription?.interval ===
-                    RECURRING_INTERVALS.year
-                      ? t('year')
-                      : t('month'),
-                  ])}
-                </Text>
-              )}
+              <Box
+                width={BlockSize.Full}
+                display={Display.Flex}
+                flexDirection={FlexDirection.Column}
+                gap={showSkeletonLoader ? 2 : 0}
+              >
+                {showSkeletonLoader ? (
+                  <Skeleton width="100%" height={18} />
+                ) : (
+                  <Text variant={TextVariant.bodySmBold}>
+                    {t('shieldTxDetails3Title')}
+                  </Text>
+                )}
+                {showSkeletonLoader ? (
+                  <Skeleton width="100%" height={18} />
+                ) : (
+                  <Text
+                    variant={TextVariant.bodySm}
+                    color={TextColor.textAlternative}
+                  >
+                    {t('shieldTxDetails3Description', [
+                      formattedRewardsPoints,
+                      displayedShieldSubscription?.interval ===
+                      RECURRING_INTERVALS.year
+                        ? t('year')
+                        : t('month'),
+                    ])}
+                  </Text>
+                )}
+              </Box>
+              <Box className="flex-shrink-0">
+                {showSkeletonLoader ? (
+                  <Skeleton width={80} height={32} />
+                ) : (
+                  <Button
+                    className="px-3"
+                    variant={ButtonVariant.Secondary}
+                    size={ButtonSize.Sm}
+                    onClick={() => {
+                      openRewardsOnboardingModal();
+                    }}
+                  >
+                    {t('shieldTxDetails3DescriptionSignUp')}
+                  </Button>
+                )}
+              </Box>
             </Box>
-            <Box className="flex-shrink-0">
-              {showSkeletonLoader ? (
-                <Skeleton width={80} height={32} />
-              ) : (
-                <Button
-                  className="px-3"
-                  variant={ButtonVariant.Secondary}
-                  size={ButtonSize.Sm}
-                  onClick={() => {
-                    openRewardsOnboardingModal();
-                  }}
-                >
-                  {t('shieldTxDetails3DescriptionSignUp')}
-                </Button>
-              )}
-            </Box>
-          </Box>
+          )}
         </Box>
         {buttonRow(
           t('shieldTxMembershipViewFullBenefits'),
