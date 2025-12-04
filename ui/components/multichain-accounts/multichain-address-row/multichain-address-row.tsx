@@ -60,7 +60,7 @@ type MultichainAddressRowProps = {
    */
   networkName: string;
   /**
-   * Address string to display (should be pre-normalized, will be truncated for display)
+   * Address string to display (will be truncated)
    */
   address: string;
   /**
