@@ -41,6 +41,7 @@ export class ShieldMockttpService {
       isActiveUser?: boolean;
       subscriptionId?: string;
       coverageStatus?: 'covered' | 'not_covered' | 'malicious';
+      claimErrorCode?: string;
     },
   ) {
     // Mock Identity Services first as shield/subscription APIs depend on it (Auth Token)
@@ -76,7 +77,7 @@ export class ShieldMockttpService {
     await this.#handleGetClaimsConfigurations(server);
     await this.#handleGetClaims(server);
     await this.#handleClaimGenerateMessage(server);
-    await this.#handleSubmitClaim(server);
+    await this.#handleSubmitClaim(server, overrides);
 
     // Ruleset Engine APIs
     await this.#handleRulesetEngine(server);
@@ -310,8 +311,59 @@ export class ShieldMockttpService {
       .thenJson(200, MOCK_CLAIM_GENERATE_MESSAGE_RESPONSE);
   }
 
-  async #handleSubmitClaim(server: Mockttp) {
+  async #handleSubmitClaim(
+    server: Mockttp,
+    overrides?: {
+      claimErrorCode?: string;
+    },
+  ) {
     await server.forPost(CLAIMS_API.CLAIMS).thenCallback(() => {
+      // Return error response if error code is specified
+      if (overrides?.claimErrorCode) {
+        const errorCode = overrides.claimErrorCode;
+        let errorResponse: {
+          statusCode: number;
+          json: {
+            errorCode: string;
+            message: string;
+          };
+        };
+
+        if (errorCode === 'E102') {
+          // TRANSACTION_NOT_ELIGIBLE
+          errorResponse = {
+            statusCode: 400,
+            json: {
+              errorCode: 'E102',
+              message:
+                'This transaction is not done within MetaMask, hence it is not eligible for claims',
+            },
+          };
+        } else if (errorCode === 'E203') {
+          // DUPLICATE_CLAIM_EXISTS
+          errorResponse = {
+            statusCode: 400,
+            json: {
+              errorCode: 'E203',
+              message:
+                'A claim has already been submitted for this transaction hash.',
+            },
+          };
+        } else {
+          // Default error
+          errorResponse = {
+            statusCode: 400,
+            json: {
+              errorCode,
+              message: 'Claim submission failed',
+            },
+          };
+        }
+
+        return errorResponse;
+      }
+
+      // Success response
       this.#newClaimSubmitted = true;
       return {
         statusCode: 200,

@@ -80,6 +80,7 @@ describe('<BaseTransactionInfo />', () => {
       selectedQuote: undefined,
       setSelectedQuote: jest.fn(),
       setQuotedSwapDisplayedInInfo: jest.fn(),
+      isQuotedSwapPresent: false,
     } as ReturnType<typeof DappSwapContext.useDappSwapContext>);
 
     const { getByText, queryByText } = renderWithConfirmContextProvider(

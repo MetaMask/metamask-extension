@@ -638,3 +638,13 @@ export function doesUserHaveALedgerAccount(state) {
 export function getCurrentCurrency(state) {
   return state.metamask.currentCurrency;
 }
+
+/**
+ * Returns a boolean indicating whether the user opened the extension with the sidepanel.
+ *
+ * @param {object} state - the redux state object
+ * @returns {boolean} true if the user opened the extension with the sidepanel, false otherwise
+ */
+export function getOpenedWithSidepanel(state) {
+  return state.metamask.openedWithSidepanel;
+}
