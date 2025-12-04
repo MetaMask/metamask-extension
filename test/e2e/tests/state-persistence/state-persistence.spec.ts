@@ -385,11 +385,21 @@ const assertAccountVisible = async (
 describe('State Persistence', function () {
   this.timeout(120000);
 
-  describe('split state', function () {
+  describe('data state', function () {
     it('should default to the data state storage', async function () {
       await withFixtures(getFixtureOptions(this), async ({ driver }) => {
         await completeOnboardingAndSync(driver);
         await expectDataStateStorage(driver);
+      });
+    });
+  });
+
+  describe('split state', function () {
+    // skipped until "split" state is set as the default
+    it.skip('should default to the split state storage', async function () {
+      await withFixtures(getFixtureOptions(this), async ({ driver }) => {
+        await completeOnboardingAndSync(driver);
+        await expectSplitStateStorage(driver);
       });
     });
 
