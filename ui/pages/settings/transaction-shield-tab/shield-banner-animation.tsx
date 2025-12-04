@@ -15,9 +15,11 @@ import {
 const ShieldBannerAnimation = ({
   containerClassName,
   canvasClassName,
+  isInactive = false,
 }: {
   containerClassName?: string;
   canvasClassName?: string;
+  isInactive?: boolean;
 }) => {
   const isTestEnvironment = Boolean(process.env.IN_TEST);
   const context = useRiveWasmContext();
@@ -60,6 +62,11 @@ const ShieldBannerAnimation = ({
     if (rive && isWasmReady && !bufferLoading && buffer) {
       const inputs = rive.stateMachineInputs('shield_banner_illustration');
       if (inputs) {
+        const darkToggle = inputs.find((input) => input.name === 'Dark');
+        if (darkToggle) {
+          darkToggle.value = isInactive;
+        }
+
         const startTrigger = inputs.find((input) => input.name === 'Start');
         if (startTrigger) {
           startTrigger.fire();
@@ -67,12 +74,7 @@ const ShieldBannerAnimation = ({
         rive.play();
       }
     }
-    return () => {
-      if (rive) {
-        rive.stop();
-      }
-    };
-  }, [rive, isWasmReady, bufferLoading, buffer]);
+  }, [rive, isWasmReady, bufferLoading, buffer, isInactive]);
 
   // Don't render Rive component until WASM and buffer are ready to avoid errors
   if (
