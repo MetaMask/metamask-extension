@@ -18,7 +18,7 @@
       "µWebSockets: Fallback to Node implementation": 1,
       "Reselect: Identity function warnings": 3,
       "Reselect: Input stability warnings": 1,
-      "MetaMask: Background connection not initialized": 6,
+      "MetaMask: Background connection not initialized": 8,
       "error: Warning: A component is changing": 2,
       "Test errors: Uncaught TypeErrors": 1
     },
@@ -603,7 +603,9 @@
     },
     "ui/pages/swaps/index.test.js": {
       "Reselect: Identity function warnings": 4,
-      "Reselect: Input stability warnings": 1
+      "Reselect: Input stability warnings": 1,
+      "error: background[method] is not a function": 1,
+      "error: Failed to fetch Swaps feature": 1
     },
     "ui/pages/confirm-encryption-public-key/confirm-encryption-public-key.component.test.js": {
       "Reselect: Identity function warnings": 2,
@@ -2125,7 +2127,7 @@
     "ui/pages/bridge/prepare/bridge-transaction-settings-modal.test.tsx": {
       "Reselect: Identity function warnings": 3,
       "Reselect: Input stability warnings": 1,
-      "MetaMask: Background connection not initialized": 972,
+      "MetaMask: Background connection not initialized": 976,
       "error: Warning: You seem to have": 2,
       "Test errors: Fetch failures": 36,
       "React: Act warnings (component updates not wrapped)": 2
