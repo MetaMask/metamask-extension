@@ -977,9 +977,6 @@
   "bridgeEnterAmount": {
     "message": "Select amount"
   },
-  "bridgeEnterAmountAndSelectAccount": {
-    "message": "Enter amount and select destination account"
-  },
   "bridgeExplorerLinkViewOn": {
     "message": "View on $1"
   },

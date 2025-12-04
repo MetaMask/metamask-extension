@@ -943,9 +943,6 @@
   "bridgeEnterAmount": {
     "message": "Miktar seçin"
   },
-  "bridgeEnterAmountAndSelectAccount": {
-    "message": "Tutar girin ve hedef hesabı seçin"
-  },
   "bridgeExplorerLinkViewOn": {
     "message": "$1 üzerinde görüntüle"
   },

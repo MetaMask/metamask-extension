@@ -943,9 +943,6 @@
   "bridgeEnterAmount": {
     "message": "Πληκτρολογήστε το ποσό"
   },
-  "bridgeEnterAmountAndSelectAccount": {
-    "message": "Εισαγάγετε το ποσό και επιλέξτε τον λογαριασμό προορισμού"
-  },
   "bridgeExplorerLinkViewOn": {
     "message": "Προβολή σε $1"
   },
