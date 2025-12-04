@@ -87,28 +87,37 @@ export function useDappSwapComparisonInfo() {
   });
 
   const { bestQuote, selectedQuote } = useMemo(() => {
-    if (
-      swapInfo?.destTokenAmountMin === undefined ||
-      !quotes?.length ||
-      tokenInfoPending
-    ) {
+    try {
+      if (
+        swapInfo?.destTokenAmountMin === undefined ||
+        !quotes?.length ||
+        tokenInfoPending
+      ) {
+        return { bestQuote: undefined, selectedQuote: undefined };
+      }
+      const { bestQuote: bestAvailableQuote, bestFilteredQuote } = getBestQuote(
+        quotes,
+        swapInfo?.destTokenAmountMin as Hex,
+        getDestinationTokenUSDValue,
+        getGasUSDValue,
+      );
+
+      const selectedBestQuote =
+        bestFilteredQuote ||
+        (dappSwapQa?.enabled ? bestAvailableQuote : undefined);
+
+      return {
+        bestQuote: bestAvailableQuote,
+        selectedQuote: selectedBestQuote,
+      };
+    } catch (error) {
+      captureException(error);
+      captureDappSwapComparisonFailed(
+        `Error calculating best quote: ${(error as Error).message}`,
+        commands,
+      );
       return { bestQuote: undefined, selectedQuote: undefined };
     }
-    const { bestQuote: bestAvailableQuote, bestFilteredQuote } = getBestQuote(
-      quotes,
-      swapInfo?.destTokenAmountMin as Hex,
-      getDestinationTokenUSDValue,
-      getGasUSDValue,
-    );
-
-    const selectedBestQuote =
-      bestFilteredQuote ||
-      (dappSwapQa?.enabled ? bestAvailableQuote : undefined);
-
-    return {
-      bestQuote: bestAvailableQuote,
-      selectedQuote: selectedBestQuote,
-    };
   }, [
     commands,
     captureDappSwapComparisonFailed,
@@ -201,7 +210,7 @@ export function useDappSwapComparisonInfo() {
     } catch (error) {
       captureException(error);
       captureDappSwapComparisonFailed(
-        `Error calculating metrics values: ${(error as Error).toString()}`,
+        `Error calculating metrics values: ${(error as Error).message}`,
         commands,
       );
     }
@@ -227,56 +236,61 @@ export function useDappSwapComparisonInfo() {
 
   const { selectedQuoteValueDifference = 0, tokenAmountDifference = 0 } =
     useMemo(() => {
-      if (!selectedQuote || !swapInfo || !simulationData || !tokenDetails) {
-        return {};
-      }
+      try {
+        if (!selectedQuote || !swapInfo || !simulationData || !tokenDetails) {
+          return {};
+        }
 
-      const { destTokenAddress } = swapInfo;
-      const {
-        quote: { destTokenAmount },
-      } = selectedQuote;
+        const { destTokenAddress } = swapInfo;
+        const {
+          quote: { destTokenAmount },
+        } = selectedQuote;
 
-      const totalGasInQuote = new BigNumber(
-        getGasUSDValue(getGasFromQuote(selectedQuote)),
-      );
+        const totalGasInQuote = new BigNumber(
+          getGasUSDValue(getGasFromQuote(selectedQuote)),
+        );
 
-      const destinationTokenAmountInQuote = new BigNumber(
-        getDestinationTokenUSDValue(destTokenAmount),
-      );
+        const destinationTokenAmountInQuote = new BigNumber(
+          getDestinationTokenUSDValue(destTokenAmount),
+        );
 
-      const totalAmountInQuote =
-        destinationTokenAmountInQuote.minus(totalGasInQuote);
+        const totalAmountInQuote =
+          destinationTokenAmountInQuote.minus(totalGasInQuote);
 
-      const totalGasInConfirmation = new BigNumber(
-        getGasUSDValue(
-          new BigNumber(gasUsed ?? gasLimitNoBuffer ?? gas ?? '0x0', 16),
-        ),
-      );
-
-      const destinationTokenAmountInConfirmation = new BigNumber(
-        getDestinationTokenUSDValue(
-          getBalanceChangeFromSimulationData(
-            destTokenAddress as Hex,
-            simulationData,
+        const totalGasInConfirmation = new BigNumber(
+          getGasUSDValue(
+            new BigNumber(gasUsed ?? gasLimitNoBuffer ?? gas ?? '0x0', 16),
           ),
-        ),
-      );
+        );
 
-      const totalAmountInConfirmation =
-        destinationTokenAmountInConfirmation.minus(totalGasInConfirmation);
+        const destinationTokenAmountInConfirmation = new BigNumber(
+          getDestinationTokenUSDValue(
+            getBalanceChangeFromSimulationData(
+              destTokenAddress as Hex,
+              simulationData,
+            ),
+          ),
+        );
 
-      const selectedQuoteValueDiff = totalAmountInQuote
-        .minus(totalAmountInConfirmation)
-        .toNumber();
+        const totalAmountInConfirmation =
+          destinationTokenAmountInConfirmation.minus(totalGasInConfirmation);
 
-      const tokenAmountDiff = destinationTokenAmountInQuote
-        .minus(destinationTokenAmountInConfirmation)
-        .toNumber();
+        const selectedQuoteValueDiff = totalAmountInQuote
+          .minus(totalAmountInConfirmation)
+          .toNumber();
 
-      return {
-        selectedQuoteValueDifference: selectedQuoteValueDiff,
-        tokenAmountDifference: tokenAmountDiff,
-      };
+        const tokenAmountDiff = destinationTokenAmountInQuote
+          .minus(destinationTokenAmountInConfirmation)
+          .toNumber();
+
+        return {
+          selectedQuoteValueDifference: selectedQuoteValueDiff,
+          tokenAmountDifference: tokenAmountDiff,
+        };
+      } catch (error) {
+        captureException(error);
+        return { selectedQuoteValueDifference: 0, tokenAmountDifference: 0 };
+      }
     }, [
       gas,
       gasLimitNoBuffer,
