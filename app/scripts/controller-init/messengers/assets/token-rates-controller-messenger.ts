@@ -4,6 +4,8 @@ import {
   NetworkControllerStateChangeEvent,
 } from '@metamask/network-controller';
 import {
+  TokenRatesControllerActions,
+  TokenRatesControllerEvents,
   TokensControllerGetStateAction,
   TokensControllerStateChangeEvent,
 } from '@metamask/assets-controllers';
@@ -13,9 +15,13 @@ import {
 } from '../../../controllers/preferences-controller';
 import { RootMessenger } from '../../../lib/messenger';
 
-type Actions = TokensControllerGetStateAction | NetworkControllerGetStateAction;
+type Actions =
+  | TokenRatesControllerActions
+  | TokensControllerGetStateAction
+  | NetworkControllerGetStateAction;
 
 type Events =
+  | TokenRatesControllerEvents
   | TokensControllerStateChangeEvent
   | NetworkControllerStateChangeEvent;
 
