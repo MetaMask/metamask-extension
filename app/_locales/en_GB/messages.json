@@ -6216,7 +6216,7 @@
     "message": "Claims"
   },
   "shieldClaimsNumber": {
-    "message": "Claims #$1",
+    "message": "Claim #$1",
     "description": "The $1 is the claim number"
   },
   "shieldClaimsTabHistory": {
