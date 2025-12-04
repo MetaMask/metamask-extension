@@ -109,11 +109,9 @@ export const KeyringControllerInit: ControllerInitFunction<
   additionalKeyrings.push(snapKeyringBuilder);
   ///: END:ONLY_INCLUDE_IF
 
-  // @ts-expect-error: The types for the encryptor are not correct.
   const controller = new KeyringController({
     state: persistedState.KeyringController,
     messenger: controllerMessenger,
-    cacheEncryptionKey: true,
     keyringBuilders: additionalKeyrings,
     encryptor: encryptor || encryptorFactory(600_000),
   });
