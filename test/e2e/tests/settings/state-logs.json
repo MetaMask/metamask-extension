@@ -110,8 +110,6 @@
     "sortOrder": "string",
     "toChainId": "null",
     "toToken": "null",
-    "toTokenExchangeRate": "null",
-    "toTokenUsdExchangeRate": "null",
     "txAlert": "null",
     "wasTxDeclined": "boolean"
   },
