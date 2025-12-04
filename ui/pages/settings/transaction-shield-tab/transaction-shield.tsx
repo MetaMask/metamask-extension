@@ -8,12 +8,13 @@ import {
 } from '@metamask/subscription-controller';
 import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
 import {
+  Button,
+  ButtonSize,
+  ButtonVariant,
   Icon,
   IconColor,
   IconName,
   IconSize,
-  TextButton,
-  TextButtonSize,
 } from '@metamask/design-system-react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -242,60 +243,32 @@ const TransactionShield = () => {
     dispatch(setOnboardingModalOpen(true));
   }, [dispatch]);
 
-  const shieldDetails = useMemo(() => {
+  const formattedRewardsPoints = useMemo(() => {
     const points =
       displayedShieldSubscription?.interval === RECURRING_INTERVALS.year
         ? pointsYearly
         : pointsMonthly;
 
-    const details = [
-      {
-        icon: IconName.ShieldLock,
-        title: t('shieldTxDetails1Title'),
-        description: t('shieldTxDetails1Description'),
-      },
-      {
-        icon: IconName.Flash,
-        title: t('shieldTxDetails2Title'),
-        description: t('shieldTxDetails2Description'),
-      },
-    ];
-
-    if (points) {
-      const formattedPoints = new Intl.NumberFormat(locale).format(points ?? 0);
-      details.push({
-        icon: IconName.MetamaskFoxOutline,
-        title: t('shieldTxDetails3Title'),
-        description: t('shieldTxDetails3Description', [
-          formattedPoints,
-          displayedShieldSubscription?.interval === RECURRING_INTERVALS.year
-            ? t('year')
-            : t('month'),
-          <TextButton
-            key="sign-up-button"
-            size={TextButtonSize.BodySm}
-            textProps={{
-              className: 'font-regular',
-            }}
-            onClick={() => {
-              openRewardsOnboardingModal();
-            }}
-          >
-            {t('shieldTxDetails3DescriptionSignUp')}
-          </TextButton>,
-        ]),
-      });
-    }
-
-    return details;
+    return new Intl.NumberFormat(locale).format(points ?? 0);
   }, [
-    displayedShieldSubscription,
-    t,
-    openRewardsOnboardingModal,
-    pointsMonthly,
+    displayedShieldSubscription?.interval,
     pointsYearly,
+    pointsMonthly,
     locale,
   ]);
+
+  const shieldDetails = [
+    {
+      icon: IconName.Cash,
+      title: t('shieldTxDetails1Title'),
+      description: t('shieldTxDetails1Description'),
+    },
+    {
+      icon: IconName.Sms,
+      title: t('shieldTxDetails2Title'),
+      description: t('shieldTxDetails2Description'),
+    },
+  ];
 
   const rowsStyleProps: BoxProps<'div'> = {
     display: Display.Flex,
@@ -660,6 +633,70 @@ const TransactionShield = () => {
               </Box>
             </Box>
           ))}
+          <Box
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            gap={2}
+            paddingTop={2}
+            paddingBottom={2}
+          >
+            {showSkeletonLoader ? (
+              <Skeleton
+                width={32}
+                height={32}
+                borderRadius={BorderRadius.full}
+                style={{ flexShrink: 0 }}
+              />
+            ) : (
+              <Icon name={IconName.MetamaskFoxOutline} size={IconSize.Xl} />
+            )}
+            <Box
+              width={BlockSize.Full}
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              gap={showSkeletonLoader ? 2 : 0}
+            >
+              {showSkeletonLoader ? (
+                <Skeleton width="100%" height={18} />
+              ) : (
+                <Text variant={TextVariant.bodySmBold}>
+                  {t('shieldTxDetails3Title')}
+                </Text>
+              )}
+              {showSkeletonLoader ? (
+                <Skeleton width="100%" height={18} />
+              ) : (
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.textAlternative}
+                >
+                  {t('shieldTxDetails3Description', [
+                    formattedRewardsPoints,
+                    displayedShieldSubscription?.interval ===
+                    RECURRING_INTERVALS.year
+                      ? t('year')
+                      : t('month'),
+                  ])}
+                </Text>
+              )}
+            </Box>
+            <Box className="flex-shrink-0">
+              {showSkeletonLoader ? (
+                <Skeleton width={80} height={32} />
+              ) : (
+                <Button
+                  className="px-3"
+                  variant={ButtonVariant.Secondary}
+                  size={ButtonSize.Sm}
+                  onClick={() => {
+                    openRewardsOnboardingModal();
+                  }}
+                >
+                  {t('shieldTxDetails3DescriptionSignUp')}
+                </Button>
+              )}
+            </Box>
+          </Box>
         </Box>
         {buttonRow(
           t('shieldTxMembershipViewFullBenefits'),
