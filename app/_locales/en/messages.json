@@ -6370,6 +6370,16 @@
   "shieldPlanDetails3": {
     "message": "24/7 access to priority live chat support"
   },
+  "shieldPlanDetailsRewards": {
+    "message": "Earn $1 points per $2",
+    "description": "The $1 is the number of points and $2 plan interval (month or year)"
+  },
+  "shieldPlanDetailsRewardsDescription": {
+    "message": "This offer is only available during Rewards seasons. Points are given when free trial ends to users signed up for Rewards."
+  },
+  "shieldPlanDetailsRewardsTitle": {
+    "message": "Rewards"
+  },
   "shieldPlanErrorText": {
     "message": "Couldn’t connect to Transaction Shield"
   },
@@ -6435,6 +6445,16 @@
   },
   "shieldTxDetails2Title": {
     "message": "Priority support"
+  },
+  "shieldTxDetails3Description": {
+    "message": "Get $1 points/$2.",
+    "description": "The $1 is the number of points, $2 is the plan interval (month or year)"
+  },
+  "shieldTxDetails3DescriptionSignUp": {
+    "message": "Sign up"
+  },
+  "shieldTxDetails3Title": {
+    "message": "Earn during rewards season"
   },
   "shieldTxMembershipActive": {
     "message": "Active plan"
