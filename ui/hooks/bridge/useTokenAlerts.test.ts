@@ -39,7 +39,7 @@ describe('useTokenAlerts', () => {
   it('should set token alert when toChain is Solana', async () => {
     const mockStoreState = createBridgeMockStore({
       featureFlagOverrides: {
-        extensionConfig: {
+        bridgeConfig: {
           chains: {
             [formatChainIdToCaip(ChainId.SOLANA)]: {
               isActiveSrc: true,

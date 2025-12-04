@@ -1,5 +1,5 @@
 import React from 'react';
-import { RequestStatus } from '@metamask/bridge-controller';
+import { QuoteResponse, RequestStatus } from '@metamask/bridge-controller';
 import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20.json';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
@@ -12,7 +12,7 @@ describe('BridgeQuotesModal', () => {
   it('should render the modal', () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        extensionConfig: {
+        bridgeConfig: {
           chains: {
             '0x1': { isActiveSrc: true, isActiveDest: false },
             '0xa': { isActiveSrc: true, isActiveDest: false },
@@ -21,8 +21,8 @@ describe('BridgeQuotesModal', () => {
         },
       },
       bridgeStateOverrides: {
-        quotes: mockBridgeQuotesErc20Erc20,
-        getQuotesLastFetched: Date.now(),
+        quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+        quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
         quoteRequest: {
           srcChainId: 10,
