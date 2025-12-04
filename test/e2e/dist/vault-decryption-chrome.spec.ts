@@ -211,6 +211,8 @@ describe('Vault Decryptor Page', function () {
         await privacySettings.completeRevealSrpQuiz();
         await privacySettings.fillPasswordToRevealSrp(WALLET_PASSWORD);
         const seedPhrase = await privacySettings.getSrpInRevealSrpDialog();
+
+        // Closing MetaMask completely
         await privacySettings.closeRevealSrpDialog();
         await settingsPage.closeSettingsPage();
         const headerNavbar = new HeaderNavbar(driver);
@@ -218,6 +220,7 @@ describe('Vault Decryptor Page', function () {
         await headerNavbar.lockMetaMask();
         await driver.closeWindow();
         await driver.switchToWindowWithTitle('Extensions');
+        await driver.delay(10000);
 
         // Retry-logic to ensure the file is ready before uploading it to mitigate flakiness when Chrome hasn't finished writing
         await waitUntilFileIsWritten({ driver });
