@@ -1945,6 +1945,10 @@
       "useTransactionSimulations": true,
       "watchEthereumAccountEnabled": false
     },
+    "ProfileMetricsController": {
+      "initialEnqueueCompleted": false,
+      "syncQueue": {}
+    },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": 0,
       "remoteFeatureFlags": {}
