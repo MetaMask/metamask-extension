@@ -17,8 +17,7 @@ import {
   TransactionParams,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { CaipAccountId, Hex, parseCaipChainId } from '@metamask/utils';
-import { InternalAccount } from '@metamask/keyring-internal-api';
+import { Hex } from '@metamask/utils';
 import { getUserSubscriptions } from '../../selectors/subscription';
 import {
   addTransaction,
@@ -52,10 +51,11 @@ import { decimalToHex } from '../../../shared/modules/conversion.utils';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
 import {
+  getMetaMaskHdKeyrings,
   getMetaMetricsId,
   getModalTypeForShieldEntryModal,
-  getSelectedAccount,
   getUnapprovedConfirmations,
+  getUpdatedAndSortedAccountsWithCaipAccountId,
 } from '../../selectors';
 import { useSubscriptionMetrics } from '../shield/metrics/useSubscriptionMetrics';
 import { CaptureShieldSubscriptionRequestParams } from '../shield/metrics/types';
@@ -73,6 +73,7 @@ import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import { useAccountTotalFiatBalance } from '../useAccountTotalFiatBalance';
 import { getNetworkConfigurationsByChainId } from '../../../shared/modules/selectors/networks';
 import { isCryptoPaymentMethod } from '../../pages/settings/transaction-shield-tab/types';
+import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import {
   TokenWithApprovalAmount,
   useSubscriptionPricing,
@@ -742,25 +743,33 @@ export const useUpdateSubscriptionCryptoPaymentMethod = ({
 
 export const useShieldRewards = () => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
-  const selectedAccount = useSelector(getSelectedAccount) as InternalAccount;
+  const [primaryKeyring] = useSelector(getMetaMaskHdKeyrings);
+  const accountsWithCaipChainId = useSelector(
+    getUpdatedAndSortedAccountsWithCaipAccountId,
+  );
 
   const caipAccountId = useMemo(() => {
-    if (!selectedAccount?.scopes?.[0]) {
+    if (!primaryKeyring) {
       return null;
     }
-    try {
-      const { namespace, reference } = parseCaipChainId(
-        selectedAccount.scopes[0],
-      );
-      return `${namespace}:${reference}:${selectedAccount.address}` as CaipAccountId;
-    } catch {
-      console.error(
-        '[useShieldRewards] Failed to parse CAIP chain ID:',
-        selectedAccount.scopes[0],
-      );
+
+    const primaryAccountWithCaipChainId = accountsWithCaipChainId.find(
+      (account) => {
+        const entropySource = account.options?.entropySource;
+        if (typeof entropySource === 'string') {
+          return isEqualCaseInsensitive(
+            entropySource,
+            primaryKeyring.metadata.id,
+          );
+        }
+        return false;
+      },
+    );
+    if (!primaryAccountWithCaipChainId) {
       return null;
     }
-  }, [selectedAccount]);
+    return primaryAccountWithCaipChainId.caipAccountId;
+  }, [primaryKeyring, accountsWithCaipChainId]);
 
   const {
     value: pointsValue,
