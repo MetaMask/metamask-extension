@@ -66,14 +66,13 @@ import {
   useSubscriptionProductPlans,
 } from '../../hooks/subscription/useSubscriptionPricing';
 import {
-  useFetchShieldRewardsPoints,
   useHandleSubscription,
+  useShieldRewards,
   useUserSubscriptionByProduct,
   useUserSubscriptions,
 } from '../../hooks/subscription/useSubscription';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { getLastUsedShieldSubscriptionPaymentDetails } from '../../selectors/subscription';
-import { useRewardsSeasonCheck } from '../../hooks/rewards/useSeasonStatus';
 import {
   EntryModalSourceEnum,
   ShieldUnexpectedErrorEventLocationEnum,
@@ -105,15 +104,12 @@ const ShieldPlan = () => {
     getLastUsedShieldSubscriptionPaymentDetails,
   );
 
-  const { isRewardsSeason, pending: isSeasonMetadataLoading } =
-    useRewardsSeasonCheck();
-
-  // gets points for monthly and yearly plans in advance to avoid fetching on toggle plan
   const {
+    isRewardsSeason,
     pointsMonthly,
     pointsYearly,
-    pending: pendingPoints,
-  } = useFetchShieldRewardsPoints();
+    pending: pendingShieldRewards,
+  } = useShieldRewards();
 
   // Stripe Test clocks
   const [enableStripeTestClock, setEnableStripeTestClock] = useState(
@@ -313,8 +309,7 @@ const ShieldPlan = () => {
     subscriptionsLoading ||
     subscriptionPricingLoading ||
     subscriptionResult.pending ||
-    isSeasonMetadataLoading ||
-    pendingPoints;
+    pendingShieldRewards;
 
   const hasApiError =
     subscriptionsError ||

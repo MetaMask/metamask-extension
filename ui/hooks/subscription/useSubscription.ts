@@ -17,13 +17,15 @@ import {
   TransactionParams,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { Hex } from '@metamask/utils';
+import { CaipAccountId, Hex, parseCaipChainId } from '@metamask/utils';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { getUserSubscriptions } from '../../selectors/subscription';
 import {
   addTransaction,
   cancelSubscription,
   estimateGas,
   estimateRewardsPoints,
+  getRewardsSeasonMetadata,
   getSubscriptionBillingPortalUrl,
   getSubscriptions,
   getSubscriptionsEligibilities,
@@ -54,7 +56,6 @@ import {
   getModalTypeForShieldEntryModal,
   getSelectedAccount,
   getUnapprovedConfirmations,
-  getUpdatedAndSortedAccountsWithCaipAccountId,
 } from '../../selectors';
 import { useSubscriptionMetrics } from '../shield/metrics/useSubscriptionMetrics';
 import { CaptureShieldSubscriptionRequestParams } from '../shield/metrics/types';
@@ -72,7 +73,6 @@ import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import { useAccountTotalFiatBalance } from '../useAccountTotalFiatBalance';
 import { getNetworkConfigurationsByChainId } from '../../../shared/modules/selectors/networks';
 import { isCryptoPaymentMethod } from '../../pages/settings/transaction-shield-tab/types';
-import { MergedInternalAccountWithCaipAccountId } from '../../selectors/selectors.types';
 import {
   TokenWithApprovalAmount,
   useSubscriptionPricing,
@@ -740,27 +740,25 @@ export const useUpdateSubscriptionCryptoPaymentMethod = ({
   };
 };
 
-export const useFetchShieldRewardsPoints = () => {
+export const useShieldRewards = () => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
-  const accounts = useSelector(
-    getUpdatedAndSortedAccountsWithCaipAccountId,
-  ) as MergedInternalAccountWithCaipAccountId[];
-  const selectedAccount = useSelector(getSelectedAccount);
+  const selectedAccount = useSelector(getSelectedAccount) as InternalAccount;
 
-  const { value, pending } = useAsyncResult<{
+  const caipAccountId = useMemo(() => {
+    if (!selectedAccount?.scopes?.[0]) {
+      return null;
+    }
+    const { namespace, reference } = parseCaipChainId(
+      selectedAccount.scopes[0],
+    );
+    return `${namespace}:${reference}:${selectedAccount.address}` as CaipAccountId;
+  }, [selectedAccount]);
+
+  const { value: pointsValue, pending: pointsPending } = useAsyncResult<{
     monthly: number | null;
     yearly: number | null;
   }>(async () => {
-    if (!selectedAccount) {
-      return { monthly: null, yearly: null };
-    }
-
-    // get the caip account id for the current selected account
-    const selectedAccountWithCaipAccountId = accounts.find(
-      (account) => account.address === selectedAccount.address,
-    );
-
-    if (!selectedAccountWithCaipAccountId) {
+    if (!caipAccountId) {
       return { monthly: null, yearly: null };
     }
 
@@ -768,7 +766,7 @@ export const useFetchShieldRewardsPoints = () => {
       dispatch(
         estimateRewardsPoints({
           activityType: 'SHIELD',
-          account: selectedAccountWithCaipAccountId.caipAccountId,
+          account: caipAccountId,
           activityContext: {
             shieldContext: {
               recurringInterval: 'month',
@@ -779,7 +777,7 @@ export const useFetchShieldRewardsPoints = () => {
       dispatch(
         estimateRewardsPoints({
           activityType: 'SHIELD',
-          account: selectedAccountWithCaipAccountId.caipAccountId,
+          account: caipAccountId,
           activityContext: {
             shieldContext: {
               recurringInterval: 'year',
@@ -793,11 +791,29 @@ export const useFetchShieldRewardsPoints = () => {
       monthly: monthlyPointsData?.pointsEstimate ?? null,
       yearly: yearlyPointsData?.pointsEstimate ?? null,
     };
-  }, [dispatch, accounts, selectedAccount]);
+  }, [dispatch, caipAccountId]);
+
+  const { value: isRewardsSeason, pending: seasonPending } =
+    useAsyncResult<boolean>(async () => {
+      const seasonMetadata = await dispatch(
+        getRewardsSeasonMetadata('current'),
+      );
+
+      if (!seasonMetadata) {
+        return false;
+      }
+
+      const currentTimestamp = Date.now();
+      return (
+        currentTimestamp >= seasonMetadata.startDate &&
+        currentTimestamp <= seasonMetadata.endDate
+      );
+    }, [dispatch]);
 
   return {
-    pending,
-    pointsMonthly: value?.monthly ?? null,
-    pointsYearly: value?.yearly ?? null,
+    pending: pointsPending || seasonPending,
+    pointsMonthly: pointsValue?.monthly ?? null,
+    pointsYearly: pointsValue?.yearly ?? null,
+    isRewardsSeason: isRewardsSeason ?? false,
   };
 };
