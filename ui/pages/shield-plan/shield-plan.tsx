@@ -108,11 +108,12 @@ const ShieldPlan = () => {
   const { isRewardsSeason, pending: isSeasonMetadataLoading } =
     useRewardsSeasonCheck();
 
-  // gets points for monthly and yearly plans
-  const { points: pointsMonthly, pending: pendingPointsMonthly } =
-    useFetchShieldRewardsPoints('month');
-  const { points: pointsYearly, pending: pendingPointsYearly } =
-    useFetchShieldRewardsPoints('year');
+  // gets points for monthly and yearly plans in advance to avoid fetching on toggle plan
+  const {
+    pointsMonthly,
+    pointsYearly,
+    pending: pendingPoints,
+  } = useFetchShieldRewardsPoints();
 
   // Stripe Test clocks
   const [enableStripeTestClock, setEnableStripeTestClock] = useState(
@@ -313,8 +314,7 @@ const ShieldPlan = () => {
     subscriptionPricingLoading ||
     subscriptionResult.pending ||
     isSeasonMetadataLoading ||
-    pendingPointsMonthly ||
-    pendingPointsYearly;
+    pendingPoints;
 
   const hasApiError =
     subscriptionsError ||

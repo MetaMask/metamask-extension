@@ -740,44 +740,60 @@ export const useUpdateSubscriptionCryptoPaymentMethod = ({
   };
 };
 
-export const useFetchShieldRewardsPoints = (interval: RecurringInterval) => {
+export const useFetchShieldRewardsPoints = () => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const accounts = useSelector(
     getUpdatedAndSortedAccountsWithCaipAccountId,
   ) as MergedInternalAccountWithCaipAccountId[];
   const selectedAccount = useSelector(getSelectedAccount);
 
-  const { value, pending } = useAsyncResult<number | null>(async () => {
+  const { value, pending } = useAsyncResult<{
+    monthly: number | null;
+    yearly: number | null;
+  }>(async () => {
     // get the caip account id for the current selected account
     const selectedAccountWithCaipAccountId = accounts.find(
       (account) => account.address === selectedAccount.address,
     );
 
     if (!selectedAccountWithCaipAccountId) {
-      return null;
+      return { monthly: null, yearly: null };
     }
 
-    const pointsData = await dispatch(
-      estimateRewardsPoints({
-        activityType: 'SHIELD',
-        account: selectedAccountWithCaipAccountId.caipAccountId,
-        activityContext: {
-          shieldContext: {
-            recurringInterval: interval,
+    const [monthlyPointsData, yearlyPointsData] = await Promise.all([
+      dispatch(
+        estimateRewardsPoints({
+          activityType: 'SHIELD',
+          account: selectedAccountWithCaipAccountId.caipAccountId,
+          activityContext: {
+            shieldContext: {
+              recurringInterval: 'month',
+            },
           },
-        },
-      }),
-    );
+        }),
+      ),
+      dispatch(
+        estimateRewardsPoints({
+          activityType: 'SHIELD',
+          account: selectedAccountWithCaipAccountId.caipAccountId,
+          activityContext: {
+            shieldContext: {
+              recurringInterval: 'year',
+            },
+          },
+        }),
+      ),
+    ]);
 
-    if (!pointsData) {
-      return null;
-    }
-
-    return pointsData.pointsEstimate;
-  }, [dispatch, accounts, selectedAccount, interval]);
+    return {
+      monthly: monthlyPointsData?.pointsEstimate ?? null,
+      yearly: yearlyPointsData?.pointsEstimate ?? null,
+    };
+  }, [dispatch, accounts, selectedAccount]);
 
   return {
     pending,
-    points: value ?? null,
+    pointsMonthly: value?.monthly ?? null,
+    pointsYearly: value?.yearly ?? null,
   };
 };
