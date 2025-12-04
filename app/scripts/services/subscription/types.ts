@@ -30,7 +30,7 @@ import {
 } from '../../controllers/app-state-controller';
 import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller';
 import {
-  RewardsControllerGetActualSubscriptionIdAction,
+  RewardsControllerGetHasAccountOptedInAction,
   RewardsControllerGetSeasonMetadataAction,
   RewardsControllerGetSeasonStatusAction,
 } from '../../controllers/rewards/rewards-controller.types';
@@ -70,7 +70,7 @@ export type SubscriptionServiceAction =
   // Rewards Integration
   | RewardsControllerGetSeasonStatusAction // For rewards, to get the season status for claiming points with the shield subscription
   | RewardsControllerGetSeasonMetadataAction // For rewards, to check if the season is active and can claim points
-  | RewardsControllerGetActualSubscriptionIdAction; // For rewards, to get the actual subscription ID for the primary account to link with the shield subscription
+  | RewardsControllerGetHasAccountOptedInAction; // For rewards, to check if the account has opted in to rewards
 
 export type SubscriptionServiceEvent = never;
 

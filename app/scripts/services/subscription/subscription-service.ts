@@ -142,14 +142,14 @@ export class SubscriptionService {
       const redirectUrl = this.#webAuthenticator.getRedirectURL();
 
       // check if the account is opted in to rewards
-      const rewardSubscriptionId = await this.#getRewardSubscriptionId();
+      const rewardAccountId = await this.#getRewardCaipAccountId();
 
       const { checkoutSessionUrl } = await this.#messenger.call(
         'SubscriptionController:startShieldSubscriptionWithCard',
         {
           ...params,
           successUrl: redirectUrl,
-          rewardSubscriptionId,
+          rewardAccountId,
         },
       );
 
@@ -248,14 +248,14 @@ export class SubscriptionService {
    */
   async linkRewardToExistingSubscription(subscriptionId: string) {
     try {
-      const rewardSubscriptionId = await this.#getRewardSubscriptionId();
-      if (!rewardSubscriptionId) {
+      const rewardAccountId = await this.#getRewardCaipAccountId();
+      if (!rewardAccountId) {
         return;
       }
 
       await this.#messenger.call('SubscriptionController:linkRewards', {
         subscriptionId,
-        rewardSubscriptionId,
+        rewardAccountId,
       });
     } catch (error) {
       log.error('Failed to link reward to existing subscription', error);
@@ -369,15 +369,13 @@ export class SubscriptionService {
         has_sufficient_crypto_balance: true,
       });
 
-      const rewardSubscriptionId = await this.#getRewardSubscriptionId(
-        txMeta.txParams.from as `0x${string}`,
-      );
+      const rewardAccountId = await this.#getRewardCaipAccountId();
 
       await this.#messenger.call(
         'SubscriptionController:submitShieldSubscriptionCryptoApproval',
         txMeta,
         isSponsored,
-        rewardSubscriptionId,
+        rewardAccountId,
       );
 
       this.trackSubscriptionRequestEvent('completed', txMeta, {
@@ -464,12 +462,9 @@ export class SubscriptionService {
   /**
    * Get the reward subscription ID for the current season.
    *
-   * @param payerAddress - The optional payer address to pay for the shield subscription with crypto.
    * @returns Promise<string | undefined> - The reward subscription ID or undefined if the season is not active.
    */
-  async #getRewardSubscriptionId(
-    payerAddress?: `0x${string}`,
-  ): Promise<string | undefined> {
+  async #getRewardCaipAccountId(): Promise<CaipAccountId | undefined> {
     try {
       const currentSeasonMetadata = await this.#messenger.call(
         'RewardsController:getSeasonMetadata',
@@ -481,33 +476,17 @@ export class SubscriptionService {
         return undefined;
       }
 
-      // if payer address is provided, check if the payer is opted in to rewards
-      // use the payer's reward subscription id if available
-      if (payerAddress) {
-        const payerCaipAccountId = await this.#getCaipAccountIds(payerAddress);
-        if (payerCaipAccountId) {
-          const payerRewardSubscriptionId = this.#messenger.call(
-            'RewardsController:getActualSubscriptionId',
-            payerCaipAccountId,
-          );
-          if (payerRewardSubscriptionId) {
-            return payerRewardSubscriptionId;
-          }
-        }
-        // if payer is not opted in to rewards, fallback to use the primary account
-      }
-
       // if payer address is not provided or not opted in to rewards, fallback to use the primary account
-      const primaryCaipAccountId = await this.#getCaipAccountIds();
+      const primaryCaipAccountId = await this.#getPrimaryCaipAccountId();
       if (!primaryCaipAccountId) {
         return undefined;
       }
 
-      const rewardSubscriptionId = this.#messenger.call(
-        'RewardsController:getActualSubscriptionId',
+      const hasAccountOptedIn = await this.#messenger.call(
+        'RewardsController:getHasAccountOptedIn',
         primaryCaipAccountId,
       );
-      return rewardSubscriptionId || undefined;
+      return hasAccountOptedIn ? primaryCaipAccountId : undefined;
     } catch (error) {
       log.warn('Failed to get reward season metadata', error);
       return undefined;
@@ -517,12 +496,9 @@ export class SubscriptionService {
   /**
    * Get the primary CAIP account ID.
    *
-   * @param address - The optional address to get the CAIP account ID for.
    * @returns Promise<CaipAccountId | undefined> - The primary CAIP account ID.
    */
-  async #getCaipAccountIds(
-    address?: `0x${string}`,
-  ): Promise<CaipAccountId | undefined> {
+  async #getPrimaryCaipAccountId(): Promise<CaipAccountId | undefined> {
     try {
       const keyringsMetadata = this.#messenger.call(
         'KeyringController:getState',
@@ -540,9 +516,6 @@ export class SubscriptionService {
       const primaryInternalAccount = Object.values(
         internalAccounts.accounts,
       ).find((account) => {
-        if (address) {
-          return isEqualCaseInsensitive(account.address, address);
-        }
         const entropySource = account.options?.entropySource;
         if (typeof entropySource === 'string') {
           return isEqualCaseInsensitive(

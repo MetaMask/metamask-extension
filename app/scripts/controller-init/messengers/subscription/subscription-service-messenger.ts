@@ -56,7 +56,7 @@ export function getSubscriptionServiceMessenger(
       // Rewards Integration
       'RewardsController:getSeasonStatus',
       'RewardsController:getSeasonMetadata',
-      'RewardsController:getActualSubscriptionId',
+      'RewardsController:getHasAccountOptedIn',
     ],
   });
   return serviceMessenger;
