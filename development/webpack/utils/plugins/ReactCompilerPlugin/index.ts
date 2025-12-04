@@ -1,146 +1,44 @@
-import type { Compiler, RuleSetRule, RuleSetCondition } from 'webpack';
+import type { Compiler } from 'webpack';
 import {
-  type ReactCompilerLoaderOption,
   defineReactCompilerLoaderOption,
   reactCompilerLoader,
+  type ReactCompilerLoaderOption,
 } from 'react-compiler-webpack';
-import type { Logger } from 'babel-plugin-react-compiler';
+import { validate } from 'schema-utils';
+import { schema } from './schema';
+import { ReactCompilerLogger } from './logger';
+
+const NAME = 'ReactCompilerPlugin';
 
 /**
- * React Compiler logger that tracks compilation statistics.
+ * Default test pattern for matching React component files.
+ * Matches .js, .jsx, .ts, .tsx, .mjs, .mts files,
+ * excluding test, stories, and container files.
  */
-class ReactCompilerLogger {
-  private compiledCount = 0;
+const DEFAULT_TEST =
+  /(?:.(?!\.(?:test|stories|container)))+\.(?:m?[jt]s|[jt]sx)$/u;
 
-  private skippedCount = 0;
-
-  private errorCount = 0;
-
-  private todoCount = 0;
-
-  private compiledFiles: string[] = [];
-
-  private skippedFiles: string[] = [];
-
-  private errorFiles: string[] = [];
-
-  private todoFiles: string[] = [];
-
-  logEvent(
-    filename: string | null,
-    event: { kind: string; detail: { options: { category: string } } },
-  ) {
-    if (filename === null) {
-      return;
-    }
-    const { options: errorDetails } = event.detail ?? {};
-    switch (event.kind) {
-      case 'CompileSuccess':
-        this.compiledCount++;
-        this.compiledFiles.push(filename);
-        console.log(`✅ Compiled: ${filename}`);
-        break;
-      case 'CompileSkip':
-        this.skippedCount++;
-        this.skippedFiles.push(filename);
-        break;
-      case 'CompileError':
-        // This error is thrown for syntax that is not yet supported by the React Compiler.
-        // We count these separately as "unsupported" errors, since there's no actionable fix we can apply.
-        if (errorDetails?.category === 'Todo') {
-          this.todoCount++;
-          this.todoFiles.push(filename);
-          break;
-        }
-        this.errorCount++;
-        this.errorFiles.push(filename);
-        console.error(
-          `❌ React Compiler error in ${filename}: ${errorDetails ? JSON.stringify(errorDetails) : 'Unknown error'}`,
-        );
-        break;
-      default:
-        break;
-    }
-  }
-
-  getStats() {
-    return {
-      compiled: this.compiledCount,
-      skipped: this.skippedCount,
-      errors: this.errorCount,
-      unsupported: this.todoCount,
-      total:
-        this.compiledCount +
-        this.skippedCount +
-        this.errorCount +
-        this.todoCount,
-      compiledFiles: this.compiledFiles,
-      skippedFiles: this.skippedFiles,
-      errorFiles: this.errorFiles,
-      unsupportedFiles: this.todoFiles,
-    };
-  }
-
-  logSummary() {
-    const stats = this.getStats();
-    console.log('\n📊 React Compiler Statistics:');
-    console.log(`   ✅ Compiled: ${stats.compiled} files`);
-    console.log(`   ⏭️  Skipped: ${stats.skipped} files`);
-    console.log(`   ❌ Errors: ${stats.errors} files`);
-    console.log(`   🔍 Unsupported: ${stats.unsupported} files`);
-    console.log(`   📦 Total processed: ${stats.total} files`);
-  }
-
-  reset() {
-    this.compiledCount = 0;
-    this.skippedCount = 0;
-    this.errorCount = 0;
-    this.todoCount = 0;
-    this.compiledFiles = [];
-    this.skippedFiles = [];
-    this.errorFiles = [];
-    this.todoFiles = [];
-  }
-}
-
-export type ReactCompilerPluginOptions = {
-  /**
-   * The target React version for the compiler.
-   */
-  target: ReactCompilerLoaderOption['target'];
-  /**
-   * Enable verbose logging of compilation events.
-   */
-  verbose?: boolean;
-  /**
-   * Debug level for build failure behavior.
-   * - 'all': Fail build on and display debug information for all compilation errors.
-   * - 'critical': Fail build on and display debug information only for critical compilation errors.
-   * - 'none': Prevent build from failing.
-   */
-  debug?: 'all' | 'critical' | 'none';
-  /**
-   * Regex pattern or patterns to include files for compilation.
-   * Files must match at least one pattern to be processed.
-   */
-  include?: RuleSetCondition;
-  /**
-   * Regex pattern or patterns to exclude files from compilation.
-   * Files matching any pattern will be skipped.
-   */
-  exclude?: RuleSetCondition;
-  /**
-   * Test pattern for matching files (e.g., /\.tsx?$/).
-   * Defaults to match .js, .jsx, .ts, .tsx, .mjs, .mts files.
-   */
-  test?: RuleSetCondition;
-};
+/**
+ * Default options for the ReactCompilerPlugin.
+ */
+const defaultOptions = {
+  verbose: false,
+  debug: 'none',
+  test: DEFAULT_TEST,
+} as const;
 
 /**
  * Webpack plugin that integrates React Compiler with logging and path filtering.
  *
+ * This plugin provides:
+ * - Automatic setup of the React Compiler webpack loader
+ * - Configurable include/exclude patterns for file filtering
+ * - Compilation statistics tracking and reporting
+ * - Schema validation for plugin options
+ * - Full support for all babel-plugin-react-compiler options
+ *
  * @example
- * ```ts
+ * // Basic usage
  * const reactCompilerPlugin = new ReactCompilerPlugin({
  *   target: '17',
  *   verbose: true,
@@ -150,28 +48,45 @@ export type ReactCompilerPluginOptions = {
  * });
  *
  * // Add to webpack config
- * plugins: [reactCompilerPlugin],
- * module: {
- *   rules: [reactCompilerPlugin.getLoaderRule()],
- * },
- * ```
+ * module.exports = {
+ *   plugins: [reactCompilerPlugin],
+ *   module: {
+ *     rules: [reactCompilerPlugin.getLoaderRule()],
+ *   },
+ * };
+ * @example
+ * // With gating
+ * const reactCompilerPlugin = new ReactCompilerPlugin({
+ *   target: '18',
+ *   gating: {
+ *     source: 'my-gating-module',
+ *     importSpecifierName: 'isCompilerEnabled',
+ *   },
+ * });
+ * @example
+ * // With compilation mode
+ * const reactCompilerPlugin = new ReactCompilerPlugin({
+ *   target: '19',
+ *   compilationMode: 'annotation', // Only compile annotated functions
+ * });
  */
 export class ReactCompilerPlugin {
-  private readonly options: Required<ReactCompilerPluginOptions>;
+  private readonly options: ReactCompilerLoaderOption;
 
   private readonly logger: ReactCompilerLogger;
 
-  static readonly defaultTest =
-    /(?:.(?!\.(?:test|stories|container)))+\.(?:m?[jt]s|[jt]sx)$/u;
+  /**
+   * Default test pattern for matching React component files.
+   * Exposed for use in custom configurations.
+   */
+  static readonly defaultTest = DEFAULT_TEST;
 
-  constructor(options: ReactCompilerPluginOptions) {
+  constructor(options: ReactCompilerLoaderOption) {
+    validate(schema, options, { name: NAME });
+
     this.options = {
-      target: options.target,
-      verbose: options.verbose ?? false,
-      debug: options.debug ?? 'none',
-      include: options.include ?? /.*/u,
-      exclude: options.exclude ?? /(?!)/u, // Matches nothing by default
-      test: options.test ?? ReactCompilerPlugin.defaultTest,
+      ...defaultOptions,
+      ...options,
     };
     this.logger = new ReactCompilerLogger();
   }
@@ -179,49 +94,75 @@ export class ReactCompilerPlugin {
   /**
    * Returns the webpack loader configuration for the React Compiler.
    * Use this in your module.rules array.
+   *
+   * @returns A webpack RuleSetRule configured for React Compiler
    */
-  getLoaderRule(): RuleSetRule {
-    const { target, verbose, debug, include, exclude, test } = this.options;
-
-    const reactCompilerOptions = {
+  getLoaderRule() {
+    const {
       target,
-      logger: verbose ? (this.logger as Logger) : undefined,
-      panicThreshold: debug === 'none' ? debug : `${debug}_errors`,
-    } as const satisfies ReactCompilerLoaderOption;
+      verbose,
+      debug,
+      include,
+      exclude,
+      test,
+      // Compiler options
+      compilationMode,
+      gating,
+      dynamicGating,
+      noEmit,
+      eslintSuppressionRules,
+      flowSuppressions,
+      ignoreUseNoForget,
+      customOptOutDirectives,
+      sources,
+      enableReanimatedCheck,
+      // Babel options
+      babelTransformOptions,
+    } = this.options;
+
+    const reactCompilerOptions = defineReactCompilerLoaderOption({
+      target,
+      logger: verbose ? this.logger : undefined,
+      panicThreshold: debug === 'none' ? undefined : `${debug}_errors`,
+      // Pass through additional compiler options if provided
+      ...(compilationMode !== undefined && { compilationMode }),
+      ...(gating !== undefined && { gating }),
+      ...(dynamicGating !== undefined && { dynamicGating }),
+      ...(noEmit !== undefined && { noEmit }),
+      ...(eslintSuppressionRules !== undefined && { eslintSuppressionRules }),
+      ...(flowSuppressions !== undefined && { flowSuppressions }),
+      ...(ignoreUseNoForget !== undefined && { ignoreUseNoForget }),
+      ...(customOptOutDirectives !== undefined && { customOptOutDirectives }),
+      ...(sources !== undefined && { sources }),
+      ...(enableReanimatedCheck !== undefined && { enableReanimatedCheck }),
+      ...(babelTransformOptions !== undefined && {
+        babelTransFormOpt: babelTransformOptions,
+      }),
+    });
 
     return {
       test,
-      include,
-      exclude,
+      ...(include !== undefined && { include }),
+      ...(exclude !== undefined && { exclude }),
       use: [
         {
           loader: reactCompilerLoader,
-          options: defineReactCompilerLoaderOption(reactCompilerOptions),
+          options: reactCompilerOptions,
         },
       ],
     };
   }
 
   /**
-   * Get compilation statistics from the logger.
+   * Webpack plugin apply method.
+   * Hooks into the compilation lifecycle to log summaries and reset stats.
+   *
+   * @param compiler - The webpack compiler instance
    */
-  getStats() {
-    return this.logger.getStats();
-  }
-
-  /**
-   * Reset the logger statistics.
-   */
-  resetStats() {
-    this.logger.reset();
-  }
-
   apply(compiler: Compiler): void {
     compiler.hooks.afterEmit.tap(ReactCompilerPlugin.name, () => {
-      const logger = getReactCompilerLogger();
-      logger.logSummary();
-      // Reset statistics after logging to prevent accumulation in watch mode
-      logger.reset();
+      this.logger.logSummary();
+      this.logger.reset();
     });
   }
 }
