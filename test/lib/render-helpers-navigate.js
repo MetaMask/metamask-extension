@@ -14,7 +14,8 @@ import {
 } from '../../ui/contexts/metametrics';
 import { getMessage } from '../../ui/helpers/utils/i18n-helper';
 import * as enLocaleMessages from '../../app/_locales/en/messages.json';
-import { setBackgroundConnection } from '../../ui/store/background-connection';
+import { setupInitialStore } from '../../ui';
+import Root from '../../ui/pages';
 
 // Re-export en messages for tests that need direct access
 export const en = enLocaleMessages;
@@ -193,10 +194,6 @@ export function renderWithUserEvent(jsx) {
  * Helper function to render the UI application for integration tests.
  * It uses the Root component and sets up the store with the provided preloaded state.
  *
- * Note: This function dynamically imports Root and setupInitialStore to avoid
- * triggering the full UI import chain during test setup, which can interfere
- * with Jest mocks.
- *
  * @param {*} extendedRenderOptions
  * @param {*} extendedRenderOptions.preloadedState - The initial state used to initialize the redux store. For integration tests we rely on a real store instance following the redux recommendations - https://redux.js.org/usage/writing-tests#guiding-principles
  * @param {*} extendedRenderOptions.backgroundConnection - The background connection rpc method. When writing integration tests, we can pass a mock background connection to simulate the background connection methods.
@@ -217,16 +214,9 @@ export async function integrationTestRender(extendedRenderOptions) {
     ...renderOptions
   } = extendedRenderOptions;
 
-  // Dynamically import to avoid triggering full UI import chain during test setup
-  const { setupInitialStore } = await import('../../ui');
-  const { default: Root } = await import('../../ui/pages');
-
-  // Set up background connection if provided
-  if (backgroundConnection) {
-    await setBackgroundConnection(backgroundConnection);
-  }
-
-  const store = await setupInitialStore(preloadedState, activeTab);
+  const store = await setupInitialStore(preloadedState, backgroundConnection, {
+    activeTab,
+  });
 
   return {
     ...render(<Root store={store} />, { ...renderOptions }),
