@@ -52,6 +52,7 @@
     "outdatedBrowserWarningLastShown": "object",
     "pendingShieldCohort": null,
     "pendingShieldCohortTxType": null,
+    "pna25Acknowledged": "boolean",
     "popupGasPollTokens": "object",
     "productTour": "accountIcon",
     "recoveryPhraseReminderHasBeenShown": true,
@@ -74,6 +75,7 @@
     "showShieldEntryModalOnce": "boolean",
     "addressSecurityAlertResponses": "object",
     "currentExtensionPopupId": "number",
+    "dappSwapComparisonData": "object",
     "nftsDropdownState": {},
     "signatureSecurityAlertResponses": "object",
     "networkConnectionBanner": "object",
@@ -403,6 +405,7 @@
     "allIgnoredTokens": {},
     "allDetectedTokens": {}
   },
+  "TransactionPayController": { "transactionData": "object" },
   "TxController": {
     "methodData": "object",
     "transactions": "object",

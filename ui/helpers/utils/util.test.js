@@ -1421,7 +1421,7 @@ describe('util', () => {
       ).toBe(true);
     });
 
-    it('returns false for third party Snap accounts derived from HD keyring', () => {
+    it('returns false for third-party Snap accounts derived from HD keyring', () => {
       const snapAccount = {
         address: '0x123',
         options: {

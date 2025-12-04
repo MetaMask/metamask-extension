@@ -8,6 +8,8 @@ import { createMockInternalAccount } from '../../../test/jest/mocks';
 import {
   getRewardsHasAccountOptedIn,
   estimateRewardsPoints,
+  getRewardsCandidateSubscriptionId,
+  rewardsIsOptInSupported,
 } from '../../store/actions';
 import { usePrevious } from '../usePrevious';
 import { useMultichainSelector } from '../useMultichainSelector';
@@ -16,7 +18,10 @@ import {
   getToToken,
   getQuoteRequest,
 } from '../../ducks/bridge/selectors';
-import { selectRewardsEnabled } from '../../ducks/rewards/selectors';
+import {
+  selectRewardsEnabled,
+  selectRewardsAccountLinkedTimestamp,
+} from '../../ducks/rewards/selectors';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
 import { useRewards, getUsdPricePerToken } from './useRewards';
 
@@ -24,6 +29,8 @@ import { useRewards, getUsdPricePerToken } from './useRewards';
 jest.mock('../../store/actions', () => ({
   getRewardsHasAccountOptedIn: jest.fn(),
   estimateRewardsPoints: jest.fn(),
+  getRewardsCandidateSubscriptionId: jest.fn(),
+  rewardsIsOptInSupported: jest.fn(),
 }));
 
 // Rewards context is no longer used in useRewards; mock redux selector instead
@@ -44,6 +51,7 @@ jest.mock('../../ducks/bridge/selectors', () => ({
 
 jest.mock('../../ducks/rewards/selectors', () => ({
   selectRewardsEnabled: jest.fn(),
+  selectRewardsAccountLinkedTimestamp: jest.fn(),
 }));
 
 jest.mock('../../selectors/multichain-accounts/account-tree', () => ({
@@ -69,6 +77,14 @@ const mockGetRewardsHasAccountOptedIn =
 const mockEstimateRewardsPoints = estimateRewardsPoints as jest.MockedFunction<
   typeof estimateRewardsPoints
 >;
+const mockGetRewardsCandidateSubscriptionId =
+  getRewardsCandidateSubscriptionId as jest.MockedFunction<
+    typeof getRewardsCandidateSubscriptionId
+  >;
+const mockRewardsIsOptInSupported =
+  rewardsIsOptInSupported as jest.MockedFunction<
+    typeof rewardsIsOptInSupported
+  >;
 const mockUsePrevious = usePrevious as jest.MockedFunction<typeof usePrevious>;
 const mockUseMultichainSelector = useMultichainSelector as jest.MockedFunction<
   typeof useMultichainSelector
@@ -90,6 +106,10 @@ const mockGetInternalAccountBySelectedAccountGroupAndCaip =
 const mockSelectRewardsEnabled = selectRewardsEnabled as jest.MockedFunction<
   typeof selectRewardsEnabled
 >;
+const mockSelectRewardsAccountLinkedTimestamp =
+  selectRewardsAccountLinkedTimestamp as jest.MockedFunction<
+    typeof selectRewardsAccountLinkedTimestamp
+  >;
 
 describe('useRewards', () => {
   const mockAddress = '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6';
@@ -160,6 +180,13 @@ describe('useRewards', () => {
       mockSelectedAccount,
     );
     mockSelectRewardsEnabled.mockReturnValue(true as never);
+    mockSelectRewardsAccountLinkedTimestamp.mockReturnValue(null as never);
+    mockGetRewardsCandidateSubscriptionId.mockReturnValue(
+      jest.fn().mockResolvedValue('subscription-id'),
+    );
+    mockRewardsIsOptInSupported.mockReturnValue(
+      jest.fn().mockResolvedValue(false),
+    );
 
     mockUseSelector.mockImplementation(((selector: unknown) => {
       if (selector === mockGetFromToken) {
@@ -173,6 +200,9 @@ describe('useRewards', () => {
       }
       if (selector === mockSelectRewardsEnabled) {
         return mockSelectRewardsEnabled({} as never);
+      }
+      if (selector === mockSelectRewardsAccountLinkedTimestamp) {
+        return mockSelectRewardsAccountLinkedTimestamp({} as never);
       }
       // Handle the account selector
       if (typeof selector === 'function') {
@@ -231,6 +261,8 @@ describe('useRewards', () => {
       expect(result.current.isLoading).toBe(false);
       expect(result.current.estimatedPoints).toBeNull();
       expect(result.current.hasError).toBe(false);
+      expect(result.current.accountOptedIn).toBeNull();
+      expect(result.current.rewardsAccountScope).toBeNull();
     });
   });
 
@@ -405,13 +437,35 @@ describe('useRewards', () => {
         expect(result.current.shouldShowRewardsRow).toBe(false);
       });
 
+      expect(mockGetRewardsCandidateSubscriptionId).not.toHaveBeenCalled();
+      expect(mockGetRewardsHasAccountOptedIn).not.toHaveBeenCalled();
+    });
+
+    it('should not estimate points when candidateSubscriptionId is null', async () => {
+      mockGetRewardsCandidateSubscriptionId.mockReturnValue(
+        jest.fn().mockResolvedValue(null),
+      );
+
+      const { result } = renderHookWithProvider(
+        () => useRewards({ activeQuote: mockActiveQuote }),
+        {},
+      );
+
+      await waitFor(() => {
+        expect(result.current.shouldShowRewardsRow).toBe(false);
+      });
+
+      expect(mockGetRewardsCandidateSubscriptionId).toHaveBeenCalled();
       expect(mockGetRewardsHasAccountOptedIn).not.toHaveBeenCalled();
     });
   });
 
   describe('Opt-in Check', () => {
-    it('should not estimate points when account has not opted in', async () => {
+    it('should not estimate points when account has not opted in and opt-in is not supported', async () => {
       mockGetRewardsHasAccountOptedIn.mockReturnValue(
+        jest.fn().mockResolvedValue(false),
+      );
+      mockRewardsIsOptInSupported.mockReturnValue(
         jest.fn().mockResolvedValue(false),
       );
 
@@ -423,11 +477,48 @@ describe('useRewards', () => {
       await waitFor(() => {
         expect(result.current.shouldShowRewardsRow).toBe(false);
         expect(result.current.estimatedPoints).toBeNull();
+        expect(result.current.accountOptedIn).toBe(false);
       });
 
       expect(mockGetRewardsHasAccountOptedIn).toHaveBeenCalledWith(
         mockCaipAccount,
       );
+      expect(mockRewardsIsOptInSupported).toHaveBeenCalledWith({
+        account: mockSelectedAccount,
+      });
+      expect(mockEstimateRewardsPoints).not.toHaveBeenCalled();
+    });
+
+    it('should show rewards row when account has not opted in but opt-in is supported, but should not estimate points', async () => {
+      const mockEstimatedPoints = { pointsEstimate: 100, bonusBips: 0 };
+
+      mockGetRewardsHasAccountOptedIn.mockReturnValue(
+        jest.fn().mockResolvedValue(false),
+      );
+      mockRewardsIsOptInSupported.mockReturnValue(
+        jest.fn().mockResolvedValue(true),
+      );
+      mockEstimateRewardsPoints.mockReturnValue(
+        jest.fn().mockResolvedValue(mockEstimatedPoints),
+      );
+
+      const { result } = renderHookWithProvider(
+        () => useRewards({ activeQuote: mockActiveQuote }),
+        {},
+      );
+
+      await waitFor(() => {
+        expect(mockGetRewardsHasAccountOptedIn).toHaveBeenCalled();
+      });
+
+      await waitFor(() => {
+        expect(result.current.isLoading).toBe(false);
+        expect(result.current.shouldShowRewardsRow).toBe(true);
+        expect(result.current.accountOptedIn).toBe(false);
+        expect(result.current.estimatedPoints).toBeNull();
+      });
+
+      // Should not estimate points when hasOptedIn is false, even if shouldShow is true
       expect(mockEstimateRewardsPoints).not.toHaveBeenCalled();
     });
 
@@ -450,6 +541,7 @@ describe('useRewards', () => {
       expect(result.current.hasError).toBe(false);
       expect(result.current.shouldShowRewardsRow).toBe(false);
       expect(result.current.estimatedPoints).toBeNull();
+      expect(result.current.accountOptedIn).toBeNull();
       expect(mockEstimateRewardsPoints).not.toHaveBeenCalled();
     });
   });
@@ -488,6 +580,8 @@ describe('useRewards', () => {
       expect(result.current.estimatedPoints).toBe(100);
       expect(result.current.shouldShowRewardsRow).toBe(true);
       expect(result.current.hasError).toBe(false);
+      expect(result.current.accountOptedIn).toBe(true);
+      expect(result.current.rewardsAccountScope).toBe(mockSelectedAccount);
     });
 
     it('should include USD price in fee asset when available', async () => {
@@ -794,9 +888,83 @@ describe('useRewards', () => {
       expect(result.current.hasError).toBe(true);
       expect(result.current.estimatedPoints).toBeNull();
       expect(mockLogError).toHaveBeenCalledWith(
-        '[useRewards] Error estimating points:',
+        '[useRewardsWithQuote] Error estimating points:',
         error,
       );
+    });
+  });
+
+  describe('Account Linked Timestamp', () => {
+    it('should re-estimate when account is linked and accountOptedIn is false', async () => {
+      const mockEstimatedPoints = { pointsEstimate: 100, bonusBips: 0 };
+
+      mockGetRewardsHasAccountOptedIn.mockReturnValue(
+        jest.fn().mockResolvedValue(false),
+      );
+      mockRewardsIsOptInSupported.mockReturnValue(
+        jest.fn().mockResolvedValue(true),
+      );
+      mockEstimateRewardsPoints.mockReturnValue(
+        jest.fn().mockResolvedValue(mockEstimatedPoints),
+      );
+      mockSelectRewardsAccountLinkedTimestamp.mockReturnValue(null as never);
+
+      const { result, rerender } = renderHookWithProvider(
+        () => useRewards({ activeQuote: mockActiveQuote }),
+        {},
+      );
+
+      await waitFor(() => {
+        expect(mockGetRewardsHasAccountOptedIn).toHaveBeenCalled();
+      });
+
+      act(() => {
+        jest.advanceTimersByTime(750);
+      });
+
+      await waitFor(() => {
+        expect(result.current.accountOptedIn).toBe(false);
+      });
+
+      // Update linked timestamp
+      mockSelectRewardsAccountLinkedTimestamp.mockReturnValue(
+        1234567890 as never,
+      );
+      mockUseSelector.mockImplementation(((selector: unknown) => {
+        if (selector === mockGetFromToken) {
+          return mockGetFromToken({} as never);
+        }
+        if (selector === mockGetToToken) {
+          return mockGetToToken({} as never);
+        }
+        if (selector === mockGetQuoteRequest) {
+          return mockGetQuoteRequest({} as never);
+        }
+        if (selector === mockSelectRewardsEnabled) {
+          return mockSelectRewardsEnabled({} as never);
+        }
+        if (selector === mockSelectRewardsAccountLinkedTimestamp) {
+          return 1234567890;
+        }
+        if (typeof selector === 'function') {
+          try {
+            return selector({} as never);
+          } catch {
+            // Not the account selector
+          }
+        }
+        return null;
+      }) as never);
+
+      (
+        rerender as unknown as (props: {
+          activeQuote: typeof mockActiveQuote | null;
+        }) => void
+      )({ activeQuote: mockActiveQuote });
+
+      await waitFor(() => {
+        expect(mockGetRewardsHasAccountOptedIn).toHaveBeenCalledTimes(2);
+      });
     });
   });
 

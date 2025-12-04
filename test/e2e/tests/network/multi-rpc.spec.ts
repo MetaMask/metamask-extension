@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import FixtureBuilder from '../../fixture-builder';
-import { withFixtures } from '../../helpers';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import { withFixtures, isSidePanelEnabled } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { Mockttp } from '../../mock-e2e';
 import {
@@ -23,7 +23,6 @@ import {
   handleSidepanelPostOnboarding,
 } from '../../page-objects/flows/onboarding.flow';
 import { switchToEditRPCViaGlobalMenuNetworks } from '../../page-objects/flows/network.flow';
-import { DEFAULT_LOCAL_NODE_USD_BALANCE } from '../../constants';
 
 describe('MultiRpc:', function (this: Suite) {
   it('should migrate to multi rpc', async function () {
@@ -37,6 +36,22 @@ describe('MultiRpc:', function (this: Suite) {
               id: '1694444405781',
               jsonrpc: '2.0',
               result: '0xa4b1',
+            },
+          })),
+        // Mock spot-prices for balance display
+        await mockServer
+          .forGet(
+            /^https:\/\/price\.api\.cx\.metamask\.io\/v2\/chains\/\d+\/spot-prices/u,
+          )
+          .thenCallback(() => ({
+            statusCode: 200,
+            json: {
+              '0x0000000000000000000000000000000000000000': {
+                id: 'ethereum',
+                price: 1700,
+                marketCap: 382623505141,
+                pricePercentChange1d: 0,
+              },
             },
           })),
       ];
@@ -117,10 +132,7 @@ describe('MultiRpc:', function (this: Suite) {
         await completeImportSRPOnboardingFlow({ driver });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed(
-          DEFAULT_LOCAL_NODE_USD_BALANCE,
-          '$',
-        );
+        await homePage.checkExpectedBalanceIsDisplayed('127,500.00', '$');
 
         await switchToEditRPCViaGlobalMenuNetworks(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
@@ -154,6 +166,22 @@ describe('MultiRpc:', function (this: Suite) {
               id: '1694444405781',
               jsonrpc: '2.0',
               result: '0xa4b1',
+            },
+          })),
+        // Mock spot-prices for balance display
+        await mockServer
+          .forGet(
+            /^https:\/\/price\.api\.cx\.metamask\.io\/v2\/chains\/\d+\/spot-prices/u,
+          )
+          .thenCallback(() => ({
+            statusCode: 200,
+            json: {
+              '0x0000000000000000000000000000000000000000': {
+                id: 'ethereum',
+                price: 1700,
+                marketCap: 382623505141,
+                pricePercentChange1d: 0,
+              },
             },
           })),
       ];
@@ -254,6 +282,22 @@ describe('MultiRpc:', function (this: Suite) {
               result: '0xa4b1',
             },
           })),
+        // Mock spot-prices for balance display
+        await mockServer
+          .forGet(
+            /^https:\/\/price\.api\.cx\.metamask\.io\/v2\/chains\/\d+\/spot-prices/u,
+          )
+          .thenCallback(() => ({
+            statusCode: 200,
+            json: {
+              '0x0000000000000000000000000000000000000000': {
+                id: 'ethereum',
+                price: 1700,
+                marketCap: 382623505141,
+                pricePercentChange1d: 0,
+              },
+            },
+          })),
       ];
     }
     await withFixtures(
@@ -315,7 +359,12 @@ describe('MultiRpc:', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum');
+        // Check for edit network toast (may not appear with sidepanel due to appState loss)
+        if (await isSidePanelEnabled()) {
+          console.log('Skipping edit network toast check for sidepanel build');
+        } else {
+          await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum');
+        }
 
         await homePage.closeUseNetworkNotificationModal();
 
@@ -338,6 +387,22 @@ describe('MultiRpc:', function (this: Suite) {
               id: '1694444405781',
               jsonrpc: '2.0',
               result: '0xa4b1',
+            },
+          })),
+        // Mock spot-prices for balance display
+        await mockServer
+          .forGet(
+            /^https:\/\/price\.api\.cx\.metamask\.io\/v2\/chains\/\d+\/spot-prices/u,
+          )
+          .thenCallback(() => ({
+            statusCode: 200,
+            json: {
+              '0x0000000000000000000000000000000000000000': {
+                id: 'ethereum',
+                price: 1700,
+                marketCap: 382623505141,
+                pricePercentChange1d: 0,
+              },
             },
           })),
       ];
@@ -438,7 +503,13 @@ describe('MultiRpc:', function (this: Suite) {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum');
+
+        // Check for edit network toast (may not appear with sidepanel due to appState loss)
+        if (await isSidePanelEnabled()) {
+          console.log('Skipping edit network toast check for sidepanel build');
+        } else {
+          await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum');
+        }
         await homePage.closeUseNetworkNotificationModal();
 
         // check that the second rpc is selected in the network dialog

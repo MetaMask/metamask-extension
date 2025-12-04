@@ -1,3 +1,5 @@
+'use no memo';
+
 import { useMemo } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 
@@ -7,11 +9,12 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { useConfirmContext } from '../../../context/confirm';
+import { useDappSwapContext } from '../../../context/dapp-swap';
 
 export function useResimulationAlert(): Alert[] {
   const t = useI18nContext();
-  const { currentConfirmation, isQuotedSwapDisplayedInInfo } =
-    useConfirmContext();
+  const { currentConfirmation } = useConfirmContext();
+  const { isQuotedSwapDisplayedInInfo } = useDappSwapContext();
 
   const transactionMeta = currentConfirmation as TransactionMeta;
 

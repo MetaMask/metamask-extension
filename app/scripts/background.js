@@ -60,7 +60,7 @@ import {
   PersistenceManager,
 } from './lib/stores/persistence-manager';
 import ExtensionStore from './lib/stores/extension-store';
-import ReadOnlyNetworkStore from './lib/stores/read-only-network-store';
+import { FixtureExtensionStore } from './lib/stores/fixture-extension-store';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import { updateRemoteFeatureFlags } from './lib/update-remote-feature-flags';
@@ -101,7 +101,7 @@ import { HyperliquidPermissionTriggerType } from './lib/createHyperliquidReferra
  * @typedef {import('./lib/stores/persistence-manager').Backup} Backup
  */
 
-// MV3 configures the ExtensionLazyListener in app-init.js and sets it on globalThis.stateHooks,
+// MV3 configures the ExtensionLazyListener in service-worker.ts and sets it on globalThis.stateHooks,
 // but in MV2 we don't need to do that, so we create it here (and we don't add any lazy listeners,
 // as it doesn't need them).
 const lazyListener =
@@ -114,10 +114,10 @@ const BADGE_COLOR_NOTIFICATION = '#D73847';
 const BADGE_MAX_COUNT = 9;
 
 const inTest = process.env.IN_TEST;
-const useReadOnlyNetworkStore =
+const useFixtureStore =
   inTest && getManifestFlags().testing?.forceExtensionStore !== true;
-const localStore = useReadOnlyNetworkStore
-  ? new ReadOnlyNetworkStore()
+const localStore = useFixtureStore
+  ? new FixtureExtensionStore()
   : new ExtensionStore();
 const persistenceManager = new PersistenceManager({ localStore });
 
@@ -180,7 +180,9 @@ const ONE_SECOND_IN_MILLISECONDS = 1_000;
 // Timeout for initializing phishing warning page.
 const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
-lazyListener.once('runtime', 'onInstalled').then(handleOnInstalled);
+lazyListener.once('runtime', 'onInstalled').then((details) => {
+  handleOnInstalled(details);
+});
 
 /**
  * This deferred Promise is used to track whether initialization has finished.
@@ -510,7 +512,7 @@ const handleOnConnect = async (port) => {
 
   try {
     // `handleOnConnect` can be called asynchronously, well after the `onConnect`
-    // event was emitted, due to the lazy listener setup in `app-init.js`, so we
+    // event was emitted, due to the lazy listener setup in `service-worker.ts`, so we
     // might not be able to send this message if the window has already closed.
     port.postMessage({
       data: {
@@ -914,7 +916,8 @@ export async function loadStateFromPersistence(backup) {
     migrations,
     defaultVersion: process.env.WITH_STATE
       ? // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
-        require('../../test/e2e/default-fixture').FIXTURE_STATE_METADATA_VERSION
+        require('../../test/e2e/fixtures/fixture-builder')
+          .FIXTURE_STATE_METADATA_VERSION
       : null,
   });
 
@@ -1657,27 +1660,6 @@ function onInstall() {
     platform.openExtensionInBrowser();
   }
 }
-// Only register sidepanel context menu for browsers that support it (Chrome/Edge/Brave)
-// and when the feature flag is enabled
-if (
-  browser.contextMenus &&
-  browser.sidePanel &&
-  process.env.IS_SIDEPANEL?.toString() === 'true'
-) {
-  browser.runtime.onInstalled.addListener(() => {
-    browser.contextMenus.create({
-      id: 'openSidePanel',
-      title: 'MetaMask Sidepanel',
-      contexts: ['all'],
-    });
-  });
-  browser.contextMenus.onClicked.addListener((info, tab) => {
-    if (info.menuItemId === 'openSidePanel') {
-      // This will open the panel in all the pages on the current window.
-      browser.sidePanel.open({ windowId: tab.windowId });
-    }
-  });
-}
 
 /**
  * Trigger actions that should happen only when an update is available
@@ -1756,18 +1738,6 @@ const initSidePanelBehavior = async () => {
         openPanelOnActionClick: useSidePanelAsDefault,
       });
     }
-
-    // Setup remote feature flag listener to update sidepanel preferences
-    controller?.controllerMessenger?.subscribe(
-      'RemoteFeatureFlagController:stateChange',
-      (state) => {
-        const extensionUxSidepanel =
-          state?.remoteFeatureFlags?.extensionUxSidepanel;
-        if (extensionUxSidepanel === false) {
-          controller?.preferencesController?.setUseSidePanelAsDefault(false);
-        }
-      },
-    );
   } catch (error) {
     console.error('Error setting side panel behavior:', error);
   }

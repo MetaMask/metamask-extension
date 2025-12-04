@@ -8,7 +8,7 @@ import { getMockConfirmStateForTransaction } from '../../../../../../../../test/
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../../../../test/data/confirmations/gas';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
-import * as ConfirmContext from '../../../../../context/confirm';
+import * as DappSwapContext from '../../../../../context/dapp-swap';
 import { EditGasFeesRow } from './edit-gas-fees-row';
 
 jest.mock('../../../../simulation-details/useBalanceChanges', () => ({
@@ -75,12 +75,12 @@ describe('<EditGasFeesRow />', () => {
   });
 
   it('does not renders edit gas fee button for quote suggested swap', () => {
-    const confirmation = genUnapprovedContractInteractionConfirmation();
-    jest.spyOn(ConfirmContext, 'useConfirmContext').mockReturnValue({
-      quoteSelectedForMMSwap: {} as unknown as QuoteResponse,
+    jest.spyOn(DappSwapContext, 'useDappSwapContext').mockReturnValue({
       isQuotedSwapDisplayedInInfo: true,
-      currentConfirmation: confirmation,
-    } as ReturnType<typeof ConfirmContext.useConfirmContext>);
+      selectedQuote: {} as unknown as QuoteResponse,
+      setSelectedQuote: jest.fn(),
+      setQuotedSwapDisplayedInInfo: jest.fn(),
+    } as unknown as ReturnType<typeof DappSwapContext.useDappSwapContext>);
     const { queryByTestId } = render({
       gasFeeTokens: undefined,
       selectedGasFeeToken: undefined,
