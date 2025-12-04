@@ -214,6 +214,24 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
   ]);
 
   return {
+    calculateGasEstimate: ({
+      feePerGas,
+      priorityFeePerGas,
+      gas,
+      shouldUseEIP1559FeeLogic,
+      gasPrice,
+    }: {
+      feePerGas: string;
+      priorityFeePerGas: string;
+      gas: string;
+      shouldUseEIP1559FeeLogic: boolean;
+      gasPrice: string;
+    }) => {
+      return {
+        currentCurrencyFee: '',
+        preciseNativeCurrencyFee: '',
+      };
+    },
     estimatedFeeFiat: estimatedFees.currentCurrencyFee,
     estimatedFeeFiatWith18SignificantDigits:
       estimatedFees.currentCurrencyFeeWith18SignificantDigits,
