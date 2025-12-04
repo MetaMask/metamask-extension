@@ -223,6 +223,7 @@ describe('useFeeCalculations', () => {
       setSelectedQuote: jest.fn(),
       setQuotedSwapDisplayedInInfo: jest.fn(),
       isQuotedSwapDisplayedInInfo: true,
+      isQuotedSwapPresent: true,
     } as DappSwapContext.DappSwapContextType);
     const transactionMeta = genUnapprovedContractInteractionConfirmation({
       address: CONTRACT_INTERACTION_SENDER_ADDRESS,
