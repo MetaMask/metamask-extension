@@ -4,6 +4,7 @@ import {
   getRewardsSeasonMetadata,
   getRewardsSeasonStatus,
 } from '../../store/actions';
+import { MetaMaskReduxDispatch } from '../../store/store';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
 import {
   SeasonDtoState,
@@ -124,13 +125,13 @@ export const useSeasonStatus = ({
  * (based on current timestamp being within the season's start and end dates).
  */
 export const useRewardsSeasonCheck = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<MetaMaskReduxDispatch>();
 
   const { value: isRewardsSeason, pending } =
     useAsyncResult<boolean>(async () => {
-      const seasonMetadata = (await dispatch(
+      const seasonMetadata = await dispatch(
         getRewardsSeasonMetadata('current'),
-      )) as unknown as SeasonDtoState | null;
+      );
 
       if (!seasonMetadata) {
         return false;
