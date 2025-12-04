@@ -4778,6 +4778,12 @@ export default class MetamaskController extends EventEmitter {
         await this.restoreSeedPhrasesToVault(remainingSecretData);
       }
 
+      // Run migration for existing users rehydrating their data.
+      // Skip onboarding check because completedOnboarding is not yet true during restore flow.
+      await this._runSeedlessOnboardingMigrations({
+        skipOnboardingCheck: true,
+      });
+
       return mnemonic;
     } catch (error) {
       if (error instanceof RecoveryError) {
@@ -7939,14 +7945,17 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Run seedless onboarding migrations based on the current migration version.
    *
+   * @param {object} options - Options for migration.
+   * @param {boolean} options.skipOnboardingCheck - If true, skips the completedOnboarding check.
+   * Used during restoreSocialBackupAndGetSeedPhrase where onboarding is not yet complete.
    * @returns {Promise<void>}
    */
-  async _runSeedlessOnboardingMigrations() {
+  async _runSeedlessOnboardingMigrations({ skipOnboardingCheck = false } = {}) {
     const { seedlessOnboardingMigrationVersion } =
       this.appStateController.state;
     const { completedOnboarding } = this.onboardingController.state;
 
-    if (!completedOnboarding) {
+    if (!skipOnboardingCheck && !completedOnboarding) {
       return;
     }
 
