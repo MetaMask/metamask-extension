@@ -30,6 +30,7 @@ import {
   TextAlign,
   BorderColor,
   BorderRadius,
+  BackgroundColor,
 } from '../../helpers/constants/design-system';
 import {
   MetaMetricsEventCategory,
@@ -42,6 +43,9 @@ import CreatePasswordForm from '../create-password-form';
 import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 
 let isImportingVault = false;
+let newPassword = '';
+let confirmPassword = '';
+let checkedTermsOfUse = false;
 
 class RestoreVaultPage extends Component {
   static contextTypes = {
@@ -92,6 +96,9 @@ class RestoreVaultPage extends Component {
     }
 
     isImportingVault = true;
+    newPassword = password;
+    confirmPassword = password;
+    checkedTermsOfUse = termsChecked;
 
     await new Promise((resolve) => {
       this.setState({ loading: true }, resolve);
@@ -120,10 +127,12 @@ class RestoreVaultPage extends Component {
       });
       isImportingVault = false;
 
-      navigate(DEFAULT_ROUTE);
+      navigate(DEFAULT_ROUTE, { replace: true });
     } catch (error) {
       isImportingVault = false;
-
+      newPassword = '';
+      confirmPassword = '';
+      checkedTermsOfUse = false;
       this.setState({ loading: false, showPasswordInput: false });
       console.error('[RestoreVault] Error during import:', error);
     }
@@ -157,6 +166,7 @@ class RestoreVaultPage extends Component {
         data-testid="import-srp-restore-vault"
         borderRadius={BorderRadius.LG}
         borderColor={BorderColor.borderMuted}
+        backgroundColor={BackgroundColor.backgroundDefault}
       >
         {shouldShowPasswordForm ? (
           <CreatePasswordForm
@@ -164,6 +174,9 @@ class RestoreVaultPage extends Component {
             onSubmit={this.handleImport}
             onBack={this.handleBack}
             loading={this.state.loading}
+            initialPassword={newPassword}
+            initialConfirmPassword={confirmPassword}
+            initialTermsChecked={checkedTermsOfUse}
           />
         ) : (
           <>
@@ -177,7 +190,7 @@ class RestoreVaultPage extends Component {
                   onClick={(e) => {
                     e.preventDefault();
                     this.props.leaveImportSeedScreenState();
-                    this.props.navigate(DEFAULT_ROUTE);
+                    this.props.navigate(DEFAULT_ROUTE, { replace: true });
                   }}
                   ariaLabel={t('back')}
                 />

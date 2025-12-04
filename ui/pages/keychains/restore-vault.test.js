@@ -164,6 +164,8 @@ describe('Restore vault Component', () => {
     actions.setFirstTimeFlowType.restore();
 
     // Verify navigation to default route - component uses navigate, not history.push
-    expect(props.navigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    expect(props.navigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+      replace: true,
+    });
   });
 });

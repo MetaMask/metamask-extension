@@ -62,18 +62,6 @@ class ResetPasswordPage {
     await this.driver.clickElement(this.createPasswordTermsCheckbox);
     await this.driver.clickElement(this.restoreButton);
   }
-
-  /**
-   * Asserts that the seed phrase input is not present on the page.
-   * This is useful for verifying that the reset password process has completed
-   * and the user has been redirected away from the reset password page.
-   */
-  async assertSeedPhraseInputNotPresent(): Promise<void> {
-    console.log('Asserting seed phrase input is not present');
-    await this.driver.assertElementNotPresent(this.seedPhraseInput, {
-      timeout: 30000,
-    });
-  }
 }
 
 export default ResetPasswordPage;

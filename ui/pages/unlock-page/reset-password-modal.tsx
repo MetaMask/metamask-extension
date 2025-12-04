@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   Box,
@@ -51,7 +51,7 @@ export default function ResetPasswordModal({
   const trackEvent = useContext(MetaMetricsContext);
   const isSocialLoginEnabled = useSelector(getIsSocialLoginFlow);
   const [resetWallet, setResetWallet] = useState(false);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const dispatch = useDispatch();
 
@@ -62,7 +62,7 @@ export default function ResetPasswordModal({
   const handleResetWalletConfirm = async () => {
     onClose();
     await dispatch(resetWalletAction());
-    history.push(DEFAULT_ROUTE);
+    navigate(DEFAULT_ROUTE, { replace: true });
   };
 
   const handleContactSupportTrackEvent = () => {

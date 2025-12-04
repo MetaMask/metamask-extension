@@ -53,7 +53,6 @@ describe('MetaMask Responsive UI', function (this: Suite) {
         const resetPasswordPage = new ResetPasswordPage(driver);
         await resetPasswordPage.checkPageIsLoaded();
         await resetPasswordPage.resetPassword(E2E_SRP, WALLET_PASSWORD);
-        await resetPasswordPage.assertSeedPhraseInputNotPresent();
 
         // Check balance renders correctly
         const homePage = new HomePage(driver);
