@@ -5,6 +5,7 @@ import {
   RECURRING_INTERVALS,
   RecurringInterval,
   Subscription,
+  SUBSCRIPTION_STATUSES,
   SubscriptionCryptoPaymentMethod,
 } from '@metamask/subscription-controller';
 import {
@@ -71,6 +72,17 @@ export function getIsShieldSubscriptionPaused(
   return PausedSubscriptionStatuses.includes(shieldSubscription.status);
 }
 
+export function getIsShieldSubscriptionTrialing(
+  subscriptions: Subscription | Subscription[],
+): boolean {
+  const shieldSubscription = getShieldSubscription(subscriptions);
+  return (
+    shieldSubscription?.status === SUBSCRIPTION_STATUSES.trialing ||
+    (shieldSubscription?.status === SUBSCRIPTION_STATUSES.provisional &&
+      Boolean(shieldSubscription?.trialPeriodDays)) // subscription in provisional status and has trial info is considered trialing
+  );
+}
+
 export function getIsShieldSubscriptionEndingSoon(
   subscriptions: Subscription | Subscription[],
 ): boolean {
@@ -89,6 +101,20 @@ export function getIsShieldSubscriptionEndingSoon(
     new Date(shieldSubscription.endDate).getTime() - Date.now() <
     SUBSCRIPTION_ENDING_SOON_DAYS
   );
+}
+
+/**
+ * Check if the subscription can change payment method from crypto to card.
+ *
+ * @param subscriptions
+ * @returns
+ */
+export function getIsShieldSubscriptionCanChangePaymentMethodToCard(
+  subscriptions: Subscription | Subscription[],
+): boolean {
+  // atm crypto to card change payment method only work if there is no stripe subscription yet, which means provisional -> (invalid payment method) -> paused
+  const shieldSubscription = getShieldSubscription(subscriptions);
+  return shieldSubscription?.status === SUBSCRIPTION_STATUSES.paused;
 }
 
 /**

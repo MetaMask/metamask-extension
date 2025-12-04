@@ -65,11 +65,13 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...restOwnProps
   } = ownProps;
 
+  const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
+
   const onImport = async () => {
     await propsMarkPasswordForgotten();
     navigate(RESTORE_VAULT_ROUTE);
 
-    if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+    if (isPopup) {
       global.platform.openExtensionInBrowser?.(RESTORE_VAULT_ROUTE);
     }
   };
@@ -96,6 +98,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     navigate,
     location,
     navState,
+    isPopup,
   };
 };
 
@@ -120,6 +123,7 @@ const UnlockPageWithNavState = (props) => {
 UnlockPageWithNavState.propTypes = {
   navigate: PropTypes.func.isRequired,
   location: PropTypes.object.isRequired,
+  onSubmit: PropTypes.func,
 };
 
 // Export the connected component for Storybook/testing

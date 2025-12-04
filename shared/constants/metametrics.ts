@@ -764,6 +764,7 @@ export enum MetaMetricsEventName {
   NavPermissionsOpened = 'Permissions Opened',
   NetworkConnectionBannerShown = 'Network Connection Banner Shown',
   NetworkConnectionBannerUpdateRpcClicked = 'Network Connection Banner Update RPC Clicked',
+  NetworkConnectionBannerRpcUpdated = 'Network Connection Banner RPC Updated',
   UpdatePermissionedNetworks = 'Update Permissioned Networks',
   UpdatePermissionedAccounts = 'Update Permissioned Accounts',
   ViewPermissionedNetworks = 'View Permissioned Networks',
@@ -850,6 +851,7 @@ export enum MetaMetricsEventName {
   TokenHidden = 'Token Hidden',
   TokenImportCanceled = 'Token Import Canceled',
   TokenImportClicked = 'Token Import Clicked',
+  ToastDisplayed = 'Toast Displayed',
   WalletSetupStarted = 'Wallet Setup Started',
   WalletFundsObtained = 'Wallet Funds Obtained',
   WalletImportStarted = 'Wallet Import Started',
@@ -965,6 +967,17 @@ export enum MetaMetricsEventName {
   ExtensionPinned = 'Extension Pinned',
   // Extension Port Stream
   PortStreamChunked = 'Port Stream Chunked',
+  // Hardware Wallets
+  AddHardwareWalletClicked = 'Add Hardware Wallet Clicked',
+  HardwareWalletButtonClicked = 'Hardware Wallet Button Clicked',
+  ConnectHardwareWalletClicked = 'Connect Hardware Wallet Clicked',
+  ConnectHardwareWalletDeviceFound = 'Connect Hardware Wallet Device Found',
+  ConnectHardwareWalletContinueButtonClicked = 'Connect Hardware Wallet Continue Button Clicked',
+  ConnectHardwareWalletAccountSelectorViewed = 'Connect Hardware Wallet Account Selector Viewed',
+  HardwareWalletAccountConnected = 'Hardware Wallet Account Connected',
+  HardwareWalletForgotten = 'Hardware Wallet Forgotten',
+  HardwareWalletMarketingButtonClicked = 'Hardware Wallet Marketing Button Clicked',
+  HardwareWalletConnectionFailed = 'Hardware Wallet Connection Failed',
   ViewportSwitched = 'Viewport Switched',
   // Rewards
   RewardsOptInStarted = 'REWARDS_OPT_IN_STARTED',
@@ -989,6 +1002,7 @@ export enum MetaMetricsEventName {
   ShieldPrioritySupportClicked = 'Shield Priority Support Clicked',
   ShieldEligibilityCohortAssigned = 'Shield Eligibility Cohort Assigned',
   ShieldEligibilityCohortTimeout = 'Shield Eligibility Cohort Timeout',
+  ShieldSubscriptionUnexpectedErrorEvent = 'Shield Subscription Unexpected Error',
 }
 
 export enum MetaMetricsEventAccountType {

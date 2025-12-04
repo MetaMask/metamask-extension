@@ -1,4 +1,5 @@
 import { Driver } from '../../../webdriver/driver';
+import { NETWORK_TO_NAME_MAP } from '../../../../../shared/constants/network';
 
 class AssetListPage {
   private readonly driver: Driver;
@@ -27,6 +28,13 @@ class AssetListPage {
 
   private readonly currentNetworkOption =
     '[data-testid="network-filter-current__button"]';
+
+  private readonly customNetworkSelectedOption = (networkName: string) => {
+    return {
+      css: '.dropdown-editor__item-dropdown',
+      text: networkName,
+    };
+  };
 
   private readonly currentNetworksTotal = `${this.currentNetworkOption} [data-testid="account-value-and-suffix"]`;
 
@@ -135,6 +143,14 @@ class AssetListPage {
   private readonly tokenIncreaseDecreaseValue =
     '[data-testid="token-increase-decrease-value"]';
 
+  private readonly noPriceAvailableMessage = {
+    css: 'p',
+    text: 'No conversion rate available',
+  };
+
+  private readonly modalCloseButton =
+    '[data-testid="modal-header-close-button"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -170,15 +186,10 @@ class AssetListPage {
   }
 
   async clickOnAsset(assetName: string): Promise<void> {
-    const buttons = await this.driver.findElements(this.tokenListItem);
-    for (const button of buttons) {
-      const text = await button.getText();
-      if (text.includes(assetName)) {
-        await button.click();
-        return;
-      }
-    }
-    throw new Error(`${assetName} button not found`);
+    await this.driver.clickElement({
+      css: this.tokenListItem,
+      text: assetName,
+    });
   }
 
   async clickSendButton(): Promise<void> {
@@ -272,8 +283,19 @@ class AssetListPage {
     await this.driver.clickElementAndWaitToDisappear(
       this.tokenImportSelectNetwork(chainId),
     );
-    await this.driver.waitForSelector(this.customTokenModalOption);
+    const networkName =
+      NETWORK_TO_NAME_MAP[chainId as keyof typeof NETWORK_TO_NAME_MAP];
+
+    if (!networkName) {
+      throw new Error(`Network name not found for chain ID ${chainId}`);
+    }
+
+    await this.driver.waitForSelector(
+      this.customNetworkSelectedOption(networkName),
+    );
+    await this.driver.waitForSelector(this.tokenSearchInput);
     await this.driver.clickElement(this.customTokenModalOption);
+    await this.driver.assertElementNotPresent(this.tokenSearchInput);
     await this.driver.waitForSelector(this.modalWarningBanner);
     await this.driver.fill(this.tokenAddressInput, tokenAddress);
     await this.driver.waitForSelector(this.tokenSymbolTitle);
@@ -336,7 +358,7 @@ class AssetListPage {
     await this.driver.clickElement(this.networksToggle);
     await this.driver.waitUntil(
       async () => {
-        return Boolean(await this.driver.findElement(this.allNetworksOption));
+        return Boolean(await this.driver.findElement(this.modalCloseButton));
       },
       {
         timeout: 5000,
@@ -487,6 +509,11 @@ class AssetListPage {
       },
       { timeout: 2000, interval: 100 },
     );
+  }
+
+  async checkPriceChartLoaded(assetAddress: string): Promise<void> {
+    console.log(`Verify the price chart is loaded`);
+    await this.driver.waitForSelector(this.tokenPercentage(assetAddress));
   }
 
   /**
@@ -713,6 +740,47 @@ class AssetListPage {
       text: expectedAddressFormat,
     });
     console.log(`Token details verified successfully for ${symbol}`);
+  }
+
+  /**
+   * Checks if the token list is displayed
+   *
+   * @throws Error if the token list is not displayed
+   */
+  async checkTokenListIsDisplayed(): Promise<void> {
+    try {
+      await this.driver.waitForSelector(this.tokenListItem, {
+        timeout: 300000,
+      });
+    } catch (e) {
+      console.log('Token list is not displayed', e);
+      throw e;
+    }
+  }
+
+  /**
+   * Waits for a token to be displayed in the token list
+   * This is done due to the snap delay.
+   *
+   * @param tokenName - The name of the token to wait for
+   */
+  async waitForTokenToBeDisplayed(tokenName: string): Promise<void> {
+    await this.driver.waitForSelector(
+      {
+        css: this.tokenListItem,
+        text: tokenName,
+      },
+      { timeout: 30000 },
+    );
+  }
+
+  /**
+   * Checks if the token list prices are displayed and no "No conversion rate available" message is displayed
+   *
+   * @throws Error if a "No conversion rate available" message is displayed
+   */
+  async checkConversionRateDisplayed(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.noPriceAvailableMessage);
   }
 }
 

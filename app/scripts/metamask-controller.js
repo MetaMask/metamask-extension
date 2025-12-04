@@ -151,8 +151,8 @@ import {
 
 import {
   HardwareDeviceNames,
-  HardwareKeyringType,
   LedgerTransportTypes,
+  KEYRING_DEVICE_PROPERTY_MAP,
 } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
 import { RestrictedMethods } from '../../shared/constants/permissions';
@@ -237,6 +237,7 @@ import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
 import { AccountIdentitiesPetnamesBridge } from './lib/AccountIdentitiesPetnamesBridge';
 import { WalletFundsObtainedMonitor } from './lib/WalletFundsObtainedMonitor';
 import { createPPOMMiddleware } from './lib/ppom/ppom-middleware';
+import { createDappSwapMiddleware } from './lib/dapp-swap/dapp-swap-middleware';
 import { createTrustSignalsMiddleware } from './lib/trust-signals/trust-signals-middleware';
 import {
   onMessageReceived,
@@ -332,6 +333,7 @@ import {
   TokenRatesControllerInit,
 } from './controller-init/assets';
 import { TransactionControllerInit } from './controller-init/confirmations/transaction-controller-init';
+import { TransactionPayControllerInit } from './controller-init/transaction-pay-controller-init';
 import { PPOMControllerInit } from './controller-init/confirmations/ppom-controller-init';
 import { SmartTransactionsControllerInit } from './controller-init/smart-transactions/smart-transactions-controller-init';
 import { initControllers } from './controller-init/utils';
@@ -430,6 +432,7 @@ import {
   ClaimsControllerInit,
   ClaimsServiceInit,
 } from './controller-init/claims';
+import { getQuotesForConfirmation } from './lib/dapp-swap/dapp-swap-util';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -607,6 +610,7 @@ export default class MetamaskController extends EventEmitter {
       PhishingController: PhishingControllerInit,
       AccountTrackerController: AccountTrackerControllerInit,
       TransactionController: TransactionControllerInit,
+      TransactionPayController: TransactionPayControllerInit,
       SmartTransactionsController: SmartTransactionsControllerInit,
       SwapsController: SwapsControllerInit,
       BridgeController: BridgeControllerInit,
@@ -805,16 +809,23 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       'SubscriptionController:stateChange',
       (state) => {
+        const { useExternalServices: hasBasicFunctionalityEnabled } =
+          this.preferencesController.state;
+        // shield coverage use security alerts, phish detect and transaction simulations, which is only available when basic functionality is enabled
+        if (!hasBasicFunctionalityEnabled) {
+          return;
+        }
+
         // check if the shield subscription is active after the state change
         const hasActiveShieldSubscription = getIsShieldSubscriptionActive(
           state.subscriptions,
         );
-
         if (hasActiveShieldSubscription) {
           // fetch claims configurations when shield subscription is active
           this.claimsController.fetchClaimsConfigurations().catch((err) => {
             log.error('Error fetching claims configurations', err);
           });
+
           // update preferences and metrics optin status after shield subscription is active
           updatePreferencesAndMetricsForShieldSubscription(
             this.metaMetricsController,
@@ -981,8 +992,8 @@ export default class MetamaskController extends EventEmitter {
           ),
         }),
       ),
-      wallet_sendCalls: createAsyncMiddleware(async (req, res) =>
-        walletSendCalls(req, res, {
+      wallet_sendCalls: createAsyncMiddleware(async (req, res) => {
+        return await walletSendCalls(req, res, {
           getAccounts,
           processSendCalls: processSendCalls.bind(
             null,
@@ -1000,8 +1011,30 @@ export default class MetamaskController extends EventEmitter {
                 this.txController.isAtomicBatchSupported.bind(
                   this.txController,
                 ),
-              validateSecurity: (securityAlertId, request, chainId) =>
-                validateRequestWithPPOM({
+              validateSecurity: (securityAlertId, request, chainId) => {
+                // Code below to get quote is placed here as securityAlertId is not available in the middleware
+                // this needs to be cleaned up
+                // https://github.com/MetaMask/MetaMask-planning/issues/6345
+                getQuotesForConfirmation({
+                  req,
+                  fetchQuotes: this.controllerMessenger.call.bind(
+                    this.controllerMessenger,
+                    `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.FETCH_QUOTES}`,
+                  ),
+                  setDappSwapComparisonData:
+                    this.appStateController.setDappSwapComparisonData.bind(
+                      this.appStateController,
+                    ),
+                  getNetworkConfigurationByNetworkClientId:
+                    this.networkController.getNetworkConfigurationByNetworkClientId.bind(
+                      this.networkController,
+                    ),
+                  dappSwapMetricsFlag:
+                    this.remoteFeatureFlagController?.state?.remoteFeatureFlags
+                      ?.dappSwapMetrics,
+                  securityAlertId,
+                });
+                return validateRequestWithPPOM({
                   chainId,
                   ppomController: this.ppomController,
                   request,
@@ -1010,14 +1043,15 @@ export default class MetamaskController extends EventEmitter {
                     this.updateSecurityAlertResponse.bind(this),
                   getSecurityAlertsConfig:
                     this.getSecurityAlertsConfig.bind(this),
-                }),
+                });
+              },
               isAuxiliaryFundsSupported: (chainId) =>
                 ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId),
             },
             this.controllerMessenger,
           ),
-        }),
-      ),
+        });
+      }),
       wallet_getCallsStatus: createAsyncMiddleware(async (req, res) =>
         walletGetCallsStatus(req, res, {
           getCallsStatus: getCallsStatus.bind(null, this.controllerMessenger),
@@ -1411,11 +1445,15 @@ export default class MetamaskController extends EventEmitter {
         (snap) => !snap.preinstalled,
       )
     ) {
-      try {
-        this.snapController.updateRegistry();
-      } catch {
-        // Ignore
-      }
+      this.snapController.updateRegistry().catch((error) => {
+        if (
+          !error.message.includes(
+            'The Snaps platform requires basic functionality to be used.',
+          )
+        ) {
+          console.error(error);
+        }
+      });
     }
   }
 
@@ -2912,6 +2950,10 @@ export default class MetamaskController extends EventEmitter {
         appStateController.getLastInteractedConfirmationInfo.bind(
           appStateController,
         ),
+      deleteDappSwapComparisonData:
+        appStateController.deleteDappSwapComparisonData.bind(
+          appStateController,
+        ),
       setLastInteractedConfirmationInfo:
         appStateController.setLastInteractedConfirmationInfo.bind(
           appStateController,
@@ -2950,6 +2992,8 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setShieldEndingToastLastClickedOrClosed.bind(
           appStateController,
         ),
+      setPna25Acknowledged:
+        appStateController.setPna25Acknowledged.bind(appStateController),
       setAppActiveTab:
         appStateController.setAppActiveTab.bind(appStateController),
       setDefaultSubscriptionPaymentOptions:
@@ -2977,6 +3021,10 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // SeedlessOnboardingController
+      preloadToprfNodeDetails:
+        this.seedlessOnboardingController.preloadToprfNodeDetails.bind(
+          this.seedlessOnboardingController,
+        ),
       authenticate: this.seedlessOnboardingController.authenticate.bind(
         this.seedlessOnboardingController,
       ),
@@ -4840,7 +4888,12 @@ export default class MetamaskController extends EventEmitter {
       );
 
       if (completedOnboarding) {
-        if (this.isMultichainAccountsFeatureState2Enabled()) {
+        // check if external services are enabled
+        const { useExternalServices } = this.preferencesController.state;
+        if (
+          this.isMultichainAccountsFeatureState2Enabled() &&
+          useExternalServices // skip the account sync if external services are disabled
+        ) {
           ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
           await this.getSnapKeyring();
           ///: END:ONLY_INCLUDE_IF
@@ -5207,12 +5260,13 @@ export default class MetamaskController extends EventEmitter {
     }
 
     await this.accountsController.updateAccounts();
-    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+
     // Init multichain accounts after creating internal accounts.
     await this.multichainAccountService.init();
-    ///: END:ONLY_INCLUDE_IF
+
     // Force account-tree refresh after all accounts have been updated.
     this.accountTreeController.init();
+
     // TODO: Move this logic to the SnapKeyring directly.
     // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
     await this.forwardSelectedAccountGroupToSnapKeyring(
@@ -5221,12 +5275,23 @@ export default class MetamaskController extends EventEmitter {
     );
 
     if (this.isMultichainAccountsFeatureState2Enabled()) {
-      // This allows to create missing accounts if new account providers have been added.
+      const resyncAndAlignAccounts = async () => {
+        // READ THIS CAREFULLY:
+        // There is/was a bug with Snap accounts that can be desynchronized (Solana). To
+        // automatically "fix" this corrupted state, we run this method which will re-sync
+        // MetaMask accounts and Snap accounts upon login.
+        // BUG: https://github.com/MetaMask/metamask-extension/issues/37228
+        await this.multichainAccountService.resyncAccounts();
+
+        // This allows to create missing accounts if new account providers have been added.
+        await this.multichainAccountService.alignWallets();
+      };
+
       // FIXME: We might wanna run discovery + alignment asynchronously here, like we do
-      // for mobile, but for now, this easy fix should cover new provider accounts.
+      // for mobile.
       // NOTE: We run this asynchronously on purpose, see FIXME^.
       // eslint-disable-next-line no-void
-      void this.multichainAccountService.alignWallets();
+      void resyncAndAlignAccounts();
     }
   }
 
@@ -5391,7 +5456,7 @@ export default class MetamaskController extends EventEmitter {
   async getHardwareTypeForMetric(address) {
     return await this.keyringController.withKeyring(
       { address },
-      ({ keyring }) => HardwareKeyringType[keyring.type],
+      ({ keyring }) => KEYRING_DEVICE_PROPERTY_MAP[keyring.type],
     );
   }
 
@@ -5429,7 +5494,7 @@ export default class MetamaskController extends EventEmitter {
       case KeyringType.lattice:
       case KeyringType.qr:
       case KeyringType.ledger:
-        return 'hardware';
+        return KEYRING_DEVICE_PROPERTY_MAP[keyringType];
       case KeyringType.imported:
         return 'imported';
       case KeyringType.snap:
@@ -7046,6 +7111,26 @@ export default class MetamaskController extends EventEmitter {
     );
 
     engine.push(
+      createDappSwapMiddleware({
+        fetchQuotes: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.FETCH_QUOTES}`,
+        ),
+        setDappSwapComparisonData:
+          this.appStateController.setDappSwapComparisonData.bind(
+            this.appStateController,
+          ),
+        getNetworkConfigurationByNetworkClientId:
+          this.networkController.getNetworkConfigurationByNetworkClientId.bind(
+            this.networkController,
+          ),
+        dappSwapMetricsFlag:
+          this.remoteFeatureFlagController?.state?.remoteFeatureFlags
+            ?.dappSwapMetrics,
+      }),
+    );
+
+    engine.push(
       createTrustSignalsMiddleware(
         this.networkController,
         this.appStateController,
@@ -7272,7 +7357,7 @@ export default class MetamaskController extends EventEmitter {
             'KeyringController:getState',
           );
 
-          return this._isClientOpen && isUnlocked;
+          return Boolean(this._isClientOpen && isUnlocked);
         },
         getVersion: () => {
           return process.env.METAMASK_VERSION;
@@ -8090,6 +8175,12 @@ export default class MetamaskController extends EventEmitter {
           return 'unknown';
         }
       },
+      getFeatureFlags: () => {
+        return this.remoteFeatureFlagController?.state?.remoteFeatureFlags;
+      },
+      getPna25Acknowledged: () => {
+        return this.appStateController?.state?.pna25Acknowledged;
+      },
     };
 
     const snapAndHardwareMessenger = new Messenger({
@@ -8118,12 +8209,26 @@ export default class MetamaskController extends EventEmitter {
   toggleExternalServices(useExternal) {
     this.preferencesController.toggleExternalServices(useExternal);
     this.tokenListController.updatePreventPollingOnNetworkRestart(!useExternal);
+    const subscriptionState = this.controllerMessenger.call(
+      'SubscriptionController:getState',
+    );
+    const hasActiveShieldSubscription = getIsShieldSubscriptionActive(
+      subscriptionState.subscriptions,
+    );
     if (useExternal) {
       this.tokenDetectionController.enable();
       this.gasFeeController.enableNonRPCGasFeeApis();
+      if (hasActiveShieldSubscription) {
+        this.shieldController.start();
+      }
     } else {
       this.tokenDetectionController.disable();
       this.gasFeeController.disableNonRPCGasFeeApis();
+      // stop polling for the subscriptions if external services are disabled
+      this.subscriptionController.stopAllPolling();
+      if (hasActiveShieldSubscription) {
+        this.shieldController.stop();
+      }
     }
   }
 
@@ -8211,6 +8316,7 @@ export default class MetamaskController extends EventEmitter {
       this.appStateController.clearPollingTokens();
       this.accountTrackerController.stopAllPolling();
       this.deFiPositionsController.stopAllPolling();
+      this.subscriptionController.stopAllPolling();
     } catch (error) {
       console.error(error);
     }
@@ -8242,6 +8348,8 @@ export default class MetamaskController extends EventEmitter {
         appStatePollingTokenType,
       );
     });
+    // stop polling for the subscriptions
+    this.subscriptionController.stopAllPolling();
   }
 
   /**

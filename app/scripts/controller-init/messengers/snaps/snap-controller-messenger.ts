@@ -44,6 +44,10 @@ import { NetworkControllerGetNetworkClientByIdAction } from '@metamask/network-c
 import { PreferencesControllerGetStateAction } from '../../../controllers/preferences-controller';
 import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller';
 import { RootMessenger } from '../../../lib/messenger';
+import {
+  OnboardingControllerGetStateAction,
+  OnboardingControllerStateChangeEvent,
+} from '../../../controllers/onboarding';
 
 type Actions =
   | GetEndowments
@@ -148,9 +152,13 @@ type InitActions =
   | KeyringControllerGetKeyringsByTypeAction
   | PreferencesControllerGetStateAction
   | MetaMetricsControllerTrackEventAction
-  | SetClientActive;
+  | SetClientActive
+  | OnboardingControllerGetStateAction;
 
-type InitEvents = KeyringControllerUnlockEvent | KeyringControllerLockEvent;
+type InitEvents =
+  | KeyringControllerUnlockEvent
+  | KeyringControllerLockEvent
+  | OnboardingControllerStateChangeEvent;
 
 export type SnapControllerInitMessenger = ReturnType<
   typeof getSnapControllerInitMessenger
@@ -182,8 +190,13 @@ export function getSnapControllerInitMessenger(
       'PreferencesController:getState',
       'MetaMetricsController:trackEvent',
       'SnapController:setClientActive',
+      'OnboardingController:getState',
     ],
-    events: ['KeyringController:lock', 'KeyringController:unlock'],
+    events: [
+      'KeyringController:lock',
+      'KeyringController:unlock',
+      'OnboardingController:stateChange',
+    ],
   });
   return controllerInitMessenger;
 }

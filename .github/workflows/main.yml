@@ -242,6 +242,17 @@ jobs:
       builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets: inherit
 
+  build-test-mv2-webpack:
+    needs:
+      - identify-builds
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-test-mv2-webpack
+      build-command: yarn build:test:webpack:mv2
+      validate-source-maps: false # Disabled as webpack outputs are not supported by validate-source-maps
+      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
+    secrets: inherit
+
   run-benchmarks:
     # If not a fork, run benchmarks
     if: ${{ !(github.event.pull_request.head.repo.fork || github.event.repository.fork) }}
@@ -250,7 +261,9 @@ jobs:
       - identify-builds
       - prep-deps
       - build-test-browserify
+      - build-test-mv2-browserify
       - build-test-webpack
+      - build-test-mv2-webpack
     with:
       builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets:
@@ -339,8 +352,9 @@ jobs:
     needs:
       - identify-builds
       - needs-e2e
+      - build-dist-mv2-browserify
       - build-test-mv2-browserify
-      - build-test-webpack
+      - build-test-mv2-webpack
       - build-test-flask-mv2-browserify
     if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/e2e-firefox.yml
@@ -538,6 +552,7 @@ jobs:
       - build-test-flask-browserify
       - build-test-flask-mv2-browserify
       - build-test-webpack
+      - build-test-mv2-webpack
       - run-tests
       - build-storybook
       - build-ts-migration-dashboard
@@ -572,12 +587,12 @@ jobs:
 
           # Check E2E jobs only if they should have run
           if [[ "${{ needs.needs-e2e.outputs.needs-e2e }}" == "true" ]]; then
-            if [[ "${{ needs.e2e-chrome.result }}" == "failure" ]]; then
-              echo "E2E Chrome tests failed"
+            if [[ "${{ needs.e2e-chrome.result }}" != "success" ]]; then
+              echo "E2E Chrome tests did not succeed (result: ${{ needs.e2e-chrome.result }})"
               exit 1
             fi
-            if [[ "${{ needs.e2e-firefox.result }}" == "failure" ]]; then
-              echo "E2E Firefox tests failed"
+            if [[ "${{ needs.e2e-firefox.result }}" != "success" ]]; then
+              echo "E2E Firefox tests did not succeed (result: ${{ needs.e2e-firefox.result }})"
               exit 1
             fi
           fi

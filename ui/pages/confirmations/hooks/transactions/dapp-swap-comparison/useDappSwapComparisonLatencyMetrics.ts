@@ -1,65 +1,22 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
-import { useCallback, useState } from 'react';
-
-import { useConfirmContext } from '../../../context/confirm';
+import { useCallback, useRef } from 'react';
 
 const N_A = 'N/A';
 
 export function useDappSwapComparisonLatencyMetrics() {
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const [requestDetectionLatency, setRequestDetectionLatency] = useState(N_A);
-  const [quoteRequestLatency, setQuoteRequestLatency] = useState(N_A);
-  const [quoteResponseLatency, setQuoteResponseLatency] = useState(N_A);
-  const [swapComparisonLatency, setSwapComparisonLatency] = useState(N_A);
-
-  const updateRequestDetectionLatency = useCallback(() => {
-    setRequestDetectionLatency(
-      (new Date().getTime() - currentConfirmation?.time).toString(),
-    );
-  }, [currentConfirmation?.time, setRequestDetectionLatency]);
-
-  const updateQuoteRequestLatency = useCallback(() => {
-    setQuoteRequestLatency(
-      (
-        new Date().getTime() -
-        currentConfirmation?.time -
-        parseInt(requestDetectionLatency, 10)
-      ).toString(),
-    );
-  }, [
-    currentConfirmation?.time,
-    setQuoteRequestLatency,
-    requestDetectionLatency,
-  ]);
-
-  const updateQuoteResponseLatency = useCallback(
-    (startTime: number) => {
-      setQuoteResponseLatency((new Date().getTime() - startTime).toString());
-    },
-    [setQuoteResponseLatency],
-  );
+  const uiInitializedTime = useRef<number>(new Date().getTime());
+  const swapComparisonLatency = useRef<number>();
 
   const updateSwapComparisonLatency = useCallback(() => {
-    if (swapComparisonLatency !== N_A) {
-      return;
+    if (swapComparisonLatency.current !== undefined) {
+      return swapComparisonLatency.current.toString();
     }
-    setSwapComparisonLatency(
-      (new Date().getTime() - currentConfirmation?.time).toString(),
-    );
-  }, [
-    currentConfirmation?.time,
-    swapComparisonLatency,
-    setSwapComparisonLatency,
-  ]);
+    swapComparisonLatency.current =
+      new Date().getTime() - (uiInitializedTime.current ?? 0);
+    return swapComparisonLatency.current.toString();
+  }, []);
 
   return {
-    requestDetectionLatency,
-    quoteRequestLatency,
-    quoteResponseLatency,
-    swapComparisonLatency,
-    updateRequestDetectionLatency,
-    updateQuoteRequestLatency,
-    updateQuoteResponseLatency,
+    swapComparisonLatency: (swapComparisonLatency.current ?? N_A).toString(),
     updateSwapComparisonLatency,
   };
 }

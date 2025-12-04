@@ -10,6 +10,7 @@ import {
   DummyQuotesNoApproval,
   DummyQuotesWithApproval,
 } from '../../../../test/data/bridge/dummy-quotes';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import useSubmitBridgeTransaction from './useSubmitBridgeTransaction';
 
 const mockUseNavigate = jest.fn();
@@ -180,7 +181,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       );
 
       // Assert
-      expect(mockUseNavigate).toHaveBeenCalledWith('/', {
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
         replace: false,
         state: { stayOnHomePage: true },
       });

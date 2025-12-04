@@ -119,7 +119,7 @@ export const SOLANA_TOKEN_IMAGE_URL = './images/solana-logo.svg';
 export const SOLANA_TESTNET_IMAGE_URL = './images/solana-testnet-logo.svg';
 export const SOLANA_DEVNET_IMAGE_URL = './images/solana-devnet-logo.svg';
 
-export const TRON_TOKEN_IMAGE_URL = './images/tron-logo.png';
+export const TRON_TOKEN_IMAGE_URL = './images/tron-logo.svg';
 export const TRON_NILE_TOKEN_IMAGE_URL = './images/tron-logo-testnet.svg';
 export const TRON_SHASTA_TOKEN_IMAGE_URL = './images/tron-logo-testnet.svg';
 

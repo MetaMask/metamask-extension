@@ -24,13 +24,7 @@ async function runHook() {
 describe('useDappSwapComparisonLatencyMetrics', () => {
   it('return required parameters', async () => {
     const result = await runHook();
-    expect(result.quoteRequestLatency).toEqual('N/A');
-    expect(result.quoteResponseLatency).toEqual('N/A');
-    expect(result.requestDetectionLatency).toEqual('N/A');
     expect(result.swapComparisonLatency).toEqual('N/A');
-    expect(result.updateRequestDetectionLatency).toBeDefined();
-    expect(result.updateQuoteRequestLatency).toBeDefined();
-    expect(result.updateQuoteResponseLatency).toBeDefined();
     expect(result.updateSwapComparisonLatency).toBeDefined();
   });
 });

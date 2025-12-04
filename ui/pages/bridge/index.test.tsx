@@ -40,7 +40,7 @@ jest.mock('react-router-dom-v5-compat', () => {
     ...jest.requireActual('react-router-dom-v5-compat'),
     useNavigate: () => mockUseNavigate,
     useLocation: () => ({
-      pathname: '/cross-chain',
+      pathname: '/cross-chain/swaps/prepare-swap-page',
       search: '',
       hash: '',
       state: null,
@@ -86,7 +86,7 @@ describe('Bridge', () => {
   it('renders the component with initial props', async () => {
     const bridgeMockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        extensionConfig: {
+        bridgeConfig: {
           support: true,
           refreshRate: 5000,
           maxRefreshCount: 5,

@@ -1,5 +1,6 @@
 import { encode } from '@metamask/abi-utils';
-import { toHex, type Address, type Hex } from './utils';
+import type { Hex as Address, Hex } from '@metamask/utils';
+import { toHex } from './utils';
 
 const zeroAddress = '0x0000000000000000000000000000000000000000' as const;
 

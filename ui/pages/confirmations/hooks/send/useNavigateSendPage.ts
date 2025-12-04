@@ -1,23 +1,25 @@
 import { useCallback } from 'react';
-import { useHistory } from 'react-router-dom';
-import { useSearchParams } from 'react-router-dom-v5-compat';
+import { useNavigate, useSearchParams } from 'react-router-dom-v5-compat';
 
-import { SEND_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  SEND_ROUTE,
+  PREVIOUS_ROUTE,
+} from '../../../../helpers/constants/routes';
 import { SendPages } from '../../constants/send';
 
 export const useNavigateSendPage = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
   const goToAmountRecipientPage = useCallback(() => {
-    history.push(
+    navigate(
       `${SEND_ROUTE}/${SendPages.AMOUNTRECIPIENT}?${searchParams.toString()}`,
     );
-  }, [searchParams, history]);
+  }, [searchParams, navigate]);
 
   const goToPreviousPage = useCallback(() => {
-    history.goBack();
-  }, [history]);
+    navigate(PREVIOUS_ROUTE);
+  }, [navigate]);
 
   return { goToAmountRecipientPage, goToPreviousPage };
 };
