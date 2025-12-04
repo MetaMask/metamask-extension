@@ -7101,17 +7101,6 @@ export function rewardsLinkAccountsToSubscriptionCandidate(
   };
 }
 
-export function getRewardsActualSubscriptionId(
-  account: CaipAccountId,
-): ThunkAction<Promise<string | null>, MetaMaskReduxState, unknown, AnyAction> {
-  return async () => {
-    return await submitRequestToBackground<string | null>(
-      'getRewardsActualSubscriptionId',
-      [account],
-    );
-  };
-}
-
 export function requestUserApproval({
   origin,
   type,

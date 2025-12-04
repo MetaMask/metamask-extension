@@ -54,7 +54,6 @@ export function getSubscriptionServiceMessenger(
       'MetaMetricsController:trackEvent',
       'KeyringController:getState',
       // Rewards Integration
-      'RewardsController:getActualSubscriptionId',
       'RewardsController:getSeasonStatus',
       'RewardsController:getSeasonMetadata',
       'RewardsController:getHasAccountOptedIn',

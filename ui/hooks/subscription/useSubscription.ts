@@ -24,7 +24,7 @@ import {
   cancelSubscription,
   estimateGas,
   estimateRewardsPoints,
-  getRewardsActualSubscriptionId,
+  getRewardsHasAccountOptedIn,
   getRewardsSeasonMetadata,
   getSubscriptionBillingPortalUrl,
   getSubscriptions,
@@ -742,7 +742,13 @@ export const useUpdateSubscriptionCryptoPaymentMethod = ({
   };
 };
 
-export const useShieldRewards = () => {
+export const useShieldRewards = (): {
+  pending: boolean;
+  pointsMonthly: number | null;
+  pointsYearly: number | null;
+  isRewardsSeason: boolean;
+  hasAccountOptedIn: boolean;
+} => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const [primaryKeyring] = useSelector(getMetaMaskHdKeyrings);
   const accountsWithCaipChainId = useSelector(
@@ -773,14 +779,14 @@ export const useShieldRewards = () => {
   }, [primaryKeyring, accountsWithCaipChainId]);
 
   const {
-    value: actualSubscriptionId,
-    pending: actualSubscriptionIdPending,
-    error: actualSubscriptionIdError,
-  } = useAsyncResult<string | null>(async () => {
+    value: hasAccountOptedIn,
+    pending: hasAccountOptedInResultPending,
+    error: hasAccountOptedInResultError,
+  } = useAsyncResult<boolean>(async () => {
     if (!caipAccountId) {
-      return null;
+      return false;
     }
-    return await dispatch(getRewardsActualSubscriptionId(caipAccountId));
+    return await dispatch(getRewardsHasAccountOptedIn(caipAccountId));
   }, [caipAccountId]);
 
   const {
@@ -845,30 +851,30 @@ export const useShieldRewards = () => {
   }, [dispatch]);
 
   // if there is an error, return null values for points and season so it will not block the UI
-  if (pointsError || seasonError || actualSubscriptionIdError) {
+  if (pointsError || seasonError || hasAccountOptedInResultError) {
     if (pointsError) {
       console.error('[useShieldRewards error]:', pointsError);
     }
     if (seasonError) {
       console.error('[useShieldRewards error]:', seasonError);
     }
-    if (actualSubscriptionIdError) {
-      console.error('[useShieldRewards error]:', actualSubscriptionIdError);
+    if (hasAccountOptedInResultError) {
+      console.error('[useShieldRewards error]:', hasAccountOptedInResultError);
     }
     return {
       pending: false,
       pointsMonthly: null,
       pointsYearly: null,
       isRewardsSeason: false,
-      actualSubscriptionId: null,
+      hasAccountOptedIn: false,
     };
   }
 
   return {
-    pending: pointsPending || seasonPending || actualSubscriptionIdPending,
+    pending: pointsPending || seasonPending || hasAccountOptedInResultPending,
     pointsMonthly: pointsValue?.monthly ?? null,
     pointsYearly: pointsValue?.yearly ?? null,
     isRewardsSeason: isRewardsSeason ?? false,
-    actualSubscriptionId: actualSubscriptionId ?? null,
+    hasAccountOptedIn: hasAccountOptedIn ?? false,
   };
 };

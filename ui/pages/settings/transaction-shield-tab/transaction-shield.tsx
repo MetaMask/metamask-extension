@@ -209,13 +209,9 @@ const TransactionShield = () => {
     pointsMonthly,
     pointsYearly,
     isRewardsSeason,
-    actualSubscriptionId,
+    hasAccountOptedIn: hasOptedIntoRewards,
     pending: pendingShieldRewards,
   } = useShieldRewards();
-
-  const hasOptedInToRewards = useMemo(() => {
-    return actualSubscriptionId;
-  }, [actualSubscriptionId]);
 
   const isWaitingForSubscriptionCreation =
     shouldWaitForSubscriptionCreation && !currentShieldSubscription;
@@ -675,7 +671,7 @@ const TransactionShield = () => {
                   ])}
                 </Text>
               </Box>
-              {!hasOptedInToRewards && (
+              {!hasOptedIntoRewards && (
                 <Box className="flex-shrink-0">
                   <Button
                     className="px-3"

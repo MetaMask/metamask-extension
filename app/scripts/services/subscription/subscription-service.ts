@@ -240,17 +240,6 @@ export class SubscriptionService {
     }
   }
 
-  async getRewardsActualSubscriptionId(accountCaipId: CaipAccountId) {
-    const actualSubscriptionId = this.#messenger.call(
-      'RewardsController:getActualSubscriptionId',
-      accountCaipId,
-    );
-    if (!actualSubscriptionId) {
-      return null;
-    }
-    return actualSubscriptionId;
-  }
-
   /**
    * Link the reward to the existing shield subscription.
    *
