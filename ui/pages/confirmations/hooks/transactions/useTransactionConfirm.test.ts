@@ -331,7 +331,7 @@ describe('useTransactionConfirm', () => {
     const mockOnDappSwapCompleted = jest.fn();
     jest.spyOn(DappSwapActions, 'useDappSwapActions').mockReturnValue({
       onDappSwapCompleted: mockOnDappSwapCompleted,
-      updateSwapWithQuoteDetails: jest.fn(),
+      updateSwapWithQuoteDetailsIfRequired: jest.fn(),
     } as unknown as ReturnType<typeof DappSwapActions.useDappSwapActions>);
 
     const { onTransactionConfirm } = runHook({ customNonceValue: '1234' });

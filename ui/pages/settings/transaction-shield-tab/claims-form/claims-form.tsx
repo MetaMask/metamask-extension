@@ -49,8 +49,8 @@ import LoadingScreen from '../../../../components/ui/loading-screen';
 import { setShowClaimSubmitToast } from '../../../../components/app/toast-master/utils';
 import { ClaimSubmitToastType } from '../../../../../shared/constants/app-state';
 import {
+  TRANSACTION_SHIELD_SUPPORT_LINK,
   FIND_TRANSACTION_HASH_LINK,
-  TRANSACTION_SHIELD_LINK,
 } from '../../../../helpers/constants/common';
 import { FileUploader } from '../../../../components/component-library/file-uploader';
 import {
@@ -425,7 +425,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
           ? t('shieldClaimDetailsViewClaims', [
               <TextButton key="here-link" className="min-w-0" asChild>
                 <a
-                  href={TRANSACTION_SHIELD_LINK}
+                  href={TRANSACTION_SHIELD_SUPPORT_LINK}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -437,11 +437,11 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
               validSubmissionWindowDays,
               <TextButton key="here-link" className="min-w-0" asChild>
                 <a
-                  href={TRANSACTION_SHIELD_LINK}
+                  href={TRANSACTION_SHIELD_SUPPORT_LINK}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  {t('here')}
+                  {t('shieldClaimViewGuidelines')}
                 </a>
               </TextButton>,
             ])}
@@ -559,7 +559,11 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
         }}
         helpText={
           errors.impactedTxHash ? (
-            <Text variant={TextVariant.BodySm} color={TextColor.Inherit}>
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.Inherit}
+              data-testid="shield-claim-impacted-tx-hash-error"
+            >
               {`${t(errors.impactedTxHash?.msg, errors.impactedTxHash?.params)} `}
               <TextButton
                 size={TextButtonSize.BodySm}

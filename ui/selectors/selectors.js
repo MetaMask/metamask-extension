@@ -1641,6 +1641,9 @@ const selectSnapId = (_state, snapId) => snapId;
  */
 export const selectInstalledSnaps = (state) => state.metamask.snaps;
 
+export const selectIsNetworkMenuOpen = (state) =>
+  state.appState.isNetworkMenuOpen;
+
 /**
  * Retrieve registry data for requested Snap.
  *
@@ -3289,6 +3292,20 @@ export function getManageInstitutionalWallets(state) {
 export function getIsDefiPositionsEnabled(state) {
   const { assetsDefiPositionsEnabled } = getRemoteFeatureFlags(state);
   return Boolean(assetsDefiPositionsEnabled);
+}
+
+/**
+ * Returns true if any EVM networks are enabled in the network filter.
+ *
+ * @param {*} state
+ * @returns {boolean} True if at least one EVM network is enabled.
+ */
+export function getHasAnyEvmNetworkEnabled(state) {
+  const enabledNetworks = getEnabledNetworks(state);
+  const enabledEvmNetworks = enabledNetworks[KnownCaipNamespace.Eip155] ?? {};
+  return Object.values(enabledEvmNetworks).some(
+    (isEnabled) => isEnabled === true,
+  );
 }
 
 export function getIsCustomNetwork(state) {

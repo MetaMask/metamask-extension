@@ -151,8 +151,8 @@ import {
 
 import {
   HardwareDeviceNames,
-  HardwareKeyringType,
   LedgerTransportTypes,
+  KEYRING_DEVICE_PROPERTY_MAP,
 } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
 import { RestrictedMethods } from '../../shared/constants/permissions';
@@ -333,6 +333,7 @@ import {
   TokenRatesControllerInit,
 } from './controller-init/assets';
 import { TransactionControllerInit } from './controller-init/confirmations/transaction-controller-init';
+import { TransactionPayControllerInit } from './controller-init/transaction-pay-controller-init';
 import { PPOMControllerInit } from './controller-init/confirmations/ppom-controller-init';
 import { SmartTransactionsControllerInit } from './controller-init/smart-transactions/smart-transactions-controller-init';
 import { initControllers } from './controller-init/utils';
@@ -609,6 +610,7 @@ export default class MetamaskController extends EventEmitter {
       PhishingController: PhishingControllerInit,
       AccountTrackerController: AccountTrackerControllerInit,
       TransactionController: TransactionControllerInit,
+      TransactionPayController: TransactionPayControllerInit,
       SmartTransactionsController: SmartTransactionsControllerInit,
       SwapsController: SwapsControllerInit,
       BridgeController: BridgeControllerInit,
@@ -807,16 +809,23 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       'SubscriptionController:stateChange',
       (state) => {
+        const { useExternalServices: hasBasicFunctionalityEnabled } =
+          this.preferencesController.state;
+        // shield coverage use security alerts, phish detect and transaction simulations, which is only available when basic functionality is enabled
+        if (!hasBasicFunctionalityEnabled) {
+          return;
+        }
+
         // check if the shield subscription is active after the state change
         const hasActiveShieldSubscription = getIsShieldSubscriptionActive(
           state.subscriptions,
         );
-
         if (hasActiveShieldSubscription) {
           // fetch claims configurations when shield subscription is active
           this.claimsController.fetchClaimsConfigurations().catch((err) => {
             log.error('Error fetching claims configurations', err);
           });
+
           // update preferences and metrics optin status after shield subscription is active
           updatePreferencesAndMetricsForShieldSubscription(
             this.metaMetricsController,
@@ -1436,11 +1445,15 @@ export default class MetamaskController extends EventEmitter {
         (snap) => !snap.preinstalled,
       )
     ) {
-      try {
-        this.snapController.updateRegistry();
-      } catch {
-        // Ignore
-      }
+      this.snapController.updateRegistry().catch((error) => {
+        if (
+          !error.message.includes(
+            'The Snaps platform requires basic functionality to be used.',
+          )
+        ) {
+          console.error(error);
+        }
+      });
     }
   }
 
@@ -2979,6 +2992,8 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setShieldEndingToastLastClickedOrClosed.bind(
           appStateController,
         ),
+      setPna25Acknowledged:
+        appStateController.setPna25Acknowledged.bind(appStateController),
       setAppActiveTab:
         appStateController.setAppActiveTab.bind(appStateController),
       setDefaultSubscriptionPaymentOptions:
@@ -5437,7 +5452,7 @@ export default class MetamaskController extends EventEmitter {
   async getHardwareTypeForMetric(address) {
     return await this.keyringController.withKeyring(
       { address },
-      ({ keyring }) => HardwareKeyringType[keyring.type],
+      ({ keyring }) => KEYRING_DEVICE_PROPERTY_MAP[keyring.type],
     );
   }
 
@@ -5475,7 +5490,7 @@ export default class MetamaskController extends EventEmitter {
       case KeyringType.lattice:
       case KeyringType.qr:
       case KeyringType.ledger:
-        return 'hardware';
+        return KEYRING_DEVICE_PROPERTY_MAP[keyringType];
       case KeyringType.imported:
         return 'imported';
       case KeyringType.snap:
@@ -7338,7 +7353,7 @@ export default class MetamaskController extends EventEmitter {
             'KeyringController:getState',
           );
 
-          return this._isClientOpen && isUnlocked;
+          return Boolean(this._isClientOpen && isUnlocked);
         },
         getVersion: () => {
           return process.env.METAMASK_VERSION;
@@ -8156,6 +8171,12 @@ export default class MetamaskController extends EventEmitter {
           return 'unknown';
         }
       },
+      getFeatureFlags: () => {
+        return this.remoteFeatureFlagController?.state?.remoteFeatureFlags;
+      },
+      getPna25Acknowledged: () => {
+        return this.appStateController?.state?.pna25Acknowledged;
+      },
     };
 
     const snapAndHardwareMessenger = new Messenger({
@@ -8184,12 +8205,26 @@ export default class MetamaskController extends EventEmitter {
   toggleExternalServices(useExternal) {
     this.preferencesController.toggleExternalServices(useExternal);
     this.tokenListController.updatePreventPollingOnNetworkRestart(!useExternal);
+    const subscriptionState = this.controllerMessenger.call(
+      'SubscriptionController:getState',
+    );
+    const hasActiveShieldSubscription = getIsShieldSubscriptionActive(
+      subscriptionState.subscriptions,
+    );
     if (useExternal) {
       this.tokenDetectionController.enable();
       this.gasFeeController.enableNonRPCGasFeeApis();
+      if (hasActiveShieldSubscription) {
+        this.shieldController.start();
+      }
     } else {
       this.tokenDetectionController.disable();
       this.gasFeeController.disableNonRPCGasFeeApis();
+      // stop polling for the subscriptions if external services are disabled
+      this.subscriptionController.stopAllPolling();
+      if (hasActiveShieldSubscription) {
+        this.shieldController.stop();
+      }
     }
   }
 
@@ -8277,6 +8312,7 @@ export default class MetamaskController extends EventEmitter {
       this.appStateController.clearPollingTokens();
       this.accountTrackerController.stopAllPolling();
       this.deFiPositionsController.stopAllPolling();
+      this.subscriptionController.stopAllPolling();
     } catch (error) {
       console.error(error);
     }
@@ -8308,6 +8344,8 @@ export default class MetamaskController extends EventEmitter {
         appStatePollingTokenType,
       );
     });
+    // stop polling for the subscriptions
+    this.subscriptionController.stopAllPolling();
   }
 
   /**

@@ -4991,9 +4991,6 @@
   "recipientEditAriaLabel": {
     "message": "Editar destinatário"
   },
-  "recipientPlaceholder": {
-    "message": "Insira ou cole um endereço válido"
-  },
   "recoveryPhraseReminderBackupStart": {
     "message": "Fazer backup agora"
   },

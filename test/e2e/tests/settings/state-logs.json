@@ -110,8 +110,6 @@
     "sortOrder": "string",
     "toChainId": "null",
     "toToken": "null",
-    "toTokenExchangeRate": "null",
-    "toTokenUsdExchangeRate": "null",
     "txAlert": "null",
     "wasTxDeclined": "boolean"
   },
@@ -709,6 +707,7 @@
     "pendingRevocations": [],
     "pendingShieldCohort": "null",
     "pendingShieldCohortTxType": "null",
+    "pna25Acknowledged": "boolean",
     "permissionActivityLog": [
       {
         "id": "number",
@@ -980,6 +979,7 @@
       "install_date_ext": "string"
     },
     "transactionBatches": [],
+    "transactionData": {},
     "transactions": [],
     "trezorModel": "null",
     "trialedProducts": [],
