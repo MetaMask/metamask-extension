@@ -211,6 +211,8 @@ describe('Vault Decryptor Page', function () {
         await privacySettings.completeRevealSrpQuiz();
         await privacySettings.fillPasswordToRevealSrp(WALLET_PASSWORD);
         const seedPhrase = await privacySettings.getSrpInRevealSrpDialog();
+        await privacySettings.closeRevealSrpDialog();
+        await settingsPage.closeSettingsPage();
 
         // Retry-logic to ensure the file is ready before uploading it to mitigate flakiness when Chrome hasn't finished writing
         await waitUntilFileIsWritten({ driver });
