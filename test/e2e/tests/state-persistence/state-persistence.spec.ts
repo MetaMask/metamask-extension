@@ -234,6 +234,7 @@ const expectSplitStateStorage = async (driver: Driver) => {
  */
 const expectDataStateStorage = async (driver: Driver) => {
   const storage = await readStorage(driver);
+  console.log('storage read:', storage);
   assertDataStateStorage(storage as DataStorage);
   return storage;
 };
@@ -286,17 +287,20 @@ const runScriptThenReloadExtension = async (
   const blankWindow = await driver.openNewPage('about:blank');
 
   await driver.switchToWindow(extensionWindow);
-  const result = await driver.executeAsyncScript(`
-    const callback = arguments[arguments.length - 1];
-    (async () => {
-      try {
-        const output = await (${runScript || 'Promise.resolve()'});
-        callback({ result: output });
-      } catch (error) {
-        callback({ error: error?.message ?? error?.toString?.() ?? error });
-      }
-    })();
-  `);
+  let result: { result?: unknown; error?: string } = {};
+  if (runScript) {
+    result = await driver.executeAsyncScript(`
+      const callback = arguments[arguments.length - 1];
+      (async () => {
+        try {
+          const output = await (${runScript || 'Promise.resolve()'});
+          callback({ result: output });
+        } catch (error) {
+          callback({ error: error?.message ?? error?.toString?.() ?? error });
+        }
+      })();
+    `);
+  }
   await driver.executeScript(
     `(globalThis.browser ?? globalThis.chrome).runtime.reload()`,
   );
@@ -454,15 +458,19 @@ describe('State Persistence', function () {
       await withFixtures(
         getFixtureOptions(this, { storageKind: 'data' }),
         async ({ driver }) => {
+          console.log('completing onboarding and sync');
           await completeOnboardingAndSync(driver);
 
           // sanity
+          console.log('expecting data state storage');
           await expectDataStateStorage(driver);
 
           // Seed a failed prior attempt and the remote flag so the migration would
           // proceed if not for the attempted flag.
+          console.log('setting local storage flags');
           await setLocalStorageFlags(driver);
 
+          console.log('setting meta to indicate prior attempted migration');
           await runScriptThenReloadExtension(
             setMeta({
               platformSplitStateGradualRolloutAttempted: true,
@@ -475,6 +483,7 @@ describe('State Persistence', function () {
             driver,
           );
 
+          console.log('expecting data state storage');
           const storage1 = await expectDataStateStorage(driver);
           assert.equal(
             (storage1 as DataStorage).meta
@@ -483,6 +492,7 @@ describe('State Persistence', function () {
             'precondition: platformSplitStateGradualRolloutAttempted should be true',
           );
 
+          console.log('setting manifest flags to use split state');
           // Set the manifest flags to use split state so the migration would be
           // attempted (but should be skipped due to the meta flag).
           await setManifestFlags({
@@ -491,11 +501,15 @@ describe('State Persistence', function () {
             },
           });
 
+          console.log('reloading and unlocking');
           await runScriptThenReloadExtension(null, driver);
+          console.log('unlocking wallet');
           await loginWithoutBalanceValidation(driver);
+          console.log('ensuring home is ready');
           await ensureHomeReady(driver);
 
           // Ensure we are still using the data state and have not migrated.
+          console.log('expecting data state storage again');
           const storage = await expectDataStateStorage(driver);
           // additionally, ensure the attempted flag is still set
           assert.equal(
