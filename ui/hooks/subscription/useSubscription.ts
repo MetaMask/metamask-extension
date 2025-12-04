@@ -623,6 +623,7 @@ export const useHandleSubscription = ({
       modalType,
       determineSubscriptionRequestSource,
       search,
+      rewardPoints,
     ]);
 
   return {
