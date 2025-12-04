@@ -77,7 +77,7 @@ async function waitForEndpointToBeCalled(
 }
 
 describe('Profile Metrics', function () {
-  describe('when MetaMetrics is enabled, the feature flag is on, and the user acknoledged the privacy change', function () {
+  describe('when MetaMetrics is enabled, the feature flag is on, and the user acknowledged the privacy change', function () {
     it('sends exising accounts to the API on wallet unlock after activating MetaMetrics', async function () {
       await withFixtures(
         {
