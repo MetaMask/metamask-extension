@@ -23,6 +23,7 @@ import {
   addTransaction,
   cancelSubscription,
   estimateGas,
+  estimateRewardsPoints,
   getSubscriptionBillingPortalUrl,
   getSubscriptions,
   getSubscriptionsEligibilities,
@@ -51,7 +52,9 @@ import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors
 import {
   getMetaMetricsId,
   getModalTypeForShieldEntryModal,
+  getSelectedAccount,
   getUnapprovedConfirmations,
+  getUpdatedAndSortedAccountsWithCaipAccountId,
 } from '../../selectors';
 import { useSubscriptionMetrics } from '../shield/metrics/useSubscriptionMetrics';
 import { CaptureShieldSubscriptionRequestParams } from '../shield/metrics/types';
@@ -69,6 +72,7 @@ import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import { useAccountTotalFiatBalance } from '../useAccountTotalFiatBalance';
 import { getNetworkConfigurationsByChainId } from '../../../shared/modules/selectors/networks';
 import { isCryptoPaymentMethod } from '../../pages/settings/transaction-shield-tab/types';
+import { MergedInternalAccountWithCaipAccountId } from '../../selectors/selectors.types';
 import {
   TokenWithApprovalAmount,
   useSubscriptionPricing,
@@ -733,5 +737,47 @@ export const useUpdateSubscriptionCryptoPaymentMethod = ({
   return {
     execute,
     result,
+  };
+};
+
+export const useFetchShieldRewardsPoints = (interval: RecurringInterval) => {
+  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const accounts = useSelector(
+    getUpdatedAndSortedAccountsWithCaipAccountId,
+  ) as MergedInternalAccountWithCaipAccountId[];
+  const selectedAccount = useSelector(getSelectedAccount);
+
+  const { value, pending } = useAsyncResult<number | null>(async () => {
+    // get the caip account id for the current selected account
+    const selectedAccountWithCaipAccountId = accounts.find(
+      (account) => account.address === selectedAccount.address,
+    );
+
+    if (!selectedAccountWithCaipAccountId) {
+      return null;
+    }
+
+    const pointsData = await dispatch(
+      estimateRewardsPoints({
+        activityType: 'SHIELD',
+        account: selectedAccountWithCaipAccountId.caipAccountId,
+        activityContext: {
+          shieldContext: {
+            recurringInterval: interval,
+          },
+        },
+      }),
+    );
+
+    if (!pointsData) {
+      return null;
+    }
+
+    return pointsData.pointsEstimate;
+  }, [dispatch, accounts, selectedAccount, interval]);
+
+  return {
+    pending,
+    points: value ?? null,
   };
 };

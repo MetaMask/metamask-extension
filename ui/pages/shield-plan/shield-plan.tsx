@@ -66,6 +66,7 @@ import {
   useSubscriptionProductPlans,
 } from '../../hooks/subscription/useSubscriptionPricing';
 import {
+  useFetchShieldRewardsPoints,
   useHandleSubscription,
   useUserSubscriptionByProduct,
   useUserSubscriptions,
@@ -87,6 +88,7 @@ import ApiErrorHandler from '../../components/app/api-error-handler';
 import { MetaMaskReduxDispatch } from '../../store/store';
 import { setLastUsedSubscriptionPaymentDetails } from '../../store/actions';
 import { RewardsBadge } from '../../components/app/rewards/RewardsBadge';
+import { getIntlLocale } from '../../ducks/locale/locale';
 import { ShieldPaymentModal } from './shield-payment-modal';
 import { ShieldRewardsModal } from './shield-rewards-modal';
 import { Plan } from './types';
@@ -95,6 +97,7 @@ import { getProductPrice } from './utils';
 const ShieldPlan = () => {
   const navigate = useNavigate();
   const { search } = useLocation();
+  const locale = useSelector(getIntlLocale);
   const t = useI18nContext();
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
 
@@ -104,6 +107,12 @@ const ShieldPlan = () => {
 
   const { isRewardsSeason, pending: isSeasonMetadataLoading } =
     useRewardsSeasonCheck();
+
+  // gets points for monthly and yearly plans
+  const { points: pointsMonthly, pending: pendingPointsMonthly } =
+    useFetchShieldRewardsPoints('month');
+  const { points: pointsYearly, pending: pendingPointsYearly } =
+    useFetchShieldRewardsPoints('year');
 
   // Stripe Test clocks
   const [enableStripeTestClock, setEnableStripeTestClock] = useState(
@@ -303,7 +312,9 @@ const ShieldPlan = () => {
     subscriptionsLoading ||
     subscriptionPricingLoading ||
     subscriptionResult.pending ||
-    isSeasonMetadataLoading;
+    isSeasonMetadataLoading ||
+    pendingPointsMonthly ||
+    pendingPointsYearly;
 
   const hasApiError =
     subscriptionsError ||
@@ -351,12 +362,18 @@ const ShieldPlan = () => {
   }, [t, isTrialed, selectedProductPrice]);
 
   const planDetailsRewardsText = useMemo(() => {
-    const points =
-      selectedPlan === RECURRING_INTERVALS.year ? '10,000' : '1,000';
     const interval =
       selectedPlan === RECURRING_INTERVALS.year ? t('year') : t('month');
-    return t('shieldPlanDetailsRewards', [points, interval]);
-  }, [t, selectedPlan]);
+    const points =
+      selectedPlan === RECURRING_INTERVALS.year ? pointsYearly : pointsMonthly;
+
+    if (!points) {
+      return '';
+    }
+
+    const formattedPoints = new Intl.NumberFormat(locale).format(points);
+    return t('shieldPlanDetailsRewards', [formattedPoints, interval]);
+  }, [selectedPlan, t, pointsYearly, pointsMonthly, locale]);
 
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showRewardsModal, setShowRewardsModal] = useState(false);
@@ -552,7 +569,7 @@ const ShieldPlan = () => {
                         <Text variant={DSTextVariant.bodyMd}>{detail}</Text>
                       </Box>
                     ))}
-                    {isRewardsSeason && (
+                    {isRewardsSeason && planDetailsRewardsText && (
                       <Box>
                         <RewardsBadge
                           boxClassName="gap-1 px-2 py-0.5 bg-background-muted rounded-lg w-fit"
