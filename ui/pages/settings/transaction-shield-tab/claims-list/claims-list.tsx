@@ -23,6 +23,8 @@ import { useClaims } from '../../../../contexts/claims/claims';
 import { TRANSACTION_SHIELD_CLAIM_ROUTES } from '../../../../helpers/constants/routes';
 import { Tab, Tabs } from '../../../../components/ui/tabs';
 import { getShortDateFormatterV2 } from '../../../asset/util';
+import { ThemeType } from '../../../../../shared/constants/preferences';
+import { useTheme } from '../../../../hooks/useTheme';
 
 const CLAIMS_TAB_KEYS = {
   PENDING: 'pending',
@@ -34,6 +36,7 @@ type ClaimsTabKey = (typeof CLAIMS_TAB_KEYS)[keyof typeof CLAIMS_TAB_KEYS];
 const ClaimsList = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const theme = useTheme();
   const { pendingClaims, completedClaims, rejectedClaims, isLoading } =
     useClaims();
 
@@ -87,11 +90,16 @@ const ClaimsList = () => {
 
   const emptyClaimsView = useCallback(
     (tabKey: ClaimsTabKey) => {
+      const activityIcon =
+        theme === ThemeType.dark
+          ? './images/empty-state-activity-dark.png'
+          : './images/empty-state-activity-light.png';
+
       return (
         <Box className="h-full flex justify-center items-center">
           <Box className="text-center">
             <img
-              src="/images/activity.svg"
+              src={activityIcon}
               alt={t('activity')}
               className="mb-2 mx-auto"
               width={72}
@@ -131,7 +139,7 @@ const ClaimsList = () => {
         </Box>
       );
     },
-    [navigate, t],
+    [navigate, t, theme],
   );
 
   if (isLoading) {
