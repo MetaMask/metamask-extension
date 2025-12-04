@@ -213,6 +213,11 @@ describe('Vault Decryptor Page', function () {
         const seedPhrase = await privacySettings.getSrpInRevealSrpDialog();
         await privacySettings.closeRevealSrpDialog();
         await settingsPage.closeSettingsPage();
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.checkPageIsLoaded();
+        await headerNavbar.lockMetaMask();
+        await driver.closeWindow();
+        await driver.switchToWindowWithTitle('Extensions');
 
         // Retry-logic to ensure the file is ready before uploading it to mitigate flakiness when Chrome hasn't finished writing
         await waitUntilFileIsWritten({ driver });
