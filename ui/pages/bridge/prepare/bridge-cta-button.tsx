@@ -69,6 +69,21 @@ export const BridgeCTAButton = ({
       return 'youDeclinedTheTransaction';
     }
 
+    if (!fromAmount) {
+      if (!toToken) {
+        return needsDestinationAddress
+          ? 'bridgeSelectTokenAmountAndAccount'
+          : 'bridgeSelectTokenAndAmount';
+      }
+      return needsDestinationAddress
+        ? 'bridgeSelectDestinationAccount'
+        : 'bridgeEnterAmount';
+    }
+
+    if (needsDestinationAddress) {
+      return 'bridgeSelectDestinationAccount';
+    }
+
     if (isQuoteExpired && !isLoading) {
       return 'bridgeQuoteExpired';
     }
@@ -83,21 +98,6 @@ export const BridgeCTAButton = ({
 
     if (isInsufficientBalance || isInsufficientGasForQuote) {
       return 'alertReasonInsufficientBalance';
-    }
-
-    if (!fromAmount) {
-      if (!toToken) {
-        return needsDestinationAddress
-          ? 'bridgeSelectTokenAmountAndAccount'
-          : 'bridgeSelectTokenAndAmount';
-      }
-      return needsDestinationAddress
-        ? 'bridgeEnterAmountAndSelectAccount'
-        : 'bridgeEnterAmount';
-    }
-
-    if (needsDestinationAddress) {
-      return 'bridgeSelectDestinationAccount';
     }
 
     if (isTxSubmittable || isTxAlertPresent) {
