@@ -1494,6 +1494,9 @@
   "confirmTitleDescERC20ApproveTransaction": {
     "message": "This site wants permission to withdraw your tokens"
   },
+  "confirmTitleDescERC20Revocation": {
+    "message": "This site wants permissions to revoke your ERC-20 token approvals."
+  },
   "confirmTitleDescPermission": {
     "message": "This site wants permissions to spend your tokens."
   },
