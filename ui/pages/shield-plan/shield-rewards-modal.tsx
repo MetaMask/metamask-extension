@@ -36,7 +36,7 @@ export const ShieldRewardsModal = ({
   return (
     <Modal
       isOpen={isOpen}
-      onClose={() => undefined}
+      onClose={onClose}
       autoFocus={false}
       className="shield-rewards-modal"
       data-testid="shield-rewards-modal"
