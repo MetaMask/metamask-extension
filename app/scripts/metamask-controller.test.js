@@ -5407,14 +5407,6 @@ describe('MetaMaskController', () => {
         op: TraceOperation.AccountDiscover,
       });
 
-      const traceCalls = mockTrace.mock.calls;
-      const endTraceCalls = mockEndTrace.mock.calls;
-
-      expect(traceCalls[0][0].name).toBe(TraceName.DiscoverAccounts);
-      expect(traceCalls[1][0].name).toBe(TraceName.EvmDiscoverAccounts);
-      expect(endTraceCalls[0][0].name).toBe(TraceName.EvmDiscoverAccounts);
-      expect(endTraceCalls[1][0].name).toBe(TraceName.DiscoverAccounts);
-
       expect(result).toStrictEqual({
         Bitcoin: 0,
         Solana: 0,

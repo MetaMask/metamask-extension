@@ -470,7 +470,7 @@ describe('MultichainAccountMenu', () => {
       const traceLib = jest.requireMock('../../../../shared/lib/trace');
       expect(traceLib.trace).toHaveBeenCalledWith(
         expect.objectContaining({
-          name: 'Show Account Address List',
+          name: traceLib.TraceName.ShowAccountAddressList,
         }),
       );
     });

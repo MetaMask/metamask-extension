@@ -2,7 +2,7 @@ import React from 'react';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import configureStore from '../../../store/store';
 import mockDefaultState from '../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { AppHeaderUnlockedContent } from './app-header-unlocked-content';
 
 jest.mock('../../../../shared/lib/trace', () => {
@@ -19,18 +19,6 @@ const mockNavigate = jest.fn();
 jest.mock('react-router-dom-v5-compat', () => ({
   ...jest.requireActual('react-router-dom-v5-compat'),
   useNavigate: () => mockNavigate,
-  Link: ({
-    children,
-    to,
-    ...props
-  }: React.PropsWithChildren<{
-    to: string;
-  }> &
-    React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
-    <a href={to} {...props}>
-      {children}
-    </a>
-  ),
 }));
 
 describe('AppHeaderUnlockedContent trace', () => {
