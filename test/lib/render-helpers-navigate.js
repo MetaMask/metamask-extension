@@ -13,8 +13,11 @@ import {
   LegacyMetaMetricsProvider,
 } from '../../ui/contexts/metametrics';
 import { getMessage } from '../../ui/helpers/utils/i18n-helper';
-import * as en from '../../app/_locales/en/messages.json';
+import * as enLocaleMessages from '../../app/_locales/en/messages.json';
 import { setBackgroundConnection } from '../../ui/store/background-connection';
+
+// Re-export en messages for tests that need direct access
+export const en = enLocaleMessages;
 
 // Mock MetaMetrics context for tests
 const createMockTrackEvent = (

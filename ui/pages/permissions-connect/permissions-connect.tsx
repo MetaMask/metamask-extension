@@ -14,7 +14,10 @@ import {
   Route,
 } from 'react-router-dom';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
-import { SubjectType } from '@metamask/permission-controller';
+import {
+  SubjectType,
+  PermissionsRequest as ControllerPermissionsRequest,
+} from '@metamask/permission-controller';
 import { isSnapId } from '@metamask/snaps-utils';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 import { isEvmAccountType, KeyringAccountType } from '@metamask/keyring-api';
@@ -411,7 +414,7 @@ function PermissionsConnect() {
       // Cast through unknown to satisfy both local and controller types
       dispatch(
         approvePermissionsRequestAction(
-          request as unknown as PermissionsRequest,
+          request as unknown as ControllerPermissionsRequest,
         ),
       );
       redirect(true);
@@ -660,7 +663,7 @@ function PermissionsConnect() {
                 approvePermissionsRequest={(request: unknown) => {
                   dispatch(
                     approvePermissionsRequestAction(
-                      request as unknown as PermissionsRequest,
+                      request as unknown as ControllerPermissionsRequest,
                     ),
                   );
                   redirect(true);

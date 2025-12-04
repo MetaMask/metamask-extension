@@ -10,10 +10,10 @@ import _mockState from '../../../../test/data/mock-state.json';
 import {
   renderWithProvider,
   I18nProvider,
+  en,
 } from '../../../../test/lib/render-helpers-navigate';
 import { LegacyI18nProvider } from '../../../contexts/i18n';
 import { setBackgroundConnection } from '../../../store/background-connection';
-import * as en from '../../../../app/_locales/en/messages.json';
 
 import {
   CONFIRM_TRANSACTION_ROUTE,
