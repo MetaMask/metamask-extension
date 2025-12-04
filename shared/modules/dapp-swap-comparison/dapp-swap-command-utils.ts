@@ -412,9 +412,10 @@ function handleV2CommandSwapExactIn(
       ...(quotesInput ?? {}),
       srcTokenAmount: result[1].toHexString(),
       srcTokenAddress:
-        quotesInput?.srcTokenAddress ?? result[3][0]?.toLowerCase(),
+        quotesInput?.srcTokenAddress ?? result[3]?.[0]?.toLowerCase(),
       destTokenAddress:
-        quotesInput?.destTokenAddress ?? result[3][1]?.toLowerCase(),
+        quotesInput?.destTokenAddress ??
+        result[3]?.[result[3]?.length - 1]?.toLowerCase(),
     } as GenericQuoteRequest,
   };
 }
