@@ -15,7 +15,7 @@ import {
   TextButton,
   TextButtonSize,
 } from '@metamask/design-system-react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   BannerAlert,
   BannerAlertSeverity,
@@ -40,6 +40,7 @@ import { Skeleton } from '../../../components/component-library/skeleton';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   useCancelSubscription,
+  useFetchShieldRewardsPoints,
   useOpenGetSubscriptionBillingPortal,
   useUnCancelSubscription,
   useUserLastSubscriptionByProduct,
@@ -80,6 +81,7 @@ import ApiErrorHandler from '../../../components/app/api-error-handler';
 import { useHandlePayment } from '../../../hooks/subscription/useHandlePayment';
 import { MetaMaskReduxDispatch } from '../../../store/store';
 import { setOnboardingModalOpen } from '../../../ducks/rewards';
+import { getIntlLocale } from '../../../ducks/locale/locale';
 import CancelMembershipModal from './cancel-membership-modal';
 import { isCardPaymentMethod, isCryptoPaymentMethod } from './types';
 import ShieldBannerAnimation from './shield-banner-animation';
@@ -87,6 +89,7 @@ import { PaymentMethodRow } from './payment-method-row';
 
 const TransactionShield = () => {
   const t = useI18nContext();
+  const locale = useSelector(getIntlLocale);
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const navigate = useNavigate();
   const { search } = useLocation();
@@ -201,13 +204,20 @@ const TransactionShield = () => {
     openGetSubscriptionBillingPortalResult,
   ] = useOpenGetSubscriptionBillingPortal(displayedShieldSubscription);
 
+  const {
+    pointsMonthly,
+    pointsYearly,
+    pending: pendingPoints,
+  } = useFetchShieldRewardsPoints();
+
   const isWaitingForSubscriptionCreation =
     shouldWaitForSubscriptionCreation && !currentShieldSubscription;
 
   const showSkeletonLoader =
     isWaitingForSubscriptionCreation ||
     subscriptionsLoading ||
-    subscriptionPricingLoading;
+    subscriptionPricingLoading ||
+    pendingPoints;
 
   // redirect to shield plan page if user doesn't have a subscription
   useEffect(() => {
@@ -232,42 +242,60 @@ const TransactionShield = () => {
     dispatch(setOnboardingModalOpen(true));
   }, [dispatch]);
 
-  const shieldDetails = [
-    {
-      icon: IconName.ShieldLock,
-      title: t('shieldTxDetails1Title'),
-      description: t('shieldTxDetails1Description'),
-    },
-    {
-      icon: IconName.Flash,
-      title: t('shieldTxDetails2Title'),
-      description: t('shieldTxDetails2Description'),
-    },
-    {
-      icon: IconName.MetamaskFoxOutline,
-      title: t('shieldTxDetails3Title'),
-      description: t('shieldTxDetails3Description', [
-        displayedShieldSubscription?.interval === RECURRING_INTERVALS.year
-          ? '10,000'
-          : '1,000',
-        displayedShieldSubscription?.interval === RECURRING_INTERVALS.year
-          ? t('year')
-          : t('month'),
-        <TextButton
-          key="sign-up-button"
-          size={TextButtonSize.BodySm}
-          textProps={{
-            className: 'font-regular',
-          }}
-          onClick={() => {
-            openRewardsOnboardingModal();
-          }}
-        >
-          {t('shieldTxDetails3DescriptionSignUp')}
-        </TextButton>,
-      ]),
-    },
-  ];
+  const shieldDetails = useMemo(() => {
+    const points =
+      displayedShieldSubscription?.interval === RECURRING_INTERVALS.year
+        ? pointsYearly
+        : pointsMonthly;
+
+    const details = [
+      {
+        icon: IconName.ShieldLock,
+        title: t('shieldTxDetails1Title'),
+        description: t('shieldTxDetails1Description'),
+      },
+      {
+        icon: IconName.Flash,
+        title: t('shieldTxDetails2Title'),
+        description: t('shieldTxDetails2Description'),
+      },
+    ];
+
+    if (points) {
+      const formattedPoints = new Intl.NumberFormat(locale).format(points ?? 0);
+      details.push({
+        icon: IconName.MetamaskFoxOutline,
+        title: t('shieldTxDetails3Title'),
+        description: t('shieldTxDetails3Description', [
+          formattedPoints,
+          displayedShieldSubscription?.interval === RECURRING_INTERVALS.year
+            ? t('year')
+            : t('month'),
+          <TextButton
+            key="sign-up-button"
+            size={TextButtonSize.BodySm}
+            textProps={{
+              className: 'font-regular',
+            }}
+            onClick={() => {
+              openRewardsOnboardingModal();
+            }}
+          >
+            {t('shieldTxDetails3DescriptionSignUp')}
+          </TextButton>,
+        ]),
+      });
+    }
+
+    return details;
+  }, [
+    displayedShieldSubscription,
+    t,
+    openRewardsOnboardingModal,
+    pointsMonthly,
+    pointsYearly,
+    locale,
+  ]);
 
   const rowsStyleProps: BoxProps<'div'> = {
     display: Display.Flex,
