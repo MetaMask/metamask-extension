@@ -170,23 +170,11 @@ function transformState(state: Record<string, unknown>) {
     enabledNetworkMap: { [KnownCaipNamespace.Eip155]: eip155NetworkMap },
   } = networkEnablementState;
 
-  const megaethTestnetV1ConfigurationSnapShot = cloneDeep(
-    networkConfigurationsByChainId[MEGAETH_TESTNET_V1_CHAIN_ID],
-  ) as unknown as NetworkConfiguration;
+  const megaethTestnetV1Configuration = networkConfigurationsByChainId[MEGAETH_TESTNET_V1_CHAIN_ID] as unknown as NetworkConfiguration;
 
   // Add the MegaETH Testnet v2 network configuration.
   networkConfigurationsByChainId[MEGAETH_TESTNET_V2_CONFIG.chainId] =
     MEGAETH_TESTNET_V2_CONFIG;
-
-  // If the MegaETH Testnet v1 network configuration exists, then remove it.
-  if (networkConfigurationsByChainId[MEGAETH_TESTNET_V1_CHAIN_ID]) {
-    delete networkConfigurationsByChainId[MEGAETH_TESTNET_V1_CHAIN_ID];
-  }
-
-  // If the MegaETH Testnet v1 network configuration is enabled, then remove it.
-  if (hasProperty(eip155NetworkMap, MEGAETH_TESTNET_V1_CHAIN_ID)) {
-    delete eip155NetworkMap[MEGAETH_TESTNET_V1_CHAIN_ID];
-  }
 
   // Add the MegaETH Testnet v2 network configuration to the enabled network map.
   eip155NetworkMap[MEGAETH_TESTNET_V2_CONFIG.chainId] = false;
@@ -196,11 +184,11 @@ function transformState(state: Record<string, unknown>) {
   if (
     hasProperty(networkState, 'selectedNetworkClientId') &&
     typeof networkState.selectedNetworkClientId === 'string' &&
-    megaethTestnetV1ConfigurationSnapShot &&
-    isObject(megaethTestnetV1ConfigurationSnapShot) &&
-    hasProperty(megaethTestnetV1ConfigurationSnapShot, 'rpcEndpoints') &&
-    Array.isArray(megaethTestnetV1ConfigurationSnapShot.rpcEndpoints) &&
-    megaethTestnetV1ConfigurationSnapShot.rpcEndpoints.some(
+    megaethTestnetV1Configuration &&
+    isObject(megaethTestnetV1Configuration) &&
+    hasProperty(megaethTestnetV1Configuration, 'rpcEndpoints') &&
+    Array.isArray(megaethTestnetV1Configuration.rpcEndpoints) &&
+    megaethTestnetV1Configuration.rpcEndpoints.some(
       (rpcEndpoint) =>
         rpcEndpoint.networkClientId === networkState.selectedNetworkClientId,
     )
@@ -208,6 +196,15 @@ function transformState(state: Record<string, unknown>) {
     networkState.selectedNetworkClientId = 'mainnet';
     // force mainnet to be enabled
     eip155NetworkMap['0x1'] = true;
+  }
+   // If the MegaETH Testnet v1 network configuration is enabled, then remove it.
+  if (hasProperty(eip155NetworkMap, MEGAETH_TESTNET_V1_CHAIN_ID)) {
+    delete eip155NetworkMap[MEGAETH_TESTNET_V1_CHAIN_ID];
+  }
+
+  // If the MegaETH Testnet v1 network configuration exists, then remove it.
+  if (networkConfigurationsByChainId[MEGAETH_TESTNET_V1_CHAIN_ID]) {
+    delete networkConfigurationsByChainId[MEGAETH_TESTNET_V1_CHAIN_ID];
   }
 
   return state;
