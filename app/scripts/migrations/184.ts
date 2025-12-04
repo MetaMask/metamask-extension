@@ -170,7 +170,9 @@ function transformState(state: Record<string, unknown>) {
     enabledNetworkMap: { [KnownCaipNamespace.Eip155]: eip155NetworkMap },
   } = networkEnablementState;
 
-  const megaethTestnetV1Configuration = networkConfigurationsByChainId[MEGAETH_TESTNET_V1_CHAIN_ID] as unknown as NetworkConfiguration;
+  const megaethTestnetV1Configuration = networkConfigurationsByChainId[
+    MEGAETH_TESTNET_V1_CHAIN_ID
+  ] as unknown as NetworkConfiguration;
 
   // Add the MegaETH Testnet v2 network configuration.
   networkConfigurationsByChainId[MEGAETH_TESTNET_V2_CONFIG.chainId] =
@@ -197,7 +199,7 @@ function transformState(state: Record<string, unknown>) {
     // force mainnet to be enabled
     eip155NetworkMap['0x1'] = true;
   }
-   // If the MegaETH Testnet v1 network configuration is enabled, then remove it.
+  // If the MegaETH Testnet v1 network configuration is enabled, then remove it.
   if (hasProperty(eip155NetworkMap, MEGAETH_TESTNET_V1_CHAIN_ID)) {
     delete eip155NetworkMap[MEGAETH_TESTNET_V1_CHAIN_ID];
   }
