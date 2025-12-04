@@ -7,6 +7,15 @@ import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useA
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { AddMultichainAccount } from './add-multichain-account';
 
+jest.mock('../../../../shared/lib/trace', () => {
+  const actual = jest.requireActual('../../../../shared/lib/trace');
+  return {
+    ...actual,
+    trace: jest.fn(),
+    endTrace: jest.fn(),
+  };
+});
+
 const addMultichainAccountButtonTestId = 'add-multichain-account-button';
 const addMultichainAccountIconClass = '.add-multichain-account__icon-box__icon';
 const addMultichainAccountIconLoadingClass =
@@ -133,14 +142,11 @@ describe('AddMultichainAccount', () => {
     // Verify we're in the loading state first
     expect(screen.getByText('Adding account...')).toBeInTheDocument();
 
-    // Wait for the async operation to complete (first run any pending promises)
-    await Promise.resolve();
-
-    // Run another tick to ensure state updates are processed
-    await Promise.resolve();
+    await waitFor(() => {
+      expect(screen.getByText('Add account')).toBeInTheDocument();
+    });
 
     // Check that the component returned to normal state
-    expect(screen.getByText('Add account')).toBeInTheDocument();
     expect(
       container.querySelector(addMultichainAccountIconClass),
     ).toBeInTheDocument();
@@ -155,6 +161,29 @@ describe('AddMultichainAccount', () => {
     // Check background color of icon box
     const iconBox = container.querySelector(addMultichainAccountIconBoxClass);
     expect(iconBox).toHaveClass('mm-box--background-color-info-muted');
+  });
+
+  it('fires trace and endTrace for CreateMultichainAccount on click', async () => {
+    const store = configureStore(initialState);
+    renderWithProvider(<AddMultichainAccount walletId={mockWalletId} />, store);
+
+    const traceLib = jest.requireMock('../../../../shared/lib/trace');
+
+    fireEvent.click(screen.getByTestId(addMultichainAccountButtonTestId));
+
+    expect(traceLib.trace).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: traceLib.TraceName.CreateMultichainAccount,
+      }),
+    );
+
+    await waitFor(() => {
+      expect(traceLib.endTrace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: traceLib.TraceName.CreateMultichainAccount,
+        }),
+      );
+    });
   });
 
   describe('Loading States Integration', () => {
