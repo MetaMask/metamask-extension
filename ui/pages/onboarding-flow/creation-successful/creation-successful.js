@@ -110,7 +110,9 @@ export default function CreationSuccessful() {
           data-testid="manage-default-settings"
           borderRadius={BorderRadius.LG}
           width={BlockSize.Full}
-          onClick={() => navigate(ONBOARDING_PRIVACY_SETTINGS_ROUTE)}
+          onClick={() =>
+            navigate(`${ONBOARDING_PRIVACY_SETTINGS_ROUTE}?isFromReminder=true`)
+          }
         >
           <Box display={Display.Flex} alignItems={AlignItems.center}>
             <Icon

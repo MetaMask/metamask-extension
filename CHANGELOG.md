@@ -56,6 +56,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixes layout inconsistencies while in fullscreen mode (#38483)
 - Fix shield confirmation transaction back handle in popup mode (#38502)
 - Fix asset page layout (#38537)
+- Fix navigation for the backup srp settings (#38544)
 
 ## [13.11.2]
 
