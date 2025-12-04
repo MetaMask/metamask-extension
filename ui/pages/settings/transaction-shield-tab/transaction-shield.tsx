@@ -541,6 +541,7 @@ const TransactionShield = () => {
             <ShieldBannerAnimation
               containerClassName="transaction-shield-page-shield-banner__container"
               canvasClassName="transaction-shield-page-shield-banner__canvas"
+              isInactive={isMembershipInactive}
             />
           )}
         </Box>
