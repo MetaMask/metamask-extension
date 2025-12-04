@@ -27,6 +27,8 @@ import { ThemeType } from '../../../../../shared/constants/preferences';
 import { useTheme } from '../../../../hooks/useTheme';
 import { CLAIMS_TAB_KEYS, ClaimsTabKey } from '../types';
 
+const MAX_PENDING_CLAIMS = 3;
+
 const ClaimsList = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
@@ -202,7 +204,7 @@ const ClaimsList = () => {
                   variant={TextVariant.BodySm}
                   color={TextColor.TextAlternative}
                 >
-                  {t('shieldClaimGroupActiveNote')}
+                  {t('shieldClaimGroupActiveNote', [MAX_PENDING_CLAIMS])}
                 </Text>
               </Box>
             </Box>
@@ -212,6 +214,7 @@ const ClaimsList = () => {
                 className="w-full"
                 variant={ButtonVariant.Primary}
                 size={ButtonSize.Lg}
+                disabled={pendingClaims.length >= MAX_PENDING_CLAIMS}
                 onClick={() => {
                   navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL);
                 }}

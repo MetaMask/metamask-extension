@@ -6101,7 +6101,8 @@
     "message": "Active claims"
   },
   "shieldClaimGroupActiveNote": {
-    "message": "Note: You can have a maximum of 3 active claims at a single time."
+    "message": "Note: You can have a maximum of $1 active claims at a single time.",
+    "description": "The $1 is the maximum number of active claims"
   },
   "shieldClaimGroupCompleted": {
     "message": "Completed claims"
