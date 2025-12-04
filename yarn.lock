@@ -6095,9 +6095,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-status-controller@npm:^64.0.0":
-  version: 64.0.0
-  resolution: "@metamask/bridge-status-controller@npm:64.0.0"
+"@metamask/bridge-status-controller@npm:^64.0.1":
+  version: 64.0.1
+  resolution: "@metamask/bridge-status-controller@npm:64.0.1"
   dependencies:
     "@metamask/accounts-controller": "npm:^35.0.0"
     "@metamask/base-controller": "npm:^9.0.0"
@@ -6112,7 +6112,7 @@ __metadata:
     "@metamask/utils": "npm:^11.8.1"
     bignumber.js: "npm:^9.1.2"
     uuid: "npm:^8.3.2"
-  checksum: 10/64aacc027d02357510b3be8bf1229b324600462d0f39d3c4b86d5e4c436f5b25130c03330a83bb31653f1f02577faec1829bccb2f442f32075d483bd6f2a0f5d
+  checksum: 10/9051920b3cfdf0eb0c74193dd610835cb619b304d2774996d213217ad299de04e1a535105ee6d0e1f94b9c3acc9b5bfb5d0df31f1acda5a66893e5c0fa18cf56
   languageName: node
   linkType: hard
 
@@ -33385,7 +33385,7 @@ __metadata:
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^1.8.0"
     "@metamask/bridge-controller": "npm:^64.0.0"
-    "@metamask/bridge-status-controller": "npm:^64.0.0"
+    "@metamask/bridge-status-controller": "npm:^64.0.1"
     "@metamask/browser-passworder": "npm:^6.0.0"
     "@metamask/build-utils": "npm:^3.0.0"
     "@metamask/chain-agnostic-permission": "npm:^1.2.2"
