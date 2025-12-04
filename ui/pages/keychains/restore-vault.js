@@ -42,11 +42,19 @@ import SrpInputForm from '../srp-input-form';
 import CreatePasswordForm from '../create-password-form';
 import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 
+// persist data across component remounts during async import
 let isImportingVault = false;
 let newPassword = '';
 let confirmPassword = '';
 let checkedTermsOfUse = false;
 let savedSecretRecoveryPhrase = '';
+
+const clearSensitiveModuleData = () => {
+  newPassword = '';
+  confirmPassword = '';
+  checkedTermsOfUse = false;
+  savedSecretRecoveryPhrase = '';
+};
 
 class RestoreVaultPage extends Component {
   static contextTypes = {
@@ -81,6 +89,12 @@ class RestoreVaultPage extends Component {
     }
   }
 
+  componentWillUnmount() {
+    if (!isImportingVault) {
+      clearSensitiveModuleData();
+    }
+  }
+
   handleImport = async (password, termsChecked) => {
     const {
       createNewVaultAndRestore: propsCreateNewVaultAndRestore,
@@ -91,8 +105,6 @@ class RestoreVaultPage extends Component {
       isSocialLoginFlow: propsIsSocialLoginFlow,
     } = this.props;
 
-    // For non-social login flows, termsChecked is required
-    // For social login flows, termsChecked is optional (used only for marketing consent)
     if (!propsIsSocialLoginFlow && !termsChecked) {
       return;
     }
@@ -130,18 +142,12 @@ class RestoreVaultPage extends Component {
       });
 
       isImportingVault = false;
-      newPassword = '';
-      confirmPassword = '';
-      checkedTermsOfUse = false;
-      savedSecretRecoveryPhrase = '';
+      clearSensitiveModuleData();
 
       navigate(DEFAULT_ROUTE, { replace: true });
     } catch (error) {
       isImportingVault = false;
-      newPassword = '';
-      confirmPassword = '';
-      checkedTermsOfUse = false;
-      savedSecretRecoveryPhrase = '';
+      clearSensitiveModuleData();
       this.setState({ loading: false, showPasswordInput: false });
       console.error('[RestoreVault] Error during import:', error);
     }
@@ -253,7 +259,6 @@ class RestoreVaultPage extends Component {
               <Button
                 width={BlockSize.Full}
                 size={ButtonSize.Lg}
-                type="primary"
                 data-testid="import-srp-confirm"
                 onClick={this.handleContinue}
                 disabled={
