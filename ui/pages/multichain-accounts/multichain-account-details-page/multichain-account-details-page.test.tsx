@@ -2,9 +2,14 @@ import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
-import { MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE } from '../../../helpers/constants/routes';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import {
+  MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
+  PREVIOUS_ROUTE,
+} from '../../../helpers/constants/routes';
+import * as traceModule from '../../../../shared/lib/trace';
 import { MultichainAccountDetailsPage } from './multichain-account-details-page';
 
 const backButtonTestId = 'back-button';
@@ -16,13 +21,20 @@ const accountDetailsRowWalletTestId = 'account-details-row-wallet';
 const accountDetailsRowSecretRecoveryPhraseTestId = 'multichain-srp-backup';
 const accountNameInputDataTestId = 'account-name-input';
 
+jest.mock('../../../../shared/lib/trace', () => ({
+  ...jest.requireActual('../../../../shared/lib/trace'),
+  trace: jest.fn(),
+}));
+
 const mockUseNavigate = jest.fn();
 const mockUseParams = jest.fn();
+const mockUseLocation = jest.fn();
 jest.mock('react-router-dom', () => {
   return {
     ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
     useParams: () => mockUseParams(),
+    useLocation: () => mockUseLocation(),
   };
 });
 
@@ -42,6 +54,13 @@ describe('MultichainAccountDetailsPage', () => {
 
     mockUseParams.mockReturnValue({
       id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+    });
+
+    mockUseLocation.mockReturnValue({
+      pathname: '/test',
+      search: '',
+      hash: '',
+      state: null,
     });
   });
 
@@ -86,7 +105,7 @@ describe('MultichainAccountDetailsPage', () => {
     const backButton = screen.getByTestId(backButtonTestId);
     fireEvent.click(backButton);
 
-    expect(mockUseNavigate).toHaveBeenCalledWith(-1);
+    expect(mockUseNavigate).toHaveBeenCalledWith(PREVIOUS_ROUTE);
   });
 
   it('calls navigate with wallet route when wallet row is clicked', () => {
@@ -204,5 +223,32 @@ describe('MultichainAccountDetailsPage', () => {
 
     // First call should be the removeAccount thunk (AsyncFunction)
     expect(mockDispatch).toHaveBeenNthCalledWith(1, expect.any(Function));
+  });
+
+  describe('tracing', () => {
+    it('calls ShowAccountAddressList trace when clicking network addresses link', () => {
+      const store = configureStore(mockState);
+      const groupId = mockState.metamask.accountTree.selectedAccountGroup;
+      renderWithProvider(
+        <MultichainAccountDetailsPage />,
+        store,
+        `/test/${encodeURIComponent(groupId)}`,
+      );
+
+      const addressesLink = document.querySelector(
+        '[data-testid="network-addresses-link"]',
+      );
+      expect(addressesLink).toBeInTheDocument();
+      if (addressesLink) {
+        (addressesLink as HTMLElement).click();
+      }
+
+      const { TraceName } = jest.requireActual('../../../../shared/lib/trace');
+      expect(traceModule.trace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: TraceName.ShowAccountAddressList,
+        }),
+      );
+    });
   });
 });

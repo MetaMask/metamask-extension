@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -21,6 +21,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MultichainAddressRowsList } from '../../../components/multichain-accounts/multichain-address-rows-list';
 import { getMultichainAccountGroupById } from '../../../selectors/multichain-accounts/account-tree';
 import { AddressQRCodeModal } from '../../../components/multichain-accounts/address-qr-code-modal/address-qr-code-modal';
+import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import {
   AddressListQueryParams,
@@ -95,6 +96,10 @@ export const MultichainAccountAddressListPage = ({
   const handleCloseQR = useCallback(() => {
     setIsQRModalOpen(false);
     setSelectedQRData(null);
+  }, []);
+
+  useEffect(() => {
+    endTrace({ name: TraceName.ShowAccountAddressList });
   }, []);
 
   return (

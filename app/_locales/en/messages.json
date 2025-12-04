@@ -4558,25 +4558,6 @@
     "message": "$1 icon",
     "description": "$1 is the icon name"
   },
-  "onboardingPinExtensionAltLaunch": {
-    "message": "Launch extension"
-  },
-  "onboardingPinExtensionAltPin": {
-    "message": "Pin extension"
-  },
-  "onboardingPinExtensionDescription": {
-    "message": "Pin MetaMask on your browser so it’s accessible and easy to view transaction confirmations."
-  },
-  "onboardingPinExtensionDescription2": {
-    "message": "Access your MetaMask wallet with 1 click by clicking on the extension."
-  },
-  "onboardingPinExtensionDescription3": {
-    "message": "Click $1 extension icon to access it instantly",
-    "description": "$1 is the browser name"
-  },
-  "onboardingPinExtensionTitle": {
-    "message": "Installation is complete"
-  },
   "onboardingSignInWith": {
     "message": "Sign in with $1",
     "description": "$1 is the type of login used Google, Apple, etc"
@@ -6370,6 +6351,16 @@
   "shieldPlanDetails3": {
     "message": "24/7 access to priority live chat support"
   },
+  "shieldPlanDetailsRewards": {
+    "message": "Earn $1 points per $2",
+    "description": "The $1 is the number of points and $2 plan interval (month or year)"
+  },
+  "shieldPlanDetailsRewardsDescription": {
+    "message": "This offer is only available during Rewards seasons. Points are given when free trial ends to users signed up for Rewards."
+  },
+  "shieldPlanDetailsRewardsTitle": {
+    "message": "Rewards"
+  },
   "shieldPlanErrorText": {
     "message": "Couldn’t connect to Transaction Shield"
   },
@@ -6435,6 +6426,16 @@
   },
   "shieldTxDetails2Title": {
     "message": "Priority support"
+  },
+  "shieldTxDetails3Description": {
+    "message": "Get $1 points/$2.",
+    "description": "The $1 is the number of points, $2 is the plan interval (month or year)"
+  },
+  "shieldTxDetails3DescriptionSignUp": {
+    "message": "Sign up"
+  },
+  "shieldTxDetails3Title": {
+    "message": "Earn during rewards season"
   },
   "shieldTxMembershipActive": {
     "message": "Active plan"

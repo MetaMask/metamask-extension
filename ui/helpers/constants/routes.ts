@@ -135,7 +135,6 @@ export const ONBOARDING_HELP_US_IMPROVE_ROUTE = '/onboarding/help-us-improve';
 export const ONBOARDING_IMPORT_WITH_SRP_ROUTE =
   '/onboarding/import-with-recovery-phrase';
 export const ONBOARDING_PRIVACY_SETTINGS_ROUTE = '/onboarding/privacy-settings';
-export const ONBOARDING_PIN_EXTENSION_ROUTE = '/onboarding/pin-extension';
 export const ONBOARDING_WELCOME_ROUTE = '/onboarding/welcome';
 export const ONBOARDING_METAMETRICS = '/onboarding/metametrics';
 export const ONBOARDING_ACCOUNT_EXIST = '/onboarding/account-exist';
@@ -578,11 +577,6 @@ export const ROUTES = [
   {
     path: ONBOARDING_COMPLETION_ROUTE,
     label: 'Onboarding Completion',
-    trackInAnalytics: false,
-  },
-  {
-    path: ONBOARDING_PIN_EXTENSION_ROUTE,
-    label: 'Onboarding Pin Extension',
     trackInAnalytics: false,
   },
   {

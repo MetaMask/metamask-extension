@@ -28,12 +28,6 @@
         "clearTimeout": true
       }
     },
-    "react-responsive-carousel": {
-      "globals": {
-        "addEventListener": true,
-        "removeEventListener": true
-      }
-    },
     "react-beautiful-dnd": {
       "globals": {
         "addEventListener": true,
