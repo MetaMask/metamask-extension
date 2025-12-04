@@ -160,6 +160,12 @@ export type AppStateControllerState = {
    * Whether the wallet reset is in progress.
    */
   isWalletResetInProgress: boolean;
+
+  /**
+   * Tracks which seedless onboarding migrations have been applied.
+   * See `SeedlessOnboardingMigrationVersion` for version details.
+   */
+  seedlessOnboardingMigrationVersion: number;
 };
 
 const controllerName = 'AppStateController';
@@ -312,6 +318,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   pendingShieldCohortTxType: null,
   isWalletResetInProgress: false,
   dappSwapComparisonData: {},
+  seedlessOnboardingMigrationVersion: 0,
   ...getInitialStateOverrides(),
 });
 
@@ -690,6 +697,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     persist: false,
     includeInDebugSnapshot: false,
     usedInUi: true,
+  },
+  seedlessOnboardingMigrationVersion: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: false,
   },
 };
 
@@ -1628,6 +1641,18 @@ export class AppStateController extends BaseController<
 
   getIsWalletResetInProgress(): boolean {
     return this.state.isWalletResetInProgress;
+  }
+
+  /**
+   * Set the seedless onboarding migration version.
+   * This tracks which migrations have been applied to prevent re-running them.
+   *
+   * @param version - The migration version to set.
+   */
+  setSeedlessOnboardingMigrationVersion(version: number): void {
+    this.update((state) => {
+      state.seedlessOnboardingMigrationVersion = version;
+    });
   }
 
   setDefaultSubscriptionPaymentOptions(
