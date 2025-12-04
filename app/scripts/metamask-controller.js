@@ -129,7 +129,7 @@ import {
   SecretType,
   RecoveryError,
 } from '@metamask/seedless-onboarding-controller';
-import { COHORT_NAMES, PRODUCT_TYPES } from '@metamask/subscription-controller';
+import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { isSnapId } from '@metamask/snaps-utils';
 import {
   findAtomicBatchSupportForChain,
@@ -916,11 +916,11 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       'TransactionController:transactionSubmitted',
       ({ transactionMeta }) => {
-        this._onShieldSubscriptionApprovalTransaction(transactionMeta).catch(
-          (err) => {
+        this.subscriptionService
+          .handlePostTransaction(transactionMeta)
+          .catch((err) => {
             console.error('Error onShieldSubscriptionApprovalTransaction', err);
-          },
-        );
+          });
       },
     );
 
@@ -2618,10 +2618,6 @@ export default class MetamaskController extends EventEmitter {
         this.subscriptionService.updateSubscriptionCardPaymentMethod.bind(
           this.subscriptionService,
         ),
-      startSubscriptionWithCrypto:
-        this.subscriptionController.startSubscriptionWithCrypto.bind(
-          this.subscriptionController,
-        ),
       updateSubscriptionCryptoPaymentMethod:
         this.subscriptionService.updateSubscriptionCryptoPaymentMethod.bind(
           this.subscriptionService,
@@ -2629,6 +2625,10 @@ export default class MetamaskController extends EventEmitter {
       submitSubscriptionUserEvents:
         this.subscriptionController.submitUserEvent.bind(
           this.subscriptionController,
+        ),
+      linkRewardToShieldSubscription:
+        this.subscriptionService.linkRewardToExistingSubscription.bind(
+          this.subscriptionService,
         ),
 
       // rewards
@@ -8656,66 +8656,6 @@ export default class MetamaskController extends EventEmitter {
       method: NOTIFICATION_NAMES.chainChanged,
       params: await this.getProviderNetworkState({ origin }),
     });
-  }
-
-  /**
-   * Handles the shield subscription approval transaction after confirm
-   * NOTE: This doesn't subscribe to messenger internally inside controller because we need more info from the client as params
-   *
-   * @param transactionMeta - The transaction metadata.
-   */
-  async _onShieldSubscriptionApprovalTransaction(transactionMeta) {
-    const { isGasFeeSponsored, chainId } = transactionMeta;
-    const bundlerSupported = await isSendBundleSupported(chainId);
-    const isSponsored = isGasFeeSponsored && bundlerSupported;
-
-    try {
-      this.subscriptionService.trackSubscriptionRequestEvent(
-        'started',
-        transactionMeta,
-        {
-          has_sufficient_crypto_balance: true,
-        },
-      );
-
-      await this.subscriptionController.submitShieldSubscriptionCryptoApproval(
-        transactionMeta,
-        isSponsored,
-      );
-
-      // Mark send/transfer/swap transactions for Shield post_tx cohort evaluation
-      const isPostTxTransaction = [
-        TransactionType.simpleSend,
-        TransactionType.tokenMethodTransfer,
-        TransactionType.swap,
-        TransactionType.swapAndSend,
-      ].includes(transactionMeta.type);
-
-      const { pendingShieldCohort } = this.appStateController.state;
-      if (isPostTxTransaction && !pendingShieldCohort) {
-        this.appStateController.setPendingShieldCohort(
-          COHORT_NAMES.POST_TX,
-          transactionMeta.type,
-        );
-      }
-      this.subscriptionService.trackSubscriptionRequestEvent(
-        'completed',
-        transactionMeta,
-        {
-          gas_sponsored: isSponsored,
-        },
-      );
-    } catch (error) {
-      log.error('Error on Shield subscription approval transaction', error);
-      this.subscriptionService.trackSubscriptionRequestEvent(
-        'failed',
-        transactionMeta,
-        {
-          error_message: error.message,
-        },
-      );
-      throw error;
-    }
   }
 
   /**
