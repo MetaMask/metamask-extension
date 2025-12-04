@@ -332,7 +332,7 @@ const MemoizedReviewPermissionsWrapper = React.memo(() => (
 ));
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export default function RoutesComponent() {
+export default function Routes() {
   const dispatch = useDispatch();
   const location = useLocation();
   const navType = useNavigationType();
@@ -624,7 +624,7 @@ export default function RoutesComponent() {
       createRouteWithLayout({
         path: `${NEW_ACCOUNT_ROUTE}/*`,
         component: CreateAccountPage,
-        layout: LegacyLayout,
+        layout: RootLayout,
         authenticated: true,
       }),
       createRouteWithLayout({
@@ -726,7 +726,7 @@ export default function RoutesComponent() {
       createRouteWithLayout({
         path: `${MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE}/:accountGroupId`,
         component: MultichainAccountPrivateKeyListPage,
-        layout: LegacyLayout,
+        layout: RootLayout,
         authenticated: true,
       }),
       createRouteWithLayout({
