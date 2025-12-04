@@ -54,7 +54,7 @@ describe('MultichainBridgeQuoteCard', () => {
         },
       },
       bridgeSliceOverrides: {
-        fromTokenInputValue: 1,
+        fromTokenInputValue: '1',
         toChainId: formatChainIdToCaip(CHAIN_IDS.POLYGON),
       },
       bridgeStateOverrides: {
@@ -131,7 +131,7 @@ describe('MultichainBridgeQuoteCard', () => {
         },
       },
       bridgeSliceOverrides: {
-        fromTokenInputValue: 1,
+        fromTokenInputValue: '1',
         toChainId: formatChainIdToCaip(CHAIN_IDS.POLYGON),
       },
       bridgeStateOverrides: {
@@ -223,7 +223,7 @@ describe('MultichainBridgeQuoteCard', () => {
         },
       },
       bridgeSliceOverrides: {
-        fromTokenInputValue: 1,
+        fromTokenInputValue: '1',
         toChainId: formatChainIdToCaip(CHAIN_IDS.POLYGON),
         slippage: 1,
       },
@@ -297,7 +297,7 @@ describe('MultichainBridgeQuoteCard', () => {
           },
         },
       },
-      bridgeSliceOverrides: { fromTokenInputValue: 1 },
+      bridgeSliceOverrides: { fromTokenInputValue: '1' },
       bridgeStateOverrides: {
         quotes: [],
         quotesLastFetched: Date.now() - 5000,
@@ -326,7 +326,7 @@ describe('MultichainBridgeQuoteCard', () => {
           },
         },
       },
-      bridgeSliceOverrides: { fromTokenInputValue: 1 },
+      bridgeSliceOverrides: { fromTokenInputValue: '1' },
       bridgeStateOverrides: {
         quotes: [],
         quotesLastFetched: Date.now() - 5000,
@@ -360,7 +360,7 @@ describe('MultichainBridgeQuoteCard', () => {
           },
         },
         bridgeSliceOverrides: {
-          fromTokenInputValue: 1,
+          fromTokenInputValue: '1',
           toChainId: formatChainIdToCaip(CHAIN_IDS.POLYGON),
         },
         bridgeStateOverrides: {
@@ -596,7 +596,7 @@ describe('MultichainBridgeQuoteCard', () => {
         },
       },
       bridgeSliceOverrides: {
-        fromTokenInputValue: 1,
+        fromTokenInputValue: '1',
         toChainId: formatChainIdToCaip(CHAIN_IDS.POLYGON),
       },
       bridgeStateOverrides: {
