@@ -5027,12 +5027,6 @@
         "react-redux>react-is": true
       }
     },
-    "react-responsive-carousel": {
-      "globals": {
-        "addEventListener": true,
-        "removeEventListener": true
-      }
-    },
     "react-router-dom": {
       "packages": {
         "react-router-dom>history": true,
