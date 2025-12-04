@@ -807,28 +807,19 @@ async function loadPreinstalledSnaps() {
   const fetchWithTimeout = getFetchWithTimeout();
 
   const promises = PREINSTALLED_SNAPS_URLS.map(async (url) => {
-    try {
-      const response = await fetchWithTimeout(url);
+    const response = await fetchWithTimeout(url);
 
-      // If the Snap is compressed, decompress it
-      if (url.pathname.endsWith('.json.gz')) {
-        const ds = new DecompressionStream('gzip');
-        const decompressedStream = response.body.pipeThrough(ds);
-        return await new Response(decompressedStream).json();
-      }
-
-      return await response.json();
-    } catch (e) {
-      log.error(`Failed to load preinstalled Snap from ${url.href}:`, e);
-      throw e;
+    // If the Snap is compressed, decompress it
+    if (url.pathname.endsWith('.json.gz')) {
+      const ds = new DecompressionStream('gzip');
+      const decompressedStream = response.body.pipeThrough(ds);
+      return await new Response(decompressedStream).json();
     }
+
+    return await response.json();
   });
 
-  return Promise.all(promises).catch((error) => {
-    log.error('Failed to load preinstalled Snaps:', error);
-    sentry?.captureException(error);
-    return [];
-  });
+  return Promise.all(promises);
 }
 
 /**
@@ -1007,7 +998,7 @@ export async function loadStateFromPersistence(backup) {
   // this initializes the meta/version data as a class variable to be used for future writes
   persistenceManager.setMetadata(versionedData.meta);
 
-  console.log(
+  log.debug(
     "[Split State]: Loaded data from persistence with storageKind '%s'",
     persistenceManager.storageKind,
   );
@@ -1016,7 +1007,7 @@ export async function loadStateFromPersistence(backup) {
       versionedData.meta.platformSplitStateGradualRolloutAttempted === true;
     const shouldUseSplitStateStorage =
       !alreadyTried && (await useSplitStateStorage(versionedData.data));
-    console.log(
+    log.debug(
       '[Split State]: shouldUseSplitStateStorage: %s (alreadyTried: %s)',
       shouldUseSplitStateStorage,
       alreadyTried,
@@ -1027,7 +1018,7 @@ export async function loadStateFromPersistence(backup) {
       persistenceManager.setMetadata(versionedData.meta);
     }
 
-    console.log(
+    log.debug(
       "[Split State]: Writing data to persistence with storageKind 'data'",
     );
     // write to disk
@@ -1062,7 +1053,7 @@ export async function loadStateFromPersistence(backup) {
       `MetaMask - persistenceManager has invalid storageKind '${persistenceManager.storageKind}'`,
     );
   }
-  console.log('[Split State]: Load complete.');
+  log.debug('[Split State]: Load complete.');
 
   // return just the data
   return versionedData;

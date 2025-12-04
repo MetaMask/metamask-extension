@@ -105,7 +105,6 @@ const MigrateToSplitStateTest = () => {
   }, []);
 
   const handleEnabledChange = async (value: string | null) => {
-    setEnabled(value);
     if (value === null) {
       await browser.storage.local.remove('splitStateMigrationEnabled');
     } else {
@@ -113,13 +112,13 @@ const MigrateToSplitStateTest = () => {
         splitStateMigrationEnabled: value,
       });
     }
+    setEnabled(value);
   };
 
   const handleMaxAccountsChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const { value } = event.target;
-    setMaxAccounts(value);
     if (value === '') {
       await browser.storage.local.remove('splitStateMigrationMaxAccounts');
     } else {
@@ -127,13 +126,13 @@ const MigrateToSplitStateTest = () => {
         splitStateMigrationMaxAccounts: value,
       });
     }
+    setMaxAccounts(value);
   };
 
   const handleMaxNetworksChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const { value } = event.target;
-    setMaxNetworks(value);
     if (value === '') {
       await browser.storage.local.remove('splitStateMigrationMaxNetworks');
     } else {
@@ -141,6 +140,7 @@ const MigrateToSplitStateTest = () => {
         splitStateMigrationMaxNetworks: value,
       });
     }
+    setMaxNetworks(value);
   };
 
   return (

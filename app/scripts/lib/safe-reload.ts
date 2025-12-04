@@ -54,24 +54,9 @@ export function getRequestSafeReload<Type extends PersistenceManager>(
      * Requests a safe reload of the browser. It prevents any new updates from
      * being sent to the persistence manager, and waits for any
      * pending updates to complete before calling `browser.runtime.reload()`.
-     *
-     * @param callback - An optional callback to be executed after all
-     * pending operations have completed, but before the reload is triggered.
      */
-    requestSafeReload: async (callback?: () => Promise<void> | void) => {
+    requestSafeReload: async () => {
       await operationSafener.evacuate();
-      if (callback) {
-        try {
-          const v = callback();
-          if (v instanceof Promise) {
-            await v;
-          }
-        } catch (error) {
-          log.error('MetaMask - Error in safe reload callback', error);
-          sentry?.captureException(error);
-          throw error;
-        }
-      }
       browser.runtime.reload();
     },
   };

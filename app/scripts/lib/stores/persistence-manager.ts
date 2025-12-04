@@ -554,8 +554,8 @@ export class PersistenceManager {
    */
   async migrateToSplitState(state: MetaMaskStateType) {
     if (this.storageKind === 'split') {
-      console.log(
-        '[PersistenceManager] Storage is already split, skipping migration',
+      log.debug(
+        '[Split State]: Storage is already split, skipping migration',
       );
       return;
     }
@@ -574,10 +574,10 @@ export class PersistenceManager {
       this.update(key, value);
     }
 
-    // 😨 mark data key for deletion 😨
+    // mark data key for deletion
     this.update('data', undefined);
 
-    console.log('[PersistenceManager] Migrating to split state storage');
+    log.debug('[Split State]: Migrating to split state storage');
     await this.persist();
   }
 }

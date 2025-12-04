@@ -293,7 +293,7 @@ const runScriptThenReloadExtension = async (
       const callback = arguments[arguments.length - 1];
       (async () => {
         try {
-          const output = await (${runScript || 'Promise.resolve()'});
+          const output = await (${runScript});
           callback({ result: output });
         } catch (error) {
           callback({ error: error?.message ?? error?.toString?.() ?? error });
@@ -479,7 +479,7 @@ describe('State Persistence', function () {
             setMeta({
               platformSplitStateGradualRolloutAttempted: true,
               // an attempted migration would set `platformSplitStateGradualRolloutAttempted`
-              // itself, if it erroneously attempted to migrate (its not supposed to try in this test)
+              // itself, if it erroneously attempted to migrate (it's not supposed to try in this test)
               // and then failed, so we are setting this extra `canary` property just so we have something
               // unique.
               canary: 'test-canary',

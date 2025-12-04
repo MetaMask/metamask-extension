@@ -80,15 +80,16 @@ export default class Migrator extends EventEmitter {
               'Migrator - migration returned value when none expected',
             );
           }
-          // a migration that doesn't change any controllers is invalid
+          // a migration that doesn't change any controllers is valid, but it'd
+          // be nice to know
           if (localChangedControllers.size === 0) {
-            throw new Error(
-              'Migrator - migration did not report any changed controllers',
+            log.debug(
+              `Migrator - migration ${migration.version} did not report any changes`,
             );
-          }
-
-          for (const controllerKey of localChangedControllers) {
-            changedControllers.add(controllerKey);
+          } else {
+            for (const controllerKey of localChangedControllers) {
+              changedControllers.add(controllerKey);
+            }
           }
         }
         // accept the migration as good
