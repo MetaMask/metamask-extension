@@ -541,6 +541,7 @@ const TransactionShield = () => {
             <ShieldBannerAnimation
               containerClassName="transaction-shield-page-shield-banner__container"
               canvasClassName="transaction-shield-page-shield-banner__canvas"
+              isInactive={isMembershipInactive}
             />
           )}
         </Box>
@@ -605,7 +606,7 @@ const TransactionShield = () => {
           buttonRow(
             t('shieldTxMembershipSubmitCase'),
             () => {
-              navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL);
+              navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);
             },
             'shield-detail-submit-case-button',
           )}

@@ -25,9 +25,13 @@ export const TRANSACTION_SHIELD_CLAIM_ROUTES = {
     FULL: `${TRANSACTION_SHIELD_CLAIMS}/new-claim`,
     RELATIVE: '/new-claim',
   },
-  VIEW: {
-    FULL: `${TRANSACTION_SHIELD_CLAIMS}/view-claim`,
-    RELATIVE: '/view-claim',
+  VIEW_PENDING: {
+    FULL: `${TRANSACTION_SHIELD_CLAIMS}/view-pending-claim`,
+    RELATIVE: '/view-pending-claim',
+  },
+  VIEW_HISTORY: {
+    FULL: `${TRANSACTION_SHIELD_CLAIMS}/view-history-claim`,
+    RELATIVE: '/view-history-claim',
   },
 } as const;
 export const SECURITY_ROUTE = '/settings/security';

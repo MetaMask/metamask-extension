@@ -327,12 +327,7 @@ const AssetPage = ({
   const showTronResources = isTron && type === AssetType.native;
 
   return (
-    <Box
-      marginLeft="auto"
-      marginRight="auto"
-      marginTop={4}
-      className="asset__content"
-    >
+    <Box marginTop={4} className="asset__content">
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
