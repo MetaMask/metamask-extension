@@ -432,6 +432,8 @@ import {
   ClaimsControllerInit,
   ClaimsServiceInit,
 } from './controller-init/claims';
+import { ProfileMetricsControllerInit } from './controller-init/profile-metrics-controller-init';
+import { ProfileMetricsServiceInit } from './controller-init/profile-metrics-service-init';
 import { getQuotesForConfirmation } from './lib/dapp-swap/dapp-swap-util';
 
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -664,6 +666,8 @@ export default class MetamaskController extends EventEmitter {
       AnnouncementController: AnnouncementControllerInit,
       RewardsDataService: RewardsDataServiceInit,
       RewardsController: RewardsControllerInit,
+      ProfileMetricsController: ProfileMetricsControllerInit,
+      ProfileMetricsService: ProfileMetricsServiceInit,
     };
 
     const {
@@ -777,6 +781,7 @@ export default class MetamaskController extends EventEmitter {
     this.rewardsController = controllersByName.RewardsController;
     this.claimsController = controllersByName.ClaimsController;
     this.claimsService = controllersByName.ClaimsService;
+    this.profileMetricsController = controllersByName.ProfileMetricsController;
     this.backup = new Backup({
       preferencesController: this.preferencesController,
       addressBookController: this.addressBookController,
@@ -1210,6 +1215,7 @@ export default class MetamaskController extends EventEmitter {
         this.notificationServicesPushController,
       RemoteFeatureFlagController: this.remoteFeatureFlagController,
       DeFiPositionsController: this.deFiPositionsController,
+      ProfileMetricsController: this.profileMetricsController,
       ...resetOnRestartStore,
       ...controllerPersistedState,
     });
@@ -1274,6 +1280,7 @@ export default class MetamaskController extends EventEmitter {
         ShieldController: this.shieldController,
         ClaimsController: this.claimsController,
         ClaimsService: this.claimsService,
+        ProfileMetricsController: this.profileMetricsController,
         ...resetOnRestartStore,
         ...controllerMemState,
       },
@@ -3021,6 +3028,10 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // SeedlessOnboardingController
+      preloadToprfNodeDetails:
+        this.seedlessOnboardingController.preloadToprfNodeDetails.bind(
+          this.seedlessOnboardingController,
+        ),
       authenticate: this.seedlessOnboardingController.authenticate.bind(
         this.seedlessOnboardingController,
       ),

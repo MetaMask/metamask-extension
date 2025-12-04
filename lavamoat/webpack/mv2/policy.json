@@ -1898,6 +1898,18 @@
         "@metamask/ppom-validator>json-rpc-random-id": true
       }
     },
+    "@metamask/profile-metrics-controller": {
+      "globals": {
+        "URL": true,
+        "console.error": true
+      },
+      "packages": {
+        "@metamask/controller-utils": true,
+        "@metamask/subscription-controller>@metamask/polling-controller": true,
+        "@metamask/profile-metrics-controller>@metamask/profile-sync-controller": true,
+        "@metamask/eth-qr-keyring>async-mutex": true
+      }
+    },
     "@metamask/profile-sync-controller": {
       "globals": {
         "Buffer.from": true,
