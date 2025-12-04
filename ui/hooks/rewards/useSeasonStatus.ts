@@ -4,6 +4,7 @@ import {
   getRewardsSeasonMetadata,
   getRewardsSeasonStatus,
 } from '../../store/actions';
+import { MetaMaskReduxDispatch } from '../../store/store';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
 import {
   SeasonDtoState,
@@ -17,6 +18,7 @@ import {
 } from '../../ducks/rewards';
 import { CandidateSubscriptionId } from '../../ducks/rewards/types';
 import { REWARDS_ERROR_MESSAGES } from '../../../shared/constants/rewards';
+import { useAsyncResult } from '../useAsync';
 
 type UseSeasonStatusOptions = {
   subscriptionId: CandidateSubscriptionId;
@@ -114,5 +116,36 @@ export const useSeasonStatus = ({
 
   return {
     fetchSeasonStatus,
+  };
+};
+
+/**
+ * Hook to check if it's currently rewards season.
+ * Returns a loading state and a boolean indicating if it's rewards season
+ * (based on current timestamp being within the season's start and end dates).
+ */
+export const useRewardsSeasonCheck = () => {
+  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+
+  const { value: isRewardsSeason, pending } =
+    useAsyncResult<boolean>(async () => {
+      const seasonMetadata = await dispatch(
+        getRewardsSeasonMetadata('current'),
+      );
+
+      if (!seasonMetadata) {
+        return false;
+      }
+
+      const currentTimestamp = Date.now();
+      return (
+        currentTimestamp >= seasonMetadata.startDate &&
+        currentTimestamp <= seasonMetadata.endDate
+      );
+    }, [dispatch]);
+
+  return {
+    pending,
+    isRewardsSeason: isRewardsSeason ?? false,
   };
 };

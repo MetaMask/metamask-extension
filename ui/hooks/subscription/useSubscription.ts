@@ -23,6 +23,7 @@ import {
   addTransaction,
   cancelSubscription,
   estimateGas,
+  estimateRewardsPoints,
   getSubscriptionBillingPortalUrl,
   getSubscriptions,
   getSubscriptionsEligibilities,
@@ -51,7 +52,9 @@ import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors
 import {
   getMetaMetricsId,
   getModalTypeForShieldEntryModal,
+  getSelectedAccount,
   getUnapprovedConfirmations,
+  getUpdatedAndSortedAccountsWithCaipAccountId,
 } from '../../selectors';
 import { useSubscriptionMetrics } from '../shield/metrics/useSubscriptionMetrics';
 import { CaptureShieldSubscriptionRequestParams } from '../shield/metrics/types';
@@ -69,6 +72,7 @@ import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import { useAccountTotalFiatBalance } from '../useAccountTotalFiatBalance';
 import { getNetworkConfigurationsByChainId } from '../../../shared/modules/selectors/networks';
 import { isCryptoPaymentMethod } from '../../pages/settings/transaction-shield-tab/types';
+import { MergedInternalAccountWithCaipAccountId } from '../../selectors/selectors.types';
 import {
   TokenWithApprovalAmount,
   useSubscriptionPricing,
@@ -733,5 +737,63 @@ export const useUpdateSubscriptionCryptoPaymentMethod = ({
   return {
     execute,
     result,
+  };
+};
+
+export const useFetchShieldRewardsPoints = () => {
+  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const accounts = useSelector(
+    getUpdatedAndSortedAccountsWithCaipAccountId,
+  ) as MergedInternalAccountWithCaipAccountId[];
+  const selectedAccount = useSelector(getSelectedAccount);
+
+  const { value, pending } = useAsyncResult<{
+    monthly: number | null;
+    yearly: number | null;
+  }>(async () => {
+    // get the caip account id for the current selected account
+    const selectedAccountWithCaipAccountId = accounts.find(
+      (account) => account.address === selectedAccount.address,
+    );
+
+    if (!selectedAccountWithCaipAccountId) {
+      return { monthly: null, yearly: null };
+    }
+
+    const [monthlyPointsData, yearlyPointsData] = await Promise.all([
+      dispatch(
+        estimateRewardsPoints({
+          activityType: 'SHIELD',
+          account: selectedAccountWithCaipAccountId.caipAccountId,
+          activityContext: {
+            shieldContext: {
+              recurringInterval: 'month',
+            },
+          },
+        }),
+      ),
+      dispatch(
+        estimateRewardsPoints({
+          activityType: 'SHIELD',
+          account: selectedAccountWithCaipAccountId.caipAccountId,
+          activityContext: {
+            shieldContext: {
+              recurringInterval: 'year',
+            },
+          },
+        }),
+      ),
+    ]);
+
+    return {
+      monthly: monthlyPointsData?.pointsEstimate ?? null,
+      yearly: yearlyPointsData?.pointsEstimate ?? null,
+    };
+  }, [dispatch, accounts, selectedAccount]);
+
+  return {
+    pending,
+    pointsMonthly: value?.monthly ?? null,
+    pointsYearly: value?.yearly ?? null,
   };
 };
