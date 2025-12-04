@@ -1027,7 +1027,6 @@ export async function loadStateFromPersistence(backup) {
     if (shouldUseSplitStateStorage) {
       await persistenceManager.migrateToSplitState(versionedData.data);
       versionedData.meta = persistenceManager.getMetaData();
-      delete versionedData.meta.platformSplitStateGradualRolloutAttempted;
       if (versionedData.meta !== undefined) {
         delete versionedData.meta.platformSplitStateGradualRolloutAttempted;
         // persist the new metadata one more time
