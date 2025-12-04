@@ -640,7 +640,7 @@ const TransactionShield = () => {
               </Box>
             </Box>
           ))}
-          {formattedRewardsPoints && (
+          {formattedRewardsPoints && !showSkeletonLoader && (
             <Box
               display={Display.Flex}
               alignItems={AlignItems.center}
@@ -648,61 +648,39 @@ const TransactionShield = () => {
               paddingTop={2}
               paddingBottom={2}
             >
-              {showSkeletonLoader ? (
-                <Skeleton
-                  width={32}
-                  height={32}
-                  borderRadius={BorderRadius.full}
-                  style={{ flexShrink: 0 }}
-                />
-              ) : (
-                <Icon name={IconName.MetamaskFoxOutline} size={IconSize.Xl} />
-              )}
+              <Icon name={IconName.MetamaskFoxOutline} size={IconSize.Xl} />
               <Box
                 width={BlockSize.Full}
                 display={Display.Flex}
                 flexDirection={FlexDirection.Column}
-                gap={showSkeletonLoader ? 2 : 0}
               >
-                {showSkeletonLoader ? (
-                  <Skeleton width="100%" height={18} />
-                ) : (
-                  <Text variant={TextVariant.bodySmBold}>
-                    {t('shieldTxDetails3Title')}
-                  </Text>
-                )}
-                {showSkeletonLoader ? (
-                  <Skeleton width="100%" height={18} />
-                ) : (
-                  <Text
-                    variant={TextVariant.bodySm}
-                    color={TextColor.textAlternative}
-                  >
-                    {t('shieldTxDetails3Description', [
-                      formattedRewardsPoints,
-                      displayedShieldSubscription?.interval ===
-                      RECURRING_INTERVALS.year
-                        ? t('year')
-                        : t('month'),
-                    ])}
-                  </Text>
-                )}
+                <Text variant={TextVariant.bodySmBold}>
+                  {t('shieldTxDetails3Title')}
+                </Text>
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.textAlternative}
+                >
+                  {t('shieldTxDetails3Description', [
+                    formattedRewardsPoints,
+                    displayedShieldSubscription?.interval ===
+                    RECURRING_INTERVALS.year
+                      ? t('year')
+                      : t('month'),
+                  ])}
+                </Text>
               </Box>
               <Box className="flex-shrink-0">
-                {showSkeletonLoader ? (
-                  <Skeleton width={80} height={32} />
-                ) : (
-                  <Button
-                    className="px-3"
-                    variant={ButtonVariant.Secondary}
-                    size={ButtonSize.Sm}
-                    onClick={() => {
-                      openRewardsOnboardingModal();
-                    }}
-                  >
-                    {t('shieldTxDetails3DescriptionSignUp')}
-                  </Button>
-                )}
+                <Button
+                  className="px-3"
+                  variant={ButtonVariant.Secondary}
+                  size={ButtonSize.Sm}
+                  onClick={() => {
+                    openRewardsOnboardingModal();
+                  }}
+                >
+                  {t('shieldTxDetails3DescriptionSignUp')}
+                </Button>
               </Box>
             </Box>
           )}
