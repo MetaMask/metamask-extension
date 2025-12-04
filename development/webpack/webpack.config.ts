@@ -34,9 +34,9 @@ import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
 import { getCodeFenceLoader } from './utils/loaders/codeFenceLoader';
 import { getSwcLoader } from './utils/loaders/swcLoader';
-import { getReactCompilerLoader } from './utils/loaders/reactCompilerLoader';
 import { getVariables } from './utils/config';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
+import { ReactCompilerPlugin } from './utils/plugins/ReactCompilerPlugin';
 import { getLatestCommit } from './utils/git';
 
 const buildTypes = loadBuildTypesConfig();
@@ -95,6 +95,12 @@ const cache = args.cache
 
 // #region plugins
 const commitHash = isDevelopment ? getLatestCommit().hash() : null;
+const reactCompilerPlugin = new ReactCompilerPlugin({
+  target: '17',
+  verbose: args.reactCompilerVerbose,
+  debug: args.reactCompilerDebug,
+  include: UI_DIR_RE,
+});
 const plugins: WebpackPluginInstance[] = [
   // HtmlBundlerPlugin treats HTML files as entry points
   new HtmlBundlerPlugin({
@@ -191,6 +197,7 @@ const plugins: WebpackPluginInstance[] = [
         : []),
     ],
   }),
+  reactCompilerPlugin,
 ];
 // MV2 requires self-injection
 if (MANIFEST_VERSION === 2) {
@@ -213,12 +220,6 @@ if (args.progress) {
   const { ProgressPlugin } = require('webpack');
   plugins.push(new ProgressPlugin());
 }
-if (args.reactCompilerVerbose) {
-  const {
-    ReactCompilerPlugin,
-  } = require('./utils/plugins/ReactCompilerPlugin');
-  plugins.push(new ReactCompilerPlugin());
-}
 
 // #endregion plugins
 
@@ -227,11 +228,6 @@ const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
 const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
 const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
 const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
-const reactCompilerLoader = getReactCompilerLoader(
-  '17',
-  args.reactCompilerVerbose,
-  args.reactCompilerDebug,
-);
 
 const config = {
   entry,
@@ -334,11 +330,7 @@ const config = {
         dependency: 'url',
         type: 'asset/resource',
       },
-      {
-        test: /^(?!.*\.(?:test|stories|container)\.)(?:.*)\.(?:m?[jt]s|[jt]sx)$/u,
-        include: UI_DIR_RE,
-        use: [reactCompilerLoader],
-      },
+      reactCompilerPlugin.getLoaderRule(),
       // own typescript, and own typescript with jsx
       {
         test: /\.(?:ts|mts|tsx)$/u,
