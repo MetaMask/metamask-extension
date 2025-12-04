@@ -46,6 +46,7 @@ let isImportingVault = false;
 let newPassword = '';
 let confirmPassword = '';
 let checkedTermsOfUse = false;
+let savedSecretRecoveryPhrase = '';
 
 class RestoreVaultPage extends Component {
   static contextTypes = {
@@ -75,6 +76,7 @@ class RestoreVaultPage extends Component {
       this.setState({
         loading: true,
         showPasswordInput: true,
+        secretRecoveryPhrase: savedSecretRecoveryPhrase,
       });
     }
   }
@@ -99,6 +101,7 @@ class RestoreVaultPage extends Component {
     newPassword = password;
     confirmPassword = password;
     checkedTermsOfUse = termsChecked;
+    savedSecretRecoveryPhrase = this.state.secretRecoveryPhrase;
 
     await new Promise((resolve) => {
       this.setState({ loading: true }, resolve);
@@ -125,7 +128,12 @@ class RestoreVaultPage extends Component {
         category: MetaMetricsEventCategory.Retention,
         event: MetaMetricsEventName.WalletRestored,
       });
+
       isImportingVault = false;
+      newPassword = '';
+      confirmPassword = '';
+      checkedTermsOfUse = false;
+      savedSecretRecoveryPhrase = '';
 
       navigate(DEFAULT_ROUTE, { replace: true });
     } catch (error) {
@@ -133,6 +141,7 @@ class RestoreVaultPage extends Component {
       newPassword = '';
       confirmPassword = '';
       checkedTermsOfUse = false;
+      savedSecretRecoveryPhrase = '';
       this.setState({ loading: false, showPasswordInput: false });
       console.error('[RestoreVault] Error during import:', error);
     }
