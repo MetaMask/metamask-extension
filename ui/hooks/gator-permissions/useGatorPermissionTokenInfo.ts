@@ -90,9 +90,7 @@ export function useGatorPermissionTokenInfo(
   );
 
   // Check if this is a native token
-  const isNativeToken = useMemo(() => {
-    return permissionType?.includes('native-token') ?? false;
-  }, [permissionType]);
+  const isNativeToken = permissionType?.includes('native-token') ?? false;
 
   // Handle native tokens using shared utility
   const nativeTokenInfo = useMemo(() => {
@@ -143,32 +141,22 @@ export function useGatorPermissionTokenInfo(
 
   // Tier 2 & 3: Fetch using API and on-chain fallback if not in cache/imported (only for ERC-20 tokens)
   useEffect(() => {
+    // Early returns for cases where we don't need to fetch
+    if (
+      isNativeToken ||
+      cachedOrImportedTokenInfo ||
+      !tokenAddress ||
+      !chainId
+    ) {
+      setFetchedTokenInfo(null);
+      setIsFetching(false);
+      setError(null);
+      return undefined;
+    }
+
     let cancelled = false;
 
     const fetchTokenInfo = async () => {
-      // If this is a native token, no need to fetch
-      if (isNativeToken) {
-        setFetchedTokenInfo(null);
-        setIsFetching(false);
-        setError(null);
-        return;
-      }
-
-      // If we found it in cache or imported tokens, no need to fetch
-      if (cachedOrImportedTokenInfo) {
-        setFetchedTokenInfo(null);
-        setIsFetching(false);
-        setError(null);
-        return;
-      }
-
-      if (!tokenAddress || !chainId) {
-        setFetchedTokenInfo(null);
-        setIsFetching(false);
-        setError(null);
-        return;
-      }
-
       try {
         setIsFetching(true);
         setError(null);
@@ -261,10 +249,5 @@ export function useGatorPermissionTokenInfo(
     isFetching,
   ]);
 
-  return {
-    tokenInfo: result.tokenInfo,
-    loading: result.loading,
-    error,
-    source: result.source,
-  };
+  return { ...result, error };
 }

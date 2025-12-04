@@ -1,8 +1,8 @@
 import {
-  Hex,
+  type Hex,
   hexToNumber,
   KnownCaipNamespace,
-  CaipChainId,
+  type CaipChainId,
 } from '@metamask/utils';
 import log from 'loglevel';
 import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../constants/network';
@@ -339,59 +339,6 @@ export async function getGatorErc20TokenInfo(
   });
   gatorTokenInfoPromiseCache.set(key, promise);
   return promise;
-}
-
-/**
- * Resolve token display info (name/symbol, decimals) for a Gator permission.
- *
- * - If `permissionType` includes 'native-token', returns network native symbol and 18 decimals.
- * - Otherwise, fetches ERC-20 info (cached) using `tokenAddress` from `permissionData`.
- *
- * @param params
- * @param params.permissionType
- * @param params.chainId
- * @param params.networkConfig
- * @param params.permissionData
- * @param params.allowExternalServices
- * @param params.getTokenStandardAndDetailsByChain
- */
-export async function getGatorPermissionTokenInfo(params: {
-  permissionType: string;
-  chainId: string;
-  networkConfig?: { nativeCurrency?: string; name?: string } | null;
-  permissionData?: GatorPermissionData;
-  allowExternalServices: boolean;
-  getTokenStandardAndDetailsByChain?: GetTokenStandardAndDetailsByChain;
-}): Promise<GatorTokenInfo> {
-  const {
-    permissionType,
-    chainId,
-    networkConfig,
-    permissionData,
-    allowExternalServices,
-    getTokenStandardAndDetailsByChain,
-  } = params;
-  const isNative = permissionType.includes('native-token');
-  if (isNative) {
-    const nativeSymbol =
-      networkConfig?.nativeCurrency ||
-      CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
-        chainId as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
-      ] ||
-      'ETH';
-    return { symbol: nativeSymbol, decimals: 18, chainId: chainId as Hex };
-  }
-
-  const tokenAddress = permissionData?.tokenAddress;
-  if (!tokenAddress) {
-    return { symbol: 'Unknown Token', decimals: 18, chainId: chainId as Hex };
-  }
-  return await getGatorErc20TokenInfo(
-    tokenAddress,
-    chainId as Hex,
-    allowExternalServices,
-    getTokenStandardAndDetailsByChain,
-  );
 }
 
 /**

@@ -167,15 +167,12 @@ export const ReviewGatorPermissionItem = ({
   const t = useI18nContext();
   const { permissionResponse, siteOrigin } = gatorPermission;
   const { chainId } = permissionResponse;
-  const permissionType = permissionResponse.permission.type;
-  const permissionContext = permissionResponse.context;
-  const permissionAccount = permissionResponse.address || '0x';
-  const justification = permissionResponse.permission.data.justification as
-    | string
-    | undefined;
-  const tokenAddress = permissionResponse.permission.data.tokenAddress as
-    | string
-    | undefined;
+  const {
+    permission: { type: permissionType, data },
+    context: permissionContext,
+    address: permissionAccount = '0x',
+  } = permissionResponse;
+  const { justification, tokenAddress } = data;
 
   const [isExpanded, setIsExpanded] = useState(false);
   const pendingRevocations = useSelector(getPendingRevocations);
@@ -183,14 +180,9 @@ export const ReviewGatorPermissionItem = ({
     getInternalAccountByAddress(state, permissionAccount),
   );
 
-  const truncatedAddress = useMemo(
-    () => shortenAddress(permissionAccount),
-    [permissionAccount],
-  );
-
   const accountText = useMemo(() => {
-    return internalAccount?.metadata?.name || truncatedAddress;
-  }, [internalAccount, truncatedAddress]);
+    return internalAccount?.metadata?.name || shortenAddress(permissionAccount);
+  }, [internalAccount, permissionAccount]);
 
   // Use the hook to fetch token information (handles both native and ERC-20 tokens)
   const { tokenInfo: tokenMetadata, loading } = useGatorPermissionTokenInfo(
@@ -362,10 +354,14 @@ export const ReviewGatorPermissionItem = ({
     switch (permissionType) {
       case 'native-token-stream':
       case 'erc20-token-stream':
-        return getTokenStreamPermissionDetails(permissionResponse.permission);
+        return getTokenStreamPermissionDetails(
+          permissionResponse.permission as Erc20TokenStreamPermission,
+        );
       case 'native-token-periodic':
       case 'erc20-token-periodic':
-        return getTokenPeriodicPermissionDetails(permissionResponse.permission);
+        return getTokenPeriodicPermissionDetails(
+          permissionResponse.permission as Erc20TokenPeriodicPermission,
+        );
       default:
         throw new Error(`Invalid permission type: ${permissionType}`);
     }

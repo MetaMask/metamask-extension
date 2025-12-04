@@ -2,10 +2,8 @@ import { Hex } from '@metamask/utils';
 import { fetchAssetMetadata } from '../asset-utils';
 import {
   getGatorErc20TokenInfo,
-  getGatorPermissionTokenInfo,
   formatGatorAmountLabel,
   getGatorPermissionDisplayMetadata,
-  GetTokenStandardAndDetailsByChain,
   clearTokenInfoCaches,
 } from './gator-permissions-utils';
 
@@ -213,128 +211,6 @@ describe('gator-permissions-utils', () => {
       expect(result3).toStrictEqual(expectedResult);
       // Should only fetch once even with multiple simultaneous calls
       expect(mockFetchAssetMetadata).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('getGatorPermissionTokenInfo', () => {
-    const mockChainId = '0x1';
-
-    it('should return native token info for native-token permission type', async () => {
-      const result = await getGatorPermissionTokenInfo({
-        permissionType: 'native-token-stream',
-        chainId: mockChainId,
-        networkConfig: { nativeCurrency: 'ETH' },
-        allowExternalServices: true,
-      });
-
-      expect(result).toStrictEqual({
-        symbol: 'ETH',
-        decimals: 18,
-        chainId: mockChainId,
-      });
-    });
-
-    it('should use networkConfig nativeCurrency for native token', async () => {
-      const result = await getGatorPermissionTokenInfo({
-        permissionType: 'native-token-periodic',
-        chainId: mockChainId,
-        networkConfig: { nativeCurrency: 'MATIC' },
-        allowExternalServices: true,
-      });
-
-      expect(result).toStrictEqual({
-        symbol: 'MATIC',
-        decimals: 18,
-        chainId: mockChainId,
-      });
-    });
-
-    it('should fall back to CHAIN_ID_TO_CURRENCY_SYMBOL_MAP for native token', async () => {
-      const result = await getGatorPermissionTokenInfo({
-        permissionType: 'native-token-stream',
-        chainId: mockChainId,
-        networkConfig: null,
-        allowExternalServices: true,
-      });
-
-      expect(result).toStrictEqual({
-        symbol: 'ETH',
-        decimals: 18,
-        chainId: mockChainId,
-      });
-    });
-
-    it('should fetch ERC20 token info for erc20-token permission type', async () => {
-      const mockTokenAddress = '0x5555555555555555555555555555555555555555';
-      mockFetchAssetMetadata.mockResolvedValue({
-        symbol: 'USDC',
-        decimals: 6,
-        image: 'https://example.com/image.png',
-        assetId: 'eip155:1/erc20:0x5555555555555555555555555555555555555555',
-        address: mockTokenAddress,
-        chainId: mockChainId as Hex,
-      });
-
-      const result = await getGatorPermissionTokenInfo({
-        permissionType: 'erc20-token-stream',
-        chainId: mockChainId,
-        permissionData: { tokenAddress: mockTokenAddress },
-        allowExternalServices: true,
-      });
-
-      expect(result).toStrictEqual({
-        symbol: 'USDC',
-        decimals: 6,
-        name: undefined,
-        image: 'https://example.com/image.png',
-        address: mockTokenAddress,
-        chainId: mockChainId,
-      });
-    });
-
-    it('should return Unknown Token when tokenAddress is missing', async () => {
-      const result = await getGatorPermissionTokenInfo({
-        permissionType: 'erc20-token-periodic',
-        chainId: mockChainId,
-        permissionData: {},
-        allowExternalServices: true,
-      });
-
-      expect(result).toStrictEqual({
-        symbol: 'Unknown Token',
-        decimals: 18,
-        chainId: mockChainId,
-      });
-    });
-
-    it('should pass getTokenStandardAndDetailsByChain to token fetcher', async () => {
-      const mockTokenAddress = '0x6666666666666666666666666666666666666666';
-      mockFetchAssetMetadata.mockResolvedValue(undefined);
-
-      const mockGetTokenDetails: GetTokenStandardAndDetailsByChain = jest
-        .fn()
-        .mockResolvedValue({
-          symbol: 'CUSTOM',
-          decimals: 12,
-        });
-
-      const result = await getGatorPermissionTokenInfo({
-        permissionType: 'erc20-token-stream',
-        chainId: mockChainId,
-        permissionData: { tokenAddress: mockTokenAddress },
-        allowExternalServices: false,
-        getTokenStandardAndDetailsByChain: mockGetTokenDetails,
-      });
-
-      expect(result).toStrictEqual({
-        symbol: 'CUSTOM',
-        decimals: 12,
-        name: undefined,
-        image: undefined,
-        address: mockTokenAddress,
-        chainId: mockChainId,
-      });
-      expect(mockGetTokenDetails).toHaveBeenCalled();
     });
   });
 
