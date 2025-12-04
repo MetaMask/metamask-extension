@@ -9,11 +9,14 @@ Automated code quality enforcement that analyzes only the changes in your curren
 ## What This Command Does
 
 1. **Detects changed files** between your current branch and main branch
-2. **Categorizes files** by type (test, controller, redux, component, general)
-3. **Applies relevant rules** from cursor guidelines
-4. **Reports violations** with severity levels and fix suggestions
-5. **Provides actionable feedback** for PR readiness
-6. **Optional Deep Mode:** Performs exhaustive checks against all detailed guidelines when requested
+2. **Analyzes only the changed lines** (not entire files) - focuses on code you introduced
+3. **Categorizes files** by type (test, controller, redux, component, general)
+4. **Applies relevant rules** from cursor guidelines to your changes
+5. **Reports violations** in newly added/modified code only with severity levels and fix suggestions
+6. **Provides actionable feedback** for PR readiness
+7. **Optional Deep Mode:** Performs exhaustive checks against all detailed guidelines when requested
+
+**Important:** CODEBOT only analyzes the lines you added or modified (marked with `+` in git diff). Pre-existing issues in unchanged code are not reported.
 
 ## Arguments
 
@@ -21,19 +24,55 @@ Automated code quality enforcement that analyzes only the changes in your curren
 |----------|-------------|
 | `--deep` | **Deep Analysis Mode:** Reads full rule files, checks architectural patterns, treats "Medium" issues as "High", and verifies edge cases. |
 
+## Core Principles
+
+### Reproducibility Guarantee
+
+CODEBOT MUST produce **deterministic, reproducible results**:
+
+✅ **Required:**
+- Same code = Same violations
+- Running twice on same branch = Identical reports (except timestamps)
+- All issues backed by verified evidence
+- No randomly inflated/deflated issue counts
+
+✅ **Consistency:**
+- If you previously analyzed this branch:
+  - Re-read all changed files (don't rely on memory)
+  - Apply the same verification standards
+  - Report should match previous analysis (unless code changed)
+
+### Evidence-Based Analysis
+
+Every violation MUST be:
+- ✅ Verified in git diff (only changed lines analyzed)
+- ✅ Located at specific line number(s) in newly added/modified code
+- ✅ Demonstrated with code snippet from the changes
+- ✅ Linked to specific guideline rule
+- ✅ NOT reported if it exists in unchanged code (even if it violates rules)
+
 ## Execution Steps
 
-### Step 1: Get Changed Files
+### Step 1: Get Changed Files and Diffs
 
-Run this command to identify changed files:
+Run these commands to identify changed files and their specific changes:
 
 ```bash
+# Get list of changed files
 git diff --name-only main...HEAD
+
+# Get the actual diff with context
+git diff main...HEAD
 ```
 
-Parse the output to get the list of modified files. Focus only on:
-- `.ts`, `.tsx`, `.js`, `.jsx` files
-- Exclude: `node_modules/`, `dist/`, `build/`, `*.d.ts`
+Parse the output to get:
+1. List of modified files (focus only on `.ts`, `.tsx`, `.js`, `.jsx` files)
+2. Actual line changes (additions/modifications marked with `+` in diff)
+3. Line numbers of changes (from diff hunks `@@ -X,Y +A,B @@`)
+
+Exclude: `node_modules/`, `dist/`, `build/`, `*.d.ts`
+
+**IMPORTANT:** Only analyze the lines that were **added or modified** in this branch (marked with `+` in the diff), not the entire file content.
 
 ### Step 2: Categorize Files by Type
 
@@ -51,6 +90,13 @@ For each file type, reference these cursor rules.
 
 **If `--deep` argument is present:** You MUST use `read_file` to fetch the full content of the relevant rule files below. Do not rely solely on the checklists.
 
+**IMPORTANT - Rule References:**
+When you read guideline files, note:
+- The line numbers where specific rules are defined
+- The section headings/names for each rule
+- Multiple locations if the same rule appears in different files
+- Cross-references to other guidelines (e.g., AGENTS.md)
+
 - **All files**: `.cursor/rules/coding-guidelines.mdc`
 - **Test files**: `.cursor/rules/unit-testing-guidelines.mdc`
 - **Controller files**: `.cursor/rules/controller-guidelines.mdc`
@@ -61,16 +107,30 @@ For each file type, reference these cursor rules.
   - `.cursor/rules/front-end-performance-hooks-effects.mdc` (hooks & effects)
   - `.cursor/rules/front-end-performance-react-compiler.mdc` (React Compiler considerations)
 
-### Step 4: Analyze Each Changed File
+### Step 4: Analyze Only the Changed Lines
 
-For each file, check for violations across severity levels. **Reference `.cursor/rules/` files for comprehensive guidelines and examples.**
+**🔴 MANDATORY:** Focus ONLY on the lines that were added or modified in this branch.
 
-**Deep Mode Instructions:**
-If running with `--deep`:
-1. Check for architectural consistency (does this file match the patterns of surrounding files?).
-2. Verify "Medium" priority checks as if they were "High".
-3. Explicitly verify all naming conventions and type definitions.
-4. Check for edge cases mentioned in the full rule files.
+**Analysis Scope:**
+- ✅ Analyze lines marked with `+` in the git diff
+- ✅ Read surrounding context from file (to understand the change)
+- ❌ Do NOT report violations in unchanged code (even if they exist)
+- ❌ Do NOT analyze the entire file as if it's all new code
+
+**Process for EACH changed file:**
+1. ✅ Get the diff for this specific file: `git diff main...HEAD -- path/to/file`
+2. ✅ Identify the changed line ranges (from `@@ -X,Y +A,B @@` markers)
+3. ✅ Read the complete file with `read_file` (for context)
+4. ✅ Read applicable guideline files from `.cursor/rules/`
+5. ✅ **Focus analysis ONLY on the changed lines** (lines with `+` in diff)
+6. ✅ Copy exact code snippets from changed lines that violate rules
+7. ✅ Document each violation with evidence (see Step 4.5)
+
+**If --deep mode:** Additionally read full rule files and verify architectural patterns, check for edge cases, and treat "Medium" priority checks as if they were "High".
+
+**Important:** If a violation exists in unchanged code, do NOT report it. Only report violations introduced or modified in this branch.
+
+For each changed section, check for violations across severity levels. **Reference `.cursor/rules/` files for comprehensive guidelines and examples.**
 
 #### 🔴 CRITICAL (FAIL - Blocks Merge)
 
@@ -104,8 +164,6 @@ If running with `--deep`:
 - [ ] Props destructured in function parameters
 - [ ] No `any` types
 - [ ] No console.logs
-- [ ] **No inline functions in JSX** (especially in `.map()`)
-- [ ] **No inline objects in JSX** (style={{}}, options={{}})
 - [ ] **No index as key** in dynamic lists (use unique IDs)
 - [ ] **No JSON.stringify in useEffect dependencies** (use useEqualityCheck or normalize to primitives)
 - [ ] **All dependencies included** in useEffect/useMemo/useCallback (no missing deps)
@@ -165,13 +223,96 @@ If running with `--deep`:
 - [ ] File organization follows standard structure (component folder with types, tests, styles)
 - [ ] External packages evaluated (Snyk Advisor, maintenance status, security)
 
+### Step 4.5: Evidence Requirements (MANDATORY)
+
+For EVERY violation reported, you MUST provide:
+
+✅ **Required Evidence:**
+- [ ] Exact file path
+- [ ] Specific line number(s) where violation occurs (must be in changed lines with `+` in diff)
+- [ ] Actual code snippet from the changed lines (3-5 lines minimum showing the violation)
+- [ ] Confirmation that this line was added/modified in current branch (not pre-existing)
+- [ ] Explanation of why it violates the rule
+- [ ] Concrete fix with code example
+- [ ] **Rule reference:** Which guideline file defines this rule (e.g., `.cursor/rules/coding-guidelines.mdc`)
+- [ ] **Rule location:** Specific section/lines in guideline file where rule is documented (e.g., "lines 45-89, 'Use Functional Components and Hooks'")
+
+❌ **NOT Allowed:**
+- Generic statements like "Multiple instances found" without listing each
+- Bundled issues (e.g., "Issues #9-15") without individual documentation
+- Violations in unchanged code (even if they exist in the file)
+- Assumed violations not verified in actual code
+- Line numbers with "~" or "approximately"
+- References to code patterns without showing the actual code
+- Vague descriptions without specific examples
+- Reporting issues that existed before this branch
+
+**Verification Test:**
+Before adding an issue to the report, ask yourself:
+1. "Can I show the exact line of code that violates this rule?"
+2. "Is this line marked with `+` in the git diff (newly added/modified)?"
+3. "If the developer opens this file at this line, will they immediately see the problem?"
+4. "Have I actually READ this specific code from the diff, or am I assuming it exists?"
+5. "Can I point to the exact guideline file, section, and lines that define this rule?"
+6. "Did this code exist before this branch, or is it newly introduced?"
+
+**If you answer "no" to any question, DO NOT report the issue.**
+
+**Rule Reference Examples:**
+
+✅ **GOOD - Complete Rule Reference:**
+```
+📚 Rule Reference:
+- Guideline: .cursor/rules/coding-guidelines.mdc
+- Section: "Use Functional Components and Hooks"
+- Lines: 45-89
+- Also See: AGENTS.md line 5 (Critical Rule #5)
+```
+
+✅ **GOOD - Multiple Guideline References:**
+```
+📚 Rule Reference:
+- Guideline: .cursor/rules/front-end-performance-hooks-effects.mdc
+- Section: "Don't Overuse useEffect"
+- Lines: 11-41
+- Also Referenced In: .cursor/rules/front-end-performance-react-compiler.mdc lines 85-121
+```
+
+❌ **BAD - Vague Reference:**
+```
+Rule: Performance guidelines
+```
+
+❌ **BAD - File Only, No Section:**
+```
+Rule: .cursor/rules/coding-guidelines.mdc
+```
+
+❌ **BAD - No Line Numbers:**
+```
+Guideline: coding-guidelines.mdc (React components section)
+```
+
 ### Step 5: Generate Report
+
+**EVIDENCE REQUIREMENTS:**
+- Every violation MUST include: File path, exact line numbers (from changed lines only), code snippet, fix, **complete rule reference**
+- **Rule reference MUST include:** Guideline file, section name, and line numbers in guideline
+- **Only report violations in newly added/modified lines** (marked with `+` in git diff)
+- Use actual line numbers (not "~150" or "around line 50")
+- Show 3-5 lines of actual code for each violation (from the changes)
+- NO generic categories like "Issues #9-15: Various problems"
+- Each issue must be individually documented with full evidence
+- Developer must be able to verify the rule by opening the guideline file at specified lines
+- **Do NOT report pre-existing issues** in unchanged code
 
 Output the analysis in this format:
 
 ```
 🤖 CODEBOT Analysis: [Current Branch] vs main
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚠️  ANALYSIS SCOPE: Only analyzing newly added/modified lines (not entire files)
 
 📊 CHANGED FILES SUMMARY
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -183,6 +324,11 @@ Total Changed Files: X
 ├─ Component Files: X
 └─ General Files: X
 
+Lines Changed:
+├─ Added: X
+├─ Modified: X
+└─ Deleted: X
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ❌ CRITICAL VIOLATIONS (X found) - BLOCKS MERGE
@@ -193,24 +339,57 @@ Total Changed Files: X
 📁 File: path/to/file.ts
 
   1. [FAIL] Violation description
-     Line: XX
-     Current: [problematic code]
-     Fix: [how to fix it]
-     Rule: [which guideline]
+     Lines: XX-YY (EXACT line numbers in file - newly added/modified in this branch)
+     Change Type: [Added | Modified]
+
+     Current Code (from diff):
+     ```typescript
+     // Show actual code from the changed lines (minimum 3 lines)
+     + const example = () => {
+     +   violatingPattern();
+     + };
+     ```
+
+     Why This Violates: [Explain the specific violation]
+
+     Fix:
+     ```typescript
+     // Show the corrected code
+     const example = useCallback(() => {
+       violatingPattern();
+     }, [deps]);
+     ```
+
+     📚 Rule Reference:
+     - Guideline: .cursor/rules/[specific-guideline.mdc]
+     - Section: [Specific section name, e.g., "Use Functional Components and Hooks"]
+     - Lines: [XX-YY in the guideline file]
+     - Also See: [Any related guidelines, e.g., "AGENTS.md line 5"]
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ⚠️  HIGH PRIORITY (X found) - REVIEW REQUIRED
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-[For each high priority issue:]
+[For each high priority issue - SAME detailed format as CRITICAL]
 
 📁 File: path/to/file.ts
 
   1. [WARN] Issue description
-     Line: XX
+     Lines: XX-YY
+
+     Current Code:
+     ```typescript
+     // Actual code snippet
+     ```
+
      Suggestion: [recommendation]
      Impact: [why it matters]
+
+     Fix:
+     ```typescript
+     // Show corrected code
+     ```
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -222,7 +401,7 @@ Total Changed Files: X
 📁 File: path/to/file.ts
 
   1. [INFO] Suggestion description
-     Line: XX
+     Lines: XX-YY
      Benefit: [improvement it provides]
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -233,6 +412,20 @@ Total Changed Files: X
 ✓ path/to/clean-file-1.ts
 ✓ path/to/clean-file-2.tsx
 ✓ path/to/clean-file-3.test.ts
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔍 ANALYSIS VERIFICATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Analysis Scope: ✅ Only changed lines (git diff) analyzed, not entire files
+Files Actually Read: [list all files read with read_file]
+Diffs Analyzed: [list all files where git diff was examined]
+Guidelines Referenced: [list all .mdc files consulted]
+Total Tool Calls: X read_file calls, Y git diff calls
+Evidence Quality: All violations verified in changed lines only
+Analysis Method: [Standard | Deep] mode
+Reproducible: ✅ Yes (same changes will produce same results)
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -256,15 +449,15 @@ PR Readiness: [READY ✅ | NEEDS WORK ❌]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 🔴 CRITICAL - Must fix before merge:
-  1. [File]: [Issue]
-  2. [File]: [Issue]
+  1. [File:Line]: [Issue]
+  2. [File:Line]: [Issue]
 
 🟡 HIGH - Should fix before merge:
-  3. [File]: [Issue]
-  4. [File]: [Issue]
+  3. [File:Line]: [Issue]
+  4. [File:Line]: [Issue]
 
 🔵 MEDIUM - Consider for next iteration:
-  5. [File]: [Issue]
+  5. [File:Line]: [Issue]
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -283,6 +476,158 @@ PR Readiness: [READY ✅ | NEEDS WORK ❌]
 [If no violations:]
 🎉 Perfect! All code quality checks passed.
 ```
+
+### Step 6: Final Verification (MANDATORY)
+
+Before presenting the report, verify:
+
+**Evidence Audit:**
+- [ ] Confirm each violation is in a line marked with `+` in git diff
+- [ ] Open each file mentioned in violations (using read_file if needed)
+- [ ] Verify each line number is accurate and was changed in this branch
+- [ ] Verify each code snippet actually exists in the changed lines
+- [ ] Check that each violation genuinely violates the cited rule
+- [ ] Ensure no violations are based on assumptions
+- [ ] **Confirm no pre-existing issues are reported** (only new/modified code)
+
+**Quality Checks:**
+- [ ] No issues reported without exact line numbers
+- [ ] No "likely" or "probably" language in violations
+- [ ] No bundled issues (e.g., "Issues #X-Y")
+- [ ] Every CRITICAL and HIGH issue has code snippet from changed lines
+- [ ] Issue count matches documented violations (not inflated)
+- [ ] Every issue can be immediately located by a developer
+- [ ] **Every violation includes rule reference:** Guideline file, section name, and line numbers
+- [ ] **Rule references are specific:** Not just file name, but exact section and lines in guideline
+- [ ] **No violations reported in unchanged code** (even if they exist)
+
+**Consistency Check:**
+- [ ] If you previously analyzed this branch, compare:
+  - Similar issue count (unless code changed)
+  - Same violations reported (unless code changed)
+  - No new "discovered" issues from same code
+
+**If ANY check fails:** Re-analyze with proper verification before generating report.
+
+## Severity Levels (Explicit Criteria)
+
+### 🔴 CRITICAL (BLOCKING - Exit Code 1)
+
+**Criteria:** Issues that violate fundamental project rules or will break standards enforcement
+
+**Examples (MUST have evidence):**
+- ✅ Class component when functional component required
+- ✅ JavaScript file (.js/.jsx) when TypeScript mandatory
+- ✅ Missing BaseController extension in controller
+- ✅ Direct state mutation in Redux reducer
+- ✅ Missing hook dependencies (verified with actual code)
+- ✅ Index used as key in dynamic list
+- ✅ console.log statements in code
+
+**NOT CRITICAL:**
+- ❌ "File is too long" (this is MEDIUM)
+- ❌ "Could use more memoization" (this is HIGH if performance issue)
+- ❌ "Missing TypeScript docs" (this is MEDIUM)
+- ❌ "Complex logic" (this is MEDIUM)
+
+**Test:** Does this violate a project rule? If yes → CRITICAL. If it's a "should" or "best practice" → HIGH or MEDIUM.
+
+### 🟡 HIGH (Should Fix - Exit Code 0 with warnings)
+
+**Criteria:** Performance issues, strong recommendations, or patterns that will cause maintenance problems
+
+**Examples (MUST have evidence):**
+- ✅ Missing React.memo on frequently rendered component
+- ✅ No useMemo for expensive computation (array.sort on 100+ items)
+- ✅ Missing useCallback for child component callback prop
+- ✅ useEffect without cleanup for subscriptions/intervals
+- ✅ Non-memoized Redux selector causing re-renders
+- ✅ Component over 200 lines (should be broken down)
+- ✅ useEffect used for derived state (calculate during render instead)
+
+**NOT HIGH:**
+- ❌ "Component could be smaller" without size threshold (this is MEDIUM)
+- ❌ "Function naming could be better" (this is MEDIUM)
+- ❌ "Missing comments" (this is MEDIUM)
+
+**Test:** Does this cause performance issues or significantly impact maintainability? If yes → HIGH. If it's code quality → MEDIUM.
+
+### 🔵 MEDIUM (Consider - Exit Code 0)
+
+**Criteria:** Code quality suggestions, readability improvements, not functional issues
+
+**Examples:**
+- ✅ Component over 300 lines but under 500 (suggest splitting)
+- ✅ Complex conditional logic (suggest extraction)
+- ✅ Missing JSDoc on public APIs
+- ✅ Deep nesting (suggest early returns)
+- ✅ Function could follow single responsibility better
+- ✅ Duplicated code (DRY principle)
+
+**Test:** Is this about code quality/readability rather than correctness or performance? If yes → MEDIUM.
+
+## Anti-Patterns to Avoid
+
+When running CODEBOT analysis, DO NOT:
+
+❌ **Bundle Issues Without Details**
+```
+Bad:  "Issues #9-15: Multiple issues found"
+Good: Each issue listed separately with file, line, code snippet
+```
+
+❌ **Use Approximate Language**
+```
+Bad:  "Around line 150, there might be..."
+Good: "Lines 147-152: [actual code snippet from changed lines]"
+```
+
+❌ **Report Unverified Issues**
+```
+Bad:  "This pattern likely exists in multiple files"
+Good: "File X, lines Y-Z (newly added): [specific verified violation with code]"
+```
+
+❌ **Rely on Memory/Assumptions**
+```
+Bad:  Using knowledge from previous analysis sessions
+Good: Read git diff and files fresh every time
+```
+
+❌ **Inflate Issue Counts**
+```
+Bad:  Reporting 27 issues when only 8 are verified
+Good: Report only verified issues with evidence
+```
+
+❌ **Generic Issue Descriptions**
+```
+Bad:  "Performance issues found" or "Code quality concerns"
+Good: "Lines 45-48 (newly added): Missing memoization for expensive computation causes re-renders"
+```
+
+❌ **Vague Rule References**
+```
+Bad:  "Violates performance guidelines"
+Bad:  "Rule: coding-guidelines.mdc"
+Good: "Rule: .cursor/rules/front-end-performance-rendering.mdc, lines 12-48, 'Use Proper Keys for Lists'"
+Good: "Guideline: .cursor/rules/coding-guidelines.mdc (lines 45-89, 'Use Functional Components'), Also: AGENTS.md line 5"
+```
+
+❌ **Report Pre-Existing Issues**
+```
+Bad:  "Line 50: Uses any type" (but line 50 was not changed in this branch)
+Good: Only report violations in lines marked with + in git diff
+```
+
+✅ **DO: Be Precise and Verified**
+- Every issue = Specific file + line + code + fix + rule reference
+- Every report = Fresh analysis with git diff and read_file
+- Every violation = In changed lines only (marked with + in diff)
+- Every violation = Backed by actual guideline with section and line numbers
+- Every claim = Verifiable by opening the file
+- Every rule reference = Includes guideline file, section name, and line numbers
+- No pre-existing issues = Only analyze new/modified code
 
 ## Analysis Rules by File Type
 
@@ -380,8 +725,6 @@ CODEBOT references detailed guidelines in `.cursor/rules/` for comprehensive rul
 - [ ] Props destructured in function parameters
 - [ ] No `any` types
 - [ ] No console.logs
-- [ ] **No inline function creation in JSX** (especially in lists)
-- [ ] **No inline object creation in JSX**
 - [ ] **No index as key in dynamic lists** (use unique IDs)
 - [ ] No class components
 
@@ -405,7 +748,6 @@ CODEBOT references detailed guidelines in `.cursor/rules/` for comprehensive rul
 - [ ] React Compiler: Keep existing useMemo/useCallback for effect dependencies
 
 **See `.cursor/rules/front-end-performance-rendering.mdc` for:**
-- Detailed examples of inline function/object violations
 - Key usage patterns
 - Virtualization examples
 - React.memo usage guidelines
@@ -434,81 +776,89 @@ CODEBOT references detailed guidelines in `.cursor/rules/` for comprehensive rul
 
 Simply type:
 ```
-@CODEBOT
+/CODEBOT
 ```
 
 Or be more specific:
 ```
-@CODEBOT analyze my changes
-@CODEBOT --deep
-@CODEBOT check PR readiness
-@CODEBOT what violations do I have?
+/CODEBOT analyze my changes
+/CODEBOT --deep
+/CODEBOT check PR readiness
+/CODEBOT what violations do I have?
 ```
 
 ### Expected Output
 
 CODEBOT will:
 1. Identify all changed files in your branch
-2. Analyze each file according to its type
-3. Report violations with severity levels
-4. Suggest fixes for each issue
-5. Give you a PR readiness assessment
+2. Read each file with `read_file` tool
+3. Analyze each file according to its type
+4. Report violations with severity levels and evidence
+5. Suggest fixes for each issue with code examples
+6. Give you a PR readiness assessment
+7. Provide verification summary of analysis quality
 
 ### Integration with Workflow
 
 **Before committing:**
 ```
-@CODEBOT check my changes
+/CODEBOT check my changes
 ```
 
 **Before creating PR:**
 ```
-@CODEBOT am I ready for PR?
+/CODEBOT am I ready for PR?
 ```
 
 **After code review feedback:**
 ```
-@CODEBOT verify fixes
+/CODEBOT verify fixes
 ```
 
-## Severity Levels
+## Quality Self-Check
 
-### 🔴 CRITICAL (Exit Code 1)
-- **Blocks merge**
-- Must be fixed before PR approval
-- Violates essential code quality rules
-- Can cause bugs or break conventions
+Before generating final report, verify:
 
-### 🟡 HIGH (Exit Code 0 with warnings)
-- **Should fix before merge**
-- Violates strong recommendations
-- May cause maintenance issues
-- Should be addressed in PR review
+### Evidence Completeness
+- [ ] Every CRITICAL issue has: file path, line numbers, code snippet, fix, **complete rule reference** (guideline file, section, lines)
+- [ ] Every HIGH issue has: file path, line numbers, code snippet, suggestion, impact, **complete rule reference**
+- [ ] Every MEDIUM issue has: file path, line numbers, benefit explanation, **complete rule reference**
+- [ ] No issues with approximate line numbers ("~150", "around line 50")
+- [ ] No bundled issues without individual documentation
+- [ ] **Every rule reference includes:** Guideline file path, section name, and line numbers in guideline
+- [ ] **Rule references are verifiable:** Developer can open guideline file and find the rule at specified lines
 
-### 🔵 MEDIUM (Exit Code 0)
-- **Consider fixing**
-- Suggestions for improvement
-- Best practices recommendations
-- Can be addressed later
+### Analysis Quality
+- [ ] All changed code files read with `read_file` tool
+- [ ] No assumptions made about code without verification
+- [ ] Issue count is accurate (matches individually documented issues)
+- [ ] No "likely" or "probably" language in issue descriptions
+- [ ] Every violation can be immediately found by developer opening the file
+
+### Reproducibility
+- [ ] If running on same branch twice, same issues would be found
+- [ ] All tool calls documented in verification section
+- [ ] Analysis method clearly stated (Standard or Deep mode)
+- [ ] Guidelines referenced are listed
 
 ## Quick Reference
 
 ### Common Violations & Fixes
 
+**Note:** When reporting violations, include the specific section name and line numbers from the guideline file.
+
 | Violation | Fix | Reference |
 |-----------|-----|-----------|
-| Test name has "should" | Remove "should", use present tense | `.cursor/rules/unit-testing-guidelines.mdc` |
-| Direct state mutation | Use `this.update()` in controllers | `.cursor/rules/controller-guidelines.mdc` |
-| Missing BaseController | Extend from BaseController | `.cursor/rules/controller-guidelines.mdc` |
-| Using `any` type | Add explicit types | `.cursor/rules/coding-guidelines.mdc` |
-| Class component | Convert to functional component | `.cursor/rules/coding-guidelines.mdc` |
-| Props not destructured | Destructure in function params | `.cursor/rules/coding-guidelines.mdc` |
-| Console.log in code | Remove debug statements | `.cursor/rules/coding-guidelines.mdc` |
+| Test name has "should" | Remove "should", use present tense | `.cursor/rules/unit-testing-guidelines.mdc` (lines vary by section) |
+| Direct state mutation | Use `this.update()` in controllers | `.cursor/rules/controller-guidelines.mdc` ("All state updates use this.update()") |
+| Missing BaseController | Extend from BaseController | `.cursor/rules/controller-guidelines.mdc` ("Controller Structure") |
+| Using `any` type | Add explicit types | `.cursor/rules/coding-guidelines.mdc` ("TypeScript Best Practices") |
+| Class component | Convert to functional component | `.cursor/rules/coding-guidelines.mdc` (lines 45-89, "Use Functional Components and Hooks") |
+| Props not destructured | Destructure in function params | `.cursor/rules/coding-guidelines.mdc` (lines 90-120, "Use Object Destructuring for Props") |
+| Console.log in code | Remove debug statements | `.cursor/rules/coding-guidelines.mdc` ("Code Style" section) |
 | No state metadata | Add metadata with persist/anonymous/usedInUi | `.cursor/rules/controller-guidelines.mdc` |
 | Getter method in controller | Export as selector function | `.cursor/rules/controller-guidelines.mdc` |
 | Redux state mutation | Use Redux Toolkit or immutable updates | `.cursor/rules/front-end-performance-state-management.mdc` |
-| Inline function in list | Use useCallback, pass stable reference | `.cursor/rules/front-end-performance-rendering.mdc` |
-| Inline object in JSX | Define constant outside component or use useMemo | `.cursor/rules/front-end-performance-rendering.mdc` |
 | Index as key | Use unique ID from data (item.id, item.address) | `.cursor/rules/front-end-performance-rendering.mdc` |
 | Missing memoization | Wrap expensive calculation in useMemo | `.cursor/rules/front-end-performance-rendering.mdc` |
 | useEffect for derived state | Calculate during render instead | `.cursor/rules/front-end-performance-hooks-effects.mdc` |
@@ -528,9 +878,12 @@ CODEBOT will:
 CODEBOT automatically:
 - ✅ Loads relevant cursor rules from `.cursor/rules/`
 - ✅ Identifies file types
+- ✅ Reads all changed files with `read_file`
 - ✅ Applies appropriate checks based on rule files
 - ✅ Provides contextual feedback with references to detailed guidelines
-- ✅ Suggests actionable fixes
+- ✅ Suggests actionable fixes with code examples
+- ✅ Verifies all violations with evidence
+- ✅ Ensures reproducible results
 
 **Rule Files Reference:**
 - `.cursor/rules/coding-guidelines.mdc` - General coding standards
@@ -545,18 +898,32 @@ No configuration needed - it just works! When rules are updated in `.cursor/rule
 
 ## Tips for Best Results
 
-1. **Run CODEBOT before creating PR** - Catch issues early
+1. **Run CODEBOT before creating PR** - Catch issues early in your changes
 2. **Fix critical violations first** - They block merge
 3. **Address high priority issues** - They improve code quality
 4. **Consider suggestions** - They follow best practices
 5. **Run again after fixes** - Verify all issues resolved
+6. **Trust the evidence** - Every issue is backed by actual code from your changes
+7. **Expect consistency** - Same changes = Same report
+8. **Focus on your code** - Pre-existing issues in unchanged lines won't be reported
 
 ## Remember
 
-CODEBOT analyzes **only your changes** (current branch vs main), so:
-- ✅ Fast analysis (only changed files)
-- ✅ Focused feedback (your code only)
+CODEBOT analyzes **only the lines you changed** (not entire files), so:
+- ✅ Fast analysis (only changed lines from git diff)
+- ✅ Focused feedback (only code you introduced/modified)
+- ✅ Fair assessment (pre-existing issues ignored)
 - ✅ PR-specific (ready to merge?)
 - ✅ No noise from existing code
+- ✅ Evidence-based (every issue verified in changed lines)
+- ✅ Reproducible (consistent results)
+
+**Quality Guarantee:**
+- Every violation has exact line numbers (from changed lines only)
+- Every issue includes code snippets (from the diff)
+- Every fix includes example code
+- Every report is reproducible
+- No assumptions or approximations
+- No blame for pre-existing code
 
 Happy coding! 🚀

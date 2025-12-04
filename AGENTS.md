@@ -24,8 +24,7 @@ Instructions for AI coding agents working on MetaMask Browser Extension.
 6. **NEVER modify git config** or run destructive git operations
 7. **NEVER commit** unless explicitly requested by user
 8. **NEVER stage changes** unless explicitly requested by user
-9. **NEVER create inline functions/objects in JSX** (especially in lists)
-10. **NEVER use array index as key** in dynamic lists (use unique IDs)
+9. **NEVER use array index as key** in dynamic lists (use unique IDs)
 
 ### Comprehensive Guidelines Location
 
@@ -667,7 +666,6 @@ metamask-extension/
 - Props destructured in function parameters
 - Redux for global state, local state for UI-only data
 - Performance optimizations: useMemo, useCallback, React.memo
-- No inline functions/objects in JSX (especially in lists)
 - Unique IDs as keys (not array index for dynamic lists)
 - Organized in component folders with tests, styles, and types
 - See `.cursor/rules/coding-guidelines.mdc` and `.cursor/rules/front-end-performance-rendering.mdc`
@@ -1193,12 +1191,11 @@ export const TokenList = ({ tokens, onSelect }: TokenListProps) => {
 **Performance Anti-Patterns to Avoid:**
 
 ```typescript
-// ❌ WRONG: Inline functions create new references on every render
+// ❌ WRONG: Using index as key for dynamic lists
 {tokens.map((token, index) => (
   <TokenItem
     key={index}  // Don't use index as key for dynamic lists
-    onClick={() => handleClick(token)}  // New function on every render!
-    style={{ padding: 16 }}  // New object on every render!
+    token={token}
   />
 ))}
 
@@ -1228,56 +1225,7 @@ useEffect(() => {
 
 When writing React components, follow these performance best practices:
 
-#### 1. Never Create Inline Functions in Lists
-
-```typescript
-// ❌ WRONG: Creates new function for each item on every render
-{accounts.map((account) => (
-  <AccountItem
-    key={account.address}
-    onClick={() => handleClick(account)}  // BAD!
-  />
-))}
-
-// ✅ CORRECT: Use memoized callback
-const handleClick = useCallback((address: string) => {
-  // handle click
-}, []);
-
-{accounts.map((account) => (
-  <AccountItem
-    key={account.address}
-    onClick={handleClick}
-    address={account.address}  // Pass as prop
-  />
-))}
-```
-
-#### 2. Never Create Inline Objects in JSX
-
-```typescript
-// ❌ WRONG: Creates new object on every render
-<Popover
-  style={{ zIndex: 10, display: 'flex' }}  // BAD!
-  options={{ showIcon: true }}  // BAD!
-/>
-
-// ✅ CORRECT: Define outside component
-const POPOVER_STYLE = { zIndex: 10, display: 'flex' };
-const POPOVER_OPTIONS = { showIcon: true };
-
-<Popover
-  style={POPOVER_STYLE}
-  options={POPOVER_OPTIONS}
-/>
-
-// Or if dynamic, use useMemo:
-const popoverOptions = useMemo(() => ({
-  showIcon: shouldShowIcon
-}), [shouldShowIcon]);
-```
-
-#### 3. Always Use Unique IDs as Keys
+#### 1. Always Use Unique IDs as Keys
 
 ```typescript
 // ❌ WRONG: Using index as key for dynamic list
@@ -1291,7 +1239,7 @@ const popoverOptions = useMemo(() => ({
 ))}
 ```
 
-#### 4. Memoize Expensive Calculations
+#### 2. Memoize Expensive Calculations
 
 ```typescript
 // ❌ WRONG: Sorts on every render
@@ -1310,7 +1258,7 @@ const TokenList = ({ tokens }) => {
 };
 ```
 
-#### 5. Don't Use useEffect for Derived State
+#### 3. Don't Use useEffect for Derived State
 
 ```typescript
 // ❌ WRONG: Using effect for derived state
@@ -1336,8 +1284,6 @@ const TokenDisplay = ({ token }) => {
 Before marking a component complete:
 
 ```
-✓ No inline arrow functions in JSX (especially in .map())
-✓ No inline object literals in JSX
 ✓ List keys use unique IDs (token.address, tx.hash), not array index
 ✓ Expensive operations wrapped in useMemo (sorting, filtering)
 ✓ Callbacks passed to children wrapped in useCallback
@@ -1597,8 +1543,6 @@ IF you changed behavior significantly:
 ✓ Build completes without errors
 
 Performance Checks (React Components):
-✓ No inline functions in JSX (especially in .map())
-✓ No inline objects in JSX (e.g., style={{}})
 ✓ Unique IDs used as keys (not array index)
 ✓ Expensive calculations wrapped in useMemo
 ✓ Callbacks to children wrapped in useCallback
