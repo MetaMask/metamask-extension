@@ -11,7 +11,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Null (#38319)
 - Add subscription retry button to notify server check when user balance is sufficient (#36847)
 - Align shield illustration to bottom in popup mode (#38340)
 - Default to BIP-44 UI for account & wallet details (#37984)
@@ -24,6 +23,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Adds theme-based toggling of the Rive shield icon’s Dark state to switch colors for light/dark modes (#38223)
 - Integrated balance empty state for zero-balance accounts on mainnet networks (#37196)
 - Shows a site if it has no connection but has permissions granted to it (#36811)
+- Confirmations for sidepanel (#38375)
+- Show minimum token amount required on payment methods (#38290)
+- Adds MegaETH Mainnet to FEATURED_RPCS (#38369)
+- Remove sidepanel feature (#38532)
 
 ### Fixed
 
@@ -45,6 +48,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed minimum received amount to be the token amount (#38150)
 - Removed the `isTestEnvironment` checks from all Rive animation–related files (#38110)
 - Updated useTheme hook and logo for unlock page (#38002)
+- Increase background connection unresponsive timeout (#38322)
+- Fix fullscreen swap confirmation (#38446)
+- Fix layout inconsistencies (#38416)
+- Fix confirmation layout in sidepanel (#38410)
+- Fix `manage permission` route (#38485)
+- Fixes layout inconsistencies while in fullscreen mode (#38483)
+- Fix shield confirmation transaction back handle in popup mode (#38502)
+- Fix asset page layout (#38537)
 
 ## [13.11.0]
 
