@@ -13,6 +13,7 @@ import {
   selectBridgeFeatureFlags,
   selectMinimumBalanceForRentExemptionInSOL,
   isValidQuoteRequest,
+  type QuoteWarning,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import {
@@ -70,6 +71,8 @@ import {
   getIsSmartTransaction,
   type SmartTransactionsMetaMaskState,
 } from '../../../shared/modules/selectors';
+import { calcTokenValue } from '../../../shared/lib/swaps-utils';
+import { safeAmountForCalc } from '../../pages/bridge/utils/quote';
 import {
   getInternalAccountsByScope,
   getSelectedInternalAccount,
@@ -692,15 +695,26 @@ export const getIsSwap = createDeepEqualSelector(
     ),
 );
 
+export const getValidatedFromValue = createSelector(
+  [getFromToken, getFromAmount],
+  (fromToken, unvalidatedInputValue) =>
+    unvalidatedInputValue && fromToken?.decimals
+      ? calcTokenValue(
+          safeAmountForCalc(unvalidatedInputValue),
+          fromToken.decimals,
+        )
+          .toFixed()
+          // Length of decimal part cannot exceed token.decimals
+          .split('.')[0]
+      : undefined,
+);
+
 const _getValidatedSrcAmount = createSelector(
-  [
-    getFromToken,
-    (state: BridgeAppState) => state.metamask.quoteRequest.srcTokenAmount,
-  ],
+  [getFromToken, getValidatedFromValue],
   (fromToken, srcTokenAmount) =>
     srcTokenAmount && fromToken?.decimals
       ? calcTokenAmount(srcTokenAmount, Number(fromToken.decimals)).toString()
-      : null,
+      : undefined,
 );
 
 export const getFromAmountInCurrency = createSelector(
@@ -831,6 +845,26 @@ export const getValidationErrors = createDeepEqualSelector(
             )
           : false,
     };
+  },
+);
+
+export const getWarningLabels = createSelector(
+  [getValidationErrors],
+  ({
+    isEstimatedReturnLow,
+    isNoQuotesAvailable,
+    isInsufficientGasBalance,
+    isInsufficientGasForQuote,
+    isInsufficientBalance,
+  }) => {
+    const warnings: QuoteWarning[] = [];
+    isEstimatedReturnLow && warnings.push('low_return');
+    isNoQuotesAvailable && warnings.push('no_quotes');
+    isInsufficientGasBalance && warnings.push('insufficient_gas_balance');
+    isInsufficientGasForQuote &&
+      warnings.push('insufficient_gas_for_selected_quote');
+    isInsufficientBalance && warnings.push('insufficient_balance');
+    return warnings;
   },
 );
 
