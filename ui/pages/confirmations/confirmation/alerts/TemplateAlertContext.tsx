@@ -1,3 +1,5 @@
+'use no memo';
+
 import React, {
   ReactElement,
   createContext,

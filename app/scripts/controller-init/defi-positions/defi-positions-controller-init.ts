@@ -39,5 +39,6 @@ export const DeFiPositionsControllerInit: ControllerInitFunction<
 
   return {
     controller,
+    persistedStateKey: null,
   };
 };

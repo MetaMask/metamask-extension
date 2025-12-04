@@ -1,6 +1,6 @@
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SendPage from '../../page-objects/pages/send/send-page';

@@ -1,6 +1,6 @@
 import { withFixtures } from '../../../helpers';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { MOCK_META_METRICS_ID } from '../../../constants';
 import Homepage from '../../../page-objects/pages/home/homepage';
 import NFTDetailsPage from '../../../page-objects/pages/nft-details-page';

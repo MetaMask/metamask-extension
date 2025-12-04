@@ -19,7 +19,7 @@ import {
   createMultichainDriverTransport,
 } from './api-specs/helpers';
 
-import FixtureBuilder from './fixture-builder';
+import FixtureBuilder from './fixtures/fixture-builder';
 import { withFixtures, unlockWallet } from './helpers';
 import { ACCOUNT_1, DAPP_URL } from './constants';
 import transformOpenRPCDocument from './api-specs/transform';

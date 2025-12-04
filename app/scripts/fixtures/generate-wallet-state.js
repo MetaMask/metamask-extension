@@ -5,8 +5,11 @@ import { cloneDeep } from 'lodash';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 import { UI_NOTIFICATIONS } from '../../../shared/notifications';
 import { WALLET_PASSWORD } from '../../../test/e2e/constants';
-import { E2E_SRP, defaultFixture } from '../../../test/e2e/default-fixture';
-import FixtureBuilder from '../../../test/e2e/fixture-builder';
+import {
+  E2E_SRP,
+  defaultFixture,
+} from '../../../test/e2e/fixtures/default-fixture';
+import FixtureBuilder from '../../../test/e2e/fixtures/fixture-builder';
 import { encryptorFactory } from '../lib/encryptor-factory';
 import { normalizeSafeAddress } from '../lib/multichain/address';
 import { getRootMessenger } from '../lib/messenger';

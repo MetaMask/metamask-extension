@@ -6,8 +6,8 @@ import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
-import FixtureBuilder from '../../fixture-builder';
-import { ACCOUNT_TYPE } from '../../constants';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import { ACCOUNT_TYPE, DAPP_PATH } from '../../constants';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { mockProtocolSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
@@ -1620,7 +1620,10 @@ export async function withSolanaAccountSnap(
       fixtures: fixtures.build(),
       title,
       forceBip44Version: state === 2 ? 2 : 0,
-      dappOptions: dappOptions ?? { numberOfTestDapps: 1 },
+      dappOptions: dappOptions ?? {
+        numberOfTestDapps: 1,
+        customDappPaths: [DAPP_PATH.TEST_SNAPS],
+      },
       manifestFlags: {
         // This flag is used to enable/disable the remote mode for the carousel
         // component, which will impact to the slides count.

@@ -7,7 +7,7 @@ const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 const { exitWithError } = require('../../development/lib/exit-with-error');
 const { withFixtures, tinyDelayMs } = require('./helpers');
-const FixtureBuilder = require('./fixture-builder');
+const FixtureBuilder = require('./fixtures/fixture-builder');
 
 async function measurePage() {
   let metrics;

@@ -77,6 +77,7 @@ export const DAPP_PATHS: Readonly<Record<string, readonly string[]>> =
     'test-dapp': mm('test-dapp', 'dist'),
     'test-dapp-multichain': mm('test-dapp-multichain', 'build'),
     'test-dapp-solana': mm('test-dapp-solana', 'dist'),
+    'test-snaps': mm('test-snaps', 'dist'),
   });
 
 // Canonical dapp path keys to be used in tests
@@ -84,6 +85,7 @@ export const DAPP_PATH = Object.freeze({
   TEST_DAPP: 'test-dapp',
   TEST_DAPP_MULTICHAIN: 'test-dapp-multichain',
   TEST_DAPP_SOLANA: 'test-dapp-solana',
+  TEST_SNAPS: 'test-snaps',
   SNAP_SIMPLE_KEYRING_SITE: 'snap-simple-keyring-site',
   SNAP_ACCOUNT_ABSTRACTION_KEYRING: 'snap-account-abstraction-keyring',
 } as const);

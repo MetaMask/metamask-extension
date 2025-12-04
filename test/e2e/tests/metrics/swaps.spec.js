@@ -1,7 +1,7 @@
 /* eslint-disable mocha/no-skipped-tests */
 const { strict: assert } = require('assert');
 const { toHex } = require('@metamask/controller-utils');
-const FixtureBuilder = require('../../fixture-builder');
+const FixtureBuilder = require('../../fixtures/fixture-builder');
 const {
   withFixtures,
   unlockWallet,

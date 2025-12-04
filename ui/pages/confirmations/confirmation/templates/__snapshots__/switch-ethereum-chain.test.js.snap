@@ -3,7 +3,7 @@
 exports[`switch-ethereum-chain confirmation should match snapshot 1`] = `
 <div>
   <div
-    class="confirmation-page"
+    class="confirmation-page h-full"
   >
     <div
       class="mm-box confirmation-page__content mm-box--padding-4"
@@ -115,7 +115,7 @@ exports[`switch-ethereum-chain confirmation should match snapshot 1`] = `
 exports[`switch-ethereum-chain confirmation should show alert if there are pending txs 1`] = `
 <div>
   <div
-    class="confirmation-page"
+    class="confirmation-page h-full"
   >
     <div
       class="mm-box confirmation-page__content mm-box--padding-4"

@@ -232,9 +232,6 @@
   "etherscanView": {
     "message": "Pogledajte račun na Etherscan-u"
   },
-  "expandView": {
-    "message": "Proširite prikaz"
-  },
   "failed": {
     "message": "Neuspešno"
   },

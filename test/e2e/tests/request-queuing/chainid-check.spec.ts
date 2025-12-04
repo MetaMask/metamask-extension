@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import {
   withFixtures,
   unlockWallet,

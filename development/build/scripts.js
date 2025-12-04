@@ -212,7 +212,7 @@ function createScriptTasks({
             case 'content-script':
               return './app/vendor/trezor/content-script.js';
             case 'offscreen':
-              return './offscreen/scripts/offscreen.ts';
+              return './app/offscreen/offscreen.ts';
             default:
               return `./app/scripts/${label}.js`;
           }
@@ -758,7 +758,6 @@ function createFactoredBuild({
               applyLavaMoat,
               scripts,
             });
-            ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
             renderHtmlFile({
               htmlName: 'sidepanel',
               browserPlatforms,
@@ -766,7 +765,6 @@ function createFactoredBuild({
               shouldIncludeSnow,
               scripts,
             });
-            ///: END:ONLY_INCLUDE_IF
             renderHtmlFile({
               htmlName: 'notification',
               browserPlatforms,
@@ -1303,10 +1301,7 @@ function renderHtmlFile({
 
   const scriptTags = scripts.join('\n    ');
 
-  const htmlFilePath =
-    htmlName === 'offscreen'
-      ? `./offscreen/${htmlName}.html`
-      : `./app/${htmlName}.html`;
+  const htmlFilePath = `./app/html/pages/${htmlName}.html`;
   const htmlTemplate = readFileSync(htmlFilePath, 'utf8');
 
   const eta = new Eta({ views: './app/' });
@@ -1314,16 +1309,36 @@ function renderHtmlFile({
     .renderString(htmlTemplate, { isTest, shouldIncludeSnow })
     // these replacements are added to support the webpack build's automatic
     // compilation of html files, which the gulp-based process doesn't support.
-    .replace('./scripts/load/background.ts', './load-background.js')
+    .replace('../../scripts/load/background.ts', './load-background.js')
     .replace(
       '<script src="./load-background.js" defer></script>',
       `${scriptTags}\n    <script src="./chromereload.js" async></script>`,
     )
-    .replace('<script src="./scripts/load/ui.ts" defer></script>', scriptTags)
-    .replace('<script src="./load-offscreen.js" defer></script>', scriptTags)
-    .replace('../ui/css/index.scss', './index.css')
+    .replace(
+      '<script src="../../scripts/load/ui.ts" defer></script>',
+      scriptTags,
+    )
+    .replace(
+      '<script src="../../offscreen/offscreen.ts" defer></script>',
+      scriptTags,
+    )
+    .replace('../../../ui/css/index.scss', './index.css')
     .replace('@lavamoat/snow/snow.prod.js', './scripts/snow.js')
-    .replace('<script src="./scripts/load/bootstrap.ts" defer></script>', '');
+    .replace('../../scripts/use-snow.js', './scripts/use-snow.js')
+    .replace(
+      '<script src="../../scripts/load/bootstrap.ts" defer></script>',
+      '',
+    )
+    .replace('../../images/enslogo.svg', './images/enslogo.svg')
+    .replace(
+      '../../images/logo/metamask-fox.svg',
+      './images/logo/metamask-fox.svg',
+    )
+    .replace('../../images/spinner.gif', './images/spinner.gif')
+    .replace(
+      '../../vendor/trezor/usb-permissions.js',
+      './vendor/trezor/usb-permissions.js',
+    );
   browserPlatforms.forEach((platform) => {
     const dest = `./dist/${platform}/${htmlName}.html`;
     // we dont have a way of creating async events atm

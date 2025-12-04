@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { compose } from 'redux';
 import {
   createNewVaultAndRestore,
   resetOAuthLoginState,
@@ -20,6 +21,7 @@ import {
 } from '../../../shared/constants/metametrics';
 import { getIsSocialLoginFlow } from '../../selectors';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 
 class RestoreVaultPage extends Component {
   static contextTypes = {
@@ -32,7 +34,7 @@ class RestoreVaultPage extends Component {
     leaveImportSeedScreenState: PropTypes.func,
     setFirstTimeFlowType: PropTypes.func,
     resetOAuthLoginState: PropTypes.func,
-    history: PropTypes.object,
+    navigate: PropTypes.func,
     isLoading: PropTypes.bool,
     isSocialLoginFlow: PropTypes.bool,
   };
@@ -43,7 +45,7 @@ class RestoreVaultPage extends Component {
       setFirstTimeFlowType: propsSetFirstTimeFlowType,
       resetOAuthLoginState: propsResetOAuthLoginState,
       leaveImportSeedScreenState,
-      history,
+      navigate,
       isSocialLoginFlow: propsIsSocialLoginFlow,
     } = this.props;
 
@@ -63,7 +65,7 @@ class RestoreVaultPage extends Component {
       category: MetaMetricsEventCategory.Retention,
       event: MetaMetricsEventName.WalletRestored,
     });
-    history.push(DEFAULT_ROUTE);
+    navigate(DEFAULT_ROUTE);
   };
 
   render() {
@@ -79,7 +81,7 @@ class RestoreVaultPage extends Component {
               onClick={(e) => {
                 e.preventDefault();
                 this.props.leaveImportSeedScreenState();
-                this.props.history.push(DEFAULT_ROUTE);
+                this.props.navigate(DEFAULT_ROUTE);
               }}
               href="#"
             >
@@ -177,20 +179,23 @@ class RestoreVaultPage extends Component {
   }
 }
 
-export default connect(
-  (state) => {
-    return {
-      isLoading: state.appState.isLoading,
-      isSocialLoginFlow: getIsSocialLoginFlow(state),
-    };
-  },
-  (dispatch) => ({
-    leaveImportSeedScreenState: () => {
-      dispatch(unMarkPasswordForgotten());
+export default compose(
+  withRouterHooks,
+  connect(
+    (state) => {
+      return {
+        isLoading: state.appState.isLoading,
+        isSocialLoginFlow: getIsSocialLoginFlow(state),
+      };
     },
-    createNewVaultAndRestore: (pw, seed) =>
-      dispatch(createNewVaultAndRestore(pw, seed)),
-    setFirstTimeFlowType: (type) => dispatch(setFirstTimeFlowType(type)),
-    resetOAuthLoginState: () => dispatch(resetOAuthLoginState()),
-  }),
+    (dispatch) => ({
+      leaveImportSeedScreenState: () => {
+        dispatch(unMarkPasswordForgotten());
+      },
+      createNewVaultAndRestore: (pw, seed) =>
+        dispatch(createNewVaultAndRestore(pw, seed)),
+      setFirstTimeFlowType: (type) => dispatch(setFirstTimeFlowType(type)),
+      resetOAuthLoginState: () => dispatch(resetOAuthLoginState()),
+    }),
+  ),
 )(RestoreVaultPage);

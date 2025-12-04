@@ -1,3 +1,5 @@
+'use no memo';
+
 import React from 'react';
 import { ButtonLink, Text } from '../../../../../components/component-library';
 import {
@@ -31,6 +33,7 @@ export const ShieldCoverageAlertMessage = ({
           target="_blank"
           rel="noreferrer noopener"
           color={TextColor.primaryDefault}
+          style={{ verticalAlign: 'baseline' }}
         >
           {t('shieldCoverageAlertMessageLearnHowCoverageWorks')}
         </ButtonLink>,

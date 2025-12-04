@@ -10,6 +10,7 @@ import {
 } from '@metamask/messenger';
 import { ENVIRONMENT } from '../../../development/build/constants';
 import { PreferencesControllerGetStateAction } from '../controllers/preferences-controller';
+import { OnboardingControllerGetStateAction } from '../controllers/onboarding';
 import {
   getConfigForRemoteFeatureFlagRequest,
   RemoteFeatureFlagControllerInit,
@@ -33,7 +34,9 @@ function getInitRequestMock(): jest.Mocked<
 > {
   const baseMessenger = new Messenger<
     MockAnyNamespace,
-    PreferencesControllerGetStateAction | ActionConstraint,
+    | PreferencesControllerGetStateAction
+    | OnboardingControllerGetStateAction
+    | ActionConstraint,
     never
   >({
     namespace: MOCK_ANY_NAMESPACE,
@@ -43,6 +46,12 @@ function getInitRequestMock(): jest.Mocked<
     'PreferencesController:getState',
     jest.fn().mockReturnValue({
       useExternalServices: true,
+    }),
+  );
+  baseMessenger.registerActionHandler(
+    'OnboardingController:getState',
+    jest.fn().mockReturnValue({
+      completedOnboarding: true,
     }),
   );
 

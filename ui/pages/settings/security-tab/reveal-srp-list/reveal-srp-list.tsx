@@ -164,6 +164,7 @@ export const RevealSrpList = () => {
           keyringId={selectedKeyringId}
           isOpen={srpQuizModalVisible}
           onClose={() => setSrpQuizModalVisible(false)}
+          navigate={navigate}
         />
       )}
     </Box>

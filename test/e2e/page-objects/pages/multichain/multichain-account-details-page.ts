@@ -41,14 +41,8 @@ class MultichainAccountDetailsPage {
   // Account-specific features
   private readonly showSrpButton = '[data-testid="account-show-srp-button"]';
 
-  private readonly showPrivateKeyButton =
-    '[data-testid="account-show-private-key-button"]';
-
-  private readonly exportSrpButton =
-    '[data-testid="account-export-srp-button"]';
-
-  private readonly exportPrivateKeyButton =
-    '[data-testid="account-export-private-key-button"]';
+  private readonly secretRecoveryPhraseRow =
+    '[data-testid="multichain-srp-backup"]';
 
   // Account removal
   private readonly removeAccountButton =
@@ -166,6 +160,14 @@ class MultichainAccountDetailsPage {
   }
 
   /**
+   * Check that the "show private key" button is not displayed
+   */
+  async checkShowPrivateKeyButtonIsNotDisplayed(): Promise<void> {
+    console.log('Check that show private key button is not displayed');
+    await this.driver.assertElementNotPresent(this.privateKeyRow);
+  }
+
+  /**
    * Click on the remove account button
    */
   async clickRemoveAccountButton(): Promise<void> {
@@ -230,6 +232,12 @@ class MultichainAccountDetailsPage {
   async clickViewOnEtherscanButton(): Promise<void> {
     console.log('Click on the view on etherscan button');
     await this.driver.clickElement(this.viewOnEtherscanButton);
+    await this.driver.delay(largeDelayMs);
+  }
+
+  async clickSecretRecoveryPhraseRow(): Promise<void> {
+    console.log('Click on the Secret Recovery Phrase row');
+    await this.driver.clickElement(this.secretRecoveryPhraseRow);
     await this.driver.delay(largeDelayMs);
   }
 

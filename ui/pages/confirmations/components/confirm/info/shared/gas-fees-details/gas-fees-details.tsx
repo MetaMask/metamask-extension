@@ -101,6 +101,7 @@ export const GasFeesDetails = ({
           >
             <Box display={Display.Flex} alignItems={AlignItems.center}>
               <GasTiming
+                chainId={transactionMeta.chainId}
                 maxFeePerGas={maxFeePerGas}
                 maxPriorityFeePerGas={maxPriorityFeePerGas}
               />

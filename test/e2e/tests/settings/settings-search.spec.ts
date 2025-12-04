@@ -1,5 +1,5 @@
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import AboutPage from '../../page-objects/pages/settings/about-page';
 import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
 import ContactsSettings from '../../page-objects/pages/settings/contacts-settings';

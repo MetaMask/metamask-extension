@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
-import { E2E_SRP } from '../../../default-fixture';
+import { E2E_SRP } from '../../../fixtures/default-fixture';
 
 class OnboardingSrpPage {
   private driver: Driver;

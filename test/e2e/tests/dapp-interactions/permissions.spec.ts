@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { DAPP_HOST_ADDRESS } from '../../constants';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';

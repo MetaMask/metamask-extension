@@ -4,7 +4,7 @@ import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
 import { TX_SENTINEL_URL } from '../../../../../shared/constants/transaction';
 import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { WINDOW_TITLES, unlockWallet, withFixtures } from '../../../helpers';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
 import GasFeeTokenModal from '../../../page-objects/pages/confirmations/redesign/gas-fee-token-modal';
@@ -13,6 +13,7 @@ import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { Driver } from '../../../webdriver/driver';
 import { mockSmartTransactionBatchRequests } from '../../smart-transactions/mocks';
+import { mockSpotPrices } from '../../tokens/utils/mocks';
 
 const TRANSACTION_HASH =
   '0xf25183af3bf64af01e9210201a2ede3c1dcd6d16091283152d13265242939fc4';
@@ -38,6 +39,13 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
             transactionHashes: [TRANSACTION_HASH, TRANSACTION_HASH_2],
           });
           mockSentinelNetworks(mockServer);
+          mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
+            '0x0000000000000000000000000000000000000000': {
+              price: 1700,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
+          });
         },
         title: this.test?.fullTitle(),
       },

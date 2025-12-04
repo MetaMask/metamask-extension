@@ -1,5 +1,5 @@
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { DAPP_HOST_ADDRESS, DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';

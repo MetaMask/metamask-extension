@@ -1,5 +1,5 @@
 import { SnapController } from '@metamask/snaps-controllers';
-import { hasProperty, Json } from '@metamask/utils';
+import { createDeferredPromise, hasProperty, Json } from '@metamask/utils';
 import { ControllerInitFunction } from '../types';
 import {
   EndowmentPermissions,
@@ -13,6 +13,7 @@ import {
   SnapControllerMessenger,
 } from '../messengers/snaps';
 import { getBooleanFlag } from '../../lib/util';
+import { OnboardingControllerState } from '../../controllers/onboarding';
 
 // Copied from `@metamask/snaps-controllers`, since it is not exported.
 type TrackingEventPayload = {
@@ -93,6 +94,34 @@ export const SnapControllerInit: ControllerInitFunction<
     };
   }
 
+  /**
+   * Async function that resolves when onboarding has been completed.
+   *
+   * @returns A promise that resolves when onboarding is complete.
+   */
+  async function ensureOnboardingComplete() {
+    const { completedOnboarding } = initMessenger.call(
+      'OnboardingController:getState',
+    );
+
+    if (completedOnboarding) {
+      return;
+    }
+
+    const { promise, resolve } = createDeferredPromise();
+
+    const listener = (state: OnboardingControllerState) => {
+      if (state.completedOnboarding) {
+        resolve();
+        initMessenger.unsubscribe('OnboardingController:stateChange', listener);
+      }
+    };
+
+    initMessenger.subscribe('OnboardingController:stateChange', listener);
+
+    await promise;
+  }
+
   const controller = new SnapController({
     environmentEndowmentPermissions: Object.values(EndowmentPermissions),
     excludedPermissions: {
@@ -130,6 +159,8 @@ export const SnapControllerInit: ControllerInitFunction<
 
     preinstalledSnaps,
     getFeatureFlags,
+
+    ensureOnboardingComplete,
 
     // `TrackEventHook` from `snaps-controllers` uses `Json | undefined` for
     // properties, but `MetaMetricsEventPayload` uses `Json`, even though

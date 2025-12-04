@@ -1,19 +1,12 @@
 import { act } from '@testing-library/react-hooks';
 import { waitFor } from '@testing-library/react';
 import log from 'loglevel';
-import { submitRequestToBackground } from '../../store/background-connection';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
-import mockState from '../../../test/data/mock-state.json';
 import { useCandidateSubscriptionId } from './useCandidateSubscriptionId';
-import { useRewardsEnabled } from './useRewardsEnabled';
 
-// Mock dependencies
-jest.mock('../../store/background-connection', () => ({
-  submitRequestToBackground: jest.fn(),
-}));
-
-jest.mock('./useRewardsEnabled', () => ({
-  useRewardsEnabled: jest.fn(),
+// Mock store actions used by the hook
+jest.mock('../../store/actions', () => ({
+  getRewardsCandidateSubscriptionId: jest.fn(() => async () => null),
 }));
 
 jest.mock('loglevel', () => ({
@@ -21,270 +14,45 @@ jest.mock('loglevel', () => ({
   setLevel: jest.fn(),
 }));
 
-// Mock console.log to avoid noise in tests
-const originalConsoleLog = console.log;
-beforeAll(() => {
-  console.log = jest.fn();
-});
-
-afterAll(() => {
-  console.log = originalConsoleLog;
-});
-
-const mockSubmitRequestToBackground =
-  submitRequestToBackground as jest.MockedFunction<
-    typeof submitRequestToBackground
-  >;
-const mockUseRewardsEnabled = useRewardsEnabled as jest.MockedFunction<
-  typeof useRewardsEnabled
->;
+const { getRewardsCandidateSubscriptionId } = jest.requireMock(
+  '../../store/actions',
+) as { getRewardsCandidateSubscriptionId: jest.Mock };
 const mockLogError = log.error as jest.MockedFunction<typeof log.error>;
 
 describe('useCandidateSubscriptionId', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseRewardsEnabled.mockReturnValue(true);
-  });
-
-  afterEach(() => {
-    jest.restoreAllMocks();
   });
 
   describe('Initial State', () => {
-    it('should return initial values', () => {
-      const { result } = renderHookWithProvider(
+    it('returns fetch function and respects initial candidateSubscriptionId sentinel', () => {
+      const { result, store } = renderHookWithProvider(
         () => useCandidateSubscriptionId(),
-        mockState,
+        {
+          rewards: {
+            candidateSubscriptionId: 'pending',
+          },
+        },
       );
 
-      expect(result.current.candidateSubscriptionId).toBeNull();
-      expect(result.current.candidateSubscriptionIdError).toBe(false);
       expect(typeof result.current.fetchCandidateSubscriptionId).toBe(
         'function',
       );
+      const rewardsState = store?.getState().rewards;
+      // Initial state uses sentinel value 'pending' and no separate flags
+      expect(rewardsState?.candidateSubscriptionId).toBe('pending');
     });
   });
 
-  describe('Conditional Fetching', () => {
-    it('should not fetch when rewards are disabled', () => {
-      mockUseRewardsEnabled.mockReturnValue(false);
-
-      const { result } = renderHookWithProvider(
-        () => useCandidateSubscriptionId(),
-        {
-          metamask: {
-            isUnlocked: true,
-            rewardsActiveAccount: {
-              account: 'eip155:1:0x123',
-              subscriptionId: 'sub-123',
-            },
-            rewardsSubscriptions: {},
-          },
-        },
-      );
-
-      expect(result.current.candidateSubscriptionId).toBeNull();
-      expect(result.current.candidateSubscriptionIdError).toBe(false);
-      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
-    });
-
-    it('should not fetch when wallet is locked', () => {
-      mockUseRewardsEnabled.mockReturnValue(true);
-
-      const testState = {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          isUnlocked: false,
-          rewardsActiveAccount: {
-            account: 'eip155:1:0x123',
-            subscriptionId: 'sub-123',
-          },
-          rewardsSubscriptions: {},
-        },
-      };
-
-      const { result } = renderHookWithProvider(
-        () => useCandidateSubscriptionId(),
-        testState,
-      );
-
-      expect(result.current.candidateSubscriptionId).toBeNull();
-      expect(result.current.candidateSubscriptionIdError).toBe(false);
-      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
-    });
-
-    it('should not fetch when rewardsActiveAccountCaipAccountId is missing', () => {
-      mockUseRewardsEnabled.mockReturnValue(true);
-
-      const { result } = renderHookWithProvider(
-        () => useCandidateSubscriptionId(),
-        {
-          metamask: {
-            isUnlocked: true,
-            rewardsActiveAccount: null,
-            rewardsSubscriptions: {},
-          },
-        },
-      );
-
-      expect(result.current.candidateSubscriptionId).toBeNull();
-      expect(result.current.candidateSubscriptionIdError).toBe(false);
-      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
-    });
-
-    it('should fetch when subscription IDs do not match', async () => {
-      mockUseRewardsEnabled.mockReturnValue(true);
-      mockSubmitRequestToBackground.mockResolvedValue('new-sub-id');
-
-      const { result } = renderHookWithProvider(
-        () => useCandidateSubscriptionId(),
-        {
-          metamask: {
-            isUnlocked: true,
-            rewardsActiveAccount: {
-              account: 'eip155:1:0x123',
-              subscriptionId: 'different-sub-id',
-            },
-            rewardsSubscriptions: {},
-          },
-        },
-      );
-
-      await waitFor(() => {
-        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-          'getRewardsCandidateSubscriptionId',
-        );
-      });
-
-      await waitFor(() => {
-        expect(result.current.candidateSubscriptionId).toBe('new-sub-id');
-      });
-    });
-  });
-
-  describe('fetchCandidateSubscriptionId Function', () => {
-    it('should fetch successfully and update state', async () => {
-      const mockId = 'test-subscription-id';
-      mockSubmitRequestToBackground.mockResolvedValue(mockId);
-
-      // Start with rewards disabled to prevent useEffect from auto-fetching
-      mockUseRewardsEnabled.mockReturnValue(false);
-
-      const { result, rerender } = renderHookWithProvider(
-        () => useCandidateSubscriptionId(),
-        {
-          metamask: {
-            isUnlocked: false, // Lock wallet to prevent useEffect from auto-fetching
-            rewardsActiveAccount: {
-              account: 'eip155:1:0x123',
-              subscriptionId: 'sub-123',
-            },
-            rewardsSubscriptions: {},
-          },
-        },
-      );
-
-      // Clear any calls that may have happened during render
-      mockSubmitRequestToBackground.mockClear();
-
-      // Enable rewards and rerender to update the hook's callback
-      mockUseRewardsEnabled.mockReturnValue(true);
-      act(() => {
-        rerender();
-      });
-
-      await act(async () => {
-        await result.current.fetchCandidateSubscriptionId();
-      });
-
-      await waitFor(() => {
-        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-          'getRewardsCandidateSubscriptionId',
-        );
-      });
-      expect(result.current.candidateSubscriptionId).toBe(mockId);
-      expect(result.current.candidateSubscriptionIdError).toBe(false);
-    });
-
-    it('should handle errors and update error state', async () => {
-      const mockError = new Error('API Error');
-      mockSubmitRequestToBackground.mockRejectedValue(mockError);
-
-      // Start with rewards disabled to prevent useEffect from auto-fetching
-      mockUseRewardsEnabled.mockReturnValue(false);
-
-      const { result, rerender } = renderHookWithProvider(
-        () => useCandidateSubscriptionId(),
-        {
-          metamask: {
-            isUnlocked: false, // Lock wallet to prevent useEffect from auto-fetching
-            rewardsActiveAccount: {
-              account: 'eip155:1:0x123',
-              subscriptionId: 'sub-123',
-            },
-            rewardsSubscriptions: {},
-          },
-        },
-      );
-
-      // Clear any calls that may have happened during render
-      mockSubmitRequestToBackground.mockClear();
-
-      // Enable rewards and rerender to update the hook's callback
-      mockUseRewardsEnabled.mockReturnValue(true);
-      act(() => {
-        rerender();
-      });
-
-      await act(async () => {
-        await result.current.fetchCandidateSubscriptionId();
-      });
-
-      await waitFor(() => {
-        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-          'getRewardsCandidateSubscriptionId',
-        );
-      });
-      expect(result.current.candidateSubscriptionId).toBeNull();
-      expect(result.current.candidateSubscriptionIdError).toBe(true);
-      expect(mockLogError).toHaveBeenCalledWith(
-        '[useCandidateSubscriptionId] Error fetching candidate subscription ID:',
-        mockError,
-      );
-    });
-  });
-
-  describe('useEffect Behavior', () => {
-    it('should fetch when wallet becomes unlocked', async () => {
-      mockUseRewardsEnabled.mockReturnValue(true);
-      mockSubmitRequestToBackground.mockResolvedValue('test-id-123');
-
-      // Test with locked wallet first
-      const { result: lockedResult } = renderHookWithProvider(
+  describe('Conditional fetching via useEffect', () => {
+    it('does nothing when wallet is locked', async () => {
+      const { store } = renderHookWithProvider(
         () => useCandidateSubscriptionId(),
         {
           metamask: {
             isUnlocked: false,
-            rewardsActiveAccount: {
-              account: 'eip155:1:0x123',
-              subscriptionId: 'sub-123',
-            },
-            rewardsSubscriptions: {},
-          },
-        },
-      );
-
-      // Initially should not fetch
-      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
-      expect(lockedResult.current.candidateSubscriptionId).toBeNull();
-
-      // Test with unlocked wallet
-      const { result: unlockedResult } = renderHookWithProvider(
-        () => useCandidateSubscriptionId(),
-        {
-          metamask: {
-            isUnlocked: true,
+            useExternalServices: true,
+            remoteFeatureFlags: { rewardsEnabled: true },
             rewardsActiveAccount: {
               account: 'eip155:1:0x123',
               subscriptionId: 'sub-123',
@@ -295,102 +63,104 @@ describe('useCandidateSubscriptionId', () => {
       );
 
       await waitFor(() => {
-        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-          'getRewardsCandidateSubscriptionId',
-        );
-      });
-
-      await waitFor(() => {
-        expect(unlockedResult.current.candidateSubscriptionId).toBe(
-          'test-id-123',
-        );
+        expect(getRewardsCandidateSubscriptionId).not.toHaveBeenCalled();
+        const rewardsState = store?.getState().rewards;
+        expect(rewardsState?.candidateSubscriptionId).toBe('pending');
       });
     });
 
-    it('should fetch when rewards become enabled', async () => {
-      mockSubmitRequestToBackground.mockResolvedValue('test-id-456');
-
-      // Test with rewards disabled first
-      const mockUseRewardsEnabledLocal = useRewardsEnabled as jest.Mock;
-      mockUseRewardsEnabledLocal.mockReturnValue(false);
-
-      const { result: disabledResult } = renderHookWithProvider(
-        () => useCandidateSubscriptionId(),
-        {
-          metamask: {
-            isUnlocked: true,
-            rewardsActiveAccount: {
-              account: 'eip155:1:0x123',
-              subscriptionId: 'sub-123',
-            },
-            rewardsSubscriptions: {},
-          },
-        },
+    it("fetches when candidateSubscriptionId is 'retry' (regardless of unlock)", async () => {
+      (getRewardsCandidateSubscriptionId as jest.Mock).mockImplementation(
+        () => async () => 'new-sub-id',
       );
 
-      // Initially should not fetch
-      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
-      expect(disabledResult.current.candidateSubscriptionId).toBeNull();
-
-      // Test with rewards enabled
-      mockUseRewardsEnabledLocal.mockReturnValue(true);
-
-      const { result: enabledResult } = renderHookWithProvider(
+      const { store } = renderHookWithProvider(
         () => useCandidateSubscriptionId(),
         {
           metamask: {
-            isUnlocked: true,
-            rewardsActiveAccount: {
-              account: 'eip155:1:0x123',
-              subscriptionId: 'sub-123',
-            },
+            isUnlocked: false, // ensure unlock effect doesn't trigger
+            useExternalServices: true,
+            remoteFeatureFlags: { rewardsEnabled: true },
+            rewardsActiveAccount: null,
             rewardsSubscriptions: {},
+          },
+          rewards: {
+            candidateSubscriptionId: 'retry',
           },
         },
       );
 
       await waitFor(() => {
-        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-          'getRewardsCandidateSubscriptionId',
-        );
-      });
-
-      await waitFor(() => {
-        expect(enabledResult.current.candidateSubscriptionId).toBe(
-          'test-id-456',
-        );
+        expect(getRewardsCandidateSubscriptionId).toHaveBeenCalled();
+        const rewardsState = store?.getState().rewards;
+        expect(rewardsState?.candidateSubscriptionId).toBe('new-sub-id');
       });
     });
 
-    it('should fetch when rewardsActiveAccountCaipAccountId becomes available', async () => {
-      mockUseRewardsEnabled.mockReturnValue(true);
-      mockSubmitRequestToBackground.mockResolvedValue('test-id-789');
-
-      // Test without rewardsActiveAccount
-      const { result: noAccountResult } = renderHookWithProvider(
+    it('uses rewardsActiveAccountSubscriptionId when available instead of fetching', async () => {
+      const { store } = renderHookWithProvider(
         () => useCandidateSubscriptionId(),
         {
           metamask: {
             isUnlocked: true,
+            useExternalServices: true,
+            remoteFeatureFlags: { rewardsEnabled: true },
+            rewardsActiveAccount: {
+              account: 'eip155:1:0x123',
+              subscriptionId: 'active-sub-id',
+            },
+            rewardsSubscriptions: {},
+          },
+        },
+      );
+
+      await waitFor(() => {
+        expect(getRewardsCandidateSubscriptionId).not.toHaveBeenCalled();
+        const rewardsState = store?.getState().rewards;
+        expect(rewardsState?.candidateSubscriptionId).toBe('active-sub-id');
+      });
+    });
+
+    it('fetches when unlocked and rewardsActiveAccountSubscriptionId is null', async () => {
+      (getRewardsCandidateSubscriptionId as jest.Mock).mockImplementation(
+        () => async () => 'new-sub-id',
+      );
+
+      const { store } = renderHookWithProvider(
+        () => useCandidateSubscriptionId(),
+        {
+          metamask: {
+            isUnlocked: true,
+            useExternalServices: true,
+            remoteFeatureFlags: { rewardsEnabled: true },
             rewardsActiveAccount: null,
             rewardsSubscriptions: {},
           },
         },
       );
 
-      // Initially should not fetch
-      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
-      expect(noAccountResult.current.candidateSubscriptionId).toBeNull();
+      await waitFor(() => {
+        expect(getRewardsCandidateSubscriptionId).toHaveBeenCalled();
+        const rewardsState = store?.getState().rewards;
+        expect(rewardsState?.candidateSubscriptionId).toBe('new-sub-id');
+      });
+    });
 
-      // Test with rewardsActiveAccount
-      const { result: withAccountResult } = renderHookWithProvider(
+    it('fetches when unlocked and rewardsActiveAccount has null subscriptionId', async () => {
+      (getRewardsCandidateSubscriptionId as jest.Mock).mockImplementation(
+        () => async () => 'new-sub-id',
+      );
+
+      const { store } = renderHookWithProvider(
         () => useCandidateSubscriptionId(),
         {
           metamask: {
             isUnlocked: true,
+            useExternalServices: true,
+            remoteFeatureFlags: { rewardsEnabled: true },
             rewardsActiveAccount: {
               account: 'eip155:1:0x123',
-              subscriptionId: 'sub-123',
+              subscriptionId: null,
             },
             rewardsSubscriptions: {},
           },
@@ -398,174 +168,151 @@ describe('useCandidateSubscriptionId', () => {
       );
 
       await waitFor(() => {
-        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-          'getRewardsCandidateSubscriptionId',
-        );
-      });
-
-      await waitFor(() => {
-        expect(withAccountResult.current.candidateSubscriptionId).toBe(
-          'test-id-789',
-        );
+        expect(getRewardsCandidateSubscriptionId).toHaveBeenCalled();
+        const rewardsState = store?.getState().rewards;
+        expect(rewardsState?.candidateSubscriptionId).toBe('new-sub-id');
       });
     });
   });
 
-  describe('Edge Cases', () => {
-    it('should handle null response from background', async () => {
-      mockSubmitRequestToBackground.mockResolvedValue(null);
+  describe('fetchCandidateSubscriptionId function', () => {
+    it('updates state to returned id when action resolves', async () => {
+      (getRewardsCandidateSubscriptionId as jest.Mock).mockImplementation(
+        () => async () => 'abc-id',
+      );
 
-      // Start with rewards disabled to prevent useEffect from auto-fetching
-      mockUseRewardsEnabled.mockReturnValue(false);
-
-      const { result, rerender } = renderHookWithProvider(
+      const { result, store } = renderHookWithProvider(
         () => useCandidateSubscriptionId(),
         {
           metamask: {
-            isUnlocked: false, // Lock wallet to prevent useEffect from auto-fetching
+            isUnlocked: false, // prevent useEffect auto-fetch
+            useExternalServices: true,
+            remoteFeatureFlags: { rewardsEnabled: true },
+            rewardsActiveAccount: null, // prevent useEffect auto-fetch
+            rewardsSubscriptions: {},
+          },
+        },
+      );
+
+      await act(async () => {
+        await result.current.fetchCandidateSubscriptionId();
+      });
+
+      expect(getRewardsCandidateSubscriptionId).toHaveBeenCalledTimes(1);
+      const rewardsState = store?.getState().rewards;
+      expect(rewardsState?.candidateSubscriptionId).toBe('abc-id');
+    });
+    it('uses rewardsActiveAccountSubscriptionId when available and does not fetch', async () => {
+      const { result, store } = renderHookWithProvider(
+        () => useCandidateSubscriptionId(),
+        {
+          metamask: {
+            isUnlocked: false, // prevent useEffect auto-fetch
+            useExternalServices: true,
+            remoteFeatureFlags: { rewardsEnabled: true },
             rewardsActiveAccount: {
-              account: 'eip155:1:0x123',
-              subscriptionId: 'sub-123',
+              account: 'eip155:1:0xabc',
+              subscriptionId: 'active-sub-id',
             },
             rewardsSubscriptions: {},
           },
         },
       );
 
-      // Clear any calls that may have happened during render
-      mockSubmitRequestToBackground.mockClear();
-
-      // Enable rewards and rerender to update the hook's callback
-      mockUseRewardsEnabled.mockReturnValue(true);
-      act(() => {
-        rerender();
-      });
-
       await act(async () => {
         await result.current.fetchCandidateSubscriptionId();
       });
 
-      expect(result.current.candidateSubscriptionId).toBeNull();
-      expect(result.current.candidateSubscriptionIdError).toBe(false);
+      expect(getRewardsCandidateSubscriptionId).not.toHaveBeenCalled();
+      const rewardsState = store?.getState().rewards;
+      expect(rewardsState?.candidateSubscriptionId).toBe('active-sub-id');
     });
 
-    it('should handle undefined response from background', async () => {
-      mockSubmitRequestToBackground.mockResolvedValue(undefined);
-
-      // Start with rewards disabled to prevent useEffect from auto-fetching
-      mockUseRewardsEnabled.mockReturnValue(false);
-
-      const { result, rerender } = renderHookWithProvider(
+    it('sets to null and does not call action when rewards disabled', async () => {
+      const { result, store } = renderHookWithProvider(
         () => useCandidateSubscriptionId(),
         {
           metamask: {
-            isUnlocked: false, // Lock wallet to prevent useEffect from auto-fetching
+            isUnlocked: true,
+            useExternalServices: false, // disables rewards via selector
+            remoteFeatureFlags: { rewardsEnabled: true },
             rewardsActiveAccount: {
-              account: 'eip155:1:0x123',
-              subscriptionId: 'sub-123',
+              account: 'eip155:1:0xabc',
+              subscriptionId: 'sub-xyz',
             },
             rewardsSubscriptions: {},
           },
         },
       );
 
-      // Clear any calls that may have happened during render
-      mockSubmitRequestToBackground.mockClear();
-
-      // Enable rewards and rerender to update the hook's callback
-      mockUseRewardsEnabled.mockReturnValue(true);
-      act(() => {
-        rerender();
-      });
-
       await act(async () => {
         await result.current.fetchCandidateSubscriptionId();
       });
 
-      // The implementation preserves undefined as-is
-      expect(result.current.candidateSubscriptionId).toBeUndefined();
-      expect(result.current.candidateSubscriptionIdError).toBe(false);
+      expect(getRewardsCandidateSubscriptionId).not.toHaveBeenCalled();
+      const rewardsState = store?.getState().rewards;
+      expect(rewardsState?.candidateSubscriptionId).toBeNull();
     });
 
-    it('should handle empty string response from background', async () => {
-      mockSubmitRequestToBackground.mockResolvedValue('');
+    it('updates state when action resolves (without auto-effect)', async () => {
+      (getRewardsCandidateSubscriptionId as jest.Mock).mockImplementation(
+        () => async () => 'resolved-id',
+      );
 
-      // Start with rewards disabled to prevent useEffect from auto-fetching
-      mockUseRewardsEnabled.mockReturnValue(false);
-
-      const { result, rerender } = renderHookWithProvider(
+      const { result, store } = renderHookWithProvider(
         () => useCandidateSubscriptionId(),
         {
           metamask: {
-            isUnlocked: false, // Lock wallet to prevent useEffect from auto-fetching
-            rewardsActiveAccount: {
-              account: 'eip155:1:0x123',
-              subscriptionId: 'sub-123',
-            },
+            isUnlocked: false, // prevent useEffect auto-fetch
+            useExternalServices: true,
+            remoteFeatureFlags: { rewardsEnabled: true },
+            rewardsActiveAccount: null, // prevent useEffect auto-fetch
             rewardsSubscriptions: {},
           },
         },
       );
 
-      // Clear any calls that may have happened during render
-      mockSubmitRequestToBackground.mockClear();
-
-      // Enable rewards and rerender to update the hook's callback
-      mockUseRewardsEnabled.mockReturnValue(true);
-      act(() => {
-        rerender();
+      await act(async () => {
+        await result.current.fetchCandidateSubscriptionId();
       });
+
+      expect(getRewardsCandidateSubscriptionId).toHaveBeenCalledTimes(1);
+      const rewardsState = store?.getState().rewards;
+      expect(rewardsState?.candidateSubscriptionId).toBe('resolved-id');
+    });
+
+    it("sets candidateSubscriptionId to 'error' when action throws (without auto-effect)", async () => {
+      const mockError = new Error('API Error');
+      (getRewardsCandidateSubscriptionId as jest.Mock).mockImplementation(
+        () => async () => {
+          throw mockError;
+        },
+      );
+
+      const { result, store } = renderHookWithProvider(
+        () => useCandidateSubscriptionId(),
+        {
+          metamask: {
+            isUnlocked: false, // prevent useEffect auto-fetch
+            useExternalServices: true,
+            remoteFeatureFlags: { rewardsEnabled: true },
+            rewardsActiveAccount: null, // prevent useEffect auto-fetch
+            rewardsSubscriptions: {},
+          },
+        },
+      );
 
       await act(async () => {
         await result.current.fetchCandidateSubscriptionId();
       });
 
-      // Empty string should be preserved as it's a valid string value
-      // However, if the implementation converts it to null, that's also acceptable
-      // since empty strings aren't valid subscription IDs
-      expect(result.current.candidateSubscriptionId).toBe('');
-      expect(result.current.candidateSubscriptionIdError).toBe(false);
-    });
-
-    it('should maintain function reference stability for fetchCandidateSubscriptionId', () => {
-      const initialState = {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          isUnlocked: false,
-          rewardsActiveAccount: {
-            account: 'eip155:1:0x123',
-            subscriptionId: 'sub-123',
-          },
-          rewardsSubscriptions: {},
-        },
-      };
-
-      const updatedState = {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          isUnlocked: true,
-          rewardsActiveAccount: {
-            account: 'eip155:1:0x123',
-            subscriptionId: 'sub-123',
-          },
-          rewardsSubscriptions: {},
-        },
-      };
-
-      const { result, rerender } = renderHookWithProvider(
-        () => useCandidateSubscriptionId(),
-        initialState,
+      expect(getRewardsCandidateSubscriptionId).toHaveBeenCalledTimes(1);
+      const rewardsState = store?.getState().rewards;
+      expect(rewardsState?.candidateSubscriptionId).toBe('error');
+      expect(mockLogError).toHaveBeenCalledWith(
+        '[useCandidateSubscriptionId] Error fetching candidate subscription ID:',
+        mockError,
       );
-
-      const firstFetchFunction = result.current.fetchCandidateSubscriptionId;
-
-      rerender({ children: updatedState });
-
-      const secondFetchFunction = result.current.fetchCandidateSubscriptionId;
-
-      expect(firstFetchFunction).toBe(secondFetchFunction);
     });
   });
 });

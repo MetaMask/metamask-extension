@@ -1,6 +1,6 @@
 const { withFixtures } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
-const FixtureBuilder = require('../../fixture-builder');
+const FixtureBuilder = require('../../fixtures/fixture-builder');
 const {
   loginWithBalanceValidation,
 } = require('../../page-objects/flows/login.flow');

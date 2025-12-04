@@ -11,23 +11,22 @@ import { parse } from '../../../shared/lib/deep-links/parse';
 import { DEEP_LINK_HOST } from '../../../shared/lib/deep-links/constants';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
+  AlignItems,
   BackgroundColor,
   BlockSize,
+  BorderColor,
   BorderRadius,
   Display,
   FlexDirection,
   FontWeight,
   TextAlign,
+  TextColor,
   TextVariant,
 } from '../../helpers/constants/design-system';
 import { Text } from '../../components/component-library/text/text';
 import { Box } from '../../components/component-library/box/box';
 import { Container } from '../../components/component-library/container/container';
-import {
-  ButtonLink,
-  ContainerMaxWidth,
-  Label,
-} from '../../components/component-library';
+import { ButtonLink, Label } from '../../components/component-library';
 import { Checkbox } from '../../components/component-library/checkbox/checkbox';
 import { setSkipDeepLinkInterstitial } from '../../store/actions';
 import { getPreferences } from '../../selectors/selectors';
@@ -52,14 +51,17 @@ const { getExtensionURL } = globalThis.platform;
  * @param setDescription - The function to call to set the description state.
  * @param setTitle - The function to call to set the title state.
  * @param t - The translation function.
+ * @param setPageNotFoundError - The function to call to set the error 404 state.
  */
 function set404(
   setDescription: React.Dispatch<React.SetStateAction<string | null>>,
   setTitle: React.Dispatch<React.SetStateAction<string | null>>,
   t: TranslateFunction,
+  setPageNotFoundError: React.Dispatch<React.SetStateAction<boolean>>,
 ) {
   setDescription(t('deepLink_Error404Description'));
   setTitle(t('deepLink_Error404Title'));
+  setPageNotFoundError(true);
 }
 
 /**
@@ -75,6 +77,7 @@ function set404(
  * @param setCta - The function to call to set the call-to-action state.
  * @param t - The translation function.
  * @param abortController
+ * @param setPageNotFoundError - The function to call to set the error 404 state.
  */
 async function updateStateFromUrl(
   urlPathAndQuery: string,
@@ -86,6 +89,7 @@ async function updateStateFromUrl(
   setCta: React.Dispatch<React.SetStateAction<string | null>>,
   t: TranslateFunction,
   abortController: AbortController,
+  setPageNotFoundError: React.Dispatch<React.SetStateAction<boolean>>,
 ) {
   try {
     const fullUrlStr = `https://${DEEP_LINK_HOST}${urlPathAndQuery}`;
@@ -119,9 +123,10 @@ async function updateStateFromUrl(
         signed ? t('deepLink_RedirectingToMetaMask') : t('deepLink_Caution'),
       );
       setCta(t('deepLink_Continue', [t(title)]));
+      setPageNotFoundError(false);
     } else {
       setRoute(null);
-      set404(setDescription, setTitle, t);
+      set404(setDescription, setTitle, t, setPageNotFoundError);
       setCta(t('deepLink_GoToTheHomePageButton'));
 
       const signature = await verify(url);
@@ -149,6 +154,7 @@ async function updateStateFromUrl(
     setRoute(null);
     setTitle(t('deepLink_ErrorOtherTitle'));
     setCta(t('deepLink_GoToTheHomePageButton'));
+    setPageNotFoundError(false);
   } finally {
     setIsLoading(false);
   }
@@ -171,6 +177,7 @@ export const DeepLink = ({ location }: DeepLinkProps) => {
   );
 
   const [description, setDescription] = useState<string | null>(null);
+  const [pageNotFoundError, setPageNotFoundError] = useState<boolean>(false);
   const [extraDescription, setExtraDescription] = useState<string | null>(null);
   const [route, setRoute] = useState<null | Route>(null);
   const [title, setTitle] = useState<null | string>(null);
@@ -199,7 +206,7 @@ export const DeepLink = ({ location }: DeepLinkProps) => {
         setRoute(null);
         setIsLoading(false);
         if (errorCode === '404') {
-          set404(setDescription, setTitle, t);
+          set404(setDescription, setTitle, t, setPageNotFoundError);
 
           if (urlStr) {
             try {
@@ -241,6 +248,7 @@ export const DeepLink = ({ location }: DeepLinkProps) => {
           setDescription(null);
           setExtraDescription(null);
           setTitle(t('deepLink_ErrorMissingUrl'));
+          setPageNotFoundError(false);
         }
         setCta(t('deepLink_GoToTheHomePageButton'));
         return;
@@ -256,6 +264,7 @@ export const DeepLink = ({ location }: DeepLinkProps) => {
         setCta,
         t,
         abortController,
+        setPageNotFoundError,
       );
     };
 
@@ -263,7 +272,7 @@ export const DeepLink = ({ location }: DeepLinkProps) => {
 
     // Cleanup function
     return () => abortController.abort();
-  }, [location.search, t]);
+  }, [location.search, t, setPageNotFoundError]);
 
   // Cleanup on unmount
   useEffect(() => () => abortControllerRef.current?.abort(), []);
@@ -276,15 +285,45 @@ export const DeepLink = ({ location }: DeepLinkProps) => {
 
   return (
     <Container
-      maxWidth={ContainerMaxWidth.Sm}
-      textAlign={TextAlign.Center}
-      marginLeft={6}
-      marginRight={6}
-      marginBottom={8}
+      display={Display.Flex}
+      alignItems={AlignItems.center}
+      flexDirection={FlexDirection.Column}
+      style={{ marginTop: '111px' }}
     >
-      <>
-        <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-          <img className="loading-logo" src="./images/logo/metamask-fox.svg" />
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        alignItems={AlignItems.center}
+        textAlign={TextAlign.Center}
+        backgroundColor={BackgroundColor.backgroundDefault}
+        borderColor={BorderColor.borderMuted}
+        borderRadius={BorderRadius.MD}
+        style={{ width: '446px', minHeight: '592px' }}
+        paddingLeft={6}
+        paddingRight={6}
+        paddingTop={12}
+        paddingBottom={8}
+        borderWidth={1}
+      >
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          alignItems={AlignItems.center}
+        >
+          {pageNotFoundError ? (
+            <img
+              className="error-404-image"
+              alt="Error 404: Page not found"
+              src="./images/deep-link-error-404.png"
+            />
+          ) : (
+            <img
+              className="metamask-deep-link-logo"
+              alt="MetaMask logo"
+              src="./images/logo/metamask-fox.svg"
+              style={{ width: '160px', height: '160px' }}
+            />
+          )}
           {isLoading && (
             <img
               data-testid="loading-indicator"
@@ -300,9 +339,9 @@ export const DeepLink = ({ location }: DeepLinkProps) => {
               <Text
                 as="h1"
                 variant={TextVariant.headingLg}
-                fontWeight={FontWeight.Medium}
-                marginTop={12}
-                marginBottom={8}
+                fontWeight={FontWeight.Bold}
+                marginTop={4}
+                marginBottom={4}
               >
                 {title}
               </Text>
@@ -312,24 +351,28 @@ export const DeepLink = ({ location }: DeepLinkProps) => {
                 as="div"
                 data-testid="deep-link-description"
                 paddingBottom={12}
+                height={BlockSize.Full}
               >
-                <Box as="div" key="description">
+                <Text
+                  key="description"
+                  variant={TextVariant.bodyMd}
+                  color={TextColor.textAlternative}
+                >
                   {description}
-                </Box>
+                </Text>
                 {extraDescription ? (
-                  <Box key="extra-description" paddingTop={4}>
-                    {extraDescription}
-                  </Box>
+                  <Box key="extra-description">{extraDescription}</Box>
                 ) : (
                   ''
                 )}
               </Box>
             )}
 
-            <Box marginTop={12}>
+            <Box width={BlockSize.Full} marginTop={12}>
               {route?.signed ? (
                 <Box
                   display={Display.Flex}
+                  width={BlockSize.Full}
                   textAlign={TextAlign.Left}
                   gap={2}
                   padding={3}
@@ -366,7 +409,7 @@ export const DeepLink = ({ location }: DeepLinkProps) => {
             </Box>
           </>
         )}
-      </>
+      </Box>
     </Container>
   );
 };

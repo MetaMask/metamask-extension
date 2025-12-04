@@ -3,7 +3,7 @@ import { EthScope } from '@metamask/keyring-api';
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { type Hex } from '@metamask/utils';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP } from '../../../../../shared/constants/network';
 import {
   convertCaipToHexChainId,
@@ -24,7 +24,7 @@ import { useAccountCreationOnNetworkChange } from '../../../../hooks/accounts/us
 
 export const useNetworkItemCallbacks = () => {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const isUnlocked = useSelector(getIsUnlocked);
   const currentChainId = useSelector(getSelectedMultichainNetworkChainId);
   const isNetworkDiscoverButtonEnabled = useSelector(
@@ -116,7 +116,7 @@ export const useNetworkItemCallbacks = () => {
               nickname: network.name,
             }),
           );
-          history.push('/edit');
+          navigate('/edit');
         },
         onDiscoverClick: isDiscoverBtnEnabled(hexChainId)
           ? () => {
@@ -128,7 +128,7 @@ export const useNetworkItemCallbacks = () => {
           : undefined,
         onRpcConfigEdit: hasMultiRpcOptions(network)
           ? () => {
-              history.push('/add-rpc');
+              navigate('/add-rpc');
               dispatch(
                 setEditedNetwork({
                   chainId: hexChainId,
@@ -142,7 +142,7 @@ export const useNetworkItemCallbacks = () => {
               chainId: hexChainId,
             }),
           );
-          history.push('/select-rpc');
+          navigate('/select-rpc');
         },
       };
     },
@@ -152,7 +152,7 @@ export const useNetworkItemCallbacks = () => {
       hasMultiRpcOptions,
       isUnlocked,
       isDiscoverBtnEnabled,
-      history,
+      navigate,
     ],
   );
 

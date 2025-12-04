@@ -23,7 +23,7 @@ const { WINDOW_TITLES, withFixtures } = require('../../../helpers');
 const {
   KNOWN_PUBLIC_KEY_ADDRESSES,
 } = require('../../../../stub/keyring-bridge');
-const FixtureBuilder = require('../../../fixture-builder');
+const FixtureBuilder = require('../../../fixtures/fixture-builder');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 const { CHAIN_IDS } = require('../../../../../shared/constants/network');
 

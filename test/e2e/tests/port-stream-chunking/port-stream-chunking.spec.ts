@@ -2,10 +2,11 @@ import assert from 'node:assert';
 import { Mockttp } from 'mockttp';
 import { Browser } from 'selenium-webdriver';
 import { getEventPayloads, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { MOCK_META_METRICS_ID } from '../../constants';
+import { PAGES } from '../../webdriver/driver';
+import LoginPage from '../../page-objects/pages/login-page';
 
 const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
@@ -61,7 +62,12 @@ describe('Port Stream Chunking', function () {
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint }) => {
-        await loginWithBalanceValidation(driver);
+        // We need an unusual amount of time because of the large background state
+        await driver.navigate(PAGES.HOME, { waitForControllersTimeout: 20000 });
+        const loginPage = new LoginPage(driver);
+        await loginPage.checkPageIsLoaded();
+        await loginPage.loginToHomepage();
+
         const homepage = new HomePage(driver);
         // Just check that the balance is displayed (wallet is usable)
         await homepage.checkExpectedBalanceIsDisplayed();

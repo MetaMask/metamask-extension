@@ -697,9 +697,6 @@
   "etherscanViewOn": {
     "message": "Ver en Etherscan"
   },
-  "expandView": {
-    "message": "Expandir vista"
-  },
   "experimental": {
     "message": "Experimental"
   },
@@ -1714,7 +1711,7 @@
   },
   "swapIncludesMMFee": {
     "message": "Incluye una tasa de MetaMask del $1%.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapMaxSlippage": {
     "message": "Desfase máximo"
@@ -1724,7 +1721,7 @@
   },
   "swapMetaMaskFeeDescription": {
     "message": "Buscamos el mejor precio en las fuentes de liquidez más importantes, todo el tiempo. Se incorpora de manera automática a esta cotización una cuota del $1 %.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapNQuotesWithDot": {
     "message": "$1 cotizaciones.",

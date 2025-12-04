@@ -217,6 +217,16 @@ class AccountListPage {
     tag: 'p',
   };
 
+  private readonly addAccountButton = {
+    text: 'Add account',
+    tag: 'p',
+  };
+
+  private readonly syncingMessage = {
+    text: 'Syncing...',
+    tag: 'p',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -226,13 +236,7 @@ class AccountListPage {
   }): Promise<void> {
     try {
       const selectorsToWaitFor = options?.isMultichainAccountsState2Enabled
-        ? [
-            {
-              css: this.createMultichainAccountButton,
-              text: 'Add account',
-            },
-            this.multichainAccountOptionsMenuButton,
-          ]
+        ? [this.addAccountButton, this.multichainAccountOptionsMenuButton]
         : [this.createAccountButton, this.accountOptionsMenuButton];
       await this.driver.waitForMultipleSelectors(selectorsToWaitFor);
     } catch (e) {
@@ -242,10 +246,7 @@ class AccountListPage {
 
     if (options?.isMultichainAccountsState2Enabled) {
       console.log(`Check that account syncing not displayed in account list`);
-      await this.driver.assertElementNotPresent({
-        css: this.createMultichainAccountButton,
-        text: 'Syncing',
-      });
+      await this.driver.assertElementNotPresent(this.syncingMessage);
     }
 
     console.log('Account list is loaded');

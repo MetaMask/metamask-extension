@@ -188,6 +188,7 @@ describe('useNetworkConnectionBanner', () => {
               /* eslint-disable @typescript-eslint/naming-convention */
               banner_type: 'degraded',
               chain_id_caip: 'eip155:1',
+              rpc_domain: 'mainnet.infura.io',
               rpc_endpoint_url: 'mainnet.infura.io',
               /* eslint-enable @typescript-eslint/naming-convention */
             },
@@ -294,6 +295,7 @@ describe('useNetworkConnectionBanner', () => {
             /* eslint-disable @typescript-eslint/naming-convention */
             banner_type: 'unavailable',
             chain_id_caip: 'eip155:1',
+            rpc_domain: 'mainnet.infura.io',
             rpc_endpoint_url: 'mainnet.infura.io',
             /* eslint-enable @typescript-eslint/naming-convention */
           },

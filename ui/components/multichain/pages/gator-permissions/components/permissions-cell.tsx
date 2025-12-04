@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import {
   Box,
   BoxBackgroundColor,
@@ -17,6 +17,7 @@ type PermissionsCellProps = {
   totalCount: number;
   chainIds: string[];
   paddingTop?: BoxSpacing;
+  origin?: string;
 };
 
 export const PermissionsCell: React.FC<PermissionsCellProps> = ({
@@ -25,9 +26,10 @@ export const PermissionsCell: React.FC<PermissionsCellProps> = ({
   totalCount,
   chainIds,
   paddingTop,
+  origin,
 }) => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const allNetworks = [...nonTestNetworks, ...testNetworks];
 
   const allNetworksWithPermissions = allNetworks.filter(({ chainId }) =>
@@ -55,7 +57,13 @@ export const PermissionsCell: React.FC<PermissionsCellProps> = ({
         countMessage={totalCount === 1 ? t('tokenCount') : t('tokensCount')}
         paddingBottomValue={0}
         paddingTopValue={0}
-        onClick={() => history.push(TOKEN_TRANSFER_ROUTE)}
+        onClick={() =>
+          navigate(
+            origin
+              ? `${TOKEN_TRANSFER_ROUTE}/${encodeURIComponent(origin)}`
+              : TOKEN_TRANSFER_ROUTE,
+          )
+        }
       />
     </Box>
   );

@@ -2,7 +2,7 @@ import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
 import GeneralSettings from '../../page-objects/pages/settings/general-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';

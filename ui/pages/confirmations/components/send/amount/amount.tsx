@@ -69,6 +69,12 @@ export const Amount = ({
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = event.target.value;
       const fractionSize = getFractionLength(newValue);
+
+      const numericRegex = /^\d*\.?\d*$/u;
+      if (!numericRegex.test(newValue)) {
+        return;
+      }
+
       if (
         (fiatMode && fractionSize > 2) ||
         (!fiatMode && fractionSize > (asset?.decimals ?? 0))
@@ -120,6 +126,12 @@ export const Amount = ({
     setAmountInputMethodPressedMax,
     updateValue,
   ]);
+
+  const balanceDisplayValue = useMemo(() => {
+    return fiatMode
+      ? `${getFiatDisplayValue(String(balance))} ${t('available')}`
+      : `${balance} ${asset?.symbol} ${t('available')}`;
+  }, [fiatMode, getFiatDisplayValue, balance, asset?.symbol, t]);
 
   if (asset?.standard === ERC721) {
     return null;
@@ -173,7 +185,7 @@ export const Amount = ({
         </Text>
         <Box display={Display.Flex}>
           <Text color={TextColor.textAlternative} variant={TextVariant.bodySm}>
-            {balance} {asset?.symbol} {t('available')}
+            {balanceDisplayValue}
           </Text>
           {!isNonEvmNativeSendType && (
             <ButtonLink

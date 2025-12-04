@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import { getMockContractInteractionConfirmState } from '../../../../../../../../test/data/confirmations/helper';
 import configureStore from '../../../../../../../store/store';
 import { ConfirmContextProvider } from '../../../../../context/confirm';
+import { DappSwapContextProvider } from '../../../../../context/dapp-swap';
 import { GasFeesSection } from './gas-fees-section';
 
 function getStore() {
@@ -22,7 +23,9 @@ const Story = {
             padding: 30,
           }}
         >
-          <ConfirmContextProvider>{story()}</ConfirmContextProvider>
+          <ConfirmContextProvider>
+            <DappSwapContextProvider>{story()}</DappSwapContextProvider>
+          </ConfirmContextProvider>
         </div>
       </Provider>
     ),

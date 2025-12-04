@@ -1,7 +1,7 @@
 import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/user-storage';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { completeOnboardFlowIdentity } from '../identity/flows';
 import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
 import { IDENTITY_TEAM_STORAGE_KEY } from '../identity/constants';

@@ -46,7 +46,7 @@ export const OriginRow = () => {
   return (
     <ConfirmInfoAlertRow
       alertKey={RowAlertKey.RequestFrom}
-      ownerId={currentConfirmation.id}
+      ownerId={currentConfirmation?.id}
       data-testid="transaction-details-origin-row"
       label={t('requestFrom')}
       tooltip={t('requestFromTransactionDescription')}
@@ -118,7 +118,11 @@ export const MethodDataRow = () => {
 const AmountRow = () => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { currency } = useUserPreferencedCurrency(PRIMARY);
+  const { currency } = useUserPreferencedCurrency(
+    PRIMARY,
+    {},
+    currentConfirmation?.chainId,
+  );
 
   const value = currentConfirmation?.txParams?.value;
 
@@ -132,7 +136,11 @@ const AmountRow = () => {
         data-testid="transaction-details-amount-row"
         label={t('amount')}
       >
-        <ConfirmInfoRowCurrency value={value} currency={currency} />
+        <ConfirmInfoRowCurrency
+          value={value}
+          currency={currency}
+          chainId={currentConfirmation?.chainId}
+        />
       </ConfirmInfoRow>
     </ConfirmInfoSection>
   );

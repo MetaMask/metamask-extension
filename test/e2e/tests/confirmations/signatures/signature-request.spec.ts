@@ -1,7 +1,7 @@
 import SignTypedData from '../../../page-objects/pages/confirmations/redesign/sign-typed-data-confirmation';
 
 import { withFixtures, unlockWallet } from '../../../helpers';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { Driver } from '../../../webdriver/driver';
 import {

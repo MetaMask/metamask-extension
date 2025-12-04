@@ -1,7 +1,7 @@
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { Driver } from '../../webdriver/driver';
-import { E2E_SRP } from '../../default-fixture';
+import { E2E_SRP } from '../../fixtures/default-fixture';
 import { Anvil } from '../../seeder/anvil';
 import { Ganache } from '../../seeder/ganache';
 import HomePage from '../../page-objects/pages/home/homepage';

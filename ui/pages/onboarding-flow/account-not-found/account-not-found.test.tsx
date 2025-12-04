@@ -53,10 +53,6 @@ describe('Account Not Found Seedless Onboarding View', () => {
   });
 
   it('should navigate to the create-password route when the button is clicked', async () => {
-    const setFirstTimeFlowTypeSpy = jest
-      .spyOn(Actions, 'setFirstTimeFlowType')
-      .mockReturnValue(jest.fn().mockResolvedValueOnce(null));
-
     const { getByText } = renderWithProvider(
       <AccountNotFound />,
       customMockStore,
@@ -66,9 +62,6 @@ describe('Account Not Found Seedless Onboarding View', () => {
     fireEvent.click(loginButton);
 
     await waitFor(() => {
-      expect(setFirstTimeFlowTypeSpy).toHaveBeenCalledWith(
-        FirstTimeFlowType.socialCreate,
-      );
       expect(mockUseNavigate).toHaveBeenCalledWith(
         ONBOARDING_CREATE_PASSWORD_ROUTE,
         {
@@ -78,12 +71,12 @@ describe('Account Not Found Seedless Onboarding View', () => {
     });
   });
 
-  it('should navigate to the welcome page when the firstTimeFlowType is not socialImport', () => {
+  it('should navigate to the welcome page when the firstTimeFlowType is not socialCreate', () => {
     const store = configureMockStore([thunk])({
       ...mockState,
       metamask: {
         ...mockState.metamask,
-        firstTimeFlowType: FirstTimeFlowType.socialCreate,
+        firstTimeFlowType: FirstTimeFlowType.socialImport,
       },
     });
 

@@ -2,7 +2,7 @@ import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';

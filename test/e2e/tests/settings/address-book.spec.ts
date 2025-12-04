@@ -2,7 +2,7 @@ import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import ContactsPage from '../../page-objects/pages/settings/contacts-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';

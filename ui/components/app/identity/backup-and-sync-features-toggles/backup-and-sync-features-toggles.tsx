@@ -203,13 +203,14 @@ export const BackupAndSyncFeaturesToggles = () => {
         {t('backupAndSyncManageWhatYouSyncDescription')}
       </Text>
 
-      {backupAndSyncFeaturesTogglesSections.map((section) =>
-        FeatureToggle({
-          section,
-          isBackupAndSyncUpdateLoading,
-          isBackupAndSyncEnabled,
-        }),
-      )}
+      {backupAndSyncFeaturesTogglesSections.map((section) => (
+        <FeatureToggle
+          key={section.id}
+          section={section}
+          isBackupAndSyncUpdateLoading={isBackupAndSyncUpdateLoading}
+          isBackupAndSyncEnabled={isBackupAndSyncEnabled}
+        />
+      ))}
     </Box>
   );
 };

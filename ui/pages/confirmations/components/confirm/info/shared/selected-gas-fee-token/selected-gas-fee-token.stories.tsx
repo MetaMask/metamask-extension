@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import configureStore from '../../../../../../../store/store';
 import { ConfirmContextProvider } from '../../../../../context/confirm';
+import { DappSwapContextProvider } from '../../../../../context/dapp-swap';
 
 import { SelectedGasFeeToken } from './selected-gas-fee-token';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
@@ -70,7 +71,9 @@ const Story = {
   decorators: [
     (story: any, { args }) => (
       <Provider store={getStore(args ?? {})}>
-        <ConfirmContextProvider>{story()}</ConfirmContextProvider>
+        <ConfirmContextProvider>
+          <DappSwapContextProvider>{story()}</DappSwapContextProvider>
+        </ConfirmContextProvider>
       </Provider>
     ),
   ],

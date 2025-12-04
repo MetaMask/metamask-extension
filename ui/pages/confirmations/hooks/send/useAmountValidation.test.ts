@@ -415,4 +415,25 @@ describe('useAmountValidation', () => {
     const error = await result.current.validateNonEvmAmountAsync();
     expect(error).toEqual(undefined);
   });
+
+  it('returns error when non-EVM account has zero balance', async () => {
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      asset: {
+        isNative: true,
+        rawBalance: '0x0',
+        decimals: 18,
+      },
+      chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      from: MOCK_ADDRESS_1,
+      value: '1',
+    } as unknown as SendContext.SendContextType);
+
+    const { result } = renderHookWithProvider(
+      () => useAmountValidation(),
+      mockState,
+    );
+    await waitFor(() =>
+      expect(result.current.amountError).toEqual('Insufficient funds'),
+    );
+  });
 });

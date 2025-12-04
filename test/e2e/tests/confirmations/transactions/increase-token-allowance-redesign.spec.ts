@@ -1,4 +1,4 @@
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { WINDOW_TITLES, withFixtures } from '../../../helpers';
 import { Mockttp } from '../../../mock-e2e';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';

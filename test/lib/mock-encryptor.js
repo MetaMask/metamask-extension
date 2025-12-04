@@ -62,7 +62,11 @@ const mockEncryptor = {
         `Failed to execute 'importKey' on 'SubtleCrypto': The provided value is not of type '(ArrayBuffer or ArrayBufferView or JsonWebKey)'.`,
       );
     }
-    return null;
+    return JSON.parse(key);
+  },
+
+  async exportKey(key) {
+    return JSON.stringify(key);
   },
 
   async updateVault(_vault, _password) {

@@ -105,7 +105,10 @@ describe('NetworkConnectionBanner', () => {
         );
         fireEvent.click(getByText('Update RPC'));
 
-        expect(mockSetEditedNetwork).toHaveBeenCalledWith({ chainId: '0x1' });
+        expect(mockSetEditedNetwork).toHaveBeenCalledWith({
+          chainId: '0x1',
+          trackRpcUpdateFromBanner: true,
+        });
         expect(navigateMock).toHaveBeenCalledWith('/settings/networks');
       });
 
@@ -212,7 +215,10 @@ describe('NetworkConnectionBanner', () => {
         );
         fireEvent.click(getByText('update RPC'));
 
-        expect(mockSetEditedNetwork).toHaveBeenCalledWith({ chainId: '0x1' });
+        expect(mockSetEditedNetwork).toHaveBeenCalledWith({
+          chainId: '0x1',
+          trackRpcUpdateFromBanner: true,
+        });
         expect(navigateMock).toHaveBeenCalledWith('/settings/networks');
       });
 

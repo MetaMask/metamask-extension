@@ -1,3 +1,5 @@
+'use no memo';
+
 import { useMemo } from 'react';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';

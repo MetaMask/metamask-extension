@@ -8,7 +8,7 @@ import {
   getFirstParentDirectoryThatExists,
   isWritable,
 } from '../../helpers/file';
-import FixtureBuilder from '../fixture-builder';
+import FixtureBuilder from '../fixtures/fixture-builder';
 import { unlockWallet, withFixtures } from '../helpers';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import BridgeQuotePage from '../page-objects/pages/bridge/quote-page';

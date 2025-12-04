@@ -29,7 +29,6 @@ jest.mock('../../../../../../hooks/useMultiPolling', () => ({
 }));
 
 jest.mock('../../../../../../store/actions', () => ({
-  setAccountDetailsAddress: jest.fn(),
   rejectPendingApproval: jest.fn().mockReturnValue({}),
   setSmartAccountOptIn: jest.fn(),
 }));

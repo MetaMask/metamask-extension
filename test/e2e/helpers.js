@@ -10,7 +10,7 @@ const { setupMocking } = require('./mock-e2e');
 const { setupMockingPassThrough } = require('./mock-e2e-pass-through');
 const { Anvil } = require('./seeder/anvil');
 const { Ganache } = require('./seeder/ganache');
-const FixtureServer = require('./fixture-server');
+const FixtureServer = require('./fixtures/fixture-server');
 const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
 const { PAGES } = require('./webdriver/driver');
@@ -801,6 +801,30 @@ async function initBundler(
 
 const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;
 
+/**
+ * Check if sidepanel is enabled by examining the build flag at runtime.
+ * Only works on Chrome-based browsers (Firefox doesn't support sidepanel).
+ * Use this check for now in case we need to disable sidepanel in future.
+ *
+ * @returns {Promise<boolean>} True if sidepanel permission is present in manifest
+ */
+async function isSidePanelEnabled() {
+  try {
+    const hasSidepanel =
+      process.env.SELENIUM_BROWSER === 'chrome' &&
+      process.env.IS_SIDEPANEL === 'true';
+
+    // Log for debugging
+    console.log(`Sidepanel check: ${hasSidepanel ? 'enabled' : 'disabled'}`);
+
+    return hasSidepanel;
+  } catch (error) {
+    // Chrome API not accessible (e.g., LavaMoat scuttling mode, Firefox)
+    console.log('Sidepanel check failed:', error.message);
+    return false;
+  }
+}
+
 module.exports = {
   DAPP_HOST_ADDRESS,
   DAPP_URL,
@@ -833,4 +857,5 @@ module.exports = {
   clickNestedButton,
   sentryRegEx,
   createWebSocketConnection,
+  isSidePanelEnabled,
 };

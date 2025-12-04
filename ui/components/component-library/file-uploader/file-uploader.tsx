@@ -197,7 +197,7 @@ export const FileUploader = ({
         onKeyDown={handleKeyDown}
         {...dropAreaProps}
         className={twMerge(
-          'flex flex-col items-center justify-center w-full p-6 gap-2 text-center rounded-lg border border-dashed border-default hover:bg-background-default-hover hover:border-solid cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-default focus:ring-offset-2',
+          'relative flex flex-col items-center justify-center w-full p-6 gap-2 text-center rounded-lg border border-dashed border-default hover:bg-background-default-hover hover:border-solid cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-default focus:ring-offset-2',
           isDragging && 'bg-background-default-hover border-solid',
           dropAreaProps?.className || '',
         )}

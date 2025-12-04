@@ -41,7 +41,7 @@ export function useIsGaslessSupported() {
   const is7702Supported = Boolean(
     relaySupportsChain &&
       // contract deployments can't be delegated
-      transactionMeta?.txParams.to !== undefined,
+      transactionMeta?.txParams?.to !== undefined,
   );
 
   const isSupported = Boolean(

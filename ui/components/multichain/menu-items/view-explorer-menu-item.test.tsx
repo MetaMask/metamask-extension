@@ -1,6 +1,7 @@
 import React from 'react';
 import { BtcAccountType } from '@metamask/keyring-api';
-import { fireEvent, renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { fireEvent } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';

@@ -38,7 +38,7 @@ export default function SnapResult({
   const t = useI18nContext();
 
   const onSubmit = useCallback(
-    () => approveSnapResult(request.metadata.id),
+    () => approveSnapResult(request?.metadata?.id),
     [request, approveSnapResult],
   );
 

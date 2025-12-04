@@ -1,5 +1,5 @@
 import { Suite } from 'mocha';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import packageJson from '../../../../package.json';

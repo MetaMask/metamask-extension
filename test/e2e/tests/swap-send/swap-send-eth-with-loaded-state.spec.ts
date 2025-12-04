@@ -1,7 +1,7 @@
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
@@ -13,7 +13,14 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
       .forGet('https://price.api.cx.metamask.io/v2/chains/1/spot-prices')
       .thenCallback(() => ({
         statusCode: 200,
-        json: {},
+        json: {
+          '0x0000000000000000000000000000000000000000': {
+            id: 'ethereum',
+            price: 1700, // Default ETH price for swap tests
+            marketCap: 382623505141,
+            pricePercentChange1d: 0,
+          },
+        },
       })),
 
     await mockServer
@@ -279,6 +286,7 @@ describe('Swap-Send ETH', function () {
           ];
 
           await swapSendPage.clickOnAsset('WETH', 'dest');
+
           await swapSendPage.verifyAssetSymbolsAndAmounts(
             ETH_WETH_TOKEN_INPUTS[0],
             ETH_WETH_TOKEN_INPUTS[1],

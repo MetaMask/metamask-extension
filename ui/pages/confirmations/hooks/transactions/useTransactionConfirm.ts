@@ -5,6 +5,7 @@ import {
 import { cloneDeep } from 'lodash';
 import { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
 import { getCustomNonceValue } from '../../../../selectors';
 import { useConfirmContext } from '../../context/confirm';
 import { useSelectedGasFeeToken } from '../../components/confirm/info/hooks/useGasFeeToken';
@@ -12,6 +13,7 @@ import { updateAndApproveTx } from '../../../../store/actions';
 import { useIsGaslessSupported } from '../gas/useIsGaslessSupported';
 import { useGaslessSupportedSmartTransactions } from '../gas/useGaslessSupportedSmartTransactions';
 import { useShieldConfirm } from './useShieldConfirm';
+import { useDappSwapActions } from './dapp-swap-comparison/useDappSwapActions';
 
 export function useTransactionConfirm() {
   const dispatch = useDispatch();
@@ -23,6 +25,8 @@ export function useTransactionConfirm() {
   const { isSupported: isGaslessSupportedSTX } =
     useGaslessSupportedSmartTransactions();
   const { isSupported: isGaslessSupported } = useIsGaslessSupported();
+  const { onDappSwapCompleted, updateSwapWithQuoteDetailsIfRequired } =
+    useDappSwapActions();
 
   const newTransactionMeta = useMemo(
     () => cloneDeep(transactionMeta),
@@ -82,6 +86,8 @@ export function useTransactionConfirm() {
   const onTransactionConfirm = useCallback(async () => {
     newTransactionMeta.customNonceValue = customNonceValue;
 
+    updateSwapWithQuoteDetailsIfRequired(newTransactionMeta);
+
     if (isGaslessSupportedSTX) {
       handleSmartTransaction();
     } else if (selectedGasFeeToken) {
@@ -99,6 +105,8 @@ export function useTransactionConfirm() {
       );
       throw error;
     }
+
+    onDappSwapCompleted();
   }, [
     newTransactionMeta,
     customNonceValue,
@@ -109,6 +117,8 @@ export function useTransactionConfirm() {
     selectedGasFeeToken,
     handleShieldSubscriptionApprovalTransactionAfterConfirm,
     handleShieldSubscriptionApprovalTransactionAfterConfirmErr,
+    onDappSwapCompleted,
+    updateSwapWithQuoteDetailsIfRequired,
   ]);
 
   return {

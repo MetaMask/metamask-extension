@@ -74,7 +74,9 @@ import {
   Subscription,
   UpdatePaymentMethodOpts,
   SubmitUserEventRequest,
-  CachedLastSelectedPaymentMethods,
+  SubscriptionEligibility,
+  BalanceCategory,
+  CachedLastSelectedPaymentMethod,
 } from '@metamask/subscription-controller';
 
 import {
@@ -82,6 +84,7 @@ import {
   CreateClaimRequest,
   SubmitClaimConfig,
 } from '@metamask/claims-controller';
+import { ModalType } from '../selectors/subscription/subscription';
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
@@ -145,6 +148,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsEventAccountType,
+  MetaMetricsUserTraits,
 } from '../../shared/constants/metametrics';
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
@@ -189,9 +193,18 @@ import {
   SeasonStatusState,
   EstimatePointsDto,
   EstimatedPointsDto,
+  RewardsGeoMetadata,
+  OptInStatusDto,
+  OptInStatusInputDto,
 } from '../../shared/types/rewards';
 import { SubmitClaimErrorResponse } from '../pages/settings/transaction-shield-tab/types';
 import { SubmitClaimError } from '../pages/settings/transaction-shield-tab/claim-error';
+import {
+  DefaultSubscriptionPaymentOptions,
+  ShieldSubscriptionMetricsPropsFromUI,
+} from '../../shared/types';
+// eslint-disable-next-line import/no-restricted-paths
+import { OAuthLoginResult } from '../../app/scripts/services/oauth/types';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -199,7 +212,7 @@ import {
   callBackgroundMethod,
   submitRequestToBackground,
 } from './background-connection';
-import {
+import type {
   MetaMaskReduxDispatch,
   MetaMaskReduxState,
   TemporaryMessageDataType,
@@ -255,10 +268,12 @@ export function startOAuthLogin(
     }
 
     try {
-      const oauth2LoginResult = await submitRequestToBackground(
-        'startOAuthLogin',
-        [authConnection],
-      );
+      const [oauth2LoginResult] = await Promise.all([
+        submitRequestToBackground<OAuthLoginResult>('startOAuthLogin', [
+          authConnection,
+        ]),
+        submitRequestToBackground('preloadToprfNodeDetails'), // fetch the toprf node details for seedless authentication in parallel
+      ]);
 
       let seedlessAuthSuccess = false;
       let isNewUser = false;
@@ -363,7 +378,7 @@ export function resetOAuthLoginState() {
  */
 export function createNewVaultAndSyncWithSocial(
   password: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       const primaryKeyring = await createNewVault(password);
@@ -398,27 +413,36 @@ export function createNewVaultAndSyncWithSocial(
  * Starts polling for the subscriptions.
  */
 export function subscriptionsStartPolling(): ThunkAction<
-  void,
+  string | undefined,
   MetaMaskReduxState,
   unknown,
   AnyAction
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('subscriptionsStartPolling');
+      const pollingToken = await submitRequestToBackground(
+        'subscriptionsStartPolling',
+        [],
+      );
+      return pollingToken;
     } catch (error) {
       log.error('[subscriptionsStartPolling] error', error);
       dispatch(displayWarning(error));
     }
+    return undefined;
   };
 }
 
 /**
  * Fetches the subscription eligibilities.
  *
+ * @param params
+ * @param params.balanceCategory
  * @returns The subscription eligibilities.
  */
-export function getSubscriptionsEligibilities(): ThunkAction<
+export function getSubscriptionsEligibilities(params?: {
+  balanceCategory?: BalanceCategory;
+}): ThunkAction<
   SubscriptionEligibility[],
   MetaMaskReduxState,
   unknown,
@@ -426,9 +450,11 @@ export function getSubscriptionsEligibilities(): ThunkAction<
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      return await submitRequestToBackground('getSubscriptionsEligibilities');
+      return await submitRequestToBackground('getSubscriptionsEligibilities', [
+        params,
+      ]);
     } catch (error) {
-      log.error('[getSubscriptionsEligibilities] error', error);
+      log.warn('[getSubscriptionsEligibilities] error', error);
       dispatch(displayWarning(error));
       throw error;
     }
@@ -439,6 +465,8 @@ export function getSubscriptionsEligibilities(): ThunkAction<
  * Submits a user event.
  *
  * @param eventRequest - The event request.
+ * @param eventRequest.event - The event type.
+ * @param eventRequest.cohort - Optional cohort ID.
  * @returns resolved promise.
  */
 export function submitSubscriptionUserEvents(
@@ -457,6 +485,27 @@ export function submitSubscriptionUserEvents(
 }
 
 /**
+ * Assigns a user to a cohort.
+ *
+ * @param params - The cohort assignment parameters.
+ * @param params.cohort - The cohort to assign the user to.
+ * @returns resolved promise.
+ */
+export function assignUserToCohort(params: {
+  cohort: string;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('assignUserToCohort', [params]);
+    } catch (error) {
+      log.error('[assignUserToCohort] error', error);
+      dispatch(displayWarning(error));
+      throw error;
+    }
+  };
+}
+
+/**
  * Fetches user subscriptions.
  *
  * @returns The subscriptions.
@@ -468,7 +517,15 @@ export function getSubscriptions(): ThunkAction<
   AnyAction
 > {
   return async (_dispatch: MetaMaskReduxDispatch) => {
-    return await submitRequestToBackground('getSubscriptions');
+    try {
+      const subscriptions = await submitRequestToBackground('getSubscriptions');
+      return subscriptions;
+    } catch (error) {
+      log.error('[getSubscriptions] error', error);
+      throw new Error(
+        `Failed to fetch subscriptions, ${getErrorMessage(error)}`,
+      );
+    }
   };
 }
 
@@ -484,9 +541,17 @@ export function getSubscriptionPricing(): ThunkAction<
   AnyAction
 > {
   return async (_dispatch: MetaMaskReduxDispatch) => {
-    return await submitRequestToBackground<PricingResponse>(
-      'getSubscriptionPricing',
-    );
+    try {
+      const pricing = await submitRequestToBackground<PricingResponse>(
+        'getSubscriptionPricing',
+      );
+      return pricing;
+    } catch (error) {
+      log.error('[getSubscriptionPricing] error', error);
+      throw new Error(
+        `Failed to fetch subscription pricing, ${getErrorMessage(error)}`,
+      );
+    }
   };
 }
 
@@ -514,12 +579,14 @@ export async function getSubscriptionCryptoApprovalAmount(
  * @param params.products - The list of products.
  * @param params.isTrialRequested - Is trial requested.
  * @param params.recurringInterval - The recurring interval.
+ * @param params.useTestClock - Whether to use test clocks.
  * @returns The subscription response.
  */
 export function startSubscriptionWithCard(params: {
   products: ProductType[];
   isTrialRequested: boolean;
   recurringInterval: RecurringInterval;
+  useTestClock: boolean;
 }): ThunkAction<Subscription[], MetaMaskReduxState, unknown, AnyAction> {
   return async (_dispatch: MetaMaskReduxDispatch) => {
     try {
@@ -584,8 +651,16 @@ export function updateSubscriptionCryptoPaymentMethod(
 export function cancelSubscription(params: {
   subscriptionId: string;
 }): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (_dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('cancelSubscription', [params]);
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('cancelSubscription', [params]);
+    } catch (error) {
+      log.error('[cancelSubscription] error', error);
+      dispatch(displayWarning(error));
+      throw new Error(
+        `Failed to cancel subscription, ${getErrorMessage(error)}`,
+      );
+    }
   };
 }
 
@@ -593,7 +668,14 @@ export function unCancelSubscription(params: {
   subscriptionId: string;
 }): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (_dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('unCancelSubscription', [params]);
+    try {
+      await submitRequestToBackground('unCancelSubscription', [params]);
+    } catch (error) {
+      log.error('[unCancelSubscription] error', error);
+      throw new Error(
+        `Failed to uncancel subscription, ${getErrorMessage(error)}`,
+      );
+    }
   };
 }
 
@@ -604,25 +686,47 @@ export function getSubscriptionBillingPortalUrl(): ThunkAction<
   AnyAction
 > {
   return async (_dispatch: MetaMaskReduxDispatch) => {
-    const res = await submitRequestToBackground<BillingPortalResponse>(
-      'getSubscriptionBillingPortalUrl',
-      [],
-    );
-    return res;
+    try {
+      const billingPortalUrl = await submitRequestToBackground(
+        'getSubscriptionBillingPortalUrl',
+      );
+      return billingPortalUrl;
+    } catch (error) {
+      log.error('[getSubscriptionBillingPortalUrl] error', error);
+      throw new Error(
+        `Failed to get subscription billing portal url, ${getErrorMessage(error)}`,
+      );
+    }
   };
 }
 
-export function setShowShieldEntryModalOnce(
-  show: boolean | null,
-  shouldSubmitEvents: boolean = false,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+export function setShowShieldEntryModalOnce({
+  show,
+  shouldSubmitEvents = false,
+  triggeringCohort,
+  modalType,
+  hasUserInteractedWithModal = false,
+  shouldUpdateBackgroundState = true,
+}: {
+  show: boolean | null;
+  shouldSubmitEvents?: boolean;
+  triggeringCohort?: string;
+  modalType?: ModalType;
+  hasUserInteractedWithModal?: boolean;
+  shouldUpdateBackgroundState?: boolean;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('setShowShieldEntryModalOnce', [show]);
+      if (shouldUpdateBackgroundState) {
+        await submitRequestToBackground('setShowShieldEntryModalOnce', [show]);
+      }
       dispatch(
         setShowShieldEntryModalOnceAction({
           show: Boolean(show),
           shouldSubmitEvents,
+          triggeringCohort,
+          modalType,
+          hasUserInteractedWithModal,
         }),
       );
     } catch (error) {
@@ -636,16 +740,37 @@ export function setShowShieldEntryModalOnce(
 export function setShowShieldEntryModalOnceAction(payload: {
   show: boolean;
   shouldSubmitEvents: boolean;
+  triggeringCohort?: string;
+  modalType: ModalType;
+  hasUserInteractedWithModal?: boolean;
 }): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return {
-    type: actionConstants.SET_SHOW_SHIELD_ENTRY_MODAL_ONCE,
+    type: actionConstants.SET_SHIELD_ENTRY_MODAL_STATUS,
     payload,
+  };
+}
+
+export function setPendingShieldCohort(
+  cohort: string | null,
+  txType?: string | null,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('setPendingShieldCohort', [
+        cohort,
+        txType,
+      ]);
+    } catch (error) {
+      log.error('[setPendingShieldCohort] error', error);
+      dispatch(displayWarning(error));
+      throw error;
+    }
   };
 }
 
 export function setLastUsedSubscriptionPaymentDetails(
   product: ProductType,
-  payload: CachedLastSelectedPaymentMethods,
+  payload: CachedLastSelectedPaymentMethod,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
@@ -661,6 +786,38 @@ export function setLastUsedSubscriptionPaymentDetails(
   };
 }
 
+export function setDefaultSubscriptionPaymentOptions(
+  payload: DefaultSubscriptionPaymentOptions,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('setDefaultSubscriptionPaymentOptions', [
+        payload,
+      ]);
+    } catch (error) {
+      log.error('[setDefaultSubscriptionPaymentOptions] error', error);
+      dispatch(displayWarning(error));
+      throw error;
+    }
+  };
+}
+
+export function setShieldSubscriptionMetricsProps(
+  payload: ShieldSubscriptionMetricsPropsFromUI,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('setShieldSubscriptionMetricsProps', [
+        payload,
+      ]);
+    } catch (error) {
+      log.error('[setShieldSubscriptionMetricsProps] error', error);
+      dispatch(displayWarning(error));
+      throw error;
+    }
+  };
+}
+
 /**
  * Fetches and restores the seed phrase from the metadata store using the social login and restore the vault using the seed phrase.
  *
@@ -669,7 +826,7 @@ export function setLastUsedSubscriptionPaymentDetails(
  */
 export function restoreSocialBackupAndGetSeedPhrase(
   password: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       // restore the vault using the seed phrase
@@ -762,16 +919,11 @@ export function tryUnlockMetamask(
       callBackgroundMethod(
         'syncPasswordAndUnlockWallet',
         [password],
-        (error, isPasswordSynced) => {
+        (error) => {
           if (error) {
             reject(error);
             return;
           }
-          // if password is not synced show connections removal warning to user.
-          if (!isPasswordSynced) {
-            dispatch(setShowConnectionsRemovedModal(true));
-          }
-
           resolve();
         },
       );
@@ -789,6 +941,34 @@ export function tryUnlockMetamask(
         dispatch(hideLoadingIndication());
         return Promise.reject(err);
       });
+  };
+}
+
+/**
+ * Checks if the seedless onboarding user is authenticated.
+ *
+ * @returns True if the seedless onboarding user is authenticated, false otherwise.
+ */
+export function getIsSeedlessOnboardingUserAuthenticated(): ThunkAction<
+  boolean,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      dispatch(showLoadingIndication());
+      const isAuthenticated = await submitRequestToBackground<boolean>(
+        'getIsSeedlessOnboardingUserAuthenticated',
+        [],
+      );
+      return isAuthenticated;
+    } catch (error) {
+      log.warn('getIsSeedlessOnboardingUserAuthenticated error', error);
+      return false;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
   };
 }
 
@@ -938,7 +1118,7 @@ export function generateNewMnemonicAndAddToVault(): ThunkAction<
 }
 export function createNewVaultAndGetSeedPhrase(
   password: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -963,7 +1143,7 @@ export function createNewVaultAndGetSeedPhrase(
 
 export function unlockAndGetSeedPhrase(
   password: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -2391,15 +2571,6 @@ export function unlockSucceeded(message?: string) {
   return {
     type: actionConstants.UNLOCK_SUCCEEDED,
     value: message,
-  };
-}
-
-export function setShowConnectionsRemovedModal(
-  showConnectionsRemovedModal: boolean,
-) {
-  return {
-    type: actionConstants.SET_SHOW_CONNECTIONS_REMOVED,
-    value: showConnectionsRemovedModal,
   };
 }
 
@@ -4588,7 +4759,7 @@ export function toggleAccountMenu() {
 
 export function toggleNetworkMenu(payload?: {
   isAddingNewNetwork: boolean;
-  isMultiRpcOnboarding: boolean;
+  isMultiRpcOnboarding?: boolean;
   isAccessedFromDappConnectedSitePopover?: boolean;
 }) {
   return {
@@ -4597,15 +4768,14 @@ export function toggleNetworkMenu(payload?: {
   };
 }
 
-export function setAccountDetailsAddress(address: string) {
+export function closeNetworkMenu() {
   return {
-    type: actionConstants.SET_ACCOUNT_DETAILS_ADDRESS,
-    payload: address,
+    type: actionConstants.CLOSE_NETWORK_MENU,
   };
 }
 
 export function setParticipateInMetaMetrics(
-  participationPreference: boolean,
+  participationPreference: boolean | null,
 ): ThunkAction<
   Promise<[boolean, string]>,
   MetaMaskReduxState,
@@ -4655,6 +4825,15 @@ export function setDataCollectionForMarketing(
       type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
       value: dataCollectionPreference,
     });
+  };
+}
+
+export function setPna25Acknowledged(
+  acknowledged: boolean,
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    log.debug(`background.setPna25Acknowledged`);
+    await submitRequestToBackground('setPna25Acknowledged', [acknowledged]);
   };
 }
 
@@ -4964,7 +5143,7 @@ export function setIsIpfsGatewayEnabled(
 }
 
 export function setUseAddressBarEnsResolution(
-  val: string,
+  val: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.setUseAddressBarEnsResolution`);
@@ -5635,6 +5814,7 @@ export function setEditedNetwork(
         nickname?: string;
         editCompleted?: boolean;
         newNetwork?: boolean;
+        trackRpcUpdateFromBanner?: boolean;
       }
     | undefined = undefined,
 ): PayloadAction<object> {
@@ -6367,6 +6547,10 @@ export function trackMetaMetricsPage(
   ]);
 }
 
+export function updateMetaMetricsTraits(traits: MetaMetricsUserTraits) {
+  return submitRequestToBackground('updateMetaMetricsTraits', [traits]);
+}
+
 export function resetViewedNotifications() {
   return submitRequestToBackground('resetViewedNotifications');
 }
@@ -6824,6 +7008,93 @@ export function estimateRewardsPoints(
       'estimateRewardsPoints',
       [request],
     );
+  };
+}
+
+export function validateRewardsReferralCode(
+  code: string,
+): ThunkAction<Promise<boolean>, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    return await submitRequestToBackground<boolean>(
+      'validateRewardsReferralCode',
+      [code],
+    );
+  };
+}
+
+export function getRewardsGeoMetadata(): ThunkAction<
+  Promise<RewardsGeoMetadata | null>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    return await submitRequestToBackground<RewardsGeoMetadata | null>(
+      'getRewardsGeoMetadata',
+    );
+  };
+}
+
+export function rewardsOptIn({
+  accounts,
+  referralCode,
+}: {
+  accounts: InternalAccount[];
+  referralCode?: string;
+}): ThunkAction<
+  Promise<string | null>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    return await submitRequestToBackground<string | null>('rewardsOptIn', [
+      accounts,
+      referralCode,
+    ]);
+  };
+}
+
+export function rewardsIsOptInSupported({
+  account,
+}: {
+  account: InternalAccount;
+}): ThunkAction<Promise<boolean>, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    return await submitRequestToBackground<boolean>('rewardsIsOptInSupported', [
+      account,
+    ]);
+  };
+}
+
+export function rewardsGetOptInStatus(
+  params: OptInStatusInputDto,
+): ThunkAction<
+  Promise<OptInStatusDto>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    return await submitRequestToBackground<OptInStatusDto>(
+      'rewardsGetOptInStatus',
+      [params],
+    );
+  };
+}
+
+export function rewardsLinkAccountsToSubscriptionCandidate(
+  accounts: InternalAccount[],
+): ThunkAction<
+  Promise<{ account: InternalAccount; success: boolean }[]>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    return await submitRequestToBackground<
+      { account: InternalAccount; success: boolean }[]
+    >('rewardsLinkAccountsToSubscriptionCandidate', [accounts]);
   };
 }
 
@@ -7589,6 +7860,14 @@ export async function getLastInteractedConfirmationInfo(): Promise<
   );
 }
 
+export async function deleteDappSwapComparisonData(
+  uniqueId: string,
+): Promise<void> {
+  return await submitRequestToBackground<void>('deleteDappSwapComparisonData', [
+    uniqueId,
+  ]);
+}
+
 export async function setLastInteractedConfirmationInfo(
   info: LastInteractedConfirmationInfo,
 ): Promise<void> {
@@ -7832,6 +8111,9 @@ export async function submitShieldClaim(
 
     return ClaimSubmitToastType.Success;
   } catch (error) {
+    if (error instanceof SubmitClaimError) {
+      throw error;
+    }
     log.error('[submitShieldClaim] Failed to submit shield claim:', error);
     throw new SubmitClaimError(ClaimSubmitToastType.Errored);
   }

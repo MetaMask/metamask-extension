@@ -4,7 +4,7 @@ import { Mockttp } from 'mockttp';
 import { type FeatureFlagResponse } from '@metamask/bridge-controller';
 
 import { emptyHtmlPage } from '../../mock-e2e';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { Driver } from '../../webdriver/driver';
@@ -577,25 +577,23 @@ async function mockPriceSpotPrices(mockServer: Mockttp) {
       return {
         statusCode: 200,
         json: {
-          data: {
-            '0x0000000000000000000000000000000000000000': {
-              usd: 2000.0,
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              usd_24h_change: 2.5,
-            },
-            '0x6b175474e89094c44da98b954eedeac495271d0f': {
-              usd: 1.0,
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              usd_24h_change: 0.1,
-            },
-            '0xaca92e438df0b2401ff60da7e4337b687a2435da': {
-              usd: 0.9999,
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              usd_24h_change: 0.1,
-            },
+          '0x0000000000000000000000000000000000000000': {
+            id: 'ethereum',
+            price: 1700,
+            marketCap: 382623505141,
+            pricePercentChange1d: 2.5,
+          },
+          '0x6b175474e89094c44da98b954eedeac495271d0f': {
+            id: 'dai',
+            price: 1.0,
+            marketCap: 5000000000,
+            pricePercentChange1d: 0.1,
+          },
+          '0xaca92e438df0b2401ff60da7e4337b687a2435da': {
+            id: 'usdc',
+            price: 0.9999,
+            marketCap: 35000000000,
+            pricePercentChange1d: 0.1,
           },
         },
       };
@@ -1043,6 +1041,7 @@ export const getInsufficientFundsFixtures = (
       await mockTokensLinea(mockServer),
       await mockTopAssetsLinea(mockServer),
       await mockETHtoWETH(mockServer),
+      await mockPriceSpotPrices(mockServer),
     ],
     manifestFlags: {
       remoteFeatureFlags: {

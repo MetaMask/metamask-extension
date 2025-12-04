@@ -1,12 +1,27 @@
 import React from 'react';
-import { fireEvent, renderWithProvider } from '../../../../test/jest';
+import { fireEvent } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
-import * as actions from '../../../store/actions';
+import { MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import { getSelectedInternalAccountFromMockState } from '../../../../test/jest/mocks';
 import { AccountDetailsMenuItem } from '.';
 
 const mockInternalAccount = getSelectedInternalAccountFromMockState(mockState);
+
+const mockNavigate = jest.fn();
+
+jest.mock('react-router-dom-v5-compat', () => ({
+  ...jest.requireActual('react-router-dom-v5-compat'),
+  useNavigate: () => mockNavigate,
+}));
+
+jest.mock('../../../selectors/multichain-accounts/account-tree', () => ({
+  ...jest.requireActual(
+    '../../../selectors/multichain-accounts/account-tree.ts',
+  ),
+  getSelectedAccountGroup: () => mockInternalAccount.address,
+}));
 
 const render = () => {
   const store = configureStore(mockState);
@@ -20,13 +35,8 @@ const render = () => {
   );
 };
 
-jest.mock('../../../store/actions', () => ({
-  ...jest.requireActual('../../../store/actions.ts'),
-  setAccountDetailsAddress: jest.fn().mockReturnValue({ type: 'TYPE' }),
-}));
-
 describe('AccountDetailsMenuItem', () => {
-  it('opens the Account Details modal with the correct address', () => {
+  it('navigates to the multichain account details page with selected account group', () => {
     global.platform = { openTab: jest.fn() };
 
     const { getByText, getByTestId } = render();
@@ -34,8 +44,10 @@ describe('AccountDetailsMenuItem', () => {
 
     fireEvent.click(getByTestId('account-list-menu-details'));
 
-    expect(actions.setAccountDetailsAddress).toHaveBeenCalledWith(
-      mockInternalAccount.address,
+    expect(mockNavigate).toHaveBeenCalledWith(
+      `${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/${encodeURIComponent(
+        mockInternalAccount.address,
+      )}`,
     );
   });
 });

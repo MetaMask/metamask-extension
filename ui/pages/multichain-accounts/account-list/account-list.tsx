@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 
 import {
@@ -31,6 +31,7 @@ import {
   getAccountTree,
   getNormalizedGroupsMetadata,
 } from '../../../selectors/multichain-accounts/account-tree';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import { AddWalletModal } from '../../../components/multichain-accounts/add-wallet-modal';
 import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useAccountsOperationsLoadingStates';
 import {
@@ -52,7 +53,7 @@ import { filterWalletsByGroupNameOrAddress } from './utils';
 
 export const AccountList = () => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const accountTree = useSelector(getAccountTree);
   const { wallets } = accountTree;
   const { selectedAccountGroup } = accountTree;
@@ -126,13 +127,13 @@ export const AccountList = () => {
             size={ButtonIconSize.Md}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            onClick={() => history.goBack()}
+            onClick={() => navigate(PREVIOUS_ROUTE)}
           />
         }
       >
         {t('accounts')}
       </Header>
-      <Content className="account-list-page__content">
+      <Content className="account-list-page__content" paddingInline={0}>
         <Box
           flexDirection={FlexDirection.Column}
           paddingTop={1}

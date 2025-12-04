@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import TestDappPage from '../../../page-objects/pages/test-dapp';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { WINDOW_TITLES, withFixtures } from '../../../helpers';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';

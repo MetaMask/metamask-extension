@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 
 import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
 import {
@@ -25,16 +25,17 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function SmartAccountUpdateSuccess() {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const closeAccountUpdatePage = useCallback(() => {
-    history.replace('/');
-  }, [history]);
+    navigate(DEFAULT_ROUTE, { replace: true });
+  }, [navigate]);
 
   return (
     <Box

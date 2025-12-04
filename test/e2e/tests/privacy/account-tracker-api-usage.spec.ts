@@ -2,7 +2,7 @@ import { strict as assert } from 'assert';
 import { JsonRpcRequest } from '@metamask/utils';
 import { MockedEndpoint } from 'mockttp';
 import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../constants';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { veryLargeDelayMs, withFixtures } from '../../helpers';
 import { Mockttp } from '../../mock-e2e';
 import HomePage from '../../page-objects/pages/home/homepage';

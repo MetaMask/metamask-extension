@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { withFixtures } from '../../helpers';
 import { PAGES, Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
 
 // Detect scuttling by prodding globals until found

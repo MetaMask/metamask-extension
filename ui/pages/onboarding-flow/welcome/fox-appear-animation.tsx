@@ -13,7 +13,7 @@ import {
 } from '../../../contexts/rive-wasm';
 
 type FoxAppearAnimationProps = {
-  isLoader: boolean;
+  isLoader?: boolean;
   skipTransition?: boolean;
 };
 
@@ -23,8 +23,6 @@ export default function FoxAppearAnimation({
   isLoader = false,
   skipTransition = false,
 }: FoxAppearAnimationProps) {
-  const isTestEnvironment = Boolean(process.env.IN_TEST);
-
   const context = useRiveWasmContext();
   const { isWasmReady, error: wasmError } = context;
   const {
@@ -108,8 +106,7 @@ export default function FoxAppearAnimation({
     bufferLoading ||
     !buffer ||
     status === 'loading' ||
-    status === 'failed' ||
-    isTestEnvironment
+    status === 'failed'
   ) {
     return (
       <Box

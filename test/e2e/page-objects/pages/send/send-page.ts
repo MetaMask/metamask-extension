@@ -7,7 +7,7 @@ class SendPage {
     `[data-testid="token-asset-${chainId}-${symbol}"]`;
 
   private readonly inputRecipient =
-    'input[placeholder="Enter or paste a valid address"]';
+    'input[placeholder="Enter or paste an address or name"]';
 
   private readonly recipientModalButton =
     '[data-testid="open-recipient-modal-btn"]';

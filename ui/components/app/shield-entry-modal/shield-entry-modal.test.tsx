@@ -6,29 +6,34 @@ import { SubscriptionUserEvent } from '@metamask/subscription-controller';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import * as actions from '../../../store/actions';
 import { SHIELD_PLAN_ROUTE } from '../../../helpers/constants/routes';
+import MockState from '../../../../test/data/mock-state.json';
 import ShieldEntryModal from './shield-entry-modal';
 
 const mockUseNavigate = jest.fn();
+const mockUseLocation = jest.fn();
 jest.mock('react-router-dom-v5-compat', () => {
   return {
     ...jest.requireActual('react-router-dom-v5-compat'),
     useNavigate: () => mockUseNavigate,
+    useLocation: () => mockUseLocation(),
   };
 });
 
+jest.mock('./shield-illustration-animation', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  __esModule: true,
+  default: () => <div data-testid="shield-illustration-animation" />,
+}));
+
 describe('Shield Entry Modal', () => {
   const mockState = {
-    metamask: {
-      internalAccounts: {
-        accounts: {},
-        selectedAccount: '',
-      },
-      metaMetricsId: '0x00000000',
-    },
+    ...MockState,
     appState: {
+      ...MockState.appState,
       shieldEntryModal: {
         show: true,
         shouldSubmitEvents: false,
+        triggeringCohort: 'cohort-1',
       },
     },
   };
@@ -44,6 +49,10 @@ describe('Shield Entry Modal', () => {
     submitSubscriptionUserEventsSpy = jest
       .spyOn(actions, 'submitSubscriptionUserEvents')
       .mockReturnValueOnce(jest.fn().mockResolvedValueOnce(true));
+    mockUseLocation.mockReturnValue({
+      pathname: '/any-other-path',
+      search: '',
+    });
   });
 
   it('should render', () => {
@@ -53,12 +62,15 @@ describe('Shield Entry Modal', () => {
     expect(shieldEntryModal).toBeInTheDocument();
   });
 
-  it('should call onClose when the skip button is clicked', () => {
+  it('should call onClose when the close button is clicked', () => {
     const { getByTestId } = renderWithProvider(<ShieldEntryModal />, mockStore);
 
-    const skipButton = getByTestId('shield-entry-modal-skip-button');
-    fireEvent.click(skipButton);
-    expect(setShowShieldEntryModalOnceSpy).toHaveBeenCalledWith(false);
+    const closeButton = getByTestId('shield-entry-modal-close-button');
+    fireEvent.click(closeButton);
+    expect(setShowShieldEntryModalOnceSpy).toHaveBeenCalledWith({
+      show: false,
+      hasUserInteractedWithModal: true,
+    });
   });
 
   it('should call onGetStarted when the get started button is clicked', async () => {
@@ -69,9 +81,15 @@ describe('Shield Entry Modal', () => {
     );
 
     fireEvent.click(getStartedButton);
-    expect(setShowShieldEntryModalOnceSpy).toHaveBeenCalledWith(false);
+    expect(setShowShieldEntryModalOnceSpy).toHaveBeenCalledWith({
+      show: false,
+      hasUserInteractedWithModal: true,
+    });
     await waitFor(() => {
-      expect(mockUseNavigate).toHaveBeenCalledWith(SHIELD_PLAN_ROUTE);
+      expect(mockUseNavigate).toHaveBeenCalledWith({
+        pathname: SHIELD_PLAN_ROUTE,
+        search: '?source=homepage',
+      });
     });
   });
 
@@ -91,13 +109,17 @@ describe('Shield Entry Modal', () => {
       customStore,
     );
 
-    const skipButton = getByTestId('shield-entry-modal-skip-button');
+    const skipButton = getByTestId('shield-entry-modal-close-button');
     fireEvent.click(skipButton);
     await waitFor(() => {
       expect(submitSubscriptionUserEventsSpy).toHaveBeenCalledWith({
         event: SubscriptionUserEvent.ShieldEntryModalViewed,
+        cohort: mockState.appState.shieldEntryModal.triggeringCohort,
       });
-      expect(setShowShieldEntryModalOnceSpy).toHaveBeenCalledWith(false);
+      expect(setShowShieldEntryModalOnceSpy).toHaveBeenCalledWith({
+        show: false,
+        hasUserInteractedWithModal: true,
+      });
     });
   });
 });

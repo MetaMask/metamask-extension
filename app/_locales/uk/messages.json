@@ -235,9 +235,6 @@
   "etherscanView": {
     "message": "Переглянути обліковий запис на Etherscan"
   },
-  "expandView": {
-    "message": "Розгорнути подання"
-  },
   "failed": {
     "message": "Помилка"
   },

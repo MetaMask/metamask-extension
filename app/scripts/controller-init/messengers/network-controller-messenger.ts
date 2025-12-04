@@ -5,7 +5,10 @@ import {
   NetworkControllerRpcEndpointDegradedEvent,
   NetworkControllerRpcEndpointUnavailableEvent,
 } from '@metamask/network-controller';
-import { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
+import {
+  RemoteFeatureFlagControllerGetStateAction,
+  RemoteFeatureFlagControllerState,
+} from '@metamask/remote-feature-flag-controller';
 import {
   MetaMetricsControllerGetMetaMetricsIdAction,
   MetaMetricsControllerTrackEventAction,
@@ -45,7 +48,8 @@ export function getNetworkControllerMessenger(
 
 type AllowedInitializationActions =
   | MetaMetricsControllerGetMetaMetricsIdAction
-  | MetaMetricsControllerTrackEventAction;
+  | MetaMetricsControllerTrackEventAction
+  | RemoteFeatureFlagControllerGetStateAction;
 
 type AllowedInitializationEvents =
   | NetworkControllerRpcEndpointUnavailableEvent
@@ -86,6 +90,7 @@ export function getNetworkControllerInitMessenger(
     actions: [
       'MetaMetricsController:getMetaMetricsId',
       'MetaMetricsController:trackEvent',
+      'RemoteFeatureFlagController:getState',
     ],
     events: [
       'NetworkController:rpcEndpointUnavailable',

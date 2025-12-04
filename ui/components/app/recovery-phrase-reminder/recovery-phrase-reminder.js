@@ -7,10 +7,11 @@ import {
   TextAlign,
   TextVariant,
   AlignItems,
-  IconColor,
   Display,
   FlexDirection,
   BlockSize,
+  JustifyContent,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import { ONBOARDING_REVEAL_SRP_ROUTE } from '../../../helpers/constants/routes';
 import {
@@ -19,9 +20,6 @@ import {
   ButtonLinkSize,
   ButtonPrimary,
   ButtonSize,
-  Icon,
-  IconName,
-  IconSize,
   Modal,
   ModalBody,
   ModalContent,
@@ -51,29 +49,29 @@ export default function RecoveryPhraseReminder({ onConfirm }) {
             alignItems={AlignItems.center}
             gap={4}
           >
-            <Icon
-              name={IconName.Danger}
-              size={IconSize.Xl}
-              color={IconColor.warningDefault}
-            />
             <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
               {t('recoveryPhraseReminderTitle')}
             </Text>
           </Box>
         </ModalHeader>
         <ModalBody>
-          <Box width={BlockSize.Full} textAlign={TextAlign.Center}>
+          <Box
+            width={BlockSize.Full}
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.center}
+            marginBottom={4}
+          >
             <img
               src="images/forgot-password-lock.png"
-              width={154}
-              height={154}
+              width={100}
+              height={100}
               alt={t('recoveryPhraseReminderTitle')}
-              style={{
-                alignSelf: 'center',
-              }}
             />
           </Box>
-          <Text>{t('recoveryPhraseReminderSubText')}</Text>
+          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+            {t('recoveryPhraseReminderSubText')}
+          </Text>
         </ModalBody>
         <ModalFooter>
           <Box

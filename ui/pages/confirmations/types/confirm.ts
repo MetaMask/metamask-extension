@@ -2,6 +2,7 @@ import { ApprovalControllerState } from '@metamask/approval-controller';
 import { DecodingData } from '@metamask/signature-controller';
 import { SIWEMessage } from '@metamask/controller-utils';
 import { DecodedPermission } from '@metamask/gator-permissions-controller';
+import { QuoteResponse } from '@metamask/bridge-controller';
 import {
   TransactionMeta,
   TransactionType,
@@ -57,5 +58,9 @@ export type ConfirmMetamaskState = {
     enableEnforcedSimulationsForTransactions: Record<string, boolean>;
     enforcedSimulationsSlippage: number;
     enforcedSimulationsSlippageForTransactions: Record<string, number>;
+    dappSwapComparisonData?: Record<
+      string,
+      { quotes?: QuoteResponse[]; latency?: number }
+    >;
   };
 };

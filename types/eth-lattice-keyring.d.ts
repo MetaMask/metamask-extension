@@ -6,10 +6,15 @@ declare module 'eth-lattice-keyring' {
 
     constructor(opts);
 
-    _getCreds(): Promise<{
-      deviceID: string;
-      password: string;
-      endpoint: string;
-    }>;
+    _hasCreds(): boolean;
+
+    _getCreds(): Promise<
+      | {
+          deviceID: string;
+          password: string;
+          endpoint?: string;
+        }
+      | undefined
+    >;
   }
 }

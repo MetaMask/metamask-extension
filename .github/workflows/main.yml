@@ -6,7 +6,7 @@ on:
       - main
       - stable
       - release/*
-      - trigger-ci*
+      - trigger-ci-*
   pull_request:
     types:
       - opened
@@ -32,12 +32,34 @@ env:
   # For a `pull_request` event, the fork is `github.event.pull_request.head.repo.fork`.
   # For a `push` event, the fork is `github.event.repository.fork`.
   IS_FORK: ${{ github.event.pull_request.head.repo.fork || github.event.repository.fork }}
+  # For a `pull_request` event, the head commit hash is `github.event.pull_request.head.sha`.
+  # For a `push` event, the head commit hash is `github.sha`.
+  HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
 
 permissions:
   contents: write # required for releases
   id-token: write # required for s3 uploads
 
 jobs:
+  identify-builds:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    outputs:
+      builds-from-run: ${{ steps.identify-builds.outputs.builds-from-run }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          # Specifying `ref` ensures that the head commit is checked out directly.
+          ref: ${{ env.HEAD_COMMIT_HASH }}
+
+      - name: 'Look for `[builds-from-run: <run>]` in the last commit message'
+        id: identify-builds
+        env:
+          RUN_ID: ${{ github.run_id }}
+        run: .github/scripts/identify-builds-from-run.sh
+
   prep-deps:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -100,91 +122,135 @@ jobs:
     uses: ./.github/workflows/validate-lavamoat-policies.yml
 
   build-dist-browserify:
+    needs:
+      - identify-builds
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-browserify
       build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build prod' || 'yarn build dist' }}
+      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets: inherit
 
   build-dist-mv2-browserify:
+    needs:
+      - identify-builds
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-mv2-browserify
       build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build prod' || 'yarn build dist' }}
       mozilla-lint: true
       enable-mv3: false
+      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets: inherit
 
   build-beta-browserify:
+    needs:
+      - identify-builds
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-beta-browserify
       build-command: yarn build --build-type beta dist
+      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets: inherit
 
   build-beta-mv2-browserify:
+    needs:
+      - identify-builds
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-beta-mv2-browserify
       build-command: yarn build --build-type beta dist
       mozilla-lint: false # Disabled as it is failing for some reason
       enable-mv3: false
+      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets: inherit
 
   build-flask-browserify:
+    needs:
+      - identify-builds
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-browserify
       build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build --build-type flask prod' || 'yarn build --build-type flask dist' }}
+      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets: inherit
 
   build-flask-mv2-browserify:
+    needs:
+      - identify-builds
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-mv2-browserify
       build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build --build-type flask prod' || 'yarn build --build-type flask dist' }}
       mozilla-lint: true
       enable-mv3: false
+      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets: inherit
 
   build-test-browserify:
+    needs:
+      - identify-builds
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-browserify
       build-command: yarn build:test
+      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets: inherit
 
   build-test-mv2-browserify:
+    needs:
+      - identify-builds
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-mv2-browserify
       build-command: yarn build:test:mv2
       mozilla-lint: false # Disabled as it is failing for some reason
       enable-mv3: false
+      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets: inherit
 
   build-test-flask-browserify:
+    needs:
+      - identify-builds
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-flask-browserify
       build-command: yarn build:test:flask
+      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets: inherit
 
   build-test-flask-mv2-browserify:
+    needs:
+      - identify-builds
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-flask-mv2-browserify
       build-command: yarn build:test:flask:mv2
       mozilla-lint: false # Disabled as it is failing for some reason
       enable-mv3: false
+      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets: inherit
 
   build-test-webpack:
+    needs:
+      - identify-builds
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-webpack
       build-command: yarn build:test:webpack
       validate-source-maps: false # Disabled as webpack outputs are not supported by validate-source-maps
+      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
+    secrets: inherit
+
+  build-test-mv2-webpack:
+    needs:
+      - identify-builds
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-test-mv2-webpack
+      build-command: yarn build:test:webpack:mv2
+      validate-source-maps: false # Disabled as webpack outputs are not supported by validate-source-maps
+      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets: inherit
 
   run-benchmarks:
@@ -192,9 +258,14 @@ jobs:
     if: ${{ !(github.event.pull_request.head.repo.fork || github.event.repository.fork) }}
     uses: ./.github/workflows/run-benchmarks.yml
     needs:
+      - identify-builds
       - prep-deps
       - build-test-browserify
+      - build-test-mv2-browserify
       - build-test-webpack
+      - build-test-mv2-webpack
+    with:
+      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
 
@@ -206,6 +277,7 @@ jobs:
 
   bundle-size:
     needs:
+      - identify-builds
       - build-dist-browserify
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -224,6 +296,8 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-dist-browserify
+          github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
+          run-id: ${{ needs.identify-builds.outputs.builds-from-run }} # Download from whatever run the identify-builds job said.
 
       - name: Measure bundle size
         run: yarn tsx test/e2e/mv3-perf-stats/bundle-size.ts --out test-artifacts/chrome
@@ -243,6 +317,7 @@ jobs:
 
   page-load-benchmark:
     needs:
+      - identify-builds
       - build-test-browserify
     uses: ./.github/workflows/page-load-benchmark.yml
     secrets:
@@ -250,6 +325,7 @@ jobs:
     with:
       browser-loads: 10
       page-loads: 10
+      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
 
   needs-e2e:
     needs:
@@ -258,6 +334,7 @@ jobs:
 
   e2e-chrome:
     needs:
+      - identify-builds
       - needs-e2e
       - build-test-browserify
       - build-test-webpack
@@ -265,18 +342,24 @@ jobs:
       - build-test-flask-browserify
     if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/e2e-chrome.yml
+    with:
+      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
 
   e2e-firefox:
     needs:
+      - identify-builds
       - needs-e2e
+      - build-dist-mv2-browserify
       - build-test-mv2-browserify
-      - build-test-webpack
+      - build-test-mv2-webpack
       - build-test-flask-mv2-browserify
     if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/e2e-firefox.yml
+    with:
+      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
 
@@ -294,6 +377,7 @@ jobs:
 
   build-source-map-explorer:
     needs:
+      - identify-builds
       - prep-deps
       - build-dist-browserify
     runs-on: ubuntu-latest
@@ -310,6 +394,8 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-dist-browserify
+          github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
+          run-id: ${{ needs.identify-builds.outputs.builds-from-run }} # Download from whatever run the identify-builds job said.
 
       - run: ./development/source-map-explorer.sh
 
@@ -324,6 +410,7 @@ jobs:
 
   build-lavamoat-viz:
     needs:
+      - identify-builds
       - prep-deps
       - build-dist-browserify
     runs-on: ubuntu-latest
@@ -384,6 +471,8 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-dist-browserify
+          github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
+          run-id: ${{ needs.identify-builds.outputs.builds-from-run }} # Download from whatever run the identify-builds job said.
 
       - run: ./.github/scripts/create-lavamoat-viz.sh
         if: ${{ steps.lavamoat-policy-changed.outputs.lavamoat-policy-changed == 'true' }}
@@ -401,6 +490,7 @@ jobs:
     name: Publish prerelease
     if: ${{ github.event_name != 'merge_group' }} # Skip this job for the Merge Queue
     needs:
+      - identify-builds
       - build-dist-browserify
       - build-dist-mv2-browserify
       - build-beta-browserify
@@ -421,6 +511,7 @@ jobs:
     uses: ./.github/workflows/publish-prerelease.yml
     with:
       lavamoat-policy-changed: ${{ needs.build-lavamoat-viz.outputs.lavamoat-policy-changed == 'true' }}
+      post-new-builds: ${{ needs.identify-builds.outputs.builds-from-run == github.run_id }}
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
 
@@ -461,6 +552,7 @@ jobs:
       - build-test-flask-browserify
       - build-test-flask-mv2-browserify
       - build-test-webpack
+      - build-test-mv2-webpack
       - run-tests
       - build-storybook
       - build-ts-migration-dashboard
@@ -483,6 +575,7 @@ jobs:
       - needs-e2e
       - e2e-chrome
       - e2e-firefox
+      - identify-builds
     steps:
       - name: Check that all jobs have passed
         run: |
@@ -494,14 +587,21 @@ jobs:
 
           # Check E2E jobs only if they should have run
           if [[ "${{ needs.needs-e2e.outputs.needs-e2e }}" == "true" ]]; then
-            if [[ "${{ needs.e2e-chrome.result }}" == "failure" ]]; then
-              echo "E2E Chrome tests failed"
+            if [[ "${{ needs.e2e-chrome.result }}" != "success" ]]; then
+              echo "E2E Chrome tests did not succeed (result: ${{ needs.e2e-chrome.result }})"
               exit 1
             fi
-            if [[ "${{ needs.e2e-firefox.result }}" == "failure" ]]; then
-              echo "E2E Firefox tests failed"
+            if [[ "${{ needs.e2e-firefox.result }}" != "success" ]]; then
+              echo "E2E Firefox tests did not succeed (result: ${{ needs.e2e-firefox.result }})"
               exit 1
             fi
+          fi
+
+          # Check if the identify-builds output is the current run ID
+          if [[ "${{ needs.identify-builds.outputs.builds-from-run }}" != "${{ github.run_id }}" ]]; then
+            echo "Builds were used from a different GHA run: ${{ needs.identify-builds.outputs.builds-from-run }}"
+            echo "Right now you can use this feature to test and iterate faster, but to merge a PR, you have to disable it."
+            exit 1
           fi
 
           echo "All required jobs passed"

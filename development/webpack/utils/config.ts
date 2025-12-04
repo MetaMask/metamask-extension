@@ -155,15 +155,16 @@ export function getVariables(
 }
 
 /**
- * Loads configuration variables from process.env, .metamaskrc, and build.yml.
+ * Loads configuration variables from process.env, .metamaskprodrc, .metamaskrc, and build.yml.
  *
  * The order of precedence is:
  * 1. process.env
- * 2. .metamaskrc
- * 3. build.yml
+ * 2. .metamaskprodrc
+ * 3. .metamaskrc
+ * 4. builds.yml
  *
  * i.e., if a variable is defined in `process.env`, it will take precedence over
- * the same variable defined in `.metamaskrc` or `build.yml`.
+ * the same variable defined in `.metamaskprodrc`, `.metamaskrc` or `build.yml`.
  *
  * @param activeBuild
  * @param build
@@ -175,6 +176,7 @@ function loadConfigVars(
   { env }: BuildTypesConfig,
 ) {
   const definitions = loadEnv();
+  addRc(definitions, join(__dirname, '../../../.metamaskprodrc'));
   addRc(definitions, join(__dirname, '../../../.metamaskrc'));
   addVars(activeBuild.env);
   addVars(env);

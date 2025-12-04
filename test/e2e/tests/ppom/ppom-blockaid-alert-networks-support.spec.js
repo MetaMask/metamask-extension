@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const FixtureBuilder = require('../../fixture-builder');
+const FixtureBuilder = require('../../fixtures/fixture-builder');
 const { unlockWallet, withFixtures } = require('../../helpers');
 const { DAPP_URL, WINDOW_TITLES } = require('../../constants');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');

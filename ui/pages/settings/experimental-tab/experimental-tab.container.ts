@@ -1,6 +1,4 @@
-import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   setAddSnapAccountEnabled,
@@ -46,7 +44,4 @@ const mapDispatchToProps = (dispatch: MetaMaskReduxDispatch) => {
   };
 };
 
-export default compose(
-  withRouter,
-  connect(mapStateToProps, mapDispatchToProps),
-)(ExperimentalTab);
+export default connect(mapStateToProps, mapDispatchToProps)(ExperimentalTab);

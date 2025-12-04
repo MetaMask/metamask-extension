@@ -1,5 +1,5 @@
 import { DELEGATOR_CONTRACTS } from '@metamask/delegation-deployments';
-import type { Hex } from './utils';
+import type { Hex } from '@metamask/utils';
 
 /**
  * A version agnostic blob of contract addresses required for the DeleGator system to function.

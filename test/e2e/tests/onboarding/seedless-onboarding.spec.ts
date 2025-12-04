@@ -1,12 +1,13 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { OAuthMockttpService } from '../../helpers/seedless-onboarding/mocks';
 import {
   createNewWalletWithSocialLoginOnboardingFlow,
   importWalletWithSocialLoginOnboardingFlow,
+  handleSidepanelPostOnboarding,
 } from '../../page-objects/flows/onboarding.flow';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -39,6 +40,9 @@ describe('Metamask onboarding (with social login)', function () {
         await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
         await onboardingCompletePage.completeOnboarding();
+
+        // Handle sidepanel navigation if needed
+        await handleSidepanelPostOnboarding(driver);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();

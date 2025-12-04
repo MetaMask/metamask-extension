@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import classnames from 'classnames';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { type Hex } from '@metamask/utils';
@@ -18,6 +18,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { TokenInsightsModal } from '../../../pages/bridge/token-insights-modal';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -124,7 +125,8 @@ export const TokenListItemComponent = ({
 
   const dispatch = useDispatch();
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
-  const history = useHistory();
+  const navigate = useNavigate();
+  const [showTokenInsights, setShowTokenInsights] = useState(false);
 
   const getTokenTitle = () => {
     if (isTitleNetworkName) {
@@ -376,6 +378,21 @@ export const TokenListItemComponent = ({
             )}
           </Box>
         </Box>
+
+        {isDestinationToken && (
+          <ButtonIcon
+            iconName={IconName.Info}
+            size={ButtonIconSize.Sm}
+            onClick={(e: React.MouseEvent) => {
+              e.stopPropagation();
+              e.preventDefault();
+              setShowTokenInsights(true);
+            }}
+            className="multichain-token-list-item__info-icon"
+            color={IconColor.iconAlternative}
+            ariaLabel={t('viewTokenDetails')}
+          />
+        )}
       </Box>
       {isEvm && showScamWarningModal ? (
         <Modal isOpen onClose={() => setShowScamWarningModal(false)}>
@@ -397,7 +414,7 @@ export const TokenListItemComponent = ({
               <ButtonSecondary
                 onClick={() => {
                   dispatch(setEditedNetwork({ chainId }));
-                  history.push(NETWORKS_ROUTE);
+                  navigate(NETWORKS_ROUTE);
                 }}
                 block
               >
@@ -407,6 +424,20 @@ export const TokenListItemComponent = ({
           </ModalContent>
         </Modal>
       ) : null}
+
+      {showTokenInsights && (
+        <TokenInsightsModal
+          isOpen={showTokenInsights}
+          onClose={() => setShowTokenInsights(false)}
+          token={{
+            address,
+            symbol: tokenSymbol || title,
+            name: title,
+            chainId,
+            iconUrl: tokenImage,
+          }}
+        />
+      )}
     </Box>
   );
 };

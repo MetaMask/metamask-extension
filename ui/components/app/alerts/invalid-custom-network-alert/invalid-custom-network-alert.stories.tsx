@@ -25,14 +25,12 @@ const meta: Meta<typeof InvalidCustomNetworkAlert> = {
     ),
   ],
   argTypes: {
-    history: {
-      control: 'object',
+    navigate: {
+      control: 'function',
     },
   },
   args: {
-    history: {
-      push: () => {},
-    },
+    navigate: () => {},
   },
 };
 
