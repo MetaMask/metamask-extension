@@ -1,6 +1,4 @@
 {
-  "generated": "2025-12-04T10:47:12.530Z",
-  "nodeVersion": "v24.11.1",
   "files": {
     "test/integration/onboarding/wallet-created.test.tsx": {
       "Reselect: Identity function warnings": 8,
@@ -97,6 +95,8 @@
       "Reselect: Input stability warnings": 8
     }
   },
+  "generated": "2025-12-04T10:47:12.530Z",
+  "nodeVersion": "v24.11.1",
   "summary": {
     "totalWarnings": 436,
     "totalFilesWithWarnings": 21,

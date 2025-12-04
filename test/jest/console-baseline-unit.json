@@ -1,6 +1,4 @@
 {
-  "generated": "2025-12-04T10:54:13.456Z",
-  "nodeVersion": "v24.11.1",
   "files": {
     "ui/components/app/assets/account-group-balance/account-group-balance.test.tsx": {
       "Reselect: Identity function warnings": 1
@@ -2166,6 +2164,8 @@
       "warn: REVIEWER_TEST: This warning should be": 45
     }
   },
+  "generated": "2025-12-04T10:54:13.456Z",
+  "nodeVersion": "v24.11.1",
   "summary": {
     "totalWarnings": 7601,
     "totalFilesWithWarnings": 509,

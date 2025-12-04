@@ -37,6 +37,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const prettier = require('prettier');
 const {
   categorizeUnitTestMessage,
   categorizeIntegrationTestMessage,
@@ -180,7 +181,10 @@ class ConsoleBaselineReporter {
       },
     };
 
-    fs.writeFileSync(baselinePath, `${JSON.stringify(baseline, null, 2)}\n`);
+    // Format with Prettier to ensure consistent output that passes lint
+    const jsonString = JSON.stringify(baseline, null, 2);
+    const formatted = prettier.format(jsonString, { parser: 'json' });
+    fs.writeFileSync(baselinePath, formatted);
 
     const filesUpdated = Object.keys(this.warningsByFile).length;
     const totalFilesInBaseline = Object.keys(mergedFiles).length;
