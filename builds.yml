@@ -34,7 +34,7 @@ buildTypes:
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
       - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.2.3/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
-      - IS_SIDEPANEL: true
+      - IS_SIDEPANEL: false
       - EXTENSION_UX_PNA25: true
       # for seedless onboarding (social login)
       - GOOGLE_PROD_CLIENT_ID
@@ -100,7 +100,7 @@ buildTypes:
       - INFURA_ENV_KEY_REF: INFURA_EXPERIMENTAL_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_EXPERIMENTAL_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: false
-      - IS_SIDEPANEL: true
+      - IS_SIDEPANEL: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
       - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.2.3/index.html
@@ -467,3 +467,4 @@ env:
 
   # PNA25 (Privacy Notice)
   - EXTENSION_UX_PNA25: true
+  - IS_SIDEPANEL: false

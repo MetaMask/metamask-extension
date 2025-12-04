@@ -65,7 +65,6 @@ describe('KeyringControllerInit', () => {
     expect(controllerMock).toHaveBeenCalledWith({
       messenger: expect.any(Object),
       state: undefined,
-      cacheEncryptionKey: true,
       encryptor: expect.any(Object),
       keyringBuilders: expect.any(Array),
     });

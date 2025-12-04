@@ -151,8 +151,8 @@ import {
 
 import {
   HardwareDeviceNames,
-  HardwareKeyringType,
   LedgerTransportTypes,
+  KEYRING_DEVICE_PROPERTY_MAP,
 } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
 import { RestrictedMethods } from '../../shared/constants/permissions';
@@ -1445,11 +1445,15 @@ export default class MetamaskController extends EventEmitter {
         (snap) => !snap.preinstalled,
       )
     ) {
-      try {
-        this.snapController.updateRegistry();
-      } catch {
-        // Ignore
-      }
+      this.snapController.updateRegistry().catch((error) => {
+        if (
+          !error.message.includes(
+            'The Snaps platform requires basic functionality to be used.',
+          )
+        ) {
+          console.error(error);
+        }
+      });
     }
   }
 
@@ -3017,6 +3021,10 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // SeedlessOnboardingController
+      preloadToprfNodeDetails:
+        this.seedlessOnboardingController.preloadToprfNodeDetails.bind(
+          this.seedlessOnboardingController,
+        ),
       authenticate: this.seedlessOnboardingController.authenticate.bind(
         this.seedlessOnboardingController,
       ),
@@ -5448,7 +5456,7 @@ export default class MetamaskController extends EventEmitter {
   async getHardwareTypeForMetric(address) {
     return await this.keyringController.withKeyring(
       { address },
-      ({ keyring }) => HardwareKeyringType[keyring.type],
+      ({ keyring }) => KEYRING_DEVICE_PROPERTY_MAP[keyring.type],
     );
   }
 
@@ -5486,7 +5494,7 @@ export default class MetamaskController extends EventEmitter {
       case KeyringType.lattice:
       case KeyringType.qr:
       case KeyringType.ledger:
-        return 'hardware';
+        return KEYRING_DEVICE_PROPERTY_MAP[keyringType];
       case KeyringType.imported:
         return 'imported';
       case KeyringType.snap:
