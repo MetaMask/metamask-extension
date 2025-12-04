@@ -37,7 +37,6 @@
 
 const fs = require('fs');
 const path = require('path');
-const prettier = require('prettier');
 const {
   categorizeUnitTestMessage,
   categorizeIntegrationTestMessage,
@@ -160,22 +159,25 @@ class ConsoleBaselineReporter {
     }
 
     const baseline = {
+      files: mergedFiles,
       generated: new Date().toISOString(),
       nodeVersion: process.version,
-      files: mergedFiles,
     };
 
-    // Format with Prettier to ensure consistent output that passes lint
-    const jsonString = JSON.stringify(baseline, null, 2);
-    const formatted = prettier.format(jsonString, { parser: 'json' });
-    fs.writeFileSync(baselinePath, formatted);
+    if (JSON.stringify(mergedFiles) === JSON.stringify(this.baseline.files)) {
+      console.log(`\n✅ Baseline is up-to-date, no changes needed.\n`);
+    } else {
+      // Write JSON with 2-space indentation and trailing newline (matches Prettier)
+      const jsonString = `${JSON.stringify(baseline, null, 2)}\n`;
+      fs.writeFileSync(baselinePath, jsonString);
 
-    const filesUpdated = Object.keys(this.warningsByFile).length;
-    const totalFilesInBaseline = Object.keys(mergedFiles).length;
-    console.log(
-      `\n✅ Baseline updated: ${filesUpdated} file(s) updated, ${totalFilesInBaseline} total in baseline`,
-    );
-    console.log(`   Written to: ${baselinePath}\n`);
+      const filesUpdated = Object.keys(this.warningsByFile).length;
+      const totalFilesInBaseline = Object.keys(mergedFiles).length;
+      console.log(
+        `\n✅ Baseline updated: ${filesUpdated} file(s) updated, ${totalFilesInBaseline} total in baseline`,
+      );
+      console.log(`   Written to: ${baselinePath}\n`);
+    }
   }
 
   // ===========================================================================
