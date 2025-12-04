@@ -845,7 +845,7 @@ export const useShieldRewards = () => {
   }, [dispatch]);
 
   // if there is an error, return null values for points and season so it will not block the UI
-  if (pointsError || seasonError) {
+  if (pointsError || seasonError || actualSubscriptionIdError) {
     if (pointsError) {
       console.error('[useShieldRewards error]:', pointsError);
     }
@@ -860,6 +860,7 @@ export const useShieldRewards = () => {
       pointsMonthly: null,
       pointsYearly: null,
       isRewardsSeason: false,
+      actualSubscriptionId: null,
     };
   }
 
