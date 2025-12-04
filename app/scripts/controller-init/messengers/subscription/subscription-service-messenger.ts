@@ -40,7 +40,10 @@ export function getSubscriptionServiceMessenger(
       'SubscriptionController:getBillingPortalUrl',
       'SubscriptionController:submitSponsorshipIntents',
       'SubscriptionController:getState',
+      'SubscriptionController:submitShieldSubscriptionCryptoApproval',
+      'SubscriptionController:linkRewards',
       'AppStateController:getState',
+      'AppStateController:setPendingShieldCohort',
       'AuthenticationController:getBearerToken',
       'TransactionController:getTransactions',
       'AccountsController:getState',
@@ -50,7 +53,11 @@ export function getSubscriptionServiceMessenger(
       'SwapsController:getState',
       'MetaMetricsController:trackEvent',
       'KeyringController:getState',
+      // Rewards Integration
       'RewardsController:getActualSubscriptionId',
+      'RewardsController:getSeasonStatus',
+      'RewardsController:getSeasonMetadata',
+      'RewardsController:getHasAccountOptedIn',
     ],
   });
   return serviceMessenger;

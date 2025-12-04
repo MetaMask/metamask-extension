@@ -1,5 +1,6 @@
 import { Messenger } from '@metamask/messenger';
 import {
+  COHORT_NAMES,
   PAYMENT_TYPES,
   PRODUCT_TYPES,
   StartSubscriptionRequest,
@@ -11,7 +12,13 @@ import {
 } from '@metamask/transaction-controller';
 import log from 'loglevel';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { CaipAccountId, Json } from '@metamask/utils';
+import {
+  CaipAccountId,
+  Json,
+  parseCaipChainId,
+  toCaipAccountId,
+} from '@metamask/utils';
+import { isEqualCaseInsensitive } from '@metamask/controller-utils';
 import ExtensionPlatform from '../../platforms/extension';
 import { WebAuthenticator } from '../oauth/types';
 import { isSendBundleSupported } from '../../lib/transaction/sentinel-api';
@@ -23,6 +30,7 @@ import { SwapsControllerState } from '../../controllers/swaps/swaps.types';
 import {
   getSubscriptionRequestTrackingProps,
   getUserAccountTypeAndCategory,
+  getUserBalanceCategory,
 } from '../../../../shared/modules/shield/metrics';
 import {
   MetaMetricsEventCategory,
@@ -133,11 +141,15 @@ export class SubscriptionService {
     try {
       const redirectUrl = this.#webAuthenticator.getRedirectURL();
 
+      // check if the account is opted in to rewards
+      const rewardAccountId = await this.#getRewardCaipAccountId();
+
       const { checkoutSessionUrl } = await this.#messenger.call(
         'SubscriptionController:startShieldSubscriptionWithCard',
         {
           ...params,
           successUrl: redirectUrl,
+          rewardAccountId,
         },
       );
 
@@ -172,6 +184,24 @@ export class SubscriptionService {
       });
       throw error;
     }
+  }
+
+  /**
+   * Handles the shield subscription approval transaction after confirm
+   *
+   * @param txMeta - The transaction metadata.
+   * @returns Promise<void> - resolves when the transaction is submitted successfully.
+   */
+  async handlePostTransaction(txMeta: TransactionMeta) {
+    // Assign the shield eligibility cohort if the conditions are met
+    this.#assignPostTxCohort(txMeta);
+
+    if (txMeta.type !== TransactionType.shieldSubscriptionApprove) {
+      return;
+    }
+
+    // handle shield subscription approval transaction
+    await this.#handleShieldSubscriptionApproveTransaction(txMeta);
   }
 
   async submitSubscriptionSponsorshipIntent(txMeta: TransactionMeta) {
@@ -219,6 +249,28 @@ export class SubscriptionService {
       return null;
     }
     return actualSubscriptionId;
+  }
+
+  /**
+   * Link the reward to the existing shield subscription.
+   *
+   * @param subscriptionId - Shield subscription ID to link the reward to.
+   * @returns Promise<void> - The reward subscription ID or undefined if the season is not active or the primary account is not opted in to rewards.
+   */
+  async linkRewardToExistingSubscription(subscriptionId: string) {
+    try {
+      const rewardAccountId = await this.#getRewardCaipAccountId();
+      if (!rewardAccountId) {
+        return;
+      }
+
+      await this.#messenger.call('SubscriptionController:linkRewards', {
+        subscriptionId,
+        rewardAccountId,
+      });
+    } catch (error) {
+      log.error('Failed to link reward to existing subscription', error);
+    }
   }
 
   /**
@@ -316,6 +368,45 @@ export class SubscriptionService {
     });
   }
 
+  async #handleShieldSubscriptionApproveTransaction(txMeta: TransactionMeta) {
+    const { isGasFeeSponsored, chainId } = txMeta;
+    const bundlerSupported = await isSendBundleSupported(chainId);
+    const isSponsored = Boolean(isGasFeeSponsored && bundlerSupported);
+
+    try {
+      this.trackSubscriptionRequestEvent('started', txMeta, {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        has_sufficient_crypto_balance: true,
+      });
+
+      const rewardAccountId = await this.#getRewardCaipAccountId();
+
+      await this.#messenger.call(
+        'SubscriptionController:submitShieldSubscriptionCryptoApproval',
+        txMeta,
+        isSponsored,
+        rewardAccountId,
+      );
+
+      this.trackSubscriptionRequestEvent('completed', txMeta, {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        gas_sponsored: isSponsored || false,
+      });
+    } catch (error) {
+      log.error('Error on Shield subscription approval transaction', error);
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+      this.trackSubscriptionRequestEvent('failed', txMeta, {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        error_message: errorMessage,
+      });
+      throw error;
+    }
+  }
+
   async #getIsSmartTransactionEnabled(chainId: `0x${string}`) {
     const swapsControllerState = await this.#getSwapsFeatureFlagsFromNetwork();
     const uiState = {
@@ -377,5 +468,143 @@ export class SubscriptionService {
       selectedInternalAccount,
       hdKeyringsMetadata,
     );
+  }
+
+  /**
+   * Get the reward subscription ID for the current season.
+   *
+   * @returns Promise<string | undefined> - The reward subscription ID or undefined if the season is not active.
+   */
+  async #getRewardCaipAccountId(): Promise<CaipAccountId | undefined> {
+    try {
+      const currentSeasonMetadata = await this.#messenger.call(
+        'RewardsController:getSeasonMetadata',
+        'current',
+      );
+      const { startDate, endDate } = currentSeasonMetadata;
+      const currentTimeStamp = Date.now();
+      if (currentTimeStamp < startDate || currentTimeStamp > endDate) {
+        return undefined;
+      }
+
+      // if payer address is not provided or not opted in to rewards, fallback to use the primary account
+      const primaryCaipAccountId = await this.#getPrimaryCaipAccountId();
+      if (!primaryCaipAccountId) {
+        return undefined;
+      }
+
+      const hasAccountOptedIn = await this.#messenger.call(
+        'RewardsController:getHasAccountOptedIn',
+        primaryCaipAccountId,
+      );
+      return hasAccountOptedIn ? primaryCaipAccountId : undefined;
+    } catch (error) {
+      log.warn('Failed to get reward season metadata', error);
+      return undefined;
+    }
+  }
+
+  /**
+   * Get the primary CAIP account ID.
+   *
+   * @returns Promise<CaipAccountId | undefined> - The primary CAIP account ID.
+   */
+  async #getPrimaryCaipAccountId(): Promise<CaipAccountId | undefined> {
+    try {
+      const keyringsMetadata = this.#messenger.call(
+        'KeyringController:getState',
+      );
+      const primaryHdKeyring = keyringsMetadata.keyrings.find(
+        (keyring) => keyring.type === KeyringTypes.hd,
+      );
+      if (!primaryHdKeyring) {
+        return undefined;
+      }
+
+      const { internalAccounts } = this.#messenger.call(
+        'AccountsController:getState',
+      );
+      const primaryInternalAccount = Object.values(
+        internalAccounts.accounts,
+      ).find((account) => {
+        const entropySource = account.options?.entropySource;
+        if (typeof entropySource === 'string') {
+          return isEqualCaseInsensitive(
+            entropySource,
+            primaryHdKeyring.metadata.id,
+          );
+        }
+        return false;
+      });
+      if (!primaryInternalAccount) {
+        return undefined;
+      }
+
+      const { namespace, reference } = parseCaipChainId(
+        primaryInternalAccount.scopes[0],
+      );
+
+      return toCaipAccountId(
+        namespace,
+        reference,
+        primaryInternalAccount.address,
+      );
+    } catch (error) {
+      log.warn(
+        '[getPrimaryCaipAccountId] Failed to get primary CAIP account ID',
+        error,
+      );
+      return undefined;
+    }
+  }
+
+  /**
+   * Assign the post tx cohort after the transaction is confirmed.
+   *
+   * @param txMeta - The transaction metadata.
+   */
+  #assignPostTxCohort(txMeta: TransactionMeta) {
+    try {
+      if (!txMeta.type) {
+        return;
+      }
+
+      // Mark send/transfer/swap transactions for Shield post_tx cohort evaluation
+      const isPostTxTransaction = [
+        TransactionType.simpleSend,
+        TransactionType.tokenMethodTransfer,
+        TransactionType.swap,
+        TransactionType.swapAndSend,
+      ].includes(txMeta.type);
+
+      const { pendingShieldCohort, shieldSubscriptionMetricsProps } =
+        this.#messenger.call('AppStateController:getState');
+      if (isPostTxTransaction && !pendingShieldCohort) {
+        this.#messenger.call(
+          'AppStateController:setPendingShieldCohort',
+          COHORT_NAMES.POST_TX,
+          txMeta.type,
+        );
+
+        // Track the Shield eligibility cohort assigned event
+        this.#messenger.call('MetaMetricsController:trackEvent', {
+          event: MetaMetricsEventName.ShieldEligibilityCohortAssigned,
+          category: MetaMetricsEventCategory.Shield,
+          properties: {
+            ...this.#getAccountTypeAndCategoryForMetrics(),
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            multi_chain_balance_category: getUserBalanceCategory(
+              shieldSubscriptionMetricsProps?.userBalanceInUSD ?? 0,
+            ),
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            assigned_cohort: COHORT_NAMES.POST_TX,
+          },
+        });
+      }
+    } catch (error) {
+      log.error('Failed to assign post tx cohort', error);
+    }
   }
 }
