@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
 import classnames from 'classnames';
 import { ButtonVariant } from '@metamask/snaps-sdk';
 import log from 'loglevel';
@@ -136,6 +136,10 @@ export default function PrivacySettings() {
 
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
 
+  const { search } = useLocation();
+  const searchParams = new URLSearchParams(search);
+  const isFromReminder = searchParams.get('isFromReminder');
+
   const handleSubmit = () => {
     dispatch(setUse4ByteResolution(turnOn4ByteResolution));
     dispatch(setUseTokenDetection(turnOnTokenDetection));
@@ -162,7 +166,13 @@ export default function PrivacySettings() {
         turnon_token_detection: turnOnTokenDetection,
       },
     });
-    navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
+    if (isFromReminder) {
+      navigate(`${ONBOARDING_COMPLETION_ROUTE}?isFromReminder=true`, {
+        replace: true,
+      });
+    } else {
+      navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
+    }
   };
 
   const handleIPFSChange = (url) => {
