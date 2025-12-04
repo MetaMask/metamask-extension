@@ -130,39 +130,6 @@ async function waitUntilFileIsWritten({
   );
 }
 
-/**
- * Closes the announcements popover if present
- *
- * @param driver
- */
-async function closePopoverIfPresent(driver: Driver) {
-  const popoverButtonSelector = '[data-testid="popover-close"]';
-  // It shows in the Smart Transactions Opt-In Modal.
-  const enableButtonSelector = {
-    text: 'Enable',
-    tag: 'button',
-  };
-  const popoverTourSelector = '[data-testid="tour-cta-button"]';
-
-  await driver.clickElementSafe(popoverButtonSelector);
-  await driver.clickElementSafe(enableButtonSelector);
-  await driver.clickElementSafe(popoverTourSelector);
-
-  // Token Autodetection Independent Announcement
-  const tokenAutodetection = {
-    css: '[data-testid="auto-detect-token-modal"] button',
-    text: 'Not right now',
-  };
-  await driver.clickElementSafe(tokenAutodetection);
-
-  // NFT Autodetection Independent Announcement
-  const nftAutodetection = {
-    css: '[data-testid="auto-detect-nft-modal"] button',
-    text: 'Not right now',
-  };
-  await driver.clickElementSafe(nftAutodetection);
-}
-
 describe('Vault Decryptor Page', function () {
   this.timeout(160000);
   it('is able to decrypt the vault uploading the log file in the vault-decryptor webapp', async function () {
@@ -188,8 +155,21 @@ describe('Vault Decryptor Page', function () {
           password: WALLET_PASSWORD,
           needNavigateToNewPage: false,
         });
-        // close popover if any (Announcements etc..)
-        await closePopoverIfPresent(driver);
+
+        // Retry-logic to ensure the file is ready before uploading it to mitigate flakiness when Chrome hasn't finished writing
+        await waitUntilFileIsWritten({ driver });
+
+        // navigate to the Vault decryptor webapp and fill the input field with storage recovered from filesystem
+        await driver.openNewPage(VAULT_DECRYPTOR_PAGE);
+        const vaultDecryptorPage = new VaultDecryptorPage(driver);
+        await vaultDecryptorPage.checkPageIsLoaded();
+        const extensionPath = await getExtensionStorageFilePath(driver);
+        const extensionLogFile = getExtensionLogFile(extensionPath);
+        await vaultDecryptorPage.uploadLogFile(extensionLogFile);
+
+        // fill the password and decrypt
+        await vaultDecryptorPage.fillPassword();
+        await vaultDecryptorPage.confirmDecrypt();
 
         // Ensure we're on the main extension window after onboarding
         await driver.switchToWindowWithTitle(
@@ -212,31 +192,7 @@ describe('Vault Decryptor Page', function () {
         await privacySettings.completeRevealSrpQuiz();
         await privacySettings.fillPasswordToRevealSrp(WALLET_PASSWORD);
         const seedPhrase = await privacySettings.getSrpInRevealSrpDialog();
-
-        // Closing MetaMask completely
-        await privacySettings.closeRevealSrpDialog();
-        await settingsPage.closeSettingsPage();
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.checkPageIsLoaded();
-        await headerNavbar.lockMetaMask();
-        await driver.closeWindow();
-        await driver.switchToWindowWithTitle('Extensions');
-        await driver.delay(10000);
-
-        // Retry-logic to ensure the file is ready before uploading it to mitigate flakiness when Chrome hasn't finished writing
-        await waitUntilFileIsWritten({ driver });
-
-        // navigate to the Vault decryptor webapp and fill the input field with storage recovered from filesystem
-        await driver.openNewPage(VAULT_DECRYPTOR_PAGE);
-        const vaultDecryptorPage = new VaultDecryptorPage(driver);
-        await vaultDecryptorPage.checkPageIsLoaded();
-        const extensionPath = await getExtensionStorageFilePath(driver);
-        const extensionLogFile = getExtensionLogFile(extensionPath);
-        await vaultDecryptorPage.uploadLogFile(extensionLogFile);
-
-        // fill the password and decrypt
-        await vaultDecryptorPage.fillPassword();
-        await vaultDecryptorPage.confirmDecrypt();
+        await driver.switchToWindowWithTitle('MetaMask Vault Decryptor');
         await vaultDecryptorPage.checkVaultIsDecrypted(seedPhrase);
       },
     );
@@ -266,8 +222,6 @@ describe('Vault Decryptor Page', function () {
           password: WALLET_PASSWORD,
           needNavigateToNewPage: false,
         });
-        // close popover if any (Announcements etc..)
-        await closePopoverIfPresent(driver);
 
         // Ensure we're on the main extension window after onboarding
         await driver.switchToWindowWithTitle(
