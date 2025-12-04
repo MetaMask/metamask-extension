@@ -107,14 +107,22 @@ export const formatProviderLabel = (args?: {
   bridges: QuoteResponse['quote']['bridges'];
 }): `${string}_${string}` => `${args?.bridgeId}_${args?.bridges[0]}`;
 
-export const sanitizeAmountInput = (textToSanitize: string) => {
-  return (
-    textToSanitize
-      .replace(/[^\d.]+/gu, '')
-      // Only allow one decimal point, ignore digits after second decimal point
-      .split('.', 2)
-      .join('.')
-  );
+export const sanitizeAmountInput = (
+  textToSanitize: string,
+  dropNumbersAfterSecondDecimal = true,
+) => {
+  // Remove non-numeric and non-decimal characters
+  const cleanedString = textToSanitize.replace(/[^\d.]+/gu, '');
+  // Find first decimal point and use its index to split the string into two parts
+  const pointIndex = cleanedString.indexOf('.');
+  const firstPart = cleanedString.slice(0, pointIndex + 1);
+  const secondPart = dropNumbersAfterSecondDecimal
+    ? // Ignore digits after second decimal point
+      cleanedString.slice(pointIndex + 1).split('.')[0]
+    : // Preserve digits after second decimal point
+      cleanedString.slice(pointIndex + 1).replace(/[^\d]+/gu, '');
+
+  return [firstPart, secondPart].filter(Boolean).join('');
 };
 
 /**

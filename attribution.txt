@@ -1525,7 +1525,7 @@ SOFTWARE.
 ******************************
 
 array-buffer-byte-length
-1.0.1 <https://github.com/inspect-js/array-buffer-byte-length>
+1.0.2 <https://github.com/inspect-js/array-buffer-byte-length>
 MIT License
 
 Copyright (c) 2023 Inspect JS
@@ -1598,6 +1598,60 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 IN THE SOFTWARE.
+
+
+******************************
+
+async-function
+1.0.0 <https://github.com/ljharb/async-function>
+MIT License
+
+Copyright (c) 2016 EduardoRFS
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+******************************
+
+async-generator-function
+1.0.0 <https://github.com/ljharb/async-generator-function>
+MIT License
+
+Copyright (c) 2016 EduardoRFS
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
 
 ******************************
@@ -19915,6 +19969,19 @@ fuse.js
 
 ******************************
 
+generator-function
+2.0.1 <https://github.com/TimothyGu/generator-function>
+Copyright (c) 2015 Tiancheng “Timothy” Gu
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+******************************
+
 gensync
 1.0.0-beta.2 <https://github.com/loganfsmyth/gensync>
 Copyright 2018 Logan Smyth <loganfsmyth@gmail.com>
@@ -19941,7 +20008,7 @@ THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH RE
 ******************************
 
 get-intrinsic
-1.3.0 <https://github.com/ljharb/get-intrinsic>
+1.3.1 <https://github.com/ljharb/get-intrinsic>
 MIT License
 
 Copyright (c) 2020 Jordan Harband
@@ -21478,7 +21545,7 @@ SOFTWARE.
 ******************************
 
 internal-slot
-1.0.7 <https://github.com/ljharb/internal-slot>
+1.1.0 <https://github.com/ljharb/internal-slot>
 MIT License
 
 Copyright (c) 2019 Jordan Harband
@@ -21673,7 +21740,7 @@ SOFTWARE.
 ******************************
 
 is-array-buffer
-3.0.4 <https://github.com/inspect-js/is-array-buffer>
+3.0.5 <https://github.com/inspect-js/is-array-buffer>
 MIT License
 
 Copyright (c) 2015 Chen Gengyuan, Inspect JS
@@ -21700,7 +21767,7 @@ SOFTWARE.
 ******************************
 
 is-bigint
-1.0.4 <https://github.com/inspect-js/is-bigint>
+1.1.0 <https://github.com/inspect-js/is-bigint>
 MIT License
 
 Copyright (c) 2018 Jordan Harband
@@ -21742,7 +21809,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 ******************************
 
 is-boolean-object
-1.1.2 <https://github.com/inspect-js/is-boolean-object>
+1.2.2 <https://github.com/inspect-js/is-boolean-object>
 The MIT License (MIT)
 
 Copyright (c) 2015 Jordan Harband
@@ -21892,7 +21959,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ******************************
 
 is-date-object
-1.0.5 <https://github.com/inspect-js/is-date-object>
+1.1.0 <https://github.com/inspect-js/is-date-object>
 The MIT License (MIT)
 
 Copyright (c) 2015 Jordan Harband
@@ -22065,7 +22132,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 ******************************
 
 is-generator-function
-1.0.10 <https://github.com/inspect-js/is-generator-function>
+1.1.2 <https://github.com/inspect-js/is-generator-function>
 The MIT License (MIT)
 
 Copyright (c) 2014 Jordan Harband
@@ -22180,7 +22247,7 @@ authors: Jared Anderson
 ******************************
 
 is-map
-2.0.2 <https://github.com/inspect-js/is-map>
+2.0.3 <https://github.com/inspect-js/is-map>
 MIT License
 
 Copyright (c) 2019 Inspect JS
@@ -22260,7 +22327,7 @@ THE SOFTWARE.
 ******************************
 
 is-number-object
-1.0.7 <https://github.com/inspect-js/is-number-object>
+1.1.1 <https://github.com/inspect-js/is-number-object>
 The MIT License (MIT)
 
 Copyright (c) 2015 Jordan Harband
@@ -22398,7 +22465,7 @@ THE SOFTWARE.
 ******************************
 
 is-regex
-1.1.4 <https://github.com/inspect-js/is-regex>
+1.2.1 <https://github.com/inspect-js/is-regex>
 The MIT License (MIT)
 
 Copyright (c) 2014 Jordan Harband
@@ -22456,7 +22523,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 ******************************
 
 is-set
-2.0.2 <https://github.com/inspect-js/is-set>
+2.0.3 <https://github.com/inspect-js/is-set>
 MIT License
 
 Copyright (c) 2019 Inspect JS
@@ -22483,7 +22550,7 @@ SOFTWARE.
 ******************************
 
 is-shared-array-buffer
-1.0.3 <https://github.com/inspect-js/is-shared-array-buffer>
+1.0.4 <https://github.com/inspect-js/is-shared-array-buffer>
 MIT License
 
 Copyright (c) 2021 Inspect JS
@@ -22552,7 +22619,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 ******************************
 
 is-string
-1.0.7 <https://github.com/ljharb/is-string>
+1.1.1 <https://github.com/inspect-js/is-string>
 The MIT License (MIT)
 
 Copyright (c) 2015 Jordan Harband
@@ -22580,7 +22647,7 @@ SOFTWARE.
 ******************************
 
 is-symbol
-1.0.4 <https://github.com/inspect-js/is-symbol>
+1.1.1 <https://github.com/inspect-js/is-symbol>
 The MIT License (MIT)
 
 Copyright (c) 2015 Jordan Harband
@@ -22661,7 +22728,7 @@ THE SOFTWARE.
 ******************************
 
 is-weakmap
-2.0.1 <https://github.com/inspect-js/is-weakmap>
+2.0.2 <https://github.com/inspect-js/is-weakmap>
 MIT License
 
 Copyright (c) 2019 Inspect JS
@@ -22688,7 +22755,7 @@ SOFTWARE.
 ******************************
 
 is-weakset
-2.0.2 <https://github.com/inspect-js/is-weakset>
+2.0.4 <https://github.com/inspect-js/is-weakset>
 MIT License
 
 Copyright (c) 2019 Inspect JS
@@ -35357,7 +35424,7 @@ THE SOFTWARE.
 ******************************
 
 object.assign
-4.1.5 <https://github.com/ljharb/object.assign>
+4.1.7 <https://github.com/ljharb/object.assign>
 The MIT License (MIT)
 
 Copyright (c) 2014 Jordan Harband
@@ -35411,7 +35478,7 @@ SOFTWARE.
 ******************************
 
 object-inspect
-1.13.3 <https://github.com/inspect-js/object-inspect>
+1.13.4 <https://github.com/inspect-js/object-inspect>
 MIT License
 
 Copyright (c) 2013 James Halliday
@@ -37762,6 +37829,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 
+
+******************************
+
+react-compiler-runtime
+1.0.0 <https://github.com/facebook/react>
+license: MIT
+authors: undefined
 
 ******************************
 
@@ -40527,6 +40601,33 @@ safer-buffer
 MIT License
 
 Copyright (c) 2018 Nikita Skovoroda <chalkerx@gmail.com>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+******************************
+
+safe-regex-test
+1.1.0 <https://github.com/ljharb/safe-regex-test>
+MIT License
+
+Copyright (c) 2022 Jordan Harband
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -44490,7 +44591,7 @@ THE SOFTWARE.
 ******************************
 
 stop-iteration-iterator
-1.0.0 <https://github.com/ljharb/stop-iteration-iterator>
+1.1.0 <https://github.com/ljharb/stop-iteration-iterator>
 MIT License
 
 Copyright (c) 2023 Jordan Harband
@@ -50435,7 +50536,7 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************
 
 which-boxed-primitive
-1.0.2 <https://github.com/inspect-js/which-boxed-primitive>
+1.1.1 <https://github.com/inspect-js/which-boxed-primitive>
 MIT License
 
 Copyright (c) 2019 Jordan Harband
@@ -50462,7 +50563,7 @@ SOFTWARE.
 ******************************
 
 which-collection
-1.0.1 <https://github.com/inspect-js/which-collection>
+1.0.2 <https://github.com/inspect-js/which-collection>
 MIT License
 
 Copyright (c) 2019 Inspect JS

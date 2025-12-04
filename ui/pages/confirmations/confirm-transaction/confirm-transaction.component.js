@@ -33,7 +33,7 @@ import { usePrevious } from '../../../hooks/usePrevious';
 import {
   unconfirmedTransactionsHashSelector,
   unconfirmedTransactionsListSelector,
-  use4ByteResolutionSelector,
+  getUse4ByteResolution,
 } from '../../../selectors';
 import {
   endBackgroundTrace,
@@ -89,7 +89,7 @@ const ConfirmTransaction = ({
   ]);
   const [transaction, setTransaction] = useState(getTransaction);
 
-  const use4ByteResolution = useSelector(use4ByteResolutionSelector);
+  const use4ByteResolution = useSelector(getUse4ByteResolution);
   // Pass the transaction ID from route params so useCurrentConfirmation can find the approval
   const { currentConfirmation } = useCurrentConfirmation(paramsTransactionId);
 
@@ -156,35 +156,37 @@ const ConfirmTransaction = ({
         dispatch(setTransactionToConfirm(txId));
       }
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    if (
-      paramsTransactionId &&
-      transactionId &&
-      prevParamsTransactionId !== paramsTransactionId
-    ) {
-      const { txData: { txParams: { data } = {}, origin } = {} } = transaction;
+    const handleNavigation = async () => {
+      if (
+        paramsTransactionId &&
+        transactionId &&
+        prevParamsTransactionId !== paramsTransactionId
+      ) {
+        const { txData: { txParams: { data } = {}, origin } = {} } =
+          transaction;
 
-      dispatch(clearConfirmTransaction());
-      dispatch(setTransactionToConfirm(paramsTransactionId));
-      if (origin !== ORIGIN_METAMASK) {
-        dispatch(getContractMethodData(data, use4ByteResolution));
-      }
-    } else if (prevTransactionId && !transactionId && !totalUnapproved) {
-      dispatch(setDefaultHomeActiveTabName('activity')).then(() => {
+        dispatch(clearConfirmTransaction());
+        dispatch(setTransactionToConfirm(paramsTransactionId));
+        if (origin !== ORIGIN_METAMASK) {
+          dispatch(getContractMethodData(data, use4ByteResolution));
+        }
+      } else if (prevTransactionId && !transactionId && !totalUnapproved) {
+        await dispatch(setDefaultHomeActiveTabName('activity'));
         navigate(DEFAULT_ROUTE, { replace: true });
-      });
-    } else if (
-      prevTransactionId &&
-      transactionId &&
-      prevTransactionId !== transactionId &&
-      paramsTransactionId !== transactionId
-    ) {
-      navigate(mostRecentOverviewPage, { replace: true });
-    }
+      } else if (
+        prevTransactionId &&
+        transactionId &&
+        prevTransactionId !== transactionId &&
+        paramsTransactionId !== transactionId
+      ) {
+        navigate(mostRecentOverviewPage, { replace: true });
+      }
+    };
+
+    handleNavigation();
   }, [
     dispatch,
     navigate,

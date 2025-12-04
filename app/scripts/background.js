@@ -55,13 +55,12 @@ import {
   CorruptionHandler,
   hasVault,
 } from './lib/state-corruption/state-corruption-recovery';
-import { initSidePanelContextMenu } from './lib/sidepanel-context-menu';
 import {
   backedUpStateKeys,
   PersistenceManager,
 } from './lib/stores/persistence-manager';
 import ExtensionStore from './lib/stores/extension-store';
-import ReadOnlyNetworkStore from './lib/stores/read-only-network-store';
+import { FixtureExtensionStore } from './lib/stores/fixture-extension-store';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import { updateRemoteFeatureFlags } from './lib/update-remote-feature-flags';
@@ -115,10 +114,10 @@ const BADGE_COLOR_NOTIFICATION = '#D73847';
 const BADGE_MAX_COUNT = 9;
 
 const inTest = process.env.IN_TEST;
-const useReadOnlyNetworkStore =
+const useFixtureStore =
   inTest && getManifestFlags().testing?.forceExtensionStore !== true;
-const localStore = useReadOnlyNetworkStore
-  ? new ReadOnlyNetworkStore()
+const localStore = useFixtureStore
+  ? new FixtureExtensionStore()
   : new ExtensionStore();
 const persistenceManager = new PersistenceManager({ localStore });
 
@@ -183,7 +182,6 @@ const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
 lazyListener.once('runtime', 'onInstalled').then((details) => {
   handleOnInstalled(details);
-  handleSidePanelContextMenu();
 });
 
 /**
@@ -918,7 +916,8 @@ export async function loadStateFromPersistence(backup) {
     migrations,
     defaultVersion: process.env.WITH_STATE
       ? // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
-        require('../../test/e2e/default-fixture').FIXTURE_STATE_METADATA_VERSION
+        require('../../test/e2e/fixtures/fixture-builder')
+          .FIXTURE_STATE_METADATA_VERSION
       : null,
   });
 
@@ -1663,15 +1662,6 @@ function onInstall() {
 }
 
 /**
- * Handles the onInstalled event for sidepanel context menu creation.
- * This is registered via lazyListener to catch the event at module load time.
- */
-async function handleSidePanelContextMenu() {
-  await isInitialized;
-  await initSidePanelContextMenu(controller);
-}
-
-/**
  * Trigger actions that should happen only when an update is available
  */
 async function onUpdateAvailable() {
@@ -1748,18 +1738,6 @@ const initSidePanelBehavior = async () => {
         openPanelOnActionClick: useSidePanelAsDefault,
       });
     }
-
-    // Setup remote feature flag listener to update sidepanel preferences
-    controller?.controllerMessenger?.subscribe(
-      'RemoteFeatureFlagController:stateChange',
-      (state) => {
-        const extensionUxSidepanel =
-          state?.remoteFeatureFlags?.extensionUxSidepanel;
-        if (extensionUxSidepanel === false) {
-          controller?.preferencesController?.setUseSidePanelAsDefault(false);
-        }
-      },
-    );
   } catch (error) {
     console.error('Error setting side panel behavior:', error);
   }

@@ -11,6 +11,7 @@ import {
   TokenPaymentInfo,
 } from '@metamask/subscription-controller';
 import { Hex } from '@metamask/utils';
+import { BigNumber } from 'bignumber.js';
 import { getSubscriptionPricing } from '../../selectors/subscription';
 import {
   getSubscriptionCryptoApprovalAmount,
@@ -44,6 +45,15 @@ export type TokenWithApprovalAmount = (
   };
 };
 
+/**
+ * get user available token balances for starting subscription
+ *
+ * @param params
+ * @param params.paymentChains - The payment chains info.
+ * @param params.price - The product price.
+ * @param params.productType - The product type.
+ * @returns The available token balances.
+ */
 export const useAvailableTokenBalances = (params: {
   paymentChains?: ChainPaymentInfo[];
   price?: ProductPrice;
@@ -148,15 +158,17 @@ export const useAvailableTokenBalances = (params: {
       if (!token.balance) {
         return;
       }
-      // NOTE: we are using stable coin for subscription atm, so we need to scale the balance by the decimals
-      const scaledFactor = 10n ** 6n;
-      const scaledBalance =
-        BigInt(Math.round(Number(token.balance) * Number(scaledFactor))) /
-        scaledFactor;
-      const tokenHasEnoughBalance =
-        amount &&
-        scaledBalance * BigInt(10 ** token.decimals) >=
-          BigInt(amount.approveAmount);
+
+      const balance = new BigNumber(token.balance);
+      // price amount and token balance has different decimals, so we need to convert the price amount to the same decimals as the token balance
+      // TODO: enforce `minBillingCyclesForBalance` type on `ProductPrice` type for cp-13.12.0. Remove this once subscription-controller@5.2.0 upgraded.
+      const minBillingCyclesForBalance =
+        (price as ProductPrice & { minBillingCyclesForBalance?: number })
+          .minBillingCyclesForBalance ?? 1; // required amount for subscription is only usually only 1 billing cycle (only approve amount need minBillingCycles)
+      const requiredAmount = new BigNumber(price.unitAmount)
+        .div(new BigNumber(10).pow(price.unitDecimals))
+        .mul(minBillingCyclesForBalance);
+      const tokenHasEnoughBalance = amount && balance.gte(requiredAmount);
       if (tokenHasEnoughBalance) {
         availableTokens.push({
           ...token,

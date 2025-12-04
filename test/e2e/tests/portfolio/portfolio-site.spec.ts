@@ -1,7 +1,7 @@
 import { MockttpServer } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { MOCK_META_METRICS_ID } from '../../constants';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { emptyHtmlPage } from '../../mock-e2e';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';

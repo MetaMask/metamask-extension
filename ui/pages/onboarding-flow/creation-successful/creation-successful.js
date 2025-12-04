@@ -67,7 +67,6 @@ export default function CreationSuccessful() {
   );
   const trackEvent = useContext(MetaMetricsContext);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-  const isTestEnvironment = Boolean(process.env.IN_TEST);
   const isSidePanelEnabled = useSidePanelEnabled();
 
   const learnMoreLink =
@@ -111,7 +110,9 @@ export default function CreationSuccessful() {
           data-testid="manage-default-settings"
           borderRadius={BorderRadius.LG}
           width={BlockSize.Full}
-          onClick={() => navigate(ONBOARDING_PRIVACY_SETTINGS_ROUTE)}
+          onClick={() =>
+            navigate(`${ONBOARDING_PRIVACY_SETTINGS_ROUTE}?isFromReminder=true`)
+          }
         >
           <Box display={Display.Flex} alignItems={AlignItems.center}>
             <Icon
@@ -291,9 +292,7 @@ export default function CreationSuccessful() {
           {renderSettingsActions}
         </Box>
       )}
-      {!isFromSettingsSRPBackup && !isTestEnvironment && (
-        <WalletReadyAnimation />
-      )}
+      {!isFromSettingsSRPBackup && <WalletReadyAnimation />}
       {!isFromSettingsSRPBackup && (
         <Text className="title">{t('yourWalletIsReady')}</Text>
       )}
