@@ -74,7 +74,12 @@ export function selectDappSwapComparisonData(
       latency?: number;
       commands?: string;
       error?: string;
-      tokenAddresses?: Hex[];
+      swapInfo?: {
+        srcTokenAddress: Hex;
+        destTokenAddress: Hex;
+        srcTokenAmount: Hex;
+        destTokenAmountMin: Hex;
+      };
     }
   | undefined {
   return state.metamask.dappSwapComparisonData?.[transactionId] ?? undefined;

@@ -15,6 +15,7 @@ describe('BillingDetails', () => {
     unitDecimals: 6,
     currency: 'usd',
     trialPeriodDays: 7,
+    minBillingCyclesForBalance: 1,
   };
 
   beforeAll(() => {

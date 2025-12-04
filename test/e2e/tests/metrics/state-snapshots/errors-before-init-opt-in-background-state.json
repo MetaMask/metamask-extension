@@ -53,6 +53,7 @@
       "showShieldEntryModalOnce": "boolean",
       "pendingShieldCohort": null,
       "pendingShieldCohortTxType": null,
+      "pna25Acknowledged": "boolean",
       "appActiveTab": "object"
     },
     "BridgeController": {},
@@ -144,6 +145,7 @@
       "isMultiAccountBalancesEnabled": "boolean",
       "referrals": "object"
     },
+    "ProfileMetricsController": "object",
     "SelectedNetworkController": { "domains": "object" },
     "SmartTransactionsController": {
       "smartTransactionsState": {

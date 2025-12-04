@@ -203,6 +203,8 @@ import {
   DefaultSubscriptionPaymentOptions,
   ShieldSubscriptionMetricsPropsFromUI,
 } from '../../shared/types';
+// eslint-disable-next-line import/no-restricted-paths
+import { OAuthLoginResult } from '../../app/scripts/services/oauth/types';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -266,10 +268,12 @@ export function startOAuthLogin(
     }
 
     try {
-      const oauth2LoginResult = await submitRequestToBackground(
-        'startOAuthLogin',
-        [authConnection],
-      );
+      const [oauth2LoginResult] = await Promise.all([
+        submitRequestToBackground<OAuthLoginResult>('startOAuthLogin', [
+          authConnection,
+        ]),
+        submitRequestToBackground('preloadToprfNodeDetails'), // fetch the toprf node details for seedless authentication in parallel
+      ]);
 
       let seedlessAuthSuccess = false;
       let isNewUser = false;
@@ -374,7 +378,7 @@ export function resetOAuthLoginState() {
  */
 export function createNewVaultAndSyncWithSocial(
   password: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       const primaryKeyring = await createNewVault(password);
@@ -616,24 +620,6 @@ export function updateSubscriptionCardPaymentMethod(params: {
   };
 }
 
-export function startSubscriptionWithCrypto(params: {
-  products: ProductType[];
-  isTrialRequested: boolean;
-  recurringInterval: RecurringInterval;
-  billingCycles: number;
-  chainId: Hex;
-  payerAddress: Hex;
-  tokenSymbol: string;
-  rawTransaction: Hex;
-}): ThunkAction<Subscription[], MetaMaskReduxState, unknown, AnyAction> {
-  return async (_dispatch: MetaMaskReduxDispatch) => {
-    return await submitRequestToBackground<Subscription[]>(
-      'startSubscriptionWithCrypto',
-      [params],
-    );
-  };
-}
-
 export function updateSubscriptionCryptoPaymentMethod(
   params: Extract<UpdatePaymentMethodOpts, { paymentType: 'crypto' }>,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -815,6 +801,27 @@ export function setShieldSubscriptionMetricsProps(
 }
 
 /**
+ * Links the reward to the existing shield subscription.
+ *
+ * @param subscriptionId - Shield subscription ID to link the reward to.
+ * @returns Promise<void> - The reward subscription ID or undefined if the season is not active or the primary account is not opted in to rewards.
+ */
+export function linkRewardToShieldSubscription(
+  subscriptionId: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('linkRewardToShieldSubscription', [
+        subscriptionId,
+      ]);
+    } catch (error) {
+      dispatch(displayWarning(error));
+      throw error;
+    }
+  };
+}
+
+/**
  * Fetches and restores the seed phrase from the metadata store using the social login and restore the vault using the seed phrase.
  *
  * @param password - The password.
@@ -822,7 +829,7 @@ export function setShieldSubscriptionMetricsProps(
  */
 export function restoreSocialBackupAndGetSeedPhrase(
   password: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       // restore the vault using the seed phrase
@@ -1114,7 +1121,7 @@ export function generateNewMnemonicAndAddToVault(): ThunkAction<
 }
 export function createNewVaultAndGetSeedPhrase(
   password: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -1139,7 +1146,7 @@ export function createNewVaultAndGetSeedPhrase(
 
 export function unlockAndGetSeedPhrase(
   password: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -4755,7 +4762,7 @@ export function toggleAccountMenu() {
 
 export function toggleNetworkMenu(payload?: {
   isAddingNewNetwork: boolean;
-  isMultiRpcOnboarding: boolean;
+  isMultiRpcOnboarding?: boolean;
   isAccessedFromDappConnectedSitePopover?: boolean;
 }) {
   return {
@@ -4771,7 +4778,7 @@ export function closeNetworkMenu() {
 }
 
 export function setParticipateInMetaMetrics(
-  participationPreference: boolean,
+  participationPreference: boolean | null,
 ): ThunkAction<
   Promise<[boolean, string]>,
   MetaMaskReduxState,
@@ -4821,6 +4828,15 @@ export function setDataCollectionForMarketing(
       type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
       value: dataCollectionPreference,
     });
+  };
+}
+
+export function setPna25Acknowledged(
+  acknowledged: boolean,
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    log.debug(`background.setPna25Acknowledged`);
+    await submitRequestToBackground('setPna25Acknowledged', [acknowledged]);
   };
 }
 
@@ -5130,7 +5146,7 @@ export function setIsIpfsGatewayEnabled(
 }
 
 export function setUseAddressBarEnsResolution(
-  val: string,
+  val: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.setUseAddressBarEnsResolution`);

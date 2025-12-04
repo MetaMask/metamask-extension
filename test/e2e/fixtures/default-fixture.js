@@ -113,6 +113,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         notificationGasPollTokens: [],
         popupGasPollTokens: [],
         recoveryPhraseReminderHasBeenShown: true,
+        pna25Acknowledged: false,
         recoveryPhraseReminderLastShown:
           '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
         showTestnetMessageInDropdown: true,
@@ -279,6 +280,10 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       MultichainAccountService: {},
       TransactionController: {
         transactions: {},
+      },
+      ProfileMetricsController: {
+        initialEnqueueCompleted: false,
+        syncQueue: {},
       },
       config: {},
       firstTimeInfo: {

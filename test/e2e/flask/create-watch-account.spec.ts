@@ -3,7 +3,7 @@ import { Suite } from 'mocha';
 import FixtureBuilder from '../fixtures/fixture-builder';
 import { withFixtures } from '../helpers';
 import { Driver } from '../webdriver/driver';
-import AccountDetailsModal from '../page-objects/pages/dialog/account-details-modal';
+import MultichainAccountDetailsPage from '../page-objects/pages/multichain/multichain-account-details-page';
 import AccountListPage from '../page-objects/pages/account-list-page';
 import ExperimentalSettings from '../page-objects/pages/settings/experimental-settings';
 import HeaderNavbar from '../page-objects/pages/header-navbar';
@@ -17,9 +17,7 @@ const EOA_ADDRESS = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045';
 const SHORTENED_EOA_ADDRESS = '0xd8dA6...96045';
 const DEFAULT_WATCHED_ACCOUNT_NAME = 'Watched Account 1';
 
-// #37563 - Creating a watch account with EOA address is not possible with BIP44 at the moment
-// eslint-disable-next-line mocha/no-skipped-tests
-describe.skip('Account-watcher snap', function (this: Suite) {
+describe('Account-watcher snap', function (this: Suite) {
   describe('Adding watched accounts', function () {
     it('adds watch account with valid EOA address', async function () {
       await withFixtures(
@@ -213,9 +211,9 @@ describe.skip('Account-watcher snap', function (this: Suite) {
           await headerNavbar.openAccountDetailsModalDetailsTab();
 
           // check 'Show private key' button should not be displayed
-          const accountDetailsModal = new AccountDetailsModal(driver);
-          await accountDetailsModal.checkPageIsLoaded();
-          await accountDetailsModal.checkShowPrivateKeyButtonIsNotDisplayed();
+          const accountDetailsPage = new MultichainAccountDetailsPage(driver);
+          await accountDetailsPage.checkPageIsLoaded();
+          await accountDetailsPage.checkShowPrivateKeyButtonIsNotDisplayed();
         },
       );
     });

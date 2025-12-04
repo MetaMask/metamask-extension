@@ -6,6 +6,8 @@ export const BASE_RULESET_ENGINE_API_URL =
 
 export const BASE_CLAIMS_API_URL = 'https://claims.dev-api.cx.metamask.io';
 
+export const BASE_REWARDS_API_URL = 'https://rewards.uat-api.cx.metamask.io';
+
 export const SUBSCRIPTION_API = {
   PRICING: `${BASE_SUBSCRIPTION_API_URL}/pricing`,
   ELIGIBILITY: `${BASE_SUBSCRIPTION_API_URL}/subscriptions/eligibility`,
@@ -31,6 +33,37 @@ export const RULESET_ENGINE_API = {
   TRANSACTION_COVERAGE_RESULT: `${BASE_RULESET_ENGINE_API_URL}/transaction/coverage/result`,
   SIGNATURE_COVERAGE_INIT: `${BASE_RULESET_ENGINE_API_URL}/signature/coverage/init`,
   SIGNATURE_COVERAGE_RESULT: `${BASE_RULESET_ENGINE_API_URL}/signature/coverage/result`,
+};
+
+export const REWARDS_API = {
+  POINTS_ESTIMATION: `${BASE_REWARDS_API_URL}/points-estimation`,
+  SEASONS_STATUS: `${BASE_REWARDS_API_URL}/public/seasons/status`,
+  SEASON_METADATA: `${BASE_REWARDS_API_URL}/public/seasons`,
+};
+
+// Mock response for rewards points estimation
+export const MOCK_REWARDS_POINTS_ESTIMATION_RESPONSE = {
+  pointsEstimate: 100,
+  bonusBips: 0,
+};
+
+// Mock response for rewards seasons status - provides a valid current season
+export const MOCK_REWARDS_SEASONS_STATUS_RESPONSE = {
+  current: {
+    id: 'mock-season-1',
+    startDate: '2025-01-01T00:00:00Z',
+    endDate: '2025-12-31T23:59:59Z',
+  },
+  next: null,
+};
+
+// Mock response for rewards season metadata
+export const MOCK_REWARDS_SEASON_METADATA_RESPONSE = {
+  id: 'mock-season-1',
+  name: 'Mock Season',
+  startDate: '2025-01-01T00:00:00Z',
+  endDate: '2025-12-31T23:59:59Z',
+  tiers: [],
 };
 
 export const BASE_SHIELD_SUBSCRIPTION_CARD = {
@@ -219,7 +252,13 @@ export const MOCK_CLAIM_2 = {
     '0x55da3eaee9bbefd762a33413b764ee2c025ff4a2cc0a49a05896ceb24c95712f',
   reimbursementWalletAddress: '0x88069b650422308bf8b472beaf790189f3f28309',
   description: 'I got scammed. Please help me get my money back. T_T @_@',
-  attachments: [],
+  attachments: [
+    {
+      originalname: 'test-document.pdf',
+      publicUrl: 'https://mock-storage-url.com/claims/test-document.pdf',
+      contentType: 'application/pdf',
+    },
+  ],
   intercomId: `intercom_${MOCK_CLAIM_ID_2}`,
   status: 'created',
 };

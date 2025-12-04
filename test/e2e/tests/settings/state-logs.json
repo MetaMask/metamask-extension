@@ -110,8 +110,6 @@
     "sortOrder": "string",
     "toChainId": "null",
     "toToken": "null",
-    "toTokenExchangeRate": "null",
-    "toTokenUsdExchangeRate": "null",
     "txAlert": "null",
     "wasTxDeclined": "boolean"
   },
@@ -491,6 +489,7 @@
       }
     },
     "ignoredNfts": [],
+    "initialEnqueueCompleted": "boolean",
     "insights": {},
     "interfaces": {},
     "internalAccounts": {
@@ -709,6 +708,7 @@
     "pendingRevocations": [],
     "pendingShieldCohort": "null",
     "pendingShieldCohortTxType": "null",
+    "pna25Acknowledged": "boolean",
     "permissionActivityLog": [
       {
         "id": "number",
@@ -813,6 +813,13 @@
     "showTestnetMessageInDropdown": "boolean",
     "signatureRequests": {},
     "signatureSecurityAlertResponses": {},
+    "syncQueue": {
+      "null": [
+        {
+          "address": "string"
+        }
+      ]
+    },
     "slides": [],
     "smartTransactionsState": {
       "fees": {},
@@ -980,6 +987,7 @@
       "install_date_ext": "string"
     },
     "transactionBatches": [],
+    "transactionData": {},
     "transactions": [],
     "trezorModel": "null",
     "trialedProducts": [],
