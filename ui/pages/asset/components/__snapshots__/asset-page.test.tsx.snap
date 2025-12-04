@@ -3,7 +3,7 @@
 exports[`AssetPage should render a native asset 1`] = `
 <div>
   <div
-    class="mm-box asset__content mm-box--margin-top-4 mm-box--margin-right-auto mm-box--margin-left-auto"
+    class="mm-box asset__content mm-box--margin-top-4"
   >
     <div
       class="mm-box mm-box--padding-top-1 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
@@ -422,7 +422,7 @@ exports[`AssetPage should render a native asset 1`] = `
 exports[`AssetPage should render an ERC20 asset without prices 1`] = `
 <div>
   <div
-    class="mm-box asset__content mm-box--margin-top-4 mm-box--margin-right-auto mm-box--margin-left-auto"
+    class="mm-box asset__content mm-box--margin-top-4"
   >
     <div
       class="mm-box mm-box--padding-top-1 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
@@ -869,7 +869,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
 exports[`AssetPage should render an ERC20 token with prices 1`] = `
 <div>
   <div
-    class="mm-box asset__content mm-box--margin-top-4 mm-box--margin-right-auto mm-box--margin-left-auto"
+    class="mm-box asset__content mm-box--margin-top-4"
   >
     <div
       class="mm-box mm-box--padding-top-1 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
