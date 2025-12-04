@@ -24,6 +24,7 @@ import {
   cancelSubscription,
   estimateGas,
   estimateRewardsPoints,
+  getRewardsActualSubscriptionId,
   getRewardsSeasonMetadata,
   getSubscriptionBillingPortalUrl,
   getSubscriptions,
@@ -772,6 +773,17 @@ export const useShieldRewards = () => {
   }, [primaryKeyring, accountsWithCaipChainId]);
 
   const {
+    value: actualSubscriptionId,
+    pending: actualSubscriptionIdPending,
+    error: actualSubscriptionIdError,
+  } = useAsyncResult<string | null>(async () => {
+    if (!caipAccountId) {
+      return null;
+    }
+    return await dispatch(getRewardsActualSubscriptionId(caipAccountId));
+  }, [caipAccountId]);
+
+  const {
     value: pointsValue,
     pending: pointsPending,
     error: pointsError,
@@ -840,6 +852,9 @@ export const useShieldRewards = () => {
     if (seasonError) {
       console.error('[useShieldRewards error]:', seasonError);
     }
+    if (actualSubscriptionIdError) {
+      console.error('[useShieldRewards error]:', actualSubscriptionIdError);
+    }
     return {
       pending: false,
       pointsMonthly: null,
@@ -849,9 +864,10 @@ export const useShieldRewards = () => {
   }
 
   return {
-    pending: pointsPending || seasonPending,
+    pending: pointsPending || seasonPending || actualSubscriptionIdPending,
     pointsMonthly: pointsValue?.monthly ?? null,
     pointsYearly: pointsValue?.yearly ?? null,
     isRewardsSeason: isRewardsSeason ?? false,
+    actualSubscriptionId: actualSubscriptionId ?? null,
   };
 };

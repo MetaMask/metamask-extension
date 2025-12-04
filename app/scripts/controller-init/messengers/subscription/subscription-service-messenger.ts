@@ -50,6 +50,7 @@ export function getSubscriptionServiceMessenger(
       'SwapsController:getState',
       'MetaMetricsController:trackEvent',
       'KeyringController:getState',
+      'RewardsController:getActualSubscriptionId',
     ],
   });
   return serviceMessenger;

@@ -11,7 +11,7 @@ import {
 } from '@metamask/transaction-controller';
 import log from 'loglevel';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { Json } from '@metamask/utils';
+import { CaipAccountId, Json } from '@metamask/utils';
 import ExtensionPlatform from '../../platforms/extension';
 import { WebAuthenticator } from '../oauth/types';
 import { isSendBundleSupported } from '../../lib/transaction/sentinel-api';
@@ -208,6 +208,17 @@ export class SubscriptionService {
     } catch (error) {
       log.error('Failed to submit sponsorship intent', error);
     }
+  }
+
+  async getRewardsActualSubscriptionId(accountCaipId: CaipAccountId) {
+    const actualSubscriptionId = this.#messenger.call(
+      'RewardsController:getActualSubscriptionId',
+      accountCaipId,
+    );
+    if (!actualSubscriptionId) {
+      return null;
+    }
+    return actualSubscriptionId;
   }
 
   /**

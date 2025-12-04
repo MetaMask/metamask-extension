@@ -209,8 +209,13 @@ const TransactionShield = () => {
     pointsMonthly,
     pointsYearly,
     isRewardsSeason,
+    actualSubscriptionId,
     pending: pendingShieldRewards,
   } = useShieldRewards();
+
+  const hasOptedInToRewards = useMemo(() => {
+    return actualSubscriptionId;
+  }, [actualSubscriptionId]);
 
   const isWaitingForSubscriptionCreation =
     shouldWaitForSubscriptionCreation && !currentShieldSubscription;
@@ -670,18 +675,20 @@ const TransactionShield = () => {
                   ])}
                 </Text>
               </Box>
-              <Box className="flex-shrink-0">
-                <Button
-                  className="px-3"
-                  variant={ButtonVariant.Secondary}
-                  size={ButtonSize.Sm}
-                  onClick={() => {
-                    openRewardsOnboardingModal();
-                  }}
-                >
-                  {t('shieldTxDetails3DescriptionSignUp')}
-                </Button>
-              </Box>
+              {!hasOptedInToRewards && (
+                <Box className="flex-shrink-0">
+                  <Button
+                    className="px-3"
+                    variant={ButtonVariant.Secondary}
+                    size={ButtonSize.Sm}
+                    onClick={() => {
+                      openRewardsOnboardingModal();
+                    }}
+                  >
+                    {t('shieldTxDetails3DescriptionSignUp')}
+                  </Button>
+                </Box>
+              )}
             </Box>
           )}
         </Box>
