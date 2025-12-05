@@ -52,7 +52,7 @@ const NativeSendHeading = () => {
   const fiatValue =
     conversionRate &&
     nativeAssetTransferValue &&
-    new BigNumber(conversionRate)
+    new BigNumber(String(conversionRate))
       .times(nativeAssetTransferValue, 10)
       .toNumber();
   const fiatFormatter = useFiatFormatter();

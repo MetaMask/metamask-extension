@@ -147,7 +147,7 @@ export const calculateTokenAmount = (
   const divisor = new BigNumber(10).pow(decimals ?? 0);
   return new BigNumber(String(value), base)
     .div(divisor)
-    .times(new BigNumber(conversionRate, 10));
+    .times(new BigNumber(String(conversionRate), 10));
 };
 
 export function getTokenValueFromRecord<Type>(
