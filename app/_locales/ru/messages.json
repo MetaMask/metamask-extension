@@ -943,9 +943,6 @@
   "bridgeEnterAmount": {
     "message": "Выберите сумму"
   },
-  "bridgeEnterAmountAndSelectAccount": {
-    "message": "Введите сумму и выберите целевой счет"
-  },
   "bridgeExplorerLinkViewOn": {
     "message": "Смотреть на $1"
   },

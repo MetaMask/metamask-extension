@@ -32,9 +32,11 @@ import { Row } from '../layout';
 export const BridgeCTAButton = ({
   onFetchNewQuotes,
   needsDestinationAddress = false,
+  onOpenRecipientModal,
 }: {
   onFetchNewQuotes: () => void;
   needsDestinationAddress?: boolean;
+  onOpenRecipientModal?: () => void;
 }) => {
   const t = useI18nContext();
 
@@ -67,6 +69,21 @@ export const BridgeCTAButton = ({
       return 'youDeclinedTheTransaction';
     }
 
+    if (!fromAmount) {
+      if (!toToken) {
+        return needsDestinationAddress
+          ? 'bridgeSelectTokenAmountAndAccount'
+          : 'bridgeSelectTokenAndAmount';
+      }
+      return needsDestinationAddress
+        ? 'bridgeSelectDestinationAccount'
+        : 'bridgeEnterAmount';
+    }
+
+    if (needsDestinationAddress) {
+      return 'bridgeSelectDestinationAccount';
+    }
+
     if (isQuoteExpired && !isLoading) {
       return 'bridgeQuoteExpired';
     }
@@ -81,21 +98,6 @@ export const BridgeCTAButton = ({
 
     if (isInsufficientBalance || isInsufficientGasForQuote) {
       return 'alertReasonInsufficientBalance';
-    }
-
-    if (!fromAmount) {
-      if (!toToken) {
-        return needsDestinationAddress
-          ? 'bridgeSelectTokenAmountAndAccount'
-          : 'bridgeSelectTokenAndAmount';
-      }
-      return needsDestinationAddress
-        ? 'bridgeEnterAmountAndSelectAccount'
-        : 'bridgeEnterAmount';
-    }
-
-    if (needsDestinationAddress) {
-      return 'bridgeSelectDestinationAccount';
     }
 
     if (isTxSubmittable || isTxAlertPresent) {
@@ -127,7 +129,7 @@ export const BridgeCTAButton = ({
     return undefined;
   }, [wasTxDeclined, isQuoteExpired]);
 
-  return activeQuote && !secondaryButtonLabel ? (
+  return (activeQuote || needsDestinationAddress) && !secondaryButtonLabel ? (
     <Button
       width={BlockSize.Full}
       size={ButtonSize.Lg}
@@ -137,6 +139,11 @@ export const BridgeCTAButton = ({
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onClick={async () => {
+        if (needsDestinationAddress && onOpenRecipientModal) {
+          onOpenRecipientModal();
+          return;
+        }
+
         if (activeQuote && isTxSubmittable && !isSubmitting) {
           try {
             // We don't need to worry about setting to false if the tx submission succeeds
@@ -150,11 +157,9 @@ export const BridgeCTAButton = ({
       }}
       loading={isSubmitting}
       disabled={
-        !isTxSubmittable ||
-        isTxAlertPresent ||
-        isQuoteExpired ||
-        isSubmitting ||
-        needsDestinationAddress
+        (!needsDestinationAddress &&
+          (!isTxSubmittable || isTxAlertPresent || isQuoteExpired)) ||
+        isSubmitting
       }
     >
       {label ? t(label) : ''}

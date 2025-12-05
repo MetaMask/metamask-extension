@@ -943,9 +943,6 @@
   "bridgeEnterAmount": {
     "message": "金額を選択"
   },
-  "bridgeEnterAmountAndSelectAccount": {
-    "message": "金額を入力して、送金先アカウントを選択します"
-  },
   "bridgeExplorerLinkViewOn": {
     "message": "$1で表示"
   },

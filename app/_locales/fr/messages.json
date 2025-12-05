@@ -943,9 +943,6 @@
   "bridgeEnterAmount": {
     "message": "Sélectionnez le montant"
   },
-  "bridgeEnterAmountAndSelectAccount": {
-    "message": "Entrez le montant et sélectionnez le compte de destination"
-  },
   "bridgeExplorerLinkViewOn": {
     "message": "Consulter sur $1"
   },

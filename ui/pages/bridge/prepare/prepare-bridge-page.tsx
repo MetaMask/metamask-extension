@@ -765,6 +765,9 @@ const PrepareBridgePage = ({
                 needsDestinationAddress={
                   isToOrFromNonEvm && !selectedDestinationAccount
                 }
+                onOpenRecipientModal={() =>
+                  setIsDestinationAccountPickerOpen(true)
+                }
               />
             )}
           </Column>

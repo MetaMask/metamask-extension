@@ -943,9 +943,6 @@
   "bridgeEnterAmount": {
     "message": "Chọn số tiền"
   },
-  "bridgeEnterAmountAndSelectAccount": {
-    "message": "Nhập số tiền và chọn tài khoản đích"
-  },
   "bridgeExplorerLinkViewOn": {
     "message": "Xem trên $1"
   },
