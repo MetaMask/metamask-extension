@@ -367,7 +367,8 @@
     },
     "chokidar": {
       "packages": {
-        "chokidar>fsevents": true
+        "chokidar>fsevents": true,
+        "tsx>fsevents": true
       }
     },
     "gulp-watch>chokidar": {
@@ -593,6 +594,13 @@
       "packages": {
         "@babel/core>@babel/types": true
       }
+    },
+    "tsx>fsevents": {
+      "globals": {
+        "console.assert": true,
+        "process.platform": true
+      },
+      "native": true
     }
   }
 }

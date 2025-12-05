@@ -1909,6 +1909,7 @@
         "chokidar>anymatch": true,
         "chokidar>braces": true,
         "chokidar>fsevents": true,
+        "tsx>fsevents": true,
         "eslint>glob-parent": true,
         "chokidar>is-binary-path": true,
         "del>is-glob": true,
@@ -3497,6 +3498,13 @@
       "packages": {
         "gulp-watch>chokidar>fsevents>node-pre-gyp": true
       }
+    },
+    "tsx>fsevents": {
+      "globals": {
+        "console.assert": true,
+        "process.platform": true
+      },
+      "native": true
     },
     "string.prototype.matchall>es-abstract>function.prototype.name": {
       "globals": {
@@ -8361,7 +8369,6 @@
     },
     "typescript": {
       "builtin": {
-        "buffer.Buffer": true,
         "crypto": true,
         "fs": true,
         "inspector": true,
@@ -8371,22 +8378,46 @@
         "path.dirname": true,
         "path.join": true,
         "path.resolve": true,
-        "perf_hooks.PerformanceObserver": true,
         "perf_hooks.performance": true
       },
       "globals": {
+        "BreakpointResolver": true,
+        "Buffer.from": true,
+        "CallHierarchy": true,
+        "Completions": true,
+        "FindAllReferences": true,
+        "GoToDefinition": true,
+        "InlayHintKind": true,
+        "InlayHints": true,
         "Intl.Collator": true,
-        "PerformanceObserver": true,
+        "JsDoc": true,
+        "JsTyping": true,
+        "MapCode": true,
+        "NavigateTo": true,
+        "NavigationBar": true,
+        "OrganizeImports": true,
+        "OutliningElementsCollector": true,
+        "Rename": true,
+        "SignatureHelp": true,
+        "SmartSelectionRange": true,
+        "SymbolDisplay": true,
         "__dirname": true,
         "__filename": true,
+        "classifier": true,
         "clearTimeout": true,
+        "codefix": true,
         "console": true,
+        "formatting": true,
         "gc": true,
         "globalThis": true,
+        "moduleSpecifiers": true,
         "onProfilerEvent": true,
         "performance": true,
         "process": true,
-        "setTimeout": true
+        "refactor": true,
+        "server": true,
+        "setTimeout": true,
+        "textChanges": true
       },
       "packages": {
         "terser>source-map-support": true
