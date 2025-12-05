@@ -28,7 +28,8 @@ export const getIsSettingsPageDevOptionsEnabled = (): boolean => {
  * 'erc20-token-periodic'), or an empty array if none are configured.
  */
 export const getEnabledAdvancedPermissions = (): string[] => {
-  const enabled = process.env.GATOR_ENABLED_PERMISSION_TYPES?.toString() || '';
+  const enabled =
+    process.env.GATOR_ENABLED_PERMISSION_TYPES?.toString().trim() || '';
   return enabled.split(',').filter(Boolean);
 };
 

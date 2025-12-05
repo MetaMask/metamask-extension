@@ -1142,8 +1142,8 @@ export default class MetamaskController extends EventEmitter {
       processRequestExecutionPermissions: async (params, req) => {
         const enabledTypes = getEnabledAdvancedPermissions();
 
-        if (enabledTypes.length === 0) {
-          throw rpcErrors.methodNotSupported('No permission types are enabled');
+        if (!params || params.length === 0) {
+          throw rpcErrors.methodNotSupported('No permission type provided');
         }
 
         for (const param of params) {
