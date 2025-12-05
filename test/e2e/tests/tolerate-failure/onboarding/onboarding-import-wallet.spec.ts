@@ -1,4 +1,5 @@
 import { Mockttp } from 'mockttp';
+import { Browser } from 'selenium-webdriver';
 import { WALLET_PASSWORD, withFixtures } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import HomePage from '../../../page-objects/pages/home/homepage';
@@ -21,6 +22,10 @@ import AssetListPage from '../../../page-objects/pages/home/asset-list';
 
 import { E2E_SRP } from '../../../fixtures/default-fixture';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
+import {
+  handleSidepanelPostOnboarding,
+  onboardingMetricsFlow,
+} from '../../../page-objects/flows/onboarding.flow';
 
 describe('MetaMask onboarding', function () {
   // Setup timer reporting for all tests in this describe block
@@ -68,7 +73,15 @@ describe('MetaMask onboarding', function () {
         const timer7 = Timers.createTimer(
           'Time since the user opens "account list" until the account list is loaded',
         );
+
         await driver.navigate();
+        const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
+        if (isFirefox) {
+          await onboardingMetricsFlow(driver, {
+            participateInMetaMetrics: false,
+            dataCollectionForMarketing: false,
+          });
+        }
         const startOnboardingPage = new StartOnboardingPage(driver);
         await startOnboardingPage.checkLoginPageIsLoaded();
         await startOnboardingPage.importWallet(false);
@@ -87,16 +100,19 @@ describe('MetaMask onboarding', function () {
         await onboardingPasswordPage.checkPageIsLoaded();
         timer3.stopTimer();
         await onboardingPasswordPage.createWalletPassword(WALLET_PASSWORD);
-        timer4.startTimer();
-        const onboardingMetricsPage = new OnboardingMetricsPage(driver);
-        await onboardingMetricsPage.checkPageIsLoaded();
-        timer4.stopTimer();
-        await onboardingMetricsPage.clickOnContinueButton();
+        if (!isFirefox) {
+          timer4.startTimer();
+          const onboardingMetricsPage = new OnboardingMetricsPage(driver);
+          await onboardingMetricsPage.checkPageIsLoaded();
+          timer4.stopTimer();
+          await onboardingMetricsPage.clickOnContinueButton();
+        }
         timer5.startTimer();
         const onboardingCompletePage = new OnboardingCompletePage(driver);
         await onboardingCompletePage.checkPageIsLoaded();
         timer5.stopTimer();
         await onboardingCompletePage.completeOnboarding();
+        await handleSidepanelPostOnboarding(driver);
         timer6.startTimer();
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();

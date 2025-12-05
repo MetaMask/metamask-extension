@@ -750,7 +750,7 @@ class AssetListPage {
   async checkTokenListIsDisplayed(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.tokenListItem, {
-        timeout: 300000,
+        timeout: 60000,
       });
     } catch (e) {
       console.log('Token list is not displayed', e);
