@@ -220,6 +220,69 @@ describe(`migration #${VERSION}`, () => {
     expect(newStorage).toStrictEqual(expectedStorage);
   });
 
+  it('merges the megaeth testnet v2 network configuration if user already has it', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        NetworkController: {
+          networkConfigurationsByChainId: {
+            [MEGAETH_TESTNET_V2_CONFIG.chainId]: {
+              ...MEGAETH_TESTNET_V2_CONFIG,
+              name: 'MegaETH Testnet custom',
+              rpcEndpoints: [
+                {
+                  networkClientId: 'some-network-client-id',
+                  type: RpcEndpointType.Custom,
+                  url: 'https://timothy.megaeth.com/rpc',
+                  failoverUrls: [],
+                },
+              ],
+            },
+          },
+        },
+        NetworkEnablementController: {
+          enabledNetworkMap: {
+            [KnownCaipNamespace.Eip155]: {
+              [MEGAETH_TESTNET_V2_CONFIG.chainId]: true,
+            },
+          },
+        },
+      },
+    };
+
+    const expectedStorage = {
+      meta: { version: VERSION },
+      data: {
+        NetworkController: {
+          networkConfigurationsByChainId: {
+            [MEGAETH_TESTNET_V2_CONFIG.chainId]: {
+              ...MEGAETH_TESTNET_V2_CONFIG,
+              rpcEndpoints: [
+                {
+                  networkClientId: 'some-network-client-id',
+                  type: RpcEndpointType.Custom,
+                  url: 'https://timothy.megaeth.com/rpc',
+                  failoverUrls: [],
+                },
+              ],
+            },
+          },
+        },
+        NetworkEnablementController: {
+          enabledNetworkMap: {
+            [KnownCaipNamespace.Eip155]: {
+              [MEGAETH_TESTNET_V2_CONFIG.chainId]: true,
+            },
+          },
+        },
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage).toStrictEqual(expectedStorage);
+  });
+
   // @ts-expect-error 'each' function is not recognized by TypeScript types
   it.each(['megaeth-testnet', 'random-network-client-id'])(
     'switchs to mainnet when the selected network client id is in MegaETH Testnet v1 - %s',
