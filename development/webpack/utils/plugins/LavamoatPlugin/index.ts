@@ -84,7 +84,6 @@ export const lavamoatPlugin = (args: Args) =>
         'HTMLElement',
         'HTMLFormElement',
         'Element',
-        'history', // needed by react-router-dom v6 HashRouter
         'pageXOffset',
         'pageYOffset',
         'visualViewport',
