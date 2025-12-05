@@ -1,4 +1,3 @@
-import { cloneDeep } from 'lodash';
 import { migrate, version } from './185';
 
 const VERSION = version;
@@ -97,9 +96,7 @@ describe(`migration #${VERSION}`, () => {
 
     expect(newStorage.data).toStrictEqual(oldStorage.data);
     expect(mockedCaptureException).toHaveBeenCalledWith(
-      new Error(
-        `Migration ${VERSION}: currencyRates is not an object: string`,
-      ),
+      new Error(`Migration ${VERSION}: currencyRates is not an object: string`),
     );
   });
 
@@ -110,10 +107,10 @@ describe(`migration #${VERSION}`, () => {
         CurrencyController: {
           currencyRates: {
             ETH: {
-              conversionRate: 12.9848883888222, // 13 decimal places
+              conversionRate: parseFloat('12.9848883888222'), // 13 decimal places
             },
             BTC: {
-              conversionRate: 50000.123456789012, // 12 decimal places
+              conversionRate: parseFloat('50000.123456789012'), // 12 decimal places
             },
           },
         },
@@ -188,7 +185,7 @@ describe(`migration #${VERSION}`, () => {
         CurrencyController: {
           currencyRates: {
             ETH: {
-              conversionRate: 2500.1234567890123, // Needs rounding
+              conversionRate: parseFloat('2500.1234567890123'), // Needs rounding
             },
             BTC: {
               conversionRate: 45000.12345, // No rounding needed
@@ -266,7 +263,7 @@ describe(`migration #${VERSION}`, () => {
         CurrencyController: {
           currencyRates: {
             SMALLCOIN: {
-              conversionRate: 0.000000000, // Rounded to 9 decimal places
+              conversionRate: 0, // Rounded to 9 decimal places
             },
           },
         },
@@ -285,10 +282,10 @@ describe(`migration #${VERSION}`, () => {
         CurrencyController: {
           currencyRates: {
             ETH: {
-              usdConversionRate: 2500.1234567890123, // Needs rounding
+              usdConversionRate: parseFloat('2500.1234567890123'), // Needs rounding
             },
             BTC: {
-              usdConversionRate: 45000.123456789012, // Needs rounding
+              usdConversionRate: parseFloat('45000.123456789012'), // Needs rounding
             },
           },
         },
@@ -323,8 +320,8 @@ describe(`migration #${VERSION}`, () => {
         CurrencyController: {
           currencyRates: {
             ETH: {
-              conversionRate: 2500.1234567890123, // Needs rounding
-              usdConversionRate: 2500.9876543210987, // Needs rounding
+              conversionRate: parseFloat('2500.1234567890123'), // Needs rounding
+              usdConversionRate: parseFloat('2500.9876543210987'), // Needs rounding
             },
             BTC: {
               conversionRate: 45000.12345, // No rounding needed
@@ -405,8 +402,8 @@ describe(`migration #${VERSION}`, () => {
         CurrencyController: {
           currencyRates: {
             ETH: {
-              conversionRate: 2500.1234567890123, // Needs rounding
-              usdConversionRate: 2500.9876543210987, // Needs rounding
+              conversionRate: parseFloat('2500.1234567890123'), // Needs rounding
+              usdConversionRate: parseFloat('2500.9876543210987'), // Needs rounding
             },
             BTC: {
               usdConversionRate: 45000.12345, // No rounding needed
@@ -460,8 +457,8 @@ describe(`migration #${VERSION}`, () => {
           currentCurrency: 'usd',
           currencyRates: {
             ETH: {
-              conversionRate: 2500.1234567890123,
-              usdConversionRate: 2500.9876543210987,
+              conversionRate: parseFloat('2500.1234567890123'),
+              usdConversionRate: parseFloat('2500.9876543210987'),
               conversionDate: 1234567890,
             },
           },

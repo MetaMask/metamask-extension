@@ -40,6 +40,7 @@ export async function migrate(
 
 /**
  * Rounds a number to a specified precision (maximum decimal places)
+ *
  * @param value - The number to round
  * @param precision - The maximum number of decimal places (default: 9)
  * @returns The rounded number
@@ -71,7 +72,7 @@ function transformState(state: Record<string, unknown>) {
     return state;
   }
 
-  const currencyRates = currencyController.currencyRates;
+  const { currencyRates } = currencyController;
   if (!isObject(currencyRates)) {
     captureException(
       new Error(
@@ -87,7 +88,7 @@ function transformState(state: Record<string, unknown>) {
     if (isObject(rateData)) {
       // Handle conversionRate
       if (hasProperty(rateData, 'conversionRate')) {
-        const conversionRate = rateData.conversionRate;
+        const { conversionRate } = rateData;
         if (typeof conversionRate === 'number') {
           // Check if the number has more than 9 decimal places
           const decimalPlaces =
@@ -100,7 +101,7 @@ function transformState(state: Record<string, unknown>) {
 
       // Handle usdConversionRate
       if (hasProperty(rateData, 'usdConversionRate')) {
-        const usdConversionRate = rateData.usdConversionRate;
+        const { usdConversionRate } = rateData;
         if (typeof usdConversionRate === 'number') {
           // Check if the number has more than 9 decimal places
           const decimalPlaces =
