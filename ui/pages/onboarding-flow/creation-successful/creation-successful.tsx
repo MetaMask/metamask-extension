@@ -145,6 +145,9 @@ export default function CreationSuccessful() {
   }, [navigate, t]);
 
   const onDone = useCallback(async () => {
+    const deferredDeepLinkResult =
+      await getDeferredDeepLinkRoute(deferredDeepLink);
+
     if (isWalletReady) {
       trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
@@ -185,6 +188,23 @@ export default function CreationSuccessful() {
             await dispatch(setUseSidePanelAsDefault(true));
             // Use the sidepanel-specific action - no navigation needed, sidepanel is already open
             await dispatch(setCompletedOnboardingWithSidepanel());
+
+            if (deferredDeepLinkResult) {
+              if (
+                deferredDeepLinkResult.type ===
+                DeferredDeepLinkRouteType.Redirect
+              ) {
+                window.open(deferredDeepLinkResult.url, '_blank');
+              } else if (
+                deferredDeepLinkResult.type ===
+                DeferredDeepLinkRouteType.Navigate
+              ) {
+                navigate(deferredDeepLinkResult.route);
+              } else {
+                navigate(DEFAULT_ROUTE);
+              }
+            }
+
             return;
           }
         }
@@ -195,9 +215,6 @@ export default function CreationSuccessful() {
     }
     // Fallback to regular onboarding completion
     await dispatch(setCompletedOnboarding());
-
-    const deferredDeepLinkResult =
-      await getDeferredDeepLinkRoute(deferredDeepLink);
 
     if (deferredDeepLinkResult) {
       if (deferredDeepLinkResult.type === DeferredDeepLinkRouteType.Redirect) {
