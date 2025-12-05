@@ -20,9 +20,21 @@ class ShieldSubscriptionApprovePage extends TransactionConfirmation {
     ]);
   }
 
-  async clickStartNowButton(): Promise<void> {
-    console.log('Clicking Start now button');
-    await this.clickFooterConfirmButton();
+  /**
+   * Verify that the payment method token is displayed in the estimated changes section
+   *
+   * @param tokenSymbol - The token symbol to verify (e.g., 'USDT', 'USDC')
+   */
+  async checkPaymentMethodInEstimatedChanges(
+    tokenSymbol: string,
+  ): Promise<void> {
+    console.log(
+      `Checking that ${tokenSymbol} is displayed in estimated changes section`,
+    );
+    await this.driver.waitForSelector({
+      css: this.estimatedChangesSection,
+      text: tokenSymbol,
+    });
   }
 }
 
