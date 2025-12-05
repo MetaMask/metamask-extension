@@ -92,17 +92,17 @@ class SnapInteractiveDialog {
       .toISO();
   }
 
-  async selectInTimePicker(hours: number, minutes: number) {
+  async selectInTimePicker(hour: number, minute: number) {
     await this.driver.clickElement(selectors.exampleTimePicker);
 
-    await this.selectTimeInPicker(hours, minutes);
+    await this.selectTimeInPicker(hour, minute);
 
     await this.driver.clickElement(selectors.dateTimePickerOkButton);
 
     return DateTime.now()
       .set({
-        hour: 9,
-        minute: 40,
+        hour,
+        minute,
         second: 0,
         millisecond: 0,
       })
