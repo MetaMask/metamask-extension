@@ -730,14 +730,14 @@ export default function Routes() {
             component={Notifications}
             layout={RootLayout}
           />
-          <RouteWithLayout path={SNAPS_ROUTE} exact layout={LegacyLayout}>
+          <RouteWithLayout path={SNAPS_ROUTE} exact layout={RootLayout}>
             {createV5CompatRoute(SnapList, {
               wrapper: AuthenticatedV5Compat,
               includeNavigate: true,
               includeLocation: true,
             })}
           </RouteWithLayout>
-          <RouteWithLayout path={SNAPS_VIEW_ROUTE} layout={LegacyLayout}>
+          <RouteWithLayout path={SNAPS_VIEW_ROUTE} layout={RootLayout}>
             {createV5CompatRoute(SnapView, {
               wrapper: AuthenticatedV5Compat,
               includeNavigate: true,

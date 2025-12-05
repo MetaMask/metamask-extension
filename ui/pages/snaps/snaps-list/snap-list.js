@@ -59,7 +59,7 @@ const SnapList = ({ navigate: navigateProp }) => {
   const snapUpdateMap = useSelector(getAllSnapAvailableUpdates);
 
   return (
-    <div className="snaps">
+    <div className="snaps h-full">
       <Page backgroundColor={BackgroundColor.backgroundDefault}>
         <Header
           backgroundColor={BackgroundColor.backgroundDefault}
