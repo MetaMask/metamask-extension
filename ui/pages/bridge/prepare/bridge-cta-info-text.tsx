@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { BRIDGE_MM_FEE_RATE, isCrossChain } from '@metamask/bridge-controller';
+import { BRIDGE_MM_FEE_RATE } from '@metamask/bridge-controller';
 import { BigNumber } from 'bignumber.js';
 import { PopoverPosition, Text } from '../../../components/component-library';
 import {
@@ -65,10 +65,7 @@ export const BridgeCTAInfoText = () => {
         {[
           hasMMFee ? t('rateIncludesMMFee', [feePercentage]) : null,
           hasApproval &&
-            (isCrossChain(
-              activeQuote.quote.srcChainId,
-              activeQuote.quote.destChainId,
-            )
+            (activeQuote.quote.srcChainId === activeQuote.quote.destChainId
               ? t('willApproveAmountForBridging')
               : t('willApproveAmountForSwapping')),
         ]

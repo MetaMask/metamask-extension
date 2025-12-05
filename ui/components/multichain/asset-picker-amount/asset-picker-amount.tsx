@@ -53,7 +53,6 @@ import {
   setActiveNetworkWithError,
   setEnabledNetworks,
 } from '../../../store/actions';
-import { setToChainId } from '../../../ducks/bridge/actions';
 import MaxClearButton from './max-clear-button';
 import {
   AssetPicker,
@@ -268,7 +267,6 @@ export const AssetPickerAmount = ({
                       networkConfig.rpcEndpoints[
                         networkConfig.defaultRpcEndpointIndex
                       ];
-                    dispatch(setToChainId(networkConfig.chainId));
                     dispatch(detectNfts(allChainIds));
 
                     dispatch(setEnabledNetworks(networkConfig.chainId));

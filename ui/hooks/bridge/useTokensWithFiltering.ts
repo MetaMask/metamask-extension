@@ -112,6 +112,7 @@ type FilterPredicate = (
  * - popularity
  * - all other tokens
  *
+ * @deprecated Use useTokenList or other token list hooks instead
  * @param chainId - the selected src/dest chainId
  * @param tokenToExclude - a token to exclude from the token list, usually the token being swapped from
  * @param tokenToExclude.symbol
@@ -286,14 +287,14 @@ export const useTokensWithFiltering = (
                   (getNativeAssetForChainId(token.chainId)?.icon ||
                     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
                     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-                    getNativeAssetForChainId(token.chainId)?.iconUrl ||
-                    getAssetImageUrl(
-                      token.address,
-                      formatChainIdToCaip(token.chainId),
-                    )),
+                    getNativeAssetForChainId(token.chainId)?.iconUrl),
                 accountType: token.accountType,
               };
             } else {
+              const assetId = toAssetId(
+                token.address,
+                formatChainIdToCaip(token.chainId),
+              );
               yield {
                 ...token,
                 symbol: token.symbol,
@@ -308,10 +309,7 @@ export const useTokensWithFiltering = (
                   (token.image ||
                     (token.address &&
                       tokenList?.[token.address.toLowerCase()]?.iconUrl)) ??
-                  getAssetImageUrl(
-                    token.address,
-                    formatChainIdToCaip(token.chainId),
-                  ) ??
+                  (assetId ? getAssetImageUrl(assetId) : undefined) ??
                   '',
               };
             }
