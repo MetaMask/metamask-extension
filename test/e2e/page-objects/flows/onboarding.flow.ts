@@ -8,7 +8,7 @@ import StartOnboardingPage from '../pages/onboarding/start-onboarding-page';
 import SecureWalletPage from '../pages/onboarding/secure-wallet-page';
 import OnboardingCompletePage from '../pages/onboarding/onboarding-complete-page';
 import OnboardingPrivacySettingsPage from '../pages/onboarding/onboarding-privacy-settings-page';
-import { WALLET_PASSWORD } from '../../helpers';
+import { WALLET_PASSWORD } from '../../constants';
 import { E2E_SRP } from '../../fixtures/default-fixture';
 import HomePage from '../pages/home/homepage';
 import LoginPage from '../pages/login-page';
@@ -16,8 +16,9 @@ import TermsOfUseUpdateModal from '../pages/dialog/terms-of-use-update-modal';
 
 /**
  * Helper function to handle post-onboarding navigation for sidepanel builds.
- * When sidepanel is enabled, clicking "Done" doesn't navigate the current window,
- * so we need to manually navigate to home.html.
+ * When sidepanel is enabled, clicking "Done" opens the home page in the sidepanel,
+ * but the main window remains on the onboarding completion page.
+ * This function navigates the current window to the actual home page.
  * Note: Sidepanel is only supported on Chrome-based browsers, not Firefox.
  *
  * @param driver - The WebDriver instance
@@ -25,23 +26,24 @@ import TermsOfUseUpdateModal from '../pages/dialog/terms-of-use-update-modal';
 export const handleSidepanelPostOnboarding = async (
   driver: Driver,
 ): Promise<void> => {
-  // Check if sidepanel is enabled via build configuration
-  // AND we're not running on Firefox (which doesn't support sidepanel)
+  // Only run when sidepanel is actually enabled on Chrome
   const isSidepanelEnabled =
-    process.env.IS_SIDEPANEL === 'true' &&
-    process.env.SELENIUM_BROWSER !== Browser.FIREFOX;
+    process.env.SELENIUM_BROWSER === 'chrome' &&
+    process.env.IS_SIDEPANEL === 'true';
 
-  if (isSidepanelEnabled) {
-    // Give the onboarding completion time to process (needed for sidepanel)
-    await driver.delay(2000);
-
-    // Navigate directly to home page in current window
-    // With sidepanel enabled, this ensures we load home page in the test window
-    await driver.driver.get(`${driver.extensionUrl}/home.html`);
-
-    // Wait for the home page to fully load
-    await driver.waitForSelector('[data-testid="account-menu-icon"]');
+  if (!isSidepanelEnabled) {
+    return;
   }
+
+  // Give the onboarding completion time to process (needed for sidepanel)
+  await driver.delay(2000);
+
+  // Navigate directly to home page in current window
+  // With sidepanel enabled, this ensures we load home page in the test window
+  await driver.driver.get(`${driver.extensionUrl}/home.html`);
+
+  // Wait for the home page to fully load
+  await driver.waitForSelector('[data-testid="account-menu-icon"]');
 };
 
 /**
@@ -506,6 +508,10 @@ export const completeCreateNewWalletOnboardingFlowWithCustomSettings = async ({
   await onboardingCompletePage.checkPageIsLoaded();
 
   await onboardingCompletePage.completeOnboarding();
+  if (process.env.SELENIUM_BROWSER === Browser.CHROME) {
+    // wait for the sidepanel to open
+    await driver.delay(3000);
+  }
 
   await handleSidepanelPostOnboarding(driver);
 };

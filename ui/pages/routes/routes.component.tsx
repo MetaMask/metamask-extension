@@ -774,7 +774,7 @@ export default function Routes() {
           </RouteWithLayout>
           <RouteWithLayout
             path={`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:srcTxMetaId`}
-            layout={LegacyLayout}
+            layout={RootLayout}
             // v5 Route supports exact with render props, but TS types don't recognize it
             // Using spread operator with type assertion to bypass incorrect type definitions
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -791,7 +791,7 @@ export default function Routes() {
               },
             )}
           </RouteWithLayout>
-          <RouteWithLayout path={CROSS_CHAIN_SWAP_ROUTE} layout={LegacyLayout}>
+          <RouteWithLayout path={CROSS_CHAIN_SWAP_ROUTE} layout={RootLayout}>
             {createV5CompatRoute(CrossChainSwap, {
               wrapper: AuthenticatedV5Compat,
               includeLocation: true,
@@ -799,7 +799,7 @@ export default function Routes() {
           </RouteWithLayout>
           <RouteWithLayout
             path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}
-            layout={LegacyLayout}
+            layout={RootLayout}
           >
             {createV5CompatRoute(ConfirmAddSuggestedTokenPage, {
               wrapper: AuthenticatedV5Compat,
@@ -809,7 +809,7 @@ export default function Routes() {
           </RouteWithLayout>
           <RouteWithLayout
             path={CONFIRM_ADD_SUGGESTED_NFT_ROUTE}
-            layout={LegacyLayout}
+            layout={RootLayout}
           >
             {createV5CompatRoute(ConfirmAddSuggestedNftPage, {
               wrapper: AuthenticatedV5Compat,
@@ -831,7 +831,7 @@ export default function Routes() {
             authenticated
             path={NEW_ACCOUNT_ROUTE}
             component={CreateAccountPage}
-            layout={LegacyLayout}
+            layout={RootLayout}
           />
           <RouteWithLayout path={`${CONNECT_ROUTE}/:id`} layout={RootLayout}>
             {createV5CompatRoute<{ id: string }>(PermissionsConnect, {
@@ -981,7 +981,6 @@ export default function Routes() {
             })}
           </RouteWithLayout>
           <RouteWithLayout
-            authenticated
             path={`${REVIEW_PERMISSIONS}/:origin`}
             exact
             layout={RootLayout}
@@ -1023,7 +1022,7 @@ export default function Routes() {
           <RouteWithLayout
             path={`${MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE}/:accountGroupId`}
             exact
-            layout={LegacyLayout}
+            layout={RootLayout}
           >
             {createV5CompatRoute<{ accountGroupId: string }>(
               MultichainAccountPrivateKeyListPage,
