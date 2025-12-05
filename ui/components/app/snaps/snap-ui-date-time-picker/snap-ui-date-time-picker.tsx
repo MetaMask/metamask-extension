@@ -128,7 +128,7 @@ export const SnapUIDateTimePicker: FunctionComponent<
 
     const isoString = normalizedDate ? normalizedDate.toISO() : null;
 
-    setValue(date);
+    setValue(normalizedDate);
     handleInputChange(name, isoString, form);
   };
 
