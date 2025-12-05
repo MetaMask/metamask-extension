@@ -73,29 +73,50 @@ class SnapInteractiveDialog {
     await this.driver.fill(selectors.exampleInput, message);
   }
 
+  /**
+   * Open, select a date and time and submit the values in the date-time picker of the Snap Interactive Dialog.
+   *
+   * @param day - The day of the month to select.
+   * @param hour - The hour to select.
+   * @param minute - The minute to select.
+   * @returns The ISO string representation of the selected date and time.
+   */
   async selectInDateTimePicker(day: number, hour: number, minute: number) {
     await this.driver.clickElement(selectors.exampleDateTimePicker);
 
-    await this.selectDateInPicker(day);
-    await this.selectTimeInPicker(hour, minute);
+    await this.#selectDateInPicker(day);
+    await this.#selectTimeInPicker(hour, minute);
     await this.driver.clickElement(selectors.dateTimePickerOkButton);
 
-    return DateTime.now()
-      .minus({ months: 1 })
-      .set({
-        day,
-        hour,
-        minute,
-        second: 0,
-        millisecond: 0,
-      })
-      .toISO();
+    return (
+      DateTime.now()
+        // We select the previous month in the picker to ensure consistent tests.
+        // Since we use `disableFuture` in the picker, if we select a day that is
+        // greater than today when running the test at the beginning of the month,
+        // the date won't be selectable.
+        .minus({ months: 1 })
+        .set({
+          day,
+          hour,
+          minute,
+          second: 0,
+          millisecond: 0,
+        })
+        .toISO()
+    );
   }
 
+  /**
+   * Open, select a time and submit the values in the time picker of the Snap Interactive Dialog.
+   *
+   * @param hour - The hour to select.
+   * @param minute - The minute to select.
+   * @returns The ISO string representation of the selected time.
+   */
   async selectInTimePicker(hour: number, minute: number) {
     await this.driver.clickElement(selectors.exampleTimePicker);
 
-    await this.selectTimeInPicker(hour, minute);
+    await this.#selectTimeInPicker(hour, minute);
 
     await this.driver.clickElement(selectors.dateTimePickerOkButton);
 
@@ -109,10 +130,16 @@ class SnapInteractiveDialog {
       .toISO();
   }
 
+  /**
+   * Open, select a date and submit the value in the date picker of the Snap Interactive Dialog.
+   *
+   * @param day - The day of the month to select.
+   * @returns The ISO string representation of the selected date.
+   */
   async selectInDatePicker(day: number) {
     await this.driver.clickElement(selectors.exampleDatePicker);
 
-    await this.selectDateInPicker(day);
+    await this.#selectDateInPicker(day);
 
     await this.driver.clickElement(selectors.dateTimePickerOkButton);
 
@@ -128,7 +155,12 @@ class SnapInteractiveDialog {
       .toISO();
   }
 
-  async selectDateInPicker(day: number) {
+  /**
+   * Select a date in the calendar of a `DateTimePicker` component.
+   *
+   * @param day - The day of the month to select.
+   */
+  async #selectDateInPicker(day: number) {
     await this.driver.clickElement(selectors.datePickerPreviousMonthButton);
     await this.driver.waitForElementToStopMoving(
       selectors.datePickerCalendarContainer,
@@ -139,7 +171,13 @@ class SnapInteractiveDialog {
     });
   }
 
-  async selectTimeInPicker(hours: number, minutes: number) {
+  /**
+   * Select a time in the clock of a `DateTimePicker` component.
+   *
+   * @param hours - The hour to select.
+   * @param minutes - The minute to select.
+   */
+  async #selectTimeInPicker(hours: number, minutes: number) {
     console.log(`Selecting time in picker: ${hours}:${minutes}`);
 
     const hourText = await this.driver.findElement({
