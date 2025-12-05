@@ -120,7 +120,6 @@ class SnapInteractiveDialog {
       .minus({ months: 1 })
       .set({
         day,
-
         second: 0,
         millisecond: 0,
       })
