@@ -53,4 +53,21 @@
     width: 100%;
     height: 100%;
   }
+
+  // Fallback image
+  &__item-image,
+  &__item-image--hidden,
+  &__item-detail {
+    position: relative;
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+
+      background-image: url('/images/default_nft.png');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+  }
 }
