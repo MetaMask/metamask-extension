@@ -163,19 +163,19 @@ export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
           } catch {
             // Silently fail - traits update should not block opt-in
           }
-        }
 
-        // Link the reward to the shield subscription if opt in from the shield subscription
-        if (options?.rewardPoints && options?.shieldSubscriptionId) {
-          try {
-            await dispatch(
-              linkRewardToShieldSubscription(
-                options.shieldSubscriptionId,
-                options.rewardPoints,
-              ),
-            );
-          } catch {
-            // Silently fail - reward linking should not block opt-in
+          // Link the reward to the shield subscription if opt in from the shield subscription
+          if (options?.rewardPoints && options?.shieldSubscriptionId) {
+            try {
+              await dispatch(
+                linkRewardToShieldSubscription(
+                  options.shieldSubscriptionId,
+                  options.rewardPoints,
+                ),
+              );
+            } catch {
+              // Silently fail - reward linking should not block opt-in
+            }
           }
         }
       } catch (error) {
