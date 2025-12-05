@@ -28,13 +28,14 @@ const usePolling = <PollingInput>(
   }, []);
 
   useEffect(() => {
+    callIdRef.current += 1;
+    const currentCallId = callIdRef.current;
+
     if (usePollingOptions.enabled === false) {
       return () => {
         // noop
       };
     }
-    callIdRef.current += 1;
-    const currentCallId = callIdRef.current;
 
     const cleanup = () => {
       if (pollTokenRef.current) {
