@@ -139,16 +139,23 @@
     "NameController": { "nameSources": "object", "names": "object" },
     "NetworkController": {
       "networkConfigurationsByChainId": "object",
-      "networksMetadata": {
-        "networkConfigurationId": { "EIPS": {}, "status": "unknown" }
-      },
+      "networksMetadata": "object",
       "selectedNetworkClientId": "string"
     },
     "NetworkEnablementController": {
       "enabledNetworkMap": { "eip155": "object", "solana": "object" }
     },
     "NetworkOrderController": {
-      "orderedNetworkList": { "0": "object", "1": "object", "2": "object" }
+      "orderedNetworkList": {
+        "0": "object",
+        "1": "object",
+        "2": "object",
+        "3": "object",
+        "4": "object",
+        "5": "object",
+        "6": "object",
+        "7": "object"
+      }
     },
     "NftController": {
       "allNftContracts": "object",
@@ -304,5 +311,5 @@
     "config": "object",
     "firstTimeInfo": "object"
   },
-  "meta": { "version": 183 }
+  "meta": { "version": 184 }
 }
