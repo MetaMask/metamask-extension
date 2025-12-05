@@ -555,9 +555,7 @@ export class PersistenceManager {
    */
   async migrateToSplitState(state: MetaMaskStateType) {
     if (this.storageKind === 'split') {
-      log.debug(
-        '[Split State]: Storage is already split, skipping migration',
-      );
+      log.debug('[Split State]: Storage is already split, skipping migration');
       return;
     }
 
