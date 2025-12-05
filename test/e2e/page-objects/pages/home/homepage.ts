@@ -113,7 +113,7 @@ class HomePage {
     try {
       await this.driver.waitForMultipleSelectors(
         [this.sendButton, this.activityTab, this.tokensTab],
-        timeout,
+        { timeout },
       );
     } catch (e) {
       console.log('Timeout while waiting for home page to be loaded', e);
