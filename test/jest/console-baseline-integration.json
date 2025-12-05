@@ -13,15 +13,6 @@
       "Reselect: Identity function warnings": 13,
       "Reselect: Input stability warnings": 8
     },
-    "test/integration/confirmations/transactions/increase-allowance.test.tsx": {
-      "Reselect: Identity function warnings": 13,
-      "Reselect: Input stability warnings": 8
-    },
-    "test/integration/confirmations/transactions/erc20-approve.test.tsx": {
-      "Reselect: Identity function warnings": 13,
-      "Reselect: Input stability warnings": 8,
-      "React: Act warnings (component updates not wrapped)": 1
-    },
     "test/integration/confirmations/transactions/erc721-approve.test.tsx": {
       "Reselect: Identity function warnings": 13,
       "Reselect: Input stability warnings": 8,
@@ -31,29 +22,55 @@
       "Reselect: Identity function warnings": 13,
       "Reselect: Input stability warnings": 8
     },
+    "test/integration/confirmations/transactions/increase-allowance.test.tsx": {
+      "Reselect: Identity function warnings": 13,
+      "Reselect: Input stability warnings": 8,
+      "React: Act warnings (component updates not wrapped)": 1
+    },
+    "test/integration/confirmations/transactions/erc20-approve.test.tsx": {
+      "Reselect: Identity function warnings": 13,
+      "Reselect: Input stability warnings": 8,
+      "React: Act warnings (component updates not wrapped)": 1
+    },
     "test/integration/onboarding/import-wallet.test.tsx": {
       "Reselect: Identity function warnings": 8,
       "Reselect: Input stability warnings": 6,
       "React Router: Duplicate navigation warnings": 1
     },
+    "test/integration/confirmations/signatures/personalSign.test.tsx": {
+      "Reselect: Identity function warnings": 12,
+      "Reselect: Input stability warnings": 8
+    },
     "test/integration/confirmations/signatures/permit.test.tsx": {
-      "warn: REVIEWER_TEST: This warning should be": 5,
       "Reselect: Identity function warnings": 13,
       "Reselect: Input stability warnings": 8
     },
-    "test/integration/confirmations/transactions/set-approval-for-all-revoke.test.tsx": {
-      "Reselect: Identity function warnings": 13,
-      "Reselect: Input stability warnings": 8
+    "test/integration/notifications&auth/notifications-toggle.test.tsx": {
+      "Reselect: Identity function warnings": 11,
+      "Reselect: Input stability warnings": 11,
+      "React: componentWill* lifecycle deprecations": 1
     },
     "test/integration/notifications&auth/notifications-list.test.tsx": {
       "Reselect: Identity function warnings": 11,
       "Reselect: Input stability warnings": 8,
       "React: State updates on unmounted components": 1
     },
+    "test/integration/confirmations/transactions/contract-interaction.test.tsx": {
+      "Reselect: Identity function warnings": 13,
+      "Reselect: Input stability warnings": 8
+    },
     "test/integration/nfts/nfts.test.tsx": {
       "Reselect: Identity function warnings": 11,
       "Reselect: Input stability warnings": 8,
       "React: DOM nesting violations": 2
+    },
+    "test/integration/confirmations/transactions/set-approval-for-all-revoke.test.tsx": {
+      "Reselect: Identity function warnings": 13,
+      "Reselect: Input stability warnings": 8
+    },
+    "test/integration/confirmations/transactions/contract-deployment.test.tsx": {
+      "Reselect: Identity function warnings": 13,
+      "Reselect: Input stability warnings": 8
     },
     "test/integration/defi/defi-positions.test.tsx": {
       "Reselect: Identity function warnings": 12,
@@ -65,15 +82,7 @@
       "Reselect: Identity function warnings": 13,
       "Reselect: Input stability warnings": 8
     },
-    "test/integration/confirmations/signatures/permit-tradeOrder.test.tsx": {
-      "Reselect: Identity function warnings": 13,
-      "Reselect: Input stability warnings": 8
-    },
-    "test/integration/confirmations/signatures/personalSign.test.tsx": {
-      "Reselect: Identity function warnings": 12,
-      "Reselect: Input stability warnings": 8
-    },
-    "test/integration/confirmations/transactions/contract-interaction.test.tsx": {
+    "test/integration/confirmations/signatures/permit-seaport.test.tsx": {
       "Reselect: Identity function warnings": 13,
       "Reselect: Input stability warnings": 8
     },
@@ -81,20 +90,11 @@
       "Reselect: Identity function warnings": 13,
       "Reselect: Input stability warnings": 8
     },
-    "test/integration/confirmations/transactions/contract-deployment.test.tsx": {
-      "Reselect: Identity function warnings": 13,
-      "Reselect: Input stability warnings": 8
-    },
-    "test/integration/notifications&auth/notifications-toggle.test.tsx": {
-      "Reselect: Identity function warnings": 11,
-      "Reselect: Input stability warnings": 11,
-      "React: componentWill* lifecycle deprecations": 1
-    },
-    "test/integration/confirmations/signatures/permit-seaport.test.tsx": {
+    "test/integration/confirmations/signatures/permit-tradeOrder.test.tsx": {
       "Reselect: Identity function warnings": 13,
       "Reselect: Input stability warnings": 8
     }
   },
-  "generated": "2025-12-04T10:47:12.530Z",
+  "generated": "2025-12-05T10:48:29.448Z",
   "nodeVersion": "v24.11.1"
 }
