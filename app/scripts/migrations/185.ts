@@ -10,7 +10,7 @@ type VersionedData = {
 export const version = 185;
 
 /**
- * This migration rounds conversionRate values in CurrencyController
+ * This migration rounds conversionRate and usdConversionRate values in CurrencyController
  * to a maximum of 9 decimal places to prevent precision issues.
  *
  * @param originalVersionedData - The original MetaMask extension state.
@@ -65,7 +65,9 @@ function transformState(state: Record<string, unknown>) {
   }
 
   if (!hasProperty(currencyController, 'currencyRates')) {
-    console.warn(`Migration ${version}: currencyRates not found in CurrencyController.`);
+    console.warn(
+      `Migration ${version}: currencyRates not found in CurrencyController.`,
+    );
     return state;
   }
 
@@ -79,16 +81,34 @@ function transformState(state: Record<string, unknown>) {
     return state;
   }
 
-  // Iterate through each currency and round conversionRate values
+  // Iterate through each currency and round conversionRate and usdConversionRate values
   Object.keys(currencyRates).forEach((currency) => {
     const rateData = currencyRates[currency];
-    if (isObject(rateData) && hasProperty(rateData, 'conversionRate')) {
-      const conversionRate = rateData.conversionRate;
-      if (typeof conversionRate === 'number') {
-        // Check if the number has more than 9 decimal places
-        const decimalPlaces = conversionRate.toString().split('.')[1]?.length || 0;
-        if (decimalPlaces > 9) {
-          rateData.conversionRate = boundedPrecisionNumber(conversionRate);
+    if (isObject(rateData)) {
+      // Handle conversionRate
+      if (hasProperty(rateData, 'conversionRate')) {
+        const conversionRate = rateData.conversionRate;
+        if (typeof conversionRate === 'number') {
+          // Check if the number has more than 9 decimal places
+          const decimalPlaces =
+            conversionRate.toString().split('.')[1]?.length || 0;
+          if (decimalPlaces > 9) {
+            rateData.conversionRate = boundedPrecisionNumber(conversionRate);
+          }
+        }
+      }
+
+      // Handle usdConversionRate
+      if (hasProperty(rateData, 'usdConversionRate')) {
+        const usdConversionRate = rateData.usdConversionRate;
+        if (typeof usdConversionRate === 'number') {
+          // Check if the number has more than 9 decimal places
+          const decimalPlaces =
+            usdConversionRate.toString().split('.')[1]?.length || 0;
+          if (decimalPlaces > 9) {
+            rateData.usdConversionRate =
+              boundedPrecisionNumber(usdConversionRate);
+          }
         }
       }
     }

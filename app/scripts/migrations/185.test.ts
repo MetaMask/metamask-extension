@@ -278,6 +278,180 @@ describe(`migration #${VERSION}`, () => {
     expect(newStorage).toStrictEqual(expectedStorage);
   });
 
+  it('rounds usdConversionRate with more than 9 decimal places', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        CurrencyController: {
+          currencyRates: {
+            ETH: {
+              usdConversionRate: 2500.1234567890123, // Needs rounding
+            },
+            BTC: {
+              usdConversionRate: 45000.123456789012, // Needs rounding
+            },
+          },
+        },
+      },
+    };
+
+    const expectedStorage = {
+      meta: { version: VERSION },
+      data: {
+        CurrencyController: {
+          currencyRates: {
+            ETH: {
+              usdConversionRate: 2500.123456789, // Rounded to 9 decimal places
+            },
+            BTC: {
+              usdConversionRate: 45000.123456789, // Rounded to 9 decimal places
+            },
+          },
+        },
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage).toStrictEqual(expectedStorage);
+  });
+
+  it('handles both conversionRate and usdConversionRate in same currency', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        CurrencyController: {
+          currencyRates: {
+            ETH: {
+              conversionRate: 2500.1234567890123, // Needs rounding
+              usdConversionRate: 2500.9876543210987, // Needs rounding
+            },
+            BTC: {
+              conversionRate: 45000.12345, // No rounding needed
+              usdConversionRate: 45000.987654321, // Needs rounding
+            },
+          },
+        },
+      },
+    };
+
+    const expectedStorage = {
+      meta: { version: VERSION },
+      data: {
+        CurrencyController: {
+          currencyRates: {
+            ETH: {
+              conversionRate: 2500.123456789, // Rounded
+              usdConversionRate: 2500.987654321, // Rounded
+            },
+            BTC: {
+              conversionRate: 45000.12345, // Unchanged
+              usdConversionRate: 45000.987654321, // Rounded
+            },
+          },
+        },
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage).toStrictEqual(expectedStorage);
+  });
+
+  it('does not modify usdConversionRate with 9 or fewer decimal places', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        CurrencyController: {
+          currencyRates: {
+            ETH: {
+              usdConversionRate: 12.123456789, // Exactly 9 decimal places
+            },
+            BTC: {
+              usdConversionRate: 50000.12345, // 5 decimal places
+            },
+            USDC: {
+              usdConversionRate: 1, // No decimal places
+            },
+          },
+        },
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    // Data should remain unchanged
+    expect(newStorage.data).toStrictEqual({
+      CurrencyController: {
+        currencyRates: {
+          ETH: {
+            usdConversionRate: 12.123456789,
+          },
+          BTC: {
+            usdConversionRate: 50000.12345,
+          },
+          USDC: {
+            usdConversionRate: 1,
+          },
+        },
+      },
+    });
+  });
+
+  it('handles mixed rate data with usdConversionRate', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        CurrencyController: {
+          currencyRates: {
+            ETH: {
+              conversionRate: 2500.1234567890123, // Needs rounding
+              usdConversionRate: 2500.9876543210987, // Needs rounding
+            },
+            BTC: {
+              usdConversionRate: 45000.12345, // No rounding needed
+            },
+            INVALID: {
+              // Missing both properties
+            },
+            USDC: {
+              conversionRate: '1.0', // String value, should be ignored
+              usdConversionRate: '1.0', // String value, should be ignored
+            },
+          },
+        },
+      },
+    };
+
+    const expectedStorage = {
+      meta: { version: VERSION },
+      data: {
+        CurrencyController: {
+          currencyRates: {
+            ETH: {
+              conversionRate: 2500.123456789, // Rounded
+              usdConversionRate: 2500.987654321, // Rounded
+            },
+            BTC: {
+              usdConversionRate: 45000.12345, // Unchanged
+            },
+            INVALID: {
+              // Unchanged
+            },
+            USDC: {
+              conversionRate: '1.0', // Unchanged (string)
+              usdConversionRate: '1.0', // Unchanged (string)
+            },
+          },
+        },
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage).toStrictEqual(expectedStorage);
+  });
+
   it('preserves other properties in CurrencyController', async () => {
     const oldStorage = {
       meta: { version: oldVersion },
@@ -287,6 +461,7 @@ describe(`migration #${VERSION}`, () => {
           currencyRates: {
             ETH: {
               conversionRate: 2500.1234567890123,
+              usdConversionRate: 2500.9876543210987,
               conversionDate: 1234567890,
             },
           },
@@ -303,6 +478,7 @@ describe(`migration #${VERSION}`, () => {
           currencyRates: {
             ETH: {
               conversionRate: 2500.123456789, // Rounded
+              usdConversionRate: 2500.987654321, // Rounded
               conversionDate: 1234567890, // Preserved
             },
           },
