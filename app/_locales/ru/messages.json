@@ -4272,25 +4272,6 @@
     "message": "Значок $1",
     "description": "$1 is the icon name"
   },
-  "onboardingPinExtensionAltLaunch": {
-    "message": "Запустить расширение"
-  },
-  "onboardingPinExtensionAltPin": {
-    "message": "Закрепить расширение"
-  },
-  "onboardingPinExtensionDescription": {
-    "message": "Закрепите расширение MetaMask в браузере для его постоянной доступности и легкого просмотра подтверждений транзакций."
-  },
-  "onboardingPinExtensionDescription2": {
-    "message": "Получите доступ к своему кошельку MetaMask в 1 клик, нажав на расширение."
-  },
-  "onboardingPinExtensionDescription3": {
-    "message": "Нажмите на значок расширения $1 для мгновенного перехода к нему",
-    "description": "$1 is the browser name"
-  },
-  "onboardingPinExtensionTitle": {
-    "message": "Установка завершена!"
-  },
   "onboardingSignInWith": {
     "message": "Войти с помощью $1",
     "description": "$1 is the type of login used Google, Apple, etc"
