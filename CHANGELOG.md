@@ -9,18 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.13.0]
 
-### Uncategorized
-
-- Added new network client `megaeth-testnet-v2` Removed network client `megaeth-testnet` (#38426)
-- Improve error message when UI can't retrieve state from background process (#38564)
-- Increase timeout for UI calls to background from 10s to 16s, potentially preventing UI crash on very slow devices. (#38561)
-- Bump assets controllers to v93 (#38521)
-- Account list padding (#38492)
-- Refresh gator permissions after revoke state is changed. (#38427)
-- Bump assets controllers to v92 (#38359)
-- Adds event tracing for hide token. (#38358)
-- Advanced permissions are now ordered by startTime. (#37858)
-
 ### Added
 
 - Enable tx submission before swap quotes are loaded (#37963)
@@ -28,11 +16,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sidepanel enabled (#38550)
 - Link/claims rewards points from shield subscription (#38489)
 - Updated claims navigation and UI (#38380)
-- Bumped `@metamask/seedless-onboarding-controller` to v7.1.0. (#38499)
+- Bumped `@metamask/seedless-onboarding-controller` to v7.1.0 (#38499)
 - Add inactive state for shield banner animation asset (#38515)
-- N/A (#38501)
-- N/A (#38423)
-- Updated `@metamask/shield-controller` to `3.1.0`. (#38472)
+- Updated `@metamask/shield-controller` to `3.1.0` (#38472)
 - Add max values to Tron resources (#38518)
 - Update text for shield transaction not covered (#38511)
 - Add change payment method from crypto -> crypto / crypto -> card (in paused state only) (#38165)
@@ -42,11 +28,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix amount component to be only accept numeric inputs (#38235)
 - Update shield coverage alert icon (#38343)
 - Support gasless crosschain swaps with STX and eth_sendBundle (#38325)
-- feat: added metrics for pna25 banner (#38403)
-- Improve network logo and enable native token logo for Cronos (chain ID 25). (#38311)
+- Improve network logo and enable native token logo for Cronos (chain ID 25) (#38311)
 - Extend metrics with `transaction_hash` if it's opted in (#38181)
 - Introduces metametrics banner (#38112)
 - Added the edge case of insufficient balance quotes for gas fees sponsored swap (#38353)
+- Added new network client `megaeth-testnet-v2` and removed network client `megaeth-testnet` (#38426)
+- Bump assets controllers to v92 (#38359)
+- Bump assets controllers to v93 (#38521)
+- Refresh gator permissions after revoke state is changed (#38427)
+- Advanced permissions are now ordered by startTime (#37858)
 
 ### Fixed
 
@@ -59,13 +49,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Permission page footer background (#38497)
 - Removed danger icon from protect wallet modal (#38508)
 - Fixed recipient modal overflow when account names are long (#38454)
-- Fix scroll issue on network modal. (#38439)
+- Fix scroll issue on network modal (#38439)
 - Fixed an issue where `active` in `snap_getClientStatus` would be `undefined` (#38479)
 - When Network manager selection is Solana and a new popular network is added, the defi and NFTs tabs are missing (#38419)
 - Fix speed estimation to factor chain transacting on rather than selected network (#38342)
 - Remove 0x0..dead address from blocker alerts (#38345)
 - Improved responsiveness of revoke button in Gator permissions by adding immediate UI feedback (#38184)
 - Update recipient placeholder text in send (#38236)
+- Improve error message when UI can't retrieve state from background process (#38564)
+- Increase timeout for UI calls to background from 10s to 16s, potentially preventing UI crash on very slow devices (#38561)
+- Account list padding (#38492)
 
 ## [13.12.0]
 
