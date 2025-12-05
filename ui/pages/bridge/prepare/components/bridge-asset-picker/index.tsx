@@ -150,7 +150,6 @@ export const BridgeAssetPicker = ({
               selectedChainId={selectedChainId}
               onNetworkChange={(chainId) => {
                 setSelectedChainId(chainId);
-                setSearchQuery('');
                 setIsNetworkPickerOpen(false);
               }}
               onClose={() => setIsNetworkPickerOpen(false)}
