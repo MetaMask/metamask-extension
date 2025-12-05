@@ -47,6 +47,10 @@ const useMultiPolling = <PollingInput>(
     };
   }, []);
 
+  // Track current `inputKeyMap` for race condition handling in async callbacks
+  const inputKeyMapRef = useRef(inputKeyMap);
+  inputKeyMapRef.current = inputKeyMap;
+
   useEffect(() => {
     if (!completedOnboarding) {
       // don't start polling if onboarding is incomplete
@@ -57,8 +61,14 @@ const useMultiPolling = <PollingInput>(
     for (const [key, input] of inputKeyMap) {
       if (!pollingTokens.current.has(key)) {
         usePollingOptions.startPolling(input).then((token) => {
+          if (!inputKeyMapRef.current.has(key)) {
+            stopPollingRef.current(token);
+            return;
+          }
           if (isMounted.current) {
             pollingTokens.current.set(key, token);
+          } else {
+            stopPollingRef.current(token);
           }
         });
       }
