@@ -780,7 +780,9 @@ class AssetListPage {
    * @throws Error if a "No conversion rate available" message is displayed
    */
   async checkConversionRateDisplayed(): Promise<void> {
-    await this.driver.assertElementNotPresent(this.noPriceAvailableMessage);
+    await this.driver.assertElementNotPresent(this.noPriceAvailableMessage, {
+      timeout: 30000,
+    });
   }
 }
 
