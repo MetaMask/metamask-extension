@@ -1181,28 +1181,13 @@ class Driver {
    * Function that aims to simulate a click action on a specified web element
    * within a web page and waits for the current window to close.
    *
-   * This method supports two scenarios:
-   * 1. Normal window close - uses WebSocket-based waiting (if available) or polling
-   * 2. Extension reload - WebSocket disconnection is treated as success
-   *
    * @param {string | object} rawLocator - Element locator
    * @param {number} [retries] - The number of times to retry the click action if it fails
-   * @returns {Promise<void>} promise that resolves when the window is closed
+   * @returns {Promise<void>} promise that resolves to the WebElement
    */
   async clickElementAndWaitForWindowToClose(rawLocator, retries = 3) {
-    // Get the current window's title before clicking (for WebSocket-based approach)
-    const title = await this.driver.getTitle();
     const handle = await this.driver.getWindowHandle();
-
     await this.clickElement(rawLocator, retries);
-
-    // Use WebSocket-based approach if available (handles extension reloads gracefully)
-    if (this.windowHandles) {
-      await this.windowHandles.waitForWindowToClose('title', title);
-      return;
-    }
-
-    // Fallback to polling-based approach
     await this.waitForWindowToClose(handle);
   }
 
@@ -1217,8 +1202,6 @@ class Driver {
    */
   async waitForWindowToClose(handle, timeout = this.timeout) {
     const start = Date.now();
-    const delayStep = 1000;
-
     // eslint-disable-next-line no-constant-condition
     while (true) {
       const handles = await this.getAllWindowHandles();
@@ -1232,8 +1215,6 @@ class Driver {
           `waitForWindowToClose timed out waiting for window handle '${handle}' to close.`,
         );
       }
-
-      await this.delay(delayStep);
     }
   }
 
