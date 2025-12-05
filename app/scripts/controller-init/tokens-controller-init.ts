@@ -19,10 +19,8 @@ export const TokensControllerInit: ControllerInitFunction<
   // TODO: Fix TokensControllerMessenger type - add TokensControllerActions & TokensControllerEvents
   // TODO: Bump @metamask/network-controller, @metamask/accounts-controller, @metamask/keyring-controller to match assets-controllers
   const controller = new TokensController({
-    // @ts-expect-error - Messenger type mismatch due to missing controller actions/events and dependency version mismatch
     messenger: controllerMessenger,
     state: persistedState.TokensController,
-    // @ts-expect-error - Provider type mismatch between SwappableProxy and InternalProvider due to network-controller version mismatch
     provider,
     chainId: getGlobalChainId(initMessenger),
   });
