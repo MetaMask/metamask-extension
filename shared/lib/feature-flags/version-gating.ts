@@ -8,6 +8,26 @@ export type VersionGatedFeatureFlag = {
 
 const APP_VERSION = packageJson.version;
 
+/**
+ * Extracts the base 3-part SemVer version (major.minor.patch) from a version string.
+ * Strips any prerelease or build metadata suffixes.
+ *
+ * @param version - The version string to parse (e.g., '13.13.0-experimental.0' or '13.2.3')
+ * @returns The base version string (e.g., '13.13.0' or '13.2.3'), or 'unknown' if parsing fails
+ */
+export const getBaseSemVerVersion = (version: string | undefined): string => {
+  if (!version) {
+    return 'unknown';
+  }
+
+  const parsed = semver.parse(version);
+  if (!parsed) {
+    return 'unknown';
+  }
+
+  return `${parsed.major}.${parsed.minor}.${parsed.patch}`;
+};
+
 export const hasMinimumRequiredVersion = (
   minRequiredVersion?: string | null,
 ) => {

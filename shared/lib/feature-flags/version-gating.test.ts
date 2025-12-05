@@ -1,5 +1,6 @@
 import semver from 'semver';
 import {
+  getBaseSemVerVersion,
   hasMinimumRequiredVersion,
   validatedVersionGatedFeatureFlag,
   VersionGatedFeatureFlag,
@@ -263,6 +264,47 @@ describe('version-gating', () => {
         expect(validatedVersionGatedFeatureFlag(flag)).toBe(true);
         expect(semverGteMock).toHaveBeenCalledWith('12.5.0', '12.5.0');
       });
+    });
+  });
+
+  describe('getBaseSemVerVersion', () => {
+    // Use real semver.parse instead of mocking - no benefit to mocking a stable library
+    const realSemver = jest.requireActual('semver');
+
+    beforeEach(() => {
+      (semver.parse as jest.Mock).mockImplementation(realSemver.parse);
+    });
+
+    it('returns base version when given a version with prerelease tag', () => {
+      expect(getBaseSemVerVersion('13.13.0-experimental.0')).toBe('13.13.0');
+    });
+
+    it('returns same version when given a clean 3-part version', () => {
+      expect(getBaseSemVerVersion('13.2.3')).toBe('13.2.3');
+    });
+
+    it('returns base version when given a beta version', () => {
+      expect(getBaseSemVerVersion('12.5.0-beta.1')).toBe('12.5.0');
+    });
+
+    it('returns base version when given a build metadata version', () => {
+      expect(getBaseSemVerVersion('1.0.0+build.123')).toBe('1.0.0');
+    });
+
+    it('returns unknown when given undefined', () => {
+      expect(getBaseSemVerVersion(undefined)).toBe('unknown');
+    });
+
+    it('returns unknown when given an empty string', () => {
+      expect(getBaseSemVerVersion('')).toBe('unknown');
+    });
+
+    it('returns unknown when given an invalid version string', () => {
+      expect(getBaseSemVerVersion('invalid')).toBe('unknown');
+    });
+
+    it('returns unknown when given a partial version', () => {
+      expect(getBaseSemVerVersion('13.2')).toBe('unknown');
     });
   });
 });
