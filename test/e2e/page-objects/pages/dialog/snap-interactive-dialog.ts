@@ -81,9 +81,9 @@ class SnapInteractiveDialog {
     await this.driver.clickElement(selectors.dateTimePickerOkButton);
 
     return DateTime.now()
+      .minus({ months: 1 })
       .set({
         day,
-        month: DateTime.now().month - 1,
         hour,
         minute,
         second: 0,
@@ -117,9 +117,10 @@ class SnapInteractiveDialog {
     await this.driver.clickElement(selectors.dateTimePickerOkButton);
 
     return DateTime.now()
+      .minus({ months: 1 })
       .set({
         day,
-        month: DateTime.now().month - 1,
+
         second: 0,
         millisecond: 0,
       })
