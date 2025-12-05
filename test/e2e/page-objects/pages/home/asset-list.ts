@@ -763,7 +763,7 @@ class AssetListPage {
   async checkTokenListIsDisplayed(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.tokenListItem, {
-        timeout: 300000,
+        timeout: 60000,
       });
     } catch (e) {
       console.log('Token list is not displayed', e);
@@ -793,7 +793,9 @@ class AssetListPage {
    * @throws Error if a "No conversion rate available" message is displayed
    */
   async checkConversionRateDisplayed(): Promise<void> {
-    await this.driver.assertElementNotPresent(this.noPriceAvailableMessage);
+    await this.driver.assertElementNotPresent(this.noPriceAvailableMessage, {
+      timeout: 30000,
+    });
   }
 }
 

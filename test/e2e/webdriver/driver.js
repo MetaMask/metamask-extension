@@ -463,8 +463,10 @@ class Driver {
    * Waits for multiple elements that match the given locators to reach the specified state within the timeout period.
    *
    * @param {Array<string | object>} rawLocators - Array of element locators
-   * @param {number} timeout - Optional parameter that specifies the maximum amount of time (in milliseconds)
-   * to wait for the condition to be met and desired state of the elements to wait for.
+   * @param {object} [options] - Optional configuration object
+   * @param {number} [options.timeout] - Maximum time (in milliseconds) to wait for the condition to be met.
+   * Defaults to the driver's timeout value.
+   * @param {string} [options.state] - Desired state of the elements to wait for.
    * It defaults to 'visible', indicating that the method will wait until the elements are visible on the page.
    * The other supported state is 'detached', which means waiting until the elements are removed from the DOM.
    * @returns {Promise<Array<WebElement>>} Promise resolving when all elements meet the state or timeout occurs.

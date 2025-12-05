@@ -39,7 +39,7 @@ describe('Power user persona', function () {
       async ({ driver }: { driver: Driver }) => {
         await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
+        await homePage.checkPageIsLoaded(30000); // Since here the requests are not mocked, let's wait longer
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenListIsDisplayed();
         await assetListPage.checkConversionRateDisplayed();
