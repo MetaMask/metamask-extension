@@ -803,7 +803,6 @@ async function initialize(backup) {
  */
 async function loadPreinstalledSnaps() {
   const fetchWithTimeout = getFetchWithTimeout();
-
   const promises = PREINSTALLED_SNAPS_URLS.map(async (url) => {
     const response = await fetchWithTimeout(url);
 
