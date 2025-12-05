@@ -27,7 +27,7 @@ describe('InfoTab', () => {
     });
 
     it('should have correct href for "Terms of Use" link', () => {
-      const termsOfUseLink = getByText('Terms of use');
+      const termsOfUseLink = getByText('Terms of Use');
       expect(termsOfUseLink).toHaveAttribute(
         'href',
         'https://metamask.io/terms.html',

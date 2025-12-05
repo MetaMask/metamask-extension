@@ -940,7 +940,7 @@ describe('NameDetails', () => {
         store,
       );
 
-      expect(getByText('Address Needs Review')).toBeInTheDocument();
+      expect(getByText('Address needs review')).toBeInTheDocument();
     });
 
     it('renders verified state correctly', () => {
