@@ -4045,11 +4045,6 @@
         "define": true
       }
     },
-    "history": {
-      "globals": {
-        "history": true
-      }
-    },
     "@toruslabs/eccrypto>elliptic>hmac-drbg": {
       "packages": {
         "ethers>@ethersproject/sha2>hash.js": true,

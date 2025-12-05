@@ -61,7 +61,7 @@ I18nProvider.defaultProps = {
 function createProviderWrapper(
   store,
   pathname = '/',
-  getMockTrackEvent = () => () => Promise.resolve(),
+  getMockTrackEvent = () => jest.fn().mockResolvedValue(undefined),
 ) {
   const mockTrackEvent = createMockTrackEvent(getMockTrackEvent);
 
@@ -103,7 +103,7 @@ export function renderHookWithProvider(
   state,
   pathname = '/',
   Container,
-  getMockTrackEvent = () => () => Promise.resolve(),
+  getMockTrackEvent = () => jest.fn().mockResolvedValue(undefined),
 ) {
   const store = state ? configureStore(state) : undefined;
 
@@ -148,7 +148,7 @@ export const renderHookWithProviderTyped = (
   state,
   pathname = '/',
   Container,
-  getMockTrackEvent = () => () => Promise.resolve(),
+  getMockTrackEvent = () => jest.fn().mockResolvedValue(undefined),
 ) =>
   renderHookWithProvider(hook, state, pathname, Container, getMockTrackEvent);
 

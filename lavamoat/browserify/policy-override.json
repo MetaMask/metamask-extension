@@ -1,10 +1,5 @@
 {
   "resources": {
-    "history": {
-      "globals": {
-        "history": true
-      }
-    },
     "react-router-dom": {
       "globals": {
         "history": true
