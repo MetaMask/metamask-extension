@@ -143,16 +143,22 @@ class SnapInteractiveDialog {
 
     await this.driver.clickElement(selectors.dateTimePickerOkButton);
 
-    return DateTime.now()
-      .minus({ months: 1 })
-      .set({
-        day,
-        hour: 0,
-        minute: 0,
-        second: 0,
-        millisecond: 0,
-      })
-      .toISO();
+    return (
+      DateTime.now()
+        // We select the previous month in the picker to ensure consistent tests.
+        // Since we use `disableFuture` in the picker, if we select a day that is
+        // greater than today when running the test at the beginning of the month,
+        // the date won't be selectable.
+        .minus({ months: 1 })
+        .set({
+          day,
+          hour: 0,
+          minute: 0,
+          second: 0,
+          millisecond: 0,
+        })
+        .toISO()
+    );
   }
 
   /**
