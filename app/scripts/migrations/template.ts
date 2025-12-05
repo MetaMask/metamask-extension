@@ -14,7 +14,6 @@ export const version = 0;
  * @param versionedData.meta.storageKind - The kind of storage being used.
  * @param versionedData.data - The persisted MetaMask state, keyed by controller.
  * @param changedKeys - `Set` to track which controller keys were modified by a migration
- * @returns void or a Promise that resolves to void; mutate the state in place.
  */
 export const migrate = ((versionedData, changedKeys) => {
   versionedData.meta.version = version;
