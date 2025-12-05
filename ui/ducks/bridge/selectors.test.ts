@@ -20,14 +20,13 @@ import { mockNetworkState } from '../../../test/stub/networks';
 import mockErc20Erc20Quotes from '../../../test/data/bridge/mock-quotes-erc20-erc20.json';
 import mockBridgeQuotesNativeErc20 from '../../../test/data/bridge/mock-quotes-native-erc20.json';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
-import { toAssetIdOrThrow } from '../../../shared/lib/asset-utils';
+import { toAssetId } from '../../../shared/lib/asset-utils';
 import {
   getBridgeQuotes,
   getFromAmount,
   getFromChain,
   getFromChains,
   getFromToken,
-  getIsSwap,
   getToChain,
   getToChains,
   getToToken,
@@ -41,7 +40,7 @@ import { toBridgeToken } from './utils';
 
 describe('Bridge selectors', () => {
   describe('getFromChain', () => {
-    it('returns the fromChain from the state', () => {
+    it('returns the fromChain from the multichain network controller', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
           bridgeConfig: {
@@ -59,7 +58,20 @@ describe('Bridge selectors', () => {
 
       const result = getFromChain(state as never);
       expect(result).toStrictEqual({
-        chainId: formatChainIdToCaip(ChainId.ARBITRUM),
+        blockExplorerUrls: ['https://localhost/blockExplorer/0xa4b1'],
+        chainId: 'eip155:42161',
+        defaultBlockExplorerUrlIndex: 0,
+        defaultRpcEndpointIndex: 0,
+        hexChainId: '0xa4b1',
+        name: 'Arbitrum',
+        nativeCurrency: 'ETH',
+        rpcEndpoints: [
+          {
+            networkClientId: expect.any(String),
+            type: 'custom',
+            url: 'https://localhost/rpc/0xa4b1',
+          },
+        ],
       });
     });
 
@@ -110,6 +122,7 @@ describe('Bridge selectors', () => {
 
       expect(result).toStrictEqual({
         chainId: formatChainIdToCaip(ChainId.LINEA),
+        name: 'Linea',
       });
     });
 
@@ -129,7 +142,20 @@ describe('Bridge selectors', () => {
       const result = getToChain(state as never);
 
       expect(result).toStrictEqual({
-        chainId: formatChainIdToCaip(ChainId.ETH),
+        blockExplorerUrls: ['https://localhost/blockExplorer/0x1'],
+        chainId: 'eip155:1',
+        defaultBlockExplorerUrlIndex: 0,
+        defaultRpcEndpointIndex: 0,
+        hexChainId: '0x1',
+        name: 'Ethereum',
+        nativeCurrency: 'ETH',
+        rpcEndpoints: [
+          {
+            networkClientId: expect.any(String),
+            type: 'custom',
+            url: 'https://localhost/rpc/0x1',
+          },
+        ],
       });
     });
   });
@@ -426,12 +452,16 @@ describe('Bridge selectors', () => {
     it('returns fromToken', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
-          fromToken: { address: '0x123', symbol: 'TEST' },
+          fromToken: { address: '0x123', symbol: 'TEST', chainId: 'eip155:1' },
         },
       });
       const result = getFromToken(state as never);
 
-      expect(result).toStrictEqual({ address: '0x123', symbol: 'TEST' });
+      expect(result).toStrictEqual({
+        address: '0x123',
+        symbol: 'TEST',
+        chainId: 'eip155:1',
+      });
     });
 
     it('returns defaultToken if fromToken is undefined', () => {
@@ -484,6 +514,7 @@ describe('Bridge selectors', () => {
       const result = getToToken(state as never);
 
       expect(result).toStrictEqual({
+        accountType: undefined,
         address: '0xaca92e438df0b2401ff60da7e4337b687a2435da',
         assetId: 'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da',
         balance: '0',
@@ -493,6 +524,7 @@ describe('Bridge selectors', () => {
           'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xaca92e438df0b2401ff60da7e4337b687a2435da.png',
         name: 'MetaMask USD',
         symbol: 'mUSD',
+        tokenFiatAmount: undefined,
       });
     });
 
@@ -1711,70 +1743,6 @@ describe('Bridge selectors', () => {
     });
   });
 
-  describe('getIsSwap', () => {
-    it('returns true when source and destination chains are the same', () => {
-      const state = createBridgeMockStore({
-        bridgeStateOverrides: {
-          quoteRequest: {
-            srcChainId: '0x1',
-            destChainId: '0x1',
-          },
-        },
-      });
-
-      const result = getIsSwap(state as never);
-      expect(result).toBe(true);
-    });
-
-    it('returns false when source and destination chains are different', () => {
-      const state = createBridgeMockStore({
-        bridgeStateOverrides: {
-          quoteRequest: {
-            srcChainId: '0x1',
-            destChainId: '0x89',
-          },
-        },
-      });
-
-      const result = getIsSwap(state as never);
-      expect(result).toBe(false);
-    });
-
-    it('returns false when either chain ID is missing', () => {
-      const stateNoSrc = createBridgeMockStore({
-        bridgeStateOverrides: {
-          quoteRequest: {
-            destChainId: '0x1',
-          },
-        },
-      });
-      const stateNoDest = createBridgeMockStore({
-        bridgeStateOverrides: {
-          quoteRequest: {
-            srcChainId: '0x1',
-          },
-        },
-      });
-
-      expect(getIsSwap(stateNoSrc as never)).toBe(false);
-      expect(getIsSwap(stateNoDest as never)).toBe(false);
-    });
-
-    it('handles CAIP chain ID format', () => {
-      const state = createBridgeMockStore({
-        bridgeStateOverrides: {
-          quoteRequest: {
-            srcChainId: 'eip155:1',
-            destChainId: 'eip155:1',
-          },
-        },
-      });
-
-      const result = getIsSwap(state as never);
-      expect(result).toBe(true);
-    });
-  });
-
   describe('getFromTokenConversionRate', () => {
     beforeEach(() => {
       jest.clearAllMocks();
@@ -1818,10 +1786,8 @@ describe('Bridge selectors', () => {
             chainId: formatChainIdToCaip(ChainId.ETH),
             symbol: 'USDC',
             name: 'USD',
-            assetId: toAssetIdOrThrow(
-              '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-              formatChainIdToCaip(ChainId.ETH),
-            ),
+            assetId:
+              'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
           }),
         },
       });

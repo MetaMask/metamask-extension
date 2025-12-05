@@ -289,11 +289,7 @@ export const getFromToken = createSelector(
       return toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET));
     }
     const fromChainId = fromChain.chainId;
-    if (
-      fromToken &&
-      fromToken.address &&
-      fromToken.chainId === fromChain.chainId
-    ) {
+    if (fromToken && fromToken.chainId === fromChain.chainId) {
       return fromToken;
     }
     const { iconUrl, ...nativeAsset } = getNativeAssetForChainId(fromChainId);
@@ -879,7 +875,7 @@ export const selectNoFeeAssets = createSelector(
 
 const getIsGasIncludedSwapSupported = createSelector(
   [
-    (state: BridgeAppState) => getFromChain(state)?.chainId,
+    (state: BridgeAppState) => getFromChain(state)?.hexChainId,
     (_, isSendBundleSupportedForChain: boolean) =>
       isSendBundleSupportedForChain,
   ],
@@ -893,7 +889,7 @@ const getIsGasIncludedSwapSupported = createSelector(
 
 export const getIsStxEnabled = createSelector(
   [
-    (state: BridgeAppState) => getFromChain(state)?.chainId,
+    (state: BridgeAppState) => getFromChain(state)?.hexChainId,
     (state: BridgeAppState) => state,
   ],
   (fromChainId, state) => getIsSmartTransaction(state, fromChainId),
