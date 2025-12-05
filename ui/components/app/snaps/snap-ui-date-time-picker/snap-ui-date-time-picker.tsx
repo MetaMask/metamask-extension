@@ -49,6 +49,31 @@ const useStyle = makeStyles({
 });
 
 /**
+ * Normalizes the date based on the picker type.
+ *
+ * @param date - The date to normalize.
+ * @param type - The type of the picker (date, time, datetime).
+ * @returns The normalized date.
+ */
+function normalizeDate(
+  date: DateTime | null,
+  type: 'date' | 'time' | 'datetime',
+): DateTime | null {
+  if (!date) {
+    return null;
+  }
+  switch (type) {
+    case 'date':
+      return date.set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
+    case 'time':
+      return date.set({ second: 0, millisecond: 0 });
+    case 'datetime':
+    default:
+      return date;
+  }
+}
+
+/**
  * The SnapUIDateTimePicker component.
  *
  * @param props - The component props.
@@ -99,15 +124,9 @@ export const SnapUIDateTimePicker: FunctionComponent<
       return;
     }
 
-    const isoString = date
-      ? date
-          // Ensure seconds and milliseconds are zeroed for consistency
-          .set({
-            second: 0,
-            millisecond: 0,
-          })
-          .toISO()
-      : null;
+    const normalizedDate = normalizeDate(date, type);
+
+    const isoString = normalizedDate ? normalizedDate.toISO() : null;
 
     setValue(date);
     handleInputChange(name, isoString, form);
