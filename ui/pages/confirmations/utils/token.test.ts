@@ -116,6 +116,24 @@ describe('calculateTokenAmount', () => {
       new BigNumber('10000000'),
     );
   });
+
+  it('handles conversion rates with more than 15 significant digits', () => {
+    // Conversion rates from price APIs can have 16+ significant digits
+    // which would cause BigNumber to throw if passed as a number type
+    const highPrecisionRate = 3145.037142758881;
+
+    expect(() =>
+      calculateTokenAmount('1000000000000000000', 18, 10, highPrecisionRate),
+    ).not.toThrow();
+
+    const result = calculateTokenAmount(
+      '1000000000000000000',
+      18,
+      10,
+      highPrecisionRate,
+    );
+    expect(result.toNumber()).toBeCloseTo(highPrecisionRate, 10);
+  });
 });
 
 describe('getTokenValueFromRecord', () => {

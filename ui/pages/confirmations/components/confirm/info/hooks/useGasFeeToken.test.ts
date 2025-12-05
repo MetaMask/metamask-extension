@@ -239,6 +239,25 @@ describe('useGasFeeToken', () => {
     expect(result.current.amountFiat).toBe('< $0.01');
   });
 
+  it('handles conversion rates with more than 15 significant digits', () => {
+    // Conversion rates from price APIs can have 16+ significant digits
+    // which would cause BigNumber to throw if passed as a number type
+    const highPrecisionRate = 3145.037142758881;
+
+    const state = getState({
+      gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+      chainId: CHAIN_IDS.POLYGON,
+      currencyRates: { POL: { conversionRate: highPrecisionRate } },
+    });
+
+    expect(() => {
+      renderHookWithConfirmContextProvider(
+        () => useGasFeeToken({ tokenAddress: GAS_FEE_TOKEN_MOCK.tokenAddress }),
+        state,
+      );
+    }).not.toThrow();
+  });
+
   describe('useSelectedGasFeeToken', () => {
     it('returns selected gas fee token', () => {
       const result = runUseSelectedGasFeeTokenHook();
