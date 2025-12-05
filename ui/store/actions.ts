@@ -804,15 +804,18 @@ export function setShieldSubscriptionMetricsProps(
  * Links the reward to the existing shield subscription.
  *
  * @param subscriptionId - Shield subscription ID to link the reward to.
+ * @param rewardPoints - The number of reward points which user will receive after linking the reward to the subscription.
  * @returns Promise<void> - The reward subscription ID or undefined if the season is not active or the primary account is not opted in to rewards.
  */
 export function linkRewardToShieldSubscription(
   subscriptionId: string,
+  rewardPoints: number,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       await submitRequestToBackground('linkRewardToShieldSubscription', [
         subscriptionId,
+        rewardPoints,
       ]);
     } catch (error) {
       dispatch(displayWarning(error));

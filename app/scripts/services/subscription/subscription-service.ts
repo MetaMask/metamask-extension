@@ -173,6 +173,11 @@ export class SubscriptionService {
         'SubscriptionController:getSubscriptions',
       );
       this.trackSubscriptionRequestEvent('completed');
+
+      // Track the shield opt in rewards event if the reward account id and reward points are provided
+      if (rewardAccountId) {
+        this.#trackShieldOptInRewardsEvent('create_new_subscription');
+      }
       return subscriptions;
     } catch (error) {
       const errorMessage =
@@ -244,9 +249,13 @@ export class SubscriptionService {
    * Link the reward to the existing shield subscription.
    *
    * @param subscriptionId - Shield subscription ID to link the reward to.
+   * @param rewardPoints - The reward points.
    * @returns Promise<void> - The reward subscription ID or undefined if the season is not active or the primary account is not opted in to rewards.
    */
-  async linkRewardToExistingSubscription(subscriptionId: string) {
+  async linkRewardToExistingSubscription(
+    subscriptionId: string,
+    rewardPoints: number,
+  ) {
     try {
       const rewardAccountId = await this.#getRewardCaipAccountId();
       if (!rewardAccountId) {
@@ -257,6 +266,13 @@ export class SubscriptionService {
         subscriptionId,
         rewardAccountId,
       });
+
+      if (rewardAccountId && rewardPoints) {
+        this.#trackShieldOptInRewardsEvent(
+          'link_existing_subscription',
+          rewardPoints,
+        );
+      }
     } catch (error) {
       log.error('Failed to link reward to existing subscription', error);
     }
@@ -595,5 +611,41 @@ export class SubscriptionService {
     } catch (error) {
       log.error('Failed to assign post tx cohort', error);
     }
+  }
+
+  #trackShieldOptInRewardsEvent(
+    rewardsOptInType: 'create_new_subscription' | 'link_existing_subscription',
+    rewardPoints?: number,
+  ) {
+    const accountTypeAndCategory = this.#getAccountTypeAndCategoryForMetrics();
+
+    const { shieldSubscriptionMetricsProps } = this.#messenger.call(
+      'AppStateController:getState',
+    );
+
+    const claimedRewardPoints =
+      rewardPoints ?? shieldSubscriptionMetricsProps?.rewardPoints;
+    if (!claimedRewardPoints) {
+      return;
+    }
+
+    this.#messenger.call('MetaMetricsController:trackEvent', {
+      event: MetaMetricsEventName.ShieldOptInRewards,
+      category: MetaMetricsEventCategory.Shield,
+      properties: {
+        ...accountTypeAndCategory,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        multi_chain_balance_category: getUserBalanceCategory(
+          shieldSubscriptionMetricsProps?.userBalanceInUSD ?? 0,
+        ),
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        rewards_point: claimedRewardPoints,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        rewards_opt_in_type: rewardsOptInType,
+      },
+    });
   }
 }
