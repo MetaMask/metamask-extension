@@ -73,7 +73,7 @@ jobs:
           use-yarn-hydrate: true
 
       - name: test:integration:coverage
-        run: yarn test:integration:coverage --silent
+        run: yarn test:integration:coverage
 
       - name: Rename coverage
         run: mv coverage/integration/coverage-final.json coverage/integration/coverage-integration.json
