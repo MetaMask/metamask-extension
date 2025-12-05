@@ -331,6 +331,19 @@ async function setupMocking(
       };
     });
 
+  // SENTRY_DSN_PERFORMANCE
+  await server
+    .forPost('https://sentry.io/api/4510302346608640/envelope/')
+    .thenPassThrough({
+      beforeRequest: (req) => {
+        console.log(
+          'Request going to Sentry metamask-performance ============',
+          req.url,
+        );
+        return {};
+      },
+    });
+
   await server
     .forGet('https://www.4byte.directory/api/v1/signatures/')
     .thenCallback(() => {
