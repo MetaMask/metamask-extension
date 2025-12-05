@@ -102,7 +102,15 @@ export const SnapUIDateTimePicker: FunctionComponent<
       return;
     }
 
-    const isoString = date ? date.toISO() : null;
+    const isoString = date
+      ? date
+          // Ensure seconds and milliseconds are zeroed for consistency
+          .set({
+            second: 0,
+            millisecond: 0,
+          })
+          .toISO()
+      : null;
 
     setValue(date);
     handleInputChange(name, isoString, form);
@@ -117,7 +125,10 @@ export const SnapUIDateTimePicker: FunctionComponent<
       {label && <Label htmlFor={name}>{label}</Label>}
       {type === 'datetime' && (
         <DateTimePicker
-          className={classes.root}
+          className={classnames(
+            classes.root,
+            'snap-ui-renderer__date-time-picker--datetime',
+          )}
           value={value}
           onChange={handleChange}
           disabled={disabled}
@@ -135,7 +146,10 @@ export const SnapUIDateTimePicker: FunctionComponent<
       )}
       {type === 'date' && (
         <DatePicker
-          className={classes.root}
+          className={classnames(
+            classes.root,
+            'snap-ui-renderer__date-time-picker--date',
+          )}
           value={value}
           onChange={handleChange}
           disabled={disabled}
@@ -152,7 +166,10 @@ export const SnapUIDateTimePicker: FunctionComponent<
       )}
       {type === 'time' && (
         <TimePicker
-          className={classes.root}
+          className={classnames(
+            classes.root,
+            'snap-ui-renderer__date-time-picker--time',
+          )}
           value={value}
           onChange={handleChange}
           disabled={disabled}

@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert';
+import { DateTime } from 'luxon';
 import { Driver } from '../../../webdriver/driver';
 
 const selectors = {
@@ -12,6 +13,15 @@ const selectors = {
   selectorItem: '.snap-ui-renderer__selector-item',
   rendererPanel: '.snap-ui-renderer__panel',
   exampleCheckbox: '.mm-checkbox__input',
+  exampleDateTimePicker: '.snap-ui-renderer__date-time-picker--datetime',
+  exampleDatePicker: '.snap-ui-renderer__date-time-picker--date',
+  exampleTimePicker: '.snap-ui-renderer__date-time-picker--time',
+  datePickerCalendarContainer: '.MuiPickersSlideTransition-transitionContainer',
+  datePickerPreviousMonthButton: '.MuiPickersCalendarHeader-iconButton',
+  datePickerDayButton: '.MuiPickersDay-day',
+  timePickerHourButton: '.MuiPickersClockNumber-clockNumber',
+  dateTimePickerOkButton:
+    '.MuiPickersModal-withAdditionalAction > button:nth-child(3)',
 } satisfies Record<string, string | Record<string, string>>;
 
 class SnapInteractiveDialog {
@@ -63,6 +73,102 @@ class SnapInteractiveDialog {
     await this.driver.fill(selectors.exampleInput, message);
   }
 
+  async selectInDateTimePicker(day: number, hour: number, minute: number) {
+    await this.driver.clickElement(selectors.exampleDateTimePicker);
+
+    await this.selectDateInPicker(day);
+    await this.selectTimeInPicker(hour, minute);
+    await this.driver.clickElement(selectors.dateTimePickerOkButton);
+
+    return DateTime.now()
+      .set({
+        day,
+        month: DateTime.now().month - 1,
+        hour,
+        minute,
+        second: 0,
+        millisecond: 0,
+      })
+      .toISO();
+  }
+
+  async selectInTimePicker(hours: number, minutes: number) {
+    await this.driver.clickElement(selectors.exampleTimePicker);
+
+    await this.selectTimeInPicker(hours, minutes);
+
+    await this.driver.clickElement(selectors.dateTimePickerOkButton);
+
+    return DateTime.now()
+      .set({
+        hour: 9,
+        minute: 40,
+        second: 0,
+        millisecond: 0,
+      })
+      .toISO();
+  }
+
+  async selectInDatePicker(day: number) {
+    await this.driver.clickElement(selectors.exampleDatePicker);
+
+    await this.selectDateInPicker(day);
+
+    await this.driver.clickElement(selectors.dateTimePickerOkButton);
+
+    return DateTime.now()
+      .set({
+        day,
+        month: DateTime.now().month - 1,
+        second: 0,
+        millisecond: 0,
+      })
+      .toISO();
+  }
+
+  async selectDateInPicker(day: number) {
+    await this.driver.clickElement(selectors.datePickerPreviousMonthButton);
+    await this.driver.waitForElementToStopMoving(
+      selectors.datePickerCalendarContainer,
+    );
+
+    await this.driver.clickElement({
+      xpath: `//button[span[p[contains(text(), "${day}")]]]`,
+    });
+  }
+
+  async selectTimeInPicker(hours: number, minutes: number) {
+    console.log(`Selecting time in picker: ${hours}:${minutes}`);
+
+    const hourText = await this.driver.findElement({
+      text: `${hours}`,
+      tag: 'span',
+      css: selectors.timePickerHourButton,
+    });
+
+    // We need to use actions here because the hour and minute selection is made
+    // by dragging the clock hand, or clicking the mask behind the numbers.
+    await this.driver.driver
+      .actions()
+      .move({ origin: hourText, x: 1, y: 1 })
+      .click()
+      .perform();
+
+    const minutesText = await this.driver.findElement({
+      text: `${minutes}`,
+      tag: 'span',
+      css: selectors.timePickerHourButton,
+    });
+
+    // We need to use actions here because the hour and minute selection is made
+    // by dragging the clock hand, or clicking the mask behind the numbers.
+    await this.driver.driver
+      .actions()
+      .move({ origin: minutesText, x: 1, y: 1 })
+      .click()
+      .perform();
+  }
+
   async selectDropDownOption(exampleDropName: string, option: string) {
     console.log(`Selecting selector option: "${option}"`);
     if (exampleDropName === 'selector') {
@@ -94,7 +200,15 @@ class SnapInteractiveDialog {
     await this.driver.clickElement(selectors.exampleCheckbox);
   }
 
-  async checkResult() {
+  async checkResult({
+    dateTimePickerDate,
+    datePickerDate,
+    timePickerDate,
+  }: {
+    dateTimePickerDate: string;
+    datePickerDate: string;
+    timePickerDate: string;
+  }) {
     console.log(`Checking that all the selected options appear in the result`);
     await this.driver.waitForSelector({
       text: 'foo bar',
@@ -114,6 +228,19 @@ class SnapInteractiveDialog {
     });
     await this.driver.waitForSelector({
       text: 'true',
+      css: selectors.rendererPanel,
+    });
+
+    await this.driver.waitForSelector({
+      text: dateTimePickerDate,
+      css: selectors.rendererPanel,
+    });
+    await this.driver.waitForSelector({
+      text: datePickerDate,
+      css: selectors.rendererPanel,
+    });
+    await this.driver.waitForSelector({
+      text: timePickerDate,
       css: selectors.rendererPanel,
     });
   }
