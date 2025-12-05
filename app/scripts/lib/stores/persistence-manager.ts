@@ -488,6 +488,7 @@ export class PersistenceManager {
         this.#isExtensionInitialized = false;
         this.#dataPersistenceFailing = false;
         this.#metadata = undefined;
+        this.storageKind = PersistenceManager.defaultStorageKind;
         this.cleanUpMostRecentRetrievedState();
       },
     );

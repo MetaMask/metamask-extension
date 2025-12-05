@@ -173,6 +173,6 @@ export default class ExtensionStore implements BaseStore {
       );
     }
     const { local } = browser.storage;
-    return await local.remove([...this.#manifest]);
+    return await local.remove(['manifest', ...this.#manifest]);
   }
 }

@@ -46,7 +46,7 @@ const MigrateToSplitStateTest = () => {
 
       setEnabled(toEnabledString(splitStateMigrationEnabled));
       setStorageKind(
-        typeof meta?.storageKind === 'string' ? meta.storageKind : 'unknown',
+        typeof meta?.storageKind === 'string' ? meta.storageKind : 'data',
       );
       setMaxAccounts(
         splitStateMigrationMaxAccounts === undefined
@@ -80,7 +80,7 @@ const MigrateToSplitStateTest = () => {
         setStorageKind(
           typeof newValue?.storageKind === 'string'
             ? newValue.storageKind
-            : 'unknown',
+            : 'data',
         );
       }
 

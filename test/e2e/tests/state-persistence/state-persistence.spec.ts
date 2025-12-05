@@ -146,6 +146,10 @@ const assertSplitStateStorage = (storage: SplitStateStorage) => {
   }
 
   if (typeof storage['temp-cronjob-storage'] === 'undefined') {
+    // temp-cronjob-storage is a temporary key added in a hotfix and is
+    // supposed to be removed at some point. Once it is removed from the codebase,
+    // this block should be removed, which is why removing it causes this test
+    // to fail.
     assert.fail(
       'Yay! You removed temp-cronjob-storage from the db. Now update this test by removing this block.',
     );

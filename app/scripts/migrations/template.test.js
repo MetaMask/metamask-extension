@@ -4,6 +4,7 @@ const storage = {
   meta: { version: -1 },
   data: {
     ControllerKey: {},
+    OldControllerKey: {},
   },
 };
 
