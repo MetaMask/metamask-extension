@@ -1,3 +1,12 @@
+/**
+ * Using require() here instead of import because this is a CommonJS file
+ * (using module.exports). We can't mix CommonJS and ES6 module syntax in the
+ * same file. To use ES6 imports, we would need to convert this file to .mjs
+ * and use 'export default' instead of 'module.exports'.
+ */
+// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+const consoleReporterRules = require('./test/jest/console-reporter-rules-integration');
+
 module.exports = {
   collectCoverageFrom: [
     '<rootDir>/shared/**/*.(js|ts|tsx)',
@@ -11,7 +20,13 @@ module.exports = {
   // Jest doesn't support Prettier 3 yet, so we use Prettier 2
   prettierPath: require.resolve('prettier-2'),
   reporters: [
-    'default',
+    [
+      'jest-clean-console-reporter',
+      {
+        rules: consoleReporterRules,
+      },
+    ],
+    '<rootDir>/test/jest/summary-reporter.js',
     [
       'jest-junit',
       {
