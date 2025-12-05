@@ -12,6 +12,7 @@ import useCurrentConfirmation from '../../hooks/useCurrentConfirmation';
 
 export type DappSwapContextType = {
   isQuotedSwapDisplayedInInfo: boolean;
+  isQuotedSwapPresent: boolean;
   selectedQuote: QuoteResponse | undefined;
   setSelectedQuote: (selectedQuote: QuoteResponse | undefined) => void;
   setQuotedSwapDisplayedInInfo: (isQuotedSwapDisplayedInInfo: boolean) => void;
@@ -36,9 +37,16 @@ export const DappSwapContextProvider: React.FC<{
     setQuotedSwapDisplayedInInfo(false);
   }, [currentConfirmation?.id, setSelectedQuote, setQuotedSwapDisplayedInInfo]);
 
+  useEffect(() => {
+    if (!selectedQuote) {
+      setQuotedSwapDisplayedInInfo(false);
+    }
+  }, [selectedQuote, setQuotedSwapDisplayedInInfo]);
+
   const value = useMemo(
     () => ({
       isQuotedSwapDisplayedInInfo,
+      isQuotedSwapPresent: selectedQuote !== undefined,
       selectedQuote,
       setSelectedQuote,
       setQuotedSwapDisplayedInInfo,

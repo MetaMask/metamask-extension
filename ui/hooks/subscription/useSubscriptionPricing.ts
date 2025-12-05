@@ -161,10 +161,7 @@ export const useAvailableTokenBalances = (params: {
 
       const balance = new BigNumber(token.balance);
       // price amount and token balance has different decimals, so we need to convert the price amount to the same decimals as the token balance
-      // TODO: enforce `minBillingCyclesForBalance` type on `ProductPrice` type for cp-13.12.0. Remove this once subscription-controller@5.2.0 upgraded.
-      const minBillingCyclesForBalance =
-        (price as ProductPrice & { minBillingCyclesForBalance?: number })
-          .minBillingCyclesForBalance ?? 1; // required amount for subscription is only usually only 1 billing cycle (only approve amount need minBillingCycles)
+      const minBillingCyclesForBalance = price.minBillingCyclesForBalance ?? 1; // required amount for subscription is only usually only 1 billing cycle (only approve amount need minBillingCycles)
       const requiredAmount = new BigNumber(price.unitAmount)
         .div(new BigNumber(10).pow(price.unitDecimals))
         .mul(minBillingCyclesForBalance);

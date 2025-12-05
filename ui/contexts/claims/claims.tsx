@@ -14,7 +14,8 @@ import { getShieldClaims } from '../../store/actions';
 type ClaimsContextType = {
   claims: Claim[];
   pendingClaims: Claim[];
-  historyClaims: Claim[];
+  completedClaims: Claim[];
+  rejectedClaims: Claim[];
   isLoading: boolean;
   error: Error | null;
   refetchClaims: () => Promise<void>;
@@ -50,13 +51,11 @@ export const ClaimsProvider: React.FC<ClaimsProviderProps> = ({ children }) => {
           const dateB = new Date(b.createdAt).getTime();
           return dateB - dateA;
         })
-        .map((claim: Claim, index: number) => {
+        .map((claim: Claim) => {
           const numberChain = Number(claim.chainId);
           const chainId = isNaN(numberChain) ? '' : numberToHex(numberChain);
           return {
             ...claim,
-            // used for displaying list of claims
-            claimNumber: index + 1,
             chainId,
           };
         });
@@ -78,22 +77,33 @@ export const ClaimsProvider: React.FC<ClaimsProviderProps> = ({ children }) => {
     );
   }, [claims]);
 
-  const historyClaims = useMemo(() => {
-    return claims.filter(
-      (claim) => !PENDING_CLAIM_STATUSES.includes(claim.status),
-    );
+  const completedClaims = useMemo(() => {
+    return claims.filter((claim) => claim.status === ClaimStatusEnum.APPROVED);
+  }, [claims]);
+
+  const rejectedClaims = useMemo(() => {
+    return claims.filter((claim) => claim.status === ClaimStatusEnum.REJECTED);
   }, [claims]);
 
   const value = useMemo(
     () => ({
       claims,
       pendingClaims,
-      historyClaims,
+      completedClaims,
+      rejectedClaims,
       isLoading,
       error,
       refetchClaims: fetchClaims,
     }),
-    [claims, pendingClaims, historyClaims, isLoading, error, fetchClaims],
+    [
+      claims,
+      pendingClaims,
+      completedClaims,
+      rejectedClaims,
+      isLoading,
+      error,
+      fetchClaims,
+    ],
   );
 
   return (

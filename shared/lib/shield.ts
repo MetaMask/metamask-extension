@@ -104,6 +104,20 @@ export function getIsShieldSubscriptionEndingSoon(
 }
 
 /**
+ * Check if the subscription can change payment method from crypto to card.
+ *
+ * @param subscriptions
+ * @returns
+ */
+export function getIsShieldSubscriptionCanChangePaymentMethodToCard(
+  subscriptions: Subscription | Subscription[],
+): boolean {
+  // atm crypto to card change payment method only work if there is no stripe subscription yet, which means provisional -> (invalid payment method) -> paused
+  const shieldSubscription = getShieldSubscription(subscriptions);
+  return shieldSubscription?.status === SUBSCRIPTION_STATUSES.paused;
+}
+
+/**
  * Get the subscription payment data.
  *
  * @param subscription - The subscription.

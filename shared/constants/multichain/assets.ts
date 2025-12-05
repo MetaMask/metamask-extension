@@ -79,3 +79,5 @@ export const TRON_RESOURCE_SYMBOLS = Object.values(
 
 export const TRON_RESOURCE_SYMBOLS_SET: ReadonlySet<TronResourceSymbol> =
   new Set(TRON_RESOURCE_SYMBOLS);
+
+export const SLIP44_ASSET_NAMESPACE = 'slip44';

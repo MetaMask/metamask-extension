@@ -16,7 +16,6 @@ describe('Slippage Service', () => {
     decimals: 6,
     image: '',
     balance: '0',
-    string: '0',
   };
 
   const mockUSDT: BridgeToken = {
@@ -26,7 +25,6 @@ describe('Slippage Service', () => {
     decimals: 6,
     image: '',
     balance: '0',
-    string: '0',
   };
 
   const mockWETH: BridgeToken = {
@@ -36,7 +34,6 @@ describe('Slippage Service', () => {
     decimals: 18,
     image: '',
     balance: '0',
-    string: '0',
   };
 
   const mockSolanaToken: BridgeToken = {
@@ -46,7 +43,6 @@ describe('Slippage Service', () => {
     decimals: 9,
     image: '',
     balance: '0',
-    string: '0',
   };
 
   describe('calculateSlippage', () => {

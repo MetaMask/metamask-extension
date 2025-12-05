@@ -25,7 +25,7 @@ export function useTransactionConfirm() {
   const { isSupported: isGaslessSupportedSTX } =
     useGaslessSupportedSmartTransactions();
   const { isSupported: isGaslessSupported } = useIsGaslessSupported();
-  const { onDappSwapCompleted, updateSwapWithQuoteDetails } =
+  const { onDappSwapCompleted, updateSwapWithQuoteDetailsIfRequired } =
     useDappSwapActions();
 
   const newTransactionMeta = useMemo(
@@ -86,7 +86,7 @@ export function useTransactionConfirm() {
   const onTransactionConfirm = useCallback(async () => {
     newTransactionMeta.customNonceValue = customNonceValue;
 
-    updateSwapWithQuoteDetails(newTransactionMeta);
+    updateSwapWithQuoteDetailsIfRequired(newTransactionMeta);
 
     if (isGaslessSupportedSTX) {
       handleSmartTransaction();
@@ -118,7 +118,7 @@ export function useTransactionConfirm() {
     handleShieldSubscriptionApprovalTransactionAfterConfirm,
     handleShieldSubscriptionApprovalTransactionAfterConfirmErr,
     onDappSwapCompleted,
-    updateSwapWithQuoteDetails,
+    updateSwapWithQuoteDetailsIfRequired,
   ]);
 
   return {

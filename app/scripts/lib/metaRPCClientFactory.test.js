@@ -179,7 +179,9 @@ describe('metaRPCClientFactory', () => {
     );
 
     jest.runOnlyPendingTimers();
-    await expect(errorPromise).rejects.toThrow('No response from RPC');
+    await expect(errorPromise).rejects.toThrow(
+      `Background 'getState' call exceeded timeout`,
+    );
 
     jest.useRealTimers();
   });

@@ -14,7 +14,6 @@ import SnapPrivacyWarning from '../snaps/snap-privacy-warning';
 import { getDedupedSnaps } from '../../../helpers/utils/util';
 
 import {
-  BackgroundColor,
   Display,
   FlexDirection,
 } from '../../../helpers/constants/design-system';
@@ -231,11 +230,7 @@ export default class PermissionPageContainer extends Component {
           selectedAccounts={selectedAccounts}
           allAccountsSelected={allAccountsSelected}
         />
-        <Box
-          display={Display.Flex}
-          backgroundColor={BackgroundColor.backgroundAlternative}
-          flexDirection={FlexDirection.Column}
-        >
+        <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
           {targetSubjectMetadata?.subjectType !== SubjectType.Snap && (
             <PermissionsConnectFooter />
           )}

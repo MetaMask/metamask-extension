@@ -3294,6 +3294,20 @@ export function getIsDefiPositionsEnabled(state) {
   return Boolean(assetsDefiPositionsEnabled);
 }
 
+/**
+ * Returns true if any EVM networks are enabled in the network filter.
+ *
+ * @param {*} state
+ * @returns {boolean} True if at least one EVM network is enabled.
+ */
+export function getHasAnyEvmNetworkEnabled(state) {
+  const enabledNetworks = getEnabledNetworks(state);
+  const enabledEvmNetworks = enabledNetworks[KnownCaipNamespace.Eip155] ?? {};
+  return Object.values(enabledEvmNetworks).some(
+    (isEnabled) => isEnabled === true,
+  );
+}
+
 export function getIsCustomNetwork(state) {
   const chainId = getCurrentChainId(state);
 

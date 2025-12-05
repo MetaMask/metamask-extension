@@ -52,6 +52,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
 
 export const MultichainAccountDetailsPage = ({
   id: idProp,
@@ -101,6 +102,10 @@ export const MultichainAccountDetailsPage = ({
   const shouldShowBackupReminder = isSRPBackedUp === false;
 
   const handleAddressesClick = () => {
+    trace({
+      name: TraceName.ShowAccountAddressList,
+      op: TraceOperation.AccountUi,
+    });
     navigate(
       `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(accountGroupId)}`,
     );

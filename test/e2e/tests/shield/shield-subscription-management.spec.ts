@@ -44,69 +44,186 @@ function createShieldFixture() {
 }
 
 describe('Shield Plan Stripe Integration', function () {
-  it('should successfully fill and submit shield claim form', async function () {
-    await withFixtures(
-      {
-        fixtures: createShieldFixture().build(),
-        title: this.test?.fullTitle(),
-        testSpecificMock: (mockServer: Mockttp) => {
-          const shieldMockttpService = new ShieldMockttpService();
-          return shieldMockttpService.setup(mockServer, {
-            isActiveUser: true,
+  describe('Shield Claims', function () {
+    it('submits shield claim successfully and check claim details correctly', async function () {
+      await withFixtures(
+        {
+          fixtures: createShieldFixture().build(),
+          title: this.test?.fullTitle(),
+          testSpecificMock: (mockServer: Mockttp) => {
+            const shieldMockttpService = new ShieldMockttpService();
+            return shieldMockttpService.setup(mockServer, {
+              isActiveUser: true,
+            });
+          },
+        },
+        async ({ driver }) => {
+          await loginWithBalanceValidation(driver);
+
+          const homePage = new HomePage(driver);
+          await homePage.checkPageIsLoaded();
+          await homePage.waitForNetworkAndDOMReady();
+
+          await new HeaderNavbar(driver).openSettingsPage();
+          const settingsPage = new SettingsPage(driver);
+          await settingsPage.checkPageIsLoaded();
+          await settingsPage.goToTransactionShieldPage();
+
+          const shieldDetailPage = new ShieldDetailPage(driver);
+          await shieldDetailPage.checkPageIsLoaded();
+
+          await shieldDetailPage.clickSubmitCaseButton();
+
+          const shieldClaimsListPage = new ShieldClaimsListPage(driver);
+          await shieldClaimsListPage.checkPageIsLoaded();
+          await shieldClaimsListPage.clickSubmitClaimButton();
+
+          const shieldClaimPage = new ShieldClaimPage(driver);
+          await shieldClaimPage.checkPageIsLoaded();
+
+          await shieldClaimPage.fillForm({
+            email: MOCK_CLAIM_2.email,
+            reimbursementWalletAddress: MOCK_CLAIM_2.reimbursementWalletAddress,
+            chainId: '0x1',
+            impactedTxnHash: MOCK_CLAIM_2.impactedTxHash,
+            impactedWalletName: 'Account 1',
+            description: MOCK_CLAIM_2.description,
+            uploadTestFile: true,
+          });
+
+          await shieldClaimPage.clickSubmitButton();
+
+          await shieldClaimPage.checkSuccessMessageDisplayed();
+
+          await shieldClaimsListPage.checkPageIsLoaded();
+
+          const { claimId } = SUBMIT_CLAIMS_RESPONSE;
+          await shieldClaimsListPage.checkClaimExists(claimId);
+          await shieldClaimsListPage.clickClaimItem(claimId);
+
+          await shieldClaimPage.checkPageIsLoadedInViewMode();
+          await shieldClaimPage.verifyClaimData({
+            email: MOCK_CLAIM_2.email,
+            reimbursementWalletAddress: MOCK_CLAIM_2.reimbursementWalletAddress,
+            impactedTxHash: MOCK_CLAIM_2.impactedTxHash,
+            description: MOCK_CLAIM_2.description,
+            uploadedFileName: 'test-document.pdf',
           });
         },
-      },
-      async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+      );
+    });
 
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-        await homePage.waitForNetworkAndDOMReady();
+    it('displays error when transaction is not eligible', async function () {
+      await withFixtures(
+        {
+          fixtures: createShieldFixture().build(),
+          title: this.test?.fullTitle(),
+          testSpecificMock: (mockServer: Mockttp) => {
+            const shieldMockttpService = new ShieldMockttpService();
+            return shieldMockttpService.setup(mockServer, {
+              isActiveUser: true,
+              claimErrorCode: 'E102', // TRANSACTION_NOT_ELIGIBLE
+            });
+          },
+        },
+        async ({ driver }) => {
+          await loginWithBalanceValidation(driver);
 
-        await new HeaderNavbar(driver).openSettingsPage();
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToTransactionShieldPage();
+          const homePage = new HomePage(driver);
+          await homePage.checkPageIsLoaded();
+          await homePage.waitForNetworkAndDOMReady();
 
-        const shieldDetailPage = new ShieldDetailPage(driver);
-        await shieldDetailPage.checkPageIsLoaded();
+          await new HeaderNavbar(driver).openSettingsPage();
+          const settingsPage = new SettingsPage(driver);
+          await settingsPage.checkPageIsLoaded();
+          await settingsPage.goToTransactionShieldPage();
 
-        await shieldDetailPage.clickSubmitCaseButton();
+          const shieldDetailPage = new ShieldDetailPage(driver);
+          await shieldDetailPage.checkPageIsLoaded();
 
-        const shieldClaimPage = new ShieldClaimPage(driver);
-        await shieldClaimPage.checkPageIsLoaded();
+          await shieldDetailPage.clickSubmitCaseButton();
 
-        await shieldClaimPage.fillForm({
-          email: MOCK_CLAIM_2.email,
-          reimbursementWalletAddress: MOCK_CLAIM_2.reimbursementWalletAddress,
-          chainId: '0x1',
-          impactedTxnHash: MOCK_CLAIM_2.impactedTxHash,
-          impactedWalletName: 'Account 1',
-          description: MOCK_CLAIM_2.description,
-        });
+          const shieldClaimsListPage = new ShieldClaimsListPage(driver);
+          await shieldClaimsListPage.checkPageIsLoaded();
+          await shieldClaimsListPage.clickSubmitClaimButton();
 
-        await shieldClaimPage.clickSubmitButton();
+          const shieldClaimPage = new ShieldClaimPage(driver);
+          await shieldClaimPage.checkPageIsLoaded();
 
-        await shieldClaimPage.checkSuccessMessageDisplayed();
+          await shieldClaimPage.fillForm({
+            email: MOCK_CLAIM_2.email,
+            reimbursementWalletAddress: MOCK_CLAIM_2.reimbursementWalletAddress,
+            chainId: '0x1',
+            impactedTxnHash: MOCK_CLAIM_2.impactedTxHash,
+            impactedWalletName: 'Account 1',
+            description: MOCK_CLAIM_2.description,
+            uploadTestFile: true,
+          });
 
-        const shieldClaimsListPage = new ShieldClaimsListPage(driver);
-        await shieldClaimsListPage.checkPageIsLoaded();
+          await shieldClaimPage.clickSubmitButton();
 
-        const { claimId } = SUBMIT_CLAIMS_RESPONSE;
-        await shieldClaimsListPage.checkClaimExists(claimId);
-        await shieldClaimsListPage.checkClaimStatus(claimId, 'Created');
+          await shieldClaimPage.verifyFieldError(
+            'This transaction is not done within MetaMask, hence it is not eligible for claims',
+          );
+        },
+      );
+    });
 
-        await shieldClaimsListPage.clickClaimItem(claimId);
+    it('displays error toast when duplicate transaction hash is submitted', async function () {
+      await withFixtures(
+        {
+          fixtures: createShieldFixture().build(),
+          title: this.test?.fullTitle(),
+          testSpecificMock: (mockServer: Mockttp) => {
+            const shieldMockttpService = new ShieldMockttpService();
+            return shieldMockttpService.setup(mockServer, {
+              isActiveUser: true,
+              claimErrorCode: 'E203', // DUPLICATE_CLAIM_EXISTS
+            });
+          },
+        },
+        async ({ driver }) => {
+          await loginWithBalanceValidation(driver);
 
-        await shieldClaimPage.checkPageIsLoadedInViewMode();
-        await shieldClaimPage.verifyClaimData({
-          email: MOCK_CLAIM_2.email,
-          reimbursementWalletAddress: MOCK_CLAIM_2.reimbursementWalletAddress,
-          impactedTxHash: MOCK_CLAIM_2.impactedTxHash,
-          description: MOCK_CLAIM_2.description,
-        });
-      },
-    );
+          const homePage = new HomePage(driver);
+          await homePage.checkPageIsLoaded();
+          await homePage.waitForNetworkAndDOMReady();
+
+          await new HeaderNavbar(driver).openSettingsPage();
+          const settingsPage = new SettingsPage(driver);
+          await settingsPage.checkPageIsLoaded();
+          await settingsPage.goToTransactionShieldPage();
+
+          const shieldDetailPage = new ShieldDetailPage(driver);
+          await shieldDetailPage.checkPageIsLoaded();
+
+          await shieldDetailPage.clickSubmitCaseButton();
+
+          const shieldClaimsListPage = new ShieldClaimsListPage(driver);
+          await shieldClaimsListPage.checkPageIsLoaded();
+          await shieldClaimsListPage.clickSubmitClaimButton();
+
+          const shieldClaimPage = new ShieldClaimPage(driver);
+          await shieldClaimPage.checkPageIsLoaded();
+
+          await shieldClaimPage.fillForm({
+            email: MOCK_CLAIM_2.email,
+            reimbursementWalletAddress: MOCK_CLAIM_2.reimbursementWalletAddress,
+            chainId: '0x1',
+            impactedTxnHash: MOCK_CLAIM_2.impactedTxHash,
+            impactedWalletName: 'Account 1',
+            description: MOCK_CLAIM_2.description,
+            uploadTestFile: true,
+          });
+
+          await shieldClaimPage.clickSubmitButton();
+
+          await shieldClaimPage.verifyToastError(
+            'A claim has already been submitted for this transaction hash.',
+          );
+        },
+      );
+    });
   });
 
   it('should successfully cancel and renew subscription', async function () {

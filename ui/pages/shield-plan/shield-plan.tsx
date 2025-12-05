@@ -67,6 +67,7 @@ import {
 } from '../../hooks/subscription/useSubscriptionPricing';
 import {
   useHandleSubscription,
+  useShieldRewards,
   useUserSubscriptionByProduct,
   useUserSubscriptions,
 } from '../../hooks/subscription/useSubscription';
@@ -85,18 +86,30 @@ import {
 import ApiErrorHandler from '../../components/app/api-error-handler';
 import { MetaMaskReduxDispatch } from '../../store/store';
 import { setLastUsedSubscriptionPaymentDetails } from '../../store/actions';
+import { RewardsBadge } from '../../components/app/rewards/RewardsBadge';
+import { getIntlLocale } from '../../ducks/locale/locale';
 import { ShieldPaymentModal } from './shield-payment-modal';
+import { ShieldRewardsModal } from './shield-rewards-modal';
 import { Plan } from './types';
 import { getProductPrice } from './utils';
 
 const ShieldPlan = () => {
   const navigate = useNavigate();
   const { search } = useLocation();
+  const locale = useSelector(getIntlLocale);
   const t = useI18nContext();
+  const dispatch = useDispatch<MetaMaskReduxDispatch>();
 
   const lastUsedPaymentDetails = useSelector(
     getLastUsedShieldSubscriptionPaymentDetails,
   );
+
+  const {
+    isRewardsSeason,
+    pointsMonthly,
+    pointsYearly,
+    pending: pendingShieldRewards,
+  } = useShieldRewards();
 
   // Stripe Test clocks
   const [enableStripeTestClock, setEnableStripeTestClock] = useState(
@@ -266,6 +279,12 @@ const ShieldPlan = () => {
     ];
   }, [cryptoPaymentMethod?.chains]);
 
+  const claimedRewardsPoints = useMemo(() => {
+    const points =
+      selectedPlan === RECURRING_INTERVALS.year ? pointsYearly : pointsMonthly;
+    return points;
+  }, [selectedPlan, pointsYearly, pointsMonthly]);
+
   const { handleSubscription, subscriptionResult } = useHandleSubscription({
     selectedPaymentMethod,
     selectedToken,
@@ -273,9 +292,9 @@ const ShieldPlan = () => {
     defaultOptions,
     isTrialed,
     useTestClock: enableStripeTestClock,
+    rewardPoints: claimedRewardsPoints ?? undefined,
   });
 
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const handleUserChangeToken = useCallback(
     async (token: TokenWithApprovalAmount) => {
       setSelectedToken(token);
@@ -296,7 +315,8 @@ const ShieldPlan = () => {
   const loading =
     subscriptionsLoading ||
     subscriptionPricingLoading ||
-    subscriptionResult.pending;
+    subscriptionResult.pending ||
+    pendingShieldRewards;
 
   const hasApiError =
     subscriptionsError ||
@@ -343,7 +363,22 @@ const ShieldPlan = () => {
     return details;
   }, [t, isTrialed, selectedProductPrice]);
 
+  const planDetailsRewardsText = useMemo(() => {
+    const interval =
+      selectedPlan === RECURRING_INTERVALS.year ? t('year') : t('month');
+
+    if (!claimedRewardsPoints) {
+      return '';
+    }
+
+    const formattedPoints = new Intl.NumberFormat(locale).format(
+      claimedRewardsPoints,
+    );
+    return t('shieldPlanDetailsRewards', [formattedPoints, interval]);
+  }, [selectedPlan, t, claimedRewardsPoints, locale]);
+
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showRewardsModal, setShowRewardsModal] = useState(false);
 
   const handleBack = () => {
     const source = new URLSearchParams(search).get('source');
@@ -536,6 +571,19 @@ const ShieldPlan = () => {
                         <Text variant={DSTextVariant.bodyMd}>{detail}</Text>
                       </Box>
                     ))}
+                    {isRewardsSeason && planDetailsRewardsText && (
+                      <Box>
+                        <RewardsBadge
+                          boxClassName="gap-1 px-2 py-0.5 bg-background-muted rounded-lg w-fit"
+                          textClassName="font-medium"
+                          withPointsSuffix={false}
+                          formattedPoints={planDetailsRewardsText}
+                          onClick={() => {
+                            setShowRewardsModal(true);
+                          }}
+                        />
+                      </Box>
+                    )}
                   </Box>
                 </Box>
                 {selectedPaymentMethod === PAYMENT_TYPES.byCrypto &&
@@ -559,6 +607,11 @@ const ShieldPlan = () => {
                 onAssetChange={handleUserChangeToken}
                 availableTokenBalances={availableTokenBalances}
                 tokensSupported={tokensSupported}
+              />
+              <ShieldRewardsModal
+                isOpen={showRewardsModal}
+                rewardsText={planDetailsRewardsText}
+                onClose={() => setShowRewardsModal(false)}
               />
             </Content>
             <Footer

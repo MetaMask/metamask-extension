@@ -118,16 +118,6 @@ describe('SendValidations', () => {
       });
     });
 
-    it('rejects dead address', async () => {
-      expect(
-        await validateEvmHexAddress(
-          '0x000000000000000000000000000000000000dead',
-        ),
-      ).toEqual({
-        error: 'invalidAddress',
-      });
-    });
-
     it('rejects ERC721 token address', async () => {
       mockGetTokenStandardAndDetailsByChain.mockResolvedValue({
         standard: 'ERC721',

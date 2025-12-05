@@ -31,8 +31,12 @@ export function createDappSwapMiddleware<
   getNetworkConfigurationByNetworkClientId: (
     networkClientId: NetworkClientId,
   ) => NetworkConfiguration | undefined;
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  dappSwapMetricsFlag: { enabled: boolean; bridge_quote_fees: number };
+  dappSwapMetricsFlag: {
+    enabled: boolean;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    bridge_quote_fees: number;
+    origins: string[];
+  };
 }) {
   return async (
     req: DappSwapMiddlewareRequest<Params>,

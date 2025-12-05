@@ -143,6 +143,18 @@ exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransactio
       },
     },
     true,
+    {
+      "best_quote_provider": "lifi_across",
+      "can_submit": true,
+      "gas_included": false,
+      "gas_included_7702": false,
+      "price_impact": 0,
+      "provider": "lifi_across",
+      "quoted_time_minutes": 0.25,
+      "usd_quoted_gas": 0,
+      "usd_quoted_return": 12,
+      "warnings": [],
+    },
   ],
 ]
 `;
@@ -282,6 +294,18 @@ exports[`ui/pages/bridge/hooks/useSubmitBridgeTransaction submitBridgeTransactio
       },
     },
     true,
+    {
+      "best_quote_provider": "lifi_across",
+      "can_submit": true,
+      "gas_included": false,
+      "gas_included_7702": false,
+      "price_impact": 0,
+      "provider": "lifi_across",
+      "quoted_time_minutes": 0.25,
+      "usd_quoted_gas": 0,
+      "usd_quoted_return": 12,
+      "warnings": [],
+    },
   ],
 ]
 `;

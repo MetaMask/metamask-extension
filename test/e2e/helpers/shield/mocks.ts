@@ -19,6 +19,10 @@ import {
   MOCK_CLAIM_GENERATE_MESSAGE_RESPONSE,
   MOCK_CLAIM_1,
   RULESET_ENGINE_API,
+  REWARDS_API,
+  MOCK_REWARDS_POINTS_ESTIMATION_RESPONSE,
+  MOCK_REWARDS_SEASONS_STATUS_RESPONSE,
+  MOCK_REWARDS_SEASON_METADATA_RESPONSE,
 } from './constants';
 
 export class ShieldMockttpService {
@@ -41,6 +45,7 @@ export class ShieldMockttpService {
       isActiveUser?: boolean;
       subscriptionId?: string;
       coverageStatus?: 'covered' | 'not_covered' | 'malicious';
+      claimErrorCode?: string;
     },
   ) {
     // Mock Identity Services first as shield/subscription APIs depend on it (Auth Token)
@@ -76,10 +81,13 @@ export class ShieldMockttpService {
     await this.#handleGetClaimsConfigurations(server);
     await this.#handleGetClaims(server);
     await this.#handleClaimGenerateMessage(server);
-    await this.#handleSubmitClaim(server);
+    await this.#handleSubmitClaim(server, overrides);
 
     // Ruleset Engine APIs
     await this.#handleRulesetEngine(server);
+
+    // Rewards APIs (needed for useShieldRewards hook on Shield Plan page)
+    await this.#handleRewardsApis(server);
   }
 
   async #handleSubscriptionPricing(server: Mockttp) {
@@ -310,8 +318,59 @@ export class ShieldMockttpService {
       .thenJson(200, MOCK_CLAIM_GENERATE_MESSAGE_RESPONSE);
   }
 
-  async #handleSubmitClaim(server: Mockttp) {
+  async #handleSubmitClaim(
+    server: Mockttp,
+    overrides?: {
+      claimErrorCode?: string;
+    },
+  ) {
     await server.forPost(CLAIMS_API.CLAIMS).thenCallback(() => {
+      // Return error response if error code is specified
+      if (overrides?.claimErrorCode) {
+        const errorCode = overrides.claimErrorCode;
+        let errorResponse: {
+          statusCode: number;
+          json: {
+            errorCode: string;
+            message: string;
+          };
+        };
+
+        if (errorCode === 'E102') {
+          // TRANSACTION_NOT_ELIGIBLE
+          errorResponse = {
+            statusCode: 400,
+            json: {
+              errorCode: 'E102',
+              message:
+                'This transaction is not done within MetaMask, hence it is not eligible for claims',
+            },
+          };
+        } else if (errorCode === 'E203') {
+          // DUPLICATE_CLAIM_EXISTS
+          errorResponse = {
+            statusCode: 400,
+            json: {
+              errorCode: 'E203',
+              message:
+                'A claim has already been submitted for this transaction hash.',
+            },
+          };
+        } else {
+          // Default error
+          errorResponse = {
+            statusCode: 400,
+            json: {
+              errorCode,
+              message: 'Claim submission failed',
+            },
+          };
+        }
+
+        return errorResponse;
+      }
+
+      // Success response
       this.#newClaimSubmitted = true;
       return {
         statusCode: 200,
@@ -396,5 +455,30 @@ export class ShieldMockttpService {
           },
         };
       });
+  }
+
+  async #handleRewardsApis(server: Mockttp) {
+    // Mock points estimation endpoint (used by useShieldRewards hook)
+    await server
+      .forPost(REWARDS_API.POINTS_ESTIMATION)
+      .always()
+      .thenJson(200, MOCK_REWARDS_POINTS_ESTIMATION_RESPONSE);
+
+    // Mock seasons status endpoint (used by useShieldRewards hook)
+    await server
+      .forGet(REWARDS_API.SEASONS_STATUS)
+      .always()
+      .thenJson(200, MOCK_REWARDS_SEASONS_STATUS_RESPONSE);
+
+    // Mock season metadata endpoint (used by getRewardsSeasonMetadata)
+    // This uses a regex to match /public/seasons/{seasonId}/meta
+    const seasonMetadataRegex = new RegExp(
+      `^${REWARDS_API.SEASON_METADATA}/[^/]+/meta$`,
+      'u',
+    );
+    await server
+      .forGet(seasonMetadataRegex)
+      .always()
+      .thenJson(200, MOCK_REWARDS_SEASON_METADATA_RESPONSE);
   }
 }

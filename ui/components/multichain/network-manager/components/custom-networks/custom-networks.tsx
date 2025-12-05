@@ -108,6 +108,7 @@ export const CustomNetworks = React.memo(() => {
           name={network.name}
           iconSrc={getNetworkIcon(network)}
           iconSize={AvatarNetworkSize.Md}
+          focus={false}
           rpcEndpoint={rpcEndpoint}
           onClick={() => handleNetworkClick(network.chainId)}
           onDeleteClick={onDelete}

@@ -8,9 +8,11 @@ import type {
   NetworkControllerGetStateAction,
   NetworkControllerStateChangeEvent,
 } from '@metamask/network-controller';
+import { AuthenticationController } from '@metamask/profile-sync-controller';
 import {
   AccountsControllerGetSelectedAccountAction,
   AccountsControllerListAccountsAction,
+  AccountsControllerSelectedEvmAccountChangeEvent,
 } from '@metamask/accounts-controller';
 import {
   AccountTrackerUpdateNativeBalancesAction,
@@ -52,7 +54,8 @@ type AllowedActions =
   | NetworkControllerGetStateAction
   | PreferencesControllerGetStateAction
   | TokensControllerGetStateAction
-  | TokenDetectionControllerAddDetectedTokensViaWsAction;
+  | TokenDetectionControllerAddDetectedTokensViaWsAction
+  | AuthenticationController.AuthenticationControllerGetBearerToken;
 
 type AllowedEvents =
   | KeyringControllerAccountRemovedEvent
@@ -60,7 +63,8 @@ type AllowedEvents =
   | PreferencesControllerStateChangeEvent
   | TokensControllerStateChangeEvent
   | AccountActivityServiceStatusChangedEvent
-  | AccountActivityServiceBalanceUpdatedEvent;
+  | AccountActivityServiceBalanceUpdatedEvent
+  | AccountsControllerSelectedEvmAccountChangeEvent;
 
 export type TokenBalancesControllerMessenger = ReturnType<
   typeof getTokenBalancesControllerMessenger
@@ -98,6 +102,7 @@ export function getTokenBalancesControllerMessenger(
       'AccountTrackerController:updateNativeBalances',
       'AccountTrackerController:updateStakedBalances',
       'TokenDetectionController:addDetectedTokensViaWs',
+      'AuthenticationController:getBearerToken',
     ],
     events: [
       'PreferencesController:stateChange',
@@ -106,6 +111,7 @@ export function getTokenBalancesControllerMessenger(
       'KeyringController:accountRemoved',
       'AccountActivityService:statusChanged',
       'AccountActivityService:balanceUpdated',
+      'AccountsController:selectedEvmAccountChange',
     ],
   });
   return controllerMessenger;

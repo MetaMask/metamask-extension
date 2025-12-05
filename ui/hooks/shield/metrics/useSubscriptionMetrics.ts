@@ -65,12 +65,14 @@ export const useSubscriptionMetrics = () => {
     async (props: {
       marketingUtmParams?: Record<string, string>;
       source: EntryModalSourceEnum;
+      rewardPoints?: number;
     }) => {
       await dispatch(
         setShieldSubscriptionMetricsProps({
           marketingUtmParams: props.marketingUtmParams,
           source: props.source,
           userBalanceInUSD: Number(totalFiatBalance),
+          rewardPoints: props.rewardPoints,
         }),
       );
     },

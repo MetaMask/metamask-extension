@@ -21,7 +21,7 @@ exports[`TransactionData renders a truncated token id for an NFT with a long tok
         />
       </button>
       <div
-        class="mm-box mm-box--padding-right-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--padding-right-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -43,7 +43,7 @@ exports[`TransactionData renders a truncated token id for an NFT with a long tok
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -92,7 +92,7 @@ exports[`TransactionData renders a truncated token id for an NFT with a long tok
         style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
         >
           <div
             class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -148,7 +148,7 @@ exports[`TransactionData renders a truncated token id for an NFT with a long tok
         style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
         >
           <div
             class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -204,7 +204,7 @@ exports[`TransactionData renders a truncated token id for an NFT with a long tok
         style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
         >
           <div
             class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -249,7 +249,7 @@ exports[`TransactionData renders a truncated token id for an NFT with a long tok
         style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
         >
           <div
             class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -294,7 +294,7 @@ exports[`TransactionData renders a truncated token id for an NFT with a long tok
         style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
         >
           <div
             class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -359,7 +359,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
         />
       </button>
       <div
-        class="mm-box mm-box--padding-right-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--padding-right-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -380,7 +380,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -434,7 +434,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -490,7 +490,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -544,7 +544,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -598,7 +598,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -654,7 +654,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -699,7 +699,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -744,7 +744,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -866,7 +866,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -920,7 +920,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -974,7 +974,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1030,7 +1030,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1086,7 +1086,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1140,7 +1140,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1194,7 +1194,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1250,7 +1250,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1306,7 +1306,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1373,7 +1373,7 @@ exports[`TransactionData renders decoded data with no names 1`] = `
         />
       </button>
       <div
-        class="mm-box mm-box--padding-right-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--padding-right-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1395,7 +1395,7 @@ exports[`TransactionData renders decoded data with no names 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1428,7 +1428,7 @@ exports[`TransactionData renders decoded data with no names 1`] = `
         style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
         >
           <div
             class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1473,7 +1473,7 @@ exports[`TransactionData renders decoded data with no names 1`] = `
         style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
         >
           <div
             class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1529,7 +1529,7 @@ exports[`TransactionData renders decoded data with no names 1`] = `
         style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
         >
           <div
             class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1594,7 +1594,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
         />
       </button>
       <div
-        class="mm-box mm-box--padding-right-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--padding-right-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1616,7 +1616,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1665,7 +1665,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
         style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
         >
           <div
             class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1721,7 +1721,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
         style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
         >
           <div
             class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1759,7 +1759,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
           style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
           >
             <div
               class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1797,7 +1797,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1835,7 +1835,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1891,7 +1891,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1936,7 +1936,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1981,7 +1981,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2027,7 +2027,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2065,7 +2065,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2121,7 +2121,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2166,7 +2166,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2211,7 +2211,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2257,7 +2257,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2295,7 +2295,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2351,7 +2351,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2396,7 +2396,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2441,7 +2441,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2488,7 +2488,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
           style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
           >
             <div
               class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2544,7 +2544,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
           style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
           >
             <div
               class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2590,7 +2590,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
         style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
         >
           <div
             class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2657,7 +2657,7 @@ exports[`TransactionData renders raw hexadecimal if no decoded data 1`] = `
         />
       </button>
       <div
-        class="mm-box mm-box--padding-right-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--padding-right-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2678,7 +2678,7 @@ exports[`TransactionData renders raw hexadecimal if no decoded data 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"

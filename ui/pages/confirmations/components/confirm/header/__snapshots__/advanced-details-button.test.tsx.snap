@@ -3,7 +3,7 @@
 exports[`<AdvancedDetailsButton /> should match snapshot 1`] = `
 <div>
   <div
-    class="mm-box mm-box--margin-right-1 mm-box--background-color-transparent mm-box--rounded-md"
+    class="mm-box mm-box--background-color-transparent mm-box--rounded-md"
   >
     <div>
       <div

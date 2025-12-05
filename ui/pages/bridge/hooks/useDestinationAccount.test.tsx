@@ -1,5 +1,6 @@
 import { ChainId, formatChainIdToCaip } from '@metamask/bridge-controller';
 import { act } from '@testing-library/react';
+import { Store } from 'redux';
 import {
   createBridgeMockStore,
   MOCK_EVM_ACCOUNT,
@@ -12,15 +13,20 @@ import {
   getFromChain,
   getToAccounts,
   getToChain,
+  type BridgeAppState,
 } from '../../../ducks/bridge/selectors';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { useDestinationAccount } from './useDestinationAccount';
 
 const renderUseDestinationAccount = (mockStoreOverrides = {}) => {
-  return renderHookWithProvider(
+  const result = renderHookWithProvider(
     () => useDestinationAccount(),
     createBridgeMockStore(mockStoreOverrides),
   );
+  return {
+    ...result,
+    store: result.store as unknown as Store<BridgeAppState>,
+  };
 };
 
 describe('useDestinationAccount', () => {

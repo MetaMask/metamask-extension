@@ -4272,25 +4272,6 @@
     "message": "$1 아이콘",
     "description": "$1 is the icon name"
   },
-  "onboardingPinExtensionAltLaunch": {
-    "message": "확장 프로그램 실행"
-  },
-  "onboardingPinExtensionAltPin": {
-    "message": "확장 고정"
-  },
-  "onboardingPinExtensionDescription": {
-    "message": "쉽게 액세스하고 트랜잭션 컨펌을 확인할 수 있도록 브라우저에 MetaMask를 고정하세요."
-  },
-  "onboardingPinExtensionDescription2": {
-    "message": "확장 프로그램을 클릭하면 한 번에 MetaMask 지갑에 액세스할 수 있습니다."
-  },
-  "onboardingPinExtensionDescription3": {
-    "message": "$1 확장 프로그램 아이콘을 클릭하면 바로 접근할 수 있습니다",
-    "description": "$1 is the browser name"
-  },
-  "onboardingPinExtensionTitle": {
-    "message": "설치가 완료되었습니다!"
-  },
   "onboardingSignInWith": {
     "message": "$1(으)로 로그인",
     "description": "$1 is the type of login used Google, Apple, etc"
@@ -4990,9 +4971,6 @@
   },
   "recipientEditAriaLabel": {
     "message": "수취인 편집"
-  },
-  "recipientPlaceholder": {
-    "message": "유효한 주소를 입력하거나 붙여 넣으세요"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "지금 백업"

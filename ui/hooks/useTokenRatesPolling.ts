@@ -1,11 +1,5 @@
 import { useSelector } from 'react-redux';
-import {
-  getChainIdsToPoll,
-  getMarketData,
-  getTokenExchangeRates,
-  getTokensMarketData,
-  getUseCurrencyRateCheck,
-} from '../selectors';
+import { getChainIdsToPoll, getUseCurrencyRateCheck } from '../selectors';
 import { getEnabledChainIds } from '../selectors/multichain/networks';
 import {
   tokenRatesStartPolling,
@@ -26,11 +20,6 @@ const useTokenRatesPolling = () => {
   const chainIds = useSelector(getChainIdsToPoll);
   const enabledChainIds = useSelector(getEnabledChainIds);
 
-  // Selectors returning state updated by the polling
-  const tokenExchangeRates = useSelector(getTokenExchangeRates);
-  const tokensMarketData = useSelector(getTokensMarketData);
-  const marketData = useSelector(getMarketData);
-
   const enabled = completedOnboarding && isUnlocked && useCurrencyRateCheck;
 
   const pollableChains = isGlobalNetworkSelectorRemoved
@@ -44,12 +33,6 @@ const useTokenRatesPolling = () => {
     stopPollingByPollingToken: tokenRatesStopPollingByPollingToken,
     input: enabled ? [pollableChains] : [],
   });
-
-  return {
-    tokenExchangeRates,
-    tokensMarketData,
-    marketData,
-  };
 };
 
 export default useTokenRatesPolling;

@@ -127,21 +127,21 @@ describe('NetworkControllerInit', () => {
               },
             ],
           },
-          "0x18c6": {
+          "0x18c7": {
             "blockExplorerUrls": [
-              "https://megaexplorer.xyz",
+              "https://megaeth-testnet-v2.blockscout.com",
             ],
-            "chainId": "0x18c6",
+            "chainId": "0x18c7",
             "defaultBlockExplorerUrlIndex": 0,
             "defaultRpcEndpointIndex": 0,
-            "name": "Mega Testnet",
+            "name": "MegaETH Testnet",
             "nativeCurrency": "MegaETH",
             "rpcEndpoints": [
               {
                 "failoverUrls": [],
-                "networkClientId": "megaeth-testnet",
+                "networkClientId": "megaeth-testnet-v2",
                 "type": "custom",
-                "url": "https://carrot.megaeth.com/rpc",
+                "url": "https://timothy.megaeth.com/rpc",
               },
             ],
           },

@@ -185,6 +185,7 @@ const getIgnoredKeys = (): string[] => [
   'metamask.snaps',
   'metamask.subjects',
   'metamask.verifiedSnaps',
+  'metamask.networksMetadata',
 ];
 
 const shouldIgnoreKey = (key: string, ignoredKeys: string[]): boolean => {

@@ -15,6 +15,7 @@ import {
 } from '../../../../../../../components/app/confirm/info/row';
 import { ConfirmInfoRowCurrency } from '../../../../../../../components/app/confirm/info/row/currency';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
+import { useDappSwapContext } from '../../../../../context/dapp-swap';
 import { useNestedTransactionLabels } from '../../hooks/useNestedTransactionLabels';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -22,8 +23,9 @@ import { useNestedTransactionLabels } from '../../hooks/useNestedTransactionLabe
 export function NestedTransactionData() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { nestedTransactions } = currentConfirmation ?? {};
+  const { isQuotedSwapDisplayedInInfo } = useDappSwapContext();
 
-  if (!nestedTransactions?.length) {
+  if (!nestedTransactions?.length || isQuotedSwapDisplayedInInfo) {
     return null;
   }
 

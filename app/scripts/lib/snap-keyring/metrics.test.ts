@@ -34,10 +34,9 @@ describe('getSnapAndHardwareInfoForMetrics', () => {
   });
 
   describe('when the wallet is unlocked', () => {
-    it('resolves keyring and device info for a HD account', async () => {
+    it('resolves keyring info for a HD account', async () => {
       getAccountType.mockResolvedValue('accountType');
       getDeviceModel.mockResolvedValue('deviceModel');
-      getHardwareTypeForMetric.mockResolvedValue('hardwareType');
       messenger.call
         .mockReturnValueOnce({
           address: '0x123',
@@ -69,7 +68,6 @@ describe('getSnapAndHardwareInfoForMetrics', () => {
 
       expect(getAccountType).toHaveBeenCalledWith('0x123');
       expect(getDeviceModel).toHaveBeenCalledWith('0x123');
-      expect(getHardwareTypeForMetric).toHaveBeenCalledWith('0x123');
       expect(messenger.call).toHaveBeenNthCalledWith(
         1,
         'AccountsController:getSelectedAccount',
@@ -87,9 +85,6 @@ describe('getSnapAndHardwareInfoForMetrics', () => {
         device_model: 'deviceModel',
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_hardware_type: 'hardwareType',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         account_snap_type: undefined,
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -97,7 +92,76 @@ describe('getSnapAndHardwareInfoForMetrics', () => {
       });
     });
 
-    it('resolves keyring, device, and snap info for a snap account', async () => {
+    it('resolves keyring and snap info for a snap account', async () => {
+      getAccountType.mockResolvedValue('accountType');
+      getDeviceModel.mockResolvedValue('deviceModel');
+      messenger.call
+        .mockReturnValueOnce({
+          address: '0x123',
+          id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          metadata: {
+            name: 'Account 1',
+            keyring: {
+              type: 'Snap Keyring',
+            },
+            snap: {
+              id: 'snapId',
+              name: 'mock-name',
+              enabled: true,
+            },
+          },
+          options: {},
+          methods: [
+            'personal_sign',
+            'eth_signTransaction',
+            'eth_signTypedData_v1',
+            'eth_signTypedData_v3',
+            'eth_signTypedData_v4',
+          ],
+          type: 'eip155:eoa',
+        })
+        .mockReturnValueOnce({ id: 'snapId', version: 'snapVersion' })
+        .mockReturnValueOnce({ isUnlocked: true });
+
+      const result = await getSnapAndHardwareInfoForMetrics(
+        getAccountType,
+        getDeviceModel,
+        getHardwareTypeForMetric,
+        messenger,
+      );
+
+      expect(getAccountType).toHaveBeenCalledWith('0x123');
+      expect(getDeviceModel).toHaveBeenCalledWith('0x123');
+      expect(messenger.call).toHaveBeenNthCalledWith(
+        1,
+        'AccountsController:getSelectedAccount',
+      );
+      expect(messenger.call).toHaveBeenNthCalledWith(
+        2,
+        'SnapController:get',
+        'snapId',
+      );
+      expect(messenger.call).toHaveBeenNthCalledWith(
+        3,
+        'KeyringController:getState',
+      );
+      expect(result).toEqual({
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_type: 'accountType',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        device_model: 'deviceModel',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_snap_type: 'snapId',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_snap_version: 'snapVersion',
+      });
+    });
+
+    it('resolves device and account type info for a hardware wallet account', async () => {
       getAccountType.mockResolvedValue('accountType');
       getDeviceModel.mockResolvedValue('deviceModel');
       getHardwareTypeForMetric.mockResolvedValue('hardwareType');
@@ -161,13 +225,13 @@ describe('getSnapAndHardwareInfoForMetrics', () => {
         device_model: 'deviceModel',
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_hardware_type: 'hardwareType',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         account_snap_type: 'snapId',
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         account_snap_version: 'snapVersion',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_hardware_type: 'hardwareType',
       });
     });
   });

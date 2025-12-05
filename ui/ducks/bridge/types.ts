@@ -17,12 +17,19 @@ export type BridgeToken = {
   decimals: number;
   chainId: number | Hex | ChainId | CaipChainId;
   balance: string; // raw balance
-  // TODO deprecate this field and use balance instead
-  string: string | undefined; // normalized balance as a stringified number
   tokenFiatAmount?: number | null;
   occurrences?: number;
   aggregators?: string[];
   accountType?: KeyringAccountType;
+};
+
+/**
+ * This is the minimal network configuration used by the Swap UI
+ */
+export type BridgeNetwork = {
+  name: string;
+  nativeCurrency: string;
+  chainId: Hex | CaipChainId;
 };
 
 export type BridgeState = {
@@ -36,8 +43,6 @@ export type BridgeState = {
   toToken: BridgeToken | null;
   fromTokenInputValue: string | null;
   fromTokenExchangeRate: number | null; // Exchange rate from selected token to the default currency (can be fiat or crypto)
-  toTokenExchangeRate: number | null; // Exchange rate from the selected token to the default currency (can be fiat or crypto)
-  toTokenUsdExchangeRate: number | null; // Exchange rate from the selected token to the USD. This is needed for metrics
   fromNativeBalance: string | null; // User's balance for the native token of the selected fromChain(EVM)
   fromTokenBalance: string | null; // User's balance for the selected token (EVM)
   sortOrder: SortOrder;
@@ -55,7 +60,6 @@ export type TokenPayload = {
     decimals: number;
     chainId: Exclude<ChainIdPayload['payload'], null>;
     balance?: string;
-    string?: string;
     image?: string;
     iconUrl?: string | null;
     icon?: string | null;
