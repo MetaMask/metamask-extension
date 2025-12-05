@@ -40,9 +40,6 @@ const useStyle = makeStyles({
     minHeight: '48px',
     display: 'inline-flex',
     alignItems: 'center',
-    '&$inputFocused': {
-      border: '1px solid var(--color-primary-default)',
-    },
     borderRadius: '8px',
     fontSize: 'var(--typography-s-body-md-font-size)',
     '& > input': {
