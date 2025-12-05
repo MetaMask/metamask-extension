@@ -1,9 +1,20 @@
 import React from 'react';
-import { fireEvent, act } from '@testing-library/react';
+import { AccountGroupId } from '@metamask/account-api';
+import { fireEvent, act, within } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
+import mockDefaultState from '../../../../test/data/mock-state.json';
 import { MultichainAccountMenu } from './multichain-account-menu';
 import type { MultichainAccountMenuProps } from './multichain-account-menu.types';
+
+jest.mock('../../../../shared/lib/trace', () => {
+  const actual = jest.requireActual('../../../../shared/lib/trace');
+  return {
+    ...actual,
+    trace: jest.fn(),
+    endTrace: jest.fn(),
+  };
+});
 
 const popoverOpenSelector = '.mm-popover--open';
 const menuButtonSelector = '.multichain-account-cell-popover-menu-button';
@@ -418,5 +429,50 @@ describe('MultichainAccountMenu', () => {
       accountGroupId,
       true,
     );
+  });
+
+  describe('tracing', () => {
+    const groupId = mockDefaultState.metamask.accountTree
+      .selectedAccountGroup as AccountGroupId;
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('calls trace ShowAccountAddressList when clicking Addresses', async () => {
+      const store = configureStore(mockDefaultState);
+      renderWithProvider(
+        <MultichainAccountMenu
+          accountGroupId={groupId}
+          isRemovable={false}
+          isOpen
+          onToggle={() => undefined}
+        />,
+        store,
+      );
+
+      const popover = document.querySelector(
+        '.multichain-account-cell-popover-menu',
+      );
+      expect(popover).toBeInTheDocument();
+
+      const addressesItem = popover
+        ? within(popover as HTMLElement).getByText('Addresses')
+        : null;
+      expect(addressesItem).toBeInTheDocument();
+
+      await act(async () => {
+        if (addressesItem) {
+          fireEvent.click(addressesItem);
+        }
+      });
+
+      const traceLib = jest.requireMock('../../../../shared/lib/trace');
+      expect(traceLib.trace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: traceLib.TraceName.ShowAccountAddressList,
+        }),
+      );
+    });
   });
 });

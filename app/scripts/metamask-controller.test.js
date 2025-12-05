@@ -50,7 +50,7 @@ import { KeyringTypes } from '@metamask/keyring-controller';
 import { createTestProviderTools } from '../../test/stub/provider';
 import {
   HardwareDeviceNames,
-  HardwareKeyringType,
+  KEYRING_DEVICE_PROPERTY_MAP,
 } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
 import { LOG_EVENT } from '../../shared/constants/logs';
@@ -68,6 +68,8 @@ import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import { HYPERLIQUID_APPROVAL_TYPE } from '../../shared/constants/app';
 import { HYPERLIQUID_ORIGIN } from '../../shared/constants/referrals';
+import { BITCOIN_WALLET_SNAP_ID } from '../../shared/lib/accounts/bitcoin-wallet-snap';
+import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-snap';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { ReferralStatus } from './controllers/preferences-controller';
 import { METAMASK_COOKIE_HANDLER } from './constants/stream';
@@ -90,7 +92,7 @@ const browserPolyfillMock = {
     onMessageExternal: {
       addListener: jest.fn(),
     },
-    getPlatformInfo: jest.fn().mockResolvedValue('mac'),
+    getPlatformInfo: jest.fn().mockResolvedValue({ os: 'mac' }),
   },
   storage: {
     session: {
@@ -196,6 +198,20 @@ jest.mock('./lib/rpc-method-middleware', () => ({
     next();
   },
 }));
+
+jest.mock('../../shared/lib/trace', () => ({
+  ...jest.requireActual('../../shared/lib/trace'),
+  trace: jest.fn(),
+  endTrace: jest.fn(),
+}));
+
+const { TraceName, TraceOperation } = jest.requireActual(
+  '../../shared/lib/trace',
+);
+
+const { trace: mockTrace, endTrace: mockEndTrace } = jest.requireMock(
+  '../../shared/lib/trace',
+);
 
 const KNOWN_PUBLIC_KEY =
   '02065bc80d3d12b3688e4ad5ab1e9eda6adf24aec2518bfc21b87c99d4c5077ab0';
@@ -1630,7 +1646,7 @@ describe('MetaMaskController', () => {
             const result =
               await metamaskController.getHardwareTypeForMetric('0x123');
 
-            expect(result).toBe(HardwareKeyringType[type]);
+            expect(result).toBe(KEYRING_DEVICE_PROPERTY_MAP[type]);
           },
         );
       });
@@ -3834,7 +3850,7 @@ describe('MetaMaskController', () => {
         const networksWithoutFailoverUrls = [
           CHAIN_IDS.SEPOLIA,
           CHAIN_IDS.LINEA_SEPOLIA,
-          CHAIN_IDS.MEGAETH_TESTNET,
+          '0x18c7', // MegaETH Testnet
           '0x279f', // Monad Testnet
           '0x539', // Localhost
         ];
@@ -5283,6 +5299,222 @@ describe('MetaMaskController', () => {
     });
   });
 
+  describe('_addAccountsWithBalance', () => {
+    let metamaskController;
+
+    beforeEach(async () => {
+      metamaskController = new MetaMaskController({
+        showUserConfirmation: noop,
+        encryptor: mockEncryptor,
+        initState: cloneDeep(firstTimeState),
+        initLangCode: 'en_US',
+        platform: {
+          showTransactionNotification: () => undefined,
+          getVersion: () => 'foo',
+        },
+        browser: browserPolyfillMock,
+        infuraProjectId: 'foo',
+        isFirstMetaMaskControllerSetup: true,
+        cronjobControllerStorageManager:
+          createMockCronjobControllerStorageManager(),
+        controllerMessenger: new Messenger({
+          namespace: MOCK_ANY_NAMESPACE,
+        }),
+      });
+
+      mockTrace.mockClear();
+      mockEndTrace.mockClear();
+    });
+
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('starts and ends both DiscoverAccounts and EvmDiscoverAccounts traces on successful execution', async () => {
+      jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
+      jest
+        .spyOn(metamaskController.tokenDetectionController, 'detectTokens')
+        .mockResolvedValue();
+      jest
+        .spyOn(metamaskController.tokensController, 'state', 'get')
+        .mockReturnValue({
+          allTokens: {},
+          allDetectedTokens: {},
+        });
+
+      const mockKeyring = {
+        getAccounts: jest
+          .fn()
+          .mockResolvedValue(['0x1234567890123456789012345678901234567890']),
+        addAccounts: jest
+          .fn()
+          .mockResolvedValue(['0x2345678901234567890123456789012345678901']),
+      };
+
+      jest
+        .spyOn(metamaskController.keyringController, 'withKeyring')
+        .mockImplementation(async (_selector, callback) => {
+          const context = {
+            keyring: mockKeyring,
+            metadata: { id: 'test-keyring-id' },
+          };
+          return await callback(context);
+        });
+
+      const mockBtcClient = {
+        discoverAccounts: jest.fn().mockResolvedValue([]),
+      };
+      const mockSolanaClient = {
+        discoverAccounts: jest.fn().mockResolvedValue([]),
+      };
+
+      jest
+        .spyOn(metamaskController, '_getMultichainWalletSnapClient')
+        .mockImplementation((snapId) => {
+          if (snapId === BITCOIN_WALLET_SNAP_ID) {
+            return Promise.resolve(mockBtcClient);
+          }
+          if (snapId === SOLANA_WALLET_SNAP_ID) {
+            return Promise.resolve(mockSolanaClient);
+          }
+          throw new Error(`Unknown snap ID: ${snapId}`);
+        });
+
+      jest.spyOn(metamaskController, '_addSnapAccount').mockResolvedValue();
+
+      const result = await metamaskController._addAccountsWithBalance(
+        'test-keyring-id',
+        true,
+      );
+
+      expect(mockTrace).toHaveBeenCalledWith({
+        name: TraceName.DiscoverAccounts,
+        op: TraceOperation.AccountDiscover,
+      });
+
+      expect(mockTrace).toHaveBeenCalledWith({
+        name: TraceName.EvmDiscoverAccounts,
+        op: TraceOperation.AccountDiscover,
+      });
+
+      expect(mockEndTrace).toHaveBeenCalledWith({
+        name: TraceName.EvmDiscoverAccounts,
+        op: TraceOperation.AccountDiscover,
+      });
+
+      expect(mockEndTrace).toHaveBeenCalledWith({
+        name: TraceName.DiscoverAccounts,
+        op: TraceOperation.AccountDiscover,
+      });
+
+      expect(result).toStrictEqual({
+        Bitcoin: 0,
+        Solana: 0,
+        Tron: 0,
+      });
+    });
+
+    it('ends DiscoverAccounts trace even if an error occurs', async () => {
+      const testError = new Error('Test error');
+
+      jest
+        .spyOn(metamaskController.keyringController, 'withKeyring')
+        .mockRejectedValue(testError);
+
+      const result = await metamaskController._addAccountsWithBalance(
+        'test-keyring-id',
+        true,
+      );
+
+      expect(mockTrace).toHaveBeenCalledWith({
+        name: TraceName.DiscoverAccounts,
+        op: TraceOperation.AccountDiscover,
+      });
+
+      expect(mockEndTrace).toHaveBeenCalledWith({
+        name: TraceName.DiscoverAccounts,
+        op: TraceOperation.AccountDiscover,
+      });
+
+      expect(mockTrace).toHaveBeenCalledTimes(1);
+      expect(mockEndTrace).toHaveBeenCalledTimes(1);
+      expect(result).toStrictEqual({
+        Bitcoin: 0,
+        Solana: 0,
+        Tron: 0,
+      });
+    });
+
+    it('does not import Solana accounts when shouldImportSolanaAccount is false', async () => {
+      jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
+      jest
+        .spyOn(metamaskController.tokenDetectionController, 'detectTokens')
+        .mockResolvedValue();
+      jest
+        .spyOn(metamaskController.tokensController, 'state', 'get')
+        .mockReturnValue({
+          allTokens: {},
+          allDetectedTokens: {},
+        });
+
+      const mockKeyring = {
+        getAccounts: jest
+          .fn()
+          .mockResolvedValue(['0x1234567890123456789012345678901234567890']),
+        addAccounts: jest
+          .fn()
+          .mockResolvedValue(['0x2345678901234567890123456789012345678901']),
+      };
+
+      jest
+        .spyOn(metamaskController.keyringController, 'withKeyring')
+        .mockImplementation(async (_selector, callback) => {
+          const context = {
+            keyring: mockKeyring,
+            metadata: { id: 'test-keyring-id' },
+          };
+          return await callback(context);
+        });
+
+      const mockBtcClient = {
+        discoverAccounts: jest.fn().mockResolvedValue([]),
+      };
+      const mockSolanaClient = {
+        discoverAccounts: jest.fn().mockResolvedValue([]),
+      };
+
+      jest
+        .spyOn(metamaskController, '_getMultichainWalletSnapClient')
+        .mockImplementation((snapId) => {
+          if (snapId === BITCOIN_WALLET_SNAP_ID) {
+            return Promise.resolve(mockBtcClient);
+          }
+          if (snapId === SOLANA_WALLET_SNAP_ID) {
+            return Promise.resolve(mockSolanaClient);
+          }
+          throw new Error(`Unknown snap ID: ${snapId}`);
+        });
+
+      jest.spyOn(metamaskController, '_addSnapAccount').mockResolvedValue();
+
+      await metamaskController._addAccountsWithBalance(
+        'test-keyring-id',
+        false,
+      );
+
+      expect(
+        metamaskController._getMultichainWalletSnapClient,
+      ).not.toHaveBeenCalledWith(SOLANA_WALLET_SNAP_ID);
+
+      expect(
+        metamaskController._getMultichainWalletSnapClient,
+      ).toHaveBeenCalledWith(BITCOIN_WALLET_SNAP_ID);
+
+      expect(mockTrace).toHaveBeenCalledTimes(2);
+      expect(mockEndTrace).toHaveBeenCalledTimes(2);
+    });
+  });
+
   describe('_importAccountsWithBalances', () => {
     let metamaskController;
 
@@ -5497,7 +5729,7 @@ describe('MetaMaskController', () => {
       ).not.toHaveBeenCalled();
     });
 
-    it('should not notify when account address has not changed', async () => {
+    it('does not notify when account address has not changed', async () => {
       setupMocks();
 
       // First call to set the lastSelectedSolanaAccountAddress

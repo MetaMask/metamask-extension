@@ -19,6 +19,7 @@ import {
   rewardsOptIn,
   rewardsLinkAccountsToSubscriptionCandidate,
   updateMetaMetricsTraits,
+  linkRewardToShieldSubscription,
 } from '../../store/actions';
 import { handleRewardsErrorMessage } from '../../components/app/rewards/utils/handleRewardsErrorMessage';
 import { useI18nContext } from '../useI18nContext';
@@ -44,7 +45,12 @@ export type UseOptinResult = {
   clearOptinError: () => void;
 };
 
-export const useOptIn = (): UseOptinResult => {
+type UseOptInOptions = {
+  rewardPoints?: number;
+  shieldSubscriptionId?: string;
+};
+
+export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
   const [optinError, setOptinError] = useState<string | null>(null);
   const dispatch = useDispatch();
   const [optinLoading, setOptinLoading] = useState<boolean>(false);
@@ -157,6 +163,20 @@ export const useOptIn = (): UseOptinResult => {
           } catch {
             // Silently fail - traits update should not block opt-in
           }
+
+          // Link the reward to the shield subscription if opt in from the shield subscription
+          if (options?.rewardPoints && options?.shieldSubscriptionId) {
+            try {
+              await dispatch(
+                linkRewardToShieldSubscription(
+                  options.shieldSubscriptionId,
+                  options.rewardPoints,
+                ),
+              );
+            } catch {
+              // Silently fail - reward linking should not block opt-in
+            }
+          }
         }
       } catch (error) {
         trackEvent({
@@ -182,6 +202,8 @@ export const useOptIn = (): UseOptinResult => {
       activeGroupAccounts,
       dispatch,
       t,
+      options?.rewardPoints,
+      options?.shieldSubscriptionId,
     ],
   );
 

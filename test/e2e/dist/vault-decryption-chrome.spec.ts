@@ -130,39 +130,6 @@ async function waitUntilFileIsWritten({
   );
 }
 
-/**
- * Closes the announcements popover if present
- *
- * @param driver
- */
-async function closePopoverIfPresent(driver: Driver) {
-  const popoverButtonSelector = '[data-testid="popover-close"]';
-  // It shows in the Smart Transactions Opt-In Modal.
-  const enableButtonSelector = {
-    text: 'Enable',
-    tag: 'button',
-  };
-  const popoverTourSelector = '[data-testid="tour-cta-button"]';
-
-  await driver.clickElementSafe(popoverButtonSelector);
-  await driver.clickElementSafe(enableButtonSelector);
-  await driver.clickElementSafe(popoverTourSelector);
-
-  // Token Autodetection Independent Announcement
-  const tokenAutodetection = {
-    css: '[data-testid="auto-detect-token-modal"] button',
-    text: 'Not right now',
-  };
-  await driver.clickElementSafe(tokenAutodetection);
-
-  // NFT Autodetection Independent Announcement
-  const nftAutodetection = {
-    css: '[data-testid="auto-detect-nft-modal"] button',
-    text: 'Not right now',
-  };
-  await driver.clickElementSafe(nftAutodetection);
-}
-
 describe('Vault Decryptor Page', function () {
   it('is able to decrypt the vault uploading the log file in the vault-decryptor webapp', async function () {
     if (process.env.SELENIUM_BROWSER !== 'chrome') {
@@ -187,41 +154,57 @@ describe('Vault Decryptor Page', function () {
           password: WALLET_PASSWORD,
           needNavigateToNewPage: false,
         });
-        // close popover if any (Announcements etc..)
-        await closePopoverIfPresent(driver);
-
-        // go to privacy settings page
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-        await homePage.checkBalanceEmptyStateIsDisplayed();
-        await new HeaderNavbar(driver).openSettingsPage();
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToPrivacySettings();
-
-        // fill password to reveal SRP and get the SRP
-        const privacySettings = new PrivacySettings(driver);
-        await privacySettings.checkPageIsLoaded();
-        await privacySettings.openRevealSrpQuiz();
-        await privacySettings.completeRevealSrpQuiz();
-        await privacySettings.fillPasswordToRevealSrp(WALLET_PASSWORD);
-        const seedPhrase = await privacySettings.getSrpInRevealSrpDialog();
 
         // Retry-logic to ensure the file is ready before uploading it to mitigate flakiness when Chrome hasn't finished writing
+        const extensionPath = await getExtensionStorageFilePath(driver);
         await waitUntilFileIsWritten({ driver });
 
-        // navigate to the Vault decryptor webapp and fill the input field with storage recovered from filesystem
-        await driver.openNewPage(VAULT_DECRYPTOR_PAGE);
-        const vaultDecryptorPage = new VaultDecryptorPage(driver);
-        await vaultDecryptorPage.checkPageIsLoaded();
-        const extensionPath = await getExtensionStorageFilePath(driver);
-        const extensionLogFile = getExtensionLogFile(extensionPath);
-        await vaultDecryptorPage.uploadLogFile(extensionLogFile);
+        // copy log file to a temp location, to avoid reading it while the browser is writing it
+        let copiedDir;
+        try {
+          copiedDir = await copyDirectoryToTmp(extensionPath);
+          const extensionLogFileCopy = getExtensionLogFile(copiedDir);
 
-        // fill the password and decrypt
-        await vaultDecryptorPage.fillPassword();
-        await vaultDecryptorPage.confirmDecrypt();
-        await vaultDecryptorPage.checkVaultIsDecrypted(seedPhrase);
+          // navigate to the Vault decryptor webapp and fill the input field with storage recovered from filesystem
+          await driver.openNewPage(VAULT_DECRYPTOR_PAGE);
+          const vaultDecryptorPage = new VaultDecryptorPage(driver);
+          await vaultDecryptorPage.checkPageIsLoaded();
+          await vaultDecryptorPage.uploadLogFile(extensionLogFileCopy);
+
+          // fill the password and decrypt
+          await vaultDecryptorPage.fillPassword();
+          await vaultDecryptorPage.confirmDecrypt();
+
+          // go back to MetaMask
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+
+          // go to privacy settings page
+          const homePage = new HomePage(driver);
+          await homePage.checkPageIsLoaded();
+          await homePage.checkBalanceEmptyStateIsDisplayed();
+          await new HeaderNavbar(driver).openSettingsPage();
+          const settingsPage = new SettingsPage(driver);
+          await settingsPage.checkPageIsLoaded();
+          await settingsPage.goToPrivacySettings();
+
+          // fill password to reveal SRP and get the SRP
+          const privacySettings = new PrivacySettings(driver);
+          await privacySettings.checkPageIsLoaded();
+          await privacySettings.openRevealSrpQuiz();
+          await privacySettings.completeRevealSrpQuiz();
+          await privacySettings.fillPasswordToRevealSrp(WALLET_PASSWORD);
+          const seedPhrase = await privacySettings.getSrpInRevealSrpDialog();
+
+          // compare the SRP values
+          await driver.switchToWindowWithTitle('MetaMask Vault Decryptor');
+          await vaultDecryptorPage.checkVaultIsDecrypted(seedPhrase);
+        } finally {
+          if (copiedDir) {
+            await fs.remove(copiedDir);
+          }
+        }
       },
     );
   });
@@ -250,8 +233,11 @@ describe('Vault Decryptor Page', function () {
           password: WALLET_PASSWORD,
           needNavigateToNewPage: false,
         });
-        // close popover if any (Announcements etc..)
-        await closePopoverIfPresent(driver);
+
+        // Ensure we're on the main extension window after onboarding
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
 
         // go to privacy settings page
         const homePage = new HomePage(driver);
