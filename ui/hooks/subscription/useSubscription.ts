@@ -753,12 +753,14 @@ export const useShieldRewards = (): {
   pointsYearly: number | null;
   isRewardsSeason: boolean;
   hasAccountOptedIn: boolean;
+  refreshOptInStatus?: () => Promise<void>;
 } => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const [primaryKeyring] = useSelector(getMetaMaskHdKeyrings);
   const accountsWithCaipChainId = useSelector(
     getUpdatedAndSortedAccountsWithCaipAccountId,
   );
+  const [hasAccountOptedIn, setHasAccountOptedIn] = useState<boolean>(false);
 
   const caipAccountId = useMemo(() => {
     if (!primaryKeyring) {
@@ -783,15 +785,29 @@ export const useShieldRewards = (): {
     return primaryAccountWithCaipChainId.caipAccountId;
   }, [primaryKeyring, accountsWithCaipChainId]);
 
+  const [refreshOptInStatus] = useAsyncCallback(async () => {
+    if (!caipAccountId) {
+      return;
+    }
+    const optinStatus = await dispatch(
+      getRewardsHasAccountOptedIn(caipAccountId),
+    );
+    console.log('[useShieldRewards refreshOptInStatus]:', optinStatus);
+    setHasAccountOptedIn(optinStatus);
+  }, [caipAccountId, dispatch]);
+
   const {
-    value: hasAccountOptedIn,
     pending: hasAccountOptedInResultPending,
     error: hasAccountOptedInResultError,
   } = useAsyncResult<boolean>(async () => {
     if (!caipAccountId) {
       return false;
     }
-    return await dispatch(getRewardsHasAccountOptedIn(caipAccountId));
+    const optinStatus = await dispatch(
+      getRewardsHasAccountOptedIn(caipAccountId),
+    );
+    setHasAccountOptedIn(optinStatus);
+    return optinStatus;
   }, [caipAccountId]);
 
   const {
@@ -866,6 +882,9 @@ export const useShieldRewards = (): {
     if (hasAccountOptedInResultError) {
       console.error('[useShieldRewards error]:', hasAccountOptedInResultError);
     }
+
+    setHasAccountOptedIn(false);
+
     return {
       pending: false,
       pointsMonthly: null,
@@ -880,6 +899,7 @@ export const useShieldRewards = (): {
     pointsMonthly: pointsValue?.monthly ?? null,
     pointsYearly: pointsValue?.yearly ?? null,
     isRewardsSeason: isRewardsSeason ?? false,
-    hasAccountOptedIn: hasAccountOptedIn ?? false,
+    hasAccountOptedIn,
+    refreshOptInStatus,
   };
 };

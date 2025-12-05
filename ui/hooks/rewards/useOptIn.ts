@@ -167,12 +167,16 @@ export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
 
         // Link the reward to the shield subscription if opt in from the shield subscription
         if (options?.rewardPoints && options?.shieldSubscriptionId) {
-          await dispatch(
-            linkRewardToShieldSubscription(
-              options.shieldSubscriptionId,
-              options.rewardPoints,
-            ),
-          );
+          try {
+            await dispatch(
+              linkRewardToShieldSubscription(
+                options.shieldSubscriptionId,
+                options.rewardPoints,
+              ),
+            );
+          } catch {
+            // Silently fail - reward linking should not block opt-in
+          }
         }
       } catch (error) {
         trackEvent({

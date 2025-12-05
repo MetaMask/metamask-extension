@@ -211,6 +211,7 @@ const TransactionShield = () => {
     isRewardsSeason,
     hasAccountOptedIn: hasOptedIntoRewards,
     pending: pendingShieldRewards,
+    refreshOptInStatus,
   } = useShieldRewards();
 
   const isWaitingForSubscriptionCreation =
@@ -849,6 +850,10 @@ const TransactionShield = () => {
       <RewardsOnboardingModal
         rewardPoints={claimedRewardsPoints ?? undefined}
         shieldSubscriptionId={displayedShieldSubscription?.id}
+        onClose={async () => {
+          const latestOptinStatus = await refreshOptInStatus?.();
+          console.log('[TransactionShield onClose]:', latestOptinStatus);
+        }}
       />
     </Box>
   );
