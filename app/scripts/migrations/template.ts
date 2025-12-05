@@ -1,35 +1,37 @@
+import type { Migrate } from './types';
+
+/**
+ * The version number of this migration.
+ */
 export const version = 0;
 
 /**
  * Explain the purpose of the migration here.
  *
- * @param versionedData - Versioned MetaMask extension state, exactly what we persist to dist.
- * @param versionedData.meta - State metadata.
+ * @param versionedData - Versioned MetaMask extension state; what we persist to dist.
+ * @param versionedData.meta - Metadata about the state being migrated.
  * @param versionedData.meta.version - The current state version.
+ * @param versionedData.meta.storageKind - The kind of storage being used.
  * @param versionedData.data - The persisted MetaMask state, keyed by controller.
- * @param changedKeys - Set to track which controller keys were modified by this migration
+ * @param changedKeys - `Set` to track which controller keys were modified by a migration
  * @returns void or a Promise that resolves to void; mutate the state in place.
  */
-export function migrate(
-  versionedData: {
-    meta: { version: number };
-    data: Record<string, unknown>;
-  },
-  changedKeys: Set<string>,
-): void | Promise<void> {
+export const migrate = ((versionedData, changedKeys) => {
   versionedData.meta.version = version;
   transformState(versionedData.data, changedKeys);
-  return undefined;
-}
+}) satisfies Migrate;
 
 function transformState(
   state: Record<string, unknown>,
   changedKeys: Set<string>,
 ): Promise<void> | void {
+  // transform state here
+
+  // Example transformation:
   (state.ControllerKey as { newProperty: string }).newProperty = 'newValue';
   delete state.OldControllerKey;
   // if you add/remove/edit a new controller key, you need to track it in
-  // changedKeys or your migration will not persist.
+  // `changedKeys` or your migration will not persist.
   changedKeys.add('ControllerKey');
   changedKeys.add('OldControllerKey');
 }
