@@ -280,7 +280,6 @@ export const getFromToken = createSelector(
     // When the page loads the global network always matches the network filter
     // Because useBridging checks whether the lastSelectedNetwork matches the provider config
     // Then useBridgeQueryParams sets the global network to lastSelectedNetwork as needed
-    // TODO remove providerConfig references and just use getLastSelectedChainId
     const fromChain = fromChains.find(
       ({ chainId }) => !isCrossChain(chainId, providerConfig?.chainId),
     );
