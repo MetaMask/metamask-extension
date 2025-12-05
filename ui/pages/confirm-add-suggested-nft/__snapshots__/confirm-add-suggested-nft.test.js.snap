@@ -9,7 +9,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
     />
     <div>
       <div
-        class="mm-box confirm-add-suggested-nft page-container confirm-add-suggested-nft--has-app-header-multichain mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
+        class="mm-box confirm-add-suggested-nft page-container h-full confirm-add-suggested-nft--has-app-header-multichain mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
       >
         <div
           class="mm-box confirm-add-suggested-nft__header mm-box--padding-bottom-2"
@@ -224,7 +224,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
   </body>,
   "container": <div>
     <div
-      class="mm-box confirm-add-suggested-nft page-container confirm-add-suggested-nft--has-app-header-multichain mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
+      class="mm-box confirm-add-suggested-nft page-container h-full confirm-add-suggested-nft--has-app-header-multichain mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
     >
       <div
         class="mm-box confirm-add-suggested-nft__header mm-box--padding-bottom-2"
