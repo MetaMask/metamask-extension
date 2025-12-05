@@ -119,11 +119,6 @@ export const SnapUIDateTimePicker: FunctionComponent<
   }, [initialValue]);
 
   const handleChange = (date: DateTime | null) => {
-    // Prevent submitting invalid dates
-    if (date && !date.isValid) {
-      return;
-    }
-
     const normalizedDate = normalizeDate(date, type);
 
     const isoString = normalizedDate ? normalizedDate.toISO() : null;

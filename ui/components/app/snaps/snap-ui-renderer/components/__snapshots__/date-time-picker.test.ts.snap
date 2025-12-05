@@ -22,7 +22,7 @@ exports[`SnapUIDateTimePicker can show an error 1`] = `
             Select date and time
           </label>
           <div
-            class="MuiFormControl-root MuiTextField-root makeStyles-root-9"
+            class="MuiFormControl-root MuiTextField-root makeStyles-root-9 snap-ui-renderer__date-time-picker--datetime"
             format="D T"
           >
             <div
@@ -70,7 +70,7 @@ exports[`SnapUIDateTimePicker renders a date picker 1`] = `
           class="snap-ui-renderer__date-time-picker"
         >
           <div
-            class="MuiFormControl-root MuiTextField-root makeStyles-root-3"
+            class="MuiFormControl-root MuiTextField-root makeStyles-root-3 snap-ui-renderer__date-time-picker--date"
             format="D"
           >
             <div
@@ -113,7 +113,7 @@ exports[`SnapUIDateTimePicker renders a date time picker 1`] = `
           class="snap-ui-renderer__date-time-picker"
         >
           <div
-            class="MuiFormControl-root MuiTextField-root makeStyles-root-1"
+            class="MuiFormControl-root MuiTextField-root makeStyles-root-1 snap-ui-renderer__date-time-picker--datetime"
             format="D T"
           >
             <div
@@ -156,7 +156,7 @@ exports[`SnapUIDateTimePicker renders a time picker 1`] = `
           class="snap-ui-renderer__date-time-picker"
         >
           <div
-            class="MuiFormControl-root MuiTextField-root makeStyles-root-5"
+            class="MuiFormControl-root MuiTextField-root makeStyles-root-5 snap-ui-renderer__date-time-picker--time"
             format="T"
           >
             <div
@@ -205,7 +205,7 @@ exports[`SnapUIDateTimePicker renders inside a field 1`] = `
             Select date and time
           </label>
           <div
-            class="MuiFormControl-root MuiTextField-root makeStyles-root-7"
+            class="MuiFormControl-root MuiTextField-root makeStyles-root-7 snap-ui-renderer__date-time-picker--datetime"
             format="D T"
           >
             <div

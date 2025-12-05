@@ -186,33 +186,29 @@ class SnapInteractiveDialog {
   async #selectTimeInPicker(hours: number, minutes: number) {
     console.log(`Selecting time in picker: ${hours}:${minutes}`);
 
-    const hourText = await this.driver.findElement({
-      text: `${hours}`,
-      tag: 'span',
-      css: selectors.timePickerHourButton,
-    });
+    // We need to use actions here because the hour and minute selection is made
+    // by dragging the clock hand, or clicking the mask behind the numbers.
+    await this.driver.clickPoint(
+      {
+        text: `${hours}`,
+        tag: 'span',
+        css: selectors.timePickerHourButton,
+      },
+      1,
+      1,
+    );
 
     // We need to use actions here because the hour and minute selection is made
     // by dragging the clock hand, or clicking the mask behind the numbers.
-    await this.driver.driver
-      .actions()
-      .move({ origin: hourText, x: 1, y: 1 })
-      .click()
-      .perform();
-
-    const minutesText = await this.driver.findElement({
-      text: `${minutes}`,
-      tag: 'span',
-      css: selectors.timePickerHourButton,
-    });
-
-    // We need to use actions here because the hour and minute selection is made
-    // by dragging the clock hand, or clicking the mask behind the numbers.
-    await this.driver.driver
-      .actions()
-      .move({ origin: minutesText, x: 1, y: 1 })
-      .click()
-      .perform();
+    await this.driver.clickPoint(
+      {
+        text: `${minutes}`,
+        tag: 'span',
+        css: selectors.timePickerHourButton,
+      },
+      1,
+      1,
+    );
   }
 
   async selectDropDownOption(exampleDropName: string, option: string) {
