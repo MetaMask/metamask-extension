@@ -82,6 +82,8 @@ class ServerMochaToBackground {
   private receivedMessage(message: MessageType) {
     if (message.command === 'openTabs' && message.tabs) {
       this.eventEmitter.emit('openTabs', message.tabs);
+    } else if (message.command === 'windowClosed') {
+      this.eventEmitter.emit('windowClosed');
     } else if (message.command === 'notFound') {
       const error = new Error(
         `No window found by background script with ${message.property}: ${message.value}`,
@@ -111,6 +113,34 @@ class ServerMochaToBackground {
     return tabs;
   }
 
+  /**
+   * Sends a message to wait until a window with the given property is closed.
+   * If the WebSocket disconnects during this wait, it's treated as success
+   * (the window/extension closed, which is what we were waiting for).
+   *
+   * @param property - 'title' or 'url'
+   * @param value - The value of the window we're waiting to close
+   */
+  async waitUntilWindowClosed(property: WindowProperties, value: string) {
+    try {
+      this.send({ command: 'waitUntilWindowClosed', property, value });
+      await this.waitForWindowClosedResponse();
+    } catch (error) {
+      // If WebSocket is disconnected, it means the extension reloaded/closed
+      // which is exactly what we were waiting for - treat as success
+      if (
+        error instanceof Error &&
+        error.message === 'No client connected to ServerMochaToBackground'
+      ) {
+        console.log(
+          'waitUntilWindowClosed: WebSocket disconnected - window/extension closed',
+        );
+        return;
+      }
+      throw error;
+    }
+  }
+
   // This is a way to wait for an event async, without timeouts or polling
   async waitForResponse() {
     return new Promise((resolve, reject) => {
@@ -121,6 +151,20 @@ class ServerMochaToBackground {
       this.eventEmitter.once('openTabs', (result) => {
         this.eventEmitter.removeListener('error', reject);
         resolve(result);
+      });
+    });
+  }
+
+  // Wait for the windowClosed event
+  async waitForWindowClosedResponse() {
+    return new Promise<void>((resolve, reject) => {
+      this.eventEmitter.once('error', (error) => {
+        this.eventEmitter.removeListener('windowClosed', resolve);
+        reject(error);
+      });
+      this.eventEmitter.once('windowClosed', () => {
+        this.eventEmitter.removeListener('error', reject);
+        resolve();
       });
     });
   }
