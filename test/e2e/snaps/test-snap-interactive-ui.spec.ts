@@ -47,10 +47,22 @@ describe('Interactive UI Snap', function () {
         await interactiveUI.selectRadioOption('Option 1');
         await interactiveUI.selectDropDownOption('dropDown', 'Option 2');
         await interactiveUI.selectCheckbox();
+
+        const dateTimePickerDate = await interactiveUI.selectInDateTimePicker(
+          15,
+          6,
+          30,
+        );
+        const datePickerDate = await interactiveUI.selectInDatePicker(20);
+        const timePickerDate = await interactiveUI.selectInTimePicker(9, 40);
         await interactiveUI.clickSubmitButton();
 
         // check for returned values and close the dialog
-        await interactiveUI.checkResult();
+        await interactiveUI.checkResult({
+          dateTimePickerDate,
+          datePickerDate,
+          timePickerDate,
+        });
         await interactiveUI.clickOKButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
         await testSnaps.checkMessageResultSpan(
