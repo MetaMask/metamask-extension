@@ -5,6 +5,7 @@ import {
   AvatarNetwork,
   AvatarNetworkSize,
   AvatarToken,
+  AvatarTokenSize,
   BadgeWrapper,
   Box,
   Icon,
@@ -43,7 +44,7 @@ import {
   ERC20Asset,
   NativeAsset,
 } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
-import { SUBSCRIPTION_DEFAULT_PAYMENT_TOKEN } from '../../../shared/constants/subscriptions';
+import { SUPPORTED_PAYMENT_TOKEN_IMAGES } from '../../../shared/constants/subscriptions';
 
 export const ShieldPaymentModal = ({
   isOpen,
@@ -55,6 +56,7 @@ export const ShieldPaymentModal = ({
   onAssetChange,
   hasStableTokenWithBalance,
   tokensSupported,
+  disableCardOption,
 }: {
   isOpen: boolean;
   onClose: () => void;
@@ -65,6 +67,7 @@ export const ShieldPaymentModal = ({
   onAssetChange: (asset: TokenWithApprovalAmount) => void;
   hasStableTokenWithBalance: boolean;
   tokensSupported: string[];
+  disableCardOption?: boolean;
 }) => {
   const t = useI18nContext();
   const [showAssetPickerModal, setShowAssetPickerModal] = useState(false);
@@ -117,22 +120,29 @@ export const ShieldPaymentModal = ({
     };
   }, [availableTokenBalances]);
 
-  const noCryptoFundsText = useMemo(() => {
-    const tokensSupportedCopy = [...tokensSupported];
-    const lastToken = tokensSupportedCopy.pop();
-
-    // multiple tokens to display eg. Insufficient USDC, USDT or mUSD
-    if (tokensSupportedCopy.length > 0) {
-      return t('shieldPlanNoFunds', [
-        tokensSupportedCopy.join(', '),
-        lastToken,
-      ]);
-    }
-    // single token to display eg. Insufficient USDC
-    return t('shieldPlanNoFundsOneToken', [
-      lastToken ?? SUBSCRIPTION_DEFAULT_PAYMENT_TOKEN,
-    ]);
-  }, [tokensSupported, t]);
+  const supportedTokens = useMemo(() => {
+    return [...tokensSupported].map((token) => {
+      return (
+        <BadgeWrapper
+          key={token}
+          badge={
+            <AvatarNetwork
+              size={AvatarNetworkSize.Xs}
+              name={NETWORK_TO_NAME_MAP[CHAIN_IDS.MAINNET]}
+              src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[CHAIN_IDS.MAINNET]}
+              borderColor={BorderColor.borderMuted}
+            />
+          }
+        >
+          <AvatarToken
+            name={token}
+            src={SUPPORTED_PAYMENT_TOKEN_IMAGES[token]}
+            size={AvatarTokenSize.Sm}
+          />
+        </BadgeWrapper>
+      );
+    });
+  }, [tokensSupported]);
 
   return (
     <Modal
@@ -228,9 +238,13 @@ export const ShieldPaymentModal = ({
                     variant={TextVariant.bodySm}
                     color={TextColor.textAlternative}
                   >
-                    {hasStableTokenWithBalance
-                      ? `${t('balance')}: ${selectedToken?.string ?? ''} ${selectedToken?.symbol ?? ''}`
-                      : noCryptoFundsText}
+                    {hasStableTokenWithBalance ? (
+                      `${t('balance')}: ${selectedToken?.string ?? ''} ${selectedToken?.symbol ?? ''}`
+                    ) : (
+                      <Box display={Display.Flex} gap={2}>
+                        {supportedTokens}
+                      </Box>
+                    )}
                   </Text>
                 </Box>
               </Box>
@@ -239,62 +253,67 @@ export const ShieldPaymentModal = ({
               )}
             </Box>
           </Box>
-          <Box
-            data-testid="shield-payment-method-card-button"
-            as="button"
-            className={classnames('payment-method-item', {
-              'payment-method-item--selected':
-                selectedPaymentMethod === PAYMENT_TYPES.byCard,
-            })}
-            padding={4}
-            gap={4}
-            backgroundColor={
-              selectedPaymentMethod === PAYMENT_TYPES.byCard
-                ? BackgroundColor.primaryMuted
-                : BackgroundColor.transparent
-            }
-            display={Display.Flex}
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.spaceBetween}
-            width={BlockSize.Full}
-            onClick={() => selectPaymentMethod(PAYMENT_TYPES.byCard)}
-          >
-            {selectedPaymentMethod === PAYMENT_TYPES.byCard && (
-              <Box
-                className="payment-method-item__selected-indicator"
-                borderRadius={BorderRadius.pill}
-                backgroundColor={BackgroundColor.primaryDefault}
-              />
-            )}
+          {!disableCardOption && (
             <Box
+              data-testid="shield-payment-method-card-button"
+              as="button"
+              className={classnames('payment-method-item', {
+                'payment-method-item--selected':
+                  selectedPaymentMethod === PAYMENT_TYPES.byCard,
+              })}
+              padding={4}
+              gap={4}
+              backgroundColor={
+                selectedPaymentMethod === PAYMENT_TYPES.byCard
+                  ? BackgroundColor.primaryMuted
+                  : BackgroundColor.transparent
+              }
               display={Display.Flex}
               alignItems={AlignItems.center}
               justifyContent={JustifyContent.spaceBetween}
               width={BlockSize.Full}
+              onClick={() => selectPaymentMethod(PAYMENT_TYPES.byCard)}
             >
+              {selectedPaymentMethod === PAYMENT_TYPES.byCard && (
+                <Box
+                  className="payment-method-item__selected-indicator"
+                  borderRadius={BorderRadius.pill}
+                  backgroundColor={BackgroundColor.primaryDefault}
+                />
+              )}
               <Box
                 display={Display.Flex}
                 alignItems={AlignItems.center}
-                gap={4}
+                justifyContent={JustifyContent.spaceBetween}
+                width={BlockSize.Full}
               >
-                <Icon size={IconSize.Xl} name={IconName.Card} />
-                <Box textAlign={TextAlign.Left}>
-                  <Text variant={TextVariant.bodyMdMedium}>
-                    {t('shieldPlanPayWithCard')}
-                  </Text>
-                  <Box
-                    display={Display.Flex}
-                    gap={1}
-                    alignItems={AlignItems.center}
-                  >
-                    <img src="./images/card-mc.svg" alt="Mastercard" />
-                    <img src="./images/card-visa.svg" alt="Visa" />
-                    <img src="./images/card-amex.svg" alt="American Express" />
+                <Box
+                  display={Display.Flex}
+                  alignItems={AlignItems.center}
+                  gap={4}
+                >
+                  <Icon size={IconSize.Xl} name={IconName.Card} />
+                  <Box textAlign={TextAlign.Left}>
+                    <Text variant={TextVariant.bodyMdMedium}>
+                      {t('shieldPlanPayWithCard')}
+                    </Text>
+                    <Box
+                      display={Display.Flex}
+                      gap={1}
+                      alignItems={AlignItems.center}
+                    >
+                      <img src="./images/card-mc.svg" alt="Mastercard" />
+                      <img src="./images/card-visa.svg" alt="Visa" />
+                      <img
+                        src="./images/card-amex.svg"
+                        alt="American Express"
+                      />
+                    </Box>
                   </Box>
                 </Box>
               </Box>
             </Box>
-          </Box>
+          )}
         </Box>
         <AssetPickerModal
           isOpen={showAssetPickerModal}

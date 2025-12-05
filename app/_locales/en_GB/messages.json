@@ -4558,25 +4558,6 @@
     "message": "$1 icon",
     "description": "$1 is the icon name"
   },
-  "onboardingPinExtensionAltLaunch": {
-    "message": "Launch extension"
-  },
-  "onboardingPinExtensionAltPin": {
-    "message": "Pin extension"
-  },
-  "onboardingPinExtensionDescription": {
-    "message": "Pin MetaMask on your browser so it’s accessible and easy to view transaction confirmations."
-  },
-  "onboardingPinExtensionDescription2": {
-    "message": "Access your MetaMask wallet with 1 click by clicking on the extension."
-  },
-  "onboardingPinExtensionDescription3": {
-    "message": "Click $1 extension icon to access it instantly",
-    "description": "$1 is the browser name"
-  },
-  "onboardingPinExtensionTitle": {
-    "message": "Installation is complete"
-  },
   "onboardingSignInWith": {
     "message": "Sign in with $1",
     "description": "$1 is the type of login used Google, Apple, etc"
@@ -6097,6 +6078,31 @@
   "shieldClaimFileUploaderHelpText": {
     "message": "If you have any additional evidence, please upload it here."
   },
+  "shieldClaimGroupActive": {
+    "message": "Active claims"
+  },
+  "shieldClaimGroupActiveNote": {
+    "message": "Note: You can have a maximum of $1 active claims at a single time.",
+    "description": "The $1 is the maximum number of active claims"
+  },
+  "shieldClaimGroupCompleted": {
+    "message": "Completed claims"
+  },
+  "shieldClaimGroupNoCompletedClaims": {
+    "message": "No completed claims"
+  },
+  "shieldClaimGroupNoCompletedClaimsDescription": {
+    "message": "Track your completed claims here."
+  },
+  "shieldClaimGroupNoOpenClaims": {
+    "message": "No open claims"
+  },
+  "shieldClaimGroupNoOpenClaimsDescription": {
+    "message": "Track the status of your claims here."
+  },
+  "shieldClaimGroupRejected": {
+    "message": "Rejected claims"
+  },
   "shieldClaimImpactedTxHash": {
     "message": "Impacted transaction hash"
   },
@@ -6157,24 +6163,6 @@
   "shieldClaimSignatureCoverageNotCovered": {
     "message": "Signature coverage not found for the given transaction hash."
   },
-  "shieldClaimStatusApproved": {
-    "message": "Approved"
-  },
-  "shieldClaimStatusCreated": {
-    "message": "Created"
-  },
-  "shieldClaimStatusInProgress": {
-    "message": "In progress"
-  },
-  "shieldClaimStatusRejected": {
-    "message": "Rejected"
-  },
-  "shieldClaimStatusSubmitted": {
-    "message": "Submitted"
-  },
-  "shieldClaimStatusWaitingForCustomer": {
-    "message": "Waiting for customer"
-  },
   "shieldClaimSubmissionWindowExpired": {
     "message": "Submission window expired. Claims must be filed within $1 days of the incident.",
     "description": "The $1 is the number of days"
@@ -6206,27 +6194,18 @@
   "shieldClaimWalletOwnershipValidationFailed": {
     "message": "Wallet ownership validation failed."
   },
-  "shieldClaimsHistoryTitle": {
-    "message": "CLAIM HISTORY"
-  },
   "shieldClaimsListTitle": {
-    "message": "Claim details"
+    "message": "Claims"
   },
   "shieldClaimsNumber": {
     "message": "Claim #$1",
     "description": "The $1 is the claim number"
   },
-  "shieldClaimsPendingAlertActionButtonLabel": {
-    "message": "View claims"
+  "shieldClaimsTabHistory": {
+    "message": "Claim history"
   },
-  "shieldClaimsPendingAlertDescription": {
-    "message": "Your claims is being reviewed by our team. We will notify you when it has been approved by email."
-  },
-  "shieldClaimsPendingAlertTitle": {
-    "message": "You have claims that are pending approval."
-  },
-  "shieldClaimsPendingTitle": {
-    "message": "PENDING CLAIMS"
+  "shieldClaimsTabPending": {
+    "message": "Claims"
   },
   "shieldConfirmMembership": {
     "message": "Confirm plan"
@@ -6241,7 +6220,7 @@
     "message": "This chain is not supported, so it isn't protected by MetaMask Transaction Shield. $1"
   },
   "shieldCoverageAlertMessageLearnHowCoverageWorks": {
-    "message": "See what's Covered"
+    "message": "See what's covered"
   },
   "shieldCoverageAlertMessagePaused": {
     "message": "There was an issue with your MetaMask Transaction Shield plan payment. Please update your payment method to resume coverage."
@@ -6372,6 +6351,16 @@
   "shieldPlanDetails3": {
     "message": "24/7 access to priority live chat support"
   },
+  "shieldPlanDetailsRewards": {
+    "message": "Earn $1 points per $2",
+    "description": "The $1 is the number of points and $2 plan interval (month or year)"
+  },
+  "shieldPlanDetailsRewardsDescription": {
+    "message": "This offer is only available during Rewards seasons. Points are given when free trial ends to users signed up for Rewards."
+  },
+  "shieldPlanDetailsRewardsTitle": {
+    "message": "Rewards"
+  },
   "shieldPlanErrorText": {
     "message": "Couldn’t connect to Transaction Shield"
   },
@@ -6387,14 +6376,6 @@
   "shieldPlanMonthlyPrice": {
     "message": "$1/month",
     "description": "The $1 is the price of the monthly plan"
-  },
-  "shieldPlanNoFunds": {
-    "message": "Insufficient $1 or $2",
-    "description": "$1 or $2 shows the supported token eg. USDC, USDT or mUSD"
-  },
-  "shieldPlanNoFundsOneToken": {
-    "message": "Insufficient $1",
-    "description": "$1 is the one token supported"
   },
   "shieldPlanPayWith": {
     "message": "Pay with"
@@ -6445,6 +6426,19 @@
   },
   "shieldTxDetails2Title": {
     "message": "Priority support"
+  },
+  "shieldTxDetails3Description": {
+    "message": "Get $1 points/$2.",
+    "description": "The $1 is the number of points, $2 is the plan interval (month or year)"
+  },
+  "shieldTxDetails3DescriptionLinkReward": {
+    "message": "Link Rewards"
+  },
+  "shieldTxDetails3DescriptionSignUp": {
+    "message": "Sign up"
+  },
+  "shieldTxDetails3Title": {
+    "message": "Earn during rewards season"
   },
   "shieldTxMembershipActive": {
     "message": "Active plan"
@@ -8104,22 +8098,29 @@
   "tronBandwidth": {
     "message": "Bandwidth"
   },
-  "tronBandwidthCoverageDescription": {
-    "message": "Sufficient to cover ~$1 TRX transfers",
+  "tronBandwidthCoverageDescriptionPlural": {
+    "message": "Covers ~$1 TRX transfers",
     "description": "$1 is the number of TRX transfers"
+  },
+  "tronBandwidthCoverageDescriptionSingular": {
+    "message": "Covers 1 TRX transfer"
   },
   "tronDailyResources": {
     "message": "Daily resource"
   },
   "tronDailyResourcesDescription": {
-    "message": "This is your daily allowance based on your staked TRX. You get 600 bandwidth for free daily."
+    "message": "This is your daily allowance based on your staked TRX. You get $1 bandwidth for free daily.",
+    "description": "$1 is the maximum bandwidth value"
   },
   "tronEnergy": {
     "message": "Energy"
   },
-  "tronEnergyCoverageDescription": {
-    "message": "Sufficient to cover ~$1 USDT",
+  "tronEnergyCoverageDescriptionPlural": {
+    "message": "Covers ~$1 USDT transfers",
     "description": "$1 is the number of USDT transfers"
+  },
+  "tronEnergyCoverageDescriptionSingular": {
+    "message": "Covers 1 USDT transfer"
   },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "We're having trouble connecting your Ledger. $1",
