@@ -4,7 +4,7 @@ exports[`SnapUIAccountSelector renders an account selector 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
-    style="overflow-y: auto; margin-bottom: 0px;"
+    style="overflow-y: auto;"
   >
     <div
       class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
@@ -309,7 +309,7 @@ exports[`SnapUIAccountSelector renders inside a field 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
-    style="overflow-y: auto; margin-bottom: 0px;"
+    style="overflow-y: auto;"
   >
     <div
       class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"

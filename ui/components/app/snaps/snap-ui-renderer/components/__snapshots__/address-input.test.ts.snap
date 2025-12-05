@@ -4,7 +4,7 @@ exports[`SnapUIAddressInput renders the matched address info in a disabled state
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
-    style="overflow-y: auto; margin-bottom: 0px;"
+    style="overflow-y: auto;"
   >
     <div
       class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
@@ -102,7 +102,7 @@ exports[`SnapUIAddressInput renders with an invalid CAIP Account ID 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
-    style="overflow-y: auto; margin-bottom: 0px;"
+    style="overflow-y: auto;"
   >
     <div
       class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
@@ -144,7 +144,7 @@ exports[`SnapUIAddressInput will not render avatar when displayAvatar is false 1
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
-    style="overflow-y: auto; margin-bottom: 0px;"
+    style="overflow-y: auto;"
   >
     <div
       class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
@@ -186,7 +186,7 @@ exports[`SnapUIAddressInput will render 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
-    style="overflow-y: auto; margin-bottom: 0px;"
+    style="overflow-y: auto;"
   >
     <div
       class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
@@ -224,7 +224,7 @@ exports[`SnapUIAddressInput will render a matched address name 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
-    style="overflow-y: auto; margin-bottom: 0px;"
+    style="overflow-y: auto;"
   >
     <div
       class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
@@ -322,7 +322,7 @@ exports[`SnapUIAddressInput will render avatar when displayAvatar is true 1`] = 
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
-    style="overflow-y: auto; margin-bottom: 0px;"
+    style="overflow-y: auto;"
   >
     <div
       class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
