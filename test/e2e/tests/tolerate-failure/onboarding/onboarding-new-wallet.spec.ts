@@ -1,7 +1,7 @@
 import { Mockttp } from 'mockttp';
 import { Browser } from 'selenium-webdriver';
 import { WALLET_PASSWORD, withFixtures } from '../../../helpers';
-import { Driver, PAGES } from '../../../webdriver/driver';
+import { Driver } from '../../../webdriver/driver';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../../page-objects/pages/onboarding/onboarding-complete-page';
 import OnboardingMetricsPage from '../../../page-objects/pages/onboarding/onboarding-metrics-page';
