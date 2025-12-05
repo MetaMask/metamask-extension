@@ -18,6 +18,11 @@ export class WindowHandles {
     this.driver = driver;
   }
 
+  // Check if the WebSocket connection to the extension is still active
+  isConnected() {
+    return getServerMochaToBackground().isConnected();
+  }
+
   // Gets all window handles and annotates them with title and url
   async getAllWindowHandles() {
     this.rawHandles = await this.driver.getAllWindowHandles();

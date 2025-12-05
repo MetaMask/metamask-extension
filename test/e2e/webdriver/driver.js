@@ -1167,14 +1167,31 @@ class Driver {
   /**
    * Retrieves the handles of all open window tabs in the browser session.
    *
+   * If the WebSocket connection to the extension is lost (e.g., during extension
+   * reload), falls back to the direct driver method.
+   *
    * @returns {Promise<Array<string>>} A promise that will
    *     be resolved with an array of window handles.
    */
   async getAllWindowHandles() {
-    if (this.windowHandles) {
+    if (this.windowHandles && this.windowHandles.isConnected()) {
       return await this.windowHandles.getAllWindowHandles();
     }
     return await this.driver.getAllWindowHandles();
+  }
+
+  /**
+   * Checks if the WebDriver session is still alive by making a lightweight call.
+   *
+   * @returns {Promise<boolean>} true if driver is responsive, false otherwise
+   */
+  async isDriverAlive() {
+    try {
+      await this.driver.getWindowHandle();
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   /**
@@ -1194,6 +1211,9 @@ class Driver {
   /**
    * Waits for the specified window handle to close before returning.
    *
+   * First waits for the driver to become alive (in case of temporary unavailability
+   * during extension reload), then polls until the handle is no longer in the list.
+   *
    * @param {string} handle - The handle of the window or tab we'll wait for.
    * @param {number} [timeout] - The amount of time in milliseconds to wait
    * before timing out. Defaults to `this.timeout`.
@@ -1201,6 +1221,12 @@ class Driver {
    * the timeout.
    */
   async waitForWindowToClose(handle, timeout = this.timeout) {
+    // Wait for driver to be alive first (handles temporary unavailability during reloads)
+    await this.waitUntil(() => this.isDriverAlive(), {
+      timeout,
+      interval: 500,
+    });
+
     const start = Date.now();
     // eslint-disable-next-line no-constant-condition
     while (true) {
