@@ -478,6 +478,10 @@ describe('State Persistence', function () {
           console.log('setting local storage flags');
           await setLocalStorageFlags(driver);
 
+          // sanity
+          console.log('STILL expecting data state storage');
+          await expectDataStateStorage(driver);
+
           console.log('setting meta to indicate prior attempted migration');
           await runScriptThenReloadExtension(
             setMeta({
@@ -491,7 +495,7 @@ describe('State Persistence', function () {
             driver,
           );
 
-          console.log('expecting data state storage');
+          console.log('NO REALLY, we STILL expect data state storage');
           const storage1 = await expectDataStateStorage(driver);
           assert.equal(
             (storage1 as DataStorage).meta
@@ -517,7 +521,7 @@ describe('State Persistence', function () {
           await ensureHomeReady(driver);
 
           // Ensure we are still using the data state and have not migrated.
-          console.log('expecting data state storage again');
+          console.log('expecting data state storage again!');
           const storage = await expectDataStateStorage(driver);
           // additionally, ensure the attempted flag is still set
           assert.equal(
