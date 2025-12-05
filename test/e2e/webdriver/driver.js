@@ -1204,25 +1204,30 @@ class Driver {
    * the timeout.
    */
   async waitForWindowToClose(handle, timeout = this.timeout) {
-    const start = Date.now();
-    const delayStep = 1000;
+    let timeElapsed = 0;
 
-    // eslint-disable-next-line no-constant-condition
-    while (true) {
-      const handles = await this.getAllWindowHandles();
+    while (timeElapsed <= timeout) {
+      // Use retry to handle transient connection errors during window transitions
+      const handles = await retry(
+        {
+          retries: 5,
+          delay: 200,
+        },
+        () => this.getAllWindowHandles(),
+      );
+
       if (!handles.includes(handle)) {
         return;
       }
 
-      const timeElapsed = Date.now() - start;
-      if (timeElapsed > timeout) {
-        throw new Error(
-          `waitForWindowToClose timed out waiting for window handle '${handle}' to close.`,
-        );
-      }
-
-      await this.delay(delayStep);
+      const delayTime = 1000;
+      await this.delay(delayTime);
+      timeElapsed += delayTime;
     }
+
+    throw new Error(
+      `waitForWindowToClose timed out waiting for window handle '${handle}' to close.`,
+    );
   }
 
   /**
