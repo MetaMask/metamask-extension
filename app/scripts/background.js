@@ -15,7 +15,6 @@ import { finished } from 'readable-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import { isObject, hasProperty } from '@metamask/utils';
-import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { ExtensionPortStream } from 'extension-port-stream';
 import { withResolvers } from '../../shared/lib/promise-with-resolvers';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
@@ -109,8 +108,6 @@ const lazyListener =
 
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_APPROVAL = '#0376C9';
-// eslint-disable-next-line @metamask/design-tokens/color-no-hex
-const BADGE_COLOR_NOTIFICATION = '#D73847';
 const BADGE_MAX_COUNT = 9;
 
 const inTest = process.env.IN_TEST;
@@ -1455,16 +1452,12 @@ export function setupController(
    */
   function updateBadge() {
     const pendingApprovalCount = getPendingApprovalCount();
-    const unreadNotificationsCount = getUnreadNotificationsCount();
 
     let label = '';
-    let badgeColor = BADGE_COLOR_APPROVAL;
+    const badgeColor = BADGE_COLOR_APPROVAL;
 
     if (pendingApprovalCount) {
       label = getBadgeLabel(pendingApprovalCount, BADGE_MAX_COUNT);
-    } else if (unreadNotificationsCount > 0) {
-      label = getBadgeLabel(unreadNotificationsCount, BADGE_MAX_COUNT);
-      badgeColor = BADGE_COLOR_NOTIFICATION;
     }
 
     try {
@@ -1491,55 +1484,6 @@ export function setupController(
       return pendingApprovalCount;
     } catch (error) {
       console.error('Failed to get pending approval count:', error);
-      return 0;
-    }
-  }
-
-  function getUnreadNotificationsCount() {
-    try {
-      const { isNotificationServicesEnabled, isFeatureAnnouncementsEnabled } =
-        controller.notificationServicesController.state;
-
-      const snapNotificationCount = Object.values(
-        controller.notificationServicesController.state
-          .metamaskNotificationsList,
-      ).filter(
-        (notification) =>
-          notification.type ===
-            NotificationServicesController.Constants.TRIGGER_TYPES.SNAP &&
-          notification.readDate === null,
-      ).length;
-
-      const featureAnnouncementCount = isFeatureAnnouncementsEnabled
-        ? controller.notificationServicesController.state.metamaskNotificationsList.filter(
-            (notification) =>
-              !notification.isRead &&
-              notification.type ===
-                NotificationServicesController.Constants.TRIGGER_TYPES
-                  .FEATURES_ANNOUNCEMENT,
-          ).length
-        : 0;
-
-      const walletNotificationCount = isNotificationServicesEnabled
-        ? controller.notificationServicesController.state.metamaskNotificationsList.filter(
-            (notification) =>
-              !notification.isRead &&
-              notification.type !==
-                NotificationServicesController.Constants.TRIGGER_TYPES
-                  .FEATURES_ANNOUNCEMENT &&
-              notification.type !==
-                NotificationServicesController.Constants.TRIGGER_TYPES.SNAP,
-          ).length
-        : 0;
-
-      const unreadNotificationsCount =
-        snapNotificationCount +
-        featureAnnouncementCount +
-        walletNotificationCount;
-
-      return unreadNotificationsCount;
-    } catch (error) {
-      console.error('Failed to get unread notifications count:', error);
       return 0;
     }
   }
