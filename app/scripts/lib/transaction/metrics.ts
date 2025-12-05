@@ -1450,7 +1450,11 @@ function addHashProperty(
 }
 
 /**
- * Returns 'not_applicable' when address alert scanning cannot be performed:
+ * Returns what the address_alert_response metrics property should be set to
+ *
+ * @param transactionMeta - The transaction metadata
+ * @param transactionMetricsRequest - The transaction metrics request
+ * @returns ResultType or 'not_applicable' if address alert scanning cannot be performed:
  * - Security alerts feature is disabled by the user
  * - Transaction has no 'to' address
  * - Chain is not supported by the Security Alerts API
