@@ -59,11 +59,11 @@
   &__item-image--hidden,
   &__item-detail {
     position: relative;
+
     &::after {
       content: '';
       position: absolute;
       inset: 0;
-
       background-image: url('/images/default_nft.png');
       background-size: cover;
       background-repeat: no-repeat;
