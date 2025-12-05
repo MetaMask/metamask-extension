@@ -54,7 +54,7 @@ class AddressListModal {
   async checkNetworkAddressIsDisplayed(networkAddress: string): Promise<void> {
     console.log(`Check network "${networkAddress}" is displayed`);
     await this.driver.waitForSelector({
-      text: networkAddress.toLowerCase(),
+      text: networkAddress,
       css: this.shortenedAddress,
     });
   }

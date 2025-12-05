@@ -122,15 +122,22 @@ describe('State logs', function () {
           stateLogs.metamask.internalAccounts.accounts,
         )[1];
 
-        // Replace new ID in reference logs
-        const referenceLogsText = JSON.stringify(referenceStateLogsDefinition);
+        // Get new sync Queue Entropy
+        const syncQueueEntropy = Object.keys(stateLogs.metamask.syncQueue)[1];
 
-        const referenceLogs = JSON.parse(
-          referenceLogsText.replaceAll(
-            '3c62fe60-6f00-4227-86f4-33d0b1f4c39e',
-            newAccountId,
-          ),
+        let referenceLogsText = JSON.stringify(referenceStateLogsDefinition);
+
+        // Replace ID in reference logs
+        referenceLogsText = referenceLogsText.replaceAll(
+          '3c62fe60-6f00-4227-86f4-33d0b1f4c39e',
+          newAccountId,
         );
+        // Replace Queue Entropy in reference logs
+        referenceLogsText = referenceLogsText.replaceAll(
+          '01KBPCGKC0N982CH1VYK4WJ5BH',
+          syncQueueEntropy,
+        );
+        const referenceLogs = JSON.parse(referenceLogsText);
 
         // Create type maps for comparison
         const currentTypeMap = createTypeMap(stateLogs);
