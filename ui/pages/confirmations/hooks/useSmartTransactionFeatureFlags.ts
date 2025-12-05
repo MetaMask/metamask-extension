@@ -4,6 +4,7 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import log from 'loglevel';
 import {
   getChainSupportsSmartTransactions,
+  getSmartTransactionsFeatureFlagsForChain,
   getSmartTransactionsPreferenceEnabled,
 } from '../../../../shared/modules/selectors';
 import { fetchSwapsFeatureFlags } from '../../swaps/swaps.util';
@@ -21,6 +22,7 @@ export function useSmartTransactionFeatureFlags() {
     id: transactionId,
     txParams,
     networkClientId,
+    chainId,
   } = currentConfirmation ?? {};
   const isTransaction = Boolean(txParams);
 
@@ -28,8 +30,13 @@ export function useSmartTransactionFeatureFlags() {
     getSmartTransactionsPreferenceEnabled,
   );
 
+  // TODO: Replace. Currently, this checks an hardcoded list in the client.
   const currentChainSupportsSmartTransactions = useSelector(
     getChainSupportsSmartTransactions,
+  );
+
+  const featureFlags = useSelector((state) =>
+    getSmartTransactionsFeatureFlagsForChain(state, chainId),
   );
 
   useEffect(() => {
@@ -43,14 +50,16 @@ export function useSmartTransactionFeatureFlags() {
     }
 
     Promise.all([
+      // TODO: check if this is still needed.
       fetchSwapsFeatureFlags(),
       fetchSmartTransactionsLiveness({ networkClientId })(),
     ])
       .then(([swapsFeatureFlags]) => {
+        // TODO: check if this is still needed.
         dispatch(setSwapsFeatureFlags(swapsFeatureFlags));
         dispatch(
           setSmartTransactionsRefreshInterval(
-            swapsFeatureFlags.smartTransactions?.batchStatusPollingInterval,
+            featureFlags?.batchStatusPollingInterval ?? 1000,
           ),
         );
       })

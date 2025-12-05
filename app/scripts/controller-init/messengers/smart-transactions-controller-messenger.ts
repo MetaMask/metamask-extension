@@ -1,27 +1,34 @@
+import type { ErrorReportingServiceCaptureExceptionAction } from '@metamask/error-reporting-service';
 import { Messenger } from '@metamask/messenger';
-import type {
-  TransactionControllerConfirmExternalTransactionAction,
-  TransactionControllerGetNonceLockAction,
-  TransactionControllerGetTransactionsAction,
-  TransactionControllerUpdateTransactionAction,
-} from '@metamask/transaction-controller';
 import {
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetStateAction,
   NetworkControllerStateChangeEvent,
 } from '@metamask/network-controller';
+import type {
+  RemoteFeatureFlagControllerGetStateAction,
+  RemoteFeatureFlagControllerStateChangeEvent,
+} from '@metamask/remote-feature-flag-controller';
+import type {
+  TransactionControllerGetNonceLockAction,
+  TransactionControllerGetTransactionsAction,
+  TransactionControllerUpdateTransactionAction,
+} from '@metamask/transaction-controller';
 import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller';
 import { RootMessenger } from '../../lib/messenger';
 
 type MessengerActions =
+  | ErrorReportingServiceCaptureExceptionAction
   | NetworkControllerGetNetworkClientByIdAction
   | NetworkControllerGetStateAction
+  | RemoteFeatureFlagControllerGetStateAction
   | TransactionControllerGetNonceLockAction
   | TransactionControllerGetTransactionsAction
-  | TransactionControllerUpdateTransactionAction
-  | TransactionControllerConfirmExternalTransactionAction;
+  | TransactionControllerUpdateTransactionAction;
 
-type MessengerEvents = NetworkControllerStateChangeEvent;
+type MessengerEvents =
+  | NetworkControllerStateChangeEvent
+  | RemoteFeatureFlagControllerStateChangeEvent;
 
 export type SmartTransactionsControllerMessenger = ReturnType<
   typeof getSmartTransactionsControllerMessenger
@@ -42,14 +49,18 @@ export function getSmartTransactionsControllerMessenger(
   messenger.delegate({
     messenger: controllerMessenger,
     actions: [
+      'ErrorReportingService:captureException',
       'NetworkController:getNetworkClientById',
       'NetworkController:getState',
+      'RemoteFeatureFlagController:getState',
       'TransactionController:getNonceLock',
-      'TransactionController:confirmExternalTransaction',
       'TransactionController:getTransactions',
       'TransactionController:updateTransaction',
     ],
-    events: ['NetworkController:stateChange'],
+    events: [
+      'NetworkController:stateChange',
+      'RemoteFeatureFlagController:stateChange',
+    ],
   });
   return controllerMessenger;
 }
