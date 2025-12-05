@@ -45,7 +45,6 @@ import {
   UNLOCK_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
   ONBOARDING_ROUTE,
-  CONNECTIONS,
   PERMISSIONS,
   REVIEW_PERMISSIONS,
   SNAPS_ROUTE,
@@ -406,13 +405,6 @@ const ReviewGatorPermissionsPage = mmLazy(
   (() =>
     import(
       '../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'
-    )) as unknown as DynamicImportType,
-);
-const Connections = mmLazy(
-  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
-  (() =>
-    import(
-      '../../components/multichain/pages/connections/index.js'
     )) as unknown as DynamicImportType,
 );
 
@@ -896,19 +888,6 @@ export default function Routes() {
               wrapper: AuthenticatedV5Compat,
               includeNavigate: true,
               includeParams: true,
-              paramsAsProps: false,
-            })}
-          </RouteWithLayout>
-          <RouteWithLayout
-            authenticated
-            path={`${CONNECTIONS}/:origin`}
-            layout={LegacyLayout}
-            exact
-          >
-            {createV5CompatRoute<{ origin: string }>(Connections, {
-              wrapper: AuthenticatedV5Compat,
-              includeParams: true,
-              includeNavigate: true,
               paramsAsProps: false,
             })}
           </RouteWithLayout>

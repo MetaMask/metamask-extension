@@ -1464,9 +1464,6 @@
   "connectWithMetaMask": {
     "message": "MetaMask के साथ कनेक्ट करें"
   },
-  "connectedAccounts": {
-    "message": "कनेक्ट किए हुए एकाउंट्स"
-  },
   "connectedAccountsDescriptionPlural": {
     "message": "आपके पास इस साइट से कनेक्ट किए गए $1 एकाउंट्स हैं।",
     "description": "$1 is the number of accounts"
@@ -1480,9 +1477,6 @@
   "connectedAccountsListTooltip": {
     "message": "$1, अकाउंट का बैलेंस, एड्रेस, एक्टिविटी देख सकता है और कनेक्टेड अकाउंट्स के लिए एप्रूवल देने के लिए ट्रांसेक्शन का सुझाव दे सकता है।",
     "description": "$1 is the origin name"
-  },
-  "connectedAccountsToast": {
-    "message": "कनेक्टेड अकाउंट अपडेट किए गए"
   },
   "connectedSites": {
     "message": "कनेक्ट की गई साइटें"
@@ -2015,14 +2009,6 @@
   },
   "disconnectThisAccount": {
     "message": "इस अकाउंट को डिस्कनेक्ट करें"
-  },
-  "disconnectedAllAccountsToast": {
-    "message": "सभी अकाउंट्स $1 से डिसकनेक्ट किए गए।",
-    "description": "$1 is name of the dapp`"
-  },
-  "disconnectedSingleAccountToast": {
-    "message": "$1, $2 से डिसकनेक्ट हो गया",
-    "description": "$1 is name of the name and $2 represents the dapp name`"
   },
   "discover": {
     "message": "खोजें"
@@ -4408,9 +4394,6 @@
     "message": "किसी ट्रांसेक्शन को कैंसिल करने या जल्दी पूरा करने का तरीका जानें।",
     "description": "The text for the hyperlink in the pending transaction alert message"
   },
-  "permissionDetails": {
-    "message": "अनुमति का ब्यौरा"
-  },
   "permissionFor": {
     "message": "के लिए अनुमतियां"
   },
@@ -4713,10 +4696,6 @@
   },
   "pleaseConfirm": {
     "message": "कृपया कन्फर्म करें"
-  },
-  "plusMore": {
-    "message": "+ $1 अधिक",
-    "description": "$1 is the number of additional items"
   },
   "plusXMore": {
     "message": "+ $1 और",
