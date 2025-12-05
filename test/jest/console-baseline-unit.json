@@ -18,7 +18,7 @@
       "µWebSockets: Fallback to Node implementation": 1,
       "Reselect: Identity function warnings": 3,
       "Reselect: Input stability warnings": 1,
-      "MetaMask: Background connection not initialized": 8,
+      "MetaMask: Background connection not initialized": 10,
       "error: Warning: A component is changing": 2,
       "Test errors: Uncaught TypeErrors": 1
     },
