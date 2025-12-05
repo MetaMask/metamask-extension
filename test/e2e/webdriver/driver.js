@@ -1197,12 +1197,10 @@ class Driver {
    * @param {string} handle - The handle of the window or tab we'll wait for.
    * @param {number} [timeout] - The amount of time in milliseconds to wait
    * before timing out. Defaults to `this.timeout`.
-   * @param {number} [delayStep] - The delay in milliseconds between each poll.
-   * Defaults to 200ms.
    * @throws {Error} throws an error if the window handle doesn't close within
    * the timeout.
    */
-  async waitForWindowToClose(handle, timeout = this.timeout, delayStep = 200) {
+  async waitForWindowToClose(handle, timeout = this.timeout) {
     const start = Date.now();
     // eslint-disable-next-line no-constant-condition
     while (true) {
@@ -1217,7 +1215,6 @@ class Driver {
           `waitForWindowToClose timed out waiting for window handle '${handle}' to close.`,
         );
       }
-      await this.delay(delayStep);
     }
   }
 
