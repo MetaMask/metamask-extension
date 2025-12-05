@@ -151,7 +151,7 @@ const MigrateToSplitStateTest = () => {
       </div>
       <hr />
       <h2>Split State Migration Flags</h2>
-      <label>
+      <div>
         <span>Migration Enabled flag:</span>
         <div>
           <label>
@@ -186,7 +186,7 @@ const MigrateToSplitStateTest = () => {
             1 (On)
           </label>
         </div>
-      </label>
+      </div>
       <div>
         <label>
           <span>Max Accounts flag:</span>

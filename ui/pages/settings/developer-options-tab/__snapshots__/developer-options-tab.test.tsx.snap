@@ -524,7 +524,7 @@ exports[`Develop options tab should match snapshot 1`] = `
       <h2>
         Split State Migration Flags
       </h2>
-      <label>
+      <div>
         <span>
           Migration Enabled flag:
         </span>
@@ -556,7 +556,7 @@ exports[`Develop options tab should match snapshot 1`] = `
             1 (On)
           </label>
         </div>
-      </label>
+      </div>
       <div>
         <label>
           <span>

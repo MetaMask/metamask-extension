@@ -7,7 +7,7 @@ export const version = 0;
  * @param versionedData.meta - State metadata.
  * @param versionedData.meta.version - The current state version.
  * @param versionedData.data - The persisted MetaMask state, keyed by controller.
- * @param changedKeys
+ * @param changedKeys - Set to track which controller keys were modified by this migration
  * @returns void or a Promise that resolves to void; mutate the state in place.
  */
 export function migrate(

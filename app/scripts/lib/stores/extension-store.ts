@@ -116,7 +116,15 @@ export default class ExtensionStore implements BaseStore {
     log.info(
       `[ExtensionStore] Removing ${toRemove.length} keys from local store`,
     );
-    await local.remove(toRemove);
+    // we cannot set and remove keys in one operation, so we do two ops
+    // the remove helps clear out old data and save space, but if it fails we
+    // can still function.
+    try {
+      await local.remove(toRemove);
+    } catch (error) {
+      sentry?.captureException(error);
+      log.error('[ExtensionStore] Error removing keys from local store:', error);
+    }
     console.timeEnd('[ExtensionStore] Writing to local store');
   }
 

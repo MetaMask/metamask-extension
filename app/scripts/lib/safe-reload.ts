@@ -40,7 +40,8 @@ export function getRequestSafeReload<Type extends PersistenceManager>(
     /**
      * Safely updates the persistence manager
      *
-     * @param params
+     * @param params - Arguments to pass to the persistence operation. For
+     * 'data' storage, pass the state; for 'split' storage, no arguments needed.
      * @returns true if the update was queued, false if writes are not allowed.
      */
     persist: async (

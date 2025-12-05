@@ -546,7 +546,8 @@ export class PersistenceManager {
    * Migrates the storage from 'data' kind to 'split' kind by separating
    * each top-level controller state into its own key in the storage.
    *
-   * @param state
+   * @param state - The MetaMask state tree containing all controller states to
+   * migrate
    * @throws Error if the metadata is not set before calling this method.
    *
    * This method should only be called when no other write operations can
