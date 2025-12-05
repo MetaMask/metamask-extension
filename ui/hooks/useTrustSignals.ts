@@ -10,6 +10,7 @@ import {
   mapChainIdToSupportedEVMChain,
 } from '../../shared/lib/trust-signals';
 import { SecurityAlertResponse } from '../pages/confirmations/types/confirm';
+import { useI18nContext } from './useI18nContext';
 
 export type UseTrustSignalRequest = {
   value: string;
@@ -57,6 +58,8 @@ export function useTrustSignal(
 export function useTrustSignals(
   requests: UseTrustSignalRequest[],
 ): TrustSignalResult[] {
+  const t = useI18nContext();
+
   return useSelector((state) =>
     requests.map(({ value, type, chainId }) => {
       if (type !== NameType.ETHEREUM_ADDRESS) {
@@ -95,8 +98,12 @@ export function useTrustSignals(
         };
       }
 
-      const label = securityAlertResponse.label || null;
       const trustState = getTrustState(securityAlertResponse);
+
+      const label =
+        trustState === TrustSignalDisplayState.Malicious
+          ? t('nameModalTitleMalicious')
+          : securityAlertResponse.label || null;
 
       return {
         state: trustState,
