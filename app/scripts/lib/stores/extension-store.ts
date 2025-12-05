@@ -83,7 +83,7 @@ export default class ExtensionStore implements BaseStore {
     const { local } = browser.storage;
     const toSet: Record<string, unknown> = Object.create(null);
     const toRemove: string[] = [];
-    let updateManifest = false;
+    const changeOps: { op: 'add' | 'delete'; key: string }[] = [];
     for (const [key, value] of pairs) {
       const keyExists = this.#manifest.has(key);
       const isRemoving = typeof value === 'undefined';
@@ -95,32 +95,43 @@ export default class ExtensionStore implements BaseStore {
           );
           continue;
         }
-        this.#manifest.delete(key);
-        updateManifest = true;
+        changeOps.push({ op: 'delete', key });
         toRemove.push(key);
         continue;
       }
       if (!keyExists) {
-        this.#manifest.add(key);
-        updateManifest = true;
+        changeOps.push({ op: 'add', key });
       }
       toSet[key] = value;
     }
 
+    const updateManifest = changeOps.length > 0;
+    let newManifest: Set<string> | undefined;
     if (updateManifest) {
-      toSet.manifest = Array.from(this.#manifest);
+      // apply any manifest changes to the `toSet` object
+      newManifest = new Set(this.#manifest);
+      for (const { op, key } of changeOps) {
+        newManifest[op](key);
+      }
+      toSet.manifest = Array.from(newManifest);
     }
+
     console.time('[ExtensionStore]: Writing to local store');
     log.info(
       `[ExtensionStore]: Writing ${Object.keys(toSet).length} keys to local store`,
     );
     await local.set(toSet);
+
+    if (newManifest) {
+      // once we know the set was successful, update our in-memory manifest
+      this.#manifest = newManifest;
+    }
     log.info(
       `[ExtensionStore]: Removing ${toRemove.length} keys from local store`,
     );
     // we cannot set and remove keys in one operation, so we do two ops
-    // the remove helps clear out old data and save space, but if it fails we
-    // can still function.
+    // the remove. This helps clear out old data and save space, but if it fails
+    // we can still function.
     try {
       await local.remove(toRemove);
     } catch (error) {
