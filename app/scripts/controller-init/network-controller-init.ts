@@ -28,7 +28,10 @@ import {
   NetworkControllerMessenger,
 } from './messengers';
 
-export const ADDITIONAL_DEFAULT_NETWORKS = [ChainId['monad-testnet']];
+export const ADDITIONAL_DEFAULT_NETWORKS = [
+  ChainId['megaeth-testnet'],
+  ChainId['monad-testnet'],
+];
 
 function getInitialState(initialState?: Partial<NetworkController['state']>) {
   let initialNetworkControllerState = initialState;
@@ -40,25 +43,6 @@ function getInitialState(initialState?: Partial<NetworkController['state']>) {
 
     const networks =
       initialNetworkControllerState.networkConfigurationsByChainId ?? {};
-
-    // TODO: Remove this once the MegaETH Testnet v2 is released from the controller utils
-    networks['0x18c7'] = {
-      chainId: '0x18c7', // 6343
-      name: 'MegaETH Testnet',
-      nativeCurrency: 'MegaETH',
-      blockExplorerUrls: ['https://megaeth-testnet-v2.blockscout.com'],
-      defaultRpcEndpointIndex: 0,
-      defaultBlockExplorerUrlIndex: 0,
-      rpcEndpoints: [
-        {
-          // to align the same networkClientId from the controller utils
-          networkClientId: 'megaeth-testnet-v2',
-          url: 'https://timothy.megaeth.com/rpc',
-          type: RpcEndpointType.Custom,
-          failoverUrls: [],
-        },
-      ],
-    };
 
     // TODO: Consider changing `getDefaultNetworkControllerState` on the
     // controller side to include some of these tweaks.

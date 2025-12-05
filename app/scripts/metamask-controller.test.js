@@ -3850,7 +3850,7 @@ describe('MetaMaskController', () => {
         const networksWithoutFailoverUrls = [
           CHAIN_IDS.SEPOLIA,
           CHAIN_IDS.LINEA_SEPOLIA,
-          '0x18c7', // MegaETH Testnet
+          CHAIN_IDS.MEGAETH_TESTNET,
           '0x279f', // Monad Testnet
           '0x539', // Localhost
         ];

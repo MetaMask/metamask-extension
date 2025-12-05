@@ -295,17 +295,17 @@ class FixtureBuilder {
 
   withNetworkControllerOnMegaETH() {
     return this.withNetworkController({
-      selectedNetworkClientId: 'megaeth-testnet-v2',
+      selectedNetworkClientId: 'megaeth-testnet',
       networkConfigurations: {
-        'megaeth-testnet-v2': {
-          chainId: CHAIN_IDS.MEGAETH_TESTNET_V2,
-          nickname: 'MegaETH Testnet',
-          rpcUrl: 'https://timothy.megaeth.com/rpc',
+        'megaeth-testnet': {
+          chainId: CHAIN_IDS.MEGAETH_TESTNET,
+          nickname: 'Mega Testnet',
+          rpcUrl: 'https://carrot.megaeth.com/rpc',
           ticker: 'MegaETH',
           rpcPrefs: {
-            blockExplorerUrl: 'https://megaeth-testnet-v2.blockscout.com',
+            blockExplorerUrl: 'https://testnet.megaeth.com',
           },
-          id: 'megaeth-testnet-v2',
+          id: 'megaeth-testnet',
           type: 'rpc',
           isCustom: true,
         },

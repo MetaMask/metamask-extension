@@ -37,7 +37,7 @@
     },
     "AppMetadataController": {
       "currentAppVersion": "13.12.0",
-      "currentMigrationVersion": 184,
+      "currentMigrationVersion": 183,
       "previousAppVersion": "",
       "previousMigrationVersion": 0
     },
@@ -335,19 +335,19 @@
             }
           ]
         },
-        "0x18c7": {
-          "blockExplorerUrls": ["https://megaeth-testnet-v2.blockscout.com"],
-          "chainId": "0x18c7",
+        "0x18c6": {
+          "blockExplorerUrls": ["https://megaexplorer.xyz"],
+          "chainId": "0x18c6",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
-          "name": "MegaETH Testnet",
+          "name": "Mega Testnet",
           "nativeCurrency": "MegaETH",
           "rpcEndpoints": [
             {
               "failoverUrls": [],
-              "networkClientId": "megaeth-testnet-v2",
+              "networkClientId": "megaeth-testnet",
               "type": "custom",
-              "url": "https://timothy.megaeth.com/rpc"
+              "url": "https://carrot.megaeth.com/rpc"
             }
           ]
         },
@@ -525,7 +525,7 @@
         },
         "eip155": {
           "0x1": true,
-          "0x18c7": false,
+          "0x18c6": false,
           "0x2105": true,
           "0x279f": false,
           "0x38": true,
@@ -2143,6 +2143,6 @@
     }
   },
   "meta": {
-    "version": 184
+    "version": 183
   }
 }
