@@ -90,7 +90,7 @@ export const RemoteFeatureFlagControllerInit: ControllerInitFunction<
     disabled: getIsDisabled(),
     getMetaMetricsId: () =>
       initMessenger.call('MetaMetricsController:getMetaMetricsId'),
-    clientVersion: getBaseSemVerVersion(process.env.METAMASK_VERSION),
+    clientVersion: getBaseSemVerVersion(),
     clientConfigApiService: new ClientConfigApiService({
       fetch: globalThis.fetch.bind(globalThis),
       config: {
