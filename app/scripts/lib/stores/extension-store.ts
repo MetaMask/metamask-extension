@@ -7,6 +7,8 @@ import type {
   MetaData,
 } from './base-store';
 
+const { sentry } = globalThis;
+
 /**
  * An implementation of the MetaMask Extension BaseStore system that uses the
  * browser.storage.local API to persist and retrieve state.
@@ -34,7 +36,7 @@ export default class ExtensionStore implements BaseStore {
       return null;
     }
     const { local } = browser.storage;
-    console.time('[ExtensionStore] Reading from local store');
+    console.time('[ExtensionStore]: Reading from local store');
     // don't fetch more than we need, in case extra stuff was put in the db
     // by testing or users playing with the db
     const response = await local.get(['manifest']);
@@ -50,7 +52,7 @@ export default class ExtensionStore implements BaseStore {
       this.#manifest = new Set(keys);
       const { meta } = data;
       delete data.meta;
-      console.timeEnd('[ExtensionStore] Reading from local store');
+      console.timeEnd('[ExtensionStore]: Reading from local store');
       return {
         data,
         meta: meta as unknown as MetaData,
@@ -67,7 +69,7 @@ export default class ExtensionStore implements BaseStore {
         this.#manifest.add(key);
       }
     }
-    console.timeEnd('[ExtensionStore] Reading from local store');
+    console.timeEnd('[ExtensionStore]: Reading from local store');
     return solidResponse;
   }
 
@@ -88,7 +90,7 @@ export default class ExtensionStore implements BaseStore {
       if (isRemoving) {
         if (!keyExists) {
           log.warn(
-            '[ExtensionStore] Trying to remove a key that does not exist in manifest:',
+            '[ExtensionStore]: Trying to remove a key that does not exist in manifest:',
             key,
           );
           continue;
@@ -108,13 +110,13 @@ export default class ExtensionStore implements BaseStore {
     if (updateManifest) {
       toSet.manifest = Array.from(this.#manifest);
     }
-    console.time('[ExtensionStore] Writing to local store');
+    console.time('[ExtensionStore]: Writing to local store');
     log.info(
-      `[ExtensionStore] Writing ${Object.keys(toSet).length} keys to local store`,
+      `[ExtensionStore]: Writing ${Object.keys(toSet).length} keys to local store`,
     );
     await local.set(toSet);
     log.info(
-      `[ExtensionStore] Removing ${toRemove.length} keys from local store`,
+      `[ExtensionStore]: Removing ${toRemove.length} keys from local store`,
     );
     // we cannot set and remove keys in one operation, so we do two ops
     // the remove helps clear out old data and save space, but if it fails we
@@ -122,10 +124,19 @@ export default class ExtensionStore implements BaseStore {
     try {
       await local.remove(toRemove);
     } catch (error) {
-      sentry?.captureException(error);
-      log.error('[ExtensionStore] Error removing keys from local store:', error);
+      if (sentry) {
+        const sentryError = new AggregateError(
+          [error],
+          'Error removing keys from local store',
+        );
+        sentry.captureException(sentryError);
+      }
+      log.error(
+        '[ExtensionStore]: Error removing keys from local store:',
+        error,
+      );
     }
-    console.timeEnd('[ExtensionStore] Writing to local store');
+    console.timeEnd('[ExtensionStore]: Writing to local store');
   }
 
   /**
@@ -142,13 +153,13 @@ export default class ExtensionStore implements BaseStore {
       );
     }
     const { local } = browser.storage;
-    console.time('[ExtensionStore] Overwriting local store');
+    console.time('[ExtensionStore]: Overwriting local store');
     await local.set({ data, meta });
     // we ensure we keep track of data and meta in the manifest if we need to
     // reset later
     this.#manifest.add('data');
     this.#manifest.add('meta');
-    console.timeEnd('[ExtensionStore] Overwriting local store');
+    console.timeEnd('[ExtensionStore]: Overwriting local store');
   }
 
   /**

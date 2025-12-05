@@ -365,11 +365,18 @@ export class PersistenceManager {
           // reset the pendingPairs
           this.#pendingPairs.clear();
           try {
-          // save the pairs
+            // save the pairs
             await this.#localStore.setKeyValues(clone);
           } catch (err) {
-            // restore the pending pairs if setting failed
-            this.#pendingPairs = clone;
+            // merge the clone with the pending pairs again
+            for (const [key, value] of clone.entries()) {
+              // we can't just overwrite because other `update` calls might have
+              // happened since we created the clone. We don't want to overwrite
+              // any new changes.
+              if (!this.#pendingPairs.has(key)) {
+                this.#pendingPairs.set(key, value);
+              }
+            }
             throw err;
           }
 
