@@ -42,9 +42,6 @@ import SrpInputForm from '../srp-input-form';
 import CreatePasswordForm from '../create-password-form';
 import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 
-// Only track import state
-let isImportingVault = false;
-
 class RestoreVaultPage extends Component {
   static contextTypes = {
     t: PropTypes.func,
@@ -68,13 +65,6 @@ class RestoreVaultPage extends Component {
     loading: false,
   };
 
-  componentDidMount() {
-    // If we remount during import, show loading and wait for navigation
-    if (isImportingVault) {
-      this.setState({ loading: true, showPasswordInput: true });
-    }
-  }
-
   handleImport = async (password, termsChecked) => {
     const {
       createNewVaultAndRestore: propsCreateNewVaultAndRestore,
@@ -90,11 +80,7 @@ class RestoreVaultPage extends Component {
 
     const { secretRecoveryPhrase } = this.state;
 
-    isImportingVault = true;
-
-    await new Promise((resolve) => {
-      this.setState({ loading: true }, resolve);
-    });
+    this.setState({ loading: true });
 
     try {
       if (propsIsSocialLoginFlow) {
@@ -110,10 +96,8 @@ class RestoreVaultPage extends Component {
         event: MetaMetricsEventName.WalletRestored,
       });
 
-      isImportingVault = false;
       navigate(DEFAULT_ROUTE, { replace: true });
     } catch (error) {
-      isImportingVault = false;
       this.setState({ loading: false, showPasswordInput: false });
       console.error('[RestoreVault] Error during import:', error);
     }
