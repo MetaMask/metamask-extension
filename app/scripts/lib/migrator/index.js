@@ -15,7 +15,7 @@ import { PersistenceManager } from '../stores/persistence-manager';
  * @property {number} [defaultVersion] - The version to use in the initial state
  */
 
-const MIGRATION_V2_START_VERSION = 185;
+const MIGRATION_V2_START_VERSION = 186;
 
 export default class Migrator extends EventEmitter {
   /**
