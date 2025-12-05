@@ -9,8 +9,8 @@ export type VersionGatedFeatureFlag = {
 const APP_VERSION = packageJson.version;
 
 /**
- * Extracts the base 3-part SemVer version (major.minor.patch) from a version string.
- * Strips any prerelease or build metadata suffixes from the package.json version.
+ * Extracts the base 3-part SemVer version (major.minor.patch) from the package.json version.
+ * Strips any prerelease or build metadata suffixes
  *
  * @returns The base version string (e.g., '13.13.0' or '13.2.3'), or 'unknown' if parsing fails
  */
