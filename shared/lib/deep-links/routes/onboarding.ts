@@ -5,7 +5,7 @@ export default new Route({
   getTitle: (_: URLSearchParams) => 'deepLink_theOnboardingPage',
   handler: function handler(_params: URLSearchParams) {
     return {
-      redirectTo: new URL(ZENDESK_URLS.IMPORT_ACCOUNTS),
+      redirectTo: new URL(ZENDESK_URLS.IMPORT_ACCOUNT_MOBILE),
     };
   },
 });

@@ -17,6 +17,8 @@ const ZENDESK_URLS = {
   HARDWARE_CONNECTION:
     'https://support.metamask.io/privacy-and-security/hardware-wallet-hub/',
   IMPORT_ACCOUNTS: 'https://support.metamask.io/start/use-an-existing-wallet/',
+  IMPORT_ACCOUNT_MOBILE:
+    'https://support.metamask.io/start/use-an-existing-wallet?client=mobile',
   IMPORTED_ACCOUNTS:
     'https://support.metamask.io/managing-my-wallet/accounts-and-addresses/what-are-imported-accounts-/',
   IMPORTED_ACCOUNT_JSON:
