@@ -16,14 +16,15 @@ const ZENDESK_URLS = {
     'https://support.metamask.io/token-swaps/user-guide-swaps/#gas-fees',
   HARDWARE_CONNECTION:
     'https://support.metamask.io/privacy-and-security/hardware-wallet-hub/',
-  IMPORT_ACCOUNTS:
-    'https://support.metamask.io/managing-my-wallet/accounts-and-addresses/how-to-import-an-account/',
+  IMPORT_ACCOUNTS: 'https://support.metamask.io/start/use-an-existing-wallet/',
+  IMPORT_ACCOUNT_MOBILE:
+    'https://support.metamask.io/start/use-an-existing-wallet?client=mobile',
   IMPORTED_ACCOUNTS:
     'https://support.metamask.io/managing-my-wallet/accounts-and-addresses/what-are-imported-accounts-/',
   IMPORTED_ACCOUNT_JSON:
     'https://support.metamask.io/start/how-to-import-an-account/#how-can-i-import-my-private-key-using-a-json-file',
   IMPORTED_ACCOUNTS_PRIVATE_KEY:
-    'https://support.metamask.io/start/use-an-existing-wallet/#importing-using-a-private-key',
+    'https://support.metamask.io/start/use-an-existing-wallet/#import-using-a-private-key',
   INFURA_BLOCKAGE:
     'https://support.metamask.io/troubleshooting/why-infura-cannot-serve-certain-areas/',
   LEDGER_FIREFOX_U2F_GUIDE:
