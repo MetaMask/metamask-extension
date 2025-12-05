@@ -491,6 +491,8 @@ const PrepareBridgePage = ({
                 (toChain && !isNetworkAdded(fromChains, toChain.chainId))
               }
               onClick={() => {
+                const previousDestAmount =
+                  unvalidatedQuote?.toTokenAmount?.amount;
                 dispatch(setSelectedQuote(null));
                 if (!toChain) {
                   return;
@@ -532,6 +534,12 @@ const PrepareBridgePage = ({
                 setRotateSwitchTokens(!rotateSwitchTokens);
 
                 toToken && dispatch(setFromToken(toToken));
+                previousDestAmount &&
+                  dispatch(
+                    setFromTokenInputValue(
+                      formatTokenAmount(locale, previousDestAmount),
+                    ),
+                  );
                 dispatch(setToToken(fromToken));
               }}
             />
