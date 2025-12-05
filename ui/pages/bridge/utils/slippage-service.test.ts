@@ -10,39 +10,48 @@ import {
 describe('Slippage Service', () => {
   // Mock tokens
   const mockUSDC: BridgeToken = {
-    chainId: '0x1',
+    chainId: 'eip155:1',
     address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    assetId: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
     symbol: 'USDC',
     decimals: 6,
     image: '',
     balance: '0',
+    name: 'USDC',
   };
 
   const mockUSDT: BridgeToken = {
-    chainId: '0x1',
+    chainId: 'eip155:1',
     address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+    assetId: 'eip155:1/erc20:0xdac17f958d2ee523a2206206994597c13d831ec7',
     symbol: 'USDT',
     decimals: 6,
     image: '',
     balance: '0',
+    name: 'USDT',
   };
 
   const mockWETH: BridgeToken = {
-    chainId: '0x1',
+    chainId: 'eip155:1',
     address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+    assetId: 'eip155:1/erc20:0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
     symbol: 'WETH',
     decimals: 18,
     image: '',
     balance: '0',
+    name: 'WETH',
   };
 
   const mockSolanaToken: BridgeToken = {
     chainId: MultichainNetworks.SOLANA,
     address: 'So11111111111111111111111111111111111111112',
+    assetId:
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:So11111111111111111111111111111111111111112',
     symbol: 'SOL',
     decimals: 9,
     image: '',
     balance: '0',
+    name: 'SOL',
   };
 
   describe('calculateSlippage', () => {

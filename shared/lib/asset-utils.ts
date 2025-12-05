@@ -36,8 +36,9 @@ export const toAssetId = (
   if (isCaipAssetType(address)) {
     return address;
   }
-  if (isNativeAddress(address)) {
-    return getNativeAssetForChainId(chainId)?.assetId;
+  const nativeAsset = getNativeAssetForChainId(chainId);
+  if (isNativeAddress(address) && nativeAsset) {
+    return nativeAsset.assetId;
   }
   if (chainId === MultichainNetwork.Solana) {
     return CaipAssetTypeStruct.create(`${chainId}/token:${address}`);
@@ -54,24 +55,11 @@ export const toAssetId = (
 /**
  * Returns the image url for a caip-formatted asset
  *
- * @param assetId - The hex address or caip-formatted asset id
- * @param chainId - The chainId in caip or hex format
+ * @param assetId - The caip-formatted asset id
  * @returns The image url for the asset
  */
-export const getAssetImageUrl = (
-  assetId: CaipAssetType | string,
-  chainId: CaipChainId | Hex,
-) => {
-  const chainIdInCaip = isCaipChainId(chainId)
-    ? chainId
-    : toEvmCaipChainId(chainId);
-
-  const assetIdInCaip = toAssetId(assetId, chainIdInCaip);
-  if (!assetIdInCaip) {
-    return undefined;
-  }
-
-  return `${STATIC_METAMASK_BASE_URL}/api/v2/tokenIcons/assets/${assetIdInCaip.replaceAll(
+export const getAssetImageUrl = (assetId: CaipAssetType) => {
+  return `${STATIC_METAMASK_BASE_URL}/api/v2/tokenIcons/assets/${assetId.replaceAll(
     ':',
     '/',
   )}.png`;
@@ -123,7 +111,7 @@ export const fetchAssetMetadata = async (
     const commonFields = {
       symbol: assetMetadata.symbol,
       decimals: assetMetadata.decimals,
-      image: getAssetImageUrl(assetId, chainIdInCaip),
+      image: getAssetImageUrl(assetId),
       assetId,
     };
 
