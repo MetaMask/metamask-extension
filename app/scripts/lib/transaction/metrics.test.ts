@@ -186,6 +186,9 @@ describe('Transaction metrics', () => {
       account_type: undefined,
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
+      address_alert_response: 'not_applicable',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       api_method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
