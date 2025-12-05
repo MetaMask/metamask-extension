@@ -245,24 +245,21 @@ const TransactionShield = () => {
     dispatch(setOnboardingModalOpen(true));
   }, [dispatch]);
 
-  const formattedRewardsPoints = useMemo(() => {
+  const claimedRewardsPoints = useMemo(() => {
     const points =
       displayedShieldSubscription?.interval === RECURRING_INTERVALS.year
         ? pointsYearly
         : pointsMonthly;
+    return points;
+  }, [pointsYearly, pointsMonthly, displayedShieldSubscription?.interval]);
 
-    if (!points || !isRewardsSeason) {
+  const formattedRewardsPoints = useMemo(() => {
+    if (!claimedRewardsPoints || !isRewardsSeason) {
       return '';
     }
 
-    return new Intl.NumberFormat(locale).format(points);
-  }, [
-    displayedShieldSubscription?.interval,
-    pointsYearly,
-    pointsMonthly,
-    isRewardsSeason,
-    locale,
-  ]);
+    return new Intl.NumberFormat(locale).format(claimedRewardsPoints);
+  }, [claimedRewardsPoints, isRewardsSeason, locale]);
 
   const shieldDetails = [
     {
@@ -849,7 +846,10 @@ const TransactionShield = () => {
             }
           />
         )}
-      <RewardsOnboardingModal />
+      <RewardsOnboardingModal
+        rewardPoints={claimedRewardsPoints ?? undefined}
+        shieldSubscriptionId={displayedShieldSubscription?.id}
+      />
     </Box>
   );
 };

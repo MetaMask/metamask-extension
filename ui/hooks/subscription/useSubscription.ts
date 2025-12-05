@@ -471,6 +471,7 @@ export const useSubscriptionEligibility = (product: ProductType) => {
  * @param options.defaultOptions - The default options for the subscription request.
  * @param options.isTrialed - Whether the user is trialing the subscription.
  * @param options.useTestClock - Whether to use a test clock for the subscription.
+ * @param options.rewardPoints
  * @returns An object with the handleSubscription function and the subscription result.
  */
 export const useHandleSubscription = ({
@@ -480,6 +481,7 @@ export const useHandleSubscription = ({
   defaultOptions,
   isTrialed,
   useTestClock = false,
+  rewardPoints,
 }: {
   defaultOptions: DefaultSubscriptionPaymentOptions;
   subscriptionState?: SubscriptionStatus;
@@ -488,6 +490,7 @@ export const useHandleSubscription = ({
   isTrialed: boolean;
   selectedToken?: TokenWithApprovalAmount;
   useTestClock?: boolean;
+  rewardPoints?: number;
 }) => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const { search } = useLocation();
@@ -550,6 +553,7 @@ export const useHandleSubscription = ({
       await setShieldSubscriptionMetricsPropsToBackground({
         source: determineSubscriptionRequestSource(),
         marketingUtmParams,
+        rewardPoints,
       });
 
       const source = determineSubscriptionRequestSource();
@@ -619,6 +623,7 @@ export const useHandleSubscription = ({
       modalType,
       determineSubscriptionRequestSource,
       search,
+      rewardPoints,
     ]);
 
   return {
@@ -779,14 +784,17 @@ export const useShieldRewards = (): {
   }, [primaryKeyring, accountsWithCaipChainId]);
 
   const {
-    value: hasAccountOptedIn,
+    value: hasAccountOptedInResultValue,
     pending: hasAccountOptedInResultPending,
     error: hasAccountOptedInResultError,
   } = useAsyncResult<boolean>(async () => {
     if (!caipAccountId) {
       return false;
     }
-    return await dispatch(getRewardsHasAccountOptedIn(caipAccountId));
+    const optinStatus = await dispatch(
+      getRewardsHasAccountOptedIn(caipAccountId),
+    );
+    return optinStatus;
   }, [caipAccountId]);
 
   const {
@@ -861,6 +869,7 @@ export const useShieldRewards = (): {
     if (hasAccountOptedInResultError) {
       console.error('[useShieldRewards error]:', hasAccountOptedInResultError);
     }
+
     return {
       pending: false,
       pointsMonthly: null,
@@ -875,6 +884,6 @@ export const useShieldRewards = (): {
     pointsMonthly: pointsValue?.monthly ?? null,
     pointsYearly: pointsValue?.yearly ?? null,
     isRewardsSeason: isRewardsSeason ?? false,
-    hasAccountOptedIn: hasAccountOptedIn ?? false,
+    hasAccountOptedIn: hasAccountOptedInResultValue ?? false,
   };
 };
