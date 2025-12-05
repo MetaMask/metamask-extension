@@ -172,17 +172,63 @@ function transformState(state: Record<string, unknown>) {
     enabledNetworkMap: { [KnownCaipNamespace.Eip155]: eip155NetworkMap },
   } = networkEnablementState;
 
-  const megaethTestnetV1Configuration = networkConfigurationsByChainId[
-    MEGAETH_TESTNET_V1_CHAIN_ID
-  ] as unknown as NetworkConfiguration;
+  // Merge the MegaETH Testnet v2 network configuration if user already has it.
+  if (
+    hasProperty(
+      networkConfigurationsByChainId,
+      MEGAETH_TESTNET_V2_CONFIG.chainId,
+    )
+  ) {
+    const megaethTestnetV2Configuration = networkConfigurationsByChainId[
+      MEGAETH_TESTNET_V2_CONFIG.chainId
+    ] as unknown as NetworkConfiguration;
+    megaethTestnetV2Configuration.name = MEGAETH_TESTNET_V2_CONFIG.name;
+    megaethTestnetV2Configuration.nativeCurrency =
+      MEGAETH_TESTNET_V2_CONFIG.nativeCurrency;
 
-  // Add the MegaETH Testnet v2 network configuration.
-  networkConfigurationsByChainId[MEGAETH_TESTNET_V2_CONFIG.chainId] =
-    MEGAETH_TESTNET_V2_CONFIG;
+    const isEndpointExist = megaethTestnetV2Configuration.rpcEndpoints.find(
+      (rpcEndpoint) =>
+        rpcEndpoint.url === MEGAETH_TESTNET_V2_CONFIG.rpcEndpoints[0].url,
+    );
+    if (!isEndpointExist) {
+      megaethTestnetV2Configuration.rpcEndpoints.push({
+        failoverUrls: [],
+        networkClientId:
+          MEGAETH_TESTNET_V2_CONFIG.rpcEndpoints[0].networkClientId,
+        type: RpcEndpointType.Custom,
+        url: MEGAETH_TESTNET_V2_CONFIG.rpcEndpoints[0].url,
+      });
+      megaethTestnetV2Configuration.defaultRpcEndpointIndex =
+        megaethTestnetV2Configuration.rpcEndpoints.length - 1;
+    }
 
-  // Add the MegaETH Testnet v2 network configuration to the enabled network map.
-  eip155NetworkMap[MEGAETH_TESTNET_V2_CONFIG.chainId] = false;
+    const isBlockExplorerUrlExist =
+      megaethTestnetV2Configuration.blockExplorerUrls.find(
+        (url) => url === MEGAETH_TESTNET_V2_CONFIG.blockExplorerUrls[0],
+      );
+    if (!isBlockExplorerUrlExist) {
+      megaethTestnetV2Configuration.blockExplorerUrls.push(
+        MEGAETH_TESTNET_V2_CONFIG.blockExplorerUrls[0],
+      );
+      megaethTestnetV2Configuration.defaultBlockExplorerUrlIndex =
+        megaethTestnetV2Configuration.blockExplorerUrls.length - 1;
+    }
+  } else {
+    // Add the MegaETH Testnet v2 network configuration if user doesn't have it.
+    (networkConfigurationsByChainId as Record<string, NetworkConfiguration>)[
+      MEGAETH_TESTNET_V2_CONFIG.chainId
+    ] = MEGAETH_TESTNET_V2_CONFIG as NetworkConfiguration;
+  }
 
+  // Add the MegaETH Testnet v2 network configuration to the enabled network map if it doesn't exist.
+  if (!hasProperty(eip155NetworkMap, MEGAETH_TESTNET_V2_CONFIG.chainId)) {
+    (eip155NetworkMap as Record<string, boolean>)[
+      MEGAETH_TESTNET_V2_CONFIG.chainId
+    ] = false;
+  }
+
+  const megaethTestnetV1Configuration =
+    networkConfigurationsByChainId[MEGAETH_TESTNET_V1_CHAIN_ID];
   // If the selected network client id is the old MegaETH Testnet v1,
   // then update it to the mainnet
   if (
