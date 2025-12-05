@@ -96,9 +96,6 @@ describe('Update modal', function (this: Suite) {
         },
       },
       async ({ driver }) => {
-        // We open a new page to avoid a race condition where the test fails with ECONNREFUSED
-        // as we are in the browser briefly without any open tab
-        await driver.openNewPage('about:blank');
         await loginWithBalanceValidation(driver);
         const updateModal = new UpdateModal(driver);
         await updateModal.checkPageIsLoaded();
