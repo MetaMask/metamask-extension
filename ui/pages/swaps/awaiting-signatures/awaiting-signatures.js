@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import isEqual from 'lodash/isEqual';
 import { I18nContext } from '../../../contexts/i18n';
 import {

@@ -5,12 +5,7 @@ import {
 } from '@metamask/network-controller';
 import React, { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  Route,
-  Routes,
-  useNavigate,
-  useLocation,
-} from 'react-router-dom-v5-compat';
+import { Route, Routes, useNavigate, useLocation } from 'react-router-dom';
 import * as URI from 'uri-js';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useNetworkFormState } from '../../../pages/settings/networks-tab/networks-form/networks-form-state';

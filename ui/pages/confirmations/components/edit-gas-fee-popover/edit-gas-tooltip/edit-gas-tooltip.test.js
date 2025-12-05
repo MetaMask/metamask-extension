@@ -1,7 +1,7 @@
 import React from 'react';
 import { act } from '@testing-library/react';
 import configureStore from '../../../../../store/store';
-import { renderWithProvider } from '../../../../../../test/jest';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { GasFeeContextProvider } from '../../../../../contexts/gasFee';
 import { mockNetworkState } from '../../../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';

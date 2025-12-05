@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { fireEvent } from '@testing-library/react';
 import configureStore from '../../../store/store';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { DATA_DELETION_ERROR_MODAL_CLOSE } from '../../../store/actionConstants';
 
 import DataDeletionErrorModal from './data-deletion-error-modal';

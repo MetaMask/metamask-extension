@@ -6,7 +6,7 @@ import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-s
 import * as useBackupAndSyncHook from '../../../../hooks/identity/useBackupAndSync/useBackupAndSync';
 import { MetamaskIdentityProvider } from '../../../../contexts/identity';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import {
   BackupAndSyncFeaturesToggles,
   backupAndSyncFeaturesTogglesTestIds,

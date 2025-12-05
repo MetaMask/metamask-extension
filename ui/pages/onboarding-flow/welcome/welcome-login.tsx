@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useSearchParams, useNavigate } from 'react-router-dom-v5-compat';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import {
   Box,
   Button,

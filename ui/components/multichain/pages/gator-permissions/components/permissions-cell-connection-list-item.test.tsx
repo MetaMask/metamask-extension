@@ -2,7 +2,7 @@ import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import { CaipChainId } from '@metamask/utils';
 import { BoxSpacing, IconName } from '@metamask/design-system-react';
-import { renderWithProvider } from '../../../../../../test/jest';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../../store/store';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { PermissionsCellConnectionListItem } from './permissions-cell-connection-list-item';

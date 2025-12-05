@@ -9,7 +9,7 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom-v5-compat';
+import { useNavigate, useParams } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { produce } from 'immer';
 import log from 'loglevel';
@@ -225,7 +225,6 @@ function Header({ confirmation, isSnapCustomUIDialog, onCancel }) {
 
 export default function ConfirmationPage({
   redirectToHomeOnZeroConfirmations = true,
-  params: routeParams,
 }) {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -245,8 +244,7 @@ export default function ConfirmationPage({
   );
   const [approvalFlowLoadingText, setApprovalFlowLoadingText] = useState(null);
 
-  const urlParams = useParams();
-  const { id } = routeParams || urlParams;
+  const { id } = useParams();
 
   const pendingRoutedConfirmation = pendingConfirmations.find(
     (confirmation) => confirmation.id === id,
@@ -617,7 +615,4 @@ export default function ConfirmationPage({
 
 ConfirmationPage.propTypes = {
   redirectToHomeOnZeroConfirmations: PropTypes.bool,
-  params: PropTypes.shape({
-    id: PropTypes.string,
-  }),
 };

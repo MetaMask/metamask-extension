@@ -36,7 +36,7 @@ describe('NotificationsSettingsBox', () => {
   it('toggles value on click', () => {
     const onToggleMock = jest.fn();
     const testId = 'test-id';
-    const { container } = render(
+    render(
       <Provider store={store}>
         <NotificationsSettingsBox
           value={false}
@@ -47,7 +47,6 @@ describe('NotificationsSettingsBox', () => {
         </NotificationsSettingsBox>
       </Provider>,
     );
-    console.log(container.innerHTML);
 
     fireEvent.click(screen.getByTestId(`${testId}-toggle-input`));
     expect(onToggleMock).toHaveBeenCalledTimes(1);

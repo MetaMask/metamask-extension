@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { act } from 'react-dom/test-utils';
 import { fireEvent } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import FormComboField, { FormComboFieldOption } from './form-combo-field';
 
 const VALUE_MOCK = 'TestValue';
@@ -126,7 +126,7 @@ describe('FormComboField', () => {
       />,
     );
 
-    const clearButton = getByLabelText('[clear]');
+    const clearButton = getByLabelText('Clear');
 
     await act(async () => {
       fireEvent.click(clearButton);

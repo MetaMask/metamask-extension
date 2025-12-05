@@ -1,5 +1,5 @@
 import React, { useContext, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import { hasProperty } from '@metamask/utils';
 import type { INotification } from '@metamask/notification-services-controller/notification-services';
 import { MetaMetricsContext } from '../../contexts/metametrics';

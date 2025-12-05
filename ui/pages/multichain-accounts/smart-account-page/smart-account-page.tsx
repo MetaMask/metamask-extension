@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate, useParams } from 'react-router-dom-v5-compat';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   Box,
   BoxFlexDirection,
@@ -17,18 +17,10 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { SmartContractAccountToggleSection } from '../../../components/multichain-accounts/smart-contract-account-toggle-section';
 import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 
-type SmartAccountPageProps = {
-  params?: { address: string };
-};
-
-export const SmartAccountPage = ({
-  params: propsParams,
-}: SmartAccountPageProps = {}) => {
+export const SmartAccountPage = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const hookParams = useParams<{ address: string }>();
-
-  const { address } = propsParams || hookParams;
+  const { address } = useParams<{ address: string }>();
 
   const decodedAddress = address ? decodeURIComponent(address) : null;
 

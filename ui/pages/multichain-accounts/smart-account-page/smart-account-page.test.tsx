@@ -10,8 +10,8 @@ const mockUseParams = jest.fn();
 
 const MOCK_ADDRESS = '0x1234567890abcdef1234567890abcdef12345678';
 
-jest.mock('react-router-dom-v5-compat', () => ({
-  ...jest.requireActual('react-router-dom-v5-compat'),
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
   useParams: () => mockUseParams(),
 }));

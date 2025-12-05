@@ -1,5 +1,5 @@
 import { cleanup } from '@testing-library/react-hooks';
-import { renderHookWithProvider } from '../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../test/lib/render-helpers-navigate';
 import usePolling from './usePolling';
 
 describe('usePolling', () => {

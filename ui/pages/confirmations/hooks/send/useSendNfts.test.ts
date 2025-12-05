@@ -1,7 +1,7 @@
 import { waitFor } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 
-import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
 import {
   getAccountGroupWithInternalAccounts,

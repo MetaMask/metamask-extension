@@ -7,7 +7,7 @@ import React, {
   useCallback,
 } from 'react';
 import { shallowEqual, useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import BigNumber from 'bignumber.js';
 import { isEqual } from 'lodash';
 import classnames from 'classnames';

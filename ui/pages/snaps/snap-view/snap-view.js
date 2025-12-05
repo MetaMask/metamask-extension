@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { hasProperty } from '@metamask/utils';
-import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   AlignItems,
   BackgroundColor,
@@ -22,13 +21,9 @@ import SnapHomeMenu from '../../../components/app/snaps/snap-home-menu';
 import { SnapHomeRenderer } from '../../../components/app/snaps/snap-home-page/snap-home-renderer';
 import SnapSettings from './snap-settings';
 
-function SnapView({ navigate: navigateProp, location: locationProp }) {
-  const hookNavigate = useNavigate();
-  const hookLocation = useLocation();
-
-  // Use passed props if they exist, otherwise fall back to hooks
-  const navigate = navigateProp ?? hookNavigate;
-  const location = locationProp ?? hookLocation;
+function SnapView() {
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const { pathname } = location;
   // The snap ID is in URI-encoded form in the last path segment of the URL.
@@ -137,10 +132,5 @@ function SnapView({ navigate: navigateProp, location: locationProp }) {
     </div>
   );
 }
-
-SnapView.propTypes = {
-  navigate: PropTypes.func,
-  location: PropTypes.object,
-};
 
 export default SnapView;

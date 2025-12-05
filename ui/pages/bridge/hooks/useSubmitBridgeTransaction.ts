@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import {
   getQuotesReceivedProperties,
   isNonEvmChainId,
@@ -21,7 +22,6 @@ import {
   getWarningLabels,
 } from '../../../ducks/bridge/selectors';
 import { captureException } from '../../../../shared/lib/sentry';
-import { useSafeNavigation } from '../../../hooks/useSafeNavigation';
 
 const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';
 const APPROVAL_TX_ERROR = 'Approve transaction failed';
@@ -57,7 +57,7 @@ const isHardwareWalletUserRejection = (error: unknown): boolean => {
 };
 
 export default function useSubmitBridgeTransaction() {
-  const { navigate } = useSafeNavigation();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const hardwareWalletUsed = useSelector(isHardwareWallet);
 

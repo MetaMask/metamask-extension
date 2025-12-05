@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes as RouterRoutes, Route } from 'react-router-dom-v5-compat';
+import { Routes as RouterRoutes, Route } from 'react-router-dom';
 import { ClaimsProvider } from '../../../../contexts/claims/claims';
 import ClaimsList from '../claims-list';
 import ClaimsForm from '../claims-form';

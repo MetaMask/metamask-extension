@@ -1317,8 +1317,6 @@
   "ui/pages/permissions-connect/flask/snap-update/index.js",
   "ui/pages/permissions-connect/flask/snap-update/snap-update.js",
   "ui/pages/permissions-connect/index.js",
-  "ui/pages/permissions-connect/permissions-connect.component.js",
-  "ui/pages/permissions-connect/permissions-connect.container.js",
   "ui/pages/permissions-connect/permissions-connect.stories.js",
   "ui/pages/permissions-connect/redirect/index.js",
   "ui/pages/permissions-connect/redirect/permissions-redirect.component.js",

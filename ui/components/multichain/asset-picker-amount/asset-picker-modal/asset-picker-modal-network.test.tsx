@@ -4,7 +4,7 @@ import thunk from 'redux-thunk';
 import { screen, fireEvent } from '@testing-library/react';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-send-state.json';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constants/bridge';
 import { AssetPickerModalNetwork } from './asset-picker-modal-network';

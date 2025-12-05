@@ -2,7 +2,7 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
@@ -48,11 +48,9 @@ jest.mock('../../../ducks/history/history', () => ({
     .mockImplementation(() => MOCK_RECENT_PAGE),
 }));
 
-// Mock React Router v5-compat hooks that withRouterHooks uses
 const mockUseNavigate = jest.fn();
-
-jest.mock('react-router-dom-v5-compat', () => ({
-  ...jest.requireActual('react-router-dom-v5-compat'),
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockUseNavigate,
   useLocation: () => ({ pathname: '/test' }),
   useParams: () => ({}),

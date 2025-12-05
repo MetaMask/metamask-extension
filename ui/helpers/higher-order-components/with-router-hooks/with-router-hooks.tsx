@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  useNavigate,
-  useLocation,
-  useParams,
-} from 'react-router-dom-v5-compat';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 
 // Types for the router hooks
 export type RouterHooksProps = {

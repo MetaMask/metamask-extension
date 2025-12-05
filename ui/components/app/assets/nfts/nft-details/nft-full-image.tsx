@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate, useNavigationType } from 'react-router-dom-v5-compat';
+import { useNavigate, useNavigationType, useParams } from 'react-router-dom';
 import { Nft } from '@metamask/assets-controllers';
 import { toHex } from '@metamask/controller-utils';
 import { getNftImage, getNftImageAlt } from '../../../../../helpers/utils/nfts';
@@ -35,24 +35,11 @@ import {
   PREVIOUS_ROUTE,
 } from '../../../../../helpers/constants/routes';
 
-type NftFullImageProps = {
-  params?: {
-    asset?: string;
-    id?: string;
-  };
-};
-
-/**
- * Component displaying full NFT image
- *
- * @param options0 - Component props
- * @param options0.params - Route parameters including asset and id
- */
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export default function NftFullImage({ params }: NftFullImageProps) {
+export default function NftFullImage() {
   const t = useI18nContext();
-  const { asset, id } = params ?? {};
+  const { asset, id } = useParams<{ asset: string; id: string }>();
   const allNfts = useSelector(getAllNfts);
   const nfts = Object.values(allNfts).flat() as Nft[];
   const nft = nfts.find(

@@ -21,8 +21,8 @@ const mockUseParams = jest.fn();
 const MOCK_ADDRESS = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
 const MOCK_ADDRESS_NAME = 'Address Book Account 1';
 
-jest.mock('react-router-dom-v5-compat', () => ({
-  ...jest.requireActual('react-router-dom-v5-compat'),
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockUseNavigate,
   useLocation: () => mockUseLocation(),
   useParams: () => mockUseParams(),

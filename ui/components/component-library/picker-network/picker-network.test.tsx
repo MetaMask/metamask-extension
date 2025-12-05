@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import React from 'react';
 
 import { IconName } from '../icon';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import { AvatarType } from '../../multichain/avatar-group/avatar-group.types';
 import { PickerNetwork } from './picker-network';

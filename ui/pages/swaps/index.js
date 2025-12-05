@@ -5,13 +5,17 @@ import React, {
   useState,
   useCallback,
 } from 'react';
-import PropTypes from 'prop-types';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { Routes, Route, Navigate } from 'react-router-dom-v5-compat';
+import {
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+  useLocation,
+} from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { I18nContext } from '../../contexts/i18n';
-import { useSafeNavigation } from '../../hooks/useSafeNavigation';
 
 import {
   getSelectedAccount,
@@ -19,7 +23,8 @@ import {
   isHardwareWallet,
   getHardwareWalletType,
   getHDEntropyIndex,
-} from '../../selectors/selectors';
+  getCurrentNetworkTransactions,
+} from '../../selectors';
 import {
   getCurrentChainId,
   getSelectedNetworkClientId,
@@ -43,7 +48,6 @@ import {
   setTransactionSettingsOpened,
   getLatestAddedTokenTo,
 } from '../../ducks/swaps/swaps';
-import { getCurrentNetworkTransactions } from '../../selectors';
 import {
   getSmartTransactionsEnabled,
   getSmartTransactionsOptInStatusForMetrics,
@@ -60,6 +64,7 @@ import {
   SWAPS_NOTIFICATION_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
 } from '../../helpers/constants/routes';
+import { toRelativeRoutePath } from '../routes/utils';
 import {
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
@@ -98,10 +103,10 @@ import AwaitingSwap from './awaiting-swap';
 import LoadingQuote from './loading-swaps-quotes';
 import NotificationPage from './notification-page/notification-page';
 
-export default function Swap({ location: propsLocation }) {
+export default function Swap() {
   const t = useContext(I18nContext);
-  const { navigate, location: hookLocation } = useSafeNavigation();
-  const location = propsLocation || hookLocation;
+  const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
@@ -406,9 +411,10 @@ export default function Swap({ location: propsLocation }) {
           </Box>
         </div>
         <div className="swaps__content">
+          {/* Using relative paths for nested routes inside parent /swaps/* */}
           <Routes>
             <Route
-              path={PREPARE_SWAP_ROUTE}
+              path={toRelativeRoutePath(PREPARE_SWAP_ROUTE)}
               element={
                 <FeatureToggledRoute
                   redirectRoute={SWAPS_MAINTENANCE_ROUTE}
@@ -423,7 +429,7 @@ export default function Swap({ location: propsLocation }) {
               }
             />
             <Route
-              path={SWAPS_ERROR_ROUTE}
+              path={toRelativeRoutePath(SWAPS_ERROR_ROUTE)}
               element={
                 swapsErrorKey ? (
                   <AwaitingSwap
@@ -439,7 +445,7 @@ export default function Swap({ location: propsLocation }) {
               }
             />
             <Route
-              path={SWAPS_NOTIFICATION_ROUTE}
+              path={toRelativeRoutePath(SWAPS_NOTIFICATION_ROUTE)}
               element={
                 swapsErrorKey ? (
                   <NotificationPage notificationKey={swapsErrorKey} />
@@ -449,7 +455,7 @@ export default function Swap({ location: propsLocation }) {
               }
             />
             <Route
-              path={LOADING_QUOTES_ROUTE}
+              path={toRelativeRoutePath(LOADING_QUOTES_ROUTE)}
               element={
                 <FeatureToggledRoute
                   redirectRoute={SWAPS_MAINTENANCE_ROUTE}
@@ -485,7 +491,7 @@ export default function Swap({ location: propsLocation }) {
               }
             />
             <Route
-              path={SWAPS_MAINTENANCE_ROUTE}
+              path={toRelativeRoutePath(SWAPS_MAINTENANCE_ROUTE)}
               element={
                 swapsEnabled === false ? (
                   <AwaitingSwap errorKey={OFFLINE_FOR_MAINTENANCE} />
@@ -495,15 +501,15 @@ export default function Swap({ location: propsLocation }) {
               }
             />
             <Route
-              path={AWAITING_SIGNATURES_ROUTE}
+              path={toRelativeRoutePath(AWAITING_SIGNATURES_ROUTE)}
               element={<AwaitingSignatures />}
             />
             <Route
-              path={SMART_TRANSACTION_STATUS_ROUTE}
+              path={toRelativeRoutePath(SMART_TRANSACTION_STATUS_ROUTE)}
               element={<SmartTransactionStatus txId={tradeTxData?.id} />}
             />
             <Route
-              path={AWAITING_SWAP_ROUTE}
+              path={toRelativeRoutePath(AWAITING_SWAP_ROUTE)}
               element={
                 routeState === 'awaiting' || tradeTxData ? (
                   <AwaitingSwap
@@ -526,7 +532,3 @@ export default function Swap({ location: propsLocation }) {
     </div>
   );
 }
-
-Swap.propTypes = {
-  location: PropTypes.object,
-};

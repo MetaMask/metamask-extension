@@ -4,7 +4,7 @@ import {
   MetaMetricsEventAccountType,
 } from '../../../../../shared/constants/metametrics';
 
-function getValues(pendingApproval, t, actions, _history, _data, contexts) {
+function getValues(pendingApproval, t, actions, _navigate, _data, contexts) {
   const { origin: snapId, snapName } = pendingApproval;
   const { url, message, isBlockedUrl } = pendingApproval.requestData;
   const { trackEvent } = contexts;

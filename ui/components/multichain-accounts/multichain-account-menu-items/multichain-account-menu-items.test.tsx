@@ -1,6 +1,6 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { TextColor } from '../../../helpers/constants/design-system';
 import { IconName } from '../../component-library';
 import { MultichainAccountMenuItems } from './multichain-account-menu-items';

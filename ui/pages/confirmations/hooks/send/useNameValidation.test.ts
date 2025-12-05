@@ -1,7 +1,7 @@
 import { AddressResolution } from '@metamask/snaps-sdk';
 
 import mockState from '../../../../../test/data/mock-state.json';
-import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { lookupDomainName } from '../../../../ducks/domains';
 // eslint-disable-next-line import/no-namespace
 import * as SnapNameResolution from '../../../../hooks/snaps/useSnapNameResolution';

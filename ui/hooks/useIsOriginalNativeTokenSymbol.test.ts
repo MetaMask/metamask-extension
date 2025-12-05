@@ -1,6 +1,6 @@
 import { waitFor } from '@testing-library/react';
 import { CaipChainId, Hex } from '@metamask/utils';
-import { renderHookWithProviderTyped } from '../../test/lib/render-helpers';
+import { renderHookWithProviderTyped } from '../../test/lib/render-helpers-navigate';
 import * as SelectorsModule from '../selectors/selectors';
 import * as MultichainSelectorsModule from '../selectors/multichain';
 import * as IsOriginalNativeTokenSymbolModule from '../helpers/utils/isOriginalNativeTokenSymbol';

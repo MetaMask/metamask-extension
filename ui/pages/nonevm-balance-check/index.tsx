@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { CaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import type { Location as HistoryLocation } from 'history';
+import { useLocation } from 'react-router-dom';
 import {
   Box,
   Modal,
@@ -65,12 +65,9 @@ const getBuyUrl = (
   return buyUrl.toString();
 };
 
-type NonEvmBalanceCheckProps = {
-  location: HistoryLocation;
-};
-
-export const NonEvmBalanceCheck = ({ location }: NonEvmBalanceCheckProps) => {
+export const NonEvmBalanceCheck = () => {
   const dispatch = useDispatch();
+  const location = useLocation();
   const metaMetricsId = useSelector(getMetaMetricsId);
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);

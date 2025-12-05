@@ -1,6 +1,6 @@
 import * as bridgeControllerUtils from '@metamask/bridge-controller';
 import { BigNumber } from 'ethers';
-import { useLocation } from 'react-router-dom-v5-compat';
+import { useLocation } from 'react-router-dom';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import * as assetUtils from '../../../shared/lib/asset-utils';
@@ -10,7 +10,7 @@ import { mockNetworkState } from '../../../test/stub/networks';
 import { useBridgeQueryParams } from './useBridgeQueryParams';
 
 // Helper hook that combines useBridgeQueryParams with useLocation
-// so we can inspect the router state from the same v5-compat context
+// so we can inspect the router state from the same v6 context
 const useBridgeQueryParamsWithLocation = () => {
   const location = useLocation();
   useBridgeQueryParams();

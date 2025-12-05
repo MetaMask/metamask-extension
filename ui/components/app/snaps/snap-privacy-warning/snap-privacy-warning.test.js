@@ -1,6 +1,6 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
-import { renderWithProvider } from '../../../../../test/jest';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import SnapPrivacyWarning from './snap-privacy-warning';
 
 describe('Snap Privacy Warning Popover', () => {

@@ -2,7 +2,7 @@ import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/dom';
 
 import mockState from '../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import configureStore from '../../../store/store';
 import * as EIP7702NetworkUtils from '../../../pages/confirmations/hooks/useEIP7702Networks';

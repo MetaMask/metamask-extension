@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom-v5-compat';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AccountGroupId, AccountWalletType } from '@metamask/account-api';
 import classnames from 'classnames';
@@ -54,17 +54,12 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
 
-export const MultichainAccountDetailsPage = ({
-  id: idProp,
-}: { id?: string } = {}) => {
+export const MultichainAccountDetailsPage = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
-  const { id: idFromParams } = useParams();
-
-  // Use prop if provided (from createV5CompatRoute), otherwise fall back to hook
-  const id = idProp || idFromParams;
+  const { id } = useParams();
 
   const accountGroupId = decodeURIComponent(id ?? '') as AccountGroupId;
   const multichainAccount = useSelector((state) =>

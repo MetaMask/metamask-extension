@@ -2,7 +2,7 @@ import { Nft } from '@metamask/assets-controllers';
 import { CaipChainId, Hex } from '@metamask/utils';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { Navigate } from 'react-router-dom-v5-compat';
+import { Navigate, useParams } from 'react-router-dom';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import NftDetails from '../../components/app/assets/nfts/nft-details/nft-details';
 import { getNFTsByChainId } from '../../ducks/metamask/metamask';
@@ -11,21 +11,13 @@ import { getTokenByAccountAndAddressAndChainId } from '../../selectors/assets';
 import NativeAsset from './components/native-asset';
 import TokenAsset from './components/token-asset';
 
-type AssetProps = {
-  params: {
-    chainId?: Hex;
-    asset?: string;
-    id?: string;
-  };
-};
+const Asset = () => {
+  const params = useParams<{
+    chainId: Hex;
+    asset: string;
+    id: string;
+  }>();
 
-/**
- * A page representing a native, token, or NFT asset
- *
- * @param options0 - Component props
- * @param options0.params - Route parameters including chainId, asset, and id
- */
-const Asset = ({ params }: AssetProps) => {
   const { chainId, asset, id } = params;
   const decodedAsset = asset ? decodeURIComponent(asset) : undefined;
 

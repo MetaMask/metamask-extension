@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import isEqual from 'lodash/isEqual';
 import Box from '../../../components/ui/box';
 import { I18nContext } from '../../../contexts/i18n';

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { getCurrentNetwork } from '../../../../../../selectors';
-import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
 import { getNetworkConfigurationsByChainId } from '../../../../../../../shared/modules/selectors/networks';
 import { NetworkFilterDropdownItem } from '.';
 

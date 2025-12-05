@@ -2,6 +2,7 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { Routes, Route } from 'react-router-dom';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import {
   ONBOARDING_EXPERIMENTAL_AREA,
@@ -28,13 +29,19 @@ import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import OnboardingFlow from './onboarding-flow';
 
 const mockUseNavigate = jest.fn();
-const mockUseLocation = jest.fn();
 
-jest.mock('react-router-dom-v5-compat', () => ({
-  ...jest.requireActual('react-router-dom-v5-compat'),
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockUseNavigate,
-  useLocation: () => mockUseLocation(),
 }));
+
+// Wrapper component that provides proper route context for nested Routes
+// OnboardingFlow uses relative paths expecting to be mounted at /onboarding/*
+const OnboardingFlowWithRouteContext = () => (
+  <Routes>
+    <Route path={`${ONBOARDING_ROUTE}/*`} element={<OnboardingFlow />} />
+  </Routes>
+);
 
 // Mock Rive animation components
 jest.mock('./welcome/fox-appear-animation', () => ({
@@ -127,16 +134,6 @@ describe('Onboarding Flow', () => {
 
   const store = configureMockStore([thunk])(mockState);
 
-  beforeEach(() => {
-    mockUseLocation.mockReturnValue({
-      key: 'test-key',
-      pathname: ONBOARDING_ROUTE,
-      search: '',
-      hash: '',
-      state: null,
-    });
-  });
-
   afterEach(() => {
     jest.resetAllMocks();
   });
@@ -173,7 +170,11 @@ describe('Onboarding Flow', () => {
       completedOnboardingState,
     );
 
-    renderWithProvider(<OnboardingFlow />, completedOnboardingStore, '/other');
+    renderWithProvider(
+      <OnboardingFlowWithRouteContext />,
+      completedOnboardingStore,
+      ONBOARDING_ROUTE,
+    );
 
     expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
@@ -181,7 +182,7 @@ describe('Onboarding Flow', () => {
   describe('Create Password', () => {
     it('should render create password', () => {
       const { queryByTestId } = renderWithProvider(
-        <OnboardingFlow />,
+        <OnboardingFlowWithRouteContext />,
         store,
         ONBOARDING_CREATE_PASSWORD_ROUTE,
       );
@@ -192,7 +193,7 @@ describe('Onboarding Flow', () => {
 
     it('should call createNewVaultAndGetSeedPhrase when creating a new wallet password', async () => {
       const { queryByTestId, queryByText } = renderWithProvider(
-        <OnboardingFlow />,
+        <OnboardingFlowWithRouteContext />,
         configureMockStore([thunk])({
           ...mockState,
           metamask: {
@@ -228,7 +229,11 @@ describe('Onboarding Flow', () => {
   });
 
   it('should redirect to reveal recovery phrase when going to review recovery phrase without srp', () => {
-    renderWithProvider(<OnboardingFlow />, store, ONBOARDING_REVIEW_SRP_ROUTE);
+    renderWithProvider(
+      <OnboardingFlowWithRouteContext />,
+      store,
+      ONBOARDING_REVIEW_SRP_ROUTE,
+    );
 
     expect(mockUseNavigate).toHaveBeenCalledWith(
       {
@@ -240,7 +245,11 @@ describe('Onboarding Flow', () => {
   });
 
   it('should redirect to reveal recovery phrase when going to confirm recovery phrase without srp', () => {
-    renderWithProvider(<OnboardingFlow />, store, ONBOARDING_CONFIRM_SRP_ROUTE);
+    renderWithProvider(
+      <OnboardingFlowWithRouteContext />,
+      store,
+      ONBOARDING_CONFIRM_SRP_ROUTE,
+    );
 
     expect(mockUseNavigate).toHaveBeenCalledWith(
       `${ONBOARDING_REVEAL_SRP_ROUTE}`,
@@ -250,7 +259,7 @@ describe('Onboarding Flow', () => {
 
   it('should render import seed phrase', () => {
     const { queryByTestId } = renderWithProvider(
-      <OnboardingFlow />,
+      <OnboardingFlowWithRouteContext />,
       store,
       ONBOARDING_IMPORT_WITH_SRP_ROUTE,
     );
@@ -262,7 +271,7 @@ describe('Onboarding Flow', () => {
   describe('Unlock Screen', () => {
     it('should render unlock page', () => {
       const { queryByTestId } = renderWithProvider(
-        <OnboardingFlow />,
+        <OnboardingFlowWithRouteContext />,
         store,
         ONBOARDING_UNLOCK_ROUTE,
       );
@@ -273,7 +282,7 @@ describe('Onboarding Flow', () => {
 
     it('should call unlockAndGetSeedPhrase when unlocking with a password', async () => {
       const { getByLabelText, getByText } = renderWithProvider(
-        <OnboardingFlow />,
+        <OnboardingFlowWithRouteContext />,
         configureMockStore([thunk])({
           ...mockState,
           metamask: {
@@ -296,7 +305,7 @@ describe('Onboarding Flow', () => {
 
   it('should render privacy settings', () => {
     const { queryByTestId } = renderWithProvider(
-      <OnboardingFlow />,
+      <OnboardingFlowWithRouteContext />,
       store,
       ONBOARDING_PRIVACY_SETTINGS_ROUTE,
     );
@@ -307,7 +316,7 @@ describe('Onboarding Flow', () => {
 
   it('should render onboarding creation/completion successful', async () => {
     const { queryByTestId } = renderWithProvider(
-      <OnboardingFlow />,
+      <OnboardingFlowWithRouteContext />,
       store,
       ONBOARDING_COMPLETION_ROUTE,
     );
@@ -319,15 +328,8 @@ describe('Onboarding Flow', () => {
   });
 
   it('should render onboarding Login page screen', async () => {
-    mockUseLocation.mockReturnValue({
-      key: 'test-key',
-      pathname: ONBOARDING_WELCOME_ROUTE,
-      search: '',
-      hash: '',
-      state: null,
-    });
     const { queryByTestId } = renderWithProvider(
-      <OnboardingFlow />,
+      <OnboardingFlowWithRouteContext />,
       store,
       ONBOARDING_WELCOME_ROUTE,
     );
@@ -335,13 +337,11 @@ describe('Onboarding Flow', () => {
     await waitFor(() => {
       expect(queryByTestId('get-started')).toBeInTheDocument();
     });
-
-    jest.clearAllMocks();
   });
 
   it('should render onboarding metametrics screen', () => {
     const { queryByTestId } = renderWithProvider(
-      <OnboardingFlow />,
+      <OnboardingFlowWithRouteContext />,
       store,
       ONBOARDING_METAMETRICS,
     );
@@ -352,7 +352,7 @@ describe('Onboarding Flow', () => {
 
   it('should render onboarding experimental screen', () => {
     const { queryByTestId } = renderWithProvider(
-      <OnboardingFlow />,
+      <OnboardingFlowWithRouteContext />,
       store,
       ONBOARDING_EXPERIMENTAL_AREA,
     );

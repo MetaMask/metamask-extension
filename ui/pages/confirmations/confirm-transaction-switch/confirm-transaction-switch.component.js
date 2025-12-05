@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Navigate } from 'react-router-dom-v5-compat';
+import { Navigate } from 'react-router-dom';
 import Loading from '../../../components/ui/loading-screen';
 import {
   CONFIRM_TRANSACTION_ROUTE,

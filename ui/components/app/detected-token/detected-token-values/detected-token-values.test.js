@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { renderWithProvider, screen } from '../../../../../test/jest';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import testData from '../../../../../.storybook/test-data';
 
@@ -71,9 +71,12 @@ describe('DetectedTokenValues', () => {
 
   it('should render the detected token address', async () => {
     const store = configureStore(testData);
-    renderWithProvider(<DetectedTokenValues {...args} />, store);
+    const { getByText } = renderWithProvider(
+      <DetectedTokenValues {...args} />,
+      store,
+    );
 
-    expect(screen.getByText('0 SNX')).toBeInTheDocument();
-    expect(screen.getByText('$0')).toBeInTheDocument();
+    expect(getByText('0 SNX')).toBeInTheDocument();
+    expect(getByText('$0')).toBeInTheDocument();
   });
 });

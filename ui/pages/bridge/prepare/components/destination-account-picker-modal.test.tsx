@@ -1,6 +1,6 @@
 import React from 'react';
 import { createBridgeMockStore } from '../../../../../test/data/bridge/mock-bridge-store';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import { getToAccounts } from '../../../../ducks/bridge/selectors';
 import { DestinationAccountPickerModal } from './destination-account-picker-modal';
