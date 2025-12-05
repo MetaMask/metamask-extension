@@ -33,7 +33,7 @@ describe('Account syncing - Unsupported Account types', function () {
    * Phase 1: Create regular accounts, import a private key account, and verify the imported account is visible in the current session
    * Phase 2: Login to a fresh app instance and verify only regular accounts persist (imported accounts are excluded)
    */
-  it.only('does not sync imported accounts and exclude them when logging into a fresh app instance', async function () {
+  it('does not sync imported accounts and exclude them when logging into a fresh app instance', async function () {
     const userStorageMockttpController = new UserStorageMockttpController();
 
     const sharedMockSetup = (server: Mockttp) => {

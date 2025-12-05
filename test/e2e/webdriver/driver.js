@@ -1204,7 +1204,7 @@ class Driver {
     const start = Date.now();
     // eslint-disable-next-line no-constant-condition
     while (true) {
-      const handles = await this.getAllWindowHandles();
+      const handles = await this.driver.getAllWindowHandles();
       if (!handles.includes(handle)) {
         return;
       }
