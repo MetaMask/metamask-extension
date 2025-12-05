@@ -568,29 +568,12 @@
         "@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/multichain-network-controller": true,
+        "@metamask/bridge-controller>@metamask/multichain-network-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "@metamask/bridge-controller>bignumber.js": true,
         "lodash": true,
         "reselect": true
-      }
-    },
-    "@metamask/browser-passworder": {
-      "globals": {
-        "Buffer.from": true,
-        "CryptoKey": true,
-        "btoa": true,
-        "crypto.getRandomValues": true,
-        "crypto.subtle.decrypt": true,
-        "crypto.subtle.deriveKey": true,
-        "crypto.subtle.encrypt": true,
-        "crypto.subtle.exportKey": true,
-        "crypto.subtle.importKey": true
-      },
-      "packages": {
-        "@metamask/browser-passworder>@metamask/utils": true,
-        "buffer": true
       }
     },
     "@metamask/chain-agnostic-permission": {
@@ -705,7 +688,7 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/eth-json-rpc-provider": true,
+        "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/eth-json-rpc-provider": true,
         "@metamask/json-rpc-engine": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true
@@ -713,11 +696,9 @@
     },
     "@metamask/eth-json-rpc-middleware": {
       "globals": {
-        "console.error": true,
         "setTimeout": true
       },
       "packages": {
-        "@metamask/json-rpc-engine": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "@metamask/json-rpc-engine>klona": true,
@@ -725,6 +706,12 @@
       }
     },
     "@metamask/eth-json-rpc-provider": {
+      "packages": {
+        "@metamask/json-rpc-engine": true,
+        "nanoid": true
+      }
+    },
+    "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/eth-json-rpc-provider": {
       "packages": {
         "@metamask/json-rpc-engine": true,
         "@metamask/rpc-errors": true,
@@ -883,6 +870,7 @@
         "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,
         "@metamask/utils": true,
+        "deep-freeze-strict": true,
         "@metamask/json-rpc-engine>klona": true
       }
     },
@@ -927,7 +915,6 @@
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/base-controller": true,
-        "@metamask/browser-passworder": true,
         "@metamask/keyring-controller>@metamask/eth-hd-keyring": true,
         "@metamask/eth-sig-util": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
@@ -989,6 +976,11 @@
       "packages": {
         "@metamask/keyring-api": true,
         "@metamask/network-controller": true,
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/bridge-controller>@metamask/multichain-network-controller": {
+      "packages": {
         "@metamask/utils": true
       }
     },
@@ -1209,22 +1201,6 @@
         "buffer": true,
         "nock>debug": true,
         "lodash": true,
-        "@metamask/utils>pony-cause": true,
-        "semver": true
-      }
-    },
-    "@metamask/browser-passworder>@metamask/utils": {
-      "globals": {
-        "Buffer": true,
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/superstruct": true,
-        "@noble/hashes": true,
-        "@scure/base": true,
-        "buffer": true,
-        "nock>debug": true,
         "@metamask/utils>pony-cause": true,
         "semver": true
       }
@@ -3464,18 +3440,6 @@
         "react-dom>scheduler": true
       }
     },
-    "react-responsive-carousel>react-easy-swipe": {
-      "globals": {
-        "addEventListener": true,
-        "define": true,
-        "document.addEventListener": true,
-        "document.removeEventListener": true
-      },
-      "packages": {
-        "prop-types": true,
-        "react": true
-      }
-    },
     "react-popper>react-fast-compare": {
       "globals": {
         "Element": true,
@@ -3552,22 +3516,6 @@
         "react": true,
         "react-dom": true,
         "react-redux>react-is": true
-      }
-    },
-    "react-responsive-carousel": {
-      "globals": {
-        "HTMLElement": true,
-        "clearTimeout": true,
-        "console.warn": true,
-        "document": true,
-        "getComputedStyle": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "classnames": true,
-        "react": true,
-        "react-dom": true,
-        "react-responsive-carousel>react-easy-swipe": true
       }
     },
     "react-router-dom": {
