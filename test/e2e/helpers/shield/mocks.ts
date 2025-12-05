@@ -19,6 +19,10 @@ import {
   MOCK_CLAIM_GENERATE_MESSAGE_RESPONSE,
   MOCK_CLAIM_1,
   RULESET_ENGINE_API,
+  REWARDS_API,
+  MOCK_REWARDS_POINTS_ESTIMATION_RESPONSE,
+  MOCK_REWARDS_SEASONS_STATUS_RESPONSE,
+  MOCK_REWARDS_SEASON_METADATA_RESPONSE,
 } from './constants';
 
 export class ShieldMockttpService {
@@ -81,6 +85,9 @@ export class ShieldMockttpService {
 
     // Ruleset Engine APIs
     await this.#handleRulesetEngine(server);
+
+    // Rewards APIs (needed for useShieldRewards hook on Shield Plan page)
+    await this.#handleRewardsApis(server);
   }
 
   async #handleSubscriptionPricing(server: Mockttp) {
@@ -448,5 +455,30 @@ export class ShieldMockttpService {
           },
         };
       });
+  }
+
+  async #handleRewardsApis(server: Mockttp) {
+    // Mock points estimation endpoint (used by useShieldRewards hook)
+    await server
+      .forPost(REWARDS_API.POINTS_ESTIMATION)
+      .always()
+      .thenJson(200, MOCK_REWARDS_POINTS_ESTIMATION_RESPONSE);
+
+    // Mock seasons status endpoint (used by useShieldRewards hook)
+    await server
+      .forGet(REWARDS_API.SEASONS_STATUS)
+      .always()
+      .thenJson(200, MOCK_REWARDS_SEASONS_STATUS_RESPONSE);
+
+    // Mock season metadata endpoint (used by getRewardsSeasonMetadata)
+    // This uses a regex to match /public/seasons/{seasonId}/meta
+    const seasonMetadataRegex = new RegExp(
+      `^${REWARDS_API.SEASON_METADATA}/[^/]+/meta$`,
+      'u',
+    );
+    await server
+      .forGet(seasonMetadataRegex)
+      .always()
+      .thenJson(200, MOCK_REWARDS_SEASON_METADATA_RESPONSE);
   }
 }

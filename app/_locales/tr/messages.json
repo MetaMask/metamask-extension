@@ -4273,25 +4273,6 @@
     "message": "$1 simgesi",
     "description": "$1 is the icon name"
   },
-  "onboardingPinExtensionAltLaunch": {
-    "message": "Uzantıyı başlat"
-  },
-  "onboardingPinExtensionAltPin": {
-    "message": "Uzantıyı sabitle"
-  },
-  "onboardingPinExtensionDescription": {
-    "message": "İşlem onaylarını erişilebilir ve kolay görüntülenebilir hale getirmek için MetaMask'i tarayıcınıza sabitleyin."
-  },
-  "onboardingPinExtensionDescription2": {
-    "message": "Uzantıya tıklayarak 1 tık ile MetaMask cüzdanınıza erişim sağlayın."
-  },
-  "onboardingPinExtensionDescription3": {
-    "message": "Hemen erişim sağlamak için $1 uzantısı simgesine tıklayın",
-    "description": "$1 is the browser name"
-  },
-  "onboardingPinExtensionTitle": {
-    "message": "Yükleme tamamlandı!"
-  },
   "onboardingSignInWith": {
     "message": "$1 ile giriş yap",
     "description": "$1 is the type of login used Google, Apple, etc"

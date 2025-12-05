@@ -4273,25 +4273,6 @@
     "message": "$1 icon",
     "description": "$1 is the icon name"
   },
-  "onboardingPinExtensionAltLaunch": {
-    "message": "Ilunsad ang extension"
-  },
-  "onboardingPinExtensionAltPin": {
-    "message": "I-pin ang extension"
-  },
-  "onboardingPinExtensionDescription": {
-    "message": "I-pin ang MetaMask sa iyong browser para madali itong ma-access at madaling makita ang mga kumpirmasyon ng transaksyon."
-  },
-  "onboardingPinExtensionDescription2": {
-    "message": "I-access ang iyong MetaMask wallet sa 1 click sa pamamagitan ng pag-click sa extension."
-  },
-  "onboardingPinExtensionDescription3": {
-    "message": "I-click ang $1 extension icon para ma-access ito kaagad",
-    "description": "$1 is the browser name"
-  },
-  "onboardingPinExtensionTitle": {
-    "message": "Tapos na ang pag-install!"
-  },
   "onboardingSignInWith": {
     "message": "Mag-sign in gamit ang $1",
     "description": "$1 is the type of login used Google, Apple, etc"

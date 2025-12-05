@@ -4273,25 +4273,6 @@
     "message": "Biểu tượng $1",
     "description": "$1 is the icon name"
   },
-  "onboardingPinExtensionAltLaunch": {
-    "message": "Khởi chạy tiện ích mở rộng"
-  },
-  "onboardingPinExtensionAltPin": {
-    "message": "Ghim tiện ích mở rộng"
-  },
-  "onboardingPinExtensionDescription": {
-    "message": "Ghim MetaMask trên trình duyệt của bạn để dễ dàng truy cập và xem xác nhận giao dịch."
-  },
-  "onboardingPinExtensionDescription2": {
-    "message": "Truy cập ví MetaMask của bạn chỉ với 1 lần nhấp bằng cách nhấp vào tiện ích mở rộng."
-  },
-  "onboardingPinExtensionDescription3": {
-    "message": "Nhấp vào biểu tượng tiện ích mở rộng $1 để truy cập tức thì",
-    "description": "$1 is the browser name"
-  },
-  "onboardingPinExtensionTitle": {
-    "message": "Cài đặt hoàn tất!"
-  },
   "onboardingSignInWith": {
     "message": "Đăng nhập bằng $1",
     "description": "$1 is the type of login used Google, Apple, etc"

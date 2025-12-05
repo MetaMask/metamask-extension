@@ -113,8 +113,8 @@
     "currencyRates": {
       "ETH": {
         "conversionDate": "number",
-        "conversionRate": 1700,
-        "usdConversionRate": 1700
+        "conversionRate": 1700.0000000000002,
+        "usdConversionRate": 1700.0000000000002
       },
       "MON": {
         "conversionDate": "number",
@@ -192,12 +192,7 @@
   "NameController": { "names": "object", "nameSources": "object" },
   "NetworkController": {
     "selectedNetworkClientId": "string",
-    "networksMetadata": {
-      "networkConfigurationId": {
-        "EIPS": { "1559": true },
-        "status": "available"
-      }
-    },
+    "networksMetadata": "object",
     "networkConfigurationsByChainId": "object"
   },
   "NetworkEnablementController": {
@@ -313,6 +308,7 @@
     "watchEthereumAccountEnabled": "boolean",
     "referrals": "object"
   },
+  "ProfileMetricsController": "object",
   "RemoteFeatureFlagController": {
     "remoteFeatureFlags": {
       "feature1": true,

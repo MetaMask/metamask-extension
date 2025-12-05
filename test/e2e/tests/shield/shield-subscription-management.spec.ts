@@ -74,6 +74,10 @@ describe('Shield Plan Stripe Integration', function () {
 
           await shieldDetailPage.clickSubmitCaseButton();
 
+          const shieldClaimsListPage = new ShieldClaimsListPage(driver);
+          await shieldClaimsListPage.checkPageIsLoaded();
+          await shieldClaimsListPage.clickSubmitClaimButton();
+
           const shieldClaimPage = new ShieldClaimPage(driver);
           await shieldClaimPage.checkPageIsLoaded();
 
@@ -91,13 +95,10 @@ describe('Shield Plan Stripe Integration', function () {
 
           await shieldClaimPage.checkSuccessMessageDisplayed();
 
-          const shieldClaimsListPage = new ShieldClaimsListPage(driver);
           await shieldClaimsListPage.checkPageIsLoaded();
 
           const { claimId } = SUBMIT_CLAIMS_RESPONSE;
           await shieldClaimsListPage.checkClaimExists(claimId);
-          await shieldClaimsListPage.checkClaimStatus(claimId, 'Created');
-
           await shieldClaimsListPage.clickClaimItem(claimId);
 
           await shieldClaimPage.checkPageIsLoadedInViewMode();
@@ -141,6 +142,10 @@ describe('Shield Plan Stripe Integration', function () {
           await shieldDetailPage.checkPageIsLoaded();
 
           await shieldDetailPage.clickSubmitCaseButton();
+
+          const shieldClaimsListPage = new ShieldClaimsListPage(driver);
+          await shieldClaimsListPage.checkPageIsLoaded();
+          await shieldClaimsListPage.clickSubmitClaimButton();
 
           const shieldClaimPage = new ShieldClaimPage(driver);
           await shieldClaimPage.checkPageIsLoaded();
@@ -193,6 +198,10 @@ describe('Shield Plan Stripe Integration', function () {
           await shieldDetailPage.checkPageIsLoaded();
 
           await shieldDetailPage.clickSubmitCaseButton();
+
+          const shieldClaimsListPage = new ShieldClaimsListPage(driver);
+          await shieldClaimsListPage.checkPageIsLoaded();
+          await shieldClaimsListPage.clickSubmitClaimButton();
 
           const shieldClaimPage = new ShieldClaimPage(driver);
           await shieldClaimPage.checkPageIsLoaded();

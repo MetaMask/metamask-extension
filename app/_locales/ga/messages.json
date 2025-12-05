@@ -4273,25 +4273,6 @@
     "message": "Deilbhín $1",
     "description": "$1 is the icon name"
   },
-  "onboardingPinExtensionAltLaunch": {
-    "message": "Seoladh síneadh"
-  },
-  "onboardingPinExtensionAltPin": {
-    "message": "Síneadh bioráin"
-  },
-  "onboardingPinExtensionDescription": {
-    "message": "Prínnigh MetaMask ar do bhrabhsálaí ionas go mbeidh sé inrochtana agus éasca deimhnithe idirbheart a fheiceáil."
-  },
-  "onboardingPinExtensionDescription2": {
-    "message": "Rochtain do sparán MetaMask le 1 chlic trí chliceáil ar an síneadh."
-  },
-  "onboardingPinExtensionDescription3": {
-    "message": "Cliceáil ar dheilbhín síneadh $1 chun rochtain a fháil air láithreach",
-    "description": "$1 is the browser name"
-  },
-  "onboardingPinExtensionTitle": {
-    "message": "Tá an suiteáil críochnaithe!"
-  },
   "onboardingSignInWith": {
     "message": "Sínigh isteach le $1",
     "description": "$1 is the type of login used Google, Apple, etc"
