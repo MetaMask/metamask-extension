@@ -3215,8 +3215,12 @@ export function addImportedTokens(
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
+      const convertedTokensToImport = tokensToImport.map((token) => ({
+        ...token,
+        address: token.address.toLowerCase(),
+      }));
       await submitRequestToBackground('addImportedTokens', [
-        tokensToImport,
+        convertedTokensToImport,
         networkClientId,
       ]);
     } catch (error) {
