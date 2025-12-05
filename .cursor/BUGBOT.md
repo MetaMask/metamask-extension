@@ -15,7 +15,7 @@ For full guidelines, see [e2e-testing-guidelines.mdc](rules/e2e-testing-guidelin
 
 | Pattern               | Regex                              | Comment                      |
 | --------------------- | ---------------------------------- | ---------------------------- |
-| CSS/ID selectors      | `(click\|find)Element\(['"][\.\#]` | Use `data-testid` attributes |
+| CSS/ID selectors      | `(click\|find)Element\(['"][\.\#]` | Use predefined selectors from the page object class `this.selector` |
 | "should" in test name | `it\(\s*['"]should\s`              | Use action-based names       |
 | Multiple behaviors    | `it\(\s*['"][^'"]*\s+and\s+`       | Split into focused tests     |
 | setTimeout            | `setTimeout\(`                     | Use driver wait methods      |
