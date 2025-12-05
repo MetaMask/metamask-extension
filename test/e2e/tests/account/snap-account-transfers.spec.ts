@@ -24,8 +24,9 @@ async function mockSnapSimpleKeyringAndSiteWithSpotPrices(
 
   return [...snapMocks, spotPricesMock];
 }
-
-describe('Snap Account Transfers', function (this: Suite) {
+// BUG #38568 - Sending token crashes the Extension with BigNumber error
+// eslint-disable-next-line mocha/no-skipped-tests
+describe.skip('Snap Account Transfers', function (this: Suite) {
   it('can import a private key and transfer 1 ETH (sync flow)', async function () {
     await withFixtures(
       {

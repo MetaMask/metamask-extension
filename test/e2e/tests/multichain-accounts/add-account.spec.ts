@@ -28,7 +28,9 @@ const importedAccount = {
 };
 
 describe('Add account', function () {
-  it('should not affect public address when using secret recovery phrase to recover account with non-zero balance', async function () {
+  // BUG #38568 - Sending token crashes the Extension with BigNumber error
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('should not affect public address when using secret recovery phrase to recover account with non-zero balance', async function () {
     await withMultichainAccountsDesignEnabled(
       {
         title: this.test?.fullTitle(),

@@ -17,7 +17,7 @@ describe('Swap tests', function (this: Suite) {
           true,
         ),
       },
-      async ({ driver }) => {
+      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await unlockWallet(driver);
 
         const homePage = new HomePage(driver);

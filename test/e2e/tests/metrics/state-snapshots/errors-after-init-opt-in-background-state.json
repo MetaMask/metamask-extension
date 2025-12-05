@@ -46,13 +46,11 @@
     "lastViewedUserSurvey": null,
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
     "newPrivacyPolicyToastShownDate": "number",
+    "pna25Acknowledged": "boolean",
     "nftsDetectionNoticeDismissed": false,
     "notificationGasPollTokens": "object",
     "onboardingDate": null,
     "outdatedBrowserWarningLastShown": "object",
-    "pendingShieldCohort": null,
-    "pendingShieldCohortTxType": null,
-    "pna25Acknowledged": "boolean",
     "popupGasPollTokens": "object",
     "productTour": "accountIcon",
     "recoveryPhraseReminderHasBeenShown": true,
@@ -70,17 +68,19 @@
     "throttledOrigins": "object",
     "trezorModel": null,
     "updateModalLastDismissedAt": null,
-    "isWalletResetInProgress": "boolean",
     "hasShownMultichainAccountsIntroModal": "boolean",
     "showShieldEntryModalOnce": "boolean",
+    "pendingShieldCohort": null,
+    "pendingShieldCohortTxType": null,
+    "isWalletResetInProgress": "boolean",
+    "dappSwapComparisonData": "object",
     "addressSecurityAlertResponses": "object",
     "currentExtensionPopupId": "number",
-    "dappSwapComparisonData": "object",
     "nftsDropdownState": {},
     "signatureSecurityAlertResponses": "object",
     "networkConnectionBanner": "object",
-    "termsOfUseLastAgreed": "number",
-    "snapsInstallPrivacyWarningShown": true
+    "snapsInstallPrivacyWarningShown": true,
+    "termsOfUseLastAgreed": "number"
   },
   "ApprovalController": {
     "pendingApprovals": "object",
@@ -308,6 +308,7 @@
     "watchEthereumAccountEnabled": "boolean",
     "referrals": "object"
   },
+  "ProfileMetricsController": "object",
   "RemoteFeatureFlagController": {
     "remoteFeatureFlags": {
       "enableMultichainAccountsState2": {
