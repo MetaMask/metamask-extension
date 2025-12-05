@@ -9,8 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.13.0]
 
+### Uncategorized
+
+- Adds event tracing for hide token. (#38358)
+
 ### Added
 
+- N/A (#38501)
+- N/A (#38423)
+- feat: added metrics for pna25 banner (#38403)
 - Enable tx submission before swap quotes are loaded (#37963)
 - Adds shield rewards modal (#38379)
 - Sidepanel enabled (#38550)
