@@ -1167,11 +1167,14 @@ class Driver {
   /**
    * Retrieves the handles of all open window tabs in the browser session.
    *
+   * If the WebSocket connection to the extension is lost (e.g., during extension
+   * reload), falls back to the direct driver method.
+   *
    * @returns {Promise<Array<string>>} A promise that will
    *     be resolved with an array of window handles.
    */
   async getAllWindowHandles() {
-    if (this.windowHandles) {
+    if (this.windowHandles && this.windowHandles.isConnected()) {
       return await this.windowHandles.getAllWindowHandles();
     }
     return await this.driver.getAllWindowHandles();
@@ -1202,9 +1205,11 @@ class Driver {
    */
   async waitForWindowToClose(handle, timeout = this.timeout) {
     const start = Date.now();
+    const delayStep = 1000;
+
     // eslint-disable-next-line no-constant-condition
     while (true) {
-      const handles = await this.driver.getAllWindowHandles();
+      const handles = await this.getAllWindowHandles();
       if (!handles.includes(handle)) {
         return;
       }
@@ -1215,6 +1220,8 @@ class Driver {
           `waitForWindowToClose timed out waiting for window handle '${handle}' to close.`,
         );
       }
+
+      await this.delay(delayStep);
     }
   }
 

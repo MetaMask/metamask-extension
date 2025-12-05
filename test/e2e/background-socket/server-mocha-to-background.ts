@@ -69,6 +69,11 @@ class ServerMochaToBackground {
     console.debug('ServerMochaToBackground stopped');
   }
 
+  // Check if the WebSocket is connected
+  isConnected() {
+    return this.ws !== null;
+  }
+
   // Send a message to the Extension background script (service worker in MV3)
   send(message: MessageType) {
     if (!this.ws) {
