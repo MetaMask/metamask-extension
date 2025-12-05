@@ -1,3 +1,5 @@
+import { type CaipChainId, isStrictHexString } from '@metamask/utils';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { CHAIN_IDS } from './network';
 
 export enum EtherDenomination {
@@ -55,6 +57,19 @@ export const CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP: BlockExplorerUrlMap = {
   [CHAIN_IDS.HYPE]: HYPEREVM_DEFAULT_BLOCK_EXPLORER_URL,
   [CHAIN_IDS.MEGAETH_MAINNET]: MEGAETH_DEFAULT_BLOCK_EXPLORER_URL,
 } as const;
+
+export const CAIP_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP = Object.entries(
+  CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
+).reduce(
+  (acc, [chainId, url]) => {
+    if (isStrictHexString(chainId)) {
+      const caipChainId = toEvmCaipChainId(chainId);
+      acc[caipChainId] = url;
+    }
+    return acc;
+  },
+  {} as Record<CaipChainId, string>,
+);
 
 export const CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP: BlockExplorerUrlMap =
   {

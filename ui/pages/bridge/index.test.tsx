@@ -90,12 +90,6 @@ describe('Bridge', () => {
           support: true,
           refreshRate: 5000,
           maxRefreshCount: 5,
-          chains: {
-            '1': {
-              isActiveSrc: true,
-              isActiveDest: false,
-            },
-          },
         },
       },
       metamaskStateOverrides: {

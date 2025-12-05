@@ -19,6 +19,7 @@ import {
 } from '@metamask/bridge-controller';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { KeyringTypes } from '@metamask/keyring-controller';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 
 const storybook = {
   title: 'Pages/Bridge/CrossChainSwapPage',
@@ -53,24 +54,14 @@ const mockFeatureFlags = {
       gasless: 2,
     },
     maxRefreshCount: 5,
-    support: true,
-    chains: {
-      '0x1': {
-        isActiveSrc: true,
-        isActiveDest: true,
-        isSingleSwapBridgeButtonEnabled: true,
-      },
-      '0xa': {
-        isActiveSrc: true,
-        isActiveDest: true,
-        isSingleSwapBridgeButtonEnabled: true,
-      },
-      '0x89': {
-        isActiveSrc: true,
-        isActiveDest: true,
-        isSingleSwapBridgeButtonEnabled: true,
-      },
-    },
+    chainRanking: [
+      { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+      { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+      { chainId: formatChainIdToCaip(CHAIN_IDS.POLYGON) },
+      { chainId: MultichainNetworks.SOLANA },
+      { chainId: MultichainNetworks.BITCOIN },
+      { chainId: MultichainNetworks.TRON },
+    ],
   },
 };
 const mockBridgeSlice = {
@@ -91,21 +82,6 @@ DefaultStory.decorators = [
           bridgeStateOverrides: {
             quotes: [],
             quotesLastFetched: Date.now(),
-          },
-          metamaskStateOverrides: {
-            useExternalServices: true,
-            currencyRates: {
-              ETH: { conversionRate: 2514.5 },
-            },
-            marketData: {
-              '0x1': {
-                ['0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85']: {
-                  price: 0.00039762010419237126,
-                  contractPercentChange1d: 0.004,
-                  priceChange1d: 0.00004,
-                },
-              },
-            },
           },
         }),
       )}
@@ -134,21 +110,6 @@ LoadingStory.decorators = [
               quotesLastFetched: 134,
               quotesLoadingStatus: RequestStatus.LOADING,
             },
-            metamaskStateOverrides: {
-              useExternalServices: true,
-              currencyRates: {
-                ETH: { conversionRate: 2514.5 },
-              },
-              marketData: {
-                '0x1': {
-                  ['0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85']: {
-                    price: 0.00039762010419237126,
-                    contractPercentChange1d: 0.004,
-                    priceChange1d: 0.00004,
-                  },
-                },
-              },
-            },
           }),
         )}
       >
@@ -169,7 +130,28 @@ NoQuotesStory.decorators = [
         store={configureStore(
           createBridgeMockStore({
             featureFlagOverrides: mockFeatureFlags,
-            bridgeSliceOverrides: mockBridgeSlice,
+            bridgeSliceOverrides: {
+              fromTokenInputValue: '1',
+              fromToken: {
+                address: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+                assetId:
+                  'eip155:1/erc20:0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+                chainId: CHAIN_IDS.MAINNET,
+                decimals: 6,
+                symbol: 'USDC',
+                name: 'USD Coin',
+              },
+              toToken: {
+                address: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+                assetId:
+                  'eip155:59144/erc20:0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
+                chainId: CHAIN_IDS.LINEA_MAINNET,
+                decimals: 6,
+                symbol: 'USDC',
+                name: 'Native USD Coin (POS)',
+              },
+              toChainId: CHAIN_IDS.LINEA_MAINNET,
+            },
             bridgeStateOverrides: {
               quoteRequest: {
                 srcChainId: CHAIN_IDS.MAINNET,
@@ -184,23 +166,8 @@ NoQuotesStory.decorators = [
                 insufficientBal: false,
               },
               quotes: [],
-              quotesLastFetched: 134,
+              quotesLastFetched: Date.now(),
               quotesLoadingStatus: RequestStatus.FETCHED,
-            },
-            metamaskStateOverrides: {
-              useExternalServices: true,
-              currencyRates: {
-                ETH: { conversionRate: 2514.5 },
-              },
-              marketData: {
-                '0x1': {
-                  ['0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85']: {
-                    price: 0.00039762010419237126,
-                    contractPercentChange1d: 0.004,
-                    priceChange1d: 0.00004,
-                  },
-                },
-              },
             },
           }),
         )}
@@ -227,21 +194,6 @@ QuotesFetchedStory.decorators = [
               quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
               quotesLastFetched: Date.now(),
               quotesLoadingStatus: RequestStatus.FETCHED,
-            },
-            metamaskStateOverrides: {
-              useExternalServices: true,
-              currencyRates: {
-                ETH: { conversionRate: 2514.5 },
-              },
-              marketData: {
-                '0x1': {
-                  ['0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85']: {
-                    price: 0.00039762010419237126,
-                    contractPercentChange1d: 0.004,
-                    priceChange1d: 0.00004,
-                  },
-                },
-              },
             },
           }),
         )}
@@ -295,27 +247,6 @@ AlertsPresentStory.decorators = [
                 walletAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
                 gasIncluded: true,
                 insufficientBal: false,
-              },
-            },
-            metamaskStateOverrides: {
-              internalAccounts: {
-                accounts: {
-                  [mockHardwareAccount.id]: mockHardwareAccount,
-                },
-                selectedAccount: mockHardwareAccount.id,
-              },
-              useExternalServices: true,
-              currencyRates: {
-                ETH: { conversionRate: 2514.5 },
-              },
-              marketData: {
-                '0x1': {
-                  ['0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85']: {
-                    price: 0.00039762010419237126,
-                    contractPercentChange1d: 0.004,
-                    priceChange1d: 0.00004,
-                  },
-                },
               },
             },
           }),

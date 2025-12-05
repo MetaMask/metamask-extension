@@ -8,7 +8,7 @@ import { TransactionController } from '@metamask/transaction-controller';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import { trace } from '../../../shared/lib/trace';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
-import { MINUTE, SECOND } from '../../../shared/constants/time';
+import { MINUTE } from '../../../shared/constants/time';
 import { getEnvironmentType } from '../lib/util';
 import { ControllerInitFunction } from './types';
 import {
@@ -60,17 +60,12 @@ export const BridgeControllerInit: ControllerInitFunction<
           functionName: 'fetchBridgeTokens',
         });
       }
-      // Cache spot prices for 30 seconds
-      if (urlString.includes('spot-prices')) {
-        return await fetchWithCache({
-          url: urlString,
-          fetchOptions: { method: 'GET', ...requestOptions },
-          cacheOptions: { cacheRefreshTime: 30 * SECOND },
-          functionName: 'fetchAssetExchangeRates',
-        });
-      }
-      // Use handleFetch for getQuote
-      if (urlString.includes('getQuote?')) {
+      // TODO add migration to remove spot-prices from storage
+      // Use handleFetch for getQuote and spot-prices
+      if (
+        urlString.includes('getQuote?') ||
+        urlString.includes('spot-prices')
+      ) {
         return await handleFetch(url, {
           method: 'GET',
           ...requestOptions,

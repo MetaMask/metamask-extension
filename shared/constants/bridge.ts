@@ -3,11 +3,18 @@ import {
   BRIDGE_DEV_API_BASE_URL,
   BRIDGE_PROD_API_BASE_URL,
   ChainId,
+  formatChainIdToCaip,
 } from '@metamask/bridge-controller';
+import { CaipAssetType, Hex } from '@metamask/utils';
+import { toAssetId } from '../lib/asset-utils';
 import { MultichainNetworks } from './multichain/networks';
-import { CHAIN_IDS, NETWORK_TO_NAME_MAP } from './network';
+import {
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  CHAIN_IDS,
+  NETWORK_TO_NAME_MAP,
+} from './network';
 
-const ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS = [
+export const ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS = [
   MultichainNetworks.SOLANA,
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin-swaps)
   MultichainNetworks.BITCOIN,
@@ -17,7 +24,7 @@ const ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS = [
   ///: END:ONLY_INCLUDE_IF
 ];
 
-const ALLOWED_EVM_BRIDGE_CHAIN_IDS = [
+export const ALLOWED_EVM_BRIDGE_CHAIN_IDS: Hex[] = [
   CHAIN_IDS.MAINNET,
   CHAIN_IDS.BSC,
   CHAIN_IDS.POLYGON,
@@ -104,7 +111,27 @@ export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
   ///: END:ONLY_INCLUDE_IF
 };
 
+export const BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP: Record<
+  (typeof ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP)[number],
+  string
+> = ALLOWED_BRIDGE_CHAIN_IDS.reduce(
+  (acc, chainId) => {
+    acc[formatChainIdToCaip(chainId)] =
+      CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId];
+    return acc;
+  },
+  {} as Record<(typeof ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP)[number], string>,
+);
+
 export const STATIC_METAMASK_BASE_URL = 'https://static.cx.metamask.io';
+
+const toAssetIdOrThrow = (...args: Parameters<typeof toAssetId>) => {
+  const assetId = toAssetId(...args);
+  if (!assetId) {
+    throw new Error(`Failed to create asset ID for: ${args.join(', ')}`);
+  }
+  return assetId;
+};
 
 export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
   Record<
@@ -114,6 +141,7 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
       symbol: string;
       decimals: number;
       name: string;
+      assetId: CaipAssetType;
     }
   >
 > = {
@@ -123,6 +151,10 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
     symbol: 'mUSD',
     decimals: 6,
     name: 'MetaMask USD',
+    assetId: toAssetIdOrThrow(
+      '0xaca92e438df0b2401ff60da7e4337b687a2435da',
+      toEvmCaipChainId(CHAIN_IDS.MAINNET),
+    ),
   },
   [toEvmCaipChainId(CHAIN_IDS.OPTIMISM)]: {
     // ETH -> USDC on Optimism
@@ -130,6 +162,10 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
     symbol: 'USDC',
     decimals: 6,
     name: 'USD Coin',
+    assetId: toAssetIdOrThrow(
+      '0x0b2c639c533813f4aa9d7837caf62653d097ff85',
+      toEvmCaipChainId(CHAIN_IDS.OPTIMISM),
+    ),
   },
   [toEvmCaipChainId(CHAIN_IDS.ARBITRUM)]: {
     // ETH -> USDC on Arbitrum
@@ -137,6 +173,10 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
     symbol: 'USDC',
     decimals: 6,
     name: 'USD Coin',
+    assetId: toAssetIdOrThrow(
+      '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
+      toEvmCaipChainId(CHAIN_IDS.ARBITRUM),
+    ),
   },
   [toEvmCaipChainId(CHAIN_IDS.BASE)]: {
     // ETH -> USDC on Base
@@ -144,6 +184,10 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
     symbol: 'USDC',
     decimals: 6,
     name: 'USD Coin',
+    assetId: toAssetIdOrThrow(
+      '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+      toEvmCaipChainId(CHAIN_IDS.BASE),
+    ),
   },
   [toEvmCaipChainId(CHAIN_IDS.POLYGON)]: {
     // POL -> USDT on Polygon
@@ -151,6 +195,10 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
     symbol: 'USDT',
     decimals: 6,
     name: 'Tether USD',
+    assetId: toAssetIdOrThrow(
+      '0xc2132d05d31c914a87c6611c10748aeb04b58e8f',
+      toEvmCaipChainId(CHAIN_IDS.POLYGON),
+    ),
   },
   [toEvmCaipChainId(CHAIN_IDS.BSC)]: {
     // BNB -> USDT on BSC
@@ -158,6 +206,10 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
     symbol: 'USDT',
     decimals: 18,
     name: 'Tether USD',
+    assetId: toAssetIdOrThrow(
+      '0x55d398326f99059ff775485246999027b3197955',
+      toEvmCaipChainId(CHAIN_IDS.BSC),
+    ),
   },
   [toEvmCaipChainId(CHAIN_IDS.AVALANCHE)]: {
     // AVAX -> USDC on Avalanche
@@ -165,6 +217,10 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
     symbol: 'USDC',
     decimals: 6,
     name: 'USD Coin',
+    assetId: toAssetIdOrThrow(
+      '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e',
+      toEvmCaipChainId(CHAIN_IDS.AVALANCHE),
+    ),
   },
   [toEvmCaipChainId(CHAIN_IDS.ZKSYNC_ERA)]: {
     // ETH -> USDT on zkSync Era
@@ -172,6 +228,10 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
     symbol: 'USDT',
     decimals: 6,
     name: 'Tether USD',
+    assetId: toAssetIdOrThrow(
+      '0x493257fd37edb34451f62edf8d2a0c418852ba4c',
+      toEvmCaipChainId(CHAIN_IDS.ZKSYNC_ERA),
+    ),
   },
   [toEvmCaipChainId(CHAIN_IDS.LINEA_MAINNET)]: {
     // ETH -> mUSD on Linea
@@ -179,6 +239,10 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
     symbol: 'mUSD',
     decimals: 6,
     name: 'MetaMask USD',
+    assetId: toAssetIdOrThrow(
+      '0xaca92e438df0b2401ff60da7e4337b687a2435da',
+      toEvmCaipChainId(CHAIN_IDS.LINEA_MAINNET),
+    ),
   },
   [toEvmCaipChainId(CHAIN_IDS.SEI)]: {
     // SEI -> USDC on Sei
@@ -186,6 +250,10 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
     symbol: 'USDC',
     decimals: 6,
     name: 'USD Coin',
+    assetId: toAssetIdOrThrow(
+      '0xe15fC38F6D8c56aF07bbCBe3BAf5708A2Bf42392',
+      toEvmCaipChainId(CHAIN_IDS.SEI),
+    ),
   },
   [toEvmCaipChainId(CHAIN_IDS.MONAD)]: {
     // MON -> USDC on Monad
@@ -193,6 +261,10 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
     symbol: 'USDC',
     decimals: 6,
     name: 'USD Coin',
+    assetId: toAssetIdOrThrow(
+      '0x754704Bc059F8C67012fEd69BC8A327a5aafb603',
+      toEvmCaipChainId(CHAIN_IDS.MONAD),
+    ),
   },
   [MultichainNetworks.SOLANA]: {
     // SOL -> USDC on Solana
@@ -200,6 +272,10 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
     symbol: 'USDC',
     decimals: 6,
     name: 'USD Coin',
+    assetId: toAssetIdOrThrow(
+      'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+      MultichainNetworks.SOLANA,
+    ),
   },
   ///: BEGIN:ONLY_INCLUDE_IF(tron)
   [MultichainNetworks.TRON]: {
@@ -208,6 +284,10 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
     symbol: 'USDT',
     decimals: 6,
     name: 'Tether USD',
+    assetId: toAssetIdOrThrow(
+      'tron:728126428/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+      MultichainNetworks.TRON,
+    ),
   },
   ///: END:ONLY_INCLUDE_IF
 } as const;

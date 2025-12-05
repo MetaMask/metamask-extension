@@ -7,6 +7,7 @@
       "srcAsset": {
         "chainId": 10,
         "address": "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85",
+        "assetId": "eip155:10/erc20:0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85",
         "symbol": "USDC",
         "name": "USD Coin",
         "decimals": 6,
@@ -19,7 +20,7 @@
       "destAsset": {
         "chainId": 137,
         "address": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
-        "assetId": "asset:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
+        "assetId": "eip155:137/erc20:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
         "symbol": "USDC",
         "name": "Native USD Coin (POS)",
         "decimals": 6,
@@ -145,7 +146,7 @@
       "destAsset": {
         "chainId": 137,
         "address": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
-        "assetId": "asset:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
+        "assetId": "eip155:137/erc20:0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
         "symbol": "USDC",
         "name": "Native USD Coin (POS)",
         "decimals": 6,
