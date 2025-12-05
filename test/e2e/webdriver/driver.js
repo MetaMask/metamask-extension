@@ -1181,6 +1181,20 @@ class Driver {
   }
 
   /**
+   * Checks if the WebDriver session is still alive by making a lightweight call.
+   *
+   * @returns {Promise<boolean>} true if driver is responsive, false otherwise
+   */
+  async isDriverAlive() {
+    try {
+      await this.driver.getWindowHandle();
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  /**
    * Function that aims to simulate a click action on a specified web element
    * within a web page and waits for the current window to close.
    *
@@ -1197,6 +1211,9 @@ class Driver {
   /**
    * Waits for the specified window handle to close before returning.
    *
+   * First waits for the driver to become alive (in case of temporary unavailability
+   * during extension reload), then polls until the handle is no longer in the list.
+   *
    * @param {string} handle - The handle of the window or tab we'll wait for.
    * @param {number} [timeout] - The amount of time in milliseconds to wait
    * before timing out. Defaults to `this.timeout`.
@@ -1204,30 +1221,27 @@ class Driver {
    * the timeout.
    */
   async waitForWindowToClose(handle, timeout = this.timeout) {
-    let timeElapsed = 0;
+    // Wait for driver to be alive first (handles temporary unavailability during reloads)
+    await this.waitUntil(() => this.isDriverAlive(), {
+      timeout,
+      interval: 500,
+    });
 
-    while (timeElapsed <= timeout) {
-      const delayTime = 1000;
-      // Use retry to handle transient connection errors during window transitions
-      const handles = await retry(
-        {
-          retries: 5,
-          delay: delayTime,
-        },
-        () => this.getAllWindowHandles(),
-      );
-
+    const start = Date.now();
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      const handles = await this.getAllWindowHandles();
       if (!handles.includes(handle)) {
         return;
       }
 
-      await this.delay(delayTime);
-      timeElapsed += delayTime;
+      const timeElapsed = Date.now() - start;
+      if (timeElapsed > timeout) {
+        throw new Error(
+          `waitForWindowToClose timed out waiting for window handle '${handle}' to close.`,
+        );
+      }
     }
-
-    throw new Error(
-      `waitForWindowToClose timed out waiting for window handle '${handle}' to close.`,
-    );
   }
 
   /**
