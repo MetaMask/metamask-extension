@@ -364,8 +364,14 @@ export class PersistenceManager {
           const clone = structuredClone(this.#pendingPairs);
           // reset the pendingPairs
           this.#pendingPairs.clear();
+          try {
           // save the pairs
-          await this.#localStore.setKeyValues(clone);
+            await this.#localStore.setKeyValues(clone);
+          } catch (err) {
+            // restore the pending pairs if setting failed
+            this.#pendingPairs = clone;
+            throw err;
+          }
 
           const partialState = Object.create(null);
           for (const [key, value] of clone.entries()) {
