@@ -1207,11 +1207,12 @@ class Driver {
     let timeElapsed = 0;
 
     while (timeElapsed <= timeout) {
+      const delayTime = 1000;
       // Use retry to handle transient connection errors during window transitions
       const handles = await retry(
         {
           retries: 5,
-          delay: 200,
+          delay: delayTime,
         },
         () => this.getAllWindowHandles(),
       );
@@ -1220,7 +1221,6 @@ class Driver {
         return;
       }
 
-      const delayTime = 1000;
       await this.delay(delayTime);
       timeElapsed += delayTime;
     }
