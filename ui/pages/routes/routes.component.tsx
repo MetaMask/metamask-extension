@@ -5,7 +5,6 @@ import classnames from 'classnames';
 import React, { Suspense, useCallback, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import {
-  Route,
   type RouteComponentProps,
   Switch,
   useHistory,
@@ -17,7 +16,6 @@ import type { ApprovalType } from '@metamask/controller-utils';
 
 import { useAppSelector } from '../../store/store';
 import AuthenticatedV5Compat from '../../helpers/higher-order-components/authenticated/authenticated-v5-compat';
-import Initialized from '../../helpers/higher-order-components/initialized';
 import InitializedV5Compat from '../../helpers/higher-order-components/initialized/initialized-v5-compat';
 import Loading from '../../components/ui/loading-screen';
 import { Modal } from '../../components/app/modals';
@@ -509,9 +507,6 @@ export default function Routes() {
   const showExtensionInFullSizeView = useAppSelector(
     getShowExtensionInFullSizeView,
   );
-  const forgottenPassword = useAppSelector(
-    (state) => state.metamask.forgottenPassword,
-  );
   const isAccountMenuOpen = useAppSelector(
     (state) => state.appState.isAccountMenuOpen,
   );
@@ -633,8 +628,6 @@ export default function Routes() {
   }, [currentCurrency, dispatch]);
 
   const renderRoutes = useCallback(() => {
-    const RestoreVaultComponent = forgottenPassword ? Route : Initialized;
-
     const routes = (
       <Suspense fallback={null}>
         {/* since the loading time is less than 200ms, we decided not to show a spinner fallback or anything */}
@@ -669,10 +662,11 @@ export default function Routes() {
               includeLocation: true,
             })}
           </RouteWithLayout>
-          <RestoreVaultComponent
+          <RouteWithLayout
             path={RESTORE_VAULT_ROUTE}
             component={RestoreVaultPage}
             exact
+            layout={LegacyLayout}
           />
           <RouteWithLayout
             authenticated
@@ -1117,7 +1111,7 @@ export default function Routes() {
     }
 
     return routes;
-  }, [autoLockTimeLimit, forgottenPassword, dispatch]);
+  }, [autoLockTimeLimit, dispatch]);
 
   const t = useI18nContext();
 

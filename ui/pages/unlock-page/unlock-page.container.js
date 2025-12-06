@@ -69,7 +69,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
 
   const onImport = async () => {
     await propsMarkPasswordForgotten();
-    navigate(RESTORE_VAULT_ROUTE);
+    navigate(RESTORE_VAULT_ROUTE, { replace: true });
 
     if (isPopup) {
       global.platform.openExtensionInBrowser?.(RESTORE_VAULT_ROUTE);

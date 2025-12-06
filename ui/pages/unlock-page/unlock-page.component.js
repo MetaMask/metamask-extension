@@ -606,7 +606,7 @@ class UnlockPage extends Component {
               value={password}
               error={Boolean(error)}
               helpText={this.renderHelpText()}
-              autoComplete
+              autoComplete={false}
               autoFocus
               width={BlockSize.Full}
               marginBottom={4}
@@ -641,37 +641,39 @@ class UnlockPage extends Component {
                 : t('forgotPassword')}
             </Button>
 
-            <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
-              {t('needHelp', [
-                <Button
-                  variant={ButtonVariant.Link}
-                  color={TextColor.primaryDefault}
-                  href={SUPPORT_LINK}
-                  type="button"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  key="need-help-link"
-                  onClick={() => {
-                    this.context.trackEvent(
-                      {
-                        category: MetaMetricsEventCategory.Navigation,
-                        event: MetaMetricsEventName.SupportLinkClicked,
-                        properties: {
-                          url: SUPPORT_LINK,
+            {isRehydrationFlow && (
+              <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
+                {t('needHelp', [
+                  <Button
+                    variant={ButtonVariant.Link}
+                    color={TextColor.primaryDefault}
+                    href={SUPPORT_LINK}
+                    type="button"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    key="need-help-link"
+                    onClick={() => {
+                      this.context.trackEvent(
+                        {
+                          category: MetaMetricsEventCategory.Navigation,
+                          event: MetaMetricsEventName.SupportLinkClicked,
+                          properties: {
+                            url: SUPPORT_LINK,
+                          },
                         },
-                      },
-                      {
-                        contextPropsIntoEventProperties: [
-                          MetaMetricsContextProp.PageTitle,
-                        ],
-                      },
-                    );
-                  }}
-                >
-                  {needHelpText}
-                </Button>,
-              ])}
-            </Text>
+                        {
+                          contextPropsIntoEventProperties: [
+                            MetaMetricsContextProp.PageTitle,
+                          ],
+                        },
+                      );
+                    }}
+                  >
+                    {needHelpText}
+                  </Button>,
+                ])}
+              </Text>
+            )}
           </Box>
         </Box>
         {!isRehydrationFlow && (
