@@ -1,12 +1,10 @@
 import * as React from 'react';
 import classnames from 'classnames';
-import { useSelector } from 'react-redux';
 import {
   AvatarAccount,
   AvatarAccountSize,
   AvatarAccountVariant,
 } from '@metamask/design-system-react';
-import { getUseBlockie } from '../../../selectors';
 import { Text } from '../../component-library/text';
 import {
   AlignItems,
@@ -40,11 +38,11 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
   avatarType = AvatarType.TOKEN,
   borderColor,
   isTagOverlay = false,
+  variant = AvatarAccountVariant.Maskicon,
 }): JSX.Element => {
   const membersCount = members.length;
   const visibleMembers = members.slice(0, limit).reverse();
   const showTag = membersCount > limit;
-  const useBlockie = useSelector(getUseBlockie);
 
   let marginLeftValue = '';
   if (AvatarTokenSize.Xs) {
@@ -83,11 +81,7 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
                 <AvatarAccount
                   size={AvatarAccountSize.Xs}
                   address={member.avatarValue}
-                  variant={
-                    useBlockie
-                      ? AvatarAccountVariant.Blockies
-                      : AvatarAccountVariant.Jazzicon
-                  }
+                  variant={variant}
                 />
               )}
               {avatarType === AvatarType.NETWORK && (
