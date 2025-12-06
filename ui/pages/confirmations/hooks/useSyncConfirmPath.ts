@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 
 import {
   CONFIRM_TRANSACTION_ROUTE,
@@ -11,7 +11,7 @@ import { useConfirmationNavigation } from './useConfirmationNavigation';
 const useSyncConfirmPath = (currentConfirmation?: Confirmation) => {
   const { navigateToId } = useConfirmationNavigation();
   const { id: paramId } = useParams<{ id: string }>();
-  const confirmationId = currentConfirmation?.id;
+  const location = useLocation();
 
   useEffect(() => {
     // Only sync path if we're on a confirmation route
@@ -28,11 +28,11 @@ const useSyncConfirmPath = (currentConfirmation?: Confirmation) => {
     // This ensures /confirm-transaction always becomes /confirm-transaction/<id>
     // which is critical for popup/notification windows and "X of Y" navigation
     if (!paramId && currentConfirmation) {
-      navigateToId(confirmationId);
+      navigateToId(currentConfirmation.id);
     }
     // Note: confirmations is intentionally excluded from dependencies
     // navigateToId is memoized with useCallback and is sufficient for tracking changes
-  }, [paramId, currentConfirmation, navigateToId, confirmationId]);
+  }, [paramId, currentConfirmation, navigateToId, location.pathname]);
 };
 
 export default useSyncConfirmPath;
