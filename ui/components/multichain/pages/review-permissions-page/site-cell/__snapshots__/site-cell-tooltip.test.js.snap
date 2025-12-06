@@ -21,12 +21,13 @@ exports[`SiteCellTooltip should render correctly 1`] = `
           style="margin-left: 0px;"
         >
           <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
           >
             <img
-              alt="undefined logo"
-              class="mm-avatar-token__token-image"
-              src="0xf0b4efe81d9f277d05a9afeacbf076d86d9c041b"
+              alt="maskicon"
+              height="16"
+              src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E"
+              width="16"
             />
           </div>
         </div>
@@ -35,12 +36,13 @@ exports[`SiteCellTooltip should render correctly 1`] = `
           style="margin-left: -8px;"
         >
           <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
           >
             <img
-              alt="undefined logo"
-              class="mm-avatar-token__token-image"
-              src="0x86771cd233a04c004ceebc3c1ad402fe8a37ff32"
+              alt="maskicon"
+              height="16"
+              src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E"
+              width="16"
             />
           </div>
         </div>
@@ -49,12 +51,13 @@ exports[`SiteCellTooltip should render correctly 1`] = `
           style="margin-left: -8px;"
         >
           <div
-            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
           >
             <img
-              alt="undefined logo"
-              class="mm-avatar-token__token-image"
-              src="0x4dd158e8b382ba1649bda883a909037e1298552c"
+              alt="maskicon"
+              height="16"
+              src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E"
+              width="16"
             />
           </div>
         </div>

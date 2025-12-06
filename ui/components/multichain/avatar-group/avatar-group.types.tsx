@@ -1,3 +1,4 @@
+import type { AvatarAccountVariant } from '@metamask/design-system-react';
 import { BorderColor } from '../../../helpers/constants/design-system';
 import { AvatarTokenSize } from '../../component-library/avatar-token/avatar-token.types';
 import type { StyleUtilityProps } from '../../component-library/box';
@@ -22,9 +23,12 @@ export type AvatarGroupProps = StyleUtilityProps & {
   borderColor?: BorderColor;
   /** * Whether the tag should be displayed as separate text or within an overlay avatar */
   isTagOverlay?: boolean;
+  /** * Variant of AvatarAccount */
+  variant?: AvatarAccountVariant;
 };
 
 export enum AvatarType {
   TOKEN = 'TOKEN',
+  ACCOUNT = 'ACCOUNT',
   NETWORK = 'NETWORK',
 }

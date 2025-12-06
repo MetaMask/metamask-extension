@@ -1,5 +1,10 @@
 import * as React from 'react';
 import classnames from 'classnames';
+import {
+  AvatarAccount,
+  AvatarAccountSize,
+  AvatarAccountVariant,
+} from '@metamask/design-system-react';
 import { Text } from '../../component-library/text';
 import {
   AlignItems,
@@ -33,6 +38,7 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
   avatarType = AvatarType.TOKEN,
   borderColor,
   isTagOverlay = false,
+  variant = AvatarAccountVariant.Maskicon,
 }): JSX.Element => {
   const membersCount = members.length;
   const visibleMembers = members.slice(0, limit).reverse();
@@ -69,6 +75,13 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
                   name={member.symbol}
                   size={size}
                   borderColor={borderColor}
+                />
+              )}
+              {avatarType === AvatarType.ACCOUNT && (
+                <AvatarAccount
+                  size={AvatarAccountSize.Xs}
+                  address={member.avatarValue}
+                  variant={variant}
                 />
               )}
               {avatarType === AvatarType.NETWORK && (
