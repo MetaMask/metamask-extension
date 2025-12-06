@@ -66,7 +66,10 @@ import { withResolvers } from '../../shared/lib/promise-with-resolvers';
 import { flushPromises } from '../../test/lib/timer-helpers';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
-import { HYPERLIQUID_APPROVAL_TYPE } from '../../shared/constants/app';
+import {
+  HYPERLIQUID_APPROVAL_TYPE,
+  SeedlessOnboardingMigrationVersion,
+} from '../../shared/constants/app';
 import { HYPERLIQUID_ORIGIN } from '../../shared/constants/referrals';
 import { BITCOIN_WALLET_SNAP_ID } from '../../shared/lib/accounts/bitcoin-wallet-snap';
 import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-snap';
@@ -854,6 +857,78 @@ describe('MetaMaskController', () => {
         expect(storeKeyringEncryptionKey).toHaveBeenCalledWith(
           keyringEncryptionKey,
         );
+      });
+
+      it('should set migration version after successful backup', async () => {
+        const password = 'a-fake-password';
+        const mockSeedPhrase =
+          'mock seed phrase one two three four five six seven eight nine ten';
+        const mockEncodedSeedPhrase = Array.from(
+          Buffer.from(mockSeedPhrase, 'utf8').values(),
+        );
+
+        jest
+          .spyOn(
+            metamaskController.seedlessOnboardingController,
+            'createToprfKeyAndBackupSeedPhrase',
+          )
+          .mockResolvedValueOnce();
+        jest
+          .spyOn(
+            metamaskController.seedlessOnboardingController,
+            'storeKeyringEncryptionKey',
+          )
+          .mockResolvedValueOnce();
+        const setSeedlessOnboardingMigrationVersionSpy = jest.spyOn(
+          metamaskController.appStateController,
+          'setSeedlessOnboardingMigrationVersion',
+        );
+
+        const primaryKeyring =
+          await metamaskController.createNewVaultAndKeychain(password);
+
+        await metamaskController.createSeedPhraseBackup(
+          password,
+          mockEncodedSeedPhrase,
+          primaryKeyring.metadata.id,
+        );
+
+        expect(setSeedlessOnboardingMigrationVersionSpy).toHaveBeenCalledWith(
+          SeedlessOnboardingMigrationVersion.DataType,
+        );
+      });
+
+      it('should not set migration version if backup fails', async () => {
+        const password = 'a-fake-password';
+        const mockSeedPhrase =
+          'mock seed phrase one two three four five six seven eight nine ten';
+        const mockEncodedSeedPhrase = Array.from(
+          Buffer.from(mockSeedPhrase, 'utf8').values(),
+        );
+
+        jest
+          .spyOn(
+            metamaskController.seedlessOnboardingController,
+            'createToprfKeyAndBackupSeedPhrase',
+          )
+          .mockRejectedValueOnce(new Error('Backup failed'));
+        const setSeedlessOnboardingMigrationVersionSpy = jest.spyOn(
+          metamaskController.appStateController,
+          'setSeedlessOnboardingMigrationVersion',
+        );
+
+        const primaryKeyring =
+          await metamaskController.createNewVaultAndKeychain(password);
+
+        await expect(
+          metamaskController.createSeedPhraseBackup(
+            password,
+            mockEncodedSeedPhrase,
+            primaryKeyring.metadata.id,
+          ),
+        ).rejects.toThrow('Backup failed');
+
+        expect(setSeedlessOnboardingMigrationVersionSpy).not.toHaveBeenCalled();
       });
     });
 
@@ -4203,6 +4278,8 @@ describe('MetaMaskController', () => {
           type: 'mnemonic',
           timestamp: Date.now(),
           version: 1,
+          itemId: 'primary-srp-id',
+          dataType: 1, // PrimarySrp
         };
         const mockRemainingSecretData = [
           {
@@ -4210,6 +4287,8 @@ describe('MetaMaskController', () => {
             type: 'mnemonic',
             timestamp: Date.now(),
             version: 1,
+            itemId: 'imported-srp-id',
+            dataType: 2, // ImportedSrp
           },
         ];
 
@@ -4247,6 +4326,8 @@ describe('MetaMaskController', () => {
           type: 'mnemonic',
           timestamp: Date.now(),
           version: 1,
+          itemId: 'primary-srp-id',
+          dataType: 1, // PrimarySrp
         };
 
         metamaskController.seedlessOnboardingController.fetchAllSecretData.mockResolvedValue(
@@ -4277,6 +4358,8 @@ describe('MetaMaskController', () => {
           type: 'mnemonic',
           timestamp: Date.now(),
           version: 1,
+          itemId: 'primary-srp-id',
+          dataType: 1, // PrimarySrp
         };
         const mockRemainingSecretData = [
           {
@@ -4284,18 +4367,24 @@ describe('MetaMaskController', () => {
             type: 'mnemonic',
             timestamp: Date.now(),
             version: 1,
+            itemId: 'imported-srp-id-1',
+            dataType: 2, // ImportedSrp
           },
           {
             data: new Uint8Array([15, 16, 17, 18]),
             type: 'privateKey',
             timestamp: Date.now(),
             version: 1,
+            itemId: 'imported-pk-id',
+            dataType: 3, // ImportedPrivateKey
           },
           {
             data: new Uint8Array([19, 20, 21, 22]),
             type: 'mnemonic',
             timestamp: Date.now(),
             version: 1,
+            itemId: 'imported-srp-id-2',
+            dataType: 2, // ImportedSrp
           },
         ];
 
@@ -4335,6 +4424,8 @@ describe('MetaMaskController', () => {
           type: 'mnemonic',
           timestamp: Date.now(),
           version: 1,
+          itemId: 'primary-srp-id',
+          dataType: 1, // PrimarySrp
         };
 
         metamaskController.seedlessOnboardingController.fetchAllSecretData.mockResolvedValue(
@@ -4361,6 +4452,8 @@ describe('MetaMaskController', () => {
           type: 'mnemonic',
           timestamp: Date.now(),
           version: 1,
+          itemId: 'primary-srp-id',
+          dataType: 1, // PrimarySrp
         };
         const mockRemainingSecretData = [
           {
@@ -4368,6 +4461,8 @@ describe('MetaMaskController', () => {
             type: 'mnemonic',
             timestamp: Date.now(),
             version: 1,
+            itemId: 'imported-srp-id',
+            dataType: 2, // ImportedSrp
           },
         ];
 
@@ -4387,6 +4482,122 @@ describe('MetaMaskController', () => {
         await expect(
           metamaskController.restoreSocialBackupAndGetSeedPhrase(mockPassword),
         ).rejects.toThrow('Failed to restore seed phrases');
+      });
+    });
+
+    describe('#addNewSeedPhraseBackup', () => {
+      it('should call addNewSecretData with ImportedSrp dataType', async () => {
+        await metamaskController.createNewVaultAndKeychain('test-password');
+        const addNewSecretDataSpy = jest
+          .spyOn(
+            metamaskController.seedlessOnboardingController,
+            'addNewSecretData',
+          )
+          .mockResolvedValue();
+
+        const mockMnemonic =
+          'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
+        const mockKeyringId = 'test-keyring-id';
+
+        await metamaskController.addNewSeedPhraseBackup(
+          mockMnemonic,
+          mockKeyringId,
+          true,
+        );
+
+        expect(addNewSecretDataSpy).toHaveBeenCalledWith(
+          expect.any(Uint8Array),
+          'mnemonic',
+          {
+            keyringId: mockKeyringId,
+            dataType: 2, // EncAccountDataType.ImportedSrp
+          },
+        );
+      });
+    });
+
+    describe('#addNewPrivateKeyBackup', () => {
+      it('should call addNewSecretData with ImportedPrivateKey dataType', async () => {
+        await metamaskController.createNewVaultAndKeychain('test-password');
+        const addNewSecretDataSpy = jest
+          .spyOn(
+            metamaskController.seedlessOnboardingController,
+            'addNewSecretData',
+          )
+          .mockResolvedValue();
+
+        const mockPrivateKey =
+          '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef';
+        const mockKeyringId = 'test-keyring-id';
+
+        await metamaskController.addNewPrivateKeyBackup(
+          mockPrivateKey,
+          mockKeyringId,
+          true,
+        );
+
+        expect(addNewSecretDataSpy).toHaveBeenCalledWith(
+          expect.any(Uint8Array),
+          'privateKey',
+          {
+            keyringId: mockKeyringId,
+            dataType: 3, // EncAccountDataType.ImportedPrivateKey
+          },
+        );
+      });
+    });
+
+    describe('#_migrateSeedlessDataTypes', () => {
+      it('should assign PrimarySrp to first mnemonic and ImportedSrp to others', async () => {
+        await metamaskController.createNewVaultAndKeychain('test-password');
+        jest
+          .spyOn(
+            metamaskController.seedlessOnboardingController,
+            'fetchAllSecretData',
+          )
+          .mockResolvedValue([
+            {
+              data: new Uint8Array([1, 2, 3]),
+              type: 'mnemonic',
+              itemId: 'srp-1',
+              dataType: undefined,
+            },
+            {
+              data: new Uint8Array([4, 5, 6]),
+              type: 'mnemonic',
+              itemId: 'srp-2',
+              dataType: undefined,
+            },
+            // Already has dataType - should be skipped
+            {
+              data: new Uint8Array([7, 8, 9]),
+              type: 'privateKey',
+              itemId: 'pk-1',
+              dataType: 3,
+            },
+          ]);
+        const batchUpdateSpy = jest
+          .spyOn(
+            metamaskController.seedlessOnboardingController,
+            'batchUpdateSecretDataItems',
+          )
+          .mockResolvedValue();
+        const setMigrationVersionSpy = jest.spyOn(
+          metamaskController.appStateController,
+          'setSeedlessOnboardingMigrationVersion',
+        );
+
+        await metamaskController._migrateSeedlessDataTypes();
+
+        expect(batchUpdateSpy).toHaveBeenCalledWith({
+          updates: [
+            { itemId: 'srp-1', dataType: 1 }, // PrimarySrp (first mnemonic)
+            { itemId: 'srp-2', dataType: 2 }, // ImportedSrp (second mnemonic)
+          ],
+        });
+        expect(setMigrationVersionSpy).toHaveBeenCalledWith(
+          SeedlessOnboardingMigrationVersion.DataType,
+        );
       });
     });
 
