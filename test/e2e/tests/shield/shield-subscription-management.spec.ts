@@ -10,6 +10,7 @@ import ShieldClaimPage from '../../page-objects/pages/settings/shield/shield-cla
 import ShieldClaimsListPage from '../../page-objects/pages/settings/shield/shield-claims-list-page';
 import {
   MOCK_CLAIM_2,
+  MOCK_CLAIM_APPROVED,
   SUBMIT_CLAIMS_RESPONSE,
   MOCK_CLAIMS_WITH_HISTORY,
   MOCK_CLAIMS_3_PENDING,
@@ -309,6 +310,24 @@ describe('Shield Plan Stripe Integration', function () {
           await shieldClaimsListPage.checkRejectedClaimsDisplayed();
           await shieldClaimsListPage.checkClaimExists('test_claim_id_approved');
           await shieldClaimsListPage.checkClaimExists('test_claim_id_rejected');
+
+          await shieldClaimsListPage.clickClaimItem('test_claim_id_approved');
+
+          const shieldClaimPage = new ShieldClaimPage(driver);
+          await shieldClaimPage.checkPageIsLoadedInViewMode();
+          await shieldClaimPage.verifyClaimData({
+            email: MOCK_CLAIM_APPROVED.email,
+            reimbursementWalletAddress:
+              MOCK_CLAIM_APPROVED.reimbursementWalletAddress,
+            impactedTxHash: MOCK_CLAIM_APPROVED.impactedTxHash,
+            description: MOCK_CLAIM_APPROVED.description,
+          });
+
+          await shieldClaimPage.clickBackButton();
+
+          await shieldClaimsListPage.checkPageIsLoaded();
+          await shieldClaimsListPage.checkCompletedClaimsDisplayed();
+          await shieldClaimsListPage.checkClaimExists('test_claim_id_approved');
         },
       );
     });
