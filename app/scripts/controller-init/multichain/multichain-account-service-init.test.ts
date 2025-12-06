@@ -1,4 +1,7 @@
-import { MultichainAccountService } from '@metamask/multichain-account-service';
+import {
+  MultichainAccountService,
+  SOL_ACCOUNT_PROVIDER_NAME,
+} from '@metamask/multichain-account-service';
 import {
   ActionConstraint,
   MOCK_ANY_NAMESPACE,
@@ -85,5 +88,28 @@ describe('MultichainAccountServiceInit', () => {
       providers: expect.any(Array),
       providerConfigs: expect.any(Object),
     });
+  });
+
+  it('initializes with correct timeout configuration for Bitcoin/Solana alignment', () => {
+    const requestMock = buildInitRequestMock();
+    MultichainAccountServiceInit(requestMock);
+
+    expect(accountTreeControllerClassMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        providerConfigs: expect.objectContaining({
+          [SOL_ACCOUNT_PROVIDER_NAME]: expect.objectContaining({
+            discovery: expect.objectContaining({
+              timeoutMs: 10000,
+              maxAttempts: 3,
+              backOffMs: 1000,
+            }),
+            createAccounts: expect.objectContaining({
+              timeoutMs: 15000,
+            }),
+            maxConcurrency: 1,
+          }),
+        }),
+      }),
+    );
   });
 });

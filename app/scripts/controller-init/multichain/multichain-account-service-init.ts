@@ -44,12 +44,12 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
     maxConcurrency: 1,
     // Re-use the default config for the rest:
     discovery: {
-      timeoutMs: 2000,
+      timeoutMs: 10000, // Increased from 2000ms to 10000ms to handle Bitcoin/Solana alignment
       maxAttempts: 3,
       backOffMs: 1000,
     },
     createAccounts: {
-      timeoutMs: 3000,
+      timeoutMs: 15000, // Increased from 3000ms to 15000ms to handle Bitcoin/Solana alignment
     },
   };
 
