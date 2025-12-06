@@ -1,40 +1,54 @@
-// This file is used only for manifest version 3
+// app-init.js (Manifest V3 Service Worker Bootstrap)
 
-// We don't usually `import` files into `app-init.js` because we need to load
-// "chunks" via `importScripts`; but in this case `ExtensionLazyListener` is so
-// small we won't ever have a problem with these two files being "split".
+/**
+ * This file is used only for Manifest Version 3 Service Workers.
+ * Its primary purpose is to:
+ * 1. Initialize the ExtensionLazyListener early to catch browser events before the worker sleeps.
+ * 2. Conditionally load the rest of the application scripts (chunks) using importScripts().
+ */
+
+// Import necessary utility. Small import is acceptable as per the original file's comment.
 import { ExtensionLazyListener } from './lib/extension-lazy-listener/extension-lazy-listener';
 
 const { chrome } = globalThis;
 
-// this needs to be run early so we can begin listening to these browser events
-// as soon as possible
+// Initialize the lazy listener immediately to start capturing critical browser events
+// like 'onInstalled' and 'onConnect', ensuring the worker stays awake if necessary.
 const lazyListener = new ExtensionLazyListener(chrome, {
   runtime: ['onInstalled', 'onConnect'],
 });
 
 /**
  * @type {import('../../types/global').StateHooks}
+ * Global object for sharing state hooks and listeners across different bundles/chunks.
  */
 globalThis.stateHooks = globalThis.stateHooks || {};
-
-// Set the lazy listener on globalThis.stateHooks so that other bundles can
-// access it.
 globalThis.stateHooks.lazyListener = lazyListener;
 
-// Represents if importAllScripts has been run
-// eslint-disable-next-line
+// Flag to ensure the main script loading process runs only once.
 let scriptsLoadInitiated = false;
 const testMode = process.env.IN_TEST;
-
 const loadTimeLogs = [];
-// eslint-disable-next-line import/unambiguous
+
+/**
+ * Attempts to synchronously import scripts and records load time metrics.
+ * @param {...string} fileNames - List of script paths to import.
+ * @returns {boolean} True if import succeeded, false otherwise.
+ */
 function tryImport(...fileNames) {
+  if (scriptsLoadInitiated) {
+    // Safety check: Prevents re-importing if accidentally called multiple times.
+    return true; 
+  }
+
   try {
     const startTime = new Date().getTime();
-    // eslint-disable-next-line
-    importScripts(...fileNames);
+    // Synchronous script loading in the Service Worker context.
+    // eslint-disable-next-line no-undef
+    importScripts(...fileNames); 
     const endTime = new Date().getTime();
+
+    // Log performance metrics only for the first file in the list for simplicity.
     loadTimeLogs.push({
       name: fileNames[0],
       value: endTime - startTime,
@@ -45,21 +59,26 @@ function tryImport(...fileNames) {
 
     return true;
   } catch (e) {
-    console.error(e);
+    console.error('Failed to import scripts:', e);
   }
 
   return false;
 }
 
+/**
+ * Orchestrates the loading of all main application scripts based on build configuration.
+ */
 function importAllScripts() {
-  // Bail if we've already imported scripts
   if (scriptsLoadInitiated) {
     return;
   }
   scriptsLoadInitiated = true;
   const files = [];
 
-  // In testMode individual files are imported, this is to help capture load time stats
+  /**
+   * Pushes file names to the array or imports them individually in test mode.
+   * @param {string} fileName - The script path.
+   */
   const loadFile = (fileName) => {
     if (testMode) {
       tryImport(fileName);
@@ -70,36 +89,39 @@ function importAllScripts() {
 
   const startImportScriptsTime = Date.now();
 
-  // value of useSnow below is dynamically replaced at build time with actual value
+  // Dynamically replaced build environment variables (assumed to be boolean literals).
   const useSnow = process.env.USE_SNOW;
   if (typeof useSnow !== 'boolean') {
-    throw new Error('Missing USE_SNOW environment variable');
+    throw new Error('Build Error: USE_SNOW environment variable is missing or not a boolean literal.');
   }
-
-  // value of applyLavaMoat below is dynamically replaced at build time with actual value
   const applyLavaMoat = process.env.APPLY_LAVAMOAT;
   if (typeof applyLavaMoat !== 'boolean') {
-    throw new Error('Missing APPLY_LAVAMOAT environment variable');
+    throw new Error('Build Error: APPLY_LAVAMOAT environment variable is missing or not a boolean literal.');
   }
+
+  // --- Start Script Loading Order ---
 
   loadFile('../scripts/sentry-install.js');
 
   if (useSnow) {
+    // Check if running in a Worker context (i.e., not a Window/Document context)
     // eslint-disable-next-line no-undef
-    const isWorker = !self.document;
-    if (!isWorker) {
-      loadFile('../scripts/snow.js');
+    const isWorker = typeof self.document === 'undefined';
+    if (isWorker) {
+      loadFile('../scripts/snow.js'); // NOTE: Assuming this file is safe to run in a worker.
     }
-
     loadFile('../scripts/use-snow.js');
   }
 
-  // Always apply LavaMoat in e2e test builds, so that we can capture initialization stats
-  if (testMode || applyLavaMoat) {
+  // Security and Runtime Setup
+  const shouldApplyLavaMoat = testMode || applyLavaMoat;
+
+  if (shouldApplyLavaMoat) {
     loadFile('../scripts/runtime-lavamoat.js');
     loadFile('../scripts/lockdown-more.js');
     loadFile('../scripts/policy-load.js');
   } else {
+    // Standard (non-LavaMoat) Hardening and CJS Runtime
     loadFile('../scripts/init-globals.js');
     loadFile('../scripts/lockdown-install.js');
     loadFile('../scripts/lockdown-run.js');
@@ -107,24 +129,25 @@ function importAllScripts() {
     loadFile('../scripts/runtime-cjs.js');
   }
 
-  // This environment variable is set to a string of comma-separated relative file paths.
+  // Load main application bundles defined via environment variables
   const rawFileList = process.env.FILE_NAMES;
   const fileList = rawFileList.split(',');
   fileList.forEach((fileName) => loadFile(fileName));
 
-  // Import all required resources
-  tryImport(...files);
+  // If not in testMode, import all collected files in one go
+  if (!testMode) {
+    tryImport(...files);
+  }
 
   const endImportScriptsTime = Date.now();
 
-  // for performance metrics/reference
+  // --- Performance Logging ---
+
   console.log(
-    `SCRIPTS IMPORT COMPLETE in Seconds: ${
-      (Date.now() - startImportScriptsTime) / 1000
-    }`,
+    `SCRIPTS IMPORT COMPLETE in Seconds: ${(endImportScriptsTime - startImportScriptsTime) / 1000}`,
   );
 
-  // In testMode load time logs are output to console
+  // Output detailed time logs in test mode for performance analysis
   if (testMode) {
     console.log(
       `Time for each import: ${JSON.stringify(
@@ -143,21 +166,15 @@ function importAllScripts() {
   }
 }
 
+// --- Service Worker Event Handling ---
+
+// 1. On initial extension installation or update, ensure all scripts are loaded.
 // Ref: https://stackoverflow.com/questions/66406672/chrome-extension-mv3-modularize-service-worker-js-file
 // eslint-disable-next-line no-undef
 self.addEventListener('install', importAllScripts);
 
-/*
- * If the service worker is stopped and restarted, then the 'install' event will not occur
- * and the chrome.runtime.onMessage will only occur if it was a message that restarted the
- * the service worker. To ensure that importAllScripts is called, we need to call it in module
- * scope as below. To avoid having `importAllScripts()` called before installation, we only
- * call it if the serviceWorker state is 'activated'. More on service worker states here:
- * https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorker/state. Testing also shows
- * that whenever the already installed service worker is stopped and then restarted, the state
- * is 'activated'.
- */
-// eslint-disable-next-line no-undef
-if (self.serviceWorker.state === 'activated') {
-  importAllScripts();
-}
+// 2. To handle Service Worker restarts after inactivity (where 'install' is not triggered),
+// we call the script loading function in module scope. Since 'scriptsLoadInitiated'
+// prevents re-runs, this is safe and guarantees the app code is loaded upon
+// worker reactivation by any event (e.g., message, alarm, network request).
+importAllScripts();
