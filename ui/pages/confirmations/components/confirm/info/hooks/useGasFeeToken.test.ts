@@ -2,6 +2,7 @@ import { Hex } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
 import { GasFeeToken } from '@metamask/transaction-controller';
 
+import { CHAIN_IDS } from '../../../../../../../shared/constants/network';
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../shared/constants/transaction';
 import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';
@@ -21,10 +22,48 @@ const GAS_FEE_TOKEN_MOCK: GasFeeToken = {
   symbol: 'USDC',
 };
 
-function getState({ gasFeeTokens }: { gasFeeTokens?: GasFeeToken[] } = {}) {
+function getState({
+  gasFeeTokens,
+  chainId,
+  currencyRates,
+}: {
+  gasFeeTokens?: GasFeeToken[];
+  chainId?: Hex;
+  currencyRates?: Record<string, { conversionRate: number }>;
+} = {}) {
+  const networkConfigurations: Record<string, unknown> = {};
+  let providerConfig = {};
+
+  // Add Polygon network configuration if using Polygon chainId
+  if (chainId === CHAIN_IDS.POLYGON) {
+    networkConfigurations[CHAIN_IDS.POLYGON] = {
+      chainId: CHAIN_IDS.POLYGON,
+      name: 'Polygon',
+      nativeCurrency: 'POL',
+      ticker: 'POL',
+      rpcEndpoints: [
+        {
+          type: 'custom',
+          url: 'https://polygon-rpc.com',
+          networkClientId: 'polygon-network',
+        },
+      ],
+      defaultRpcEndpointIndex: 0,
+      blockExplorerUrls: [],
+    };
+    providerConfig = {
+      type: 'rpc',
+      chainId: CHAIN_IDS.POLYGON,
+      ticker: 'POL',
+      nickname: 'Polygon',
+      rpcUrl: 'https://polygon-rpc.com',
+    };
+  }
+
   return getMockConfirmStateForTransaction(
     genUnapprovedContractInteractionConfirmation({
       address: FROM_MOCK,
+      chainId,
       gasFeeTokens: gasFeeTokens ?? [GAS_FEE_TOKEN_MOCK],
       selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
     }),
@@ -33,6 +72,13 @@ function getState({ gasFeeTokens }: { gasFeeTokens?: GasFeeToken[] } = {}) {
         preferences: {
           showFiatInTestnets: true,
         },
+        ...(currencyRates && { currencyRates }),
+        ...(Object.keys(networkConfigurations).length > 0 && {
+          networkConfigurationsByChainId: networkConfigurations,
+        }),
+        ...(chainId === CHAIN_IDS.POLYGON && {
+          providerConfig,
+        }),
       },
     },
   );
@@ -172,6 +218,25 @@ describe('useGasFeeToken', () => {
         }),
       );
     });
+  });
+
+  it('returns fiat amount with < prefix when less than 0.01', () => {
+    const smallAmountToken: GasFeeToken = {
+      ...GAS_FEE_TOKEN_MOCK,
+      amount: toHex(1), // Very small amount
+    };
+
+    const state = getState({
+      gasFeeTokens: [smallAmountToken],
+      currencyRates: { ETH: { conversionRate: 1 } },
+    });
+
+    const { result } = renderHookWithConfirmContextProvider(
+      () => useGasFeeToken({ tokenAddress: smallAmountToken.tokenAddress }),
+      state,
+    );
+
+    expect(result.current.amountFiat).toBe('< $0.01');
   });
 
   describe('useSelectedGasFeeToken', () => {

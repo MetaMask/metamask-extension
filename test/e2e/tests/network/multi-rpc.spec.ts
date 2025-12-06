@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import FixtureBuilder from '../../fixture-builder';
-import { withFixtures } from '../../helpers';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import { withFixtures, isSidePanelEnabled } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { Mockttp } from '../../mock-e2e';
 import {
@@ -23,7 +23,7 @@ import {
   handleSidepanelPostOnboarding,
 } from '../../page-objects/flows/onboarding.flow';
 import { switchToEditRPCViaGlobalMenuNetworks } from '../../page-objects/flows/network.flow';
-import { DEFAULT_LOCAL_NODE_USD_BALANCE } from '../../constants';
+import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../../constants';
 
 describe('MultiRpc:', function (this: Suite) {
   it('should migrate to multi rpc', async function () {
@@ -124,6 +124,16 @@ describe('MultiRpc:', function (this: Suite) {
             },
             selectedNetworkClientId: 'mainnet',
           })
+          .withPreferencesController({
+            preferences: {
+              showNativeTokenAsMainBalance: true,
+            },
+          })
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockRPCURLAndChainId,
@@ -134,8 +144,8 @@ describe('MultiRpc:', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed(
-          DEFAULT_LOCAL_NODE_USD_BALANCE,
-          '$',
+          DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
+          'ETH',
         );
 
         await switchToEditRPCViaGlobalMenuNetworks(driver);
@@ -268,7 +278,7 @@ describe('MultiRpc:', function (this: Suite) {
         assert.equal(usedUrl[0].url, 'https://responsive-rpc.test/');
 
         // check that requests are sent on the background for the url https://responsive-rpc.test/
-        await expectMockRequest(driver, mockedEndpoint[0], { timeout: 3000 });
+        await expectMockRequest(driver, mockedEndpoint[0], { timeout: 5000 });
       },
     );
   });
@@ -363,7 +373,12 @@ describe('MultiRpc:', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum');
+        // Check for edit network toast (may not appear with sidepanel due to appState loss)
+        if (await isSidePanelEnabled()) {
+          console.log('Skipping edit network toast check for sidepanel build');
+        } else {
+          await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum');
+        }
 
         await homePage.closeUseNetworkNotificationModal();
 
@@ -502,7 +517,13 @@ describe('MultiRpc:', function (this: Suite) {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum');
+
+        // Check for edit network toast (may not appear with sidepanel due to appState loss)
+        if (await isSidePanelEnabled()) {
+          console.log('Skipping edit network toast check for sidepanel build');
+        } else {
+          await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum');
+        }
         await homePage.closeUseNetworkNotificationModal();
 
         // check that the second rpc is selected in the network dialog

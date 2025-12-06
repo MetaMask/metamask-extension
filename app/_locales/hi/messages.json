@@ -2467,9 +2467,6 @@
   "exploreDefi": {
     "message": "DeFi को एक्सप्लोर करें"
   },
-  "exploreweb3": {
-    "message": "Web3 एक्सप्लोर करें"
-  },
   "exportYourData": {
     "message": "अपना डेटा एक्सपोर्ट करें"
   },
@@ -4272,25 +4269,6 @@
     "message": "$1 आइकन",
     "description": "$1 is the icon name"
   },
-  "onboardingPinExtensionAltLaunch": {
-    "message": "एक्सटेंशन लॉन्च करें"
-  },
-  "onboardingPinExtensionAltPin": {
-    "message": "एक्सटेंशन को पिन करें"
-  },
-  "onboardingPinExtensionDescription": {
-    "message": "अपने ब्राउज़र पर MetaMask को पिन करें ताकि इस तक पहुंच आसान हो और ट्रांसेक्शन के कन्फर्मेशन को देखना आसान हो सके।"
-  },
-  "onboardingPinExtensionDescription2": {
-    "message": "एक्सटेंशन पर क्लिक करके 1 क्लिक से अपने MetaMask वॉलेट तक पहुंचें।"
-  },
-  "onboardingPinExtensionDescription3": {
-    "message": "इस तक तुरंत पहुंचने के लिए $1 एक्सटेंशन आइकन पर क्लिक करें",
-    "description": "$1 is the browser name"
-  },
-  "onboardingPinExtensionTitle": {
-    "message": "इंस्टॉलेशन पूरा हुआ!"
-  },
   "onboardingSignInWith": {
     "message": "$1 के साथ साइन इन करें",
     "description": "$1 is the type of login used Google, Apple, etc"
@@ -4990,9 +4968,6 @@
   },
   "recipientEditAriaLabel": {
     "message": "प्राप्तकर्ता बदलें"
-  },
-  "recipientPlaceholder": {
-    "message": "मान्य एड्रेस दर्ज करें या पेस्ट करें"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "अभी बैकअप लें"
@@ -6671,19 +6646,19 @@
   },
   "swapIncludesGasAndMetaMaskFee": {
     "message": "इसमें गैस और $1% MetaMask फीस शामिल है",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFee": {
     "message": "$1% MetaMask फ़ीस शामिल है।",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFeeAlt": {
     "message": "उद्धरण $1% MetaMask शुल्क दर्शाता है",
-    "description": "Provides information about the fee that metamask takes for swaps using the latest copy. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
     "message": "$1% MetaMask फ़ीस शामिल है - $2",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
   },
   "swapLearnMore": {
     "message": "स्वैप के बारे में ज्यादा जानें"
@@ -6702,7 +6677,7 @@
   },
   "swapMetaMaskFeeDescription": {
     "message": "$1% का फ़ीस ऑटोमेटिक तरीके से इस उद्धरण में समाविष्ट हो जाता है। आप इसे MetaMask's के तरलता प्रोवाइडर सूचना एकत्रीकरण सॉफ़्टवेयर का इस्तेमाल करने के लिए लाइसेंस के बदले में पेमेंट करते हैं।",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapNQuotesWithDot": {
     "message": "$1 उद्धरण.",
@@ -7507,18 +7482,8 @@
   "walletConnectionGuide": {
     "message": "हमारी hardware wallet कनेक्शन गाइड"
   },
-  "walletDetails": {
-    "message": "वॉलेट विवरण"
-  },
   "walletName": {
     "message": "वॉलेट का नाम"
-  },
-  "walletNotFoundDescription": {
-    "message": "$1 ID वाला वॉलेट नहीं मिला।",
-    "description": "$1 is the wallet ID"
-  },
-  "walletNotFoundTitle": {
-    "message": "वॉलेट नहीं मिला"
   },
   "walletReadyLearn": {
     "message": "$1 आप इस फ्रेज़ को सुरक्षित रख सकते हैं ताकि आप कभी भी अपने पैसे तक पहुंच न खोएं।",

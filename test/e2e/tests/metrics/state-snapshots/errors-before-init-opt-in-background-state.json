@@ -19,11 +19,7 @@
     },
     "AnnouncementController": { "announcements": "object" },
     "NetworkOrderController": {
-      "orderedNetworkList": {
-        "0": "object",
-        "1": "object",
-        "2": "object"
-      }
+      "orderedNetworkList": { "0": "object", "1": "object", "2": "object" }
     },
     "NetworkEnablementController": {
       "enabledNetworkMap": { "eip155": "object", "solana": "object" }
@@ -53,6 +49,7 @@
       "showShieldEntryModalOnce": "boolean",
       "pendingShieldCohort": null,
       "pendingShieldCohortTxType": null,
+      "pna25Acknowledged": "boolean",
       "appActiveTab": "object"
     },
     "BridgeController": {},
@@ -93,9 +90,7 @@
     "NetworkController": {
       "selectedNetworkClientId": "string",
       "networkConfigurations": "object",
-      "networksMetadata": {
-        "networkConfigurationId": { "EIPS": {}, "status": "available" }
-      },
+      "networksMetadata": "object",
       "providerConfig": "object"
     },
     "OnboardingController": {
@@ -144,6 +139,7 @@
       "isMultiAccountBalancesEnabled": "boolean",
       "referrals": "object"
     },
+    "ProfileMetricsController": "object",
     "SelectedNetworkController": { "domains": "object" },
     "SmartTransactionsController": {
       "smartTransactionsState": {

@@ -1,7 +1,6 @@
 import { withFixtures } from '../../../helpers';
-import { ACCOUNT_TYPE } from '../../../constants';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import Homepage from '../../../page-objects/pages/home/homepage';
@@ -64,11 +63,11 @@ describe('Import NFT', function () {
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
-        await accountListPage.addAccount({
-          accountType: ACCOUNT_TYPE.Ethereum,
-        });
-        await headerNavbar.checkAccountLabel('Account 2');
-        await homepage.checkExpectedBalanceIsDisplayed();
+        await accountListPage.checkPageIsLoaded();
+        await accountListPage.addMultichainAccount();
+        await accountListPage.checkAccountDisplayedInAccountList('Account 2');
+        await accountListPage.closeMultichainAccountsPage();
+        await homepage.checkExpectedBalanceIsDisplayed('24.997');
 
         // Switch back to Account 1 and check that the NFT is still displayed
         await headerNavbar.openAccountMenu();

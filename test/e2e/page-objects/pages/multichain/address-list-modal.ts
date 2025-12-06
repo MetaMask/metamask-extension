@@ -3,6 +3,9 @@ import { Driver } from '../../../webdriver/driver';
 class AddressListModal {
   private driver: Driver;
 
+  private readonly accountAddress =
+    '[data-testid="multichain-address-row-address"]';
+
   private readonly copyButton =
     '[data-testid="multichain-address-row-copy-button"]';
 
@@ -14,6 +17,9 @@ class AddressListModal {
 
   private readonly networkName =
     '[data-testid="multichain-address-row-network-name"]';
+
+  private readonly shortenedAddress =
+    '[data-testid="multichain-address-row-address"]';
 
   private readonly addressCopiedMessage = {
     css: '[data-testid="multichain-address-row-address"]',
@@ -45,6 +51,14 @@ class AddressListModal {
     });
   }
 
+  async checkNetworkAddressIsDisplayed(networkAddress: string): Promise<void> {
+    console.log(`Check network "${networkAddress}" is displayed`);
+    await this.driver.waitForSelector({
+      text: networkAddress,
+      css: this.shortenedAddress,
+    });
+  }
+
   async clickCopyButton(addressIndex: number = 0): Promise<void> {
     const copyButtonsList = await this.driver.findElements(this.copyButton);
     const copyButton = copyButtonsList[addressIndex];
@@ -60,6 +74,17 @@ class AddressListModal {
     const qrButtonsList = await this.driver.findElements(this.qrButton);
     const qrButton = qrButtonsList[addressIndex];
     await qrButton.click();
+  }
+
+  async getTruncatedAccountAddress(addressIndex: number = 0): Promise<string> {
+    console.log('Get truncated account address');
+    const addressElements = await this.driver.findElements(this.accountAddress);
+    if (addressIndex < 0 || addressIndex >= addressElements.length) {
+      throw new Error('Invalid account row index');
+    }
+    const addressElement = addressElements[addressIndex];
+    const address = await addressElement.getText();
+    return address;
   }
 
   async goBack(): Promise<void> {

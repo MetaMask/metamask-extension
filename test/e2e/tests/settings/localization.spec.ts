@@ -1,5 +1,5 @@
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { Mockttp } from '../../mock-e2e';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
@@ -37,6 +37,12 @@ async function mockPhpConversion(mockServer: Mockttp) {
         return {
           statusCode: 200,
           json: {
+            eth: {
+              name: 'Ether',
+              ticker: 'eth',
+              value: 1,
+              currencyType: 'crypto',
+            },
             usd: {
               name: 'US Dollar',
               ticker: 'usd',
@@ -74,7 +80,7 @@ async function mockPhpConversion(mockServer: Mockttp) {
           json: {
             '0x0000000000000000000000000000000000000000': {
               id: 'ethereum',
-              price: 2500, // 1 ETH = 2,500 USD
+              price: 1,
               marketCap: 382623505141,
               pricePercentChange1d: 0,
             },
@@ -98,6 +104,7 @@ describe('Localization', function () {
               showNativeTokenAsMainBalance: false,
             },
           })
+          .withEnabledNetworks({ eip155: { '0x1': true } })
           .build(),
         testSpecificMock: mockPhpConversion,
         title: this.test?.fullTitle(),

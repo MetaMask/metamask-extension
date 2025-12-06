@@ -1954,7 +1954,7 @@
     "message": "Anladım"
   },
   "deprecatedNetworkDescription": {
-    "message": "Bağlanmaya çalıştığınız ağ artık Metamask tarafından desteklenmiyor. $1"
+    "message": "Bağlanmaya çalıştığınız ağ artık MetaMask tarafından desteklenmiyor. $1"
   },
   "description": {
     "message": "Açıklama"
@@ -2469,9 +2469,6 @@
   },
   "exploreDefi": {
     "message": "DeFi'yi keşfet"
-  },
-  "exploreweb3": {
-    "message": "Web3'ü keşfet"
   },
   "exportYourData": {
     "message": "Verilerinizi dışa aktarın"
@@ -3310,7 +3307,7 @@
     "description": "$1 is the key 'loginErrorGenericSupport'"
   },
   "loginErrorGenericSupport": {
-    "message": "Metamask Destek"
+    "message": "MetaMask Destek"
   },
   "loginErrorGenericTitle": {
     "message": "Bir şeyler ters gitti"
@@ -4275,25 +4272,6 @@
     "message": "$1 simgesi",
     "description": "$1 is the icon name"
   },
-  "onboardingPinExtensionAltLaunch": {
-    "message": "Uzantıyı başlat"
-  },
-  "onboardingPinExtensionAltPin": {
-    "message": "Uzantıyı sabitle"
-  },
-  "onboardingPinExtensionDescription": {
-    "message": "İşlem onaylarını erişilebilir ve kolay görüntülenebilir hale getirmek için MetaMask'i tarayıcınıza sabitleyin."
-  },
-  "onboardingPinExtensionDescription2": {
-    "message": "Uzantıya tıklayarak 1 tık ile MetaMask cüzdanınıza erişim sağlayın."
-  },
-  "onboardingPinExtensionDescription3": {
-    "message": "Hemen erişim sağlamak için $1 uzantısı simgesine tıklayın",
-    "description": "$1 is the browser name"
-  },
-  "onboardingPinExtensionTitle": {
-    "message": "Yükleme tamamlandı!"
-  },
   "onboardingSignInWith": {
     "message": "$1 ile giriş yap",
     "description": "$1 is the type of login used Google, Apple, etc"
@@ -4993,9 +4971,6 @@
   },
   "recipientEditAriaLabel": {
     "message": "Alıcıyı düzenle"
-  },
-  "recipientPlaceholder": {
-    "message": "Geçerli bir adres girin veya yapıştırın"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Şimdi yedekle"
@@ -6674,19 +6649,19 @@
   },
   "swapIncludesGasAndMetaMaskFee": {
     "message": "Gaz ve %$1 MetaMask ücreti dahildir",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFee": {
     "message": "%$1 MetaMask ücreti dahildir.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFeeAlt": {
     "message": "Teklif $1% MetaMask ücretini yansıtır",
-    "description": "Provides information about the fee that metamask takes for swaps using the latest copy. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
     "message": "%$1 MetaMask ücreti - $2 dahildir",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
   },
   "swapLearnMore": {
     "message": "Swap işlemleri hakkında daha fazla bilgi edinin"
@@ -6705,7 +6680,7 @@
   },
   "swapMetaMaskFeeDescription": {
     "message": "%$1 oranında bir ücret otomatik olarak bu teklife dahil edilmiştir. MetaMask'in likidite sağlayıcı bilgilerinin toplandığı yazılımı kullanma lisansı karşılığında ödersiniz.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapNQuotesWithDot": {
     "message": "$1 teklif.",
@@ -7510,18 +7485,8 @@
   "walletConnectionGuide": {
     "message": "donanım cüzdanı bağlantı kılavuzumuz"
   },
-  "walletDetails": {
-    "message": "Cüzdan bilgileri"
-  },
   "walletName": {
     "message": "Cüzdan adı"
-  },
-  "walletNotFoundDescription": {
-    "message": "$1 kimliği ile cüzdan bulunamadı.",
-    "description": "$1 is the wallet ID"
-  },
-  "walletNotFoundTitle": {
-    "message": "Cüzdan bulunamadı"
   },
   "walletReadyLearn": {
     "message": "$1 paranıza erişimi asla kaybetmemeniz için bu ifadeyi güvenli bir şekilde saklayabilirsiniz.",

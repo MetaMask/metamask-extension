@@ -2,12 +2,13 @@ import * as assert from 'assert';
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { withFixtures, WALLET_PASSWORD as testPassword } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
+import MultichainAccountDetailsPage from '../../page-objects/pages/multichain/multichain-account-details-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import {
   SECOND_TEST_E2E_SRP,
@@ -53,11 +54,14 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
       async (driver: Driver) => {
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
-
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded();
-        await accountListPage.startExportSrpForAccount('Account 2');
-
+        await accountListPage.openMultichainAccountMenu({
+          accountLabel: 'Account 1',
+          srpIndex: 1,
+        });
+        await accountListPage.clickMultichainAccountMenuItem('Account details');
+        const accountDetailsPage = new MultichainAccountDetailsPage(driver);
+        await accountDetailsPage.clickRevealRow();
         const privacySettings = new PrivacySettings(driver);
         await privacySettings.completeRevealSrpQuiz();
         await privacySettings.fillPasswordToRevealSrp(testPassword);
@@ -85,7 +89,8 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
 
-        await accountListPage.openImportSrpModal();
+        await accountListPage.addMultichainWallet();
+        await accountListPage.clickImportWallet();
 
         const firstSrpInputSelector =
           '[data-testid="srp-input-import__srp-note"]';

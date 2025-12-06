@@ -1,7 +1,7 @@
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { Driver } from '../../webdriver/driver';
-import { E2E_SRP } from '../../default-fixture';
+import { E2E_SRP } from '../../fixtures/default-fixture';
 import { Anvil } from '../../seeder/anvil';
 import { Ganache } from '../../seeder/ganache';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -33,6 +33,8 @@ describe('Forgot password', function () {
         localNodes: Anvil[] | Ganache[] | undefined[];
       }) => {
         await loginWithBalanceValidation(driver, localNodes[0]);
+        // Giving sometime for network calls to settle before locking metamask
+        await driver.delay(3000);
 
         const homePage = new HomePage(driver);
         await homePage.headerNavbar.checkPageIsLoaded();

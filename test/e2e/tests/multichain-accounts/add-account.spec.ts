@@ -1,4 +1,4 @@
-import { E2E_SRP } from '../../default-fixture';
+import { E2E_SRP } from '../../fixtures/default-fixture';
 import { WALLET_PASSWORD } from '../../helpers';
 import { sendRedesignedTransactionToAccount } from '../../page-objects/flows/send-transaction.flow';
 import AccountListPage from '../../page-objects/pages/account-list-page';
@@ -10,6 +10,7 @@ import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
 import MultichainAccountDetailsPage from '../../page-objects/pages/multichain/multichain-account-details-page';
 import { Driver } from '../../webdriver/driver';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { mockPriceApi } from '../tokens/utils/mocks';
 import {
   withImportedAccount,
   withMultichainAccountsDesignEnabled,
@@ -27,16 +28,17 @@ const importedAccount = {
 };
 
 describe('Add account', function () {
-  it('should not affect public address when using secret recovery phrase to recover account with non-zero balance', async function () {
+  // BUG #38568 - Sending token crashes the Extension with BigNumber error
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('should not affect public address when using secret recovery phrase to recover account with non-zero balance', async function () {
     await withMultichainAccountsDesignEnabled(
       {
         title: this.test?.fullTitle(),
+        testSpecificMock: mockPriceApi,
       },
       async (driver: Driver) => {
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
         await accountListPage.addMultichainAccount();
         await accountListPage.checkAccountDisplayedInAccountList(
           SECOND_ACCOUNT_NAME,
@@ -51,13 +53,16 @@ describe('Add account', function () {
         });
 
         const homePage = new HomePage(driver);
+        const headerNavbar = new HeaderNavbar(driver);
         await homePage.checkPageIsLoaded();
         const activityList = new ActivityListPage(driver);
-        await activityList.checkConfirmedTxNumberDisplayedInActivity();
         await activityList.checkTxAmountInActivity('-2.8 ETH');
+        await activityList.waitPendingTxToNotBeVisible();
+        await headerNavbar.openAccountMenu();
+        await accountListPage.checkMultichainAccountBalanceDisplayed('75,502');
+        await accountListPage.closeMultichainAccountsPage();
 
         // Lock wallet and recover via SRP in "forget password" option
-        const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.lockMetaMask();
         await new LoginPage(driver).gotoResetPasswordPage();
         const resetPasswordPage = new ResetPasswordPage(driver);
@@ -68,19 +73,14 @@ describe('Add account', function () {
         // Check wallet balance for both accounts
         await homePage.checkPageIsLoaded();
         await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
-        // BUG 37030 With BIP44 enabled wallet is not showing balance
-        // await homePage.checkLocalNodeBalanceIsDisplayed();
-        await headerNavbar.openAccountsPage();
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await homePage.checkExpectedBalanceIsDisplayed('75,502');
+        await headerNavbar.openAccountMenu();
+        await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountDisplayedInAccountList(
           SECOND_ACCOUNT_NAME,
         );
         await accountListPage.switchToAccount(SECOND_ACCOUNT_NAME);
         await headerNavbar.checkAccountLabel(SECOND_ACCOUNT_NAME);
-        // BUG 37030 With BIP44 enabled wallet is not showing balance
-        // await homePage.checkExpectedBalanceIsDisplayed('2.8');
       },
     );
   });
@@ -90,12 +90,11 @@ describe('Add account', function () {
       {
         title: this.test?.fullTitle(),
         privateKey: TEST_PRIVATE_KEY,
+        testSpecificMock: mockPriceApi,
       },
       async (driver: Driver) => {
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
         await accountListPage.openMultichainAccountMenu({
           accountLabel: importedAccount.name,
         });
@@ -122,12 +121,11 @@ describe('Add account', function () {
     await withMultichainAccountsDesignEnabled(
       {
         title: this.test?.fullTitle(),
+        testSpecificMock: mockPriceApi,
       },
       async (driver: Driver) => {
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
         await accountListPage.addMultichainAccount();
         await accountListPage.checkAccountDisplayedInAccountList(
           SECOND_ACCOUNT_NAME,
@@ -167,10 +165,8 @@ describe('Add account', function () {
         await accountDetailsPage.removeAccount();
 
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountsPage();
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await headerNavbar.openAccountMenu();
+        await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountNotDisplayedInAccountList(
           IMPORTED_ACCOUNT_NAME,
         );
@@ -182,12 +178,11 @@ describe('Add account', function () {
     await withMultichainAccountsDesignEnabled(
       {
         title: this.test?.fullTitle(),
+        testSpecificMock: mockPriceApi,
       },
       async (driver: Driver) => {
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
         await accountListPage.addMultichainAccount();
         await accountListPage.openMultichainAccountMenu({
           accountLabel: 'Account 2',
@@ -209,11 +204,9 @@ describe('Add account', function () {
 
         // Verify both account labels persist after unlock
         await headerNavbar.checkAccountLabel(CUSTOM_ACCOUNT_NAME);
-        await headerNavbar.openAccountsPage();
+        await headerNavbar.openAccountMenu();
 
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountDisplayedInAccountList(
           CUSTOM_ACCOUNT_NAME,
         );

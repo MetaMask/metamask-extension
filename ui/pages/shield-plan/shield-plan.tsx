@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import classnames from 'classnames';
 import {
   PAYMENT_TYPES,
@@ -7,9 +7,10 @@ import {
   RECURRING_INTERVALS,
   RecurringInterval,
 } from '@metamask/subscription-controller';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
 import { Checkbox, TextVariant } from '@metamask/design-system-react';
+import { Hex } from '@metamask/utils';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
@@ -66,6 +67,7 @@ import {
 } from '../../hooks/subscription/useSubscriptionPricing';
 import {
   useHandleSubscription,
+  useShieldRewards,
   useUserSubscriptionByProduct,
   useUserSubscriptions,
 } from '../../hooks/subscription/useSubscription';
@@ -73,6 +75,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { getLastUsedShieldSubscriptionPaymentDetails } from '../../selectors/subscription';
 import {
   EntryModalSourceEnum,
+  ShieldUnexpectedErrorEventLocationEnum,
   SUBSCRIPTION_DEFAULT_TRIAL_PERIOD_DAYS,
 } from '../../../shared/constants/subscriptions';
 import {
@@ -81,18 +84,32 @@ import {
   getIsTrialedSubscription,
 } from '../../../shared/modules/shield';
 import ApiErrorHandler from '../../components/app/api-error-handler';
+import { MetaMaskReduxDispatch } from '../../store/store';
+import { setLastUsedSubscriptionPaymentDetails } from '../../store/actions';
+import { RewardsBadge } from '../../components/app/rewards/RewardsBadge';
+import { getIntlLocale } from '../../ducks/locale/locale';
 import { ShieldPaymentModal } from './shield-payment-modal';
+import { ShieldRewardsModal } from './shield-rewards-modal';
 import { Plan } from './types';
 import { getProductPrice } from './utils';
 
 const ShieldPlan = () => {
   const navigate = useNavigate();
   const { search } = useLocation();
+  const locale = useSelector(getIntlLocale);
   const t = useI18nContext();
+  const dispatch = useDispatch<MetaMaskReduxDispatch>();
 
   const lastUsedPaymentDetails = useSelector(
     getLastUsedShieldSubscriptionPaymentDetails,
   );
+
+  const {
+    isRewardsSeason,
+    pointsMonthly,
+    pointsYearly,
+    pending: pendingShieldRewards,
+  } = useShieldRewards();
 
   // Stripe Test clocks
   const [enableStripeTestClock, setEnableStripeTestClock] = useState(
@@ -262,6 +279,12 @@ const ShieldPlan = () => {
     ];
   }, [cryptoPaymentMethod?.chains]);
 
+  const claimedRewardsPoints = useMemo(() => {
+    const points =
+      selectedPlan === RECURRING_INTERVALS.year ? pointsYearly : pointsMonthly;
+    return points;
+  }, [selectedPlan, pointsYearly, pointsMonthly]);
+
   const { handleSubscription, subscriptionResult } = useHandleSubscription({
     selectedPaymentMethod,
     selectedToken,
@@ -269,12 +292,31 @@ const ShieldPlan = () => {
     defaultOptions,
     isTrialed,
     useTestClock: enableStripeTestClock,
+    rewardPoints: claimedRewardsPoints ?? undefined,
   });
+
+  const handleUserChangeToken = useCallback(
+    async (token: TokenWithApprovalAmount) => {
+      setSelectedToken(token);
+      // update last used subscription payment details everytime user select token
+      await dispatch(
+        setLastUsedSubscriptionPaymentDetails(PRODUCT_TYPES.SHIELD, {
+          type: PAYMENT_TYPES.byCrypto,
+          paymentTokenAddress: token.address as Hex,
+          paymentTokenSymbol: token.symbol,
+          plan: selectedPlan,
+          useTestClock: enableStripeTestClock,
+        }),
+      );
+    },
+    [dispatch, selectedPlan, enableStripeTestClock, setSelectedToken],
+  );
 
   const loading =
     subscriptionsLoading ||
     subscriptionPricingLoading ||
-    subscriptionResult.pending;
+    subscriptionResult.pending ||
+    pendingShieldRewards;
 
   const hasApiError =
     subscriptionsError ||
@@ -321,7 +363,22 @@ const ShieldPlan = () => {
     return details;
   }, [t, isTrialed, selectedProductPrice]);
 
+  const planDetailsRewardsText = useMemo(() => {
+    const interval =
+      selectedPlan === RECURRING_INTERVALS.year ? t('year') : t('month');
+
+    if (!claimedRewardsPoints) {
+      return '';
+    }
+
+    const formattedPoints = new Intl.NumberFormat(locale).format(
+      claimedRewardsPoints,
+    );
+    return t('shieldPlanDetailsRewards', [formattedPoints, interval]);
+  }, [selectedPlan, t, claimedRewardsPoints, locale]);
+
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showRewardsModal, setShowRewardsModal] = useState(false);
 
   const handleBack = () => {
     const source = new URLSearchParams(search).get('source');
@@ -366,7 +423,11 @@ const ShieldPlan = () => {
           justifyContent={JustifyContent.flexStart}
           alignItems={AlignItems.center}
         >
-          <ApiErrorHandler className="shield-plan-page__error-content" />
+          <ApiErrorHandler
+            className="shield-plan-page__error-content"
+            error={hasApiError}
+            location={ShieldUnexpectedErrorEventLocationEnum.ShieldPlanPage}
+          />
         </Content>
       ) : (
         subscriptionPricing && (
@@ -510,6 +571,19 @@ const ShieldPlan = () => {
                         <Text variant={DSTextVariant.bodyMd}>{detail}</Text>
                       </Box>
                     ))}
+                    {isRewardsSeason && planDetailsRewardsText && (
+                      <Box>
+                        <RewardsBadge
+                          boxClassName="gap-1 px-2 py-0.5 bg-background-muted rounded-lg w-fit"
+                          textClassName="font-medium"
+                          withPointsSuffix={false}
+                          formattedPoints={planDetailsRewardsText}
+                          onClick={() => {
+                            setShowRewardsModal(true);
+                          }}
+                        />
+                      </Box>
+                    )}
                   </Box>
                 </Box>
                 {selectedPaymentMethod === PAYMENT_TYPES.byCrypto &&
@@ -530,9 +604,14 @@ const ShieldPlan = () => {
                 selectedPaymentMethod={selectedPaymentMethod}
                 hasStableTokenWithBalance={hasAvailableToken}
                 setSelectedPaymentMethod={setSelectedPaymentMethod}
-                onAssetChange={setSelectedToken}
+                onAssetChange={handleUserChangeToken}
                 availableTokenBalances={availableTokenBalances}
                 tokensSupported={tokensSupported}
+              />
+              <ShieldRewardsModal
+                isOpen={showRewardsModal}
+                rewardsText={planDetailsRewardsText}
+                onClose={() => setShowRewardsModal(false)}
               />
             </Content>
             <Footer

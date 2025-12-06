@@ -72,6 +72,8 @@ export type TransactionMetricsRequest = {
   getIsConfirmationAdvancedDetailsOpen: () => boolean;
   getHDEntropyIndex: () => number;
   getNetworkRpcUrl: (chainId: Hex) => string;
+  getFeatureFlags: () => Record<string, unknown>;
+  getPna25Acknowledged: () => boolean;
 };
 
 export type TransactionEventPayload = {
@@ -101,5 +103,6 @@ export type DefaultSubscriptionPaymentOptions = {
 export type ShieldSubscriptionMetricsPropsFromUI = {
   userBalanceInUSD: number;
   source: EntryModalSourceEnum;
+  rewardPoints?: number;
   marketingUtmParams?: Record<string, string>;
 };

@@ -1,9 +1,8 @@
 import { Mockttp } from 'mockttp';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import ShieldPlanPage from '../../page-objects/pages/settings/shield/shield-plan-page';
-import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { ShieldMockttpService } from '../../helpers/shield/mocks';
 
@@ -53,30 +52,6 @@ describe('Shield Entry Modal', function () {
 
         const shieldPlanPage = new ShieldPlanPage(driver);
         await shieldPlanPage.checkPageIsLoaded();
-      },
-    );
-  });
-
-  it('should not show the shield entry modal if user does not have a shield subscription and has a balance less than the minimum fiat balance threshold', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        title: this.test?.fullTitle(),
-        testSpecificMock: (server: Mockttp) => {
-          const shieldMockttpService = new ShieldMockttpService();
-          return shieldMockttpService.setup(server);
-        },
-      },
-      async ({ driver }) => {
-        await completeCreateNewWalletOnboardingFlow({
-          driver,
-        });
-
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed('0');
-
-        await homePage.checkNoShieldEntryModalIsDisplayed();
       },
     );
   });

@@ -55,7 +55,6 @@ import {
   CorruptionHandler,
   hasVault,
 } from './lib/state-corruption/state-corruption-recovery';
-import { initSidePanelContextMenu } from './lib/sidepanel-context-menu';
 import {
   backedUpStateKeys,
   PersistenceManager,
@@ -183,7 +182,6 @@ const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
 lazyListener.once('runtime', 'onInstalled').then((details) => {
   handleOnInstalled(details);
-  handleSidePanelContextMenu();
 });
 
 /**
@@ -918,7 +916,8 @@ export async function loadStateFromPersistence(backup) {
     migrations,
     defaultVersion: process.env.WITH_STATE
       ? // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
-        require('../../test/e2e/default-fixture').FIXTURE_STATE_METADATA_VERSION
+        require('../../test/e2e/fixtures/fixture-builder')
+          .FIXTURE_STATE_METADATA_VERSION
       : null,
   });
 
@@ -1663,15 +1662,6 @@ function onInstall() {
 }
 
 /**
- * Handles the onInstalled event for sidepanel context menu creation.
- * This is registered via lazyListener to catch the event at module load time.
- */
-async function handleSidePanelContextMenu() {
-  await isInitialized;
-  await initSidePanelContextMenu(controller);
-}
-
-/**
  * Trigger actions that should happen only when an update is available
  */
 async function onUpdateAvailable() {
@@ -1748,18 +1738,6 @@ const initSidePanelBehavior = async () => {
         openPanelOnActionClick: useSidePanelAsDefault,
       });
     }
-
-    // Setup remote feature flag listener to update sidepanel preferences
-    controller?.controllerMessenger?.subscribe(
-      'RemoteFeatureFlagController:stateChange',
-      (state) => {
-        const extensionUxSidepanel =
-          state?.remoteFeatureFlags?.extensionUxSidepanel;
-        if (extensionUxSidepanel === false) {
-          controller?.preferencesController?.setUseSidePanelAsDefault(false);
-        }
-      },
-    );
   } catch (error) {
     console.error('Error setting side panel behavior:', error);
   }

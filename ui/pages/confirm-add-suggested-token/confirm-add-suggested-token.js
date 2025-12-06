@@ -97,9 +97,12 @@ const ConfirmAddSuggestedToken = ({
 
   const hasAppHeader = location?.pathname ? !hideAppHeader({ location }) : true;
 
-  const classNames = classnames('confirm-add-suggested-token page-container', {
-    'confirm-add-suggested-token--has-app-header-multichain': hasAppHeader,
-  });
+  const classNames = classnames(
+    'confirm-add-suggested-token page-container h-full',
+    {
+      'confirm-add-suggested-token--has-app-header-multichain': hasAppHeader,
+    },
+  );
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const suggestedTokens = useSelector(getSuggestedTokens);
@@ -185,7 +188,6 @@ const ConfirmAddSuggestedToken = ({
 
   useEffect(() => {
     goBackIfNoSuggestedTokensOnFirstRender();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
