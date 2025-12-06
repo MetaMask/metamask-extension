@@ -1,6 +1,7 @@
 import { useCallback, useState, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
+import log from 'loglevel';
 import {
   getMultichainAccountsByWalletId,
   getWalletIdAndNameByAccountAddress,
@@ -173,8 +174,9 @@ export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
                   options.rewardPoints,
                 ),
               );
-            } catch {
+            } catch (error) {
               // Silently fail - reward linking should not block opt-in
+              log.warn('Failed to link reward to shield subscription', error);
             }
           }
         }
