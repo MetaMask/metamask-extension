@@ -36,6 +36,11 @@ class ShieldSubscriptionApprovePage extends TransactionConfirmation {
       text: tokenSymbol,
     });
   }
+
+  async clickStartNowButton(): Promise<void> {
+    console.log('Clicking Start now button');
+    await this.clickFooterConfirmButton();
+  }
 }
 
 export default ShieldSubscriptionApprovePage;
