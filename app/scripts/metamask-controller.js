@@ -254,6 +254,7 @@ import {
   makeMethodMiddlewareMaker,
 } from './lib/rpc-method-middleware';
 import createOriginMiddleware from './lib/createOriginMiddleware';
+import createRpcBlockingMiddleware from './lib/rpcBlockingMiddleware';
 import createMainFrameOriginMiddleware from './lib/createMainFrameOriginMiddleware';
 import createTabIdMiddleware from './lib/createTabIdMiddleware';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
@@ -1064,6 +1065,16 @@ export default class MetamaskController extends EventEmitter {
       ),
     });
 
+    const {
+      setIsBlocked: setIsEip7715RequestInProgress,
+      middleware: eip7715BlockingMiddleware,
+    } = createRpcBlockingMiddleware({
+      errorMessage:
+        'Cannot process requests while a wallet_requestExecutionPermissions request is in process',
+    });
+
+    this.eip7715BlockingMiddleware = eip7715BlockingMiddleware;
+
     this.eip7702Middleware = createScaffoldMiddleware({
       wallet_upgradeAccount: createAsyncMiddleware(async (req, res) => {
         await walletUpgradeAccount(req, res, {
@@ -1151,6 +1162,8 @@ export default class MetamaskController extends EventEmitter {
         ? forwardRequestToSnap.bind(null, {
             snapId: process.env.PERMISSIONS_KERNEL_SNAP_ID,
             handleRequest: this.handleSnapRequest.bind(this),
+            onBeforeRequest: () => setIsEip7715RequestInProgress(true),
+            onAfterRequest: () => setIsEip7715RequestInProgress(false),
           })
         : undefined,
     });
@@ -7140,6 +7153,13 @@ export default class MetamaskController extends EventEmitter {
           ),
       }),
     );
+
+    ///: BEGIN:ONLY_INCLUDE_IF(gator-permissions)
+
+    // Block requests while a wallet_requestExecutionPermissions request is in process.
+    engine.push(this.eip7715BlockingMiddleware);
+
+    ///: END:ONLY_INCLUDE_IF
 
     engine.push(
       createPPOMMiddleware(
