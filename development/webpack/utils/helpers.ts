@@ -54,6 +54,16 @@ export const TREZOR_MODULE_RE = new RegExp(
 );
 
 /**
+ * Regular expression to match React files in the top-level `ui/` directory
+ * Uses a platform-specific path separator: `/` on Unix-like systems and `\` on
+ * Windows.
+ */
+export const UI_DIR_RE = new RegExp(
+  `^${join(__dirname, '..', '..', '..', 'ui').replaceAll(sep, slash)}${slash}(?:components|contexts|hooks|layouts|pages)${slash}.*$`,
+  'u',
+);
+
+/**
  * No Operation. A function that does nothing and returns nothing.
  *
  * @returns `undefined`

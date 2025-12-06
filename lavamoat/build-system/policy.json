@@ -291,12 +291,12 @@
         "@babel/preset-env>@babel/helper-plugin-utils": true
       }
     },
-    "@babel/preset-typescript>@babel/plugin-syntax-jsx": {
+    "react-compiler-webpack>@babel/plugin-syntax-jsx": {
       "packages": {
         "@babel/preset-env>@babel/helper-plugin-utils": true
       }
     },
-    "@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/plugin-syntax-typescript": {
+    "react-compiler-webpack>@babel/plugin-syntax-typescript": {
       "packages": {
         "@babel/preset-env>@babel/helper-plugin-utils": true
       }
@@ -584,7 +584,7 @@
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": true,
         "@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": true,
         "@babel/preset-env>@babel/helper-plugin-utils": true,
-        "@babel/preset-typescript>@babel/plugin-syntax-jsx": true
+        "react-compiler-webpack>@babel/plugin-syntax-jsx": true
       }
     },
     "@babel/preset-react>@babel/plugin-transform-react-pure-annotations": {
@@ -650,7 +650,7 @@
         "@babel/preset-env>@babel/plugin-transform-private-methods>@babel/helper-create-class-features-plugin": true,
         "@babel/preset-env>@babel/helper-plugin-utils": true,
         "@babel/preset-env>@babel/plugin-transform-for-of>@babel/helper-skip-transparent-expression-wrappers": true,
-        "@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/plugin-syntax-typescript": true
+        "react-compiler-webpack>@babel/plugin-syntax-typescript": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-unicode-escapes": {
@@ -768,7 +768,7 @@
       "packages": {
         "@babel/preset-env>@babel/helper-plugin-utils": true,
         "@babel/preset-env>@babel/helper-validator-option": true,
-        "@babel/preset-typescript>@babel/plugin-syntax-jsx": true,
+        "react-compiler-webpack>@babel/plugin-syntax-jsx": true,
         "@babel/preset-env>@babel/plugin-transform-modules-commonjs": true,
         "@babel/preset-typescript>@babel/plugin-transform-typescript": true
       }
