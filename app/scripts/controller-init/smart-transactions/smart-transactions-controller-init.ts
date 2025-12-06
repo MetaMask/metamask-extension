@@ -5,10 +5,6 @@ import {
 import type { Hex } from '@metamask/utils';
 import type { TraceCallback } from '@metamask/controller-utils';
 import { getAllowedSmartTransactionsChainIds } from '../../../../shared/constants/smartTransactions';
-import { getFeatureFlagsByChainId } from '../../../../shared/modules/selectors';
-import { type ProviderConfigState } from '../../../../shared/modules/selectors/networks';
-import { type FeatureFlagsMetaMaskState } from '../../../../shared/modules/selectors/feature-flags';
-import type { FeatureFlags } from '../../lib/smart-transaction/smart-transactions';
 import { ControllerInitFunction, ControllerInitRequest } from '../types';
 import {
   SmartTransactionsControllerInitMessenger,
@@ -57,12 +53,6 @@ export const SmartTransactionsControllerInit: ControllerInitFunction<
     >[0]['trackMetaMetricsEvent'],
     state: persistedState.SmartTransactionsController,
     messenger: controllerMessenger,
-    getFeatureFlags: () => {
-      const state = { metamask: getUIState() };
-      return getFeatureFlagsByChainId(
-        state as unknown as ProviderConfigState & FeatureFlagsMetaMaskState,
-      ) as unknown as FeatureFlags;
-    },
     getMetaMetricsProps: async () => {
       const metamask = getUIState();
       const { internalAccounts } = metamask;
