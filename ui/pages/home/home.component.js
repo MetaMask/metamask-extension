@@ -428,6 +428,8 @@ export default class Home extends PureComponent {
           key="new-network-added"
           type="success"
           className="home__new-network-notification"
+          autoHideTime={autoHideDelay}
+          onAutoHide={() => clearNewNetworkAdded()}
           message={
             <Box display={Display.InlineFlex}>
               <i className="fa fa-check-circle home__new-network-notification-icon" />
