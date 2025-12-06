@@ -41,7 +41,6 @@ export const BridgeControllerInit: ControllerInitFunction<
   }
 
   const controller = new BridgeController({
-    // @ts-expect-error - Messenger type mismatch due to missing controller actions and dependency version mismatch
     messenger: controllerMessenger,
     clientId: BridgeClientId.EXTENSION,
     clientVersion: process.env.METAMASK_VERSION,

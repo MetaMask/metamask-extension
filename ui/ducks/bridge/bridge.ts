@@ -57,7 +57,6 @@ const getBalanceAmount = async ({
   }
   return (
     await calcLatestSrcBalance(
-      // @ts-expect-error - Provider type mismatch due to missing controller actions and dependency version mismatch
       global.ethereumProvider,
       selectedAddress,
       tokenAddress,
