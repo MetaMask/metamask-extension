@@ -30,7 +30,9 @@ module.exports = {
     '<rootDir>/test/setup.js',
     '<rootDir>/test/env.js',
   ],
-  setupFilesAfterEnv: ['<rootDir>/test/jest/setup.js'],
+  setupFilesAfterEnv: ['<rootDir>/test/jest/setup.ts'],
+  globalTeardown: '<rootDir>/test/jest/global-teardown.ts',
+  // Unit tests use 'unit' snapshot type (default)
   testMatch: [
     '<rootDir>/app/scripts/**/*.test.(js|ts|tsx)',
     '<rootDir>/shared/**/*.test.(js|ts|tsx)',
