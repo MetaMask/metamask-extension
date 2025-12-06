@@ -1467,9 +1467,6 @@
   "connectWithMetaMask": {
     "message": "Conectar-se com a MetaMask"
   },
-  "connectedAccounts": {
-    "message": "Contas conectadas"
-  },
   "connectedAccountsDescriptionPlural": {
     "message": "Você tem $1 contas conectadas a este site.",
     "description": "$1 is the number of accounts"
@@ -1483,9 +1480,6 @@
   "connectedAccountsListTooltip": {
     "message": "$1 pode ver o saldo, endereço e atividade da conta, além das transações sugeridas para aprovar para contas conectadas.",
     "description": "$1 is the origin name"
-  },
-  "connectedAccountsToast": {
-    "message": "As contas conectadas foram atualizadas"
   },
   "connectedSites": {
     "message": "Sites conectados"
@@ -2018,14 +2012,6 @@
   },
   "disconnectThisAccount": {
     "message": "Desconectar esta conta"
-  },
-  "disconnectedAllAccountsToast": {
-    "message": "Todas as contas foram desconectadas de $1",
-    "description": "$1 is name of the dapp`"
-  },
-  "disconnectedSingleAccountToast": {
-    "message": "$1 desconectada de $2",
-    "description": "$1 is name of the name and $2 represents the dapp name`"
   },
   "discover": {
     "message": "Descobrir"
@@ -4411,9 +4397,6 @@
     "message": "Aprenda como cancelar ou agilizar uma transação.",
     "description": "The text for the hyperlink in the pending transaction alert message"
   },
-  "permissionDetails": {
-    "message": "Detalhes da permissão"
-  },
   "permissionFor": {
     "message": "Permissão para"
   },
@@ -4716,10 +4699,6 @@
   },
   "pleaseConfirm": {
     "message": "Por favor, confirme"
-  },
-  "plusMore": {
-    "message": "E mais $1",
-    "description": "$1 is the number of additional items"
   },
   "plusXMore": {
     "message": "E mais $1",

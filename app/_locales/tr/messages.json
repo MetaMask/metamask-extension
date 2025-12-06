@@ -1467,9 +1467,6 @@
   "connectWithMetaMask": {
     "message": "MetaMask ile Bağlan"
   },
-  "connectedAccounts": {
-    "message": "Bağlı hesaplar"
-  },
   "connectedAccountsDescriptionPlural": {
     "message": "Bu siteye bağlı $1 hesabınız var.",
     "description": "$1 is the number of accounts"
@@ -1483,9 +1480,6 @@
   "connectedAccountsListTooltip": {
     "message": "$1 hesap bakiyenizi, adresinizi, aktivitenizi görebilir ve bağlı hesapları onaylamak için işlem önerebilir.",
     "description": "$1 is the origin name"
-  },
-  "connectedAccountsToast": {
-    "message": "Bağlı hesaplar güncellendi"
   },
   "connectedSites": {
     "message": "Bağlı siteler"
@@ -2018,14 +2012,6 @@
   },
   "disconnectThisAccount": {
     "message": "Bu hesabın bağlantısını kes"
-  },
-  "disconnectedAllAccountsToast": {
-    "message": "Tüm hesapların $1 ile bağlantısı kesildi",
-    "description": "$1 is name of the dapp`"
-  },
-  "disconnectedSingleAccountToast": {
-    "message": "$1 için $2 bağlantısı kesildi",
-    "description": "$1 is name of the name and $2 represents the dapp name`"
   },
   "discover": {
     "message": "Keşfet"
@@ -4411,9 +4397,6 @@
     "message": "Bir işlemin nasıl iptal edileceğini veya hızlandırılacağını öğrenin.",
     "description": "The text for the hyperlink in the pending transaction alert message"
   },
-  "permissionDetails": {
-    "message": "İzin ayrıntıları"
-  },
   "permissionFor": {
     "message": "Şunun için izin:"
   },
@@ -4716,10 +4699,6 @@
   },
   "pleaseConfirm": {
     "message": "Lütfen onayla"
-  },
-  "plusMore": {
-    "message": "+ $1 tane daha",
-    "description": "$1 is the number of additional items"
   },
   "plusXMore": {
     "message": "+ $1 tane daha",

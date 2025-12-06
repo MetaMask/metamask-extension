@@ -12,7 +12,6 @@ import {
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
   CONNECT_ROUTE,
-  CONNECTIONS,
   CROSS_CHAIN_SWAP_ROUTE,
   IMPORT_SRP_ROUTE,
   DEFAULT_ROUTE,
@@ -160,20 +159,6 @@ export function hideAppHeader(props) {
   );
 
   if (isPermissionsPage) {
-    return true;
-  }
-
-  const isConnectionsPage = Boolean(
-    matchPath(
-      {
-        path: CONNECTIONS,
-        end: false,
-      },
-      location.pathname,
-    ),
-  );
-
-  if (isConnectionsPage) {
     return true;
   }
 

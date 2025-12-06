@@ -3,7 +3,7 @@
 exports[`No Connections Content should render correctly 1`] = `
 <div>
   <div
-    class="mm-box connections-page__no-site-connected-content mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center"
+    class="mm-box connections-page__no-site-connected-content h-full mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center"
   >
     <p
       class="mm-box mm-text mm-text--body-md-medium mm-text--text-align-center mm-box--color-text-default"

@@ -1464,9 +1464,6 @@
   "connectWithMetaMask": {
     "message": "与 MetaMask 连接"
   },
-  "connectedAccounts": {
-    "message": "已连接的账户"
-  },
   "connectedAccountsDescriptionPlural": {
     "message": "您有 $1 个账户连接到了该网站。",
     "description": "$1 is the number of accounts"
@@ -1480,9 +1477,6 @@
   "connectedAccountsListTooltip": {
     "message": "$1 可以查看账户余额、地址、活动，并建议要批准的关联账户交易。",
     "description": "$1 is the origin name"
-  },
-  "connectedAccountsToast": {
-    "message": "已更新连接的账户"
   },
   "connectedSites": {
     "message": "已连接的网站"
@@ -2015,14 +2009,6 @@
   },
   "disconnectThisAccount": {
     "message": "断开此账户的连接"
-  },
-  "disconnectedAllAccountsToast": {
-    "message": "所有账户已与 $1 断开连接",
-    "description": "$1 is name of the dapp`"
-  },
-  "disconnectedSingleAccountToast": {
-    "message": "$1 已与 $2 断开连接",
-    "description": "$1 is name of the name and $2 represents the dapp name`"
   },
   "discover": {
     "message": "发现"
@@ -4408,9 +4394,6 @@
     "message": "了解如何取消或加速交易。",
     "description": "The text for the hyperlink in the pending transaction alert message"
   },
-  "permissionDetails": {
-    "message": "许可详情"
-  },
   "permissionFor": {
     "message": "权限用于"
   },
@@ -4713,10 +4696,6 @@
   },
   "pleaseConfirm": {
     "message": "请确认"
-  },
-  "plusMore": {
-    "message": "另外 $1 项",
-    "description": "$1 is the number of additional items"
   },
   "plusXMore": {
     "message": "另外 $1 项",
