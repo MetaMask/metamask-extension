@@ -278,6 +278,7 @@ const render = (
   const defaultProps = {
     supportedAccountGroups: createMockAccountGroups(),
     defaultSelectedAccountGroups: [MOCK_GROUP_ID_1],
+    isSnapsPermissionsRequest: false,
     onSubmit: jest.fn(),
     onClose: jest.fn(),
     ...props,
@@ -425,6 +426,7 @@ describe('MultichainEditAccountsPage', () => {
         ]}
         onSubmit={jest.fn()}
         onClose={jest.fn()}
+        isSnapsPermissionsRequest={false}
       />,
     );
 

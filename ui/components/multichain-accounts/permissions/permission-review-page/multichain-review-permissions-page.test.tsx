@@ -268,8 +268,27 @@ describe('MultichainReviewPermissions', () => {
       });
     });
 
-    it('allows deselecting account groups', async () => {
+    it('dispatches setPermittedAccounts when deselecting some account groups', async () => {
+      const useAccountGroupsForPermissionsSpy = jest.spyOn(
+        hooks,
+        'useAccountGroupsForPermissions',
+      );
+      useAccountGroupsForPermissionsSpy.mockReturnValue({
+        supportedAccountGroups: mockAccountGroups,
+        connectedAccountGroups: mockAccountGroups,
+        existingConnectedCaipAccountIds:
+          generateCaipAccountIds(mockAccountGroups),
+        connectedAccountGroupWithRequested: mockAccountGroups,
+        caipAccountIdsOfConnectedAndRequestedAccountGroups:
+          generateCaipAccountIds(mockAccountGroups),
+        selectedAndRequestedAccountGroups: mockAccountGroups,
+      });
+
       const { getAllByTestId, getByTestId } = render();
+      const setPermittedAccountsSpy = jest.spyOn(
+        actions,
+        'setPermittedAccounts',
+      );
 
       const editButtons = getAllByTestId(TEST_IDS.EDIT_BUTTON);
       const accountsEditButton = editButtons[0];
@@ -279,15 +298,16 @@ describe('MultichainReviewPermissions', () => {
         expect(getByTestId(TEST_IDS.MODAL_PAGE)).toBeInTheDocument();
       });
 
-      const firstAccountCell = getByTestId(
-        TEST_IDS.MULTICHAIN_ACCOUNT_CELL(mockAccountGroups[0].id),
+      const secondAccountCell = getByTestId(
+        TEST_IDS.MULTICHAIN_ACCOUNT_CELL(mockAccountGroups[1].id),
       );
-      fireEvent.click(firstAccountCell);
+      fireEvent.click(secondAccountCell);
 
       const submitButton = getByTestId(TEST_IDS.CONNECT_MORE_ACCOUNTS_BUTTON);
       fireEvent.click(submitButton);
 
       await waitFor(() => {
+        expect(setPermittedAccountsSpy).toHaveBeenCalled();
         expect(getByTestId(TEST_IDS.CONNECTIONS_PAGE)).toBeInTheDocument();
       });
     });
@@ -306,8 +326,8 @@ describe('MultichainReviewPermissions', () => {
       expect(getByText('Edit accounts')).toBeInTheDocument();
     });
 
-    it('handles deselecting all accounts', async () => {
-      const { getAllByTestId, getByTestId } = render();
+    it('returns to connections page and triggers disconnect flow when deselecting all accounts', async () => {
+      const { getAllByTestId, getByTestId, getAllByRole } = render();
 
       const editButtons = getAllByTestId(TEST_IDS.EDIT_BUTTON);
       const accountsEditButton = editButtons[0];
@@ -317,10 +337,16 @@ describe('MultichainReviewPermissions', () => {
         expect(getByTestId(TEST_IDS.MODAL_PAGE)).toBeInTheDocument();
       });
 
-      const firstAccountCell = getByTestId(
-        TEST_IDS.MULTICHAIN_ACCOUNT_CELL(mockAccountGroups[0].id),
-      );
-      fireEvent.click(firstAccountCell);
+      const checkboxes = getAllByRole('checkbox');
+      const firstCheckbox = checkboxes[0] as HTMLInputElement;
+
+      expect(firstCheckbox).toBeChecked();
+
+      fireEvent.change(firstCheckbox, { target: { checked: false } });
+
+      await waitFor(() => {
+        expect(firstCheckbox).not.toBeChecked();
+      });
 
       const submitButton = getByTestId(TEST_IDS.CONNECT_MORE_ACCOUNTS_BUTTON);
       fireEvent.click(submitButton);

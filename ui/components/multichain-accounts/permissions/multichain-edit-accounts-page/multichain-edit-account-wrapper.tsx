@@ -18,6 +18,7 @@ type MultichainEditAccountsPageWrapperProps = {
   onSubmit: (accountGroups: AccountGroupId[]) => void;
   onClose: () => void;
   permissions: PermissionsRequest;
+  isSnapsPermissionsRequest?: boolean;
 };
 
 export const MultichainEditAccountsPageWrapper = ({
@@ -25,6 +26,7 @@ export const MultichainEditAccountsPageWrapper = ({
   onSubmit,
   onClose,
   permissions,
+  isSnapsPermissionsRequest,
 }: MultichainEditAccountsPageWrapperProps) => {
   const requestedCaip25CaveatValueWithExistingPermissions = useMemo(() => {
     return getCaip25CaveatValueFromPermissions(permissions);
@@ -70,6 +72,7 @@ export const MultichainEditAccountsPageWrapper = ({
       supportedAccountGroups={supportedAccountGroups}
       onSubmit={onSubmit}
       onClose={onClose}
+      isSnapsPermissionsRequest={Boolean(isSnapsPermissionsRequest)}
     />
   );
 };

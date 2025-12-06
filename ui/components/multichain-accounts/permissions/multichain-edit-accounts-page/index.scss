@@ -1,0 +1,47 @@
+.multichain-edit-accounts-page {
+  // Calculate height accounting for snap header (64px min-height)
+  &.multichain-page {
+    height: calc(100vh - 64px) !important;
+    max-height: calc(100vh - 64px) !important;
+    overflow: hidden !important;
+  }
+
+  // Prevent the outer Box wrapper from overflowing
+  &.mm-box--height-full {
+    height: calc(100vh - 64px) !important;
+    max-height: calc(100vh - 64px) !important;
+    overflow: hidden !important;
+  }
+
+  .multichain-page__inner-container {
+    position: relative;
+    height: 100% !important;
+    overflow: hidden !important;
+  }
+
+  // Constrain header
+  .multichain-page-header {
+    flex-shrink: 0;
+  }
+
+  .multichain-page-content {
+    // Use flex to take remaining space
+    flex: 1 1 0%;
+    min-height: 0;
+    // Add padding at the bottom so content isn't hidden behind floating footer
+    padding-bottom: 96px !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+
+  .multichain-page-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-top: 1px solid var(--color-border-muted);
+    background-color: var(--color-background-default);
+    z-index: 10;
+  }
+}
+
