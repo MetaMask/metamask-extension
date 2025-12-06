@@ -24,6 +24,9 @@ import { getNetworksByScopes } from '../../../../shared/modules/selectors/networ
 import { MultichainAccountNetworkGroup } from '../multichain-account-network-group';
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
+import { isBtcMainnetAddress } from '../../../../shared/lib/multichain/accounts';
+import { AddressType, getAddressInfo } from 'bitcoin-address-validation';
+import { Tag } from '../../component-library';
 
 type MultichainAggregatedAddressListRowProps = {
   /**
@@ -78,14 +81,30 @@ export const MultichainAggregatedAddressListRow = ({
   const networks = useSelector((state) => getNetworksByScopes(state, chainIds));
 
   const groupName = useMemo(() => {
-    if (networks[0]?.name === 'Bitcoin') {
-      return t('networkNameBitcoinSegwit');
-    }
-
     return chainIds.some((chain) => chain.startsWith('eip155:'))
       ? t('networkNameEthereum')
       : networks[0]?.name;
   }, [chainIds, t, networks]);
+
+  const btcAddressTag = useMemo(() => {
+    if (!isBtcMainnetAddress(address)) {
+      return undefined;
+    }
+
+    const { type } = getAddressInfo(address);
+    switch (type) {
+      case AddressType.p2pkh:
+        return t('networkNameBitcoinLegacy');
+      case AddressType.p2sh:
+        return t('networkNameBitcoinNestedSegwit');
+      case AddressType.p2wpkh:
+        return t('networkNameBitcoinSegwit');
+      case AddressType.p2tr:
+        return t('networkNameBitcoinTaproot');
+      default:
+        return undefined;
+    }
+  }, [address, t]);
 
   // Helper function to get text color based on state
   const getTextColor = () => {
@@ -167,6 +186,7 @@ export const MultichainAggregatedAddressListRow = ({
         <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Bold}>
           {groupName}
         </Text>
+        {btcAddressTag && <Tag label={btcAddressTag} />}
       </Box>
       <Box
         gap={1}
