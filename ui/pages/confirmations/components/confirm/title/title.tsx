@@ -28,6 +28,7 @@ import { useTransactionEventFragment } from '../../../hooks/useTransactionEventF
 import { NestedTransactionTag } from '../../transactions/nested-transaction-tag';
 import { useIsUpgradeTransaction } from '../info/hooks/useIsUpgradeTransaction';
 import { useCurrentSpendingCap } from './hooks/useCurrentSpendingCap';
+import { getPermissionDescription } from '../info/typed-sign/typed-sign-permission/typed-sign-permission-util';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -197,7 +198,13 @@ const getDescription = (
         return t('confirmTitleDescPermitSignature');
       }
       if ((confirmation as SignatureRequestType).decodedPermission) {
-        return t('confirmTitleDescPermission');
+        const permissionType = (confirmation as SignatureRequestType)
+          .decodedPermission?.permission?.type;
+
+        return getPermissionDescription(
+          t as ReturnType<typeof useI18nContext>,
+          permissionType,
+        );
       }
 
       return t('confirmTitleDescSign');

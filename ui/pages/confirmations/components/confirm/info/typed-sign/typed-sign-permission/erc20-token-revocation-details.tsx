@@ -1,0 +1,32 @@
+import React from 'react';
+import { Hex } from '@metamask/utils';
+
+import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
+import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
+import { DateAndTimeRow } from './date-and-time-row';
+
+/**
+ * Displays details for the ERC20 token revocation permission.
+ * This component is used to display the details of the ERC20 token revocation permission.
+ * @param props - The component props
+ * @param props.expiry - The expiration timestamp (null if no expiry)
+ * @param props.chainId - The chain ID for which the permission is being revoked.
+ * @returns JSX element containing the ERC20 token revocation permission details
+ */
+export const Erc20TokenRevocationDetails: React.FC<{
+  expiry: number | null;
+  chainId: Hex;
+}> = ({ expiry }) => {
+  const t = useI18nContext();
+
+  return (
+    <ConfirmInfoSection data-testid="erc20-token-revocation-details-section">
+      {expiry && (
+        <DateAndTimeRow
+          timestamp={expiry}
+          label={t('confirmFieldExpiration')}
+        />
+      )}
+    </ConfirmInfoSection>
+  );
+};
