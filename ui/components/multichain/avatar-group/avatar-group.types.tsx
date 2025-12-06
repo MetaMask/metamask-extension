@@ -26,6 +26,5 @@ export type AvatarGroupProps = StyleUtilityProps & {
 
 export enum AvatarType {
   TOKEN = 'TOKEN',
-  ACCOUNT = 'ACCOUNT',
   NETWORK = 'NETWORK',
 }
