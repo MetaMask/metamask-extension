@@ -142,6 +142,7 @@ describe('ConfirmFooter', () => {
     useIsGaslessSupportedMock.mockReturnValue({
       isSmartTransaction: false,
       isSupported: false,
+      pending: false,
     });
 
     useIsGaslessLoadingMock.mockReturnValue({
@@ -216,6 +217,7 @@ describe('ConfirmFooter', () => {
       useIsGaslessSupportedMock.mockReturnValue({
         isSmartTransaction: true,
         isSupported: true,
+        pending: false,
       });
       useInsufficientBalanceAlertsMock.mockReturnValue(ALERT_MOCK);
       jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
