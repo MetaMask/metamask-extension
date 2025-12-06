@@ -1,4 +1,5 @@
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
+import { getAccountLink } from '@metamask/etherscan-link';
 import { MultichainNetwork } from '../../../selectors/multichain';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -23,6 +24,28 @@ export const getMultichainAccountUrl = (
   }
 
   // We're in a non-EVM context, so we assume we can use format URLs instead.
+  const { blockExplorerFormatUrls } =
+    network.network as MultichainProviderConfig;
+  if (blockExplorerFormatUrls) {
+    return formatBlockExplorerAddressUrl(blockExplorerFormatUrls, address);
+  }
+
+  return '';
+};
+
+export const getAssetDetailsAccountUrl = (
+  address: string,
+  network: MultichainNetwork,
+): string => {
+  const { namespace } = parseCaipChainId(network.chainId);
+  if (namespace === KnownCaipNamespace.Eip155) {
+    return getAccountLink(
+      normalizeSafeAddress(address),
+      network.network.chainId,
+      network.network?.rpcPrefs,
+    );
+  }
+
   const { blockExplorerFormatUrls } =
     network.network as MultichainProviderConfig;
   if (blockExplorerFormatUrls) {
