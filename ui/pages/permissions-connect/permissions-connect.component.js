@@ -405,7 +405,7 @@ export default class PermissionConnect extends Component {
       activeTabOrigin: this.state.origin,
       request: this.props.permissionsRequest || {},
       permissionsRequestId: this.props.permissionsRequestId,
-      approveConnection: this.approveConnection,
+      approveConnection: this.approveConnectionWithoutRedirect,
       targetSubjectMetadata: this.props.targetSubjectMetadata,
     };
 
@@ -440,6 +440,11 @@ export default class PermissionConnect extends Component {
     const { approvePermissionsRequest } = this.props;
     approvePermissionsRequest(...args);
     this.redirect(true);
+  };
+
+  approveConnectionWithoutRedirect = (...args) => {
+    const { approvePermissionsRequest } = this.props;
+    approvePermissionsRequest(...args);
   };
 
   render() {
