@@ -961,6 +961,24 @@
         "svgIcon": "string",
         "version": "string"
       },
+      "npm:@metamask/permissions-kernel-snap": {
+        "extensionId": "null",
+        "iconUrl": "null",
+        "name": "string",
+        "origin": "string",
+        "subjectType": "string",
+        "svgIcon": "string",
+        "version": "string"
+      },
+      "npm:@metamask/gator-permissions-snap": {
+        "extensionId": "null",
+        "iconUrl": "null",
+        "name": "string",
+        "origin": "string",
+        "subjectType": "string",
+        "svgIcon": "string",
+        "version": "string"
+      },
       "npm:@metamask/solana-wallet-snap": {
         "extensionId": "null",
         "iconUrl": "null",

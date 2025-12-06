@@ -1,6 +1,6 @@
 import { ENVIRONMENT } from '../../development/build/constants';
 import {
-  isGatorPermissionsFeatureEnabled,
+  getEnabledAdvancedPermissions,
   isProduction,
   isGatorPermissionsRevocationFeatureEnabled,
 } from './environment';
@@ -32,20 +32,53 @@ describe('isProduction', () => {
   });
 });
 
-describe('isGatorPermissionsFeatureEnabled', () => {
-  it('should return true when GATOR_PERMISSIONS_ENABLED is "true"', () => {
-    process.env.GATOR_PERMISSIONS_ENABLED = 'true';
-    expect(isGatorPermissionsFeatureEnabled()).toBe(true);
+describe('getEnabledAdvancedPermissions', () => {
+  let originalGatorEnabledPermissionTypes: string | undefined;
+
+  beforeAll(() => {
+    originalGatorEnabledPermissionTypes =
+      process.env.GATOR_ENABLED_PERMISSION_TYPES;
   });
 
-  it('should return false when GATOR_PERMISSIONS_ENABLED is "false"', () => {
-    process.env.GATOR_PERMISSIONS_ENABLED = 'false';
-    expect(isGatorPermissionsFeatureEnabled()).toBe(false);
+  afterAll(() => {
+    process.env.GATOR_ENABLED_PERMISSION_TYPES =
+      originalGatorEnabledPermissionTypes;
   });
 
-  it('should return false when GATOR_PERMISSIONS_ENABLED is undefined', () => {
-    delete process.env.GATOR_PERMISSIONS_ENABLED;
-    expect(isGatorPermissionsFeatureEnabled()).toBe(false);
+  it('should return an empty array when GATOR_ENABLED_PERMISSION_TYPES is not set', () => {
+    delete process.env.GATOR_ENABLED_PERMISSION_TYPES;
+    expect(getEnabledAdvancedPermissions()).toStrictEqual([]);
+  });
+
+  it('should return an empty array when GATOR_ENABLED_PERMISSION_TYPES is an empty string', () => {
+    process.env.GATOR_ENABLED_PERMISSION_TYPES = '';
+    expect(getEnabledAdvancedPermissions()).toStrictEqual([]);
+  });
+
+  it('should parse comma-separated values correctly', () => {
+    process.env.GATOR_ENABLED_PERMISSION_TYPES =
+      'native-token-stream,native-token-periodic,erc20-token-stream';
+    expect(getEnabledAdvancedPermissions()).toStrictEqual([
+      'native-token-stream',
+      'native-token-periodic',
+      'erc20-token-stream',
+    ]);
+  });
+
+  it('should filter out empty strings from the result', () => {
+    process.env.GATOR_ENABLED_PERMISSION_TYPES =
+      'native-token-stream,,erc20-token-stream';
+    expect(getEnabledAdvancedPermissions()).toStrictEqual([
+      'native-token-stream',
+      'erc20-token-stream',
+    ]);
+  });
+
+  it('should handle a single permission type', () => {
+    process.env.GATOR_ENABLED_PERMISSION_TYPES = 'native-token-stream';
+    expect(getEnabledAdvancedPermissions()).toStrictEqual([
+      'native-token-stream',
+    ]);
   });
 });
 
