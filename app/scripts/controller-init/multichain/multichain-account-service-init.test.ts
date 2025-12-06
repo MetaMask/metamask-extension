@@ -1,7 +1,4 @@
-import {
-  MultichainAccountService,
-  SOL_ACCOUNT_PROVIDER_NAME,
-} from '@metamask/multichain-account-service';
+import { MultichainAccountService } from '@metamask/multichain-account-service';
 import {
   ActionConstraint,
   MOCK_ANY_NAMESPACE,
@@ -21,6 +18,12 @@ import { PreferencesControllerGetStateAction } from '../../controllers/preferenc
 import { MultichainAccountServiceInit } from './multichain-account-service-init';
 
 jest.mock('@metamask/multichain-account-service');
+
+// Get the actual SOL_ACCOUNT_PROVIDER_NAME constant from the real module
+// since we need it for the test assertion even though the module is mocked
+const { SOL_ACCOUNT_PROVIDER_NAME } = jest.requireActual<
+  typeof import('@metamask/multichain-account-service')
+>('@metamask/multichain-account-service');
 
 function buildInitRequestMock(): jest.Mocked<
   ControllerInitRequest<
