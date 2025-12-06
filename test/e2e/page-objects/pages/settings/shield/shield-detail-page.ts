@@ -69,6 +69,14 @@ export default class ShieldDetailPage {
     text,
   });
 
+  private readonly paymentMethodButton =
+    '[data-testid="shield-detail-payment-method"] button';
+
+  private readonly shieldPaymentModal = '[data-testid="shield-payment-modal"]';
+
+  private readonly shieldPaymentMethodTokenButton =
+    '[data-testid="shield-payment-method-token-button"]';
+
   private readonly pausedTag = '[data-testid="shield-detail-paused-tag"]';
 
   private readonly renewButton =
@@ -300,5 +308,28 @@ export default class ShieldDetailPage {
     await this.checkCharges(charges);
 
     await this.checkPaymentMethod(paymentMethod);
+  }
+
+  /**
+   * Click on the payment method button to open the payment modal
+   */
+  async clickPaymentMethod(): Promise<void> {
+    console.log('Clicking on payment method button');
+    await this.driver.waitForSelector(this.paymentMethodButton);
+    await this.driver.clickElement(this.paymentMethodButton);
+    await this.driver.waitForSelector(this.shieldPaymentModal);
+  }
+
+  /**
+   * Select payment method token in the payment modal
+   *
+   * @param paymentMethodText - The full payment method text to select (e.g., 'Pay with USDT', 'Pay with USDC')
+   */
+  async selectPaymentMethodInModal(paymentMethodText: string): Promise<void> {
+    console.log(`Selecting payment method: ${paymentMethodText}`);
+    await this.driver.clickElement({
+      css: this.shieldPaymentMethodTokenButton,
+      text: paymentMethodText,
+    });
   }
 }
