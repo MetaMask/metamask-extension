@@ -415,7 +415,7 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
     // Always return empty subscriptions to simulate no active subscription
     mockGetSubscriptions.mockResolvedValue([]);
 
-    expect(() =>
+    await expect(() =>
       subscriptionService.startSubscriptionWithCard(
         {
           products: [PRODUCT_TYPES.SHIELD],
