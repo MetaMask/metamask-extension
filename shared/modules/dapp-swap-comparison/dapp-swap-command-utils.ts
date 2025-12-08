@@ -244,7 +244,7 @@ function handleV4CommandSwap(
       srcTokenAddress:
         quotesInput?.srcTokenAddress || result?.quotesInput?.srcTokenAddress,
       destTokenAddress:
-        result?.quotesInput?.destTokenAddress || quotesInput?.srcTokenAddress,
+        result?.quotesInput?.destTokenAddress || quotesInput?.destTokenAddress,
     } as GenericQuoteRequest,
   };
 }
