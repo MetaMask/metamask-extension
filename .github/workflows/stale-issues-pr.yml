@@ -15,4 +15,3 @@ jobs:
     steps:
       - name: Close stale issues and PRs
         uses: MetaMask/github-tools/.github/actions/stale-issue-pr@v1
-
