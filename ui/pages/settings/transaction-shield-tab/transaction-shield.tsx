@@ -4,9 +4,10 @@ import {
   Product,
   PRODUCT_TYPES,
   RECURRING_INTERVALS,
+  Subscription,
   SUBSCRIPTION_STATUSES,
 } from '@metamask/subscription-controller';
-import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Button,
   ButtonSize,
@@ -17,6 +18,7 @@ import {
   IconSize,
 } from '@metamask/design-system-react';
 import { useDispatch, useSelector } from 'react-redux';
+import log from 'loglevel';
 import {
   BannerAlert,
   BannerAlertSeverity,
@@ -83,6 +85,7 @@ import { useHandlePayment } from '../../../hooks/subscription/useHandlePayment';
 import { MetaMaskReduxDispatch } from '../../../store/store';
 import { setOnboardingModalOpen } from '../../../ducks/rewards';
 import { getIntlLocale } from '../../../ducks/locale/locale';
+import { linkRewardToShieldSubscription } from '../../../store/actions';
 import CancelMembershipModal from './cancel-membership-modal';
 import { isCardPaymentMethod, isCryptoPaymentMethod } from './types';
 import ShieldBannerAnimation from './shield-banner-animation';
@@ -126,8 +129,9 @@ const TransactionShield = () => {
     lastSubscription,
   );
   // show current active shield subscription or last subscription if no active subscription
-  const displayedShieldSubscription =
-    currentShieldSubscription ?? lastShieldSubscription;
+  const displayedShieldSubscription:
+    | (Subscription & { rewardAccountId?: string }) // TODO: fix this type once we have controller released.
+    | undefined = currentShieldSubscription ?? lastShieldSubscription;
 
   const [timeoutCancelled, setTimeoutCancelled] = useState(false);
   useEffect(() => {
@@ -245,24 +249,21 @@ const TransactionShield = () => {
     dispatch(setOnboardingModalOpen(true));
   }, [dispatch]);
 
-  const formattedRewardsPoints = useMemo(() => {
+  const claimedRewardsPoints = useMemo(() => {
     const points =
       displayedShieldSubscription?.interval === RECURRING_INTERVALS.year
         ? pointsYearly
         : pointsMonthly;
+    return points;
+  }, [pointsYearly, pointsMonthly, displayedShieldSubscription?.interval]);
 
-    if (!points || !isRewardsSeason) {
+  const formattedRewardsPoints = useMemo(() => {
+    if (!claimedRewardsPoints || !isRewardsSeason) {
       return '';
     }
 
-    return new Intl.NumberFormat(locale).format(points);
-  }, [
-    displayedShieldSubscription?.interval,
-    pointsYearly,
-    pointsMonthly,
-    isRewardsSeason,
-    locale,
-  ]);
+    return new Intl.NumberFormat(locale).format(claimedRewardsPoints);
+  }, [claimedRewardsPoints, isRewardsSeason, locale]);
 
   const shieldDetails = [
     {
@@ -282,6 +283,20 @@ const TransactionShield = () => {
     backgroundColor: BackgroundColor.backgroundSection,
     padding: 4,
   };
+
+  const handleLinkRewardToShieldSubscription = useCallback(
+    async (subscriptionId: string, rewardPoints: number) => {
+      // link to shield only coz already opted in to rewards
+      try {
+        await dispatch(
+          linkRewardToShieldSubscription(subscriptionId, rewardPoints),
+        );
+      } catch (error) {
+        log.warn('Failed to link reward to shield subscription', error);
+      }
+    },
+    [dispatch],
+  );
 
   const buttonRow = (label: string, onClick: () => void, id?: string) => {
     return (
@@ -685,6 +700,26 @@ const TransactionShield = () => {
                   </Button>
                 </Box>
               )}
+              {hasOptedIntoRewards &&
+                displayedShieldSubscription?.id &&
+                claimedRewardsPoints &&
+                !displayedShieldSubscription?.rewardAccountId && (
+                  <Box className="flex-shrink-0">
+                    <Button
+                      className="px-3"
+                      variant={ButtonVariant.Secondary}
+                      size={ButtonSize.Sm}
+                      onClick={async () =>
+                        handleLinkRewardToShieldSubscription(
+                          displayedShieldSubscription?.id,
+                          claimedRewardsPoints,
+                        )
+                      }
+                    >
+                      {t('shieldTxDetails3DescriptionLinkReward')}
+                    </Button>
+                  </Box>
+                )}
             </Box>
           )}
         </Box>
@@ -849,7 +884,10 @@ const TransactionShield = () => {
             }
           />
         )}
-      <RewardsOnboardingModal />
+      <RewardsOnboardingModal
+        rewardPoints={claimedRewardsPoints ?? undefined}
+        shieldSubscriptionId={displayedShieldSubscription?.id}
+      />
     </Box>
   );
 };

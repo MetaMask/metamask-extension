@@ -1,6 +1,7 @@
 import { strict as assert } from 'assert';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { getCleanAppState, withFixtures } from '../../helpers';
+import { MOCK_META_METRICS_ID } from '../../constants';
 import HomePage from '../../page-objects/pages/home/homepage';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
@@ -8,13 +9,11 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 
 describe('MetaMetrics ID persistence', function () {
   it('MetaMetrics ID should persist when the user opts-out and then opts-in again of MetaMetrics collection', async function () {
-    const initialMetaMetricsId = 'test-metrics-id';
-
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: initialMetaMetricsId,
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .build(),
@@ -25,7 +24,7 @@ describe('MetaMetrics ID persistence', function () {
 
         let uiState = await getCleanAppState(driver);
 
-        assert.equal(uiState.metamask.metaMetricsId, initialMetaMetricsId);
+        assert.equal(uiState.metamask.metaMetricsId, MOCK_META_METRICS_ID);
 
         // goes to the privacy settings screen and toggle off participate in metaMetrics
         await new HomePage(driver).headerNavbar.openSettingsPage();
@@ -43,7 +42,7 @@ describe('MetaMetrics ID persistence', function () {
 
         assert.equal(
           uiState.metamask.metaMetricsId,
-          initialMetaMetricsId,
+          MOCK_META_METRICS_ID,
           'Metametrics ID should be preserved when toggling off metametrics collection',
         );
 
@@ -57,7 +56,7 @@ describe('MetaMetrics ID persistence', function () {
 
         assert.equal(
           uiState.metamask.metaMetricsId,
-          initialMetaMetricsId,
+          MOCK_META_METRICS_ID,
           'Metametrics ID should be preserved when toggling on metametrics collection',
         );
       },

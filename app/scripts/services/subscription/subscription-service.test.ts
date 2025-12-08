@@ -484,6 +484,7 @@ describe('SubscriptionService - linkRewardToExistingSubscription', () => {
   const MOCK_REWARD_ACCOUNT_ID =
     'eip155:0:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
   const MOCK_SHIELD_SUBSCRIPTION_ID = 'shield_subscription_id';
+  const MOCK_REWARD_POINTS = 100;
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -518,6 +519,7 @@ describe('SubscriptionService - linkRewardToExistingSubscription', () => {
   it('should link the reward to the existing subscription', async () => {
     await subscriptionService.linkRewardToExistingSubscription(
       MOCK_SHIELD_SUBSCRIPTION_ID,
+      MOCK_REWARD_POINTS,
     );
 
     expect(mockLinkRewards).toHaveBeenCalledWith({
@@ -539,6 +541,7 @@ describe('SubscriptionService - linkRewardToExistingSubscription', () => {
     });
     await subscriptionService.linkRewardToExistingSubscription(
       MOCK_SHIELD_SUBSCRIPTION_ID,
+      MOCK_REWARD_POINTS,
     );
 
     expect(mockLinkRewards).not.toHaveBeenCalled();
@@ -550,6 +553,7 @@ describe('SubscriptionService - linkRewardToExistingSubscription', () => {
 
     await subscriptionService.linkRewardToExistingSubscription(
       MOCK_SHIELD_SUBSCRIPTION_ID,
+      MOCK_REWARD_POINTS,
     );
 
     expect(mockLinkRewards).not.toHaveBeenCalled();

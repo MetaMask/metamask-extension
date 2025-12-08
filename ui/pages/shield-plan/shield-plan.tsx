@@ -8,7 +8,7 @@ import {
   RecurringInterval,
 } from '@metamask/subscription-controller';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Checkbox, TextVariant } from '@metamask/design-system-react';
 import { Hex } from '@metamask/utils';
 import {
@@ -279,6 +279,12 @@ const ShieldPlan = () => {
     ];
   }, [cryptoPaymentMethod?.chains]);
 
+  const claimedRewardsPoints = useMemo(() => {
+    const points =
+      selectedPlan === RECURRING_INTERVALS.year ? pointsYearly : pointsMonthly;
+    return points;
+  }, [selectedPlan, pointsYearly, pointsMonthly]);
+
   const { handleSubscription, subscriptionResult } = useHandleSubscription({
     selectedPaymentMethod,
     selectedToken,
@@ -286,6 +292,7 @@ const ShieldPlan = () => {
     defaultOptions,
     isTrialed,
     useTestClock: enableStripeTestClock,
+    rewardPoints: claimedRewardsPoints ?? undefined,
   });
 
   const handleUserChangeToken = useCallback(
@@ -359,16 +366,16 @@ const ShieldPlan = () => {
   const planDetailsRewardsText = useMemo(() => {
     const interval =
       selectedPlan === RECURRING_INTERVALS.year ? t('year') : t('month');
-    const points =
-      selectedPlan === RECURRING_INTERVALS.year ? pointsYearly : pointsMonthly;
 
-    if (!points) {
+    if (!claimedRewardsPoints) {
       return '';
     }
 
-    const formattedPoints = new Intl.NumberFormat(locale).format(points);
+    const formattedPoints = new Intl.NumberFormat(locale).format(
+      claimedRewardsPoints,
+    );
     return t('shieldPlanDetailsRewards', [formattedPoints, interval]);
-  }, [selectedPlan, t, pointsYearly, pointsMonthly, locale]);
+  }, [selectedPlan, t, claimedRewardsPoints, locale]);
 
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showRewardsModal, setShowRewardsModal] = useState(false);

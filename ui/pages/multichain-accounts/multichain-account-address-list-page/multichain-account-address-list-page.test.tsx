@@ -14,9 +14,6 @@ jest.mock('../../../../shared/lib/trace', () => {
   };
 });
 
-const mockUseNavigate = jest.fn();
-const mockUseParams = jest.fn();
-const mockUseLocation = jest.fn();
 const addressRowsListSearchTestId = 'multichain-address-rows-list-search';
 const addressRowsListTestId = 'multichain-address-rows-list';
 const backButtonTestId = 'multichain-account-address-list-page-back-button';
@@ -24,9 +21,13 @@ const backButtonTestId = 'multichain-account-address-list-page-back-button';
 // Use actual group IDs from mock-state.json
 const MOCK_GROUP_ID = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0' as AccountGroupId;
 const MOCK_GROUP_NAME = 'Account 1';
-jest.mock('react-router-dom-v5-compat', () => {
+
+const mockUseNavigate = jest.fn();
+const mockUseParams = jest.fn();
+const mockUseLocation = jest.fn();
+jest.mock('react-router-dom', () => {
   return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
+    ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
     useParams: () => mockUseParams(),
     useLocation: () => mockUseLocation(),

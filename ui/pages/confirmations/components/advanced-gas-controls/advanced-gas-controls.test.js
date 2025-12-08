@@ -1,7 +1,7 @@
 import React from 'react';
 
 import configureMockStore from 'redux-mock-store';
-import { renderWithProvider } from '../../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 
 import AdvancedGasControls from './advanced-gas-controls.component';
 

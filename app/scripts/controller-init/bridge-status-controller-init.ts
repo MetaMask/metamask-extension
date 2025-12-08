@@ -21,7 +21,6 @@ export const BridgeStatusControllerInit: ControllerInitFunction<
   const transactionController = getController('TransactionController');
 
   const controller = new BridgeStatusController({
-    // @ts-expect-error - Messenger type mismatch due to missing controller actions and dependency version mismatch
     messenger: controllerMessenger,
     state: persistedState.BridgeStatusController,
     fetchFn: async (url, requestOptions) => {

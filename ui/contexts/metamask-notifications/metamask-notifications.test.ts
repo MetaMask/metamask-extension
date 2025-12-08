@@ -6,7 +6,7 @@ import * as Selectors from '../../selectors/selectors';
 import * as MetamaskDucks from '../../ducks/metamask/metamask';
 import * as AuthenticationSelectors from '../../selectors/identity/authentication';
 import * as StorageHelpers from '../../../shared/lib/storage-helpers';
-import { renderHookWithProvider } from '../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import {
   useBasicFunctionalityDisableEffect,
   useEnableNotificationsByDefaultEffect,
