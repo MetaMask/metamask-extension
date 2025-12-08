@@ -61,8 +61,8 @@ export class FixtureExtensionStore extends ExtensionStore {
           }
         } else {
           log.debug(
-          `Received response with a state of ${JSON.stringify(state)}`,
-        );
+            `Received response with a state of ${JSON.stringify(state)}`,
+          );
         }
       } else {
         log.debug(
