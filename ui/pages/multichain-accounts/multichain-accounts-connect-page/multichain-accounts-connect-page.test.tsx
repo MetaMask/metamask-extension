@@ -27,7 +27,6 @@ import {
   MultichainAccountsConnectPage,
   MultichainConnectPageProps,
 } from './multichain-accounts-connect-page';
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 
 const mockGetAllNetworkConfigurationsByCaipChainId =
   getAllNetworkConfigurationsByCaipChainId as jest.MockedFunction<

@@ -264,7 +264,7 @@ export function createMockInternalAccount({
         MultichainNetworks.TRON_SHASTA,
         MultichainNetworks.TRON_NILE,
       ];
-      methods = [TrxMethod.SignMessage, TrxMethod.SignTransaction];
+      methods = [TrxMethod.SignMessageV2];
       break;
     default:
       throw new Error(`Unknown account type: ${type}`);

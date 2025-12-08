@@ -131,7 +131,6 @@ import {
 } from '@metamask/seedless-onboarding-controller';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { isSnapId } from '@metamask/snaps-utils';
-import { address } from '@solana/addresses';
 import {
   findAtomicBatchSupportForChain,
   checkEip7702Support,
@@ -1670,6 +1669,8 @@ export default class MetamaskController extends EventEmitter {
     } catch {
       // noop
     }
+
+    ///: BEGIN:ONLY_INCLUDE_IF(tron)
     try {
       lastSelectedTronAccountAddress =
         this.accountsController.getSelectedMultichainAccount(
@@ -1678,6 +1679,7 @@ export default class MetamaskController extends EventEmitter {
     } catch {
       // noop
     }
+    ///: END:ONLY_INCLUDE_IF
 
     this.controllerMessenger.subscribe(
       'PreferencesController:stateChange',
@@ -1973,6 +1975,7 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
+    ///: BEGIN:ONLY_INCLUDE_IF(tron)
     // wallet_notify for tron accountChanged when permission changes
     this.controllerMessenger.subscribe(
       `${this.permissionController.name}:stateChange`,
@@ -2055,7 +2058,9 @@ export default class MetamaskController extends EventEmitter {
       },
       getAuthorizedScopesByOrigin,
     );
+    ///: END:ONLY_INCLUDE_IF
 
+    ///: BEGIN:ONLY_INCLUDE_IF(tron)
     // TODO: To be removed when state 2 is fully transitioned.
     // wallet_notify for tron accountChanged when selected account changes
     this.controllerMessenger.subscribe(
@@ -2101,19 +2106,13 @@ export default class MetamaskController extends EventEmitter {
         }
       },
     );
+    ///: END:ONLY_INCLUDE_IF
 
+    ///: BEGIN:ONLY_INCLUDE_IF(tron)
     // wallet_notify for tron accountChanged when selected account group changes
     this.controllerMessenger.subscribe(
       `${this.accountTreeController.name}:selectedAccountGroupChange`,
-      (groupId) => {
-        // TODO: Move this logic to the SnapKeyring directly.
-        // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
-        // eslint-disable-next-line no-void
-        void this.forwardSelectedAccountGroupToSnapKeyring(
-          this.getSnapKeyringIfAvailable(),
-          groupId,
-        );
-
+      () => {
         const [account] =
           this.accountTreeController.getAccountsFromSelectedAccountGroup({
             scopes: [TrxScope.Mainnet],
@@ -2151,7 +2150,6 @@ export default class MetamaskController extends EventEmitter {
               if (
                 parsedTronAddresses.includes(account.address) &&
                 originsWithTronAccountChangedNotifications[origin]
-                // originsWithTronAccountChangedNotifications[origin]
               ) {
                 this._notifyTronAccountChange(origin, [account.address]);
               }
@@ -2160,6 +2158,7 @@ export default class MetamaskController extends EventEmitter {
         }
       },
     );
+    ///: END:ONLY_INCLUDE_IF
 
     // TODO: Move this logic to the SnapKeyring directly.
     // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
@@ -4722,7 +4721,10 @@ export default class MetamaskController extends EventEmitter {
 
     const solanaAccountTypes = Object.values(SolAccountType);
     const bitcoinAccountTypes = Object.values(BtcAccountType);
+
+    ///: BEGIN:ONLY_INCLUDE_IF(tron)
     const tronAccountTypes = Object.values(TrxAccountType);
+    ///: END:ONLY_INCLUDE_IF
 
     for (const account of accounts) {
       // Newly supported account types should be added here
@@ -4733,9 +4735,11 @@ export default class MetamaskController extends EventEmitter {
       if (bitcoinAccountTypes.includes(account.type)) {
         counts.Bitcoin += 1;
       }
+      ///: BEGIN:ONLY_INCLUDE_IF(tron)
       if (tronAccountTypes.includes(account.type)) {
         counts.Tron += 1;
       }
+      ///: END:ONLY_INCLUDE_IF
     }
 
     return counts;
@@ -6498,6 +6502,11 @@ export default class MetamaskController extends EventEmitter {
       return;
     }
 
+    const sessionScopes = getSessionScopes(caip25Caveat.value, {
+      getNonEvmSupportedMethods: this.getNonEvmSupportedMethods.bind(this),
+    });
+
+    // Handle Solana account notifications
     // The optional chain operator below shouldn't be needed as
     // the existence of sessionProperties is enforced by the caveat
     // validator, but we are still seeing some instances where it
@@ -6509,17 +6518,6 @@ export default class MetamaskController extends EventEmitter {
       caip25Caveat.value.sessionProperties?.[
         KnownSessionProperties.SolanaAccountChangedNotifications
       ];
-
-    const tronAccountsChangedNotifications =
-      caip25Caveat.value.sessionProperties?.[
-        KnownSessionProperties.TronAccountChangedNotifications
-      ];
-
-    const sessionScopes = getSessionScopes(caip25Caveat.value, {
-      getNonEvmSupportedMethods: this.getNonEvmSupportedMethods.bind(this),
-    });
-
-    // Handle Solana account notifications
     const solanaScope =
       sessionScopes[MultichainNetworks.SOLANA] ||
       sessionScopes[MultichainNetworks.SOLANA_DEVNET] ||
@@ -6541,11 +6539,17 @@ export default class MetamaskController extends EventEmitter {
       }
     }
 
+    ///: BEGIN:ONLY_INCLUDE_IF(tron)
     // Handle Tron account notifications
+    const tronAccountsChangedNotifications =
+      caip25Caveat.value.sessionProperties?.[
+        KnownSessionProperties.TronAccountChangedNotifications
+      ];
+
     const tronScope =
       sessionScopes[MultichainNetworks.TRON] ||
-      sessionScopes[MultichainNetworks.TRON_DEVNET] ||
-      sessionScopes[MultichainNetworks.TRON_TESTNET];
+      sessionScopes[MultichainNetworks.TRON_NILE] ||
+      sessionScopes[MultichainNetworks.TRON_SHASTA];
 
     if (tronAccountsChangedNotifications && tronScope) {
       const { accounts } = tronScope;
@@ -6562,6 +6566,7 @@ export default class MetamaskController extends EventEmitter {
         this._notifyTronAccountChange(origin, [accountAddressToEmit]);
       }
     }
+    ///: END:ONLY_INCLUDE_IF
   } // ---------------------------------------------------------------------------
   // Identity Management (signature operations)
 
@@ -8921,6 +8926,7 @@ export default class MetamaskController extends EventEmitter {
     );
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IF(tron)
   async _notifyTronAccountChange(origin, accountAddressArray) {
     this.notifyConnections(
       origin,
@@ -8937,6 +8943,7 @@ export default class MetamaskController extends EventEmitter {
       API_TYPE.CAIP_MULTICHAIN,
     );
   }
+  ///: END:ONLY_INCLUDE_IF
 
   async _notifyChainChange() {
     this.notifyAllConnections(
