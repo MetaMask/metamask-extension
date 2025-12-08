@@ -3512,6 +3512,8 @@ export default class MetamaskController extends EventEmitter {
       ignoreTokens: tokensController.ignoreTokens.bind(tokensController),
       getBalancesInSingleCall: (...args) =>
         this.assetsContractController.getBalancesInSingleCall(...args),
+      getBalancesUsingMulticall: (...args) =>
+        this.assetsContractController.getBalancesUsingMulticall(...args),
 
       // Authentication Controller
       performSignIn: authenticationController.performSignIn.bind(
