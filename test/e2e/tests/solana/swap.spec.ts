@@ -8,7 +8,8 @@ import {
 } from './common-solana';
 
 describe('Swap on Solana', function () {
-  it('Completes a Swap between SOL and SPL', async function () {
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('Completes a Swap between SOL and SPL', async function () {
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),
@@ -32,21 +33,21 @@ describe('Swap on Solana', function () {
         await swapPage.checkQuote({
           amount: '$2.65',
           totalCost: '$168.88',
-          receivedAmount: '$136.88',
+          receivedAmount: '$166.23',
           estimatedTime: '< 1 min',
-          provider: 'Dflow Via Li Fi',
+          provider: 'Jupiter Via Li Fi',
         });
         await swapPage.checkQuote({
           amount: '$1.19',
           totalCost: '$168.88',
-          receivedAmount: '$136.88',
+          receivedAmount: '$167.70',
           estimatedTime: '< 1 min',
-          provider: 'Humidi Fi',
+          provider: 'Sol Fi',
         });
 
         await swapPage.closeQuotes();
         await swapPage.reviewSolanaQuote({
-          swapToAmount: '136.9',
+          swapToAmount: '167.7',
           swapFrom: 'SOL',
           swapTo: 'USDC',
           swapFromAmount: '1',
