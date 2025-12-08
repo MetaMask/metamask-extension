@@ -27,6 +27,7 @@ import {
   ImportTokensModal,
 } from '../../components/multichain';
 import Alerts from '../../components/app/alerts';
+import OneKeyErrors from '../onekey-errors';
 
 import {
   ASSET_ROUTE,
@@ -71,6 +72,7 @@ import {
   TOKEN_TRANSFER_ROUTE,
   REVIEW_GATOR_PERMISSIONS_ROUTE,
   REWARDS_ROUTE,
+  HARDWARE_ONEKEY_ERRORS_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import {
@@ -1085,6 +1087,12 @@ export default function Routes() {
             authenticated
             path={SHIELD_PLAN_ROUTE}
             component={ShieldPlan}
+            layout={LegacyLayout}
+          />
+          <RouteWithLayout
+            authenticated
+            path={`${HARDWARE_ONEKEY_ERRORS_ROUTE}/:error`}
+            component={OneKeyErrors}
             layout={LegacyLayout}
           />
           <RouteWithLayout path={REWARDS_ROUTE} layout={RootLayout}>
