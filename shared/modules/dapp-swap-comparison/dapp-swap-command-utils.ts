@@ -514,10 +514,10 @@ function getGenericValues(
   inputs: string[],
   chainId: Hex,
   parserDefinition: DAPP_SWAP_COMMANDS_PARSER_TYPE[],
-  commandsDefinition: {
-    swapCommandsDefinition: typeof SwapCommands | typeof V4Actions;
-    nonSwapCommandsDefinition?: typeof NonSwapCommands;
-  },
+  commandsDefinition:
+    | typeof SwapCommands
+    | typeof V4Actions
+    | typeof NonSwapCommands,
 ): COMMAND_VALUES_RESULT {
   if (commandBytes.length === 0) {
     return {
@@ -526,23 +526,7 @@ function getGenericValues(
     };
   }
 
-  const { swapCommandsDefinition, nonSwapCommandsDefinition } =
-    commandsDefinition;
-
-  const swapCommands = commandBytes.filter((commandByte) =>
-    Object.values(swapCommandsDefinition).includes(commandByte),
-  );
-
-  let nonSwapCommands: string[] = [];
-  if (nonSwapCommandsDefinition) {
-    nonSwapCommands = commandBytes.filter((commandByte) =>
-      Object.values(nonSwapCommandsDefinition).includes(
-        commandByte as NonSwapCommands,
-      ),
-    );
-  }
-
-  const commands = [...swapCommands, ...nonSwapCommands];
+  const commands = Object.values(commandsDefinition);
 
   let decodingResult: COMMAND_VALUES_RESULT = {
     amountMin: undefined,
@@ -554,8 +538,11 @@ function getGenericValues(
     } as GenericQuoteRequest,
   };
 
-  commands.forEach((command) => {
-    const data = getCommandData(commandBytes, inputs, command);
+  commandBytes.forEach((command, index) => {
+    if (!commands.includes(command)) {
+      return;
+    }
+    const data = inputs[index];
 
     if (data !== undefined) {
       const commandParser: DAPP_SWAP_COMMANDS_PARSER_TYPE | undefined =
@@ -582,9 +569,7 @@ function getV4SwapActionValues(
     actionParameters,
     chainId,
     V4_SWAP_ACTIONS_PARSER,
-    {
-      swapCommandsDefinition: V4Actions,
-    },
+    V4Actions,
   );
 }
 
@@ -600,9 +585,6 @@ export function getCommandValues(
     inputs,
     chainId,
     DAPP_SWAP_COMMANDS_PARSER,
-    {
-      swapCommandsDefinition: SwapCommands,
-      nonSwapCommandsDefinition: NonSwapCommands,
-    },
+    { ...SwapCommands, ...NonSwapCommands },
   );
 }
