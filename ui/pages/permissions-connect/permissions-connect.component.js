@@ -380,6 +380,7 @@ export default class PermissionConnect extends Component {
           this.selectAccounts(new Set(addresses));
         }}
         onClose={() => this.cancelPermissionsRequest(permissionsRequestId)}
+        isSnapsPermissionsRequest
       />
     );
   };
