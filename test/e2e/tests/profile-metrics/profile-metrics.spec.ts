@@ -7,7 +7,6 @@ import { Driver } from '../../webdriver/driver';
 import { MockedEndpoint } from '../../mock-e2e';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
-import { ACCOUNT_TYPE } from '../../constants';
 
 const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
 
@@ -35,6 +34,11 @@ const mockSendFeatureFlag = (enabled: boolean) => (mockServer: Mockttp) =>
         json: [
           {
             extensionUxPna25: enabled,
+            enableMultichainAccountsState2: {
+              enabled: true,
+              featureVersion: '2',
+              minimumVersion: '12.19.0',
+            },
           },
         ],
       };
@@ -77,13 +81,17 @@ async function waitForEndpointToBeCalled(
 }
 
 describe('Profile Metrics', function () {
-  describe('when MetaMetrics is enabled and the feature flag is on', function () {
+  describe('when MetaMetrics is enabled, the feature flag is on, and the user acknowledged the privacy change', function () {
     it('sends exising accounts to the API on wallet unlock after activating MetaMetrics', async function () {
       await withFixtures(
         {
+          forceBip44Version: false,
           fixtures: new FixtureBuilder()
             .withMetaMetricsController({
               participateInMetaMetrics: true,
+            })
+            .withAppStateController({
+              pna25Acknowledged: true,
             })
             .build(),
           testSpecificMock: async (server: Mockttp) => [
@@ -100,6 +108,7 @@ describe('Profile Metrics', function () {
           mockedEndpoint: MockedEndpoint[];
         }) => {
           await loginWithBalanceValidation(driver);
+          await driver.delay(1000);
 
           const [authCall] = mockedEndpoint;
           await waitForEndpointToBeCalled(driver, authCall);
@@ -107,7 +116,7 @@ describe('Profile Metrics', function () {
           const requests = await authCall.getSeenRequests();
           assert.equal(
             requests.length,
-            1,
+            2,
             'Expected one request to the auth API.',
           );
         },
@@ -117,9 +126,13 @@ describe('Profile Metrics', function () {
     it('sends new accounts to the API when they are created after wallet unlock', async function () {
       await withFixtures(
         {
+          forceBip44Version: false,
           fixtures: new FixtureBuilder()
             .withMetaMetricsController({
               participateInMetaMetrics: true,
+            })
+            .withAppStateController({
+              pna25Acknowledged: true,
             })
             .build(),
           testSpecificMock: async (server: Mockttp) => [
@@ -141,10 +154,7 @@ describe('Profile Metrics', function () {
           await headerNavbar.openAccountMenu();
           const accountListPage = new AccountListPage(driver);
           await accountListPage.checkPageIsLoaded();
-          await accountListPage.addAccount({
-            accountType: ACCOUNT_TYPE.Ethereum,
-          });
-
+          await accountListPage.addMultichainAccount();
           const [authCall] = mockedEndpoint;
           await waitForEndpointToBeCalled(driver, authCall, 2);
 
@@ -159,77 +169,67 @@ describe('Profile Metrics', function () {
     });
   });
 
-  describe('when MetaMetrics is disabled or the feature flag is off', function () {
-    it('does not send existing accounts to the API on wallet unlock if MetaMetrics is disabled', async function () {
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilder()
-            .withMetaMetricsController({
-              participateInMetaMetrics: false,
-            })
-            .build(),
-          testSpecificMock: async (server: Mockttp) => [
-            await mockAuthService(server),
-            await mockSendFeatureFlag(true)(server),
-          ],
-          title: this.test?.fullTitle(),
-        },
-        async ({
-          driver,
-          mockedEndpoint,
-        }: {
-          driver: Driver;
-          mockedEndpoint: MockedEndpoint[];
-        }) => {
-          await loginWithBalanceValidation(driver);
+  [
+    {
+      title: 'when MetaMetrics is disabled',
+      participateInMetaMetrics: false,
+      featureFlag: true,
+      pna25Acknowledged: true,
+    },
+    {
+      title: 'when the relevant feature flag is off',
+      participateInMetaMetrics: true,
+      featureFlag: false,
+      pna25Acknowledged: true,
+    },
+    {
+      title: 'when the user has not acknowledged the privacy change',
+      participateInMetaMetrics: true,
+      featureFlag: true,
+      pna25Acknowledged: false,
+    },
+  ].forEach(
+    ({ title, participateInMetaMetrics, featureFlag, pna25Acknowledged }) => {
+      describe(title, function () {
+        it('does not send existing accounts to the API on wallet unlock', async function () {
+          await withFixtures(
+            {
+              fixtures: new FixtureBuilder()
+                .withMetaMetricsController({
+                  participateInMetaMetrics,
+                })
+                .withAppStateController({
+                  pna25Acknowledged,
+                })
+                .build(),
+              testSpecificMock: async (server: Mockttp) => [
+                await mockAuthService(server),
+                await mockSendFeatureFlag(featureFlag)(server),
+              ],
+              title: this.test?.fullTitle(),
+            },
+            async ({
+              driver,
+              mockedEndpoint,
+            }: {
+              driver: Driver;
+              mockedEndpoint: MockedEndpoint[];
+            }) => {
+              await loginWithBalanceValidation(driver);
 
-          await driver.delay(5000);
+              await driver.delay(5000);
 
-          const [authCall] = mockedEndpoint;
-          const requests = await authCall.getSeenRequests();
-          assert.equal(
-            requests.length,
-            0,
-            'Expected no requests to the auth API.',
+              const [authCall] = mockedEndpoint;
+              const requests = await authCall.getSeenRequests();
+              assert.equal(
+                requests.length,
+                0,
+                'Expected no requests to the auth API.',
+              );
+            },
           );
-        },
-      );
-    });
-
-    it('does not send existing accounts to the API on wallet unlock if feature flag is disabled', async function () {
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilder()
-            .withMetaMetricsController({
-              participateInMetaMetrics: true,
-            })
-            .build(),
-          testSpecificMock: async (server: Mockttp) => [
-            await mockAuthService(server),
-            await mockSendFeatureFlag(false)(server),
-          ],
-          title: this.test?.fullTitle(),
-        },
-        async ({
-          driver,
-          mockedEndpoint,
-        }: {
-          driver: Driver;
-          mockedEndpoint: MockedEndpoint[];
-        }) => {
-          await loginWithBalanceValidation(driver);
-
-          await driver.delay(5000);
-
-          const [authCall] = mockedEndpoint;
-          const requests = await authCall.getSeenRequests();
-          assert.equal(
-            requests.length,
-            0,
-            'Expected no requests to the auth API.',
-          );
-        },
-      );
-    });
-  });
+        });
+      });
+    },
+  );
 });

@@ -4272,25 +4272,6 @@
     "message": "$1-Symbol",
     "description": "$1 is the icon name"
   },
-  "onboardingPinExtensionAltLaunch": {
-    "message": "Erweiterung starten"
-  },
-  "onboardingPinExtensionAltPin": {
-    "message": "Erweiterung anheften"
-  },
-  "onboardingPinExtensionDescription": {
-    "message": "Heften Sie MetaMask an Ihren Browser an, damit Sie darauf zugreifen und Transaktionsbestätigungen einfach anzeigen können."
-  },
-  "onboardingPinExtensionDescription2": {
-    "message": "Greifen Sie mit einem Klick auf Ihr MetaMask-Wallet zu, indem Sie auf die Erweiterung klicken."
-  },
-  "onboardingPinExtensionDescription3": {
-    "message": "Klicken Sie auf das $1-Erweiterungssymbol, um sofort darauf zuzugreifen.",
-    "description": "$1 is the browser name"
-  },
-  "onboardingPinExtensionTitle": {
-    "message": "Installation ist abgeschlossen!"
-  },
   "onboardingSignInWith": {
     "message": "Mit $1 anmelden",
     "description": "$1 is the type of login used Google, Apple, etc"

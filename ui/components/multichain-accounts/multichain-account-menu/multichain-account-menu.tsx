@@ -28,6 +28,7 @@ import {
   setAccountGroupHidden,
 } from '../../../store/actions';
 import { getAccountTree } from '../../../selectors/multichain-accounts/account-tree';
+import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { MultichainAccountMenuProps } from './multichain-account-menu.types';
 
 export const MultichainAccountMenu = ({
@@ -81,6 +82,10 @@ export const MultichainAccountMenu = ({
     const handleAccountAddressesClick = (mouseEvent: React.MouseEvent) => {
       mouseEvent.stopPropagation();
       mouseEvent.preventDefault();
+      trace({
+        name: TraceName.ShowAccountAddressList,
+        op: TraceOperation.AccountUi,
+      });
       const multichainAccountAddressesPageRoute = `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(accountGroupId)}`;
       navigate(multichainAccountAddressesPageRoute);
     };
