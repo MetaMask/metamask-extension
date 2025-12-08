@@ -122,8 +122,8 @@
     "currencyRates": {
       "ETH": {
         "conversionDate": "number",
-        "conversionRate": 1700.0000000000002,
-        "usdConversionRate": 1700.0000000000002
+        "conversionRate": 1700,
+        "usdConversionRate": 1700
       },
       "MON": {
         "conversionDate": "number",
@@ -151,7 +151,6 @@
     "lastViewedUserSurvey": null,
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
     "newPrivacyPolicyToastShownDate": "number",
-    "pna25Acknowledged": "boolean",
     "nftsDetectionNoticeDismissed": false,
     "notificationGasPollTokens": "object",
     "onboardingDate": null,
@@ -183,8 +182,9 @@
     "nftsDropdownState": {},
     "signatureSecurityAlertResponses": "object",
     "networkConnectionBanner": "object",
-    "snapsInstallPrivacyWarningShown": true,
     "termsOfUseLastAgreed": "number",
+    "pna25Acknowledged": "boolean",
+    "snapsInstallPrivacyWarningShown": true,
     "currentAppVersion": "string",
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
@@ -332,9 +332,11 @@
     "fcmToken": "string",
     "isUpdatingFCMToken": "boolean",
     "remoteFeatureFlags": {
-      "feature1": true,
-      "feature2": false,
-      "feature3": { "name": "groupC", "value": "valueC" },
+      "enableMultichainAccountsState2": {
+        "enabled": true,
+        "featureVersion": "2",
+        "minimumVersion": "12.19.0"
+      },
       "sendRedesign": { "enabled": false }
     },
     "cacheTimestamp": "number",

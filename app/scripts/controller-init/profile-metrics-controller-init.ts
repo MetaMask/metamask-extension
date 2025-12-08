@@ -24,9 +24,12 @@ export const ProfileMetricsControllerInit: ControllerInitFunction<
     'RemoteFeatureFlagController',
   );
   const metaMetricsController = getController('MetaMetricsController');
+  const appStateController = getController('AppStateController');
   const assertUserOptedIn = () =>
     remoteFeatureFlagController.state.remoteFeatureFlags.extensionUxPna25 ===
-      true && metaMetricsController.state.participateInMetaMetrics === true;
+      true &&
+    appStateController.state.pna25Acknowledged === true &&
+    metaMetricsController.state.participateInMetaMetrics === true;
 
   const controller = new ProfileMetricsController({
     messenger: controllerMessenger,
