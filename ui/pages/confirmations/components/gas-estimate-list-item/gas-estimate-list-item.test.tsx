@@ -92,4 +92,3 @@ describe('GasEstimateListItem', () => {
     expect(infoIcon).toBeInTheDocument();
   });
 });
-

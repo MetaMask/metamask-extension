@@ -23,7 +23,7 @@ import { type GasOption, type GasOptionTooltipProps } from '../../types/gas';
 import Tooltip from '../../../../components/ui/tooltip';
 import EditGasToolTip from '../edit-gas-fee-popover/edit-gas-tooltip/edit-gas-tooltip';
 
-export function GasEstimateListHeader() {
+export const GasEstimateListHeader = () => {
   const t = useI18nContext();
 
   return (
@@ -58,9 +58,9 @@ export function GasEstimateListHeader() {
       </Box>
     </Box>
   );
-}
+};
 
-export function GasEstimateListItem({ option }: { option: GasOption }) {
+export const GasEstimateListItem = ({ option }: { option: GasOption }) => {
   const {
     emoji,
     estimatedTime,
@@ -84,9 +84,9 @@ export function GasEstimateListItem({ option }: { option: GasOption }) {
       tooltipProps={tooltipProps}
     />
   );
-}
+};
 
-function ListItem({
+const ListItem = ({
   icon,
   name,
   isSelected,
@@ -104,7 +104,7 @@ function ListItem({
   feeInFiat?: string;
   onClick?: () => void;
   tooltipProps?: GasOptionTooltipProps;
-}) {
+}) => {
   const t = useI18nContext();
 
   return (
@@ -188,7 +188,7 @@ function ListItem({
       </Box>
     </Box>
   );
-}
+};
 
 function SelectedIndicator() {
   return (
@@ -199,4 +199,3 @@ function SelectedIndicator() {
     />
   );
 }
-

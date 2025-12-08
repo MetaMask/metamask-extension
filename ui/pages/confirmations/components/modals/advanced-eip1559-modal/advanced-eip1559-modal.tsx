@@ -8,7 +8,9 @@ import {
 import { GasModalType } from '../../../constants/gas';
 
 export const AdvancedEIP1559Modal = ({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setActiveModal,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   handleCloseModals,
 }: {
   setActiveModal: (modal: GasModalType) => void;

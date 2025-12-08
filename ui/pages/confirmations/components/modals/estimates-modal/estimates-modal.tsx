@@ -23,7 +23,7 @@ import {
 import {
   GasEstimateListHeader,
   GasEstimateListItem,
-} from '../../gas-estimate-list-item';
+} from '../../gas-estimate-list-item/gas-estimate-list-item';
 import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
 
 export const EstimatesModal = ({

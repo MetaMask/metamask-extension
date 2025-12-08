@@ -21,4 +21,3 @@ describe('AdvancedEIP1559Modal', () => {
     expect(getByText('Advanced EIP1559')).toBeInTheDocument();
   });
 });
-
