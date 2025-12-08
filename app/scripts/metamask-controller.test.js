@@ -134,7 +134,7 @@ async function waitForAllPromises() {
   // Wait for next tick to flush all pending promises. It's requires since
   // we are testing some asynchronous execution flows that are started by
   // synchronous calls.
-  await new Promise(process.nextTick);
+  await new Promise((resolve) => setTimeout(() => resolve()));
 }
 
 /**
@@ -758,7 +758,7 @@ describe('MetaMaskController', () => {
         expect(accountsControllerSpy).toHaveBeenCalledTimes(2);
       });
 
-      it('runs discovery and alignments after an unlock', async () => {
+      it('runs discovery and alignment asynchronously after submitting password', async () => {
         const localMetaMaskController = new MetaMaskController({
           showUserConfirmation: noop,
           encryptor: mockEncryptor,
@@ -792,6 +792,12 @@ describe('MetaMaskController', () => {
           localMetaMaskController,
           'discoverAndCreateAccounts',
         );
+        discoverAndCreateAccountsSpy.mockImplementation(() => undefined);
+
+        localMetaMaskController.multichainAccountService = {
+          init: jest.fn(),
+          resyncAccounts: jest.fn(),
+        };
 
         const password = 'password';
         // Primary HD keyring.
@@ -799,41 +805,44 @@ describe('MetaMaskController', () => {
         // Second HD keyring.
         await localMetaMaskController.importMnemonicToVault(TEST_SEED_ALT);
 
-        await localMetaMaskController.submitPassword(password);
+        // Wait for async call to discover accounts.
+        await waitForAllPromises();
 
-        // Wait for the fire-and-forget sync and discover operation to complete
-        await new Promise((resolve) => setImmediate(resolve));
-
-        // We should have run discovery + alignment on every HD keyrings.
         const keyrings =
           localMetaMaskController.keyringController.state.keyrings.filter(
             (keyring) => keyring.type === KeyringTypes.hd,
           );
         expect(keyrings).toHaveLength(2);
-        expect(discoverAndCreateAccountsSpy).toHaveBeenCalledTimes(3);
+
+        // Run discovery right after importing SRP.
+        expect(discoverAndCreateAccountsSpy).toHaveBeenCalledTimes(1);
         // 1: During importMnemonicToVault (hence, `keyrings[1]` here).
-        expect(discoverAndCreateAccountsSpy).toHaveBeenNthCalledWith(
-          1,
+        expect(discoverAndCreateAccountsSpy).toHaveBeenCalledWith(
           keyrings[1].metadata.id,
         );
+        discoverAndCreateAccountsSpy.mockReset();
+
+        // Unlocking will trigger some async works!
+        await localMetaMaskController.submitPassword(password);
+
+        // Wait for async call to discover accounts.
+        await waitForAllPromises();
+
+        // We should have run discovery + alignment on every HD keyrings:
         // 1: After unlock, with the primary HD keyring.
         expect(discoverAndCreateAccountsSpy).toHaveBeenNthCalledWith(
-          2,
+          1,
           keyrings[0].metadata.id,
         );
-        // 1: After unlock, with the second HD keyring.
+        // 2: After unlock, with the second HD keyring.
         expect(discoverAndCreateAccountsSpy).toHaveBeenNthCalledWith(
-          3,
+          2,
           keyrings[1].metadata.id,
         );
       });
-    });
 
-    describe('#submitPasswordOrEncryptionKey', () => {
-      const password = 'a-fake-password';
-
-      it('should call resyncAccounts and alignWallets asynchronously when submitPasswordOrEncryptionKey is called', async () => {
-        const mockAlignWallets = jest.fn();
+      it('runs resyncAccounts asynchronously after submitting password', async () => {
+        const password = 'a-fake-password';
         const mockResyncAccounts = jest.fn();
 
         // We only trigger this behavior when the feature flag is enabled.
@@ -844,7 +853,6 @@ describe('MetaMaskController', () => {
         metamaskController.multichainAccountService = {
           init: jest.fn(),
           resyncAccounts: mockResyncAccounts,
-          alignWallets: mockAlignWallets,
         };
 
         await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
@@ -853,7 +861,6 @@ describe('MetaMaskController', () => {
         await waitForAllPromises();
 
         expect(mockResyncAccounts).toHaveBeenCalled();
-        expect(mockAlignWallets).toHaveBeenCalled();
       });
     });
 
