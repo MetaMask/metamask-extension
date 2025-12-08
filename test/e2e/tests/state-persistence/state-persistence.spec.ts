@@ -279,32 +279,14 @@ const ensureHomeReady = async (driver: Driver) => {
 /**
  * Runs a background script, reloads the extension, and waits for restart.
  *
- * @param runScript - Stringified async script to execute before reload.
  * @param driver - WebDriver instance.
  * @returns Result object from the executed script.
  */
-const runScriptThenReloadExtension = async (
-  runScript: string | null,
-  driver: Driver,
-) => {
+const reloadExtension = async (driver: Driver) => {
   const extensionWindow = await driver.driver.getWindowHandle();
   const blankWindow = await driver.openNewPage('about:blank');
 
   await driver.switchToWindow(extensionWindow);
-  let result: { result?: unknown; error?: string } = {};
-  if (runScript) {
-    result = await driver.executeAsyncScript(`
-      const callback = arguments[arguments.length - 1];
-      (async () => {
-        try {
-          const output = await (${runScript});
-          callback({ result: output });
-        } catch (error) {
-          callback({ error: error?.message ?? error?.toString?.() ?? error });
-        }
-      })();
-    `);
-  }
   await driver.executeScript(
     `(globalThis.browser ?? globalThis.chrome).runtime.reload()`,
   );
@@ -315,25 +297,15 @@ const runScriptThenReloadExtension = async (
   await driver.openNewPage('about:blank');
 
   await waitForRestart(driver);
-
-  if (result?.error) {
-    throw new Error(result.error);
-  }
-
-  return result?.result;
 };
 
 /**
  * Reloads the extension, unlocks, and waits for home readiness.
  *
  * @param driver - WebDriver instance.
- * @param runScript - Optional stringified async script to run pre-reload.
  */
-const reloadAndUnlock = async (
-  driver: Driver,
-  runScript: string | null = null,
-) => {
-  await runScriptThenReloadExtension(runScript, driver);
+const reloadAndUnlock = async (driver: Driver) => {
+  await reloadExtension(driver);
   await unlockWallet(driver, { password: WALLET_PASSWORD });
   await ensureHomeReady(driver);
 };
@@ -477,23 +449,39 @@ describe('State Persistence', function () {
           // proceed if not for the attempted flag.
           console.log('setting local storage flags');
           await setLocalStorageFlags(driver);
-
           // sanity
           console.log('STILL expecting data state storage');
           await expectDataStateStorage(driver);
 
           console.log('setting meta to indicate prior attempted migration');
-          await runScriptThenReloadExtension(
-            setMeta({
+          await driver.executeAsyncScript(`
+            const callback = arguments[arguments.length - 1];
+            const browser = globalThis.browser ?? globalThis.chrome;
+
+            const newMeta = {
               platformSplitStateGradualRolloutAttempted: true,
-              // an attempted migration would set `platformSplitStateGradualRolloutAttempted`
+              // an attempted migration would set platformSplitStateGradualRolloutAttempted
               // itself, if it erroneously attempted to migrate (it's not supposed to try in this test)
-              // and then failed, so we are setting this extra `canary` property just so we have something
+              // and then failed, so we are setting this extra canary property just so we have something
               // unique.
               canary: 'test-canary',
-            }),
-            driver,
-          );
+            };
+
+            browser.storage.local
+              .get(['meta'])
+              .then(({ meta: existingMeta = {} }) =>
+                browser.storage.local.set({
+                  meta: { ...existingMeta, ...newMeta },
+                }),
+              )
+              .then(() => callback({ ok: true }))
+              .catch((error) =>
+                callback({
+                  error: error?.message ?? error?.toString?.() ?? error,
+                }),
+              );
+            `);
+          await reloadExtension(driver);
 
           console.log('NO REALLY, we STILL expect data state storage');
           const storage1 = await expectDataStateStorage(driver);
@@ -514,7 +502,7 @@ describe('State Persistence', function () {
           });
 
           console.log('reloading and unlocking');
-          await runScriptThenReloadExtension(null, driver);
+          await reloadExtension(driver);
           console.log('unlocking wallet');
           await loginWithoutBalanceValidation(driver);
           console.log('ensuring home is ready');

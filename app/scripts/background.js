@@ -761,7 +761,12 @@ async function initialize(backup) {
             persistenceManager.update(key, state);
           });
         }
-        await persist();
+        try {
+          await persist();
+        } catch (error) {
+          log.error('Error persisting state change:', error);
+          sentry?.captureException(error);
+        }
       },
     );
   } else {
