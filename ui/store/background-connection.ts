@@ -1,9 +1,12 @@
 // eslint-disable-next-line import/no-restricted-paths
 import { type MetaRpcClientFactory } from '../../app/scripts/lib/metaRPCClientFactory';
+import log from 'loglevel';
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Api = Record<string, (...params: any[]) => any>;
+/**
+ * API method signature type.
+ * Each method can have any number of parameters and return any type.
+ */
+type Api = Record<string, (...params: unknown[]) => unknown>;
 type BackgroundRpcClient = MetaRpcClientFactory<Api>;
 
 const NO_BACKGROUND_CONNECTION_MESSAGE =
@@ -31,7 +34,7 @@ export function submitRequestToBackground<R>(
     // the return values for various RPC calls aren't always used. In production
     // builds, this will not happen, and even if it did MM wouldn't work.
     if (!background) {
-      console.warn(NO_BACKGROUND_CONNECTION_MESSAGE);
+      log.warn(NO_BACKGROUND_CONNECTION_MESSAGE);
       return Promise.resolve() as Promise<R>;
     }
   }
@@ -56,8 +59,6 @@ type CallbackMethod<R = unknown> = (error?: unknown, result?: R) => void;
 export const callBackgroundMethod = <R>(
   method: keyof Api,
 
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   args: Parameters<Api[typeof method]>,
   callback: CallbackMethod<R>,
 ) => {

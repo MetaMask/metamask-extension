@@ -7,24 +7,27 @@ import type { AppSliceState } from '../ducks/app/app';
 import type { FlattenedBackgroundStateProxy } from '../../shared/types/background';
 
 /**
- * This interface is temporary and is copied from the message-manager.js file
- * and is the 'msgParams' key of the interface declared there. We should get a
- * universal Message type to use for this, the Message manager and all
- * the other types of messages.
+ * Universal message type for decrypt/encrypt messages.
+ * This replaces the temporary TemporaryMessageDataType.
  *
- * TODO: Replace this
+ * Note: AbstractMessage from @metamask/message-manager may not have all the fields we need,
+ * so we define a compatible type structure here.
  */
-export type TemporaryMessageDataType = {
+export type MessageDataType = {
   id: string;
   type: string;
   msgParams: {
     metamaskId: string;
     data: string;
   };
+  // Additional fields that may be present from AbstractMessage
+  time?: number;
+  status?: string;
+  rawSig?: string;
 };
 
 export type MessagesIndexedById = {
-  [id: string]: TemporaryMessageDataType;
+  [id: string]: MessageDataType;
 };
 
 type RootReducerReturnType = ReturnType<typeof rootReducer>;
@@ -44,9 +47,15 @@ type ReduxState = {
   appState: AppSliceState['appState'];
 } & Omit<RootReducerReturnType, 'activeTab' | 'metamask' | 'appState'>;
 
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function configureStore(preloadedState: any) {
+/**
+ * Configure the Redux store with proper type safety.
+ *
+ * @param preloadedState - Optional initial state to preload into the store.
+ * @returns Configured Redux store instance.
+ */
+export default function configureStore(
+  preloadedState?: Partial<ReduxState>,
+) {
   const reduxDevtoolsEnabled = process.env.METAMASK_REACT_REDUX_DEVTOOLS;
   const runningTests = process.env.IN_TEST;
   const enhancers: StoreEnhancer[] = [];
