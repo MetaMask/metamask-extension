@@ -5675,11 +5675,11 @@
     "message": "By clicking \"Claim points\", you're agreeing to our $1. We'll track your on-chain activity to reward you automatically. $2",
     "description": "$1 is the Terms and Privacy Notice link, $2 is the Learn more link"
   },
-  "rewardsOnboardingStep4LegalDisclaimerTermsLink": {
-    "message": "Terms and Privacy Notice"
-  },
   "rewardsOnboardingStep4LegalDisclaimerLearnMoreLink": {
     "message": "Learn more"
+  },
+  "rewardsOnboardingStep4LegalDisclaimerTermsLink": {
+    "message": "Terms and Privacy Notice"
   },
   "rewardsOnboardingStep4OptInError": {
     "message": "Opt-in failed"
