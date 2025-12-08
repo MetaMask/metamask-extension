@@ -5606,7 +5606,8 @@
     "description": "The $1 is the date subscription ends"
   },
   "shieldTxDetails2Description": {
-    "message": "随时获取更快捷的专属支持"
+    "message": "随时获取更快捷的专属支持",
+    "description": "The $1 is interval and the $2 is the date of next billing"
   },
   "shieldTxDetails2Title": {
     "message": "优先支持"
