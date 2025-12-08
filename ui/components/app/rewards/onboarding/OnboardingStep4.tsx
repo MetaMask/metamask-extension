@@ -218,16 +218,16 @@ const OnboardingStep4: React.FC<OnboardingStep4Props> = ({
         >
           {t('rewardsOnboardingStep4LegalDisclaimer', [
             <TextButton
-            size={TextButtonSize.BodySm}
-            className="text-primary-default"
-            onClick={openTermsOfUse}
+              size={TextButtonSize.BodySm}
+              className="text-primary-default"
+              onClick={openTermsOfUse}
             >
               {t('rewardsOnboardingStep4LegalDisclaimerTermsLink')}
             </TextButton>,
-             <TextButton
-             size={TextButtonSize.BodySm}
-             className="text-primary-default"
-             onClick={openLearnMore}
+            <TextButton
+              size={TextButtonSize.BodySm}
+              className="text-primary-default"
+              onClick={openLearnMore}
             >
               {t('rewardsOnboardingStep4LegalDisclaimerLearnMoreLink')}
             </TextButton>,
