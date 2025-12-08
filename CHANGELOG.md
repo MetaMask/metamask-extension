@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 
 - bump semvar version to 13.12.1
+- bump semvar version to 13.12.1
 
 ### Fixed
 
