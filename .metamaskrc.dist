@@ -53,8 +53,9 @@ BLOCKAID_PUBLIC_KEY=
 ; Enables the Settings Page - Developer Options
 ; ENABLE_SETTINGS_PAGE_DEV_OPTIONS=true
 
-; The endpoint used to submit errors and tracing data to Sentry.
-; The below is the `test-metamask` project.
+; SENTRY CONFIGURATION
+; SENTRY_DSN     - For production builds only (do NOT use in development)
+; SENTRY_DSN_DEV - For local dev, CI/CD, and testing (sends to 'test-metamask' project)
 ; SENTRY_DSN_DEV=https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496
 
 ; Enable/disable why did you render debug tool: https://github.com/welldone-software/why-did-you-render

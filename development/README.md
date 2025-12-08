@@ -58,23 +58,98 @@ or `https://api.segment.io/v1/batch` respectively.
 
 ## Sentry
 
-### Debugging Sentry
+### Overview
 
-1. Set `SENTRY_DSN_DEV`, or `SENTRY_DSN` if using a production build, in `.metamaskrc` to a suitable Sentry URL.
+MetaMask uses Sentry for error tracking and performance monitoring. Events are
+automatically categorized by environment based on build target and GitHub context.
 
-- The example value specified in `.metamaskrc.dist` uses the `test-metamask` project in the MetaMask account.
-- Alternatively, create a free Sentry account with a new organization and project.
-- The DSN is specified in: `Settings > Projects > [Project Name] > Client Keys (DSN)`.
+### Sentry Projects
 
-2. To display Sentry logs, include `DEBUG=metamask:sentry:*` in `.metamaskrc`.
+| Project                | Purpose                                              | DSN Variable     |
+| ---------------------- | ---------------------------------------------------- | ---------------- |
+| **test-metamask**      | Non-production events (dev, staging, CI/CD, testing) | `SENTRY_DSN_DEV` |
+| **metamask-extension** | Production events only                               | `SENTRY_DSN`     |
 
-3. To display more verbose logs if not in a developer build, include `METAMASK_DEBUG=1` in `.metamaskrc`.
+> ⚠️ **Important**: Never use `SENTRY_DSN` (production) for local development or CI/CD builds.
+> Always use `SENTRY_DSN_DEV` for non-production environments.
 
-4. Ensure metrics are enabled during onboarding or via `Settings > Security & privacy > Participate in MetaMetrics`.
+### Environments
 
-5. To test Sentry via the developer options in the UI, include `ENABLE_SETTINGS_PAGE_DEV_OPTIONS=true` in `.metamaskrc`.
+| Environment         | When Used                    | Build Command     | Branch/Context       |
+| ------------------- | ---------------------------- | ----------------- | -------------------- |
+| `production`        | Production releases          | `yarn build prod` | `stable` branch      |
+| `staging`           | Main branch builds           | `yarn build dist` | `main` branch        |
+| `development`       | Local development            | `yarn start`      | Local dev server     |
+| `testing`           | E2E test builds              | `yarn build:test` | Any                  |
+| `pull-request`      | PR builds                    | `yarn build dist` | `pull_request` event |
+| `release-candidate` | Release branches             | `yarn build dist` | `release/*` branches |
+| `other`             | Fallback (should not happen) | -                 | Uncategorized        |
 
-6. Alternatively, call `window.stateHooks.throwTestError()` or `window.stateHooks.throwTestBackgroundError()` via the UI console.
+For non-main build types (beta, flask, experimental), the environment includes the build type suffix:
+
+- `staging-beta`, `staging-flask`, `staging-experimental`
+- `development-beta`, `development-flask`, etc.
+- `testing-flask`, etc.
+
+### Environment Determination Logic
+
+Environments are determined by `development/build/utils.js:getEnvironment()`:
+
+1. **Build target** (highest priority):
+   - `prod` → `production`
+   - `dev` or `testDev` → `development`
+   - `test` → `testing`
+
+2. **Branch name** (for `dist` builds):
+   - `release/*` → `release-candidate`
+   - `main` → `staging`
+
+3. **GitHub event** (fallback):
+   - `pull_request` → `pull-request`
+
+4. **Default**: `other` (indicates misconfiguration)
+
+### DSN Selection Logic
+
+The Sentry target DSN is determined by `app/scripts/lib/setupSentry.js:getSentryTarget()`:
+
+```
+if (IN_TEST && !SENTRY_DSN_DEV)     → SENTRY_DSN_FAKE (no events sent)
+if (METAMASK_ENVIRONMENT !== 'production') → SENTRY_DSN_DEV (test-metamask)
+if (METAMASK_ENVIRONMENT === 'production') → SENTRY_DSN (production project)
+```
+
+### Querying Sentry
+
+Common Sentry search queries:
+
+| What you want   | Sentry Query                                          |
+| --------------- | ----------------------------------------------------- |
+| All PR errors   | `environment:development OR environment:pull-request` |
+| Staging errors  | `environment:staging OR environment:staging-*`        |
+| Test failures   | `environment:testing OR environment:testing-*`        |
+| Production only | `environment:production`                              |
+| Flask builds    | `environment:*-flask`                                 |
+| Beta builds     | `environment:*-beta`                                  |
+
+### Local Development Setup
+
+To enable Sentry error reporting for local development:
+
+1. Copy the example config and set the DSN:
+
+   ```bash
+   cp .metamaskrc.dist .metamaskrc
+   # Uncomment SENTRY_DSN_DEV in .metamaskrc
+   ```
+
+2. Enable Sentry debug logs (optional): add `DEBUG=metamask:sentry:*` to `.metamaskrc`
+
+3. Enable MetaMetrics via `Settings > Security & privacy > Participate in MetaMetrics`
+
+4. To test Sentry errors:
+   - Add `ENABLE_SETTINGS_PAGE_DEV_OPTIONS=true` to `.metamaskrc` and use Developer Options in Settings
+   - Or call `window.stateHooks.throwTestError()` in the browser console
 
 ### Debugging the Publish Release Flow
 
