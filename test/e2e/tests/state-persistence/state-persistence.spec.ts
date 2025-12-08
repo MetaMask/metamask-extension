@@ -311,21 +311,6 @@ const reloadAndUnlock = async (driver: Driver) => {
 };
 
 /**
- * Stringifies a script that persists the split flag into stored state.
- *
- * @param meta - extra meta values to merge with the current meta.
- * @returns Stringified async script to execute.
- */
-const setMeta = (meta = {}) => {
-  return `(async () => {
-    const browser = globalThis.browser ?? globalThis.chrome;
-    const { meta: existingMeta = {} } = await browser.storage.local.get(['meta']);
-    await browser.storage.local.set({ meta: { ...existingMeta, ...${JSON.stringify(meta)} } });
-    return { ok: true };
-  })()`;
-};
-
-/**
  * Onboard the user.
  *
  * @param driver - The WebDriver instance.
