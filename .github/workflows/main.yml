@@ -81,7 +81,7 @@ jobs:
 
   lint-workflows:
     name: Lint workflows
-    uses: metamask/github-tools/.github/workflows/lint-workflows.yml@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+    uses: MetaMask/github-tools/.github/workflows/lint-workflows.yml@v1
 
   test-lint:
     needs:
@@ -308,7 +308,7 @@ jobs:
 
       - name: Upload 'bundle-size' to S3
         if: ${{ vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
-        uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
+        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
@@ -401,7 +401,7 @@ jobs:
 
       - name: Upload 'source-map-explorer' to S3
         if: ${{ vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
-        uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
+        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
@@ -479,7 +479,7 @@ jobs:
 
       - name: Upload 'build-viz' to S3
         if: ${{ steps.lavamoat-policy-changed.outputs.lavamoat-policy-changed == 'true' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
-        uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
+        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
@@ -612,9 +612,12 @@ jobs:
     if: ${{ github.event_name == 'merge_group' && failure() && !github.event.repository.fork }}
     needs:
       - all-jobs-pass
-    uses: metamask/github-tools/.github/workflows/log-merge-group-failure.yml@6bbad335a01fce1a9ec1eabd9515542c225d46c0
-    secrets:
-      GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
-      GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
-      SPREADSHEET_ID: ${{ secrets.GOOGLE_MERGE_QUEUE_SPREADSHEET_ID }}
-      SHEET_NAME: ${{ secrets.GOOGLE_MERGE_QUEUE_SHEET_NAME }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Log merge group failure
+        uses: MetaMask/github-tools/.github/actions/log-merge-group-failure@v1
+        with:
+          google-application-credentials: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+          google-service-account: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+          spreadsheet-id: ${{ secrets.GOOGLE_MERGE_QUEUE_SPREADSHEET_ID }}
+          sheet-name: ${{ secrets.GOOGLE_MERGE_QUEUE_SHEET_NAME }}
