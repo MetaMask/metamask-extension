@@ -1,5 +1,5 @@
 diff --git a/dist/utils/quote.cjs b/dist/utils/quote.cjs
-index f09b7c3e34ca626c93a80cf7c1a2b528d5e07e3f..b8f4dcfbe8ca15a5058d711ec29753893201d5f0 100644
+index f09b7c3e34ca626c93a80cf7c1a2b528d5e07e3f..f2d5194b2f08eeb2c5bf2a1161ea868515d740f3 100644
 --- a/dist/utils/quote.cjs
 +++ b/dist/utils/quote.cjs
 @@ -134,10 +134,9 @@ const calcTotalGasFee = ({ approvalGasLimit, resetApprovalGasLimit, tradeGasLimi
@@ -10,7 +10,7 @@ index f09b7c3e34ca626c93a80cf7c1a2b528d5e07e3f..b8f4dcfbe8ca15a5058d711ec2975389
      const l1GasFeesInDecGWei = (0, controller_utils_1.weiHexToGweiDec)((0, controller_utils_1.toHex)(l1GasFeesInHexWei ?? '0'));
      const gasFeesInDecGwei = totalGasLimitInDec
 -        .times(totalFeePerGasInDecGwei)
-+        .times(priorityFeePerGasInDecGwei)
++        .times(feePerGasInDecGwei)
          .plus(l1GasFeesInDecGWei);
      const gasFeesInDecEth = gasFeesInDecGwei.times(new bignumber_js_1.BigNumber(10).pow(-9));
      const gasFeesInDisplayCurrency = nativeToDisplayCurrencyExchangeRate
