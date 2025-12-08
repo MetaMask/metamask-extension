@@ -15,8 +15,10 @@ export const version = 0;
  * @param versionedData.data - The persisted MetaMask state, keyed by controller.
  * @param changedKeys - `Set` to track which controller keys were modified by a migration
  */
-export const migrate = ((versionedData, changedKeys) => {
+export const migrate = (async (versionedData, changedKeys) => {
   versionedData.meta.version = version;
+  // if your `transformState` is async, you must `await` it, if it is not async,
+  // don't `await` it.
   transformState(versionedData.data, changedKeys);
 }) satisfies Migrate;
 
