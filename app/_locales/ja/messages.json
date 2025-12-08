@@ -5615,21 +5615,6 @@
   "shieldTxDetails2Title": {
     "message": "優先サポート"
   },
-  "shieldTxMembershipBillingDetails": {
-    "message": "請求の詳細"
-  },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "請求アカウント\n\nCharges"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "請求額"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "次回の請求"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "支払方法"
-  },
   "shieldTxMembershipErrorPausedCardTooltip": {
     "message": "支払いが拒否されました。補償を継続するには、支払方法を更新してください。"
   },
@@ -5644,9 +5629,6 @@
   },
   "shieldTxMembershipSubmitCase": {
     "message": "請求を送信"
-  },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "特典をすべて見る"
   },
   "show": {
     "message": "表示"

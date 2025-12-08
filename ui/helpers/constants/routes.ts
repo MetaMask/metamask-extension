@@ -17,6 +17,8 @@ export const ADVANCED_ROUTE = '/settings/advanced';
 export const DEVELOPER_OPTIONS_ROUTE = '/settings/developer-options';
 export const EXPERIMENTAL_ROUTE = '/settings/experimental';
 export const TRANSACTION_SHIELD_ROUTE = '/settings/transaction-shield';
+export const TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE =
+  '/settings/transaction-shield/manage-plan';
 export const TRANSACTION_SHIELD_CLAIMS = '/settings/transaction-shield/claims';
 // Transaction Shield Claims routes
 export const TRANSACTION_SHIELD_CLAIM_ROUTES = {

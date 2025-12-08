@@ -5615,21 +5615,6 @@
   "shieldTxDetails2Title": {
     "message": "Hỗ trợ ưu tiên"
   },
-  "shieldTxMembershipBillingDetails": {
-    "message": "Chi tiết thanh toán"
-  },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "Tài khoản thanh toán"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "Phí"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "Lần thanh toán tiếp theo"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "Phương thức thanh toán"
-  },
   "shieldTxMembershipErrorPausedCardTooltip": {
     "message": "Giao dịch thanh toán của bạn bị từ chối. Vui lòng cập nhật phương thức thanh toán để tiếp tục gói bảo hiểm."
   },
@@ -5644,9 +5629,6 @@
   },
   "shieldTxMembershipSubmitCase": {
     "message": "Gửi yêu cầu bồi thường"
-  },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "Xem toàn bộ quyền lợi"
   },
   "show": {
     "message": "Hiển thị"

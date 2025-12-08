@@ -42,6 +42,7 @@ import {
   SECURITY_PASSWORD_CHANGE_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
   TRANSACTION_SHIELD_CLAIM_ROUTES,
+  TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import { toggleNetworkMenu } from '../../store/actions';
@@ -74,6 +75,7 @@ const ROUTES_TO_I18N_KEYS = {
   [SECURITY_ROUTE]: 'securityAndPrivacy',
   [TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL]: 'shieldClaim',
   [TRANSACTION_SHIELD_CLAIM_ROUTES.BASE]: 'shieldClaimsListTitle',
+  [TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE]: 'shieldTx',
   [TRANSACTION_SHIELD_ROUTE]: 'shieldTx',
 };
 
@@ -124,6 +126,9 @@ const mapStateToProps = (state, ownProps) => {
   const isShieldClaimBasePage = Boolean(
     pathname.startsWith(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE),
   );
+  const isShieldManagePlanPage = Boolean(
+    pathname.startsWith(TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE),
+  );
 
   const environmentType = getEnvironmentType();
   const isPopup =
@@ -161,6 +166,8 @@ const mapStateToProps = (state, ownProps) => {
   } else if (isShieldClaimViewCompletedPage) {
     backRoute = `${TRANSACTION_SHIELD_CLAIM_ROUTES.BASE}?tab=${CLAIMS_TAB_KEYS.HISTORY}`;
   } else if (isShieldClaimBasePage) {
+    backRoute = TRANSACTION_SHIELD_ROUTE;
+  } else if (isShieldManagePlanPage) {
     backRoute = TRANSACTION_SHIELD_ROUTE;
   }
 

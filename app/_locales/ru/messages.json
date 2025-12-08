@@ -5615,21 +5615,6 @@
   "shieldTxDetails2Title": {
     "message": "Приоритетная поддержка"
   },
-  "shieldTxMembershipBillingDetails": {
-    "message": "Сведения для биллинга"
-  },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "Биллинговый счет"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "Сборы"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "Следующее выставление счетов"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "Способ оплаты"
-  },
   "shieldTxMembershipErrorPausedCardTooltip": {
     "message": "Ваш платёж отклонён. Обновите способ оплаты, чтобы продолжить страховку."
   },
@@ -5644,9 +5629,6 @@
   },
   "shieldTxMembershipSubmitCase": {
     "message": "Отправить претензию"
-  },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "Просмотреть все преимущества"
   },
   "show": {
     "message": "Показать"

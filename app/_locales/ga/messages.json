@@ -5687,21 +5687,6 @@
   "shieldTxMembershipActive": {
     "message": "Ballraíocht ghníomhach"
   },
-  "shieldTxMembershipBillingDetails": {
-    "message": "Sonraí billeála"
-  },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "Cuntas billeála"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "Muirir"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "An chéad bhilleáil eile"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "Modh íocaíochta"
-  },
   "shieldTxMembershipBillingDetailsViewBillingHistory": {
     "message": "Féach ar stair billeála"
   },
@@ -5745,9 +5730,6 @@
   },
   "shieldTxMembershipSubmitCase": {
     "message": "Cuir éileamh isteach"
-  },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "Féach ar na buntáistí iomlána"
   },
   "show": {
     "message": "Taispeáin"

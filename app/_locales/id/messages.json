@@ -5615,21 +5615,6 @@
   "shieldTxDetails2Title": {
     "message": "Dukungan prioritas"
   },
-  "shieldTxMembershipBillingDetails": {
-    "message": "Detail penagihan"
-  },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "Akun penagihan"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "Biaya"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "Penagihan berikutnya"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "Metode pembayaran"
-  },
   "shieldTxMembershipErrorPausedCardTooltip": {
     "message": "Pembayaran Anda ditolak. Perbarui metode pembayaran untuk melanjutkan pertanggungan."
   },
@@ -5644,9 +5629,6 @@
   },
   "shieldTxMembershipSubmitCase": {
     "message": "Ajukan klaim"
-  },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "Lihat manfaat lengkapnya"
   },
   "show": {
     "message": "Tampilkan"

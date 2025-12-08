@@ -5615,21 +5615,6 @@
   "shieldTxDetails2Title": {
     "message": "Soporte prioritario"
   },
-  "shieldTxMembershipBillingDetails": {
-    "message": "Detalles de facturación"
-  },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "Cuenta de facturación"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "Cargos"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "Próxima facturación"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "Método de pago"
-  },
   "shieldTxMembershipErrorPausedCardTooltip": {
     "message": "Tu pago se rechazó. Actualiza tu método de pago para continuar con tu cobertura."
   },
@@ -5644,9 +5629,6 @@
   },
   "shieldTxMembershipSubmitCase": {
     "message": "Presentar una reclamación"
-  },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "Ver todos los beneficios"
   },
   "show": {
     "message": "Mostrar"

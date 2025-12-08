@@ -32,6 +32,7 @@ import {
   SECURITY_PASSWORD_CHANGE_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
   TRANSACTION_SHIELD_CLAIM_ROUTES,
+  TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE,
 } from '../../helpers/constants/routes';
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
 import {
@@ -77,6 +78,7 @@ import BackupAndSyncTab from './backup-and-sync-tab';
 import ChangePassword from './security-tab/change-password';
 import ClaimsArea from './transaction-shield-tab/claims-area';
 import TransactionShield from './transaction-shield-tab';
+import ManageShieldPlan from './transaction-shield-tab/manage-shield-plan';
 
 // Helper component for network routes that need side effects
 const NetworkRouteHandler = ({ onMount }) => {
@@ -566,6 +568,10 @@ class SettingsPage extends PureComponent {
         <Route
           path={`${toRelativeRoutePath(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE, SETTINGS_ROUTE)}/*`}
           element={<ClaimsArea />}
+        />
+        <Route
+          path={`${toRelativeRoutePath(TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE, SETTINGS_ROUTE)}/*`}
+          element={<ManageShieldPlan />}
         />
         <Route
           path={toRelativeRoutePath(EXPERIMENTAL_ROUTE, SETTINGS_ROUTE)}

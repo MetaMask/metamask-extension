@@ -5615,21 +5615,6 @@
   "shieldTxDetails2Title": {
     "message": "우선 지원"
   },
-  "shieldTxMembershipBillingDetails": {
-    "message": "청구 세부 정보"
-  },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "청구 계정"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "요금"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "다음 청구"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "결제 수단"
-  },
   "shieldTxMembershipErrorPausedCardTooltip": {
     "message": "결제가 거부되었습니다. 보장을 유지하려면 결제 수단을 업데이트하세요."
   },
@@ -5644,9 +5629,6 @@
   },
   "shieldTxMembershipSubmitCase": {
     "message": "청구하기"
-  },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "전체 혜택 보기"
   },
   "show": {
     "message": "표시"

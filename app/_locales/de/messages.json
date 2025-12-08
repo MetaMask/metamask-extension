@@ -5615,21 +5615,6 @@
   "shieldTxDetails2Title": {
     "message": "Prioritärer Support"
   },
-  "shieldTxMembershipBillingDetails": {
-    "message": "Abrechnungsdetails"
-  },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "Abrechnungskonto"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "Belastungen"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "Nächste Abrechnung"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "Zahlungsmethode"
-  },
   "shieldTxMembershipErrorPausedCardTooltip": {
     "message": "Ihre Zahlung wurde abgelehnt. Bitte aktualisieren Sie Ihre Zahlungsmethode, um Ihre Abdeckung beizubehalten."
   },
@@ -5644,9 +5629,6 @@
   },
   "shieldTxMembershipSubmitCase": {
     "message": "Anspruch einreichen"
-  },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "Gesamte Vorteile anzeigen"
   },
   "show": {
     "message": "Anzeigen"

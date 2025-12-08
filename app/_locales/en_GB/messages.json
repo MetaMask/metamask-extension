@@ -6479,21 +6479,6 @@
   "shieldTxMembershipBenefitsViewAll": {
     "message": "View all"
   },
-  "shieldTxMembershipBillingDetails": {
-    "message": "Billing details"
-  },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "Billing account"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "Charges"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "Next billing"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "Payment method"
-  },
   "shieldTxMembershipBillingDetailsViewBillingHistory": {
     "message": "Manage billing"
   },
@@ -6559,9 +6544,6 @@
   },
   "shieldTxMembershipSubmitCase": {
     "message": "Submit a claim"
-  },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "View full benefits"
   },
   "show": {
     "message": "Show"
