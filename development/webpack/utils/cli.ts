@@ -8,6 +8,7 @@ import type { Options as YargsOptions } from 'yargs';
 import yargs from 'yargs/yargs';
 import parser from 'yargs-parser';
 import type { BuildTypesConfig } from '../../lib/build-type';
+import { ENVIRONMENT } from '../../build/constants';
 import {
   Browsers,
   type Manifest,
@@ -16,6 +17,7 @@ import {
   toOrange,
 } from './helpers';
 
+const environmentOptions = Object.values(ENVIRONMENT) as [string, ...string[]];
 const ENV_PREFIX = 'BUNDLE';
 const addFeat = 'addFeature' as const;
 const omitFeat = 'omitFeature' as const;
@@ -357,6 +359,20 @@ function getOptions(
       type: 'boolean',
     },
 
+    metamaskEnvironment: {
+      array: false,
+      choices: environmentOptions,
+      default: undefined as string | undefined,
+      defaultDescription:
+        'Auto-detected from git context (branch name, CI environment)',
+      description:
+        'The build environment (production, staging, release-candidate, pull-request, other). ' +
+        'Controls Sentry project targeting and feature flag detection. ' +
+        'If not specified, auto-detected from git context.',
+      group: toOrange('Build options:'),
+      type: 'string',
+    },
+
     dryRun: {
       array: false,
       default: false,
@@ -380,10 +396,15 @@ function getOptions(
  * @param args
  * @param features
  */
-export function getDryRunMessage(args: Args, features: Features) {
+export function getDryRunMessage(
+  args: Args,
+  features: Features,
+  resolvedEnvironment?: string,
+) {
   return `🦊 Build Config 🦊
 
-Environment: ${args.env}
+Environment (--env): ${args.env}
+MetaMask Environment: ${resolvedEnvironment ?? args.metamaskEnvironment ?? '(auto-detected)'}
 Minify: ${args.minify}
 Watch: ${args.watch}
 Cache: ${args.cache}

@@ -27,6 +27,7 @@ describe('./utils/cli.ts', () => {
     snow: false,
     dryRun: false,
     stats: false,
+    metamaskEnvironment: undefined,
   };
 
   it('should return defaults', () => {

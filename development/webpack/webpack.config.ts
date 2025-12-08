@@ -33,14 +33,15 @@ import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
 import { getCodeFenceLoader } from './utils/loaders/codeFenceLoader';
 import { getSwcLoader } from './utils/loaders/swcLoader';
-import { getVariables } from './utils/config';
+import { getVariables, resolveEnvironment } from './utils/config';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import { getLatestCommit } from './utils/git';
 
 const buildTypes = loadBuildTypesConfig();
 const { args, cacheKey, features } = parseArgv(argv.slice(2), buildTypes);
 if (args.dryRun) {
-  console.error(getDryRunMessage(args, features));
+  const resolvedEnv = resolveEnvironment(args);
+  console.error(getDryRunMessage(args, features, resolvedEnv));
   exit(0);
 }
 
