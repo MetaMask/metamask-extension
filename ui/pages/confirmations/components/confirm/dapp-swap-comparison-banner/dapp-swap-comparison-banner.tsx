@@ -203,7 +203,7 @@ const DappSwapComparisonInner = () => {
                 `$${selectedQuoteValueDifference.toFixed(2)}`,
               ])}
             </Text>
-            {(rewards || true) && (
+            {rewards && (
               <>
                 <Text
                   color={TextColor.TextAlternative}
@@ -215,7 +215,7 @@ const DappSwapComparisonInner = () => {
                   className="dapp-swap_text-rewards"
                   variant={TextVariant.BodySm}
                 >
-                  testing {rewards?.text}
+                  {rewards?.text}
                 </Text>
               </>
             )}
