@@ -17,6 +17,11 @@ const mockSendFeatureFlag = (mockServer: Mockttp, enabled: boolean) =>
         statusCode: 200,
         json: [
           {
+            enableMultichainAccountsState2: {
+              enabled: true,
+              featureVersion: '2',
+              minimumVersion: '12.19.0',
+            },
             sendRedesign: {
               enabled,
             },
