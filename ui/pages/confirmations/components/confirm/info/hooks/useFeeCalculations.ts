@@ -231,20 +231,18 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
 
       if (shouldUseEIP1559FeeLogic) {
         // Calculate minimum fee per gas = estimatedBaseFee + priorityFeePerGas
+        // Note: feePerGas and priorityFeePerGas are hex strings from txParams/gasFeeEstimates
         let minimumFeePerGas = addHexes(
           decGWEIToHexWEI(estimatedBaseFee) || HEX_ZERO,
-          feePerGas ? decimalToHex(priorityFeePerGas) : HEX_ZERO,
+          feePerGas ? (priorityFeePerGas as Hex) : HEX_ZERO,
         );
 
         // minimumFeePerGas should never be higher than feePerGas (maxFeePerGas)
         if (
           feePerGas &&
-          new Numeric(minimumFeePerGas, 16).greaterThan(
-            decimalToHex(feePerGas),
-            16,
-          )
+          new Numeric(minimumFeePerGas, 16).greaterThan(feePerGas, 16)
         ) {
-          minimumFeePerGas = decimalToHex(feePerGas);
+          minimumFeePerGas = feePerGas;
         }
 
         gasEstimate = multiplyHexes(minimumFeePerGas as Hex, gas as Hex);

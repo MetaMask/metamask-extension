@@ -35,6 +35,10 @@ jest.mock('../../../../store/actions', () => ({
   updateTransactionGasFees: jest.fn(),
 }));
 
+jest.mock('react-redux', () => ({
+  useDispatch: () => jest.fn(),
+}));
+
 const mockUseConfirmContext = jest.mocked(useConfirmContext);
 const mockUseGasFeeEstimates = jest.mocked(useGasFeeEstimates);
 const mockUseFeeCalculations = jest.mocked(useFeeCalculations);

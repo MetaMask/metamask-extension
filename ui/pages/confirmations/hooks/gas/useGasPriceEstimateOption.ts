@@ -6,6 +6,8 @@ import {
   type GasPriceGasFeeEstimates,
 } from '@metamask/transaction-controller';
 import { type GasFeeEstimates } from '@metamask/gas-fee-controller';
+import { useDispatch } from 'react-redux';
+
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { updateTransactionGasFees } from '../../../../store/actions';
 import { useConfirmContext } from '../../context/confirm';
@@ -23,6 +25,7 @@ export const useGasPriceEstimateOption = ({
 }: {
   handleCloseModals: () => void;
 }): GasOption[] => {
+  const dispatch = useDispatch();
   const t = useI18nContext();
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
@@ -59,7 +62,7 @@ export const useGasPriceEstimateOption = ({
     [transactionGasFeeEstimates, networkGasFeeEstimates],
   );
 
-  const onGasPriceEstimateLevelClick = useCallback(() => {
+  const onGasPriceEstimateLevelClick = useCallback(async () => {
     let gasPropertiesToUpdate;
     if (transactionEnvelopeType === TransactionEnvelopeType.legacy) {
       gasPropertiesToUpdate = {
@@ -72,16 +75,19 @@ export const useGasPriceEstimateOption = ({
       };
     }
 
-    updateTransactionGasFees(id, {
-      userFeeLevel: 'medium',
-      ...gasPropertiesToUpdate,
-    });
+    await dispatch(
+      updateTransactionGasFees(id, {
+        userFeeLevel: 'medium',
+        ...gasPropertiesToUpdate,
+      }),
+    );
     handleCloseModals();
   }, [
     id,
     transactionGasFeeEstimates,
     transactionEnvelopeType,
     handleCloseModals,
+    dispatch,
   ]);
 
   const options = useMemo((): GasOption[] => {
