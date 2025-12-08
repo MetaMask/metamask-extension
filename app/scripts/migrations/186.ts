@@ -1,15 +1,17 @@
+import { getErrorMessage, hasProperty, isObject } from '@metamask/utils';
+import { RpcEndpointType } from '@metamask/network-controller';
 import { cloneDeep } from 'lodash';
 import { v4 as uuidV4 } from 'uuid';
-import { RpcEndpointType } from '@metamask/network-controller';
-import { hasProperty, isObject } from '@metamask/utils';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { captureException } from '../../../shared/lib/sentry';
 
-type VersionedData = {
+export type VersionedData = {
   meta: { version: number };
   data: Record<string, unknown>;
 };
 
-export const version = 183;
+export const monadTestnetChainId = '0x279f'; // 10143
+
+export const version = 186;
 
 /**
  * This migration add Monad Testnet Infura RPC to
@@ -28,19 +30,34 @@ export async function migrate(
 ): Promise<VersionedData> {
   const versionedData = cloneDeep(originalVersionedData);
   versionedData.meta.version = version;
-  transformState(versionedData.data);
+
+  try {
+    transformState(versionedData.data);
+  } catch (error) {
+    console.error(error);
+    const newError = new Error(
+      `Migration #${version}: ${getErrorMessage(error)}`,
+    );
+    captureException(newError);
+    // Even though we encountered an error, we need the migration to pass for
+    // the migrator tests to work
+    versionedData.data = originalVersionedData.data;
+  }
+
   return versionedData;
 }
 
 function transformState(state: Record<string, unknown>) {
   if (!hasProperty(state, 'NetworkController')) {
-    console.warn(`Migration ${version}: NetworkController not found.`);
+    captureException(
+      new Error(`Migration ${version}: NetworkController not found.`),
+    );
     return state;
   }
 
   const networkState = state.NetworkController;
   if (!isObject(networkState)) {
-    global.sentry?.captureException?.(
+    captureException(
       new Error(
         `Migration ${version}: NetworkController is not an object: ${typeof networkState}`,
       ),
@@ -49,7 +66,7 @@ function transformState(state: Record<string, unknown>) {
   }
 
   if (!hasProperty(networkState, 'networkConfigurationsByChainId')) {
-    global.sentry?.captureException?.(
+    captureException(
       new Error(
         `Migration ${version}: NetworkController missing property networkConfigurationsByChainId.`,
       ),
@@ -58,7 +75,7 @@ function transformState(state: Record<string, unknown>) {
   }
 
   if (!isObject(networkState.networkConfigurationsByChainId)) {
-    global.sentry?.captureException?.(
+    captureException(
       new Error(
         `Migration ${version}: NetworkController.networkConfigurationsByChainId is not an object: ${typeof networkState.networkConfigurationsByChainId}.`,
       ),
@@ -66,31 +83,41 @@ function transformState(state: Record<string, unknown>) {
     return state;
   }
 
-  const existingNetworkConfigurations =
-    networkState.networkConfigurationsByChainId;
+  const { networkConfigurationsByChainId } = networkState;
 
-  const monadTestnetChainId = CHAIN_IDS.MONAD_TESTNET;
-  const monadTestnetConfiguration = existingNetworkConfigurations[monadTestnetChainId];
   // Only add the Infura RPC endpoint if the Monad Testnet network configuration is already present
-  if (monadTestnetConfiguration) {
-    if (isObject(monadTestnetConfiguration) && hasProperty(monadTestnetConfiguration, 'rpcEndpoints') && Array.isArray(monadTestnetConfiguration.rpcEndpoints)) {
-      // Filter out the Infura RPC endpoints
-      const infuraRpcEndpoints = monadTestnetConfiguration.rpcEndpoints.filter((rpcEndpoint) => {
-        return (isObject(rpcEndpoint) && hasProperty(rpcEndpoint, 'url') && typeof rpcEndpoint.url === 'string' && rpcEndpoint.url.includes('monad-testnet.infura.io'))
-      });
+  if (
+    hasProperty(networkConfigurationsByChainId, monadTestnetChainId) &&
+    isObject(networkConfigurationsByChainId[monadTestnetChainId])
+  ) {
+    const monadTestnetConfiguration =
+      networkConfigurationsByChainId[monadTestnetChainId];
+    if (
+      isObject(monadTestnetConfiguration) &&
+      hasProperty(monadTestnetConfiguration, 'rpcEndpoints') &&
+      Array.isArray(monadTestnetConfiguration.rpcEndpoints)
+    ) {
+      const isInfuraRpcEndpointExist =
+        monadTestnetConfiguration.rpcEndpoints.find((rpcEndpoint) => {
+          return (
+            isObject(rpcEndpoint) &&
+            hasProperty(rpcEndpoint, 'url') &&
+            typeof rpcEndpoint.url === 'string' &&
+            rpcEndpoint.url.includes('monad-testnet.infura.io')
+          );
+        });
 
       // If there are no Infura RPC endpoints, add the Infura RPC endpoint to the Monad Testnet network configuration
-      if (infuraRpcEndpoints.length === 0) {
+      if (!isInfuraRpcEndpointExist) {
         // Add the Infura RPC endpoint to the Monad Testnet network configuration
         monadTestnetConfiguration.rpcEndpoints.push({
           url: 'https://monad-testnet.infura.io/v3/{infuraProjectId}',
-          // We have to use Custom type for this migration,
-          // Because the controller utils is not yet updated to support Monad Testnet as Infura type
-          type: RpcEndpointType.Custom,
+          type: RpcEndpointType.Infura,
           networkClientId: uuidV4(),
         });
         // Update the default RPC endpoint index to the new Infura RPC endpoint
-        monadTestnetConfiguration.defaultRpcEndpointIndex = monadTestnetConfiguration.rpcEndpoints.length - 1;
+        monadTestnetConfiguration.defaultRpcEndpointIndex =
+          monadTestnetConfiguration.rpcEndpoints.length - 1;
       }
     }
   }

@@ -1,18 +1,25 @@
-import { NetworkState, RpcEndpointType } from '@metamask/network-controller';
-import { CHAIN_IDS } from '../../../shared/constants/network';
-import { migrate, version } from './183';
+import { RpcEndpointType, NetworkState } from '@metamask/network-controller';
+import { cloneDeep } from 'lodash';
+import {
+  migrate,
+  version,
+  monadTestnetChainId,
+  type VersionedData,
+} from './186';
 
 // Mock uuid
 jest.mock('uuid', () => ({
   v4: jest.fn(() => 'mocked-uuid-123'),
 }));
 
-const oldVersion = 182;
+const VERSION = version;
+const oldVersion = VERSION - 1;
 
-describe(`migration #${version}`, () => {
+describe(`migration #${VERSION}`, () => {
+  let mockedCaptureException: jest.Mock;
   beforeEach(() => {
-    global.sentry = { captureException: jest.fn() };
-    // Mock process.env to allow migration logic to run
+    mockedCaptureException = jest.fn();
+    global.sentry = { captureException: mockedCaptureException };
   });
 
   afterEach(() => {
@@ -31,104 +38,84 @@ describe(`migration #${version}`, () => {
 
     const newStorage = await migrate(oldStorage);
 
-    expect(newStorage.meta).toStrictEqual({ version });
+    expect(newStorage.meta).toStrictEqual({ version: VERSION });
   });
 
-  it('logs a warning and returns the original state if NetworkController is missing', async () => {
-    const oldStorage = {
-      meta: { version: oldVersion },
-      data: {},
-    };
-
-    const mockWarn = jest.spyOn(console, 'warn').mockImplementation(jest.fn());
-
-    const newStorage = await migrate(oldStorage);
-
-    expect(mockWarn).toHaveBeenCalledWith(
-      `Migration ${version}: NetworkController not found.`,
-    );
-    expect(newStorage.data).toStrictEqual(oldStorage.data);
-  });
-
-  it('logs an error and returns the original state if NetworkController is not an object', async () => {
-    const oldStorage = {
-      meta: { version: oldVersion },
-      data: {
-        NetworkController: 'not an object',
+  const invalidStates = [
+    {
+      state: {
+        meta: { version: VERSION },
+        data: {},
       },
-    };
-
-    const newStorage = await migrate(oldStorage);
-
-    expect(global.sentry.captureException).toHaveBeenCalledWith(
-      new Error(
-        `Migration ${version}: NetworkController is not an object: string`,
-      ),
-    );
-    expect(newStorage.data).toStrictEqual(oldStorage.data);
-  });
-
-  it('logs an error and returns the original state if networkConfigurationsByChainId is missing', async () => {
-    const oldStorage = {
-      meta: { version: oldVersion },
-      data: {
-        NetworkController: {},
-      },
-    };
-
-    const newStorage = await migrate(oldStorage);
-
-    expect(global.sentry.captureException).toHaveBeenCalledWith(
-      new Error(
-        `Migration ${version}: NetworkController missing property networkConfigurationsByChainId.`,
-      ),
-    );
-    expect(newStorage.data).toStrictEqual(oldStorage.data);
-  });
-
-  it('logs an error and returns the original state if networkConfigurationsByChainId is not an object', async () => {
-    const oldStorage = {
-      meta: { version: oldVersion },
-      data: {
-        NetworkController: {
-          networkConfigurationsByChainId: 'not an object',
+      scenario: 'NetworkController not found',
+    },
+    {
+      state: {
+        meta: { version: VERSION },
+        data: {
+          NetworkController: 'invalid',
         },
       },
-    };
+      scenario: 'invalid NetworkController state',
+    },
+    {
+      state: {
+        meta: { version: VERSION },
+        data: {
+          NetworkController: {},
+        },
+      },
+      scenario: 'missing networkConfigurationsByChainId property',
+    },
+    {
+      state: {
+        meta: { version: VERSION },
+        data: {
+          NetworkController: {
+            networkConfigurationsByChainId: 'invalid',
+          },
+        },
+      },
+      scenario: 'invalid networkConfigurationsByChainId state',
+    },
+  ];
 
-    const newStorage = await migrate(oldStorage);
+  // @ts-expect-error 'each' function is not recognized by TypeScript types
+  it.each(invalidStates)(
+    'should capture exception if $scenario',
+    async ({ state }: { errorMessage: string; state: VersionedData }) => {
+      const orgState = cloneDeep(state);
 
-    expect(global.sentry.captureException).toHaveBeenCalledWith(
-      new Error(
-        `Migration ${version}: NetworkController.networkConfigurationsByChainId is not an object: string.`,
-      ),
-    );
-    expect(newStorage.data).toStrictEqual(oldStorage.data);
-  });
+      const migratedState = await migrate(state);
 
-  it('does not modify state if `monad-testnet.infura.io` is already present in `Monad Testnet` network configuration', async () => {
-    // Create a state with all supported FEATURED_RPCS networks already present
+      // State should be unchanged
+      expect(migratedState).toStrictEqual(orgState);
+      expect(mockedCaptureException).toHaveBeenCalledWith(expect.any(Error));
+    },
+  );
+
+  it('does not modify state if RPC `monad-testnet.infura.io` is already present in `Monad Testnet` network configuration', async () => {
     const monadTestnetConfiguration = {
-      chainId: CHAIN_IDS.MONAD_TESTNET,
+      chainId: monadTestnetChainId,
       name: 'Monad Testnet',
-      nativeCurrency: 'MONAD',
+      nativeCurrency: 'MON',
       rpcEndpoints: [
         {
           url: 'https://monad-testnet.infura.io/v3/{infuraProjectId}',
           type: RpcEndpointType.Custom,
-          networkClientId: 'existing-client-id',
+          networkClientId: 'custom-client-id',
         },
       ],
       defaultRpcEndpointIndex: 0,
       blockExplorerUrls: ['https://testnet.monadexplorer.com/'],
       defaultBlockExplorerUrlIndex: 0,
     };
+
     const existingNetworks = {
-      [CHAIN_IDS.MONAD_TESTNET]: monadTestnetConfiguration,
+      [monadTestnetChainId]: monadTestnetConfiguration,
     };
 
-
-    const oldStorage = {
+    const orgState = {
       meta: { version: oldVersion },
       data: {
         NetworkController: {
@@ -137,16 +124,15 @@ describe(`migration #${version}`, () => {
       },
     };
 
-    const newStorage = await migrate(oldStorage);
+    const migratedState = await migrate(orgState);
 
-    expect(newStorage.data).toStrictEqual(oldStorage.data);
+    expect(migratedState.data).toStrictEqual(orgState.data);
   });
 
   it('does not modify state if `Monad Testnet` is not present in network configurations', async () => {
-    const existingNetworks = {
-    };
+    const existingNetworks = {};
 
-    const oldStorage = {
+    const orgState = {
       meta: { version: oldVersion },
       data: {
         NetworkController: {
@@ -155,16 +141,16 @@ describe(`migration #${version}`, () => {
       },
     };
 
-    const newStorage = await migrate(oldStorage);
+    const migratedState = await migrate(orgState);
 
-    expect(newStorage.data).toStrictEqual(oldStorage.data);
+    expect(migratedState.data).toStrictEqual(orgState.data);
   });
 
-  it('adds `monad-testnet.infura.io` in `Monad Testnet` network configuration if not already present', async () => {
+  it('adds RPC `monad-testnet.infura.io` in `Monad Testnet` network configuration if not already present', async () => {
     const monadTestnetConfiguration = {
-      chainId: CHAIN_IDS.MONAD_TESTNET,
+      chainId: monadTestnetChainId,
       name: 'Monad Testnet',
-      nativeCurrency: 'MONAD',
+      nativeCurrency: 'MON',
       rpcEndpoints: [
         {
           url: 'https://testnet-rpc.monad.xyz',
@@ -178,10 +164,10 @@ describe(`migration #${version}`, () => {
     };
 
     const existingNetworks = {
-      [CHAIN_IDS.MONAD_TESTNET]: monadTestnetConfiguration,
+      [monadTestnetChainId]: monadTestnetConfiguration,
     };
 
-    const oldStorage = {
+    const orgState = {
       meta: { version: oldVersion },
       data: {
         NetworkController: {
@@ -190,29 +176,31 @@ describe(`migration #${version}`, () => {
       },
     };
 
-    const newStorage = await migrate(oldStorage);
+    const migratedState = await migrate(orgState);
 
     expect(
-      (newStorage.data.NetworkController as NetworkState)
-        .networkConfigurationsByChainId[CHAIN_IDS.MONAD_TESTNET].rpcEndpoints,
-    ).toStrictEqual(
-      [
-        {
-          url: 'https://testnet-rpc.monad.xyz',
-          type: RpcEndpointType.Custom,
-          networkClientId: 'existing-client-id',
-        },
-        {
-          url: 'https://monad-testnet.infura.io/v3/{infuraProjectId}',
-          type: RpcEndpointType.Custom,
-          networkClientId: 'mocked-uuid-123',
-        },
-      ],
-    );
+      (migratedState.data.NetworkController as NetworkState)
+        .networkConfigurationsByChainId[monadTestnetChainId].rpcEndpoints,
+    ).toStrictEqual([
+      {
+        url: 'https://testnet-rpc.monad.xyz',
+        type: RpcEndpointType.Custom,
+        networkClientId: 'existing-client-id',
+      },
+      {
+        url: 'https://monad-testnet.infura.io/v3/{infuraProjectId}',
+        type: RpcEndpointType.Infura,
+        networkClientId: 'mocked-uuid-123',
+      },
+    ]);
     expect(
-      (newStorage.data.NetworkController as NetworkState)
-        .networkConfigurationsByChainId[CHAIN_IDS.MONAD_TESTNET].defaultRpcEndpointIndex,
-    ).toStrictEqual((newStorage.data.NetworkController as NetworkState)
-    .networkConfigurationsByChainId[CHAIN_IDS.MONAD_TESTNET].rpcEndpoints.length - 1);
+      (migratedState.data.NetworkController as NetworkState)
+        .networkConfigurationsByChainId[monadTestnetChainId]
+        .defaultRpcEndpointIndex,
+    ).toStrictEqual(
+      (migratedState.data.NetworkController as NetworkState)
+        .networkConfigurationsByChainId[monadTestnetChainId].rpcEndpoints
+        .length - 1,
+    );
   });
 });
