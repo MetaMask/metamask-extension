@@ -1,7 +1,7 @@
 import { screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { useParams } from 'react-router-dom-v5-compat';
+import { useParams } from 'react-router-dom';
 import {
   getMockAddEthereumChainConfirmState,
   getMockApproveConfirmState,
@@ -58,8 +58,8 @@ jest.mock('../../../../../../shared/modules/environment', () => ({
   isGatorPermissionsFeatureEnabled: jest.fn().mockReturnValue(true),
 }));
 
-jest.mock('react-router-dom-v5-compat', () => ({
-  ...jest.requireActual('react-router-dom-v5-compat'),
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   useParams: jest.fn(),
 }));
 

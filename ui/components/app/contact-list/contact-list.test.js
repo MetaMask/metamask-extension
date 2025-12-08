@@ -1,6 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { MOCK_ADDRESS_BOOK } from '../../../../test/data/mock-data';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import ContactList from '.';

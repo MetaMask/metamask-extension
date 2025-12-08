@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom-v5-compat';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   CaipAccountId,
   CaipChainId,
@@ -61,28 +61,11 @@ import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../../shared/constants/
 import { endTrace, trace, TraceName } from '../../../../../shared/lib/trace';
 import { SiteCell } from './site-cell/site-cell';
 
-type ReviewPermissionsProps = {
-  params?: { origin: string };
-  navigate?: (
-    to: string | number,
-    options?: { replace?: boolean; state?: Record<string, unknown> },
-  ) => void;
-};
-
-export const ReviewPermissions = ({
-  params,
-  navigate: navigateProp,
-}: ReviewPermissionsProps = {}) => {
+export const ReviewPermissions = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const navigateHook = useNavigate();
-  const urlParamsHook = useParams<{ origin: string }>();
-
-  // Use props if provided, otherwise fall back to hooks
-  const navigate = (navigateProp || navigateHook) as NonNullable<
-    typeof navigateProp
-  >;
-  const urlParams = params || urlParamsHook;
+  const navigate = useNavigate();
+  const urlParams = useParams<{ origin: string }>();
 
   // @ts-expect-error TODO: Fix this type error by handling undefined parameters
   const securedOrigin = decodeURIComponent(urlParams.origin);
