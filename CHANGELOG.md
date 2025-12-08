@@ -60,6 +60,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Increase timeout for UI calls to background from 10s to 16s, potentially preventing UI crash on very slow devices (#38561)
 - Account list padding (#38492)
 
+## [13.12.1]
+
+### Fixed
+
+- Adds bounds to currencyRates (#38591)
+
 ## [13.12.0]
 
 ### Added
@@ -1445,7 +1451,8 @@ authorized by the user.` error until the user fully revoked dapp
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.13.0...HEAD
-[13.13.0]: https://github.com/MetaMask/metamask-extension/compare/v13.12.0...v13.13.0
+[13.13.0]: https://github.com/MetaMask/metamask-extension/compare/v13.12.1...v13.13.0
+[13.12.1]: https://github.com/MetaMask/metamask-extension/compare/v13.12.0...v13.12.1
 [13.12.0]: https://github.com/MetaMask/metamask-extension/compare/v13.11.2...v13.12.0
 [13.11.2]: https://github.com/MetaMask/metamask-extension/compare/v13.11.1...v13.11.2
 [13.11.1]: https://github.com/MetaMask/metamask-extension/compare/v13.11.0...v13.11.1
