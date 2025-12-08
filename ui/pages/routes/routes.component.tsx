@@ -737,7 +737,7 @@ export default function Routes() {
               includeLocation: true,
             })}
           </RouteWithLayout>
-          <RouteWithLayout path={SNAPS_VIEW_ROUTE} layout={LegacyLayout}>
+          <RouteWithLayout path={SNAPS_VIEW_ROUTE} layout={RootLayout}>
             {createV5CompatRoute(SnapView, {
               wrapper: AuthenticatedV5Compat,
               includeNavigate: true,
