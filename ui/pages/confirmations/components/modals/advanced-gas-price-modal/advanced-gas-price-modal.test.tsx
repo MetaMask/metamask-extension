@@ -21,4 +21,3 @@ describe('AdvancedGasPriceModal', () => {
     expect(getByText('Advanced Gas Price')).toBeInTheDocument();
   });
 });
-

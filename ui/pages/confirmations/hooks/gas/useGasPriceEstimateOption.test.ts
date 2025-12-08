@@ -4,6 +4,9 @@ import {
   TransactionEnvelopeType,
 } from '@metamask/transaction-controller';
 
+import { useGasFeeEstimates } from '../../../../hooks/useGasFeeEstimates';
+import { useConfirmContext } from '../../context/confirm';
+import { useFeeCalculations } from '../../components/confirm/info/hooks/useFeeCalculations';
 import { useGasPriceEstimateOption } from './useGasPriceEstimateOption';
 
 const MOCK_GAS_PRICE = '0x2540be400';
@@ -31,10 +34,6 @@ jest.mock('../transactions/useTransactionNativeTicker', () => ({
 jest.mock('../../../../store/actions', () => ({
   updateTransactionGasFees: jest.fn(),
 }));
-
-import { useConfirmContext } from '../../context/confirm';
-import { useGasFeeEstimates } from '../../../../hooks/useGasFeeEstimates';
-import { useFeeCalculations } from '../../components/confirm/info/hooks/useFeeCalculations';
 
 const mockUseConfirmContext = jest.mocked(useConfirmContext);
 const mockUseGasFeeEstimates = jest.mocked(useGasFeeEstimates);

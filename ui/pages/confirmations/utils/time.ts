@@ -42,11 +42,7 @@ export const toHumanEstimatedTimeRange = (min: number, max: number) => {
   const adjustedMin =
     useMinutes && minInSeconds >= 59 && minInSeconds < 60 ? 60000 : min;
 
-  return (
-    withoutUnitHumanizer(adjustedMin, options) +
-    '- ' +
-    shortEnglishHumanizer(max, options)
-  );
+  return `${withoutUnitHumanizer(adjustedMin, options)}- ${shortEnglishHumanizer(max, options)}`;
 };
 
 export const toHumanSeconds = (milliseconds: number): string => {

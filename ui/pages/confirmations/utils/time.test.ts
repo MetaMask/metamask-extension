@@ -35,4 +35,3 @@ describe('time utils', () => {
     });
   });
 });
-

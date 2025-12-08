@@ -6,6 +6,8 @@ import {
 } from '@metamask/transaction-controller';
 
 import { GasModalType } from '../../constants/gas';
+import { useConfirmContext } from '../../context/confirm';
+import { useFeeCalculations } from '../../components/confirm/info/hooks/useFeeCalculations';
 import { useAdvancedGasFeeOption } from './useAdvancedGasFeeOption';
 
 jest.mock('../../../../hooks/useI18nContext', () => ({
@@ -23,9 +25,6 @@ jest.mock('../../components/confirm/info/hooks/useFeeCalculations', () => ({
 jest.mock('../transactions/useTransactionNativeTicker', () => ({
   useTransactionNativeTicker: () => 'ETH',
 }));
-
-import { useConfirmContext } from '../../context/confirm';
-import { useFeeCalculations } from '../../components/confirm/info/hooks/useFeeCalculations';
 
 const mockUseConfirmContext = jest.mocked(useConfirmContext);
 const mockUseFeeCalculations = jest.mocked(useFeeCalculations);

@@ -8,6 +8,7 @@ import {
 import { GasModalType } from '../../../constants/gas';
 
 export const AdvancedGasPriceModal = ({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setActiveModal,
   handleCloseModals,
 }: {

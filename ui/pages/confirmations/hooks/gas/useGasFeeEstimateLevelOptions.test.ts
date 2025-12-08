@@ -4,6 +4,9 @@ import {
   GasFeeEstimateLevel,
 } from '@metamask/transaction-controller';
 
+import { useGasFeeEstimates } from '../../../../hooks/useGasFeeEstimates';
+import { useConfirmContext } from '../../context/confirm';
+import { useFeeCalculations } from '../../components/confirm/info/hooks/useFeeCalculations';
 import { useGasFeeEstimateLevelOptions } from './useGasFeeEstimateLevelOptions';
 
 jest.mock('../../../../hooks/useI18nContext', () => ({
@@ -33,10 +36,6 @@ jest.mock('../../../../store/actions', () => ({
 jest.mock('react-redux', () => ({
   useDispatch: () => jest.fn(),
 }));
-
-import { useConfirmContext } from '../../context/confirm';
-import { useGasFeeEstimates } from '../../../../hooks/useGasFeeEstimates';
-import { useFeeCalculations } from '../../components/confirm/info/hooks/useFeeCalculations';
 
 const mockUseConfirmContext = jest.mocked(useConfirmContext);
 const mockUseGasFeeEstimates = jest.mocked(useGasFeeEstimates);

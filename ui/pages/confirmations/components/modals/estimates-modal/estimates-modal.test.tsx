@@ -39,9 +39,10 @@ jest.mock('../../../hooks/gas/useGasOptions', () => ({
   }),
 }));
 
-jest.mock('../../edit-gas-fee-popover/network-statistics/network-statistics', () => () => (
-  <div data-testid="network-statistics">Network Statistics</div>
-));
+jest.mock(
+  '../../edit-gas-fee-popover/network-statistics/network-statistics',
+  () => () => <div data-testid="network-statistics">Network Statistics</div>,
+);
 
 describe('EstimatesModal', () => {
   const mockSetActiveModal = jest.fn();
@@ -87,4 +88,3 @@ describe('EstimatesModal', () => {
     expect(getByText('learn more')).toBeInTheDocument();
   });
 });
-

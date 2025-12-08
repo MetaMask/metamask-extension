@@ -23,65 +23,12 @@ import { type GasOption, type GasOptionTooltipProps } from '../../types/gas';
 import Tooltip from '../../../../components/ui/tooltip';
 import EditGasToolTip from '../edit-gas-fee-popover/edit-gas-tooltip/edit-gas-tooltip';
 
-export const GasEstimateListHeader = () => {
-  const t = useI18nContext();
-
+const SelectedIndicator = () => {
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      alignItems={AlignItems.center}
-      padding={2}
-      paddingTop={2}
-      paddingBottom={2}
-    >
-      <Box paddingLeft={2} style={{ flex: 1 }}>
-        <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
-          {t('gasOption')}
-        </Text>
-      </Box>
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.center}
-        gap={2}
-      >
-        <Text
-          variant={TextVariant.bodySm}
-          color={TextColor.textAlternative}
-          textAlign={TextAlign.Right}
-        >
-          {t('maxFee')}
-        </Text>
-        {/* Spacer for info icon alignment */}
-        <Box style={{ width: 16 }} />
-      </Box>
-    </Box>
-  );
-};
-
-export const GasEstimateListItem = ({ option }: { option: GasOption }) => {
-  const {
-    emoji,
-    estimatedTime,
-    isSelected,
-    name,
-    onSelect,
-    value,
-    valueInFiat,
-    tooltipProps,
-  } = option;
-
-  return (
-    <ListItem
-      icon={<Text variant={TextVariant.bodyMd}>{emoji}</Text>}
-      name={name}
-      isSelected={isSelected}
-      time={estimatedTime}
-      fee={value}
-      feeInFiat={valueInFiat}
-      onClick={onSelect}
-      tooltipProps={tooltipProps}
+      borderRadius={BorderRadius.pill}
+      backgroundColor={BackgroundColor.primaryDefault}
+      className="gas-fee-token-list-item__selected-indicator"
     />
   );
 };
@@ -190,12 +137,65 @@ const ListItem = ({
   );
 };
 
-function SelectedIndicator() {
+export const GasEstimateListHeader = () => {
+  const t = useI18nContext();
+
   return (
     <Box
-      borderRadius={BorderRadius.pill}
-      backgroundColor={BackgroundColor.primaryDefault}
-      className="gas-fee-token-list-item__selected-indicator"
+      display={Display.Flex}
+      flexDirection={FlexDirection.Row}
+      alignItems={AlignItems.center}
+      padding={2}
+      paddingTop={2}
+      paddingBottom={2}
+    >
+      <Box paddingLeft={2} style={{ flex: 1 }}>
+        <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
+          {t('gasOption')}
+        </Text>
+      </Box>
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        alignItems={AlignItems.center}
+        gap={2}
+      >
+        <Text
+          variant={TextVariant.bodySm}
+          color={TextColor.textAlternative}
+          textAlign={TextAlign.Right}
+        >
+          {t('maxFee')}
+        </Text>
+        {/* Spacer for info icon alignment */}
+        <Box style={{ width: 16 }} />
+      </Box>
+    </Box>
+  );
+};
+
+export const GasEstimateListItem = ({ option }: { option: GasOption }) => {
+  const {
+    emoji,
+    estimatedTime,
+    isSelected,
+    name,
+    onSelect,
+    value,
+    valueInFiat,
+    tooltipProps,
+  } = option;
+
+  return (
+    <ListItem
+      icon={<Text variant={TextVariant.bodyMd}>{emoji}</Text>}
+      name={name}
+      isSelected={isSelected}
+      time={estimatedTime}
+      fee={value}
+      feeInFiat={valueInFiat}
+      onClick={onSelect}
+      tooltipProps={tooltipProps}
     />
   );
-}
+};
