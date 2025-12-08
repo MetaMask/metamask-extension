@@ -163,6 +163,10 @@ export default class ExtensionStore implements BaseStore {
         'MetaMask - cannot persist state to local store as this browser does not support this action',
       );
     }
+    if (data === undefined || meta === undefined) {
+      throw new Error('Data and meta must be defined to set the store');
+    }
+
     const { local } = browser.storage;
     console.time('[ExtensionStore]: Overwriting local store');
     await local.set({ data, meta });

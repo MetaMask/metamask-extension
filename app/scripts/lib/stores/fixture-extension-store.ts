@@ -2,6 +2,7 @@ import log from 'loglevel';
 import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
 import ExtensionStore from './extension-store';
 import type { MetaMaskStorageStructure } from './base-store';
+import { isObject } from '@metamask/utils';
 
 const fetchWithTimeout = getFetchWithTimeout();
 
@@ -49,13 +50,19 @@ export class FixtureExtensionStore extends ExtensionStore {
 
       if (response.ok) {
         const state = await response.json();
-        if (state.meta?.storageKind === 'split') {
-          // If fixture is already in split state format, convert it properly
-          const kvs = new Map(Object.entries(state.data));
-          kvs.set('meta', state.meta);
-          await super.setKeyValues(kvs);
+        if (isObject(state.data) && isObject(state.meta)) {
+          if (state.meta?.storageKind === 'split') {
+            // If fixture is already in split state format, convert it properly
+            const kvs = new Map(Object.entries(state.data));
+            kvs.set('meta', state.meta);
+            await super.setKeyValues(kvs);
+          } else {
+            await super.set(state);
+          }
         } else {
-          await super.set(state);
+          log.debug(
+          `Received response with a state of ${JSON.stringify(state)}`,
+        );
         }
       } else {
         log.debug(
