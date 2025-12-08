@@ -221,8 +221,10 @@ export const MultichainAccountList = ({
       navigate(DEFAULT_ROUTE);
     };
 
-    const handleAccountClickToUse =
-      handleAccountClick ?? defaultHandleAccountClick;
+    const handleAccountClickToUse = (accountGroupId: AccountGroupId) => {
+      const handlerToUse = handleAccountClick ?? defaultHandleAccountClick;
+      handlerToUse?.(accountGroupId);
+    };
 
     const renderAccountCell = (
       groupId: string,
@@ -475,6 +477,10 @@ export const MultichainAccountList = ({
     t,
     isHiddenAccountsExpanded,
   ]);
+
+  useEffect(() => {
+    endTrace({ name: TraceName.ShowAccountList });
+  }, []);
 
   return (
     <>

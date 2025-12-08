@@ -73,6 +73,11 @@ type ReviewGatorPermissionItemProps = {
    * The function to call when the revoke is clicked
    */
   onRevokeClick: () => void;
+
+  /**
+   * Whether this permission has a pending revoke click (temporary UI state)
+   */
+  hasRevokeBeenClicked?: boolean;
 };
 
 type PermissionExpandedDetails = Record<
@@ -102,6 +107,7 @@ export const ReviewGatorPermissionItem = ({
   networkName,
   gatorPermission,
   onRevokeClick,
+  hasRevokeBeenClicked = false,
 }: ReviewGatorPermissionItemProps) => {
   const t = useI18nContext();
   const { permissionResponse, siteOrigin } = gatorPermission;
@@ -151,10 +157,13 @@ export const ReviewGatorPermissionItem = ({
   }, [tokensByChain, chainId, tokenAddress, nativeTokenMetadata]);
 
   const isPendingRevocation = useMemo(() => {
-    return pendingRevocations.some(
-      (revocation) => revocation.permissionContext === permissionContext,
+    return (
+      hasRevokeBeenClicked ||
+      pendingRevocations.some(
+        (revocation) => revocation.permissionContext === permissionContext,
+      )
     );
-  }, [pendingRevocations, permissionContext]);
+  }, [pendingRevocations, permissionContext, hasRevokeBeenClicked]);
 
   /**
    * Handles the click event for the expand/collapse button

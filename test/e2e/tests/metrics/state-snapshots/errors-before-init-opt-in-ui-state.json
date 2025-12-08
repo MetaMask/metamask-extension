@@ -41,6 +41,7 @@
       "lastViewedUserSurvey": null,
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
       "newPrivacyPolicyToastShownDate": "number",
+      "pna25Acknowledged": "boolean",
       "nftsDetectionNoticeDismissed": false,
       "onboardingDate": null,
       "outdatedBrowserWarningLastShown": "object",
@@ -106,11 +107,41 @@
       "metaMetricsDataDeletionTimestamp": 0
     },
     "NetworkController": {
-      "selectedNetworkClientId": "string",
-      "networksMetadata": {
-        "networkConfigurationId": { "EIPS": {}, "status": "unknown" }
-      },
-      "networkConfigurationsByChainId": "object"
+      "networkConfigurationsByChainId": "object",
+      "networksMetadata": "object",
+      "selectedNetworkClientId": "string"
+    },
+    "NetworkEnablementController": {
+      "enabledNetworkMap": { "eip155": "object", "solana": "object" }
+    },
+    "NetworkOrderController": {
+      "orderedNetworkList": {
+        "0": "object",
+        "1": "object",
+        "2": "object",
+        "3": "object",
+        "4": "object",
+        "5": "object",
+        "6": "object",
+        "7": "object"
+      }
+    },
+    "NftController": {
+      "allNftContracts": "object",
+      "allNfts": "object",
+      "ignoredNfts": "object"
+    },
+    "NotificationServicesController": {
+      "isFeatureAnnouncementsEnabled": "boolean",
+      "isMetamaskNotificationsFeatureSeen": "boolean",
+      "isNotificationServicesEnabled": "boolean",
+      "metamaskNotificationsList": "object",
+      "metamaskNotificationsReadList": "object",
+      "subscriptionAccountsSeen": "object"
+    },
+    "NotificationServicesPushController": {
+      "fcmToken": "string",
+      "isPushEnabled": "boolean"
     },
     "OnboardingController": {
       "seedPhraseBackedUp": true,
@@ -240,11 +271,14 @@
       "isPushEnabled": "boolean",
       "fcmToken": "string"
     },
+    "ProfileMetricsController": "object",
     "RemoteFeatureFlagController": {
       "remoteFeatureFlags": {
-        "feature1": true,
-        "feature2": false,
-        "feature3": { "name": "groupC", "value": "valueC" },
+        "enableMultichainAccountsState2": {
+          "enabled": true,
+          "featureVersion": "2",
+          "minimumVersion": "12.19.0"
+        },
         "sendRedesign": { "enabled": false }
       },
       "cacheTimestamp": "number"
@@ -275,6 +309,7 @@
     "SnapInsightsController": {},
     "SnapInterfaceController": { "interfaces": "object" },
     "PPOMController": { "storageMetadata": {} },
+    "TransactionPayController": {},
     "AccountTreeController": {
       "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean",
       "accountGroupsMetadata": "object",
@@ -301,5 +336,5 @@
       "rewardsSubscriptionTokens": "object"
     }
   },
-  "meta": { "version": 183.1 }
+  "meta": { "version": 185 }
 }
