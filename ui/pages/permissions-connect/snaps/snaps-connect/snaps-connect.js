@@ -62,13 +62,17 @@ export default function SnapsConnect({
   }, [request, rejectConnection]);
 
   const onConnect = useCallback(() => {
-    try {
-      setIsLoading(true);
-      approveConnection(request);
-    } finally {
-      setIsLoading(false);
+    // Prevent double submission - guard is also in parent, but keep for safety
+    if (isLoading) {
+      return;
     }
-  }, [request, approveConnection]);
+
+    setIsLoading(true);
+    approveConnection(request);
+    // Note: isLoading will remain true until component unmounts or user navigates away
+    // This is intentional to prevent double submission since approveConnection is async
+    // but doesn't return a promise we can await
+  }, [request, approveConnection, isLoading]);
 
   const SnapsConnectContent = () => {
     let trimmedOrigin = (useOriginMetadata(origin) || {})?.hostname;

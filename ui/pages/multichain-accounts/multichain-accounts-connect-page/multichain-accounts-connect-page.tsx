@@ -112,6 +112,7 @@ export type MultichainConnectPageProps = {
     origin: string;
     subjectType: string;
   };
+  isSubmitting?: boolean;
 };
 
 export enum MultichainAccountsConnectPageMode {
@@ -127,6 +128,7 @@ export const MultichainAccountsConnectPage: React.FC<
   rejectPermissionsRequest,
   approveConnection,
   targetSubjectMetadata,
+  isSubmitting = false,
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -487,6 +489,11 @@ export const MultichainAccountsConnectPage: React.FC<
   }, [permissionsRequestId, rejectPermissionsRequest]);
 
   const onConfirm = useCallback(() => {
+    // Prevent double submission (guard is also in parent, but keep for safety)
+    if (isSubmitting) {
+      return;
+    }
+
     const _request = {
       ...request,
       permissions: {
@@ -505,6 +512,7 @@ export const MultichainAccountsConnectPage: React.FC<
     selectedCaipAccountIds,
     selectedChainIds,
     approveConnection,
+    isSubmitting,
   ]);
 
   const title = transformOriginToTitle(targetSubjectMetadata.origin);
@@ -736,6 +744,7 @@ export const MultichainAccountsConnectPage: React.FC<
               size={ButtonSize.Lg}
               onClick={onConfirm}
               disabled={
+                isSubmitting ||
                 selectedAccountGroupIds.length === 0 ||
                 selectedChainIds.length === 0
               }
