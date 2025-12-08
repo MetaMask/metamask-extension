@@ -257,7 +257,8 @@ function handleV4CommandSwap(
         quotesInput?.srcTokenAmount || result?.quotesInput?.srcTokenAmount,
       srcTokenAddress:
         quotesInput?.srcTokenAddress || result?.quotesInput?.srcTokenAddress,
-      destTokenAddress: result?.quotesInput?.destTokenAddress,
+      destTokenAddress:
+        result?.quotesInput?.destTokenAddress || quotesInput?.srcTokenAddress,
     } as GenericQuoteRequest,
   };
 }
@@ -388,8 +389,8 @@ function handleV3CommandSwapExactIn(
   const srcTokenAddress =
     quotesInput?.srcTokenAddress || decodedPath[0].firstAddress.toLowerCase();
   const destTokenAddress =
-    quotesInput?.destTokenAddress ||
-    decodedPath[decodedPath.length - 1].secondAddress.toLowerCase();
+    decodedPath[decodedPath.length - 1].secondAddress.toLowerCase() ||
+    quotesInput?.destTokenAddress;
   const minimumAmount = result[2].toHexString();
 
   return {
