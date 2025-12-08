@@ -139,8 +139,8 @@ describe('TransactionBreakdown', () => {
         getActualDataFrom(getAllByTestId('transaction-breakdown-row')),
       ).toStrictEqual([
         ['Nonce', '114'],
-        ['Amount Sent', '33.425656732428330864 BAT'],
-        ['Amount Received', '0.00222334422997802 ETH'],
+        ['Amount sent', '33.425656732428330864 BAT'],
+        ['Amount received', '0.00222334422997802 ETH'],
         ['Gas limit (units)', '246742'],
         ['Gas used (units)', '195177'],
         ['Base fee (GWEI)', '6.476394595'],
@@ -171,8 +171,8 @@ describe('TransactionBreakdown', () => {
       ).toStrictEqual([
         ['Nonce', '114'],
         // Verify small amounts not in scientific notation
-        ['Amount Sent', '0.0000000000000001 BAT'],
-        ['Amount Received', '0.0000000000000001 ETH'],
+        ['Amount sent', '0.0000000000000001 BAT'],
+        ['Amount received', '0.0000000000000001 ETH'],
         ['Gas limit (units)', '246742'],
         ['Gas used (units)', '195177'],
         ['Base fee (GWEI)', '6.476394595'],
