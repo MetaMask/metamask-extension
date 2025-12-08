@@ -3,30 +3,13 @@ import {
   MetaMetricsEventName,
   type MetaMetricsEventPayload,
 } from '../../../../shared/constants/metametrics';
+import { TrackingParameter } from '../../../../shared/lib/deep-links/constants';
 import type { SignatureStatus } from '../../../../shared/lib/deep-links/verify';
-
-type UTMParameter =
-  | 'utm_campaign'
-  | 'utm_content'
-  | 'utm_medium'
-  | 'utm_source'
-  | 'utm_term';
-
-const UTM_PARAMETERS = new Set([
-  'utm_campaign',
-  'utm_content',
-  'utm_medium',
-  'utm_source',
-  'utm_term',
-]) as Set<UTMParameter> & { has: (key: string) => key is UTMParameter };
 
 export type Properties = {
   route: string;
   signature: SignatureStatus;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  attribution_id?: string;
-} & { [key in UTMParameter]?: string };
+} & { [key in TrackingParameter]?: string };
 
 export type EventDetails = {
   url: URL;
@@ -58,9 +41,7 @@ export function createEvent({ signature, url }: EventDetails) {
       continue;
     }
 
-    if (key === 'attributionId') {
-      properties.attribution_id = value;
-    } else if (UTM_PARAMETERS.has(key)) {
+    if (TRACKING_PARAMETERS.has(key)) {
       properties[key] = value;
     } else {
       sensitiveProperties[key] = value;

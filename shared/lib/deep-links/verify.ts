@@ -55,7 +55,7 @@ export const verify = async (url: URL) => {
   const { algorithm, encoder, publicKey } = tools || (await lazyGetTools());
 
   const signature = sigToBytes(signatureStr);
-  const data = encoder.encode(canonicalize(url));
+  const data = encoder.encode(url.toString());
 
   const ok = await crypto.subtle.verify(algorithm, publicKey, signature, data);
   return ok ? VALID : INVALID;
