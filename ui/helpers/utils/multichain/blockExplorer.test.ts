@@ -84,7 +84,7 @@ describe('Block Explorer Tests', () => {
   describe('getAssetDetailsAccountUrl', () => {
     it('returns the correct account URL using configured block explorer for EVM networks', () => {
       const address = '0x1234567890abcdef';
-      // Uses the network's configured block explorer URL
+      // getAccountLink uses the network's configured block explorer URL
       const expectedUrl = `https://etherscan.io/address/${address}`;
 
       const result = getAssetDetailsAccountUrl(address, mockEvmNetwork);
@@ -92,7 +92,7 @@ describe('Block Explorer Tests', () => {
       expect(result).toBe(expectedUrl);
     });
 
-    it('falls back to Etherscan multichain when no block explorer is configured', () => {
+    it('falls back to default explorer when no block explorer is configured', () => {
       const address = '0x1234567890abcdef';
       const networkWithoutExplorer: MultichainNetwork = {
         ...mockEvmNetwork,
@@ -104,7 +104,8 @@ describe('Block Explorer Tests', () => {
           },
         },
       };
-      const expectedUrl = `https://etherscan.io/address/${address}#asset-multichain`;
+      // getAccountLink falls back to known explorer for mainnet
+      const expectedUrl = `https://etherscan.io/address/${address}`;
 
       const result = getAssetDetailsAccountUrl(address, networkWithoutExplorer);
 
