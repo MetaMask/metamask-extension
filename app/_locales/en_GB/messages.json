@@ -4062,6 +4062,9 @@
     "message": "Gas fees are $1 relative to the past 72 hours.",
     "description": "$1 is networks stability value - stable, low, high"
   },
+  "networkSuggested": {
+    "message": "Network suggested"
+  },
   "networkTabCustom": {
     "message": "Custom"
   },

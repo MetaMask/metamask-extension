@@ -213,8 +213,8 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
     transactionMeta,
   ]);
 
-  return {
-    calculateGasEstimate: ({
+  const calculateGasEstimateCallback = useCallback(
+    ({
       feePerGas,
       priorityFeePerGas,
       gas,
@@ -227,18 +227,53 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
       shouldUseEIP1559FeeLogic: boolean;
       gasPrice: string;
     }) => {
-      console.log('OGP - ', {
-        feePerGas,
-        priorityFeePerGas,
-        gas,
-        shouldUseEIP1559FeeLogic,
-        gasPrice: gasPriceParam,
-      });
+      let gasEstimate: Hex;
+
+      if (shouldUseEIP1559FeeLogic) {
+        // Calculate minimum fee per gas = estimatedBaseFee + priorityFeePerGas
+        let minimumFeePerGas = addHexes(
+          decGWEIToHexWEI(estimatedBaseFee) || HEX_ZERO,
+          feePerGas ? decimalToHex(priorityFeePerGas) : HEX_ZERO,
+        );
+
+        // minimumFeePerGas should never be higher than feePerGas (maxFeePerGas)
+        if (
+          feePerGas &&
+          new Numeric(minimumFeePerGas, 16).greaterThan(
+            decimalToHex(feePerGas),
+            16,
+          )
+        ) {
+          minimumFeePerGas = decimalToHex(feePerGas);
+        }
+
+        gasEstimate = multiplyHexes(minimumFeePerGas as Hex, gas as Hex);
+      } else {
+        gasEstimate = multiplyHexes(gasPriceParam as Hex, gas as Hex);
+      }
+
+      // Add L1 fee if present
+      const totalGasEstimate = addHexes(
+        gasEstimate,
+        layer1GasFee ?? HEX_ZERO,
+      ) as Hex;
+
+      const fees = getFeesFromHex(totalGasEstimate);
+
       return {
-        currentCurrencyFee: '',
-        preciseNativeCurrencyFee: '',
+        currentCurrencyFee: fees.currentCurrencyFee,
+        preciseNativeCurrencyFee: getValueFromWeiHex({
+          value: fees.hexFee,
+          fromCurrency: EtherDenomination.GWEI,
+          numberOfDecimals: 18,
+        }),
       };
     },
+    [estimatedBaseFee, layer1GasFee, getFeesFromHex],
+  );
+
+  return {
+    calculateGasEstimate: calculateGasEstimateCallback,
     estimatedFeeFiat: estimatedFees.currentCurrencyFee,
     estimatedFeeFiatWith18SignificantDigits:
       estimatedFees.currentCurrencyFeeWith18SignificantDigits,

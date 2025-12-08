@@ -1,4 +1,12 @@
-export interface GasOption {
+export type GasOptionTooltipProps = {
+  priorityLevel: string;
+  maxFeePerGas?: string;
+  maxPriorityFeePerGas?: string;
+  gasLimit?: number;
+  transaction?: Record<string, unknown>;
+};
+
+export type GasOption = {
   emoji: string;
   estimatedTime?: string;
   isSelected: boolean;
@@ -7,4 +15,5 @@ export interface GasOption {
   onSelect: () => void;
   value: string;
   valueInFiat?: string;
-}
+  tooltipProps?: GasOptionTooltipProps;
+};

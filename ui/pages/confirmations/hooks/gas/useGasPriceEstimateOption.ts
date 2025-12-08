@@ -6,13 +6,15 @@ import {
   type GasPriceGasFeeEstimates,
 } from '@metamask/transaction-controller';
 import { type GasFeeEstimates } from '@metamask/gas-fee-controller';
-// import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { updateTransactionGasFees } from '../../../../store/actions';
 import { useConfirmContext } from '../../context/confirm';
 import { useGasFeeEstimates } from '../../../../hooks/useGasFeeEstimates';
 import { useFeeCalculations } from '../../components/confirm/info/hooks/useFeeCalculations';
 import { type GasOption } from '../../types/gas';
 import { EMPTY_VALUE_STRING, GasOptionIcon } from '../../constants/gas';
+import { useTransactionNativeTicker } from '../transactions/useTransactionNativeTicker';
+import { hexWEIToDecGWEI } from '../../../../../shared/modules/conversion.utils';
 
 const HEX_ZERO = '0x0';
 
@@ -21,9 +23,11 @@ export const useGasPriceEstimateOption = ({
 }: {
   handleCloseModals: () => void;
 }): GasOption[] => {
+  const t = useI18nContext();
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
   const { calculateGasEstimate } = useFeeCalculations(transactionMeta);
+  const nativeTicker = useTransactionNativeTicker();
 
   const {
     gasFeeEstimates,
@@ -110,24 +114,35 @@ export const useGasPriceEstimateOption = ({
 
     return [
       {
-        emoji: GasOptionIcon.GAS_PRICE,
+        emoji: GasOptionIcon.GasPrice,
         estimatedTime: undefined,
         isSelected: isGasPriceEstimateSelected,
         key: 'gasPrice',
-        name: "transactions.gas_modal.network_suggested",
+        name: t('networkSuggested'),
         onSelect: () => onGasPriceEstimateLevelClick(),
-        value: preciseNativeCurrencyFee || EMPTY_VALUE_STRING,
+        value: preciseNativeCurrencyFee
+          ? `${preciseNativeCurrencyFee} ${nativeTicker}`
+          : EMPTY_VALUE_STRING,
         valueInFiat: currentCurrencyFee || EMPTY_VALUE_STRING,
+        tooltipProps: {
+          priorityLevel: 'medium',
+          maxFeePerGas: hexWEIToDecGWEI(feePerGas),
+          maxPriorityFeePerGas: hexWEIToDecGWEI(priorityFeePerGas),
+          gasLimit: parseInt(gas, 16),
+          transaction: transactionMeta as unknown as Record<string, unknown>,
+        },
       },
     ];
   }, [
     shouldIncludeGasPriceEstimateOption,
-    transactionMeta.gasLimitNoBuffer,
+    transactionMeta,
     transactionEnvelopeType,
     transactionGasFeeEstimates?.gasPrice,
     calculateGasEstimate,
     isGasPriceEstimateSelected,
     onGasPriceEstimateLevelClick,
+    t,
+    nativeTicker,
   ]);
 
   return options;

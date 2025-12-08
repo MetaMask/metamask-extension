@@ -14,7 +14,9 @@ import {
 } from '../../constants/gas';
 import { type GasOption } from '../../types/gas';
 import { useConfirmContext } from '../../context/confirm';
-// import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useTransactionNativeTicker } from '../transactions/useTransactionNativeTicker';
+import { hexWEIToDecGWEI } from '../../../../../shared/modules/conversion.utils';
 
 const HEX_ZERO = '0x0';
 
@@ -23,7 +25,8 @@ export const useAdvancedGasFeeOption = ({
 }: {
   setActiveModal: (modal: GasModalType) => void;
 }): GasOption[] => {
-  // const t = useI18nContext();
+  const t = useI18nContext();
+  const nativeTicker = useTransactionNativeTicker();
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
   const {
@@ -118,14 +121,39 @@ export const useAdvancedGasFeeOption = ({
         estimatedTime: '',
         isSelected: isAdvancedGasFeeSelected,
         key: 'advanced',
-        // name: t('transactions.gas_modal.advanced'),
-        name: 'Advanced',
+        name: t('advanced'),
         onSelect: onAdvancedGasFeeClick,
-        value,
+        value:
+          value === EMPTY_VALUE_STRING
+            ? EMPTY_VALUE_STRING
+            : `${value} ${nativeTicker}`,
         valueInFiat,
+        tooltipProps: {
+          priorityLevel: 'custom',
+          maxFeePerGas: hexWEIToDecGWEI(maxFeePerGas || HEX_ZERO),
+          maxPriorityFeePerGas: hexWEIToDecGWEI(
+            maxPriorityFeePerGas || HEX_ZERO,
+          ),
+          gasLimit: parseInt(
+            transactionMeta.gasLimitNoBuffer || txParamsGas || HEX_ZERO,
+            16,
+          ),
+          transaction: transactionMeta as unknown as Record<string, unknown>,
+        },
       },
     ],
-    [isAdvancedGasFeeSelected, onAdvancedGasFeeClick, value, valueInFiat],
+    [
+      isAdvancedGasFeeSelected,
+      onAdvancedGasFeeClick,
+      value,
+      valueInFiat,
+      t,
+      nativeTicker,
+      maxFeePerGas,
+      maxPriorityFeePerGas,
+      transactionMeta,
+      txParamsGas,
+    ],
   );
 
   return memoizedGasOption;
