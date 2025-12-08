@@ -421,7 +421,7 @@ describe('State Persistence', function () {
       );
     });
 
-    it.only('should not attempt to update if an update attempt fails', async function () {
+    it('should not attempt to update if an update attempt fails', async function () {
       await withFixtures(
         getFixtureOptions(this, { storageKind: 'data' }),
         async ({ driver }) => {
