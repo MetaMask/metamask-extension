@@ -44,4 +44,4 @@ jobs:
           semver-version: ${{ needs.get-next-version.outputs.next-version }}
           repo-type: 'extension'
           stable-branch-name: 'stable'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.STABLE_SYNC_TOKEN }}
