@@ -7,7 +7,7 @@ import {
   toAccountWalletId,
 } from '@metamask/account-api';
 import { AccountTreeWallets } from '../../../selectors/multichain-accounts/account-tree.types';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockDefaultState from '../../../../test/data/mock-state.json';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
@@ -15,6 +15,15 @@ import {
   MultichainAccountList,
   MultichainAccountListProps,
 } from './multichain-account-list';
+
+jest.mock('../../../../shared/lib/trace', () => {
+  const actual = jest.requireActual('../../../../shared/lib/trace');
+  return {
+    ...actual,
+    trace: jest.fn(),
+    endTrace: jest.fn(),
+  };
+});
 
 jest.mock('../../../selectors/multichain-accounts/account-tree', () => {
   const actual = jest.requireActual(
@@ -31,6 +40,14 @@ jest.mock('@metamask/chain-agnostic-permission', () => {
   return {
     ...actual,
     isInternalAccountInPermittedAccountIds: jest.fn(),
+  };
+});
+
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
   };
 });
 
@@ -210,8 +227,7 @@ describe('MultichainAccountList', () => {
   });
 
   it('marks only the selected account with a check icon and dispatches action on click', () => {
-    const { history } = renderComponent();
-    const mockHistoryPush = jest.spyOn(history, 'push');
+    renderComponent();
 
     // With default props, checkboxes should not be shown (showAccountCheckbox defaults to false)
     // Check that no checkboxes are present
@@ -240,7 +256,7 @@ describe('MultichainAccountList', () => {
     expect(mockSetSelectedMultichainAccount).toHaveBeenCalledWith(
       walletTwoGroupId,
     );
-    expect(mockHistoryPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 
   it('updates selected account when selectedAccountGroup changes', () => {
@@ -613,11 +629,10 @@ describe('MultichainAccountList', () => {
     });
 
     it('handles checkbox click to select unselected account', () => {
-      const { history } = renderComponent({
+      renderComponent({
         selectedAccountGroups: [walletOneGroupId],
         showAccountCheckbox: true,
       });
-      const mockHistoryPush = jest.spyOn(history, 'push');
 
       const checkboxes = screen.getAllByRole('checkbox');
 
@@ -628,15 +643,14 @@ describe('MultichainAccountList', () => {
       expect(mockSetSelectedMultichainAccount).toHaveBeenCalledWith(
         walletTwoGroupId,
       );
-      expect(mockHistoryPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
     });
 
     it('handles checkbox click to deselect selected account', () => {
-      const { history } = renderComponent({
+      renderComponent({
         selectedAccountGroups: [walletOneGroupId],
         showAccountCheckbox: true,
       });
-      const mockHistoryPush = jest.spyOn(history, 'push');
 
       const checkboxes = screen.getAllByRole('checkbox');
 
@@ -647,7 +661,7 @@ describe('MultichainAccountList', () => {
       expect(mockSetSelectedMultichainAccount).toHaveBeenCalledWith(
         walletOneGroupId,
       );
-      expect(mockHistoryPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
     });
 
     it('updates checkbox states when selectedAccountGroups prop changes', () => {
@@ -1178,6 +1192,19 @@ describe('MultichainAccountList', () => {
       expect(
         screen.queryByTestId(`multichain-account-cell-${walletTwoGroupId}`),
       ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('Trace events', () => {
+    it('ends AccountList and ShowAccountList traces on mount', () => {
+      renderComponent();
+      const traceLib = jest.requireMock('../../../../shared/lib/trace');
+      expect(traceLib.endTrace).toHaveBeenCalledWith(
+        expect.objectContaining({ name: traceLib.TraceName.AccountList }),
+      );
+      expect(traceLib.endTrace).toHaveBeenCalledWith(
+        expect.objectContaining({ name: traceLib.TraceName.ShowAccountList }),
+      );
     });
   });
 });

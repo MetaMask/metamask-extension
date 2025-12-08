@@ -145,5 +145,17 @@ export const calculateTokenAmount = (
   conversionRate: number = 1,
 ) => {
   const divisor = new BigNumber(10).pow(decimals ?? 0);
-  return new BigNumber(String(value), base).div(divisor).times(conversionRate);
+  return new BigNumber(String(value), base)
+    .div(divisor)
+    .times(new BigNumber(conversionRate, 10));
 };
+
+export function getTokenValueFromRecord<Type>(
+  record: Record<Hex, Type>,
+  tokenAddress: Hex,
+): Type | undefined {
+  const address = Object.keys(record).find((key) => {
+    return key.toLowerCase() === tokenAddress.toLowerCase();
+  });
+  return address ? record[address as Hex] : undefined;
+}

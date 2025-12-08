@@ -11,7 +11,7 @@ exports[`TokenDetailsSection renders correctly 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -46,7 +46,7 @@ exports[`TokenDetailsSection renders correctly 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -96,7 +96,7 @@ exports[`TokenDetailsSection renders correctly 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -127,7 +127,7 @@ exports[`TokenDetailsSection renders correctly 1`] = `
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+          class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
             class="name name__clickable name__missing"

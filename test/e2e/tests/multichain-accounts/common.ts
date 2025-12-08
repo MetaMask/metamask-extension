@@ -1,6 +1,6 @@
 import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { withFixtures } from '../../helpers';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -10,8 +10,9 @@ import {
   loginWithoutBalanceValidation,
 } from '../../page-objects/flows/login.flow';
 import { MockedEndpoint } from '../../mock-e2e';
+import { mockPriceApi } from '../tokens/utils/mocks';
 
-import { E2E_SRP } from '../../default-fixture';
+import { E2E_SRP } from '../../fixtures/default-fixture';
 import { SECOND_TEST_E2E_SRP } from '../../flask/multi-srp/common-multi-srp';
 import {
   mockMultichainAccountsFeatureFlagDisabled,
@@ -31,7 +32,6 @@ export async function withMultichainAccountsDesignEnabled(
     title,
     testSpecificMock,
     accountType = AccountType.MultiSRP,
-    state = 2,
     dappOptions,
     shouldMockDiscovery = true,
     withFixtures: withMoreFixtures,
@@ -41,7 +41,6 @@ export async function withMultichainAccountsDesignEnabled(
       mockServer: Mockttp,
     ) => Promise<MockedEndpoint | MockedEndpoint[] | void>;
     accountType?: AccountType;
-    state?: number;
     dappOptions?: { numberOfTestDapps?: number; customDappPaths?: string[] };
     shouldMockDiscovery?: boolean;
     withFixtures?: (builder: FixtureBuilder) => FixtureBuilder;
@@ -53,14 +52,19 @@ export async function withMultichainAccountsDesignEnabled(
 
   switch (accountType) {
     case AccountType.HardwareWallet:
-      fixtureBuilder = fixtureBuilder.withLedgerAccount();
+      fixtureBuilder = fixtureBuilder
+        .withLedgerAccount()
+        .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
+        .withEnabledNetworks({ eip155: { '0x1': true } });
       srps = [E2E_SRP];
       break;
-    case AccountType.SSK:
-    case AccountType.MultiSRP:
     default:
-      fixtureBuilder = fixtureBuilder.withKeyringControllerMultiSRP();
+      fixtureBuilder = fixtureBuilder
+        .withKeyringControllerMultiSRP()
+        .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
+        .withEnabledNetworks({ eip155: { '0x1': true } });
       srps = [E2E_SRP, SECOND_TEST_E2E_SRP];
+      break;
   }
 
   if (withMoreFixtures) {
@@ -68,6 +72,8 @@ export async function withMultichainAccountsDesignEnabled(
   }
 
   const mockNetworkCalls = async (mockServer: Mockttp) => {
+    await testSpecificMock?.(mockServer);
+
     if (shouldMockDiscovery) {
       for (const srp of srps) {
         await MockedDiscoveryBuilder.from(srp)
@@ -76,7 +82,7 @@ export async function withMultichainAccountsDesignEnabled(
       }
     }
 
-    await testSpecificMock?.(mockServer);
+    await mockPriceApi(mockServer);
   };
 
   await withFixtures(
@@ -84,32 +90,25 @@ export async function withMultichainAccountsDesignEnabled(
       fixtures: fixtureBuilder.build(),
       testSpecificMock: mockNetworkCalls,
       title,
-      forceBip44Version: state === 2 ? 2 : 0,
       dappOptions,
     },
     async ({ driver }: { driver: Driver; mockServer: Mockttp }) => {
-      // State 2 uses unified account group balance (fiat) and may not equal '25 ETH'.
-      // Skip strict balance validation for hardware wallets and state 2 flows.
-      if (accountType === AccountType.HardwareWallet || state === 2) {
+      // Skip strict balance validation for hardware wallets
+      if (accountType === AccountType.HardwareWallet) {
         await loginWithoutBalanceValidation(driver);
       } else {
-        await loginWithBalanceValidation(driver);
+        await loginWithBalanceValidation(
+          driver,
+          undefined,
+          undefined,
+          '$85,025.00',
+        );
       }
       const homePage = new HomePage(driver);
       await homePage.checkPageIsLoaded();
       const headerNavbar = new HeaderNavbar(driver);
+      await headerNavbar.openAccountMenu();
 
-      if (state === 1) {
-        await headerNavbar.openAccountMenu();
-      } else {
-        await headerNavbar.openAccountsPage();
-      }
-
-      const accountListPage = new AccountListPage(driver);
-
-      if (state === 1) {
-        await accountListPage.checkPageIsLoaded();
-      }
       await test(driver);
     },
   );

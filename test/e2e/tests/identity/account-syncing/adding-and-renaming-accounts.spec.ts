@@ -4,8 +4,8 @@ import {
   USER_STORAGE_GROUPS_FEATURE_KEY,
   USER_STORAGE_WALLETS_FEATURE_KEY,
 } from '@metamask/account-tree-controller';
-import { E2E_SRP } from '../../../default-fixture';
-import FixtureBuilder from '../../../fixture-builder';
+import { E2E_SRP } from '../../../fixtures/default-fixture';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import {
   withFixtures,
   unlockWallet,
@@ -78,9 +78,7 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
         await header.openAccountMenu();
 
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
 
         // Verify default account is visible
         await accountListPage.checkAccountDisplayedInAccountList(
@@ -139,9 +137,7 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
         await header.openAccountMenu();
 
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
 
         // Verify both accounts from previous phase are still visible
         await accountListPage.checkAccountDisplayedInAccountList(
@@ -215,9 +211,7 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
         await header.openAccountMenu();
 
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
 
         // Verify all accounts and renames are properly synced
         await accountListPage.checkAccountDisplayedInAccountList(

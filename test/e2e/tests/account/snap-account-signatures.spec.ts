@@ -2,7 +2,7 @@ import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
 import { WINDOW_TITLES, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import ExperimentalSettings from '../../page-objects/pages/settings/experimental-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
@@ -59,7 +59,8 @@ describe('Snap Account Signatures', function (this: Suite) {
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
           const headerNavbar = new HeaderNavbar(driver);
-          await headerNavbar.checkAccountLabel('SSK Account');
+          // BUG #37591 - With BIP44 the account mame is not retained.
+          await headerNavbar.checkAccountLabel('Snap Account 1');
 
           // Navigate to experimental settings and disable redesigned signature.
           await headerNavbar.openSettingsPage();

@@ -1,5 +1,5 @@
 import React, { useMemo, useRef } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
@@ -28,6 +28,7 @@ import {
   setAccountGroupHidden,
 } from '../../../store/actions';
 import { getAccountTree } from '../../../selectors/multichain-accounts/account-tree';
+import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { MultichainAccountMenuProps } from './multichain-account-menu.types';
 
 export const MultichainAccountMenu = ({
@@ -38,7 +39,7 @@ export const MultichainAccountMenu = ({
   isOpen = false,
   onToggle,
 }: MultichainAccountMenuProps) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const popoverRef = useRef<HTMLDivElement>(null);
   const accountTree = useSelector(getAccountTree);
@@ -67,7 +68,7 @@ export const MultichainAccountMenu = ({
     const handleAccountDetailsClick = (mouseEvent: React.MouseEvent) => {
       mouseEvent.stopPropagation();
       const multichainAccountDetailsPageRoute = `${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/${encodeURIComponent(accountGroupId)}`;
-      history.push(multichainAccountDetailsPageRoute);
+      navigate(multichainAccountDetailsPageRoute);
     };
 
     const handleAccountRenameClick = (mouseEvent: React.MouseEvent) => {
@@ -81,8 +82,12 @@ export const MultichainAccountMenu = ({
     const handleAccountAddressesClick = (mouseEvent: React.MouseEvent) => {
       mouseEvent.stopPropagation();
       mouseEvent.preventDefault();
+      trace({
+        name: TraceName.ShowAccountAddressList,
+        op: TraceOperation.AccountUi,
+      });
       const multichainAccountAddressesPageRoute = `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(accountGroupId)}`;
-      history.push(multichainAccountAddressesPageRoute);
+      navigate(multichainAccountAddressesPageRoute);
     };
 
     const handleAccountPinClick = async (mouseEvent: React.MouseEvent) => {
@@ -158,7 +163,7 @@ export const MultichainAccountMenu = ({
   }, [
     accountGroupId,
     handleAccountRenameAction,
-    history,
+    navigate,
     isRemovable,
     isPinned,
     isHidden,

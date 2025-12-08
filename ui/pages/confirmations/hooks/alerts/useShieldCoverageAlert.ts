@@ -272,11 +272,13 @@ export function useShieldCoverageAlert(): Alert[] {
       modalTitle = t('shieldCoverageAlertMessageTitleSignatureRequest');
     }
     let inlineAlertTextBackgroundColor;
+    let iconColor = IconColor.inherit;
     if (!isPaused) {
       switch (status) {
         case 'covered':
           severity = Severity.Success;
           inlineAlertText = t('shieldCovered');
+          iconColor = IconColor.successDefault;
           modalTitle = isSignatureRequest
             ? t('shieldCoverageAlertMessageTitleSignatureRequestCovered')
             : t('shieldCoverageAlertMessageTitleCovered');
@@ -284,6 +286,7 @@ export function useShieldCoverageAlert(): Alert[] {
         case 'malicious':
           severity = Severity.Danger;
           inlineAlertTextBackgroundColor = BackgroundColor.errorMuted;
+          iconColor = IconColor.errorDefault;
           break;
         default:
       }
@@ -302,9 +305,10 @@ export function useShieldCoverageAlert(): Alert[] {
         inlineAlertText,
         inlineAlertTextPill: true,
         inlineAlertTextBackgroundColor,
+        alertDetailsBackgroundColor: BackgroundColor.backgroundDefault,
         inlineAlertIconRight: true,
-        iconName: IconName.Info,
-        iconColor: IconColor.inherit,
+        iconName: IconName.Security,
+        iconColor,
         showArrow: false,
         isOpenModalOnClick: true,
         hideFromAlertNavigation: true,

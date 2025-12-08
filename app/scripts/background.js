@@ -60,9 +60,10 @@ import {
   PersistenceManager,
 } from './lib/stores/persistence-manager';
 import ExtensionStore from './lib/stores/extension-store';
-import ReadOnlyNetworkStore from './lib/stores/read-only-network-store';
+import { FixtureExtensionStore } from './lib/stores/fixture-extension-store';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
+import { updateRemoteFeatureFlags } from './lib/update-remote-feature-flags';
 import ExtensionPlatform from './platforms/extension';
 import { SENTRY_BACKGROUND_STATE } from './constants/sentry-state';
 
@@ -78,6 +79,7 @@ import { getPlatform, shouldEmitDappViewedEvent } from './lib/util';
 import { createOffscreen } from './offscreen';
 import { setupMultiplex } from './lib/stream-utils';
 import rawFirstTimeState from './first-time-state';
+import { onUpdate } from './on-update';
 
 /* eslint-enable import/first */
 
@@ -99,7 +101,7 @@ import { HyperliquidPermissionTriggerType } from './lib/createHyperliquidReferra
  * @typedef {import('./lib/stores/persistence-manager').Backup} Backup
  */
 
-// MV3 configures the ExtensionLazyListener in app-init.js and sets it on globalThis.stateHooks,
+// MV3 configures the ExtensionLazyListener in service-worker.ts and sets it on globalThis.stateHooks,
 // but in MV2 we don't need to do that, so we create it here (and we don't add any lazy listeners,
 // as it doesn't need them).
 const lazyListener =
@@ -112,12 +114,15 @@ const BADGE_COLOR_NOTIFICATION = '#D73847';
 const BADGE_MAX_COUNT = 9;
 
 const inTest = process.env.IN_TEST;
-const useReadOnlyNetworkStore =
+const useFixtureStore =
   inTest && getManifestFlags().testing?.forceExtensionStore !== true;
-const localStore = useReadOnlyNetworkStore
-  ? new ReadOnlyNetworkStore()
+const localStore = useFixtureStore
+  ? new FixtureExtensionStore()
   : new ExtensionStore();
 const persistenceManager = new PersistenceManager({ localStore });
+
+const { update, requestSafeReload } = getRequestSafeReload(persistenceManager);
+
 // Setup global hook for improved Sentry state snapshots during initialization
 global.stateHooks.getMostRecentPersistedState = () =>
   persistenceManager.mostRecentRetrievedState;
@@ -175,7 +180,9 @@ const ONE_SECOND_IN_MILLISECONDS = 1_000;
 // Timeout for initializing phishing warning page.
 const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
-lazyListener.once('runtime', 'onInstalled').then(handleOnInstalled);
+lazyListener.once('runtime', 'onInstalled').then((details) => {
+  handleOnInstalled(details);
+});
 
 /**
  * This deferred Promise is used to track whether initialization has finished.
@@ -505,7 +512,7 @@ const handleOnConnect = async (port) => {
 
   try {
     // `handleOnConnect` can be called asynchronously, well after the `onConnect`
-    // event was emitted, due to the lazy listener setup in `app-init.js`, so we
+    // event was emitted, due to the lazy listener setup in `service-worker.ts`, so we
     // might not be able to send this message if the window has already closed.
     port.postMessage({
       data: {
@@ -721,9 +728,6 @@ async function initialize(backup) {
   const cronjobControllerStorageManager = new CronjobControllerStorageManager();
   await cronjobControllerStorageManager.init();
 
-  const { update, requestSafeReload } =
-    getRequestSafeReload(persistenceManager);
-
   setupController(
     initState,
     initLangCode,
@@ -732,7 +736,6 @@ async function initialize(backup) {
     initData.meta,
     offscreenPromise,
     preinstalledSnaps,
-    requestSafeReload,
     cronjobControllerStorageManager,
   );
 
@@ -913,7 +916,8 @@ export async function loadStateFromPersistence(backup) {
     migrations,
     defaultVersion: process.env.WITH_STATE
       ? // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
-        require('../../test/e2e/default-fixture').FIXTURE_STATE_METADATA_VERSION
+        require('../../test/e2e/fixtures/fixture-builder')
+          .FIXTURE_STATE_METADATA_VERSION
       : null,
   });
 
@@ -1102,7 +1106,6 @@ function trackAppOpened(environment) {
  * @param {object} stateMetadata - Metadata about the initial state and migrations, including the most recent migration version
  * @param {Promise<void>} offscreenPromise - A promise that resolves when the offscreen document has finished initialization.
  * @param {Array} preinstalledSnaps - A list of preinstalled Snaps loaded from disk during boot.
- * @param {() => Promise<void>)} requestSafeReload - A function that requests a safe reload of the extension.
  * @param {CronjobControllerStorageManager} cronjobControllerStorageManager - A storage manager for the CronjobController.
  */
 export function setupController(
@@ -1113,7 +1116,6 @@ export function setupController(
   stateMetadata,
   offscreenPromise,
   preinstalledSnaps,
-  requestSafeReload,
   cronjobControllerStorageManager,
 ) {
   //
@@ -1241,7 +1243,8 @@ export function setupController(
       controller.setupTrustedCommunication(portStream, remotePort.sender);
       trackAppOpened(processName);
 
-      initializeRemoteFeatureFlags();
+      // lazily update the remote feature flags every time the UI is opened.
+      updateRemoteFeatureFlags(controller);
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         openPopupCount += 1;
@@ -1480,22 +1483,6 @@ export function setupController(
     }
   }
 
-  /**
-   * Initializes remote feature flags by making a request to fetch them from the clientConfigApi.
-   * This function is called when MM is during internal process.
-   * If the request fails, the error will be logged but won't interrupt extension initialization.
-   *
-   * @returns {Promise<void>} A promise that resolves when the remote feature flags have been updated.
-   */
-  async function initializeRemoteFeatureFlags() {
-    try {
-      // initialize the request to fetch remote feature flags
-      await controller.remoteFeatureFlagController.updateRemoteFeatureFlags();
-    } catch (error) {
-      log.error('Error initializing remote feature flags:', error);
-    }
-  }
-
   function getPendingApprovalCount() {
     try {
       const pendingApprovalCount =
@@ -1650,15 +1637,16 @@ const addAppInstalledEvent = () => {
  *
  * @param {[chrome.runtime.InstalledDetails]} params - Array containing a single installation details object.
  */
-function handleOnInstalled([details]) {
+async function handleOnInstalled([details]) {
   if (details.reason === 'install') {
     onInstall();
-  } else if (
-    details.reason === 'update' &&
-    details.previousVersion &&
-    details.previousVersion !== platform.getVersion()
-  ) {
-    onUpdate(details.previousVersion);
+  } else if (details.reason === 'update') {
+    const { previousVersion } = details;
+    if (!previousVersion || previousVersion === platform.getVersion()) {
+      return;
+    }
+    await isInitialized;
+    onUpdate(controller, platform, previousVersion, requestSafeReload);
   }
 }
 
@@ -1670,54 +1658,6 @@ function onInstall() {
   addAppInstalledEvent();
   if (!process.env.IN_TEST && !process.env.METAMASK_DEBUG) {
     platform.openExtensionInBrowser();
-  }
-}
-// Only register sidepanel context menu for browsers that support it (Chrome/Edge/Brave)
-// and when the feature flag is enabled
-if (
-  browser.contextMenus &&
-  browser.sidePanel &&
-  process.env.IS_SIDEPANEL?.toString() === 'true'
-) {
-  browser.runtime.onInstalled.addListener(() => {
-    browser.contextMenus.create({
-      id: 'openSidePanel',
-      title: 'MetaMask Sidepanel',
-      contexts: ['all'],
-    });
-  });
-  browser.contextMenus.onClicked.addListener((info, tab) => {
-    if (info.menuItemId === 'openSidePanel') {
-      // This will open the panel in all the pages on the current window.
-      browser.sidePanel.open({ windowId: tab.windowId });
-    }
-  });
-}
-
-// // On first install, open a new tab with MetaMask
-// async function onInstall() {
-//   const storeAlreadyExisted = Boolean(await localStore.get());
-//   // If the store doesn't exist, then this is the first time running this script,
-//   // and is therefore an install
-//   if (process.env.IN_TEST) {
-//     addAppInstalledEvent();
-//   } else if (!storeAlreadyExisted && !process.env.METAMASK_DEBUG) {
-//     addAppInstalledEvent();
-//     platform.openExtensionInBrowser();
-//   }
-// }
-
-/**
- * Trigger actions that should happen only upon update installation
- *
- * @param previousVersion
- */
-async function onUpdate(previousVersion) {
-  await isInitialized;
-  log.debug('Update installation detected');
-  controller.appStateController.setLastUpdatedAt(Date.now());
-  if (previousVersion) {
-    controller.appStateController.setLastUpdatedFromVersion(previousVersion);
   }
 }
 
@@ -1798,18 +1738,6 @@ const initSidePanelBehavior = async () => {
         openPanelOnActionClick: useSidePanelAsDefault,
       });
     }
-
-    // Setup remote feature flag listener to update sidepanel preferences
-    controller?.controllerMessenger?.subscribe(
-      'RemoteFeatureFlagController:stateChange',
-      (state) => {
-        const extensionUxSidepanel =
-          state?.remoteFeatureFlags?.extensionUxSidepanel;
-        if (extensionUxSidepanel === false) {
-          controller?.preferencesController?.setUseSidePanelAsDefault(false);
-        }
-      },
-    );
   } catch (error) {
     console.error('Error setting side panel behavior:', error);
   }

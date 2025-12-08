@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import {
   DAPP_ONE_URL,
   DAPP_URL,

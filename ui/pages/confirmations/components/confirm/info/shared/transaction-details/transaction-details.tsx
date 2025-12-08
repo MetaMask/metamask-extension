@@ -20,7 +20,6 @@ import { useFourByte } from '../../hooks/useFourByte';
 import { ConfirmInfoRowCurrency } from '../../../../../../../components/app/confirm/info/row/currency';
 import { PRIMARY } from '../../../../../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../../../../../hooks/useUserPreferencedCurrency';
-import { useSwapCheck } from '../../../../../hooks/transactions/dapp-swap-comparison/useSwapCheck';
 import { SmartContractWithLogo } from '../../../../smart-contract-with-logo';
 import {
   useIsDowngradeTransaction,
@@ -47,7 +46,7 @@ export const OriginRow = () => {
   return (
     <ConfirmInfoAlertRow
       alertKey={RowAlertKey.RequestFrom}
-      ownerId={currentConfirmation.id}
+      ownerId={currentConfirmation?.id}
       data-testid="transaction-details-origin-row"
       label={t('requestFrom')}
       tooltip={t('requestFromTransactionDescription')}
@@ -119,7 +118,11 @@ export const MethodDataRow = () => {
 const AmountRow = () => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { currency } = useUserPreferencedCurrency(PRIMARY);
+  const { currency } = useUserPreferencedCurrency(
+    PRIMARY,
+    {},
+    currentConfirmation?.chainId,
+  );
 
   const value = currentConfirmation?.txParams?.value;
 
@@ -133,7 +136,11 @@ const AmountRow = () => {
         data-testid="transaction-details-amount-row"
         label={t('amount')}
       >
-        <ConfirmInfoRowCurrency value={value} currency={currency} />
+        <ConfirmInfoRowCurrency
+          value={value}
+          currency={currency}
+          chainId={currentConfirmation?.chainId}
+        />
       </ConfirmInfoRow>
     </ConfirmInfoSection>
   );
@@ -181,7 +188,6 @@ export const TransactionDetails = () => {
   );
   const { isUpgradeOnly } = useIsUpgradeTransaction();
   const isDowngrade = useIsDowngradeTransaction();
-  const { isQuotedSwap } = useSwapCheck();
 
   if (isUpgradeOnly || isDowngrade) {
     return null;
@@ -197,8 +203,8 @@ export const TransactionDetails = () => {
     <>
       <ConfirmInfoSection data-testid="transaction-details-section">
         <NetworkRow isShownWithAlertsOnly={!isBIP44} />
-        {!isQuotedSwap && <OriginRow />}
-        {!isBatch && !isQuotedSwap && <RecipientRow />}
+        <OriginRow />
+        {!isBatch && <RecipientRow />}
         {showAdvancedDetails && <MethodDataRow />}
         <SigningInWithRow />
       </ConfirmInfoSection>

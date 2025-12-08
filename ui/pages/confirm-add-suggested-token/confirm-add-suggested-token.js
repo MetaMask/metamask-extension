@@ -1,6 +1,7 @@
 import React, { useCallback, useContext, useEffect, useMemo } from 'react';
+import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
 import classnames from 'classnames';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import {
@@ -83,17 +84,25 @@ function hasDuplicateSymbolAndDiffAddress(suggestedTokens, tokens) {
   return Boolean(duplicate);
 }
 
-const ConfirmAddSuggestedToken = () => {
+const ConfirmAddSuggestedToken = ({
+  navigate: routeNavigate,
+  location: routeLocation,
+} = {}) => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
-  const history = useHistory();
+  const hookNavigate = useNavigate();
+  const hookLocation = useLocation();
+  const navigate = routeNavigate || hookNavigate;
+  const location = routeLocation || hookLocation;
 
-  const location = useLocation();
   const hasAppHeader = location?.pathname ? !hideAppHeader({ location }) : true;
 
-  const classNames = classnames('confirm-add-suggested-token page-container', {
-    'confirm-add-suggested-token--has-app-header-multichain': hasAppHeader,
-  });
+  const classNames = classnames(
+    'confirm-add-suggested-token page-container h-full',
+    {
+      'confirm-add-suggested-token--has-app-header-multichain': hasAppHeader,
+    },
+  );
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const suggestedTokens = useSelector(getSuggestedTokens);
@@ -154,8 +163,8 @@ const ConfirmAddSuggestedToken = () => {
         });
       }),
     );
-    history.push(mostRecentOverviewPage);
-  }, [dispatch, history, trackEvent, mostRecentOverviewPage, suggestedTokens]);
+    navigate(mostRecentOverviewPage);
+  }, [dispatch, navigate, trackEvent, mostRecentOverviewPage, suggestedTokens]);
 
   const handleCancelTokenClick = useCallback(async () => {
     await Promise.all(
@@ -168,18 +177,17 @@ const ConfirmAddSuggestedToken = () => {
         ),
       ),
     );
-    history.push(mostRecentOverviewPage);
-  }, [dispatch, history, mostRecentOverviewPage, suggestedTokens]);
+    navigate(mostRecentOverviewPage);
+  }, [dispatch, navigate, mostRecentOverviewPage, suggestedTokens]);
 
   const goBackIfNoSuggestedTokensOnFirstRender = () => {
     if (!suggestedTokens.length) {
-      history.push(mostRecentOverviewPage);
+      navigate(mostRecentOverviewPage);
     }
   };
 
   useEffect(() => {
     goBackIfNoSuggestedTokensOnFirstRender();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -235,6 +243,17 @@ const ConfirmAddSuggestedToken = () => {
       />
     </div>
   );
+};
+
+ConfirmAddSuggestedToken.propTypes = {
+  navigate: PropTypes.func,
+  location: PropTypes.shape({
+    pathname: PropTypes.string,
+    search: PropTypes.string,
+    hash: PropTypes.string,
+    state: PropTypes.object,
+    key: PropTypes.string,
+  }),
 };
 
 export default ConfirmAddSuggestedToken;

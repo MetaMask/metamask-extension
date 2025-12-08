@@ -5,7 +5,7 @@ import {
 } from '@metamask/account-tree-controller';
 import { PAGES } from '../../../webdriver/driver';
 import { withFixtures, unlockWallet } from '../../../helpers';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
@@ -66,9 +66,7 @@ describe('Account syncing - Settings Toggle', function () {
         await header.openAccountMenu();
 
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
 
         // Verify the default account exists
         await accountListPage.checkAccountDisplayedInAccountList(
@@ -113,9 +111,7 @@ describe('Account syncing - Settings Toggle', function () {
         await driver.navigate(PAGES.HOME);
         await header.checkPageIsLoaded();
         await header.openAccountMenu();
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
 
         // Create third account with sync disabled - this should NOT sync to user storage
         await accountListPage.addMultichainAccount();
@@ -145,9 +141,7 @@ describe('Account syncing - Settings Toggle', function () {
         await header.openAccountMenu();
 
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
 
         // Verify only accounts created with sync enabled are restored
         const visibleAccounts = [DEFAULT_ACCOUNT_NAME, SECOND_ACCOUNT_NAME];

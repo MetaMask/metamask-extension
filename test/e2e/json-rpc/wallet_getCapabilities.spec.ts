@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { withFixtures } from '../helpers';
-import FixtureBuilder from '../fixture-builder';
+import FixtureBuilder from '../fixtures/fixture-builder';
 import TestDapp from '../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../constants';
@@ -10,6 +10,7 @@ describe('wallet_getCapabilities', function () {
   it('should indicate auxiliaryFunds support for chains with bridge support', async function () {
     await withFixtures(
       {
+        forceBip44Version: false,
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDappWithChains(['0x1'])
@@ -41,6 +42,7 @@ describe('wallet_getCapabilities', function () {
   it('should not include auxiliaryFunds for chains without bridge support', async function () {
     await withFixtures(
       {
+        forceBip44Version: false,
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDappWithChains(['0x539'])

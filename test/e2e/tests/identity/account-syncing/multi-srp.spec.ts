@@ -4,13 +4,13 @@ import {
   USER_STORAGE_WALLETS_FEATURE_KEY,
 } from '@metamask/account-tree-controller';
 import { withFixtures } from '../../../helpers';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { mockIdentityServices } from '../mocks';
 import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HomePage from '../../../page-objects/pages/home/homepage';
@@ -64,7 +64,7 @@ describe('Account syncing - Multiple SRPs', function () {
         testSpecificMock: sharedMockSetup,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
@@ -74,9 +74,7 @@ describe('Account syncing - Multiple SRPs', function () {
         await header.openAccountMenu();
 
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
 
         // Verify default account is visible
         await accountListPage.checkAccountDisplayedInAccountList(
@@ -116,22 +114,14 @@ describe('Account syncing - Multiple SRPs', function () {
         // Import second SRP (this will automatically create the third account)
         await accountListPage.startImportSecretPhrase(
           IDENTITY_TEAM_SEED_PHRASE_2,
-          {
-            isMultichainAccountsState2Enabled: true,
-          },
         );
 
         // Importing an SRP can be long, so we add a bit of extra time here
         await driver.delay(10000);
 
-        // Wait for the import to complete and sync
-        await waitUntilSyncedAccountsNumberEquals(3);
-
         // Add a fourth account with custom name to the second SRP
         await header.openAccountMenu();
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
 
         // Add account with custom name to specific SRP
         await accountListPage.addMultichainAccount({
@@ -139,8 +129,6 @@ describe('Account syncing - Multiple SRPs', function () {
         });
 
         await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
-
-        await waitUntilSyncedAccountsNumberEquals(4);
 
         await accountListPage.openMultichainAccountMenu({
           accountLabel: 'Account 2',
@@ -151,7 +139,6 @@ describe('Account syncing - Multiple SRPs', function () {
           SRP_2_SECOND_ACCOUNT,
         );
 
-        await waitUntilSyncedAccountsNumberEquals(4);
         await waitUntilEventsEmittedNumberEquals(5);
 
         // Verify all accounts are visible
@@ -171,7 +158,7 @@ describe('Account syncing - Multiple SRPs', function () {
         testSpecificMock: sharedMockSetup,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
@@ -186,9 +173,6 @@ describe('Account syncing - Multiple SRPs', function () {
         const accountListPage = new AccountListPage(driver);
         await accountListPage.startImportSecretPhrase(
           IDENTITY_TEAM_SEED_PHRASE_2,
-          {
-            isMultichainAccountsState2Enabled: true,
-          },
         );
 
         // Importing an SRP can be long, so we add a bit of extra time here

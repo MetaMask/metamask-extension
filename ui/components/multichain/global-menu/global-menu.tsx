@@ -1,5 +1,5 @@
 import React, { useContext, useMemo } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
 import browser from 'webextension-polyfill';
 import {
@@ -37,7 +37,6 @@ import {
   Popover,
   PopoverPosition,
   Tag,
-  Text,
 } from '../../component-library';
 
 import { MenuItem } from '../../ui/menu';
@@ -97,7 +96,7 @@ import {
   getShieldSubscription,
   getSubscriptionPaymentData,
 } from '../../../../shared/lib/shield';
-import { useRewardsContext } from '../../../contexts/rewards';
+import { selectRewardsEnabled } from '../../../ducks/rewards/selectors';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
 
 const METRICS_LOCATION = 'Global Menu';
@@ -119,9 +118,9 @@ export const GlobalMenu = ({
   const { captureCommonExistingShieldSubscriptionEvents } =
     useSubscriptionMetrics();
   const basicFunctionality = useSelector(getUseExternalServices);
-  const { rewardsEnabled } = useRewardsContext();
+  const rewardsEnabled = useSelector(selectRewardsEnabled);
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const { notificationsUnreadCount } = useUnreadNotificationsCounter();
   const { notificationsReadCount } = useReadNotificationsCounter();
@@ -169,7 +168,7 @@ export const GlobalMenu = ({
   const preferences = useSelector(getPreferences);
   const isSidePanelDefault = preferences?.useSidePanelAsDefault ?? false;
 
-  // Check if sidepanel feature is enabled (both build flag and LaunchDarkly flag)
+  // Check if sidepanel feature is enabled
   const isSidePanelEnabled = useSidePanelEnabled();
 
   const showPriorityTag = useMemo(
@@ -303,7 +302,7 @@ export const GlobalMenu = ({
         read_count: notificationsReadCount,
       },
     });
-    history.push(NOTIFICATIONS_ROUTE);
+    navigate(NOTIFICATIONS_ROUTE);
     closeMenu();
   };
 
@@ -352,11 +351,12 @@ export const GlobalMenu = ({
       onClickOutside={closeMenu}
       onPressEscKey={closeMenu}
       style={{
-        overflow: 'hidden',
         minWidth: 225,
+        maxHeight: 'calc(100vh - var(--header-height))',
       }}
       offset={[0, 8]}
       position={PopoverPosition.BottomEnd}
+      className="overflow-y-auto"
     >
       {basicFunctionality && (
         <>
@@ -409,12 +409,6 @@ export const GlobalMenu = ({
           data-testid="global-menu-expand-view"
         >
           {t('openFullScreen')}
-          <Text
-            variant={TextVariant.bodySmMedium}
-            color={TextColor.textAlternative}
-          >
-            {t('metamaskExtension')}
-          </Text>
         </MenuItem>
       )}
       {account &&

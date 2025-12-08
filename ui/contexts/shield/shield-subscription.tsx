@@ -14,19 +14,15 @@ import {
   setShowShieldEntryModalOnce,
   subscriptionsStartPolling,
 } from '../../store/actions';
-import {
-  getSelectedInternalAccount,
-  getUseExternalServices,
-} from '../../selectors';
-import { useAccountTotalFiatBalance } from '../../hooks/useAccountTotalFiatBalance';
+import { getUseExternalServices } from '../../selectors';
 import { selectIsSignedIn } from '../../selectors/identity/authentication';
 import { getIsMetaMaskShieldFeatureEnabled } from '../../../shared/modules/environment';
 import {
   getHasShieldEntryModalShownOnce,
   getIsActiveShieldSubscription,
 } from '../../selectors/subscription';
+import { MetaMaskReduxDispatch } from '../../store/store';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
-import { getUserBalanceCategory } from '../../../shared/modules/shield';
 import { useSubscriptionMetrics } from '../../hooks/shield/metrics/useSubscriptionMetrics';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 
@@ -49,7 +45,7 @@ export const useShieldSubscriptionContext = () => {
 };
 
 export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const isBasicFunctionalityEnabled = Boolean(
     useSelector(getUseExternalServices),
   );
@@ -60,14 +56,8 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
   const hasShieldEntryModalShownOnce = useSelector(
     getHasShieldEntryModalShownOnce,
   );
-  const selectedAccount = useSelector(getSelectedInternalAccount);
   const { getSubscriptionEligibility: getShieldSubscriptionEligibility } =
     useSubscriptionEligibility(PRODUCT_TYPES.SHIELD);
-  const { totalFiatBalance } = useAccountTotalFiatBalance(
-    selectedAccount,
-    false,
-    true, // use USD conversion rate instead of the current currency
-  );
   const { captureShieldEligibilityCohortEvent } = useSubscriptionMetrics();
 
   /**
@@ -150,33 +140,23 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
         }
 
         if (isShieldSubscriptionActive) {
-          dispatch(setShowShieldEntryModalOnce(false));
+          dispatch(
+            setShowShieldEntryModalOnce({
+              show: false,
+            }),
+          );
           return;
         }
 
-        if (
-          !selectedAccount ||
-          !isSignedIn ||
-          !isUnlocked ||
-          hasShieldEntryModalShownOnce
-        ) {
+        if (!isSignedIn || !isUnlocked || hasShieldEntryModalShownOnce) {
           return;
         }
 
-        const balanceCategory = totalFiatBalance
-          ? getUserBalanceCategory(Number(totalFiatBalance))
-          : undefined;
-
-        const shieldEligibility = await getShieldSubscriptionEligibility({
-          balanceCategory,
-        });
+        const shieldEligibility = await getShieldSubscriptionEligibility();
 
         if (
           !shieldEligibility?.canSubscribe ||
-          !shieldEligibility.canViewEntryModal ||
-          !shieldEligibility.minBalanceUSD ||
-          !totalFiatBalance ||
-          Number(totalFiatBalance) < shieldEligibility.minBalanceUSD
+          !shieldEligibility.canViewEntryModal
         ) {
           return;
         }
@@ -213,14 +193,16 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
             return;
           }
 
-          const shouldSubmitUserEvents = true; // submits `shield_entry_modal_viewed` event
           dispatch(
-            setShowShieldEntryModalOnce(
-              true,
-              shouldSubmitUserEvents,
-              entrypointCohort,
+            setShowShieldEntryModalOnce({
+              show: true,
+              shouldSubmitEvents: true, // submits `shield_entry_modal_viewed` event
+              triggeringCohort: entrypointCohort,
               modalType,
-            ),
+              // we will show the modal but we won't update the background state yet,
+              // we will only update after the user has interacted with the modal
+              shouldUpdateBackgroundState: false,
+            }),
           );
           return;
         }
@@ -236,14 +218,16 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
             modalType,
           );
           if (selectedCohort?.cohort === COHORT_NAMES.WALLET_HOME) {
-            const shouldSubmitUserEvents = true; // submits `shield_entry_modal_viewed` event to subscription backend
             dispatch(
-              setShowShieldEntryModalOnce(
-                true,
-                shouldSubmitUserEvents,
-                selectedCohort.cohort,
+              setShowShieldEntryModalOnce({
+                show: true,
+                shouldSubmitEvents: true, // submits `shield_entry_modal_viewed` event to subscription backend
+                triggeringCohort: selectedCohort.cohort,
                 modalType,
-              ),
+                // we will show the modal but we won't update the background state yet,
+                // we will only update after the user has interacted with the modal
+                shouldUpdateBackgroundState: false,
+              }),
             );
           }
         }
@@ -256,11 +240,9 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
       isMetaMaskShieldFeatureEnabled,
       isBasicFunctionalityEnabled,
       isShieldSubscriptionActive,
-      selectedAccount,
       isSignedIn,
       isUnlocked,
       hasShieldEntryModalShownOnce,
-      totalFiatBalance,
       getShieldSubscriptionEligibility,
       assignToCohort,
       captureShieldEligibilityCohortEvent,
@@ -271,7 +253,6 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
     if (
       isMetaMaskShieldFeatureEnabled &&
       isBasicFunctionalityEnabled &&
-      selectedAccount &&
       isSignedIn &&
       isUnlocked
     ) {
@@ -281,7 +262,6 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
   }, [
     isMetaMaskShieldFeatureEnabled,
     isSignedIn,
-    selectedAccount,
     dispatch,
     isUnlocked,
     isBasicFunctionalityEnabled,

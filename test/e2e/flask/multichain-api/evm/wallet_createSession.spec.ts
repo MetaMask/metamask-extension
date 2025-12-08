@@ -6,7 +6,7 @@ import {
   ACCOUNT_1,
   ACCOUNT_2,
 } from '../../../helpers';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
 import EditConnectedAccountsModal from '../../../page-objects/pages/dialog/edit-connected-accounts-modal';
 import HomePage from '../../../page-objects/pages/home/homepage';
@@ -214,7 +214,7 @@ describe('Multichain API', function () {
               driver,
             );
             await editConnectedAccountsModal.checkPageIsLoaded();
-            await editConnectedAccountsModal.addNewEthereumAccount();
+            await editConnectedAccountsModal.addNewAccount();
 
             await connectAccountConfirmation.checkPageIsLoaded();
             await connectAccountConfirmation.goToPermissionsTab();
@@ -332,7 +332,7 @@ describe('Multichain API', function () {
               driver,
             );
             await editConnectedAccountsModal.checkPageIsLoaded();
-            await editConnectedAccountsModal.addNewEthereumAccount();
+            await editConnectedAccountsModal.addNewAccount();
 
             await connectAccountConfirmation.checkPageIsLoaded();
             await connectAccountConfirmation.confirmConnect();
@@ -388,7 +388,7 @@ describe('Multichain API', function () {
             );
             await editConnectedAccountsModal.checkPageIsLoaded();
             await editConnectedAccountsModal.selectAccount(1);
-            await editConnectedAccountsModal.disconnectAccount();
+            await editConnectedAccountsModal.clickOnConnect();
 
             await connectAccountConfirmation.checkPageIsLoaded();
             assert.strictEqual(
@@ -472,8 +472,8 @@ describe('Multichain API', function () {
           const expectedNewSessionScopes = [...OLD_SCOPES, ...NEW_SCOPES].map(
             (scope) => ({
               [scope]: getExpectedSessionScope(scope, [
-                ACCOUNT_1,
                 TREZOR_ACCOUNT,
+                ACCOUNT_1,
               ]),
             }),
           );

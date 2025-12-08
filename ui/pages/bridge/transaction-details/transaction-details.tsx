@@ -33,6 +33,7 @@ import { getTransactionBreakdownData } from '../../../components/app/transaction
 import type { MetaMaskReduxState } from '../../../store/store';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import {
   AlignItems,
   Display,
@@ -44,10 +45,8 @@ import {
 import { formatDate } from '../../../helpers/utils/util';
 import { ConfirmInfoRowDivider as Divider } from '../../../components/app/confirm/info/row';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  getNativeTokenInfo,
-  selectedAddressTxListSelectorAllChain,
-} from '../../../selectors';
+import { getNativeTokenInfo } from '../../../selectors';
+import { getAllNetworkTransactions } from '../../../selectors/transactions';
 import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
@@ -95,22 +94,20 @@ const CrossChainSwapTxDetails = ({
   const rootState = useSelector((state) => state);
 
   const srcTxMetaId = params?.srcTxMetaId;
-  const selectedAddressTxList = useSelector(
-    selectedAddressTxListSelectorAllChain,
+  const allTransactions = useSelector(
+    getAllNetworkTransactions,
   ) as TransactionMeta[];
 
   const transactionGroup: TransactionGroup | null =
     location?.state?.transactionGroup || null;
   const isEarliestNonce: boolean | null =
     location?.state?.isEarliestNonce || null;
-  const srcChainTxMeta = selectedAddressTxList.find(
-    (tx) => tx.id === srcTxMetaId,
-  );
+  const srcChainTxMeta = allTransactions.find((tx) => tx.id === srcTxMetaId);
   // Even if user is still on /tx-details/txMetaId, we want to be able to show the bridge history item
   const bridgeHistoryItem = useSelector((state) =>
     selectBridgeHistoryItemForTxMetaId(state, srcTxMetaId),
   );
-  const approvalTxMeta = selectedAddressTxList.find(
+  const approvalTxMeta = allTransactions.find(
     (tx) => tx.id === bridgeHistoryItem?.approvalTxId,
   );
 
@@ -226,7 +223,7 @@ const CrossChainSwapTxDetails = ({
   );
 
   return (
-    <div className="bridge__container">
+    <div className="bridge__container bg-background-default">
       <Header
         className="bridge__header"
         startAccessory={
@@ -234,7 +231,7 @@ const CrossChainSwapTxDetails = ({
             iconName={IconName.ArrowLeft}
             size={ButtonIconSize.Sm}
             ariaLabel={t('back')}
-            onClick={() => navigate?.(-1)}
+            onClick={() => navigate?.(PREVIOUS_ROUTE)}
           />
         }
       >

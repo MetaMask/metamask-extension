@@ -1,6 +1,6 @@
 import { withFixtures, WINDOW_TITLES } from '../../helpers';
 import { DEFAULT_FIXTURE_ACCOUNT, DAPP_HOST_ADDRESS } from '../../constants';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import Homepage from '../../page-objects/pages/home/homepage';
 import TestDapp from '../../page-objects/pages/test-dapp';
@@ -41,8 +41,8 @@ describe('Edit Networks Permissions', function () {
         // Disconnect Mainnet
         await sitePermissionPage.editPermissionsForNetwork(['Ethereum']);
 
-        // Default Chains Connected: Ethereum, Linea, Base, Arbitrum, BSC, Optimism, Polygon
-        await sitePermissionPage.checkConnectedNetworksNumber(8);
+        // Default Chains Connected: Ethereum, Linea, Base, Arbitrum, BSC, Optimism, Polygon, Solana, BTC
+        await sitePermissionPage.checkConnectedNetworksNumber(11);
       },
     );
   });

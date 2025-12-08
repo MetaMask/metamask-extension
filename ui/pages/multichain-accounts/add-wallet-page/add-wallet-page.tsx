@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import {
   ButtonIcon,
   ButtonIconSize,
@@ -16,6 +16,7 @@ import {
 import { TextVariant as LegacyTextVariant } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { ImportAccount } from '../../../components/multichain/import-account/import-account';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 
 /**
  *
@@ -24,21 +25,21 @@ import { ImportAccount } from '../../../components/multichain/import-account/imp
  */
 export const AddWalletPage = () => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const onActionComplete = useCallback(
     async (confirmed?: boolean) => {
       // Navigate back if import succeeded (true) or user cancelled (undefined)
       // Stay on page if import failed (false) to allow retry
       if (confirmed !== false) {
-        history.goBack();
+        navigate(PREVIOUS_ROUTE);
       }
     },
-    [history],
+    [navigate],
   );
 
   return (
-    <Page className="max-w-[600px]">
+    <Page>
       <Header
         textProps={{
           variant: LegacyTextVariant.headingSm,
@@ -48,7 +49,7 @@ export const AddWalletPage = () => {
             size={ButtonIconSize.Md}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            onClick={() => history.goBack()}
+            onClick={() => navigate(PREVIOUS_ROUTE)}
             data-testid="add-wallet-page-back-button"
           />
         }

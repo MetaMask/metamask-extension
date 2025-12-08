@@ -11,12 +11,12 @@ import {
   TokenPaymentInfo,
 } from '@metamask/subscription-controller';
 import { Hex } from '@metamask/utils';
+import { BigNumber } from 'bignumber.js';
 import { getSubscriptionPricing } from '../../selectors/subscription';
 import {
   getSubscriptionCryptoApprovalAmount,
   getSubscriptionPricing as getSubscriptionPricingAction,
 } from '../../store/actions';
-import { getSelectedAccount } from '../../selectors';
 import { getTokenBalancesEvm } from '../../selectors/assets';
 import { useTokenBalances as pollAndUpdateEvmBalances } from '../useTokenBalances';
 import {
@@ -26,6 +26,12 @@ import {
 } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
 import { AssetType } from '../../../shared/constants/transaction';
 import { useAsyncResult } from '../useAsync';
+import {
+  getAccountGroupsByAddress,
+  getInternalAccountByGroupAndCaip,
+  getSelectedAccountGroup,
+} from '../../selectors/multichain-accounts/account-tree';
+import { MultichainAccountsState } from '../../selectors/multichain-accounts/account-tree.types';
 
 export type TokenWithApprovalAmount = (
   | AssetWithDisplayData<ERC20Asset>
@@ -39,6 +45,15 @@ export type TokenWithApprovalAmount = (
   };
 };
 
+/**
+ * get user available token balances for starting subscription
+ *
+ * @param params
+ * @param params.paymentChains - The payment chains info.
+ * @param params.price - The product price.
+ * @param params.productType - The product type.
+ * @returns The available token balances.
+ */
 export const useAvailableTokenBalances = (params: {
   paymentChains?: ChainPaymentInfo[];
   price?: ProductPrice;
@@ -66,9 +81,19 @@ export const useAvailableTokenBalances = (params: {
     [paymentChains],
   );
 
-  const selectedAccount = useSelector(getSelectedAccount);
+  // Use accountAddress's account group if it exists, otherwise use the selected account group
+  const selectedAccountGroup = useSelector(getSelectedAccountGroup);
+  const [requestedAccountGroup] = useSelector((state) =>
+    getAccountGroupsByAddress(state as MultichainAccountsState, ['']),
+  );
+  const accountGroupIdToUse = requestedAccountGroup?.id ?? selectedAccountGroup;
+
+  // Get internal account to use for each supported scope
+  const evmAccount = useSelector((state) =>
+    getInternalAccountByGroupAndCaip(state, accountGroupIdToUse, 'eip155:1'),
+  );
   const evmBalances = useSelector((state) =>
-    getTokenBalancesEvm(state, selectedAccount.address),
+    getTokenBalancesEvm(state, evmAccount?.address),
   );
 
   // Poll and update evm balances for payment chains
@@ -133,15 +158,14 @@ export const useAvailableTokenBalances = (params: {
       if (!token.balance) {
         return;
       }
-      // NOTE: we are using stable coin for subscription atm, so we need to scale the balance by the decimals
-      const scaledFactor = 10n ** 6n;
-      const scaledBalance =
-        BigInt(Math.round(Number(token.balance) * Number(scaledFactor))) /
-        scaledFactor;
-      const tokenHasEnoughBalance =
-        amount &&
-        scaledBalance * BigInt(10 ** token.decimals) >=
-          BigInt(amount.approveAmount);
+
+      const balance = new BigNumber(token.balance);
+      // price amount and token balance has different decimals, so we need to convert the price amount to the same decimals as the token balance
+      const minBillingCyclesForBalance = price.minBillingCyclesForBalance ?? 1; // required amount for subscription is only usually only 1 billing cycle (only approve amount need minBillingCycles)
+      const requiredAmount = new BigNumber(price.unitAmount)
+        .div(new BigNumber(10).pow(price.unitDecimals))
+        .mul(minBillingCyclesForBalance);
+      const tokenHasEnoughBalance = amount && balance.gte(requiredAmount);
       if (tokenHasEnoughBalance) {
         availableTokens.push({
           ...token,

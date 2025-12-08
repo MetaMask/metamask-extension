@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { withFixtures, WALLET_PASSWORD } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountDetailsModal from '../../page-objects/pages/dialog/account-details-modal';
@@ -27,9 +27,7 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
         },
         async (driver: Driver) => {
           const accountListPage = new AccountListPage(driver);
-          await accountListPage.checkPageIsLoaded({
-            isMultichainAccountsState2Enabled: true,
-          });
+          await accountListPage.checkPageIsLoaded();
           await accountListPage.openMultichainAccountMenu({
             accountLabel: account1.name,
           });
@@ -99,9 +97,7 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
         },
         async (driver: Driver) => {
           const accountListPage = new AccountListPage(driver);
-          await accountListPage.checkPageIsLoaded({
-            isMultichainAccountsState2Enabled: true,
-          });
+          await accountListPage.checkPageIsLoaded();
           await accountListPage.openMultichainAccountMenu({
             accountLabel: 'Account 1',
           });
@@ -128,7 +124,6 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
         {
           fixtures: new FixtureBuilder().build(),
           title: this.test?.fullTitle(),
-          forceBip44Version: 2,
         },
         async ({ driver }) => {
           await loginWithoutBalanceValidation(driver);
@@ -153,13 +148,10 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
       await withMultichainAccountsDesignEnabled(
         {
           title: this.test?.fullTitle(),
-          state: 2,
         },
         async (driver: Driver) => {
           const accountListPage = new AccountListPage(driver);
-          await accountListPage.checkPageIsLoaded({
-            isMultichainAccountsState2Enabled: true,
-          });
+          await accountListPage.checkPageIsLoaded();
           await accountListPage.openMultichainAccountMenu({
             accountLabel: account1.name,
           });
@@ -171,9 +163,7 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
 
           await accountDetailsPage.clickConfirmAccountNameButton();
 
-          await accountListPage.checkPageIsLoaded({
-            isMultichainAccountsState2Enabled: true,
-          });
+          await accountListPage.checkPageIsLoaded();
 
           await accountListPage.checkAccountNameIsDisplayed(newName);
         },
@@ -186,13 +176,10 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
       await withMultichainAccountsDesignEnabled(
         {
           title: this.test?.fullTitle(),
-          state: 2,
         },
         async (driver: Driver) => {
           const accountListPage = new AccountListPage(driver);
-          await accountListPage.checkPageIsLoaded({
-            isMultichainAccountsState2Enabled: true,
-          });
+          await accountListPage.checkPageIsLoaded();
           await accountListPage.openMultichainAccountMenu({
             accountLabel: account1.name,
           });
@@ -215,13 +202,10 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
       await withMultichainAccountsDesignEnabled(
         {
           title: this.test?.fullTitle(),
-          state: 2,
         },
         async (driver: Driver) => {
           const accountListPage = new AccountListPage(driver);
-          await accountListPage.checkPageIsLoaded({
-            isMultichainAccountsState2Enabled: true,
-          });
+          await accountListPage.checkPageIsLoaded();
           await accountListPage.openMultichainAccountMenu({
             accountLabel: account1.name,
           });
@@ -248,13 +232,10 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
       await withMultichainAccountsDesignEnabled(
         {
           title: this.test?.fullTitle(),
-          state: 2,
         },
         async (driver: Driver) => {
           const accountListPage = new AccountListPage(driver);
-          await accountListPage.checkPageIsLoaded({
-            isMultichainAccountsState2Enabled: true,
-          });
+          await accountListPage.checkPageIsLoaded();
           await accountListPage.openMultichainAccountMenu({
             accountLabel: account1.name,
           });
@@ -276,13 +257,10 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
       await withMultichainAccountsDesignEnabled(
         {
           title: this.test?.fullTitle(),
-          state: 2,
         },
         async (driver: Driver) => {
           const accountListPage = new AccountListPage(driver);
-          await accountListPage.checkPageIsLoaded({
-            isMultichainAccountsState2Enabled: true,
-          });
+          await accountListPage.checkPageIsLoaded();
           await accountListPage.openMultichainAccountMenu({
             accountLabel: account1.name,
           });

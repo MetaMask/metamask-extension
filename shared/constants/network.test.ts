@@ -36,6 +36,8 @@ describe('NetworkConstants', () => {
         Linea: CHAIN_IDS.LINEA_MAINNET,
         Sei: CHAIN_IDS.SEI,
         Monad: CHAIN_IDS.MONAD,
+        HyperEVM: CHAIN_IDS.HYPE,
+        MegaETH: CHAIN_IDS.MEGAETH_MAINNET,
       };
 
       FEATURED_RPCS.forEach((rpc) => {

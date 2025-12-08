@@ -79,14 +79,16 @@ import {
   getMultichainIsTestnet,
   getMultichainNetworkConfigurationsByChainId,
   getMultichainShouldShowFiat,
+  getMultichainIsTron,
 } from '../../../selectors/multichain';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import { useSafeChains } from '../../settings/networks-tab/networks-form/use-safe-chains';
 import { useCurrentPrice } from '../hooks/useCurrentPrice';
-import { Asset } from '../types/asset';
+import { isNativeAsset, type Asset } from '../types/asset';
 import { AssetMarketDetails } from './asset-market-details';
 import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
+import { TronDailyResources } from './tron-daily-resources';
 
 // TODO BIP44 Refactor: This page needs a significant refactor after BIP44 is enabled to remove confusing branching logic
 // A page representing a native or token asset
@@ -165,7 +167,7 @@ const AssetPage = ({
           return false;
       }
     }) ?? {
-    // TODO: remve the fallback case where the mutichainTokenWithFiatAmount is undefined
+    // TODO: remove the fallback case where the mutichainTokenWithFiatAmount is undefined
     // Root cause: There is a race condition where when switching from a non-EVM network
     // to an EVM network, the mutichainTokenWithFiatAmount is undefined
     // This is a workaround to avoid the error
@@ -209,7 +211,7 @@ const AssetPage = ({
 
   const { currentPrice } = useCurrentPrice(asset);
 
-  let balance, tokenFiatAmount, assetId;
+  let balance, tokenFiatAmount, assetId, updatedAsset;
   if (isMultichainAccountsState2Enabled) {
     const assetWithBalance = accountGroupIdAssets[chainId]?.find(
       (item) =>
@@ -224,10 +226,13 @@ const AssetPage = ({
     tokenFiatAmount = assetWithBalance?.fiat?.balance ?? 0;
     const tokenHexBalance = assetWithBalance?.rawBalance as string;
 
-    asset.balance = {
-      value: hexToDecimal(tokenHexBalance),
-      display: balance,
-      fiat: String(tokenFiatAmount),
+    updatedAsset = {
+      ...asset,
+      balance: {
+        value: hexToDecimal(tokenHexBalance),
+        display: balance,
+        fiat: String(tokenFiatAmount),
+      },
     };
   } else {
     const tokenHexBalance =
@@ -247,10 +252,13 @@ const AssetPage = ({
       : 0;
 
     // this is needed in order to assign the correct balances to TokenButtons before navigating to send/swap screens
-    asset.balance = {
-      value: hexToDecimal(tokenHexBalance),
-      display: String(balance),
-      fiat: String(tokenFiatAmount),
+    updatedAsset = {
+      ...asset,
+      balance: {
+        value: hexToDecimal(tokenHexBalance),
+        display: String(balance),
+        fiat: String(tokenFiatAmount),
+      },
     };
   }
 
@@ -314,13 +322,12 @@ const AssetPage = ({
   );
   const showUnifiedTransactionList = isBIP44FeatureFlagEnabled;
 
+  // Check if we should show Tron resources
+  const isTron = useMultichainSelector(getMultichainIsTron, selectedAccount);
+  const showTronResources = isTron && type === AssetType.native;
+
   return (
-    <Box
-      marginLeft="auto"
-      marginRight="auto"
-      marginTop={4}
-      className="asset__content"
-    >
+    <Box marginTop={4} className="asset__content">
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -361,7 +368,7 @@ const AssetPage = ({
         asset={tokenWithFiatAmount as TokenFiatDisplayInfo}
       />
       <Box marginTop={4} paddingLeft={4} paddingRight={4}>
-        {type === AssetType.native ? (
+        {isNativeAsset(updatedAsset) ? (
           <CoinButtons
             {...{
               account: selectedAccount,
@@ -374,7 +381,7 @@ const AssetPage = ({
             }}
           />
         ) : (
-          <TokenButtons token={asset} account={selectedAccount} />
+          <TokenButtons token={updatedAsset} account={selectedAccount} />
         )}
       </Box>
       <Box
@@ -382,6 +389,18 @@ const AssetPage = ({
         flexDirection={FlexDirection.Column}
         paddingTop={3}
       >
+        {showTronResources && (
+          <Box>
+            <TronDailyResources account={selectedAccount} chainId={chainId} />
+            <Box
+              marginTop={2}
+              marginBottom={2}
+              borderColor={BorderColor.borderMuted}
+              marginInline={4}
+              style={{ height: '1px', borderBottomWidth: 0 }}
+            />
+          </Box>
+        )}
         <Text
           variant={TextVariant.headingSm}
           paddingBottom={1}
@@ -394,7 +413,6 @@ const AssetPage = ({
           <TokenCell
             key={`${symbol}-${address}`}
             token={tokenWithFiatAmount as TokenWithFiatAmount}
-            disableHover={true}
             safeChains={safeChains}
           />
         )}
@@ -496,7 +514,7 @@ const AssetPage = ({
               </Box>
             </Box>
           )}
-          <AssetMarketDetails asset={asset} address={address} />
+          <AssetMarketDetails asset={updatedAsset} address={address} />
           <Box
             borderColor={BorderColor.borderMuted}
             marginInline={4}

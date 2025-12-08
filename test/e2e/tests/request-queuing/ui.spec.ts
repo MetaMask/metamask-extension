@@ -7,8 +7,8 @@ import NetworkManager, {
   NetworkId,
 } from '../../page-objects/pages/network-manager';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import FixtureBuilder from '../../fixture-builder';
-import { DEFAULT_LOCAL_NODE_USD_BALANCE } from '../../constants';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../../constants';
 import {
   withFixtures,
   DAPP_URL,
@@ -376,7 +376,7 @@ describe('Request-queue UI changes', function () {
           await networkManager.selectTab('Custom');
 
           await networkManager.selectNetworkByNameWithWait('Localhost 7777');
-          await validateBalanceAndActivity(driver, '24.9998');
+          await validateBalanceAndActivity(driver, '25');
         }
 
         // Validate second network, where transaction was rejected
@@ -391,7 +391,7 @@ describe('Request-queue UI changes', function () {
         await networkManager.selectTab('Custom');
         await networkManager.selectNetworkByNameWithWait('Localhost 8545');
 
-        await validateBalanceAndActivity(driver, '24.9998');
+        await validateBalanceAndActivity(driver, '25');
       },
     );
   });
@@ -597,8 +597,6 @@ describe('Request-queue UI changes', function () {
           .withEnabledNetworks({
             eip155: {
               '0x1': true,
-              '0x2105': true,
-              '0xe708': true,
             },
           })
           .build(),
@@ -625,7 +623,7 @@ describe('Request-queue UI changes', function () {
           driver,
           undefined,
           undefined,
-          DEFAULT_LOCAL_NODE_USD_BALANCE,
+          DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
         );
 
         // Open the first dapp

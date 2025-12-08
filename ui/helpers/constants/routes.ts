@@ -7,6 +7,7 @@ type AppRoute = {
 };
 
 export const DEFAULT_ROUTE = '/';
+export const PREVIOUS_ROUTE = -1;
 export const UNLOCK_ROUTE = '/unlock';
 export const LOCK_ROUTE = '/lock';
 export const ASSET_ROUTE = '/asset';
@@ -24,9 +25,13 @@ export const TRANSACTION_SHIELD_CLAIM_ROUTES = {
     FULL: `${TRANSACTION_SHIELD_CLAIMS}/new-claim`,
     RELATIVE: '/new-claim',
   },
-  VIEW: {
-    FULL: `${TRANSACTION_SHIELD_CLAIMS}/view-claim`,
-    RELATIVE: '/view-claim',
+  VIEW_PENDING: {
+    FULL: `${TRANSACTION_SHIELD_CLAIMS}/view-pending-claim`,
+    RELATIVE: '/view-pending-claim',
+  },
+  VIEW_HISTORY: {
+    FULL: `${TRANSACTION_SHIELD_CLAIMS}/view-history-claim`,
+    RELATIVE: '/view-history-claim',
   },
 } as const;
 export const SECURITY_ROUTE = '/settings/security';
@@ -67,8 +72,6 @@ export const MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE =
   '/multichain-wallet-details-page';
 export const MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE = '/multichain-smart-account';
 export const NEW_ACCOUNT_ROUTE = '/new-account';
-export const ACCOUNT_DETAILS_ROUTE = '/account-details';
-export const ACCOUNT_DETAILS_QR_CODE_ROUTE = '/account-details/qr-code';
 export const CONFIRM_ADD_SUGGESTED_NFT_ROUTE = '/confirm-add-suggested-nft';
 export const CONNECT_HARDWARE_ROUTE = '/new-account/connect';
 export const SEND_ROUTE = '/send';
@@ -132,7 +135,6 @@ export const ONBOARDING_HELP_US_IMPROVE_ROUTE = '/onboarding/help-us-improve';
 export const ONBOARDING_IMPORT_WITH_SRP_ROUTE =
   '/onboarding/import-with-recovery-phrase';
 export const ONBOARDING_PRIVACY_SETTINGS_ROUTE = '/onboarding/privacy-settings';
-export const ONBOARDING_PIN_EXTENSION_ROUTE = '/onboarding/pin-extension';
 export const ONBOARDING_WELCOME_ROUTE = '/onboarding/welcome';
 export const ONBOARDING_METAMETRICS = '/onboarding/metametrics';
 export const ONBOARDING_ACCOUNT_EXIST = '/onboarding/account-exist';
@@ -146,16 +148,17 @@ export const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
 ///: END:ONLY_INCLUDE_IF
 
 export const DEEP_LINK_ROUTE = '/link';
-export const WALLET_DETAILS_ROUTE = '/wallet-details/:id';
 export const DEFI_ROUTE = '/defi';
 
 export const SHIELD_PLAN_ROUTE = '/shield-plan';
+export const REWARDS_ROUTE = '/rewards';
 
 export const ROUTES = [
   { path: DEFAULT_ROUTE, label: 'Home', trackInAnalytics: true },
   { path: '', label: 'Home', trackInAnalytics: true }, // "" is an alias for the Home route
   { path: UNLOCK_ROUTE, label: 'Unlock Page', trackInAnalytics: true },
   { path: LOCK_ROUTE, label: 'Lock Page', trackInAnalytics: true },
+  { path: REWARDS_ROUTE, label: 'Rewards Page', trackInAnalytics: true },
   {
     path: ACCOUNT_LIST_PAGE_ROUTE,
     label: 'Account List Page',
@@ -326,16 +329,6 @@ export const ROUTES = [
   {
     path: NEW_ACCOUNT_ROUTE,
     label: 'New Account Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: ACCOUNT_DETAILS_ROUTE,
-    label: 'Account Details Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: ACCOUNT_DETAILS_QR_CODE_ROUTE,
-    label: 'Account Details QR Code Page',
     trackInAnalytics: true,
   },
   {
@@ -539,11 +532,6 @@ export const ROUTES = [
     label: 'Deep link Redirect Page',
     trackInAnalytics: true,
   },
-  {
-    path: WALLET_DETAILS_ROUTE,
-    label: 'Wallet Details Page',
-    trackInAnalytics: true,
-  },
   // Onboarding routes
   { path: ONBOARDING_ROUTE, label: 'Onboarding', trackInAnalytics: false },
   {
@@ -589,11 +577,6 @@ export const ROUTES = [
   {
     path: ONBOARDING_COMPLETION_ROUTE,
     label: 'Onboarding Completion',
-    trackInAnalytics: false,
-  },
-  {
-    path: ONBOARDING_PIN_EXTENSION_ROUTE,
-    label: 'Onboarding Pin Extension',
     trackInAnalytics: false,
   },
   {

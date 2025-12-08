@@ -1,14 +1,8 @@
 import { Messenger } from '@metamask/messenger';
 import {
   NetworkControllerGetStateAction,
-  NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerStateChangeEvent,
 } from '@metamask/network-controller';
-import {
-  AccountsControllerGetSelectedAccountAction,
-  AccountsControllerGetAccountAction,
-  AccountsControllerSelectedEvmAccountChangeEvent,
-} from '@metamask/accounts-controller';
 import {
   TokensControllerGetStateAction,
   TokensControllerStateChangeEvent,
@@ -19,18 +13,11 @@ import {
 } from '../../../controllers/preferences-controller';
 import { RootMessenger } from '../../../lib/messenger';
 
-type Actions =
-  | TokensControllerGetStateAction
-  | NetworkControllerGetNetworkClientByIdAction
-  | NetworkControllerGetStateAction
-  | AccountsControllerGetAccountAction
-  | AccountsControllerGetSelectedAccountAction;
+type Actions = TokensControllerGetStateAction | NetworkControllerGetStateAction;
 
 type Events =
-  | NetworkControllerStateChangeEvent
-  | AccountsControllerSelectedEvmAccountChangeEvent
-  | PreferencesControllerStateChangeEvent
-  | TokensControllerStateChangeEvent;
+  | TokensControllerStateChangeEvent
+  | NetworkControllerStateChangeEvent;
 
 export type TokenRatesControllerMessenger = ReturnType<
   typeof getTokenRatesControllerMessenger
@@ -57,19 +44,8 @@ export function getTokenRatesControllerMessenger(
   });
   messenger.delegate({
     messenger: controllerMessenger,
-    actions: [
-      'TokensController:getState',
-      'NetworkController:getNetworkClientById',
-      'NetworkController:getState',
-      'AccountsController:getAccount',
-      'AccountsController:getSelectedAccount',
-    ],
-    events: [
-      'NetworkController:stateChange',
-      'AccountsController:selectedEvmAccountChange',
-      'PreferencesController:stateChange',
-      'TokensController:stateChange',
-    ],
+    actions: ['TokensController:getState', 'NetworkController:getState'],
+    events: ['TokensController:stateChange', 'NetworkController:stateChange'],
   });
   return controllerMessenger;
 }

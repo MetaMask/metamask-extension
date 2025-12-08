@@ -5,12 +5,16 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { getMetaMaskHdKeyrings, getSelectedAccount } from '../../../selectors';
+import { getMetaMaskHdKeyrings } from '../../../selectors';
 import { useAccountTotalFiatBalance } from '../../useAccountTotalFiatBalance';
-import { getShieldCommonTrackingProps } from '../../../../shared/modules/shield';
+import {
+  getShieldCommonTrackingProps,
+  getShieldMarketingTrackingProps,
+} from '../../../../shared/modules/shield';
 import { MetaMaskReduxDispatch } from '../../../store/store';
 import { setShieldSubscriptionMetricsProps } from '../../../store/actions';
 import { EntryModalSourceEnum } from '../../../../shared/constants/subscriptions';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import {
   CaptureShieldClaimSubmissionEventParams,
   CaptureShieldCryptoConfirmationEventParams,
@@ -23,6 +27,7 @@ import {
   CaptureShieldPaymentMethodChangeEventParams,
   CaptureShieldSubscriptionRequestParams,
   CaptureShieldSubscriptionRestartRequestEventParams,
+  CaptureShieldUnexpectedErrorEventParams,
   ExistingSubscriptionEventParams,
 } from './types';
 import {
@@ -36,7 +41,11 @@ import {
 export const useSubscriptionMetrics = () => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const trackEvent = useContext(MetaMetricsContext);
-  const selectedAccount = useSelector(getSelectedAccount);
+  const evmInternalAccount = useSelector((state) =>
+    // Account address will be the same for all EVM accounts
+    getInternalAccountBySelectedAccountGroupAndCaip(state, 'eip155:1'),
+  );
+  const selectedAccount = evmInternalAccount;
   const hdKeyingsMetadata = useSelector(getMetaMaskHdKeyrings);
   const { totalFiatBalance } = useAccountTotalFiatBalance(
     selectedAccount,
@@ -50,19 +59,20 @@ export const useSubscriptionMetrics = () => {
    * Since some of the properties are not accessible in the background directly, we need to set them from the UI.
    *
    * @param props - The Shield subscription metrics properties.
-   * @param props.marketingUtmId - The UTM ID used if source is marketing campaign.
    * @param props.source - The source of the Shield subscription metrics.
    */
   const setShieldSubscriptionMetricsPropsToBackground = useCallback(
     async (props: {
-      marketingUtmId?: string;
+      marketingUtmParams?: Record<string, string>;
       source: EntryModalSourceEnum;
+      rewardPoints?: number;
     }) => {
       await dispatch(
         setShieldSubscriptionMetricsProps({
-          marketingUtmId: props.marketingUtmId,
+          marketingUtmParams: props.marketingUtmParams,
           source: props.source,
           userBalanceInUSD: Number(totalFiatBalance),
+          rewardPoints: props.rewardPoints,
         }),
       );
     },
@@ -113,6 +123,7 @@ export const useSubscriptionMetrics = () => {
         category: MetaMetricsEventCategory.Shield,
         properties: {
           ...commonTrackingProps,
+          ...getShieldMarketingTrackingProps(params.marketingUtmParams),
           source: params.source,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -120,9 +131,6 @@ export const useSubscriptionMetrics = () => {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           modal_cta_action_clicked: params.modalCtaActionClicked,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          marketing_utm_id: params.marketingUtmId,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           post_transaction_type: params.postTransactionType,
@@ -377,6 +385,31 @@ export const useSubscriptionMetrics = () => {
     [trackEvent, selectedAccount, hdKeyingsMetadata, totalFiatBalance],
   );
 
+  /**
+   * Capture the event when an unexpected error occurs.
+   */
+  const captureShieldUnexpectedErrorEvent = useCallback(
+    (params: CaptureShieldUnexpectedErrorEventParams) => {
+      const commonTrackingProps = getShieldCommonTrackingProps(
+        selectedAccount,
+        hdKeyingsMetadata,
+        Number(totalFiatBalance),
+      );
+      trackEvent({
+        event: MetaMetricsEventName.ShieldSubscriptionUnexpectedErrorEvent,
+        category: MetaMetricsEventCategory.Shield,
+        properties: {
+          ...commonTrackingProps,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          error_message: params.errorMessage,
+          location: params.location,
+        },
+      });
+    },
+    [trackEvent, selectedAccount, hdKeyingsMetadata, totalFiatBalance],
+  );
+
   return {
     setShieldSubscriptionMetricsPropsToBackground,
     captureShieldEntryModalEvent,
@@ -390,5 +423,6 @@ export const useSubscriptionMetrics = () => {
     captureCommonExistingShieldSubscriptionEvents,
     captureShieldErrorStateClickedEvent,
     captureShieldSubscriptionRestartRequestEvent,
+    captureShieldUnexpectedErrorEvent,
   };
 };

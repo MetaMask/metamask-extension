@@ -1,5 +1,5 @@
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { withFixtures } from '../../helpers';
 import { MockedEndpoint, Mockttp } from '../../mock-e2e';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
@@ -7,6 +7,7 @@ import { Driver } from '../../webdriver/driver';
 import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
 import { MOCK_META_METRICS_ID } from '../../constants';
 import { mockDialogSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
+import { BIP44_STAGE_TWO } from '../multichain-accounts/feature-flag-mocks';
 
 export const DECODING_E2E_API_URL =
   'https://signature-insights.api.cx.metamask.io/v1';
@@ -258,6 +259,7 @@ export async function mockEip7702FeatureFlag(mockServer: Mockttp) {
                 supportedChains: ['0xaa36a7', '0x539', '0x1'],
               },
             },
+            BIP44_STAGE_TWO,
           ],
         };
       }),
@@ -603,12 +605,22 @@ export async function mockDeFiPositionFeatureFlag(mockServer: Mockttp) {
             {
               assetsDefiPositionsEnabled: true,
             },
-            {
-              sendRedesign: {
-                enabled: false,
-              },
-            },
+            BIP44_STAGE_TWO,
           ],
+        };
+      }),
+    await mockServer
+      .forGet('https://price.api.cx.metamask.io/v2/chains/1/spot-prices')
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            '0x0000000000000000000000000000000000000000': {
+              price: 1700,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
+          },
         };
       }),
   ];
@@ -641,6 +653,7 @@ export async function mockNoDeFiPositionFeatureFlag(mockServer: Mockttp) {
                 enabled: false,
               },
             },
+            BIP44_STAGE_TWO,
           ],
         };
       }),
@@ -669,6 +682,7 @@ export async function mockDefiPositionsFailure(mockServer: Mockttp) {
             {
               assetsDefiPositionsEnabled: true,
             },
+            BIP44_STAGE_TWO,
           ],
         };
       }),

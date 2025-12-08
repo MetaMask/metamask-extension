@@ -1,0 +1,241 @@
+{
+  "resources": {
+    "@ethersproject/wallet>@ethersproject/random": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@lavamoat/lavadome-react": {
+      "globals": {
+        "Array": true,
+        "Clipboard": true,
+        "Document": true,
+        "DocumentFragment": true,
+        "Element": true,
+        "Event": true,
+        "EventTarget": true,
+        "Function": true,
+        "JSON": true,
+        "NavigateEvent": true,
+        "NavigationDestination": true,
+        "Node": true,
+        "Number": true,
+        "Object": true,
+        "String": true,
+        "Weakmap": true
+      }
+    },
+    "@metamask/keyring-controller>ulid": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@popperjs/core": {
+      "globals": {
+        "devicePixelRatio": true
+      }
+    },
+    "@sentry/utils": {
+      "globals": {
+        "performance.now": true,
+        "performance.timeOrigin": true,
+        "devicePixelRatio": true,
+        "navigator.userAgent": true,
+        "navigator.language": true,
+        "navigator.userAgentData": true,
+        "crypto": true,
+        "onunhandledrejection": true,
+        "addEventListener": true,
+        "PerformanceObserver": true,
+        "chrome.app": true,
+        "chrome.runtime": true,
+        "location": false,
+        "location.href": true,
+        "top": true
+      }
+    },
+    "@trezor/connect-web>@trezor/connect-common>@trezor/env-utils>ua-parser-js": {
+      "globals": {
+        "navigator.userAgentData": true
+      }
+    },
+    "^ background; v popup": {},
+    "axios": {
+      "globals": {
+        "postMessage": true,
+        "fetch": true,
+        "Request": true,
+        "Response": true,
+        "TextEncoder": true
+      }
+    },
+    "browserify>util": {
+      "globals": {
+        "SharedArrayBuffer": true
+      }
+    },
+    "buffer": {
+      "globals": {
+        "SharedArrayBuffer": true
+      }
+    },
+    "core-js-pure": {
+      "globals": {
+        "navigator.userAgent": true,
+        "MessageChannel": true,
+        "location": true
+      }
+    },
+    "ethers>@ethersproject/random": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
+    "lodash": {
+      "globals": {
+        "_": true,
+        "setTimeout": true,
+        "clearTimeout": true
+      }
+    },
+    "node-fetch": {
+      "globals": {
+        "fetch": true,
+        "Headers": true,
+        "Request": true,
+        "Response": true
+      }
+    },
+    "react-dom": {
+      "globals": {
+        "event": false,
+        "HTMLIFrameElement": true
+      }
+    },
+    "react-dom>scheduler": {
+      "globals": {
+        "SharedArrayBuffer": true
+      }
+    },
+    "react-toggle-button": {
+      "globals": {
+        "requestAnimationFrame": true,
+        "cancelAnimationFrame": true
+      }
+    },
+    "string.prototype.matchall>get-intrinsic": {
+      "globals": {
+        "Atomics": true,
+        "SharedArrayBuffer": true
+      }
+    },
+    "eth-lattice-keyring>gridplus-sdk>buffer": {
+      "globals": {
+        "SharedArrayBuffer": true
+      }
+    },
+    "@open-rpc/test-coverage>isomorphic-fetch>whatwg-fetch": {
+      "globals": {
+        "DOMException": true,
+        "fetch": true
+      }
+    },
+    "react-beautiful-dnd": {
+      "globals": {
+        "addEventListener": true,
+        "removeEventListener": true
+      }
+    },
+    "@metamask/network-controller": {
+      "packages": {
+        "cockatiel": true
+      }
+    },
+    "@ethereumjs/tx>@ethereumjs/util": {
+      "packages": {
+        "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true
+      }
+    },
+    "@metamask/keyring-controller>@metamask/eth-hd-keyring": {
+      "packages": {
+        "@ethereumjs/tx>ethereum-cryptography>@scure/bip32": true
+      }
+    },
+    "react-router-dom-v5-compat": {
+      "packages": {
+        "react-router-dom>react-router": true
+      }
+    },
+    "@metamask/multichain-network-controller": {
+      "packages": {
+        "@metamask/multichain-network-controller>@metamask/keyring-api": true
+      }
+    },
+    "@metamask/multichain-network-controller>@metamask/keyring-api": {
+      "packages": {
+        "@metamask/keyring-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "bitcoin-address-validation": true
+      }
+    },
+    "@metamask/bridge-controller": {
+      "packages": {
+        "@metamask/bridge-controller>@metamask/multichain-network-controller": true
+      }
+    },
+    "@metamask/bridge-controller>@metamask/multichain-network-controller": {
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/bridge-controller>@metamask/multichain-network-controller>@metamask/keyring-api": true,
+        "@metamask/network-controller": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "lodash": true
+      }
+    },
+    "@metamask/bridge-controller>@metamask/multichain-network-controller>@metamask/keyring-api": {
+      "packages": {
+        "@metamask/keyring-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "bitcoin-address-validation": true
+      }
+    },
+    "@rive-app/react-canvas>@rive-app/canvas": {
+      "globals": {
+        "AudioContext": false,
+        "DOMMatrix": false,
+        "FinalizationRegistry": false,
+        "Iterator": false,
+        "MouseEvent": false,
+        "ResizeObserver": false,
+        "crypto": false,
+        "define": false,
+        "devicePixelRatio": false,
+        "h": false,
+        "importScripts": false,
+        "location": false,
+        "prompt": false,
+        "readline": false,
+        "webkitAudioContext": false,
+        "fetch": false,
+        "XMLHttpRequest": false,
+        "document": false,
+        "document.createElement": true,
+        "navigator": false,
+        "navigator.userAgent": true
+      }
+    },
+    "@rive-app/react-canvas": {
+      "globals": {
+        "IntersectionObserver": false,
+        "ResizeObserver": false,
+        "devicePixelRatio": false,
+        "innerHeight": false,
+        "innerWidth": false,
+        "matchMedia": false
+      }
+    }
+  }
+}

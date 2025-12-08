@@ -1,6 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { Route, Switch, useHistory, useParams } from 'react-router-dom';
+import {
+  Routes,
+  Route,
+  useNavigate,
+  useParams,
+  useLocation,
+} from 'react-router-dom-v5-compat';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ORIGIN_METAMASK,
@@ -26,7 +33,7 @@ import { usePrevious } from '../../../hooks/usePrevious';
 import {
   unconfirmedTransactionsHashSelector,
   unconfirmedTransactionsListSelector,
-  use4ByteResolutionSelector,
+  getUse4ByteResolution,
 } from '../../../selectors';
 import {
   endBackgroundTrace,
@@ -37,8 +44,6 @@ import {
 } from '../../../store/actions';
 import ConfirmDecryptMessage from '../../confirm-decrypt-message';
 import ConfirmEncryptionPublicKey from '../../confirm-encryption-public-key';
-import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
-import { getUnapprovedConfirmations } from '../../../selectors/selectors';
 import ConfirmTransactionSwitch from '../confirm-transaction-switch';
 import Confirm from '../confirm/confirm';
 import useCurrentConfirmation from '../hooks/useCurrentConfirmation';
@@ -49,13 +54,20 @@ import { useAsyncResult } from '../../../hooks/useAsync';
 import { TraceName } from '../../../../shared/lib/trace';
 import ConfirmTokenTransactionSwitch from './confirm-token-transaction-switch';
 
-const ConfirmTransaction = () => {
+const ConfirmTransaction = ({
+  params: routeParams,
+  location: routeLocation,
+} = {}) => {
   const dispatch = useDispatch();
-  const history = useHistory();
-  const { id: paramsTransactionId } = useParams();
-  const isSidePanelEnabled = useSidePanelEnabled();
-  const hasPendingApprovals =
-    useSelector(getUnapprovedConfirmations).length > 0;
+  const navigate = useNavigate();
+  const urlParams = useParams();
+  const hookLocation = useLocation();
+
+  // Use params from props (v5 route) if available, otherwise fall back to useParams (v6)
+  const { id: paramsTransactionId } = routeParams || urlParams;
+
+  // Use location from props (v5 route) if available, otherwise fall back to useLocation (v6)
+  const location = routeLocation || hookLocation;
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const sendTo = useSelector(getSendTo);
@@ -76,8 +88,10 @@ const ConfirmTransaction = () => {
     unconfirmedTxsSorted,
   ]);
   const [transaction, setTransaction] = useState(getTransaction);
-  const use4ByteResolution = useSelector(use4ByteResolutionSelector);
-  const { currentConfirmation } = useCurrentConfirmation();
+
+  const use4ByteResolution = useSelector(getUse4ByteResolution);
+  // Pass the transaction ID from route params so useCurrentConfirmation can find the approval
+  const { currentConfirmation } = useCurrentConfirmation(paramsTransactionId);
 
   useEffect(() => {
     const tx = getTransaction();
@@ -142,48 +156,45 @@ const ConfirmTransaction = () => {
         dispatch(setTransactionToConfirm(txId));
       }
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    if (
-      paramsTransactionId &&
-      transactionId &&
-      prevParamsTransactionId !== paramsTransactionId
-    ) {
-      const { txData: { txParams: { data } = {}, origin } = {} } = transaction;
+    const handleNavigation = async () => {
+      if (
+        paramsTransactionId &&
+        transactionId &&
+        prevParamsTransactionId !== paramsTransactionId
+      ) {
+        const { txData: { txParams: { data } = {}, origin } = {} } =
+          transaction;
 
-      dispatch(clearConfirmTransaction());
-      dispatch(setTransactionToConfirm(paramsTransactionId));
-      if (origin !== ORIGIN_METAMASK) {
-        dispatch(getContractMethodData(data, use4ByteResolution));
+        dispatch(clearConfirmTransaction());
+        dispatch(setTransactionToConfirm(paramsTransactionId));
+        if (origin !== ORIGIN_METAMASK) {
+          dispatch(getContractMethodData(data, use4ByteResolution));
+        }
+      } else if (prevTransactionId && !transactionId && !totalUnapproved) {
+        await dispatch(setDefaultHomeActiveTabName('activity'));
+        navigate(DEFAULT_ROUTE, { replace: true });
+      } else if (
+        prevTransactionId &&
+        transactionId &&
+        prevTransactionId !== transactionId &&
+        paramsTransactionId !== transactionId
+      ) {
+        navigate(mostRecentOverviewPage, { replace: true });
       }
-    } else if (prevTransactionId && !transactionId && !totalUnapproved) {
-      dispatch(setDefaultHomeActiveTabName('activity')).then(() => {
-        history.replace(DEFAULT_ROUTE);
-      });
-    } else if (
-      prevTransactionId &&
-      transactionId &&
-      prevTransactionId !== transactionId &&
-      paramsTransactionId !== transactionId
-    ) {
-      history.replace(mostRecentOverviewPage);
-    } else if (isSidePanelEnabled && !hasPendingApprovals) {
-      history.replace(DEFAULT_ROUTE);
-    }
+    };
+
+    handleNavigation();
   }, [
     dispatch,
-    history,
+    navigate,
     mostRecentOverviewPage,
     paramsTransactionId,
     prevParamsTransactionId,
     prevTransactionId,
     totalUnapproved,
-    hasPendingApprovals,
-    isSidePanelEnabled,
-    isValidTransactionId,
     transaction,
     transactionId,
     use4ByteResolution,
@@ -194,7 +205,7 @@ const ConfirmTransaction = () => {
   // Once we migrate all confirmations to new designs we can get rid of this code
   // and render <Confirm /> component for all confirmation requests.
   if (currentConfirmation) {
-    return <Confirm />;
+    return <Confirm confirmationId={paramsTransactionId} />;
   }
 
   if (isValidTokenMethod && isValidTransactionId) {
@@ -203,23 +214,36 @@ const ConfirmTransaction = () => {
   // Show routes when state.confirmTransaction has been set and when either the ID in the params
   // isn't specified or is specified and matches the ID in state.confirmTransaction in order to
   // support URLs of /confirm-transaction or /confirm-transaction/<transactionId>
-  return isValidTransactionId ? (
-    <Switch>
-      <Route
-        exact
-        path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${DECRYPT_MESSAGE_REQUEST_PATH}`}
-        component={ConfirmDecryptMessage}
-      />
-      <Route
-        exact
-        path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`}
-        component={ConfirmEncryptionPublicKey}
-      />
-      <Route path="*" component={ConfirmTransactionSwitch} />
-    </Switch>
-  ) : (
-    <Loading />
-  );
+  if (isValidTransactionId) {
+    return (
+      <Routes location={location}>
+        <Route
+          path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${DECRYPT_MESSAGE_REQUEST_PATH}`}
+          element={<ConfirmDecryptMessage />}
+        />
+        <Route
+          path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`}
+          element={<ConfirmEncryptionPublicKey />}
+        />
+        <Route path="*" element={<ConfirmTransactionSwitch />} />
+      </Routes>
+    );
+  }
+
+  return <Loading />;
+};
+
+ConfirmTransaction.propTypes = {
+  params: PropTypes.shape({
+    id: PropTypes.string,
+  }),
+  location: PropTypes.shape({
+    pathname: PropTypes.string,
+    search: PropTypes.string,
+    hash: PropTypes.string,
+    state: PropTypes.object,
+    key: PropTypes.string,
+  }),
 };
 
 export default ConfirmTransaction;

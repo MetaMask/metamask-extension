@@ -1,9 +1,20 @@
 import React from 'react';
-import { fireEvent, act } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { AccountGroupId } from '@metamask/account-api';
+import { fireEvent, act, within } from '@testing-library/react';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
+import mockDefaultState from '../../../../test/data/mock-state.json';
 import { MultichainAccountMenu } from './multichain-account-menu';
 import type { MultichainAccountMenuProps } from './multichain-account-menu.types';
+
+jest.mock('../../../../shared/lib/trace', () => {
+  const actual = jest.requireActual('../../../../shared/lib/trace');
+  return {
+    ...actual,
+    trace: jest.fn(),
+    endTrace: jest.fn(),
+  };
+});
 
 const popoverOpenSelector = '.mm-popover--open';
 const menuButtonSelector = '.multichain-account-cell-popover-menu-button';
@@ -45,6 +56,14 @@ jest.mock('../../../store/actions', () => {
         await Promise.resolve();
       };
     }),
+  };
+});
+
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
   };
 });
 
@@ -162,13 +181,12 @@ describe('MultichainAccountMenu', () => {
   });
 
   it('navigates to account details page when clicking the account details option', async () => {
-    const { history } = renderComponent({
+    renderComponent({
       accountGroupId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
       isRemovable: false,
       isOpen: true,
       onToggle: jest.fn(),
     });
-    const mockHistoryPush = jest.spyOn(history, 'push');
 
     const accountDetailsOption = document.querySelector(menuItemSelector);
     expect(accountDetailsOption).not.toBeNull();
@@ -179,7 +197,7 @@ describe('MultichainAccountMenu', () => {
       });
     }
 
-    expect(mockHistoryPush).toHaveBeenCalledWith(
+    expect(mockUseNavigate).toHaveBeenCalledWith(
       '/multichain-account-details/entropy%3A01JKAF3DSGM3AB87EM9N0K41AJ%2Fdefault',
     );
   });
@@ -411,5 +429,50 @@ describe('MultichainAccountMenu', () => {
       accountGroupId,
       true,
     );
+  });
+
+  describe('tracing', () => {
+    const groupId = mockDefaultState.metamask.accountTree
+      .selectedAccountGroup as AccountGroupId;
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('calls trace ShowAccountAddressList when clicking Addresses', async () => {
+      const store = configureStore(mockDefaultState);
+      renderWithProvider(
+        <MultichainAccountMenu
+          accountGroupId={groupId}
+          isRemovable={false}
+          isOpen
+          onToggle={() => undefined}
+        />,
+        store,
+      );
+
+      const popover = document.querySelector(
+        '.multichain-account-cell-popover-menu',
+      );
+      expect(popover).toBeInTheDocument();
+
+      const addressesItem = popover
+        ? within(popover as HTMLElement).getByText('Addresses')
+        : null;
+      expect(addressesItem).toBeInTheDocument();
+
+      await act(async () => {
+        if (addressesItem) {
+          fireEvent.click(addressesItem);
+        }
+      });
+
+      const traceLib = jest.requireMock('../../../../shared/lib/trace');
+      expect(traceLib.trace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: traceLib.TraceName.ShowAccountAddressList,
+        }),
+      );
+    });
   });
 });

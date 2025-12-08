@@ -11,7 +11,7 @@ exports[`DataTree correctly renders reverse strings 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -40,7 +40,7 @@ exports[`DataTree correctly renders reverse strings 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -78,7 +78,7 @@ exports[`DataTree should match snapshot 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -107,7 +107,7 @@ exports[`DataTree should match snapshot 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -128,7 +128,7 @@ exports[`DataTree should match snapshot 1`] = `
           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
           >
             <div
               class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -157,7 +157,7 @@ exports[`DataTree should match snapshot 1`] = `
           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
           >
             <div
               class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -178,7 +178,7 @@ exports[`DataTree should match snapshot 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -194,7 +194,7 @@ exports[`DataTree should match snapshot 1`] = `
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                  class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                 >
                   <div
                     class="name name__clickable name__missing"
@@ -218,7 +218,7 @@ exports[`DataTree should match snapshot 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -234,7 +234,7 @@ exports[`DataTree should match snapshot 1`] = `
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                  class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                 >
                   <div
                     class="name name__clickable name__missing"
@@ -262,7 +262,7 @@ exports[`DataTree should match snapshot 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -283,7 +283,7 @@ exports[`DataTree should match snapshot 1`] = `
           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
           >
             <div
               class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -304,7 +304,7 @@ exports[`DataTree should match snapshot 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -333,7 +333,7 @@ exports[`DataTree should match snapshot 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -354,7 +354,7 @@ exports[`DataTree should match snapshot 1`] = `
                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                 >
                   <div
-                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                   >
                     <div
                       class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -370,7 +370,7 @@ exports[`DataTree should match snapshot 1`] = `
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                   >
                     <div
-                      class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                      class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                     >
                       <div
                         class="name name__clickable name__missing"
@@ -394,7 +394,7 @@ exports[`DataTree should match snapshot 1`] = `
                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                 >
                   <div
-                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                   >
                     <div
                       class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -410,7 +410,7 @@ exports[`DataTree should match snapshot 1`] = `
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                   >
                     <div
-                      class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                      class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                     >
                       <div
                         class="name name__clickable name__missing"
@@ -434,7 +434,7 @@ exports[`DataTree should match snapshot 1`] = `
                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                 >
                   <div
-                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                   >
                     <div
                       class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -450,7 +450,7 @@ exports[`DataTree should match snapshot 1`] = `
                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                   >
                     <div
-                      class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                      class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                     >
                       <div
                         class="name name__clickable name__missing"
@@ -480,7 +480,7 @@ exports[`DataTree should match snapshot 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -518,7 +518,7 @@ exports[`DataTree should match snapshot for order signature type 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -545,7 +545,7 @@ exports[`DataTree should match snapshot for order signature type 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -572,7 +572,7 @@ exports[`DataTree should match snapshot for order signature type 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -599,7 +599,7 @@ exports[`DataTree should match snapshot for order signature type 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -635,7 +635,7 @@ exports[`DataTree should match snapshot for permit signature type 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -662,7 +662,7 @@ exports[`DataTree should match snapshot for permit signature type 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -689,7 +689,7 @@ exports[`DataTree should match snapshot for permit signature type 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -716,7 +716,7 @@ exports[`DataTree should match snapshot for permit signature type 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -754,7 +754,7 @@ exports[`DataTree should match snapshot for permit signature type and deadline i
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -781,7 +781,7 @@ exports[`DataTree should match snapshot for permit signature type and deadline i
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -808,7 +808,7 @@ exports[`DataTree should match snapshot for permit signature type and deadline i
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -835,7 +835,7 @@ exports[`DataTree should match snapshot for permit signature type and deadline i
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
