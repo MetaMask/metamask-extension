@@ -162,12 +162,12 @@ function ListItem({
             {fee}
           </Text>
         </Box>
-        <Tooltip
-          interactive
-          position="top"
-          style={{ maxWidth: 240 }}
-          html={
-            tooltipProps ? (
+        {tooltipProps && (
+          <Tooltip
+            interactive
+            position="top"
+            style={{ maxWidth: 240 }}
+            html={
               <EditGasToolTip
                 t={t as (...args: unknown[]) => string}
                 priorityLevel={tooltipProps.priorityLevel}
@@ -176,15 +176,15 @@ function ListItem({
                 gasLimit={tooltipProps.gasLimit}
                 transaction={tooltipProps.transaction}
               />
-            ) : null
-          }
-        >
-          <Icon
-            name={IconName.Info}
-            size={IconSize.Sm}
-            color={IconColor.iconAlternative}
-          />
-        </Tooltip>
+            }
+          >
+            <Icon
+              name={IconName.Info}
+              size={IconSize.Sm}
+              color={IconColor.iconAlternative}
+            />
+          </Tooltip>
+        )}
       </Box>
     </Box>
   );
