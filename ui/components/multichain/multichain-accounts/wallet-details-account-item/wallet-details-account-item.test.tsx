@@ -2,7 +2,7 @@ import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import configureStore from '../../../../store/store';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
 import WalletDetailsAccountItem from './wallet-details-account-item';
 
