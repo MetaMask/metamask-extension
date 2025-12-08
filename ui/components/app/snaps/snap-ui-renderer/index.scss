@@ -81,6 +81,8 @@
   &__footer {
     box-shadow: var(--shadow-size-md) var(--color-shadow-default);
     height: 80px;
+    position: sticky;
+    bottom: 0;
     margin-top: auto;
     transition: bottom 0.3s ease-in-out;
   }
