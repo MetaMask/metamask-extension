@@ -60,7 +60,7 @@ class RestoreVaultPage extends Component {
   state = {
     srpError: '',
     secretRecoveryPhrase: '',
-    openSrpDetailsModal: false,
+    toggleSrpDetailsModal: false,
     showPasswordInput: false,
     loading: false,
   };
@@ -173,7 +173,7 @@ class RestoreVaultPage extends Component {
                       variant={TextVariant.bodyMd}
                       color={TextColor.primaryDefault}
                       onClick={() =>
-                        this.setState({ openSrpDetailsModal: true })
+                        this.setState({ toggleSrpDetailsModal: true })
                       }
                       as="button"
                     >
@@ -189,9 +189,9 @@ class RestoreVaultPage extends Component {
                 }
                 onClearCallback={() => this.setState({ srpError: '' })}
                 showDescription={false}
-                openSrpDetailsModal={this.state.openSrpDetailsModal}
-                openSrpDetailsModalCallback={() =>
-                  this.setState({ openSrpDetailsModal: false })
+                toggleSrpDetailsModal={this.state.toggleSrpDetailsModal}
+                onSrpDetailsModalClose={() =>
+                  this.setState({ toggleSrpDetailsModal: false })
                 }
               />
             </Box>

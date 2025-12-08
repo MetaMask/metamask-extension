@@ -28,9 +28,18 @@ type SrpInputFormProps = {
   error?: string;
   setSecretRecoveryPhrase: (secretRecoveryPhrase: string) => void;
   onClearCallback: () => void;
+  /**
+   * Whether to show the default description
+   */
   showDescription?: boolean;
-  openSrpDetailsModal?: boolean;
-  openSrpDetailsModalCallback?: () => void;
+  /**
+   * Whether to toggle the SRP details modal when you have a custom description
+   */
+  toggleSrpDetailsModal?: boolean;
+  /**
+   * Callback to close the SRP details modal when you have a custom description
+   */
+  onSrpDetailsModalClose?: () => void;
 };
 
 const SrpInputForm = ({
@@ -38,16 +47,16 @@ const SrpInputForm = ({
   setSecretRecoveryPhrase,
   onClearCallback,
   showDescription = true,
-  openSrpDetailsModal = false,
-  openSrpDetailsModalCallback,
+  toggleSrpDetailsModal = false,
+  onSrpDetailsModalClose,
 }: SrpInputFormProps) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const [showSrpDetailsModal, setShowSrpDetailsModal] = useState(false);
 
   useEffect(() => {
-    setShowSrpDetailsModal(openSrpDetailsModal);
-  }, [openSrpDetailsModal]);
+    setShowSrpDetailsModal(toggleSrpDetailsModal);
+  }, [toggleSrpDetailsModal]);
 
   const onShowSrpDetailsModal = useCallback(() => {
     trackEvent({
@@ -66,7 +75,7 @@ const SrpInputForm = ({
         <SRPDetailsModal
           onClose={() => {
             setShowSrpDetailsModal(false);
-            openSrpDetailsModalCallback?.();
+            onSrpDetailsModalClose?.();
           }}
         />
       )}

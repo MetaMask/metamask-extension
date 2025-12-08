@@ -33,7 +33,7 @@ import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 
 type CreatePasswordFormProps = {
   isSocialLoginFlow: boolean;
-  onSubmit: (password: string, termsChecked: boolean) => void;
+  onSubmit: (password: string, termsChecked: boolean) => Promise<void>;
   onBack: (event: React.MouseEvent<HTMLButtonElement>) => void;
   loading?: boolean;
 };
@@ -50,9 +50,9 @@ const CreatePasswordForm = ({
 
   const trackEvent = useContext(MetaMetricsContext);
 
-  const handleCreatePassword = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleCreatePassword = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onSubmit(password, termsChecked);
+    await onSubmit(password, termsChecked);
   };
 
   const handleLearnMoreClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
