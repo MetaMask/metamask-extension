@@ -200,6 +200,11 @@ export class SubscriptionService {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         error_message: errorMessage,
       });
+
+      if (!errorMessage.toLocaleLowerCase().includes('timed out')) {
+        // fetch latest subscriptions to update the state in case subscription already created error (not when polling timed out)
+        await this.#messenger.call('SubscriptionController:getSubscriptions');
+      }
       throw error;
     }
   }
