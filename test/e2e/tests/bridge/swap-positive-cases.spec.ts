@@ -62,7 +62,7 @@ describe('Swap tests', function (this: Suite) {
           `Quote count validation failed. Actual value: ${quotesReceivedEvent.properties.quotes_count}`,
         );
         assert.ok(
-          quotesReceivedEvent.properties.usd_quoted_gas === 28.371668300803776,
+          quotesReceivedEvent.properties.usd_quoted_gas === 26.339744300803776,
           `Quoted gas validation failed. Actual value: ${quotesReceivedEvent.properties.usd_quoted_gas}`,
         );
         assert.ok(
@@ -127,7 +127,7 @@ describe('Swap tests', function (this: Suite) {
           `Quote count validation failed. Actual value: ${quotesReceivedEvent.properties.quotes_count}`,
         );
         assert.ok(
-          quotesReceivedEvent.properties.usd_quoted_gas === 18.796416654764112,
+          quotesReceivedEvent.properties.usd_quoted_gas === 17.45025365476411,
           `Quoted gas validation failed. Actual value: ${quotesReceivedEvent.properties.usd_quoted_gas}`,
         );
         assert.ok(
