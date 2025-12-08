@@ -1,8 +1,8 @@
 import log from 'loglevel';
+import { isObject } from '@metamask/utils';
 import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
 import ExtensionStore from './extension-store';
 import type { MetaMaskStorageStructure } from './base-store';
-import { isObject } from '@metamask/utils';
 
 const fetchWithTimeout = getFetchWithTimeout();
 
