@@ -127,6 +127,10 @@ class UnlockPage extends Component {
      * Indicates if the environment is a popup
      */
     isPopup: PropTypes.bool,
+    /**
+     * Indicates if the wallet is reset in progress
+     */
+    isWalletResetInProgress: PropTypes.bool,
   };
 
   state = {
@@ -185,6 +189,12 @@ class UnlockPage extends Component {
         // if the seedless onboarding user is not authenticated, redirect to the onboarding welcome page
         this.props.navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
       }
+    }
+    if (
+      this.props.isWalletResetInProgress &&
+      this.props.firstTimeFlowType === null
+    ) {
+      this.props.navigate(DEFAULT_ROUTE, { replace: true });
     }
   }
 

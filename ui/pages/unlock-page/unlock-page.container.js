@@ -20,7 +20,10 @@ import {
   getIsSeedlessOnboardingUserAuthenticated,
 } from '../../store/actions';
 import { getIsSocialLoginFlow, getFirstTimeFlowType } from '../../selectors';
-import { getCompletedOnboarding } from '../../ducks/metamask/metamask';
+import {
+  getCompletedOnboarding,
+  getIsWalletResetInProgress,
+} from '../../ducks/metamask/metamask';
 import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import { useNavState } from '../../contexts/navigation-state';
 import UnlockPage from './unlock-page.component';
@@ -34,6 +37,7 @@ const mapStateToProps = (state) => {
     isSocialLoginFlow: getIsSocialLoginFlow(state),
     isOnboardingCompleted: getCompletedOnboarding(state),
     firstTimeFlowType: getFirstTimeFlowType(state),
+    isWalletResetInProgress: getIsWalletResetInProgress(state),
   };
 };
 
