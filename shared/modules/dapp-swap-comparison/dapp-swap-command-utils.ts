@@ -224,20 +224,6 @@ function decodeCommandData(
   return values;
 }
 
-function getCommandData(
-  commandBytes: string[],
-  inputs: string[],
-  command: string,
-) {
-  const commandIndex = commandBytes.findIndex(
-    (commandByte: string) => commandByte === command,
-  );
-  if (commandIndex < 0) {
-    return undefined;
-  }
-  return inputs[commandIndex];
-}
-
 function handleV4CommandSwap(
   data: string,
   decodedResult: COMMAND_VALUES_RESULT,
