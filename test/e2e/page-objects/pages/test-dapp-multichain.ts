@@ -210,7 +210,9 @@ class TestDappMultichain {
     );
 
     // Wait for the element text to be valid JSON
-    let parsedResult: { sessionScopes: Record<string, NormalizedScopeObject> } | undefined;
+    let parsedResult:
+      | { sessionScopes: Record<string, NormalizedScopeObject> }
+      | undefined;
     await this.driver.wait(async () => {
       try {
         const text = await getSessionRawResult.getText();
