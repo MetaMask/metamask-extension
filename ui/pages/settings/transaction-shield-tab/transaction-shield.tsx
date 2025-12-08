@@ -8,6 +8,8 @@ import {
 } from '@metamask/subscription-controller';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
+  Box,
+  BoxBackgroundColor,
   Button,
   ButtonSize,
   ButtonVariant,
@@ -15,25 +17,16 @@ import {
   IconColor,
   IconName,
   IconSize,
+  Text,
   TextButton,
+  TextVariant,
 } from '@metamask/design-system-react';
 import { useDispatch, useSelector } from 'react-redux';
 import log from 'loglevel';
 import {
   BannerAlert,
   BannerAlertSeverity,
-  Box,
-  Text,
 } from '../../../components/component-library';
-import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  Display,
-  FlexDirection,
-  JustifyContent,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
 import { Skeleton } from '../../../components/component-library/skeleton';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -482,10 +475,8 @@ const TransactionShield = () => {
   if (!loading && hasApiError) {
     return (
       <Box
-        className="transaction-shield-page"
+        className="transaction-shield-page w-full"
         data-testid="transaction-shield-page"
-        width={BlockSize.Full}
-        padding={4}
       >
         <ApiErrorHandler
           className="transaction-shield-page__error-content mx-auto"
@@ -498,25 +489,16 @@ const TransactionShield = () => {
 
   return (
     <Box
-      className="transaction-shield-page"
+      className="transaction-shield-page flex flex-col w-full"
       data-testid="transaction-shield-page"
-      width={BlockSize.Full}
-      flexDirection={FlexDirection.Column}
     >
       {currentShieldSubscription?.cancelAtPeriodEnd && (
         <Box
-          className="transaction-shield-page__notification-banner"
-          backgroundColor={BackgroundColor.warningMuted}
-          paddingTop={1}
-          paddingBottom={1}
-          paddingInline={4}
-          display={Display.Flex}
-          alignItems={AlignItems.center}
-          gap={2}
-          marginBottom={4}
+          className="transaction-shield-page__notification-banner flex items-center px-4 py-1 gap-2 mb-4"
+          backgroundColor={BoxBackgroundColor.WarningMuted}
         >
           <Icon name={IconName.Info} size={IconSize.Lg} />
-          <Text variant={TextVariant.bodySm}>
+          <Text variant={TextVariant.BodySm}>
             {t('shieldTxMembershipCancelNotification', [
               getShortDateFormatterV2().format(
                 new Date(currentShieldSubscription.currentPeriodEnd),
@@ -526,7 +508,7 @@ const TransactionShield = () => {
         </Box>
       )}
       {membershipErrorBanner}
-      <Box className="transaction-shield-page__container" marginBottom={4}>
+      <Box className="transaction-shield-page__container mb-4">
         <MembershipHeader
           isInactive={isMembershipInactive}
           showSkeletonLoader={showSkeletonLoader}
@@ -539,18 +521,11 @@ const TransactionShield = () => {
         />
         {displayedShieldSubscription && (
           <Box className="mt-4">
-            <Box
-              display={Display.Flex}
-              justifyContent={JustifyContent.spaceBetween}
-              alignItems={AlignItems.center}
-              gap={2}
-              paddingInline={4}
-              marginBottom={2}
-            >
+            <Box className="flex items-center justify-between gap-2 px-4 mb-2">
               {showSkeletonLoader ? (
                 <Skeleton width="40%" height={20} />
               ) : (
-                <Text variant={TextVariant.headingSm}>
+                <Text variant={TextVariant.HeadingSm}>
                   {t('shieldTxDetailsTitle')}
                 </Text>
               )}
@@ -559,7 +534,7 @@ const TransactionShield = () => {
               ) : (
                 <TextButton
                   data-testid="shield-detail-manage-plan-button"
-                  className="text-text-alternative hover:text-text-alternative hover:decoration-text-alternative"
+                  className="text-text-alternative hover:text-text-alternative hover:decoration-text-alternative hover:bg-transparent"
                   endIconName={IconName.ArrowRight}
                   endIconProps={{
                     size: IconSize.Sm,
@@ -605,18 +580,11 @@ const TransactionShield = () => {
         )}
         <Box className="border-t border-muted my-4 w-full h-px" />
         <Box>
-          <Box
-            display={Display.Flex}
-            justifyContent={JustifyContent.spaceBetween}
-            alignItems={AlignItems.center}
-            gap={2}
-            paddingInline={4}
-            marginBottom={2}
-          >
+          <Box className="flex items-center justify-between gap-2 px-4 mb-2">
             {showSkeletonLoader ? (
               <Skeleton width="40%" height={20} />
             ) : (
-              <Text variant={TextVariant.headingSm}>
+              <Text variant={TextVariant.HeadingSm}>
                 {t('shieldTxMembershipBenefits')}
               </Text>
             )}
@@ -625,7 +593,7 @@ const TransactionShield = () => {
             ) : (
               <TextButton
                 data-testid="shield-detail-view-benefits-button"
-                className="text-text-alternative hover:text-text-alternative hover:decoration-text-alternative"
+                className="text-text-alternative hover:text-text-alternative hover:decoration-text-alternative hover:bg-transparent"
                 endIconName={IconName.ArrowRight}
                 endIconProps={{
                   size: IconSize.Sm,

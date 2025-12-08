@@ -160,6 +160,7 @@ const MembershipHeader = ({
         <ShieldBannerAnimation
           containerClassName="transaction-shield-page-shield-banner__container"
           canvasClassName="transaction-shield-page-shield-banner__canvas"
+          isInactive={isInactive}
         />
       )}
     </Box>
