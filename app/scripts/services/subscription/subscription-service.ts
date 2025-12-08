@@ -42,6 +42,7 @@ import {
   getIsShieldSubscriptionActive,
   getIsShieldSubscriptionPaused,
 } from '../../../../shared/lib/shield';
+import { SHIELD_ERROR } from '../../../../shared/modules/shield';
 import {
   SubscriptionServiceAction,
   SubscriptionServiceEvent,
@@ -201,7 +202,11 @@ export class SubscriptionService {
         error_message: errorMessage,
       });
 
-      if (!errorMessage.toLocaleLowerCase().includes('timed out')) {
+      if (
+        !errorMessage
+          .toLocaleLowerCase()
+          .includes(SHIELD_ERROR.subscriptionPollingTimedOut.toLowerCase())
+      ) {
         // fetch latest subscriptions to update the state in case subscription already created error (not when polling timed out)
         await this.#messenger.call('SubscriptionController:getSubscriptions');
       }
@@ -383,7 +388,7 @@ export class SubscriptionService {
           if (succeeded) {
             resolve();
           } else {
-            reject(new Error('Tab action failed'));
+            reject(new Error(SHIELD_ERROR.tabActionFailed));
           }
         }
       };
@@ -420,7 +425,7 @@ export class SubscriptionService {
       await new Promise((resolve) => setTimeout(resolve, interval));
     }
 
-    throw new Error('Subscription activation timed out');
+    throw new Error(SHIELD_ERROR.subscriptionPollingTimedOut);
   }
 
   async #handleShieldSubscriptionApproveTransaction(txMeta: TransactionMeta) {
