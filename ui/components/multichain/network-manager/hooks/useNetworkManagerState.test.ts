@@ -1,5 +1,5 @@
 import { SolScope } from '@metamask/keyring-api';
-import { renderHookWithProviderTyped } from '../../../../../test/lib/render-helpers';
+import { renderHookWithProviderTyped } from '../../../../../test/lib/render-helpers-navigate';
 import { getAllEnabledNetworksForAllNamespaces } from '../../../../selectors';
 import { useNetworkManagerInitialTab } from './useNetworkManagerState';
 

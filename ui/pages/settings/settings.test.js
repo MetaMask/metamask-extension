@@ -5,8 +5,8 @@ import mockState from '../../../test/data/mock-state.json';
 import Settings from '.';
 import 'jest-canvas-mock';
 
-jest.mock('react-router-dom-v5-compat', () => ({
-  ...jest.requireActual('react-router-dom-v5-compat'),
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   useLocation: () => ({ pathname: '/settings' }),
   useNavigate: () => jest.fn(),
   useParams: () => ({}),

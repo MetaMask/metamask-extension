@@ -4,7 +4,7 @@ import thunk from 'redux-thunk';
 import mockState from '../../../../../test/data/mock-state.json';
 import { createMockInternalAccount } from '../../../../../test/jest/mocks';
 import { InternalAccountWithBalance } from '../../../../selectors';
-import { renderWithProvider } from '../../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import { SrpListItem } from './srp-list-item';
 
