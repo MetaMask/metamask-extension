@@ -1,7 +1,7 @@
 import { withFixtures } from '../../../helpers';
 
 import FixtureBuilder from '../../../fixtures/fixture-builder';
-import Homepage from '../../../page-objects/pages/home/homepage';
+import HomePage from '../../../page-objects/pages/home/homepage';
 
 import DeFiTab from '../../../page-objects/pages/defi-tab';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
@@ -14,6 +14,7 @@ describe('Check DeFi empty state when no defi positions', function () {
   it('user should be able to view empty', async function () {
     await withFixtures(
       {
+        forceBip44Version: false,
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
@@ -22,7 +23,8 @@ describe('Check DeFi empty state when no defi positions', function () {
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
 
-        await new Homepage(driver).goToDeFiTab();
+        const homePage = new HomePage(driver);
+        await homePage.goToDeFiTab();
 
         const defiTab = new DeFiTab(driver);
 

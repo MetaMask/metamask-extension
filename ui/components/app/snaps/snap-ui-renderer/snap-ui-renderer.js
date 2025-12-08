@@ -4,6 +4,9 @@ import { useSelector } from 'react-redux';
 import { Container } from '@metamask/snaps-sdk/jsx';
 
 import { isEqual } from 'lodash';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import LuxonUtils from '@date-io/luxon';
+import { ThemeProvider } from '@material-ui/core/styles';
 import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-template-renderer';
 import { getMemoizedInterface } from '../../../../selectors';
 import { Box } from '../../../component-library';
@@ -18,7 +21,12 @@ import {
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { mapToExtensionCompatibleColor, mapToTemplate } from './utils';
+import { getIntlLocale } from '../../../../ducks/locale/locale';
+import {
+  mapToExtensionCompatibleColor,
+  mapToTemplate,
+  muiPickerTheme,
+} from './utils';
 import { COMPONENT_MAPPING } from './components';
 
 // Component for tracking the number of re-renders
@@ -49,6 +57,7 @@ const SnapUIRendererComponent = ({
   'use no memo';
 
   const t = useI18nContext();
+  const locale = useSelector(getIntlLocale);
 
   const interfaceState = useSelector(
     (state) => getMemoizedInterface(state, interfaceId),
@@ -115,17 +124,21 @@ const SnapUIRendererComponent = ({
       interfaceId={interfaceId}
       initialState={initialState}
     >
-      <Box
-        className="snap-ui-renderer__content"
-        height={BlockSize.Full}
-        backgroundColor={backgroundColor}
-        style={{
-          overflowY: 'auto',
-        }}
-      >
-        <MetaMaskTemplateRenderer sections={sections} />
-        {PERF_DEBUG && <PerformanceTracker />}
-      </Box>
+      <ThemeProvider theme={muiPickerTheme}>
+        <MuiPickersUtilsProvider utils={LuxonUtils} locale={locale}>
+          <Box
+            className="snap-ui-renderer__content"
+            height={BlockSize.Full}
+            backgroundColor={backgroundColor}
+            style={{
+              overflowY: 'auto',
+            }}
+          >
+            <MetaMaskTemplateRenderer sections={sections} />
+            {PERF_DEBUG && <PerformanceTracker />}
+          </Box>
+        </MuiPickersUtilsProvider>
+      </ThemeProvider>
     </SnapInterfaceContextProvider>
   );
 };

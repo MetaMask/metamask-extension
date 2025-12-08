@@ -59,7 +59,8 @@ describe('Snap Account Signatures', function (this: Suite) {
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
           const headerNavbar = new HeaderNavbar(driver);
-          await headerNavbar.checkAccountLabel('SSK Account');
+          // BUG #37591 - With BIP44 the account mame is not retained.
+          await headerNavbar.checkAccountLabel('Snap Account 1');
 
           // Navigate to experimental settings and disable redesigned signature.
           await headerNavbar.openSettingsPage();
