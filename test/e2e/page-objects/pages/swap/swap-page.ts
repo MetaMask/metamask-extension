@@ -54,10 +54,7 @@ class SwapPage {
   private readonly fromToText =
     '[data-testid="multichain-token-list-button"] p';
 
-  private readonly moreQuotesButton = {
-    tag: 'button',
-    text: 'More quotes',
-  };
+  private readonly moreQuotesButton = '[aria-label="More quotes"]';
 
   private readonly noQuotesAvailableMessage = {
     text: "This trade route isn't available right now. Try changing the amount, network, or token and we'll find the best option",
