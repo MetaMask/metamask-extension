@@ -108,7 +108,8 @@ export default class Migrator extends EventEmitter {
     }
 
     const changedKeys =
-      initialData.meta.version < MIGRATION_V2_START_VERSION
+      initialData.meta.version < MIGRATION_V2_START_VERSION &&
+      isObject(state.data)
         ? // we had to run older migrations, so assume all controllers changed
           new Set(Object.keys(state.data))
         : new Set();
