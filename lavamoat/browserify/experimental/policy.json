@@ -10,6 +10,11 @@
         "SuppressedError": true
       }
     },
+    "@date-io/luxon": {
+      "packages": {
+        "luxon": true
+      }
+    },
     "@ensdomains/content-hash": {
       "globals": {
         "console.warn": true
@@ -679,6 +684,7 @@
         "getSelection": true,
         "performance.now": true,
         "removeEventListener": true,
+        "requestAnimationFrame": true,
         "setInterval": true,
         "setTimeout": true
       },
@@ -692,8 +698,26 @@
         "prop-types": true,
         "react": true,
         "react-dom": true,
-        "@material-ui/core>react-is": true,
+        "react-redux>react-is": true,
         "react-transition-group": true
+      }
+    },
+    "@material-ui/pickers": {
+      "globals": {
+        "addEventListener": true,
+        "innerHeight": true,
+        "orientation": true,
+        "removeEventListener": true,
+        "screen": true
+      },
+      "packages": {
+        "@babel/runtime": true,
+        "@material-ui/core": true,
+        "@material-ui/pickers>clsx": true,
+        "prop-types": true,
+        "react": true,
+        "react-transition-group": true,
+        "@material-ui/pickers>rifm": true
       }
     },
     "@material-ui/core>@material-ui/styles": {
@@ -735,7 +759,7 @@
       "packages": {
         "@babel/runtime": true,
         "prop-types": true,
-        "@material-ui/core>@material-ui/utils>react-is": true
+        "react-redux>react-is": true
       }
     },
     "@metamask/abi-utils": {
@@ -2192,7 +2216,8 @@
       "packages": {
         "@metamask/rpc-errors": true,
         "@metamask/superstruct": true,
-        "@metamask/utils": true
+        "@metamask/utils": true,
+        "luxon": true
       }
     },
     "@metamask/snaps-utils": {
@@ -4848,27 +4873,12 @@
         "react": true
       }
     },
-    "@material-ui/core>react-is": {
-      "globals": {
-        "console": true
-      }
-    },
-    "@material-ui/core>@material-ui/utils>react-is": {
-      "globals": {
-        "console": true
-      }
-    },
     "react-redux>hoist-non-react-statics>react-is": {
       "globals": {
         "console": true
       }
     },
     "prop-types>react-is": {
-      "globals": {
-        "console": true
-      }
-    },
-    "react-markdown>react-is": {
       "globals": {
         "console": true
       }
@@ -4887,7 +4897,7 @@
         "prop-types": true,
         "react-markdown>property-information": true,
         "react": true,
-        "react-markdown>react-is": true,
+        "react-redux>react-is": true,
         "react-markdown>remark-parse": true,
         "react-markdown>remark-rehype": true,
         "react-markdown>space-separated-tokens": true,
@@ -5248,6 +5258,17 @@
     "@metamask/snaps-utils>rfdc": {
       "packages": {
         "browserify>buffer": true
+      }
+    },
+    "@material-ui/pickers>rifm": {
+      "globals": {
+        "console.error": true,
+        "document.addEventListener": true,
+        "document.removeEventListener": true
+      },
+      "packages": {
+        "@babel/runtime": true,
+        "react": true
       }
     },
     "ethereumjs-util>create-hash>ripemd160": {
