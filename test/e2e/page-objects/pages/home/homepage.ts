@@ -49,6 +49,10 @@ class HomePage {
     testId: 'asset-list-control-bar-action-button',
   };
 
+  private readonly fundYourWalletBanner = {
+    text: 'Fund your wallet',
+  };
+
   private readonly loadingOverlay = {
     text: 'Connecting to Localhost 8545',
   };
@@ -98,6 +102,8 @@ class HomePage {
 
   private readonly shieldEntryModalSkip =
     '[data-testid="shield-entry-modal-close-button"]';
+
+  private readonly multichainTokenListButton = `[data-testid="multichain-token-list-button"]`;
 
   private readonly emptyBalance =
     '[data-testid="coin-overview-balance-empty-state"]';
@@ -346,6 +352,10 @@ class HomePage {
     expectedBalance: string = '25',
     symbol: string = 'ETH',
   ): Promise<void> {
+    if (expectedBalance === '0') {
+      await this.driver.waitForSelector(this.fundYourWalletBanner);
+      return;
+    }
     try {
       await this.driver.waitForSelector({
         css: this.balance,
@@ -435,7 +445,9 @@ class HomePage {
   ): Promise<void> {
     let expectedBalance: string;
     if (localNode) {
-      expectedBalance = (await localNode.getBalance(address)).toString();
+      const balance = await localNode.getBalance(address);
+      expectedBalance = balance.toFixed(3);
+      expectedBalance = Number(expectedBalance).toString();
     } else {
       expectedBalance = '25';
     }

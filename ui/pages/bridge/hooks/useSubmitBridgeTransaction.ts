@@ -1,5 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { isNonEvmChainId } from '@metamask/bridge-controller';
+import {
+  getQuotesReceivedProperties,
+  isNonEvmChainId,
+} from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import {
   AWAITING_SIGNATURES_ROUTE,
@@ -12,8 +15,10 @@ import { submitBridgeTx } from '../../../ducks/bridge-status/actions';
 import { setWasTxDeclined } from '../../../ducks/bridge/actions';
 import { isHardwareWallet } from '../../../../shared/modules/selectors';
 import {
+  getBridgeQuotes,
   getFromAccount,
   getIsStxEnabled,
+  getWarningLabels,
 } from '../../../ducks/bridge/selectors';
 import { captureException } from '../../../../shared/lib/sentry';
 import { useSafeNavigation } from '../../../hooks/useSafeNavigation';
@@ -59,6 +64,8 @@ export default function useSubmitBridgeTransaction() {
   const smartTransactionsEnabled = useSelector(getIsStxEnabled);
 
   const fromAccount = useSelector(getFromAccount);
+  const { recommendedQuote } = useSelector(getBridgeQuotes);
+  const warnings = useSelector(getWarningLabels);
 
   const submitBridgeTransaction = async (
     quoteResponse: QuoteResponse & QuoteMetadata,
@@ -80,7 +87,18 @@ export default function useSubmitBridgeTransaction() {
       if (isNonEvmSource) {
         // Submit the transaction first, THEN navigate
         await dispatch(
-          submitBridgeTx(fromAccount.address, quoteResponse, false),
+          // await submitBridgeTx(
+          submitBridgeTx(
+            fromAccount.address,
+            quoteResponse,
+            false,
+            getQuotesReceivedProperties(
+              quoteResponse,
+              warnings,
+              true,
+              recommendedQuote,
+            ),
+          ),
         );
         await dispatch(setDefaultHomeActiveTabName('activity'));
         navigate(DEFAULT_ROUTE, { state: { stayOnHomePage: true } });
@@ -88,10 +106,17 @@ export default function useSubmitBridgeTransaction() {
       }
 
       await dispatch(
+        // await submitBridgeTx(
         submitBridgeTx(
           fromAccount.address,
           quoteResponse,
           smartTransactionsEnabled,
+          getQuotesReceivedProperties(
+            quoteResponse,
+            warnings,
+            true,
+            recommendedQuote,
+          ),
         ),
       );
     } catch (e) {

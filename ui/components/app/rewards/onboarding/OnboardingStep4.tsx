@@ -34,10 +34,21 @@ import {
 } from './constants';
 import ProgressIndicator from './ProgressIndicator';
 
-const OnboardingStep4: React.FC = () => {
+type OnboardingStep4Props = {
+  rewardPoints?: number;
+  shieldSubscriptionId?: string;
+};
+
+const OnboardingStep4: React.FC<OnboardingStep4Props> = ({
+  rewardPoints,
+  shieldSubscriptionId,
+}) => {
   const t = useI18nContext();
 
-  const { optinLoading, optinError, optin } = useOptIn();
+  const { optinLoading, optinError, optin } = useOptIn({
+    rewardPoints,
+    shieldSubscriptionId,
+  });
   const onboardingReferralCode = useSelector(selectOnboardingReferralCode);
 
   const {
