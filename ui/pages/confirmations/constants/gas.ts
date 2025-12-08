@@ -1,16 +1,16 @@
 export enum GasModalType {
-  ESTIMATES = 'estimatesModal',
-  ADVANCED_EIP1559 = 'advancedEIP1559Modal',
-  ADVANCED_GAS_PRICE = 'advancedGasPriceModal',
+  EstimatesModal = 'estimatesModal',
+  AdvancedEIP1559Modal = 'advancedEIP1559Modal',
+  AdvancedGasPriceModal = 'advancedGasPriceModal',
 }
 
 export enum GasOptionIcon {
-  ADVANCED = '⚙️',
-  GAS_PRICE = '⛓️',
-  HIGH = '🦍',
-  LOW = '🐢',
-  MEDIUM = '🦊',
-  SITE_SUGGESTED = '🌐',
+  Advanced = '⚙️',
+  GasPrice = '⛓️',
+  High = '🦍',
+  Low = '🐢',
+  Medium = '🦊',
+  SiteSuggested = '🌐',
 }
 
 export const EMPTY_VALUE_STRING = '--';

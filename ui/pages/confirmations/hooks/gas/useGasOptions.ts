@@ -1,9 +1,9 @@
+import { GasModalType } from '../../constants/gas';
+import { type GasOption } from '../../types/gas';
 import { useAdvancedGasFeeOption } from './useAdvancedGasFeeOption';
 import { useGasFeeEstimateLevelOptions } from './useGasFeeEstimateLevelOptions';
 import { useGasPriceEstimateOption } from './useGasPriceEstimateOption';
 import { useDappSuggestedGasFeeOption } from './useDappSuggestedGasFeeOption';
-import { GasModalType } from '../../constants/gas';
-import { type GasOption } from '../../types/gas';
 
 export const useGasOptions = ({
   handleCloseModals,

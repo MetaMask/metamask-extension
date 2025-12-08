@@ -43,8 +43,8 @@ export const useAdvancedGasFeeOption = ({
   const onAdvancedGasFeeClick = useCallback(() => {
     const newModalType =
       transactionEnvelopeType === TransactionEnvelopeType.legacy
-        ? GasModalType.ADVANCED_GAS_PRICE
-        : GasModalType.ADVANCED_EIP1559;
+        ? GasModalType.AdvancedGasPriceModal
+        : GasModalType.AdvancedEIP1559Modal;
 
     setActiveModal(newModalType);
   }, [transactionEnvelopeType, setActiveModal]);
@@ -114,7 +114,7 @@ export const useAdvancedGasFeeOption = ({
   const memoizedGasOption = useMemo(
     () => [
       {
-        emoji: GasOptionIcon.ADVANCED,
+        emoji: GasOptionIcon.Advanced,
         estimatedTime: '',
         isSelected: isAdvancedGasFeeSelected,
         key: 'advanced',

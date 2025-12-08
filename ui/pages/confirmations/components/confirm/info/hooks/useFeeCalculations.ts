@@ -219,7 +219,7 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
       priorityFeePerGas,
       gas,
       shouldUseEIP1559FeeLogic,
-      gasPrice,
+      gasPrice: gasPriceParam,
     }: {
       feePerGas: string;
       priorityFeePerGas: string;
@@ -227,6 +227,13 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
       shouldUseEIP1559FeeLogic: boolean;
       gasPrice: string;
     }) => {
+      console.log('OGP - ', {
+        feePerGas,
+        priorityFeePerGas,
+        gas,
+        shouldUseEIP1559FeeLogic,
+        gasPrice: gasPriceParam,
+      });
       return {
         currentCurrencyFee: '',
         preciseNativeCurrencyFee: '',
