@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { ACCOUNT_TYPE, WINDOW_TITLES } from '../../constants';
+import { WINDOW_TITLES } from '../../constants';
 import { WALLET_PASSWORD, unlockWallet, withFixtures } from '../../helpers';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
@@ -306,7 +306,10 @@ const reloadExtension = async (driver: Driver) => {
  */
 const reloadAndUnlock = async (driver: Driver) => {
   await reloadExtension(driver);
-  await unlockWallet(driver, { password: WALLET_PASSWORD });
+  await unlockWallet(driver, {
+    password: WALLET_PASSWORD,
+    waitLoginSuccess: false,
+  });
   await ensureHomeReady(driver);
 };
 
@@ -316,7 +319,7 @@ const reloadAndUnlock = async (driver: Driver) => {
  * @param driver - The WebDriver instance.
  */
 async function onboard(driver: Driver) {
-  return await completeCreateNewWalletOnboardingFlow({
+  await completeCreateNewWalletOnboardingFlow({
     driver,
     password: WALLET_PASSWORD,
     skipSRPBackup: true,
@@ -348,7 +351,7 @@ const assertAccountVisible = async (
 ) => {
   await headerNavbar.openAccountMenu();
   await accountListPage.checkAccountDisplayedInAccountList(accountName);
-  await accountListPage.closeAccountModal();
+  await accountListPage.closeMultichainAccountsPage();
 };
 
 describe('State Persistence', function () {
@@ -387,10 +390,9 @@ describe('State Persistence', function () {
 
           await headerNavbar.checkPageIsLoaded();
           await headerNavbar.openAccountMenu();
-          await accountListPage.addAccount({
-            accountType: ACCOUNT_TYPE.Ethereum,
-            accountName,
-          });
+          await accountListPage.checkPageIsLoaded();
+          await accountListPage.addMultichainAccount();
+          await accountListPage.closeMultichainAccountsPage();
           await assertAccountVisible(
             headerNavbar,
             accountListPage,
