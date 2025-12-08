@@ -9,9 +9,7 @@ import { withSolanaAccountSnap } from './common-solana';
 
 const commonSolanaAddress = 'GYP1hGem9HBkYKEWNUQUxEwfmu4hhjuujRgGnj5LrHna';
 
-// BUG #37824 - With BIP44 turned on mocking Solana network responses no longer works
-// eslint-disable-next-line mocha/no-skipped-tests
-describe.skip('Send flow', function (this: Suite) {
+describe('Send flow', function (this: Suite) {
   it('with some field validation', async function () {
     this.timeout(120000);
     await withSolanaAccountSnap(
