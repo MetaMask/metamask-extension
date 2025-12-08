@@ -250,10 +250,14 @@ function handleV4CommandSwap(
   const result = getV4SwapActionValues(actionBytes, actionParameters, chainId);
 
   return {
-    amountMin: amountMin || result.amountMin,
+    amountMin: result.amountMin || amountMin,
     quotesInput: {
       ...(quotesInput ?? {}),
-      ...result.quotesInput,
+      srcTokenAmount:
+        quotesInput?.srcTokenAmount ?? result?.quotesInput?.srcTokenAmount,
+      srcTokenAddress:
+        quotesInput?.srcTokenAddress ?? result?.quotesInput?.srcTokenAddress,
+      destTokenAddress: result?.quotesInput?.destTokenAddress,
     } as GenericQuoteRequest,
   };
 }
@@ -316,18 +320,20 @@ function handleV4CommandSwapExactIn(
     V4_BASE_ACTIONS_ABI_DEFINITION,
   );
   const parsedResult = parseV4ExactIn(result[0]);
+  const minimumAmount = parsedResult.amountOutMinimum.toHexString();
+
   return {
-    amountMin: amountMin || parsedResult.amountOutMinimum.toHexString(),
+    amountMin: minimumAmount || amountMin,
     quotesInput: {
       ...(quotesInput ?? {}),
-      srcTokenAmount: parsedResult.amountIn.toHexString(),
+      srcTokenAmount:
+        quotesInput?.srcTokenAmount ?? parsedResult.amountIn.toHexString(),
       srcTokenAddress:
         quotesInput?.srcTokenAddress ?? parsedResult.currencyIn.toLowerCase(),
       destTokenAddress:
-        quotesInput?.destTokenAddress ??
         parsedResult.path[
           parsedResult.path.length - 1
-        ].intermediateCurrency.toLowerCase(),
+        ].intermediateCurrency.toLowerCase() ?? quotesInput?.destTokenAddress,
     } as GenericQuoteRequest,
   };
 }
@@ -344,22 +350,24 @@ function handleV4CommandSwapExactInSingle(
     V4_BASE_ACTIONS_ABI_DEFINITION,
   );
   const parsedResult = parseV4ExactInSingle(result[0]);
+  const minimumAmount = parsedResult.amountOutMinimum.toHexString();
 
   return {
-    amountMin: amountMin || parsedResult.amountOutMinimum.toHexString(),
+    amountMin: minimumAmount || amountMin,
     quotesInput: {
       ...(quotesInput ?? {}),
-      srcTokenAmount: parsedResult.amountIn.toHexString(),
+      srcTokenAmount:
+        quotesInput?.srcTokenAmount ?? parsedResult.amountIn.toHexString(),
       srcTokenAddress:
         quotesInput?.srcTokenAddress ??
         (parsedResult.zeroForOne
           ? parsedResult.poolKey.currency0.toLowerCase()
           : parsedResult.poolKey.currency1.toLowerCase()),
       destTokenAddress:
-        quotesInput?.destTokenAddress ??
         (parsedResult.zeroForOne
           ? parsedResult.poolKey.currency1.toLowerCase()
-          : parsedResult.poolKey.currency0.toLowerCase()),
+          : parsedResult.poolKey.currency0.toLowerCase()) ??
+        quotesInput?.destTokenAddress,
     } as GenericQuoteRequest,
   };
 }
@@ -382,9 +390,10 @@ function handleV3CommandSwapExactIn(
   const destTokenAddress =
     quotesInput?.destTokenAddress ??
     decodedPath[decodedPath.length - 1].secondAddress.toLowerCase();
+  const minimumAmount = result[2].toHexString();
 
   return {
-    amountMin: amountMin || result[2].toHexString(),
+    amountMin: minimumAmount || amountMin,
     quotesInput: {
       ...(quotesInput ?? {}),
       srcTokenAmount: result[1].toHexString(),
@@ -405,17 +414,18 @@ function handleV2CommandSwapExactIn(
     data,
     BASE_COMMANDS_ABI_DEFINITION,
   );
+  const minimumAmount = result[2].toHexString();
 
   return {
-    amountMin: amountMin || result[2].toHexString(),
+    amountMin: minimumAmount || amountMin,
     quotesInput: {
       ...(quotesInput ?? {}),
-      srcTokenAmount: result[1].toHexString(),
+      srcTokenAmount: quotesInput?.srcTokenAmount ?? result[1].toHexString(),
       srcTokenAddress:
         quotesInput?.srcTokenAddress ?? result[3]?.[0]?.toLowerCase(),
       destTokenAddress:
-        quotesInput?.destTokenAddress ??
-        result[3]?.[result[3]?.length - 1]?.toLowerCase(),
+        result[3]?.[result[3]?.length - 1]?.toLowerCase() ??
+        quotesInput?.destTokenAddress,
     } as GenericQuoteRequest,
   };
 }
@@ -478,6 +488,27 @@ function handleCommandExactOut(_1: string, _2: COMMAND_VALUES_RESULT, _3: Hex) {
   throw new Error('Exact-out commands are not supported yet');
 }
 
+function validateSwapCommands(commandBytes: string[]) {
+  const swapCommandsDefinition = Object.values(SwapCommands);
+  const swapCommands = commandBytes.filter((commandByte) =>
+    Object.values(swapCommandsDefinition).includes(commandByte as SwapCommands),
+  );
+
+  if (swapCommands.length < 1) {
+    throw new Error('No swap commands found');
+  }
+
+  let lastSwapCommandIndex = -1;
+  for (let i = 0; i < commandBytes.length; i++) {
+    if (swapCommandsDefinition.includes(commandBytes[i] as SwapCommands)) {
+      if (lastSwapCommandIndex !== -1 && i - lastSwapCommandIndex > 1) {
+        throw new Error(`Non-sequential swap commands are not supported`);
+      }
+      lastSwapCommandIndex = i;
+    }
+  }
+}
+
 function getGenericValues(
   commandBytes: string[],
   inputs: string[],
@@ -501,10 +532,6 @@ function getGenericValues(
   const swapCommands = commandBytes.filter((commandByte) =>
     Object.values(swapCommandsDefinition).includes(commandByte),
   );
-
-  if (swapCommands.length !== 1) {
-    throw new Error(`Found swap commands ${swapCommands.length} instead of 1`);
-  }
 
   let nonSwapCommands: string[] = [];
   if (nonSwapCommandsDefinition) {
@@ -566,6 +593,8 @@ export function getCommandValues(
   inputs: string[],
   chainId: Hex,
 ) {
+  validateSwapCommands(commandBytes);
+
   return getGenericValues(
     commandBytes,
     inputs,
