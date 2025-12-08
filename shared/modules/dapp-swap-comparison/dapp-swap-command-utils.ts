@@ -254,9 +254,9 @@ function handleV4CommandSwap(
     quotesInput: {
       ...(quotesInput ?? {}),
       srcTokenAmount:
-        quotesInput?.srcTokenAmount ?? result?.quotesInput?.srcTokenAmount,
+        quotesInput?.srcTokenAmount || result?.quotesInput?.srcTokenAmount,
       srcTokenAddress:
-        quotesInput?.srcTokenAddress ?? result?.quotesInput?.srcTokenAddress,
+        quotesInput?.srcTokenAddress || result?.quotesInput?.srcTokenAddress,
       destTokenAddress: result?.quotesInput?.destTokenAddress,
     } as GenericQuoteRequest,
   };
@@ -327,13 +327,13 @@ function handleV4CommandSwapExactIn(
     quotesInput: {
       ...(quotesInput ?? {}),
       srcTokenAmount:
-        quotesInput?.srcTokenAmount ?? parsedResult.amountIn.toHexString(),
+        quotesInput?.srcTokenAmount || parsedResult.amountIn.toHexString(),
       srcTokenAddress:
-        quotesInput?.srcTokenAddress ?? parsedResult.currencyIn.toLowerCase(),
+        quotesInput?.srcTokenAddress || parsedResult.currencyIn.toLowerCase(),
       destTokenAddress:
         parsedResult.path[
           parsedResult.path.length - 1
-        ].intermediateCurrency.toLowerCase() ?? quotesInput?.destTokenAddress,
+        ].intermediateCurrency.toLowerCase() || quotesInput?.destTokenAddress,
     } as GenericQuoteRequest,
   };
 }
@@ -357,16 +357,16 @@ function handleV4CommandSwapExactInSingle(
     quotesInput: {
       ...(quotesInput ?? {}),
       srcTokenAmount:
-        quotesInput?.srcTokenAmount ?? parsedResult.amountIn.toHexString(),
+        quotesInput?.srcTokenAmount || parsedResult.amountIn.toHexString(),
       srcTokenAddress:
-        quotesInput?.srcTokenAddress ??
+        quotesInput?.srcTokenAddress ||
         (parsedResult.zeroForOne
           ? parsedResult.poolKey.currency0.toLowerCase()
           : parsedResult.poolKey.currency1.toLowerCase()),
       destTokenAddress:
         (parsedResult.zeroForOne
           ? parsedResult.poolKey.currency1.toLowerCase()
-          : parsedResult.poolKey.currency0.toLowerCase()) ??
+          : parsedResult.poolKey.currency0.toLowerCase()) ||
         quotesInput?.destTokenAddress,
     } as GenericQuoteRequest,
   };
@@ -386,9 +386,9 @@ function handleV3CommandSwapExactIn(
 
   const decodedPath = decodeCommandV3Path(result[3]);
   const srcTokenAddress =
-    quotesInput?.srcTokenAddress ?? decodedPath[0].firstAddress.toLowerCase();
+    quotesInput?.srcTokenAddress || decodedPath[0].firstAddress.toLowerCase();
   const destTokenAddress =
-    quotesInput?.destTokenAddress ??
+    quotesInput?.destTokenAddress ||
     decodedPath[decodedPath.length - 1].secondAddress.toLowerCase();
   const minimumAmount = result[2].toHexString();
 
@@ -396,7 +396,7 @@ function handleV3CommandSwapExactIn(
     amountMin: minimumAmount || amountMin || '0',
     quotesInput: {
       ...(quotesInput ?? {}),
-      srcTokenAmount: quotesInput?.srcTokenAmount ?? result[1].toHexString(),
+      srcTokenAmount: quotesInput?.srcTokenAmount || result[1].toHexString(),
       srcTokenAddress,
       destTokenAddress,
     } as GenericQuoteRequest,
@@ -420,11 +420,11 @@ function handleV2CommandSwapExactIn(
     amountMin: minimumAmount || amountMin || '0',
     quotesInput: {
       ...(quotesInput ?? {}),
-      srcTokenAmount: quotesInput?.srcTokenAmount ?? result[1].toHexString(),
+      srcTokenAmount: quotesInput?.srcTokenAmount || result[1].toHexString(),
       srcTokenAddress:
-        quotesInput?.srcTokenAddress ?? result[3]?.[0]?.toLowerCase(),
+        quotesInput?.srcTokenAddress || result[3]?.[0]?.toLowerCase(),
       destTokenAddress:
-        result[3]?.[result[3]?.length - 1]?.toLowerCase() ??
+        result[3]?.[result[3]?.length - 1]?.toLowerCase() ||
         quotesInput?.destTokenAddress,
     } as GenericQuoteRequest,
   };
