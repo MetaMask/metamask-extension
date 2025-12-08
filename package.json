@@ -249,7 +249,9 @@
     "addons-linter/glob": "^10.5.0",
     "@metamask/assets-controllers@npm:^92.0.0": "patch:@metamask/assets-controllers@patch%3A@metamask/assets-controllers@npm%253A93.0.0%23~/.yarn/patches/@metamask-assets-controllers-npm-93.0.0-ea998cb0bd.patch%3A%3Aversion=93.0.0&hash=224a2c#~/.yarn/patches/@metamask-assets-controllers-patch-0229f60576.patch",
     "@metamask/assets-controllers@npm:^93.0.0": "patch:@metamask/assets-controllers@patch%3A@metamask/assets-controllers@npm%253A93.0.0%23~/.yarn/patches/@metamask-assets-controllers-npm-93.0.0-ea998cb0bd.patch%3A%3Aversion=93.0.0&hash=224a2c#~/.yarn/patches/@metamask-assets-controllers-patch-0229f60576.patch",
-    "@metamask/assets-controllers@npm:^91.0.0": "patch:@metamask/assets-controllers@patch%3A@metamask/assets-controllers@npm%253A93.0.0%23~/.yarn/patches/@metamask-assets-controllers-npm-93.0.0-ea998cb0bd.patch%3A%3Aversion=93.0.0&hash=224a2c#~/.yarn/patches/@metamask-assets-controllers-patch-0229f60576.patch"
+    "@metamask/assets-controllers@npm:^91.0.0": "patch:@metamask/assets-controllers@patch%3A@metamask/assets-controllers@npm%253A93.0.0%23~/.yarn/patches/@metamask-assets-controllers-npm-93.0.0-ea998cb0bd.patch%3A%3Aversion=93.0.0&hash=224a2c#~/.yarn/patches/@metamask-assets-controllers-patch-0229f60576.patch",
+    "@metamask/bridge-controller@npm:^64.0.0": "patch:@metamask/bridge-controller@npm%3A64.0.0#~/.yarn/patches/@metamask-bridge-controller-npm-64.0.0-956740f7c8.patch",
+    "@metamask/bridge-controller@npm:^63.2.0": "patch:@metamask/bridge-controller@npm%3A64.0.0#~/.yarn/patches/@metamask-bridge-controller-npm-64.0.0-956740f7c8.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -282,7 +284,7 @@
     "@metamask/assets-controllers": "patch:@metamask/assets-controllers@patch%3A@metamask/assets-controllers@npm%253A93.0.0%23~/.yarn/patches/@metamask-assets-controllers-npm-93.0.0-ea998cb0bd.patch%3A%3Aversion=93.0.0&hash=224a2c#~/.yarn/patches/@metamask-assets-controllers-patch-0229f60576.patch",
     "@metamask/base-controller": "^9.0.0",
     "@metamask/bitcoin-wallet-snap": "^1.8.0",
-    "@metamask/bridge-controller": "^64.0.0",
+    "@metamask/bridge-controller": "patch:@metamask/bridge-controller@npm%3A64.0.0#~/.yarn/patches/@metamask-bridge-controller-npm-64.0.0-956740f7c8.patch",
     "@metamask/bridge-status-controller": "^64.0.1",
     "@metamask/browser-passworder": "^6.0.0",
     "@metamask/chain-agnostic-permission": "^1.2.2",
