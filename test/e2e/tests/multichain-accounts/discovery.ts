@@ -6,7 +6,7 @@ import {
   TEST_SEED_PHRASE_TWO,
 } from '../../constants';
 import { SOLANA_URL_REGEX_MAINNET } from '../solana/common-solana';
-import { E2E_SRP } from '../../default-fixture';
+import { E2E_SRP } from '../../fixtures/default-fixture';
 import { SECOND_TEST_E2E_SRP } from '../../flask/multi-srp/common-multi-srp';
 import {
   IDENTITY_TEAM_SEED_PHRASE,
