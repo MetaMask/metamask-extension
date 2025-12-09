@@ -1,8 +1,9 @@
 /* eslint-disable mocha/no-skipped-tests */
 import { Mockttp } from 'mockttp';
-import { withFixtures, unlockWallet } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import { SWAP_TEST_ETH_USDC_TRADES_MOCK } from '../../../data/mock-data';
 import FixtureBuilder from '../../fixtures/fixture-builder';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { buildQuote, reviewQuote, checkNotification } from './shared';
 
 async function mockSwapsTransactionQuote(mockServer: Mockttp) {
@@ -74,7 +75,7 @@ describe.skip('Swaps - notifications', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
         await buildQuote(driver, {
           amount: 2,
           swapTo: 'INUINU',
@@ -120,7 +121,7 @@ describe.skip('Swaps - notifications', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
         await buildQuote(driver, {
           amount: 0.001,
           swapTo: 'USDC',
@@ -150,7 +151,7 @@ describe.skip('Swaps - notifications', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
         await buildQuote(driver, {
           amount: 2,
           swapToContractAddress: '0x72c9Fb7ED19D3ce51cea5C56B3e023cd918baaDf',
@@ -173,7 +174,7 @@ describe.skip('Swaps - notifications', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
         await buildQuote(driver, {
           amount: 0.0001,
           swapTo: 'DAI',

@@ -1,5 +1,8 @@
 const { DAPP_PATH, DAPP_URL } = require('../constants');
-const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
+const { withFixtures, WINDOW_TITLES } = require('../helpers');
+const {
+  loginWithBalanceValidation,
+} = require('../page-objects/flows/login.flow');
 const FixtureBuilder = require('../fixtures/fixture-builder');
 const {
   mockLocalizationSnap,
@@ -17,7 +20,7 @@ describe('Test Snap Get Locale', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // navigate to test snaps page and connect to get-locale snap
         await driver.openNewPage(DAPP_URL);

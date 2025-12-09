@@ -2,7 +2,7 @@ import { Context } from 'mocha';
 import { MockttpServer } from 'mockttp';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import { unlockWallet, withFixtures } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { RECIPIENT_ADDRESS_MOCK } from '../simulation-details/types';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
@@ -13,6 +13,7 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import TokenList from '../../page-objects/pages/token-list';
 import AssetPicker from '../../page-objects/pages/asset-picker';
 import { mockSpotPrices } from '../tokens/utils/mocks';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 describe('AssetPickerSendFlow', function () {
   const chainId = CHAIN_IDS.MAINNET;
@@ -43,7 +44,7 @@ describe('AssetPickerSendFlow', function () {
         },
       },
       async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // Disable token auto detection
         const settingsPage = new SettingsPage(driver);

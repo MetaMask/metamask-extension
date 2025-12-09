@@ -2,7 +2,7 @@
 import { Hex } from '@metamask/utils';
 import { decimalToPrefixedHex } from '../../../../../shared/modules/conversion.utils';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../../constants';
-import { unlockWallet } from '../../../helpers';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
 import Confirmation from '../../../page-objects/pages/confirmations/redesign/confirmation';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
@@ -30,7 +30,7 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver, localNodes }: TestSuiteArguments) => {
-          await unlockWallet(driver);
+          await loginWithBalanceValidation(driver);
 
           // Create initial stuck transaction
           await createDappTransaction(driver, {
@@ -86,7 +86,7 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver, localNodes }: TestSuiteArguments) => {
-          await unlockWallet(driver);
+          await loginWithBalanceValidation(driver);
 
           // Create initial stuck transaction
           await createDappTransaction(driver, {

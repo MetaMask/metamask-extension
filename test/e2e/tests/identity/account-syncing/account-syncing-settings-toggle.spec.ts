@@ -4,13 +4,14 @@ import {
   USER_STORAGE_WALLETS_FEATURE_KEY,
 } from '@metamask/account-tree-controller';
 import { PAGES } from '../../../webdriver/driver';
-import { withFixtures, unlockWallet } from '../../../helpers';
+import { withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
 import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import BackupAndSyncSettings from '../../../page-objects/pages/settings/backup-and-sync-settings';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
@@ -53,7 +54,7 @@ describe('Account syncing - Settings Toggle', function () {
         testSpecificMock: sharedMockSetup,
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         const header = new HeaderNavbar(driver);
         await header.checkPageIsLoaded();
@@ -128,7 +129,7 @@ describe('Account syncing - Settings Toggle', function () {
       },
       async ({ driver }) => {
         // Login to fresh app instance to test sync restoration
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         const header = new HeaderNavbar(driver);
         await header.checkPageIsLoaded();

@@ -2,7 +2,7 @@
 import { MockttpServer } from 'mockttp';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import { unlockWallet, WINDOW_TITLES, withFixtures } from '../../helpers';
+import { WINDOW_TITLES, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { createDappTransaction } from '../../page-objects/flows/transaction';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
@@ -10,6 +10,7 @@ import TransactionConfirmation from '../../page-objects/pages/confirmations/rede
 import HomePage from '../../page-objects/pages/home/homepage';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { TX_SENTINEL_URL } from '../../../../shared/constants/transaction';
 import { mockSpotPrices } from '../tokens/utils/mocks';
 import {
@@ -48,7 +49,7 @@ async function withFixturesForSmartTransactions(
       testSpecificMock,
     },
     async ({ driver }) => {
-      await unlockWallet(driver);
+      await loginWithBalanceValidation(driver);
       await runTestWithFixtures({ driver });
     },
   );

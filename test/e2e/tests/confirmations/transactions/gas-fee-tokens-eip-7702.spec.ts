@@ -15,6 +15,7 @@ import HomePage from '../../../page-objects/pages/home/homepage';
 import { Driver } from '../../../webdriver/driver';
 import { mockEip7702FeatureFlag } from '../helpers';
 import { mockSpotPrices } from '../../tokens/utils/mocks';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 
 const UUID = '1234-5678';
 const TRANSACTION_HASH =
@@ -57,7 +58,7 @@ describe.skip('Gas Fee Tokens - EIP-7702', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver; localNodes: Anvil }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         await createDappTransaction(driver);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
