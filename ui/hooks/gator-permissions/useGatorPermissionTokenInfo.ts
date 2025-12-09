@@ -18,14 +18,6 @@ import { useAsyncResult } from '../useAsync';
 
 export type { GatorTokenInfo } from '../../../shared/lib/gator-permissions/gator-permissions-utils';
 
-type TokenInfoSource =
-  | 'native'
-  | 'cache'
-  | 'imported'
-  | 'api'
-  | 'onchain'
-  | null;
-
 export type UseGatorPermissionTokenInfoResult = {
   /**
    * Token information including symbol, decimals, name, and image
@@ -39,15 +31,6 @@ export type UseGatorPermissionTokenInfoResult = {
    * Error that occurred during fetch, if any
    */
   error: Error | null;
-  /**
-   * The source from which token info was retrieved
-   * - 'native': Native token from network configuration
-   * - 'cache': From tokensChainsCache (API cache)
-   * - 'imported': From user's imported tokens
-   * - 'api': From external API
-   * - 'onchain': From on-chain data
-   */
-  source: TokenInfoSource;
 };
 
 /**
@@ -90,13 +73,7 @@ export function useGatorPermissionTokenInfo(
       return null;
     }
 
-    return {
-      tokenInfo: resolveNativeTokenInfo(
-        chainId,
-        networkConfigurationsByCaipChainId,
-      ),
-      source: 'native' as const,
-    };
+    return resolveNativeTokenInfo(chainId, networkConfigurationsByCaipChainId);
   }, [isNativeToken, chainId, networkConfigurationsByCaipChainId]);
 
   // Tier 1: Check cache and imported tokens (only for ERC-20 tokens) using shared utility
@@ -105,27 +82,12 @@ export function useGatorPermissionTokenInfo(
       return null;
     }
 
-    const tokenInfo = lookupCachedOrImportedTokenInfo(
+    return lookupCachedOrImportedTokenInfo(
       tokenAddress,
       chainId,
       erc20TokensByChain,
       allTokens,
     );
-
-    if (!tokenInfo) {
-      return null;
-    }
-
-    // Determine source: cache if found in erc20TokensByChain, otherwise imported
-    const normalizedAddress = tokenAddress.toLowerCase();
-    const isFromCache = Boolean(
-      erc20TokensByChain[chainId]?.data?.[normalizedAddress],
-    );
-
-    return {
-      tokenInfo,
-      source: isFromCache ? 'cache' : 'imported',
-    };
   }, [tokenAddress, chainId, erc20TokensByChain, allTokens, isNativeToken]);
 
   // Determine if we should fetch token info
@@ -155,33 +117,29 @@ export function useGatorPermissionTokenInfo(
   // Only consider it fetching if we actually should fetch
   const isFetching = shouldFetch && asyncResult.pending;
 
-  // Determine the final token info, source, and loading state
+  // Determine the final token info and loading state
   // Prioritize: native > cached/imported > fetched > default
   const result = useMemo((): {
     tokenInfo: GatorTokenInfo;
-    source: TokenInfoSource;
     loading: boolean;
   } => {
     if (nativeTokenInfo) {
       return {
-        tokenInfo: nativeTokenInfo.tokenInfo,
-        source: nativeTokenInfo.source,
+        tokenInfo: nativeTokenInfo,
         loading: false,
       };
     }
 
     if (cachedOrImportedTokenInfo) {
       return {
-        tokenInfo: cachedOrImportedTokenInfo.tokenInfo,
-        source: cachedOrImportedTokenInfo.source as TokenInfoSource,
+        tokenInfo: cachedOrImportedTokenInfo,
         loading: false,
       };
     }
 
-    if (fetchedTokenInfo?.tokenInfo) {
+    if (fetchedTokenInfo) {
       return {
-        tokenInfo: fetchedTokenInfo.tokenInfo,
-        source: fetchedTokenInfo.source,
+        tokenInfo: fetchedTokenInfo,
         loading: false,
       };
     }
@@ -192,7 +150,6 @@ export function useGatorPermissionTokenInfo(
         decimals: 18,
         chainId: chainId || ('0x0' as const),
       },
-      source: null,
       loading: isFetching,
     };
   }, [

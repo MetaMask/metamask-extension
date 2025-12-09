@@ -89,7 +89,6 @@ describe('useGatorPermissionTokenInfo', () => {
         decimals: 18,
         chainId: mockChainId,
       });
-      expect(result.current.source).toBe('native');
       expect(mockFetchAssetMetadata).not.toHaveBeenCalled();
     });
 
@@ -112,7 +111,6 @@ describe('useGatorPermissionTokenInfo', () => {
         decimals: 18,
         chainId: mockChainId,
       });
-      expect(result.current.source).toBe('native');
     });
 
     it('should fallback to CHAIN_ID_TO_CURRENCY_SYMBOL_MAP when network config is missing', () => {
@@ -137,7 +135,6 @@ describe('useGatorPermissionTokenInfo', () => {
         decimals: 18,
         chainId: sepoliaChainId,
       });
-      expect(result.current.source).toBe('native');
     });
 
     it('should default to ETH when neither network config nor CHAIN_ID_TO_CURRENCY_SYMBOL_MAP has the chain', () => {
@@ -162,7 +159,6 @@ describe('useGatorPermissionTokenInfo', () => {
         decimals: 18,
         chainId: unknownChainId,
       });
-      expect(result.current.source).toBe('native');
     });
   });
 
@@ -197,7 +193,6 @@ describe('useGatorPermissionTokenInfo', () => {
         address: mockTokenAddress,
         chainId: mockChainId,
       });
-      expect(result.current.source).toBe('cache');
       expect(mockFetchAssetMetadata).not.toHaveBeenCalled();
     });
 
@@ -224,7 +219,6 @@ describe('useGatorPermissionTokenInfo', () => {
       );
 
       expect(result.current.tokenInfo?.symbol).toBe('IMPORTED');
-      expect(result.current.source).toBe('imported');
       expect(mockFetchAssetMetadata).not.toHaveBeenCalled();
     });
 
@@ -260,7 +254,6 @@ describe('useGatorPermissionTokenInfo', () => {
       );
 
       expect(result.current.tokenInfo?.symbol).toBe('CACHED');
-      expect(result.current.source).toBe('cache');
     });
   });
 
@@ -287,7 +280,6 @@ describe('useGatorPermissionTokenInfo', () => {
 
       expect(result.current.loading).toBe(false);
       expect(result.current.tokenInfo?.symbol).toBe('API');
-      expect(result.current.source).toBe('api');
       expect(mockFetchAssetMetadata).toHaveBeenCalledWith(
         mockTokenAddress,
         mockChainId,
@@ -315,7 +307,6 @@ describe('useGatorPermissionTokenInfo', () => {
       expect(mockFetchAssetMetadata).not.toHaveBeenCalled();
       expect(mockGetTokenStandardAndDetailsByChain).toHaveBeenCalled();
       expect(result.current.tokenInfo?.symbol).toBe('ONCHAIN');
-      expect(result.current.source).toBe('onchain');
     });
   });
 
@@ -338,7 +329,6 @@ describe('useGatorPermissionTokenInfo', () => {
 
       expect(result.current.tokenInfo?.symbol).toBe('ONCHAIN');
       expect(result.current.tokenInfo?.decimals).toBe(6);
-      expect(result.current.source).toBe('onchain');
       expect(result.current.error).toBeNull();
     });
 
@@ -415,7 +405,6 @@ describe('useGatorPermissionTokenInfo', () => {
         decimals: 18,
         chainId: mockChainId,
       });
-      expect(result.current.source).toBe(null);
     });
 
     it('should return default token info when chainId is undefined', () => {
@@ -431,7 +420,6 @@ describe('useGatorPermissionTokenInfo', () => {
         decimals: 18,
         chainId: '0x0',
       });
-      expect(result.current.source).toBe(null);
     });
 
     it('should handle case-insensitive address matching', () => {
@@ -456,7 +444,6 @@ describe('useGatorPermissionTokenInfo', () => {
       );
 
       expect(result.current.tokenInfo?.symbol).toBe('CACHED');
-      expect(result.current.source).toBe('cache');
     });
   });
 

@@ -217,20 +217,19 @@ function parseDecimals(
  * @param chainId - Chain ID in hex format
  * @param allowExternalServices - Whether to use external API services
  * @param getTokenStandardAndDetailsByChain - Optional function to fetch on-chain token details
- * @returns Extended token info with source and defaults: symbol='Unknown Token', decimals=18
+ * @returns Extended token info with defaults: symbol='Unknown Token', decimals=18
  */
 async function fetchGatorErc20TokenInfo(
   address: string,
   chainId: Hex,
   allowExternalServices: boolean,
   getTokenStandardAndDetailsByChain?: GetTokenStandardAndDetailsByChain,
-): Promise<{ tokenInfo: GatorTokenInfo; source: 'api' | 'onchain' }> {
+): Promise<GatorTokenInfo> {
   let symbol: string | undefined;
   let decimals: number | undefined;
   let name: string | undefined;
   let image: string | undefined;
   let onchainError: Error | undefined;
-  let usedApi = false;
 
   // Tier 1: Try API if external services are allowed
   if (allowExternalServices) {
@@ -241,7 +240,6 @@ async function fetchGatorErc20TokenInfo(
         decimals = metadata.decimals;
         // Note: fetchAssetMetadata returns 'address' and 'image', not 'name'
         image = metadata.image;
-        usedApi = true;
       }
     } catch (error) {
       log.warn('Failed to fetch token metadata from API', {
@@ -284,23 +282,17 @@ async function fetchGatorErc20TokenInfo(
   }
 
   return {
-    tokenInfo: {
-      symbol: symbol || 'Unknown Token',
-      decimals: decimals ?? 18,
-      name,
-      image,
-      address,
-      chainId,
-    },
-    source: usedApi ? 'api' : 'onchain',
+    symbol: symbol || 'Unknown Token',
+    decimals: decimals ?? 18,
+    name,
+    image,
+    address,
+    chainId,
   };
 }
 
-// Cache to store the result with source
-const gatorTokenInfoResultCache = new Map<
-  string,
-  Promise<{ tokenInfo: GatorTokenInfo; source: 'api' | 'onchain' }>
->();
+// Cache to store the result
+const gatorTokenInfoResultCache = new Map<string, Promise<GatorTokenInfo>>();
 
 /**
  * Clear all token info caches. Useful for testing.
@@ -322,14 +314,14 @@ export function clearTokenInfoCaches(): void {
  * @param chainId - Chain ID in hex format
  * @param allowExternalServices - Whether to use external API services
  * @param getTokenStandardAndDetailsByChain - Optional function to fetch on-chain token details
- * @returns Token info with source ('api' | 'onchain')
+ * @returns Token info with symbol, decimals, name, image, address, and chainId
  */
 export async function getGatorErc20TokenInfo(
   address: string,
   chainId: Hex,
   allowExternalServices: boolean,
   getTokenStandardAndDetailsByChain?: GetTokenStandardAndDetailsByChain,
-): Promise<{ tokenInfo: GatorTokenInfo; source: 'api' | 'onchain' }> {
+): Promise<GatorTokenInfo> {
   const key = `${chainId}:${address.toLowerCase()}`;
   const existing = gatorTokenInfoResultCache.get(key);
   if (existing) {
