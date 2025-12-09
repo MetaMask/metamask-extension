@@ -16,7 +16,9 @@ export type MetaData = {
    * migration
    */
   version: number;
-
+  /**
+   * The kind of storage being used.
+   */
   storageKind?: 'data' | 'split';
 };
 
