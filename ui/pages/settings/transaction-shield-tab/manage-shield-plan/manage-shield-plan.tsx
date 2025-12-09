@@ -25,7 +25,7 @@ import {
   useUserSubscriptionByProduct,
   useUserSubscriptions,
 } from '../../../../hooks/subscription/useSubscription';
-import CancelMembershipModal from '../cancel-membership-modal';
+import CancelMembershipModal from '../components/cancel-membership-modal';
 import ApiErrorHandler from '../../../../components/app/api-error-handler';
 import { ShieldUnexpectedErrorEventLocationEnum } from '../../../../../shared/constants/subscriptions';
 import LoadingScreen from '../../../../components/ui/loading-screen';

@@ -26,7 +26,6 @@ import log from 'loglevel';
 import { Skeleton } from '../../../components/component-library/skeleton';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  useCancelSubscription,
   useShieldRewards,
   useUserLastSubscriptionByProduct,
   useUserSubscriptionByProduct,
@@ -68,7 +67,6 @@ import { getIntlLocale } from '../../../ducks/locale/locale';
 import { linkRewardToShieldSubscription } from '../../../store/actions';
 import { getAccountName, getInternalAccounts } from '../../../selectors';
 import { shortenAddress } from '../../../helpers/utils/util';
-import CancelMembershipModal from './cancel-membership-modal';
 import { isCardPaymentMethod, isCryptoPaymentMethod } from './types';
 import {
   ButtonRow,
@@ -179,9 +177,6 @@ const TransactionShield = () => {
     [displayedShieldSubscription],
   );
 
-  const [executeCancelSubscription, cancelSubscriptionResult] =
-    useCancelSubscription(currentShieldSubscription);
-
   const {
     pointsMonthly,
     pointsYearly,
@@ -212,9 +207,6 @@ const TransactionShield = () => {
     navigate,
     displayedShieldSubscription,
   ]);
-
-  const [isCancelMembershipModalOpen, setIsCancelMembershipModalOpen] =
-    useState(false);
 
   const [isAddFundsModalOpen, setIsAddFundsModalOpen] = useState(false);
 
@@ -348,13 +340,11 @@ const TransactionShield = () => {
   const hasApiError =
     subscriptionsError ||
     subscriptionPricingError ||
-    cancelSubscriptionResult.error ||
     updateSubscriptionCardPaymentMethodResult.error ||
     updateSubscriptionCryptoPaymentMethodResult.error ||
     resultTriggerSubscriptionCheckInsufficientFunds.error;
 
   const loading =
-    cancelSubscriptionResult.pending ||
     updateSubscriptionCardPaymentMethodResult.pending ||
     updateSubscriptionCryptoPaymentMethodResult.pending ||
     resultTriggerSubscriptionCheckInsufficientFunds.pending;
@@ -637,16 +627,6 @@ const TransactionShield = () => {
         )}
       </Box>
 
-      {currentShieldSubscription && isCancelMembershipModalOpen && (
-        <CancelMembershipModal
-          onClose={() => setIsCancelMembershipModalOpen(false)}
-          onConfirm={async () => {
-            setIsCancelMembershipModalOpen(false);
-            await executeCancelSubscription();
-          }}
-          subscription={currentShieldSubscription}
-        />
-      )}
       {loading && <LoadingScreen />}
       {currentToken &&
         isAddFundsModalOpen &&
