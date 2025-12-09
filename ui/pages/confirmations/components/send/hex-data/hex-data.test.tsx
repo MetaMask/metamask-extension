@@ -7,7 +7,7 @@ import {
   EVM_NATIVE_ASSET,
   MOCK_NFT1155,
 } from '../../../../../../test/data/send/assets';
-import { renderWithProvider } from '../../../../../../test/jest';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../../store/store';
 import * as SendContext from '../../../context/send';
 import { HexData } from './hex-data';
