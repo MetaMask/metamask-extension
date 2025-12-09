@@ -57,7 +57,6 @@ const convertToHexValue = (val) => `0x${new BigNumber(val, 10).toString(16)}`;
 const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
 
 const {
-  mockMultichainAccountsFeatureFlagStateOne,
   mockMultichainAccountsFeatureFlagStateTwo,
 } = require('./tests/multichain-accounts/feature-flag-mocks');
 
@@ -174,7 +173,7 @@ async function withFixtures(options, testSuite) {
     monConversionInUsd,
     manifestFlags,
     solanaWebSocketSpecificMocks = [],
-    forceBip44Version = 0,
+    forceBip44Version = true,
   } = options;
 
   // Normalize localNodeOptions
@@ -334,20 +333,8 @@ async function withFixtures(options, testSuite) {
     webSocketServer.start();
     await setupSolanaWebsocketMocks(solanaWebSocketSpecificMocks);
 
-    // The feature flag wrapper chooses state 2 by default
-    // but we want most tests to be able to run with state 0 (bip-44 disabled)
-    // So the default argument is 0
-    // and doing nothing here means we get state 2
-
-    if (forceBip44Version === 0) {
-      console.log('Applying multichain accounts feature flag disabled mock');
-    } else if (forceBip44Version === 1) {
-      console.log(
-        'Applying multichain accounts state 1 feature state 1 enabled mock',
-      );
-      await mockMultichainAccountsFeatureFlagStateOne(mockServer);
-    } else {
-      console.log('BIP-44 state 2 enabled');
+    if (forceBip44Version) {
+      console.log('BIP-44 stage 2 enabled');
       await mockMultichainAccountsFeatureFlagStateTwo(mockServer);
     }
 
@@ -615,12 +602,11 @@ const clickNestedButton = async (driver, tabName) => {
  * @param {WebDriver} driver - The webdriver instance
  * @param {object} [options] - Options for unlocking the wallet
  * @param {boolean} [options.navigate] - Whether to navigate to the root page prior to unlocking - defaults to true
- * @param {boolean} [options.waitLoginSuccess] - Whether to wait for the login to succeed - defaults to true
  * @param {string} [options.password] - Password to unlock wallet - defaults to shared WALLET_PASSWORD
  */
 async function unlockWallet(
   driver,
-  { navigate = true, waitLoginSuccess = true, password = WALLET_PASSWORD } = {},
+  { navigate = true, password = WALLET_PASSWORD } = {},
 ) {
   if (navigate) {
     await driver.navigate();
@@ -629,9 +615,7 @@ async function unlockWallet(
   await driver.waitForSelector('#password', { state: 'enabled' });
   await driver.fill('#password', password);
   await driver.press('#password', driver.Key.ENTER);
-  if (waitLoginSuccess) {
-    await driver.assertElementNotPresent('[data-testid="unlock-page"]');
-  }
+  await driver.assertElementNotPresent('[data-testid="unlock-page"]');
 }
 
 /**

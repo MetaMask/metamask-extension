@@ -11,7 +11,15 @@ import {
 } from './constants';
 
 jest.mock('../../../../hooks/useI18nContext', () => ({
-  useI18nContext: jest.fn(() => (key: string) => key),
+  useI18nContext: jest.fn(
+    () => (key: string, substitutions?: (string | React.ReactNode)[]) => {
+      if (substitutions && Array.isArray(substitutions)) {
+        // Return an array containing the key and all substitutions for interpolated translations
+        return [key, ...substitutions];
+      }
+      return key;
+    },
+  ),
 }));
 
 // Partially mock the design-system Button to expose props for assertions
@@ -304,7 +312,7 @@ describe('OnboardingStep4', () => {
     render(<OnboardingStep4 />);
 
     const termsLink = screen.getByText(
-      'rewardsOnboardingStep4LegalDisclaimer2',
+      'rewardsOnboardingStep4LegalDisclaimerTermsLink',
     );
     fireEvent.click(termsLink);
     expect(window.open).toHaveBeenCalledWith(
@@ -314,7 +322,7 @@ describe('OnboardingStep4', () => {
     );
 
     const learnMoreLink = screen.getByText(
-      'rewardsOnboardingStep4LegalDisclaimer4',
+      'rewardsOnboardingStep4LegalDisclaimerLearnMoreLink',
     );
     fireEvent.click(learnMoreLink);
     expect(window.open).toHaveBeenCalledWith(

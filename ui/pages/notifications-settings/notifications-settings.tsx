@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   NOTIFICATIONS_ROUTE,
