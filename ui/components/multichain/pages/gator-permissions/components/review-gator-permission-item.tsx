@@ -268,7 +268,7 @@ export const ReviewGatorPermissionItem = ({
           startDate: {
             translationKey: 'gatorPermissionsStartDate',
             value: convertTimestampToReadableDate(
-              permission.data.startTime as number,
+              permission.data.startTime ?? 0,
             ),
             testId: 'review-gator-permission-start-date',
           },
