@@ -5709,7 +5709,7 @@ describe('MetaMaskController', () => {
       });
 
       jest
-        .spyOn(metamaskController, '_notifySolanaAccountChange')
+        .spyOn(metamaskController, '_notifyMultichainAccountChange')
         .mockImplementation(() => undefined);
     });
 
@@ -5718,8 +5718,12 @@ describe('MetaMaskController', () => {
       triggerSubscription();
 
       expect(
-        metamaskController._notifySolanaAccountChange,
-      ).toHaveBeenCalledWith(mockOrigin, [mockSolanaAddress]);
+        metamaskController._notifyMultichainAccountChange,
+      ).toHaveBeenCalledWith(
+        mockOrigin,
+        [mockSolanaAddress],
+        MultichainNetworks.SOLANA,
+      );
     });
 
     it('does not notify when account is not a Solana DataAccount', async () => {
@@ -5727,7 +5731,7 @@ describe('MetaMaskController', () => {
       triggerSubscription();
 
       expect(
-        metamaskController._notifySolanaAccountChange,
+        metamaskController._notifyMultichainAccountChange,
       ).not.toHaveBeenCalled();
     });
 
@@ -5744,7 +5748,7 @@ describe('MetaMaskController', () => {
       triggerSubscription();
 
       expect(
-        metamaskController._notifySolanaAccountChange,
+        metamaskController._notifyMultichainAccountChange,
       ).not.toHaveBeenCalled();
     });
 
@@ -5753,7 +5757,7 @@ describe('MetaMaskController', () => {
       triggerSubscription();
 
       expect(
-        metamaskController._notifySolanaAccountChange,
+        metamaskController._notifyMultichainAccountChange,
       ).not.toHaveBeenCalled();
     });
 
@@ -5768,7 +5772,7 @@ describe('MetaMaskController', () => {
       triggerSubscription();
 
       expect(
-        metamaskController._notifySolanaAccountChange,
+        metamaskController._notifyMultichainAccountChange,
       ).not.toHaveBeenCalled();
     });
   });
@@ -5860,7 +5864,7 @@ describe('MetaMaskController', () => {
       });
 
       jest
-        .spyOn(metamaskController, '_notifyTronAccountChange')
+        .spyOn(metamaskController, '_notifyMultichainAccountChange')
         .mockImplementation(() => undefined);
     });
 
@@ -5868,9 +5872,12 @@ describe('MetaMaskController', () => {
       setupMocks();
       triggerSubscription();
 
-      expect(metamaskController._notifyTronAccountChange).toHaveBeenCalledWith(
+      expect(
+        metamaskController._notifyMultichainAccountChange,
+      ).toHaveBeenCalledWith(
         mockOrigin,
         [mockTronAddress],
+        MultichainNetworks.TRON,
       );
     });
 
@@ -5879,7 +5886,7 @@ describe('MetaMaskController', () => {
       triggerSubscription();
 
       expect(
-        metamaskController._notifyTronAccountChange,
+        metamaskController._notifyMultichainAccountChange,
       ).not.toHaveBeenCalled();
     });
 
@@ -5896,7 +5903,7 @@ describe('MetaMaskController', () => {
       triggerSubscription();
 
       expect(
-        metamaskController._notifyTronAccountChange,
+        metamaskController._notifyMultichainAccountChange,
       ).not.toHaveBeenCalled();
     });
 
@@ -5905,7 +5912,7 @@ describe('MetaMaskController', () => {
       triggerSubscription();
 
       expect(
-        metamaskController._notifyTronAccountChange,
+        metamaskController._notifyMultichainAccountChange,
       ).not.toHaveBeenCalled();
     });
 
@@ -5920,7 +5927,7 @@ describe('MetaMaskController', () => {
       triggerSubscription();
 
       expect(
-        metamaskController._notifyTronAccountChange,
+        metamaskController._notifyMultichainAccountChange,
       ).not.toHaveBeenCalled();
     });
   });

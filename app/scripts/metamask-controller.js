@@ -1660,7 +1660,7 @@ export default class MetamaskController extends EventEmitter {
     let lastSelectedSolanaAccountAddress;
     let lastSelectedTronAccountAddress;
 
-    // this throws if there is no solana or Tron account... perhaps we should handle this better at the controller level
+    // this throws if there is no Solana or Tron account... perhaps we should handle this better at the controller level
     try {
       lastSelectedSolanaAccountAddress =
         this.accountsController.getSelectedMultichainAccount(
@@ -1859,11 +1859,12 @@ export default class MetamaskController extends EventEmitter {
             previousSelectedSolanaAccountAddress !==
             currentSelectedSolanaAccountAddress
           ) {
-            this._notifySolanaAccountChange(
+            this._notifyMultichainAccountChange(
               origin,
               currentSelectedSolanaAccountAddress
                 ? [currentSelectedSolanaAccountAddress]
                 : [],
+              MultichainNetworks.SOLANA,
             );
           }
         });
@@ -1909,7 +1910,11 @@ export default class MetamaskController extends EventEmitter {
                 parsedSolanaAddresses.includes(account.address) &&
                 originsWithSolanaAccountChangedNotifications[origin]
               ) {
-                this._notifySolanaAccountChange(origin, [account.address]);
+                this._notifyMultichainAccountChange(
+                  origin,
+                  [account.address],
+                  MultichainNetworks.SOLANA,
+                );
               }
             }
           }
@@ -1956,19 +1961,21 @@ export default class MetamaskController extends EventEmitter {
             ],
           );
 
-          if (solanaAccounts.size > 0) {
-            for (const [origin, accounts] of solanaAccounts.entries()) {
-              const parsedSolanaAddresses = accounts.map((caipAccountId) => {
-                const { address } = parseCaipAccountId(caipAccountId);
-                return address;
-              });
+          for (const [origin, accounts] of solanaAccounts.entries()) {
+            const parsedSolanaAddresses = accounts.map((caipAccountId) => {
+              const { address } = parseCaipAccountId(caipAccountId);
+              return address;
+            });
 
-              if (
-                parsedSolanaAddresses.includes(account.address) &&
-                originsWithSolanaAccountChangedNotifications[origin]
-              ) {
-                this._notifySolanaAccountChange(origin, [account.address]);
-              }
+            if (
+              parsedSolanaAddresses.includes(account.address) &&
+              originsWithSolanaAccountChangedNotifications[origin]
+            ) {
+              this._notifyMultichainAccountChange(
+                origin,
+                [account.address],
+                MultichainNetworks.SOLANA,
+              );
             }
           }
         }
@@ -2047,20 +2054,19 @@ export default class MetamaskController extends EventEmitter {
             previousSelectedTronAccountAddress !==
             currentSelectedTronAccountAddress
           ) {
-            this._notifyTronAccountChange(
+            this._notifyMultichainAccountChange(
               origin,
               currentSelectedTronAccountAddress
                 ? [currentSelectedTronAccountAddress]
                 : [],
+              MultichainNetworks.TRON,
             );
           }
         });
       },
       getAuthorizedScopesByOrigin,
     );
-    ///: END:ONLY_INCLUDE_IF
 
-    ///: BEGIN:ONLY_INCLUDE_IF(tron)
     // TODO: To be removed when state 2 is fully transitioned.
     // wallet_notify for tron accountChanged when selected account changes
     this.controllerMessenger.subscribe(
@@ -2088,27 +2094,27 @@ export default class MetamaskController extends EventEmitter {
             ],
           );
 
-          if (tronAccounts.size > 0) {
-            for (const [origin, accounts] of tronAccounts.entries()) {
-              const parsedTronAddresses = accounts.map((caipAccountId) => {
-                const { address } = parseCaipAccountId(caipAccountId);
-                return address;
-              });
+          for (const [origin, accounts] of tronAccounts.entries()) {
+            const parsedTronAddresses = accounts.map((caipAccountId) => {
+              const { address } = parseCaipAccountId(caipAccountId);
+              return address;
+            });
 
-              if (
-                parsedTronAddresses.includes(account.address) &&
-                originsWithTronAccountChangedNotifications[origin]
-              ) {
-                this._notifyTronAccountChange(origin, [account.address]);
-              }
+            if (
+              parsedTronAddresses.includes(account.address) &&
+              originsWithTronAccountChangedNotifications[origin]
+            ) {
+              this._notifyMultichainAccountChange(
+                origin,
+                [account.address],
+                MultichainNetworks.TRON,
+              );
             }
           }
         }
       },
     );
-    ///: END:ONLY_INCLUDE_IF
 
-    ///: BEGIN:ONLY_INCLUDE_IF(tron)
     // wallet_notify for tron accountChanged when selected account group changes
     this.controllerMessenger.subscribe(
       `${this.accountTreeController.name}:selectedAccountGroupChange`,
@@ -2151,7 +2157,11 @@ export default class MetamaskController extends EventEmitter {
                 parsedTronAddresses.includes(account.address) &&
                 originsWithTronAccountChangedNotifications[origin]
               ) {
-                this._notifyTronAccountChange(origin, [account.address]);
+                this._notifyMultichainAccountChange(
+                  origin,
+                  [account.address],
+                  MultichainNetworks.TRON,
+                );
               }
             }
           }
@@ -6535,7 +6545,11 @@ export default class MetamaskController extends EventEmitter {
       );
 
       if (accountAddressToEmit) {
-        this._notifySolanaAccountChange(origin, [accountAddressToEmit]);
+        this._notifyMultichainAccountChange(
+          origin,
+          [accountAddressToEmit],
+          MultichainNetworks.SOLANA,
+        );
       }
     }
 
@@ -6563,7 +6577,11 @@ export default class MetamaskController extends EventEmitter {
       );
 
       if (accountAddressToEmit) {
-        this._notifyTronAccountChange(origin, [accountAddressToEmit]);
+        this._notifyMultichainAccountChange(
+          origin,
+          [accountAddressToEmit],
+          MultichainNetworks.TRON,
+        );
       }
     }
     ///: END:ONLY_INCLUDE_IF
@@ -7181,7 +7199,7 @@ export default class MetamaskController extends EventEmitter {
       engine,
     });
 
-    // solana and Tron account changed notifications
+    // Solana and Tron account changed notifications
     // This delay is needed because it's possible for a dapp to not have listeners
     // setup in time right after a connection is established.
     // This can be resolved if we amend the caip standards to include a liveliness
@@ -8909,13 +8927,13 @@ export default class MetamaskController extends EventEmitter {
     );
   }
 
-  async _notifySolanaAccountChange(origin, accountAddressArray) {
+  async _notifyMultichainAccountChange(origin, accountAddressArray, scope) {
     this.notifyConnections(
       origin,
       {
         method: MultichainApiNotifications.walletNotify,
         params: {
-          scope: MultichainNetworks.SOLANA,
+          scope,
           notification: {
             method: NOTIFICATION_NAMES.accountsChanged,
             params: accountAddressArray,
@@ -8925,25 +8943,6 @@ export default class MetamaskController extends EventEmitter {
       API_TYPE.CAIP_MULTICHAIN,
     );
   }
-
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
-  async _notifyTronAccountChange(origin, accountAddressArray) {
-    this.notifyConnections(
-      origin,
-      {
-        method: MultichainApiNotifications.walletNotify,
-        params: {
-          scope: MultichainNetworks.TRON,
-          notification: {
-            method: NOTIFICATION_NAMES.accountsChanged,
-            params: accountAddressArray,
-          },
-        },
-      },
-      API_TYPE.CAIP_MULTICHAIN,
-    );
-  }
-  ///: END:ONLY_INCLUDE_IF
 
   async _notifyChainChange() {
     this.notifyAllConnections(
