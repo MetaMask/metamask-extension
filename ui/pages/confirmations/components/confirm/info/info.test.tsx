@@ -13,7 +13,7 @@ import {
 } from '../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { useAssetDetails } from '../../../hooks/useAssetDetails';
-import { isGatorPermissionsFeatureEnabled } from '../../../../../../shared/modules/environment';
+import { getEnabledAdvancedPermissions } from '../../../../../../shared/modules/environment';
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import Info from './info';
 
@@ -55,7 +55,9 @@ jest.mock('../../../hooks/useTransactionFocusEffect', () => ({
 
 jest.mock('../../../../../../shared/modules/environment', () => ({
   ...jest.requireActual('../../../../../../shared/modules/environment'),
-  isGatorPermissionsFeatureEnabled: jest.fn().mockReturnValue(true),
+  getEnabledAdvancedPermissions: jest
+    .fn()
+    .mockReturnValue(['native-token-stream']),
 }));
 
 jest.mock('react-router-dom', () => ({
@@ -99,7 +101,7 @@ describe('Info', () => {
   });
 
   it('throws an error if gator permissions feature is not enabled', () => {
-    jest.mocked(isGatorPermissionsFeatureEnabled).mockReturnValue(false);
+    jest.mocked(getEnabledAdvancedPermissions).mockReturnValue([]);
 
     const state = getMockTypedSignPermissionConfirmState();
     const mockStore = configureMockStore([])(state);
