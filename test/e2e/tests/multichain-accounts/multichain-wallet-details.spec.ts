@@ -1,83 +1,48 @@
-import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
+import { Suite } from 'mocha';
+import { withFixtures } from '../../helpers';
 import AccountListPage from '../../page-objects/pages/account-list-page';
-import WalletDetailsPage from '../../page-objects/pages/wallet-details-page';
 import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import { withSolanaAccountSnap } from '../solana/common-solana';
-import { mockMultichainAccountsFeatureFlagStateTwo } from './common';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { mockPriceApi } from '../tokens/utils/mocks';
 
-// eslint-disable-next-line
-describe.skip('Multichain Accounts - Wallet Details', function (this: Suite) {
-  it('should view wallet details with one Ethereum and one Solana account and show SRP backup reminder', async function () {
-    await withSolanaAccountSnap(
+describe('Multichain Accounts - Wallet Details', function (this: Suite) {
+  it('should view wallet details with one Ethereum', async function () {
+    await withFixtures(
       {
+        fixtures: new FixtureBuilder()
+          .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
+          .withKeyringControllerMultiSRP()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .build(),
         title: this.test?.fullTitle(),
-        state: 2,
-        numberOfAccounts: 1,
-        withFixtureBuilder: (builder) =>
-          builder.withKeyringControllerMultiSRP().withPreferencesController({
-            dismissSeedBackUpReminder: false,
-          }),
-        withCustomMocks: async (mockServer: Mockttp) => {
-          return mockMultichainAccountsFeatureFlagStateTwo(mockServer);
+        testSpecificMock: async (mockServer: Mockttp) => {
+          await mockPriceApi(mockServer);
         },
       },
-      async (driver: Driver) => {
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithBalanceValidation(
+          driver,
+          undefined,
+          undefined,
+          '$85,025.00',
+        );
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
 
-        await accountListPage.checkWalletDetailsButtonIsDisplayed();
-        await accountListPage.clickWalletDetailsButton();
+        await accountListPage.checkWalletDisplayedInAccountListMenu('Wallet 1');
+        await accountListPage.checkAccountNameIsDisplayed('Account 1');
+        await accountListPage.checkWalletDisplayedInAccountListMenu('Wallet 2');
+        await accountListPage.checkAccountNameIsDisplayed('Account 2');
 
-        const walletDetailsPage = new WalletDetailsPage(driver);
-        await walletDetailsPage.checkPageIsLoaded();
-
-        await walletDetailsPage.checkWalletNameIsDisplayed('Wallet 1');
-        await walletDetailsPage.checkBalanceIsDisplayed('$5,643.50');
-        await walletDetailsPage.checkAccountIsDisplayed('Account 1');
-        await walletDetailsPage.checkAccountIsDisplayed('Solana 1');
-      },
-    );
-  });
-
-  it('should add new Ethereum account from wallet details', async function () {
-    await withSolanaAccountSnap(
-      {
-        title: this.test?.fullTitle(),
-        numberOfAccounts: 1,
-        withFixtureBuilder: (builder) =>
-          builder.withKeyringControllerMultiSRP(),
-        withCustomMocks: async (mockServer: Mockttp) => {
-          return mockMultichainAccountsFeatureFlagStateTwo(mockServer);
-        },
-      },
-      async (driver: Driver) => {
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountMenu();
-
-        const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded();
-
-        await accountListPage.checkWalletDetailsButtonIsDisplayed();
-        await accountListPage.clickWalletDetailsButton();
-
-        const walletDetailsPage = new WalletDetailsPage(driver);
-        await walletDetailsPage.checkPageIsLoaded();
-
-        await walletDetailsPage.checkAddAccountButtonIsDisplayed();
-        await walletDetailsPage.clickAddAccountButton();
-
-        await walletDetailsPage.checkAccountTypeModalIsDisplayed();
-        await walletDetailsPage.checkEthereumAccountOptionIsDisplayed();
-        await walletDetailsPage.checkSolanaAccountOptionIsDisplayed();
-
-        await walletDetailsPage.clickEthereumAccountOption();
-
-        await walletDetailsPage.checkNumberOfAccountsDisplayed(3);
+        await accountListPage.checkMultichainAccountBalanceDisplayed(
+          '$85,025.00',
+        );
       },
     );
   });

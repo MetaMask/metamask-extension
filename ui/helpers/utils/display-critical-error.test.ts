@@ -22,8 +22,8 @@ jest.mock('webextension-polyfill', () => ({
 
 // Mock environment variables before importing the module
 const MOCK_SENTRY_DSN =
-  'https://3567c198f8a8412082d32655da2961d0@o124216.ingest.us.sentry.io/273505';
-const MOCK_SENTRY_DSN_DEV = 'https://dev123@o124216.ingest.us.sentry.io/273505';
+  'https://3567c198f8a8412082d32655da2961d0@sentry.io/273505';
+const MOCK_SENTRY_DSN_DEV = 'https://dev123@sentry.io/273505';
 
 const originalEnv = process.env;
 process.env = {
@@ -237,12 +237,9 @@ describe('displayCriticalError', () => {
 
 describe('extractEnvelopeUrlFromDsn', () => {
   it('should extract correct envelope URL from valid DSN', () => {
-    const dsn =
-      'https://3567c198f8a8412082d32655da2961d0@o124216.ingest.us.sentry.io/273505';
+    const dsn = 'https://3567c198f8a8412082d32655da2961d0@sentry.io/273505';
     const result = extractEnvelopeUrlFromDsn(dsn);
-    expect(result).toBe(
-      'https://o124216.ingest.us.sentry.io/api/273505/envelope/',
-    );
+    expect(result).toBe('https://sentry.io/api/273505/envelope/');
   });
 
   it('should handle different regions', () => {

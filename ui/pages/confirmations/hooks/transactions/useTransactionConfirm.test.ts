@@ -4,7 +4,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import { QuoteResponse } from '@metamask/bridge-controller';
+import { QuoteResponse, TxData } from '@metamask/bridge-controller';
 
 import {
   genUnapprovedContractInteractionConfirmation,
@@ -28,9 +28,9 @@ jest.mock('../../../../store/actions', () => ({
 }));
 
 const mockUseNavigate = jest.fn();
-jest.mock('react-router-dom-v5-compat', () => {
+jest.mock('react-router-dom', () => {
   return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
+    ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
   };
 });
@@ -388,7 +388,7 @@ describe('useTransactionConfirm', () => {
     expect(actual.txParams).toStrictEqual(
       expect.objectContaining({
         authorizationList: undefined,
-        data: '',
+        data: (mockBridgeQuotes[0].trade as TxData).data,
         from: '0x2e0d7e8c45221fca00d74a3609a0f7097035d09b',
         gas: '0x3',
         maxFeePerGas: '0x4',
