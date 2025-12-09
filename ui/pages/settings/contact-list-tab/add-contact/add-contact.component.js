@@ -76,10 +76,13 @@ const AddContact = ({
 
   // Re-resolve ENS name when network changes
   useEffect(() => {
-    const domainToResolve =
-      enteredDomainName || (isValidDomainName(input) ? input : '');
+    const domainToResolve = isValidDomainName(input)
+      ? input
+      : enteredDomainName;
 
     if (prevChainIdRef.current !== selectedChainId && domainToResolve) {
+      setInput(domainToResolve);
+      setEnteredDomainName('');
       resetDomainResolution();
       lookupDomainName(domainToResolve, selectedChainId);
     }
