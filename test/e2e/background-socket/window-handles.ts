@@ -1,6 +1,5 @@
 import log from 'loglevel';
 import { ThenableWebDriver } from 'selenium-webdriver';
-import { retry } from '../../../development/lib/retry';
 import { getServerMochaToBackground } from './server-mocha-to-background';
 import { Handle, WindowProperties } from './types';
 
@@ -144,52 +143,49 @@ export class WindowHandles {
       value,
     );
 
-    // Retry driver calls - ChromeDriver may be temporarily unavailable during extension reload
-    return await retry({ retries: 25, delay: 200 }, async () => {
-      await this.getAllWindowHandles();
+    await this.getAllWindowHandles();
 
-      // See if we already know the handle by annotation
-      const handle = this.annotatedHandles.find((a) => a[property] === value);
-      let handleId = handle?.id;
+    // See if we already know the handle by annotation
+    const handle = this.annotatedHandles.find((a) => a[property] === value);
+    let handleId = handle?.id;
 
-      // If there's exactly one un-annotated handle, we should try it
-      if (!handleId) {
-        if (this.countHandlesWithoutProperty(property) === 1) {
-          handleId = this.annotatedHandles.find((a) => !a[property])?.id;
-        }
+    // If there's exactly one un-annotated handle, we should try it
+    if (!handleId) {
+      if (this.countHandlesWithoutProperty(property) === 1) {
+        handleId = this.annotatedHandles.find((a) => !a[property])?.id;
       }
+    }
 
-      // Do the actual switching for the one we found
-      if (handleId) {
-        const matchesProperty = await this.switchToHandleAndCheckForProperty(
-          handleId,
-          property,
-          value,
-        );
+    // Do the actual switching for the one we found
+    if (handleId) {
+      const matchesProperty = await this.switchToHandleAndCheckForProperty(
+        handleId,
+        property,
+        value,
+      );
 
-        if (matchesProperty) {
-          return handleId;
-        }
+      if (matchesProperty) {
+        return handleId;
       }
+    }
 
-      // We have not found it in the annotatedHandles, or the one we found was wrong, so we have to cycle through all
-      // handles and bring them into focus to get their titles/urls. There is no need for repeats or delays, because
-      // ServerMochaToBackground has already waited for the tab to be found
-      for (handleId of this.rawHandles) {
-        const matchesProperty = await this.switchToHandleAndCheckForProperty(
-          handleId,
-          property,
-          value,
-        );
+    // We have not found it in the annotatedHandles, or the one we found was wrong, so we have to cycle through all
+    // handles and bring them into focus to get their titles/urls. There is no need for repeats or delays, because
+    // ServerMochaToBackground has already waited for the tab to be found
+    for (handleId of this.rawHandles) {
+      const matchesProperty = await this.switchToHandleAndCheckForProperty(
+        handleId,
+        property,
+        value,
+      );
 
-        if (matchesProperty) {
-          return handleId;
-        }
+      if (matchesProperty) {
+        return handleId;
       }
+    }
 
-      // If we still haven't found it, throw an error
-      throw new Error(`No window with ${property}: ${value}`);
-    });
+    // If we still haven't found it, throw an error
+    throw new Error(`No window with ${property}: ${value}`);
   }
 
   /**
