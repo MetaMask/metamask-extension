@@ -118,6 +118,9 @@ class AssetListPage {
   private readonly tokenOptionsButton =
     '[data-testid="asset-list-control-bar-action-button"]';
 
+  private readonly tokenSearchSelected =
+    '.token-list__tokens-container .mm-checkbox__input--checked';
+
   private readonly tokenSymbolTitle = {
     css: '.mm-label',
     text: 'Token symbol',
@@ -346,9 +349,10 @@ class AssetListPage {
     await this.driver.clickElement(this.importTokensButton);
     await this.driver.waitForSelector(this.importTokenModalTitle);
     await this.driver.fill(this.tokenSearchInput, tokenName);
-    // Wait until the token search matches 1 result
+    // Wait until the token search matches 1 result to prevent flakiness with token result re-renders
     await this.waitUntilTokenSearchMatch(1);
     await this.driver.clickElement({ text: tokenName, tag: 'p' });
+    await this.driver.waitForSelector(this.tokenSearchSelected);
     await this.driver.clickElement(this.importTokensNextButton);
     await this.driver.waitForSelector(this.confirmImportTokenMessage);
     await this.driver.clickElementAndWaitToDisappear(
