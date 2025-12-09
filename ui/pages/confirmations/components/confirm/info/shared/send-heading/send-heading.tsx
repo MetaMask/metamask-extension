@@ -63,20 +63,35 @@ const SendHeading = () => {
     />
   );
 
+  const TokenValueSkeleton = (
+    <Box display={Display.InlineFlex} alignItems={AlignItems.center} gap={2}>
+      <Skeleton width={40} height={24} />
+      {tokenSymbol}
+    </Box>
+  );
+
+  const TokenValueContent = pending
+    ? TokenValueSkeleton
+    : `${displayTransferValue} ${tokenSymbol}`;
+
   const TokenValue =
-    displayTransferValue === decodedTransferValue ? (
+    pending || displayTransferValue === decodedTransferValue ? (
       <Text
         variant={TextVariant.headingLg}
         color={TextColor.inherit}
         marginTop={3}
-      >{`${displayTransferValue} ${tokenSymbol}`}</Text>
+      >
+        {TokenValueContent}
+      </Text>
     ) : (
       <Tooltip title={decodedTransferValue} position="right">
         <Text
           variant={TextVariant.headingLg}
           color={TextColor.inherit}
           marginTop={3}
-        >{`${displayTransferValue} ${tokenSymbol}`}</Text>
+        >
+          {TokenValueContent}
+        </Text>
       </Tooltip>
     );
 
