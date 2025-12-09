@@ -115,7 +115,7 @@ describe('MetaMask onboarding', function () {
         await handleSidepanelPostOnboarding(driver);
         timer6.startTimer();
         const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded(30000); // Since here the requests are not mocked, let's wait longer
+        await homePage.checkPageIsLoaded({ timeout: 30000 }); // Since here the requests are not mocked, let's wait longer
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenListIsDisplayed();
         await assetListPage.checkConversionRateDisplayed();
