@@ -5036,7 +5036,28 @@
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
   "pna25BannerTitle": {
-    "message": "We’re updating MetaMetrics. We'll associate some in-app activity to on-chain data to better understand usage. You can opt out via Settings."
+    "message": "We're updating MetaMetrics. We'll associate some in-app activity to on-chain data to better understand usage. You can opt out via Settings."
+  },
+  "pna25ModalTitle": {
+    "message": "Privacy and product updates"
+  },
+  "pna25ModalBody1": {
+    "message": "To better serve our customers, we're updating our analytics so that some actions you take in MetaMask can be linked with the wallet address and related on-chain activity using hashed and pseudonymous identifiers. We use this information only to improve MetaMask performance and features, not for advertising. You can turn this off at any time in Settings."
+  },
+  "pna25ModalBody2": {
+    "message": "We care deeply about privacy. We never collect your secret recovery phrase, private keys, banking details, payment card information, or sell your data to third parties."
+  },
+  "pna25ModalBody3": {
+    "message": "You can read more about what we collect, how we protect it, and why we're making this change in our latest "
+  },
+  "pna25ModalBlogPostLink": {
+    "message": "blog post"
+  },
+  "openSettings": {
+    "message": "Open settings"
+  },
+  "acceptAndClose": {
+    "message": "Accept and close"
   },
   "popularNetworkAddToolTip": {
     "message": "Some of these networks rely on third parties. The connections may be less reliable or enable third-parties to track activity.",
