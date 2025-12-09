@@ -10,23 +10,22 @@ exports[`TokenTransferInfo renders correctly 1`] = `
     >
       ?
     </div>
-    <h2
-      class="mm-box mm-text mm-text--heading-lg mm-box--margin-top-3 mm-box--color-inherit"
-    >
+    <div>
       <div
-        class="mm-box mm-box--display-inline-flex mm-box--gap-2 mm-box--align-items-center"
+        aria-describedby="tippy-tooltip-1"
+        class=""
+        data-original-title="0.000000000000000001"
+        data-tooltipped=""
+        style="display: inline;"
+        tabindex="0"
       >
-        <div
-          class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
-          style="height: 24px; width: 40px;"
-        />
-        Unknown
+        <h2
+          class="mm-box mm-text mm-text--heading-lg mm-box--margin-top-3 mm-box--color-inherit"
+        >
+          &lt;0.000001 Unknown
+        </h2>
       </div>
-    </h2>
-    <div
-      class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
-      style="margin-bottom: 2px; height: 22px; width: 48px;"
-    />
+    </div>
   </div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
@@ -159,7 +158,7 @@ exports[`TokenTransferInfo renders correctly 1`] = `
                 </p>
                 <div>
                   <div
-                    aria-describedby="tippy-tooltip-1"
+                    aria-describedby="tippy-tooltip-2"
                     class=""
                     data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
                     data-tooltipped=""
@@ -240,7 +239,7 @@ exports[`TokenTransferInfo renders correctly 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-2"
+              aria-describedby="tippy-tooltip-3"
               class=""
               data-original-title="This is the site asking for your confirmation."
               data-tooltipped=""
@@ -290,7 +289,7 @@ exports[`TokenTransferInfo renders correctly 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-3"
+              aria-describedby="tippy-tooltip-4"
               class=""
               data-original-title="This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
               data-tooltipped=""
@@ -353,7 +352,7 @@ exports[`TokenTransferInfo renders correctly 1`] = `
             </p>
             <div>
               <div
-                aria-describedby="tippy-tooltip-4"
+                aria-describedby="tippy-tooltip-5"
                 class=""
                 data-original-title="Amount paid to process the transaction on network."
                 data-tooltipped=""
