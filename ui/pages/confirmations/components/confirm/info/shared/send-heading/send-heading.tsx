@@ -82,7 +82,9 @@ const SendHeading = () => {
 
   const showFiatValue = !isTestnet || showFiatInTestnets;
 
-  const TokenFiatValueSkeleton = <Skeleton width={48} height={18} />;
+  const TokenFiatValueSkeleton = (
+    <Skeleton width={48} height={22} style={{ marginBottom: '2px' }} />
+  );
 
   const TokenFiatValue =
     showFiatValue &&

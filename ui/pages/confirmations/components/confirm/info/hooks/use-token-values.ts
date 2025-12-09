@@ -47,9 +47,8 @@ export const useTokenValues = (transactionMeta: TransactionMeta) => {
     new BigNumber(decodedTransferValue),
   );
 
-  // Exchange rate is pending if we have token data but no exchange rate yet
-  const pending =
-    decimals !== undefined && value !== undefined && !exchangeRate;
+  // Fiat value is pending if token data or exchange rate hasn't loaded yet
+  const pending = !exchangeRate || decimals === undefined || !value;
 
   return {
     decodedTransferValue,

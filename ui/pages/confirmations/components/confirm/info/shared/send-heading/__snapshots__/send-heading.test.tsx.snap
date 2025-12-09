@@ -28,7 +28,7 @@ exports[`<SendHeading /> renders component 1`] = `
     </div>
     <div
       class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
-      style="height: 18px; width: 48px;"
+      style="margin-bottom: 2px; height: 22px; width: 48px;"
     />
   </div>
 </div>
