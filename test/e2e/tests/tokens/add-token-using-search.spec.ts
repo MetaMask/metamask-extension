@@ -77,7 +77,7 @@ describe('Add existing token using search', function () {
       ...(await mockBscBridgeApi(mockServer)),
     ];
   }
-  it('renders the balance for the chosen token', async function () {
+  it('renders the balance for the chosen token TEST', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.BSC })
