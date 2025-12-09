@@ -46,6 +46,7 @@ describe('useTokenValues', () => {
       displayTransferValue: '7',
       fiatDisplayValue: '$6.37',
       fiatValue: 6.37,
+      pending: false,
     });
   });
 
@@ -71,6 +72,7 @@ describe('useTokenValues', () => {
       displayTransferValue: '7',
       fiatDisplayValue: undefined,
       fiatValue: undefined,
+      pending: true,
     });
   });
 });

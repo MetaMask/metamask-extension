@@ -8,6 +8,7 @@ import {
   Box,
   Text,
 } from '../../../../../../../components/component-library';
+import { Skeleton } from '../../../../../../../components/component-library/skeleton';
 import Tooltip from '../../../../../../../components/ui/tooltip';
 import {
   AlignItems,
@@ -35,6 +36,7 @@ const SendHeading = () => {
     displayTransferValue,
     fiatDisplayValue,
     fiatValue,
+    pending,
   } = useTokenValues(transactionMeta);
 
   type TestNetChainId = (typeof TEST_CHAINS)[number];
@@ -78,12 +80,19 @@ const SendHeading = () => {
       </Tooltip>
     );
 
-  const TokenFiatValue = Boolean(fiatDisplayValue) &&
-    (!isTestnet || showFiatInTestnets) && (
-      <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-        {fiatDisplayValue}
-      </Text>
-    );
+  const showFiatValue = !isTestnet || showFiatInTestnets;
+
+  const TokenFiatValueSkeleton = <Skeleton width={48} height={18} />;
+
+  const TokenFiatValue =
+    showFiatValue &&
+    (pending
+      ? TokenFiatValueSkeleton
+      : Boolean(fiatDisplayValue) && (
+          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+            {fiatDisplayValue}
+          </Text>
+        ));
 
   useSendingValueMetric({ transactionMeta, fiatValue });
 
