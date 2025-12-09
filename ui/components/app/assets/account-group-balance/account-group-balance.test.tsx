@@ -25,7 +25,7 @@ jest.mock('../../../../selectors');
 jest.mock('../../../../ducks/locale/locale');
 jest.mock('../../../../ducks/metamask/metamask');
 jest.mock('../../../../selectors/multichain', () => ({
-  getMultichainNativeCurrency: jest.fn(),
+  ...jest.requireActual('../../../../selectors/multichain'),
   getMultichainIsTestnet: jest.fn(),
 }));
 
