@@ -1467,9 +1467,6 @@
   "connectWithMetaMask": {
     "message": "MetaMask로 연결"
   },
-  "connectedAccounts": {
-    "message": "연결된 계정"
-  },
   "connectedAccountsDescriptionPlural": {
     "message": "이 사이트에 계정 $1개가 연결되어 있습니다.",
     "description": "$1 is the number of accounts"
@@ -1483,9 +1480,6 @@
   "connectedAccountsListTooltip": {
     "message": "$1은(는) 계정 잔액, 주소, 활동을 확인하고 연결된 계정에 대해 승인할 거래를 제안할 수 있습니다.",
     "description": "$1 is the origin name"
-  },
-  "connectedAccountsToast": {
-    "message": "연결 계정 업데이트됨"
   },
   "connectedSites": {
     "message": "연결된 사이트"
@@ -2018,14 +2012,6 @@
   },
   "disconnectThisAccount": {
     "message": "이 계정 연결 해제"
-  },
-  "disconnectedAllAccountsToast": {
-    "message": "모든 계정이 $1에서 연결 해제됨",
-    "description": "$1 is name of the dapp`"
-  },
-  "disconnectedSingleAccountToast": {
-    "message": "$1, $2에서 연결 해제됨",
-    "description": "$1 is name of the name and $2 represents the dapp name`"
   },
   "discover": {
     "message": "발견"
@@ -4411,9 +4397,6 @@
     "message": "트랜잭션을 취소하거나 속도를 높이는 방법을 알아보세요.",
     "description": "The text for the hyperlink in the pending transaction alert message"
   },
-  "permissionDetails": {
-    "message": "권한 세부 정보"
-  },
   "permissionFor": {
     "message": "승인:"
   },
@@ -4716,10 +4699,6 @@
   },
   "pleaseConfirm": {
     "message": "컨펌하세요"
-  },
-  "plusMore": {
-    "message": "+ 그 외 $1개",
-    "description": "$1 is the number of additional items"
   },
   "plusXMore": {
     "message": "+ $1개 추가",

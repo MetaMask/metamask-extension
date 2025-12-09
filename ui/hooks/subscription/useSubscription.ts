@@ -12,7 +12,7 @@ import {
   ModalType,
 } from '@metamask/subscription-controller';
 import log from 'loglevel';
-import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   TransactionParams,
   TransactionType,
@@ -66,7 +66,7 @@ import {
   getLatestSubscriptionStatus,
   getShieldMarketingUtmParamsForMetrics,
   getUserBalanceCategory,
-  SHIELD_SUBSCRIPTION_CARD_TAB_ACTION_ERROR_MESSAGE,
+  SHIELD_ERROR,
 } from '../../../shared/modules/shield';
 import { openWindow } from '../../helpers/utils/window';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
@@ -596,9 +596,7 @@ export const useHandleSubscription = ({
             e instanceof Error &&
             e.message
               .toLowerCase()
-              .includes(
-                SHIELD_SUBSCRIPTION_CARD_TAB_ACTION_ERROR_MESSAGE.toLowerCase(),
-              )
+              .includes(SHIELD_ERROR.tabActionFailed.toLowerCase())
           ) {
             // tab action failed is not api error, only log it here
             console.error('[useHandleSubscription error]:', e);
