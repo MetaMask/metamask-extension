@@ -322,7 +322,7 @@ export async function getGatorErc20TokenInfo(
   allowExternalServices: boolean,
   getTokenStandardAndDetailsByChain?: GetTokenStandardAndDetailsByChain,
 ): Promise<GatorTokenInfo> {
-  const key = `${chainId}:${address.toLowerCase()}`;
+  const key = `${chainId}:${address.toLowerCase()}:${allowExternalServices}`;
   const existing = gatorTokenInfoResultCache.get(key);
   if (existing) {
     return existing;
