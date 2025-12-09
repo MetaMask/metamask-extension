@@ -1167,9 +1167,6 @@ class Driver {
   /**
    * Retrieves the handles of all open window tabs in the browser session.
    *
-   * If the WebSocket connection to the extension is lost (e.g., during extension
-   * reload), falls back to the direct driver method.
-   *
    * @returns {Promise<Array<string>>} A promise that will
    *     be resolved with an array of window handles.
    */
@@ -1209,7 +1206,6 @@ class Driver {
    */
   async waitForWindowToClose(handle, timeout = this.timeout) {
     const start = Date.now();
-
     // eslint-disable-next-line no-constant-condition
     while (true) {
       let handles;
