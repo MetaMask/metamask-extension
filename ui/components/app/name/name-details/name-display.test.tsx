@@ -3,7 +3,7 @@ import { NameType } from '@metamask/name-controller';
 import { useDispatch, useSelector } from 'react-redux';
 import { useDisplayName } from '../../../../hooks/useDisplayName';
 import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
 import NameDisplay from './name-display';

@@ -1,5 +1,5 @@
 import React, { Fragment, useContext } from 'react';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../../contexts/i18n';
 import { Button, ButtonVariant } from '../../../component-library';

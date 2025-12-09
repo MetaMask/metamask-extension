@@ -1,6 +1,6 @@
 import { act } from '@testing-library/react-hooks';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
-import { renderHookWithProviderTyped } from '../../../../test/lib/render-helpers';
+import { renderHookWithProviderTyped } from '../../../../test/lib/render-helpers-navigate';
 import { MetamaskIdentityProvider } from '../../../contexts/identity';
 import * as actions from '../../../store/actions';
 import { useBackupAndSync } from './useBackupAndSync';
