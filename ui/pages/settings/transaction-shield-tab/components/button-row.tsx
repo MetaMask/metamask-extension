@@ -19,6 +19,7 @@ type ButtonRowProps = {
   title: string;
   description?: string | React.ReactNode;
   descriptionClassName?: string;
+  descriptionTestId?: string;
   startIconName?: IconName;
   endIconName?: IconName;
   endAccessory?: React.ReactNode;
@@ -33,6 +34,7 @@ const ButtonRow = ({
   title,
   description,
   descriptionClassName,
+  descriptionTestId,
   startIconName,
   endIconName,
   endAccessory,
@@ -68,6 +70,7 @@ const ButtonRow = ({
     if (typeof description === 'string') {
       return (
         <Text
+          data-testid={descriptionTestId}
           variant={TextVariant.BodyMd}
           className={twMerge('text-text-alternative', descriptionClassName)}
         >
@@ -77,7 +80,7 @@ const ButtonRow = ({
     }
 
     return description;
-  }, [description, descriptionClassName, loading]);
+  }, [description, descriptionClassName, descriptionTestId, loading]);
 
   return (
     <Box

@@ -504,6 +504,7 @@ const TransactionShield = () => {
                   startIconName={IconName.SecurityTick}
                   title={t('shieldTxDetails1Title')}
                   description={amountDetails}
+                  descriptionTestId="shield-detail-charges"
                   loading={showSkeletonLoader}
                 />
                 <ButtonRow
@@ -518,12 +519,14 @@ const TransactionShield = () => {
                       new Date(displayedShieldSubscription?.currentPeriodEnd),
                     ),
                   ])}
+                  descriptionTestId="shield-detail-next-billing"
                   loading={showSkeletonLoader}
                 />
                 <ButtonRow
                   startIconName={IconName.Card}
                   title={t('shieldTxDetails3Title')}
                   description={paymentMethodDetails}
+                  descriptionTestId="shield-detail-payment-method"
                   loading={showSkeletonLoader}
                 />
               </ButtonRowContainer>
@@ -582,7 +585,10 @@ const TransactionShield = () => {
                 isMembershipInactive
                   ? 'shieldTxMembershipBenefits3DescriptionInactive'
                   : 'shieldTxMembershipBenefits3Description',
-                [formattedRewardsPoints, displayedShieldSubscription?.interval],
+                [
+                  formattedRewardsPoints || '',
+                  displayedShieldSubscription?.interval || '',
+                ],
               )}
               loading={showSkeletonLoader}
               endAccessory={rewardsButton}
