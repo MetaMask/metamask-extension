@@ -126,7 +126,6 @@ buildTypes:
       - tron
       - multi-srp
       - multichain
-      - gator-permissions
     env:
       - INFURA_FLASK_PROJECT_ID
       - SEGMENT_FLASK_WRITE_KEY
@@ -147,7 +146,7 @@ buildTypes:
       - APPLE_FLASK_CLIENT_ID
       - GOOGLE_CLIENT_ID_REF: GOOGLE_FLASK_CLIENT_ID
       - APPLE_CLIENT_ID_REF: APPLE_FLASK_CLIENT_ID
-      - GATOR_PERMISSIONS_ENABLED: true
+      - GATOR_ENABLED_PERMISSION_TYPES: 'native-token-stream,native-token-periodic,erc20-token-stream,erc20-token-periodic'
       - GATOR_PERMISSIONS_REVOCATION_ENABLED: true
 
     isPrerelease: true
@@ -190,6 +189,10 @@ features:
         dest: snaps/institutional-wallet-snap.json
       - src: ./node_modules/@metamask/solana-wallet-snap/dist/preinstalled-snap.json
         dest: snaps/solana-wallet-snap.json
+      - src: ./node_modules/@metamask/permissions-kernel-snap/dist/preinstalled-snap.json
+        dest: snaps/permissions-kernel-snap.json
+      - src: ./node_modules/@metamask/gator-permissions-snap/dist/preinstalled-snap.json
+        dest: snaps/gator-permissions-snap.json
       - ./{app,shared,ui}/**/keyring-snaps/**
   bitcoin:
     assets:
@@ -208,12 +211,6 @@ features:
   ocap-kernel:
     assets:
       - ./{app,shared,ui}/**/ocap-kernel/**
-  gator-permissions:
-    assets:
-      - src: ./node_modules/@metamask/permissions-kernel-snap/dist/preinstalled-snap.json
-        dest: snaps/permissions-kernel-snap.json
-      - src: ./node_modules/@metamask/gator-permissions-snap/dist/preinstalled-snap.json
-        dest: snaps/gator-permissions-snap.json
   build-experimental:
     assets:
       - src: ./node_modules/@metamask/account-watcher/dist/preinstalled-snap.json
@@ -389,7 +386,7 @@ env:
   - METAMASK_RAMP_API_CONTENT_BASE_URL: https://on-ramp-content.api.cx.metamask.io
 
   # EIP-7715 Readable Permissions
-  - GATOR_PERMISSIONS_ENABLED: false
+  - GATOR_ENABLED_PERMISSION_TYPES: ''
   - PERMISSIONS_KERNEL_SNAP_ID: 'npm:@metamask/permissions-kernel-snap'
   - GATOR_PERMISSIONS_PROVIDER_SNAP_ID: 'npm:@metamask/gator-permissions-snap'
   - GATOR_PERMISSIONS_REVOCATION_ENABLED: false

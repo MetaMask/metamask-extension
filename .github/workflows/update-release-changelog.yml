@@ -48,11 +48,10 @@ jobs:
       pull-requests: write
     steps:
       - name: Update Release Changelog
-        uses: MetaMask/github-tools/.github/actions/update-release-changelog@v1.1.3
+        uses: MetaMask/github-tools/.github/actions/update-release-changelog@v1
         with:
           release-branch: ${{ github.ref_name }}
           repository-url: ${{ github.server_url }}/${{ github.repository }}
           platform: extension
           previous-version-ref: 'null'
-          github-tools-version: v1.1.3
           github-token: ${{ secrets.PR_TOKEN }}

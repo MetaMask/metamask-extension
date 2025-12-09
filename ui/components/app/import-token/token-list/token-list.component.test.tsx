@@ -2,7 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { screen } from '@testing-library/react';
 import * as bridgeControllerModule from '@metamask/bridge-controller';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
 import * as assetUtilsModule from '../../../../../shared/lib/asset-utils';
 import * as utilModule from '../../../../helpers/utils/util';
