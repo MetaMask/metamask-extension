@@ -22,10 +22,8 @@ export const PREINSTALLED_SNAPS = [
   ///: BEGIN:ONLY_INCLUDE_IF(tron)
   'npm:@metamask/tron-wallet-snap',
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(gator-permissions)
   'npm:@metamask/permissions-kernel-snap',
   'npm:@metamask/gator-permissions-snap',
-  ///: END:ONLY_INCLUDE_IF
 ];
 
 /**
