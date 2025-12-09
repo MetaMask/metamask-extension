@@ -4,12 +4,16 @@ import { SENTRY_BACKGROUND_STATE } from '../constants/sentry-state';
 import { FixtureExtensionStore } from './stores/fixture-extension-store';
 import ExtensionStore from './stores/extension-store';
 import { PersistenceManager } from './stores/persistence-manager';
+import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 
 const platform = new ExtensionPlatform();
 
+const useFixtureStore =
+  process.env.IN_TEST &&
+  getManifestFlags().testing?.forceExtensionStore !== true;
 // This instance of `localStore` is used by Sentry to get the persisted state
 const sentryLocalStore = new PersistenceManager({
-  localStore: process.env.IN_TEST
+  localStore: useFixtureStore
     ? new FixtureExtensionStore()
     : new ExtensionStore(),
 });
