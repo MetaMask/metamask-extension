@@ -776,14 +776,18 @@ class AssetListPage {
    * This is done due to the snap delay.
    *
    * @param tokenName - The name of the token to wait for
+   * @param timeout
    */
-  async waitForTokenToBeDisplayed(tokenName: string): Promise<void> {
+  async waitForTokenToBeDisplayed(
+    tokenName: string,
+    timeout: number = 10000,
+  ): Promise<void> {
     await this.driver.waitForSelector(
       {
         css: this.tokenListItem,
         text: tokenName,
       },
-      { timeout: 30000 },
+      { timeout },
     );
   }
 

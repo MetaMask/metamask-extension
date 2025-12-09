@@ -118,7 +118,7 @@ describe('MetaMask onboarding', function () {
         await assetListPage.checkTokenListIsDisplayed();
         await assetListPage.checkConversionRateDisplayed();
         await assetListPage.waitForTokenToBeDisplayed('Ethereum');
-        await assetListPage.waitForTokenToBeDisplayed('Solana');
+        await assetListPage.waitForTokenToBeDisplayed('Solana', 60000); // Non EVM network can take longer to load
         // await assetListPage.waitForTokenToBeDisplayed('Bitcoin');
         // await assetListPage.checkTokenExistsInList('Tron'); // https://consensyssoftware.atlassian.net/browse/MMQA-1191
         timer7.stopTimer();
