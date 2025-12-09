@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import {
@@ -13,10 +13,8 @@ import {
   lookupCachedOrImportedTokenInfo,
   getGatorErc20TokenInfo,
   type GatorTokenInfo,
-  type CachedTokensByChain,
-  type ImportedTokensByChain,
-  type NetworkConfigurationsByCaipChainId,
 } from '../../../shared/lib/gator-permissions/gator-permissions-utils';
+import { useAsyncResult } from '../useAsync';
 
 export type { GatorTokenInfo } from '../../../shared/lib/gator-permissions/gator-permissions-utils';
 
@@ -69,12 +67,6 @@ export function useGatorPermissionTokenInfo(
   chainId: Hex | undefined,
   permissionType?: string,
 ): UseGatorPermissionTokenInfoResult {
-  const [error, setError] = useState<Error | null>(null);
-  const [fetchedTokenInfo, setFetchedTokenInfo] = useState<{
-    tokenInfo: GatorTokenInfo;
-    source: 'api' | 'onchain';
-  } | null>(null);
-
   // Get cached tokens from tokensChainsCache (API cache)
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
 
@@ -101,7 +93,7 @@ export function useGatorPermissionTokenInfo(
     return {
       tokenInfo: resolveNativeTokenInfo(
         chainId,
-        networkConfigurationsByCaipChainId as NetworkConfigurationsByCaipChainId,
+        networkConfigurationsByCaipChainId,
       ),
       source: 'native' as const,
     };
@@ -116,8 +108,8 @@ export function useGatorPermissionTokenInfo(
     const tokenInfo = lookupCachedOrImportedTokenInfo(
       tokenAddress,
       chainId,
-      erc20TokensByChain as CachedTokensByChain,
-      allTokens as ImportedTokensByChain,
+      erc20TokensByChain,
+      allTokens,
     );
 
     if (!tokenInfo) {
@@ -136,70 +128,32 @@ export function useGatorPermissionTokenInfo(
     };
   }, [tokenAddress, chainId, erc20TokensByChain, allTokens, isNativeToken]);
 
-  // Track if we're actively fetching token info (for async operations)
-  const [isFetching, setIsFetching] = useState(false);
+  // Determine if we should fetch token info
+  const shouldFetch = Boolean(
+    !isNativeToken && !cachedOrImportedTokenInfo && tokenAddress && chainId,
+  );
 
   // Tier 2 & 3: Fetch using API and on-chain fallback if not in cache/imported (only for ERC-20 tokens)
-  useEffect(() => {
-    // Early returns for cases where we don't need to fetch
-    if (
-      isNativeToken ||
-      cachedOrImportedTokenInfo ||
-      !tokenAddress ||
-      !chainId
-    ) {
-      setFetchedTokenInfo(null);
-      setIsFetching(false);
-      setError(null);
-      return undefined;
+  const asyncResult = useAsyncResult(async () => {
+    if (!shouldFetch || !tokenAddress || !chainId) {
+      return null;
     }
 
-    let cancelled = false;
+    // Fetch token info with API and on-chain fallback using shared utility
+    return await getGatorErc20TokenInfo(
+      tokenAddress,
+      chainId,
+      Boolean(allowExternalServices),
+      getTokenStandardAndDetailsByChain,
+    );
+  }, [shouldFetch, tokenAddress, chainId, allowExternalServices]);
 
-    const fetchTokenInfo = async () => {
-      try {
-        setIsFetching(true);
-        setError(null);
-
-        // Fetch token info with API and on-chain fallback using shared utility
-        const tokenInfo = await getGatorErc20TokenInfo(
-          tokenAddress,
-          chainId,
-          Boolean(allowExternalServices),
-          getTokenStandardAndDetailsByChain,
-        );
-
-        if (!cancelled) {
-          // Determine source based on whether we have image data (typically from API)
-          setFetchedTokenInfo({
-            tokenInfo,
-            source: tokenInfo.image ? 'api' : 'onchain',
-          });
-        }
-      } catch (err) {
-        if (!cancelled) {
-          setError(err as Error);
-          setFetchedTokenInfo(null);
-        }
-      } finally {
-        if (!cancelled) {
-          setIsFetching(false);
-        }
-      }
-    };
-
-    fetchTokenInfo();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [
-    tokenAddress,
-    chainId,
-    cachedOrImportedTokenInfo,
-    allowExternalServices,
-    isNativeToken,
-  ]);
+  // Extract fetched token info from async result
+  const fetchedTokenInfo =
+    asyncResult.status === 'success' ? asyncResult.value : null;
+  const error = asyncResult.status === 'error' ? asyncResult.error : null;
+  // Only consider it fetching if we actually should fetch
+  const isFetching = shouldFetch && asyncResult.pending;
 
   // Determine the final token info, source, and loading state
   // Prioritize: native > cached/imported > fetched > default
@@ -224,7 +178,7 @@ export function useGatorPermissionTokenInfo(
       };
     }
 
-    if (fetchedTokenInfo) {
+    if (fetchedTokenInfo?.tokenInfo) {
       return {
         tokenInfo: fetchedTokenInfo.tokenInfo,
         source: fetchedTokenInfo.source,
