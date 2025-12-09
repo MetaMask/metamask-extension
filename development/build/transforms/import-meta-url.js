@@ -90,12 +90,10 @@ module.exports = function ({ types: t }) {
         if (match) {
           const filename = match[1];
           const ext = originalArg.value.split('.').slice(1).join('.');
-          const urlSafePath = join(rootPath, `${filename}.${ext}`).replace(/\\/gu, '/');
-          return t.stringLiteral(urlSafePath);
+          return t.stringLiteral(join(rootPath, `${filename}.${ext}`));
         }
       }
-      const urlSafePath = join(rootPath, originalArg.value).replace(/\\/gu, '/');
-      return t.stringLiteral(urlSafePath);
+      return t.stringLiteral(join(rootPath, originalArg.value));
     }
 
     const quasis = [...originalArg.quasis];
