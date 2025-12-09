@@ -1174,24 +1174,10 @@ class Driver {
    *     be resolved with an array of window handles.
    */
   async getAllWindowHandles() {
-    if (this.windowHandles && this.windowHandles.isConnected()) {
+    if (this.windowHandles) {
       return await this.windowHandles.getAllWindowHandles();
     }
     return await this.driver.getAllWindowHandles();
-  }
-
-  /**
-   * Checks if the WebDriver session is still alive by making a lightweight call.
-   *
-   * @returns {Promise<boolean>} true if driver is responsive, false otherwise
-   */
-  async isDriverAlive() {
-    try {
-      await this.driver.getWindowHandle();
-      return true;
-    } catch {
-      return false;
-    }
   }
 
   /**
@@ -1211,8 +1197,9 @@ class Driver {
   /**
    * Waits for the specified window handle to close before returning.
    *
-   * First waits for the driver to become alive (in case of temporary unavailability
-   * during extension reload), then polls until the handle is no longer in the list.
+   * Polls until the window handle is no longer in the list. If the driver
+   * is temporarily unavailable (e.g., ECONNREFUSED during extension reload),
+   * it catches the error and retries until timeout.
    *
    * @param {string} handle - The handle of the window or tab we'll wait for.
    * @param {number} [timeout] - The amount of time in milliseconds to wait
@@ -1221,16 +1208,19 @@ class Driver {
    * the timeout.
    */
   async waitForWindowToClose(handle, timeout = this.timeout) {
-    // Wait for driver to be alive first (handles temporary unavailability during reloads)
-    await this.waitUntil(() => this.isDriverAlive(), {
-      timeout,
-      interval: 500,
-    });
-
     const start = Date.now();
+
     // eslint-disable-next-line no-constant-condition
     while (true) {
-      const handles = await this.getAllWindowHandles();
+      let handles;
+      try {
+        handles = await this.getAllWindowHandles();
+      } catch {
+        // ECONNREFUSED or similar - driver temporarily unavailable, retry
+        await this.delay(500);
+        continue;
+      }
+
       if (!handles.includes(handle)) {
         return;
       }
@@ -1241,6 +1231,8 @@ class Driver {
           `waitForWindowToClose timed out waiting for window handle '${handle}' to close.`,
         );
       }
+
+      await this.delay(500);
     }
   }
 
