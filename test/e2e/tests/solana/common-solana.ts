@@ -13,7 +13,6 @@ import { mockProtocolSnap } from '../../mock-response-data/snaps/snap-binary-moc
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import Homepage from '../../page-objects/pages/home/homepage';
 import NetworkManager from '../../page-objects/pages/network-manager';
-import { BIP44_STAGE_TWO } from '../multichain-accounts/feature-flag-mocks';
 
 const SOLANA_URL_REGEX_MAINNET =
   /^https:\/\/solana-(mainnet|devnet)\.infura\.io\/v3*/u;
@@ -1655,6 +1654,7 @@ export async function withSolanaAccountSnap(
 
   await withFixtures(
     {
+      forceBip44Version: false,
       fixtures: fixtures.build(),
       title,
       dappOptions: dappOptions ?? {
@@ -1671,7 +1671,11 @@ export async function withSolanaAccountSnap(
           bridgeConfig: showSnapConfirmation
             ? featureFlagsWithSnapConfirmation
             : featureFlags,
-          ...BIP44_STAGE_TWO,
+          enableMultichainAccountsState2: {
+            enabled: true,
+            featureVersion: '2',
+            minimumVersion: '12.19.0',
+          },
         },
       },
       testSpecificMock: async (mockServer: Mockttp) => {
