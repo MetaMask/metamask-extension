@@ -14,7 +14,7 @@ index 3afe13e4fc960c87f98c85d323dd992c5d5ac7f2..0d585efbbd5043ae092a1a8cb497f772
  });
  // Selects cross-chain swap quotes including their metadata
 diff --git a/dist/utils/quote.cjs b/dist/utils/quote.cjs
-index f09b7c3e34ca626c93a80cf7c1a2b528d5e07e3f..032c60cf1b7607df17799f0721218cda9160047f 100644
+index f09b7c3e34ca626c93a80cf7c1a2b528d5e07e3f..d9929ff35b0e9534e01ee580c94bf2bae1345f0d 100644
 --- a/dist/utils/quote.cjs
 +++ b/dist/utils/quote.cjs
 @@ -130,14 +130,13 @@ const calcRelayerFee = (quoteResponse, { exchangeRate, usdExchangeRate }) => {
@@ -71,3 +71,12 @@ index f09b7c3e34ca626c93a80cf7c1a2b528d5e07e3f..032c60cf1b7607df17799f0721218cda
          nativeToDisplayCurrencyExchangeRate,
          nativeToUsdExchangeRate,
      });
+@@ -214,7 +210,7 @@ exports.calcEstimatedAndMaxTotalGasFee = calcEstimatedAndMaxTotalGasFee;
+  * @param relayerFee - The relayer fee paid to bridge providers
+  * @returns The total estimated network fee for the bridge transaction, including the relayer fee paid to bridge providers
+  */
+-const calcTotalEstimatedNetworkFee = ({ effective: gasFeeToDisplay, }, relayerFee) => {
++const calcTotalEstimatedNetworkFee = ({ total: gasFeeToDisplay, }, relayerFee) => {
+     return {
+         amount: new bignumber_js_1.BigNumber(gasFeeToDisplay?.amount ?? '0')
+             .plus(relayerFee.amount)
