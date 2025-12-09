@@ -110,7 +110,7 @@ class AssetListPage {
   private readonly tokenImportedMessageCloseButton =
     '.actionable-message__message button[aria-label="Close"]';
 
-  private readonly tokenListComponent = '.token-list__token_component';
+  private readonly tokenSearchResults = '.token-list__token_component';
 
   private readonly tokenListItem =
     '[data-testid="multichain-token-list-button"]';
@@ -803,7 +803,7 @@ class AssetListPage {
   async waitUntilTokenSearchMatch(numberOfMatches: number) {
     await this.driver.waitUntil(
       async () => {
-        const matches = await this.driver.findElements(this.tokenListComponent);
+        const matches = await this.driver.findElements(this.tokenSearchResults);
         return matches.length === numberOfMatches;
       },
       {
