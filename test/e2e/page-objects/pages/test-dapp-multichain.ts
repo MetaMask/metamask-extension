@@ -224,7 +224,7 @@ class TestDappMultichain {
       } catch {
         return false;
       }
-    }, veryLargeDelayMs);
+    });
     if (!parsedResult) {
       throw new Error(
         'Failed to parse session result: JSON parsing did not complete',
