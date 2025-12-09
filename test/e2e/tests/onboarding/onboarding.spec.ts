@@ -61,7 +61,6 @@ describe('MetaMask onboarding', function () {
 
         await unlockWallet(driver, {
           navigate: true,
-          waitLoginSuccess: true,
           password: WALLET_PASSWORD,
         });
 
