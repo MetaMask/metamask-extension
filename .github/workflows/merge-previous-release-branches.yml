@@ -20,8 +20,9 @@ jobs:
     steps:
       - name: Check branch name format
         id: check
+        env:
+          BRANCH: ${{ github.event.ref }}
         run: |
-          BRANCH="${{ github.event.ref }}"
           if [[ "$BRANCH" =~ ^release/[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             echo "Branch '$BRANCH' matches release/X.Y.Z format"
             echo "is-valid=true" >> $GITHUB_OUTPUT
