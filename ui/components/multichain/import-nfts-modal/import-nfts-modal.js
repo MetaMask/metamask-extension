@@ -102,8 +102,10 @@ export const ImportNftsModal = ({ onClose }) => {
 
   const [selectedNetworkForCustomImport, setSelectedNetworkForCustomImport] =
     useState(null);
-  const [selectedNetworkClientIdForCustomImport, setSelectedNetworkClientIdForCustomImport] =
-    useState(null);
+  const [
+    selectedNetworkClientIdForCustomImport,
+    setSelectedNetworkClientIdForCustomImport,
+  ] = useState(null);
 
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
 
@@ -122,8 +124,12 @@ export const ImportNftsModal = ({ onClose }) => {
   const handleAddNft = async () => {
     trace({ name: TraceName.ImportNfts });
     try {
-      dispatch(
-        addNftVerifyOwnership(nftAddress, tokenId, selectedNetworkClientIdForCustomImport),
+      await dispatch(
+        addNftVerifyOwnership(
+          nftAddress,
+          tokenId,
+          selectedNetworkClientIdForCustomImport,
+        ),
       );
       const newNftDropdownState = {
         ...nftsDropdownState,
