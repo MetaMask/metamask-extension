@@ -1,5 +1,6 @@
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { TransactionParams } from '@metamask/eth-json-rpc-middleware';
+import { MiddlewareContext } from '@metamask/json-rpc-engine/v2';
 import {
   TransactionController,
   TransactionMeta,
@@ -66,12 +67,18 @@ const TRANSACTION_OPTIONS_MOCK: AddTransactionOptions = {
   type: TransactionType.simpleSend,
 };
 
-const DAPP_REQUEST_MOCK = {
-  id: TRANSACTION_OPTIONS_MOCK.actionId,
+const makeDappRequest = () => ({
+  jsonrpc: '2.0' as const,
+  id: TRANSACTION_OPTIONS_MOCK.actionId as string,
   method: 'eth_sendTransaction',
-  origin: TRANSACTION_OPTIONS_MOCK.origin,
-  securityAlertResponse: { test: 'value' },
-};
+  params: [],
+});
+
+const makeRequestContext = () =>
+  new MiddlewareContext<Record<PropertyKey, unknown>>({
+    origin: TRANSACTION_OPTIONS_MOCK.origin as string,
+    securityAlertResponse: { test: 'value' },
+  });
 
 const TRANSACTION_META_MOCK: TransactionMeta = {
   id: 'testId',
@@ -156,7 +163,8 @@ describe('Transaction Utils', () => {
 
     dappRequest = {
       ...request,
-      dappRequest: DAPP_REQUEST_MOCK,
+      dappRequest: makeDappRequest(),
+      requestContext: makeRequestContext(),
     };
   });
 
@@ -651,9 +659,11 @@ describe('Transaction Utils', () => {
           request.transactionController.addTransaction,
         ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
           ...TRANSACTION_OPTIONS_MOCK,
-          method: DAPP_REQUEST_MOCK.method,
+          method: makeDappRequest().method,
           requireApproval: true,
-          securityAlertResponse: DAPP_REQUEST_MOCK.securityAlertResponse,
+          securityAlertResponse: makeRequestContext().assertGet(
+            'securityAlertResponse',
+          ),
           type: undefined,
         });
       });

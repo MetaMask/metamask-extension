@@ -1,5 +1,15 @@
 {
   "resources": {
+    "react-router-dom": {
+      "globals": {
+        "history": true
+      }
+    },
+    "react-router-dom>@remix-run/router": {
+      "globals": {
+        "history": true
+      }
+    },
     "@metamask/snaps-execution-environments": {
       "packages": {
         "@metamask/post-message-stream": true,
@@ -11,12 +21,6 @@
       "globals": {
         "setTimeout": true,
         "clearTimeout": true
-      }
-    },
-    "react-responsive-carousel": {
-      "globals": {
-        "addEventListener": true,
-        "removeEventListener": true
       }
     },
     "react-beautiful-dnd": {

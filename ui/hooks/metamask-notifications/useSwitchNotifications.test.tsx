@@ -1,7 +1,7 @@
 import { waitFor } from '@testing-library/react';
 import * as ActionsModule from '../../store/actions';
 import * as NotificationSelectorsModule from '../../selectors/metamask-notifications/metamask-notifications';
-import { renderHookWithProviderTyped } from '../../../test/lib/render-helpers';
+import { renderHookWithProviderTyped } from '../../../test/lib/render-helpers-navigate';
 import {
   useSwitchFeatureAnnouncementsChange,
   useSwitchAccountNotificationsChange,

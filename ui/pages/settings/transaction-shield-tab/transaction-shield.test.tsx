@@ -9,15 +9,16 @@ import {
   Subscription,
   SUBSCRIPTION_STATUSES,
 } from '@metamask/subscription-controller';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
+import { initialState as rewardsInitialState } from '../../../ducks/rewards';
 import TransactionShield from './transaction-shield';
 
 const mockUseNavigate = jest.fn();
 const mockUseLocation = jest.fn();
-jest.mock('react-router-dom-v5-compat', () => {
+jest.mock('react-router-dom', () => {
   return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
+    ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
     useLocation: () => mockUseLocation,
   };
@@ -38,6 +39,7 @@ jest.mock('./shield-subscription-icon-animation', () => ({
 describe('Transaction Shield Page', () => {
   const STATE_MOCK = {
     ...mockState,
+    rewards: rewardsInitialState,
     metamask: {
       ...mockState.metamask,
       customerId: '1',
