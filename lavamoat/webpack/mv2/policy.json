@@ -1952,6 +1952,7 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
+        "@metamask/utils": true,
         "uuid": true
       }
     },
