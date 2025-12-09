@@ -20,7 +20,7 @@ describe('Swap on Solana', function () {
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
 
-        await homePage.checkPageIsLoaded('50');
+        await homePage.checkPageIsLoaded({ amount: '50' });
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
         await swapPage.createSolanaSwap({
@@ -79,7 +79,7 @@ describe('Swap on Solana', function () {
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
 
-        await homePage.checkPageIsLoaded('50');
+        await homePage.checkPageIsLoaded({ amount: '50' });
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
         await swapPage.createSolanaSwap({
@@ -119,7 +119,7 @@ describe('Swap on Solana', function () {
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
 
-        await homePage.checkPageIsLoaded('50');
+        await homePage.checkPageIsLoaded({ amount: '50' });
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
         await swapPage.createSolanaSwap({

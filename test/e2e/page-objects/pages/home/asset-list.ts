@@ -763,7 +763,7 @@ class AssetListPage {
   async checkTokenListIsDisplayed(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.tokenListItem, {
-        timeout: 300000,
+        timeout: 60000,
       });
     } catch (e) {
       console.log('Token list is not displayed', e);
@@ -776,14 +776,18 @@ class AssetListPage {
    * This is done due to the snap delay.
    *
    * @param tokenName - The name of the token to wait for
+   * @param timeout
    */
-  async waitForTokenToBeDisplayed(tokenName: string): Promise<void> {
+  async waitForTokenToBeDisplayed(
+    tokenName: string,
+    timeout: number = 10000,
+  ): Promise<void> {
     await this.driver.waitForSelector(
       {
         css: this.tokenListItem,
         text: tokenName,
       },
-      { timeout: 30000 },
+      { timeout },
     );
   }
 
@@ -793,7 +797,9 @@ class AssetListPage {
    * @throws Error if a "No conversion rate available" message is displayed
    */
   async checkConversionRateDisplayed(): Promise<void> {
-    await this.driver.assertElementNotPresent(this.noPriceAvailableMessage);
+    await this.driver.assertElementNotPresent(this.noPriceAvailableMessage, {
+      timeout: 30000,
+    });
   }
 }
 
