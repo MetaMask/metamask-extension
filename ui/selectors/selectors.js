@@ -142,6 +142,10 @@ import {
   getAllUnapprovedTransactions,
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
+  unapprovedDecryptMsgsSelector,
+  unapprovedPersonalMsgsSelector,
+  unapprovedEncryptionPublicKeyMsgsSelector,
+  unapprovedTypedMessagesSelector,
 } from './transactions';
 // eslint-disable-next-line import/order
 import { getSelectedInternalAccount, getInternalAccounts } from './accounts';
@@ -2494,22 +2498,31 @@ export function getShowRecoveryPhraseReminder(state) {
 /**
  * Retrieves the number of unapproved transactions and messages
  *
- * @param state - Redux state object.
  * @returns Number of unapproved transactions
  */
-export function getNumberOfAllUnapprovedTransactionsAndMessages(state) {
-  const unapprovedTxs = getAllUnapprovedTransactions(state);
-
-  const allUnapprovedMessages = {
-    ...unapprovedTxs,
-    ...state.metamask.unapprovedDecryptMsgs,
-    ...state.metamask.unapprovedPersonalMsgs,
-    ...state.metamask.unapprovedEncryptionPublicKeyMsgs,
-    ...state.metamask.unapprovedTypedMessages,
-  };
-  const numUnapprovedMessages = Object.keys(allUnapprovedMessages).length;
-  return numUnapprovedMessages;
-}
+export const getNumberOfAllUnapprovedTransactionsAndMessages =
+  createDeepEqualSelector(
+    getAllUnapprovedTransactions,
+    unapprovedDecryptMsgsSelector,
+    unapprovedPersonalMsgsSelector,
+    unapprovedEncryptionPublicKeyMsgsSelector,
+    unapprovedTypedMessagesSelector,
+    (
+      unapprovedTxs,
+      unapprovedDecryptMsgs,
+      unapprovedPersonalMsgs,
+      unapprovedEncryptionPublicKeyMsgs,
+      unapprovedTypedMessages,
+    ) => {
+      return (
+        Object.keys(unapprovedTxs).length +
+        Object.keys(unapprovedDecryptMsgs || {}).length +
+        Object.keys(unapprovedPersonalMsgs || {}).length +
+        Object.keys(unapprovedEncryptionPublicKeyMsgs || {}).length +
+        Object.keys(unapprovedTypedMessages || {}).length
+      );
+    },
+  );
 
 export const getCurrentNetwork = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
