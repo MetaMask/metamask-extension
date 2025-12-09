@@ -1,10 +1,3 @@
-/**
- * Using require() here instead of import because this is a CommonJS file
- * (using module.exports). We can't mix CommonJS and ES6 module syntax in the
- * same file. To use ES6 imports, we would need to convert this file to .mjs
- * and use 'export default' instead of 'module.exports'.
- */
-// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const consoleReporterRules = require('./test/jest/console-reporter-rules-integration');
 
 module.exports = {
