@@ -10,22 +10,19 @@ exports[`<SendHeading /> renders component 1`] = `
     >
       ?
     </div>
-    <div>
+    <h2
+      class="mm-box mm-text mm-text--heading-lg mm-box--margin-top-3 mm-box--color-inherit"
+    >
       <div
-        aria-describedby="tippy-tooltip-1"
-        class=""
-        data-original-title="0.000000000000000001"
-        data-tooltipped=""
-        style="display: inline;"
-        tabindex="0"
+        class="mm-box mm-box--display-inline-flex mm-box--gap-2 mm-box--align-items-center"
       >
-        <h2
-          class="mm-box mm-text mm-text--heading-lg mm-box--margin-top-3 mm-box--color-inherit"
-        >
-          &lt;0.000001 Unknown
-        </h2>
+        <div
+          class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+          style="height: 24px; width: 40px;"
+        />
+        Unknown
       </div>
-    </div>
+    </h2>
     <div
       class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
       style="margin-bottom: 2px; height: 22px; width: 48px;"
