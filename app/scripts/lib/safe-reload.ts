@@ -44,7 +44,7 @@ export function getRequestSafeReload<Type extends PersistenceManager>(
      * 'data' storage, pass the state; for 'split' storage, no arguments needed.
      * @returns true if the update was queued, false if writes are not allowed.
      */
-    persist: async (
+    safePersist: async (
       ...params: Parameters<
         PersistenceManager['set'] | PersistenceManager['persist']
       >

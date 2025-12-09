@@ -119,7 +119,8 @@ const localStore = useFixtureStore
   : new ExtensionStore();
 const persistenceManager = new PersistenceManager({ localStore });
 
-const { persist, requestSafeReload } = getRequestSafeReload(persistenceManager);
+const { safePersist, requestSafeReload } =
+  getRequestSafeReload(persistenceManager);
 
 // Setup global hook for improved Sentry state snapshots during initialization
 global.stateHooks.getMostRecentPersistedState = () =>
@@ -759,7 +760,7 @@ async function initialize(backup) {
           });
         }
         try {
-          await persist();
+          await safePersist();
         } catch (error) {
           log.error('Error persisting state change:', error);
           sentry?.captureException(error);
@@ -767,7 +768,7 @@ async function initialize(backup) {
       },
     );
   } else {
-    controller.store.on('update', persist);
+    controller.store.on('update', safePersist);
   }
   controller.store.on('error', (error) => {
     log.error('MetaMask controller.store error:', error);
