@@ -22,10 +22,10 @@ import stringify from 'fast-json-stable-stringify';
  * ```
  */
 export function useSyncEqualityCheck<Value>(value: Value): Value {
-  const snapshotRef = useRef<string>(stringify(value));
+  const currentSnapshot = stringify(value);
+  const snapshotRef = useRef<string>(currentSnapshot);
   const valueRef = useRef<Value>(value);
 
-  const currentSnapshot = stringify(value);
   if (currentSnapshot !== snapshotRef.current) {
     valueRef.current = Object.is(value, valueRef.current)
       ? (JSON.parse(currentSnapshot) as Value)
