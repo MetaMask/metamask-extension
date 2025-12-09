@@ -71,10 +71,6 @@ class UnlockPage extends Component {
      */
     location: PropTypes.object.isRequired,
     /**
-     * Navigation state from v5-compat navigation context
-     */
-    navState: PropTypes.object,
-    /**
      * If isUnlocked is true will redirect to most recent route in history
      */
     isUnlocked: PropTypes.bool,
@@ -157,13 +153,12 @@ class UnlockPage extends Component {
   }
 
   UNSAFE_componentWillMount() {
-    const { isUnlocked, navigate, location, navState } = this.props;
+    const { isUnlocked, navigate, location } = this.props;
 
     if (isUnlocked) {
       // Redirect to the intended route if available, otherwise DEFAULT_ROUTE
       let redirectTo = DEFAULT_ROUTE;
-      // Read from both v5 location.state and v5-compat navState
-      const fromLocation = location.state?.from || navState?.from;
+      const fromLocation = location.state?.from;
       if (fromLocation?.pathname) {
         const search = fromLocation.search || '';
         redirectTo = fromLocation.pathname + search;
