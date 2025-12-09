@@ -26,9 +26,6 @@ import {
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../ui/helpers/utils/metrics';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { shouldUseRedesignForSignatures } from '../../../shared/lib/confirmation.utils';
 import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
 
@@ -389,17 +386,6 @@ export default function createRPCMethodTrackingMiddleware({
         if (req.securityAlertResponse?.description) {
           eventProperties.security_alert_description =
             req.securityAlertResponse.description;
-        }
-
-        if (
-          shouldUseRedesignForSignatures({
-            approvalType: MESSAGE_TYPE_TO_APPROVAL_TYPE[invokedMethod],
-          })
-        ) {
-          eventProperties.ui_customizations = [
-            ...(eventProperties.ui_customizations || []),
-            MetaMetricsEventUiCustomization.RedesignedConfirmation,
-          ];
         }
 
         const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(
