@@ -220,58 +220,82 @@ export const PaymentMethodRow = ({
     );
   }, [displayedShieldSubscription, internalAccounts]);
 
+  const isCryptoPayment = useMemo(
+    () =>
+      displayedShieldSubscription &&
+      isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod),
+    [displayedShieldSubscription],
+  );
+
+  const descriptionText = useMemo(() => {
+    if (!displayedShieldSubscription || !isCryptoPayment) {
+      return t('shieldPlanCard');
+    }
+
+    const { payerAddress, tokenSymbol } = (
+      displayedShieldSubscription.paymentMethod as SubscriptionCryptoPaymentMethod
+    ).crypto;
+    const displayName = payerAccountName || shortenAddress(payerAddress);
+
+    return t('shieldTxDetails3DescriptionCrypto', [
+      tokenSymbol.toUpperCase(),
+      displayName,
+    ]);
+  }, [displayedShieldSubscription, isCryptoPayment, payerAccountName, t]);
+
+  const descriptionWithIcon = useCallback(
+    (iconColor: IconColor) => (
+      <Box className="flex items-center gap-1">
+        <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+          {descriptionText}
+        </Text>
+        <Icon name={IconName.Warning} size={IconSize.Lg} color={iconColor} />
+      </Box>
+    ),
+    [descriptionText],
+  );
+
+  // Check if crypto payment method changes should be disabled
+  const isCryptoPaymentChangeDisabled = useMemo(() => {
+    if (!displayedShieldSubscription) {
+      return false;
+    }
+    const { status } = displayedShieldSubscription;
+    return (
+      status === SUBSCRIPTION_STATUSES.canceled ||
+      status === SUBSCRIPTION_STATUSES.provisional
+    );
+  }, [displayedShieldSubscription]);
+
   const paymentMethodDisplay = useMemo(() => {
     if (!displayedShieldSubscription) {
       return '';
     }
 
-    let descriptionText = t('shieldPlanCard');
-    if (isCryptoPaymentMethod(displayedShieldSubscription?.paymentMethod)) {
-      const { payerAddress } = displayedShieldSubscription.paymentMethod.crypto;
-      const displayName = payerAccountName || shortenAddress(payerAddress);
-      descriptionText = t('shieldTxDetails3DescriptionCrypto', [
-        displayedShieldSubscription.paymentMethod.crypto.tokenSymbol.toUpperCase(),
-        displayName,
-      ]);
-    }
+    const title = t('shieldTxDetails3Title');
+    const openModal = () => setShowPaymentModal(true);
 
+    // Handle paused state (payment error)
     if (isPaused && !isUnexpectedErrorCryptoPayment) {
-      let tooltipText = '';
-      let buttonDisabled = false;
-      let buttonOnClick = handlePaymentError;
-      if (isCryptoPaymentMethod(displayedShieldSubscription?.paymentMethod)) {
-        tooltipText = 'shieldTxMembershipErrorPausedCryptoTooltip';
-        if (isInsufficientFundsCrypto) {
-          buttonOnClick = handlePaymentErrorInsufficientFunds;
-          // disable button if insufficient funds and not enough token balance to trigger subscription check
-          if (isCheckSubscriptionInsufficientFundsDisabled) {
-            buttonDisabled = true;
-          }
-        }
-      } else {
-        // card payment error case
-        tooltipText = 'shieldTxMembershipErrorPausedCardTooltip';
-      }
+      const tooltipText = isCryptoPayment
+        ? 'shieldTxMembershipErrorPausedCryptoTooltip'
+        : 'shieldTxMembershipErrorPausedCardTooltip';
+
+      const buttonOnClick =
+        isCryptoPayment && isInsufficientFundsCrypto
+          ? handlePaymentErrorInsufficientFunds
+          : handlePaymentError;
+
+      const buttonDisabled =
+        isCryptoPayment &&
+        isInsufficientFundsCrypto &&
+        isCheckSubscriptionInsufficientFundsDisabled;
 
       return (
         <Tooltip position="top" title={t(tooltipText)}>
           <ButtonRow
-            title={t('shieldTxDetails3Title')}
-            description={
-              <Box className="flex items-center gap-1">
-                <Text
-                  variant={TextVariant.BodyMd}
-                  fontWeight={FontWeight.Medium}
-                >
-                  {descriptionText}
-                </Text>
-                <Icon
-                  name={IconName.Warning}
-                  size={IconSize.Lg}
-                  color={IconColor.ErrorDefault}
-                />
-              </Box>
-            }
+            title={title}
+            description={descriptionWithIcon(IconColor.ErrorDefault)}
             descriptionClassName="text-error-default"
             onClick={buttonOnClick}
             disabled={buttonDisabled}
@@ -279,66 +303,41 @@ export const PaymentMethodRow = ({
         </Tooltip>
       );
     }
-    if (isSubscriptionEndingSoon && displayedShieldSubscription) {
-      return (
-        <>
-          <ButtonRow
-            title={t('shieldTxDetails3Title')}
-            description={
-              <Box className="flex items-center gap-1">
-                <Text
-                  variant={TextVariant.BodyMd}
-                  fontWeight={FontWeight.Medium}
-                >
-                  {descriptionText}
-                </Text>
-                <Icon
-                  name={IconName.Warning}
-                  size={IconSize.Lg}
-                  color={IconColor.WarningDefault}
-                />
-              </Box>
-            }
-            onClick={handlePaymentError}
-          />
-        </>
-      );
-    }
 
-    if (isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)) {
+    // Handle subscription ending soon state
+    if (isSubscriptionEndingSoon) {
       return (
         <ButtonRow
-          title={t('shieldTxDetails3Title')}
-          description={descriptionText}
-          disabled={
-            displayedShieldSubscription.status ===
-              SUBSCRIPTION_STATUSES.canceled || // can't change payment method if subscription is canceled
-            displayedShieldSubscription.status ===
-              SUBSCRIPTION_STATUSES.provisional // payment method crypto verifying, can't change yet
-          }
-          onClick={() => setShowPaymentModal(true)}
+          title={title}
+          description={descriptionWithIcon(IconColor.WarningDefault)}
+          onClick={handlePaymentError}
         />
       );
     }
 
+    // Default state - show payment method with option to change
     return (
       <ButtonRow
-        title={t('shieldTxDetails3Title')}
+        title={title}
         description={descriptionText}
-        onClick={() => setShowPaymentModal(true)}
+        disabled={isCryptoPayment && isCryptoPaymentChangeDisabled}
+        onClick={openModal}
       />
     );
   }, [
     displayedShieldSubscription,
+    t,
     isPaused,
     isUnexpectedErrorCryptoPayment,
     isSubscriptionEndingSoon,
-    t,
-    handlePaymentError,
+    descriptionText,
+    isCryptoPayment,
+    isCryptoPaymentChangeDisabled,
     isInsufficientFundsCrypto,
     handlePaymentErrorInsufficientFunds,
+    handlePaymentError,
     isCheckSubscriptionInsufficientFundsDisabled,
-    payerAccountName,
+    descriptionWithIcon,
   ]);
 
   if (showSkeletonLoader) {
