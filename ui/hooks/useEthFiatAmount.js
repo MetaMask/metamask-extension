@@ -36,7 +36,8 @@ export function useEthFiatAmount(
   if (
     !showFiat ||
     currentCurrency.toUpperCase() === 'ETH' ||
-    conversionRate <= 0 ||
+    !conversionRate ||
+    conversionRate < 0 ||
     ethAmount === undefined
   ) {
     return undefined;

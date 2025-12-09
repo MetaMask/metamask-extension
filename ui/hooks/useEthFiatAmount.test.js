@@ -72,6 +72,24 @@ describe('useEthFiatAmount', () => {
       const { result } = renderUseEthFiatAmount('1', { showFiat: true }, state);
       expect(result.current).toBeUndefined();
     });
+
+    it('should return undefined when conversionRate is undefined (ticker not in currencyRates)', () => {
+      // This tests the case where the ticker doesn't exist in currencyRates,
+      // resulting in conversionRate being undefined
+      const state = {
+        ...baseState,
+        metamask: {
+          ...baseState.metamask,
+          currencyRates: {}, // No ETH entry, so conversionRate will be undefined
+        },
+      };
+
+      const { result } = renderUseEthFiatAmount('1', { showFiat: true }, state);
+
+      // Should not throw TypeError when calling .toString() on undefined
+      expect(result.error).toBeUndefined();
+      expect(result.current).toBeUndefined();
+    });
   });
 
   describe('BigNumber precision handling', () => {
