@@ -1,3 +1,4 @@
+import type { WalletMiddlewareContext } from '@metamask/eth-json-rpc-middleware';
 import { Hex, JsonRpcRequest } from '@metamask/utils';
 import { HandlerType } from '@metamask/snaps-utils';
 import { InternalError, type SnapId } from '@metamask/snaps-sdk';
@@ -14,8 +15,11 @@ describe('forwardRequestToSnap', () => {
     jsonrpc: '2.0',
     method: 'test_method',
     params: { test: 'value' },
-    origin: ORIGIN_MOCK,
-  } as JsonRpcRequest & { origin: string };
+  } as JsonRpcRequest;
+
+  const CONTEXT_MOCK = new Map([
+    ['origin', ORIGIN_MOCK],
+  ]) as WalletMiddlewareContext;
 
   const INVOKE_RESULT_MOCK = { result: { success: true } } as Record<
     string,
@@ -35,6 +39,7 @@ describe('forwardRequestToSnap', () => {
         { handleRequest: handleRequestMock, snapId: SNAP_ID_MOCK },
         { id: ID_MOCK },
         REQUEST_MOCK,
+        CONTEXT_MOCK,
       );
 
       expect(handleRequestMock).toHaveBeenCalledWith({
@@ -56,13 +61,13 @@ describe('forwardRequestToSnap', () => {
         id: 1,
         jsonrpc: '2.0',
         method: 'test_method',
-        origin: ORIGIN_MOCK,
-      } as JsonRpcRequest & { origin: string };
+      } as JsonRpcRequest;
 
       const result = await forwardRequestToSnap(
         { handleRequest: handleRequestMock, snapId: SNAP_ID_MOCK },
         { id: ID_MOCK },
         requestWithoutParams,
+        CONTEXT_MOCK,
       );
 
       expect(handleRequestMock).toHaveBeenCalledWith({
@@ -87,6 +92,7 @@ describe('forwardRequestToSnap', () => {
         { handleRequest: handleRequestMock, snapId: SNAP_ID_MOCK },
         { id: ID_MOCK },
         REQUEST_MOCK,
+        CONTEXT_MOCK,
       );
 
       expect(result).toBe(customResponse);
@@ -101,6 +107,7 @@ describe('forwardRequestToSnap', () => {
           { handleRequest: handleRequestMock, snapId: SNAP_ID_MOCK },
           { id: ID_MOCK },
           REQUEST_MOCK,
+          CONTEXT_MOCK,
         ),
       ).rejects.toThrow('Snap error');
     });
@@ -113,6 +120,7 @@ describe('forwardRequestToSnap', () => {
           { handleRequest: handleRequestMock, snapId: '' as SnapId },
           { id: ID_MOCK },
           REQUEST_MOCK,
+          CONTEXT_MOCK,
         ),
       ).rejects.toThrow(
         new InternalError('No snapId configured for method test_method'),
@@ -128,6 +136,7 @@ describe('forwardRequestToSnap', () => {
           },
           { id: ID_MOCK },
           REQUEST_MOCK,
+          CONTEXT_MOCK,
         ),
       ).rejects.toThrow(
         new InternalError('No snapId configured for method test_method'),
@@ -143,6 +152,7 @@ describe('forwardRequestToSnap', () => {
           },
           { id: ID_MOCK },
           REQUEST_MOCK,
+          CONTEXT_MOCK,
         ),
       ).rejects.toThrow(
         new InternalError('No snapId configured for method test_method'),
@@ -150,11 +160,14 @@ describe('forwardRequestToSnap', () => {
     });
 
     it('throws InternalError with method name for undefined origin', async () => {
+      const emptyContextMock = new Map() as WalletMiddlewareContext;
+
       await expect(
         forwardRequestToSnap(
           { handleRequest: handleRequestMock, snapId: SNAP_ID_MOCK },
           { id: ID_MOCK },
-          { ...REQUEST_MOCK, origin: undefined as unknown as string },
+          { ...REQUEST_MOCK },
+          emptyContextMock,
         ),
       ).rejects.toThrow(
         new InternalError('No origin specified for method test_method'),
@@ -172,6 +185,7 @@ describe('forwardRequestToSnap', () => {
           { handleRequest: handleRequestMock, snapId: '' as SnapId },
           { id: ID_MOCK },
           customMethodRequest,
+          CONTEXT_MOCK,
         ),
       ).rejects.toThrow(
         new InternalError('No snapId configured for method custom_method'),
@@ -191,13 +205,13 @@ describe('forwardRequestToSnap', () => {
             array: [1, 2, 3],
           },
         },
-        origin: ORIGIN_MOCK,
-      } as JsonRpcRequest & { origin: string };
+      } as JsonRpcRequest;
 
       await forwardRequestToSnap(
         { handleRequest: handleRequestMock, snapId: SNAP_ID_MOCK },
         { id: ID_MOCK },
         complexRequest,
+        CONTEXT_MOCK,
       );
 
       expect(handleRequestMock).toHaveBeenCalledWith({
@@ -222,6 +236,7 @@ describe('forwardRequestToSnap', () => {
         { handleRequest: handleRequestMock, snapId: SNAP_ID_MOCK },
         { id: ID_MOCK },
         REQUEST_MOCK,
+        CONTEXT_MOCK,
       );
 
       expect(handleRequestMock).toHaveBeenCalledWith(
@@ -236,6 +251,7 @@ describe('forwardRequestToSnap', () => {
         { handleRequest: handleRequestMock, snapId: SNAP_ID_MOCK },
         { id: ID_MOCK },
         REQUEST_MOCK,
+        CONTEXT_MOCK,
       );
 
       expect(handleRequestMock).toHaveBeenCalledWith(
