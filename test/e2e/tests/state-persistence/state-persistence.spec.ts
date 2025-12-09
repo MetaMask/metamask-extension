@@ -307,8 +307,7 @@ const reloadExtension = async (driver: Driver) => {
 const reloadAndUnlock = async (driver: Driver) => {
   await reloadExtension(driver);
   await unlockWallet(driver, {
-    password: WALLET_PASSWORD,
-    waitLoginSuccess: false,
+    password: WALLET_PASSWORD
   });
   await ensureHomeReady(driver);
 };
