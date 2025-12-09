@@ -7,7 +7,11 @@ on:
 
 jobs:
   stale:
+    name: Close stale issues and PRs
+    runs-on: ubuntu-latest
     permissions:
       issues: write
       pull-requests: write
-    uses: metamask/github-tools/.github/workflows/stale-issue-pr.yml@566da3332757544da431707bde71a242b182b3ac
+    steps:
+      - name: Close stale issues and PRs
+        uses: MetaMask/github-tools/.github/actions/stale-issue-pr@v1

@@ -82,7 +82,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Create Release PR
-        uses: MetaMask/github-tools/.github/actions/create-release-pr@v1.1.3
+        uses: MetaMask/github-tools/.github/actions/create-release-pr@v1
         with:
           platform: extension
           checkout-base-branch: ${{ needs.resolve-bases.outputs.checkout_base }}
