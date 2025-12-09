@@ -4,7 +4,6 @@ import { largeDelayMs } from '../../../helpers';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
 import { DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS } from '../testHelpers';
 import { withSolanaAccountSnap } from '../../../tests/solana/common-solana';
-import { switchToAccount } from '../../solana-wallet-standard/testHelpers';
 
 describe('Multichain API - Non EVM', function () {
   const SOLANA_SCOPE = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
@@ -81,7 +80,6 @@ describe('Multichain API - Non EVM', function () {
         },
         async (driver, _, extensionId) => {
           const testDapp = new TestDappMultichain(driver);
-          await switchToAccount(driver, 'Solana 1'); // we make sure to manually select account 1 as default
           await testDapp.openTestDappPage();
           await testDapp.connectExternallyConnectable(extensionId);
           await testDapp.initCreateSessionScopes([SOLANA_SCOPE]);
@@ -93,8 +91,7 @@ describe('Multichain API - Non EVM', function () {
             'input[type="checkbox" i]',
           );
 
-          // 0 index is select all, 1 index is EVM default account, 2 index is Solana account 1 (default)
-          const accountCheckbox = checkboxes[2];
+          const accountCheckbox = checkboxes[0];
           const isChecked = await accountCheckbox.isSelected();
 
           assert.strictEqual(
