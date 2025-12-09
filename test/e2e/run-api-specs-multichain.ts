@@ -12,7 +12,7 @@ import ExamplesRule from '@open-rpc/test-coverage/build/rules/examples-rule';
 import { Call, IOptions } from '@open-rpc/test-coverage/build/coverage';
 import { InternalScopeString } from '@metamask/chain-agnostic-permission';
 import { Mockttp } from 'mockttp';
-import { Driver, PAGES } from './webdriver/driver';
+import { Driver } from './webdriver/driver';
 
 import {
   createCaip27DriverTransport,
