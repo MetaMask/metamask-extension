@@ -236,7 +236,7 @@ function handleV4CommandSwap(
   const result = getV4SwapActionValues(actionBytes, actionParameters, chainId);
 
   return {
-    amountMin: result.amountMin || amountMin || '0',
+    amountMin: result.amountMin || amountMin,
     quotesInput: {
       ...(quotesInput ?? {}),
       srcTokenAmount:
@@ -310,7 +310,7 @@ function handleV4CommandSwapExactIn(
   const minimumAmount = parsedResult.amountOutMinimum.toHexString();
 
   return {
-    amountMin: minimumAmount || amountMin || '0',
+    amountMin: minimumAmount || amountMin,
     quotesInput: {
       ...(quotesInput ?? {}),
       srcTokenAmount:
@@ -340,7 +340,7 @@ function handleV4CommandSwapExactInSingle(
   const minimumAmount = parsedResult.amountOutMinimum.toHexString();
 
   return {
-    amountMin: minimumAmount || amountMin || '0',
+    amountMin: minimumAmount || amountMin,
     quotesInput: {
       ...(quotesInput ?? {}),
       srcTokenAmount:
@@ -380,7 +380,7 @@ function handleV3CommandSwapExactIn(
   const minimumAmount = result[2].toHexString();
 
   return {
-    amountMin: minimumAmount || amountMin || '0',
+    amountMin: minimumAmount || amountMin,
     quotesInput: {
       ...(quotesInput ?? {}),
       srcTokenAmount: quotesInput?.srcTokenAmount || result[1].toHexString(),
@@ -404,7 +404,7 @@ function handleV2CommandSwapExactIn(
   const minimumAmount = result[2].toHexString();
 
   return {
-    amountMin: minimumAmount || amountMin || '0',
+    amountMin: minimumAmount || amountMin,
     quotesInput: {
       ...(quotesInput ?? {}),
       srcTokenAmount: quotesInput?.srcTokenAmount || result[1].toHexString(),
@@ -430,7 +430,7 @@ function handleCommandSweep(
   );
 
   return {
-    amountMin: result[2].toHexString() || '0',
+    amountMin: result[2].toHexString(),
     quotesInput: quotesInput as GenericQuoteRequest,
   };
 }
@@ -463,7 +463,7 @@ function handleCommandUnwrapETH(
   );
 
   return {
-    amountMin: result[1].toHexString() || '0',
+    amountMin: result[1].toHexString(),
     quotesInput: {
       ...(quotesInput ?? {}),
       destTokenAddress: getNativeTokenAddress(chainId),
