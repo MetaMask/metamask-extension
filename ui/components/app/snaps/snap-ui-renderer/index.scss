@@ -17,6 +17,12 @@
     }
   }
 
+  &__container > &__panel:first-child {
+    overflow-y: auto;
+    margin: 0;
+    padding: 16px;
+  }
+
   &__content {
     flex: 1 1 auto;
   }
@@ -81,8 +87,6 @@
   &__footer {
     box-shadow: var(--shadow-size-md) var(--color-shadow-default);
     height: 80px;
-    position: sticky;
-    bottom: 0;
     margin-top: auto;
     transition: bottom 0.3s ease-in-out;
   }
