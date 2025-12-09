@@ -405,7 +405,7 @@ describe('Sentry errors', function () {
               })
               .build(),
             // Intentionally corrupt state to trigger migration error during initialization
-            meta: undefined,
+            meta: { version: undefined },
           },
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
