@@ -66,20 +66,16 @@ export const getAllNetworkTransactions = createDeepEqualSelector(
 );
 
 export const getCurrentNetworkTransactions = createDeepEqualSelector(
-  (state) => {
-    const transactions = getTransactions(state);
-
+  getTransactions,
+  getProviderConfig,
+  (transactions, providerConfig) => {
     if (!transactions.length) {
       return [];
     }
-
-    const { chainId } = getProviderConfig(state);
-
     return transactions.filter(
-      (transaction) => transaction.chainId === chainId,
+      (transaction) => transaction.chainId === providerConfig.chainId,
     );
   },
-  (transactions) => transactions,
 );
 
 export const incomingTxListSelectorAllChains = createDeepEqualSelector(
