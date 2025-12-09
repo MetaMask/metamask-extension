@@ -90,11 +90,17 @@ module.exports = function ({ types: t }) {
         if (match) {
           const filename = match[1];
           const ext = originalArg.value.split('.').slice(1).join('.');
-          const urlSafePath = join(rootPath, `${filename}.${ext}`).replace(/\\/gu, '/');
+          const urlSafePath = join(rootPath, `${filename}.${ext}`).replace(
+            /\\/gu,
+            '/',
+          );
           return t.stringLiteral(urlSafePath);
         }
       }
-      const urlSafePath = join(rootPath, originalArg.value).replace(/\\/gu, '/');
+      const urlSafePath = join(rootPath, originalArg.value).replace(
+        /\\/gu,
+        '/',
+      );
       return t.stringLiteral(urlSafePath);
     }
 
