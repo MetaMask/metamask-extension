@@ -76,8 +76,6 @@ const AddContact = ({
 
   // Re-resolve ENS name when network changes
   useEffect(() => {
-    // Use enteredDomainName if user already selected a resolution,
-    // otherwise check if input is a valid domain name (resolution list still showing)
     const domainToResolve =
       enteredDomainName || (isValidDomainName(input) ? input : '');
 
