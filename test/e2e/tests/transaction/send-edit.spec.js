@@ -90,7 +90,7 @@ describe('Editing Confirm Transaction', function () {
         );
         await driver.wait(async () => {
           const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .activity-list-item',
+            '.transaction-status-label--confirmed',
           );
           return confirmedTxes.length === 1;
         }, 10000);
@@ -186,7 +186,7 @@ describe('Editing Confirm Transaction', function () {
         );
         await driver.wait(async () => {
           const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .activity-list-item',
+            '.transaction-status-label--confirmed',
           );
           return confirmedTxes.length === 1;
         }, 10000);

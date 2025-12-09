@@ -4,7 +4,7 @@ import { Suite } from 'mocha';
 import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { MetaMetricsRequestedThrough } from '../../../../shared/constants/metametrics';
-import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
+import { DEFAULT_FIXTURE_ACCOUNT, MOCK_META_METRICS_ID } from '../../constants';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
@@ -50,7 +50,7 @@ describe('Permissions Approved Event', function (this: Suite) {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-fd20',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .build(),

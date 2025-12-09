@@ -71,13 +71,15 @@ class NonEvmHomepage extends HomePage {
       { timeout: 30000 },
     );
 
-    await this.driver.waitForSelector(
-      {
-        text: token,
-        tag: 'span',
-      },
-      { timeout: 30000 },
-    );
+    if (token) {
+      await this.driver.waitForSelector(
+        {
+          text: token,
+          tag: 'span',
+        },
+        { timeout: 30000 },
+      );
+    }
   }
 
   /**

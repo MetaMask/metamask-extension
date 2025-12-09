@@ -2,7 +2,7 @@ import * as React from 'react';
 import { NameType } from '@metamask/name-controller';
 import { fireEvent } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,

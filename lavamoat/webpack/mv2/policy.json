@@ -10,6 +10,11 @@
         "SuppressedError": true
       }
     },
+    "@date-io/luxon": {
+      "packages": {
+        "luxon": true
+      }
+    },
     "@ensdomains/content-hash": {
       "globals": {
         "Buffer.from": true,
@@ -706,6 +711,7 @@
         "getSelection": true,
         "performance.now": true,
         "removeEventListener": true,
+        "requestAnimationFrame": true,
         "setInterval": true,
         "setTimeout": true
       },
@@ -719,8 +725,26 @@
         "prop-types": true,
         "react": true,
         "react-dom": true,
-        "@material-ui/core>react-is": true,
+        "react-redux>react-is": true,
         "react-transition-group": true
+      }
+    },
+    "@material-ui/pickers": {
+      "globals": {
+        "addEventListener": true,
+        "innerHeight": true,
+        "orientation": true,
+        "removeEventListener": true,
+        "screen": true
+      },
+      "packages": {
+        "@babel/runtime": true,
+        "@material-ui/core": true,
+        "@material-ui/pickers>clsx": true,
+        "prop-types": true,
+        "react": true,
+        "react-transition-group": true,
+        "@material-ui/pickers>rifm": true
       }
     },
     "@material-ui/core>@material-ui/styles": {
@@ -1928,6 +1952,7 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
+        "@metamask/utils": true,
         "uuid": true
       }
     },
@@ -2085,6 +2110,11 @@
       }
     },
     "@metamask/snaps-rpc-methods": {
+      "meta": {
+        "webpack-optimization": [
+          "Dependency '@metamask/snaps-utils' reexports from '@metamask/snaps-sdk' and webpack collapsed that to a direct import."
+        ]
+      },
       "packages": {
         "@metamask/snaps-sdk>@metamask/key-tree": true,
         "@metamask/permission-controller": true,
@@ -2106,7 +2136,8 @@
         "@metamask/rpc-errors": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "@swc/helpers": true
+        "@swc/helpers": true,
+        "luxon": true
       }
     },
     "@metamask/snaps-utils": {
@@ -2405,7 +2436,7 @@
         "@reduxjs/toolkit>reselect": true
       }
     },
-    "react-router-dom-v5-compat>@remix-run/router": {
+    "react-router-dom>@remix-run/router": {
       "globals": {
         "AbortController": true,
         "DOMException": true,
@@ -3690,7 +3721,7 @@
         "pageYOffset": true
       },
       "packages": {
-        "react-router-dom>tiny-invariant": true
+        "react-beautiful-dnd>css-box-model>tiny-invariant": true
       }
     },
     "@material-ui/core>@material-ui/styles>jss-plugin-vendor-prefixer>css-vendor": {
@@ -4200,24 +4231,6 @@
         "define": true
       }
     },
-    "react-router-dom>history": {
-      "globals": {
-        "addEventListener": true,
-        "confirm": true,
-        "document": true,
-        "history": true,
-        "location": true,
-        "navigator.userAgent": true,
-        "removeEventListener": true
-      },
-      "packages": {
-        "@babel/runtime": true,
-        "react-router-dom>history>resolve-pathname": true,
-        "react-router-dom>tiny-invariant": true,
-        "react-router-dom>tiny-warning": true,
-        "react-router-dom>history>value-equal": true
-      }
-    },
     "@toruslabs/eccrypto>elliptic>hmac-drbg": {
       "packages": {
         "ethers>@ethersproject/sha2>hash.js": true,
@@ -4437,13 +4450,13 @@
     "@material-ui/core>@material-ui/styles>jss-plugin-nested": {
       "packages": {
         "@babel/runtime": true,
-        "react-router-dom>tiny-warning": true
+        "@material-ui/core>@material-ui/styles>jss>tiny-warning": true
       }
     },
     "@material-ui/core>@material-ui/styles>jss-plugin-rule-value-function": {
       "packages": {
         "@material-ui/core>@material-ui/styles>jss": true,
-        "react-router-dom>tiny-warning": true
+        "@material-ui/core>@material-ui/styles>jss>tiny-warning": true
       }
     },
     "@material-ui/core>@material-ui/styles>jss-plugin-vendor-prefixer": {
@@ -4461,7 +4474,7 @@
       "packages": {
         "@babel/runtime": true,
         "@material-ui/core>@material-ui/styles>jss>is-in-browser": true,
-        "react-router-dom>tiny-warning": true
+        "@material-ui/core>@material-ui/styles>jss>tiny-warning": true
       }
     },
     "ethereumjs-util>ethereum-cryptography>keccak": {
@@ -4737,11 +4750,6 @@
       },
       "packages": {
         "process": true
-      }
-    },
-    "serve-handler>path-to-regexp": {
-      "packages": {
-        "serve-handler>path-to-regexp>isarray": true
       }
     },
     "crypto-browserify>pbkdf2": {
@@ -5071,7 +5079,7 @@
         "prop-types": true,
         "react-markdown>property-information": true,
         "react": true,
-        "react-markdown>react-is": true,
+        "react-redux>react-is": true,
         "react-markdown>remark-parse": true,
         "react-markdown>remark-rehype": true,
         "react-markdown>space-separated-tokens": true,
@@ -5105,17 +5113,6 @@
       }
     },
     "react-router-dom": {
-      "packages": {
-        "@babel/runtime": true,
-        "react-router-dom>history": true,
-        "prop-types": true,
-        "react": true,
-        "react-router-dom>react-router": true,
-        "react-router-dom>tiny-invariant": true,
-        "react-router-dom>tiny-warning": true
-      }
-    },
-    "react-router-dom-v5-compat": {
       "globals": {
         "FormData": true,
         "URL": true,
@@ -5135,39 +5132,23 @@
       },
       "meta": {
         "webpack-optimization": [
-          "Dependency 'react-router-dom' reexports from 'react-router-dom>react-router' and webpack collapsed that to a direct import.",
-          "Dependency 'react-router-dom-v5-compat>react-router' reexports from 'react-router-dom-v5-compat>@remix-run/router' and webpack collapsed that to a direct import."
+          "Dependency 'react-router-dom>react-router' reexports from 'react-router-dom>@remix-run/router' and webpack collapsed that to a direct import."
         ]
       },
       "packages": {
-        "react-router-dom-v5-compat>@remix-run/router": true,
-        "history": true,
+        "react-router-dom>@remix-run/router": true,
         "react": true,
         "react-dom": true,
-        "react-router-dom": true,
-        "react-router-dom>react-router": true,
-        "react-router-dom-v5-compat>react-router": true
+        "react-router-dom>react-router": true
       }
     },
     "react-router-dom>react-router": {
-      "packages": {
-        "@babel/runtime": true,
-        "react-router-dom>history": true,
-        "react-redux>hoist-non-react-statics": true,
-        "serve-handler>path-to-regexp": true,
-        "prop-types": true,
-        "react": true,
-        "react-router-dom>react-router>react-is": true,
-        "react-router-dom>tiny-invariant": true,
-        "react-router-dom>tiny-warning": true
-      }
-    },
-    "react-router-dom-v5-compat>react-router": {
       "globals": {
-        "console.error": true
+        "console.error": true,
+        "console.warn": true
       },
       "packages": {
-        "react-router-dom-v5-compat>@remix-run/router": true,
+        "react-router-dom>@remix-run/router": true,
         "react": true
       }
     },
@@ -5548,6 +5529,17 @@
       },
       "packages": {
         "buffer": true
+      }
+    },
+    "@material-ui/pickers>rifm": {
+      "globals": {
+        "console.error": true,
+        "document.addEventListener": true,
+        "document.removeEventListener": true
+      },
+      "packages": {
+        "@babel/runtime": true,
+        "react": true
       }
     },
     "ethereumjs-util>create-hash>ripemd160": {

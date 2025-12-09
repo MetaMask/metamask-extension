@@ -125,12 +125,10 @@ describe('MetaMask onboarding', function () {
         // await assetListPage.checkTokenExistsInList('Tron'); // https://consensyssoftware.atlassian.net/browse/MMQA-1191
         timer6.stopTimer();
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountsPage();
+        await headerNavbar.openAccountMenu();
         timer7.startTimer();
-        const accountList = new AccountListPage(driver);
-        await accountList.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        const accountListPage = new AccountListPage(driver);
+        await accountListPage.checkPageIsLoaded();
         timer7.stopTimer();
       },
     );

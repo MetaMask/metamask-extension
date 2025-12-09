@@ -81,6 +81,7 @@ class TestDappMultichain {
   }
 
   async clickFirstResultSummary() {
+    await this.driver.waitForSelector(this.resultSummary);
     const resultSummaries = await this.driver.findElements(this.resultSummary);
     const firstResultSummary = resultSummaries[0];
     await firstResultSummary.click();
@@ -204,9 +205,10 @@ class TestDappMultichain {
     await this.clickWalletGetSessionButton();
     await this.clickFirstResultSummary();
 
-    const getSessionRawResult = await this.driver.findElement(
+    const getSessionRawResult = await this.driver.waitForSelector(
       this.firstSessionMethodResult,
     );
+    await this.driver.delay(veryLargeDelayMs);
     return JSON.parse(await getSessionRawResult.getText());
   }
 
