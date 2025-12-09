@@ -109,7 +109,9 @@ class HomePage {
     this.headerNavbar = new HeaderNavbar(driver);
   }
 
-  async checkPageIsLoaded(timeout: number = 10000): Promise<void> {
+  async checkPageIsLoaded({
+    timeout = 10000,
+  }: { timeout?: number } = {}): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors(
         [this.sendButton, this.activityTab, this.tokensTab],
