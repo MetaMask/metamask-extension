@@ -72,7 +72,7 @@ export const addAccountInWalletAndAuthorize = async (
 
   const editConnectedAccountsModal = new EditConnectedAccountsModal(driver);
   await editConnectedAccountsModal.checkPageIsLoaded();
-  await editConnectedAccountsModal.addNewEthereumAccount();
+  await editConnectedAccountsModal.addNewAccount();
 
   await connectAccountConfirmation.checkPageIsLoaded();
   await connectAccountConfirmation.confirmConnect();

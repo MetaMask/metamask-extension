@@ -129,7 +129,7 @@ import {
   SecretType,
   RecoveryError,
 } from '@metamask/seedless-onboarding-controller';
-import { COHORT_NAMES, PRODUCT_TYPES } from '@metamask/subscription-controller';
+import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { isSnapId } from '@metamask/snaps-utils';
 import {
   findAtomicBatchSupportForChain,
@@ -151,8 +151,8 @@ import {
 
 import {
   HardwareDeviceNames,
-  HardwareKeyringType,
   LedgerTransportTypes,
+  KEYRING_DEVICE_PROPERTY_MAP,
 } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
 import { RestrictedMethods } from '../../shared/constants/permissions';
@@ -215,7 +215,7 @@ import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
 import {
   getIsSeedlessOnboardingFeatureEnabled,
-  isGatorPermissionsFeatureEnabled,
+  getEnabledAdvancedPermissions,
 } from '../../shared/modules/environment';
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
@@ -333,6 +333,7 @@ import {
   TokenRatesControllerInit,
 } from './controller-init/assets';
 import { TransactionControllerInit } from './controller-init/confirmations/transaction-controller-init';
+import { TransactionPayControllerInit } from './controller-init/transaction-pay-controller-init';
 import { PPOMControllerInit } from './controller-init/confirmations/ppom-controller-init';
 import { SmartTransactionsControllerInit } from './controller-init/smart-transactions/smart-transactions-controller-init';
 import { initControllers } from './controller-init/utils';
@@ -431,6 +432,8 @@ import {
   ClaimsControllerInit,
   ClaimsServiceInit,
 } from './controller-init/claims';
+import { ProfileMetricsControllerInit } from './controller-init/profile-metrics-controller-init';
+import { ProfileMetricsServiceInit } from './controller-init/profile-metrics-service-init';
 import { getQuotesForConfirmation } from './lib/dapp-swap/dapp-swap-util';
 
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -609,6 +612,7 @@ export default class MetamaskController extends EventEmitter {
       PhishingController: PhishingControllerInit,
       AccountTrackerController: AccountTrackerControllerInit,
       TransactionController: TransactionControllerInit,
+      TransactionPayController: TransactionPayControllerInit,
       SmartTransactionsController: SmartTransactionsControllerInit,
       SwapsController: SwapsControllerInit,
       BridgeController: BridgeControllerInit,
@@ -662,6 +666,8 @@ export default class MetamaskController extends EventEmitter {
       AnnouncementController: AnnouncementControllerInit,
       RewardsDataService: RewardsDataServiceInit,
       RewardsController: RewardsControllerInit,
+      ProfileMetricsController: ProfileMetricsControllerInit,
+      ProfileMetricsService: ProfileMetricsServiceInit,
     };
 
     const {
@@ -775,6 +781,7 @@ export default class MetamaskController extends EventEmitter {
     this.rewardsController = controllersByName.RewardsController;
     this.claimsController = controllersByName.ClaimsController;
     this.claimsService = controllersByName.ClaimsService;
+    this.profileMetricsController = controllersByName.ProfileMetricsController;
     this.backup = new Backup({
       preferencesController: this.preferencesController,
       addressBookController: this.addressBookController,
@@ -909,11 +916,11 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       'TransactionController:transactionSubmitted',
       ({ transactionMeta }) => {
-        this._onShieldSubscriptionApprovalTransaction(transactionMeta).catch(
-          (err) => {
+        this.subscriptionService
+          .handlePostTransaction(transactionMeta)
+          .catch((err) => {
             console.error('Error onShieldSubscriptionApprovalTransaction', err);
-          },
-        );
+          });
       },
     );
 
@@ -1093,14 +1100,17 @@ export default class MetamaskController extends EventEmitter {
       },
       version,
       // account mgmt
-      getAccounts,
+      getAccounts: (requestOrigin) => getAccounts({ origin: requestOrigin }),
       // tx signing
-      processTransaction: (transactionParams, dappRequest) =>
+      processTransaction: (transactionParams, dappRequest, requestContext) =>
         addDappTransaction(
-          this.getAddTransactionRequest({ transactionParams, dappRequest }),
+          this.getAddTransactionRequest({
+            transactionParams,
+            dappRequest,
+            requestContext,
+          }),
         ),
       // msg signing
-
       processTypedMessage: (...args) =>
         addTypedMessage({
           signatureController: this.signatureController,
@@ -1137,12 +1147,31 @@ export default class MetamaskController extends EventEmitter {
           (meta) =>
             meta.hash === hash && meta.status === TransactionStatus.submitted,
         ),
-      processRequestExecutionPermissions: isGatorPermissionsFeatureEnabled()
-        ? forwardRequestToSnap.bind(null, {
+      processRequestExecutionPermissions: async (params, req) => {
+        const enabledTypes = getEnabledAdvancedPermissions();
+
+        if (!params || params.length === 0) {
+          throw rpcErrors.methodNotSupported('No permission type provided');
+        }
+
+        for (const param of params) {
+          const permissionType = param?.permission?.type;
+          if (!enabledTypes.includes(permissionType)) {
+            throw rpcErrors.methodNotSupported(
+              `Permission type '${permissionType ?? 'unknown'}' is not enabled`,
+            );
+          }
+        }
+
+        return forwardRequestToSnap(
+          {
             snapId: process.env.PERMISSIONS_KERNEL_SNAP_ID,
             handleRequest: this.handleSnapRequest.bind(this),
-          })
-        : undefined,
+          },
+          params,
+          req,
+        );
+      },
     });
 
     // ensure isClientOpenAndUnlocked is updated when memState updates
@@ -1208,6 +1237,7 @@ export default class MetamaskController extends EventEmitter {
         this.notificationServicesPushController,
       RemoteFeatureFlagController: this.remoteFeatureFlagController,
       DeFiPositionsController: this.deFiPositionsController,
+      ProfileMetricsController: this.profileMetricsController,
       ...resetOnRestartStore,
       ...controllerPersistedState,
     });
@@ -1272,6 +1302,7 @@ export default class MetamaskController extends EventEmitter {
         ShieldController: this.shieldController,
         ClaimsController: this.claimsController,
         ClaimsService: this.claimsService,
+        ProfileMetricsController: this.profileMetricsController,
         ...resetOnRestartStore,
         ...controllerMemState,
       },
@@ -1443,11 +1474,15 @@ export default class MetamaskController extends EventEmitter {
         (snap) => !snap.preinstalled,
       )
     ) {
-      try {
-        this.snapController.updateRegistry();
-      } catch {
-        // Ignore
-      }
+      this.snapController.updateRegistry().catch((error) => {
+        if (
+          !error.message.includes(
+            'The Snaps platform requires basic functionality to be used.',
+          )
+        ) {
+          console.error(error);
+        }
+      });
     }
   }
 
@@ -2605,10 +2640,6 @@ export default class MetamaskController extends EventEmitter {
         this.subscriptionService.updateSubscriptionCardPaymentMethod.bind(
           this.subscriptionService,
         ),
-      startSubscriptionWithCrypto:
-        this.subscriptionController.startSubscriptionWithCrypto.bind(
-          this.subscriptionController,
-        ),
       updateSubscriptionCryptoPaymentMethod:
         this.subscriptionService.updateSubscriptionCryptoPaymentMethod.bind(
           this.subscriptionService,
@@ -2616,6 +2647,10 @@ export default class MetamaskController extends EventEmitter {
       submitSubscriptionUserEvents:
         this.subscriptionController.submitUserEvent.bind(
           this.subscriptionController,
+        ),
+      linkRewardToShieldSubscription:
+        this.subscriptionService.linkRewardToExistingSubscription.bind(
+          this.subscriptionService,
         ),
 
       // rewards
@@ -3015,6 +3050,10 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // SeedlessOnboardingController
+      preloadToprfNodeDetails:
+        this.seedlessOnboardingController.preloadToprfNodeDetails.bind(
+          this.seedlessOnboardingController,
+        ),
       authenticate: this.seedlessOnboardingController.authenticate.bind(
         this.seedlessOnboardingController,
       ),
@@ -4510,6 +4549,10 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<Record<string, number>>} Discovered account counts by chain.
    */
   async discoverAndCreateAccounts(id) {
+    trace({
+      name: TraceName.DiscoverAccounts,
+      op: TraceOperation.AccountDiscover,
+    });
     try {
       // If no keyring id is provided, we assume one keyring was added to the vault
       const keyringIdToDiscover =
@@ -4539,6 +4582,10 @@ export default class MetamaskController extends EventEmitter {
         Solana: 0,
         Tron: 0,
       };
+    } finally {
+      endTrace({
+        name: TraceName.DiscoverAccounts,
+      });
     }
   }
 
@@ -4932,6 +4979,10 @@ export default class MetamaskController extends EventEmitter {
    * For the context, we do not need to import the Solana account if the onboarding flow has not completed yet during the social login import flow.
    */
   async _addAccountsWithBalance(keyringId, shouldImportSolanaAccount = true) {
+    trace({
+      name: TraceName.DiscoverAccounts,
+      op: TraceOperation.AccountDiscover,
+    });
     try {
       // Scan accounts until we find an empty one
       const chainId = this.#getGlobalChainId();
@@ -4953,41 +5004,54 @@ export default class MetamaskController extends EventEmitter {
         );
       let address = accounts[accounts.length - 1];
 
-      for (let count = accounts.length; ; count++) {
-        const balance = await this.getBalance(address, this.provider);
+      trace({
+        name: TraceName.EvmDiscoverAccounts,
+        op: TraceOperation.AccountDiscover,
+      });
+      try {
+        for (let count = accounts.length; ; count++) {
+          const balance = await this.getBalance(address, this.provider);
 
-        if (balance === '0x0') {
-          // This account has no balance, so check for tokens
-          await this.tokenDetectionController.detectTokens({
-            chainIds: [chainId],
-            selectedAddress: address,
-          });
+          if (balance === '0x0') {
+            // This account has no balance, so check for tokens
+            await this.tokenDetectionController.detectTokens({
+              chainIds: [chainId],
+              selectedAddress: address,
+            });
 
-          const tokens =
-            this.tokensController.state.allTokens?.[chainId]?.[address];
-          const detectedTokens =
-            this.tokensController.state.allDetectedTokens?.[chainId]?.[address];
+            const tokens =
+              this.tokensController.state.allTokens?.[chainId]?.[address];
+            const detectedTokens =
+              this.tokensController.state.allDetectedTokens?.[chainId]?.[
+                address
+              ];
 
-          if (
-            (tokens?.length ?? 0) === 0 &&
-            (detectedTokens?.length ?? 0) === 0
-          ) {
-            // This account has no balance or tokens
-            if (count !== 1) {
-              await this.removeAccount(address);
+            if (
+              (tokens?.length ?? 0) === 0 &&
+              (detectedTokens?.length ?? 0) === 0
+            ) {
+              // This account has no balance or tokens
+              if (count !== 1) {
+                await this.removeAccount(address);
+              }
+              break;
             }
-            break;
           }
-        }
 
-        // This account has assets, so check the next one
-        address = await this.keyringController.withKeyring(
-          keyringSelector,
-          async ({ keyring }) => {
-            const [newAddress] = await keyring.addAccounts(1);
-            return newAddress;
-          },
-        );
+          // This account has assets, so check the next one
+          address = await this.keyringController.withKeyring(
+            keyringSelector,
+            async ({ keyring }) => {
+              const [newAddress] = await keyring.addAccounts(1);
+              return newAddress;
+            },
+          );
+        }
+      } finally {
+        endTrace({
+          name: TraceName.EvmDiscoverAccounts,
+          op: TraceOperation.AccountDiscover,
+        });
       }
 
       const discoveredAccounts = {
@@ -5064,6 +5128,11 @@ export default class MetamaskController extends EventEmitter {
         Solana: 0,
         Tron: 0,
       };
+    } finally {
+      endTrace({
+        name: TraceName.DiscoverAccounts,
+        op: TraceOperation.AccountDiscover,
+      });
     }
   }
 
@@ -5446,7 +5515,7 @@ export default class MetamaskController extends EventEmitter {
   async getHardwareTypeForMetric(address) {
     return await this.keyringController.withKeyring(
       { address },
-      ({ keyring }) => HardwareKeyringType[keyring.type],
+      ({ keyring }) => KEYRING_DEVICE_PROPERTY_MAP[keyring.type],
     );
   }
 
@@ -5484,7 +5553,7 @@ export default class MetamaskController extends EventEmitter {
       case KeyringType.lattice:
       case KeyringType.qr:
       case KeyringType.ledger:
-        return 'hardware';
+        return KEYRING_DEVICE_PROPERTY_MAP[keyringType];
       case KeyringType.imported:
         return 'imported';
       case KeyringType.snap:
@@ -6275,10 +6344,12 @@ export default class MetamaskController extends EventEmitter {
     transactionParams,
     transactionOptions,
     dappRequest,
+    requestContext,
     ...otherParams
   }) {
     const networkClientId =
-      dappRequest?.networkClientId ?? transactionOptions?.networkClientId;
+      requestContext?.get('networkClientId') ??
+      transactionOptions?.networkClientId;
     const { chainId } =
       this.networkController.getNetworkConfigurationByNetworkClientId(
         networkClientId,
@@ -6286,6 +6357,7 @@ export default class MetamaskController extends EventEmitter {
     return {
       internalAccounts: this.accountsController.listAccounts(),
       dappRequest,
+      requestContext,
       networkClientId,
       selectedAccount: this.accountsController.getAccountByAddress(
         transactionParams.from,
@@ -7347,7 +7419,7 @@ export default class MetamaskController extends EventEmitter {
             'KeyringController:getState',
           );
 
-          return this._isClientOpen && isUnlocked;
+          return Boolean(this._isClientOpen && isUnlocked);
         },
         getVersion: () => {
           return process.env.METAMASK_VERSION;
@@ -8165,6 +8237,12 @@ export default class MetamaskController extends EventEmitter {
           return 'unknown';
         }
       },
+      getFeatureFlags: () => {
+        return this.remoteFeatureFlagController?.state?.remoteFeatureFlags;
+      },
+      getPna25Acknowledged: () => {
+        return this.appStateController?.state?.pna25Acknowledged;
+      },
     };
 
     const snapAndHardwareMessenger = new Messenger({
@@ -8633,66 +8711,6 @@ export default class MetamaskController extends EventEmitter {
       method: NOTIFICATION_NAMES.chainChanged,
       params: await this.getProviderNetworkState({ origin }),
     });
-  }
-
-  /**
-   * Handles the shield subscription approval transaction after confirm
-   * NOTE: This doesn't subscribe to messenger internally inside controller because we need more info from the client as params
-   *
-   * @param transactionMeta - The transaction metadata.
-   */
-  async _onShieldSubscriptionApprovalTransaction(transactionMeta) {
-    const { isGasFeeSponsored, chainId } = transactionMeta;
-    const bundlerSupported = await isSendBundleSupported(chainId);
-    const isSponsored = isGasFeeSponsored && bundlerSupported;
-
-    try {
-      this.subscriptionService.trackSubscriptionRequestEvent(
-        'started',
-        transactionMeta,
-        {
-          has_sufficient_crypto_balance: true,
-        },
-      );
-
-      await this.subscriptionController.submitShieldSubscriptionCryptoApproval(
-        transactionMeta,
-        isSponsored,
-      );
-
-      // Mark send/transfer/swap transactions for Shield post_tx cohort evaluation
-      const isPostTxTransaction = [
-        TransactionType.simpleSend,
-        TransactionType.tokenMethodTransfer,
-        TransactionType.swap,
-        TransactionType.swapAndSend,
-      ].includes(transactionMeta.type);
-
-      const { pendingShieldCohort } = this.appStateController.state;
-      if (isPostTxTransaction && !pendingShieldCohort) {
-        this.appStateController.setPendingShieldCohort(
-          COHORT_NAMES.POST_TX,
-          transactionMeta.type,
-        );
-      }
-      this.subscriptionService.trackSubscriptionRequestEvent(
-        'completed',
-        transactionMeta,
-        {
-          gas_sponsored: isSponsored,
-        },
-      );
-    } catch (error) {
-      log.error('Error on Shield subscription approval transaction', error);
-      this.subscriptionService.trackSubscriptionRequestEvent(
-        'failed',
-        transactionMeta,
-        {
-          error_message: error.message,
-        },
-      );
-      throw error;
-    }
   }
 
   /**

@@ -32,6 +32,8 @@ export const TokenListControllerInit: ControllerInitFunction<
     return useTokenDetection || petnamesEnabled || useTransactionSimulations;
   };
 
+  // TODO: Fix TokenListControllerMessenger type - add TokenListControllerActions & TokenListControllerEvents
+  // TODO: Bump @metamask/network-controller to match assets-controllers
   const controller = new TokenListController({
     messenger: controllerMessenger,
     state: persistedState.TokenListController,

@@ -1,6 +1,5 @@
 // Needed for webpack to analyze the preinstalled snaps
 export const PREINSTALLED_SNAPS_URLS = [
-  ///: BEGIN:ONLY_INCLUDE_IF(gator-permissions)
   new URL(
     '@metamask/permissions-kernel-snap/dist/preinstalled-snap.json',
     // @ts-expect-error TS1470: 'import.meta' is not allowed in CommonJS
@@ -11,7 +10,6 @@ export const PREINSTALLED_SNAPS_URLS = [
     // @ts-expect-error TS1470: 'import.meta' is not allowed in CommonJS
     import.meta.url,
   ),
-  ///: END:ONLY_INCLUDE_IF
   new URL(
     '@metamask/message-signing-snap/dist/preinstalled-snap.json',
     // @ts-expect-error TS1470: 'import.meta' is not allowed in CommonJS

@@ -19,6 +19,8 @@ export const AssetsContractControllerInit: ControllerInitFunction<
   AssetsContractControllerMessenger,
   AssetsContractControllerInitMessenger
 > = ({ controllerMessenger, initMessenger }) => {
+  // TODO: Fix AssetsContractControllerMessenger type - add AssetsContractControllerActions
+  // TODO: Bump @metamask/network-controller to match assets-controllers
   const controller = new AssetsContractController({
     messenger: controllerMessenger,
     chainId: getGlobalChainId(initMessenger),

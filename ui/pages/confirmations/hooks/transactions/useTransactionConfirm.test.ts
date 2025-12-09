@@ -4,7 +4,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import { QuoteResponse } from '@metamask/bridge-controller';
+import { QuoteResponse, TxData } from '@metamask/bridge-controller';
 
 import {
   genUnapprovedContractInteractionConfirmation,
@@ -28,9 +28,9 @@ jest.mock('../../../../store/actions', () => ({
 }));
 
 const mockUseNavigate = jest.fn();
-jest.mock('react-router-dom-v5-compat', () => {
+jest.mock('react-router-dom', () => {
   return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
+    ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
   };
 });
@@ -85,6 +85,7 @@ describe('useTransactionConfirm', () => {
     useIsGaslessSupportedMock.mockReturnValue({
       isSmartTransaction: false,
       isSupported: false,
+      pending: false,
     });
     updateAndApproveTxMock.mockReturnValue(() =>
       Promise.resolve({} as TransactionMeta),
@@ -93,6 +94,7 @@ describe('useTransactionConfirm', () => {
     useIsGaslessSupportedMock.mockReturnValue({
       isSupported: false,
       isSmartTransaction: false,
+      pending: false,
     });
 
     useGaslessSupportedSmartTransactionsMock.mockReturnValue({
@@ -132,6 +134,7 @@ describe('useTransactionConfirm', () => {
     useIsGaslessSupportedMock.mockReturnValue({
       isSmartTransaction: true,
       isSupported: true,
+      pending: false,
     });
     useGaslessSupportedSmartTransactionsMock.mockReturnValue({
       isSupported: true,
@@ -168,6 +171,7 @@ describe('useTransactionConfirm', () => {
     useIsGaslessSupportedMock.mockReturnValue({
       isSmartTransaction: true,
       isSupported: true,
+      pending: false,
     });
     useGaslessSupportedSmartTransactionsMock.mockReturnValue({
       isSupported: true,
@@ -197,6 +201,7 @@ describe('useTransactionConfirm', () => {
     useIsGaslessSupportedMock.mockReturnValue({
       isSmartTransaction: true,
       isSupported: true,
+      pending: false,
     });
 
     const { onTransactionConfirm } = runHook({
@@ -221,6 +226,7 @@ describe('useTransactionConfirm', () => {
     useIsGaslessSupportedMock.mockReturnValue({
       isSmartTransaction: true,
       isSupported: true,
+      pending: false,
     });
     useGaslessSupportedSmartTransactionsMock.mockReturnValue({
       isSupported: true,
@@ -256,6 +262,7 @@ describe('useTransactionConfirm', () => {
     useIsGaslessSupportedMock.mockReturnValue({
       isSmartTransaction: true,
       isSupported: true,
+      pending: false,
     });
     useGaslessSupportedSmartTransactionsMock.mockReturnValue({
       isSupported: false,
@@ -285,6 +292,7 @@ describe('useTransactionConfirm', () => {
     useIsGaslessSupportedMock.mockReturnValue({
       isSmartTransaction: false,
       isSupported: true,
+      pending: false,
     });
 
     const { onTransactionConfirm } = runHook({
@@ -323,7 +331,7 @@ describe('useTransactionConfirm', () => {
     const mockOnDappSwapCompleted = jest.fn();
     jest.spyOn(DappSwapActions, 'useDappSwapActions').mockReturnValue({
       onDappSwapCompleted: mockOnDappSwapCompleted,
-      updateSwapWithQuoteDetails: jest.fn(),
+      updateSwapWithQuoteDetailsIfRequired: jest.fn(),
     } as unknown as ReturnType<typeof DappSwapActions.useDappSwapActions>);
 
     const { onTransactionConfirm } = runHook({ customNonceValue: '1234' });
@@ -380,7 +388,7 @@ describe('useTransactionConfirm', () => {
     expect(actual.txParams).toStrictEqual(
       expect.objectContaining({
         authorizationList: undefined,
-        data: '',
+        data: (mockBridgeQuotes[0].trade as TxData).data,
         from: '0x2e0d7e8c45221fca00d74a3609a0f7097035d09b',
         gas: '0x3',
         maxFeePerGas: '0x4',
@@ -424,6 +432,7 @@ describe('useTransactionConfirm', () => {
     useIsGaslessSupportedMock.mockReturnValue({
       isSupported: true,
       isSmartTransaction: false,
+      pending: false,
     });
 
     const { onTransactionConfirm } = runHook({

@@ -114,3 +114,11 @@ export const SHIELD_ICON_ARTBOARD_NAMES = {
 
 export type ShieldIconArtboardName =
   (typeof SHIELD_ICON_ARTBOARD_NAMES)[keyof typeof SHIELD_ICON_ARTBOARD_NAMES];
+
+export const CLAIMS_TAB_KEYS = {
+  PENDING: 'pending',
+  HISTORY: 'history',
+} as const;
+
+export type ClaimsTabKey =
+  (typeof CLAIMS_TAB_KEYS)[keyof typeof CLAIMS_TAB_KEYS];

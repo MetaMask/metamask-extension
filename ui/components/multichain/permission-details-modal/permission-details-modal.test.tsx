@@ -1,7 +1,8 @@
 import React from 'react';
 import configureStore from 'redux-mock-store';
 import { EthAccountType, EthMethod, EthScope } from '@metamask/keyring-api';
-import { fireEvent, renderWithProvider } from '../../../../test/jest';
+import { fireEvent } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';

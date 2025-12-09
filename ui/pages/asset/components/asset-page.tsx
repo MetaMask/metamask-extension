@@ -15,7 +15,7 @@ import {
 } from '@metamask/utils';
 import React, { ReactNode, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
@@ -327,12 +327,7 @@ const AssetPage = ({
   const showTronResources = isTron && type === AssetType.native;
 
   return (
-    <Box
-      marginLeft="auto"
-      marginRight="auto"
-      marginTop={4}
-      className="asset__content"
-    >
+    <Box marginTop={4} className="asset__content">
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Row}

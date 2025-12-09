@@ -16,6 +16,8 @@ export const TokensControllerInit: ControllerInitFunction<
     initMessenger.call('NetworkController:getSelectedNetworkClient') ?? {};
   assert(provider, 'Provider is required to initialize TokensController.');
 
+  // TODO: Fix TokensControllerMessenger type - add TokensControllerActions & TokensControllerEvents
+  // TODO: Bump @metamask/network-controller, @metamask/accounts-controller, @metamask/keyring-controller to match assets-controllers
   const controller = new TokensController({
     messenger: controllerMessenger,
     state: persistedState.TokensController,
