@@ -85,6 +85,7 @@ describe('useTransactionConfirm', () => {
     useIsGaslessSupportedMock.mockReturnValue({
       isSmartTransaction: false,
       isSupported: false,
+      pending: false,
     });
     updateAndApproveTxMock.mockReturnValue(() =>
       Promise.resolve({} as TransactionMeta),
@@ -93,6 +94,7 @@ describe('useTransactionConfirm', () => {
     useIsGaslessSupportedMock.mockReturnValue({
       isSupported: false,
       isSmartTransaction: false,
+      pending: false,
     });
 
     useGaslessSupportedSmartTransactionsMock.mockReturnValue({
@@ -132,6 +134,7 @@ describe('useTransactionConfirm', () => {
     useIsGaslessSupportedMock.mockReturnValue({
       isSmartTransaction: true,
       isSupported: true,
+      pending: false,
     });
     useGaslessSupportedSmartTransactionsMock.mockReturnValue({
       isSupported: true,
@@ -168,6 +171,7 @@ describe('useTransactionConfirm', () => {
     useIsGaslessSupportedMock.mockReturnValue({
       isSmartTransaction: true,
       isSupported: true,
+      pending: false,
     });
     useGaslessSupportedSmartTransactionsMock.mockReturnValue({
       isSupported: true,
@@ -197,6 +201,7 @@ describe('useTransactionConfirm', () => {
     useIsGaslessSupportedMock.mockReturnValue({
       isSmartTransaction: true,
       isSupported: true,
+      pending: false,
     });
 
     const { onTransactionConfirm } = runHook({
@@ -221,6 +226,7 @@ describe('useTransactionConfirm', () => {
     useIsGaslessSupportedMock.mockReturnValue({
       isSmartTransaction: true,
       isSupported: true,
+      pending: false,
     });
     useGaslessSupportedSmartTransactionsMock.mockReturnValue({
       isSupported: true,
@@ -256,6 +262,7 @@ describe('useTransactionConfirm', () => {
     useIsGaslessSupportedMock.mockReturnValue({
       isSmartTransaction: true,
       isSupported: true,
+      pending: false,
     });
     useGaslessSupportedSmartTransactionsMock.mockReturnValue({
       isSupported: false,
@@ -285,6 +292,7 @@ describe('useTransactionConfirm', () => {
     useIsGaslessSupportedMock.mockReturnValue({
       isSmartTransaction: false,
       isSupported: true,
+      pending: false,
     });
 
     const { onTransactionConfirm } = runHook({
@@ -424,6 +432,7 @@ describe('useTransactionConfirm', () => {
     useIsGaslessSupportedMock.mockReturnValue({
       isSupported: true,
       isSmartTransaction: false,
+      pending: false,
     });
 
     const { onTransactionConfirm } = runHook({
