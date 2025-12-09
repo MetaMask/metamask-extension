@@ -83,7 +83,7 @@ describe('Transfer custom tokens', function () {
       );
     });
 
-    it('transfer custom tokens from dapp customizing gas values', async function () {
+    it('transfer custom tokens from dapp customizing gas values TEST', async function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
