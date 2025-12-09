@@ -135,9 +135,6 @@ const ManageShieldPlan = () => {
       data-testid="manage-plan-page"
     >
       <Box className="flex-1">
-        <Text variant={TextVariant.HeadingMd} className="px-4 mb-4">
-          {t('shieldManagePlan')}
-        </Text>
         {displayedShieldSubscription && (
           <ButtonRowContainer>
             <ButtonRow
