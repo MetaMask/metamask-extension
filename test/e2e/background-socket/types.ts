@@ -3,9 +3,7 @@ export type MessageType = {
     | 'openTabs'
     | 'notFound'
     | 'queryTabs'
-    | 'waitUntilWindowWithProperty'
-    | 'waitUntilWindowClosed'
-    | 'windowClosed';
+    | 'waitUntilWindowWithProperty';
   tabs?: chrome.tabs.Tab[];
   title?: string;
   property?: WindowProperties;
@@ -24,5 +22,4 @@ export type ServerMochaEventEmitterType = {
   error: [error: Error];
   openTabs: [openTabs: chrome.tabs.Tab[]];
   notFound: [openTabs: chrome.tabs.Tab[]];
-  windowClosed: [];
 };

@@ -96,8 +96,6 @@ describe('Update modal', function (this: Suite) {
         },
       },
       async ({ driver }) => {
-        // Open a blank page to prevent browser from closing
-        await driver.openNewPage('about:blank');
         await loginWithBalanceValidation(driver);
         const updateModal = new UpdateModal(driver);
         await updateModal.checkPageIsLoaded();
