@@ -12,7 +12,11 @@ import {
   SUBSCRIPTION_STATUSES,
 } from '@metamask/subscription-controller';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { ButtonRow, ButtonRowContainer } from '../components';
+import {
+  ButtonRow,
+  ButtonRowContainer,
+  MembershipErrorBanner,
+} from '../components';
 import {
   useCancelSubscription,
   useOpenGetSubscriptionBillingPortal,
@@ -29,7 +33,11 @@ import { getShortDateFormatterV2 } from '../../../asset/util';
 import { PaymentMethodRow } from '../payment-method-row';
 import { useSubscriptionPricing } from '../../../../hooks/subscription/useSubscriptionPricing';
 import { useHandlePayment } from '../../../../hooks/subscription/useHandlePayment';
-import { getIsShieldSubscriptionPaused } from '../../../../../shared/lib/shield';
+import {
+  getIsShieldSubscriptionEndingSoon,
+  getIsShieldSubscriptionPaused,
+} from '../../../../../shared/lib/shield';
+import { isCardPaymentMethod, isCryptoPaymentMethod } from '../types';
 
 const ManageShieldPlan = () => {
   const t = useI18nContext();
@@ -65,10 +73,20 @@ const ManageShieldPlan = () => {
     displayedShieldSubscription?.status === SUBSCRIPTION_STATUSES.canceled;
   const isPaused = getIsShieldSubscriptionPaused(subscriptions);
   const isMembershipInactive = isCancelled || isPaused;
+  const isSubscriptionEndingSoon =
+    getIsShieldSubscriptionEndingSoon(subscriptions);
 
   // user can cancel subscription if not canceled and current subscription not cancel at period end
   const canCancel =
     !isCancelled && !currentShieldSubscription?.cancelAtPeriodEnd;
+
+  const isCryptoPayment =
+    displayedShieldSubscription?.paymentMethod &&
+    isCryptoPaymentMethod(displayedShieldSubscription?.paymentMethod);
+
+  const isCardPayment =
+    currentShieldSubscription &&
+    isCardPaymentMethod(currentShieldSubscription.paymentMethod);
 
   const {
     handlePaymentError,
@@ -131,6 +149,14 @@ const ManageShieldPlan = () => {
       className="manage-plan-page w-full h-full flex flex-col"
       data-testid="manage-plan-page"
     >
+      <MembershipErrorBanner
+        isPaused={isPaused}
+        isCryptoPayment={isCryptoPayment ?? false}
+        isCardPayment={isCardPayment ?? false}
+        isSubscriptionEndingSoon={isSubscriptionEndingSoon}
+        currentShieldSubscription={currentShieldSubscription}
+        onActionButtonClick={handlePaymentError}
+      />
       <Box className="flex-1">
         {displayedShieldSubscription && (
           <ButtonRowContainer>

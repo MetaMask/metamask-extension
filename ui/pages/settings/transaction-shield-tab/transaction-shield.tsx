@@ -23,10 +23,6 @@ import {
 } from '@metamask/design-system-react';
 import { useDispatch, useSelector } from 'react-redux';
 import log from 'loglevel';
-import {
-  BannerAlert,
-  BannerAlertSeverity,
-} from '../../../components/component-library';
 import { Skeleton } from '../../../components/component-library/skeleton';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -74,7 +70,12 @@ import { getAccountName, getInternalAccounts } from '../../../selectors';
 import { shortenAddress } from '../../../helpers/utils/util';
 import CancelMembershipModal from './cancel-membership-modal';
 import { isCardPaymentMethod, isCryptoPaymentMethod } from './types';
-import { ButtonRow, ButtonRowContainer, MembershipHeader } from './components';
+import {
+  ButtonRow,
+  ButtonRowContainer,
+  MembershipErrorBanner,
+  MembershipHeader,
+} from './components';
 
 const TransactionShield = () => {
   const t = useI18nContext();
@@ -358,59 +359,6 @@ const TransactionShield = () => {
     updateSubscriptionCryptoPaymentMethodResult.pending ||
     resultTriggerSubscriptionCheckInsufficientFunds.pending;
 
-  const membershipErrorBanner = useMemo(() => {
-    // This is the number of hours it might takes for the payment to be updated
-    const PAYMENT_UPDATE_HOURS = 24;
-    if (isPaused) {
-      // default text to unexpected error case
-      let descriptionText = 'shieldTxMembershipErrorPausedUnexpected';
-      let actionButtonLabel = 'shieldTxMembershipErrorPausedUnexpectedAction';
-      if (isCryptoPayment) {
-        descriptionText =
-          'shieldTxMembershipErrorPausedCryptoInsufficientFunds';
-        actionButtonLabel =
-          'shieldTxMembershipErrorPausedCryptoInsufficientFundsAction';
-      } else if (isCardPayment) {
-        descriptionText = 'shieldTxMembershipErrorPausedCard';
-        actionButtonLabel = 'shieldTxMembershipErrorPausedCardAction';
-      }
-      return (
-        <BannerAlert
-          description={t(descriptionText, [PAYMENT_UPDATE_HOURS])}
-          severity={BannerAlertSeverity.Danger}
-          marginBottom={4}
-          actionButtonLabel={t(actionButtonLabel)}
-          actionButtonOnClick={handlePaymentError}
-        />
-      );
-    }
-    if (currentShieldSubscription && isSubscriptionEndingSoon) {
-      return (
-        <BannerAlert
-          description={t('shieldTxMembershipErrorInsufficientFunds', [
-            getShortDateFormatterV2().format(
-              new Date(currentShieldSubscription.currentPeriodEnd),
-            ),
-          ])}
-          severity={BannerAlertSeverity.Warning}
-          marginBottom={4}
-          actionButtonLabel={t('shieldTxMembershipRenew')}
-          actionButtonOnClick={handlePaymentError}
-        />
-      );
-    }
-
-    return null;
-  }, [
-    isPaused,
-    isSubscriptionEndingSoon,
-    currentShieldSubscription,
-    t,
-    isCardPayment,
-    isCryptoPayment,
-    handlePaymentError,
-  ]);
-
   const handleViewFullBenefitsClicked = useCallback(() => {
     window.open(TRANSACTION_SHIELD_LINK, '_blank', 'noopener noreferrer');
     captureShieldCtaClickedEvent({
@@ -509,7 +457,14 @@ const TransactionShield = () => {
           </Text>
         </Box>
       )}
-      {membershipErrorBanner}
+      <MembershipErrorBanner
+        isPaused={isPaused}
+        isCryptoPayment={isCryptoPayment ?? false}
+        isCardPayment={isCardPayment ?? false}
+        isSubscriptionEndingSoon={isSubscriptionEndingSoon}
+        currentShieldSubscription={currentShieldSubscription}
+        onActionButtonClick={handlePaymentError}
+      />
       <Box className="transaction-shield-page__container mb-4">
         <MembershipHeader
           className="mb-4"
