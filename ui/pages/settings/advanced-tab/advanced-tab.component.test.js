@@ -45,6 +45,13 @@ jest.mock('../../../helpers/utils/export-utils', () => ({
     .mockImplementationOnce(new Error('state file error')),
 }));
 
+// Mock window.logStateString which is set up in ui/index.js
+const mockLogStateString = jest.fn();
+Object.defineProperty(window, 'logStateString', {
+  value: mockLogStateString,
+  writable: true,
+});
+
 jest.mock('webextension-polyfill', () => ({
   runtime: {
     getPlatformInfo: jest.fn().mockResolvedValue('mac'),
@@ -205,6 +212,11 @@ describe('AdvancedTab Component', () => {
   });
 
   describe('renderStateLogs', () => {
+    beforeEach(() => {
+      mockLogStateString.mockClear();
+      mockDisplayErrorInSettings.mockClear();
+    });
+
     it('should render the toggle button for state log download', () => {
       const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
       const stateLogButton = queryByTestId('advanced-setting-state-logs');
@@ -212,6 +224,10 @@ describe('AdvancedTab Component', () => {
     });
 
     it('should call exportAsFile when the toggle button is clicked', async () => {
+      // Mock successful state log retrieval
+      mockLogStateString.mockImplementation((callback) => {
+        callback(null, '{"state": "data"}');
+      });
       const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
       const stateLogButton = queryByTestId(
         'advanced-setting-state-logs-button',
@@ -222,6 +238,10 @@ describe('AdvancedTab Component', () => {
       });
     });
     it('should call displayErrorInSettings when the state file download fails', async () => {
+      // Mock failed state log retrieval
+      mockLogStateString.mockImplementation((callback) => {
+        callback(new Error('state file error'), null);
+      });
       const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
       const stateLogButton = queryByTestId(
         'advanced-setting-state-logs-button',

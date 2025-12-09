@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 
 import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
 import {
