@@ -7,7 +7,7 @@ import UpdateModal from '../../page-objects/pages/dialog/update-modal';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { version } from '../../../../package.json';
 
-describe('Update modal TEST', function (this: Suite) {
+describe('Update modal', function (this: Suite) {
   it('should not be shown by default', async function () {
     await withFixtures(
       {
@@ -96,6 +96,8 @@ describe('Update modal TEST', function (this: Suite) {
         },
       },
       async ({ driver }) => {
+        // Open a blank page to prevent browser from closing
+        await driver.openNewPage('about:blank');
         await loginWithBalanceValidation(driver);
         const updateModal = new UpdateModal(driver);
         await updateModal.checkPageIsLoaded();
