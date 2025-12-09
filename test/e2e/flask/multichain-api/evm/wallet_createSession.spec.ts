@@ -5,6 +5,7 @@ import {
   withFixtures,
   ACCOUNT_1,
   ACCOUNT_2,
+  veryLargeDelayMs,
 } from '../../../helpers';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
 import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
@@ -62,6 +63,7 @@ describe('Multichain API', function () {
             WINDOW_TITLES.MultichainTestDApp,
           );
           await testDapp.checkPageIsLoaded();
+          await driver.delay(veryLargeDelayMs);
           const getSessionResult = await testDapp.getSession();
 
           for (const scope of scopesToIgnore) {
