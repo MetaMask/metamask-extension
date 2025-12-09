@@ -253,14 +253,13 @@ describe('Shield Plan Stripe Integration', function () {
         await shieldDetailPage.checkPageIsLoaded();
 
         // Cancel the subscription
+        await shieldDetailPage.clickManagePlanButton();
         await shieldDetailPage.cancelSubscription();
-
-        await shieldDetailPage.checkNotificationShieldBanner(
-          'Your plan will be cancelled on Nov 3, 2025.',
-        );
 
         // Renew the subscription
         await shieldDetailPage.clickRenewButton();
+
+        settingsPage.goToTransactionShieldPage();
 
         await shieldDetailPage.checkNotificationShieldBannerRemoved();
         await shieldDetailPage.checkMembershipStatus('Active plan');

@@ -15,6 +15,9 @@ export default class ShieldDetailPage {
     text,
   });
 
+  private readonly managePlanButton =
+    '[data-testid="shield-detail-manage-plan-button"]';
+
   private readonly cancelButton =
     '[data-testid="shield-tx-membership-cancel-button"]';
 
@@ -145,6 +148,14 @@ export default class ShieldDetailPage {
   async clickViewBenefitsButton(): Promise<void> {
     console.log('Clicking View Full Benefits button');
     await this.driver.clickElement(this.viewBenefitsButton);
+  }
+
+  /**
+   * Click the Manage Plan button
+   */
+  async clickManagePlanButton(): Promise<void> {
+    console.log('Clicking Manage Plan button');
+    await this.driver.clickElement(this.managePlanButton);
   }
 
   /**
