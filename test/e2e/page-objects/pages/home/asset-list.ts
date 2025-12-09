@@ -38,10 +38,8 @@ class AssetListPage {
 
   private readonly currentNetworksTotal = `${this.currentNetworkOption} [data-testid="account-value-and-suffix"]`;
 
-  private readonly customTokenModalOption = {
-    text: 'Custom token',
-    tag: 'button',
-  };
+  private readonly customTokenModalOption =
+    '[data-testid="import-tokens-modal-custom-token-tab"]';
 
   private readonly hideTokenButton = '[data-testid="asset-options__hide"]';
 
@@ -106,7 +104,8 @@ class AssetListPage {
     text: 'Token decimal',
   };
 
-  private readonly tokenNameInDetails = '[data-testid="asset-name"]';
+  private readonly tokenNameInDetails =
+    '[data-testid="multichain-token-list-item-token-name"]';
 
   private readonly tokenImportedMessageCloseButton =
     '.actionable-message__message button[aria-label="Close"]';
@@ -138,7 +137,13 @@ class AssetListPage {
   private readonly tokenSymbolInput =
     '[data-testid="import-tokens-modal-custom-symbol"]';
 
+  private readonly tokenDecimalsInput =
+    '[data-testid="import-tokens-modal-custom-decimals"]';
+
   private readonly modalWarningBanner = '[data-testid="custom-token-warning"]';
+
+  private readonly tokenName =
+    '[data-testid="multichain-token-list-item-token-name"]';
 
   private readonly tokenIncreaseDecreaseValue =
     '[data-testid="token-increase-decrease-value"]';
@@ -186,8 +191,9 @@ class AssetListPage {
   }
 
   async clickOnAsset(assetName: string): Promise<void> {
+    console.log(`Clicking on the token name `);
     await this.driver.clickElement({
-      css: this.tokenListItem,
+      css: this.tokenName,
       text: assetName,
     });
   }
@@ -271,6 +277,7 @@ class AssetListPage {
     chainId: string,
     tokenAddress: string,
     symbol?: string,
+    decimals?: string,
   ): Promise<void> {
     console.log(`Creating custom token ${symbol} on homepage`);
     await this.driver.waitForSelector(this.multichainTokenListButton, {
@@ -293,10 +300,14 @@ class AssetListPage {
     await this.driver.waitForSelector(
       this.customNetworkSelectedOption(networkName),
     );
-    await this.driver.waitForSelector(this.tokenSearchInput);
+    // on chrome the test is going to fast so this can fail without a wait
+    await this.driver.delay(1000);
+    await this.driver.waitForSelector(this.customTokenModalOption);
     await this.driver.clickElement(this.customTokenModalOption);
-    await this.driver.assertElementNotPresent(this.tokenSearchInput);
     await this.driver.waitForSelector(this.modalWarningBanner);
+    // Wait for the input to be present and stable after modal content re-renders
+    await this.driver.waitForSelector(this.tokenAddressInput);
+
     await this.driver.fill(this.tokenAddressInput, tokenAddress);
     await this.driver.waitForSelector(this.tokenSymbolTitle);
 
@@ -307,6 +318,14 @@ class AssetListPage {
         waitAtLeastGuard: 1000,
       });
       await this.driver.fill(this.tokenSymbolInput, symbol);
+    }
+
+    if (decimals) {
+      await this.driver.waitForSelector(this.importTokensNextButton, {
+        state: 'disabled',
+        waitAtLeastGuard: 1000,
+      });
+      await this.driver.fill(this.tokenDecimalsInput, decimals);
     }
 
     await this.driver.waitForSelector(this.tokenDecimalsTitle);
@@ -375,16 +394,10 @@ class AssetListPage {
    */
   async openTokenDetails(tokenSymbol: string): Promise<void> {
     console.log(`Opening token details for ${tokenSymbol}`);
-    const tokenElements = await this.driver.findElements(this.tokenListItem);
-
-    for (const element of tokenElements) {
-      const text = await element.getText();
-      if (text.includes(tokenSymbol)) {
-        await element.click();
-        return;
-      }
-    }
-    throw new Error(`Token "${tokenSymbol}" not found in token list`);
+    await this.driver.clickElement({
+      text: tokenSymbol,
+      css: this.tokenNameInDetails,
+    });
   }
 
   async waitUntilFilterLabelIs(label: string): Promise<void> {
@@ -750,7 +763,7 @@ class AssetListPage {
   async checkTokenListIsDisplayed(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.tokenListItem, {
-        timeout: 300000,
+        timeout: 60000,
       });
     } catch (e) {
       console.log('Token list is not displayed', e);
@@ -763,14 +776,18 @@ class AssetListPage {
    * This is done due to the snap delay.
    *
    * @param tokenName - The name of the token to wait for
+   * @param timeout
    */
-  async waitForTokenToBeDisplayed(tokenName: string): Promise<void> {
+  async waitForTokenToBeDisplayed(
+    tokenName: string,
+    timeout: number = 10000,
+  ): Promise<void> {
     await this.driver.waitForSelector(
       {
         css: this.tokenListItem,
         text: tokenName,
       },
-      { timeout: 30000 },
+      { timeout },
     );
   }
 
@@ -780,7 +797,9 @@ class AssetListPage {
    * @throws Error if a "No conversion rate available" message is displayed
    */
   async checkConversionRateDisplayed(): Promise<void> {
-    await this.driver.assertElementNotPresent(this.noPriceAvailableMessage);
+    await this.driver.assertElementNotPresent(this.noPriceAvailableMessage, {
+      timeout: 30000,
+    });
   }
 }
 

@@ -5,7 +5,7 @@ import {
   EditGasModes,
   GasEstimateTypes,
 } from '../../../../../../shared/constants/gas';
-import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import mockEstimates from '../../../../../../test/data/mock-estimates.json';
 import mockState from '../../../../../../test/data/mock-state.json';
 import * as Actions from '../../../../../store/actions';

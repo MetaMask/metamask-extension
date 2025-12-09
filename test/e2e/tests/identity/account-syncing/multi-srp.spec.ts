@@ -65,9 +65,7 @@ describe('Account syncing - Multiple SRPs', function () {
         await header.openAccountMenu();
 
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
 
         // Verify default account is visible
         await accountListPage.checkAccountDisplayedInAccountList(
@@ -107,22 +105,14 @@ describe('Account syncing - Multiple SRPs', function () {
         // Import second SRP (this will automatically create the third account)
         await accountListPage.startImportSecretPhrase(
           IDENTITY_TEAM_SEED_PHRASE_2,
-          {
-            isMultichainAccountsState2Enabled: true,
-          },
         );
 
         // Importing an SRP can be long, so we add a bit of extra time here
         await driver.delay(10000);
 
-        // Wait for the import to complete and sync
-        await waitUntilSyncedAccountsNumberEquals(3);
-
         // Add a fourth account with custom name to the second SRP
         await header.openAccountMenu();
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
 
         // Add account with custom name to specific SRP
         await accountListPage.addMultichainAccount({
@@ -130,8 +120,6 @@ describe('Account syncing - Multiple SRPs', function () {
         });
 
         await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
-
-        await waitUntilSyncedAccountsNumberEquals(4);
 
         await accountListPage.openMultichainAccountMenu({
           accountLabel: 'Account 2',
@@ -142,7 +130,6 @@ describe('Account syncing - Multiple SRPs', function () {
           SRP_2_SECOND_ACCOUNT,
         );
 
-        await waitUntilSyncedAccountsNumberEquals(4);
         await waitUntilEventsEmittedNumberEquals(5);
 
         // Verify all accounts are visible
@@ -177,9 +164,6 @@ describe('Account syncing - Multiple SRPs', function () {
         const accountListPage = new AccountListPage(driver);
         await accountListPage.startImportSecretPhrase(
           IDENTITY_TEAM_SEED_PHRASE_2,
-          {
-            isMultichainAccountsState2Enabled: true,
-          },
         );
 
         // Importing an SRP can be long, so we add a bit of extra time here

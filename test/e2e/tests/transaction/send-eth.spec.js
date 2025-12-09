@@ -77,7 +77,7 @@ describe('Send ETH', function () {
           );
           await driver.wait(async () => {
             const confirmedTxes = await driver.findElements(
-              '.transaction-list__completed-transactions .activity-list-item',
+              '.transaction-status-label--confirmed',
             );
             return confirmedTxes.length === 1;
           }, 10000);
@@ -127,7 +127,7 @@ describe('Send ETH', function () {
 
           await driver.wait(async () => {
             const confirmedTxes = await driver.findElements(
-              '.transaction-list__completed-transactions .activity-list-item',
+              '.transaction-status-label--confirmed',
             );
             return confirmedTxes.length === 1;
           }, 10000);
@@ -179,9 +179,7 @@ describe('Send ETH', function () {
             '[data-testid="account-overview__activity-tab"]',
           );
 
-          await driver.findElement(
-            '.transaction-list__completed-transactions .activity-list-item',
-          );
+          await driver.findElement('.transaction-status-label--confirmed');
 
           // The previous findElement already serves as the guard here for the assertElementNotPresent
           await driver.assertElementNotPresent(
@@ -294,7 +292,7 @@ describe('Send ETH', function () {
               '[data-testid="account-overview__activity-tab"]',
             );
             await driver.waitForSelector(
-              '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
+              '.transaction-status-label--confirmed',
             );
             await driver.waitForSelector({
               css: '[data-testid="transaction-list-item-primary-currency"]',
@@ -387,7 +385,7 @@ describe('Send ETH', function () {
               '[data-testid="account-overview__activity-tab"]',
             );
             await driver.waitForSelector(
-              '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
+              '.transaction-status-label--confirmed',
             );
             await driver.waitForSelector({
               css: '[data-testid="transaction-list-item-primary-currency"]',

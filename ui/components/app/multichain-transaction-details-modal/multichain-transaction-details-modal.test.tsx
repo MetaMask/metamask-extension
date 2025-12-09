@@ -7,7 +7,7 @@ import {
 } from '@metamask/keyring-api';
 import { screen, fireEvent } from '@testing-library/react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
   MOCK_ACCOUNT_SOLANA_MAINNET,
   MOCK_ACCOUNT_BIP122_P2WPKH,
