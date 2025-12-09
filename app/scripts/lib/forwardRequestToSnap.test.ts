@@ -1,9 +1,9 @@
+import type { WalletMiddlewareContext } from '@metamask/eth-json-rpc-middleware';
 import { Hex, JsonRpcRequest } from '@metamask/utils';
 import { HandlerType } from '@metamask/snaps-utils';
 import { InternalError, type SnapId } from '@metamask/snaps-sdk';
 
 import { forwardRequestToSnap } from './forwardRequestToSnap';
-import type { WalletMiddlewareContext } from '@metamask/eth-json-rpc-middleware';
 
 describe('forwardRequestToSnap', () => {
   const SNAP_ID_MOCK = 'local:test-snap' as SnapId;
