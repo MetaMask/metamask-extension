@@ -25,10 +25,10 @@ jobs:
         run: |
           if [[ "$BRANCH" =~ ^release/[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             echo "Branch '$BRANCH' matches release/X.Y.Z format"
-            echo "is-valid=true" >> $GITHUB_OUTPUT
+            echo "is-valid=true" >> "$GITHUB_OUTPUT"
           else
             echo "Branch '$BRANCH' does not match release/X.Y.Z format. Skipping."
-            echo "is-valid=false" >> $GITHUB_OUTPUT
+            echo "is-valid=false" >> "$GITHUB_OUTPUT"
           fi
 
   merge-previous-releases:
