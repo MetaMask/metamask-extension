@@ -11,6 +11,7 @@ import {
   getDomainError,
   getDomainResolutions,
   resetDomainResolution,
+  lookupDomainName,
 } from '../../../../ducks/domains';
 import { getAddressBook, getInternalAccounts } from '../../../../selectors';
 import AddContact from './add-contact.component';
@@ -32,6 +33,8 @@ const mapDispatchToProps = (dispatch) => {
     scanQrCode: () => dispatch(showQrScanner()),
     qrCodeDetected: (data) => dispatch(qrCodeDetected(data)),
     resetDomainResolution: () => dispatch(resetDomainResolution()),
+    lookupDomainName: (domainName, chainId) =>
+      dispatch(lookupDomainName(domainName, chainId)),
   };
 };
 
