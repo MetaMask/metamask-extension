@@ -17,7 +17,7 @@ import { Skeleton } from '../../../../components/component-library/skeleton';
 
 type ButtonRowProps = {
   title: string;
-  description?: string;
+  description?: string | React.ReactNode;
   descriptionClassName?: string;
   startIconName?: IconName;
   endIconName?: IconName;
@@ -61,6 +61,24 @@ const ButtonRow = ({
     return null;
   }, [endAccessory, endIconName, onClick, loading]);
 
+  const descriptionElement = useMemo(() => {
+    if (loading) {
+      return <Skeleton width="100%" height={20} />;
+    }
+    if (typeof description === 'string') {
+      return (
+        <Text
+          variant={TextVariant.BodyMd}
+          className={twMerge('text-text-alternative', descriptionClassName)}
+        >
+          {description}
+        </Text>
+      );
+    }
+
+    return description;
+  }, [description, descriptionClassName, loading]);
+
   return (
     <Box
       asChild
@@ -98,20 +116,7 @@ const ButtonRow = ({
               {title}
             </Text>
           )}
-          {description &&
-            (loading ? (
-              <Skeleton width="100%" height={20} />
-            ) : (
-              <Text
-                variant={TextVariant.BodyMd}
-                className={twMerge(
-                  'text-text-alternative',
-                  descriptionClassName,
-                )}
-              >
-                {description}
-              </Text>
-            ))}
+          {descriptionElement}
         </Box>
         {endElement}
       </Component>

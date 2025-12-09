@@ -4,8 +4,6 @@ import {
   Button,
   ButtonVariant,
   IconName,
-  Text,
-  TextVariant,
 } from '@metamask/design-system-react';
 import {
   PRODUCT_TYPES,
@@ -85,7 +83,6 @@ const ManageShieldPlan = () => {
     isCancelled: isCancelled ?? false,
     subscriptionPricing,
   });
-
 
   const [isCancelMembershipModalOpen, setIsCancelMembershipModalOpen] =
     useState(false);

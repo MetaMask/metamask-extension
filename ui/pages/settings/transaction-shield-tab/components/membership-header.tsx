@@ -91,7 +91,48 @@ const MembershipHeader = ({
       return trialDaysLeftText;
     }
     return membershipPeriod;
-  }, [isCancelled, cancelledText, membershipPeriod, trialDaysLeftText]);
+  }, [
+    isCancelled,
+    isTrialing,
+    membershipPeriod,
+    cancelledText,
+    trialDaysLeftText,
+  ]);
+
+  const membershipTag = useMemo(() => {
+    if (isPaused) {
+      return (
+        <Tag
+          label={t('shieldTxMembershipPaused')}
+          labelProps={{
+            variant: DSTextVariant.bodySmMedium,
+            color: DSTextColor.textAlternative,
+          }}
+          borderStyle={BorderStyle.none}
+          borderRadius={BorderRadius.SM}
+          backgroundColor={BackgroundColor.backgroundMuted}
+          data-testid="shield-detail-paused-tag"
+        />
+      );
+    }
+    if (isTrialing) {
+      return (
+        <Tag
+          label={t('shieldTxMembershipFreeTrial')}
+          labelProps={{
+            variant: DSTextVariant.bodySmMedium,
+            color: DSTextColor.successDefault,
+          }}
+          borderStyle={BorderStyle.none}
+          borderRadius={BorderRadius.SM}
+          backgroundColor={BackgroundColor.successMuted}
+          data-testid="shield-detail-trial-tag"
+        />
+      );
+    }
+
+    return null;
+  }, [isPaused, isTrialing, t]);
 
   return (
     <Box
@@ -128,32 +169,7 @@ const MembershipHeader = ({
                   ? t('shieldTxMembershipInactive')
                   : t('shieldTxMembershipActive')}
               </Text>
-              {isTrialing && (
-                <Tag
-                  label={t('shieldTxMembershipFreeTrial')}
-                  labelProps={{
-                    variant: DSTextVariant.bodySmMedium,
-                    color: DSTextColor.successDefault,
-                  }}
-                  borderStyle={BorderStyle.none}
-                  borderRadius={BorderRadius.SM}
-                  backgroundColor={BackgroundColor.successMuted}
-                  data-testid="shield-detail-trial-tag"
-                />
-              )}
-              {isPaused && (
-                <Tag
-                  label={t('shieldTxMembershipPaused')}
-                  labelProps={{
-                    variant: DSTextVariant.bodySmMedium,
-                    color: DSTextColor.textAlternative,
-                  }}
-                  borderStyle={BorderStyle.none}
-                  borderRadius={BorderRadius.SM}
-                  backgroundColor={BackgroundColor.backgroundMuted}
-                  data-testid="shield-detail-paused-tag"
-                />
-              )}
+              {membershipTag}
             </Box>
           )}
           {showSkeletonLoader ? (

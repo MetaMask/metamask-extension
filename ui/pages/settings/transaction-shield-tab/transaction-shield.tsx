@@ -421,7 +421,7 @@ const TransactionShield = () => {
   }, [captureShieldCtaClickedEvent]);
 
   const rewardsButton = useMemo(() => {
-    if (isMembershipInactive) {
+    if (isCancelled) {
       return null;
     }
     if (showSkeletonLoader) {
@@ -463,7 +463,7 @@ const TransactionShield = () => {
     }
     return null;
   }, [
-    isMembershipInactive,
+    isCancelled,
     showSkeletonLoader,
     hasOptedIntoRewards,
     displayedShieldSubscription?.id,
@@ -523,7 +523,8 @@ const TransactionShield = () => {
           trialDaysLeft={trialDaysLeft}
           cancelledDate={displayedShieldSubscription?.canceledAt}
         />
-        {displayedShieldSubscription && !isMembershipInactive && (
+        {/* TODO: verify if we need to hide on all inactive states */}
+        {displayedShieldSubscription && !isCancelled && (
           <>
             <Box>
               <Box className="flex items-center justify-between gap-2 px-4 mb-2">

@@ -12,6 +12,10 @@ import {
 import {
   Box,
   FontWeight,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
@@ -230,12 +234,14 @@ export const PaymentMethodRow = ({
     }
     if (isPaused && !isUnexpectedErrorCryptoPayment) {
       let tooltipText = '';
-      let buttonText = '';
+      let buttonText: string | React.ReactNode = '';
       let buttonDisabled = false;
       let buttonOnClick = handlePaymentError;
-      if (isCryptoPayment) {
+      if (isCryptoPaymentMethod(displayedShieldSubscription?.paymentMethod)) {
         tooltipText = 'shieldTxMembershipErrorPausedCryptoTooltip';
-        buttonText = 'shieldTxMembershipErrorInsufficientToken';
+        buttonText = t('shieldTxMembershipErrorInsufficientToken', [
+          displayedShieldSubscription.paymentMethod.crypto.tokenSymbol,
+        ]);
         if (isInsufficientFundsCrypto) {
           buttonOnClick = handlePaymentErrorInsufficientFunds;
           // disable button if insufficient funds and not enough token balance to trigger subscription check
@@ -246,18 +252,28 @@ export const PaymentMethodRow = ({
       } else {
         // card payment error case
         tooltipText = 'shieldTxMembershipErrorPausedCardTooltip';
-        buttonText = 'shieldTxMembershipErrorUpdateCard';
+        buttonText = t('shieldPlanCard');
       }
 
       return (
         <Tooltip position="top" title={t(tooltipText)}>
           <ButtonRow
             title={t('shieldTxDetails3Title')}
-            description={t(buttonText, [
-              isCryptoPaymentMethod(displayedShieldSubscription?.paymentMethod)
-                ? displayedShieldSubscription.paymentMethod.crypto.tokenSymbol
-                : '',
-            ])}
+            description={
+              <Box className="flex items-center gap-1">
+                <Text
+                  variant={TextVariant.BodyMd}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {buttonText}
+                </Text>
+                <Icon
+                  name={IconName.Warning}
+                  size={IconSize.Md}
+                  color={IconColor.ErrorDefault}
+                />
+              </Box>
+            }
             descriptionClassName="text-error-default"
             onClick={buttonOnClick}
             disabled={buttonDisabled}
