@@ -55,9 +55,9 @@ jest.mock('../../../../../store/actions', () => ({
 describe('ConfirmTitle', () => {
   it('should render a skeleton loader when there is no current confirmation', () => {
     const mockStateWithNoConfirmation = {
-      ...getMockPersonalSignConfirmState,
+      ...getMockPersonalSignConfirmState(),
       metamask: {
-        ...getMockPersonalSignConfirmState.metamask,
+        ...getMockPersonalSignConfirmState().metamask,
         pendingApprovals: {},
         unapprovedPersonalMsgs: {},
       },

@@ -26,6 +26,10 @@ exports[`TokenTransferInfo renders correctly 1`] = `
         </h2>
       </div>
     </div>
+    <div
+      class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+      style="margin-bottom: 2px; height: 22px; width: 48px;"
+    />
   </div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
