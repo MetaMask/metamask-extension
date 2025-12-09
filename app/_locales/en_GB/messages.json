@@ -6470,6 +6470,10 @@
     "message": "Get $1 points/$2",
     "description": "The $1 is the number of points and the $2 is the interval"
   },
+  "shieldTxMembershipBenefits3DescriptionInactive": {
+    "message": "Get $1 points/$2 with your plan",
+    "description": "The $1 is the number of points and the $2 is the interval"
+  },
   "shieldTxMembershipBenefits3LinkRewards": {
     "message": "Link Rewards"
   },
@@ -6478,6 +6482,9 @@
   },
   "shieldTxMembershipBenefits3Title": {
     "message": "Earn during rewards season"
+  },
+  "shieldTxMembershipBenefitsInactive": {
+    "message": "What you get"
   },
   "shieldTxMembershipBenefitsViewAll": {
     "message": "View all"
@@ -6490,6 +6497,10 @@
   },
   "shieldTxMembershipCancelNotification": {
     "message": "Your plan will be cancelled on $1.",
+    "description": "The $1 is the date"
+  },
+  "shieldTxMembershipCancelledDate": {
+    "message": "You cancelled your plan on $1",
     "description": "The $1 is the date"
   },
   "shieldTxMembershipErrorInsufficientFunds": {
@@ -6530,8 +6541,12 @@
   "shieldTxMembershipFreeTrial": {
     "message": "Free trial"
   },
+  "shieldTxMembershipFreeTrialDaysLeft": {
+    "message": "You have $1 days left on your trial",
+    "description": "The $1 is the number of days left"
+  },
   "shieldTxMembershipId": {
-    "message": "Plan ID"
+    "message": "Member ID"
   },
   "shieldTxMembershipInactive": {
     "message": "Inactive plan"
@@ -6541,6 +6556,10 @@
   },
   "shieldTxMembershipRenew": {
     "message": "Renew plan"
+  },
+  "shieldTxMembershipRenewDescription": {
+    "message": "Reactivate for $1",
+    "description": "The $1 is the price of the plan"
   },
   "shieldTxMembershipResubscribe": {
     "message": "Restart plan"

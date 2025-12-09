@@ -24,29 +24,35 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getShortDateFormatterV2 } from '../../../asset/util';
 
 type MembershipHeaderProps = {
-  isInactive: boolean;
   showSkeletonLoader: boolean;
+  isCancelled: boolean;
   isTrialing: boolean;
   isPaused: boolean;
   customerId?: string;
   startDate?: string;
   endDate?: string;
   trialDaysLeft?: string;
+  cancelledDate?: string;
+  className?: string;
 };
 
 const MembershipHeader = ({
-  isInactive,
   showSkeletonLoader,
+  isCancelled,
   isTrialing,
   isPaused,
   customerId,
   startDate,
   endDate,
   trialDaysLeft,
+  cancelledDate,
+  className,
 }: MembershipHeaderProps) => {
   const t = useI18nContext();
   const theme = useTheme();
   const isLightTheme = theme === ThemeType.light;
+
+  const isInactive = isCancelled || isPaused;
 
   const membershipPeriod = useMemo(() => {
     if (!startDate || !endDate) {
@@ -68,6 +74,25 @@ const MembershipHeader = ({
     return t('shieldTxMembershipFreeTrialDaysLeft', [trialDaysLeft]);
   }, [isTrialing, t, trialDaysLeft]);
 
+  const cancelledText = useMemo(() => {
+    if (!isCancelled || !cancelledDate) {
+      return '';
+    }
+    return t('shieldTxMembershipCancelledDate', [
+      getShortDateFormatterV2().format(new Date(cancelledDate)),
+    ]);
+  }, [isCancelled, t, cancelledDate]);
+
+  const membershipDetailsText = useMemo(() => {
+    if (isCancelled) {
+      return cancelledText;
+    }
+    if (isTrialing) {
+      return trialDaysLeftText;
+    }
+    return membershipPeriod;
+  }, [isCancelled, cancelledText, membershipPeriod, trialDaysLeftText]);
+
   return (
     <Box
       data-theme={isInactive ? theme : ThemeType.dark}
@@ -82,6 +107,7 @@ const MembershipHeader = ({
           'transaction-shield-page__membership--inactive-light':
             isLightTheme && isInactive && !showSkeletonLoader,
         },
+        className ?? '',
       )}
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Between}
@@ -138,7 +164,7 @@ const MembershipHeader = ({
               className="transaction-shield-page__membership-text"
               data-testid="shield-detail-note"
             >
-              {trialDaysLeftText || membershipPeriod}
+              {membershipDetailsText}
             </Text>
           )}
         </Box>

@@ -248,7 +248,7 @@ const TransactionShield = () => {
     return diffDays.toString();
   }, [displayedShieldSubscription, isTrialing]);
 
-  const amountDetails = useMemo(() => {
+  const priceDetails = useMemo(() => {
     if (!displayedShieldSubscription) {
       return '';
     }
@@ -268,20 +268,18 @@ const TransactionShield = () => {
             minimumFractionDigits: 0,
           },
         );
+    return t('shieldTxDetails1Description', [price, interval]);
+  }, [displayedShieldSubscription, productInfo, t, formatCurrency]);
 
-    const priceDetails = t('shieldTxDetails1Description', [price, interval]);
+  const amountDetails = useMemo(() => {
+    if (!displayedShieldSubscription) {
+      return '';
+    }
 
     return isTrialing
       ? t('shieldTxDetails1DescriptionTrial', [trialDaysLeft, priceDetails])
       : priceDetails;
-  }, [
-    displayedShieldSubscription,
-    formatCurrency,
-    isTrialing,
-    productInfo,
-    t,
-    trialDaysLeft,
-  ]);
+  }, [displayedShieldSubscription, isTrialing, t, trialDaysLeft, priceDetails]);
 
   const payerAccountName = useMemo(() => {
     if (
@@ -423,6 +421,9 @@ const TransactionShield = () => {
   }, [captureShieldCtaClickedEvent]);
 
   const rewardsButton = useMemo(() => {
+    if (isMembershipInactive) {
+      return null;
+    }
     if (showSkeletonLoader) {
       return <Skeleton width={80} height={40} />;
     }
@@ -462,6 +463,7 @@ const TransactionShield = () => {
     }
     return null;
   }, [
+    isMembershipInactive,
     showSkeletonLoader,
     hasOptedIntoRewards,
     displayedShieldSubscription?.id,
@@ -510,82 +512,89 @@ const TransactionShield = () => {
       {membershipErrorBanner}
       <Box className="transaction-shield-page__container mb-4">
         <MembershipHeader
-          isInactive={isMembershipInactive}
+          className="mb-4"
           showSkeletonLoader={showSkeletonLoader}
           isTrialing={isTrialing}
           isPaused={isPaused}
+          isCancelled={isCancelled}
           customerId={customerId}
           startDate={displayedShieldSubscription?.currentPeriodStart}
           endDate={displayedShieldSubscription?.currentPeriodEnd}
           trialDaysLeft={trialDaysLeft}
+          cancelledDate={displayedShieldSubscription?.canceledAt}
         />
-        {displayedShieldSubscription && (
-          <Box className="mt-4">
-            <Box className="flex items-center justify-between gap-2 px-4 mb-2">
-              {showSkeletonLoader ? (
-                <Skeleton width="40%" height={20} />
-              ) : (
-                <Text variant={TextVariant.HeadingSm}>
-                  {t('shieldTxDetailsTitle')}
-                </Text>
-              )}
-              {showSkeletonLoader ? (
-                <Skeleton width="30%" height={20} />
-              ) : (
-                <TextButton
-                  data-testid="shield-detail-manage-plan-button"
-                  className="text-text-alternative hover:text-text-alternative hover:decoration-text-alternative hover:bg-transparent"
-                  endIconName={IconName.ArrowRight}
-                  endIconProps={{
-                    size: IconSize.Sm,
-                    color: IconColor.IconAlternative,
-                  }}
-                  onClick={() => {
-                    navigate(TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE);
-                  }}
-                >
-                  {t('shieldTxDetailsManage')}
-                </TextButton>
-              )}
+        {displayedShieldSubscription && !isMembershipInactive && (
+          <>
+            <Box>
+              <Box className="flex items-center justify-between gap-2 px-4 mb-2">
+                {showSkeletonLoader ? (
+                  <Skeleton width="40%" height={20} />
+                ) : (
+                  <Text variant={TextVariant.HeadingSm}>
+                    {t('shieldTxDetailsTitle')}
+                  </Text>
+                )}
+                {showSkeletonLoader ? (
+                  <Skeleton width="30%" height={20} />
+                ) : (
+                  <TextButton
+                    data-testid="shield-detail-manage-plan-button"
+                    className="text-text-alternative hover:text-text-alternative hover:decoration-text-alternative hover:bg-transparent"
+                    endIconName={IconName.ArrowRight}
+                    endIconProps={{
+                      size: IconSize.Sm,
+                      color: IconColor.IconAlternative,
+                    }}
+                    onClick={() => {
+                      navigate(TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE);
+                    }}
+                  >
+                    {t('shieldTxDetailsManage')}
+                  </TextButton>
+                )}
+              </Box>
+              <ButtonRowContainer>
+                <ButtonRow
+                  startIconName={IconName.SecurityTick}
+                  title={t('shieldTxDetails1Title')}
+                  description={amountDetails}
+                  loading={showSkeletonLoader}
+                />
+                <ButtonRow
+                  startIconName={IconName.Calendar}
+                  title={t('shieldTxDetails2Title')}
+                  description={t('shieldTxDetails2Description', [
+                    displayedShieldSubscription?.interval ===
+                    RECURRING_INTERVALS.year
+                      ? t('shieldPlanAnnual')
+                      : t('shieldPlanMonthly'),
+                    getShortDateFormatterV2().format(
+                      new Date(displayedShieldSubscription?.currentPeriodEnd),
+                    ),
+                  ])}
+                  loading={showSkeletonLoader}
+                />
+                <ButtonRow
+                  startIconName={IconName.Card}
+                  title={t('shieldTxDetails3Title')}
+                  description={paymentMethodDetails}
+                  loading={showSkeletonLoader}
+                />
+              </ButtonRowContainer>
             </Box>
-            <ButtonRowContainer>
-              <ButtonRow
-                startIconName={IconName.SecurityTick}
-                title={t('shieldTxDetails1Title')}
-                description={amountDetails}
-                loading={showSkeletonLoader}
-              />
-              <ButtonRow
-                startIconName={IconName.Calendar}
-                title={t('shieldTxDetails2Title')}
-                description={t('shieldTxDetails2Description', [
-                  displayedShieldSubscription?.interval ===
-                  RECURRING_INTERVALS.year
-                    ? t('shieldPlanAnnual')
-                    : t('shieldPlanMonthly'),
-                  getShortDateFormatterV2().format(
-                    new Date(displayedShieldSubscription?.currentPeriodEnd),
-                  ),
-                ])}
-                loading={showSkeletonLoader}
-              />
-              <ButtonRow
-                startIconName={IconName.Card}
-                title={t('shieldTxDetails3Title')}
-                description={paymentMethodDetails}
-                loading={showSkeletonLoader}
-              />
-            </ButtonRowContainer>
-          </Box>
+            <Box className="border-t border-muted my-4 w-full h-px" />
+          </>
         )}
-        <Box className="border-t border-muted my-4 w-full h-px" />
+
         <Box>
           <Box className="flex items-center justify-between gap-2 px-4 mb-2">
             {showSkeletonLoader ? (
               <Skeleton width="40%" height={20} />
             ) : (
               <Text variant={TextVariant.HeadingSm}>
-                {t('shieldTxMembershipBenefits')}
+                {isMembershipInactive
+                  ? t('shieldTxMembershipBenefitsInactive')
+                  : t('shieldTxMembershipBenefits')}
               </Text>
             )}
             {showSkeletonLoader ? (
@@ -623,10 +632,12 @@ const TransactionShield = () => {
             <ButtonRow
               startIconName={IconName.MetamaskFoxOutline}
               title={t('shieldTxMembershipBenefits3Title')}
-              description={t('shieldTxMembershipBenefits3Description', [
-                formattedRewardsPoints,
-                displayedShieldSubscription?.interval,
-              ])}
+              description={t(
+                isMembershipInactive
+                  ? 'shieldTxMembershipBenefits3DescriptionInactive'
+                  : 'shieldTxMembershipBenefits3Description',
+                [formattedRewardsPoints, displayedShieldSubscription?.interval],
+              )}
               loading={showSkeletonLoader}
               endAccessory={rewardsButton}
             />
@@ -646,6 +657,24 @@ const TransactionShield = () => {
                 }}
               >
                 {t('shieldTxMembershipSubmitCase')}
+              </Button>
+            )}
+          </Box>
+        )}
+        {isCancelled && (
+          <Box className="px-4 mt-4">
+            {showSkeletonLoader ? (
+              <Skeleton width="100%" height={40} />
+            ) : (
+              <Button
+                data-testid="shield-detail-renew-button"
+                className="w-full"
+                variant={ButtonVariant.Secondary}
+                onClick={() => {
+                  handlePaymentError();
+                }}
+              >
+                {t('shieldTxMembershipRenewDescription', [priceDetails])}
               </Button>
             )}
           </Box>

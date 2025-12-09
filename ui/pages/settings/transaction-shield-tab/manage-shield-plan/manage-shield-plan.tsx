@@ -198,7 +198,7 @@ const ManageShieldPlan = () => {
           )}
         {isCancelled && (
           <Button
-            data-testid="shield-detail-renew-button"
+            data-testid="shield-plan-renew-button"
             variant={ButtonVariant.Secondary}
             className="w-full"
             onClick={() => {
