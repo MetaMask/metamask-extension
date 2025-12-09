@@ -24,8 +24,6 @@ const initialState: BridgeState = {
   toToken: null,
   fromTokenInputValue: null,
   fromTokenExchangeRate: null,
-  toTokenExchangeRate: null,
-  toTokenUsdExchangeRate: null,
   fromTokenBalance: null,
   fromNativeBalance: null,
   sortOrder: SortOrder.COST_ASC,
@@ -37,16 +35,6 @@ const initialState: BridgeState = {
 
 export const setSrcTokenExchangeRates = createAsyncThunk(
   'bridge/setSrcTokenExchangeRates',
-  getTokenExchangeRate,
-);
-
-export const setDestTokenExchangeRates = createAsyncThunk(
-  'bridge/setDestTokenExchangeRates',
-  getTokenExchangeRate,
-);
-
-export const setDestTokenUsdExchangeRates = createAsyncThunk(
-  'bridge/setDestTokenUsdExchangeRates',
   getTokenExchangeRate,
 );
 
@@ -110,7 +98,6 @@ const bridgeSlice = createSlice({
       if (
         state.fromToken?.assetId &&
         state.toToken?.assetId &&
-        // TODO: determine if this is necessary.
         state.fromToken.assetId?.toLowerCase() ===
           state.toToken.assetId?.toLowerCase()
       ) {
@@ -179,20 +166,8 @@ const bridgeSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(setDestTokenExchangeRates.pending, (state) => {
-      state.toTokenExchangeRate = null;
-    });
-    builder.addCase(setDestTokenUsdExchangeRates.pending, (state) => {
-      state.toTokenUsdExchangeRate = null;
-    });
     builder.addCase(setSrcTokenExchangeRates.pending, (state) => {
       state.fromTokenExchangeRate = null;
-    });
-    builder.addCase(setDestTokenExchangeRates.fulfilled, (state, action) => {
-      state.toTokenExchangeRate = action.payload ?? null;
-    });
-    builder.addCase(setDestTokenUsdExchangeRates.fulfilled, (state, action) => {
-      state.toTokenUsdExchangeRate = action.payload ?? null;
     });
     builder.addCase(setSrcTokenExchangeRates.fulfilled, (state, action) => {
       state.fromTokenExchangeRate = action.payload ?? null;

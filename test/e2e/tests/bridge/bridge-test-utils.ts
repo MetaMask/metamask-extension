@@ -16,6 +16,7 @@ import AccountListPage from '../../page-objects/pages/account-list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { MOCK_META_METRICS_ID } from '../../constants';
 import { mockSegment } from '../metrics/mocks/segment';
+import { BIP44_STAGE_TWO } from '../multichain-accounts/feature-flag-mocks';
 import {
   ETH_CONVERSION_RATE_USD,
   MOCK_CURRENCY_RATES,
@@ -375,7 +376,7 @@ async function mockFeatureFlags(
       return {
         ok: true,
         statusCode: 200,
-        json: [{ bridgeConfig: featureFlags }],
+        json: [{ bridgeConfig: featureFlags, ...BIP44_STAGE_TWO }],
       };
     });
 }
@@ -383,6 +384,7 @@ async function mockFeatureFlags(
 async function mockSwapETHtoMUSD(mockServer: Mockttp) {
   return await mockServer
     .forGet(/getQuoteStream/u)
+    .once()
     .withQuery({
       srcTokenAddress: '0x0000000000000000000000000000000000000000',
       destTokenAddress: '0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
@@ -398,6 +400,7 @@ async function mockUSDCtoDAI(mockServer: Mockttp, sseEnabled?: boolean) {
   if (sseEnabled) {
     return await mockServer
       .forGet(/getQuoteStream/u)
+      .once()
       .withQuery({
         srcTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
         destTokenAddress: '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5',
@@ -835,6 +838,7 @@ export const getBridgeFixtures = (
   }
 
   return {
+    forceBip44Version: false,
     fixtures: fixtureBuilder.build(),
     testSpecificMock: async (mockServer: Mockttp) => {
       const standardMocks = [
@@ -848,10 +852,6 @@ export const getBridgeFixtures = (
         await mockETHtoETH(mockServer),
         await mockETHtoUSDC(mockServer),
         await mockDAItoETH(mockServer),
-        await mockSwapETHtoMUSD(mockServer),
-        await mockSwapETHtoMUSD(mockServer),
-        await mockSwapETHtoMUSD(mockServer),
-        await mockSwapETHtoMUSD(mockServer),
         await mockSwapETHtoMUSD(mockServer),
         await mockUSDCtoDAI(mockServer, featureFlags.sse?.enabled),
         await mockFeatureFlags(mockServer, featureFlags),
@@ -937,8 +937,6 @@ export const getQuoteNegativeCasesFixtures = (
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
-        '0xe708': true,
-        '0xa4b1': true,
       },
     });
 
@@ -953,6 +951,7 @@ export const getQuoteNegativeCasesFixtures = (
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
+        ...BIP44_STAGE_TWO,
       },
       testing: { disableSmartTransactionsOverride: true },
     },
@@ -962,7 +961,7 @@ export const getQuoteNegativeCasesFixtures = (
         type: 'anvil',
         options: {
           chainId: 1,
-          hardfork: 'muirGlacier',
+          hardfork: 'london',
         },
       },
     ],
@@ -985,7 +984,6 @@ export const getBridgeNegativeCasesFixtures = (
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
-        '0xe708': true,
       },
     });
 
@@ -1001,6 +999,7 @@ export const getBridgeNegativeCasesFixtures = (
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
+        ...BIP44_STAGE_TWO,
       },
       testing: { disableSmartTransactionsOverride: true },
     },
@@ -1031,7 +1030,6 @@ export const getInsufficientFundsFixtures = (
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
-        '0xe708': true,
       },
     });
 
@@ -1046,6 +1044,7 @@ export const getInsufficientFundsFixtures = (
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
+        ...BIP44_STAGE_TWO,
       },
     },
     smartContract: SMART_CONTRACTS.HST,

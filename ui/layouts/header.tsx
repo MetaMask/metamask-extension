@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom-v5-compat';
+import { useLocation } from 'react-router-dom';
 import { AppHeader } from '../components/multichain';
 import { hideAppHeader } from '../pages/routes/utils';
 import { removeGns } from './config';

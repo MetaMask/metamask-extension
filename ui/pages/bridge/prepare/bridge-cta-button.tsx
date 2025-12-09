@@ -150,8 +150,6 @@ export const BridgeCTAButton = ({
       }}
       loading={isSubmitting}
       disabled={
-        // Disable submission until all quotes have been fetched
-        isLoading ||
         !isTxSubmittable ||
         isTxAlertPresent ||
         isQuoteExpired ||

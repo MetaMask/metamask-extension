@@ -40,7 +40,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
           '[data-testid="account-overview__activity-tab"]',
         );
         const sendTransactionListItem = await driver.findElement(
-          '.transaction-list__completed-transactions .activity-list-item',
+          '.transaction-status-label--confirmed',
         );
         await sendTransactionListItem.click();
         await driver.clickElement({ text: 'Activity log', tag: 'summary' });
@@ -83,9 +83,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
         await driver.clickElement(
           '[data-testid="account-overview__activity-tab"]',
         );
-        await driver.clickElement(
-          '.transaction-list__completed-transactions .activity-list-item',
-        );
+        await driver.clickElement('.transaction-status-label--confirmed');
         await driver.clickElement({ text: 'Activity log', tag: 'summary' });
 
         // Verify address in activity log
@@ -108,6 +106,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         fixtures: new FixtureBuilder()
           .withPreferencesControllerPetnamesDisabled()
           .withTokensControllerERC20()
+          .withEnabledNetworks({ eip155: { '0x539': true } })
           .build(),
         smartContract,
         title: this.test.fullTitle(),
@@ -145,11 +144,9 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         await driver.clickElement(
           '[data-testid="account-overview__activity-tab"]',
         );
-        await driver.findElement(
-          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
-        );
+        await driver.findElement('.transaction-status-label--confirmed');
         const sendTransactionListItem = await driver.findElement(
-          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
+          '.transaction-status-label--confirmed',
         );
         await sendTransactionListItem.click();
         await driver.clickElement({ text: 'Activity log', tag: 'summary' });
@@ -169,6 +166,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPreferencesControllerPetnamesDisabled()
+          .withEnabledNetworks({ eip155: { '0x539': true } })
           .withTokensControllerERC20()
           .build(),
         smartContract,
@@ -207,11 +205,9 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         await driver.clickElement(
           '[data-testid="account-overview__activity-tab"]',
         );
-        await driver.findElement(
-          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
-        );
+        await driver.findElement('.transaction-status-label--confirmed');
         const sendTransactionListItem = await driver.findElement(
-          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
+          '.transaction-status-label--confirmed',
         );
         await sendTransactionListItem.click();
         await driver.clickElement({ text: 'Activity log', tag: 'summary' });
