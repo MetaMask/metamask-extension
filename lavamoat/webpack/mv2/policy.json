@@ -4963,6 +4963,14 @@
         "react": true
       }
     },
+    "react-compiler-runtime": {
+      "globals": {
+        "console.error": true
+      },
+      "packages": {
+        "react": true
+      }
+    },
     "react-devtools-core": {
       "globals": {
         "CSSStyleRule": true,
