@@ -5615,9 +5615,6 @@
   "shieldTxMembershipErrorPausedCardTooltip": {
     "message": "您的付款已被拒绝。请更新支付方式以继续使用保障服务。"
   },
-  "shieldTxMembershipErrorUpdateCard": {
-    "message": "更新卡片信息"
-  },
   "shieldTxMembershipFreeTrial": {
     "message": "免费试用"
   },

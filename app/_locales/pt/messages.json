@@ -5618,9 +5618,6 @@
   "shieldTxMembershipErrorPausedCardTooltip": {
     "message": "Seu pagamento foi recusado. Por favor, atualize seu método de pagamento para continuar sua cobertura."
   },
-  "shieldTxMembershipErrorUpdateCard": {
-    "message": "Atualizar dados do cartão"
-  },
   "shieldTxMembershipFreeTrial": {
     "message": "Teste grátis"
   },

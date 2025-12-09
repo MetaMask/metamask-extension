@@ -5618,9 +5618,6 @@
   "shieldTxMembershipErrorPausedCardTooltip": {
     "message": "Pembayaran Anda ditolak. Perbarui metode pembayaran untuk melanjutkan pertanggungan."
   },
-  "shieldTxMembershipErrorUpdateCard": {
-    "message": "Perbarui detail kartu"
-  },
   "shieldTxMembershipFreeTrial": {
     "message": "Uji coba gratis"
   },

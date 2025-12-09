@@ -5618,9 +5618,6 @@
   "shieldTxMembershipErrorPausedCardTooltip": {
     "message": "Ваш платёж отклонён. Обновите способ оплаты, чтобы продолжить страховку."
   },
-  "shieldTxMembershipErrorUpdateCard": {
-    "message": "Обновить реквизиты карты"
-  },
   "shieldTxMembershipFreeTrial": {
     "message": "Бесплатная пробная версия"
   },

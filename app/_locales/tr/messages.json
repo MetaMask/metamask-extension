@@ -5618,9 +5618,6 @@
   "shieldTxMembershipErrorPausedCardTooltip": {
     "message": "Ödemeniz reddedildi. Koruma kapsamınızı sürdürmek için lütfen ödeme yönteminizi güncelleyin."
   },
-  "shieldTxMembershipErrorUpdateCard": {
-    "message": "Kart bilgilerini güncelle"
-  },
   "shieldTxMembershipFreeTrial": {
     "message": "Ücretsiz deneme"
   },

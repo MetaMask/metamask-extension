@@ -6507,9 +6507,6 @@
     "message": "Your plan ends on $1. Renew now to continue your benefits.",
     "description": "The $1 is the date subscription ends"
   },
-  "shieldTxMembershipErrorInsufficientToken": {
-    "message": "Retry payment"
-  },
   "shieldTxMembershipErrorPausedCard": {
     "message": "Your plan has been paused due to a failed card payment."
   },
@@ -6534,9 +6531,6 @@
   },
   "shieldTxMembershipErrorPausedUnexpectedAction": {
     "message": "Contact support"
-  },
-  "shieldTxMembershipErrorUpdateCard": {
-    "message": "Update card details"
   },
   "shieldTxMembershipFreeTrial": {
     "message": "Free trial"

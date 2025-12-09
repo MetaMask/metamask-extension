@@ -5618,9 +5618,6 @@
   "shieldTxMembershipErrorPausedCardTooltip": {
     "message": "支払いが拒否されました。補償を継続するには、支払方法を更新してください。"
   },
-  "shieldTxMembershipErrorUpdateCard": {
-    "message": "カード情報を更新"
-  },
   "shieldTxMembershipFreeTrial": {
     "message": "無料トライアル"
   },

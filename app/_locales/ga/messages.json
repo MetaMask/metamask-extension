@@ -5697,18 +5697,11 @@
     "message": "Cuirfear do bhallra�ocht ar ceal ar $1.",
     "description": "The $1 is the date"
   },
-  "shieldTxMembershipErrorInsufficientToken": {
-    "message": "$1 neamhleor",
-    "description": "The $1 is the token symbol"
-  },
   "shieldTxMembershipErrorPausedCardTooltip": {
     "message": "Diúltaíodh do d’íocaíocht. Nuashonraigh do mhodh íocaíochta le go leanfaidh do chlúdach ar aghaidh."
   },
   "shieldTxMembershipErrorPausedCryptoTooltip": {
     "message": "Iarmhéid neamhleor comharthaí i do sparán. Cuir barr leis chun clúdach a atosú."
-  },
-  "shieldTxMembershipErrorUpdateCard": {
-    "message": "Nuashonraigh sonraí cárta"
   },
   "shieldTxMembershipFreeTrial": {
     "message": "Triail saor in aisce"

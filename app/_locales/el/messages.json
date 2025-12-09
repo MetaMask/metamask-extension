@@ -5618,9 +5618,6 @@
   "shieldTxMembershipErrorPausedCardTooltip": {
     "message": "Η πληρωμή σας απορρίφθηκε. Ενημερώστε τον τρόπο πληρωμής σας ώστε να συνεχιστεί η κάλυψη."
   },
-  "shieldTxMembershipErrorUpdateCard": {
-    "message": "Ενημέρωση στοιχείων κάρτας"
-  },
   "shieldTxMembershipFreeTrial": {
     "message": "Δωρεάν δοκιμή"
   },

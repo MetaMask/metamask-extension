@@ -5618,9 +5618,6 @@
   "shieldTxMembershipErrorPausedCardTooltip": {
     "message": "Hindi tinanggap ang iyong pagbabayad. I-update ang iyong paraan ng pagbabayad para ipagpatuloy ang iyong coverage."
   },
-  "shieldTxMembershipErrorUpdateCard": {
-    "message": "I-update ang mga detalye ng card"
-  },
   "shieldTxMembershipFreeTrial": {
     "message": "Libreng trial"
   },

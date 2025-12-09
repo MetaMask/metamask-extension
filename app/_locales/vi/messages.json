@@ -5618,9 +5618,6 @@
   "shieldTxMembershipErrorPausedCardTooltip": {
     "message": "Giao dịch thanh toán của bạn bị từ chối. Vui lòng cập nhật phương thức thanh toán để tiếp tục gói bảo hiểm."
   },
-  "shieldTxMembershipErrorUpdateCard": {
-    "message": "Cập nhật chi tiết thẻ"
-  },
   "shieldTxMembershipFreeTrial": {
     "message": "Dùng thử miễn phí"
   },

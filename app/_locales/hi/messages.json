@@ -5615,9 +5615,6 @@
   "shieldTxMembershipErrorPausedCardTooltip": {
     "message": "आपका भुगतान अस्वीकार कर दिया गया। कृपया अपनी भुगतान विधि अपडेट करें ताकि आपका कवरेज जारी रह सके।"
   },
-  "shieldTxMembershipErrorUpdateCard": {
-    "message": "कार्ड विवरण अपडेट करें"
-  },
   "shieldTxMembershipFreeTrial": {
     "message": "मुफ्त ट्रायल"
   },
