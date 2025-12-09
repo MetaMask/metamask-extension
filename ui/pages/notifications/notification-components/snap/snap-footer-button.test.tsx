@@ -2,16 +2,16 @@ import React from 'react';
 import { processNotification } from '@metamask/notification-services-controller/notification-services';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { createMockSnapNotification } from '@metamask/notification-services-controller/notification-services/mocks';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import { SnapFooterButton } from './snap-footer-button';
 import { DetailedViewData, SnapNotification } from './types';
 
 const mockUseNavigate = jest.fn();
 
-jest.mock('react-router-dom-v5-compat', () => {
+jest.mock('react-router-dom', () => {
   return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
+    ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
   };
 });
@@ -80,8 +80,8 @@ describe('SnapFooterButton', () => {
 
     // Confirm Leave
     await waitFor(() => {
-      const leaveModalTitle = getByText('[leaveMetaMask]');
-      const leaveModalButton = getByText('[visitSite]');
+      const leaveModalTitle = getByText('Leave MetaMask?');
+      const leaveModalButton = getByText('Visit site');
       expect(leaveModalTitle).toBeInTheDocument();
       expect(leaveModalButton).toBeInTheDocument();
     });

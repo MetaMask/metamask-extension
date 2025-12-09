@@ -8,7 +8,7 @@ import {
   getKnownMethodData,
   getSelectedAddress,
   selectERC20TokensByChain,
-} from '../selectors/selectors';
+} from '../selectors';
 import {
   getStatusKey,
   getTransactionTypeTitle,

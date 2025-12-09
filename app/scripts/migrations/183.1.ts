@@ -7,7 +7,7 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-export const version = 185;
+export const version = 183.1;
 
 /**
  * This migration rounds conversionRate and usdConversionRate values in CurrencyController

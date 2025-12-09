@@ -1,7 +1,7 @@
-import { migrate, version } from './185';
+import { migrate, version } from './183.1';
 
 const VERSION = version;
-const oldVersion = 184;
+const oldVersion = 183;
 
 describe(`migration #${VERSION}`, () => {
   let mockedCaptureException: jest.Mock;
