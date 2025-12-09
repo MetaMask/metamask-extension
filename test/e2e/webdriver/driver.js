@@ -1208,6 +1208,13 @@ class Driver {
     const start = Date.now();
     // eslint-disable-next-line no-constant-condition
     while (true) {
+      const timeElapsed = Date.now() - start;
+      if (timeElapsed > timeout) {
+        throw new Error(
+          `waitForWindowToClose timed out waiting for window handle '${handle}' to close.`,
+        );
+      }
+
       let handles;
       try {
         handles = await this.getAllWindowHandles();
@@ -1217,15 +1224,14 @@ class Driver {
         continue;
       }
 
-      if (!handles.includes(handle)) {
-        return;
+      // If handles is null/undefined (edge case during instability), retry
+      if (!handles) {
+        await this.delay(500);
+        continue;
       }
 
-      const timeElapsed = Date.now() - start;
-      if (timeElapsed > timeout) {
-        throw new Error(
-          `waitForWindowToClose timed out waiting for window handle '${handle}' to close.`,
-        );
+      if (!handles.includes(handle)) {
+        return;
       }
 
       await this.delay(500);

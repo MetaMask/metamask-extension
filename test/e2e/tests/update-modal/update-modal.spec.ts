@@ -7,8 +7,7 @@ import UpdateModal from '../../page-objects/pages/dialog/update-modal';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { version } from '../../../../package.json';
 
-describe('Update modal', function (this: Suite) {
-  this.timeout(120000); // This test is very long, so we need an unusually high timeout
+describe('Update modal TEST', function (this: Suite) {
   it('should not be shown by default', async function () {
     await withFixtures(
       {
