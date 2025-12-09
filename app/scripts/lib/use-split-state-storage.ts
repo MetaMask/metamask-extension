@@ -60,7 +60,7 @@ async function developerOverrides() {
 }
 
 /**
- * Get current account and network counts from the messenger
+ * Get current account and network counts from controller state
  *
  * @param state - The current state
  * @returns The account and network counts
