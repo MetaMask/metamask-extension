@@ -21,6 +21,7 @@ import { WebAuthenticator } from '../oauth/types';
 import { createSwapsMockStore } from '../../../../test/jest';
 import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
 import { DAY } from '../../../../shared/constants/time';
+import { SHIELD_ERROR } from '../../../../shared/modules/shield';
 import { SubscriptionService } from './subscription-service';
 import { SubscriptionServiceMessenger } from './types';
 
@@ -426,7 +427,7 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
         100,
         1000,
       ),
-    ).rejects.toThrow('Subscription activation timed out');
+    ).rejects.toThrow(SHIELD_ERROR.subscriptionPollingTimedOut);
   });
 });
 
