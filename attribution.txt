@@ -29968,7 +29968,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************
 
 @metamask/eth-json-rpc-middleware
-22.0.0 <https://github.com/MetaMask/core>
+22.0.1 <https://github.com/MetaMask/core>
 ISC License
 
 Copyright (c) 2020 MetaMask
