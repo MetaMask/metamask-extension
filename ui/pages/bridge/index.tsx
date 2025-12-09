@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Route, Routes } from 'react-router-dom-v5-compat';
+import { Route, Routes, useNavigate, useLocation } from 'react-router-dom';
 import {
   UnifiedSwapBridgeEventName,
   isNonEvmChainId,
@@ -10,10 +10,10 @@ import { clearSwapsState } from '../../ducks/swaps/swaps';
 import {
   DEFAULT_ROUTE,
   PREPARE_SWAP_ROUTE,
-  CROSS_CHAIN_SWAP_ROUTE,
   AWAITING_SIGNATURES_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
+import { toRelativeRoutePath } from '../routes/utils';
 import { resetBackgroundSwapsState } from '../../store/actions';
 import {
   ButtonIcon,
@@ -40,29 +40,20 @@ import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
 import { TextVariant } from '../../helpers/constants/design-system';
 import { useTxAlerts } from '../../hooks/bridge/useTxAlerts';
 import { getFromChain, getBridgeQuotes } from '../../ducks/bridge/selectors';
-import { useSafeNavigation } from '../../hooks/useSafeNavigation';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
 import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
 import { BridgeTransactionSettingsModal } from './prepare/bridge-transaction-settings-modal';
 
-type CrossChainSwapProps = {
-  location?: {
-    search?: string;
-  };
-};
-
-const CrossChainSwap = ({ location }: CrossChainSwapProps) => {
+const CrossChainSwap = () => {
   const t = useContext(I18nContext);
 
   // Load swaps feature flags so that we can use smart transactions
   useSwapsFeatureFlags();
   useBridging();
-
-  const { navigate } = useSafeNavigation();
   const dispatch = useDispatch();
-
-  const { search } = location ?? {};
+  const navigate = useNavigate();
+  const { search } = useLocation();
 
   const isFromTransactionShield = new URLSearchParams(search || '').get(
     'isFromTransactionShield',
@@ -157,7 +148,7 @@ const CrossChainSwap = ({ location }: CrossChainSwapProps) => {
       <Content padding={0}>
         <Routes>
           <Route
-            path={CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE}
+            path={toRelativeRoutePath(PREPARE_SWAP_ROUTE)}
             element={
               <>
                 <BridgeTransactionSettingsModal
@@ -173,7 +164,7 @@ const CrossChainSwap = ({ location }: CrossChainSwapProps) => {
             }
           />
           <Route
-            path={CROSS_CHAIN_SWAP_ROUTE + AWAITING_SIGNATURES_ROUTE}
+            path={toRelativeRoutePath(AWAITING_SIGNATURES_ROUTE)}
             element={
               <>
                 <Content>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate, useParams } from 'react-router-dom-v5-compat';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import {
@@ -33,25 +33,10 @@ import {
 } from '../../../../../selectors/gator-permissions/gator-permissions';
 import { getDisplayOrigin, safeDecodeURIComponent } from '../helper';
 
-type TokenTransferPageProps = {
-  params?: { origin?: string };
-  navigate?: (
-    to: string | number,
-    options?: { replace?: boolean; state?: Record<string, unknown> },
-  ) => void;
-};
-
-export const TokenTransferPage = ({
-  params,
-  navigate: navigateProp,
-}: TokenTransferPageProps = {}) => {
+export const TokenTransferPage = () => {
   const t = useI18nContext();
-  const navigateHook = useNavigate();
-  const navigate = (navigateProp || navigateHook) as NonNullable<
-    typeof navigateProp
-  >;
-  const urlParamsHook = useParams<{ origin?: string }>();
-  const urlParams = params || urlParamsHook;
+  const navigate = useNavigate();
+  const urlParams = useParams<{ origin?: string }>();
   const origin = urlParams.origin
     ? safeDecodeURIComponent(urlParams.origin)
     : undefined;

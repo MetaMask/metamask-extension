@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom-v5-compat';
+import { useNavigate, useParams } from 'react-router-dom';
 import { NonEmptyArray } from '@metamask/utils';
 import {
   AlignItems,
@@ -68,28 +68,11 @@ import {
 } from './components/connections.types';
 import { NoConnectionContent } from './components/no-connection';
 
-type ConnectionsProps = {
-  params?: { origin: string };
-  navigate?: (
-    to: string | number,
-    options?: { replace?: boolean; state?: Record<string, unknown> },
-  ) => void;
-};
-
-export const Connections = ({
-  params,
-  navigate: navigateProp,
-}: ConnectionsProps = {}) => {
+export const Connections = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const navigateHook = useNavigate();
-  const urlParamsHook = useParams<{ origin: string }>();
-
-  // Use props if provided, otherwise fall back to hooks
-  const navigate = (navigateProp || navigateHook) as NonNullable<
-    typeof navigateProp
-  >;
-  const urlParams = params || urlParamsHook;
+  const navigate = useNavigate();
+  const urlParams = useParams<{ origin: string }>();
 
   const [showConnectAccountsModal, setShowConnectAccountsModal] =
     useState(false);
