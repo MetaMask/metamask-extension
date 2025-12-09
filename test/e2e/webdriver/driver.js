@@ -1194,6 +1194,9 @@ class Driver {
   /**
    * Waits for the specified window handle to close before returning.
    *
+   * Uses retry to handle ECONNREFUSED errors that can occur when ChromeDriver
+   * is temporarily unavailable during extension reload.
+   *
    * @param {string} handle - The handle of the window or tab we'll wait for.
    * @param {number} [timeout] - The amount of time in milliseconds to wait
    * before timing out. Defaults to `this.timeout`.
@@ -1204,8 +1207,13 @@ class Driver {
     const start = Date.now();
     // eslint-disable-next-line no-constant-condition
     while (true) {
-      const handles = await this.getAllWindowHandles();
-      if (!handles.includes(handle)) {
+      // Retry getAllWindowHandles - ChromeDriver may be temporarily unavailable
+      const handles = await retry(
+        { retries: 25, delay: 200 },
+        () => this.getAllWindowHandles(),
+      );
+
+      if (!handles || !handles.includes(handle)) {
         return;
       }
 
@@ -1215,6 +1223,8 @@ class Driver {
           `waitForWindowToClose timed out waiting for window handle '${handle}' to close.`,
         );
       }
+
+      await this.delay(500);
     }
   }
 
