@@ -1,18 +1,15 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { MockttpServer } from 'mockttp';
-import { WINDOW_TITLES } from '../../../helpers';
+import { WINDOW_TITLES, withFixtures } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import AssetListPage from '../../../page-objects/pages/home/asset-list';
-import {
-  confirmApproveTransaction,
-  mocked4BytesApprove,
-  TestSuiteArguments,
-  toggleAdvancedDetails,
-} from './shared';
+import ERC20ApproveTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/erc20-approve-transaction-confirmation';
+import { scrollAndConfirmAndAssertConfirm } from '../helpers';
+import HomePage from '../../../page-objects/pages/home/homepage';
+import { mocked4BytesApprove, TestSuiteArguments } from './shared';
 
-const { withFixtures } = require('../../../helpers');
 const FixtureBuilder = require('../../../fixtures/fixture-builder');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
@@ -116,55 +113,31 @@ async function createERC20ApproveTransaction(driver: Driver) {
 async function assertApproveDetails(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-  await driver.waitForSelector({
-    css: 'h2',
-    text: 'Spending cap request',
-  });
+  const erc20ApproveConfirmation = new ERC20ApproveTransactionConfirmation(
+    driver,
+  );
 
-  await driver.waitForSelector({
-    css: 'p',
-    text: 'This site wants permission to withdraw your tokens',
-  });
+  await erc20ApproveConfirmation.checkSpendingCapRequestTitle();
+  await erc20ApproveConfirmation.checkSpendingCapPermissionDescription();
+  await erc20ApproveConfirmation.checkEstimatedChangesSection();
+  await erc20ApproveConfirmation.checkSpendingCapSection();
+  await erc20ApproveConfirmation.checkSpendingCapAmount('7');
 
-  await driver.waitForSelector({
-    css: 'p',
-    text: 'Estimated changes',
-  });
+  await erc20ApproveConfirmation.clickAdvancedDetailsButton();
 
-  await driver.waitForSelector({
-    css: 'p',
-    text: 'Spending cap',
-  });
+  await erc20ApproveConfirmation.checkAdvancedDetailsSections();
+  await erc20ApproveConfirmation.checkSpendingCapSection();
+}
 
-  await driver.waitForSelector({
-    css: 'p',
-    text: '7',
-  });
+async function confirmApproveTransaction(driver: Driver) {
+  await scrollAndConfirmAndAssertConfirm(driver);
 
-  await toggleAdvancedDetails(driver);
+  await driver.waitUntilXWindowHandles(2);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
 
-  await driver.waitForSelector({
-    css: 'p',
-    text: 'Spender',
-  });
-
-  await driver.waitForSelector({
-    css: 'p',
-    text: 'Request from',
-  });
-
-  await driver.waitForSelector({
-    css: 'p',
-    text: 'Interacting with',
-  });
-
-  await driver.waitForSelector({
-    css: 'p',
-    text: 'Method',
-  });
-
-  await driver.waitForSelector({
-    css: 'p',
-    text: 'Spending cap',
-  });
+  const homePage = new HomePage(driver);
+  await homePage.goToActivityList();
+  await driver.waitForSelector(
+    '.transaction-status-label--confirmed:nth-of-type(1)',
+  );
 }
