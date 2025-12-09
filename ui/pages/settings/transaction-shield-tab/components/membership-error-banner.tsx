@@ -71,4 +71,3 @@ const MembershipErrorBanner = ({
 };
 
 export default MembershipErrorBanner;
-

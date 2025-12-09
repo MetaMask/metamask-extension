@@ -77,14 +77,6 @@ export const PaymentMethodRow = ({
     );
   }, [displayedShieldSubscription]);
 
-  // Derive isCryptoPayment from subscription
-  const isCryptoPayment = useMemo(() => {
-    return (
-      displayedShieldSubscription?.paymentMethod &&
-      isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)
-    );
-  }, [displayedShieldSubscription]);
-
   // Derive isSubscriptionEndingSoon from subscription
   const isSubscriptionEndingSoon = useMemo(() => {
     if (!displayedShieldSubscription) {
@@ -232,16 +224,23 @@ export const PaymentMethodRow = ({
     if (!displayedShieldSubscription) {
       return '';
     }
+
+    let descriptionText = t('shieldPlanCard');
+    if (isCryptoPaymentMethod(displayedShieldSubscription?.paymentMethod)) {
+      const { payerAddress } = displayedShieldSubscription.paymentMethod.crypto;
+      const displayName = payerAccountName || shortenAddress(payerAddress);
+      descriptionText = t('shieldTxDetails3DescriptionCrypto', [
+        displayedShieldSubscription.paymentMethod.crypto.tokenSymbol.toUpperCase(),
+        displayName,
+      ]);
+    }
+
     if (isPaused && !isUnexpectedErrorCryptoPayment) {
       let tooltipText = '';
-      let buttonText: string | React.ReactNode = '';
       let buttonDisabled = false;
       let buttonOnClick = handlePaymentError;
       if (isCryptoPaymentMethod(displayedShieldSubscription?.paymentMethod)) {
         tooltipText = 'shieldTxMembershipErrorPausedCryptoTooltip';
-        buttonText = t('shieldTxMembershipErrorInsufficientToken', [
-          displayedShieldSubscription.paymentMethod.crypto.tokenSymbol,
-        ]);
         if (isInsufficientFundsCrypto) {
           buttonOnClick = handlePaymentErrorInsufficientFunds;
           // disable button if insufficient funds and not enough token balance to trigger subscription check
@@ -252,7 +251,6 @@ export const PaymentMethodRow = ({
       } else {
         // card payment error case
         tooltipText = 'shieldTxMembershipErrorPausedCardTooltip';
-        buttonText = t('shieldPlanCard');
       }
 
       return (
@@ -265,11 +263,11 @@ export const PaymentMethodRow = ({
                   variant={TextVariant.BodyMd}
                   fontWeight={FontWeight.Medium}
                 >
-                  {buttonText}
+                  {descriptionText}
                 </Text>
                 <Icon
                   name={IconName.Warning}
-                  size={IconSize.Md}
+                  size={IconSize.Lg}
                   color={IconColor.ErrorDefault}
                 />
               </Box>
@@ -287,11 +285,20 @@ export const PaymentMethodRow = ({
           <ButtonRow
             title={t('shieldTxDetails3Title')}
             description={
-              isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)
-                ? displayedShieldSubscription.paymentMethod.crypto.tokenSymbol
-                : ''
+              <Box className="flex items-center gap-1">
+                <Text
+                  variant={TextVariant.BodyMd}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {descriptionText}
+                </Text>
+                <Icon
+                  name={IconName.Warning}
+                  size={IconSize.Lg}
+                  color={IconColor.WarningDefault}
+                />
+              </Box>
             }
-            descriptionClassName="text-warning-default"
             onClick={handlePaymentError}
           />
         </>
@@ -299,16 +306,10 @@ export const PaymentMethodRow = ({
     }
 
     if (isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)) {
-      const { payerAddress } = displayedShieldSubscription.paymentMethod.crypto;
-      const displayName = payerAccountName || shortenAddress(payerAddress);
-      const cryptoDetails = t('shieldTxDetails3DescriptionCrypto', [
-        displayedShieldSubscription.paymentMethod.crypto.tokenSymbol.toUpperCase(),
-        displayName,
-      ]);
       return (
         <ButtonRow
           title={t('shieldTxDetails3Title')}
-          description={cryptoDetails}
+          description={descriptionText}
           disabled={
             displayedShieldSubscription.status ===
               SUBSCRIPTION_STATUSES.canceled || // can't change payment method if subscription is canceled
@@ -323,7 +324,7 @@ export const PaymentMethodRow = ({
     return (
       <ButtonRow
         title={t('shieldTxDetails3Title')}
-        description={t('shieldPlanCard')}
+        description={descriptionText}
         onClick={() => setShowPaymentModal(true)}
       />
     );
@@ -334,7 +335,6 @@ export const PaymentMethodRow = ({
     isSubscriptionEndingSoon,
     t,
     handlePaymentError,
-    isCryptoPayment,
     isInsufficientFundsCrypto,
     handlePaymentErrorInsufficientFunds,
     isCheckSubscriptionInsufficientFundsDisabled,
