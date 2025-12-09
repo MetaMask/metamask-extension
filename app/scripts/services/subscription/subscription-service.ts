@@ -202,12 +202,8 @@ export class SubscriptionService {
         error_message: errorMessage,
       });
 
-      if (
-        !errorMessage
-          .toLocaleLowerCase()
-          .includes(SHIELD_ERROR.subscriptionPollingTimedOut.toLowerCase())
-      ) {
-        // fetch latest subscriptions to update the state in case subscription already created error (not when polling timed out)
+      // fetch latest subscriptions to update the state in case subscription already created error (not when polling timed out)
+      if (errorMessage.toLocaleLowerCase().includes('already exists')) {
         await this.#messenger.call('SubscriptionController:getSubscriptions');
       }
       throw error;
