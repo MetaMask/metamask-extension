@@ -228,4 +228,15 @@ export class WindowHandles {
 
     return null;
   }
+
+  /**
+   * Waits until a window with the given property is closed.
+   * Uses the WebSocket-based approach which is robust during extension reloads.
+   *
+   * @param property - 'title' or 'url'
+   * @param value - The value of the window we're waiting to close
+   */
+  async waitForWindowToClose(property: WindowProperties, value: string) {
+    await getServerMochaToBackground().waitUntilWindowClosed(property, value);
+  }
 }

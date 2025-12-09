@@ -1183,28 +1183,41 @@ class Driver {
    *
    * @param {string | object} rawLocator - Element locator
    * @param {number} [retries] - The number of times to retry the click action if it fails
-   * @returns {Promise<void>} promise that resolves to the WebElement
+   * @returns {Promise<void>} promise that resolves when the window is closed
    */
   async clickElementAndWaitForWindowToClose(rawLocator, retries = 3) {
+    // Get window title before clicking (for WebSocket-based approach)
+    const title = await this.driver.getTitle();
     const handle = await this.driver.getWindowHandle();
+
     await this.clickElement(rawLocator, retries);
-    await this.waitForWindowToClose(handle);
+    await this.waitForWindowToClose(handle, this.timeout, title);
   }
 
   /**
    * Waits for the specified window handle to close before returning.
    *
-   * Polls until the window handle is no longer in the list. If the driver
-   * is temporarily unavailable (e.g., ECONNREFUSED during extension reload),
-   * it catches the error and retries until timeout.
+   * When WebSocket is available (this.windowHandles exists), uses the WebSocket-based
+   * approach which waits for the extension to confirm the window is closed.
+   * This mirrors the pattern used by switchToWindowWithTitle.
+   *
+   * When WebSocket is not available, polls until the handle is no longer in the list.
    *
    * @param {string} handle - The handle of the window or tab we'll wait for.
    * @param {number} [timeout] - The amount of time in milliseconds to wait
    * before timing out. Defaults to `this.timeout`.
+   * @param {string} [title] - The title of the window (used for WebSocket-based waiting).
    * @throws {Error} throws an error if the window handle doesn't close within
    * the timeout.
    */
-  async waitForWindowToClose(handle, timeout = this.timeout) {
+  async waitForWindowToClose(handle, timeout = this.timeout, title) {
+    // When WebSocket is available, use WebSocket-based waiting
+    if (this.windowHandles && title) {
+      await this.windowHandles.waitForWindowToClose('title', title);
+      return;
+    }
+
+    // Fallback: poll for window handle to disappear
     const start = Date.now();
     // eslint-disable-next-line no-constant-condition
     while (true) {

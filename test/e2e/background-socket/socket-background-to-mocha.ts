@@ -85,6 +85,45 @@ class SocketBackgroundToMocha {
     });
   }
 
+  /**
+   * Waits until a window with the given property is closed (no longer exists).
+   * This is the inverse of waitUntilWindowWithProperty.
+   * delayStep = 200ms, timeout = 10s
+   *
+   * @param property - 'title' or 'url'
+   * @param value - The value of the window we're waiting to close
+   */
+  async waitUntilWindowClosed(property: WindowProperties, value: string) {
+    const delayStep = 200;
+    const timeout = 10000;
+
+    for (
+      let timeElapsed = 0;
+      timeElapsed <= timeout;
+      timeElapsed += delayStep
+    ) {
+      const tabs = await this.queryTabs({});
+
+      const index = tabs.findIndex((a) => a[property] === value);
+
+      if (index === -1) {
+        // Window is gone - success!
+        this.send({ command: 'windowClosed' });
+        return;
+      }
+
+      // wait for delayStep milliseconds
+      await new Promise((resolve) => setTimeout(resolve, delayStep));
+    }
+
+    // The window is still present after timeout
+    this.send({
+      command: 'notFound',
+      property,
+      value,
+    });
+  }
+
   // This function exists to support both MV2 and MV3
   private async queryTabs(queryInfo: object): Promise<chrome.tabs.Tab[]> {
     if (isManifestV3) {
@@ -131,6 +170,12 @@ class SocketBackgroundToMocha {
       message.value
     ) {
       this.waitUntilWindowWithProperty(message.property, message.value);
+    } else if (
+      message.command === 'waitUntilWindowClosed' &&
+      message.property &&
+      message.value
+    ) {
+      this.waitUntilWindowClosed(message.property, message.value);
     }
   }
 }
