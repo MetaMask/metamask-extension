@@ -87,8 +87,10 @@ class SocketBackgroundToMocha {
 
   /**
    * Waits until a window with the given property is closed (no longer exists).
-   * This is the inverse of waitUntilWindowWithProperty.
    * delayStep = 200ms, timeout = 10s
+   *
+   * This is the inverse of waitUntilWindowWithProperty - it waits for a window
+   * to disappear rather than appear.
    *
    * @param property - 'title' or 'url'
    * @param value - The value of the window we're waiting to close
