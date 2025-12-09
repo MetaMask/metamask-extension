@@ -37,7 +37,7 @@ import {
 } from '../../../store/actions';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
-import CreatePasswordForm from '../../create-password-form';
+import { CreatePasswordForm } from '../../create-password-form';
 
 type CreatePasswordProps = {
   createNewAccount: (password: string) => void;

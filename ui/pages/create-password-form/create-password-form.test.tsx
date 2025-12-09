@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react';
-import CreatePasswordForm from '.';
+import { CreatePasswordForm } from '.';
 
 describe('CreatePasswordForm', () => {
   it('renders match snapshot', () => {

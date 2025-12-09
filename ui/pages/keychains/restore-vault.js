@@ -39,7 +39,7 @@ import {
 import { getIsSocialLoginFlow } from '../../selectors';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import SrpInputForm from '../srp-input-form';
-import CreatePasswordForm from '../create-password-form';
+import { CreatePasswordForm } from '../create-password-form';
 import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 
 class RestoreVaultPage extends Component {
