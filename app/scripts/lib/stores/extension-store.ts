@@ -129,9 +129,9 @@ export default class ExtensionStore implements BaseStore {
     log.info(
       `[ExtensionStore]: Removing ${toRemove.length} keys from local store`,
     );
-    // we cannot set and remove keys in one operation, so we do two ops
-    // the remove. This helps clear out old data and save space, but if it fails
-    // we can still function.
+    // we cannot set and remove keys in one operation, so we do two operations.
+    // This helps clear out old data and save space, but if it fails we can
+    // still function.
     try {
       await local.remove(toRemove);
     } catch (error) {
