@@ -128,7 +128,7 @@ export class PersistenceManager {
    */
   static readonly defaultStorageKind = ((process.env.IN_TEST
     ? getManifestFlags().testing?.storageKind
-    : null) ?? 'data') as StorageKind;
+    : null) ?? 'split') as StorageKind;
 
   /**
    * dataPersistenceFailing is a boolean that is set to true if the storage
