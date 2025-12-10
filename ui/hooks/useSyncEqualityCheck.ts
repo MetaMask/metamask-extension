@@ -21,7 +21,7 @@ import stringify from 'fast-json-stable-stringify';
  * }, [stableInput]);
  * ```
  */
-export function useSyncEqualityCheck<Value>(value: Value): Value {
+export function useSyncEqualityCheck<Value extends Json>(value: Value): Value {
   const currentSnapshot = stringify(value);
   const snapshotRef = useRef<string>(currentSnapshot);
   const valueRef = useRef<Value>(value);
