@@ -1,10 +1,10 @@
 import React from 'react';
-import type { Location as RouterLocation } from 'react-router-dom-v5-compat';
+import type { Location as RouterLocation } from 'react-router-dom';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { StatusTypes } from '@metamask/bridge-controller';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockBridgeTxData from '../../../../test/data/bridge/mock-bridge-transaction-details.json';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { mockNetworkState } from '../../../../test/stub/networks';
