@@ -122,8 +122,8 @@ export function resolveEnvironment(
   // For production-like builds (--env production), auto-detect from git context
   // We intentionally do NOT return PRODUCTION here - that requires explicit CLI flag
   const branch =
-    process.env.GITHUB_HEAD_REF ?? process.env.GITHUB_REF_NAME ?? '';
-  const eventName = process.env.GITHUB_EVENT_NAME ?? '';
+    process.env.GITHUB_HEAD_REF || process.env.GITHUB_REF_NAME || '';
+  const eventName = process.env.GITHUB_EVENT_NAME || '';
 
   // Check git context to determine the appropriate non-production environment
   if (/^release\/(\d+)[.](\d+)[.](\d+)/u.test(branch)) {
