@@ -62,6 +62,9 @@ describe('Multichain API', function () {
             WINDOW_TITLES.MultichainTestDApp,
           );
           await testDapp.checkPageIsLoaded();
+
+          await testDapp.checkConnectedAccounts([ACCOUNT_1]);
+
           const getSessionResult = await testDapp.getSession();
 
           for (const scope of scopesToIgnore) {
@@ -118,6 +121,7 @@ describe('Multichain API', function () {
             WINDOW_TITLES.MultichainTestDApp,
           );
           await testDapp.checkPageIsLoaded();
+          await testDapp.checkConnectedAccounts([SECOND_ACCOUNT_IN_WALLET]);
           const getSessionResult = await testDapp.getSession();
           /**
            * Accounts in scope should not include invalid account {@link ACCOUNT_NOT_IN_WALLET}, only the valid accounts.
@@ -235,6 +239,7 @@ describe('Multichain API', function () {
               WINDOW_TITLES.MultichainTestDApp,
             );
             await testDapp.checkPageIsLoaded();
+            await testDapp.checkConnectedAccounts([ACCOUNT_1, ACCOUNT_2]);
             const getSessionResult = await testDapp.getSession();
 
             assert.strictEqual(
@@ -326,6 +331,9 @@ describe('Multichain API', function () {
               driver,
             );
             await connectAccountConfirmation.checkPageIsLoaded();
+            await connectAccountConfirmation.checkForAccountsInPermissionList([
+              'Account 1',
+            ]);
             await connectAccountConfirmation.openEditAccountsModal();
 
             const editConnectedAccountsModal = new EditConnectedAccountsModal(
@@ -335,12 +343,18 @@ describe('Multichain API', function () {
             await editConnectedAccountsModal.addNewAccount();
 
             await connectAccountConfirmation.checkPageIsLoaded();
+
+            await connectAccountConfirmation.checkForAccountsInPermissionList([
+              'Account 1',
+              'Account 2',
+            ]);
             await connectAccountConfirmation.confirmConnect();
 
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.MultichainTestDApp,
             );
             await testDapp.checkPageIsLoaded();
+            await testDapp.checkConnectedAccounts([ACCOUNT_1, ACCOUNT_2]);
             const getSessionResult = await testDapp.getSession();
 
             assert.deepEqual(
@@ -434,7 +448,9 @@ describe('Multichain API', function () {
           /**
            * We first make sure sessions exist
            */
-          const existinggetSessionResult = await testDapp.getSession();
+          const existinggetSessionResult = await testDapp.getSession({
+            numberOfResultItems: 1,
+          });
           OLD_SCOPES.forEach((scope) =>
             assert.strictEqual(
               isObject(existinggetSessionResult.sessionScopes[scope]),
@@ -442,6 +458,8 @@ describe('Multichain API', function () {
               `scope ${scope} should exist`,
             ),
           );
+
+          await testDapp.checkConnectedAccounts([ACCOUNT_1]);
 
           /**
            * Then we make sure to deselect the existing session scopes, and create session with new scopes
@@ -460,6 +478,10 @@ describe('Multichain API', function () {
             driver,
           );
           await connectAccountConfirmation.checkPageIsLoaded();
+          await connectAccountConfirmation.checkForAccountsInPermissionList([
+            'Account 1',
+            'Trezor 1',
+          ]);
           await connectAccountConfirmation.confirmConnect();
 
           await driver.switchToWindowWithTitle(
@@ -467,7 +489,11 @@ describe('Multichain API', function () {
           );
           await testDapp.checkPageIsLoaded();
 
-          const newgetSessionResult = await testDapp.getSession();
+          await testDapp.checkConnectedAccounts([ACCOUNT_1, TREZOR_ACCOUNT]);
+
+          const newgetSessionResult = await testDapp.getSession({
+            numberOfResultItems: 3,
+          });
 
           const expectedNewSessionScopes = [...OLD_SCOPES, ...NEW_SCOPES].map(
             (scope) => ({
