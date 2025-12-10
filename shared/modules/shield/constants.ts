@@ -3,4 +3,4 @@ export const SHIELD_ERROR = {
   subscriptionPollingTimedOut: 'subscription polling timed out',
 };
 
-export const SHIELD_CAROUSEL_ID = '1MftLVfZkCqPH1EA8jtSOm';
+export const SHIELD_CAROUSEL_ID = 'contentful-1MftLVfZkCqPH1EA8jtSOm';
