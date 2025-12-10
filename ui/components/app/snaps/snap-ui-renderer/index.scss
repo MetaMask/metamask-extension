@@ -9,19 +9,14 @@
   &__container {
     height: 100%;
 
-    & > *:first-child {
-      gap: 16px;
-      // Note: Do not replace margin with padding
-      // @see {@link https://github.com/MetaMask/metamask-extension/pull/29385}
-      margin: 16px;
-    }
   }
 
-  &__container > &__panel:first-child {
+  &__container > &__panel {
+    gap: 16px;
     overflow-y: auto;
-    margin: 0;
     padding: 16px;
   }
+
 
   &__content {
     flex: 1 1 auto;
