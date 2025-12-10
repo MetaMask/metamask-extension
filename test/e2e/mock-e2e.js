@@ -11,6 +11,9 @@ const {
   TOKEN_API_BASE_URL,
 } = require('../../shared/constants/swaps');
 const { TX_SENTINEL_URL } = require('../../shared/constants/transaction');
+const {
+  MockedDiscoveryBuilder,
+} = require('./tests/multichain-accounts/discovery');
 const { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } = require('./constants');
 const { SECURITY_ALERTS_PROD_API_BASE_URL } = require('./tests/ppom/constants');
 
@@ -1044,6 +1047,11 @@ async function setupMocking(
 
   // Identity APIs
   await mockIdentityServices(server);
+
+  // Account framework (account discovery)
+  await MockedDiscoveryBuilder.fromDefaultSrp()
+    .doNotDiscoverAnyAccounts()
+    .mock(server);
 
   await server.forGet(/^https:\/\/sourcify.dev\/(.*)/u).thenCallback(() => {
     return {
