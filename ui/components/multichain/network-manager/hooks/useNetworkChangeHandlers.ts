@@ -23,6 +23,11 @@ import {
   getSelectedMultichainNetworkChainId,
 } from '../../../../selectors';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import {
+  BUILT_IN_NETWORKS,
+  FEATURED_RPCS,
+} from '../../../../../shared/constants/network';
+import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -143,6 +148,28 @@ export const useNetworkChangeHandlers = () => {
         ? convertCaipToHexChainId(currentChainId)
         : currentChainId;
 
+      // Check if the destination network is custom (not built-in, featured, or multichain)
+      const hexChainId = chain.isEvm
+        ? convertCaipToHexChainId(chain.chainId)
+        : chain.chainId;
+
+      const isBuiltInNetwork = Object.values(BUILT_IN_NETWORKS).some(
+        (builtInNetwork) => builtInNetwork.chainId === hexChainId,
+      );
+      const isFeaturedRpc = FEATURED_RPCS.some(
+        (featuredRpc) => featuredRpc.chainId === hexChainId,
+      );
+      const isMultichainProviderConfig = Object.values(MultichainNetworks).some(
+        (multichainNetwork) =>
+          multichainNetwork === chain.chainId ||
+          (chain.isEvm
+            ? convertCaipToHexChainId(chain.chainId)
+            : chain.chainId) === multichainNetwork,
+      );
+
+      const isCustomNetwork =
+        !isBuiltInNetwork && !isFeaturedRpc && !isMultichainProviderConfig;
+
       trackEvent({
         event: MetaMetricsEventName.NavNetworkSwitched,
         category: MetaMetricsEventCategory.Network,
@@ -157,6 +184,9 @@ export const useNetworkChangeHandlers = () => {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           to_network: chainIdToTrack,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          custom_network: isCustomNetwork,
         },
       });
     },
