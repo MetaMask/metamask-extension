@@ -2,7 +2,6 @@ import { useEffect, useRef } from 'react';
 import { useSyncEqualityCheck } from './useSyncEqualityCheck';
 
 type UsePollingOptions<PollingInput> = {
-  callback?: (pollingToken: string) => (pollingToken: string) => void;
   startPolling: (input: PollingInput) => Promise<string>;
   stopPollingByPollingToken: (pollingToken: string) => void;
   input: PollingInput;
@@ -13,7 +12,6 @@ const usePolling = <PollingInput>(
   usePollingOptions: UsePollingOptions<PollingInput>,
 ) => {
   const pollTokenRef = useRef<null | string>(null);
-  const cleanupRef = useRef<null | ((pollingToken: string) => void)>(null);
   const pollingInput = useSyncEqualityCheck(usePollingOptions.input);
 
   // Track effect call generation to handle race conditions with pending promises
@@ -40,9 +38,7 @@ const usePolling = <PollingInput>(
     const cleanup = () => {
       if (pollTokenRef.current) {
         usePollingOptions.stopPollingByPollingToken(pollTokenRef.current);
-        cleanupRef.current?.(pollTokenRef.current);
         pollTokenRef.current = null;
-        cleanupRef.current = null;
       }
     };
 
@@ -56,7 +52,6 @@ const usePolling = <PollingInput>(
       }
 
       pollTokenRef.current = pollToken;
-      cleanupRef.current = usePollingOptions.callback?.(pollToken) ?? null;
       if (!isMounted.current) {
         cleanup();
       }
@@ -69,7 +64,6 @@ const usePolling = <PollingInput>(
     usePollingOptions.enabled,
     usePollingOptions.startPolling,
     usePollingOptions.stopPollingByPollingToken,
-    usePollingOptions.callback,
   ]);
 };
 
