@@ -260,9 +260,7 @@ async function mockPriceAPIs(mockServer: MockttpServer) {
 
   // Generic spot-prices with query params
   await mockServer
-    .forGet(
-      /https:\/\/price\.api\.cx\.metamask\.io\/v2\/chains\/1\/spot-prices\?.*/u,
-    )
+    .forGet(/https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices\?.*/u)
     .thenCallback(() => ({
       statusCode: 200,
       json: {},

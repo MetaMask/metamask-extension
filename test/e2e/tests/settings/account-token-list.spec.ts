@@ -13,7 +13,6 @@ import {
   loginWithBalanceValidation,
   loginWithoutBalanceValidation,
 } from '../../page-objects/flows/login.flow';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 const infuraSepoliaUrl =
   'https://sepolia.infura.io/v3/00000000000000000000000000000000';
@@ -49,14 +48,12 @@ async function mockInfuraResponses(mockServer: Mockttp): Promise<void> {
 
 async function mockPriceApi(mockServer: Mockttp) {
   const spotPricesMockEth = await mockServer
-    .forGet(
-      /^https:\/\/price\.api\.cx\.metamask\.io\/v2\/chains\/\d+\/spot-prices/u,
-    )
+    .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
 
     .thenCallback(() => ({
       statusCode: 200,
       json: {
-        '0x0000000000000000000000000000000000000000': {
+        'eip155:1/slip44:60': {
           id: 'ethereum',
           price: 1,
           marketCap: 112500000,

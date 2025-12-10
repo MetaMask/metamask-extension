@@ -52,7 +52,7 @@ async function mockPhpConversion(mockServer: Mockttp) {
           },
         };
       }),
-    // Mock v2 spot-prices for chain 1 (mainnet)
+    // Mock v3 spot-prices
     await mockServer
       .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
       .thenCallback((request) => {
