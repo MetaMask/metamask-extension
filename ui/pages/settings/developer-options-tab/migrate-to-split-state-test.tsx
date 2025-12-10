@@ -1,7 +1,10 @@
 import { Text } from '@metamask/design-system-react';
 import browser from 'webextension-polyfill';
 import React, { useEffect, useState } from 'react';
-import TextField from '../../../components/ui/text-field';
+import {
+  TextField,
+  TextFieldType,
+} from '../../../components/component-library/text-field';
 
 const MigrateToSplitStateTest = () => {
   const [enabled, setEnabled] = useState<string | null>(null);
@@ -193,7 +196,7 @@ const MigrateToSplitStateTest = () => {
           <TextField
             min="0"
             max="99999999"
-            type="number"
+            type={TextFieldType.Number}
             value={maxAccounts}
             onChange={handleMaxAccountsChange}
           />
@@ -205,7 +208,7 @@ const MigrateToSplitStateTest = () => {
           <TextField
             min="0"
             max="99999999"
-            type="number"
+            type={TextFieldType.Number}
             value={maxNetworks}
             onChange={handleMaxNetworksChange}
           />
