@@ -1654,7 +1654,6 @@ export async function withSolanaAccountSnap(
 
   await withFixtures(
     {
-      forceBip44Version: false,
       fixtures: fixtures.build(),
       title,
       dappOptions: dappOptions ?? {
@@ -1671,10 +1670,8 @@ export async function withSolanaAccountSnap(
           bridgeConfig: showSnapConfirmation
             ? featureFlagsWithSnapConfirmation
             : featureFlags,
-          enableMultichainAccountsState2: {
+          sendRedesign: {
             enabled: true,
-            featureVersion: '2',
-            minimumVersion: '12.19.0',
           },
         },
       },
