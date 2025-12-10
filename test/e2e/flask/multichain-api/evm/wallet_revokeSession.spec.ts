@@ -63,9 +63,7 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
         /**
          * We verify that scopes are not empty before calling `wallet_revokeSession`
          */
-        const { sessionScopes } = await testDapp.getSession({
-          numberOfResultItems: 1,
-        });
+        const { sessionScopes } = await testDapp.getSession();
         assert.ok(
           Object.keys(sessionScopes).length > 0,
           'Should have non-empty session scopes value before calling `wallet_revokeSession`',

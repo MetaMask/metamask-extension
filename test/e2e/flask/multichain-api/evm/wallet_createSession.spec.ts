@@ -23,7 +23,6 @@ import {
 } from '../testHelpers';
 
 describe('Multichain API', function () {
-  const TREZOR_ACCOUNT = '0xf68464152d7289d7ea9a2bec2e0035c45188223c';
   describe('Connect wallet to the multichain dapp via `externally_connectable`, call `wallet_createSession` with requested EVM scope that does NOT match one of the users enabled networks', function () {
     it("the specified EVM scopes that do not match the user's configured networks should be treated as if they were not requested", async function () {
       await withFixtures(
@@ -122,7 +121,7 @@ describe('Multichain API', function () {
             WINDOW_TITLES.MultichainTestDApp,
           );
           await testDapp.checkPageIsLoaded();
-          await testDapp.checkConnectedAccounts([TREZOR_ACCOUNT]);
+          await testDapp.checkConnectedAccounts([SECOND_ACCOUNT_IN_WALLET]);
           const getSessionResult = await testDapp.getSession();
           /**
            * Accounts in scope should not include invalid account {@link ACCOUNT_NOT_IN_WALLET}, only the valid accounts.
@@ -420,6 +419,7 @@ describe('Multichain API', function () {
   describe('Dapp has existing session with 2 scopes and 1 account and then calls `wallet_createSession` with different scopes and accounts', function () {
     const OLD_SCOPES = ['eip155:1337', 'eip155:1'];
     const NEW_SCOPES = ['eip155:1338', 'eip155:1000'];
+    const TREZOR_ACCOUNT = '0xf68464152d7289d7ea9a2bec2e0035c45188223c';
 
     it('should include old session permissions as pre-selected in the connection screen along with those requested in the new `wallet_createSession` request', async function () {
       await withFixtures(
