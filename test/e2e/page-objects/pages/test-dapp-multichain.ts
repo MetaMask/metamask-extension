@@ -36,6 +36,10 @@ class TestDappMultichain {
     testId: 'invoke-all-methods-button',
   };
 
+  private readonly sessionResultListItems = (resultNumber: number) => {
+    return `#session-method-details-${resultNumber}`;
+  };
+
   private readonly walletCreateSessionButton = '#create-session-btn';
 
   private readonly walletGetSessionButton = '#get-session-btn';
@@ -81,6 +85,12 @@ class TestDappMultichain {
       throw e;
     }
     console.log('Multichain Test Dapp page is loaded');
+  }
+
+  async checkResultListTotalItems(totalItems: number): Promise<void> {
+    await this.driver.waitForSelector(
+      this.sessionResultListItems(totalItems - 1),
+    );
   }
 
   async clickConnectExternallyConnectableButton() {
@@ -203,14 +213,19 @@ class TestDappMultichain {
   /**
    * Retrieves permitted session object.
    *
+   * @param params - The parameters for retrieving the session.
+   * @param params.numberOfResultItems - The number of result items expected. Defaults to 2.
    * @returns the session object.
    */
-  async getSession(): Promise<{
+  async getSession({
+    numberOfResultItems = 2,
+  }: { numberOfResultItems?: number } = {}): Promise<{
     sessionScopes: Record<string, NormalizedScopeObject>;
   }> {
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
     await this.clickWalletGetSessionButton();
-    await this.driver.delay(5000);
+    // Wait for the complete result list to be displayed
+    await this.checkResultListTotalItems(numberOfResultItems);
 
     await this.clickFirstResultSummary();
 
