@@ -165,7 +165,7 @@ export default class Home extends PureComponent {
     isSignedIn: PropTypes.bool,
     rewardsEnabled: PropTypes.bool,
     rewardsOnboardingEnabled: PropTypes.bool,
-    showPna25Banner: PropTypes.bool,
+    showPna25Modal: PropTypes.bool.isRequired,
   };
 
   state = {
@@ -781,7 +781,7 @@ export default class Home extends PureComponent {
       isSocialLoginFlow,
       rewardsEnabled,
       rewardsOnboardingEnabled,
-      showPna25Banner,
+      showPna25Modal,
     } = this.props;
 
     if (forgottenPassword) {
@@ -836,9 +836,8 @@ export default class Home extends PureComponent {
       !isSeedlessPasswordOutdated &&
       !showShieldEntryModal &&
       !showRecoveryPhrase;
-
-    const showPna25Modal =
-      showPna25Banner &&
+    const showPna25ModalComponent =
+      showPna25Modal &&
       canSeeModals &&
       !showTermsOfUse &&
       !showWhatsNew &&
@@ -890,7 +889,7 @@ export default class Home extends PureComponent {
           ) : null}
           {showShieldEntryModal && <ShieldEntryModal />}
           {showRewardsModal && <RewardsOnboardingModal />}
-          {showPna25Modal && <Pna25Modal />}
+          {showPna25ModalComponent && <Pna25Modal />}
           {isPopup && !connectedStatusPopoverHasBeenShown
             ? this.renderPopover()
             : null}

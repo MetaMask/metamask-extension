@@ -253,7 +253,7 @@ export function selectShowShieldEndingToast(
  * @param state - The application state containing the banner data.
  * @returns Boolean indicating whether to show the banner
  */
-export function selectShowPna25Banner(state: Pick<State, 'metamask'>): boolean {
+export function selectShowPna25Modal(state: Pick<State, 'metamask'>): boolean {
   const {
     completedOnboarding,
     participateInMetaMetrics,
