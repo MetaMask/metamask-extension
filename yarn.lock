@@ -8756,7 +8756,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^62.5.0":
+"@metamask/transaction-controller@npm:^62.5.0, @metamask/transaction-controller@npm:^62.6.0":
   version: 62.6.0
   resolution: "@metamask/transaction-controller@npm:62.6.0"
   dependencies:
@@ -33045,7 +33045,7 @@ __metadata:
     "@metamask/test-dapp-multichain": "npm:^0.17.0"
     "@metamask/test-dapp-solana": "npm:^0.3.1"
     "@metamask/test-snaps": "npm:^3.1.0"
-    "@metamask/transaction-controller": "npm:^62.3.1"
+    "@metamask/transaction-controller": "npm:^62.6.0"
     "@metamask/transaction-pay-controller": "npm:^10.2.0"
     "@metamask/tron-wallet-snap": "npm:^1.15.1"
     "@metamask/user-operation-controller": "npm:^40.0.0"
