@@ -12,7 +12,7 @@ import configureStore from 'redux-mock-store';
 import { cloneDeep } from 'lodash';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import mockState from '../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { AlertMetricsProvider } from '../../../../components/app/alert-system/contexts/alertMetricsContext';
 import { BalanceChangeList } from './balance-change-list';
 import { SimulationDetails, StaticRow } from './simulation-details';
@@ -112,20 +112,20 @@ describe('SimulationDetails', () => {
     });
   });
 
-  it('renders loading indicator when simulation data is not available', () => {
-    renderSimulationDetails();
-    expect(screen.getByRole('progressbar')).toBeInTheDocument();
+  it('renders skeleton loader when simulation data is not available', () => {
+    const { container } = renderSimulationDetails();
+    expect(container.querySelector('.mm-skeleton')).toBeInTheDocument();
   });
 
-  it('renders loading indicator when balance changes are pending', () => {
+  it('renders skeleton loader when balance changes are pending', () => {
     (useBalanceChanges as jest.Mock).mockReturnValue({
       pending: true,
       value: [],
     });
 
-    renderSimulationDetails({});
+    const { container } = renderSimulationDetails({});
 
-    expect(screen.getByRole('progressbar')).toBeInTheDocument();
+    expect(container.querySelector('.mm-skeleton')).toBeInTheDocument();
   });
 
   it('renders error content when simulation error is reverted', () => {

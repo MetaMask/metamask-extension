@@ -8,7 +8,7 @@ import React, {
   type ComponentType,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import { Box } from '../../../components/component-library';
 import {
   ONBOARDING_COMPLETION_ROUTE,
@@ -388,7 +388,7 @@ export default function OnboardingWelcome() {
             parentContext: onboardingParentContext?.current,
           });
           await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialImport));
-          navigate(ONBOARDING_UNLOCK_ROUTE);
+          navigate(ONBOARDING_UNLOCK_ROUTE, { replace: true });
         }
       } catch (error) {
         handleSocialLoginError(error, socialConnectionType);

@@ -9,7 +9,7 @@ import {
   SOLANA_ASSET,
 } from '../../../../../../test/data/send/assets';
 import { Numeric } from '../../../../../../shared/modules/Numeric';
-import { renderWithProvider } from '../../../../../../test/jest';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../../store/store';
 import * as AmountSelectionMetrics from '../../../hooks/send/metrics/useAmountSelectionMetrics';
 import * as BalanceFunctions from '../../../hooks/send/useBalance';

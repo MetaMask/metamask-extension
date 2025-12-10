@@ -1,5 +1,5 @@
 import { CaipAssetType } from '@metamask/utils';
-import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { useChartTimeRanges } from './useChartTimeRanges';
 
 describe('useChartTimeRanges', () => {

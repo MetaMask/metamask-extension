@@ -1,7 +1,7 @@
 import { BtcAccountType } from '@metamask/keyring-api';
 
 import { cloneDeep } from 'lodash';
-import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
 import { ConsolidatedWallets } from '../../../../selectors/multichain-accounts/account-tree.types';
 import * as accountTreeSelectors from '../../../../selectors/multichain-accounts/account-tree';

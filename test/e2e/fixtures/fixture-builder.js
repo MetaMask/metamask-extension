@@ -817,6 +817,14 @@ class FixtureBuilder {
     });
   }
 
+  withPreferencesControllerShowNativeTokenAsMainBalanceEnabled() {
+    return this.withPreferencesController({
+      preferences: {
+        showNativeTokenAsMainBalance: true,
+      },
+    });
+  }
+
   withPreferencesControllerTxSimulationsDisabled() {
     return this.withPreferencesController({
       useTransactionSimulations: false,
@@ -1200,11 +1208,12 @@ class FixtureBuilder {
             {
               address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.HST}`,
               symbol: 'TST',
-              decimals: 4,
               image:
                 'https://static.cx.metamask.io/api/v1/tokenIcons/1337/0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947.png',
               isERC721: false,
-              aggregators: [],
+              decimals: 4,
+              aggregators: ['Metamask', 'Aave'],
+              name: 'test',
             },
           ],
         },

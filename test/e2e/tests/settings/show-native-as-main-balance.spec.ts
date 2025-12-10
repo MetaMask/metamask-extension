@@ -1,3 +1,4 @@
+import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixtures/fixture-builder';
@@ -10,12 +11,57 @@ import {
   loginWithoutBalanceValidation,
 } from '../../page-objects/flows/login.flow';
 
+async function mockPriceApi(mockServer: Mockttp) {
+  const spotPricesMockEth = await mockServer
+    .forGet(
+      /^https:\/\/price\.api\.cx\.metamask\.io\/v2\/chains\/\d+\/spot-prices/u,
+    )
+
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        '0x0000000000000000000000000000000000000000': {
+          id: 'ethereum',
+          price: 1,
+          marketCap: 112500000,
+          totalVolume: 4500000,
+          dilutedMarketCap: 120000000,
+          pricePercentChange1d: 0,
+        },
+      },
+    }));
+  const mockExchangeRates = await mockServer
+    .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        eth: {
+          name: 'Ether',
+          ticker: 'eth',
+          value: 1 / 1700,
+          currencyType: 'crypto',
+        },
+        usd: {
+          name: 'US Dollar',
+          ticker: 'usd',
+          value: 1,
+          currencyType: 'fiat',
+        },
+      },
+    }));
+
+  return [spotPricesMockEth, mockExchangeRates];
+}
+
 describe('Settings: Show native token as main balance', function () {
   it('Should show balance in crypto when toggle is off', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().withConversionRateDisabled().build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: async (mockServer: Mockttp) => {
+          await mockPriceApi(mockServer);
+        },
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
@@ -30,9 +76,13 @@ describe('Settings: Show native token as main balance', function () {
       {
         fixtures: new FixtureBuilder()
           .withConversionRateEnabled()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
           .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
           .build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: async (mockServer: Mockttp) => {
+          await mockPriceApi(mockServer);
+        },
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithoutBalanceValidation(driver);
@@ -60,10 +110,14 @@ describe('Settings: Show native token as main balance', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
           .withConversionRateEnabled()
           .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
           .build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: async (mockServer: Mockttp) => {
+          await mockPriceApi(mockServer);
+        },
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithoutBalanceValidation(driver);

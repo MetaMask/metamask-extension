@@ -4,7 +4,7 @@ import { NameType } from '@metamask/name-controller';
 import { Hex } from '@metamask/utils';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import Name from '../../../../components/app/name';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { AvatarNetwork } from '../../../../components/component-library/avatar-network';

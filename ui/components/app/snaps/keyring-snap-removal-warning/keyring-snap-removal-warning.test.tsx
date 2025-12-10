@@ -4,7 +4,7 @@ import configureMockStore from 'redux-mock-store';
 import { Snap } from '@metamask/snaps-utils';
 import { userEvent } from '@testing-library/user-event';
 import mockStore from '../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../test/jest';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths

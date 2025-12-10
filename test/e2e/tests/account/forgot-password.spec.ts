@@ -33,6 +33,8 @@ describe('Forgot password', function () {
         localNodes: Anvil[] | Ganache[] | undefined[];
       }) => {
         await loginWithBalanceValidation(driver, localNodes[0]);
+        // Giving sometime for network calls to settle before locking metamask
+        await driver.delay(3000);
 
         const homePage = new HomePage(driver);
         await homePage.headerNavbar.checkPageIsLoaded();
@@ -45,7 +47,7 @@ describe('Forgot password', function () {
         await resetPasswordPage.checkPageIsLoaded();
 
         await resetPasswordPage.resetPassword(E2E_SRP, newPassword);
-        await resetPasswordPage.waitForSeedPhraseInputToNotBeVisible();
+        await resetPasswordPage.waitForPasswordInputToNotBeVisible();
         await homePage.headerNavbar.checkPageIsLoaded();
         await driver.delay(1000); // to avoid a race condition where the wallet is not locked yet
         // Lock wallet again

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
 import {
   NotificationDetailTitle,

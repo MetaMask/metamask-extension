@@ -1,7 +1,6 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
-import { useNavigate } from 'react-router-dom-v5-compat';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 
 import { useNetworkConnectionBanner } from '../../../hooks/useNetworkConnectionBanner';
 import { setEditedNetwork } from '../../../store/actions';
@@ -22,8 +21,10 @@ jest.mock('../../../hooks/useNetworkConnectionBanner', () => ({
   useNetworkConnectionBanner: jest.fn(),
 }));
 
-jest.mock('react-router-dom-v5-compat', () => ({
-  useNavigate: jest.fn(),
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockUseNavigate,
 }));
 
 jest.mock('../../../hooks/useTheme', () => ({
@@ -31,13 +32,11 @@ jest.mock('../../../hooks/useTheme', () => ({
 }));
 
 const mockUseNetworkConnectionBanner = jest.mocked(useNetworkConnectionBanner);
-const mockUseNavigate = jest.mocked(useNavigate);
 const mockSetEditedNetwork = jest.mocked(setEditedNetwork);
 
 describe('NetworkConnectionBanner', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseNavigate.mockReturnValue(jest.fn());
   });
 
   describe('when the status of the banner is "degraded"', () => {
@@ -96,8 +95,6 @@ describe('NetworkConnectionBanner', () => {
           trackNetworkBannerEvent: jest.fn(),
         });
         const store = configureStore({});
-        const navigateMock = jest.fn();
-        mockUseNavigate.mockReturnValue(navigateMock);
 
         const { getByText } = renderWithProvider(
           <NetworkConnectionBanner />,
@@ -109,7 +106,7 @@ describe('NetworkConnectionBanner', () => {
           chainId: '0x1',
           trackRpcUpdateFromBanner: true,
         });
-        expect(navigateMock).toHaveBeenCalledWith('/settings/networks');
+        expect(mockUseNavigate).toHaveBeenCalledWith('/settings/networks');
       });
 
       it('creates a metrics event', () => {
@@ -206,8 +203,6 @@ describe('NetworkConnectionBanner', () => {
           trackNetworkBannerEvent: jest.fn(),
         });
         const store = configureStore({});
-        const navigateMock = jest.fn();
-        mockUseNavigate.mockReturnValue(navigateMock);
 
         const { getByText } = renderWithProvider(
           <NetworkConnectionBanner />,
@@ -219,7 +214,7 @@ describe('NetworkConnectionBanner', () => {
           chainId: '0x1',
           trackRpcUpdateFromBanner: true,
         });
-        expect(navigateMock).toHaveBeenCalledWith('/settings/networks');
+        expect(mockUseNavigate).toHaveBeenCalledWith('/settings/networks');
       });
 
       it('creates a metrics event', () => {
