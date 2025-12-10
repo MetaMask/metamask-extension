@@ -1079,15 +1079,14 @@ export default class MetamaskController extends EventEmitter {
       // account mgmt
       getAccounts: (requestOrigin) => getAccounts({ origin: requestOrigin }),
       // tx signing
-      processTransaction: (transactionParams, dappRequest, requestContext) => {
-        return addDappTransaction(
+      processTransaction: (transactionParams, dappRequest, requestContext) =>
+        addDappTransaction(
           this.getAddTransactionRequest({
             transactionParams,
             dappRequest,
             requestContext,
           }),
-        );
-      },
+        ),
       // msg signing
       processTypedMessage: (...args) =>
         addTypedMessage({
