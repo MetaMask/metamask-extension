@@ -123,6 +123,8 @@ async function assertApproveDetails(driver: Driver) {
   await erc20ApproveConfirmation.checkSpendingCapSection();
   await erc20ApproveConfirmation.checkSpendingCapAmount('7');
 
+  // TODO - Scroll button not shown in Firefox if advanced details enabled too fast.
+  await driver.delay(1000);
   await erc20ApproveConfirmation.clickAdvancedDetailsButton();
 
   await erc20ApproveConfirmation.checkAdvancedDetailsSections();
