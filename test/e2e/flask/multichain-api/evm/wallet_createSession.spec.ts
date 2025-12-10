@@ -21,6 +21,7 @@ import {
   getExpectedSessionScope,
   type FixtureCallbackArgs,
 } from '../testHelpers';
+import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../../constants';
 
 describe('Multichain API', function () {
   describe('Connect wallet to the multichain dapp via `externally_connectable`, call `wallet_createSession` with requested EVM scope that does NOT match one of the users enabled networks', function () {
@@ -443,6 +444,11 @@ describe('Multichain API', function () {
             ),
           );
 
+          // Issue #38699: Account 2 is connected but it's not imported in my wallet
+          await testDapp.checkConnectedAccounts([
+            DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
+          ]);
+
           /**
            * Then we make sure to deselect the existing session scopes, and create session with new scopes
            */
@@ -460,6 +466,10 @@ describe('Multichain API', function () {
             driver,
           );
           await connectAccountConfirmation.checkPageIsLoaded();
+          await connectAccountConfirmation.checkForAccountsInPermissionList([
+            'Account 1',
+            'Trezor 1',
+          ]);
           await connectAccountConfirmation.confirmConnect();
 
           await driver.switchToWindowWithTitle(

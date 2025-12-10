@@ -11,6 +11,13 @@ const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 class TestDappMultichain {
   private readonly driver: Driver;
 
+  private readonly connectedAccount = (account: string) => {
+    return {
+      testId: 'connected-accounts-list',
+      text: account,
+    };
+  };
+
   private readonly connectExternallyConnectableButton = {
     text: 'Connect',
     tag: 'button',
@@ -430,6 +437,13 @@ class TestDappMultichain {
       css: this.walletNotifyResult,
       text: scope,
     });
+  }
+
+  async checkConnectedAccounts(expectedAccounts: string[]): Promise<void> {
+    console.log('Checking connected accounts on multichain test dapp.');
+    for (const account of expectedAccounts) {
+      await this.driver.waitForSelector(this.connectedAccount(account));
+    }
   }
 }
 
