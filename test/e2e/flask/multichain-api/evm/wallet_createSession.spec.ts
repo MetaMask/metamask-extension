@@ -21,9 +21,9 @@ import {
   getExpectedSessionScope,
   type FixtureCallbackArgs,
 } from '../testHelpers';
-import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../../constants';
 
 describe('Multichain API', function () {
+  const TREZOR_ACCOUNT = '0xf68464152d7289d7ea9a2bec2e0035c45188223c';
   describe('Connect wallet to the multichain dapp via `externally_connectable`, call `wallet_createSession` with requested EVM scope that does NOT match one of the users enabled networks', function () {
     it("the specified EVM scopes that do not match the user's configured networks should be treated as if they were not requested", async function () {
       await withFixtures(
@@ -63,6 +63,9 @@ describe('Multichain API', function () {
             WINDOW_TITLES.MultichainTestDApp,
           );
           await testDapp.checkPageIsLoaded();
+
+          await testDapp.checkConnectedAccounts([ACCOUNT_1]);
+
           const getSessionResult = await testDapp.getSession();
 
           for (const scope of scopesToIgnore) {
@@ -119,6 +122,7 @@ describe('Multichain API', function () {
             WINDOW_TITLES.MultichainTestDApp,
           );
           await testDapp.checkPageIsLoaded();
+          await testDapp.checkConnectedAccounts([TREZOR_ACCOUNT]);
           const getSessionResult = await testDapp.getSession();
           /**
            * Accounts in scope should not include invalid account {@link ACCOUNT_NOT_IN_WALLET}, only the valid accounts.
@@ -236,6 +240,7 @@ describe('Multichain API', function () {
               WINDOW_TITLES.MultichainTestDApp,
             );
             await testDapp.checkPageIsLoaded();
+            await testDapp.checkConnectedAccounts([ACCOUNT_1, ACCOUNT_2]);
             const getSessionResult = await testDapp.getSession();
 
             assert.strictEqual(
@@ -350,6 +355,7 @@ describe('Multichain API', function () {
               WINDOW_TITLES.MultichainTestDApp,
             );
             await testDapp.checkPageIsLoaded();
+            await testDapp.checkConnectedAccounts([ACCOUNT_1, ACCOUNT_2]);
             const getSessionResult = await testDapp.getSession();
 
             assert.deepEqual(
@@ -414,7 +420,6 @@ describe('Multichain API', function () {
   describe('Dapp has existing session with 2 scopes and 1 account and then calls `wallet_createSession` with different scopes and accounts', function () {
     const OLD_SCOPES = ['eip155:1337', 'eip155:1'];
     const NEW_SCOPES = ['eip155:1338', 'eip155:1000'];
-    const TREZOR_ACCOUNT = '0xf68464152d7289d7ea9a2bec2e0035c45188223c';
 
     it('should include old session permissions as pre-selected in the connection screen along with those requested in the new `wallet_createSession` request', async function () {
       await withFixtures(
@@ -453,9 +458,7 @@ describe('Multichain API', function () {
           );
 
           // Issue #38699: Account 2 is connected but it's not imported in my wallet
-          await testDapp.checkConnectedAccounts([
-            DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
-          ]);
+          await testDapp.checkConnectedAccounts([ACCOUNT_1]);
 
           /**
            * Then we make sure to deselect the existing session scopes, and create session with new scopes
@@ -485,7 +488,8 @@ describe('Multichain API', function () {
           );
           await testDapp.checkPageIsLoaded();
 
-          await driver.delay(5000);
+          await testDapp.checkConnectedAccounts([ACCOUNT_1, TREZOR_ACCOUNT]);
+
           const newgetSessionResult = await testDapp.getSession();
 
           const expectedNewSessionScopes = [...OLD_SCOPES, ...NEW_SCOPES].map(
