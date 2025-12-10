@@ -410,8 +410,9 @@ function getOptions(
 /**
  * Returns a string representation of the given arguments and features.
  *
- * @param args
- * @param features
+ * @param args - The parsed CLI arguments
+ * @param features - The active and available features
+ * @param resolvedEnvironment - The resolved MetaMask environment
  */
 export function getDryRunMessage(
   args: Args,

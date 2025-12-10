@@ -91,20 +91,13 @@ export function getBuildName(
  * 1. If `--test` is set, returns 'testing'
  * 2. If `--metamaskEnvironment` is explicitly set via CLI, uses that value
  * 3. If `--env development`, returns 'development'
- * 4. Otherwise (production-like builds), auto-detects from git context:
- *    - release/* branch → 'release-candidate'
- *    - main branch → 'staging'
- *    - pull_request event → 'pull-request'
- *    - anything else (including local builds) → 'other'
+ * 4. Otherwise, auto-detects from git context (release branch, main, PR, or other)
  *
  * NOTE: 'production' environment is NEVER auto-detected. It must be explicitly
  * set via --metamaskEnvironment to prevent accidental pollution of production
  * Sentry with events from local or CI test builds.
  *
  * @param args - The parsed CLI arguments
- * @param args.test - Whether this is a test build
- * @param args.env - The webpack environment ('production' or 'development')
- * @param args.metamaskEnvironment - Explicit environment override from CLI
  * @returns The resolved environment string
  */
 export function resolveEnvironment(
@@ -164,7 +157,7 @@ export function getVariables(
   const isDevBuild = env === 'development';
 
   // Resolve the MetaMask environment using proper detection logic
-  const environment = resolveEnvironment({ test: args.test, env, ...args });
+  const environment = resolveEnvironment({ ...args, env });
 
   function set(key: string, value: unknown): void;
   function set(key: Record<string, unknown>): void;
