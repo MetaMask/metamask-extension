@@ -173,7 +173,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
           <div
             class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap"
           >
-
+             
           </div>
         </div>
       </div>
