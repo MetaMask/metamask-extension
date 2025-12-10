@@ -35,8 +35,10 @@ jobs:
     name: Merge previous release branches
     needs: validate-branch
     if: needs.validate-branch.outputs.is-valid == 'true'
-    uses: metamask/github-tools/.github/workflows/merge-previous-releases.yml@INFRA-3187-AutomateMergingReleaseBranches
-    secrets:
-      github-token: ${{ secrets.METAMASK_EXTENSION_BRANCH_SYNC_TOKEN }}
-    with:
-      new-release-branch: ${{ github.event.ref }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Merge previous releases
+        uses: metamask/github-tools/.github/actions/merge-previous-releases@INFRA-3187-AutomateMergingReleaseBranches
+        with:
+          new-release-branch: ${{ github.event.ref }}
+          github-token: ${{ secrets.METAMASK_EXTENSION_BRANCH_SYNC_TOKEN }}
