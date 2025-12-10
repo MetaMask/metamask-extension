@@ -49,19 +49,13 @@ const EditGasFeePopover = () => {
   }
 
   return (
-    <Modal
-      isOpen={true}
-      onClose={closeAllModals}
-      className="edit-gas-fee-popover"
-    >
+    <Modal isOpen onClose={closeAllModals} className="edit-gas-fee-popover">
       <ModalOverlay />
       <ModalContent>
         <ModalHeader
           onClose={closeAllModals}
           onBack={
-            openModalCount === 1
-              ? undefined
-              : () => closeModal(['editGasFee'])
+            openModalCount === 1 ? undefined : () => closeModal(['editGasFee'])
           }
         >
           {t(popupTitle)}
