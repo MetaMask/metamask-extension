@@ -17,6 +17,13 @@ import InfoTooltip from '../../../../../components/ui/info-tooltip';
 import LoadingHeartBeat from '../../../../../components/ui/loading-heartbeat';
 import UserPreferencedCurrencyDisplay from '../../../../../components/app/user-preferenced-currency-display';
 import EditGasToolTip from '../edit-gas-tooltip/edit-gas-tooltip';
+import { Box, Text } from '../../../../../components/component-library';
+import {
+  Display,
+  FlexDirection,
+  JustifyContent,
+  TextVariant,
+} from '../../../../../helpers/constants/design-system';
 
 import { useGasItemFeeDetails } from './useGasItemFeeDetails';
 
@@ -106,7 +113,8 @@ const EditGasItem = ({ priorityLevel }) => {
   const { title, icon } = getTitleAndIcon(priorityLevel, editGasMode);
 
   return (
-    <button
+    <Box
+      as="button"
       className={classNames('edit-gas-item', {
         'edit-gas-item--selected': priorityLevel === estimateUsed,
         'edit-gas-item--disabled': estimateGreaterThanGasUse,
@@ -116,28 +124,49 @@ const EditGasItem = ({ priorityLevel }) => {
       autoFocus={priorityLevel === estimateUsed}
       disabled={estimateGreaterThanGasUse}
       data-testid={`edit-gas-fee-item-${priorityLevel}`}
+      display={Display.Flex}
+      flexDirection={FlexDirection.Row}
+      justifyContent={JustifyContent.SpaceBetween}
+      alignItems="center"
+      width="100%"
+      padding={0}
+      border="none"
+      backgroundColor="transparent"
+      style={{ cursor: estimateGreaterThanGasUse ? 'not-allowed' : 'pointer' }}
     >
-      <span className="edit-gas-item__name">
+      <Box
+        className="edit-gas-item__name"
+        display={Display.Flex}
+        alignItems="center"
+        gap={2}
+      >
         {icon && (
-          <span
+          <Box
             className={`edit-gas-item__icon edit-gas-item__icon-${priorityLevel}`}
           >
             {PRIORITY_LEVEL_ICON_MAP[icon]}
-          </span>
+          </Box>
         )}
-        {t(title)}
-      </span>
-      <span
+        <Text variant={TextVariant.bodySm}>{t(title)}</Text>
+      </Box>
+      <Text
         className={`edit-gas-item__time-estimate edit-gas-item__time-estimate-${priorityLevel}`}
+        variant={TextVariant.bodySm}
       >
         {editGasMode !== EditGasModes.swaps &&
           (minWaitTime ? toHumanReadableTime(t, minWaitTime) : '--')}
-      </span>
-      <span
+      </Text>
+      <Box
         className={`edit-gas-item__fee-estimate edit-gas-item__fee-estimate-${priorityLevel}`}
+        display={Display.Flex}
+        alignItems="center"
       >
         {hexMaximumTransactionFee ? (
-          <div className="edit-gas-item__maxfee">
+          <Box
+            className="edit-gas-item__maxfee"
+            display={Display.Flex}
+            alignItems="center"
+          >
             <LoadingHeartBeat
               backgroundColor={
                 priorityLevel === estimateUsed
@@ -151,12 +180,12 @@ const EditGasItem = ({ priorityLevel }) => {
               type={PRIMARY}
               value={hexMaximumTransactionFee}
             />
-          </div>
+          </Box>
         ) : (
-          '--'
+          <Text variant={TextVariant.bodySm}>--</Text>
         )}
-      </span>
-      <span className="edit-gas-item__tooltip" data-testid="gas-tooltip">
+      </Box>
+      <Box className="edit-gas-item__tooltip" data-testid="gas-tooltip">
         <InfoTooltip
           contentText={
             <EditGasToolTip
@@ -172,8 +201,8 @@ const EditGasItem = ({ priorityLevel }) => {
           }
           position="top"
         />
-      </span>
-    </button>
+      </Box>
+    </Box>
   );
 };
 

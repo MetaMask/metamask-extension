@@ -6,12 +6,12 @@ import {
 } from '../../../../../shared/constants/gas';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useTransactionModalContext } from '../../../../contexts/transaction-modal';
-import Box from '../../../../components/ui/box';
-import Popover from '../../../../components/ui/popover';
 
 import {
   TextColor,
   TextVariant,
+  Display,
+  FlexDirection,
 } from '../../../../helpers/constants/design-system';
 import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../../helpers/constants/error-keys';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
@@ -21,6 +21,12 @@ import {
   BannerAlert,
   BannerAlertSeverity,
   Text,
+  Box,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
 } from '../../../../components/component-library';
 import EditGasItem from './edit-gas-item';
 import NetworkStatistics from './network-statistics';
@@ -43,81 +49,107 @@ const EditGasFeePopover = () => {
   }
 
   return (
-    <Popover
-      title={t(popupTitle)}
-      // below logic ensures that back button is visible only if there are other modals open before this.
-      onBack={
-        openModalCount === 1 ? undefined : () => closeModal(['editGasFee'])
-      }
+    <Modal
+      isOpen={true}
       onClose={closeAllModals}
       className="edit-gas-fee-popover"
     >
-      <>
-        <AppLoadingSpinner />
-        <div className="edit-gas-fee-popover__wrapper">
-          <div className="edit-gas-fee-popover__content">
-            <Box>
-              {balanceError && (
-                <BannerAlert
-                  severity={BannerAlertSeverity.Danger}
-                  description={t(INSUFFICIENT_FUNDS_ERROR_KEY)}
-                  marginBottom={1}
-                />
-              )}
-              <div className="edit-gas-fee-popover__content__header">
-                <span className="edit-gas-fee-popover__content__header-option">
-                  {t('gasOption')}
-                </span>
-                <span className="edit-gas-fee-popover__content__header-time">
-                  {editGasMode !== EditGasModes.swaps && t('time')}
-                </span>
-                <span className="edit-gas-fee-popover__content__header-max-fee">
-                  {t('maxFee')}
-                </span>
-              </div>
-              {(editGasMode === EditGasModes.cancel ||
-                editGasMode === EditGasModes.speedUp) && (
-                <EditGasItem
-                  priorityLevel={PriorityLevels.tenPercentIncreased}
-                />
-              )}
-              {editGasMode === EditGasModes.modifyInPlace && (
-                <EditGasItem priorityLevel={PriorityLevels.low} />
-              )}
-              <EditGasItem priorityLevel={PriorityLevels.medium} />
-              <EditGasItem priorityLevel={PriorityLevels.high} />
-              <div className="edit-gas-fee-popover__content__separator" />
-              {editGasMode === EditGasModes.modifyInPlace && (
-                <EditGasItem priorityLevel={PriorityLevels.dAppSuggested} />
-              )}
-              <EditGasItem priorityLevel={PriorityLevels.custom} />
-            </Box>
-            <Box>
-              <NetworkStatistics />
-              <Text
-                className="edit-gas-fee-popover__know-more"
-                align="center"
-                color={TextColor.textAlternative}
-                tag={TextVariant.bodyMd}
-                variant={TextVariant.bodySm}
-                as="h6"
-              >
-                {t('learnMoreAboutGas', [
-                  <a
-                    key="learnMoreLink"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href={ZENDESK_URLS.USER_GUIDE_GAS}
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader
+          onClose={closeAllModals}
+          onBack={
+            openModalCount === 1
+              ? undefined
+              : () => closeModal(['editGasFee'])
+          }
+        >
+          {t(popupTitle)}
+        </ModalHeader>
+        <ModalBody>
+          <AppLoadingSpinner />
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            className="edit-gas-fee-popover__wrapper"
+          >
+            <Box className="edit-gas-fee-popover__content">
+              <Box>
+                {balanceError && (
+                  <BannerAlert
+                    severity={BannerAlertSeverity.Danger}
+                    description={t(INSUFFICIENT_FUNDS_ERROR_KEY)}
+                    marginBottom={1}
+                  />
+                )}
+                <Box
+                  display={Display.Flex}
+                  className="edit-gas-fee-popover__content__header"
+                >
+                  <Text
+                    className="edit-gas-fee-popover__content__header-option"
+                    variant={TextVariant.bodySm}
                   >
-                    {t('learnMore')}
-                  </a>,
-                ])}
-              </Text>
+                    {t('gasOption')}
+                  </Text>
+                  {editGasMode !== EditGasModes.swaps && (
+                    <Text
+                      className="edit-gas-fee-popover__content__header-time"
+                      variant={TextVariant.bodySm}
+                    >
+                      {t('time')}
+                    </Text>
+                  )}
+                  <Text
+                    className="edit-gas-fee-popover__content__header-max-fee"
+                    variant={TextVariant.bodySm}
+                  >
+                    {t('maxFee')}
+                  </Text>
+                </Box>
+                {(editGasMode === EditGasModes.cancel ||
+                  editGasMode === EditGasModes.speedUp) && (
+                  <EditGasItem
+                    priorityLevel={PriorityLevels.tenPercentIncreased}
+                  />
+                )}
+                {editGasMode === EditGasModes.modifyInPlace && (
+                  <EditGasItem priorityLevel={PriorityLevels.low} />
+                )}
+                <EditGasItem priorityLevel={PriorityLevels.medium} />
+                <EditGasItem priorityLevel={PriorityLevels.high} />
+                <Box className="edit-gas-fee-popover__content__separator" />
+                {editGasMode === EditGasModes.modifyInPlace && (
+                  <EditGasItem priorityLevel={PriorityLevels.dAppSuggested} />
+                )}
+                <EditGasItem priorityLevel={PriorityLevels.custom} />
+              </Box>
+              <Box>
+                <NetworkStatistics />
+                <Text
+                  className="edit-gas-fee-popover__know-more"
+                  textAlign="center"
+                  color={TextColor.textAlternative}
+                  variant={TextVariant.bodySm}
+                  as="h6"
+                >
+                  {t('learnMoreAboutGas', [
+                    <a
+                      key="learnMoreLink"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href={ZENDESK_URLS.USER_GUIDE_GAS}
+                    >
+                      {t('learnMore')}
+                    </a>,
+                  ])}
+                </Text>
+              </Box>
             </Box>
-          </div>
-        </div>
-      </>
-    </Popover>
+          </Box>
+        </ModalBody>
+      </ModalContent>
+    </Modal>
   );
 };
 
