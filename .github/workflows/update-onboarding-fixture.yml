@@ -87,11 +87,36 @@ jobs:
 
       - name: Find and download dist artifact
         run: |
-          RUN_ID=$(gh run list --workflow "Main" --branch "${BRANCH}" --json databaseId,status,conclusion --limit 20 --jq 'map(select(.status=="completed" and .conclusion=="success")) | first | .databaseId')
-          if [ -z "$RUN_ID" ]; then
-            echo "No successful 'Main' workflow run found for branch ${BRANCH}"
+          # Get the most recent run for the Main workflow on this branch
+          RUN_INFO=$(gh run list --workflow "Main" --branch "${BRANCH}" --json databaseId,status,conclusion --limit 1 --jq 'first')
+
+          if [ -z "$RUN_INFO" ] || [ "$RUN_INFO" = "null" ]; then
+            echo "::error::No 'Main' workflow run found for branch ${BRANCH}"
             exit 1
           fi
+
+          RUN_ID=$(echo "$RUN_INFO" | jq -r '.databaseId')
+          RUN_STATUS=$(echo "$RUN_INFO" | jq -r '.status')
+          RUN_CONCLUSION=$(echo "$RUN_INFO" | jq -r '.conclusion')
+
+          echo "Found run ${RUN_ID} with status: ${RUN_STATUS}, conclusion: ${RUN_CONCLUSION}"
+
+          # If the run is still in progress, wait for it to complete
+          if [ "$RUN_STATUS" != "completed" ]; then
+            echo "Run ${RUN_ID} is still in progress. Waiting for it to complete..."
+            gh run watch "${RUN_ID}"
+            # Re-fetch the conclusion after waiting
+            RUN_CONCLUSION=$(gh run view "${RUN_ID}" --json conclusion --jq '.conclusion')
+            echo "Run completed with conclusion: ${RUN_CONCLUSION}"
+          fi
+
+          # Check if the run was successful
+          if [ "$RUN_CONCLUSION" != "success" ]; then
+            echo "::error::The most recent 'Main' workflow run (${RUN_ID}) did not succeed (conclusion: ${RUN_CONCLUSION}). Please fix the build and try again."
+            exit 1
+          fi
+
+          echo "Downloading artifacts from run ${RUN_ID}..."
           gh run download "${RUN_ID}" -n build-dist-browserify -D build-dist-browserify
         env:
           BRANCH: ${{ steps.branch.outputs.BRANCH }}
