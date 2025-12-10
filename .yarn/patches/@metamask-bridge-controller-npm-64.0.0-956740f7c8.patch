@@ -1,0 +1,82 @@
+diff --git a/dist/selectors.cjs b/dist/selectors.cjs
+index 3afe13e4fc960c87f98c85d323dd992c5d5ac7f2..0d585efbbd5043ae092a1a8cb497f772ebd4b548 100644
+--- a/dist/selectors.cjs
++++ b/dist/selectors.cjs
+@@ -135,8 +135,8 @@ exports.selectIsAssetExchangeRateInState = selectIsAssetExchangeRateInState;
+  */
+ const selectBridgeFeesPerGas = createStructuredBridgeSelector({
+     estimatedBaseFeeInDecGwei: ({ gasFeeEstimates }) => gasFeeEstimates?.estimatedBaseFee,
+-    maxPriorityFeePerGasInDecGwei: ({ gasFeeEstimates }) => gasFeeEstimates?.[bridge_1.BRIDGE_PREFERRED_GAS_ESTIMATE]
+-        ?.suggestedMaxPriorityFeePerGas,
++    feePerGasInDecGwei: ({ gasFeeEstimates }) => gasFeeEstimates?.[bridge_1.BRIDGE_PREFERRED_GAS_ESTIMATE]
++        ?.suggestedMaxFeePerGas,
+     maxFeePerGasInDecGwei: ({ gasFeeEstimates }) => gasFeeEstimates?.high?.suggestedMaxFeePerGas,
+ });
+ // Selects cross-chain swap quotes including their metadata
+diff --git a/dist/utils/quote.cjs b/dist/utils/quote.cjs
+index f09b7c3e34ca626c93a80cf7c1a2b528d5e07e3f..d9929ff35b0e9534e01ee580c94bf2bae1345f0d 100644
+--- a/dist/utils/quote.cjs
++++ b/dist/utils/quote.cjs
+@@ -130,14 +130,13 @@ const calcRelayerFee = (quoteResponse, { exchangeRate, usdExchangeRate }) => {
+     };
+ };
+ exports.calcRelayerFee = calcRelayerFee;
+-const calcTotalGasFee = ({ approvalGasLimit, resetApprovalGasLimit, tradeGasLimit, l1GasFeesInHexWei, feePerGasInDecGwei, priorityFeePerGasInDecGwei, nativeToDisplayCurrencyExchangeRate, nativeToUsdExchangeRate, }) => {
++const calcTotalGasFee = ({ approvalGasLimit, resetApprovalGasLimit, tradeGasLimit, l1GasFeesInHexWei, feePerGasInDecGwei, nativeToDisplayCurrencyExchangeRate, nativeToUsdExchangeRate, }) => {
+     const totalGasLimitInDec = new bignumber_js_1.BigNumber(tradeGasLimit?.toString() ?? '0')
+         .plus(approvalGasLimit?.toString() ?? '0')
+         .plus(resetApprovalGasLimit?.toString() ?? '0');
+-    const totalFeePerGasInDecGwei = new bignumber_js_1.BigNumber(feePerGasInDecGwei).plus(priorityFeePerGasInDecGwei);
+     const l1GasFeesInDecGWei = (0, controller_utils_1.weiHexToGweiDec)((0, controller_utils_1.toHex)(l1GasFeesInHexWei ?? '0'));
+     const gasFeesInDecGwei = totalGasLimitInDec
+-        .times(totalFeePerGasInDecGwei)
++        .times(feePerGasInDecGwei)
+         .plus(l1GasFeesInDecGWei);
+     const gasFeesInDecEth = gasFeesInDecGwei.times(new bignumber_js_1.BigNumber(10).pow(-9));
+     const gasFeesInDisplayCurrency = nativeToDisplayCurrencyExchangeRate
+@@ -152,7 +151,7 @@ const calcTotalGasFee = ({ approvalGasLimit, resetApprovalGasLimit, tradeGasLimi
+         usd: gasFeesInUSD?.toString() ?? null,
+     };
+ };
+-const calcEstimatedAndMaxTotalGasFee = ({ bridgeQuote: { approval, trade, l1GasFeesInHexWei, resetApproval }, estimatedBaseFeeInDecGwei, maxFeePerGasInDecGwei, maxPriorityFeePerGasInDecGwei, exchangeRate: nativeToDisplayCurrencyExchangeRate, usdExchangeRate: nativeToUsdExchangeRate, }) => {
++const calcEstimatedAndMaxTotalGasFee = ({ bridgeQuote: { approval, trade, l1GasFeesInHexWei, resetApproval }, estimatedBaseFeeInDecGwei, maxFeePerGasInDecGwei, feePerGasInDecGwei, exchangeRate: nativeToDisplayCurrencyExchangeRate, usdExchangeRate: nativeToUsdExchangeRate, }) => {
+     // Estimated gas fees spent after receiving refunds, this is shown to the user
+     const { amount: amountEffective, valueInCurrency: valueInCurrencyEffective, usd: usdEffective, } = calcTotalGasFee({
+         // Fallback to gasLimit if effectiveGas is not available
+@@ -160,8 +159,7 @@ const calcEstimatedAndMaxTotalGasFee = ({ bridgeQuote: { approval, trade, l1GasF
+         resetApprovalGasLimit: resetApproval?.effectiveGas ?? resetApproval?.gasLimit,
+         tradeGasLimit: trade?.effectiveGas ?? trade?.gasLimit,
+         l1GasFeesInHexWei,
+-        feePerGasInDecGwei: estimatedBaseFeeInDecGwei,
+-        priorityFeePerGasInDecGwei: maxPriorityFeePerGasInDecGwei,
++        feePerGasInDecGwei: feePerGasInDecGwei,
+         nativeToDisplayCurrencyExchangeRate,
+         nativeToUsdExchangeRate,
+     });
+@@ -171,8 +169,7 @@ const calcEstimatedAndMaxTotalGasFee = ({ bridgeQuote: { approval, trade, l1GasF
+         resetApprovalGasLimit: resetApproval?.gasLimit,
+         tradeGasLimit: trade?.gasLimit,
+         l1GasFeesInHexWei,
+-        feePerGasInDecGwei: estimatedBaseFeeInDecGwei,
+-        priorityFeePerGasInDecGwei: maxPriorityFeePerGasInDecGwei,
++        feePerGasInDecGwei: feePerGasInDecGwei,
+         nativeToDisplayCurrencyExchangeRate,
+         nativeToUsdExchangeRate,
+     });
+@@ -183,7 +180,6 @@ const calcEstimatedAndMaxTotalGasFee = ({ bridgeQuote: { approval, trade, l1GasF
+         tradeGasLimit: trade?.gasLimit,
+         l1GasFeesInHexWei,
+         feePerGasInDecGwei: maxFeePerGasInDecGwei,
+-        priorityFeePerGasInDecGwei: maxPriorityFeePerGasInDecGwei,
+         nativeToDisplayCurrencyExchangeRate,
+         nativeToUsdExchangeRate,
+     });
+@@ -214,7 +210,7 @@ exports.calcEstimatedAndMaxTotalGasFee = calcEstimatedAndMaxTotalGasFee;
+  * @param relayerFee - The relayer fee paid to bridge providers
+  * @returns The total estimated network fee for the bridge transaction, including the relayer fee paid to bridge providers
+  */
+-const calcTotalEstimatedNetworkFee = ({ effective: gasFeeToDisplay, }, relayerFee) => {
++const calcTotalEstimatedNetworkFee = ({ total: gasFeeToDisplay, }, relayerFee) => {
+     return {
+         amount: new bignumber_js_1.BigNumber(gasFeeToDisplay?.amount ?? '0')
+             .plus(relayerFee.amount)
