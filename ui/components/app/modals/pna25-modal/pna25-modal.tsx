@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useEffect, useRef } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -37,6 +43,7 @@ export default function Pna25Modal() {
   const trackEvent = useContext(MetaMetricsContext);
 
   const hasTrackedView = useRef(false);
+  const [isOpen, setIsOpen] = useState(true);
 
   const handleAction = useCallback(
     (action: Pna25NoticeAction) => {
@@ -48,8 +55,12 @@ export default function Pna25Modal() {
         },
       });
 
+      // Acknowledge on first view so modal won't show on next app load
+      dispatch(setPna25Acknowledged(true));
+
+      // Close the modal for explicit dismiss actions
       if (action !== Pna25NoticeAction.Viewed) {
-        dispatch(setPna25Acknowledged(true));
+        setIsOpen(false);
       }
 
       if (action === Pna25NoticeAction.OpenSettings) {
@@ -67,7 +78,7 @@ export default function Pna25Modal() {
   }, [handleAction]);
 
   return (
-    <Modal isOpen onClose={() => handleAction(Pna25NoticeAction.Leave)}>
+    <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader onClose={() => handleAction(Pna25NoticeAction.Close)}>
@@ -88,7 +99,7 @@ export default function Pna25Modal() {
               {t('pna25ModalBody3')}
               <TextButton
                 asChild
-                className="!text-inherit !font-normal underline underline-offset-2 [text-decoration-skip-ink:none] hover:!text-inherit hover:!font-normal hover:![text-decoration-color:inherit] hover:!underline-offset-2"
+                className="!text-inherit !font-normal underline underline-offset-2 [text-decoration-skip-ink:none] cursor-pointer hover:!text-inherit hover:!font-normal hover:![text-decoration-color:inherit] hover:!underline-offset-2 hover:!cursor-pointer"
               >
                 <a
                   href={PNA25_BLOG_POST_LINK}

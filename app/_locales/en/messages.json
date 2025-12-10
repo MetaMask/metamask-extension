@@ -5043,7 +5043,7 @@
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
   "pna25ModalBlogPostLink": {
-    "message": "blog post"
+    "message": "blog post."
   },
   "pna25ModalBody1": {
     "message": "To better serve you, we’re updating our analytics so publicly available data like wallet addresses and related on-chain activity can be associated with actions you take in MetaMask using a pseudonymous ID. This helps us improve MetaMask's performance, security, and features in order to make a better, safer wallet."

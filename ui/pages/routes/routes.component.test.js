@@ -219,6 +219,9 @@ describe('toast display', () => {
 
   const getToastDisplayTestState = (date) => ({
     ...mockState,
+    rewards: {
+      onboardingModalOpen: false,
+    },
     metamask: {
       ...mockState.metamask,
       allTokens: {},
@@ -253,6 +256,9 @@ describe('toast display', () => {
 
   const getToastConnectAccountDisplayTestState = (selectedAccountId) => ({
     ...mockState,
+    rewards: {
+      onboardingModalOpen: false,
+    },
     metamask: {
       ...mockState.metamask,
       announcements: {},
