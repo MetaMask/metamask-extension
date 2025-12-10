@@ -8,6 +8,11 @@ class ShieldSubscriptionApprovePage extends TransactionConfirmation {
   private readonly estimatedChangesSection: RawLocator =
     '[data-testid="shield-subscription-approve__estimated_changes_section"]';
 
+  private readonly estimatedChangesSectionByText = (text: string) => ({
+    css: this.estimatedChangesSection,
+    text,
+  });
+
   private readonly subscriptionDetailsSection: RawLocator =
     '[data-testid="shield-subscription-approve__subscription_details_section"]';
 
@@ -31,10 +36,9 @@ class ShieldSubscriptionApprovePage extends TransactionConfirmation {
     console.log(
       `Checking that ${tokenSymbol} is displayed in estimated changes section`,
     );
-    await this.driver.waitForSelector({
-      css: this.estimatedChangesSection,
-      text: tokenSymbol,
-    });
+    await this.driver.waitForSelector(
+      this.estimatedChangesSectionByText(tokenSymbol),
+    );
   }
 
   async clickStartNowButton(): Promise<void> {

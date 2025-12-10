@@ -279,6 +279,7 @@ export const PaymentMethodRow = ({
             displayedShieldSubscription.status ===
               SUBSCRIPTION_STATUSES.provisional // payment method crypto verifying, can't change yet
           }
+          data-testid="shield-detail-payment-method-button"
         >
           {displayedShieldSubscription.paymentMethod.crypto.tokenSymbol}
         </TextButton>

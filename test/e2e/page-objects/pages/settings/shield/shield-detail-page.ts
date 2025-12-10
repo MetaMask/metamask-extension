@@ -70,12 +70,14 @@ export default class ShieldDetailPage {
   });
 
   private readonly paymentMethodButton =
-    '[data-testid="shield-detail-payment-method"] button';
+    '[data-testid="shield-detail-payment-method-button"]';
+
+  private readonly paymentMethodTokenButtonByText = (text: string) => ({
+    css: '[data-testid="shield-payment-method-token-button"]',
+    text,
+  });
 
   private readonly shieldPaymentModal = '[data-testid="shield-payment-modal"]';
-
-  private readonly shieldPaymentMethodTokenButton =
-    '[data-testid="shield-payment-method-token-button"]';
 
   private readonly pausedTag = '[data-testid="shield-detail-paused-tag"]';
 
@@ -327,9 +329,8 @@ export default class ShieldDetailPage {
    */
   async selectPaymentMethodInModal(paymentMethodText: string): Promise<void> {
     console.log(`Selecting payment method: ${paymentMethodText}`);
-    await this.driver.clickElement({
-      css: this.shieldPaymentMethodTokenButton,
-      text: paymentMethodText,
-    });
+    await this.driver.clickElement(
+      this.paymentMethodTokenButtonByText(paymentMethodText),
+    );
   }
 }
