@@ -165,6 +165,7 @@ export default class Home extends PureComponent {
     isSignedIn: PropTypes.bool,
     rewardsEnabled: PropTypes.bool,
     rewardsOnboardingEnabled: PropTypes.bool,
+    rewardsOnboardingModalOpen: PropTypes.bool,
     showPna25Modal: PropTypes.bool.isRequired,
   };
 
@@ -781,6 +782,7 @@ export default class Home extends PureComponent {
       isSocialLoginFlow,
       rewardsEnabled,
       rewardsOnboardingEnabled,
+      rewardsOnboardingModalOpen,
       showPna25Modal,
     } = this.props;
 
@@ -836,6 +838,7 @@ export default class Home extends PureComponent {
       !isSeedlessPasswordOutdated &&
       !showShieldEntryModal &&
       !showRecoveryPhrase;
+
     const showPna25ModalComponent =
       showPna25Modal &&
       canSeeModals &&
@@ -846,7 +849,7 @@ export default class Home extends PureComponent {
       !isSeedlessPasswordOutdated &&
       !showShieldEntryModal &&
       !showRecoveryPhrase &&
-      !showRewardsModal;
+      !rewardsOnboardingModalOpen;
 
     const { location } = this.props;
 
