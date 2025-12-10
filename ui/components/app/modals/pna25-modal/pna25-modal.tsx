@@ -3,30 +3,36 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
+  BoxAlignItems,
+  BoxFlexDirection,
   Button,
-  ButtonLink,
   ButtonVariant,
+  Icon,
+  IconName,
+  IconSize,
+  Text,
+  TextButton,
+  TextVariant,
+} from '@metamask/design-system-react';
+import {
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Text,
 } from '../../../component-library';
-import {
-  Display,
-  FlexDirection,
-  TextVariant,
-} from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../../shared/constants/metametrics';
 import { SECURITY_ROUTE } from '../../../../helpers/constants/routes';
 import { setPna25Acknowledged } from '../../../../store/actions';
+import { PNA25_BLOG_POST_LINK } from './constants';
 
-const PNA25_BLOG_POST_LINK = '';
-
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function Pna25Modal() {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -35,20 +41,46 @@ export default function Pna25Modal() {
 
   useEffect(() => {
     trackEvent({
-      event: MetaMetricsEventName.ToastDisplayed,
+      event: MetaMetricsEventName.NoticeUpdateDisplayed,
+      category: MetaMetricsEventCategory.Navigation,
       properties: {
-        toast_name: 'pna25',
-        closed: false,
+        name: 'pna25',
+        action: 'viewed',
       },
     });
   }, [trackEvent]);
 
+  const handleLeave = () => {
+    trackEvent({
+      event: MetaMetricsEventName.NoticeUpdateDisplayed,
+      category: MetaMetricsEventCategory.Navigation,
+      properties: {
+        name: 'pna25',
+        action: 'leave',
+      },
+    });
+    dispatch(setPna25Acknowledged(true));
+  };
+
   const handleClose = () => {
     trackEvent({
-      event: MetaMetricsEventName.ToastDisplayed,
+      event: MetaMetricsEventName.NoticeUpdateDisplayed,
+      category: MetaMetricsEventCategory.Navigation,
       properties: {
-        toast_name: 'pna25',
-        closed: true,
+        name: 'pna25',
+        action: 'close',
+      },
+    });
+    dispatch(setPna25Acknowledged(true));
+  };
+
+  const handleAccept = () => {
+    trackEvent({
+      event: MetaMetricsEventName.NoticeUpdateDisplayed,
+      category: MetaMetricsEventCategory.Navigation,
+      properties: {
+        name: 'pna25',
+        action: 'accept and close',
       },
     });
     dispatch(setPna25Acknowledged(true));
@@ -56,11 +88,11 @@ export default function Pna25Modal() {
 
   const handleOpenSettings = () => {
     trackEvent({
-      event: MetaMetricsEventName.ToastDisplayed,
+      event: MetaMetricsEventName.NoticeUpdateDisplayed,
+      category: MetaMetricsEventCategory.Navigation,
       properties: {
-        toast_name: 'pna25',
-        closed: true,
-        action: 'open_settings',
+        name: 'pna25',
+        action: 'open settings',
       },
     });
     dispatch(setPna25Acknowledged(true));
@@ -68,40 +100,52 @@ export default function Pna25Modal() {
   };
 
   return (
-    <Modal isOpen onClose={handleClose}>
+    <Modal isOpen onClose={handleLeave}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader onClose={handleClose}>{t('pna25ModalTitle')}</ModalHeader>
+        <ModalHeader onClose={handleClose}>
+          <Box
+            flexDirection={BoxFlexDirection.Column}
+            alignItems={BoxAlignItems.Center}
+            gap={2}
+          >
+            <Icon name={IconName.ShieldLock} size={IconSize.Xl} />
+            <Text variant={TextVariant.HeadingSm}>{t('pna25ModalTitle')}</Text>
+          </Box>
+        </ModalHeader>
         <ModalBody>
-          <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
-            <Text variant={TextVariant.bodyMd}>{t('pna25ModalBody1')}</Text>
-            <Text variant={TextVariant.bodyMd}>{t('pna25ModalBody2')}</Text>
-            <Text variant={TextVariant.bodyMd}>
+          <Box flexDirection={BoxFlexDirection.Column} gap={4}>
+            <Text variant={TextVariant.BodyMd}>{t('pna25ModalBody1')}</Text>
+            <Text variant={TextVariant.BodyMd}>{t('pna25ModalBody2')}</Text>
+            <Text variant={TextVariant.BodyMd}>
               {t('pna25ModalBody3')}
-              <ButtonLink
-                href={PNA25_BLOG_POST_LINK}
-                externalLink
-              >
-                {t('pna25ModalBlogPostLink')}
-              </ButtonLink>
+              <TextButton asChild>
+                <a
+                  href={PNA25_BLOG_POST_LINK}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {t('pna25ModalBlogPostLink')}
+                </a>
+              </TextButton>
               .
             </Text>
           </Box>
         </ModalBody>
         <ModalFooter>
-          <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
+          <Box flexDirection={BoxFlexDirection.Column} gap={4}>
             <Button
               variant={ButtonVariant.Secondary}
               onClick={handleOpenSettings}
-              block
+              className="w-full"
               data-testid="pna25-modal-open-settings"
             >
               {t('openSettings')}
             </Button>
             <Button
               variant={ButtonVariant.Primary}
-              onClick={handleClose}
-              block
+              onClick={handleAccept}
+              className="w-full"
               data-testid="pna25-modal-accept"
             >
               {t('acceptAndClose')}
@@ -112,4 +156,3 @@ export default function Pna25Modal() {
     </Modal>
   );
 }
-
