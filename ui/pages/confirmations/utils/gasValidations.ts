@@ -31,7 +31,11 @@ export const validatePriorityFee = (
     validateValueExists(value, field, t) ||
     validateValueIsNumber(value, t) ||
     validateValueIsPositive(value, field, t) ||
-    validatePriorityFeeValueIsLessThanMaxFeePerGas(value, maxFeePerGasInDec, t) ||
+    validatePriorityFeeValueIsLessThanMaxFeePerGas(
+      value,
+      maxFeePerGasInDec,
+      t,
+    ) ||
     undefined
   );
 };
@@ -116,7 +120,7 @@ function validateValueIsNumber(
   t: TranslateFunction,
 ): string | false {
   const normalizedValue = normalizeGasInput(value);
-  if (/^\d*\.?\d*$/.test(normalizedValue)) {
+  if (/^\d*\.?\d*$/u.test(normalizedValue)) {
     return false;
   }
   return t('onlyNumbersAllowed');
@@ -153,7 +157,7 @@ function validateValueIsInteger(
   t: TranslateFunction,
 ): string | false {
   const normalizedValue = normalizeGasInput(value);
-  if (/^\d+$/.test(normalizedValue)) {
+  if (/^\d+$/u.test(normalizedValue)) {
     return false;
   }
   return t('onlyIntegersAllowed');

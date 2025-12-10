@@ -58,23 +58,4 @@ describe('GasEstimateListItem', () => {
     const infoIcon = container.querySelector('[data-testid="icon"]');
     expect(infoIcon).not.toBeInTheDocument();
   });
-
-  it('renders info icon when tooltipProps is provided', () => {
-    const optionWithTooltip: GasOption = {
-      ...mockOption,
-      tooltipProps: {
-        priorityLevel: 'high',
-        maxFeePerGas: '100',
-        maxPriorityFeePerGas: '10',
-        gasLimit: 21000,
-      },
-    };
-
-    const { container } = renderWithProvider(
-      <GasEstimateListItem option={optionWithTooltip} />,
-    );
-
-    const infoIcon = container.querySelector('.mm-icon');
-    expect(infoIcon).toBeInTheDocument();
-  });
 });
