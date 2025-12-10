@@ -20,11 +20,7 @@ import {
   TextColor,
 } from '../../../../helpers/constants/design-system';
 import { t } from '../../../../../shared/lib/translate';
-import {
-  getIsToOrFromNonEvm,
-  getToAccounts,
-  getToChain,
-} from '../../../../ducks/bridge/selectors';
+import { getToAccounts, getToChain } from '../../../../ducks/bridge/selectors';
 import { useExternalAccountResolution } from '../../hooks/useExternalAccountResolution';
 import type { DestinationAccount } from '../types';
 import DestinationAccountListItem from './destination-account-list-item';
@@ -79,11 +75,9 @@ export const DestinationAccountPickerModal = ({
     [accounts, searchQuery],
   );
 
-  const isToOrFromNonEvm = useSelector(getIsToOrFromNonEvm);
-
   return (
     <Modal
-      isOpen={isOpen || (isToOrFromNonEvm && !selectedAccount)}
+      isOpen={isOpen}
       onClose={() => {
         setSearchQuery('');
         onClose();
