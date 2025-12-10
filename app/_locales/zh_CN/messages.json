@@ -943,9 +943,6 @@
   "bridgeEnterAmount": {
     "message": "选择金额"
   },
-  "bridgeEnterAmountAndSelectAccount": {
-    "message": "输入金额并选择目标账户"
-  },
   "bridgeExplorerLinkViewOn": {
     "message": "在 $1 上查看"
   },
