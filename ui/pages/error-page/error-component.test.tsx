@@ -5,7 +5,7 @@ import browser from 'webextension-polyfill';
 import { fireEvent } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import configureMockState from 'redux-mock-store';
-import { renderWithProvider } from '../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { getParticipateInMetaMetrics } from '../../selectors';

@@ -6,7 +6,7 @@ import {
   ProductType,
   PaymentType,
 } from '@metamask/subscription-controller';
-import { renderHookWithProvider } from '../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import baseMockState from '../../../test/data/mock-state.json';
 import {
   useSubscriptionPricing,
@@ -26,6 +26,7 @@ const mockSubscriptionPricing: PricingResponse = {
           currency: 'usd',
           trialPeriodDays: 7,
           minBillingCycles: 1,
+          minBillingCyclesForBalance: 1,
         },
         {
           interval: RECURRING_INTERVALS.year,
@@ -34,6 +35,7 @@ const mockSubscriptionPricing: PricingResponse = {
           currency: 'usd',
           trialPeriodDays: 7,
           minBillingCycles: 1,
+          minBillingCyclesForBalance: 1,
         },
       ],
     },

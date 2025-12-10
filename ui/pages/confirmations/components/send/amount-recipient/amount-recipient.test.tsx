@@ -19,8 +19,8 @@ import { AmountRecipient } from './amount-recipient';
 
 const MOCK_ADDRESS = '0xdB055877e6c13b6A6B25aBcAA29B393777dD0a73';
 
-jest.mock('react-router-dom-v5-compat', () => ({
-  ...jest.requireActual('react-router-dom-v5-compat'),
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   useLocation: () => ({ pathname: '/send/asset' }),
   useSearchParams: jest.fn().mockReturnValue([{ get: () => null }]),
 }));

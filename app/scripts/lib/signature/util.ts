@@ -1,12 +1,23 @@
-import type { SignatureController } from '@metamask/signature-controller';
 import type {
   OriginalRequest,
-  TypedMessageParams,
-} from '@metamask/message-manager';
+  SignatureController,
+  MessageParamsTyped,
+  MessageParamsPersonal,
+} from '@metamask/signature-controller';
+import type {
+  Json,
+  JsonRpcRequest,
+  MiddlewareContext,
+} from '@metamask/json-rpc-engine/v2';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 
-export type SignatureParams = [TypedMessageParams, OriginalRequest];
+export type SignatureParams = [
+  MessageParamsTyped | MessageParamsPersonal,
+  JsonRpcRequest,
+  MiddlewareContext,
+  string?, // version if typed message
+];
 
 export type MessageType = keyof typeof MESSAGE_TYPE;
 
@@ -20,28 +31,40 @@ async function handleSignature(
   signatureController: SignatureController,
   functionName: keyof SignatureController,
 ) {
-  const [, signatureRequest] = signatureParams;
-  const { id } = signatureRequest;
-  const actionId = id?.toString();
+  const [messageParams, signatureRequest, requestContext, version] =
+    signatureParams;
+  const { id, method, params } = signatureRequest;
+  const originalRequest = {
+    // @ts-expect-error - Will resolve on package update
+    id,
+    method,
+    params: params as string[],
+    origin: requestContext.get('origin') as string,
+    networkClientId: requestContext.get('networkClientId') as string,
+    securityAlertResponse: requestContext.get(
+      'securityAlertResponse',
+    ) as Record<string, Json>,
+  } satisfies OriginalRequest;
 
+  const actionId = id?.toString();
   endTrace({ name: TraceName.Middleware, id: actionId });
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore: Expected 4-5 arguments, but got 2.
-  const hash = await signatureController[functionName](...signatureParams);
+  // @ts-expect-error - Bludgeoning the types to make a polymorphic call
+  const signature = await signatureController[functionName](
+    messageParams,
+    originalRequest,
+    version,
+  );
 
   endTrace({ name: TraceName.Signature, id: actionId });
 
-  return hash;
+  return signature;
 }
 
 export async function addTypedMessage({
   signatureParams,
   signatureController,
-}: {
-  signatureParams: SignatureParams;
-  signatureController: SignatureController;
-}) {
+}: AddSignatureMessageRequest) {
   return handleSignature(
     signatureParams,
     signatureController,
@@ -52,10 +75,7 @@ export async function addTypedMessage({
 export async function addPersonalMessage({
   signatureParams,
   signatureController,
-}: {
-  signatureParams: SignatureParams;
-  signatureController: SignatureController;
-}) {
+}: AddSignatureMessageRequest) {
   return handleSignature(
     signatureParams,
     signatureController,

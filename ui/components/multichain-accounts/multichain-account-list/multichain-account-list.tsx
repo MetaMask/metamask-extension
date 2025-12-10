@@ -12,7 +12,7 @@ import {
   AccountWalletType,
 } from '@metamask/account-api';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import { parseCaipAccountId } from '@metamask/utils';
 import {
   Box,
@@ -221,8 +221,10 @@ export const MultichainAccountList = ({
       navigate(DEFAULT_ROUTE);
     };
 
-    const handleAccountClickToUse =
-      handleAccountClick ?? defaultHandleAccountClick;
+    const handleAccountClickToUse = (accountGroupId: AccountGroupId) => {
+      const handlerToUse = handleAccountClick ?? defaultHandleAccountClick;
+      handlerToUse?.(accountGroupId);
+    };
 
     const renderAccountCell = (
       groupId: string,
@@ -475,6 +477,10 @@ export const MultichainAccountList = ({
     t,
     isHiddenAccountsExpanded,
   ]);
+
+  useEffect(() => {
+    endTrace({ name: TraceName.ShowAccountList });
+  }, []);
 
   return (
     <>

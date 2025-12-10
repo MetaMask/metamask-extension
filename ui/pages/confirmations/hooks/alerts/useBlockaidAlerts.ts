@@ -28,10 +28,11 @@ import { normalizeProviderAlert } from './utils';
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const zlib = require('zlib');
 
-const IGNORED_RESULT_TYPES = [
-  BlockaidResultType.Benign,
-  BlockaidResultType.Loading,
-];
+export const ALERT_RESULT_TYPES = [
+  BlockaidResultType.Malicious,
+  BlockaidResultType.Warning,
+  BlockaidResultType.Errored,
+] as BlockaidResultType[];
 
 type SecurityAlertResponsesState = {
   metamask: {
@@ -73,7 +74,7 @@ const useBlockaidAlerts = (): Alert[] => {
     isCorrectDeveloperTransactionType(transactionType) ||
     SIGNATURE_TRANSACTION_TYPES.includes(transactionType);
 
-  const isResultTypeIgnored = IGNORED_RESULT_TYPES.includes(
+  const shouldShowAlert = ALERT_RESULT_TYPES.includes(
     securityAlertResponse?.result_type as BlockaidResultType,
   );
 
@@ -109,7 +110,7 @@ const useBlockaidAlerts = (): Alert[] => {
   return useMemo<Alert[]>(() => {
     if (
       !isTransactionTypeSupported ||
-      isResultTypeIgnored ||
+      !shouldShowAlert ||
       !securityAlertResponse
     ) {
       return [];
@@ -128,7 +129,7 @@ const useBlockaidAlerts = (): Alert[] => {
     return [normalizeProviderAlert(securityAlertResponse, t, reportUrl)];
   }, [
     isTransactionTypeSupported,
-    isResultTypeIgnored,
+    shouldShowAlert,
     securityAlertResponse,
     stringifiedJSONData,
     t,

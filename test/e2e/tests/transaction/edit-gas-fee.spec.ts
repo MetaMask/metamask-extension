@@ -61,7 +61,7 @@ describe('Editing Confirm Transaction', function () {
 
         // check transaction in activity tab
         await activityListPage.openActivityTab();
-        await activityListPage.checkCompletedTransactionItems(1);
+        await activityListPage.checkWaitForTransactionStatus('confirmed');
 
         await activityListPage.checkTransactionAmount('-1 ETH');
       },
@@ -124,7 +124,7 @@ describe('Editing Confirm Transaction', function () {
         await sendTokenConfirmationPage.clickOnConfirm();
 
         await activityListPage.openActivityTab();
-        await activityListPage.checkCompletedTransactionItems(1);
+        await activityListPage.checkWaitForTransactionStatus('confirmed');
 
         await activityListPage.checkTransactionAmount('-1 ETH');
       },
@@ -189,7 +189,7 @@ describe('Editing Confirm Transaction', function () {
         );
 
         await activityListPage.openActivityTab();
-        await activityListPage.checkCompletedTransactionItems(1);
+        await activityListPage.checkWaitForTransactionStatus('confirmed');
 
         await activityListPage.checkTransactionAmount('-0.001 ETH');
       },

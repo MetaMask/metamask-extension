@@ -2,7 +2,7 @@ import { SignatureRequest } from '@metamask/signature-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import { CoverageStatus } from '@metamask/shield-controller';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
@@ -272,11 +272,13 @@ export function useShieldCoverageAlert(): Alert[] {
       modalTitle = t('shieldCoverageAlertMessageTitleSignatureRequest');
     }
     let inlineAlertTextBackgroundColor;
+    let iconColor = IconColor.inherit;
     if (!isPaused) {
       switch (status) {
         case 'covered':
           severity = Severity.Success;
           inlineAlertText = t('shieldCovered');
+          iconColor = IconColor.successDefault;
           modalTitle = isSignatureRequest
             ? t('shieldCoverageAlertMessageTitleSignatureRequestCovered')
             : t('shieldCoverageAlertMessageTitleCovered');
@@ -284,6 +286,7 @@ export function useShieldCoverageAlert(): Alert[] {
         case 'malicious':
           severity = Severity.Danger;
           inlineAlertTextBackgroundColor = BackgroundColor.errorMuted;
+          iconColor = IconColor.errorDefault;
           break;
         default:
       }
@@ -304,8 +307,8 @@ export function useShieldCoverageAlert(): Alert[] {
         inlineAlertTextBackgroundColor,
         alertDetailsBackgroundColor: BackgroundColor.backgroundDefault,
         inlineAlertIconRight: true,
-        iconName: IconName.Info,
-        iconColor: IconColor.inherit,
+        iconName: IconName.Security,
+        iconColor,
         showArrow: false,
         isOpenModalOnClick: true,
         hideFromAlertNavigation: true,

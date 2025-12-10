@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useParams, useLocation } from 'react-router-dom-v5-compat';
+import { useParams, useLocation } from 'react-router-dom';
 
 import {
   CONFIRM_TRANSACTION_ROUTE,
@@ -8,17 +8,10 @@ import {
 import { Confirmation } from '../types/confirm';
 import { useConfirmationNavigation } from './useConfirmationNavigation';
 
-const useSyncConfirmPath = (
-  currentConfirmation?: Confirmation,
-  routeParamId?: string,
-) => {
+const useSyncConfirmPath = (currentConfirmation?: Confirmation) => {
   const { navigateToId } = useConfirmationNavigation();
+  const { id: paramId } = useParams<{ id: string }>();
   const location = useLocation();
-
-  // Use routeParamId from props if available (passed from v5 Route),
-  // otherwise fall back to useParams() for v5-compat Routes
-  const urlParams = useParams<{ id: string }>();
-  const paramId = routeParamId || urlParams.id;
 
   useEffect(() => {
     // Only sync path if we're on a confirmation route

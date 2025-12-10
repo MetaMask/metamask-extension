@@ -6,6 +6,8 @@ import { getNativeTokenAddress } from '@metamask/assets-controllers';
 
 import { decodeCommandV3Path } from '../decoding';
 
+export class DappSwapDecodingError extends Error {}
+
 enum SwapCommands {
   V3_SWAP_EXACT_IN = '00',
   V3_SWAP_EXACT_OUT = '01',
@@ -47,6 +49,28 @@ const BASE_COMMANDS_ABI_DEFINITION: Partial<
     },
     {
       type: 'bytes',
+      name: 'path',
+    },
+    {
+      type: 'bool',
+      name: 'payerIsUser',
+    },
+  ],
+  [SwapCommands.V2_SWAP_EXACT_IN]: [
+    {
+      type: 'address',
+      name: 'recipient',
+    },
+    {
+      type: 'uint256',
+      name: 'amountIn',
+    },
+    {
+      type: 'uint256',
+      name: 'amountOutMin',
+    },
+    {
+      type: 'address[]',
       name: 'path',
     },
     {
@@ -150,6 +174,7 @@ type DAPP_SWAP_COMMANDS_PARSER_TYPE = {
 
 const DAPP_SWAP_COMMANDS_PARSER: DAPP_SWAP_COMMANDS_PARSER_TYPE[] = [
   { value: '00', handler: handleV3CommandSwapExactIn },
+  { value: '08', handler: handleV2CommandSwapExactIn },
   {
     value: '01',
     handler: handleCommandExactOut as DAPP_SWAP_COMMANDS_PARSER_TYPE['handler'],
@@ -189,7 +214,9 @@ function decodeCommandData(
   ABI_DEFINITION: Record<string, { name: string; type: string }[]>,
 ): Result {
   if (!ABI_DEFINITION[action]) {
-    throw new Error(`Action ${action} not found in ABI definition`);
+    throw new DappSwapDecodingError(
+      `Action ${action} not found in ABI definition`,
+    );
   }
 
   const abiDecoder = Interface.getAbiCoder();
@@ -371,6 +398,32 @@ function handleV3CommandSwapExactIn(
   };
 }
 
+function handleV2CommandSwapExactIn(
+  data: string,
+  decodedResult: COMMAND_VALUES_RESULT,
+  _chainId: Hex,
+) {
+  const { amountMin, quotesInput } = decodedResult;
+  const result = decodeCommandData(
+    SwapCommands.V2_SWAP_EXACT_IN,
+    data,
+    BASE_COMMANDS_ABI_DEFINITION,
+  );
+
+  return {
+    amountMin: amountMin || result[2].toHexString(),
+    quotesInput: {
+      ...(quotesInput ?? {}),
+      srcTokenAmount: result[1].toHexString(),
+      srcTokenAddress:
+        quotesInput?.srcTokenAddress ?? result[3]?.[0]?.toLowerCase(),
+      destTokenAddress:
+        quotesInput?.destTokenAddress ??
+        result[3]?.[result[3]?.length - 1]?.toLowerCase(),
+    } as GenericQuoteRequest,
+  };
+}
+
 function handleCommandSweep(
   data: string,
   decodedResult: COMMAND_VALUES_RESULT,
@@ -426,7 +479,7 @@ function handleCommandUnwrapETH(
 }
 
 function handleCommandExactOut(_1: string, _2: COMMAND_VALUES_RESULT, _3: Hex) {
-  throw new Error('Exact-out commands are not supported yet');
+  throw new DappSwapDecodingError('Exact-out commands are not supported yet');
 }
 
 function getGenericValues(
@@ -454,7 +507,9 @@ function getGenericValues(
   );
 
   if (swapCommands.length !== 1) {
-    throw new Error(`Found swap commands ${swapCommands.length} instead of 1`);
+    throw new DappSwapDecodingError(
+      `Found swap commands ${swapCommands.length} instead of 1`,
+    );
   }
 
   let nonSwapCommands: string[] = [];

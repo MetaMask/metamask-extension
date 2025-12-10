@@ -149,7 +149,7 @@ describe('Token Details', function () {
         await homePage.checkPageIsLoaded();
 
         const assetListPage = new AssetListPage(driver);
-        await assetListPage.openTokenDetails('ETH');
+        await assetListPage.openTokenDetails('Ethereum');
 
         // check display of price in details
         await assetListPage.checkTokenPrice('$1,700.00');
