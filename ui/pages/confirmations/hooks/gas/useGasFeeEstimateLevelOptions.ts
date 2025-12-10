@@ -67,6 +67,26 @@ export const useGasFeeEstimateLevelOptions = ({
 
   if (shouldIncludeGasFeeEstimateLevelOptions) {
     Object.values(GasFeeEstimateLevel).forEach((level) => {
+      // Skip adding the high option if it has the same fees as the medium option
+      if (
+        level === GasFeeEstimateLevel.High &&
+        transactionGasFeeEstimates?.type === GasFeeEstimateType.FeeMarket
+      ) {
+        const mediumEstimates =
+          transactionGasFeeEstimates[GasFeeEstimateLevel.Medium];
+        const highEstimates =
+          transactionGasFeeEstimates[GasFeeEstimateLevel.High];
+
+        const hasSameFees =
+          mediumEstimates?.maxFeePerGas === highEstimates?.maxFeePerGas &&
+          mediumEstimates?.maxPriorityFeePerGas ===
+            highEstimates?.maxPriorityFeePerGas;
+
+        if (hasSameFees) {
+          return;
+        }
+      }
+
       const estimatedTime = toHumanEstimatedTimeRange(
         networkGasFeeEstimates[level].minWaitTimeEstimate,
         networkGasFeeEstimates[level].maxWaitTimeEstimate,
