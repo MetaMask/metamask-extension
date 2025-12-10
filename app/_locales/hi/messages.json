@@ -943,9 +943,6 @@
   "bridgeEnterAmount": {
     "message": "रकम चुनें"
   },
-  "bridgeEnterAmountAndSelectAccount": {
-    "message": "राशि दर्ज करें और गंतव्य अकाउंट चुनें"
-  },
   "bridgeExplorerLinkViewOn": {
     "message": "$1 पर देखें"
   },
@@ -1464,9 +1461,6 @@
   "connectWithMetaMask": {
     "message": "MetaMask के साथ कनेक्ट करें"
   },
-  "connectedAccounts": {
-    "message": "कनेक्ट किए हुए एकाउंट्स"
-  },
   "connectedAccountsDescriptionPlural": {
     "message": "आपके पास इस साइट से कनेक्ट किए गए $1 एकाउंट्स हैं।",
     "description": "$1 is the number of accounts"
@@ -1480,9 +1474,6 @@
   "connectedAccountsListTooltip": {
     "message": "$1, अकाउंट का बैलेंस, एड्रेस, एक्टिविटी देख सकता है और कनेक्टेड अकाउंट्स के लिए एप्रूवल देने के लिए ट्रांसेक्शन का सुझाव दे सकता है।",
     "description": "$1 is the origin name"
-  },
-  "connectedAccountsToast": {
-    "message": "कनेक्टेड अकाउंट अपडेट किए गए"
   },
   "connectedSites": {
     "message": "कनेक्ट की गई साइटें"
@@ -2015,14 +2006,6 @@
   },
   "disconnectThisAccount": {
     "message": "इस अकाउंट को डिस्कनेक्ट करें"
-  },
-  "disconnectedAllAccountsToast": {
-    "message": "सभी अकाउंट्स $1 से डिसकनेक्ट किए गए।",
-    "description": "$1 is name of the dapp`"
-  },
-  "disconnectedSingleAccountToast": {
-    "message": "$1, $2 से डिसकनेक्ट हो गया",
-    "description": "$1 is name of the name and $2 represents the dapp name`"
   },
   "discover": {
     "message": "खोजें"
@@ -2570,11 +2553,12 @@
     "message": "अपना पासवर्ड भूल गए?"
   },
   "forgotPasswordSocialDescription": {
-    "message": "MetaMask आपके लिए आपका पासवर्ड रिकवर नहीं कर सकता।"
+    "message": "MetaMask आपके लिए आपका पासवर्ड रिकवर नहीं कर सकता।",
+    "description": "$1 is the support link"
   },
   "forgotPasswordSocialStep1": {
     "message": "यदि आप $1 वाले डिवाइस (जैसे फेस ID) पर MetaMask में लॉग इन हैं, तो आप वहां अपना पासवर्ड रीसेट कर सकते हैं।",
-    "description": "$1 is bold biometrics turned on"
+    "description": "$1 is bold heading"
   },
   "forgotPasswordSocialStep1Biometrics": {
     "message": "जिसमें बायोमेट्रिक्स चालू है"
@@ -4408,9 +4392,6 @@
     "message": "किसी ट्रांसेक्शन को कैंसिल करने या जल्दी पूरा करने का तरीका जानें।",
     "description": "The text for the hyperlink in the pending transaction alert message"
   },
-  "permissionDetails": {
-    "message": "अनुमति का ब्यौरा"
-  },
   "permissionFor": {
     "message": "के लिए अनुमतियां"
   },
@@ -4714,10 +4695,6 @@
   "pleaseConfirm": {
     "message": "कृपया कन्फर्म करें"
   },
-  "plusMore": {
-    "message": "+ $1 अधिक",
-    "description": "$1 is the number of additional items"
-  },
   "plusXMore": {
     "message": "+ $1 और",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
@@ -4938,12 +4915,6 @@
   "rateIncludesMMFee": {
     "message": "$1% MM शुल्क शामिल है।"
   },
-  "reAddAccounts": {
-    "message": "कोई अन्य खाता दोबारा जोड़ें"
-  },
-  "reAdded": {
-    "message": "फिर से जोड़ा गया"
-  },
   "readdToken": {
     "message": "आप अपने एकाउंट्स के विकल्प मेन्यू में “टोकन जोड़ें” पर जाकर भविष्य में इस टोकन को वापस जोड़ सकते हैं।"
   },
@@ -5100,33 +5071,6 @@
   },
   "resetWallet": {
     "message": "अपना वॉलेट रीसेट करें"
-  },
-  "resetWalletSubHeader": {
-    "message": "MetaMask आपके पासवर्ड की कॉपी नहीं रखता है। यदि आपको अपना खाता अनलॉक करने में समस्या हो रही है, तो आपको अपना वॉलेट रीसेट करना होगा। आप ऐसा गुप्त पुनर्प्राप्ति वाक्यांश प्रदान करके कर सकते हैं जिसका उपयोग आपने अपना वॉलेट सेट करते समय किया था।"
-  },
-  "resetWalletSubHeaderSocial": {
-    "message": "MetaMask आपके पासवर्ड की कोई कॉपी नहीं रखता है। यदि आपको अपना अकाउंट अनलॉक करने में परेशानी हो रही है, तो आपको अपना वॉलेट रीसेट करना होगा। अगर आपके पास सीक्रेट रिकवरी फ्रेज़ है, तो आप इसका उपयोग करके इस डिवाइस से अपना वर्तमान वॉलेट और अपने एकाउंट्स की सूची हटा सकते हैं।"
-  },
-  "resetWalletUsingSRP": {
-    "message": "यह कार्यवाही इस डिवाइस से आपके वर्तमान वॉलेट और गुप्त पुनर्प्राप्ति वाक्यांश, साथ ही आपके द्वारा चुने गए खातों की सूची को भी हटा देगी। गुप्त पुनर्प्राप्ति वाक्यांश से रीसेट करने के बाद, आपको गुप्त पुनर्प्राप्ति वाक्यांश के आधार पर खातों की एक सूची दिखाई देगी जिसका उपयोग आप रीसेट करने के लिए करते हैं। इस नई सूची में उन खातों को स्वतः रूप से शामिल कर लिया जाएगा जिनमें शेष राशि है। आप पहले से बनाए गए $1खाते में भी सक्षम रहेंगे। आपके द्वारा आयात किए गए कस्टम खाते को $2 होना जरूरी होगा, और आपके द्वारा किसी खाते में जोड़े गए किसी भी कस्टम टोकन को भी $3 होना जरूरी होगा।"
-  },
-  "resetWalletUsingSRPSocial": {
-    "message": "सीक्रेट रिकवरी फ्रेज़ से रीसेट करने के बाद, आपको एकाउंट्स की एक नई सूची दिखाई देगी। इस सूची में वे एकाउंट्स शामिल होंगे जिनमें बैलेंस है। आप अपने पहले बनाए गए $1 सकते हैं। लेकिन आपको अपने इंपोर्ट किए गए कोई $2 और $3 को दोबारा जोड़ना होगा। "
-  },
-  "resetWalletUsingSRPSocialAccounts": {
-    "message": "किसी भी अन्य एकाउंट्स को दोबारा जोड़ सकते हैं"
-  },
-  "resetWalletUsingSRPSocialCustomAccounts": {
-    "message": "कस्टम एकाउंट्स"
-  },
-  "resetWalletUsingSRPSocialCustomTokens": {
-    "message": "कस्टम टोकंस"
-  },
-  "resetWalletWarning": {
-    "message": "सुनिश्चित करें कि आगे बढ़ने से पहले आप सही वाले गुप्त पुनर्प्राप्ति वाक्यांश का उपयोग कर रहे हैं। आप इसे पहले जैसा नहीं कर पाएंगे।"
-  },
-  "resetWalletWarningSocial": {
-    "message": "रीसेट करने से पहले सही सीक्रेट रिकवरी फ्रेज़ का उपयोग करना सुनिश्चित करें। इसे पूर्ववत नहीं किया जा सकता।"
   },
   "resolutionProtocol": {
     "message": "$1 के माध्यम से एड्रेस हल किया गया",

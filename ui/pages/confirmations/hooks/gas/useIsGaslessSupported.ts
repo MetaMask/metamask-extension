@@ -14,6 +14,7 @@ import { useGaslessSupportedSmartTransactions } from './useGaslessSupportedSmart
  * @returns An object containing:
  * - `isSupported`: `true` if gasless transactions are supported via either 7702 or smart transactions with sendBundle.
  * - `isSmartTransaction`: `true` if smart transactions are enabled for the current chain.
+ * - `pending`: `true` if the support check is still in progress.
  */
 export function useIsGaslessSupported() {
   const { currentConfirmation: transactionMeta } =
@@ -24,19 +25,19 @@ export function useIsGaslessSupported() {
   const {
     isSmartTransaction,
     isSupported: isSmartTransactionAndBundleSupported,
-    pending,
+    pending: smartTransactionPending,
   } = useGaslessSupportedSmartTransactions();
 
   const shouldCheck7702Eligibility =
-    !pending && !isSmartTransactionAndBundleSupported;
+    !smartTransactionPending && !isSmartTransactionAndBundleSupported;
+  const { value: relaySupportsChain, pending: relayPending } =
+    useAsyncResult(async () => {
+      if (!shouldCheck7702Eligibility) {
+        return undefined;
+      }
 
-  const { value: relaySupportsChain } = useAsyncResult(async () => {
-    if (!shouldCheck7702Eligibility) {
-      return undefined;
-    }
-
-    return isRelaySupported(chainId);
-  }, [chainId, shouldCheck7702Eligibility]);
+      return isRelaySupported(chainId);
+    }, [chainId, shouldCheck7702Eligibility]);
 
   const is7702Supported = Boolean(
     relaySupportsChain &&
@@ -48,8 +49,12 @@ export function useIsGaslessSupported() {
     isSmartTransactionAndBundleSupported || is7702Supported,
   );
 
+  const isPending =
+    smartTransactionPending || (shouldCheck7702Eligibility && relayPending);
+
   return {
     isSupported,
     isSmartTransaction,
+    pending: isPending,
   };
 }

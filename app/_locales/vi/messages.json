@@ -943,9 +943,6 @@
   "bridgeEnterAmount": {
     "message": "Chọn số tiền"
   },
-  "bridgeEnterAmountAndSelectAccount": {
-    "message": "Nhập số tiền và chọn tài khoản đích"
-  },
   "bridgeExplorerLinkViewOn": {
     "message": "Xem trên $1"
   },
@@ -1467,9 +1464,6 @@
   "connectWithMetaMask": {
     "message": "Kết nối với MetaMask"
   },
-  "connectedAccounts": {
-    "message": "Tài khoản đã kết nối"
-  },
   "connectedAccountsDescriptionPlural": {
     "message": "Bạn có $1 tài khoản kết nối với trang web này.",
     "description": "$1 is the number of accounts"
@@ -1483,9 +1477,6 @@
   "connectedAccountsListTooltip": {
     "message": "$1 có thể xem số dư tài khoản, địa chỉ, hoạt động và gợi ý các giao dịch cần phê duyệt cho tài khoản được kết nối.",
     "description": "$1 is the origin name"
-  },
-  "connectedAccountsToast": {
-    "message": "Đã cập nhật các tài khoản được kết nối"
   },
   "connectedSites": {
     "message": "Trang web đã kết nối"
@@ -2018,14 +2009,6 @@
   },
   "disconnectThisAccount": {
     "message": "Ngắt kết nối tài khoản này"
-  },
-  "disconnectedAllAccountsToast": {
-    "message": "Đã ngắt kết nối tất cả các tài khoản khỏi $1",
-    "description": "$1 is name of the dapp`"
-  },
-  "disconnectedSingleAccountToast": {
-    "message": "Đã ngắt kết nối $1 khỏi $2",
-    "description": "$1 is name of the name and $2 represents the dapp name`"
   },
   "discover": {
     "message": "Khám phá"
@@ -2573,11 +2556,12 @@
     "message": "Quên mật khẩu?"
   },
   "forgotPasswordSocialDescription": {
-    "message": "MetaMask không thể khôi phục mật khẩu cho bạn."
+    "message": "MetaMask không thể khôi phục mật khẩu cho bạn.",
+    "description": "$1 is the support link"
   },
   "forgotPasswordSocialStep1": {
     "message": "Nếu bạn đang đăng nhập MetaMask trên một thiết bị có $1 (như Face ID), bạn có thể đặt lại mật khẩu tại đó.",
-    "description": "$1 is bold biometrics turned on"
+    "description": "$1 is bold heading"
   },
   "forgotPasswordSocialStep1Biometrics": {
     "message": "có bật sinh trắc học"
@@ -4411,9 +4395,6 @@
     "message": "Tìm hiểu cách hủy hoặc tăng tốc một giao dịch.",
     "description": "The text for the hyperlink in the pending transaction alert message"
   },
-  "permissionDetails": {
-    "message": "Chi tiết Quyền"
-  },
   "permissionFor": {
     "message": "Quyền cho"
   },
@@ -4717,10 +4698,6 @@
   "pleaseConfirm": {
     "message": "Vui lòng xác nhận"
   },
-  "plusMore": {
-    "message": "+ $1 khác",
-    "description": "$1 is the number of additional items"
-  },
   "plusXMore": {
     "message": "+ $1 khác",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
@@ -4941,12 +4918,6 @@
   "rateIncludesMMFee": {
     "message": "Bao gồm phí $1% của MM."
   },
-  "reAddAccounts": {
-    "message": "thêm lại bất kỳ tài khoản nào khác"
-  },
-  "reAdded": {
-    "message": "đã thêm lại"
-  },
   "readdToken": {
     "message": "Bạn có thể thêm lại token này trong tương lai bằng cách chuyển đến mục “Thêm token” trong trình đơn tùy chọn tài khoản."
   },
@@ -5103,33 +5074,6 @@
   },
   "resetWallet": {
     "message": "Đặt lại ví của bạn"
-  },
-  "resetWalletSubHeader": {
-    "message": "MetaMask không lưu giữ bản sao mật khẩu của bạn. Nếu bạn đang gặp sự cố khi mở khóa tài khoản, bạn sẽ cần đặt lại ví của mình. Bạn có thể thực hiện bằng cách cung cấp Cụm từ khôi phục bí mật mà bạn đã sử dụng khi thiết lập ví."
-  },
-  "resetWalletSubHeaderSocial": {
-    "message": "MetaMask không lưu giữ bản sao mật khẩu của bạn. Nếu bạn gặp sự cố khi mở khóa tài khoản, bạn sẽ cần đặt lại ví. Nếu bạn có Cụm từ khôi phục bí mật, bạn có thể sử dụng nó để xóa ví hiện tại khỏi thiết bị này, cùng với danh sách các tài khoản của bạn."
-  },
-  "resetWalletUsingSRP": {
-    "message": "Hành động này sẽ xóa ví hiện tại và Cụm từ khôi phục bí mật khỏi thiết bị này, cùng với danh sách các tài khoản mà bạn quản lý. Sau khi đặt lại bằng Cụm từ khôi phục bí mật, bạn sẽ thấy danh sách các tài khoản dựa trên Cụm từ khôi phục bí mật mà bạn sử dụng để đặt lại. Danh sách mới này sẽ tự động bổ sung các tài khoản có số dư. Bạn cũng sẽ có thể $1 đã tạo trước đó. Các tài khoản tùy chỉnh mà bạn đã nhập sẽ cần $2, và mọi token tùy chỉnh mà bạn thêm vào tài khoản cũng sẽ cần $3."
-  },
-  "resetWalletUsingSRPSocial": {
-    "message": "Sau khi đặt lại bằng Cụm từ khôi phục bí mật, bạn sẽ thấy danh sách tài khoản mới. Danh sách này sẽ bao gồm các tài khoản có số dư. Bạn có thể $1 mà bạn đã tạo trước đó. Nhưng bạn sẽ cần thêm lại bất kỳ $2 và $3 nào mà bạn đã nhập. "
-  },
-  "resetWalletUsingSRPSocialAccounts": {
-    "message": "thêm lại bất kỳ tài khoản nào khác"
-  },
-  "resetWalletUsingSRPSocialCustomAccounts": {
-    "message": "tài khoản tùy chỉnh"
-  },
-  "resetWalletUsingSRPSocialCustomTokens": {
-    "message": "token tùy chỉnh"
-  },
-  "resetWalletWarning": {
-    "message": "Đảm bảo bạn đang sử dụng đúng Cụm từ khôi phục bí mật trước khi tiếp tục vì bạn sẽ không thể hoàn tác."
-  },
-  "resetWalletWarningSocial": {
-    "message": "Đảm bảo bạn sử dụng đúng Cụm từ khôi phục bí mật trước khi đặt lại. Hành động này không thể hoàn tác."
   },
   "resolutionProtocol": {
     "message": "Địa chỉ đã được giải mã qua $1",

@@ -943,9 +943,6 @@
   "bridgeEnterAmount": {
     "message": "选择金额"
   },
-  "bridgeEnterAmountAndSelectAccount": {
-    "message": "输入金额并选择目标账户"
-  },
   "bridgeExplorerLinkViewOn": {
     "message": "在 $1 上查看"
   },
@@ -1464,9 +1461,6 @@
   "connectWithMetaMask": {
     "message": "与 MetaMask 连接"
   },
-  "connectedAccounts": {
-    "message": "已连接的账户"
-  },
   "connectedAccountsDescriptionPlural": {
     "message": "您有 $1 个账户连接到了该网站。",
     "description": "$1 is the number of accounts"
@@ -1480,9 +1474,6 @@
   "connectedAccountsListTooltip": {
     "message": "$1 可以查看账户余额、地址、活动，并建议要批准的关联账户交易。",
     "description": "$1 is the origin name"
-  },
-  "connectedAccountsToast": {
-    "message": "已更新连接的账户"
   },
   "connectedSites": {
     "message": "已连接的网站"
@@ -2015,14 +2006,6 @@
   },
   "disconnectThisAccount": {
     "message": "断开此账户的连接"
-  },
-  "disconnectedAllAccountsToast": {
-    "message": "所有账户已与 $1 断开连接",
-    "description": "$1 is name of the dapp`"
-  },
-  "disconnectedSingleAccountToast": {
-    "message": "$1 已与 $2 断开连接",
-    "description": "$1 is name of the name and $2 represents the dapp name`"
   },
   "discover": {
     "message": "发现"
@@ -2570,11 +2553,12 @@
     "message": "忘记密码？"
   },
   "forgotPasswordSocialDescription": {
-    "message": "MetaMask 无法恢复您的密码。"
+    "message": "MetaMask 无法恢复您的密码。",
+    "description": "$1 is the support link"
   },
   "forgotPasswordSocialStep1": {
     "message": "如果您在启用了 $1（如面容 ID）的设备上已登录 MetaMask，您可以在此处重设密码。",
-    "description": "$1 is bold biometrics turned on"
+    "description": "$1 is bold heading"
   },
   "forgotPasswordSocialStep1Biometrics": {
     "message": "生物特征识别（如面容 ID）的设备上"
@@ -4408,9 +4392,6 @@
     "message": "了解如何取消或加速交易。",
     "description": "The text for the hyperlink in the pending transaction alert message"
   },
-  "permissionDetails": {
-    "message": "许可详情"
-  },
   "permissionFor": {
     "message": "权限用于"
   },
@@ -4714,10 +4695,6 @@
   "pleaseConfirm": {
     "message": "请确认"
   },
-  "plusMore": {
-    "message": "另外 $1 项",
-    "description": "$1 is the number of additional items"
-  },
   "plusXMore": {
     "message": "另外 $1 项",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
@@ -4938,12 +4915,6 @@
   "rateIncludesMMFee": {
     "message": "包含 $1% 的 MM 手续费。"
   },
-  "reAddAccounts": {
-    "message": "重新添加任何其他账户"
-  },
-  "reAdded": {
-    "message": "重新添加"
-  },
   "readdToken": {
     "message": "将来您还可以通过账户选项菜单中的“导入代币”来添加此代币。"
   },
@@ -5100,33 +5071,6 @@
   },
   "resetWallet": {
     "message": "重设您的钱包"
-  },
-  "resetWalletSubHeader": {
-    "message": "MetaMask不会保留密码的副本。如果您在解锁账户时遇到问题，需要重置您的钱包。您可以提供设置钱包时使用的私钥助记词，以进行重置。"
-  },
-  "resetWalletSubHeaderSocial": {
-    "message": "MetaMask 不会保存您的密码副本。若您遇到账户解锁问题，则需要重设钱包。若您持有私钥助记词，可使用它从本设备中清除当前钱包及账户列表。"
-  },
-  "resetWalletUsingSRP": {
-    "message": "此操作将从此设备中删除您当前的钱包和私钥助记词，以及您编制的账户列表。使用助记词进行重置后，您将会看到一个账户列表（基于用于重置的助记词）。这个新列表将自动包括有余额的账户。您还可以使用之前创建的$1。您导入的自定义账户需要是$2，添加到账户中的任何自定义代币也需要是$3。"
-  },
-  "resetWalletUsingSRPSocial": {
-    "message": "使用私钥助记词重设后，您将看到一个新的账户列表。此列表包含有余额的账户。您可以执行此前的 $1 操作。但您需要重新添加所有已导入的 $2 和 $3。 "
-  },
-  "resetWalletUsingSRPSocialAccounts": {
-    "message": "重新添加任何其他账户"
-  },
-  "resetWalletUsingSRPSocialCustomAccounts": {
-    "message": "自定义账户"
-  },
-  "resetWalletUsingSRPSocialCustomTokens": {
-    "message": "自定义代币"
-  },
-  "resetWalletWarning": {
-    "message": "在继续之前，请确保您所使用的私钥助记词正确无误。您将无法撤消此操作。"
-  },
-  "resetWalletWarningSocial": {
-    "message": "重设前请务必使用正确的私钥助记词。此操作无法撤销。"
   },
   "resolutionProtocol": {
     "message": "通过 $1 解析的地址",

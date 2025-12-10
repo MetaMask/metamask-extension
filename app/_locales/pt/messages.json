@@ -943,9 +943,6 @@
   "bridgeEnterAmount": {
     "message": "Selecione o valor"
   },
-  "bridgeEnterAmountAndSelectAccount": {
-    "message": "Insira o valor e selecione a conta de destino"
-  },
   "bridgeExplorerLinkViewOn": {
     "message": "Visualizar em $1"
   },
@@ -1467,9 +1464,6 @@
   "connectWithMetaMask": {
     "message": "Conectar-se com a MetaMask"
   },
-  "connectedAccounts": {
-    "message": "Contas conectadas"
-  },
   "connectedAccountsDescriptionPlural": {
     "message": "Você tem $1 contas conectadas a este site.",
     "description": "$1 is the number of accounts"
@@ -1483,9 +1477,6 @@
   "connectedAccountsListTooltip": {
     "message": "$1 pode ver o saldo, endereço e atividade da conta, além das transações sugeridas para aprovar para contas conectadas.",
     "description": "$1 is the origin name"
-  },
-  "connectedAccountsToast": {
-    "message": "As contas conectadas foram atualizadas"
   },
   "connectedSites": {
     "message": "Sites conectados"
@@ -2018,14 +2009,6 @@
   },
   "disconnectThisAccount": {
     "message": "Desconectar esta conta"
-  },
-  "disconnectedAllAccountsToast": {
-    "message": "Todas as contas foram desconectadas de $1",
-    "description": "$1 is name of the dapp`"
-  },
-  "disconnectedSingleAccountToast": {
-    "message": "$1 desconectada de $2",
-    "description": "$1 is name of the name and $2 represents the dapp name`"
   },
   "discover": {
     "message": "Descobrir"
@@ -2573,11 +2556,12 @@
     "message": "Esqueceu sua senha?"
   },
   "forgotPasswordSocialDescription": {
-    "message": "A MetaMask não consegue recuperar sua senha para você."
+    "message": "A MetaMask não consegue recuperar sua senha para você.",
+    "description": "$1 is the support link"
   },
   "forgotPasswordSocialStep1": {
     "message": "Se você estiver conectado à MetaMask em um dispositivo com $1 (como Face ID), sua senha pode ser redefinida nele.",
-    "description": "$1 is bold biometrics turned on"
+    "description": "$1 is bold heading"
   },
   "forgotPasswordSocialStep1Biometrics": {
     "message": "biometria ativada"
@@ -4411,9 +4395,6 @@
     "message": "Aprenda como cancelar ou agilizar uma transação.",
     "description": "The text for the hyperlink in the pending transaction alert message"
   },
-  "permissionDetails": {
-    "message": "Detalhes da permissão"
-  },
   "permissionFor": {
     "message": "Permissão para"
   },
@@ -4717,10 +4698,6 @@
   "pleaseConfirm": {
     "message": "Por favor, confirme"
   },
-  "plusMore": {
-    "message": "E mais $1",
-    "description": "$1 is the number of additional items"
-  },
   "plusXMore": {
     "message": "E mais $1",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
@@ -4941,12 +4918,6 @@
   "rateIncludesMMFee": {
     "message": "Inclui taxa de $1% da MM."
   },
-  "reAddAccounts": {
-    "message": "readicione outras contas"
-  },
-  "reAdded": {
-    "message": "readicionar"
-  },
   "readdToken": {
     "message": "Você pode adicionar esse token novamente no futuro indo até “Importar token” no menu de opções das suas contas."
   },
@@ -5103,33 +5074,6 @@
   },
   "resetWallet": {
     "message": "Redefina sua carteira"
-  },
-  "resetWalletSubHeader": {
-    "message": "A MetaMask não mantém cópia de sua senha. Se estiver enfrentando problemas para desbloquear sua conta, você precisará redefinir sua carteira. É possível fazer isso informando a Frase de Recuperação Secreta usada ao configurar sua carteira."
-  },
-  "resetWalletSubHeaderSocial": {
-    "message": "A MetaMask não guarda uma cópia da sua senha. Caso você encontre algum problema para desbloquear sua conta, será necessário redefinir sua carteira. Se você tiver uma Frase de Recuperação Secreta, poderá usá-la para excluir sua carteira atual deste dispositivo, juntamente com a lista de suas contas."
-  },
-  "resetWalletUsingSRP": {
-    "message": "Essa ação excluirá sua carteira atual e a Frase de Recuperação Secreta deste dispositivo, juntamente com a lista de contas que você tem curadoria. Após redefinir com a Frase de Recuperação Secreta, você verá uma lista de contas baseadas na Frase de Recuperação Secreta que você usou para redefinir. Essa nova lista incluirá automaticamente novas contas que tenham saldo. Você também poderá $1 criadas anteriormente. Contas personalizadas importadas precisarão ser $2, e quaisquer tokens personalizados adicionados a uma conta também precisarão ser $3."
-  },
-  "resetWalletUsingSRPSocial": {
-    "message": "Após a redefinição usando uma Frase de Recuperação Secreta, você verá uma nova lista de contas. Essa lista incluirá contas com saldo. Você pode $1 que tenha criado antes, mas precisará readicionar quaisquer $2 e $3 que tiver importado. "
-  },
-  "resetWalletUsingSRPSocialAccounts": {
-    "message": "readicionar quaisquer outras contas"
-  },
-  "resetWalletUsingSRPSocialCustomAccounts": {
-    "message": "contas personalizadas"
-  },
-  "resetWalletUsingSRPSocialCustomTokens": {
-    "message": "tokens personalizados"
-  },
-  "resetWalletWarning": {
-    "message": "Certifique-se de usar a frase secreta de recuperação correta antes de prosseguir. Você não poderá desfazer isso."
-  },
-  "resetWalletWarningSocial": {
-    "message": "Certifique-se de usar a Frase de Recuperação Secreta correta antes de efetuar a redefinição. Essa ação não pode ser desfeita."
   },
   "resolutionProtocol": {
     "message": "Endereço resolvido via $1",

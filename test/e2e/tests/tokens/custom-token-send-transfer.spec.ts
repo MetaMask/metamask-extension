@@ -74,6 +74,8 @@ describe('Transfer custom tokens', function () {
             GAS_LIMIT,
             GAS_PRICE,
           );
+
+          await tokenTransferRedesignedConfirmPage.checkGasFee('0.0004');
           await tokenTransferRedesignedConfirmPage.clickConfirmButton();
 
           // check that transaction has completed correctly and is displayed in the activity list
