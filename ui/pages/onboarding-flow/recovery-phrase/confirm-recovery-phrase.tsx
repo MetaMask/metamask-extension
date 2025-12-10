@@ -127,7 +127,9 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
       const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
       // if user has already done the Secure Wallet flow, we can redirect to the next page
       navigate(
-        isFirefox ? ONBOARDING_COMPLETION_ROUTE : ONBOARDING_METAMETRICS,
+        isFirefox || isFromReminder
+          ? ONBOARDING_COMPLETION_ROUTE
+          : ONBOARDING_METAMETRICS,
         { replace: true },
       );
     }
@@ -136,6 +138,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
     secretRecoveryPhrase,
     nextRouteQueryString,
     hasSeedPhraseBackedUp,
+    isFromReminder,
   ]);
 
   const resetQuizWords = useCallback(() => {
