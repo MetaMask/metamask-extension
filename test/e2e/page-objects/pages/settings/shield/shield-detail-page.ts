@@ -301,7 +301,7 @@ export default class ShieldDetailPage {
       membershipStatus = 'Active plan',
       nextBillingDate = 'Nov 3',
       charges = '$80',
-      paymentMethod = 'Visa',
+      paymentMethod = 'Card',
       expectTrialTag = true,
     } = options || {};
 
