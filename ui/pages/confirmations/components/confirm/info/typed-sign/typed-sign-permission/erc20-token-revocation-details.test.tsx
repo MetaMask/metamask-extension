@@ -34,18 +34,10 @@ describe('Erc20TokenRevocationDetails', () => {
       expect(detailsSection?.textContent?.includes('Expiration')).toBe(true);
     });
 
-    it('renders without expiry and hides expiration row', () => {
-      const detailsSection = renderAndGetDetailsSection(null);
-      expect(detailsSection).toBeInTheDocument();
-      expect(detailsSection?.textContent?.includes('Expiration')).toBe(false);
-    });
-  });
-
-  describe('edge cases', () => {
-    it('does not render expiration row when expiry is 0', () => {
-      const detailsSection = renderAndGetDetailsSection(0);
-      expect(detailsSection).toBeInTheDocument();
-      expect(detailsSection?.textContent?.includes('Expiration')).toBe(false);
+    it('does not render details section when expiry is null', () => {
+      expect(() => renderAndGetDetailsSection(null)).toThrow(
+        'Unable to find an element',
+      );
     });
   });
 });

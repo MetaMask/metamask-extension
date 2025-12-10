@@ -17,14 +17,13 @@ export const Erc20TokenRevocationDetails: React.FC<{
 }> = ({ expiry }) => {
   const t = useI18nContext();
 
+  if (expiry === null) {
+    return null;
+  }
+
   return (
     <ConfirmInfoSection data-testid="erc20-token-revocation-details-section">
-      {expiry && (
-        <DateAndTimeRow
-          timestamp={expiry}
-          label={t('confirmFieldExpiration')}
-        />
-      )}
+      <DateAndTimeRow timestamp={expiry} label={t('confirmFieldExpiration')} />
     </ConfirmInfoSection>
   );
 };
