@@ -139,9 +139,6 @@ jobs:
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
-    env:
-      DISPLAY: :99
-      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
