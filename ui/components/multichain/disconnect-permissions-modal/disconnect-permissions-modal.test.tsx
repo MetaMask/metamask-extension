@@ -9,10 +9,6 @@ import { DisconnectPermissionsModal } from '.';
 
 // Mock the gator permissions utils
 jest.mock('../../../../shared/lib/gator-permissions', () => ({
-  getGatorPermissionTokenInfo: jest.fn().mockResolvedValue({
-    symbol: 'ETH',
-    decimals: 18,
-  }),
   formatGatorAmountLabel: jest.fn().mockReturnValue('1 ETH per second'),
   getGatorPermissionDisplayMetadata: jest.fn().mockReturnValue({
     displayNameKey: 'tokenStream',
@@ -20,6 +16,23 @@ jest.mock('../../../../shared/lib/gator-permissions', () => ({
     frequencyKey: 'perSecond',
   }),
 }));
+
+// Mock the useGatorPermissionTokenInfo hook
+jest.mock(
+  '../../../hooks/gator-permissions/useGatorPermissionTokenInfo',
+  () => ({
+    useGatorPermissionTokenInfo: jest.fn().mockReturnValue({
+      tokenInfo: {
+        symbol: 'ETH',
+        decimals: 18,
+        chainId: '0x1',
+      },
+      loading: false,
+      error: null,
+      source: 'native',
+    }),
+  }),
+);
 
 describe('DisconnectPermissionsModal', () => {
   const onSkip = jest.fn();

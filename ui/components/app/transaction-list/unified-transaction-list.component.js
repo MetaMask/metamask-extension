@@ -553,6 +553,27 @@ export default function UnifiedTransactionList({
     getSelectedMultichainNetworkChainId,
   );
 
+  const enabledNetworksFilteredPendingTransactions = useMemo(() => {
+    if (!currentMultichainChainId) {
+      return unfilteredPendingTransactions;
+    }
+
+    // If no networks are enabled for this namespace, return empty array
+    if (enabledNetworksForAllNamespaces.length === 0) {
+      return [];
+    }
+
+    // Filter transactions to only include those from enabled networks
+    return unfilteredPendingTransactions.filter((transactionGroup) => {
+      const transactionChainId = transactionGroup.initialTransaction?.chainId;
+      return enabledNetworksForAllNamespaces.includes(transactionChainId);
+    });
+  }, [
+    enabledNetworksForAllNamespaces,
+    currentMultichainChainId,
+    unfilteredPendingTransactions,
+  ]);
+
   const enabledNetworksFilteredCompletedTransactions = useMemo(() => {
     if (!currentMultichainChainId) {
       return unfilteredCompletedTransactionsAllChains;
@@ -590,7 +611,7 @@ export default function UnifiedTransactionList({
 
   const unifiedActivityItems = useMemo(() => {
     return buildUnifiedActivityItems(
-      unfilteredPendingTransactions,
+      enabledNetworksFilteredPendingTransactions,
       enabledNetworksFilteredCompletedTransactions,
       nonEvmTransactionsForToken,
       {
@@ -601,7 +622,7 @@ export default function UnifiedTransactionList({
       },
     );
   }, [
-    unfilteredPendingTransactions,
+    enabledNetworksFilteredPendingTransactions,
     enabledNetworksFilteredCompletedTransactions,
     nonEvmTransactionsForToken,
     hideTokenTransactions,

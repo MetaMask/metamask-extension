@@ -1147,7 +1147,7 @@ export default class MetamaskController extends EventEmitter {
           (meta) =>
             meta.hash === hash && meta.status === TransactionStatus.submitted,
         ),
-      processRequestExecutionPermissions: async (params, req) => {
+      processRequestExecutionPermissions: async (params, req, context) => {
         const enabledTypes = getEnabledAdvancedPermissions();
 
         if (!params || params.length === 0) {
@@ -1170,6 +1170,7 @@ export default class MetamaskController extends EventEmitter {
           },
           params,
           req,
+          context,
         );
       },
     });

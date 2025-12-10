@@ -213,7 +213,65 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
     transactionMeta,
   ]);
 
+  const calculateGasEstimateCallback = useCallback(
+    ({
+      feePerGas,
+      priorityFeePerGas,
+      gas,
+      shouldUseEIP1559FeeLogic,
+      gasPrice: gasPriceParam,
+    }: {
+      feePerGas: string;
+      priorityFeePerGas: string;
+      gas: string;
+      shouldUseEIP1559FeeLogic: boolean;
+      gasPrice: string;
+    }) => {
+      let gasEstimate: Hex;
+
+      if (shouldUseEIP1559FeeLogic) {
+        // Calculate minimum fee per gas = estimatedBaseFee + priorityFeePerGas
+        // Note: feePerGas and priorityFeePerGas are hex strings from txParams/gasFeeEstimates
+        let minimumFeePerGas = addHexes(
+          decGWEIToHexWEI(estimatedBaseFee) || HEX_ZERO,
+          feePerGas ? (priorityFeePerGas as Hex) : HEX_ZERO,
+        );
+
+        // minimumFeePerGas should never be higher than feePerGas (maxFeePerGas)
+        if (
+          feePerGas &&
+          new Numeric(minimumFeePerGas, 16).greaterThan(feePerGas, 16)
+        ) {
+          minimumFeePerGas = feePerGas;
+        }
+
+        gasEstimate = multiplyHexes(minimumFeePerGas as Hex, gas as Hex);
+      } else {
+        gasEstimate = multiplyHexes(gasPriceParam as Hex, gas as Hex);
+      }
+
+      // Add L1 fee if present
+      const totalGasEstimate = addHexes(
+        gasEstimate,
+        layer1GasFee ?? HEX_ZERO,
+      ) as Hex;
+
+      const fees = getFeesFromHex(totalGasEstimate);
+
+      return {
+        currentCurrencyFee: fees.currentCurrencyFee,
+        preciseNativeCurrencyFee: getValueFromWeiHex({
+          value: fees.hexFee,
+          fromCurrency: EtherDenomination.GWEI,
+          numberOfDecimals: 18,
+        }),
+      };
+    },
+    [estimatedBaseFee, layer1GasFee, getFeesFromHex],
+  );
+
   return {
+    calculateGasEstimate: calculateGasEstimateCallback,
     estimatedFeeFiat: estimatedFees.currentCurrencyFee,
     estimatedFeeFiatWith18SignificantDigits:
       estimatedFees.currentCurrencyFeeWith18SignificantDigits,
