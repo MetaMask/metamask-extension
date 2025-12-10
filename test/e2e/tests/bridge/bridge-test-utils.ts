@@ -147,11 +147,11 @@ export const bridgeTransaction = async ({
       action: isBridge
         ? `Bridged to ${quote.toChain}`
         : `Swapped ${quote.tokenFrom} to ${quote.tokenTo}`,
-      completedTxs: expectedTransactionsCount,
+      confirmedTx: expectedTransactionsCount,
     });
     await activityList.checkTxAction({
       action: `Approve ${quote.tokenFrom} for ${isBridge ? 'bridge' : 'swap'}`,
-      completedTxs: expectedTransactionsCount,
+      confirmedTx: expectedTransactionsCount,
       txIndex: 2,
     });
   } else {
@@ -159,7 +159,7 @@ export const bridgeTransaction = async ({
       action: isBridge
         ? `Bridged to ${quote.toChain}`
         : `Swap ${quote.tokenFrom ?? expectedSwapTokens?.tokenFrom} to ${quote.tokenTo ?? expectedSwapTokens?.tokenTo}`,
-      completedTxs: expectedTransactionsCount,
+      confirmedTx: expectedTransactionsCount,
     });
   }
   // Check the amount of ETH deducted in the activity is correct
