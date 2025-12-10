@@ -97,15 +97,6 @@ function getInitialState(initialState?: Partial<NetworkController['state']>) {
         getFailoverUrlsForInfuraNetwork('polygon-mainnet');
     }
 
-    // Update default popular network names.
-    networks[CHAIN_IDS.MAINNET].name = 'Ethereum';
-    networks[CHAIN_IDS.LINEA_MAINNET].name = 'Linea';
-    networks[CHAIN_IDS.BASE].name = 'Base';
-    networks[CHAIN_IDS.ARBITRUM].name = 'Arbitrum';
-    networks[CHAIN_IDS.BSC].name = 'BNB Chain';
-    networks[CHAIN_IDS.OPTIMISM].name = 'OP';
-    networks[CHAIN_IDS.POLYGON].name = 'Polygon';
-
     // Remove Sei from initial state so it appears in Additional Networks section
     // Users can add it manually, and it will be available in FEATURED_RPCS
     delete networks[CHAIN_IDS.SEI];
