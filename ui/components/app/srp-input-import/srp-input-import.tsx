@@ -59,6 +59,12 @@ export default function SrpInputImport({
   const [misSpelledWords, setMisSpelledWords] = useState<DraftSrp[]>([]);
 
   const srpRefs = useRef<ListOfTextFieldRefs>({});
+  const onChangeRef = useRef(onChange);
+
+  // Keep the ref updated with the latest onChange callback
+  useEffect(() => {
+    onChangeRef.current = onChange;
+  }, [onChange]);
 
   const checkForInvalidWords = useCallback(
     (srp?: DraftSrp[]) => {
@@ -301,15 +307,15 @@ export default function SrpInputImport({
       );
 
       if (hasInvalidWords) {
-        onChange('');
+        onChangeRef.current('');
       } else {
         const stringSrp = draftSrp.map((word) => word.word).join(' ');
-        onChange(stringSrp);
+        onChangeRef.current(stringSrp);
       }
     } else {
-      onChange('');
+      onChangeRef.current('');
     }
-  }, [draftSrp, onChange]);
+  }, [draftSrp]);
 
   const misSpelledWordsList = useCallback(
     () => misSpelledWords.map((word) => word.word),
