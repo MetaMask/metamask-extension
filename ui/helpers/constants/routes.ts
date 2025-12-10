@@ -90,6 +90,7 @@ export const CONNECT_SNAPS_CONNECT_ROUTE = '/snaps-connect';
 export const CONNECT_SNAP_INSTALL_ROUTE = '/snap-install';
 export const CONNECT_SNAP_UPDATE_ROUTE = '/snap-update';
 export const CONNECT_SNAP_RESULT_ROUTE = '/snap-install-result';
+export const KEYSTONE_USB_BRIDGE = '/keystone-usb-bridge';
 export const SNAPS_ROUTE = '/snaps';
 export const SNAPS_VIEW_ROUTE = '/snaps/view';
 export const NOTIFICATIONS_ROUTE = '/notifications';
@@ -622,6 +623,11 @@ export const ROUTES = [
   {
     path: SWAPS_MAINTENANCE_ROUTE,
     label: 'Swaps Maintenance',
+    trackInAnalytics: false,
+  },
+  {
+    path: KEYSTONE_USB_BRIDGE,
+    label: 'Keystone USB Bridge Page',
     trackInAnalytics: false,
   },
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)

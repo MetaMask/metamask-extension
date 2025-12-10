@@ -20,6 +20,7 @@ import log from 'loglevel';
 import { OneKeyKeyring, TrezorKeyring } from '@metamask/eth-trezor-keyring';
 import { LedgerKeyring } from '@metamask/eth-ledger-bridge-keyring';
 import LatticeKeyring from 'eth-lattice-keyring';
+import { KeystoneUSBKeyring } from '@keystonehq/metamask-keystone-usb-keyring';
 import { rawChainData } from 'eth-chainlist';
 import { QrKeyring } from '@metamask/eth-qr-keyring';
 import { nanoid } from 'nanoid';
@@ -435,6 +436,7 @@ import {
 import { ProfileMetricsControllerInit } from './controller-init/profile-metrics-controller-init';
 import { ProfileMetricsServiceInit } from './controller-init/profile-metrics-service-init';
 import { getQuotesForConfirmation } from './lib/dapp-swap/dapp-swap-util';
+import { KeystoneOffscreenBridge } from './lib/offscreen-bridge/keystone-offscreen-bridge';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -9256,6 +9258,9 @@ export default class MetamaskController extends EventEmitter {
         break;
       case HardwareDeviceNames.ledger:
         keyringType = keyringOverrides?.ledger?.type || LedgerKeyring.type;
+        break;
+      case HardwareDeviceNames.keystone:
+        keyringType = keyringOverrides?.keystone?.type || KeystoneUSBKeyring.type;
         break;
       case HardwareDeviceNames.qr:
         keyringType = QrKeyring.type;

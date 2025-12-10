@@ -5,6 +5,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import { KEYSTONE_HD_PATH } from '@keystonehq/metamask-keystone-usb-keyring';
+
 import * as actions from '../../../store/actions';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
@@ -73,11 +75,18 @@ export const TREZOR_HD_PATHS = [
   { name: `Trezor Testnets`, value: TREZOR_TESTNET_PATH },
 ];
 
+const KEYSTONE_HD_PATHS = [
+  { name: `BIP44 Standard`, value: KEYSTONE_HD_PATH.STANDARD },
+  { name: `Legacy Legacy`, value: KEYSTONE_HD_PATH.LEDGER_LEGACY },
+  { name: `Ledger Live`, value: KEYSTONE_HD_PATH.LEDGER_LIVE },
+];
+
 const HD_PATHS = {
   ledger: LEDGER_HD_PATHS,
   lattice: LATTICE_HD_PATHS,
   trezor: TREZOR_HD_PATHS,
   oneKey: TREZOR_HD_PATHS,
+  keystone: KEYSTONE_HD_PATHS,
 };
 
 const getErrorMessage = (errorCode, t) => {
