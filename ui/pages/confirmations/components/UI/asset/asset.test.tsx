@@ -3,7 +3,7 @@ import { fireEvent } from '@testing-library/react';
 import { BtcAccountType } from '@metamask/keyring-api';
 import createMockStore from 'redux-mock-store';
 
-import { renderWithProvider } from '../../../../../../test/jest';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { useNftImageUrl } from '../../../hooks/useNftImageUrl';
 import { AssetStandard } from '../../../types/send';
 import { Asset } from './asset';

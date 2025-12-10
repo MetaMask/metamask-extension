@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import mockState from '../../../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
 import { unapprovedTypedSignMsgV1 } from '../../../../../../../test/data/confirmations/typed_sign';
 import { TypedSignDataV1Type } from '../../../../types/confirm';
 import { ConfirmInfoRowTypedSignDataV1 } from './typedSignDataV1';

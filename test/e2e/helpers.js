@@ -602,12 +602,11 @@ const clickNestedButton = async (driver, tabName) => {
  * @param {WebDriver} driver - The webdriver instance
  * @param {object} [options] - Options for unlocking the wallet
  * @param {boolean} [options.navigate] - Whether to navigate to the root page prior to unlocking - defaults to true
- * @param {boolean} [options.waitLoginSuccess] - Whether to wait for the login to succeed - defaults to true
  * @param {string} [options.password] - Password to unlock wallet - defaults to shared WALLET_PASSWORD
  */
 async function unlockWallet(
   driver,
-  { navigate = true, waitLoginSuccess = true, password = WALLET_PASSWORD } = {},
+  { navigate = true, password = WALLET_PASSWORD } = {},
 ) {
   if (navigate) {
     await driver.navigate();
@@ -616,17 +615,7 @@ async function unlockWallet(
   await driver.waitForSelector('#password', { state: 'enabled' });
   await driver.fill('#password', password);
   await driver.press('#password', driver.Key.ENTER);
-  if (waitLoginSuccess) {
-    await driver.assertElementNotPresent('[data-testid="unlock-page"]');
-    await driver.assertElementNotPresent(
-      {
-        text: 'Fund your wallet',
-      },
-      {
-        waitAtLeastGuard: largeDelayMs,
-      },
-    );
-  }
+  await driver.assertElementNotPresent('[data-testid="unlock-page"]');
 }
 
 /**
