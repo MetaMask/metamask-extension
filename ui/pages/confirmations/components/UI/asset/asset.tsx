@@ -26,6 +26,8 @@ import { useNftImageUrl } from '../../../hooks/useNftImageUrl';
 import { accountTypeLabel } from '../../../constants/network';
 import { useFormatters } from '../../../../../hooks/useFormatters';
 import { AccountTypeLabel } from '../account-type-label';
+import { hexToDecimal } from '../../../../../../shared/modules/conversion.utils';
+import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 
 type AssetProps = {
   asset: AssetType;
@@ -118,11 +120,15 @@ const NftAsset = ({ asset, onClick, isSelected }: AssetProps) => {
 
 const TokenAsset = ({ asset, onClick, isSelected }: AssetProps) => {
   const tokenData = asset;
-  const { chainId, image, name, balance, symbol = '', fiat } = tokenData;
+  const { chainId, address, image, name, balance, symbol = '', fiat } = tokenData;
   const { formatCurrencyWithMinThreshold, formatTokenQuantity } =
     useFormatters();
 
   const typeLabel = accountTypeLabel[asset.accountType as KeyringAccountType];
+
+  // Temporary override for Tempo Testnet tokens until Tempo token assets are
+  // served from Metamask CDN
+  const overrideImage = (chainId === CHAIN_IDS.TEMPO_TESTNET && address) ? `https://tempoxyz.github.io/tempo-apps/${hexToDecimal(chainId)}/icons/${address.toLowerCase()}.svg` : undefined;
 
   return (
     <Box
@@ -155,7 +161,7 @@ const TokenAsset = ({ asset, onClick, isSelected }: AssetProps) => {
         >
           <AvatarToken
             size={AvatarTokenSize.Md}
-            src={image}
+            src={overrideImage || image}
             name={symbol}
             showHalo={false}
           />
