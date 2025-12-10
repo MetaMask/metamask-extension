@@ -216,15 +216,6 @@ const ConfirmTransaction = () => {
     );
   }
 
-  // If we have a specific transaction ID requested but don't have that transaction yet,
-  // we can't reliably determine the transaction type, so show a generic loading screen
-  // (avoid using properties from a different transaction that getTransaction() may have fallen back to)
-  const hasRequestedTransaction =
-    !paramsTransactionId || transaction?.id === paramsTransactionId;
-  if (!hasRequestedTransaction) {
-    return <LoadingScreen />;
-  }
-
   // Only show skeleton loading for dapp-initiated contract interactions (not MetaMask Send flow or token transfers)
   const isDappTransaction =
     transaction?.origin && transaction.origin !== ORIGIN_METAMASK;
@@ -232,6 +223,7 @@ const ConfirmTransaction = () => {
     TransactionType.tokenMethodTransfer,
     TransactionType.tokenMethodTransferFrom,
     TransactionType.tokenMethodSafeTransferFrom,
+    TransactionType.simpleSend,
   ].includes(type);
   if (isDappTransaction && !isTokenTransfer) {
     return <Confirm confirmationId={paramsTransactionId} />;
