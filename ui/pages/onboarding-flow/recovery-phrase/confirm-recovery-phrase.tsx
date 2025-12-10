@@ -49,6 +49,7 @@ import { TraceName } from '../../../../shared/lib/trace';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import ConfirmSrpModal from './confirm-srp-modal';
 import RecoveryPhraseChips from './recovery-phrase-chips';
+import { getSeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
 
 const QUIZ_WORDS_COUNT = 3;
 
@@ -88,6 +89,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
   const trackEvent = useContext(MetaMetricsContext);
   const { bufferedEndTrace } = trackEvent;
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
+  const hasSeedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
 
   const splitSecretRecoveryPhrase = useMemo(
     () => (secretRecoveryPhrase ? secretRecoveryPhrase.split(' ') : []),
@@ -121,8 +123,12 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
         }`,
         { replace: true },
       );
+    } else if (hasSeedPhraseBackedUp) {
+      const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
+      // if user has already done the Secure Wallet flow, we can redirect to the next page
+      navigate(isFirefox ? ONBOARDING_COMPLETION_ROUTE : ONBOARDING_METAMETRICS, { replace: true });
     }
-  }, [navigate, secretRecoveryPhrase, nextRouteQueryString]);
+  }, [navigate, secretRecoveryPhrase, nextRouteQueryString, hasSeedPhraseBackedUp]);
 
   const resetQuizWords = useCallback(() => {
     const newQuizWords = generateQuizWords(splitSecretRecoveryPhrase);
