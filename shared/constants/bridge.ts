@@ -3,9 +3,10 @@ import {
   BRIDGE_DEV_API_BASE_URL,
   BRIDGE_PROD_API_BASE_URL,
   ChainId,
+  formatChainIdToCaip,
 } from '@metamask/bridge-controller';
 import { MultichainNetworks } from './multichain/networks';
-import { CHAIN_IDS, NETWORK_TO_NAME_MAP } from './network';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP, CHAIN_IDS, NETWORK_TO_NAME_MAP } from './network';
 
 const ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS = [
   MultichainNetworks.SOLANA,
@@ -62,7 +63,18 @@ export const BRIDGE_API_BASE_URL = process.env.BRIDGE_USE_DEV_APIS
   ? BRIDGE_DEV_API_BASE_URL
   : BRIDGE_PROD_API_BASE_URL;
 
-export const ETH_USDT_ADDRESS = '0xdac17f958d2ee523a2206206994597c13d831ec7';
+export const BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP: Record<
+  (typeof ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP)[number],
+  string
+> = ALLOWED_BRIDGE_CHAIN_IDS.reduce(
+  (acc, chainId) => {
+    acc[formatChainIdToCaip(chainId)] =
+      CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId];
+    return acc;
+  },
+  {} as Record<(typeof ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP)[number], string>,
+    );
+
 export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
   AllowedBridgeChainIds,
   string
