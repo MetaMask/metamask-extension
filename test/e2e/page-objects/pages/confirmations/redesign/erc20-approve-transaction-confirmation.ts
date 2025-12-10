@@ -43,10 +43,6 @@ class ERC20ApproveTransactionConfirmation extends TransactionConfirmation {
     text: tEn('methodData') as string,
   };
 
-  constructor(driver: Driver) {
-    super(driver);
-  }
-
   async checkSpendingCapRequestTitle(): Promise<void> {
     console.log('Verify spending cap request title is displayed');
     await this.driver.waitForSelector(this.spendingCapRequestTitle);
