@@ -8,6 +8,7 @@ import {
   Box,
   Text,
 } from '../../../../../../../components/component-library';
+import { Skeleton } from '../../../../../../../components/component-library/skeleton';
 import Tooltip from '../../../../../../../components/ui/tooltip';
 import {
   AlignItems,
@@ -35,6 +36,7 @@ const SendHeading = () => {
     displayTransferValue,
     fiatDisplayValue,
     fiatValue,
+    pending,
   } = useTokenValues(transactionMeta);
 
   type TestNetChainId = (typeof TEST_CHAINS)[number];
@@ -61,29 +63,53 @@ const SendHeading = () => {
     />
   );
 
+  const TokenValueSkeleton = (
+    <Box display={Display.InlineFlex} alignItems={AlignItems.center} gap={2}>
+      <Skeleton width={40} height={24} />
+      {tokenSymbol}
+    </Box>
+  );
+
+  const TokenValueContent = pending
+    ? TokenValueSkeleton
+    : `${displayTransferValue} ${tokenSymbol}`;
+
   const TokenValue =
-    displayTransferValue === decodedTransferValue ? (
+    pending || displayTransferValue === decodedTransferValue ? (
       <Text
         variant={TextVariant.headingLg}
         color={TextColor.inherit}
         marginTop={3}
-      >{`${displayTransferValue} ${tokenSymbol}`}</Text>
+      >
+        {TokenValueContent}
+      </Text>
     ) : (
       <Tooltip title={decodedTransferValue} position="right">
         <Text
           variant={TextVariant.headingLg}
           color={TextColor.inherit}
           marginTop={3}
-        >{`${displayTransferValue} ${tokenSymbol}`}</Text>
+        >
+          {TokenValueContent}
+        </Text>
       </Tooltip>
     );
 
-  const TokenFiatValue = Boolean(fiatDisplayValue) &&
-    (!isTestnet || showFiatInTestnets) && (
-      <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-        {fiatDisplayValue}
-      </Text>
-    );
+  const showFiatValue = !isTestnet || showFiatInTestnets;
+
+  const TokenFiatValueSkeleton = (
+    <Skeleton width={48} height={22} style={{ marginBottom: '2px' }} />
+  );
+
+  const TokenFiatValue =
+    showFiatValue &&
+    (pending
+      ? TokenFiatValueSkeleton
+      : Boolean(fiatDisplayValue) && (
+          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+            {fiatDisplayValue}
+          </Text>
+        ));
 
   useSendingValueMetric({ transactionMeta, fiatValue });
 

@@ -10,7 +10,10 @@ import ShieldClaimPage from '../../page-objects/pages/settings/shield/shield-cla
 import ShieldClaimsListPage from '../../page-objects/pages/settings/shield/shield-claims-list-page';
 import {
   MOCK_CLAIM_2,
+  MOCK_CLAIM_APPROVED,
   SUBMIT_CLAIMS_RESPONSE,
+  MOCK_CLAIMS_WITH_HISTORY,
+  MOCK_CLAIMS_3_PENDING,
 } from '../../helpers/shield/constants';
 import { ShieldMockttpService } from '../../helpers/shield/mocks';
 
@@ -221,6 +224,155 @@ describe('Shield Plan Stripe Integration', function () {
           await shieldClaimPage.verifyToastError(
             'A claim has already been submitted for this transaction hash.',
           );
+        },
+      );
+    });
+
+    it('displays empty state when Claims and History tabs have no data', async function () {
+      await withFixtures(
+        {
+          fixtures: createShieldFixture().build(),
+          title: this.test?.fullTitle(),
+          testSpecificMock: (mockServer: Mockttp) => {
+            const shieldMockttpService = new ShieldMockttpService();
+            return shieldMockttpService.setup(mockServer, {
+              isActiveUser: true,
+              claimsResponse: [], // Empty claims array
+            });
+          },
+        },
+        async ({ driver }) => {
+          await loginWithBalanceValidation(driver);
+
+          const homePage = new HomePage(driver);
+          await homePage.checkPageIsLoaded();
+          await homePage.waitForNetworkAndDOMReady();
+
+          await new HeaderNavbar(driver).openSettingsPage();
+          const settingsPage = new SettingsPage(driver);
+          await settingsPage.checkPageIsLoaded();
+          await settingsPage.goToTransactionShieldPage();
+
+          const shieldDetailPage = new ShieldDetailPage(driver);
+          await shieldDetailPage.checkPageIsLoaded();
+
+          await shieldDetailPage.clickSubmitCaseButton();
+
+          const shieldClaimsListPage = new ShieldClaimsListPage(driver);
+          await shieldClaimsListPage.checkPageIsLoaded();
+
+          await shieldClaimsListPage.checkPendingTabEmptyState();
+
+          await shieldClaimsListPage.clickHistoryTab();
+          await shieldClaimsListPage.checkHistoryTabEmptyState();
+        },
+      );
+    });
+
+    it('displays claims data when Claims and History tabs have data', async function () {
+      await withFixtures(
+        {
+          fixtures: createShieldFixture().build(),
+          title: this.test?.fullTitle(),
+          testSpecificMock: (mockServer: Mockttp) => {
+            const shieldMockttpService = new ShieldMockttpService();
+            return shieldMockttpService.setup(mockServer, {
+              isActiveUser: true,
+              claimsResponse: MOCK_CLAIMS_WITH_HISTORY, // Claims with pending, approved, and rejected
+            });
+          },
+        },
+        async ({ driver }) => {
+          await loginWithBalanceValidation(driver);
+
+          const homePage = new HomePage(driver);
+          await homePage.checkPageIsLoaded();
+          await homePage.waitForNetworkAndDOMReady();
+
+          await new HeaderNavbar(driver).openSettingsPage();
+          const settingsPage = new SettingsPage(driver);
+          await settingsPage.checkPageIsLoaded();
+          await settingsPage.goToTransactionShieldPage();
+
+          const shieldDetailPage = new ShieldDetailPage(driver);
+          await shieldDetailPage.checkPageIsLoaded();
+
+          await shieldDetailPage.clickSubmitCaseButton();
+
+          const shieldClaimsListPage = new ShieldClaimsListPage(driver);
+          await shieldClaimsListPage.checkPageIsLoaded();
+
+          await shieldClaimsListPage.checkPendingClaimsDisplayed();
+          await shieldClaimsListPage.checkClaimExists('test_claim_id_00001');
+
+          await shieldClaimsListPage.clickHistoryTab();
+          await shieldClaimsListPage.checkCompletedClaimsDisplayed();
+          await shieldClaimsListPage.checkRejectedClaimsDisplayed();
+          await shieldClaimsListPage.checkClaimExists('test_claim_id_approved');
+          await shieldClaimsListPage.checkClaimExists('test_claim_id_rejected');
+
+          await shieldClaimsListPage.clickClaimItem('test_claim_id_approved');
+
+          const shieldClaimPage = new ShieldClaimPage(driver);
+          await shieldClaimPage.checkPageIsLoadedInViewMode();
+          await shieldClaimPage.verifyClaimData({
+            email: MOCK_CLAIM_APPROVED.email,
+            reimbursementWalletAddress:
+              MOCK_CLAIM_APPROVED.reimbursementWalletAddress,
+            impactedTxHash: MOCK_CLAIM_APPROVED.impactedTxHash,
+            description: MOCK_CLAIM_APPROVED.description,
+          });
+
+          await shieldClaimPage.clickBackButton();
+
+          await shieldClaimsListPage.checkPageIsLoaded();
+          await shieldClaimsListPage.checkCompletedClaimsDisplayed();
+          await shieldClaimsListPage.checkClaimExists('test_claim_id_approved');
+        },
+      );
+    });
+
+    it('displays 3 pending claims with maximum limit note', async function () {
+      await withFixtures(
+        {
+          fixtures: createShieldFixture().build(),
+          title: this.test?.fullTitle(),
+          testSpecificMock: (mockServer: Mockttp) => {
+            const shieldMockttpService = new ShieldMockttpService();
+            return shieldMockttpService.setup(mockServer, {
+              isActiveUser: true,
+              claimsResponse: MOCK_CLAIMS_3_PENDING, // 3 pending claims (maximum limit)
+            });
+          },
+        },
+        async ({ driver }) => {
+          await loginWithBalanceValidation(driver);
+
+          const homePage = new HomePage(driver);
+          await homePage.checkPageIsLoaded();
+          await homePage.waitForNetworkAndDOMReady();
+
+          await new HeaderNavbar(driver).openSettingsPage();
+          const settingsPage = new SettingsPage(driver);
+          await settingsPage.checkPageIsLoaded();
+          await settingsPage.goToTransactionShieldPage();
+
+          const shieldDetailPage = new ShieldDetailPage(driver);
+          await shieldDetailPage.checkPageIsLoaded();
+
+          await shieldDetailPage.clickSubmitCaseButton();
+
+          const shieldClaimsListPage = new ShieldClaimsListPage(driver);
+          await shieldClaimsListPage.checkPageIsLoaded();
+
+          await shieldClaimsListPage.checkPendingClaimsDisplayed();
+          await shieldClaimsListPage.checkThreeClaimsDisplayed();
+
+          await shieldClaimsListPage.checkClaimExists('test_claim_id_00001');
+          await shieldClaimsListPage.checkClaimExists('test_claim_id_00002');
+          await shieldClaimsListPage.checkClaimExists('test_claim_id_00003');
+
+          await shieldClaimsListPage.checkSubmitClaimButtonDisabled();
         },
       );
     });
