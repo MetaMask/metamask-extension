@@ -86,7 +86,10 @@ export default function Pna25Modal() {
             <Text variant={TextVariant.BodyMd}>{t('pna25ModalBody2')}</Text>
             <Text variant={TextVariant.BodyMd}>
               {t('pna25ModalBody3')}
-              <TextButton asChild>
+              <TextButton
+                asChild
+                className="!text-inherit !font-normal underline underline-offset-2 [text-decoration-skip-ink:none] hover:!text-inherit hover:!font-normal hover:![text-decoration-color:inherit] hover:!underline-offset-2"
+              >
                 <a
                   href={PNA25_BLOG_POST_LINK}
                   target="_blank"
@@ -95,7 +98,6 @@ export default function Pna25Modal() {
                   {t('pna25ModalBlogPostLink')}
                 </a>
               </TextButton>
-              .
             </Text>
           </Box>
         </ModalBody>

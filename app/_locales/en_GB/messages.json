@@ -5046,13 +5046,13 @@
     "message": "blog post"
   },
   "pna25ModalBody1": {
-    "message": "To better serve our customers, we're updating our analytics so that some actions you take in MetaMask can be linked with the wallet address and related on-chain activity using hashed and pseudonymous identifiers. We use this information only to improve MetaMask performance and features, not for advertising. You can turn this off at any time in Settings."
+    "message": "To better serve you, we’re updating our analytics so publicly available data like wallet addresses and related on-chain activity can be associated with actions you take in MetaMask using a pseudonymous ID. This helps us improve MetaMask's performance, security, and features in order to make a better, safer wallet."
   },
   "pna25ModalBody2": {
-    "message": "We care deeply about privacy. We never collect your secret recovery phrase, private keys, banking details, payment card information, or sell your data to third parties."
+    "message": "We take privacy seriously.  We do not use this information for advertising or sell your data to third parties.  You can opt out anytime in Settings."
   },
   "pna25ModalBody3": {
-    "message": "You can read more about what we collect, how we protect it, and why we're making this change in our latest"
+    "message": "You can read more about what we collect, how we protect it, and why we’re making this change in our latest"
   },
   "pna25ModalTitle": {
     "message": "Privacy and product updates"
