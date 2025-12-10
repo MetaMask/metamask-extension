@@ -218,7 +218,6 @@ export class MockedDiscoveryBuilder {
         method: 'eth_getTransactionCount',
       })
       .withBodyIncluding(address)
-      .once()
       .thenCallback(async (request) => {
         const json = await request.body.getJson();
         console.log(
