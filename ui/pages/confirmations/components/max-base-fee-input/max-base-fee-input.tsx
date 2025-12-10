@@ -45,7 +45,7 @@ export const MaxBaseFeeInput = ({
   );
 
   const validateMaxBaseFeeCallback = useCallback(
-    (valueToBeValidated: string) => {
+    (valueToBeValidated: string): string | undefined => {
       const maxPriorityFeeInDec =
         hexWEIToDecGWEI(maxPriorityFeePerGas).toString();
 
@@ -55,6 +55,7 @@ export const MaxBaseFeeInput = ({
         t,
       );
       setError(validationError);
+      return validationError;
     },
     [maxPriorityFeePerGas, t],
   );
@@ -62,10 +63,12 @@ export const MaxBaseFeeInput = ({
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = event.target.value;
-      validateMaxBaseFeeCallback(newValue);
+      const validationError = validateMaxBaseFeeCallback(newValue);
       setValue(newValue);
-      const updatedMaxBaseFee = decGWEIToHexWEI(newValue) as Hex;
-      onChange(updatedMaxBaseFee);
+      if (!validationError) {
+        const updatedMaxBaseFee = decGWEIToHexWEI(newValue) as Hex;
+        onChange(updatedMaxBaseFee);
+      }
     },
     [onChange, validateMaxBaseFeeCallback],
   );
@@ -104,23 +107,33 @@ export const MaxBaseFeeInput = ({
           flexDirection={BoxFlexDirection.Row}
           justifyContent={BoxJustifyContent.Between}
         >
-          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            {t('currentEstimatedBaseFee', [
-              limitToMaximumDecimalPlaces(parseFloat(estimatedBaseFee), 2),
-            ])}
-          </Text>
-          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            {t('currentHistoricalBaseFeeRange', [
-              limitToMaximumDecimalPlaces(
-                parseFloat(historicalBaseFeeRange?.[0]),
-                2,
-              ),
-              limitToMaximumDecimalPlaces(
-                parseFloat(historicalBaseFeeRange?.[1]),
-                2,
-              ),
-            ])}
-          </Text>
+          {estimatedBaseFee && (
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.TextAlternative}
+            >
+              {t('currentEstimatedBaseFee', [
+                limitToMaximumDecimalPlaces(parseFloat(estimatedBaseFee), 2),
+              ])}
+            </Text>
+          )}
+          {historicalBaseFeeRange && (
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.TextAlternative}
+            >
+              {t('currentHistoricalBaseFeeRange', [
+                limitToMaximumDecimalPlaces(
+                  parseFloat(historicalBaseFeeRange?.[0]),
+                  2,
+                ),
+                limitToMaximumDecimalPlaces(
+                  parseFloat(historicalBaseFeeRange?.[1]),
+                  2,
+                ),
+              ])}
+            </Text>
+          )}
         </Box>
       )}
     </Box>

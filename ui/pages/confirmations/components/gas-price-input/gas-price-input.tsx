@@ -35,9 +35,10 @@ export const GasPriceInput = ({
   const [error, setError] = useState<string | undefined>(undefined);
 
   const validateGasPriceCallback = useCallback(
-    (valueToBeValidated: string) => {
+    (valueToBeValidated: string): string | undefined => {
       const validationError = validateGasPrice(valueToBeValidated, t);
       setError(validationError);
+      return validationError;
     },
     [t],
   );
@@ -45,10 +46,12 @@ export const GasPriceInput = ({
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = event.target.value;
-      validateGasPriceCallback(newValue);
+      const validationError = validateGasPriceCallback(newValue);
       setValue(newValue);
-      const updatedGasPrice = decGWEIToHexWEI(newValue) as Hex;
-      onChange(updatedGasPrice);
+      if (!validationError) {
+        const updatedGasPrice = decGWEIToHexWEI(newValue) as Hex;
+        onChange(updatedGasPrice);
+      }
     },
     [onChange, validateGasPriceCallback],
   );

@@ -45,7 +45,7 @@ export const PriorityFeeInput = ({
   );
 
   const validatePriorityFeeCallback = useCallback(
-    (valueToBeValidated: string) => {
+    (valueToBeValidated: string): string | undefined => {
       const maxFeePerGasInDec = hexWEIToDecGWEI(maxFeePerGas).toString();
 
       const validationError = validatePriorityFee(
@@ -54,6 +54,7 @@ export const PriorityFeeInput = ({
         t,
       );
       setError(validationError);
+      return validationError;
     },
     [maxFeePerGas, t],
   );
@@ -61,10 +62,12 @@ export const PriorityFeeInput = ({
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = event.target.value;
-      validatePriorityFeeCallback(newValue);
+      const validationError = validatePriorityFeeCallback(newValue);
       setValue(newValue);
-      const updatedPriorityFee = decGWEIToHexWEI(newValue) as Hex;
-      onChange(updatedPriorityFee);
+      if (!validationError) {
+        const updatedPriorityFee = decGWEIToHexWEI(newValue) as Hex;
+        onChange(updatedPriorityFee);
+      }
     },
     [onChange, validatePriorityFeeCallback],
   );
@@ -103,30 +106,40 @@ export const PriorityFeeInput = ({
           flexDirection={BoxFlexDirection.Row}
           justifyContent={BoxJustifyContent.Between}
         >
-          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            {t('currentEstimatedPriorityFeeRange', [
-              limitToMaximumDecimalPlaces(
-                parseFloat(latestPriorityFeeRange?.[0]),
-                2,
-              ),
-              limitToMaximumDecimalPlaces(
-                parseFloat(latestPriorityFeeRange?.[1]),
-                2,
-              ),
-            ])}
-          </Text>
-          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            {t('currentHistoricalPriorityFeeRange', [
-              limitToMaximumDecimalPlaces(
-                parseFloat(historicalPriorityFeeRange?.[0]),
-                2,
-              ),
-              limitToMaximumDecimalPlaces(
-                parseFloat(historicalPriorityFeeRange?.[1]),
-                2,
-              ),
-            ])}
-          </Text>
+          {latestPriorityFeeRange && (
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.TextAlternative}
+            >
+              {t('currentEstimatedPriorityFeeRange', [
+                limitToMaximumDecimalPlaces(
+                  parseFloat(latestPriorityFeeRange?.[0]),
+                  2,
+                ),
+                limitToMaximumDecimalPlaces(
+                  parseFloat(latestPriorityFeeRange?.[1]),
+                  2,
+                ),
+              ])}
+            </Text>
+          )}
+          {historicalPriorityFeeRange && (
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.TextAlternative}
+            >
+              {t('currentHistoricalPriorityFeeRange', [
+                limitToMaximumDecimalPlaces(
+                  parseFloat(historicalPriorityFeeRange?.[0]),
+                  2,
+                ),
+                limitToMaximumDecimalPlaces(
+                  parseFloat(historicalPriorityFeeRange?.[1]),
+                  2,
+                ),
+              ])}
+            </Text>
+          )}
         </Box>
       )}
     </Box>

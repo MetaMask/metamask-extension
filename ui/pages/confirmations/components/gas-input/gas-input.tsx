@@ -29,9 +29,10 @@ export const GasInput = ({
   const [error, setError] = useState<string | undefined>(undefined);
 
   const validateGasCallback = useCallback(
-    (valueToBeValidated: string) => {
+    (valueToBeValidated: string): string | undefined => {
       const validationError = validateGas(valueToBeValidated, t);
       setError(validationError);
+      return validationError;
     },
     [t],
   );
@@ -39,10 +40,12 @@ export const GasInput = ({
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = event.target.value;
-      validateGasCallback(newValue);
+      const validationError = validateGasCallback(newValue);
       setValue(newValue);
-      const updatedGasLimitHex = add0x(decimalToHex(newValue)) as Hex;
-      onChange(updatedGasLimitHex);
+      if (!validationError) {
+        const updatedGasLimitHex = add0x(decimalToHex(newValue)) as Hex;
+        onChange(updatedGasLimitHex);
+      }
     },
     [onChange, validateGasCallback],
   );

@@ -79,4 +79,16 @@ describe('GasPriceInput', () => {
 
     expect(mockOnErrorChange).toHaveBeenCalled();
   });
+
+  it('does not call onChange when input is invalid', () => {
+    const { getByTestId, mockOnChange } = render();
+
+    const input = getByTestId('gas-price-input').querySelector(
+      'input',
+    ) as HTMLInputElement;
+    mockOnChange.mockClear();
+    fireEvent.change(input, { target: { value: 'abc' } });
+
+    expect(mockOnChange).not.toHaveBeenCalled();
+  });
 });
