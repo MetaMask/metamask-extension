@@ -1576,9 +1576,6 @@
   "connectWithMetaMask": {
     "message": "Connect with MetaMask"
   },
-  "connectedAccounts": {
-    "message": "Connected accounts"
-  },
   "connectedAccountsDescriptionPlural": {
     "message": "You have $1 accounts connected to this site.",
     "description": "$1 is the number of accounts"
@@ -1592,9 +1589,6 @@
   "connectedAccountsListTooltip": {
     "message": "$1 can see the account balance, address, activity, and suggest transactions to approve for connected accounts.",
     "description": "$1 is the origin name"
-  },
-  "connectedAccountsToast": {
-    "message": "Connected accounts updated"
   },
   "connectedSites": {
     "message": "Connected sites"
@@ -2162,14 +2156,6 @@
   },
   "disconnectThisAccount": {
     "message": "Disconnect this account"
-  },
-  "disconnectedAllAccountsToast": {
-    "message": "All accounts disconnected from $1",
-    "description": "$1 is name of the dapp`"
-  },
-  "disconnectedSingleAccountToast": {
-    "message": "$1 disconnected from $2",
-    "description": "$1 is name of the name and $2 represents the dapp name`"
   },
   "discover": {
     "message": "Discover"
@@ -2849,10 +2835,6 @@
     "message": "Period",
     "description": "Label for the period of a token stream permission"
   },
-  "gatorPermissionUnknownTokenAmount": {
-    "message": "Unknown amount",
-    "description": "Text for an unknown amount with no decimals"
-  },
   "gatorPermissionWeeklyFrequency": {
     "message": "Weekly",
     "description": "Time period for weekly recurring permissions redemption"
@@ -2861,9 +2843,17 @@
     "message": "Expiration date",
     "description": "Label for the expiration date of a permission"
   },
+  "gatorPermissionsHideDetails": {
+    "message": "Hide Details",
+    "description": "Button text to hide permission details"
+  },
   "gatorPermissionsInitialAllowance": {
     "message": "Initial allowance",
     "description": "Label for the initial allowance of a permission"
+  },
+  "gatorPermissionsJustification": {
+    "message": "Justification",
+    "description": "Label for the justification"
   },
   "gatorPermissionsMaxAllowance": {
     "message": "Max allowance",
@@ -2876,6 +2866,10 @@
   "gatorPermissionsRevoke": {
     "message": "Revoke",
     "description": "Label for the revoke button of a gator permission"
+  },
+  "gatorPermissionsShowDetails": {
+    "message": "Show Details",
+    "description": "Button text to show permission details"
   },
   "gatorPermissionsStartDate": {
     "message": "Start date",
@@ -4718,9 +4712,6 @@
   "percentChange": {
     "message": "Percent change"
   },
-  "permissionDetails": {
-    "message": "Permission details"
-  },
   "permissionFor": {
     "message": "Permission for"
   },
@@ -5026,10 +5017,6 @@
   },
   "pleaseConfirm": {
     "message": "Please confirm"
-  },
-  "plusMore": {
-    "message": "+ $1 more",
-    "description": "$1 is the number of additional items"
   },
   "plusXMore": {
     "message": "+ $1 more",
