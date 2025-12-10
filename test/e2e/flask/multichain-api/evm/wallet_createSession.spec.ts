@@ -491,7 +491,9 @@ describe('Multichain API', function () {
 
           await testDapp.checkConnectedAccounts([ACCOUNT_1, TREZOR_ACCOUNT]);
 
-          const newgetSessionResult = await testDapp.getSession();
+          const newgetSessionResult = await testDapp.getSession({
+            numberOfResultItems: 3,
+          });
 
           const expectedNewSessionScopes = [...OLD_SCOPES, ...NEW_SCOPES].map(
             (scope) => ({

@@ -74,7 +74,7 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
         await testDapp.revokeSession();
 
         const parsedResult = await testDapp.getSession({
-          numberOfResultItems: 1,
+          numberOfResultItems: 2,
         });
         const resultSessionScopes = parsedResult.sessionScopes;
         assert.deepStrictEqual(

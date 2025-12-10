@@ -36,7 +36,7 @@ class TestDappMultichain {
     testId: 'invoke-all-methods-button',
   };
 
-  private readonly sessionResultListItems = (resultNumber: number) => {
+  private readonly sessionResultListItem = (resultNumber: number) => {
     return `#session-method-details-${resultNumber}`;
   };
 
@@ -89,7 +89,7 @@ class TestDappMultichain {
 
   async checkResultListTotalItems(totalItems: number): Promise<void> {
     await this.driver.waitForSelector(
-      this.sessionResultListItems(totalItems - 1),
+      this.sessionResultListItem(totalItems - 1),
     );
   }
 
