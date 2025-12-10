@@ -1,6 +1,6 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
-import { CHAIN_IDS } from '@metamask/transaction-controller';
+import { CHAIN_IDS, TransactionMeta } from '@metamask/transaction-controller';
 import configureStore from '../../../../store/store';
 import { renderWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
@@ -10,7 +10,12 @@ import { GasPriceInput } from './gas-price-input';
 const render = (props = {}) => {
   const contractInteraction = genUnapprovedContractInteractionConfirmation({
     chainId: CHAIN_IDS.GOERLI,
-  });
+  }) as TransactionMeta;
+
+  contractInteraction.txParams = {
+    ...contractInteraction.txParams,
+    gasPrice: '0x3b9aca00', // 1 GWEI
+  };
 
   const store = configureStore(
     getMockConfirmStateForTransaction(contractInteraction),

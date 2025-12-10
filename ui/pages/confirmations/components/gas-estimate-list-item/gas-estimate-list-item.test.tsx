@@ -2,13 +2,9 @@ import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { GasOption } from '../../types/gas';
-import {
-  GasEstimateListHeader,
-  GasEstimateListItem,
-} from './gas-estimate-list-item';
+import { GasEstimateListItem } from './gas-estimate-list-item';
 
 const mockOption: GasOption = {
-  emoji: '🚀',
   estimatedTime: '15 sec',
   isSelected: false,
   key: 'fast',
@@ -18,15 +14,6 @@ const mockOption: GasOption = {
   valueInFiat: '$0.25',
 };
 
-describe('GasEstimateListHeader', () => {
-  it('renders header with gas option and max fee labels', () => {
-    const { getByText } = renderWithProvider(<GasEstimateListHeader />);
-
-    expect(getByText('Gas option')).toBeInTheDocument();
-    expect(getByText('Max fee')).toBeInTheDocument();
-  });
-});
-
 describe('GasEstimateListItem', () => {
   it('renders list item with option details', () => {
     const { getByText, getByTestId } = renderWithProvider(
@@ -34,7 +21,6 @@ describe('GasEstimateListItem', () => {
     );
 
     expect(getByTestId('gas-option-Fast')).toBeInTheDocument();
-    expect(getByText('🚀')).toBeInTheDocument();
     expect(getByText('Fast')).toBeInTheDocument();
     expect(getByText('15 sec')).toBeInTheDocument();
     expect(getByText('0.0001 ETH')).toBeInTheDocument();
