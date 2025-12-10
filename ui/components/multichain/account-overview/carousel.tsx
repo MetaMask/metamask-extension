@@ -1,5 +1,6 @@
 import React, { useContext, useState, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { removeSlide, setSelectedAccount } from '../../../store/actions';
 import { CarouselWithEmptyState } from '../carousel';
 import {
@@ -17,6 +18,8 @@ import { useCarouselManagement } from '../../../hooks/useCarouselManagement';
 import { CreateSolanaAccountModal } from '../create-solana-account-modal';
 import { getLastSelectedSolanaAccount } from '../../../selectors/multichain';
 import DownloadMobileAppModal from '../../app/download-mobile-modal/download-mobile-modal';
+import { SHIELD_PLAN_ROUTE } from '../../../helpers/constants/routes';
+import { SHIELD_CAROUSEL_ID } from '../../../../shared/modules/shield';
 
 export const Carousel = () => {
   const dispatch = useDispatch();
@@ -48,6 +51,8 @@ export const Carousel = () => {
     return m;
   }, [slides]);
 
+  const navigate = useNavigate();
+
   const handleCarouselClick = (id: string) => {
     const slide = slideById.get(id);
     const key = slide?.variableName ?? id;
@@ -62,6 +67,10 @@ export const Carousel = () => {
 
     if (key === 'downloadMobileApp') {
       setShowDownloadMobileAppModal(true);
+    }
+
+    if (key === SHIELD_CAROUSEL_ID) {
+      navigate(SHIELD_PLAN_ROUTE);
     }
 
     trackEvent({
