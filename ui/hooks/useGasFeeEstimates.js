@@ -61,7 +61,9 @@ export function useGasFeeEstimates(_networkClientId, enabled = true) {
 
   useEffect(() => {
     if (!enabled) {
-      return;
+      return () => {
+        // No cleanup needed when disabled
+      };
     }
 
     let isMounted = true;
