@@ -113,14 +113,14 @@ describe('Incoming Transactions', function () {
         await activityList.checkTxAction({
           action: 'Received',
           txIndex: 1,
-          completedTxs: 2,
+          confirmedTx: 2,
         });
         await activityList.checkTxAmountInActivity('1.23 ETH', 1);
 
         await activityList.checkTxAction({
           action: 'Received',
           txIndex: 2,
-          completedTxs: 2,
+          confirmedTx: 2,
         });
         await activityList.checkTxAmountInActivity('2.34 ETH', 2);
       },
@@ -178,7 +178,7 @@ describe('Incoming Transactions', function () {
         await activityList.checkTxAction({
           action: 'Contract interaction',
           txIndex: 2,
-          completedTxs: 2,
+          confirmedTx: 2,
         });
         await activityList.checkTxAmountInActivity('-4.56 ETH', 2);
       },

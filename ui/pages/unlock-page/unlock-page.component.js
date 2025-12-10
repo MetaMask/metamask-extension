@@ -123,6 +123,10 @@ class UnlockPage extends Component {
      * Indicates if the environment is a popup
      */
     isPopup: PropTypes.bool,
+    /**
+     * Indicates if the wallet is reset in progress
+     */
+    isWalletResetInProgress: PropTypes.bool,
   };
 
   state = {
@@ -180,6 +184,12 @@ class UnlockPage extends Component {
         // if the seedless onboarding user is not authenticated, redirect to the onboarding welcome page
         this.props.navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
       }
+    }
+    if (
+      this.props.isWalletResetInProgress &&
+      this.props.firstTimeFlowType === null
+    ) {
+      this.props.navigate(DEFAULT_ROUTE, { replace: true });
     }
   }
 
@@ -601,7 +611,7 @@ class UnlockPage extends Component {
               value={password}
               error={Boolean(error)}
               helpText={this.renderHelpText()}
-              autoComplete
+              autoComplete={false}
               autoFocus
               width={BlockSize.Full}
               marginBottom={4}
@@ -636,37 +646,39 @@ class UnlockPage extends Component {
                 : t('forgotPassword')}
             </Button>
 
-            <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
-              {t('needHelp', [
-                <Button
-                  variant={ButtonVariant.Link}
-                  color={TextColor.primaryDefault}
-                  href={SUPPORT_LINK}
-                  type="button"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  key="need-help-link"
-                  onClick={() => {
-                    this.context.trackEvent(
-                      {
-                        category: MetaMetricsEventCategory.Navigation,
-                        event: MetaMetricsEventName.SupportLinkClicked,
-                        properties: {
-                          url: SUPPORT_LINK,
+            {isRehydrationFlow && (
+              <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
+                {t('needHelp', [
+                  <Button
+                    variant={ButtonVariant.Link}
+                    color={TextColor.primaryDefault}
+                    href={SUPPORT_LINK}
+                    type="button"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    key="need-help-link"
+                    onClick={() => {
+                      this.context.trackEvent(
+                        {
+                          category: MetaMetricsEventCategory.Navigation,
+                          event: MetaMetricsEventName.SupportLinkClicked,
+                          properties: {
+                            url: SUPPORT_LINK,
+                          },
                         },
-                      },
-                      {
-                        contextPropsIntoEventProperties: [
-                          MetaMetricsContextProp.PageTitle,
-                        ],
-                      },
-                    );
-                  }}
-                >
-                  {needHelpText}
-                </Button>,
-              ])}
-            </Text>
+                        {
+                          contextPropsIntoEventProperties: [
+                            MetaMetricsContextProp.PageTitle,
+                          ],
+                        },
+                      );
+                    }}
+                  >
+                    {needHelpText}
+                  </Button>,
+                ])}
+              </Text>
+            )}
           </Box>
         </Box>
         {!isRehydrationFlow && (
