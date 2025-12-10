@@ -22,10 +22,11 @@ describe('Check balance', function (this: Suite) {
       {
         title: this.test?.fullTitle(),
         mockZeroBalance: true,
+        showNativeTokenAsMainBalance: false,
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
-        await homePage.checkPageIsLoaded({ amount: '0 SOL' });
+        await homePage.checkPageIsLoaded({ amount: '$0' });
       },
     );
   });
