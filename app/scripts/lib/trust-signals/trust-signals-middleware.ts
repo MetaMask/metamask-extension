@@ -11,6 +11,7 @@ import {
   parseApprovalTransactionData,
 } from '../../../../shared/modules/transaction.utils';
 import { PRIMARY_TYPES_PERMIT } from '../../../../shared/constants/signatures';
+import { PRIMARY_TYPE_DELEGATION } from '../transaction/delegation';
 import { isSecurityAlertsAPIEnabled } from '../ppom/security-alerts-api';
 import { mapChainIdToSupportedEVMChain } from '../../../../shared/lib/trust-signals';
 import { scanAddressAndAddToCache } from './security-alerts-api';
@@ -205,6 +206,24 @@ function handleEthSignTypedData(
       ).catch((error) => {
         console.error(
           '[createTrustSignalsMiddleware] error scanning spender address for permit:',
+          error,
+        );
+      });
+    }
+  }
+
+  // If this is a delegation signature, scan the delegate address
+  if (primaryType === PRIMARY_TYPE_DELEGATION) {
+    const delegateAddress = typedDataMessage.message?.delegate;
+    if (delegateAddress) {
+      scanAddressAndAddToCache(
+        delegateAddress,
+        appStateController.getAddressSecurityAlertResponse,
+        appStateController.addAddressSecurityAlertResponse,
+        supportedEVMChain,
+      ).catch((error) => {
+        console.error(
+          '[createTrustSignalsMiddleware] error scanning delegate address for delegation:',
           error,
         );
       });
