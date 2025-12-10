@@ -342,6 +342,7 @@ module.exports = {
         'react/no-children-prop': 'off',
         'react/jsx-key': 'warn', // TODO - increase this into 'error' level
         'react-hooks/rules-of-hooks': 'error',
+        'consistent-return': 'off',
       },
       settings: {
         react: {
