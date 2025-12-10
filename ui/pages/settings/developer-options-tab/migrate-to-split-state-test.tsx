@@ -194,8 +194,8 @@ const MigrateToSplitStateTest = () => {
         <label>
           <span>Max Accounts flag:</span>
           <TextField
-            min="0"
-            max="99999999"
+            minLength={0}
+            maxLength={99999999}
             type={TextFieldType.Number}
             value={maxAccounts}
             onChange={handleMaxAccountsChange}
@@ -206,8 +206,8 @@ const MigrateToSplitStateTest = () => {
         <label>
           <span>Max Networks flag:</span>
           <TextField
-            min="0"
-            max="99999999"
+            minLength={0}
+            maxLength={99999999}
             type={TextFieldType.Number}
             value={maxNetworks}
             onChange={handleMaxNetworksChange}
