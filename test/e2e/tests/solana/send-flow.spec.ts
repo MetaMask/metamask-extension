@@ -183,7 +183,10 @@ describe('Send flow', function (this: Suite) {
         await confirmation.clickFooterConfirmButton();
 
         const activityList = new ActivityListPage(driver);
-        await activityList.checkTxAction({ action: 'Interaction' });
+        await activityList.checkTxAction({
+          action: 'Interaction',
+          confirmedTx: 0,
+        });
         await activityList.checkFailedTxNumberDisplayedInActivity();
       },
     );

@@ -61,7 +61,10 @@ describe('Transaction activity list', function (this: Suite) {
         await homePage.goToActivityList();
         const activityList = new ActivityListPage(driver);
         await activityList.checkFailedTxNumberDisplayedInActivity(1);
-        await activityList.checkTxAction({ action: 'Interaction' });
+        await activityList.checkTxAction({
+          action: 'Interaction',
+          confirmedTx: 0,
+        });
         await activityList.clickOnActivity(1);
         const transactionDetails = new TransactionDetailsPage(driver);
 
