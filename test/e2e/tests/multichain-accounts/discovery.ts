@@ -4,14 +4,14 @@ import {
   INFURA_MAINNET_URL,
   TEST_SEED_PHRASE,
   TEST_SEED_PHRASE_TWO,
+  E2E_SRP,
 } from '../../constants';
-import { SOLANA_URL_REGEX_MAINNET } from '../solana/common-solana';
-import { E2E_SRP } from '../../fixtures/default-fixture';
-import { SECOND_TEST_E2E_SRP } from '../../flask/multi-srp/common-multi-srp';
+import { SECOND_TEST_E2E_SRP } from '../../flask/multi-srp/constants';
 import {
   IDENTITY_TEAM_SEED_PHRASE,
   IDENTITY_TEAM_SEED_PHRASE_2,
 } from '../identity/constants';
+import { SOLANA_URL_REGEX_MAINNET } from '../solana/constants';
 
 export type MockedDiscoveredAccount = {
   [ACCOUNT_TYPE.Ethereum]: string;
