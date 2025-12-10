@@ -5,7 +5,7 @@ class ConnectAccountConfirmation {
 
   private readonly accountListItem = (accountName: string) => {
     return {
-      css: 'multichain-account-cell__account-name',
+      css: '.multichain-account-cell__account-name',
       text: accountName,
     };
   };
