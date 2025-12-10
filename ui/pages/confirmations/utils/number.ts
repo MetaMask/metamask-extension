@@ -1,8 +1,9 @@
 /**
  * Limits a number to a max decimal places.
- * @param {number} num
- * @param {number} maxDecimalPlaces
- * @returns {string}
+ *
+ * @param num - The number to limit
+ * @param maxDecimalPlaces - The maximum number of decimal places
+ * @returns The number limited to the maximum decimal places
  */
 export function limitToMaximumDecimalPlaces(
   num: number,
