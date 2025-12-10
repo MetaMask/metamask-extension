@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -27,7 +27,7 @@ import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { SECURITY_ROUTE } from '../../../../helpers/constants/routes';
 import { setPna25Acknowledged } from '../../../../store/actions';
-import { PNA25_BLOG_POST_LINK } from './constants';
+import { PNA25_BLOG_POST_LINK, Pna25NoticeAction } from './constants';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function Pna25Modal() {
@@ -36,66 +36,36 @@ export default function Pna25Modal() {
   const navigate = useNavigate();
   const trackEvent = useContext(MetaMetricsContext);
 
+  const handleAction = useCallback(
+    (action: Pna25NoticeAction) => {
+      trackEvent({
+        event: MetaMetricsEventName.NoticeUpdateDisplayed,
+        properties: {
+          name: 'pna25',
+          action,
+        },
+      });
+
+      if (action !== Pna25NoticeAction.Viewed) {
+        dispatch(setPna25Acknowledged(true));
+      }
+
+      if (action === Pna25NoticeAction.OpenSettings) {
+        navigate(SECURITY_ROUTE);
+      }
+    },
+    [trackEvent, dispatch, navigate],
+  );
+
   useEffect(() => {
-    trackEvent({
-      event: MetaMetricsEventName.NoticeUpdateDisplayed,
-      properties: {
-        name: 'pna25',
-        action: 'viewed',
-      },
-    });
-  }, [trackEvent]);
-
-  const handleLeave = () => {
-    trackEvent({
-      event: MetaMetricsEventName.NoticeUpdateDisplayed,
-      properties: {
-        name: 'pna25',
-        action: 'leave',
-      },
-    });
-    dispatch(setPna25Acknowledged(true));
-  };
-
-  const handleClose = () => {
-    trackEvent({
-      event: MetaMetricsEventName.NoticeUpdateDisplayed,
-      properties: {
-        name: 'pna25',
-        action: 'close',
-      },
-    });
-    dispatch(setPna25Acknowledged(true));
-  };
-
-  const handleAccept = () => {
-    trackEvent({
-      event: MetaMetricsEventName.NoticeUpdateDisplayed,
-      properties: {
-        name: 'pna25',
-        action: 'accept and close',
-      },
-    });
-    dispatch(setPna25Acknowledged(true));
-  };
-
-  const handleOpenSettings = () => {
-    trackEvent({
-      event: MetaMetricsEventName.NoticeUpdateDisplayed,
-      properties: {
-        name: 'pna25',
-        action: 'open settings',
-      },
-    });
-    dispatch(setPna25Acknowledged(true));
-    navigate(SECURITY_ROUTE);
-  };
+    handleAction(Pna25NoticeAction.Viewed);
+  }, [handleAction]);
 
   return (
-    <Modal isOpen onClose={handleLeave}>
+    <Modal isOpen onClose={() => handleAction(Pna25NoticeAction.Leave)}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader onClose={handleClose}>
+        <ModalHeader onClose={() => handleAction(Pna25NoticeAction.Close)}>
           <Box
             flexDirection={BoxFlexDirection.Column}
             alignItems={BoxAlignItems.Center}
@@ -128,7 +98,7 @@ export default function Pna25Modal() {
           <Box flexDirection={BoxFlexDirection.Column} gap={4}>
             <Button
               variant={ButtonVariant.Secondary}
-              onClick={handleOpenSettings}
+              onClick={() => handleAction(Pna25NoticeAction.OpenSettings)}
               className="w-full"
               data-testid="pna25-modal-open-settings"
             >
@@ -136,7 +106,7 @@ export default function Pna25Modal() {
             </Button>
             <Button
               variant={ButtonVariant.Primary}
-              onClick={handleAccept}
+              onClick={() => handleAction(Pna25NoticeAction.AcceptAndClose)}
               className="w-full"
               data-testid="pna25-modal-accept"
             >
