@@ -930,14 +930,6 @@ export function NftDetailsComponent({
               );
             })}
           </Box>
-          <Box>
-            <Text
-              color={TextColor.textAlternative}
-              variant={TextVariant.bodyXs}
-            >
-              {t('nftDisclaimer')}
-            </Text>
-          </Box>
         </Box>
       </Content>
       {isCurrentlyOwned === true ? (

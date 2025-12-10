@@ -4156,9 +4156,6 @@
   "nftAutoDetectionEnabled": {
     "message": "NFT autodetection enabled"
   },
-  "nftDisclaimer": {
-    "message": "Disclaimer: MetaMask pulls the media file from the source URL. This URL sometimes gets changed by the marketplace on which the NFT was minted."
-  },
   "nftEmptyDescription": {
     "message": "There's a world of NFTs out there. Start your collection today."
   },

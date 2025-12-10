@@ -173,16 +173,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
           <div
             class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap"
           >
-             
-          </div>
-          <div
-            class="mm-box"
-          >
-            <p
-              class="mm-box mm-text mm-text--body-xs mm-box--color-text-alternative"
-            >
-              Disclaimer: MetaMask pulls the media file from the source URL. This URL sometimes gets changed by the marketplace on which the NFT was minted.
-            </p>
+
           </div>
         </div>
       </div>
