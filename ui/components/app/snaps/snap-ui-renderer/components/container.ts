@@ -26,16 +26,19 @@ export const container: UIComponentFactory<ContainerElement> = ({
   const firstChildIsBox =
     typeof children[0] !== 'string' && children[0]?.type === 'Box';
 
-  const templateChildren = children.map((child) =>
+  // Ensure the first child is always a Box to apply layout styles correctly
+  const containerChildren = firstChildIsBox
+    ? children
+    : [Box({ children: children[0] as JSXElement }), ...children.slice(1)];
+
+  const templateChildren = containerChildren.map((child) =>
     mapToTemplate({
       useFooter,
       onCancel,
       t,
       ...params,
-      // Ensure the first child is always a Box to apply layout styles correctly
-      element: firstChildIsBox
-        ? (child as JSXElement)
-        : Box({ children: [child as JSXElement] }),
+
+      element: child as JSXElement,
     }),
   );
 
