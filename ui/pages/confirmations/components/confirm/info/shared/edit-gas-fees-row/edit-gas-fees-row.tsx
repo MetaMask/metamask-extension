@@ -150,7 +150,7 @@ export const EditGasFeesRow = ({
                 : ' '}
             </Text>
           </Box>
-          {showAdvancedDetails && (
+          {showAdvancedDetails && !isTempoChain && (
             <FiatValue
               fullValue={fiatFeeWith18SignificantDigits}
               roundedValue={fiatValue}
