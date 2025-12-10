@@ -149,7 +149,7 @@ const getTitle = (
       }
       return t('setApprovalForAllRedesignedTitle');
     default:
-      return '';
+      return undefined;
   }
 };
 
@@ -319,17 +319,8 @@ const ConfirmTitle: React.FC = memo(() => {
     return <TitleSkeleton />;
   }
 
-  // These transaction types use the header for their title, not this component
-  const typesWithoutTitle = [
-    TransactionType.simpleSend,
-    TransactionType.tokenMethodTransfer,
-    TransactionType.tokenMethodTransferFrom,
-    TransactionType.tokenMethodSafeTransferFrom,
-  ];
-
-  const showTitleSkeleton =
-    currentConfirmation?.type &&
-    !typesWithoutTitle.includes(currentConfirmation.type);
+  // Show skeleton only if title is pending AND the type is handled by getTitle
+  const showTitleSkeleton = spendingCapPending && title !== undefined;
 
   return (
     <>
