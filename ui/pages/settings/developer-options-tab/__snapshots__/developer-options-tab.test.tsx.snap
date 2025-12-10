@@ -563,21 +563,16 @@ exports[`Develop options tab should match snapshot 1`] = `
             Max Accounts flag:
           </span>
           <div
-            class="MuiFormControl-root MuiTextField-root"
+            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
           >
-            <div
-              class="MuiInputBase-root MuiInput-root TextField-inputRoot-12 MuiInputBase-formControl MuiInput-formControl"
-            >
-              <input
-                aria-invalid="false"
-                class="MuiInputBase-input MuiInput-input"
-                dir="auto"
-                max="99999999"
-                min="0"
-                type="number"
-                value=""
-              />
-            </div>
+            <input
+              autocomplete="off"
+              class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+              focused="false"
+              maxlength="99999999"
+              type="number"
+              value=""
+            />
           </div>
         </label>
       </div>
@@ -587,21 +582,16 @@ exports[`Develop options tab should match snapshot 1`] = `
             Max Networks flag:
           </span>
           <div
-            class="MuiFormControl-root MuiTextField-root"
+            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
           >
-            <div
-              class="MuiInputBase-root MuiInput-root TextField-inputRoot-12 MuiInputBase-formControl MuiInput-formControl"
-            >
-              <input
-                aria-invalid="false"
-                class="MuiInputBase-input MuiInput-input"
-                dir="auto"
-                max="99999999"
-                min="0"
-                type="number"
-                value=""
-              />
-            </div>
+            <input
+              autocomplete="off"
+              class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+              focused="false"
+              maxlength="99999999"
+              type="number"
+              value=""
+            />
           </div>
         </label>
       </div>
