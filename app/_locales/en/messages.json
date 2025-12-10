@@ -414,15 +414,15 @@
   "advancedEIP1559ModalTitle": {
     "message": "Advanced Network Fee"
   },
-  "advancedGasPriceModalTitle": {
-    "message": "Advanced Network Fee"
-  },
   "advancedGasFeeDefaultOptIn": {
     "message": "Save these values as my default for the $1 network.",
     "description": "$1 is the current network name."
   },
   "advancedGasFeeModalTitle": {
     "message": "Advanced gas fee"
+  },
+  "advancedGasPriceModalTitle": {
+    "message": "Advanced Network Fee"
   },
   "advancedGasPriceTitle": {
     "message": "Gas price"
