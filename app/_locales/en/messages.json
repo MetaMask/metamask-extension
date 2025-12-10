@@ -980,9 +980,6 @@
   "bridgeEnterAmount": {
     "message": "Select amount"
   },
-  "bridgeEnterAmountAndSelectAccount": {
-    "message": "Enter amount and select destination account"
-  },
   "bridgeExplorerLinkViewOn": {
     "message": "View on $1"
   },
@@ -1046,7 +1043,7 @@
     "message": "Your quote timed out."
   },
   "bridgeSelectDestinationAccount": {
-    "message": "Select destination account"
+    "message": "Select a destination account"
   },
   "bridgeSelectDifferentQuote": {
     "message": "Please select a different quote."

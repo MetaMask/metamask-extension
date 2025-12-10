@@ -943,9 +943,6 @@
   "bridgeEnterAmount": {
     "message": "Pumili ng halaga"
   },
-  "bridgeEnterAmountAndSelectAccount": {
-    "message": "Ilagay ang halaga at pumili ng destinasyong account"
-  },
   "bridgeExplorerLinkViewOn": {
     "message": "Tingnan sa $1"
   },

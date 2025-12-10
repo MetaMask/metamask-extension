@@ -8491,6 +8491,14 @@ export default class MetamaskController extends EventEmitter {
       getPna25Acknowledged: () => {
         return this.appStateController?.state?.pna25Acknowledged;
       },
+      getAddressSecurityAlertResponse: (cacheKey) => {
+        return this.appStateController?.getAddressSecurityAlertResponse(
+          cacheKey,
+        );
+      },
+      getSecurityAlertsEnabled: () => {
+        return this.preferencesController?.state?.securityAlertsEnabled;
+      },
     };
 
     const snapAndHardwareMessenger = new Messenger({

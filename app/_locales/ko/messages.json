@@ -943,9 +943,6 @@
   "bridgeEnterAmount": {
     "message": "금액 선택"
   },
-  "bridgeEnterAmountAndSelectAccount": {
-    "message": "금액을 입력하고 대상 계정을 선택하세요"
-  },
   "bridgeExplorerLinkViewOn": {
     "message": "$1에서 보기"
   },

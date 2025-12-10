@@ -342,7 +342,7 @@ export const MultichainBridgeQuoteCard = ({
                         currency,
                       )
                     : formatNetworkFee(
-                        activeQuote.totalNetworkFee?.valueInCurrency,
+                        activeQuote.gasFee.effective?.valueInCurrency,
                         currency,
                       )}
                 </Text>
@@ -369,7 +369,7 @@ export const MultichainBridgeQuoteCard = ({
                 data-testid="network-fees"
               >
                 {formatNetworkFee(
-                  activeQuote.totalNetworkFee?.valueInCurrency,
+                  activeQuote.gasFee.effective?.valueInCurrency,
                   currency,
                 )}
               </Text>

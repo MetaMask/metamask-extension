@@ -934,9 +934,6 @@
   "bridgeEnterAmount": {
     "message": "Roghnaigh méid"
   },
-  "bridgeEnterAmountAndSelectAccount": {
-    "message": "Cuir isteach an méid agus roghnaigh an cuntas ceann scríbe"
-  },
   "bridgeExplorerLinkViewOn": {
     "message": "Féach ar $1"
   },
