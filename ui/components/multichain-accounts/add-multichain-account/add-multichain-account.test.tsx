@@ -4,7 +4,7 @@ import { fireEvent, screen, waitFor } from '@testing-library/react';
 import configureStore, { MetaMaskReduxDispatch } from '../../../store/store';
 import { createNextMultichainAccountGroup } from '../../../store/actions';
 import { useAccountsWalletOperationsLoadingStates } from '../../../hooks/accounts/useAccountsWalletOperationsLoadingStates';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { AddMultichainAccount } from './add-multichain-account';
 
 jest.mock('../../../../shared/lib/trace', () => {
