@@ -21,7 +21,7 @@ module.exports = {
         rules: consoleReporterRules,
       },
     ],
-    '<rootDir>/test/jest/summary-reporter.js',
+    'summary',
     [
       'jest-junit',
       {
