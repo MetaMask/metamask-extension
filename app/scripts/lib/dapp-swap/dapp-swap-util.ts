@@ -66,7 +66,6 @@ export function getQuotesForConfirmation({
   setDappSwapComparisonData,
   getNetworkConfigurationByNetworkClientId,
   dappSwapMetricsFlag,
-  securityAlertId,
 }: {
   req: DappSwapMiddlewareRequest<JsonRpcParams>;
   fetchQuotes: (quotesInput: GenericQuoteRequest) => Promise<QuoteResponse[]>;
@@ -86,6 +85,7 @@ export function getQuotesForConfirmation({
   securityAlertId?: string;
 }) {
   let commands = '';
+  const requestId = String(req.id);
   try {
     const {
       enabled: dappSwapEnabled,
@@ -93,7 +93,7 @@ export function getQuotesForConfirmation({
       bridge_quote_fees: bridgeQuoteFees,
       origins,
     } = dappSwapMetricsFlag;
-    if (!dappSwapEnabled || !securityAlertId) {
+    if (!dappSwapEnabled) {
       return;
     }
     const { params, origin } = req;
@@ -101,7 +101,7 @@ export function getQuotesForConfirmation({
       const { chainId } =
         getNetworkConfigurationByNetworkClientId(req.networkClientId) ?? {};
       const { data, from } = getSwapDetails(params);
-      if (data && securityAlertId && chainId) {
+      if (data && requestId && chainId) {
         const parsedTransactionData = parseTransactionData(data);
         commands = parsedTransactionData.commands;
         const { quotesInput, amountMin } = getDataFromSwap(
@@ -114,7 +114,7 @@ export function getQuotesForConfirmation({
             params[0].calls as NestedTransactionMetadata[],
             quotesInput?.srcTokenAddress as Hex,
           );
-          setDappSwapComparisonData(securityAlertId, {
+          setDappSwapComparisonData(requestId, {
             commands,
             swapInfo: {
               srcTokenAddress: quotesInput?.srcTokenAddress as Hex,
@@ -133,14 +133,14 @@ export function getQuotesForConfirmation({
               const endTime = new Date().getTime();
               const latency = endTime - startTime;
               if (quotes) {
-                setDappSwapComparisonData(securityAlertId, {
+                setDappSwapComparisonData(requestId, {
                   quotes,
                   latency,
                 });
               }
             })
             .catch((error) => {
-              setDappSwapComparisonData(securityAlertId, {
+              setDappSwapComparisonData(requestId, {
                 error: `Error fetching bridge quotes: ${error.message}`,
                 commands,
               });
@@ -151,8 +151,8 @@ export function getQuotesForConfirmation({
       }
     }
   } catch (error) {
-    if (securityAlertId) {
-      setDappSwapComparisonData(securityAlertId, {
+    if (requestId) {
+      setDappSwapComparisonData(requestId, {
         error: `Error fetching bridge quotes: ${(error as Error).message}`,
         commands,
       });

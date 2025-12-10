@@ -1016,30 +1016,8 @@ export default class MetamaskController extends EventEmitter {
                 this.txController.isAtomicBatchSupported.bind(
                   this.txController,
                 ),
-              validateSecurity: (securityAlertId, request, chainId) => {
-                // Code below to get quote is placed here as securityAlertId is not available in the middleware
-                // this needs to be cleaned up
-                // https://github.com/MetaMask/MetaMask-planning/issues/6345
-                getQuotesForConfirmation({
-                  req,
-                  fetchQuotes: this.controllerMessenger.call.bind(
-                    this.controllerMessenger,
-                    `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.FETCH_QUOTES}`,
-                  ),
-                  setDappSwapComparisonData:
-                    this.appStateController.setDappSwapComparisonData.bind(
-                      this.appStateController,
-                    ),
-                  getNetworkConfigurationByNetworkClientId:
-                    this.networkController.getNetworkConfigurationByNetworkClientId.bind(
-                      this.networkController,
-                    ),
-                  dappSwapMetricsFlag:
-                    this.remoteFeatureFlagController?.state?.remoteFeatureFlags
-                      ?.dappSwapMetrics,
-                  securityAlertId,
-                });
-                return validateRequestWithPPOM({
+              validateSecurity: (securityAlertId, request, chainId) =>
+                validateRequestWithPPOM({
                   chainId,
                   ppomController: this.ppomController,
                   request,
@@ -1048,8 +1026,7 @@ export default class MetamaskController extends EventEmitter {
                     this.updateSecurityAlertResponse.bind(this),
                   getSecurityAlertsConfig:
                     this.getSecurityAlertsConfig.bind(this),
-                });
-              },
+                }),
               isAuxiliaryFundsSupported: (chainId) =>
                 ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId),
             },
@@ -1102,14 +1079,15 @@ export default class MetamaskController extends EventEmitter {
       // account mgmt
       getAccounts: (requestOrigin) => getAccounts({ origin: requestOrigin }),
       // tx signing
-      processTransaction: (transactionParams, dappRequest, requestContext) =>
-        addDappTransaction(
+      processTransaction: (transactionParams, dappRequest, requestContext) => {
+        return addDappTransaction(
           this.getAddTransactionRequest({
             transactionParams,
             dappRequest,
             requestContext,
           }),
-        ),
+        );
+      },
       // msg signing
       processTypedMessage: (...args) =>
         addTypedMessage({

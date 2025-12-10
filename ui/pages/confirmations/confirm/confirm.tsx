@@ -35,6 +35,10 @@ const GasFeeContextProviderWrapper: React.FC<{
   children: ReactNode;
 }> = ({ children }) => {
   const { currentConfirmation } = useConfirmContext();
+  console.log(
+    '----------------------- currentConfirmation',
+    currentConfirmation,
+  );
   return (
     <GasFeeContextProvider transaction={currentConfirmation}>
       {children as NonNullable<ReactNodeLike>}

@@ -44,7 +44,7 @@ export function useDappSwapComparisonInfo() {
   } = useSelector((state: ConfirmMetamaskState) => {
     return selectDappSwapComparisonData(
       state,
-      currentConfirmation?.securityAlertResponse?.securityAlertId ?? '',
+      currentConfirmation?.requestId ?? '',
     );
   }) ?? { quotes: undefined };
   const { updateSwapComparisonLatency } = useDappSwapComparisonLatencyMetrics();
