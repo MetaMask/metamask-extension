@@ -448,7 +448,9 @@ describe('Multichain API', function () {
           /**
            * We first make sure sessions exist
            */
-          const existinggetSessionResult = await testDapp.getSession();
+          const existinggetSessionResult = await testDapp.getSession({
+            numberOfResultItems: 1,
+          });
           OLD_SCOPES.forEach((scope) =>
             assert.strictEqual(
               isObject(existinggetSessionResult.sessionScopes[scope]),
@@ -457,7 +459,6 @@ describe('Multichain API', function () {
             ),
           );
 
-          // Issue #38699: Account 2 is connected but it's not imported in my wallet
           await testDapp.checkConnectedAccounts([ACCOUNT_1]);
 
           /**
