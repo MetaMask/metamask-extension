@@ -327,6 +327,9 @@ describe('Multichain API', function () {
               driver,
             );
             await connectAccountConfirmation.checkPageIsLoaded();
+            await connectAccountConfirmation.checkForAccountsInPermissionList([
+              'Account 1',
+            ]);
             await connectAccountConfirmation.openEditAccountsModal();
 
             const editConnectedAccountsModal = new EditConnectedAccountsModal(
@@ -336,6 +339,11 @@ describe('Multichain API', function () {
             await editConnectedAccountsModal.addNewAccount();
 
             await connectAccountConfirmation.checkPageIsLoaded();
+
+            await connectAccountConfirmation.checkForAccountsInPermissionList([
+              'Account 1',
+              'Account 2',
+            ]);
             await connectAccountConfirmation.confirmConnect();
 
             await driver.switchToWindowWithTitle(
