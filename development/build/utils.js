@@ -163,11 +163,9 @@ Good luck on your endeavors.`,
 function getEnvironment({ buildTarget, git }) {
   // Use provided git context or fall back to process.env for backwards compatibility
   const branch =
-    git?.branch ||
-    process.env.GITHUB_HEAD_REF ||
-    process.env.GITHUB_REF_NAME ||
-    '';
-  const eventName = git?.eventName || process.env.GITHUB_EVENT_NAME || '';
+    git?.branch ??
+    (process.env.GITHUB_HEAD_REF || process.env.GITHUB_REF_NAME || '');
+  const eventName = git?.eventName ?? (process.env.GITHUB_EVENT_NAME || '');
 
   // get environment slug
   if (buildTarget === BUILD_TARGETS.PROD) {
