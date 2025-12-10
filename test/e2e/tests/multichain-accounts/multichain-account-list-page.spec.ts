@@ -4,6 +4,7 @@ import { Driver } from '../../webdriver/driver';
 import { mockSnapSimpleKeyringAndSite } from '../account/snap-keyring-site-mocks';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
+import { DAPP_PATH } from '../../constants';
 import { WINDOW_TITLES } from '../../helpers';
 import { AccountType, withMultichainAccountsDesignEnabled } from './common';
 
@@ -13,7 +14,6 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
       {
         title: this.test?.fullTitle(),
         accountType: AccountType.HardwareWallet,
-        state: 2,
       },
       async (driver: Driver) => {
         const accountListPage = new AccountListPage(driver);
@@ -35,12 +35,12 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
       {
         title: this.test?.fullTitle(),
         accountType: AccountType.SSK,
-        dapp: true,
-        dappPaths: ['snap-simple-keyring-site'],
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
+        },
         testSpecificMock: async (mockServer) => {
           return mockSnapSimpleKeyringAndSite(mockServer);
         },
-        state: 2,
       },
       async (driver: Driver) => {
         await installSnapSimpleKeyring(driver);

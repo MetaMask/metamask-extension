@@ -3,7 +3,7 @@ import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { withFixtures, WINDOW_TITLES } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
 
 describe('Request Queuing - Extension and Dapp on different networks.', function () {
@@ -12,7 +12,7 @@ describe('Request Queuing - Extension and Dapp on different networks.', function
     const chainId = 1338;
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .withPermissionControllerConnectedToTestDapp()

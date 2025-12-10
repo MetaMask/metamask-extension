@@ -40,6 +40,21 @@ export type NameProps = {
    * Such as the chain ID if the `type` is an Ethereum address.
    */
   variation: string;
+
+  /**
+   * The fallback value to display if the name is not found or cannot be resolved.
+   */
+  fallbackName?: string;
+
+  /**
+   * Whether to show the full name.
+   */
+  showFullName?: boolean;
+
+  /**
+   * The class name to apply to the box.
+   */
+  className?: string;
 };
 
 const Name = memo(
@@ -48,6 +63,7 @@ const Name = memo(
     type,
     preferContractSymbol = false,
     variation,
+    className,
     ...props
   }: NameProps) => {
     const [modalOpen, setModalOpen] = useState(false);
@@ -88,7 +104,11 @@ const Name = memo(
     }, [setModalOpen]);
 
     return (
-      <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        className={className}
+      >
         {modalOpen && (
           <NameDetails
             value={value}

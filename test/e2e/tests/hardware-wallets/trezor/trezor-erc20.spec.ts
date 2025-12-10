@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import TestDappPage from '../../../page-objects/pages/test-dapp';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { WINDOW_TITLES, withFixtures } from '../../../helpers';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
@@ -16,6 +16,7 @@ describe('Trezor Hardware', function (this: Suite) {
   it('can create an ERC20 token', async function () {
     await withFixtures(
       {
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withTrezorAccount()
           .withPermissionControllerConnectedToTestDapp({
@@ -23,7 +24,6 @@ describe('Trezor Hardware', function (this: Suite) {
           })
           .build(),
         title: this.test?.fullTitle(),
-        dapp: true,
       },
       async ({ driver, localNodes }) => {
         const symbol = 'TST';
@@ -31,12 +31,7 @@ describe('Trezor Hardware', function (this: Suite) {
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           '0x100000000000000000000',
         )) ?? console.error('localNodes is undefined or empty');
-        await loginWithBalanceValidation(
-          driver,
-          undefined,
-          undefined,
-          '1208925.8196',
-        );
+        await loginWithBalanceValidation(driver, undefined, undefined, '1.21M');
         const testDappPage = new TestDappPage(driver);
         await testDappPage.openTestDappPage();
         await testDappPage.checkPageIsLoaded();
@@ -68,6 +63,7 @@ describe('Trezor Hardware', function (this: Suite) {
     const erc20 = SMART_CONTRACTS.HST;
     await withFixtures(
       {
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withTrezorAccount()
           .withPermissionControllerConnectedToTestDapp({
@@ -76,7 +72,6 @@ describe('Trezor Hardware', function (this: Suite) {
 
           .build(),
         title: this.test?.fullTitle(),
-        dapp: true,
         smartContract: [
           {
             name: erc20,
@@ -92,12 +87,7 @@ describe('Trezor Hardware', function (this: Suite) {
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           '0x100000000000000000000',
         )) ?? console.error('localNodes is undefined or empty');
-        await loginWithBalanceValidation(
-          driver,
-          undefined,
-          undefined,
-          '1208925.8196',
-        );
+        await loginWithBalanceValidation(driver, undefined, undefined, '1.21M');
         const contractAddress = contractRegistry.getContractAddress(erc20);
         const testDappPage = new TestDappPage(driver);
         await testDappPage.openTestDappPage({
@@ -137,6 +127,7 @@ describe('Trezor Hardware', function (this: Suite) {
     const erc20 = SMART_CONTRACTS.HST;
     await withFixtures(
       {
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withTrezorAccount()
           .withPermissionControllerConnectedToTestDapp({
@@ -144,7 +135,6 @@ describe('Trezor Hardware', function (this: Suite) {
           })
           .build(),
         title: this.test?.fullTitle(),
-        dapp: true,
         smartContract: [
           {
             name: erc20,
@@ -160,12 +150,7 @@ describe('Trezor Hardware', function (this: Suite) {
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           '0x100000000000000000000',
         )) ?? console.error('localNodes is undefined or empty');
-        await loginWithBalanceValidation(
-          driver,
-          undefined,
-          undefined,
-          '1208925.8196',
-        );
+        await loginWithBalanceValidation(driver, undefined, undefined, '1.21M');
         const contractAddress = contractRegistry.getContractAddress(erc20);
         const testDappPage = new TestDappPage(driver);
         await testDappPage.openTestDappPage({
@@ -196,6 +181,7 @@ describe('Trezor Hardware', function (this: Suite) {
     const erc20 = SMART_CONTRACTS.HST;
     await withFixtures(
       {
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withTrezorAccount()
           .withPermissionControllerConnectedToTestDapp({
@@ -203,7 +189,6 @@ describe('Trezor Hardware', function (this: Suite) {
           })
           .build(),
         title: this.test?.fullTitle(),
-        dapp: true,
         smartContract: [
           {
             name: erc20,
@@ -219,12 +204,7 @@ describe('Trezor Hardware', function (this: Suite) {
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           '0x100000000000000000000',
         )) ?? console.error('localNodes is undefined or empty');
-        await loginWithBalanceValidation(
-          driver,
-          undefined,
-          undefined,
-          '1208925.8196',
-        );
+        await loginWithBalanceValidation(driver, undefined, undefined, '1.21M');
         const contractAddress = contractRegistry.getContractAddress(erc20);
         const testDappPage = new TestDappPage(driver);
         await testDappPage.openTestDappPage({

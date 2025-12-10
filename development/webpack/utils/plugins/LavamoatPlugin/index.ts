@@ -11,11 +11,16 @@ import type { Args } from '../../cli';
 const rootDir = join(__dirname, '../../../../../');
 
 // Entries that need to be included in the unsafe layer to run without LavaMoat.
-const unsafeEntries: Set<string> = new Set(['scripts/inpage.js', 'bootstrap']);
+const unsafeEntries: Set<string> = new Set([
+  'scripts/inpage.js',
+  'bootstrap',
+  'service-worker.ts',
+]);
 
 export const lavamoatPlugin = (args: Args) =>
   new LavaMoatPlugin({
     rootDir,
+    policyLocation: join('lavamoat', 'webpack', `mv${args.manifest_version}`),
     diagnosticsVerbosity: 0,
     generatePolicyOnly: args.generatePolicy,
     runChecks: true, // Candidate to disable later for performance. useful in debugging invalid JS errors, but unless the audit proves me wrong this is probably not improving security.
@@ -69,6 +74,7 @@ export const lavamoatPlugin = (args: Args) =>
       scuttlerName: args.snow ? 'SCUTTLER' : undefined,
       exceptions: [
         // globals used by different mm deps outside of lm compartment
+        'window',
         'Proxy',
         'toString',
         'getComputedStyle',
@@ -115,6 +121,7 @@ export const lavamoatPlugin = (args: Args) =>
         'Date',
         'setTimeout',
         'clearTimeout',
+        'ResizeObserver',
         // globals sentry needs to function
         '__SENTRY__',
         'appState',
@@ -123,6 +130,7 @@ export const lavamoatPlugin = (args: Args) =>
         'sentryHooks',
         'sentry',
         'logEncryptedVault',
+        'history', // needed by Sentry and react-router-dom v6 HashRouter
         // globals used by react-dom
         'getSelection',
         // globals opera needs to function

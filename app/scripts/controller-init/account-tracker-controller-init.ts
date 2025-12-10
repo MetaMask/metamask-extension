@@ -1,56 +1,41 @@
-import { assert } from '@metamask/utils';
-import { getProviderConfig } from '../../../shared/modules/selectors/networks';
-import { NETWORK_TYPES } from '../../../shared/constants/network';
-import AccountTrackerController from '../controllers/account-tracker-controller';
+import { AccountTrackerController } from '@metamask/assets-controllers';
+import { NetworkClientId } from '@metamask/network-controller';
 import { ControllerInitFunction } from './types';
 import {
   AccountTrackerControllerInitMessenger,
   AccountTrackerControllerMessenger,
 } from './messengers';
 
-/**
- * Initialize the account tracker controller.
- *
- * @param request - The request object.
- * @param request.controllerMessenger - The messenger to use for the controller.
- * @param request.initMessenger - The messenger to use for initialization.
- * @returns The initialized controller.
- */
 export const AccountTrackerControllerInit: ControllerInitFunction<
   AccountTrackerController,
   AccountTrackerControllerMessenger,
   AccountTrackerControllerInitMessenger
-> = ({ controllerMessenger, initMessenger }) => {
-  const { provider, blockTracker } =
-    initMessenger.call('NetworkController:getSelectedNetworkClient') ?? {};
+> = ({ controllerMessenger, initMessenger, getController }) => {
+  const getAssetsContractController = () =>
+    getController('AssetsContractController');
 
-  assert(
-    provider,
-    'Provider is required to initialize AccountTrackerController.',
-  );
+  const onboardingController = () => getController('OnboardingController');
 
-  assert(
-    blockTracker,
-    'Block tracker is required to initialize AccountTrackerController.',
-  );
-
+  // TODO: Fix AccountTrackerControllerMessenger type - add AccountTrackerControllerActions & AccountTrackerControllerEvents
+  // TODO: Bump @metamask/network-controller, @metamask/accounts-controller to match assets-controllers
   const controller = new AccountTrackerController({
-    state: { accounts: {} },
     messenger: controllerMessenger,
-    provider,
-    blockTracker,
-    getNetworkIdentifier: (providerConfig): string => {
-      const metamask = initMessenger.call('NetworkController:getState');
-
-      const config =
-        providerConfig ??
-        getProviderConfig({
-          metamask,
-        });
-
-      return config.type === NETWORK_TYPES.RPC && config.rpcUrl
-        ? config.rpcUrl
-        : config.type;
+    getStakedBalanceForChain: (
+      addresses: string[],
+      networkClientId?: NetworkClientId,
+    ) => {
+      const assetsContractController = getAssetsContractController();
+      return assetsContractController.getStakedBalanceForChain(
+        addresses,
+        networkClientId,
+      );
+    },
+    includeStakedAssets: false,
+    allowExternalServices: () => {
+      const { useExternalServices } = initMessenger.call(
+        'PreferencesController:getState',
+      );
+      return useExternalServices;
     },
     accountsApiChainIds: () => {
       const state = initMessenger.call('RemoteFeatureFlagController:getState');
@@ -59,14 +44,10 @@ export const AccountTrackerControllerInit: ControllerInitFunction<
         state?.remoteFeatureFlags?.assetsAccountApiBalances;
 
       return Array.isArray(featureFlagForAccountApiBalances)
-        ? (featureFlagForAccountApiBalances as string[])
+        ? (featureFlagForAccountApiBalances as `0x${string}`[])
         : [];
     },
-  });
-
-  // Ensure `AccountTrackerController` updates balances after network change.
-  initMessenger.subscribe('NetworkController:networkDidChange', () => {
-    controller.updateAccounts();
+    fetchingEnabled: () => onboardingController().state.completedOnboarding,
   });
 
   return {

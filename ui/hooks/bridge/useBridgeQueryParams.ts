@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useCallback, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   CaipAssetType,
   CaipAssetTypeStruct,
@@ -12,8 +12,6 @@ import {
   isCrossChain,
   isNativeAddress,
 } from '@metamask/bridge-controller';
-import { type InternalAccount } from '@metamask/keyring-internal-api';
-import { type NetworkConfiguration } from '@metamask/network-controller';
 import {
   type AssetMetadata,
   fetchAssetMetadataForAssetIds,
@@ -34,6 +32,7 @@ import {
   getFromChains,
   getFromToken,
 } from '../../ducks/bridge/selectors';
+import { type BridgeNetwork } from '../../ducks/bridge/types';
 
 const parseAsset = (assetId: string | null) => {
   if (!assetId) {
@@ -87,8 +86,8 @@ export const useBridgeQueryParams = () => {
 
   const abortController = useRef<AbortController>(new AbortController());
 
-  const { search } = useLocation();
-  const history = useHistory();
+  const { search, pathname } = useLocation();
+  const navigate = useNavigate();
 
   // Parse CAIP asset data
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
@@ -102,9 +101,15 @@ export const useBridgeQueryParams = () => {
           updatedSearchParams.delete(param);
         }
       });
-      history.replace({ search: updatedSearchParams.toString() });
+      navigate(
+        {
+          pathname,
+          search: updatedSearchParams.toString(),
+        },
+        { replace: true },
+      );
     },
-    [search, history],
+    [search, pathname, navigate],
   );
 
   const [parsedFromAssetId, setParsedFromAssetId] =
@@ -166,9 +171,8 @@ export const useBridgeQueryParams = () => {
     (
       fromTokenMetadata,
       fromAsset,
-      networks: NetworkConfiguration[],
-      account: InternalAccount | null,
-      network?: NetworkConfiguration,
+      networks: BridgeNetwork[],
+      network?: BridgeNetwork,
     ) => {
       const { chainId: assetChainId } = fromAsset;
 
@@ -198,8 +202,7 @@ export const useBridgeQueryParams = () => {
           if (targetChain) {
             dispatch(
               setFromChain({
-                networkConfig: targetChain,
-                selectedAccount: account,
+                chainId: targetChain.chainId,
                 token,
               }),
             );
@@ -245,16 +248,9 @@ export const useBridgeQueryParams = () => {
       fromTokenMetadata,
       parsedFromAssetId,
       fromChains,
-      selectedAccount,
       fromChain,
     );
-  }, [
-    assetMetadataByAssetId,
-    parsedFromAssetId,
-    fromChains,
-    fromChain,
-    selectedAccount,
-  ]);
+  }, [assetMetadataByAssetId, parsedFromAssetId, fromChains, fromChain]);
 
   // Set toChainId and toToken
   useEffect(() => {

@@ -1,14 +1,17 @@
+const { DAPP_PATH, DAPP_URL } = require('../constants');
 const { withFixtures, WINDOW_TITLES, unlockWallet } = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
+const FixtureBuilder = require('../fixtures/fixture-builder');
 const {
   mockEthereumProviderSnap,
 } = require('../mock-response-data/snaps/snap-binary-mocks');
-const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap revoke permission', function () {
   it('can revoke a permission', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockEthereumProviderSnap,
         title: this.test.fullTitle(),
@@ -17,7 +20,7 @@ describe('Test Snap revoke permission', function () {
         await unlockWallet(driver);
 
         // navigate to test snaps page and connect to ethereum-provider snap
-        await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
+        await driver.openNewPage(DAPP_URL);
 
         // wait for page to load
         await driver.waitForSelector({
@@ -96,13 +99,13 @@ describe('Test Snap revoke permission', function () {
         // switch to metamask window
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        // wait for and click next
-        await driver.waitForSelector({
-          text: 'Next',
-          tag: 'button',
-        });
+        // wait for and click Connect
         await driver.clickElement({
-          text: 'Next',
+          text: 'Account 1',
+        });
+
+        await driver.clickElement({
+          text: 'Connect',
           tag: 'button',
         });
 
@@ -184,13 +187,14 @@ describe('Test Snap revoke permission', function () {
         // switch to metamask dialog
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        // wait for and click next
-        await driver.waitForSelector({
-          text: 'Next',
-          tag: 'button',
-        });
+        // BUG #38447 - When connecting account with Snap on BIP44 no account is preselected in the UI
+        // This click should be removed after the fix.
         await driver.clickElement({
-          text: 'Next',
+          text: 'Account 1',
+        });
+
+        await driver.clickElement({
+          text: 'Connect',
           tag: 'button',
         });
 

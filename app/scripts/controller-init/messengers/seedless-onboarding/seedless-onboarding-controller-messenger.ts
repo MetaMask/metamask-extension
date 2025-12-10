@@ -1,4 +1,4 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import {
   KeyringControllerLockEvent,
   KeyringControllerUnlockEvent,
@@ -12,6 +12,7 @@ import {
   OAuthServiceRevokeRefreshTokenAction,
   OAuthServiceRenewRefreshTokenAction,
 } from '../../../services/oauth/types';
+import { RootMessenger } from '../../../lib/messenger';
 
 type MessengerActions = SeedlessOnboardingControllerGetStateAction;
 
@@ -32,12 +33,16 @@ export type SeedlessOnboardingControllerMessenger = ReturnType<
  * @returns The restricted messenger.
  */
 export function getSeedlessOnboardingControllerMessenger(
-  messenger: Messenger<MessengerActions, MessengerEvents>,
+  messenger: RootMessenger<MessengerActions, MessengerEvents>,
 ) {
-  return messenger.getRestricted({
-    name: 'SeedlessOnboardingController',
-    allowedActions: [],
-    allowedEvents: [],
+  return new Messenger<
+    'SeedlessOnboardingController',
+    MessengerActions,
+    MessengerEvents,
+    typeof messenger
+  >({
+    namespace: 'SeedlessOnboardingController',
+    parent: messenger,
   });
 }
 
@@ -59,15 +64,24 @@ export type SeedlessOnboardingControllerInitMessenger = ReturnType<
  * @returns The restricted messenger.
  */
 export function getSeedlessOnboardingControllerInitMessenger(
-  messenger: Messenger<InitActions, never>,
+  messenger: RootMessenger<InitActions, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'SeedlessOnboardingControllerInit',
-    allowedEvents: [],
-    allowedActions: [
+  const controllerInitMessenger = new Messenger<
+    'SeedlessOnboardingControllerInit',
+    InitActions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'SeedlessOnboardingControllerInit',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    actions: [
       'OAuthService:getNewRefreshToken',
       'OAuthService:revokeRefreshToken',
       'OAuthService:renewRefreshToken',
     ],
   });
+  return controllerInitMessenger;
 }

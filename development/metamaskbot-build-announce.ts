@@ -1,5 +1,6 @@
 import startCase from 'lodash/startCase';
 import { version as VERSION } from '../package.json';
+import { getPageLoadBenchmarkComment } from './page-load-benchmark-pr-comment';
 import { postCommentWithMetamaskBot } from './utils/benchmark-utils';
 
 const benchmarkPlatforms = ['chrome', 'firefox'];
@@ -60,6 +61,8 @@ async function start(): Promise<void> {
     HEAD_COMMIT_HASH,
     MERGE_BASE_COMMIT_HASH,
     HOST_URL,
+    LAVAMOAT_POLICY_CHANGED,
+    POST_NEW_BUILDS,
   } = process.env as Record<string, string>;
 
   if (!PR_NUMBER) {
@@ -155,9 +158,19 @@ async function start(): Promise<void> {
 
   const allArtifactsUrl = `https://github.com/${OWNER}/${REPOSITORY}/actions/runs/${RUN_ID}#artifacts`;
 
-  const contentRows = [
-    ...buildContentRows,
-    `build viz: ${depVizLink}`,
+  const contentRows = [];
+
+  // Only post new Extension builds if this run is not using old builds
+  if (POST_NEW_BUILDS === 'true') {
+    contentRows.push(...buildContentRows);
+  }
+
+  // Only show lavamoat build viz link if the policy files changed
+  if (LAVAMOAT_POLICY_CHANGED === 'true') {
+    contentRows.push(`lavamoat build viz: ${depVizLink}`);
+  }
+
+  contentRows.push(
     `bundle size: ${bundleSizeStatsLink}`,
     `user-actions-benchmark: ${userActionsStatsLink}`,
     `storybook: ${storybookLink}`,
@@ -167,7 +180,8 @@ async function start(): Promise<void> {
        <summary>bundle viz:</summary>
        ${bundleMarkup}
      </details>`,
-  ];
+  );
+
   const hiddenContent = `<ul>${contentRows
     .map((row) => `<li>${row}</li>`)
     .join('\n')}</ul>`;
@@ -321,6 +335,12 @@ async function start(): Promise<void> {
     }
   } else {
     console.log(`No results for ${summaryPlatform} found; skipping benchmark`);
+  }
+
+  // Add the page load benchmark results
+  const pageLoadBenchmarkComment = await getPageLoadBenchmarkComment();
+  if (pageLoadBenchmarkComment) {
+    commentBody += pageLoadBenchmarkComment;
   }
 
   try {

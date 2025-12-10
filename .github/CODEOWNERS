@@ -13,13 +13,13 @@
 # audit these changes on their own, and leave their analysis in a comment.
 # These codeowners will review this analysis, and review the policy changes in
 # further detail if warranted.
-lavamoat/                            @MetaMask/extension-devs @MetaMask/policy-reviewers @MetaMask/supply-chain
+lavamoat/                            @MetaMask/policy-reviewers
 
 # The offscreen.ts script file that is included in the offscreen document html
 # file is responsible, at present, for loading the snaps execution environment
 # for MV3. Any changes to this file should require at least one member of the
 # snaps development team to review and approve the changes.
-offscreen/scripts/offscreen.ts       @MetaMask/core-platform
+app/offscreen/offscreen.ts       @MetaMask/core-platform
 
 
 # The privacy-snapshot.json file includes a list of all hosts that the
@@ -118,21 +118,41 @@ ui/components/multichain/account-list-item-menu/ @MetaMask/accounts-engineers @M
 # Web3Auth / Onboarding
 ui/pages/onboarding-flow              @MetaMask/web3auth
 
+# Web3Auth / Shield
+app/scripts/controller-init/claims              @MetaMask/web3auth
+app/scripts/controller-init/shield              @MetaMask/web3auth
+app/scripts/controller-init/subscription        @MetaMask/web3auth
+shared/lib/shield.ts                            @MetaMask/web3auth
+ui/components/app/modals/add-funds-modal        @MetaMask/web3auth
+ui/components/app/shield-entry-modal            @MetaMask/web3auth
+ui/contexts/claims                              @MetaMask/web3auth
+ui/contexts/shield                              @MetaMask/web3auth
+ui/hooks/claims                                 @MetaMask/web3auth
+ui/hooks/subscription                           @MetaMask/web3auth
+ui/pages/shield-plan                            @MetaMask/web3auth
+ui/pages/settings/transaction-shield-tab        @MetaMask/web3auth
+
 # Confirmations team to own code for confirmations on UI.
-app/scripts/controller-init/confirmations                         @MetaMask/confirmations
-app/scripts/lib/ppom                                              @MetaMask/confirmations
-app/scripts/lib/signature                                         @MetaMask/confirmations
-app/scripts/lib/transaction/decode                                @MetaMask/confirmations
-app/scripts/lib/transaction/metrics.*                             @MetaMask/confirmations
-app/scripts/lib/transaction/util.*                                @MetaMask/confirmations
-ui/pages/confirmations                                            @MetaMask/confirmations
-ui/components/multichain/pages/send                               @MetaMask/confirmations
+app/scripts/controller-init/confirmations                                           @MetaMask/confirmations
+app/scripts/lib/ppom                                                                @MetaMask/confirmations
+app/scripts/lib/signature                                                           @MetaMask/confirmations
+app/scripts/lib/transaction/decode                                                  @MetaMask/confirmations
+app/scripts/lib/transaction/metrics.*                                               @MetaMask/confirmations
+app/scripts/lib/transaction/util.*                                                  @MetaMask/confirmations
+ui/pages/confirmations                                                              @MetaMask/confirmations
+ui/components/multichain/pages/send                                                 @MetaMask/confirmations
+ui/pages/confirmations/components/confirm/footer                                    @MetaMask/confirmations @MetaMask/web3auth
+ui/pages/confirmations/components/confirm/info/shield-subscription-approve          @MetaMask/confirmations @MetaMask/web3auth
+ui/pages/confirmations/hooks/alerts/useShieldCoverageAlert.test.ts                  @MetaMask/confirmations @MetaMask/web3auth
+ui/pages/confirmations/hooks/alerts/useShieldCoverageAlert.ts                       @MetaMask/confirmations @MetaMask/web3auth
+ui/pages/confirmations/hooks/alerts/transactions/ShieldCoverageAlertMessage.tsx     @MetaMask/confirmations @MetaMask/web3auth
+ui/pages/confirmations/hooks/transactions/useEnableShieldCoverageChecks.ts          @MetaMask/confirmations @MetaMask/web3auth
+ui/pages/confirmations/hooks/transactions/useEnableShieldCoverageChecks.test.ts     @MetaMask/confirmations @MetaMask/web3auth
 
 # Assets
 ui/components/app/detected-token                   @MetaMask/metamask-assets
 ui/components/app/import-token                        @MetaMask/metamask-assets
 ui/components/app/assets                              @MetaMask/metamask-assets
-ui/components/ui/deprecated-networks                  @MetaMask/metamask-assets
 ui/components/ui/nft-collection-image                 @MetaMask/metamask-assets
 
 # Extension Platform
@@ -142,15 +162,21 @@ ui/components/ui/nft-collection-image                 @MetaMask/metamask-assets
 app/scripts/controller-init/smart-transactions    @MetaMask/transactions
 app/scripts/lib/smart-transaction                 @MetaMask/transactions
 
+# New networks
+shared/lib/multichain/addresses/* @MetaMask/new-networks
+
 # QA Team - E2E Framework
-test/e2e/page-objects/                    @MetaMask/qa
-test/e2e/seeder/                          @MetaMask/qa
-test/e2e/default-fixture.js               @MetaMask/qa
-test/e2e/fixture-builder.js               @MetaMask/qa
-test/e2e/fixture-server.js                @MetaMask/qa
-test/e2e/helpers.js                       @MetaMask/qa
-test/e2e/mock-e2e-allowlist.js            @MetaMask/qa
-test/e2e/mock-e2e.js                      @MetaMask/qa
+test/e2e/page-objects/                                               @MetaMask/qa
+test/e2e/seeder/                                                     @MetaMask/qa
+test/e2e/default-fixture.js                                          @MetaMask/qa
+test/e2e/fixture-builder.js                                          @MetaMask/qa
+test/e2e/fixture-server.js                                           @MetaMask/qa
+test/e2e/helpers.js                                                  @MetaMask/qa
+test/e2e/mock-e2e-allowlist.js                                       @MetaMask/qa
+test/e2e/mock-e2e.js                                                 @MetaMask/qa
+test/e2e/tests/settings/state-logs-helpers.ts                        @MetaMask/qa
+test/e2e/tests/settings/state-logs.json                              @MetaMask/qa @MetaMask/extension-privacy-reviewers
+test/e2e/tests/privacy/privacy-max-allowlist-onboarding.json         @MetaMask/qa @MetaMask/extension-privacy-reviewers
 
 # Wallet Integrations
 app/scripts/lib/rpc-method-middleware                                 @MetaMask/wallet-integrations
@@ -160,7 +186,7 @@ test/e2e/playwright/benchmark                                         @MetaMask/
 test/e2e/flask/multichain-api                                         @MetaMask/wallet-integrations
 # TODO CONSOLIDATE THE MIDDLEWARE BELOW INTO THE RPC-METHOD-MIDDLEWARE FOLDER
 app/scripts/lib/createRPCMethodTrackingMiddleware.js                  @MetaMask/wallet-integrations
-app/scripts/lib/createMetamaskMiddleware.js                           @MetaMask/wallet-integrations
+app/scripts/lib/createMetamaskMiddleware.ts                           @MetaMask/wallet-integrations
 app/scripts/lib/createOnboardingMiddleware.js                         @MetaMask/wallet-integrations
 app/scripts/lib/createMetaRPCHandler.js                               @MetaMask/wallet-integrations
 app/scripts/lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware.ts @MetaMask/wallet-integrations

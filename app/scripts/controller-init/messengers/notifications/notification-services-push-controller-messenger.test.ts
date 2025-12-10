@@ -1,4 +1,5 @@
-import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
+import { getRootMessenger } from '../../../lib/messenger';
 import {
   getNotificationServicesPushControllerMessenger,
   getNotificationServicesPushControllerInitMessenger,
@@ -6,24 +7,20 @@ import {
 
 describe('getNotificationServicesPushControllerMessenger', () => {
   it('returns a restricted messenger', () => {
-    const messenger = new Messenger<never, never>();
+    const messenger = getRootMessenger<never, never>();
     const authenticationControllerMessenger =
       getNotificationServicesPushControllerMessenger(messenger);
 
-    expect(authenticationControllerMessenger).toBeInstanceOf(
-      RestrictedMessenger,
-    );
+    expect(authenticationControllerMessenger).toBeInstanceOf(Messenger);
   });
 });
 
 describe('getNotificationServicesPushControllerInitMessenger', () => {
   it('returns a restricted messenger', () => {
-    const messenger = new Messenger<never, never>();
+    const messenger = getRootMessenger<never, never>();
     const authenticationControllerMessenger =
       getNotificationServicesPushControllerInitMessenger(messenger);
 
-    expect(authenticationControllerMessenger).toBeInstanceOf(
-      RestrictedMessenger,
-    );
+    expect(authenticationControllerMessenger).toBeInstanceOf(Messenger);
   });
 });

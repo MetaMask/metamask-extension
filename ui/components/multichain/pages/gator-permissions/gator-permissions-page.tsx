@@ -1,7 +1,6 @@
 import React, { useRef } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { isSnapId } from '@metamask/snaps-utils';
 import { Content, Header, Page } from '../page';
 import {
   ButtonIcon,
@@ -31,28 +30,25 @@ import {
   TOKEN_TRANSFER_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { useGatorPermissions } from '../../../../hooks/gator-permissions/useGatorPermissions';
-import { getConnectedSitesListWithNetworkInfo } from '../../../../selectors';
 import {
   AppState,
   getAggregatedGatorPermissionsCountAcrossAllChains,
+  getTotalUniqueSitesCount,
 } from '../../../../selectors/gator-permissions/gator-permissions';
 import { PermissionListItem } from './components/permission-list-item';
 
 export const GatorPermissionsPage = () => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const headerRef = useRef<HTMLSpanElement>(null);
-  const sitesConnectionsList = useSelector(
-    getConnectedSitesListWithNetworkInfo,
-  );
   const totalGatorPermissions = useSelector((state: AppState) =>
     getAggregatedGatorPermissionsCountAcrossAllChains(state, 'token-transfer'),
   );
-  const totalSitesConnections = Object.keys(sitesConnectionsList).filter(
-    (site) => !isSnapId(site),
-  ).length;
+  const totalSitesConnections = useSelector(getTotalUniqueSitesCount);
   const totalPermissions = totalGatorPermissions + totalSitesConnections;
 
+  // Hook uses cache-first strategy: returns cached data immediately if available,
+  // then refreshes in background. Loading is only true on initial load with no cache.
   const { loading: gatorPermissionsLoading } = useGatorPermissions();
 
   const handlePermissionGroupNameClick = async (
@@ -60,10 +56,10 @@ export const GatorPermissionsPage = () => {
   ) => {
     switch (permissionGroupName) {
       case 'sites':
-        history.push(PERMISSIONS);
+        navigate(PERMISSIONS);
         break;
       case 'token-transfer':
-        history.push(TOKEN_TRANSFER_ROUTE);
+        navigate(TOKEN_TRANSFER_ROUTE);
         break;
       default:
         console.error('Invalid permission group name:', permissionGroupName);
@@ -199,7 +195,7 @@ export const GatorPermissionsPage = () => {
             iconName={IconName.ArrowLeft}
             className="connections-header__start-accessory"
             color={IconColor.iconDefault}
-            onClick={() => history.push(DEFAULT_ROUTE)}
+            onClick={() => navigate(DEFAULT_ROUTE)}
             size={ButtonIconSize.Sm}
           />
         }

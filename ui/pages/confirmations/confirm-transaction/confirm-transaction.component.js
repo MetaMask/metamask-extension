@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Route, Switch, useHistory, useParams } from 'react-router-dom';
+import { Routes, Route, useNavigate, useParams } from 'react-router-dom';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ORIGIN_METAMASK,
@@ -15,18 +15,18 @@ import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { getSendTo } from '../../../ducks/send';
 import { getSelectedNetworkClientId } from '../../../../shared/modules/selectors/networks';
 import {
-  CONFIRM_TRANSACTION_ROUTE,
   DECRYPT_MESSAGE_REQUEST_PATH,
   DEFAULT_ROUTE,
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
 } from '../../../helpers/constants/routes';
+import { toRelativeRoutePath } from '../../routes/utils';
 import { isTokenMethodAction } from '../../../helpers/utils/transactions.util';
 import usePolling from '../../../hooks/usePolling';
 import { usePrevious } from '../../../hooks/usePrevious';
 import {
   unconfirmedTransactionsHashSelector,
   unconfirmedTransactionsListSelector,
-  use4ByteResolutionSelector,
+  getUse4ByteResolution,
 } from '../../../selectors';
 import {
   endBackgroundTrace,
@@ -49,8 +49,10 @@ import ConfirmTokenTransactionSwitch from './confirm-token-transaction-switch';
 
 const ConfirmTransaction = () => {
   const dispatch = useDispatch();
-  const history = useHistory();
-  const { id: paramsTransactionId } = useParams();
+  const navigate = useNavigate();
+  const urlParams = useParams();
+
+  const { id: paramsTransactionId } = urlParams;
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const sendTo = useSelector(getSendTo);
@@ -71,8 +73,10 @@ const ConfirmTransaction = () => {
     unconfirmedTxsSorted,
   ]);
   const [transaction, setTransaction] = useState(getTransaction);
-  const use4ByteResolution = useSelector(use4ByteResolutionSelector);
-  const { currentConfirmation } = useCurrentConfirmation();
+
+  const use4ByteResolution = useSelector(getUse4ByteResolution);
+  // Pass the transaction ID from route params so useCurrentConfirmation can find the approval
+  const { currentConfirmation } = useCurrentConfirmation(paramsTransactionId);
 
   useEffect(() => {
     const tx = getTransaction();
@@ -137,38 +141,40 @@ const ConfirmTransaction = () => {
         dispatch(setTransactionToConfirm(txId));
       }
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    if (
-      paramsTransactionId &&
-      transactionId &&
-      prevParamsTransactionId !== paramsTransactionId
-    ) {
-      const { txData: { txParams: { data } = {}, origin } = {} } = transaction;
+    const handleNavigation = async () => {
+      if (
+        paramsTransactionId &&
+        transactionId &&
+        prevParamsTransactionId !== paramsTransactionId
+      ) {
+        const { txData: { txParams: { data } = {}, origin } = {} } =
+          transaction;
 
-      dispatch(clearConfirmTransaction());
-      dispatch(setTransactionToConfirm(paramsTransactionId));
-      if (origin !== ORIGIN_METAMASK) {
-        dispatch(getContractMethodData(data, use4ByteResolution));
+        dispatch(clearConfirmTransaction());
+        dispatch(setTransactionToConfirm(paramsTransactionId));
+        if (origin !== ORIGIN_METAMASK) {
+          dispatch(getContractMethodData(data, use4ByteResolution));
+        }
+      } else if (prevTransactionId && !transactionId && !totalUnapproved) {
+        await dispatch(setDefaultHomeActiveTabName('activity'));
+        navigate(DEFAULT_ROUTE, { replace: true });
+      } else if (
+        prevTransactionId &&
+        transactionId &&
+        prevTransactionId !== transactionId &&
+        paramsTransactionId !== transactionId
+      ) {
+        navigate(mostRecentOverviewPage, { replace: true });
       }
-    } else if (prevTransactionId && !transactionId && !totalUnapproved) {
-      dispatch(setDefaultHomeActiveTabName('activity')).then(() => {
-        history.replace(DEFAULT_ROUTE);
-      });
-    } else if (
-      prevTransactionId &&
-      transactionId &&
-      prevTransactionId !== transactionId &&
-      paramsTransactionId !== transactionId
-    ) {
-      history.replace(mostRecentOverviewPage);
-    }
+    };
+
+    handleNavigation();
   }, [
     dispatch,
-    history,
+    navigate,
     mostRecentOverviewPage,
     paramsTransactionId,
     prevParamsTransactionId,
@@ -184,7 +190,7 @@ const ConfirmTransaction = () => {
   // Once we migrate all confirmations to new designs we can get rid of this code
   // and render <Confirm /> component for all confirmation requests.
   if (currentConfirmation) {
-    return <Confirm />;
+    return <Confirm confirmationId={paramsTransactionId} />;
   }
 
   if (isValidTokenMethod && isValidTransactionId) {
@@ -193,23 +199,23 @@ const ConfirmTransaction = () => {
   // Show routes when state.confirmTransaction has been set and when either the ID in the params
   // isn't specified or is specified and matches the ID in state.confirmTransaction in order to
   // support URLs of /confirm-transaction or /confirm-transaction/<transactionId>
-  return isValidTransactionId ? (
-    <Switch>
-      <Route
-        exact
-        path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${DECRYPT_MESSAGE_REQUEST_PATH}`}
-        component={ConfirmDecryptMessage}
-      />
-      <Route
-        exact
-        path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`}
-        component={ConfirmEncryptionPublicKey}
-      />
-      <Route path="*" component={ConfirmTransactionSwitch} />
-    </Switch>
-  ) : (
-    <Loading />
-  );
+  if (isValidTransactionId) {
+    return (
+      <Routes>
+        <Route
+          path={toRelativeRoutePath(DECRYPT_MESSAGE_REQUEST_PATH)}
+          element={<ConfirmDecryptMessage />}
+        />
+        <Route
+          path={toRelativeRoutePath(ENCRYPTION_PUBLIC_KEY_REQUEST_PATH)}
+          element={<ConfirmEncryptionPublicKey />}
+        />
+        <Route path="*" element={<ConfirmTransactionSwitch />} />
+      </Routes>
+    );
+  }
+
+  return <Loading />;
 };
 
 export default ConfirmTransaction;

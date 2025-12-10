@@ -1,10 +1,6 @@
 import { withFixtures, WINDOW_TITLES } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
-import {
-  ACCOUNT_TYPE,
-  DEFAULT_FIXTURE_ACCOUNT,
-  DAPP_HOST_ADDRESS,
-} from '../../constants';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import { DEFAULT_FIXTURE_ACCOUNT, DAPP_HOST_ADDRESS } from '../../constants';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import Homepage from '../../page-objects/pages/home/homepage';
@@ -13,13 +9,13 @@ import SitePermissionPage from '../../page-objects/pages/permission/site-permiss
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
-const accountLabel2 = '2nd custom name';
-const accountLabel3 = '3rd custom name';
+const accountLabel2 = 'Account 2';
+const accountLabel3 = 'Account 3';
 describe('Edit Accounts Permissions', function () {
   it('should be able to edit accounts', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },
@@ -40,20 +36,19 @@ describe('Edit Accounts Permissions', function () {
         // create second account with custom label
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
-        await accountListPage.addAccount({
-          accountType: ACCOUNT_TYPE.Ethereum,
-          accountName: accountLabel2,
-        });
+        await accountListPage.addMultichainAccount();
+        await accountListPage.checkAccountDisplayedInAccountList(accountLabel2);
+        await accountListPage.closeMultichainAccountsPage();
+
         const homepage = new Homepage(driver);
         await homepage.checkExpectedBalanceIsDisplayed();
 
         // create third account with custom label
         await homepage.headerNavbar.openAccountMenu();
         await accountListPage.checkPageIsLoaded();
-        await accountListPage.addAccount({
-          accountType: ACCOUNT_TYPE.Ethereum,
-          accountName: accountLabel3,
-        });
+        await accountListPage.addMultichainAccount();
+        await accountListPage.checkAccountDisplayedInAccountList(accountLabel3);
+        await accountListPage.closeMultichainAccountsPage();
         await homepage.checkExpectedBalanceIsDisplayed();
 
         // go to connections permissions page

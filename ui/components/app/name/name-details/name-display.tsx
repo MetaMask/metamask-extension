@@ -18,6 +18,10 @@ export type NameDisplayProps = {
   variation: string;
   handleClick?: () => void;
   showFullName?: boolean;
+  /**
+   * The fallback value to display if the name is not found or cannot be resolved.
+   */
+  fallbackName?: string;
 };
 
 const NameDisplay = memo(
@@ -28,6 +32,7 @@ const NameDisplay = memo(
     variation,
     handleClick,
     showFullName = false,
+    fallbackName,
     ...props
   }: NameDisplayProps) => {
     const { name, image, icon, displayState, isAccount } = useDisplayName({
@@ -64,11 +69,12 @@ const NameDisplay = memo(
     };
 
     const renderName = () => {
-      if (!name) {
+      const nameWithFallbackValue = name || fallbackName;
+      if (!nameWithFallbackValue) {
         return <FormattedName value={value} type={type} {...props} />;
       }
 
-      if (showFullName) {
+      if (name && showFullName) {
         return (
           <Text className="name__name" variant={TextVariant.bodyMd} {...props}>
             {name}
@@ -76,7 +82,7 @@ const NameDisplay = memo(
         );
       }
 
-      return <ShortenedName name={name} {...props} />;
+      return <ShortenedName name={nameWithFallbackValue} {...props} />;
     };
 
     return (

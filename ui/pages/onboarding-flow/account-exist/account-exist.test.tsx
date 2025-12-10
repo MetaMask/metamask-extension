@@ -14,9 +14,9 @@ import AccountExist from './account-exist';
 
 const mockUseNavigate = jest.fn();
 
-jest.mock('react-router-dom-v5-compat', () => {
+jest.mock('react-router-dom', () => {
   return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
+    ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
   };
 });
@@ -46,10 +46,6 @@ describe('Account Exist Seedless Onboarding View', () => {
   });
 
   it('should navigate to the unlock page when the button is clicked', async () => {
-    const setFirstTimeFlowTypeSpy = jest
-      .spyOn(Actions, 'setFirstTimeFlowType')
-      .mockReturnValue(jest.fn().mockResolvedValueOnce(null));
-
     const { getByText } = renderWithProvider(<AccountExist />, customMockStore);
     const loginButton = getByText('Log in');
     fireEvent.click(loginButton);
@@ -58,18 +54,15 @@ describe('Account Exist Seedless Onboarding View', () => {
       expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_UNLOCK_ROUTE, {
         replace: true,
       });
-      expect(setFirstTimeFlowTypeSpy).toHaveBeenCalledWith(
-        FirstTimeFlowType.socialImport,
-      );
     });
   });
 
-  it('should navigate to the welcome page when the firstTimeFlowType is not socialCreate', () => {
+  it('should navigate to the welcome page when the firstTimeFlowType is not socialImport', () => {
     const store = configureMockStore([thunk])({
       ...mockState,
       metamask: {
         ...mockState.metamask,
-        firstTimeFlowType: FirstTimeFlowType.socialImport,
+        firstTimeFlowType: FirstTimeFlowType.socialCreate,
       },
     });
 

@@ -2,8 +2,13 @@ import {
   TokenRatesController,
   TokenRatesControllerMessenger,
 } from '@metamask/assets-controllers';
-import { ActionConstraint, Messenger } from '@metamask/base-controller';
 import { PreferencesController } from '@metamask/preferences-controller';
+import {
+  Messenger,
+  ActionConstraint,
+  MOCK_ANY_NAMESPACE,
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ControllerInitRequest } from '../types';
 import {
@@ -51,9 +56,12 @@ function buildInitRequestMock(): jest.Mocked<
   >
 > {
   const baseControllerMessenger = new Messenger<
+    MockAnyNamespace,
     PreferencesControllerGetStateAction | ActionConstraint,
     never
-  >();
+  >({
+    namespace: MOCK_ANY_NAMESPACE,
+  });
 
   baseControllerMessenger.registerActionHandler(
     'PreferencesController:getState',

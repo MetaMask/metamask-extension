@@ -1,13 +1,18 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-
-import ReactRouterDOM from 'react-router-dom';
-
+import { Provider } from 'react-redux';
+import { render } from '@testing-library/react';
+import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import * as ConfirmTransactionDucks from '../../../ducks/confirm-transaction/confirm-transaction.duck';
 import * as Actions from '../../../store/actions';
 import _mockState from '../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import {
+  renderWithProvider,
+  I18nProvider,
+  en,
+} from '../../../../test/lib/render-helpers-navigate';
+import { LegacyI18nProvider } from '../../../contexts/i18n';
 import { setBackgroundConnection } from '../../../store/background-connection';
 
 import {
@@ -50,25 +55,19 @@ jest.mock(
     setTransactionToConfirm: jest.fn().mockImplementation((txId) => {
       return { type: 'mock-set-transaction-to-confirm', value: txId };
     }),
+    clearConfirmTransaction: jest.fn().mockImplementation(() => {
+      return { type: 'mock-clear-confirm-transaction' };
+    }),
   }),
 );
 
+const mockUseNavigate = jest.fn();
+const mockUseSearchParams = jest.fn();
 jest.mock('react-router-dom', () => {
-  const original = jest.requireActual('react-router-dom');
   return {
-    ...original,
-    useHistory: () => ({
-      replace: jest.fn(),
-    }),
-  };
-});
-
-jest.mock('react-router-dom-v5-compat', () => {
-  const original = jest.requireActual('react-router-dom-v5-compat');
-  return {
-    ...original,
-    useNavigate: () => jest.fn(),
-    useSearchParams: () => [new URLSearchParams(''), jest.fn()],
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockUseNavigate,
+    useSearchParams: () => mockUseSearchParams(),
   };
 });
 
@@ -109,10 +108,13 @@ jest.mock('../confirm-transaction-switch', () => {
 
 describe('Confirmation Transaction Page', () => {
   beforeEach(() => {
+    jest.clearAllMocks();
     jest
       .spyOn(Actions, 'gasFeeStartPollingByNetworkClientId')
       .mockResolvedValue(null);
+    mockUseSearchParams.mockReturnValue([new URLSearchParams(''), jest.fn()]);
   });
+
   it('should display the Loading component when the transaction is invalid', () => {
     const mockStore = configureMockStore(middleware)({
       ...mockState,
@@ -138,11 +140,37 @@ describe('Confirmation Transaction Page', () => {
     [ENCRYPTION_PUBLIC_KEY_REQUEST_PATH, '.mock-confirm-encryption-public-key'],
   ].forEach(([componentPath, mockClassNameMatch]) => {
     it(`should render "${componentPath}" route`, () => {
-      const mockStore = configureMockStore(middleware)(mockState);
-      const { container } = renderWithProvider(
-        <ConfirmTransaction />,
-        mockStore,
-        `${CONFIRM_TRANSACTION_ROUTE}/${mockUnapprovedTx.id}${componentPath}`,
+      // Use string ID to match what useParams() returns
+      const txId = String(mockUnapprovedTx.id);
+      // Update the state to use string ID for consistency
+      const stateWithStringId = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          transactions: mockState.metamask.transactions.map((tx) => ({
+            ...tx,
+            id: String(tx.id),
+          })),
+        },
+      };
+      const mockStore = configureMockStore(middleware)(stateWithStringId);
+      const fullPath = `${CONFIRM_TRANSACTION_ROUTE}/${txId}${componentPath}`;
+      // Wrap in Routes with parent route to properly handle nested routing
+      const { container } = render(
+        <Provider store={mockStore}>
+          <I18nProvider currentLocale="en" current={en} en={en}>
+            <LegacyI18nProvider>
+              <MemoryRouter initialEntries={[fullPath]}>
+                <Routes>
+                  <Route
+                    path={`${CONFIRM_TRANSACTION_ROUTE}/:id/*`}
+                    element={<ConfirmTransaction />}
+                  />
+                </Routes>
+              </MemoryRouter>
+            </LegacyI18nProvider>
+          </I18nProvider>
+        </Provider>,
       );
 
       expect(container.querySelector(mockClassNameMatch)).toBeInTheDocument();
@@ -190,9 +218,7 @@ describe('Confirmation Transaction Page', () => {
         ...mockState,
         metamask: { ...mockState.metamask, transactions: [] },
       });
-      jest.spyOn(ReactRouterDOM, 'useParams').mockImplementation(() => {
-        return { id: null };
-      });
+      mockUseSearchParams.mockReturnValue([new URLSearchParams(''), jest.fn()]);
       ConfirmTransactionDucks.setTransactionToConfirm.mockClear();
 
       renderWithProvider(<ConfirmTransaction />, mockStore);
@@ -203,17 +229,10 @@ describe('Confirmation Transaction Page', () => {
     });
 
     describe('when unapproved transactions exist or a sendTo recipient exists', () => {
-      it('should not call history.replace(mostRecentOverviewPage)', () => {
+      it('should not call navigate(mostRecentOverviewPage)', () => {
         const mockStore = configureMockStore(middleware)(mockState);
-        const replaceSpy = jest.fn();
-        jest.spyOn(ReactRouterDOM, 'useHistory').mockImplementation(() => {
-          return {
-            replace: replaceSpy,
-          };
-        });
-
         renderWithProvider(<ConfirmTransaction />, mockStore);
-        expect(replaceSpy).not.toHaveBeenCalled();
+        expect(mockUseNavigate).not.toHaveBeenCalled();
       });
     });
   });

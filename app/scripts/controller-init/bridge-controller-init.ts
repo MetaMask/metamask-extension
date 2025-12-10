@@ -3,24 +3,18 @@ import {
   BridgeController,
   UNIFIED_SWAP_BRIDGE_EVENT_CATEGORY,
 } from '@metamask/bridge-controller';
-import { handleFetch } from '@metamask/controller-utils';
+import { handleFetch, HttpError } from '@metamask/controller-utils';
 import { TransactionController } from '@metamask/transaction-controller';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import { trace } from '../../../shared/lib/trace';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
+import { MINUTE, SECOND } from '../../../shared/constants/time';
 import { getEnvironmentType } from '../lib/util';
 import { ControllerInitFunction } from './types';
 import {
   BridgeControllerInitMessenger,
   BridgeControllerMessenger,
 } from './messengers';
-
-type FetchWithCacheOptions = {
-  cacheOptions?: {
-    cacheRefreshTime: number;
-  };
-  functionName?: string;
-};
 
 /**
  * Initialize the bridge controller.
@@ -40,6 +34,12 @@ export const BridgeControllerInit: ControllerInitFunction<
     'TransactionController',
   ) as TransactionController;
 
+  if (!process.env.METAMASK_VERSION) {
+    throw new Error(
+      'process.env.METAMASK_VERSION is not defined but is required by the BridgeController',
+    );
+  }
+
   const controller = new BridgeController({
     messenger: controllerMessenger,
     clientId: BridgeClientId.EXTENSION,
@@ -49,27 +49,42 @@ export const BridgeControllerInit: ControllerInitFunction<
     getLayer1GasFee: (...args) =>
       transactionController.getLayer1GasFee(...args),
 
-    fetchFn: async (
-      url,
-      {
-        cacheOptions,
-        functionName,
-        ...requestOptions
-      }: FetchWithCacheOptions = {},
-    ) => {
-      if (functionName === 'fetchBridgeTokens') {
+    fetchFn: async (url, requestOptions) => {
+      const urlString = url.toString();
+      // Cache token list for 10 minutes
+      if (urlString.includes('getTokens')) {
         return await fetchWithCache({
-          url: url.toString(),
+          url: urlString,
           fetchOptions: { method: 'GET', ...requestOptions },
-          cacheOptions,
-          functionName,
+          cacheOptions: { cacheRefreshTime: 10 * MINUTE },
+          functionName: 'fetchBridgeTokens',
         });
       }
-
-      return await handleFetch(url, {
-        method: 'GET',
-        ...requestOptions,
-      });
+      // Cache spot prices for 30 seconds
+      if (urlString.includes('spot-prices')) {
+        return await fetchWithCache({
+          url: urlString,
+          fetchOptions: { method: 'GET', ...requestOptions },
+          cacheOptions: { cacheRefreshTime: 30 * SECOND },
+          functionName: 'fetchAssetExchangeRates',
+        });
+      }
+      // Use handleFetch for getQuote
+      if (urlString.includes('getQuote?')) {
+        return await handleFetch(url, {
+          method: 'GET',
+          ...requestOptions,
+        });
+      }
+      // Use fetch for all other requests
+      const response = await fetch(url, requestOptions);
+      if (!response.ok) {
+        throw new HttpError(
+          response.status,
+          `Fetch failed with status '${response.status}' for request ${urlString}`,
+        );
+      }
+      return response;
     },
 
     trackMetaMetricsFn: (event, properties) => {

@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import classnames from 'classnames';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import {
@@ -86,14 +86,17 @@ function hasDuplicateSymbolAndDiffAddress(suggestedTokens, tokens) {
 const ConfirmAddSuggestedToken = () => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
-  const history = useHistory();
-
+  const navigate = useNavigate();
   const location = useLocation();
+
   const hasAppHeader = location?.pathname ? !hideAppHeader({ location }) : true;
 
-  const classNames = classnames('confirm-add-suggested-token page-container', {
-    'confirm-add-suggested-token--has-app-header-multichain': hasAppHeader,
-  });
+  const classNames = classnames(
+    'confirm-add-suggested-token page-container h-full',
+    {
+      'confirm-add-suggested-token--has-app-header-multichain': hasAppHeader,
+    },
+  );
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const suggestedTokens = useSelector(getSuggestedTokens);
@@ -154,8 +157,8 @@ const ConfirmAddSuggestedToken = () => {
         });
       }),
     );
-    history.push(mostRecentOverviewPage);
-  }, [dispatch, history, trackEvent, mostRecentOverviewPage, suggestedTokens]);
+    navigate(mostRecentOverviewPage);
+  }, [dispatch, navigate, trackEvent, mostRecentOverviewPage, suggestedTokens]);
 
   const handleCancelTokenClick = useCallback(async () => {
     await Promise.all(
@@ -168,18 +171,17 @@ const ConfirmAddSuggestedToken = () => {
         ),
       ),
     );
-    history.push(mostRecentOverviewPage);
-  }, [dispatch, history, mostRecentOverviewPage, suggestedTokens]);
+    navigate(mostRecentOverviewPage);
+  }, [dispatch, navigate, mostRecentOverviewPage, suggestedTokens]);
 
   const goBackIfNoSuggestedTokensOnFirstRender = () => {
     if (!suggestedTokens.length) {
-      history.push(mostRecentOverviewPage);
+      navigate(mostRecentOverviewPage);
     }
   };
 
   useEffect(() => {
     goBackIfNoSuggestedTokensOnFirstRender();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

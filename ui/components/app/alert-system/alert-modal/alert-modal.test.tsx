@@ -7,7 +7,7 @@ import {
 } from '../../../../../shared/constants/security-provider';
 import mockState from '../../../../../test/data/mock-state.json';
 import { tEn } from '../../../../../test/lib/i18n-helpers';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../helpers/constants/design-system';
 import * as useAlertsModule from '../../../../hooks/useAlerts';
@@ -204,6 +204,42 @@ describe('AlertModal', () => {
       true,
     );
     useAlertsSpy.mockRestore();
+  });
+
+  it('allows bypassing acknowledgement for danger alerts when acknowledgeBypass is true', () => {
+    const dangerAlert = alertsMock.find(
+      (alert) => alert.key === DATA_ALERT_KEY_MOCK,
+    ) as Alert;
+
+    const dangerAlertWithBypass = {
+      ...dangerAlert,
+      acknowledgeBypass: true,
+    };
+
+    const bypassStore = configureMockStore([])({
+      ...STATE_MOCK,
+      confirmAlerts: {
+        alerts: { [OWNER_ID_MOCK]: [dangerAlertWithBypass] },
+        confirmed: {
+          [OWNER_ID_MOCK]: {
+            [DATA_ALERT_KEY_MOCK]: false,
+          },
+        },
+      },
+    });
+
+    const { queryByTestId, getByTestId } = renderWithProvider(
+      <AlertModal
+        ownerId={OWNER_ID_MOCK}
+        onAcknowledgeClick={onAcknowledgeClickMock}
+        onClose={onCloseMock}
+        alertKey={DATA_ALERT_KEY_MOCK}
+      />,
+      bypassStore,
+    );
+
+    expect(queryByTestId('alert-modal-acknowledge-checkbox')).toBeNull();
+    expect(getByTestId('alert-modal-button')).toBeEnabled();
   });
 
   it('calls onClose when the button is clicked', () => {

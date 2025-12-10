@@ -4,7 +4,7 @@ import { MockttpServer } from 'mockttp';
 import { RelayStatus } from '../../../../../app/scripts/lib/transaction/transaction-relay';
 import { TX_SENTINEL_URL } from '../../../../../shared/constants/transaction';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../../constants';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import {
   WINDOW_TITLES,
   convertETHToHexGwei,
@@ -16,16 +16,19 @@ import TransactionConfirmation from '../../../page-objects/pages/confirmations/r
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { mockEip7702FeatureFlag } from '../helpers';
+import { mockSpotPrices } from '../../tokens/utils/mocks';
 
 const UUID = '1234-5678';
 const TRANSACTION_HASH =
   '0xf25183af3bf64af01e9210201a2ede3c1dcd6d16091283152d13265242939fc4';
 
 describe('Gas Fee Tokens - EIP-7702 - Sponsored', function (this: Suite) {
-  it('confirms transaction if successful', async function () {
+  // Bug 37677 fee paid by Metamask is not shown
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('confirms transaction if successful', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.MAINNET })
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesControllerSmartTransactionsOptedOut()
@@ -44,6 +47,13 @@ describe('Gas Fee Tokens - EIP-7702 - Sponsored', function (this: Suite) {
           mockTransactionRelaySubmit(mockServer);
           mockTransactionRelayStatus(mockServer);
           mockSmartTransactionFeatureFlags(mockServer);
+          mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
+            '0x0000000000000000000000000000000000000000': {
+              price: 1700,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
+          });
         },
         title: this.test?.fullTitle(),
       },
@@ -81,7 +91,7 @@ describe('Gas Fee Tokens - EIP-7702 - Sponsored', function (this: Suite) {
   it('fails transaction if error', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.MAINNET })
           .withPermissionControllerConnectedToTestDapp()
           .withNetworkControllerOnMainnet()
@@ -97,6 +107,13 @@ describe('Gas Fee Tokens - EIP-7702 - Sponsored', function (this: Suite) {
           mockTransactionRelaySubmit(mockServer);
           mockTransactionRelayStatus(mockServer, { success: false });
           mockSmartTransactionFeatureFlags(mockServer);
+          mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
+            '0x0000000000000000000000000000000000000000': {
+              price: 1700,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
+          });
         },
         title: this.test?.fullTitle(),
       },

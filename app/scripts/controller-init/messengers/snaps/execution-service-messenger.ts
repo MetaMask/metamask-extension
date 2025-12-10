@@ -1,4 +1,5 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
+import { RootMessenger } from '../../../lib/messenger';
 
 export type ExecutionServiceMessenger = ReturnType<
   typeof getExecutionServiceMessenger
@@ -12,11 +13,10 @@ export type ExecutionServiceMessenger = ReturnType<
  * @returns The restricted messenger.
  */
 export function getExecutionServiceMessenger(
-  messenger: Messenger<never, never>,
+  messenger: RootMessenger<never, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'ExecutionService',
-    allowedEvents: [],
-    allowedActions: [],
+  return new Messenger<'ExecutionService', never, never, typeof messenger>({
+    namespace: 'ExecutionService',
+    parent: messenger,
   });
 }

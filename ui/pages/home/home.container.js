@@ -1,6 +1,8 @@
+import React from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
+import { useShieldSubscriptionContext } from '../../contexts/shield/shield-subscription';
 import {
   activeTabHasPermissions,
   getUseExternalServices,
@@ -23,11 +25,10 @@ import {
   hasPendingApprovals,
   getSelectedInternalAccount,
   getEditedNetwork,
-  selectPendingApprovalsForNavigation,
   getShowUpdateModal,
-  getShowConnectionsRemovedModal,
   getIsSocialLoginFlow,
   getShowShieldEntryModal,
+  getPendingShieldCohort,
 } from '../../selectors';
 import { getInfuraBlocked } from '../../../shared/modules/selectors/networks';
 import {
@@ -48,8 +49,8 @@ import {
   setNewTokensImportedError,
   setDataCollectionForMarketing,
   setEditedNetwork,
-  setAccountDetailsAddress,
   lookupSelectedNetworks,
+  setPendingShieldCohort,
 } from '../../store/actions';
 import {
   hideWhatsNewPopup,
@@ -62,6 +63,10 @@ import {
 } from '../../ducks/metamask/metamask';
 import { getSwapsFeatureIsLive } from '../../ducks/swaps/swaps';
 import { fetchBuyableChains } from '../../ducks/ramps';
+import {
+  selectRewardsEnabled,
+  selectRewardsOnboardingEnabled,
+} from '../../ducks/rewards/selectors';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
@@ -82,7 +87,6 @@ import {
   getRedirectAfterDefaultPage,
   clearRedirectAfterDefaultPage,
 } from '../../ducks/history/history';
-
 import Home from './home.component';
 
 const mapStateToProps = (state) => {
@@ -91,8 +95,6 @@ const mapStateToProps = (state) => {
     seedPhraseBackedUp,
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
-    swapsState,
-    quotes,
     dataCollectionForMarketing,
     participateInMetaMetrics,
     firstTimeFlowType,
@@ -103,7 +105,6 @@ const mapStateToProps = (state) => {
   const { address: selectedAddress } = selectedAccount;
   const totalUnapprovedCount = getTotalUnapprovedCount(state);
   const swapsEnabled = getSwapsFeatureIsLive(state);
-  const pendingApprovals = selectPendingApprovalsForNavigation(state);
   const redirectAfterDefaultPage = getRedirectAfterDefaultPage(state);
 
   const envType = getEnvironmentType();
@@ -153,14 +154,9 @@ const mapStateToProps = (state) => {
     defaultHomeActiveTabName,
     firstTimeFlowType,
     completedOnboarding,
-    haveSwapsQuotes: Boolean(Object.values(swapsState.quotes || {}).length),
-    swapsFetchParams: swapsState.fetchParams,
-    showAwaitingSwapScreen: swapsState.routeState === 'awaiting',
-    haveBridgeQuotes: Boolean(Object.values(quotes || {}).length),
     isMainnet: getIsMainnet(state),
     originOfCurrentTab,
     shouldShowWeb3ShimUsageNotification,
-    pendingApprovals,
     infuraBlocked: getInfuraBlocked(state),
     announcementsToShow: getSortedAnnouncementsToShow(state).length > 0,
     showWhatsNewPopup,
@@ -184,9 +180,12 @@ const mapStateToProps = (state) => {
     redirectAfterDefaultPage,
     isSeedlessPasswordOutdated: getIsSeedlessPasswordOutdated(state),
     isPrimarySeedPhraseBackedUp: getIsPrimarySeedPhraseBackedUp(state),
-    showConnectionsRemovedModal: getShowConnectionsRemovedModal(state),
     showShieldEntryModal: getShowShieldEntryModal(state),
     isSocialLoginFlow: getIsSocialLoginFlow(state),
+    pendingShieldCohort: getPendingShieldCohort(state),
+    isSignedIn: state.metamask.isSignedIn,
+    rewardsEnabled: selectRewardsEnabled(state),
+    rewardsOnboardingEnabled: selectRewardsOnboardingEnabled(state),
   };
 };
 
@@ -241,13 +240,24 @@ const mapDispatchToProps = (dispatch) => {
     fetchBuyableChains: () => dispatch(fetchBuyableChains()),
     clearRedirectAfterDefaultPage: () =>
       dispatch(clearRedirectAfterDefaultPage()),
-    setAccountDetailsAddress: (address) =>
-      dispatch(setAccountDetailsAddress(address)),
     lookupSelectedNetworks: () => dispatch(lookupSelectedNetworks()),
+    setPendingShieldCohort: (cohort) =>
+      dispatch(setPendingShieldCohort(cohort)),
   };
 };
 
+// Strip unused 'match' prop from withRouter
+// It causes cascading, unnecessary re-renders
+// eslint-disable-next-line react/prop-types
+const HomeWithRouter = ({ match: _match, ...props }) => {
+  const { evaluateCohortEligibility } = useShieldSubscriptionContext();
+
+  return (
+    <Home {...props} evaluateCohortEligibility={evaluateCohortEligibility} />
+  );
+};
+
 export default compose(
-  withRouter,
+  withRouterHooks,
   connect(mapStateToProps, mapDispatchToProps),
-)(Home);
+)(HomeWithRouter);

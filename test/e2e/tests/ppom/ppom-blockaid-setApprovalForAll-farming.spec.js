@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const FixtureBuilder = require('../../fixture-builder');
+const FixtureBuilder = require('../../fixtures/fixture-builder');
 const { unlockWallet, withFixtures } = require('../../helpers');
 const { DAPP_URL, WINDOW_TITLES } = require('../../constants');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
@@ -246,7 +246,7 @@ describe('PPOM Blockaid Alert - Set Approval to All', function () {
   it.skip('should show banner alert', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()

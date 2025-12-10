@@ -5,7 +5,9 @@ import { DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS } from '../../flask/solana-wal
 import { withSolanaAccountSnap } from '../solana/common-solana';
 import { mockSendRedesignFeatureFlag } from './common';
 
-describe('Send Solana', function () {
+// BUG #37824 With BIP44 turned on mocking Solana network responses no longer works
+// eslint-disable-next-line mocha/no-skipped-tests
+describe.skip('Send Solana', function () {
   it('it should be possible to send SOL', async function () {
     await withSolanaAccountSnap(
       {
@@ -22,6 +24,11 @@ describe('Send Solana', function () {
         );
 
         await nonEvmHomepage.clickOnSendButton();
+
+        // Navigating immediate will not work - we wait in the asset page to catch up
+        await driver.waitForSelector({
+          text: '50 SOL',
+        });
 
         await sendPage.createSendRequest({
           chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',

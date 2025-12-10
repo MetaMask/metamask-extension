@@ -9,7 +9,9 @@ import {
   PublishHookResult,
   TransactionMeta,
 } from '@metamask/transaction-controller';
-import { Hex, createProjectLogger } from '@metamask/utils';
+import { Hex, add0x, createProjectLogger } from '@metamask/utils';
+import { toHex } from '@metamask/controller-utils';
+import { NetworkClientId } from '@metamask/network-controller';
 import {
   BATCH_DEFAULT_MODE,
   Caveat,
@@ -22,6 +24,10 @@ import {
   createDelegation,
   getDeleGatorEnvironment,
 } from '../../../../../shared/lib/delegation';
+import {
+  findAtomicBatchSupportForChain,
+  checkEip7702Support,
+} from '../../../../../shared/lib/eip7702-support-utils';
 import { exactExecution } from '../../../../../shared/lib/delegation/caveatBuilder/exactExecutionBuilder';
 import { limitedCalls } from '../../../../../shared/lib/delegation/caveatBuilder/limitedCallsBuilder';
 import { specificActionERC20TransferBatch } from '../../../../../shared/lib/delegation/caveatBuilder/specificActionERC20TransferBatchBuilder';
@@ -37,6 +43,7 @@ import {
   submitRelayTransaction,
   waitForRelayResult,
 } from '../transaction-relay';
+import { stripSingleLeadingZero } from '../util';
 
 const EMPTY_HEX = '0x';
 const POLLING_INTERVAL_MS = 1000; // 1 Second
@@ -54,17 +61,28 @@ export class Delegation7702PublishHook {
 
   #messenger: TransactionControllerInitMessenger;
 
+  #getNextNonce: (
+    address: string,
+    networkClientId: NetworkClientId,
+  ) => Promise<Hex>;
+
   constructor({
     isAtomicBatchSupported,
     messenger,
+    getNextNonce,
   }: {
     isAtomicBatchSupported: (
       request: IsAtomicBatchSupportedRequest,
     ) => Promise<IsAtomicBatchSupportedResult>;
     messenger: TransactionControllerInitMessenger;
+    getNextNonce: (
+      address: string,
+      networkClientId: NetworkClientId,
+    ) => Promise<Hex>;
   }) {
     this.#isAtomicBatchSupported = isAtomicBatchSupported;
     this.#messenger = messenger;
+    this.#getNextNonce = getNextNonce;
   }
 
   getHook(): PublishHook {
@@ -97,22 +115,18 @@ export class Delegation7702PublishHook {
       chainIds: [chainId],
     });
 
-    const atomicBatchChainSupport = atomicBatchSupport.find(
-      (result) => result.chainId.toLowerCase() === chainId.toLowerCase(),
+    const atomicBatchChainSupport = findAtomicBatchSupportForChain(
+      atomicBatchSupport,
+      chainId,
     );
 
-    const isChainSupported =
-      atomicBatchChainSupport &&
-      (!atomicBatchChainSupport.delegationAddress ||
-        atomicBatchChainSupport.isSupported);
+    const { isSupported, delegationAddress, upgradeContractAddress } =
+      checkEip7702Support(atomicBatchChainSupport);
 
-    if (!isChainSupported) {
+    if (!isSupported) {
       log('Skipping as EIP-7702 is not supported', { from, chainId });
       return EMPTY_RESULT;
     }
-
-    const { delegationAddress, upgradeContractAddress } =
-      atomicBatchChainSupport;
 
     const isGaslessSwap = transactionMeta.isGasFeeIncluded;
 
@@ -182,7 +196,7 @@ export class Delegation7702PublishHook {
     if (!delegationAddress) {
       relayRequest.authorizationList = await this.#buildAuthorizationList(
         transactionMeta,
-        upgradeContractAddress,
+        upgradeContractAddress ?? undefined,
       );
     }
 
@@ -348,8 +362,11 @@ export class Delegation7702PublishHook {
     transactionMeta: TransactionMeta,
     upgradeContractAddress?: Hex,
   ): Promise<AuthorizationList> {
-    const { chainId, txParams } = transactionMeta;
-    const { from, nonce } = txParams;
+    const { chainId, txParams, networkClientId } = transactionMeta;
+    const { from, nonce: txNonce } = txParams;
+    const nextNonce = await this.#getNextNonce(from, networkClientId);
+
+    const nonce = txNonce ?? nextNonce;
 
     log('Including authorization as not upgraded');
 
@@ -393,10 +410,10 @@ export class Delegation7702PublishHook {
   }
 
   #decodeAuthorizationSignature(signature: Hex) {
-    const r = signature.slice(0, 66) as Hex;
-    const s = `0x${signature.slice(66, 130)}` as Hex;
+    const r = stripSingleLeadingZero(signature.slice(0, 66)) as Hex;
+    const s = stripSingleLeadingZero(add0x(signature.slice(66, 130))) as Hex;
     const v = parseInt(signature.slice(130, 132), 16);
-    const yParity = v - 27 === 0 ? ('0x' as const) : ('0x1' as const);
+    const yParity = toHex(v - 27 === 0 ? 0 : 1);
 
     return {
       r,

@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { WINDOW_TITLES, withFixtures } from '../helpers';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
-import FixtureBuilder from '../fixture-builder';
+import FixtureBuilder from '../fixtures/fixture-builder';
 import { Driver } from '../webdriver/driver';
 import LoginPage from '../page-objects/pages/login-page';
 import ConnectAccountConfirmation from '../page-objects/pages/confirmations/redesign/connect-account-confirmation';
@@ -11,7 +11,7 @@ describe('eth_requestAccounts', function () {
   it('returns permitted accounts when there are permitted accounts and the wallet is unlocked', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -44,7 +44,7 @@ describe('eth_requestAccounts', function () {
   it('returns permitted accounts when there are permitted accounts and the wallet is locked', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -75,7 +75,7 @@ describe('eth_requestAccounts', function () {
   it('prompts for login when there are no permitted accounts and the wallet is locked', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },

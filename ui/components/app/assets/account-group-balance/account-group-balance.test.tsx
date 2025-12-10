@@ -1,13 +1,21 @@
 import type { AccountGroupBalance as AccountGroupBalanceType } from '@metamask/assets-controllers';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import { CaipChainId, Hex } from '@metamask/utils';
 import mockState from '../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
-import { getPreferences } from '../../../../selectors';
+import {
+  getPreferences,
+  getEnabledNetworksByNamespace,
+} from '../../../../selectors';
 import { selectBalanceBySelectedAccountGroup } from '../../../../selectors/assets';
-import { AccountGroupBalance } from './account-group-balance';
+import * as useMultichainSelectorHook from '../../../../hooks/useMultichainSelector';
+import {
+  AccountGroupBalance,
+  AccountGroupBalanceProps,
+} from './account-group-balance';
 
 const mockStore = configureMockStore()(mockState);
 
@@ -26,6 +34,7 @@ describe('AccountGroupBalance', () => {
 
   const arrange = (
     selectedGroupBalance: AccountGroupBalanceType | null = null,
+    showNativeTokenAsMainBalance: boolean = false,
   ) => {
     const mockSelectBalanceBySelectedAccountGroup = jest
       .mocked(selectBalanceBySelectedAccountGroup)
@@ -33,7 +42,13 @@ describe('AccountGroupBalance', () => {
 
     const mockGetPreferences = jest
       .mocked(getPreferences)
-      .mockReturnValue({ privacyMode: false });
+      .mockReturnValue({ privacyMode: false, showNativeTokenAsMainBalance });
+
+    const mockGetEnabledNetworksByNamespace = jest
+      .mocked(getEnabledNetworksByNamespace)
+      .mockReturnValue({
+        '0x1': true,
+      });
 
     const mockGetIntlLocale = jest.mocked(getIntlLocale).mockReturnValue('en');
 
@@ -46,16 +61,26 @@ describe('AccountGroupBalance', () => {
       mockGetPreferences,
       mockGetIntlLocale,
       mockGetCurrentCurrency,
+      mockGetEnabledNetworksByNamespace,
     };
   };
 
-  const renderComponent = (props = {}) =>
+  const renderComponent = (
+    props: Partial<AccountGroupBalanceProps> = {
+      classPrefix: 'coin',
+      balanceIsCached: false,
+      handleSensitiveToggle: () => undefined,
+      balance: '1000000000000000000',
+      chainId: '0x1',
+    },
+  ) =>
     renderWithProvider(
       <AccountGroupBalance
-        classPrefix="coin"
-        balanceIsCached={false}
-        handleSensitiveToggle={() => undefined}
-        {...props}
+        classPrefix={props.classPrefix || 'coin'}
+        balanceIsCached={props.balanceIsCached || false}
+        handleSensitiveToggle={props.handleSensitiveToggle || (() => undefined)}
+        balance={props.balance || '1000000000000000000'}
+        chainId={props.chainId || '0x1'}
       />,
       mockStore,
     );
@@ -68,9 +93,16 @@ describe('AccountGroupBalance', () => {
   const actAssertBalanceContent = (props: {
     currency: string;
     amount: string;
+    balance: string;
+    chainId: string;
   }) => {
-    const { getByText } = renderComponent();
-    expect(getByText(props.amount)).toBeInTheDocument();
+    const { getByText } = renderComponent({
+      balance: props.balance,
+      chainId: props.chainId as CaipChainId | Hex,
+    });
+    expect(
+      getByText((content) => content.includes(props.amount)),
+    ).toBeInTheDocument();
   };
 
   beforeEach(() => {
@@ -87,6 +119,21 @@ describe('AccountGroupBalance', () => {
     actAssertBalanceContent({
       currency: 'USD',
       amount: '$123.45',
+      balance: '1000000000000000000',
+      chainId: '0x1',
+    });
+  });
+
+  it('renders native balance when setting showNativeTokenAsMainBalance to true', () => {
+    jest
+      .spyOn(useMultichainSelectorHook, 'useMultichainSelector')
+      .mockReturnValue('ETH');
+    arrange(createMockBalance(), true);
+    actAssertBalanceContent({
+      currency: 'ETH',
+      amount: '0.000589',
+      balance: '0x0217b4f7389e02',
+      chainId: '0x1',
     });
   });
 });

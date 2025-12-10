@@ -10,9 +10,12 @@ on:
 
 jobs:
   get-release-timelines:
-    uses: metamask/github-tools/.github/workflows/get-release-timelines.yml@b39d2cf87af5e31c4a85a83221e3a40b79edf06c
-    with:
-      version: ${{ inputs.version }}
-    secrets:
-      RUNWAY_APP_ID: ${{ secrets.RUNWAY_APP_ID }}
-      RUNWAY_API_KEY: ${{ secrets.RUNWAY_API_KEY }}
+    name: Get release timelines
+    runs-on: ubuntu-latest
+    steps:
+      - uses: MetaMask/github-tools/.github/actions/get-release-timelines@v1
+        with:
+          version: ${{ inputs.version }}
+          runway-app-id: ${{ secrets.RUNWAY_APP_ID }}
+          runway-api-key: ${{ secrets.RUNWAY_API_KEY }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}

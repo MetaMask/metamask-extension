@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { parseCaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
@@ -90,7 +90,7 @@ export const ViewExplorerMenuItem = ({
 }: ViewExplorerMenuItemProps) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const multichainNetwork = useMultichainSelector(
     getMultichainNetwork,
@@ -136,7 +136,7 @@ export const ViewExplorerMenuItem = ({
   const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);
 
   const routeToAddBlockExplorerUrl = () => {
-    history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
+    navigate(`${NETWORKS_ROUTE}#blockExplorerUrl`);
   };
 
   const LABEL = t('viewOnExplorer');

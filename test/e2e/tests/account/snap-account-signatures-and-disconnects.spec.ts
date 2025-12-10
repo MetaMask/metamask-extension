@@ -2,7 +2,8 @@ import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
 import { WINDOW_TITLES, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import { DAPP_PATH } from '../../constants';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
@@ -18,8 +19,10 @@ describe('Snap Account Signatures and Disconnects', function (this: Suite) {
   it('can connect to the Test Dapp, then #signTypedDataV3, disconnect then connect, then #signTypedDataV4 (async flow approve)', async function () {
     await withFixtures(
       {
-        dapp: true,
-        dappPaths: ['test-dapp', 'snap-simple-keyring-site'],
+        dappOptions: {
+          numberOfTestDapps: 1,
+          customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
+        },
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: async (mockServer: Mockttp) => {
           const snapMocks = await mockSnapSimpleKeyringAndSite(
@@ -41,7 +44,8 @@ describe('Snap Account Signatures and Disconnects', function (this: Suite) {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.checkAccountLabel('SSK Account');
+        // BUG #37591 - With BIP44 the account mame is not retained.
+        await headerNavbar.checkAccountLabel('Snap Account 1');
 
         // Open the Test Dapp and connect
         const testDapp = new TestDapp(driver);

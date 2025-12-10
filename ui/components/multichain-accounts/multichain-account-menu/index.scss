@@ -2,6 +2,14 @@
   cursor: pointer;
   width: 28px;
   height: 28px;
+
+  &:hover {
+    background: var(--color-primary-muted);
+
+    .multichain-account-cell-popover-menu-button-icon {
+      background-color: var(--color-primary-default);
+    }
+  }
 }
 
 .multichain-account-cell-popover-menu {

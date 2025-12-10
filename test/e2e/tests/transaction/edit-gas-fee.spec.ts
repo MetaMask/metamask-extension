@@ -1,12 +1,15 @@
+import { MockttpServer } from 'mockttp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import {
   createInternalTransaction,
   createDappTransaction,
 } from '../../page-objects/flows/transaction';
 import { withFixtures, WINDOW_TITLES } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import SendTokenConfirmPage from '../../page-objects/pages/send/send-token-confirmation-page';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { mockSpotPrices } from '../tokens/utils/mocks';
 
 const PREFERENCES_STATE_MOCK = {
   preferences: {
@@ -59,7 +62,7 @@ describe('Editing Confirm Transaction', function () {
 
         // check transaction in activity tab
         await activityListPage.openActivityTab();
-        await activityListPage.checkCompletedTransactionItems(1);
+        await activityListPage.checkWaitForTransactionStatus('confirmed');
 
         await activityListPage.checkTransactionAmount('-1 ETH');
       },
@@ -74,6 +77,15 @@ describe('Editing Confirm Transaction', function () {
           .build(),
         localNodeOptions: { hardfork: 'london' },
         title: this.test?.fullTitle(),
+        testSpecificMock: async (mockServer: MockttpServer) => {
+          await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
+            '0x0000000000000000000000000000000000000000': {
+              price: 1700,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
+          });
+        },
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
@@ -113,7 +125,7 @@ describe('Editing Confirm Transaction', function () {
         await sendTokenConfirmationPage.clickOnConfirm();
 
         await activityListPage.openActivityTab();
-        await activityListPage.checkCompletedTransactionItems(1);
+        await activityListPage.checkWaitForTransactionStatus('confirmed');
 
         await activityListPage.checkTransactionAmount('-1 ETH');
       },
@@ -123,13 +135,22 @@ describe('Editing Confirm Transaction', function () {
   it('should use dapp suggested estimates for transaction coming from dapp', async function () {
     await withFixtures(
       {
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController(PREFERENCES_STATE_MOCK)
           .build(),
         localNodeOptions: { hardfork: 'london' },
         title: this.test?.fullTitle(),
-        dapp: true,
+        testSpecificMock: async (mockServer: MockttpServer) => {
+          await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
+            '0x0000000000000000000000000000000000000000': {
+              price: 1700,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
+          });
+        },
       },
       async ({ driver }) => {
         // login to extension
@@ -169,7 +190,7 @@ describe('Editing Confirm Transaction', function () {
         );
 
         await activityListPage.openActivityTab();
-        await activityListPage.checkCompletedTransactionItems(1);
+        await activityListPage.checkWaitForTransactionStatus('confirmed');
 
         await activityListPage.checkTransactionAmount('-0.001 ETH');
       },

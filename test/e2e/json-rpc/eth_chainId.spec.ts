@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { withFixtures } from '../helpers';
-import FixtureBuilder from '../fixture-builder';
+import FixtureBuilder from '../fixtures/fixture-builder';
 import { Driver } from '../webdriver/driver';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 
@@ -8,7 +8,7 @@ describe('eth_chainId', function () {
   it('returns the chain ID of the current network', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),

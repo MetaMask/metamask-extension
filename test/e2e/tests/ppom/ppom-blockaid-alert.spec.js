@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const FixtureBuilder = require('../../fixture-builder');
+const FixtureBuilder = require('../../fixtures/fixture-builder');
 
 const { unlockWallet, withFixtures } = require('../../helpers');
 const { DAPP_URL, WINDOW_TITLES } = require('../../constants');
@@ -165,7 +165,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
   it.skip('should not show security alerts for benign requests', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()
@@ -227,7 +227,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
   it.skip('should show security alerts for malicious requests', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()
@@ -285,7 +285,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
   it.skip('should show "Request may not be safe" if the PPOM request fails to check transaction', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()

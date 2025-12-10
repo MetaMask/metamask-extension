@@ -44,7 +44,7 @@ BENCHMARK_BROWSER_LOADS=5 BENCHMARK_PAGE_LOADS=5 yarn playwright test --project=
 
 ## Output
 
-The benchmark generates a JSON file (`benchmark-results.json`) with the following structure:
+The benchmark generates a JSON file (`page-load-benchmark-results.json`) with the following structure:
 
 ```json
 {

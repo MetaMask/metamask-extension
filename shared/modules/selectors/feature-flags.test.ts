@@ -46,7 +46,9 @@ type MockState = ProviderConfigState &
 describe('Feature Flags Selectors', () => {
   const createMockState = (
     chainId: Hex = CHAIN_IDS.MAINNET,
-    includeRemoteFlags = false,
+    remoteFeatureFlagsOverride?: {
+      smartTransactionsNetworks?: SmartTransactionsNetworks;
+    },
   ): MockState => {
     const state: MockState = {
       metamask: {
@@ -96,14 +98,17 @@ describe('Feature Flags Selectors', () => {
             },
           } as SwapsFeatureFlags,
         },
-        remoteFeatureFlags: includeRemoteFlags
+        remoteFeatureFlags: remoteFeatureFlagsOverride
           ? {
               smartTransactionsNetworks: {
                 default: {
                   batchStatusPollingInterval: 1000,
                   extensionActive: true,
                   extensionReturnTxHashAsap: true,
+                  extensionReturnTxHashAsapBatch: true,
+                  extensionSkipSmartTransactionStatusPage: false,
                 },
+                ...remoteFeatureFlagsOverride.smartTransactionsNetworks,
               },
             }
           : undefined,
@@ -145,6 +150,8 @@ describe('Feature Flags Selectors', () => {
           expectedDeadline: 45,
           maxDeadline: 150,
           extensionReturnTxHashAsap: false,
+          extensionReturnTxHashAsapBatch: false,
+          extensionSkipSmartTransactionStatusPage: false,
         },
       });
     });
@@ -175,6 +182,8 @@ describe('Feature Flags Selectors', () => {
           expectedDeadline: 60,
           maxDeadline: 180,
           extensionReturnTxHashAsap: false,
+          extensionReturnTxHashAsapBatch: false,
+          extensionSkipSmartTransactionStatusPage: false,
         },
       });
     });
@@ -190,13 +199,17 @@ describe('Feature Flags Selectors', () => {
           expectedDeadline: 45,
           maxDeadline: 150,
           extensionReturnTxHashAsap: false,
+          extensionReturnTxHashAsapBatch: false,
+          extensionSkipSmartTransactionStatusPage: false,
         },
       });
     });
 
     describe('remote feature flags', () => {
       it('uses extensionReturnTxHashAsap from remote flags when available', () => {
-        const state = createMockState(CHAIN_IDS.MAINNET, true);
+        const state = createMockState(CHAIN_IDS.MAINNET, {
+          smartTransactionsNetworks: {},
+        });
         const result = getFeatureFlagsByChainId(state);
 
         expect(result).toStrictEqual({
@@ -206,12 +219,14 @@ describe('Feature Flags Selectors', () => {
             expectedDeadline: 45,
             maxDeadline: 150,
             extensionReturnTxHashAsap: true,
+            extensionReturnTxHashAsapBatch: true,
+            extensionSkipSmartTransactionStatusPage: false,
           },
         });
       });
 
       it('defaults to false when remote flags are not available', () => {
-        const state = createMockState(CHAIN_IDS.MAINNET, false);
+        const state = createMockState(CHAIN_IDS.MAINNET);
         const result = getFeatureFlagsByChainId(state);
 
         expect(result).toStrictEqual({
@@ -221,12 +236,16 @@ describe('Feature Flags Selectors', () => {
             expectedDeadline: 45,
             maxDeadline: 150,
             extensionReturnTxHashAsap: false,
+            extensionReturnTxHashAsapBatch: false,
+            extensionSkipSmartTransactionStatusPage: false,
           },
         });
       });
 
       it('uses default remote flag value for all networks', () => {
-        const state = createMockState(CHAIN_IDS.BSC, true);
+        const state = createMockState(CHAIN_IDS.BSC, {
+          smartTransactionsNetworks: {},
+        });
         const result = getFeatureFlagsByChainId(state);
 
         expect(result).toStrictEqual({
@@ -236,6 +255,38 @@ describe('Feature Flags Selectors', () => {
             expectedDeadline: 60,
             maxDeadline: 180,
             extensionReturnTxHashAsap: true,
+            extensionReturnTxHashAsapBatch: true,
+            extensionSkipSmartTransactionStatusPage: false,
+          },
+        });
+      });
+
+      it('uses extensionSkipSmartTransactionStatusPage from network specific remote flags and override default when available', () => {
+        const state = createMockState(CHAIN_IDS.BSC, {
+          smartTransactionsNetworks: {
+            [CHAIN_IDS.BSC]: {
+              extensionSkipSmartTransactionStatusPage: true,
+            },
+            default: {
+              batchStatusPollingInterval: 1000,
+              extensionActive: true,
+              extensionReturnTxHashAsap: true,
+              extensionReturnTxHashAsapBatch: true,
+              extensionSkipSmartTransactionStatusPage: false,
+            },
+          },
+        });
+
+        const result = getFeatureFlagsByChainId(state);
+        expect(result).toStrictEqual({
+          smartTransactions: {
+            extensionActive: true,
+            mobileActive: true,
+            expectedDeadline: 60,
+            maxDeadline: 180,
+            extensionReturnTxHashAsap: true,
+            extensionReturnTxHashAsapBatch: true,
+            extensionSkipSmartTransactionStatusPage: true,
           },
         });
       });

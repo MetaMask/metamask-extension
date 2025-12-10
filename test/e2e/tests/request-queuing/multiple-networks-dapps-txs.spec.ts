@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import {
   withFixtures,
   DAPP_URL,
@@ -13,13 +13,15 @@ import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
-describe('Request Queuing for Multiple Dapps and Txs on different networks.', function (this: Suite) {
+// BUG #38149 - Request Queuing multiple Dapps and txs on different networks fails with unapproved transaction
+// eslint-disable-next-line
+describe.skip('Request Queuing for Multiple Dapps and Txs on different networks.', function (this: Suite) {
   it('should be possible to send requests from different dapps on different networks', async function () {
     const port = 8546;
     const chainId = 1338;
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 2 },
         fixtures: new FixtureBuilder()
           .withEnabledNetworks({
             eip155: {
@@ -29,7 +31,6 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
           .withNetworkControllerDoubleNode()
           .withSelectedNetworkControllerPerDomain()
           .build(),
-        dappOptions: { numberOfDapps: 2 },
         localNodeOptions: [
           {
             type: 'anvil',

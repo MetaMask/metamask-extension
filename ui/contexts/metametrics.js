@@ -12,7 +12,7 @@ import React, {
   useContext,
 } from 'react';
 import PropTypes from 'prop-types';
-import { matchPath, useLocation } from 'react-router-dom';
+import { useLocation, matchPath } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import { omit } from 'lodash';
@@ -20,7 +20,11 @@ import { captureException, captureMessage } from '../../shared/lib/sentry';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../app/scripts/lib/util';
-import { PATH_NAME_MAP, getPaths } from '../helpers/constants/routes';
+import {
+  PATH_NAME_MAP,
+  getPaths,
+  DEFAULT_ROUTE,
+} from '../helpers/constants/routes';
 import { MetaMetricsContextProp } from '../../shared/constants/metametrics';
 import { useSegmentContext } from '../hooks/useSegmentContext';
 import { getParticipateInMetaMetrics } from '../selectors';
@@ -157,11 +161,24 @@ export function MetaMetricsProvider({ children }) {
    */
   useEffect(() => {
     const environmentType = getEnvironmentType();
-    const match = matchPath(location.pathname, {
-      path: getPaths(),
-      exact: true,
-      strict: true,
-    });
+    // v6 matchPath doesn't support array of paths, so we loop to find first match
+    const paths = getPaths();
+    let match = null;
+    for (const path of paths) {
+      // Normalize empty string paths to '/' - they're aliases for the Home route
+      const normalizedPath = path === '' ? DEFAULT_ROUTE : path;
+      match = matchPath(
+        {
+          path: normalizedPath,
+          end: true,
+          caseSensitive: false, // Match v5 behavior (case-insensitive by default)
+        },
+        location.pathname,
+      );
+      if (match) {
+        break;
+      }
+    }
     // Start by checking for a missing match route. If this falls through to
     // the else if, then we know we have a matched route for tracking.
     if (!match) {
@@ -172,10 +189,10 @@ export function MetaMetricsProvider({ children }) {
         },
       });
     } else if (
-      previousMatch.current !== match.path &&
+      previousMatch.current !== match.pattern.path &&
       !(
         environmentType === 'notification' &&
-        match.path === '/' &&
+        match.pattern.path === '/' &&
         previousMatch.current === undefined
       )
     ) {
@@ -184,7 +201,8 @@ export function MetaMetricsProvider({ children }) {
       // this we keep track of the previousMatch, and we skip the event track
       // in the event that we are dealing with the initial load of the
       // homepage
-      const { path, params } = match;
+      const { pattern, params } = match;
+      const { path } = pattern;
       const name = PATH_NAME_MAP.get(path);
       trackMetaMetricsPage(
         {
@@ -201,11 +219,18 @@ export function MetaMetricsProvider({ children }) {
         },
       );
     }
-    previousMatch.current = match?.path;
-  }, [location, context]);
+    previousMatch.current = match?.pattern?.path;
+  }, [
+    location.pathname,
+    location.search,
+    location.hash,
+    context.page,
+    context.referrer,
+  ]);
 
   // For backwards compatibility, attach the new methods as properties to trackEvent
   const trackEventWithMethods = trackEvent;
+  // eslint-disable-next-line react-compiler/react-compiler
   trackEventWithMethods.bufferedTrace = bufferedTrace;
   trackEventWithMethods.bufferedEndTrace = bufferedEndTrace;
   trackEventWithMethods.onboardingParentContext = onboardingParentContext;

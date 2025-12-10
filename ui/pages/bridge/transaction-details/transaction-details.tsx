@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory, useParams, useLocation } from 'react-router-dom';
+import type { Location as RouterLocation } from 'react-router-dom';
 import {
   TransactionStatus,
   TransactionType,
@@ -33,6 +33,7 @@ import { getTransactionBreakdownData } from '../../../components/app/transaction
 import type { MetaMaskReduxState } from '../../../store/store';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 import {
   AlignItems,
   Display,
@@ -44,10 +45,8 @@ import {
 import { formatDate } from '../../../helpers/utils/util';
 import { ConfirmInfoRowDivider as Divider } from '../../../components/app/confirm/info/row';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  getNativeTokenInfo,
-  selectedAddressTxListSelectorAllChain,
-} from '../../../selectors';
+import { getNativeTokenInfo } from '../../../selectors';
+import { getAllNetworkTransactions } from '../../../selectors/transactions';
 import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
@@ -75,30 +74,40 @@ import TransactionDetailRow from './transaction-detail-row';
 import BridgeExplorerLinks from './bridge-explorer-links';
 import BridgeStepList from './bridge-step-list';
 
-const CrossChainSwapTxDetails = () => {
+type CrossChainSwapTxDetailsProps = {
+  location?: RouterLocation;
+  navigate?: (
+    path: string | number,
+    options?: { replace?: boolean; state?: Record<string, unknown> },
+  ) => void;
+  params?: { srcTxMetaId: string };
+};
+
+const CrossChainSwapTxDetails = ({
+  location,
+  navigate,
+  params,
+}: CrossChainSwapTxDetailsProps) => {
   const t = useI18nContext();
   const locale = useSelector(getIntlLocale);
   const trackEvent = useContext(MetaMetricsContext);
   const rootState = useSelector((state) => state);
-  const history = useHistory();
-  const location = useLocation();
-  const { srcTxMetaId } = useParams<{ srcTxMetaId: string }>();
-  const selectedAddressTxList = useSelector(
-    selectedAddressTxListSelectorAllChain,
+
+  const srcTxMetaId = params?.srcTxMetaId;
+  const allTransactions = useSelector(
+    getAllNetworkTransactions,
   ) as TransactionMeta[];
 
   const transactionGroup: TransactionGroup | null =
-    location.state?.transactionGroup || null;
+    location?.state?.transactionGroup || null;
   const isEarliestNonce: boolean | null =
-    location.state?.isEarliestNonce || null;
-  const srcChainTxMeta = selectedAddressTxList.find(
-    (tx) => tx.id === srcTxMetaId,
-  );
+    location?.state?.isEarliestNonce || null;
+  const srcChainTxMeta = allTransactions.find((tx) => tx.id === srcTxMetaId);
   // Even if user is still on /tx-details/txMetaId, we want to be able to show the bridge history item
   const bridgeHistoryItem = useSelector((state) =>
     selectBridgeHistoryItemForTxMetaId(state, srcTxMetaId),
   );
-  const approvalTxMeta = selectedAddressTxList.find(
+  const approvalTxMeta = allTransactions.find(
     (tx) => tx.id === bridgeHistoryItem?.approvalTxId,
   );
 
@@ -214,7 +223,7 @@ const CrossChainSwapTxDetails = () => {
   );
 
   return (
-    <div className="bridge__container">
+    <div className="bridge__container bg-background-default">
       <Header
         className="bridge__header"
         startAccessory={
@@ -222,7 +231,7 @@ const CrossChainSwapTxDetails = () => {
             iconName={IconName.ArrowLeft}
             size={ButtonIconSize.Sm}
             ariaLabel={t('back')}
-            onClick={() => history.goBack()}
+            onClick={() => navigate?.(PREVIOUS_ROUTE)}
           />
         }
       >

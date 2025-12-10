@@ -1,5 +1,5 @@
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { DAPP_HOST_ADDRESS, DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
@@ -11,7 +11,7 @@ describe('Revoke Permissions', function () {
   it('should disconnect when click on Disconnect button in connections page', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),

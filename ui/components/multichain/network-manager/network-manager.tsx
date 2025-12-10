@@ -5,12 +5,7 @@ import {
 } from '@metamask/network-controller';
 import React, { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  Route,
-  Routes,
-  useNavigate,
-  useLocation,
-} from 'react-router-dom-v5-compat';
+import { Route, Routes, useNavigate, useLocation } from 'react-router-dom';
 import * as URI from 'uri-js';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useNetworkFormState } from '../../../pages/settings/networks-tab/networks-form/networks-form-state';
@@ -28,6 +23,7 @@ import {
 import AddBlockExplorerModal from '../network-list-menu/add-block-explorer-modal/add-block-explorer-modal';
 import AddRpcUrlModal from '../network-list-menu/add-rpc-url-modal/add-rpc-url-modal';
 import { SelectRpcUrlModal } from '../network-list-menu/select-rpc-url-modal/select-rpc-url-modal';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { AddNetwork } from './components/add-network';
 import { NetworkTabs } from './network-tabs';
 import { useNetworkManagerInitialTab } from './hooks/useNetworkManagerState';
@@ -123,11 +119,11 @@ export const NetworkManager = () => {
   const handleClose = () => {
     dispatch(hideModal());
     dispatch(setEditedNetwork());
-    navigate('/');
+    navigate(DEFAULT_ROUTE);
   };
 
   const handleGoHome = () => {
-    navigate('/');
+    navigate(DEFAULT_ROUTE);
   };
 
   const handleEditOnComplete = useCallback(() => {

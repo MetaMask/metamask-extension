@@ -4,6 +4,7 @@ import { WINDOW_TITLES } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import AssetListPage from '../../../page-objects/pages/home/asset-list';
 import {
   confirmApproveTransaction,
   mocked4BytesApprove,
@@ -12,7 +13,7 @@ import {
 } from './shared';
 
 const { withFixtures } = require('../../../helpers');
-const FixtureBuilder = require('../../../fixture-builder');
+const FixtureBuilder = require('../../../fixtures/fixture-builder');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
 describe('Confirmation Redesign ERC20 Approve Component', function () {
@@ -22,7 +23,7 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
     it('Sends a type 0 transaction (Legacy)', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
@@ -59,7 +60,7 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
     it('Sends a type 2 transaction (EIP1559)', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
@@ -99,39 +100,12 @@ async function mocks(server: MockttpServer) {
 
 async function importTST(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-  await driver.clickElement(
-    '[data-testid="asset-list-control-bar-action-button"]',
-  );
-  await driver.clickElement('[data-testid="importTokens"]');
 
-  await driver.waitForSelector({
-    css: '[data-testid="import-tokens-modal-custom-token-tab"]',
-    text: 'Custom token',
-  });
-  await driver.clickElement({
-    css: '[data-testid="import-tokens-modal-custom-token-tab"]',
-    text: 'Custom token',
-  });
-
-  await driver.clickElement(
-    '[data-testid="test-import-tokens-drop-down-custom-import"]',
-  );
-
-  await driver.clickElement('[data-testid="select-network-item-0x539"]');
-
-  await driver.fill(
-    '[data-testid="import-tokens-modal-custom-address"]',
+  const assetListPage = new AssetListPage(driver);
+  await assetListPage.importCustomTokenByChain(
+    '0x539',
     '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
   );
-  await driver.clickElementAndWaitToDisappear({
-    css: '[data-testid="import-tokens-button-next"]',
-    text: 'Next',
-  });
-
-  await driver.clickElement({
-    css: '[data-testid="import-tokens-modal-import-button"]',
-    text: 'Import',
-  });
 }
 
 async function createERC20ApproveTransaction(driver: Driver) {

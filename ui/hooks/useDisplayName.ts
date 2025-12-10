@@ -49,7 +49,9 @@ export function useDisplayNames(
 ): UseDisplayNameResponse[] {
   const nameEntries = useNames(requests);
   const firstPartyContractNames = useFirstPartyContractNames(requests);
-  const trustSignals = useTrustSignals(requests);
+  const trustSignals = useTrustSignals(
+    requests.map((req) => ({ ...req, chainId: req.variation })),
+  );
   const erc20Tokens = useERC20Tokens(requests);
   const watchedNFTNames = useWatchedNFTNames(requests);
   const nfts = useNFTs(requests);

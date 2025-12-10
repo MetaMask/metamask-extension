@@ -2,7 +2,7 @@ import { hexToNumber } from '@metamask/utils';
 import { Mockttp, MockttpServer } from 'mockttp';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { TX_SENTINEL_URL } from '../../../../shared/constants/transaction';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { Fixtures, withFixtures } from '../../helpers';
 import { DAPP_URL, WINDOW_TITLES } from '../../constants';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
@@ -61,7 +61,7 @@ async function withFixturesForSimulationDetails(
         .build(),
       title,
       testSpecificMock: mockRequests,
-      dapp: true,
+      dappOptions: { numberOfTestDapps: 1 },
       localNodeOptions: {
         hardfork: 'london',
         chainId: hexToNumber(inputChainId),

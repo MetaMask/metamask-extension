@@ -1,15 +1,13 @@
-import {
-  ActionConstraint,
+import type {
   Messenger,
+  ActionConstraint,
   EventConstraint,
-  RestrictedMessenger,
-} from '@metamask/base-controller';
+} from '@metamask/messenger';
 import { Duplex } from 'readable-stream';
 import { SubjectType } from '@metamask/permission-controller';
 import { PreinstalledSnap } from '@metamask/snaps-controllers';
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { Browser } from 'webextension-polyfill';
-import { ExportableKeyEncryptor } from '@metamask/keyring-controller';
+import { Encryptor } from '@metamask/keyring-controller';
 import { KeyringClass } from '@metamask/keyring-utils';
 import { QrKeyringScannerBridge } from '@metamask/eth-qr-keyring';
 import type { TransactionMetricsRequest } from '../../../shared/types';
@@ -44,17 +42,16 @@ export type ControllerPersistedState = Partial<{
 
 /** Generic controller messenger using base template types. */
 export type BaseControllerMessenger = Messenger<
+  string,
   ActionConstraint,
   EventConstraint
 >;
 
 /** Generic restricted controller messenger using base template types. */
-export type BaseRestrictedControllerMessenger = RestrictedMessenger<
+export type BaseRestrictedControllerMessenger = Messenger<
   string,
   ActionConstraint,
-  EventConstraint,
-  string,
-  string
+  EventConstraint
 >;
 
 type SnapSender = {
@@ -86,7 +83,7 @@ export type ControllerInitRequest<
    * An instance of an encryptor to use for encrypting and decrypting
    * sensitive data.
    */
-  encryptor?: ExportableKeyEncryptor;
+  encryptor: Encryptor;
 
   /**
    * The extension browser API.
@@ -155,13 +152,6 @@ export type ControllerInitRequest<
    * The Infura project ID to use for the network controller.
    */
   infuraProjectId: string;
-
-  /**
-   * Function to update account balance for network of the transaction
-   */
-  updateAccountBalanceForTransactionNetwork(
-    transactionMeta: TransactionMeta,
-  ): void;
 
   /**
    * A promise that resolves when the offscreen document is ready.

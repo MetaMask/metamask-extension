@@ -1,6 +1,7 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import { AllowedActions } from '@metamask/ens-controller';
 import { NetworkControllerNetworkDidChangeEvent } from '@metamask/network-controller';
+import { RootMessenger } from '../../lib/messenger';
 
 export type EnsControllerMessenger = ReturnType<
   typeof getEnsControllerMessenger
@@ -14,16 +15,25 @@ export type EnsControllerMessenger = ReturnType<
  * messenger.
  */
 export function getEnsControllerMessenger(
-  messenger: Messenger<AllowedActions, never>,
+  messenger: RootMessenger<AllowedActions, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'EnsController',
-    allowedActions: [
+  const controllerMessenger = new Messenger<
+    'EnsController',
+    AllowedActions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'EnsController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    actions: [
       'NetworkController:getNetworkClientById',
       'NetworkController:getState',
     ],
-    allowedEvents: [],
   });
+  return controllerMessenger;
 }
 
 type AllowedInitializationEvents = NetworkControllerNetworkDidChangeEvent;
@@ -40,11 +50,20 @@ export type EnsControllerInitMessenger = ReturnType<
  * messenger.
  */
 export function getEnsControllerInitMessenger(
-  messenger: Messenger<never, AllowedInitializationEvents>,
+  messenger: RootMessenger<never, AllowedInitializationEvents>,
 ) {
-  return messenger.getRestricted({
-    name: 'EnsControllerInit',
-    allowedActions: [],
-    allowedEvents: ['NetworkController:networkDidChange'],
+  const controllerInitMessenger = new Messenger<
+    'EnsControllerInit',
+    never,
+    AllowedInitializationEvents,
+    typeof messenger
+  >({
+    namespace: 'EnsControllerInit',
+    parent: messenger,
   });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    events: ['NetworkController:networkDidChange'],
+  });
+  return controllerInitMessenger;
 }

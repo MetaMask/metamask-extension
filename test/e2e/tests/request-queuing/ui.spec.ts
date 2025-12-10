@@ -7,7 +7,8 @@ import NetworkManager, {
   NetworkId,
 } from '../../page-objects/pages/network-manager';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../../constants';
 import {
   withFixtures,
   DAPP_URL,
@@ -193,7 +194,7 @@ describe('Request-queue UI changes', function () {
     const chainId = 1338; // 0x53a
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 2 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .build(),
@@ -209,7 +210,7 @@ describe('Request-queue UI changes', function () {
             },
           },
         ],
-        dappOptions: { numberOfDapps: 2 },
+
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -257,7 +258,7 @@ describe('Request-queue UI changes', function () {
     const chainId = 1338; // 0x53a
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 3 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerTripleNode()
           .withPreferencesController({
@@ -289,7 +290,6 @@ describe('Request-queue UI changes', function () {
           },
         ],
 
-        dappOptions: { numberOfDapps: 3 },
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -376,7 +376,7 @@ describe('Request-queue UI changes', function () {
           await networkManager.selectTab('Custom');
 
           await networkManager.selectNetworkByNameWithWait('Localhost 7777');
-          await validateBalanceAndActivity(driver, '24.9998');
+          await validateBalanceAndActivity(driver, '25');
         }
 
         // Validate second network, where transaction was rejected
@@ -391,7 +391,7 @@ describe('Request-queue UI changes', function () {
         await networkManager.selectTab('Custom');
         await networkManager.selectNetworkByNameWithWait('Localhost 8545');
 
-        await validateBalanceAndActivity(driver, '24.9998');
+        await validateBalanceAndActivity(driver, '25');
       },
     );
   });
@@ -401,7 +401,7 @@ describe('Request-queue UI changes', function () {
     const chainId = 1338;
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 2 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .withPreferencesController({
@@ -421,7 +421,7 @@ describe('Request-queue UI changes', function () {
             },
           },
         ],
-        dappOptions: { numberOfDapps: 2 },
+
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -470,7 +470,7 @@ describe('Request-queue UI changes', function () {
   it('should signal from UI to dapp the network change', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
         driverOptions: { constrainWindowSize: true },
@@ -509,7 +509,7 @@ describe('Request-queue UI changes', function () {
     const chainId = 1338;
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 2 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .withEnabledNetworks({
@@ -533,7 +533,7 @@ describe('Request-queue UI changes', function () {
         // This test intentionally quits the local node server while the extension is using it, causing
         // PollingBlockTracker errors and others. These are expected.
         ignoredConsoleErrors: ['ignore-all'],
-        dappOptions: { numberOfDapps: 2 },
+
         title: this.test?.fullTitle(),
       },
       async ({
@@ -588,7 +588,7 @@ describe('Request-queue UI changes', function () {
     const chainId = 1338;
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 2 },
         // Presently confirmations take up to 10 seconds to display on a dead network
         driverOptions: { timeOut: 30000 },
         fixtures: new FixtureBuilder()
@@ -597,8 +597,6 @@ describe('Request-queue UI changes', function () {
           .withEnabledNetworks({
             eip155: {
               '0x1': true,
-              '0x2105': true,
-              '0xe708': true,
             },
           })
           .build(),
@@ -617,7 +615,7 @@ describe('Request-queue UI changes', function () {
         // This test intentionally quits the local node server while the extension is using it, causing
         // PollingBlockTracker errors and others. These are expected.
         ignoredConsoleErrors: ['ignore-all'],
-        dappOptions: { numberOfDapps: 2 },
+
         title: this.test?.fullTitle(),
       },
       async ({ driver, localNodes }) => {
@@ -625,7 +623,7 @@ describe('Request-queue UI changes', function () {
           driver,
           undefined,
           undefined,
-          '85,000.00',
+          DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
         );
 
         // Open the first dapp

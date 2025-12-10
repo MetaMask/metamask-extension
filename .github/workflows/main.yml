@@ -5,9 +5,8 @@ on:
     branches:
       - main
       - stable
-      - Version-v*
       - release/*
-      - trigger-ci*
+      - trigger-ci-*
   pull_request:
     types:
       - opened
@@ -23,7 +22,7 @@ on:
     - cron: '0 2-6 * * *'
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref == 'refs/heads/main' && github.sha || github.ref }}
   cancel-in-progress: ${{ !(contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/heads/stable')) }}
 
 env:
@@ -33,12 +32,34 @@ env:
   # For a `pull_request` event, the fork is `github.event.pull_request.head.repo.fork`.
   # For a `push` event, the fork is `github.event.repository.fork`.
   IS_FORK: ${{ github.event.pull_request.head.repo.fork || github.event.repository.fork }}
+  # For a `pull_request` event, the head commit hash is `github.event.pull_request.head.sha`.
+  # For a `push` event, the head commit hash is `github.sha`.
+  HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
 
 permissions:
   contents: write # required for releases
   id-token: write # required for s3 uploads
 
 jobs:
+  identify-builds:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    outputs:
+      builds-from-run: ${{ steps.identify-builds.outputs.builds-from-run }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          # Specifying `ref` ensures that the head commit is checked out directly.
+          ref: ${{ env.HEAD_COMMIT_HASH }}
+
+      - name: 'Look for `[builds-from-run: <run>]` in the last commit message'
+        id: identify-builds
+        env:
+          RUN_ID: ${{ github.run_id }}
+        run: .github/scripts/identify-builds-from-run.sh
+
   prep-deps:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -60,7 +81,7 @@ jobs:
 
   lint-workflows:
     name: Lint workflows
-    uses: metamask/github-tools/.github/workflows/lint-workflows.yml@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+    uses: MetaMask/github-tools/.github/workflows/lint-workflows.yml@v1
 
   test-lint:
     needs:
@@ -101,91 +122,135 @@ jobs:
     uses: ./.github/workflows/validate-lavamoat-policies.yml
 
   build-dist-browserify:
+    needs:
+      - identify-builds
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-browserify
       build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build prod' || 'yarn build dist' }}
+      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets: inherit
 
   build-dist-mv2-browserify:
+    needs:
+      - identify-builds
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-mv2-browserify
       build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build prod' || 'yarn build dist' }}
       mozilla-lint: true
       enable-mv3: false
+      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets: inherit
 
   build-beta-browserify:
+    needs:
+      - identify-builds
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-beta-browserify
       build-command: yarn build --build-type beta dist
+      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets: inherit
 
   build-beta-mv2-browserify:
+    needs:
+      - identify-builds
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-beta-mv2-browserify
       build-command: yarn build --build-type beta dist
       mozilla-lint: false # Disabled as it is failing for some reason
       enable-mv3: false
+      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets: inherit
 
   build-flask-browserify:
+    needs:
+      - identify-builds
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-browserify
       build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build --build-type flask prod' || 'yarn build --build-type flask dist' }}
+      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets: inherit
 
   build-flask-mv2-browserify:
+    needs:
+      - identify-builds
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-mv2-browserify
       build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build --build-type flask prod' || 'yarn build --build-type flask dist' }}
       mozilla-lint: true
       enable-mv3: false
+      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets: inherit
 
   build-test-browserify:
+    needs:
+      - identify-builds
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-browserify
       build-command: yarn build:test
+      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets: inherit
 
   build-test-mv2-browserify:
+    needs:
+      - identify-builds
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-mv2-browserify
       build-command: yarn build:test:mv2
       mozilla-lint: false # Disabled as it is failing for some reason
       enable-mv3: false
+      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets: inherit
 
   build-test-flask-browserify:
+    needs:
+      - identify-builds
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-flask-browserify
       build-command: yarn build:test:flask
+      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets: inherit
 
   build-test-flask-mv2-browserify:
+    needs:
+      - identify-builds
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-flask-mv2-browserify
       build-command: yarn build:test:flask:mv2
       mozilla-lint: false # Disabled as it is failing for some reason
       enable-mv3: false
+      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets: inherit
 
   build-test-webpack:
+    needs:
+      - identify-builds
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-webpack
       build-command: yarn build:test:webpack
       validate-source-maps: false # Disabled as webpack outputs are not supported by validate-source-maps
+      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
+    secrets: inherit
+
+  build-test-mv2-webpack:
+    needs:
+      - identify-builds
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-test-mv2-webpack
+      build-command: yarn build:test:webpack:mv2
+      validate-source-maps: false # Disabled as webpack outputs are not supported by validate-source-maps
+      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets: inherit
 
   run-benchmarks:
@@ -193,9 +258,14 @@ jobs:
     if: ${{ !(github.event.pull_request.head.repo.fork || github.event.repository.fork) }}
     uses: ./.github/workflows/run-benchmarks.yml
     needs:
+      - identify-builds
       - prep-deps
       - build-test-browserify
+      - build-test-mv2-browserify
       - build-test-webpack
+      - build-test-mv2-webpack
+    with:
+      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
 
@@ -207,6 +277,7 @@ jobs:
 
   bundle-size:
     needs:
+      - identify-builds
       - build-dist-browserify
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -225,6 +296,8 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-dist-browserify
+          github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
+          run-id: ${{ needs.identify-builds.outputs.builds-from-run }} # Download from whatever run the identify-builds job said.
 
       - name: Measure bundle size
         run: yarn tsx test/e2e/mv3-perf-stats/bundle-size.ts --out test-artifacts/chrome
@@ -235,29 +308,24 @@ jobs:
 
       - name: Upload 'bundle-size' to S3
         if: ${{ vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
-        uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
+        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
           s3-bucket: ${{ vars.AWS_S3_BUCKET }}/${{ github.event.repository.name }}/${{ github.run_id }}/bundle-size
           path: test-artifacts/chrome
 
-  page-load-benchmark-pr:
+  page-load-benchmark:
     needs:
+      - identify-builds
       - build-test-browserify
-    if: ${{ github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref_name == 'main') }}
-    uses: ./.github/workflows/page-load-benchmark-pr.yml
-    with:
-      browser-loads: '10'
-      page-loads: '10'
-
-  page-load-benchmark-upload:
-    needs:
-      - page-load-benchmark-pr
-    if: github.ref == 'refs/heads/main'
-    uses: ./.github/workflows/page-load-benchmark-upload.yml
+    uses: ./.github/workflows/page-load-benchmark.yml
     secrets:
       EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
+    with:
+      browser-loads: 10
+      page-loads: 10
+      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
 
   needs-e2e:
     needs:
@@ -266,6 +334,7 @@ jobs:
 
   e2e-chrome:
     needs:
+      - identify-builds
       - needs-e2e
       - build-test-browserify
       - build-test-webpack
@@ -273,18 +342,24 @@ jobs:
       - build-test-flask-browserify
     if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/e2e-chrome.yml
+    with:
+      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
 
   e2e-firefox:
     needs:
+      - identify-builds
       - needs-e2e
+      - build-dist-mv2-browserify
       - build-test-mv2-browserify
-      - build-test-webpack
+      - build-test-mv2-webpack
       - build-test-flask-mv2-browserify
     if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/e2e-firefox.yml
+    with:
+      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
 
@@ -302,12 +377,14 @@ jobs:
 
   build-source-map-explorer:
     needs:
+      - identify-builds
       - prep-deps
       - build-dist-browserify
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
+        if: ${{ github.event_name != 'merge_group' }} # Skip every step in this job for the Merge Queue
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
@@ -315,15 +392,19 @@ jobs:
           use-yarn-hydrate: true
 
       - name: Download artifact 'build-dist-browserify'
+        if: ${{ github.event_name != 'merge_group' }} # Skip every step in this job for the Merge Queue
         uses: actions/download-artifact@v4
         with:
           name: build-dist-browserify
+          github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
+          run-id: ${{ needs.identify-builds.outputs.builds-from-run }} # Download from whatever run the identify-builds job said.
 
       - run: ./development/source-map-explorer.sh
+        if: ${{ github.event_name != 'merge_group' }} # Skip every step in this job for the Merge Queue
 
       - name: Upload 'source-map-explorer' to S3
-        if: ${{ vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
-        uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
+        if: ${{ github.event_name != 'merge_group' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
+        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
@@ -332,19 +413,24 @@ jobs:
 
   build-lavamoat-viz:
     needs:
+      - identify-builds
       - prep-deps
       - build-dist-browserify
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
       GOOGLE_PROD_CLIENT_ID: 00000000000
       APPLE_PROD_CLIENT_ID: 00000000000
       GOOGLE_BETA_CLIENT_ID: 00000000000
       APPLE_BETA_CLIENT_ID: 00000000000
+      GOOGLE_EXPERIMENTAL_CLIENT_ID: 00000000000
+      APPLE_EXPERIMENTAL_CLIENT_ID: 00000000000
       GOOGLE_FLASK_CLIENT_ID: 00000000000
       APPLE_FLASK_CLIENT_ID: 00000000000
-
+    outputs:
+      lavamoat-policy-changed: ${{ steps.lavamoat-policy-changed.outputs.lavamoat-policy-changed }}
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -353,16 +439,50 @@ jobs:
           skip-allow-scripts: true
           use-yarn-hydrate: true
 
+      - name: Download changed-files artifact
+        if: ${{ env.BRANCH != 'main' }}
+        id: download-changed-files
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: changed-files
+          path: ./changed-files/
+
+      # if the changed-files artifact does not exist, we get the diff
+      - run: yarn tsx .github/scripts/git-diff-default-branch.ts
+        if: ${{ steps.download-changed-files.outcome == 'failure' }}
+
+      - name: See if lavamoat policy files have changed
+        id: lavamoat-policy-changed
+        run: |
+          # if 'changed-files/changed-files.json' exists, check if it contains any files named policy.json or policy-override.json
+          if [ -f "changed-files/changed-files.json" ]; then
+            if grep -q -e 'policy.json' -e 'policy-override.json' changed-files/changed-files.json; then
+              echo "Lavamoat policy file changes detected."
+              echo "lavamoat-policy-changed=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "No Lavamoat policy file changes detected."
+              echo "lavamoat-policy-changed=false" >> "$GITHUB_OUTPUT"
+            fi
+          else
+            echo "Cannot find 'changed-files.json', assuming that Lavamoat policy files have changed."
+            echo "lavamoat-policy-changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Download artifact 'build-dist-browserify'
+        if: ${{ steps.lavamoat-policy-changed.outputs.lavamoat-policy-changed == 'true' }}
         uses: actions/download-artifact@v4
         with:
           name: build-dist-browserify
+          github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
+          run-id: ${{ needs.identify-builds.outputs.builds-from-run }} # Download from whatever run the identify-builds job said.
 
       - run: ./.github/scripts/create-lavamoat-viz.sh
+        if: ${{ steps.lavamoat-policy-changed.outputs.lavamoat-policy-changed == 'true' }}
 
       - name: Upload 'build-viz' to S3
-        if: ${{ vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
-        uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
+        if: ${{ steps.lavamoat-policy-changed.outputs.lavamoat-policy-changed == 'true' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
+        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
@@ -371,7 +491,9 @@ jobs:
 
   publish-prerelease:
     name: Publish prerelease
+    if: ${{ github.event_name != 'merge_group' }} # Skip this job for the Merge Queue
     needs:
+      - identify-builds
       - build-dist-browserify
       - build-dist-mv2-browserify
       - build-beta-browserify
@@ -383,12 +505,16 @@ jobs:
       - build-test-flask-browserify
       - build-test-flask-mv2-browserify
       - run-benchmarks
+      - page-load-benchmark
       - bundle-size
       - build-storybook
       - build-ts-migration-dashboard
       - build-source-map-explorer
       - build-lavamoat-viz
     uses: ./.github/workflows/publish-prerelease.yml
+    with:
+      lavamoat-policy-changed: ${{ needs.build-lavamoat-viz.outputs.lavamoat-policy-changed == 'true' }}
+      post-new-builds: ${{ needs.identify-builds.outputs.builds-from-run == github.run_id }}
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
 
@@ -429,6 +555,7 @@ jobs:
       - build-test-flask-browserify
       - build-test-flask-mv2-browserify
       - build-test-webpack
+      - build-test-mv2-webpack
       - run-tests
       - build-storybook
       - build-ts-migration-dashboard
@@ -451,6 +578,7 @@ jobs:
       - needs-e2e
       - e2e-chrome
       - e2e-firefox
+      - identify-builds
     steps:
       - name: Check that all jobs have passed
         run: |
@@ -462,14 +590,21 @@ jobs:
 
           # Check E2E jobs only if they should have run
           if [[ "${{ needs.needs-e2e.outputs.needs-e2e }}" == "true" ]]; then
-            if [[ "${{ needs.e2e-chrome.result }}" == "failure" ]]; then
-              echo "E2E Chrome tests failed"
+            if [[ "${{ needs.e2e-chrome.result }}" != "success" ]]; then
+              echo "E2E Chrome tests did not succeed (result: ${{ needs.e2e-chrome.result }})"
               exit 1
             fi
-            if [[ "${{ needs.e2e-firefox.result }}" == "failure" ]]; then
-              echo "E2E Firefox tests failed"
+            if [[ "${{ needs.e2e-firefox.result }}" != "success" ]]; then
+              echo "E2E Firefox tests did not succeed (result: ${{ needs.e2e-firefox.result }})"
               exit 1
             fi
+          fi
+
+          # Check if the identify-builds output is the current run ID
+          if [[ "${{ needs.identify-builds.outputs.builds-from-run }}" != "${{ github.run_id }}" ]]; then
+            echo "Builds were used from a different GHA run: ${{ needs.identify-builds.outputs.builds-from-run }}"
+            echo "Right now you can use this feature to test and iterate faster, but to merge a PR, you have to disable it."
+            exit 1
           fi
 
           echo "All required jobs passed"
@@ -480,9 +615,12 @@ jobs:
     if: ${{ github.event_name == 'merge_group' && failure() && !github.event.repository.fork }}
     needs:
       - all-jobs-pass
-    uses: metamask/github-tools/.github/workflows/log-merge-group-failure.yml@6bbad335a01fce1a9ec1eabd9515542c225d46c0
-    secrets:
-      GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
-      GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
-      SPREADSHEET_ID: ${{ secrets.GOOGLE_MERGE_QUEUE_SPREADSHEET_ID }}
-      SHEET_NAME: ${{ secrets.GOOGLE_MERGE_QUEUE_SHEET_NAME }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Log merge group failure
+        uses: MetaMask/github-tools/.github/actions/log-merge-group-failure@v1
+        with:
+          google-application-credentials: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+          google-service-account: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+          spreadsheet-id: ${{ secrets.GOOGLE_MERGE_QUEUE_SPREADSHEET_ID }}
+          sheet-name: ${{ secrets.GOOGLE_MERGE_QUEUE_SHEET_NAME }}

@@ -55,10 +55,10 @@ exports[`NFTTokenTransferInfo renders correctly 1`] = `
     >
       <div
         class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-        style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; flex-direction: column;"
+        style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; flex: 1; flex-direction: column;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
         >
           <div
             class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -78,7 +78,7 @@ exports[`NFTTokenTransferInfo renders correctly 1`] = `
             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+              class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
             >
               <div
                 class="name name__clickable name__missing"
@@ -103,10 +103,10 @@ exports[`NFTTokenTransferInfo renders correctly 1`] = `
       />
       <div
         class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-        style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; flex-direction: column;"
+        style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; flex: 1; flex-direction: column; overflow: hidden;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
         >
           <div
             class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -119,14 +119,14 @@ exports[`NFTTokenTransferInfo renders correctly 1`] = `
           </div>
         </div>
         <div
-          class="mm-box mm-box--margin-top-2"
+          class="mm-box w-full mm-box--margin-top-2"
           data-testid="recipient-address"
         >
           <div
             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+              class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
             >
               <div
                 class="name name__clickable name__missing"
@@ -165,7 +165,7 @@ exports[`NFTTokenTransferInfo renders correctly 1`] = `
             style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; padding-left: 0px; padding-right: 0px;"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -195,7 +195,7 @@ exports[`NFTTokenTransferInfo renders correctly 1`] = `
           </div>
         </div>
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          class="mm-box mm-text mm-text--body-md mm-text--text-align-right mm-box--width-11/12 mm-box--color-text-default"
         >
           No changes
         </p>
@@ -211,7 +211,7 @@ exports[`NFTTokenTransferInfo renders correctly 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -234,6 +234,7 @@ exports[`NFTTokenTransferInfo renders correctly 1`] = `
         </div>
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          data-testid="confirmation__details-network-name"
         >
           Goerli
         </p>
@@ -245,7 +246,7 @@ exports[`NFTTokenTransferInfo renders correctly 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -295,7 +296,7 @@ exports[`NFTTokenTransferInfo renders correctly 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -326,7 +327,7 @@ exports[`NFTTokenTransferInfo renders correctly 1`] = `
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+          class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
             class="name name__clickable name__missing"
@@ -358,7 +359,7 @@ exports[`NFTTokenTransferInfo renders correctly 1`] = `
         style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; align-items: center;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
         >
           <div
             class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -453,7 +454,7 @@ exports[`NFTTokenTransferInfo renders correctly 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"

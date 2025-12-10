@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { getEventPayloads, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { MOCK_META_METRICS_ID } from '../../constants';
 import { MetaMetricsRequestedThrough } from '../../../../shared/constants/metametrics';
 import TestDapp from '../../page-objects/pages/test-dapp';
@@ -71,7 +71,7 @@ describe('Signature Approved Event', function () {
   it('Successfully tracked for signTypedData_v4', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withMetaMetricsController({
@@ -130,7 +130,7 @@ describe('Signature Approved Event', function () {
   it('Successfully tracked for signTypedData_v3', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withMetaMetricsController({
@@ -183,7 +183,7 @@ describe('Signature Approved Event', function () {
   it('Successfully tracked for signTypedData', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withMetaMetricsController({
@@ -236,7 +236,7 @@ describe('Signature Approved Event', function () {
   it('Successfully tracked for personalSign', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withMetaMetricsController({

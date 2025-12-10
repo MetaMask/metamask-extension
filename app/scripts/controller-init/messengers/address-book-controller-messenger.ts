@@ -1,4 +1,5 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
+import { RootMessenger } from '../../lib/messenger';
 
 export type AddressBookControllerMessenger = ReturnType<
   typeof getAddressBookControllerMessenger
@@ -12,13 +13,12 @@ export type AddressBookControllerMessenger = ReturnType<
  * messenger.
  */
 export function getAddressBookControllerMessenger(
-  messenger: Messenger<never, never>,
+  messenger: RootMessenger<never, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'AddressBookController',
-
-    // This controller does not call any actions or subscribe to any events.
-    allowedActions: [],
-    allowedEvents: [],
-  });
+  return new Messenger<'AddressBookController', never, never, typeof messenger>(
+    {
+      namespace: 'AddressBookController',
+      parent: messenger,
+    },
+  );
 }

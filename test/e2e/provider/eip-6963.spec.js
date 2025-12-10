@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const FixtureBuilder = require('../fixture-builder');
+const FixtureBuilder = require('../fixtures/fixture-builder');
 const { withFixtures, unlockWallet } = require('../helpers');
 const { DAPP_URL } = require('../constants');
 
@@ -13,7 +13,7 @@ describe('EIP-6963 Provider', function () {
   it('should respond to the request provider event', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),

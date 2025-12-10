@@ -1,7 +1,11 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
-import { NotificationServicesController } from '@metamask/notification-services-controller';
+import { useNavigate } from 'react-router-dom';
+import {
+  type INotification,
+  TRIGGER_TYPES,
+  NOTIFICATION_API_TRIGGER_TYPES_SET,
+} from '@metamask/notification-services-controller/notification-services';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   IconName,
@@ -15,8 +19,7 @@ import {
   DEFAULT_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
 } from '../../helpers/constants/routes';
-import { NotificationsPage } from '../../components/multichain';
-import { Content, Header } from '../../components/multichain/pages/page';
+import { Content, Header, Page } from '../../components/multichain/pages/page';
 import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
 import { useUnreadNotificationsCounter } from '../../hooks/metamask-notifications/useCounter';
 import { getNotifySnaps } from '../../selectors';
@@ -33,11 +36,6 @@ import {
 import { deleteExpiredNotifications } from '../../store/actions';
 import { NotificationsList, TAB_KEYS } from './notifications-list';
 import { NewFeatureTag } from './NewFeatureTag';
-
-export type Notification = NotificationServicesController.Types.INotification;
-
-const { TRIGGER_TYPES, TRIGGER_TYPES_WALLET_SET } =
-  NotificationServicesController.Constants;
 
 // NOTE - these 2 data sources are combined in our controller.
 // FUTURE - we could separate these data sources into separate methods.
@@ -112,7 +110,7 @@ const useCombinedNotifications = () => {
 
 export const filterNotifications = (
   activeTab: TAB_KEYS,
-  notifications: Notification[],
+  notifications: INotification[],
 ) => {
   if (activeTab === TAB_KEYS.ALL) {
     return notifications;
@@ -121,7 +119,7 @@ export const filterNotifications = (
   if (activeTab === TAB_KEYS.WALLET) {
     return notifications.filter(
       (notification) =>
-        TRIGGER_TYPES_WALLET_SET.has(notification.type) ||
+        NOTIFICATION_API_TRIGGER_TYPES_SET.has(notification.type) ||
         notification.type === TRIGGER_TYPES.FEATURES_ANNOUNCEMENT,
     );
   }
@@ -160,7 +158,7 @@ export default function Notifications() {
   }, [dispatch]);
 
   return (
-    <NotificationsPage>
+    <Page data-testid="notifications-page">
       {/* Back and Settings Buttons */}
       <Header
         startAccessory={
@@ -235,6 +233,6 @@ export default function Notifications() {
           notificationsCount={notificationsUnreadCount}
         />
       </Content>
-    </NotificationsPage>
+    </Page>
   );
 }

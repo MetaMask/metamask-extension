@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import {
   Box,
@@ -26,6 +26,7 @@ import {
 import { setSmartAccountOptIn } from '../../../../../store/actions';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { SmartAccountUpdateContent } from '../smart-account-update-content';
+import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import { SmartAccountUpdateSuccess } from './smart-account-update-success';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -33,12 +34,12 @@ import { SmartAccountUpdateSuccess } from './smart-account-update-success';
 export function SmartAccountUpdate() {
   const [acknowledged, setAcknowledged] = useState(false);
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const closeAccountUpdatePage = useCallback(() => {
-    history.replace('/');
-  }, [history]);
+    navigate(DEFAULT_ROUTE, { replace: true });
+  }, [navigate]);
 
   const acknowledgeSmartAccountUpgrade = useCallback(() => {
     dispatch(setSmartAccountOptIn(true));

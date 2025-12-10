@@ -1,11 +1,8 @@
-import { Hex, isHexString } from '@metamask/utils';
-import { isSolanaChainId } from '@metamask/bridge-controller';
+import { Hex } from '@metamask/utils';
 import { useEffect, useMemo } from 'react';
-import { useHistory } from 'react-router-dom';
-import { useLocation, useSearchParams } from 'react-router-dom-v5-compat';
+import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-import { toHex } from '../../../../../shared/lib/delegation/utils';
 import { SEND_ROUTE } from '../../../../helpers/constants/routes';
 import { getAssetsBySelectedAccountGroup } from '../../../../selectors/assets';
 import { Asset } from '../../types/send';
@@ -27,7 +24,7 @@ export const useSendQueryParams = () => {
     updateTo,
     value,
   } = useSendContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { pathname } = useLocation();
   const [searchParams] = useSearchParams();
   const nfts = useSendNfts();
@@ -45,6 +42,7 @@ export const useSendQueryParams = () => {
   const paramAsset = searchParams.get('asset');
   const paramAmount = searchParams.get('amount');
   const paramChainId = searchParams.get('chainId');
+  const paramTokenId = searchParams.get('tokenId');
   const paramHexData = searchParams.get('hexData');
   const paramRecipient = searchParams.get('recipient');
   const paramMaxValueMode = searchParams.get('maxValueMode');
@@ -72,6 +70,9 @@ export const useSendQueryParams = () => {
     if (asset?.chainId !== undefined && paramChainId !== asset.chainId) {
       queryParams.set('chainId', asset.chainId.toString());
     }
+    if (asset?.tokenId !== undefined && paramTokenId !== asset.tokenId) {
+      queryParams.set('tokenId', asset.tokenId);
+    }
     if (maxValueMode !== undefined && paramMaxValueMode !== `${maxValueMode}`) {
       queryParams.set('maxValueMode', maxValueMode.toString());
     }
@@ -81,15 +82,18 @@ export const useSendQueryParams = () => {
     if (to !== undefined && paramRecipient !== to) {
       queryParams.set('recipient', to);
     }
-    history.replace(`${SEND_ROUTE}/${subPath}?${queryParams.toString()}`);
+    navigate(`${SEND_ROUTE}/${subPath}?${queryParams.toString()}`, {
+      replace: true,
+    });
   }, [
     asset,
-    history,
+    navigate,
     hexData,
     maxValueMode,
     paramAmount,
     paramAsset,
     paramChainId,
+    paramTokenId,
     paramMaxValueMode,
     paramRecipient,
     searchParams,
@@ -120,22 +124,19 @@ export const useSendQueryParams = () => {
     if (asset || !paramChainId) {
       return;
     }
-    const chainId =
-      !isSolanaChainId(paramChainId) && !isHexString(paramChainId)
-        ? toHex(paramChainId)
-        : paramChainId;
 
     let newAsset: Asset | undefined = flatAssets?.find(
       ({ assetId, chainId: tokenChainId, isNative }) =>
-        chainId === tokenChainId &&
+        paramChainId === tokenChainId &&
         ((paramAsset && assetId?.toLowerCase() === paramAsset.toLowerCase()) ||
           (!paramAsset && isNative)),
     );
 
     if (!newAsset) {
       newAsset = nfts?.find(
-        ({ address, chainId: tokenChainId, isNative }) =>
-          chainId === tokenChainId &&
+        ({ address, chainId: tokenChainId, isNative, tokenId }) =>
+          paramChainId === tokenChainId &&
+          paramTokenId === tokenId &&
           ((paramAsset &&
             address?.toLowerCase() === paramAsset.toLowerCase()) ||
             (!paramAsset && isNative)),
@@ -145,5 +146,13 @@ export const useSendQueryParams = () => {
     if (newAsset) {
       updateAsset(newAsset);
     }
-  }, [asset, flatAssets, paramAsset, paramChainId, nfts, updateAsset]);
+  }, [
+    asset,
+    flatAssets,
+    paramAsset,
+    paramChainId,
+    paramTokenId,
+    nfts,
+    updateAsset,
+  ]);
 };

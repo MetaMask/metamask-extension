@@ -6,7 +6,7 @@ import {
   withFixtures,
 } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { DAPP_HOST_ADDRESS } from '../../../constants';
 import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
 import EditConnectedAccountsModal from '../../../page-objects/pages/dialog/edit-connected-accounts-modal';
@@ -63,7 +63,7 @@ describe('Call `wallet_createSession`, then update the accounts and/or scopes in
           driver,
         );
         await editConnectedAccountsModal.checkPageIsLoaded();
-        await editConnectedAccountsModal.addNewEthereumAccount();
+        await editConnectedAccountsModal.addNewAccount();
         await connectAccountConfirmation.confirmConnect();
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,

@@ -1,7 +1,7 @@
 import { TransactionStatus } from '@metamask/transaction-controller';
 
 import { getMockConfirmStateForTransaction } from '../../../../test/data/confirmations/helper';
-import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { Confirmation } from '../types/confirm';
 import { useBatchAuthorizationRequests } from './useBatchAuthorizationRequests';
 

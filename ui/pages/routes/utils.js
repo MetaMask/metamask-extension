@@ -12,7 +12,6 @@ import {
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
   CONNECT_ROUTE,
-  CONNECTIONS,
   CROSS_CHAIN_SWAP_ROUTE,
   IMPORT_SRP_ROUTE,
   DEFAULT_ROUTE,
@@ -23,9 +22,6 @@ import {
   SEND_ROUTE,
   SNAPS_VIEW_ROUTE,
   DEEP_LINK_ROUTE,
-  WALLET_DETAILS_ROUTE,
-  ACCOUNT_DETAILS_ROUTE,
-  ACCOUNT_DETAILS_QR_CODE_ROUTE,
   MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
   SHIELD_PLAN_ROUTE,
   MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
@@ -36,14 +32,17 @@ import {
 
 export function isConfirmTransactionRoute(pathname) {
   return Boolean(
-    matchPath(pathname, {
-      path: CONFIRM_TRANSACTION_ROUTE,
-      exact: false,
-    }),
+    matchPath(
+      {
+        path: CONFIRM_TRANSACTION_ROUTE,
+        end: false,
+      },
+      pathname,
+    ),
   );
 }
 
-function getThemeFromRawTheme(theme) {
+export function getThemeFromRawTheme(theme) {
   if (theme === ThemeType.os) {
     if (window?.matchMedia('(prefers-color-scheme: dark)')?.matches) {
       return ThemeType.dark;
@@ -63,10 +62,13 @@ export function setTheme(theme) {
 function onConfirmPage(props) {
   const { location } = props;
   return Boolean(
-    matchPath(location.pathname, {
-      path: CONFIRM_TRANSACTION_ROUTE,
-      exact: false,
-    }),
+    matchPath(
+      {
+        path: CONFIRM_TRANSACTION_ROUTE,
+        end: false,
+      },
+      location.pathname,
+    ),
   );
 }
 
@@ -99,10 +101,13 @@ export function hideAppHeader(props) {
   const { location } = props;
 
   const isNotificationsPage = Boolean(
-    matchPath(location.pathname, {
-      path: `${NOTIFICATIONS_ROUTE}`,
-      exact: false,
-    }),
+    matchPath(
+      {
+        path: `${NOTIFICATIONS_ROUTE}`,
+        end: false,
+      },
+      location.pathname,
+    ),
   );
 
   if (isNotificationsPage) {
@@ -110,10 +115,13 @@ export function hideAppHeader(props) {
   }
 
   const isDeepLinksPage = Boolean(
-    matchPath(location.pathname, {
-      path: DEEP_LINK_ROUTE,
-      exact: false,
-    }),
+    matchPath(
+      {
+        path: DEEP_LINK_ROUTE,
+        end: false,
+      },
+      location.pathname,
+    ),
   );
 
   if (isDeepLinksPage) {
@@ -121,10 +129,13 @@ export function hideAppHeader(props) {
   }
 
   const isInitializing = Boolean(
-    matchPath(location.pathname, {
-      path: ONBOARDING_ROUTE,
-      exact: false,
-    }),
+    matchPath(
+      {
+        path: ONBOARDING_ROUTE,
+        end: false,
+      },
+      location.pathname,
+    ),
   );
 
   if (isInitializing) {
@@ -138,32 +149,27 @@ export function hideAppHeader(props) {
   }
 
   const isPermissionsPage = Boolean(
-    matchPath(location.pathname, {
-      path: PERMISSIONS,
-      exact: false,
-    }),
+    matchPath(
+      {
+        path: PERMISSIONS,
+        end: false,
+      },
+      location.pathname,
+    ),
   );
 
   if (isPermissionsPage) {
     return true;
   }
 
-  const isConnectionsPage = Boolean(
-    matchPath(location.pathname, {
-      path: CONNECTIONS,
-      exact: false,
-    }),
-  );
-
-  if (isConnectionsPage) {
-    return true;
-  }
-
   const isReviewPermissionsPgae = Boolean(
-    matchPath(location.pathname, {
-      path: REVIEW_PERMISSIONS,
-      exact: false,
-    }),
+    matchPath(
+      {
+        path: REVIEW_PERMISSIONS,
+        end: false,
+      },
+      location.pathname,
+    ),
   );
 
   if (isReviewPermissionsPgae) {
@@ -175,124 +181,122 @@ export function hideAppHeader(props) {
   }
 
   const isHandlingPermissionsRequest = Boolean(
-    matchPath(location.pathname, {
-      path: CONNECT_ROUTE,
-      exact: false,
-    }),
+    matchPath(
+      {
+        path: CONNECT_ROUTE,
+        end: false,
+      },
+      location.pathname,
+    ),
   );
 
   const isMultichainSend = Boolean(
-    matchPath(location.pathname, {
-      path: SEND_ROUTE,
-      exact: false,
-    }),
+    matchPath(
+      {
+        path: SEND_ROUTE,
+        end: false,
+      },
+      location.pathname,
+    ),
   );
   if (isMultichainSend) {
     return true;
   }
 
   const isStateTwoMultichainAccountDetailsPage = Boolean(
-    matchPath(location.pathname, {
-      path: MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
-      exact: false,
-    }),
+    matchPath(
+      {
+        path: MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
+        end: false,
+      },
+      location.pathname,
+    ),
   );
   if (isStateTwoMultichainAccountDetailsPage) {
     return true;
   }
 
   const isStateTwoMultichainWalletDetailsPage = Boolean(
-    matchPath(location.pathname, {
-      path: MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
-      exact: false,
-    }),
+    matchPath(
+      {
+        path: MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
+        end: false,
+      },
+      location.pathname,
+    ),
   );
   if (isStateTwoMultichainWalletDetailsPage) {
     return true;
   }
 
-  const isWalletDetailsPage = Boolean(
-    matchPath(location.pathname, {
-      path: WALLET_DETAILS_ROUTE,
-      exact: false,
-    }),
-  );
-  if (isWalletDetailsPage) {
-    return true;
-  }
-
   const isSnapsHome = Boolean(
-    matchPath(location.pathname, {
-      path: SNAPS_VIEW_ROUTE,
-      exact: false,
-    }),
+    matchPath(
+      {
+        path: SNAPS_VIEW_ROUTE,
+        end: false,
+      },
+      location.pathname,
+    ),
   );
   if (isSnapsHome) {
     return true;
   }
 
   const isCrossChainSwapsPage = Boolean(
-    matchPath(location.pathname, {
-      path: `${CROSS_CHAIN_SWAP_ROUTE}`,
-      exact: false,
-    }),
+    matchPath(
+      {
+        path: `${CROSS_CHAIN_SWAP_ROUTE}`,
+        end: false,
+      },
+      location.pathname,
+    ),
   );
   if (isCrossChainSwapsPage) {
     return true;
   }
 
   const isAssetsPage = Boolean(
-    matchPath(location.pathname, {
-      path: ASSET_ROUTE,
-      exact: false,
-    }),
+    matchPath(
+      {
+        path: ASSET_ROUTE,
+        end: false,
+      },
+      location.pathname,
+    ),
   );
 
   if (isAssetsPage) {
     return true;
   }
 
-  const isMultichainAccountDetailsPage = Boolean(
-    matchPath(location.pathname, {
-      path: ACCOUNT_DETAILS_ROUTE,
-      exact: false,
-    }),
-  );
-
-  if (isMultichainAccountDetailsPage) {
-    return true;
-  }
-
-  const isMultichainAccountDetailsQRCodePage = Boolean(
-    matchPath(location.pathname, {
-      path: ACCOUNT_DETAILS_QR_CODE_ROUTE,
-      exact: false,
-    }),
-  );
-
-  if (isMultichainAccountDetailsQRCodePage) {
-    return true;
-  }
-
   const isHandlingAddEthereumChainRequest = Boolean(
-    matchPath(location.pathname, {
-      path: CONFIRMATION_V_NEXT_ROUTE,
-      exact: false,
-    }),
+    matchPath(
+      {
+        path: CONFIRMATION_V_NEXT_ROUTE,
+        end: false,
+      },
+      location.pathname,
+    ),
   );
 
   const isImportSrpPage = Boolean(
-    matchPath(location.pathname, {
-      path: IMPORT_SRP_ROUTE,
-      exact: false,
-    }),
+    matchPath(
+      {
+        path: IMPORT_SRP_ROUTE,
+        end: false,
+      },
+      location.pathname,
+    ),
   );
 
   const isShieldPlanPage = Boolean(
-    matchPath(location.pathname, {
-      path: SHIELD_PLAN_ROUTE,
-      exact: false,
-    }),
+    matchPath(
+      {
+        path: SHIELD_PLAN_ROUTE,
+        end: false,
+      },
+      location.pathname,
+    ),
   );
 
   if (isShieldPlanPage) {
@@ -300,10 +304,13 @@ export function hideAppHeader(props) {
   }
 
   const isGatorPermissionsPage = Boolean(
-    matchPath(location.pathname, {
-      path: GATOR_PERMISSIONS,
-      exact: false,
-    }),
+    matchPath(
+      {
+        path: GATOR_PERMISSIONS,
+        end: false,
+      },
+      location.pathname,
+    ),
   );
 
   if (isGatorPermissionsPage) {
@@ -311,10 +318,13 @@ export function hideAppHeader(props) {
   }
 
   const isGatorPermissionsTokenTransferPage = Boolean(
-    matchPath(location.pathname, {
-      path: TOKEN_TRANSFER_ROUTE,
-      exact: false,
-    }),
+    matchPath(
+      {
+        path: TOKEN_TRANSFER_ROUTE,
+        end: false,
+      },
+      location.pathname,
+    ),
   );
 
   if (isGatorPermissionsTokenTransferPage) {
@@ -322,10 +332,13 @@ export function hideAppHeader(props) {
   }
 
   const isReviewGatorPermissionsPage = Boolean(
-    matchPath(location.pathname, {
-      path: REVIEW_GATOR_PERMISSIONS_ROUTE,
-      exact: false,
-    }),
+    matchPath(
+      {
+        path: REVIEW_GATOR_PERMISSIONS_ROUTE,
+        end: false,
+      },
+      location.pathname,
+    ),
   );
 
   if (isReviewGatorPermissionsPage) {
@@ -343,9 +356,103 @@ export function hideAppHeader(props) {
 export function showAppHeader(props) {
   const { location } = props;
   return Boolean(
-    matchPath(location.pathname, {
-      path: DEFAULT_ROUTE,
-      exact: true,
-    }),
+    matchPath(
+      {
+        path: DEFAULT_ROUTE,
+        end: true,
+      },
+      location.pathname,
+    ),
   );
+}
+
+/**
+ * Creates a relative location object for use with nested react-router-dom Routes.
+ *
+ * When using <Routes> and <Route> components inside a parent route,
+ * the child Routes need to match against paths relative to the parent route,
+ * not the full pathname. This function strips the base path prefix from the
+ * location to create a relative location. The resulting pathname is guaranteed
+ * to start with '/', as required by React Router Route matching.
+ *
+ * @param {object} location - The full location object from react-router
+ * @param {string} location.pathname - The full pathname (e.g., '/connect/id/snap-install')
+ * @param {string} basePath - The base path to remove (e.g., '/connect/id' or '/connect/id/')
+ * @returns {object} A new location object with pathname set to the relative path
+ * (e.g., '/snap-install' or '/') and all other location properties preserved
+ * @example
+ * // Full pathname: '/connect/abc123/snaps-connect'
+ * // Base path: '/connect/abc123' or '/connect/abc123/'
+ * const relativeLocation = getRelativeLocationForNestedRoutes(
+ *   location,
+ *   '/connect/abc123'
+ * );
+ * // relativeLocation.pathname === '/snaps-connect'
+ * @example
+ * // Usage with v6 Routes:
+ * <Routes location={relativeLocation}>
+ *   <Route path="/" element={<HomePage />} />
+ *   <Route path="/snaps-connect" element={<SnapsConnect />} />
+ * </Routes>
+ */
+export function getRelativeLocationForNestedRoutes(location, basePath) {
+  const normalizedBasePath = basePath.endsWith('/')
+    ? basePath.slice(0, -1)
+    : basePath;
+
+  const relativePathname = location.pathname.startsWith(normalizedBasePath)
+    ? location.pathname.slice(normalizedBasePath.length) || '/'
+    : location.pathname;
+
+  return {
+    ...location,
+    pathname: relativePathname,
+  };
+}
+
+/**
+ * Converts an absolute route path to a relative path for use with nested Routes.
+ *
+ * When using nested `<Routes>` components inside a parent route with `/*`,
+ * child routes need to use relative paths (without the parent's base path prefix).
+ * This function strips the base path and leading slash to create a truly relative path.
+ *
+ * @param {string} absolutePath - The full absolute path (e.g., '/onboarding/completion')
+ * @param {string} [basePath] - The base path to remove (e.g., '/onboarding'). Defaults to empty string.
+ * @returns {string} The relative path suitable for nested Route matching
+ * (e.g., 'completion' or '/' for the base route)
+ */
+export function toRelativeRoutePath(absolutePath, basePath = '') {
+  const relativePath = absolutePath.replace(basePath, '').replace(/^\//u, '');
+  return relativePath || '/';
+}
+
+/**
+ * Extracts the transaction ID from a URL pathname.
+ *
+ * @param {string} pathname - The URL pathname (e.g., '/confirm-transaction/123?query=foo').
+ * @param {string} baseRoute - The base route to match against (e.g., '/confirm-transaction/').
+ * @returns {string | null} The transaction ID if found, otherwise null.
+ * @example
+ * extractIdFromPathname('/confirm-transaction/abc123', '/confirm-transaction/') // 'abc123'
+ * extractIdFromPathname('/confirm-transaction/abc123?foo=bar', '/confirm-transaction/') // 'abc123'
+ * extractIdFromPathname('/confirm-transaction/abc123#hash', '/confirm-transaction/') // 'abc123'
+ * extractIdFromPathname('/other-route', '/confirm-transaction/') // null
+ */
+export function extractIdFromPathname(pathname, baseRoute) {
+  if (!pathname || !baseRoute || !pathname.includes(baseRoute)) {
+    return null;
+  }
+
+  // Get the part after the base route
+  const afterRoute = pathname.split(baseRoute)[1];
+
+  if (!afterRoute) {
+    return null;
+  }
+
+  // Extract the ID by getting everything before any query params or hash
+  const id = afterRoute.split(/[/?#]/u)[0];
+
+  return id || null;
 }

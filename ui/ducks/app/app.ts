@@ -4,6 +4,7 @@ import type {
 } from '@metamask/assets-controllers';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { Action, AnyAction } from 'redux';
+import { ModalType } from '@metamask/subscription-controller';
 import {
   HardwareTransportStates,
   WebHIDConnectedStatuses,
@@ -111,6 +112,7 @@ type AppState = {
         nickname?: string;
         editCompleted?: boolean;
         newNetwork?: boolean;
+        trackRpcUpdateFromBanner?: boolean;
       }
     | undefined;
   newNetworkAddedConfigurationId: string;
@@ -131,12 +133,17 @@ type AppState = {
   errorInSettings: string | null;
   showNewSrpAddedToast: boolean;
   showPasswordChangeToast: PasswordChangeToastType | null;
-  showConnectionsRemovedModal: boolean;
   showCopyAddressToast: boolean;
   showClaimSubmitToast: ClaimSubmitToastType | null;
   shieldEntryModal?: {
     show: boolean;
     shouldSubmitEvents: boolean;
+    modalType?: ModalType;
+    triggeringCohort?: string;
+    /**
+     * Whether the user has interacted with the modal.
+     */
+    hasUserInteractedWithModal?: boolean;
   };
 };
 
@@ -240,7 +247,6 @@ const initialState: AppState = {
   showCopyAddressToast: false,
   showClaimSubmitToast: null,
   showSupportDataConsentModal: false,
-  showConnectionsRemovedModal: false,
 };
 
 export default function reduceApp(
@@ -419,13 +425,6 @@ export default function reduceApp(
         alertOpen: false,
         alertMessage: null,
       };
-
-    case actionConstants.SET_ACCOUNT_DETAILS_ADDRESS: {
-      return {
-        ...appState,
-        accountDetailsAddress: action.payload,
-      };
-    }
 
     // qr scanner methods
     case actionConstants.QR_CODE_DETECTED:
@@ -717,6 +716,11 @@ export default function reduceApp(
         ),
         isNetworkMenuOpen: !appState.isNetworkMenuOpen,
       };
+    case actionConstants.CLOSE_NETWORK_MENU:
+      return {
+        ...appState,
+        isNetworkMenuOpen: false,
+      };
     case actionConstants.DELETE_METAMETRICS_DATA_MODAL_OPEN:
       return {
         ...appState,
@@ -796,12 +800,7 @@ export default function reduceApp(
         showSupportDataConsentModal: action.payload,
       };
 
-    case actionConstants.SET_SHOW_CONNECTIONS_REMOVED:
-      return {
-        ...appState,
-        showConnectionsRemovedModal: action.value,
-      };
-    case actionConstants.SET_SHOW_SHIELD_ENTRY_MODAL_ONCE:
+    case actionConstants.SET_SHIELD_ENTRY_MODAL_STATUS:
       return {
         ...appState,
         shieldEntryModal: {

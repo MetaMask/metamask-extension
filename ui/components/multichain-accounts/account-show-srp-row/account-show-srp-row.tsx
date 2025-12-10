@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
   TextVariant,
@@ -29,7 +29,7 @@ type AccountShowSrpRowProps = {
 
 export const AccountShowSrpRow = ({ account }: AccountShowSrpRowProps) => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [srpQuizModalVisible, setSrpQuizModalVisible] = useState(false);
   const seedPhraseBackedUp = useSelector(getIsPrimarySeedPhraseBackedUp);
   const hdKeyrings = useSelector(getMetaMaskHdKeyrings);
@@ -68,7 +68,7 @@ export const AccountShowSrpRow = ({ account }: AccountShowSrpRowProps) => {
         onClick={() => {
           if (shouldShowBackupReminder) {
             const backUpSRPRoute = `${ONBOARDING_REVIEW_SRP_ROUTE}/?isFromReminder=true`;
-            history.push(backUpSRPRoute);
+            navigate(backUpSRPRoute);
           } else {
             setSrpQuizModalVisible(true);
           }
@@ -80,6 +80,7 @@ export const AccountShowSrpRow = ({ account }: AccountShowSrpRowProps) => {
           isOpen={srpQuizModalVisible}
           onClose={() => setSrpQuizModalVisible(false)}
           closeAfterCompleting
+          navigate={navigate}
         />
       ) : null}
     </>

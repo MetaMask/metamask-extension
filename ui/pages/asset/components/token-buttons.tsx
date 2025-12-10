@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { CaipAssetType } from '@metamask/utils';
@@ -60,7 +60,7 @@ const TokenButtons = ({
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
-  const history = useHistory();
+  const navigate = useNavigate();
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
   const isEvm = isEvmChainId(token.chainId);
   const isMultichainAccountsState2Enabled = useSelector(
@@ -189,7 +189,7 @@ const TokenButtons = ({
           details: token,
         }),
       );
-      navigateToSendRoute(history, isSendRedesignEnabled, {
+      navigateToSendRoute(navigate, isSendRedesignEnabled, {
         address: token.address,
         chainId: token.chainId,
       });
@@ -204,7 +204,7 @@ const TokenButtons = ({
   }, [
     trackEvent,
     dispatch,
-    history,
+    navigate,
     token,
     setCorrectChain,
     account,

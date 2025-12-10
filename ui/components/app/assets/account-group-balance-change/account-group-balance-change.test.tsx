@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import mockState from '../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { TextColor } from '../../../../helpers/constants/design-system';
 import { getIsMultichainAccountsState2Enabled } from '../../../../selectors';
 import { AccountGroupBalanceChange } from './account-group-balance-change';
@@ -38,7 +38,7 @@ describe('AccountGroupBalanceChange', () => {
 
   const renderComponent = () =>
     renderWithProvider(
-      <AccountGroupBalanceChange period="1d" portfolioButton={() => null} />,
+      <AccountGroupBalanceChange period="1d" trailingChild={() => null} />,
       mockStore,
     );
 

@@ -1,7 +1,7 @@
 import { Mockttp } from 'mockttp';
 import { mockedSourcifyTokenSend } from '../confirmations/helpers';
 import { DAPP_URL, WINDOW_TITLES, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
@@ -24,8 +24,14 @@ describe('Transfer custom tokens', function () {
     it('send custom tokens from extension customizing gas values', async function () {
       await withFixtures(
         {
-          dapp: true,
-          fixtures: new FixtureBuilder().withTokensControllerERC20().build(),
+          dappOptions: { numberOfTestDapps: 1 },
+          fixtures: new FixtureBuilder()
+            .withEnabledNetworks({
+              eip155: {
+                '0x539': true,
+              },
+            })
+            .build(),
           localNodeOptions: { hardfork: 'muirGlacier' },
           smartContract,
           title: this.test?.fullTitle(),
@@ -42,7 +48,10 @@ describe('Transfer custom tokens', function () {
           const activityListPage = new ActivityListPage(driver);
 
           await homePage.checkPageIsLoaded();
-
+          await assetListPage.importCustomTokenByChain(
+            '0x539',
+            '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
+          );
           // go to custom tokens view on extension, perform send tokens
           await assetListPage.openTokenDetails(symbol);
           await assetListPage.clickSendButton();
@@ -77,10 +86,14 @@ describe('Transfer custom tokens', function () {
     it('transfer custom tokens from dapp customizing gas values', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
-            .withTokensControllerERC20()
+            .withEnabledNetworks({
+              eip155: {
+                '0x539': true,
+              },
+            })
             .build(),
           localNodeOptions: { hardfork: 'muirGlacier' },
           smartContract,
@@ -99,6 +112,11 @@ describe('Transfer custom tokens', function () {
             new TokenTransferTransactionConfirmation(driver);
           const activityListPage = new ActivityListPage(driver);
 
+          await homePage.checkPageIsLoaded();
+          await assetListPage.importCustomTokenByChain(
+            '0x539',
+            '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
+          );
           // transfer token from dapp
           await testDapp.openTestDappPage({ contractAddress });
           await testDapp.checkPageIsLoaded();
@@ -145,10 +163,14 @@ describe('Transfer custom tokens', function () {
     it('transfer custom tokens from dapp without specifying gas', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
-            .withTokensControllerERC20()
+            .withEnabledNetworks({
+              eip155: {
+                '0x539': true,
+              },
+            })
             .build(),
           smartContract,
           title: this.test?.fullTitle(),
@@ -166,6 +188,11 @@ describe('Transfer custom tokens', function () {
             new TokenTransferTransactionConfirmation(driver);
           const activityListPage = new ActivityListPage(driver);
 
+          await homePage.checkPageIsLoaded();
+          await assetListPage.importCustomTokenByChain(
+            '0x539',
+            '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
+          );
           // transfer token from dapp
           await driver.openNewPage(`${DAPP_URL}/?contract=${contractAddress}`);
 

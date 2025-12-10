@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { withFixtures, WINDOW_TITLES } from '../../helpers';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -14,7 +14,7 @@ describe('Permissions Page when Dapp Switch to an enabled and non permissioned n
     const chainId: number = 1338;
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .withSelectedNetworkControllerPerDomain()

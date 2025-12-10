@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import classnames from 'classnames';
 import { IconSize } from '@metamask/design-system-react';
 import { Box, Icon, IconName, Text } from '../../component-library';
@@ -30,17 +30,17 @@ export const MultichainSrpBackup: React.FC<MultichainSrpBackupProps> = ({
   keyringId,
 }) => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [srpQuizModalVisible, setSrpQuizModalVisible] = useState(false);
 
   const handleSrpBackupClick = useCallback(() => {
     if (shouldShowBackupReminder) {
       const backUpSRPRoute = `${ONBOARDING_REVIEW_SRP_ROUTE}/?isFromReminder=true`;
-      history.push(backUpSRPRoute);
+      navigate(backUpSRPRoute);
     } else {
       setSrpQuizModalVisible(true);
     }
-  }, [shouldShowBackupReminder, history, setSrpQuizModalVisible]);
+  }, [shouldShowBackupReminder, navigate, setSrpQuizModalVisible]);
 
   const handleQuizModalClose = useCallback(() => {
     setSrpQuizModalVisible(false);
@@ -92,6 +92,7 @@ export const MultichainSrpBackup: React.FC<MultichainSrpBackupProps> = ({
           isOpen={srpQuizModalVisible}
           onClose={handleQuizModalClose}
           closeAfterCompleting
+          navigate={navigate}
         />
       )}
     </>

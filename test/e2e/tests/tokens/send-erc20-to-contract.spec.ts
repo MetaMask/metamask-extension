@@ -1,6 +1,6 @@
 import { withFixtures, unlockWallet } from '../../helpers';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -13,8 +13,8 @@ describe('Send ERC20 token to contract address', function () {
   it('should display the token contract warning to the user', async function () {
     await withFixtures(
       {
-        dapp: true,
-        fixtures: new FixtureBuilder().withTokensControllerERC20().build(),
+        dappOptions: { numberOfTestDapps: 1 },
+        fixtures: new FixtureBuilder().build(),
         smartContract,
         title: this.test?.fullTitle(),
       },
@@ -23,8 +23,13 @@ describe('Send ERC20 token to contract address', function () {
           await contractRegistry.getContractAddress(smartContract);
         await unlockWallet(driver);
 
-        const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
+        await assetListPage.importCustomTokenByChain(
+          '0x539',
+          '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
+        );
+
+        const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await assetListPage.clickOnAsset('TST');
 

@@ -5,7 +5,10 @@ import {
   getAccountGroupNameByInternalAccount,
   getToChain,
 } from '../../../ducks/bridge/selectors';
-import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
+import {
+  getInternalAccountBySelectedAccountGroupAndCaip,
+  getWalletIdAndNameByAccountAddress,
+} from '../../../selectors/multichain-accounts/account-tree';
 import type { DestinationAccount } from '../prepare/types';
 
 /**
@@ -38,10 +41,20 @@ export const useDestinationAccount = () => {
     ),
   );
 
+  const walletName = useSelector((state) =>
+    defaultInternalDestinationAccount?.address
+      ? getWalletIdAndNameByAccountAddress(
+          state,
+          defaultInternalDestinationAccount?.address,
+        )?.name
+      : null,
+  );
+
   useEffect(() => {
     if (defaultInternalDestinationAccount) {
       setSelectedDestinationAccount({
         ...defaultInternalDestinationAccount,
+        walletName: walletName ?? '',
         isExternal: false,
         displayName: displayName ?? '',
       });
@@ -52,7 +65,7 @@ export const useDestinationAccount = () => {
       setSelectedDestinationAccount(null);
       setIsDestinationAccountPickerOpen(true);
     }
-  }, [defaultInternalDestinationAccount, displayName]);
+  }, [defaultInternalDestinationAccount, displayName, walletName]);
 
   return {
     selectedDestinationAccount,

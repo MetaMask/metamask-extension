@@ -23,12 +23,12 @@ if (reactDevtoolsCore && process.env.METAMASK_REACT_REDUX_DEVTOOLS) {
   connectToDevTools();
 }
 
-import PortStream from 'extension-port-stream';
 import browser from 'webextension-polyfill';
 
 import { StreamProvider } from '@metamask/providers';
 import { createIdRemapMiddleware } from '@metamask/json-rpc-engine';
 import log from 'loglevel';
+import { ExtensionPortStream } from 'extension-port-stream';
 import launchMetaMaskUi, {
   CriticalStartupErrorHandler,
   connectToBackground,
@@ -40,6 +40,7 @@ import launchMetaMaskUi, {
 import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
   PLATFORM_FIREFOX,
 } from '../../shared/constants/app';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
@@ -109,7 +110,7 @@ async function start() {
   );
   criticalErrorHandler.install();
 
-  const connectionStream = new PortStream(extensionPort);
+  const connectionStream = new ExtensionPortStream(extensionPort);
   const subStreams = connectSubstreams(connectionStream);
   const backgroundConnection = metaRPCClientFactory(subStreams.controller);
   connectToBackground(backgroundConnection, handleStartUISync);
@@ -280,9 +281,12 @@ async function queryCurrentActiveTab(windowType) {
     }
   }
 
-  // At the time of writing we only have the `activeTab` permission which means
-  // that this query will only succeed in the popup context (i.e. after a "browserAction")
-  if (windowType !== ENVIRONMENT_TYPE_POPUP) {
+  // Only popup queries the active tab
+  // Sidepanel uses appActiveTab from tab listeners instead
+  if (
+    windowType !== ENVIRONMENT_TYPE_POPUP &&
+    windowType !== ENVIRONMENT_TYPE_SIDEPANEL
+  ) {
     return {};
   }
 
@@ -316,7 +320,7 @@ async function initializeUi(activeTab, backgroundConnection, traceContext) {
  * Establishes a connections between the PortStream (background) and various UI
  * streams.
  *
- * @param {PortStream} connectionStream - PortStream instance establishing a background connection
+ * @param {ExtensionPortStream} connectionStream - PortStream instance establishing a background connection
  * @returns The multiplexed streams
  */
 function connectSubstreams(connectionStream) {

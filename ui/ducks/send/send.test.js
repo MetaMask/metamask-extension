@@ -93,6 +93,14 @@ jest.mock('lodash', () => ({
   debounce: (fn) => fn,
 }));
 
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom', () => {
+  return {
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
+
 const getTestUUIDTx = (state) => state.draftTransactions['test-uuid'];
 
 describe('Send Slice', () => {
@@ -2912,9 +2920,7 @@ describe('Send Slice', () => {
 
       it('should show confirm tx page when no other conditions for signing have been met', async () => {
         const store = mockStore(signTransactionState);
-
-        const history = { push: jest.fn() };
-        await store.dispatch(signTransaction(history));
+        await store.dispatch(signTransaction(mockUseNavigate));
 
         const actionResult = store.getActions();
 
@@ -2980,9 +2986,7 @@ describe('Send Slice', () => {
           jest.mock('../../store/actions.ts');
 
           const store = mockStore(tokenTransferTxState);
-
-          const history = { push: jest.fn() };
-          await store.dispatch(signTransaction(history));
+          await store.dispatch(signTransaction(mockUseNavigate));
 
           expect(
             addTransactionAndRouteToConfirmationPageStub.mock.calls[0][0].data,
@@ -3045,8 +3049,6 @@ describe('Send Slice', () => {
 
           const ERROR = new Error('rejected');
 
-          const history = { push: jest.fn() };
-
           setBackgroundConnection({
             addPollingTokenToAppState: jest.fn(() => Promise.resolve()),
             addTransaction: jest.fn((_u, _v) => Promise.reject(ERROR)),
@@ -3056,7 +3058,7 @@ describe('Send Slice', () => {
           });
 
           await expect(
-            store.dispatch(signTransaction(history)),
+            store.dispatch(signTransaction(mockUseNavigate)),
           ).rejects.toThrow('rejected');
         });
       });
@@ -3139,9 +3141,7 @@ describe('Send Slice', () => {
           const store = mockStore(swapAndSendState);
 
           store.clearActions();
-
-          const history = { push: jest.fn() };
-          await store.dispatch(signTransaction(history));
+          await store.dispatch(signTransaction(mockUseNavigate));
 
           expect(
             setDefaultHomeActiveTabNameStub.mock.calls[0][0],
@@ -3182,8 +3182,7 @@ describe('Send Slice', () => {
 
         const store = mockStore(editStageSignTxState);
 
-        const history = { push: jest.fn() };
-        await store.dispatch(signTransaction(history));
+        await store.dispatch(signTransaction(mockUseNavigate));
 
         const actionResult = store.getActions();
 

@@ -4,7 +4,7 @@ import {
   genUnapprovedContractInteractionConfirmation,
 } from '../../../../../../../test/data/confirmations/contract-interaction';
 import mockState from '../../../../../../../test/data/mock-state.json';
-import { renderHookWithProvider } from '../../../../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
 import { useGasFeeEstimates } from '../../../../../../hooks/useGasFeeEstimates';
 import { useTransactionGasFeeEstimate } from './useTransactionGasFeeEstimate';
 
@@ -59,5 +59,25 @@ describe('useTransactionGasFeeEstimate', () => {
     );
 
     expect(result.current).toMatchInlineSnapshot(`"0"`);
+  });
+
+  it('returns the correct estimate when quotedGasLimit is provided', () => {
+    const transactionMeta = {
+      ...genUnapprovedContractInteractionConfirmation({
+        address: CONTRACT_INTERACTION_SENDER_ADDRESS,
+      }),
+      txParams: {
+        gas: '0x5208', // 21000 in hex
+        maxPriorityFeePerGas: '0x3b9aca00', // 1 GWEI in hex
+        maxFeePerGas: '0x77359400', // 2 GWEI in hex
+      },
+    } as TransactionMeta;
+
+    const { result } = renderHookWithProvider(
+      () => useTransactionGasFeeEstimate(transactionMeta, true, '0x61077a1f'),
+      mockState,
+    );
+
+    expect(result.current).toMatchInlineSnapshot(`"21e3164ec303b100"`);
   });
 });

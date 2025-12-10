@@ -5,6 +5,7 @@ import {
   AvatarNetwork,
   AvatarNetworkSize,
   AvatarToken,
+  AvatarTokenSize,
   BadgeWrapper,
   Box,
   Icon,
@@ -43,6 +44,7 @@ import {
   ERC20Asset,
   NativeAsset,
 } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
+import { SUPPORTED_PAYMENT_TOKEN_IMAGES } from '../../../shared/constants/subscriptions';
 
 export const ShieldPaymentModal = ({
   isOpen,
@@ -53,6 +55,8 @@ export const ShieldPaymentModal = ({
   selectedToken,
   onAssetChange,
   hasStableTokenWithBalance,
+  tokensSupported,
+  disableCardOption,
 }: {
   isOpen: boolean;
   onClose: () => void;
@@ -62,21 +66,40 @@ export const ShieldPaymentModal = ({
   selectedToken?: TokenWithApprovalAmount;
   onAssetChange: (asset: TokenWithApprovalAmount) => void;
   hasStableTokenWithBalance: boolean;
+  tokensSupported: string[];
+  disableCardOption?: boolean;
 }) => {
   const t = useI18nContext();
   const [showAssetPickerModal, setShowAssetPickerModal] = useState(false);
+
+  const hasMultipleTokenOptions = useMemo(() => {
+    return availableTokenBalances.length > 1;
+  }, [availableTokenBalances]);
 
   const selectPaymentMethod = useCallback(
     (selectedMethod: PaymentType) => {
       setSelectedPaymentMethod(selectedMethod);
 
       if (selectedMethod === PAYMENT_TYPES.byCrypto) {
-        setShowAssetPickerModal(true);
-      } else {
-        onClose();
+        // if there are multiple token options, show the asset picker modal
+        if (hasMultipleTokenOptions) {
+          setShowAssetPickerModal(true);
+          return;
+        }
+
+        // if there is only one token option, set it as the selected token
+        onAssetChange(availableTokenBalances[0]);
       }
+
+      onClose();
     },
-    [setSelectedPaymentMethod, onClose],
+    [
+      setSelectedPaymentMethod,
+      onClose,
+      hasMultipleTokenOptions,
+      onAssetChange,
+      availableTokenBalances,
+    ],
   );
 
   // Create custom token list generator that filters for USDT/USDC with balance
@@ -96,6 +119,30 @@ export const ShieldPaymentModal = ({
       }
     };
   }, [availableTokenBalances]);
+
+  const supportedTokens = useMemo(() => {
+    return [...tokensSupported].map((token) => {
+      return (
+        <BadgeWrapper
+          key={token}
+          badge={
+            <AvatarNetwork
+              size={AvatarNetworkSize.Xs}
+              name={NETWORK_TO_NAME_MAP[CHAIN_IDS.MAINNET]}
+              src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[CHAIN_IDS.MAINNET]}
+              borderColor={BorderColor.borderMuted}
+            />
+          }
+        >
+          <AvatarToken
+            name={token}
+            src={SUPPORTED_PAYMENT_TOKEN_IMAGES[token]}
+            size={AvatarTokenSize.Sm}
+          />
+        </BadgeWrapper>
+      );
+    });
+  }, [tokensSupported]);
 
   return (
     <Modal
@@ -184,80 +231,89 @@ export const ShieldPaymentModal = ({
                     {t('shieldPlanPayWithToken', [
                       hasStableTokenWithBalance
                         ? (selectedToken?.symbol ?? '')
-                        : 'Crypto',
+                        : 'crypto',
                     ])}
                   </Text>
                   <Text
                     variant={TextVariant.bodySm}
                     color={TextColor.textAlternative}
                   >
-                    {hasStableTokenWithBalance
-                      ? `${t('balance')}: ${selectedToken?.string ?? ''} ${selectedToken?.symbol ?? ''}`
-                      : t('shieldPlanNoFunds')}
+                    {hasStableTokenWithBalance ? (
+                      `${t('balance')}: ${selectedToken?.string ?? ''} ${selectedToken?.symbol ?? ''}`
+                    ) : (
+                      <Box display={Display.Flex} gap={2}>
+                        {supportedTokens}
+                      </Box>
+                    )}
                   </Text>
                 </Box>
               </Box>
-              {hasStableTokenWithBalance && (
-                <Icon size={IconSize.Md} name={IconName.ArrowRight} />
+              {hasStableTokenWithBalance && hasMultipleTokenOptions && (
+                <Icon size={IconSize.Md} name={IconName.ArrowDown} />
               )}
             </Box>
           </Box>
-          <Box
-            data-testid="shield-payment-method-card-button"
-            as="button"
-            className={classnames('payment-method-item', {
-              'payment-method-item--selected':
-                selectedPaymentMethod === PAYMENT_TYPES.byCard,
-            })}
-            padding={4}
-            gap={4}
-            backgroundColor={
-              selectedPaymentMethod === PAYMENT_TYPES.byCard
-                ? BackgroundColor.primaryMuted
-                : BackgroundColor.transparent
-            }
-            display={Display.Flex}
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.spaceBetween}
-            width={BlockSize.Full}
-            onClick={() => selectPaymentMethod(PAYMENT_TYPES.byCard)}
-          >
-            {selectedPaymentMethod === PAYMENT_TYPES.byCard && (
-              <Box
-                className="payment-method-item__selected-indicator"
-                borderRadius={BorderRadius.pill}
-                backgroundColor={BackgroundColor.primaryDefault}
-              />
-            )}
+          {!disableCardOption && (
             <Box
+              data-testid="shield-payment-method-card-button"
+              as="button"
+              className={classnames('payment-method-item', {
+                'payment-method-item--selected':
+                  selectedPaymentMethod === PAYMENT_TYPES.byCard,
+              })}
+              padding={4}
+              gap={4}
+              backgroundColor={
+                selectedPaymentMethod === PAYMENT_TYPES.byCard
+                  ? BackgroundColor.primaryMuted
+                  : BackgroundColor.transparent
+              }
               display={Display.Flex}
               alignItems={AlignItems.center}
               justifyContent={JustifyContent.spaceBetween}
               width={BlockSize.Full}
+              onClick={() => selectPaymentMethod(PAYMENT_TYPES.byCard)}
             >
+              {selectedPaymentMethod === PAYMENT_TYPES.byCard && (
+                <Box
+                  className="payment-method-item__selected-indicator"
+                  borderRadius={BorderRadius.pill}
+                  backgroundColor={BackgroundColor.primaryDefault}
+                />
+              )}
               <Box
                 display={Display.Flex}
                 alignItems={AlignItems.center}
-                gap={4}
+                justifyContent={JustifyContent.spaceBetween}
+                width={BlockSize.Full}
               >
-                <Icon size={IconSize.Xl} name={IconName.Card} />
-                <Box textAlign={TextAlign.Left}>
-                  <Text variant={TextVariant.bodyMdMedium}>
-                    {t('shieldPlanPayWithCard')}
-                  </Text>
-                  <Box
-                    display={Display.Flex}
-                    gap={1}
-                    alignItems={AlignItems.center}
-                  >
-                    <img src="./images/card-mc.svg" alt="Mastercard" />
-                    <img src="./images/card-visa.svg" alt="Visa" />
-                    <img src="./images/card-amex.svg" alt="American Express" />
+                <Box
+                  display={Display.Flex}
+                  alignItems={AlignItems.center}
+                  gap={4}
+                >
+                  <Icon size={IconSize.Xl} name={IconName.Card} />
+                  <Box textAlign={TextAlign.Left}>
+                    <Text variant={TextVariant.bodyMdMedium}>
+                      {t('shieldPlanPayWithCard')}
+                    </Text>
+                    <Box
+                      display={Display.Flex}
+                      gap={1}
+                      alignItems={AlignItems.center}
+                    >
+                      <img src="./images/card-mc.svg" alt="Mastercard" />
+                      <img src="./images/card-visa.svg" alt="Visa" />
+                      <img
+                        src="./images/card-amex.svg"
+                        alt="American Express"
+                      />
+                    </Box>
                   </Box>
                 </Box>
               </Box>
             </Box>
-          </Box>
+          )}
         </Box>
         <AssetPickerModal
           isOpen={showAssetPickerModal}
@@ -274,6 +330,7 @@ export const ShieldPaymentModal = ({
           autoFocus={false}
           visibleTabs={[TabName.TOKENS]}
           customTokenListGenerator={customTokenListGenerator}
+          hideSearch
         />
       </ModalContent>
     </Modal>

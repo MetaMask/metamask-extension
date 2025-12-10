@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports, import/no-commonjs */
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import type { To } from 'react-router-dom';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
@@ -64,6 +64,13 @@ export type SRPQuizProps = {
   isOpen: boolean;
   onClose: () => void;
   closeAfterCompleting?: boolean;
+  navigate: {
+    (
+      to: To,
+      options?: { replace?: boolean; state?: Record<string, unknown> },
+    ): void;
+    (delta: number): void;
+  };
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -72,7 +79,6 @@ export default function SRPQuiz(props: SRPQuizProps): JSX.Element {
   const [stage, setStage] = useState<QuizStage>(QuizStage.introduction);
 
   const trackEvent = useContext(MetaMetricsContext);
-  const history = useHistory();
   const t = useI18nContext();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
 
@@ -237,7 +243,7 @@ export default function SRPQuiz(props: SRPQuizProps): JSX.Element {
                 route = `${REVEAL_SEED_ROUTE}/${props.keyringId}`;
               }
 
-              history.push(route);
+              props.navigate(route);
               if (props.closeAfterCompleting) {
                 props.onClose();
               }

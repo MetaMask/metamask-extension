@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   Box,
   BoxFlexDirection,
@@ -28,11 +28,20 @@ import {
 } from '../../../components/component-library';
 import { getMultichainAccountGroupById } from '../../../selectors/multichain-accounts/account-tree';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
 
-export const MultichainAccountPrivateKeyListPage = () => {
+type MultichainAccountPrivateKeyListPageProps = {
+  params?: { accountGroupId: string };
+};
+
+export const MultichainAccountPrivateKeyListPage = ({
+  params: propsParams,
+}: MultichainAccountPrivateKeyListPageProps = {}) => {
   const t = useI18nContext();
-  const history = useHistory();
-  const { accountGroupId } = useParams<{ accountGroupId: string }>();
+  const navigate = useNavigate();
+  const hookParams = useParams<{ accountGroupId: string }>();
+
+  const { accountGroupId } = propsParams || hookParams;
 
   const decodedAccountGroupId: AccountGroupId | null = accountGroupId
     ? (decodeURIComponent(accountGroupId) as AccountGroupId)
@@ -66,7 +75,7 @@ export const MultichainAccountPrivateKeyListPage = () => {
   );
 
   return (
-    <Page className="max-w-[600px]">
+    <Page>
       <Header
         textProps={{
           variant: TextVariant.headingSm,
@@ -76,7 +85,7 @@ export const MultichainAccountPrivateKeyListPage = () => {
             size={ButtonIconSize.Md}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            onClick={() => history.goBack()}
+            onClick={() => navigate(PREVIOUS_ROUTE)}
             data-testid="multichain-account-address-list-page-back-button"
           />
         }
@@ -97,7 +106,7 @@ export const MultichainAccountPrivateKeyListPage = () => {
           {decodedAccountGroupId ? (
             <MultichainPrivateKeyList
               groupId={decodedAccountGroupId}
-              goBack={history.goBack}
+              goBack={() => navigate(PREVIOUS_ROUTE)}
               data-testid="multichain-account-private-key-list"
             />
           ) : null}

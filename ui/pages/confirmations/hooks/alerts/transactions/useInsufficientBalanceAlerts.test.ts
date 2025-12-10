@@ -1,14 +1,18 @@
-import { ApprovalType } from '@metamask/controller-utils';
+import { ApprovalType, toHex } from '@metamask/controller-utils';
 import {
   TransactionMeta,
   TransactionParams,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { createMockInternalAccount } from '../../../../../../test/jest/mocks';
 import { getMockConfirmState } from '../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import { useIsGaslessSupported } from '../../gas/useIsGaslessSupported';
 import { useInsufficientBalanceAlerts } from './useInsufficientBalanceAlerts';
+
+jest.mock('../../gas/useIsGaslessSupported');
+
+const useIsGaslessSupportedMock = jest.mocked(useIsGaslessSupported);
 
 const TRANSACTION_ID_MOCK = '123-456';
 const TRANSACTION_ID_MOCK_2 = '456-789';
@@ -49,17 +53,15 @@ function buildState({
   currentConfirmation,
   transaction,
   selectedNetworkClientId,
+  chainId,
 }: {
   balance?: number;
   currentConfirmation?: Partial<TransactionMeta>;
   transaction?: Partial<TransactionMeta>;
   selectedNetworkClientId?: string;
+  chainId?: string;
 } = {}) {
   const accountAddress = transaction?.txParams?.from as string;
-  const mockAccount = createMockInternalAccount({
-    address: accountAddress,
-    name: 'Account 1',
-  });
 
   let pendingApprovals = {};
   if (currentConfirmation) {
@@ -75,16 +77,10 @@ function buildState({
     metamask: {
       selectedNetworkClientId: selectedNetworkClientId ?? 'goerli',
       pendingApprovals,
-      internalAccounts: {
-        accounts:
-          balance && transaction
-            ? {
-                [mockAccount.id]: {
-                  ...mockAccount,
-                  balance,
-                },
-              }
-            : {},
+      accountsByChainId: {
+        [chainId ?? '0x5']: {
+          [accountAddress]: { balance: toHex(balance ?? 0) },
+        },
       },
       transactions: transaction ? [transaction] : [],
     },
@@ -107,10 +103,37 @@ function runHook(
 describe('useInsufficientBalanceAlerts', () => {
   beforeEach(() => {
     jest.resetAllMocks();
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSmartTransaction: false,
+      isSupported: false,
+      pending: false,
+    });
   });
 
   it('returns no alerts if no confirmation', () => {
     expect(runHook()).toEqual([]);
+  });
+
+  it('returns no alerts if transaction is gas fee sponsored and gasless transactions are supported', () => {
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSmartTransaction: false,
+      isSupported: true,
+      pending: false,
+    });
+
+    const alerts = runHook({
+      balance: 7,
+      currentConfirmation: {
+        ...TRANSACTION_MOCK,
+        isGasFeeSponsored: true,
+      },
+      transaction: {
+        ...TRANSACTION_MOCK,
+        isGasFeeSponsored: true,
+      },
+    });
+
+    expect(alerts).toEqual([]);
   });
 
   it('returns no alerts if no transaction matching confirmation', () => {
@@ -213,12 +236,13 @@ describe('useInsufficientBalanceAlerts', () => {
     expect(alerts).toEqual(ALERT);
   });
 
-  it('returns correct alert test if selected chain is different from chain in confirmation', () => {
+  it('returns correct alert if selected chain is different from chain in confirmation', () => {
     const alerts = runHook({
-      balance: 7,
+      balance: 1,
       currentConfirmation: TRANSACTION_MOCK,
-      transaction: TRANSACTION_MOCK,
+      transaction: { ...TRANSACTION_MOCK, chainId: '0x1' },
       selectedNetworkClientId: 'testNetworkConfigurationId',
+      chainId: '0x1',
     });
 
     expect(alerts).toEqual(ALERT);

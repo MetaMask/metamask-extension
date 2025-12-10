@@ -2,13 +2,13 @@ import {
   IframeExecutionService,
   OffscreenExecutionService,
 } from '@metamask/snaps-controllers';
-import { Messenger } from '@metamask/base-controller';
 import { ControllerInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import {
   ExecutionServiceMessenger,
   getExecutionServiceMessenger,
 } from '../messengers/snaps';
+import { getRootMessenger } from '../../lib/messenger';
 import { ExecutionServiceInit } from './execution-service-init';
 
 jest.mock('@metamask/snaps-controllers');
@@ -19,7 +19,7 @@ jest.mock('../../../../shared/modules/mv3.utils', () => ({
 function getInitRequestMock(): jest.Mocked<
   ControllerInitRequest<ExecutionServiceMessenger>
 > {
-  const baseMessenger = new Messenger<never, never>();
+  const baseMessenger = getRootMessenger<never, never>();
 
   const requestMock = {
     ...buildControllerInitRequestMock(),
@@ -69,7 +69,6 @@ describe('ExecutionServiceInit', () => {
       messenger: expect.any(Object),
       offscreenPromise: expect.any(Promise),
       setupSnapProvider: expect.any(Function),
-      pingTimeout: process.env.IN_TEST ? 60000 : 5000, // see https://github.com/MetaMask/metamask-extension/issues/36935
     });
   });
 });

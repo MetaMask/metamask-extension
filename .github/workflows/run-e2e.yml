@@ -19,6 +19,10 @@ on:
         required: true
         type: string
         description: The test command to run
+      builds-from-run:
+        required: true
+        type: string
+        description: The run ID to get builds from
       test-timeout-minutes:
         type: number
         default: 30
@@ -47,7 +51,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     container:
-      image: ghcr.io/metamask/metamask-extension-e2e-image:v1.0.0
+      image: ghcr.io/metamask/metamask-extension-e2e-image:v24.11.0
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
@@ -55,6 +59,7 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # This is to support tests that set manifestFlags.testing.infuraProjectId, such as power-user.spec.ts
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      SENTRY_DSN_PERFORMANCE: ${{ vars.SENTRY_DSN_PERFORMANCE }}
       # For a `pull_request` event, the branch is `github.head_ref``.
       # For a `push` event, the branch is `github.ref_name`.
       BRANCH: ${{ github.head_ref || github.ref_name }}
@@ -70,6 +75,7 @@ jobs:
       RUN_ID: ${{ github.run_id }}
       PR_NUMBER: ${{ github.event.pull_request.number || '' }}
       TEST_SUITE_NAME: ${{ inputs.test-suite-name }}
+      IS_SIDEPANEL: true
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -97,6 +103,8 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: ${{ inputs.build-artifact }}
+          github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
+          run-id: ${{ inputs.builds-from-run }} # Download from whatever run the identify-builds job said.
 
       # if there is a build-command and there is no build artifact, or the specified artifact does not exist, we run the build command
       - run: ${{ inputs.build-command }}

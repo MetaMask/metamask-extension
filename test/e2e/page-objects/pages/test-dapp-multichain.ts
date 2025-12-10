@@ -81,6 +81,7 @@ class TestDappMultichain {
   }
 
   async clickFirstResultSummary() {
+    await this.driver.waitForSelector(this.resultSummary);
     const resultSummaries = await this.driver.findElements(this.resultSummary);
     const firstResultSummary = resultSummaries[0];
     await firstResultSummary.click();
@@ -169,20 +170,24 @@ class TestDappMultichain {
    * @param params - The parameters for retrieving the method result.
    * @param params.scope - The scope identifier for the method invocation.
    * @param params.method - The method name that was invoked.
+   * @param params.methodCount - The 1-based index of the method result to return. Defaults to 1.
    * @returns The result as string.
    */
   async getInvokeMethodResult({
     scope,
     method,
+    methodCount = 1,
   }: {
     scope: string;
     method: string;
+    methodCount?: number;
   }): Promise<string> {
     console.log(
       `Getting invoke method result for scope ${scope} and method ${method} on multichain test dapp.`,
     );
+    const index = Math.max(0, methodCount - 1);
     const result = await this.driver.findElement(
-      `[id="invoke-method-${replaceColon(scope)}-${method}-result-0"]`,
+      `[id="invoke-method-${replaceColon(scope)}-${method}-result-${index}"]`,
     );
     await this.driver.waitForNonEmptyElement(result);
     return await result.getText();
@@ -200,10 +205,32 @@ class TestDappMultichain {
     await this.clickWalletGetSessionButton();
     await this.clickFirstResultSummary();
 
-    const getSessionRawResult = await this.driver.findElement(
+    const getSessionRawResult = await this.driver.waitForSelector(
       this.firstSessionMethodResult,
     );
-    return JSON.parse(await getSessionRawResult.getText());
+
+    // Wait for the element text to be valid JSON
+    let parsedResult:
+      | { sessionScopes: Record<string, NormalizedScopeObject> }
+      | undefined;
+    await this.driver.wait(async () => {
+      try {
+        const text = await getSessionRawResult.getText();
+        if (!text || text.trim().length === 0) {
+          return false;
+        }
+        parsedResult = JSON.parse(text);
+        return true;
+      } catch {
+        return false;
+      }
+    });
+    if (!parsedResult) {
+      throw new Error(
+        'Failed to parse session result: JSON parsing did not complete',
+      );
+    }
+    return parsedResult;
   }
 
   /**
@@ -286,19 +313,22 @@ class TestDappMultichain {
    * @param params.scope - The CAIP-2 scope.
    * @param params.method - The JSON-RPC method to invoke.
    * @param params.params - The parameters for the JSON-RPC method.
+   * @param params.methodCount - The 1-based index of the method result to return. Defaults to 1.
    * @returns The result as string.
    */
   async invokeMethodAndReturnResult({
     scope,
     method,
     params = {},
+    methodCount = 1,
   }: {
     scope: string;
     method: string;
     params?: Json;
+    methodCount?: number;
   }): Promise<string> {
     await this.invokeMethod({ scope, method, params });
-    return this.getInvokeMethodResult({ scope, method });
+    return this.getInvokeMethodResult({ scope, method, methodCount });
   }
 
   /**
@@ -368,11 +398,22 @@ class TestDappMultichain {
     console.log(
       `Selecting ${method} for scope ${scope} on multichain test dapp.`,
     );
-    await this.driver.clickElement(
-      `[data-testid="${replaceColon(scope)}-select"]`,
-    );
-    await this.driver.clickElement(
-      `[data-testid="${replaceColon(scope)}-${method}-option"]`,
+    // With the waitUntil, we ensure the dropdown element is set to the correct method before clicking it
+    await this.driver.waitUntil(
+      async () => {
+        await this.driver.clickElement(
+          `[data-testid="${replaceColon(scope)}-select"]`,
+        );
+        await this.driver.clickElement(
+          `[data-testid="${replaceColon(scope)}-${method}-option"]`,
+        );
+        const selectEl = await this.driver.findElement(
+          `[data-testid="${replaceColon(scope)}-select"]`,
+        );
+        const selectedValue = await selectEl.getAttribute('value');
+        return selectedValue === method;
+      },
+      { interval: 100, timeout: 5000 },
     );
   }
 

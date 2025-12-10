@@ -1,10 +1,20 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import PermissionConnectHeader from './permission-connect-header';
 
 const STORE_MOCK = configureMockStore()({ metamask: { pendingApprovals: {} } });
+
+const mockUseNavigate = jest.fn();
+const mockUseLocation = jest.fn();
+jest.mock('react-router-dom', () => {
+  return {
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockUseNavigate,
+    useLocation: () => mockUseLocation(),
+  };
+});
 
 describe('Permission Connect Header', () => {
   const mockOriginData = {
@@ -13,6 +23,17 @@ describe('Permission Connect Header', () => {
   };
   const expectedTitle = 'metamask.github.io';
   const expectedAltImageText = 'metamask.github.io logo';
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockUseLocation.mockReturnValue({
+      pathname: '/',
+      search: '',
+      hash: '',
+      state: null,
+      key: 'test',
+    });
+  });
 
   it('renders permission connect header', () => {
     const { getByAltText } = renderWithProvider(

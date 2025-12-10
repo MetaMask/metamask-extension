@@ -455,14 +455,8 @@
   "customToken": {
     "message": "Token Personalizzato"
   },
-  "customTokenWarningInNonTokenDetectionNetwork": {
-    "message": "Il rilevamento dei token non è ancora disponibile su questa rete. Importa il token manualmente e assicurati che sia corretto. Ulteriori informazioni su $1"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Prima di importare manualmente un token, assicurati sia attendibile. Ulteriori informazioni su $1"
-  },
-  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
-    "message": "Assicurati di fidarti di un token prima di importarlo. Scopri come evitare $1. Puoi anche abilitare il rilevamento dei token $2."
   },
   "customerSupport": {
     "message": "servizio clienti"
@@ -650,9 +644,6 @@
   "etherscanView": {
     "message": "Vedi account su Etherscan"
   },
-  "expandView": {
-    "message": "Espandi Vista"
-  },
   "externalExtension": {
     "message": "Estensione Esterna"
   },
@@ -683,10 +674,6 @@
   },
   "from": {
     "message": "Da"
-  },
-  "fromAddress": {
-    "message": "Da: $1",
-    "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
   },
   "gasLimit": {
     "message": "Gas Limite"
@@ -1234,7 +1221,7 @@
   },
   "swapMetaMaskFeeDescription": {
     "message": "Troviamo i migliori prezzi dalle sorgenti di liquidità migliori, sempre. Una tassa del $1% è automaticamente aggiunta ad ogni quotazione, ciò serve a supportare lo sviluppo in modo da rendere MetaMask sempre migliore.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapNewQuoteIn": {
     "message": "Nuove quotazioni in $1",
@@ -1346,10 +1333,6 @@
   },
   "to": {
     "message": "A"
-  },
-  "toAddress": {
-    "message": "A: $1",
-    "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
   "tokenAlreadyAdded": {
     "message": "Il token è già stato aggiunto."

@@ -9,7 +9,7 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { produce } from 'immer';
 import log from 'loglevel';
@@ -34,7 +34,7 @@ import {
   getUnapprovedTxCount,
   getApprovalFlows,
   getTotalUnapprovedCount,
-  useSafeChainsListValidationSelector,
+  getUseSafeChainsListValidation,
   getSnapsMetadata,
   getHideSnapBranding,
 } from '../../../selectors';
@@ -229,7 +229,7 @@ export default function ConfirmationPage({
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const pendingConfirmations = useSelector(
     getMemoizedUnapprovedTemplatedConfirmations,
   );
@@ -237,7 +237,7 @@ export default function ConfirmationPage({
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
   const totalUnapprovedCount = useSelector(getTotalUnapprovedCount);
   const useSafeChainsListValidation = useSelector(
-    useSafeChainsListValidationSelector,
+    getUseSafeChainsListValidation,
   );
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
@@ -245,6 +245,7 @@ export default function ConfirmationPage({
   const [approvalFlowLoadingText, setApprovalFlowLoadingText] = useState(null);
 
   const { id } = useParams();
+
   const pendingRoutedConfirmation = pendingConfirmations.find(
     (confirmation) => confirmation.id === id,
   );
@@ -321,7 +322,7 @@ export default function ConfirmationPage({
           },
           t,
           dispatch,
-          history,
+          navigate,
           {
             matchedChain,
             currencySymbolWarning,
@@ -339,7 +340,7 @@ export default function ConfirmationPage({
     pendingConfirmation,
     t,
     dispatch,
-    history,
+    navigate,
     matchedChain,
     currencySymbolWarning,
     trackEvent,
@@ -364,13 +365,13 @@ export default function ConfirmationPage({
       (approvalFlows.length === 0 || totalUnapprovedCount !== 0) &&
       redirectToHomeOnZeroConfirmations
     ) {
-      history.push(DEFAULT_ROUTE);
+      navigate(DEFAULT_ROUTE);
     }
   }, [
     pendingConfirmations,
     approvalFlows,
     totalUnapprovedCount,
-    history,
+    navigate,
     redirectToHomeOnZeroConfirmations,
   ]);
 
@@ -509,12 +510,12 @@ export default function ConfirmationPage({
       : null);
 
   return (
-    <ConfirmContextProvider>
+    <ConfirmContextProvider confirmationId={id}>
       <TemplateAlertContextProvider
         confirmationId={pendingConfirmation.id}
         onSubmit={!templatedValues.hideSubmitButton && handleSubmit}
       >
-        <div className="confirmation-page">
+        <div className="confirmation-page h-full">
           <Header
             confirmation={pendingConfirmation}
             isSnapCustomUIDialog={isSnapCustomUIDialog}

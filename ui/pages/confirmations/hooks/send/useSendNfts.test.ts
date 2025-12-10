@@ -1,7 +1,7 @@
 import { waitFor } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 
-import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
 import {
   getAccountGroupWithInternalAccounts,
@@ -40,12 +40,14 @@ describe('useSendNfts', () => {
           tokenId: '1',
           name: 'Test NFT 1',
           standard: AssetStandard.ERC721,
+          isCurrentlyOwned: true,
         },
         {
           address: '0xNft2',
           tokenId: '2',
           name: 'Test NFT 2',
           standard: AssetStandard.ERC1155,
+          isCurrentlyOwned: true,
         },
       ],
       '137': [
@@ -54,6 +56,7 @@ describe('useSendNfts', () => {
           tokenId: '3',
           name: 'Polygon NFT',
           standard: AssetStandard.ERC721,
+          isCurrentlyOwned: true,
         },
       ],
     },
@@ -64,6 +67,7 @@ describe('useSendNfts', () => {
           tokenId: '4',
           name: 'Account2 NFT',
           standard: AssetStandard.ERC721,
+          isCurrentlyOwned: true,
         },
       ],
     },
@@ -129,6 +133,7 @@ describe('useSendNfts', () => {
         chainId: '1',
         networkName: 'Ethereum',
         networkImage: 'eth.svg',
+        isCurrentlyOwned: true,
       });
     });
   });
@@ -301,6 +306,7 @@ describe('useSendNfts', () => {
             tokenId: '100',
             name: 'New NFT',
             standard: AssetStandard.ERC721,
+            isCurrentlyOwned: true,
           },
         ],
       },

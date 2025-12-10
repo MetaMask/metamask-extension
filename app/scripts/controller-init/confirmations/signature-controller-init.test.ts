@@ -1,4 +1,3 @@
-import { Messenger } from '@metamask/base-controller';
 import { SignatureController } from '@metamask/signature-controller';
 import { ControllerInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
@@ -8,6 +7,7 @@ import {
   SignatureControllerInitMessenger,
   SignatureControllerMessenger,
 } from '../messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import { SignatureControllerInit } from './signature-controller-init';
 
 jest.mock('@metamask/signature-controller', () => ({
@@ -24,7 +24,7 @@ function getInitRequestMock(): jest.Mocked<
     SignatureControllerInitMessenger
   >
 > {
-  const baseMessenger = new Messenger<never, never>();
+  const baseMessenger = getRootMessenger<never, never>();
 
   const requestMock = {
     ...buildControllerInitRequestMock(),

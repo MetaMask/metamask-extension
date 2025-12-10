@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { withFixtures, DAPP_ONE_URL, WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import TestDapp from '../../page-objects/pages/test-dapp';
@@ -14,12 +14,11 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
     const chainId = 1338;
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 2 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        dappOptions: { numberOfDapps: 2 },
         localNodeOptions: [
           {
             type: 'anvil',
@@ -100,12 +99,11 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
     const chainId = 1338;
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 2 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .withPermissionControllerConnectedToTwoTestDapps()
           .build(),
-        dappOptions: { numberOfDapps: 2 },
         localNodeOptions: [
           {
             type: 'anvil',

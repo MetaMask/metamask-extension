@@ -1,28 +1,21 @@
 import { Suite } from 'mocha';
-import { WALLET_PASSWORD } from '../../helpers';
+import { withFixtures, WALLET_PASSWORD } from '../../helpers';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import AccountListPage from '../../page-objects/pages/account-list-page';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import AccountDetailsModal from '../../page-objects/pages/dialog/account-details-modal';
 import AccountAddressModal from '../../page-objects/pages/multichain/account-address-modal';
 import AddressListModal from '../../page-objects/pages/multichain/address-list-modal';
-import PrivateKeyModal from '../../page-objects/pages/multichain/private-key-modal';
 import MultichainAccountDetailsPage from '../../page-objects/pages/multichain/multichain-account-details-page';
 import MultichainWalletDetailsPage from '../../page-objects/pages/multichain/multichain-wallet-details-page';
+import PrivateKeyModal from '../../page-objects/pages/multichain/private-key-modal';
+import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import { Driver } from '../../webdriver/driver';
-import {
-  withImportedAccount,
-  withMultichainAccountsDesignEnabled,
-} from './common';
+import { withMultichainAccountsDesignEnabled } from './common';
 
 const account1 = {
   name: 'Account 1',
   address: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
-};
-
-const TEST_PRIVATE_KEY =
-  '14abe6f4aab7f9f626fe981c864d0adeb5685f289ac9270c27b8fd790b4235d6';
-
-const importedAccount = {
-  name: 'Imported Account 1',
-  address: '0x7A46ce51fbBB29C34aea1fE9833c27b5D2781925',
 };
 
 describe('Multichain Accounts - Account Details', function (this: Suite) {
@@ -34,9 +27,7 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
         },
         async (driver: Driver) => {
           const accountListPage = new AccountListPage(driver);
-          await accountListPage.checkPageIsLoaded({
-            isMultichainAccountsState2Enabled: true,
-          });
+          await accountListPage.checkPageIsLoaded();
           await accountListPage.openMultichainAccountMenu({
             accountLabel: account1.name,
           });
@@ -98,52 +89,17 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
     });
   });
 
-  describe('Rename', function () {
-    it('renames account successfully', async function () {
-      await withMultichainAccountsDesignEnabled(
-        {
-          title: this.test?.fullTitle(),
-          state: 2,
-        },
-        async (driver: Driver) => {
-          const accountListPage = new AccountListPage(driver);
-          await accountListPage.checkPageIsLoaded({
-            isMultichainAccountsState2Enabled: true,
-          });
-          await accountListPage.openMultichainAccountMenu({
-            accountLabel: account1.name,
-          });
-          await accountListPage.clickMultichainAccountMenuItem('Rename');
-          const accountDetailsPage = new MultichainAccountDetailsPage(driver);
-
-          const newName = 'Updated Account Name';
-          await accountDetailsPage.fillAccountNameInput(newName);
-
-          await accountDetailsPage.clickConfirmAccountNameButton();
-
-          await accountListPage.checkPageIsLoaded({
-            isMultichainAccountsState2Enabled: true,
-          });
-
-          await accountListPage.checkAccountNameIsDisplayed(newName);
-        },
-      );
-    });
-  });
-
-  describe('View private key', function () {
-    it('shows private key when requested', async function () {
+  describe('Show account details', function () {
+    it('should show the correct private key from account menu', async function () {
       await withMultichainAccountsDesignEnabled(
         {
           title: this.test?.fullTitle(),
         },
         async (driver: Driver) => {
           const accountListPage = new AccountListPage(driver);
-          await accountListPage.checkPageIsLoaded({
-            isMultichainAccountsState2Enabled: true,
-          });
+          await accountListPage.checkPageIsLoaded();
           await accountListPage.openMultichainAccountMenu({
-            accountLabel: account1.name,
+            accountLabel: 'Account 1',
           });
           await accountListPage.clickMultichainAccountMenuItem(
             'Account details',
@@ -156,40 +112,60 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
           await privateKeyModal.checkPageIsLoaded();
           await privateKeyModal.typePassword(WALLET_PASSWORD);
           await privateKeyModal.clickConfirm();
+          const accountDetailsModal = new AccountDetailsModal(driver);
+          await accountDetailsModal.clickCopyPrivateKeyButton();
+          await accountDetailsModal.checkAddressIsCopied();
+        },
+      );
+    });
+
+    it('should show the correct private key from global menu', async function () {
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilder().build(),
+          title: this.test?.fullTitle(),
+        },
+        async ({ driver }) => {
+          await loginWithoutBalanceValidation(driver);
+          const headerNavbar = new HeaderNavbar(driver);
+          await headerNavbar.openAccountDetailsModal();
+          const accountDetailsPage = new MultichainAccountDetailsPage(driver);
+          await accountDetailsPage.clickPrivateKeyRow();
+          const privateKeyModal = new PrivateKeyModal(driver);
+          await privateKeyModal.checkPageIsLoaded();
+          await privateKeyModal.typePassword(WALLET_PASSWORD);
+          await privateKeyModal.clickConfirm();
+          const accountDetailsModal = new AccountDetailsModal(driver);
+          await accountDetailsModal.clickCopyPrivateKeyButton();
+          await accountDetailsModal.checkAddressIsCopied();
         },
       );
     });
   });
 
-  describe('Delete private key account', function () {
-    it('removes imported private key account successfully', async function () {
-      await withImportedAccount(
+  describe('Rename', function () {
+    it('renames account successfully', async function () {
+      await withMultichainAccountsDesignEnabled(
         {
           title: this.test?.fullTitle(),
-          privateKey: TEST_PRIVATE_KEY,
         },
         async (driver: Driver) => {
           const accountListPage = new AccountListPage(driver);
-          await accountListPage.checkPageIsLoaded({
-            isMultichainAccountsState2Enabled: true,
-          });
+          await accountListPage.checkPageIsLoaded();
           await accountListPage.openMultichainAccountMenu({
-            accountLabel: importedAccount.name,
+            accountLabel: account1.name,
           });
-          await accountListPage.clickMultichainAccountMenuItem(
-            'Account details',
-          );
-
+          await accountListPage.clickMultichainAccountMenuItem('Rename');
           const accountDetailsPage = new MultichainAccountDetailsPage(driver);
-          await accountDetailsPage.checkPageIsLoaded();
 
-          await accountDetailsPage.clickRemoveAccountButton();
+          const newName = 'Updated Account Name';
+          await accountDetailsPage.fillAccountNameInput(newName);
 
-          await accountDetailsPage.clickRemoveAccountConfirmButton();
+          await accountDetailsPage.clickConfirmAccountNameButton();
 
-          await accountListPage.checkAccountIsNotDisplayedInAccountList(
-            importedAccount.name,
-          );
+          await accountListPage.checkPageIsLoaded();
+
+          await accountListPage.checkAccountNameIsDisplayed(newName);
         },
       );
     });
@@ -200,13 +176,10 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
       await withMultichainAccountsDesignEnabled(
         {
           title: this.test?.fullTitle(),
-          state: 2,
         },
         async (driver: Driver) => {
           const accountListPage = new AccountListPage(driver);
-          await accountListPage.checkPageIsLoaded({
-            isMultichainAccountsState2Enabled: true,
-          });
+          await accountListPage.checkPageIsLoaded();
           await accountListPage.openMultichainAccountMenu({
             accountLabel: account1.name,
           });
@@ -229,13 +202,10 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
       await withMultichainAccountsDesignEnabled(
         {
           title: this.test?.fullTitle(),
-          state: 2,
         },
         async (driver: Driver) => {
           const accountListPage = new AccountListPage(driver);
-          await accountListPage.checkPageIsLoaded({
-            isMultichainAccountsState2Enabled: true,
-          });
+          await accountListPage.checkPageIsLoaded();
           await accountListPage.openMultichainAccountMenu({
             accountLabel: account1.name,
           });
@@ -262,13 +232,10 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
       await withMultichainAccountsDesignEnabled(
         {
           title: this.test?.fullTitle(),
-          state: 2,
         },
         async (driver: Driver) => {
           const accountListPage = new AccountListPage(driver);
-          await accountListPage.checkPageIsLoaded({
-            isMultichainAccountsState2Enabled: true,
-          });
+          await accountListPage.checkPageIsLoaded();
           await accountListPage.openMultichainAccountMenu({
             accountLabel: account1.name,
           });
@@ -290,13 +257,10 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
       await withMultichainAccountsDesignEnabled(
         {
           title: this.test?.fullTitle(),
-          state: 2,
         },
         async (driver: Driver) => {
           const accountListPage = new AccountListPage(driver);
-          await accountListPage.checkPageIsLoaded({
-            isMultichainAccountsState2Enabled: true,
-          });
+          await accountListPage.checkPageIsLoaded();
           await accountListPage.openMultichainAccountMenu({
             accountLabel: account1.name,
           });

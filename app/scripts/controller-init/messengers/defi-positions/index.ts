@@ -1,3 +1,9 @@
-export { getDeFiPositionsControllerMessenger } from './defi-positions-controller-messenger';
+export {
+  getDeFiPositionsControllerMessenger,
+  getDeFiPositionsControllerInitMessenger,
+} from './defi-positions-controller-messenger';
 
-export type { DefiPositionsControllerMessenger } from './defi-positions-controller-messenger';
+export type {
+  DeFiPositionsControllerMessenger,
+  DeFiPositionsControllerInitMessenger,
+} from './defi-positions-controller-messenger';

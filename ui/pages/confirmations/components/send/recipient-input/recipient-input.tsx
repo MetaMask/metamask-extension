@@ -56,7 +56,10 @@ export const RecipientInput = ({
     toAddressValidated,
   } = recipientValidationResult;
   const avatarSeedAddress =
-    accountAddressSeedIconMap.get(to?.toLowerCase() as string) ?? to ?? '';
+    accountAddressSeedIconMap.get(to?.toLowerCase() as string) ||
+    recipientResolvedLookup ||
+    to ||
+    '';
 
   const onToChange = useCallback(
     (e) => {
@@ -159,7 +162,7 @@ export const RecipientInput = ({
             ) : null
           }
           onChange={onToChange}
-          placeholder={t('recipientPlaceholder')}
+          placeholder={t('recipientPlaceholderText')}
           ref={recipientInputRef}
           value={to}
           width={BlockSize.Full}

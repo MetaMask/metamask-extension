@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const FixtureBuilder = require('../../fixture-builder');
+const FixtureBuilder = require('../../fixtures/fixture-builder');
 
 const { unlockWallet, withFixtures } = require('../../helpers');
 const { DAPP_URL, WINDOW_TITLES } = require('../../constants');
@@ -209,7 +209,7 @@ describe('PPOM Blockaid Alert - Malicious ERC20 Approval', function () {
   it.skip('should show banner alert', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()

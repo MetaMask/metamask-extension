@@ -1,5 +1,5 @@
 import { DAPP_ONE_URL, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
@@ -7,11 +7,10 @@ describe('eth_subscribe', function () {
   it('only broadcasts subscription notifications on the page that registered the subscription', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 2 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        dappOptions: { numberOfDapps: 2 },
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {

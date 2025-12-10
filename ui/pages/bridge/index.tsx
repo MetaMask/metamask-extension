@@ -1,20 +1,19 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Route, Switch, useHistory, useLocation } from 'react-router-dom';
+import { Route, Routes, useNavigate, useLocation } from 'react-router-dom';
 import {
   UnifiedSwapBridgeEventName,
-  // TODO: update this with all non-EVM chains when bitcoin added.
-  isSolanaChainId,
+  isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import { I18nContext } from '../../contexts/i18n';
 import { clearSwapsState } from '../../ducks/swaps/swaps';
 import {
   DEFAULT_ROUTE,
   PREPARE_SWAP_ROUTE,
-  CROSS_CHAIN_SWAP_ROUTE,
   AWAITING_SIGNATURES_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
+import { toRelativeRoutePath } from '../routes/utils';
 import { resetBackgroundSwapsState } from '../../store/actions';
 import {
   ButtonIcon,
@@ -52,13 +51,11 @@ const CrossChainSwap = () => {
   // Load swaps feature flags so that we can use smart transactions
   useSwapsFeatureFlags();
   useBridging();
-
-  const history = useHistory();
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   const { search } = useLocation();
 
-  const isFromTransactionShield = new URLSearchParams(search).get(
+  const isFromTransactionShield = new URLSearchParams(search || '').get(
     'isFromTransactionShield',
   );
 
@@ -72,10 +69,10 @@ const CrossChainSwap = () => {
 
   // Get chain information to determine if we need gas estimates
   const fromChain = useSelector(getFromChain);
-  // Only fetch gas estimates if the source chain is EVM (not Solana)
+
+  // Only fetch gas estimates if the source chain is EVM (not Solana, Bitcoin, or Tron)
   const shouldFetchGasEstimates =
-    // TODO: update this with all non-EVM chains when bitcoin added.
-    fromChain?.chainId && !isSolanaChainId(fromChain.chainId);
+    fromChain?.chainId && !isNonEvmChainId(fromChain.chainId);
 
   useEffect(() => {
     dispatch(
@@ -110,14 +107,9 @@ const CrossChainSwap = () => {
   const redirectToDefaultRoute = async () => {
     await resetControllerAndInputStates();
     if (isFromTransactionShield) {
-      history.push({
-        pathname: TRANSACTION_SHIELD_ROUTE,
-      });
+      navigate(TRANSACTION_SHIELD_ROUTE);
     } else {
-      history.push({
-        pathname: DEFAULT_ROUTE,
-        state: { stayOnHomePage: true },
-      });
+      navigate(DEFAULT_ROUTE, { state: { stayOnHomePage: true } });
     }
     dispatch(clearSwapsState());
     await dispatch(resetBackgroundSwapsState());
@@ -144,6 +136,7 @@ const CrossChainSwap = () => {
             iconName={IconName.Setting}
             size={ButtonIconSize.Sm}
             ariaLabel={t('settings')}
+            data-testid="bridge__header-settings-button"
             onClick={() => {
               setIsSettingsModalOpen(true);
             }}
@@ -153,27 +146,37 @@ const CrossChainSwap = () => {
         {t('swap')}
       </Header>
       <Content padding={0}>
-        <Switch>
-          <Route path={CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE}>
-            <BridgeTransactionSettingsModal
-              isOpen={isSettingsModalOpen}
-              onClose={() => {
-                setIsSettingsModalOpen(false);
-              }}
-            />
-            <PrepareBridgePage
-              onOpenSettings={() => setIsSettingsModalOpen(true)}
-            />
-          </Route>
-          <Route path={CROSS_CHAIN_SWAP_ROUTE + AWAITING_SIGNATURES_ROUTE}>
-            <Content>
-              <AwaitingSignatures />
-            </Content>
-            <Footer>
-              <AwaitingSignaturesCancelButton />
-            </Footer>
-          </Route>
-        </Switch>
+        <Routes>
+          <Route
+            path={toRelativeRoutePath(PREPARE_SWAP_ROUTE)}
+            element={
+              <>
+                <BridgeTransactionSettingsModal
+                  isOpen={isSettingsModalOpen}
+                  onClose={() => {
+                    setIsSettingsModalOpen(false);
+                  }}
+                />
+                <PrepareBridgePage
+                  onOpenSettings={() => setIsSettingsModalOpen(true)}
+                />
+              </>
+            }
+          />
+          <Route
+            path={toRelativeRoutePath(AWAITING_SIGNATURES_ROUTE)}
+            element={
+              <>
+                <Content>
+                  <AwaitingSignatures />
+                </Content>
+                <Footer>
+                  <AwaitingSignaturesCancelButton />
+                </Footer>
+              </>
+            }
+          />
+        </Routes>
       </Content>
     </Page>
   );

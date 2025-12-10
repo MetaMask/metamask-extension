@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import TestDappPage from '../../../page-objects/pages/test-dapp';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { WINDOW_TITLES, withFixtures } from '../../../helpers';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
@@ -17,6 +17,7 @@ describe('Ledger Hardware', function (this: Suite) {
   it('deploys an ERC-721 token', async function () {
     await withFixtures(
       {
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withLedgerAccount()
           .withPermissionControllerConnectedToTestDapp({
@@ -24,19 +25,13 @@ describe('Ledger Hardware', function (this: Suite) {
           })
           .build(),
         title: this.test?.fullTitle(),
-        dapp: true,
       },
       async ({ driver, localNodes }) => {
         (await localNodes?.[0]?.setAccountBalance(
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           '0x100000000000000000000',
         )) ?? console.error('localNodes is undefined or empty');
-        await loginWithBalanceValidation(
-          driver,
-          undefined,
-          undefined,
-          '1208925.8196',
-        );
+        await loginWithBalanceValidation(driver, undefined, undefined, '1.21M');
 
         // deploy action
         const testDappPage = new TestDappPage(driver);
@@ -57,6 +52,7 @@ describe('Ledger Hardware', function (this: Suite) {
   it('mints an ERC-721 token', async function () {
     await withFixtures(
       {
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withLedgerAccount()
           .withPermissionControllerConnectedToTestDapp({
@@ -64,7 +60,6 @@ describe('Ledger Hardware', function (this: Suite) {
           })
           .build(),
         title: this.test?.fullTitle(),
-        dapp: true,
         smartContract: [
           {
             name: erc721,
@@ -88,7 +83,7 @@ describe('Ledger Hardware', function (this: Suite) {
           driver,
           undefined,
           undefined,
-          balance?.toString(),
+          `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
         );
 
         const contractAddress =
@@ -120,6 +115,7 @@ describe('Ledger Hardware', function (this: Suite) {
   it('approves an ERC-721 token', async function () {
     await withFixtures(
       {
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withLedgerAccount()
           .withPermissionControllerConnectedToTestDapp({
@@ -127,7 +123,6 @@ describe('Ledger Hardware', function (this: Suite) {
           })
           .build(),
         title: this.test?.fullTitle(),
-        dapp: true,
         smartContract: [
           {
             name: erc721,
@@ -151,7 +146,7 @@ describe('Ledger Hardware', function (this: Suite) {
           driver,
           undefined,
           undefined,
-          balance?.toString(),
+          `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
         );
 
         const contractAddress =
@@ -181,6 +176,7 @@ describe('Ledger Hardware', function (this: Suite) {
   it('sets approval for all an ERC-721 token', async function () {
     await withFixtures(
       {
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withLedgerAccount()
           .withPermissionControllerConnectedToTestDapp({
@@ -188,7 +184,6 @@ describe('Ledger Hardware', function (this: Suite) {
           })
           .build(),
         title: this.test?.fullTitle(),
-        dapp: true,
         smartContract: [
           {
             name: erc721,
@@ -212,7 +207,7 @@ describe('Ledger Hardware', function (this: Suite) {
           driver,
           undefined,
           undefined,
-          balance?.toString(),
+          `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
         );
 
         const contractAddress =

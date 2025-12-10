@@ -16,7 +16,7 @@ import { IconName } from '../icon';
 import { AvatarIconSize } from './avatar-icon.types';
 
 export default {
-  title: 'Components/ComponentLibrary/AvatarIcon',
+  title: 'Components/ComponentLibrary/AvatarIcon (deprecated)',
   component: AvatarIcon,
   parameters: {
     docs: {

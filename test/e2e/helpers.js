@@ -10,7 +10,7 @@ const { setupMocking } = require('./mock-e2e');
 const { setupMockingPassThrough } = require('./mock-e2e-pass-through');
 const { Anvil } = require('./seeder/anvil');
 const { Ganache } = require('./seeder/ganache');
-const FixtureServer = require('./fixture-server');
+const FixtureServer = require('./fixtures/fixture-server');
 const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
 const { PAGES } = require('./webdriver/driver');
@@ -33,6 +33,7 @@ const {
   ACCOUNT_2,
   WALLET_PASSWORD,
   WINDOW_TITLES,
+  DAPP_PATHS,
 } = require('./constants');
 const {
   getServerMochaToBackground,
@@ -56,7 +57,6 @@ const convertToHexValue = (val) => `0x${new BigNumber(val, 10).toString(16)}`;
 const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
 
 const {
-  mockMultichainAccountsFeatureFlagStateOne,
   mockMultichainAccountsFeatureFlagStateTwo,
 } = require('./tests/multichain-accounts/feature-flag-mocks');
 
@@ -154,7 +154,6 @@ function normalizeSmartContracts(smartContract) {
  */
 async function withFixtures(options, testSuite) {
   const {
-    dapp,
     fixtures,
     localNodeOptions = 'anvil',
     smartContract,
@@ -163,9 +162,7 @@ async function withFixtures(options, testSuite) {
     staticServerOptions,
     title,
     ignoredConsoleErrors = [],
-    dappPath = undefined,
     disableServerMochaToBackground = false,
-    dappPaths,
     testSpecificMock = function () {
       // do nothing.
     },
@@ -176,7 +173,7 @@ async function withFixtures(options, testSuite) {
     monConversionInUsd,
     manifestFlags,
     solanaWebSocketSpecificMocks = [],
-    forceBip44Version = 0,
+    forceBip44Version = true,
   } = options;
 
   // Normalize localNodeOptions
@@ -187,7 +184,17 @@ async function withFixtures(options, testSuite) {
   const bundlerServer = new Bundler();
   const https = await mockttp.generateCACertificate();
   const mockServer = mockttp.getLocal({ https, cors: true });
-  let numberOfDapps = dapp ? 1 : 0;
+  const dappOpts = dappOptions || {};
+  const hasCustomPaths =
+    Array.isArray(dappOpts.customDappPaths) &&
+    dappOpts.customDappPaths.length > 0;
+  const customCount = hasCustomPaths ? dappOpts.customDappPaths.length : 0;
+  const defaultCount =
+    typeof dappOpts.numberOfTestDapps === 'number' &&
+    dappOpts.numberOfTestDapps > 0
+      ? dappOpts.numberOfTestDapps
+      : 0;
+  const numberOfDapps = customCount + defaultCount;
   const dappServer = [];
   const phishingPageServer = new PhishingWarningPageServer();
 
@@ -282,75 +289,38 @@ async function withFixtures(options, testSuite) {
     }
 
     await phishingPageServer.start();
-    if (dapp) {
-      if (dappOptions?.numberOfDapps) {
-        numberOfDapps = dappOptions.numberOfDapps;
-        // Note: We don't cap numberOfDapps here even if dappPaths is shorter,
-        // because tests may need multiple dapps where some use default paths
-      } else if (dappPaths && Array.isArray(dappPaths)) {
-        numberOfDapps = dappPaths.length;
-      } else {
-        // Default to 1 dapp when dapp=true but no specific configuration
-        numberOfDapps = 1;
-      }
-
+    if (numberOfDapps > 0) {
+      // Ensure the default test dapp occupies the lowest ports first (e.g., 8080),
+      // then any custom dapps follow (e.g., 8081, 8082, ...).
       for (let i = 0; i < numberOfDapps; i++) {
         let dappDirectory;
         let currentDappPath;
-        if (dappPath) {
-          // Single dappPath takes precedence
-          currentDappPath = dappPath;
-        } else if (
-          dappPaths &&
-          Array.isArray(dappPaths) &&
-          i < dappPaths.length
-        ) {
-          // Use dappPaths[i] if within bounds
-          currentDappPath = dappPaths[i];
+        if (i < defaultCount) {
+          // First spin up the default test-dapp instances
+          currentDappPath = 'test-dapp';
+        } else if (hasCustomPaths) {
+          // Then start custom dapps on subsequent ports
+          currentDappPath = dappOpts.customDappPaths[i - defaultCount];
         } else {
-          // Fallback to default
           currentDappPath = 'test-dapp';
         }
 
-        switch (currentDappPath) {
-          case 'snap-simple-keyring-site':
-            dappDirectory = path.resolve(
-              __dirname,
-              '..',
-              '..',
-              'node_modules',
-              '@metamask/snap-simple-keyring-site',
-              'public',
-            );
-            break;
-          case 'snap-account-abstraction-keyring':
-            dappDirectory = path.resolve(
-              __dirname,
-              '..',
-              '..',
-              'node_modules',
-              '@metamask/snap-account-abstraction-keyring-site',
-              'public',
-            );
-            break;
-          case 'test-dapp':
-            dappDirectory = path.resolve(
-              __dirname,
-              '..',
-              '..',
-              'node_modules',
-              '@metamask/test-dapp',
-              'dist',
-            );
-            break;
-          default:
-            dappDirectory = path.resolve(__dirname, currentDappPath);
-            break;
+        if (DAPP_PATHS && DAPP_PATHS[currentDappPath]) {
+          dappDirectory = path.resolve(
+            __dirname,
+            ...DAPP_PATHS[currentDappPath],
+          );
+        } else {
+          dappDirectory = path.resolve(__dirname, currentDappPath);
         }
         dappServer.push(
           createStaticServer({ public: dappDirectory, ...staticServerOptions }),
         );
-        dappServer[i].listen(`${dappBasePort + i}`);
+        const basePort =
+          typeof dappOpts.basePort === 'number'
+            ? dappOpts.basePort
+            : dappBasePort;
+        dappServer[i].listen(`${basePort + i}`);
         await new Promise((resolve, reject) => {
           dappServer[i].on('listening', resolve);
           dappServer[i].on('error', reject);
@@ -363,20 +333,8 @@ async function withFixtures(options, testSuite) {
     webSocketServer.start();
     await setupSolanaWebsocketMocks(solanaWebSocketSpecificMocks);
 
-    // The feature flag wrapper chooses state 2 by default
-    // but we want most tests to be able to run with state 0 (bip-44 disabled)
-    // So the default argument is 0
-    // and doing nothing here means we get state 2
-
-    if (forceBip44Version === 0) {
-      console.log('Applying multichain accounts feature flag disabled mock');
-    } else if (forceBip44Version === 1) {
-      console.log(
-        'Applying multichain accounts state 1 feature state 1 enabled mock',
-      );
-      await mockMultichainAccountsFeatureFlagStateOne(mockServer);
-    } else {
-      console.log('BIP-44 state 2 enabled');
+    if (forceBip44Version) {
+      console.log('BIP-44 stage 2 enabled');
       await mockMultichainAccountsFeatureFlagStateTwo(mockServer);
     }
 
@@ -386,15 +344,16 @@ async function withFixtures(options, testSuite) {
       : setupMocking;
 
     // Use the mockingSetupFunction we just chose
-    const { mockedEndpoint, getPrivacyReport } = await mockingSetupFunction(
-      mockServer,
-      testSpecificMock,
-      {
-        chainId: localNodeOptsNormalized[0]?.options.chainId || 1337,
-        ethConversionInUsd,
-        monConversionInUsd,
-      },
-    );
+    const {
+      mockedEndpoint,
+      getPrivacyReport,
+      getNetworkReport,
+      clearNetworkReport,
+    } = await mockingSetupFunction(mockServer, testSpecificMock, {
+      chainId: localNodeOptsNormalized[0]?.options.chainId || 1337,
+      ethConversionInUsd,
+      monConversionInUsd,
+    });
 
     if ((await detectPort(8000)) !== 8000) {
       throw new Error(
@@ -448,6 +407,8 @@ async function withFixtures(options, testSuite) {
       mockedEndpoint,
       mockServer,
       extensionId,
+      getNetworkReport,
+      clearNetworkReport,
     });
 
     const errorsAndExceptions = driver.summarizeErrorsAndExceptions();
@@ -480,7 +441,7 @@ async function withFixtures(options, testSuite) {
       if (process.env.UPDATE_PRIVACY_SNAPSHOT === 'true') {
         writeFileSync(
           './privacy-snapshot.json',
-          JSON.stringify(mergedReport, null, 2),
+          `${JSON.stringify(mergedReport, null, 2)}\n`, // must add trailing newline to satisfy prettier
         );
       } else {
         throw new Error(
@@ -536,7 +497,7 @@ async function withFixtures(options, testSuite) {
       if (webDriver) {
         shutdownTasks.push(driver.quit());
       }
-      if (dapp) {
+      if (numberOfDapps > 0) {
         for (let i = 0; i < numberOfDapps; i++) {
           if (dappServer[i] && dappServer[i].listening) {
             shutdownTasks.push(
@@ -641,12 +602,11 @@ const clickNestedButton = async (driver, tabName) => {
  * @param {WebDriver} driver - The webdriver instance
  * @param {object} [options] - Options for unlocking the wallet
  * @param {boolean} [options.navigate] - Whether to navigate to the root page prior to unlocking - defaults to true
- * @param {boolean} [options.waitLoginSuccess] - Whether to wait for the login to succeed - defaults to true
  * @param {string} [options.password] - Password to unlock wallet - defaults to shared WALLET_PASSWORD
  */
 async function unlockWallet(
   driver,
-  { navigate = true, waitLoginSuccess = true, password = WALLET_PASSWORD } = {},
+  { navigate = true, password = WALLET_PASSWORD } = {},
 ) {
   if (navigate) {
     await driver.navigate();
@@ -655,9 +615,7 @@ async function unlockWallet(
   await driver.waitForSelector('#password', { state: 'enabled' });
   await driver.fill('#password', password);
   await driver.press('#password', driver.Key.ENTER);
-  if (waitLoginSuccess) {
-    await driver.assertElementNotPresent('[data-testid="unlock-page"]');
-  }
+  await driver.assertElementNotPresent('[data-testid="unlock-page"]');
 }
 
 /**
@@ -827,6 +785,30 @@ async function initBundler(
 
 const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;
 
+/**
+ * Check if sidepanel is enabled by examining the build flag at runtime.
+ * Only works on Chrome-based browsers (Firefox doesn't support sidepanel).
+ * Use this check for now in case we need to disable sidepanel in future.
+ *
+ * @returns {Promise<boolean>} True if sidepanel permission is present in manifest
+ */
+async function isSidePanelEnabled() {
+  try {
+    const hasSidepanel =
+      process.env.SELENIUM_BROWSER === 'chrome' &&
+      process.env.IS_SIDEPANEL === 'true';
+
+    // Log for debugging
+    console.log(`Sidepanel check: ${hasSidepanel ? 'enabled' : 'disabled'}`);
+
+    return hasSidepanel;
+  } catch (error) {
+    // Chrome API not accessible (e.g., LavaMoat scuttling mode, Firefox)
+    console.log('Sidepanel check failed:', error.message);
+    return false;
+  }
+}
+
 module.exports = {
   DAPP_HOST_ADDRESS,
   DAPP_URL,
@@ -859,4 +841,5 @@ module.exports = {
   clickNestedButton,
   sentryRegEx,
   createWebSocketConnection,
+  isSidePanelEnabled,
 };

@@ -1,6 +1,6 @@
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import MetafoxLogo from '../../ui/metafox-logo';
@@ -19,7 +19,7 @@ export const AppHeaderLockedContent = ({
   networkOpenCallback,
 }: AppHeaderLockedContentProps) => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
   const networkIconSrc = getNetworkIcon(currentNetwork);
@@ -45,11 +45,10 @@ export const AppHeaderLockedContent = ({
           data-testid="network-display"
         />
       </div>
-      <div></div>
       <MetafoxLogo
         unsetIconHeight
         onClick={async () => {
-          history.push(DEFAULT_ROUTE);
+          navigate(DEFAULT_ROUTE);
         }}
       />
     </>

@@ -1,6 +1,6 @@
 import { By } from 'selenium-webdriver';
 
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import {
   DAPP_ONE_URL,
   DAPP_URL,
@@ -17,11 +17,10 @@ describe('Routing confirmstions from Multiple Dapps and different networks', fun
     const chainId = 1338;
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 2 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .build(),
-        dappOptions: { numberOfDapps: 2 },
         localNodeOptions: [
           {
             type: 'anvil',

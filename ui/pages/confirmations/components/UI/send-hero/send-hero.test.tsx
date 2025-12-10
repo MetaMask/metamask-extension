@@ -1,17 +1,13 @@
 import React from 'react';
 
 import mockDefaultState from '../../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../../test/jest';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../../store/store';
 import { Asset, AssetStandard } from '../../../types/send';
 import { SendHero } from './send-hero';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
-}));
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
 }));
 
 jest.mock('../../../../../components/component-library', () => ({

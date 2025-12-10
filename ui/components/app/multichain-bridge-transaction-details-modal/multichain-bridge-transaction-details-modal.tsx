@@ -401,11 +401,13 @@ const MultichainBridgeTransactionDetailsModal = ({
                         : ''
                     }
                     src={
-                      CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                        destNetwork?.isEvm
-                          ? formatChainIdToHex(destNetwork?.chainId)
-                          : (destNetwork?.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP)
-                      ] || ''
+                      destNetwork?.isEvm
+                        ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                            formatChainIdToHex(destNetwork?.chainId)
+                          ] || ''
+                        : (destNetwork?.chainId &&
+                            MULTICHAIN_TOKEN_IMAGE_MAP[destNetwork.chainId]) ||
+                          ''
                     }
                     borderColor={BorderColor.backgroundDefault}
                   />
@@ -450,6 +452,16 @@ const MultichainBridgeTransactionDetailsModal = ({
                           : assetData.amount;
                         return `${displayAmount} ${assetData.unit}`;
                       }
+
+                      // Fallback to quote data when transaction.from is empty (e.g., BTC transactions)
+                      if (quote?.srcTokenAmount && quote?.srcAsset?.symbol) {
+                        const formattedAmount = formatDestTokenAmount(
+                          quote.srcTokenAmount,
+                          quote.srcAsset.decimals,
+                        );
+                        return `${formattedAmount} ${quote.srcAsset.symbol}`;
+                      }
+
                       return '';
                     })()}
                   </Text>

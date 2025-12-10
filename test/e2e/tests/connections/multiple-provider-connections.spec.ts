@@ -10,8 +10,12 @@ import {
 import {
   BASE_DISPLAY_NAME,
   LINEA_MAINNET_DISPLAY_NAME,
-  LOCALHOST_DISPLAY_NAME,
   MAINNET_DISPLAY_NAME,
+  ARBITRUM_DISPLAY_NAME,
+  BSC_DISPLAY_NAME,
+  POLYGON_DISPLAY_NAME,
+  OPTIMISM_DISPLAY_NAME,
+  SEI_DISPLAY_NAME,
 } from '../../../../shared/constants/network';
 import Homepage from '../../page-objects/pages/home/homepage';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
@@ -20,7 +24,7 @@ import TestDapp from '../../page-objects/pages/test-dapp';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import { withSolanaAccountSnap } from '../solana/common-solana';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import {
   connectSolanaTestDapp,
@@ -36,7 +40,6 @@ const SOLANA_ACCOUNT_ONE = `${SolScope.Mainnet}:${SOLANA_ADDRESS_ONE}`;
 
 const EVM_ACCOUNT_LABEL_ONE = 'Account 1';
 const EVM_ACCOUNT_LABEL_TWO = 'Account 2';
-const SOLANA_ACCOUNT_LABEL_ONE = 'Solana 1';
 
 const SOLANA_PERMISSIONS = {
   isMultichainOrigin: true,
@@ -81,7 +84,7 @@ async function checkIsAccountDisplayed(
 ): Promise<void> {
   await driver.waitForSelector({
     text: account,
-    tag: 'button',
+    tag: 'p',
   });
 }
 
@@ -173,7 +176,7 @@ describe('Multiple Standard Dapp Connections', function () {
   it('should default account selection to already permitted account(s) plus the selected account (if not already permissioned) when `wallet_requestPermissions` is called with no accounts specified', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withKeyringControllerAdditionalAccountVault()
           .withPreferencesControllerAdditionalAccountIdentities()
@@ -223,7 +226,7 @@ describe('Multiple Standard Dapp Connections', function () {
   it('should default account selection to both accounts when `wallet_requestPermissions` is called with specific account while another is already connected', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withKeyringControllerAdditionalAccountVault()
           .withPreferencesControllerAdditionalAccountIdentities()
@@ -262,7 +265,7 @@ describe('Multiple Standard Dapp Connections', function () {
 
         await checkIsAccountDisplayed(driver, EVM_ACCOUNT_LABEL_TWO);
 
-        await await connectAccountConfirmation.confirmConnect();
+        await connectAccountConfirmation.confirmConnect();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
@@ -301,18 +304,26 @@ describe('Multiple Standard Dapp Connections', function () {
           DAPP_HOST_ADDRESS,
         );
 
-        await sitePermissionPage.checkConnectedAccountsNumber(3);
-        await sitePermissionPage.checkConnectedNetworksNumber(2);
+        await sitePermissionPage.checkConnectedAccountsNumber(2);
+        await sitePermissionPage.checkConnectedNetworksNumber(11);
 
         await checkAccountsAndNetworksDisplayed(
           driver,
           sitePermissionPage,
-          ['Solana', LOCALHOST_DISPLAY_NAME],
           [
-            EVM_ACCOUNT_LABEL_ONE,
-            EVM_ACCOUNT_LABEL_TWO,
-            SOLANA_ACCOUNT_LABEL_ONE,
+            MAINNET_DISPLAY_NAME,
+            LINEA_MAINNET_DISPLAY_NAME,
+            BASE_DISPLAY_NAME,
+            ARBITRUM_DISPLAY_NAME,
+            BSC_DISPLAY_NAME,
+            POLYGON_DISPLAY_NAME,
+            OPTIMISM_DISPLAY_NAME,
+            SEI_DISPLAY_NAME,
+            'Solana',
+            'Solana Testnet',
+            'Solana Devnet',
           ],
+          [EVM_ACCOUNT_LABEL_ONE, EVM_ACCOUNT_LABEL_TWO],
         );
       },
     );
@@ -346,8 +357,8 @@ describe('Multiple Standard Dapp Connections', function () {
           DAPP_HOST_ADDRESS,
         );
 
-        await sitePermissionPage.checkConnectedAccountsNumber(2);
-        await sitePermissionPage.checkConnectedNetworksNumber(4);
+        await sitePermissionPage.checkConnectedAccountsNumber(1);
+        await sitePermissionPage.checkConnectedNetworksNumber(11);
 
         await checkAccountsAndNetworksDisplayed(
           driver,
@@ -356,9 +367,17 @@ describe('Multiple Standard Dapp Connections', function () {
             MAINNET_DISPLAY_NAME,
             LINEA_MAINNET_DISPLAY_NAME,
             BASE_DISPLAY_NAME,
+            ARBITRUM_DISPLAY_NAME,
+            BSC_DISPLAY_NAME,
+            POLYGON_DISPLAY_NAME,
+            OPTIMISM_DISPLAY_NAME,
+            SEI_DISPLAY_NAME,
+            'Bitcoin',
             'Solana',
+            'Solana Testnet',
+            'Solana Devnet',
           ],
-          [EVM_ACCOUNT_LABEL_ONE, SOLANA_ACCOUNT_LABEL_ONE],
+          [EVM_ACCOUNT_LABEL_ONE],
         );
       },
     );
@@ -401,8 +420,6 @@ describe('Multiple Standard Dapp Connections', function () {
 
         await checkIsAccountDisplayed(driver, EVM_ACCOUNT_LABEL_TWO);
 
-        await checkIsAccountDisplayed(driver, SOLANA_ACCOUNT_LABEL_ONE);
-
         await connectAccountConfirmation.confirmConnect();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -416,7 +433,7 @@ describe('Multiple Standard Dapp Connections', function () {
         );
 
         await sitePermissionPage.checkConnectedAccountsNumber(2);
-        await sitePermissionPage.checkConnectedNetworksNumber(4);
+        await sitePermissionPage.checkConnectedNetworksNumber(11);
 
         await checkAccountsAndNetworksDisplayed(
           driver,
@@ -425,9 +442,16 @@ describe('Multiple Standard Dapp Connections', function () {
             MAINNET_DISPLAY_NAME,
             LINEA_MAINNET_DISPLAY_NAME,
             BASE_DISPLAY_NAME,
+            ARBITRUM_DISPLAY_NAME,
+            BSC_DISPLAY_NAME,
+            POLYGON_DISPLAY_NAME,
+            OPTIMISM_DISPLAY_NAME,
+            SEI_DISPLAY_NAME,
             'Solana',
+            'Solana Testnet',
+            'Solana Devnet',
           ],
-          [EVM_ACCOUNT_LABEL_TWO, SOLANA_ACCOUNT_LABEL_ONE],
+          [EVM_ACCOUNT_LABEL_TWO],
         );
       },
     );
@@ -474,14 +498,14 @@ describe('Multiple Standard Dapp Connections', function () {
           DAPP_HOST_ADDRESS,
         );
 
-        await sitePermissionPage.checkConnectedAccountsNumber(2);
+        await sitePermissionPage.checkConnectedAccountsNumber(1);
         await sitePermissionPage.checkConnectedNetworksNumber(2);
 
         await checkAccountsAndNetworksDisplayed(
           driver,
           sitePermissionPage,
           [MAINNET_DISPLAY_NAME, 'Solana'],
-          [EVM_ACCOUNT_LABEL_ONE, SOLANA_ACCOUNT_LABEL_ONE],
+          [EVM_ACCOUNT_LABEL_ONE],
         );
       },
     );

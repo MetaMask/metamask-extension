@@ -2,8 +2,8 @@ import { TokenRatesControllerGetStateAction } from '@metamask/assets-controllers
 import {
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  RestrictedMessenger,
 } from '@metamask/base-controller';
+import type { Messenger } from '@metamask/messenger';
 import { GasFeeState } from '@metamask/gas-fee-controller';
 import {
   NetworkClientId,
@@ -114,12 +114,10 @@ export type SwapsControllerEvents = SwapsControllerStateChangeEvent;
 /**
  * The messenger for the SwapsController.
  */
-export type SwapsControllerMessenger = RestrictedMessenger<
+export type SwapsControllerMessenger = Messenger<
   typeof controllerName,
   SwapsControllerActions | AllowedActions,
-  SwapsControllerEvents,
-  AllowedActions['type'],
-  never
+  SwapsControllerEvents
 >;
 
 /**

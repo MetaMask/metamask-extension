@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
   AccountGroupId,
@@ -32,7 +32,10 @@ import {
 } from '../../../components/multichain/pages/page';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getWalletsWithAccounts } from '../../../selectors/multichain-accounts/account-tree';
-import { ACCOUNT_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ACCOUNT_LIST_PAGE_ROUTE,
+  PREVIOUS_ROUTE,
+} from '../../../helpers/constants/routes';
 import { MultichainAccountCell } from '../../../components/multichain-accounts/multichain-account-cell';
 import { AddMultichainAccount } from '../../../components/multichain-accounts/add-multichain-account';
 import { useWalletInfo } from '../../../hooks/multichain-accounts/useWalletInfo';
@@ -43,10 +46,18 @@ import {
 } from '../../../hooks/multichain-accounts/useWalletBalance';
 import { getPreferences } from '../../../selectors';
 
-export const WalletDetailsPage = () => {
+type WalletDetailsPageProps = {
+  params?: { id: string };
+};
+
+export const WalletDetailsPage = ({
+  params: propsParams,
+}: WalletDetailsPageProps = {}) => {
   const t = useI18nContext();
-  const history = useHistory();
-  const { id } = useParams();
+  const navigate = useNavigate();
+  const hookParams = useParams();
+
+  const { id } = propsParams || hookParams;
   const walletId = decodeURIComponent(id as string) as AccountWalletId;
   const walletsWithAccounts = useSelector(getWalletsWithAccounts);
   const wallet = walletsWithAccounts[walletId as AccountWalletId];
@@ -59,9 +70,9 @@ export const WalletDetailsPage = () => {
 
   useEffect(() => {
     if (!wallet) {
-      history.push(ACCOUNT_LIST_PAGE_ROUTE);
+      navigate(ACCOUNT_LIST_PAGE_ROUTE);
     }
-  }, [wallet, history]);
+  }, [wallet, navigate]);
 
   const isEntropyWallet = wallet?.type === AccountWalletType.Entropy;
   const shouldShowBackupReminder = isSRPBackedUp === false;
@@ -74,7 +85,7 @@ export const WalletDetailsPage = () => {
   };
 
   const handleBack = () => {
-    history.goBack();
+    navigate(PREVIOUS_ROUTE);
   };
 
   const multichainAccountCells = useMemo(

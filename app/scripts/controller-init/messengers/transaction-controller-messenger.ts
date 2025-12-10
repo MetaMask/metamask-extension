@@ -3,7 +3,11 @@ import {
   AccountsControllerGetStateAction,
 } from '@metamask/accounts-controller';
 import { ApprovalControllerActions } from '@metamask/approval-controller';
-import { Messenger } from '@metamask/base-controller';
+import {
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+} from '@metamask/messenger';
 import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import {
   KeyringControllerSignEip7702AuthorizationAction,
@@ -34,17 +38,55 @@ import {
   TransactionControllerUnapprovedTransactionAddedEvent,
 } from '@metamask/transaction-controller';
 import { SubscriptionControllerActions } from '@metamask/subscription-controller';
+import { RootMessenger } from '../../lib/messenger';
 import { AppStateControllerGetStateAction } from '../../controllers/app-state-controller';
 import {
   SwapsControllerSetApproveTxIdAction,
   SwapsControllerSetTradeTxIdAction,
 } from '../../controllers/swaps/swaps.types';
+import { SubscriptionServiceAction } from '../../services/subscription/types';
 import {
   InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction,
   InstitutionalSnapControllerPublishHookAction,
 } from './accounts/institutional-snap-controller-messenger';
 
-type MessengerActions =
+type AllowedActions = MessengerActions<TransactionControllerMessenger>;
+
+type AllowedEvents = MessengerEvents<TransactionControllerMessenger>;
+
+export type TransactionControllerInitMessenger = ReturnType<
+  typeof getTransactionControllerInitMessenger
+>;
+
+export function getTransactionControllerMessenger(
+  messenger: RootMessenger<AllowedActions, AllowedEvents>,
+): TransactionControllerMessenger {
+  const controllerMessenger = new Messenger<
+    'TransactionController',
+    AllowedActions,
+    AllowedEvents,
+    typeof messenger
+  >({
+    namespace: 'TransactionController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    actions: [
+      'AccountsController:getSelectedAccount',
+      'AccountsController:getState',
+      `ApprovalController:addRequest`,
+      'KeyringController:signEip7702Authorization',
+      'NetworkController:findNetworkClientIdByChainId',
+      'NetworkController:getNetworkClientById',
+      'RemoteFeatureFlagController:getState',
+    ],
+    events: [`NetworkController:stateChange`],
+  });
+  return controllerMessenger;
+}
+
+type InitMessengerActions =
   | ApprovalControllerActions
   | AccountsControllerGetSelectedAccountAction
   | AccountsControllerGetStateAction
@@ -63,9 +105,10 @@ type MessengerActions =
   | SwapsControllerSetTradeTxIdAction
   | TransactionControllerEstimateGasAction
   | TransactionControllerGetStateAction
-  | SubscriptionControllerActions;
+  | SubscriptionControllerActions
+  | SubscriptionServiceAction;
 
-type MessengerEvents =
+type InitMessengerEvents =
   | TransactionControllerTransactionApprovedEvent
   | TransactionControllerTransactionConfirmedEvent
   | TransactionControllerTransactionDroppedEvent
@@ -79,34 +122,21 @@ type MessengerEvents =
   | NetworkControllerStateChangeEvent
   | SmartTransactionsControllerSmartTransactionEvent;
 
-export type TransactionControllerInitMessenger = ReturnType<
-  typeof getTransactionControllerInitMessenger
->;
-
-export function getTransactionControllerMessenger(
-  messenger: Messenger<MessengerActions, MessengerEvents>,
-): TransactionControllerMessenger {
-  return messenger.getRestricted({
-    name: 'TransactionController',
-    allowedActions: [
-      'AccountsController:getSelectedAccount',
-      'AccountsController:getState',
-      `ApprovalController:addRequest`,
-      'KeyringController:signEip7702Authorization',
-      'NetworkController:findNetworkClientIdByChainId',
-      'NetworkController:getNetworkClientById',
-      'RemoteFeatureFlagController:getState',
-    ],
-    allowedEvents: [`NetworkController:stateChange`],
-  });
-}
-
 export function getTransactionControllerInitMessenger(
-  messenger: Messenger<MessengerActions, MessengerEvents>,
+  messenger: RootMessenger<InitMessengerActions, InitMessengerEvents>,
 ) {
-  return messenger.getRestricted({
-    name: 'TransactionControllerInit',
-    allowedEvents: [
+  const controllerInitMessenger = new Messenger<
+    'TransactionControllerInit',
+    InitMessengerActions,
+    InitMessengerEvents,
+    typeof messenger
+  >({
+    namespace: 'TransactionControllerInit',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    events: [
       'SmartTransactionsController:smartTransaction',
       'TransactionController:transactionApproved',
       'TransactionController:transactionConfirmed',
@@ -119,7 +149,7 @@ export function getTransactionControllerInitMessenger(
       'TransactionController:postTransactionBalanceUpdated',
       'TransactionController:unapprovedTransactionAdded',
     ],
-    allowedActions: [
+    actions: [
       'ApprovalController:acceptRequest',
       'ApprovalController:addRequest',
       'ApprovalController:endFlow',
@@ -139,6 +169,8 @@ export function getTransactionControllerInitMessenger(
       'TransactionController:estimateGas',
       'TransactionController:getState',
       'SubscriptionController:getSubscriptionByProduct',
+      'SubscriptionService:submitSubscriptionSponsorshipIntent',
     ],
   });
+  return controllerInitMessenger;
 }

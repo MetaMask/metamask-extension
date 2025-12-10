@@ -1,6 +1,6 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { toHex } from '@metamask/controller-utils';
 import {
   AlignItems,
@@ -9,7 +9,6 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useNftsCollections } from '../../../../../hooks/useNftsCollections';
 import {
-  getCurrentNetwork,
   getIsMainnet,
   getUseNftDetection,
   getNftIsStillFetchingIndication,
@@ -17,13 +16,6 @@ import {
 } from '../../../../../selectors';
 import { Box } from '../../../../component-library';
 import NFTsDetectionNoticeNFTsTab from '../nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
-import { MetaMetricsContext } from '../../../../../contexts/metametrics';
-import { ORIGIN_METAMASK } from '../../../../../../shared/constants/app';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../../../shared/constants/metametrics';
-import { getCurrentLocale } from '../../../../../ducks/locale/locale';
 import { endTrace, TraceName } from '../../../../../../shared/lib/trace';
 import { useNfts } from '../../../../../hooks/useNfts';
 import { NFT } from '../../../../multichain/asset-picker-amount/asset-picker-modal/types';
@@ -37,11 +29,10 @@ import { NftEmptyState } from '../nft-empty-state';
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function NftsTab() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const useNftDetection = useSelector(getUseNftDetection);
   const isMainnet = useSelector(getIsMainnet);
   const { privacyMode } = useSelector(getPreferences);
-  const trackEvent = useContext(MetaMetricsContext);
   const nftsStillFetchingIndication = useSelector(
     getNftIsStillFetchingIndication,
   );
@@ -51,34 +42,6 @@ export default function NftsTab() {
   const { currentlyOwnedNfts, previouslyOwnedNfts } = useNfts();
 
   const hasAnyNfts = Object.keys(collections).length > 0;
-  const showNftBanner = hasAnyNfts === false;
-  const { chainId, nickname } = useSelector(getCurrentNetwork);
-  const currentLocale = useSelector(getCurrentLocale);
-
-  useEffect(() => {
-    if (nftsLoading || !showNftBanner) {
-      return;
-    }
-    trackEvent({
-      event: MetaMetricsEventName.EmptyNftsBannerDisplayed,
-      category: MetaMetricsEventCategory.Navigation,
-      properties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: chainId,
-        locale: currentLocale,
-        network: nickname,
-        referrer: ORIGIN_METAMASK,
-      },
-    });
-  }, [
-    nftsLoading,
-    showNftBanner,
-    trackEvent,
-    chainId,
-    nickname,
-    currentLocale,
-  ]);
 
   useEffect(() => {
     if (!nftsLoading && !nftsStillFetchingIndication) {
@@ -87,7 +50,7 @@ export default function NftsTab() {
   }, [nftsLoading, nftsStillFetchingIndication]);
 
   const handleNftClick = (nft: NFT) => {
-    history.push(
+    navigate(
       `${ASSET_ROUTE}/${toHex(nft.chainId)}/${nft.address}/${nft.tokenId}`,
     );
   };

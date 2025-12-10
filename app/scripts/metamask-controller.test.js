@@ -22,7 +22,7 @@ import {
   SolAccountType,
   SolScope,
 } from '@metamask/keyring-api';
-import { Messenger } from '@metamask/base-controller';
+import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 import { LoggingController, LogType } from '@metamask/logging-controller';
 import {
   CHAIN_IDS,
@@ -50,7 +50,7 @@ import { KeyringTypes } from '@metamask/keyring-controller';
 import { createTestProviderTools } from '../../test/stub/provider';
 import {
   HardwareDeviceNames,
-  HardwareKeyringType,
+  KEYRING_DEVICE_PROPERTY_MAP,
 } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
 import { LOG_EVENT } from '../../shared/constants/logs';
@@ -68,6 +68,9 @@ import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import { HYPERLIQUID_APPROVAL_TYPE } from '../../shared/constants/app';
 import { HYPERLIQUID_ORIGIN } from '../../shared/constants/referrals';
+import { BITCOIN_WALLET_SNAP_ID } from '../../shared/lib/accounts/bitcoin-wallet-snap';
+import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-snap';
+import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { ReferralStatus } from './controllers/preferences-controller';
 import { METAMASK_COOKIE_HANDLER } from './constants/stream';
 import {
@@ -89,7 +92,7 @@ const browserPolyfillMock = {
     onMessageExternal: {
       addListener: jest.fn(),
     },
-    getPlatformInfo: jest.fn().mockResolvedValue('mac'),
+    getPlatformInfo: jest.fn().mockResolvedValue({ os: 'mac' }),
   },
   storage: {
     session: {
@@ -118,6 +121,20 @@ function* ulidGenerator(ulids = mockULIDs) {
     yield id;
   }
   throw new Error('should not be called after exhausting provided IDs');
+}
+
+/**
+ * Utility function that waits for all pending promises to be resolved.
+ * This is necessary when testing asynchronous execution flows that are
+ * initiated by synchronous calls.
+ *
+ * @returns A promise that resolves when all pending promises are completed.
+ */
+async function waitForAllPromises() {
+  // Wait for next tick to flush all pending promises. It's requires since
+  // we are testing some asynchronous execution flows that are started by
+  // synchronous calls.
+  await new Promise(process.nextTick);
 }
 
 /**
@@ -181,6 +198,20 @@ jest.mock('./lib/rpc-method-middleware', () => ({
     next();
   },
 }));
+
+jest.mock('../../shared/lib/trace', () => ({
+  ...jest.requireActual('../../shared/lib/trace'),
+  trace: jest.fn(),
+  endTrace: jest.fn(),
+}));
+
+const { TraceName, TraceOperation } = jest.requireActual(
+  '../../shared/lib/trace',
+);
+
+const { trace: mockTrace, endTrace: mockEndTrace } = jest.requireMock(
+  '../../shared/lib/trace',
+);
 
 const KNOWN_PUBLIC_KEY =
   '02065bc80d3d12b3688e4ad5ab1e9eda6adf24aec2518bfc21b87c99d4c5077ab0';
@@ -452,6 +483,9 @@ describe('MetaMaskController', () => {
         isFirstMetaMaskControllerSetup: true,
         cronjobControllerStorageManager:
           createMockCronjobControllerStorageManager(),
+        controllerMessenger: new Messenger({
+          namespace: MOCK_ANY_NAMESPACE,
+        }),
       });
 
       // Mock RemoteFeatureFlagController to prevent network requests in tests
@@ -515,6 +549,9 @@ describe('MetaMaskController', () => {
           },
           cronjobControllerStorageManager:
             createMockCronjobControllerStorageManager(),
+          controllerMessenger: new Messenger({
+            namespace: MOCK_ANY_NAMESPACE,
+          }),
         });
 
         expect(localController.loggingController.add).toHaveBeenCalledTimes(1);
@@ -544,6 +581,9 @@ describe('MetaMaskController', () => {
           infuraProjectId: 'foo',
           cronjobControllerStorageManager:
             createMockCronjobControllerStorageManager(),
+          controllerMessenger: new Messenger({
+            namespace: MOCK_ANY_NAMESPACE,
+          }),
         });
 
         expect(openExtensionInBrowserMock).toHaveBeenCalledTimes(1);
@@ -601,6 +641,7 @@ describe('MetaMaskController', () => {
           internalAccounts:
             metamaskController.accountsController.listAccounts(),
           dappRequest: undefined,
+          requestContext: undefined,
           networkClientId: NETWORK_CONFIGURATION_ID_1,
           selectedAccount:
             metamaskController.accountsController.getAccountByAddress(
@@ -670,6 +711,9 @@ describe('MetaMaskController', () => {
           isFirstMetaMaskControllerSetup: true,
           cronjobControllerStorageManager:
             createMockCronjobControllerStorageManager(),
+          controllerMessenger: new Messenger({
+            namespace: MOCK_ANY_NAMESPACE,
+          }),
         });
 
         const accountsControllerSpy = jest.spyOn(
@@ -712,6 +756,34 @@ describe('MetaMaskController', () => {
         // + 1 in `createNewVaultAndKeychain` (onboarding)
         // + 1 in `submitPassword`
         expect(accountsControllerSpy).toHaveBeenCalledTimes(2);
+      });
+    });
+
+    describe('#submitPasswordOrEncryptionKey', () => {
+      const password = 'a-fake-password';
+
+      it('should call resyncAccounts and alignWallets asynchronously when submitPasswordOrEncryptionKey is called', async () => {
+        const mockAlignWallets = jest.fn();
+        const mockResyncAccounts = jest.fn();
+
+        // We only trigger this behavior when the feature flag is enabled.
+        jest
+          .spyOn(metamaskController, 'isMultichainAccountsFeatureState2Enabled')
+          .mockReturnValue(true);
+
+        metamaskController.multichainAccountService = {
+          init: jest.fn(),
+          resyncAccounts: mockResyncAccounts,
+          alignWallets: mockAlignWallets,
+        };
+
+        await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
+        await metamaskController.submitPasswordOrEncryptionKey({ password });
+
+        await waitForAllPromises();
+
+        expect(mockResyncAccounts).toHaveBeenCalled();
+        expect(mockAlignWallets).toHaveBeenCalled();
       });
     });
 
@@ -915,6 +987,12 @@ describe('MetaMaskController', () => {
           .mockReturnValue({ completedOnboarding: true });
 
         jest
+          .spyOn(metamaskController.preferencesController, 'state', 'get')
+          .mockReturnValue({
+            useExternalServices: true,
+          });
+
+        jest
           .spyOn(metamaskController, 'discoverAndCreateAccounts')
           .mockResolvedValue({});
 
@@ -933,17 +1011,14 @@ describe('MetaMaskController', () => {
 
     describe('#getBalance', () => {
       it('should return the balance known by accountTrackerController', async () => {
-        const accounts = {};
         const balance = '0x14ced5122ce0a000';
-        accounts[TEST_ADDRESS] = { balance };
 
         jest
           .spyOn(metamaskController.accountTrackerController, 'state', 'get')
           .mockReturnValue({
-            accounts,
             accountsByChainId: {
               '0x1': {
-                [TEST_ADDRESS]: { balance },
+                [toChecksumHexAddress(TEST_ADDRESS)]: { balance },
               },
             },
           });
@@ -954,7 +1029,6 @@ describe('MetaMaskController', () => {
       });
 
       it('should ask the network for a balance when not known by accountTrackerController', async () => {
-        const accounts = {};
         const balance = '0x14ced5122ce0a000';
         const { provider } = createTestProviderTools({
           scaffold: {
@@ -965,10 +1039,9 @@ describe('MetaMaskController', () => {
         jest
           .spyOn(metamaskController.accountTrackerController, 'state', 'get')
           .mockReturnValue({
-            accounts,
             accountsByChainId: {
               '0x1': {
-                [TEST_ADDRESS]: { balance },
+                [toChecksumHexAddress(TEST_ADDRESS)]: { balance },
               },
             },
           });
@@ -1574,7 +1647,7 @@ describe('MetaMaskController', () => {
             const result =
               await metamaskController.getHardwareTypeForMetric('0x123');
 
-            expect(result).toBe(HardwareKeyringType[type]);
+            expect(result).toBe(KEYRING_DEVICE_PROPERTY_MAP[type]);
           },
         );
       });
@@ -1940,6 +2013,9 @@ describe('MetaMaskController', () => {
           isFirstMetaMaskControllerSetup: true,
           cronjobControllerStorageManager:
             createMockCronjobControllerStorageManager(),
+          controllerMessenger: new Messenger({
+            namespace: MOCK_ANY_NAMESPACE,
+          }),
         });
         jest.spyOn(localMetaMaskController, 'getCookieFromMarketingPage');
       });
@@ -2221,7 +2297,20 @@ describe('MetaMaskController', () => {
             null,
             () => {
               setTimeout(() => {
-                expect(loggerMiddlewareMock.requests).toHaveLength(1);
+                expect(loggerMiddlewareMock.requests.length).toBeGreaterThan(0);
+
+                const expectedEntry = {
+                  jsonrpc: '2.0',
+                  method: 'eth_chainId',
+                  origin: 'http://mycrypto.com',
+                  tabId: 456,
+                };
+                expect(loggerMiddlewareMock.requests).toStrictEqual(
+                  expect.arrayContaining([
+                    expect.objectContaining(expectedEntry),
+                  ]),
+                );
+
                 resolve();
               });
             },
@@ -2253,6 +2342,9 @@ describe('MetaMaskController', () => {
           isFirstMetaMaskControllerSetup: true,
           cronjobControllerStorageManager:
             createMockCronjobControllerStorageManager(),
+          controllerMessenger: new Messenger({
+            namespace: MOCK_ANY_NAMESPACE,
+          }),
         });
         initializeMockMiddlewareLog();
         jest
@@ -2674,104 +2766,6 @@ describe('MetaMaskController', () => {
         metamaskController.unMarkPasswordForgotten(noop);
         const state = metamaskController.getState();
         expect(state.forgottenPassword).toStrictEqual(false);
-      });
-    });
-
-    describe('#_onKeyringControllerUpdate', () => {
-      const accounts = [
-        '0x603E83442BA54A2d0E080c34D6908ec228bef59f',
-        '0xDe95cE6E727692286E02A931d074efD1E5E2f03c',
-      ];
-
-      it('should do nothing if there are no keyrings in state', async () => {
-        jest
-          .spyOn(
-            metamaskController.accountTrackerController,
-            'syncWithAddresses',
-          )
-          .mockReturnValue();
-
-        const oldState = metamaskController.getState();
-        await metamaskController._onKeyringControllerUpdate({ keyrings: [] });
-
-        expect(
-          metamaskController.accountTrackerController.syncWithAddresses,
-        ).not.toHaveBeenCalled();
-        expect(metamaskController.getState()).toStrictEqual(oldState);
-      });
-
-      it('should sync addresses if there are keyrings in state', async () => {
-        jest
-          .spyOn(
-            metamaskController.accountTrackerController,
-            'syncWithAddresses',
-          )
-          .mockReturnValue();
-
-        const oldState = metamaskController.getState();
-        await metamaskController._onKeyringControllerUpdate({
-          keyrings: [
-            {
-              accounts,
-            },
-          ],
-        });
-
-        expect(
-          metamaskController.accountTrackerController.syncWithAddresses,
-        ).toHaveBeenCalledWith(accounts);
-        expect(metamaskController.getState()).toStrictEqual(oldState);
-      });
-
-      it('should NOT update selected address if already unlocked', async () => {
-        jest
-          .spyOn(
-            metamaskController.accountTrackerController,
-            'syncWithAddresses',
-          )
-          .mockReturnValue();
-
-        const oldState = metamaskController.getState();
-        await metamaskController._onKeyringControllerUpdate({
-          isUnlocked: true,
-          keyrings: [
-            {
-              accounts,
-            },
-          ],
-        });
-
-        expect(
-          metamaskController.accountTrackerController.syncWithAddresses,
-        ).toHaveBeenCalledWith(accounts);
-        expect(metamaskController.getState()).toStrictEqual(oldState);
-      });
-
-      it('filter out non-EVM addresses prior to calling syncWithAddresses', async () => {
-        jest
-          .spyOn(
-            metamaskController.accountTrackerController,
-            'syncWithAddresses',
-          )
-          .mockReturnValue();
-
-        const oldState = metamaskController.getState();
-        await metamaskController._onKeyringControllerUpdate({
-          keyrings: [
-            {
-              accounts: [
-                ...accounts,
-                // Non-EVM address which should not be used by syncWithAddresses
-                'bc1ql49ydapnjafl5t2cp9zqpjwe6pdgmxy98859v2',
-              ],
-            },
-          ],
-        });
-
-        expect(
-          metamaskController.accountTrackerController.syncWithAddresses,
-        ).toHaveBeenCalledWith(accounts);
-        expect(metamaskController.getState()).toStrictEqual(oldState);
       });
     });
 
@@ -3305,6 +3299,9 @@ describe('MetaMaskController', () => {
           isFirstMetaMaskControllerSetup: true,
           cronjobControllerStorageManager:
             createMockCronjobControllerStorageManager(),
+          controllerMessenger: new Messenger({
+            namespace: MOCK_ANY_NAMESPACE,
+          }),
         });
 
         metamaskController.controllerMessenger.publish(
@@ -3342,6 +3339,9 @@ describe('MetaMaskController', () => {
           isFirstMetaMaskControllerSetup: true,
           cronjobControllerStorageManager:
             createMockCronjobControllerStorageManager(),
+          controllerMessenger: new Messenger({
+            namespace: MOCK_ANY_NAMESPACE,
+          }),
         });
 
         // Mock RemoteFeatureFlagController to prevent network requests in tests
@@ -3562,7 +3562,8 @@ describe('MetaMaskController', () => {
         // Assert that discoverAccounts was called correctly:
         // - 1 time for Bitcoin
         // - 3 times for Solana (twice with discovered accounts, once with empty array)
-        expect(mockDiscoverAccounts).toHaveBeenCalledTimes(1 + 3);
+        // - 1 time for Tron (newly supported)
+        expect(mockDiscoverAccounts).toHaveBeenCalledTimes(1 + 3 + 1);
 
         // All calls should include the solana scopes
         expect(mockDiscoverAccounts.mock.calls[1][0]).toStrictEqual([
@@ -3647,7 +3648,8 @@ describe('MetaMaskController', () => {
         // Assert that discoverAccounts was called correctly:
         // - 3 times for Bitcoin (twice with discovered accounts, once with empty array)
         // - 1 time for Solana
-        expect(mockDiscoverAccounts).toHaveBeenCalledTimes(3 + 1);
+        // - 1 time for Tron (newly supported)
+        expect(mockDiscoverAccounts).toHaveBeenCalledTimes(3 + 1 + 1);
 
         // All calls should include the solana scopes
         expect(mockDiscoverAccounts.mock.calls[0][0]).toStrictEqual([
@@ -3795,6 +3797,9 @@ describe('MetaMaskController', () => {
           isFirstMetaMaskControllerSetup: true,
           cronjobControllerStorageManager:
             createMockCronjobControllerStorageManager(),
+          controllerMessenger: new Messenger({
+            namespace: MOCK_ANY_NAMESPACE,
+          }),
         });
 
         expect(
@@ -3827,6 +3832,9 @@ describe('MetaMaskController', () => {
           isFirstMetaMaskControllerSetup: true,
           cronjobControllerStorageManager:
             createMockCronjobControllerStorageManager(),
+          controllerMessenger: new Messenger({
+            namespace: MOCK_ANY_NAMESPACE,
+          }),
         });
 
         const networkState = metamaskController.networkController.state;
@@ -3834,11 +3842,16 @@ describe('MetaMaskController', () => {
           CHAIN_IDS.MAINNET,
           CHAIN_IDS.LINEA_MAINNET,
           CHAIN_IDS.BASE,
+          CHAIN_IDS.ARBITRUM,
+          CHAIN_IDS.BSC,
+          CHAIN_IDS.POLYGON,
+          CHAIN_IDS.OPTIMISM,
+          CHAIN_IDS.SEI,
         ];
         const networksWithoutFailoverUrls = [
           CHAIN_IDS.SEPOLIA,
           CHAIN_IDS.LINEA_SEPOLIA,
-          CHAIN_IDS.MEGAETH_TESTNET,
+          '0x18c7', // MegaETH Testnet
           '0x279f', // Monad Testnet
           '0x539', // Localhost
         ];
@@ -3861,6 +3874,9 @@ describe('MetaMaskController', () => {
 
         // Assert - networks have failovers
         networksWithFailoverUrls.forEach((chainId) => {
+          if (chainId === CHAIN_IDS.SEI) {
+            return;
+          }
           expect(
             networkState.networkConfigurationsByChainId[chainId].rpcEndpoints[0]
               .failoverUrls,
@@ -3894,6 +3910,9 @@ describe('MetaMaskController', () => {
           isFirstMetaMaskControllerSetup: true,
           cronjobControllerStorageManager:
             createMockCronjobControllerStorageManager(),
+          controllerMessenger: new Messenger({
+            namespace: MOCK_ANY_NAMESPACE,
+          }),
         });
 
         const networkState = metamaskController.networkController.state;
@@ -3939,6 +3958,9 @@ describe('MetaMaskController', () => {
           isFirstMetaMaskControllerSetup: true,
           cronjobControllerStorageManager:
             createMockCronjobControllerStorageManager(),
+          controllerMessenger: new Messenger({
+            namespace: MOCK_ANY_NAMESPACE,
+          }),
         });
 
         const networkState = metamaskController.networkController.state;
@@ -4789,6 +4811,9 @@ describe('MetaMaskController', () => {
       isFirstMetaMaskControllerSetup: true,
       cronjobControllerStorageManager:
         createMockCronjobControllerStorageManager(),
+      controllerMessenger: new Messenger({
+        namespace: MOCK_ANY_NAMESPACE,
+      }),
     });
 
     beforeEach(() => {
@@ -4854,6 +4879,9 @@ describe('MetaMaskController', () => {
         isFirstMetaMaskControllerSetup: true,
         cronjobControllerStorageManager:
           createMockCronjobControllerStorageManager(),
+        controllerMessenger: new Messenger({
+          namespace: MOCK_ANY_NAMESPACE,
+        }),
       });
 
       expect(metamaskController.resetStates).toHaveBeenCalledTimes(1);
@@ -4881,6 +4909,9 @@ describe('MetaMaskController', () => {
         isFirstMetaMaskControllerSetup: false,
         cronjobControllerStorageManager:
           createMockCronjobControllerStorageManager(),
+        controllerMessenger: new Messenger({
+          namespace: MOCK_ANY_NAMESPACE,
+        }),
       });
 
       expect(metamaskController.resetStates).not.toHaveBeenCalled();
@@ -4909,6 +4940,9 @@ describe('MetaMaskController', () => {
         isFirstMetaMaskControllerSetup: true,
         cronjobControllerStorageManager:
           createMockCronjobControllerStorageManager(),
+        controllerMessenger: new Messenger({
+          namespace: MOCK_ANY_NAMESPACE,
+        }),
       });
     });
 
@@ -5004,6 +5038,9 @@ describe('MetaMaskController', () => {
         isFirstMetaMaskControllerSetup: true,
         cronjobControllerStorageManager:
           createMockCronjobControllerStorageManager(),
+        controllerMessenger: new Messenger({
+          namespace: MOCK_ANY_NAMESPACE,
+        }),
       });
 
       // Avoid KC.addNewKeyring side-effects and AccountTracker sync touching NetworkController
@@ -5011,9 +5048,6 @@ describe('MetaMaskController', () => {
         // Now required, since it's invoked automatically when new account groups get added.
         setSelectedAccounts: jest.fn(),
       });
-      jest
-        .spyOn(metamaskController.accountTrackerController, 'syncWithAddresses')
-        .mockReturnValue();
 
       await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
     });
@@ -5043,7 +5077,7 @@ describe('MetaMaskController', () => {
       );
 
       expect(wallet.discoverAccounts).toHaveBeenCalledTimes(1);
-      expect(result).toStrictEqual({ Bitcoin: 0, Solana: 1 });
+      expect(result).toStrictEqual({ Bitcoin: 0, Solana: 1, Tron: 0 });
     });
 
     it('passes provided keyring id to wallet getter', async () => {
@@ -5070,7 +5104,7 @@ describe('MetaMaskController', () => {
         { entropySource: providedId },
       );
 
-      expect(result).toStrictEqual({ Bitcoin: 0, Solana: 1 });
+      expect(result).toStrictEqual({ Bitcoin: 0, Solana: 1, Tron: 0 });
     });
 
     it('returns zero counts and warns when no HD keyring can be derived (no keyring id provided or HD keyring found)', async () => {
@@ -5083,7 +5117,7 @@ describe('MetaMaskController', () => {
 
       const result = await metamaskController.discoverAndCreateAccounts();
 
-      expect(result).toStrictEqual({ Bitcoin: 0, Solana: 0 });
+      expect(result).toStrictEqual({ Bitcoin: 0, Solana: 0, Tron: 0 });
       expect(warnSpy).toHaveBeenCalledWith(
         'Failed to add accounts with balance. Error: No keyring id to discover accounts for',
       );
@@ -5107,7 +5141,7 @@ describe('MetaMaskController', () => {
       const warnSpy = jest.spyOn(log, 'warn');
 
       const result = await metamaskController.discoverAndCreateAccounts();
-      expect(result).toStrictEqual({ Bitcoin: 0, Solana: 0 });
+      expect(result).toStrictEqual({ Bitcoin: 0, Solana: 0, Tron: 0 });
       expect(warnSpy).toHaveBeenCalledWith(
         'Failed to add accounts with balance. Error: boom',
       );
@@ -5145,6 +5179,9 @@ describe('MetaMaskController', () => {
         isFirstMetaMaskControllerSetup: true,
         cronjobControllerStorageManager:
           createMockCronjobControllerStorageManager(),
+        controllerMessenger: new Messenger({
+          namespace: MOCK_ANY_NAMESPACE,
+        }),
       });
 
       jest
@@ -5263,6 +5300,222 @@ describe('MetaMaskController', () => {
     });
   });
 
+  describe('_addAccountsWithBalance', () => {
+    let metamaskController;
+
+    beforeEach(async () => {
+      metamaskController = new MetaMaskController({
+        showUserConfirmation: noop,
+        encryptor: mockEncryptor,
+        initState: cloneDeep(firstTimeState),
+        initLangCode: 'en_US',
+        platform: {
+          showTransactionNotification: () => undefined,
+          getVersion: () => 'foo',
+        },
+        browser: browserPolyfillMock,
+        infuraProjectId: 'foo',
+        isFirstMetaMaskControllerSetup: true,
+        cronjobControllerStorageManager:
+          createMockCronjobControllerStorageManager(),
+        controllerMessenger: new Messenger({
+          namespace: MOCK_ANY_NAMESPACE,
+        }),
+      });
+
+      mockTrace.mockClear();
+      mockEndTrace.mockClear();
+    });
+
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('starts and ends both DiscoverAccounts and EvmDiscoverAccounts traces on successful execution', async () => {
+      jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
+      jest
+        .spyOn(metamaskController.tokenDetectionController, 'detectTokens')
+        .mockResolvedValue();
+      jest
+        .spyOn(metamaskController.tokensController, 'state', 'get')
+        .mockReturnValue({
+          allTokens: {},
+          allDetectedTokens: {},
+        });
+
+      const mockKeyring = {
+        getAccounts: jest
+          .fn()
+          .mockResolvedValue(['0x1234567890123456789012345678901234567890']),
+        addAccounts: jest
+          .fn()
+          .mockResolvedValue(['0x2345678901234567890123456789012345678901']),
+      };
+
+      jest
+        .spyOn(metamaskController.keyringController, 'withKeyring')
+        .mockImplementation(async (_selector, callback) => {
+          const context = {
+            keyring: mockKeyring,
+            metadata: { id: 'test-keyring-id' },
+          };
+          return await callback(context);
+        });
+
+      const mockBtcClient = {
+        discoverAccounts: jest.fn().mockResolvedValue([]),
+      };
+      const mockSolanaClient = {
+        discoverAccounts: jest.fn().mockResolvedValue([]),
+      };
+
+      jest
+        .spyOn(metamaskController, '_getMultichainWalletSnapClient')
+        .mockImplementation((snapId) => {
+          if (snapId === BITCOIN_WALLET_SNAP_ID) {
+            return Promise.resolve(mockBtcClient);
+          }
+          if (snapId === SOLANA_WALLET_SNAP_ID) {
+            return Promise.resolve(mockSolanaClient);
+          }
+          throw new Error(`Unknown snap ID: ${snapId}`);
+        });
+
+      jest.spyOn(metamaskController, '_addSnapAccount').mockResolvedValue();
+
+      const result = await metamaskController._addAccountsWithBalance(
+        'test-keyring-id',
+        true,
+      );
+
+      expect(mockTrace).toHaveBeenCalledWith({
+        name: TraceName.DiscoverAccounts,
+        op: TraceOperation.AccountDiscover,
+      });
+
+      expect(mockTrace).toHaveBeenCalledWith({
+        name: TraceName.EvmDiscoverAccounts,
+        op: TraceOperation.AccountDiscover,
+      });
+
+      expect(mockEndTrace).toHaveBeenCalledWith({
+        name: TraceName.EvmDiscoverAccounts,
+        op: TraceOperation.AccountDiscover,
+      });
+
+      expect(mockEndTrace).toHaveBeenCalledWith({
+        name: TraceName.DiscoverAccounts,
+        op: TraceOperation.AccountDiscover,
+      });
+
+      expect(result).toStrictEqual({
+        Bitcoin: 0,
+        Solana: 0,
+        Tron: 0,
+      });
+    });
+
+    it('ends DiscoverAccounts trace even if an error occurs', async () => {
+      const testError = new Error('Test error');
+
+      jest
+        .spyOn(metamaskController.keyringController, 'withKeyring')
+        .mockRejectedValue(testError);
+
+      const result = await metamaskController._addAccountsWithBalance(
+        'test-keyring-id',
+        true,
+      );
+
+      expect(mockTrace).toHaveBeenCalledWith({
+        name: TraceName.DiscoverAccounts,
+        op: TraceOperation.AccountDiscover,
+      });
+
+      expect(mockEndTrace).toHaveBeenCalledWith({
+        name: TraceName.DiscoverAccounts,
+        op: TraceOperation.AccountDiscover,
+      });
+
+      expect(mockTrace).toHaveBeenCalledTimes(1);
+      expect(mockEndTrace).toHaveBeenCalledTimes(1);
+      expect(result).toStrictEqual({
+        Bitcoin: 0,
+        Solana: 0,
+        Tron: 0,
+      });
+    });
+
+    it('does not import Solana accounts when shouldImportSolanaAccount is false', async () => {
+      jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
+      jest
+        .spyOn(metamaskController.tokenDetectionController, 'detectTokens')
+        .mockResolvedValue();
+      jest
+        .spyOn(metamaskController.tokensController, 'state', 'get')
+        .mockReturnValue({
+          allTokens: {},
+          allDetectedTokens: {},
+        });
+
+      const mockKeyring = {
+        getAccounts: jest
+          .fn()
+          .mockResolvedValue(['0x1234567890123456789012345678901234567890']),
+        addAccounts: jest
+          .fn()
+          .mockResolvedValue(['0x2345678901234567890123456789012345678901']),
+      };
+
+      jest
+        .spyOn(metamaskController.keyringController, 'withKeyring')
+        .mockImplementation(async (_selector, callback) => {
+          const context = {
+            keyring: mockKeyring,
+            metadata: { id: 'test-keyring-id' },
+          };
+          return await callback(context);
+        });
+
+      const mockBtcClient = {
+        discoverAccounts: jest.fn().mockResolvedValue([]),
+      };
+      const mockSolanaClient = {
+        discoverAccounts: jest.fn().mockResolvedValue([]),
+      };
+
+      jest
+        .spyOn(metamaskController, '_getMultichainWalletSnapClient')
+        .mockImplementation((snapId) => {
+          if (snapId === BITCOIN_WALLET_SNAP_ID) {
+            return Promise.resolve(mockBtcClient);
+          }
+          if (snapId === SOLANA_WALLET_SNAP_ID) {
+            return Promise.resolve(mockSolanaClient);
+          }
+          throw new Error(`Unknown snap ID: ${snapId}`);
+        });
+
+      jest.spyOn(metamaskController, '_addSnapAccount').mockResolvedValue();
+
+      await metamaskController._addAccountsWithBalance(
+        'test-keyring-id',
+        false,
+      );
+
+      expect(
+        metamaskController._getMultichainWalletSnapClient,
+      ).not.toHaveBeenCalledWith(SOLANA_WALLET_SNAP_ID);
+
+      expect(
+        metamaskController._getMultichainWalletSnapClient,
+      ).toHaveBeenCalledWith(BITCOIN_WALLET_SNAP_ID);
+
+      expect(mockTrace).toHaveBeenCalledTimes(2);
+      expect(mockEndTrace).toHaveBeenCalledTimes(2);
+    });
+  });
+
   describe('_importAccountsWithBalances', () => {
     let metamaskController;
 
@@ -5282,6 +5535,9 @@ describe('MetaMaskController', () => {
         isFirstMetaMaskControllerSetup: true,
         cronjobControllerStorageManager:
           createMockCronjobControllerStorageManager(),
+        controllerMessenger: new Messenger({
+          namespace: MOCK_ANY_NAMESPACE,
+        }),
       });
 
       // Avoid KC.addNewKeyring side-effects and AccountTracker sync touching NetworkController
@@ -5289,9 +5545,6 @@ describe('MetaMaskController', () => {
         // Now required, since it's invoked automatically when new account groups get added.
         setSelectedAccounts: jest.fn(),
       });
-      jest
-        .spyOn(metamaskController.accountTrackerController, 'syncWithAddresses')
-        .mockReturnValue();
 
       await metamaskController.createNewVaultAndRestore('foo', TEST_SEED);
     });
@@ -5449,6 +5702,9 @@ describe('MetaMaskController', () => {
         isFirstMetaMaskControllerSetup: true,
         cronjobControllerStorageManager:
           createMockCronjobControllerStorageManager(),
+        controllerMessenger: new Messenger({
+          namespace: MOCK_ANY_NAMESPACE,
+        }),
       });
 
       jest
@@ -5474,7 +5730,7 @@ describe('MetaMaskController', () => {
       ).not.toHaveBeenCalled();
     });
 
-    it('should not notify when account address has not changed', async () => {
+    it('does not notify when account address has not changed', async () => {
       setupMocks();
 
       // First call to set the lastSelectedSolanaAccountAddress

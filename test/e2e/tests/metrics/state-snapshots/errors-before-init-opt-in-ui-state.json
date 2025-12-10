@@ -3,14 +3,14 @@
     "AuthenticationController": { "isSignedIn": "boolean" },
     "NotificationServicesController": {
       "subscriptionAccountsSeen": "object",
-      "isFeatureAnnouncementsEnabled": "boolean",
-      "isNotificationServicesEnabled": "boolean",
       "isMetamaskNotificationsFeatureSeen": "boolean",
+      "isNotificationServicesEnabled": "boolean",
+      "isFeatureAnnouncementsEnabled": "boolean",
       "metamaskNotificationsList": "object",
       "metamaskNotificationsReadList": "object"
     },
     "AccountsController": {
-      "internalAccounts": { "selectedAccount": "string", "accounts": "object" }
+      "internalAccounts": { "accounts": "object", "selectedAccount": "string" }
     },
     "AlertController": {
       "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
@@ -29,24 +29,43 @@
       "hiddenAccountList": {}
     },
     "AppStateController": {
-      "browserEnvironment": {},
-      "nftsDropdownState": {},
+      "browserEnvironment": { "os": "string", "browser": "string" },
       "connectedStatusPopoverHasBeenShown": true,
-      "termsOfUseLastAgreed": "number",
       "defaultHomeActiveTabName": null,
-      "fullScreenGasPollTokens": "object",
-      "notificationGasPollTokens": "object",
-      "popupGasPollTokens": "object",
-      "recoveryPhraseReminderHasBeenShown": true,
-      "recoveryPhraseReminderLastShown": "number",
-      "showShieldEntryModalOnce": "boolean",
-      "showTestnetMessageInDropdown": true,
-      "trezorModel": null,
+      "enableEnforcedSimulations": true,
+      "enforcedSimulationsSlippage": "number",
+      "hadAdvancedGasFeesSetPriorToMigration92_3": false,
+      "canTrackWalletFundsObtained": false,
       "isRampCardClosed": false,
+      "lastUpdatedAt": null,
+      "lastViewedUserSurvey": null,
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
       "newPrivacyPolicyToastShownDate": "number",
-      "snapsInstallPrivacyWarningShown": true,
-      "hasShownMultichainAccountsIntroModal": "boolean"
+      "pna25Acknowledged": "boolean",
+      "nftsDetectionNoticeDismissed": false,
+      "onboardingDate": null,
+      "outdatedBrowserWarningLastShown": "object",
+      "productTour": "accountIcon",
+      "recoveryPhraseReminderHasBeenShown": true,
+      "recoveryPhraseReminderLastShown": "number",
+      "showAccountBanner": true,
+      "showBetaHeader": false,
+      "showDownloadMobileAppSlide": "boolean",
+      "showNetworkBanner": true,
+      "showPermissionsTour": true,
+      "showTestnetMessageInDropdown": true,
+      "slides": "object",
+      "surveyLinkLastClickedOrClosed": "object",
+      "shieldEndingToastLastClickedOrClosed": "object",
+      "shieldPausedToastLastClickedOrClosed": "object",
+      "trezorModel": null,
+      "updateModalLastDismissedAt": null,
+      "hasShownMultichainAccountsIntroModal": "boolean",
+      "showShieldEntryModalOnce": "boolean",
+      "pendingShieldCohortTxType": null,
+      "isWalletResetInProgress": "boolean",
+      "termsOfUseLastAgreed": "number",
+      "snapsInstallPrivacyWarningShown": true
     },
     "BridgeController": {},
     "CurrencyController": {
@@ -65,98 +84,257 @@
       }
     },
     "GasFeeController": {
+      "gasFeeEstimatesByChainId": {},
+      "gasFeeEstimates": {},
       "estimatedGasFeeTimeBounds": {},
       "gasEstimateType": "none",
-      "gasFeeEstimates": {}
+      "nonRPCGasFeeApisDisabled": "boolean"
     },
     "KeyringController": { "vault": "string" },
     "MetaMetricsController": {
+      "participateInMetaMetrics": true,
+      "metaMetricsId": "0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420",
+      "dataCollectionForMarketing": "boolean",
+      "marketingCampaignCookieId": null,
       "eventsBeforeMetricsOptIn": "object",
       "tracesBeforeMetricsOptIn": "object",
+      "traits": "object",
       "fragments": "object",
-      "metaMetricsId": "0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420",
-      "participateInMetaMetrics": true,
-      "dataCollectionForMarketing": "boolean",
-      "traits": "object"
+      "segmentApiCalls": "object"
     },
     "MetaMetricsDataDeletionController": {
       "metaMetricsDataDeletionId": null,
       "metaMetricsDataDeletionTimestamp": 0
     },
-    "MultichainAccountService": "object",
     "NetworkController": {
-      "selectedNetworkClientId": "string",
-      "networkConfigurations": "object",
-      "networksMetadata": {
-        "networkConfigurationId": { "EIPS": {}, "status": "available" }
-      },
-      "providerConfig": "object"
+      "networkConfigurationsByChainId": "object",
+      "networksMetadata": "object",
+      "selectedNetworkClientId": "string"
+    },
+    "NetworkEnablementController": {
+      "enabledNetworkMap": { "eip155": "object", "solana": "object" }
+    },
+    "NetworkOrderController": {
+      "orderedNetworkList": {
+        "0": "object",
+        "1": "object",
+        "2": "object",
+        "3": "object",
+        "4": "object",
+        "5": "object",
+        "6": "object",
+        "7": "object"
+      }
+    },
+    "NftController": {
+      "allNftContracts": "object",
+      "allNfts": "object",
+      "ignoredNfts": "object"
+    },
+    "NotificationServicesController": {
+      "isFeatureAnnouncementsEnabled": "boolean",
+      "isMetamaskNotificationsFeatureSeen": "boolean",
+      "isNotificationServicesEnabled": "boolean",
+      "metamaskNotificationsList": "object",
+      "metamaskNotificationsReadList": "object",
+      "subscriptionAccountsSeen": "object"
+    },
+    "NotificationServicesPushController": {
+      "fcmToken": "string",
+      "isPushEnabled": "boolean"
     },
     "OnboardingController": {
-      "completedOnboarding": true,
+      "seedPhraseBackedUp": true,
       "firstTimeFlowType": "import",
-      "onboardingTabs": "object",
-      "seedPhraseBackedUp": true
+      "completedOnboarding": true
     },
     "PermissionController": { "subjects": "object" },
     "PreferencesController": {
-      "advancedGasFee": null,
+      "addSnapAccountEnabled": "boolean",
+      "advancedGasFee": {},
       "currentLocale": "en",
-      "useExternalServices": "boolean",
       "dismissSeedBackUpReminder": true,
-      "overrideContentSecurityPolicyHeader": true,
+      "enableMV3TimestampSave": true,
       "featureFlags": {},
       "forgottenPassword": false,
       "identities": "object",
       "ipfsGateway": "string",
+      "isIpfsGatewayEnabled": "boolean",
       "knownMethodData": "object",
       "ledgerTransportType": "webhid",
       "lostIdentities": "object",
+      "manageInstitutionalWallets": "boolean",
       "openSeaEnabled": false,
+      "overrideContentSecurityPolicyHeader": true,
       "preferences": {
+        "dismissSmartAccountSuggestionEnabled": "boolean",
+        "featureNotificationsEnabled": "boolean",
         "hideZeroBalanceTokens": false,
+        "petnamesEnabled": "boolean",
+        "privacyMode": "boolean",
         "showExtensionInFullSizeView": false,
         "showFiatInTestnets": false,
-        "showTestNetworks": false,
-        "smartTransactionsOptInStatus": true,
-        "showNativeTokenAsMainBalance": true,
-        "petnamesEnabled": "boolean",
         "showMultiRpcModal": "boolean",
-        "showConfirmationAdvancedDetails": false,
+        "showNativeTokenAsMainBalance": true,
+        "showTestNetworks": false,
+        "skipDeepLinkInterstitial": "boolean",
+        "smartAccountOptIn": "boolean",
+        "smartTransactionsOptInStatus": true,
+        "smartTransactionsMigrationApplied": "boolean",
+        "tokenNetworkFilter": {},
         "tokenSortConfig": "object",
-        "shouldShowAggregatedBalancePopover": "boolean",
-        "tokenNetworkFilter": {}
+        "useNativeCurrencyAsPrimaryCurrency": "boolean",
+        "useSidePanelAsDefault": "boolean",
+        "shouldShowAggregatedBalancePopover": "boolean"
       },
+      "securityAlertsEnabled": "boolean",
       "selectedAddress": "string",
+      "snapRegistryList": "object",
+      "snapsAddSnapAccountModalDismissed": "boolean",
       "theme": "light",
+      "use4ByteResolution": true,
+      "useAddressBarEnsResolution": true,
       "useBlockie": false,
+      "useCurrencyRateCheck": true,
+      "useExternalNameSources": "boolean",
+      "useExternalServices": "boolean",
+      "isMultiAccountBalancesEnabled": "boolean",
+      "useMultiAccountBalanceChecker": true,
       "useNftDetection": false,
       "usePhishDetect": true,
-      "useTokenDetection": false,
-      "useCurrencyRateCheck": true,
-      "useMultiAccountBalanceChecker": true,
-      "isMultiAccountBalancesEnabled": "boolean",
+      "useSafeChainsListValidation": "boolean",
+      "useTokenDetection": true,
+      "useTransactionSimulations": true,
+      "watchEthereumAccountEnabled": "boolean",
       "referrals": "object"
     },
     "SelectedNetworkController": { "domains": "object" },
-    "SmartTransactionsController": {
-      "smartTransactionsState": {
-        "fees": {},
-        "feesByChainId": "object",
-        "liveness": true,
-        "livenessByChainId": "object",
-        "smartTransactions": "object"
-      }
-    },
+    "SmartTransactionsController": {},
     "SubjectMetadataController": { "subjectMetadata": "object" },
     "TokensController": {
-      "allDetectedTokens": {},
+      "allTokens": {},
       "allIgnoredTokens": {},
-      "allTokens": {}
+      "allDetectedTokens": {}
     },
-    "TransactionController": { "transactions": "object" },
+    "MultichainAccountService": "object",
+    "TransactionController": {
+      "methodData": "object",
+      "transactions": "object",
+      "transactionBatches": "object",
+      "lastFetchedBlockNumbers": "object",
+      "submitHistory": "object"
+    },
     "config": "object",
-    "firstTimeInfo": "object"
+    "firstTimeInfo": "object",
+    "NameController": { "names": "object", "nameSources": "object" },
+    "UserStorageController": {
+      "isBackupAndSyncEnabled": true,
+      "isAccountSyncingEnabled": true,
+      "isContactSyncingEnabled": true
+    },
+    "AppMetadataController": {
+      "currentAppVersion": "string",
+      "previousAppVersion": "",
+      "previousMigrationVersion": 0,
+      "currentMigrationVersion": "number"
+    },
+    "AddressBookController": { "addressBook": "object" },
+    "MultichainNetworkController": "object",
+    "SeedlessOnboardingController": "object",
+    "PermissionLogController": { "permissionHistory": "object" },
+    "GatorPermissionsController": "object",
+    "TokenListController": {
+      "tokensChainsCache": {},
+      "preventPollingOnNetworkRestart": false
+    },
+    "TokenBalancesController": { "tokenBalances": "object" },
+    "NftController": {
+      "allNftContracts": "object",
+      "allNfts": "object",
+      "ignoredNfts": "object"
+    },
+    "PhishingController": {
+      "urlScanCache": "object",
+      "tokenScanCache": "object"
+    },
+    "LoggingController": { "logs": "object" },
+    "MultichainRatesController": {
+      "fiatCurrency": "usd",
+      "rates": {
+        "btc": { "conversionDate": 0, "conversionRate": 0 },
+        "sol": { "conversionDate": 0, "conversionRate": 0 }
+      },
+      "cryptocurrencies": ["btc", "sol"]
+    },
+    "UserOperationController": { "userOperations": "object" },
+    "NotificationServicesPushController": {
+      "isPushEnabled": "boolean",
+      "fcmToken": "string"
+    },
+    "ProfileMetricsController": "object",
+    "RemoteFeatureFlagController": {
+      "remoteFeatureFlags": {
+        "enableMultichainAccountsState2": {
+          "enabled": true,
+          "featureVersion": "2",
+          "minimumVersion": "12.19.0"
+        },
+        "sendRedesign": { "enabled": false }
+      },
+      "cacheTimestamp": "number"
+    },
+    "DeFiPositionsController": "object",
+    "AccountTracker": { "accountsByChainId": "object" },
+    "TokenRatesController": { "marketData": "object" },
+    "DecryptMessageController": {},
+    "EncryptionPublicKeyController": {},
+    "SignatureController": {},
+    "SwapsController": {},
+    "BridgeStatusController": { "txHistory": "object" },
+    "EnsController": {
+      "ensEntries": "object",
+      "ensResolutionsByAddress": "object"
+    },
+    "ApprovalController": {},
+    "SnapsRegistry": {
+      "database": "object",
+      "lastUpdated": "number",
+      "databaseUnavailable": "boolean"
+    },
+    "SnapController": {
+      "snaps": "object",
+      "snapStates": "object",
+      "unencryptedSnapStates": "object"
+    },
+    "SnapInsightsController": {},
+    "SnapInterfaceController": { "interfaces": "object" },
+    "PPOMController": { "storageMetadata": {} },
+    "TransactionPayController": {},
+    "AccountTreeController": {
+      "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean",
+      "accountGroupsMetadata": "object",
+      "accountWalletsMetadata": "object"
+    },
+    "MultichainAssetsController": {
+      "accountsAssets": "object",
+      "assetsMetadata": "object",
+      "allIgnoredAssets": "object"
+    },
+    "MultichainAssetsRatesController": { "conversionRates": "object" },
+    "MultichainBalancesController": { "balances": "object" },
+    "MultichainTransactionsController": "object",
+    "DelegationController": "object",
+    "SubscriptionController": "object",
+    "ShieldController": "object",
+    "ClaimsController": "object",
+    "RewardsController": {
+      "rewardsActiveAccount": null,
+      "rewardsAccounts": "object",
+      "rewardsSubscriptions": "object",
+      "rewardsSeasons": "object",
+      "rewardsSeasonStatuses": "object",
+      "rewardsSubscriptionTokens": "object"
+    }
   },
-  "meta": { "version": 74 }
+  "meta": { "version": 184 }
 }

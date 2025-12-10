@@ -1,14 +1,14 @@
 import { strict as assert } from 'assert';
 import { withFixtures } from '../helpers';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
-import FixtureBuilder from '../fixture-builder';
+import FixtureBuilder from '../fixtures/fixture-builder';
 import { Driver } from '../webdriver/driver';
 
 describe('eth_estimateGas', function () {
   it('executes a estimate gas json rpc call', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),

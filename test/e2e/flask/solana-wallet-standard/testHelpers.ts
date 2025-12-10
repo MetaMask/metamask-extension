@@ -1,17 +1,13 @@
-import * as path from 'path';
 import { strict as assert } from 'assert';
 import { By } from 'selenium-webdriver';
 import nacl from 'tweetnacl';
 import { largeDelayMs, regularDelayMs, WINDOW_TITLES } from '../../helpers';
+import { DAPP_PATH } from '../../constants';
 import { Driver } from '../../webdriver/driver';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
-import {
-  SOLANA_DEVNET_URL,
-  withSolanaAccountSnap,
-} from '../../tests/solana/common-solana';
+import { SOLANA_DEVNET_URL } from '../../tests/solana/common-solana';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
-import EditConnectedAccountsModal from '../../page-objects/pages/dialog/edit-connected-accounts-modal';
 import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 
@@ -25,37 +21,9 @@ export const account2Short = 'ExTE...GNtt';
  * Default options for setting up Solana E2E test environment
  */
 export const DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS = {
-  dappPaths: [
-    path.join(
-      '..',
-      '..',
-      'node_modules',
-      '@metamask',
-      'test-dapp-solana',
-      'dist',
-    ),
-  ],
-} satisfies Parameters<typeof withSolanaAccountSnap>[0];
-
-const onboardSolanaAccount = async (driver: Driver): Promise<void> => {
-  console.log('onboarding a new solana account');
-
-  const connectAccountConfirmation = new ConnectAccountConfirmation(driver);
-  await connectAccountConfirmation.isCreateSolanaAccountModalButtonVisible();
-  await connectAccountConfirmation.createCreateSolanaAccountFromModal();
-};
-
-const selectAccountsAndAuthorize = async (driver: Driver): Promise<void> => {
-  console.log(
-    'select all accounts without deselecting the already selected accounts',
-  );
-  const connectAccountConfirmation = new ConnectAccountConfirmation(driver);
-  await connectAccountConfirmation.checkPageIsLoaded();
-  await connectAccountConfirmation.openEditAccountsModal();
-
-  const editConnectedAccountsModal = new EditConnectedAccountsModal(driver);
-  await editConnectedAccountsModal.checkPageIsLoaded();
-  await editConnectedAccountsModal.selectAllAccounts();
+  dappOptions: {
+    customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+  },
 };
 
 /**
@@ -85,16 +53,12 @@ const selectDevnet = async (driver: Driver): Promise<void> => {
  * @param driver
  * @param testDapp
  * @param options
- * @param options.selectAllAccounts
  * @param options.includeDevnet
- * @param options.onboard
  */
 export const connectSolanaTestDapp = async (
   driver: Driver,
   testDapp: TestDappSolana,
   options: {
-    onboard?: boolean;
-    selectAllAccounts?: boolean;
     includeDevnet?: boolean;
   } = {},
 ): Promise<void> => {
@@ -117,13 +81,6 @@ export const connectSolanaTestDapp = async (
   await driver.delay(largeDelayMs);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-  if (options?.onboard) {
-    await onboardSolanaAccount(driver);
-  }
-
-  if (options?.selectAllAccounts) {
-    await selectAccountsAndAuthorize(driver);
-  }
   if (options?.includeDevnet) {
     await selectDevnet(driver);
   }
@@ -184,7 +141,6 @@ export const switchToAccount = async (
   await accountListPage.checkAccountDisplayedInAccountList(accountName);
   await accountListPage.switchToAccount(accountName);
   await nonEvmHomepage.headerNavbar.checkAccountLabel(accountName);
-  await nonEvmHomepage.checkPageIsLoaded();
 };
 
 /**

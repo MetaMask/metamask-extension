@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import SnapListItem from '../../../components/app/snaps/snap-list-item';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -40,10 +40,10 @@ import { getSnapRoute } from '../../../helpers/utils/util';
 
 const SnapList = () => {
   const t = useI18nContext();
-  const history = useHistory();
   const settingsRef = useRef();
+  const navigate = useNavigate();
   const onClick = (snap) => {
-    history.push(getSnapRoute(snap.id));
+    navigate(getSnapRoute(snap.id));
   };
 
   useEffect(() => {
@@ -63,7 +63,7 @@ const SnapList = () => {
               ariaLabel="Back"
               iconName="arrow-left"
               size="sm"
-              onClick={() => history.push(DEFAULT_ROUTE)}
+              onClick={() => navigate(DEFAULT_ROUTE)}
             />
           }
         >
@@ -136,7 +136,7 @@ const SnapList = () => {
                   display={Display.Flex}
                   width={BlockSize.Full}
                   height={BlockSize.Min}
-                ></Box>
+                />
                 <Box
                   className="snaps__content__list__container--no-snaps_banner-tip"
                   display={Display.Flex}

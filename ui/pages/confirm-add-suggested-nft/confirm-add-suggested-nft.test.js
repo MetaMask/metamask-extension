@@ -8,11 +8,19 @@ import {
 } from '../../store/actions';
 import configureStore from '../../store/store';
 import mockState from '../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../test/jest/rendering';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import * as util from '../../helpers/utils/util';
 import ConfirmAddSuggestedNFT from '.';
+
+const mockNavigate = jest.fn();
+const mockUseLocation = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+  useLocation: () => mockUseLocation(),
+}));
 
 const PENDING_NFT_APPROVALS = {
   1: {
@@ -70,6 +78,15 @@ jest.mock('../../store/actions', () => ({
 }));
 
 const renderComponent = (pendingNfts = {}) => {
+  mockNavigate.mockClear();
+  mockUseLocation.mockReturnValue({
+    pathname: '/',
+    search: '',
+    hash: '',
+    key: 'test-key',
+    state: undefined,
+  });
+
   const store = configureStore({
     metamask: {
       ...mockState.metamask,

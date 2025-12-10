@@ -89,12 +89,12 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
           class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--align-items-flex-end"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
+            class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--justify-content-flex-end"
             style="align-self: flex-end;"
           >
             <div>
               <div
-                aria-describedby="tippy-tooltip-7"
+                aria-describedby="tippy-tooltip-6"
                 class=""
                 data-original-title="Account details"
                 data-tooltipped=""
@@ -142,7 +142,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -154,7 +154,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-8"
+                      aria-describedby="tippy-tooltip-7"
                       class=""
                       data-original-title="This is the site asking for your signature."
                       data-tooltipped=""
@@ -209,7 +209,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
                 />
               </button>
               <div
-                class="mm-box mm-box--padding-right-12 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+                class="mm-box mm-box--padding-right-12 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -314,12 +314,12 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
           class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--align-items-flex-end"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
+            class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--justify-content-flex-end"
             style="align-self: flex-end;"
           >
             <div>
               <div
-                aria-describedby="tippy-tooltip-22"
+                aria-describedby="tippy-tooltip-19"
                 class=""
                 data-original-title="Account details"
                 data-tooltipped=""
@@ -358,7 +358,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -370,7 +370,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-23"
+                      aria-describedby="tippy-tooltip-20"
                       class=""
                       data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
                       data-tooltipped=""
@@ -401,7 +401,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -434,7 +434,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                           style="min-width: 0;"
                         >
                           <div
-                            aria-describedby="tippy-tooltip-24"
+                            aria-describedby="tippy-tooltip-21"
                             class=""
                             data-original-title="1,461,501,637,330,902,918,203,684,832,716,283,019,655,932,542,975"
                             data-tooltipped=""
@@ -487,7 +487,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                           style="min-width: 0;"
                         >
                           <div
-                            aria-describedby="tippy-tooltip-25"
+                            aria-describedby="tippy-tooltip-22"
                             class=""
                             data-original-title="2,461,501,637,330,902,918,203,684,832,716,283,019,655,932,542,975"
                             data-tooltipped=""
@@ -536,10 +536,10 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
           >
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-              style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -555,7 +555,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                  class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                 >
                   <div
                     class="name name__clickable name__missing"
@@ -585,7 +585,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -597,7 +597,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-26"
+                      aria-describedby="tippy-tooltip-23"
                       class=""
                       data-original-title="This is the site asking for your signature."
                       data-tooltipped=""
@@ -627,7 +627,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -639,7 +639,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-27"
+                      aria-describedby="tippy-tooltip-24"
                       class=""
                       data-original-title="This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
                       data-tooltipped=""
@@ -658,7 +658,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                  class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                 >
                   <div
                     class="name name__clickable name__missing"
@@ -707,7 +707,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                 />
               </button>
               <div
-                class="mm-box mm-box--padding-right-12 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--padding-right-12 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -802,12 +802,12 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
           class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--align-items-flex-end"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
+            class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--justify-content-flex-end"
             style="align-self: flex-end;"
           >
             <div>
               <div
-                aria-describedby="tippy-tooltip-15"
+                aria-describedby="tippy-tooltip-14"
                 class=""
                 data-original-title="Account details"
                 data-tooltipped=""
@@ -846,7 +846,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -858,7 +858,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-16"
+                      aria-describedby="tippy-tooltip-15"
                       class=""
                       data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
                       data-tooltipped=""
@@ -889,7 +889,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -922,7 +922,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                           style="min-width: 0;"
                         >
                           <div
-                            aria-describedby="tippy-tooltip-17"
+                            aria-describedby="tippy-tooltip-16"
                             class=""
                             data-original-title="1,461,501,637,330,902,918,203,684,832,716,283,019,655,932,542,975"
                             data-tooltipped=""
@@ -971,10 +971,10 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
           >
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-              style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -990,7 +990,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                  class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                 >
                   <div
                     class="name name__clickable name__missing"
@@ -1020,7 +1020,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1032,7 +1032,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-18"
+                      aria-describedby="tippy-tooltip-17"
                       class=""
                       data-original-title="This is the site asking for your signature."
                       data-tooltipped=""
@@ -1062,7 +1062,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1074,7 +1074,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-19"
+                      aria-describedby="tippy-tooltip-18"
                       class=""
                       data-original-title="This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
                       data-tooltipped=""
@@ -1093,7 +1093,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                  class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                 >
                   <div
                     class="name name__clickable name__missing"
@@ -1142,7 +1142,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                 />
               </button>
               <div
-                class="mm-box mm-box--padding-right-12 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--padding-right-12 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1272,12 +1272,12 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
           class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--align-items-flex-end"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
+            class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--justify-content-flex-end"
             style="align-self: flex-end;"
           >
             <div>
               <div
-                aria-describedby="tippy-tooltip-12"
+                aria-describedby="tippy-tooltip-11"
                 class=""
                 data-original-title="Account details"
                 data-tooltipped=""
@@ -1326,7 +1326,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1338,7 +1338,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-13"
+                      aria-describedby="tippy-tooltip-12"
                       class=""
                       data-original-title="This is the site asking for your signature."
                       data-tooltipped=""
@@ -1368,7 +1368,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1380,7 +1380,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-14"
+                      aria-describedby="tippy-tooltip-13"
                       class=""
                       data-original-title="This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
                       data-tooltipped=""
@@ -1399,7 +1399,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                  class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                 >
                   <div
                     class="name name__clickable name__missing"
@@ -1437,7 +1437,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                 />
               </button>
               <div
-                class="mm-box mm-box--padding-right-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--padding-right-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1457,7 +1457,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-left: 0px; padding-right: 0px;"
                 >
                   <div
-                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                   >
                     <div
                       class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1493,7 +1493,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1522,7 +1522,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1543,7 +1543,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                         >
                           <div
-                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                           >
                             <div
                               class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1572,7 +1572,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                         >
                           <div
-                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                           >
                             <div
                               class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1593,7 +1593,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                             >
                               <div
-                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                               >
                                 <div
                                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1609,7 +1609,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                               >
                                 <div
-                                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                                  class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                                 >
                                   <div
                                     class="name name__clickable name__missing"
@@ -1633,7 +1633,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                             >
                               <div
-                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                               >
                                 <div
                                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1649,7 +1649,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                               >
                                 <div
-                                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                                  class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                                 >
                                   <div
                                     class="name name__clickable name__missing"
@@ -1673,7 +1673,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                             >
                               <div
-                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                               >
                                 <div
                                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1689,7 +1689,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                               >
                                 <div
-                                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                                  class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                                 >
                                   <div
                                     class="name name__clickable name__missing"
@@ -1717,7 +1717,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1738,7 +1738,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                         >
                           <div
-                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                           >
                             <div
                               class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1759,7 +1759,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                             >
                               <div
-                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                               >
                                 <div
                                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1788,7 +1788,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                             >
                               <div
-                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                               >
                                 <div
                                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1809,7 +1809,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                                 >
                                   <div
-                                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                                   >
                                     <div
                                       class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1825,7 +1825,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                                   >
                                     <div
-                                      class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                                      class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                                     >
                                       <div
                                         class="name name__clickable name__missing"
@@ -1849,7 +1849,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                                 >
                                   <div
-                                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                                   >
                                     <div
                                       class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1865,7 +1865,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                                   >
                                     <div
-                                      class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                                      class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                                     >
                                       <div
                                         class="name name__clickable name__missing"
@@ -1889,7 +1889,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                                 >
                                   <div
-                                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                                   >
                                     <div
                                       class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1905,7 +1905,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                                   >
                                     <div
-                                      class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                                      class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                                     >
                                       <div
                                         class="name name__clickable name__missing"
@@ -2048,12 +2048,12 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
           class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--align-items-flex-end"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
+            class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--justify-content-flex-end"
             style="align-self: flex-end;"
           >
             <div>
               <div
-                aria-describedby="tippy-tooltip-2"
+                aria-describedby="tippy-tooltip-1"
                 class=""
                 data-original-title="Account details"
                 data-tooltipped=""
@@ -2102,7 +2102,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2114,7 +2114,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-3"
+                      aria-describedby="tippy-tooltip-2"
                       class=""
                       data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
                       data-tooltipped=""
@@ -2145,7 +2145,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2175,7 +2175,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                         style="min-width: 0;"
                       >
                         <div
-                          aria-describedby="tippy-tooltip-4"
+                          aria-describedby="tippy-tooltip-3"
                           class=""
                           data-original-title="30"
                           data-tooltipped=""
@@ -2223,10 +2223,10 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
           >
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-              style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+              style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2242,7 +2242,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                  class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                 >
                   <div
                     class="name name__clickable name__missing"
@@ -2272,7 +2272,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2284,7 +2284,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-5"
+                      aria-describedby="tippy-tooltip-4"
                       class=""
                       data-original-title="This is the site asking for your signature."
                       data-tooltipped=""
@@ -2314,7 +2314,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2326,7 +2326,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-6"
+                      aria-describedby="tippy-tooltip-5"
                       class=""
                       data-original-title="This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
                       data-tooltipped=""
@@ -2345,7 +2345,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                  class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                 >
                   <div
                     class="name name__clickable name__missing"
@@ -2394,7 +2394,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                 />
               </button>
               <div
-                class="mm-box mm-box--padding-right-12 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--padding-right-12 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2522,12 +2522,12 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
           class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--align-items-flex-end"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
+            class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--justify-content-flex-end"
             style="align-self: flex-end;"
           >
             <div>
               <div
-                aria-describedby="tippy-tooltip-9"
+                aria-describedby="tippy-tooltip-8"
                 class=""
                 data-original-title="Account details"
                 data-tooltipped=""
@@ -2576,7 +2576,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2588,7 +2588,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-10"
+                      aria-describedby="tippy-tooltip-9"
                       class=""
                       data-original-title="This is the site asking for your signature."
                       data-tooltipped=""
@@ -2618,7 +2618,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2630,7 +2630,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-11"
+                      aria-describedby="tippy-tooltip-10"
                       class=""
                       data-original-title="This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
                       data-tooltipped=""
@@ -2649,7 +2649,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                  class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                 >
                   <div
                     class="name name__clickable name__missing"
@@ -2698,7 +2698,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                 />
               </button>
               <div
-                class="mm-box mm-box--padding-right-12 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--padding-right-12 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2718,7 +2718,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-left: 0px; padding-right: 0px;"
                 >
                   <div
-                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                   >
                     <div
                       class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2754,7 +2754,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2783,7 +2783,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2799,7 +2799,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                       >
                         <div
-                          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                          class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                         >
                           <div
                             class="name name__clickable name__missing"
@@ -2823,7 +2823,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2839,7 +2839,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                       >
                         <div
-                          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                          class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                         >
                           <div
                             class="name name__clickable name__missing"
@@ -2863,7 +2863,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2892,7 +2892,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2921,7 +2921,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2937,7 +2937,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                       >
                         <div
-                          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                          class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                         >
                           <div
                             class="name name__clickable name__missing"
@@ -2961,7 +2961,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2990,7 +2990,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -3012,7 +3012,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -3028,7 +3028,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                       >
                         <div
-                          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                          class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                         >
                           <div
                             class="name name__clickable name__missing"
@@ -3052,7 +3052,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -3081,7 +3081,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -3138,74 +3138,6 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
     <div
       class="mm-box multichain-page__inner-container confirm_wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
     >
-      <div
-        class="mm-box confirm_header__wrapper mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
-        data-testid="confirm-header"
-      >
-        <div
-          class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--align-items-flex-start"
-        >
-          <div
-            class="mm-box mm-box--margin-top-2 mm-box--display-flex"
-          >
-            <div
-              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
-            >
-              <div
-                class="flex [&>div]:!rounded-none"
-              />
-            </div>
-            <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-            >
-              <img
-                alt="network logo"
-                class="mm-avatar-network__network-image"
-                src=""
-              />
-            </div>
-          </div>
-          <div
-            class="mm-box mm-box--margin-top-3 mm-box--margin-inline-start-4"
-          >
-            <p
-              class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
-              data-testid="header-account-name"
-            />
-            
-          </div>
-        </div>
-        <div
-          class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--align-items-flex-end"
-        >
-          <div
-            class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
-            style="align-self: flex-end;"
-          >
-            <div>
-              <div
-                aria-describedby="tippy-tooltip-32"
-                class=""
-                data-original-title="Account details"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <button
-                  aria-label="Account details"
-                  class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-                  data-testid="header-info__account-details-button"
-                >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
-                    style="mask-image: url('./images/icons/info.svg');"
-                  />
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
       <div
         class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
         style="min-height: 0; overflow: hidden; position: relative;"
@@ -3296,12 +3228,12 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
           class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--align-items-flex-end"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
+            class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--justify-content-flex-end"
             style="align-self: flex-end;"
           >
             <div>
               <div
-                aria-describedby="tippy-tooltip-33"
+                aria-describedby="tippy-tooltip-25"
                 class=""
                 data-original-title="Account details"
                 data-tooltipped=""
@@ -3340,7 +3272,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -3352,7 +3284,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-34"
+                      aria-describedby="tippy-tooltip-26"
                       class=""
                       data-original-title="This is the site asking for your signature."
                       data-tooltipped=""
@@ -3382,7 +3314,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -3394,7 +3326,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                   </p>
                   <div>
                     <div
-                      aria-describedby="tippy-tooltip-35"
+                      aria-describedby="tippy-tooltip-27"
                       class=""
                       data-original-title="This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
                       data-tooltipped=""
@@ -3413,7 +3345,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                  class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                 >
                   <div
                     class="name name__clickable name__missing"
@@ -3451,7 +3383,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                 />
               </button>
               <div
-                class="mm-box mm-box--padding-right-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--padding-right-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -3471,7 +3403,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-left: 0px; padding-right: 0px;"
                 >
                   <div
-                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                   >
                     <div
                       class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -3507,7 +3439,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -3536,7 +3468,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -3557,7 +3489,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                         >
                           <div
-                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                           >
                             <div
                               class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -3586,7 +3518,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                         >
                           <div
-                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                           >
                             <div
                               class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -3607,7 +3539,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                             >
                               <div
-                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                               >
                                 <div
                                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -3623,7 +3555,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                               >
                                 <div
-                                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                                  class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                                 >
                                   <div
                                     class="name name__clickable name__missing"
@@ -3647,7 +3579,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                             >
                               <div
-                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                               >
                                 <div
                                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -3663,7 +3595,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                               >
                                 <div
-                                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                                  class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                                 >
                                   <div
                                     class="name name__clickable name__missing"
@@ -3687,7 +3619,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                             >
                               <div
-                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                               >
                                 <div
                                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -3703,7 +3635,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                               >
                                 <div
-                                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                                  class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                                 >
                                   <div
                                     class="name name__clickable name__missing"
@@ -3731,7 +3663,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -3752,7 +3684,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                         >
                           <div
-                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                           >
                             <div
                               class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -3773,7 +3705,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                             >
                               <div
-                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                               >
                                 <div
                                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -3802,7 +3734,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                             >
                               <div
-                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                               >
                                 <div
                                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -3823,7 +3755,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                                 >
                                   <div
-                                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                                   >
                                     <div
                                       class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -3839,7 +3771,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                                   >
                                     <div
-                                      class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                                      class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                                     >
                                       <div
                                         class="name name__clickable name__missing"
@@ -3863,7 +3795,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                                 >
                                   <div
-                                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                                   >
                                     <div
                                       class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -3879,7 +3811,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                                   >
                                     <div
-                                      class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                                      class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                                     >
                                       <div
                                         class="name name__clickable name__missing"
@@ -3903,7 +3835,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                                 >
                                   <div
-                                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                                   >
                                     <div
                                       class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -3919,7 +3851,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                                     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                                   >
                                     <div
-                                      class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                                      class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                                     >
                                       <div
                                         class="name name__clickable name__missing"

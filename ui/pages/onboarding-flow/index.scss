@@ -6,7 +6,6 @@
 @import 'create-password/index';
 @import 'creation-successful/index';
 @import 'welcome/index';
-@import 'pin-extension/index';
 @import 'metametrics/index';
 
 .onboarding-flow {
@@ -16,8 +15,11 @@
   }
 
   &--welcome-login {
-    background: url('/images/welcome-page.png') no-repeat center top;
-    background-color: var(--color-accent02-dark);
+    background-color: var(--welcome-bg-light);
+
+    @media (prefers-color-scheme: dark) {
+      background-color: var(--color-accent02-dark);
+    }
   }
 
   &__container {

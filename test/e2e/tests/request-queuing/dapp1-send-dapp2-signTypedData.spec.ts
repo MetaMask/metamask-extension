@@ -1,4 +1,4 @@
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import {
   withFixtures,
   DAPP_URL,
@@ -17,12 +17,11 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
     const chainId = 1338;
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 2 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerTripleNode()
           .withSelectedNetworkControllerPerDomain()
           .build(),
-        dappOptions: { numberOfDapps: 2 },
         localNodeOptions: [
           {
             type: 'anvil',

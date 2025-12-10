@@ -2,8 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import {
   formatChainIdToHex,
-  isSolanaChainId,
-  isBitcoinChainId,
+  isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import {
   Icon,
@@ -93,11 +92,11 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
   } else {
     const chainIdInHexOrCaip =
       toChain?.chainId &&
-      (isSolanaChainId(toChain?.chainId) || isBitcoinChainId(toChain?.chainId)
+      (isNonEvmChainId(toChain?.chainId)
         ? toChain.chainId
         : formatChainIdToHex(toChain?.chainId));
     balanceToTranslate = chainIdInHexOrCaip
-      ? balanceByChainId[chainIdInHexOrCaip]?.toString()
+      ? (balanceByChainId[chainIdInHexOrCaip]?.toString() ?? '0')
       : '0';
   }
 
@@ -136,9 +135,14 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
       <Column
         gap={1}
         data-testid={selected ? 'selected-to-account' : undefined}
+        style={{ overflow: 'hidden', flex: 1, minWidth: 0 }}
       >
-        <Row gap={1} style={{ maxWidth: 'min-content' }}>
-          <Text variant={TextVariant.bodyMdMedium} ellipsis>
+        <Row gap={1} style={{ overflow: 'hidden' }}>
+          <Text
+            variant={TextVariant.bodyMdMedium}
+            ellipsis
+            style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}
+          >
             {account.displayName}
           </Text>
           {selected && (
@@ -146,6 +150,7 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
               name={IconName.CheckBold}
               size={IconSize.Md}
               color={IconColor.PrimaryDefault}
+              style={{ flexShrink: 0 }}
             />
           )}
         </Row>
@@ -177,9 +182,7 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
           <AvatarNetwork
             src={
               CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                toChain?.chainId &&
-                !isSolanaChainId(toChain?.chainId) &&
-                !isBitcoinChainId(toChain?.chainId)
+                toChain?.chainId && !isNonEvmChainId(toChain?.chainId)
                   ? formatChainIdToHex(toChain?.chainId)
                   : (toChain?.chainId ?? '')
               ]

@@ -110,11 +110,17 @@ const Header = () => {
     CONFIRMATIONS_WITH_ALT_HEADER.includes(currentConfirmation.type);
   const isWalletInitiated =
     (currentConfirmation as TransactionMeta)?.origin === ORIGIN_METAMASK;
+
   if (isConfirmationWithNewHeader && isWalletInitiated) {
     return <WalletInitiatedHeader />;
   } else if (isConfirmationWithNewHeader && !isWalletInitiated) {
     return <DAppInitiatedHeader />;
   }
+
+  if (!fromName && !secondaryText) {
+    return null;
+  }
+
   return DefaultHeader;
 };
 

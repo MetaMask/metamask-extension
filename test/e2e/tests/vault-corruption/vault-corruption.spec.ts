@@ -8,10 +8,15 @@ import {
 import HomePage from '../../page-objects/pages/home/homepage';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
-import AccountDetailsModal from '../../page-objects/pages/dialog/account-details-modal';
+import AccountAddressModal from '../../page-objects/pages/multichain/account-address-modal';
 import LoginPage from '../../page-objects/pages/login-page';
+import AddressListModal from '../../page-objects/pages/multichain/address-list-modal';
 
-describe('Vault Corruption', function () {
+// Skipping these tests temporarily until BIP44 is turned on using FF
+// if mock the FF response to turn on BIP44 then when the extension is reset the mocks will be lost
+// BUG #38080 - Reactivate vault corruption test after BIP44 is turned on with FF
+// eslint-disable-next-line mocha/no-skipped-tests
+describe.skip('Vault Corruption', function () {
   this.timeout(120000); // This test is very long, so we need an unusually high timeout
   /**
    * Script template to simulate a broken database.
@@ -255,12 +260,21 @@ describe('Vault Corruption', function () {
 
     const accountListPage = new AccountListPage(driver);
     await accountListPage.checkPageIsLoaded();
-    await accountListPage.openAccountDetailsModal('Account 1');
+    await accountListPage.openMultichainAccountMenu({
+      accountLabel: 'Account 1',
+    });
 
-    const accountDetailsModal = new AccountDetailsModal(driver);
-    await accountDetailsModal.checkPageIsLoaded();
+    await accountListPage.clickMultichainAccountMenuItem('Addresses');
 
-    const accountAddress = await accountDetailsModal.getAccountAddress();
+    const addressListModal = new AddressListModal(driver);
+    await addressListModal.clickQRbutton();
+
+    const accountAddressModal = new AccountAddressModal(driver);
+    const accountAddress = await accountAddressModal.getAccountAddress();
+    await accountAddressModal.goBack();
+    await addressListModal.goBack();
+    await accountListPage.closeMultichainAccountsPage();
+
     return accountAddress;
   }
 

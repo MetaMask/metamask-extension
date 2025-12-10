@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
 import {
   NotificationDetailTitle,
@@ -31,7 +31,8 @@ import { SnapFooterButton } from './snap-footer-button';
 
 export const components: NotificationComponent<SnapNotification> = {
   guardFn: isOfTypeNodeGuard([TRIGGER_TYPES.SNAP]),
-  item: ({ notification, onClick }) => {
+  // eslint-disable-next-line func-name-matching, @typescript-eslint/naming-convention
+  item: function Item({ notification, onClick }) {
     const navigate = useNavigate();
     const snapsMetadata = useSelector(getSnapsMetadata);
     const snapsNameGetter = getSnapName(snapsMetadata);
@@ -123,9 +124,9 @@ export const components: NotificationComponent<SnapNotification> = {
         );
       },
     },
-  },
-  footer: {
-    type: NotificationComponentType.SnapFooter,
-    Link: SnapFooterButton,
+    footer: {
+      type: NotificationComponentType.SnapFooter,
+      Link: SnapFooterButton,
+    },
   },
 };

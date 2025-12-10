@@ -12,7 +12,7 @@ class HeaderNavbar {
   private readonly allPermissionsButton =
     '[data-testid="global-menu-connected-sites"]';
 
-  private readonly copyAddressButton = '[data-testid="app-header-copy-button"]';
+  private readonly copyAddressButton = '[aria-label="Copy address"]';
 
   private readonly threeDotMenuButton =
     '[data-testid="account-options-menu-button"]';
@@ -46,6 +46,9 @@ class HeaderNavbar {
   private readonly connectedSitePopoverNetworkButton =
     '[data-testid="connected-site-popover-network-button"]';
 
+  private readonly networkAddressesLink =
+    '[data-testid="networks-subtitle-test-id"]';
+
   private readonly networkOption = (networkId: string) =>
     `[data-testid="${networkId}"]`;
 
@@ -67,20 +70,17 @@ class HeaderNavbar {
   }
 
   async clickAddressCopyButton(): Promise<void> {
+    await this.driver.clickElement(this.networkAddressesLink);
     await this.driver.clickElement(this.copyAddressButton);
   }
 
   async lockMetaMask(): Promise<void> {
     await this.openThreeDotMenu();
     await this.driver.clickElement(this.lockMetaMaskButton);
+    await this.driver.waitForSelector('[data-testid="unlock-password"]');
   }
 
   async openAccountMenu(): Promise<void> {
-    await this.driver.clickElement(this.accountMenuButton);
-    await this.driver.waitForSelector('.multichain-account-menu-popover__list');
-  }
-
-  async openAccountsPage(): Promise<void> {
     await this.driver.clickElement(this.accountMenuButton);
     await this.driver.waitForSelector(this.accountListPage);
   }
@@ -112,7 +112,7 @@ class HeaderNavbar {
     if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
       await this.driver.clickElementUsingMouseMove(this.threeDotMenuButton);
     } else {
-      this.driver.clickElement(this.threeDotMenuButton);
+      await this.driver.clickElement(this.threeDotMenuButton);
     }
   }
 
@@ -121,10 +121,35 @@ class HeaderNavbar {
     await this.driver.clickElementUsingMouseMove(this.threeDotMenuButton);
   }
 
-  async openPermissionsPage(): Promise<void> {
+  /**
+   * Opens the permissions page.
+   * Handles both flows:
+   * - Regular flow: Click "All Permissions" → Goes directly to Permissions Page
+   * - Gator flow (Flask): Click "All Permissions" → Gator Permissions Page → Click "Sites" → Permissions Page
+   *
+   * @param options - Optional configuration
+   * @param options.skipSitesNavigation - If true, stops at Gator Permissions Page without clicking "Sites" (only relevant for Gator flow)
+   */
+  async openPermissionsPage(options?: {
+    skipSitesNavigation?: boolean;
+  }): Promise<void> {
     console.log('Open permissions page in header navbar');
     await this.openThreeDotMenu();
     await this.driver.clickElement(this.allPermissionsButton);
+
+    // Check if we landed on Gator Permissions Page (intermediate page for Flask builds)
+    // If so, we need to click "Sites" to get to the actual Permissions Page
+    const isGatorPermissionsPage = await this.driver
+      .findElement('[data-testid="gator-permissions-page"]')
+      .then(() => true)
+      .catch(() => false);
+
+    if (isGatorPermissionsPage && !options?.skipSitesNavigation) {
+      console.log(
+        'Detected Gator Permissions Page, clicking "Sites" to navigate to Permissions Page',
+      );
+      await this.driver.clickElement({ text: 'Sites', tag: 'p' });
+    }
   }
 
   async openSnapListPage(): Promise<void> {
@@ -217,6 +242,14 @@ class HeaderNavbar {
   async clickConnectedSitePopoverNetworkButton(): Promise<void> {
     console.log('Clicking connected site popover network button');
     await this.driver.clickElement(this.connectedSitePopoverNetworkButton);
+  }
+
+  /**
+   * Click the network addresses link
+   */
+  async clickNetworkAddresses(): Promise<void> {
+    console.log('Click the network addresses link');
+    await this.driver.clickElement(this.networkAddressesLink);
   }
 
   /**

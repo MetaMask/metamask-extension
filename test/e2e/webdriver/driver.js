@@ -27,6 +27,7 @@ const PAGES = {
   NOTIFICATION: 'notification',
   OFFSCREEN: 'offscreen',
   POPUP: 'popup',
+  SIDEPANEL: 'sidepanel',
 };
 
 /**
@@ -225,6 +226,16 @@ class Driver {
     if (typeof locator === 'string') {
       // If locator is a string we assume its a css selector
       return By.css(locator);
+    } else if (locator.css && locator.value) {
+      // Providing both css and value props will use xpath to look for an element
+      // matching the CSS selector with a specific value attribute.
+      const quotedValue = quoteXPathText(locator.value);
+      const baseXpath = cssToXPath.parse(locator.css).toXPath();
+      // Handle both cases: XPaths with predicates ending in ']' and simple XPaths without predicates
+      const xpath = baseXpath.endsWith(']')
+        ? baseXpath.replace(/\]$/u, ` and @value=${quotedValue}]`)
+        : `${baseXpath}[@value=${quotedValue}]`;
+      return By.xpath(xpath);
     } else if (locator.value) {
       // For backwards compatibility, checking if the locator has a value prop
       // tells us this is a Selenium locator
@@ -452,8 +463,10 @@ class Driver {
    * Waits for multiple elements that match the given locators to reach the specified state within the timeout period.
    *
    * @param {Array<string | object>} rawLocators - Array of element locators
-   * @param {number} timeout - Optional parameter that specifies the maximum amount of time (in milliseconds)
-   * to wait for the condition to be met and desired state of the elements to wait for.
+   * @param {object} [options] - Optional configuration object
+   * @param {number} [options.timeout] - Maximum time (in milliseconds) to wait for the condition to be met.
+   * Defaults to the driver's timeout value.
+   * @param {string} [options.state] - Desired state of the elements to wait for.
    * It defaults to 'visible', indicating that the method will wait until the elements are visible on the page.
    * The other supported state is 'detached', which means waiting until the elements are removed from the DOM.
    * @returns {Promise<Array<WebElement>>} Promise resolving when all elements meet the state or timeout occurs.
@@ -805,7 +818,7 @@ class Driver {
    * @param rawLocator - The locator used to identify the element to be clicked
    * @param timeout - The maximum time in ms to wait for the element to disappear after clicking.
    */
-  async clickElementAndWaitToDisappear(rawLocator, timeout = 2000) {
+  async clickElementAndWaitToDisappear(rawLocator, timeout = 3000) {
     const element = await this.findClickableElement(rawLocator);
     await element.click();
     await element.waitForElementState('hidden', timeout);
@@ -973,6 +986,9 @@ class Driver {
   /**
    * Checks if an element that matches the given locator is present on the page.
    *
+   * @deprecated This method should not be used because it can lead to race conditions
+   * when the element takes some ms to disappear. Instead use assertElementNotPresent
+   * which is a more robust method with customizable guard to avoid this problem.
    * @param {string | object} rawLocator - Element locator
    * @returns {Promise<boolean>} promise that resolves to a boolean indicating whether the element is present.
    */
@@ -1030,18 +1046,22 @@ class Driver {
    * Navigates to the specified page within a browser session.
    *
    * @param {string} [page] - its optional parameter to specify the page you want to navigate.
-   * Defaults to home if no other page is specified.
    * @param {object} [options] - optional parameter to specify additional options.
    * @param {boolean} [options.waitForControllers] - optional parameter to specify whether to wait for the controllers to be loaded.
    * Defaults to true.
+   * @param {number} [options.waitForControllersTimeout] - optional parameter to specify the timeout in milliseconds for waiting
+   * for the controllers to be loaded. Defaults to 10000 (10 seconds).
    * @returns {Promise} promise resolves when the page has finished loading
    * @throws {Error} Will throw an error if the navigation fails or the page does not load within the timeout period.
    */
-  async navigate(page = PAGES.HOME, { waitForControllers = true } = {}) {
+  async navigate(
+    page = PAGES.HOME,
+    { waitForControllers = true, waitForControllersTimeout = 10000 } = {},
+  ) {
     const response = await this.driver.get(`${this.extensionUrl}/${page}.html`);
     // Wait for asynchronous JavaScript to load
     if (waitForControllers) {
-      await this.waitForControllersLoaded();
+      await this.waitForControllersLoaded(waitForControllersTimeout);
     }
     return response;
   }
@@ -1052,13 +1072,15 @@ class Driver {
    * This function waits until an element with the class 'controller-loaded' is located,
    * indicating that the controllers have finished loading.
    *
+   * @param {number} [timeout] - optional timeout in milliseconds for waiting for the controllers to be loaded.
+   * Defaults to 10000 (10 seconds).
    * @returns {Promise<void>} A promise that resolves when the controllers are loaded.
    * @throws {Error} Will throw an error if the element is not located within the timeout period.
    */
-  async waitForControllersLoaded() {
+  async waitForControllersLoaded(timeout = 10000) {
     await this.driver.wait(
       until.elementLocated(this.buildLocator('.controller-loaded')),
-      10 * 1000,
+      timeout,
     );
   }
 
@@ -1641,6 +1663,8 @@ class Driver {
       'Failed to load resource: the server responded with a status of 502 (Bad Gateway)',
       // Sentry error that is not actually a problem
       'Event fragment with id transaction-added-',
+      // Sidepanel
+      'GL Context was lost',
     ]);
 
     const cdpConnection = await this.driver.createCDPConnection('page');

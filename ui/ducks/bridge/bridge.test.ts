@@ -4,16 +4,13 @@ import { zeroAddress } from 'ethereumjs-util';
 import {
   BridgeBackgroundAction,
   BridgeUserAction,
-  BRIDGE_DEFAULT_SLIPPAGE,
   formatChainIdToCaip,
-  getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
-import * as controllerUtils from '@metamask/controller-utils';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
-import { toAssetId } from '../../../shared/lib/asset-utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { setBackgroundConnection } from '../../store/background-connection';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
+import { SlippageValue } from '../../pages/bridge/utils/slippage-service';
 import bridgeReducer from './bridge';
 import {
   setFromToken,
@@ -23,7 +20,6 @@ import {
   setToChainId,
   updateQuoteRequestParams,
   resetBridgeState,
-  setDestTokenExchangeRates,
   setWasTxDeclined,
   setSlippage,
 } from './actions';
@@ -110,7 +106,6 @@ describe('Ducks - Bridge', () => {
           chainId: '0xa',
           image:
             'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/10/erc20/0x13341431.png',
-          string: '0',
         }),
       );
     });
@@ -141,14 +136,12 @@ describe('Ducks - Bridge', () => {
         toChainId: null,
         fromToken: null,
         toToken: null,
-        slippage: BRIDGE_DEFAULT_SLIPPAGE,
+        slippage: SlippageValue.BridgeDefault,
         fromTokenInputValue: null,
         sortOrder: 'cost_ascending',
-        toTokenExchangeRate: null,
         fromTokenExchangeRate: null,
         wasTxDeclined: false,
         txAlert: null,
-        toTokenUsdExchangeRate: null,
         fromTokenBalance: null,
         fromNativeBalance: null,
       });
@@ -183,6 +176,9 @@ describe('Ducks - Bridge', () => {
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             security_warnings: [],
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            usd_amount_source: 1000,
           },
         ) as never,
       );
@@ -208,6 +204,9 @@ describe('Ducks - Bridge', () => {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           security_warnings: [],
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          usd_amount_source: 1000,
         },
       );
     });
@@ -240,120 +239,14 @@ describe('Ducks - Bridge', () => {
         fromTokenExchangeRate: null,
         fromTokenInputValue: null,
         selectedQuote: null,
-        slippage: BRIDGE_DEFAULT_SLIPPAGE,
+        slippage: SlippageValue.BridgeDefault,
         sortOrder: 'cost_ascending',
         toChainId: null,
         toToken: null,
         txAlert: null,
-        toTokenExchangeRate: null,
         wasTxDeclined: false,
-        toTokenUsdExchangeRate: null,
         fromTokenBalance: null,
         fromNativeBalance: null,
-      });
-    });
-  });
-
-  describe('setDestTokenExchangeRates', () => {
-    it('fetches token prices and updates dest exchange rates in state, native dest token', async () => {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const mockStore = configureMockStore<any>(middleware)(
-        createBridgeMockStore(),
-      );
-      const state = mockStore.getState().bridge;
-      const fetchTokenExchangeRatesSpy = jest
-        .spyOn(controllerUtils, 'handleFetch')
-        .mockResolvedValue({
-          [getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET).assetId]: {
-            price: 0.356628,
-          },
-        });
-
-      await mockStore.dispatch(
-        setDestTokenExchangeRates({
-          chainId: CHAIN_IDS.LINEA_MAINNET,
-          tokenAddress: zeroAddress(),
-          currency: 'usd',
-        }) as never,
-      );
-
-      expect(fetchTokenExchangeRatesSpy).toHaveBeenCalledTimes(1);
-      expect(fetchTokenExchangeRatesSpy).toHaveBeenCalledWith(
-        'https://price.api.cx.metamask.io/v3/spot-prices?assetIds=eip155%3A59144%2Fslip44%3A60&includeMarketData=true&vsCurrency=usd',
-        {
-          headers: { 'X-Client-Id': 'extension' },
-          method: 'GET',
-          signal: undefined,
-        },
-      );
-
-      const actions = mockStore.getActions();
-      expect(actions).toHaveLength(2);
-      expect(actions[0].type).toStrictEqual(
-        'bridge/setDestTokenExchangeRates/pending',
-      );
-      expect(actions[1].type).toStrictEqual(
-        'bridge/setDestTokenExchangeRates/fulfilled',
-      );
-      const newState = bridgeReducer(state, actions[1]);
-      expect(newState).toStrictEqual({
-        toChainId: null,
-        toTokenExchangeRate: 0.356628,
-        sortOrder: 'cost_ascending',
-      });
-    });
-
-    it('fetches token prices and updates dest exchange rates in state, erc20 dest token', async () => {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const mockStore = configureMockStore<any>(middleware)(
-        createBridgeMockStore(),
-      );
-      const state = mockStore.getState().bridge;
-      const fetchTokenExchangeRatesSpy = jest
-        .spyOn(controllerUtils, 'handleFetch')
-        .mockResolvedValue({
-          [toAssetId(
-            '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359'.toLowerCase(),
-            formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
-          ) as never]: {
-            price: 0.999881,
-          },
-        });
-
-      await mockStore.dispatch(
-        setDestTokenExchangeRates({
-          chainId: CHAIN_IDS.LINEA_MAINNET,
-          tokenAddress:
-            '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359'.toLowerCase(),
-          currency: 'usd',
-        }) as never,
-      );
-
-      expect(fetchTokenExchangeRatesSpy).toHaveBeenCalledTimes(1);
-      expect(fetchTokenExchangeRatesSpy).toHaveBeenCalledWith(
-        'https://price.api.cx.metamask.io/v3/spot-prices?assetIds=eip155%3A59144%2Ferc20%3A0x3c499c542cef5e3811e1192ce70d8cc03d5c3359&includeMarketData=true&vsCurrency=usd',
-        {
-          headers: { 'X-Client-Id': 'extension' },
-          method: 'GET',
-          signal: undefined,
-        },
-      );
-
-      const actions = mockStore.getActions();
-      expect(actions).toHaveLength(2);
-      expect(actions[0].type).toStrictEqual(
-        'bridge/setDestTokenExchangeRates/pending',
-      );
-      expect(actions[1].type).toStrictEqual(
-        'bridge/setDestTokenExchangeRates/fulfilled',
-      );
-      const newState = bridgeReducer(state, actions[1]);
-      expect(newState).toStrictEqual({
-        toChainId: null,
-        toTokenExchangeRate: 0.999881,
-        sortOrder: 'cost_ascending',
       });
     });
   });

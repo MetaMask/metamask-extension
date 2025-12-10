@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { CaipChainId } from '@metamask/utils';
 import {
@@ -36,13 +36,16 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getIsAddSnapAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   getIsWatchEthereumAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   getIsBitcoinSupportEnabled,
   ///: END:ONLY_INCLUDE_IF
   getIsSolanaSupportEnabled,
+  ///: BEGIN:ONLY_INCLUDE_IF(tron)
+  getIsTronSupportEnabled,
+  ///: END:ONLY_INCLUDE_IF
   getHdKeyringOfSelectedAccountOrPrimaryKeyring,
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   getMetaMaskHdKeyrings,
@@ -64,7 +67,7 @@ import {
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
 import {
   ACCOUNT_WATCHER_NAME,
   ACCOUNT_WATCHER_SNAP_ID,
@@ -100,7 +103,7 @@ export const ACTION_MODES = {
   MENU: 'menu',
   // Displays the add account form controls
   ADD: 'add',
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   // Displays the add account form controls (for watch-only account)
   ADD_WATCH_ONLY: 'add-watch-only',
   ///: END:ONLY_INCLUDE_IF
@@ -110,6 +113,10 @@ export const ACTION_MODES = {
   ///: END:ONLY_INCLUDE_IF
   // Displays the add account form controls (for solana account)
   ADD_SOLANA: 'add-solana',
+  ///: BEGIN:ONLY_INCLUDE_IF(tron)
+  // Displays the add account form controls (for tron account)
+  ADD_TRON: 'add-tron',
+  ///: END:ONLY_INCLUDE_IF
   // Displays the import account form controls
   IMPORT: 'import',
   CREATE_SRP: 'create-srp',
@@ -132,6 +139,10 @@ export const SNAP_CLIENT_CONFIG_MAP: Record<
     clientType: WalletClientType.Solana,
     chainId: MultichainNetworks.SOLANA,
   },
+  [ACTION_MODES.ADD_TRON]: {
+    clientType: WalletClientType.Tron,
+    chainId: MultichainNetworks.TRON,
+  },
 };
 ///: END:ONLY_INCLUDE_IF(multichain)
 /**
@@ -152,7 +163,7 @@ export const getActionTitle = (
       return t('addAccountFromNetwork', [t('networkNameEthereum')]);
     case ACTION_MODES.MENU:
       return t('addAccount');
-    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
     case ACTION_MODES.ADD_WATCH_ONLY:
       return t('addAccountFromNetwork', [t('networkNameEthereum')]);
     ///: END:ONLY_INCLUDE_IF
@@ -162,6 +173,10 @@ export const getActionTitle = (
     ///: END:ONLY_INCLUDE_IF
     case ACTION_MODES.ADD_SOLANA:
       return t('addAccountFromNetwork', [t('networkNameSolana')]);
+    ///: BEGIN:ONLY_INCLUDE_IF(tron)
+    case ACTION_MODES.ADD_TRON:
+      return t('addAccountFromNetwork', [t('networkNameTron')]);
+    ///: END:ONLY_INCLUDE_IF
     case ACTION_MODES.IMPORT:
       return t('importPrivateKey');
     case ACTION_MODES.CREATE_SRP:
@@ -194,7 +209,7 @@ export const AccountMenu = ({
   useEffect(() => {
     endTrace({ name: TraceName.AccountList });
   }, []);
-  const history = useHistory();
+  const navigate = useNavigate();
   const isMultichainAccountsState1Enabled = useSelector(
     getIsMultichainAccountsState1Enabled,
   );
@@ -209,7 +224,7 @@ export const AccountMenu = ({
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   const isAddWatchEthereumAccountEnabled = useSelector(
     getIsWatchEthereumAccountEnabled,
   );
@@ -235,8 +250,8 @@ export const AccountMenu = ({
       },
     });
     onClose();
-    history.push(`/snaps/view/${encodeURIComponent(ACCOUNT_WATCHER_SNAP_ID)}`);
-  }, [trackEvent, hdEntropyIndex, onClose, history]);
+    navigate(`/snaps/view/${encodeURIComponent(ACCOUNT_WATCHER_SNAP_ID)}`);
+  }, [trackEvent, hdEntropyIndex, onClose, navigate]);
   ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
@@ -250,6 +265,14 @@ export const AccountMenu = ({
   const solanaWalletSnapClient = useMultichainWalletSnapClient(
     WalletClientType.Solana,
   );
+
+  ///: BEGIN:ONLY_INCLUDE_IF(tron)
+  const tronSupportEnabled = useSelector(getIsTronSupportEnabled);
+  const tronWalletSnapClient = useMultichainWalletSnapClient(
+    WalletClientType.Tron,
+  );
+  ///: END:ONLY_INCLUDE_IF
+
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const [primaryKeyring] = useSelector(getMetaMaskHdKeyrings);
 
@@ -494,6 +517,35 @@ export const AccountMenu = ({
               ///: END:ONLY_INCLUDE_IF
             }
 
+            {
+              ///: BEGIN:ONLY_INCLUDE_IF(tron)
+              tronSupportEnabled && (
+                <Box marginTop={4}>
+                  <ButtonLink
+                    size={ButtonLinkSize.Sm}
+                    startIconName={IconName.Add}
+                    startIconProps={{ size: IconSize.Md }}
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                    onClick={async () => {
+                      return await handleMultichainSnapAccountCreation(
+                        tronWalletSnapClient,
+                        {
+                          scope: MultichainNetworks.TRON,
+                          entropySource: primaryKeyring.metadata.id,
+                        },
+                        ACTION_MODES.ADD_TRON,
+                      );
+                    }}
+                    data-testid="multichain-account-menu-popover-add-tron-account"
+                  >
+                    {t('addNewTronAccountLabel')}
+                  </ButtonLink>
+                </Box>
+              )
+              ///: END:ONLY_INCLUDE_IF
+            }
+
             <Text
               variant={TextVariant.bodySmMedium}
               marginTop={4}
@@ -511,10 +563,13 @@ export const AccountMenu = ({
                   onClick={() => {
                     trackEvent({
                       category: MetaMetricsEventCategory.Navigation,
-                      event:
-                        MetaMetricsEventName.ImportSecretRecoveryPhraseClicked,
+                      event: MetaMetricsEventName.ImportSecretRecoveryPhrase,
+                      properties: {
+                        status: 'started',
+                        location: 'Account Menu',
+                      },
                     });
-                    history.push(IMPORT_SRP_ROUTE);
+                    navigate(IMPORT_SRP_ROUTE);
                     onClose();
                   }}
                   data-testid="multichain-account-menu-popover-import-srp"
@@ -583,7 +638,7 @@ export const AccountMenu = ({
                       CONNECT_HARDWARE_ROUTE,
                     );
                   } else {
-                    history.push(CONNECT_HARDWARE_ROUTE);
+                    navigate(CONNECT_HARDWARE_ROUTE);
                   }
                 }}
               >
@@ -625,7 +680,7 @@ export const AccountMenu = ({
               ///: END:ONLY_INCLUDE_IF
             }
             {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+              ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
               isAddWatchEthereumAccountEnabled && (
                 <Box marginTop={4}>
                   <ButtonLink
@@ -651,7 +706,7 @@ export const AccountMenu = ({
                   startIconName={IconName.Add}
                   onClick={() => {
                     onClose();
-                    history.push(
+                    navigate(
                       `/snaps/view/${encodeURIComponent(
                         INSTITUTIONAL_WALLET_SNAP_ID,
                       )}`,

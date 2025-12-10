@@ -4,6 +4,8 @@ import {
 } from '@metamask/transaction-controller';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { PRODUCT_TYPES } from '@metamask/subscription-controller';
+import { useNavigate } from 'react-router-dom';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
 import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
 import { ConfirmAlertModal } from '../../../../../components/app/alert-system/confirm-alert-modal';
@@ -21,18 +23,26 @@ import {
   FlexDirection,
   Severity,
 } from '../../../../../helpers/constants/design-system';
+import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { doesAddressRequireLedgerHidConnection } from '../../../../../selectors';
+import { useConfirmationNavigation } from '../../../hooks/useConfirmationNavigation';
 import { resolvePendingApproval } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
 import { useIsGaslessLoading } from '../../../hooks/gas/useIsGaslessLoading';
 import { useEnableShieldCoverageChecks } from '../../../hooks/transactions/useEnableShieldCoverageChecks';
 import { useTransactionConfirm } from '../../../hooks/transactions/useTransactionConfirm';
 import { useConfirmActions } from '../../../hooks/useConfirmActions';
+import { useDappSwapActions } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapActions';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
+import {
+  isAddEthereumChainType,
+  useAddEthereumChain,
+} from '../../../hooks/useAddEthereumChain';
 import { isSignatureTransactionType } from '../../../utils';
 import { getConfirmationSender } from '../utils';
+import { useUserSubscriptions } from '../../../../../hooks/subscription/useSubscription';
 import OriginThrottleModal from './origin-throttle-modal';
 import ShieldFooterAgreement from './shield-footer-agreement';
 import ShieldFooterCoverageIndicator from './shield-footer-coverage-indicator/shield-footer-coverage-indicator';
@@ -112,6 +122,9 @@ const ConfirmButton = ({
     setConfirmModalVisible(true);
   }, []);
 
+  const { trialedProducts } = useUserSubscriptions();
+  const isShieldTrialed = trialedProducts?.includes(PRODUCT_TYPES.SHIELD);
+
   return (
     <>
       {confirmModalVisible && (
@@ -152,7 +165,11 @@ const ConfirmButton = ({
         >
           {currentConfirmation?.type ===
           TransactionType.shieldSubscriptionApprove
-            ? t('shieldStartNowCTA')
+            ? t(
+                isShieldTrialed
+                  ? 'shieldStartNowCTA'
+                  : 'shieldStartNowCTAWithTrial',
+              )
             : t('confirm')}
         </Button>
       )}
@@ -187,7 +204,11 @@ const CancelButton = ({
 
 const Footer = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { onDappSwapCompleted } = useDappSwapActions();
   const { onTransactionConfirm } = useTransactionConfirm();
+  const { navigateNext } = useConfirmationNavigation();
+  const { onSubmit: onAddEthereumChain } = useAddEthereumChain();
 
   const { currentConfirmation, isScrollToBottomCompleted } =
     useConfirmContext<TransactionMeta>();
@@ -209,43 +230,71 @@ const Footer = () => {
   });
 
   const isSignature = isSignatureTransactionType(currentConfirmation);
+  const isTransactionConfirmation = isCorrectDeveloperTransactionType(
+    currentConfirmation?.type,
+  );
+  const isAddEthereumChain = isAddEthereumChainType(currentConfirmation);
 
   const isConfirmDisabled =
     (!isScrollToBottomCompleted && !isSignature) ||
     hardwareWalletRequiresConnection ||
     isGaslessLoading;
 
-  const onSubmit = useCallback(() => {
+  const onSubmit = useCallback(async () => {
     if (!currentConfirmation) {
       return;
     }
 
-    const isTransactionConfirmation = isCorrectDeveloperTransactionType(
-      currentConfirmation?.type,
-    );
-
-    if (isTransactionConfirmation) {
-      onTransactionConfirm();
+    if (isAddEthereumChain) {
+      await onAddEthereumChain();
+      navigate(DEFAULT_ROUTE);
+    } else if (isTransactionConfirmation) {
+      await onTransactionConfirm();
+      navigateNext(currentConfirmation.id);
     } else {
-      dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
+      await dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
+      navigateNext(currentConfirmation.id);
     }
+
     resetTransactionState();
   }, [
     currentConfirmation,
     dispatch,
+    navigate,
+    isTransactionConfirmation,
+    isAddEthereumChain,
+    navigateNext,
     onTransactionConfirm,
     resetTransactionState,
+    onAddEthereumChain,
   ]);
 
-  const handleFooterCancel = useCallback(() => {
+  const handleFooterCancel = useCallback(async () => {
     if (shouldThrottleOrigin) {
       setShowOriginThrottleModal(true);
       return;
     }
-    onCancel({ location: MetaMetricsEventLocation.Confirmation });
-  }, [onCancel, shouldThrottleOrigin]);
 
-  const isShowShieldFooterCoverageIndicator = useEnableShieldCoverageChecks();
+    await onCancel({ location: MetaMetricsEventLocation.Confirmation });
+
+    onDappSwapCompleted();
+    if (isAddEthereumChain) {
+      navigate(DEFAULT_ROUTE);
+    } else {
+      navigateNext(currentConfirmation.id);
+    }
+  }, [
+    navigateNext,
+    onCancel,
+    shouldThrottleOrigin,
+    currentConfirmation,
+    isAddEthereumChain,
+    navigate,
+    onDappSwapCompleted,
+  ]);
+
+  const { isEnabled, isPaused } = useEnableShieldCoverageChecks();
+  const isShowShieldFooterCoverageIndicator = isEnabled || isPaused;
 
   return (
     <>
