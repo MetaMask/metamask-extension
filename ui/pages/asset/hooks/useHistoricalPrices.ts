@@ -206,9 +206,7 @@ const useHistoricalPricesNonEvm = ({
    */
   useEffect(() => {
     if (isEvm) {
-      return () => {
-        // No clean up needed
-      };
+      return;
     }
 
     // On non-EVM, we fetch the prices from the snap, then store them in the redux state, and grab them from the redux state
