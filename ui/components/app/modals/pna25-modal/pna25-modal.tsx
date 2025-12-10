@@ -68,7 +68,9 @@ export default function Pna25Modal() {
   }, [handleAction]);
 
   return (
-    <Modal isOpen onClose={() => dispatch(setPna25Acknowledged(true))}>
+    // User should not be able to close the modal, so we pass an empty function
+    // eslint-disable-next-line @typescript-eslint/no-empty-function, no-empty-function
+    <Modal isOpen onClose={() => {}} isClosedOnOutsideClick={false}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader onClose={() => handleAction(Pna25NoticeAction.Close)}>
