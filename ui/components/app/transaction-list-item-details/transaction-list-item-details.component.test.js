@@ -153,7 +153,7 @@ describe('TransactionListItemDetails for swaps', () => {
       'Priority fee (GWEI)30',
       'Total gas fee0.010716ETH',
       'Max fee per gas0.00000003ETH',
-      'Total0.01071636ETH',
+      'Total0.01071636POL',
     ];
 
     queryAllByTestId('transaction-breakdown-row').forEach((row, i) => {
