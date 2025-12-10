@@ -70,7 +70,9 @@ export const Carousel = () => {
     }
 
     if (key === SHIELD_CAROUSEL_ID) {
-      navigate(SHIELD_PLAN_ROUTE);
+      navigate(
+        `${SHIELD_PLAN_ROUTE}?utm_source=carousel&utm_medium=in-product&utm_campaign=cmp-741242243-afbf08`,
+      );
     }
 
     trackEvent({
