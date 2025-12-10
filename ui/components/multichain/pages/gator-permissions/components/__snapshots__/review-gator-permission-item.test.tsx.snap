@@ -48,7 +48,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
           style="flex: 1; align-self: center;"
         >
           <p
-            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
             data-testid="review-gator-permission-amount-label"
           >
             0.5 WBTC
@@ -69,7 +69,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
           style="flex: 1; align-self: center;"
         >
           <p
-            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
             data-testid="review-gator-permission-frequency-label"
           >
             Weekly
@@ -134,9 +134,20 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
           </div>
           <p
             class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+            data-testid="review-gator-permission-account-name"
           >
-            0x4f71D...E7a63
+            Test Gator Account
           </p>
+          <button
+            aria-label="copy-button"
+            class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+            style="cursor: pointer; position: static;"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/copy.svg');"
+            />
+          </button>
         </div>
       </div>
     </div>
@@ -179,7 +190,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
 </div>
 `;
 
-exports[`Permission List Item render ERC20 token permissions renders erc20 token permission with unknown token amount correctly 1`] = `
+exports[`Permission List Item render ERC20 token permissions renders erc20 token permission with loading state for unknown token 1`] = `
 <div>
   <div
     class="box box--margin-4 box--padding-4 box--gap-1 box--flex-direction-row box--background-color-background-default box--rounded-md box--border-style-solid box--border-color-border-muted box--border-width-1"
@@ -226,12 +237,17 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
           class="flex flex-row gap-2 items-center justify-end"
           style="flex: 1; align-self: center;"
         >
-          <p
-            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-            data-testid="review-gator-permission-amount-label"
+          <div
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 16px; width: 100px;"
           >
-            Unknown amount
-          </p>
+            <p
+              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
+              data-testid="review-gator-permission-amount-label"
+            >
+              0.00003024 Unknown Token
+            </p>
+          </div>
         </div>
       </div>
       <div
@@ -248,7 +264,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
           style="flex: 1; align-self: center;"
         >
           <p
-            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
             data-testid="review-gator-permission-frequency-label"
           >
             Weekly
@@ -313,9 +329,20 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
           </div>
           <p
             class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+            data-testid="review-gator-permission-account-name"
           >
-            0x4f71D...E7a63
+            Test Gator Account
           </p>
+          <button
+            aria-label="copy-button"
+            class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+            style="cursor: pointer; position: static;"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/copy.svg');"
+            />
+          </button>
         </div>
       </div>
     </div>
@@ -406,7 +433,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
           style="flex: 1; align-self: center;"
         >
           <p
-            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
             data-testid="review-gator-permission-amount-label"
           >
             302400 WBTC
@@ -427,7 +454,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
           style="flex: 1; align-self: center;"
         >
           <p
-            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
             data-testid="review-gator-permission-frequency-label"
           >
             Weekly
@@ -492,9 +519,20 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
           </div>
           <p
             class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+            data-testid="review-gator-permission-account-name"
           >
-            0x4f71D...E7a63
+            Test Gator Account
           </p>
+          <button
+            aria-label="copy-button"
+            class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+            style="cursor: pointer; position: static;"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/copy.svg');"
+            />
+          </button>
         </div>
       </div>
     </div>
@@ -585,7 +623,7 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
           style="flex: 1; align-self: center;"
         >
           <p
-            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
             data-testid="review-gator-permission-amount-label"
           >
             0.5 ETH
@@ -606,7 +644,7 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
           style="flex: 1; align-self: center;"
         >
           <p
-            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
             data-testid="review-gator-permission-frequency-label"
           >
             Weekly
@@ -671,9 +709,20 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
           </div>
           <p
             class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+            data-testid="review-gator-permission-account-name"
           >
-            0x4f71D...E7a63
+            Test Gator Account
           </p>
+          <button
+            aria-label="copy-button"
+            class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+            style="cursor: pointer; position: static;"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/copy.svg');"
+            />
+          </button>
         </div>
       </div>
     </div>
@@ -764,7 +813,7 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
           style="flex: 1; align-self: center;"
         >
           <p
-            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
             data-testid="review-gator-permission-amount-label"
           >
             302400 ETH
@@ -785,7 +834,7 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
           style="flex: 1; align-self: center;"
         >
           <p
-            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
             data-testid="review-gator-permission-frequency-label"
           >
             Weekly
@@ -850,9 +899,20 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
           </div>
           <p
             class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+            data-testid="review-gator-permission-account-name"
           >
-            0x4f71D...E7a63
+            Test Gator Account
           </p>
+          <button
+            aria-label="copy-button"
+            class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+            style="cursor: pointer; position: static;"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/copy.svg');"
+            />
+          </button>
         </div>
       </div>
     </div>
