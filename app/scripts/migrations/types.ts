@@ -9,6 +9,6 @@ export type ChangedKeys = Set<string>;
  * A migration function that updates the versioned MetaMask extension state.
  */
 export type Migrate = (
-  versionedData: MetaMaskStorageStructure,
+  versionedData: Required<MetaMaskStorageStructure>,
   changedKeys: ChangedKeys,
 ) => void | Promise<void>;
