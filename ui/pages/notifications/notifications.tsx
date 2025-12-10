@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import {
   type INotification,
   TRIGGER_TYPES,
@@ -19,8 +19,7 @@ import {
   DEFAULT_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
 } from '../../helpers/constants/routes';
-import { NotificationsPage } from '../../components/multichain';
-import { Content, Header } from '../../components/multichain/pages/page';
+import { Content, Header, Page } from '../../components/multichain/pages/page';
 import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
 import { useUnreadNotificationsCounter } from '../../hooks/metamask-notifications/useCounter';
 import { getNotifySnaps } from '../../selectors';
@@ -159,7 +158,7 @@ export default function Notifications() {
   }, [dispatch]);
 
   return (
-    <NotificationsPage>
+    <Page data-testid="notifications-page">
       {/* Back and Settings Buttons */}
       <Header
         startAccessory={
@@ -234,6 +233,6 @@ export default function Notifications() {
           notificationsCount={notificationsUnreadCount}
         />
       </Content>
-    </NotificationsPage>
+    </Page>
   );
 }

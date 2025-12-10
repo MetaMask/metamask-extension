@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types -- TODO: upgrade to TypeScript */
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate, useLocation } from 'react-router-dom';
 import classnames from 'classnames';
 import { getAllScopesFromCaip25CaveatValue } from '@metamask/chain-agnostic-permission';
 import { AvatarAccountSize } from '@metamask/design-system-react';
@@ -37,6 +37,8 @@ import {
   getSelectedAccount,
   getUseNftDetection,
 } from '../../../selectors';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import {
   addPermittedAccount,
@@ -111,12 +113,13 @@ import {
   setShieldEndingToastLastClickedOrClosed,
 } from './utils';
 
-export function ToastMaster({ location } = {}) {
+export function ToastMaster() {
+  const location = useLocation();
   const isMultichainAccountsFeatureState2Enabled = useSelector(
     getIsMultichainAccountsState2Enabled,
   );
 
-  // Use passed location or fallback to DEFAULT_ROUTE
+  // Get current pathname from React Router
   const currentPathname = location?.pathname ?? DEFAULT_ROUTE;
   const onHomeScreen = currentPathname === DEFAULT_ROUTE;
   const onSettingsScreen = currentPathname.startsWith(SETTINGS_ROUTE);
@@ -757,8 +760,21 @@ function ShieldEndingToast() {
 function Pna25Banner() {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const trackEvent = useContext(MetaMetricsContext);
 
   const showPna25Banner = useSelector(selectShowPna25Banner);
+
+  useEffect(() => {
+    if (showPna25Banner) {
+      trackEvent({
+        event: MetaMetricsEventName.ToastDisplayed,
+        properties: {
+          toast_name: 'pna25',
+          closed: false,
+        },
+      });
+    }
+  }, [showPna25Banner, trackEvent]);
 
   const handleLearnMore = () => {
     // Open MetaMetrics settings help page and acknowledge
@@ -768,6 +784,13 @@ function Pna25Banner() {
   };
 
   const handleClose = () => {
+    trackEvent({
+      event: MetaMetricsEventName.ToastDisplayed,
+      properties: {
+        toast_name: 'pna25',
+        closed: true,
+      },
+    });
     // Just acknowledge without opening link
     dispatch(setPna25Acknowledged(true));
   };

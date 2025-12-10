@@ -1,5 +1,5 @@
 import { createBridgeMockStore } from '../../test/data/bridge/mock-bridge-store';
-import { renderHookWithProvider } from '../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../test/lib/render-helpers-navigate';
 import { useMultichainBalances } from './useMultichainBalances';
 
 describe('useMultichainBalances', () => {

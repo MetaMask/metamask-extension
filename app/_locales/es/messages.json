@@ -1467,9 +1467,6 @@
   "connectWithMetaMask": {
     "message": "Conectarse con MetaMask"
   },
-  "connectedAccounts": {
-    "message": "Cuentas conectadas"
-  },
   "connectedAccountsDescriptionPlural": {
     "message": "Tiene $1 cuentas conectadas a este sitio.",
     "description": "$1 is the number of accounts"
@@ -1483,9 +1480,6 @@
   "connectedAccountsListTooltip": {
     "message": "$1 puede ver el saldo de la cuenta, la dirección, la actividad y sugerir transacciones para aprobar para las cuentas conectadas.",
     "description": "$1 is the origin name"
-  },
-  "connectedAccountsToast": {
-    "message": "Se actualizaron las cuentas conectadas"
   },
   "connectedSites": {
     "message": "Sitios conectados"
@@ -2018,14 +2012,6 @@
   },
   "disconnectThisAccount": {
     "message": "Desconectar esta cuenta"
-  },
-  "disconnectedAllAccountsToast": {
-    "message": "Todas las cuentas desconectadas de $1",
-    "description": "$1 is name of the dapp`"
-  },
-  "disconnectedSingleAccountToast": {
-    "message": "$1 desconectada de $2",
-    "description": "$1 is name of the name and $2 represents the dapp name`"
   },
   "discover": {
     "message": "Descubrir"
@@ -4272,25 +4258,6 @@
     "message": "Ícono $1",
     "description": "$1 is the icon name"
   },
-  "onboardingPinExtensionAltLaunch": {
-    "message": "Lanzar la extensión"
-  },
-  "onboardingPinExtensionAltPin": {
-    "message": "Fije la extensión"
-  },
-  "onboardingPinExtensionDescription": {
-    "message": "Ancla MetaMask en tu navegador para que sea accesible y las confirmaciones de las transacciones se vean con facilidad."
-  },
-  "onboardingPinExtensionDescription2": {
-    "message": "Accede a tu billetera MetaMask con 1 clic haciendo clic en la extensión."
-  },
-  "onboardingPinExtensionDescription3": {
-    "message": "Haz clic en el icono de la extensión de $1 para tener acceso instantáneo",
-    "description": "$1 is the browser name"
-  },
-  "onboardingPinExtensionTitle": {
-    "message": "¡Instalación completa!"
-  },
   "onboardingSignInWith": {
     "message": "Inicia sesión con $1",
     "description": "$1 is the type of login used Google, Apple, etc"
@@ -4429,9 +4396,6 @@
   "pendingTransactionAlertMessageHyperlink": {
     "message": "Aprenda a cancelar o acelerar una transacción.",
     "description": "The text for the hyperlink in the pending transaction alert message"
-  },
-  "permissionDetails": {
-    "message": "Detalles del permiso"
   },
   "permissionFor": {
     "message": "Permiso para"
@@ -4735,10 +4699,6 @@
   },
   "pleaseConfirm": {
     "message": "Confirmar"
-  },
-  "plusMore": {
-    "message": "+ $1 más",
-    "description": "$1 is the number of additional items"
   },
   "plusXMore": {
     "message": "+ $1 más",

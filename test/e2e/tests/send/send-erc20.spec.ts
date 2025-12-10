@@ -14,6 +14,7 @@ describe('Send ERC20', function () {
   it('it should be possible to send ERC20 token', async function () {
     await withFixtures(
       {
+        forceBip44Version: false,
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSendRedesignFeatureFlag,
@@ -57,6 +58,7 @@ describe('Send ERC20', function () {
   it('it should be possible to send Max token value', async function () {
     await withFixtures(
       {
+        forceBip44Version: false,
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSendRedesignFeatureFlag,
@@ -66,11 +68,9 @@ describe('Send ERC20', function () {
         await loginWithBalanceValidation(driver, localNodes[0]);
         const tokenAddress =
           await contractRegistry.getContractAddress(smartContract);
-
         // Importing token manually until we update the fixture with the new state
         const assetListPage = new AssetListPage(driver);
         await assetListPage.importCustomTokenByChain('0x539', tokenAddress);
-
         const homePage = new HomePage(driver);
         const sendPage = new SendPage(driver);
         const confirmation = new Confirmation(driver);

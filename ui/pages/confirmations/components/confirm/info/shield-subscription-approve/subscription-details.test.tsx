@@ -6,7 +6,7 @@ import {
 } from '@metamask/subscription-controller';
 import { getMockConfirmState } from '../../../../../../../test/data/confirmations/helper';
 import { tEn } from '../../../../../../../test/lib/i18n-helpers';
-import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
 import { SubscriptionDetails } from './subscription-details';
 
 const mockProductPrice: ProductPrice = {
@@ -16,6 +16,7 @@ const mockProductPrice: ProductPrice = {
   unitDecimals: 6,
   currency: 'usd',
   trialPeriodDays: 14,
+  minBillingCyclesForBalance: 1,
 };
 
 describe('SubscriptionDetails', () => {

@@ -1467,9 +1467,6 @@
   "connectWithMetaMask": {
     "message": "Σύνδεση με το MetaMask"
   },
-  "connectedAccounts": {
-    "message": "Συνδεδεμένοι λογαριασμοί"
-  },
   "connectedAccountsDescriptionPlural": {
     "message": "Έχετε $1 λογαριασμούς συνδεδεμένους με αυτόν τον ιστότοπο.",
     "description": "$1 is the number of accounts"
@@ -1483,9 +1480,6 @@
   "connectedAccountsListTooltip": {
     "message": "Το $1 μπορεί να δει το υπόλοιπο του λογαριασμού, τη διεύθυνση, τη δραστηριότητα και να προτείνει συναλλαγές προς έγκριση για συνδεδεμένους λογαριασμούς.",
     "description": "$1 is the origin name"
-  },
-  "connectedAccountsToast": {
-    "message": "Οι συνδεδεμένοι λογαριασμοί ενημερώθηκαν"
   },
   "connectedSites": {
     "message": "Συνδεδεμένοι ιστότοποι"
@@ -2018,14 +2012,6 @@
   },
   "disconnectThisAccount": {
     "message": "Αποσύνδεση αυτού του λογαριασμού"
-  },
-  "disconnectedAllAccountsToast": {
-    "message": "Όλοι οι λογαριασμοί αποσυνδέθηκαν από το $1",
-    "description": "$1 is name of the dapp`"
-  },
-  "disconnectedSingleAccountToast": {
-    "message": "Το $1 αποσυνδέθηκε από το $2",
-    "description": "$1 is name of the name and $2 represents the dapp name`"
   },
   "discover": {
     "message": "Ανακαλύψτε"
@@ -4272,25 +4258,6 @@
     "message": "εικονίδιο $1",
     "description": "$1 is the icon name"
   },
-  "onboardingPinExtensionAltLaunch": {
-    "message": "Ανοίξτε την επέκταση"
-  },
-  "onboardingPinExtensionAltPin": {
-    "message": "Καρφιτσώστε την επέκταση"
-  },
-  "onboardingPinExtensionDescription": {
-    "message": "Προσθέστε το MetaMask στο πρόγραμμα περιήγησής σας για πιο εύκολη πρόσβαση και προβολή επιβεβαιώσεων συναλλαγών."
-  },
-  "onboardingPinExtensionDescription2": {
-    "message": "Με 1 απλό κλικ στην επέκταση, έχετε πρόσβαση στο πορτοφόλι σας στο MetaMask."
-  },
-  "onboardingPinExtensionDescription3": {
-    "message": "Κάντε κλικ στο εικονίδιο της επέκτασης $1 για άμεση πρόσβαση",
-    "description": "$1 is the browser name"
-  },
-  "onboardingPinExtensionTitle": {
-    "message": "Η εγκατάσταση ολοκληρώθηκε!"
-  },
   "onboardingSignInWith": {
     "message": "Συνδεθείτε με το $1",
     "description": "$1 is the type of login used Google, Apple, etc"
@@ -4429,9 +4396,6 @@
   "pendingTransactionAlertMessageHyperlink": {
     "message": "Μάθετε πώς να ακυρώσετε ή να επιταχύνετε μια συναλλαγή.",
     "description": "The text for the hyperlink in the pending transaction alert message"
-  },
-  "permissionDetails": {
-    "message": "Λεπτομέρειες άδειας χρήσης"
   },
   "permissionFor": {
     "message": "Άδεια για"
@@ -4735,10 +4699,6 @@
   },
   "pleaseConfirm": {
     "message": "Παρακαλούμε επιβεβαιώστε"
-  },
-  "plusMore": {
-    "message": "+ $1 ακόμη",
-    "description": "$1 is the number of additional items"
   },
   "plusXMore": {
     "message": "+ $1 ακόμη",

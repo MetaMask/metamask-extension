@@ -1,6 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import {
@@ -14,6 +13,8 @@ import {
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
+  SHIELD_PLAN_ROUTE,
+  TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
 import { getConfirmationRoute } from '../confirmations/hooks/useConfirmationNavigation';
 // eslint-disable-next-line import/no-restricted-paths
@@ -33,7 +34,6 @@ import {
   selectHasSwapsQuotes,
   selectShowAwaitingSwapScreen,
 } from '../../ducks/swaps/swaps';
-import { useNavState } from '../../contexts/navigation-state';
 import { useModalState } from '../../hooks/useModalState';
 
 const EXEMPTED_ROUTES = [
@@ -47,6 +47,9 @@ const EXEMPTED_ROUTES = [
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
+  // shield approval transaction back to shield plan and transaction shield settings page on cancel/confirm, need to be exempted otherwise it will redirect to home page
+  SHIELD_PLAN_ROUTE,
+  TRANSACTION_SHIELD_ROUTE,
 ];
 
 const SNAP_APPROVAL_TYPES = [
@@ -63,7 +66,6 @@ export const ConfirmationHandler = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { pathname } = location;
-  const navState = useNavState();
   const { closeModals } = useModalState();
 
   const envType = getEnvironmentType();
@@ -76,11 +78,7 @@ export const ConfirmationHandler = () => {
   const swapsFetchParams = useSelector(getFetchParams);
   const pendingApprovals = useSelector(selectPendingApprovalsForNavigation);
   const hasApprovalFlows = useSelector(selectHasApprovalFlows);
-
-  // Read stayOnHomePage from both v5 location.state and v5-compat navState
-  const stayOnHomePage =
-    Boolean(location.state?.stayOnHomePage) ||
-    Boolean(navState?.stayOnHomePage);
+  const stayOnHomePage = Boolean(location.state?.stayOnHomePage);
 
   const canRedirect = !isNotification && !stayOnHomePage;
 
@@ -120,30 +118,39 @@ export const ConfirmationHandler = () => {
     swapsFetchParams,
   ]);
 
+  // Runs on all routes (not just home), so skip navigation on exempted routes
   const isExemptedRoute = EXEMPTED_ROUTES.some((route) =>
     pathname.startsWith(route),
   );
 
+  // Ported from home.component - hasAllowedPopupRedirectApprovals()
   const hasAllowedPopupRedirectApprovals = pendingApprovals.some((approval) =>
     SNAP_APPROVAL_TYPES.includes(approval.type),
   );
 
+  const hasSwapRelatedNavigation =
+    showAwaitingSwapScreen ||
+    hasSwapsQuotes ||
+    swapsFetchParams ||
+    hasBridgeQuotes;
+
+  const isFullscreenExemption =
+    isFullscreen &&
+    !hasAllowedPopupRedirectApprovals &&
+    !hasSwapRelatedNavigation;
+
+  // Ported from home.component - componentDidUpdate()
   useEffect(() => {
     if (isExemptedRoute) {
       return;
     }
 
-    if (isFullscreen && !hasAllowedPopupRedirectApprovals) {
+    if (isFullscreenExemption) {
       return;
     }
 
     checkStatusAndNavigate();
-  }, [
-    checkStatusAndNavigate,
-    hasAllowedPopupRedirectApprovals,
-    isExemptedRoute,
-    isFullscreen,
-  ]);
+  }, [checkStatusAndNavigate, isExemptedRoute, isFullscreenExemption]);
 
   return null;
 };

@@ -1,14 +1,15 @@
 import { Browser } from 'selenium-webdriver';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { withFixtures } from '../../../helpers';
-import { shortenAddress } from '../../../../../ui/helpers/utils/util';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import ConnectHardwareWalletPage from '../../../page-objects/pages/hardware-wallet/connect-hardware-wallet-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import SelectHardwareWalletAccountPage from '../../../page-objects/pages/hardware-wallet/select-hardware-wallet-account-page';
+import MultichainAccountDetailsPage from '../../../page-objects/pages/multichain/multichain-account-details-page';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { checkAccountAddressDisplayedInAccountList } from '../common';
 
 describe('Ledger Hardware', function () {
   it('derives the correct accounts and unlocks the first account', async function () {
@@ -66,11 +67,7 @@ describe('Ledger Hardware', function () {
         await headerNavbar.checkPageIsLoaded();
         await new HomePage(driver).checkExpectedBalanceIsDisplayed('0');
         await headerNavbar.openAccountMenu();
-        await accountListPage.checkPageIsLoaded();
-        await accountListPage.checkAccountDisplayedInAccountList('Ledger 1');
-        await accountListPage.checkAccountAddressDisplayedInAccountList(
-          shortenAddress(KNOWN_PUBLIC_KEY_ADDRESSES[0].address),
-        );
+        await checkAccountAddressDisplayedInAccountList(driver, 'Ledger', 1);
       },
     );
   });
@@ -124,23 +121,19 @@ describe('Ledger Hardware', function () {
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('0');
         await headerNavbar.openAccountMenu();
-        await accountListPage.checkPageIsLoaded();
-        for (let i = 0; i < 5; i++) {
-          await accountListPage.checkAccountDisplayedInAccountList(
-            `Ledger ${i + 1}`,
-          );
-          await accountListPage.checkAccountAddressDisplayedInAccountList(
-            shortenAddress(KNOWN_PUBLIC_KEY_ADDRESSES[i].address),
-          );
-        }
+        await checkAccountAddressDisplayedInAccountList(driver, 'Ledger', 5);
 
         // Remove Ledger 1 account and check Ledger 1 account is removed
-        await accountListPage.removeAccount('Ledger 1');
-        await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed('0');
-        await headerNavbar.openAccountMenu();
+        await accountListPage.openMultichainAccountMenu({
+          accountLabel: `Ledger Account 1`,
+        });
+        await accountListPage.clickMultichainAccountMenuItem('Account details');
+        const accountDetailsPage = new MultichainAccountDetailsPage(driver);
+        await accountDetailsPage.checkPageIsLoaded();
+        await accountDetailsPage.clickRemoveAccountButton();
+        await accountDetailsPage.clickRemoveAccountConfirmButton();
         await accountListPage.checkAccountIsNotDisplayedInAccountList(
-          'Ledger 1',
+          `Ledger Account 1`,
         );
       },
     );

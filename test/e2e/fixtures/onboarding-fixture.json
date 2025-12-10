@@ -37,7 +37,7 @@
     },
     "AppMetadataController": {
       "currentAppVersion": "13.12.0",
-      "currentMigrationVersion": 183,
+      "currentMigrationVersion": 184,
       "previousAppVersion": "",
       "previousMigrationVersion": 0
     },
@@ -334,19 +334,19 @@
             }
           ]
         },
-        "0x18c6": {
-          "blockExplorerUrls": ["https://megaexplorer.xyz"],
-          "chainId": "0x18c6",
+        "0x18c7": {
+          "blockExplorerUrls": ["https://megaeth-testnet-v2.blockscout.com"],
+          "chainId": "0x18c7",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
-          "name": "Mega Testnet",
+          "name": "MegaETH Testnet",
           "nativeCurrency": "MegaETH",
           "rpcEndpoints": [
             {
               "failoverUrls": [],
-              "networkClientId": "megaeth-testnet",
+              "networkClientId": "megaeth-testnet-v2",
               "type": "custom",
-              "url": "https://carrot.megaeth.com/rpc"
+              "url": "https://timothy.megaeth.com/rpc"
             }
           ]
         },
@@ -514,7 +514,7 @@
         },
         "eip155": {
           "0x1": true,
-          "0x18c6": false,
+          "0x18c7": false,
           "0x2105": true,
           "0x279f": false,
           "0x38": true,
@@ -1934,6 +1934,10 @@
       "useTransactionSimulations": true,
       "watchEthereumAccountEnabled": false
     },
+    "ProfileMetricsController": {
+      "initialEnqueueCompleted": false,
+      "syncQueue": {}
+    },
     "RemoteFeatureFlagController": {
       "cacheTimestamp": 0,
       "remoteFeatureFlags": {}
@@ -2128,6 +2132,6 @@
     }
   },
   "meta": {
-    "version": 183
+    "version": 184
   }
 }

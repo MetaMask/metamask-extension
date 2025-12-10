@@ -24,7 +24,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import { BackgroundColor } from '../../../helpers/constants/design-system';
 import { Popover, PopoverPosition } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -67,6 +67,11 @@ export type MultichainAddressRowsListProps = {
    * The delay of the hover.
    */
   hoverCloseDelay?: number;
+  /**
+   * Optional callback triggered when the "View All" button is clicked,
+   * before navigation occurs. Useful for analytics or tracing.
+   */
+  onViewAllClick?: () => void;
 };
 
 export const MultichainHoveredAddressRowsList = ({
@@ -74,6 +79,7 @@ export const MultichainHoveredAddressRowsList = ({
   children,
   showAccountHeaderAndBalance = true,
   hoverCloseDelay = 50,
+  onViewAllClick,
 }: MultichainAddressRowsListProps) => {
   const t = useI18nContext();
   const [, handleCopy] = useCopyToClipboard();
@@ -264,11 +270,12 @@ export const MultichainHoveredAddressRowsList = ({
   const handleViewAllClick = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
       e.stopPropagation();
+      onViewAllClick?.();
       navigate(
         `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(groupId)}`,
       );
     },
-    [groupId, navigate],
+    [groupId, navigate, onViewAllClick],
   );
 
   const renderedRows = useMemo(() => {

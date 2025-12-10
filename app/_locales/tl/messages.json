@@ -1467,9 +1467,6 @@
   "connectWithMetaMask": {
     "message": "Kumonekta sa MetaMask"
   },
-  "connectedAccounts": {
-    "message": "Mga konektadong account"
-  },
   "connectedAccountsDescriptionPlural": {
     "message": "Mayroon kang $1 account na nakakonekta sa site na ito.",
     "description": "$1 is the number of accounts"
@@ -1483,9 +1480,6 @@
   "connectedAccountsListTooltip": {
     "message": "Maaaring makita ng $1 ang balanse ng account, address, aktibidad, at magmungkahi ng mga transaksyon na aprubahan para sa mga konektadong account.",
     "description": "$1 is the origin name"
-  },
-  "connectedAccountsToast": {
-    "message": "In-update ang mga konektadong account"
   },
   "connectedSites": {
     "message": "Mga konektadong site"
@@ -2018,14 +2012,6 @@
   },
   "disconnectThisAccount": {
     "message": "Idiskonekta ang account na ito"
-  },
-  "disconnectedAllAccountsToast": {
-    "message": "Nadiskonekta ang lahat ng account mula sa $1",
-    "description": "$1 is name of the dapp`"
-  },
-  "disconnectedSingleAccountToast": {
-    "message": "Ang $1 ay nadiskonekta mula sa $2",
-    "description": "$1 is name of the name and $2 represents the dapp name`"
   },
   "discover": {
     "message": "Tuklasin"
@@ -4272,25 +4258,6 @@
     "message": "$1 icon",
     "description": "$1 is the icon name"
   },
-  "onboardingPinExtensionAltLaunch": {
-    "message": "Ilunsad ang extension"
-  },
-  "onboardingPinExtensionAltPin": {
-    "message": "I-pin ang extension"
-  },
-  "onboardingPinExtensionDescription": {
-    "message": "I-pin ang MetaMask sa iyong browser para madali itong ma-access at madaling makita ang mga kumpirmasyon ng transaksyon."
-  },
-  "onboardingPinExtensionDescription2": {
-    "message": "I-access ang iyong MetaMask wallet sa 1 click sa pamamagitan ng pag-click sa extension."
-  },
-  "onboardingPinExtensionDescription3": {
-    "message": "I-click ang $1 extension icon para ma-access ito kaagad",
-    "description": "$1 is the browser name"
-  },
-  "onboardingPinExtensionTitle": {
-    "message": "Tapos na ang pag-install!"
-  },
   "onboardingSignInWith": {
     "message": "Mag-sign in gamit ang $1",
     "description": "$1 is the type of login used Google, Apple, etc"
@@ -4429,9 +4396,6 @@
   "pendingTransactionAlertMessageHyperlink": {
     "message": "Alamin kung paano kanselahin o pabilisin ang transaksyon.",
     "description": "The text for the hyperlink in the pending transaction alert message"
-  },
-  "permissionDetails": {
-    "message": "Mga detalye ng permiso"
   },
   "permissionFor": {
     "message": "Pahintulot para sa"
@@ -4735,10 +4699,6 @@
   },
   "pleaseConfirm": {
     "message": "Pakikumpirma"
-  },
-  "plusMore": {
-    "message": "+ $1 pa",
-    "description": "$1 is the number of additional items"
   },
   "plusXMore": {
     "message": "+ $1 pa",
@@ -6087,11 +6047,11 @@
     "message": "Walang insight na ipapakita"
   },
   "snapsPrivacyWarningFirstMessage": {
-    "message": "Kinikilala mo na anumang snap na i-install mo ay isang Serbisyong Third Party, maliban kung tinukoy, ayon sa depenisyon sa $1 ng Consensys. Ang iyong paggamit ng mga Serbisyong Third Party ay pinapamahalaan ng hiwalay na mga tuntunin at kundisyon na itinakda ng tagapagbigay ng Serbisyong Third Party. Iyong ina-access, pinagbabatayan, o ginagamit mo ang Serbisyong Third Party sa sarili mong panganib. Itinatanggi ng Consensys ang lahat ng responsibilidad at pananagutan para sa anumang pagkalugi sa account dahil sa iyong paggamit ng mga Serbisyo ng Third Party.",
+    "message": "Kinikilala mo na anumang snap na i-install mo ay isang Serbisyong third-party, maliban kung tinukoy, ayon sa depenisyon sa $1 ng Consensys. Ang iyong paggamit ng mga Serbisyong third-party ay pinapamahalaan ng hiwalay na mga tuntunin at kundisyon na itinakda ng tagapagbigay ng Serbisyong third-party. Iyong ina-access, pinagbabatayan, o ginagamit mo ang Serbisyong third-party sa sarili mong panganib. Itinatanggi ng Consensys ang lahat ng responsibilidad at pananagutan para sa anumang pagkalugi sa account dahil sa iyong paggamit ng mga Serbisyo ng third-party.",
     "description": "First part of a message in popup modal displayed when installing a snap for the first time. $1 is terms of use link."
   },
   "snapsPrivacyWarningSecondMessage": {
-    "message": "Ang anumang impormasyong ibinabahagi mo sa mga Serbisyo ng Third Party ay direktang kokolektahin ng mga Serbisyo ng Third Party na iyon alinsunod sa kanilang mga patakaran sa pagkapribado. Pakitingnan ang kanilang mga patakaran sa pagkapribado para sa higit pang impormasyon.",
+    "message": "Ang anumang impormasyong ibinabahagi mo sa mga Serbisyo ng third-party ay direktang kokolektahin ng mga Serbisyo ng third-party na iyon alinsunod sa kanilang mga patakaran sa pagkapribado. Pakitingnan ang kanilang mga patakaran sa pagkapribado para sa higit pang impormasyon.",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
   },
   "snapsPrivacyWarningThirdMessage": {

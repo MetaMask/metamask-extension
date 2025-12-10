@@ -1440,9 +1440,6 @@
   "connectWithMetaMask": {
     "message": "Ceangail le MetaMask"
   },
-  "connectedAccounts": {
-    "message": "Cuntais nasctha"
-  },
   "connectedAccountsDescriptionPlural": {
     "message": "Tá $1 cuntas agat ceangailte leis an suíomh seo.",
     "description": "$1 is the number of accounts"
@@ -1456,9 +1453,6 @@
   "connectedAccountsListTooltip": {
     "message": "Is féidir le $1 iarmhéid an chuntais, an seoladh, an ghníomhaíocht a fheiceáil, agus idirbhearta a mholadh le ceadú do chuntais nasctha.",
     "description": "$1 is the origin name"
-  },
-  "connectedAccountsToast": {
-    "message": "Cuntais nasctha nuashonraithe"
   },
   "connectedSites": {
     "message": "Suíomhanna ceangailte"
@@ -1999,14 +1993,6 @@
   },
   "disconnectThisAccount": {
     "message": "Dícheangail an cuntas seo"
-  },
-  "disconnectedAllAccountsToast": {
-    "message": "Gach cuntas dícheangailte ó $1",
-    "description": "$1 is name of the dapp`"
-  },
-  "disconnectedSingleAccountToast": {
-    "message": "$1 dícheangailte ó $2",
-    "description": "$1 is name of the name and $2 represents the dapp name`"
   },
   "discover": {
     "message": "Faigh amach"
@@ -4272,25 +4258,6 @@
     "message": "Deilbhín $1",
     "description": "$1 is the icon name"
   },
-  "onboardingPinExtensionAltLaunch": {
-    "message": "Seoladh síneadh"
-  },
-  "onboardingPinExtensionAltPin": {
-    "message": "Síneadh bioráin"
-  },
-  "onboardingPinExtensionDescription": {
-    "message": "Prínnigh MetaMask ar do bhrabhsálaí ionas go mbeidh sé inrochtana agus éasca deimhnithe idirbheart a fheiceáil."
-  },
-  "onboardingPinExtensionDescription2": {
-    "message": "Rochtain do sparán MetaMask le 1 chlic trí chliceáil ar an síneadh."
-  },
-  "onboardingPinExtensionDescription3": {
-    "message": "Cliceáil ar dheilbhín síneadh $1 chun rochtain a fháil air láithreach",
-    "description": "$1 is the browser name"
-  },
-  "onboardingPinExtensionTitle": {
-    "message": "Tá an suiteáil críochnaithe!"
-  },
   "onboardingSignInWith": {
     "message": "Sínigh isteach le $1",
     "description": "$1 is the type of login used Google, Apple, etc"
@@ -4429,9 +4396,6 @@
   "pendingTransactionAlertMessageHyperlink": {
     "message": "Foghlaim conas idirbheart a chealú nó a bhrostú.",
     "description": "The text for the hyperlink in the pending transaction alert message"
-  },
-  "permissionDetails": {
-    "message": "Sonraí ceadanna"
   },
   "permissionFor": {
     "message": "Cead do"
@@ -4735,10 +4699,6 @@
   },
   "pleaseConfirm": {
     "message": "Deimhnigh le do thoil"
-  },
-  "plusMore": {
-    "message": "+ $1 breise",
-    "description": "$1 is the number of additional items"
   },
   "plusXMore": {
     "message": "+ $1 breise",
@@ -5659,10 +5619,6 @@
   "shieldPlanMonthlyPrice": {
     "message": "$1/mí",
     "description": "The $1 is the price of the monthly plan"
-  },
-  "shieldPlanNoFunds": {
-    "message": "Gan aon chistí ar fáil",
-    "description": "$1 or $2 shows the supported token eg. USDC, USDT or mUSD"
   },
   "shieldPlanPayWith": {
     "message": "Íoc le"

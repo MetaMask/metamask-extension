@@ -11,7 +11,7 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -54,7 +54,7 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -135,7 +135,7 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -181,7 +181,7 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -223,7 +223,7 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -303,7 +303,7 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
         />
       </button>
       <div
-        class="mm-box mm-box--padding-right-12 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--padding-right-12 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -331,7 +331,7 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -374,7 +374,7 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -455,7 +455,7 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -501,7 +501,7 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -543,7 +543,7 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -623,7 +623,7 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
         />
       </button>
       <div
-        class="mm-box mm-box--padding-right-12 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--padding-right-12 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -653,7 +653,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -695,7 +695,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -764,7 +764,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
         />
       </button>
       <div
-        class="mm-box mm-box--padding-right-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--padding-right-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -784,7 +784,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-left: 0px; padding-right: 0px;"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
           >
             <div
               class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -820,7 +820,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -849,7 +849,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -870,7 +870,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                 >
                   <div
-                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                   >
                     <div
                       class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -899,7 +899,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                 >
                   <div
-                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                   >
                     <div
                       class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -920,7 +920,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -960,7 +960,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1000,7 +1000,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1044,7 +1044,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1065,7 +1065,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                 >
                   <div
-                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                   >
                     <div
                       class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1086,7 +1086,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1115,7 +1115,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1136,7 +1136,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
                           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                         >
                           <div
-                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                           >
                             <div
                               class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1176,7 +1176,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
                           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                         >
                           <div
-                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                           >
                             <div
                               class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1216,7 +1216,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
                           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                         >
                           <div
-                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                           >
                             <div
                               class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1275,7 +1275,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1317,7 +1317,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1386,7 +1386,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
         />
       </button>
       <div
-        class="mm-box mm-box--padding-right-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--padding-right-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1406,7 +1406,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-left: 0px; padding-right: 0px;"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
           >
             <div
               class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1442,7 +1442,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1463,7 +1463,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                 >
                   <div
-                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                   >
                     <div
                       class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1492,7 +1492,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                 >
                   <div
-                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                   >
                     <div
                       class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1534,7 +1534,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1555,7 +1555,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                 >
                   <div
-                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                   >
                     <div
                       class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1584,7 +1584,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                 >
                   <div
-                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                   >
                     <div
                       class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1626,7 +1626,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1668,7 +1668,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1710,7 +1710,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1779,7 +1779,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
         />
       </button>
       <div
-        class="mm-box mm-box--padding-right-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--padding-right-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1799,7 +1799,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-left: 0px; padding-right: 0px;"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
           >
             <div
               class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1835,7 +1835,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1864,7 +1864,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1885,7 +1885,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                 >
                   <div
-                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                   >
                     <div
                       class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1914,7 +1914,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                 >
                   <div
-                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                   >
                     <div
                       class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1935,7 +1935,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -1975,7 +1975,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2015,7 +2015,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2059,7 +2059,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2080,7 +2080,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                 >
                   <div
-                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                   >
                     <div
                       class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2101,7 +2101,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2130,7 +2130,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2151,7 +2151,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                         >
                           <div
-                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                           >
                             <div
                               class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2191,7 +2191,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                         >
                           <div
-                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                           >
                             <div
                               class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -2231,7 +2231,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
                           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                         >
                           <div
-                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
                           >
                             <div
                               class="mm-box mm-box--display-flex mm-box--align-items-center"

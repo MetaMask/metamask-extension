@@ -13,7 +13,7 @@
 # audit these changes on their own, and leave their analysis in a comment.
 # These codeowners will review this analysis, and review the policy changes in
 # further detail if warranted.
-lavamoat/                            @MetaMask/extension-devs @MetaMask/policy-reviewers @MetaMask/supply-chain
+lavamoat/                            @MetaMask/policy-reviewers
 
 # The offscreen.ts script file that is included in the offscreen document html
 # file is responsible, at present, for loading the snaps execution environment
@@ -142,6 +142,7 @@ app/scripts/lib/transaction/util.*                                              
 ui/pages/confirmations                                                              @MetaMask/confirmations
 ui/components/multichain/pages/send                                                 @MetaMask/confirmations
 ui/pages/confirmations/components/confirm/footer                                    @MetaMask/confirmations @MetaMask/web3auth
+ui/pages/confirmations/components/confirm/info/shield-subscription-approve          @MetaMask/confirmations @MetaMask/web3auth
 ui/pages/confirmations/hooks/alerts/useShieldCoverageAlert.test.ts                  @MetaMask/confirmations @MetaMask/web3auth
 ui/pages/confirmations/hooks/alerts/useShieldCoverageAlert.ts                       @MetaMask/confirmations @MetaMask/web3auth
 ui/pages/confirmations/hooks/alerts/transactions/ShieldCoverageAlertMessage.tsx     @MetaMask/confirmations @MetaMask/web3auth
@@ -165,20 +166,21 @@ app/scripts/lib/smart-transaction                 @MetaMask/transactions
 shared/lib/multichain/addresses/* @MetaMask/new-networks
 
 # QA Team - E2E Framework
-test/e2e/page-objects/                            @MetaMask/qa
-test/e2e/seeder/                                  @MetaMask/qa
-test/e2e/default-fixture.js                       @MetaMask/qa
-test/e2e/fixture-builder.js                       @MetaMask/qa
-test/e2e/fixture-server.js                        @MetaMask/qa
-test/e2e/helpers.js                               @MetaMask/qa
-test/e2e/mock-e2e-allowlist.js                    @MetaMask/qa
-test/e2e/mock-e2e.js                              @MetaMask/qa
-test/e2e/tests/settings/state-logs-helpers.ts     @MetaMask/qa
-test/e2e/tests/settings/state-logs.json           @MetaMask/qa @MetaMask/extension-privacy-reviewers
-test/e2e/fixtures/onboarding-fixture.json         @MetaMask/qa @MetaMask/extension-platform
-test/e2e/fixtures/fixture-validation.ts           @MetaMask/qa @MetaMask/extension-platform
-test/e2e/dist/wallet-fixture-export.spec.ts       @MetaMask/qa @MetaMask/extension-platform
-test/e2e/dist/wallet-fixture-validation.spec.ts   @MetaMask/qa @MetaMask/extension-platform
+test/e2e/page-objects/                                                @MetaMask/qa
+test/e2e/seeder/                                                      @MetaMask/qa
+test/e2e/default-fixture.js                                           @MetaMask/qa
+test/e2e/fixture-builder.js                                           @MetaMask/qa
+test/e2e/fixture-server.js                                            @MetaMask/qa
+test/e2e/helpers.js                                                   @MetaMask/qa
+test/e2e/mock-e2e-allowlist.js                                        @MetaMask/qa
+test/e2e/mock-e2e.js                                                  @MetaMask/qa
+test/e2e/tests/settings/state-logs-helpers.ts                         @MetaMask/qa
+test/e2e/tests/settings/state-logs.json                               @MetaMask/qa @MetaMask/extension-privacy-reviewers
+test/e2e/tests/privacy/privacy-max-allowlist-onboarding.json          @MetaMask/qa @MetaMask/extension-privacy-reviewers
+test/e2e/fixtures/onboarding-fixture.json                             @MetaMask/qa @MetaMask/extension-platform
+test/e2e/fixtures/fixture-validation.ts                               @MetaMask/qa @MetaMask/extension-platform
+test/e2e/dist/wallet-fixture-export.spec.ts                           @MetaMask/qa @MetaMask/extension-platform
+test/e2e/dist/wallet-fixture-validation.spec.ts                       @MetaMask/qa @MetaMask/extension-platform
 
 # Wallet Integrations
 app/scripts/lib/rpc-method-middleware                                 @MetaMask/wallet-integrations
@@ -188,7 +190,7 @@ test/e2e/playwright/benchmark                                         @MetaMask/
 test/e2e/flask/multichain-api                                         @MetaMask/wallet-integrations
 # TODO CONSOLIDATE THE MIDDLEWARE BELOW INTO THE RPC-METHOD-MIDDLEWARE FOLDER
 app/scripts/lib/createRPCMethodTrackingMiddleware.js                  @MetaMask/wallet-integrations
-app/scripts/lib/createMetamaskMiddleware.js                           @MetaMask/wallet-integrations
+app/scripts/lib/createMetamaskMiddleware.ts                           @MetaMask/wallet-integrations
 app/scripts/lib/createOnboardingMiddleware.js                         @MetaMask/wallet-integrations
 app/scripts/lib/createMetaRPCHandler.js                               @MetaMask/wallet-integrations
 app/scripts/lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware.ts @MetaMask/wallet-integrations
