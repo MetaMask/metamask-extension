@@ -10,11 +10,8 @@ import AccountListPage from '../../page-objects/pages/account-list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import MultichainAccountDetailsPage from '../../page-objects/pages/multichain/multichain-account-details-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
-import {
-  SECOND_TEST_E2E_SRP,
-  mockActiveNetworks,
-  withMultiSrp,
-} from './common-multi-srp';
+import { mockActiveNetworks, withMultiSrp } from './common-multi-srp';
+import { SECOND_TEST_E2E_SRP } from './constants';
 
 const TEST_SRP_WORDS_FOR_UI_TEST = [
   'ghost',
