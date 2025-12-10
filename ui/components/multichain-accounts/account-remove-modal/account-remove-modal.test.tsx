@@ -2,7 +2,7 @@ import React from 'react';
 import { screen } from '@testing-library/react';
 
 import configureStore from '../../../store/store';
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { AccountRemoveModal } from './account-remove-modal';
 
 describe('AccountRemoveModal', () => {

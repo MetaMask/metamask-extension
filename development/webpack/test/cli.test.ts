@@ -14,6 +14,8 @@ describe('./utils/cli.ts', () => {
     devtool: 'source-map',
     sentry: false,
     test: false,
+    reactCompilerVerbose: false,
+    reactCompilerDebug: 'none',
     zip: false,
     minify: false,
     browser: ['chrome'],
