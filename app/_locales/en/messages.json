@@ -72,6 +72,9 @@
   "accept": {
     "message": "Accept"
   },
+  "acceptAndClose": {
+    "message": "Accept and close"
+  },
   "acceptTermsOfUse": {
     "message": "I have read and agree to the $1",
     "description": "$1 is the `terms` message"
@@ -4597,6 +4600,9 @@
   "openInBlockExplorer": {
     "message": "Open in block explorer"
   },
+  "openSettings": {
+    "message": "Open settings"
+  },
   "openWallet": {
     "message": "Open wallet"
   },
@@ -5038,8 +5044,8 @@
   "pna25BannerTitle": {
     "message": "We're updating MetaMetrics. We'll associate some in-app activity to on-chain data to better understand usage. You can opt out via Settings."
   },
-  "pna25ModalTitle": {
-    "message": "Privacy and product updates"
+  "pna25ModalBlogPostLink": {
+    "message": "blog post"
   },
   "pna25ModalBody1": {
     "message": "To better serve our customers, we're updating our analytics so that some actions you take in MetaMask can be linked with the wallet address and related on-chain activity using hashed and pseudonymous identifiers. We use this information only to improve MetaMask performance and features, not for advertising. You can turn this off at any time in Settings."
@@ -5050,14 +5056,8 @@
   "pna25ModalBody3": {
     "message": "You can read more about what we collect, how we protect it, and why we're making this change in our latest "
   },
-  "pna25ModalBlogPostLink": {
-    "message": "blog post"
-  },
-  "openSettings": {
-    "message": "Open settings"
-  },
-  "acceptAndClose": {
-    "message": "Accept and close"
+  "pna25ModalTitle": {
+    "message": "Privacy and product updates"
   },
   "popularNetworkAddToolTip": {
     "message": "Some of these networks rely on third parties. The connections may be less reliable or enable third-parties to track activity.",
