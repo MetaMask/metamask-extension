@@ -78,6 +78,8 @@ export function useMultichainTransactionDisplay(
     [TransactionType.Swap]: `${t('swap')} ${from?.unit} ${t(
       'to',
     ).toLowerCase()} ${to?.unit}`,
+    [TransactionType.StakeDeposit]: t('stakingDeposit'),
+    [TransactionType.StakeWithdraw]: t('stakingWithdrawal'),
     [TransactionType.Unknown]: t('interaction'),
   };
 

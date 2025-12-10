@@ -5982,6 +5982,12 @@
   "sent": {
     "message": "Sent"
   },
+  "stakingDeposit": {
+    "message": "Staking Deposit"
+  },
+  "stakingWithdrawal": {
+    "message": "Staking Withdrawal"
+  },
   "sentSpecifiedTokens": {
     "message": "Sent $1",
     "description": "Symbol of the specified token"
