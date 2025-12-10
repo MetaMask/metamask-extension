@@ -477,6 +477,7 @@ describe('Multichain API', function () {
           );
           await testDapp.checkPageIsLoaded();
 
+          await driver.delay(5000);
           const newgetSessionResult = await testDapp.getSession();
 
           const expectedNewSessionScopes = [...OLD_SCOPES, ...NEW_SCOPES].map(
