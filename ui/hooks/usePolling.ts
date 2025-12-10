@@ -32,7 +32,7 @@ const usePolling = <PollingInput>(
     const currentCallId = callIdRef.current;
 
     if (usePollingOptions.enabled === false) {
-      return () => {
+      cleanup();
         // noop
       };
     }
