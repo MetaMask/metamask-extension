@@ -10,6 +10,11 @@
         "SuppressedError": true
       }
     },
+    "@date-io/luxon": {
+      "packages": {
+        "luxon": true
+      }
+    },
     "@ensdomains/content-hash": {
       "globals": {
         "console.warn": true
@@ -679,6 +684,7 @@
         "getSelection": true,
         "performance.now": true,
         "removeEventListener": true,
+        "requestAnimationFrame": true,
         "setInterval": true,
         "setTimeout": true
       },
@@ -692,8 +698,26 @@
         "prop-types": true,
         "react": true,
         "react-dom": true,
-        "@material-ui/core>react-is": true,
+        "react-redux>react-is": true,
         "react-transition-group": true
+      }
+    },
+    "@material-ui/pickers": {
+      "globals": {
+        "addEventListener": true,
+        "innerHeight": true,
+        "orientation": true,
+        "removeEventListener": true,
+        "screen": true
+      },
+      "packages": {
+        "@babel/runtime": true,
+        "@material-ui/core": true,
+        "@material-ui/pickers>clsx": true,
+        "prop-types": true,
+        "react": true,
+        "react-transition-group": true,
+        "@material-ui/pickers>rifm": true
       }
     },
     "@material-ui/core>@material-ui/styles": {
@@ -735,7 +759,7 @@
       "packages": {
         "@babel/runtime": true,
         "prop-types": true,
-        "@material-ui/core>@material-ui/utils>react-is": true
+        "react-redux>react-is": true
       }
     },
     "@metamask/abi-utils": {
@@ -842,7 +866,7 @@
         "@metamask/keyring-snap-client": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/assets-controllers>@metamask/phishing-controller": true,
-        "@metamask/assets-controllers>@metamask/polling-controller": true,
+        "@metamask/bridge-controller>@metamask/polling-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
@@ -959,7 +983,7 @@
       "packages": {
         "@metamask/bridge-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/bridge-status-controller>@metamask/polling-controller": true,
+        "@metamask/bridge-controller>@metamask/polling-controller": true,
         "@metamask/superstruct": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true,
@@ -1115,18 +1139,6 @@
         "@metamask/ppom-validator>json-rpc-random-id": true
       }
     },
-    "@metamask/transaction-controller>@metamask/eth-block-tracker": {
-      "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/safe-event-emitter": true,
-        "@metamask/utils": true,
-        "@metamask/ppom-validator>json-rpc-random-id": true
-      }
-    },
     "@metamask/keyring-controller>@metamask/eth-hd-keyring": {
       "globals": {
         "TextEncoder": true
@@ -1159,56 +1171,13 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/eth-json-rpc-provider": true,
+        "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/eth-json-rpc-provider": true,
         "@metamask/json-rpc-engine": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true
       }
     },
     "@metamask/eth-json-rpc-middleware": {
-      "globals": {
-        "console.error": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/eth-sig-util": true,
-        "@metamask/json-rpc-engine": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "@metamask/json-rpc-engine>klona": true,
-        "@metamask/eth-json-rpc-middleware>safe-stable-stringify": true
-      }
-    },
-    "@metamask/bridge-controller>@metamask/network-controller>@metamask/eth-json-rpc-middleware": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/eth-sig-util": true,
-        "@metamask/json-rpc-engine": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "@metamask/json-rpc-engine>klona": true,
-        "@metamask/eth-json-rpc-middleware>safe-stable-stringify": true
-      }
-    },
-    "@metamask/transaction-controller>@metamask/network-controller>@metamask/eth-json-rpc-middleware": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/eth-sig-util": true,
-        "@metamask/json-rpc-engine": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "@metamask/json-rpc-engine>klona": true,
-        "@metamask/eth-json-rpc-middleware>safe-stable-stringify": true
-      }
-    },
-    "@metamask/transaction-pay-controller>@metamask/network-controller>@metamask/eth-json-rpc-middleware": {
       "globals": {
         "setTimeout": true
       },
@@ -1225,27 +1194,15 @@
     "@metamask/eth-json-rpc-provider": {
       "packages": {
         "@metamask/json-rpc-engine": true,
+        "nanoid": true
+      }
+    },
+    "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/eth-json-rpc-provider": {
+      "packages": {
+        "@metamask/json-rpc-engine": true,
         "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,
         "uuid": true
-      }
-    },
-    "@metamask/bridge-controller>@metamask/network-controller>@metamask/eth-json-rpc-provider": {
-      "packages": {
-        "@metamask/json-rpc-engine": true,
-        "nanoid": true
-      }
-    },
-    "@metamask/transaction-controller>@metamask/network-controller>@metamask/eth-json-rpc-provider": {
-      "packages": {
-        "@metamask/json-rpc-engine": true,
-        "nanoid": true
-      }
-    },
-    "@metamask/transaction-pay-controller>@metamask/network-controller>@metamask/eth-json-rpc-provider": {
-      "packages": {
-        "@metamask/json-rpc-engine": true,
-        "nanoid": true
       }
     },
     "@metamask/eth-ledger-bridge-keyring": {
@@ -1442,7 +1399,7 @@
       "packages": {
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/transaction-controller>@metamask/gas-fee-controller>@metamask/polling-controller": true,
+        "@metamask/bridge-controller>@metamask/polling-controller": true,
         "bn.js": true,
         "uuid": true
       }
@@ -1659,7 +1616,7 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/keyring-api": true,
-        "@metamask/bridge-controller>@metamask/network-controller": true,
+        "@metamask/network-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "lodash": true
@@ -1727,60 +1684,6 @@
         "uuid": true
       }
     },
-    "@metamask/bridge-controller>@metamask/network-controller": {
-      "globals": {
-        "Intl.NumberFormat": true,
-        "URL": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
-        "@metamask/transaction-controller>@metamask/eth-block-tracker": true,
-        "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
-        "@metamask/bridge-controller>@metamask/network-controller>@metamask/eth-json-rpc-middleware": true,
-        "@metamask/bridge-controller>@metamask/network-controller>@metamask/eth-json-rpc-provider": true,
-        "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/json-rpc-engine": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
-        "@metamask/utils": true,
-        "addons-linter>deepmerge": true,
-        "eslint>fast-deep-equal": true,
-        "immer": true,
-        "lodash": true,
-        "reselect": true,
-        "uri-js": true,
-        "uuid": true
-      }
-    },
-    "@metamask/transaction-controller>@metamask/network-controller": {
-      "globals": {
-        "Intl.NumberFormat": true,
-        "URL": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
-        "@metamask/transaction-controller>@metamask/eth-block-tracker": true,
-        "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
-        "@metamask/transaction-controller>@metamask/network-controller>@metamask/eth-json-rpc-middleware": true,
-        "@metamask/transaction-controller>@metamask/network-controller>@metamask/eth-json-rpc-provider": true,
-        "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/json-rpc-engine": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
-        "@metamask/utils": true,
-        "addons-linter>deepmerge": true,
-        "eslint>fast-deep-equal": true,
-        "immer": true,
-        "lodash": true,
-        "reselect": true,
-        "uri-js": true,
-        "uuid": true
-      }
-    },
     "@metamask/transaction-pay-controller>@metamask/network-controller": {
       "globals": {
         "Intl.NumberFormat": true,
@@ -1790,10 +1693,10 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/transaction-controller>@metamask/eth-block-tracker": true,
+        "@metamask/network-controller>@metamask/eth-block-tracker": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
-        "@metamask/transaction-pay-controller>@metamask/network-controller>@metamask/eth-json-rpc-middleware": true,
-        "@metamask/transaction-pay-controller>@metamask/network-controller>@metamask/eth-json-rpc-provider": true,
+        "@metamask/eth-json-rpc-middleware": true,
+        "@metamask/eth-json-rpc-provider": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/json-rpc-engine": true,
         "@metamask/rpc-errors": true,
@@ -1923,18 +1826,6 @@
         "punycode": true
       }
     },
-    "@metamask/assets-controllers>@metamask/polling-controller": {
-      "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/snaps-utils>fast-json-stable-stringify": true,
-        "uuid": true
-      }
-    },
     "@metamask/bridge-controller>@metamask/polling-controller": {
       "globals": {
         "clearTimeout": true,
@@ -1959,18 +1850,6 @@
         "uuid": true
       }
     },
-    "@metamask/bridge-status-controller>@metamask/polling-controller": {
-      "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/snaps-utils>fast-json-stable-stringify": true,
-        "uuid": true
-      }
-    },
     "@metamask/gas-fee-controller>@metamask/polling-controller": {
       "globals": {
         "clearTimeout": true,
@@ -1983,31 +1862,7 @@
         "uuid": true
       }
     },
-    "@metamask/transaction-controller>@metamask/gas-fee-controller>@metamask/polling-controller": {
-      "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/snaps-utils>fast-json-stable-stringify": true,
-        "uuid": true
-      }
-    },
     "@metamask/smart-transactions-controller>@metamask/polling-controller": {
-      "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/snaps-utils>fast-json-stable-stringify": true,
-        "uuid": true
-      }
-    },
-    "@metamask/subscription-controller>@metamask/polling-controller": {
       "globals": {
         "clearTimeout": true,
         "console.error": true,
@@ -2070,7 +1925,7 @@
       },
       "packages": {
         "@metamask/controller-utils": true,
-        "@metamask/subscription-controller>@metamask/polling-controller": true,
+        "@metamask/bridge-controller>@metamask/polling-controller": true,
         "@metamask/profile-metrics-controller>@metamask/profile-sync-controller": true,
         "@metamask/eth-qr-keyring>async-mutex": true
       }
@@ -2168,6 +2023,7 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
+        "@metamask/utils": true,
         "uuid": true
       }
     },
@@ -2333,6 +2189,9 @@
       }
     },
     "@metamask/snaps-utils>@metamask/snaps-registry": {
+      "globals": {
+        "crypto": true
+      },
       "packages": {
         "@metamask/superstruct": true,
         "@metamask/utils": true,
@@ -2361,7 +2220,8 @@
       "packages": {
         "@metamask/rpc-errors": true,
         "@metamask/superstruct": true,
-        "@metamask/utils": true
+        "@metamask/utils": true,
+        "luxon": true
       }
     },
     "@metamask/snaps-utils": {
@@ -2407,7 +2267,7 @@
       },
       "packages": {
         "@metamask/controller-utils": true,
-        "@metamask/subscription-controller>@metamask/polling-controller": true,
+        "@metamask/bridge-controller>@metamask/polling-controller": true,
         "@metamask/transaction-controller": true,
         "@metamask/subscription-controller>bignumber.js": true
       }
@@ -2449,7 +2309,7 @@
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/transaction-controller>@metamask/gas-fee-controller": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/transaction-controller>@metamask/network-controller": true,
+        "@metamask/network-controller": true,
         "@metamask/transaction-controller>@metamask/nonce-tracker": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
@@ -2680,7 +2540,7 @@
         "@reduxjs/toolkit>reselect": true
       }
     },
-    "react-router-dom-v5-compat>@remix-run/router": {
+    "react-router-dom>@remix-run/router": {
       "globals": {
         "AbortController": true,
         "DOMException": true,
@@ -2691,7 +2551,8 @@
         "URL": true,
         "URLSearchParams": true,
         "console": true,
-        "document.defaultView": true
+        "document.defaultView": true,
+        "history": true
       }
     },
     "@rive-app/react-canvas>@rive-app/canvas": {
@@ -3720,7 +3581,7 @@
         "pageYOffset": true
       },
       "packages": {
-        "react-router-dom>tiny-invariant": true
+        "react-beautiful-dnd>css-box-model>tiny-invariant": true
       }
     },
     "@material-ui/core>@material-ui/styles>jss-plugin-vendor-prefixer>css-vendor": {
@@ -4213,31 +4074,6 @@
         "define": true
       }
     },
-    "history": {
-      "globals": {
-        "console": true,
-        "define": true,
-        "document.defaultView": true,
-        "document.querySelector": true
-      }
-    },
-    "react-router-dom>history": {
-      "globals": {
-        "addEventListener": true,
-        "confirm": true,
-        "document": true,
-        "history": true,
-        "location": true,
-        "navigator.userAgent": true,
-        "removeEventListener": true
-      },
-      "packages": {
-        "react-router-dom>history>resolve-pathname": true,
-        "react-router-dom>tiny-invariant": true,
-        "react-router-dom>tiny-warning": true,
-        "react-router-dom>history>value-equal": true
-      }
-    },
     "@toruslabs/eccrypto>elliptic>hmac-drbg": {
       "packages": {
         "ethers>@ethersproject/sha2>hash.js": true,
@@ -4444,13 +4280,13 @@
     "@material-ui/core>@material-ui/styles>jss-plugin-nested": {
       "packages": {
         "@babel/runtime": true,
-        "react-router-dom>tiny-warning": true
+        "@material-ui/core>@material-ui/styles>jss>tiny-warning": true
       }
     },
     "@material-ui/core>@material-ui/styles>jss-plugin-rule-value-function": {
       "packages": {
         "@material-ui/core>@material-ui/styles>jss": true,
-        "react-router-dom>tiny-warning": true
+        "@material-ui/core>@material-ui/styles>jss>tiny-warning": true
       }
     },
     "@material-ui/core>@material-ui/styles>jss-plugin-vendor-prefixer": {
@@ -4468,7 +4304,7 @@
       "packages": {
         "@babel/runtime": true,
         "@material-ui/core>@material-ui/styles>jss>is-in-browser": true,
-        "react-router-dom>tiny-warning": true
+        "@material-ui/core>@material-ui/styles>jss>tiny-warning": true
       }
     },
     "ethereumjs-util>ethereum-cryptography>keccak": {
@@ -4746,11 +4582,6 @@
     "path-browserify": {
       "packages": {
         "process": true
-      }
-    },
-    "serve-handler>path-to-regexp": {
-      "packages": {
-        "serve-handler>path-to-regexp>isarray": true
       }
     },
     "crypto-browserify>pbkdf2": {
@@ -5046,16 +4877,6 @@
         "react": true
       }
     },
-    "@material-ui/core>react-is": {
-      "globals": {
-        "console": true
-      }
-    },
-    "@material-ui/core>@material-ui/utils>react-is": {
-      "globals": {
-        "console": true
-      }
-    },
     "react-redux>hoist-non-react-statics>react-is": {
       "globals": {
         "console": true
@@ -5066,17 +4887,7 @@
         "console": true
       }
     },
-    "react-markdown>react-is": {
-      "globals": {
-        "console": true
-      }
-    },
     "react-redux>react-is": {
-      "globals": {
-        "console": true
-      }
-    },
-    "react-router-dom>react-router>react-is": {
       "globals": {
         "console": true
       }
@@ -5090,7 +4901,7 @@
         "prop-types": true,
         "react-markdown>property-information": true,
         "react": true,
-        "react-markdown>react-is": true,
+        "react-redux>react-is": true,
         "react-markdown>remark-parse": true,
         "react-markdown>remark-rehype": true,
         "react-markdown>space-separated-tokens": true,
@@ -5126,16 +4937,6 @@
       }
     },
     "react-router-dom": {
-      "packages": {
-        "react-router-dom>history": true,
-        "prop-types": true,
-        "react": true,
-        "react-router-dom>react-router": true,
-        "react-router-dom>tiny-invariant": true,
-        "react-router-dom>tiny-warning": true
-      }
-    },
-    "react-router-dom-v5-compat": {
       "globals": {
         "FormData": true,
         "URL": true,
@@ -5145,7 +4946,7 @@
         "confirm": true,
         "define": true,
         "document": true,
-        "history.scrollRestoration": true,
+        "history": true,
         "location.href": true,
         "removeEventListener": true,
         "scrollTo": true,
@@ -5155,33 +4956,20 @@
         "setTimeout": true
       },
       "packages": {
-        "react-router-dom-v5-compat>@remix-run/router": true,
-        "history": true,
+        "react-router-dom>@remix-run/router": true,
         "react": true,
         "react-dom": true,
-        "react-router-dom": true,
-        "react-router-dom-v5-compat>react-router": true
+        "react-router-dom>react-router": true
       }
     },
     "react-router-dom>react-router": {
-      "packages": {
-        "react-router-dom>history": true,
-        "react-redux>hoist-non-react-statics": true,
-        "serve-handler>path-to-regexp": true,
-        "prop-types": true,
-        "react": true,
-        "react-router-dom>react-router>react-is": true,
-        "react-router-dom>tiny-invariant": true,
-        "react-router-dom>tiny-warning": true
-      }
-    },
-    "react-router-dom-v5-compat>react-router": {
       "globals": {
         "console.error": true,
+        "console.warn": true,
         "define": true
       },
       "packages": {
-        "react-router-dom-v5-compat>@remix-run/router": true,
+        "react-router-dom>@remix-run/router": true,
         "react": true
       }
     },
@@ -5476,6 +5264,17 @@
         "browserify>buffer": true
       }
     },
+    "@material-ui/pickers>rifm": {
+      "globals": {
+        "console.error": true,
+        "document.addEventListener": true,
+        "document.removeEventListener": true
+      },
+      "packages": {
+        "@babel/runtime": true,
+        "react": true
+      }
+    },
     "ethereumjs-util>create-hash>ripemd160": {
       "packages": {
         "browserify>buffer": true,
@@ -5734,7 +5533,7 @@
         "process": true
       }
     },
-    "react-router-dom>tiny-warning": {
+    "@material-ui/core>@material-ui/styles>jss>tiny-warning": {
       "globals": {
         "console": true
       }

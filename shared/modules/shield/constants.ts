@@ -1,2 +1,4 @@
-export const SHIELD_SUBSCRIPTION_CARD_TAB_ACTION_ERROR_MESSAGE =
-  'tab action failed';
+export const SHIELD_ERROR = {
+  tabActionFailed: 'tab action failed',
+  subscriptionPollingTimedOut: 'subscription polling timed out',
+};

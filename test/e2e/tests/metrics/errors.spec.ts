@@ -51,6 +51,8 @@ const maskedBackgroundFields = [
   'CurrencyController.currencyRates.SepoliaETH.conversionDate',
   'CurrencyController.currencyRates.MegaETH.conversionDate',
   'CurrencyController.currencyRates.MON.conversionDate',
+  // Network metadata entries vary as networks are added/removed in the codebase
+  'NetworkController.networksMetadata',
 ];
 const maskedUiFields = maskedBackgroundFields.map(backgroundToUiField);
 

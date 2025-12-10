@@ -215,7 +215,7 @@ import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
 import {
   getIsSeedlessOnboardingFeatureEnabled,
-  isGatorPermissionsFeatureEnabled,
+  getEnabledAdvancedPermissions,
 } from '../../shared/modules/environment';
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
@@ -1100,14 +1100,17 @@ export default class MetamaskController extends EventEmitter {
       },
       version,
       // account mgmt
-      getAccounts,
+      getAccounts: (requestOrigin) => getAccounts({ origin: requestOrigin }),
       // tx signing
-      processTransaction: (transactionParams, dappRequest) =>
+      processTransaction: (transactionParams, dappRequest, requestContext) =>
         addDappTransaction(
-          this.getAddTransactionRequest({ transactionParams, dappRequest }),
+          this.getAddTransactionRequest({
+            transactionParams,
+            dappRequest,
+            requestContext,
+          }),
         ),
       // msg signing
-
       processTypedMessage: (...args) =>
         addTypedMessage({
           signatureController: this.signatureController,
@@ -1144,12 +1147,32 @@ export default class MetamaskController extends EventEmitter {
           (meta) =>
             meta.hash === hash && meta.status === TransactionStatus.submitted,
         ),
-      processRequestExecutionPermissions: isGatorPermissionsFeatureEnabled()
-        ? forwardRequestToSnap.bind(null, {
+      processRequestExecutionPermissions: async (params, req, context) => {
+        const enabledTypes = getEnabledAdvancedPermissions();
+
+        if (!params || params.length === 0) {
+          throw rpcErrors.methodNotSupported('No permission type provided');
+        }
+
+        for (const param of params) {
+          const permissionType = param?.permission?.type;
+          if (!enabledTypes.includes(permissionType)) {
+            throw rpcErrors.methodNotSupported(
+              `Permission type '${permissionType ?? 'unknown'}' is not enabled`,
+            );
+          }
+        }
+
+        return forwardRequestToSnap(
+          {
             snapId: process.env.PERMISSIONS_KERNEL_SNAP_ID,
             handleRequest: this.handleSnapRequest.bind(this),
-          })
-        : undefined,
+          },
+          params,
+          req,
+          context,
+        );
+      },
     });
 
     // ensure isClientOpenAndUnlocked is updated when memState updates
@@ -6322,10 +6345,12 @@ export default class MetamaskController extends EventEmitter {
     transactionParams,
     transactionOptions,
     dappRequest,
+    requestContext,
     ...otherParams
   }) {
     const networkClientId =
-      dappRequest?.networkClientId ?? transactionOptions?.networkClientId;
+      requestContext?.get('networkClientId') ??
+      transactionOptions?.networkClientId;
     const { chainId } =
       this.networkController.getNetworkConfigurationByNetworkClientId(
         networkClientId,
@@ -6333,6 +6358,7 @@ export default class MetamaskController extends EventEmitter {
     return {
       internalAccounts: this.accountsController.listAccounts(),
       dappRequest,
+      requestContext,
       networkClientId,
       selectedAccount: this.accountsController.getAccountByAddress(
         transactionParams.from,

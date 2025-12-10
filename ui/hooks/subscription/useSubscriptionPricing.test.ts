@@ -6,7 +6,7 @@ import {
   ProductType,
   PaymentType,
 } from '@metamask/subscription-controller';
-import { renderHookWithProvider } from '../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import baseMockState from '../../../test/data/mock-state.json';
 import {
   useSubscriptionPricing,
