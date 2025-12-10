@@ -65,11 +65,20 @@ export const getAllNetworkTransactions = createDeepEqualSelector(
   },
 );
 
+// Safe wrapper that prevents crashes when provider config is unavailable
+const getProviderConfigSafe = (state) => {
+  try {
+    return getProviderConfig(state);
+  } catch {
+    return null;
+  }
+};
+
 export const getCurrentNetworkTransactions = createDeepEqualSelector(
   getTransactions,
-  getProviderConfig,
+  getProviderConfigSafe,
   (transactions, providerConfig) => {
-    if (!transactions.length) {
+    if (!transactions.length || !providerConfig) {
       return [];
     }
     return transactions.filter(
