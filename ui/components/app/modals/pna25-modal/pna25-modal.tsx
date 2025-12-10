@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -36,6 +36,8 @@ export default function Pna25Modal() {
   const navigate = useNavigate();
   const trackEvent = useContext(MetaMetricsContext);
 
+  const hasTrackedView = useRef(false);
+
   const handleAction = useCallback(
     (action: Pna25NoticeAction) => {
       trackEvent({
@@ -58,7 +60,10 @@ export default function Pna25Modal() {
   );
 
   useEffect(() => {
-    handleAction(Pna25NoticeAction.Viewed);
+    if (!hasTrackedView.current) {
+      hasTrackedView.current = true;
+      handleAction(Pna25NoticeAction.Viewed);
+    }
   }, [handleAction]);
 
   return (
