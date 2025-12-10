@@ -1,10 +1,11 @@
 import { useEffect, useRef, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import stringify from 'fast-json-stable-stringify';
+import type { Json } from '@metamask/utils';
 import { getCompletedOnboarding } from '../ducks/metamask/metamask';
 import { useSyncEqualityCheck } from './useSyncEqualityCheck';
 
-type UseMultiPollingOptions<PollingInput> = {
+type UseMultiPollingOptions<PollingInput extends Json> = {
   startPolling: (input: PollingInput) => Promise<string>;
   stopPollingByPollingToken: (pollingToken: string) => void;
   input: PollingInput[];
@@ -13,7 +14,7 @@ type UseMultiPollingOptions<PollingInput> = {
 // A hook that manages multiple polling loops of a polling controller.
 // Callers provide an array of inputs, and the hook manages starting
 // and stopping polling loops for each input.
-const useMultiPolling = <PollingInput>(
+const useMultiPolling = <PollingInput extends Json>(
   usePollingOptions: UseMultiPollingOptions<PollingInput>,
 ) => {
   const completedOnboarding = useSelector(getCompletedOnboarding);

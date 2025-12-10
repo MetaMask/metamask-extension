@@ -1,14 +1,15 @@
 import { useEffect, useRef } from 'react';
+import type { Json } from '@metamask/utils';
 import { useSyncEqualityCheck } from './useSyncEqualityCheck';
 
-type UsePollingOptions<PollingInput> = {
+type UsePollingOptions<PollingInput extends Json> = {
   startPolling: (input: PollingInput) => Promise<string>;
   stopPollingByPollingToken: (pollingToken: string) => void;
   input: PollingInput;
   enabled?: boolean;
 };
 
-const usePolling = <PollingInput>(
+const usePolling = <PollingInput extends Json>(
   usePollingOptions: UsePollingOptions<PollingInput>,
 ) => {
   const pollTokenRef = useRef<null | string>(null);
