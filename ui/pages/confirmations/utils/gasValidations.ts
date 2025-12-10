@@ -120,7 +120,8 @@ function validateValueIsNumber(
   t: TranslateFunction,
 ): string | false {
   const normalizedValue = normalizeGasInput(value);
-  if (/^\d*\.?\d*$/u.test(normalizedValue)) {
+  // Require at least one digit - matches numbers like "123", "123.45", ".45", "123."
+  if (/^(\d+\.?\d*|\d*\.\d+)$/u.test(normalizedValue)) {
     return false;
   }
   return t('onlyNumbersAllowed');

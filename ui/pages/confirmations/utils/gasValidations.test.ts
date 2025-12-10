@@ -42,6 +42,10 @@ describe('gas-validations', () => {
       expect(validateGas('abc', mockT)).toBe('Only numbers are allowed');
     });
 
+    it('return error message when gas is a lone decimal point', () => {
+      expect(validateGas('.', mockT)).toBe('Only numbers are allowed');
+    });
+
     it('return error message when gas is zero', () => {
       expect(validateGas('0', mockT)).toBe('Gas Limit must be greater than 0');
     });
@@ -77,6 +81,12 @@ describe('gas-validations', () => {
 
     it('return error message when priority fee is not a number', () => {
       expect(validatePriorityFee('abc', '10', mockT)).toBe(
+        'Only numbers are allowed',
+      );
+    });
+
+    it('return error message when priority fee is a lone decimal point', () => {
+      expect(validatePriorityFee('.', '10', mockT)).toBe(
         'Only numbers are allowed',
       );
     });
@@ -119,6 +129,12 @@ describe('gas-validations', () => {
       );
     });
 
+    it('return error message when max base fee is a lone decimal point', () => {
+      expect(validateMaxBaseFee('.', '5', mockT)).toBe(
+        'Only numbers are allowed',
+      );
+    });
+
     it('return error message when max base fee is zero', () => {
       expect(validateMaxBaseFee('0', '5', mockT)).toBe(
         'Max Base Fee must be greater than 0',
@@ -153,6 +169,10 @@ describe('gas-validations', () => {
       expect(validateGasPrice('abc', mockT)).toBe('Only numbers are allowed');
     });
 
+    it('return error message when gas price is a lone decimal point', () => {
+      expect(validateGasPrice('.', mockT)).toBe('Only numbers are allowed');
+    });
+
     it('return error message when gas price is zero', () => {
       expect(validateGasPrice('0', mockT)).toBe(
         'Gas price must be greater than 0',
@@ -166,6 +186,8 @@ describe('gas-validations', () => {
     it('return undefined when gas price is valid', () => {
       expect(validateGasPrice('1', mockT)).toBeUndefined();
       expect(validateGasPrice('10.5', mockT)).toBeUndefined();
+      expect(validateGasPrice('.5', mockT)).toBeUndefined();
+      expect(validateGasPrice('5.', mockT)).toBeUndefined();
     });
   });
 });
