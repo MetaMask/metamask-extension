@@ -54,6 +54,20 @@ describe(`migration #${version}`, () => {
       expect(newStorage.data).toStrictEqual(oldStorage.data);
     });
 
+    it('returns the original state if TokenBalancesController is missing', async () => {
+      const oldStorage = {
+        meta: { version: oldVersion },
+        data: {
+          TokensController: {},
+          AccountsController: {},
+        },
+      };
+
+      const newStorage = await migrate(oldStorage);
+
+      expect(newStorage.data).toStrictEqual(oldStorage.data);
+    });
+
     it('logs an error and returns the original state if TokensController is not an object', async () => {
       const oldStorage = {
         meta: { version: oldVersion },
