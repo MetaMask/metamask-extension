@@ -1952,6 +1952,7 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
+        "@metamask/utils": true,
         "uuid": true
       }
     },
@@ -2101,6 +2102,9 @@
       }
     },
     "@metamask/snaps-utils>@metamask/snaps-registry": {
+      "globals": {
+        "crypto": true
+      },
       "packages": {
         "@metamask/superstruct": true,
         "@metamask/utils": true,
@@ -4956,6 +4960,14 @@
     "react-focus-lock>react-clientside-effect": {
       "packages": {
         "@babel/runtime": true,
+        "react": true
+      }
+    },
+    "react-compiler-runtime": {
+      "globals": {
+        "console.error": true
+      },
+      "packages": {
         "react": true
       }
     },
