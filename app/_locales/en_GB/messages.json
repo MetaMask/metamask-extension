@@ -2835,10 +2835,6 @@
     "message": "Period",
     "description": "Label for the period of a token stream permission"
   },
-  "gatorPermissionUnknownTokenAmount": {
-    "message": "Unknown amount",
-    "description": "Text for an unknown amount with no decimals"
-  },
   "gatorPermissionWeeklyFrequency": {
     "message": "Weekly",
     "description": "Time period for weekly recurring permissions redemption"
@@ -2847,9 +2843,17 @@
     "message": "Expiration date",
     "description": "Label for the expiration date of a permission"
   },
+  "gatorPermissionsHideDetails": {
+    "message": "Hide Details",
+    "description": "Button text to hide permission details"
+  },
   "gatorPermissionsInitialAllowance": {
     "message": "Initial allowance",
     "description": "Label for the initial allowance of a permission"
+  },
+  "gatorPermissionsJustification": {
+    "message": "Justification",
+    "description": "Label for the justification"
   },
   "gatorPermissionsMaxAllowance": {
     "message": "Max allowance",
@@ -2862,6 +2866,10 @@
   "gatorPermissionsRevoke": {
     "message": "Revoke",
     "description": "Label for the revoke button of a gator permission"
+  },
+  "gatorPermissionsShowDetails": {
+    "message": "Show Details",
+    "description": "Button text to show permission details"
   },
   "gatorPermissionsStartDate": {
     "message": "Start date",
