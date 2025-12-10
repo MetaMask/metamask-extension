@@ -90,67 +90,69 @@ const getTitle = (
   primaryType?: keyof typeof TypedSignSignaturePrimaryTypes,
   tokenStandard?: string,
   isUpgradeOnly?: boolean,
-) => {
-  if (pending) {
-    return '';
-  }
+): string | undefined => {
+  let title: string;
 
   switch (confirmation?.type) {
     case TransactionType.contractInteraction:
-      return t('confirmTitleTransaction');
+      title = t('confirmTitleTransaction');
+      break;
     case TransactionType.batch:
-      if (isUpgradeOnly) {
-        return t('confirmTitleAccountTypeSwitch');
-      }
-      return t('confirmTitleTransaction');
+      title = isUpgradeOnly
+        ? t('confirmTitleAccountTypeSwitch')
+        : t('confirmTitleTransaction');
+      break;
     case TransactionType.deployContract:
-      return t('confirmTitleDeployContract');
+      title = t('confirmTitleDeployContract');
+      break;
     case TransactionType.personalSign:
-      if (isSIWESignatureRequest(confirmation as SignatureRequestType)) {
-        return t('confirmTitleSIWESignature');
-      }
-      return t('confirmTitleSignature');
+      title = isSIWESignatureRequest(confirmation as SignatureRequestType)
+        ? t('confirmTitleSIWESignature')
+        : t('confirmTitleSignature');
+      break;
     case TransactionType.revokeDelegation:
-      return t('confirmTitleAccountTypeSwitch');
+      title = t('confirmTitleAccountTypeSwitch');
+      break;
     case TransactionType.signTypedData:
       if (primaryType === TypedSignSignaturePrimaryTypes.PERMIT) {
         const isRevokeDAIPermit = getIsRevokeDAIPermit(
           confirmation as SignatureRequestType,
         );
         if (isRevokeDAIPermit || customSpendingCap === '0') {
-          return t('confirmTitleRevokeApproveTransaction');
+          title = t('confirmTitleRevokeApproveTransaction');
+        } else if (tokenStandard === TokenStandard.ERC721) {
+          title = t('setApprovalForAllRedesignedTitle');
+        } else {
+          title = t('confirmTitlePermitTokens');
         }
-
-        if (tokenStandard === TokenStandard.ERC721) {
-          return t('setApprovalForAllRedesignedTitle');
-        }
-
-        return t('confirmTitlePermitTokens');
+      } else if ((confirmation as SignatureRequestType).decodedPermission) {
+        title = t('confirmTitlePermission');
+      } else {
+        title = t('confirmTitleSignature');
       }
-
-      if ((confirmation as SignatureRequestType).decodedPermission) {
-        return t('confirmTitlePermission');
-      }
-
-      return t('confirmTitleSignature');
+      break;
     case TransactionType.tokenMethodApprove:
       if (isNFT) {
-        return t('confirmTitleApproveTransactionNFT');
+        title = t('confirmTitleApproveTransactionNFT');
+      } else if (customSpendingCap === '0') {
+        title = t('confirmTitleRevokeApproveTransaction');
+      } else {
+        title = t('confirmTitlePermitTokens');
       }
-      if (customSpendingCap === '0') {
-        return t('confirmTitleRevokeApproveTransaction');
-      }
-      return t('confirmTitlePermitTokens');
+      break;
     case TransactionType.tokenMethodIncreaseAllowance:
-      return t('confirmTitlePermitTokens');
+      title = t('confirmTitlePermitTokens');
+      break;
     case TransactionType.tokenMethodSetApprovalForAll:
-      if (isRevokeSetApprovalForAll) {
-        return t('confirmTitleSetApprovalForAllRevokeTransaction');
-      }
-      return t('setApprovalForAllRedesignedTitle');
+      title = isRevokeSetApprovalForAll
+        ? t('confirmTitleSetApprovalForAllRevokeTransaction')
+        : t('setApprovalForAllRedesignedTitle');
+      break;
     default:
       return undefined;
   }
+
+  return pending ? '' : title;
 };
 
 const getDescription = (
