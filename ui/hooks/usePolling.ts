@@ -30,18 +30,19 @@ const usePolling = <PollingInput extends Json>(
     callIdRef.current += 1;
     const currentCallId = callIdRef.current;
 
-    if (usePollingOptions.enabled === false) {
-      cleanup();
-        // noop
-      };
-    }
-
     const cleanup = () => {
       if (pollTokenRef.current) {
         usePollingOptions.stopPollingByPollingToken(pollTokenRef.current);
         pollTokenRef.current = null;
       }
     };
+
+    if (usePollingOptions.enabled === false) {
+      cleanup();
+      return () => {
+        // no-op
+      };
+    }
 
     // Start polling when the component mounts
     usePollingOptions.startPolling(pollingInput).then((pollToken) => {
