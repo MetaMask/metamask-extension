@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useContext, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -43,7 +37,6 @@ export default function Pna25Modal() {
   const trackEvent = useContext(MetaMetricsContext);
 
   const hasTrackedView = useRef(false);
-  const [isOpen, setIsOpen] = useState(true);
 
   const handleAction = useCallback(
     (action: Pna25NoticeAction) => {
@@ -55,12 +48,9 @@ export default function Pna25Modal() {
         },
       });
 
-      // Acknowledge on first view so modal won't show on next app load
-      dispatch(setPna25Acknowledged(true));
-
-      // Close the modal for explicit dismiss actions
+      // Only acknowledge and close on user actions, not on initial view
       if (action !== Pna25NoticeAction.Viewed) {
-        setIsOpen(false);
+        dispatch(setPna25Acknowledged(true));
       }
 
       if (action === Pna25NoticeAction.OpenSettings) {
@@ -78,7 +68,7 @@ export default function Pna25Modal() {
   }, [handleAction]);
 
   return (
-    <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+    <Modal isOpen onClose={() => dispatch(setPna25Acknowledged(true))}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader onClose={() => handleAction(Pna25NoticeAction.Close)}>
