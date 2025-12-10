@@ -76,6 +76,7 @@ import {
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
 import { Numeric } from '../../../../../shared/modules/Numeric';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
+import { shouldHideTempoToken } from '../../../../../shared/lib/tempo-utils';
 
 import { useAssetMetadata } from './hooks/useAssetMetadata';
 import type {
@@ -553,7 +554,18 @@ export function AssetPickerModal({
   );
 
   const displayedTokens = useMemo(() => {
-    return unlistedAssetMetadata ? [unlistedAssetMetadata] : filteredTokenList;
+    const tokens = unlistedAssetMetadata
+      ? [unlistedAssetMetadata]
+      : filteredTokenList;
+
+    return tokens.filter(
+      (token) =>
+        !shouldHideTempoToken(
+          token.chainId,
+          token.type === AssetType.native,
+          token.symbol,
+        ),
+    );
   }, [unlistedAssetMetadata, filteredTokenList]);
 
   const getNetworkPickerLabel = () => {

@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+import { shouldHideTempoToken } from '../../../../../shared/lib/tempo-utils';
 import { type Asset } from '../../types/send';
 
 type UseSendAssetFilterProps = {
@@ -41,8 +42,17 @@ export const useSendAssetFilter = ({
       matchesSearchQuery(nft, searchQuery),
     );
 
+    const tempoFilteredTokens = filteredTokens.filter((token) => {
+      const chainId =
+        typeof token.chainId === 'string' ? token.chainId : undefined;
+      if (!chainId) {
+        return true;
+      }
+      return !shouldHideTempoToken(chainId, token.isNative, token.symbol);
+    });
+
     return {
-      filteredTokens,
+      filteredTokens: tempoFilteredTokens,
       filteredNfts,
     };
   }, [tokens, nfts, selectedChainId, searchQuery]);

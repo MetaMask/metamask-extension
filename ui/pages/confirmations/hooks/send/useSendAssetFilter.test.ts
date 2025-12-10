@@ -307,4 +307,28 @@ describe('useSendAssetFilter', () => {
     expect(result.current.filteredTokens).toEqual(mockTokens);
     expect(result.current.filteredNfts).toEqual(mockNfts);
   });
+
+  it('filters out USD tokens on Tempo network', () => {
+    const tempoTokens: Asset[] = [
+      { name: 'USD', symbol: 'USD', chainId: '0xa5bd', isNative: true },
+      { name: 'AlphaUSD', symbol: 'AlphaUSD', chainId: '0xa5bd' },
+      { name: 'Ethereum', symbol: 'ETH', chainId: '0x1' },
+    ];
+
+    const { result } = renderHookWithProvider(
+      () =>
+        useSendAssetFilter({
+          tokens: tempoTokens,
+          nfts: [],
+          selectedChainId: null,
+          searchQuery: '',
+        }),
+      mockState,
+    );
+
+    expect(result.current.filteredTokens).toEqual([
+      tempoTokens[1],
+      tempoTokens[2],
+    ]);
+  });
 });

@@ -3,6 +3,7 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
+import { isTempoNetwork } from '../../../../../../../../shared/lib/tempo-utils';
 import {
   Box,
   Icon,
@@ -64,7 +65,8 @@ export function SelectedGasFeeToken() {
 
   const nativeTicker = networkConfiguration?.nativeCurrency;
   const gasFeeToken = useSelectedGasFeeToken();
-  const symbol = gasFeeToken?.symbol ?? nativeTicker;
+  const isTempoChain = isTempoNetwork(chainId);
+  const symbol = gasFeeToken?.symbol ?? (isTempoChain ? 'USD' : nativeTicker);
 
   return (
     <>

@@ -3,6 +3,7 @@ import { Hex } from '@metamask/utils';
 import React, { Dispatch, SetStateAction } from 'react';
 import { useSelector } from 'react-redux';
 import { TEST_CHAINS } from '../../../../../../../../shared/constants/network';
+import { isTempoNetwork } from '../../../../../../../../shared/lib/tempo-utils';
 import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { Box, Text } from '../../../../../../../components/component-library';
@@ -57,6 +58,7 @@ export const EditGasFeesRow = ({
   } = transactionMeta;
   const gasFeeToken = useSelectedGasFeeToken();
   const showFiat = useShowFiat(chainId);
+  const isTempoChain = isTempoNetwork(chainId);
   const fiatValue = gasFeeToken ? gasFeeToken.amountFiat : fiatFee;
   const tokenValue = gasFeeToken ? gasFeeToken.amountFormatted : nativeFee;
   const metamaskFeeFiat = gasFeeToken?.metamaskFeeFiat;
@@ -117,8 +119,14 @@ export const EditGasFeesRow = ({
                 roundedValue={fiatValue}
               />
             )}
-            {!(showFiat && !showAdvancedDetails) && !isGasFeeSponsored && (
-              <TokenValue roundedValue={tokenValue} />
+            {!(showFiat && !showAdvancedDetails) &&
+              !isGasFeeSponsored &&
+              !isTempoChain && <TokenValue roundedValue={tokenValue} />}
+            {showAdvancedDetails && !isGasFeeSponsored && isTempoChain && (
+              <FiatValue
+                fullValue={fiatFeeWith18SignificantDigits}
+                roundedValue={fiatValue}
+              />
             )}
             {!isGasFeeSponsored && <SelectedGasFeeToken />}
           </Box>
@@ -195,6 +203,10 @@ function FiatValue({
 
 function useShowFiat(chainId: Hex): boolean {
   type TestNetChainId = (typeof TEST_CHAINS)[number];
+
+  if (isTempoNetwork(chainId)) {
+    return true;
+  }
 
   const isTestnet = TEST_CHAINS.includes(chainId as TestNetChainId);
   const { showFiatInTestnets } = useSelector(getPreferences);
