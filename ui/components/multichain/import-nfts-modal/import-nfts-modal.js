@@ -151,11 +151,15 @@ export const ImportNftsModal = ({ onClose }) => {
     }
     dispatch(setNewNftAddedMessage('success'));
 
-    const tokenDetails = await getTokenStandardAndDetails(
-      nftAddress,
-      null,
-      tokenId.toString(),
-    ).catch(() => ({}));
+    const tokenDetails = await Promise.race([
+      getTokenStandardAndDetails(nftAddress, null, tokenId.toString()),
+      new Promise((_, reject) =>
+        setTimeout(
+          () => reject(new Error('getTokenStandardAndDetails timeout')),
+          3000,
+        ),
+      ),
+    ]).catch(() => ({}));
 
     trackEvent({
       event: MetaMetricsEventName.TokenAdded,
