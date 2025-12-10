@@ -17,7 +17,7 @@ describe('Check balance', function (this: Suite) {
       },
     );
   });
-  it.skip('Just created Solana account shows 0 USD when native token is not enabled', async function () {
+  it('Just created Solana account shows 0 USD when native token is not enabled', async function () {
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),
