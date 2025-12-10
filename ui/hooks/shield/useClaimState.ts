@@ -3,10 +3,14 @@ import { useLocation } from 'react-router-dom';
 import { Attachment as ClaimAttachment } from '@metamask/claims-controller';
 import { useClaims } from '../../contexts/claims/claims';
 import { generateClaimSignature } from '../../store/actions';
+import { useClaimDraft } from './useClaimDraft';
 
-export const useClaimState = (isView: boolean = false) => {
+export type ClaimStateMode = 'new' | 'view' | 'edit-draft';
+
+export const useClaimState = (mode: ClaimStateMode = 'new') => {
   const { pathname } = useLocation();
   const { claims } = useClaims();
+  const { getDraft } = useClaimDraft();
   const [chainId, setChainId] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [impactedWalletAddress, setImpactedWalletAddress] =
@@ -19,8 +23,11 @@ export const useClaimState = (isView: boolean = false) => {
   const [files, setFiles] = useState<FileList>();
   const [uploadedFiles, setUploadedFiles] = useState<ClaimAttachment[]>([]);
   const [claimSignature, setClaimSignature] = useState<string>('');
+  const [currentDraftId, setCurrentDraftId] = useState<string | undefined>();
 
-  const claimId = pathname.split('/').pop();
+  const isView = mode === 'view';
+  const isEditDraft = mode === 'edit-draft';
+  const claimOrDraftId = pathname.split('/').pop();
 
   useEffect(() => {
     if (isView || !chainId || !impactedWalletAddress) {
@@ -36,9 +43,10 @@ export const useClaimState = (isView: boolean = false) => {
     })();
   }, [isView, chainId, impactedWalletAddress]);
 
+  // Load claim data for view mode
   useEffect(() => {
-    if (isView && claimId) {
-      const claimDetails = claims.find((claim) => claim.id === claimId);
+    if (isView && claimOrDraftId) {
+      const claimDetails = claims.find((claim) => claim.id === claimOrDraftId);
       if (claimDetails) {
         setEmail(claimDetails.email);
         setChainId(claimDetails.chainId);
@@ -49,7 +57,23 @@ export const useClaimState = (isView: boolean = false) => {
         setUploadedFiles(claimDetails.attachments || []);
       }
     }
-  }, [isView, claimId, claims]);
+  }, [isView, claimOrDraftId, claims]);
+
+  // Load draft data for edit-draft mode
+  useEffect(() => {
+    if (isEditDraft && claimOrDraftId) {
+      const draftDetails = getDraft(claimOrDraftId);
+      if (draftDetails) {
+        setCurrentDraftId(draftDetails.id);
+        setEmail(draftDetails.email);
+        setChainId(draftDetails.chainId);
+        setImpactedWalletAddress(draftDetails.impactedWalletAddress);
+        setImpactedTransactionHash(draftDetails.impactedTransactionHash);
+        setReimbursementWalletAddress(draftDetails.reimbursementWalletAddress);
+        setCaseDescription(draftDetails.caseDescription);
+      }
+    }
+  }, [isEditDraft, claimOrDraftId, getDraft]);
 
   return {
     chainId,
@@ -68,6 +92,7 @@ export const useClaimState = (isView: boolean = false) => {
     setFiles,
     uploadedFiles,
     claimSignature,
+    currentDraftId,
     clear: () => {
       setChainId('');
       setEmail('');
@@ -76,6 +101,7 @@ export const useClaimState = (isView: boolean = false) => {
       setReimbursementWalletAddress('');
       setCaseDescription('');
       setFiles(undefined);
+      setCurrentDraftId(undefined);
     },
   };
 };

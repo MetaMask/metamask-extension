@@ -37,7 +37,11 @@ import {
   BorderRadius,
   TextColor as DsTextColor,
 } from '../../../../helpers/constants/design-system';
-import { useClaimState } from '../../../../hooks/shield/useClaimState';
+import {
+  useClaimState,
+  ClaimStateMode,
+} from '../../../../hooks/shield/useClaimState';
+import { useClaimDraft } from '../../../../hooks/shield/useClaimDraft';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { isValidEmail } from '../../../../../app/scripts/lib/util';
@@ -74,11 +78,17 @@ import {
 } from './constants';
 import { isValidTransactionHash } from './utils';
 
-const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
+type ClaimsFormProps = {
+  mode?: ClaimStateMode;
+};
+
+const ClaimsForm = ({ mode = 'new' }: ClaimsFormProps) => {
+  const isView = mode === 'view';
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { refetchClaims } = useClaims();
+  const { saveDraft, deleteDraft } = useClaimDraft();
   const validSubmissionWindowDays = useSelector(getValidSubmissionWindowDays);
   const latestShieldSubscription = useSelector(getLatestShieldSubscription);
   const { captureShieldCtaClickedEvent, captureShieldClaimSubmissionEvent } =
@@ -102,7 +112,8 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
     setFiles,
     uploadedFiles,
     claimSignature,
-  } = useClaimState(isView);
+    currentDraftId,
+  } = useClaimState(mode);
 
   const [errors, setErrors] = useState<
     Partial<
@@ -369,6 +380,11 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
       // track the event when the claim submission is completed
       trackClaimSubmissionEvent('completed');
 
+      // Delete the draft if we were editing one
+      if (currentDraftId) {
+        deleteDraft(currentDraftId);
+      }
+
       dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.Success));
       // update claims
       await refetchClaims();
@@ -399,6 +415,53 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
     handleSubmitClaimError,
     captureShieldClaimSubmissionEvent,
     latestShieldSubscription,
+    currentDraftId,
+    deleteDraft,
+  ]);
+
+  const hasAnyDraftData = useMemo(() => {
+    return Boolean(
+      chainId ||
+        email ||
+        impactedWalletAddress ||
+        impactedTransactionHash ||
+        reimbursementWalletAddress ||
+        caseDescription,
+    );
+  }, [
+    chainId,
+    email,
+    impactedWalletAddress,
+    impactedTransactionHash,
+    reimbursementWalletAddress,
+    caseDescription,
+  ]);
+
+  const handleSaveDraft = useCallback(() => {
+    saveDraft(
+      {
+        chainId,
+        email,
+        impactedWalletAddress,
+        impactedTransactionHash,
+        reimbursementWalletAddress,
+        caseDescription,
+      },
+      currentDraftId,
+    );
+    dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.DraftSaved));
+    navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);
+  }, [
+    saveDraft,
+    chainId,
+    email,
+    impactedWalletAddress,
+    impactedTransactionHash,
+    reimbursementWalletAddress,
+    caseDescription,
+    currentDraftId,
+    dispatch,
+    navigate,
   ]);
 
   return (
@@ -681,9 +744,20 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
       )}
 
       {!isView && (
-        <Box className="settings-page__content-item-col">
+        <Box className="flex gap-2">
+          <Button
+            data-testid="shield-claim-save-draft-button"
+            className="flex-1"
+            variant={ButtonVariant.Secondary}
+            size={ButtonSize.Lg}
+            disabled={!hasAnyDraftData || isSubmittingClaim}
+            onClick={handleSaveDraft}
+          >
+            {t('shieldClaimSaveAsDraft')}
+          </Button>
           <Button
             data-testid="shield-claim-submit-button"
+            className="flex-1"
             variant={ButtonVariant.Primary}
             size={ButtonSize.Lg}
             disabled={isInvalidData || isSubmittingClaim}

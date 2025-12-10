@@ -46,6 +46,7 @@ export enum PasswordChangeToastType {
 export enum ClaimSubmitToastType {
   Success = 'success',
   Errored = 'errored',
+  DraftSaved = 'draft-saved',
 }
 
 export type NetworkConnectionBanner =

@@ -574,40 +574,57 @@ const ClaimSubmitToast = () => {
   const showClaimSubmitToast = useSelector(selectClaimSubmitToast);
   const autoHideToastDelay = 5 * SECOND;
 
+  const isSuccess = showClaimSubmitToast === ClaimSubmitToastType.Success;
+  const isDraftSaved = showClaimSubmitToast === ClaimSubmitToastType.DraftSaved;
+  const isErrored = showClaimSubmitToast === ClaimSubmitToastType.Errored;
+
   const description = useMemo(() => {
-    if (showClaimSubmitToast === ClaimSubmitToastType.Success) {
+    if (isSuccess) {
       return t('shieldClaimSubmitSuccessDescription');
     }
-    if (showClaimSubmitToast === ClaimSubmitToastType.Errored) {
+    if (isDraftSaved) {
+      return t('shieldClaimDraftSavedDescription');
+    }
+    if (isErrored) {
       return '';
     }
     return showClaimSubmitToast;
-  }, [showClaimSubmitToast, t]);
+  }, [showClaimSubmitToast, t, isSuccess, isDraftSaved, isErrored]);
+
+  const toastText = useMemo(() => {
+    if (isSuccess) {
+      return t('shieldClaimSubmitSuccess');
+    }
+    if (isDraftSaved) {
+      return t('shieldClaimDraftSaved');
+    }
+    return t('shieldClaimSubmitError');
+  }, [isSuccess, isDraftSaved, t]);
+
+  const dataTestId = useMemo(() => {
+    if (isSuccess) {
+      return 'claim-submit-toast-success';
+    }
+    if (isDraftSaved) {
+      return 'claim-draft-saved-toast';
+    }
+    return 'claim-submit-toast-error';
+  }, [isSuccess, isDraftSaved]);
 
   return (
     showClaimSubmitToast !== null && (
       <Toast
-        dataTestId={
-          showClaimSubmitToast === ClaimSubmitToastType.Success
-            ? 'claim-submit-toast-success'
-            : 'claim-submit-toast-error'
-        }
+        dataTestId={dataTestId}
         key="claim-submit-toast"
-        text={
-          showClaimSubmitToast === ClaimSubmitToastType.Success
-            ? t('shieldClaimSubmitSuccess')
-            : t('shieldClaimSubmitError')
-        }
+        text={toastText}
         description={description}
         startAdornment={
           <Icon
             name={
-              showClaimSubmitToast === ClaimSubmitToastType.Success
-                ? IconName.CheckBold
-                : IconName.CircleX
+              isSuccess || isDraftSaved ? IconName.CheckBold : IconName.CircleX
             }
             color={
-              showClaimSubmitToast === ClaimSubmitToastType.Success
+              isSuccess || isDraftSaved
                 ? IconColor.successDefault
                 : IconColor.errorDefault
             }

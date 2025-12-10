@@ -6035,6 +6035,12 @@
     "message": "This claim is being reviewed by our team. We will notify you when it has been approved by email. View the full coverage policy $1.",
     "description": "The $1 is a link to the full coverage policy"
   },
+  "shieldClaimDraftSaved": {
+    "message": "Draft saved"
+  },
+  "shieldClaimDraftSavedDescription": {
+    "message": "Your claim draft has been saved."
+  },
   "shieldClaimDuplicateClaimExists": {
     "message": "A claim has already been submitted for this transaction hash."
   },
@@ -6069,6 +6075,9 @@
   "shieldClaimGroupActiveNote": {
     "message": "Note: You can have a maximum of $1 active claims at a single time.",
     "description": "The $1 is the maximum number of active claims"
+  },
+  "shieldClaimGroupDrafts": {
+    "message": "Drafts"
   },
   "shieldClaimGroupCompleted": {
     "message": "Completed claims"
@@ -6138,6 +6147,9 @@
   },
   "shieldClaimSameWalletAddressesError": {
     "message": "Impacted wallet address and reimbursement wallet address must be different."
+  },
+  "shieldClaimSaveAsDraft": {
+    "message": "Save as draft"
   },
   "shieldClaimSelectAccount": {
     "message": "Select an account"
