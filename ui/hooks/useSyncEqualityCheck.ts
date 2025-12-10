@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import stringify from 'fast-json-stable-stringify';
+import type { Json } from '@metamask/utils';
 
 /**
  * Synchronous version of `useEqualityCheck` that provides referential stability without triggering unnecessary re-renders.
