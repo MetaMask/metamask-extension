@@ -131,12 +131,13 @@ function validateValueIsPositive(
   field: string,
   t: TranslateFunction,
 ): string | false {
-  if (parseFloat(value) > 0) {
+  const normalizedValue = normalizeGasInput(value);
+  if (parseFloat(normalizedValue) > 0) {
     return false;
   }
 
-  if (parseFloat(value) === 0) {
-    return t('noZeroValue', field);
+  if (parseFloat(normalizedValue) === 0) {
+    return t('noZeroValue', [field]);
   }
 
   return t('negativeValuesNotAllowed');
@@ -146,7 +147,8 @@ function validateGasLimitValueIsGreaterThanMinimum(
   value: string,
   t: TranslateFunction,
 ): string | false {
-  if (parseFloat(value) >= 21000) {
+  const normalizedValue = normalizeGasInput(value);
+  if (parseFloat(normalizedValue) >= 21000) {
     return false;
   }
   return t('gasLimitTooLow');
