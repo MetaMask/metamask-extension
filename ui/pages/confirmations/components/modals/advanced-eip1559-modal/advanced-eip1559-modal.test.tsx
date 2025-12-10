@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderWithProvider } from '../../../../../../test/jest';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { AdvancedEIP1559Modal } from './advanced-eip1559-modal';
 
 describe('AdvancedEIP1559Modal', () => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderWithProvider } from '../../../../../../test/jest';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { AdvancedGasPriceModal } from './advanced-gas-price-modal';
 
 describe('AdvancedGasPriceModal', () => {
