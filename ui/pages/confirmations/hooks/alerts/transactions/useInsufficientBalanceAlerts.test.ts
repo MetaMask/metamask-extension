@@ -1,5 +1,6 @@
 import { ApprovalType, toHex } from '@metamask/controller-utils';
 import {
+  GasFeeToken,
   TransactionMeta,
   TransactionParams,
   TransactionType,
@@ -134,6 +135,38 @@ describe('useInsufficientBalanceAlerts', () => {
     });
 
     expect(alerts).toEqual([]);
+  });
+
+  it('return alert when balance is insufficient and has GasFeeTokens but not selected gas fee token', () => {
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSmartTransaction: true,
+      isSupported: true,
+      pending: false,
+    });
+    const alerts = runHook({
+      balance: 7,
+      currentConfirmation: {
+        ...TRANSACTION_MOCK,
+        gasFeeTokens: [
+          {
+            tokenAddress: '0xabc',
+            symbol: 'ALT',
+            decimals: 18,
+            amount: '0x1',
+            balance: '0x0',
+            gas: '0x0',
+            maxFeePerGas: '0x0',
+            maxPriorityFeePerGas: '0x0',
+          } as unknown as GasFeeToken,
+        ],
+        selectedGasFeeToken: undefined,
+      },
+      transaction: {
+        ...TRANSACTION_MOCK,
+      },
+    });
+
+    expect(alerts).toEqual(ALERT);
   });
 
   it('returns no alerts if no transaction matching confirmation', () => {
