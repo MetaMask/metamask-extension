@@ -14,18 +14,12 @@ import { useGasFeeEstimates } from '../../../../hooks/useGasFeeEstimates';
 import { useFeeCalculations } from '../../components/confirm/info/hooks/useFeeCalculations';
 import { updateTransactionGasFees } from '../../../../store/actions';
 import { type GasOption } from '../../types/gas';
-import { EMPTY_VALUE_STRING, GasOptionIcon } from '../../constants/gas';
+import { EMPTY_VALUE_STRING } from '../../constants/gas';
 import { toHumanEstimatedTimeRange } from '../../utils/time';
 import { useTransactionNativeTicker } from '../transactions/useTransactionNativeTicker';
 import { hexWEIToDecGWEI } from '../../../../../shared/modules/conversion.utils';
 
 const HEX_ZERO = '0x0';
-
-const GasEstimateFeeLevelEmojis = {
-  [GasFeeEstimateLevel.Low]: GasOptionIcon.Low,
-  [GasFeeEstimateLevel.Medium]: GasOptionIcon.Medium,
-  [GasFeeEstimateLevel.High]: GasOptionIcon.High,
-};
 
 export const useGasFeeEstimateLevelOptions = ({
   handleCloseModals,
@@ -110,7 +104,6 @@ export const useGasFeeEstimateLevelOptions = ({
         });
 
       options.push({
-        emoji: GasEstimateFeeLevelEmojis[level],
         estimatedTime,
         isSelected: userFeeLevel === level,
         key: level,

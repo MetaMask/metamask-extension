@@ -14,7 +14,7 @@ import { useConfirmContext } from '../../context/confirm';
 import { useGasFeeEstimates } from '../../../../hooks/useGasFeeEstimates';
 import { useFeeCalculations } from '../../components/confirm/info/hooks/useFeeCalculations';
 import { type GasOption } from '../../types/gas';
-import { EMPTY_VALUE_STRING, GasOptionIcon } from '../../constants/gas';
+import { EMPTY_VALUE_STRING } from '../../constants/gas';
 import { useTransactionNativeTicker } from '../transactions/useTransactionNativeTicker';
 import { hexWEIToDecGWEI } from '../../../../../shared/modules/conversion.utils';
 
@@ -120,7 +120,6 @@ export const useGasPriceEstimateOption = ({
 
     return [
       {
-        emoji: GasOptionIcon.GasPrice,
         estimatedTime: undefined,
         isSelected: isGasPriceEstimateSelected,
         key: 'gasPrice',

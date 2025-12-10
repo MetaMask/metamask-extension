@@ -7,7 +7,6 @@ export type GasOptionTooltipProps = {
 };
 
 export type GasOption = {
-  emoji: string;
   estimatedTime?: string;
   isSelected: boolean;
   key: string;

@@ -411,6 +411,12 @@
   "advancedDetailsNonceTooltip": {
     "message": "This is the transaction number of an account. Nonce for the first transaction is 0 and it increases in sequential order."
   },
+  "advancedEIP1559ModalTitle": {
+    "message": "Advanced Network Fee"
+  },
+  "advancedGasPriceModalTitle": {
+    "message": "Advanced Network Fee"
+  },
   "advancedGasFeeDefaultOptIn": {
     "message": "Save these values as my default for the $1 network.",
     "description": "$1 is the current network name."
@@ -1802,8 +1808,20 @@
   "currentAccountNotConnected": {
     "message": "Your current account is not connected"
   },
+  "currentEstimatedBaseFee": {
+    "message": "Current: $1 GWEI"
+  },
+  "currentEstimatedPriorityFeeRange": {
+    "message": "Current: $1 - $2 GWEI"
+  },
   "currentExtension": {
     "message": "Current extension page"
+  },
+  "currentHistoricalBaseFeeRange": {
+    "message": "12 hr: $1 - $2 GWEI"
+  },
+  "currentHistoricalPriorityFeeRange": {
+    "message": "12 hr: $1 - $2 GWEI"
   },
   "currentLanguage": {
     "message": "Current language"
@@ -2655,6 +2673,9 @@
   "feeDetails": {
     "message": "Fee details"
   },
+  "fieldRequired": {
+    "message": "$1 is required"
+  },
   "fileImportFail": {
     "message": "File import not working? Click here!",
     "description": "Helps user import their account from a JSON file"
@@ -2789,6 +2810,9 @@
   },
   "gasOption": {
     "message": "Gas option"
+  },
+  "gasPrice": {
+    "message": "Gas price"
   },
   "gasPriceExcessive": {
     "message": "Your gas fee is set unnecessarily high. Consider lowering the amount."
@@ -3651,6 +3675,9 @@
   "maxBaseFee": {
     "message": "Max base fee"
   },
+  "maxBaseFeeMustBeGreaterThanPriorityFee": {
+    "message": "Max base fee must be greater than priority fee"
+  },
   "maxFee": {
     "message": "Max fee"
   },
@@ -3962,6 +3989,9 @@
   "negativeOrZeroAmountToken": {
     "message": "Cannot send negative or zero amounts of asset."
   },
+  "negativeValuesNotAllowed": {
+    "message": "Negative values are not allowed"
+  },
   "network": {
     "message": "Network"
   },
@@ -4257,6 +4287,9 @@
   },
   "noWebcamFoundTitle": {
     "message": "Webcam not found"
+  },
+  "noZeroValue": {
+    "message": "$1 must be greater than 0"
   },
   "nonContractAddressAlertDesc": {
     "message": "You're sending call data to an address that isn't a contract. This could cause you to lose funds. Make sure you're using the correct address and network before continuing."
@@ -4594,6 +4627,12 @@
   "onlyConnectTrust": {
     "message": "Only connect with sites you trust. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
+  },
+  "onlyIntegersAllowed": {
+    "message": "Only whole numbers are allowed"
+  },
+  "onlyNumbersAllowed": {
+    "message": "Only numbers are allowed"
   },
   "openFullScreen": {
     "message": "Open full screen"
@@ -5069,6 +5108,9 @@
   },
   "priorityFeeProperCase": {
     "message": "Priority Fee"
+  },
+  "priorityFeeTooHigh": {
+    "message": "Priority fee must be less than max base fee"
   },
   "privacy": {
     "message": "Privacy"

@@ -2,23 +2,19 @@ import React from 'react';
 import classnames from 'classnames';
 import {
   Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  FontWeight,
   Icon,
+  IconColor,
   IconName,
   IconSize,
   Text,
-} from '../../../../components/component-library';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import {
-  AlignItems,
-  BackgroundColor,
-  BorderRadius,
-  Display,
-  FlexDirection,
-  IconColor,
-  TextAlign,
   TextColor,
   TextVariant,
-} from '../../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { type GasOption, type GasOptionTooltipProps } from '../../types/gas';
 import Tooltip from '../../../../components/ui/tooltip';
 import EditGasToolTip from '../edit-gas-fee-popover/edit-gas-tooltip/edit-gas-tooltip';
@@ -26,15 +22,13 @@ import EditGasToolTip from '../edit-gas-fee-popover/edit-gas-tooltip/edit-gas-to
 const SelectedIndicator = () => {
   return (
     <Box
-      borderRadius={BorderRadius.pill}
-      backgroundColor={BackgroundColor.primaryDefault}
-      className="gas-fee-token-list-item__selected-indicator"
+      backgroundColor={BoxBackgroundColor.PrimaryDefault}
+      className="gas-fee-token-list-item__selected-indicator rounded-full"
     />
   );
 };
 
 const ListItem = ({
-  icon,
   name,
   isSelected,
   time,
@@ -43,7 +37,6 @@ const ListItem = ({
   onClick,
   tooltipProps,
 }: {
-  icon: React.ReactNode;
   name: string;
   isSelected?: boolean;
   time?: string;
@@ -57,9 +50,8 @@ const ListItem = ({
   return (
     <Box
       data-testid={`gas-option-${name}`}
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      backgroundColor={isSelected ? BackgroundColor.primaryMuted : undefined}
+      flexDirection={BoxFlexDirection.Row}
+      backgroundColor={isSelected ? BoxBackgroundColor.PrimaryMuted : undefined}
       padding={2}
       paddingTop={4}
       paddingBottom={4}
@@ -70,20 +62,21 @@ const ListItem = ({
     >
       {isSelected && <SelectedIndicator />}
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.center}
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
         paddingLeft={2}
         gap={4}
         style={{ flex: 1 }}
       >
-        {icon}
-        <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-          <Text variant={TextVariant.bodyMdMedium}>{name}</Text>
+        <Box flexDirection={BoxFlexDirection.Column} marginLeft={2}>
+          <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+            {name}
+          </Text>
           <Text
-            variant={TextVariant.bodySmMedium}
+            variant={TextVariant.BodySm}
+            fontWeight={FontWeight.Medium}
             color={
-              isSelected ? TextColor.primaryDefault : TextColor.textAlternative
+              isSelected ? TextColor.PrimaryDefault : TextColor.TextAlternative
             }
           >
             {time}
@@ -91,20 +84,21 @@ const ListItem = ({
         </Box>
       </Box>
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.center}
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
         gap={2}
       >
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          textAlign={TextAlign.Right}
+          flexDirection={BoxFlexDirection.Column}
+          style={{ textAlign: 'right' }}
         >
-          <Text variant={TextVariant.bodyMdMedium}>{feeInFiat}</Text>
+          <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+            {feeInFiat}
+          </Text>
           <Text
-            variant={TextVariant.bodySmMedium}
-            color={TextColor.textAlternative}
+            variant={TextVariant.BodySm}
+            fontWeight={FontWeight.Medium}
+            color={TextColor.TextAlternative}
           >
             {fee}
           </Text>
@@ -128,7 +122,7 @@ const ListItem = ({
             <Icon
               name={IconName.Info}
               size={IconSize.Sm}
-              color={IconColor.iconAlternative}
+              color={IconColor.IconAlternative}
             />
           </Tooltip>
         )}
@@ -137,46 +131,8 @@ const ListItem = ({
   );
 };
 
-export const GasEstimateListHeader = () => {
-  const t = useI18nContext();
-
-  return (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      alignItems={AlignItems.center}
-      padding={2}
-      paddingTop={2}
-      paddingBottom={2}
-    >
-      <Box paddingLeft={2} style={{ flex: 1 }}>
-        <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
-          {t('gasOption')}
-        </Text>
-      </Box>
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.center}
-        gap={2}
-      >
-        <Text
-          variant={TextVariant.bodySm}
-          color={TextColor.textAlternative}
-          textAlign={TextAlign.Right}
-        >
-          {t('maxFee')}
-        </Text>
-        {/* Spacer for info icon alignment */}
-        <Box style={{ width: 16 }} />
-      </Box>
-    </Box>
-  );
-};
-
 export const GasEstimateListItem = ({ option }: { option: GasOption }) => {
   const {
-    emoji,
     estimatedTime,
     isSelected,
     name,
@@ -188,7 +144,6 @@ export const GasEstimateListItem = ({ option }: { option: GasOption }) => {
 
   return (
     <ListItem
-      icon={<Text variant={TextVariant.bodyMd}>{emoji}</Text>}
       name={name}
       isSelected={isSelected}
       time={estimatedTime}

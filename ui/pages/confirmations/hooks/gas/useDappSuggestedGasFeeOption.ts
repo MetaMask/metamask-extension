@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { updateTransactionGasFees } from '../../../../store/actions';
 import { type GasOption } from '../../types/gas';
-import { EMPTY_VALUE_STRING, GasOptionIcon } from '../../constants/gas';
+import { EMPTY_VALUE_STRING } from '../../constants/gas';
 import { useConfirmContext } from '../../context/confirm';
 import { useFeeCalculations } from '../../components/confirm/info/hooks/useFeeCalculations';
 import { useTransactionNativeTicker } from '../transactions/useTransactionNativeTicker';
@@ -80,7 +80,6 @@ export const useDappSuggestedGasFeeOption = ({
       });
 
     options.push({
-      emoji: GasOptionIcon.SiteSuggested,
       estimatedTime: undefined,
       isSelected: isDappSuggestedGasFeeSelected,
       key: 'site_suggested',
