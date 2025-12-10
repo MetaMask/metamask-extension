@@ -25,7 +25,7 @@ import {
   IconSize,
   Text,
 } from '../../../../components/component-library';
-import Preloader from '../../../../components/ui/icon/preloader/preloader-icon.component';
+import { Skeleton } from '../../../../components/component-library/skeleton';
 import Tooltip from '../../../../components/ui/tooltip';
 import {
   AlignItems,
@@ -63,19 +63,6 @@ export type SimulationDetailsProps = {
   staticRows?: StaticRow[];
   transaction: TransactionMeta;
   smartTransactionStatus?: string;
-};
-
-/**
- * Displayed while loading the simulation preview.
- *
- * @returns
- */
-const LoadingIndicator: React.FC = () => {
-  return (
-    <div role="progressbar">
-      <Preloader size={20} />
-    </div>
-  );
 };
 
 /**
@@ -414,6 +401,38 @@ const BalanceChangesAlert = ({ transactionId }: { transactionId: string }) => {
   );
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function SimulationDetailsSkeleton({
+  isTransactionsRedesign,
+  transactionId,
+}: {
+  isTransactionsRedesign: boolean;
+  transactionId: string;
+}) {
+  return (
+    <SimulationDetailsLayout
+      isTransactionsRedesign={isTransactionsRedesign}
+      transactionId={transactionId}
+    >
+      <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={3}>
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          justifyContent={JustifyContent.spaceBetween}
+          alignItems={AlignItems.center}
+        >
+          <Skeleton height={20} width={72} />
+          <Skeleton height={20} width={100} />
+        </Box>
+        <Box display={Display.Flex} justifyContent={JustifyContent.flexEnd}>
+          <Skeleton height={18} width={40} />
+        </Box>
+      </Box>
+    </SimulationDetailsLayout>
+  );
+}
+
 /**
  * Preview of a transaction's effects using simulation data.
  *
@@ -461,11 +480,10 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
 
   if (loading) {
     return (
-      <SimulationDetailsLayout
-        inHeader={<LoadingIndicator />}
+      <SimulationDetailsSkeleton
         isTransactionsRedesign={isTransactionsRedesign}
         transactionId={transactionId}
-      ></SimulationDetailsLayout>
+      />
     );
   }
 
