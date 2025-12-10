@@ -24,10 +24,7 @@ import {
 } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../../shared/constants/metametrics';
+import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { SECURITY_ROUTE } from '../../../../helpers/constants/routes';
 import { setPna25Acknowledged } from '../../../../store/actions';
 import { PNA25_BLOG_POST_LINK } from './constants';
@@ -42,7 +39,6 @@ export default function Pna25Modal() {
   useEffect(() => {
     trackEvent({
       event: MetaMetricsEventName.NoticeUpdateDisplayed,
-      category: MetaMetricsEventCategory.Navigation,
       properties: {
         name: 'pna25',
         action: 'viewed',
@@ -53,7 +49,6 @@ export default function Pna25Modal() {
   const handleLeave = () => {
     trackEvent({
       event: MetaMetricsEventName.NoticeUpdateDisplayed,
-      category: MetaMetricsEventCategory.Navigation,
       properties: {
         name: 'pna25',
         action: 'leave',
@@ -65,7 +60,6 @@ export default function Pna25Modal() {
   const handleClose = () => {
     trackEvent({
       event: MetaMetricsEventName.NoticeUpdateDisplayed,
-      category: MetaMetricsEventCategory.Navigation,
       properties: {
         name: 'pna25',
         action: 'close',
@@ -77,7 +71,6 @@ export default function Pna25Modal() {
   const handleAccept = () => {
     trackEvent({
       event: MetaMetricsEventName.NoticeUpdateDisplayed,
-      category: MetaMetricsEventCategory.Navigation,
       properties: {
         name: 'pna25',
         action: 'accept and close',
@@ -89,7 +82,6 @@ export default function Pna25Modal() {
   const handleOpenSettings = () => {
     trackEvent({
       event: MetaMetricsEventName.NoticeUpdateDisplayed,
-      category: MetaMetricsEventCategory.Navigation,
       properties: {
         name: 'pna25',
         action: 'open settings',
