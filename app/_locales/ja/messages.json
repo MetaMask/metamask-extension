@@ -1467,9 +1467,6 @@
   "connectWithMetaMask": {
     "message": "MetaMaskを使用して接続"
   },
-  "connectedAccounts": {
-    "message": "接続されたアカウント"
-  },
   "connectedAccountsDescriptionPlural": {
     "message": "このサイトに接続されているアカウントを$1個持っています。",
     "description": "$1 is the number of accounts"
@@ -1483,9 +1480,6 @@
   "connectedAccountsListTooltip": {
     "message": "$1はアカウントの残高、アドレス、アクティビティを確認し、接続されたアカウントで承認するトランザクションを提案できます。",
     "description": "$1 is the origin name"
-  },
-  "connectedAccountsToast": {
-    "message": "接続されたアカウントが更新されました"
   },
   "connectedSites": {
     "message": "接続済みのサイト"
@@ -2018,14 +2012,6 @@
   },
   "disconnectThisAccount": {
     "message": "このアカウントを接続解除"
-  },
-  "disconnectedAllAccountsToast": {
-    "message": "すべてのアカウントの$1への接続が解除されました",
-    "description": "$1 is name of the dapp`"
-  },
-  "disconnectedSingleAccountToast": {
-    "message": "$1の$2への接続が解除されました",
-    "description": "$1 is name of the name and $2 represents the dapp name`"
   },
   "discover": {
     "message": "ディスカバリ"
@@ -4412,9 +4398,6 @@
     "message": "トランザクションをキャンセルまたは高速化する方法をご覧ください。",
     "description": "The text for the hyperlink in the pending transaction alert message"
   },
-  "permissionDetails": {
-    "message": "アクセス許可の詳細"
-  },
   "permissionFor": {
     "message": "アクセス許可:"
   },
@@ -4717,10 +4700,6 @@
   },
   "pleaseConfirm": {
     "message": "ご確認ください"
-  },
-  "plusMore": {
-    "message": "その他$1件",
-    "description": "$1 is the number of additional items"
   },
   "plusXMore": {
     "message": "他$1件",

@@ -20,7 +20,7 @@ describe.skip('Send flow - SPL Token', function (this: Suite) {
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
-        await homePage.checkPageIsLoaded('50');
+        await homePage.checkPageIsLoaded({ amount: '50' });
         await homePage.clickOnSendButton();
         const sendSolanaPage = new SendSolanaPage(driver);
         // await sendSolanaPage.checkPageIsLoaded('50 SOL'); // Get price might take a bit to get executed, so to avoid flakiness, wait until the call is made and mocked
@@ -146,7 +146,7 @@ describe.skip('Send flow - SPL Token', function (this: Suite) {
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
-        await homePage.checkPageIsLoaded('50');
+        await homePage.checkPageIsLoaded({ amount: '50' });
         await homePage.clickOnSendButton();
 
         const sendSolanaPage = new SendSolanaPage(driver);

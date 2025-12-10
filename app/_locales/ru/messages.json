@@ -1467,9 +1467,6 @@
   "connectWithMetaMask": {
     "message": "Подключиться с помощью MetaMask"
   },
-  "connectedAccounts": {
-    "message": "Подключенные счета"
-  },
   "connectedAccountsDescriptionPlural": {
     "message": "К этому сайту подключено $1 ваших счета(-ов).",
     "description": "$1 is the number of accounts"
@@ -1483,9 +1480,6 @@
   "connectedAccountsListTooltip": {
     "message": "$1 может видеть баланс счета, адрес, активность и предлагать транзакции для одобрения для подключенных счетов.",
     "description": "$1 is the origin name"
-  },
-  "connectedAccountsToast": {
-    "message": "Подключенные счета обновлены"
   },
   "connectedSites": {
     "message": "Подключенные сайты"
@@ -2018,14 +2012,6 @@
   },
   "disconnectThisAccount": {
     "message": "Отключить этот счет"
-  },
-  "disconnectedAllAccountsToast": {
-    "message": "Все счета отключены от $1",
-    "description": "$1 is name of the dapp`"
-  },
-  "disconnectedSingleAccountToast": {
-    "message": "$1 отключен от $2",
-    "description": "$1 is name of the name and $2 represents the dapp name`"
   },
   "discover": {
     "message": "Обзор"
@@ -4412,9 +4398,6 @@
     "message": "Узнайте, как отменить или ускорить транзакцию.",
     "description": "The text for the hyperlink in the pending transaction alert message"
   },
-  "permissionDetails": {
-    "message": "Сведения о разрешении"
-  },
   "permissionFor": {
     "message": "Разрешение для"
   },
@@ -4717,10 +4700,6 @@
   },
   "pleaseConfirm": {
     "message": "Подтвердите"
-  },
-  "plusMore": {
-    "message": "+ еще $1",
-    "description": "$1 is the number of additional items"
   },
   "plusXMore": {
     "message": "+ еще $1",
