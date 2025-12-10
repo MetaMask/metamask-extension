@@ -175,9 +175,7 @@ jobs:
         run: |
           rm -rf dist builds
           cp -R build-dist-browserify/dist ./dist
-          if [ -d build-dist-browserify/builds ]; then
-            cp -R build-dist-browserify/builds ./builds
-          fi
+          cp -R build-dist-browserify/builds ./builds
 
       - name: Update onboarding fixture
         run: |
