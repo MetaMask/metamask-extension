@@ -2500,29 +2500,28 @@ export function getShowRecoveryPhraseReminder(state) {
  *
  * @returns Number of unapproved transactions
  */
-export const getNumberOfAllUnapprovedTransactionsAndMessages =
-  createDeepEqualSelector(
-    getAllUnapprovedTransactions,
-    unapprovedDecryptMsgsSelector,
-    unapprovedPersonalMsgsSelector,
-    unapprovedEncryptionPublicKeyMsgsSelector,
-    unapprovedTypedMessagesSelector,
-    (
-      unapprovedTxs,
-      unapprovedDecryptMsgs,
-      unapprovedPersonalMsgs,
-      unapprovedEncryptionPublicKeyMsgs,
-      unapprovedTypedMessages,
-    ) => {
-      return (
-        Object.keys(unapprovedTxs).length +
-        Object.keys(unapprovedDecryptMsgs || {}).length +
-        Object.keys(unapprovedPersonalMsgs || {}).length +
-        Object.keys(unapprovedEncryptionPublicKeyMsgs || {}).length +
-        Object.keys(unapprovedTypedMessages || {}).length
-      );
-    },
-  );
+export const getNumberOfAllUnapprovedTransactionsAndMessages = createSelector(
+  getAllUnapprovedTransactions,
+  unapprovedDecryptMsgsSelector,
+  unapprovedPersonalMsgsSelector,
+  unapprovedEncryptionPublicKeyMsgsSelector,
+  unapprovedTypedMessagesSelector,
+  (
+    unapprovedTxs,
+    unapprovedDecryptMsgs,
+    unapprovedPersonalMsgs,
+    unapprovedEncryptionPublicKeyMsgs,
+    unapprovedTypedMessages,
+  ) => {
+    return (
+      Object.keys(unapprovedTxs).length +
+      Object.keys(unapprovedDecryptMsgs || {}).length +
+      Object.keys(unapprovedPersonalMsgs || {}).length +
+      Object.keys(unapprovedEncryptionPublicKeyMsgs || {}).length +
+      Object.keys(unapprovedTypedMessages || {}).length
+    );
+  },
+);
 
 export const getCurrentNetwork = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
