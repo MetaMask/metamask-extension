@@ -93,10 +93,7 @@ describe('Confirm Recovery Phrase Component', () => {
         seedPhraseBackedUp: true,
       },
     });
-    renderWithProvider(
-      <ConfirmRecoveryPhrase {...props} />,
-      store,
-    );
+    renderWithProvider(<ConfirmRecoveryPhrase {...props} />, store);
 
     expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_METAMETRICS, {
       replace: true,

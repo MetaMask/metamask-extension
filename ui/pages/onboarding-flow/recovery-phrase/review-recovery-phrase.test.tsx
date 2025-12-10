@@ -76,10 +76,7 @@ describe('Review Recovery Phrase Component', () => {
         seedPhraseBackedUp: true,
       },
     });
-    renderWithProvider(
-      <RecoveryPhrase {...props} />,
-      store,
-    );
+    renderWithProvider(<RecoveryPhrase {...props} />, store);
 
     expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_METAMETRICS, {
       replace: true,

@@ -45,8 +45,8 @@ import { TraceName } from '../../../../shared/lib/trace';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-import RecoveryPhraseChips from './recovery-phrase-chips';
 import { getSeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
+import RecoveryPhraseChips from './recovery-phrase-chips';
 
 type RecoveryPhraseProps = {
   secretRecoveryPhrase: string;
@@ -95,9 +95,17 @@ export default function RecoveryPhrase({
     } else if (hasSeedPhraseBackedUp) {
       // if user has already done the Secure Wallet flow, we can redirect to the next page
       const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
-      navigate(isFirefox ? ONBOARDING_COMPLETION_ROUTE : ONBOARDING_METAMETRICS, { replace: true });
+      navigate(
+        isFirefox ? ONBOARDING_COMPLETION_ROUTE : ONBOARDING_METAMETRICS,
+        { replace: true },
+      );
     }
-  }, [navigate, secretRecoveryPhrase, nextRouteQueryString, hasSeedPhraseBackedUp]);
+  }, [
+    navigate,
+    secretRecoveryPhrase,
+    nextRouteQueryString,
+    hasSeedPhraseBackedUp,
+  ]);
 
   const handleContinue = useCallback(() => {
     trackEvent({
