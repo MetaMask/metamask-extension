@@ -5649,16 +5649,8 @@
     "message": "Mura gcealaíonn tú, ní bheidh do sparán ná d’idirbhearta clúdaithe ag tosú le $1.",
     "description": "The $1 is the date subscription ends"
   },
-  "shieldTxDetails1Description": {
-    "message": "Cosnaíonn sé do shócmhainní ó idirbhearta contúirteacha",
-    "description": "The $1 is the price of the plan and the $2 is the interval of plan"
-  },
   "shieldTxDetails1Title": {
     "message": "Clúdaíonn sé $10,000 i gcosaint idirbhirt"
-  },
-  "shieldTxDetails2Description": {
-    "message": "Faigh tacaíocht níos tapúla, tiomanta am ar bith",
-    "description": "The $1 is interval and the $2 is the date of next billing"
   },
   "shieldTxDetails2Title": {
     "message": "Tacaíocht tosaíochta"

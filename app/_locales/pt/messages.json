@@ -5587,10 +5587,6 @@
     "message": "Se você cancelar, sua carteira e transações deixarão de ser cobertas a partir de $1.",
     "description": "The $1 is the date subscription ends"
   },
-  "shieldTxDetails2Description": {
-    "message": "Receba suporte mais rápido e dedicado a qualquer momento",
-    "description": "The $1 is interval and the $2 is the date of next billing"
-  },
   "shieldTxDetails2Title": {
     "message": "Suporte prioritário"
   },

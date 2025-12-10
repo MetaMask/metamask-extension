@@ -5587,10 +5587,6 @@
     "message": "Kapag nagkansela ka, hindi na covered ang iyong wallet at mga transaksyon mula $1.",
     "description": "The $1 is the date subscription ends"
   },
-  "shieldTxDetails2Description": {
-    "message": "Tumanggap ng mas mabilis at dedikadong suporta anumang oras",
-    "description": "The $1 is interval and the $2 is the date of next billing"
-  },
   "shieldTxDetails2Title": {
     "message": "Suporta para sa priority"
   },

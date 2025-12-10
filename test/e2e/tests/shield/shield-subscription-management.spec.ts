@@ -259,7 +259,7 @@ describe('Shield Plan Stripe Integration', function () {
         // Renew the subscription
         await shieldDetailPage.clickRenewButton();
 
-        settingsPage.goToTransactionShieldPage();
+        await settingsPage.goToTransactionShieldPage();
 
         await shieldDetailPage.checkNotificationShieldBannerRemoved();
         await shieldDetailPage.checkMembershipStatus('Active plan');

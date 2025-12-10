@@ -5587,10 +5587,6 @@
     "message": "Si cancelas, tu billetera y tus transacciones no estarán cubiertas a partir de $1.",
     "description": "The $1 is the date subscription ends"
   },
-  "shieldTxDetails2Description": {
-    "message": "Accede a soporte más rápido y dedicado en cualquier momento",
-    "description": "The $1 is interval and the $2 is the date of next billing"
-  },
   "shieldTxDetails2Title": {
     "message": "Soporte prioritario"
   },

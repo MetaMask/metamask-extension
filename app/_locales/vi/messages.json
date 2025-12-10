@@ -5587,10 +5587,6 @@
     "message": "Nếu bạn hủy, ví và các giao dịch của bạn sẽ không được bảo hiểm kể từ $1.",
     "description": "The $1 is the date subscription ends"
   },
-  "shieldTxDetails2Description": {
-    "message": "Nhận dịch vụ hỗ trợ chuyên biệt, nhanh chóng bất cứ khi nào bạn cần",
-    "description": "The $1 is interval and the $2 is the date of next billing"
-  },
   "shieldTxDetails2Title": {
     "message": "Hỗ trợ ưu tiên"
   },
