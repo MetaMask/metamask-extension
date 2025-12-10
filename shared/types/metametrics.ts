@@ -18,6 +18,7 @@ import type { HardwareKeyringType } from '../constants/hardware-wallets';
 // eslint-disable-next-line import/no-restricted-paths
 import type { SnapAndHardwareMessenger } from '../../app/scripts/lib/snap-keyring/metrics';
 import { EntryModalSourceEnum } from '../constants/subscriptions';
+import type { ScanAddressResponse } from '../lib/trust-signals';
 
 export type TransactionMetricsRequest = {
   createEventFragment: (
@@ -74,6 +75,10 @@ export type TransactionMetricsRequest = {
   getNetworkRpcUrl: (chainId: Hex) => string;
   getFeatureFlags: () => Record<string, unknown>;
   getPna25Acknowledged: () => boolean;
+  getAddressSecurityAlertResponse: (
+    cacheKey: string,
+  ) => ScanAddressResponse | undefined;
+  getSecurityAlertsEnabled: () => boolean;
 };
 
 export type TransactionEventPayload = {
