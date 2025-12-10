@@ -970,13 +970,6 @@
         "uuid": true
       }
     },
-    "@metamask/transaction-pay-controller>@metamask/bridge-controller": {
-      "packages": {
-        "@metamask/controller-utils": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true
-      }
-    },
     "@metamask/bridge-status-controller": {
       "globals": {
         "URLSearchParams": true,
@@ -2102,6 +2095,9 @@
       }
     },
     "@metamask/snaps-utils>@metamask/snaps-registry": {
+      "globals": {
+        "crypto": true
+      },
       "packages": {
         "@metamask/superstruct": true,
         "@metamask/utils": true,
@@ -2251,7 +2247,7 @@
       "packages": {
         "@ethersproject/abi": true,
         "@metamask/base-controller": true,
-        "@metamask/transaction-pay-controller>@metamask/bridge-controller": true,
+        "@metamask/bridge-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/transaction-controller": true,
@@ -4957,6 +4953,14 @@
     "react-focus-lock>react-clientside-effect": {
       "packages": {
         "@babel/runtime": true,
+        "react": true
+      }
+    },
+    "react-compiler-runtime": {
+      "globals": {
+        "console.error": true
+      },
+      "packages": {
         "react": true
       }
     },

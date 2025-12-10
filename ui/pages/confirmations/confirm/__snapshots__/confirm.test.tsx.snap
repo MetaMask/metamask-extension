@@ -350,6 +350,14 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
           style="overflow: auto;"
         >
           <div
+            class="mm-box mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center"
+          >
+            <div
+              class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+              style="height: 24px; width: 200px;"
+            />
+          </div>
+          <div
             class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
             data-testid="confirmation__simulation_section"
           >
@@ -837,6 +845,14 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
           class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
           style="overflow: auto;"
         >
+          <div
+            class="mm-box mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center"
+          >
+            <div
+              class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+              style="height: 24px; width: 200px;"
+            />
+          </div>
           <div
             class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
             data-testid="confirmation__simulation_section"
@@ -3145,7 +3161,29 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
         <div
           class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
           style="overflow: auto;"
-        />
+        >
+          <div
+            class="mm-box mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center"
+          >
+            <div
+              class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+              style="height: 24px; width: 200px;"
+            />
+          </div>
+          <div
+            class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
+            data-testid="confirmation__info_skeleton"
+          >
+            <div
+              class="mm-box mm-skeleton mm-box--margin-bottom-2 mm-box--background-color-icon-alternative mm-box--rounded-sm"
+              style="height: 16px; width: 30%;"
+            />
+            <div
+              class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+              style="height: 48px; width: 100%;"
+            />
+          </div>
+        </div>
       </div>
       <div
         class="mm-box multichain-page-footer confirm-footer_page-footer mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full"
@@ -3263,6 +3301,14 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
           class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
           style="overflow: auto;"
         >
+          <div
+            class="mm-box mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center"
+          >
+            <div
+              class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+              style="height: 24px; width: 200px;"
+            />
+          </div>
           <div
             class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
             data-testid="confirmation_request-section"

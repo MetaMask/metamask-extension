@@ -934,9 +934,6 @@
   "bridgeEnterAmount": {
     "message": "Roghnaigh méid"
   },
-  "bridgeEnterAmountAndSelectAccount": {
-    "message": "Cuir isteach an méid agus roghnaigh an cuntas ceann scríbe"
-  },
   "bridgeExplorerLinkViewOn": {
     "message": "Féach ar $1"
   },
@@ -1440,9 +1437,6 @@
   "connectWithMetaMask": {
     "message": "Ceangail le MetaMask"
   },
-  "connectedAccounts": {
-    "message": "Cuntais nasctha"
-  },
   "connectedAccountsDescriptionPlural": {
     "message": "Tá $1 cuntas agat ceangailte leis an suíomh seo.",
     "description": "$1 is the number of accounts"
@@ -1456,9 +1450,6 @@
   "connectedAccountsListTooltip": {
     "message": "Is féidir le $1 iarmhéid an chuntais, an seoladh, an ghníomhaíocht a fheiceáil, agus idirbhearta a mholadh le ceadú do chuntais nasctha.",
     "description": "$1 is the origin name"
-  },
-  "connectedAccountsToast": {
-    "message": "Cuntais nasctha nuashonraithe"
   },
   "connectedSites": {
     "message": "Suíomhanna ceangailte"
@@ -1999,14 +1990,6 @@
   },
   "disconnectThisAccount": {
     "message": "Dícheangail an cuntas seo"
-  },
-  "disconnectedAllAccountsToast": {
-    "message": "Gach cuntas dícheangailte ó $1",
-    "description": "$1 is name of the dapp`"
-  },
-  "disconnectedSingleAccountToast": {
-    "message": "$1 dícheangailte ó $2",
-    "description": "$1 is name of the name and $2 represents the dapp name`"
   },
   "discover": {
     "message": "Faigh amach"
@@ -2566,11 +2549,12 @@
     "message": "An ndearna tú dearmad ar do phasfhocal?"
   },
   "forgotPasswordSocialDescription": {
-    "message": "Ní féidir le MetaMask do phasfhocal a aisghabháil duit."
+    "message": "Ní féidir le MetaMask do phasfhocal a aisghabháil duit.",
+    "description": "$1 is the support link"
   },
   "forgotPasswordSocialStep1": {
     "message": "Má tá tú logáilte isteach i MetaMask ar ghléas le $1 (cosúil le Face ID), is féidir leat do phasfhocal a athshocrú ansin.",
-    "description": "$1 is bold biometrics turned on"
+    "description": "$1 is bold heading"
   },
   "forgotPasswordSocialStep1Biometrics": {
     "message": "bithmhéadracht casta air"
@@ -4411,9 +4395,6 @@
     "message": "Foghlaim conas idirbheart a chealú nó a bhrostú.",
     "description": "The text for the hyperlink in the pending transaction alert message"
   },
-  "permissionDetails": {
-    "message": "Sonraí ceadanna"
-  },
   "permissionFor": {
     "message": "Cead do"
   },
@@ -4717,10 +4698,6 @@
   "pleaseConfirm": {
     "message": "Deimhnigh le do thoil"
   },
-  "plusMore": {
-    "message": "+ $1 breise",
-    "description": "$1 is the number of additional items"
-  },
   "plusXMore": {
     "message": "+ $1 breise",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
@@ -4941,12 +4918,6 @@
   "rateIncludesMMFee": {
     "message": "Tá táille MM $1% san áireamh."
   },
-  "reAddAccounts": {
-    "message": "cuir aon chuntais eile leis arís"
-  },
-  "reAdded": {
-    "message": "curtha leis arís"
-  },
   "readdToken": {
     "message": "Is féidir leat an comhartha seo a chur leis arís amach anseo trí dhul go “Iompórtáil comhartha” i roghchlár roghanna do chuntais."
   },
@@ -5103,33 +5074,6 @@
   },
   "resetWallet": {
     "message": "Athshocraigh do sparán"
-  },
-  "resetWalletSubHeader": {
-    "message": "Ní choinníonn MetaMask cóip de do phasfhocal. Má bhíonn deacracht agat do chuntas a dhíghlasáil, beidh ort do sparán a athshocrú. Is féidir leat é seo a dhéanamh tríd an bhFrása Rúnda Aisghabhála a d'úsáid tú nuair a bhunaigh tú do sparán a sholáthar."
-  },
-  "resetWalletSubHeaderSocial": {
-    "message": "Ní choinníonn MetaMask cóip de do phasfhocal. Má bhíonn deacracht agat do chuntas a dhíghlasáil, beidh ort do sparán a athshocrú. Má tá Frása Aisghabhála Rúnda agat, is féidir leat é a úsáid chun do sparán reatha a scriosadh ón ngléas seo, mar aon le liosta do chuntas."
-  },
-  "resetWalletUsingSRP": {
-    "message": "Scriosfaidh an gníomh seo do sparán reatha agus do Rún Aisghabhála den fheiste seo, mar aon leis an liosta cuntas atá coimeádta agat. Tar éis athshocrú le Rún Aisghabhála, feicfidh tú liosta cuntas bunaithe ar an Rún Aisghabhála Frása a úsáideann tú chun athshocrú a dhéanamh. Áireofar sa liosta nua seo go huathoibríoch cuntais a bhfuil iarmhéid acu. Beidh tú in ann $1 a cruthaíodh roimhe seo freisin. Beidh ar chuntais saincheaptha a d'allmhairigh tú a bheith $2, agus beidh ar aon chomharthaí saincheaptha a chuir tú le cuntas a bheith $3 chomh maith."
-  },
-  "resetWalletUsingSRPSocial": {
-    "message": "Tar éis athshocrú le Frása Aisghabhála Rúnda, feicfidh tú liosta nua cuntas. Áireofar ar an liosta seo cuntais a bhfuil iarmhéid iontu. Is féidir leat $1 a thuill tú roimhe seo. Ach beidh ort aon $2 agus $3 a d’allmhairigh tú a chur leis ar ais. "
-  },
-  "resetWalletUsingSRPSocialAccounts": {
-    "message": "cuir aon chuntais eile leis arís"
-  },
-  "resetWalletUsingSRPSocialCustomAccounts": {
-    "message": "cuntais saincheaptha"
-  },
-  "resetWalletUsingSRPSocialCustomTokens": {
-    "message": "comharthaí saincheaptha"
-  },
-  "resetWalletWarning": {
-    "message": "Cinntigh go bhfuil an Frása Aisghabhála Rúnda ceart á úsáid agat sula leanann tú ar aghaidh. Ní bheidh tú in ann é seo a chealú."
-  },
-  "resetWalletWarningSocial": {
-    "message": "Déan cinnte go n-úsáideann tú an Frása Aisghabhála Rúnda ceart sula ndéanann tú athshocrú. Ní féidir é seo a chealú."
   },
   "resolutionProtocol": {
     "message": "Seoladh réitithe trí $1",

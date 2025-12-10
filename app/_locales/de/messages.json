@@ -943,9 +943,6 @@
   "bridgeEnterAmount": {
     "message": "Betrag auswählen"
   },
-  "bridgeEnterAmountAndSelectAccount": {
-    "message": "Betrag eingeben und Zielkonto auswählen"
-  },
   "bridgeExplorerLinkViewOn": {
     "message": "Auf $1 ansehen"
   },
@@ -1467,9 +1464,6 @@
   "connectWithMetaMask": {
     "message": "Mit MetaMask verbinden"
   },
-  "connectedAccounts": {
-    "message": "Verbundene Konten"
-  },
   "connectedAccountsDescriptionPlural": {
     "message": "Sie haben $1 Konten mit dieser Seite verbunden.",
     "description": "$1 is the number of accounts"
@@ -1483,9 +1477,6 @@
   "connectedAccountsListTooltip": {
     "message": "$1 kann den Kontostand, die Adresse und die Aktivitäten einsehen und Transaktionen vorschlagen, um für verbundene Konten zu genehmigen.",
     "description": "$1 is the origin name"
-  },
-  "connectedAccountsToast": {
-    "message": "Verbundene Konten aktualisiert"
   },
   "connectedSites": {
     "message": "Verbundene Seiten"
@@ -2018,14 +2009,6 @@
   },
   "disconnectThisAccount": {
     "message": "Dieses Konto trennen"
-  },
-  "disconnectedAllAccountsToast": {
-    "message": "Alle Konten wurden von $1 getrennt",
-    "description": "$1 is name of the dapp`"
-  },
-  "disconnectedSingleAccountToast": {
-    "message": "$1 wurde von $2 getrennt",
-    "description": "$1 is name of the name and $2 represents the dapp name`"
   },
   "discover": {
     "message": "Entdecken"
@@ -2573,11 +2556,12 @@
     "message": "Passwort vergessen?"
   },
   "forgotPasswordSocialDescription": {
-    "message": "MetaMask kann Ihr Passwort nicht für Sie wiederherstellen."
+    "message": "MetaMask kann Ihr Passwort nicht für Sie wiederherstellen.",
+    "description": "$1 is the support link"
   },
   "forgotPasswordSocialStep1": {
     "message": "Wenn Sie auf einem Gerät mit $1 (wie Face ID) bei MetaMask angemeldet sind, können Sie dort Ihr Passwort zurücksetzen.",
-    "description": "$1 is bold biometrics turned on"
+    "description": "$1 is bold heading"
   },
   "forgotPasswordSocialStep1Biometrics": {
     "message": "aktivierter Biometrie eingeloggt sind"
@@ -4411,9 +4395,6 @@
     "message": "Erfahren Sie, wie Sie eine Transaktion stornieren oder beschleunigen.",
     "description": "The text for the hyperlink in the pending transaction alert message"
   },
-  "permissionDetails": {
-    "message": "Genehmigungsdetails"
-  },
   "permissionFor": {
     "message": "Genehmigung für"
   },
@@ -4717,10 +4698,6 @@
   "pleaseConfirm": {
     "message": "Bitte bestätigen"
   },
-  "plusMore": {
-    "message": "+ $1 mehr",
-    "description": "$1 is the number of additional items"
-  },
   "plusXMore": {
     "message": "+ $1 mehr",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
@@ -4941,12 +4918,6 @@
   "rateIncludesMMFee": {
     "message": "Beinhaltet $1 % MM-Gebühr."
   },
-  "reAddAccounts": {
-    "message": "Andere Konten erneut hinzufügen"
-  },
-  "reAdded": {
-    "message": "Erneut hinzugefügt"
-  },
   "readdToken": {
     "message": "Sie können diese Token immer erneut hinzufügen, indem Sie in den Menüpunkt „Token hinzufügen“ in den Einstellungen Ihres Kontos gehen."
   },
@@ -5103,33 +5074,6 @@
   },
   "resetWallet": {
     "message": "Ihre Wallet zurücksetzen"
-  },
-  "resetWalletSubHeader": {
-    "message": "MetaMask speichert keine Kopie Ihres Passwortes. Wenn Sie Probleme dabei haben, Ihr Konto zu entsperren, müssen Sie Ihr Wallet zurücksetzen. Dies können Sie tun, indem Sie die geheime Wiederherstellungsphrase eingeben, die Sie verwendet haben, als Sie Ihr Wallet eingerichtet haben."
-  },
-  "resetWalletSubHeaderSocial": {
-    "message": "MetaMask speichert keine Kopie Ihres Passworts. Wenn Sie Probleme beim Entsperren Ihres Kontos haben, müssen Sie Ihre Wallet zurücksetzen. Wenn Sie über eine geheime Wiederherstellungsphrase verfügen, können Sie damit Ihre aktuelle Wallet zusammen mit der Liste Ihrer Konten von diesem Gerät löschen."
-  },
-  "resetWalletUsingSRP": {
-    "message": "Diese Aktion wird Ihre aktuelles Wallet und die geheime Wiederherstellungsphrase von diesem Gerät löschen, zusammen mit der Liste der von Ihnen betreuten Konten. Nachdem Sie Ihr Wallet mit einer geheimen Wiederherstellungsphrase zurückgesetzt haben, sehen Sie eine Liste von Konten, die auf der verwendeten geheimen Wiederherstellungsphrase basiert. Diese Liste umfasst automatisch Konten, die Guthaben aufweisen. Sie können außerdem vorher erstellte $1. Benutzerdefinierte von Ihnen importierte Konten müssen $2 sein und benutzerdefinierte Token, die Sie einem Konto hinzugefügt haben, müssen ebenfalls $3 sein."
-  },
-  "resetWalletUsingSRPSocial": {
-    "message": "Nach dem Zurücksetzen mit einer geheimen Wiederherstellungsphrase wird eine neue Liste mit Konten angezeigt. Diese Liste enthält Konten mit einem Guthaben. Sie können $1, die Sie zuvor gemacht haben. Sie müssen jedoch alle importierten $2 und $3 wieder hinzufügen. "
-  },
-  "resetWalletUsingSRPSocialAccounts": {
-    "message": "alle anderen Konten wieder erneut hinzufügen"
-  },
-  "resetWalletUsingSRPSocialCustomAccounts": {
-    "message": "Benutzerdefinierte Konten"
-  },
-  "resetWalletUsingSRPSocialCustomTokens": {
-    "message": "benutzerdefinierte Token"
-  },
-  "resetWalletWarning": {
-    "message": "Gehen Sie vor dem Fortfahren auf Nummer sicher, dass Sie die korrekte geheime Wiederherstellungsphrase verwenden. Sie können dies nicht rückgängig machen."
-  },
-  "resetWalletWarningSocial": {
-    "message": "Stellen Sie sicher, dass Sie vor dem Zurücksetzen die richtige geheime Wiederherstellungsphrase verwenden. Dies kann nicht rückgängig gemacht werden."
   },
   "resolutionProtocol": {
     "message": "Adresse aufgelöst über $1",

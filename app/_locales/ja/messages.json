@@ -943,9 +943,6 @@
   "bridgeEnterAmount": {
     "message": "金額を選択"
   },
-  "bridgeEnterAmountAndSelectAccount": {
-    "message": "金額を入力して、送金先アカウントを選択します"
-  },
   "bridgeExplorerLinkViewOn": {
     "message": "$1で表示"
   },
@@ -1467,9 +1464,6 @@
   "connectWithMetaMask": {
     "message": "MetaMaskを使用して接続"
   },
-  "connectedAccounts": {
-    "message": "接続されたアカウント"
-  },
   "connectedAccountsDescriptionPlural": {
     "message": "このサイトに接続されているアカウントを$1個持っています。",
     "description": "$1 is the number of accounts"
@@ -1483,9 +1477,6 @@
   "connectedAccountsListTooltip": {
     "message": "$1はアカウントの残高、アドレス、アクティビティを確認し、接続されたアカウントで承認するトランザクションを提案できます。",
     "description": "$1 is the origin name"
-  },
-  "connectedAccountsToast": {
-    "message": "接続されたアカウントが更新されました"
   },
   "connectedSites": {
     "message": "接続済みのサイト"
@@ -2018,14 +2009,6 @@
   },
   "disconnectThisAccount": {
     "message": "このアカウントを接続解除"
-  },
-  "disconnectedAllAccountsToast": {
-    "message": "すべてのアカウントの$1への接続が解除されました",
-    "description": "$1 is name of the dapp`"
-  },
-  "disconnectedSingleAccountToast": {
-    "message": "$1の$2への接続が解除されました",
-    "description": "$1 is name of the name and $2 represents the dapp name`"
   },
   "discover": {
     "message": "ディスカバリ"
@@ -2573,11 +2556,12 @@
     "message": "パスワードをお忘れですか？"
   },
   "forgotPasswordSocialDescription": {
-    "message": "MetaMask側ではパスワードを復元できません。"
+    "message": "MetaMask側ではパスワードを復元できません。",
+    "description": "$1 is the support link"
   },
   "forgotPasswordSocialStep1": {
     "message": "$1（Face IDなど）が搭載されたデバイスでMetaMaskにログインしている場合は、そこでパスワードをリセットできます。",
-    "description": "$1 is bold biometrics turned on"
+    "description": "$1 is bold heading"
   },
   "forgotPasswordSocialStep1Biometrics": {
     "message": "生体認証 (Face IDなど) が有効な"
@@ -4411,9 +4395,6 @@
     "message": "トランザクションをキャンセルまたは高速化する方法をご覧ください。",
     "description": "The text for the hyperlink in the pending transaction alert message"
   },
-  "permissionDetails": {
-    "message": "アクセス許可の詳細"
-  },
   "permissionFor": {
     "message": "アクセス許可:"
   },
@@ -4717,10 +4698,6 @@
   "pleaseConfirm": {
     "message": "ご確認ください"
   },
-  "plusMore": {
-    "message": "その他$1件",
-    "description": "$1 is the number of additional items"
-  },
   "plusXMore": {
     "message": "他$1件",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
@@ -4941,12 +4918,6 @@
   "rateIncludesMMFee": {
     "message": "$1%のMM手数料込み。"
   },
-  "reAddAccounts": {
-    "message": "他のアカウントを再追加"
-  },
-  "reAdded": {
-    "message": "再追加済み"
-  },
   "readdToken": {
     "message": "アカウントオプションメニューで「トークンのインポート」を選択することによって、今後このトークンを戻すことができます。"
   },
@@ -5103,33 +5074,6 @@
   },
   "resetWallet": {
     "message": "ウォレットをリセットする"
-  },
-  "resetWalletSubHeader": {
-    "message": "MetaMask側では、ユーザーのパスワードのコピーを保存していません。アカウントのロックを解除できない場合は、ウォレットをリセットする必要があります。ウォレットをセットアップする際に使用した秘密のリカバリーフレーズを入力することでリセットできます。"
-  },
-  "resetWalletSubHeaderSocial": {
-    "message": "MetaMaskはパスワードのコピーを保存しません。アカウントのロック解除で問題が発生している場合は、ウォレットをリセットする必要があります。シークレットリカバリーフレーズをお持ちの場合は、それを使用してこのデバイスから現在のウォレットとアカウントリストを削除できます。"
-  },
-  "resetWalletUsingSRP": {
-    "message": "この操作により、このデバイスから現在のウォレットと秘密のリカバリーフレーズだけでなく、これまで収集したアカウントのリストも削除されます。秘密のリカバリーフレーズでリセットした後、リセットに使用した秘密のリカバリーフレーズに基づくアカウントのリストが表示されます。この新規リストには、残高のあるアカウントが自動的に含まれます。また、過去に作成された$1することもできます。インポートしたカスタムアカウントは$2する必要があり、アカウントに追加したカスタムトークンも$3する必要があります。"
-  },
-  "resetWalletUsingSRPSocial": {
-    "message": "シークレットリカバリーフレーズを使ってリセットを行うと、新しいアカウントリストが表示されます。このリストには、残高のあるアカウントが含まれます。以前作成した$1することもできます。ただし、インポートした$2や$3は再度追加する必要があります。"
-  },
-  "resetWalletUsingSRPSocialAccounts": {
-    "message": "他のアカウントを再追加"
-  },
-  "resetWalletUsingSRPSocialCustomAccounts": {
-    "message": "カスタムアカウント"
-  },
-  "resetWalletUsingSRPSocialCustomTokens": {
-    "message": "カスタムトークン"
-  },
-  "resetWalletWarning": {
-    "message": "続行する前に、正しいリカバリーフレーズを使用していることを確認してください。この操作は元に戻せません。"
-  },
-  "resetWalletWarningSocial": {
-    "message": "リセットを行う前に、正しいシークレットリカバリーフレーズを使用していることを確認してください。この操作は元に戻すことができません。"
   },
   "resolutionProtocol": {
     "message": "アドレスは$1を通じて解決されました",

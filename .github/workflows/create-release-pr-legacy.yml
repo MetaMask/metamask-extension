@@ -15,17 +15,20 @@ on:
 jobs:
   create-release-pr:
     name: Create Release Pull Request using Github Tools
-    uses: MetaMask/github-tools/.github/workflows/create-release-pr.yml@3b4244a675e7bb1eec7309a11e89697f53a25d9a
-    with:
-      platform: extension
-      base-branch: ${{ inputs.base-branch }}
-      semver-version: ${{ inputs.semver-version }}
-      previous-version-tag: release/${{ inputs.previous-semver-version }}
-      github-tools-version: 3b4244a675e7bb1eec7309a11e89697f53a25d9a
-    secrets:
-      # This token needs write permissions to metamask-extension & read permissions to metamask-planning
-      github-token: ${{ secrets.PR_TOKEN }}
-      google-application-creds-base64: ${{ secrets.GCP_RLS_SHEET_ACCOUNT_BASE64 }}
+    runs-on: ubuntu-latest
     permissions:
       contents: write
       pull-requests: write
+    steps:
+      - name: Create release pull request
+        uses: MetaMask/github-tools/.github/actions/create-release-pr@v1
+        with:
+          platform: extension
+          semver-version: ${{ inputs.semver-version }}
+          release-pr-base-branch: ${{ inputs.base-branch }}
+          checkout-base-branch: ${{ inputs.base-branch }}
+          google-application-creds-base64: ${{ secrets.GCP_RLS_SHEET_ACCOUNT_BASE64 }}
+          previous-version-ref: release/${{ inputs.previous-semver-version }}
+          # This token needs write permissions to metamask-extension & read
+          # permissions to metamask-planning.
+          github-token: ${{ secrets.PR_TOKEN }}

@@ -47,7 +47,7 @@ describe('Forgot password', function () {
         await resetPasswordPage.checkPageIsLoaded();
 
         await resetPasswordPage.resetPassword(E2E_SRP, newPassword);
-        await resetPasswordPage.waitForSeedPhraseInputToNotBeVisible();
+        await resetPasswordPage.waitForPasswordInputToNotBeVisible();
         await homePage.headerNavbar.checkPageIsLoaded();
         await driver.delay(1000); // to avoid a race condition where the wallet is not locked yet
         // Lock wallet again
