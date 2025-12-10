@@ -6332,10 +6332,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ens-resolver-snap@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/ens-resolver-snap@npm:1.0.0"
-  checksum: 10/c97e0d300a275fac053233391f38d7146a98bb0a49ec8e03a42a27bf4db9864a7f8b2d5b2a9701bcb1dd043d0edf9a9e9f7e52115893db39e51c140e7202e24d
+"@metamask/ens-resolver-snap@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@metamask/ens-resolver-snap@npm:1.1.0"
+  checksum: 10/e7d636ae8934aa31e0b0ee916557e1911b37147d7a6eca74fbe3581df3652162104f190eddba6c5ae100166e79168855ac364393b57abfbc6f8bc82047d71082
   languageName: node
   linkType: hard
 
@@ -32941,7 +32941,7 @@ __metadata:
     "@metamask/eip-5792-middleware": "npm:^2.0.0"
     "@metamask/eip-7702-internal-rpc-middleware": "npm:^0.1.0"
     "@metamask/ens-controller": "npm:^18.0.0"
-    "@metamask/ens-resolver-snap": "npm:^1.0.0"
+    "@metamask/ens-resolver-snap": "npm:^1.1.0"
     "@metamask/error-reporting-service": "npm:^3.0.0"
     "@metamask/eslint-config": "npm:^9.0.0"
     "@metamask/eslint-config-jest": "npm:^9.0.0"

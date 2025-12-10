@@ -299,7 +299,7 @@
     "@metamask/eip-5792-middleware": "^2.0.0",
     "@metamask/eip-7702-internal-rpc-middleware": "^0.1.0",
     "@metamask/ens-controller": "^18.0.0",
-    "@metamask/ens-resolver-snap": "^1.0.0",
+    "@metamask/ens-resolver-snap": "^1.1.0",
     "@metamask/error-reporting-service": "^3.0.0",
     "@metamask/eth-json-rpc-filters": "^9.0.0",
     "@metamask/eth-json-rpc-middleware": "^22.0.1",
