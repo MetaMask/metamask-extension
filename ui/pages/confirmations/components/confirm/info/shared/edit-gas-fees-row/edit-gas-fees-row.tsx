@@ -204,12 +204,12 @@ function FiatValue({
 function useShowFiat(chainId: Hex): boolean {
   type TestNetChainId = (typeof TEST_CHAINS)[number];
 
+  const isTestnet = TEST_CHAINS.includes(chainId as TestNetChainId);
+  const { showFiatInTestnets } = useSelector(getPreferences);
+
   if (isTempoNetwork(chainId)) {
     return true;
   }
-
-  const isTestnet = TEST_CHAINS.includes(chainId as TestNetChainId);
-  const { showFiatInTestnets } = useSelector(getPreferences);
 
   return !isTestnet || showFiatInTestnets;
 }
