@@ -6,7 +6,7 @@
       },
       "packages": {
         "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
-        "@jest/reporters>@jridgewell/trace-mapping": true
+        "terser-webpack-plugin>@jridgewell/trace-mapping": true
       }
     },
     "@babel/code-frame": {
@@ -108,7 +108,7 @@
       "packages": {
         "@babel/core>@babel/types": true,
         "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
-        "@jest/reporters>@jridgewell/trace-mapping": true,
+        "terser-webpack-plugin>@jridgewell/trace-mapping": true,
         "@babel/core>@babel/generator>jsesc": true
       }
     },
@@ -943,11 +943,11 @@
         "define": true
       },
       "packages": {
-        "@jest/reporters>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true,
-        "@jest/reporters>@jridgewell/trace-mapping": true
+        "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true,
+        "terser-webpack-plugin>@jridgewell/trace-mapping": true
       }
     },
-    "@jest/reporters>@jridgewell/trace-mapping>@jridgewell/resolve-uri": {
+    "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/resolve-uri": {
       "globals": {
         "define": true
       }
@@ -955,10 +955,10 @@
     "terser>@jridgewell/source-map": {
       "packages": {
         "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
-        "@jest/reporters>@jridgewell/trace-mapping": true
+        "terser-webpack-plugin>@jridgewell/trace-mapping": true
       }
     },
-    "@jest/reporters>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": {
+    "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": {
       "globals": {
         "Buffer": true,
         "TextDecoder": true,
@@ -970,17 +970,17 @@
         "define": true
       },
       "packages": {
-        "@jest/reporters>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true,
-        "@jest/reporters>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true
+        "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true,
+        "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true
       }
     },
-    "@jest/reporters>@jridgewell/trace-mapping": {
+    "terser-webpack-plugin>@jridgewell/trace-mapping": {
       "globals": {
         "define": true
       },
       "packages": {
-        "@jest/reporters>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true,
-        "@jest/reporters>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true
+        "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true,
+        "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true
       }
     },
     "lavamoat>@lavamoat/aa": {
