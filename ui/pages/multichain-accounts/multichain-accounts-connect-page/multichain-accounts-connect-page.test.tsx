@@ -22,6 +22,7 @@ import {
 } from '../../../../shared/modules/selectors/networks';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import {
   MultichainAccountsConnectPage,
   MultichainConnectPageProps,
@@ -870,6 +871,82 @@ describe('MultichainConnectPage', () => {
       expect(actualChainIds).toContain(
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
       );
+    });
+
+    it('returns all default networks for Tron Wallet Adapter requests', () => {
+      const TRON_CAIP_CHAIN_ID = MultichainNetworks.TRON;
+
+      mockGetCaip25CaveatValueFromPermissions.mockReturnValue({
+        requiredScopes: {},
+        optionalScopes: {
+          [TRON_CAIP_CHAIN_ID]: {
+            accounts: [],
+          },
+        },
+        sessionProperties: {
+          [KnownSessionProperties.TronAccountChangedNotifications]: true,
+        },
+        isMultichainOrigin: true,
+      });
+
+      mockGetAllScopesFromCaip25CaveatValue.mockReturnValue([
+        TRON_CAIP_CHAIN_ID,
+      ]);
+
+      mockGetAllNetworkConfigurationsByCaipChainId.mockReturnValue({
+        'eip155:1': {
+          chainId: 'eip155:1',
+          name: 'Ethereum Mainnet',
+          nativeCurrency: 'ETH',
+        } as unknown as EvmAndMultichainNetworkConfigurationsWithCaipChainId,
+        [TRON_CAIP_CHAIN_ID]: {
+          chainId: TRON_CAIP_CHAIN_ID,
+          name: 'Tron Mainnet',
+          nativeCurrency: 'TRX',
+        } as unknown as EvmAndMultichainNetworkConfigurationsWithCaipChainId,
+      });
+
+      render({
+        props: {
+          request: {
+            permissions: {
+              'endowment:caip25': {
+                caveats: [
+                  {
+                    type: 'restrictNetworkSwitching',
+                    value: {
+                      requiredScopes: {},
+                      optionalScopes: {
+                        [TRON_CAIP_CHAIN_ID]: {
+                          accounts: [],
+                        },
+                      },
+                      sessionProperties: {
+                        [KnownSessionProperties.TronAccountChangedNotifications]: true, // Tron Wallet Adapter indicator
+                      },
+                      isMultichainOrigin: true,
+                    },
+                  },
+                ],
+              },
+            },
+            metadata: {
+              id: '1',
+              origin: mockTargetSubjectMetadata.origin,
+            },
+          },
+        },
+      });
+
+      // For Tron Wallet Adapter requests, should return all default networks (EVM + Tron)
+      // even though only Tron was explicitly requested
+      const { calls } = mockUseAccountGroupsForPermissions.mock;
+      expect(calls.length).toBeGreaterThan(0);
+      const actualChainIds = calls[0]?.[2] as string[] | undefined;
+      expect(actualChainIds).toBeDefined();
+      // Should include both EVM and Tron networks by default
+      expect(actualChainIds).toContain('eip155:1');
+      expect(actualChainIds).toContain(TRON_CAIP_CHAIN_ID);
     });
 
     it('returns all default networks when EIP-1193 request with no specific chain IDs requested', () => {

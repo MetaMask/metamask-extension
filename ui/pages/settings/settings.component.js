@@ -372,6 +372,7 @@ class SettingsPage extends PureComponent {
               onClick={() => navigate(backRoute)}
               marginRight={2}
               size={ButtonIconSize.Md}
+              data-testid="settings-back-button"
             />
           )}
           <Text variant={TextVariant.headingSm}>{subheaderText}</Text>
