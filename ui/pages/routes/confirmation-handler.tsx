@@ -15,6 +15,7 @@ import {
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
   SHIELD_PLAN_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
+  SETTINGS_ROUTE,
 } from '../../helpers/constants/routes';
 import { getConfirmationRoute } from '../confirmations/hooks/useConfirmationNavigation';
 // eslint-disable-next-line import/no-restricted-paths
@@ -50,6 +51,7 @@ const EXEMPTED_ROUTES = [
   // shield approval transaction back to shield plan and transaction shield settings page on cancel/confirm, need to be exempted otherwise it will redirect to home page
   SHIELD_PLAN_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
+  SETTINGS_ROUTE,
 ];
 
 const SNAP_APPROVAL_TYPES = [
