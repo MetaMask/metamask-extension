@@ -13,6 +13,7 @@ import {
   ShieldErrorStateActionClickedEnum,
   ShieldErrorStateLocationEnum,
   ShieldErrorStateViewEnum,
+  ShieldSubscriptionRequestSubscriptionStateEnum,
   ShieldUnexpectedErrorEventLocationEnum,
 } from '../../../../shared/constants/subscriptions';
 import { DefaultSubscriptionPaymentOptions } from '../../../../shared/types';
@@ -43,7 +44,7 @@ export type CaptureShieldSubscriptionRequestParams =
       /**
        * Current subscription status before the new subscription request was started (cancelled, expired, etc.)
        */
-      subscriptionState: SubscriptionStatus | 'none';
+      subscriptionState: ShieldSubscriptionRequestSubscriptionStateEnum;
 
       /**
        * Actual options selected by the user for the new subscription request.

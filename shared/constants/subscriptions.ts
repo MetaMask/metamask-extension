@@ -60,6 +60,11 @@ export enum ShieldUserAccountTypeEnum {
   OTHER = 'Other',
 }
 
+export enum ShieldSubscriptionRequestSubscriptionStateEnum {
+  New = 'new',
+  Renew = 'renew',
+}
+
 export enum ShieldCtaActionClickedEnum {
   Start14DayTrial = 'start_14_day_free_trial',
   LearnMore = 'learn_more',

@@ -6,7 +6,6 @@ import {
   RecurringInterval,
   Subscription,
   SubscriptionControllerState,
-  SubscriptionStatus,
 } from '@metamask/subscription-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
@@ -14,6 +13,7 @@ import { KeyringObject } from '@metamask/keyring-controller';
 import { Json } from '@metamask/utils';
 import {
   EntryModalSourceEnum,
+  ShieldSubscriptionRequestSubscriptionStateEnum,
   ShieldUserAccountCategoryEnum,
   ShieldUserAccountTypeEnum,
 } from '../../constants/subscriptions';
@@ -41,9 +41,12 @@ export function getBillingCyclesForMetrics(interval: RecurringInterval) {
 export function getLatestSubscriptionStatus(
   subscriptions: Subscription[],
   lastSubscription: Subscription | undefined,
-): SubscriptionStatus | undefined {
+): ShieldSubscriptionRequestSubscriptionStateEnum {
   const currentShieldSubscription = getShieldSubscription(subscriptions);
-  return currentShieldSubscription?.status || lastSubscription?.status;
+  if (currentShieldSubscription || lastSubscription) {
+    return ShieldSubscriptionRequestSubscriptionStateEnum.Renew;
+  }
+  return ShieldSubscriptionRequestSubscriptionStateEnum.New;
 }
 
 export function getUserAccountType(
