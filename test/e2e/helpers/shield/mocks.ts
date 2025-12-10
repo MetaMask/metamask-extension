@@ -40,6 +40,8 @@ export class ShieldMockttpService {
 
   #currentPaymentTokenSymbol: 'USDC' | 'USDT' = 'USDC';
 
+  #customClaimsResponse: unknown[] | null = null;
+
   async setup(
     server: Mockttp,
     overrides?: {
@@ -49,6 +51,7 @@ export class ShieldMockttpService {
       coverageStatus?: 'covered' | 'not_covered' | 'malicious';
       claimErrorCode?: string;
       defaultPaymentMethod?: 'card' | 'crypto';
+      claimsResponse?: unknown[];
     },
   ) {
     // Mock Identity Services first as shield/subscription APIs depend on it (Auth Token)
@@ -61,6 +64,11 @@ export class ShieldMockttpService {
     // Set coverage status if provided
     if (overrides?.coverageStatus) {
       this.#coverageStatus = overrides.coverageStatus;
+    }
+
+    // Set custom claims response if provided
+    if (overrides?.claimsResponse !== undefined) {
+      this.#customClaimsResponse = overrides.claimsResponse;
     }
 
     // Subscription APIs
@@ -374,6 +382,12 @@ export class ShieldMockttpService {
 
   async #handleGetClaims(server: Mockttp) {
     await server.forGet(CLAIMS_API.CLAIMS).thenCallback(() => {
+      if (this.#customClaimsResponse !== null) {
+        return {
+          statusCode: 200,
+          json: this.#customClaimsResponse,
+        };
+      }
       return {
         statusCode: 200,
         json: this.#newClaimSubmitted
