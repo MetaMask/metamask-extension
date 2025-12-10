@@ -74,6 +74,8 @@ describe('Transfer custom tokens', function () {
             GAS_LIMIT,
             GAS_PRICE,
           );
+
+          await tokenTransferRedesignedConfirmPage.checkGasFee('0.0004');
           await tokenTransferRedesignedConfirmPage.clickConfirmButton();
 
           // check that transaction has completed correctly and is displayed in the activity list
@@ -83,7 +85,7 @@ describe('Transfer custom tokens', function () {
       );
     });
 
-    it('transfer custom tokens from dapp customizing gas values TEST', async function () {
+    it('transfer custom tokens from dapp customizing gas values', async function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },

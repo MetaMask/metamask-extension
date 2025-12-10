@@ -115,10 +115,7 @@ describe('Ledger Hardware', function (this: Suite) {
         await homePage.checkPageIsLoaded();
         await homePage.goToActivityList();
         const activityListPage = new ActivityListPage(driver);
-        await activityListPage.checkTxAction({
-          action: `Sent ${symbol}`,
-          confirmedTx: 1,
-        });
+        await activityListPage.checkTxAction({ action: `Sent ${symbol}` });
         await activityListPage.checkTxAmountInActivity(`-1.5 ${symbol}`);
       },
     );
