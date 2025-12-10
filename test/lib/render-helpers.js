@@ -1,35 +1,13 @@
 import React, { useMemo, useState } from 'react';
-import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
-import { renderHook } from '@testing-library/react-hooks';
 import { userEvent } from '@testing-library/user-event';
-import { Router } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { createMemoryHistory } from 'history';
 import { noop } from 'lodash';
-import configureStore from '../../ui/store/store';
 import { I18nContext, LegacyI18nProvider } from '../../ui/contexts/i18n';
-import {
-  LegacyMetaMetricsProvider,
-  MetaMetricsContext,
-} from '../../ui/contexts/metametrics';
 import { getMessage } from '../../ui/helpers/utils/i18n-helper';
 import * as en from '../../app/_locales/en/messages.json';
 import { setupInitialStore, connectToBackground } from '../../ui';
 import Root from '../../ui/pages';
-
-// Mock MetaMetrics context for tests
-const createMockTrackEvent = (
-  getMockTrackEvent = () => () => Promise.resolve(),
-) => {
-  const mockTrackEvent = getMockTrackEvent();
-  Object.assign(mockTrackEvent, {
-    bufferedTrace: () => Promise.resolve(),
-    bufferedEndTrace: () => Promise.resolve(),
-    onboardingParentContext: { current: null },
-  });
-  return mockTrackEvent;
-};
 
 export const I18nProvider = (props) => {
   const { currentLocale, current, en: eng } = props;
@@ -55,120 +33,6 @@ I18nProvider.propTypes = {
 I18nProvider.defaultProps = {
   children: undefined,
 };
-
-const createProviderWrapper = (
-  store,
-  pathname = '/',
-  getMockTrackEvent = () => () => Promise.resolve(),
-) => {
-  const history = createMemoryHistory({ initialEntries: [pathname] });
-  const mockTrackEvent = createMockTrackEvent(getMockTrackEvent);
-
-  const Wrapper = ({ children }) =>
-    store ? (
-      <Provider store={store}>
-        <Router history={history}>
-          <I18nProvider currentLocale="en" current={en} en={en}>
-            <LegacyI18nProvider>
-              <MetaMetricsContext.Provider value={mockTrackEvent}>
-                <LegacyMetaMetricsProvider>
-                  {children}
-                </LegacyMetaMetricsProvider>
-              </MetaMetricsContext.Provider>
-            </LegacyI18nProvider>
-          </I18nProvider>
-        </Router>
-      </Provider>
-    ) : (
-      <Router history={history}>
-        <LegacyI18nProvider>
-          <MetaMetricsContext.Provider value={mockTrackEvent}>
-            <LegacyMetaMetricsProvider>{children}</LegacyMetaMetricsProvider>
-          </MetaMetricsContext.Provider>
-        </LegacyI18nProvider>
-      </Router>
-    );
-
-  Wrapper.propTypes = {
-    children: PropTypes.node,
-  };
-  return {
-    Wrapper,
-    history,
-    mockTrackEvent,
-  };
-};
-
-export function renderWithProvider(
-  component,
-  store,
-  pathname = '/',
-  renderer = render,
-) {
-  const { history, Wrapper, mockTrackEvent } = createProviderWrapper(
-    store,
-    pathname,
-  );
-  return {
-    ...renderer(component, { wrapper: Wrapper }),
-    history,
-    mockTrackEvent,
-  };
-}
-
-export function renderHookWithProvider(
-  hook,
-  state,
-  pathname = '/',
-  Container,
-  getMockTrackEvent = () => () => Promise.resolve(),
-) {
-  const store = state ? configureStore(state) : undefined;
-
-  const { history, Wrapper: ProviderWrapper } = createProviderWrapper(
-    store,
-    pathname,
-    getMockTrackEvent,
-  );
-
-  const wrapper = Container
-    ? ({ children }) => (
-        <ProviderWrapper>
-          <Container>{children}</Container>
-        </ProviderWrapper>
-      )
-    : ProviderWrapper;
-
-  return {
-    ...renderHook(hook, { wrapper }),
-    history,
-    store,
-  };
-}
-
-/**
- * Renders a hook with a provider and optional container.
- *
- * @template {(...args: any) => any} Hook
- * @template {Parameters<Hook>} HookParams
- * @template {ReturnType<Hook>} HookReturn
- * @template {import('@testing-library/react-hooks').RenderHookResult<HookParams, HookReturn>} RenderHookResult
- * @template {import('history').History} History
- * @param {Hook} hook - The hook to be rendered.
- * @param [state] - The initial state for the store.
- * @param [pathname] - The initial pathname for the history.
- * @param [Container] - An optional container component.
- * @param {() => () => Promise<void>} [getMockTrackEvent] - A placeholder function for tracking a MetaMetrics event.
- * @returns {RenderHookResult & { history: History }} The result of the rendered hook and the history object.
- */
-export const renderHookWithProviderTyped = (
-  hook,
-  state,
-  pathname = '/',
-  Container,
-  getMockTrackEvent = () => () => Promise.resolve(),
-) =>
-  renderHookWithProvider(hook, state, pathname, Container, getMockTrackEvent);
 
 export function renderWithLocalization(component) {
   const Wrapper = ({ children }) => (

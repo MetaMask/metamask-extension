@@ -32,7 +32,7 @@ export async function setManifestFlags(flags: ManifestFlags = {}) {
       enabled: true,
       branch: process.env.BRANCH,
       commitHash: process.env.HEAD_COMMIT_HASH,
-      job: process.env.JOB_NAME,
+      job: process.env.JOB_NAME?.split(' ')[0], // Remove matrix info
       matrixIndex: parseIntOrUndefined(process.env.MATRIX_INDEX),
       prNumber: parseIntOrUndefined(process.env.PR_NUMBER),
     };
