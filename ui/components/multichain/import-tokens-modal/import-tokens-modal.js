@@ -11,6 +11,7 @@ import {
   formatChainIdToCaip,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
+import { TextButton } from '@metamask/design-system-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -1006,14 +1007,21 @@ export const ImportTokensModal = ({ onClose }) => {
                                 {t(
                                   'customTokenWarningInTokenDetectionNetwork',
                                   [
-                                    <ButtonLink
+                                    <TextButton
                                       key="import-token-fake-token-warning"
-                                      rel="noopener noreferrer"
-                                      target="_blank"
-                                      href={ZENDESK_URLS.TOKEN_SAFETY_PRACTICES}
+                                      asChild
+                                      className="inline"
                                     >
-                                      {t('learnScamRisk')}
-                                    </ButtonLink>,
+                                      <a
+                                        href={
+                                          ZENDESK_URLS.TOKEN_SAFETY_PRACTICES
+                                        }
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                      >
+                                        {t('learnScamRisk')}
+                                      </a>
+                                    </TextButton>,
                                   ],
                                 )}
                               </Text>
