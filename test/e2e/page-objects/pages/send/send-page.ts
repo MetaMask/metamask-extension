@@ -28,6 +28,14 @@ class SendPage {
     text: 'Insufficient funds',
   };
 
+  private readonly invalidAddressError = {
+    text: 'Invalid address',
+  };
+
+  private readonly solanaNetwork = {
+    text: 'Solana',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -63,9 +71,30 @@ class SendPage {
     await this.driver.findElement(this.insufficientFundsError);
   }
 
+  async checkInvalidAddressError(): Promise<void> {
+    await this.driver.findElement(this.invalidAddressError);
+  }
+
+  async checkSolanaNetworkIsPresent(): Promise<void> {
+    await this.driver.findElement(this.solanaNetwork);
+  }
+
   async selectAccountFromRecipientModal(accountName: string): Promise<void> {
     await this.driver.clickElement(this.recipientModalButton);
     await this.driver.clickElement({ text: accountName });
+  }
+
+  async isContinueButtonEnabled(): Promise<boolean> {
+    try {
+      await this.driver.findClickableElement(this.continueButton, {
+        timeout: 2000,
+      });
+    } catch (e) {
+      console.log('Continue button not enabled', e);
+      return false;
+    }
+    console.log('Continue button enabled');
+    return true;
   }
 
   async createSendRequest({
