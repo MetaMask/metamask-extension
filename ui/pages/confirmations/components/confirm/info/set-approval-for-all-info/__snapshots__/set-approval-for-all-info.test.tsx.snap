@@ -275,9 +275,6 @@ exports[`<SetApprovalForAllInfo /> renders component for approve request 1`] = `
               class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
             />
           </button>
-          <button>
-            Edit Gas
-          </button>
           <p
             class="mm-box mm-text mm-text--body-md"
             data-testid="native-currency"
