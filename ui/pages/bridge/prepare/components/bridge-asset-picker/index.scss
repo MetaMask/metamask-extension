@@ -1,0 +1,6 @@
+// Hides the network avatar placeholder icon in the "All Networks" NetworkListItem
+.multichain-network-list-item:first-child {
+  .mm-avatar-base {
+    display: none;
+  }
+}
