@@ -87,6 +87,9 @@ export default class ShieldDetailPage {
   private readonly resubscribeButton =
     '[data-testid="shield-detail-resubscribe-button"]';
 
+  private readonly renewButtonWhenCancelled =
+    '[data-testid="shield-detail-renew-button"]';
+
   private readonly submitCaseButton =
     '[data-testid="shield-detail-submit-case-button"]';
 
@@ -172,11 +175,20 @@ export default class ShieldDetailPage {
   }
 
   /**
-   * Click the Resubscribe button
+   * Click the Resubscribe button (when cancelAtPeriodEnd is true)
    */
   async clickResubscribeButton(): Promise<void> {
     console.log('Clicking Resubscribe button');
     await this.driver.clickElement(this.resubscribeButton);
+  }
+
+  /**
+   * Click the Renew button (when subscription is fully cancelled)
+   * This navigates to the shield plan page
+   */
+  async clickRenewButtonWhenCancelled(): Promise<void> {
+    console.log('Clicking Renew button when subscription is cancelled');
+    await this.driver.clickElement(this.renewButtonWhenCancelled);
   }
 
   /**

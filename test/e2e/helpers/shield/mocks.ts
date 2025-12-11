@@ -34,6 +34,8 @@ export class ShieldMockttpService {
 
   #cancelAtPeriodEnd = false;
 
+  #isSubscriptionCancelled = false;
+
   #newClaimSubmitted = false;
 
   #coverageStatus: 'covered' | 'not_covered' | 'malicious' = 'covered';
@@ -52,6 +54,7 @@ export class ShieldMockttpService {
       claimErrorCode?: string;
       defaultPaymentMethod?: 'card' | 'crypto';
       claimsResponse?: unknown[];
+      isSubscriptionCancelled?: boolean;
     },
   ) {
     // Mock Identity Services first as shield/subscription APIs depend on it (Auth Token)
@@ -69,6 +72,11 @@ export class ShieldMockttpService {
     // Set custom claims response if provided
     if (overrides?.claimsResponse !== undefined) {
       this.#customClaimsResponse = overrides.claimsResponse;
+    }
+
+    // Set subscription cancelled state if provided
+    if (overrides?.isSubscriptionCancelled !== undefined) {
+      this.#isSubscriptionCancelled = overrides.isSubscriptionCancelled;
     }
 
     // Subscription APIs
@@ -148,6 +156,7 @@ export class ShieldMockttpService {
       .forPost(SUBSCRIPTION_API.CREATE_SUBSCRIPTION_BY_CARD)
       .thenCallback(() => {
         this.#hasSubscribedToShield = true;
+        this.#isSubscriptionCancelled = false; // Reset cancelled state when creating new subscription
         return {
           statusCode: 200,
           json: {
@@ -222,6 +231,28 @@ export class ShieldMockttpService {
           };
         }
 
+        // If subscription is fully cancelled, return empty subscriptions array
+        // but include the cancelled subscription in lastSubscription
+        // This simulates the subscription period ending - cancelled subscriptions
+        // are not in the active subscriptions array, only in lastSubscription
+        if (this.#isSubscriptionCancelled) {
+          const cancelledSubscription = {
+            ...BASE_SHIELD_SUBSCRIPTION_CARD,
+            status: 'canceled' as const,
+            cancelAtPeriodEnd: false,
+          };
+
+          return {
+            statusCode: 200,
+            json: {
+              customerId: 'test_customer_id',
+              subscriptions: [], // Empty array - cancelled subscriptions are not active
+              lastSubscription: cancelledSubscription, // Include in lastSubscription so it's available as displayedShieldSubscription
+              trialedProducts: ['shield'],
+            },
+          };
+        }
+
         // Return crypto subscription if crypto was subscribed, or if defaultPaymentMethod is 'crypto'
         const shouldReturnCrypto =
           this.#hasSubscribedToShieldCrypto ||
@@ -252,31 +283,33 @@ export class ShieldMockttpService {
             },
           };
 
+          const cryptoSubscriptionWithCancel = {
+            ...cryptoSubscription,
+            cancelAtPeriodEnd: this.#cancelAtPeriodEnd,
+          };
+
           return {
             statusCode: 200,
             json: {
               customerId: 'test_customer_id',
-              subscriptions: [
-                {
-                  ...cryptoSubscription,
-                  cancelAtPeriodEnd: this.#cancelAtPeriodEnd,
-                },
-              ],
+              subscriptions: [cryptoSubscriptionWithCancel],
+              lastSubscription: cryptoSubscriptionWithCancel, // Include in lastSubscription for consistency
               trialedProducts: ['shield'],
             },
           };
         }
 
+        const cardSubscription = {
+          ...BASE_SHIELD_SUBSCRIPTION_CARD,
+          cancelAtPeriodEnd: this.#cancelAtPeriodEnd,
+        };
+
         return {
           statusCode: 200,
           json: {
             customerId: 'test_customer_id',
-            subscriptions: [
-              {
-                ...BASE_SHIELD_SUBSCRIPTION_CARD,
-                cancelAtPeriodEnd: this.#cancelAtPeriodEnd,
-              },
-            ],
+            subscriptions: [cardSubscription],
+            lastSubscription: cardSubscription, // Include in lastSubscription for consistency
             trialedProducts: ['shield'],
           },
         };
@@ -294,6 +327,7 @@ export class ShieldMockttpService {
     server: Mockttp,
     overrides?: {
       subscriptionId?: string;
+      fullyCancel?: boolean;
     },
   ) {
     const subscriptionId = overrides?.subscriptionId || 'test_subscription_id';
@@ -302,7 +336,13 @@ export class ShieldMockttpService {
         `${BASE_SUBSCRIPTION_API_URL}/subscriptions/${subscriptionId}/cancel`,
       )
       .thenCallback(() => {
-        this.#cancelAtPeriodEnd = true;
+        // If fullyCancel is true, mark subscription as fully cancelled
+        // This simulates the subscription period ending
+        if (overrides?.fullyCancel) {
+          this.#isSubscriptionCancelled = true;
+        } else {
+          this.#cancelAtPeriodEnd = true;
+        }
         return {
           statusCode: 200,
           json: { ...BASE_SHIELD_SUBSCRIPTION_CARD, cancelAtPeriodEnd: true },
@@ -323,6 +363,7 @@ export class ShieldMockttpService {
       )
       .thenCallback(() => {
         this.#cancelAtPeriodEnd = false;
+        this.#isSubscriptionCancelled = false;
         return {
           statusCode: 200,
           json: { ...BASE_SHIELD_SUBSCRIPTION_CARD, cancelAtPeriodEnd: false },
