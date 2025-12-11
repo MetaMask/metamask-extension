@@ -301,7 +301,15 @@ export const PaymentMethodRow = ({
         <ButtonRow
           title={title}
           description={descriptionWithIcon(IconColor.WarningDefault)}
-          onClick={handlePaymentError}
+          endAccessory={
+            <Button
+              variant={ButtonVariant.Secondary}
+              size={ButtonSize.Md}
+              onClick={handlePaymentError}
+            >
+              {t('shieldTxMembershipRenew')}
+            </Button>
+          }
         />
       );
     }
