@@ -26,6 +26,7 @@ import {
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/modules/environment';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
+import { useBrowserSupportsSidePanel } from '../../../hooks/useBrowserSupportsSidePanel';
 import {
   selectIsMetamaskNotificationsEnabled,
   selectIsMetamaskNotificationsFeatureSeen,
@@ -171,6 +172,9 @@ export const GlobalMenu = ({
   // Check if sidepanel feature is enabled
   const isSidePanelEnabled = useSidePanelEnabled();
 
+  // Check if browser actually supports sidepanel (Arc browser has API but doesn't work)
+  const browserSupportsSidePanel = useBrowserSupportsSidePanel();
+
   const showPriorityTag = useMemo(
     () =>
       (isActiveShieldSubscription || isPausedShieldSubscription) &&
@@ -192,43 +196,66 @@ export const GlobalMenu = ({
     }
 
     try {
-      const newValue = !isSidePanelDefault;
-      await dispatch(setUseSidePanelAsDefault(newValue));
-
-      // If switching from sidepanel to popup view, close the current sidepanel
+      // If switching from sidepanel to popup view
       if (
         isSidePanelDefault &&
         getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL
       ) {
-        // Close only the sidepanel, not the entire browser window
+        await dispatch(setUseSidePanelAsDefault(false));
+        // Close the sidepanel
         window.close();
+        return;
       }
-      // If switching from popup to sidepanel view, open the sidepanel
-      else if (
+
+      // If switching from popup to sidepanel view
+      if (
         !isSidePanelDefault &&
         getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
       ) {
-        try {
-          const browserWithSidePanel = browser as typeof browser & {
-            sidePanel?: {
-              open: (options: { windowId: number }) => Promise<void>;
-            };
+        const browserWithSidePanel = browser as typeof browser & {
+          sidePanel?: {
+            open: (options: { windowId: number }) => Promise<void>;
           };
-          if (browserWithSidePanel?.sidePanel?.open) {
-            const tabs = await browser.tabs.query({
-              active: true,
-              currentWindow: true,
-            });
-            if (tabs && tabs.length > 0 && tabs[0].windowId) {
-              await browserWithSidePanel.sidePanel.open({
-                windowId: tabs[0].windowId,
-              });
-              // Close the popup after successfully opening the sidepanel
-              window.close();
-            }
+        };
+
+        // If sidePanel.open is undefined (e.g., Arc browser), don't do anything
+        if (!browserWithSidePanel?.sidePanel?.open) {
+          console.log(
+            'sidePanel.open is undefined - browser does not support sidepanel',
+          );
+          return;
+        }
+
+        const tabs = await browser.tabs.query({
+          active: true,
+          currentWindow: true,
+        });
+
+        if (tabs && tabs.length > 0 && tabs[0].windowId) {
+          // Try to open sidepanel FIRST, before setting preference
+          await browserWithSidePanel.sidePanel.open({
+            windowId: tabs[0].windowId,
+          });
+
+          // Wait a moment and verify sidepanel actually opened
+          await new Promise((resolve) => setTimeout(resolve, 500));
+
+          // Check if sidepanel context exists - if not, the open didn't work (Arc browser)
+          const contexts = await chrome.runtime.getContexts({
+            contextTypes: ['SIDE_PANEL' as chrome.runtime.ContextType],
+          });
+
+          if (!contexts || contexts.length === 0) {
+            console.log(
+              'Sidepanel did not open - browser does not support sidepanel properly',
+            );
+            return;
           }
-        } catch (error) {
-          console.error('Error opening side panel:', error);
+
+          // Only set preference AFTER verifying sidepanel actually opened
+          await dispatch(setUseSidePanelAsDefault(true));
+          // Close the popup after successfully opening the sidepanel
+          window.close();
         }
       }
     } catch (error) {
@@ -434,8 +461,9 @@ export const GlobalMenu = ({
         width={BlockSize.Full}
         style={{ height: '1px', borderBottomWidth: 0 }}
       ></Box>
-      {/* Toggle between popup and sidepanel - only for Chrome when sidepanel is enabled */}
+      {/* Toggle between popup and sidepanel - only show if browser supports it */}
       {getBrowserName() !== PLATFORM_FIREFOX &&
+        browserSupportsSidePanel === true &&
         isSidePanelEnabled &&
         (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
           getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) && (
