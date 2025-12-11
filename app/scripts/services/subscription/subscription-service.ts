@@ -805,23 +805,6 @@ export class SubscriptionService {
     });
   }
 
-  async #getCurrentActiveSubscription(): Promise<Subscription | undefined> {
-    const subscriptions = await this.#messenger.call(
-      'SubscriptionController:getSubscriptions',
-    );
-    const currentSubscription = getShieldSubscription(subscriptions);
-    if (!currentSubscription) {
-      return undefined;
-    }
-
-    const isActive = getIsShieldSubscriptionActive(currentSubscription);
-    if (!isActive) {
-      return undefined;
-    }
-
-    return currentSubscription;
-  }
-
   async #getCurrentShieldSubscription(): Promise<Subscription | undefined> {
     const subscriptions = await this.#messenger.call(
       'SubscriptionController:getSubscriptions',
