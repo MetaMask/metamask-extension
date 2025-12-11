@@ -820,12 +820,12 @@ export const getValidationErrors = createDeepEqualSelector(
           !isGasless &&
           (isNativeAddress(fromToken.address)
             ? new BigNumber(nativeBalance)
-                .sub(activeQuote.totalMaxNetworkFee.amount)
+                .sub(activeQuote.totalNetworkFee.amount)
                 .sub(activeQuote.sentAmount.amount)
                 .sub(minimumBalanceToUse)
                 .lte(0)
             : new BigNumber(nativeBalance).lte(
-                activeQuote.totalMaxNetworkFee.amount,
+                activeQuote.totalNetworkFee.amount,
               )),
       ),
       isInsufficientBalance:
