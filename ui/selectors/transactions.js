@@ -22,6 +22,8 @@ import {
 } from '../../shared/modules/selectors/util';
 import { getSelectedInternalAccount } from './accounts';
 import { hasPendingApprovals, getApprovalRequestsByType } from './approvals';
+import { EMPTY_ARRAY } from './shared';
+import { getOrCreatePerfTracker } from './ogp-performance';
 
 const INVALID_INITIAL_TRANSACTION_TYPES = [
   TransactionType.cancel,
@@ -40,18 +42,41 @@ const allowedSwapsSmartTransactionStatusesForActivityList = [
   SmartTransactionStatuses.CANCELLED,
 ];
 
-export const getTransactions = createDeepEqualSelector(
-  (state) => {
-    const { transactions } = state.metamask ?? {};
+const USE_OPTIMIZED_SELECTOR = false;
 
+const perf = getOrCreatePerfTracker('getTransactions');
+perf.setMode(USE_OPTIMIZED_SELECTOR ? 'OPTIMIZED' : 'LEGACY');
+
+const legacyGetTransactions = createDeepEqualSelector(
+  (state) => {
+    perf.trackSelectorCall();
+    const { transactions } = state.metamask ?? {};
     if (!transactions?.length) {
       return [];
     }
-
-    return [...transactions].sort((a, b) => a.time - b.time); // Ascending
+    perf.trackResultFnCall();
+    return [...transactions].sort((a, b) => a.time - b.time);
   },
   (transactions) => transactions,
 );
+
+const optimizedGetTransactions = createDeepEqualSelector(
+  (state) => {
+    perf.trackSelectorCall();
+    return state.metamask?.transactions;
+  },
+  (transactions) => {
+    perf.trackResultFnCall();
+    if (!transactions?.length) {
+      return EMPTY_ARRAY;
+    }
+    return [...transactions].sort((a, b) => a.time - b.time);
+  },
+);
+
+export const getTransactions = USE_OPTIMIZED_SELECTOR
+  ? optimizedGetTransactions
+  : legacyGetTransactions;
 
 export const getAllNetworkTransactions = createDeepEqualSelector(
   // Input Selector: Retrieve all transactions from the state.
