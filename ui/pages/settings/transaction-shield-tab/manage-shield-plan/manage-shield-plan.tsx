@@ -81,7 +81,9 @@ const ManageShieldPlan = ({ isPastPlan = false }: { isPastPlan?: boolean }) => {
 
   // user can cancel subscription if not canceled and current subscription not cancel at period end
   const canCancel =
-    !isCancelled && !currentShieldSubscription?.cancelAtPeriodEnd;
+    !isCancelled &&
+    currentShieldSubscription &&
+    !currentShieldSubscription?.cancelAtPeriodEnd;
 
   const isCryptoPayment =
     displayedShieldSubscription?.paymentMethod &&
