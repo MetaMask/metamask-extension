@@ -10,6 +10,18 @@ import { getExtensionVersion } from './version';
 
 type Environment = (typeof ENVIRONMENT)[keyof typeof ENVIRONMENT];
 
+const ENVIRONMENT_VALUES = Object.values(ENVIRONMENT) as Environment[];
+
+/**
+ * Type guard to validate that a string is a valid Environment value.
+ *
+ * @param value - The value to check.
+ * @returns True if the value is a valid Environment.
+ */
+function isEnvironment(value: string): value is Environment {
+  return ENVIRONMENT_VALUES.includes(value as Environment);
+}
+
 /**
  * Coerce `"true"`, `"false"`, and `"null"` to their respective JavaScript
  * values. Coerce the empty string (`""`) to `undefined`;
@@ -110,8 +122,8 @@ export function resolveEnvironment(
 
   // If explicitly set via CLI, use that value
   // This is the ONLY way to get 'production' environment
-  if (args.metamaskEnvironment) {
-    return args.metamaskEnvironment as Environment;
+  if (args.metamaskEnvironment && isEnvironment(args.metamaskEnvironment)) {
+    return args.metamaskEnvironment;
   }
 
   // Development builds use 'development' environment

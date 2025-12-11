@@ -379,7 +379,6 @@ function getOptions(
     metamaskEnvironment: {
       array: false,
       choices: environmentOptions,
-      default: undefined as string | undefined,
       defaultDescription:
         'Auto-detected from git context (branch name, CI environment)',
       description:
