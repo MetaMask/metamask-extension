@@ -80,4 +80,3 @@ export const getIsTronTestnetSupportEnabled = createSelector(
   getRemoteFeatureFlags,
   ({ tronTestnetsEnabled }) => Boolean(tronTestnetsEnabled),
 );
-
