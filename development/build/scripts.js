@@ -990,6 +990,18 @@ function setupBundlerDefaults(
   const { bundlerOpts } = buildConfiguration;
   const extensions = ['.js', '.ts', '.tsx'];
 
+  // Add pathmodify plugin to resolve deep imports for @ledgerhq/evm-tools and others
+  // This is needed because Browserify doesn't support 'exports' field mapping for subpaths
+  // and these packages use it to map e.g. 'selectors/index' to 'lib/selectors/index.js'
+  // We need to manually map these patterns.
+  // Using 'pathmodify' plugin logic directly via transform or plugin if available,
+  // or simple aliasify if we can configure it.
+  // Since we don't have pathmodify installed, we can try 'aliasify' if it supports regex or prefixes.
+  // Aliasify usually supports mapping keys to values.
+  // But mapping '@ledgerhq/evm-tools/selectors/index' -> '@ledgerhq/evm-tools/lib/selectors/index'
+  // is specific.
+  // We can inject a transform that rewrites requires.
+
   Object.assign(bundlerOpts, {
     // Source transforms
     transform: [
@@ -1010,20 +1022,37 @@ function setupBundlerDefaults(
         babelify,
         {
           only: [
-            './**/node_modules/firebase',
-            './**/node_modules/@firebase',
-            './**/node_modules/marked',
-            './**/node_modules/@solana',
-            './**/node_modules/axios',
-            // Ocap Kernel
-            './**/node_modules/@endo',
-            './**/node_modules/@agoric',
-            // Snaps
-            './**/node_modules/@metamask/snaps-controllers',
-            './**/node_modules/@metamask/snaps-execution-environments',
-            './**/node_modules/@metamask/snaps-rpc-methods',
-            './**/node_modules/@metamask/snaps-sdk',
-            './**/node_modules/@metamask/snaps-utils',
+            (filename) => {
+              if (
+                filename.includes('node_modules/firebase') ||
+                filename.includes('node_modules/@firebase') ||
+                filename.includes('node_modules/marked') ||
+                filename.includes('node_modules/@solana') ||
+                filename.includes('node_modules/axios') ||
+                filename.includes('node_modules/@endo') ||
+                filename.includes('node_modules/@agoric') ||
+                filename.includes('node_modules/@metamask/snaps-controllers') ||
+                filename.includes(
+                  'node_modules/@metamask/snaps-execution-environments',
+                ) ||
+                filename.includes('node_modules/@metamask/snaps-rpc-methods') ||
+                filename.includes('node_modules/@metamask/snaps-sdk') ||
+                filename.includes('node_modules/@metamask/snaps-utils') ||
+                filename.includes('node_modules/@ledgerhq') ||
+                filename.includes('node_modules/xstate') ||
+                filename.includes('node_modules/@inversifyjs') ||
+                filename.includes('node_modules/@noble') ||
+                filename.includes('node_modules/purify-ts') ||
+                filename.includes('node_modules/reflect-metadata') ||
+                filename.includes('node_modules/rxjs') ||
+                filename.includes('node_modules/uuid') ||
+                filename.includes('node_modules/isomorphic-ws')
+              ) {
+                return true;
+              }
+              return false;
+            },
+            './**/node_modules/xstate',
           ],
           global: true,
         },
@@ -1035,6 +1064,43 @@ function setupBundlerDefaults(
     fullPaths: isDevBuild(buildTarget) || isTestBuild(buildTarget),
     // For sourcemaps
     debug: true,
+    // Fix resolution for packages using 'exports' but missing 'main' (like new @ledgerhq packages)
+    packageFilter: (pkg) => {
+      if (pkg.name?.startsWith('@ledgerhq/')) {
+        // Handle deeply nested exports usage by some older Ledger packages that Browserify misses
+        // This is specifically for @ledgerhq/hw-app-eth dependencies that use exports to alias subpaths
+        if (pkg.name === '@ledgerhq/evm-tools') {
+          // If main is set to ./index.ts (which it is), resolve can fail if it expects js or doesn't support exports
+          // But here we need to fix resolution of subpaths like selectors/index
+          // Browserify doesn't support exports for subpaths natively in this setup.
+          // We can't fix subpath resolution via packageFilter easily because packageFilter only affects the package's main point.
+          // BUT, we can try to alias the main to something that works if the require is for the main package.
+          // The error is for `require("@ledgerhq/evm-tools/selectors/index")`.
+          // `resolve` sees `@ledgerhq/evm-tools` package.json.
+          // It sees `exports`.
+          // If `resolve` ignores `exports`, it looks for `selectors/index.js` relative to package root.
+          // In `node_modules/@ledgerhq/evm-tools`, `selectors` is in `lib/selectors` or `src/selectors`.
+          // It is NOT in root `selectors/`.
+          // So `resolve` fails.
+          // We need to rewrite the path or alias it.
+          // We will use `aliasify` or `pathmodify` for this.
+          // `packageFilter` cannot move files.
+        }
+
+        if (!pkg.main && pkg.exports) {
+          // If no main, try to find a suitable export
+          const exports = pkg.exports['.'] || pkg.exports;
+          if (exports.require) {
+            pkg.main = exports.require;
+          } else if (exports.import) {
+            pkg.main = exports.import;
+          } else if (exports.default) {
+            pkg.main = exports.default;
+          }
+        }
+      }
+      return pkg;
+    },
   });
 
   // Ensure react-devtools-core is only included in dev builds

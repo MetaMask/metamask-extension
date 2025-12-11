@@ -34,6 +34,7 @@ function initializePostMessageStream() {
  * post message stream for the Snaps environment.
  */
 async function init(): Promise<void> {
+  console.log('Offscreen: Initialization started');
   initializePostMessageStream();
   initTrezor();
   initLattice();

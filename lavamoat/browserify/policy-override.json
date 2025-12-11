@@ -96,6 +96,25 @@
         "navigator": false,
         "navigator.userAgent": true
       }
+    },
+    "@ledgerhq/device-transport-kit-web-hid": {
+      "globals": {
+        "navigator.hid.getDevices": true,
+        "navigator.hid.requestDevice": true,
+        "navigator.hid": true
+      }
+    },
+    "@ledgerhq/device-management-kit": {
+      "globals": {
+        "console": true,
+        "setTimeout": true,
+        "clearTimeout": true
+      },
+      "packages": {
+        "rxjs": true,
+        "uuid": true,
+        "inversify": true
+      }
     }
   }
 }

@@ -20,6 +20,29 @@ module.exports = function (api) {
       },
     ],
     plugins: [
+      [
+        'module-resolver',
+        {
+          alias: {
+            // Fix deep import resolutions for @ledgerhq/hw-app-eth which uses 'exports' subpaths
+            // that are not supported by Browserify's resolve mechanism.
+            '@ledgerhq/evm-tools/selectors/index':
+              '@ledgerhq/evm-tools/lib/selectors/index',
+            '@ledgerhq/evm-tools/message/EIP712/index':
+              '@ledgerhq/evm-tools/lib/message/EIP712/index',
+            '@ledgerhq/domain-service/signers/index':
+              '@ledgerhq/domain-service/lib/signers/index',
+            '@ledgerhq/cryptoassets-evm-signatures/data/evm/index':
+              '@ledgerhq/cryptoassets-evm-signatures/lib/data/evm/index',
+            '@ledgerhq/evm-tools/message/index':
+              '@ledgerhq/evm-tools/lib/message/index',
+            '@ledgerhq/cryptoassets-evm-signatures/data/eip712_v2':
+              '@ledgerhq/cryptoassets-evm-signatures/lib/data/eip712_v2',
+            '@ledgerhq/cryptoassets-evm-signatures/data/eip712':
+              '@ledgerhq/cryptoassets-evm-signatures/lib/data/eip712',
+          },
+        },
+      ],
       // `browserify` is old and busted, and doesn't support `??=` (and other
       // logical assignment operators). This plugin lets us target es2020-level
       // browsers (except we do still end up with transpiled logical assignment
