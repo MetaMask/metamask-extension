@@ -1,4 +1,7 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import React, { useMemo } from 'react';
 import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
@@ -32,8 +35,12 @@ const ShieldFooterCoverageIndicator = () => {
   const selectedAlertSeverity = selectedAlert?.severity;
 
   const { isEnabled, isPaused } = useEnableShieldCoverageChecks();
+  const isShieldApprovalTx =
+    currentConfirmation?.type === TransactionType.shieldSubscriptionApprove;
   const isShowShieldFooterCoverageIndicator =
-    (isSignature || isTransactionConfirmation) && (isEnabled || isPaused);
+    (isSignature || isTransactionConfirmation) &&
+    (isEnabled || isPaused) &&
+    !isShieldApprovalTx; // TODO: we don't show the shield footer coverage indicator for shield approval transactions atm, remove this once ruleengine update to cover shield subscription transaction
 
   const animationSeverity = useMemo(() => {
     if (isPaused) {
