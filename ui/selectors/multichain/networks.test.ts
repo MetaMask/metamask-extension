@@ -387,14 +387,14 @@ describe('Multichain network selectors', () => {
     it('returns a new reference when state changes', () => {
       const result1 = getEvmMultichainNetworkConfigurations(mockState);
 
-      const modifiedState = {
+      const modifiedState: TestState = {
         ...mockState,
         metamask: {
           ...mockState.metamask,
           networkConfigurationsByChainId: {
             ...mockState.metamask.networkConfigurationsByChainId,
             '0x5': {
-              chainId: '0x5' as const,
+              chainId: '0x5',
               name: 'Goerli',
               nativeCurrency: 'GoerliETH',
               rpcEndpoints: [
@@ -437,14 +437,14 @@ describe('Multichain network selectors', () => {
     it('returns a new reference when state changes', () => {
       const result1 = getAllMultichainNetworkConfigurations(mockState);
 
-      const modifiedState = {
+      const modifiedState: TestState = {
         ...mockState,
         metamask: {
           ...mockState.metamask,
           networkConfigurationsByChainId: {
             ...mockState.metamask.networkConfigurationsByChainId,
             '0x5': {
-              chainId: '0x5' as const,
+              chainId: '0x5',
               name: 'Goerli',
               nativeCurrency: 'GoerliETH',
               rpcEndpoints: [
@@ -483,14 +483,14 @@ describe('Multichain network selectors', () => {
     it('returns a new reference when EVM networks change', () => {
       const result1 = getMultichainNetworkConfigurationsByChainId(mockState);
 
-      const modifiedState = {
+      const modifiedState: TestState = {
         ...mockState,
         metamask: {
           ...mockState.metamask,
           networkConfigurationsByChainId: {
             ...mockState.metamask.networkConfigurationsByChainId,
             '0x5': {
-              chainId: '0x5' as const,
+              chainId: '0x5',
               name: 'Goerli',
               nativeCurrency: 'GoerliETH',
               rpcEndpoints: [
