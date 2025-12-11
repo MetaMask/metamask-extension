@@ -1,6 +1,6 @@
 {
   "excludeRegExp": [
-    "/.[^/]*\/test\/.[^/]*/u"
+    "/.[^/]*/test/.[^/]*/u"
   ],
   "fileExtensions": [
     "js",
@@ -29,7 +29,6 @@
     "ui/store/**",
     "ui/components/multichain/**",
     "ui/components/app/**",
-    "ui/components/component-library/**",
     "shared/modules/selectors/**"
   ]
 }

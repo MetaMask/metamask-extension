@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types -- TODO: upgrade to TypeScript */
 
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import classnames from 'classnames';
@@ -11,7 +11,6 @@ import { MILLISECOND, SECOND } from '../../../../shared/constants/time';
 import {
   PRIVACY_POLICY_LINK,
   SURVEY_LINK,
-  METAMETRICS_SETTINGS_LINK,
 } from '../../../../shared/lib/ui-utils';
 import {
   BorderColor,
@@ -37,13 +36,10 @@ import {
   getSelectedAccount,
   getUseNftDetection,
 } from '../../../selectors';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import {
   addPermittedAccount,
   hidePermittedNetworkToast,
-  setPna25Acknowledged,
 } from '../../../store/actions';
 import {
   AvatarNetwork,
@@ -98,7 +94,6 @@ import {
   selectClaimSubmitToast,
   selectShowShieldPausedToast,
   selectShowShieldEndingToast,
-  selectShowPna25Banner,
 } from './selectors';
 import {
   setNewPrivacyPolicyToastClickedOrClosed,
@@ -135,7 +130,6 @@ export function ToastMaster() {
         )}
         <SurveyToastMayDelete />
         <PrivacyPolicyToast />
-        <Pna25Banner />
         <NftEnablementToast />
         <PermittedNetworkToast />
         <NewSrpAddedToast />
@@ -752,62 +746,6 @@ function ShieldEndingToast() {
           />
         }
         onClose={() => setShieldEndingToastLastClickedOrClosed(Date.now())}
-      />
-    )
-  );
-}
-
-function Pna25Banner() {
-  const t = useI18nContext();
-  const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
-
-  const showPna25Banner = useSelector(selectShowPna25Banner);
-
-  useEffect(() => {
-    if (showPna25Banner) {
-      trackEvent({
-        event: MetaMetricsEventName.ToastDisplayed,
-        properties: {
-          toast_name: 'pna25',
-          closed: false,
-        },
-      });
-    }
-  }, [showPna25Banner, trackEvent]);
-
-  const handleLearnMore = () => {
-    // Open MetaMetrics settings help page and acknowledge
-    global.platform.openTab({
-      url: METAMETRICS_SETTINGS_LINK,
-    });
-  };
-
-  const handleClose = () => {
-    trackEvent({
-      event: MetaMetricsEventName.ToastDisplayed,
-      properties: {
-        toast_name: 'pna25',
-        closed: true,
-      },
-    });
-    // Just acknowledge without opening link
-    dispatch(setPna25Acknowledged(true));
-  };
-
-  return (
-    showPna25Banner && (
-      <Toast
-        key="pna25-banner"
-        dataTestId="pna25-banner"
-        startAdornment={
-          <Icon name={IconName.Info} color={IconColor.infoDefault} />
-        }
-        text={t('pna25BannerTitle')}
-        textVariant={TextVariant.bodySm}
-        actionText={t('learnMoreUpperCase')}
-        onActionClick={handleLearnMore}
-        onClose={handleClose}
       />
     )
   );
