@@ -28,7 +28,7 @@ describe('createRpcBlockingMiddleware', () => {
     const next = jest.fn();
     const end = jest.fn();
 
-    await middleware(req, {} as unknown as JsonRpcResponse<Json>, next, end);
+    await middleware(req, {} as unknown as JsonRpcResponse<Json>, next);
 
     expect(next).toHaveBeenCalledTimes(1);
     expect(end).not.toHaveBeenCalled();

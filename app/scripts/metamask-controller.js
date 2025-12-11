@@ -1173,15 +1173,19 @@ export default class MetamaskController extends EventEmitter {
           }
         }
 
-        return forwardRequestToSnap({
-          snapId: process.env.PERMISSIONS_KERNEL_SNAP_ID,
-          handleRequest: this.handleSnapRequest.bind(this),
-          onBeforeRequest: () => (rpcBlockingMiddlewareState.isBlocked = true),
-          onAfterRequest: () => (rpcBlockingMiddlewareState.isBlocked = false),
+        return forwardRequestToSnap(
+          {
+            snapId: process.env.PERMISSIONS_KERNEL_SNAP_ID,
+            handleRequest: this.handleSnapRequest.bind(this),
+            onBeforeRequest: () =>
+              (rpcBlockingMiddlewareState.isBlocked = true),
+            onAfterRequest: () =>
+              (rpcBlockingMiddlewareState.isBlocked = false),
+          },
           params,
           req,
           context,
-        });
+        );
       },
     });
 
@@ -7418,12 +7422,8 @@ export default class MetamaskController extends EventEmitter {
       }),
     );
 
-    ///: BEGIN:ONLY_INCLUDE_IF(gator-permissions)
-
     // Block requests while a wallet_requestExecutionPermissions request is in process.
     engine.push(this.eip7715BlockingMiddleware);
-
-    ///: END:ONLY_INCLUDE_IF
 
     engine.push(
       createPPOMMiddleware(
