@@ -416,9 +416,7 @@ async function withFixtures(options, testSuite) {
 
     const wd = await buildWebDriver({
       ...driverOptions,
-      ...(isPerformanceTest())
-        ? { timeOut: getDriverTimeout() }
-        : {},
+      ...(isPerformanceTest() ? { timeOut: getDriverTimeout() } : {}),
       disableServerMochaToBackground,
     });
     driver = wd.driver;
