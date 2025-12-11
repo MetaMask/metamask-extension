@@ -21,7 +21,7 @@ import { handleFetch } from '@metamask/controller-utils';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { getTransaction1559GasFeeEstimates } from '../../pages/swaps/swaps.util';
-import { getAssetImageUrl, toAssetId } from '../../../shared/lib/asset-utils';
+import { toAssetId } from '../../../shared/lib/asset-utils';
 import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../shared/constants/bridge';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
@@ -29,6 +29,7 @@ import {
   TRON_RESOURCE_SYMBOLS_SET,
   type TronResourceSymbol,
 } from '../../../shared/constants/multichain/assets';
+import { getImageUrlFromAssetId } from '../../pages/bridge/utils/tokens';
 import type { TokenPayload, BridgeToken } from './types';
 
 // Re-export isNonEvmChainId from bridge-controller for backward compatibility
@@ -284,7 +285,7 @@ const getTokenImage = (payload: TokenPayload['payload']) => {
   }
   // If there's no image from the payload, build the asset image URL and return it
   const assetIdToUse = assetId ?? toAssetId(address, caipChainId);
-  return (assetIdToUse && getAssetImageUrl(assetIdToUse, caipChainId)) ?? '';
+  return (assetIdToUse && getImageUrlFromAssetId(assetIdToUse)) ?? '';
 };
 
 export const toBridgeToken = (
