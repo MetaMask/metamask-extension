@@ -325,6 +325,7 @@ export const PaymentMethodRow = ({
         endAccessory={
           isCryptoPayment && !isCryptoPaymentChangeDisabled ? (
             <Button
+              data-testid="shield-detail-payment-method-button"
               variant={ButtonVariant.Secondary}
               size={ButtonSize.Md}
               onClick={openModal}
