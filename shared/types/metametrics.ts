@@ -6,6 +6,7 @@ import { Hex } from 'viem';
 import {
   PaymentType,
   RecurringInterval,
+  SubscriptionStatus,
 } from '@metamask/subscription-controller';
 import type {
   MetaMetricsEventFragment,
@@ -111,3 +112,43 @@ export type ShieldSubscriptionMetricsPropsFromUI = {
   rewardPoints?: number;
   marketingUtmParams?: Record<string, string>;
 };
+
+export type ExistingSubscriptionEventParams = {
+  /**
+   * Current subscription status before restarting the subscription. (e.g. cancelled, expired, etc.)
+   */
+  subscriptionStatus: SubscriptionStatus;
+
+  /**
+   * The payment type used for the previous subscription.
+   */
+  paymentType: PaymentType;
+
+  /**
+   * The billing interval used for the previous subscription.
+   */
+  billingInterval: RecurringInterval;
+
+  /**
+   * The crypto payment chain used for the previous subscription.
+   */
+  cryptoPaymentChain?: string;
+
+  /**
+   * The crypto payment currency used for the previous subscription.
+   */
+  cryptoPaymentCurrency?: string;
+};
+
+/**
+ * Capture the event when the payment method is changed whilst the membership is active.
+ */
+export type CaptureShieldPaymentMethodChangeEventParams =
+  ExistingSubscriptionEventParams & {
+    newPaymentType: PaymentType;
+    newBillingInterval: RecurringInterval;
+    newPaymentCurrency: string;
+    newCryptoPaymentChain?: string;
+    changeStatus: 'succeeded' | 'failed';
+    errorMessage?: string;
+  };
