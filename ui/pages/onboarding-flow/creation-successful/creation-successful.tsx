@@ -101,6 +101,10 @@ export default function CreationSuccessful() {
         browserWithSidePanel.sidePanel.onClosed.addListener(
           handleSidePanelClosed,
         );
+      } else {
+        console.warn('`sidePanel.onClosed` event is not available');
+        // If the event is not available, we set the state to false to prevent the button from being disabled
+        setIsSidePanelOpen(false);
       }
     }
 
