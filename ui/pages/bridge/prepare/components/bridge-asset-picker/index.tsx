@@ -228,8 +228,8 @@ export const BridgeAssetPicker = ({
             {!isNetworkPickerOpen && selectedAsset.assetId && (
               <BridgeAssetList
                 assetsToInclude={assetsToInclude}
-                chainIds={chainIdsSet}
-                accountAddress={accountAddress}
+                // chainIds={chainIdsSet}
+                // accountAddress={accountAddress}
                 searchQuery={searchQuery}
                 selectedAssetId={selectedAsset.assetId}
                 popularTokensList={popularTokensList}
