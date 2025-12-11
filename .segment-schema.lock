@@ -1,0 +1,6 @@
+{
+  "commit": "3af2b9e45a588aeec5c24d016c1625b4d043b78f",
+  "branch": "main",
+  "lastUpdated": "2025-11-21T18:23:14.465Z",
+  "note": "This file locks the segment-schema version used for generating event validators. Update with --update-schema flag."
+}
