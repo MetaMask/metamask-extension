@@ -8,6 +8,7 @@ import {
 import { getMetaMaskHdKeyrings } from '../../../selectors';
 import { useAccountTotalFiatBalance } from '../../useAccountTotalFiatBalance';
 import {
+  formatExistingSubscriptionEventProps,
   getShieldCommonTrackingProps,
   getShieldMarketingTrackingProps,
 } from '../../../../shared/modules/shield';
@@ -15,6 +16,10 @@ import { MetaMaskReduxDispatch } from '../../../store/store';
 import { setShieldSubscriptionMetricsProps } from '../../../store/actions';
 import { EntryModalSourceEnum } from '../../../../shared/constants/subscriptions';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
+import {
+  CaptureShieldPaymentMethodChangeEventParams,
+  ExistingSubscriptionEventParams,
+} from '../../../../shared/types';
 import {
   CaptureShieldClaimSubmissionEventParams,
   CaptureShieldCryptoConfirmationEventParams,
@@ -24,18 +29,15 @@ import {
   CaptureShieldEntryModalEventParams,
   CaptureShieldErrorStateClickedEventParams,
   CaptureShieldMembershipCancelledEventParams,
-  CaptureShieldPaymentMethodChangeEventParams,
   CaptureShieldSubscriptionRequestParams,
   CaptureShieldSubscriptionRestartRequestEventParams,
   CaptureShieldUnexpectedErrorEventParams,
-  ExistingSubscriptionEventParams,
 } from './types';
 import {
   formatCaptureShieldCtaClickedEventProps,
   formatCaptureShieldEligibilityCohortEventsProps,
   formatCaptureShieldPaymentMethodChangeEventProps,
   formatDefaultShieldSubscriptionRequestEventProps,
-  formatExistingSubscriptionEventProps,
 } from './utils';
 
 export const useSubscriptionMetrics = () => {
@@ -65,12 +67,14 @@ export const useSubscriptionMetrics = () => {
     async (props: {
       marketingUtmParams?: Record<string, string>;
       source: EntryModalSourceEnum;
+      rewardPoints?: number;
     }) => {
       await dispatch(
         setShieldSubscriptionMetricsProps({
           marketingUtmParams: props.marketingUtmParams,
           source: props.source,
           userBalanceInUSD: Number(totalFiatBalance),
+          rewardPoints: props.rewardPoints,
         }),
       );
     },
@@ -245,9 +249,7 @@ export const useSubscriptionMetrics = () => {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           status: params.changeStatus,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          error_message: params.errorMessage,
+          error: params.errorMessage,
         },
       });
     },

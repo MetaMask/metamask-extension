@@ -23,11 +23,13 @@ const mockAsset = nfts[0].address;
 const mockId = nfts[0].tokenId;
 
 const mockUseNavigate = jest.fn();
-jest.mock('react-router-dom-v5-compat', () => {
+const mockUseParams = jest.fn();
+jest.mock('react-router-dom', () => {
   return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
+    ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
     useNavigationType: () => 'PUSH',
+    useParams: () => mockUseParams(),
   };
 });
 
@@ -65,13 +67,11 @@ describe('NFT full image', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseParams.mockReturnValue(mockParams);
   });
 
   it('should match snapshot', async () => {
-    const { container } = renderWithProvider(
-      <NftFullImage params={mockParams} />,
-      mockStore,
-    );
+    const { container } = renderWithProvider(<NftFullImage />, mockStore);
 
     await waitFor(() => {
       expect(container).toMatchSnapshot();
@@ -91,10 +91,7 @@ describe('NFT full image', () => {
 
     nfts[0].image = images;
 
-    const { findByTestId } = renderWithProvider(
-      <NftFullImage params={mockParams} />,
-      mockStore,
-    );
+    const { findByTestId } = renderWithProvider(<NftFullImage />, mockStore);
 
     const imageElem = await findByTestId('nft-image');
     expect(imageElem).toHaveAttribute('src', mockImageUrl);

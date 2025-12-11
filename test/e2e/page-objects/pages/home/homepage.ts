@@ -49,6 +49,10 @@ class HomePage {
     testId: 'asset-list-control-bar-action-button',
   };
 
+  private readonly fundYourWalletBanner = {
+    text: 'Fund your wallet',
+  };
+
   private readonly loadingOverlay = {
     text: 'Connecting to Localhost 8545',
   };
@@ -109,13 +113,14 @@ class HomePage {
     this.headerNavbar = new HeaderNavbar(driver);
   }
 
-  async checkPageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded({
+    timeout = 10000,
+  }: { timeout?: number } = {}): Promise<void> {
     try {
-      await this.driver.waitForMultipleSelectors([
-        this.sendButton,
-        this.activityTab,
-        this.tokensTab,
-      ]);
+      await this.driver.waitForMultipleSelectors(
+        [this.sendButton, this.activityTab, this.tokensTab],
+        { timeout },
+      );
     } catch (e) {
       console.log('Timeout while waiting for home page to be loaded', e);
       throw e;
@@ -348,6 +353,10 @@ class HomePage {
     expectedBalance: string = '25',
     symbol: string = 'ETH',
   ): Promise<void> {
+    if (expectedBalance === '0') {
+      await this.driver.waitForSelector(this.fundYourWalletBanner);
+      return;
+    }
     try {
       await this.driver.waitForSelector({
         css: this.balance,
@@ -437,7 +446,9 @@ class HomePage {
   ): Promise<void> {
     let expectedBalance: string;
     if (localNode) {
-      expectedBalance = (await localNode.getBalance(address)).toString();
+      const balance = await localNode.getBalance(address);
+      expectedBalance = balance.toFixed(3);
+      expectedBalance = Number(expectedBalance).toString();
     } else {
       expectedBalance = '25';
     }

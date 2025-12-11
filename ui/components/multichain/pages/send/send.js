@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Tooltip } from 'react-tippy';
 import { I18nContext } from '../../../../contexts/i18n';
 import {
@@ -96,8 +96,7 @@ export const SendPage = ({
   const sendStage = useSelector(getSendStage);
   const isSwapAndSend = getIsDraftSwapAndSend(draftTransaction);
 
-  // Use v5-compat hooks as fallback (works in test environment with CompatRouter)
-  // In production, props are provided by createV5CompatRoute
+  // Use React Router v6 hooks
   const navigateHook = useNavigate();
   const locationHook = useLocation();
   const navigate = navigateProp || navigateHook;

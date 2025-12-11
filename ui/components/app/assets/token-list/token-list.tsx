@@ -159,7 +159,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     count: sortedFilteredTokens.length,
     getScrollElement: () => scrollContainerRef?.current || null,
     estimateSize: () => ASSET_CELL_HEIGHT,
-    overscan: 5,
+    overscan: 10,
   });
 
   useEffect(() => {

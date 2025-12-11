@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useContext } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import browser from 'webextension-polyfill';
 import {
@@ -113,7 +113,9 @@ export default function CreationSuccessful() {
           data-testid="manage-default-settings"
           borderRadius={BorderRadius.LG}
           width={BlockSize.Full}
-          onClick={() => navigate(ONBOARDING_PRIVACY_SETTINGS_ROUTE)}
+          onClick={() =>
+            navigate(`${ONBOARDING_PRIVACY_SETTINGS_ROUTE}?isFromReminder=true`)
+          }
         >
           <Box display={Display.Flex} alignItems={AlignItems.center}>
             <Icon

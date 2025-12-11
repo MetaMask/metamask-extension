@@ -15,7 +15,11 @@ import { TransactionType as KeyringTransactionType } from '@metamask/keyring-api
 import {
   nonceSortedCompletedTransactionsSelectorAllChains,
   nonceSortedPendingTransactionsSelectorAllChains,
+  getAllNetworkTransactions,
+  groupAndSortTransactionsByNonce,
+  smartTransactionsListSelector,
 } from '../../../selectors/transactions';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import {
   getSelectedAccount,
   getSelectedMultichainNetworkChainId,
@@ -31,7 +35,12 @@ import SmartTransactionListItem from '../transaction-list-item/smart-transaction
 import {
   TOKEN_CATEGORY_HASH,
   TransactionKind,
+  PENDING_STATUS_HASH,
 } from '../../../helpers/constants/transactions';
+import {
+  SmartTransactionStatus,
+  TransactionGroupCategory,
+} from '../../../../shared/constants/transaction';
 import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants/swaps';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import {
@@ -75,7 +84,6 @@ import {
   KEYRING_TRANSACTION_STATUS_KEY,
   useMultichainTransactionDisplay,
 } from '../../../hooks/useMultichainTransactionDisplay';
-import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 ///: END:ONLY_INCLUDE_IF
 
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
@@ -429,17 +437,114 @@ export default function UnifiedTransactionList({
   );
   ///: END:ONLY_INCLUDE_IF
 
-  const unfilteredPendingTransactionsAllChains = useSelector(
+  const accountGroupEvmAccount = useSelector((state) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(state, 'eip155:1'),
+  );
+  const groupEvmAddress = accountGroupEvmAccount?.address?.toLowerCase();
+
+  const bridgeHistoryItems = useSelector(selectBridgeHistoryForAccountGroup);
+
+  const pendingFromSelectedAccount = useSelector(
     nonceSortedPendingTransactionsSelectorAllChains,
   );
-
-  const unfilteredPendingTransactions = useMemo(() => {
-    return unfilteredPendingTransactionsAllChains;
-  }, [unfilteredPendingTransactionsAllChains]);
-
-  const unfilteredCompletedTransactionsAllChains = useSelector(
+  const completedFromSelectedAccount = useSelector(
     nonceSortedCompletedTransactionsSelectorAllChains,
   );
+
+  const needsGroupEvmTransactions =
+    groupEvmAddress &&
+    groupEvmAddress !== selectedAccount?.address?.toLowerCase();
+
+  const allTransactions = useSelector(getAllNetworkTransactions);
+
+  const allSmartTransactionsState = useSelector(
+    (state) => state.metamask.smartTransactionsState?.smartTransactions,
+  );
+  const smartTransactionsForSelected = useSelector(
+    smartTransactionsListSelector,
+  );
+
+  const smartTransactions = useMemo(() => {
+    if (!needsGroupEvmTransactions) {
+      return smartTransactionsForSelected ?? [];
+    }
+
+    if (!allSmartTransactionsState || !groupEvmAddress) {
+      return [];
+    }
+
+    const allSmartTxs = Object.values(allSmartTransactionsState).flat();
+
+    const filtered = allSmartTxs.filter((stx) => {
+      const fromAddress = stx?.txParams?.from?.toLowerCase();
+      const isSwapType =
+        stx.type === TransactionType.swap ||
+        stx.type === TransactionType.swapApproval;
+
+      return fromAddress === groupEvmAddress && isSwapType;
+    });
+
+    return filtered.map((stx) => ({
+      ...stx,
+      id: stx.uuid,
+      isSmartTransaction: true,
+      status: stx.status?.startsWith('cancelled')
+        ? SmartTransactionStatus.cancelled
+        : stx.status,
+    }));
+  }, [
+    needsGroupEvmTransactions,
+    smartTransactionsForSelected,
+    allSmartTransactionsState,
+    groupEvmAddress,
+  ]);
+
+  const unfilteredPendingTransactions = useMemo(() => {
+    if (needsGroupEvmTransactions) {
+      const evmTxs = [...allTransactions, ...(smartTransactions ?? [])]
+        .filter((tx) => tx.txParams?.from?.toLowerCase() === groupEvmAddress)
+        .filter((tx) => tx.type !== TransactionType.incoming)
+        .filter((tx) => tx.status in PENDING_STATUS_HASH);
+
+      return groupAndSortTransactionsByNonce(evmTxs);
+    }
+
+    return pendingFromSelectedAccount;
+  }, [
+    needsGroupEvmTransactions,
+    pendingFromSelectedAccount,
+    allTransactions,
+    smartTransactions,
+    groupEvmAddress,
+  ]);
+
+  const unfilteredCompletedTransactionsAllChains = useMemo(() => {
+    if (needsGroupEvmTransactions) {
+      const smartTxs = smartTransactions ?? [];
+      const smartTxNonces = new Set(
+        smartTxs.map((tx) => tx.txParams?.nonce).filter((n) => n !== undefined),
+      );
+
+      const evmTxs = [...allTransactions, ...smartTxs]
+        .filter((tx) => tx.txParams?.from?.toLowerCase() === groupEvmAddress)
+        .filter((tx) => tx.type !== TransactionType.incoming)
+        .filter((tx) => !(tx.status in PENDING_STATUS_HASH))
+        .filter(
+          (tx) =>
+            tx.isSmartTransaction || !smartTxNonces.has(tx.txParams?.nonce),
+        );
+
+      return groupAndSortTransactionsByNonce(evmTxs);
+    }
+
+    return completedFromSelectedAccount;
+  }, [
+    needsGroupEvmTransactions,
+    completedFromSelectedAccount,
+    allTransactions,
+    smartTransactions,
+    groupEvmAddress,
+  ]);
 
   const enabledNetworksForAllNamespaces = useSelector(
     getAllEnabledNetworksForAllNamespaces,
@@ -447,6 +552,27 @@ export default function UnifiedTransactionList({
   const currentMultichainChainId = useSelector(
     getSelectedMultichainNetworkChainId,
   );
+
+  const enabledNetworksFilteredPendingTransactions = useMemo(() => {
+    if (!currentMultichainChainId) {
+      return unfilteredPendingTransactions;
+    }
+
+    // If no networks are enabled for this namespace, return empty array
+    if (enabledNetworksForAllNamespaces.length === 0) {
+      return [];
+    }
+
+    // Filter transactions to only include those from enabled networks
+    return unfilteredPendingTransactions.filter((transactionGroup) => {
+      const transactionChainId = transactionGroup.initialTransaction?.chainId;
+      return enabledNetworksForAllNamespaces.includes(transactionChainId);
+    });
+  }, [
+    enabledNetworksForAllNamespaces,
+    currentMultichainChainId,
+    unfilteredPendingTransactions,
+  ]);
 
   const enabledNetworksFilteredCompletedTransactions = useMemo(() => {
     if (!currentMultichainChainId) {
@@ -485,7 +611,7 @@ export default function UnifiedTransactionList({
 
   const unifiedActivityItems = useMemo(() => {
     return buildUnifiedActivityItems(
-      unfilteredPendingTransactions,
+      enabledNetworksFilteredPendingTransactions,
       enabledNetworksFilteredCompletedTransactions,
       nonEvmTransactionsForToken,
       {
@@ -496,7 +622,7 @@ export default function UnifiedTransactionList({
       },
     );
   }, [
-    unfilteredPendingTransactions,
+    enabledNetworksFilteredPendingTransactions,
     enabledNetworksFilteredCompletedTransactions,
     nonEvmTransactionsForToken,
     hideTokenTransactions,
@@ -537,7 +663,6 @@ export default function UnifiedTransactionList({
     getSelectedMultichainNetworkConfiguration,
   );
 
-  const bridgeHistoryItems = useSelector(selectBridgeHistoryForAccountGroup);
   const selectedBridgeHistoryItem = useSelector((state) =>
     selectBridgeHistoryItemForTxMetaId(state, selectedTransaction?.id),
   );
