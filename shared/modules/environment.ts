@@ -54,5 +54,13 @@ export const getIsSidePanelFeatureEnabled = (): boolean => {
     return false;
   }
 
+  // Arc browser doesn't support sidepanel properly
+  if (
+    typeof window !== 'undefined' &&
+    window.navigator?.userAgent?.includes('Arc/')
+  ) {
+    return false;
+  }
+
   return true;
 };
