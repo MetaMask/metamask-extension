@@ -38,4 +38,3 @@ export const useBrowserSupportsSidePanel = (): boolean | null => {
 
   return isSupported;
 };
-

@@ -195,67 +195,70 @@ export const GlobalMenu = ({
       return;
     }
 
+    const currentEnvironment = getEnvironmentType();
+    const newValue = !isSidePanelDefault;
+
     try {
-      // If switching from sidepanel to popup view
-      if (
-        isSidePanelDefault &&
-        getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL
-      ) {
+      // Case 1: Currently in sidepanel, switching to popup
+      if (currentEnvironment === ENVIRONMENT_TYPE_SIDEPANEL) {
         await dispatch(setUseSidePanelAsDefault(false));
         // Close the sidepanel
         window.close();
         return;
       }
 
-      // If switching from popup to sidepanel view
-      if (
-        !isSidePanelDefault &&
-        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
-      ) {
-        const browserWithSidePanel = browser as typeof browser & {
-          sidePanel?: {
-            open: (options: { windowId: number }) => Promise<void>;
+      // Case 2: Currently in popup
+      if (currentEnvironment === ENVIRONMENT_TYPE_POPUP) {
+        // If switching TO sidepanel (newValue is true)
+        if (newValue) {
+          const browserWithSidePanel = browser as typeof browser & {
+            sidePanel?: {
+              open: (options: { windowId: number }) => Promise<void>;
+            };
           };
-        };
 
-        // If sidePanel.open is undefined (e.g., Arc browser), don't do anything
-        if (!browserWithSidePanel?.sidePanel?.open) {
-          console.log(
-            'sidePanel.open is undefined - browser does not support sidepanel',
-          );
-          return;
-        }
-
-        const tabs = await browser.tabs.query({
-          active: true,
-          currentWindow: true,
-        });
-
-        if (tabs && tabs.length > 0 && tabs[0].windowId) {
-          // Try to open sidepanel FIRST, before setting preference
-          await browserWithSidePanel.sidePanel.open({
-            windowId: tabs[0].windowId,
-          });
-
-          // Wait a moment and verify sidepanel actually opened
-          await new Promise((resolve) => setTimeout(resolve, 500));
-
-          // Check if sidepanel context exists - if not, the open didn't work (Arc browser)
-          const contexts = await chrome.runtime.getContexts({
-            contextTypes: ['SIDE_PANEL' as chrome.runtime.ContextType],
-          });
-
-          if (!contexts || contexts.length === 0) {
+          // If sidePanel.open is undefined (e.g., Arc browser), don't do anything
+          if (!browserWithSidePanel?.sidePanel?.open) {
             console.log(
-              'Sidepanel did not open - browser does not support sidepanel properly',
+              'sidePanel.open is undefined - browser does not support sidepanel',
             );
             return;
           }
 
-          // Only set preference AFTER verifying sidepanel actually opened
-          await dispatch(setUseSidePanelAsDefault(true));
-          // Close the popup after successfully opening the sidepanel
-          window.close();
+          const tabs = await browser.tabs.query({
+            active: true,
+            currentWindow: true,
+          });
+
+          if (tabs && tabs.length > 0 && tabs[0].windowId) {
+            // Try to open sidepanel FIRST, before setting preference
+            await browserWithSidePanel.sidePanel.open({
+              windowId: tabs[0].windowId,
+            });
+
+            // Wait a moment and verify sidepanel actually opened
+            await new Promise((resolve) => setTimeout(resolve, 500));
+
+            // Check if sidepanel context exists - if not, the open didn't work (Arc browser)
+            const contexts = await chrome.runtime.getContexts({
+              contextTypes: ['SIDE_PANEL' as chrome.runtime.ContextType],
+            });
+
+            if (!contexts || contexts.length === 0) {
+              console.log(
+                'Sidepanel did not open - browser does not support sidepanel properly',
+              );
+              return;
+            }
+
+            // Only set preference AFTER verifying sidepanel actually opened
+            await dispatch(setUseSidePanelAsDefault(true));
+            // Close the popup after successfully opening the sidepanel
+            window.close();
+          }
+        } else {
+          // Switching TO popup (newValue is false) - just update preference
+          await dispatch(setUseSidePanelAsDefault(false));
         }
       }
     } catch (error) {
