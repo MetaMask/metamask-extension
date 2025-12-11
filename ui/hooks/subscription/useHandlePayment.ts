@@ -52,17 +52,17 @@ import {
 export const useHandlePayment = ({
   currentShieldSubscription,
   displayedShieldSubscription,
-  subscriptions,
   isCancelled,
-  subscriptionPricing,
   onOpenAddFundsModal,
+  subscriptions,
+  subscriptionPricing,
 }: {
   currentShieldSubscription?: Subscription;
   displayedShieldSubscription?: Subscription;
-  subscriptions?: Subscription[];
   isCancelled: boolean;
+  onOpenAddFundsModal: () => void;
+  subscriptions?: Subscription[];
   subscriptionPricing?: PricingResponse;
-  onOpenAddFundsModal?: () => void;
 }) => {
   const navigate = useNavigate();
   const { captureShieldErrorStateClickedEvent } = useSubscriptionMetrics();
@@ -268,7 +268,7 @@ export const useHandlePayment = ({
       if (isInsufficientFundsCrypto) {
         // TODO: handle add funds crypto
         // then use subscription controller to trigger subscription check
-        onOpenAddFundsModal?.();
+        onOpenAddFundsModal();
         // await dispatch(updateSubscriptionCryptoPaymentMethod({
         //   ...params,
         //   rawTransaction: undefined // no raw transaction to trigger server to check for new funded balance

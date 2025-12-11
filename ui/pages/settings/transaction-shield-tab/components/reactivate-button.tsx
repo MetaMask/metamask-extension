@@ -1,12 +1,12 @@
 import React, { useMemo } from 'react';
 import { Button, ButtonVariant } from '@metamask/design-system-react';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useSubscriptionProductPlans } from '../../../../hooks/subscription/useSubscriptionPricing';
 import {
   PricingResponse,
   PRODUCT_TYPES,
   RECURRING_INTERVALS,
 } from '@metamask/subscription-controller';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useSubscriptionProductPlans } from '../../../../hooks/subscription/useSubscriptionPricing';
 import { getProductPrice } from '../../../shield-plan/utils';
 
 const ReactivateButton = ({
