@@ -321,4 +321,117 @@ describe('useMultiPolling', () => {
     expect(mockStopPollingByPollingToken).toHaveBeenCalledWith('bar_token');
     expect(mockStopPollingByPollingToken).toHaveBeenCalledWith('baz_token');
   });
+
+  it('should not stop valid pending polls when effect re-runs due to function reference change', async () => {
+    let resolveFoo: (value: string) => void = () => undefined;
+
+    // Track function instances to verify reference changes
+    const startPollingFn1 = jest.fn().mockImplementation((input) => {
+      if (input === 'foo') {
+        return new Promise<string>((resolve) => {
+          resolveFoo = resolve;
+        });
+      }
+      return Promise.resolve(`${input}_token`);
+    });
+
+    // New function reference with same behavior
+    const startPollingFn2 = jest.fn().mockImplementation((input) => {
+      return Promise.resolve(`${input}_token_v2`);
+    });
+
+    const mockStopPollingByPollingToken = jest.fn();
+    let currentStartPolling = startPollingFn1;
+
+    const { rerender } = renderHookWithProvider(
+      () =>
+        useMultiPolling({
+          startPolling: currentStartPolling,
+          stopPollingByPollingToken: mockStopPollingByPollingToken,
+          input: ['foo'],
+        }),
+      {
+        metamask: {
+          completedOnboarding: true,
+        },
+      },
+    );
+
+    // Effect 1: startPolling called, promise pending
+    expect(startPollingFn1).toHaveBeenCalledWith('foo');
+    expect(startPollingFn1).toHaveBeenCalledTimes(1);
+
+    // Simulate function reference change (e.g., parent re-render creates new function)
+    currentStartPolling = startPollingFn2;
+    rerender();
+
+    // Effect 2 should NOT start a new poll because 'foo' is still pending
+    expect(startPollingFn2).not.toHaveBeenCalled();
+
+    // Now resolve the first promise
+    resolveFoo('foo_token');
+
+    // Wait for the promise callback to execute
+    await waitFor(() => {
+      // The token should NOT be stopped - 'foo' is still a valid input
+      expect(mockStopPollingByPollingToken).not.toHaveBeenCalledWith(
+        'foo_token',
+      );
+    });
+  });
+
+  it('should not start duplicate polls when effect re-runs while promise is pending', async () => {
+    let resolveFoo: (value: string) => void = () => undefined;
+    let callCount = 0;
+
+    const mockStartPolling = jest.fn().mockImplementation((input) => {
+      callCount += 1;
+      if (input === 'foo' && callCount === 1) {
+        return new Promise<string>((resolve) => {
+          resolveFoo = resolve;
+        });
+      }
+      return Promise.resolve(`${input}_token_${callCount}`);
+    });
+
+    const mockStopPollingByPollingToken = jest.fn();
+    let forceRerender = 0;
+
+    const { rerender } = renderHookWithProvider(
+      () => {
+        // Use a changing value to force effect re-run
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+        forceRerender;
+        return useMultiPolling({
+          startPolling: mockStartPolling,
+          stopPollingByPollingToken: mockStopPollingByPollingToken,
+          input: ['foo'],
+        });
+      },
+      {
+        metamask: {
+          completedOnboarding: true,
+        },
+      },
+    );
+
+    expect(mockStartPolling).toHaveBeenCalledTimes(1);
+
+    // Force multiple rerenders while promise is pending
+    forceRerender = 1;
+    rerender();
+    forceRerender = 2;
+    rerender();
+
+    // Should still only have one startPolling call (pending check prevents duplicates)
+    expect(mockStartPolling).toHaveBeenCalledTimes(1);
+
+    // Resolve the pending promise
+    resolveFoo('foo_token');
+
+    await waitFor(() => {
+      // Token should be stored, not stopped
+      expect(mockStopPollingByPollingToken).not.toHaveBeenCalled();
+    });
+  });
 });
