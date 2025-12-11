@@ -66,25 +66,33 @@ const useMultiPolling = <PollingInput extends Json>(
     for (const [key, input] of inputKeyMap) {
       if (!pollingTokens.current.has(key) && !pendingPolls.current.has(key)) {
         pendingPolls.current.add(key);
-        usePollingOptions.startPolling(input).then((token) => {
-          pendingPolls.current.delete(key);
-          if (!inputKeyMapRef.current.has(key)) {
-            stopPollingRef.current(token);
-            return;
-          }
-
-          if (isMounted.current) {
-            // If there's already a token for this key (from a concurrent call
-            // that resolved first), stop the old one before replacing
-            const existingToken = pollingTokens.current.get(key);
-            if (existingToken && existingToken !== token) {
-              stopPollingRef.current(existingToken);
+        usePollingOptions
+          .startPolling(input)
+          .then((token) => {
+            if (!inputKeyMapRef.current.has(key)) {
+              stopPollingRef.current(token);
+              return;
             }
-            pollingTokens.current.set(key, token);
-          } else {
-            stopPollingRef.current(token);
-          }
-        });
+
+            if (isMounted.current) {
+              // If there's already a token for this key (from a concurrent call
+              // that resolved first), stop the old one before replacing
+              const existingToken = pollingTokens.current.get(key);
+              if (existingToken && existingToken !== token) {
+                stopPollingRef.current(existingToken);
+              }
+              pollingTokens.current.set(key, token);
+            } else {
+              stopPollingRef.current(token);
+            }
+          })
+          .catch(() => {
+            // noop
+          })
+          .finally(() => {
+            // Always remove from pending to allow retry on next effect run
+            pendingPolls.current.delete(key);
+          });
       }
     }
 

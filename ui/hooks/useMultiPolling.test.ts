@@ -434,4 +434,64 @@ describe('useMultiPolling', () => {
       expect(mockStopPollingByPollingToken).not.toHaveBeenCalled();
     });
   });
+
+  it('should allow retry after startPolling rejection', async () => {
+    let rejectFoo: (error: Error) => void = () => undefined;
+    let callCount = 0;
+
+    const mockStartPolling = jest.fn().mockImplementation((input) => {
+      callCount += 1;
+      if (input === 'foo' && callCount === 1) {
+        // First call rejects
+        return new Promise<string>((_, reject) => {
+          rejectFoo = reject;
+        });
+      }
+      // Subsequent calls succeed
+      return Promise.resolve(`${input}_token_${callCount}`);
+    });
+
+    const mockStopPollingByPollingToken = jest.fn();
+    let currentInputs: string[] = ['foo'];
+
+    const { rerender } = renderHookWithProvider(
+      () =>
+        useMultiPolling({
+          startPolling: mockStartPolling,
+          stopPollingByPollingToken: mockStopPollingByPollingToken,
+          input: currentInputs,
+        }),
+      {
+        metamask: {
+          completedOnboarding: true,
+        },
+      },
+    );
+
+    // First call is made
+    expect(mockStartPolling).toHaveBeenCalledTimes(1);
+
+    // Reject the promise - .finally() will clear pendingPolls
+    rejectFoo(new Error('Network error'));
+
+    // Wait for the rejection to propagate and .finally() to run
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    // Change inputs to trigger effect re-run (useSyncEqualityCheck returns same ref for same content)
+    // First remove 'foo', then add it back to force the effect to run again
+    currentInputs = ['bar'];
+    rerender();
+
+    await waitFor(() => {
+      expect(mockStartPolling).toHaveBeenCalledWith('bar');
+    });
+
+    // Now add 'foo' back - should retry since pendingPolls was cleared
+    currentInputs = ['bar', 'foo'];
+    rerender();
+
+    await waitFor(() => {
+      expect(mockStartPolling).toHaveBeenCalledTimes(3); // foo (rejected), bar, foo (retry)
+    });
+  });
 });
