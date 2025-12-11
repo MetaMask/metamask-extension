@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import {
   CROSS_CHAIN_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,

@@ -2,7 +2,7 @@ import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { SolScope } from '@metamask/keyring-api';
 import { MultichainNetwork } from '@metamask/multichain-transactions-controller';
-import { renderHookWithProvider } from '../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
 import { CHAIN_IDS } from '../../../shared/constants/network';

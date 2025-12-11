@@ -137,7 +137,7 @@ import { hasTransactionData } from '../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
-import { EMPTY_ARRAY } from './shared';
+import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 import {
   getAllUnapprovedTransactions,
   getCurrentNetworkTransactions,
@@ -1641,6 +1641,9 @@ const selectSnapId = (_state, snapId) => snapId;
  */
 export const selectInstalledSnaps = (state) => state.metamask.snaps;
 
+export const selectIsNetworkMenuOpen = (state) =>
+  state.appState.isNetworkMenuOpen;
+
 /**
  * Retrieve registry data for requested Snap.
  *
@@ -1986,6 +1989,10 @@ export function getIsSwapsChain(state, overrideChainId) {
     : ALLOWED_PROD_SWAPS_CHAIN_IDS.includes(chainId);
 }
 
+export function selectHasBridgeQuotes(state) {
+  return Boolean(Object.values(state.metamask.quotes || {}).length);
+}
+
 /**
  * @deprecated Check if chainId is in ALLOWED_BRIDGE_CHAIN_IDS constant instead
  * @param state - The Redux state
@@ -2098,12 +2105,10 @@ export const getUnapprovedTransaction = createDeepEqualSelector(
 );
 
 export const getTransaction = createDeepEqualSelector(
-  (state) => getCurrentNetworkTransactions(state),
+  getCurrentNetworkTransactions,
   (_, transactionId) => transactionId,
-  (unapprovedTxs, transactionId) => {
-    return (
-      Object.values(unapprovedTxs).find(({ id }) => id === transactionId) || {}
-    );
+  (transactions, transactionId) => {
+    return transactions.find(({ id }) => id === transactionId) || EMPTY_OBJECT;
   },
 );
 
@@ -3285,6 +3290,20 @@ export function getManageInstitutionalWallets(state) {
 export function getIsDefiPositionsEnabled(state) {
   const { assetsDefiPositionsEnabled } = getRemoteFeatureFlags(state);
   return Boolean(assetsDefiPositionsEnabled);
+}
+
+/**
+ * Returns true if any EVM networks are enabled in the network filter.
+ *
+ * @param {*} state
+ * @returns {boolean} True if at least one EVM network is enabled.
+ */
+export function getHasAnyEvmNetworkEnabled(state) {
+  const enabledNetworks = getEnabledNetworks(state);
+  const enabledEvmNetworks = enabledNetworks[KnownCaipNamespace.Eip155] ?? {};
+  return Object.values(enabledEvmNetworks).some(
+    (isEnabled) => isEnabled === true,
+  );
 }
 
 export function getIsCustomNetwork(state) {

@@ -1,6 +1,6 @@
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import React from 'react';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import MetafoxLogo from '../../ui/metafox-logo';

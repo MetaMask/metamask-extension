@@ -40,7 +40,7 @@ async function measurePageStandard(
     {
       fixtures: new FixtureBuilder().build(),
       disableServerMochaToBackground: true,
-      title: 'benchmark-pageload',
+      title: 'measurePageStandard',
     },
     async ({ driver, getNetworkReport, clearNetworkReport }) => {
       await unlockWallet(driver);

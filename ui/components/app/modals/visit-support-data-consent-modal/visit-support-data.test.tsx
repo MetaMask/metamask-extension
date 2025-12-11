@@ -6,7 +6,7 @@ import thunk from 'redux-thunk';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { openWindow } from '../../../../helpers/utils/window';
 import { SUPPORT_LINK } from '../../../../../shared/lib/ui-utils';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
 import {
   MetaMetricsContextProp,

@@ -36,11 +36,10 @@ async function mockSetup(mockServer: Mockttp) {
       })),
   ];
 }
-function buildFixtures(title: string, chainId: number = 137) {
+function buildFixtures(title: string) {
   return {
     fixtures: new FixtureBuilder()
       .withNetworkControllerOnPolygon()
-      .withTokensControllerERC20({ chainId })
       .withEnabledNetworks({
         eip155: {
           [CHAIN_IDS.POLYGON]: true,
@@ -86,11 +85,15 @@ describe('Multichain Asset List', function (this: Suite) {
   });
   it('validate the tokens appear on send given network', async function () {
     await withFixtures(
-      buildFixtures(this.test?.fullTitle() as string, 137),
+      buildFixtures(this.test?.fullTitle() as string),
       async ({ driver }) => {
         await loginWithoutBalanceValidation(driver);
         const assetListPage = new AssetListPage(driver);
         const sendPage = new SendTokenPage(driver);
+        await assetListPage.importCustomTokenByChain(
+          '0x89',
+          '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
+        );
         // Currently only polygon is selected, so only see polygon tokens
         // 1 native token (POL), and 1 ERC-20 (TST)
         await assetListPage.checkTokenItemNumber(2);

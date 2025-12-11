@@ -1,6 +1,6 @@
 import React from 'react';
 import { screen, fireEvent, act } from '@testing-library/react';
-import { renderWithProvider } from '../../../../../../test/jest';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../../store/store';
 import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
 import { AdditionalNetworksInfo } from './additional-networks-info';

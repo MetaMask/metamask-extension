@@ -352,6 +352,9 @@ export const getSwapsQuotePrefetchingRefreshTime = (state) =>
 export const getBackgroundSwapRouteState = (state) =>
   state.metamask.swapsState.routeState;
 
+export const selectShowAwaitingSwapScreen = (state) =>
+  state.metamask.swapsState.routeState === 'awaiting';
+
 export const getCustomSwapsGas = (state) =>
   state.metamask.swapsState.customMaxGas;
 
@@ -370,6 +373,9 @@ export const getSwapsUserFeeLevel = (state) =>
 export const getFetchParams = (state) => state.metamask.swapsState.fetchParams;
 
 export const getQuotes = (state) => state.metamask.swapsState.quotes;
+
+export const selectHasSwapsQuotes = (state) =>
+  Boolean(Object.values(state.metamask.swapsState.quotes || {}).length);
 
 export const getQuotesLastFetched = (state) =>
   state.metamask.swapsState.quotesLastFetched;

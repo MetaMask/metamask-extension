@@ -1,6 +1,6 @@
 import React, { useEffect, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { getTokenTrackerLink, getAccountLink } from '@metamask/etherscan-link';
 import { Nft } from '@metamask/assets-controllers';

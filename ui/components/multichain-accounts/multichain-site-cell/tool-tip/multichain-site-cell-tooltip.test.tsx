@@ -1,7 +1,7 @@
 import React from 'react';
 import { CaipChainId } from '@metamask/utils';
 import { RpcEndpointType } from '@metamask/network-controller';
-import { renderWithProvider } from '../../../../../test/jest';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { createMockInternalAccount } from '../../../../../test/jest/mocks';

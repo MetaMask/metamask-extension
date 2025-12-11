@@ -59,7 +59,7 @@ describe.skip('Transaction activity list', function (this: Suite) {
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
-        await homePage.checkPageIsLoaded('50');
+        await homePage.checkPageIsLoaded({ amount: '50' });
         await homePage.goToActivityList();
         const activityList = new ActivityListPage(driver);
         await activityList.checkFailedTxNumberDisplayedInActivity(1);
@@ -74,7 +74,7 @@ describe.skip('Transaction activity list', function (this: Suite) {
           commonSolanaTxFailedDetailsFixture.txHash,
         );
         await transactionDetails.checkTransactionViewDetailsLink();
-        await transactionDetails.checkNetworkFeeTransaction(
+        await transactionDetails.checkTransactionBaseFee(
           commonSolanaTxFailedDetailsFixture.networkFee,
         );
       },

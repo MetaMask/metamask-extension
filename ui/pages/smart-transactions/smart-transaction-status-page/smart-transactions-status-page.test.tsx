@@ -7,10 +7,8 @@ import {
 } from '@metamask/smart-transactions-controller';
 
 import { fireEvent } from '@testing-library/react';
-import {
-  renderWithProvider,
-  createSwapsMockStore,
-} from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { createSwapsMockStore } from '../../../../test/jest';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
   SmartTransactionStatusPage,

@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Navigate } from 'react-router-dom-v5-compat';
+import { Navigate } from 'react-router-dom';
 import { Text, TextVariant, TextColor } from '@metamask/design-system-react';
 import { COHORT_NAMES } from '@metamask/subscription-controller';
 import {
@@ -52,9 +52,6 @@ import {
   RESTORE_VAULT_ROUTE,
   CONNECTED_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,
-  AWAITING_SWAP_ROUTE,
-  PREPARE_SWAP_ROUTE,
-  CROSS_CHAIN_SWAP_ROUTE,
   ONBOARDING_REVIEW_SRP_ROUTE,
 } from '../../helpers/constants/routes';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
@@ -66,10 +63,10 @@ import {
 } from '../../../shared/lib/ui-utils';
 import { AccountOverview } from '../../components/multichain';
 import { setEditedNetwork } from '../../store/actions';
-import { getConfirmationRoute } from '../confirmations/hooks/useConfirmationNavigation';
 import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
 import ShieldEntryModal from '../../components/app/shield-entry-modal';
 import RewardsOnboardingModal from '../../components/app/rewards/onboarding/OnboardingModal';
+import { Pna25Modal } from '../../components/app/modals/pna25-modal';
 ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
 import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IF
@@ -116,27 +113,19 @@ export default class Home extends PureComponent {
     showMultiRpcModal: PropTypes.bool.isRequired,
     showUpdateModal: PropTypes.bool.isRequired,
     newNetworkAddedConfigurationId: PropTypes.string,
-    isNotification: PropTypes.bool.isRequired,
-    isSidepanel: PropTypes.bool.isRequired,
     // This prop is used in the `shouldCloseNotificationPopup` function
     // eslint-disable-next-line react/no-unused-prop-types
     totalUnapprovedCount: PropTypes.number.isRequired,
     defaultHomeActiveTabName: PropTypes.string,
     participateInMetaMetrics: PropTypes.bool.isRequired,
     onTabClick: PropTypes.func.isRequired,
-    haveSwapsQuotes: PropTypes.bool.isRequired,
-    showAwaitingSwapScreen: PropTypes.bool.isRequired,
-    haveBridgeQuotes: PropTypes.bool.isRequired,
     setDataCollectionForMarketing: PropTypes.func.isRequired,
     dataCollectionForMarketing: PropTypes.bool,
-    swapsFetchParams: PropTypes.object,
     location: PropTypes.object,
     shouldShowWeb3ShimUsageNotification: PropTypes.bool.isRequired,
     setWeb3ShimUsageAlertDismissed: PropTypes.func.isRequired,
     originOfCurrentTab: PropTypes.string,
     disableWeb3ShimUsageAlert: PropTypes.func.isRequired,
-    pendingApprovals: PropTypes.arrayOf(PropTypes.object).isRequired,
-    hasApprovalFlows: PropTypes.bool.isRequired,
     infuraBlocked: PropTypes.bool.isRequired,
     setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
     setRecoveryPhraseReminderLastShown: PropTypes.func.isRequired,
@@ -160,7 +149,6 @@ export default class Home extends PureComponent {
     clearNewNetworkAdded: PropTypes.func,
     clearEditedNetwork: PropTypes.func,
     setActiveNetwork: PropTypes.func,
-    hasAllowedPopupRedirectApprovals: PropTypes.bool.isRequired,
     useExternalServices: PropTypes.bool,
     setBasicFunctionalityModalOpen: PropTypes.func,
     fetchBuyableChains: PropTypes.func.isRequired,
@@ -171,92 +159,28 @@ export default class Home extends PureComponent {
     showShieldEntryModal: PropTypes.bool,
     isSocialLoginFlow: PropTypes.bool,
     lookupSelectedNetworks: PropTypes.func.isRequired,
-    navState: PropTypes.object,
     evaluateCohortEligibility: PropTypes.func,
     pendingShieldCohort: PropTypes.string,
     setPendingShieldCohort: PropTypes.func,
     isSignedIn: PropTypes.bool,
     rewardsEnabled: PropTypes.bool,
     rewardsOnboardingEnabled: PropTypes.bool,
+    rewardsOnboardingModalOpen: PropTypes.bool,
+    showPna25Modal: PropTypes.bool.isRequired,
   };
 
   state = {
     canShowBlockageNotification: true,
     notificationClosing: false,
-    redirecting: false,
   };
 
   constructor(props) {
     super(props);
 
-    const {
-      attemptCloseNotificationPopup,
-      haveSwapsQuotes,
-      haveBridgeQuotes,
-      isNotification,
-      pendingApprovals,
-      showAwaitingSwapScreen,
-      swapsFetchParams,
-      location,
-      navState,
-    } = this.props;
-    // Read stayOnHomePage from both v5 location.state and v5-compat navState
-    const stayOnHomePage =
-      Boolean(location?.state?.stayOnHomePage) ||
-      Boolean(navState?.stayOnHomePage);
-
+    const { attemptCloseNotificationPopup } = this.props;
     if (shouldCloseNotificationPopup(props)) {
       this.state.notificationClosing = true;
       attemptCloseNotificationPopup();
-    } else if (
-      pendingApprovals.length ||
-      (!isNotification &&
-        !stayOnHomePage &&
-        (showAwaitingSwapScreen ||
-          haveSwapsQuotes ||
-          swapsFetchParams ||
-          haveBridgeQuotes))
-    ) {
-      this.state.redirecting = true;
-    }
-  }
-
-  checkStatusAndNavigate() {
-    const {
-      navigate,
-      isNotification,
-      haveSwapsQuotes,
-      haveBridgeQuotes,
-      showAwaitingSwapScreen,
-      swapsFetchParams,
-      location,
-      pendingApprovals,
-      hasApprovalFlows,
-      navState,
-    } = this.props;
-    // Read stayOnHomePage from both v5 location.state and v5-compat navState
-    const stayOnHomePage =
-      Boolean(location?.state?.stayOnHomePage) ||
-      Boolean(navState?.stayOnHomePage);
-
-    const canRedirect = !isNotification && !stayOnHomePage;
-    if (canRedirect && showAwaitingSwapScreen) {
-      navigate(AWAITING_SWAP_ROUTE);
-    } else if (canRedirect && (haveSwapsQuotes || swapsFetchParams)) {
-      navigate(PREPARE_SWAP_ROUTE);
-    } else if (canRedirect && haveBridgeQuotes) {
-      navigate(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
-    } else if (pendingApprovals.length || hasApprovalFlows) {
-      const url = getConfirmationRoute(
-        pendingApprovals?.[0]?.id,
-        pendingApprovals,
-        hasApprovalFlows,
-        '', // queryString
-      );
-
-      if (url) {
-        navigate(url, { replace: true });
-      }
     }
   }
 
@@ -277,8 +201,6 @@ export default class Home extends PureComponent {
   }
 
   componentDidMount() {
-    this.checkStatusAndNavigate();
-
     this.props.fetchBuyableChains();
 
     // Check for redirect after default page
@@ -304,12 +226,9 @@ export default class Home extends PureComponent {
   componentDidUpdate(_prevProps, prevState) {
     const {
       attemptCloseNotificationPopup,
-      isNotification,
-      hasAllowedPopupRedirectApprovals,
       newNetworkAddedConfigurationId,
       setActiveNetwork,
       clearNewNetworkAdded,
-      isSidepanel,
       pendingShieldCohort,
       evaluateCohortEligibility,
       setPendingShieldCohort,
@@ -331,12 +250,6 @@ export default class Home extends PureComponent {
 
     if (notificationClosing && !prevState.notificationClosing) {
       attemptCloseNotificationPopup();
-    } else if (
-      isNotification ||
-      hasAllowedPopupRedirectApprovals ||
-      isSidepanel
-    ) {
-      this.checkStatusAndNavigate();
     }
 
     // Check for pending Shield cohort evaluation if user is signed in
@@ -869,11 +782,13 @@ export default class Home extends PureComponent {
       isSocialLoginFlow,
       rewardsEnabled,
       rewardsOnboardingEnabled,
+      rewardsOnboardingModalOpen,
+      showPna25Modal,
     } = this.props;
 
     if (forgottenPassword) {
       return <Navigate to={RESTORE_VAULT_ROUTE} replace />;
-    } else if (this.state.notificationClosing || this.state.redirecting) {
+    } else if (this.state.notificationClosing) {
       return null;
     }
 
@@ -924,6 +839,18 @@ export default class Home extends PureComponent {
       !showShieldEntryModal &&
       !showRecoveryPhrase;
 
+    const showPna25ModalComponent =
+      showPna25Modal &&
+      canSeeModals &&
+      !showTermsOfUse &&
+      !showWhatsNew &&
+      !showMultiRpcEditModal &&
+      !displayUpdateModal &&
+      !isSeedlessPasswordOutdated &&
+      !showShieldEntryModal &&
+      !showRecoveryPhrase &&
+      !rewardsOnboardingModalOpen;
+
     const { location } = this.props;
 
     // Handle connected routes
@@ -965,6 +892,7 @@ export default class Home extends PureComponent {
           ) : null}
           {showShieldEntryModal && <ShieldEntryModal />}
           {showRewardsModal && <RewardsOnboardingModal />}
+          {showPna25ModalComponent && <Pna25Modal />}
           {isPopup && !connectedStatusPopoverHasBeenShown
             ? this.renderPopover()
             : null}

@@ -11,17 +11,19 @@ export function useNestedTransactionLabels({
 }) {
   const t = useI18nContext();
 
-  return nestedTransactions?.map((nestedTransaction, index) => {
-    const { data, to } = nestedTransaction;
-    // It's safe to call useFourByte here because the length of nestedTransactions
-    // remains stable throughout the component's lifecycle.
-    // eslint-disable-next-line react-compiler/react-compiler, react-hooks/rules-of-hooks
-    const methodData = useFourByte({ data, to });
-    const functionName = methodData?.name;
+  return nestedTransactions
+    ?.filter((nestedTransaction) => nestedTransaction !== undefined)
+    .map((nestedTransaction, index) => {
+      const { data, to } = nestedTransaction;
+      // It's safe to call useFourByte here because the length of nestedTransactions
+      // remains stable throughout the component's lifecycle.
+      // eslint-disable-next-line react-compiler/react-compiler, react-hooks/rules-of-hooks
+      const methodData = useFourByte({ data, to });
+      const functionName = methodData?.name;
 
-    return (
-      functionName ??
-      t('confirmNestedTransactionTitle', [String((useIndex ?? index) + 1)])
-    );
-  });
+      return (
+        functionName ??
+        t('confirmNestedTransactionTitle', [String((useIndex ?? index) + 1)])
+      );
+    });
 }

@@ -57,7 +57,6 @@ const convertToHexValue = (val) => `0x${new BigNumber(val, 10).toString(16)}`;
 const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
 
 const {
-  mockMultichainAccountsFeatureFlagStateOne,
   mockMultichainAccountsFeatureFlagStateTwo,
 } = require('./tests/multichain-accounts/feature-flag-mocks');
 
@@ -174,7 +173,7 @@ async function withFixtures(options, testSuite) {
     monConversionInUsd,
     manifestFlags,
     solanaWebSocketSpecificMocks = [],
-    forceBip44Version = 0,
+    forceBip44Version = true,
   } = options;
 
   // Normalize localNodeOptions
@@ -334,20 +333,8 @@ async function withFixtures(options, testSuite) {
     webSocketServer.start();
     await setupSolanaWebsocketMocks(solanaWebSocketSpecificMocks);
 
-    // The feature flag wrapper chooses state 2 by default
-    // but we want most tests to be able to run with state 0 (bip-44 disabled)
-    // So the default argument is 0
-    // and doing nothing here means we get state 2
-
-    if (forceBip44Version === 0) {
-      console.log('Applying multichain accounts feature flag disabled mock');
-    } else if (forceBip44Version === 1) {
-      console.log(
-        'Applying multichain accounts state 1 feature state 1 enabled mock',
-      );
-      await mockMultichainAccountsFeatureFlagStateOne(mockServer);
-    } else {
-      console.log('BIP-44 state 2 enabled');
+    if (forceBip44Version) {
+      console.log('BIP-44 stage 2 enabled');
       await mockMultichainAccountsFeatureFlagStateTwo(mockServer);
     }
 
@@ -454,7 +441,7 @@ async function withFixtures(options, testSuite) {
       if (process.env.UPDATE_PRIVACY_SNAPSHOT === 'true') {
         writeFileSync(
           './privacy-snapshot.json',
-          JSON.stringify(mergedReport, null, 2),
+          `${JSON.stringify(mergedReport, null, 2)}\n`, // must add trailing newline to satisfy prettier
         );
       } else {
         throw new Error(
@@ -615,12 +602,11 @@ const clickNestedButton = async (driver, tabName) => {
  * @param {WebDriver} driver - The webdriver instance
  * @param {object} [options] - Options for unlocking the wallet
  * @param {boolean} [options.navigate] - Whether to navigate to the root page prior to unlocking - defaults to true
- * @param {boolean} [options.waitLoginSuccess] - Whether to wait for the login to succeed - defaults to true
  * @param {string} [options.password] - Password to unlock wallet - defaults to shared WALLET_PASSWORD
  */
 async function unlockWallet(
   driver,
-  { navigate = true, waitLoginSuccess = true, password = WALLET_PASSWORD } = {},
+  { navigate = true, password = WALLET_PASSWORD } = {},
 ) {
   if (navigate) {
     await driver.navigate();
@@ -629,9 +615,7 @@ async function unlockWallet(
   await driver.waitForSelector('#password', { state: 'enabled' });
   await driver.fill('#password', password);
   await driver.press('#password', driver.Key.ENTER);
-  if (waitLoginSuccess) {
-    await driver.assertElementNotPresent('[data-testid="unlock-page"]');
-  }
+  await driver.assertElementNotPresent('[data-testid="unlock-page"]');
 }
 
 /**
@@ -801,6 +785,30 @@ async function initBundler(
 
 const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;
 
+/**
+ * Check if sidepanel is enabled by examining the build flag at runtime.
+ * Only works on Chrome-based browsers (Firefox doesn't support sidepanel).
+ * Use this check for now in case we need to disable sidepanel in future.
+ *
+ * @returns {Promise<boolean>} True if sidepanel permission is present in manifest
+ */
+async function isSidePanelEnabled() {
+  try {
+    const hasSidepanel =
+      process.env.SELENIUM_BROWSER === 'chrome' &&
+      process.env.IS_SIDEPANEL === 'true';
+
+    // Log for debugging
+    console.log(`Sidepanel check: ${hasSidepanel ? 'enabled' : 'disabled'}`);
+
+    return hasSidepanel;
+  } catch (error) {
+    // Chrome API not accessible (e.g., LavaMoat scuttling mode, Firefox)
+    console.log('Sidepanel check failed:', error.message);
+    return false;
+  }
+}
+
 module.exports = {
   DAPP_HOST_ADDRESS,
   DAPP_URL,
@@ -833,4 +841,5 @@ module.exports = {
   clickNestedButton,
   sentryRegEx,
   createWebSocketConnection,
+  isSidePanelEnabled,
 };

@@ -10,6 +10,7 @@ import { I18nContext } from '../../../../contexts/i18n';
 import {
   getGasEstimateType,
   getGasFeeEstimates,
+  getGasFeeEstimatesByChainId,
   getIsGasEstimatesLoading,
 } from '../../../../ducks/metamask/metamask';
 import {
@@ -38,14 +39,19 @@ const toHumanReadableTime = (milliseconds = 1, t) => {
   return t('gasTimingMinutesShort', [Math.ceil(seconds / 60)]);
 };
 export default function GasTiming({
+  chainId,
   maxFeePerGas = '0',
   maxPriorityFeePerGas = '0',
   gasWarnings,
 }) {
   const gasEstimateType = useSelector(getGasEstimateType);
-  const gasFeeEstimates = useSelector(getGasFeeEstimates);
+  const chainGasFeeEstimates = useSelector((state) =>
+    getGasFeeEstimatesByChainId(state, chainId),
+  );
+  const gasFeeEstimatesFromRoot = useSelector(getGasFeeEstimates);
   const isGasEstimatesLoading = useSelector(getIsGasEstimatesLoading);
 
+  const gasFeeEstimates = chainGasFeeEstimates || gasFeeEstimatesFromRoot;
   const [customEstimatedTime, setCustomEstimatedTime] = useState(null);
   const t = useContext(I18nContext);
   const { estimateUsed } = useGasFeeContext();
@@ -194,6 +200,7 @@ export default function GasTiming({
 }
 
 GasTiming.propTypes = {
+  chainId: PropTypes.string,
   maxPriorityFeePerGas: PropTypes.string,
   maxFeePerGas: PropTypes.string,
   gasWarnings: PropTypes.object,

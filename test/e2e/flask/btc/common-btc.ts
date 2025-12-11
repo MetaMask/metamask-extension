@@ -1,10 +1,7 @@
 import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
-import { ACCOUNT_TYPE } from '../../constants';
 import { Driver } from '../../webdriver/driver';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import AccountListPage from '../../page-objects/pages/account-list-page';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import {
@@ -21,6 +18,7 @@ export async function withBtcAccountSnap(
 ) {
   await withFixtures(
     {
+      forceBip44Version: false,
       fixtures: new FixtureBuilder()
         .withEnabledNetworks({
           eip155: {
@@ -48,11 +46,6 @@ export async function withBtcAccountSnap(
     },
     async ({ driver, mockServer }: { driver: Driver; mockServer: Mockttp }) => {
       await loginWithBalanceValidation(driver);
-      // create one BTC account
-      await new HeaderNavbar(driver).openAccountMenu();
-      const accountListPage = new AccountListPage(driver);
-      await accountListPage.checkPageIsLoaded();
-      await accountListPage.addAccount({ accountType: ACCOUNT_TYPE.Bitcoin });
       await test(driver, mockServer);
     },
   );

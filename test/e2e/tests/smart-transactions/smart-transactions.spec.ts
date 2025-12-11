@@ -87,7 +87,6 @@ describe('Smart Transactions', function () {
         await sendPage.selectTokenFee('USDC');
         await driver.delay(1000);
         await sendPage.clickConfirmButton();
-        await sendPage.clickViewActivity();
 
         const activityList = new ActivityListPage(driver);
         await activityList.checkNoFailedTransactions();
@@ -96,7 +95,7 @@ describe('Smart Transactions', function () {
         await activityList.checkTxAction({
           action: 'Sent',
           txIndex: 2,
-          completedTxs: 2,
+          confirmedTx: 2,
         });
         await activityList.checkTxAmountInActivity(`-0 ETH`, 1);
         await activityList.checkTxAmountInActivity(`-0.01 ETH`, 2);

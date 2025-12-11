@@ -47,8 +47,7 @@ class MultichainAccountDetailsPage {
   private readonly showPrivateKeyButton =
     '[data-testid="account-show-private-key-button"]';
 
-  private readonly exportSrpButton =
-    '[data-testid="account-export-srp-button"]';
+  private readonly exportSrpButton = '[data-testid="multichain-srp-backup"]';
 
   private readonly exportPrivateKeyButton =
     '[data-testid="account-export-private-key-button"]';
@@ -159,6 +158,14 @@ class MultichainAccountDetailsPage {
   }
 
   /**
+   * Check that the "show private key" button is not displayed
+   */
+  async checkShowPrivateKeyButtonIsNotDisplayed(): Promise<void> {
+    console.log('Check that show private key button is not displayed');
+    await this.driver.assertElementNotPresent(this.privateKeyRow);
+  }
+
+  /**
    * Click on the private key row
    */
   async clickPrivateKeyRow(): Promise<void> {
@@ -166,6 +173,14 @@ class MultichainAccountDetailsPage {
     const privateKeyRow = await this.driver.findElement(this.privateKeyRow);
     await privateKeyRow.click();
     await this.driver.delay(largeDelayMs);
+  }
+
+  /**
+   * Click on reveal SRP button
+   */
+  async clickRevealRow(): Promise<void> {
+    console.log('Click on reveal SRP button');
+    await this.driver.clickElement(this.exportSrpButton);
   }
 
   /**

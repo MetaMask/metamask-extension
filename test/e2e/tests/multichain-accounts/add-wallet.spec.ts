@@ -14,8 +14,11 @@ import {
   accountsToMockForAccountsSync,
   getAccountsSyncMockResponse,
 } from '../identity/account-syncing/mock-data';
+import { mockPriceApi } from '../tokens/utils/mocks';
 import { mockIdentityServices } from '../identity/mocks';
 import { withMultichainAccountsDesignEnabled } from './common';
+
+const DEFAULT_LOCAL_NODE_USD_BALANCE = '85,025.00';
 
 describe('Add wallet', function () {
   const arrange = async () => {
@@ -34,9 +37,11 @@ describe('Add wallet', function () {
       await arrange();
     await withFixtures(
       {
-        forceBip44Version: 2,
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
-        testSpecificMock: (server: Mockttp) => {
+        fixtures: new FixtureBuilder({ onboarding: true })
+          .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .build(),
+        testSpecificMock: async (server: Mockttp) => {
           userStorageMockttpController.setupPath(
             USER_STORAGE_FEATURE_NAMES.accounts,
             server,
@@ -44,6 +49,7 @@ describe('Add wallet', function () {
               getResponse: mockedAccountSyncResponse,
             },
           );
+          await mockPriceApi(server);
           return mockIdentityServices(server, userStorageMockttpController);
         },
         title: this.test?.fullTitle(),
@@ -53,28 +59,27 @@ describe('Add wallet', function () {
           driver,
           fillSrpWordByWord: true,
         });
-        // Allow syncing to finish
-        await driver.delay(3000);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        // BUG 37030 With BIP44 enabled wallet is not showing balance
-        // await homePage.checkExpectedBalanceIsDisplayed(
-        //  DEFAULT_LOCAL_NODE_USD_BALANCE,
-        //  '$',
-        // );
+
+        await homePage.checkExpectedBalanceIsDisplayed(
+          DEFAULT_LOCAL_NODE_USD_BALANCE,
+          '$',
+        );
 
         // Open account details modal and check displayed account address
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountsPage();
+        await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
 
         await accountListPage.openMultichainAccountMenu({
           accountLabel: 'Account 1',
         });
+        await accountListPage.checkMultichainAccountBalanceDisplayed(
+          DEFAULT_LOCAL_NODE_USD_BALANCE,
+        );
       },
     );
   });
@@ -85,20 +90,15 @@ describe('Add wallet', function () {
     await withMultichainAccountsDesignEnabled(
       {
         title: this.test?.fullTitle(),
+        testSpecificMock: mockPriceApi,
       },
       async (driver: Driver) => {
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
-        await accountListPage.startImportSecretPhrase(E2E_SRP, {
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
+        await accountListPage.startImportSecretPhrase(E2E_SRP);
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountsPage();
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await headerNavbar.openAccountMenu();
+        await accountListPage.checkPageIsLoaded();
         await accountListPage.checkNumberOfAvailableAccounts(3);
       },
     );
@@ -110,13 +110,13 @@ describe('Add wallet', function () {
       await arrange();
     await withFixtures(
       {
-        forceBip44Version: 2,
         fixtures: new FixtureBuilder()
           .withAccountsControllerImportedAccount()
           .withKeyringControllerImportedAccountVault()
           .withPreferencesControllerImportedAccountIdentities()
           .build(),
-        testSpecificMock: (server: Mockttp) => {
+        testSpecificMock: async (server: Mockttp) => {
+          await mockPriceApi(server);
           userStorageMockttpController.setupPath(
             USER_STORAGE_FEATURE_NAMES.accounts,
             server,
@@ -134,11 +134,9 @@ describe('Add wallet', function () {
         // Wait until account list is loaded to mitigate race condition
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.checkAccountLabel('Account 1');
-        await headerNavbar.openAccountsPage();
+        await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
 
         // Imports an account with JSON file
         const jsonFile = path.join(
@@ -171,11 +169,11 @@ describe('Add wallet', function () {
       await arrange();
     await withFixtures(
       {
-        forceBip44Version: 2,
         fixtures: new FixtureBuilder()
           .withKeyringControllerImportedAccountVault()
           .build(),
-        testSpecificMock: (server: Mockttp) => {
+        testSpecificMock: async (server: Mockttp) => {
+          await mockPriceApi(server);
           userStorageMockttpController.setupPath(
             USER_STORAGE_FEATURE_NAMES.accounts,
             server,
@@ -192,11 +190,9 @@ describe('Add wallet', function () {
 
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.checkAccountLabel('Account 1');
-        await headerNavbar.openAccountsPage();
+        await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
 
         // import active account with private key from the account menu and check error message
         await accountListPage.addNewImportedAccount(

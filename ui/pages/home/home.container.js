@@ -2,7 +2,6 @@ import React from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
-import { useNavState } from '../../contexts/navigation-state';
 import { useShieldSubscriptionContext } from '../../contexts/shield/shield-subscription';
 import {
   activeTabHasPermissions,
@@ -26,7 +25,6 @@ import {
   hasPendingApprovals,
   getSelectedInternalAccount,
   getEditedNetwork,
-  selectPendingApprovalsForNavigation,
   getShowUpdateModal,
   getIsSocialLoginFlow,
   getShowShieldEntryModal,
@@ -68,7 +66,9 @@ import { fetchBuyableChains } from '../../ducks/ramps';
 import {
   selectRewardsEnabled,
   selectRewardsOnboardingEnabled,
+  selectOnboardingModalOpen,
 } from '../../ducks/rewards/selectors';
+import { selectShowPna25Modal } from '../../components/app/toast-master/selectors';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
@@ -76,7 +76,6 @@ import { getIsBrowserDeprecated } from '../../helpers/utils/util';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
-  ENVIRONMENT_TYPE_SIDEPANEL,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
   ///: END:ONLY_INCLUDE_IF
@@ -90,7 +89,6 @@ import {
   getRedirectAfterDefaultPage,
   clearRedirectAfterDefaultPage,
 } from '../../ducks/history/history';
-
 import Home from './home.component';
 
 const mapStateToProps = (state) => {
@@ -99,8 +97,6 @@ const mapStateToProps = (state) => {
     seedPhraseBackedUp,
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
-    swapsState,
-    quotes,
     dataCollectionForMarketing,
     participateInMetaMetrics,
     firstTimeFlowType,
@@ -111,13 +107,11 @@ const mapStateToProps = (state) => {
   const { address: selectedAddress } = selectedAccount;
   const totalUnapprovedCount = getTotalUnapprovedCount(state);
   const swapsEnabled = getSwapsFeatureIsLive(state);
-  const pendingApprovals = selectPendingApprovalsForNavigation(state);
   const redirectAfterDefaultPage = getRedirectAfterDefaultPage(state);
 
   const envType = getEnvironmentType();
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
   const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
-  const isSidepanel = envType === ENVIRONMENT_TYPE_SIDEPANEL;
 
   const originOfCurrentTab = getOriginOfCurrentTab(state);
   const shouldShowWeb3ShimUsageNotification =
@@ -154,7 +148,6 @@ const mapStateToProps = (state) => {
     isPopup,
     isNotification,
     dataCollectionForMarketing,
-    isSidepanel,
     selectedAddress,
     totalUnapprovedCount,
     participateInMetaMetrics,
@@ -163,14 +156,9 @@ const mapStateToProps = (state) => {
     defaultHomeActiveTabName,
     firstTimeFlowType,
     completedOnboarding,
-    haveSwapsQuotes: Boolean(Object.values(swapsState.quotes || {}).length),
-    swapsFetchParams: swapsState.fetchParams,
-    showAwaitingSwapScreen: swapsState.routeState === 'awaiting',
-    haveBridgeQuotes: Boolean(Object.values(quotes || {}).length),
     isMainnet: getIsMainnet(state),
     originOfCurrentTab,
     shouldShowWeb3ShimUsageNotification,
-    pendingApprovals,
     infuraBlocked: getInfuraBlocked(state),
     announcementsToShow: getSortedAnnouncementsToShow(state).length > 0,
     showWhatsNewPopup,
@@ -200,6 +188,8 @@ const mapStateToProps = (state) => {
     isSignedIn: state.metamask.isSignedIn,
     rewardsEnabled: selectRewardsEnabled(state),
     rewardsOnboardingEnabled: selectRewardsOnboardingEnabled(state),
+    rewardsOnboardingModalOpen: selectOnboardingModalOpen(state),
+    showPna25Modal: selectShowPna25Modal(state),
   };
 };
 
@@ -262,18 +252,12 @@ const mapDispatchToProps = (dispatch) => {
 
 // Strip unused 'match' prop from withRouter
 // It causes cascading, unnecessary re-renders
-// Also inject navState from NavigationStateContext for v5-compat navigation
 // eslint-disable-next-line react/prop-types
 const HomeWithRouter = ({ match: _match, ...props }) => {
-  const navState = useNavState();
   const { evaluateCohortEligibility } = useShieldSubscriptionContext();
 
   return (
-    <Home
-      {...props}
-      navState={navState}
-      evaluateCohortEligibility={evaluateCohortEligibility}
-    />
+    <Home {...props} evaluateCohortEligibility={evaluateCohortEligibility} />
   );
 };
 

@@ -18,6 +18,7 @@ import {
 } from '../../../../shared/modules/dapp-swap-comparison/dapp-swap-comparison-utils';
 import { DappSwapComparisonData } from '../../controllers/app-state-controller';
 import { SecurityAlertResponse } from '../ppom/types';
+import { DappSwapDecodingError } from '../../../../shared/modules/dapp-swap-comparison/dapp-swap-command-utils';
 
 export type DappSwapMiddlewareRequest<
   Params extends JsonRpcParams = JsonRpcParams,
@@ -34,8 +35,6 @@ export type DappSwapMiddlewareRequest<
 };
 
 const FOUR_BYTE_EXECUTE_SWAP_CONTRACT = '0x3593564c';
-const DAPP_SWAP_COMPARISON_ORIGIN = 'https://app.uniswap.org';
-const TEST_DAPP_ORIGIN = 'https://metamask.github.io';
 
 const getSwapDetails = (params: DappSwapMiddlewareRequest['params']) => {
   if (!params?.length) {
@@ -79,27 +78,34 @@ export function getQuotesForConfirmation({
   getNetworkConfigurationByNetworkClientId: (
     networkClientId: NetworkClientId,
   ) => NetworkConfiguration | undefined;
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  dappSwapMetricsFlag: { enabled: boolean; bridge_quote_fees: number };
+  dappSwapMetricsFlag: {
+    enabled: boolean;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    bridge_quote_fees: number;
+    origins: string[];
+  };
   securityAlertId?: string;
 }) {
   let commands = '';
   try {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    const { enabled: dappSwapEnabled, bridge_quote_fees: bridgeQuoteFees } =
-      dappSwapMetricsFlag;
+    const {
+      enabled: dappSwapEnabled,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      bridge_quote_fees: bridgeQuoteFees,
+      origins,
+    } = dappSwapMetricsFlag;
     if (!dappSwapEnabled || !securityAlertId) {
       return;
     }
     const { params, origin } = req;
-    if (origin === DAPP_SWAP_COMPARISON_ORIGIN || origin === TEST_DAPP_ORIGIN) {
+    if (origin && origins.includes(origin)) {
       const { chainId } =
         getNetworkConfigurationByNetworkClientId(req.networkClientId) ?? {};
       const { data, from } = getSwapDetails(params);
       if (data && securityAlertId && chainId) {
         const parsedTransactionData = parseTransactionData(data);
         commands = parsedTransactionData.commands;
-        const { quotesInput, tokenAddresses } = getDataFromSwap(
+        const { quotesInput, amountMin } = getDataFromSwap(
           chainId as Hex,
           parsedTransactionData.commandBytes,
           parsedTransactionData.inputs,
@@ -109,6 +115,15 @@ export function getQuotesForConfirmation({
             params[0].calls as NestedTransactionMetadata[],
             quotesInput?.srcTokenAddress as Hex,
           );
+          setDappSwapComparisonData(securityAlertId, {
+            commands,
+            swapInfo: {
+              srcTokenAddress: quotesInput?.srcTokenAddress as Hex,
+              destTokenAddress: quotesInput?.destTokenAddress as Hex,
+              srcTokenAmount: quotesInput?.srcTokenAmount as Hex,
+              destTokenAmountMin: amountMin as Hex,
+            },
+          });
           const startTime = new Date().getTime();
           fetchQuotes({
             ...quotesInput,
@@ -122,7 +137,6 @@ export function getQuotesForConfirmation({
                 setDappSwapComparisonData(securityAlertId, {
                   quotes,
                   latency,
-                  tokenAddresses: tokenAddresses as Hex[],
                 });
               }
             })
@@ -140,12 +154,12 @@ export function getQuotesForConfirmation({
   } catch (error) {
     if (securityAlertId) {
       setDappSwapComparisonData(securityAlertId, {
-        error: `Error fetching bridge quotes: ${(error as Error).toString()}`,
+        error: `Error fetching bridge quotes: ${(error as Error).message}`,
         commands,
       });
     }
-    captureException(
-      `Error fetching bridge quotes: ${(error as Error).toString()}`,
-    );
+    if (!(error instanceof DappSwapDecodingError)) {
+      captureException(error);
+    }
   }
 }

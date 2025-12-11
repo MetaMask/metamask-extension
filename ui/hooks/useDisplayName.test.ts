@@ -7,7 +7,7 @@ import {
   FIRST_PARTY_CONTRACT_NAMES,
 } from '../../shared/constants/first-party-contracts';
 import mockState from '../../test/data/mock-state.json';
-import { renderHookWithProvider } from '../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../test/lib/render-helpers-navigate';
 import { getDomainResolutions } from '../ducks/domains';
 import { IconName } from '../components/component-library';
 import { IconColor } from '../helpers/constants/design-system';

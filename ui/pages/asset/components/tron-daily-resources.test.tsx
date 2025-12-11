@@ -60,7 +60,7 @@ describe('TronDailyResources', () => {
 
       expect(screen.getByText('tronDailyResources')).toBeInTheDocument();
       expect(
-        screen.getByText('tronDailyResourcesDescription'),
+        screen.getByText('tronDailyResourcesDescription-5,000'),
       ).toBeInTheDocument();
       expect(screen.getByText('tronEnergy')).toBeInTheDocument();
       expect(screen.getByText('tronBandwidth')).toBeInTheDocument();
@@ -107,9 +107,9 @@ describe('TronDailyResources', () => {
 
       render(<TronDailyResources account={mockAccount} chainId={chainId} />);
 
-      // Should show "1" USDT transfer covered
+      // Should show singular message for 1 USDT transfer covered
       expect(
-        screen.getByText('tronEnergyCoverageDescription-1'),
+        screen.getByText('tronEnergyCoverageDescriptionSingular'),
       ).toBeInTheDocument();
     });
 
@@ -133,7 +133,7 @@ describe('TronDailyResources', () => {
 
       // Should show "3" USDT transfers covered
       expect(
-        screen.getByText('tronEnergyCoverageDescription-3'),
+        screen.getByText('tronEnergyCoverageDescriptionPlural-3'),
       ).toBeInTheDocument();
     });
 
@@ -157,7 +157,7 @@ describe('TronDailyResources', () => {
 
       // Should show "0" USDT transfers covered
       expect(
-        screen.getByText('tronEnergyCoverageDescription-0'),
+        screen.getByText('tronEnergyCoverageDescriptionPlural-0'),
       ).toBeInTheDocument();
     });
 
@@ -179,9 +179,9 @@ describe('TronDailyResources', () => {
 
       render(<TronDailyResources account={mockAccount} chainId={chainId} />);
 
-      // Should show "1" TRX transfer covered
+      // Should show singular message for 1 TRX transfer covered
       expect(
-        screen.getByText('tronBandwidthCoverageDescription-1'),
+        screen.getByText('tronBandwidthCoverageDescriptionSingular'),
       ).toBeInTheDocument();
     });
 
@@ -205,7 +205,7 @@ describe('TronDailyResources', () => {
 
       // Should show "4" TRX transfers covered
       expect(
-        screen.getByText('tronBandwidthCoverageDescription-4'),
+        screen.getByText('tronBandwidthCoverageDescriptionPlural-4'),
       ).toBeInTheDocument();
     });
 
@@ -229,7 +229,7 @@ describe('TronDailyResources', () => {
 
       // Should show "0" TRX transfers covered
       expect(
-        screen.getByText('tronBandwidthCoverageDescription-0'),
+        screen.getByText('tronBandwidthCoverageDescriptionPlural-0'),
       ).toBeInTheDocument();
     });
 
@@ -255,10 +255,10 @@ describe('TronDailyResources', () => {
       const zeroElements = screen.getAllByText('0');
       expect(zeroElements).toHaveLength(2);
       expect(
-        screen.getByText('tronEnergyCoverageDescription-0'),
+        screen.getByText('tronEnergyCoverageDescriptionPlural-0'),
       ).toBeInTheDocument();
       expect(
-        screen.getByText('tronBandwidthCoverageDescription-0'),
+        screen.getByText('tronBandwidthCoverageDescriptionPlural-0'),
       ).toBeInTheDocument();
     });
 
@@ -286,12 +286,12 @@ describe('TronDailyResources', () => {
 
       // 1000000 / 65000 = 15 USDT transfers
       expect(
-        screen.getByText('tronEnergyCoverageDescription-15'),
+        screen.getByText('tronEnergyCoverageDescriptionPlural-15'),
       ).toBeInTheDocument();
 
       // 50000 / 280 = 178 TRX transfers
       expect(
-        screen.getByText('tronBandwidthCoverageDescription-178'),
+        screen.getByText('tronBandwidthCoverageDescriptionPlural-178'),
       ).toBeInTheDocument();
     });
 
@@ -390,12 +390,12 @@ describe('TronDailyResources', () => {
 
       render(<TronDailyResources account={mockAccount} chainId={chainId} />);
 
-      // Should floor fractional transfers
+      // Should floor fractional transfers to 1, using singular message
       expect(
-        screen.getByText('tronEnergyCoverageDescription-1'),
+        screen.getByText('tronEnergyCoverageDescriptionSingular'),
       ).toBeInTheDocument();
       expect(
-        screen.getByText('tronBandwidthCoverageDescription-1'),
+        screen.getByText('tronBandwidthCoverageDescriptionSingular'),
       ).toBeInTheDocument();
     });
   });

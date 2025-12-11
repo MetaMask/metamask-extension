@@ -1,0 +1,233 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SnapUIDateTimePicker can show an error 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    style="overflow-y: auto; margin-bottom: 0px;"
+  >
+    <div
+      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
+    >
+      <div
+        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+      >
+        <div
+          class="snap-ui-renderer__date-time-picker snap-ui-renderer__field"
+        >
+          <label
+            class="mm-box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+            for="date-time-picker"
+          >
+            Select date and time
+          </label>
+          <div
+            class="MuiFormControl-root MuiTextField-root makeStyles-root-9 snap-ui-renderer__date-time-picker--datetime"
+            format="D T"
+          >
+            <div
+              class="MuiInputBase-root MuiInput-root makeStyles-input-10 MuiInputBase-formControl MuiInput-formControl"
+            >
+              <input
+                aria-invalid="false"
+                class="MuiInputBase-input MuiInput-input"
+                readonly=""
+                type="text"
+                value=""
+              />
+            </div>
+            
+          </div>
+          <p
+            class="mm-box mm-text mm-help-text mm-text--body-sm mm-box--margin-top-1 mm-box--color-error-default"
+          >
+            This is an error
+          </p>
+        </div>
+      </div>
+    </div>
+    <span
+      data-renders="1"
+      data-testid="performance"
+    />
+  </div>
+</div>
+`;
+
+exports[`SnapUIDateTimePicker renders a date picker 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    style="overflow-y: auto; margin-bottom: 0px;"
+  >
+    <div
+      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
+    >
+      <div
+        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+      >
+        <div
+          class="snap-ui-renderer__date-time-picker"
+        >
+          <div
+            class="MuiFormControl-root MuiTextField-root makeStyles-root-3 snap-ui-renderer__date-time-picker--date"
+            format="D"
+          >
+            <div
+              class="MuiInputBase-root MuiInput-root makeStyles-input-4 MuiInputBase-formControl MuiInput-formControl"
+            >
+              <input
+                aria-invalid="false"
+                class="MuiInputBase-input MuiInput-input"
+                readonly=""
+                type="text"
+                value=""
+              />
+            </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <span
+      data-renders="1"
+      data-testid="performance"
+    />
+  </div>
+</div>
+`;
+
+exports[`SnapUIDateTimePicker renders a date time picker 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    style="overflow-y: auto; margin-bottom: 0px;"
+  >
+    <div
+      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
+    >
+      <div
+        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+      >
+        <div
+          class="snap-ui-renderer__date-time-picker"
+        >
+          <div
+            class="MuiFormControl-root MuiTextField-root makeStyles-root-1 snap-ui-renderer__date-time-picker--datetime"
+            format="D T"
+          >
+            <div
+              class="MuiInputBase-root MuiInput-root makeStyles-input-2 MuiInputBase-formControl MuiInput-formControl"
+            >
+              <input
+                aria-invalid="false"
+                class="MuiInputBase-input MuiInput-input"
+                readonly=""
+                type="text"
+                value=""
+              />
+            </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <span
+      data-renders="1"
+      data-testid="performance"
+    />
+  </div>
+</div>
+`;
+
+exports[`SnapUIDateTimePicker renders a time picker 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    style="overflow-y: auto; margin-bottom: 0px;"
+  >
+    <div
+      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
+    >
+      <div
+        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+      >
+        <div
+          class="snap-ui-renderer__date-time-picker"
+        >
+          <div
+            class="MuiFormControl-root MuiTextField-root makeStyles-root-5 snap-ui-renderer__date-time-picker--time"
+            format="T"
+          >
+            <div
+              class="MuiInputBase-root MuiInput-root makeStyles-input-6 MuiInputBase-formControl MuiInput-formControl"
+            >
+              <input
+                aria-invalid="false"
+                class="MuiInputBase-input MuiInput-input"
+                readonly=""
+                type="text"
+                value=""
+              />
+            </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <span
+      data-renders="1"
+      data-testid="performance"
+    />
+  </div>
+</div>
+`;
+
+exports[`SnapUIDateTimePicker renders inside a field 1`] = `
+<div>
+  <div
+    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    style="overflow-y: auto; margin-bottom: 0px;"
+  >
+    <div
+      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
+    >
+      <div
+        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+      >
+        <div
+          class="snap-ui-renderer__date-time-picker snap-ui-renderer__field"
+        >
+          <label
+            class="mm-box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+            for="date-time-picker"
+          >
+            Select date and time
+          </label>
+          <div
+            class="MuiFormControl-root MuiTextField-root makeStyles-root-7 snap-ui-renderer__date-time-picker--datetime"
+            format="D T"
+          >
+            <div
+              class="MuiInputBase-root MuiInput-root makeStyles-input-8 MuiInputBase-formControl MuiInput-formControl"
+            >
+              <input
+                aria-invalid="false"
+                class="MuiInputBase-input MuiInput-input"
+                readonly=""
+                type="text"
+                value=""
+              />
+            </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <span
+      data-renders="1"
+      data-testid="performance"
+    />
+  </div>
+</div>
+`;

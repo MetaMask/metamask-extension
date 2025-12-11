@@ -21,9 +21,9 @@ import { MultichainHoveredAddressRowsList } from './multichain-hovered-address-r
 
 const mockStore = configureStore([]);
 const mockUseNavigate = jest.fn();
-jest.mock('react-router-dom-v5-compat', () => {
+jest.mock('react-router-dom', () => {
   return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
+    ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
   };
 });
@@ -316,10 +316,16 @@ const createMockBalance = (
   },
 });
 
-const renderComponent = (groupId: AccountGroupId = GROUP_ID_MOCK) => {
+const renderComponent = (
+  groupId: AccountGroupId = GROUP_ID_MOCK,
+  onViewAllClick?: () => void,
+) => {
   const store = mockStore(createMockState());
   return renderWithProvider(
-    <MultichainHoveredAddressRowsList groupId={groupId}>
+    <MultichainHoveredAddressRowsList
+      groupId={groupId}
+      onViewAllClick={onViewAllClick}
+    >
       <div data-testid="hover-trigger">Hover Me</div>
     </MultichainHoveredAddressRowsList>,
     store,
@@ -734,6 +740,29 @@ describe('MultichainHoveredAddressRowsList', () => {
 
       expect(mockUseNavigate).toHaveBeenCalledWith(
         `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(SPECIAL_GROUP_ID)}`,
+      );
+    });
+
+    it('calls onViewAllClick callback before navigation', async () => {
+      const mockOnViewAllClick = jest.fn();
+      renderComponent(GROUP_ID_MOCK, mockOnViewAllClick);
+
+      const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
+      fireEvent.mouseEnter(triggerElement.parentElement as HTMLElement);
+      await waitFor(() => {
+        expect(
+          screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
+        ).toBeInTheDocument();
+      });
+
+      const buttons = screen.getAllByRole('button');
+      const viewAllButton = buttons[buttons.length - 1];
+
+      fireEvent.click(viewAllButton);
+
+      expect(mockOnViewAllClick).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(GROUP_ID_MOCK)}`,
       );
     });
   });
