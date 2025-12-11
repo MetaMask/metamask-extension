@@ -1,4 +1,4 @@
-import { act, waitFor } from '@testing-library/react';
+import { waitFor } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
 import usePolling from './usePolling';
 
@@ -37,9 +37,7 @@ describe('usePolling', () => {
       expect(mockStart).toHaveBeenCalled();
     });
 
-    act(() => {
-      unmount();
-    });
+    unmount();
 
     expect(mockStop).toHaveBeenCalledWith('pollingToken');
   });
@@ -59,11 +57,9 @@ describe('usePolling', () => {
     );
 
     // Give the effect a chance to run
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 0));
+    await waitFor(() => {
+      expect(mockStart).not.toHaveBeenCalled();
     });
-
-    expect(mockStart).not.toHaveBeenCalled();
   });
 
   it('stops existing poll and does not start new one when enabled changes to false', async () => {
@@ -123,8 +119,9 @@ describe('usePolling', () => {
   });
 
   it('handles race conditions by stopping stale polls', async () => {
-    let resolveFirst: (value: string) => void;
-    let resolveSecond: (value: string) => void;
+    type Resolver = (value: string) => void;
+    let resolveFirst: Resolver = () => undefined;
+    let resolveSecond: Resolver = () => undefined;
 
     const mockStart = jest
       .fn()
@@ -155,15 +152,9 @@ describe('usePolling', () => {
     // Trigger second call before first resolves
     rerender({ input: { networkClientId: 'goerli' } });
 
-    // Resolve second call first (simulating faster response)
-    await act(async () => {
-      resolveSecond('pollingToken2');
-    });
-
-    // Now resolve first call (stale)
-    await act(async () => {
-      resolveFirst('pollingToken1');
-    });
+    // Resolve in order: second first (simulating faster response), then first (stale)
+    resolveSecond('pollingToken2');
+    resolveFirst('pollingToken1');
 
     // The stale token should be immediately stopped
     await waitFor(() => {

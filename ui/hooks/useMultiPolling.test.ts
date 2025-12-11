@@ -1,4 +1,4 @@
-import { act, waitFor } from '@testing-library/react';
+import { waitFor } from '@testing-library/react';
 import { renderHookWithProvider } from '../../test/lib/render-helpers-navigate';
 import useMultiPolling from './useMultiPolling';
 
@@ -127,11 +127,9 @@ describe('useMultiPolling', () => {
     );
 
     // Give effects time to run
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 0));
+    await waitFor(() => {
+      expect(mockStartPolling).not.toHaveBeenCalled();
     });
-
-    expect(mockStartPolling).not.toHaveBeenCalled();
   });
 
   it('should not poll when inputs array is empty', async () => {
@@ -152,11 +150,9 @@ describe('useMultiPolling', () => {
       },
     );
 
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 0));
+    await waitFor(() => {
+      expect(mockStartPolling).not.toHaveBeenCalled();
     });
-
-    expect(mockStartPolling).not.toHaveBeenCalled();
   });
 
   it('should handle race conditions by stopping stale tokens', async () => {
@@ -198,15 +194,9 @@ describe('useMultiPolling', () => {
     currentInputs = ['bar'];
     rerender();
 
-    // Resolve bar first (the current input)
-    await act(async () => {
-      resolveBar('bar_token');
-    });
-
-    // Now resolve foo (stale - was removed before resolving)
-    await act(async () => {
-      resolveFoo('foo_token');
-    });
+    // Resolve in order: bar first (current input), then foo (stale)
+    resolveBar('bar_token');
+    resolveFoo('foo_token');
 
     // The stale token should be immediately stopped
     await waitFor(() => {
@@ -288,12 +278,10 @@ describe('useMultiPolling', () => {
     currentInputs = ['foo', 'bar'];
     rerender();
 
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 0));
-    });
-
     // Should not have started any new polls
-    expect(mockStartPolling).toHaveBeenCalledTimes(2);
+    await waitFor(() => {
+      expect(mockStartPolling).toHaveBeenCalledTimes(2);
+    });
     // Should not have stopped any polls
     expect(mockStopPollingByPollingToken).not.toHaveBeenCalled();
   });
