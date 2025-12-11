@@ -277,8 +277,19 @@ export const PaymentMethodRow = ({
             title={title}
             description={descriptionWithIcon(IconColor.ErrorDefault)}
             descriptionClassName="text-error-default"
-            onClick={buttonOnClick}
-            disabled={buttonDisabled}
+            endAccessory={
+              !buttonDisabled && (
+                <Button
+                  variant={ButtonVariant.Secondary}
+                  size={ButtonSize.Md}
+                  onClick={buttonOnClick}
+                >
+                  {isCryptoPayment && isInsufficientFundsCrypto
+                    ? t('addFunds')
+                    : t('update')}
+                </Button>
+              )
+            }
           />
         </Tooltip>
       );
