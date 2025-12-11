@@ -13,8 +13,10 @@ import { mockProtocolSnap } from '../../mock-response-data/snaps/snap-binary-moc
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import Homepage from '../../page-objects/pages/home/homepage';
 import NetworkManager from '../../page-objects/pages/network-manager';
-import { SOLANA_URL_REGEX_DEVNET, SOLANA_URL_REGEX_MAINNET } from './constants';
 
+const SOLANA_URL_REGEX_MAINNET =
+  /^https:\/\/solana-(mainnet|devnet)\.infura\.io\/v3*/u;
+const SOLANA_URL_REGEX_DEVNET = /^https:\/\/solana-devnet\.infura\.io\/v3\/.*/u;
 const SPOT_PRICE_API =
   /^https:\/\/price\.api\.cx\.metamask\.io\/v[1-9]\/spot-prices/u;
 const SOLANA_EXCHANGE_RATES_PRICE_API =
