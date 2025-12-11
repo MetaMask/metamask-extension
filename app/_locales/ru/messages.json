@@ -943,9 +943,6 @@
   "bridgeEnterAmount": {
     "message": "Выберите сумму"
   },
-  "bridgeEnterAmountAndSelectAccount": {
-    "message": "Введите сумму и выберите целевой счет"
-  },
   "bridgeExplorerLinkViewOn": {
     "message": "Смотреть на $1"
   },
@@ -1467,9 +1464,6 @@
   "connectWithMetaMask": {
     "message": "Подключиться с помощью MetaMask"
   },
-  "connectedAccounts": {
-    "message": "Подключенные счета"
-  },
   "connectedAccountsDescriptionPlural": {
     "message": "К этому сайту подключено $1 ваших счета(-ов).",
     "description": "$1 is the number of accounts"
@@ -1483,9 +1477,6 @@
   "connectedAccountsListTooltip": {
     "message": "$1 может видеть баланс счета, адрес, активность и предлагать транзакции для одобрения для подключенных счетов.",
     "description": "$1 is the origin name"
-  },
-  "connectedAccountsToast": {
-    "message": "Подключенные счета обновлены"
   },
   "connectedSites": {
     "message": "Подключенные сайты"
@@ -2018,14 +2009,6 @@
   },
   "disconnectThisAccount": {
     "message": "Отключить этот счет"
-  },
-  "disconnectedAllAccountsToast": {
-    "message": "Все счета отключены от $1",
-    "description": "$1 is name of the dapp`"
-  },
-  "disconnectedSingleAccountToast": {
-    "message": "$1 отключен от $2",
-    "description": "$1 is name of the name and $2 represents the dapp name`"
   },
   "discover": {
     "message": "Обзор"
@@ -2573,11 +2556,12 @@
     "message": "Забыли пароль?"
   },
   "forgotPasswordSocialDescription": {
-    "message": "MetaMask не сможет восстановить ваш пароль для вас."
+    "message": "MetaMask не сможет восстановить ваш пароль для вас.",
+    "description": "$1 is the support link"
   },
   "forgotPasswordSocialStep1": {
     "message": "Если вы вошли в MetaMask на устройстве с $1 (например, Face ID), вы можете сбросить пароль нем.",
-    "description": "$1 is bold biometrics turned on"
+    "description": "$1 is bold heading"
   },
   "forgotPasswordSocialStep1Biometrics": {
     "message": "включенной биометрией"
@@ -4411,9 +4395,6 @@
     "message": "Узнайте, как отменить или ускорить транзакцию.",
     "description": "The text for the hyperlink in the pending transaction alert message"
   },
-  "permissionDetails": {
-    "message": "Сведения о разрешении"
-  },
   "permissionFor": {
     "message": "Разрешение для"
   },
@@ -4717,10 +4698,6 @@
   "pleaseConfirm": {
     "message": "Подтвердите"
   },
-  "plusMore": {
-    "message": "+ еще $1",
-    "description": "$1 is the number of additional items"
-  },
   "plusXMore": {
     "message": "+ еще $1",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
@@ -4941,12 +4918,6 @@
   "rateIncludesMMFee": {
     "message": "Включает $1% комиссии MM."
   },
-  "reAddAccounts": {
-    "message": "повторно добавить любые другие счета"
-  },
-  "reAdded": {
-    "message": "добавлены повторно"
-  },
   "readdToken": {
     "message": "Вы можете снова добавить этот токен в будущем, выбрав «Импорт токена» в меню параметров вашего счета."
   },
@@ -5103,33 +5074,6 @@
   },
   "resetWallet": {
     "message": "Сбросьте свой кошелек"
-  },
-  "resetWalletSubHeader": {
-    "message": "MetaMask не хранит копию вашего пароля. При возникновении трудностей с разблокировкой счета следует сбросить кошелек. Это можно сделать с помощью секретной фразы для восстановления, использованной при создании кошелька."
-  },
-  "resetWalletSubHeaderSocial": {
-    "message": "MetaMask не сохраняет копию вашего пароля. Если у вас возникли проблемы с разблокировкой счета, вам необходимо сбросить кошелек. Если у вас есть секретная фраза для восстановления, вы можете использовать её, чтобы удалить текущий кошелёк с этого устройства вместе со списком своих счетов."
-  },
-  "resetWalletUsingSRP": {
-    "message": "Этим действием вы удаляете имеющийся кошелек и секретную фразу для восстановления с этого устройства, а также список курируемых вами счетов. После сброса секретной фразы для восстановления вы увидите список счетов, связанных с секретной фразой для восстановления, использованной для сброса. Этот новый список будет автоматически включать счета, имеющие баланс. Также вы сможете $1, созданные ранее. Импортированные индивидуализированные счета должны быть $2, любые индивидуализированные токены должны быть тоже $3."
-  },
-  "resetWalletUsingSRPSocial": {
-    "message": "После сброса настроек с помощью секретной фразы для восстановления вы увидите новый список счетов. В нём будут счета с балансом. Вы можете вернуть $1, заработанный ранее. Но вам нужно будет вернуть импортированные $2 и $3. "
-  },
-  "resetWalletUsingSRPSocialAccounts": {
-    "message": "повторно добавьте любые другие счета"
-  },
-  "resetWalletUsingSRPSocialCustomAccounts": {
-    "message": "пользовательские счета"
-  },
-  "resetWalletUsingSRPSocialCustomTokens": {
-    "message": "пользовательские токены"
-  },
-  "resetWalletWarning": {
-    "message": "Перед тем, как продолжить, убедитесь в использовании правильной секретной фразы для восстановления. Действие отмене не подлежит."
-  },
-  "resetWalletWarningSocial": {
-    "message": "Перед сбросом настроек убедитесь, что вы используете правильную секретную фразу для восстановления. Это действие нельзя будет отменить."
   },
   "resolutionProtocol": {
     "message": "Адрес решен через $1",

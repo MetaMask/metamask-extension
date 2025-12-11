@@ -4,6 +4,7 @@ import {
   PAYMENT_TYPES,
   PRODUCT_TYPES,
   StartSubscriptionRequest,
+  Subscription,
   UpdatePaymentMethodOpts,
 } from '@metamask/subscription-controller';
 import {
@@ -36,6 +37,12 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { SECOND } from '../../../../shared/constants/time';
+import {
+  getIsShieldSubscriptionActive,
+  getIsShieldSubscriptionPaused,
+} from '../../../../shared/lib/shield';
+import { SHIELD_ERROR } from '../../../../shared/modules/shield';
 import {
   SubscriptionServiceAction,
   SubscriptionServiceEvent,
@@ -43,6 +50,9 @@ import {
   SERVICE_NAME,
   ServiceName,
 } from './types';
+
+const SUBSCRIPTION_POLL_INTERVAL = 5 * SECOND;
+const SUBSCRIPTION_POLL_TIMEOUT = 60 * SECOND;
 
 export class SubscriptionService {
   // Required for modular initialisation.
@@ -137,6 +147,8 @@ export class SubscriptionService {
   async startSubscriptionWithCard(
     params: StartSubscriptionRequest,
     currentTabId?: number,
+    subscriptionPollInterval?: number,
+    subscriptionPollTimeout?: number,
   ) {
     try {
       const redirectUrl = this.#webAuthenticator.getRedirectURL();
@@ -169,8 +181,10 @@ export class SubscriptionService {
         }
       }
 
-      const subscriptions = await this.#messenger.call(
-        'SubscriptionController:getSubscriptions',
+      // Poll subscriptions until active or paused subscription is created (stripe webhook may be delayed)
+      const subscriptions = await this.#pollForSubscription(
+        subscriptionPollInterval,
+        subscriptionPollTimeout,
       );
       this.trackSubscriptionRequestEvent('completed');
 
@@ -187,6 +201,11 @@ export class SubscriptionService {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         error_message: errorMessage,
       });
+
+      // fetch latest subscriptions to update the state in case subscription already created error (not when polling timed out)
+      if (errorMessage.toLocaleLowerCase().includes('already exists')) {
+        await this.#messenger.call('SubscriptionController:getSubscriptions');
+      }
       throw error;
     }
   }
@@ -365,12 +384,44 @@ export class SubscriptionService {
           if (succeeded) {
             resolve();
           } else {
-            reject(new Error('Tab action failed'));
+            reject(new Error(SHIELD_ERROR.tabActionFailed));
           }
         }
       };
       this.#platform.addTabRemovedListener(onTabRemovedListener);
     });
+  }
+
+  /**
+   * Poll for active subscription until one is found or timeout.
+   * This is needed because Stripe webhook may be delayed after card payment.
+   *
+   * @param interval
+   * @param timeout
+   * @returns Promise<Subscription[]> - The subscriptions when an active one is found.
+   */
+  async #pollForSubscription(
+    interval: number = SUBSCRIPTION_POLL_INTERVAL,
+    timeout: number = SUBSCRIPTION_POLL_TIMEOUT,
+  ): Promise<Subscription[]> {
+    const startTime = Date.now();
+
+    while (Date.now() - startTime < timeout) {
+      const subscriptions = await this.#messenger.call(
+        'SubscriptionController:getSubscriptions',
+      );
+
+      if (
+        getIsShieldSubscriptionActive(subscriptions) ||
+        getIsShieldSubscriptionPaused(subscriptions)
+      ) {
+        return subscriptions;
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, interval));
+    }
+
+    throw new Error(SHIELD_ERROR.subscriptionPollingTimedOut);
   }
 
   async #handleShieldSubscriptionApproveTransaction(txMeta: TransactionMeta) {

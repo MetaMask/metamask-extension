@@ -943,9 +943,6 @@
   "bridgeEnterAmount": {
     "message": "Pumili ng halaga"
   },
-  "bridgeEnterAmountAndSelectAccount": {
-    "message": "Ilagay ang halaga at pumili ng destinasyong account"
-  },
   "bridgeExplorerLinkViewOn": {
     "message": "Tingnan sa $1"
   },
@@ -1467,9 +1464,6 @@
   "connectWithMetaMask": {
     "message": "Kumonekta sa MetaMask"
   },
-  "connectedAccounts": {
-    "message": "Mga konektadong account"
-  },
   "connectedAccountsDescriptionPlural": {
     "message": "Mayroon kang $1 account na nakakonekta sa site na ito.",
     "description": "$1 is the number of accounts"
@@ -1483,9 +1477,6 @@
   "connectedAccountsListTooltip": {
     "message": "Maaaring makita ng $1 ang balanse ng account, address, aktibidad, at magmungkahi ng mga transaksyon na aprubahan para sa mga konektadong account.",
     "description": "$1 is the origin name"
-  },
-  "connectedAccountsToast": {
-    "message": "In-update ang mga konektadong account"
   },
   "connectedSites": {
     "message": "Mga konektadong site"
@@ -2018,14 +2009,6 @@
   },
   "disconnectThisAccount": {
     "message": "Idiskonekta ang account na ito"
-  },
-  "disconnectedAllAccountsToast": {
-    "message": "Nadiskonekta ang lahat ng account mula sa $1",
-    "description": "$1 is name of the dapp`"
-  },
-  "disconnectedSingleAccountToast": {
-    "message": "Ang $1 ay nadiskonekta mula sa $2",
-    "description": "$1 is name of the name and $2 represents the dapp name`"
   },
   "discover": {
     "message": "Tuklasin"
@@ -2573,11 +2556,12 @@
     "message": "Nakalimutan ang iyong password?"
   },
   "forgotPasswordSocialDescription": {
-    "message": "Hindi mababawi ng MetaMask ang password mo para sa iyo."
+    "message": "Hindi mababawi ng MetaMask ang password mo para sa iyo.",
+    "description": "$1 is the support link"
   },
   "forgotPasswordSocialStep1": {
     "message": "Kung naka-log in ka sa MetaMask sa device na may $1 (tulad ng Face ID), maaari mong i-reset ang iyong password doon.",
-    "description": "$1 is bold biometrics turned on"
+    "description": "$1 is bold heading"
   },
   "forgotPasswordSocialStep1Biometrics": {
     "message": "naka-on ang biometrics"
@@ -4411,9 +4395,6 @@
     "message": "Alamin kung paano kanselahin o pabilisin ang transaksyon.",
     "description": "The text for the hyperlink in the pending transaction alert message"
   },
-  "permissionDetails": {
-    "message": "Mga detalye ng permiso"
-  },
   "permissionFor": {
     "message": "Pahintulot para sa"
   },
@@ -4717,10 +4698,6 @@
   "pleaseConfirm": {
     "message": "Pakikumpirma"
   },
-  "plusMore": {
-    "message": "+ $1 pa",
-    "description": "$1 is the number of additional items"
-  },
   "plusXMore": {
     "message": "+ $1 pa",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
@@ -4941,12 +4918,6 @@
   "rateIncludesMMFee": {
     "message": "Kasama ang $1% na bayad sa MM."
   },
-  "reAddAccounts": {
-    "message": "idagdag muli ang anumang ibang mga account"
-  },
-  "reAdded": {
-    "message": "idagdag muli"
-  },
   "readdToken": {
     "message": "Puwede mong ibalik ang token na ito sa hinaharap sa pamamagitan ng pagpunta sa “Mag-import ng token” sa menu ng mga opsyon sa iyong account."
   },
@@ -5103,33 +5074,6 @@
   },
   "resetWallet": {
     "message": "I-reset ang iyong wallet"
-  },
-  "resetWalletSubHeader": {
-    "message": "Hindi nagpapanatili ang MetaMask ng kopya ng iyong password. Kung nagkakaproblema ka sa pag-unlock ng iyong account, kakailanganin mong i-reset ang iyong wallet. Magagawa mo ito sa pamamagitan ng pagbibigay ng Lihim na Parirala sa Pagbawi na ginamit mo noong mag-set up ka ng iyong wallet."
-  },
-  "resetWalletSubHeaderSocial": {
-    "message": "Hindi nagpapanatili ang MetaMask ng kopya ng iyong password. Kung nagkakaproblema ka sa pag-unlock ng iyong account, kakailanganin mong i-reset ang iyong wallet. Kung mayroon kang Lihim na Parirala sa Pagbawi, maaari mo itong gamitin para burahin ang iyong kasalukuyang wallet mula sa device na ito, kasama ang listahan ng iyong mga account."
-  },
-  "resetWalletUsingSRP": {
-    "message": "Tatanggalin ng aksyong ito mula sa iyong device ang iyong kasalukuyang wallet at Lihim na Parirala sa Pagbawi, kasama ang listahan ng mga account na isinaayos mo. Pagkatapos i-reset ang Lihim na Parirala sa Pagbawi, makikita mo ang listahan ng mga account batay sa Lihim na Parirala sa Pagbawi na ginamit mo para mag-reset. Awtomatikong kasama sa bagong listahan na ito ang mga account na may balanse. Magagawa mo ring $1 na ginawa dati. Ang mga custom account na iyong na-import ay kinakailangang $2, at ang alinmang mga custom token na idinagdag mo sa account ay kailangang $3 din."
-  },
-  "resetWalletUsingSRPSocial": {
-    "message": "Pagkatapos i-reset gamit ang Lihim na Parirala sa Pagbawi, makikita mo ang bagong listahan ng mga account. Kasama sa listahan na ito ang mga account na may balanse. Maaari mong $1 na ginawa mo dati. Ngunit kakailanganin mong magdagdag pabalik ng anumang $2 at $3 na in-import mo. "
-  },
-  "resetWalletUsingSRPSocialAccounts": {
-    "message": "idagdag pabalik ang anumang ibang mga account"
-  },
-  "resetWalletUsingSRPSocialCustomAccounts": {
-    "message": "mga custom account"
-  },
-  "resetWalletUsingSRPSocialCustomTokens": {
-    "message": "mga custom token"
-  },
-  "resetWalletWarning": {
-    "message": "Tiyakin na ginagamit mo ang tamang Lihim na Parirala sa Pagbawi bago magpatuloy. Hindi mo na ito maaaring bawiin."
-  },
-  "resetWalletWarningSocial": {
-    "message": "Siguraduhin na tamang Lihim na Parirala sa Pagbawi ang ginagamit mo bago ka mag-reset. Hindi ito maaaring bawiin."
   },
   "resolutionProtocol": {
     "message": "Naayos ang address gamit ang $1",
