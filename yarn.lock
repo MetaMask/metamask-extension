@@ -8179,9 +8179,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/smart-transactions-controller@npm:^20.0.0":
-  version: 20.0.0
-  resolution: "@metamask/smart-transactions-controller@npm:20.0.0"
+"@metamask/smart-transactions-controller@npm:^21.0.0":
+  version: 21.0.0
+  resolution: "@metamask/smart-transactions-controller@npm:21.0.0"
   dependencies:
     "@babel/runtime": "npm:^7.24.1"
     "@ethereumjs/tx": "npm:^5.2.1"
@@ -8212,7 +8212,7 @@ __metadata:
       optional: true
     "@metamask/remote-feature-flag-controller":
       optional: true
-  checksum: 10/8c3bb501531820c1d2d470d433b8f3a4335e9e45bc87edbc0c6a4c2ebf57bdabf5a1b67b4614fd84bb5c0ac17595690fae473afd5ab169c8b0d8b5a57521c4ef
+  checksum: 10/a0d5c58f3671368a9f6649eef5c0ffe9b82c562662adf0641c898c32299577ead9f40514b2f44e805b8a0641335eaa36f14a3bf33eae037b6f063c338138f360
   languageName: node
   linkType: hard
 
@@ -32969,7 +32969,7 @@ __metadata:
     "@metamask/selected-network-controller": "npm:^25.0.0"
     "@metamask/shield-controller": "npm:^3.1.0"
     "@metamask/signature-controller": "npm:^35.0.0"
-    "@metamask/smart-transactions-controller": "npm:^20.0.0"
+    "@metamask/smart-transactions-controller": "npm:^21.0.0"
     "@metamask/snap-account-abstraction-keyring-site": "npm:^1.0.0"
     "@metamask/snap-simple-keyring-site": "npm:^2.0.0"
     "@metamask/snaps-controllers": "npm:^17.1.1"
