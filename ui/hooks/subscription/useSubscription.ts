@@ -60,10 +60,12 @@ import {
 } from '../../selectors';
 import { useSubscriptionMetrics } from '../shield/metrics/useSubscriptionMetrics';
 import { CaptureShieldSubscriptionRequestParams } from '../shield/metrics/types';
-import { EntryModalSourceEnum } from '../../../shared/constants/subscriptions';
+import {
+  EntryModalSourceEnum,
+  ShieldSubscriptionRequestSubscriptionStateEnum,
+} from '../../../shared/constants/subscriptions';
 import { DefaultSubscriptionPaymentOptions } from '../../../shared/types';
 import {
-  getLatestSubscriptionStatus,
   getShieldMarketingUtmParamsForMetrics,
   getUserBalanceCategory,
   SHIELD_ERROR,
@@ -496,15 +498,18 @@ export const useHandleSubscription = ({
   const { search } = useLocation();
   const { execute: executeSubscriptionCryptoApprovalTransaction } =
     useSubscriptionCryptoApprovalTransaction(selectedToken);
-  const { subscriptions, lastSubscription } = useUserSubscriptions();
+  const { lastSubscription } = useUserSubscriptions();
   const {
     captureShieldSubscriptionRequestEvent,
     setShieldSubscriptionMetricsPropsToBackground,
   } = useSubscriptionMetrics();
   const modalType: ModalType = useSelector(getModalTypeForShieldEntryModal);
 
-  const latestSubscriptionStatus =
-    getLatestSubscriptionStatus(subscriptions, lastSubscription) || 'none';
+  const latestSubscriptionStatus = useMemo(() => {
+    return lastSubscription
+      ? ShieldSubscriptionRequestSubscriptionStateEnum.Renew
+      : ShieldSubscriptionRequestSubscriptionStateEnum.New;
+  }, [lastSubscription]);
 
   const determineSubscriptionRequestSource =
     useCallback((): EntryModalSourceEnum => {

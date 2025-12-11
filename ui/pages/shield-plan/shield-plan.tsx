@@ -200,6 +200,7 @@ const ShieldPlan = () => {
       defaultPaymentType: paymentType,
       defaultPaymentCurrency: paymentCurrency,
       defaultBillingInterval: RECURRING_INTERVALS.year,
+      defaultPaymentChain: availableTokenBalances[0]?.chainId,
     };
   }, [availableTokenBalances]);
 
