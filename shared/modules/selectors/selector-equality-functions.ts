@@ -52,7 +52,7 @@ export const shallowObjectEqual = (
     return false;
   }
   for (const key of keysA) {
-    if (a[key] !== b[key]) {
+    if (!Object.hasOwn(b, key) || a[key] !== b[key]) {
       return false;
     }
   }
