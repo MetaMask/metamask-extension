@@ -6285,6 +6285,9 @@
   "shieldNotCovered": {
     "message": "Not covered"
   },
+  "shieldPastPlansTitle": {
+    "message": "Past details"
+  },
   "shieldPaused": {
     "message": "Paused"
   },
@@ -6386,6 +6389,9 @@
   },
   "shieldPlanTitle": {
     "message": "Choose your plan"
+  },
+  "shieldPlanYearly": {
+    "message": "Yearly"
   },
   "shieldStartNowCTA": {
     "message": "Start now"
@@ -6535,6 +6541,9 @@
   "shieldTxMembershipInactive": {
     "message": "Inactive plan"
   },
+  "shieldTxMembershipMakeClaim": {
+    "message": "Make a claim"
+  },
   "shieldTxMembershipPaused": {
     "message": "Paused"
   },
@@ -6550,6 +6559,15 @@
   },
   "shieldTxMembershipSubmitCase": {
     "message": "Submit a claim"
+  },
+  "shieldTxPastPlans": {
+    "message": "Past plans"
+  },
+  "shieldTxPastPlansMonthly": {
+    "message": "Monthly plan"
+  },
+  "shieldTxPastPlansYearly": {
+    "message": "Yearly plan"
   },
   "show": {
     "message": "Show"

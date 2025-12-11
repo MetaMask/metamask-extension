@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Box, Button, ButtonVariant } from '@metamask/design-system-react';
 import {
   PRODUCT_TYPES,
@@ -6,6 +6,7 @@ import {
   Subscription,
   SUBSCRIPTION_STATUSES,
 } from '@metamask/subscription-controller';
+import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   ButtonRow,
@@ -35,9 +36,11 @@ import {
 import { isCardPaymentMethod, isCryptoPaymentMethod } from '../types';
 import AddFundsModal from '../../../../components/app/modals/add-funds-modal';
 import { ConfirmInfoRowAddress } from '../../../../components/app/confirm/info/row/address';
+import { TRANSACTION_SHIELD_CLAIM_ROUTES } from '../../../../helpers/constants/routes';
 
-const ManageShieldPlan = () => {
+const ManageShieldPlan = ({ isPastPlan = false }: { isPastPlan?: boolean }) => {
   const t = useI18nContext();
+  const navigate = useNavigate();
   const [isAddFundsModalOpen, setIsAddFundsModalOpen] = useState(false);
 
   const {
@@ -57,7 +60,9 @@ const ManageShieldPlan = () => {
   // show current active shield subscription or last subscription if no active subscription
   const displayedShieldSubscription:
     | (Subscription & { rewardAccountId?: string }) // TODO: fix this type once we have controller released.
-    | undefined = currentShieldSubscription ?? lastShieldSubscription;
+    | undefined = isPastPlan
+    ? lastShieldSubscription
+    : (currentShieldSubscription ?? lastShieldSubscription);
 
   const {
     subscriptionPricing,
@@ -127,6 +132,24 @@ const ManageShieldPlan = () => {
     unCancelSubscriptionResult.error ||
     cancelSubscriptionResult.error;
 
+  const billingCycleDescription = useMemo(() => {
+    if (!displayedShieldSubscription) {
+      return '';
+    }
+
+    const isYearly =
+      displayedShieldSubscription?.interval === RECURRING_INTERVALS.year;
+    if (isPastPlan) {
+      return isYearly ? t('shieldPlanYearly') : t('shieldPlanMonthly');
+    }
+    return t('shieldTxDetails2Description', [
+      isYearly ? t('shieldPlanAnnual') : t('shieldPlanMonthly'),
+      getShortDateFormatterV2().format(
+        new Date(displayedShieldSubscription?.currentPeriodEnd),
+      ),
+    ]);
+  }, [displayedShieldSubscription, isPastPlan, t]);
+
   if (!loading && hasApiError) {
     return (
       <Box
@@ -159,17 +182,17 @@ const ManageShieldPlan = () => {
       <Box className="flex-1">
         {displayedShieldSubscription && (
           <ButtonRowContainer>
+            {isPastPlan && (
+              <ButtonRow
+                title={t('shieldTxDetails1Title')}
+                description={`${getShortDateFormatterV2().format(new Date(displayedShieldSubscription?.currentPeriodStart))} - ${getShortDateFormatterV2().format(
+                  new Date(displayedShieldSubscription?.currentPeriodEnd),
+                )}`}
+              />
+            )}
             <ButtonRow
               title={t('shieldTxDetails2Title')}
-              description={t('shieldTxDetails2Description', [
-                displayedShieldSubscription?.interval ===
-                RECURRING_INTERVALS.year
-                  ? t('shieldPlanAnnual')
-                  : t('shieldPlanMonthly'),
-                getShortDateFormatterV2().format(
-                  new Date(displayedShieldSubscription?.currentPeriodEnd),
-                ),
-              ])}
+              description={billingCycleDescription}
             />
             <PaymentMethodRow
               displayedShieldSubscription={displayedShieldSubscription}
@@ -204,21 +227,35 @@ const ManageShieldPlan = () => {
                 }
               />
             )}
-            {displayedShieldSubscription?.status !==
-              SUBSCRIPTION_STATUSES.provisional && (
-              <>
-                <Box className="border-t border-muted w-full h-px" />
-                <ButtonRow
-                  data-testid="shield-detail-view-billing-history-button"
-                  title={t(
-                    'shieldTxMembershipBillingDetailsViewBillingHistory',
-                  )}
-                  onClick={() => {
-                    executeOpenGetSubscriptionBillingPortal();
-                  }}
-                />
-              </>
-            )}
+            {!isPastPlan &&
+              displayedShieldSubscription?.status !==
+                SUBSCRIPTION_STATUSES.provisional && (
+                <>
+                  <Box className="border-t border-muted w-full h-px" />
+                  <ButtonRow
+                    data-testid="shield-detail-view-billing-history-button"
+                    title={t(
+                      'shieldTxMembershipBillingDetailsViewBillingHistory',
+                    )}
+                    onClick={() => {
+                      executeOpenGetSubscriptionBillingPortal();
+                    }}
+                  />
+                </>
+              )}
+            {isPastPlan &&
+              displayedShieldSubscription?.isEligibleForSupport && (
+                <>
+                  <Box className="border-t border-muted w-full h-px" />
+                  <ButtonRow
+                    data-testid="shield-detail-submit-case-button"
+                    title={t('shieldTxMembershipMakeClaim')}
+                    onClick={() => {
+                      navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);
+                    }}
+                  />
+                </>
+              )}
           </ButtonRowContainer>
         )}
       </Box>

@@ -36,6 +36,7 @@ import {
   DEFAULT_ROUTE,
   SHIELD_PLAN_ROUTE,
   TRANSACTION_SHIELD_CLAIM_ROUTES,
+  TRANSACTION_SHIELD_MANAGE_PAST_PLAN_ROUTE,
   TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE,
 } from '../../../helpers/constants/routes';
 import { TRANSACTION_SHIELD_LINK } from '../../../helpers/constants/common';
@@ -596,7 +597,7 @@ const TransactionShield = () => {
             />
           </ButtonRowContainer>
         </Box>
-        {displayedShieldSubscription?.isEligibleForSupport && (
+        {!isCancelled && displayedShieldSubscription?.isEligibleForSupport && (
           <Box className="px-4 mt-4">
             {showSkeletonLoader ? (
               <Skeleton width="100%" height={40} />
@@ -625,6 +626,40 @@ const TransactionShield = () => {
               />
             )}
           </Box>
+        )}
+        {/* TODO: replace with lastShieldSubscription*/}
+        {isCancelled && currentShieldSubscription && (
+          <>
+            <Box className="border-t border-muted my-4 w-full h-px" />
+            <Box>
+              <Box className="flex items-center justify-between gap-2 px-4 mb-2">
+                {showSkeletonLoader ? (
+                  <Skeleton width="40%" height={20} />
+                ) : (
+                  <Text variant={TextVariant.HeadingSm}>
+                    {t('shieldTxPastPlans')}
+                  </Text>
+                )}
+              </Box>
+              <ButtonRowContainer>
+                <ButtonRow
+                  title={
+                    currentShieldSubscription.interval ===
+                    RECURRING_INTERVALS.year
+                      ? t('shieldTxPastPlansYearly')
+                      : t('shieldTxPastPlansMonthly')
+                  }
+                  description={`${getShortDateFormatterV2().format(new Date(currentShieldSubscription.currentPeriodStart))} - ${getShortDateFormatterV2().format(
+                    new Date(currentShieldSubscription.currentPeriodEnd),
+                  )}`}
+                  loading={showSkeletonLoader}
+                  onClick={() => {
+                    navigate(TRANSACTION_SHIELD_MANAGE_PAST_PLAN_ROUTE);
+                  }}
+                />
+              </ButtonRowContainer>
+            </Box>
+          </>
         )}
       </Box>
 

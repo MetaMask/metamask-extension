@@ -33,6 +33,7 @@ import {
   TRANSACTION_SHIELD_ROUTE,
   TRANSACTION_SHIELD_CLAIM_ROUTES,
   TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE,
+  TRANSACTION_SHIELD_MANAGE_PAST_PLAN_ROUTE,
 } from '../../helpers/constants/routes';
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
 import {
@@ -572,6 +573,10 @@ class SettingsPage extends PureComponent {
         <Route
           path={`${toRelativeRoutePath(TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE, SETTINGS_ROUTE)}/*`}
           element={<ManageShieldPlan />}
+        />
+        <Route
+          path={`${toRelativeRoutePath(TRANSACTION_SHIELD_MANAGE_PAST_PLAN_ROUTE, SETTINGS_ROUTE)}/*`}
+          element={<ManageShieldPlan isPastPlan />}
         />
         <Route
           path={toRelativeRoutePath(EXPERIMENTAL_ROUTE, SETTINGS_ROUTE)}
