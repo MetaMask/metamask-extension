@@ -38,9 +38,11 @@ import {
   getIsShieldSubscriptionPaused,
 } from '../../../../../shared/lib/shield';
 import { isCardPaymentMethod, isCryptoPaymentMethod } from '../types';
+import AddFundsModal from '../../../../components/app/modals/add-funds-modal';
 
 const ManageShieldPlan = () => {
   const t = useI18nContext();
+  const [isAddFundsModalOpen, setIsAddFundsModalOpen] = useState(false);
 
   const {
     subscriptions,
@@ -94,6 +96,7 @@ const ManageShieldPlan = () => {
     handlePaymentMethodChange,
     isUnexpectedErrorCryptoPayment,
     hasAvailableSelectedTokenToTriggerCheckInsufficientFunds,
+    currentToken,
   } = useHandlePayment({
     currentShieldSubscription,
     displayedShieldSubscription,
@@ -255,6 +258,21 @@ const ManageShieldPlan = () => {
           subscription={currentShieldSubscription}
         />
       )}
+      {currentToken &&
+        isAddFundsModalOpen &&
+        currentShieldSubscription &&
+        isCryptoPaymentMethod(currentShieldSubscription.paymentMethod) && (
+          <AddFundsModal
+            onClose={() => {
+              setIsAddFundsModalOpen(false);
+            }}
+            token={currentToken}
+            chainId={currentShieldSubscription.paymentMethod.crypto.chainId}
+            payerAddress={
+              currentShieldSubscription.paymentMethod.crypto.payerAddress
+            }
+          />
+        )}
     </Box>
   );
 };
