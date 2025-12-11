@@ -366,7 +366,7 @@
     "@metamask/selected-network-controller": "^25.0.0",
     "@metamask/shield-controller": "^3.1.0",
     "@metamask/signature-controller": "^35.0.0",
-    "@metamask/smart-transactions-controller": "^20.0.0",
+    "@metamask/smart-transactions-controller": "^21.0.0",
     "@metamask/snaps-controllers": "^17.1.1",
     "@metamask/snaps-execution-environments": "^10.3.0",
     "@metamask/snaps-rpc-methods": "^14.1.1",
