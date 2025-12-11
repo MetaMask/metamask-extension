@@ -627,8 +627,7 @@ const TransactionShield = () => {
             )}
           </Box>
         )}
-        {/* TODO: replace with lastShieldSubscription*/}
-        {isCancelled && currentShieldSubscription && (
+        {isCancelled && lastShieldSubscription && (
           <>
             <Box className="border-t border-muted my-4 w-full h-px" />
             <Box>
@@ -644,13 +643,12 @@ const TransactionShield = () => {
               <ButtonRowContainer>
                 <ButtonRow
                   title={
-                    currentShieldSubscription.interval ===
-                    RECURRING_INTERVALS.year
+                    lastShieldSubscription.interval === RECURRING_INTERVALS.year
                       ? t('shieldTxPastPlansYearly')
                       : t('shieldTxPastPlansMonthly')
                   }
-                  description={`${getShortDateFormatterV2().format(new Date(currentShieldSubscription.currentPeriodStart))} - ${getShortDateFormatterV2().format(
-                    new Date(currentShieldSubscription.currentPeriodEnd),
+                  description={`${getShortDateFormatterV2().format(new Date(lastShieldSubscription.currentPeriodStart))} - ${getShortDateFormatterV2().format(
+                    new Date(lastShieldSubscription.currentPeriodEnd),
                   )}`}
                   loading={showSkeletonLoader}
                   onClick={() => {

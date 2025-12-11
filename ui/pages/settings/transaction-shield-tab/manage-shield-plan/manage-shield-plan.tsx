@@ -106,6 +106,7 @@ const ManageShieldPlan = ({ isPastPlan = false }: { isPastPlan?: boolean }) => {
     subscriptions,
     isCancelled: isCancelled ?? false,
     subscriptionPricing,
+    onOpenAddFundsModal: () => setIsAddFundsModalOpen(true),
   });
 
   const [isCancelMembershipModalOpen, setIsCancelMembershipModalOpen] =
