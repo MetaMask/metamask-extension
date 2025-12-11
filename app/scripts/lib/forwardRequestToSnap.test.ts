@@ -77,11 +77,38 @@ describe('forwardRequestToSnap', () => {
           },
           { id: ID_MOCK },
           REQUEST_MOCK,
+          CONTEXT_MOCK,
         ),
       ).rejects.toThrow('failure');
 
       expect(onBeforeRequest).toHaveBeenCalledTimes(1);
       expect(onAfterRequest).toHaveBeenCalledTimes(1);
+    });
+
+    it('calls onAfterRequest even if onBeforeRequest throws', async () => {
+      const error = new Error('failure');
+      const onBeforeRequest = jest.fn(() => {
+        throw error;
+      });
+      const onAfterRequest = jest.fn();
+      handleRequestMock.mockResolvedValue(INVOKE_RESULT_MOCK);
+      await expect(
+        forwardRequestToSnap(
+          {
+            handleRequest: handleRequestMock,
+            snapId: SNAP_ID_MOCK,
+            onBeforeRequest,
+            onAfterRequest,
+          },
+          { id: ID_MOCK },
+          REQUEST_MOCK,
+          CONTEXT_MOCK,
+        ),
+      ).rejects.toThrow(error);
+
+      expect(onBeforeRequest).toHaveBeenCalledTimes(1);
+      expect(onAfterRequest).toHaveBeenCalledTimes(1);
+      expect(handleRequestMock).not.toHaveBeenCalled();
     });
 
     it('does not forward the request if onBeforeRequest throws', async () => {
@@ -102,6 +129,7 @@ describe('forwardRequestToSnap', () => {
           },
           { id: ID_MOCK },
           REQUEST_MOCK,
+          CONTEXT_MOCK,
         ),
       ).rejects.toThrow(error);
 

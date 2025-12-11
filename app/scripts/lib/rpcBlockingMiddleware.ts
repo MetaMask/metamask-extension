@@ -1,8 +1,5 @@
 import type { Json, JsonRpcRequest, JsonRpcResponse } from '@metamask/utils';
-import type {
-  JsonRpcEngineEndCallback,
-  JsonRpcEngineNextCallback,
-} from '@metamask/json-rpc-engine';
+import type { Next } from '@metamask/json-rpc-engine/v2';
 import { providerErrors } from '@metamask/rpc-errors';
 import { SnapId } from '@metamask/snaps-sdk';
 import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
@@ -29,14 +26,12 @@ export default function createRpcBlockingMiddleware({
   const middleware = (
     req: ExtendedJsonRpcRequest,
     _res: JsonRpcResponse<Json>,
-    next: JsonRpcEngineNextCallback,
-    end: JsonRpcEngineEndCallback,
+    next: Next<JsonRpcRequest>,
   ) => {
     const { origin } = req;
 
     if (isBlocked && !isSnapPreinstalled(origin as SnapId)) {
-      end(providerErrors.unauthorized(errorMessage));
-      return;
+      throw providerErrors.unauthorized(errorMessage);
     }
 
     next();
