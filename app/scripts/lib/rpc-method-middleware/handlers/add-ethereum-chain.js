@@ -181,7 +181,13 @@ async function addEthereumChainHandler(
           name: chainName,
           nativeCurrency: ticker,
           rpcEndpoints: [
-            ...(featuredEndpoint ? [featuredEndpoint] : []),
+            // Metamask may using a public RPC endpoint form FEATURED_RPCS,
+            // if the URL `firstValidRPCUrl` send from client is the same with the one in FEATURED_RPCS,
+            // it will be failed in validation due to duplication of the same URL.
+            // So we only add the featured endpoint if the URL is different.
+            ...(featuredEndpoint && firstValidRPCUrl !== featuredEndpoint.url
+              ? [featuredEndpoint]
+              : []),
             {
               url: firstValidRPCUrl,
               name: chainName,
