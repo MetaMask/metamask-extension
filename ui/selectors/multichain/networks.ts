@@ -213,47 +213,78 @@ export const getNonEvmMultichainNetworkConfigurationsByChainId =
     },
   );
 
+/**
+ * Returns all EVM networks converted to multichain network configuration format.
+ * This selector provides stable references when the underlying data hasn't changed.
+ */
+export const getEvmMultichainNetworkConfigurations = createDeepEqualSelector(
+  getNetworkConfigurationsByChainId,
+  (
+    networkConfigurationsByChainId,
+  ): Record<CaipChainId, InternalMultichainNetworkConfiguration> => {
+    // There's a fallback for EVM network names/nicknames, in case the network
+    // does not have a name/nickname the fallback is the first rpc endpoint url.
+    // TODO: Update toMultichainNetworkConfigurationsByChainId to handle this case.
+    const evmNetworks: Record<
+      CaipChainId,
+      InternalMultichainNetworkConfiguration
+    > = {};
+
+    for (const [, network] of Object.entries(networkConfigurationsByChainId)) {
+      evmNetworks[toEvmCaipChainId(network.chainId)] = {
+        ...toMultichainNetworkConfiguration(network),
+        name:
+          network.name ||
+          network.rpcEndpoints[network.defaultRpcEndpointIndex].url,
+      };
+    }
+
+    return evmNetworks;
+  },
+);
+
+/**
+ * Returns all multichain network configurations (both EVM and non-EVM) by chain ID.
+ * This selector provides stable references when the underlying data hasn't changed.
+ */
+export const getAllMultichainNetworkConfigurations = createDeepEqualSelector(
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+  getNonEvmMultichainNetworkConfigurationsByChainId,
+  ///: END:ONLY_INCLUDE_IF
+  getEvmMultichainNetworkConfigurations,
+  (
+    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+    nonEvmNetworkConfigurationsByChainId,
+    ///: END:ONLY_INCLUDE_IF
+    evmNetworks,
+  ): Record<CaipChainId, InternalMultichainNetworkConfiguration> => {
+    return {
+      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+      ...nonEvmNetworkConfigurationsByChainId,
+      ///: END:ONLY_INCLUDE_IF
+      ...evmNetworks,
+    };
+  },
+);
+
+/**
+ * Returns a tuple of [multichain networks, EVM network configurations].
+ * This selector provides stable references when the underlying data hasn't changed.
+ *
+ * @deprecated Prefer using `getAllMultichainNetworkConfigurations` for multichain networks
+ * or `getNetworkConfigurationsByChainId` for EVM-only networks directly.
+ */
 export const getMultichainNetworkConfigurationsByChainId =
   createDeepEqualSelector(
-    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-    getNonEvmMultichainNetworkConfigurationsByChainId,
-    ///: END:ONLY_INCLUDE_IF
+    getAllMultichainNetworkConfigurations,
     getNetworkConfigurationsByChainId,
     (
-      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-      nonEvmNetworkConfigurationsByChainId,
-      ///: END:ONLY_INCLUDE_IF
+      networks,
       networkConfigurationsByChainId,
     ): [
       Record<CaipChainId, InternalMultichainNetworkConfiguration>,
       Record<Hex, InternalNetworkConfiguration>,
     ] => {
-      // There's a fallback for EVM network names/nicknames, in case the network
-      // does not have a name/nickname the fallback is the first rpc endpoint url.
-      // TODO: Update toMultichainNetworkConfigurationsByChainId to handle this case.
-      const evmNetworks: Record<
-        CaipChainId,
-        InternalMultichainNetworkConfiguration
-      > = {};
-
-      for (const [, network] of Object.entries(
-        networkConfigurationsByChainId,
-      )) {
-        evmNetworks[toEvmCaipChainId(network.chainId)] = {
-          ...toMultichainNetworkConfiguration(network),
-          name:
-            network.name ||
-            network.rpcEndpoints[network.defaultRpcEndpointIndex].url,
-        };
-      }
-
-      const networks = {
-        ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-        ...nonEvmNetworkConfigurationsByChainId,
-        ///: END:ONLY_INCLUDE_IF
-        ...evmNetworks,
-      };
-
       return [networks, networkConfigurationsByChainId];
     },
   );
@@ -273,14 +304,14 @@ export const getSelectedMultichainNetworkChainId = (
   return state.metamask.selectedMultichainNetworkChainId;
 };
 
-export const getSelectedMultichainNetworkConfiguration = (
-  state: MultichainNetworkConfigState,
-) => {
-  const chainId = getSelectedMultichainNetworkChainId(state);
-  const [networkConfigurationsByChainId] =
-    getMultichainNetworkConfigurationsByChainId(state);
-  return networkConfigurationsByChainId[chainId];
-};
+export const getSelectedMultichainNetworkConfiguration =
+  createDeepEqualSelector(
+    getSelectedMultichainNetworkChainId,
+    getAllMultichainNetworkConfigurations,
+    (chainId, networkConfigurationsByChainId) => {
+      return networkConfigurationsByChainId[chainId];
+    },
+  );
 
 export const getNetworksWithActivity = (state: MultichainNetworkConfigState) =>
   state.metamask.networksWithTransactionActivity;
