@@ -30,9 +30,13 @@ describe('getBuildTargetFromTask', () => {
     ).toBe('testDev');
   });
 
-  it('returns unknown patterns unchanged', () => {
-    expect(getBuildTargetFromTask('unknown:task')).toBe('unknown:task');
-    expect(getBuildTargetFromTask(TASKS.MANIFEST_DEV)).toBe(TASKS.MANIFEST_DEV);
+  it('throws error for unknown patterns', () => {
+    expect(() => getBuildTargetFromTask('unknown:task')).toThrow(
+      'Unable to extract build target from task name: "unknown:task"',
+    );
+    expect(() => getBuildTargetFromTask(TASKS.MANIFEST_DEV)).toThrow(
+      `Unable to extract build target from task name: "${TASKS.MANIFEST_DEV}"`,
+    );
   });
 });
 

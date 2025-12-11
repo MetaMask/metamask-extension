@@ -39,7 +39,8 @@ function isTestBuild(buildTarget) {
  * - 'test' -> 'test' (already a build target)
  *
  * @param {string} taskName - The task name or build target.
- * @returns {BUILD_TARGETS | string} The extracted build target.
+ * @returns {BUILD_TARGETS} The extracted build target.
+ * @throws {Error} If the task name doesn't match any known build target or prefix.
  */
 function getBuildTargetFromTask(taskName) {
   // If it's already a valid build target, return it
@@ -61,9 +62,10 @@ function getBuildTargetFromTask(taskName) {
     }
   }
 
-  // If no match found, return the original task name
-  // (getEnvironment will handle it appropriately)
-  return taskName;
+  throw new Error(
+    `Unable to extract build target from task name: "${taskName}". ` +
+      `This may indicate a new task prefix was added without updating TASK_PREFIXES in constants.js.`,
+  );
 }
 
 /**
