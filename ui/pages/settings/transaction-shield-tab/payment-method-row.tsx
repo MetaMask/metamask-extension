@@ -11,6 +11,9 @@ import {
 } from '@metamask/subscription-controller';
 import {
   Box,
+  Button,
+  ButtonSize,
+  ButtonVariant,
   FontWeight,
   Icon,
   IconColor,
@@ -19,7 +22,6 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
-import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   useAvailableTokenBalances,
@@ -33,8 +35,6 @@ import {
   getIsShieldSubscriptionCanChangePaymentMethodToCard,
   getIsShieldSubscriptionEndingSoon,
 } from '../../../../shared/lib/shield';
-import { shortenAddress } from '../../../helpers/utils/util';
-import { getAccountName, getInternalAccounts } from '../../../selectors';
 import { isCryptoPaymentMethod } from './types';
 import { ButtonRow } from './components';
 
@@ -65,7 +65,6 @@ export const PaymentMethodRow = ({
   handlePaymentErrorInsufficientFunds,
 }: PaymentMethodRowProps) => {
   const t = useI18nContext();
-  const internalAccounts = useSelector(getInternalAccounts);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   const canChangePaymentMethodToCard = useMemo(() => {
@@ -205,21 +204,6 @@ export const PaymentMethodRow = ({
     [onPaymentMethodChange],
   );
 
-  const payerAccountName = useMemo(() => {
-    if (
-      !displayedShieldSubscription ||
-      !isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)
-    ) {
-      return '';
-    }
-    return (
-      getAccountName(
-        internalAccounts,
-        displayedShieldSubscription.paymentMethod.crypto.payerAddress,
-      ) || ''
-    );
-  }, [displayedShieldSubscription, internalAccounts]);
-
   const isCryptoPayment = useMemo(
     () =>
       displayedShieldSubscription &&
@@ -232,16 +216,12 @@ export const PaymentMethodRow = ({
       return t('shieldPlanCard');
     }
 
-    const { payerAddress, tokenSymbol } = (
+    const { tokenSymbol } = (
       displayedShieldSubscription.paymentMethod as SubscriptionCryptoPaymentMethod
     ).crypto;
-    const displayName = payerAccountName || shortenAddress(payerAddress);
 
-    return t('shieldTxDetails3DescriptionCrypto', [
-      tokenSymbol.toUpperCase(),
-      displayName,
-    ]);
-  }, [displayedShieldSubscription, isCryptoPayment, payerAccountName, t]);
+    return t('shieldTxDetails3DescriptionCrypto', [tokenSymbol]);
+  }, [displayedShieldSubscription, isCryptoPayment, t]);
 
   const descriptionWithIcon = useCallback(
     (iconColor: IconColor) => (
@@ -320,8 +300,17 @@ export const PaymentMethodRow = ({
       <ButtonRow
         title={title}
         description={descriptionText}
-        disabled={isCryptoPayment && isCryptoPaymentChangeDisabled}
-        onClick={openModal}
+        endAccessory={
+          isCryptoPayment && !isCryptoPaymentChangeDisabled ? (
+            <Button
+              variant={ButtonVariant.Secondary}
+              size={ButtonSize.Md}
+              onClick={openModal}
+            >
+              {t('update')}
+            </Button>
+          ) : undefined
+        }
       />
     );
   }, [

@@ -296,7 +296,7 @@ const TransactionShield = () => {
     if (isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)) {
       const { payerAddress } = displayedShieldSubscription.paymentMethod.crypto;
       const displayName = payerAccountName || shortenAddress(payerAddress);
-      return t('shieldTxDetails3DescriptionCrypto', [
+      return t('shieldTxDetails3DescriptionCryptoWithAccount', [
         displayedShieldSubscription.paymentMethod.crypto.tokenSymbol.toUpperCase(),
         displayName,
       ]);

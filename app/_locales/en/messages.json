@@ -6396,6 +6396,9 @@
   "shieldTx": {
     "message": "Transaction Shield"
   },
+  "shieldTxBillingAccount": {
+    "message": "Billing account"
+  },
   "shieldTxCancelDetails": {
     "message": "If you cancel, your wallet and transactions will not be covered starting $1.",
     "description": "The $1 is the date subscription ends"
@@ -6422,8 +6425,12 @@
     "message": "Billing cycle"
   },
   "shieldTxDetails3DescriptionCrypto": {
+    "message": "Crypto ($1)",
+    "description": "The $1 is the token symbol"
+  },
+  "shieldTxDetails3DescriptionCryptoWithAccount": {
     "message": "Crypto ($1), $2",
-    "description": "The $1 is the token symbol and the $2 is the account number"
+    "description": "The $1 is the token symbol and the $2 is the account"
   },
   "shieldTxDetails3Title": {
     "message": "Payment method"
@@ -6444,7 +6451,7 @@
     "message": "Secures assets on covered transactions"
   },
   "shieldTxMembershipBenefits1Title": {
-    "message": "Up to $1 transaction protection",
+    "message": "Up to $1 protection",
     "description": "The $1 is the amount of transaction protection"
   },
   "shieldTxMembershipBenefits2Description": {
@@ -6462,7 +6469,7 @@
     "description": "The $1 is the number of points and the $2 is the interval"
   },
   "shieldTxMembershipBenefits3LinkRewards": {
-    "message": "Link Rewards"
+    "message": "Link"
   },
   "shieldTxMembershipBenefits3SignUp": {
     "message": "Sign up"

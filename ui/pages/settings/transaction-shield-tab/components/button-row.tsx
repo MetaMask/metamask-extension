@@ -53,7 +53,7 @@ const ButtonRow = ({
     if (onClick && !loading) {
       return (
         <Icon
-          name={endIconName ?? IconName.ArrowDown}
+          name={endIconName ?? IconName.ArrowRight}
           size={IconSize.Sm}
           color={IconColor.IconAlternative}
           className="ml-auto"
@@ -71,7 +71,7 @@ const ButtonRow = ({
       return (
         <Text
           data-testid={descriptionTestId}
-          variant={TextVariant.BodyMd}
+          variant={TextVariant.BodySm}
           className={twMerge('text-text-alternative', descriptionClassName)}
         >
           {description}

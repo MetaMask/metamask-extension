@@ -1,10 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Box,
-  Button,
-  ButtonVariant,
-  IconName,
-} from '@metamask/design-system-react';
+import { Box, Button, ButtonVariant } from '@metamask/design-system-react';
 import {
   PRODUCT_TYPES,
   RECURRING_INTERVALS,
@@ -39,6 +34,7 @@ import {
 } from '../../../../../shared/lib/shield';
 import { isCardPaymentMethod, isCryptoPaymentMethod } from '../types';
 import AddFundsModal from '../../../../components/app/modals/add-funds-modal';
+import { ConfirmInfoRowAddress } from '../../../../components/app/confirm/info/row/address';
 
 const ManageShieldPlan = () => {
   const t = useI18nContext();
@@ -189,6 +185,25 @@ const ManageShieldPlan = () => {
               isUnexpectedErrorCryptoPayment={isUnexpectedErrorCryptoPayment}
               handlePaymentError={handlePaymentError}
             />
+            {isCryptoPaymentMethod(
+              displayedShieldSubscription.paymentMethod,
+            ) && (
+              <ButtonRow
+                title={t('shieldTxBillingAccount')}
+                description={
+                  <ConfirmInfoRowAddress
+                    address={
+                      displayedShieldSubscription.paymentMethod.crypto
+                        .payerAddress
+                    }
+                    chainId={
+                      displayedShieldSubscription.paymentMethod.crypto.chainId
+                    }
+                    showFullName
+                  />
+                }
+              />
+            )}
             {displayedShieldSubscription?.status !==
               SUBSCRIPTION_STATUSES.provisional && (
               <>
@@ -198,7 +213,6 @@ const ManageShieldPlan = () => {
                   title={t(
                     'shieldTxMembershipBillingDetailsViewBillingHistory',
                   )}
-                  endIconName={IconName.ArrowRight}
                   onClick={() => {
                     executeOpenGetSubscriptionBillingPortal();
                   }}
