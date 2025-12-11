@@ -19,6 +19,7 @@ const useMultiPolling = <PollingInput extends Json>(
 ) => {
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const pollingTokens = useRef<Map<string, string>>(new Map());
+  const pendingPolls = useRef<Set<string>>(new Set());
   const pollingInputs = useSyncEqualityCheck(usePollingOptions.input);
 
   // Pre-compute keys once per stable input instead of in loops
@@ -37,14 +38,17 @@ const useMultiPolling = <PollingInput extends Json>(
   const isMounted = useRef(true);
   useEffect(() => {
     isMounted.current = true;
+    // Capture refs for cleanup
+    const tokens = pollingTokens.current;
+    const pendingTokens = pendingPolls.current;
     return () => {
       isMounted.current = false;
       // Stop all polling on unmount - use ref to get latest function
-      const tokens = pollingTokens.current;
       for (const token of tokens.values()) {
         stopPollingRef.current(token);
       }
       tokens.clear();
+      pendingTokens.clear();
     };
   }, []);
 
@@ -60,13 +64,22 @@ const useMultiPolling = <PollingInput extends Json>(
 
     // start new polls
     for (const [key, input] of inputKeyMap) {
-      if (!pollingTokens.current.has(key)) {
+      if (!pollingTokens.current.has(key) && !pendingPolls.current.has(key)) {
+        pendingPolls.current.add(key);
         usePollingOptions.startPolling(input).then((token) => {
+          pendingPolls.current.delete(key);
           if (!inputKeyMapRef.current.has(key)) {
             stopPollingRef.current(token);
             return;
           }
+
           if (isMounted.current) {
+            // If there's already a token for this key (from a concurrent call
+            // that resolved first), stop the old one before replacing
+            const existingToken = pollingTokens.current.get(key);
+            if (existingToken && existingToken !== token) {
+              stopPollingRef.current(existingToken);
+            }
             pollingTokens.current.set(key, token);
           } else {
             stopPollingRef.current(token);
@@ -75,7 +88,7 @@ const useMultiPolling = <PollingInput extends Json>(
       }
     }
 
-    // stop existing polls
+    // stop existing polls for removed inputs
     for (const [inputKey, token] of pollingTokens.current.entries()) {
       if (!inputKeyMap.has(inputKey)) {
         usePollingOptions.stopPollingByPollingToken(token);
