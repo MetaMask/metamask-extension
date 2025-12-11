@@ -21,7 +21,9 @@ describe('createRpcBlockingMiddleware', () => {
     ({ origin }) as unknown as ExtendedJsonRpcRequest;
 
   it('calls next when not blocked', async () => {
-    const { middleware } = createRpcBlockingMiddleware();
+    const middleware = createRpcBlockingMiddleware({
+      state: { isBlocked: false },
+    });
     const req = createRequest();
     const next = jest.fn();
     const end = jest.fn();
@@ -32,55 +34,52 @@ describe('createRpcBlockingMiddleware', () => {
     expect(end).not.toHaveBeenCalled();
   });
 
-  it('ends with error when blocked and origin is not a preinstalled snap', async () => {
+  it('throws an error when blocked and origin is not a preinstalled snap', async () => {
     const customMessage = 'Requests are temporarily blocked';
-    const { setIsBlocked, middleware } = createRpcBlockingMiddleware({
+    const middleware = createRpcBlockingMiddleware({
+      state: { isBlocked: true },
       errorMessage: customMessage,
     });
 
-    setIsBlocked(true);
-
     const req = createRequest('https://dapp.example');
     const next = jest.fn();
-    const end = jest.fn();
 
-    await middleware(req, {} as unknown as JsonRpcResponse<Json>, next, end);
+    await expect(
+      middleware(req, {} as unknown as JsonRpcResponse<Json>, next),
+    ).rejects.toThrow(customMessage);
 
     expect(next).not.toHaveBeenCalled();
-    expect(end).toHaveBeenCalledTimes(1);
-    const [errorArg] = end.mock.calls[0];
-    expect(errorArg).toBeInstanceOf(Error);
-    expect((errorArg as Error).message).toBe(customMessage);
   });
 
   it('calls next when blocked but origin is a preinstalled snap', async () => {
     isSnapPreinstalledMock.mockReturnValue(true);
 
-    const { setIsBlocked, middleware } = createRpcBlockingMiddleware();
-    setIsBlocked(true);
+    const middleware = createRpcBlockingMiddleware({
+      state: { isBlocked: true },
+    });
 
     const req = createRequest('npm:example-snap');
     const next = jest.fn();
-    const end = jest.fn();
 
-    await middleware(req, {} as unknown as JsonRpcResponse<Json>, next, end);
+    await middleware(req, {} as unknown as JsonRpcResponse<Json>, next);
 
     expect(next).toHaveBeenCalledTimes(1);
-    expect(end).not.toHaveBeenCalled();
   });
 
   it('respects toggling isBlocked back to false', async () => {
-    const { setIsBlocked, middleware } = createRpcBlockingMiddleware();
-    setIsBlocked(true);
-    setIsBlocked(false);
+    const state = { isBlocked: true };
+
+    const middleware = createRpcBlockingMiddleware({
+      state,
+    });
+
+    state.isBlocked = false;
 
     const req = createRequest('https://dapp.example');
     const next = jest.fn();
-    const end = jest.fn();
 
-    await middleware(req, {} as unknown as JsonRpcResponse<Json>, next, end);
+    await middleware(req, {} as unknown as JsonRpcResponse<Json>, next);
 
     expect(next).toHaveBeenCalledTimes(1);
-    expect(end).not.toHaveBeenCalled();
   });
 });

@@ -12,17 +12,16 @@ type CreateRpcBlockingMiddlewareOptions = {
    * Defaults to 'Cannot process requests at this time'.
    */
   errorMessage?: string;
+  /**
+   * State of the middleware.
+   */
+  state: { isBlocked: boolean };
 };
 
 export default function createRpcBlockingMiddleware({
   errorMessage = 'Cannot process requests at this time',
-}: CreateRpcBlockingMiddlewareOptions = {}) {
-  let isBlocked = false;
-
-  const setIsBlocked = (value: boolean) => {
-    isBlocked = value;
-  };
-
+  state,
+}: CreateRpcBlockingMiddlewareOptions) {
   const middleware = (
     req: ExtendedJsonRpcRequest,
     _res: JsonRpcResponse<Json>,
@@ -30,12 +29,12 @@ export default function createRpcBlockingMiddleware({
   ) => {
     const { origin } = req;
 
-    if (isBlocked && !isSnapPreinstalled(origin as SnapId)) {
+    if (state.isBlocked && !isSnapPreinstalled(origin as SnapId)) {
       throw providerErrors.unauthorized(errorMessage);
     }
 
     next();
   };
 
-  return { setIsBlocked, middleware };
+  return middleware;
 }
