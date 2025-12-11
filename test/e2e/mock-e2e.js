@@ -1059,12 +1059,9 @@ async function setupMocking(
   await mockIdentityServices(server);
 
   // Account framework (account discovery)
-  // NOTE: For now we are not mocking the discovery since it's disabled on the client itself when
-  // running E2E.
-  // TODO: Re-enable this once we introduce account discovery E2E testing.
-  // await MockedDiscoveryBuilder.fromDefaultSrp()
-  //   .doNotDiscoverAnyAccounts()
-  //   .mock(server);
+  await MockedDiscoveryBuilder.fromDefaultSrp()
+    .doNotDiscoverAnyAccounts()
+    .mock(server);
 
   await server.forGet(/^https:\/\/sourcify.dev\/(.*)/u).thenCallback(() => {
     return {
