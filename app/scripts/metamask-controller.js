@@ -5558,16 +5558,27 @@ export default class MetamaskController extends EventEmitter {
         // BUG: https://github.com/MetaMask/metamask-extension/issues/37228
         await this.multichainAccountService.resyncAccounts();
 
-        // We just run discovery every time we unlock to check if new accounts have
-        // been created on some other external wallets.
+        // NOTE: We do not run the discovery for E2E since it it's hard to mock
+        // async requests in a reliable way without interfering with other
+        // "natural" requests.
+        // TODO: Re-enable this once we introduce account discovery E2E testing.
+        const shouldRunDiscovery = Boolean(!process.env.IN_TEST);
+
+        // We run accounts discovery/alignment every time we unlock to check if new
+        // accounts have been created on some other external wallets.
         // This also allows to create missing accounts if new account providers
-        // have been added.
-        await Promise.allSettled(
-          this.getHDEntropySources().map(
-            async (entropySource) =>
-              await this.discoverAndCreateAccounts(entropySource),
-          ),
-        );
+        // have been added (accounts alignment).
+        if (shouldRunDiscovery) {
+          await Promise.allSettled(
+            this.getHDEntropySources().map(
+              async (entropySource) =>
+                await this.discoverAndCreateAccounts(entropySource),
+            ),
+          );
+        } else {
+          // Still run the alignment to re-align default accounts.
+          await this.multichainAccountService.alignWallets();
+        }
       };
 
       // NOTE: We run this asynchronously on purpose. The UI will show each wallet status
