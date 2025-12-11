@@ -2,9 +2,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import {
   Box,
+  BoxAlignItems,
   BoxBackgroundColor,
+  BoxFlexDirection,
   ButtonIcon,
   ButtonIconSize,
+  FontWeight,
   IconName,
   Text,
   TextColor,
@@ -117,12 +120,10 @@ const DappSwapComparisonInner = () => {
       swap_mm_opened: 'true',
     });
     setSelectedSwapType(SwapType.Metamask);
-    setShowDappSwapComparisonBanner(false);
   }, [
     captureDappSwapComparisonDisplayProperties,
     setQuotedSwapDisplayedInInfo,
     setSelectedSwapType,
-    setShowDappSwapComparisonBanner,
     selectedQuote,
   ]);
 
@@ -163,7 +164,7 @@ const DappSwapComparisonInner = () => {
   return (
     <Box>
       <SwapTabs onTabClick={onTabClick} activeTabKey={selectedSwapType} />
-      {showDappSwapComparisonBanner && dappTypeSelected && (
+      {showDappSwapComparisonBanner && (
         <Box
           className="dapp-swap_callout"
           backgroundColor={BoxBackgroundColor.BackgroundSection}
@@ -172,32 +173,54 @@ const DappSwapComparisonInner = () => {
           role="button"
           onClick={updateSwapToSelectedQuote}
         >
-          <ButtonIcon
-            className="dapp-swap_close-button"
-            iconName={IconName.Close}
-            size={ButtonIconSize.Sm}
-            onClick={hideDappSwapComparisonBanner}
-            ariaLabel="close-dapp-swap-comparison-banner"
-          />
-          <div className="dapp-swap_callout-arrow" />
+          {dappTypeSelected && (
+            <>
+              <ButtonIcon
+                className="dapp-swap_close-button"
+                iconName={IconName.Close}
+                size={ButtonIconSize.Sm}
+                onClick={hideDappSwapComparisonBanner}
+                ariaLabel="close-dapp-swap-comparison-banner"
+              />
+              <div className="dapp-swap_callout-arrow" />
+            </>
+          )}
           <Text
             className="dapp-swap_callout-text"
             color={TextColor.TextDefault}
+            fontWeight={FontWeight.Medium}
             variant={TextVariant.BodySm}
           >
             {rewards ? t('dappSwapAdvantage') : t('dappSwapAdvantageSaveOnly')}
           </Text>
-          <Text
-            className="dapp-swap_text-save"
-            color={TextColor.TextAlternative}
-            variant={TextVariant.BodyXs}
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            gap={2}
           >
-            {t('dappSwapQuoteDifference', [
-              `$${selectedQuoteValueDifference.toFixed(2)}`,
-            ])}
-            {rewards && <span>{` • ${rewards.text}`}</span>}
-          </Text>
-          <Text color={TextColor.TextAlternative} variant={TextVariant.BodyXs}>
+            <Text color={TextColor.SuccessDefault} variant={TextVariant.BodySm}>
+              {t('dappSwapQuoteDifference', [
+                `$${selectedQuoteValueDifference.toFixed(2)}`,
+              ])}
+            </Text>
+            {rewards && (
+              <>
+                <Text
+                  color={TextColor.TextAlternative}
+                  variant={TextVariant.BodySm}
+                >
+                  {` • `}
+                </Text>
+                <Text
+                  className="dapp-swap_text-rewards"
+                  variant={TextVariant.BodySm}
+                >
+                  {rewards?.text}
+                </Text>
+              </>
+            )}
+          </Box>
+          <Text color={TextColor.TextAlternative} variant={TextVariant.BodySm}>
             {t('dappSwapBenefits')}
           </Text>
         </Box>

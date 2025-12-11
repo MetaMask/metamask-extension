@@ -13,7 +13,7 @@ exports[`<AdvancedDetails /> renders component when the prop override is passed 
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -73,7 +73,7 @@ exports[`<AdvancedDetails /> renders component when the prop override is passed 
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -144,7 +144,7 @@ exports[`<AdvancedDetails /> renders component when the state property is true 1
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
@@ -204,7 +204,7 @@ exports[`<AdvancedDetails /> renders component when the state property is true 1
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-alternative"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"

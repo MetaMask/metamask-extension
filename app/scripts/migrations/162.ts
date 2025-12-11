@@ -54,9 +54,6 @@ function transformState(
   }
 
   if (!hasProperty(state, 'TokenBalancesController')) {
-    global.sentry?.captureException?.(
-      new Error(`Migration ${version}: TokenBalancesController not found.`),
-    );
     return state;
   }
 

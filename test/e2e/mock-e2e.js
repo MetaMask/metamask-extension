@@ -75,7 +75,7 @@ const blocklistedHosts = [
   'linea-mainnet.infura.io',
   'linea-sepolia.infura.io',
   'testnet-rpc.monad.xyz',
-  'carrot.megaeth.com',
+  'timothy.megaeth.com',
   'sei-mainnet.infura.io',
   'mainnet.infura.io',
   'sepolia.infura.io',
@@ -329,6 +329,19 @@ async function setupMocking(
         statusCode: 200,
         json: {},
       };
+    });
+
+  // SENTRY_DSN_PERFORMANCE
+  await server
+    .forPost('https://sentry.io/api/4510302346608640/envelope/')
+    .thenPassThrough({
+      beforeRequest: (req) => {
+        console.log(
+          'Request going to Sentry metamask-performance ============',
+          req.url,
+        );
+        return {};
+      },
     });
 
   await server

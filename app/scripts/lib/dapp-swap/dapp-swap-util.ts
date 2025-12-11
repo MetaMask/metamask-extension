@@ -18,6 +18,7 @@ import {
 } from '../../../../shared/modules/dapp-swap-comparison/dapp-swap-comparison-utils';
 import { DappSwapComparisonData } from '../../controllers/app-state-controller';
 import { SecurityAlertResponse } from '../ppom/types';
+import { DappSwapDecodingError } from '../../../../shared/modules/dapp-swap-comparison/dapp-swap-command-utils';
 
 export type DappSwapMiddlewareRequest<
   Params extends JsonRpcParams = JsonRpcParams,
@@ -157,8 +158,8 @@ export function getQuotesForConfirmation({
         commands,
       });
     }
-    captureException(
-      `Error fetching bridge quotes: ${(error as Error).message}`,
-    );
+    if (!(error instanceof DappSwapDecodingError)) {
+      captureException(error);
+    }
   }
 }

@@ -85,6 +85,7 @@ jobs:
 
   report-coverage:
     name: Report coverage
+    if: ${{ github.event_name != 'merge_group' }} # Skip this job for the Merge Queue
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs:

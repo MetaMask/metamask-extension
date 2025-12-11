@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
-import { Navigate, useNavigate } from 'react-router-dom-v5-compat';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { AvatarAccountSize } from '@metamask/design-system-react';
 import TextField from '../../../../components/ui/text-field';
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer';

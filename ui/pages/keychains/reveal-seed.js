@@ -1,7 +1,7 @@
 import qrCode from 'qrcode-generator';
 import React, { useContext, useEffect, useState, useCallback } from 'react';
-import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
 import { getErrorMessage } from '../../../shared/modules/error';
 import {
   MetaMetricsEventCategory,
@@ -38,18 +38,20 @@ import {
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { requestRevealSeedWords } from '../../store/actions';
-import { getHDEntropyIndex } from '../../selectors/selectors';
+import { getHDEntropyIndex } from '../../selectors';
 import { endTrace, trace, TraceName } from '../../../shared/lib/trace';
 import { PREVIOUS_ROUTE } from '../../helpers/constants/routes';
 
 const PASSWORD_PROMPT_SCREEN = 'PASSWORD_PROMPT_SCREEN';
 const REVEAL_SEED_SCREEN = 'REVEAL_SEED_SCREEN';
 
-function RevealSeedPage({ navigate, keyringId }) {
+function RevealSeedPage() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
+  const { keyringId } = useParams();
 
   const [screen, setScreen] = useState(PASSWORD_PROMPT_SCREEN);
   const [password, setPassword] = useState('');
@@ -408,10 +410,5 @@ function RevealSeedPage({ navigate, keyringId }) {
     </Box>
   );
 }
-
-RevealSeedPage.propTypes = {
-  navigate: PropTypes.func.isRequired,
-  keyringId: PropTypes.string,
-};
 
 export default RevealSeedPage;

@@ -1,3 +1,4 @@
+import { MiddlewareContext } from '@metamask/json-rpc-engine/v2';
 import { EthAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
@@ -10,7 +11,7 @@ import {
   AddUserOperationOptions,
   UserOperationController,
 } from '@metamask/user-operation-controller';
-import type { Hex } from '@metamask/utils';
+import type { Hex, JsonRpcRequest } from '@metamask/utils';
 import { addHexPrefix } from 'ethereumjs-util';
 import { PPOMController } from '@metamask/ppom-validator';
 
@@ -67,17 +68,23 @@ export type AddTransactionRequest = FinalAddTransactionRequest & {
 };
 
 export type AddDappTransactionRequest = BaseAddTransactionRequest & {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  dappRequest: Record<string, any>;
+  dappRequest: JsonRpcRequest;
+  requestContext: MiddlewareContext;
 };
 
 export async function addDappTransaction(
   request: AddDappTransactionRequest,
 ): Promise<string> {
-  const { dappRequest } = request;
-  const { id: actionId, method, origin } = dappRequest;
-  const { securityAlertResponse, traceContext } = dappRequest;
+  const { dappRequest, requestContext } = request;
+  const { id, method } = dappRequest;
+  const actionId = String(id);
+
+  // TODO: Find a home for and define the appropriate MiddlewareContext type
+  const origin = requestContext.assertGet('origin') as string;
+  const securityAlertResponse = requestContext.get('securityAlertResponse') as
+    | SecurityAlertResponse
+    | undefined;
+  const traceContext = requestContext.get('traceContext');
 
   const transactionOptions: Partial<AddTransactionOptions> = {
     actionId,
