@@ -66,7 +66,7 @@ describe('MetaMask onboarding', function () {
           'Time since the user clicks on "Done" button until "Skip backup" screen and assets list are visible',
         );
 
-        await driver.navigate();
+        await driver.navigate(undefined, { waitForControllers: false });
         const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
         if (isFirefox) {
           await onboardingMetricsFlow(driver, {

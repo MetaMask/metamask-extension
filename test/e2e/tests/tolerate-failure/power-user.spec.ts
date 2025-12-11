@@ -31,7 +31,7 @@ describe('Power user persona', function () {
         disableServerMochaToBackground: true,
       },
       async ({ driver }: { driver: Driver }) => {
-        await driver.navigate();
+        await driver.navigate(undefined, { waitForControllers: false });
         const loginPage = new LoginPage(driver);
         await loginPage.checkPageIsLoaded(30000);
         await loginPage.loginToHomepage();

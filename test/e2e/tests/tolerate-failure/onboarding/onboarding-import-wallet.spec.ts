@@ -74,7 +74,7 @@ describe('MetaMask onboarding', function () {
           'Time since the user opens "account list" until the account list is loaded',
         );
 
-        await driver.navigate();
+        await driver.navigate(undefined, { waitForControllers: false });
         const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
         if (isFirefox) {
           await onboardingMetricsFlow(driver, {
