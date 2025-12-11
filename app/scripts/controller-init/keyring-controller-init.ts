@@ -20,12 +20,14 @@ import { qrKeyringBuilderFactory } from '../lib/qr-keyring-builder-factory';
 import { encryptorFactory } from '../lib/encryptor-factory';
 import { TrezorOffscreenBridge } from '../lib/offscreen-bridge/trezor-offscreen-bridge';
 import { LedgerOffscreenBridge } from '../lib/offscreen-bridge/ledger-offscreen-bridge';
+import { KeystoneOffscreenBridge } from '../lib/offscreen-bridge/keystone-offscreen-bridge';
 import { LatticeKeyringOffscreen } from '../lib/offscreen-bridge/lattice-offscreen-keyring';
 import { ControllerInitFunction } from './types';
 import {
   KeyringControllerMessenger,
   KeyringControllerInitMessenger,
 } from './messengers';
+import { KeystoneUSBKeyring } from '@keystonehq/metamask-keystone-usb-keyring';
 
 /**
  * Initialize the keyring controller.
@@ -83,6 +85,10 @@ export const KeyringControllerInit: ControllerInitFunction<
         LedgerKeyring as unknown as KeyringClass,
         keyringOverrides?.ledgerBridge || LedgerIframeBridge,
       ),
+      hardwareKeyringBuilderFactory(
+        KeystoneUSBKeyring as unknown as KeyringClass,
+        keyringOverrides?.keystoneUSBBridge || TrezorConnectBridge,
+      ),
     );
   } else {
     additionalKeyrings.push(
@@ -97,6 +103,10 @@ export const KeyringControllerInit: ControllerInitFunction<
       hardwareKeyringBuilderFactory(
         LedgerKeyring as unknown as KeyringClass,
         keyringOverrides?.ledgerBridge || LedgerOffscreenBridge,
+      ),
+      hardwareKeyringBuilderFactory(
+        KeystoneUSBKeyring as unknown as KeyringClass,
+        keyringOverrides?.keystoneUSBBridge || KeystoneOffscreenBridge,
       ),
       keyringBuilderFactory(LatticeKeyringOffscreen as unknown as KeyringClass),
     );

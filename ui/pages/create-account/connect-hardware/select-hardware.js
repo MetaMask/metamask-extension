@@ -623,11 +623,11 @@ export default class SelectHardware extends Component {
                 className="hw-connect__external-btn-first"
                 variant={BUTTON_VARIANT.SECONDARY}
                 onClick={() => {
-                  this.context.trackEvent({
-                    category: MetaMetricsEventCategory.Navigation,
-                    event: 'Clicked GridPlus Buy Now',
-                  });
-                  openWindow(HardwareAffiliateLinks.gridplus);
+                  this.trackMarketingEvent(
+                    MarketingActionNames.BuyNow,
+                    HardwareDeviceNames.keystone,
+                  );
+                  openWindow(HardwareAffiliateLinks.Keystone);
                 }}
               >
                 {this.context.t('buyNow')}
@@ -636,11 +636,11 @@ export default class SelectHardware extends Component {
                 className="hw-connect__external-btn"
                 variant={BUTTON_VARIANT.SECONDARY}
                 onClick={() => {
-                  this.context.trackEvent({
-                    category: MetaMetricsEventCategory.Navigation,
-                    event: 'Clicked GidPlus Tutorial',
-                  });
-                  openWindow(HardwareAffiliateTutorialLinks.gridplus);
+                  this.trackMarketingEvent(
+                    MarketingActionNames.Tutorial,
+                    HardwareDeviceNames.keystone,
+                  );
+                  openWindow(HardwareAffiliateTutorialLinks.Keystone);
                 }}
               >
                 {this.context.t('tutorial')}

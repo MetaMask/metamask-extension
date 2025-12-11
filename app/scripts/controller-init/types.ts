@@ -146,6 +146,7 @@ export type ControllerInitRequest<
     trezorBridge?: HardwareTransportBridgeClass;
     oneKey?: HardwareTransportBridgeClass;
     ledgerBridge?: HardwareTransportBridgeClass;
+    keystoneUSBBridge?: HardwareTransportBridgeClass;
   };
 
   /**
