@@ -299,6 +299,10 @@
   "close": {
     "message": "Fechar"
   },
+  "closeSlide": {
+    "message": "Fechar $1",
+    "description": "Rótulo aria para o botão de fechar nos slides do carrossel. $1 é o título do slide"
+  },
   "confirm": {
     "message": "Confirmar"
   },
