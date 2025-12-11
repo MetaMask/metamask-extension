@@ -100,6 +100,9 @@ const ManageShieldPlan = ({ isPastPlan = false }: { isPastPlan?: boolean }) => {
     isUnexpectedErrorCryptoPayment,
     hasAvailableSelectedTokenToTriggerCheckInsufficientFunds,
     currentToken,
+    resultTriggerSubscriptionCheckInsufficientFunds,
+    updateSubscriptionCardPaymentMethodResult,
+    updateSubscriptionCryptoPaymentMethodResult,
   } = useHandlePayment({
     currentShieldSubscription,
     displayedShieldSubscription,
@@ -127,13 +130,19 @@ const ManageShieldPlan = ({ isPastPlan = false }: { isPastPlan?: boolean }) => {
     subscriptionPricingLoading ||
     openGetSubscriptionBillingPortalResult.pending ||
     unCancelSubscriptionResult.pending ||
-    cancelSubscriptionResult.pending;
+    cancelSubscriptionResult.pending ||
+    updateSubscriptionCardPaymentMethodResult.pending ||
+    updateSubscriptionCryptoPaymentMethodResult.pending ||
+    resultTriggerSubscriptionCheckInsufficientFunds.pending;
   const hasApiError =
     subscriptionsError ||
     subscriptionPricingError ||
     openGetSubscriptionBillingPortalResult.error ||
     unCancelSubscriptionResult.error ||
-    cancelSubscriptionResult.error;
+    cancelSubscriptionResult.error ||
+    updateSubscriptionCardPaymentMethodResult.error ||
+    updateSubscriptionCryptoPaymentMethodResult.error ||
+    resultTriggerSubscriptionCheckInsufficientFunds.error;
 
   const billingCycleDescription = useMemo(() => {
     if (!displayedShieldSubscription) {

@@ -30,8 +30,7 @@ const ReactivateButton = ({
       return '';
     }
     return t('shieldPlanMonthlyPrice', [`$${getProductPrice(monthlyPlan)}`]);
-  }, [pricingPlans]);
-
+  }, [pricingPlans, t]);
 
   return (
     <Button
