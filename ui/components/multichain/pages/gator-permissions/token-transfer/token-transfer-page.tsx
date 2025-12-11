@@ -7,12 +7,8 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
-  Text,
-  TextAlign,
-  TextVariant,
   BoxFlexDirection,
   BoxJustifyContent,
-  TextColor,
   IconColor,
 } from '@metamask/design-system-react';
 import { Content, Header, Page } from '../../page';
