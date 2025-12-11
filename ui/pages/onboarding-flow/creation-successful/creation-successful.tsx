@@ -1,4 +1,10 @@
-import React, { useCallback, useMemo, useContext } from 'react';
+import React, {
+  useCallback,
+  useMemo,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import browser from 'webextension-polyfill';
@@ -79,6 +85,31 @@ export default function CreationSuccessful() {
   const isFromReminder = searchParams.get('isFromReminder');
   const isFromSettingsSecurity = searchParams.get('isFromSettingsSecurity');
   const isFromSettingsSRPBackup = isWalletReady && isFromReminder;
+
+  const [isSidePanelOpen, setIsSidePanelOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    const browserWithSidePanel = browser as BrowserWithSidePanel;
+    const handleSidePanelClosed = (_args: unknown) => {
+      setIsSidePanelOpen(false);
+    };
+
+    if (isSidePanelEnabled) {
+      if (browserWithSidePanel?.sidePanel?.onClosed?.addListener) {
+        browserWithSidePanel.sidePanel.onClosed.addListener(
+          handleSidePanelClosed,
+        );
+      }
+    }
+
+    return () => {
+      if (browserWithSidePanel?.sidePanel?.onClosed?.removeListener) {
+        browserWithSidePanel.sidePanel.onClosed.removeListener(
+          handleSidePanelClosed,
+        );
+      }
+    };
+  }, [isSidePanelEnabled]);
 
   const renderDetails1 = useMemo(() => {
     if (isFromReminder) {
@@ -178,6 +209,7 @@ export default function CreationSuccessful() {
             await dispatch(setUseSidePanelAsDefault(true));
             // Use the sidepanel-specific action - no navigation needed, sidepanel is already open
             await dispatch(setCompletedOnboardingWithSidepanel());
+            setIsSidePanelOpen(true);
             return;
           }
         }
@@ -216,6 +248,7 @@ export default function CreationSuccessful() {
           size={ButtonSize.Lg}
           width={BlockSize.Full}
           onClick={onDone}
+          disabled={isSidePanelEnabled && isSidePanelOpen}
         >
           {isSidePanelEnabled ? t('openWallet') : t('done')}
         </Button>

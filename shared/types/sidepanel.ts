@@ -2,5 +2,9 @@
 export type BrowserWithSidePanel = typeof browser & {
   sidePanel?: {
     open: (options: { windowId?: number }) => Promise<void>;
+    onClosed: {
+      addListener: (callback: (args: unknown) => void) => void;
+      removeListener: (callback: (args: unknown) => void) => void;
+    };
   };
 };
