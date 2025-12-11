@@ -54,12 +54,19 @@ export const getIsSidePanelFeatureEnabled = (): boolean => {
     return false;
   }
 
-  // Arc browser doesn't support sidepanel properly
-  if (
-    typeof window !== 'undefined' &&
-    window.navigator?.userAgent?.includes('Arc/')
-  ) {
-    return false;
+  // Arc browser doesn't support sidepanel properly.
+  // Arc uses a Chrome-identical user agent, so we detect it via its unique CSS variable.
+  if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+    try {
+      const arcPaletteTitle = getComputedStyle(
+        document.documentElement,
+      ).getPropertyValue('--arc-palette-title');
+      if (arcPaletteTitle) {
+        return false;
+      }
+    } catch (error) {
+      console.warn('Arc browser detection failed:', error);
+    }
   }
 
   return true;
