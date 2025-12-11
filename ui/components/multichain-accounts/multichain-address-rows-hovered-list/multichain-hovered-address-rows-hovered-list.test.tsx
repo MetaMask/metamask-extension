@@ -77,12 +77,6 @@ const TEST_IDS = {
   HOVER_TRIGGER: 'hover-trigger',
 } as const;
 
-const CSS_CLASSES = {
-  FONT_BOLD: 'font-bold',
-  ARROW_RIGHT: 'arrow-right',
-  AVATAR_NETWORK: 'avatar-network',
-} as const;
-
 const mockWalletEntropySource = '01K437Z7EJ0VCMFDE9TQKRV60A';
 const WALLET_ID_MOCK = toAccountWalletId(
   AccountWalletType.Entropy,
@@ -597,10 +591,23 @@ describe('MultichainHoveredAddressRowsList', () => {
     expect(addressRows.length).toBe(4);
 
     const groupNames = addressRows.map((row) => {
-      const nameElement = row.querySelector(
-        `p[class*="${CSS_CLASSES.FONT_BOLD}"]`,
-      );
-      return nameElement?.textContent || '';
+      // Find the Text element containing the network name
+      // It's the first Text element after the network group avatar
+      const textElements = row.querySelectorAll('p');
+      // The network name is typically the first text element in the row
+      // We'll find it by checking which text matches our expected network names
+      for (const textEl of textElements) {
+        const text = textEl.textContent?.trim() || '';
+        if (
+          text === TEST_STRINGS.EVM_NETWORKS ||
+          text === TEST_STRINGS.BITCOIN_NETWORK ||
+          text === TEST_STRINGS.SOLANA_NETWORK ||
+          text === TEST_STRINGS.TRON_NETWORK
+        ) {
+          return text;
+        }
+      }
+      return '';
     });
 
     expect(groupNames).toEqual([

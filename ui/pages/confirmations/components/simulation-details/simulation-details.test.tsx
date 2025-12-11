@@ -112,20 +112,20 @@ describe('SimulationDetails', () => {
     });
   });
 
-  it('renders loading indicator when simulation data is not available', () => {
-    renderSimulationDetails();
-    expect(screen.getByRole('progressbar')).toBeInTheDocument();
+  it('renders skeleton loader when simulation data is not available', () => {
+    const { container } = renderSimulationDetails();
+    expect(container.querySelector('.mm-skeleton')).toBeInTheDocument();
   });
 
-  it('renders loading indicator when balance changes are pending', () => {
+  it('renders skeleton loader when balance changes are pending', () => {
     (useBalanceChanges as jest.Mock).mockReturnValue({
       pending: true,
       value: [],
     });
 
-    renderSimulationDetails({});
+    const { container } = renderSimulationDetails({});
 
-    expect(screen.getByRole('progressbar')).toBeInTheDocument();
+    expect(container.querySelector('.mm-skeleton')).toBeInTheDocument();
   });
 
   it('renders error content when simulation error is reverted', () => {
