@@ -13,24 +13,24 @@ import {
  *
  * ## When to Use
  * 1. **Deeply nested objects** - Input contains multiple levels of nesting where
- *    any level may change independently
+ * any level may change independently
  * 2. **Uncontrolled/unmemoized input sources** - Working with external data or legacy code
- *    where referential stability cannot be guaranteed
+ * where referential stability cannot be guaranteed
  * 3. **Complex transformations upstream** - Input selectors perform operations
- *    that create new object references on every call (e.g., `.map()`, `.filter()`,
- *    spread operators) but produce equivalent values
+ * that create new object references on every call (e.g., `.map()`, `.filter()`,
+ * spread operators) but produce equivalent values
  *
  * ## When to Avoid
  * 1. **Referentially stable inputs** - If input selectors are already memoized
- *    or return stable references, use `createSelector` instead
+ * or return stable references, use `createSelector` instead
  * 2. **Flat arrays** - Use {@link createShallowArrayEqualSelector} for arrays
- *    where element references are stable
+ * where element references are stable
  * 3. **Flat objects** - Use {@link createShallowObjectEqualSelector} for objects
- *    with stable property values
+ * with stable property values
  * 4. **Structural differences are common** - Use {@link createFastDeepEqualSelector}
- *    when changes typically alter array length or object key count (faster short-circuit)
+ * when changes typically alter array length or object key count (faster short-circuit)
  * 5. **Large data structures** - Deep comparison cost grows with size; consider
- *    restructuring selectors or normalizing state instead
+ * restructuring selectors or normalizing state instead
  *
  * @example
  * ```ts
@@ -49,7 +49,6 @@ import {
  *   },
  * );
  * ```
- *
  * @see {@link createSelector} - Preferred default; uses reference equality
  */
 export const createDeepEqualSelector = createSelectorCreator(
@@ -65,19 +64,19 @@ export const createDeepEqualSelector = createSelectorCreator(
  *
  * ## When to Use
  * 1. **Stable object references as arguments** - Input selectors return objects
- *    with reliable referential identity (e.g., normalized entities from state)
+ * with reliable referential identity (e.g., normalized entities from state)
  * 2. **Many unique argument combinations** - Selector is called with different
- *    objects frequently; WeakMap avoids unbounded cache growth
+ * objects frequently; WeakMap avoids unbounded cache growth
  * 3. **Large state trees** - Memory pressure is a concern and cached results
- *    should be garbage-collected when source objects are no longer referenced
+ * should be garbage-collected when source objects are no longer referenced
  *
  * ## When to Avoid
  * 1. **Primitive arguments** - WeakMap only accepts objects as keys; use
- *    {@link createLruSelector} for selectors with string/number parameters
+ * {@link createLruSelector} for selectors with string/number parameters
  * 2. **Unstable references** - If input selectors create new objects on each call,
- *    the cache will never hit; use an equality-based selector instead
+ * the cache will never hit; use an equality-based selector instead
  * 3. **Small, bounded argument sets** - Standard LRU memoization is simpler and
- *    sufficient when argument variety is limited
+ * sufficient when argument variety is limited
  *
  * @example
  * ```ts
@@ -95,7 +94,6 @@ export const createDeepEqualSelector = createSelectorCreator(
  *   },
  * );
  * ```
- *
  * @see {@link createSelector} - Preferred default; uses reference equality with LRU
  */
 export const createWeakMapSelector = createSelectorCreator(weakMapMemoize);
@@ -108,19 +106,19 @@ export const createWeakMapSelector = createSelectorCreator(weakMapMemoize);
  *
  * ## When to Use
  * 1. **Parameterized selectors** - Selector receives dynamic arguments (e.g., IDs,
- *    filters) and is called with a bounded set of values
+ * filters) and is called with a bounded set of values
  * 2. **Repeated access patterns** - Same arguments are requested multiple times
- *    within a render cycle or across navigation
+ * within a render cycle or across navigation
  * 3. **Expensive computations** - Result function is costly and caching multiple
- *    results provides meaningful performance benefit
+ * results provides meaningful performance benefit
  *
  * ## When to Avoid
  * 1. **Unbounded argument variety** - If arguments are highly unique (e.g., timestamps),
- *    cache will thrash; consider {@link createWeakMapSelector} for object keys
+ * cache will thrash; consider {@link createWeakMapSelector} for object keys
  * 2. **Single argument pattern** - If selector is always called with the same argument,
- *    standard `createSelector` (cache size 1) is sufficient
+ * standard `createSelector` (cache size 1) is sufficient
  * 3. **Memory-constrained environments** - Large cache sizes with large result
- *    objects increase memory footprint
+ * objects increase memory footprint
  *
  * @example
  * ```ts
@@ -141,7 +139,6 @@ export const createWeakMapSelector = createSelectorCreator(weakMapMemoize);
  * // selectTokensForChain(state, '0x89');  // Polygon - cached
  * // selectTokensForChain(state, '0x1');   // Mainnet - cache hit
  * ```
- *
  * @param maxSize - Maximum number of cached results (default: 10)
  * @returns Selector creator with specified cache size
  */
@@ -156,19 +153,19 @@ export const createLruSelector = (maxSize = 10) =>
  *
  * ## When to Use
  * 1. **Arrays of stable objects** - Elements are memoized or come from normalized
- *    state where references are preserved across updates
+ * state where references are preserved across updates
  * 2. **Filtered/sliced results** - Upstream selector returns a new array reference
- *    but contains the same object references (e.g., `.filter()`, `.slice()`)
+ * but contains the same object references (e.g., `.filter()`, `.slice()`)
  * 3. **Computed array selections** - Result is an array derived from multiple inputs
- *    where the contained objects don't change frequently
+ * where the contained objects don't change frequently
  *
  * ## When to Avoid
  * 1. **Arrays of primitives that are recreated** - New arrays with same primitive
- *    values won't match; consider {@link createDeepEqualSelector}
+ * values won't match; consider {@link createDeepEqualSelector}
  * 2. **Nested arrays/objects within elements** - Shallow comparison won't detect
- *    changes inside array elements; use {@link createFastDeepEqualSelector}
+ * changes inside array elements; use {@link createFastDeepEqualSelector}
  * 3. **Unstable element references** - If elements are recreated on each selector
- *    call, shallow comparison provides no benefit
+ * call, shallow comparison provides no benefit
  *
  * @example
  * ```ts
@@ -189,7 +186,6 @@ export const createLruSelector = (maxSize = 10) =>
  *   },
  * );
  * ```
- *
  * @see {@link shallowArrayEqual} - The underlying comparison function
  */
 export const createShallowArrayEqualSelector = createSelectorCreator(
@@ -205,19 +201,19 @@ export const createShallowArrayEqualSelector = createSelectorCreator(
  *
  * ## When to Use
  * 1. **Flat configuration objects** - Objects with primitive or stable reference values
- *    that may be recreated with the same contents
+ * that may be recreated with the same contents
  * 2. **Merged/spread objects** - Upstream selector combines objects via spread operator
- *    but underlying property values are referentially stable
+ * but underlying property values are referentially stable
  * 3. **Computed object selections** - Result is an object derived from state where
- *    property values don't change frequently
+ * property values don't change frequently
  *
  * ## When to Avoid
  * 1. **Nested objects** - Shallow comparison won't detect changes in nested properties;
- *    use {@link createFastDeepEqualSelector} or {@link createDeepEqualSelector}
+ * use {@link createFastDeepEqualSelector} or {@link createDeepEqualSelector}
  * 2. **Objects with array values** - Arrays are compared by reference only; if arrays
- *    are recreated, use {@link createDeepEqualSelector}
+ * are recreated, use {@link createDeepEqualSelector}
  * 3. **Dynamic key sets** - If object shape changes frequently (keys added/removed),
- *    comparison overhead increases
+ * comparison overhead increases
  *
  * @example
  * ```ts
@@ -234,7 +230,6 @@ export const createShallowArrayEqualSelector = createSelectorCreator(
  * // The wrapped objects are stable references from state, so shallow comparison
  * // detects when the returned object is equivalent to the previous result.
  * ```
- *
  * @see {@link shallowObjectEqual} - The underlying comparison function
  */
 export const createShallowObjectEqualSelector = createSelectorCreator(
@@ -251,19 +246,19 @@ export const createShallowObjectEqualSelector = createSelectorCreator(
  *
  * ## When to Use
  * 1. **Structural changes are common** - Data frequently changes in ways that alter
- *    array lengths or object key counts (items added/removed)
+ * array lengths or object key counts (items added/removed)
  * 2. **Deep equality needed with better average performance** - Need full deep comparison
- *    but want to optimize for the common case of structural differences
+ * but want to optimize for the common case of structural differences
  * 3. **Mixed change patterns** - Some updates are structural (fast reject), others are
- *    value-only (falls back to deep comparison)
+ * value-only (falls back to deep comparison)
  *
  * ## When to Avoid
  * 1. **Changes are typically value-only** - If array lengths and key counts rarely change,
- *    the pre-checks add overhead; use {@link createDeepEqualSelector} directly
+ * the pre-checks add overhead; use {@link createDeepEqualSelector} directly
  * 2. **Shallow comparison is sufficient** - If data is flat, use
- *    {@link createShallowArrayEqualSelector} or {@link createShallowObjectEqualSelector}
+ * {@link createShallowArrayEqualSelector} or {@link createShallowObjectEqualSelector}
  * 3. **Inputs are referentially stable** - If references don't change when values don't,
- *    use `createSelector` with default reference equality
+ * use `createSelector` with default reference equality
  *
  * @example
  * ```ts
@@ -283,7 +278,6 @@ export const createShallowObjectEqualSelector = createSelectorCreator(
  *   },
  * );
  * ```
- *
  * @see {@link fastDeepEqual} - The underlying comparison function
  * @see {@link createDeepEqualSelector} - Alternative without structural pre-checks
  */
@@ -302,9 +296,9 @@ export const createFastDeepEqualSelector = createSelectorCreator(
  *
  * ## When to Use
  * 1. **Transformations that may produce equal results** - Selector computes a value
- *    that often equals the previous result even when inputs change
+ * that often equals the previous result even when inputs change
  * 2. **Derived primitive values** - Computing strings, numbers, or booleans where
- *    reference equality doesn't apply
+ * reference equality doesn't apply
  * 3. **Aggregations** - Sum, count, or other reductions that may produce same value
  *
  * ## When to Avoid
@@ -331,7 +325,6 @@ export const createFastDeepEqualSelector = createSelectorCreator(
  *   }),
  * );
  * ```
- *
  * @see {@link createDeepEqualSelector} - For input equality comparison instead
  */
 export const createResultEqualSelector = createSelectorCreator({
