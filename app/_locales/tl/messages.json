@@ -3912,9 +3912,6 @@
   "noAccountsFound": {
     "message": "Walang nakitang account para sa ibinigay na query sa paghahanap"
   },
-  "noConnectedAccountTitle": {
-    "message": "Ang MetaMask ay hindi nakakonekta sa site na ito"
-  },
   "noConnectionDescription": {
     "message": "Para kumonekta sa site, hanapin at piliin ang \"connect\" button. Tandaan na ang MetaMask ay maaari lamang kumonekta sa mga site sa web3"
   },
@@ -4646,10 +4643,7 @@
   "permissions": {
     "message": "Mga Pahintulot"
   },
-  "permissionsPageEmptyContent": {
-    "message": "Walang makikita rito"
-  },
-  "permissionsPageEmptySubContent": {
+  "permissionsPageEmptyDescription": {
     "message": "Dito mo makikita ang mga pahintulot na iyong binigay sa mga naka-install na Snap o konektadong site."
   },
   "permitSimulationChange_approve": {
