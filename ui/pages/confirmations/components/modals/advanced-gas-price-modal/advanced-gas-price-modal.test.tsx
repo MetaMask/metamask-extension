@@ -9,9 +9,7 @@ import { GasModalType } from '../../../constants/gas';
 import { AdvancedGasPriceModal } from './advanced-gas-price-modal';
 
 jest.mock('../../gas-price-input/gas-price-input', () => ({
-  GasPriceInput: () => (
-    <div data-testid="gas-price-input">Gas Price Input</div>
-  ),
+  GasPriceInput: () => <div data-testid="gas-price-input">Gas Price Input</div>,
 }));
 
 jest.mock('../../gas-input/gas-input', () => ({

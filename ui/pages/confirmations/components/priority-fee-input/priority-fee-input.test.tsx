@@ -27,7 +27,7 @@ const render = (props = {}) => {
 
   const result = renderWithConfirmContextProvider(
     <PriorityFeeInput
-      maxFeePerGas="0x3b9aca00"
+      maxFeePerGas="0x2540be400"
       onChange={mockOnChange}
       onErrorChange={mockOnErrorChange}
       {...props}
