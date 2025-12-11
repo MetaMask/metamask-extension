@@ -278,7 +278,7 @@ export class MockedDiscoveryBuilder {
 
     for (const [index, account] of accounts.entries()) {
       const evmAddress = account[ACCOUNT_TYPE.Ethereum];
-      const solAddress = account[ACCOUNT_TYPE.Solana];
+      //const solAddress = account[ACCOUNT_TYPE.Solana];
 
       const isLastIndex = index === untilGroupIndex;
 
@@ -296,7 +296,7 @@ export class MockedDiscoveryBuilder {
         evmAddress,
         !shouldDiscover || shouldStop,
       );
-      await this.#mockSolDiscoveryOnce(mockServer, solAddress);
+      //await this.#mockSolDiscoveryOnce(mockServer, solAddress);
 
       if (shouldStop) {
         break;
