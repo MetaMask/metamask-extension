@@ -7225,6 +7225,12 @@
   "staked": {
     "message": "Staked"
   },
+  "stakingDeposit": {
+    "message": "Staking Deposit"
+  },
+  "stakingWithdrawal": {
+    "message": "Staking Withdrawal"
+  },
   "standardAccountLabel": {
     "message": "Standard Account"
   },
