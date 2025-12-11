@@ -261,10 +261,7 @@ export const isNetworkAdded = (
 
 export const toBridgeToken = (
   payload: TokenPayload['payload'],
-): BridgeToken | null => {
-  if (!payload) {
-    return null;
-  }
+): BridgeToken => {
   const caipChainId = formatChainIdToCaip(payload.chainId);
   const assetId = payload.assetId ?? toAssetId(payload.address, caipChainId);
   const imageFromPayload = payload.image ?? payload.iconUrl ?? payload.icon;

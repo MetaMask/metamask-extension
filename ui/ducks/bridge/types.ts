@@ -63,5 +63,5 @@ export type TokenPayload = {
     assetId?: CaipAssetType;
     aggregators?: string[];
     occurrences?: number;
-  } | null;
+  };
 };
