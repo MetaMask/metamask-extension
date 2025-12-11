@@ -95,6 +95,8 @@ export default function CreationSuccessful() {
     };
 
     if (isSidePanelEnabled) {
+      // NOTE: `sidePanel.onClosed` event is only available on later versions of Chrome
+      // REFERENCE: {@link https://developer.chrome.com/docs/extensions/reference/api/sidePanel#event-onClosed}
       if (browserWithSidePanel?.sidePanel?.onClosed?.addListener) {
         browserWithSidePanel.sidePanel.onClosed.addListener(
           handleSidePanelClosed,
