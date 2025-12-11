@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports, import/no-commonjs */
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import type { To } from 'react-router-dom-v5-compat';
+import type { To } from 'react-router-dom';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,

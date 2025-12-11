@@ -1,5 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom-v5-compat';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import {
@@ -38,34 +44,52 @@ import {
 import { ReviewGatorPermissionItem } from '../components';
 import { PREVIOUS_ROUTE } from '../../../../../helpers/constants/routes';
 
-type ReviewGatorPermissionsPageProps = {
-  params?: { chainId: string; permissionGroupName: string; origin?: string };
-  navigate?: (
-    to: string | number,
-    options?: { replace?: boolean; state?: Record<string, unknown> },
-  ) => void;
-};
-
-export const ReviewGatorPermissionsPage = ({
-  params,
-  navigate: navigateProp,
-}: ReviewGatorPermissionsPageProps = {}) => {
+export const ReviewGatorPermissionsPage = () => {
   const t = useI18nContext();
-  const navigateHook = useNavigate();
-  const navigate = navigateProp || navigateHook;
-  const urlParamsHook = useParams<{
+  const navigate = useNavigate();
+  const { chainId, origin } = useParams<{
     chainId: string;
     permissionGroupName: string;
     origin?: string;
   }>();
 
-  const { chainId, origin } = params || urlParamsHook;
   const originDecoded = origin ? safeDecodeURIComponent(origin) : undefined;
 
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
-  const [totalGatorPermissions, setTotalGatorPermissions] = useState(0);
+  const [pendingRevokeClicks, setPendingRevokeClicks] = useState<Set<string>>(
+    new Set(),
+  );
+  const revokeTimeoutsRef = useRef<Map<string, ReturnType<typeof setTimeout>>>(
+    new Map(),
+  );
+
+  // Cleanup all pending timeouts on unmount
+  useEffect(() => {
+    const timeouts = revokeTimeoutsRef.current;
+    return () => {
+      timeouts.forEach((timeout) => clearTimeout(timeout));
+      timeouts.clear();
+    };
+  }, []);
+
+  // Helper functions for managing pending state
+  const addPendingContext = useCallback((context: string) => {
+    setPendingRevokeClicks((prev) => {
+      const next = new Set(prev);
+      next.add(context);
+      return next;
+    });
+  }, []);
+
+  const removePendingContext = useCallback((context: string) => {
+    setPendingRevokeClicks((prev) => {
+      const next = new Set(prev);
+      next.delete(context);
+      return next;
+    });
+  }, []);
 
   const networkName: string = useMemo(() => {
     const networkNameKey = extractNetworkName(evmNetworks, chainId as Hex);
@@ -100,22 +124,42 @@ export const ReviewGatorPermissionsPage = ({
     chainId: chainId as Hex,
   });
 
-  useEffect(() => {
-    setTotalGatorPermissions(gatorPermissions.length);
-  }, [chainId, gatorPermissions]);
+  const handleRevokeClick = useCallback(
+    async (
+      permission: StoredGatorPermissionSanitized<
+        Signer,
+        PermissionTypesWithCustom
+      >,
+    ) => {
+      const { context } = permission.permissionResponse;
 
-  const handleRevokeClick = async (
-    permission: StoredGatorPermissionSanitized<
-      Signer,
-      PermissionTypesWithCustom
-    >,
-  ) => {
-    try {
-      await revokeGatorPermission(permission);
-    } catch (error) {
-      console.error('Error revoking gator permission:', error);
-    }
-  };
+      // Set pending state immediately to disable button and show "Pending..." text
+      addPendingContext(context);
+
+      try {
+        await revokeGatorPermission(permission);
+
+        // Delay clearing to prevent visual flash before transaction window shows
+        const timeoutId = setTimeout(() => {
+          removePendingContext(context);
+          revokeTimeoutsRef.current.delete(context);
+        }, 800); // 800ms delay to prevent visual flash before transaction window shows
+
+        revokeTimeoutsRef.current.set(context, timeoutId);
+      } catch (error) {
+        console.error('Error revoking gator permission:', error);
+
+        // Clean up any pending timeout
+        const existingTimeout = revokeTimeoutsRef.current.get(context);
+        clearTimeout(existingTimeout);
+        revokeTimeoutsRef.current.delete(context);
+
+        // Clear pending state immediately on error
+        removePendingContext(context);
+      }
+    },
+    [revokeGatorPermission, addPendingContext, removePendingContext],
+  );
 
   const renderGatorPermissions = (
     permissions: StoredGatorPermissionSanitized<
@@ -123,16 +167,17 @@ export const ReviewGatorPermissionsPage = ({
       PermissionTypesWithCustom
     >[],
   ) =>
-    permissions.map((permission) => {
-      return (
-        <ReviewGatorPermissionItem
-          key={`${permission.siteOrigin}-${permission.permissionResponse.context}`}
-          networkName={networkName}
-          gatorPermission={permission}
-          onRevokeClick={() => handleRevokeClick(permission)}
-        />
-      );
-    });
+    permissions.map((permission) => (
+      <ReviewGatorPermissionItem
+        key={`${permission.siteOrigin}-${permission.permissionResponse.context}`}
+        networkName={networkName}
+        gatorPermission={permission}
+        onRevokeClick={() => handleRevokeClick(permission)}
+        hasRevokeBeenClicked={pendingRevokeClicks.has(
+          permission.permissionResponse.context,
+        )}
+      />
+    ));
 
   return (
     <Page
@@ -162,7 +207,7 @@ export const ReviewGatorPermissionsPage = ({
         </Text>
       </Header>
       <Content padding={0}>
-        {totalGatorPermissions > 0 ? (
+        {gatorPermissions.length > 0 ? (
           renderGatorPermissions(gatorPermissions)
         ) : (
           <Box

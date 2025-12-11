@@ -9,19 +9,12 @@ import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import UnlockPage from '.';
 
 const mockUseNavigate = jest.fn();
-jest.mock('react-router-dom-v5-compat', () => {
+jest.mock('react-router-dom', () => {
   return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
+    ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
   };
 });
-
-const mockUseNavState = jest.fn(() => null);
-jest.mock('../../contexts/navigation-state', () => ({
-  useNavState: () => mockUseNavState(),
-  useSetNavState: () => jest.fn(),
-  NavigationStateProvider: ({ children }) => children,
-}));
 
 jest.mock('../onboarding-flow/welcome/fox-appear-animation', () => ({
   __esModule: true,
@@ -67,7 +60,6 @@ describe('Unlock Page', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseNavState.mockReturnValue(null); // Reset navState to null for each test
   });
 
   it('should match snapshot', () => {
@@ -178,28 +170,6 @@ describe('Unlock Page', () => {
     expect(mockUseNavigate).toHaveBeenCalledWith(intendedPath);
   });
 
-  it('should redirect to context-stored location when unlocked (HashRouter v5-compat workaround)', () => {
-    const intendedPath = '/previous-route';
-    const mockStateWithUnlock = {
-      metamask: { isUnlocked: true },
-    };
-    const store = configureMockStore([thunk])(mockStateWithUnlock);
-
-    const pathname = '/unlock';
-
-    // Mock navState to provide the redirect location (v5-compat way)
-    mockUseNavState.mockReturnValueOnce({
-      from: { pathname: intendedPath },
-    });
-
-    renderWithProvider(<UnlockPage />, store, {
-      pathname,
-    });
-
-    expect(mockUseNavigate).toHaveBeenCalledTimes(1);
-    expect(mockUseNavigate).toHaveBeenCalledWith(intendedPath);
-  });
-
   it('changes password, submits, and redirects to the specified route (from location.state)', async () => {
     const intendedPath = '/intended-route';
     const intendedSearch = '?abc=123';
@@ -230,49 +200,12 @@ describe('Unlock Page', () => {
     expect(mockUseNavigate).toHaveBeenCalledWith(intendedPath + intendedSearch);
   });
 
-  it('changes password, submits, and redirects to the specified route (from navState)', async () => {
-    const intendedPath = '/intended-route';
-    const intendedSearch = '?abc=123';
-    const mockStateNonUnlocked = {
-      metamask: { isUnlocked: false },
-    };
-    const store = configureMockStore([thunk])(mockStateNonUnlocked);
-
-    const pathname = '/unlock';
-
-    // Mock navState to provide the redirect location (v5-compat way)
-    mockUseNavState.mockReturnValue({
-      from: { pathname: intendedPath, search: intendedSearch },
-    });
-
-    const { queryByTestId } = renderWithProvider(<UnlockPage />, store, {
-      pathname,
-    });
-
-    const passwordField = queryByTestId('unlock-password');
-    const loginButton = queryByTestId('unlock-submit');
-    fireEvent.change(passwordField, { target: { value: 'a-password' } });
-    fireEvent.click(loginButton);
-    await Promise.resolve(); // Wait for async operations
-
-    expect(mockTryUnlockMetamask).toHaveBeenCalledTimes(1);
-    expect(mockUseNavigate).toHaveBeenCalledTimes(1);
-    expect(mockUseNavigate).toHaveBeenCalledWith(intendedPath + intendedSearch);
-  });
-
   it('should show login error modal when authentication error is thrown', async () => {
-    const intendedPath = '/intended-route';
-    const intendedSearch = '?abc=123';
     const mockStateNonUnlocked = {
       metamask: { isUnlocked: false, completedOnboarding: true },
     };
     const store = configureMockStore([thunk])(mockStateNonUnlocked);
     const pathname = '/unlock';
-    // Mock navState to provide the redirect location (v5-compat way)
-    mockUseNavState.mockReturnValue({
-      from: { pathname: intendedPath, search: intendedSearch },
-    });
-
     mockTryUnlockMetamask.mockImplementationOnce(
       jest.fn(() => {
         return Promise.reject(

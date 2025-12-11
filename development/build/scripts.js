@@ -1338,7 +1338,8 @@ function renderHtmlFile({
     .replace(
       '../../vendor/trezor/usb-permissions.js',
       './vendor/trezor/usb-permissions.js',
-    );
+    )
+    .replace('../../images/icon-64.png', './images/icon-64.png');
   browserPlatforms.forEach((platform) => {
     const dest = `./dist/${platform}/${htmlName}.html`;
     // we dont have a way of creating async events atm

@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { renderWithProvider, screen, fireEvent } from '../../../../test/jest';
+import { fireEvent } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import testData from '../../../../.storybook/test-data';
 
@@ -96,36 +97,39 @@ describe('DetectedToken', () => {
       setShowDetectedTokens: jest.fn(),
     };
 
-    renderWithProvider(<DetectedToken {...props} />, store);
+    const { getByText, getAllByText } = renderWithProvider(
+      <DetectedToken {...props} />,
+      store,
+    );
 
-    expect(screen.getByText('0 LINK')).toBeInTheDocument();
-    expect(screen.getByText('0 COMP')).toBeInTheDocument();
-    expect(screen.getByText('0 FSW')).toBeInTheDocument();
-    expect(screen.getAllByText('$0')).toHaveLength(3);
-    expect(screen.getAllByText('Token address:')).toHaveLength(3);
-    expect(screen.getByText('0x51491...986CA')).toBeInTheDocument();
-    expect(screen.getByText('0xc00e9...26888')).toBeInTheDocument();
-    expect(screen.getByText('0xfffff...126DB')).toBeInTheDocument();
-    expect(screen.getAllByText('From token lists:')).toHaveLength(3);
-    expect(screen.getByText('Aave, Bancor')).toBeInTheDocument();
-    expect(screen.getByText('+ 9 more')).toBeInTheDocument();
-    fireEvent.click(screen.getByText('+ 9 more'));
+    expect(getByText('0 LINK')).toBeInTheDocument();
+    expect(getByText('0 COMP')).toBeInTheDocument();
+    expect(getByText('0 FSW')).toBeInTheDocument();
+    expect(getAllByText('$0')).toHaveLength(3);
+    expect(getAllByText('Token address:')).toHaveLength(3);
+    expect(getByText('0x51491...986CA')).toBeInTheDocument();
+    expect(getByText('0xc00e9...26888')).toBeInTheDocument();
+    expect(getByText('0xfffff...126DB')).toBeInTheDocument();
+    expect(getAllByText('From token lists:')).toHaveLength(3);
+    expect(getByText('Aave, Bancor')).toBeInTheDocument();
+    expect(getByText('+ 9 more')).toBeInTheDocument();
+    fireEvent.click(getByText('+ 9 more'));
     expect(
-      screen.getByText(
+      getByText(
         'Aave, Bancor, CMC, Crypto.com, CoinGecko, 1inch, Paraswap, PMM, Zapper, Zerion, 0x.',
       ),
     ).toBeInTheDocument();
-    expect(screen.getByText('Bancor, CMC')).toBeInTheDocument();
-    expect(screen.getByText('+ 8 more')).toBeInTheDocument();
-    fireEvent.click(screen.getByText('+ 8 more'));
+    expect(getByText('Bancor, CMC')).toBeInTheDocument();
+    expect(getByText('+ 8 more')).toBeInTheDocument();
+    fireEvent.click(getByText('+ 8 more'));
     expect(
-      screen.getByText(
+      getByText(
         'Bancor, CMC, Crypto.com, CoinGecko, 1inch, Paraswap, PMM, Zapper, Zerion, 0x.',
       ),
     ).toBeInTheDocument();
-    expect(screen.getByText('CoinGecko, 1inch')).toBeInTheDocument();
-    expect(screen.getByText('+ 1 more')).toBeInTheDocument();
-    fireEvent.click(screen.getByText('+ 1 more'));
-    expect(screen.getByText('CoinGecko, 1inch, Lifi.')).toBeInTheDocument();
+    expect(getByText('CoinGecko, 1inch')).toBeInTheDocument();
+    expect(getByText('+ 1 more')).toBeInTheDocument();
+    fireEvent.click(getByText('+ 1 more'));
+    expect(getByText('CoinGecko, 1inch, Lifi.')).toBeInTheDocument();
   });
 });

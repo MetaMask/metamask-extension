@@ -6,6 +6,8 @@ export const BASE_RULESET_ENGINE_API_URL =
 
 export const BASE_CLAIMS_API_URL = 'https://claims.dev-api.cx.metamask.io';
 
+export const BASE_REWARDS_API_URL = 'https://rewards.uat-api.cx.metamask.io';
+
 export const SUBSCRIPTION_API = {
   PRICING: `${BASE_SUBSCRIPTION_API_URL}/pricing`,
   ELIGIBILITY: `${BASE_SUBSCRIPTION_API_URL}/subscriptions/eligibility`,
@@ -31,6 +33,37 @@ export const RULESET_ENGINE_API = {
   TRANSACTION_COVERAGE_RESULT: `${BASE_RULESET_ENGINE_API_URL}/transaction/coverage/result`,
   SIGNATURE_COVERAGE_INIT: `${BASE_RULESET_ENGINE_API_URL}/signature/coverage/init`,
   SIGNATURE_COVERAGE_RESULT: `${BASE_RULESET_ENGINE_API_URL}/signature/coverage/result`,
+};
+
+export const REWARDS_API = {
+  POINTS_ESTIMATION: `${BASE_REWARDS_API_URL}/points-estimation`,
+  SEASONS_STATUS: `${BASE_REWARDS_API_URL}/public/seasons/status`,
+  SEASON_METADATA: `${BASE_REWARDS_API_URL}/public/seasons`,
+};
+
+// Mock response for rewards points estimation
+export const MOCK_REWARDS_POINTS_ESTIMATION_RESPONSE = {
+  pointsEstimate: 100,
+  bonusBips: 0,
+};
+
+// Mock response for rewards seasons status - provides a valid current season
+export const MOCK_REWARDS_SEASONS_STATUS_RESPONSE = {
+  current: {
+    id: 'mock-season-1',
+    startDate: '2025-01-01T00:00:00Z',
+    endDate: '2025-12-31T23:59:59Z',
+  },
+  next: null,
+};
+
+// Mock response for rewards season metadata
+export const MOCK_REWARDS_SEASON_METADATA_RESPONSE = {
+  id: 'mock-season-1',
+  name: 'Mock Season',
+  startDate: '2025-01-01T00:00:00Z',
+  endDate: '2025-12-31T23:59:59Z',
+  tiers: [],
 };
 
 export const BASE_SHIELD_SUBSCRIPTION_CARD = {
@@ -173,6 +206,7 @@ export const SHIELD_USER_EVENTS_RESPONSE = {
 
 const MOCK_CLAIM_ID_1 = 'test_claim_id_00001';
 const MOCK_CLAIM_ID_2 = 'test_claim_id_00002';
+const MOCK_CLAIM_ID_3 = 'test_claim_id_00003';
 
 export const SUBMIT_CLAIMS_RESPONSE = {
   status: 'success',
@@ -219,12 +253,68 @@ export const MOCK_CLAIM_2 = {
     '0x55da3eaee9bbefd762a33413b764ee2c025ff4a2cc0a49a05896ceb24c95712f',
   reimbursementWalletAddress: '0x88069b650422308bf8b472beaf790189f3f28309',
   description: 'I got scammed. Please help me get my money back. T_T @_@',
-  attachments: [],
+  attachments: [
+    {
+      originalname: 'test-document.pdf',
+      publicUrl: 'https://mock-storage-url.com/claims/test-document.pdf',
+      contentType: 'application/pdf',
+    },
+  ],
   intercomId: `intercom_${MOCK_CLAIM_ID_2}`,
   status: 'created',
 };
 
 export const MOCK_CLAIMS_RESPONSE = [MOCK_CLAIM_1];
+
+// Mock claim with approved status for history tab
+export const MOCK_CLAIM_APPROVED = {
+  ...MOCK_CLAIM_1,
+  id: 'test_claim_id_approved',
+  shortId: '00003',
+  status: 'approved',
+  intercomId: 'intercom_test_claim_id_approved',
+};
+
+// Mock claim with rejected status for history tab
+export const MOCK_CLAIM_REJECTED = {
+  ...MOCK_CLAIM_2,
+  id: 'test_claim_id_rejected',
+  shortId: '00004',
+  status: 'rejected',
+  intercomId: 'intercom_test_claim_id_rejected',
+};
+
+// Mock claim 3 with created status (pending)
+export const MOCK_CLAIM_3 = {
+  id: MOCK_CLAIM_ID_3,
+  shortId: '00005',
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+  chainId: '1',
+  email: 'e2e@metamask.io',
+  impactedWalletAddress: '0x5cfe73b6021e818b776b421b1c4db2474086a7e3',
+  impactedTxHash:
+    '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890',
+  reimbursementWalletAddress: '0x88069b650422308bf8b472beaf790189f3f28309',
+  description: 'I got scammed. Please help me get my money back. T_T @_@',
+  attachments: [],
+  intercomId: `intercom_${MOCK_CLAIM_ID_3}`,
+  status: 'created',
+};
+
+// Mock claims response with 3 pending claims (maximum limit)
+export const MOCK_CLAIMS_3_PENDING = [
+  MOCK_CLAIM_1, // pending (created status)
+  MOCK_CLAIM_2, // pending (created status)
+  MOCK_CLAIM_3, // pending (created status)
+];
+
+// Mock claims response with pending, approved, and rejected claims
+export const MOCK_CLAIMS_WITH_HISTORY = [
+  MOCK_CLAIM_1, // pending (created status)
+  MOCK_CLAIM_APPROVED, // completed
+  MOCK_CLAIM_REJECTED, // rejected
+];
 
 export const MOCK_CLAIM_GENERATE_MESSAGE_RESPONSE = {
   message:
