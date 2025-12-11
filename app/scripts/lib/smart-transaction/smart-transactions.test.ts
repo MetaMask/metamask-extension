@@ -17,7 +17,6 @@ import {
   type SmartTransaction,
 } from '@metamask/smart-transactions-controller';
 import type {
-  TransactionControllerConfirmExternalTransactionAction,
   TransactionControllerGetNonceLockAction,
   TransactionControllerGetTransactionsAction,
   TransactionControllerUpdateTransactionAction,
@@ -88,7 +87,6 @@ function withRequest<ReturnValue>(
     MockAnyNamespace,
     | MessengerActions<SmartTransactionsControllerMessenger>
     | TransactionControllerGetNonceLockAction
-    | TransactionControllerConfirmExternalTransactionAction
     | TransactionControllerGetTransactionsAction
     | TransactionControllerUpdateTransactionAction
     | AllowedActions,
@@ -123,6 +121,24 @@ function withRequest<ReturnValue>(
   const endFlowSpy = jest.fn();
   messenger.registerActionHandler('ApprovalController:endFlow', endFlowSpy);
 
+  // Register RemoteFeatureFlagController:getState handler for the new controller
+  messenger.registerActionHandler(
+    'RemoteFeatureFlagController:getState',
+    jest.fn().mockReturnValue({
+      remoteFeatureFlags: {
+        smartTransactionsNetworks: {
+          default: { extensionActive: true },
+        },
+      },
+    }),
+  );
+
+  // Register ErrorReportingService:captureException handler
+  messenger.registerActionHandler(
+    'ErrorReportingService:captureException',
+    jest.fn(),
+  );
+
   const smartTransactionsControllerMessenger = new Messenger<
     'SmartTransactionsController',
     MessengerActions<SmartTransactionsControllerMessenger>,
@@ -136,11 +152,15 @@ function withRequest<ReturnValue>(
     messenger: smartTransactionsControllerMessenger,
     actions: [
       'TransactionController:getNonceLock',
-      'TransactionController:confirmExternalTransaction',
       'TransactionController:getTransactions',
       'TransactionController:updateTransaction',
+      'RemoteFeatureFlagController:getState',
+      'ErrorReportingService:captureException',
     ],
-    events: ['NetworkController:stateChange'],
+    events: [
+      'NetworkController:stateChange',
+      'RemoteFeatureFlagController:stateChange',
+    ],
   });
 
   const smartTransactionsController = new SmartTransactionsController({
@@ -148,7 +168,6 @@ function withRequest<ReturnValue>(
     trackMetaMetricsEvent: jest.fn(),
     getMetaMetricsProps: jest.fn(),
     clientId: ClientId.Extension,
-    getFeatureFlags: jest.fn(),
   });
 
   jest.spyOn(smartTransactionsController, 'getFees').mockResolvedValue({
@@ -202,12 +221,10 @@ function withRequest<ReturnValue>(
     featureFlags: {
       extensionActive: true,
       mobileActive: false,
-      smartTransactions: {
-        expectedDeadline: 45,
-        maxDeadline: 150,
-        extensionReturnTxHashAsap: false,
-        extensionReturnTxHashAsapBatch: false,
-      },
+      expectedDeadline: 45,
+      maxDeadline: 150,
+      extensionReturnTxHashAsap: false,
+      extensionReturnTxHashAsapBatch: false,
     },
     ...options,
   };
@@ -296,7 +313,7 @@ describe('submitSmartTransactionHook', () => {
   it('skips getting fees if the transaction is signed and sponsored', async () => {
     withRequest(async ({ request }) => {
       request.transactionMeta.isGasFeeSponsored = true;
-      request.featureFlags.smartTransactions.extensionReturnTxHashAsap = true;
+      request.featureFlags.extensionReturnTxHashAsap = true;
 
       const result = await submitSmartTransactionHook(request);
 
@@ -312,7 +329,7 @@ describe('submitSmartTransactionHook', () => {
 
   it('returns a txHash asap if the feature flag requires it', async () => {
     withRequest(async ({ request }) => {
-      request.featureFlags.smartTransactions.extensionReturnTxHashAsap = true;
+      request.featureFlags.extensionReturnTxHashAsap = true;
       const result = await submitSmartTransactionHook(request);
       expect(result).toEqual({ transactionHash: txHash });
     });
@@ -901,13 +918,11 @@ describe('submitSmartTransactionHook', () => {
             featureFlags: {
               extensionActive: true,
               mobileActive: false,
-              smartTransactions: {
-                expectedDeadline: 45,
-                maxDeadline: 150,
-                extensionReturnTxHashAsap: false,
-                extensionReturnTxHashAsapBatch: false,
-                extensionSkipSmartTransactionStatusPage: true,
-              },
+              expectedDeadline: 45,
+              maxDeadline: 150,
+              extensionReturnTxHashAsap: false,
+              extensionReturnTxHashAsapBatch: false,
+              extensionSkipSmartTransactionStatusPage: true,
             },
           },
         },
@@ -939,13 +954,11 @@ describe('submitSmartTransactionHook', () => {
             featureFlags: {
               extensionActive: true,
               mobileActive: false,
-              smartTransactions: {
-                expectedDeadline: 45,
-                maxDeadline: 150,
-                extensionReturnTxHashAsap: false,
-                extensionReturnTxHashAsapBatch: false,
-                extensionSkipSmartTransactionStatusPage: false,
-              },
+              expectedDeadline: 45,
+              maxDeadline: 150,
+              extensionReturnTxHashAsap: false,
+              extensionReturnTxHashAsapBatch: false,
+              extensionSkipSmartTransactionStatusPage: false,
             },
           },
         },
@@ -977,13 +990,11 @@ describe('submitSmartTransactionHook', () => {
             featureFlags: {
               extensionActive: true,
               mobileActive: false,
-              smartTransactions: {
-                expectedDeadline: 45,
-                maxDeadline: 150,
-                extensionReturnTxHashAsap: false,
-                extensionReturnTxHashAsapBatch: false,
-                // extensionSkipSTXStatusPage is not set (undefined)
-              },
+              expectedDeadline: 45,
+              maxDeadline: 150,
+              extensionReturnTxHashAsap: false,
+              extensionReturnTxHashAsapBatch: false,
+              // extensionSkipSmartTransactionStatusPage is not set (undefined)
             },
           },
         },
@@ -1039,13 +1050,11 @@ describe('submitSmartTransactionHook', () => {
             featureFlags: {
               extensionActive: true,
               mobileActive: false,
-              smartTransactions: {
-                expectedDeadline: 45,
-                maxDeadline: 150,
-                extensionReturnTxHashAsap: false,
-                extensionReturnTxHashAsapBatch: false,
-                extensionSkipSmartTransactionStatusPage: true,
-              },
+              expectedDeadline: 45,
+              maxDeadline: 150,
+              extensionReturnTxHashAsap: false,
+              extensionReturnTxHashAsapBatch: false,
+              extensionSkipSmartTransactionStatusPage: true,
             },
           },
         },
@@ -1077,13 +1086,11 @@ describe('submitSmartTransactionHook', () => {
             featureFlags: {
               extensionActive: true,
               mobileActive: false,
-              smartTransactions: {
-                expectedDeadline: 45,
-                maxDeadline: 150,
-                extensionReturnTxHashAsap: false,
-                extensionReturnTxHashAsapBatch: false,
-                extensionSkipSmartTransactionStatusPage: true,
-              },
+              expectedDeadline: 45,
+              maxDeadline: 150,
+              extensionReturnTxHashAsap: false,
+              extensionReturnTxHashAsapBatch: false,
+              extensionSkipSmartTransactionStatusPage: true,
             },
             transactions: [
               {
@@ -1368,7 +1375,7 @@ describe('submitBatchSmartTransactionHook', () => {
 
   it('returns txHashes asap if extensionReturnTxHashAsapBatch feature flag is enabled', async () => {
     withRequest(async ({ request }) => {
-      request.featureFlags.smartTransactions.extensionReturnTxHashAsapBatch = true;
+      request.featureFlags.extensionReturnTxHashAsapBatch = true;
       request.smartTransactionsController.submitSignedTransactions = jest.fn(
         async (_) => {
           return {
@@ -1388,7 +1395,7 @@ describe('submitBatchSmartTransactionHook', () => {
 
   it('waits for transaction hash if extensionReturnTxHashAsapBatch is false', async () => {
     withRequest(async ({ request, messenger }) => {
-      request.featureFlags.smartTransactions.extensionReturnTxHashAsapBatch = false;
+      request.featureFlags.extensionReturnTxHashAsapBatch = false;
       request.smartTransactionsController.submitSignedTransactions = jest.fn(
         async (_) => {
           return {

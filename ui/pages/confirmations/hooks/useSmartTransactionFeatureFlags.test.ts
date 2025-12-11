@@ -35,10 +35,12 @@ async function runHook({
   smartTransactionsOptInStatus,
   chainId,
   confirmation,
+  batchStatusPollingInterval,
 }: {
   smartTransactionsOptInStatus: boolean;
   chainId: Hex;
   confirmation?: Partial<TransactionMeta>;
+  batchStatusPollingInterval?: number;
 }) {
   const transaction =
     (confirmation as TransactionMeta) ??
@@ -52,6 +54,17 @@ async function runHook({
       selectedNetworkClientId: 'Test',
       preferences: {
         smartTransactionsOptInStatus,
+      },
+      remoteFeatureFlags: {
+        smartTransactionsNetworks: {
+          default: {
+            extensionActive: true,
+          },
+          [chainId]: {
+            extensionActive: true,
+            batchStatusPollingInterval,
+          },
+        },
       },
     },
   });
@@ -123,34 +136,24 @@ describe('useSmartTransactionFeatureFlags', () => {
   });
 
   it('updates refresh interval when feature flags include interval', async () => {
-    fetchSwapsFeatureFlagsMock.mockResolvedValue({
-      smartTransactions: {
-        batchStatusPollingInterval: 1000,
-      },
-    });
-
     await runHook({
       smartTransactionsOptInStatus: true,
       chainId: CHAIN_IDS.MAINNET,
+      batchStatusPollingInterval: 5000,
+    });
+
+    expect(setSmartTransactionsRefreshIntervalMock).toHaveBeenCalledTimes(1);
+    expect(setSmartTransactionsRefreshIntervalMock).toHaveBeenCalledWith(5000);
+  });
+
+  it('uses default refresh interval when feature flags do not include interval', async () => {
+    await runHook({
+      smartTransactionsOptInStatus: true,
+      chainId: CHAIN_IDS.MAINNET,
+      // batchStatusPollingInterval not set, so defaults to 1000
     });
 
     expect(setSmartTransactionsRefreshIntervalMock).toHaveBeenCalledTimes(1);
     expect(setSmartTransactionsRefreshIntervalMock).toHaveBeenCalledWith(1000);
-  });
-
-  it('does not update refresh interval when feature flags do not include interval', async () => {
-    fetchSwapsFeatureFlagsMock.mockResolvedValue({
-      smartTransactions: {},
-    });
-
-    await runHook({
-      smartTransactionsOptInStatus: true,
-      chainId: CHAIN_IDS.MAINNET,
-    });
-
-    expect(setSmartTransactionsRefreshIntervalMock).toHaveBeenCalledTimes(1);
-    expect(setSmartTransactionsRefreshIntervalMock).toHaveBeenCalledWith(
-      undefined,
-    );
   });
 });
