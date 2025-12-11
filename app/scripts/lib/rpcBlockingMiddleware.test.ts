@@ -1,8 +1,7 @@
-import type { Json, JsonRpcResponse } from '@metamask/utils';
+import type { Json, JsonRpcRequest, JsonRpcResponse } from '@metamask/utils';
 import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
-import createRpcBlockingMiddleware, {
-  type ExtendedJsonRpcRequest,
-} from './rpcBlockingMiddleware';
+import createRpcBlockingMiddleware from './rpcBlockingMiddleware';
+import { WalletMiddlewareContext } from '@metamask/eth-json-rpc-middleware';
 
 jest.mock('../../../shared/lib/snaps/snaps', () => ({
   isSnapPreinstalled: jest.fn(),
@@ -18,7 +17,7 @@ describe('createRpcBlockingMiddleware', () => {
   });
 
   const createRequest = (origin = 'https://example.com') =>
-    ({ origin }) as unknown as ExtendedJsonRpcRequest;
+    ({ origin }) as unknown as JsonRpcRequest;
 
   it('calls next when not blocked', async () => {
     const middleware = createRpcBlockingMiddleware({
@@ -26,12 +25,18 @@ describe('createRpcBlockingMiddleware', () => {
     });
     const req = createRequest();
     const next = jest.fn();
-    const end = jest.fn();
+    const context = new Map([
+      ['origin', 'https://example.com'],
+    ]) as WalletMiddlewareContext;
 
-    await middleware(req, {} as unknown as JsonRpcResponse<Json>, next);
+    await middleware(
+      req,
+      {} as unknown as JsonRpcResponse<Json>,
+      next,
+      context,
+    );
 
     expect(next).toHaveBeenCalledTimes(1);
-    expect(end).not.toHaveBeenCalled();
   });
 
   it('throws an error when blocked and origin is not a preinstalled snap', async () => {
@@ -43,9 +48,12 @@ describe('createRpcBlockingMiddleware', () => {
 
     const req = createRequest('https://dapp.example');
     const next = jest.fn();
+    const context = new Map([
+      ['origin', 'https://dapp.example'],
+    ]) as WalletMiddlewareContext;
 
     await expect(
-      middleware(req, {} as unknown as JsonRpcResponse<Json>, next),
+      middleware(req, {} as unknown as JsonRpcResponse<Json>, next, context),
     ).rejects.toThrow(customMessage);
 
     expect(next).not.toHaveBeenCalled();
@@ -61,7 +69,16 @@ describe('createRpcBlockingMiddleware', () => {
     const req = createRequest('npm:example-snap');
     const next = jest.fn();
 
-    await middleware(req, {} as unknown as JsonRpcResponse<Json>, next);
+    const context = new Map([
+      ['origin', 'npm:example-snap'],
+    ]) as WalletMiddlewareContext;
+
+    await middleware(
+      req,
+      {} as unknown as JsonRpcResponse<Json>,
+      next,
+      context,
+    );
 
     expect(next).toHaveBeenCalledTimes(1);
   });
@@ -78,7 +95,16 @@ describe('createRpcBlockingMiddleware', () => {
     const req = createRequest('https://dapp.example');
     const next = jest.fn();
 
-    await middleware(req, {} as unknown as JsonRpcResponse<Json>, next);
+    const context = new Map([
+      ['origin', 'https://dapp.example'],
+    ]) as WalletMiddlewareContext;
+
+    await middleware(
+      req,
+      {} as unknown as JsonRpcResponse<Json>,
+      next,
+      context,
+    );
 
     expect(next).toHaveBeenCalledTimes(1);
   });
