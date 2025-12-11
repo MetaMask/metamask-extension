@@ -1,4 +1,5 @@
-import { renderHook, act, waitFor } from '@testing-library/react';
+import { act, waitFor } from '@testing-library/react';
+import { renderHook } from '@testing-library/react-hooks';
 import usePolling from './usePolling';
 
 describe('usePolling', () => {
@@ -122,19 +123,22 @@ describe('usePolling', () => {
   });
 
   it('handles race conditions by stopping stale polls', async () => {
-    let resolveFirst, resolveSecond;
+    let resolveFirst: (value: string) => void;
+    let resolveSecond: (value: string) => void;
 
     const mockStart = jest
       .fn()
-      .mockImplementationOnce(() =>
-        new Promise()((resolve) => {
-          resolveFirst = resolve;
-        }),
+      .mockImplementationOnce(
+        () =>
+          new Promise<string>((resolve) => {
+            resolveFirst = resolve;
+          }),
       )
-      .mockImplementationOnce(() =>
-        new Promise()((resolve) => {
-          resolveSecond = resolve;
-        }),
+      .mockImplementationOnce(
+        () =>
+          new Promise<string>((resolve) => {
+            resolveSecond = resolve;
+          }),
       );
     const mockStop = jest.fn();
 
