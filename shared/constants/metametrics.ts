@@ -778,6 +778,7 @@ export enum MetaMetricsEventName {
   NavSwapButtonClicked = 'Swap Button Clicked',
   NavReceiveButtonClicked = 'Receive Button Clicked',
   NftAdded = 'NFT Added',
+  NoticeUpdateDisplayed = 'Notice Update Displayed',
   OnboardingWalletSecurityStarted = 'SRP Backup Selected',
   OnboardingWalletSecuritySkipInitiated = 'SRP Skip Backup Selected',
   OnboardingWalletSecuritySkipConfirmed = 'SRP Backup Skipped',
@@ -1003,6 +1004,7 @@ export enum MetaMetricsEventName {
   ShieldEligibilityCohortAssigned = 'Shield Eligibility Cohort Assigned',
   ShieldEligibilityCohortTimeout = 'Shield Eligibility Cohort Timeout',
   ShieldSubscriptionUnexpectedErrorEvent = 'Shield Subscription Unexpected Error',
+  ShieldOptInRewards = 'Shield Opt In Rewards',
 }
 
 export enum MetaMetricsEventAccountType {

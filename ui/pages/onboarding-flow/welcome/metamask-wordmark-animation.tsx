@@ -16,16 +16,16 @@ import {
 
 type MetamaskWordMarkAnimationProps = {
   setIsAnimationComplete: (isAnimationComplete: boolean) => void;
-  isAnimationComplete: boolean;
-  skipTransition: boolean;
+  isAnimationComplete?: boolean;
+  skipTransition?: boolean;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function MetamaskWordMarkAnimation({
   setIsAnimationComplete,
-  isAnimationComplete,
-  skipTransition,
+  isAnimationComplete = false,
+  skipTransition = false,
 }: MetamaskWordMarkAnimationProps) {
   const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const theme = useTheme();

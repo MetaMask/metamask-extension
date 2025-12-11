@@ -1,5 +1,5 @@
 import { ThemeType } from '../../shared/constants/preferences';
-import { renderHookWithProvider } from '../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../test/lib/render-helpers-navigate';
 import { useTheme } from './useTheme';
 
 jest.mock('../selectors', () => ({

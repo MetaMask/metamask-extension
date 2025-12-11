@@ -1,13 +1,14 @@
 import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { withFixtures } from '../../../helpers';
-import { shortenAddress } from '../../../../../ui/helpers/utils/util';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import ConnectHardwareWalletPage from '../../../page-objects/pages/hardware-wallet/connect-hardware-wallet-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import SelectHardwareWalletAccountPage from '../../../page-objects/pages/hardware-wallet/select-hardware-wallet-account-page';
+import MultichainAccountDetailsPage from '../../../page-objects/pages/multichain/multichain-account-details-page';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { checkAccountAddressDisplayedInAccountList } from '../common';
 
 describe('Trezor Hardware', function () {
   it('derives the correct accounts and unlocks the first account', async function () {
@@ -52,11 +53,7 @@ describe('Trezor Hardware', function () {
         await headerNavbar.checkPageIsLoaded();
         await new HomePage(driver).checkExpectedBalanceIsDisplayed('0');
         await headerNavbar.openAccountMenu();
-        await accountListPage.checkPageIsLoaded();
-        await accountListPage.checkAccountDisplayedInAccountList('Trezor 1');
-        await accountListPage.checkAccountAddressDisplayedInAccountList(
-          shortenAddress(KNOWN_PUBLIC_KEY_ADDRESSES[0].address),
-        );
+        await checkAccountAddressDisplayedInAccountList(driver, 'Trezor', 1);
       },
     );
   });
@@ -97,23 +94,19 @@ describe('Trezor Hardware', function () {
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('0');
         await headerNavbar.openAccountMenu();
-        await accountListPage.checkPageIsLoaded();
-        for (let i = 0; i < 5; i++) {
-          await accountListPage.checkAccountDisplayedInAccountList(
-            `Trezor ${i + 1}`,
-          );
-          await accountListPage.checkAccountAddressDisplayedInAccountList(
-            shortenAddress(KNOWN_PUBLIC_KEY_ADDRESSES[i].address),
-          );
-        }
+        await checkAccountAddressDisplayedInAccountList(driver, 'Trezor', 5);
 
         // Remove Trezor 1 account and check Trezor 1 account is removed
-        await accountListPage.removeAccount('Trezor 1');
-        await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed('0');
-        await headerNavbar.openAccountMenu();
+        await accountListPage.openMultichainAccountMenu({
+          accountLabel: `Trezor Account 1`,
+        });
+        await accountListPage.clickMultichainAccountMenuItem('Account details');
+        const accountDetailsPage = new MultichainAccountDetailsPage(driver);
+        await accountDetailsPage.checkPageIsLoaded();
+        await accountDetailsPage.clickRemoveAccountButton();
+        await accountDetailsPage.clickRemoveAccountConfirmButton();
         await accountListPage.checkAccountIsNotDisplayedInAccountList(
-          'Trezor 1',
+          `Trezor Account 1`,
         );
       },
     );

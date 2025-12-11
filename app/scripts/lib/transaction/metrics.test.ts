@@ -94,7 +94,7 @@ const mockTransactionMetricsRequest = {
   getParticipateInMetrics: jest.fn(),
   getTokenStandardAndDetails: jest.fn(),
   getTransaction: jest.fn(),
-  provider: provider as Provider,
+  provider: provider as unknown as Provider,
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   snapAndHardwareMessenger: jest.fn() as any,
@@ -107,6 +107,8 @@ const mockTransactionMetricsRequest = {
   getNetworkRpcUrl: jest.fn(),
   getFeatureFlags: jest.fn(),
   getPna25Acknowledged: jest.fn(),
+  getAddressSecurityAlertResponse: jest.fn(),
+  getSecurityAlertsEnabled: jest.fn(),
 } as TransactionMetricsRequest;
 
 describe('Transaction metrics', () => {
@@ -182,6 +184,9 @@ describe('Transaction metrics', () => {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
       account_type: undefined,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      address_alert_response: 'not_applicable',
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
       api_method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,

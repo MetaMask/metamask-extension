@@ -4,7 +4,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { EthMethod } from '@metamask/keyring-api';
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import useBridging from '../../../hooks/bridge/useBridging';

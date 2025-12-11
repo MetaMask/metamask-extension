@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 import PropTypes from 'prop-types';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { uniqBy, isEqual, isEmpty } from 'lodash';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import { getAccountLink, getTokenTrackerLink } from '@metamask/etherscan-link';
 import classnames from 'classnames';
 import { MetaMetricsContext } from '../../../contexts/metametrics';

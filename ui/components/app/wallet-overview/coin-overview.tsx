@@ -1,6 +1,6 @@
 import React, { useContext, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import classnames from 'classnames';
 import { CaipChainId } from '@metamask/utils';
 import type { Hex } from '@metamask/utils';
@@ -412,7 +412,7 @@ export const CoinOverview = ({
       balance={
         shouldShowBalanceEmptyState ? (
           <BalanceEmptyState
-            className="w-full max-w-[420px]"
+            className="w-full max-w-[460px] self-center"
             data-testid="coin-overview-balance-empty-state"
             onClickReceive={handleReceiveOnClick}
           />

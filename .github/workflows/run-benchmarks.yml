@@ -40,6 +40,7 @@ jobs:
       ARTIFACT_NAME: build-test${{ matrix.browser == 'firefox' && '-mv2' || '' }}-${{ matrix.buildType }}
       OUTPUT_NAME: benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      SENTRY_DSN_PERFORMANCE: ${{ vars.SENTRY_DSN_PERFORMANCE }}
     continue-on-error: true
     steps:
       - name: Checkout and setup environment
@@ -82,7 +83,7 @@ jobs:
 
       - name: Upload '${{ env.OUTPUT_NAME }}' to S3
         if: ${{ vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
-        uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
+        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}

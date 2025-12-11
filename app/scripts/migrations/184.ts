@@ -1,27 +1,53 @@
-import { getErrorMessage, hasProperty, Hex, isObject } from '@metamask/utils';
+import {
+  getErrorMessage,
+  hasProperty,
+  isObject,
+  KnownCaipNamespace,
+} from '@metamask/utils';
+import {
+  NetworkConfiguration,
+  RpcEndpointType,
+} from '@metamask/network-controller';
 import { cloneDeep } from 'lodash';
 import { captureException } from '../../../shared/lib/sentry';
-import { CHAIN_IDS } from '../../../shared/constants/network';
 
-type VersionedData = {
+export type VersionedData = {
   meta: { version: number };
   data: Record<string, unknown>;
 };
 
 export const version = 184;
 
-const MONAD_CHAIN_ID: Hex = CHAIN_IDS.MONAD;
+export const MEGAETH_TESTNET_V1_CHAIN_ID = '0x18c6'; // 6342
+
+export const MEGAETH_TESTNET_V2_CONFIG = {
+  chainId: '0x18c7', // 6343
+  name: 'MegaETH Testnet',
+  nativeCurrency: 'MegaETH',
+  blockExplorerUrls: ['https://megaeth-testnet-v2.blockscout.com'],
+  defaultRpcEndpointIndex: 0,
+  defaultBlockExplorerUrlIndex: 0,
+  rpcEndpoints: [
+    {
+      failoverUrls: [],
+      networkClientId: 'megaeth-testnet-v2',
+      type: RpcEndpointType.Custom,
+      url: 'https://timothy.megaeth.com/rpc',
+    },
+  ],
+};
 
 /**
- * This migration adds QuickNode failover URL to Monad network RPC endpoints
- * that use Infura and don't already have a failover URL configured.
+ * This migration does:
+ * - Add MegaETH Testnet v2 to the network controller
+ * - Update the selected network client id to mainnet if it is the old MegaETH Testnet v1.
+ * - Remove the old MegaETH Testnet v1 network configuration.
  *
- * @param originalVersionedData - The original MetaMask extension state.
+ * @param originalVersionedData - Versioned MetaMask extension state, exactly
+ * what we persist to disk.
  * @returns Updated versioned MetaMask extension state.
  */
-export async function migrate(
-  originalVersionedData: VersionedData,
-): Promise<VersionedData> {
+export async function migrate(originalVersionedData: VersionedData) {
   const versionedData = cloneDeep(originalVersionedData);
   versionedData.meta.version = version;
 
@@ -43,13 +69,16 @@ export async function migrate(
 
 function transformState(state: Record<string, unknown>) {
   if (!hasProperty(state, 'NetworkController')) {
-    console.warn(`Migration ${version}: NetworkController not found.`);
+    captureException(
+      new Error(`Migration ${version}: NetworkController not found.`),
+    );
     return state;
   }
 
   const networkState = state.NetworkController;
+
   if (!isObject(networkState)) {
-    global.sentry?.captureException?.(
+    captureException(
       new Error(
         `Migration ${version}: NetworkController is not an object: ${typeof networkState}`,
       ),
@@ -58,7 +87,7 @@ function transformState(state: Record<string, unknown>) {
   }
 
   if (!hasProperty(networkState, 'networkConfigurationsByChainId')) {
-    global.sentry?.captureException?.(
+    captureException(
       new Error(
         `Migration ${version}: NetworkController missing property networkConfigurationsByChainId.`,
       ),
@@ -67,7 +96,7 @@ function transformState(state: Record<string, unknown>) {
   }
 
   if (!isObject(networkState.networkConfigurationsByChainId)) {
-    global.sentry?.captureException?.(
+    captureException(
       new Error(
         `Migration ${version}: NetworkController.networkConfigurationsByChainId is not an object: ${typeof networkState.networkConfigurationsByChainId}.`,
       ),
@@ -75,62 +104,158 @@ function transformState(state: Record<string, unknown>) {
     return state;
   }
 
-  const { networkConfigurationsByChainId } = networkState;
-
-  // Get Monad network configuration
-  const monadNetworkConfiguration =
-    networkConfigurationsByChainId[MONAD_CHAIN_ID];
-
-  if (!monadNetworkConfiguration) {
-    // Monad network doesn't exist, nothing to migrate
+  if (!hasProperty(state, 'NetworkEnablementController')) {
+    captureException(
+      new Error(`Migration ${version}: NetworkEnablementController not found.`),
+    );
     return state;
   }
 
-  if (
-    !isObject(monadNetworkConfiguration) ||
-    !hasProperty(monadNetworkConfiguration, 'rpcEndpoints') ||
-    !Array.isArray(monadNetworkConfiguration.rpcEndpoints)
-  ) {
-    global.sentry?.captureException?.(
+  const networkEnablementState = state.NetworkEnablementController;
+
+  if (!isObject(networkEnablementState)) {
+    captureException(
       new Error(
-        `Migration ${version}: Monad network configuration has invalid rpcEndpoints.`,
+        `Migration ${version}: NetworkEnablementController is not an object: ${typeof networkEnablementState}`,
       ),
     );
     return state;
   }
 
-  // Update RPC endpoints to add failover URL if needed
-  monadNetworkConfiguration.rpcEndpoints =
-    monadNetworkConfiguration.rpcEndpoints.map((rpcEndpoint) => {
-      // Skip if endpoint is not an object or doesn't have a url property
-      if (
-        !isObject(rpcEndpoint) ||
-        !hasProperty(rpcEndpoint, 'url') ||
-        typeof rpcEndpoint.url !== 'string'
-      ) {
-        return rpcEndpoint;
-      }
+  if (!hasProperty(networkEnablementState, 'enabledNetworkMap')) {
+    captureException(
+      new Error(
+        `Migration ${version}: NetworkEnablementController missing property enabledNetworkMap.`,
+      ),
+    );
+    return state;
+  }
 
-      // Skip if endpoint already has failover URLs
-      if (
-        hasProperty(rpcEndpoint, 'failoverUrls') &&
-        Array.isArray(rpcEndpoint.failoverUrls) &&
-        rpcEndpoint.failoverUrls.length > 0
-      ) {
-        return rpcEndpoint;
-      }
+  if (!isObject(networkEnablementState.enabledNetworkMap)) {
+    captureException(
+      new Error(
+        `Migration ${version}: NetworkEnablementController.enabledNetworkMap is not an object: ${typeof networkEnablementState.enabledNetworkMap}.`,
+      ),
+    );
+    return state;
+  }
 
-      // Add QuickNode failover URL
-      const quickNodeUrl = process.env.QUICKNODE_MONAD_URL;
-      if (quickNodeUrl) {
-        return {
-          ...rpcEndpoint,
-          failoverUrls: [quickNodeUrl],
-        };
-      }
+  if (
+    !hasProperty(
+      networkEnablementState.enabledNetworkMap,
+      KnownCaipNamespace.Eip155,
+    )
+  ) {
+    captureException(
+      new Error(
+        `Migration ${version}: NetworkEnablementController.enabledNetworkMap missing property Eip155.`,
+      ),
+    );
+    return state;
+  }
 
-      return rpcEndpoint;
-    });
+  if (
+    !isObject(
+      networkEnablementState.enabledNetworkMap[KnownCaipNamespace.Eip155],
+    )
+  ) {
+    captureException(
+      new Error(
+        `Migration ${version}: NetworkEnablementController.enabledNetworkMap[Eip155] is not an object: ${typeof networkEnablementState.enabledNetworkMap[KnownCaipNamespace.Eip155]}.`,
+      ),
+    );
+    return state;
+  }
+
+  const { networkConfigurationsByChainId } = networkState;
+  const {
+    enabledNetworkMap: { [KnownCaipNamespace.Eip155]: eip155NetworkMap },
+  } = networkEnablementState;
+
+  // Merge the MegaETH Testnet v2 network configuration if user already has it.
+  if (
+    hasProperty(
+      networkConfigurationsByChainId,
+      MEGAETH_TESTNET_V2_CONFIG.chainId,
+    )
+  ) {
+    const megaethTestnetV2Configuration = networkConfigurationsByChainId[
+      MEGAETH_TESTNET_V2_CONFIG.chainId
+    ] as unknown as NetworkConfiguration;
+    megaethTestnetV2Configuration.name = MEGAETH_TESTNET_V2_CONFIG.name;
+    megaethTestnetV2Configuration.nativeCurrency =
+      MEGAETH_TESTNET_V2_CONFIG.nativeCurrency;
+
+    const isEndpointExist = megaethTestnetV2Configuration.rpcEndpoints.find(
+      (rpcEndpoint) =>
+        rpcEndpoint.url === MEGAETH_TESTNET_V2_CONFIG.rpcEndpoints[0].url,
+    );
+    if (!isEndpointExist) {
+      megaethTestnetV2Configuration.rpcEndpoints.push({
+        failoverUrls: [],
+        networkClientId:
+          MEGAETH_TESTNET_V2_CONFIG.rpcEndpoints[0].networkClientId,
+        type: RpcEndpointType.Custom,
+        url: MEGAETH_TESTNET_V2_CONFIG.rpcEndpoints[0].url,
+      });
+      megaethTestnetV2Configuration.defaultRpcEndpointIndex =
+        megaethTestnetV2Configuration.rpcEndpoints.length - 1;
+    }
+
+    const isBlockExplorerUrlExist =
+      megaethTestnetV2Configuration.blockExplorerUrls.find(
+        (url) => url === MEGAETH_TESTNET_V2_CONFIG.blockExplorerUrls[0],
+      );
+    if (!isBlockExplorerUrlExist) {
+      megaethTestnetV2Configuration.blockExplorerUrls.push(
+        MEGAETH_TESTNET_V2_CONFIG.blockExplorerUrls[0],
+      );
+      megaethTestnetV2Configuration.defaultBlockExplorerUrlIndex =
+        megaethTestnetV2Configuration.blockExplorerUrls.length - 1;
+    }
+  } else {
+    // Add the MegaETH Testnet v2 network configuration if user doesn't have it.
+    (networkConfigurationsByChainId as Record<string, NetworkConfiguration>)[
+      MEGAETH_TESTNET_V2_CONFIG.chainId
+    ] = MEGAETH_TESTNET_V2_CONFIG as NetworkConfiguration;
+  }
+
+  // Add the MegaETH Testnet v2 network configuration to the enabled network map if it doesn't exist.
+  if (!hasProperty(eip155NetworkMap, MEGAETH_TESTNET_V2_CONFIG.chainId)) {
+    (eip155NetworkMap as Record<string, boolean>)[
+      MEGAETH_TESTNET_V2_CONFIG.chainId
+    ] = false;
+  }
+
+  const megaethTestnetV1Configuration =
+    networkConfigurationsByChainId[MEGAETH_TESTNET_V1_CHAIN_ID];
+  // If the selected network client id is the old MegaETH Testnet v1,
+  // then update it to the mainnet
+  if (
+    hasProperty(networkState, 'selectedNetworkClientId') &&
+    typeof networkState.selectedNetworkClientId === 'string' &&
+    megaethTestnetV1Configuration &&
+    isObject(megaethTestnetV1Configuration) &&
+    hasProperty(megaethTestnetV1Configuration, 'rpcEndpoints') &&
+    Array.isArray(megaethTestnetV1Configuration.rpcEndpoints) &&
+    megaethTestnetV1Configuration.rpcEndpoints.some(
+      (rpcEndpoint) =>
+        rpcEndpoint.networkClientId === networkState.selectedNetworkClientId,
+    )
+  ) {
+    networkState.selectedNetworkClientId = 'mainnet';
+    // force mainnet to be enabled
+    eip155NetworkMap['0x1'] = true;
+  }
+  // If the MegaETH Testnet v1 network configuration exists, then remove it.
+  if (hasProperty(eip155NetworkMap, MEGAETH_TESTNET_V1_CHAIN_ID)) {
+    delete eip155NetworkMap[MEGAETH_TESTNET_V1_CHAIN_ID];
+  }
+
+  // If the MegaETH Testnet v1 network configuration exists, then remove it.
+  if (networkConfigurationsByChainId[MEGAETH_TESTNET_V1_CHAIN_ID]) {
+    delete networkConfigurationsByChainId[MEGAETH_TESTNET_V1_CHAIN_ID];
+  }
 
   return state;
 }

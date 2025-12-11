@@ -71,7 +71,12 @@ export type DappSwapComparisonData = {
   latency?: number;
   commands?: string;
   error?: string;
-  tokenAddresses?: Hex[];
+  swapInfo?: {
+    srcTokenAddress: Hex;
+    destTokenAddress: Hex;
+    srcTokenAmount: Hex;
+    destTokenAmountMin: Hex;
+  };
 };
 
 export type AppStateControllerState = {
@@ -187,6 +192,11 @@ export type AppStateControllerSetCanTrackWalletFundsObtainedAction = {
   handler: AppStateController['setCanTrackWalletFundsObtained'];
 };
 
+export type AppStateControllerSetPendingShieldCohortAction = {
+  type: 'AppStateController:setPendingShieldCohort';
+  handler: AppStateController['setPendingShieldCohort'];
+};
+
 /**
  * Actions exposed by the {@link AppStateController}.
  */
@@ -194,7 +204,8 @@ export type AppStateControllerActions =
   | AppStateControllerGetStateAction
   | AppStateControllerGetUnlockPromiseAction
   | AppStateControllerRequestQrCodeScanAction
-  | AppStateControllerSetCanTrackWalletFundsObtainedAction;
+  | AppStateControllerSetCanTrackWalletFundsObtainedAction
+  | AppStateControllerSetPendingShieldCohortAction;
 
 /**
  * Actions that this controller is allowed to call.
@@ -771,6 +782,11 @@ export class AppStateController extends BaseController<
     this.messenger.registerActionHandler(
       'AppStateController:setCanTrackWalletFundsObtained',
       this.setCanTrackWalletFundsObtained.bind(this),
+    );
+
+    this.messenger.registerActionHandler(
+      'AppStateController:setPendingShieldCohort',
+      this.setPendingShieldCohort.bind(this),
     );
 
     this.#approvalRequestId = null;
@@ -1668,7 +1684,10 @@ export class AppStateController extends BaseController<
     this.update((state) => {
       state.dappSwapComparisonData = {
         ...state.dappSwapComparisonData,
-        [uniqueId]: info,
+        [uniqueId]: {
+          ...(state.dappSwapComparisonData?.[uniqueId] ?? {}),
+          ...info,
+        },
       };
     });
   }
