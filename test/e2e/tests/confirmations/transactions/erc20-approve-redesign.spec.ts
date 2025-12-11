@@ -44,13 +44,50 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
           await testDapp.openTestDappPage({ contractAddress });
           await testDapp.checkPageIsLoaded();
 
-          await importTST(driver);
+          // Import TST token
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          const assetListPage = new AssetListPage(driver);
+          await assetListPage.importCustomTokenByChain(
+            '0x539',
+            '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
+          );
 
-          await createERC20ApproveTransaction(driver);
+          // Create ERC20 approve transaction
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+          await driver.clickElement('#approveTokens');
 
-          await assertApproveDetails(driver);
+          // Assert approve details
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          const erc20ApproveConfirmation =
+            new ERC20ApproveTransactionConfirmation(driver);
 
-          await confirmApproveTransaction(driver);
+          await erc20ApproveConfirmation.checkSpendingCapRequestTitle();
+          await erc20ApproveConfirmation.checkSpendingCapPermissionDescription();
+          await erc20ApproveConfirmation.checkEstimatedChangesSection();
+          await erc20ApproveConfirmation.checkSpendingCapSection();
+          await erc20ApproveConfirmation.checkSpendingCapAmount('7');
+
+          // TODO - Scroll button not shown in Firefox if advanced details enabled too fast.
+          await driver.delay(1000);
+          await erc20ApproveConfirmation.clickAdvancedDetailsButton();
+
+          await erc20ApproveConfirmation.checkAdvancedDetailsSections();
+          await erc20ApproveConfirmation.checkSpendingCapSection();
+
+          // Confirm approve transaction
+          await scrollAndConfirmAndAssertConfirm(driver);
+
+          await driver.waitUntilXWindowHandles(2);
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+
+          const homePage = new HomePage(driver);
+          await homePage.goToActivityList();
+          const activityList = new ActivityListPage(driver);
+          await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
         },
       );
     });
@@ -79,13 +116,50 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
           await testDapp.openTestDappPage({ contractAddress });
           await testDapp.checkPageIsLoaded();
 
-          await importTST(driver);
+          // Import TST token
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          const assetListPage = new AssetListPage(driver);
+          await assetListPage.importCustomTokenByChain(
+            '0x539',
+            '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
+          );
 
-          await createERC20ApproveTransaction(driver);
+          // Create ERC20 approve transaction
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+          await driver.clickElement('#approveTokens');
 
-          await assertApproveDetails(driver);
+          // Assert approve details
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          const erc20ApproveConfirmation =
+            new ERC20ApproveTransactionConfirmation(driver);
 
-          await confirmApproveTransaction(driver);
+          await erc20ApproveConfirmation.checkSpendingCapRequestTitle();
+          await erc20ApproveConfirmation.checkSpendingCapPermissionDescription();
+          await erc20ApproveConfirmation.checkEstimatedChangesSection();
+          await erc20ApproveConfirmation.checkSpendingCapSection();
+          await erc20ApproveConfirmation.checkSpendingCapAmount('7');
+
+          // TODO - Scroll button not shown in Firefox if advanced details enabled too fast.
+          await driver.delay(1000);
+          await erc20ApproveConfirmation.clickAdvancedDetailsButton();
+
+          await erc20ApproveConfirmation.checkAdvancedDetailsSections();
+          await erc20ApproveConfirmation.checkSpendingCapSection();
+
+          // Confirm approve transaction
+          await scrollAndConfirmAndAssertConfirm(driver);
+
+          await driver.waitUntilXWindowHandles(2);
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+
+          const homePage = new HomePage(driver);
+          await homePage.goToActivityList();
+          const activityList = new ActivityListPage(driver);
+          await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
         },
       );
     });
@@ -94,52 +168,4 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
 
 async function mocks(server: MockttpServer) {
   return [await mocked4BytesApprove(server)];
-}
-
-async function importTST(driver: Driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-
-  const assetListPage = new AssetListPage(driver);
-  await assetListPage.importCustomTokenByChain(
-    '0x539',
-    '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
-  );
-}
-
-async function createERC20ApproveTransaction(driver: Driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  await driver.clickElement('#approveTokens');
-}
-
-async function assertApproveDetails(driver: Driver) {
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-  const erc20ApproveConfirmation = new ERC20ApproveTransactionConfirmation(
-    driver,
-  );
-
-  await erc20ApproveConfirmation.checkSpendingCapRequestTitle();
-  await erc20ApproveConfirmation.checkSpendingCapPermissionDescription();
-  await erc20ApproveConfirmation.checkEstimatedChangesSection();
-  await erc20ApproveConfirmation.checkSpendingCapSection();
-  await erc20ApproveConfirmation.checkSpendingCapAmount('7');
-
-  // TODO - Scroll button not shown in Firefox if advanced details enabled too fast.
-  await driver.delay(1000);
-  await erc20ApproveConfirmation.clickAdvancedDetailsButton();
-
-  await erc20ApproveConfirmation.checkAdvancedDetailsSections();
-  await erc20ApproveConfirmation.checkSpendingCapSection();
-}
-
-async function confirmApproveTransaction(driver: Driver) {
-  await scrollAndConfirmAndAssertConfirm(driver);
-
-  await driver.waitUntilXWindowHandles(2);
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
-
-  const homePage = new HomePage(driver);
-  await homePage.goToActivityList();
-  const activityList = new ActivityListPage(driver);
-  await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
 }
