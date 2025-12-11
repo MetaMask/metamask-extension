@@ -47,6 +47,7 @@ describe('Check balance', function (this: Suite) {
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),
+        showNativeTokenAsMainBalance: true,
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);

@@ -150,6 +150,7 @@ describe('Send flow', function (this: Suite) {
         title: this.test?.fullTitle(),
         showNativeTokenAsMainBalance: true,
         mockGetTransactionFailed: true,
+        withCustomMocks: mockSendRedesignFeatureFlag,
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
@@ -181,13 +182,12 @@ describe('Send flow', function (this: Suite) {
         await confirmation.checkPageIsLoaded();
         await confirmation.checkAccountIsDisplayed('Account 1');
         await confirmation.clickFooterConfirmButton();
-
         const activityList = new ActivityListPage(driver);
+        await activityList.checkFailedTxNumberDisplayedInActivity();
         await activityList.checkTxAction({
           action: 'Interaction',
           confirmedTx: 0,
         });
-        await activityList.checkFailedTxNumberDisplayedInActivity();
       },
     );
   });
