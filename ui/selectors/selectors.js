@@ -34,7 +34,6 @@ import {
 } from '@metamask/utils';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 
-import { isMultichainFeatureEnabled } from '../../shared/lib/multichain-feature-flags';
 import { generateTokenCacheKey } from '../helpers/utils/token-cache-utils';
 import {
   getCurrentChainId,
@@ -155,6 +154,14 @@ import {
   getIsEvmMultichainNetworkSelected,
 } from './multichain/networks';
 import { getRemoteFeatureFlags } from './remote-feature-flags';
+import {
+  getIsBitcoinSupportEnabled,
+  getIsSolanaSupportEnabled,
+  getIsTronSupportEnabled,
+  getIsSolanaTestnetSupportEnabled,
+  getIsBitcoinTestnetSupportEnabled,
+  getIsTronTestnetSupportEnabled,
+} from './multichain/feature-flags';
 import { getApprovalRequestsByType } from './approvals';
 
 /**
@@ -3185,87 +3192,19 @@ export function getIsAddSnapAccountEnabled(state) {
 }
 ///: END:ONLY_INCLUDE_IF
 
-/**
- * Get the state of the `solanaTestnetsEnabled` remote feature flag.
- *
- * @param {*} state
- * @returns The state of the `solanaTestnetsEnabled` remote feature flag.
- */
-export function getIsSolanaTestnetSupportEnabled(state) {
-  const { solanaTestnetsEnabled } = getRemoteFeatureFlags(state);
-  return Boolean(solanaTestnetsEnabled);
-}
-
-/**
- * Get the state of the `bitcoinTestnetsEnabled` remote feature flag.
- *
- * @param {*} state
- * @returns The state of the `bitcoinTestnetsEnabled` remote feature flag.
- */
-export function getIsBitcoinTestnetSupportEnabled(state) {
-  const { bitcoinTestnetsEnabled } = getRemoteFeatureFlags(state);
-  return Boolean(bitcoinTestnetsEnabled);
-}
-
-/**
- * Get the state of the `tronTestnetsEnabled` remote feature flag.
- *
- * @param {*} state
- * @returns The state of the `tronTestnetsEnabled` remote feature flag.
- */
-export function getIsTronTestnetSupportEnabled(state) {
-  const { tronTestnetsEnabled } = getRemoteFeatureFlags(state);
-  return Boolean(tronTestnetsEnabled);
-}
-
 export function getIsWatchEthereumAccountEnabled(state) {
   return state.metamask.watchEthereumAccountEnabled;
 }
 
-/**
- * Get the state of the `bitcoinAccounts` feature flag with version check.
- *
- * @param {*} _state
- * @returns The state of the `bitcoinAccounts` feature flag.
- */
-export function getIsBitcoinSupportEnabled(
-  // Use `_` prefix to avoid lint issue if `bitcoin` code-fence is not enabled
-  _state,
-) {
-  // When bitcoin is not enabled, always return false
-  let enabled = false;
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-  const { bitcoinAccounts } = getRemoteFeatureFlags(_state);
-  enabled = isMultichainFeatureEnabled(bitcoinAccounts);
-  ///: END:ONLY_INCLUDE_IF
-  return enabled;
-}
-
-/**
- * Get the state of the `solanaAccounts` feature flag with version check.
- *
- * @param {*} state
- * @returns The state of the `solanaAccounts` feature flag.
- */
-export function getIsSolanaSupportEnabled(state) {
-  const { solanaAccounts } = getRemoteFeatureFlags(state);
-  return isMultichainFeatureEnabled(solanaAccounts);
-}
-
-/**
- * Get the state of the `tronSupportEnabled` remote feature flag.
- *
- * @param {*} _state
- * @returns The state of the `tronSupportEnabled` remote feature flag.
- */
-export function getIsTronSupportEnabled(_state) {
-  let enabled = false;
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
-  const { tronAccounts } = getRemoteFeatureFlags(_state);
-  enabled = isMultichainFeatureEnabled(tronAccounts);
-  ///: END:ONLY_INCLUDE_IF
-  return enabled;
-}
+// Re-export multichain support selectors from remote-feature-flags to maintain backward compatibility
+export {
+  getIsBitcoinSupportEnabled,
+  getIsSolanaSupportEnabled,
+  getIsTronSupportEnabled,
+  getIsSolanaTestnetSupportEnabled,
+  getIsBitcoinTestnetSupportEnabled,
+  getIsTronTestnetSupportEnabled,
+};
 
 /**
  * Checks if the new settings redesign is enabled

@@ -28,6 +28,11 @@ import {
   getNetworksMetadata,
 } from '../../../shared/modules/selectors/networks';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
+import { getEnabledNetworks } from '../../../shared/modules/selectors/multichain';
+import { getIsMetaMaskInfuraEndpointUrl } from '../../../shared/lib/network-utils';
+import { infuraProjectId } from '../../../shared/constants/network';
+import { type RemoteFeatureFlagsState } from '../remote-feature-flags';
+import { getInternalAccounts, type AccountsState } from '../accounts';
 import {
   getIsBitcoinSupportEnabled,
   getIsSolanaSupportEnabled,
@@ -35,11 +40,7 @@ import {
   getIsBitcoinTestnetSupportEnabled,
   getIsTronSupportEnabled,
   getIsTronTestnetSupportEnabled,
-} from '../selectors';
-import { getInternalAccounts } from '../accounts';
-import { getEnabledNetworks } from '../../../shared/modules/selectors/multichain';
-import { getIsMetaMaskInfuraEndpointUrl } from '../../../shared/lib/network-utils';
-import { infuraProjectId } from '../../../shared/constants/network';
+} from './feature-flags';
 
 // Selector types
 
@@ -75,11 +76,13 @@ export type MultichainNetworkConfigState =
     IsEvmSelectedState &
     SelectedNetworkClientIdState &
     ProviderConfigState &
-    NetworksWithTransactionActivityByAccountsState;
+    NetworksWithTransactionActivityByAccountsState &
+    RemoteFeatureFlagsState &
+    AccountsState;
 
 // Selectors
 
-export const getIsNonEvmNetworksEnabled = createDeepEqualSelector(
+export const getIsNonEvmNetworksEnabled = createSelector(
   getIsBitcoinSupportEnabled,
   getIsSolanaSupportEnabled,
   getIsTronSupportEnabled,
@@ -217,7 +220,7 @@ export const getNonEvmMultichainNetworkConfigurationsByChainId =
  * Returns all EVM networks converted to multichain network configuration format.
  * This selector provides stable references when the underlying data hasn't changed.
  */
-export const getEvmMultichainNetworkConfigurations = createDeepEqualSelector(
+export const getEvmMultichainNetworkConfigurations = createSelector(
   getNetworkConfigurationsByChainId,
   (
     networkConfigurationsByChainId,
@@ -247,7 +250,7 @@ export const getEvmMultichainNetworkConfigurations = createDeepEqualSelector(
  * Returns all multichain network configurations (both EVM and non-EVM) by chain ID.
  * This selector provides stable references when the underlying data hasn't changed.
  */
-export const getAllMultichainNetworkConfigurations = createDeepEqualSelector(
+export const getAllMultichainNetworkConfigurations = createSelector(
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   getNonEvmMultichainNetworkConfigurationsByChainId,
   ///: END:ONLY_INCLUDE_IF
@@ -274,20 +277,19 @@ export const getAllMultichainNetworkConfigurations = createDeepEqualSelector(
  * @deprecated Prefer using `getAllMultichainNetworkConfigurations` for multichain networks
  * or `getNetworkConfigurationsByChainId` for EVM-only networks directly.
  */
-export const getMultichainNetworkConfigurationsByChainId =
-  createDeepEqualSelector(
-    getAllMultichainNetworkConfigurations,
-    getNetworkConfigurationsByChainId,
-    (
-      networks,
-      networkConfigurationsByChainId,
-    ): [
-      Record<CaipChainId, InternalMultichainNetworkConfiguration>,
-      Record<Hex, InternalNetworkConfiguration>,
-    ] => {
-      return [networks, networkConfigurationsByChainId];
-    },
-  );
+export const getMultichainNetworkConfigurationsByChainId = createSelector(
+  getAllMultichainNetworkConfigurations,
+  getNetworkConfigurationsByChainId,
+  (
+    networks,
+    networkConfigurationsByChainId,
+  ): [
+    Record<CaipChainId, InternalMultichainNetworkConfiguration>,
+    Record<Hex, InternalNetworkConfiguration>,
+  ] => {
+    return [networks, networkConfigurationsByChainId];
+  },
+);
 
 export const getIsEvmMultichainNetworkSelected = (state: IsEvmSelectedState) =>
   state.metamask.isEvmSelected;
@@ -304,24 +306,18 @@ export const getSelectedMultichainNetworkChainId = (
   return state.metamask.selectedMultichainNetworkChainId;
 };
 
-export const getSelectedMultichainNetworkConfiguration =
-  createDeepEqualSelector(
-    getSelectedMultichainNetworkChainId,
-    getAllMultichainNetworkConfigurations,
-    (chainId, networkConfigurationsByChainId) => {
-      return networkConfigurationsByChainId[chainId];
-    },
-  );
+export const getSelectedMultichainNetworkConfiguration = createSelector(
+  getSelectedMultichainNetworkChainId,
+  getAllMultichainNetworkConfigurations,
+  (chainId, networkConfigurationsByChainId) => {
+    return networkConfigurationsByChainId[chainId];
+  },
+);
 
 export const getNetworksWithActivity = (state: MultichainNetworkConfigState) =>
   state.metamask.networksWithTransactionActivity;
 
-export const getNetworksWithTransactionActivity = createDeepEqualSelector(
-  getNetworksWithActivity,
-  (networksWithActivity) => networksWithActivity,
-);
-
-export const getEnabledNetworksByNamespace = createDeepEqualSelector(
+export const getEnabledNetworksByNamespace = createSelector(
   getEnabledNetworks,
   getSelectedMultichainNetworkChainId,
   (enabledNetworkMap, currentMultichainChainId) => {
@@ -334,7 +330,7 @@ export const getEnabledNetworksByNamespace = createDeepEqualSelector(
   },
 );
 
-export const getAllEnabledNetworksForAllNamespaces = createDeepEqualSelector(
+export const getAllEnabledNetworksForAllNamespaces = createSelector(
   getEnabledNetworks,
   (enabledNetworkMap) =>
     Object.values(enabledNetworkMap).flatMap((namespaceNetworks) =>
@@ -344,7 +340,7 @@ export const getAllEnabledNetworksForAllNamespaces = createDeepEqualSelector(
     ),
 );
 
-export const getEnabledChainIds = createDeepEqualSelector(
+export const getEnabledChainIds = createSelector(
   getNetworkConfigurationsByChainId,
   getEnabledNetworks,
   getSelectedMultichainNetworkChainId,
@@ -360,7 +356,7 @@ export const getEnabledChainIds = createDeepEqualSelector(
   },
 );
 
-export const getEnabledNetworkClientIds = createDeepEqualSelector(
+export const getEnabledNetworkClientIds = createSelector(
   getNetworkConfigurationsByChainId,
   getEnabledNetworks,
   getSelectedMultichainNetworkChainId,
