@@ -243,6 +243,8 @@ module.exports = {
             allowNumber: true,
           },
         ],
+        // TODO: Remove once `@metamask/eslint-config-typescript` is updated to a version with this setting.
+        'consistent-return': 'off',
       },
       settings: {
         'import/resolver': {
