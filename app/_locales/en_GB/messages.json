@@ -6406,10 +6406,6 @@
   "shieldTxCancelWhenPausedDetails": {
     "message": "Your plan isn't active while paused. If you cancel, your plan will immediately end."
   },
-  "shieldTxDetails1Description": {
-    "message": "$1/$2",
-    "description": "The $1 is the price of the plan and the $2 is the interval of plan"
-  },
   "shieldTxDetails1DescriptionTrial": {
     "message": "Free for $1 days, then $2",
     "description": "The $1 is the number of days and the $2 is the price of the plan"

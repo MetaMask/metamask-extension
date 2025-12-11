@@ -74,6 +74,7 @@ import {
   MembershipErrorBanner,
   MembershipHeader,
 } from './components';
+import ReactivateButton from './components/reactivate-button';
 
 const TransactionShield = () => {
   const t = useI18nContext();
@@ -245,10 +246,8 @@ const TransactionShield = () => {
     if (!displayedShieldSubscription) {
       return '';
     }
-    const interval =
-      displayedShieldSubscription.interval === RECURRING_INTERVALS.year
-        ? t('year')
-        : t('month');
+    const isYearly =
+      displayedShieldSubscription.interval === RECURRING_INTERVALS.year;
     const price = isCryptoPaymentMethod(
       displayedShieldSubscription.paymentMethod,
     )
@@ -261,7 +260,9 @@ const TransactionShield = () => {
             minimumFractionDigits: 0,
           },
         );
-    return t('shieldTxDetails1Description', [price, interval]);
+    return t(isYearly ? 'shieldPlanAnnualPrice' : 'shieldPlanMonthlyPrice', [
+      price,
+    ]);
   }, [displayedShieldSubscription, productInfo, t, formatCurrency]);
 
   const amountDetails = useMemo(() => {
@@ -618,16 +619,10 @@ const TransactionShield = () => {
             {showSkeletonLoader ? (
               <Skeleton width="100%" height={40} />
             ) : (
-              <Button
-                data-testid="shield-detail-renew-button"
-                className="w-full"
-                variant={ButtonVariant.Secondary}
-                onClick={() => {
-                  handlePaymentError();
-                }}
-              >
-                {t('shieldTxMembershipRenewDescription', [priceDetails])}
-              </Button>
+              <ReactivateButton
+                subscriptionPricing={subscriptionPricing}
+                handlePaymentError={handlePaymentError}
+              />
             )}
           </Box>
         )}
