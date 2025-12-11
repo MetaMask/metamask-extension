@@ -4,6 +4,7 @@ import React, {
   useContext,
   useCallback,
   useMemo,
+  useRef,
 } from 'react';
 import PropTypes from 'prop-types';
 import { debounce } from 'lodash';
@@ -57,6 +58,7 @@ const AddContact = ({
   domainResolutions,
   domainError,
   resetDomainResolution,
+  lookupDomainName,
 }) => {
   const t = useContext(I18nContext);
 
@@ -65,10 +67,33 @@ const AddContact = ({
   const [addressInputError, setAddressInputError] = useState('');
   const [nameInputError, setNameInputError] = useState('');
   const [input, setInput] = useState('');
+  const [enteredDomainName, setEnteredDomainName] = useState(''); // Track original ENS name for re-resolution
   const currentChainId = useSelector(getCurrentChainId);
   const [selectedChainId, setSelectedChainId] = useState(currentChainId);
   const [showModal, setShowModal] = useState(false);
   const networks = useSelector(getNetworkConfigurationsByChainId);
+  const prevChainIdRef = useRef(selectedChainId);
+
+  // Re-resolve ENS name when network changes
+  useEffect(() => {
+    const domainToResolve = isValidDomainName(input)
+      ? input
+      : enteredDomainName;
+
+    if (prevChainIdRef.current !== selectedChainId && domainToResolve) {
+      setInput(domainToResolve);
+      setEnteredDomainName('');
+      resetDomainResolution();
+      lookupDomainName(domainToResolve, selectedChainId);
+    }
+    prevChainIdRef.current = selectedChainId;
+  }, [
+    selectedChainId,
+    enteredDomainName,
+    input,
+    resetDomainResolution,
+    lookupDomainName,
+  ]);
 
   const validate = useCallback((value) => {
     const valid =
@@ -112,6 +137,7 @@ const AddContact = ({
         resetDomainResolution();
         setInput('');
         setSelectedAddress('');
+        setEnteredDomainName('');
       }}
       userInput={selectedAddress || input}
     />
@@ -192,6 +218,7 @@ const AddContact = ({
                   onClick={() => {
                     handleNameChange(domainName);
                     setInput(resolvedAddress);
+                    setEnteredDomainName(domainName); // Store ENS name for re-resolution on network change
                     resetDomainResolution();
                   }}
                   protocol={protocol}
@@ -242,7 +269,7 @@ const AddContact = ({
               isOpen
               onClose={() => setShowModal(false)}
               selectedChainId={selectedChainId}
-              onSelect={(chainname) => setSelectedChainId(chainname)}
+              onSelect={(chainId) => setSelectedChainId(chainId)}
             />
           )}
         </div>
@@ -279,6 +306,7 @@ AddContact.propTypes = {
   domainResolutions: PropTypes.arrayOf(PropTypes.object),
   domainError: PropTypes.string,
   resetDomainResolution: PropTypes.func,
+  lookupDomainName: PropTypes.func,
 };
 
 export default AddContact;
