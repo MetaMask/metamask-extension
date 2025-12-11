@@ -85,7 +85,7 @@ exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
         class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
         data-testid="network-fees"
       >
-        $2.52
+        $0.0002
       </p>
     </div>
     <div
@@ -471,7 +471,7 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote (no MM fe
         class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
         data-testid="network-fees"
       >
-        $2.52
+        $0.0002
       </p>
     </div>
     <div
@@ -656,7 +656,7 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote while loa
         class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
         data-testid="network-fees"
       >
-        $2.52
+        $0.0003
       </p>
     </div>
     <div
