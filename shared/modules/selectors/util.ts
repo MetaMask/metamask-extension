@@ -2,13 +2,10 @@ import {
   type TransactionMeta,
   TransactionStatus,
 } from '@metamask/transaction-controller';
-import { isEqual } from 'lodash';
-import { createSelectorCreator, lruMemoize } from 'reselect';
+import { createDeepEqualSelector } from './selector-creators';
 
-export const createDeepEqualSelector = createSelectorCreator(
-  lruMemoize,
-  isEqual,
-);
+// re-export for backward compatibility
+export { createDeepEqualSelector };
 
 export const filterAndShapeUnapprovedTransactions = (
   transactions: TransactionMeta[],
