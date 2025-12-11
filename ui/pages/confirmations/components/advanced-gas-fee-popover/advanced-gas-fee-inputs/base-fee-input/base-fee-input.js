@@ -96,6 +96,7 @@ const BaseFeeInput = () => {
   const [baseFeeInPrimaryCurrency] = useCurrencyDisplay(
     decGWEIToHexWEI(baseFee * gasLimit),
     { currency, numberOfDecimals },
+    chainId,
   );
 
   const updateBaseFee = useCallback(

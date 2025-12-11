@@ -135,6 +135,7 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
+    "jest-clean-console-reporter/chalk": "^4.1.2",
     "http-cache-semantics": "^4.1.1",
     "semver-regex": "^3.1.4",
     "base-x@^3.0.x": "^3.0.11",
@@ -337,7 +338,7 @@
     "@metamask/messenger": "^0.3.0",
     "@metamask/metamask-eth-abis": "^3.1.1",
     "@metamask/multichain-account-service": "^3.0.0",
-    "@metamask/multichain-api-client": "^0.7.0",
+    "@metamask/multichain-api-client": "^0.10.1",
     "@metamask/multichain-api-middleware": "^1.2.5",
     "@metamask/multichain-network-controller": "^2.0.0",
     "@metamask/multichain-transactions-controller": "^6.0.0",
@@ -378,7 +379,7 @@
     "@metamask/subscription-controller": "^5.3.1",
     "@metamask/transaction-controller": "^62.3.1",
     "@metamask/transaction-pay-controller": "^10.2.0",
-    "@metamask/tron-wallet-snap": "^1.15.1",
+    "@metamask/tron-wallet-snap": "^1.16.0",
     "@metamask/user-operation-controller": "^40.0.0",
     "@metamask/utils": "^11.4.2",
     "@ngraveio/bc-ur": "^1.1.13",
@@ -653,6 +654,7 @@
     "ini": "^3.0.0",
     "jest": "^29.7.0",
     "jest-canvas-mock": "^2.3.1",
+    "jest-clean-console-reporter": "^0.3.0",
     "jest-environment-jsdom": "patch:jest-environment-jsdom@npm%3A29.7.0#~/.yarn/patches/jest-environment-jsdom-npm-29.7.0-0b72dd0e0b.patch",
     "jest-fixed-jsdom": "^0.0.9",
     "jest-preview": "^0.3.1",

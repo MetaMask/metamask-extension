@@ -552,13 +552,13 @@ export default function Routes() {
       createRouteWithLayout({
         path: SNAPS_ROUTE,
         component: SnapList,
-        layout: LegacyLayout,
+        layout: RootLayout,
         authenticated: true,
       }),
       createRouteWithLayout({
         path: `${SNAPS_VIEW_ROUTE}/*`,
         component: SnapView,
-        layout: LegacyLayout,
+        layout: RootLayout,
         authenticated: true,
       }),
       createRouteWithLayout({
