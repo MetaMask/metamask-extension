@@ -2045,7 +2045,6 @@
         "@metamask/smart-transactions-controller>@metamask/polling-controller": true,
         "@metamask/transaction-controller": true,
         "@metamask/smart-transactions-controller>bignumber.js": true,
-        "fast-json-patch": true,
         "lodash": true
       }
     },
