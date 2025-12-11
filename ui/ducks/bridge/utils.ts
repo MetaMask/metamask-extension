@@ -270,6 +270,7 @@ export const toBridgeToken = (
   const imageFromPayload = payload.image ?? payload.iconUrl ?? payload.icon;
   return {
     ...payload,
+    name: payload.name ?? payload.symbol,
     balance: payload.balance ?? '0',
     chainId: isNonEvmChainId(payload.chainId)
       ? caipChainId

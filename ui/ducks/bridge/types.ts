@@ -15,6 +15,7 @@ export type BridgeToken = {
   assetId?: CaipAssetType;
   symbol: string;
   image: string;
+  name: string;
   decimals: number;
   chainId: number | Hex | ChainId | CaipChainId;
   balance: string; // raw balance
@@ -54,6 +55,7 @@ export type TokenPayload = {
     symbol: string;
     decimals: number;
     chainId: ChainId | Hex | CaipChainId;
+    name?: string;
     balance?: string;
     image?: string;
     iconUrl?: string | null;
