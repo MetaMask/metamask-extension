@@ -8,6 +8,7 @@ import AssetListPage from '../../../page-objects/pages/home/asset-list';
 import ERC20ApproveTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/erc20-approve-transaction-confirmation';
 import { scrollAndConfirmAndAssertConfirm } from '../helpers';
 import HomePage from '../../../page-objects/pages/home/homepage';
+import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import { mocked4BytesApprove, TestSuiteArguments } from './shared';
 
 const FixtureBuilder = require('../../../fixtures/fixture-builder');
@@ -139,7 +140,6 @@ async function confirmApproveTransaction(driver: Driver) {
 
   const homePage = new HomePage(driver);
   await homePage.goToActivityList();
-  await driver.waitForSelector(
-    '.transaction-status-label--confirmed:nth-of-type(1)',
-  );
+  const activityList = new ActivityListPage(driver);
+  await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
 }
