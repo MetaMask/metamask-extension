@@ -943,9 +943,6 @@
   "bridgeEnterAmount": {
     "message": "Pilih jumlah"
   },
-  "bridgeEnterAmountAndSelectAccount": {
-    "message": "Masukkan jumlah dan pilih akun tujuan"
-  },
   "bridgeExplorerLinkViewOn": {
     "message": "Lihat di $1"
   },
