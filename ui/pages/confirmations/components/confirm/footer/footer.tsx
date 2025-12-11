@@ -293,8 +293,7 @@ const Footer = () => {
     onDappSwapCompleted,
   ]);
 
-  const { isEnabled, isPaused } = useEnableShieldCoverageChecks();
-  const isShowShieldFooterCoverageIndicator = isEnabled || isPaused;
+  const { isShowCoverageIndicator } = useEnableShieldCoverageChecks();
 
   return (
     <>
@@ -306,7 +305,7 @@ const Footer = () => {
         // but only applied to the bottom of the box, so it doesn't overlap with
         // the shield footer coverage indicator
         style={
-          isShowShieldFooterCoverageIndicator
+          isShowCoverageIndicator
             ? { boxShadow: '0 4px 16px -8px var(--color-shadow-default)' }
             : undefined
         }
