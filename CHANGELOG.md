@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.12.2]
 
+### Uncategorized
+
+- Bump version to 13.12.2 (#38722)
+- bump semvar version to 13.12.2
+
 ### Fixed
 
 - Increase timeout for UI calls to background from 10s to 16s, potentially preventing UI crash on very slow devices (#38561)
