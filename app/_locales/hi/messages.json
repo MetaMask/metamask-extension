@@ -943,9 +943,6 @@
   "bridgeEnterAmount": {
     "message": "रकम चुनें"
   },
-  "bridgeEnterAmountAndSelectAccount": {
-    "message": "राशि दर्ज करें और गंतव्य अकाउंट चुनें"
-  },
   "bridgeExplorerLinkViewOn": {
     "message": "$1 पर देखें"
   },

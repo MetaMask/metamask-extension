@@ -419,7 +419,7 @@ export const MultichainAccountList = ({
           justifyContent={JustifyContent.spaceBetween}
           alignItems={AlignItems.center}
           paddingLeft={4}
-          paddingRight={4}
+          paddingRight={6}
           paddingTop={2}
           paddingBottom={2}
           width={BlockSize.Full}
@@ -436,8 +436,8 @@ export const MultichainAccountList = ({
             name={
               isHiddenAccountsExpanded ? IconName.ArrowUp : IconName.ArrowDown
             }
-            size={IconSize.Sm}
-            color={IconColor.iconDefault}
+            size={IconSize.Md}
+            color={IconColor.iconAlternative}
           />
         </Box>
       );
