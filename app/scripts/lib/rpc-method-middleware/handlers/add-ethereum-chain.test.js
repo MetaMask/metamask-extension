@@ -160,7 +160,7 @@ describe('addEthereumChainHandler', () => {
     );
   });
 
-  it('should deduplicate the featured endpoint if the URL `firstValidRPCUrl` send from client is the same with the one in FEATURED_RPCS', async () => {
+  it('should deduplicate the featured endpoint if the URL `firstValidRPCUrl` send from client is the same as the one in FEATURED_RPCS', async () => {
     const rpcUrl = FEATURED_RPCS.find(
       (f) => f.chainId === CHAIN_IDS.LINEA_MAINNET,
     )?.rpcEndpoints[0].url;
