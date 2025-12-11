@@ -233,15 +233,13 @@ export const BridgeInputGroup = ({
           isMultiselectEnabled={isMultiselectEnabled}
           isDestinationToken={isDestinationToken}
         >
-          {(onClickHandler) =>
-             (
-              <SelectedAssetButton
-                onClick={onClickHandler}
-                asset={(token as never) ?? undefined}
-                data-testid={buttonProps.testId}
-              />
-            )
-          }
+          {(onClickHandler) => (
+            <SelectedAssetButton
+              onClick={onClickHandler}
+              asset={(token as never) ?? undefined}
+              data-testid={buttonProps.testId}
+            />
+          )}
         </AssetPicker>
       </Row>
 
