@@ -5,10 +5,10 @@ import {
   BtcAccountType,
   isEvmAccountType,
   EthScope,
-  BtcScope,
   SolAccountType,
-  SolScope,
   SolMethod,
+  TrxAccountType,
+  TrxMethod,
 } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
@@ -23,6 +23,7 @@ import {
 import { MetaMaskReduxState } from '../../ui/store/store';
 import mockState from '../data/mock-state.json';
 import { isBtcMainnetAddress } from '../../shared/lib/multichain/accounts';
+import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 
 export type MockState = typeof mockState;
 
@@ -241,13 +242,29 @@ export function createMockInternalAccount({
       // If no address is given, we fallback to testnet
       const isMainnet = Boolean(address) && isBtcMainnetAddress(address);
 
-      scopes = [isMainnet ? BtcScope.Mainnet : BtcScope.Testnet];
+      scopes = [
+        isMainnet
+          ? MultichainNetworks.BITCOIN
+          : MultichainNetworks.BITCOIN_TESTNET,
+      ];
       methods = Object.values(BtcMethod);
       break;
     }
     case SolAccountType.DataAccount:
-      scopes = [SolScope.Mainnet, SolScope.Testnet, SolScope.Devnet];
+      scopes = [
+        MultichainNetworks.SOLANA,
+        MultichainNetworks.SOLANA_TESTNET,
+        MultichainNetworks.SOLANA_DEVNET,
+      ];
       methods = [SolMethod.SendAndConfirmTransaction];
+      break;
+    case TrxAccountType.Eoa:
+      scopes = [
+        MultichainNetworks.TRON,
+        MultichainNetworks.TRON_SHASTA,
+        MultichainNetworks.TRON_NILE,
+      ];
+      methods = [TrxMethod.SignMessageV2];
       break;
     default:
       throw new Error(`Unknown account type: ${type}`);

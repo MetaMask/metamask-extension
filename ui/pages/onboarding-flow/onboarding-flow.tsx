@@ -128,7 +128,7 @@ export default function OnboardingFlow() {
 
   useEffect(() => {
     if (completedOnboarding && !isFromReminder && !openedWithSidepanel) {
-      navigate(DEFAULT_ROUTE);
+      navigate(DEFAULT_ROUTE, { replace: true });
     }
   }, [navigate, completedOnboarding, isFromReminder, openedWithSidepanel]);
 
@@ -140,7 +140,7 @@ export default function OnboardingFlow() {
 
     if (isUnlocked && !completedOnboarding && !secretRecoveryPhrase) {
       if (isSRPBackupRoute) {
-        navigate(ONBOARDING_UNLOCK_ROUTE);
+        navigate(ONBOARDING_UNLOCK_ROUTE, { replace: true });
       }
     }
 
@@ -224,7 +224,11 @@ export default function OnboardingFlow() {
         setSecretRecoveryPhrase(retrievedSecretRecoveryPhrase);
       }
       if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
+        // For existing social login users, set onboarding complete
+        // The useEffect watching completedOnboarding will handle navigation to DEFAULT_ROUTE
         await dispatch(setCompletedOnboarding());
+        // Don't navigate here - let the useEffect handle it to avoid duplicate navigations
+        return;
       }
       navigate(nextRoute, { replace: true });
     } finally {

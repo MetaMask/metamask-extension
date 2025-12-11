@@ -1,11 +1,11 @@
-import { ContainerElement, JSXElement } from '@metamask/snaps-sdk/jsx';
+import { Box, ContainerElement, JSXElement } from '@metamask/snaps-sdk/jsx';
 import { getJsxChildren } from '@metamask/snaps-utils';
 import { mapToTemplate } from '../utils';
 import {
   Display,
   FlexDirection,
 } from '../../../../../helpers/constants/design-system';
-import { UIComponentFactory } from './types';
+import { UIComponent, UIComponentFactory } from './types';
 import { DEFAULT_FOOTER } from './footer';
 
 export const container: UIComponentFactory<ContainerElement> = ({
@@ -23,24 +23,32 @@ export const container: UIComponentFactory<ContainerElement> = ({
     children.pop();
   }
 
-  const templateChildren = children.map((child) =>
+  const firstChildIsBox =
+    typeof children[0] !== 'string' && children[0]?.type === 'Box';
+
+  // Ensure the first child is always a Box to apply layout styles correctly
+  const containerChildren = firstChildIsBox
+    ? children
+    : [Box({ children: children[0] as JSXElement }), ...children.slice(1)];
+
+  const templateChildren = containerChildren.map((child) =>
     mapToTemplate({
       useFooter,
       onCancel,
       t,
       ...params,
+
       element: child as JSXElement,
     }),
   );
 
   // Injects the prompt input field into the template if the dialog is a prompt type.
   if (promptLegacyProps) {
-    templateChildren.push({
+    // We can safely push to the first child's children as we ensure it's always a Box.
+    (templateChildren[0].children as UIComponent[])?.push({
       element: 'FormTextField',
       key: 'snap-prompt-input',
       props: {
-        marginLeft: 4,
-        marginRight: 4,
         className: 'snap-prompt-input',
         value: promptLegacyProps.inputValue,
         onChange: promptLegacyProps.onInputChange,

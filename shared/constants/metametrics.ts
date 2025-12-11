@@ -778,6 +778,7 @@ export enum MetaMetricsEventName {
   NavSwapButtonClicked = 'Swap Button Clicked',
   NavReceiveButtonClicked = 'Receive Button Clicked',
   NftAdded = 'NFT Added',
+  NoticeUpdateDisplayed = 'Notice Update Displayed',
   OnboardingWalletSecurityStarted = 'SRP Backup Selected',
   OnboardingWalletSecuritySkipInitiated = 'SRP Skip Backup Selected',
   OnboardingWalletSecuritySkipConfirmed = 'SRP Backup Skipped',
