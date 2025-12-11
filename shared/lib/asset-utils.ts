@@ -10,13 +10,12 @@ import {
   parseCaipAssetType,
   KnownCaipNamespace,
 } from '@metamask/utils';
-
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
-import { MultichainNetwork } from '@metamask/multichain-transactions-controller';
 import {
   getNativeAssetForChainId,
   isNativeAddress,
 } from '@metamask/bridge-controller';
+import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { Asset } from '@metamask/assets-controllers';
 import getFetchWithTimeout from '../modules/fetch-with-timeout';
 import { decimalToPrefixedHex } from '../modules/conversion.utils';
@@ -24,6 +23,7 @@ import {
   TRON_RESOURCE_SYMBOLS_SET,
   TronResourceSymbol,
 } from '../constants/multichain/assets';
+import { MultichainNetworks } from '../constants/multichain/networks';
 import { TEN_SECONDS_IN_MILLISECONDS } from './transactions-controller-utils';
 
 const TOKEN_API_V3_BASE_URL = 'https://tokens.api.cx.metamask.io/v3';
@@ -39,13 +39,16 @@ export const toAssetId = (
   if (isNativeAddress(address)) {
     return getNativeAssetForChainId(chainId)?.assetId;
   }
-  if (chainId === MultichainNetwork.Solana) {
+  if (chainId === MultichainNetworks.SOLANA) {
     return CaipAssetTypeStruct.create(`${chainId}/token:${address}`);
+  }
+  if (chainId === MultichainNetworks.TRON) {
+    return CaipAssetTypeStruct.create(`${chainId}/trc20:${address}`);
   }
   // EVM assets
   if (isStrictHexString(address)) {
     return CaipAssetTypeStruct.create(
-      `${chainId}/erc20:${address.toLowerCase()}`,
+      `${chainId}/erc20:${toChecksumHexAddress(address)}`,
     );
   }
   return undefined;
@@ -127,7 +130,12 @@ export const fetchAssetMetadata = async (
       assetId,
     };
 
-    if (chainId === MultichainNetwork.Solana && assetId) {
+    if (
+      [MultichainNetworks.SOLANA, MultichainNetworks.TRON].includes(
+        chainId as MultichainNetworks,
+      ) &&
+      assetId
+    ) {
       const { assetReference } = parseCaipAssetType(assetId);
       return {
         ...commonFields,
