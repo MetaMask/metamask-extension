@@ -410,7 +410,8 @@ class HomePage {
     console.log('Check if account syncing has synced at least once');
     await this.driver.wait(async () => {
       const uiState = await getCleanAppState(this.driver);
-      return uiState.metamask.hasAccountTreeSyncingSyncedAtLeastOnce === true;
+      // Check for nullish, as the state we might seems to be `null` sometimes.
+      return uiState?.metamask.hasAccountTreeSyncingSyncedAtLeastOnce === true;
     }, 30000); // Syncing can take some time so adding a longer timeout to reduce flakes
   }
 
