@@ -413,7 +413,7 @@ class HomePage {
         const uiState = await getCleanAppState(this.driver);
         // Check for nullish, as the state we might seems to be `null` sometimes.
         return (
-          uiState?.metamask.hasAccountTreeSyncingSyncedAtLeastOnce === true
+          uiState?.metamask?.hasAccountTreeSyncingSyncedAtLeastOnce === true
         );
       },
       {
