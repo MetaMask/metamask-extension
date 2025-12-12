@@ -38,6 +38,7 @@ exports[`useBridgeQueryParams should only set dest token 1`] = `
   "fromToken": undefined,
   "fromTokenInputValue": undefined,
   "toToken": {
+    "accountType": undefined,
     "address": "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
     "assetId": "eip155:59144/erc20:0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
     "balance": "0",
@@ -46,6 +47,7 @@ exports[`useBridgeQueryParams should only set dest token 1`] = `
     "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/erc20/0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d.png",
     "name": "USDC",
     "symbol": "USDC",
+    "tokenFiatAmount": undefined,
   },
 }
 `;
@@ -53,6 +55,7 @@ exports[`useBridgeQueryParams should only set dest token 1`] = `
 exports[`useBridgeQueryParams should only set src token and amount 1`] = `
 {
   "fromToken": {
+    "accountType": undefined,
     "address": "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
     "assetId": "eip155:59144/erc20:0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
     "balance": "0",
@@ -61,6 +64,7 @@ exports[`useBridgeQueryParams should only set src token and amount 1`] = `
     "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/erc20/0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d.png",
     "name": "USDC",
     "symbol": "USDC",
+    "tokenFiatAmount": undefined,
   },
   "fromTokenInputValue": "0.000100",
   "toToken": undefined,
@@ -72,7 +76,7 @@ exports[`useBridgeQueryParams should only set src token and amount 2`] = `
   [
     undefined,
     "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
-    "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
+    "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d",
     "0xe708",
   ],
   [
@@ -88,6 +92,7 @@ exports[`useBridgeQueryParams should set evm bridge params 1`] = `
 {
   "fromNativeBalance": "1000000",
   "fromToken": {
+    "accountType": undefined,
     "address": "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
     "assetId": "eip155:59144/erc20:0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
     "balance": "0",
@@ -96,10 +101,12 @@ exports[`useBridgeQueryParams should set evm bridge params 1`] = `
     "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/erc20/0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d.png",
     "name": "USDC",
     "symbol": "USDC",
+    "tokenFiatAmount": undefined,
   },
   "fromTokenBalance": "1000000",
   "fromTokenInputValue": "0.000100",
   "toToken": {
+    "accountType": undefined,
     "address": "501",
     "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
     "balance": "0",
@@ -108,6 +115,7 @@ exports[`useBridgeQueryParams should set evm bridge params 1`] = `
     "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png",
     "name": "Solana",
     "symbol": "SOL",
+    "tokenFiatAmount": undefined,
   },
 }
 `;
@@ -117,7 +125,7 @@ exports[`useBridgeQueryParams should set evm bridge params 2`] = `
   [
     undefined,
     "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
-    "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
+    "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d",
     "0xe708",
   ],
   [
@@ -132,6 +140,7 @@ exports[`useBridgeQueryParams should set evm bridge params 2`] = `
 exports[`useBridgeQueryParams should set solana swap params 1`] = `
 {
   "fromToken": {
+    "accountType": undefined,
     "address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
     "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
     "balance": "0",
@@ -140,9 +149,11 @@ exports[`useBridgeQueryParams should set solana swap params 1`] = `
     "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png",
     "name": "Solana",
     "symbol": "USDC",
+    "tokenFiatAmount": undefined,
   },
   "fromTokenInputValue": "0.000000100",
   "toToken": {
+    "accountType": undefined,
     "address": "501",
     "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
     "balance": "0",
@@ -151,6 +162,7 @@ exports[`useBridgeQueryParams should set solana swap params 1`] = `
     "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png",
     "name": "Solana",
     "symbol": "SOL",
+    "tokenFiatAmount": undefined,
   },
 }
 `;
@@ -158,6 +170,7 @@ exports[`useBridgeQueryParams should set solana swap params 1`] = `
 exports[`useBridgeQueryParams should set src token after navigating from ERC20 asset page 1`] = `
 {
   "fromToken": {
+    "accountType": undefined,
     "address": "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
     "assetId": "eip155:59144/erc20:0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
     "balance": "0",
@@ -166,6 +179,7 @@ exports[`useBridgeQueryParams should set src token after navigating from ERC20 a
     "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/erc20/0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d.png",
     "name": "USDC",
     "symbol": "USDC",
+    "tokenFiatAmount": undefined,
   },
   "fromTokenInputValue": null,
   "toToken": undefined,

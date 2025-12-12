@@ -7,6 +7,7 @@ import {
   formatChainIdToCaip,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
+import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { SolAccountType, SolScope } from '@metamask/keyring-api';
 import { getAddress } from 'ethers/lib/utils';
@@ -294,15 +295,17 @@ describe('Bridge selectors', () => {
       const result = getFromToken(state as never);
 
       expect(result).toStrictEqual({
+        accountType: undefined,
         address: '0x0000000000000000000000000000000000000000',
         assetId: 'eip155:1/slip44:60',
-        chainId: '0x1',
+        balance: '0',
+        chainId: 'eip155:1',
         decimals: 18,
         image:
           'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png',
         name: 'Ether',
         symbol: 'ETH',
-        balance: '0',
+        tokenFiatAmount: undefined,
       });
     });
 
@@ -313,15 +316,17 @@ describe('Bridge selectors', () => {
       const result = getFromToken(state as never);
 
       expect(result).toStrictEqual({
+        accountType: undefined,
         address: '0x0000000000000000000000000000000000000000',
         assetId: 'eip155:1/slip44:60',
-        chainId: '0x1',
+        balance: '0',
+        chainId: 'eip155:1',
         decimals: 18,
         image:
           'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png',
         name: 'Ether',
         symbol: 'ETH',
-        balance: '0',
+        tokenFiatAmount: undefined,
       });
     });
   });
@@ -369,15 +374,17 @@ describe('Bridge selectors', () => {
       const result = getToToken(state as never);
 
       expect(result).toStrictEqual({
+        accountType: undefined,
         address: '0xaca92e438df0b2401ff60da7e4337b687a2435da',
         assetId: 'eip155:1/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
         balance: '0',
         chainId: '0x1',
         decimals: 6,
         image:
-          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xaca92e438df0b2401ff60da7e4337b687a2435da.png',
+          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xacA92E438df0B2401fF60dA7E4337B687a2435DA.png',
         name: 'MetaMask USD',
         symbol: 'mUSD',
+        tokenFiatAmount: undefined,
       });
     });
 
@@ -467,6 +474,8 @@ describe('Bridge selectors', () => {
           'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png',
         name: 'Ether',
         symbol: 'ETH',
+        tokenFiatAmount: undefined,
+        accountType: undefined,
       });
     });
   });
@@ -1732,9 +1741,9 @@ describe('Bridge selectors', () => {
         metamaskStateOverrides: {
           marketData: {
             '0x1': {
-              [getAddress('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48')]: {
-                price: 1.2,
-              },
+              [toChecksumHexAddress(
+                '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+              )]: { price: 1.2 },
             },
           },
           currencyRates: {
@@ -1743,10 +1752,15 @@ describe('Bridge selectors', () => {
           ...mockNetworkState({ chainId: '0x1' }),
         },
         bridgeSliceOverrides: {
-          fromToken: {
+          fromToken: toBridgeToken({
             address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
             decimals: 6,
-          },
+            chainId: formatChainIdToCaip(ChainId.ETH),
+            symbol: 'USDC',
+            name: 'USD',
+            assetId:
+              'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+          }),
         },
         featureFlagOverrides: {
           bridgeConfig: {
@@ -1769,7 +1783,10 @@ describe('Bridge selectors', () => {
         metamaskStateOverrides: {
           marketData: {
             '0x1': {
-              '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': { price: 1.2 },
+              [zeroAddress()]: { price: 1 },
+              [toChecksumHexAddress(
+                '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+              )]: { price: 1.2 },
             },
           },
           currencyRates: {
@@ -1778,10 +1795,7 @@ describe('Bridge selectors', () => {
           ...mockNetworkState({ chainId: '0x1' }),
         },
         bridgeSliceOverrides: {
-          fromToken: {
-            address: zeroAddress(),
-            decimals: 18,
-          },
+          fromToken: toBridgeToken(getNativeAssetForChainId(1)),
         },
         featureFlagOverrides: {
           bridgeConfig: {
@@ -1819,24 +1833,30 @@ describe('Bridge selectors', () => {
             [getNativeAssetForChainId(MultichainNetworks.SOLANA)?.assetId]: {
               rate: 1.5,
             },
-            [`${formatChainIdToCaip(ChainId.SOLANA)}/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`]:
-              {
-                rate: 2.0,
-              },
+            [`${formatChainIdToCaip(
+              ChainId.SOLANA,
+            )}/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`]: {
+              rate: 2.1,
+            },
           },
           rates: {
             sol: {
-              conversionRate: 1.5,
+              conversionRate: 1.99,
               usdConversionRate: 1.4,
             },
           },
         },
         bridgeSliceOverrides: {
-          fromTokenExchangeRate: 1.0,
-          fromToken: {
+          fromTokenExchangeRate: 2.0,
+          fromToken: toBridgeToken({
             address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
             decimals: 6,
-          },
+            assetId:
+              'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+            chainId: MultichainNetworks.SOLANA,
+            symbol: 'USDC',
+            name: 'USD',
+          }),
         },
         featureFlagOverrides: {
           bridgeConfig: {
@@ -1852,7 +1872,7 @@ describe('Bridge selectors', () => {
 
       const result = getFromTokenConversionRate(state);
       expect(result).toStrictEqual({
-        usd: 1.8666666666666665,
+        usd: 1.4070351758793969,
         valueInCurrency: 2,
       });
     });
@@ -1875,21 +1895,19 @@ describe('Bridge selectors', () => {
           ...mockNetworkState({ chainId: '0x1' }),
           conversionRates: {
             [getNativeAssetForChainId(MultichainNetworks.SOLANA)?.assetId]: {
-              rate: 1.5,
+              rate: 1.54,
             },
           },
           rates: {
             sol: {
               usdConversionRate: 1.4,
+              conversionRate: 1.55,
             },
           },
         },
         bridgeSliceOverrides: {
-          fromTokenExchangeRate: 1.0,
-          fromToken: {
-            address: zeroAddress(),
-            decimals: 18,
-          },
+          fromTokenExchangeRate: 1.5,
+          fromToken: toBridgeToken(getNativeAssetForChainId(ChainId.SOLANA)),
         },
         featureFlagOverrides: {
           bridgeConfig: {
@@ -1905,7 +1923,7 @@ describe('Bridge selectors', () => {
 
       const result = getFromTokenConversionRate(state);
       expect(result).toStrictEqual({
-        usd: 1.4,
+        usd: 1.354838709677419,
         valueInCurrency: 1.5,
       });
     });
