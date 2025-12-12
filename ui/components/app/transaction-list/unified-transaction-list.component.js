@@ -643,7 +643,7 @@ export default function UnifiedTransactionList({
       .filter((item) => item.kind === TransactionKind.EVM)
       .filter(
         (item) =>
-          item.transactionGroup.initialTransaction?.status in
+          item.transactionGroup.primaryTransaction?.status in
           PENDING_STATUS_HASH,
       )
       .map((item) => item.transactionGroup);
