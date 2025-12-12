@@ -69,26 +69,6 @@ export const getNativeTokenName = (chainId: string): string | undefined => {
   }
 };
 
-type GasFeeEstimate = {
-  suggestedMaxPriorityFeePerGas: string;
-  suggestedMaxFeePerGas: string;
-  minWaitTimeEstimate: number;
-  maxWaitTimeEstimate: number;
-};
-
-type NetworkGasFeeEstimates = {
-  low: GasFeeEstimate;
-  medium: GasFeeEstimate;
-  high: GasFeeEstimate;
-  estimatedBaseFee: string;
-  historicalBaseFeeRange: [string, string];
-  baseFeeTrend: 'up' | 'down';
-  latestPriorityFeeRange: [string, string];
-  historicalPriorityFeeRange: [string, string];
-  priorityFeeTrend: 'up' | 'down';
-  networkCongestion: number;
-};
-
 // We don't need to use gas multipliers here because the gasLimit from Bridge API already included it
 export const getHexMaxGasLimit = (gasLimit: number) => {
   return new Numeric(
@@ -118,39 +98,6 @@ export const bpsToPercentage = (
 
   // BPS to percentage: divide by 100
   return (bpsValue / 100).toString();
-};
-
-export const getTxGasEstimates = async ({
-  networkAndAccountSupports1559,
-  networkGasFeeEstimates,
-  txParams,
-  hexChainId,
-}: {
-  networkAndAccountSupports1559: boolean;
-  networkGasFeeEstimates: NetworkGasFeeEstimates;
-  txParams: TxData;
-  hexChainId: Hex;
-}) => {
-  if (networkAndAccountSupports1559) {
-    const { estimatedBaseFee = '0' } = networkGasFeeEstimates;
-    const hexEstimatedBaseFee = decGWEIToHexWEI(estimatedBaseFee) as Hex;
-    const txGasFeeEstimates = await getTransaction1559GasFeeEstimates(
-      {
-        ...txParams,
-        chainId: hexChainId,
-        gasLimit: txParams.gasLimit?.toString(),
-      },
-      hexEstimatedBaseFee,
-      hexChainId,
-    );
-    return txGasFeeEstimates;
-  }
-
-  return {
-    baseAndPriorityFeePerGas: undefined,
-    maxFeePerGas: undefined,
-    maxPriorityFeePerGas: undefined,
-  };
 };
 
 const fetchTokenExchangeRates = async (
