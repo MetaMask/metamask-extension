@@ -35,7 +35,40 @@ export function NotificationsListItem({
 
   const { markNotificationAsRead } = useMarkNotificationAsRead();
 
-  const handleNotificationClick = useCallback(() => {
+  const handleNotificationClick = useCallback(async () => {
+    // POC: Handle side panel notification click
+    // TODO: Introduce a new Contentful property such as "action_type"
+    if (notification.id === 'sidepanel-poc-notification') {
+      markNotificationAsRead([
+        {
+          id: notification.id,
+          type: notification.type,
+          isRead: notification.isRead,
+        },
+      ]);
+
+      if (!chrome.sidePanel?.open) {
+        return;
+      }
+
+      try {
+        const tabs = await chrome.tabs.query({
+          active: true,
+          currentWindow: true,
+        });
+
+        if (tabs?.[0]?.windowId) {
+          await chrome.sidePanel.open({ windowId: tabs[0].windowId });
+          window.close();
+        }
+      } catch {
+        // Silently fail
+      }
+
+      return;
+    }
+
+    // Normal notification handling
     const otherNotificationProperties = () => {
       if (
         'notification_type' in notification &&
