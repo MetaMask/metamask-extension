@@ -31,8 +31,7 @@ import {
   getAllMultichainNetworkConfigurations,
 } from './networks';
 
-// Mock the main selectors to avoid circular dependency
-jest.mock('../selectors', () => ({
+jest.mock('./feature-flags', () => ({
   getIsBitcoinSupportEnabled: jest.fn((state) => {
     const { bitcoinAccounts } = state.metamask.remoteFeatureFlags;
     // Keep this simple, only check if it's enabled or not.
@@ -57,7 +56,12 @@ jest.mock('../selectors', () => ({
   getIsTronTestnetSupportEnabled: jest.fn(
     (state) => state.metamask.remoteFeatureFlags.tronTestnetsEnabled,
   ),
-  getEnabledNetworks: jest.fn(() => ({ eip155: {} })),
+}));
+
+jest.mock('../../../shared/modules/selectors/multichain', () => ({
+  getEnabledNetworks: jest.fn(
+    (state) => state.metamask.enabledNetworkMap ?? { eip155: {} },
+  ),
 }));
 
 type TestState = AccountsState &
