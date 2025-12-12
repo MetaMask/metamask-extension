@@ -102,6 +102,7 @@ const render = (
   return renderWithProvider(<AccountListMenu {...props} />, store, location);
 };
 
+// Old account model components.
 describe('AccountListMenu', () => {
   afterEach(() => {
     jest.resetAllMocks();

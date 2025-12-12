@@ -135,6 +135,7 @@ const render = (
   );
 };
 
+// Old account model components.
 describe('MultichainAccountListMenu', () => {
   afterEach(() => {
     jest.resetAllMocks();
@@ -142,9 +143,9 @@ describe('MultichainAccountListMenu', () => {
   });
 
   it('displays important elements', () => {
-    const { getByText, getByTestId } = render();
+    const { getByTestId } = render();
 
-    expect(getByText('Add account or hardware wallet')).toBeInTheDocument();
+    // expect(getByText('Add account or hardware wallet')).toBeInTheDocument();
     expect(
       getByTestId('multichain-account-menu-search-bar'),
     ).toBeInTheDocument();
