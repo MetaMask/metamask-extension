@@ -5,7 +5,6 @@ const {
 } = require('../../page-objects/flows/login.flow');
 const { withFixtures, WINDOW_TITLES, DAPP_URL } = require('../../helpers');
 const FixtureBuilder = require('../../fixtures/fixture-builder');
-const { CHAIN_IDS } = require('../../../../shared/constants/network');
 const { mockSpotPrices } = require('../tokens/utils/mocks');
 
 const PREFERENCES_STATE_MOCK = {
@@ -232,8 +231,8 @@ describe('Send ETH', function () {
               hardfork: 'muirGlacier',
             },
             testSpecificMock: async (mockServer) => {
-              await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
-                '0x0000000000000000000000000000000000000000': {
+              await mockSpotPrices(mockServer, {
+                'eip155:1/slip44:60': {
                   price: 1700,
                   marketCap: 382623505141,
                   pricePercentChange1d: 0,
@@ -321,8 +320,8 @@ describe('Send ETH', function () {
               .build(),
             title: this.test.fullTitle(),
             testSpecificMock: async (mockServer) => {
-              await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
-                '0x0000000000000000000000000000000000000000': {
+              await mockSpotPrices(mockServer, {
+                'eip155:1/slip44:60': {
                   price: 1700,
                   marketCap: 382623505141,
                   pricePercentChange1d: 0,
