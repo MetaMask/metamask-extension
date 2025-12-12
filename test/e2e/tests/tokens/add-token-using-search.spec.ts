@@ -5,7 +5,7 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 
-describe('Add existing token using search TEST', function () {
+describe('Add existing token using search', function () {
   // Mock call to core to fetch BAT token price
   async function mockPriceFetch(
     mockServer: Mockttp,
