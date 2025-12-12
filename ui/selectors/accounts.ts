@@ -10,7 +10,6 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import { createSelector } from 'reselect';
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
-import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 
 export type AccountsState = {
@@ -54,7 +53,7 @@ export const getInternalAccountsObject = createSelector(
   (internalAccounts) => internalAccounts,
 );
 
-export const getMemoizedInternalAccountByAddress = createDeepEqualSelector(
+export const getMemoizedInternalAccountByAddress = createSelector(
   [getInternalAccounts, (_state, address) => address],
   (internalAccounts, address) => {
     return internalAccounts.find((account) =>
@@ -83,7 +82,7 @@ export const isSelectedInternalAccountSolana = createSelector(
   (account) => isSolanaAccount(account),
 );
 
-export const hasCreatedSolanaAccount = createDeepEqualSelector(
+export const hasCreatedSolanaAccount = createSelector(
   getInternalAccounts,
   (accounts) => accounts.some((account) => isSolanaAccount(account)),
 );
@@ -95,7 +94,7 @@ export const hasCreatedSolanaAccount = createDeepEqualSelector(
  * @param _state - Redux state (unused; required for selector signature)
  * @param scope - The CAIP scope string to filter accounts by
  */
-export const getInternalAccountsByScope = createDeepEqualSelector(
+export const getInternalAccountsByScope = createSelector(
   [getInternalAccounts, (_state: AccountsState, scope: CaipChainId) => scope],
   (accounts, scope): InternalAccount[] => {
     if (!Array.isArray(accounts) || accounts.length === 0) {

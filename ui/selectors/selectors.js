@@ -524,7 +524,7 @@ export function getSelectedAddress(state) {
   return getSelectedInternalAccount(state)?.address;
 }
 
-export const getInternalAccountByAddress = createDeepEqualSelector(
+export const getInternalAccountByAddress = createSelector(
   getInternalAccounts,
   (_, address) => address,
   (accounts, address) => {
@@ -1203,7 +1203,7 @@ export function getAccountName(accounts, accountAddress) {
   return account && account.metadata.name !== '' ? account.metadata.name : '';
 }
 
-export const accountsWithSendEtherInfoSelector = createDeepEqualSelector(
+export const accountsWithSendEtherInfoSelector = createSelector(
   getMetaMaskAccounts,
   getInternalAccounts,
   (accounts, internalAccounts) => {

@@ -79,7 +79,7 @@ export type MultichainNetworkConfigState =
 
 // Selectors
 
-export const getIsNonEvmNetworksEnabled = createDeepEqualSelector(
+export const getIsNonEvmNetworksEnabled = createSelector(
   getIsBitcoinSupportEnabled,
   getIsSolanaSupportEnabled,
   getIsTronSupportEnabled,

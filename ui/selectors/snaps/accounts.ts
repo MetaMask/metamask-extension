@@ -1,7 +1,7 @@
+import { createSelector } from 'reselect';
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import { getAccountName } from '../selectors';
 import { getInternalAccounts } from '../accounts';
-import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 
 /**
  * The Metamask state for the accounts controller.
@@ -17,7 +17,7 @@ export type AccountsMetaMaskState = {
  * @param address - The address to get the display name for.
  * @returns The account name for the address.
  */
-export const getAccountNameFromState = createDeepEqualSelector(
+export const getAccountNameFromState = createSelector(
   [
     getInternalAccounts,
     (_state: AccountsMetaMaskState, address: string) => address,

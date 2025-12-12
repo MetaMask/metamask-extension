@@ -693,7 +693,7 @@ export const getMemoizedMultichainNetworkConfigurationsByChainId =
     (networkConfigurations) => networkConfigurations,
   );
 
-export const getLastSelectedNonEvmAccount = createDeepEqualSelector(
+export const getLastSelectedNonEvmAccount = createSelector(
   getInternalAccounts,
   (nonEvmAccounts) => {
     const sortedNonEvmAccounts = nonEvmAccounts
@@ -708,7 +708,7 @@ export const getLastSelectedNonEvmAccount = createDeepEqualSelector(
   },
 );
 
-export const getLastSelectedSolanaAccount = createDeepEqualSelector(
+export const getLastSelectedSolanaAccount = createSelector(
   getInternalAccounts,
   (nonEvmAccounts) => {
     const sortedNonEvmAccounts = nonEvmAccounts
