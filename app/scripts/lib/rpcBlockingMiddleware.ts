@@ -1,6 +1,6 @@
 import type { Json, JsonRpcRequest, JsonRpcResponse } from '@metamask/utils';
 import type { Next } from '@metamask/json-rpc-engine/v2';
-import { providerErrors } from '@metamask/rpc-errors';
+import { rpcErrors } from '@metamask/rpc-errors';
 import { InternalError, SnapId } from '@metamask/snaps-sdk';
 import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
 import { WalletMiddlewareContext } from '@metamask/eth-json-rpc-middleware';
@@ -31,11 +31,13 @@ export default function createRpcBlockingMiddleware({
       const origin = context.get('origin');
 
       if (!origin) {
-        throw new InternalError(`No origin specified for method ${req.method}`);
+        throw new InternalError(
+          `No origin specified for request with method ${req.method}`,
+        );
       }
 
       if (!isSnapPreinstalled(origin as SnapId)) {
-        throw providerErrors.unauthorized(errorMessage);
+        throw rpcErrors.resourceUnavailable(errorMessage);
       }
     }
 
