@@ -24,7 +24,7 @@ describe('Send flow', function (this: Suite) {
         const homePage = new NonEvmHomepage(driver);
         const sendPage = new SendPage(driver);
 
-        await homePage.checkPageIsLoaded({ amount: '0' });
+        await homePage.checkPageIsLoaded('0');
         await homePage.clickOnSendButton();
         await sendPage.checkSolanaNetworkIsPresent();
         await sendPage.selectToken(
@@ -59,7 +59,7 @@ describe('Send flow', function (this: Suite) {
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
         const sendPage = new SendPage(driver);
-        await homePage.checkPageIsLoaded({ amount: '$5,643.50' });
+        await homePage.checkPageIsLoaded('$5,643.50');
         await homePage.clickOnSendButton();
         await sendPage.checkSolanaNetworkIsPresent();
         await sendPage.selectToken(
@@ -107,7 +107,7 @@ describe('Send flow', function (this: Suite) {
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
         const sendPage = new SendPage(driver);
-        await homePage.checkPageIsLoaded({ amount: '50' });
+        await homePage.checkPageIsLoaded('50');
         await homePage.clickOnSendButton();
         await sendPage.checkSolanaNetworkIsPresent();
         await sendPage.selectToken(
@@ -155,7 +155,7 @@ describe('Send flow', function (this: Suite) {
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
         const sendPage = new SendPage(driver);
-        await homePage.checkPageIsLoaded({ amount: '50' });
+        await homePage.checkPageIsLoaded('50');
         await homePage.clickOnSendButton();
         await sendPage.checkSolanaNetworkIsPresent();
         await sendPage.selectToken(

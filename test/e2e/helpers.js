@@ -47,56 +47,6 @@ const largeDelayMs = regularDelayMs * 2;
 const veryLargeDelayMs = largeDelayMs * 2;
 const dappBasePort = 8080;
 
-// Default driver timeout in milliseconds (same as Driver class default)
-const DEFAULT_DRIVER_TIMEOUT = 10 * 1000;
-const PERFORMANCE_TEST_TIMEOUT_MULTIPLIER = 3;
-
-/**
- * Gets the test file path from the call stack.
- *
- * @returns {string | null} The test file path if found, null otherwise.
- */
-function getTestFilePath() {
-  const originalPrepareStackTrace = Error.prepareStackTrace;
-  Error.prepareStackTrace = (_, stack) => stack;
-  const { stack } = new Error();
-  Error.prepareStackTrace = originalPrepareStackTrace;
-
-  for (const frame of stack) {
-    const fileName = frame.getFileName();
-    if (fileName && fileName.includes('.spec.')) {
-      return fileName;
-    }
-  }
-  return null;
-}
-
-/**
- * Checks if the current test is a performance test (located in tolerate-failure folder).
- *
- * @returns {boolean} True if the test is a performance test, false otherwise.
- */
-function isPerformanceTest() {
-  const testFilePath = getTestFilePath();
-  return testFilePath !== null && testFilePath.includes('tolerate-failure');
-}
-
-/**
- * Gets the appropriate driver timeout based on whether the test is a performance test.
- * Performance tests (in tolerate-failure folder) get 3x the default timeout.
- *
- * @returns {number} The timeout in milliseconds.
- */
-function getDriverTimeout() {
-  if (isPerformanceTest()) {
-    console.log(
-      `Performance test detected - using extended timeout: ${DEFAULT_DRIVER_TIMEOUT * PERFORMANCE_TEST_TIMEOUT_MULTIPLIER}ms`,
-    );
-    return DEFAULT_DRIVER_TIMEOUT * PERFORMANCE_TEST_TIMEOUT_MULTIPLIER;
-  }
-  return DEFAULT_DRIVER_TIMEOUT;
-}
-
 const createDownloadFolder = async (downloadsFolder) => {
   await fs.rm(downloadsFolder, { recursive: true, force: true });
   await fs.mkdir(downloadsFolder, { recursive: true });
@@ -224,6 +174,7 @@ async function withFixtures(options, testSuite) {
     manifestFlags,
     solanaWebSocketSpecificMocks = [],
     forceBip44Version = true,
+    extendedTimeoutMultiplier = 1,
   } = options;
 
   // Normalize localNodeOptions
@@ -411,15 +362,18 @@ async function withFixtures(options, testSuite) {
       );
     }
     await mockServer.start(8000);
-
     await setManifestFlags(manifestFlags);
 
     const wd = await buildWebDriver({
       ...driverOptions,
-      ...(isPerformanceTest() ? { timeOut: getDriverTimeout() } : {}),
       disableServerMochaToBackground,
     });
+
     driver = wd.driver;
+    driver.timeout =
+      extendedTimeoutMultiplier > 1
+        ? driver.timeout * extendedTimeoutMultiplier
+        : driver.timeout;
     extensionId = wd.extensionId;
     webDriver = driver.driver;
 

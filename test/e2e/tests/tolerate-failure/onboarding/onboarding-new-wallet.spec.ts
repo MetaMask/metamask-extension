@@ -36,6 +36,7 @@ describe('MetaMask onboarding', function () {
         },
         useMockingPassThrough: true,
         disableServerMochaToBackground: true,
+        extendedTimeoutMultiplier: 3,
         fixtures: new FixtureBuilder({ onboarding: true })
           .withEnabledNetworks(ALL_POPULAR_NETWORKS)
           .build(),
@@ -66,7 +67,7 @@ describe('MetaMask onboarding', function () {
           'Time since the user clicks on "Done" button until "Skip backup" screen and assets list are visible',
         );
 
-        await driver.navigate(undefined, { waitForControllers: false });
+        await driver.navigate();
         const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
         if (isFirefox) {
           await onboardingMetricsFlow(driver, {
@@ -107,7 +108,7 @@ describe('MetaMask onboarding', function () {
         await handleSidepanelPostOnboarding(driver);
         timer6.startTimer();
         const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded({ timeout: 30000 }); // Since here the requests are not mocked, let's wait longer
+        await homePage.checkPageIsLoaded();
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenListIsDisplayed();
         await assetListPage.checkConversionRateDisplayed();
