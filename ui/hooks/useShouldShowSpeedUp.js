@@ -35,7 +35,20 @@ export function useShouldShowSpeedUp(transactionGroup, isEarliestNonce) {
     // condition is already met. This effect will run anytime the variables
     // for determining enabled status change
     let timeoutId;
-    if (!hasRetried && isEarliestNonce && !speedUpEnabled) {
+
+    // Disable speed up if conditions are no longer met
+    if (
+      (hasRetried || !isEarliestNonce || !matchCurrentChainId) &&
+      speedUpEnabled
+    ) {
+      setSpeedUpEnabled(false);
+    } else if (
+      !hasRetried &&
+      isEarliestNonce &&
+      matchCurrentChainId &&
+      !speedUpEnabled
+    ) {
+      // Enable speed up after 5 seconds if conditions are met
       if (Date.now() - submittedTime > SECOND * 5) {
         setSpeedUpEnabled(true);
       } else {
@@ -55,7 +68,13 @@ export function useShouldShowSpeedUp(transactionGroup, isEarliestNonce) {
         clearTimeout(timeoutId);
       }
     };
-  }, [submittedTime, speedUpEnabled, hasRetried, isEarliestNonce]);
+  }, [
+    submittedTime,
+    speedUpEnabled,
+    hasRetried,
+    isEarliestNonce,
+    matchCurrentChainId,
+  ]);
 
   return speedUpEnabled;
 }
