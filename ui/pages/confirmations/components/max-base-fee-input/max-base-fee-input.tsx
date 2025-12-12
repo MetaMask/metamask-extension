@@ -107,33 +107,23 @@ export const MaxBaseFeeInput = ({
           flexDirection={BoxFlexDirection.Row}
           justifyContent={BoxJustifyContent.Between}
         >
-          {estimatedBaseFee && (
-            <Text
-              variant={TextVariant.BodySm}
-              color={TextColor.TextAlternative}
-            >
-              {t('currentEstimatedBaseFee', [
-                limitToMaximumDecimalPlaces(parseFloat(estimatedBaseFee), 2),
-              ])}
-            </Text>
-          )}
-          {historicalBaseFeeRange && (
-            <Text
-              variant={TextVariant.BodySm}
-              color={TextColor.TextAlternative}
-            >
-              {t('currentHistoricalBaseFeeRange', [
-                limitToMaximumDecimalPlaces(
-                  parseFloat(historicalBaseFeeRange?.[0]),
-                  2,
-                ),
-                limitToMaximumDecimalPlaces(
-                  parseFloat(historicalBaseFeeRange?.[1]),
-                  2,
-                ),
-              ])}
-            </Text>
-          )}
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            {t('currentEstimatedBaseFee', [
+              limitToMaximumDecimalPlaces(parseFloat(estimatedBaseFee), 2),
+            ])}
+          </Text>
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            {t('currentHistoricalBaseFeeRange', [
+              limitToMaximumDecimalPlaces(
+                parseFloat(historicalBaseFeeRange?.[0]),
+                2,
+              ),
+              limitToMaximumDecimalPlaces(
+                parseFloat(historicalBaseFeeRange?.[1]),
+                2,
+              ),
+            ])}
+          </Text>
         </Box>
       )}
     </Box>

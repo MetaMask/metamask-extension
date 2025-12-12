@@ -106,40 +106,30 @@ export const PriorityFeeInput = ({
           flexDirection={BoxFlexDirection.Row}
           justifyContent={BoxJustifyContent.Between}
         >
-          {latestPriorityFeeRange && (
-            <Text
-              variant={TextVariant.BodySm}
-              color={TextColor.TextAlternative}
-            >
-              {t('currentEstimatedPriorityFeeRange', [
-                limitToMaximumDecimalPlaces(
-                  parseFloat(latestPriorityFeeRange?.[0]),
-                  2,
-                ),
-                limitToMaximumDecimalPlaces(
-                  parseFloat(latestPriorityFeeRange?.[1]),
-                  2,
-                ),
-              ])}
-            </Text>
-          )}
-          {historicalPriorityFeeRange && (
-            <Text
-              variant={TextVariant.BodySm}
-              color={TextColor.TextAlternative}
-            >
-              {t('currentHistoricalPriorityFeeRange', [
-                limitToMaximumDecimalPlaces(
-                  parseFloat(historicalPriorityFeeRange?.[0]),
-                  2,
-                ),
-                limitToMaximumDecimalPlaces(
-                  parseFloat(historicalPriorityFeeRange?.[1]),
-                  2,
-                ),
-              ])}
-            </Text>
-          )}
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            {t('currentEstimatedPriorityFeeRange', [
+              limitToMaximumDecimalPlaces(
+                parseFloat(latestPriorityFeeRange?.[0]),
+                2,
+              ),
+              limitToMaximumDecimalPlaces(
+                parseFloat(latestPriorityFeeRange?.[1]),
+                2,
+              ),
+            ])}
+          </Text>
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            {t('currentHistoricalPriorityFeeRange', [
+              limitToMaximumDecimalPlaces(
+                parseFloat(historicalPriorityFeeRange?.[0]),
+                2,
+              ),
+              limitToMaximumDecimalPlaces(
+                parseFloat(historicalPriorityFeeRange?.[1]),
+                2,
+              ),
+            ])}
+          </Text>
         </Box>
       )}
     </Box>
