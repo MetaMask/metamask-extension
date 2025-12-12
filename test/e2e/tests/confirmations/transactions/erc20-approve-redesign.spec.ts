@@ -64,8 +64,6 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
           await erc20ApproveConfirmation.checkSpendingCapSection();
           await erc20ApproveConfirmation.checkSpendingCapAmount('7');
 
-          // TODO - Scroll button not shown in Firefox if advanced details enabled too fast.
-          await driver.delay(1000);
           await erc20ApproveConfirmation.clickAdvancedDetailsButton();
 
           await erc20ApproveConfirmation.checkAdvancedDetailsSections();
@@ -131,8 +129,6 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
           await erc20ApproveConfirmation.checkSpendingCapSection();
           await erc20ApproveConfirmation.checkSpendingCapAmount('7');
 
-          // TODO - Scroll button not shown in Firefox if advanced details enabled too fast.
-          await driver.delay(1000);
           await erc20ApproveConfirmation.clickAdvancedDetailsButton();
 
           await erc20ApproveConfirmation.checkAdvancedDetailsSections();
