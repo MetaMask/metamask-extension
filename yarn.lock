@@ -7792,9 +7792,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-metrics-controller@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "@metamask/profile-metrics-controller@npm:1.1.0"
+"@metamask/profile-metrics-controller@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@metamask/profile-metrics-controller@npm:2.0.0"
   dependencies:
     "@metamask/accounts-controller": "npm:^35.0.0"
     "@metamask/base-controller": "npm:^9.0.0"
@@ -7805,7 +7805,7 @@ __metadata:
     "@metamask/profile-sync-controller": "npm:^27.0.0"
     "@metamask/utils": "npm:^11.8.1"
     async-mutex: "npm:^0.5.0"
-  checksum: 10/95367783f6137c7fc6217346b6b4939f3f1664b99b11899165bd4de7bf4ec5bd929813a046f3abf6542c28bd2d9b895ad654c588f20ab5e42427fbbb532082aa
+  checksum: 10/3d65a539a179e504b9a06f3fd744be087274ed3f93bdeea6c7965e208040c7d66bf3a2f0c99cbebf70187fb49b500fda29b62f82520b3f557c8973ebfdb1f8bd
   languageName: node
   linkType: hard
 
@@ -32903,7 +32903,7 @@ __metadata:
     "@metamask/ppom-validator": "npm:0.39.0"
     "@metamask/preferences-controller": "npm:^21.0.0"
     "@metamask/preinstalled-example-snap": "npm:^0.7.2"
-    "@metamask/profile-metrics-controller": "npm:^1.1.0"
+    "@metamask/profile-metrics-controller": "npm:^2.0.0"
     "@metamask/profile-sync-controller": "npm:^26.0.0"
     "@metamask/providers": "npm:^22.1.1"
     "@metamask/rate-limit-controller": "npm:^7.0.0"
