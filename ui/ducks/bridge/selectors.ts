@@ -35,11 +35,13 @@ import {
   type Hex,
 } from '@metamask/utils';
 import type {
+  AccountTrackerControllerState,
   CurrencyRateState,
   MultichainAssetsControllerState,
   MultichainAssetsRatesControllerState,
   MultichainBalancesControllerState,
   RatesControllerState,
+  TokenBalancesControllerState,
   TokenListState,
   TokenRatesControllerState,
 } from '@metamask/assets-controllers';
@@ -100,9 +102,12 @@ export type BridgeAppState = {
     NetworkState &
     AccountsControllerState &
     AccountTreeControllerState &
+    AccountTrackerControllerState &
+    TokenBalancesControllerState &
     MultichainAssetsRatesControllerState &
     TokenRatesControllerState &
     RatesControllerState &
+    TokenBalancesControllerState &
     MultichainBalancesControllerState &
     MultichainTransactionsControllerState &
     MultichainAssetsControllerState &
@@ -546,88 +551,74 @@ export const getBridgeSortOrder = (state: BridgeAppState) =>
 
 export const getFromTokenConversionRate = createSelector(
   [
-    getFromChain,
-    (state: BridgeAppState) => state.metamask.marketData, // rates for non-native evm tokens
-    getAssetsRates, // non-evm conversion rates multichain equivalent of getMarketData
     getFromToken,
-    getMultichainCoinRates, // RatesController rates for native assets
-    (state: BridgeAppState) => state.metamask.currencyRates, // EVM only
     (state: BridgeAppState) => state.bridge.fromTokenExchangeRate,
+    getAssetsRates, // non-evm conversion rates multichain equivalent of getMarketData
+    getMultichainCoinRates,
+    (state: BridgeAppState) => state.metamask.marketData, // rates for non-native evm tokens
+    (state: BridgeAppState) => state.metamask.currencyRates, // EVM only
   ],
   (
-    fromChain,
-    marketData,
-    conversionRates,
     fromToken,
-    rates,
-    currencyRates,
     fromTokenExchangeRate,
+    conversionRates,
+    rates,
+    marketData,
+    currencyRates,
   ) => {
-    if (fromChain?.chainId && fromToken) {
-      const nativeAssetId = getNativeAssetForChainId(
-        fromChain.chainId,
-      )?.assetId;
-      const tokenAssetId = toAssetId(
-        fromToken.address,
-        formatChainIdToCaip(fromChain.chainId),
-      );
-      const nativeToCurrencyRate = isNonEvmChain(fromChain.chainId)
-        ? Number(
-            rates?.[fromChain.nativeCurrency?.toLowerCase()]?.conversionRate ??
-              conversionRates?.[nativeAssetId as CaipAssetType]?.rate ??
-              null,
-          )
-        : (currencyRates[fromChain.nativeCurrency]?.conversionRate ?? null);
-      const nativeToUsdRate = isNonEvmChain(fromChain.chainId)
-        ? Number(
-            rates?.[fromChain.nativeCurrency?.toLowerCase()]
-              ?.usdConversionRate ??
-              conversionRates?.[nativeAssetId as CaipAssetType]?.rate ??
-              null,
-          )
-        : (currencyRates[fromChain.nativeCurrency]?.usdConversionRate ?? null);
-
-      if (isNativeAddress(fromToken.address)) {
-        return {
-          valueInCurrency: nativeToCurrencyRate,
-          usd: nativeToUsdRate,
-        };
-      }
-      // For non-EVM tokens (Solana, Bitcoin, Tron), we use the conversion rates provided by the multichain rates controller
-      if (isNonEvmChain(fromChain.chainId) && nativeAssetId && tokenAssetId) {
-        const nativeAssetRate = Number(
-          conversionRates?.[nativeAssetId as CaipAssetType]?.rate ?? null,
-        );
-        const tokenToNativeAssetRate = tokenPriceInNativeAsset(
-          Number(
-            conversionRates?.[tokenAssetId]?.rate ??
-              fromTokenExchangeRate ??
-              null,
-          ),
-          nativeAssetRate,
-        );
-        return exchangeRatesFromNativeAndCurrencyRates(
-          tokenToNativeAssetRate,
-          Number(nativeToCurrencyRate),
-          Number(nativeToUsdRate),
-        );
-      }
-      // For EVM tokens, we use the market data to get the exchange rate
-      const tokenToNativeAssetRate =
-        exchangeRateFromMarketData(
-          fromChain.chainId,
-          fromToken.address,
-          marketData,
-        ) ??
-        tokenPriceInNativeAsset(fromTokenExchangeRate, nativeToCurrencyRate);
-
-      return exchangeRatesFromNativeAndCurrencyRates(
-        tokenToNativeAssetRate,
-        nativeToCurrencyRate,
-        nativeToUsdRate,
-      );
+    const nullResult = {
+      valueInCurrency: null,
+      usd: null,
+    };
+    if (!fromToken) {
+      return nullResult;
     }
-    return exchangeRatesFromNativeAndCurrencyRates();
+    const { chainId, assetId } = fromToken;
+    const nativeAsset = getNativeAssetForChainId(chainId);
+    if (!nativeAsset) {
+      return nullResult;
+    }
+    // For non-EVM tokens (Solana, Bitcoin, Tron), we use the conversion rates provided by the multichain rates controller
+    if (isNonEvmChain(chainId)) {
+      // Derive asset's value in USD from the native asset's value in USD
+      const {
+        conversionRate: nativeToCurrencyRate,
+        usdConversionRate: nativeToUsdRate,
+      } = rates[nativeAsset.symbol.toLowerCase()] ?? {};
+      const assetToCurrencyRateToUse =
+        fromTokenExchangeRate ?? Number(conversionRates?.[assetId]?.rate);
+
+      return {
+        valueInCurrency: assetToCurrencyRateToUse,
+        usd:
+          nativeToUsdRate && nativeToCurrencyRate && assetToCurrencyRateToUse
+            ? (assetToCurrencyRateToUse * nativeToUsdRate) /
+              nativeToCurrencyRate
+            : null,
+      };
+    }
+
+    // For EVM tokens
+    const {
+      conversionRate: nativeToCurrencyRate,
+      usdConversionRate: nativeToUsdRate,
+    } = currencyRates[nativeAsset.symbol] ?? {};
+
+    // For EVM tokens, we use the market data to get the exchange rate
+    const tokenToNativeAssetRate =
+      exchangeRateFromMarketData(assetId, marketData) ??
+      tokenPriceInNativeAsset(fromTokenExchangeRate, nativeToCurrencyRate);
+
+    return {
+      valueInCurrency:
+        tokenToNativeAssetRate && nativeToCurrencyRate
+          ? tokenToNativeAssetRate * nativeToCurrencyRate
+          : null,
+      usd:
+        tokenToNativeAssetRate && nativeToUsdRate
+          ? tokenToNativeAssetRate * nativeToUsdRate
+          : null,
+    };
   },
 );
 
