@@ -7846,9 +7846,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-metrics-controller@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/profile-metrics-controller@npm:1.0.0"
+"@metamask/profile-metrics-controller@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@metamask/profile-metrics-controller@npm:1.1.0"
   dependencies:
     "@metamask/accounts-controller": "npm:^35.0.0"
     "@metamask/base-controller": "npm:^9.0.0"
@@ -7859,7 +7859,7 @@ __metadata:
     "@metamask/profile-sync-controller": "npm:^27.0.0"
     "@metamask/utils": "npm:^11.8.1"
     async-mutex: "npm:^0.5.0"
-  checksum: 10/187ceb47a7247b0c801148313f6f6dd1c58d1bc5572f85ae6b8447c9fcea1feccf9a470074234cace0a4f4699a9c71cf3f1d180ddfcc08218e2615ee79cf3214
+  checksum: 10/95367783f6137c7fc6217346b6b4939f3f1664b99b11899165bd4de7bf4ec5bd929813a046f3abf6542c28bd2d9b895ad654c588f20ab5e42427fbbb532082aa
   languageName: node
   linkType: hard
 
@@ -8179,9 +8179,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/smart-transactions-controller@npm:^20.0.0":
-  version: 20.0.0
-  resolution: "@metamask/smart-transactions-controller@npm:20.0.0"
+"@metamask/smart-transactions-controller@npm:^21.0.0":
+  version: 21.0.0
+  resolution: "@metamask/smart-transactions-controller@npm:21.0.0"
   dependencies:
     "@babel/runtime": "npm:^7.24.1"
     "@ethereumjs/tx": "npm:^5.2.1"
@@ -8212,7 +8212,7 @@ __metadata:
       optional: true
     "@metamask/remote-feature-flag-controller":
       optional: true
-  checksum: 10/8c3bb501531820c1d2d470d433b8f3a4335e9e45bc87edbc0c6a4c2ebf57bdabf5a1b67b4614fd84bb5c0ac17595690fae473afd5ab169c8b0d8b5a57521c4ef
+  checksum: 10/a0d5c58f3671368a9f6649eef5c0ffe9b82c562662adf0641c898c32299577ead9f40514b2f44e805b8a0641335eaa36f14a3bf33eae037b6f063c338138f360
   languageName: node
   linkType: hard
 
@@ -32957,7 +32957,7 @@ __metadata:
     "@metamask/ppom-validator": "npm:0.39.0"
     "@metamask/preferences-controller": "npm:^21.0.0"
     "@metamask/preinstalled-example-snap": "npm:^0.7.2"
-    "@metamask/profile-metrics-controller": "npm:^1.0.0"
+    "@metamask/profile-metrics-controller": "npm:^1.1.0"
     "@metamask/profile-sync-controller": "npm:^26.0.0"
     "@metamask/providers": "npm:^22.1.1"
     "@metamask/rate-limit-controller": "npm:^7.0.0"
@@ -32969,7 +32969,7 @@ __metadata:
     "@metamask/selected-network-controller": "npm:^25.0.0"
     "@metamask/shield-controller": "npm:^3.1.0"
     "@metamask/signature-controller": "npm:^35.0.0"
-    "@metamask/smart-transactions-controller": "npm:^20.0.0"
+    "@metamask/smart-transactions-controller": "npm:^21.0.0"
     "@metamask/snap-account-abstraction-keyring-site": "npm:^1.0.0"
     "@metamask/snap-simple-keyring-site": "npm:^2.0.0"
     "@metamask/snaps-controllers": "npm:^17.1.1"
