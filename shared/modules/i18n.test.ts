@@ -4,9 +4,61 @@ import {
   I18NMessageDict,
   clearCaches,
   fetchLocale,
+  getLocaleMessagesUrl,
   getMessage,
   loadRelativeTimeFormatLocaleData,
 } from './i18n';
+
+describe('getLocaleMessagesUrl', () => {
+  const originalBrowser = (globalThis as { browser?: unknown }).browser;
+  const originalChrome = (globalThis as { chrome?: unknown }).chrome;
+  const originalHref = window.location.href;
+
+  afterEach(() => {
+    (globalThis as { browser?: unknown }).browser = originalBrowser;
+    (globalThis as { chrome?: unknown }).chrome = originalChrome;
+    window.history.replaceState(null, '', originalHref);
+  });
+
+  it('uses extension runtime when available', () => {
+    const getURL = jest
+      .fn()
+      .mockReturnValue('chrome-extension://id/_locales/en/messages.json');
+    (globalThis as { browser?: { runtime?: { getURL?: typeof getURL } } }).browser = {
+      runtime: { getURL },
+    };
+
+    expect(getLocaleMessagesUrl('en')).toBe(
+      'chrome-extension://id/_locales/en/messages.json',
+    );
+    expect(getURL).toHaveBeenCalledWith('_locales/en/messages.json');
+  });
+
+  it('resolves relative to the current directory when runtime API is missing', () => {
+    delete (globalThis as { browser?: unknown }).browser;
+    window.history.replaceState(
+      null,
+      '',
+      'https://example.com/metamask/notification.html',
+    );
+
+    expect(getLocaleMessagesUrl('en')).toBe(
+      'https://example.com/metamask/_locales/en/messages.json',
+    );
+  });
+
+  it('falls back to locale path when window is unavailable', () => {
+    const originalWindow = globalThis.window;
+    // @ts-expect-error - Simulate absence of window
+    delete globalThis.window;
+
+    try {
+      expect(getLocaleMessagesUrl('en')).toBe('_locales/en/messages.json');
+    } finally {
+      globalThis.window = originalWindow;
+    }
+  });
+});
 
 const localeCodeMock = 'te';
 const keyMock = 'testKey';

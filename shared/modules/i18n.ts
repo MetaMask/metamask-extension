@@ -90,13 +90,41 @@ export const getMessage = <T>(
   return join ? join(parts) : parts.join('');
 };
 
+type ExtensionRuntime = {
+  getURL?: (path: string) => string;
+};
+
+type ExtensionApis = {
+  browser?: { runtime?: ExtensionRuntime };
+  chrome?: { runtime?: ExtensionRuntime };
+};
+
+export function getLocaleMessagesUrl(localeCode: string): string {
+  const localePath = `_locales/${localeCode}/messages.json`;
+  const globalScope = globalThis as typeof globalThis & ExtensionApis;
+  const runtime =
+    globalScope.browser?.runtime ?? globalScope.chrome?.runtime;
+
+  if (runtime?.getURL) {
+    return runtime.getURL(localePath);
+  }
+
+  if (typeof window !== 'undefined' && window.location?.href) {
+    try {
+      return new URL(localePath, window.location.href).toString();
+    } catch (error) {
+      log.error('Failed to resolve locale URL from window location', error);
+    }
+  }
+
+  return localePath;
+}
+
 export async function fetchLocale(
   localeCode: string,
 ): Promise<I18NMessageDict> {
   try {
-    const response = await fetchWithTimeout(
-      `../_locales/${localeCode}/messages.json`,
-    );
+    const response = await fetchWithTimeout(getLocaleMessagesUrl(localeCode));
     return await response.json();
   } catch (error) {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
