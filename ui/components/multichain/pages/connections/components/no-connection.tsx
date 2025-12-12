@@ -24,6 +24,9 @@ export const NoConnectionContent = () => {
         />
       }
       description={t('noConnectionDescription')}
+      descriptionProps={{
+        'data-testid': 'no-connection-description',
+      }}
       className="connections-page__no-site-connected-content h-full mx-auto"
     />
   );
