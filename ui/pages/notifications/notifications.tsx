@@ -34,9 +34,9 @@ import {
   JustifyContent,
 } from '../../helpers/constants/design-system';
 import { deleteExpiredNotifications } from '../../store/actions';
+import { useSidePanelEnabled } from '../../hooks/useSidePanelEnabled';
 import { NotificationsList, TAB_KEYS } from './notifications-list';
 import { NewFeatureTag } from './NewFeatureTag';
-import { useSidePanelEnabled } from '../../hooks/useSidePanelEnabled';
 
 // NOTE - these 2 data sources are combined in our controller.
 // FUTURE - we could separate these data sources into separate methods.
@@ -91,33 +91,30 @@ const useCombinedNotifications = () => {
   const isSidePanelEnabled = useSidePanelEnabled();
 
   const combinedNotifications = useMemo(() => {
-    // POC: Hard-coded notification for side panel feature
-    const hardCodedNotification: INotification | null = isSidePanelEnabled
-      ? ({
-          // TODO: Introduce a new Contentful property such as "action_type"
-          id: 'sidepanel-poc-notification',
-          type: TRIGGER_TYPES.PLATFORM,
-          createdAt: new Date().toISOString(),
-          isRead: false,
-          template: {
-            title: 'Try Side Panel Mode',
-            body: 'Open MetaMask in a side panel for a better browsing experience',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            image_url:
-              'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="75" font-size="75">✨</text></svg>',
-          },
-        } as INotification)
-      : null;
+    const isInSidePanel = window.location.pathname.includes('sidepanel.html');
 
     const notifications = [
-      ...(hardCodedNotification ? [hardCodedNotification] : []),
       ...snapNotifications,
       ...featureAnnouncementNotifications,
       ...walletNotifications,
-    ].sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-    );
+    ]
+      .filter((n) => {
+        // Filter out sidepanel notifications if:
+        // 1. Side panel is not supported/enabled
+        // 2. Already viewing in side panel mode
+        const actionType =
+          'template' in n
+            ? (n.template as Record<string, unknown>)?.actionType
+            : undefined;
+        if (actionType === 'sidepanel') {
+          return isSidePanelEnabled && !isInSidePanel;
+        }
+        return true;
+      })
+      .sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      );
 
     return notifications;
   }, [

@@ -36,9 +36,12 @@ export function NotificationsListItem({
   const { markNotificationAsRead } = useMarkNotificationAsRead();
 
   const handleNotificationClick = useCallback(async () => {
-    // POC: Handle side panel notification click
-    // TODO: Introduce a new Contentful property such as "action_type"
-    if (notification.id === 'sidepanel-poc-notification') {
+    // Handle side panel notification click (from Contentful actionType field)
+    const actionType =
+      'template' in notification
+        ? (notification.template as Record<string, unknown>)?.actionType
+        : undefined;
+    if (actionType === 'sidepanel') {
       markNotificationAsRead([
         {
           id: notification.id,
