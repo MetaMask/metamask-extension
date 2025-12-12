@@ -51,10 +51,6 @@ export const GasInput = ({
   );
 
   useEffect(() => {
-    validateGasCallback(value);
-  }, [validateGasCallback, value]);
-
-  useEffect(() => {
     onErrorChange(error);
   }, [error, onErrorChange]);
 
