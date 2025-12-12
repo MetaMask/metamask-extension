@@ -28,7 +28,7 @@ export function useEarliestNonceByChain(
       if (nonce && chainId) {
         const nonceValue = Number(hexToDecimal(nonce));
 
-        if (!nonceMap[chainId] || nonceValue < nonceMap[chainId]) {
+        if (!(chainId in nonceMap) || nonceValue < nonceMap[chainId]) {
           nonceMap[chainId] = nonceValue;
         }
       }
