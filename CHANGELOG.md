@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- feat: added metrics for pna25 banner (#38403)
+- Adds event tracing for hide token. (#38358)
 - Enable tx submission before swap quotes are loaded (#37963)
 - Adds shield rewards modal (#38379)
 - Sidepanel enabled (#38550)
@@ -1458,8 +1460,7 @@ authorized by the user.` error until the user fully revoked dapp
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.13.0...HEAD
-[13.13.0]: https://github.com/MetaMask/metamask-extension/compare/v13.12.1...v13.13.0
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.12.2...HEAD
+[13.13.0]: https://github.com/MetaMask/metamask-extension/compare/v13.12.2...v13.13.0
 [13.12.2]: https://github.com/MetaMask/metamask-extension/compare/v13.12.1...v13.12.2
 [13.12.1]: https://github.com/MetaMask/metamask-extension/compare/v13.12.0...v13.12.1
 [13.12.0]: https://github.com/MetaMask/metamask-extension/compare/v13.11.2...v13.12.0
