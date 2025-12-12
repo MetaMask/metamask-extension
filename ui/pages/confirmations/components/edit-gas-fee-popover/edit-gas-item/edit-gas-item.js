@@ -152,6 +152,7 @@ const EditGasItem = ({ priorityLevel }) => {
       <Text
         className={`edit-gas-item__time-estimate edit-gas-item__time-estimate-${priorityLevel}`}
         variant={TextVariant.bodySm}
+        as="span"
       >
         {editGasMode !== EditGasModes.swaps &&
           (minWaitTime ? toHumanReadableTime(t, minWaitTime) : '--')}
