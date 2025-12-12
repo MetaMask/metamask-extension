@@ -41,7 +41,7 @@ const allowedSwapsSmartTransactionStatusesForActivityList = [
   SmartTransactionStatuses.CANCELLED,
 ];
 
-export const getTransactions = createDeepEqualSelector(
+export const getTransactions = createSelector(
   (state) => state.metamask?.transactions,
   (transactions) => {
     if (!transactions?.length) {

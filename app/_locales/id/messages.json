@@ -3877,9 +3877,6 @@
   "nftAutoDetectionEnabled": {
     "message": "Autodeteksi NFT diaktifkan"
   },
-  "nftDisclaimer": {
-    "message": "Penafian: MetaMask mengambil file media dari url sumber. Url ini terkadang diubah oleh pasar tempat NFT dicetak."
-  },
   "nftEmptyDescription": {
     "message": "Ada banyak sekali NFT di luar sana. Mulai koleksi Anda hari ini."
   },

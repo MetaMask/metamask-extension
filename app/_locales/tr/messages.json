@@ -3877,9 +3877,6 @@
   "nftAutoDetectionEnabled": {
     "message": "NFT otomatik algılama etkinleştirildi"
   },
-  "nftDisclaimer": {
-    "message": "Sorumluluğun Reddi: MetaMask medya dosyasını kaynak url adresinden çeker. Bu url adresi bazen NFT'nin mint edildiği pazar yeri tarafından değiştirilir."
-  },
   "nftEmptyDescription": {
     "message": "Dışarıda bir NFT dünyası var. Koleksiyonunuzu oluşturmaya bugün başlayın."
   },
