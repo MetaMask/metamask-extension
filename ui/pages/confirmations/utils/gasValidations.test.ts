@@ -13,7 +13,7 @@ const mockT = ((key: string, args?: string | string[]) => {
     gasPrice: 'Gas price',
     onlyNumbersAllowed: 'Only numbers are allowed',
     onlyIntegersAllowed: 'Only whole numbers are allowed',
-    gasLimitTooLow: 'Gas limit must be greater than 21000',
+    gasLimitTooLow: 'Gas limit must be at least 21000',
     priorityFeeTooHigh: 'Priority fee must be less than max base fee',
     maxBaseFeeMustBeGreaterThanPriorityFee:
       'Max base fee must be greater than priority fee',
@@ -56,7 +56,7 @@ describe('gas-validations', () => {
 
     it('return error message when gas is less than 21000', () => {
       expect(validateGas('20000', mockT)).toBe(
-        'Gas limit must be greater than 21000',
+        'Gas limit must be at least 21000',
       );
     });
 

@@ -11,6 +11,7 @@ import {
   IconName,
   IconSize,
   Text,
+  TextAlign,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
@@ -88,17 +89,19 @@ const ListItem = ({
         alignItems={BoxAlignItems.Center}
         gap={2}
       >
-        <Box
-          flexDirection={BoxFlexDirection.Column}
-          style={{ textAlign: 'right' }}
-        >
-          <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+        <Box flexDirection={BoxFlexDirection.Column}>
+          <Text
+            variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Medium}
+            textAlign={TextAlign.Right}
+          >
             {feeInFiat}
           </Text>
           <Text
             variant={TextVariant.BodySm}
             fontWeight={FontWeight.Medium}
             color={TextColor.TextAlternative}
+            textAlign={TextAlign.Right}
           >
             {fee}
           </Text>
