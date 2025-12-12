@@ -214,13 +214,16 @@ const PrepareBridgePage = ({
   const { openBuyCryptoInPdapp } = useRamps();
 
   const { tokenAlert } = useTokenAlerts();
-  const securityWarnings = useMemo(
-    () =>
-      [tokenAlert?.description, txAlert?.description].filter(
-        (x) => x !== null && x !== undefined,
-      ),
-    [tokenAlert?.description, txAlert?.description],
-  );
+  const securityWarnings: string[] = useMemo(() => {
+    const warnings: string[] = [];
+    if (tokenAlert?.description) {
+      warnings.push(tokenAlert.description);
+    }
+    if (txAlert?.description) {
+      warnings.push(txAlert.description);
+    }
+    return warnings;
+  }, [tokenAlert?.description, txAlert?.description]);
 
   const {
     selectedDestinationAccount,
