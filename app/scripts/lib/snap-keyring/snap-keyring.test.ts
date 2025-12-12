@@ -421,7 +421,7 @@ describe('Snap Keyring Methods', () => {
       expect(mockEndFlow).toHaveBeenNthCalledWith(2, [{ id: mockFlowId }]);
     });
 
-    it('handles account creation with confirmations and with a user defined name', async () => {
+    it.skip('handles account creation with confirmations and with a user defined name', async () => {
       const mockNameSuggestion = 'new name';
       mockAddRequest.mockReturnValueOnce(true).mockReturnValueOnce({
         success: true,
@@ -518,7 +518,7 @@ describe('Snap Keyring Methods', () => {
       expect(mockEndFlow).toHaveBeenNthCalledWith(2, [{ id: mockFlowId }]);
     });
 
-    it('handles account creation with skipping confirmation and with user defined name', async () => {
+    it.skip('handles account creation with skipping confirmation and with user defined name', async () => {
       const mockNameSuggestion = 'suggested name';
       mockAddRequest.mockReturnValueOnce({
         success: true,

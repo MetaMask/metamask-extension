@@ -170,7 +170,12 @@ describe('Routes Component', () => {
             },
           },
           tokenBalances: {
-            '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': '0x176270e2b862e4ed3',
+            '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+              '0x1': {
+                '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': '0xbdbd',
+                '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e': '0x501b4176a64d6',
+              },
+            },
           },
           permissionHistory: {
             'https://metamask.github.io': {
@@ -291,7 +296,12 @@ describe('toast display', () => {
       },
       termsOfUseLastAgreed: new Date(0).getTime(),
       tokenBalances: {
-        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': '0x176270e2b862e4ed3',
+        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+          '0x1': {
+            '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': '0xbdbd',
+            '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e': '0x501b4176a64d6',
+          },
+        },
       },
       accountTree: {
         wallets: {
