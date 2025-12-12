@@ -4178,9 +4178,6 @@
   "nftAutoDetectionEnabled": {
     "message": "NFT autodetection enabled"
   },
-  "nftDisclaimer": {
-    "message": "Disclaimer: MetaMask pulls the media file from the source URL. This URL sometimes gets changed by the marketplace on which the NFT was minted."
-  },
   "nftEmptyDescription": {
     "message": "There's a world of NFTs out there. Start your collection today."
   },
@@ -5043,7 +5040,7 @@
     "message": "blog post."
   },
   "pna25ModalBody1": {
-    "message": "To better serve you, we’re updating our analytics so publicly available data like wallet addresses and related on-chain activity can be associated with actions you take in MetaMask using a pseudonymous ID. This helps us improve MetaMask's performance, security, and features in order to make a better, safer wallet."
+    "message": "To better serve you, we’re updating our analytics so publicly available data like wallet addresses and related on-chain activity can be associated with actions you take in MetaMask. This helps us improve MetaMask's performance, security, and features in order to make a better, safer wallet."
   },
   "pna25ModalBody2": {
     "message": "We take privacy seriously.  We do not use this information for advertising or sell your data to third parties.  You can opt out anytime in Settings."
@@ -6432,11 +6429,11 @@
     "message": "Priority support"
   },
   "shieldTxDetails3Description": {
-    "message": "Get $1 points/$2.",
+    "message": "Get $1 points/$2",
     "description": "The $1 is the number of points, $2 is the plan interval (month or year)"
   },
   "shieldTxDetails3DescriptionLinkReward": {
-    "message": "Link Rewards"
+    "message": "Link"
   },
   "shieldTxDetails3DescriptionSignUp": {
     "message": "Sign up"
