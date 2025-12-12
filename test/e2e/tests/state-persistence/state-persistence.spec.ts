@@ -166,6 +166,10 @@ const assertSplitStateStorage = (storage: SplitStateStorage) => {
       `storage key ${key} should be present in manifest`,
     );
   }
+
+  // sanity check
+  assert(storage.manifest.includes("KeyringController"), 'KeyringController should be in the manifest');
+  assert(typeof storage.KeyringController !== 'undefined', 'KeyringController should be in storage');
 };
 
 /**

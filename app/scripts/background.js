@@ -956,7 +956,7 @@ export async function loadStateFromPersistence(backup) {
     console.warn(err);
     // get vault structure without secrets
     const vaultStructure = getObjStructure(preMigrationVersionedData);
-    sentry.captureException(err, {
+    sentry?.captureException(err, {
       // "extra" key is required by Sentry
       extra: { vaultStructure },
     });
