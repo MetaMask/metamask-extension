@@ -340,22 +340,33 @@ export class UserStorageMockttpController {
       .get(path)
       ?.server.forGet(pathRegexps[path])
       .always()
-      .thenCallback((request) =>
-        this.onGet(path, request, overrides?.getStatusCode),
-      );
+      .thenCallback((request) => {
+        console.log('-- DEBUG - GET', request.url);
+        return this.onGet(path, request, overrides?.getStatusCode);
+      });
     this.paths
       .get(path)
       ?.server.forPut(pathRegexps[path])
       .always()
-      .thenCallback((request) =>
-        this.onPut(path, request, overrides?.putStatusCode),
-      );
+      .thenCallback(async (request) => {
+        console.log(
+          '-- DEBUG - PUT',
+          request.url,
+          JSON.stringify(await request.body.getJson(), null, 2),
+        );
+        return this.onPut(path, request, overrides?.putStatusCode);
+      });
     this.paths
       .get(path)
       ?.server.forDelete(pathRegexps[path])
       .always()
-      .thenCallback((request) =>
-        this.onDelete(path, request, overrides?.deleteStatusCode),
-      );
+      .thenCallback(async (request) => {
+        console.log(
+          '-- DEBUG - DELETE',
+          request.url,
+          JSON.stringify(await request.body.getJson(), null, 2),
+        );
+        return this.onDelete(path, request, overrides?.deleteStatusCode);
+      });
   };
 }
