@@ -41,6 +41,11 @@ const missingSubstitutionErrors: {
   [localeCode: string]: I18NMessageDictMap<boolean>;
 } = {};
 
+const MESSAGE_ALIASES: Record<string, string> = {
+  slideDownloadMobileAppTitle: 'downloadMetaMaskMobileTitle',
+  slideDownloadMobileAppDescription: 'downloadMetaMaskMobileDescription',
+};
+
 const relativeTimeFormatLocaleData = new Set();
 
 /**
@@ -68,7 +73,8 @@ export const getMessage = <T>(
     return null;
   }
 
-  const message = localeMessages[key];
+  const resolvedKey = resolveTranslationKey(key, localeMessages);
+  const message = localeMessages[resolvedKey];
 
   if (!message) {
     missingKeyError(key, localeCode, onError);
@@ -234,4 +240,21 @@ async function fetchRelativeTimeFormatData(languageTag: string): Promise<Json> {
     `./intl/${languageTag}/relative-time-format-data.json`,
   );
   return await response.json();
+}
+
+function resolveTranslationKey(
+  key: string,
+  localeMessages: I18NMessageDict,
+): string {
+  if (localeMessages[key]) {
+    return key;
+  }
+
+  const aliasKey = MESSAGE_ALIASES[key];
+
+  if (aliasKey && localeMessages[aliasKey]) {
+    return aliasKey;
+  }
+
+  return key;
 }

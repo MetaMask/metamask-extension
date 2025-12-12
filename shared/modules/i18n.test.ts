@@ -289,6 +289,17 @@ describe('I18N Module', () => {
         ),
       ).toStrictEqual('test1 ,a1, test2 ,b2, test3');
     });
+
+    it('returns text for aliased keys when original key is missing', () => {
+      expect(
+        getMessage(
+          localeCodeMock,
+          { downloadMetaMaskMobileTitle: { message: 'alias value' } },
+          'slideDownloadMobileAppTitle',
+        ),
+      ).toStrictEqual('alias value');
+      expect(log.warn).not.toHaveBeenCalled();
+    });
   });
 
   describe('fetchLocale', () => {
