@@ -17,7 +17,7 @@ import HomePage from '../../../page-objects/pages/home/homepage';
 import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
 import { arrangeTestUtils } from './helpers';
 
-describe('Account syncing - Unsupported Account types', function () {
+describe('Account syncing - Unsupported Account types TEST', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
 
   const DEFAULT_ACCOUNT_NAME = 'Account 1';
