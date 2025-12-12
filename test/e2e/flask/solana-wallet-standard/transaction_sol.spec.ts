@@ -10,9 +10,7 @@ import {
   DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
 } from './testHelpers';
 
-// BUG #37690 Sending a transaction on TestDapp with BIP44 on fails with exception
-// eslint-disable-next-line mocha/no-skipped-tests
-describe.skip('Solana Wallet Standard - Transfer SOL', function () {
+describe('Solana Wallet Standard - Transfer SOL', function () {
   describe('Send a transaction', function () {
     it('Should send a transaction', async function () {
       await withSolanaAccountSnap(
@@ -128,8 +126,7 @@ describe.skip('Solana Wallet Standard - Transfer SOL', function () {
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
             // Confirm connection
-            await driver.clickElement({ text: 'Connect', tag: 'button' });
-            await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+            await driver.clickElement({ text: 'Confirm', tag: 'span' });
 
             // Look for the target chain to be set to Devnet
             const permission = await driver.findElement(
