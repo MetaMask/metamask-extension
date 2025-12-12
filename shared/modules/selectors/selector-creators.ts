@@ -333,3 +333,73 @@ export const createResultEqualSelector = createSelectorCreator({
     resultEqualityCheck: isEqual,
   },
 });
+
+/**
+ * Creates a selector creator that applies deep equality selectively to specified inputs.
+ *
+ * By default, uses reference equality (fast) for all inputs. For inputs at indices
+ * specified in `deepEqualInputs`, uses lodash `isEqual` (thorough but slower).
+ * This is optimal when most inputs are referentially stable (e.g., from immer patches)
+ * but some inputs are computed and may recreate equivalent objects.
+ *
+ * ## When to Use
+ * 1. **Mixed input stability** - Some inputs come from stable state (use reference
+ * equality), others are computed and may recreate objects (need deep equality)
+ * 2. **Avoiding full deep equality overhead** - Only pay the deep comparison cost
+ * for inputs that actually need it
+ * 3. **Combining stable and unstable selectors** - When nesting selectors would be awkward
+ *
+ * ## When to Avoid
+ * 1. **All inputs are stable** - Use `createSelector` (default reference equality)
+ * 2. **All inputs need deep equality** - Use {@link createDeepEqualSelector}
+ * 3. **Simple cases** - Nesting selectors (Option 1 in docs) is often clearer
+ *
+ * @param deepEqualInputs - Array of input indices (0-based) that should use deep equality
+ * @returns A selector creator function
+ * @example
+ * ```ts
+ * // Input 0 (accounts) is stable from state, input 1 (config) is computed
+ * const createMixedSelector = createSelectiveDeepEqualSelector([1]);
+ *
+ * const getAccountsWithConfig = createMixedSelector(
+ *   getInternalAccounts,      // Index 0: reference equality (stable from immer)
+ *   getComputedNetworkConfig, // Index 1: deep equality (may recreate objects)
+ *   (accounts, config) => accounts.filter((a) => a.chainId === config.chainId),
+ * );
+ * ```
+ * @example
+ * ```ts
+ * // Multiple unstable inputs at indices 1 and 2
+ * const createMultiDeepSelector = createSelectiveDeepEqualSelector([1, 2]);
+ *
+ * const getComplexData = createMultiDeepSelector(
+ *   getStableState,     // Index 0: reference equality
+ *   getComputedArrayA,  // Index 1: deep equality
+ *   getComputedArrayB,  // Index 2: deep equality
+ *   (state, arrayA, arrayB) => ({ ...state, arrayA, arrayB }),
+ * );
+ * ```
+ */
+export const createSelectiveDeepEqualSelector = (deepEqualInputs: number[]) => {
+  deepEqualInputs.sort();
+
+  const selectiveArrayEqual = (a: unknown[], b: unknown[]) => {
+    if (a === b) {
+      return true;
+    }
+    if (!Array.isArray(a) || !Array.isArray(b) || a.length !== b.length) {
+      return false;
+    }
+
+    for (let i = 0; i < a.length; i += 1) {
+      if (
+        deepEqualInputs.shift() === i ? !isEqual(a[i], b[i]) : a[i] !== b[i]
+      ) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  return createSelectorCreator(lruMemoize, selectiveArrayEqual);
+};
