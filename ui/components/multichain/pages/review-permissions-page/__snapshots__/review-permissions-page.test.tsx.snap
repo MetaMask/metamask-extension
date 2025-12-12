@@ -63,6 +63,7 @@ exports[`ReviewPermissions should render correctly 1`] = `
           />
           <p
             class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center"
+            data-testid="no-connection-description"
           >
             MetaMask isn't connected to this site. To get started, select the site's Connect button.
           </p>
