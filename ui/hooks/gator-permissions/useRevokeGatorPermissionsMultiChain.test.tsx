@@ -21,7 +21,7 @@ import {
   findNetworkClientIdByChainId,
 } from '../../store/actions';
 import { encodeDisableDelegation } from '../../../shared/lib/delegation/delegation';
-import { getMemoizedInternalAccountByAddress } from '../../selectors/accounts';
+import { getInternalAccountByAddress } from '../../selectors/accounts';
 import {
   useRevokeGatorPermissionsMultiChain,
   RevokeGatorPermissionsMultiChainResults,
@@ -51,7 +51,7 @@ jest.mock('../../../shared/lib/delegation', () => ({
 // Mock the selectors
 jest.mock('../../selectors/accounts', () => ({
   ...jest.requireActual('../../selectors/accounts'),
-  getMemoizedInternalAccountByAddress: jest.fn(),
+  getInternalAccountByAddress: jest.fn(),
 }));
 
 // Mock useConfirmationNavigation hook
@@ -80,8 +80,8 @@ const mockEncodeDisableDelegation =
     typeof encodeDisableDelegation
   >;
 const mockGetMemoizedInternalAccountByAddress =
-  getMemoizedInternalAccountByAddress as jest.MockedFunction<
-    typeof getMemoizedInternalAccountByAddress
+  getInternalAccountByAddress as jest.MockedFunction<
+    typeof getInternalAccountByAddress
   >;
 
 const mockStore = configureStore();

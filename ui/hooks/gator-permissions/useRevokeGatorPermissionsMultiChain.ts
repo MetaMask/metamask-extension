@@ -14,7 +14,7 @@ import {
   addTransaction,
   findNetworkClientIdByChainId,
 } from '../../store/actions';
-import { getMemoizedInternalAccountByAddress } from '../../selectors/accounts';
+import { getInternalAccountByAddress } from '../../selectors/accounts';
 import { encodeDisableDelegation } from '../../../shared/lib/delegation/delegation';
 import { addPendingRevocation } from '../../store/controller-actions/gator-permissions-controller';
 import { extractDelegationFromGatorPermissionContext } from './utils';
@@ -99,7 +99,7 @@ export function useRevokeGatorPermissionsMultiChain({
         for (const permission of permissions) {
           try {
             const { permissionResponse } = permission;
-            const internalAccount = getMemoizedInternalAccountByAddress(
+            const internalAccount = getInternalAccountByAddress(
               store.getState(),
               permissionResponse.address as Hex,
             );
