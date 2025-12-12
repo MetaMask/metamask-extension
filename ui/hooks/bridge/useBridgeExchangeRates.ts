@@ -5,12 +5,8 @@ import { getMarketData } from '../../selectors';
 import { getCurrentCurrency } from '../../ducks/metamask/metamask';
 import { setSrcTokenExchangeRates } from '../../ducks/bridge/bridge';
 import { exchangeRateFromMarketData } from '../../ducks/bridge/utils';
-import { useMultichainSelector } from '../useMultichainSelector';
-import { getMultichainCurrentChainId } from '../../selectors/multichain';
 
 export const useBridgeExchangeRates = () => {
-  const fromChainId = useMultichainSelector(getMultichainCurrentChainId);
-
   const dispatch = useDispatch();
   const currency = useSelector(getCurrentCurrency);
 
@@ -47,5 +43,5 @@ export const useBridgeExchangeRates = () => {
         }),
       );
     }
-  }, [currency, dispatch, fromToken, fromChainId, cachedFromTokenExchangeRate]);
+  }, [currency, dispatch, fromToken, cachedFromTokenExchangeRate]);
 };
