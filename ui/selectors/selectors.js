@@ -42,6 +42,23 @@ import {
   getNetworkConfigurationsByChainId,
 } from '../../shared/modules/selectors/networks';
 import { getEnabledNetworks } from '../../shared/modules/selectors/multichain';
+// TODO: Fix circular dependency
+// To avoid import evaluating as `undefined` due to circular dependency,
+// this needs to be imported before `'../pages/confirmations/confirmation/templates'`
+// eslint-disable-next-line import/order
+import { getRemoteFeatureFlags } from './remote-feature-flags';
+// TODO: Fix circular dependency
+// To avoid import evaluating as `undefined` due to circular dependency,
+// this needs to be imported before `'../pages/confirmations/confirmation/templates'`
+// eslint-disable-next-line import/order
+import {
+  getIsBitcoinSupportEnabled,
+  getIsSolanaSupportEnabled,
+  getIsTronSupportEnabled,
+  getIsSolanaTestnetSupportEnabled,
+  getIsBitcoinTestnetSupportEnabled,
+  getIsTronTestnetSupportEnabled,
+} from './multichain/feature-flags';
 
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -153,15 +170,6 @@ import {
   getSelectedMultichainNetworkChainId,
   getIsEvmMultichainNetworkSelected,
 } from './multichain/networks';
-import { getRemoteFeatureFlags } from './remote-feature-flags';
-import {
-  getIsBitcoinSupportEnabled,
-  getIsSolanaSupportEnabled,
-  getIsTronSupportEnabled,
-  getIsSolanaTestnetSupportEnabled,
-  getIsBitcoinTestnetSupportEnabled,
-  getIsTronTestnetSupportEnabled,
-} from './multichain/feature-flags';
 import { getApprovalRequestsByType } from './approvals';
 
 /**
@@ -170,7 +178,15 @@ import { getApprovalRequestsByType } from './approvals';
 
 // Re-export this file so we don't have to update all references
 // TODO: Update all references
-export { getEnabledNetworks };
+export {
+  getEnabledNetworks,
+  getIsBitcoinSupportEnabled,
+  getIsSolanaSupportEnabled,
+  getIsTronSupportEnabled,
+  getIsSolanaTestnetSupportEnabled,
+  getIsBitcoinTestnetSupportEnabled,
+  getIsTronTestnetSupportEnabled,
+};
 
 export const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
 
@@ -3195,16 +3211,6 @@ export function getIsAddSnapAccountEnabled(state) {
 export function getIsWatchEthereumAccountEnabled(state) {
   return state.metamask.watchEthereumAccountEnabled;
 }
-
-// Re-export multichain support selectors from remote-feature-flags to maintain backward compatibility
-export {
-  getIsBitcoinSupportEnabled,
-  getIsSolanaSupportEnabled,
-  getIsTronSupportEnabled,
-  getIsSolanaTestnetSupportEnabled,
-  getIsBitcoinTestnetSupportEnabled,
-  getIsTronTestnetSupportEnabled,
-};
 
 /**
  * Checks if the new settings redesign is enabled
