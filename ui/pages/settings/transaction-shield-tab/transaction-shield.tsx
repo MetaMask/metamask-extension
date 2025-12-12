@@ -630,7 +630,7 @@ const TransactionShield = () => {
                   style={{ flexShrink: 0 }}
                 />
               ) : (
-                <Box>
+                <Box className="flex-shrink-0">
                   <Icon name={detail.icon} size={IconSize.Xl} />
                 </Box>
               )}
@@ -666,7 +666,7 @@ const TransactionShield = () => {
               paddingTop={2}
               paddingBottom={2}
             >
-              <Box>
+              <Box className="flex-shrink-0">
                 <Icon name={IconName.MetamaskFoxOutline} size={IconSize.Xl} />
               </Box>
               <Box
