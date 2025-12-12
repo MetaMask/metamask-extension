@@ -26,7 +26,7 @@ type AppState = {
   };
 };
 
-describe('Contact syncing - New User TEST', function () {
+describe('Contact syncing - New User', function () {
   this.timeout(120000); // Contact syncing tests can be long
 
   it('syncs contacts after new wallet creation', async function () {
