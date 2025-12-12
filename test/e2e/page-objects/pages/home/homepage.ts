@@ -408,10 +408,19 @@ class HomePage {
    */
   async checkHasAccountSyncingSyncedAtLeastOnce(): Promise<void> {
     console.log('Check if account syncing has synced at least once');
-    await this.driver.wait(async () => {
-      const uiState = await getCleanAppState(this.driver);
-      return uiState.metamask.hasAccountTreeSyncingSyncedAtLeastOnce === true;
-    }, 30000); // Syncing can take some time so adding a longer timeout to reduce flakes
+    await this.driver.waitUntil(
+      async () => {
+        const uiState = await getCleanAppState(this.driver);
+        // Check for nullish, as the state we might seems to be `null` sometimes.
+        return (
+          uiState?.metamask?.hasAccountTreeSyncingSyncedAtLeastOnce === true
+        );
+      },
+      {
+        interval: 1000,
+        timeout: 30000, // Syncing can take some time so adding a longer timeout to reduce flakes
+      },
+    );
   }
 
   async checkIfSendButtonIsClickable(): Promise<boolean> {

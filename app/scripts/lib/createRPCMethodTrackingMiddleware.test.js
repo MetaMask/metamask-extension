@@ -363,9 +363,6 @@ describe('createRPCMethodTrackingMiddleware', () => {
           ppom_eth_call_count: 5,
           ppom_eth_getCode_count: 3,
           api_source: MetaMetricsRequestedThrough.EthereumProvider,
-          ui_customizations: [
-            MetaMetricsEventUiCustomization.RedesignedConfirmation,
-          ],
         },
         referrer: { url: 'some.dapp' },
         uniqueIdentifier: expectedUniqueIdentifier,
@@ -733,10 +730,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         event: MetaMetricsEventName.SignatureApproved,
         properties: {
           signature_type: MESSAGE_TYPE.PERSONAL_SIGN,
-          ui_customizations: [
-            MetaMetricsEventUiCustomization.RedesignedConfirmation,
-            MetaMetricsEventUiCustomization.Siwe,
-          ],
+          ui_customizations: [MetaMetricsEventUiCustomization.Siwe],
         },
         referrer: { url: 'some.dapp' },
       });
@@ -797,10 +791,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         event: MetaMetricsEventName.SignatureApproved,
         properties: {
           signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
-          ui_customizations: [
-            MetaMetricsEventUiCustomization.RedesignedConfirmation,
-            MetaMetricsEventUiCustomization.Permit,
-          ],
+          ui_customizations: [MetaMetricsEventUiCustomization.Permit],
           eip712_primary_type: 'Permit',
         },
         referrer: { url: 'some.dapp' },
@@ -856,10 +847,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         properties: {
           api_source: MetaMetricsRequestedThrough.EthereumProvider,
           signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
-          ui_customizations: [
-            MetaMetricsEventUiCustomization.RedesignedConfirmation,
-            MetaMetricsEventUiCustomization.Order,
-          ],
+          ui_customizations: [MetaMetricsEventUiCustomization.Order],
         },
         referrer: { url: 'some.dapp' },
       });
@@ -892,9 +880,6 @@ describe('createRPCMethodTrackingMiddleware', () => {
           api_source: MetaMetricsRequestedThrough.EthereumProvider,
           signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
           eip712_primary_type: 'Unknown',
-          ui_customizations: [
-            MetaMetricsEventUiCustomization.RedesignedConfirmation,
-          ],
         },
         referrer: { url: 'some.dapp' },
       });
