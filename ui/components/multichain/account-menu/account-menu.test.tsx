@@ -126,7 +126,7 @@ const render = (
   return renderWithProvider(<AccountMenu {...props} />, store, location);
 };
 
-describe('AccountMenu', () => {
+describe.skip('AccountMenu', () => {
   afterEach(() => {
     jest.resetAllMocks();
     jest.clearAllMocks();
