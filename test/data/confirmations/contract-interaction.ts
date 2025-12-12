@@ -93,7 +93,6 @@ export const genUnapprovedContractInteractionConfirmation = ({
           // eslint-disable-next-line @typescript-eslint/naming-convention
           result_type: 'validation_in_progress',
         },
-        sendFlowHistory: [],
         status: TransactionStatus.unapproved,
         time: 1713534772044,
         txParams: {
@@ -174,7 +173,6 @@ export const genUnapprovedContractInteractionConfirmation = ({
       result_type: 'Benign',
     },
     selectedGasFeeToken,
-    sendFlowHistory: [],
     simulationData: {
       nativeBalanceChange: {
         difference: '0x3782dace9d900000',
@@ -232,7 +230,6 @@ export const mockSwapConfirmation = {
   type: 'contractInteraction',
   gasLimitNoBuffer: '0x58e25',
   layer1GasFee: '0x61077a1f',
-  sendFlowHistory: [],
   gasUsed: '0x4674f',
   simulationData: {
     tokenBalanceChanges: [

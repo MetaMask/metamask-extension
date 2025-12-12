@@ -981,7 +981,7 @@
         "@metamask/controller-utils": true,
         "@metamask/bridge-controller>@metamask/polling-controller": true,
         "@metamask/superstruct": true,
-        "@metamask/transaction-controller": true,
+        "@metamask/bridge-status-controller>@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "@metamask/bridge-status-controller>bignumber.js": true,
         "uuid": true
@@ -2002,7 +2002,7 @@
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/shield-controller>@metamask/signature-controller": true,
-        "@metamask/transaction-controller": true,
+        "@metamask/shield-controller>@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "cockatiel": true,
         "lodash": true
@@ -2180,7 +2180,7 @@
       "packages": {
         "@metamask/controller-utils": true,
         "@metamask/bridge-controller>@metamask/polling-controller": true,
-        "@metamask/transaction-controller": true,
+        "@metamask/subscription-controller>@metamask/transaction-controller": true,
         "@metamask/subscription-controller>bignumber.js": true
       }
     },
@@ -2233,7 +2233,6 @@
         "buffer": true,
         "eth-method-registry": true,
         "webpack>events": true,
-        "fast-json-patch": true,
         "lodash": true,
         "uuid": true
       }
