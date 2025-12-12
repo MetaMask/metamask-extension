@@ -5549,32 +5549,11 @@
     "message": "यदि आप कैंसिल करते हैं, तो आपके वॉलेट और ट्रांसेक्शन पर $1 से शुरू होने वाला कोई भी शुल्क नहीं लगेगा।",
     "description": "The $1 is the date subscription ends"
   },
-  "shieldTxDetails2Description": {
-    "message": "कभी भी तेज़ और समर्पित सपोर्ट प्राप्त करें"
-  },
   "shieldTxDetails2Title": {
     "message": "प्राथमिक सपोर्ट"
   },
-  "shieldTxMembershipBillingDetails": {
-    "message": "बिलिंग विवरण"
-  },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "बिलिंग अकाउंट"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "शुल्क"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "अगला बिलिंग"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "भुगतान का तरीका"
-  },
   "shieldTxMembershipErrorPausedCardTooltip": {
     "message": "आपका भुगतान अस्वीकार कर दिया गया। कृपया अपनी भुगतान विधि अपडेट करें ताकि आपका कवरेज जारी रह सके।"
-  },
-  "shieldTxMembershipErrorUpdateCard": {
-    "message": "कार्ड विवरण अपडेट करें"
   },
   "shieldTxMembershipFreeTrial": {
     "message": "मुफ्त ट्रायल"
@@ -5584,9 +5563,6 @@
   },
   "shieldTxMembershipSubmitCase": {
     "message": "क्लेम सबमिट करें"
-  },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "संपूर्ण लाभ देखें"
   },
   "show": {
     "message": "दिखाएं"

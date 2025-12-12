@@ -5549,32 +5549,11 @@
     "message": "如果您取消，自 $1 起您的钱包和交易将不再受保护。",
     "description": "The $1 is the date subscription ends"
   },
-  "shieldTxDetails2Description": {
-    "message": "随时获取更快捷的专属支持"
-  },
   "shieldTxDetails2Title": {
     "message": "优先支持"
   },
-  "shieldTxMembershipBillingDetails": {
-    "message": "账单详情"
-  },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "账单账户"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "费用"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "下次账单日期"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "支付方式"
-  },
   "shieldTxMembershipErrorPausedCardTooltip": {
     "message": "您的付款已被拒绝。请更新支付方式以继续使用保障服务。"
-  },
-  "shieldTxMembershipErrorUpdateCard": {
-    "message": "更新卡片信息"
   },
   "shieldTxMembershipFreeTrial": {
     "message": "免费试用"
@@ -5584,9 +5563,6 @@
   },
   "shieldTxMembershipSubmitCase": {
     "message": "提交索赔"
-  },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "查看完整权益"
   },
   "show": {
     "message": "显示"

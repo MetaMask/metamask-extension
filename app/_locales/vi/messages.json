@@ -5552,32 +5552,11 @@
     "message": "Nếu bạn hủy, ví và các giao dịch của bạn sẽ không được bảo hiểm kể từ $1.",
     "description": "The $1 is the date subscription ends"
   },
-  "shieldTxDetails2Description": {
-    "message": "Nhận dịch vụ hỗ trợ chuyên biệt, nhanh chóng bất cứ khi nào bạn cần"
-  },
   "shieldTxDetails2Title": {
     "message": "Hỗ trợ ưu tiên"
   },
-  "shieldTxMembershipBillingDetails": {
-    "message": "Chi tiết thanh toán"
-  },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "Tài khoản thanh toán"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "Phí"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "Lần thanh toán tiếp theo"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "Phương thức thanh toán"
-  },
   "shieldTxMembershipErrorPausedCardTooltip": {
     "message": "Giao dịch thanh toán của bạn bị từ chối. Vui lòng cập nhật phương thức thanh toán để tiếp tục gói bảo hiểm."
-  },
-  "shieldTxMembershipErrorUpdateCard": {
-    "message": "Cập nhật chi tiết thẻ"
   },
   "shieldTxMembershipFreeTrial": {
     "message": "Dùng thử miễn phí"
@@ -5587,9 +5566,6 @@
   },
   "shieldTxMembershipSubmitCase": {
     "message": "Gửi yêu cầu bồi thường"
-  },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "Xem toàn bộ quyền lợi"
   },
   "show": {
     "message": "Hiển thị"

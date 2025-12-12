@@ -5552,32 +5552,11 @@
     "message": "Si cancelas, tu billetera y tus transacciones no estarán cubiertas a partir de $1.",
     "description": "The $1 is the date subscription ends"
   },
-  "shieldTxDetails2Description": {
-    "message": "Accede a soporte más rápido y dedicado en cualquier momento"
-  },
   "shieldTxDetails2Title": {
     "message": "Soporte prioritario"
   },
-  "shieldTxMembershipBillingDetails": {
-    "message": "Detalles de facturación"
-  },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "Cuenta de facturación"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "Cargos"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "Próxima facturación"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "Método de pago"
-  },
   "shieldTxMembershipErrorPausedCardTooltip": {
     "message": "Tu pago se rechazó. Actualiza tu método de pago para continuar con tu cobertura."
-  },
-  "shieldTxMembershipErrorUpdateCard": {
-    "message": "Actualizar los datos de la tarjeta"
   },
   "shieldTxMembershipFreeTrial": {
     "message": "Prueba gratuita"
@@ -5587,9 +5566,6 @@
   },
   "shieldTxMembershipSubmitCase": {
     "message": "Presentar una reclamación"
-  },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "Ver todos los beneficios"
   },
   "show": {
     "message": "Mostrar"

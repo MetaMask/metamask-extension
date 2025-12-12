@@ -5552,32 +5552,11 @@
     "message": "Jika dibatalkan, dompet dan transaksi Anda tidak akan terlindungi mulai $1.",
     "description": "The $1 is the date subscription ends"
   },
-  "shieldTxDetails2Description": {
-    "message": "Dapatkan dukungan khusus yang lebih cepat setiap saat"
-  },
   "shieldTxDetails2Title": {
     "message": "Dukungan prioritas"
   },
-  "shieldTxMembershipBillingDetails": {
-    "message": "Detail penagihan"
-  },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "Akun penagihan"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "Biaya"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "Penagihan berikutnya"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "Metode pembayaran"
-  },
   "shieldTxMembershipErrorPausedCardTooltip": {
     "message": "Pembayaran Anda ditolak. Perbarui metode pembayaran untuk melanjutkan pertanggungan."
-  },
-  "shieldTxMembershipErrorUpdateCard": {
-    "message": "Perbarui detail kartu"
   },
   "shieldTxMembershipFreeTrial": {
     "message": "Uji coba gratis"
@@ -5587,9 +5566,6 @@
   },
   "shieldTxMembershipSubmitCase": {
     "message": "Ajukan klaim"
-  },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "Lihat manfaat lengkapnya"
   },
   "show": {
     "message": "Tampilkan"

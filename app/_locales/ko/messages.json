@@ -5552,32 +5552,11 @@
     "message": "취소하면 $1부터 지갑과 트랜잭션이 보호되지 않습니다.",
     "description": "The $1 is the date subscription ends"
   },
-  "shieldTxDetails2Description": {
-    "message": "언제든지 신속히 전담 지원을 받으세요"
-  },
   "shieldTxDetails2Title": {
     "message": "우선 지원"
   },
-  "shieldTxMembershipBillingDetails": {
-    "message": "청구 세부 정보"
-  },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "청구 계정"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "요금"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "다음 청구"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "결제 수단"
-  },
   "shieldTxMembershipErrorPausedCardTooltip": {
     "message": "결제가 거부되었습니다. 보장을 유지하려면 결제 수단을 업데이트하세요."
-  },
-  "shieldTxMembershipErrorUpdateCard": {
-    "message": "카드 세부 정보 업데이트"
   },
   "shieldTxMembershipFreeTrial": {
     "message": "무료 체험"
@@ -5587,9 +5566,6 @@
   },
   "shieldTxMembershipSubmitCase": {
     "message": "청구하기"
-  },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "전체 혜택 보기"
   },
   "show": {
     "message": "표시"

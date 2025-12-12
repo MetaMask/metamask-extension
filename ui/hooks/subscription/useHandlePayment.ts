@@ -52,17 +52,17 @@ import {
 export const useHandlePayment = ({
   currentShieldSubscription,
   displayedShieldSubscription,
-  subscriptions,
   isCancelled,
-  subscriptionPricing,
   onOpenAddFundsModal,
+  subscriptions,
+  subscriptionPricing,
 }: {
   currentShieldSubscription?: Subscription;
   displayedShieldSubscription?: Subscription;
-  subscriptions?: Subscription[];
   isCancelled: boolean;
-  subscriptionPricing?: PricingResponse;
   onOpenAddFundsModal: () => void;
+  subscriptions?: Subscription[];
+  subscriptionPricing?: PricingResponse;
 }) => {
   const navigate = useNavigate();
   const { captureShieldErrorStateClickedEvent } = useSubscriptionMetrics();

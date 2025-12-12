@@ -5552,32 +5552,11 @@
     "message": "キャンセルすると、$1からウォレットおよび取引が補償対象外となります。",
     "description": "The $1 is the date subscription ends"
   },
-  "shieldTxDetails2Description": {
-    "message": "いつでもすぐに専任のサポートを受けられます"
-  },
   "shieldTxDetails2Title": {
     "message": "優先サポート"
   },
-  "shieldTxMembershipBillingDetails": {
-    "message": "請求の詳細"
-  },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "請求アカウント\n\nCharges"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "請求額"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "次回の請求"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "支払方法"
-  },
   "shieldTxMembershipErrorPausedCardTooltip": {
     "message": "支払いが拒否されました。補償を継続するには、支払方法を更新してください。"
-  },
-  "shieldTxMembershipErrorUpdateCard": {
-    "message": "カード情報を更新"
   },
   "shieldTxMembershipFreeTrial": {
     "message": "無料トライアル"
@@ -5587,9 +5566,6 @@
   },
   "shieldTxMembershipSubmitCase": {
     "message": "請求を送信"
-  },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "特典をすべて見る"
   },
   "show": {
     "message": "表示"

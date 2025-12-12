@@ -5552,32 +5552,11 @@
     "message": "Kapag nagkansela ka, hindi na covered ang iyong wallet at mga transaksyon mula $1.",
     "description": "The $1 is the date subscription ends"
   },
-  "shieldTxDetails2Description": {
-    "message": "Tumanggap ng mas mabilis at dedikadong suporta anumang oras"
-  },
   "shieldTxDetails2Title": {
     "message": "Suporta para sa priority"
   },
-  "shieldTxMembershipBillingDetails": {
-    "message": "Mga detalye ng paniningil"
-  },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "Billing account"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "Mga bayad"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "Susunod na paniningil"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "Paraan ng pagbabayad"
-  },
   "shieldTxMembershipErrorPausedCardTooltip": {
     "message": "Hindi tinanggap ang iyong pagbabayad. I-update ang iyong paraan ng pagbabayad para ipagpatuloy ang iyong coverage."
-  },
-  "shieldTxMembershipErrorUpdateCard": {
-    "message": "I-update ang mga detalye ng card"
   },
   "shieldTxMembershipFreeTrial": {
     "message": "Libreng trial"
@@ -5587,9 +5566,6 @@
   },
   "shieldTxMembershipSubmitCase": {
     "message": "Magsumite ng claim"
-  },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "Tingnan ang mga kumpletong benepisyo"
   },
   "show": {
     "message": "Ipakita"

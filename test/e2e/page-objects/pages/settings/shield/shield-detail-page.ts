@@ -1,4 +1,5 @@
 // ShieldDetailPage class for interacting with the Shield Detail page
+import assert from 'assert';
 import { Driver } from '../../../../webdriver/driver';
 
 export default class ShieldDetailPage {
@@ -14,6 +15,9 @@ export default class ShieldDetailPage {
     text,
   });
 
+  private readonly managePlanButton =
+    '[data-testid="shield-detail-manage-plan-button"]';
+
   private readonly cancelButton =
     '[data-testid="shield-tx-membership-cancel-button"]';
 
@@ -23,10 +27,7 @@ export default class ShieldDetailPage {
   private readonly cancelMembershipModal =
     '[data-testid="cancel-membership-modal"]';
 
-  private readonly chargesElement = (text: string) => ({
-    css: '[data-testid="shield-detail-charges"]',
-    text,
-  });
+  private readonly chargesElement = '[data-testid="shield-detail-charges"]';
 
   private readonly customerIdElement = (text: string) => ({
     css: '[data-testid="shield-detail-customer-id"]',
@@ -44,10 +45,8 @@ export default class ShieldDetailPage {
     text,
   });
 
-  private readonly nextBillingElement = (text: string) => ({
-    css: '[data-testid="shield-detail-next-billing"]',
-    text,
-  });
+  private readonly nextBillingElement =
+    '[data-testid="shield-detail-next-billing"]';
 
   private readonly notificationShieldBanner =
     '.transaction-shield-page__notification-banner';
@@ -64,10 +63,8 @@ export default class ShieldDetailPage {
     tag: 'h4',
   };
 
-  private readonly paymentMethodElement = (text: string) => ({
-    css: '[data-testid="shield-detail-payment-method"]',
-    text,
-  });
+  private readonly paymentMethodElement =
+    '[data-testid="shield-detail-payment-method"]';
 
   private readonly paymentMethodButton =
     '[data-testid="shield-detail-payment-method-button"]';
@@ -164,6 +161,14 @@ export default class ShieldDetailPage {
   }
 
   /**
+   * Click the Manage Plan button
+   */
+  async clickManagePlanButton(): Promise<void> {
+    console.log('Clicking Manage Plan button');
+    await this.driver.clickElement(this.managePlanButton);
+  }
+
+  /**
    * Click the Submit Case button
    */
   async clickSubmitCaseButton(): Promise<void> {
@@ -233,7 +238,12 @@ export default class ShieldDetailPage {
    */
   async checkNextBillingDate(expectedText: string): Promise<void> {
     console.log(`Checking next billing date contains: ${expectedText}`);
-    await this.driver.waitForSelector(this.nextBillingElement(expectedText));
+    const element = await this.driver.findElement(this.nextBillingElement);
+    const actualText = await element.getText();
+    assert.ok(
+      actualText.includes(expectedText),
+      `Expected text to contain "${expectedText}" but got "${actualText}"`,
+    );
   }
 
   /**
@@ -243,7 +253,12 @@ export default class ShieldDetailPage {
    */
   async checkCharges(expectedText: string): Promise<void> {
     console.log(`Checking charges contain: ${expectedText}`);
-    await this.driver.waitForSelector(this.chargesElement(expectedText));
+    const element = await this.driver.findElement(this.chargesElement);
+    const actualText = await element.getText();
+    assert.ok(
+      actualText.includes(expectedText),
+      `Expected text to contain "${expectedText}" but got "${actualText}"`,
+    );
   }
 
   /**
@@ -253,7 +268,12 @@ export default class ShieldDetailPage {
    */
   async checkPaymentMethod(expectedText: string): Promise<void> {
     console.log(`Checking payment method contains: ${expectedText}`);
-    await this.driver.waitForSelector(this.paymentMethodElement(expectedText));
+    const element = await this.driver.findElement(this.paymentMethodElement);
+    const actualText = await element.getText();
+    assert.ok(
+      actualText.includes(expectedText),
+      `Expected text to contain "${expectedText}" but got "${actualText}"`,
+    );
   }
 
   /**
@@ -291,7 +311,7 @@ export default class ShieldDetailPage {
       membershipStatus = 'Active plan',
       nextBillingDate = 'Nov 3',
       charges = '$80',
-      paymentMethod = 'Visa',
+      paymentMethod = 'Card',
       expectTrialTag = true,
     } = options || {};
 
