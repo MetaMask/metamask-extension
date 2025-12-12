@@ -154,8 +154,10 @@ import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { getSmartTransactionsOptInStatusInternal } from '../../shared/modules/selectors';
 import {
+  FALLBACK_LOCALE,
   fetchLocale,
   loadRelativeTimeFormatLocaleData,
+  type I18NMessageDict,
 } from '../../shared/modules/i18n';
 import { decimalToHex } from '../../shared/modules/conversion.utils';
 import { TxGasFees, PriorityLevels } from '../../shared/constants/gas';
@@ -5166,17 +5168,33 @@ export function updateCurrentLocale(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => MetaMaskReduxState,
+  ) => {
     dispatch(showLoadingIndication());
 
     try {
       await loadRelativeTimeFormatLocaleData(key);
-      const localeMessages = await fetchLocale(key);
+      const existingFallbackMessages = getState().localeMessages?.en;
+      const shouldFetchFallback =
+        key !== FALLBACK_LOCALE && !existingFallbackMessages;
+
+      const [localeMessages, fetchedFallbackMessages] = await Promise.all([
+        fetchLocale(key),
+        shouldFetchFallback ? fetchLocale(FALLBACK_LOCALE) : Promise.resolve(),
+      ]);
+
+      const fallbackMessages =
+        key === FALLBACK_LOCALE
+          ? localeMessages
+          : existingFallbackMessages ?? fetchedFallbackMessages;
+
       const textDirection = await submitRequestToBackground<
         'rtl' | 'ltr' | 'auto'
       >('setCurrentLocale', [key]);
       switchDirection(textDirection);
-      dispatch(setCurrentLocale(key, localeMessages));
+      dispatch(setCurrentLocale(key, localeMessages, fallbackMessages));
     } catch (error) {
       dispatch(displayWarning(error));
       return;
@@ -5188,20 +5206,19 @@ export function updateCurrentLocale(
 
 export function setCurrentLocale(
   locale: string,
-  messages: {
-    [translationKey: string]: { message: string; description?: string };
-  },
+  messages: I18NMessageDict,
+  fallbackMessages?: I18NMessageDict,
 ): PayloadAction<{
   locale: string;
-  messages: {
-    [translationKey: string]: { message: string; description?: string };
-  };
+  messages: I18NMessageDict;
+  fallbackMessages?: I18NMessageDict;
 }> {
   return {
     type: actionConstants.SET_CURRENT_LOCALE,
     payload: {
       locale,
       messages,
+      fallbackMessages,
     },
   };
 }

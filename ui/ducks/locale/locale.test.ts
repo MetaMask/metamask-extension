@@ -3,12 +3,13 @@
 import locales from '../../../app/_locales/index.json';
 import testData from '../../../test/data/mock-state.json';
 
-import {
+import reduceLocaleMessages, {
   getCurrentLocale,
   getIntlLocale,
   getCurrentLocaleMessages,
   getEnLocaleMessages,
 } from './locale';
+import * as actionConstants from '../../store/actionConstants';
 
 // Mock state creation functions
 const createMockStateWithLocale = (locale: string) => ({
@@ -16,6 +17,37 @@ const createMockStateWithLocale = (locale: string) => ({
 });
 
 describe('Locale Selectors', () => {
+  describe('reduceLocaleMessages', () => {
+    const sampleMessages = {
+      example: { message: 'Example' },
+    };
+    const fallbackMessages = {
+      fallback: { message: 'Fallback' },
+    };
+
+    it('stores English fallback when locale is the fallback locale', () => {
+      const state = reduceLocaleMessages(undefined, {
+        type: actionConstants.SET_CURRENT_LOCALE,
+        payload: { locale: 'en', messages: sampleMessages },
+      });
+
+      expect(state.en).toStrictEqual(sampleMessages);
+    });
+
+    it('stores provided fallback messages when locale differs from fallback', () => {
+      const state = reduceLocaleMessages(undefined, {
+        type: actionConstants.SET_CURRENT_LOCALE,
+        payload: {
+          locale: 'es',
+          messages: sampleMessages,
+          fallbackMessages,
+        },
+      });
+
+      expect(state.en).toStrictEqual(fallbackMessages);
+    });
+  });
+
   describe('getCurrentLocale', () => {
     it('returns the current locale from the state', () => {
       expect(getCurrentLocale(testData)).toBe('en');
