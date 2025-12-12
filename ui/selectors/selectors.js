@@ -524,15 +524,7 @@ export function getSelectedAddress(state) {
   return getSelectedInternalAccount(state)?.address;
 }
 
-export const getInternalAccountByAddress = createSelector(
-  getInternalAccounts,
-  (_, address) => address,
-  (accounts, address) => {
-    return accounts.find((account) =>
-      isEqualCaseInsensitive(account.address, address),
-    );
-  },
-);
+export { getInternalAccountsObject } from './accounts';
 
 export function getMaybeSelectedInternalAccount(state) {
   // Same as `getSelectedInternalAccount`, but might potentially be `undefined`:

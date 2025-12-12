@@ -50,10 +50,11 @@ export const getInternalAccounts = createSelector(
   (accounts) => Object.values(accounts),
 );
 
-export const getMemoizedInternalAccountByAddress = createSelector(
-  [getInternalAccounts, (_state, address) => address],
-  (internalAccounts, address) => {
-    return internalAccounts.find((account) =>
+export const getInternalAccountByAddress = createSelector(
+  getInternalAccounts,
+  (_, address) => address,
+  (accounts, address) => {
+    return accounts.find((account) =>
       isEqualCaseInsensitive(account.address, address),
     );
   },
