@@ -21,12 +21,14 @@ export function useShouldShowSpeedUp(transactionGroup, isEarliestNonce) {
 
   const { submittedTime } = earliestTransaction;
   const [speedUpEnabled, setSpeedUpEnabled] = useState(() => {
-    return (
-      Date.now() - submittedTime > 5000 &&
+    const timeDelta = Date.now() - submittedTime;
+    const shouldEnable = (
+      timeDelta > 5000 &&
       isEarliestNonce &&
       !hasRetried &&
       matchCurrentChainId
     );
+    return shouldEnable;
   });
   useEffect(() => {
     // because this hook is optimized to only run on changes we have to

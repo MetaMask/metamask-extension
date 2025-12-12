@@ -724,7 +724,8 @@ export default function UnifiedTransactionList({
 
       // evm transaction
       const { transactionGroup } = item;
-      const { nonce, chainId } = transactionGroup.initialTransaction || {};
+      const { nonce, initialTransaction } = transactionGroup;
+      const chainId = initialTransaction?.chainId;
       const isEarliestNonce = isTransactionEarliestNonce(
         nonce,
         chainId,

@@ -6,22 +6,22 @@ describe('useEarliestNonceByChain', () => {
   it('should calculate earliest nonce per chain', () => {
     const transactionGroups = [
       {
+        nonce: '0x5', // 5
         initialTransaction: {
-          nonce: '0x5', // 5
           chainId: CHAIN_IDS.GOERLI,
           status: 'submitted',
         },
       },
       {
+        nonce: '0xa', // 10
         initialTransaction: {
-          nonce: '0xa', // 10
           chainId: CHAIN_IDS.MAINNET,
           status: 'submitted',
         },
       },
       {
+        nonce: '0x6', // 6
         initialTransaction: {
-          nonce: '0x6', // 6
           chainId: CHAIN_IDS.GOERLI,
           status: 'submitted',
         },
@@ -41,15 +41,15 @@ describe('useEarliestNonceByChain', () => {
   it('should handle undefined nonce', () => {
     const transactionGroups = [
       {
+        nonce: undefined,
         initialTransaction: {
-          nonce: undefined,
           chainId: CHAIN_IDS.GOERLI,
           status: 'submitted',
         },
       },
       {
+        nonce: '0x5',
         initialTransaction: {
-          nonce: '0x5',
           chainId: CHAIN_IDS.GOERLI,
           status: 'submitted',
         },
@@ -68,15 +68,15 @@ describe('useEarliestNonceByChain', () => {
   it('should work with only pending transactions', () => {
     const transactionGroups = [
       {
+        nonce: '0xa', // 10
         initialTransaction: {
-          nonce: '0xa', // 10
           chainId: CHAIN_IDS.GOERLI,
           status: 'submitted',
         },
       },
       {
+        nonce: '0x5', // 5 - EARLIEST
         initialTransaction: {
-          nonce: '0x5', // 5 - EARLIEST
           chainId: CHAIN_IDS.GOERLI,
           status: 'submitted',
         },

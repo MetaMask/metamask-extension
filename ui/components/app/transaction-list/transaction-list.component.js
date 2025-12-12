@@ -739,8 +739,8 @@ export default function TransactionList({
                 {groupedPendingTransactions.map((dateGroup) => {
                   return dateGroup.transactionGroups.map(
                     (transactionGroup, index) => {
-                      const { nonce, chainId: txChainId } =
-                        transactionGroup.initialTransaction || {};
+                      const { nonce, initialTransaction } = transactionGroup;
+                      const txChainId = initialTransaction?.chainId;
                       const isEarliestNonce = isTransactionEarliestNonce(
                         nonce,
                         txChainId,

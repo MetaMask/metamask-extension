@@ -2,8 +2,8 @@ import { useMemo } from 'react';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 
 type TransactionGroup = {
+  nonce?: string;
   initialTransaction?: {
-    nonce?: string;
     chainId?: string;
   };
 };
@@ -22,7 +22,8 @@ export function useEarliestNonceByChain(
     const nonceMap: Record<string, number> = {};
 
     transactionGroups.forEach((txGroup) => {
-      const { nonce, chainId } = txGroup.initialTransaction || {};
+      const nonce = txGroup.nonce;
+      const chainId = txGroup.initialTransaction?.chainId;
 
       if (nonce && chainId) {
         const nonceValue = Number(hexToDecimal(nonce));
@@ -57,4 +58,3 @@ export function isTransactionEarliestNonce(
   const nonceValue = Number(hexToDecimal(nonce));
   return nonceValue === earliestNonceByChain[chainId];
 }
-
