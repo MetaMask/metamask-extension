@@ -1,30 +1,28 @@
 import {
   type CaipAssetType,
-  isStrictHexString,
   type CaipChainId,
   type Hex,
+  parseCaipAssetType,
 } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import type { ContractMarketData } from '@metamask/assets-controllers';
 import {
   ChainId,
-  type TxData,
   BridgeClientId,
   formatChainIdToCaip,
   getNativeAssetForChainId,
   isNativeAddress,
-  isNonEvmChainId,
-  formatChainIdToHex,
   isBitcoinChainId,
+  formatChainIdToHex,
+  isNonEvmChainId,
+  formatAddressToCaipReference,
 } from '@metamask/bridge-controller';
 import { handleFetch } from '@metamask/controller-utils';
-import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../shared/modules/Numeric';
-import { getTransaction1559GasFeeEstimates } from '../../pages/swaps/swaps.util';
-import { toAssetId } from '../../../shared/lib/asset-utils';
-import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../shared/constants/bridge';
-import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
-import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
+import {
+  BRIDGE_CHAINID_COMMON_TOKEN_PAIR,
+  toAssetIdOrThrow,
+} from '../../../shared/constants/bridge';
 import {
   TRON_RESOURCE_SYMBOLS_SET,
   type TronResourceSymbol,
@@ -103,14 +101,10 @@ export const bpsToPercentage = (
 };
 
 const fetchTokenExchangeRates = async (
-  chainId: Hex | CaipChainId | ChainId,
   currency: string,
   signal?: AbortSignal,
-  ...tokenAddresses: string[]
+  ...assetIds: CaipAssetType[]
 ) => {
-  const assetIds = tokenAddresses
-    .map((address) => toAssetId(address, formatChainIdToCaip(chainId)))
-    .filter(Boolean);
   if (assetIds.length === 0) {
     return {};
   }
@@ -141,32 +135,38 @@ const fetchTokenExchangeRates = async (
 // rate is not available in the TokenRatesController, which happens when the selected token has not been
 // imported into the wallet
 export const getTokenExchangeRate = async (request: {
-  chainId: Hex | CaipChainId | ChainId;
-  tokenAddress: string;
+  assetId: CaipAssetType;
   currency: string;
   signal?: AbortSignal;
 }) => {
-  const { chainId, tokenAddress, currency, signal } = request;
+  const { assetId, currency, signal } = request;
   const exchangeRates = await fetchTokenExchangeRates(
-    chainId,
     currency,
     signal,
-    tokenAddress,
+    assetId,
   );
-  const assetId = toAssetId(tokenAddress, formatChainIdToCaip(chainId));
-  return assetId ? exchangeRates?.[assetId] : undefined;
+  // EVM prices are lowercased, non-EVM prices are not
+  return assetId
+    ? (exchangeRates?.[assetId] ??
+        exchangeRates?.[assetId.toLowerCase() as CaipAssetType])
+    : undefined;
 };
 
 // This extracts a token's exchange rate from the marketData state object
 // These exchange rates are against the native asset of the chain
 export const exchangeRateFromMarketData = (
-  chainId: Hex | ChainId | CaipChainId,
-  tokenAddress: string,
+  assetId: CaipAssetType,
   marketData?: Record<string, ContractMarketData>,
-) =>
-  isStrictHexString(tokenAddress) && isStrictHexString(chainId)
-    ? marketData?.[chainId]?.[tokenAddress]?.price
-    : undefined;
+) => {
+  const { chainId, assetReference } = parseCaipAssetType(assetId);
+  if (isNonEvmChainId(chainId)) {
+    return undefined;
+  }
+  const hexChainId = formatChainIdToHex(chainId);
+  const address = formatAddressToCaipReference(assetReference);
+  // @ts-expect-error - hexChainId is a Hex string
+  return marketData?.[hexChainId]?.[address]?.price ?? undefined;
+};
 
 export const tokenAmountToCurrency = (
   amount: string | BigNumber,
@@ -186,68 +186,25 @@ export const tokenPriceInNativeAsset = (
     : null;
 };
 
-export const exchangeRatesFromNativeAndCurrencyRates = (
-  tokenToNativeAssetRate?: number | null,
-  nativeToCurrencyRate?: number | null,
-  nativeToUsdRate?: number | null,
-) => {
-  return {
-    valueInCurrency:
-      tokenToNativeAssetRate && nativeToCurrencyRate
-        ? tokenToNativeAssetRate * nativeToCurrencyRate
-        : null,
-    usd:
-      tokenToNativeAssetRate && nativeToUsdRate
-        ? tokenToNativeAssetRate * nativeToUsdRate
-        : null,
-  };
-};
-
 export const isNetworkAdded = (
   availableNetworks: { chainId: Hex | CaipChainId }[],
   chainId: Hex | CaipChainId,
 ) => availableNetworks.some((network) => network.chainId === chainId);
 
-const getTokenImage = (payload: TokenPayload['payload']) => {
-  if (!payload) {
-    return '';
-  }
-  const { image, iconUrl, icon, chainId, address, assetId } = payload;
-  const caipChainId = formatChainIdToCaip(chainId);
-  // If the token is native, return the SVG image asset
-  if (isNativeAddress(address)) {
-    // Non-EVM chains (Solana, Bitcoin) use MULTICHAIN_TOKEN_IMAGE_MAP
-    if (isNonEvmChainId(chainId)) {
-      return MULTICHAIN_TOKEN_IMAGE_MAP[caipChainId];
-    }
-    // EVM chains use CHAIN_ID_TOKEN_IMAGE_MAP
-    return CHAIN_ID_TOKEN_IMAGE_MAP[
-      formatChainIdToHex(chainId) as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-    ];
-  }
-  // If the token is not native, return the image from the payload
-  const imageFromPayload = image ?? iconUrl ?? icon;
-  if (imageFromPayload) {
-    return imageFromPayload;
-  }
-  // If there's no image from the payload, build the asset image URL and return it
-  const assetIdToUse = assetId ?? toAssetId(address, caipChainId);
-  return (assetIdToUse && getImageUrlFromAssetId(assetIdToUse)) ?? '';
-};
-
 export const toBridgeToken = (
-  payload: TokenPayload['payload'],
-): BridgeToken | null => {
-  if (!payload) {
-    return null;
-  }
-  const caipChainId = formatChainIdToCaip(payload.chainId);
+  payload: NonNullable<TokenPayload['payload']>,
+): BridgeToken => {
+  const assetId =
+    payload.assetId ?? toAssetIdOrThrow(payload.chainId, payload.address);
   return {
     ...payload,
     balance: payload.balance ?? '0',
-    chainId: payload.chainId,
-    image: getTokenImage(payload),
-    assetId: payload.assetId ?? toAssetId(payload.address, caipChainId),
+    chainId: formatChainIdToCaip(payload.chainId),
+    image: (payload.image || getImageUrlFromAssetId(assetId)) ?? '',
+    assetId,
+    name: payload.name ?? payload.symbol,
+    tokenFiatAmount: payload.tokenFiatAmount,
+    accountType: payload.accountType,
   };
 };
 const createBridgeTokenPayload = (
@@ -255,21 +212,20 @@ const createBridgeTokenPayload = (
     address: string;
     symbol: string;
     decimals: number;
-    name?: string;
-    assetId?: string;
+    name: string;
+    assetId: CaipAssetType;
   },
   chainId: ChainId | Hex | CaipChainId,
 ): TokenPayload['payload'] | null => {
-  const { assetId, ...rest } = tokenData;
   return toBridgeToken({
-    ...rest,
+    ...tokenData,
     chainId,
   });
 };
 
 export const getDefaultToToken = (
   targetChainId: CaipChainId,
-  fromToken: Pick<NonNullable<TokenPayload['payload']>, 'address' | 'chainId'>,
+  fromToken: Pick<BridgeToken, 'address' | 'chainId'>,
 ) => {
   const commonPair = BRIDGE_CHAINID_COMMON_TOKEN_PAIR[targetChainId];
 

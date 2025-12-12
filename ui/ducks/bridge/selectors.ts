@@ -64,8 +64,6 @@ import {
   HardwareKeyringNames,
   HardwareKeyringType,
 } from '../../../shared/constants/hardware-wallets';
-import { toAssetId } from '../../../shared/lib/asset-utils';
-import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../../shared/constants/multichain/assets';
 import { Numeric } from '../../../shared/modules/Numeric';
 import {
   getIsSmartTransaction,
@@ -87,7 +85,6 @@ import { getAllEnabledNetworksForAllNamespaces } from '../../selectors/multichai
 
 import {
   exchangeRateFromMarketData,
-  exchangeRatesFromNativeAndCurrencyRates,
   tokenPriceInNativeAsset,
   getDefaultToToken,
   toBridgeToken,
@@ -95,37 +92,6 @@ import {
   isTronChainId,
 } from './utils';
 import type { BridgeNetwork, BridgeState } from './types';
-
-/**
- * Helper function to determine the CAIP asset type for non-EVM native assets
- *
- * @param chainId - The chain ID
- * @param address - The asset address
- * @param assetId - The asset ID
- * @returns The appropriate CAIP asset type string
- */
-const getNonEvmNativeAssetType = (
-  chainId: Hex | string | number | CaipChainId,
-  address: string,
-  assetId?: string,
-): CaipAssetType | string => {
-  if (isSolanaChainId(chainId)) {
-    return isNativeAddress(address)
-      ? MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19.SOL
-      : (assetId ?? address);
-  }
-  if (isBitcoinChainId(chainId)) {
-    // Bitcoin bridge only supports mainnet
-    return MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19.BTC;
-  }
-  if (isTronChainId(chainId)) {
-    // Tron bridge only supports mainnet
-    return isNativeAddress(address)
-      ? MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19.TRX
-      : (assetId ?? address);
-  }
-  return assetId ?? address;
-};
 
 export type BridgeAppState = {
   metamask: BridgeAppStateFromController &
@@ -511,12 +477,11 @@ const _getFromNativeBalance = createSelector(
     }
 
     const { chainId } = fromChain;
-    const { decimals, address, assetId } = getNativeAssetForChainId(chainId);
+    const { decimals, assetId } = getNativeAssetForChainId(chainId);
 
     // Use the balance provided by the multichain balances controller for non-EVM chains
     if (isNonEvmChain(chainId)) {
-      const caipAssetType = getNonEvmNativeAssetType(chainId, address, assetId);
-      return nonEvmBalancesByAccountId?.[id]?.[caipAssetType]?.amount ?? null;
+      return nonEvmBalancesByAccountId?.[id]?.[assetId]?.amount ?? null;
     }
 
     return fromNativeBalance
@@ -544,13 +509,12 @@ export const getFromTokenBalance = createSelector(
       return null;
     }
     const { id } = fromAccount;
-    const { chainId, decimals, address, assetId } = fromToken;
+    const { chainId, decimals, assetId } = fromToken;
 
     // Use the balance provided by the multichain balances controller for non-EVM chains
     if (isNonEvmChain(chainId)) {
-      const caipAssetType = getNonEvmNativeAssetType(chainId, address, assetId);
       return (
-        nonEvmBalancesByAccountId?.[id]?.[caipAssetType]?.amount ??
+        nonEvmBalancesByAccountId?.[id]?.[assetId]?.amount ??
         fromToken.balance ??
         null
       );

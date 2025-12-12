@@ -4,23 +4,27 @@ import {
   type QuoteResponse,
   SortOrder,
   type ChainId,
-  type GenericQuoteRequest,
 } from '@metamask/bridge-controller';
 import { type KeyringAccountType } from '@metamask/keyring-api';
 import { type TxAlert } from '../../../shared/types/security-alerts-api';
+import { type BridgeAssetV2 } from '../../pages/bridge/utils/tokens';
 
-export type BridgeToken = {
-  address: string;
-  assetId?: CaipAssetType;
-  symbol: string;
-  image: string;
-  decimals: number;
-  chainId: number | Hex | ChainId | CaipChainId;
-  balance: string; // raw balance
+export type BridgeToken = BridgeAssetV2 & {
+  balance: string;
   tokenFiatAmount?: number | null;
+  /**
+   * @deprecated Can be removed when all tokens come from the bridge-api
+   */
   occurrences?: number;
+  /**
+   * @deprecated Can be removed when all tokens come from the bridge-api
+   */
   aggregators?: string[];
   accountType?: KeyringAccountType;
+  /**
+   * @deprecated Should be removed when all tokens come from the bridge-api
+   */
+  address?: string;
 };
 
 /**
@@ -54,17 +58,10 @@ export type BridgeState = {
 
 export type ChainIdPayload = { payload: ChainId | Hex | CaipChainId | null };
 export type TokenPayload = {
-  payload: {
-    address: GenericQuoteRequest['srcTokenAddress'];
-    symbol: string;
-    decimals: number;
-    chainId: Exclude<ChainIdPayload['payload'], null>;
+  payload: Omit<BridgeToken, 'chainId' | 'balance' | 'assetId' | 'name'> & {
+    chainId: number | CaipChainId | Hex;
     balance?: string;
-    image?: string;
-    iconUrl?: string | null;
-    icon?: string | null;
     assetId?: CaipAssetType;
-    aggregators?: string[];
-    occurrences?: number;
-  } | null;
+    name?: string;
+  };
 };

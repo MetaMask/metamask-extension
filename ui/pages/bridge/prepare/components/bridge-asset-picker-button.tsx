@@ -1,4 +1,5 @@
 import React from 'react';
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constants/bridge';
 import {
   SelectButtonProps,
   SelectButtonSize,
@@ -23,7 +24,8 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { AssetPicker } from '../../../../components/multichain/asset-picker-amount/asset-picker';
-import { getNftImage } from '../../../../helpers/utils/nfts';
+import { type BridgeToken } from '../../../../ducks/bridge/types';
+import { getImageUrlFromAssetId } from '../../utils/tokens';
 
 export const BridgeAssetPickerButton = ({
   asset,
@@ -31,9 +33,10 @@ export const BridgeAssetPickerButton = ({
   networkImageSrc,
   ...props
 }: {
+  asset?: BridgeToken;
   networkImageSrc?: string;
 } & SelectButtonProps<'div'> &
-  Pick<React.ComponentProps<typeof AssetPicker>, 'asset' | 'networkProps'>) => {
+  Pick<React.ComponentProps<typeof AssetPicker>, 'networkProps'>) => {
   const t = useI18nContext();
 
   return (
@@ -71,7 +74,7 @@ export const BridgeAssetPickerButton = ({
             badge={
               asset ? (
                 <AvatarNetwork
-                  name={networkProps?.network?.name ?? ''}
+                  name={NETWORK_TO_SHORT_NETWORK_NAME_MAP[asset.chainId]}
                   src={networkImageSrc}
                   size={AvatarNetworkSize.Xs}
                 />
@@ -80,9 +83,7 @@ export const BridgeAssetPickerButton = ({
           >
             {asset ? (
               <AvatarToken
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-                // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-                src={getNftImage(asset.image) || undefined}
+                src={asset.image || getImageUrlFromAssetId(asset.assetId)}
                 backgroundColor={BackgroundColor.backgroundHover}
                 name={asset.symbol}
               />
