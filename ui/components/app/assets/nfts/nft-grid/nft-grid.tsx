@@ -128,10 +128,9 @@ export default function NftGrid({
   return (
     <Box style={{ margin: 16 }}>
       <div
+        className="relative w-full"
         style={{
           height: `${virtualizer.getTotalSize()}px`,
-          width: '100%',
-          position: 'relative',
         }}
       >
         {virtualizer.getVirtualItems().map((virtualRow) => {
@@ -141,11 +140,8 @@ export default function NftGrid({
               key={virtualRow.index}
               data-index={virtualRow.index}
               ref={virtualizer.measureElement}
+              className="absolute top-0 left-0 w-full"
               style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
                 transform: `translateY(${virtualRow.start}px)`,
                 paddingBottom: '16px',
               }}
