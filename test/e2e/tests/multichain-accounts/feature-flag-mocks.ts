@@ -117,7 +117,7 @@ export const mockMultichainAccountsFeatureFlagStateTwo = (
       return {
         ok: true,
         statusCode: 200,
-        json: [],
+        json: [BIP44_STAGE_TWO],
       };
     });
 };
