@@ -348,7 +348,7 @@ class AssetListPage {
     await this.driver.clickElement(this.tokenOptionsButton);
     await this.driver.clickElement(this.importTokensButton);
     await this.driver.waitForSelector(this.importTokenModalTitle);
-    await this.driver.fill(this.tokenSearchInput, tokenName);
+    await this.driver.pasteIntoField(this.tokenSearchInput, tokenName);
     // Wait until the token search matches 1 result to prevent flakiness with token result re-renders
     await this.waitUntilTokenSearchMatch(1);
     await this.driver.clickElement({ text: tokenName, tag: 'p' });
