@@ -9,6 +9,11 @@ const mockResultComponent: ResultComponent = {
   children: 'Mock child',
 };
 
+const keylessResultComponent: ResultComponent = {
+  name: 'mock-component',
+  properties: { message: 'keyless' },
+};
+
 const expectedTemplateRendererComponent = {
   key: 'mock-key',
   props: {
@@ -70,5 +75,17 @@ describe('processHeader', () => {
   it('returns array when input is array', () => {
     const result = processHeader(['Hello', mockResultComponent]);
     expect(result).toEqual(['Hello', expectedTemplateRendererComponent]);
+  });
+
+  it('generates a key when one is not provided', () => {
+    const result = processHeader([keylessResultComponent]);
+    expect(result).toEqual([
+      {
+        key: 'mock-component-0',
+        element: 'mock-component',
+        props: { message: 'keyless' },
+        children: undefined,
+      },
+    ]);
   });
 });

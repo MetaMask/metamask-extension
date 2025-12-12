@@ -137,8 +137,25 @@ function findMarkdown(
   return elements;
 }
 
+type ConvertOptions = {
+  path: number[];
+};
+
+const DEFAULT_CONVERT_OPTIONS: ConvertOptions = {
+  path: [],
+};
+
+function generateComponentKey(
+  elementName: string | undefined,
+  path: number[],
+) {
+  const suffix = path.length ? path.join('-') : 'root';
+  return `${elementName ?? 'component'}-${suffix}`;
+}
+
 function convertResultComponents(
   input: undefined | string | ResultComponent | (string | ResultComponent)[],
+  options: ConvertOptions = DEFAULT_CONVERT_OPTIONS,
 ):
   | undefined
   | string
@@ -153,16 +170,17 @@ function convertResultComponents(
   }
 
   if (Array.isArray(input)) {
-    return input.map(convertResultComponents) as (
-      | string
-      | TemplateRendererComponent
-    )[];
+    return input.map((entry, index) =>
+      convertResultComponents(entry, {
+        path: [...options.path, index],
+      }),
+    ) as (string | TemplateRendererComponent)[];
   }
 
   return {
-    key: input.key,
+    key: input.key ?? generateComponentKey(input.name, options.path),
     element: input.name,
     props: input.properties,
-    children: convertResultComponents(input.children),
+    children: convertResultComponents(input.children, options),
   };
 }
