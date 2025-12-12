@@ -6432,11 +6432,11 @@
     "message": "Priority support"
   },
   "shieldTxDetails3Description": {
-    "message": "Get $1 points/$2.",
+    "message": "Get $1 points/$2",
     "description": "The $1 is the number of points, $2 is the plan interval (month or year)"
   },
   "shieldTxDetails3DescriptionLinkReward": {
-    "message": "Link Rewards"
+    "message": "Link"
   },
   "shieldTxDetails3DescriptionSignUp": {
     "message": "Sign up"
