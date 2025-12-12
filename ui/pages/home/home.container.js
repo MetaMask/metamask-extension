@@ -66,7 +66,9 @@ import { fetchBuyableChains } from '../../ducks/ramps';
 import {
   selectRewardsEnabled,
   selectRewardsOnboardingEnabled,
+  selectOnboardingModalOpen,
 } from '../../ducks/rewards/selectors';
+import { selectShowPna25Modal } from '../../components/app/toast-master/selectors';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
@@ -186,6 +188,8 @@ const mapStateToProps = (state) => {
     isSignedIn: state.metamask.isSignedIn,
     rewardsEnabled: selectRewardsEnabled(state),
     rewardsOnboardingEnabled: selectRewardsOnboardingEnabled(state),
+    rewardsOnboardingModalOpen: selectOnboardingModalOpen(state),
+    showPna25Modal: selectShowPna25Modal(state),
   };
 };
 

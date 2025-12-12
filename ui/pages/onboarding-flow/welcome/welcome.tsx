@@ -388,7 +388,7 @@ export default function OnboardingWelcome() {
             parentContext: onboardingParentContext?.current,
           });
           await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialImport));
-          navigate(ONBOARDING_UNLOCK_ROUTE);
+          navigate(ONBOARDING_UNLOCK_ROUTE, { replace: true });
         }
       } catch (error) {
         handleSocialLoginError(error, socialConnectionType);

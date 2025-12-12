@@ -943,9 +943,6 @@
   "bridgeEnterAmount": {
     "message": "Miktar seçin"
   },
-  "bridgeEnterAmountAndSelectAccount": {
-    "message": "Tutar girin ve hedef hesabı seçin"
-  },
   "bridgeExplorerLinkViewOn": {
     "message": "$1 üzerinde görüntüle"
   },
@@ -1467,9 +1464,6 @@
   "connectWithMetaMask": {
     "message": "MetaMask ile Bağlan"
   },
-  "connectedAccounts": {
-    "message": "Bağlı hesaplar"
-  },
   "connectedAccountsDescriptionPlural": {
     "message": "Bu siteye bağlı $1 hesabınız var.",
     "description": "$1 is the number of accounts"
@@ -1483,9 +1477,6 @@
   "connectedAccountsListTooltip": {
     "message": "$1 hesap bakiyenizi, adresinizi, aktivitenizi görebilir ve bağlı hesapları onaylamak için işlem önerebilir.",
     "description": "$1 is the origin name"
-  },
-  "connectedAccountsToast": {
-    "message": "Bağlı hesaplar güncellendi"
   },
   "connectedSites": {
     "message": "Bağlı siteler"
@@ -2018,14 +2009,6 @@
   },
   "disconnectThisAccount": {
     "message": "Bu hesabın bağlantısını kes"
-  },
-  "disconnectedAllAccountsToast": {
-    "message": "Tüm hesapların $1 ile bağlantısı kesildi",
-    "description": "$1 is name of the dapp`"
-  },
-  "disconnectedSingleAccountToast": {
-    "message": "$1 için $2 bağlantısı kesildi",
-    "description": "$1 is name of the name and $2 represents the dapp name`"
   },
   "discover": {
     "message": "Keşfet"
@@ -2573,11 +2556,12 @@
     "message": "Şifrenizi mi unuttunuz?"
   },
   "forgotPasswordSocialDescription": {
-    "message": "MetaMask sizin adınıza şifrenizi kurtaramaz."
+    "message": "MetaMask sizin adınıza şifrenizi kurtaramaz.",
+    "description": "$1 is the support link"
   },
   "forgotPasswordSocialStep1": {
     "message": "Bir cihazda $1 ile (Face ID gibi) MetaMask'te oturum açtıysanız şifrenizi orada sıfırlayabilirsiniz.",
-    "description": "$1 is bold biometrics turned on"
+    "description": "$1 is bold heading"
   },
   "forgotPasswordSocialStep1Biometrics": {
     "message": "Biyometrikler açık (Face ID gibi) ise"
@@ -4411,9 +4395,6 @@
     "message": "Bir işlemin nasıl iptal edileceğini veya hızlandırılacağını öğrenin.",
     "description": "The text for the hyperlink in the pending transaction alert message"
   },
-  "permissionDetails": {
-    "message": "İzin ayrıntıları"
-  },
   "permissionFor": {
     "message": "Şunun için izin:"
   },
@@ -4717,10 +4698,6 @@
   "pleaseConfirm": {
     "message": "Lütfen onayla"
   },
-  "plusMore": {
-    "message": "+ $1 tane daha",
-    "description": "$1 is the number of additional items"
-  },
   "plusXMore": {
     "message": "+ $1 tane daha",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
@@ -4941,12 +4918,6 @@
   "rateIncludesMMFee": {
     "message": "%$1 MM ücreti dahildir."
   },
-  "reAddAccounts": {
-    "message": "diğer hesapları yeniden ekle"
-  },
-  "reAdded": {
-    "message": "yeniden eklendi"
-  },
   "readdToken": {
     "message": "Gelecekte bu tokeni hesap seçenekleri menüsünde “Tokeni İçe Aktar”' kısmına giderek tekrar ekleyebilirsiniz."
   },
@@ -5103,33 +5074,6 @@
   },
   "resetWallet": {
     "message": "Cüzdanınızı sıfırlayın"
-  },
-  "resetWalletSubHeader": {
-    "message": "MetaMask, parolanın bir kopyasını tutmaz. Hesabının kilidini açmakta sorun yaşıyorsan cüzdanını sıfırlaman gerekecektir. Bunu, cüzdanını kurarken kullandığın Gizli Kurtarma İfadesini girerek yapabilirsin."
-  },
-  "resetWalletSubHeaderSocial": {
-    "message": "MetaMask, şifrenizin bir kopyasını saklamaz. Hesabınızın kilidini açma konusunda sorun yaşıyorsanız cüzdanınızı sıfırlamanız gerekir. Gizli Kurtarma İfadeniz varsa mevcut cüzdanınızı hesap listenizle birlikte bu cihazdan silmek için onu kullanabilirsiniz."
-  },
-  "resetWalletUsingSRP": {
-    "message": "Bu eylem, düzenlediğin hesapların listesiyle birlikte mevcut cüzdanını ve Gizli Kurtarma İfadeni bu cihazdan siler. Bir Gizli Kurtarma İfadesi ile sıfırlama yaptıktan sonra sıfırlamak için kullandığın Gizli Kurtarma İfadesine dayalı bir hesap listesi göreceksin. Bu yeni liste otomatik olarak bakiyesi olan hesapları içerecektir. Ayrıca daha önce oluşturulmuş $1 hesabını oluşturabileceksin. İçe aktardığın özel hesapların $2 olması ve bir hesaba eklediğin özel token'ların da $3 olması gerekir."
-  },
-  "resetWalletUsingSRPSocial": {
-    "message": "Bir Gizli Kurtarma İfadesi ile sıfırlama gerçekleştirdikten sonra yeni bir hesap listesi göreceksiniz. Bu liste, bakiyesi bulunan hesapları içerecektir. Daha önce yaptığınız gibi $1 işlemi gerçekleştirebilirsiniz. Ancak içe aktardığınız tüm $2 ve $3 geri eklenmelidir. "
-  },
-  "resetWalletUsingSRPSocialAccounts": {
-    "message": "tüm diğer hesapları geri ekle"
-  },
-  "resetWalletUsingSRPSocialCustomAccounts": {
-    "message": "özel hesaplar"
-  },
-  "resetWalletUsingSRPSocialCustomTokens": {
-    "message": "özel token'lar"
-  },
-  "resetWalletWarning": {
-    "message": "Devam etmeden önce doğru Gizli Kurtarma İfadesini kullandığından emin ol. Bu işlemi geri alamazsın."
-  },
-  "resetWalletWarningSocial": {
-    "message": "Sıfırlamadan önce doğru Gizli Kurtarma İfadesini kullandığınızdan emin olun. Bu işlem geri alınamaz."
   },
   "resolutionProtocol": {
     "message": "$1 ile adres çözümlendi",

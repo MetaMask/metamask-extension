@@ -943,9 +943,6 @@
   "bridgeEnterAmount": {
     "message": "Sélectionnez le montant"
   },
-  "bridgeEnterAmountAndSelectAccount": {
-    "message": "Entrez le montant et sélectionnez le compte de destination"
-  },
   "bridgeExplorerLinkViewOn": {
     "message": "Consulter sur $1"
   },
@@ -1467,9 +1464,6 @@
   "connectWithMetaMask": {
     "message": "Connectez-vous avec MetaMask"
   },
-  "connectedAccounts": {
-    "message": "Comptes connectés"
-  },
   "connectedAccountsDescriptionPlural": {
     "message": "Vous avez $1 comptes connectés à ce site.",
     "description": "$1 is the number of accounts"
@@ -1483,9 +1477,6 @@
   "connectedAccountsListTooltip": {
     "message": "$1 peut voir le solde, l’adresse et l’activité du compte, et suggérer des transactions à approuver pour les comptes connectés.",
     "description": "$1 is the origin name"
-  },
-  "connectedAccountsToast": {
-    "message": "Les comptes connectés ont été mis à jour"
   },
   "connectedSites": {
     "message": "Sites connectés"
@@ -2018,14 +2009,6 @@
   },
   "disconnectThisAccount": {
     "message": "Déconnecter ce compte"
-  },
-  "disconnectedAllAccountsToast": {
-    "message": "Tous les comptes ont été déconnectés de $1",
-    "description": "$1 is name of the dapp`"
-  },
-  "disconnectedSingleAccountToast": {
-    "message": "$1 déconnecté de $2",
-    "description": "$1 is name of the name and $2 represents the dapp name`"
   },
   "discover": {
     "message": "Découvrir"
@@ -2573,11 +2556,12 @@
     "message": "Mot de passe oublié ?"
   },
   "forgotPasswordSocialDescription": {
-    "message": "MetaMask ne peut pas récupérer votre mot de passe pour vous."
+    "message": "MetaMask ne peut pas récupérer votre mot de passe pour vous.",
+    "description": "$1 is the support link"
   },
   "forgotPasswordSocialStep1": {
     "message": "Si vous êtes connecté(e) à MetaMask sur un appareil sur lequel $1 (comme Face ID), vous pouvez réinitialiser votre mot de passe à partir de cet appareil.",
-    "description": "$1 is bold biometrics turned on"
+    "description": "$1 is bold heading"
   },
   "forgotPasswordSocialStep1Biometrics": {
     "message": "la biométrie est activée"
@@ -4411,9 +4395,6 @@
     "message": "Découvrez comment annuler ou accélérer une transaction.",
     "description": "The text for the hyperlink in the pending transaction alert message"
   },
-  "permissionDetails": {
-    "message": "Informations sur les autorisations"
-  },
   "permissionFor": {
     "message": "Autorisation pour"
   },
@@ -4717,10 +4698,6 @@
   "pleaseConfirm": {
     "message": "Veuillez confirmer"
   },
-  "plusMore": {
-    "message": "+ $1 de plus",
-    "description": "$1 is the number of additional items"
-  },
   "plusXMore": {
     "message": "+ $1 de plus",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
@@ -4941,12 +4918,6 @@
   "rateIncludesMMFee": {
     "message": "Comprend des frais MM de $1 %."
   },
-  "reAddAccounts": {
-    "message": "ajoutez tous les autres comptes à nouveau"
-  },
-  "reAdded": {
-    "message": "ajoutés à nouveau"
-  },
   "readdToken": {
     "message": "Vous pourrez ajouter à nouveau ce jeton en allant sur « Ajouter un jeton » dans le menu des options de votre compte."
   },
@@ -5103,33 +5074,6 @@
   },
   "resetWallet": {
     "message": "Réinitialisez votre portefeuille"
-  },
-  "resetWalletSubHeader": {
-    "message": "MetaMask ne garde pas de copie de votre mot de passe. Si vous avez des problèmes de déblocage de votre compte, il faudra réinitialiser votre portefeuille. Vous pouvez effectuer cette action en fournissant la phrase de récupération secrète que vous avez utilisée en configurant votre portefeuille."
-  },
-  "resetWalletSubHeaderSocial": {
-    "message": "MetaMask ne conserve pas de copie de votre mot de passe. Si vous avez des difficultés à déverrouiller votre compte, vous devrez réinitialiser votre portefeuille. Si vous disposez d’une phrase secrète de récupération, vous pouvez l’utiliser pour effacer votre portefeuille actuel ainsi que la liste de vos comptes de cet appareil."
-  },
-  "resetWalletUsingSRP": {
-    "message": "Cette action supprimera votre portefeuille actuel et votre phrase de récupération secrète de cet appareil, avec la liste des comptes que vous avez sélectionnés. Après la réinitialisation avec une phrase de récupération secrète, vous verrez une liste de comptes en fonction de la phrase utilisée. Cette nouvelle liste inclura automatiquement les comptes ayant un solde. Vous pourrez aussi voir les $1 créés précédemment. Les comptes personnalisés que vous avez importés devront être $2 et tous les jetons personnalisés que vous avez ajoutés à un compte devront aussi être $3."
-  },
-  "resetWalletUsingSRPSocial": {
-    "message": "Après la réinitialisation à l’aide d’une phrase secrète de récupération, vous verrez s’afficher une nouvelle liste de comptes qui ont un solde. Vous pourrez $1 que vous avez créés auparavant. Mais vous devrez ajouter à nouveau tous les $2 et les $3 que vous avez importés. "
-  },
-  "resetWalletUsingSRPSocialAccounts": {
-    "message": "ajouter à nouveau tous les autres comptes"
-  },
-  "resetWalletUsingSRPSocialCustomAccounts": {
-    "message": "comptes personnalisés"
-  },
-  "resetWalletUsingSRPSocialCustomTokens": {
-    "message": "jetons personnalisés"
-  },
-  "resetWalletWarning": {
-    "message": "Assurez-vous d’utiliser la bonne phrase de récupération secrète avant de continuer. Cette action est irréversible."
-  },
-  "resetWalletWarningSocial": {
-    "message": "Assurez-vous d’utiliser la bonne phrase secrète de récupération avant de procéder à la réinitialisation, car cette opération est irréversible."
   },
   "resolutionProtocol": {
     "message": "Adresse résolue via $1",

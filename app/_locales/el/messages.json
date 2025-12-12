@@ -943,9 +943,6 @@
   "bridgeEnterAmount": {
     "message": "Πληκτρολογήστε το ποσό"
   },
-  "bridgeEnterAmountAndSelectAccount": {
-    "message": "Εισαγάγετε το ποσό και επιλέξτε τον λογαριασμό προορισμού"
-  },
   "bridgeExplorerLinkViewOn": {
     "message": "Προβολή σε $1"
   },
@@ -1467,9 +1464,6 @@
   "connectWithMetaMask": {
     "message": "Σύνδεση με το MetaMask"
   },
-  "connectedAccounts": {
-    "message": "Συνδεδεμένοι λογαριασμοί"
-  },
   "connectedAccountsDescriptionPlural": {
     "message": "Έχετε $1 λογαριασμούς συνδεδεμένους με αυτόν τον ιστότοπο.",
     "description": "$1 is the number of accounts"
@@ -1483,9 +1477,6 @@
   "connectedAccountsListTooltip": {
     "message": "Το $1 μπορεί να δει το υπόλοιπο του λογαριασμού, τη διεύθυνση, τη δραστηριότητα και να προτείνει συναλλαγές προς έγκριση για συνδεδεμένους λογαριασμούς.",
     "description": "$1 is the origin name"
-  },
-  "connectedAccountsToast": {
-    "message": "Οι συνδεδεμένοι λογαριασμοί ενημερώθηκαν"
   },
   "connectedSites": {
     "message": "Συνδεδεμένοι ιστότοποι"
@@ -2018,14 +2009,6 @@
   },
   "disconnectThisAccount": {
     "message": "Αποσύνδεση αυτού του λογαριασμού"
-  },
-  "disconnectedAllAccountsToast": {
-    "message": "Όλοι οι λογαριασμοί αποσυνδέθηκαν από το $1",
-    "description": "$1 is name of the dapp`"
-  },
-  "disconnectedSingleAccountToast": {
-    "message": "Το $1 αποσυνδέθηκε από το $2",
-    "description": "$1 is name of the name and $2 represents the dapp name`"
   },
   "discover": {
     "message": "Ανακαλύψτε"
@@ -2573,11 +2556,12 @@
     "message": "Ξεχάσατε τον κωδικό πρόσβασης;"
   },
   "forgotPasswordSocialDescription": {
-    "message": "Το MetaMask δεν μπορεί να ανακτήσει τον κωδικό πρόσβασής σας για εσάς."
+    "message": "Το MetaMask δεν μπορεί να ανακτήσει τον κωδικό πρόσβασής σας για εσάς.",
+    "description": "$1 is the support link"
   },
   "forgotPasswordSocialStep1": {
     "message": "Αν είστε συνδεδεμένοι στο MetaMask σε μια συσκευή με $1 (όπως Face ID), μπορείτε να επαναφέρετε τον κωδικό πρόσβασής σας από εκεί.",
-    "description": "$1 is bold biometrics turned on"
+    "description": "$1 is bold heading"
   },
   "forgotPasswordSocialStep1Biometrics": {
     "message": "ενεργοποιημένα βιομετρικά στοιχεία"
@@ -4411,9 +4395,6 @@
     "message": "Μάθετε πώς να ακυρώσετε ή να επιταχύνετε μια συναλλαγή.",
     "description": "The text for the hyperlink in the pending transaction alert message"
   },
-  "permissionDetails": {
-    "message": "Λεπτομέρειες άδειας χρήσης"
-  },
   "permissionFor": {
     "message": "Άδεια για"
   },
@@ -4717,10 +4698,6 @@
   "pleaseConfirm": {
     "message": "Παρακαλούμε επιβεβαιώστε"
   },
-  "plusMore": {
-    "message": "+ $1 ακόμη",
-    "description": "$1 is the number of additional items"
-  },
   "plusXMore": {
     "message": "+ $1 ακόμη",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
@@ -4941,12 +4918,6 @@
   "rateIncludesMMFee": {
     "message": "Περιλαμβάνει προμήθεια $1% στο MM."
   },
-  "reAddAccounts": {
-    "message": "προσθέστε εκ νέου οποιουσδήποτε άλλους λογαριασμούς"
-  },
-  "reAdded": {
-    "message": "προστέθηκαν εκ νέου"
-  },
   "readdToken": {
     "message": "Μπορείτε να προσθέσετε ξανά αυτό το token στο μέλλον επιλέγοντας \"Εισαγωγή token\" στο μενού επιλογών των λογαριασμών σας."
   },
@@ -5103,33 +5074,6 @@
   },
   "resetWallet": {
     "message": "Επαναφορά του πορτοφολιού σας"
-  },
-  "resetWalletSubHeader": {
-    "message": "Το MetaMask δεν κρατά αντίγραφο του κωδικού πρόσβασής σας. Εάν δεν μπορείτε να ξεκλειδώσετε τον λογαριασμό σας, θα πρέπει να επαναφέρετε το πορτοφόλι σας. Μπορείτε να το κάνετε με το να εισαγάγετε την Μυστική Φράση Ανάκτησής σας, την οποία χρησιμοποιήσατε όταν δημιουργήσατε το πορτοφόλι σας."
-  },
-  "resetWalletSubHeaderSocial": {
-    "message": "Το MetaMask δεν διατηρεί αντίγραφο του κωδικού πρόσβασής σας. Εάν δεν μπορείτε να ξεκλειδώσετε τον λογαριασμό σας, θα πρέπει να επαναφέρετε το πορτοφόλι σας. Αν έχετε την Μυστική Φράση Ανάκτησης, μπορείτε να τη χρησιμοποιήσετε για να διαγράψετε το τρέχον πορτοφόλι από αυτήν τη συσκευή, μαζί με τη λίστα των λογαριασμών σας."
-  },
-  "resetWalletUsingSRP": {
-    "message": "Αυτή η ενέργεια θα διαγράψει το τρέχον πορτοφόλι σας και την Μυστική Φράση Ανάκτησής σας από αυτή τη συσκευή μαζί με τη λίστα λογαριασμών που χειρίζεστε. Αφού κάνετε επαναφορά με την Μυστική Φράση Ανάκτησής σας, θα δείτε μια λίστα με λογαριασμούς με βάση τη Μυστική Φράση Ανάκτησης που χρησιμοποιήσατε για την επαναφορά. Αυτή η νέα λίστα θα περιλαμβάνει αυτόματα λογαριασμούς που έχουν κάποιο υπόλοιπο. Θα μπορείτε επίσης να $1 που δημιουργήθηκε προηγουμένως. Οι προσαρμοσμένοι λογαριασμοί που έχετε εισαγάγει θα χρειαστεί να είναι $2, και κάθε προσαρμοσμένο token που προσθέσατε στον λογαριασμό θα πρέπει επίσης να $3."
-  },
-  "resetWalletUsingSRPSocial": {
-    "message": "Αφού επαναφέρετε το πορτοφόλι σας με τη Μυστική Φράση Ανάκτησης, θα δείτε μια νέα λίστα λογαριασμών. Αυτή η λίστα θα περιλαμβάνει λογαριασμούς που έχουν υπόλοιπο. Μπορείτε να $1 είχατε δημιουργήσει στο παρελθόν. Ωστόσο, θα χρειαστεί να προσθέσετε ξανά οποιουσδήποτε $2 και $3 που είχατε εισαγάγει.  "
-  },
-  "resetWalletUsingSRPSocialAccounts": {
-    "message": "προσθέσετε ξανά οποιουσδήποτε άλλους λογαριασμούς"
-  },
-  "resetWalletUsingSRPSocialCustomAccounts": {
-    "message": "προσαρμοσμένους λογαριασμούς"
-  },
-  "resetWalletUsingSRPSocialCustomTokens": {
-    "message": "προσαρμοσμένα token"
-  },
-  "resetWalletWarning": {
-    "message": "Βεβαιωθείτε ότι χρησιμοποιείτε τη σωστή Μυστική Φράση Ανάκτησης πριν συνεχίσετε. Αυτή η ενέργεια είναι μη αναστρέψιμη."
-  },
-  "resetWalletWarningSocial": {
-    "message": "Βεβαιωθείτε ότι χρησιμοποιείτε τη σωστή Μυστική Φράση Ανάκτησης πριν κάνετε επαναφορά. Αυτή η ενέργεια δεν μπορεί να αναιρεθεί."
   },
   "resolutionProtocol": {
     "message": "Η διεύθυνση επιλύθηκε μέσω $1",
