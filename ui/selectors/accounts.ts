@@ -42,15 +42,12 @@ export function isNonEvmAccount(account: InternalAccount) {
   );
 }
 
-export const getInternalAccounts = createSelector(
-  (state: AccountsState) =>
-    Object.values(state.metamask.internalAccounts.accounts),
-  (accounts) => accounts,
-);
+export const getInternalAccountsObject = (state: AccountsState) =>
+  state.metamask.internalAccounts.accounts;
 
-export const getInternalAccountsObject = createSelector(
-  (state: AccountsState) => state.metamask.internalAccounts.accounts,
-  (internalAccounts) => internalAccounts,
+export const getInternalAccounts = createSelector(
+  getInternalAccountsObject,
+  (accounts) => Object.values(accounts),
 );
 
 export const getMemoizedInternalAccountByAddress = createSelector(
