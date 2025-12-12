@@ -137,6 +137,7 @@ export const ONBOARDING_METAMETRICS = '/onboarding/metametrics';
 export const ONBOARDING_ACCOUNT_EXIST = '/onboarding/account-exist';
 export const ONBOARDING_ACCOUNT_NOT_FOUND = '/onboarding/account-not-found';
 export const ONBOARDING_DOWNLOAD_APP_ROUTE = '/onboarding/download-app';
+export const ONBOARDING_MPC_ROUTE = '/onboarding/mpc';
 export const NONEVM_BALANCE_CHECK_ROUTE = '/nonevm-balance-check';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
@@ -599,6 +600,11 @@ export const ROUTES = [
   {
     path: ONBOARDING_ACCOUNT_NOT_FOUND,
     label: 'Onboarding Account Not Found',
+    trackInAnalytics: false,
+  },
+  {
+    path: ONBOARDING_MPC_ROUTE,
+    label: 'Onboarding MPC',
     trackInAnalytics: false,
   },
   // Additional routes

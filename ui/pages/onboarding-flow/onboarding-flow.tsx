@@ -30,6 +30,7 @@ import {
   SECURITY_ROUTE,
   ONBOARDING_REVEAL_SRP_ROUTE,
   ONBOARDING_DOWNLOAD_APP_ROUTE,
+  ONBOARDING_MPC_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   getCompletedOnboarding,
@@ -89,6 +90,7 @@ import AccountExist from './account-exist/account-exist';
 import AccountNotFound from './account-not-found/account-not-found';
 import RevealRecoveryPhrase from './recovery-phrase/reveal-recovery-phrase';
 import OnboardingDownloadApp from './download-app/download-app';
+import MpcPage from './mpc';
 
 type OnboardingFlowProps = {
   navigate?: NavigateFunction;
@@ -383,6 +385,7 @@ export default function OnboardingFlow({
             path={ONBOARDING_DOWNLOAD_APP_ROUTE}
             element={<OnboardingDownloadApp />}
           />
+          <Route path={ONBOARDING_MPC_ROUTE} element={<MpcPage />} />
           {
             ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
           }

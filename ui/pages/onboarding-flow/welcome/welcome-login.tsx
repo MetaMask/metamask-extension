@@ -17,7 +17,10 @@ import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/module
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { setTermsOfUseLastAgreed } from '../../../store/actions';
 import { useTheme } from '../../../hooks/useTheme';
-import { ONBOARDING_WELCOME_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ONBOARDING_WELCOME_ROUTE,
+  ONBOARDING_MPC_ROUTE,
+} from '../../../helpers/constants/routes';
 import LoginOptions from './login-options';
 import { LOGIN_OPTION, LOGIN_TYPE, LoginOptionType, LoginType } from './types';
 
@@ -163,6 +166,15 @@ export default function WelcomeLogin({
               {isSeedlessOnboardingFeatureEnabled
                 ? t('onboardingImportWallet')
                 : t('onboardingSrpImport')}
+            </Button>
+            <Button
+              data-testid="onboarding-mpc-wallet"
+              variant={ButtonVariant.Secondary}
+              size={ButtonSize.Lg}
+              block
+              onClick={() => navigate(ONBOARDING_MPC_ROUTE)}
+            >
+              MPC Wallet Demo
             </Button>
           </Box>
         )}
