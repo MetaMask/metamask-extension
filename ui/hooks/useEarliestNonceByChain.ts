@@ -22,7 +22,7 @@ export function useEarliestNonceByChain(
     const nonceMap: Record<string, number> = {};
 
     transactionGroups.forEach((txGroup) => {
-      const nonce = txGroup.nonce;
+      const { nonce } = txGroup;
       const chainId = txGroup.initialTransaction?.chainId;
 
       if (nonce && chainId) {
