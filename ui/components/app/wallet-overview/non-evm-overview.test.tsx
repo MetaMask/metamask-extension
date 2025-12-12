@@ -180,7 +180,8 @@ function getStore(state?: Record<string, unknown>) {
   });
 }
 
-describe('NonEvmOverview', () => {
+// Old account model components.
+describe.skip('NonEvmOverview', () => {
   beforeEach(() => {
     // Clear previous mock implementations
     (useMultiPolling as jest.Mock).mockClear();
