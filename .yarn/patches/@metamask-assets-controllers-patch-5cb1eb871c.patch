@@ -1,0 +1,34 @@
+diff --git a/dist/token-prices-service/codefi-v2.cjs b/dist/token-prices-service/codefi-v2.cjs
+index 49af7c70a2f05d6587d960a227a724084333a942..9671aa607a195a1efa71d99f5a1a226fa4293e64 100644
+--- a/dist/token-prices-service/codefi-v2.cjs
++++ b/dist/token-prices-service/codefi-v2.cjs
+@@ -192,6 +192,8 @@ exports.SUPPORTED_CURRENCIES = [
+     'nom',
+     // Avalanche
+     'avax',
++    // Ape
++    'ape',
+ ];
+ /**
+  * Represents the zero address, commonly used as a placeholder in blockchain transactions.
+@@ -259,6 +261,7 @@ exports.SPOT_PRICES_SUPPORT_INFO = {
+     '0x82750': null, //'eip155:534352/slip44:60', // Scroll Mainnet - Native symbol: ETH
+     '0x4e454152': null, //'eip155:60/slip44:60', // Aurora Mainnet (Ethereum L2 on NEAR) - Native symbol: ETH
+     '0x63564c40': null, //'eip155:1666600000/slip44:1023', // Harmony Mainnet Shard 0 - Native symbol: ONE
++    '0x8173': null, //'eip155:33139/erc20:0x0000000000000000000000000000000000000000', // Apechain Mainnet - Native symbol: APE
+ };
+ /**
+  * The list of chain IDs that can be supplied in the URL for the `/spot-prices`
+diff --git a/dist/token-prices-service/codefi-v2.d.cts b/dist/token-prices-service/codefi-v2.d.cts
+index d73d74bfb34e7aa3b1a23692b45ef09e7537ea04..64731212e488817578ddbad37a210a6e1aa110f4 100644
+--- a/dist/token-prices-service/codefi-v2.d.cts
++++ b/dist/token-prices-service/codefi-v2.d.cts
+@@ -73,7 +73,7 @@ type SupportedCurrency = (typeof SUPPORTED_CURRENCIES)[number] | Uppercase<(type
+  *
+  * @see Used by {@link CodefiTokenPricesServiceV2} to validate that a given chain ID is supported by V2 of the Codefi Price API.
+  */
+-export declare const SUPPORTED_CHAIN_IDS: ("0x1" | "0x89" | "0x38" | "0x2105" | "0xa" | "0xa4b1" | "0x82750" | "0x531" | "0x8f" | "0xe708" | "0x440" | "0x1388" | "0x19" | "0x39" | "0x52" | "0x58" | "0x64" | "0x6a" | "0x80" | "0x92" | "0xfa" | "0x141" | "0x144" | "0x169" | "0x3e7" | "0x44d" | "0x504" | "0x505" | "0x2710" | "0xa4ec" | "0xa516" | "0xa86a" | "0x13c31" | "0x17dcd" | "0x518af" | "0x4e454152" | "0x63564c40")[];
++export declare const SUPPORTED_CHAIN_IDS: ("0x1" | "0x89" | "0x38" | "0x2105" | "0xa" | "0xa4b1" | "0x82750" | "0x531" | "0x8f" | "0xe708" | "0x440" | "0x1388" | "0x19" | "0x39" | "0x52" | "0x58" | "0x64" | "0x6a" | "0x80" | "0x92" | "0xfa" | "0x141" | "0x144" | "0x169" | "0x3e7" | "0x44d" | "0x504" | "0x505" | "0x2710" | "0xa4ec" | "0xa516" | "0xa86a" | "0x13c31" | "0x17dcd" | "0x518af" | "0x4e454152" | "0x63564c40" | "0x8173")[];
+ /**
+  * A chain ID that can be supplied in the URL for the `/spot-prices` endpoint,
+  * but in hexadecimal form (for consistency with how we represent chain IDs in
