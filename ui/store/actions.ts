@@ -154,6 +154,7 @@ import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { getSmartTransactionsOptInStatusInternal } from '../../shared/modules/selectors';
 import {
+  FALLBACK_LOCALE,
   fetchLocale,
   loadRelativeTimeFormatLocaleData,
 } from '../../shared/modules/i18n';
@@ -5166,17 +5167,31 @@ export function updateCurrentLocale(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => MetaMaskReduxState,
+  ) => {
     dispatch(showLoadingIndication());
 
     try {
       await loadRelativeTimeFormatLocaleData(key);
       const localeMessages = await fetchLocale(key);
+      let fallbackMessages:
+        | MetaMaskReduxState['localeMessages']['en']
+        | undefined;
+      if (key === FALLBACK_LOCALE) {
+        fallbackMessages = localeMessages;
+      } else {
+        const existingFallback = getState().localeMessages?.en;
+        if (!existingFallback) {
+          fallbackMessages = await fetchLocale(FALLBACK_LOCALE);
+        }
+      }
       const textDirection = await submitRequestToBackground<
         'rtl' | 'ltr' | 'auto'
       >('setCurrentLocale', [key]);
       switchDirection(textDirection);
-      dispatch(setCurrentLocale(key, localeMessages));
+      dispatch(setCurrentLocale(key, localeMessages, fallbackMessages));
     } catch (error) {
       dispatch(displayWarning(error));
       return;
@@ -5191,9 +5206,15 @@ export function setCurrentLocale(
   messages: {
     [translationKey: string]: { message: string; description?: string };
   },
+  fallbackMessages?: {
+    [translationKey: string]: { message: string; description?: string };
+  },
 ): PayloadAction<{
   locale: string;
   messages: {
+    [translationKey: string]: { message: string; description?: string };
+  };
+  fallbackMessages?: {
     [translationKey: string]: { message: string; description?: string };
   };
 }> {
@@ -5202,6 +5223,7 @@ export function setCurrentLocale(
     payload: {
       locale,
       messages,
+      fallbackMessages,
     },
   };
 }

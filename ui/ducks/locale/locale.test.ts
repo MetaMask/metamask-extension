@@ -2,8 +2,9 @@
 // eslint-disable-next-line import/no-restricted-paths
 import locales from '../../../app/_locales/index.json';
 import testData from '../../../test/data/mock-state.json';
+import * as actionConstants from '../../store/actionConstants';
 
-import {
+import reducer, {
   getCurrentLocale,
   getIntlLocale,
   getCurrentLocaleMessages,
@@ -76,5 +77,55 @@ describe('Locale Selectors', () => {
       };
       expect(getEnLocaleMessages(newAppState)).toBeUndefined();
     });
+  });
+});
+
+describe('localeMessages reducer', () => {
+  const baseMessages = {
+    foo: { message: 'bar' },
+  };
+
+  it('persists provided fallback messages', () => {
+    const fallback = {
+      baz: { message: 'qux' },
+    };
+    const result = reducer(undefined, {
+      type: actionConstants.SET_CURRENT_LOCALE,
+      payload: {
+        locale: 'es',
+        messages: baseMessages,
+        fallbackMessages: fallback,
+      },
+    });
+
+    expect(result.en).toStrictEqual(fallback);
+  });
+
+  it('defaults fallback to locale messages when locale is fallback', () => {
+    const result = reducer(undefined, {
+      type: actionConstants.SET_CURRENT_LOCALE,
+      payload: {
+        locale: 'en',
+        messages: baseMessages,
+      },
+    });
+
+    expect(result.en).toStrictEqual(baseMessages);
+  });
+
+  it('retains previous fallback when none provided', () => {
+    const previousState = {
+      en: { hello: { message: 'world' } },
+    };
+
+    const result = reducer(previousState, {
+      type: actionConstants.SET_CURRENT_LOCALE,
+      payload: {
+        locale: 'fr',
+        messages: baseMessages,
+      },
+    });
+
+    expect(result.en).toStrictEqual(previousState.en);
   });
 });

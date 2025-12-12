@@ -1,15 +1,18 @@
 import { Action } from 'redux'; // Import types for actions
 import * as actionConstants from '../../store/actionConstants';
-import { FALLBACK_LOCALE } from '../../../shared/modules/i18n';
+import {
+  FALLBACK_LOCALE,
+  type I18NMessageDict,
+} from '../../../shared/modules/i18n';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 
 /**
  * Type for the locale messages part of the state
  */
 type LocaleMessagesState = {
-  current?: { [key: string]: string }; // Messages for the current locale
+  current?: I18NMessageDict; // Messages for the current locale
   currentLocale?: string; // User's selected locale (unsafe for Intl API)
-  en?: { [key: string]: string }; // English locale messages
+  en?: I18NMessageDict; // English locale messages
 };
 
 /**
@@ -18,8 +21,9 @@ type LocaleMessagesState = {
 type SetCurrentLocaleAction = Action & {
   type: typeof actionConstants.SET_CURRENT_LOCALE;
   payload: {
-    messages: { [key: string]: string };
+    messages: I18NMessageDict;
     locale: string;
+    fallbackMessages?: I18NMessageDict;
   };
 };
 
@@ -46,12 +50,22 @@ export default function reduceLocaleMessages(
   action: LocaleMessagesActions,
 ): LocaleMessagesState {
   switch (action.type) {
-    case actionConstants.SET_CURRENT_LOCALE:
-      return {
+    case actionConstants.SET_CURRENT_LOCALE: {
+      const { locale, messages, fallbackMessages } = action.payload;
+      const nextState: LocaleMessagesState = {
         ...state,
-        current: action.payload.messages,
-        currentLocale: action.payload.locale,
+        current: messages,
+        currentLocale: locale,
       };
+
+      if (fallbackMessages) {
+        nextState.en = fallbackMessages;
+      } else if (locale === FALLBACK_LOCALE) {
+        nextState.en = messages;
+      }
+
+      return nextState;
+    }
     default:
       return state;
   }
@@ -95,7 +109,7 @@ export const getIntlLocale = createDeepEqualSelector(
  */
 export const getCurrentLocaleMessages = (
   state: AppState,
-): Record<string, string> | undefined => state.localeMessages.current;
+): I18NMessageDict | undefined => state.localeMessages.current;
 
 /**
  * This selector returns the English locale messages.
@@ -105,4 +119,4 @@ export const getCurrentLocaleMessages = (
  */
 export const getEnLocaleMessages = (
   state: AppState,
-): Record<string, string> | undefined => state.localeMessages.en;
+): I18NMessageDict | undefined => state.localeMessages.en;
