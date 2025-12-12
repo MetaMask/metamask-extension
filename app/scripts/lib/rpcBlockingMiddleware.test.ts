@@ -1,7 +1,7 @@
+import type { WalletMiddlewareContext } from '@metamask/eth-json-rpc-middleware';
 import type { Json, JsonRpcRequest, JsonRpcResponse } from '@metamask/utils';
 import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
 import createRpcBlockingMiddleware from './rpcBlockingMiddleware';
-import { WalletMiddlewareContext } from '@metamask/eth-json-rpc-middleware';
 
 jest.mock('../../../shared/lib/snaps/snaps', () => ({
   isSnapPreinstalled: jest.fn(),

@@ -52,6 +52,7 @@ describe('forwardRequestToSnap', () => {
         },
         { id: ID_MOCK },
         REQUEST_MOCK,
+        CONTEXT_MOCK,
       );
 
       expect(result).toBe(INVOKE_RESULT_MOCK);

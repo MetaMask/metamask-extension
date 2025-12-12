@@ -1,9 +1,9 @@
+import { WalletMiddlewareContext } from '@metamask/eth-json-rpc-middleware';
 import type { Json, JsonRpcRequest, JsonRpcResponse } from '@metamask/utils';
 import type { Next } from '@metamask/json-rpc-engine/v2';
 import { rpcErrors } from '@metamask/rpc-errors';
 import { InternalError, SnapId } from '@metamask/snaps-sdk';
 import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
-import { WalletMiddlewareContext } from '@metamask/eth-json-rpc-middleware';
 
 type CreateRpcBlockingMiddlewareOptions = {
   /**
