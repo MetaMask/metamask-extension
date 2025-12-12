@@ -376,7 +376,7 @@ function TransactionListItemInner({
         }
       >
         {Boolean(showCancelButton || speedUpButton) && (
-          <Box paddingTop={4} className="flex gap-2">
+          <Box paddingTop={2} className="flex gap-2">
             {showCancelButton && (
               <CancelButton
                 data-testid="cancel-button"
