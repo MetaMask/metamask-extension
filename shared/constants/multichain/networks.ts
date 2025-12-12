@@ -407,3 +407,15 @@ export const SOLANA_TEST_CHAINS: CaipChainId[] = [
   SolScope.Testnet,
   SolScope.Devnet,
 ];
+
+export const SOLANA_CHAINS: CaipChainId[] = [
+  MultichainNetworks.SOLANA,
+  MultichainNetworks.SOLANA_TESTNET,
+  MultichainNetworks.SOLANA_DEVNET,
+];
+
+export const TRON_CHAINS: CaipChainId[] = [
+  MultichainNetworks.TRON,
+  MultichainNetworks.TRON_NILE,
+  MultichainNetworks.TRON_SHASTA,
+];

@@ -199,7 +199,11 @@ import {
   TraceOperation,
 } from '../../shared/lib/trace';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
-import { MultichainNetworks } from '../../shared/constants/multichain/networks';
+import {
+  MultichainNetworks,
+  SOLANA_CHAINS,
+  TRON_CHAINS,
+} from '../../shared/constants/multichain/networks';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
@@ -1808,89 +1812,32 @@ export default class MetamaskController extends EventEmitter {
       getAuthorizedScopesByOrigin,
     );
 
-    // wallet_notify for solana accountChanged when permission changes
-    this.controllerMessenger.subscribe(
-      `${this.permissionController.name}:stateChange`,
-      async (currentValue, previousValue) => {
-        const origins = uniq([...previousValue.keys(), ...currentValue.keys()]);
-        origins.forEach((origin) => {
-          const previousCaveatValue = previousValue.get(origin);
-          const currentCaveatValue = currentValue.get(origin);
-
-          const previousSolanaAccountChangedNotificationsEnabled = Boolean(
-            previousCaveatValue?.sessionProperties?.[
-              KnownSessionProperties.SolanaAccountChangedNotifications
-            ],
-          );
-          const currentSolanaAccountChangedNotificationsEnabled = Boolean(
-            currentCaveatValue?.sessionProperties?.[
-              KnownSessionProperties.SolanaAccountChangedNotifications
-            ],
-          );
-
-          if (
-            !previousSolanaAccountChangedNotificationsEnabled &&
-            !currentSolanaAccountChangedNotificationsEnabled
-          ) {
-            return;
-          }
-
-          const previousSolanaCaipAccountIds = previousCaveatValue
-            ? getPermittedAccountsForScopes(previousCaveatValue, [
-                MultichainNetworks.SOLANA,
-                MultichainNetworks.SOLANA_DEVNET,
-                MultichainNetworks.SOLANA_TESTNET,
-              ])
-            : [];
-          const previousNonUniqueSolanaHexAccountAddresses =
-            previousSolanaCaipAccountIds.map((caipAccountId) => {
-              const { address } = parseCaipAccountId(caipAccountId);
-              return address;
-            });
-          const previousSolanaHexAccountAddresses = uniq(
-            previousNonUniqueSolanaHexAccountAddresses,
-          );
-          const [previousSelectedSolanaAccountAddress] =
-            this.sortMultichainAccountsByLastSelected(
-              previousSolanaHexAccountAddresses,
-            );
-
-          const currentSolanaCaipAccountIds = currentCaveatValue
-            ? getPermittedAccountsForScopes(currentCaveatValue, [
-                MultichainNetworks.SOLANA,
-                MultichainNetworks.SOLANA_DEVNET,
-                MultichainNetworks.SOLANA_TESTNET,
-              ])
-            : [];
-          const currentNonUniqueSolanaHexAccountAddresses =
-            currentSolanaCaipAccountIds.map((caipAccountId) => {
-              const { address } = parseCaipAccountId(caipAccountId);
-              return address;
-            });
-          const currentSolanaHexAccountAddresses = uniq(
-            currentNonUniqueSolanaHexAccountAddresses,
-          );
-          const [currentSelectedSolanaAccountAddress] =
-            this.sortMultichainAccountsByLastSelected(
-              currentSolanaHexAccountAddresses,
-            );
-
-          if (
-            previousSelectedSolanaAccountAddress !==
-            currentSelectedSolanaAccountAddress
-          ) {
-            this._notifyMultichainAccountChange(
-              origin,
-              currentSelectedSolanaAccountAddress
-                ? [currentSelectedSolanaAccountAddress]
-                : [],
-              MultichainNetworks.SOLANA,
-            );
-          }
-        });
+    const multichainAccountChangedConfigs = [
+      {
+        network: MultichainNetworks.SOLANA,
+        chains: SOLANA_CHAINS,
+        notificationProperty:
+          KnownSessionProperties.SolanaAccountChangedNotifications,
+        accountType: SolAccountType.DataAccount,
+        getLastSelectedAccountAddress: () => lastSelectedSolanaAccountAddress,
+        setLastSelectedAccountAddress: (address) => {
+          lastSelectedSolanaAccountAddress = address;
+        },
       },
-      getAuthorizedScopesByOrigin,
-    );
+      ///: BEGIN:ONLY_INCLUDE_IF(tron)
+      {
+        network: MultichainNetworks.TRON,
+        chains: TRON_CHAINS,
+        notificationProperty:
+          KnownSessionProperties.TronAccountChangedNotifications,
+        accountType: TrxAccountType.Eoa,
+        getLastSelectedAccountAddress: () => lastSelectedTronAccountAddress,
+        setLastSelectedAccountAddress: (address) => {
+          lastSelectedTronAccountAddress = address;
+        },
+      },
+      ///: END:ONLY_INCLUDE_IF
+    ];
 
     // TODO: To be removed when state 2 is fully transitioned.
     // wallet_notify for solana accountChanged when selected account changes
@@ -1912,11 +1859,7 @@ export default class MetamaskController extends EventEmitter {
           // returns a map of origins to permitted solana accounts
           const solanaAccounts = getPermittedAccountsForScopesByOrigin(
             this.permissionController.state,
-            [
-              MultichainNetworks.SOLANA,
-              MultichainNetworks.SOLANA_DEVNET,
-              MultichainNetworks.SOLANA_TESTNET,
-            ],
+            SOLANA_CHAINS,
           );
 
           if (solanaAccounts.size > 0) {
@@ -1942,7 +1885,57 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
-    // wallet_notify for solana accountChanged when selected account group changes
+    // wallet_notify for multichain accountChanged when permission changes
+    this.controllerMessenger.subscribe(
+      `${this.permissionController.name}:stateChange`,
+      async (currentValue, previousValue) => {
+        const origins = uniq([...previousValue.keys(), ...currentValue.keys()]);
+        multichainAccountChangedConfigs.forEach(
+          ({ chains, notificationProperty, network }) => {
+            origins.forEach((origin) => {
+              const previousCaveatValue = previousValue.get(origin);
+              const currentCaveatValue = currentValue.get(origin);
+
+              const notificationsEnabled =
+                Boolean(
+                  previousCaveatValue?.sessionProperties?.[
+                    notificationProperty
+                  ],
+                ) ||
+                Boolean(
+                  currentCaveatValue?.sessionProperties?.[notificationProperty],
+                );
+
+              if (!notificationsEnabled) {
+                return;
+              }
+
+              const previousSelectedAddress =
+                this._getSelectedMultichainAccountAddress(
+                  previousCaveatValue,
+                  chains,
+                );
+              const currentSelectedAddress =
+                this._getSelectedMultichainAccountAddress(
+                  currentCaveatValue,
+                  chains,
+                );
+
+              if (previousSelectedAddress !== currentSelectedAddress) {
+                this._notifyMultichainAccountChange(
+                  origin,
+                  currentSelectedAddress ? [currentSelectedAddress] : [],
+                  network,
+                );
+              }
+            });
+          },
+        );
+      },
+      getAuthorizedScopesByOrigin,
+    );
+
+    // wallet_notify for multichain accountChanged when selected account group changes
     this.controllerMessenger.subscribe(
       `${this.accountTreeController.name}:selectedAccountGroupChange`,
       (groupId) => {
@@ -1954,241 +1947,65 @@ export default class MetamaskController extends EventEmitter {
           groupId,
         );
 
-        const [account] =
-          this.accountTreeController.getAccountsFromSelectedAccountGroup({
-            scopes: [SolScope.Mainnet],
-          });
-        if (
-          account &&
-          account.type === SolAccountType.DataAccount &&
-          account.address !== lastSelectedSolanaAccountAddress
-        ) {
-          lastSelectedSolanaAccountAddress = account.address;
+        multichainAccountChangedConfigs.forEach(
+          ({
+            network,
+            accountType,
+            notificationProperty,
+            chains,
+            getLastSelectedAccountAddress,
+            setLastSelectedAccountAddress,
+          }) => {
+            const [account] =
+              this.accountTreeController.getAccountsFromSelectedAccountGroup({
+                scopes: [network],
+              });
 
-          const originsWithSolanaAccountChangedNotifications =
-            getOriginsWithSessionProperty(
-              this.permissionController.state,
-              KnownSessionProperties.SolanaAccountChangedNotifications,
-            );
-
-          // returns a map of origins to permitted solana accounts
-          const solanaAccounts = getPermittedAccountsForScopesByOrigin(
-            this.permissionController.state,
-            [
-              MultichainNetworks.SOLANA,
-              MultichainNetworks.SOLANA_DEVNET,
-              MultichainNetworks.SOLANA_TESTNET,
-            ],
-          );
-
-          for (const [origin, accounts] of solanaAccounts.entries()) {
-            const parsedSolanaAddresses = accounts.map((caipAccountId) => {
-              const { address } = parseCaipAccountId(caipAccountId);
-              return address;
-            });
+            const lastSelectedAccountAddress =
+              getLastSelectedAccountAddress?.();
 
             if (
-              parsedSolanaAddresses.includes(account.address) &&
-              originsWithSolanaAccountChangedNotifications[origin]
+              !account ||
+              account.type !== accountType ||
+              account.address === lastSelectedAccountAddress
             ) {
-              this._notifyMultichainAccountChange(
-                origin,
-                [account.address],
-                MultichainNetworks.SOLANA,
-              );
+              return;
             }
-          }
-        }
-      },
-    );
 
-    ///: BEGIN:ONLY_INCLUDE_IF(tron)
-    // wallet_notify for tron accountChanged when permission changes
-    this.controllerMessenger.subscribe(
-      `${this.permissionController.name}:stateChange`,
-      async (currentValue, previousValue) => {
-        const origins = uniq([...previousValue.keys(), ...currentValue.keys()]);
-        origins.forEach((origin) => {
-          const previousCaveatValue = previousValue.get(origin);
-          const currentCaveatValue = currentValue.get(origin);
+            setLastSelectedAccountAddress?.(account.address);
 
-          const previousTronAccountChangedNotificationsEnabled = Boolean(
-            previousCaveatValue?.sessionProperties?.[
-              KnownSessionProperties.TronAccountChangedNotifications
-            ],
-          );
-          const currentTronAccountChangedNotificationsEnabled = Boolean(
-            currentCaveatValue?.sessionProperties?.[
-              KnownSessionProperties.TronAccountChangedNotifications
-            ],
-          );
-
-          if (
-            !previousTronAccountChangedNotificationsEnabled &&
-            !currentTronAccountChangedNotificationsEnabled
-          ) {
-            return;
-          }
-
-          const previousTronCaipAccountIds = previousCaveatValue
-            ? getPermittedAccountsForScopes(previousCaveatValue, [
-                MultichainNetworks.TRON,
-                MultichainNetworks.TRON_SHASTA,
-                MultichainNetworks.TRON_NILE,
-              ])
-            : [];
-          const previousNonUniqueTronHexAccountAddresses =
-            previousTronCaipAccountIds.map((caipAccountId) => {
-              const { address } = parseCaipAccountId(caipAccountId);
-              return address;
-            });
-          const previousTronHexAccountAddresses = uniq(
-            previousNonUniqueTronHexAccountAddresses,
-          );
-          const [previousSelectedTronAccountAddress] =
-            this.sortMultichainAccountsByLastSelected(
-              previousTronHexAccountAddresses,
-            );
-
-          const currentTronCaipAccountIds = currentCaveatValue
-            ? getPermittedAccountsForScopes(currentCaveatValue, [
-                MultichainNetworks.TRON,
-                MultichainNetworks.TRON_SHASTA,
-                MultichainNetworks.TRON_NILE,
-              ])
-            : [];
-          const currentNonUniqueTronHexAccountAddresses =
-            currentTronCaipAccountIds.map((caipAccountId) => {
-              const { address } = parseCaipAccountId(caipAccountId);
-              return address;
-            });
-          const currentTronHexAccountAddresses = uniq(
-            currentNonUniqueTronHexAccountAddresses,
-          );
-          const [currentSelectedTronAccountAddress] =
-            this.sortMultichainAccountsByLastSelected(
-              currentTronHexAccountAddresses,
-            );
-
-          if (
-            previousSelectedTronAccountAddress !==
-            currentSelectedTronAccountAddress
-          ) {
-            this._notifyMultichainAccountChange(
-              origin,
-              currentSelectedTronAccountAddress
-                ? [currentSelectedTronAccountAddress]
-                : [],
-              MultichainNetworks.TRON,
-            );
-          }
-        });
-      },
-      getAuthorizedScopesByOrigin,
-    );
-
-    // TODO: To be removed when state 2 is fully transitioned.
-    // wallet_notify for tron accountChanged when selected account changes
-    this.controllerMessenger.subscribe(
-      `${this.accountsController.name}:selectedAccountChange`,
-      async (account) => {
-        if (
-          account.type === TrxAccountType.Eoa &&
-          account.address !== lastSelectedTronAccountAddress
-        ) {
-          lastSelectedTronAccountAddress = account.address;
-
-          const originsWithTronAccountChangedNotifications =
-            getOriginsWithSessionProperty(
-              this.permissionController.state,
-              KnownSessionProperties.TronAccountChangedNotifications,
-            );
-
-          // returns a map of origins to permitted tron accounts
-          const tronAccounts = getPermittedAccountsForScopesByOrigin(
-            this.permissionController.state,
-            [
-              MultichainNetworks.TRON,
-              MultichainNetworks.TRON_SHASTA,
-              MultichainNetworks.TRON_NILE,
-            ],
-          );
-
-          for (const [origin, accounts] of tronAccounts.entries()) {
-            const parsedTronAddresses = accounts.map((caipAccountId) => {
-              const { address } = parseCaipAccountId(caipAccountId);
-              return address;
-            });
-
-            if (
-              parsedTronAddresses.includes(account.address) &&
-              originsWithTronAccountChangedNotifications[origin]
-            ) {
-              this._notifyMultichainAccountChange(
-                origin,
-                [account.address],
-                MultichainNetworks.TRON,
+            const originsWithAccountChangedNotifications =
+              getOriginsWithSessionProperty(
+                this.permissionController.state,
+                notificationProperty,
               );
-            }
-          }
-        }
-      },
-    );
 
-    // wallet_notify for tron accountChanged when selected account group changes
-    this.controllerMessenger.subscribe(
-      `${this.accountTreeController.name}:selectedAccountGroupChange`,
-      () => {
-        const [account] =
-          this.accountTreeController.getAccountsFromSelectedAccountGroup({
-            scopes: [TrxScope.Mainnet],
-          });
-        if (
-          account &&
-          account.type === TrxAccountType.Eoa &&
-          account.address !== lastSelectedTronAccountAddress
-        ) {
-          lastSelectedTronAccountAddress = account.address;
-
-          const originsWithTronAccountChangedNotifications =
-            getOriginsWithSessionProperty(
+            const permittedAccounts = getPermittedAccountsForScopesByOrigin(
               this.permissionController.state,
-              KnownSessionProperties.TronAccountChangedNotifications,
+              chains,
             );
 
-          // returns a map of origins to permitted tron accounts
-          const tronAccounts = getPermittedAccountsForScopesByOrigin(
-            this.permissionController.state,
-            [
-              MultichainNetworks.TRON,
-              MultichainNetworks.TRON_SHASTA,
-              MultichainNetworks.TRON_NILE,
-            ],
-          );
-
-          if (tronAccounts.size > 0) {
-            for (const [origin, accounts] of tronAccounts.entries()) {
-              const parsedTronAddresses = accounts.map((caipAccountId) => {
+            for (const [origin, accounts] of permittedAccounts.entries()) {
+              const parsedAddresses = accounts.map((caipAccountId) => {
                 const { address } = parseCaipAccountId(caipAccountId);
                 return address;
               });
 
               if (
-                parsedTronAddresses.includes(account.address) &&
-                originsWithTronAccountChangedNotifications[origin]
+                parsedAddresses.includes(account.address) &&
+                originsWithAccountChangedNotifications[origin]
               ) {
                 this._notifyMultichainAccountChange(
                   origin,
                   [account.address],
-                  MultichainNetworks.TRON,
+                  network,
                 );
               }
             }
-          }
-        }
+          },
+        );
       },
     );
-    ///: END:ONLY_INCLUDE_IF
 
     // TODO: Move this logic to the SnapKeyring directly.
     // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
@@ -8961,6 +8778,27 @@ export default class MetamaskController extends EventEmitter {
       },
       API_TYPE.CAIP_MULTICHAIN,
     );
+  }
+
+  /**
+   * Gets the selected account address from a caveat value for the given scopes.
+   *
+   * @param {object|undefined} caveatValue - The caveat value from permission state.
+   * @param {string[]} scopes - Array of scope identifiers (e.g., SOLANA_CHAINS, TRON_CHAINS).
+   * @returns {string|undefined} The selected account address, or undefined if none.
+   * @private
+   */
+  _getSelectedMultichainAccountAddress(caveatValue, scopes) {
+    if (!caveatValue) {
+      return undefined;
+    }
+    const caipAccountIds = getPermittedAccountsForScopes(caveatValue, scopes);
+    const hexAddresses = uniq(
+      caipAccountIds.map(
+        (caipAccountId) => parseCaipAccountId(caipAccountId).address,
+      ),
+    );
+    return this.sortMultichainAccountsByLastSelected(hexAddresses)?.[0];
   }
 
   async _notifyMultichainAccountChange(origin, accountAddressArray, scope) {
