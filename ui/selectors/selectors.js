@@ -3441,21 +3441,26 @@ export const getUpdatedAndSortedAccounts = createDeepEqualSelector(
   getHiddenAccountsList,
   getOrderedConnectedAccountsForActiveTab,
   (accounts, pinnedAddresses, hiddenAddresses, connectedAccounts) => {
+    const connectionMetadataById = new Map();
     connectedAccounts.forEach((connection) => {
-      // Find if the connection exists in accounts
-      const matchingAccount = accounts.find(
-        (account) => account.id === connection.id,
-      );
-
-      // If a matching account is found and the connection has metadata, add the connections property to true and lastSelected timestamp from metadata
-      if (matchingAccount && connection.metadata) {
-        matchingAccount.connections = true;
-        matchingAccount.lastSelected = connection.metadata.lastSelected;
+      if (connection.metadata) {
+        connectionMetadataById.set(connection.id, {
+          connections: true,
+          lastSelected: connection.metadata.lastSelected,
+        });
       }
     });
 
+    const accountsWithMetadata = accounts.map((account) => {
+      const connectionData = connectionMetadataById.get(account.id);
+      if (connectionData) {
+        return { ...account, ...connectionData };
+      }
+      return account;
+    });
+
     // Find the account with the most recent lastSelected timestamp among accounts with metadata
-    const accountsWithLastSelected = accounts.filter(
+    const accountsWithLastSelected = accountsWithMetadata.filter(
       (account) => account.connections && account.lastSelected,
     );
 
@@ -3466,17 +3471,16 @@ export const getUpdatedAndSortedAccounts = createDeepEqualSelector(
           )
         : null;
 
-    accounts.forEach((account) => {
-      account.pinned = Boolean(pinnedAddresses.includes(account.address));
-      account.hidden = Boolean(hiddenAddresses.includes(account.address));
-      account.active = Boolean(
-        mostRecentAccount && account.id === mostRecentAccount.id,
-      );
-    });
+    const enrichedAccounts = accountsWithMetadata.map((account) => ({
+      ...account,
+      pinned: Boolean(pinnedAddresses.includes(account.address)),
+      hidden: Boolean(hiddenAddresses.includes(account.address)),
+      active: Boolean(mostRecentAccount && account.id === mostRecentAccount.id),
+    }));
 
     const sortedPinnedAccounts = pinnedAddresses
       ?.map((address) =>
-        accounts.find((account) => account.address === address),
+        enrichedAccounts.find((account) => account.address === address),
       )
       .filter((account) =>
         Boolean(
@@ -3486,13 +3490,13 @@ export const getUpdatedAndSortedAccounts = createDeepEqualSelector(
         ),
       );
 
-    const notPinnedAccounts = accounts.filter(
+    const notPinnedAccounts = enrichedAccounts.filter(
       (account) =>
         !pinnedAddresses.includes(account.address) &&
         !hiddenAddresses.includes(account.address),
     );
 
-    const filteredHiddenAccounts = accounts.filter((account) =>
+    const filteredHiddenAccounts = enrichedAccounts.filter((account) =>
       hiddenAddresses.includes(account.address),
     );
 
