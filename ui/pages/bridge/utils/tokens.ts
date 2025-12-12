@@ -20,7 +20,7 @@ import { STATIC_METAMASK_BASE_URL } from '../../../../shared/constants/bridge';
 
 const MinimalAssetSchema = type({
   /**
-   * The case-sensitive assetId of the token
+   * Case-sensitive for non-EVM chains, case-insensitive for EVM chains
    */
   assetId: CaipAssetTypeStruct,
   /**

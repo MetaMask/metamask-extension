@@ -184,7 +184,8 @@ const bridgeSlice = createSlice({
       );
       if (
         isTokenInChain && state.fromToken?.address
-          ? action.meta.arg.tokenAddress === state.fromToken.address
+          ? action.meta.arg.tokenAddress.toLowerCase() ===
+            state.fromToken.address.toLowerCase()
           : true
       ) {
         state.fromTokenBalance = action.payload?.toString() ?? null;

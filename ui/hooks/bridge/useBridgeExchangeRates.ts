@@ -23,11 +23,7 @@ export const useBridgeExchangeRates = () => {
   );
 
   const cachedFromTokenExchangeRate = fromToken
-    ? exchangeRateFromMarketData(
-        fromToken.chainId,
-        fromToken.address,
-        marketData,
-      )
+    ? exchangeRateFromMarketData(fromToken.assetId, marketData)
     : undefined;
 
   // Cleanup abort controller on unmount
@@ -45,8 +41,7 @@ export const useBridgeExchangeRates = () => {
     if (fromToken && !cachedFromTokenExchangeRate) {
       dispatch(
         setSrcTokenExchangeRates({
-          chainId: fromToken.chainId,
-          tokenAddress: fromToken.address,
+          assetId: fromToken.assetId,
           currency,
           signal: fromAbortController.current.signal,
         }),
