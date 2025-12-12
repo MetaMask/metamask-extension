@@ -66,6 +66,9 @@
   "contractDeployment": {
     "message": "Nasazení kontraktu"
   },
+  "contractInteraction": {
+    "message": "Interakce s kontraktem"
+  },
   "copiedExclamation": {
     "message": "Zkopírováno!"
   },
@@ -130,6 +133,18 @@
   },
   "importAccountMsg": {
     "message": "Importované účty nebudou spojeny s vaší původní MetaMaskovou klíčovou frází. Zjistěte více o importovaných účtech "
+  },
+  "importNFT": {
+    "message": "Importovat NFT"
+  },
+  "importNFTAddressToolTip": {
+    "message": "Na OpenSea například na stránce NFT v části Details je modrá hodnota s odkazem nazvaná 'Contract Address'. Po kliknutí se otevře adresa kontraktu na Etherscan; v levém horním rohu této stránky by měla být ikona 'Contract' a napravo dlouhý řetězec písmen a číslic. To je adresa kontraktu, který vytvořil vaše NFT. Kliknutím na ikonu 'copy' napravo od adresy ji zkopírujete do schránky."
+  },
+  "importNFTPage": {
+    "message": "Stránka Importovat NFT"
+  },
+  "importNFTTokenIdToolTip": {
+    "message": "ID NFT je jedinečný identifikátor, protože žádná dvě NFT nejsou stejná. Na OpenSea je toto číslo znovu pod 'Details'. Zapište si ho nebo zkopírujte do schránky."
   },
   "imported": {
     "message": "Importováno",
@@ -233,6 +248,9 @@
   "readdToken": {
     "message": "Tento token můžete v budoucnu přidat zpět s „Přidat token“ v nastavení účtu."
   },
+  "received": {
+    "message": "Přijato"
+  },
   "reject": {
     "message": "Odmítnout"
   },
@@ -264,6 +282,17 @@
   "send": {
     "message": "Odeslat"
   },
+  "sent": {
+    "message": "Odesláno"
+  },
+  "sentSpecifiedTokens": {
+    "message": "Odesláno $1",
+    "description": "Symbol konkrétního tokenu"
+  },
+  "sentTokenAsToken": {
+    "message": "Odesláno $1 jako $2",
+    "description": "Used in the transaction display list to describe a swap and send. $1 and $2 are the symbols of tokens involved in the swap."
+  },
   "settings": {
     "message": "Nastavení"
   },
@@ -290,6 +319,14 @@
   },
   "supportCenter": {
     "message": "Navštivte naše centrum podpory"
+  },
+  "swapApproval": {
+    "message": "Schválit $1 pro swapy",
+    "description": "Used in the transaction display list to describe a swap approval transaction. $1 is the symbol of the approved token."
+  },
+  "swapTokenToToken": {
+    "message": "Vyměnit $1 za $2",
+    "description": "Used in the transaction display list to describe a swap. $1 and $2 are symbols of the tokens in the swap."
   },
   "symbolBetweenZeroTwelve": {
     "message": "Symbol musí mít 11 nebo méně znaků."
