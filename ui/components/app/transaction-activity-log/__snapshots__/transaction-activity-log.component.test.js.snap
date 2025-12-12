@@ -29,9 +29,9 @@ exports[`TransactionActivityLog Component should match snapshot 1`] = `
         >
           <div
             class="transaction-activity-log__activity-text"
-            title="Transaction created with a value of 0.01 ETH at 21:13 on 12/4/2018."
+            title="Transaction created with a value of 0.01 ETH at 22:13 on 12/4/2018."
           >
-            Transaction created with a value of 0.01 ETH at 21:13 on 12/4/2018.
+            Transaction created with a value of 0.01 ETH at 22:13 on 12/4/2018.
           </div>
         </div>
       </div>
@@ -51,9 +51,9 @@ exports[`TransactionActivityLog Component should match snapshot 1`] = `
         >
           <div
             class="transaction-activity-log__activity-text"
-            title="Transaction submitted with estimated gas fee of 0.000021 ETH at 21:13 on 12/4/2018."
+            title="Transaction submitted with estimated gas fee of 0.000021 ETH at 22:13 on 12/4/2018."
           >
-            Transaction submitted with estimated gas fee of 0.000021 ETH at 21:13 on 12/4/2018.
+            Transaction submitted with estimated gas fee of 0.000021 ETH at 22:13 on 12/4/2018.
           </div>
         </div>
       </div>
@@ -73,9 +73,9 @@ exports[`TransactionActivityLog Component should match snapshot 1`] = `
         >
           <div
             class="transaction-activity-log__activity-text"
-            title="Transaction resubmitted with estimated gas fee increased to 0.000023 ETH at 21:13 on 12/4/2018"
+            title="Transaction resubmitted with estimated gas fee increased to 0.000023 ETH at 22:13 on 12/4/2018"
           >
-            Transaction resubmitted with estimated gas fee increased to 0.000023 ETH at 21:13 on 12/4/2018
+            Transaction resubmitted with estimated gas fee increased to 0.000023 ETH at 22:13 on 12/4/2018
           </div>
         </div>
       </div>
@@ -95,9 +95,9 @@ exports[`TransactionActivityLog Component should match snapshot 1`] = `
         >
           <div
             class="transaction-activity-log__activity-text"
-            title="Transaction confirmed at 21:13 on 12/4/2018."
+            title="Transaction confirmed at 22:13 on 12/4/2018."
           >
-            Transaction confirmed at 21:13 on 12/4/2018.
+            Transaction confirmed at 22:13 on 12/4/2018.
           </div>
         </div>
       </div>
