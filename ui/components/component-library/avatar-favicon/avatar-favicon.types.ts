@@ -23,9 +23,9 @@ export interface AvatarFaviconStyleUtilityProps
    */
   src?: string;
   /**
-   * The alt text for the favicon avatar to be rendered
+   * The alt text label for the favicon avatar. Defaults to `'avatar-favicon'`.
    */
-  name: string;
+  name?: string | null;
   /**
    * Props for the fallback icon. All Icon props can be used
    */

@@ -2,6 +2,11 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 
+jest.mock('../../../hooks/useI18nContext', () => ({
+  useI18nContext: jest.fn(),
+}));
+
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { IconName } from '../icon';
 import { AvatarFaviconSize } from './avatar-favicon.types';
 import { AvatarFavicon } from './avatar-favicon';
@@ -11,6 +16,30 @@ describe('AvatarFavicon', () => {
     src: './images/eth_logo.svg',
     name: 'test',
   };
+
+  const mockT = jest.fn();
+  const useI18nContextMock = useI18nContext as jest.MockedFunction<
+    typeof useI18nContext
+  >;
+
+  beforeEach(() => {
+    mockT.mockImplementation((key, substitutions = []) => {
+      if (key === 'logo') {
+        return `${substitutions?.[0]} logo`;
+      }
+
+      if (key === 'unknown') {
+        return 'Unknown';
+      }
+
+      return key;
+    });
+    useI18nContextMock.mockReturnValue(mockT);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
   it('should render correctly', () => {
     const { getByTestId, container } = render(
@@ -113,5 +142,13 @@ describe('AvatarFavicon', () => {
     expect(ref.current).not.toBeNull();
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     expect(ref.current!.nodeName).toBe('DIV');
+  });
+
+  it('should fall back to a localized alt label when name is missing', () => {
+    render(<AvatarFavicon src="./icon.svg" name={null} />);
+
+    expect(mockT).toHaveBeenCalledWith('unknown');
+    expect(mockT).toHaveBeenCalledWith('logo', ['Unknown']);
+    expect(screen.getByRole('img')).toHaveAttribute('alt', 'Unknown logo');
   });
 });

@@ -18,10 +18,33 @@ import {
   AvatarFaviconSize,
 } from './avatar-favicon.types';
 
-const Favicon = (props: { src?: string; name: string }) => {
+const UNKNOWN_FALLBACK_LABEL = 'Unknown';
+
+const Favicon = (props: { src?: string; name?: string | null }) => {
   const { src, name } = props;
   const t = useI18nContext();
   const [imageLoadError, setImageLoadError] = useState(false);
+
+  const accessibleName = (() => {
+    if (typeof name === 'string') {
+      const trimmedName = name.trim();
+      if (trimmedName.length > 0) {
+        return trimmedName;
+      }
+    }
+
+    const unknownLabel = t('unknown');
+
+    if (typeof unknownLabel === 'string') {
+      return unknownLabel;
+    }
+
+    return UNKNOWN_FALLBACK_LABEL;
+  })();
+
+  const logoAltMessage = t('logo', [accessibleName]);
+  const altText =
+    typeof logoAltMessage === 'string' ? logoAltMessage : accessibleName;
 
   useEffect(() => {
     setImageLoadError(false);
@@ -33,13 +56,13 @@ const Favicon = (props: { src?: string; name: string }) => {
 
   return imageLoadError ? (
     <div className="h-full w-full content-center bg-background-muted">
-      {getAvatarFallbackLetter(name)}
+      {getAvatarFallbackLetter(accessibleName)}
     </div>
   ) : (
     <img
       className="mm-avatar-favicon__image"
       src={src}
-      alt={t('logo', [name])}
+      alt={altText}
       onError={handleImageError}
     />
   );
@@ -63,6 +86,8 @@ export const AvatarFavicon: AvatarFaviconComponent = React.forwardRef(
     }: AvatarFaviconProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
+    const normalizedName = name ?? 'avatar-favicon';
+
     return (
       <AvatarBase
         ref={ref}
@@ -74,7 +99,7 @@ export const AvatarFavicon: AvatarFaviconComponent = React.forwardRef(
         {...{ borderColor, ...(props as AvatarBaseProps<C>) }}
       >
         {src ? (
-          <Favicon src={src} name={name} />
+          <Favicon src={src} name={normalizedName} />
         ) : (
           <Icon
             name={IconName.Global}
