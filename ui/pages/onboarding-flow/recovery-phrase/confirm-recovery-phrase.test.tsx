@@ -85,6 +85,20 @@ describe('Confirm Recovery Phrase Component', () => {
 
   const mockStore = configureMockStore([thunk])(mockState);
 
+  it('should redirect to onboarding metametrics page if seed phrase is already backed up', () => {
+    const store = configureMockStore()({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        seedPhraseBackedUp: true,
+      },
+    });
+    renderWithProvider(<ConfirmRecoveryPhrase {...props} />, store);
+
+    expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_METAMETRICS, {
+      replace: true,
+    });
+  });
   it('should have 3 recovery phrase inputs', () => {
     const { queryAllByTestId } = renderWithProvider(
       <ConfirmRecoveryPhrase {...props} />,

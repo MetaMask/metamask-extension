@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.12.2]
+
+### Fixed
+
+- Increase timeout for UI calls to background from 10s to 16s, potentially preventing UI crash on very slow devices (#38561)
+- Improve error message when UI can't retrieve state from background process (#38564)
+
 ## [13.12.1]
 
 ### Fixed
@@ -1397,7 +1404,8 @@ authorized by the user.` error until the user fully revoked dapp
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.12.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.12.2...HEAD
+[13.12.2]: https://github.com/MetaMask/metamask-extension/compare/v13.12.1...v13.12.2
 [13.12.1]: https://github.com/MetaMask/metamask-extension/compare/v13.12.0...v13.12.1
 [13.12.0]: https://github.com/MetaMask/metamask-extension/compare/v13.11.2...v13.12.0
 [13.11.2]: https://github.com/MetaMask/metamask-extension/compare/v13.11.1...v13.11.2

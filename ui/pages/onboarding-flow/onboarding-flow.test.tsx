@@ -176,7 +176,9 @@ describe('Onboarding Flow', () => {
       ONBOARDING_ROUTE,
     );
 
-    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+      replace: true,
+    });
   });
 
   describe('Create Password', () => {

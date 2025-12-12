@@ -4,6 +4,7 @@ import {
   PAYMENT_TYPES,
   PRODUCT_TYPES,
   StartSubscriptionRequest,
+  Subscription,
   UpdatePaymentMethodOpts,
 } from '@metamask/subscription-controller';
 import {
@@ -28,6 +29,7 @@ import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { fetchSwapsFeatureFlags } from '../../../../ui/pages/swaps/swaps.util';
 import { SwapsControllerState } from '../../controllers/swaps/swaps.types';
 import {
+  formatCaptureShieldPaymentMethodChangeEventProps,
   getSubscriptionRequestTrackingProps,
   getUserAccountTypeAndCategory,
   getUserBalanceCategory,
@@ -36,6 +38,13 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { SECOND } from '../../../../shared/constants/time';
+import {
+  getIsShieldSubscriptionActive,
+  getIsShieldSubscriptionPaused,
+  getShieldSubscription,
+} from '../../../../shared/lib/shield';
+import { SHIELD_ERROR } from '../../../../shared/modules/shield';
 import {
   SubscriptionServiceAction,
   SubscriptionServiceEvent,
@@ -43,6 +52,9 @@ import {
   SERVICE_NAME,
   ServiceName,
 } from './types';
+
+const SUBSCRIPTION_POLL_INTERVAL = 5 * SECOND;
+const SUBSCRIPTION_POLL_TIMEOUT = 60 * SECOND;
 
 export class SubscriptionService {
   // Required for modular initialisation.
@@ -137,7 +149,11 @@ export class SubscriptionService {
   async startSubscriptionWithCard(
     params: StartSubscriptionRequest,
     currentTabId?: number,
+    subscriptionPollInterval?: number,
+    subscriptionPollTimeout?: number,
   ) {
+    const currentShieldSubscription =
+      await this.#getCurrentShieldSubscription();
     try {
       const redirectUrl = this.#webAuthenticator.getRedirectURL();
 
@@ -169,10 +185,15 @@ export class SubscriptionService {
         }
       }
 
-      const subscriptions = await this.#messenger.call(
-        'SubscriptionController:getSubscriptions',
+      // Poll subscriptions until active or paused subscription is created (stripe webhook may be delayed)
+      const subscriptions = await this.#pollForSubscription(
+        subscriptionPollInterval,
+        subscriptionPollTimeout,
       );
-      this.trackSubscriptionRequestEvent('completed');
+      this.#trackSubscriptionRequestEvent(
+        'completed',
+        currentShieldSubscription,
+      );
 
       // Track the shield opt in rewards event if the reward account id and reward points are provided
       if (rewardAccountId) {
@@ -182,11 +203,21 @@ export class SubscriptionService {
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
-      this.trackSubscriptionRequestEvent('failed', undefined, {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        error_message: errorMessage,
-      });
+      this.#trackSubscriptionRequestEvent(
+        'failed',
+        currentShieldSubscription,
+        undefined,
+        {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          error_message: errorMessage,
+        },
+      );
+
+      // fetch latest subscriptions to update the state in case subscription already created error (not when polling timed out)
+      if (errorMessage.toLocaleLowerCase().includes('already exists')) {
+        await this.#messenger.call('SubscriptionController:getSubscriptions');
+      }
       throw error;
     }
   }
@@ -278,57 +309,6 @@ export class SubscriptionService {
     }
   }
 
-  /**
-   * Track the subscription request event.
-   *
-   * @param requestStatus - The request status.
-   * @param transactionMeta - The transaction meta (for crypto subscription requests).
-   * @param extrasProps - The extra properties.
-   */
-  trackSubscriptionRequestEvent(
-    requestStatus: 'started' | 'completed' | 'failed',
-    transactionMeta?: TransactionMeta,
-    extrasProps?: Record<string, Json>,
-  ) {
-    if (
-      transactionMeta &&
-      transactionMeta.type !== TransactionType.shieldSubscriptionApprove
-    ) {
-      return;
-    }
-
-    const subscriptionControllerState = this.#messenger.call(
-      'SubscriptionController:getState',
-    );
-    const appStateControllerState = this.#messenger.call(
-      'AppStateController:getState',
-    );
-    const {
-      defaultSubscriptionPaymentOptions,
-      shieldSubscriptionMetricsProps,
-    } = appStateControllerState;
-
-    const accountTypeAndCategory = this.#getAccountTypeAndCategoryForMetrics();
-
-    const trackingProps = getSubscriptionRequestTrackingProps(
-      subscriptionControllerState,
-      defaultSubscriptionPaymentOptions,
-      shieldSubscriptionMetricsProps,
-      transactionMeta,
-    );
-
-    this.#messenger.call('MetaMetricsController:trackEvent', {
-      event: MetaMetricsEventName.ShieldSubscriptionRequest,
-      category: MetaMetricsEventCategory.Shield,
-      properties: {
-        ...accountTypeAndCategory,
-        ...trackingProps,
-        ...extrasProps,
-        status: requestStatus,
-      },
-    });
-  }
-
   async #openAndWaitForTabToClose(params: { url: string; successUrl: string }) {
     const openedTab = await this.#platform.openTab({ url: params.url });
 
@@ -365,7 +345,7 @@ export class SubscriptionService {
           if (succeeded) {
             resolve();
           } else {
-            reject(new Error('Tab action failed'));
+            reject(new Error(SHIELD_ERROR.tabActionFailed));
           }
         }
       };
@@ -373,17 +353,62 @@ export class SubscriptionService {
     });
   }
 
+  /**
+   * Poll for active subscription until one is found or timeout.
+   * This is needed because Stripe webhook may be delayed after card payment.
+   *
+   * @param interval
+   * @param timeout
+   * @returns Promise<Subscription[]> - The subscriptions when an active one is found.
+   */
+  async #pollForSubscription(
+    interval: number = SUBSCRIPTION_POLL_INTERVAL,
+    timeout: number = SUBSCRIPTION_POLL_TIMEOUT,
+  ): Promise<Subscription[]> {
+    const startTime = Date.now();
+
+    while (Date.now() - startTime < timeout) {
+      const subscriptions = await this.#messenger.call(
+        'SubscriptionController:getSubscriptions',
+      );
+
+      if (
+        getIsShieldSubscriptionActive(subscriptions) ||
+        getIsShieldSubscriptionPaused(subscriptions)
+      ) {
+        return subscriptions;
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, interval));
+    }
+
+    throw new Error(SHIELD_ERROR.subscriptionPollingTimedOut);
+  }
+
   async #handleShieldSubscriptionApproveTransaction(txMeta: TransactionMeta) {
     const { isGasFeeSponsored, chainId } = txMeta;
     const bundlerSupported = await isSendBundleSupported(chainId);
     const isSponsored = Boolean(isGasFeeSponsored && bundlerSupported);
+    const currentShieldSubscription =
+      await this.#getCurrentShieldSubscription();
+    const isCurrentShieldSubscriptionActive = getIsShieldSubscriptionActive(
+      currentShieldSubscription ?? [],
+    );
 
     try {
-      this.trackSubscriptionRequestEvent('started', txMeta, {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        has_sufficient_crypto_balance: true,
-      });
+      if (!isCurrentShieldSubscriptionActive) {
+        // If there is no active subscription, we can assume this is a new/renew subscription request
+        this.#trackSubscriptionRequestEvent(
+          'started',
+          currentShieldSubscription,
+          txMeta,
+          {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            has_sufficient_crypto_balance: true,
+          },
+        );
+      }
 
       const rewardAccountId = await this.#getRewardCaipAccountId();
 
@@ -394,20 +419,53 @@ export class SubscriptionService {
         rewardAccountId,
       );
 
-      this.trackSubscriptionRequestEvent('completed', txMeta, {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        gas_sponsored: isSponsored || false,
-      });
+      if (currentShieldSubscription && isCurrentShieldSubscriptionActive) {
+        // If there is an active subscription, we can assume this is a Payment Method Change request
+        this.#trackPaymentMethodChangeRequestEvent(
+          'succeeded',
+          currentShieldSubscription,
+          txMeta,
+        );
+      } else {
+        // If there is no active subscription, we can assume this is a new/renew subscription request
+        this.#trackSubscriptionRequestEvent(
+          'completed',
+          currentShieldSubscription,
+          txMeta,
+          {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            gas_sponsored: isSponsored || false,
+          },
+        );
+      }
     } catch (error) {
       log.error('Error on Shield subscription approval transaction', error);
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
-      this.trackSubscriptionRequestEvent('failed', txMeta, {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        error_message: errorMessage,
-      });
+      if (currentShieldSubscription && isCurrentShieldSubscriptionActive) {
+        // If there is an active subscription, we can assume this is a Payment Method Change request
+        this.#trackPaymentMethodChangeRequestEvent(
+          'failed',
+          currentShieldSubscription,
+          txMeta,
+          {
+            error: errorMessage,
+          },
+        );
+      } else {
+        // If there is no active subscription, we can assume this is a new/renew subscription request
+        this.#trackSubscriptionRequestEvent(
+          'failed',
+          currentShieldSubscription,
+          txMeta,
+          {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            error_message: errorMessage,
+          },
+        );
+      }
       throw error;
     }
   }
@@ -613,6 +671,104 @@ export class SubscriptionService {
     }
   }
 
+  /**
+   * Track the subscription request event.
+   *
+   * @param requestStatus - The request status.
+   * @param currentShieldSubscription - The current Shield subscription (before making new subscription request).
+   * @param transactionMeta - The transaction meta (for crypto subscription requests).
+   * @param extrasProps - The extra properties.
+   */
+  #trackSubscriptionRequestEvent(
+    requestStatus: 'started' | 'completed' | 'failed',
+    currentShieldSubscription?: Subscription,
+    transactionMeta?: TransactionMeta,
+    extrasProps?: Record<string, Json>,
+  ) {
+    if (
+      transactionMeta &&
+      transactionMeta.type !== TransactionType.shieldSubscriptionApprove
+    ) {
+      return;
+    }
+
+    const subscriptionControllerState = this.#messenger.call(
+      'SubscriptionController:getState',
+    );
+    const appStateControllerState = this.#messenger.call(
+      'AppStateController:getState',
+    );
+    const {
+      defaultSubscriptionPaymentOptions,
+      shieldSubscriptionMetricsProps,
+    } = appStateControllerState;
+
+    const accountTypeAndCategory = this.#getAccountTypeAndCategoryForMetrics();
+
+    const trackingProps = getSubscriptionRequestTrackingProps(
+      subscriptionControllerState,
+      currentShieldSubscription || subscriptionControllerState.lastSubscription,
+      defaultSubscriptionPaymentOptions,
+      shieldSubscriptionMetricsProps,
+      transactionMeta,
+    );
+
+    this.#messenger.call('MetaMetricsController:trackEvent', {
+      event: MetaMetricsEventName.ShieldSubscriptionRequest,
+      category: MetaMetricsEventCategory.Shield,
+      properties: {
+        ...accountTypeAndCategory,
+        ...trackingProps,
+        ...extrasProps,
+        status: requestStatus,
+      },
+    });
+  }
+
+  /**
+   * Track the subscription payment method change request event.
+   *
+   * @param changeStatus - The change status.
+   * @param previousSubscription - The previous active subscription (before the payment method change request).
+   * @param transactionMeta - The transaction meta (for crypto subscription requests).
+   * @param extrasProps - The extra properties.
+   */
+  #trackPaymentMethodChangeRequestEvent(
+    changeStatus: 'succeeded' | 'failed',
+    previousSubscription: Subscription,
+    transactionMeta?: TransactionMeta,
+    extrasProps?: Record<string, Json>,
+  ) {
+    if (
+      transactionMeta &&
+      transactionMeta.type !== TransactionType.shieldSubscriptionApprove
+    ) {
+      return;
+    }
+
+    const subscriptionControllerState = this.#messenger.call(
+      'SubscriptionController:getState',
+    );
+
+    const accountTypeAndCategory = this.#getAccountTypeAndCategoryForMetrics();
+    const trackingProps = formatCaptureShieldPaymentMethodChangeEventProps(
+      subscriptionControllerState,
+      previousSubscription,
+      transactionMeta,
+    );
+
+    this.#messenger.call('MetaMetricsController:trackEvent', {
+      event: MetaMetricsEventName.ShieldPaymentMethodChange,
+      category: MetaMetricsEventCategory.Shield,
+      properties: {
+        ...accountTypeAndCategory,
+        ...trackingProps,
+        ...extrasProps,
+        status: changeStatus,
+      },
+    });
+  }
+
   #trackShieldOptInRewardsEvent(
     rewardsOptInType: 'create_new_subscription' | 'link_existing_subscription',
     rewardPoints?: number,
@@ -647,5 +803,12 @@ export class SubscriptionService {
         rewards_opt_in_type: rewardsOptInType,
       },
     });
+  }
+
+  async #getCurrentShieldSubscription(): Promise<Subscription | undefined> {
+    const subscriptions = await this.#messenger.call(
+      'SubscriptionController:getSubscriptions',
+    );
+    return getShieldSubscription(subscriptions);
   }
 }

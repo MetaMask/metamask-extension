@@ -128,7 +128,7 @@ jobs:
           path: ${{ env.HTML_REPORT_PATH }}
 
       - name: Upload html report to S3
-        uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
+        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
@@ -170,7 +170,7 @@ jobs:
           path: ${{ env.HTML_REPORT_PATH }}
 
       - name: Upload html report to S3
-        uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
+        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}

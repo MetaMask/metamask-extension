@@ -792,7 +792,7 @@ const TransactionShield = () => {
               {billingDetails(
                 t('shieldTxMembershipBillingDetailsCharges'),
                 isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)
-                  ? `${getProductPrice(productInfo as Product)} ${displayedShieldSubscription.paymentMethod.crypto.tokenSymbol.toUpperCase()} (${displayedShieldSubscription.interval === RECURRING_INTERVALS.year ? t('shieldPlanAnnual') : t('shieldPlanMonthly')})`
+                  ? `${getProductPrice(productInfo as Product)} ${displayedShieldSubscription.paymentMethod.crypto.tokenSymbol} (${displayedShieldSubscription.interval === RECURRING_INTERVALS.year ? t('shieldPlanAnnual') : t('shieldPlanMonthly')})`
                   : `${formatCurrency(
                       getProductPrice(productInfo as Product),
                       productInfo?.currency.toUpperCase(),

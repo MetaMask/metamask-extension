@@ -35,7 +35,6 @@ import {
   UNLOCK_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
   ONBOARDING_ROUTE,
-  CONNECTIONS,
   PERMISSIONS,
   REVIEW_PERMISSIONS,
   SNAPS_ROUTE,
@@ -279,13 +278,6 @@ const ReviewGatorPermissionsPage = mmLazy(
       '../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'
     )) as unknown as DynamicImportType,
 );
-const Connections = mmLazy(
-  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
-  (() =>
-    import(
-      '../../components/multichain/pages/connections/index.js'
-    )) as unknown as DynamicImportType,
-);
 
 const Home = mmLazy(
   (() => import('../home/index.js')) as unknown as DynamicImportType,
@@ -370,9 +362,6 @@ export default function Routes() {
   const theme = useAppSelector(getTheme);
   const showExtensionInFullSizeView = useAppSelector(
     getShowExtensionInFullSizeView,
-  );
-  const forgottenPassword = useAppSelector(
-    (state) => state.metamask.forgottenPassword,
   );
   const isAccountMenuOpen = useAppSelector(
     (state) => state.appState.isAccountMenuOpen,
@@ -517,7 +506,6 @@ export default function Routes() {
         path: RESTORE_VAULT_ROUTE,
         component: RestoreVaultPage,
         layout: LegacyLayout,
-        initialized: !forgottenPassword,
       }),
       createRouteWithLayout({
         path: SMART_ACCOUNT_UPDATE,
@@ -564,13 +552,13 @@ export default function Routes() {
       createRouteWithLayout({
         path: SNAPS_ROUTE,
         component: SnapList,
-        layout: LegacyLayout,
+        layout: RootLayout,
         authenticated: true,
       }),
       createRouteWithLayout({
         path: `${SNAPS_VIEW_ROUTE}/*`,
         component: SnapView,
-        layout: LegacyLayout,
+        layout: RootLayout,
         authenticated: true,
       }),
       createRouteWithLayout({
@@ -661,12 +649,6 @@ export default function Routes() {
         path: `${DEFI_ROUTE}/:chainId/:protocolId`,
         component: DeFiPage,
         layout: RootLayout,
-        authenticated: true,
-      }),
-      createRouteWithLayout({
-        path: `${CONNECTIONS}/:origin`,
-        component: Connections,
-        layout: LegacyLayout,
         authenticated: true,
       }),
       createRouteWithLayout({
@@ -778,7 +760,7 @@ export default function Routes() {
         authenticated: true,
       }),
     ],
-    [forgottenPassword],
+    [],
   );
 
   // Use useRoutes hook to render routes - called on every render to track location changes

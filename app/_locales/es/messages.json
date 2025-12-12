@@ -943,9 +943,6 @@
   "bridgeEnterAmount": {
     "message": "Seleccione el monto"
   },
-  "bridgeEnterAmountAndSelectAccount": {
-    "message": "Ingrese el monto y seleccione la cuenta de destino"
-  },
   "bridgeExplorerLinkViewOn": {
     "message": "Ver en $1"
   },
@@ -1467,9 +1464,6 @@
   "connectWithMetaMask": {
     "message": "Conectarse con MetaMask"
   },
-  "connectedAccounts": {
-    "message": "Cuentas conectadas"
-  },
   "connectedAccountsDescriptionPlural": {
     "message": "Tiene $1 cuentas conectadas a este sitio.",
     "description": "$1 is the number of accounts"
@@ -1483,9 +1477,6 @@
   "connectedAccountsListTooltip": {
     "message": "$1 puede ver el saldo de la cuenta, la dirección, la actividad y sugerir transacciones para aprobar para las cuentas conectadas.",
     "description": "$1 is the origin name"
-  },
-  "connectedAccountsToast": {
-    "message": "Se actualizaron las cuentas conectadas"
   },
   "connectedSites": {
     "message": "Sitios conectados"
@@ -2018,14 +2009,6 @@
   },
   "disconnectThisAccount": {
     "message": "Desconectar esta cuenta"
-  },
-  "disconnectedAllAccountsToast": {
-    "message": "Todas las cuentas desconectadas de $1",
-    "description": "$1 is name of the dapp`"
-  },
-  "disconnectedSingleAccountToast": {
-    "message": "$1 desconectada de $2",
-    "description": "$1 is name of the name and $2 represents the dapp name`"
   },
   "discover": {
     "message": "Descubrir"
@@ -2573,11 +2556,12 @@
     "message": "¿Olvidaste tu contraseña?"
   },
   "forgotPasswordSocialDescription": {
-    "message": "MetaMask no puede recuperar tu contraseña por ti."
+    "message": "MetaMask no puede recuperar tu contraseña por ti.",
+    "description": "$1 is the support link"
   },
   "forgotPasswordSocialStep1": {
     "message": "Si has iniciado sesión en MetaMask en un dispositivo con $1 (como Face ID), puedes restablecer tu contraseña allí.",
-    "description": "$1 is bold biometrics turned on"
+    "description": "$1 is bold heading"
   },
   "forgotPasswordSocialStep1Biometrics": {
     "message": "la biometría activada"
@@ -4411,9 +4395,6 @@
     "message": "Aprenda a cancelar o acelerar una transacción.",
     "description": "The text for the hyperlink in the pending transaction alert message"
   },
-  "permissionDetails": {
-    "message": "Detalles del permiso"
-  },
   "permissionFor": {
     "message": "Permiso para"
   },
@@ -4717,10 +4698,6 @@
   "pleaseConfirm": {
     "message": "Confirmar"
   },
-  "plusMore": {
-    "message": "+ $1 más",
-    "description": "$1 is the number of additional items"
-  },
   "plusXMore": {
     "message": "+ $1 más",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
@@ -4941,12 +4918,6 @@
   "rateIncludesMMFee": {
     "message": "Incluye la tarifa MM de $1 %."
   },
-  "reAddAccounts": {
-    "message": "volver a agregar cualquier otra cuenta"
-  },
-  "reAdded": {
-    "message": "agregada nuevamente"
-  },
   "readdToken": {
     "message": "Puede volver a agregar este token en el futuro desde “Agregar token” en el menú de opciones de las cuentas."
   },
@@ -5103,33 +5074,6 @@
   },
   "resetWallet": {
     "message": "Restablece tu billetera"
-  },
-  "resetWalletSubHeader": {
-    "message": "MetaMask no guarda una copia de su contraseña. Si tiene problemas para desbloquear su cuenta, deberá restablecer su monedero. Puede hacerlo proporcionando la frase secreta de recuperación que utilizó cuando configuró su monedero."
-  },
-  "resetWalletSubHeaderSocial": {
-    "message": "MetaMask no guarda una copia de tu contraseña. Si tienes problemas para desbloquear tu cuenta, tendrás que restablecer tu billetera. Si tienes una frase secreta de recuperación, puedes usarla para borrar tu billetera actual de este dispositivo, junto con la lista de tus cuentas."
-  },
-  "resetWalletUsingSRP": {
-    "message": "Esta acción eliminará su monedero actual y la frase secreta de recuperación de este dispositivo, junto con la lista de cuentas que ha seleccionado. Después de restablecer con una frase secreta de recuperación, verá una lista de cuentas basada en la frase secreta de recuperación que usa para restablecer. Esta nueva lista incluirá automáticamente las cuentas que tengan saldo. También podrá $1 creado anteriormente. Las cuentas personalizadas que haya importado deberán costar $2, y cualquier token personalizado que haya agregado a una cuenta también deberá costar $3."
-  },
-  "resetWalletUsingSRPSocial": {
-    "message": "Después de restablecer con una frase secreta de recuperación, verás una nueva lista de cuentas. Esta lista incluirá las cuentas con saldo. Puedes $1 que hayas generado anteriormente, pero tendrás que volver a agregar los $2 y $3 que hayas importado. "
-  },
-  "resetWalletUsingSRPSocialAccounts": {
-    "message": "volver a agregar cualquier otra cuenta"
-  },
-  "resetWalletUsingSRPSocialCustomAccounts": {
-    "message": "cuentas personalizadas"
-  },
-  "resetWalletUsingSRPSocialCustomTokens": {
-    "message": "tokens personalizados"
-  },
-  "resetWalletWarning": {
-    "message": "Asegúrese de usar la frase secreta de recuperación correcta antes de continuar. No podrá deshacer esto."
-  },
-  "resetWalletWarningSocial": {
-    "message": "Asegúrate de usar la frase secreta de recuperación correcta antes de restablecer. Esto no se puede deshacer."
   },
   "resolutionProtocol": {
     "message": "Dirección resuelta mediante $1",

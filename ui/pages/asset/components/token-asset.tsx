@@ -25,7 +25,7 @@ import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { getTokenList, selectERC20TokensByChain } from '../../../selectors';
 import { showModal } from '../../../store/actions';
-import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
+import { getAssetDetailsAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
@@ -112,7 +112,7 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
 
   const blockExplorerLink = isEvm
     ? tokenTrackerLink
-    : getMultichainAccountUrl(
+    : getAssetDetailsAccountUrl(
         parseCaipAssetType(address as CaipAssetType).assetReference,
         multichainNetwork,
       );

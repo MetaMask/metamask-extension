@@ -6,21 +6,25 @@ import {
   RecurringInterval,
   Subscription,
   SubscriptionControllerState,
-  SubscriptionStatus,
 } from '@metamask/subscription-controller';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { KeyringObject } from '@metamask/keyring-controller';
 import { Json } from '@metamask/utils';
 import {
   EntryModalSourceEnum,
+  ShieldSubscriptionRequestSubscriptionStateEnum,
   ShieldUserAccountCategoryEnum,
   ShieldUserAccountTypeEnum,
 } from '../../constants/subscriptions';
-import { getShieldSubscription } from '../../lib/shield';
+import { getSubscriptionPaymentData } from '../../lib/shield';
 import { KeyringType } from '../../constants/keyring';
 import {
   DefaultSubscriptionPaymentOptions,
+  ExistingSubscriptionEventParams,
   ShieldSubscriptionMetricsPropsFromUI,
 } from '../../types';
 // eslint-disable-next-line import/no-restricted-paths
@@ -36,14 +40,6 @@ export function getBillingIntervalForMetrics(interval: RecurringInterval) {
 
 export function getBillingCyclesForMetrics(interval: RecurringInterval) {
   return interval === 'month' ? '12' : '1';
-}
-
-export function getLatestSubscriptionStatus(
-  subscriptions: Subscription[],
-  lastSubscription: Subscription | undefined,
-): SubscriptionStatus | undefined {
-  const currentShieldSubscription = getShieldSubscription(subscriptions);
-  return currentShieldSubscription?.status || lastSubscription?.status;
 }
 
 export function getUserAccountType(
@@ -151,10 +147,37 @@ export function getShieldMarketingTrackingProps(
   return marketingProps;
 }
 
+export function formatExistingSubscriptionEventProps(
+  params: ExistingSubscriptionEventParams,
+): Record<string, Json> {
+  const selectedBillingInterval = getBillingIntervalForMetrics(
+    params.billingInterval,
+  );
+
+  return {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    subscription_status: params.subscriptionStatus,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    payment_type: params.paymentType,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    crypto_payment_chain: params.cryptoPaymentChain || null,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    crypto_payment_currency: params.cryptoPaymentCurrency || null,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    billing_interval: selectedBillingInterval,
+  };
+}
+
 /**
  * Get the tracking props for the subscription request for the Shield metrics.
  *
  * @param subscriptionControllerState - The subscription controller state.
+ * @param previousShieldSubscription - The optional previous Shield subscription (before making new subscription request).
  * @param defaultSubscriptionPaymentOptions - The default subscription payment options.
  * @param shieldSubscriptionMetricsProps - The Shield subscription metrics properties.
  * @param transactionMeta
@@ -162,16 +185,13 @@ export function getShieldMarketingTrackingProps(
  */
 export function getSubscriptionRequestTrackingProps(
   subscriptionControllerState: SubscriptionControllerState,
+  previousShieldSubscription?: Subscription,
   defaultSubscriptionPaymentOptions?: DefaultSubscriptionPaymentOptions,
   shieldSubscriptionMetricsProps?: ShieldSubscriptionMetricsPropsFromUI,
   transactionMeta?: TransactionMeta,
 ): Record<string, Json> {
-  const {
-    lastSelectedPaymentMethod,
-    trialedProducts,
-    subscriptions,
-    lastSubscription,
-  } = subscriptionControllerState;
+  const { lastSelectedPaymentMethod, trialedProducts } =
+    subscriptionControllerState;
 
   if (!lastSelectedPaymentMethod?.shield) {
     // This should never happen, since this function is only called after the user has selected a payment method for the Shield subscription
@@ -197,8 +217,9 @@ export function getSubscriptionRequestTrackingProps(
   );
   const paymentChain = transactionMeta?.chainId;
 
-  const latestSubscriptionStatus =
-    getLatestSubscriptionStatus(subscriptions, lastSubscription) || 'none';
+  const subscriptionRequestState = previousShieldSubscription
+    ? ShieldSubscriptionRequestSubscriptionStateEnum.Renew
+    : ShieldSubscriptionRequestSubscriptionStateEnum.New;
 
   return {
     ...getShieldMarketingTrackingProps(
@@ -213,7 +234,7 @@ export function getSubscriptionRequestTrackingProps(
     ),
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    subscription_state: latestSubscriptionStatus,
+    subscription_state: subscriptionRequestState,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     default_payment_type: defaultPaymentType,
@@ -249,6 +270,68 @@ export function getSubscriptionRequestTrackingProps(
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     is_trial: !isTrialed,
+  };
+}
+
+/**
+ * Format the properties for the Shield payment method change event.
+ *
+ * @param subscriptionControllerState - The subscription controller state.
+ * @param previousSubscription - The previous subscription (before the payment method change request).
+ * @param transactionMeta - The transaction meta for crypto payment change requests.
+ * @returns The formatted properties.
+ */
+export function formatCaptureShieldPaymentMethodChangeEventProps(
+  subscriptionControllerState: SubscriptionControllerState,
+  previousSubscription: Subscription,
+  transactionMeta?: TransactionMeta,
+): Record<string, Json> {
+  const { lastSelectedPaymentMethod } = subscriptionControllerState;
+
+  if (!lastSelectedPaymentMethod?.shield) {
+    // This should never happen, since this function is only called after the user has selected a payment method for the Shield subscription
+    throw new Error('Last selected payment method is not set');
+  }
+
+  const {
+    paymentType,
+    billingInterval,
+    cryptoPaymentChain,
+    cryptoPaymentCurrency,
+  } = getSubscriptionPaymentData(previousSubscription);
+
+  const existingSubscriptionEventProps = formatExistingSubscriptionEventProps({
+    subscriptionStatus: previousSubscription.status,
+    paymentType,
+    billingInterval,
+    cryptoPaymentChain,
+    cryptoPaymentCurrency,
+  });
+  const newBillingInterval = getBillingIntervalForMetrics(
+    lastSelectedPaymentMethod.shield.plan,
+  );
+  const newPaymentType =
+    transactionMeta?.type === TransactionType.shieldSubscriptionApprove
+      ? PAYMENT_TYPES.byCrypto
+      : PAYMENT_TYPES.byCard;
+  const newCryptoPaymentChain = transactionMeta?.chainId;
+  const newPaymentCurrency =
+    lastSelectedPaymentMethod.shield.paymentTokenSymbol || 'USD';
+
+  return {
+    ...existingSubscriptionEventProps,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    new_payment_type: newPaymentType,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    new_billing_interval: newBillingInterval,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    new_crypto_payment_chain: newCryptoPaymentChain || null,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    new_payment_currency: newPaymentCurrency,
   };
 }
 

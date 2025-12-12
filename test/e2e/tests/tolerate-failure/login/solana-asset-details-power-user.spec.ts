@@ -2,14 +2,13 @@ import { generateWalletState } from '../../../../../app/scripts/fixtures/generat
 import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
 import { WITH_STATE_POWER_USER } from '../../../benchmarks/constants';
 import { withFixtures } from '../../../helpers';
-import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
 import AssetListPage from '../../../page-objects/pages/home/asset-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import NetworkManager from '../../../page-objects/pages/network-manager';
 import { Driver } from '../../../webdriver/driver';
 
 import { setupTimerReporting } from '../utils/testSetup';
 import Timers from '../../../../timers/Timers';
+import LoginPage from '../../../page-objects/pages/login-page';
 
 const SOL_TOKEN_ADDRESS = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
 describe('Power user persona', function () {
@@ -38,16 +37,15 @@ describe('Power user persona', function () {
         disableServerMochaToBackground: true,
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await driver.navigate();
+        const loginPage = new LoginPage(driver);
+        await loginPage.checkPageIsLoaded(30000);
+        await loginPage.loginToHomepage();
         const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
+        await homePage.checkPageIsLoaded({ timeout: 30000 }); // Since here the requests are not mocked, let's wait longer
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenListIsDisplayed();
         await assetListPage.checkConversionRateDisplayed();
-        await assetListPage.openNetworksFilter();
-        const networkManager = new NetworkManager(driver);
-        await networkManager.selectNetworkByNameWithWait('Solana');
-        await homePage.checkPageIsLoaded();
         await assetListPage.checkTokenListIsDisplayed();
         await assetListPage.checkConversionRateDisplayed();
         await assetListPage.clickOnAsset('Solana');
