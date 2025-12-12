@@ -144,7 +144,11 @@ import {
   getUnapprovedTransactions,
 } from './transactions';
 // eslint-disable-next-line import/order
-import { getSelectedInternalAccount, getInternalAccounts } from './accounts';
+import {
+  getSelectedInternalAccount,
+  getInternalAccounts,
+  getInternalAccountByAddress,
+} from './accounts';
 import {
   getMultichainBalances,
   getMultichainNetworkProviders,
@@ -523,8 +527,6 @@ export const getMetaMaskAccounts = createDeepEqualSelector(
 export function getSelectedAddress(state) {
   return getSelectedInternalAccount(state)?.address;
 }
-
-export { getInternalAccountsObject } from './accounts';
 
 export function getMaybeSelectedInternalAccount(state) {
   // Same as `getSelectedInternalAccount`, but might potentially be `undefined`:

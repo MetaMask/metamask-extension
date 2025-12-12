@@ -14,7 +14,7 @@ import {
   addTransaction,
   findNetworkClientIdByChainId,
 } from '../../store/actions';
-import { getInternalAccountByAddress } from '../../selectors/accounts';
+import { getInternalAccountByAddress } from '../../selectors';
 import { encodeDisableDelegation } from '../../../shared/lib/delegation/delegation';
 import { addPendingRevocation } from '../../store/controller-actions/gator-permissions-controller';
 import { extractDelegationFromGatorPermissionContext } from './utils';

@@ -21,7 +21,7 @@ import {
   findNetworkClientIdByChainId,
 } from '../../store/actions';
 import { encodeDisableDelegation } from '../../../shared/lib/delegation/delegation';
-import { getInternalAccountByAddress } from '../../selectors/accounts';
+import { getInternalAccountByAddress } from '../../selectors';
 import {
   useRevokeGatorPermissionsMultiChain,
   RevokeGatorPermissionsMultiChainResults,
