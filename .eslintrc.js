@@ -301,6 +301,12 @@ module.exports = {
         'react/no-deprecated': 'error',
         'react/default-props-match-prop-types': 'error',
         'react/jsx-no-duplicate-props': 'error',
+        'react-hooks/exhaustive-deps': [
+          'warn',
+          {
+            additionalHooks: 'useAsync(Callback|Result|ResultOrThrow)',
+          },
+        ],
       },
       settings: {
         react: {
@@ -344,6 +350,12 @@ module.exports = {
         'react/no-children-prop': 'off',
         'react/jsx-key': 'warn', // TODO - increase this into 'error' level
         'react-hooks/rules-of-hooks': 'error',
+        'react-hooks/exhaustive-deps': [
+          'warn',
+          {
+            additionalHooks: 'useAsync(Callback|Result|ResultOrThrow)',
+          },
+        ],
       },
       settings: {
         react: {
