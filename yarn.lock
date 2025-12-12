@@ -6,7 +6,7 @@ __metadata:
   cacheKey: 10
 
 "@aashutoshrathi/word-wrap@npm:^1.2.3":
-  version: 1.2.6
+  version: 1.2.6 
   resolution: "@aashutoshrathi/word-wrap@npm:1.2.6"
   checksum: 10/6eebd12a5cd03cee38fcb915ef9f4ea557df6a06f642dfc7fe8eb4839eb5c9ca55a382f3604d52c14200b0c214c12af5e1f23d2a6d8e23ef2d016b105a9d6c0a
   languageName: node
