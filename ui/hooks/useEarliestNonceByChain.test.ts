@@ -92,4 +92,3 @@ describe('useEarliestNonceByChain', () => {
     });
   });
 });
-
