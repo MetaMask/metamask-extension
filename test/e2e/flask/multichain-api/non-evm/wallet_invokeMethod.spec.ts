@@ -7,9 +7,7 @@ import { withSolanaAccountSnap } from '../../../tests/solana/common-solana';
 import SnapTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/snap-transaction-confirmation';
 import SnapSignInConfirmation from '../../../page-objects/pages/confirmations/redesign/snap-sign-in-confirmation';
 
-// #37691 - Calling wallet_invokeMethod for signIn will fail with BIP44
-// eslint-disable-next-line mocha/no-skipped-tests
-describe.skip('Multichain API - Non EVM', function () {
+describe('Multichain API - Non EVM', function () {
   const SOLANA_SCOPE = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
   describe('Calling `wallet_invokeMethod`', function () {
     describe('signIn method', function () {
@@ -80,7 +78,7 @@ describe.skip('Multichain API - Non EVM', function () {
 
             const confirmation = new SnapTransactionConfirmation(driver);
             await confirmation.checkPageIsLoaded();
-            await confirmation.checkAccountIsDisplayed('Solana 1');
+            await confirmation.checkAccountIsDisplayed('Account 1');
             await confirmation.clickFooterConfirmButton();
 
             await driver.switchToWindowWithTitle(
