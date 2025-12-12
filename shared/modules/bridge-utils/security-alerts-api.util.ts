@@ -160,9 +160,6 @@ export function convertChainIdToBlockAidChainName(
   chainId: CaipChainId,
 ): string | null {
   const name = CHAIN_ID_TO_SECURITY_API_NAME[chainId];
-  if (name === undefined) {
-    throw new Error(`Unsupported chain ID: ${chainId}`);
-  }
   return name ?? null;
 }
 
