@@ -1,5 +1,6 @@
 import { Driver } from '../../../webdriver/driver';
 import { NETWORK_TO_NAME_MAP } from '../../../../../shared/constants/network';
+import { veryLargeDelayMs } from '../../../helpers';
 
 class AssetListPage {
   private readonly driver: Driver;
@@ -349,7 +350,6 @@ class AssetListPage {
     await this.driver.clickElement(this.importTokensButton);
     await this.driver.waitForSelector(this.importTokenModalTitle);
     await this.driver.fill(this.tokenSearchInput, tokenName);
-    await this.driver.delay(3000);
     // Wait until the token search matches 1 result to prevent flakiness with token result re-renders
     await this.waitUntilTokenSearchMatch(1);
     await this.driver.clickElement({ text: tokenName, tag: 'p' });
@@ -820,6 +820,7 @@ class AssetListPage {
       {
         timeout: this.driver.timeout,
         interval: 200,
+        stableFor: veryLargeDelayMs,
       },
     );
   }
