@@ -54,7 +54,9 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
           );
 
           // Create ERC20 approve transaction
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
           await testDapp.clickApproveTokens();
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const erc20ApproveConfirmation =
             new ERC20ApproveTransactionConfirmation(driver);
 
@@ -119,7 +121,9 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
           );
 
           // Create ERC20 approve transaction
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
           await testDapp.clickApproveTokens();
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
           const erc20ApproveConfirmation =
             new ERC20ApproveTransactionConfirmation(driver);
 
