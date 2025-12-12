@@ -28,8 +28,7 @@
     "test/integration/confirmations/transactions/increase-allowance.test.tsx": {
       "Reselect: Identity function warnings": 12,
       "Reselect: Input stability warnings": 8,
-      "warn: ⚠️ React Router Future Flag": 2,
-      "React: Act warnings (component updates not wrapped)": 1
+      "warn: ⚠️ React Router Future Flag": 2
     },
     "test/integration/confirmations/transactions/erc20-approve.test.tsx": {
       "Reselect: Identity function warnings": 12,
@@ -39,7 +38,8 @@
     "test/integration/onboarding/import-wallet.test.tsx": {
       "Reselect: Identity function warnings": 8,
       "Reselect: Input stability warnings": 6,
-      "warn: ⚠️ React Router Future Flag": 2
+      "warn: ⚠️ React Router Future Flag": 2,
+      "warn: Infura project ID not found,": 1
     },
     "test/integration/confirmations/signatures/personalSign.test.tsx": {
       "Reselect: Identity function warnings": 11,
