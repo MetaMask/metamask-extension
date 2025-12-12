@@ -51,8 +51,7 @@ export const getInternalAccounts = createSelector(
 );
 
 export const getInternalAccountByAddress = createSelector(
-  getInternalAccounts,
-  (_: AccountsState, address: string) => address,
+  [getInternalAccounts, (_, address: string) => address],
   (accounts, address) => {
     return accounts.find((account) =>
       isEqualCaseInsensitive(account.address, address),
