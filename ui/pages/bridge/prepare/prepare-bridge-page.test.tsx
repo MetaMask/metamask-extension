@@ -118,12 +118,15 @@ describe('PrepareBridgePage', () => {
           address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
           decimals: 6,
           chainId: CHAIN_IDS.MAINNET,
+          assetId: 'eip155:1/erc20:0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
         },
         toToken: {
           iconUrl: 'http://url',
           symbol: 'UNI',
           address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
           decimals: 6,
+          assetId:
+            'eip155:59144/erc20:0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
         },
         toChainId: toEvmCaipChainId(CHAIN_IDS.LINEA_MAINNET),
       },
