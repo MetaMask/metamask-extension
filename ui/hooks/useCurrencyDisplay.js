@@ -33,6 +33,22 @@ const MIN_AMOUNT_DISPLAY = `<${MIN_AMOUNT}`;
 // It set to the number of decimal places in the minimum amount.
 export const DEFAULT_PRECISION = new BigNumber(MIN_AMOUNT).decimalPlaces();
 
+const HEXADECIMAL_VALUE_REGEX = /^-?(?:0x)?[0-9a-f]+$/iu;
+
+function normalizeNonEvmInputValue(inputValue) {
+  try {
+    return new Numeric(inputValue, 10);
+  } catch (error) {
+    if (
+      typeof inputValue === 'string' &&
+      HEXADECIMAL_VALUE_REGEX.test(inputValue)
+    ) {
+      return new Numeric(inputValue, 16).toBase(10);
+    }
+    throw error;
+  }
+}
+
 function formatEthCurrencyDisplay({
   isNativeCurrency,
   isUserPreferredCurrency,
@@ -71,7 +87,7 @@ function formatNonEvmAssetCurrencyDisplay({
     // We use `Numeric` here, so we handle those amount the same way than for EVMs (it's worth
     // noting that if `inputValue` is not properly defined, the amount will be set to '0', see
     // `Numeric` constructor for that)
-    return new Numeric(inputValue, 10).toString();
+    return normalizeNonEvmInputValue(inputValue).toString();
   } else if (isUserPreferredCurrency && conversionRate) {
     const amount =
       getTokenFiatAmount(

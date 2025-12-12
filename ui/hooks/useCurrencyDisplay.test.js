@@ -220,5 +220,37 @@ describe('useCurrencyDisplay', () => {
       expect(parts.value).toStrictEqual('1');
       expect(parts.suffix).toStrictEqual('POL');
     });
+
+    it('should gracefully handle hexadecimal values on non-EVM chains', () => {
+      const state = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          completedOnboarding: true,
+          currentCurrency: 'usd',
+          currencyRates: { ETH: { conversionRate: 280.45 } },
+        },
+      };
+
+      const wrapper = ({ children }) => (
+        <Provider store={configureStore(state)}>{children}</Provider>
+      );
+
+      const hexWithoutPrefix = '6fe90e4a491400';
+
+      const { result } = renderHook(
+        () =>
+          useCurrencyDisplay(
+            hexWithoutPrefix,
+            { currency: 'ETH', hideLabel: true },
+            'solana:1',
+          ),
+        { wrapper },
+      );
+
+      const [displayValue, parts] = result.current;
+      expect(displayValue).toStrictEqual('31499970000000000');
+      expect(parts.value).toStrictEqual('31499970000000000');
+    });
   });
 });
