@@ -88,6 +88,7 @@ export async function addDappTransaction(
 
   const transactionOptions: Partial<AddTransactionOptions> = {
     actionId,
+    requestId: String(id),
     method,
     origin,
     // This is the default behaviour but specified here for clarity
