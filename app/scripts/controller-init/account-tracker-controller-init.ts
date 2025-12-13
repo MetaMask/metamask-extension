@@ -16,6 +16,8 @@ export const AccountTrackerControllerInit: ControllerInitFunction<
 
   const onboardingController = () => getController('OnboardingController');
 
+  // TODO: Fix AccountTrackerControllerMessenger type - add AccountTrackerControllerActions & AccountTrackerControllerEvents
+  // TODO: Bump @metamask/network-controller, @metamask/accounts-controller to match assets-controllers
   const controller = new AccountTrackerController({
     messenger: controllerMessenger,
     getStakedBalanceForChain: (

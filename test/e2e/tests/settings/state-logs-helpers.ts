@@ -63,6 +63,14 @@ type MinimalStateLogsJson = {
         };
       };
     };
+    syncQueue: {
+      [key: string]: [
+        {
+          address: string;
+          scopes: [];
+        },
+      ];
+    };
   };
   [key: string]: unknown;
 };
@@ -185,6 +193,7 @@ const getIgnoredKeys = (): string[] => [
   'metamask.snaps',
   'metamask.subjects',
   'metamask.verifiedSnaps',
+  'metamask.networksMetadata',
 ];
 
 const shouldIgnoreKey = (key: string, ignoredKeys: string[]): boolean => {

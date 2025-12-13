@@ -54,8 +54,12 @@ import {
   FEATURED_RPCS,
   TEST_CHAINS,
   CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP,
+  BUILT_IN_NETWORKS,
 } from '../../../../shared/constants/network';
-import { MULTICHAIN_NETWORK_TO_ACCOUNT_TYPE_NAME } from '../../../../shared/constants/multichain/networks';
+import {
+  MULTICHAIN_NETWORK_TO_ACCOUNT_TYPE_NAME,
+  MultichainNetworks,
+} from '../../../../shared/constants/multichain/networks';
 import {
   getShowTestNetworks,
   getOriginOfCurrentTab,
@@ -423,6 +427,28 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
       ? convertCaipToHexChainId(currentChainId)
       : currentChainId;
 
+    // Check if the destination network is custom (not built-in, featured, or multichain)
+    const hexChainId = chain.isEvm
+      ? convertCaipToHexChainId(chain.chainId)
+      : chain.chainId;
+
+    const isBuiltInNetwork = Object.values(BUILT_IN_NETWORKS).some(
+      (builtInNetwork) => builtInNetwork.chainId === hexChainId,
+    );
+    const isFeaturedRpc = FEATURED_RPCS.some(
+      (featuredRpc) => featuredRpc.chainId === hexChainId,
+    );
+    const isMultichainProviderConfig = Object.values(MultichainNetworks).some(
+      (multichainNetwork) =>
+        multichainNetwork === chain.chainId ||
+        (chain.isEvm
+          ? convertCaipToHexChainId(chain.chainId)
+          : chain.chainId) === multichainNetwork,
+    );
+
+    const isCustomNetwork =
+      !isBuiltInNetwork && !isFeaturedRpc && !isMultichainProviderConfig;
+
     trackEvent({
       event: MetaMetricsEventName.NavNetworkSwitched,
       category: MetaMetricsEventCategory.Network,
@@ -437,6 +463,9 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         to_network: chainIdToTrack,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        custom_network: isCustomNetwork,
       },
     });
   };

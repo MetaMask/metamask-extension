@@ -84,6 +84,7 @@ describe('MultichainAccountServiceInit', () => {
       messenger: requestMock.controllerMessenger,
       providers: expect.any(Array),
       providerConfigs: expect.any(Object),
+      config: expect.any(Object),
     });
   });
 });

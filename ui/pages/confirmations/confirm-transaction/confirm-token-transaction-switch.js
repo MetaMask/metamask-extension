@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom-v5-compat';
+import { Routes, Route } from 'react-router-dom';
 import ConfirmTransactionSwitch from '../confirm-transaction-switch';
 
 export default function ConfirmTokenTransactionSwitch() {

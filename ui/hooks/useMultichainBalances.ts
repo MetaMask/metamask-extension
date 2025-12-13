@@ -10,10 +10,10 @@ import { type InternalAccount } from '@metamask/keyring-internal-api';
 import { BigNumber } from 'bignumber.js';
 import { AssetType } from '../../shared/constants/transaction';
 import {
+  SLIP44_ASSET_NAMESPACE,
   TRON_RESOURCE_SYMBOLS_SET,
   type TronResourceSymbol,
 } from '../../shared/constants/multichain/assets';
-import type { TokenWithBalance } from '../components/app/assets/types';
 import {
   getAccountAssets,
   getAssetsMetadata,
@@ -32,17 +32,7 @@ import { useMultichainSelector } from './useMultichainSelector';
 const useNonEvmAssetsWithBalances = (
   accountId?: string,
   accountType?: InternalAccount['type'],
-): (Omit<TokenWithBalance, 'address' | 'chainId' | 'primary' | 'secondary'> & {
-  chainId: `${string}:${string}`;
-  decimals: number;
-  address: string;
-  assetId: `${string}:${string}`;
-  string: string;
-  balance: string;
-  tokenFiatAmount: number;
-  symbol: string;
-  accountType?: InternalAccount['type'];
-})[] => {
+) => {
   // non-evm tokens owned by non-evm account, includes native and non-native assets
   const assetsByAccountId = useSelector(getAccountAssets);
   const assetMetadataById = useSelector(getAssetsMetadata);
@@ -75,6 +65,7 @@ const useNonEvmAssetsWithBalances = (
           symbol: assetMetadataById[caipAssetId]?.symbol ?? '',
           assetId: caipAssetId,
           address: assetReference,
+          isNative: assetNamespace === SLIP44_ASSET_NAMESPACE,
           string: balancesByAssetId[caipAssetId]?.amount ?? '0',
           balance: balancesByAssetId[caipAssetId]?.amount ?? '0',
           decimals: assetMetadataById[caipAssetId]?.units[0]?.decimals,

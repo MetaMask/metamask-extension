@@ -36,7 +36,7 @@ const createTransactionMetricsRequest = (customProps = {}) => {
     getParticipateInMetrics: jest.fn(),
     getTokenStandardAndDetails: jest.fn(),
     getTransaction: jest.fn(),
-    provider: provider as Provider,
+    provider: provider as unknown as Provider,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     snapAndHardwareMessenger: jest.fn() as any,
@@ -49,6 +49,8 @@ const createTransactionMetricsRequest = (customProps = {}) => {
     getNetworkRpcUrl: jest.fn(),
     getFeatureFlags: jest.fn(),
     getPna25Acknowledged: jest.fn(),
+    getAddressSecurityAlertResponse: jest.fn(),
+    getSecurityAlertsEnabled: jest.fn(),
     ...customProps,
   } as TransactionMetricsRequest;
 };

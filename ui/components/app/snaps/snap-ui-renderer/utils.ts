@@ -5,6 +5,8 @@ import { sha256 } from '@noble/hashes/sha256';
 import { NonEmptyArray, bytesToHex, remove0x } from '@metamask/utils';
 import { unescape as unescapeEntities } from 'he';
 import { ChangeEvent as ReactChangeEvent } from 'react';
+import { createTheme, ThemeOptions } from '@material-ui/core/styles';
+import { MuiPickersOverrides } from '@material-ui/pickers/typings/overrides';
 import {
   BackgroundColor,
   BorderRadius,
@@ -138,6 +140,7 @@ export const FIELD_ELEMENT_TYPES = [
   'Selector',
   'AssetSelector',
   'AccountSelector',
+  'DateTimePicker',
 ];
 
 /**
@@ -183,3 +186,130 @@ export const mapSnapBorderRadiusToExtensionBorderRadius = (
       return BorderRadius.full;
   }
 };
+
+/**
+ * The MUI theme overrides for the date/time pickers to match MetaMask design system.
+ */
+export const muiPickerTheme = createTheme({
+  overrides: {
+    MuiPickersModal: {
+      dialogRoot: {
+        '& *': {
+          fontFamily: 'var(--font-family-default)',
+        },
+        backgroundColor: 'var(--color-background-default)',
+        color: 'var(--color-text-default)',
+        borderRadius: '8px',
+      },
+      withAdditionalAction: {
+        '& > button': {
+          color: 'var(--color-primary-default)',
+          fontWeight: 'var(--typography-s-body-md-medium-font-weight)',
+          fontSize: 'var(--typography-s-body-md-medium-font-size)',
+          lineHeight: 'var(--typography-s-body-md-medium-line-height)',
+          letterSpacing: 'var(--typography-s-body-md-medium-letter-spacing)',
+          textTransform: 'none',
+          '&:hover': {
+            textDecoration: 'underline',
+            textDecorationThickness: '2px',
+            textUnderlineOffset: '4px',
+            backgroundColor: 'transparent',
+          },
+        },
+      },
+      dialogAction: {
+        color: 'var(--color-primary-default)',
+      },
+    },
+    MuiPickersToolbar: {
+      toolbar: {
+        backgroundColor: 'var(--color-background-alternative)',
+      },
+    },
+    MuiPickersToolbarButton: {
+      toolbarBtn: {
+        color: 'var(--color-text-alternative)',
+      },
+    },
+    MuiPickersToolbarText: {
+      toolbarTxt: {
+        color: 'var(--color-text-alternative)',
+      },
+      toolbarBtnSelected: {
+        color: 'var(--color-text-default)',
+      },
+    },
+    MuiPickersCalendarHeader: {
+      iconButton: {
+        '&:hover': {
+          backgroundColor: 'var(--color-background-alternative-hover)',
+        },
+        color: 'var(--color-icon-alternative)',
+        backgroundColor: 'var(--color-background-alternative)',
+      },
+      dayLabel: {
+        color: 'var(--color-text-alternative)',
+      },
+    },
+    MuiPickersDay: {
+      day: {
+        color: 'var(--color-text-default)',
+      },
+      current: {
+        color: 'var(--color-primary-default)',
+      },
+      dayDisabled: {
+        color: 'var(--color-text-muted)',
+      },
+      daySelected: {
+        '&:hover': {
+          backgroundColor: 'var(--color-primary-default-hover)',
+        },
+        backgroundColor: 'var(--color-primary-default)',
+        color: 'var(--color-primary-inverse)',
+      },
+    },
+    MuiPickersClock: {
+      clock: {
+        backgroundColor: 'var(--color-background-alternative)',
+      },
+      pin: {
+        color: 'var(--color-primary-default)',
+        backgroundColor: 'var(--color-primary-default)',
+      },
+    },
+    MuiPickersClockPointer: {
+      pointer: {
+        backgroundColor: 'var(--color-primary-default)',
+      },
+      thumb: {
+        borderColor: 'var(--color-primary-default)',
+        backgroundColor: 'var(--color-primary-inverse)',
+      },
+      noPoint: {
+        backgroundColor: 'var(--color-primary-default)',
+      },
+    },
+    MuiPickersClockNumber: {
+      clockNumber: {
+        color: 'var(--color-text-default)',
+      },
+      clockNumberSelected: {
+        color: 'var(--color-primary-inverse)',
+      },
+    },
+    MuiPickersYear: {
+      root: {
+        '&:focus': {
+          color: 'var(--color-primary-default)',
+        },
+      },
+      yearSelected: {
+        color: 'var(--color-primary-default)',
+      },
+      yearDisabled: {
+        color: 'var(--color-text-muted)',
+      },
+    },
+  } as MuiPickersOverrides,
+} as ThemeOptions);

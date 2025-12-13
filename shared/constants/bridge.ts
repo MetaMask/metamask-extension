@@ -41,7 +41,7 @@ export const ALLOWED_BRIDGE_CHAIN_IDS = [
   ///: BEGIN:ONLY_INCLUDE_IF(tron)
   MultichainNetworks.TRON,
   ///: END:ONLY_INCLUDE_IF
-];
+] as const;
 
 export const ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP =
   ALLOWED_EVM_BRIDGE_CHAIN_IDS.map(toEvmCaipChainId).concat(

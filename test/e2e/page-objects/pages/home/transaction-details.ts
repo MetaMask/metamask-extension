@@ -1,5 +1,3 @@
-import { strict as assert } from 'assert';
-import { By } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
 
 class TransactionDetailsPage {
@@ -7,83 +5,58 @@ class TransactionDetailsPage {
 
   private readonly solanaExplorerUrl = 'https://solscan.io';
 
-  private readonly transactionFromToLink = (accountAddress: string) => {
-    return {
-      tag: 'a',
-      href: `${this.solanaExplorerUrl}/account/${accountAddress}`,
-    };
-  };
-
-  private readonly transactionHashLink = (txHash: string) => {
-    return {
-      tag: 'a',
-      href: `${this.solanaExplorerUrl}/tx/${txHash}`,
-    };
-  };
-
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
-  private readonly transactionDetail = {
-    text: `Status`,
-    tag: 'span',
+  private readonly amount = (amount: string) => ({
+    testId: 'transaction-list-item-primary-currency',
+    text: amount,
+  });
+
+  private readonly baseFee = (fee: string) => ({
+    testId: 'transaction-base-fee',
+    text: fee,
+  });
+
+  private readonly fromToLink = (fromToAddress: string) =>
+    `a[href='${this.solanaExplorerUrl}/account/${fromToAddress}']`;
+
+  private readonly hashLink = (txHash: string) =>
+    `a[href='${this.solanaExplorerUrl}/tx/${txHash}']`;
+
+  private readonly status = (status: string) => ({
+    tag: 'p',
+    text: status,
+  });
+
+  private readonly viewDetailsLink = {
+    tag: 'button',
+    text: 'View details',
   };
 
-  async checkTransactionStatus(status: string): Promise<void> {
-    await this.driver.waitForSelector({
-      text: status,
-      tag: 'p',
-    });
-  }
-
   async checkTransactionAmount(amount: string): Promise<void> {
-    const transactionAmount = await this.driver.findElement(
-      By.css('[data-testid="transaction-list-item-primary-currency"]'),
-    );
-    const transactionAmountText = await transactionAmount.getText();
-    assert.equal(transactionAmountText, amount);
+    await this.driver.waitForSelector(this.amount(amount));
   }
 
-  async checkTransactionNetworkFee(networkFee: string): Promise<void> {
-    const transactionAmount = await this.driver.findElement(
-      By.css('[data-testid="transaction-base-fee"]'),
-    );
-    const transactionAmountText = await transactionAmount.getText();
-    assert.equal(transactionAmountText, networkFee);
+  async checkTransactionStatus(status: string): Promise<void> {
+    await this.driver.waitForSelector(this.status(status));
+  }
+
+  async checkTransactionBaseFee(networkFee: string): Promise<void> {
+    await this.driver.waitForSelector(this.baseFee(networkFee));
   }
 
   async checkTransactionFromToLink(fromToAddress: string): Promise<void> {
-    await this.driver.waitForSelector(
-      By.css(`a[href='${this.solanaExplorerUrl}/account/${fromToAddress}']`),
-    );
+    await this.driver.waitForSelector(this.fromToLink(fromToAddress));
   }
 
   async checkTransactionHashLink(txHash: string): Promise<void> {
-    await this.driver.waitForSelector(
-      By.css(`a[href='${this.solanaExplorerUrl}/tx/${txHash}']`),
-    );
-  }
-
-  async checkAmountTransaction(amount: string): Promise<void> {
-    await this.driver.waitForSelector({
-      text: amount,
-      tag: 'p',
-    });
-  }
-
-  async checkNetworkFeeTransaction(amount: string): Promise<void> {
-    await this.driver.waitForSelector({
-      text: amount,
-      tag: 'p',
-    });
+    await this.driver.waitForSelector(this.hashLink(txHash));
   }
 
   async checkTransactionViewDetailsLink(): Promise<void> {
-    await this.driver.waitForSelector({
-      text: 'View details',
-      tag: 'button',
-    });
+    await this.driver.waitForSelector(this.viewDetailsLink);
   }
 }
 

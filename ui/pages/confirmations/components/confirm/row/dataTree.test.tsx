@@ -5,7 +5,7 @@ import {
   permitSignatureMsg,
 } from '../../../../../../test/data/confirmations/typed_sign';
 import mockState from '../../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../../store/store';
 
 import { DataTree } from './dataTree';

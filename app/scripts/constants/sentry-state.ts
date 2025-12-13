@@ -384,6 +384,9 @@ export const SENTRY_BACKGROUND_STATE = {
     lastFetchedBlockNumbers: false,
     methodData: false,
   },
+  TransactionPayController: {
+    transactionData: false,
+  },
   TxController: {
     transactions: false,
   },
