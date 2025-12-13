@@ -324,13 +324,12 @@ export function useTransactionDisplayData(transactionGroup) {
       prefix = '-';
     }
   } else if (type === TransactionType.swapApproval) {
-    title = t('swapApproval', [
+    const swapApprovalTokenSymbol =
       bridgeTokenDisplayData.sourceTokenSymbol ??
-        primaryTransaction.sourceTokenSymbol,
-    ]);
-    primarySuffix =
-      bridgeTokenDisplayData.sourceTokenSymbol ??
-      primaryTransaction.sourceTokenSymbol;
+      primaryTransaction.sourceTokenSymbol ??
+      t('token');
+    title = t('swapApproval', [swapApprovalTokenSymbol]);
+    primarySuffix = swapApprovalTokenSymbol;
   } else if (type === TransactionType.tokenMethodApprove) {
     prefix = '';
     title = t('approveSpendingCap', [
