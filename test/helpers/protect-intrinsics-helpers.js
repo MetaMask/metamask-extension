@@ -6,7 +6,7 @@ module.exports = {
 };
 
 /**
- * Gets the global intrinsic property names in a locked down environemnt.
+ * Gets the global intrinsic property names in a locked down environment.
  *
  * @returns {Set<string>} All global intrinsic property names.
  */
