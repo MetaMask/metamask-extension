@@ -305,7 +305,7 @@ describe('DataDeletionService', () => {
           .times(MAX_CONSECUTIVE_FAILURES)
           .replyWithError('Failed to fetch');
         // This interceptor should not be used
-        const successfullCallScope = mockDataDeletionInterceptor().reply(
+        const successfulCallScope = mockDataDeletionInterceptor().reply(
           200,
           mockResponse,
         );
@@ -338,7 +338,7 @@ describe('DataDeletionService', () => {
         ).rejects.toThrow(
           'Execution prevented because the circuit breaker is open',
         );
-        expect(successfullCallScope.isDone()).toBe(false);
+        expect(successfulCallScope.isDone()).toBe(false);
       });
 
       it('calls onBreak handler upon break', async () => {
@@ -446,7 +446,7 @@ describe('DataDeletionService', () => {
           .times(MAX_CONSECUTIVE_FAILURES + 1)
           .replyWithError('Failed to fetch');
         // This interceptor should not be used
-        const successfullCallScope = mockDataDeletionInterceptor().reply(
+        const successfulCallScope = mockDataDeletionInterceptor().reply(
           200,
           mockResponse,
         );
@@ -500,7 +500,7 @@ describe('DataDeletionService', () => {
         ).rejects.toThrow(
           'Execution prevented because the circuit breaker is open',
         );
-        expect(successfullCallScope.isDone()).toBe(false);
+        expect(successfulCallScope.isDone()).toBe(false);
       });
 
       it('recovers', async () => {
@@ -520,7 +520,7 @@ describe('DataDeletionService', () => {
         mockDataDeletionInterceptor()
           .times(MAX_CONSECUTIVE_FAILURES)
           .replyWithError('Failed to fetch');
-        // Later interceptor for successfull request after recovery
+        // Later interceptor for successful request after recovery
         mockDataDeletionInterceptor().reply(200, mockResponse);
         const dataDeletionService = new DataDeletionService({
           ...getDefaultOptions(),
@@ -854,7 +854,7 @@ describe('DataDeletionService', () => {
           .times(MAX_CONSECUTIVE_FAILURES)
           .replyWithError('Failed to fetch');
         // This interceptor should not be used
-        const successfullCallScope = mockDataDeletionStatusInterceptor(
+        const successfulCallScope = mockDataDeletionStatusInterceptor(
           mockTaskId,
         ).reply(200, mockResponse);
         const dataDeletionService = new DataDeletionService({
@@ -884,7 +884,7 @@ describe('DataDeletionService', () => {
         ).rejects.toThrow(
           'Execution prevented because the circuit breaker is open',
         );
-        expect(successfullCallScope.isDone()).toBe(false);
+        expect(successfulCallScope.isDone()).toBe(false);
       });
 
       it('calls onBreak handler upon break', async () => {
@@ -990,7 +990,7 @@ describe('DataDeletionService', () => {
           .times(MAX_CONSECUTIVE_FAILURES + 1)
           .replyWithError('Failed to fetch');
         // This interceptor should not be used
-        const successfullCallScope = mockDataDeletionStatusInterceptor(
+        const successfulCallScope = mockDataDeletionStatusInterceptor(
           mockTaskId,
         ).reply(200, mockResponse);
         const dataDeletionService = new DataDeletionService({
@@ -1041,7 +1041,7 @@ describe('DataDeletionService', () => {
         ).rejects.toThrow(
           'Execution prevented because the circuit breaker is open',
         );
-        expect(successfullCallScope.isDone()).toBe(false);
+        expect(successfulCallScope.isDone()).toBe(false);
       });
 
       it('recovers', async () => {
@@ -1064,7 +1064,7 @@ describe('DataDeletionService', () => {
         mockDataDeletionStatusInterceptor(mockTaskId)
           .times(MAX_CONSECUTIVE_FAILURES)
           .replyWithError('Failed to fetch');
-        // Later interceptor for successfull request after recovery
+        // Later interceptor for successful request after recovery
         mockDataDeletionStatusInterceptor(mockTaskId).reply(200, mockResponse);
         const dataDeletionService = new DataDeletionService({
           ...getDefaultOptions(),
