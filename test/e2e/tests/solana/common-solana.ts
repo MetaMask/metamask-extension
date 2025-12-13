@@ -177,15 +177,15 @@ export async function mockPriceApiSpotPriceSolanaUsdc(mockServer: Mockttp) {
 }
 export async function mockPriceApiNative(mockServer: Mockttp) {
   return await mockServer
-    .forGet('https://price.api.cx.metamask.io/v2/chains/1/spot-prices')
+    .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
     .withQuery({
-      tokenAddresses: '0x0000000000000000000000000000000000000000',
+      assetIds: 'eip155:1/slip44:60',
     })
     .thenCallback(() => {
       return {
         statusCode: 200,
         json: {
-          '0x0000000000000000000000000000000000000000': {
+          'eip155:1/slip44:60': {
             id: 'ethereum',
             price: 0.999117772642222,
             marketCap: 120730309.278268,
