@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import Fuse from 'fuse.js';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
@@ -9,6 +9,8 @@ import {
   Size,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+// eslint-disable-next-line import/namespace
+import { useSearchRequest } from '../../../../hooks/useSearchRequest';
 
 const getTokens = (tokenList = {}) => Object.values(tokenList);
 
@@ -64,28 +66,48 @@ export default function TokenSearch({
     setTokenSearchFuse(createTokenSearchFuse(filteredTokenList));
   }, [filteredTokenList]);
 
-  const handleSearch = (newSearchQuery) => {
-    setSearchQuery(newSearchQuery);
-    const fuseSearchResult = tokenSearchFuse.search(newSearchQuery);
-    const addressSearchResult = getTokens(filteredTokenList).filter((token) => {
-      return (
-        token.address &&
-        newSearchQuery &&
-        isEqualCaseInsensitive(token.address, newSearchQuery)
-      );
-    });
-    const results = [...addressSearchResult, ...fuseSearchResult];
-    onSearch({ newSearchQuery, results });
-  };
+  // Always call the API search hook for performance comparison
+  // eslint-disable-next-line no-unused-vars
+  const apiSearchResult = useSearchRequest({
+    chainIds: ['eip155:1'],
+    query: searchQuery,
+    limit: 50,
+  });
 
-  const clear = () => {
+  const handleSearch = useCallback(
+    (query) => {
+      setSearchQuery(query);
+
+      // Always perform local search (original behavior)
+      const startTime = performance.now();
+
+      const fuseSearchResult = tokenSearchFuse.search(query);
+      const addressSearchResult = getTokens(filteredTokenList).filter(
+        (token) =>
+          token.address &&
+          query &&
+          isEqualCaseInsensitive(token.address, query),
+      );
+      const results = [...addressSearchResult, ...fuseSearchResult];
+
+      const duration = performance.now() - startTime;
+      console.log(
+        `Local search ==== "${query}": ${duration.toFixed(2)}ms, ${results.length} results`,
+      );
+
+      onSearch({ query, results });
+    },
+    [tokenSearchFuse, filteredTokenList, onSearch],
+  );
+
+  const clear = useCallback(() => {
     setSearchQuery('');
     setSearchResults([]);
-  };
+  }, [setSearchResults]);
 
   useEffect(() => {
     clear();
-  }, [isTokenNetworkFilterEqualCurrentNetwork]);
+  }, [isTokenNetworkFilterEqualCurrentNetwork, clear]);
 
   return (
     <TextFieldSearch
