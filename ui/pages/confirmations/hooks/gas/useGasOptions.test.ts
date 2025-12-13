@@ -23,7 +23,6 @@ describe('useGasOptions', () => {
   );
 
   const mockAdvancedOption: GasOption = {
-    emoji: '⚙️',
     estimatedTime: '',
     isSelected: false,
     key: 'advanced',
@@ -34,7 +33,6 @@ describe('useGasOptions', () => {
   };
 
   const mockLowLevelOption: GasOption = {
-    emoji: '🐢',
     estimatedTime: '~1 min',
     isSelected: false,
     key: 'low',
@@ -45,7 +43,6 @@ describe('useGasOptions', () => {
   };
 
   const mockMediumLevelOption: GasOption = {
-    emoji: '🦊',
     estimatedTime: '~30 sec',
     isSelected: true,
     key: 'medium',
@@ -56,7 +53,6 @@ describe('useGasOptions', () => {
   };
 
   const mockGasPriceOption: GasOption = {
-    emoji: '⛽️',
     estimatedTime: '',
     isSelected: false,
     key: 'gasPrice',
@@ -67,7 +63,6 @@ describe('useGasOptions', () => {
   };
 
   const mockDappSuggestedOption: GasOption = {
-    emoji: '🌐',
     estimatedTime: '',
     isSelected: false,
     key: 'site_suggested',

@@ -7,11 +7,7 @@ import {
   UserFeeLevel as UserFeeLevelType,
 } from '@metamask/transaction-controller';
 import { useFeeCalculations } from '../../components/confirm/info/hooks/useFeeCalculations';
-import {
-  EMPTY_VALUE_STRING,
-  GasModalType,
-  GasOptionIcon,
-} from '../../constants/gas';
+import { EMPTY_VALUE_STRING, GasModalType } from '../../constants/gas';
 import { type GasOption } from '../../types/gas';
 import { useConfirmContext } from '../../context/confirm';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -117,7 +113,6 @@ export const useAdvancedGasFeeOption = ({
   const memoizedGasOption = useMemo(
     () => [
       {
-        emoji: GasOptionIcon.Advanced,
         estimatedTime: '',
         isSelected: isAdvancedGasFeeSelected,
         key: 'advanced',

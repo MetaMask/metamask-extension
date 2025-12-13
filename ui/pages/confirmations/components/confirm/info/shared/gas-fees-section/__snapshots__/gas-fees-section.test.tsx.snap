@@ -133,7 +133,7 @@ exports[`<GasFeesSection /> renders component for gas fees section 1`] = `
           <p
             class="mm-box mm-text mm-text--body-md mm-box--padding-inline-end-2 mm-box--color-text-alternative"
           >
-            🦊 Market
+            Market
           </p>
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-text-default"

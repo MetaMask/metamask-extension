@@ -134,4 +134,57 @@ describe('useGasFeeEstimateLevelOptions', () => {
     expect(result.current[2].key).toBe(GasFeeEstimateLevel.High);
     expect(result.current[1].isSelected).toBe(true);
   });
+
+  it('skips high option when it has the same fees as medium for FeeMarket type', () => {
+    mockUseConfirmContext.mockReturnValue({
+      currentConfirmation: {
+        id: '1',
+        networkClientId: 'mainnet',
+        userFeeLevel: 'medium',
+        gasLimitNoBuffer: '0x5208',
+        gasFeeEstimates: {
+          type: GasFeeEstimateType.FeeMarket,
+          [GasFeeEstimateLevel.Low]: {
+            maxFeePerGas: '0x1',
+            maxPriorityFeePerGas: '0x1',
+          },
+          [GasFeeEstimateLevel.Medium]: {
+            maxFeePerGas: '0x2',
+            maxPriorityFeePerGas: '0x2',
+          },
+          [GasFeeEstimateLevel.High]: {
+            maxFeePerGas: '0x2',
+            maxPriorityFeePerGas: '0x2',
+          },
+        },
+      },
+    } as unknown as ReturnType<typeof useConfirmContext>);
+
+    mockUseGasFeeEstimates.mockReturnValue({
+      gasFeeEstimates: {
+        [GasFeeEstimateLevel.Low]: {
+          minWaitTimeEstimate: 15000,
+          maxWaitTimeEstimate: 30000,
+        },
+        [GasFeeEstimateLevel.Medium]: {
+          minWaitTimeEstimate: 10000,
+          maxWaitTimeEstimate: 20000,
+        },
+        [GasFeeEstimateLevel.High]: {
+          minWaitTimeEstimate: 5000,
+          maxWaitTimeEstimate: 10000,
+        },
+      },
+    } as unknown as ReturnType<typeof useGasFeeEstimates>);
+
+    const { result } = renderHook(() =>
+      useGasFeeEstimateLevelOptions({
+        handleCloseModals: mockHandleCloseModals,
+      }),
+    );
+
+    expect(result.current).toHaveLength(2);
+    expect(result.current[0].key).toBe(GasFeeEstimateLevel.Low);
+    expect(result.current[1].key).toBe(GasFeeEstimateLevel.Medium);
+  });
 });
