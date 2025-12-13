@@ -1751,7 +1751,7 @@
     "message": "Unlocks MetaMask on this device only."
   },
   "createPasswordDetailsSocial": {
-    "message": "Losing this password means losing wallet access on all devices, "
+    "message": "Losing this password means losing wallet access on all devices."
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask can't reset it."
@@ -4530,7 +4530,7 @@
     "message": "By continuing, I agree to MetaMask’s $1 and $2"
   },
   "onboardingLoginFooterPrivacyNotice": {
-    "message": "Privacy notice."
+    "message": "Privacy notice"
   },
   "onboardingLoginFooterTermsOfUse": {
     "message": "Terms of Use"
