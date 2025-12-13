@@ -14,7 +14,6 @@ import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
 import { arrangeTestUtils } from './helpers';
 
 describe('Account syncing - Unsupported Account types', function () {
@@ -45,7 +44,6 @@ describe('Account syncing - Unsupported Account types', function () {
         USER_STORAGE_WALLETS_FEATURE_KEY,
         server,
       );
-      mockMultichainAccountsFeatureFlagStateTwo(server);
       return mockIdentityServices(server, userStorageMockttpController);
     };
 

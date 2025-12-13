@@ -11,6 +11,8 @@ import {
   clickElementById,
   clickElementByText,
   createMockImplementation,
+  getSelectedAccountGroupAccounts,
+  getSelectedAccountGroupName,
   waitForElementByText,
   waitForElementByTextToNotBePresent,
 } from '../helpers';
@@ -39,13 +41,8 @@ const setupSubmitRequestToBackgroundMocks = (
   );
 };
 
-const account =
-  mockMetaMaskState.internalAccounts.accounts[
-    mockMetaMaskState.internalAccounts
-      .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-  ];
-
-const accountName = account.metadata.name;
+const [account] = getSelectedAccountGroupAccounts(mockMetaMaskState);
+const accountName = getSelectedAccountGroupName(mockMetaMaskState);
 
 const withMetamaskConnectedToMainnet = {
   ...mockMetaMaskState,

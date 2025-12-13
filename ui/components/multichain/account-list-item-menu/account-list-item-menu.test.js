@@ -23,6 +23,13 @@ jest.mock('../../../store/actions', () => {
   };
 });
 
+jest.mock('../../../selectors', () => {
+  return {
+    ...jest.requireActual('../../../selectors'),
+    getIsMultichainAccountsState1Enabled: () => false,
+  };
+});
+
 const account = {
   ...mockState.metamask.internalAccounts.accounts[
     'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'

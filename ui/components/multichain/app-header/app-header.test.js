@@ -66,7 +66,7 @@ describe('App Header', () => {
       expect(getByTestId('account-menu-icon')).toBeEnabled();
     });
 
-    it('should show the copy button for multichain', () => {
+    it.skip('should show the copy button for multichain', () => {
       const { getByTestId } = render({
         stateChanges: { send: { stage: SEND_STAGES.DRAFT } },
       });

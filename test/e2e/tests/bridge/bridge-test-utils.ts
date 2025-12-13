@@ -16,7 +16,6 @@ import AccountListPage from '../../page-objects/pages/account-list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { MOCK_META_METRICS_ID } from '../../constants';
 import { mockSegment } from '../metrics/mocks/segment';
-import { BIP44_STAGE_TWO } from '../multichain-accounts/feature-flag-mocks';
 import {
   ETH_CONVERSION_RATE_USD,
   MOCK_CURRENCY_RATES,
@@ -376,7 +375,7 @@ async function mockFeatureFlags(
       return {
         ok: true,
         statusCode: 200,
-        json: [{ bridgeConfig: featureFlags, ...BIP44_STAGE_TWO }],
+        json: [{ bridgeConfig: featureFlags }],
       };
     });
 }
@@ -951,7 +950,6 @@ export const getQuoteNegativeCasesFixtures = (
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
-        ...BIP44_STAGE_TWO,
       },
       testing: { disableSmartTransactionsOverride: true },
     },
@@ -999,7 +997,6 @@ export const getBridgeNegativeCasesFixtures = (
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
-        ...BIP44_STAGE_TWO,
       },
       testing: { disableSmartTransactionsOverride: true },
     },
@@ -1044,7 +1041,6 @@ export const getInsufficientFundsFixtures = (
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
-        ...BIP44_STAGE_TWO,
       },
     },
     smartContract: SMART_CONTRACTS.HST,

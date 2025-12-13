@@ -12,7 +12,6 @@ import {
   MOCK_META_METRICS_ID,
   MOCK_REMOTE_FEATURE_FLAGS_RESPONSE,
 } from '../../constants';
-import { BIP44_STAGE_TWO } from '../multichain-accounts/feature-flag-mocks';
 
 describe('Remote feature flag', function (this: Suite) {
   it('should be fetched with threshold value when basic functionality toggle is on', async function () {
@@ -40,20 +39,16 @@ describe('Remote feature flag', function (this: Suite) {
   it('should not be fetched when basic functionality toggle is off', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder()
+          .withUseBasicFunctionalityDisabled()
+          .build(),
         title: this.test?.fullTitle(),
-        manifestFlags: {
-          useExternalServices: false,
-        },
       },
 
       async ({ driver }: TestSuiteArguments) => {
         await loginWithBalanceValidation(driver);
         const uiState = await getCleanAppState(driver);
-        assert.deepStrictEqual(
-          uiState.metamask.remoteFeatureFlags,
-          BIP44_STAGE_TWO,
-        );
+        assert.deepStrictEqual(uiState.metamask.remoteFeatureFlags, {});
       },
     );
   });
