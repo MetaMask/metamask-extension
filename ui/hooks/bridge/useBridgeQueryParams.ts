@@ -2,14 +2,12 @@ import { useEffect, useMemo, useCallback, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
-  CaipAssetType,
+  type CaipAssetType,
   CaipAssetTypeStruct,
   parseCaipAssetType,
 } from '@metamask/utils';
 import {
-  formatChainIdToCaip,
   getNativeAssetForChainId,
-  isCrossChain,
   isNativeAddress,
 } from '@metamask/bridge-controller';
 import {
@@ -19,20 +17,12 @@ import {
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import {
-  setEVMSrcTokenBalance,
-  setEVMSrcNativeBalance,
-  setFromChain,
+  setEvmBalances,
   setFromToken,
   setFromTokenInputValue,
   setToToken,
 } from '../../ducks/bridge/actions';
-import {
-  getFromAccount,
-  getFromChain,
-  getFromChains,
-  getFromToken,
-} from '../../ducks/bridge/selectors';
-import { type BridgeNetwork } from '../../ducks/bridge/types';
+import { getFromChain, getFromToken } from '../../ducks/bridge/selectors';
 
 const parseAsset = (assetId: string | null) => {
   if (!assetId) {
@@ -79,10 +69,8 @@ const fetchAssetMetadata = async (
  */
 export const useBridgeQueryParams = () => {
   const dispatch = useDispatch();
-  const fromChains = useSelector(getFromChains);
   const fromChain = useSelector(getFromChain);
   const fromToken = useSelector(getFromToken);
-  const selectedAccount = useSelector(getFromAccount);
 
   const abortController = useRef<AbortController>(new AbortController());
 
@@ -114,7 +102,7 @@ export const useBridgeQueryParams = () => {
 
   const [parsedFromAssetId, setParsedFromAssetId] =
     useState<ReturnType<typeof parseAsset>>(null);
-  const [parsedToAssetId, setParsedToAssetId] =
+  const [parsedtoAssetId, setParsedtoAssetId] =
     useState<ReturnType<typeof parseAsset>>(null);
 
   const [parsedAmount, setParsedAmount] = useState<string | null>(null);
@@ -140,7 +128,7 @@ export const useBridgeQueryParams = () => {
     const searchParamsAmount = searchParams.get(BridgeQueryParams.AMOUNT);
 
     if (searchParamsFrom || searchParamsTo || searchParamsAmount) {
-      setParsedToAssetId(searchParamsTo);
+      setParsedtoAssetId(searchParamsTo);
       setParsedFromAssetId(searchParamsFrom);
       if (searchParamsAmount) {
         setParsedAmount(searchParamsAmount);
@@ -168,14 +156,7 @@ export const useBridgeQueryParams = () => {
 
   // Set fromChain and fromToken
   const setFromChainAndToken = useCallback(
-    (
-      fromTokenMetadata,
-      fromAsset,
-      networks: BridgeNetwork[],
-      network?: BridgeNetwork,
-    ) => {
-      const { chainId: assetChainId } = fromAsset;
-
+    (fromTokenMetadata: AssetMetadata) => {
       if (fromTokenMetadata) {
         const { chainId, assetReference } = parseCaipAssetType(
           fromTokenMetadata.assetId,
@@ -191,23 +172,7 @@ export const useBridgeQueryParams = () => {
               ? (nativeAsset?.address ?? '')
               : assetReference,
         };
-        // If asset's chain is the same as fromChain, only set the fromToken
-        if (network && assetChainId === formatChainIdToCaip(network.chainId)) {
-          dispatch(setFromToken(token));
-        } else {
-          // Find the chain matching the srcAsset's chainId
-          const targetChain = networks.find(
-            (chain) => formatChainIdToCaip(chain.chainId) === assetChainId,
-          );
-          if (targetChain) {
-            dispatch(
-              setFromChain({
-                chainId: targetChain.chainId,
-                token,
-              }),
-            );
-          }
-        }
+        dispatch(setFromToken(token));
       }
     },
     [],
@@ -226,14 +191,14 @@ export const useBridgeQueryParams = () => {
         }),
       );
       // Clear parsed to asset ID after successful processing
-      setParsedToAssetId(null);
+      setParsedtoAssetId(null);
     },
     [],
   );
 
   // Main effect to orchestrate the parameter processing
   useEffect(() => {
-    if (!parsedFromAssetId || !assetMetadataByAssetId || !fromChains.length) {
+    if (!parsedFromAssetId || !assetMetadataByAssetId) {
       return;
     }
 
@@ -244,28 +209,23 @@ export const useBridgeQueryParams = () => {
       ];
 
     // Process from chain/token first
-    setFromChainAndToken(
-      fromTokenMetadata,
-      parsedFromAssetId,
-      fromChains,
-      fromChain,
-    );
-  }, [assetMetadataByAssetId, parsedFromAssetId, fromChains, fromChain]);
+    setFromChainAndToken(fromTokenMetadata);
+  }, [assetMetadataByAssetId, parsedFromAssetId]);
 
   // Set toChainId and toToken
   useEffect(() => {
-    if (!parsedToAssetId) {
+    if (!parsedtoAssetId) {
       return;
     }
     const toTokenMetadata =
-      assetMetadataByAssetId?.[parsedToAssetId.assetId] ??
+      assetMetadataByAssetId?.[parsedtoAssetId.assetId] ??
       assetMetadataByAssetId?.[
-        parsedToAssetId.assetId.toLowerCase() as unknown as CaipAssetType
+        parsedtoAssetId.assetId.toLowerCase() as unknown as CaipAssetType
       ];
     if (toTokenMetadata) {
       setToChainAndToken(toTokenMetadata);
     }
-  }, [parsedToAssetId, assetMetadataByAssetId]);
+  }, [parsedtoAssetId, assetMetadataByAssetId]);
 
   // Process amount after fromToken is set
   useEffect(() => {
@@ -297,18 +257,18 @@ export const useBridgeQueryParams = () => {
       // Wait for url params to be applied
       !parsedFromAssetId &&
       !searchParams.get(BridgeQueryParams.FROM) &&
-      fromToken &&
+      fromToken?.chainId &&
+      // TODO remove this when GNS references are removed
       // Wait for network to be changed if needed
-      !isCrossChain(fromToken.chainId, fromChain?.chainId) &&
-      selectedAccount
+      fromToken.chainId === fromChain?.chainId
     ) {
-      dispatch(setEVMSrcTokenBalance(fromToken, selectedAccount.address));
-      dispatch(
-        setEVMSrcNativeBalance({
-          selectedAddress: selectedAccount.address,
-          chainId: fromToken.chainId,
-        }),
-      );
+      dispatch(setEvmBalances(fromToken.assetId));
     }
-  }, [parsedFromAssetId, selectedAccount, fromToken, fromChain, searchParams]);
+  }, [
+    parsedFromAssetId,
+    fromToken?.chainId,
+    fromToken?.address,
+    fromChain?.chainId,
+    searchParams,
+  ]);
 };

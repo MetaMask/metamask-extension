@@ -1,7 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import isEqual from 'lodash/isEqual';
-import { isCrossChain } from '@metamask/bridge-controller';
 
 import {
   isHardwareWallet,
@@ -81,8 +80,7 @@ export default function AwaitingSignatures() {
     });
   }, []);
 
-  const isSwap =
-    fromChain && !isCrossChain(fromChain.chainId, toChain?.chainId);
+  const isSwap = fromToken.chainId === toToken.chainId;
 
   return (
     <div className="awaiting-bridge-signatures">
