@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { NameType } from '@metamask/name-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
+import { BigNumber } from 'bignumber.js';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../context/confirm';
@@ -22,6 +23,7 @@ import {
 /**
  * Hook to generate alerts for spender addresses in approval transactions and permit signatures.
  * Supports both warning and malicious states using the trust signals system.
+ * Does not show alerts for revoke transactions (allowance == 0).
  *
  * @returns Array of alerts for spender addresses
  */
@@ -29,9 +31,9 @@ export function useSpenderAlerts(): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
 
-  const spenderAddress = useMemo(() => {
+  const { spenderAddress, isRevoke } = useMemo(() => {
     if (!currentConfirmation) {
-      return null;
+      return { spenderAddress: null, isRevoke: false };
     }
 
     // Handle approval transactions
@@ -43,7 +45,16 @@ export function useSpenderAlerts(): Alert[] {
         txData as `0x${string}`,
       );
       if (approvalData?.spender) {
-        return approvalData.spender;
+        // Check if this is a revoke transaction
+        const isRevokeTransaction =
+          approvalData.isRevokeAll ||
+          (approvalData.amountOrTokenId &&
+            new BigNumber(approvalData.amountOrTokenId).isZero());
+
+        return {
+          spenderAddress: approvalData.spender,
+          isRevoke: Boolean(isRevokeTransaction),
+        };
       }
     }
     // Handle permit signatures
@@ -60,12 +71,22 @@ export function useSpenderAlerts(): Alert[] {
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         if (PRIMARY_TYPES_PERMIT.includes(primaryType as any)) {
-          return typedDataMessage.message?.spender || null;
+          const spender = typedDataMessage.message?.spender || null;
+          const value = typedDataMessage.message?.value;
+
+          // Check if permit is for zero value (revoke)
+          const isRevokePermit =
+            value !== undefined && new BigNumber(String(value)).isZero();
+
+          return {
+            spenderAddress: spender,
+            isRevoke: isRevokePermit,
+          };
         }
       }
     }
 
-    return null;
+    return { spenderAddress: null, isRevoke: false };
   }, [currentConfirmation]);
 
   const { state: trustSignalDisplayState } = useTrustSignal(
@@ -76,6 +97,11 @@ export function useSpenderAlerts(): Alert[] {
 
   return useMemo(() => {
     if (!spenderAddress) {
+      return [];
+    }
+
+    // Don't show alerts for revoke transactions (allowance == 0)
+    if (isRevoke) {
       return [];
     }
 
@@ -104,5 +130,5 @@ export function useSpenderAlerts(): Alert[] {
     }
 
     return alerts;
-  }, [spenderAddress, trustSignalDisplayState, t]);
+  }, [spenderAddress, isRevoke, trustSignalDisplayState, t]);
 }

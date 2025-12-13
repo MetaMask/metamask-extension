@@ -1,6 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { TransactionType } from '@metamask/transaction-controller';
 import { NameType } from '@metamask/name-controller';
+import { BigNumber } from 'bignumber.js';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../context/confirm';
@@ -233,6 +234,72 @@ describe('useSpenderAlerts', () => {
 
       expect(result.current).toHaveLength(0);
     });
+
+    it('should not return alert when revoking malicious spender (amount == 0)', () => {
+      const mockTransaction = {
+        id: MOCK_TRANSACTION_ID,
+        type: TransactionType.tokenMethodApprove,
+        chainId: '0x1',
+        txParams: {
+          data: '0xapprovedata',
+        },
+      };
+
+      mockUseConfirmContext.mockReturnValue({
+        currentConfirmation: mockTransaction,
+        isScrollToBottomCompleted: false,
+        setIsScrollToBottomCompleted: jest.fn(),
+      } as unknown as ReturnType<typeof useConfirmContext>);
+      mockParseApprovalTransactionData.mockReturnValue({
+        name: 'approve',
+        spender: MOCK_SPENDER_ADDRESS as `0x${string}`,
+        amountOrTokenId: new BigNumber(0), // Zero amount = revoke
+      });
+
+      // Mock malicious trust signal response
+      mockUseTrustSignal.mockReturnValue({
+        state: TrustSignalDisplayState.Malicious,
+        label: 'Known malicious address',
+      });
+
+      const { result } = renderHook(() => useSpenderAlerts());
+
+      // Should not show alert for revoke transaction
+      expect(result.current).toHaveLength(0);
+    });
+
+    it('should not return alert when revoking with setApprovalForAll (isRevokeAll)', () => {
+      const mockTransaction = {
+        id: MOCK_TRANSACTION_ID,
+        type: TransactionType.tokenMethodSetApprovalForAll,
+        chainId: '0x1',
+        txParams: {
+          data: '0xsetapprovalforalldata',
+        },
+      };
+
+      mockUseConfirmContext.mockReturnValue({
+        currentConfirmation: mockTransaction,
+        isScrollToBottomCompleted: false,
+        setIsScrollToBottomCompleted: jest.fn(),
+      } as unknown as ReturnType<typeof useConfirmContext>);
+      mockParseApprovalTransactionData.mockReturnValue({
+        name: 'setApprovalForAll',
+        spender: MOCK_SPENDER_ADDRESS as `0x${string}`,
+        isRevokeAll: true, // Revoking all approvals
+      });
+
+      // Mock malicious trust signal response
+      mockUseTrustSignal.mockReturnValue({
+        state: TrustSignalDisplayState.Malicious,
+        label: 'Known malicious address',
+      });
+
+      const { result } = renderHook(() => useSpenderAlerts());
+
+      // Should not show alert for revoke transaction
+      expect(result.current).toHaveLength(0);
+    });
   });
 
   describe('permit signatures', () => {
@@ -337,6 +404,46 @@ describe('useSpenderAlerts', () => {
 
       const { result } = renderHook(() => useSpenderAlerts());
 
+      expect(result.current).toHaveLength(0);
+    });
+
+    it('should not return alert when revoking permit with malicious spender (value == 0)', () => {
+      const mockPermitData = JSON.stringify({
+        domain: { name: 'Token', version: '1' },
+        message: { spender: MOCK_SPENDER_ADDRESS, value: 0 },
+        types: {},
+      });
+
+      const mockSignatureRequest = {
+        id: MOCK_TRANSACTION_ID,
+        type: 'eth_signTypedData',
+        chainId: '0x1',
+        msgParams: {
+          data: mockPermitData,
+        },
+      };
+
+      mockUseConfirmContext.mockReturnValue({
+        currentConfirmation: mockSignatureRequest,
+        isScrollToBottomCompleted: false,
+        setIsScrollToBottomCompleted: jest.fn(),
+      } as unknown as ReturnType<typeof useConfirmContext>);
+      mockParseTypedDataMessage.mockReturnValue({
+        primaryType: 'Permit',
+        message: { spender: MOCK_SPENDER_ADDRESS, value: 0 }, // Zero value = revoke
+        domain: { name: 'Token', version: '1' },
+        types: {},
+      });
+
+      // Mock malicious trust signal response
+      mockUseTrustSignal.mockReturnValue({
+        state: TrustSignalDisplayState.Malicious,
+        label: 'Phishing address',
+      });
+
+      const { result } = renderHook(() => useSpenderAlerts());
+
+      // Should not show alert for revoke permit
       expect(result.current).toHaveLength(0);
     });
   });
