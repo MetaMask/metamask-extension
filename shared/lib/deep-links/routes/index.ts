@@ -6,6 +6,7 @@ import nonevm from './nonevm';
 import perps from './perps';
 import predict from './predict';
 import rewards from './rewards';
+import settings from './settings';
 
 import type { Route } from './route';
 import shield from './shield';
@@ -47,3 +48,4 @@ addRoute(perps);
 addRoute(predict);
 addRoute(rewards);
 addRoute(shield);
+addRoute(settings);
