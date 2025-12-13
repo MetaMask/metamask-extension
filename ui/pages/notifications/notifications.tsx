@@ -34,6 +34,7 @@ import {
   JustifyContent,
 } from '../../helpers/constants/design-system';
 import { deleteExpiredNotifications } from '../../store/actions';
+import { useSidePanelEnabled } from '../../hooks/useSidePanelEnabled';
 import { NotificationsList, TAB_KEYS } from './notifications-list';
 import { NewFeatureTag } from './NewFeatureTag';
 
@@ -87,22 +88,40 @@ const useCombinedNotifications = () => {
     walletNotifications,
     snapNotifications,
   } = useMetaMaskNotifications();
+  const isSidePanelEnabled = useSidePanelEnabled();
 
   const combinedNotifications = useMemo(() => {
+    const isInSidePanel = window.location.pathname.includes('sidepanel.html');
+
     const notifications = [
       ...snapNotifications,
       ...featureAnnouncementNotifications,
       ...walletNotifications,
-    ].sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-    );
+    ]
+      .filter((n) => {
+        // Filter out sidepanel notifications if:
+        // 1. Side panel is not supported/enabled
+        // 2. Already viewing in side panel mode
+        const actionType =
+          'template' in n
+            ? (n.template as Record<string, unknown>)?.actionType
+            : undefined;
+        if (actionType === 'sidepanel') {
+          return isSidePanelEnabled && !isInSidePanel;
+        }
+        return true;
+      })
+      .sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      );
 
     return notifications;
   }, [
     snapNotifications,
     featureAnnouncementNotifications,
     walletNotifications,
+    isSidePanelEnabled,
   ]);
 
   return combinedNotifications;
