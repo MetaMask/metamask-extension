@@ -1,16 +1,17 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { AppHeader } from '../components/multichain';
-import { hideAppHeader, showAppHeader } from '../pages/routes/utils';
+import { hideAppHeader } from '../pages/routes/utils';
+import { removeGns } from './config';
+
+// Note: Remove this component once REMOVE_GNS flag is resolved
 
 export const Header = () => {
   const location = useLocation();
 
-  return (
-    <>
-      {process.env.REMOVE_GNS
-        ? showAppHeader({ location }) && <AppHeader location={location} />
-        : !hideAppHeader({ location }) && <AppHeader location={location} />}
-    </>
-  );
+  if (removeGns || hideAppHeader({ location })) {
+    return null;
+  }
+
+  return <AppHeader location={location} />;
 };
