@@ -39,9 +39,37 @@ export function toPrecisionWithoutTrailingZeros(n, precision) {
  * @param {number=} decimals
  * @returns {BigNumber}
  */
+const BIGINT_LITERAL_REGEX = /^-?\d+n$/u;
+
+/**
+ * Converts the provided value into a string that BigNumber can parse.
+ *
+ * This normalizes BigInt primitives and BigInt-literal strings (e.g., "123n")
+ * that may have been produced by JSON serialization of BigInt values.
+ *
+ * @param {number|string|bigint|BigNumber} value
+ * @returns {string|number|BigNumber}
+ */
+function normalizeNumericInput(value) {
+  if (typeof value === 'bigint') {
+    return value.toString(10);
+  }
+
+  if (typeof value === 'string') {
+    const trimmedValue = value.trim();
+    if (BIGINT_LITERAL_REGEX.test(trimmedValue)) {
+      return trimmedValue.slice(0, -1);
+    }
+    return trimmedValue;
+  }
+
+  return value;
+}
+
 export function calcTokenAmount(value, decimals) {
   const divisor = new BigNumber(10).pow(decimals ?? 0);
-  return new BigNumber(String(value)).div(divisor);
+  const normalizedValue = normalizeNumericInput(value);
+  return new BigNumber(String(normalizedValue)).div(divisor);
 }
 
 export function getSwapsTokensReceivedFromTxMeta(

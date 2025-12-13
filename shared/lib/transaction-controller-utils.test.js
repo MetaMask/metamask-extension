@@ -63,6 +63,15 @@ describe('transaction controller utils', () => {
         expect(calcTokenAmount(value, decimals).toString()).toBe(expected);
       },
     );
+
+    it('handles bigint inputs by converting them to decimal strings', () => {
+      // 501000000n / 10^6 = 501
+      expect(calcTokenAmount(501000000n, 6).toString()).toBe('501');
+    });
+
+    it('handles serialized bigint literal strings that include the "n" suffix', () => {
+      expect(calcTokenAmount('987654321n', 3).toString()).toBe('987654.321');
+    });
   });
 
   describe('getSwapsTokensReceivedFromTxMeta', () => {
