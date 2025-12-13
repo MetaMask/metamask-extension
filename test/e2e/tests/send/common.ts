@@ -1,14 +1,46 @@
+import { existsSync, readFileSync } from 'fs';
 import { Mockttp } from 'mockttp';
 
 export const FEATURE_FLAGS_URL =
   'https://client-config.api.cx.metamask.io/v1/flags';
 
-const mockSendFeatureFlag = (mockServer: Mockttp, enabled: boolean) =>
-  mockServer
+/**
+ * Detects if the current build is Flask by reading the manifest.json file.
+ * Flask builds have "MetaMask Flask" in the name field.
+ * Tries both chrome and firefox dist directories since SELENIUM_BROWSER
+ * may not be set in the pipeline.
+ *
+ * @returns true if this is a Flask build, false otherwise
+ */
+function isFlaskBuild(): boolean {
+  const browsers = ['chrome', 'firefox'];
+
+  for (const browser of browsers) {
+    const manifestPath = `dist/${browser}/manifest.json`;
+    try {
+      if (existsSync(manifestPath)) {
+        const manifest = JSON.parse(readFileSync(manifestPath, 'utf-8'));
+        if (manifest.name?.includes('Flask')) {
+          return true;
+        }
+      }
+    } catch (error) {
+      // Continue to next browser if this one fails
+      continue;
+    }
+  }
+
+  // If we can't read any manifest or none contain Flask, default to 'main' distribution
+  return false;
+}
+
+const mockSendFeatureFlag = (mockServer: Mockttp, enabled: boolean) => {
+  const distribution = isFlaskBuild() ? 'flask' : 'main';
+  return mockServer
     .forGet(FEATURE_FLAGS_URL)
     .withQuery({
       client: 'extension',
-      distribution: 'main',
+      distribution,
       environment: 'dev',
     })
     .thenCallback(() => {
@@ -24,6 +56,7 @@ const mockSendFeatureFlag = (mockServer: Mockttp, enabled: boolean) =>
         ],
       };
     });
+};
 
 export const mockSendRedesignFeatureFlag = (mockServer: Mockttp) =>
   mockSendFeatureFlag(mockServer, true);
