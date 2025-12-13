@@ -213,6 +213,13 @@ describe('Send - utils', () => {
       expect(convertedCurrency('10.111125', 15, 2)).toBe('151.66');
       expect(convertedCurrency('250', 0.00001, 4)).toBe('0.0025');
     });
+
+    it('returns original value when conversion rate is not finite', () => {
+      expect(convertedCurrency('10.50', Number.NaN, 2)).toBe('10.5');
+      expect(
+        convertedCurrency('10.50', Number.POSITIVE_INFINITY, 2),
+      ).toBe('10.5');
+    });
   });
 
   describe('removeAdditionalDecimalPlaces', () => {

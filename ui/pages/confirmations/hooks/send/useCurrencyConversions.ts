@@ -18,6 +18,11 @@ type ConversionArgs = {
   currentCurrency?: string;
 };
 
+const isValidConversionRate = (
+  rate: number | undefined,
+): rate is number =>
+  typeof rate === 'number' && Number.isFinite(rate) && rate > 0;
+
 const getFiatValueFn = ({ amount, conversionRate }: ConversionArgs) => {
   if (!amount) {
     return '0';
@@ -94,7 +99,12 @@ export const useCurrencyConversions = () => {
     ) {
       return 0;
     }
-    return ((asset as Asset)?.fiat?.conversionRate ?? 0) * exchangeRate;
+    const baseRate = (asset as Asset)?.fiat?.conversionRate;
+    if (!isValidConversionRate(baseRate)) {
+      return 0;
+    }
+    const calculatedRate = baseRate * exchangeRate;
+    return isValidConversionRate(calculatedRate) ? calculatedRate : 0;
   }, [asset, exchangeRate]);
 
   const getFiatValue = useCallback(
@@ -128,7 +138,7 @@ export const useCurrencyConversions = () => {
 
   return {
     conversionSupportedForAsset:
-      conversionRate !== 0 &&
+      isValidConversionRate(conversionRate) &&
       asset?.standard !== ERC1155 &&
       asset?.standard !== ERC721,
     fiatCurrencySymbol: getCurrencySymbol(currentCurrency),

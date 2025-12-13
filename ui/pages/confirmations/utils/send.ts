@@ -268,9 +268,17 @@ export function convertedCurrency(
     return undefined;
   }
 
+  const numericValue = new Numeric(value, 10);
+  const shouldApplyConversionRate =
+    typeof conversionRate === 'number' && Number.isFinite(conversionRate);
+
+  const convertedValue = shouldApplyConversionRate
+    ? numericValue.applyConversionRate(conversionRate)
+    : numericValue;
+
   return trimTrailingZeros(
     removeAdditionalDecimalPlaces(
-      new Numeric(value, 10).applyConversionRate(conversionRate).toString(),
+      convertedValue.toString(),
       decimals,
     ) ?? '',
   );
