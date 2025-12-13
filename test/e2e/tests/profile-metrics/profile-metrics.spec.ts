@@ -80,7 +80,6 @@ describe('Profile Metrics', function () {
     it('sends exising accounts to the API on wallet unlock after activating MetaMetrics', async function () {
       await withFixtures(
         {
-          forceLegacySendFlow: false,
           fixtures: new FixtureBuilder()
             .withMetaMetricsController({
               participateInMetaMetrics: true,
@@ -121,7 +120,6 @@ describe('Profile Metrics', function () {
     it('sends new accounts to the API when they are created after wallet unlock', async function () {
       await withFixtures(
         {
-          forceLegacySendFlow: false,
           fixtures: new FixtureBuilder()
             .withMetaMetricsController({
               participateInMetaMetrics: true,

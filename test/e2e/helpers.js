@@ -170,7 +170,6 @@ async function withFixtures(options, testSuite) {
     monConversionInUsd,
     manifestFlags,
     solanaWebSocketSpecificMocks = [],
-    forceLegacySendFlow = true,
   } = options;
 
   // Normalize localNodeOptions
@@ -329,11 +328,6 @@ async function withFixtures(options, testSuite) {
     webSocketServer = LocalWebSocketServer.getServerInstance();
     webSocketServer.start();
     await setupSolanaWebsocketMocks(solanaWebSocketSpecificMocks);
-
-    if (forceLegacySendFlow) {
-      console.log('! Force legacy send flow');
-      await mockLegacySendFeatureFlag(mockServer);
-    }
 
     // Decide between the regular setupMocking and the passThrough version
     const mockingSetupFunction = useMockingPassThrough
