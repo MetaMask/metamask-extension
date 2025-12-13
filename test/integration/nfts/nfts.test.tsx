@@ -50,8 +50,7 @@ describe('NFTs list', () => {
   });
 
   it('displays the nfts list for popular networks and tracks the event', async () => {
-    const accountName =
-      getSelectedAccountGroupName(mockMetaMaskState);
+    const accountName = getSelectedAccountGroupName(mockMetaMaskState);
 
     const withMetamaskConnectedToMainnet = {
       ...mockMetaMaskState,
@@ -92,8 +91,7 @@ describe('NFTs list', () => {
   });
 
   it('filters the nfts list for the current network', async () => {
-    const accountName =
-      getSelectedAccountGroupName(mockMetaMaskState);
+    const accountName = getSelectedAccountGroupName(mockMetaMaskState);
 
     const withMetamaskConnectedToMainnet = {
       ...mockMetaMaskState,
@@ -138,8 +136,7 @@ describe('NFTs list', () => {
   });
 
   it('disables the filter list for the test networks', async () => {
-    const accountName =
-      getSelectedAccountGroupName(mockMetaMaskState);
+    const accountName = getSelectedAccountGroupName(mockMetaMaskState);
 
     await act(async () => {
       await integrationTestRender({
