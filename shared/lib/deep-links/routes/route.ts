@@ -14,6 +14,8 @@ export {
   DEVELOPER_OPTIONS_ROUTE,
 } from '../../../../ui/helpers/constants/routes';
 
+export { default as ZENDESK_URLS } from '../../../../ui/helpers/constants/zendesk-url';
+
 /**
  * Represents the final destination.
  */
