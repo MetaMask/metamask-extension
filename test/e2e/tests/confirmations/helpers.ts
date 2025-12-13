@@ -7,7 +7,6 @@ import { Driver } from '../../webdriver/driver';
 import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
 import { MOCK_META_METRICS_ID } from '../../constants';
 import { mockDialogSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
-import { BIP44_STAGE_TWO } from '../multichain-accounts/feature-flag-mocks';
 
 export const DECODING_E2E_API_URL =
   'https://signature-insights.api.cx.metamask.io/v1';
@@ -259,7 +258,6 @@ export async function mockEip7702FeatureFlag(mockServer: Mockttp) {
                 supportedChains: ['0xaa36a7', '0x539', '0x1'],
               },
             },
-            BIP44_STAGE_TWO,
           ],
         };
       }),
@@ -605,7 +603,6 @@ export async function mockDeFiPositionFeatureFlag(mockServer: Mockttp) {
             {
               assetsDefiPositionsEnabled: true,
             },
-            BIP44_STAGE_TWO,
           ],
         };
       }),
@@ -653,7 +650,6 @@ export async function mockNoDeFiPositionFeatureFlag(mockServer: Mockttp) {
                 enabled: false,
               },
             },
-            BIP44_STAGE_TWO,
           ],
         };
       }),
@@ -682,7 +678,6 @@ export async function mockDefiPositionsFailure(mockServer: Mockttp) {
             {
               assetsDefiPositionsEnabled: true,
             },
-            BIP44_STAGE_TWO,
           ],
         };
       }),
