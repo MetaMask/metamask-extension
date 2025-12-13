@@ -95,7 +95,7 @@ describe('useMultichainAccountsIntroModal', () => {
     });
 
     it('does NOT show for fresh install (no previous version)', () => {
-      const { result } = renderHook(true, true, false, Date.now(), null, '/');
+      const { result } = renderHook(true, false, Date.now(), null, '/');
       expect(result.current.showMultichainIntroModal).toBe(false);
     });
 
