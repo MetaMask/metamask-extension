@@ -1,4 +1,11 @@
 {
+  "accountGroupsMetadata": {
+    "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0": {
+      "name": "Account 1",
+      "pinned": false,
+      "hidden": false
+    }
+  },
   "accountTree": {
     "selectedAccountGroup": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0",
     "wallets": {
@@ -31,15 +38,6 @@
           }
         }
       }
-    }
-  },
-  "isAccountTreeSyncingInProgress": false,
-  "hasAccountTreeSyncingSyncedAtLeastOnce": true,
-  "accountGroupsMetadata": {
-    "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0": {
-      "name": "Account 1",
-      "pinned": false,
-      "hidden": false
     }
   },
   "accountWalletsMetadata": {
@@ -453,6 +451,7 @@
     }
   },
   "hadAdvancedGasFeesSetPriorToMigration92_3": false,
+  "hasAccountTreeSyncingSyncedAtLeastOnce": true,
   "hasDismissedOpenSeaToBlockaidBanner": false,
   "hiddenAccountList": [],
   "identities": {
@@ -610,6 +609,7 @@
   },
   "ipfsGateway": "dweb.link",
   "isAccountMenuOpen": false,
+  "isAccountTreeSyncingInProgress": false,
   "isEvmSelected": true,
   "isInitialized": true,
   "isIpfsGatewayEnabled": true,
