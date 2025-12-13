@@ -5,6 +5,7 @@
       "entropy:01JKAF3DSGM3AB87EM9N0K41AJ": {
         "id": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ",
         "type": "entropy",
+        "status": "ready",
         "groups": {
           "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0": {
             "id": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0",
@@ -30,6 +31,20 @@
           }
         }
       }
+    }
+  },
+  "isAccountTreeSyncingInProgress": false,
+  "hasAccountTreeSyncingSyncedAtLeastOnce": true,
+  "accountGroupsMetadata": {
+    "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0": {
+      "name": "Account 1",
+      "pinned": false,
+      "hidden": false
+    }
+  },
+  "accountWalletsMetadata": {
+    "entropy:01JKAF3DSGM3AB87EM9N0K41AJ": {
+      "name": "Wallet 1"
     }
   },
   "accountsAssets": {},

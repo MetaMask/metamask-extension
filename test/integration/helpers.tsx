@@ -1,5 +1,7 @@
 import nock from 'nock';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import { parseAccountGroupId } from '@metamask/account-api';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -42,6 +44,75 @@ export function mock4byte(hexSignature: string, textSignature?: string) {
     });
   return mockEndpoint;
 }
+
+type AccountTreeControllerState = {
+  accountTree: {
+    wallets: {
+      [walletId: string]: {
+        groups: {
+          [groupId: string]: {
+            accounts: string[];
+            metadata: {
+              name: string;
+            };
+          };
+        };
+      };
+    };
+    selectedAccountGroup: string | '';
+  };
+};
+
+type AccountsControllerState = {
+  internalAccounts: {
+    accounts: {
+      [accountId: string]: {
+        type: string; // Relaxed type for simplicity.
+        id: InternalAccount['id'];
+        address: InternalAccount['address'];
+        options: InternalAccount['options'];
+        scopes: string[]; // Relaxed type for simplicity.
+        methods: InternalAccount['methods'];
+        // Not including `metadata` on purpose as we want to rely on
+        // account group metadata instead.
+      };
+    };
+  };
+};
+
+export const getSelectedAccountGroup = <
+  State extends AccountTreeControllerState,
+>(
+  state: State,
+) => {
+  const groupId = state.accountTree.selectedAccountGroup;
+  const {
+    wallet: { id: walletId },
+  } = parseAccountGroupId(state.accountTree.selectedAccountGroup);
+  const wallet =
+    state.accountTree.wallets[
+      walletId as keyof typeof state.accountTree.wallets
+    ];
+  return wallet.groups[groupId as keyof typeof wallet.groups];
+};
+
+export const getSelectedAccountGroupName = <
+  State extends AccountTreeControllerState,
+>(
+  state: State,
+) => {
+  return getSelectedAccountGroup(state).metadata.name;
+};
+
+export const getSelectedAccountGroupAccounts = <
+  State extends AccountTreeControllerState & AccountsControllerState,
+>(
+  state: State,
+) => {
+  const group = getSelectedAccountGroup(state);
+
+  return group.accounts.map((id) => state.internalAccounts.accounts[id]);
+};
 
 /**
  * Clicks on an element identified by the given test ID.

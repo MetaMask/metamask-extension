@@ -6,6 +6,7 @@ import mockMetaMaskState from '../data/integration-init-state.json';
 import {
   clickElementById,
   createMockImplementation,
+  getSelectedAccountGroup,
   waitForElementById,
   waitForElementByText,
   waitForElementByTextToNotBePresent,
@@ -49,13 +50,8 @@ describe('NFTs list', () => {
   });
 
   it('displays the nfts list for popular networks and tracks the event', async () => {
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
-
-    const accountName = account.metadata.name;
+    const accountName =
+      getSelectedAccountGroup(mockMetaMaskState).metadata.name;
 
     const withMetamaskConnectedToMainnet = {
       ...mockMetaMaskState,
@@ -96,11 +92,8 @@ describe('NFTs list', () => {
   });
 
   it('filters the nfts list for the current network', async () => {
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
+    const accountName =
+      getSelectedAccountGroup(mockMetaMaskState).metadata.name;
 
     const withMetamaskConnectedToMainnet = {
       ...mockMetaMaskState,
@@ -117,8 +110,6 @@ describe('NFTs list', () => {
         },
       },
     };
-
-    const accountName = account.metadata.name;
 
     await act(async () => {
       await integrationTestRender({
@@ -147,13 +138,8 @@ describe('NFTs list', () => {
   });
 
   it('disables the filter list for the test networks', async () => {
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
-
-    const accountName = account.metadata.name;
+    const accountName =
+      getSelectedAccountGroup(mockMetaMaskState).metadata.name;
 
     await act(async () => {
       await integrationTestRender({
