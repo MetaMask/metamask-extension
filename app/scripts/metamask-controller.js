@@ -3291,6 +3291,10 @@ export default class MetamaskController extends EventEmitter {
         gatorPermissionsController.addPendingRevocation.bind(
           gatorPermissionsController,
         ),
+      submitDirectRevocation:
+        gatorPermissionsController.submitDirectRevocation.bind(
+          gatorPermissionsController,
+        ),
       submitRevocation: gatorPermissionsController.submitRevocation.bind(
         gatorPermissionsController,
       ),
