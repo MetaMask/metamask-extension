@@ -35,6 +35,7 @@ module.exports = {
     '<rootDir>/test/integration/config/env.js',
   ],
   setupFilesAfterEnv: ['<rootDir>/test/integration/config/setupAfter.js'],
+  globalTeardown: '<rootDir>/test/jest/integration-global-teardown.ts',
   testMatch: ['<rootDir>/test/integration/**/*.test.(js|ts|tsx)'],
   testPathIgnorePatterns: ['<rootDir>/test/integration/config/*'],
   testTimeout: 15000,
