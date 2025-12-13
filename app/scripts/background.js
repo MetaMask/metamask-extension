@@ -736,12 +736,6 @@ async function initialize(backup) {
     cronjobControllerStorageManager,
   );
 
-  controller.store.on('update', update);
-  controller.store.on('error', (error) => {
-    log.error('MetaMask controller.store error:', error);
-    sentry?.captureException(error);
-  });
-
   // `setupController` sets up the `controller` object, so we can use it now:
   maybeDetectPhishing(controller);
 
@@ -1144,7 +1138,21 @@ export function setupController(
     preinstalledSnaps,
     requestSafeReload,
     cronjobControllerStorageManager,
+    // set to false because we need to subscribe to some events *before*
+    // configuring controllers to ensure we are able to record state changes
+    autoConfigureControllers: false,
   });
+
+  // this persistence hooks must happen before `controller.configureAllControllers`
+  // or some update might not be persisted!
+  controller.store.on('update', update);
+  controller.store.on('error', (error) => {
+    log.error('MetaMask controller.store error:', error);
+    sentry?.captureException(error);
+  });
+
+  // `autoConfigureControllers` is `false`, so we have to call this manually here.
+  controller.configureAllControllers();
 
   setupEnsIpfsResolver({
     getCurrentChainId: () =>

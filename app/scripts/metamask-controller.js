@@ -473,7 +473,7 @@ export default class MetamaskController extends EventEmitter {
     super();
 
     const {
-      isFirstMetaMaskControllerSetup,
+      autoConfigureControllers = true,
       controllerMessenger = getRootMessenger(),
     } = opts;
 
@@ -490,7 +490,7 @@ export default class MetamaskController extends EventEmitter {
     this.platform = opts.platform;
     this.notificationManager = opts.notificationManager;
     const initState = opts.initState || {};
-    const version = process.env.METAMASK_VERSION;
+    this.version = process.env.METAMASK_VERSION;
     this.recordFirstTimeInfo(initState);
     this.featureFlags = opts.featureFlags;
 
@@ -527,11 +527,43 @@ export default class MetamaskController extends EventEmitter {
 
     this.extension.runtime.onInstalled.addListener((details) => {
       if (details.reason === 'update') {
-        if (version === '8.1.0') {
+        if (this.version === '8.1.0') {
           this.platform.openExtensionInBrowser();
         }
       }
     });
+
+    // Multiple MetaMask instances launched warning
+    this.extension.runtime.onMessageExternal.addListener(onMessageReceived);
+
+    // Fire a ping message to check if other extensions are running
+    checkForMultipleVersionsRunning();
+
+    if (autoConfigureControllers) {
+      this.configureAllControllers();
+    }
+
+    // Don't add anything that interacts with a `controller` in the constructor,
+    // that should go inside `configureAllControllers`.
+    // Fin.
+  }
+
+  /**
+   * @type {boolean} Indicates whether all controllers have been configured.
+   */
+  #hasConfiguredAllControllers = false;
+
+  /**
+   * Ensures all controllers are configured. No-op if they have already been configured.
+   *
+   * If you need to do something with a controller immediately on MetaMaskController
+   * start up you should do that in here, not in the constructor.
+   */
+  configureAllControllers() {
+    if (this.#hasConfiguredAllControllers) {
+      return;
+    }
+    this.#hasConfiguredAllControllers = true;
 
     this.multichainSubscriptionManager = new MultichainSubscriptionManager({
       getNetworkClientById: this.controllerMessenger.call.bind(
@@ -677,7 +709,7 @@ export default class MetamaskController extends EventEmitter {
       controllersByName,
     } = this.#initControllers({
       initFunctions: controllerInitFunctions,
-      initState,
+      initState: this.opts.initState || {},
     });
 
     this.controllerApi = controllerApi;
@@ -1096,9 +1128,9 @@ export default class MetamaskController extends EventEmitter {
     this.metamaskMiddleware = createMetamaskMiddleware({
       static: {
         eth_syncing: false,
-        web3_clientVersion: `MetaMask/v${version}`,
+        web3_clientVersion: `MetaMask/v${this.version}`,
       },
-      version,
+      version: this.version,
       // account mgmt
       getAccounts: (requestOrigin) => getAccounts({ origin: requestOrigin }),
       // tx signing
@@ -1327,7 +1359,7 @@ export default class MetamaskController extends EventEmitter {
     ];
 
     if (isManifestV3) {
-      if (isFirstMetaMaskControllerSetup === true) {
+      if (this.opts.isFirstMetaMaskControllerSetup === true) {
         this.resetStates(resetMethods);
         this.extension.storage.session.set({
           isFirstMetaMaskControllerSetup: false,
@@ -1369,11 +1401,6 @@ export default class MetamaskController extends EventEmitter {
     // https://github.com/MetaMask/metamask-extension/issues/15491
     // TODO:LegacyProvider: Delete
     this.publicConfigStore = this.createPublicConfigStore();
-
-    // Multiple MetaMask instances launched warning
-    this.extension.runtime.onMessageExternal.addListener(onMessageReceived);
-    // Fire a ping message to check if other extensions are running
-    checkForMultipleVersionsRunning();
 
     if (this.onboardingController.state.completedOnboarding) {
       this.postOnboardingInitialization();
@@ -7670,7 +7697,7 @@ export default class MetamaskController extends EventEmitter {
           return Boolean(this._isClientOpen && isUnlocked);
         },
         getVersion: () => {
-          return process.env.METAMASK_VERSION;
+          return this.version;
         },
         getInterfaceState: (...args) =>
           this.controllerMessenger.call(
@@ -8583,7 +8610,7 @@ export default class MetamaskController extends EventEmitter {
    */
   recordFirstTimeInfo(initState) {
     if (!('firstTimeInfo' in initState)) {
-      const version = process.env.METAMASK_VERSION;
+      const { version } = this;
       initState.firstTimeInfo = {
         version,
         date: Date.now(),
