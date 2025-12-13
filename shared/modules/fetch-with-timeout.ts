@@ -1,5 +1,6 @@
 import { memoize } from 'lodash';
 import { SECOND } from '../constants/time';
+import { getFetchWithSentryInstrumentation } from './fetch-with-sentry-instrumentation';
 
 /**
  * Returns a function that can be used to make an HTTP request but timing out
@@ -16,7 +17,7 @@ const getFetchWithTimeout = memoize((timeout = SECOND * 30) => {
     throw new Error('Must specify positive integer timeout.');
   }
 
-  return async function fetchWithTimeout(
+  async function fetchWithTimeout(
     url: RequestInfo,
     opts?: RequestInit,
   ): Promise<Response> {
@@ -47,7 +48,9 @@ const getFetchWithTimeout = memoize((timeout = SECOND * 30) => {
         sig.removeEventListener('abort', abortHandler),
       );
     }
-  };
+  }
+
+  return getFetchWithSentryInstrumentation(fetchWithTimeout);
 });
 
 export default getFetchWithTimeout;
