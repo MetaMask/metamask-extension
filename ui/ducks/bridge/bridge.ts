@@ -94,6 +94,7 @@ const bridgeSlice = createSlice({
     setFromToken: (state, { payload }: TokenPayload) => {
       state.fromToken = toBridgeToken(payload);
       state.fromTokenBalance = null;
+      state.fromTokenExchangeRate = null;
       // Unset toToken if it's the same as the fromToken
       if (
         state.fromToken?.assetId &&
@@ -188,7 +189,8 @@ const bridgeSlice = createSlice({
       );
       if (
         isTokenInChain && state.fromToken?.address
-          ? action.meta.arg.tokenAddress === state.fromToken.address
+          ? action.meta.arg.tokenAddress.toLowerCase() ===
+            state.fromToken.address.toLowerCase()
           : true
       ) {
         state.fromTokenBalance = action.payload?.toString() ?? null;

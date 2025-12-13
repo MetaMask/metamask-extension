@@ -57,6 +57,11 @@ describe('useTokenAlerts', () => {
         },
         toToken: {
           address: '6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN',
+          assetId:
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN',
+          chainId: MultichainNetworks.SOLANA,
+          symbol: 'USDC',
+          name: 'USD',
         },
         toChainId: MultichainNetworks.SOLANA,
       },

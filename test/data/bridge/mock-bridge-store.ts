@@ -6,7 +6,9 @@ import {
 } from '@metamask/bridge-controller';
 import { DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE } from '@metamask/bridge-status-controller';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
+import { zeroAddress } from 'ethereumjs-util';
 import { KeyringTypes } from '@metamask/keyring-controller';
+import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import { ETH_SCOPE_EOA } from '@metamask/keyring-utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
@@ -151,8 +153,24 @@ export const createBridgeMockStore = ({
   const {
     internalAccounts: internalAccountsOverrides,
     accountTree: accountTreeOverrides,
+    marketData,
     ...metamaskStateOverridesWithoutAccounts
   } = metamaskStateOverrides;
+  // Checksum the addresses in the marketData object
+  // Also add a price for the zero address if not provided
+  const marketDataOverrides = Object.fromEntries(
+    Object.entries(marketData ?? {}).map(([chainId, addressToData]) => {
+      const dataForChain = Object.fromEntries(
+        Object.entries(addressToData ?? {}).map(([address, data]) => {
+          return [toChecksumHexAddress(address), data];
+        }),
+      );
+      if (!dataForChain[zeroAddress()]) {
+        dataForChain[zeroAddress()] = { price: 1 };
+      }
+      return [chainId, dataForChain];
+    }),
+  );
 
   const internalAccounts = {
     selectedAccount:
@@ -227,11 +245,13 @@ export const createBridgeMockStore = ({
       },
       marketData: {
         '0x1': {
-          '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': {
-            currency: 'usd',
-            price: 2.3,
-          },
+          [toChecksumHexAddress('0x1f9840a85d5af5bf1d1762f925bdaddc4201f984')]:
+            {
+              currency: 'ETH',
+              price: 2.3,
+            },
         },
+        ...marketDataOverrides,
       },
       slides: [],
       accountTree: {

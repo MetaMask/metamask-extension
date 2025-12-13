@@ -14,6 +14,7 @@ import {
   type BridgeController,
   isCrossChain,
   isBitcoinChainId,
+  formatAddressToCaipReference,
 } from '@metamask/bridge-controller';
 import { type CaipChainId, type Hex, isStrictHexString } from '@metamask/utils';
 import {
@@ -312,8 +313,12 @@ const PrepareBridgePage = ({
     () =>
       selectedAccount?.address
         ? {
-            srcTokenAddress: fromToken?.address,
-            destTokenAddress: toToken?.address,
+            srcTokenAddress: fromToken?.assetId
+              ? formatAddressToCaipReference(fromToken?.assetId)
+              : undefined,
+            destTokenAddress: toToken?.assetId
+              ? formatAddressToCaipReference(toToken?.assetId)
+              : undefined,
             srcTokenAmount: validatedFromValue,
             srcChainId: fromChain?.chainId,
             destChainId: toChain?.chainId,
@@ -331,8 +336,8 @@ const PrepareBridgePage = ({
           }
         : undefined,
     [
-      fromToken?.address,
-      toToken?.address,
+      fromToken?.assetId,
+      toToken?.assetId,
       validatedFromValue,
       fromChain?.chainId,
       toChain?.chainId,
@@ -471,9 +476,6 @@ const PrepareBridgePage = ({
             };
             dispatch(setFromToken(bridgeToken));
             dispatch(setFromTokenInputValue(null));
-            if (token.address === toToken?.address) {
-              dispatch(setToToken(null));
-            }
           }}
           networkProps={{
             // @ts-expect-error other network fields are not used by the asset picker
@@ -571,7 +573,7 @@ const PrepareBridgePage = ({
               }
               onClick={() => {
                 dispatch(setSelectedQuote(null));
-                if (!toChain) {
+                if (!toChain || !fromToken || !toToken) {
                   return;
                 }
                 // Track the flip event

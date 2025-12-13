@@ -2,14 +2,18 @@ import {
   BridgeBackgroundAction,
   type BridgeController,
   BridgeUserAction,
-  formatChainIdToCaip,
   isNativeAddress,
   getNativeAssetForChainId,
   type RequiredEventContextFromClient,
   UnifiedSwapBridgeEventName,
   formatChainIdToHex,
+  formatAddressToCaipReference,
 } from '@metamask/bridge-controller';
-import type { CaipChainId, Hex } from '@metamask/utils';
+import {
+  parseCaipAssetType,
+  type CaipChainId,
+  type Hex,
+} from '@metamask/utils';
 import { trace, TraceName } from '../../../shared/lib/trace';
 import { selectDefaultNetworkClientIdsByChainId } from '../../../shared/modules/selectors/networks';
 import {
@@ -25,7 +29,7 @@ import {
   setEVMSrcTokenBalance as setEVMSrcTokenBalance_,
   setEVMSrcNativeBalance,
 } from './bridge';
-import { type TokenPayload } from './types';
+import type { BridgeToken, TokenPayload } from './types';
 import { type BridgeAppState } from './selectors';
 import { isNonEvmChain } from './utils';
 
@@ -114,24 +118,25 @@ export const updateQuoteRequestParams = (
 };
 
 export const setEVMSrcTokenBalance = (
-  token: TokenPayload['payload'],
+  token: BridgeToken,
   selectedAddress?: string,
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
     if (token) {
+      const { chainId, assetReference } = parseCaipAssetType(token.assetId);
       trace({
         name: TraceName.BridgeBalancesUpdated,
         data: {
-          srcChainId: formatChainIdToCaip(token.chainId),
-          isNative: isNativeAddress(token.address),
+          srcChainId: chainId,
+          isNative: isNativeAddress(assetReference),
         },
         startTime: Date.now(),
       });
       await dispatch(
         setEVMSrcTokenBalance_({
           selectedAddress,
-          tokenAddress: token.address,
-          chainId: token.chainId,
+          tokenAddress: formatAddressToCaipReference(assetReference),
+          chainId,
         }),
       );
     }
@@ -143,7 +148,7 @@ export const setFromChain = ({
   token = null,
 }: {
   chainId: Hex | CaipChainId;
-  token?: TokenPayload['payload'];
+  token?: TokenPayload['payload'] | null;
 }) => {
   return async (
     dispatch: MetaMaskReduxDispatch,
