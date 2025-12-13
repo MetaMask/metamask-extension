@@ -4,6 +4,12 @@ import { Mockttp } from 'mockttp';
 export const FEATURE_FLAGS_URL =
   'https://client-config.api.cx.metamask.io/v1/flags';
 
+export const LEGACY_SEND_FEATURE_FLAG = {
+  sendRedesign: {
+    enabled: false,
+  },
+};
+
 /**
  * Detects if the current build is Flask by reading the manifest.json file.
  * Flask builds have "MetaMask Flask" in the name field.

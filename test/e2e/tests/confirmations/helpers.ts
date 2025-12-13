@@ -7,6 +7,7 @@ import { Driver } from '../../webdriver/driver';
 import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
 import { MOCK_META_METRICS_ID } from '../../constants';
 import { mockDialogSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
+import { LEGACY_SEND_FEATURE_FLAG } from '../send/common';
 
 export const DECODING_E2E_API_URL =
   'https://signature-insights.api.cx.metamask.io/v1';
@@ -258,11 +259,7 @@ export async function mockEip7702FeatureFlag(mockServer: Mockttp) {
                 supportedChains: ['0xaa36a7', '0x539', '0x1'],
               },
             },
-            {
-              sendRedesign: {
-                enabled: false,
-              },
-            },
+            LEGACY_SEND_FEATURE_FLAG,
           ],
         };
       }),
@@ -608,11 +605,7 @@ export async function mockDeFiPositionFeatureFlag(mockServer: Mockttp) {
             {
               assetsDefiPositionsEnabled: true,
             },
-            {
-              sendRedesign: {
-                enabled: false,
-              },
-            },
+            LEGACY_SEND_FEATURE_FLAG,
           ],
         };
       }),
@@ -655,11 +648,7 @@ export async function mockNoDeFiPositionFeatureFlag(mockServer: Mockttp) {
             {
               assetsDefiPositionsEnabled: true,
             },
-            {
-              sendRedesign: {
-                enabled: false,
-              },
-            },
+            LEGACY_SEND_FEATURE_FLAG,
           ],
         };
       }),
@@ -688,11 +677,7 @@ export async function mockDefiPositionsFailure(mockServer: Mockttp) {
             {
               assetsDefiPositionsEnabled: true,
             },
-            {
-              sendRedesign: {
-                enabled: false,
-              },
-            },
+            LEGACY_SEND_FEATURE_FLAG,
           ],
         };
       }),
