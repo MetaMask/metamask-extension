@@ -1,5 +1,8 @@
+const {
+  loginWithBalanceValidation,
+} = require('../page-objects/flows/login.flow');
 const { DAPP_PATH, DAPP_URL_LOCALHOST } = require('../constants');
-const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
+const { withFixtures, WINDOW_TITLES } = require('../helpers');
 const FixtureBuilder = require('../fixtures/fixture-builder');
 const {
   mockDialogSnap,
@@ -17,7 +20,7 @@ describe('Test Snap Dialog', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // navigate to test snaps page and connect to dialog snap
         await driver.openNewPage(DAPP_URL_LOCALHOST);

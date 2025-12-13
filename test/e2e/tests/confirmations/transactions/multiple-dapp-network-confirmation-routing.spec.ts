@@ -4,12 +4,12 @@ import FixtureBuilder from '../../../fixtures/fixture-builder';
 import {
   DAPP_ONE_URL,
   DAPP_URL,
-  unlockWallet,
   WINDOW_TITLES,
   withFixtures,
 } from '../../../helpers';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 
 describe('Routing confirmstions from Multiple Dapps and different networks', function () {
   it('Confirmation requests from different DAPPS and networks should be in same queue, it is possible to navigate the queue.', async function () {
@@ -38,7 +38,7 @@ describe('Routing confirmstions from Multiple Dapps and different networks', fun
 
       async ({ driver }) => {
         if (process.env.EVM_MULTICHAIN_ENABLED === 'true') {
-          await unlockWallet(driver);
+          await loginWithBalanceValidation(driver);
 
           // Open Dapp One
           const testDapp1 = new TestDapp(driver);

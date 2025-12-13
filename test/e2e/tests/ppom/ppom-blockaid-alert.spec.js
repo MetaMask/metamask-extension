@@ -1,8 +1,10 @@
 const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixtures/fixture-builder');
-
-const { unlockWallet, withFixtures } = require('../../helpers');
+const { withFixtures } = require('../../helpers');
 const { DAPP_URL, WINDOW_TITLES } = require('../../constants');
+const {
+  loginWithBalanceValidation,
+} = require('../../page-objects/flows/login.flow');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 
 const bannerAlertSelector = '[data-testid="security-provider-banner-alert"]';
@@ -178,7 +180,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
       },
 
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
         await driver.openNewPage(DAPP_URL);
 
         for (const config of testBenignConfigs) {
@@ -240,7 +242,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
       },
 
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
         await driver.openNewPage(DAPP_URL);
 
         for (const config of testMaliciousConfigs) {
@@ -298,7 +300,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
       },
 
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
         await driver.openNewPage(DAPP_URL);
 
         // Click TestDapp button to send JSON-RPC request

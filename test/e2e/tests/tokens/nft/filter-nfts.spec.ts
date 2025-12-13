@@ -1,5 +1,5 @@
 import { toHex } from '@metamask/controller-utils';
-import { withFixtures, unlockWallet } from '../../../helpers';
+import { withFixtures } from '../../../helpers';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { Driver } from '../../../webdriver/driver';
@@ -8,6 +8,7 @@ import NftListPage from '../../../page-objects/pages/home/nft-list';
 import NetworkManager, {
   NetworkId,
 } from '../../../page-objects/pages/network-manager';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 
 describe('View NFT details', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
@@ -94,7 +95,7 @@ describe('View NFT details', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         const networkManager = new NetworkManager(driver);
 

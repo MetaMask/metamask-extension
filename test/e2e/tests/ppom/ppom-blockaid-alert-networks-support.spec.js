@@ -1,6 +1,9 @@
 const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixtures/fixture-builder');
-const { unlockWallet, withFixtures } = require('../../helpers');
+const { withFixtures } = require('../../helpers');
+const {
+  loginWithBalanceValidation,
+} = require('../../page-objects/flows/login.flow');
 const { DAPP_URL, WINDOW_TITLES } = require('../../constants');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 
@@ -63,7 +66,7 @@ describe('PPOM Blockaid Alert - Multiple Networks Support', function () {
         const expectedDescription =
           'If you approve this request, you might lose your assets.';
 
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
         await driver.openNewPage(DAPP_URL);
 
         // Click TestDapp button to send JSON-RPC request

@@ -2,7 +2,7 @@ import { Mockttp } from 'mockttp';
 
 import { E2E_SRP } from '../../../fixtures/default-fixture';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
-import { withFixtures, unlockWallet, WALLET_PASSWORD } from '../../../helpers';
+import { withFixtures, WALLET_PASSWORD } from '../../../helpers';
 import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
@@ -11,6 +11,7 @@ import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onb
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
 import { mockInfuraAndAccountSync } from '../mocks';
 import { arrangeTestUtils } from './helpers';
@@ -48,7 +49,7 @@ describe('Account syncing - Accounts with Balances', function () {
         testSpecificMock: phase1MockSetup,
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         const header = new HeaderNavbar(driver);
         await header.checkPageIsLoaded();

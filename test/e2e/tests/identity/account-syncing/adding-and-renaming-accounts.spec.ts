@@ -8,7 +8,6 @@ import { E2E_SRP } from '../../../fixtures/default-fixture';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
 import {
   withFixtures,
-  unlockWallet,
   WALLET_PASSWORD,
   getCleanAppState,
 } from '../../../helpers';
@@ -18,6 +17,7 @@ import {
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
 import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
@@ -61,7 +61,7 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
         testSpecificMock: sharedMockSetup,
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // Wait for the initial account sync to complete before adding new accounts
         const homePage = new HomePage(driver);
@@ -116,7 +116,7 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
         testSpecificMock: sharedMockSetup,
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // Wait for the initial account sync to complete before interacting with accounts
         await driver.wait(async () => {

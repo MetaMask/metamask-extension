@@ -1,9 +1,4 @@
-import {
-  withFixtures,
-  unlockWallet,
-  WINDOW_TITLES,
-  convertETHToHexGwei,
-} from '../helpers';
+import { withFixtures, WINDOW_TITLES, convertETHToHexGwei } from '../helpers';
 import FixtureBuilder from '../fixtures/fixture-builder';
 import {
   BUNDLER_URL,
@@ -26,6 +21,7 @@ import TestDapp from '../page-objects/pages/test-dapp';
 import { mockSnapAccountAbstractionKeyRingAndSite } from '../mock-response-data/snaps/snap-local-sites/account-abstraction-keyring-site-mocks';
 import SendTokenPage from '../page-objects/pages/send/send-token-page';
 import HomePage from '../page-objects/pages/home/homepage';
+import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 
 enum TransactionDetailRowIndex {
   Nonce = 0,
@@ -222,7 +218,7 @@ async function withAccountSnap(
       driver: Driver;
       bundlerServer: Bundler;
     }) => {
-      await unlockWallet(driver);
+      await loginWithBalanceValidation(driver);
       await installExampleSnap(driver);
 
       await setSnapConfig(driver, {

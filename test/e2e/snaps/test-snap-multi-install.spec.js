@@ -1,6 +1,9 @@
 const { DAPP_PATH, DAPP_URL } = require('../constants');
-const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
+const { withFixtures, WINDOW_TITLES } = require('../helpers');
 const FixtureBuilder = require('../fixtures/fixture-builder');
+const {
+  loginWithBalanceValidation,
+} = require('../page-objects/flows/login.flow');
 const {
   mockBip32Snap,
   mockBip44Snap,
@@ -23,7 +26,7 @@ describe('Test Snap Multi Install', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // navigate to test snaps page and multi-install snaps
         await driver.openNewPage(DAPP_URL);

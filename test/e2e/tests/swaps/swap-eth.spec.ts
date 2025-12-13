@@ -1,5 +1,6 @@
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import { unlockWallet, withFixtures } from '../../helpers';
+import { withFixtures } from '../../helpers';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import {
   buildQuote,
   reviewQuote,
@@ -20,7 +21,7 @@ describe('Swap Eth for another Token', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         await buildQuote(driver, {
           amount: 2,
