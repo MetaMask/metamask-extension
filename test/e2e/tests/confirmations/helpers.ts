@@ -258,6 +258,11 @@ export async function mockEip7702FeatureFlag(mockServer: Mockttp) {
                 supportedChains: ['0xaa36a7', '0x539', '0x1'],
               },
             },
+            {
+              sendRedesign: {
+                enabled: false,
+              },
+            },
           ],
         };
       }),
@@ -603,6 +608,11 @@ export async function mockDeFiPositionFeatureFlag(mockServer: Mockttp) {
             {
               assetsDefiPositionsEnabled: true,
             },
+            {
+              sendRedesign: {
+                enabled: false,
+              },
+            },
           ],
         };
       }),
@@ -677,6 +687,11 @@ export async function mockDefiPositionsFailure(mockServer: Mockttp) {
           json: [
             {
               assetsDefiPositionsEnabled: true,
+            },
+            {
+              sendRedesign: {
+                enabled: false,
+              },
             },
           ],
         };
