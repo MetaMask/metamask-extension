@@ -6,7 +6,6 @@ const detectPort = require('detect-port');
 const { difference } = require('lodash');
 const WebSocket = require('ws');
 const createStaticServer = require('../../development/create-static-server');
-const { mockLegacySendFeatureFlag } = require('./tests/send/common');
 const { setupMocking } = require('./mock-e2e');
 const { setupMockingPassThrough } = require('./mock-e2e-pass-through');
 const { Anvil } = require('./seeder/anvil');
