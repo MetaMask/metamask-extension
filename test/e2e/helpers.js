@@ -6,6 +6,7 @@ const detectPort = require('detect-port');
 const { difference } = require('lodash');
 const WebSocket = require('ws');
 const createStaticServer = require('../../development/create-static-server');
+const { mockLegacySendFeatureFlag } = require('./tests/send/common');
 const { setupMocking } = require('./mock-e2e');
 const { setupMockingPassThrough } = require('./mock-e2e-pass-through');
 const { Anvil } = require('./seeder/anvil');
@@ -55,10 +56,6 @@ const createDownloadFolder = async (downloadsFolder) => {
 const convertToHexValue = (val) => `0x${new BigNumber(val, 10).toString(16)}`;
 
 const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
-
-const {
-  mockMultichainAccountsFeatureFlagStateTwo,
-} = require('./tests/multichain-accounts/feature-flag-mocks');
 
 /**
  * Normalizes the localNodeOptions into a consistent format to handle different data structures.
@@ -173,7 +170,7 @@ async function withFixtures(options, testSuite) {
     monConversionInUsd,
     manifestFlags,
     solanaWebSocketSpecificMocks = [],
-    forceBip44Version = true,
+    forceLegacySendFlow = true,
   } = options;
 
   // Normalize localNodeOptions
@@ -333,9 +330,9 @@ async function withFixtures(options, testSuite) {
     webSocketServer.start();
     await setupSolanaWebsocketMocks(solanaWebSocketSpecificMocks);
 
-    if (forceBip44Version) {
-      console.log('BIP-44 stage 2 enabled');
-      await mockMultichainAccountsFeatureFlagStateTwo(mockServer);
+    if (forceLegacySendFlow) {
+      console.log('! Force legacy send flow');
+      await mockLegacySendFeatureFlag(mockServer);
     }
 
     // Decide between the regular setupMocking and the passThrough version

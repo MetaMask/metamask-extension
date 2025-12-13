@@ -22,7 +22,7 @@ describe('Bridge functionality', function (this: Suite) {
   it('should show that more funds are needed to execute the Bridge', async function () {
     await withFixtures(
       {
-        forceBip44Version: false,
+        forceLegacySendFlow: false,
         ...getInsufficientFundsFixtures(
           DEFAULT_BRIDGE_FEATURE_FLAGS,
           this.test?.fullTitle(),
@@ -54,7 +54,7 @@ describe('Bridge functionality', function (this: Suite) {
   it('should show message that no trade route is available if getQuote returns error 500', async function () {
     await withFixtures(
       {
-        forceBip44Version: false,
+        forceLegacySendFlow: false,
         ...getQuoteNegativeCasesFixtures(
           {
             statusCode: 500,
@@ -82,7 +82,7 @@ describe('Bridge functionality', function (this: Suite) {
   it('should show message that no trade route is available if getQuote returns empty array', async function () {
     await withFixtures(
       {
-        forceBip44Version: false,
+        forceLegacySendFlow: false,
         ...getQuoteNegativeCasesFixtures(
           {
             statusCode: 200,
@@ -110,7 +110,7 @@ describe('Bridge functionality', function (this: Suite) {
   it('should show message that no trade route is available if getQuote returns invalid response', async function () {
     await withFixtures(
       {
-        forceBip44Version: false,
+        forceLegacySendFlow: false,
         ...getQuoteNegativeCasesFixtures(
           {
             statusCode: 200,
@@ -139,7 +139,7 @@ describe('Bridge functionality', function (this: Suite) {
   it('should show that bridge transaction is pending if getTxStatus returns error 500', async function () {
     await withFixtures(
       {
-        forceBip44Version: false,
+        forceLegacySendFlow: false,
         ...getBridgeNegativeCasesFixtures(
           {
             statusCode: 500,
@@ -172,7 +172,7 @@ describe('Bridge functionality', function (this: Suite) {
   it('should show failed bridge activity if getTxStatus returns failed source transaction', async function () {
     await withFixtures(
       {
-        forceBip44Version: false,
+        forceLegacySendFlow: false,
         ...getBridgeNegativeCasesFixtures(
           {
             statusCode: 200,
@@ -206,7 +206,7 @@ describe('Bridge functionality', function (this: Suite) {
   it('should show failed bridge activity if getTxStatus returns failed destination transaction', async function () {
     await withFixtures(
       {
-        forceBip44Version: false,
+        forceLegacySendFlow: false,
         ...getBridgeNegativeCasesFixtures(
           {
             statusCode: 200,

@@ -16,7 +16,7 @@ describe('View DeFi details', function () {
   it('user should be able to view Aave Positions details', async function () {
     await withFixtures(
       {
-        forceBip44Version: false,
+        forceLegacySendFlow: false,
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withEnabledNetworks({
