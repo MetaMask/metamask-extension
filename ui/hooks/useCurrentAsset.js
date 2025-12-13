@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { useMatch } from 'react-router-dom-v5-compat';
+import { useMatch } from 'react-router-dom';
 import { getTokens } from '../ducks/metamask/metamask';
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { ASSET_ROUTE } from '../helpers/constants/routes';

@@ -5,7 +5,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventLocation,
   MetaMetricsEventName,
-  MetaMetricsEventUiCustomization,
 } from '../../../../shared/constants/metametrics';
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -61,11 +60,6 @@ const useTrackERC20WithoutDecimalInformation = (
           // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id: chainId,
           location: metricLocation,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          ui_customizations: [
-            MetaMetricsEventUiCustomization.RedesignedConfirmation,
-          ],
         },
       });
       hasTracked.current = true;

@@ -263,8 +263,8 @@ describe('Sentry errors', function () {
           },
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSpotPrices(mockServer, '0x539', {
-              '0x0000000000000000000000000000000000000000': {
+            await mockSpotPrices(mockServer, {
+              'eip155:1/slip44:60': {
                 price: 1700,
                 marketCap: 382623505141,
                 pricePercentChange1d: 0,
@@ -331,8 +331,8 @@ describe('Sentry errors', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSpotPrices(mockServer, '0x539', {
-              '0x0000000000000000000000000000000000000000': {
+            await mockSpotPrices(mockServer, {
+              'eip155:1/slip44:60': {
                 price: 1700,
                 marketCap: 382623505141,
                 pricePercentChange1d: 0,
@@ -409,8 +409,8 @@ describe('Sentry errors', function () {
           },
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSpotPrices(mockServer, '0x539', {
-              '0x0000000000000000000000000000000000000000': {
+            await mockSpotPrices(mockServer, {
+              'eip155:1/slip44:60': {
                 price: 1700,
                 marketCap: 382623505141,
                 pricePercentChange1d: 0,
@@ -492,8 +492,8 @@ describe('Sentry errors', function () {
           },
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSpotPrices(mockServer, '0x539', {
-              '0x0000000000000000000000000000000000000000': {
+            await mockSpotPrices(mockServer, {
+              'eip155:1/slip44:60': {
                 price: 1700,
                 marketCap: 382623505141,
                 pricePercentChange1d: 0,
@@ -591,8 +591,8 @@ describe('Sentry errors', function () {
           },
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSpotPrices(mockServer, '0x539', {
-              '0x0000000000000000000000000000000000000000': {
+            await mockSpotPrices(mockServer, {
+              'eip155:1/slip44:60': {
                 price: 1700,
                 marketCap: 382623505141,
                 pricePercentChange1d: 0,
@@ -677,8 +677,8 @@ describe('Sentry errors', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSpotPrices(mockServer, '0x539', {
-              '0x0000000000000000000000000000000000000000': {
+            await mockSpotPrices(mockServer, {
+              'eip155:1/slip44:60': {
                 price: 1700,
                 marketCap: 382623505141,
                 pricePercentChange1d: 0,
@@ -759,8 +759,8 @@ describe('Sentry errors', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSpotPrices(mockServer, '0x539', {
-              '0x0000000000000000000000000000000000000000': {
+            await mockSpotPrices(mockServer, {
+              'eip155:1/slip44:60': {
                 price: 1700,
                 marketCap: 382623505141,
                 pricePercentChange1d: 0,
@@ -864,8 +864,8 @@ describe('Sentry errors', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSpotPrices(mockServer, '0x539', {
-              '0x0000000000000000000000000000000000000000': {
+            await mockSpotPrices(mockServer, {
+              'eip155:1/slip44:60': {
                 price: 1700,
                 marketCap: 382623505141,
                 pricePercentChange1d: 0,
@@ -936,8 +936,8 @@ describe('Sentry errors', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSpotPrices(mockServer, '0x539', {
-              '0x0000000000000000000000000000000000000000': {
+            await mockSpotPrices(mockServer, {
+              'eip155:1/slip44:60': {
                 price: 1700,
                 marketCap: 382623505141,
                 pricePercentChange1d: 0,
@@ -1008,8 +1008,8 @@ describe('Sentry errors', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSpotPrices(mockServer, '0x539', {
-              '0x0000000000000000000000000000000000000000': {
+            await mockSpotPrices(mockServer, {
+              'eip155:1/slip44:60': {
                 price: 1700,
                 marketCap: 382623505141,
                 pricePercentChange1d: 0,
@@ -1094,8 +1094,8 @@ describe('Sentry errors', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSpotPrices(mockServer, '0x539', {
-              '0x0000000000000000000000000000000000000000': {
+            await mockSpotPrices(mockServer, {
+              'eip155:1/slip44:60': {
                 price: 1700,
                 marketCap: 382623505141,
                 pricePercentChange1d: 0,
@@ -1193,8 +1193,8 @@ describe('Sentry errors', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSpotPrices(mockServer, '0x539', {
-              '0x0000000000000000000000000000000000000000': {
+            await mockSpotPrices(mockServer, {
+              'eip155:1/slip44:60': {
                 price: 1700,
                 marketCap: 382623505141,
                 pricePercentChange1d: 0,
@@ -1273,8 +1273,8 @@ describe('Sentry errors', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockSpotPrices(mockServer, '0x539', {
-              '0x0000000000000000000000000000000000000000': {
+            await mockSpotPrices(mockServer, {
+              'eip155:1/slip44:60': {
                 price: 1700,
                 marketCap: 382623505141,
                 pricePercentChange1d: 0,

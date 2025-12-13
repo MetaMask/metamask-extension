@@ -1,7 +1,7 @@
 import { act } from '@testing-library/react-hooks';
 import React from 'react';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { renderHookWithProvider } from '../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   MetaMetricsEventName,

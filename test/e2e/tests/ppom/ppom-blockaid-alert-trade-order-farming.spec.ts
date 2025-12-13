@@ -108,7 +108,7 @@ async function mockSecurityAlertsRequest(server: MockttpServer): Promise<void> {
   await server
     .forPost(`${SECURITY_ALERTS_PROD_API_BASE_URL}/validate/0x539`)
     .withJsonBodyIncluding(request)
-    .thenJson(response.statusCode ?? 201, response);
+    .thenJson(response.statusCode ?? 201, response.body);
 }
 
 describe('PPOM Blockaid Alert - Set Trade farming order', function (this: Suite) {
@@ -147,7 +147,7 @@ describe('PPOM Blockaid Alert - Set Trade farming order', function (this: Suite)
 
         const expectedTitle = 'This is a deceptive request';
         const expectedDescription =
-          'If you approve this request, you might lose your assets.';
+          'If you approve this request, a third party known for scams will take all your assets.';
 
         // Click TestDapp button to send JSON-RPC request
         await testDapp.clickMaliciousTradeOrderButton();

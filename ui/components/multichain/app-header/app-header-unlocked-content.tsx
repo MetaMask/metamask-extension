@@ -9,7 +9,7 @@ import React, {
 import browser from 'webextension-polyfill';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import {
   AlignItems,
   BackgroundColor,

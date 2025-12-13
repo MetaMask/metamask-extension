@@ -19,6 +19,7 @@ describe('Name lookup', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
+        forceBip44Version: false,
         fixtures: new FixtureBuilder({
           inputChainId: CHAIN_IDS.MAINNET,
         }).build(),

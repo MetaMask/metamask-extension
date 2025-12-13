@@ -186,6 +186,7 @@ export default function RecoveryPhraseChips({
             const isTargetIndex = index === indexToFocus;
             return isQuizWord || !confirmPhase ? (
               <Box
+                key={index}
                 as={isQuizWord ? 'button' : 'div'}
                 data-testid={`recovery-phrase-chip-${index}`}
                 className="recovery-phrase__text"

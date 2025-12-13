@@ -6,7 +6,7 @@ exports[`SnapsSection renders section for typed sign request 1`] = `
     class="mm-box mm-box--margin-bottom-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
   >
     <div
-      class="mm-box delineator__wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--background-color-background-default mm-box--rounded-lg"
+      class="mm-box delineator__wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--background-color-background-section mm-box--rounded-lg"
     >
       <div
         class="mm-box delineator__header delineator__header--expanded mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-0 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
@@ -39,7 +39,7 @@ exports[`SnapsSection renders section for typed sign request 1`] = `
         class="mm-box mm-box--padding-top-0 mm-box--padding-right-0 mm-box--padding-bottom-0 mm-box--padding-left-0 mm-box--flex-direction-column"
       >
         <div
-          class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-default"
+          class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-section"
           style="overflow-y: auto;"
         >
           <div
@@ -68,7 +68,7 @@ exports[`SnapsSection renders section personal sign request 1`] = `
     class="mm-box mm-box--margin-bottom-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
   >
     <div
-      class="mm-box delineator__wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--background-color-background-default mm-box--rounded-lg"
+      class="mm-box delineator__wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--background-color-background-section mm-box--rounded-lg"
     >
       <div
         class="mm-box delineator__header delineator__header--expanded mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-0 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
@@ -101,7 +101,7 @@ exports[`SnapsSection renders section personal sign request 1`] = `
         class="mm-box mm-box--padding-top-0 mm-box--padding-right-0 mm-box--padding-bottom-0 mm-box--padding-left-0 mm-box--flex-direction-column"
       >
         <div
-          class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-default"
+          class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-section"
           style="overflow-y: auto;"
         >
           <div

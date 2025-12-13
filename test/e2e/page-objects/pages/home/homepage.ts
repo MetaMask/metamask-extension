@@ -49,6 +49,10 @@ class HomePage {
     testId: 'asset-list-control-bar-action-button',
   };
 
+  private readonly fundYourWalletBanner = {
+    text: 'Fund your wallet',
+  };
+
   private readonly loadingOverlay = {
     text: 'Connecting to Localhost 8545',
   };
@@ -109,13 +113,14 @@ class HomePage {
     this.headerNavbar = new HeaderNavbar(driver);
   }
 
-  async checkPageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded({
+    timeout = 10000,
+  }: { timeout?: number } = {}): Promise<void> {
     try {
-      await this.driver.waitForMultipleSelectors([
-        this.sendButton,
-        this.activityTab,
-        this.tokensTab,
-      ]);
+      await this.driver.waitForMultipleSelectors(
+        [this.sendButton, this.activityTab, this.tokensTab],
+        { timeout },
+      );
     } catch (e) {
       console.log('Timeout while waiting for home page to be loaded', e);
       throw e;
@@ -348,6 +353,10 @@ class HomePage {
     expectedBalance: string = '25',
     symbol: string = 'ETH',
   ): Promise<void> {
+    if (expectedBalance === '0') {
+      await this.driver.waitForSelector(this.fundYourWalletBanner);
+      return;
+    }
     try {
       await this.driver.waitForSelector({
         css: this.balance,
@@ -399,10 +408,19 @@ class HomePage {
    */
   async checkHasAccountSyncingSyncedAtLeastOnce(): Promise<void> {
     console.log('Check if account syncing has synced at least once');
-    await this.driver.wait(async () => {
-      const uiState = await getCleanAppState(this.driver);
-      return uiState.metamask.hasAccountTreeSyncingSyncedAtLeastOnce === true;
-    }, 30000); // Syncing can take some time so adding a longer timeout to reduce flakes
+    await this.driver.waitUntil(
+      async () => {
+        const uiState = await getCleanAppState(this.driver);
+        // Check for nullish, as the state we might seems to be `null` sometimes.
+        return (
+          uiState?.metamask?.hasAccountTreeSyncingSyncedAtLeastOnce === true
+        );
+      },
+      {
+        interval: 1000,
+        timeout: 30000, // Syncing can take some time so adding a longer timeout to reduce flakes
+      },
+    );
   }
 
   async checkIfSendButtonIsClickable(): Promise<boolean> {
@@ -437,7 +455,9 @@ class HomePage {
   ): Promise<void> {
     let expectedBalance: string;
     if (localNode) {
-      expectedBalance = (await localNode.getBalance(address)).toString();
+      const balance = await localNode.getBalance(address);
+      expectedBalance = balance.toFixed(3);
+      expectedBalance = Number(expectedBalance).toString();
     } else {
       expectedBalance = '25';
     }

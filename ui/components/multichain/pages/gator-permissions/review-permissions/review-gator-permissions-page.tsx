@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { useNavigate, useParams } from 'react-router-dom-v5-compat';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import {
@@ -44,28 +44,15 @@ import {
 import { ReviewGatorPermissionItem } from '../components';
 import { PREVIOUS_ROUTE } from '../../../../../helpers/constants/routes';
 
-type ReviewGatorPermissionsPageProps = {
-  params?: { chainId: string; permissionGroupName: string; origin?: string };
-  navigate?: (
-    to: string | number,
-    options?: { replace?: boolean; state?: Record<string, unknown> },
-  ) => void;
-};
-
-export const ReviewGatorPermissionsPage = ({
-  params,
-  navigate: navigateProp,
-}: ReviewGatorPermissionsPageProps = {}) => {
+export const ReviewGatorPermissionsPage = () => {
   const t = useI18nContext();
-  const navigateHook = useNavigate();
-  const navigate = navigateProp || navigateHook;
-  const urlParamsHook = useParams<{
+  const navigate = useNavigate();
+  const { chainId, origin } = useParams<{
     chainId: string;
     permissionGroupName: string;
     origin?: string;
   }>();
 
-  const { chainId, origin } = params || urlParamsHook;
   const originDecoded = origin ? safeDecodeURIComponent(origin) : undefined;
 
   const [, evmNetworks] = useSelector(

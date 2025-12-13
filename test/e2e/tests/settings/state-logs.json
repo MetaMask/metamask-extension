@@ -151,27 +151,28 @@
   "logs": [],
   "metamask": {
     "accountGroupsMetadata": {
-      "entropy:01KA0MT07W98B2G9474CFDC6VM/0": {
-        "hidden": {
-          "lastUpdatedAt": "number",
-          "value": "boolean"
-        },
+      "entropy:01K98E0QDS4HYMTRJ5WHZ73ZWJ/0": {
         "name": {
-          "lastUpdatedAt": "number",
-          "value": "string"
+          "value": "string",
+          "lastUpdatedAt": "number"
         },
         "pinned": {
-          "lastUpdatedAt": "number",
-          "value": "boolean"
+          "value": "boolean",
+          "lastUpdatedAt": "number"
+        },
+        "hidden": {
+          "value": "boolean",
+          "lastUpdatedAt": "number"
         }
       }
     },
-    "accountsAssets": {},
+    "accountsAssets": {
+      "3c62fe60-6f00-4227-86f4-33d0b1f4c39e": ["string"]
+    },
     "accountsByChainId": {
       "0x1": {
         "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
-          "balance": "string",
-          "stakedBalance": "string"
+          "balance": "string"
         }
       },
       "0x18c7": {
@@ -236,35 +237,39 @@
       }
     },
     "accountTree": {
-      "selectedAccountGroup": "string",
       "wallets": {
-        "entropy:01KA0MT07W98B2G9474CFDC6VM": {
-          "groups": {
-            "entropy:01KA0MT07W98B2G9474CFDC6VM/0": {
-              "accounts": ["string"],
-              "id": "string",
-              "metadata": {
-                "entropy": {
-                  "groupIndex": "number"
-                },
-                "hidden": "boolean",
-                "name": "string",
-                "pinned": "boolean"
-              },
-              "type": "string"
-            }
-          },
+        "entropy:01K98E0QDS4HYMTRJ5WHZ73ZWJ": {
+          "type": "string",
           "id": "string",
           "metadata": {
+            "name": "string",
             "entropy": {
               "id": "string"
-            },
-            "name": "string"
+            }
           },
           "status": "string",
-          "type": "string"
+          "groups": {
+            "entropy:01K98E0QDS4HYMTRJ5WHZ73ZWJ/0": {
+              "type": "string",
+              "id": "string",
+              "metadata": {
+                "name": "string",
+                "pinned": "boolean",
+                "hidden": "boolean",
+                "entropy": {
+                  "groupIndex": "number"
+                }
+              },
+              "accounts": [
+                "d5e45e4a-3b04-4a09-a5e1-39762e5c6be4",
+                "dcf615fa-115e-4b45-af18-2df686fffde2",
+                "3c62fe60-6f00-4227-86f4-33d0b1f4c39e"
+              ]
+            }
+          }
         }
-      }
+      },
+      "selectedAccountGroup": "string"
     },
     "accountWalletsMetadata": {},
     "activeQrCodeScanRequest": "null",
@@ -302,8 +307,29 @@
     },
     "approvalFlows": [],
     "assetExchangeRates": {},
-    "assetsMetadata": {},
-    "balances": {},
+    "assetsMetadata": {
+      "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501": {
+        "name": "string",
+        "symbol": "string",
+        "fungible": "boolean",
+        "iconUrl": "string",
+        "units": [
+          {
+            "name": "string",
+            "symbol": "string",
+            "decimals": "number"
+          }
+        ]
+      }
+    },
+    "balances": {
+      "3c62fe60-6f00-4227-86f4-33d0b1f4c39e": {
+        "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501": {
+          "unit": "string",
+          "amount": "string"
+        }
+      }
+    },
     "browserEnvironment": {
       "browser": "string",
       "os": "string"
@@ -486,8 +512,13 @@
     "identities": {
       "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
         "address": "string",
-        "lastSelected": "number",
-        "name": "string"
+        "name": "string",
+        "lastSelected": "number"
+      },
+      "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer": {
+        "address": "string",
+        "name": "string",
+        "lastSelected": "number"
       }
     },
     "ignoredNfts": [],
@@ -497,30 +528,61 @@
     "internalAccounts": {
       "accounts": {
         "d5e45e4a-3b04-4a09-a5e1-39762e5c6be4": {
-          "address": "string",
           "id": "string",
+          "address": "string",
+          "options": {
+            "entropySource": "string",
+            "derivationPath": "string",
+            "groupIndex": "number",
+            "entropy": {
+              "type": "string",
+              "id": "string",
+              "derivationPath": "string",
+              "groupIndex": "number"
+            }
+          },
+          "methods": ["string"],
+          "scopes": ["string"],
+          "type": "string",
           "metadata": {
+            "name": "string",
+            "importTime": "number",
+            "lastSelected": "number",
+            "keyring": {
+              "type": "string"
+            }
+          }
+        },
+        "3c62fe60-6f00-4227-86f4-33d0b1f4c39e": {
+          "type": "string",
+          "scopes": ["string"],
+          "id": "string",
+          "address": "string",
+          "options": {
+            "entropySource": "string",
+            "derivationPath": "string",
+            "index": "number",
+            "entropy": {
+              "type": "string",
+              "id": "string",
+              "derivationPath": "string",
+              "groupIndex": "number"
+            }
+          },
+          "methods": ["string"],
+          "metadata": {
+            "name": "string",
             "importTime": "number",
             "keyring": {
               "type": "string"
             },
-            "lastSelected": "number",
-            "name": "string"
-          },
-          "methods": ["string"],
-          "options": {
-            "derivationPath": "string",
-            "entropy": {
-              "derivationPath": "string",
-              "groupIndex": "number",
+            "snap": {
               "id": "string",
-              "type": "string"
+              "name": "string",
+              "enabled": "boolean"
             },
-            "entropySource": "string",
-            "groupIndex": "number"
-          },
-          "scopes": ["string"],
-          "type": "string"
+            "lastSelected": "number"
+          }
         }
       },
       "selectedAccount": "string"
@@ -575,8 +637,13 @@
     "lostIdentities": {
       "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
         "address": "string",
-        "lastSelected": "number",
-        "name": "string"
+        "name": "string",
+        "lastSelected": "number"
+      },
+      "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer": {
+        "address": "string",
+        "name": "string",
+        "lastSelected": "number"
       }
     },
     "manageInstitutionalWallets": "boolean",
@@ -690,7 +757,9 @@
     "newPrivacyPolicyToastShownDate": "number",
     "nftsDetectionNoticeDismissed": "boolean",
     "nftsDropdownState": {},
-    "nonEvmTransactions": {},
+    "nonEvmTransactions": {
+      "3c62fe60-6f00-4227-86f4-33d0b1f4c39e": {}
+    },
     "nonRPCGasFeeApisDisabled": "boolean",
     "notificationGasPollTokens": [],
     "onboardingDate": "null",
@@ -782,11 +851,10 @@
       "hyperliquid": {}
     },
     "remoteFeatureFlags": {
-      "feature1": "boolean",
-      "feature2": "boolean",
-      "feature3": {
-        "name": "string",
-        "value": "string"
+      "enableMultichainAccountsState2": {
+        "enabled": "boolean",
+        "featureVersion": "string",
+        "minimumVersion": "string"
       },
       "sendRedesign": {
         "enabled": "boolean"
@@ -819,6 +887,12 @@
       "null": [
         {
           "address": "string"
+        }
+      ],
+      "01KBPCGKC0N982CH1VYK4WJ5BH": [
+        {
+          "address": "string",
+          "scopes": ["string", "string", "string"]
         }
       ]
     },
@@ -887,6 +961,24 @@
         "svgIcon": "string",
         "version": "string"
       },
+      "npm:@metamask/permissions-kernel-snap": {
+        "extensionId": "null",
+        "iconUrl": "null",
+        "name": "string",
+        "origin": "string",
+        "subjectType": "string",
+        "svgIcon": "string",
+        "version": "string"
+      },
+      "npm:@metamask/gator-permissions-snap": {
+        "extensionId": "null",
+        "iconUrl": "null",
+        "name": "string",
+        "origin": "string",
+        "subjectType": "string",
+        "svgIcon": "string",
+        "version": "string"
+      },
       "npm:@metamask/solana-wallet-snap": {
         "extensionId": "null",
         "iconUrl": "null",
@@ -946,23 +1038,6 @@
     "tokenBalances": {
       "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
         "0x539": {
-          "0x0000000000000000000000000000000000000000": "string"
-        },
-        "0x1": {
-          "0x0000000000000000000000000000000000000000": "string",
-          "0x4FEF9D741011476750A243aC70b9789a63dd47Df": "string"
-        },
-        "0xe708": {
-          "0x0000000000000000000000000000000000000000": "string"
-        },
-        "0x2105": {},
-        "0xa4b1": {
-          "0x0000000000000000000000000000000000000000": "string"
-        },
-        "0x38": {},
-        "0xa": {},
-        "0x89": {},
-        "0x531": {
           "0x0000000000000000000000000000000000000000": "string"
         }
       }
