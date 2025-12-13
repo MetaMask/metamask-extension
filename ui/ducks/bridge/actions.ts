@@ -143,7 +143,7 @@ export const setFromChain = ({
   token = null,
 }: {
   chainId: Hex | CaipChainId;
-  token?: TokenPayload['payload'];
+  token?: TokenPayload['payload'] | null;
 }) => {
   return async (
     dispatch: MetaMaskReduxDispatch,

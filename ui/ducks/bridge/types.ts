@@ -14,6 +14,7 @@ export type BridgeToken = {
   assetId?: CaipAssetType;
   symbol: string;
   image: string;
+  name: string;
   decimals: number;
   chainId: number | Hex | ChainId | CaipChainId;
   balance: string; // raw balance
@@ -58,6 +59,7 @@ export type TokenPayload = {
     address: GenericQuoteRequest['srcTokenAddress'];
     symbol: string;
     decimals: number;
+    name?: string;
     chainId: Exclude<ChainIdPayload['payload'], null>;
     balance?: string;
     image?: string;
@@ -66,5 +68,5 @@ export type TokenPayload = {
     assetId?: CaipAssetType;
     aggregators?: string[];
     occurrences?: number;
-  } | null;
+  };
 };
