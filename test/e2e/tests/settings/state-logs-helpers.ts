@@ -196,7 +196,10 @@ const getIgnoredKeys = (): string[] => [
   'metamask.networksMetadata',
 ];
 
-const shouldIgnoreKey = (key: string, ignoredKeys: string[]): boolean => {
+export const shouldIgnoreKey = (
+  key: string,
+  ignoredKeys: string[],
+): boolean => {
   const hasNonZeroArrayIndex = key.split('.').some((part) => {
     const matches = part.match(/\[(\d+)\]/gu);
     return (
