@@ -139,7 +139,17 @@ export const MOCK_META_METRICS_ID =
   '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420';
 
 /* Mock remote feature flags response */
-export const MOCK_REMOTE_FEATURE_FLAGS_RESPONSE = {};
+export const MOCK_REMOTE_FEATURE_FLAGS_RESPONSE = {
+  feature1: true,
+  feature2: false,
+  feature3: {
+    name: 'groupC',
+    value: 'valueC',
+  },
+  sendRedesign: {
+    enabled: false,
+  },
+};
 
 /* Mock customized remote feature flags response*/
 export const MOCK_CUSTOMIZED_REMOTE_FEATURE_FLAGS = {

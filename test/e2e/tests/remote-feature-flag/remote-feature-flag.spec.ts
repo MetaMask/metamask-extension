@@ -39,11 +39,10 @@ describe('Remote feature flag', function (this: Suite) {
   it('should not be fetched when basic functionality toggle is off', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder()
+          .withUseBasicFunctionalityDisabled()
+          .build(),
         title: this.test?.fullTitle(),
-        manifestFlags: {
-          useExternalServices: false,
-        },
       },
 
       async ({ driver }: TestSuiteArguments) => {
