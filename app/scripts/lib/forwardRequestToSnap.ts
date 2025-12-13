@@ -11,6 +11,8 @@ import { WalletMiddlewareContext } from '@metamask/eth-json-rpc-middleware';
  * @param config - The config for forwarding the request.
  * @param config.handleRequest - The SnapController's handleRequest function.
  * @param config.snapId - The ID of the Snap to forward the request to.
+ * @param config.onBeforeRequest - A function to call before forwarding the request.
+ * @param config.onAfterRequest - A function to call after forwarding the request.
  * @param _params - Additional parameters, including the request ID.
  * @param _params.id - The request ID.
  * @param req - The JSON-RPC request object.
@@ -20,6 +22,8 @@ import { WalletMiddlewareContext } from '@metamask/eth-json-rpc-middleware';
 export async function forwardRequestToSnap(
   config: {
     handleRequest: SnapController['handleRequest'];
+    onBeforeRequest?: () => void;
+    onAfterRequest?: () => void;
     snapId: SnapId;
   },
   _params: {
@@ -29,7 +33,7 @@ export async function forwardRequestToSnap(
   context: WalletMiddlewareContext,
 ): Promise<Json> {
   const { method, params } = req;
-  const { handleRequest, snapId } = config;
+  const { handleRequest, snapId, onBeforeRequest, onAfterRequest } = config;
 
   if (!snapId) {
     throw new InternalError(`No snapId configured for method ${method}`);
@@ -41,16 +45,22 @@ export async function forwardRequestToSnap(
     throw new InternalError(`No origin specified for method ${method}`);
   }
 
-  const response = (await handleRequest({
-    snapId,
-    origin,
-    handler: HandlerType.OnRpcRequest,
-    request: {
-      jsonrpc: '2.0',
-      method,
-      params,
-    },
-  })) as Json;
+  try {
+    onBeforeRequest?.();
 
-  return response;
+    const response = (await handleRequest({
+      snapId,
+      origin,
+      handler: HandlerType.OnRpcRequest,
+      request: {
+        jsonrpc: '2.0',
+        method,
+        params,
+      },
+    })) as Json;
+
+    return response;
+  } finally {
+    onAfterRequest?.();
+  }
 }
