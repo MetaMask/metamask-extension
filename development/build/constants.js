@@ -25,6 +25,18 @@ const ENVIRONMENT = {
   TESTING: 'testing',
 };
 
+/**
+ * Task prefixes for each build target.
+ * Used to create task names like 'scripts:core:dev:standardEntryPoints'.
+ */
+const TASK_PREFIXES = {
+  [BUILD_TARGETS.DEV]: 'scripts:core:dev',
+  [BUILD_TARGETS.DIST]: 'scripts:core:dist',
+  [BUILD_TARGETS.PROD]: 'scripts:core:prod',
+  [BUILD_TARGETS.TEST]: 'scripts:core:test',
+  [BUILD_TARGETS.TEST_DEV]: 'scripts:core:test-live',
+};
+
 const TASKS = {
   ...BUILD_TARGETS,
   CLEAN: 'clean',
@@ -87,6 +99,7 @@ const MANIFEST_RELEASE_CANDIDATE_KEY =
 module.exports = {
   BUILD_TARGETS,
   ENVIRONMENT,
+  TASK_PREFIXES,
   TASKS,
   MANIFEST_DEV_KEY,
   MANIFEST_RELEASE_CANDIDATE_KEY,
