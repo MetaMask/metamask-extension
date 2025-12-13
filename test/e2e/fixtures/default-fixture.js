@@ -1,15 +1,13 @@
 const { mockNetworkStateOld } = require('../../stub/networks');
 const { CHAIN_IDS } = require('../../../shared/constants/network');
 const { FirstTimeFlowType } = require('../../../shared/constants/onboarding');
+const { E2E_SRP } = require('../constants');
 
 // TODO: Should we bump this?
 // The e2e tests currently configure state in the schema of migration 74.
 // This requires us to specify network state in the old schema, so it can run through the migrations.
 // We could bump this to latest, but it breaks too many other things to handle right now.
 const FIXTURE_STATE_METADATA_VERSION = 74;
-
-const E2E_SRP =
-  'spread raise short crane omit tent fringe mandate neglect detail suspect cradle';
 
 function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
   return {

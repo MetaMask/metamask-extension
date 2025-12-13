@@ -9,9 +9,7 @@ import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { MockedEndpoint } from '../../mock-e2e';
-
-export const SECOND_TEST_E2E_SRP =
-  'bench top weekend buyer spoon side resist become detect gauge eye feed';
+import { SECOND_TEST_E2E_SRP } from './constants';
 
 export async function withMultiSrp(
   {

@@ -119,7 +119,7 @@ describe('Account syncing - Settings Toggle', function () {
       },
     );
 
-    // Phase 3: Fresh app instance to verify sync persistence
+    // Phase 2: Fresh app instance to verify sync persistence
     await withFixtures(
       {
         fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
