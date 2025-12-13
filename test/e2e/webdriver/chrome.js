@@ -1,6 +1,9 @@
 const { Builder } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
 const { ThenableWebDriver } = require('selenium-webdriver'); // eslint-disable-line no-unused-vars -- this is imported for JSDoc
+const {
+  OUTDATED_BROWSER_VERSIONS,
+} = require('../../../ui/helpers/constants/common');
 const { isHeadless } = require('../../helpers/env');
 
 /**
@@ -77,8 +80,11 @@ class ChromeDriver {
       'download.default_directory': `${process.cwd()}/test-artifacts/downloads`,
     });
 
-    // Temporarily lock to version 126
-    options.setBrowserVersion('126');
+    // slice to remove the '<' character in the beginning
+    const chromeVersion = OUTDATED_BROWSER_VERSIONS.chrome.slice(1);
+
+    // Set the browser to the oldest supported version
+    options.setBrowserVersion(chromeVersion);
 
     // Allow disabling DoT local testing
     if (process.env.SELENIUM_USE_SYSTEM_DN) {
