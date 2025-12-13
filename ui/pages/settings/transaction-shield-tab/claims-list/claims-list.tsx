@@ -16,7 +16,7 @@ import {
   Icon,
 } from '@metamask/design-system-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Claim } from '@metamask/claims-controller';
+import { Claim, ClaimDraft } from '@metamask/claims-controller';
 import LoadingScreen from '../../../../components/ui/loading-screen';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useClaims } from '../../../../contexts/claims/claims';
@@ -59,28 +59,34 @@ const ClaimsList = () => {
   }, [searchParams, setSearchParams]);
 
   const claimItem = useCallback(
-    (claimData: Claim, tabKey: ClaimsTabKey, isDraft = false) => {
-      const formattedDate = getShortDateFormatterV2().format(
-        new Date(claimData.createdAt),
-      );
+    (claimData: Claim | ClaimDraft, tabKey: ClaimsTabKey, isDraft = false) => {
+      const formattedDate = isDraft
+        ? ''
+        : getShortDateFormatterV2().format(
+            new Date((claimData as Claim).createdAt),
+          );
+
+      const id = isDraft
+        ? (claimData as ClaimDraft).draftId
+        : (claimData as Claim).id;
       return (
         <Box
           asChild
-          key={claimData.id}
-          data-testid={`claim-item-${claimData.id}`}
+          key={id}
+          data-testid={`claim-item-${id}`}
           backgroundColor={BoxBackgroundColor.BackgroundSection}
           className="claim-item flex items-center justify-between w-full p-4 rounded-lg"
           onClick={() => {
             if (isDraft) {
               navigate(
-                `${TRANSACTION_SHIELD_CLAIM_ROUTES.EDIT_DRAFT.FULL}/${claimData.id}`,
+                `${TRANSACTION_SHIELD_CLAIM_ROUTES.EDIT_DRAFT.FULL}/${id}`,
               );
             } else {
               const viewRoute =
                 tabKey === CLAIMS_TAB_KEYS.PENDING
                   ? TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW_PENDING.FULL
                   : TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW_HISTORY.FULL;
-              navigate(`${viewRoute}/${claimData.id}`);
+              navigate(`${viewRoute}/${id}`);
             }
           }}
         >
@@ -91,7 +97,7 @@ const ClaimsList = () => {
                 fontWeight={FontWeight.Medium}
                 textAlign={TextAlign.Left}
               >
-                {t('shieldClaimsNumber', [claimData.shortId || claimData.id])}
+                {t('shieldClaimsNumber', [id])}
               </Text>
               <Text
                 variant={TextVariant.BodySm}

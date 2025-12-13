@@ -64,13 +64,15 @@ export const useClaimState = (mode: ClaimStateMode = 'new') => {
     if (isEditDraft && claimOrDraftId) {
       const draftDetails = getDraft(claimOrDraftId);
       if (draftDetails) {
-        setCurrentDraftId(draftDetails.id);
-        setEmail(draftDetails.email);
-        setChainId(draftDetails.chainId);
-        setImpactedWalletAddress(draftDetails.impactedWalletAddress);
-        setImpactedTransactionHash(draftDetails.impactedTransactionHash);
-        setReimbursementWalletAddress(draftDetails.reimbursementWalletAddress);
-        setCaseDescription(draftDetails.caseDescription);
+        setCurrentDraftId(draftDetails.draftId);
+        setEmail(draftDetails.email || '');
+        setChainId(draftDetails.chainId || '');
+        setImpactedWalletAddress(draftDetails.impactedWalletAddress || '');
+        setImpactedTransactionHash(draftDetails.impactedTxHash || '');
+        setReimbursementWalletAddress(
+          draftDetails.reimbursementWalletAddress || '',
+        );
+        setCaseDescription(draftDetails.description || '');
       }
     }
   }, [isEditDraft, claimOrDraftId, getDraft]);

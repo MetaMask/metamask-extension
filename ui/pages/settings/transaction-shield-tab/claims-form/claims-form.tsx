@@ -438,17 +438,15 @@ const ClaimsForm = ({ mode = 'new' }: ClaimsFormProps) => {
   ]);
 
   const handleSaveDraft = useCallback(() => {
-    saveDraft(
-      {
-        chainId,
-        email,
-        impactedWalletAddress,
-        impactedTransactionHash,
-        reimbursementWalletAddress,
-        caseDescription,
-      },
-      currentDraftId,
-    );
+    saveDraft({
+      chainId,
+      email,
+      impactedWalletAddress: impactedWalletAddress as `0x${string}`,
+      impactedTxHash: impactedTransactionHash as `0x${string}`,
+      reimbursementWalletAddress: reimbursementWalletAddress as `0x${string}`,
+      description: caseDescription,
+      draftId: currentDraftId,
+    });
     dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.DraftSaved));
     navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);
   }, [
@@ -459,9 +457,9 @@ const ClaimsForm = ({ mode = 'new' }: ClaimsFormProps) => {
     impactedTransactionHash,
     reimbursementWalletAddress,
     caseDescription,
-    currentDraftId,
     dispatch,
     navigate,
+    currentDraftId,
   ]);
 
   return (
