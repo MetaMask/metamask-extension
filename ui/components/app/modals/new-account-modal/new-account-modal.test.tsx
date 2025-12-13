@@ -23,9 +23,9 @@ const mockNewMetamaskState = {
   currentLocale: 'en',
 };
 
-jest.mock('../../../../selectors/selectors', () => ({
-  ...jest.requireActual('../../../../selectors/selectors'),
-  getInternalAccountByAddress: () => jest.fn().mockReturnValue(mockNewAccount),
+jest.mock('../../../../selectors/accounts', () => ({
+  ...jest.requireActual('../../../../selectors/accounts'),
+  getInternalAccountByAddress: () => mockNewAccount,
 }));
 
 const mockSubmitRequestToBackground = jest.fn().mockImplementation((method) => {

@@ -10,7 +10,7 @@ import {
   Signer,
   StoredGatorPermissionSanitized,
 } from '@metamask/gator-permissions-controller';
-import { getMemoizedInternalAccountByAddress } from '../../selectors/accounts';
+import { getInternalAccountByAddress } from '../../selectors';
 import {
   addTransaction,
   findNetworkClientIdByChainId,
@@ -115,7 +115,7 @@ export function useRevokeGatorPermissions({
       >,
     ): RevokeGatorPermissionArgs => {
       const { permissionResponse } = gatorPermission;
-      const internalAccount = getMemoizedInternalAccountByAddress(
+      const internalAccount = getInternalAccountByAddress(
         store.getState(),
         permissionResponse.address as Hex,
       );

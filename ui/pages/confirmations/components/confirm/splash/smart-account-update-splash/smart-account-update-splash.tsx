@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ORIGIN_METAMASK } from '../../../../../../../shared/constants/app';
 import {
   AccountsState,
-  getMemoizedInternalAccountByAddress,
+  getInternalAccountByAddress,
 } from '../../../../../../selectors';
 import {
   Box,
@@ -41,7 +41,7 @@ export function SmartAccountUpdateSplash() {
   const { from } = txParams;
   const [acknowledged, setAcknowledged] = useState(false);
   const account = useSelector((state: AccountsState) =>
-    getMemoizedInternalAccountByAddress(state as AccountsState, from),
+    getInternalAccountByAddress(state as AccountsState, from),
   );
   const dispatch = useDispatch();
   const keyringType = account?.metadata?.keyring?.type;
