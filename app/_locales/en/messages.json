@@ -2218,6 +2218,12 @@
   "downloadMetaMaskMobileTitle": {
     "message": "Get our mobile app"
   },
+  "slideDownloadMobileAppTitle": {
+    "message": "Download MetaMask Mobile"
+  },
+  "slideDownloadMobileAppDescription": {
+    "message": "Scan the QR code to install MetaMask Mobile and stay connected on the go."
+  },
   "downloadNow": {
     "message": "Download Now"
   },
