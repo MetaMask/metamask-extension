@@ -2221,6 +2221,14 @@
   "downloadNow": {
     "message": "Download Now"
   },
+  "slideDownloadMobileAppTitle": {
+    "message": "Download MetaMask Mobile",
+    "description": "Carousel banner title encouraging users to install the MetaMask mobile app."
+  },
+  "slideDownloadMobileAppDescription": {
+    "message": "Scan the QR code to keep MetaMask with you on the go.",
+    "description": "Carousel banner description prompting users to scan the QR code and download the MetaMask mobile app."
+  },
   "downloadStateLogs": {
     "message": "Download state logs"
   },
