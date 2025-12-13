@@ -26,6 +26,7 @@ import { getShortDateFormatterV2 } from '../../../asset/util';
 import { ThemeType } from '../../../../../shared/constants/preferences';
 import { useTheme } from '../../../../hooks/useTheme';
 import { CLAIMS_TAB_KEYS, ClaimsTabKey } from '../types';
+import { useClaimDraft } from '../../../../hooks/shield/useClaimDraft';
 
 const MAX_PENDING_CLAIMS = 3;
 
@@ -36,6 +37,7 @@ const ClaimsList = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { pendingClaims, completedClaims, rejectedClaims, isLoading } =
     useClaims();
+  const { drafts } = useClaimDraft();
 
   const [defaultTab] = useState(() => {
     const tabParam = searchParams.get('tab');
@@ -57,23 +59,29 @@ const ClaimsList = () => {
   }, [searchParams, setSearchParams]);
 
   const claimItem = useCallback(
-    (claim: Claim, tabKey: ClaimsTabKey) => {
+    (claimData: Claim, tabKey: ClaimsTabKey, isDraft = false) => {
       const formattedDate = getShortDateFormatterV2().format(
-        new Date(claim.createdAt),
+        new Date(claimData.createdAt),
       );
       return (
         <Box
           asChild
-          key={claim.id}
-          data-testid={`claim-item-${claim.id}`}
+          key={claimData.id}
+          data-testid={`claim-item-${claimData.id}`}
           backgroundColor={BoxBackgroundColor.BackgroundSection}
           className="claim-item flex items-center justify-between w-full p-4 rounded-lg"
           onClick={() => {
-            const viewRoute =
-              tabKey === CLAIMS_TAB_KEYS.PENDING
-                ? TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW_PENDING.FULL
-                : TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW_HISTORY.FULL;
-            navigate(`${viewRoute}/${claim.id}`);
+            if (isDraft) {
+              navigate(
+                `${TRANSACTION_SHIELD_CLAIM_ROUTES.EDIT_DRAFT.FULL}/${claimData.id}`,
+              );
+            } else {
+              const viewRoute =
+                tabKey === CLAIMS_TAB_KEYS.PENDING
+                  ? TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW_PENDING.FULL
+                  : TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW_HISTORY.FULL;
+              navigate(`${viewRoute}/${claimData.id}`);
+            }
           }}
         >
           <button>
@@ -83,7 +91,7 @@ const ClaimsList = () => {
                 fontWeight={FontWeight.Medium}
                 textAlign={TextAlign.Left}
               >
-                {t('shieldClaimsNumber', [claim.shortId])}
+                {t('shieldClaimsNumber', [claimData.shortId || claimData.id])}
               </Text>
               <Text
                 variant={TextVariant.BodySm}
@@ -181,25 +189,44 @@ const ClaimsList = () => {
         className="flex-1 px-4 py-2"
         tabKey="pending"
       >
-        {pendingClaims.length > 0 ? (
+        {pendingClaims.length > 0 || drafts.length > 0 ? (
           <Box className="h-full flex flex-col justify-between">
             <Box className="flex-1 overflow-y-auto">
               <Box padding={4} className="flex flex-col gap-4">
                 {/* Active claims */}
-                <Box>
-                  <Text
-                    variant={TextVariant.HeadingSm}
-                    fontWeight={FontWeight.Medium}
-                    className="mb-3"
-                  >
-                    {t('shieldClaimGroupActive')}
-                  </Text>
-                  <Box className="flex flex-col gap-2">
-                    {pendingClaims.map((claim) =>
-                      claimItem(claim, CLAIMS_TAB_KEYS.PENDING),
-                    )}
+                {pendingClaims.length > 0 && (
+                  <Box>
+                    <Text
+                      variant={TextVariant.HeadingSm}
+                      fontWeight={FontWeight.Medium}
+                      className="mb-3"
+                    >
+                      {t('shieldClaimGroupActive')}
+                    </Text>
+                    <Box className="flex flex-col gap-2">
+                      {pendingClaims.map((claim) =>
+                        claimItem(claim, CLAIMS_TAB_KEYS.PENDING),
+                      )}
+                    </Box>
                   </Box>
-                </Box>
+                )}
+                {/* Draft claims */}
+                {drafts.length > 0 && (
+                  <Box>
+                    <Text
+                      variant={TextVariant.HeadingSm}
+                      fontWeight={FontWeight.Medium}
+                      className="mb-3"
+                    >
+                      {t('shieldClaimGroupDrafts')}
+                    </Text>
+                    <Box className="flex flex-col gap-2">
+                      {drafts.map((draft) =>
+                        claimItem(draft, CLAIMS_TAB_KEYS.PENDING, true),
+                      )}
+                    </Box>
+                  </Box>
+                )}
                 <Text
                   variant={TextVariant.BodySm}
                   color={TextColor.TextAlternative}

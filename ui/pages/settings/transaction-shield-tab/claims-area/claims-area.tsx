@@ -15,12 +15,16 @@ const ClaimsArea = () => {
           element={<ClaimsForm />}
         />
         <Route
+          path={`${TRANSACTION_SHIELD_CLAIM_ROUTES.EDIT_DRAFT.RELATIVE}/:draftId`}
+          element={<ClaimsForm mode="edit-draft" />}
+        />
+        <Route
           path={`${TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW_PENDING.RELATIVE}/:claimId`}
-          element={<ClaimsForm isView />}
+          element={<ClaimsForm mode="view" />}
         />
         <Route
           path={`${TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW_HISTORY.RELATIVE}/:claimId`}
-          element={<ClaimsForm isView />}
+          element={<ClaimsForm mode="view" />}
         />
       </RouterRoutes>
     </ClaimsProvider>
