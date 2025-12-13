@@ -209,8 +209,9 @@ export const MultichainBridgeQuoteCard = ({
               <Text
                 variant={TextVariant.bodySm}
                 color={getTimerColor(secondsUntilNextRefresh)}
+                style={{ width: 32 }}
               >
-                {`(0:${secondsUntilNextRefresh < 10 ? '0' : ''}${secondsUntilNextRefresh})`}
+                {`0:${secondsUntilNextRefresh < 10 ? '0' : ''}${secondsUntilNextRefresh}`}
               </Text>
             )}
 
