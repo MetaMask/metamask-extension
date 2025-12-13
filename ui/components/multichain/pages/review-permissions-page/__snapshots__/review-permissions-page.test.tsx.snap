@@ -53,17 +53,19 @@ exports[`ReviewPermissions should render correctly 1`] = `
         style="overflow: auto;"
       >
         <div
-          class="mm-box connections-page__no-site-connected-content h-full mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center"
+          class="flex flex-col gap-3 items-center justify-center bg-default max-w-56 connections-page__no-site-connected-content h-full mx-auto"
         >
+          <img
+            alt="MetaMask isn't connected to this site. To get started, select the site's Connect button."
+            height="72"
+            src="/images/empty-state-permissions-light.png"
+            width="72"
+          />
           <p
-            class="mm-box mm-text mm-text--body-md-medium mm-text--text-align-center mm-box--color-text-default"
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center"
+            data-testid="no-connection-description"
           >
-            MetaMask isn’t connected to this site
-          </p>
-          <p
-            class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-default"
-          >
-            To connect to a site, find and select the "connect" button. Remember MetaMask can only connect to sites on web3
+            MetaMask isn't connected to this site. To get started, select the site's Connect button.
           </p>
         </div>
       </div>
