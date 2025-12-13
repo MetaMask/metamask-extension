@@ -4,6 +4,7 @@ import { BtcAccountType } from '@metamask/keyring-api';
 import createMockStore from 'redux-mock-store';
 
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import { useNftImageUrl } from '../../../hooks/useNftImageUrl';
 import { AssetStandard } from '../../../types/send';
 import { Asset } from './asset';
@@ -102,6 +103,21 @@ describe('TokenAsset', () => {
 
     expect(getByTestId('token-asset-undefined-TEST')).toBeInTheDocument();
     expect(queryByRole('img', { name: 'Ethereum' })).not.toBeInTheDocument();
+  });
+
+  it('uses override image URL for Tempo Testnet tokens', () => {
+    const tempoTokenAsset = {
+      ...mockTokenAsset,
+      chainId: CHAIN_IDS.TEMPO_TESTNET,
+      address: '0x1234567890abcdef1234567890abcdef12345678',
+    };
+    const { getByAltText } = render(<Asset asset={tempoTokenAsset} />);
+
+    const image = getByAltText('TEST logo');
+    expect(image).toHaveAttribute(
+      'src',
+      'https://tempoxyz.github.io/tempo-apps/42429/icons/0x1234567890abcdef1234567890abcdef12345678.svg',
+    );
   });
 });
 
