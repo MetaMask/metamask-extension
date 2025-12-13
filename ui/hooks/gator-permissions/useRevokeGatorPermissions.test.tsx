@@ -287,7 +287,7 @@ describe('useRevokeGatorPermissions', () => {
     const mockAccount = {
       id: 'mock-account-id',
       address: mockSelectedAccountAddress,
-      type: 'eip155:eoa',
+      type: 'eip155:eoa' as const,
       options: {},
       metadata: {
         name: 'Mock Account',
@@ -296,7 +296,7 @@ describe('useRevokeGatorPermissions', () => {
           type: 'hd',
         },
       },
-      scopes: ['eip155:1'],
+      scopes: ['eip155:1' as const],
       methods: ['eth_sendTransaction'],
     };
     mockGetInternalAccounts.mockReturnValue([mockAccount]);

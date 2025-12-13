@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
+import type { SnapId } from '@metamask/snaps-sdk';
 import { AvatarAccountSize } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -60,16 +61,6 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
   const account = useSelector((state) =>
     getInternalAccountByAddress(state, address),
   );
-  const {
-    metadata: {
-      name,
-      keyring: { type: keyringType },
-    },
-    options: { entropySource },
-    type,
-  } = account;
-
-  const snapId = account.metadata.snap?.id;
 
   const [showHoldToReveal, setShowHoldToReveal] = useState(false);
   let showModal = !showHoldToReveal;
@@ -79,18 +70,7 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
 
   const keyrings: KeyringObject[] = useSelector(getMetaMaskKeyrings);
 
-  // Snap accounts have an entropy source that is the id of the hd keyring
-  const keyringId =
-    keyringType === KeyringTypes.snap &&
-    isMultichainWalletSnap(snapId) &&
-    entropySource
-      ? entropySource
-      : findKeyringId(keyrings, {
-          address,
-        });
-
   const isAbleToExportSrp = isAbleToRevealSrp(account, keyrings);
-  const displayExportSrpQuiz = keyringId && isAbleToExportSrp;
 
   const [attemptingExport, setAttemptingExport] = useState<AttemptExportState>(
     AttemptExportState.None,
@@ -103,6 +83,34 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
     dispatch(clearAccountDetails());
     dispatch(hideWarning());
   }, [dispatch]);
+
+  if (!account) {
+    return null;
+  }
+
+  const {
+    metadata: {
+      name,
+      keyring: { type: keyringType },
+      snap: { id: snapId } = {},
+    },
+    options: { entropySource },
+    type,
+  } = account;
+
+  // Snap accounts have an entropy source that is the id of the hd keyring
+  const keyringId =
+    keyringType === KeyringTypes.snap &&
+    typeof snapId === 'string' &&
+    isMultichainWalletSnap(snapId as SnapId) &&
+    entropySource &&
+    typeof entropySource === 'string'
+      ? entropySource
+      : findKeyringId(keyrings, {
+          address,
+        });
+
+  const displayExportSrpQuiz = keyringId && isAbleToExportSrp;
 
   const avatar = (
     <PreferredAvatar
