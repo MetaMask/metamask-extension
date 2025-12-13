@@ -1,6 +1,6 @@
 import copyToClipboard from 'copy-to-clipboard';
 import log from 'loglevel';
-import React from 'react';
+import React, { Profiler } from 'react';
 import { render } from 'react-dom';
 import browser from 'webextension-polyfill';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
@@ -235,8 +235,36 @@ async function startApp(metamaskState, opts) {
     () => runInitialActions(store),
   );
 
+  const onRender = (
+    id,
+    phase,
+    actualDuration,
+    baseDuration,
+    startTime,
+    commitTime,
+  ) => {
+    window.__REACT_RENDER_METRICS__ ??= [];
+    window.__REACT_RENDER_METRICS__.push({
+      id,
+      phase,
+      actualDuration,
+      baseDuration,
+      startTime,
+      commitTime,
+    });
+  };
+
   trace({ name: TraceName.FirstRender, parentContext: traceContext }, () =>
-    render(<Root store={store} />, opts.container),
+    render(
+      process.env.METAMASK_ENVIRONMENT === 'production' ? (
+        <Root store={store} />
+      ) : (
+        <Profiler id="Root" onRender={onRender}>
+          <Root store={store} />
+        </Profiler>
+      ),
+      opts.container,
+    ),
   );
 
   return store;
