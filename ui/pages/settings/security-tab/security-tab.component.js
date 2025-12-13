@@ -232,6 +232,8 @@ export default class SecurityTab extends PureComponent {
     const getButtonText = () => {
       if (socialLoginEnabled) {
         return t('securitySrpWalletRecovery');
+      } else if (isSeedPhraseBackedUp) {
+        return t('revealSeedWords');
       }
       return t('revealSecretRecoveryPhrase');
     };
