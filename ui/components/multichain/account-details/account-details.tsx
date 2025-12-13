@@ -70,8 +70,6 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
 
   const keyrings: KeyringObject[] = useSelector(getMetaMaskKeyrings);
 
-  const isAbleToExportSrp = isAbleToRevealSrp(account, keyrings);
-
   const [attemptingExport, setAttemptingExport] = useState<AttemptExportState>(
     AttemptExportState.None,
   );
@@ -97,6 +95,8 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
     options: { entropySource },
     type,
   } = account;
+
+  const isAbleToExportSrp = isAbleToRevealSrp(account, keyrings);
 
   // Snap accounts have an entropy source that is the id of the hd keyring
   const keyringId =

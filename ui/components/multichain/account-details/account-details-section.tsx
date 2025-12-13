@@ -39,7 +39,9 @@ export const AccountDetailsSection = ({
   const keyring = account?.metadata?.keyring;
   const exportPrivateKeyFeatureEnabled = isAbleToExportAccount(keyring?.type);
   const keyrings = useSelector(getMetaMaskKeyrings);
-  const exportSrpFeatureEnabled = isAbleToRevealSrp(account, keyrings);
+  const exportSrpFeatureEnabled = account
+    ? isAbleToRevealSrp(account, keyrings)
+    : false;
 
   return (
     <>
