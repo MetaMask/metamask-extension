@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import copyToClipboard from 'copy-to-clipboard';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { TransactionType } from '@metamask/transaction-controller';
+import { Button, ButtonSize } from '@metamask/design-system-react';
 import SenderToRecipient from '../../ui/sender-to-recipient';
 import { DEFAULT_VARIANT } from '../../ui/sender-to-recipient/sender-to-recipient.constants';
 import Disclosure from '../../ui/disclosure';
 import TransactionActivityLog from '../transaction-activity-log';
 import TransactionBreakdown from '../transaction-breakdown';
-import Button from '../../ui/button';
 import Tooltip from '../../ui/tooltip';
 import CancelButton from '../cancel-button';
 import Popover from '../../ui/popover';
@@ -174,12 +174,11 @@ export default class TransactionListItemDetails extends PureComponent {
       <Popover title={title} onClose={onClose}>
         <div className="transaction-list-item-details">
           <div className="transaction-list-item-details__operations">
-            <div className="transaction-list-item-details__header-buttons">
+            <div className="flex gap-2">
               {showSpeedUp && (
                 <Button
-                  type="primary"
+                  size={ButtonSize.Sm}
                   onClick={this.handleRetry}
-                  className="transaction-list-item-details__header-button-rounded-button"
                   data-testid="speedup-button"
                 >
                   {t('speedUp')}
@@ -187,6 +186,7 @@ export default class TransactionListItemDetails extends PureComponent {
               )}
               {showCancel && (
                 <CancelButton
+                  size={ButtonSize.Sm}
                   transaction={transaction}
                   cancelTransaction={this.handleCancel}
                   detailsModal

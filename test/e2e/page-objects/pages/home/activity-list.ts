@@ -41,10 +41,7 @@ class ActivityListPage {
     tag: 'button',
   };
 
-  private readonly cancelTransactionButton = {
-    text: 'Cancel',
-    tag: 'button',
-  };
+  private readonly cancelTransactionButton = '[data-testid="cancel-button"]';
 
   private readonly speedupInlineButton = '[data-testid="speed-up-button"]';
 
