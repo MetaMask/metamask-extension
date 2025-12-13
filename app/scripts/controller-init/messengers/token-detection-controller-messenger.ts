@@ -28,6 +28,7 @@ import {
   TokensControllerAddTokensAction,
   TokensControllerGetStateAction,
   AssetsContractControllerGetBalancesInSingleCallAction,
+  AssetsContractControllerGetBalancesUsingMulticallAction,
 } from '@metamask/assets-controllers';
 import { TransactionControllerTransactionConfirmedEvent } from '@metamask/transaction-controller';
 import {
@@ -127,7 +128,7 @@ export function getTokenDetectionControllerMessenger(
 }
 
 type AllowedInitializationActions =
-  | AssetsContractControllerGetBalancesInSingleCallAction
+  | AssetsContractControllerGetBalancesUsingMulticallAction
   | MetaMetricsControllerTrackEventAction
   | NetworkControllerGetStateAction
   | PreferencesControllerGetStateAction;
@@ -157,7 +158,7 @@ export function getTokenDetectionControllerInitMessenger(
   messenger.delegate({
     messenger: controllerInitMessenger,
     actions: [
-      'AssetsContractController:getBalancesInSingleCall',
+      'AssetsContractController:getBalancesUsingMulticall',
       'MetaMetricsController:trackEvent',
       'PreferencesController:getState',
     ],
