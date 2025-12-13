@@ -13,7 +13,7 @@ describe('Check balance', function (this: Suite) {
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
-        await homePage.checkPageIsLoaded({ amount: '0 SOL' });
+        await homePage.checkPageIsLoaded('0 SOL');
       },
     );
   });
@@ -26,7 +26,7 @@ describe('Check balance', function (this: Suite) {
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
-        await homePage.checkPageIsLoaded({ amount: '$0' });
+        await homePage.checkPageIsLoaded('$0');
       },
     );
   });
@@ -39,7 +39,7 @@ describe('Check balance', function (this: Suite) {
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
-        await homePage.checkPageIsLoaded({ amount: '$5,643.50' });
+        await homePage.checkPageIsLoaded('$5,643.50');
       },
     );
   });
@@ -51,7 +51,7 @@ describe('Check balance', function (this: Suite) {
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
-        await homePage.checkPageIsLoaded({ amount: '50 SOL' });
+        await homePage.checkPageIsLoaded('50 SOL');
       },
     );
   });

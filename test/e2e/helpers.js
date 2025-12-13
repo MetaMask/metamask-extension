@@ -174,6 +174,7 @@ async function withFixtures(options, testSuite) {
     manifestFlags,
     solanaWebSocketSpecificMocks = [],
     forceBip44Version = true,
+    extendedTimeoutMultiplier = 1,
   } = options;
 
   // Normalize localNodeOptions
@@ -361,14 +362,18 @@ async function withFixtures(options, testSuite) {
       );
     }
     await mockServer.start(8000);
-
     await setManifestFlags(manifestFlags);
 
     const wd = await buildWebDriver({
       ...driverOptions,
       disableServerMochaToBackground,
     });
+
     driver = wd.driver;
+    driver.timeout =
+      extendedTimeoutMultiplier > 1
+        ? driver.timeout * extendedTimeoutMultiplier
+        : driver.timeout;
     extensionId = wd.extensionId;
     webDriver = driver.driver;
 

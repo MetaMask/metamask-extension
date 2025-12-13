@@ -35,14 +35,15 @@ describe('Power user persona', function () {
         },
         useMockingPassThrough: true,
         disableServerMochaToBackground: true,
+        extendedTimeoutMultiplier: 3,
       },
       async ({ driver }: { driver: Driver }) => {
         await driver.navigate();
         const loginPage = new LoginPage(driver);
-        await loginPage.checkPageIsLoaded(30000);
+        await loginPage.checkPageIsLoaded();
         await loginPage.loginToHomepage();
         const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded({ timeout: 30000 }); // Since here the requests are not mocked, let's wait longer
+        await homePage.checkPageIsLoaded();
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenListIsDisplayed();
         await assetListPage.checkConversionRateDisplayed();
