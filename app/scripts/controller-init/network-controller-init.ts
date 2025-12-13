@@ -28,7 +28,7 @@ import {
   NetworkControllerMessenger,
 } from './messengers';
 
-export const ADDITIONAL_DEFAULT_NETWORKS = [ChainId['monad-testnet']];
+export const ADDITIONAL_DEFAULT_NETWORKS = [];
 
 function getInitialState(initialState?: Partial<NetworkController['state']>) {
   let initialNetworkControllerState = initialState;
