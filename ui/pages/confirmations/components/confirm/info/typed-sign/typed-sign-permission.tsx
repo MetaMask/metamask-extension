@@ -20,9 +20,10 @@ import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/c
 import { SigningInWithRow } from '../shared/sign-in-with-row/sign-in-with-row';
 
 import { NativeTokenStreamDetails } from './typed-sign-permission/native-token-stream-details';
+import { NativeTokenPeriodicDetails } from './typed-sign-permission/native-token-periodic-details';
 import { Erc20TokenPeriodicDetails } from './typed-sign-permission/erc20-token-periodic-details';
 import { Erc20TokenStreamDetails } from './typed-sign-permission/erc20-token-stream-details';
-import { NativeTokenPeriodicDetails } from './typed-sign-permission/native-token-periodic-details';
+import { Erc20TokenRevocationDetails } from './typed-sign-permission/erc20-token-revocation-details';
 
 /**
  * Main component for displaying typed signature permission information.
@@ -100,6 +101,10 @@ const TypedSignPermissionInfo: React.FC = () => {
         />
       );
 
+      break;
+    }
+    case 'erc20-token-revocation': {
+      permissionDetail = <Erc20TokenRevocationDetails expiry={expiry} />;
       break;
     }
     default:

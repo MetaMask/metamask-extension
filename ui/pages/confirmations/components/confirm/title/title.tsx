@@ -31,6 +31,7 @@ import { useSignatureEventFragment } from '../../../hooks/useSignatureEventFragm
 import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
 import { NestedTransactionTag } from '../../transactions/nested-transaction-tag';
 import { useIsUpgradeTransaction } from '../info/hooks/useIsUpgradeTransaction';
+import { getPermissionDescription } from '../info/typed-sign/typed-sign-permission/typed-sign-permission-util';
 import { useCurrentSpendingCap } from './hooks/useCurrentSpendingCap';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -203,7 +204,13 @@ const getDescription = (
         return t('confirmTitleDescPermitSignature');
       }
       if ((confirmation as SignatureRequestType).decodedPermission) {
-        return t('confirmTitleDescPermission');
+        const permissionType = (confirmation as SignatureRequestType)
+          .decodedPermission?.permission?.type;
+
+        return getPermissionDescription(
+          t as ReturnType<typeof useI18nContext>,
+          permissionType,
+        );
       }
 
       return t('confirmTitleDescSign');

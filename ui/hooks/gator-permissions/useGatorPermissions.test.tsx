@@ -26,6 +26,7 @@ describe('useGatorPermissions', () => {
   let store: Store;
 
   const mockGatorPermissionsMap: GatorPermissionsMap = {
+    'erc20-token-revocation': {},
     'native-token-stream': {
       '0x1': [
         {
@@ -236,6 +237,7 @@ describe('useGatorPermissions', () => {
 
   it('should handle empty GatorPermissionsMap from cache', async () => {
     const emptyPermissionsList: GatorPermissionsMap = {
+      'erc20-token-revocation': {},
       'native-token-stream': {},
       'erc20-token-stream': {},
       'native-token-periodic': {},
