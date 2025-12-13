@@ -851,11 +851,6 @@
       "hyperliquid": {}
     },
     "remoteFeatureFlags": {
-      "enableMultichainAccountsState2": {
-        "enabled": "boolean",
-        "featureVersion": "string",
-        "minimumVersion": "string"
-      },
       "sendRedesign": {
         "enabled": "boolean"
       }
