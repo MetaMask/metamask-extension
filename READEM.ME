@@ -1,0 +1,86 @@
+fix: cp-12.13.0 replace 3D flask mascot with 2D version (#30592)
+## **Description**
+
+Issue: The new Flask 3D asset isn't fully supported
+
+Solution: Replace all instances of the 3D asset for Flask with the 2D
+counterpart temporarily until we fix the issue
+
+[![Open in GitHub
+Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/MetaMask/metamask-extension/pull/30592?quickstart=1)
+
+## **Related issues**
+
+Fixes:
+[#30338](#30338)
+
+## **Manual testing steps**
+
+1. Run `yarn start:flask`
+2. Confirm that the 2D flask logo is visible in the following flows
+3. Swap Quote flow 
+4. Create Wallet flow
+5. Login
+
+## **Screenshots/Recordings**
+
+`ui/pages/onboarding-flow/welcome/welcome.js`
+| Before  | After  |
+|:---:|:---:|
+
+|![before_welcome](https://github.com/user-attachments/assets/5acd7341-ac4f-4c3f-9279-01f31b8a1e51)|![after_welcome](https://github.com/user-attachments/assets/4891ba78-23d2-4e7f-98f3-610131fd8134)|
+
+`ui/pages/swaps/awaiting-swap/awaiting-swap.js`
+| Before  | After  |
+|:---:|:---:|
+
+|![before_await_swap](https://github.com/user-attachments/assets/81dec14b-9f93-431e-8e2e-8baa546513ab)|![after_await_swap](https://github.com/user-attachments/assets/a096033c-357f-47de-b74b-123824d80a52)|
+
+`ui/pages/swaps/loading-swaps-quotes/loading-swaps-quotes.js`
+| Before  | After  |
+|:---:|:---:|
+
+|![before_loading_swap_quote](https://github.com/user-attachments/assets/2fca315b-8ff4-4f7a-904f-13fcb630f0b1)|![after_loading_swap_quote](https://github.com/user-attachments/assets/cca208b1-f45d-4583-a35b-7d9a851624a0)|
+
+
+`ui/pages/swaps/mascot-background-animation/mascot-background-animation.js`
+| Before  | After  |
+|:---:|:---:|
+
+|![before_background_animation](https://github.com/user-attachments/assets/d9869718-04ab-41c1-8371-4aca613c4a79)|![after_background_animation](https://github.com/user-attachments/assets/f50c948c-c3e4-45a3-999c-152ab0f7b7df)|
+
+`ui/pages/unlock-page/unlock-page.component.js`
+| Before  | After  |
+|:---:|:---:|
+
+|![before](https://github.com/user-attachments/assets/4267afb5-2d28-4cd9-8f34-6027bf9308ed)|![after](https://github.com/user-attachments/assets/32f8eec7-e5ba-4c97-afe8-207f100b1828)|
+
+### **Before**
+
+NA
+
+### **After**
+
+NA
+
+## **Pre-merge author checklist**
+
+- [x] I've followed [MetaMask Contributor
+Docs](https://github.com/MetaMask/contributor-docs) and [MetaMask
+Extension Coding
+Standards](https://github.com/MetaMask/metamask-extension/blob/main/.github/guidelines/CODING_GUIDELINES.md).
+- [x] I've completed the PR template to the best of my ability
+- [x] I’ve included tests if applicable
+- [x] I’ve documented my code using [JSDoc](https://jsdoc.app/) format
+if applicable
+- [x] I’ve applied the right labels on the PR (see [labeling
+guidelines](https://github.com/MetaMask/metamask-extension/blob/main/.github/guidelines/LABELING_GUIDELINES.md)).
+Not required for external contributors.
+
+## **Pre-merge reviewer checklist**
+
+- [x] I've manually tested the PR (e.g. pull and build branch, run the
+app, test code being changed).
+- [x ] I confirm that this PR addresses all acceptance criteria
+described in the ticket it closes and includes the necessary testing
+evidence such as recordings and or screenshots.
