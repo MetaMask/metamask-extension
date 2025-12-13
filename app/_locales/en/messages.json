@@ -6721,6 +6721,22 @@
   "skipDeepLinkInterstitialDescription": {
     "message": "Enabling this option will skip the interstitial screen that is shown when opening deep links in MetaMask. A \"deep link\" is a link like https://link.metamask.io/home that will cause MetaMask to open; these links can be obfuscated by others. The interstitial screen is designed to protect you from accidentally opening pages within MetaMask that might display your accounts, tokens, history, balances, settings, or other potentially sensitive information. This setting only applies to links signed by MetaMask."
   },
+  "slideBridgeDescription": {
+    "message": "Use MetaMask Bridge to transfer your crypto between chains.",
+    "description": "Carousel slide description promoting the MetaMask Bridge feature."
+  },
+  "slideBridgeTitle": {
+    "message": "Move tokens across networks",
+    "description": "Carousel slide title promoting the MetaMask Bridge feature."
+  },
+  "slideDebitCardDescription": {
+    "message": "Purchase tokens directly with your debit or credit card in MetaMask Portfolio.",
+    "description": "Carousel slide description promoting debit and credit card purchases."
+  },
+  "slideDebitCardTitle": {
+    "message": "Buy crypto with a debit card",
+    "description": "Carousel slide title promoting debit and credit card purchases."
+  },
   "slippage": {
     "message": "Slippage"
   },
