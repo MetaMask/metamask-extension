@@ -6,7 +6,7 @@ import mockMetaMaskState from '../data/integration-init-state.json';
 import {
   clickElementById,
   createMockImplementation,
-  getSelectedAccountGroup,
+  getSelectedAccountGroupName,
   waitForElementById,
   waitForElementByText,
   waitForElementByTextToNotBePresent,
@@ -51,7 +51,7 @@ describe('NFTs list', () => {
 
   it('displays the nfts list for popular networks and tracks the event', async () => {
     const accountName =
-      getSelectedAccountGroup(mockMetaMaskState).metadata.name;
+      getSelectedAccountGroupName(mockMetaMaskState);
 
     const withMetamaskConnectedToMainnet = {
       ...mockMetaMaskState,
@@ -93,7 +93,7 @@ describe('NFTs list', () => {
 
   it('filters the nfts list for the current network', async () => {
     const accountName =
-      getSelectedAccountGroup(mockMetaMaskState).metadata.name;
+      getSelectedAccountGroupName(mockMetaMaskState);
 
     const withMetamaskConnectedToMainnet = {
       ...mockMetaMaskState,
@@ -139,7 +139,7 @@ describe('NFTs list', () => {
 
   it('disables the filter list for the test networks', async () => {
     const accountName =
-      getSelectedAccountGroup(mockMetaMaskState).metadata.name;
+      getSelectedAccountGroupName(mockMetaMaskState);
 
     await act(async () => {
       await integrationTestRender({
