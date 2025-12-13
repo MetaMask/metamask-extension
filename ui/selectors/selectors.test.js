@@ -3125,3 +3125,26 @@ describe('getHasAnyEvmNetworkEnabled', () => {
     expect(selectors.getHasAnyEvmNetworkEnabled(state)).toBe(true);
   });
 });
+
+describe('getDeferredDeepLink', () => {
+  it('returns the deferredDeepLink value when it exists', () => {
+    const mockDeepLink = 'https://link.metamask.io/deep-link';
+    const state = {
+      metamask: {
+        deferredDeepLink: mockDeepLink,
+      },
+    };
+
+    expect(selectors.getDeferredDeepLink(state)).toBe(mockDeepLink);
+  });
+
+  it('returns null when deferredDeepLink is undefined', () => {
+    const state = {
+      metamask: {
+        deferredDeepLink: undefined,
+      },
+    };
+
+    expect(selectors.getDeferredDeepLink(state)).toBeNull();
+  });
+});

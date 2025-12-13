@@ -4197,3 +4197,13 @@ export const selectNonZeroUnusedApprovalsAllowList = createSelector(
 export function getNetworkConnectionBanner(state) {
   return state.metamask.networkConnectionBanner;
 }
+
+/**
+ * Retrieves the deferred deep link from the MetaMask state.
+ *
+ * @param {MetaMaskReduxState} state - The Redux state object.
+ * @returns {object | null} The deferred deep link object if available, null otherwise.
+ */
+export function getDeferredDeepLink(state) {
+  return state.metamask?.deferredDeepLink || null;
+}
