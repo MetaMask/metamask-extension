@@ -100,6 +100,92 @@ export class ShieldMockttpService {
 
     // Rewards APIs (needed for useShieldRewards hook on Shield Plan page)
     await this.#handleRewardsApis(server);
+
+    // Accounts API v4 for balance fetching
+    // await this.#handleAccountsApiV4(server);
+
+    // Mock mainnet RPC calls for balance and block data
+    await this.#handleMainnetRpc(server);
+  }
+
+  async #handleMainnetRpc(server: Mockttp) {
+    // Use regex to match any infura URL (mainnet, base-mainnet, etc.)
+    const infuraUrlPattern = /infura/u;
+
+    // Mock eth_blockNumber for any infura endpoint
+    await server
+      .forPost(infuraUrlPattern)
+      .withBodyIncluding('eth_blockNumber')
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: '1111111111111111',
+          result: '0x1234567',
+        },
+      }));
+
+    // Mock eth_getBlockByNumber for any infura endpoint
+    await server
+      .forPost(infuraUrlPattern)
+      .withBodyIncluding('eth_getBlockByNumber')
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: '1111111111111111',
+          result: {
+            number: '0x1234567',
+            hash: '0x0000000000000000000000000000000000000000000000000000000000000000',
+            parentHash:
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
+            timestamp: '0x64',
+            gasLimit: '0x1c9c380',
+            gasUsed: '0x0',
+            miner: '0x0000000000000000000000000000000000000000',
+            difficulty: '0x0',
+            totalDifficulty: '0x0',
+            size: '0x0',
+            transactions: [],
+            baseFeePerGas: '0x7',
+          },
+        },
+      }));
+
+    // Mock eth_getBalance to return 25 ETH for any infura endpoint
+    await server
+      .forPost(infuraUrlPattern)
+      .withJsonBodyIncluding({ method: 'eth_getBalance' })
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: '1111111111111111',
+          result: '0x15af1d78b58c40000', // 25 ETH in hex
+        },
+      }));
+
+    // Mock eth_call to Multicall3 contract (0xcA11bde05977b3631167028862bE2a173976CA11)
+    // Returns 25 ETH balance for native token
+    await server
+      .forPost(infuraUrlPattern)
+      .withJsonBodyIncluding({
+        method: 'eth_call',
+        params: [
+          {
+            to: '0xca11bde05977b3631167028862be2a173976ca11',
+          },
+        ],
+      })
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: '1111111111111111',
+          result:
+            '0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000015af1d78b58c40000', // 25 ETH
+        },
+      }));
   }
 
   async #handleSubscriptionPricing(server: Mockttp) {

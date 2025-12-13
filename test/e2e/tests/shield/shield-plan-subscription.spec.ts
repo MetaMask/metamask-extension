@@ -33,6 +33,15 @@ function createShieldFixtureCard() {
         },
       },
     })
+    .withAccountTracker({
+      accountsByChainId: {
+        '0x1': {
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+            balance: '0x15af1d78b58c40000', // 25 ETH
+          },
+        },
+      },
+    })
     .withAppStateController({
       showShieldEntryModalOnce: null, // set the initial state to null so that the modal is shown
     });
@@ -67,6 +76,15 @@ function createShieldFixtureCrypto() {
               aggregators: [],
             },
           ],
+        },
+      },
+    })
+    .withAccountTracker({
+      accountsByChainId: {
+        '0x1': {
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+            balance: '0x15af1d78b58c40000', // 25 ETH
+          },
         },
       },
     })
