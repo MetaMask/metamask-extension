@@ -162,7 +162,7 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
             });
             global.platform.openTab({ url: blockExplorerLink });
           }}
-          tokenSymbol={token.symbol}
+          token={token}
         />
       }
     />

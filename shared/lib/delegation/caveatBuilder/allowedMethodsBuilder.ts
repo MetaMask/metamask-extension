@@ -1,4 +1,4 @@
-import type { Hex } from '../utils';
+import type { Hex } from '@metamask/utils';
 import { concat, isHex, toFunctionSelector } from '../utils';
 import type { Caveat, DeleGatorEnvironment } from '..';
 

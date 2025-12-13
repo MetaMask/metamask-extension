@@ -34,6 +34,7 @@ import { useIsGaslessLoading } from '../../../hooks/gas/useIsGaslessLoading';
 import { useEnableShieldCoverageChecks } from '../../../hooks/transactions/useEnableShieldCoverageChecks';
 import { useTransactionConfirm } from '../../../hooks/transactions/useTransactionConfirm';
 import { useConfirmActions } from '../../../hooks/useConfirmActions';
+import { useDappSwapActions } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapActions';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
 import {
   isAddEthereumChainType,
@@ -204,6 +205,7 @@ const CancelButton = ({
 const Footer = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { onDappSwapCompleted } = useDappSwapActions();
   const { onTransactionConfirm } = useTransactionConfirm();
   const { navigateNext } = useConfirmationNavigation();
   const { onSubmit: onAddEthereumChain } = useAddEthereumChain();
@@ -275,6 +277,7 @@ const Footer = () => {
 
     await onCancel({ location: MetaMetricsEventLocation.Confirmation });
 
+    onDappSwapCompleted();
     if (isAddEthereumChain) {
       navigate(DEFAULT_ROUTE);
     } else {
@@ -287,10 +290,10 @@ const Footer = () => {
     currentConfirmation,
     isAddEthereumChain,
     navigate,
+    onDappSwapCompleted,
   ]);
 
-  const { isEnabled, isPaused } = useEnableShieldCoverageChecks();
-  const isShowShieldFooterCoverageIndicator = isEnabled || isPaused;
+  const { isShowCoverageIndicator } = useEnableShieldCoverageChecks();
 
   return (
     <>
@@ -302,7 +305,7 @@ const Footer = () => {
         // but only applied to the bottom of the box, so it doesn't overlap with
         // the shield footer coverage indicator
         style={
-          isShowShieldFooterCoverageIndicator
+          isShowCoverageIndicator
             ? { boxShadow: '0 4px 16px -8px var(--color-shadow-default)' }
             : undefined
         }

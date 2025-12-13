@@ -86,7 +86,7 @@ describe('Bridge', () => {
   it('renders the component with initial props', async () => {
     const bridgeMockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        extensionConfig: {
+        bridgeConfig: {
           support: true,
           refreshRate: 5000,
           maxRefreshCount: 5,

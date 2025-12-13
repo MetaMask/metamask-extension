@@ -52,6 +52,7 @@
     "outdatedBrowserWarningLastShown": "object",
     "pendingShieldCohort": null,
     "pendingShieldCohortTxType": null,
+    "pna25Acknowledged": "boolean",
     "popupGasPollTokens": "object",
     "productTour": "accountIcon",
     "recoveryPhraseReminderHasBeenShown": true,
@@ -191,12 +192,7 @@
   "NameController": { "names": "object", "nameSources": "object" },
   "NetworkController": {
     "selectedNetworkClientId": "string",
-    "networksMetadata": {
-      "networkConfigurationId": {
-        "EIPS": { "1559": true },
-        "status": "available"
-      }
-    },
+    "networksMetadata": "object",
     "networkConfigurationsByChainId": "object"
   },
   "NetworkEnablementController": {
@@ -312,6 +308,7 @@
     "watchEthereumAccountEnabled": "boolean",
     "referrals": "object"
   },
+  "ProfileMetricsController": "object",
   "RemoteFeatureFlagController": {
     "remoteFeatureFlags": {
       "feature1": true,
@@ -404,6 +401,7 @@
     "allIgnoredTokens": {},
     "allDetectedTokens": {}
   },
+  "TransactionPayController": { "transactionData": "object" },
   "TxController": {
     "methodData": "object",
     "transactions": "object",

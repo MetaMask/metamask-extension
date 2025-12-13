@@ -74,7 +74,7 @@ describe.skip('Transaction activity list', function (this: Suite) {
           commonSolanaTxFailedDetailsFixture.txHash,
         );
         await transactionDetails.checkTransactionViewDetailsLink();
-        await transactionDetails.checkNetworkFeeTransaction(
+        await transactionDetails.checkTransactionBaseFee(
           commonSolanaTxFailedDetailsFixture.networkFee,
         );
       },

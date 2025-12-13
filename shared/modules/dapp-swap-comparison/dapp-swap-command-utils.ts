@@ -54,6 +54,28 @@ const BASE_COMMANDS_ABI_DEFINITION: Partial<
       name: 'payerIsUser',
     },
   ],
+  [SwapCommands.V2_SWAP_EXACT_IN]: [
+    {
+      type: 'address',
+      name: 'recipient',
+    },
+    {
+      type: 'uint256',
+      name: 'amountIn',
+    },
+    {
+      type: 'uint256',
+      name: 'amountOutMin',
+    },
+    {
+      type: 'address[]',
+      name: 'path',
+    },
+    {
+      type: 'bool',
+      name: 'payerIsUser',
+    },
+  ],
   [NonSwapCommands.SWEEP]: [
     {
       type: 'address',
@@ -150,6 +172,7 @@ type DAPP_SWAP_COMMANDS_PARSER_TYPE = {
 
 const DAPP_SWAP_COMMANDS_PARSER: DAPP_SWAP_COMMANDS_PARSER_TYPE[] = [
   { value: '00', handler: handleV3CommandSwapExactIn },
+  { value: '08', handler: handleV2CommandSwapExactIn },
   {
     value: '01',
     handler: handleCommandExactOut as DAPP_SWAP_COMMANDS_PARSER_TYPE['handler'],
@@ -367,6 +390,32 @@ function handleV3CommandSwapExactIn(
       srcTokenAmount: result[1].toHexString(),
       srcTokenAddress,
       destTokenAddress,
+    } as GenericQuoteRequest,
+  };
+}
+
+function handleV2CommandSwapExactIn(
+  data: string,
+  decodedResult: COMMAND_VALUES_RESULT,
+  _chainId: Hex,
+) {
+  const { amountMin, quotesInput } = decodedResult;
+  const result = decodeCommandData(
+    SwapCommands.V2_SWAP_EXACT_IN,
+    data,
+    BASE_COMMANDS_ABI_DEFINITION,
+  );
+
+  return {
+    amountMin: amountMin || result[2].toHexString(),
+    quotesInput: {
+      ...(quotesInput ?? {}),
+      srcTokenAmount: result[1].toHexString(),
+      srcTokenAddress:
+        quotesInput?.srcTokenAddress ?? result[3]?.[0]?.toLowerCase(),
+      destTokenAddress:
+        quotesInput?.destTokenAddress ??
+        result[3]?.[result[3]?.length - 1]?.toLowerCase(),
     } as GenericQuoteRequest,
   };
 }

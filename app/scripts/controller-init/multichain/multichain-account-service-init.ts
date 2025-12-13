@@ -23,6 +23,7 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
 import { isMultichainFeatureEnabled } from '../../../../shared/lib/multichain-feature-flags';
 ///: END:ONLY_INCLUDE_IF
+import { trace } from '../../../../shared/lib/trace';
 
 /**
  * Initialize the multichain account service.
@@ -79,6 +80,10 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
     ],
     providerConfigs: {
       [SOL_ACCOUNT_PROVIDER_NAME]: snapAccountProviderConfig,
+    },
+    config: {
+      // @ts-expect-error Controller uses string for names rather than enum
+      trace,
     },
   });
 

@@ -4272,25 +4272,6 @@
     "message": "Icône $1",
     "description": "$1 is the icon name"
   },
-  "onboardingPinExtensionAltLaunch": {
-    "message": "Lancer l’extension"
-  },
-  "onboardingPinExtensionAltPin": {
-    "message": "Épingler l’extension"
-  },
-  "onboardingPinExtensionDescription": {
-    "message": "Épinglez MetaMask à votre navigateur pour que vous puissiez y accéder facilement et voir les confirmations de transaction."
-  },
-  "onboardingPinExtensionDescription2": {
-    "message": "Accédez à votre portefeuille MetaMask en un clic en cliquant sur l’extension."
-  },
-  "onboardingPinExtensionDescription3": {
-    "message": "Cliquez sur l’icône de l’extension $1 pour y accéder immédiatement",
-    "description": "$1 is the browser name"
-  },
-  "onboardingPinExtensionTitle": {
-    "message": "L’installation est terminée !"
-  },
   "onboardingSignInWith": {
     "message": "Se connecter avec $1",
     "description": "$1 is the type of login used Google, Apple, etc"
@@ -4990,9 +4971,6 @@
   },
   "recipientEditAriaLabel": {
     "message": "Modifier le destinataire"
-  },
-  "recipientPlaceholder": {
-    "message": "Saisissez ou collez une adresse valide"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Sauvegarder maintenant"

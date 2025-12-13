@@ -133,7 +133,7 @@ export const AccountList = () => {
       >
         {t('accounts')}
       </Header>
-      <Content className="account-list-page__content">
+      <Content className="account-list-page__content" paddingInline={0}>
         <Box
           flexDirection={FlexDirection.Column}
           paddingTop={1}

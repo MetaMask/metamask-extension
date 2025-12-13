@@ -53,6 +53,7 @@
       "showShieldEntryModalOnce": "boolean",
       "pendingShieldCohort": null,
       "pendingShieldCohortTxType": null,
+      "pna25Acknowledged": "boolean",
       "appActiveTab": "object"
     },
     "BridgeController": {},
@@ -93,9 +94,7 @@
     "NetworkController": {
       "selectedNetworkClientId": "string",
       "networkConfigurations": "object",
-      "networksMetadata": {
-        "networkConfigurationId": { "EIPS": {}, "status": "available" }
-      },
+      "networksMetadata": "object",
       "providerConfig": "object"
     },
     "OnboardingController": {
@@ -144,6 +143,7 @@
       "isMultiAccountBalancesEnabled": "boolean",
       "referrals": "object"
     },
+    "ProfileMetricsController": "object",
     "SelectedNetworkController": { "domains": "object" },
     "SmartTransactionsController": {
       "smartTransactionsState": {

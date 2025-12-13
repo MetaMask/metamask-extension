@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  QuoteResponse,
   RequestStatus,
   formatChainIdToCaip,
   getNativeAssetForChainId,
@@ -16,14 +17,14 @@ describe('BridgeCTAButton', () => {
   it("should render the component's initial state", () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        extensionConfig: {
+        bridgeConfig: {
           chains: {
             [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: false },
             [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: true },
           },
         },
       },
-      bridgeSliceOverrides: { fromTokenInputValue: 1 },
+      bridgeSliceOverrides: { fromTokenInputValue: '1' },
     });
     const { container, getByText } = renderWithProvider(
       <BridgeCTAButton onFetchNewQuotes={jest.fn()} />,
@@ -38,7 +39,7 @@ describe('BridgeCTAButton', () => {
   it('should render the component when amount is missing', () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        extensionConfig: {
+        bridgeConfig: {
           chains: {
             [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: false },
             [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: false },
@@ -51,8 +52,8 @@ describe('BridgeCTAButton', () => {
       },
       bridgeSliceOverrides: {
         fromTokenInputValue: null,
-        fromToken: 'ETH',
-        toToken: 'ETH',
+        // fromToken: 'ETH',
+        // toToken: 'ETH',
         toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
       },
     });
@@ -67,7 +68,7 @@ describe('BridgeCTAButton', () => {
   it('should render the component when amount and dest token is missing', () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        extensionConfig: {
+        bridgeConfig: {
           chains: {
             [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: false },
             [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: false },
@@ -100,7 +101,7 @@ describe('BridgeCTAButton', () => {
   it('should render the component when amount, dest chain and dest token are missing (defaults set', () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        extensionConfig: {
+        bridgeConfig: {
           chains: {
             [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: false },
             [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: false },
@@ -133,7 +134,7 @@ describe('BridgeCTAButton', () => {
   it('should render the component when tx is submittable', () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        extensionConfig: {
+        bridgeConfig: {
           chains: {
             [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: false },
             [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: false },
@@ -145,13 +146,13 @@ describe('BridgeCTAButton', () => {
         },
       },
       bridgeSliceOverrides: {
-        fromTokenInputValue: 1,
+        fromTokenInputValue: '1',
         fromToken: 'ETH',
         toToken: 'ETH',
         toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
       },
       bridgeStateOverrides: {
-        quotes: mockBridgeQuotesNativeErc20,
+        quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
         quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
       },
@@ -168,7 +169,7 @@ describe('BridgeCTAButton', () => {
   it('should disable the component when quotes are loading and there are no existing quotes', () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        extensionConfig: {
+        bridgeConfig: {
           chains: {
             [CHAIN_IDS.MAINNET]: {
               isActiveSrc: true,
@@ -186,7 +187,7 @@ describe('BridgeCTAButton', () => {
         },
       },
       bridgeSliceOverrides: {
-        fromTokenInputValue: 1,
+        fromTokenInputValue: '1',
         fromToken: 'ETH',
         toToken: 'ETH',
         toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
@@ -214,8 +215,8 @@ describe('BridgeCTAButton', () => {
       { isInsufficientGasForQuote: true },
       'Insufficient funds',
     ],
-    ['disable', 'the estimated return is low', { isEstimatedReturnLow: true }],
-    ['disable', 'there are no validation errors', {}, 'Swap'],
+    ['enable', 'the estimated return is low', { isEstimatedReturnLow: true }],
+    ['enable', 'there are no validation errors', {}, 'Swap'],
   ])(
     'should %s the component when quotes are loading and %s',
     async (
@@ -226,7 +227,7 @@ describe('BridgeCTAButton', () => {
     ) => {
       const mockStore = createBridgeMockStore({
         featureFlagOverrides: {
-          extensionConfig: {
+          bridgeConfig: {
             chains: {
               [CHAIN_IDS.MAINNET]: {
                 isActiveSrc: true,
@@ -244,13 +245,13 @@ describe('BridgeCTAButton', () => {
           },
         },
         bridgeSliceOverrides: {
-          fromTokenInputValue: 1,
+          fromTokenInputValue: '1',
           fromToken: 'ETH',
           toToken: 'ETH',
           toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
         },
         bridgeStateOverrides: {
-          quotes: mockBridgeQuotesNativeErc20,
+          quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
           quotesLastFetched: Date.now(),
           quotesLoadingStatus: RequestStatus.LOADING,
         },
@@ -278,10 +279,10 @@ describe('BridgeCTAButton', () => {
     },
   );
 
-  it('should disable the component when quotes are loading and there are existing quotes', () => {
+  it('should not disable the component when quotes are loading and there are existing quotes', () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        extensionConfig: {
+        bridgeConfig: {
           chains: {
             [CHAIN_IDS.MAINNET]: {
               isActiveSrc: true,
@@ -299,13 +300,13 @@ describe('BridgeCTAButton', () => {
         },
       },
       bridgeSliceOverrides: {
-        fromTokenInputValue: 1,
+        fromTokenInputValue: '1',
         fromToken: 'ETH',
         toToken: 'ETH',
         toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
       },
       bridgeStateOverrides: {
-        quotes: mockBridgeQuotesNativeErc20,
+        quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
         quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.LOADING,
       },
@@ -316,12 +317,11 @@ describe('BridgeCTAButton', () => {
     );
 
     expect(getByText('Swap')).toBeInTheDocument();
-    expect(getByRole('button')).toBeDisabled();
+    expect(getByRole('button')).not.toBeDisabled();
     expect(getByRole('button')).toMatchInlineSnapshot(`
       <button
-        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
         data-testid="bridge-cta-button"
-        disabled=""
         style="box-shadow: none;"
       >
         Swap

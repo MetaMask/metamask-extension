@@ -15,7 +15,11 @@ const ClaimsArea = () => {
           element={<ClaimsForm />}
         />
         <Route
-          path={`${TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW.RELATIVE}/:claimId`}
+          path={`${TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW_PENDING.RELATIVE}/:claimId`}
+          element={<ClaimsForm isView />}
+        />
+        <Route
+          path={`${TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW_HISTORY.RELATIVE}/:claimId`}
           element={<ClaimsForm isView />}
         />
       </RouterRoutes>

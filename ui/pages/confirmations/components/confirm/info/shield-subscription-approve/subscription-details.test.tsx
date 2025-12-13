@@ -16,6 +16,7 @@ const mockProductPrice: ProductPrice = {
   unitDecimals: 6,
   currency: 'usd',
   trialPeriodDays: 14,
+  minBillingCyclesForBalance: 1,
 };
 
 describe('SubscriptionDetails', () => {

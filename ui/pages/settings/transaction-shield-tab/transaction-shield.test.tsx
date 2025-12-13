@@ -11,6 +11,7 @@ import {
 } from '@metamask/subscription-controller';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import mockState from '../../../../test/data/mock-state.json';
+import { initialState as rewardsInitialState } from '../../../ducks/rewards';
 import TransactionShield from './transaction-shield';
 
 const mockUseNavigate = jest.fn();
@@ -38,6 +39,7 @@ jest.mock('./shield-subscription-icon-animation', () => ({
 describe('Transaction Shield Page', () => {
   const STATE_MOCK = {
     ...mockState,
+    rewards: rewardsInitialState,
     metamask: {
       ...mockState.metamask,
       customerId: '1',

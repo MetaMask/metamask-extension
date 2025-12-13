@@ -39,6 +39,10 @@ export type MetDataByPermissionTypeGroup = Record<
   }
 >;
 
+export enum GatorSortOrder {
+  Ascending = 'asc',
+  Descending = 'desc',
+}
 export type ConnectionInfo = {
   addresses: string[];
   addressToNameMap?: Record<string, string>;
@@ -62,6 +66,54 @@ const TOKEN_TRANSFER_PERMISSION_TYPES: SupportedGatorPermissionType[] = [
 ];
 
 const getMetamask = (state: AppState) => state.metamask;
+
+/**
+ * Sort gator permissions by startTime.
+ * Permissions without startTime are placed at the beginning for ascending order,
+ * or at the end for descending order.
+ *
+ * @param permissions - Array of gator permissions to sort
+ * @param order - Sort order: GatorSortOrder.Ascending for oldest first, GatorSortOrder.Descending for newest first. Defaults to GatorSortOrder.Ascending
+ * @returns Sorted array of gator permissions
+ */
+function sortGatorPermissionsByStartTime<
+  TPermission extends StoredGatorPermissionSanitized<
+    Signer,
+    PermissionTypesWithCustom
+  >,
+>(
+  permissions: TPermission[],
+  order: GatorSortOrder = GatorSortOrder.Ascending,
+): TPermission[] {
+  return [...permissions].sort((a, b) => {
+    const aStartTime = a.permissionResponse.permission.data?.startTime as
+      | number
+      | undefined;
+    const bStartTime = b.permissionResponse.permission.data?.startTime as
+      | number
+      | undefined;
+
+    // Both undefined - maintain original order
+    if (!aStartTime && !bStartTime) {
+      return 0;
+    }
+
+    // Only a is undefined
+    if (!aStartTime) {
+      return order === GatorSortOrder.Ascending ? -1 : 1;
+    }
+
+    // Only b is undefined
+    if (!bStartTime) {
+      return order === GatorSortOrder.Ascending ? 1 : -1;
+    }
+
+    // Both have values - sort based on order
+    return order === GatorSortOrder.Ascending
+      ? aStartTime - bStartTime
+      : bStartTime - aStartTime;
+  });
+}
 
 /**
  * Get gator permissions map from GatorPermissionsController.
@@ -421,11 +473,11 @@ export const getPermissionGroupMetaDataByOrigin = createSelector(
 );
 
 /**
- * Get all token transfer permissions for a specific site origin.
+ * Get all token transfer permissions for a specific site origin sorted by start time.
  *
  * @param _state - The current state
  * @param siteOrigin - The site origin to filter by (e.g., 'https://example.com')
- * @returns Array of all token transfer permissions for the site origin
+ * @returns Array of all token transfer permissions for the site origin, sorted by start time (oldest first)
  * @example
  * const permissions = getTokenTransferPermissionsByOrigin(state, 'https://example.com');
  *
@@ -443,10 +495,11 @@ export const getTokenTransferPermissionsByOrigin = createSelector(
     gatorPermissionsMap,
     siteOrigin,
   ): StoredGatorPermissionSanitized<Signer, PermissionTypesWithCustom>[] => {
-    return getTokenTransferPermissionsByOriginHelper(
+    const allPermissions = getTokenTransferPermissionsByOriginHelper(
       gatorPermissionsMap,
       siteOrigin,
     );
+    return sortGatorPermissionsByStartTime(allPermissions);
   },
 );
 
@@ -637,7 +690,7 @@ export const getAggregatedGatorPermissionByChainId = createSelector(
   ): StoredGatorPermissionSanitized<Signer, PermissionTypesWithCustom>[] => {
     switch (aggregatedPermissionType) {
       case 'token-transfer': {
-        return TOKEN_TRANSFER_PERMISSION_TYPES.flatMap(
+        const allPermissions = TOKEN_TRANSFER_PERMISSION_TYPES.flatMap(
           (permissionType) =>
             (gatorPermissionsMap[permissionType][chainId] ||
               []) as StoredGatorPermissionSanitized<
@@ -645,6 +698,7 @@ export const getAggregatedGatorPermissionByChainId = createSelector(
               PermissionTypesWithCustom
             >[],
         );
+        return sortGatorPermissionsByStartTime(allPermissions);
       }
       default: {
         console.warn(
@@ -695,12 +749,13 @@ export const getAggregatedGatorPermissionByChainIdAndOrigin = createSelector(
 
         // Filter by origin
         const decodedSiteOrigin = safeDecodeURIComponent(siteOrigin);
-        return allPermissions.filter((permission) =>
+        const filteredPermissions = allPermissions.filter((permission) =>
           isEqualCaseInsensitive(
             safeDecodeURIComponent(permission.siteOrigin),
             decodedSiteOrigin,
           ),
         );
+        return sortGatorPermissionsByStartTime(filteredPermissions);
       }
       default: {
         console.warn(

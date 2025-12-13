@@ -1,6 +1,7 @@
 /* eslint-disable no-empty-function */
 import React from 'react';
 import {
+  QuoteResponse,
   RequestStatus,
   formatChainIdToCaip,
 } from '@metamask/bridge-controller';
@@ -42,7 +43,7 @@ describe('MultichainBridgeQuoteCard', () => {
   it('should render the recommended quote (no MM fee)', async () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        extensionConfig: {
+        bridgeConfig: {
           maxRefreshCount: 5,
           refreshRate: 30000,
           chains: {
@@ -53,7 +54,7 @@ describe('MultichainBridgeQuoteCard', () => {
         },
       },
       bridgeSliceOverrides: {
-        fromTokenInputValue: 1,
+        fromTokenInputValue: '1',
         toChainId: formatChainIdToCaip(CHAIN_IDS.POLYGON),
       },
       bridgeStateOverrides: {
@@ -66,8 +67,8 @@ describe('MultichainBridgeQuoteCard', () => {
           srcTokenAmount: '14000000',
         },
         quotesRefreshCount: 1,
-        quotes: mockBridgeQuotesErc20Erc20,
-        getQuotesLastFetched: Date.now(),
+        quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+        quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
       },
       metamaskStateOverrides: {
@@ -119,7 +120,7 @@ describe('MultichainBridgeQuoteCard', () => {
   it('should render a quote with MM fee', async () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        extensionConfig: {
+        bridgeConfig: {
           maxRefreshCount: 5,
           refreshRate: 30000,
           chains: {
@@ -130,7 +131,7 @@ describe('MultichainBridgeQuoteCard', () => {
         },
       },
       bridgeSliceOverrides: {
-        fromTokenInputValue: 1,
+        fromTokenInputValue: '1',
         toChainId: formatChainIdToCaip(CHAIN_IDS.POLYGON),
       },
       bridgeStateOverrides: {
@@ -143,21 +144,23 @@ describe('MultichainBridgeQuoteCard', () => {
           srcTokenAmount: '14000000',
         },
         quotesRefreshCount: 1,
-        quotes: mockBridgeQuotesErc20Erc20.map((quote) => ({
-          ...quote,
-          quote: {
-            ...quote.quote,
-            feeData: {
-              ...quote.quote.feeData,
-              metabridge: {
-                ...quote.quote.feeData.metabridge,
-                amount: '1000000000000000000',
-                quoteBpsFee: 87.5,
+        quotes: (mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[]).map(
+          (quote) => ({
+            ...quote,
+            quote: {
+              ...quote.quote,
+              feeData: {
+                ...quote.quote.feeData,
+                metabridge: {
+                  ...quote.quote.feeData.metabridge,
+                  amount: '1000000000000000000',
+                  quoteBpsFee: 87.5,
+                },
               },
             },
-          },
-        })),
-        getQuotesLastFetched: Date.now(),
+          }),
+        ),
+        quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
       },
       metamaskStateOverrides: {
@@ -211,7 +214,7 @@ describe('MultichainBridgeQuoteCard', () => {
   it('should render the recommended quote while loading new quotes', async () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        extensionConfig: {
+        bridgeConfig: {
           chains: {
             [CHAIN_IDS.MAINNET]: { isActiveSrc: false, isActiveDest: false },
             [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: true },
@@ -220,7 +223,7 @@ describe('MultichainBridgeQuoteCard', () => {
         },
       },
       bridgeSliceOverrides: {
-        fromTokenInputValue: 1,
+        fromTokenInputValue: '1',
         toChainId: formatChainIdToCaip(CHAIN_IDS.POLYGON),
         slippage: 1,
       },
@@ -234,7 +237,7 @@ describe('MultichainBridgeQuoteCard', () => {
             usdExchangeRate: '.99',
           },
         },
-        quotes: mockBridgeQuotesNativeErc20,
+        quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
         quoteRequest: {
           insufficientBal: false,
           srcChainId: 10,
@@ -243,7 +246,7 @@ describe('MultichainBridgeQuoteCard', () => {
           destTokenAddress: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
           srcTokenAmount: '14000000',
         },
-        getQuotesLastFetched: Date.now() - 5000,
+        quotesLastFetched: Date.now() - 5000,
         quotesLoadingStatus: RequestStatus.LOADING,
       },
       metamaskStateOverrides: {
@@ -287,17 +290,17 @@ describe('MultichainBridgeQuoteCard', () => {
   it('should not render when there is no quote', async () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        extensionConfig: {
+        bridgeConfig: {
           chains: {
             [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: false },
             [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: true },
           },
         },
       },
-      bridgeSliceOverrides: { fromTokenInputValue: 1 },
+      bridgeSliceOverrides: { fromTokenInputValue: '1' },
       bridgeStateOverrides: {
         quotes: [],
-        getQuotesLastFetched: Date.now() - 5000,
+        quotesLastFetched: Date.now() - 5000,
         quotesLoadingStatus: RequestStatus.FETCHED,
       },
     });
@@ -316,17 +319,17 @@ describe('MultichainBridgeQuoteCard', () => {
   it('should not render when there is a quote fetch error', async () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        extensionConfig: {
+        bridgeConfig: {
           chains: {
             [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: false },
             [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: true },
           },
         },
       },
-      bridgeSliceOverrides: { fromTokenInputValue: 1 },
+      bridgeSliceOverrides: { fromTokenInputValue: '1' },
       bridgeStateOverrides: {
         quotes: [],
-        getQuotesLastFetched: Date.now() - 5000,
+        quotesLastFetched: Date.now() - 5000,
         quotesLoadingStatus: RequestStatus.ERROR,
       },
     });
@@ -346,7 +349,7 @@ describe('MultichainBridgeQuoteCard', () => {
     const createMockStoreWithQuote = () =>
       createBridgeMockStore({
         featureFlagOverrides: {
-          extensionConfig: {
+          bridgeConfig: {
             maxRefreshCount: 5,
             refreshRate: 30000,
             chains: {
@@ -357,7 +360,7 @@ describe('MultichainBridgeQuoteCard', () => {
           },
         },
         bridgeSliceOverrides: {
-          fromTokenInputValue: 1,
+          fromTokenInputValue: '1',
           toChainId: formatChainIdToCaip(CHAIN_IDS.POLYGON),
         },
         bridgeStateOverrides: {
@@ -370,8 +373,8 @@ describe('MultichainBridgeQuoteCard', () => {
             srcTokenAmount: '14000000',
           },
           quotesRefreshCount: 1,
-          quotes: mockBridgeQuotesErc20Erc20,
-          getQuotesLastFetched: Date.now(),
+          quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+          quotesLastFetched: Date.now(),
           quotesLoadingStatus: RequestStatus.FETCHED,
         },
         metamaskStateOverrides: {
@@ -582,7 +585,7 @@ describe('MultichainBridgeQuoteCard', () => {
   it('should render gas sponsored text when gasSponsored is true', async () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        extensionConfig: {
+        bridgeConfig: {
           maxRefreshCount: 5,
           refreshRate: 30000,
           chains: {
@@ -593,7 +596,7 @@ describe('MultichainBridgeQuoteCard', () => {
         },
       },
       bridgeSliceOverrides: {
-        fromTokenInputValue: 1,
+        fromTokenInputValue: '1',
         toChainId: formatChainIdToCaip(CHAIN_IDS.POLYGON),
       },
       bridgeStateOverrides: {
@@ -606,14 +609,16 @@ describe('MultichainBridgeQuoteCard', () => {
           srcTokenAmount: '14000000',
         },
         quotesRefreshCount: 1,
-        quotes: mockBridgeQuotesErc20Erc20.map((quote) => ({
-          ...quote,
-          quote: {
-            ...quote.quote,
-            gasSponsored: true,
-          },
-        })),
-        getQuotesLastFetched: Date.now(),
+        quotes: (mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[]).map(
+          (quote) => ({
+            ...quote,
+            quote: {
+              ...quote.quote,
+              gasSponsored: true,
+            },
+          }),
+        ),
+        quotesLastFetched: Date.now(),
         quotesLoadingStatus: RequestStatus.FETCHED,
       },
       metamaskStateOverrides: {

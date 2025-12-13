@@ -18,7 +18,7 @@ describe('useCountdownTimer', () => {
     const { result } = renderUseCountdownTimer(
       createBridgeMockStore({
         featureFlagOverrides: {
-          extensionConfig: { maxRefreshCount: 5, refreshRate: 40000 },
+          bridgeConfig: { maxRefreshCount: 5, refreshRate: 40000 },
         },
         bridgeStateOverrides: {
           quotesLastFetched,

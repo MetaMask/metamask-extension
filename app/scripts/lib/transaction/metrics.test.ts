@@ -94,7 +94,7 @@ const mockTransactionMetricsRequest = {
   getParticipateInMetrics: jest.fn(),
   getTokenStandardAndDetails: jest.fn(),
   getTransaction: jest.fn(),
-  provider: provider as Provider,
+  provider: provider as unknown as Provider,
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   snapAndHardwareMessenger: jest.fn() as any,
@@ -105,6 +105,8 @@ const mockTransactionMetricsRequest = {
   getIsConfirmationAdvancedDetailsOpen: jest.fn(),
   getHDEntropyIndex: jest.fn(),
   getNetworkRpcUrl: jest.fn(),
+  getFeatureFlags: jest.fn(),
+  getPna25Acknowledged: jest.fn(),
 } as TransactionMetricsRequest;
 
 describe('Transaction metrics', () => {
@@ -133,6 +135,7 @@ describe('Transaction metrics', () => {
     mockTransactionMeta = {
       id: '1',
       status: TransactionStatus.unapproved,
+      hash: '0x1234567890123456789012345678901234567890',
       txParams: {
         from: fromAccount.address,
         to: '0x1678a085c290ebd122dc42cba69373b5953b831d',
@@ -1701,6 +1704,185 @@ describe('Transaction metrics', () => {
           simulation_receiving_assets_total_value: '200',
         }),
       );
+    });
+  });
+
+  describe('transaction hash property', () => {
+    describe('included when', () => {
+      // @ts-expect-error This function is missing from the Mocha type definitions
+      it.each([
+        [TransactionStatus.failed, handleTransactionFailed],
+        [TransactionStatus.dropped, handleTransactionDropped],
+        [
+          TransactionStatus.confirmed,
+          (request: TransactionMetricsRequest, args: TransactionEventPayload) =>
+            handleTransactionConfirmed(
+              request,
+              args.transactionMeta as TransactionMetaEventPayload,
+            ),
+        ],
+      ])(
+        'transaction is %s and metrics opted in and pna25 acknowledged',
+        async (
+          status: TransactionStatus,
+          handler: (
+            request: TransactionMetricsRequest,
+            args: TransactionEventPayload,
+          ) => Promise<void>,
+        ) => {
+          const mockMetricsRequest = {
+            ...mockTransactionMetricsRequest,
+            getFeatureFlags: jest.fn().mockReturnValue({
+              extensionUxPna25: true,
+            }),
+            getPna25Acknowledged: jest.fn().mockReturnValue(true),
+            getParticipateInMetrics: jest.fn().mockReturnValue(true),
+          } as TransactionMetricsRequest;
+
+          const failedTransactionMeta = {
+            ...mockTransactionMeta,
+            status,
+          } as TransactionMeta;
+
+          await handler(mockMetricsRequest, {
+            transactionMeta: failedTransactionMeta,
+          });
+
+          const { properties } = jest.mocked(
+            mockTransactionMetricsRequest.createEventFragment,
+          ).mock.calls[0][0];
+
+          expect(properties).toStrictEqual(
+            expect.objectContaining({
+              transaction_hash: mockTransactionMeta.hash,
+            }),
+          );
+        },
+      );
+    });
+
+    describe('not included when', () => {
+      // @ts-expect-error This function is missing from the Mocha type definitions
+      it.each([
+        [TransactionStatus.unapproved, handleTransactionAdded],
+        [TransactionStatus.approved, handleTransactionApproved],
+        [TransactionStatus.submitted, handleTransactionSubmitted],
+      ])(
+        'transaction is %s and metrics opted in and pna25 acknowledged',
+        async (
+          status: TransactionStatus,
+          handler: (
+            request: TransactionMetricsRequest,
+            args: TransactionEventPayload,
+          ) => Promise<void>,
+        ) => {
+          const transactionMeta = {
+            ...mockTransactionMeta,
+            status,
+          } as TransactionMeta;
+
+          await handler(mockTransactionMetricsRequest, {
+            transactionMeta,
+          });
+
+          const { properties } = jest.mocked(
+            mockTransactionMetricsRequest.createEventFragment,
+          ).mock.calls[0][0];
+
+          expect(properties).not.toStrictEqual(
+            expect.objectContaining({
+              transaction_hash: mockTransactionMeta.hash,
+            }),
+          );
+        },
+      );
+
+      it('metrics not opted in', async () => {
+        const mockMetricsRequest = {
+          ...mockTransactionMetricsRequest,
+          getFeatureFlags: jest.fn().mockReturnValue({
+            extensionUxPna25: true,
+          }),
+          getPna25Acknowledged: jest.fn().mockReturnValue(true),
+          getParticipateInMetrics: jest.fn().mockReturnValue(false),
+        } as TransactionMetricsRequest;
+        const failedTransactionMeta = {
+          ...mockTransactionMeta,
+          status: TransactionStatus.failed,
+        } as TransactionMeta;
+
+        await handleTransactionFailed(mockMetricsRequest, {
+          transactionMeta: failedTransactionMeta as TransactionMetaEventPayload,
+        });
+
+        const { properties } = jest.mocked(
+          mockTransactionMetricsRequest.createEventFragment,
+        ).mock.calls[0][0];
+
+        expect(properties).not.toStrictEqual(
+          expect.objectContaining({
+            transaction_hash: mockTransactionMeta.hash,
+          }),
+        );
+      });
+
+      it('pna25 not acknowledged', async () => {
+        const mockMetricsRequest = {
+          ...mockTransactionMetricsRequest,
+          getFeatureFlags: jest.fn().mockReturnValue({
+            extensionUxPna25: true,
+          }),
+          getPna25Acknowledged: jest.fn().mockReturnValue(false),
+          getParticipateInMetrics: jest.fn().mockReturnValue(true),
+        } as TransactionMetricsRequest;
+        const failedTransactionMeta = {
+          ...mockTransactionMeta,
+          status: TransactionStatus.failed,
+        } as TransactionMeta;
+
+        await handleTransactionFailed(mockMetricsRequest, {
+          transactionMeta: failedTransactionMeta as TransactionMetaEventPayload,
+        });
+
+        const { properties } = jest.mocked(
+          mockTransactionMetricsRequest.createEventFragment,
+        ).mock.calls[0][0];
+
+        expect(properties).not.toStrictEqual(
+          expect.objectContaining({
+            transaction_hash: mockTransactionMeta.hash,
+          }),
+        );
+      });
+
+      it('ff not enabled', async () => {
+        const mockMetricsRequest = {
+          ...mockTransactionMetricsRequest,
+          getFeatureFlags: jest.fn().mockReturnValue({
+            extensionUxPna25: false,
+          }),
+          getPna25Acknowledged: jest.fn().mockReturnValue(true),
+          getParticipateInMetrics: jest.fn().mockReturnValue(true),
+        } as TransactionMetricsRequest;
+        const failedTransactionMeta = {
+          ...mockTransactionMeta,
+          status: TransactionStatus.failed,
+        } as TransactionMeta;
+
+        await handleTransactionFailed(mockMetricsRequest, {
+          transactionMeta: failedTransactionMeta as TransactionMetaEventPayload,
+        });
+
+        const { properties } = jest.mocked(
+          mockTransactionMetricsRequest.createEventFragment,
+        ).mock.calls[0][0];
+
+        expect(properties).not.toStrictEqual(
+          expect.objectContaining({
+            transaction_hash: mockTransactionMeta.hash,
+          }),
+        );
+      });
     });
   });
 });

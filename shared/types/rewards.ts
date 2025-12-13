@@ -3,6 +3,7 @@
  * These types are used across UI and background to avoid import restrictions
  */
 
+import { RecurringInterval } from '@metamask/subscription-controller';
 import { CaipAccountId, CaipAssetType } from '@metamask/utils';
 
 export enum SeasonRewardType {
@@ -160,6 +161,15 @@ export type EstimatePerpsContextDto = {
   coin: string;
 };
 
+export type EstimateShieldContextDto = {
+  /**
+   * Recurring interval of the shield subscription
+   *
+   * @example 'month'
+   */
+  recurringInterval: RecurringInterval;
+};
+
 export type EstimatePointsContextDto = {
   /**
    * Swap context data, must be present for SWAP activity
@@ -170,6 +180,11 @@ export type EstimatePointsContextDto = {
    * PERPS context data, must be present for PERPS activity
    */
   perpsContext?: EstimatePerpsContextDto;
+
+  /**
+   * Shield context data, must be present for SHIELD activity
+   */
+  shieldContext?: EstimateShieldContextDto;
 };
 
 /**
@@ -183,7 +198,8 @@ export type PointsEventEarnType =
   | 'REFERRAL'
   | 'SIGN_UP_BONUS'
   | 'LOYALTY_BONUS'
-  | 'ONE_TIME_BONUS';
+  | 'ONE_TIME_BONUS'
+  | 'SHIELD';
 
 export type EstimatedPointsDto = {
   /**

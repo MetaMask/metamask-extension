@@ -99,6 +99,8 @@ class HomePage {
   private readonly shieldEntryModalSkip =
     '[data-testid="shield-entry-modal-close-button"]';
 
+  private readonly multichainTokenListButton = `[data-testid="multichain-token-list-button"]`;
+
   private readonly emptyBalance =
     '[data-testid="coin-overview-balance-empty-state"]';
 
