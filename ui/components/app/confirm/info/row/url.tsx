@@ -21,6 +21,7 @@ import SnapAuthorshipPill from '../../../snaps/snap-authorship-pill';
 import { SnapMetadataModal } from '../../../snaps/snap-metadata-modal';
 import { useOriginTrustSignals } from '../../../../../hooks/useOriginTrustSignals';
 import { TrustSignalDisplayState } from '../../../../../hooks/useTrustSignals';
+import { toPlainString } from '../../../../../helpers/utils/string';
 import Tooltip from '../../../../ui/tooltip';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
@@ -63,6 +64,28 @@ export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
 
   const originTrustSignals = useOriginTrustSignals(url);
 
+  const maliciousTooltipTitle = toPlainString(
+    t('alertReasonOriginTrustSignalMalicious'),
+  );
+  const warningTooltipTitle = toPlainString(
+    t('alertReasonOriginTrustSignalWarning'),
+  );
+  const verifiedTooltipTitle = toPlainString(
+    t('alertReasonOriginTrustSignalVerified'),
+  );
+
+  const renderIconWithOptionalTooltip = (
+    tooltipTitle: string | undefined,
+    icon: JSX.Element,
+  ) =>
+    tooltipTitle ? (
+      <Tooltip title={tooltipTitle} position="bottom" style={{ display: 'flex' }}>
+        {icon}
+      </Tooltip>
+    ) : (
+      icon
+    );
+
   // Check if it's a Snap ID first to avoid unnecessary processing
   if (isSnapId(url)) {
     return (
@@ -90,18 +113,13 @@ export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
   const renderIcon = () => {
     // Priority 1: Malicious
     if (originTrustSignals.state === TrustSignalDisplayState.Malicious) {
-      return (
-        <Tooltip
-          title={t('alertReasonOriginTrustSignalMalicious')}
-          position="bottom"
-          style={{ display: 'flex' }}
-        >
-          <Icon
-            name={IconName.Danger}
-            color={IconColor.errorDefault}
-            size={IconSize.Sm}
-          />
-        </Tooltip>
+      return renderIconWithOptionalTooltip(
+        maliciousTooltipTitle,
+        <Icon
+          name={IconName.Danger}
+          color={IconColor.errorDefault}
+          size={IconSize.Sm}
+        />,
       );
     }
 
@@ -112,35 +130,25 @@ export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
 
     // Priority 3: Warning
     if (originTrustSignals.state === TrustSignalDisplayState.Warning) {
-      return (
-        <Tooltip
-          title={t('alertReasonOriginTrustSignalWarning')}
-          position="bottom"
-          style={{ display: 'flex' }}
-        >
-          <Icon
-            name={IconName.Danger}
-            color={IconColor.warningDefault}
-            size={IconSize.Sm}
-          />
-        </Tooltip>
+      return renderIconWithOptionalTooltip(
+        warningTooltipTitle,
+        <Icon
+          name={IconName.Danger}
+          color={IconColor.warningDefault}
+          size={IconSize.Sm}
+        />,
       );
     }
 
     // Priority 4: Verified
     if (originTrustSignals.state === TrustSignalDisplayState.Verified) {
-      return (
-        <Tooltip
-          title={t('alertReasonOriginTrustSignalVerified')}
-          position="bottom"
-          style={{ display: 'flex' }}
-        >
-          <Icon
-            name={IconName.VerifiedFilled}
-            color={IconColor.infoDefault}
-            size={IconSize.Sm}
-          />
-        </Tooltip>
+      return renderIconWithOptionalTooltip(
+        verifiedTooltipTitle,
+        <Icon
+          name={IconName.VerifiedFilled}
+          color={IconColor.infoDefault}
+          size={IconSize.Sm}
+        />,
       );
     }
 

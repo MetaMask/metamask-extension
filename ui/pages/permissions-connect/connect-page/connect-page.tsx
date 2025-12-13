@@ -77,6 +77,7 @@ import {
   isIpAddress,
   transformOriginToTitle,
 } from '../../../helpers/utils/util';
+import { toPlainString } from '../../../helpers/utils/string';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -452,6 +453,16 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
   const originTrustSignals = useOriginTrustSignals(
     targetSubjectMetadata.origin,
   );
+  const verifiedTooltipTitle = toPlainString(
+    t('alertReasonOriginTrustSignalVerified'),
+  );
+  const verifiedIcon = (
+    <Icon
+      name={IconName.VerifiedFilled}
+      color={IconColor.infoDefault}
+      size={IconSize.Sm}
+    />
+  );
 
   return (
     <Page
@@ -518,19 +529,18 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
           >
             {title}
           </Text>
-          {originTrustSignals.state === TrustSignalDisplayState.Verified && (
-            <Tooltip
-              title={t('alertReasonOriginTrustSignalVerified')}
-              position="bottom"
-              style={{ display: 'flex' }}
-            >
-              <Icon
-                name={IconName.VerifiedFilled}
-                color={IconColor.infoDefault}
-                size={IconSize.Sm}
-              />
-            </Tooltip>
-          )}
+          {originTrustSignals.state === TrustSignalDisplayState.Verified &&
+            (verifiedTooltipTitle ? (
+              <Tooltip
+                title={verifiedTooltipTitle}
+                position="bottom"
+                style={{ display: 'flex' }}
+              >
+                {verifiedIcon}
+              </Tooltip>
+            ) : (
+              verifiedIcon
+            ))}
         </Box>
         <Box display={Display.Flex} justifyContent={JustifyContent.center}>
           <Text color={TextColor.textAlternative}>
