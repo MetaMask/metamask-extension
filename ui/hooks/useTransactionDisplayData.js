@@ -269,19 +269,24 @@ export function useTransactionDisplayData(transactionGroup) {
   } = useSwappedTokenValue(transactionGroup, currentAsset);
 
   const bridgeTokenDisplayData = useBridgeTokenDisplayData(transactionGroup);
+  const unknownSwapTokenLabel = t('swapUnknown');
+  const swapSourceTokenSymbol =
+    bridgeTokenDisplayData.sourceTokenSymbol ??
+    initialTransaction.sourceTokenSymbol ??
+    unknownSwapTokenLabel;
+  const swapDestinationTokenSymbol =
+    bridgeTokenDisplayData.destinationTokenSymbol ??
+    initialTransaction.destinationTokenSymbol ??
+    unknownSwapTokenLabel;
 
   if (signatureTypes.includes(type)) {
     title = t('signatureRequest');
   } else if (type === TransactionType.swap) {
     title = t('swapTokenToToken', [
-      bridgeTokenDisplayData.sourceTokenSymbol ??
-        initialTransaction.sourceTokenSymbol,
-      bridgeTokenDisplayData.destinationTokenSymbol ??
-        initialTransaction.destinationTokenSymbol,
+      swapSourceTokenSymbol,
+      swapDestinationTokenSymbol,
     ]);
-    const symbolFromTx =
-      bridgeTokenDisplayData.sourceTokenSymbol ??
-      initialTransaction.sourceTokenSymbol;
+    const symbolFromTx = swapSourceTokenSymbol;
     primarySuffix = isViewingReceivedTokenFromSwap
       ? currentAsset.symbol
       : symbolFromTx;
