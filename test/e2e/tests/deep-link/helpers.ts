@@ -1,8 +1,57 @@
+import { Mockttp } from 'mockttp';
 import { canonicalize } from '../../../../shared/lib/deep-links/canonicalize';
 import {
   SIG_PARAM,
   SIG_PARAMS_PARAM,
 } from '../../../../shared/lib/deep-links/constants';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import { emptyHtmlPage } from '../../mock-e2e';
+
+export const TEST_PAGE = 'https://doesntexist.test/';
+
+/**
+ * Generates the configuration for the test, including fixtures and
+ * manifest flags.
+ *
+ * @param title - The title of the test, used for debugging and logging.
+ */
+export async function getConfig(
+  title: string | null,
+  deepLinkPublicKey: string,
+) {
+  return {
+    fixtures: new FixtureBuilder().build(),
+    title,
+    manifestFlags: {
+      testing: {
+        deepLinkPublicKey,
+      },
+    },
+    testSpecificMock: async (server: Mockttp) => {
+      // Deep Links
+      await server
+        .forGet(/^https?:\/\/link\.metamask\.io\/.*$/u)
+        .thenCallback(() => {
+          return {
+            statusCode: 200,
+            body: emptyHtmlPage(),
+            headers: {
+              'Content-Type': 'text/html; charset=utf-8',
+            },
+          };
+        });
+      await server.forGet(TEST_PAGE).thenCallback(() => {
+        return {
+          statusCode: 200,
+          body: emptyHtmlPage(),
+          headers: {
+            'Content-Type': 'text/html; charset=utf-8',
+          },
+        };
+      });
+    },
+  };
+}
 
 /**
  * Generates an ECDSA key pair for signing deep links for testing purposes.
