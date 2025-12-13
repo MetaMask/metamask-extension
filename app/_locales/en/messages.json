@@ -2218,6 +2218,14 @@
   "downloadMetaMaskMobileTitle": {
     "message": "Get our mobile app"
   },
+  "slideDownloadMobileAppTitle": {
+    "message": "Get our mobile app",
+    "description": "Carousel slide title promoting the MetaMask mobile app"
+  },
+  "slideDownloadMobileAppDescription": {
+    "message": "Face ID on our app lets you in even if you forget your password. Take MetaMask everywhere you go!",
+    "description": "Carousel slide description encouraging users to download the MetaMask mobile app"
+  },
   "downloadNow": {
     "message": "Download Now"
   },
