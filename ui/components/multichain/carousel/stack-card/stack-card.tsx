@@ -24,6 +24,25 @@ export const StackCard: React.FC<StackCardProps> = ({
   const t = useI18nContext();
   const isContentfulContent = slide.id.startsWith('contentful-');
 
+  const getLocalizedSlideText = (value: string) => {
+    if (!value) {
+      return '';
+    }
+
+    if (isContentfulContent) {
+      return value;
+    }
+
+    return t(value) ?? value;
+  };
+
+  const localizedTitle = getLocalizedSlideText(slide.title);
+  const localizedDescription = getLocalizedSlideText(slide.description);
+  const fallbackTitle = localizedTitle || slide.title;
+  const closeButtonLabel =
+    t('closeSlide', [fallbackTitle]) ??
+    [t('close') ?? 'Close', fallbackTitle].filter(Boolean).join(' ').trim();
+
   const handleCloseClick = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     e.stopPropagation();
@@ -63,7 +82,7 @@ export const StackCard: React.FC<StackCardProps> = ({
 
       {/* Image Container */}
       <div className="carousel-card__image">
-        <img src={slide.image} alt={slide.title} />
+        <img src={slide.image} alt={fallbackTitle} />
       </div>
 
       {/* Info container */}
@@ -75,7 +94,7 @@ export const StackCard: React.FC<StackCardProps> = ({
             color={TextColor.textDefault}
             className="carousel-card__title"
           >
-            {isContentfulContent ? slide.title : t(slide.title)}
+            {localizedTitle || slide.title}
           </Text>
 
           {onTransitionToNextCard && (
@@ -83,9 +102,7 @@ export const StackCard: React.FC<StackCardProps> = ({
               iconName={IconName.Close}
               size={ButtonIconSize.Md}
               color={IconColor.iconAlternative}
-              ariaLabel={t('closeSlide', [
-                isContentfulContent ? slide.title : t(slide.title),
-              ])}
+              ariaLabel={closeButtonLabel}
               onClick={handleCloseClick}
               data-testid={`carousel-slide-${slide.id}-close-button`}
             />
@@ -99,7 +116,7 @@ export const StackCard: React.FC<StackCardProps> = ({
             color={TextColor.textAlternative}
             className="carousel-card__description"
           >
-            {isContentfulContent ? slide.description : t(slide.description)}
+            {localizedDescription || slide.description}
           </Text>
         </div>
       </div>
