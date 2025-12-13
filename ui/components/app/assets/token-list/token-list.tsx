@@ -41,6 +41,7 @@ import {
   isEvmChainId,
   isTronResource,
 } from '../../../../../shared/lib/asset-utils';
+import { shouldHideTempoToken } from '../../../../../shared/lib/tempo-utils';
 import { sortAssetsWithPriority } from '../util/sortAssetsWithPriority';
 import { useScrollContainer } from '../../../../contexts/scroll-container';
 
@@ -102,7 +103,12 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
         },
       ]);
 
-      return sortAssets([...filteredAssets], tokenSortConfig);
+      const sortedAssets = sortAssets([...filteredAssets], tokenSortConfig);
+
+      return sortedAssets.filter(
+        (asset) =>
+          !shouldHideTempoToken(asset.chainId, asset.isNative, asset.symbol),
+      );
     }
 
     const accountAssetsPreSort = Object.entries(accountGroupIdAssets).flatMap(
@@ -129,7 +135,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
       tokenSortConfig,
     );
 
-    return accountAssets.map((asset) => {
+    const mappedAssets = accountAssets.map((asset) => {
       const token: TokenWithFiatAmount = {
         ...asset,
         tokenFiatAmount: asset.fiat?.balance,
@@ -141,6 +147,11 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
 
       return token;
     });
+
+    return mappedAssets.filter(
+      (asset) =>
+        !shouldHideTempoToken(asset.chainId, asset.isNative, asset.symbol),
+    );
   }, [
     isEvm,
     evmBalances,
