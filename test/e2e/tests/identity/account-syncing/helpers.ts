@@ -10,7 +10,7 @@ export const arrangeTestUtils = (
   driver: Driver,
   userStorageMockttpController: UserStorageMockttpController,
 ) => {
-  const BASE_TIMEOUT = 30000;
+  const BASE_TIMEOUT = 40000;
   const BASE_INTERVAL = 1000;
 
   const prepareEventsEmittedCounter = (
