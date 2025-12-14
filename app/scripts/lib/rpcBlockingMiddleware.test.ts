@@ -1,5 +1,4 @@
-import type { WalletMiddlewareContext } from '@metamask/eth-json-rpc-middleware';
-import type { Json, JsonRpcRequest, JsonRpcResponse } from '@metamask/utils';
+import type { JsonRpcRequest } from '@metamask/utils';
 import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
 import createRpcBlockingMiddleware from './rpcBlockingMiddleware';
 
@@ -9,6 +8,7 @@ jest.mock('../../../shared/lib/snaps/snaps', () => ({
 
 describe('createRpcBlockingMiddleware', () => {
   const isSnapPreinstalledMock = jest.mocked(isSnapPreinstalled);
+  const res = { id: 1, jsonrpc: '2.0' } as const;
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -25,16 +25,15 @@ describe('createRpcBlockingMiddleware', () => {
     });
     const req = createRequest();
     const next = jest.fn();
-    const context = new Map([
-      ['origin', 'https://example.com'],
-    ]) as WalletMiddlewareContext;
+    const end = jest.fn();
 
-    middleware(req, {} as unknown as JsonRpcResponse<Json>, next, context);
+    middleware(req, res, next, end);
 
     expect(next).toHaveBeenCalledTimes(1);
+    expect(end).not.toHaveBeenCalled();
   });
 
-  it('throws an error when blocked and origin is not a preinstalled snap', () => {
+  it('ends with an error when blocked and origin is not a preinstalled snap', () => {
     const customMessage = 'Requests are temporarily blocked';
     const middleware = createRpcBlockingMiddleware({
       state: { isBlocked: true },
@@ -43,14 +42,14 @@ describe('createRpcBlockingMiddleware', () => {
 
     const req = createRequest('https://dapp.example');
     const next = jest.fn();
-    const context = new Map([
-      ['origin', 'https://dapp.example'],
-    ]) as WalletMiddlewareContext;
+    const end = jest.fn();
 
-    expect(() =>
-      middleware(req, {} as unknown as JsonRpcResponse<Json>, next, context),
-    ).toThrow(customMessage);
+    middleware(req, res, next, end);
 
+    expect(end).toHaveBeenCalledTimes(1);
+    expect((end.mock.calls[0][0] as Error).message).toStrictEqual(
+      customMessage,
+    );
     expect(next).not.toHaveBeenCalled();
   });
 
@@ -63,29 +62,28 @@ describe('createRpcBlockingMiddleware', () => {
 
     const req = createRequest('npm:example-snap');
     const next = jest.fn();
-
-    const context = new Map([
-      ['origin', 'npm:example-snap'],
-    ]) as WalletMiddlewareContext;
-
-    middleware(req, {} as unknown as JsonRpcResponse<Json>, next, context);
+    const end = jest.fn();
+    middleware(req, res, next, end);
 
     expect(next).toHaveBeenCalledTimes(1);
+    expect(end).not.toHaveBeenCalled();
   });
 
-  it('throws an error when blocked and origin is missing', () => {
+  it('ends with an error when blocked and origin is missing', () => {
     const middleware = createRpcBlockingMiddleware({
       state: { isBlocked: true },
     });
 
     const req = { method: 'eth_testMethod' } as unknown as JsonRpcRequest;
     const next = jest.fn();
-    const context = new Map() as WalletMiddlewareContext;
+    const end = jest.fn();
 
-    expect(() =>
-      middleware(req, {} as unknown as JsonRpcResponse<Json>, next, context),
-    ).toThrow('No origin specified for request with method eth_testMethod');
+    middleware(req, res, next, end);
 
+    expect(end).toHaveBeenCalledTimes(1);
+    expect((end.mock.calls[0][0] as Error).message).toStrictEqual(
+      'No origin specified for request with method eth_testMethod',
+    );
     expect(next).not.toHaveBeenCalled();
   });
 
@@ -100,13 +98,10 @@ describe('createRpcBlockingMiddleware', () => {
 
     const req = createRequest('https://dapp.example');
     const next = jest.fn();
-
-    const context = new Map([
-      ['origin', 'https://dapp.example'],
-    ]) as WalletMiddlewareContext;
-
-    middleware(req, {} as unknown as JsonRpcResponse<Json>, next, context);
+    const end = jest.fn();
+    middleware(req, res, next, end);
 
     expect(next).toHaveBeenCalledTimes(1);
+    expect(end).not.toHaveBeenCalled();
   });
 });

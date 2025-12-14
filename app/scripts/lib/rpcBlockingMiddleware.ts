@@ -1,6 +1,5 @@
-import { WalletMiddlewareContext } from '@metamask/eth-json-rpc-middleware';
-import type { Json, JsonRpcRequest, JsonRpcResponse } from '@metamask/utils';
-import type { Next } from '@metamask/json-rpc-engine/v2';
+import type { JsonRpcMiddleware } from '@metamask/json-rpc-engine';
+import type { Json, JsonRpcParams } from '@metamask/utils';
 import { rpcErrors } from '@metamask/rpc-errors';
 import { InternalError, SnapId } from '@metamask/snaps-sdk';
 import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
@@ -20,29 +19,26 @@ type CreateRpcBlockingMiddlewareOptions = {
 export default function createRpcBlockingMiddleware({
   errorMessage = 'Cannot process requests at this time',
   state,
-}: CreateRpcBlockingMiddlewareOptions) {
-  const middleware = (
-    req: JsonRpcRequest,
-    _res: JsonRpcResponse<Json>,
-    next: Next<JsonRpcRequest>,
-    context: WalletMiddlewareContext,
-  ) => {
-    if (state.isBlocked) {
-      const origin = context.get('origin');
-
-      if (!origin) {
-        throw new InternalError(
-          `No origin specified for request with method ${req.method}`,
-        );
-      }
-
-      if (!isSnapPreinstalled(origin as SnapId)) {
-        throw rpcErrors.resourceUnavailable(errorMessage);
-      }
+}: CreateRpcBlockingMiddlewareOptions): JsonRpcMiddleware<JsonRpcParams, Json> {
+  return function rpcBlockingMiddleware(req, _res, next, end) {
+    if (!state.isBlocked) {
+      return next();
     }
 
-    next();
-  };
+    const { origin } = req as { origin?: string };
 
-  return middleware;
+    if (!origin) {
+      return end(
+        new InternalError(
+          `No origin specified for request with method ${req.method}`,
+        ),
+      );
+    }
+
+    if (!isSnapPreinstalled(origin as SnapId)) {
+      return end(rpcErrors.resourceUnavailable(errorMessage));
+    }
+
+    return next();
+  };
 }

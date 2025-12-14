@@ -45,10 +45,35 @@ export async function forwardRequestToSnap(
     throw new InternalError(`No origin specified for method ${method}`);
   }
 
+  /*
+  the hooks should be designed so that they don't throw, but we need to handle them anyway
+
+  if handleRequest throws, its error must be thrown to the caller.
+  if handleRequest resolves, but either hook throws, the hook's error must be thrown to the caller.
+  if onBeforeRequest throws, onAfterRequest _must_ still be called.
+  if handleRequest throws, onAfterRequest _must_ still be called.
+  if _both_ onBeforeRequest and onAfterRequest throw it's ambiguous which error should be thrown to the caller, we throw onBeforeRequest's error under the presumption that this error is more likely to be the root cause.
+*/
+
   try {
     onBeforeRequest?.();
+  } catch (error) {
+    try {
+      onAfterRequest?.();
+    } catch (_errorFromAfterRequestHook) {
+      // because an error was thrown in onBeforeRequest, we only log this error, so that the main error can be thrown to the caller.
+      console.error(
+        'Error from onAfterRequest hook:',
+        _errorFromAfterRequestHook,
+      );
+    }
+    throw error;
+  }
 
-    const response = (await handleRequest({
+  let response: Json;
+
+  try {
+    response = (await handleRequest({
       snapId,
       origin,
       handler: HandlerType.OnRpcRequest,
@@ -58,9 +83,21 @@ export async function forwardRequestToSnap(
         params,
       },
     })) as Json;
+  } catch (error) {
+    try {
+      onAfterRequest?.();
+    } catch (_errorFromAfterRequestHook) {
+      // because an error was thrown in handleRequest, we only log this error, so that the main error can be thrown to the caller.
+      console.error(
+        'Error from onAfterRequest hook:',
+        _errorFromAfterRequestHook,
+      );
+    }
 
-    return response;
-  } finally {
-    onAfterRequest?.();
+    throw error;
   }
+
+  onAfterRequest?.();
+
+  return response;
 }
