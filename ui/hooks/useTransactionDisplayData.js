@@ -273,15 +273,17 @@ export function useTransactionDisplayData(transactionGroup) {
   if (signatureTypes.includes(type)) {
     title = t('signatureRequest');
   } else if (type === TransactionType.swap) {
-    title = t('swapTokenToToken', [
+    const sourceSymbol =
       bridgeTokenDisplayData.sourceTokenSymbol ??
-        initialTransaction.sourceTokenSymbol,
+      initialTransaction.sourceTokenSymbol ??
+      t('token');
+    const destinationSymbol =
       bridgeTokenDisplayData.destinationTokenSymbol ??
-        initialTransaction.destinationTokenSymbol,
-    ]);
-    const symbolFromTx =
-      bridgeTokenDisplayData.sourceTokenSymbol ??
-      initialTransaction.sourceTokenSymbol;
+      initialTransaction.destinationTokenSymbol ??
+      t('token');
+
+    title = t('swapTokenToToken', [sourceSymbol, destinationSymbol]);
+    const symbolFromTx = sourceSymbol;
     primarySuffix = isViewingReceivedTokenFromSwap
       ? currentAsset.symbol
       : symbolFromTx;
