@@ -140,7 +140,8 @@ const DappSwapComparisonInner = () => {
 
   const swapComparisonDisplayed =
     dappSwapUi?.enabled &&
-    (selectedQuoteValueDifference >= dappSwapUi?.threshold ||
+    ((selectedQuoteValueDifference &&
+      selectedQuoteValueDifference >= dappSwapUi?.threshold) ||
       (dappSwapQa?.enabled && selectedQuote));
 
   useEffect(() => {
@@ -244,6 +245,19 @@ const DappSwapComparisonInner = () => {
   );
 };
 
+const DappSwapComparisonWrapper = () => {
+  useDappSwapComparisonInfo();
+  const { dappSwapUi } = useSelector(getRemoteFeatureFlags) as {
+    dappSwapUi: DappSwapUiFlag;
+  };
+
+  if (!dappSwapUi?.enabled) {
+    return null;
+  }
+
+  return <DappSwapComparisonInner />;
+};
+
 export const DappSwapComparisonBanner = () => {
   const { isSwapToBeCompared } = useDappSwapCheck();
 
@@ -251,5 +265,5 @@ export const DappSwapComparisonBanner = () => {
     return null;
   }
 
-  return <DappSwapComparisonInner />;
+  return <DappSwapComparisonWrapper />;
 };

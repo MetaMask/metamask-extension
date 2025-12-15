@@ -4,7 +4,7 @@ import { hexStripZeros } from '@ethersproject/bytes';
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import _ from 'lodash';
-import { Hex } from '@metamask/utils';
+import { Hex, isHexString } from '@metamask/utils';
 
 import { APPROVAL_METHOD_NAMES } from '../../../../../../../../shared/constants/transaction';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
@@ -248,6 +248,7 @@ function ParamValue({
   source?: DecodedTransactionDataSource;
   chainId: string;
 }) {
+  console.log('----------------------- param 0', param);
   const { name, type, value } = param;
 
   if (type === 'address') {
@@ -264,7 +265,11 @@ function ParamValue({
     valueString = renderShortTokenId(valueString, 5);
   }
 
-  if (!Array.isArray(value) && valueString.startsWith('0x')) {
+  if (
+    !Array.isArray(value) &&
+    valueString.startsWith('0x') &&
+    isHexString(valueString)
+  ) {
     valueString = hexStripZeros(valueString);
   }
 
@@ -289,6 +294,7 @@ function ParamRow({
   const tooltip = `${type}${description ? ` - ${description}` : ''}`;
   const dataTestId = `advanced-details-data-param-${index}`;
 
+  console.log('----------------------- param 0', param.children);
   const childRows = param.children?.map((childParam, childIndex) => (
     <ParamRow
       key={childIndex}
