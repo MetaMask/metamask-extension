@@ -267,8 +267,6 @@ export function AssetPickerModal({
   const { assetsWithBalance: multichainTokensWithBalance } =
     useMultichainBalances();
 
-  // console.log('DEBUG ASSET PICKER MODAL', multichainTokensWithBalance);
-
   const evmTokenMetadataByAddress = useSelector(getTokenList) as TokenListMap;
 
   const allowExternalServices = useSelector(getUseExternalServices);
