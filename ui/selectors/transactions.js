@@ -57,9 +57,14 @@ export const getUnapprovedTransactions = createShallowEqualSelector(
  *
  * @returns {Function} Selector function (state, chainId) => transactions[]
  * @example
- * // Create once, reuse
+ * // In a selector (module-level instance)
  * const getChainTxs = makeGetTransactionsByChainId();
- * const txs = getChainTxs(state, '0x1');
+ * export const getPendingTxs = (state, chainId) =>
+ *   getChainTxs(state, chainId).filter(tx => tx.status === 'submitted');
+ * @example
+ * // In a React component (memoized instance)
+ * const getChainTxs = useMemo(() => makeGetTransactionsByChainId(), []);
+ * const txs = useSelector((state) => getChainTxs(state, chainId));
  */
 export const makeGetTransactionsByChainId = () =>
   createShallowEqualSelector(
