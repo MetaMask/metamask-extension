@@ -322,6 +322,7 @@ export const PaymentMethodRow = ({
       <ButtonRow
         title={title}
         description={descriptionText}
+        descriptionTestId="shield-detail-payment-method"
         endAccessory={
           isCryptoPayment && !isCryptoPaymentChangeDisabled ? (
             <Button

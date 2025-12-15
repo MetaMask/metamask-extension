@@ -63,8 +63,10 @@ export default class ShieldDetailPage {
     tag: 'h4',
   };
 
-  private readonly paymentMethodElement =
-    '[data-testid="shield-detail-payment-method"]';
+  private readonly paymentMethodElement = (text: string) => ({
+    css: '[data-testid="shield-detail-payment-method"]',
+    text,
+  });
 
   private readonly paymentMethodButton =
     '[data-testid="shield-detail-payment-method-button"]';
@@ -268,12 +270,7 @@ export default class ShieldDetailPage {
    */
   async checkPaymentMethod(expectedText: string): Promise<void> {
     console.log(`Checking payment method contains: ${expectedText}`);
-    const element = await this.driver.findElement(this.paymentMethodElement);
-    const actualText = await element.getText();
-    assert.ok(
-      actualText.includes(expectedText),
-      `Expected text to contain "${expectedText}" but got "${actualText}"`,
-    );
+    await this.driver.waitForSelector(this.paymentMethodElement(expectedText));
   }
 
   /**
