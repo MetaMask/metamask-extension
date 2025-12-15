@@ -10,6 +10,9 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import { Driver } from '../../webdriver/driver';
 
 async function waitForAccountsToBeAligned(driver: Driver) {
+  // Multichain accounts create non-EVM accounts asynchronously, thus we need to
+  // wait for them to be created before proceeding with tests that depend on
+  // account count.
   await driver.delay(2000);
 }
 
