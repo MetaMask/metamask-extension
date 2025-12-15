@@ -39,7 +39,7 @@ export const ROOT_AUTHORITY =
 
 export const ANY_BENEFICIARY = '0x0000000000000000000000000000000000000a11';
 
-const PRIMARY_TYPE_DELEGATION = 'Delegation';
+export const PRIMARY_TYPE_DELEGATION = 'Delegation';
 const DOMAIN_NAME = 'DelegationManager';
 
 const ABI_TYPES_CAVEAT = [

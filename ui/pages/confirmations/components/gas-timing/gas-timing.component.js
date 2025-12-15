@@ -20,10 +20,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import {
-  GAS_FORM_ERRORS,
-  PRIORITY_LEVEL_ICON_MAP,
-} from '../../../../helpers/constants/gas';
+import { GAS_FORM_ERRORS } from '../../../../helpers/constants/gas';
 import { usePrevious } from '../../../../hooks/usePrevious';
 import { getGasFeeTimeEstimate } from '../../../../store/actions';
 import { useDraftTransactionWithTxParams } from '../../hooks/useDraftTransactionWithTxParams';
@@ -136,10 +133,9 @@ export default function GasTiming({
 
   const estimateToUse =
     estimateUsed || transactionData.userFeeLevel || 'medium';
-  const estimateEmoji = PRIORITY_LEVEL_ICON_MAP[estimateToUse];
 
   const textTKey = estimateToUse === 'low' ? 'gasTimingLow' : estimateToUse;
-  let text = estimateEmoji ? `${estimateEmoji} ${t(textTKey)}` : t(textTKey);
+  let text = t(textTKey);
   let time = '';
 
   // Anything medium or faster is positive

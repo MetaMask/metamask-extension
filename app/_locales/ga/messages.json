@@ -3874,9 +3874,6 @@
   "nftAutoDetectionEnabled": {
     "message": "Uathbhrath NFT cumasaithe"
   },
-  "nftDisclaimer": {
-    "message": "Séanadh: Tarraingíonn MetaMask an comhad meán ón url foinseach. Athraíonn an margadh inar cruthaíodh an NFT an url seo uaireanta."
-  },
   "nftEmptyDescription": {
     "message": "Tá domhan mór NFTanna amuigh ansin. Tosaigh do bhailiúchán inniu."
   },
