@@ -154,7 +154,10 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
 
         const shieldEligibility = await getShieldSubscriptionEligibility();
 
-        if (!shieldEligibility?.canSubscribe) {
+        if (
+          !shieldEligibility?.canSubscribe ||
+          !shieldEligibility.canViewEntryModal
+        ) {
           return;
         }
 
@@ -228,18 +231,6 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
             );
           }
         }
-
-        dispatch(
-          setShowShieldEntryModalOnce({
-            show: true,
-            shouldSubmitEvents: true, // submits `shield_entry_modal_viewed` event to subscription backend
-            triggeringCohort: COHORT_NAMES.WALLET_HOME,
-            modalType,
-            // we will show the modal but we won't update the background state yet,
-            // we will only update after the user has interacted with the modal
-            shouldUpdateBackgroundState: false,
-          }),
-        );
       } catch (error) {
         log.warn('[evaluateCohortEligibility] error', error);
       }

@@ -158,7 +158,6 @@ const ShieldEntryModal = ({
     if (actionLoading) {
       return;
     }
-    setActionLoading(true);
 
     const source = determineEntryModalSource();
     const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
@@ -181,15 +180,12 @@ const ShieldEntryModal = ({
           ? `?${new URLSearchParams(marketingUtmParams).toString()}`
           : `?source=${source}`,
     });
-
-    setActionLoading(false);
   };
 
   const handleOnLearnMoreClick = () => {
     if (actionLoading) {
       return;
     }
-    setActionLoading(true);
 
     const source = determineEntryModalSource();
     const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
@@ -202,8 +198,6 @@ const ShieldEntryModal = ({
     });
 
     window.open(TRANSACTION_SHIELD_LINK, '_blank', 'noopener,noreferrer');
-
-    setActionLoading(false);
   };
 
   return (
