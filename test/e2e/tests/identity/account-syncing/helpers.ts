@@ -6,13 +6,14 @@ import {
   UserStorageMockttpControllerEvents,
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 
+// Syncing can take some time (specially in Firefox) so adding a longer timeout to reduce flakes
+export const BASE_ACCOUNT_SYNC_TIMEOUT = 45000;
+export const BASE_ACCOUNT_SYNC_INTERVAL = 1000;
+
 export const arrangeTestUtils = (
   driver: Driver,
   userStorageMockttpController: UserStorageMockttpController,
 ) => {
-  const BASE_TIMEOUT = 40000;
-  const BASE_INTERVAL = 1000;
-
   const prepareEventsEmittedCounter = (
     event: AsEnum<typeof UserStorageMockttpControllerEvents>,
   ) => {
@@ -28,8 +29,8 @@ export const arrangeTestUtils = (
         `Waiting for user storage event ${event} to be emitted ${expectedNumber} times`,
       );
       await driver.waitUntil(async () => counter >= expectedNumber, {
-        timeout: BASE_TIMEOUT,
-        interval: BASE_INTERVAL,
+        timeout: BASE_ACCOUNT_SYNC_TIMEOUT,
+        interval: BASE_ACCOUNT_SYNC_INTERVAL,
       });
     };
     return { waitUntilEventsEmittedNumberEquals };
@@ -56,8 +57,8 @@ export const arrangeTestUtils = (
         return currentCount === expectedNumber;
       },
       {
-        timeout: BASE_TIMEOUT,
-        interval: BASE_INTERVAL,
+        timeout: BASE_ACCOUNT_SYNC_TIMEOUT,
+        interval: BASE_ACCOUNT_SYNC_INTERVAL,
       },
     );
   };
