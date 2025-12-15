@@ -1,6 +1,5 @@
 import { Messenger } from '@metamask/messenger';
 import type {
-  TransactionControllerConfirmExternalTransactionAction,
   TransactionControllerGetNonceLockAction,
   TransactionControllerGetTransactionsAction,
   TransactionControllerUpdateTransactionAction,
@@ -18,8 +17,7 @@ type MessengerActions =
   | NetworkControllerGetStateAction
   | TransactionControllerGetNonceLockAction
   | TransactionControllerGetTransactionsAction
-  | TransactionControllerUpdateTransactionAction
-  | TransactionControllerConfirmExternalTransactionAction;
+  | TransactionControllerUpdateTransactionAction;
 
 type MessengerEvents = NetworkControllerStateChangeEvent;
 
@@ -45,7 +43,6 @@ export function getSmartTransactionsControllerMessenger(
       'NetworkController:getNetworkClientById',
       'NetworkController:getState',
       'TransactionController:getNonceLock',
-      'TransactionController:confirmExternalTransaction',
       'TransactionController:getTransactions',
       'TransactionController:updateTransaction',
     ],

@@ -7,6 +7,68 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.13.0]
+
+### Added
+
+- feat: added metrics for pna25 banner (#38403)
+- Adds event tracing for hide token. (#38358)
+- Enable tx submission before swap quotes are loaded (#37963)
+- Adds shield rewards modal (#38379)
+- Sidepanel enabled (#38550)
+- Link/claims rewards points from shield subscription (#38489)
+- Updated claims navigation and UI (#38380)
+- Bumped `@metamask/seedless-onboarding-controller` to v7.1.0 (#38499)
+- Add inactive state for shield banner animation asset (#38515)
+- Updated `@metamask/shield-controller` to `3.1.0` (#38472)
+- Add max values to Tron resources (#38518)
+- Update text for shield transaction not covered (#38511)
+- Add change payment method from crypto -> crypto / crypto -> card (in paused state only) (#38165)
+- Remove smart transaction status page (#38460)
+- Estimate rewards points for shield subscription (#38462)
+- Design upgrades for Confirmations (#38399)
+- Fix amount component to be only accept numeric inputs (#38235)
+- Update shield coverage alert icon (#38343)
+- Support gasless crosschain swaps with STX and eth_sendBundle (#38325)
+- Improve network logo and enable native token logo for Cronos (chain ID 25) (#38311)
+- Extend metrics with `transaction_hash` if it's opted in (#38181)
+- Introduces metametrics banner (#38112)
+- Added the edge case of insufficient balance quotes for gas fees sponsored swap (#38353)
+- Added new network client `megaeth-testnet-v2` and removed network client `megaeth-testnet` (#38426)
+- Bump assets controllers to v92 (#38359)
+- Bump assets controllers to v93 (#38521)
+- Refresh gator permissions after revoke state is changed (#38427)
+- Advanced permissions are now ordered by startTime (#37858)
+
+### Fixed
+
+- Fixed the migration script for adding MegaETH testnet v2 (#38573)
+- Fixed swap transactions not appearing in activity list when Solana account is selected (#38529)
+- Layout inconsistencies (#38535)
+- Fixed bug where the EVM addresses were not checksummed (#38539)
+- Layout inconsistencies - account pages (#38533)
+- Fix cannot convert undefined or null to object sentry (#38471)
+- Permission page footer background (#38497)
+- Removed danger icon from protect wallet modal (#38508)
+- Fixed recipient modal overflow when account names are long (#38454)
+- Fix scroll issue on network modal (#38439)
+- Fixed an issue where `active` in `snap_getClientStatus` would be `undefined` (#38479)
+- When Network manager selection is Solana and a new popular network is added, the defi and NFTs tabs are missing (#38419)
+- Fix speed estimation to factor chain transacting on rather than selected network (#38342)
+- Remove 0x0..dead address from blocker alerts (#38345)
+- Improved responsiveness of revoke button in Gator permissions by adding immediate UI feedback (#38184)
+- Update recipient placeholder text in send (#38236)
+- Improve error message when UI can't retrieve state from background process (#38564)
+- Increase timeout for UI calls to background from 10s to 16s, potentially preventing UI crash on very slow devices (#38561)
+- Account list padding (#38492)
+
+## [13.12.2]
+
+### Fixed
+
+- Increase timeout for UI calls to background from 10s to 16s, potentially preventing UI crash on very slow devices (#38561)
+- Improve error message when UI can't retrieve state from background process (#38564)
+
 ## [13.12.1]
 
 ### Fixed
@@ -1397,7 +1459,9 @@ authorized by the user.` error until the user fully revoked dapp
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.12.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.13.0...HEAD
+[13.13.0]: https://github.com/MetaMask/metamask-extension/compare/v13.12.2...v13.13.0
+[13.12.2]: https://github.com/MetaMask/metamask-extension/compare/v13.12.1...v13.12.2
 [13.12.1]: https://github.com/MetaMask/metamask-extension/compare/v13.12.0...v13.12.1
 [13.12.0]: https://github.com/MetaMask/metamask-extension/compare/v13.11.2...v13.12.0
 [13.11.2]: https://github.com/MetaMask/metamask-extension/compare/v13.11.1...v13.11.2

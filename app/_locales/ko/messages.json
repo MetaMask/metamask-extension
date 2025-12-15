@@ -3877,9 +3877,6 @@
   "nftAutoDetectionEnabled": {
     "message": "NFT 자동 감지 켜짐"
   },
-  "nftDisclaimer": {
-    "message": "면책 조항: MetaMask는 소스 URL에서 미디어 파일을 가져옵니다. 이러한 URL은 때때로 NFT가 민팅된 마켓플레이스에 의해 변경되기도 합니다."
-  },
   "nftEmptyDescription": {
     "message": "끝없이 펼쳐지는 NFT의 세계. 나만의 컬렉션을 만들어 보세요."
   },
