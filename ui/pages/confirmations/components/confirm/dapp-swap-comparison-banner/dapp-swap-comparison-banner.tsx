@@ -75,7 +75,11 @@ const SwapTabs = React.memo(
   },
 );
 
-const DappSwapComparisonInner = () => {
+const DappSwapComparisonInner = ({
+  dappSwapComparisonInfoResult,
+}: {
+  dappSwapComparisonInfoResult: ReturnType<typeof useDappSwapComparisonInfo>;
+}) => {
   const t = useI18nContext();
   const {
     fiatRates,
@@ -85,7 +89,7 @@ const DappSwapComparisonInner = () => {
     sourceTokenAmount,
     tokenAmountDifference,
     tokenDetails,
-  } = useDappSwapComparisonInfo();
+  } = dappSwapComparisonInfoResult;
   const { captureDappSwapComparisonDisplayProperties } =
     useDappSwapComparisonMetrics();
   const { dappSwapUi, dappSwapQa } = useSelector(getRemoteFeatureFlags) as {
@@ -246,7 +250,7 @@ const DappSwapComparisonInner = () => {
 };
 
 const DappSwapComparisonWrapper = () => {
-  useDappSwapComparisonInfo();
+  const dappSwapComparisonInfoResult = useDappSwapComparisonInfo();
   const { dappSwapUi } = useSelector(getRemoteFeatureFlags) as {
     dappSwapUi: DappSwapUiFlag;
   };
@@ -255,7 +259,11 @@ const DappSwapComparisonWrapper = () => {
     return null;
   }
 
-  return <DappSwapComparisonInner />;
+  return (
+    <DappSwapComparisonInner
+      dappSwapComparisonInfoResult={dappSwapComparisonInfoResult}
+    />
+  );
 };
 
 export const DappSwapComparisonBanner = () => {
