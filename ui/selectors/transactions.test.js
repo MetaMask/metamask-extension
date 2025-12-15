@@ -26,6 +26,7 @@ import {
   smartTransactionsListSelector,
   getTransactions,
   getUnapprovedTransactions,
+  makeGetTransactionsByChainId,
   incomingTxListSelectorAllChains,
   selectedAddressTxListSelectorAllChain,
   transactionSubSelectorAllChains,
@@ -1678,6 +1679,155 @@ describe('Transaction Selectors', () => {
         3: state.metamask.transactions[2],
         4: state.metamask.transactions[3],
       });
+    });
+  });
+
+  describe('makeGetTransactionsByChainId', () => {
+    it('returns transactions filtered by chainId', () => {
+      const mainnetTx = {
+        id: 1,
+        chainId: CHAIN_IDS.MAINNET,
+        time: 100,
+        status: TransactionStatus.confirmed,
+      };
+      const goerliTx = {
+        id: 2,
+        chainId: CHAIN_IDS.GOERLI,
+        time: 200,
+        status: TransactionStatus.confirmed,
+      };
+
+      const state = {
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          transactions: [mainnetTx, goerliTx],
+        },
+      };
+
+      const getTransactionsByChainId = makeGetTransactionsByChainId();
+      const result = getTransactionsByChainId(state, CHAIN_IDS.MAINNET);
+
+      expect(result).toStrictEqual([mainnetTx]);
+    });
+
+    it('returns empty array when no transactions match chainId', () => {
+      const state = {
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          transactions: [
+            {
+              id: 1,
+              chainId: CHAIN_IDS.MAINNET,
+              time: 100,
+              status: TransactionStatus.confirmed,
+            },
+          ],
+        },
+      };
+
+      const getTransactionsByChainId = makeGetTransactionsByChainId();
+      const result = getTransactionsByChainId(state, CHAIN_IDS.GOERLI);
+
+      expect(result).toStrictEqual([]);
+    });
+
+    it('returns empty array when chainId is not provided', () => {
+      const state = {
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          transactions: [
+            {
+              id: 1,
+              chainId: CHAIN_IDS.MAINNET,
+              time: 100,
+              status: TransactionStatus.confirmed,
+            },
+          ],
+        },
+      };
+
+      const getTransactionsByChainId = makeGetTransactionsByChainId();
+      const result = getTransactionsByChainId(state, null);
+
+      expect(result).toStrictEqual([]);
+    });
+
+    it('returns empty array when there are no transactions', () => {
+      const state = {
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          transactions: [],
+        },
+      };
+
+      const getTransactionsByChainId = makeGetTransactionsByChainId();
+      const result = getTransactionsByChainId(state, CHAIN_IDS.MAINNET);
+
+      expect(result).toStrictEqual([]);
+    });
+
+    it('creates independent selector instances with separate caches', () => {
+      const mainnetTx = {
+        id: 1,
+        chainId: CHAIN_IDS.MAINNET,
+        time: 100,
+        status: TransactionStatus.confirmed,
+      };
+      const goerliTx = {
+        id: 2,
+        chainId: CHAIN_IDS.GOERLI,
+        time: 200,
+        status: TransactionStatus.confirmed,
+      };
+
+      const state = {
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          transactions: [mainnetTx, goerliTx],
+        },
+      };
+
+      // Create two separate instances
+      const getMainnetTxs = makeGetTransactionsByChainId();
+      const getGoerliTxs = makeGetTransactionsByChainId();
+
+      // Each should filter independently
+      const mainnetResult = getMainnetTxs(state, CHAIN_IDS.MAINNET);
+      const goerliResult = getGoerliTxs(state, CHAIN_IDS.GOERLI);
+
+      expect(mainnetResult).toStrictEqual([mainnetTx]);
+      expect(goerliResult).toStrictEqual([goerliTx]);
+
+      // Calling again should return cached results (same reference)
+      const mainnetResult2 = getMainnetTxs(state, CHAIN_IDS.MAINNET);
+      const goerliResult2 = getGoerliTxs(state, CHAIN_IDS.GOERLI);
+
+      expect(mainnetResult2).toBe(mainnetResult);
+      expect(goerliResult2).toBe(goerliResult);
+    });
+
+    it('memoizes results when called with same state and chainId', () => {
+      const tx = {
+        id: 1,
+        chainId: CHAIN_IDS.MAINNET,
+        time: 100,
+        status: TransactionStatus.confirmed,
+      };
+
+      const state = {
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          transactions: [tx],
+        },
+      };
+
+      const getTransactionsByChainId = makeGetTransactionsByChainId();
+
+      const result1 = getTransactionsByChainId(state, CHAIN_IDS.MAINNET);
+      const result2 = getTransactionsByChainId(state, CHAIN_IDS.MAINNET);
+
+      // Should return same reference (memoized)
+      expect(result1).toBe(result2);
     });
   });
 });
