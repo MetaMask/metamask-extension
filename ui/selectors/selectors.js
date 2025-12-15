@@ -710,19 +710,21 @@ export function getHDEntropyIndex(state) {
  * @param {object} state - Redux state
  * @returns {object} A map of account addresses to account objects (which includes the account balance)
  */
-export function getMetaMaskAccountBalances(state) {
-  const currentChainId = getCurrentChainId(state);
-  const balancesForCurrentChain =
-    state.metamask?.accountsByChainId?.[currentChainId] ?? {};
-
-  return Object.entries(balancesForCurrentChain).reduce(
-    (acc, [address, value]) => {
-      acc[address.toLowerCase()] = value;
-      return acc;
-    },
-    {},
-  );
-}
+export const getMetaMaskAccountBalances = createSelector(
+  (state) => state.metamask.accountsByChainId,
+  getCurrentChainId,
+  (accountsByChainId, currentChainId) => {
+    const balancesForCurrentChain = accountsByChainId?.[currentChainId] ?? {};
+    if (isEmptyObject(balancesForCurrentChain)) {
+      return EMPTY_OBJECT;
+    }
+    return Object.entries(balancesForCurrentChain)
+      .reduce((acc, [address, value]) => {
+        acc[address.toLowerCase()] = value;
+        return acc;
+      }, {});
+  }
+);
 
 export function getMetaMaskCachedBalances(state, networkChainId) {
   const enabledNetworks = getEnabledNetworks(state);
