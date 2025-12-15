@@ -851,6 +851,12 @@
       "hyperliquid": {}
     },
     "remoteFeatureFlags": {
+      "feature1": "boolean",
+      "feature2": "boolean",
+      "feature3": {
+        "name": "string",
+        "value": "string"
+      },
       "sendRedesign": {
         "enabled": "boolean"
       }
