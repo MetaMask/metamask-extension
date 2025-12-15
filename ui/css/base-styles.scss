@@ -75,3 +75,25 @@ a:hover {
 * {
   font-family: design-system.$font-family;
 }
+
+/** Global Scrollbar Styles **/
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-icon-muted) transparent;
+}
+
+/* Webkit: Chrome, Brave, Safari */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 8px;
+  border-radius: 8px;
+  background: var(--color-icon-muted);
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}

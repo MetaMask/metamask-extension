@@ -1,12 +1,6 @@
 .form-combo-field {
   width: 100%;
 
-  ::-webkit-scrollbar-thumb {
-    -webkit-border-radius: 8px;
-    border-radius: 8px;
-    background: var(--color-icon-muted);
-  }
-
   ::-webkit-scrollbar {
     width: 0;
   }
@@ -29,9 +23,6 @@
     z-index: 1;
     background-color: var(--color-background-default);
 
-    &__scroll::-webkit-scrollbar {
-      width: 8px;
-    }
   }
 
   &__option {
