@@ -156,29 +156,33 @@ const ShieldEntryModal = ({
 
     setActionLoading(true);
 
-    const source = determineEntryModalSource();
-    const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
+    try {
+      const source = determineEntryModalSource();
+      const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
 
-    captureShieldCtaClickedEvent({
-      // ShieldCtaSourceEnum & EntryModalSourceEnum are the same enum, so we can cast it to ShieldCtaSourceEnum
-      source: source as unknown as ShieldCtaSourceEnum,
-      ctaActionClicked: ShieldCtaActionClickedEnum.Start14DayTrial,
-      redirectToPage: SHIELD_PLAN_ROUTE,
-      marketingUtmParams,
-    });
+      captureShieldCtaClickedEvent({
+        // ShieldCtaSourceEnum & EntryModalSourceEnum are the same enum, so we can cast it to ShieldCtaSourceEnum
+        source: source as unknown as ShieldCtaSourceEnum,
+        ctaActionClicked: ShieldCtaActionClickedEnum.Start14DayTrial,
+        redirectToPage: SHIELD_PLAN_ROUTE,
+        marketingUtmParams,
+      });
 
-    // Ensure handleOnClose completes before redirecting
-    await handleOnClose(ShieldCtaActionClickedEnum.Start14DayTrial);
+      // Ensure handleOnClose completes before redirecting
+      await handleOnClose(ShieldCtaActionClickedEnum.Start14DayTrial);
 
-    navigate({
-      pathname: SHIELD_PLAN_ROUTE,
-      search:
-        Object.keys(marketingUtmParams).length > 0
-          ? `?${new URLSearchParams(marketingUtmParams).toString()}`
-          : `?source=${source}`,
-    });
-
-    setActionLoading(false);
+      navigate({
+        pathname: SHIELD_PLAN_ROUTE,
+        search:
+          Object.keys(marketingUtmParams).length > 0
+            ? `?${new URLSearchParams(marketingUtmParams).toString()}`
+            : `?source=${source}`,
+      });
+    } catch (error) {
+      log.error('[handleOnGetStarted] error', error);
+    } finally {
+      setActionLoading(false);
+    }
   };
 
   const handleOnLearnMoreClick = () => {
@@ -187,26 +191,30 @@ const ShieldEntryModal = ({
     }
     setActionLoading(true);
 
-    const source = determineEntryModalSource();
-    const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
-    captureShieldCtaClickedEvent({
-      // ShieldCtaSourceEnum & EntryModalSourceEnum are the same enum, so we can cast it to ShieldCtaSourceEnum
-      source: source as unknown as ShieldCtaSourceEnum,
-      ctaActionClicked: ShieldCtaActionClickedEnum.LearnMore,
-      redirectToUrl: TRANSACTION_SHIELD_LINK,
-      marketingUtmParams,
-    });
+    try {
+      const source = determineEntryModalSource();
+      const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
+      captureShieldCtaClickedEvent({
+        // ShieldCtaSourceEnum & EntryModalSourceEnum are the same enum, so we can cast it to ShieldCtaSourceEnum
+        source: source as unknown as ShieldCtaSourceEnum,
+        ctaActionClicked: ShieldCtaActionClickedEnum.LearnMore,
+        redirectToUrl: TRANSACTION_SHIELD_LINK,
+        marketingUtmParams,
+      });
 
-    captureShieldEntryModalEvent({
-      source,
-      type: modalType,
-      modalCtaActionClicked: ShieldCtaActionClickedEnum.LearnMore,
-      marketingUtmParams,
-    });
+      captureShieldEntryModalEvent({
+        source,
+        type: modalType,
+        modalCtaActionClicked: ShieldCtaActionClickedEnum.LearnMore,
+        marketingUtmParams,
+      });
 
-    window.open(TRANSACTION_SHIELD_LINK, '_blank', 'noopener,noreferrer');
-
-    setActionLoading(false);
+      window.open(TRANSACTION_SHIELD_LINK, '_blank', 'noopener,noreferrer');
+    } catch (error) {
+      log.error('[handleOnLearnMoreClick] error', error);
+    } finally {
+      setActionLoading(false);
+    }
   };
 
   return (
