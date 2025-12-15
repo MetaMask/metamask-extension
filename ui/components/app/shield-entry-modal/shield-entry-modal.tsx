@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
@@ -18,6 +18,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import classnames from 'classnames';
+import log from 'loglevel';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Modal,
@@ -80,6 +81,8 @@ const ShieldEntryModal = ({
   const modalType: ModalType = useSelector(getModalTypeForShieldEntryModal);
   const triggeringCohort = useSelector(getShieldEntryModalTriggeringCohort);
 
+  const [actionLoading, setActionLoading] = useState(false);
+
   const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
 
   const determineEntryModalSource = useCallback((): EntryModalSourceEnum => {
@@ -102,45 +105,61 @@ const ShieldEntryModal = ({
   const handleOnClose = async (
     ctaActionClicked: ShieldCtaActionClickedEnum = ShieldCtaActionClickedEnum.Dismiss,
   ) => {
-    const source = determineEntryModalSource();
-    const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
-    captureShieldEntryModalEvent({
-      source,
-      type: modalType,
-      modalCtaActionClicked: ctaActionClicked,
-      marketingUtmParams,
-    });
+    if (actionLoading) {
+      return;
+    }
 
-    if (ctaActionClicked === ShieldCtaActionClickedEnum.Dismiss) {
-      captureShieldCtaClickedEvent({
-        // ShieldCtaSourceEnum & EntryModalSourceEnum are the same enum, so we can cast it to ShieldCtaSourceEnum
-        source: source as unknown as ShieldCtaSourceEnum,
-        ctaActionClicked: ShieldCtaActionClickedEnum.Dismiss,
+    setActionLoading(true);
+    try {
+      const source = determineEntryModalSource();
+      const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
+      captureShieldEntryModalEvent({
+        source,
+        type: modalType,
+        modalCtaActionClicked: ctaActionClicked,
         marketingUtmParams,
       });
-    }
 
-    if (skipEventSubmission) {
-      onClose?.();
-      return;
-    } else if (shouldSubmitEvent) {
+      if (ctaActionClicked === ShieldCtaActionClickedEnum.Dismiss) {
+        captureShieldCtaClickedEvent({
+          // ShieldCtaSourceEnum & EntryModalSourceEnum are the same enum, so we can cast it to ShieldCtaSourceEnum
+          source: source as unknown as ShieldCtaSourceEnum,
+          ctaActionClicked: ShieldCtaActionClickedEnum.Dismiss,
+          marketingUtmParams,
+        });
+      }
+
+      if (skipEventSubmission) {
+        onClose?.();
+        return;
+      } else if (shouldSubmitEvent) {
+        await dispatch(
+          submitSubscriptionUserEvents({
+            event: SubscriptionUserEvent.ShieldEntryModalViewed,
+            cohort: triggeringCohort,
+          }),
+        );
+      }
+
       await dispatch(
-        submitSubscriptionUserEvents({
-          event: SubscriptionUserEvent.ShieldEntryModalViewed,
-          cohort: triggeringCohort,
+        setShowShieldEntryModalOnce({
+          show: false,
+          hasUserInteractedWithModal: true,
         }),
       );
+    } catch (error) {
+      log.error('[handleOnClose] error', error);
+    } finally {
+      setActionLoading(false);
     }
-
-    await dispatch(
-      setShowShieldEntryModalOnce({
-        show: false,
-        hasUserInteractedWithModal: true,
-      }),
-    );
   };
 
   const handleOnGetStarted = async () => {
+    if (actionLoading) {
+      return;
+    }
+    setActionLoading(true);
+
     const source = determineEntryModalSource();
     const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
 
@@ -162,9 +181,16 @@ const ShieldEntryModal = ({
           ? `?${new URLSearchParams(marketingUtmParams).toString()}`
           : `?source=${source}`,
     });
+
+    setActionLoading(false);
   };
 
   const handleOnLearnMoreClick = () => {
+    if (actionLoading) {
+      return;
+    }
+    setActionLoading(true);
+
     const source = determineEntryModalSource();
     const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
     captureShieldCtaClickedEvent({
@@ -176,6 +202,8 @@ const ShieldEntryModal = ({
     });
 
     window.open(TRANSACTION_SHIELD_LINK, '_blank', 'noopener,noreferrer');
+
+    setActionLoading(false);
   };
 
   return (
