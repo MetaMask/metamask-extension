@@ -155,7 +155,7 @@ const ManageShieldPlan = ({ isPastPlan = false }: { isPastPlan?: boolean }) => {
       return isYearly ? t('shieldPlanYearly') : t('shieldPlanMonthly');
     }
     return t('shieldTxDetails2Description', [
-      isYearly ? t('shieldPlanAnnual') : t('shieldPlanMonthly'),
+      isYearly ? t('shieldPlanYearly') : t('shieldPlanMonthly'),
       getShortDateFormatterV2().format(
         new Date(displayedShieldSubscription?.currentPeriodEnd),
       ),

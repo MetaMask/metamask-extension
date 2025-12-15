@@ -515,7 +515,7 @@ const TransactionShield = () => {
                   description={t('shieldTxDetails2Description', [
                     displayedShieldSubscription?.interval ===
                     RECURRING_INTERVALS.year
-                      ? t('shieldPlanAnnual')
+                      ? t('shieldPlanYearly')
                       : t('shieldPlanMonthly'),
                     getShortDateFormatterV2().format(
                       new Date(displayedShieldSubscription?.currentPeriodEnd),
