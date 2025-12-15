@@ -6,7 +6,6 @@ import nock from 'nock';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
 import { mockNetworkState } from '../../../../../test/stub/networks';
-import { ScrollContainer } from '../../../../contexts/scroll-container';
 import { AssetPickerModalNftTab } from './asset-picker-modal-nft-tab';
 
 jest.mock('../../../../hooks/useGetAssetImageUrl', () => ({
@@ -14,37 +13,6 @@ jest.mock('../../../../hooks/useGetAssetImageUrl', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: () => 'mock-image-url.png',
-}));
-
-// Mock element measurements for virtualization
-Object.defineProperty(HTMLElement.prototype, 'offsetHeight', {
-  configurable: true,
-  value: 600,
-});
-
-Object.defineProperty(HTMLElement.prototype, 'offsetWidth', {
-  configurable: true,
-  value: 400,
-});
-
-// Mock getBoundingClientRect for virtualizer
-HTMLElement.prototype.getBoundingClientRect = jest.fn(() => ({
-  width: 400,
-  height: 600,
-  top: 0,
-  left: 0,
-  bottom: 600,
-  right: 400,
-  x: 0,
-  y: 0,
-  toJSON: () => ({}),
-}));
-
-// Mock ResizeObserver for virtualizer
-global.ResizeObserver = jest.fn().mockImplementation(() => ({
-  observe: jest.fn(),
-  unobserve: jest.fn(),
-  disconnect: jest.fn(),
 }));
 
 const defaultProps = {
@@ -130,9 +98,7 @@ describe('AssetPickerModalNftTab', () => {
       },
     });
     const { getByText, getAllByTestId } = renderWithProvider(
-      <ScrollContainer style={{ height: '600px', overflow: 'auto' }}>
-        <AssetPickerModalNftTab {...defaultProps} />
-      </ScrollContainer>,
+      <AssetPickerModalNftTab {...defaultProps} />,
       mainnetStore,
     );
 
@@ -160,9 +126,7 @@ describe('AssetPickerModalNftTab', () => {
     });
 
     const { getAllByTestId } = renderWithProvider(
-      <ScrollContainer style={{ height: '600px', overflow: 'auto' }}>
-        <AssetPickerModalNftTab {...defaultProps} />
-      </ScrollContainer>,
+      <AssetPickerModalNftTab {...defaultProps} />,
       lineaStore,
     );
 
