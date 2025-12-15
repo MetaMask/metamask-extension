@@ -134,7 +134,11 @@ window.localStorage = {
 };
 
 // used for native dark/light mode detection
-window.matchMedia = () => true;
+window.matchMedia = () => ({
+  // Used for NFT list virtualization
+  // eslint-disable-next-line no-empty-function
+  addEventListener: () => {},
+});
 
 // override @metamask/logo
 window.requestAnimationFrame = () => undefined;
