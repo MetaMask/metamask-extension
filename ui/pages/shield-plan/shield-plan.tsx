@@ -386,6 +386,9 @@ const ShieldPlan = () => {
     if (source === EntryModalSourceEnum.Settings) {
       // this happens when user is from settings or transaction shield page
       navigate(SETTINGS_ROUTE, { replace: true });
+    } else if (source === EntryModalSourceEnum.ShieldManagement) {
+      // this happens when user is from shield management page
+      navigate(TRANSACTION_SHIELD_ROUTE, { replace: true });
     } else {
       // this happens when user is from homepage or post transaction page
       navigate(DEFAULT_ROUTE, { replace: true });

@@ -256,7 +256,7 @@ export const useHandlePayment = ({
       // go to shield plan page to renew subscription for cancelled subscription
       navigate({
         pathname: SHIELD_PLAN_ROUTE,
-        search: `?source=${EntryModalSourceEnum.Settings}`,
+        search: `?source=${EntryModalSourceEnum.ShieldManagement}`,
       });
     } else if (isUnexpectedErrorCryptoPayment) {
       // handle support action

@@ -36,6 +36,7 @@ export enum EntryModalSourceEnum {
   Settings = 'settings',
   Marketing = 'marketing', // from marketing campaign
   PostTransaction = 'post_transaction', // after a transaction
+  ShieldManagement = 'shield_management', // from shield management page
 }
 
 export enum ShieldCtaSourceEnum {
