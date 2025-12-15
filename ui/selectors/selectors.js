@@ -149,6 +149,7 @@ import {
 } from '../../shared/modules/conversion.utils';
 import { BackgroundColor } from '../helpers/constants/design-system';
 import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
+import { MULTICHAIN_PROVIDER_CONFIGS } from '../../shared/constants/multichain/networks';
 import { hasTransactionData } from '../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
@@ -160,11 +161,7 @@ import {
 } from './transactions';
 // eslint-disable-next-line import/order
 import { getSelectedInternalAccount, getInternalAccounts } from './accounts';
-import {
-  getMultichainBalances,
-  getMultichainNetworkProviders,
-  getMultichainNetwork,
-} from './multichain';
+import { getMultichainBalances, getMultichainNetwork } from './multichain';
 import {
   getSelectedMultichainNetworkChainId,
   getIsEvmMultichainNetworkSelected,
@@ -472,14 +469,73 @@ export function getAccountTypeForKeyring(keyring) {
 }
 
 /**
+ * Get account balances state.
+ *
+ * @param {object} state - Redux state
+ * @returns {object} A map of account addresses to account objects (which includes the account balance)
+ */
+export const getMetaMaskAccountBalances = createSelector(
+  (state) => state.metamask.accountsByChainId,
+  getCurrentChainId,
+  (accountsByChainId, currentChainId) => {
+    const balancesForCurrentChain = accountsByChainId?.[currentChainId] ?? {};
+    if (Object.keys(balancesForCurrentChain).length === 0) {
+      return EMPTY_OBJECT;
+    }
+    return Object.entries(balancesForCurrentChain).reduce(
+      (acc, [address, value]) => {
+        acc[address.toLowerCase()] = value;
+        return acc;
+      },
+      {},
+    );
+  },
+);
+
+export const getMetaMaskCachedBalances = createSelector(
+  (state) => state.metamask.accountsByChainId,
+  getEnabledNetworks,
+  getCurrentChainId,
+  (_, networkChainId) => networkChainId,
+  (accountsByChainId, enabledNetworks, currentChainId, networkChainId) => {
+    const eip155 = enabledNetworks?.eip155 ?? {};
+    const enabledIds = Object.keys(eip155).filter((id) => Boolean(eip155[id]));
+    if (enabledIds.length === 1) {
+      const chainId = enabledIds[0];
+      if (Object.keys(accountsByChainId?.[chainId] ?? {}).length === 0) {
+        return EMPTY_OBJECT;
+      }
+      return Object.entries(accountsByChainId[chainId]).reduce(
+        (accumulator, [key, value]) => {
+          accumulator[key.toLowerCase()] = value.balance;
+          return accumulator;
+        },
+        {},
+      );
+    }
+
+    const chainId = networkChainId ?? currentChainId;
+    if (Object.keys(accountsByChainId?.[chainId] ?? {}).length === 0) {
+      return EMPTY_OBJECT;
+    }
+    return Object.entries(accountsByChainId[chainId]).reduce(
+      (accumulator, [key, value]) => {
+        accumulator[key.toLowerCase()] = value.balance;
+        return accumulator;
+      },
+      {},
+    );
+  },
+);
+
+/**
  * Get MetaMask accounts, including account name and balance.
  */
-export const getMetaMaskAccounts = createDeepEqualSelector(
+export const getMetaMaskAccounts = createSelector(
   getInternalAccounts,
   getMetaMaskAccountBalances,
   getMetaMaskCachedBalances,
   getMultichainBalances,
-  getMultichainNetworkProviders,
   getCurrentChainId,
   (_, chainId) => chainId,
   (
@@ -487,11 +543,10 @@ export const getMetaMaskAccounts = createDeepEqualSelector(
     balances,
     cachedBalances,
     multichainBalances,
-    multichainNetworkProviders,
     currentChainId,
     chainId,
-  ) =>
-    Object.values(internalAccounts).reduce((accounts, internalAccount) => {
+  ) => {
+    return internalAccounts.reduce((accounts, internalAccount) => {
       // TODO: mix in the identity state here as well, consolidating this
       // selector with `accountsWithSendEtherInfoSelector`
       let account = internalAccount;
@@ -507,7 +562,9 @@ export const getMetaMaskAccounts = createDeepEqualSelector(
             };
           }
         } else {
-          const multichainNetwork = multichainNetworkProviders.find((network) =>
+          const multichainNetwork = Object.values(
+            MULTICHAIN_PROVIDER_CONFIGS,
+          ).find((network) =>
             internalAccount.scopes.some((scope) => scope === network.chainId),
           );
           account = {
@@ -538,8 +595,10 @@ export const getMetaMaskAccounts = createDeepEqualSelector(
 
       accounts[internalAccount.address] = account;
       return accounts;
-    }, {}),
+    }, {});
+  },
 );
+
 /**
  * Returns the address of the selected InternalAccount from the Metamask state.
  *
@@ -703,64 +762,6 @@ export function getHDEntropyIndex(state) {
   }
   return hdEntropyIndex === -1 ? undefined : hdEntropyIndex;
 }
-
-/**
- * Get account balances state.
- *
- * @param {object} state - Redux state
- * @returns {object} A map of account addresses to account objects (which includes the account balance)
- */
-export const getMetaMaskAccountBalances = createSelector(
-  (state) => state.metamask.accountsByChainId,
-  getCurrentChainId,
-  (accountsByChainId, currentChainId) => {
-    const balancesForCurrentChain = accountsByChainId?.[currentChainId] ?? {};
-    if (isEmptyObject(balancesForCurrentChain)) {
-      return EMPTY_OBJECT;
-    }
-    return Object.entries(balancesForCurrentChain)
-      .reduce((acc, [address, value]) => {
-        acc[address.toLowerCase()] = value;
-        return acc;
-      }, {});
-  }
-);
-
-export const getMetaMaskCachedBalances = createSelector(
-  (state) => state.metamask.accountsByChainId,
-  getEnabledNetworks,
-  getCurrentChainId,
-  (_, networkChainId) => networkChainId,
-  (accountsByChainId, enabledNetworks, currentChainId, networkChainId) => {
-    const eip155 = enabledNetworks?.eip155 ?? {};
-    const enabledIds = Object.keys(eip155).filter((id) => Boolean(eip155[id]));
-    if (enabledIds.length === 1) {
-      const chainId = enabledIds[0];
-      if (isEmptyObject(accountsByChainId?.[chainId] ?? {})) {
-        return EMPTY_OBJECT;
-      }
-      return Object.entries(accountsByChainId[chainId]).reduce(
-        (accumulator, [key, value]) => {
-          accumulator[key.toLowerCase()] = value.balance;
-          return accumulator;
-        },
-        {},
-      );
-    }
-
-    const chainId = networkChainId ?? currentChainId;
-    if (isEmptyObject(accountsByChainId?.[chainId] ?? {})) {
-      return EMPTY_OBJECT;
-    }
-    return Object.entries(accountsByChainId[chainId]).reduce(
-      (accumulator, [key, value]) => {
-        accumulator[key.toLowerCase()] = value.balance;
-        return accumulator;
-      },
-      {},
-    );
-  },
-)
 
 export function getCrossChainMetaMaskCachedBalances(state) {
   const allAccountsByChainId = state.metamask.accountsByChainId;
