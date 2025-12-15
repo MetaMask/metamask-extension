@@ -30,12 +30,23 @@ function isTestBuild(buildTarget) {
 }
 
 /**
+ * Special task mappings for entry tasks that don't follow the prefix pattern.
+ */
+const SPECIAL_TASK_MAPPINGS = {
+  // Used by lavamoat policy generation (generate-lavamoat-policies.js)
+  'scripts:dist': BUILD_TARGETS.DIST,
+  // Exposed as standalone entry task (index.js line 315)
+  styles: BUILD_TARGETS.PROD,
+};
+
+/**
  * Extract the actual build target from a task name.
  *
  * Task names follow patterns like:
  * - 'scripts:core:dev:standardEntryPoints' -> 'dev'
  * - 'scripts:core:test:contentscript' -> 'test'
  * - 'scripts:core:test-live:sentry' -> 'testDev'
+ * - 'scripts:dist' -> 'dist' (special task)
  * - 'test' -> 'test' (already a build target)
  *
  * @param {string} taskName - The task name or build target.
@@ -47,6 +58,11 @@ function getBuildTargetFromTask(taskName) {
   const validTargets = Object.values(BUILD_TARGETS);
   if (validTargets.includes(taskName)) {
     return taskName;
+  }
+
+  // Check for special task mappings (e.g., 'scripts:dist' -> 'dist')
+  if (SPECIAL_TASK_MAPPINGS[taskName]) {
+    return SPECIAL_TASK_MAPPINGS[taskName];
   }
 
   // Create reverse mapping from prefix to build target

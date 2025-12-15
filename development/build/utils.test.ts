@@ -30,6 +30,11 @@ describe('getBuildTargetFromTask', () => {
     ).toBe('testDev');
   });
 
+  it('maps special entry tasks to build targets', () => {
+    expect(getBuildTargetFromTask(TASKS.SCRIPTS_DIST)).toBe('dist');
+    expect(getBuildTargetFromTask(TASKS.STYLES)).toBe('prod');
+  });
+
   it('throws error for unknown patterns', () => {
     expect(() => getBuildTargetFromTask('unknown:task')).toThrow(
       'Unable to extract build target from task name: "unknown:task"',
