@@ -6,7 +6,7 @@ import { RawLocator } from '../../../common';
  * This modal allows users to select gas fee options (low, medium, high, advanced)
  * and customize gas parameters.
  */
-class GasFeeModal {
+export default class GasFeeModal {
   private driver: Driver;
 
   // Estimates Modal selectors
@@ -301,5 +301,3 @@ class GasFeeModal {
     await this.clickSave();
   }
 }
-
-export default GasFeeModal;

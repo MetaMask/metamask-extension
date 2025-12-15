@@ -292,4 +292,3 @@ describe('Sending with max amount', function () {
     );
   });
 });
-

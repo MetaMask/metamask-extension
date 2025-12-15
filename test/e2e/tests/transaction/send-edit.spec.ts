@@ -158,4 +158,3 @@ describe('Editing Confirm Transaction', function () {
     );
   });
 });
-
