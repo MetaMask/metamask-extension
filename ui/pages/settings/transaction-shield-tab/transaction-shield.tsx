@@ -603,7 +603,7 @@ const TransactionShield = () => {
             />
           </ButtonRowContainer>
         </Box>
-        {displayedShieldSubscription?.isEligibleForSupport && (
+        {!isCancelled && displayedShieldSubscription?.isEligibleForSupport && (
           <Box className="px-4 mt-4">
             {showSkeletonLoader ? (
               <Skeleton width="100%" height={40} />
