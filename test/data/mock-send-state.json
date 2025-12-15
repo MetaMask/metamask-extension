@@ -68,6 +68,8 @@
         "0x5": {}
       }
     },
+    "accountsAssets": {},
+    "allIgnoredTokens": {},
     "ipfsGateway": "",
     "dismissSeedBackUpReminder": false,
     "usePhishDetect": true,
