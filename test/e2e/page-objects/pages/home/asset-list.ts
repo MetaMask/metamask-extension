@@ -1,5 +1,6 @@
 import { Driver } from '../../../webdriver/driver';
 import { NETWORK_TO_NAME_MAP } from '../../../../../shared/constants/network';
+import { veryLargeDelayMs } from '../../../helpers';
 
 class AssetListPage {
   private readonly driver: Driver;
@@ -819,6 +820,7 @@ class AssetListPage {
       {
         timeout: this.driver.timeout,
         interval: 200,
+        stableFor: veryLargeDelayMs,
       },
     );
   }
