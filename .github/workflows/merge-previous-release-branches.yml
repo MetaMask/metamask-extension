@@ -38,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Merge previous releases
-        uses: metamask/github-tools/.github/actions/merge-previous-releases@INFRA-3187-AutomateMergingReleaseBranches
+        uses: metamask/github-tools/.github/actions/merge-previous-releases@v1.2.0
         with:
           new-release-branch: ${{ github.event.ref }}
           github-token: ${{ secrets.METAMASK_EXTENSION_BRANCH_SYNC_TOKEN }}
