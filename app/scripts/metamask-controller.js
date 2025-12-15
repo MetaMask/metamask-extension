@@ -7886,6 +7886,9 @@ export default class MetamaskController extends EventEmitter {
       return next();
     });
 
+    // Block requests while a wallet_requestExecutionPermissions request is in process.
+    engine.push(this.eip7715BlockingMiddleware);
+
     const snapAndHardwareMessenger = new Messenger({
       namespace: 'SnapAndHardwareMessenger',
       parent: this.controllerMessenger,

@@ -19,6 +19,7 @@ type CreateRpcBlockingMiddlewareOptions = {
 
 /**
  * Creates a JsonRpcMiddleware function that blocks requests to snaps when the state isBlocked is true.
+ *
  * @param options - The options for the middleware.
  * @param options.errorMessage - The error message to return when requests are blocked.
  * @param options.state - The state of the middleware.
