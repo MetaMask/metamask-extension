@@ -1,5 +1,7 @@
 import log from 'loglevel';
+import Bowser from 'bowser';
 import { PLATFORM_FIREFOX } from '../../shared/constants/app';
+import { getIsBrowserMV3StableUpdatesSupported } from '../../shared/modules/browser-runtime.utils';
 import { getPlatform } from './lib/util';
 import type MetaMaskController from './metamask-controller';
 import type ExtensionPlatform from './platforms/extension';
@@ -50,19 +52,23 @@ export function onUpdate(
   appStateController.setLastUpdatedAt(lastUpdatedAt);
   appStateController.setLastUpdatedFromVersion(previousVersion);
 
-  if (!isFirefox) {
+  if (
+    !isFirefox &&
+    !getIsBrowserMV3StableUpdatesSupported(
+      Bowser.getParser(globalThis.navigator.userAgent),
+    )
+  ) {
     // Work around Chromium bug https://issues.chromium.org/issues/40805401
-    // by doing a safe reload after an update. We'll be able to gate this
-    // behind a Chromium version check once we know the chromium version #
-    // that fixes this bug, ETA: December 2025 (likely in `143.0.7465.0`).
-    // Once we no longer support the affected Chromium versions, we should
-    // remove this workaround.
+    // by doing a safe reload after an update. We have gated this workaround behind
+    // a Chromium version check for `<143`, to prevent it from running on
+    // newer versions that are no longer affected by the bug. Once the affected
+    // Chromium versions are no longer supported, we should remove this.
     // We only want to do the safe reload when the version actually changed,
     // just as a safe guard, as Chrome fires this event each time we call
     // `runtime.reload` -- as we really don't want to send Chrome into a restart
     // loop! This is overkill, as `onUpdate` is already only called when
     // `previousVersion !== platform.getVersion()`, but better safe than better
-    // safe than better safe than... rebooting forever. :-)
+    // safe than better safe than better safe than... rebooting forever. :-)
     log.info(
       `[onUpdate]: Requesting "safe reload" after update to ${platform.getVersion()}`,
     );
