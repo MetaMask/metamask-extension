@@ -2,6 +2,7 @@ import { useEffect, useRef, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import stringify from 'fast-json-stable-stringify';
 import type { Json } from '@metamask/utils';
+import { captureException } from '../../shared/lib/sentry';
 import { getCompletedOnboarding } from '../ducks/metamask/metamask';
 import { useSyncEqualityCheck } from './useSyncEqualityCheck';
 
@@ -86,8 +87,8 @@ const useMultiPolling = <PollingInput extends Json>(
               stopPollingRef.current(token);
             }
           })
-          .catch(() => {
-            // noop
+          .catch((error) => {
+            captureException(error);
           })
           .finally(() => {
             // Always remove from pending to allow retry on next effect run
