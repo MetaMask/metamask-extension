@@ -374,11 +374,24 @@ export function useTransactionDisplayData(transactionGroup) {
   } else if (type === TransactionType.simpleSend) {
     title = t('sent');
   } else if (type === TransactionType.bridgeApproval) {
-    title = t('bridgeApproval', [bridgeTokenDisplayData.sourceTokenSymbol]);
-    primarySuffix = bridgeTokenDisplayData.sourceTokenSymbol;
+    const bridgeApprovalTokenSymbol =
+      bridgeTokenDisplayData.sourceTokenSymbol ??
+      initialTransaction.sourceTokenSymbol ??
+      primaryTransaction.sourceTokenSymbol ??
+      token?.symbol ??
+      t('token');
+
+    title = t('bridgeApproval', [bridgeApprovalTokenSymbol]);
+    primarySuffix = bridgeApprovalTokenSymbol;
   } else if (type === TransactionType.bridge) {
+    const bridgeTokenSymbol =
+      bridgeTokenDisplayData.sourceTokenSymbol ??
+      initialTransaction.sourceTokenSymbol ??
+      primaryTransaction.sourceTokenSymbol ??
+      token?.symbol;
+
     title = destChainName ? t('bridgedToChain', [destChainName]) : t('bridged');
-    primarySuffix = bridgeTokenDisplayData.sourceTokenSymbol;
+    primarySuffix = bridgeTokenSymbol;
     primaryDisplayValue = formatAmount(
       locale,
       new BigNumber(bridgeTokenDisplayData.sourceTokenAmountSent ?? 0),
