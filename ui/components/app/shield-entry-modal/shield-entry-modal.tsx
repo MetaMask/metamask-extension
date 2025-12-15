@@ -105,11 +105,6 @@ const ShieldEntryModal = ({
   const handleOnClose = async (
     ctaActionClicked: ShieldCtaActionClickedEnum = ShieldCtaActionClickedEnum.Dismiss,
   ) => {
-    if (actionLoading) {
-      return;
-    }
-
-    setActionLoading(true);
     try {
       const source = determineEntryModalSource();
       const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
@@ -171,7 +166,6 @@ const ShieldEntryModal = ({
       redirectToPage: SHIELD_PLAN_ROUTE,
       marketingUtmParams,
     });
-    setActionLoading(false);
 
     // Ensure handleOnClose completes before redirecting
     await handleOnClose(ShieldCtaActionClickedEnum.Start14DayTrial);
@@ -183,6 +177,8 @@ const ShieldEntryModal = ({
           ? `?${new URLSearchParams(marketingUtmParams).toString()}`
           : `?source=${source}`,
     });
+
+    setActionLoading(false);
   };
 
   const handleOnLearnMoreClick = () => {
@@ -220,7 +216,14 @@ const ShieldEntryModal = ({
       autoFocus={false}
       isClosedOnOutsideClick={false}
       isClosedOnEscapeKey={false}
-      onClose={() => handleOnClose()}
+      onClose={() => {
+        if (actionLoading) {
+          return;
+        }
+
+        setActionLoading(true);
+        handleOnClose();
+      }}
       className="shield-entry-modal"
       data-theme={ThemeType.dark}
     >
@@ -232,7 +235,14 @@ const ShieldEntryModal = ({
         className="shield-entry-modal__content"
       >
         <ModalHeader
-          onClose={() => handleOnClose()}
+          onClose={() => {
+            if (actionLoading) {
+              return;
+            }
+
+            setActionLoading(true);
+            handleOnClose();
+          }}
           closeButtonProps={{
             'data-testid': 'shield-entry-modal-close-button',
             className: 'absolute top-2 right-2',
