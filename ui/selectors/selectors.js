@@ -772,7 +772,7 @@ export function getSelectedAccountNativeTokenCachedBalanceByChainId(state) {
  * Based on the current account address, query for all tokens across all chain networks on that account,
  * including the native tokens, without hardcoding any native token information.
  *
- * @deprecated
+ * @deprecated use getAssetsBySelectedAccountGroup instead
  * @param {object} state - Redux state
  * @returns {object} An object mapping chain IDs to arrays of tokens (including native tokens) with balances.
  */
@@ -831,7 +831,7 @@ export function getSelectedAccountTokensAcrossChains(state) {
 /**
  * Get the native token balance for a given account address and chainId
  *
- * @deprecated
+ * @deprecated use selectBalanceByWallet instead
  * @param {object} state - Redux state
  * @param {string} accountAddress - The address of the account
  * @param {string} chainId - The chainId of the account
@@ -846,7 +846,7 @@ export const getNativeTokenCachedBalanceByChainIdSelector = createSelector(
 /**
  * Get the tokens across chains for a given account address
  *
- * @deprecated
+ * @deprecated use getAllAssets instead
  * @param {object} state - Redux state
  * @param {string} accountAddress - The address of the account
  */

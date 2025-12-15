@@ -161,7 +161,7 @@ export function getHistoricalPrices(state: AssetsRatesState) {
 }
 
 /**
- * @deprecated
+ * @deprecated use getAllAssets instead
  */
 export const getMultiChainAssets = createDeepEqualSelector(
   (_state, selectedAccount) => selectedAccount,
@@ -227,7 +227,7 @@ export const getMultiChainAssets = createDeepEqualSelector(
 /**
  * Gets a {@link Token} (EVM or Multichain) owned by the passed account by address and chainId.
  *
- * @deprecated
+ * @deprecated use getAllAssets instead
  * @param state - Redux state object
  * @param tokenAddress - Token address (Hex for EVM, or CaipAssetType for non-EVM)
  * @param chainId - Chain ID (Hex for EVM, or CaipChainId for non-EVM)
@@ -287,7 +287,7 @@ export const getTokenByAccountAndAddressAndChainId = createDeepEqualSelector(
 const zeroBalanceAssetFallback = { amount: 0, unit: '' };
 
 /**
- * @deprecated
+ * @deprecated use selectBalanceByAccountGroup instead
  */
 export const getMultichainAggregatedBalance = createDeepEqualSelector(
   (_state, selectedAccount) => selectedAccount,
@@ -462,7 +462,7 @@ export const getMultichainNativeAssetType = createDeepEqualSelector(
 /**
  * Gets the balance of the native token of the current network for the selected account.
  *
- * @deprecated
+ * @deprecated use selectBalanceByAccountGroup instead
  * @param state - Redux state object
  * @param selectedAccount - Selected account
  * @returns Balance of the native token, or fallbacks to { amount: 0, unit: '' } if no native token is found
@@ -1230,7 +1230,7 @@ export const getAsset = createSelector(
 );
 
 /**
- * @deprecated
+ * @deprecated use selectBalanceByAccountGroup instead
  */
 export const getTokenBalancesEvm = createDeepEqualSelector(
   getPreferences,
