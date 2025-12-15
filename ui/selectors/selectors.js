@@ -726,14 +726,20 @@ export const getMetaMaskAccountBalances = createSelector(
   }
 );
 
-export function getMetaMaskCachedBalances(state, networkChainId) {
-  const enabledNetworks = getEnabledNetworks(state);
-  const eip155 = enabledNetworks?.eip155 ?? {};
-  const enabledIds = Object.keys(eip155).filter((id) => Boolean(eip155[id]));
-  if (enabledIds.length === 1) {
-    const chainId = enabledIds[0];
-    if (state.metamask.accountsByChainId?.[chainId]) {
-      return Object.entries(state.metamask.accountsByChainId[chainId]).reduce(
+export const getMetaMaskCachedBalances = createSelector(
+  (state) => state.metamask.accountsByChainId,
+  getEnabledNetworks,
+  getCurrentChainId,
+  (_, networkChainId) => networkChainId,
+  (accountsByChainId, enabledNetworks, currentChainId, networkChainId) => {
+    const eip155 = enabledNetworks?.eip155 ?? {};
+    const enabledIds = Object.keys(eip155).filter((id) => Boolean(eip155[id]));
+    if (enabledIds.length === 1) {
+      const chainId = enabledIds[0];
+      if (isEmptyObject(accountsByChainId?.[chainId] ?? {})) {
+        return EMPTY_OBJECT;
+      }
+      return Object.entries(accountsByChainId[chainId]).reduce(
         (accumulator, [key, value]) => {
           accumulator[key.toLowerCase()] = value.balance;
           return accumulator;
@@ -741,22 +747,20 @@ export function getMetaMaskCachedBalances(state, networkChainId) {
         {},
       );
     }
-    return {};
-  }
 
-  const chainId = networkChainId ?? getCurrentChainId(state);
-
-  if (state.metamask.accountsByChainId?.[chainId]) {
-    return Object.entries(state.metamask.accountsByChainId[chainId]).reduce(
+    const chainId = networkChainId ?? currentChainId;
+    if (isEmptyObject(accountsByChainId?.[chainId] ?? {})) {
+      return EMPTY_OBJECT;
+    }
+    return Object.entries(accountsByChainId[chainId]).reduce(
       (accumulator, [key, value]) => {
         accumulator[key.toLowerCase()] = value.balance;
         return accumulator;
       },
       {},
     );
-  }
-  return {};
-}
+  },
+)
 
 export function getCrossChainMetaMaskCachedBalances(state) {
   const allAccountsByChainId = state.metamask.accountsByChainId;
