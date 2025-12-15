@@ -1071,6 +1071,7 @@ describe('AppStateController', () => {
               "showNetworkBanner": true,
               "showPermissionsTour": true,
               "showShieldEntryModalOnce": null,
+              "sidePanelGasPollTokens": [],
               "signatureSecurityAlertResponses": {},
               "slides": [],
               "snapsInstallPrivacyWarningShown": false,
