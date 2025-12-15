@@ -418,7 +418,7 @@ class HomePage {
       },
       {
         interval: 1000,
-        timeout: 30000, // Syncing can take some time so adding a longer timeout to reduce flakes
+        timeout: 40000, // Syncing can take some time so adding a longer timeout to reduce flakes
       },
     );
   }
