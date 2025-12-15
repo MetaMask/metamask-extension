@@ -4244,6 +4244,11 @@
         "browserify>url": true
       }
     },
+    "humanize-duration": {
+      "globals": {
+        "define": true
+      }
+    },
     "@metamask/notification-services-controller>firebase>@firebase/app>idb": {
       "globals": {
         "DOMException": true,
