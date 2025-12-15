@@ -250,9 +250,8 @@
     "addons-linter/glob": "^10.5.0",
     "@metamask/bridge-controller@npm:^64.0.0": "patch:@metamask/bridge-controller@npm%3A64.0.0#~/.yarn/patches/@metamask-bridge-controller-npm-64.0.0-956740f7c8.patch",
     "@metamask/bridge-controller@npm:^63.2.0": "patch:@metamask/bridge-controller@npm%3A64.0.0#~/.yarn/patches/@metamask-bridge-controller-npm-64.0.0-956740f7c8.patch",
-    "@metamask/assets-controllers@npm:^92.0.0": "npm:@metamask-previews/assets-controllers@94.1.0-preview-eb60826c",
-    "@metamask/assets-controllers@npm:^93.0.0": "npm:@metamask-previews/assets-controllers@94.1.0-preview-eb60826c",
-    "@metamask/assets-controllers@npm:^91.0.0": "npm:@metamask-previews/assets-controllers@94.1.0-preview-eb60826c"
+    "@metamask/assets-controllers@npm:^92.0.0": "patch:@metamask/assets-controllers@npm%3A93.1.0#~/.yarn/patches/@metamask-assets-controllers-npm-93.1.0-0f2b5956ff.patch",
+    "@metamask/assets-controllers@npm:^93.0.0": "patch:@metamask/assets-controllers@npm%3A93.1.0#~/.yarn/patches/@metamask-assets-controllers-npm-93.1.0-0f2b5956ff.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -282,7 +281,7 @@
     "@metamask/address-book-controller": "^7.0.0",
     "@metamask/announcement-controller": "^8.0.0",
     "@metamask/approval-controller": "^8.0.0",
-    "@metamask/assets-controllers": "npm:@metamask-previews/assets-controllers@94.1.0-preview-eb60826c",
+    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A93.1.0#~/.yarn/patches/@metamask-assets-controllers-npm-93.1.0-0f2b5956ff.patch",
     "@metamask/base-controller": "^9.0.0",
     "@metamask/bitcoin-wallet-snap": "^1.8.0",
     "@metamask/bridge-controller": "patch:@metamask/bridge-controller@npm%3A64.0.0#~/.yarn/patches/@metamask-bridge-controller-npm-64.0.0-956740f7c8.patch",

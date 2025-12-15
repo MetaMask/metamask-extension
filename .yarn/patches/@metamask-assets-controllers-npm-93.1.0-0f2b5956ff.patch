@@ -1,0 +1,26 @@
+diff --git a/dist/index.cjs b/dist/index.cjs
+index 182111ed7c84e66460667552b09f9d696f919da4..f9370d200be7918841b33038eed4016c2a3b2c69 100644
+--- a/dist/index.cjs
++++ b/dist/index.cjs
+@@ -14,7 +14,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
+     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+ };
+ Object.defineProperty(exports, "__esModule", { value: true });
+-exports.createFormatters = exports.selectAssetsBySelectedAccountGroup = exports.calculateBalanceChangeForAccountGroup = exports.calculateBalanceChangeForAllWallets = exports.calculateBalanceForAllWallets = exports.DeFiPositionsController = exports.TokenSearchDiscoveryDataController = exports.getDefaultMultichainAssetsRatesControllerState = exports.MultichainAssetsRatesController = exports.getDefaultMultichainAssetsControllerState = exports.MultichainAssetsController = exports.MultichainBalancesController = exports.Cryptocurrency = exports.RatesController = exports.getTrendingTokens = exports.searchTokens = exports.getNativeTokenAddress = exports.SUPPORTED_CHAIN_IDS = exports.CodefiTokenPricesServiceV2 = exports.getKeyByValue = exports.fetchTokenContractExchangeRates = exports.getFormattedIpfsUrl = exports.formatIconUrlWithProxy = exports.isTokenDetectionSupportedForNetwork = exports.TokensController = exports.TokenRatesController = exports.getDefaultTokenRatesControllerState = exports.TokenListController = exports.TokenDetectionController = exports.TokenBalancesController = exports.NftDetectionController = exports.NftController = exports.getDefaultNftControllerState = exports.AssetsContractController = exports.SINGLE_CALL_BALANCES_ADDRESS_BY_CHAINID = exports.AccountTrackerController = void 0;
++exports.createFormatters = exports.selectAllAssets = exports.selectAssetsBySelectedAccountGroup = exports.calculateBalanceChangeForAccountGroup = exports.calculateBalanceChangeForAllWallets = exports.calculateBalanceForAllWallets = exports.DeFiPositionsController = exports.TokenSearchDiscoveryDataController = exports.getDefaultMultichainAssetsRatesControllerState = exports.MultichainAssetsRatesController = exports.getDefaultMultichainAssetsControllerState = exports.MultichainAssetsController = exports.MultichainBalancesController = exports.Cryptocurrency = exports.RatesController = exports.getTrendingTokens = exports.searchTokens = exports.getNativeTokenAddress = exports.SUPPORTED_CHAIN_IDS = exports.CodefiTokenPricesServiceV2 = exports.getKeyByValue = exports.fetchTokenContractExchangeRates = exports.getFormattedIpfsUrl = exports.formatIconUrlWithProxy = exports.isTokenDetectionSupportedForNetwork = exports.TokensController = exports.TokenRatesController = exports.getDefaultTokenRatesControllerState = exports.TokenListController = exports.TokenDetectionController = exports.TokenBalancesController = exports.NftDetectionController = exports.NftController = exports.getDefaultNftControllerState = exports.AssetsContractController = exports.SINGLE_CALL_BALANCES_ADDRESS_BY_CHAINID = exports.AccountTrackerController = void 0;
+ var AccountTrackerController_1 = require("./AccountTrackerController.cjs");
+ Object.defineProperty(exports, "AccountTrackerController", { enumerable: true, get: function () { return AccountTrackerController_1.AccountTrackerController; } });
+ var AssetsContractController_1 = require("./AssetsContractController.cjs");
+diff --git a/dist/selectors/token-selectors.cjs b/dist/selectors/token-selectors.cjs
+index 50f20f60fd2bc0ab2a5a1f847be6886369334533..937396b92c70c14aeda33249f1b3cc78d2b2622e 100644
+--- a/dist/selectors/token-selectors.cjs
++++ b/dist/selectors/token-selectors.cjs
+@@ -221,7 +221,7 @@ const selectAllMultichainAssets = createAssetListSelector([
+     }
+     return groupAssets;
+ });
+-const selectAllAssets = createAssetListSelector([
++exports.selectAllAssets = createAssetListSelector([
+     selectAllEvmAssets,
+     selectAllMultichainAssets,
+     selectAllEvmAccountNativeBalances,
