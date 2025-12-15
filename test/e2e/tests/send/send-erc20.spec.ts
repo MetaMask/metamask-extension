@@ -14,7 +14,6 @@ describe('Send ERC20', function () {
   it('it should be possible to send ERC20 token', async function () {
     await withFixtures(
       {
-        forceLegacySendFlow: false,
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSendRedesignFeatureFlag,
@@ -58,7 +57,6 @@ describe('Send ERC20', function () {
   it('it should be possible to send Max token value', async function () {
     await withFixtures(
       {
-        forceLegacySendFlow: false,
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSendRedesignFeatureFlag,
