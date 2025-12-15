@@ -20,6 +20,7 @@ const TEST_ADDRESSES = {
   TO: '0x1234567890123456789012345678901234567890',
   FROM: '0xabcdef0123456789012345678901234567890123',
   SPENDER: '0x9876543210987654321098765432109876543210',
+  DELEGATE: '0xfedcba9876543210fedcba9876543210fedcba98',
 };
 
 const MOCK_SCAN_RESPONSES = {
@@ -955,6 +956,145 @@ describe('createTrustSignalsMiddleware', () => {
             getChainId(networkController),
           );
         }
+      });
+    });
+
+    describe('delegation signatures', () => {
+      const createDelegationTypedData = (delegate?: string) => ({
+        domain: {
+          name: 'DelegationManager',
+          version: '1',
+          chainId: 1,
+          verifyingContract: TEST_ADDRESSES.TO,
+        },
+        primaryType: 'Delegation',
+        message: {
+          delegate: delegate || TEST_ADDRESSES.DELEGATE,
+          delegator: TEST_ADDRESSES.FROM,
+          authority:
+            '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
+          caveats: [],
+          salt: 12345,
+        },
+        types: {
+          EIP712Domain: [
+            { name: 'name', type: 'string' },
+            { name: 'version', type: 'string' },
+            { name: 'chainId', type: 'uint256' },
+            { name: 'verifyingContract', type: 'address' },
+          ],
+          Caveat: [
+            { name: 'enforcer', type: 'address' },
+            { name: 'terms', type: 'bytes' },
+          ],
+          Delegation: [
+            { name: 'delegate', type: 'address' },
+            { name: 'delegator', type: 'address' },
+            { name: 'authority', type: 'bytes32' },
+            { name: 'caveats', type: 'Caveat[]' },
+            { name: 'salt', type: 'uint256' },
+          ],
+        },
+      });
+
+      it('scans both verifying contract and delegate addresses for delegation signatures', async () => {
+        scanAddressMockAndAddToCache.mockResolvedValue(
+          MOCK_SCAN_RESPONSES.BENIGN,
+        );
+        const {
+          middleware,
+          appStateController,
+          networkController,
+          phishingController,
+        } = createMiddleware();
+
+        const delegationData = createDelegationTypedData();
+        const req = createMockRequest(MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4, [
+          TEST_ADDRESSES.FROM,
+          delegationData,
+        ]);
+        const res = createMockResponse();
+        const next = jest.fn();
+
+        await middleware(req, res, next);
+
+        // Should scan both the verifying contract and the delegate
+        expect(scanAddressMockAndAddToCache).toHaveBeenCalledTimes(2);
+        expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
+          TEST_ADDRESSES.TO,
+          appStateController.getAddressSecurityAlertResponse,
+          appStateController.addAddressSecurityAlertResponse,
+          getChainId(networkController),
+        );
+        expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
+          TEST_ADDRESSES.DELEGATE,
+          appStateController.getAddressSecurityAlertResponse,
+          appStateController.addAddressSecurityAlertResponse,
+          getChainId(networkController),
+        );
+        expect(phishingController.scanUrl).toHaveBeenCalled();
+        expect(next).toHaveBeenCalled();
+      });
+
+      it('handles delegation delegate scanning errors gracefully', async () => {
+        scanAddressMockAndAddToCache
+          .mockResolvedValueOnce(MOCK_SCAN_RESPONSES.BENIGN) // Contract scan succeeds
+          .mockRejectedValueOnce(new Error('Delegate scan failed')); // Delegate scan fails
+
+        const { middleware, phishingController } = createMiddleware();
+
+        const delegationData = createDelegationTypedData();
+        const req = createMockRequest(MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4, [
+          TEST_ADDRESSES.FROM,
+          delegationData,
+        ]);
+        const res = createMockResponse();
+        const next = jest.fn();
+
+        await middleware(req, res, next);
+
+        expect(scanAddressMockAndAddToCache).toHaveBeenCalledTimes(2);
+        expect(phishingController.scanUrl).toHaveBeenCalled();
+        expect(next).toHaveBeenCalled();
+
+        // Wait for async error handling
+        await new Promise((resolve) => setTimeout(resolve, 0));
+
+        expect(consoleErrorSpy).toHaveBeenCalledWith(
+          '[createTrustSignalsMiddleware] error scanning delegate address for delegation:',
+          expect.any(Error),
+        );
+      });
+
+      it('does not scan delegate when delegate address is not present in delegation', async () => {
+        scanAddressMockAndAddToCache.mockResolvedValue(
+          MOCK_SCAN_RESPONSES.BENIGN,
+        );
+        const { middleware, appStateController, networkController } =
+          createMiddleware();
+
+        const delegationDataWithoutDelegate = createDelegationTypedData();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        delete (delegationDataWithoutDelegate.message as any).delegate;
+
+        const req = createMockRequest(MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4, [
+          TEST_ADDRESSES.FROM,
+          delegationDataWithoutDelegate,
+        ]);
+        const res = createMockResponse();
+        const next = jest.fn();
+
+        await middleware(req, res, next);
+
+        // Should only scan the verifying contract
+        expect(scanAddressMockAndAddToCache).toHaveBeenCalledTimes(1);
+        expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
+          TEST_ADDRESSES.TO,
+          appStateController.getAddressSecurityAlertResponse,
+          appStateController.addAddressSecurityAlertResponse,
+          getChainId(networkController),
+        );
+        expect(next).toHaveBeenCalled();
       });
     });
   });
