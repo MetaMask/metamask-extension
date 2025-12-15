@@ -38,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Sync release branches with stable
-        uses: metamask/github-tools/.github/actions/release-branch-sync@INFRA-3188-AutomateReleaseBranchSync
+        uses: metamask/github-tools/.github/actions/release-branch-sync@v1.2.0
         with:
           merged-release-branch: ${{ github.event.pull_request.head.ref }}
           github-token: ${{ secrets.STABLE_SYNC_TOKEN }}
