@@ -248,7 +248,6 @@ function ParamValue({
   source?: DecodedTransactionDataSource;
   chainId: string;
 }) {
-  console.log('----------------------- param 0', param);
   const { name, type, value } = param;
 
   if (type === 'address') {
@@ -294,7 +293,6 @@ function ParamRow({
   const tooltip = `${type}${description ? ` - ${description}` : ''}`;
   const dataTestId = `advanced-details-data-param-${index}`;
 
-  console.log('----------------------- param 0', param.children);
   const childRows = param.children?.map((childParam, childIndex) => (
     <ParamRow
       key={childIndex}
