@@ -1681,12 +1681,11 @@ export default class MetamaskController extends EventEmitter {
    */
   setupControllerEventSubscriptions() {
     let lastSelectedAddress;
-    let lastSelectedSolanaAccountAddress;
-    let lastSelectedTronAccountAddress;
+    const lastSelectedAccountAddressByNetwork = {};
 
     // this throws if there is no Solana or Tron account... perhaps we should handle this better at the controller level
     try {
-      lastSelectedSolanaAccountAddress =
+      lastSelectedAccountAddressByNetwork[MultichainNetworks.SOLANA] =
         this.accountsController.getSelectedMultichainAccount(
           MultichainNetworks.SOLANA,
         )?.address;
@@ -1696,7 +1695,7 @@ export default class MetamaskController extends EventEmitter {
 
     ///: BEGIN:ONLY_INCLUDE_IF(tron)
     try {
-      lastSelectedTronAccountAddress =
+      lastSelectedAccountAddressByNetwork[MultichainNetworks.TRON] =
         this.accountsController.getSelectedMultichainAccount(
           MultichainNetworks.TRON,
         )?.address;
@@ -1819,10 +1818,6 @@ export default class MetamaskController extends EventEmitter {
         notificationProperty:
           KnownSessionProperties.SolanaAccountChangedNotifications,
         accountType: SolAccountType.DataAccount,
-        getLastSelectedAccountAddress: () => lastSelectedSolanaAccountAddress,
-        setLastSelectedAccountAddress: (address) => {
-          lastSelectedSolanaAccountAddress = address;
-        },
       },
       ///: BEGIN:ONLY_INCLUDE_IF(tron)
       {
@@ -1831,10 +1826,6 @@ export default class MetamaskController extends EventEmitter {
         notificationProperty:
           KnownSessionProperties.TronAccountChangedNotifications,
         accountType: TrxAccountType.Eoa,
-        getLastSelectedAccountAddress: () => lastSelectedTronAccountAddress,
-        setLastSelectedAccountAddress: (address) => {
-          lastSelectedTronAccountAddress = address;
-        },
       },
       ///: END:ONLY_INCLUDE_IF
     ];
@@ -1948,21 +1939,14 @@ export default class MetamaskController extends EventEmitter {
         );
 
         multichainAccountChangedConfigs.forEach(
-          ({
-            network,
-            accountType,
-            notificationProperty,
-            chains,
-            getLastSelectedAccountAddress,
-            setLastSelectedAccountAddress,
-          }) => {
+          ({ network, accountType, notificationProperty, chains }) => {
             const [account] =
               this.accountTreeController.getAccountsFromSelectedAccountGroup({
                 scopes: [network],
               });
 
             const lastSelectedAccountAddress =
-              getLastSelectedAccountAddress?.();
+              lastSelectedAccountAddressByNetwork[network];
 
             if (
               !account ||
@@ -1972,7 +1956,7 @@ export default class MetamaskController extends EventEmitter {
               return;
             }
 
-            setLastSelectedAccountAddress?.(account.address);
+            lastSelectedAccountAddressByNetwork[network] = account.address;
 
             const originsWithAccountChangedNotifications =
               getOriginsWithSessionProperty(
