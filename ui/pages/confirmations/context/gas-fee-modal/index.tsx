@@ -37,7 +37,6 @@ export const GasFeeModalContextProvider: React.FC<{
     setIsGasFeeModalVisible(false);
   }, []);
 
-
   const value = useMemo(
     () => ({
       isGasFeeModalVisible,
@@ -80,4 +79,3 @@ export const GasFeeModalWrapper = () => {
     />
   );
 };
-

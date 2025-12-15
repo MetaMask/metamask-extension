@@ -6,7 +6,7 @@ import {
   GasFeeModalContextProvider,
   GasFeeModalWrapper,
   useGasFeeModalContext,
-} from './index';
+} from '.';
 
 jest.mock('../../components/modals/gas-fee-modal/gas-fee-modal', () => ({
   GasFeeModal: ({
