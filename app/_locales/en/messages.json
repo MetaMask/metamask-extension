@@ -1227,6 +1227,9 @@
   "chainListReturnedDifferentTickerSymbol": {
     "message": "This token symbol doesn't match the network name or chain ID entered. Many popular tokens use similar symbols, which scammers can use to trick you into sending them a more valuable token in return. Verify everything before you continue."
   },
+  "changePasswordDetailsSocial": {
+    "message": "Losing this password means losing wallet access on all devices."
+  },
   "changePasswordLoading": {
     "message": "Changing password..."
   },
@@ -4530,7 +4533,7 @@
     "message": "By continuing, I agree to MetaMask’s $1 and $2"
   },
   "onboardingLoginFooterPrivacyNotice": {
-    "message": "Privacy notice."
+    "message": "Privacy notice"
   },
   "onboardingLoginFooterTermsOfUse": {
     "message": "Terms of Use"
