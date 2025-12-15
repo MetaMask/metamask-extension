@@ -54,7 +54,7 @@
     height: 40px;
     font-size: var(--typography-s-body-sm-font-size);
 
-    @media screen and (min-width: 400px) {
+    @include design-system.screen-sm-min {
       font-size: var(--typography-s-body-md-font-size);
     }
   }
@@ -63,7 +63,7 @@
     width: 16px;
     font-size: var(--typography-s-body-sm-font-size);
 
-    @media screen and (min-width: 400px) {
+    @include design-system.screen-sm-min {
       width: 20px;
       font-size: var(--typography-s-body-md-font-size);
     }
@@ -74,7 +74,7 @@
     min-height: 216px;
     padding: 8px;
 
-    @media screen and (min-width: 400px) {
+    @include design-system.screen-sm-min {
       padding: 12px;
     }
 
