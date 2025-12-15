@@ -90,8 +90,8 @@ const ManageShieldPlan = ({ isPastPlan = false }: { isPastPlan?: boolean }) => {
     isCryptoPaymentMethod(displayedShieldSubscription?.paymentMethod);
 
   const isCardPayment =
-    currentShieldSubscription &&
-    isCardPaymentMethod(currentShieldSubscription.paymentMethod);
+    displayedShieldSubscription &&
+    isCardPaymentMethod(displayedShieldSubscription.paymentMethod);
 
   const {
     handlePaymentError,
