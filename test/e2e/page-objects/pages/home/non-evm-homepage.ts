@@ -15,7 +15,7 @@ class NonEvmHomepage extends HomePage {
 
   protected readonly bridgeButton = '[data-testid="coin-overview-bridge"]';
 
-  async checkPageIsLoaded(amount = ''): Promise<void> {
+  async checkPageIsLoaded({ amount }: { amount?: string } = {}): Promise<void> {
     await super.checkPageIsLoaded();
     await this.driver.delay(regularDelayMs); // workaround to avoid flakiness
     if (amount) {
