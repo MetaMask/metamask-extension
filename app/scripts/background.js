@@ -1143,17 +1143,16 @@ export function setupController(
     autoConfigureControllers: false,
   });
 
-  // `autoConfigureControllers` is `false`, so we have to call this manually here.
-  controller.configureAllControllers();
-
   // this persistence hooks must happen before `controller.configureAllControllers`
   // or some update might not be persisted!
   controller.store.on('update', update);
-
   controller.store.on('error', (error) => {
     log.error('MetaMask controller.store error:', error);
     sentry?.captureException(error);
   });
+
+  // `autoConfigureControllers` is `false`, so we have to call this manually here.
+  controller.configureAllControllers();
 
   setupEnsIpfsResolver({
     getCurrentChainId: () =>
