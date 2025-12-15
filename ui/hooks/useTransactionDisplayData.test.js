@@ -254,6 +254,28 @@ describe('useTransactionDisplayData', () => {
     });
   });
 
+  it('falls back to unknown labels when swap tokens are missing', () => {
+    const transactionGroup = JSON.parse(JSON.stringify(transactions[6]));
+    transactionGroup.initialTransaction = {
+      ...transactionGroup.initialTransaction,
+      sourceTokenSymbol: undefined,
+      destinationTokenSymbol: undefined,
+    };
+    transactionGroup.primaryTransaction = {
+      ...transactionGroup.primaryTransaction,
+      sourceTokenSymbol: undefined,
+      destinationTokenSymbol: undefined,
+    };
+
+    const { result } = renderHookWithProvider(
+      () => useTransactionDisplayData(transactionGroup),
+      getMockState(),
+      DEFAULT_ROUTE,
+    );
+
+    expect(result.current.title).toStrictEqual('Swap Unknown to Unknown');
+  });
+
   it('should return an appropriate object', () => {
     const { result } = renderHookWithProvider(
       () => useTransactionDisplayData(transactions[0]),
