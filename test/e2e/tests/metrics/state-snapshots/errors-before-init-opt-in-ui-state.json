@@ -5,22 +5,14 @@
       "pinnedAccountList": {}
     },
     "AccountsController": {
-      "internalAccounts": {
-        "accounts": "object",
-        "selectedAccount": "string"
-      }
+      "internalAccounts": { "accounts": "object", "selectedAccount": "string" }
     },
     "AlertController": {
-      "alertEnabledness": {
-        "unconnectedAccount": true,
-        "web3ShimUsage": true
-      },
+      "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
       "unconnectedAccountAlertShownOrigins": "object",
       "web3ShimUsageOrigins": "object"
     },
-    "AnnouncementController": {
-      "announcements": "object"
-    },
+    "AnnouncementController": { "announcements": "object" },
     "AppStateController": {
       "appActiveTab": "object",
       "browserEnvironment": {},
@@ -46,9 +38,7 @@
       "termsOfUseLastAgreed": "number",
       "trezorModel": null
     },
-    "AuthenticationController": {
-      "isSignedIn": "boolean"
-    },
+    "AuthenticationController": { "isSignedIn": "boolean" },
     "BridgeController": {},
     "CurrencyController": {
       "currencyRates": {
@@ -70,9 +60,7 @@
       "gasEstimateType": "none",
       "gasFeeEstimates": {}
     },
-    "KeyringController": {
-      "vault": "string"
-    },
+    "KeyringController": { "vault": "string" },
     "MetaMetricsController": {
       "dataCollectionForMarketing": "boolean",
       "eventsBeforeMetricsOptIn": "object",
@@ -87,26 +75,17 @@
       "metaMetricsDataDeletionTimestamp": 0
     },
     "MultichainAccountService": "object",
-    "NameController": {
-      "names": "object"
-    },
+    "NameController": { "names": "object" },
     "NetworkController": {
       "networkConfigurationsByChainId": "object",
       "networksMetadata": "object",
       "selectedNetworkClientId": "string"
     },
     "NetworkEnablementController": {
-      "enabledNetworkMap": {
-        "eip155": "object",
-        "solana": "object"
-      }
+      "enabledNetworkMap": { "eip155": "object", "solana": "object" }
     },
     "NetworkOrderController": {
-      "orderedNetworkList": {
-        "0": "object",
-        "1": "object",
-        "2": "object"
-      }
+      "orderedNetworkList": { "0": "object", "1": "object", "2": "object" }
     },
     "NotificationServicesController": {
       "isFeatureAnnouncementsEnabled": "boolean",
@@ -122,9 +101,7 @@
       "onboardingTabs": "object",
       "seedPhraseBackedUp": true
     },
-    "PermissionController": {
-      "subjects": "object"
-    },
+    "PermissionController": { "subjects": "object" },
     "PreferencesController": {
       "advancedGasFee": {},
       "currentLocale": "en",
@@ -166,9 +143,7 @@
       "useTokenDetection": true
     },
     "ProfileMetricsController": "object",
-    "SelectedNetworkController": {
-      "domains": "object"
-    },
+    "SelectedNetworkController": { "domains": "object" },
     "SmartTransactionsController": {
       "smartTransactionsState": {
         "fees": {},
@@ -178,24 +153,16 @@
         "smartTransactions": "object"
       }
     },
-    "SubjectMetadataController": {
-      "subjectMetadata": "object"
-    },
+    "SubjectMetadataController": { "subjectMetadata": "object" },
     "TokensController": {
       "allDetectedTokens": {},
       "allIgnoredTokens": {},
       "allTokens": {}
     },
-    "TransactionController": {
-      "transactions": "object"
-    },
-    "UserStorageController": {
-      "isBackupAndSyncEnabled": true
-    },
+    "TransactionController": { "transactions": "object" },
+    "UserStorageController": { "isBackupAndSyncEnabled": true },
     "config": "object",
     "firstTimeInfo": "object"
   },
-  "meta": {
-    "version": 184
-  }
+  "meta": { "version": 184 }
 }
