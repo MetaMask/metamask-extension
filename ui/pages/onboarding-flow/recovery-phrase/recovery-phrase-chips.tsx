@@ -214,6 +214,7 @@ export default function RecoveryPhraseChips({
                 }}
               >
                 <Text
+                  variant={TextVariant.inherit}
                   color={TextColor.textAlternative}
                   className="recovery-phrase__word-index"
                 >
@@ -228,8 +229,12 @@ export default function RecoveryPhraseChips({
                 testId={`recovery-phrase-chip-${index}`}
                 key={index}
                 value={wordToDisplay}
+                inputProps={{
+                  textVariant: TextVariant.inherit,
+                }}
                 startAccessory={
                   <Text
+                    variant={TextVariant.inherit}
                     color={TextColor.textAlternative}
                     className="recovery-phrase__word-index"
                   >
