@@ -6528,7 +6528,7 @@
     "description": "The $1 is the number of points and the $2 is the interval"
   },
   "shieldTxMembershipBenefits3DescriptionInactive": {
-    "message": "Get $1 points/$2 with your plan",
+    "message": "Get $1 points/$2",
     "description": "The $1 is the number of points and the $2 is the interval"
   },
   "shieldTxMembershipBenefits3LinkRewards": {
@@ -6538,7 +6538,7 @@
     "message": "Sign up"
   },
   "shieldTxMembershipBenefits3Title": {
-    "message": "Earn during rewards season"
+    "message": "Earn season rewards"
   },
   "shieldTxMembershipBenefitsInactive": {
     "message": "What you get"

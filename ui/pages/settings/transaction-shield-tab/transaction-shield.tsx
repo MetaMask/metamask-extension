@@ -373,6 +373,9 @@ const TransactionShield = () => {
         <Button
           variant={ButtonVariant.Secondary}
           size={ButtonSize.Md}
+          textProps={{
+            variant: TextVariant.BodySm,
+          }}
           onClick={() => {
             openRewardsOnboardingModal();
           }}
@@ -390,6 +393,9 @@ const TransactionShield = () => {
         <Button
           variant={ButtonVariant.Secondary}
           size={ButtonSize.Md}
+          textProps={{
+            variant: TextVariant.BodySm,
+          }}
           onClick={async () =>
             handleLinkRewardToShieldSubscription(
               displayedShieldSubscription?.id,
@@ -597,7 +603,7 @@ const TransactionShield = () => {
             />
           </ButtonRowContainer>
         </Box>
-        {!isCancelled && displayedShieldSubscription?.isEligibleForSupport && (
+        {displayedShieldSubscription?.isEligibleForSupport && (
           <Box className="px-4 mt-4">
             {showSkeletonLoader ? (
               <Skeleton width="100%" height={40} />

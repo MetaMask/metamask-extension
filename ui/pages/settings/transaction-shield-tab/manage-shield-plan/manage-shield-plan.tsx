@@ -36,7 +36,6 @@ import {
 import { isCardPaymentMethod, isCryptoPaymentMethod } from '../types';
 import AddFundsModal from '../../../../components/app/modals/add-funds-modal';
 import { ConfirmInfoRowAddress } from '../../../../components/app/confirm/info/row/address';
-import { TRANSACTION_SHIELD_CLAIM_ROUTES } from '../../../../helpers/constants/routes';
 
 const ManageShieldPlan = ({ isPastPlan = false }: { isPastPlan?: boolean }) => {
   const t = useI18nContext();
@@ -251,19 +250,6 @@ const ManageShieldPlan = ({ isPastPlan = false }: { isPastPlan?: boolean }) => {
                     )}
                     onClick={() => {
                       executeOpenGetSubscriptionBillingPortal();
-                    }}
-                  />
-                </>
-              )}
-            {isPastPlan &&
-              displayedShieldSubscription?.isEligibleForSupport && (
-                <>
-                  <Box className="border-t border-muted w-full h-px" />
-                  <ButtonRow
-                    data-testid="shield-detail-submit-case-button"
-                    title={t('shieldTxMembershipMakeClaim')}
-                    onClick={() => {
-                      navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);
                     }}
                   />
                 </>
