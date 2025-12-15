@@ -45,7 +45,8 @@
       height: 100%;
     }
 
-    &--popup {
+    &--popup,
+    &--sidepanel {
       padding-inline: 16px;
       padding-top: 16px;
       padding-bottom: 24px;

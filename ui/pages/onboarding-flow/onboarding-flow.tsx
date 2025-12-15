@@ -62,7 +62,10 @@ import {
 } from '../../helpers/constants/design-system';
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../shared/constants/app';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/modules/environment';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
@@ -114,6 +117,7 @@ export default function OnboardingFlow() {
 
   const envType = getEnvironmentType();
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
+  const isSidepanel = envType === ENVIRONMENT_TYPE_SIDEPANEL;
 
   // If the user has not agreed to the terms of use, we show the banner
   // Otherwise, we show the login page
@@ -268,7 +272,7 @@ export default function OnboardingFlow() {
         'onboarding-flow--welcome-login': isWelcomePage,
       })}
     >
-      {!isPopup && (
+      {!isPopup && !isSidepanel && (
         <OnboardingAppHeader
           isWelcomePage={isWelcomePage}
           location={location}
@@ -278,13 +282,20 @@ export default function OnboardingFlow() {
         className={classnames('onboarding-flow__container', {
           'onboarding-flow__container--full': isFullPage,
           'onboarding-flow__container--popup': isPopup,
+          'onboarding-flow__container--sidepanel': isSidepanel,
         })}
         width={BlockSize.Full}
         borderStyle={
-          isFullPage || isPopup ? BorderStyle.none : BorderStyle.solid
+          isFullPage || isPopup || isSidepanel
+            ? BorderStyle.none
+            : BorderStyle.solid
         }
         borderRadius={BorderRadius.LG}
-        marginTop={pathname === ONBOARDING_WELCOME_ROUTE || isPopup ? 0 : 3}
+        marginTop={
+          pathname === ONBOARDING_WELCOME_ROUTE || isPopup || isSidepanel
+            ? 0
+            : 3
+        }
         ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
         marginBottom={pathname === ONBOARDING_EXPERIMENTAL_AREA ? 6 : 0}
         ///: END:ONLY_INCLUDE_IF
