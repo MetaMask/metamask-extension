@@ -517,6 +517,7 @@
     "@playwright/test": "^1.54.2",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.6.1",
     "@sentry/cli": "^2.56.0",
+    "@sentry/node": "^10.30.0",
     "@slack/types": "^2.14.0",
     "@slack/webhook": "^7.0.5",
     "@storybook/addon-a11y": "^7.6.20",

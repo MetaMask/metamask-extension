@@ -28,6 +28,7 @@ import {
   DEFAULT_NUM_PAGE_LOADS,
   WITH_STATE_POWER_USER,
 } from './constants';
+import { initSentryReporter, reportBenchmarkMetrics } from './sentry-reporter';
 
 const ALL_PAGES = Object.values(PAGES);
 
@@ -126,21 +127,24 @@ function calculateResult(calc: (array: number[]) => number) {
   return (result: Record<string, number[]>): StatisticalResult => {
     const calculatedResult: StatisticalResult = {};
     for (const key of Object.keys(result)) {
-      calculatedResult[key] = calc(result[key]);
+      // Skip empty arrays (metric not available for any run)
+      if (result[key].length > 0) {
+        calculatedResult[key] = calc(result[key]);
+      }
     }
     return calculatedResult;
   };
 }
 
 const calculateSum = (array: number[]): number =>
-  array.reduce((sum, val) => sum + val);
+  array.reduce((sum, val) => sum + val, 0);
 const calculateMean = (array: number[]): number =>
-  calculateSum(array) / array.length;
+  array.length > 0 ? calculateSum(array) / array.length : 0;
 const minResult = calculateResult((array: number[]) => Math.min(...array));
 const maxResult = calculateResult((array: number[]) => Math.max(...array));
 const meanResult = calculateResult((array: number[]) => calculateMean(array));
 const standardDeviationResult = calculateResult((array: number[]) => {
-  if (array.length === 1) {
+  if (array.length <= 1) {
     return 0;
   }
   const average = calculateMean(array);
@@ -208,8 +212,10 @@ async function profilePageLoad(
 
     for (const [key, tracePath] of Object.entries(ALL_METRICS)) {
       // Using lodash get to support nested properties like 'navigation[0].load'
+      // Filter out undefined/NaN values (e.g., first run may not have UI Startup)
       result[key] = runResults
         .map((metrics) => get(metrics, tracePath) as number)
+        .filter((value) => value !== undefined && !Number.isNaN(value))
         .sort((a, b) => a - b); // Sort the array as numbers, not strings
     }
 
@@ -280,6 +286,15 @@ async function main(): Promise<void> {
     retries,
     persona,
   );
+
+  // Report metrics to Sentry if configured
+  if (initSentryReporter) {
+    await reportBenchmarkMetrics(results, {
+      persona: persona as 'standard' | 'powerUser',
+      browser: process.env.SELENIUM_BROWSER || 'chrome',
+      buildType: process.env.BUILD_TYPE || 'browserify',
+    });
+  }
 
   if (out) {
     const outputDirectory = path.dirname(out);
