@@ -68,6 +68,8 @@ import { getIsSeedlessOnboardingFeatureEnabled } from '../../../shared/modules/e
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import LoadingScreen from '../../components/ui/loading-screen';
 import type { MetaMaskReduxDispatch } from '../../store/store';
+import { useTheme } from '../../hooks/useTheme';
+import { ThemeType } from '../../../shared/constants/preferences';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -95,6 +97,7 @@ export default function OnboardingFlow() {
   const location = useLocation();
   const { pathname, search } = location;
   const navigate = useNavigate();
+  const theme = useTheme();
   const completedOnboarding: boolean = useSelector(getCompletedOnboarding);
   const openedWithSidepanel = useSelector(getOpenedWithSidepanel);
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterUnlock);
@@ -251,6 +254,15 @@ export default function OnboardingFlow() {
   isFullPage = isFullPage || pathname === ONBOARDING_EXPERIMENTAL_AREA;
   ///: END:ONLY_INCLUDE_IF
 
+  const backgroundColorForWelcomePage = useMemo(() => {
+    if (isWelcomePage) {
+      return theme === ThemeType.light
+        ? 'var(--welcome-bg-light)'
+        : 'var(--color-accent02-dark)';
+    }
+    return 'var(--color-background-default)';
+  }, [isWelcomePage, theme]);
+
   return (
     <Box
       backgroundColor={BackgroundColor.backgroundDefault}
@@ -264,9 +276,10 @@ export default function OnboardingFlow() {
           : AlignItems.center
       }
       justifyContent={JustifyContent.flexStart}
-      className={classnames('onboarding-flow', {
-        'onboarding-flow--welcome-login': isWelcomePage,
-      })}
+      className="onboarding-flow"
+      style={{
+        backgroundColor: backgroundColorForWelcomePage,
+      }}
     >
       {!isPopup && (
         <OnboardingAppHeader
