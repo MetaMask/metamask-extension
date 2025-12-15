@@ -271,16 +271,17 @@ const ManageShieldPlan = ({ isPastPlan = false }: { isPastPlan?: boolean }) => {
               {t('shieldTxMembershipResubscribe')}
             </Button>
           )}
+        {/* If cancelled show the invoice button here */}
         {isCancelled && (
           <Button
-            data-testid="shield-plan-renew-button"
+            data-testid="shield-detail-view-billing-history-button"
             variant={ButtonVariant.Secondary}
             className="w-full"
             onClick={() => {
-              handlePaymentError();
+              executeOpenGetSubscriptionBillingPortal();
             }}
           >
-            {t('shieldTxMembershipRenew')}
+            {t('shieldTxViewPastInvoice')}
           </Button>
         )}
         {canCancel && (

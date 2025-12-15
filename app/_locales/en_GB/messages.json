@@ -6630,6 +6630,9 @@
   "shieldTxPastPlansYearly": {
     "message": "Yearly plan"
   },
+  "shieldTxViewPastInvoice": {
+    "message": "View past invoice"
+  },
   "show": {
     "message": "Show"
   },
