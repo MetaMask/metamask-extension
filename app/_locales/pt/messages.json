@@ -3877,9 +3877,6 @@
   "nftAutoDetectionEnabled": {
     "message": "Detecção automática de NFTs ativada"
   },
-  "nftDisclaimer": {
-    "message": "Aviso legal: a MetaMask obtém o arquivo de mídia do URL de origem. Às vezes, esse URL é modificado pelo marketplace onde o NFT foi mintado."
-  },
   "nftEmptyDescription": {
     "message": "Existe um mundo de NFTs por aí. Comece sua coleção hoje mesmo."
   },

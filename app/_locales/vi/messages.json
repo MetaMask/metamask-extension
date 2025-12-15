@@ -3877,9 +3877,6 @@
   "nftAutoDetectionEnabled": {
     "message": "Tính năng tự động phát hiện NFT đã được bật"
   },
-  "nftDisclaimer": {
-    "message": "Tuyên bố miễn trừ trách nhiệm: MetaMask lấy tập tin đa phương tiện từ URL nguồn. URL này đôi khi bị thay đổi bởi thị trường mà NFT được đào."
-  },
   "nftEmptyDescription": {
     "message": "Có cả một thế giới NFT đang chờ bạn khám phá. Bắt đầu bộ sưu tập của bạn ngay hôm nay."
   },

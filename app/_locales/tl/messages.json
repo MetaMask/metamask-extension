@@ -3877,9 +3877,6 @@
   "nftAutoDetectionEnabled": {
     "message": "Pinagana ang autodetection ng NFT"
   },
-  "nftDisclaimer": {
-    "message": "Disclaimer: Kinukuha ng MetaMask ang media file mula sa pinagmulang url. Ang url na ito kung minsan ay pinapalitan ng marketplace kung saan nalikha ang NFT."
-  },
   "nftEmptyDescription": {
     "message": "Malawak ang mundo ng mga NFT. Simulan mo na ang iyong koleksyon ngayon."
   },

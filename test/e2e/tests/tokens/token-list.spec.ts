@@ -17,7 +17,6 @@ import {
 
 describe('Token List', function () {
   const chainId = CHAIN_IDS.MAINNET;
-  const lineaChainId = CHAIN_IDS.LINEA_MAINNET;
   const tokenAddress = '0x2EFA2Cb29C2341d8E5Ba7D3262C9e9d6f1Bf3711';
   const symbol = 'foo';
 
@@ -34,8 +33,7 @@ describe('Token List', function () {
         ...fixtures,
         title: (this as Context).test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => [
-          await mockEmptyPrices(mockServer, chainId),
-          await mockEmptyPrices(mockServer, lineaChainId),
+          await mockEmptyPrices(mockServer),
           await mockEmptyHistoricalPrices(mockServer, tokenAddress, chainId),
         ],
       },
@@ -80,9 +78,9 @@ describe('Token List', function () {
         title: (this as Context).test?.fullTitle(),
         ethConversionInUsd,
         testSpecificMock: async (mockServer: Mockttp) => [
-          await mockSpotPrices(mockServer, chainId, {
-            [zeroAddress()]: marketDataNative,
-            [tokenAddress.toLowerCase()]: marketData,
+          await mockSpotPrices(mockServer, {
+            'eip155:1/slip44:60': marketDataNative,
+            [`eip155:1/erc20:${tokenAddress.toLowerCase()}`]: marketData,
           }),
           await mockHistoricalPrices(mockServer, {
             address: tokenAddress,

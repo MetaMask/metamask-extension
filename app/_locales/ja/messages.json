@@ -3877,9 +3877,6 @@
   "nftAutoDetectionEnabled": {
     "message": "NFTの自動検出が有効になりました"
   },
-  "nftDisclaimer": {
-    "message": "開示事項: MetaMaskはソースURLからメディアファイルを取得します。このURLは時々、NFTがミントされたマーケットプレイスにより変更されることがあります。"
-  },
   "nftEmptyDescription": {
     "message": "NFTの世界が無限に広がっています。さっそくコレクションを始めましょう。"
   },

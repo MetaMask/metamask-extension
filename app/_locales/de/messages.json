@@ -3877,9 +3877,6 @@
   "nftAutoDetectionEnabled": {
     "message": "Automatische NFT-Erkennung aktiviert"
   },
-  "nftDisclaimer": {
-    "message": "Haftungsausschluss: MetaMask bezieht die Mediendatei aus der Quellen-URL. Diese URL wird manchmal vom Markt, auf dem das NFT erstellt wurde, geändert."
-  },
   "nftEmptyDescription": {
     "message": "Es gibt eine ganze Welt voller NFTs da draußen. Beginnen Sie noch heute mit Ihrer Sammlung."
   },

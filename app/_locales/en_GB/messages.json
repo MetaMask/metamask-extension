@@ -1227,6 +1227,9 @@
   "chainListReturnedDifferentTickerSymbol": {
     "message": "This token symbol doesn't match the network name or chain ID entered. Many popular tokens use similar symbols, which scammers can use to trick you into sending them a more valuable token in return. Verify everything before you continue."
   },
+  "changePasswordDetailsSocial": {
+    "message": "Losing this password means losing wallet access on all devices."
+  },
   "changePasswordLoading": {
     "message": "Changing password..."
   },
@@ -4178,9 +4181,6 @@
   "nftAutoDetectionEnabled": {
     "message": "NFT autodetection enabled"
   },
-  "nftDisclaimer": {
-    "message": "Disclaimer: MetaMask pulls the media file from the source URL. This URL sometimes gets changed by the marketplace on which the NFT was minted."
-  },
   "nftEmptyDescription": {
     "message": "There's a world of NFTs out there. Start your collection today."
   },
@@ -4533,7 +4533,7 @@
     "message": "By continuing, I agree to MetaMask’s $1 and $2"
   },
   "onboardingLoginFooterPrivacyNotice": {
-    "message": "Privacy notice."
+    "message": "Privacy notice"
   },
   "onboardingLoginFooterTermsOfUse": {
     "message": "Terms of Use"
@@ -5043,7 +5043,7 @@
     "message": "blog post."
   },
   "pna25ModalBody1": {
-    "message": "To better serve you, we’re updating our analytics so publicly available data like wallet addresses and related on-chain activity can be associated with actions you take in MetaMask using a pseudonymous ID. This helps us improve MetaMask's performance, security, and features in order to make a better, safer wallet."
+    "message": "To better serve you, we’re updating our analytics so publicly available data like wallet addresses and related on-chain activity can be associated with actions you take in MetaMask. This helps us improve MetaMask's performance, security, and features in order to make a better, safer wallet."
   },
   "pna25ModalBody2": {
     "message": "We take privacy seriously.  We do not use this information for advertising or sell your data to third parties.  You can opt out anytime in Settings."

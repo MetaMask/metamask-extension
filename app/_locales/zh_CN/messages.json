@@ -3874,9 +3874,6 @@
   "nftAutoDetectionEnabled": {
     "message": "已启用 NFT 自动检测"
   },
-  "nftDisclaimer": {
-    "message": "免责声明：MetaMask 从源网址中提取媒体文件。该网址有时会因铸造 NFT 的市场而改变。"
-  },
   "nftEmptyDescription": {
     "message": "NFT 世界广阔无限，立即开启您的收藏之旅。"
   },

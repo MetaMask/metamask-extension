@@ -3874,9 +3874,6 @@
   "nftAutoDetectionEnabled": {
     "message": "NFT ऑटोडिटेक्शन चालू किया गया"
   },
-  "nftDisclaimer": {
-    "message": "अस्वीकरण: MetaMask मीडिया फ़ाइल को सोर्स url से खींचता है। यह url कभी-कभी मार्केटप्लेस द्वारा बदल दिया जाता है जिस पर NFT को मिंट किया गया था।"
-  },
   "nftEmptyDescription": {
     "message": "NFTs की एक अलग दुनिया है। आज ही अपना कलेक्शन शुरू करें।"
   },
