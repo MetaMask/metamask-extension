@@ -1,7 +1,7 @@
 import type { JsonRpcMiddleware } from '@metamask/json-rpc-engine';
 import type { Json, JsonRpcParams } from '@metamask/utils';
 import { rpcErrors } from '@metamask/rpc-errors';
-import { InternalError, SnapId } from '@metamask/snaps-sdk';
+import { InternalError, type SnapId } from '@metamask/snaps-sdk';
 import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
 
 type CreateRpcBlockingMiddlewareOptions = {
