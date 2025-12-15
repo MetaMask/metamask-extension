@@ -87,13 +87,6 @@ const getTransactionsByChainId = makeGetTransactionsByChainId();
  *
  * @deprecated Use `makeGetTransactionsByChainId()` instead with explicit chainId.
  * This selector relies on providerConfig which we're moving away from.
- * @example
- * // Before (deprecated)
- * const txs = useSelector(getCurrentNetworkTransactions);
- *
- * // After (preferred)
- * const getChainTxs = useMemo(() => makeGetTransactionsByChainId(), []);
- * const txs = useSelector((state) => getChainTxs(state, chainId));
  * @param {object} state - Root state
  * @returns {object[]} Array of transaction objects
  */
