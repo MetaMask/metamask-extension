@@ -159,6 +159,8 @@ const ShieldEntryModal = ({
       return;
     }
 
+    setActionLoading(true);
+
     const source = determineEntryModalSource();
     const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
 
@@ -169,6 +171,7 @@ const ShieldEntryModal = ({
       redirectToPage: SHIELD_PLAN_ROUTE,
       marketingUtmParams,
     });
+    setActionLoading(false);
 
     // Ensure handleOnClose completes before redirecting
     await handleOnClose(ShieldCtaActionClickedEnum.Start14DayTrial);
@@ -186,6 +189,7 @@ const ShieldEntryModal = ({
     if (actionLoading) {
       return;
     }
+    setActionLoading(true);
 
     const source = determineEntryModalSource();
     const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
@@ -197,7 +201,16 @@ const ShieldEntryModal = ({
       marketingUtmParams,
     });
 
+    captureShieldEntryModalEvent({
+      source,
+      type: modalType,
+      modalCtaActionClicked: ShieldCtaActionClickedEnum.LearnMore,
+      marketingUtmParams,
+    });
+
     window.open(TRANSACTION_SHIELD_LINK, '_blank', 'noopener,noreferrer');
+
+    setActionLoading(false);
   };
 
   return (
