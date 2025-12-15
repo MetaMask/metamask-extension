@@ -2432,9 +2432,6 @@
     "message": "イーサリアムプロバイダーに$1へのアクセス権を付与する",
     "description": "The parameter is the name of the requesting origin"
   },
-  "ethereumPublicAddress": {
-    "message": "イーサリアムのパブリックアドレス"
-  },
   "etherscan": {
     "message": "Etherscan"
   },

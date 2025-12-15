@@ -2432,9 +2432,6 @@
     "message": "Payagan ang pag-access sa Ethereum provider sa $1",
     "description": "The parameter is the name of the requesting origin"
   },
-  "ethereumPublicAddress": {
-    "message": "Pampublikong address ng Ethereum"
-  },
   "etherscan": {
     "message": "Etherscan"
   },

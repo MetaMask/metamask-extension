@@ -2432,9 +2432,6 @@
     "message": "이더리움 공급업체에 $1 엑세스 허용",
     "description": "The parameter is the name of the requesting origin"
   },
-  "ethereumPublicAddress": {
-    "message": "이더리움 공개 주소"
-  },
   "etherscan": {
     "message": "Etherscan"
   },

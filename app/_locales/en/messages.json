@@ -2609,9 +2609,6 @@
     "message": "Grant Ethereum provider access to $1",
     "description": "The parameter is the name of the requesting origin"
   },
-  "ethereumPublicAddress": {
-    "message": "Ethereum public address"
-  },
   "etherscan": {
     "message": "Etherscan"
   },

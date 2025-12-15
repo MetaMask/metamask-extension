@@ -2432,9 +2432,6 @@
     "message": "Предоставить поставщику Ethereum доступ к $1",
     "description": "The parameter is the name of the requesting origin"
   },
-  "ethereumPublicAddress": {
-    "message": "Публичный адрес Ethereum"
-  },
   "etherscan": {
     "message": "Etherscan"
   },

@@ -2429,9 +2429,6 @@
     "message": "授予以太坊提供商对 $1 的访问权限",
     "description": "The parameter is the name of the requesting origin"
   },
-  "ethereumPublicAddress": {
-    "message": "以太坊公钥"
-  },
   "etherscan": {
     "message": "Etherscan"
   },
