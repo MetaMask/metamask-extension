@@ -808,6 +808,7 @@ describe('AppStateController', () => {
               "showPermissionsTour": true,
               "showShieldEntryModalOnce": null,
               "showTestnetMessageInDropdown": true,
+              "sidePanelGasPollTokens": [],
               "signatureSecurityAlertResponses": {},
               "slides": [],
               "snapsInstallPrivacyWarningShown": false,
