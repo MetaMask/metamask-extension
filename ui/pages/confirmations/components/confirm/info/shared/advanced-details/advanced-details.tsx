@@ -21,6 +21,7 @@ import {
   updateCustomNonce,
 } from '../../../../../../../store/actions';
 import { useConfirmContext } from '../../../../../context/confirm';
+import { useDappSwapContext } from '../../../../../context/dapp-swap';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
 import { isSignatureTransactionType } from '../../../../../utils';
 import { NestedTransactionData } from '../../batch/nested-transaction-data/nested-transaction-data';
@@ -93,6 +94,7 @@ export const AdvancedDetails = ({
 }: {
   overrideVisibility?: boolean;
 }) => {
+  const { isQuotedSwapDisplayedInInfo } = useDappSwapContext();
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,
   );
@@ -106,7 +108,7 @@ export const AdvancedDetails = ({
       <NonceDetails />
       <TransactionData />
       <NestedTransactionData />
-      <QuotedSwapTransactionData />
+      {isQuotedSwapDisplayedInInfo && <QuotedSwapTransactionData />}
     </>
   );
 };

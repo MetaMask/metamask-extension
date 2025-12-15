@@ -80,3 +80,27 @@ index f09b7c3e34ca626c93a80cf7c1a2b528d5e07e3f..d9929ff35b0e9534e01ee580c94bf2ba
      return {
          amount: new bignumber_js_1.BigNumber(gasFeeToDisplay?.amount ?? '0')
              .plus(relayerFee.amount)
+diff --git a/dist/utils/quote-fees.cjs b/dist/utils/quote-fees.cjs
+index accd7751a6e94db0c0a43b16787ad8252ee5a20a..4e093c7b93731c7dc389eb339db5f4b633a86c39 100644
+--- a/dist/utils/quote-fees.cjs
++++ b/dist/utils/quote-fees.cjs
+@@ -91,6 +91,7 @@ const appendNonEvmFees = async (quotes, messenger, selectedAccount) => {
+                 ? {
+                     visible: trade.visible,
+                     type: trade.raw_data?.contract?.[0]?.type,
++                    feeLimit: trade.raw_data?.fee_limit,
+                 }
+                 : undefined;
+             const response = (await messenger.call('SnapController:handleRequest', (0, snaps_1.computeFeeRequest)(selectedAccount?.metadata?.snap?.id, transaction, selectedAccount?.id, scope, options)));
+diff --git a/dist/utils/quote-fees.mjs b/dist/utils/quote-fees.mjs
+index 9dd2aa0b29ef32c710fd5aea067512a3104be764..23fa279da0f6e35740940d67bb707494bf59b30a 100644
+--- a/dist/utils/quote-fees.mjs
++++ b/dist/utils/quote-fees.mjs
+@@ -88,6 +88,7 @@ const appendNonEvmFees = async (quotes, messenger, selectedAccount) => {
+                 ? {
+                     visible: trade.visible,
+                     type: trade.raw_data?.contract?.[0]?.type,
++                    feeLimit: trade.raw_data?.fee_limit,
+                 }
+                 : undefined;
+             const response = (await messenger.call('SnapController:handleRequest', computeFeeRequest(selectedAccount?.metadata?.snap?.id, transaction, selectedAccount?.id, scope, options)));

@@ -183,6 +183,8 @@ export function MultichainTransactionDetailsModal({
     [TransactionType.Send]: t('send'),
     [TransactionType.Receive]: t('receive'),
     [TransactionType.Swap]: t('swap'),
+    [TransactionType.StakeDeposit]: t('stakingDeposit'),
+    [TransactionType.StakeWithdraw]: t('stakingWithdrawal'),
     [TransactionType.Unknown]: t('interaction'),
   };
 
