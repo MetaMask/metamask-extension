@@ -943,9 +943,6 @@
   "bridgeEnterAmount": {
     "message": "Seleccione el monto"
   },
-  "bridgeEnterAmountAndSelectAccount": {
-    "message": "Ingrese el monto y seleccione la cuenta de destino"
-  },
   "bridgeExplorerLinkViewOn": {
     "message": "Ver en $1"
   },
@@ -3879,9 +3876,6 @@
   },
   "nftAutoDetectionEnabled": {
     "message": "Autodetección de NFT habilitada"
-  },
-  "nftDisclaimer": {
-    "message": "Descargo de responsabilidad: MetaMask extrae el archivo multimedia de la URL de origen. A veces, el mercado en el que se acuñó el NFT cambia esta URL."
   },
   "nftEmptyDescription": {
     "message": "Hay un mundo de NFT disponible. Empieza tu colección hoy mismo."

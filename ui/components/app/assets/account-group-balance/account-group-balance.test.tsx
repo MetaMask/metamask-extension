@@ -12,6 +12,7 @@ import {
 } from '../../../../selectors';
 import { selectBalanceBySelectedAccountGroup } from '../../../../selectors/assets';
 import * as useMultichainSelectorHook from '../../../../hooks/useMultichainSelector';
+import * as multichainSelectors from '../../../../selectors/multichain';
 import {
   AccountGroupBalance,
   AccountGroupBalanceProps,
@@ -23,6 +24,10 @@ jest.mock('../../../../selectors/assets');
 jest.mock('../../../../selectors');
 jest.mock('../../../../ducks/locale/locale');
 jest.mock('../../../../ducks/metamask/metamask');
+jest.mock('../../../../selectors/multichain', () => ({
+  ...jest.requireActual('../../../../selectors/multichain'),
+  getMultichainIsTestnet: jest.fn(),
+}));
 
 describe('AccountGroupBalance', () => {
   const createMockBalance = (): AccountGroupBalanceType => ({
@@ -35,6 +40,7 @@ describe('AccountGroupBalance', () => {
   const arrange = (
     selectedGroupBalance: AccountGroupBalanceType | null = null,
     showNativeTokenAsMainBalance: boolean = false,
+    isTestnet: boolean = false,
   ) => {
     const mockSelectBalanceBySelectedAccountGroup = jest
       .mocked(selectBalanceBySelectedAccountGroup)
@@ -56,12 +62,17 @@ describe('AccountGroupBalance', () => {
       .mocked(getCurrentCurrency)
       .mockReturnValue('usd');
 
+    const mockGetMultichainIsTestnet = jest
+      .mocked(multichainSelectors.getMultichainIsTestnet)
+      .mockReturnValue(isTestnet);
+
     return {
       mockSelectBalanceBySelectedAccountGroup,
       mockGetPreferences,
       mockGetIntlLocale,
       mockGetCurrentCurrency,
       mockGetEnabledNetworksByNamespace,
+      mockGetMultichainIsTestnet,
     };
   };
 
@@ -134,6 +145,19 @@ describe('AccountGroupBalance', () => {
       amount: '0.000589',
       balance: '0x0217b4f7389e02',
       chainId: '0x1',
+    });
+  });
+
+  it('renders native balance when on testnet regardless of showNativeTokenAsMainBalance setting', () => {
+    jest
+      .spyOn(useMultichainSelectorHook, 'useMultichainSelector')
+      .mockReturnValue('SepoliaETH');
+    arrange(createMockBalance(), false, true);
+    actAssertBalanceContent({
+      currency: 'SepoliaETH',
+      amount: '0.000589',
+      balance: '0x0217b4f7389e02',
+      chainId: '0xaa36a7',
     });
   });
 });

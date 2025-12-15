@@ -59,10 +59,14 @@ import type {
 } from '../../../../shared/types/metametrics';
 
 import { getSnapAndHardwareInfoForMetrics } from '../snap-keyring/metrics';
-import { shouldUseRedesignForTransactions } from '../../../../shared/lib/confirmation.utils';
 import { getMaximumGasTotalInHexWei } from '../../../../shared/modules/gas.utils';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { extractRpcDomain } from '../util';
+import {
+  createCacheKey,
+  mapChainIdToSupportedEVMChain,
+  ResultType,
+} from '../../../../shared/lib/trust-signals';
 
 const log = createProjectLogger('transaction-metrics');
 
@@ -939,7 +943,6 @@ async function buildEventFragmentProperties({
   }
 
   const uiCustomizations = [];
-  let isAdvancedDetailsOpen = null;
 
   /** securityProviderResponse is used by the OpenSea <> Blockaid provider */
   // eslint-disable-next-line no-lonely-if
@@ -963,17 +966,9 @@ async function buildEventFragmentProperties({
     uiCustomizations.push(MetaMetricsEventUiCustomization.GasEstimationFailed);
   }
 
-  const isRedesignedForTransaction = shouldUseRedesignForTransactions({
-    transactionMetadataType: transactionMeta.type as TransactionType,
-  });
-  if (isRedesignedForTransaction) {
-    uiCustomizations.push(
-      MetaMetricsEventUiCustomization.RedesignedConfirmation,
-    );
+  const isAdvancedDetailsOpen =
+    transactionMetricsRequest.getIsConfirmationAdvancedDetailsOpen();
 
-    isAdvancedDetailsOpen =
-      transactionMetricsRequest.getIsConfirmationAdvancedDetailsOpen();
-  }
   const smartTransactionMetricsProperties =
     getSmartTransactionMetricsProperties(
       transactionMetricsRequest,
@@ -987,6 +982,11 @@ async function buildEventFragmentProperties({
   const hdEntropyProperties = {
     hd_entropy_index: transactionMetricsRequest.getHDEntropyIndex(),
   };
+
+  const addressAlertProperties = getAddressAlertMetricsProperties(
+    transactionMeta,
+    transactionMetricsRequest,
+  );
 
   let accountType;
   try {
@@ -1029,6 +1029,7 @@ async function buildEventFragmentProperties({
     ...smartTransactionMetricsProperties,
     ...swapAndSendMetricsProperties,
     ...hdEntropyProperties,
+    ...addressAlertProperties,
 
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -1436,4 +1437,46 @@ function addHashProperty(
   ) {
     properties.transaction_hash = transactionMeta.hash;
   }
+}
+
+/**
+ * Returns what the address_alert_response metrics property should be set to
+ *
+ * @param transactionMeta - The transaction metadata
+ * @param transactionMetricsRequest - The transaction metrics request
+ * @returns ResultType or 'not_applicable' if address alert scanning cannot be performed:
+ * - Security alerts feature is disabled by the user
+ * - Transaction has no 'to' address
+ * - Chain is not supported by the Security Alerts API
+ */
+function getAddressAlertMetricsProperties(
+  transactionMeta: TransactionMeta,
+  transactionMetricsRequest: TransactionMetricsRequest,
+): { address_alert_response?: ResultType | 'not_applicable' } {
+  const securityAlertsEnabled =
+    transactionMetricsRequest.getSecurityAlertsEnabled();
+  if (!securityAlertsEnabled) {
+    return { address_alert_response: 'not_applicable' };
+  }
+
+  const { to } = transactionMeta.txParams;
+  if (typeof to !== 'string') {
+    return { address_alert_response: 'not_applicable' };
+  }
+
+  const { chainId } = transactionMeta;
+  const supportedEVMChain = mapChainIdToSupportedEVMChain(chainId);
+  if (!supportedEVMChain) {
+    return { address_alert_response: 'not_applicable' };
+  }
+
+  const cacheKey = createCacheKey(supportedEVMChain, to);
+  const cachedResponse =
+    transactionMetricsRequest.getAddressSecurityAlertResponse(cacheKey);
+
+  if (cachedResponse) {
+    return { address_alert_response: cachedResponse.result_type };
+  }
+
+  return { address_alert_response: ResultType.Loading };
 }
