@@ -14,7 +14,6 @@ export const arrangeTestUtils = (
   driver: Driver,
   userStorageMockttpController: UserStorageMockttpController,
 ) => {
-
   const prepareEventsEmittedCounter = (
     event: AsEnum<typeof UserStorageMockttpControllerEvents>,
   ) => {
