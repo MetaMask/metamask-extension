@@ -11,6 +11,10 @@ type CreateRpcBlockingMiddlewareOptions = {
    */
   errorMessage?: string;
   /**
+   * List of origins that are allowed to bypass the blocking middleware.
+   */
+  allowedOrigins: string[];
+  /**
    * State of the middleware.
    * Note: `isBlocked` is not concurrent safe - an operation may set `isBlocked` to `false` while a prior operation is still in progress, prematurely unblocking the middleware.
    */
@@ -21,11 +25,13 @@ type CreateRpcBlockingMiddlewareOptions = {
  * Creates a JsonRpcMiddleware function that blocks requests to snaps when the state isBlocked is true.
  *
  * @param options - The options for the middleware.
+ * @param options.allowedOrigins - The list of origins that are allowed to bypass the blocking middleware.
  * @param options.errorMessage - The error message to return when requests are blocked.
- * @param options.state - The state of the middleware.
+ * @param options.state - The state of the middleware. Note: `isBlocked` is not concurrent safe - an operation may set `isBlocked` to `false` while a prior operation is still in progress, prematurely unblocking the middleware.
  * @returns A JsonRpcMiddleware function that blocks requests to snaps when the state isBlocked is true.
  */
 export default function createRpcBlockingMiddleware({
+  allowedOrigins,
   errorMessage = 'Cannot process requests at this time',
   state,
 }: CreateRpcBlockingMiddlewareOptions): JsonRpcMiddleware<JsonRpcParams, Json> {
@@ -44,7 +50,9 @@ export default function createRpcBlockingMiddleware({
       );
     }
 
-    if (!isSnapPreinstalled(origin as SnapId)) {
+    const isAllowedOrigin = allowedOrigins.includes(origin);
+
+    if (!(isAllowedOrigin || isSnapPreinstalled(origin as SnapId))) {
       return end(rpcErrors.resourceUnavailable(errorMessage));
     }
 

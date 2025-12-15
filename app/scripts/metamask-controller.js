@@ -1068,6 +1068,10 @@ export default class MetamaskController extends EventEmitter {
     const rpcBlockingMiddlewareState = { isBlocked: false };
     const eip7715BlockingMiddleware = createRpcBlockingMiddleware({
       state: rpcBlockingMiddlewareState,
+      allowedOrigins: [
+        process.env.GATOR_PERMISSIONS_PROVIDER_SNAP_ID,
+        process.env.PERMISSIONS_KERNEL_SNAP_ID,
+      ],
       errorMessage:
         'Cannot process requests while a wallet_requestExecutionPermissions request is in process',
     });
