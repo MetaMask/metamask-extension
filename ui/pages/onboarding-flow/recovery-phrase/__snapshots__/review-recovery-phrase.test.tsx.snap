@@ -73,12 +73,12 @@ exports[`Review Recovery Phrase Component renders match snapshot when isFromRemi
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-0"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 1
                 .
-              </p>
+              </span>
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
@@ -89,12 +89,12 @@ exports[`Review Recovery Phrase Component renders match snapshot when isFromRemi
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-1"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 2
                 .
-              </p>
+              </span>
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
@@ -105,12 +105,12 @@ exports[`Review Recovery Phrase Component renders match snapshot when isFromRemi
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-2"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 3
                 .
-              </p>
+              </span>
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
@@ -121,12 +121,12 @@ exports[`Review Recovery Phrase Component renders match snapshot when isFromRemi
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-3"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 4
                 .
-              </p>
+              </span>
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
@@ -137,12 +137,12 @@ exports[`Review Recovery Phrase Component renders match snapshot when isFromRemi
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-4"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 5
                 .
-              </p>
+              </span>
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
@@ -153,12 +153,12 @@ exports[`Review Recovery Phrase Component renders match snapshot when isFromRemi
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-5"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 6
                 .
-              </p>
+              </span>
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
@@ -169,12 +169,12 @@ exports[`Review Recovery Phrase Component renders match snapshot when isFromRemi
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-6"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 7
                 .
-              </p>
+              </span>
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
@@ -185,12 +185,12 @@ exports[`Review Recovery Phrase Component renders match snapshot when isFromRemi
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-7"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 8
                 .
-              </p>
+              </span>
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
@@ -201,12 +201,12 @@ exports[`Review Recovery Phrase Component renders match snapshot when isFromRemi
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-8"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 9
                 .
-              </p>
+              </span>
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
@@ -217,12 +217,12 @@ exports[`Review Recovery Phrase Component renders match snapshot when isFromRemi
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-9"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 10
                 .
-              </p>
+              </span>
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
@@ -233,12 +233,12 @@ exports[`Review Recovery Phrase Component renders match snapshot when isFromRemi
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-10"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 11
                 .
-              </p>
+              </span>
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
@@ -249,12 +249,12 @@ exports[`Review Recovery Phrase Component renders match snapshot when isFromRemi
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-11"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 12
                 .
-              </p>
+              </span>
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
@@ -359,12 +359,12 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-0"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 1
                 .
-              </p>
+              </span>
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
@@ -375,12 +375,12 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-1"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 2
                 .
-              </p>
+              </span>
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
@@ -391,12 +391,12 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-2"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 3
                 .
-              </p>
+              </span>
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
@@ -407,12 +407,12 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-3"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 4
                 .
-              </p>
+              </span>
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
@@ -423,12 +423,12 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-4"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 5
                 .
-              </p>
+              </span>
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
@@ -439,12 +439,12 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-5"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 6
                 .
-              </p>
+              </span>
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
@@ -455,12 +455,12 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-6"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 7
                 .
-              </p>
+              </span>
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
@@ -471,12 +471,12 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-7"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 8
                 .
-              </p>
+              </span>
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
@@ -487,12 +487,12 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-8"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 9
                 .
-              </p>
+              </span>
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
@@ -503,12 +503,12 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-9"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 10
                 .
-              </p>
+              </span>
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
@@ -519,12 +519,12 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-10"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 11
                 .
-              </p>
+              </span>
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
@@ -535,12 +535,12 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-11"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 12
                 .
-              </p>
+              </span>
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
@@ -652,12 +652,12 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-0"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 1
                 .
-              </p>
+              </span>
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
@@ -668,12 +668,12 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-1"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 2
                 .
-              </p>
+              </span>
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
@@ -684,12 +684,12 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-2"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 3
                 .
-              </p>
+              </span>
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
@@ -700,12 +700,12 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-3"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 4
                 .
-              </p>
+              </span>
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
@@ -716,12 +716,12 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-4"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 5
                 .
-              </p>
+              </span>
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
@@ -732,12 +732,12 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-5"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 6
                 .
-              </p>
+              </span>
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
@@ -748,12 +748,12 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-6"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 7
                 .
-              </p>
+              </span>
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
@@ -764,12 +764,12 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-7"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 8
                 .
-              </p>
+              </span>
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
@@ -780,12 +780,12 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-8"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 9
                 .
-              </p>
+              </span>
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
@@ -796,12 +796,12 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-9"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 10
                 .
-              </p>
+              </span>
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
@@ -812,12 +812,12 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-10"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 11
                 .
-              </p>
+              </span>
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
@@ -828,12 +828,12 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-11"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 12
                 .
-              </p>
+              </span>
               <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
