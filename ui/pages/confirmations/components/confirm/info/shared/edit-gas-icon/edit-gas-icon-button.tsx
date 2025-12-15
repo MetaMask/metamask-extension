@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import {
   Button,
@@ -8,16 +8,16 @@ import {
 } from '../../../../../../../components/component-library';
 import { IconColor } from '../../../../../../../helpers/constants/design-system';
 import { useTransactionEventFragment } from '../../../../../hooks/useTransactionEventFragment';
-import { GasFeeModal } from '../../../../modals/gas-fee-modal/gas-fee-modal';
 import { useConfirmContext } from '../../../../../context/confirm';
+import { useGasFeeModalContext } from '../../../../../context/gas-fee-modal';
 
 export const EditGasIconButton = (): JSX.Element => {
-  const [isGasModalsVisible, setIsGasModalsVisible] = useState(false);
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
   const { updateTransactionEventFragment } = useTransactionEventFragment();
+  const { openGasFeeModal } = useGasFeeModalContext();
 
-  const openGasFeeModal = useCallback(() => {
+  const handleOpenGasFeeModal = useCallback(() => {
     updateTransactionEventFragment(
       {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -26,23 +26,18 @@ export const EditGasIconButton = (): JSX.Element => {
       },
       transactionMeta.id,
     );
-    setIsGasModalsVisible(true);
-  }, [updateTransactionEventFragment, transactionMeta.id]);
+    openGasFeeModal();
+  }, [updateTransactionEventFragment, transactionMeta.id, openGasFeeModal]);
 
   return (
-    <>
-      <Button
-        style={{ textDecoration: 'none' }}
-        size={ButtonSize.Auto}
-        variant={ButtonVariant.Link}
-        startIconName={IconName.Edit}
-        color={IconColor.primaryDefault}
-        data-testid="edit-gas-fee-icon"
-        onClick={openGasFeeModal}
-      />
-      {isGasModalsVisible && (
-        <GasFeeModal setGasModalVisible={setIsGasModalsVisible} />
-      )}
-    </>
+    <Button
+      style={{ textDecoration: 'none' }}
+      size={ButtonSize.Auto}
+      variant={ButtonVariant.Link}
+      startIconName={IconName.Edit}
+      color={IconColor.primaryDefault}
+      data-testid="edit-gas-fee-icon"
+      onClick={handleOpenGasFeeModal}
+    />
   );
 };
