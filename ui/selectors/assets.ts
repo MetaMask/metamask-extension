@@ -35,12 +35,11 @@ import type {
   CurrencyRateState,
   BalanceChangePeriod,
   BalanceChangeResult,
+  AccountGroupAssets,
 } from '@metamask/assets-controllers';
 import { TEST_CHAINS } from '../../shared/constants/network';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
-import { Token, TokenWithFiatAmount } from '../components/app/assets/types';
-import { calculateTokenBalance } from '../components/app/assets/util/calculateTokenBalance';
-import { calculateTokenFiatAmount } from '../components/app/assets/util/calculateTokenFiatAmount';
+import { TokenWithFiatAmount } from '../components/app/assets/types';
 import {
   getTokenBalances,
   getCurrentCurrency,
@@ -58,16 +57,13 @@ import {
   getCurrentNetwork,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getMarketData,
-  getNativeTokenCachedBalanceByChainIdSelector,
   getPreferences,
   getSelectedAccountTokensAcrossChains,
-  getTokensAcrossChainsByAccountAddressSelector,
   getEnabledNetworks,
 } from './selectors';
 import { getSelectedMultichainNetworkConfiguration } from './multichain/networks';
 import {
   getAccountGroupsByAddress,
-  getAccountTree,
   getInternalAccountBySelectedAccountGroupAndCaip,
 } from './multichain-accounts/account-tree';
 
@@ -1237,24 +1233,12 @@ export const getAsset = createSelector(
  * @deprecated
  */
 export const getTokenBalancesEvm = createDeepEqualSelector(
-  getTokensAcrossChainsByAccountAddressSelector,
-  getNativeTokenCachedBalanceByChainIdSelector,
-  getTokenBalances,
-  (_state, accountAddress) => accountAddress,
-  getMarketData,
-  getCurrencyRates,
   getPreferences,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getCurrentNetwork,
   getAllAssets,
   (state, accountAddress) => getAccountGroupsByAddress(state, [accountAddress]),
   (
-    selectedAccountTokensChains,
-    nativeBalances,
-    tokenBalances,
-    selectedAccountAddress,
-    marketData,
-    currencyRates,
     preferences,
     isOnCurrentNetwork,
     currentNetwork,
@@ -1262,114 +1246,44 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
     accountGroups,
   ) => {
     const { hideZeroBalanceTokens } = preferences;
-    const selectedAccountTokenBalancesAcrossChains =
-      tokenBalances[selectedAccountAddress];
-
-    // we need to filter Testnets
     const isTestNetwork = TEST_CHAINS.includes(currentNetwork.chainId);
-    const filteredAccountTokensChains = Object.fromEntries(
-      Object.entries(selectedAccountTokensChains).filter(([chainId]) =>
-        isTestNetwork
-          ? TEST_CHAINS.includes(chainId as (typeof TEST_CHAINS)[number])
-          : !TEST_CHAINS.includes(chainId as (typeof TEST_CHAINS)[number]),
-      ),
-    );
-    const tokensWithBalance: TokenWithFiatAmount[] = [];
-    Object.entries(filteredAccountTokensChains).forEach(
-      ([stringChainKey, tokens]) => {
-        const chainId = stringChainKey as Hex;
-        const tokenList = tokens as Token[];
-        tokenList.forEach((token: Token) => {
-          const { isNative, address, decimals } = token;
-
-          const balance =
-            calculateTokenBalance({
-              isNative,
-              chainId,
-              address: address as Hex,
-              decimals,
-              nativeBalances,
-              selectedAccountTokenBalancesAcrossChains,
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-            }) || '0';
-
-          const tokenFiatAmount = calculateTokenFiatAmount({
-            token,
-            chainId,
-            balance,
-            marketData,
-            currencyRates,
-          });
-
-          // Respect the "hide zero balance" setting (when true):
-          // - Native tokens should always display with zero balance when on the current network filter.
-          // - Native tokens should not display with zero balance when on all networks filter
-          // - ERC20 tokens with zero balances should respect the setting on both the current and all networks.
-
-          // Respect the "hide zero balance" setting (when false):
-          // - Native tokens should always display with zero balance when on the current network filter.
-          // - Native tokens should always display with zero balance when on all networks filter
-          // - ERC20 tokens always display with zero balance on both the current and all networks filter.
-          if (
-            !hideZeroBalanceTokens ||
-            balance !== '0' ||
-            (token.isNative && isOnCurrentNetwork)
-          ) {
-            // title is used for sorting. We override native ETH to Ethereum
-            let title;
-            if (token.isNative) {
-              title = token.symbol === 'ETH' ? 'Ethereum' : token.symbol;
-            } else {
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-              title = token.name || token.symbol;
-            }
-
-            tokensWithBalance.push({
-              ...token,
-              address: token.address as CaipAssetType,
-              balance,
-              tokenFiatAmount,
-              chainId: chainId as CaipChainId,
-              string: String(balance),
-              secondary: 0,
-              title,
-            });
-          }
-        });
-      },
-    );
 
     const accountGroupId = accountGroups[0]?.id;
-    const accountAssetsPerChain = allAssets[accountGroupId] ?? {};
+    const accountAssetsPerChain: AccountGroupAssets =
+      allAssets[accountGroupId] ?? {};
+
     const accountAssets = Object.entries(accountAssetsPerChain).flatMap(
-      ([chainId, assets]: [Hex | CaipChainId, any[]]) => {
-        if (!isEvmChainId(chainId) || TEST_CHAINS.includes(chainId as Hex)) {
+      ([chainId, assets]) => {
+        if (
+          !isEvmChainId(chainId as Hex) ||
+          (isTestNetwork && !TEST_CHAINS.includes(chainId as Hex)) ||
+          (!isTestNetwork && TEST_CHAINS.includes(chainId as Hex))
+        ) {
           return [];
         }
-        return assets.map((asset) => {
-          return {
-            ...asset,
-            tokenFiatAmount: asset.fiat?.balance,
-            string: asset.balance,
-            secondary: null,
-            title: asset.name,
-            address: asset.isNative ? '' : asset.address,
-          };
-        });
+
+        return assets
+          .filter((asset) => {
+            return (
+              !hideZeroBalanceTokens ||
+              asset.balance !== '0' ||
+              (asset.isNative && isOnCurrentNetwork)
+            );
+          })
+          .map((asset) => {
+            return {
+              ...asset,
+              tokenFiatAmount: asset.fiat?.balance,
+              string: asset.balance,
+              secondary: null,
+              title: asset.name,
+              address:
+                !asset.isNative && 'address' in asset ? asset.address : '',
+            };
+          });
       },
     );
 
-    console.log('DEBUG getTokenBalancesEvm tokensWithBalance', {
-      tokensWithBalance,
-      // allAssets,
-      // accountTree,
-      selectedAccountAddress,
-      accountGroupId,
-      accountAssets,
-    });
-    // return tokensWithBalance;
     return accountAssets;
   },
 );
