@@ -1,13 +1,19 @@
 import React from 'react';
 import {
   Box,
+  Text,
+  TextColor,
+  TextVariant,
+  TextAlign,
+} from '@metamask/design-system-react';
+
+import {
   Modal,
   ModalBody,
   ModalContent,
   ModalContentSize,
   ModalHeader,
   ModalOverlay,
-  Text,
 } from '../../../../../components/component-library';
 import NetworkStatistics from '../../edit-gas-fee-popover/network-statistics/network-statistics';
 import { GasModalType } from '../../../constants/gas';
@@ -16,14 +22,8 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   Display,
   FlexDirection,
-  TextColor,
-  TextVariant,
-  TextAlign,
 } from '../../../../../helpers/constants/design-system';
-import {
-  GasEstimateListHeader,
-  GasEstimateListItem,
-} from '../../gas-estimate-list-item/gas-estimate-list-item';
+import { GasEstimateListItem } from '../../gas-estimate-list-item/gas-estimate-list-item';
 import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
 
 export const EstimatesModal = ({
@@ -52,7 +52,6 @@ export const EstimatesModal = ({
           paddingLeft={0}
           paddingRight={0}
         >
-          <GasEstimateListHeader />
           {options.map((option) => (
             <GasEstimateListItem key={option.key} option={option} />
           ))}
@@ -62,9 +61,8 @@ export const EstimatesModal = ({
             <Text
               className="edit-gas-fee-popover__know-more"
               textAlign={TextAlign.Center}
-              color={TextColor.textAlternative}
-              variant={TextVariant.bodySm}
-              as="h6"
+              color={TextColor.TextAlternative}
+              variant={TextVariant.BodySm}
             >
               {t('learnMoreAboutGas', [
                 <a
