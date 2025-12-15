@@ -8,6 +8,7 @@
   &__chips {
     grid-template-columns: 1fr 1fr 1fr;
     gap: 4px;
+
     @include design-system.screen-sm-min {
       gap: 8px;
     }
@@ -52,6 +53,7 @@
   &__text {
     height: 40px;
     font-size: var(--typography-s-body-sm-font-size);
+
     @media screen and (min-width: 400px) {
       font-size: var(--typography-s-body-md-font-size);
     }
@@ -60,6 +62,7 @@
   &__word-index {
     width: 16px;
     font-size: var(--typography-s-body-sm-font-size);
+
     @media screen and (min-width: 400px) {
       width: 20px;
       font-size: var(--typography-s-body-md-font-size);
@@ -70,9 +73,11 @@
     position: relative;
     min-height: 216px;
     padding: 8px;
+
     @media screen and (min-width: 400px) {
       padding: 12px;
     }
+
     @include design-system.screen-sm-min {
       padding: 16px;
     }
