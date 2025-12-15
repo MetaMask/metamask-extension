@@ -21,7 +21,10 @@ import {
   TokensControllerState,
   type TokenDetectionControllerAddDetectedTokensViaWsAction,
 } from '@metamask/assets-controllers';
-import { KeyringControllerAccountRemovedEvent } from '@metamask/keyring-controller';
+import {
+  KeyringControllerAccountRemovedEvent,
+  KeyringControllerGetStateAction,
+} from '@metamask/keyring-controller';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import type {
   AccountActivityServiceStatusChangedEvent,
@@ -55,7 +58,8 @@ type AllowedActions =
   | PreferencesControllerGetStateAction
   | TokensControllerGetStateAction
   | TokenDetectionControllerAddDetectedTokensViaWsAction
-  | AuthenticationController.AuthenticationControllerGetBearerToken;
+  | AuthenticationController.AuthenticationControllerGetBearerToken
+  | KeyringControllerGetStateAction;
 
 type AllowedEvents =
   | KeyringControllerAccountRemovedEvent
@@ -103,6 +107,7 @@ export function getTokenBalancesControllerMessenger(
       'AccountTrackerController:updateStakedBalances',
       'TokenDetectionController:addDetectedTokensViaWs',
       'AuthenticationController:getBearerToken',
+      'KeyringController:getState',
     ],
     events: [
       'PreferencesController:stateChange',
