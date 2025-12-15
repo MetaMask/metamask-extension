@@ -10,16 +10,17 @@ import { getExtensionVersion } from './version';
 
 type Environment = (typeof ENVIRONMENT)[keyof typeof ENVIRONMENT];
 
-const ENVIRONMENT_VALUES = Object.values(ENVIRONMENT) as Environment[];
-
 /**
- * Type guard to validate that a string is a valid Environment value.
+ * Type guard to validate that a value is a valid Environment.
  *
  * @param value - The value to check.
  * @returns True if the value is a valid Environment.
  */
-function isEnvironment(value: string): value is Environment {
-  return ENVIRONMENT_VALUES.includes(value as Environment);
+function isEnvironment(value: unknown): value is Environment {
+  return (
+    typeof value === 'string' &&
+    Object.values(ENVIRONMENT).some((env) => env === value)
+  );
 }
 
 /**
