@@ -2429,9 +2429,6 @@
     "message": "Ethereum प्रोवाइडर को $1 तक एक्सेस दें",
     "description": "The parameter is the name of the requesting origin"
   },
-  "ethereumPublicAddress": {
-    "message": "Ethereum पब्लिक एड्रेस"
-  },
   "etherscan": {
     "message": "Etherscan"
   },
