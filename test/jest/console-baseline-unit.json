@@ -21,7 +21,7 @@
       "µWebSockets: Fallback to Node implementation": 1,
       "Reselect: Identity function warnings": 3,
       "Reselect: Input stability warnings": 1,
-      "MetaMask: Background connection not initialized": 8,
+      "MetaMask: Background connection not initialized": 10,
       "warn: ⚠️ React Router Future Flag": 2,
       "error: Warning: A component is changing": 2,
       "Test errors: Uncaught TypeErrors": 1
@@ -226,6 +226,11 @@
       "React: Act warnings (component updates not wrapped)": 15,
       "Test errors: Uncaught Errors": 1
     },
+    "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/erc20-token-revocation-details.test.tsx": {
+      "Reselect: Input stability warnings": 2,
+      "Reselect: Identity function warnings": 4,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/settings/networks-tab/networks-form/networks-form.test.js": {
       "warn: ⚠️ React Router Future Flag": 2,
       "React: State updates on unmounted components": 1,
@@ -359,7 +364,7 @@
       "µWebSockets: Compatibility warnings": 1,
       "µWebSockets: Fallback to Node implementation": 1,
       "MetaMask: Chain processing errors": 2,
-      "Test errors: Fetch failures": 3
+      "Test errors: Fetch failures": 4
     },
     "ui/components/multichain/pages/gator-permissions/components/review-gator-permission-item.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
@@ -2106,7 +2111,8 @@
     },
     "ui/components/app/shield-entry-modal/shield-entry-modal.test.tsx": {
       "Reselect: Identity function warnings": 1,
-      "warn: ⚠️ React Router Future Flag": 2
+      "warn: ⚠️ React Router Future Flag": 2,
+      "React: Act warnings (component updates not wrapped)": 1
     },
     "shared/modules/contract-utils.test.js": {
       "Third-party: Bindings failed, using pure JS": 1,
@@ -2119,7 +2125,8 @@
     "ui/components/app/transaction-list-item-details/transaction-list-item-details.component.test.js": {
       "Reselect: Identity function warnings": 2,
       "Reselect: Input stability warnings": 1,
-      "warn: ⚠️ React Router Future Flag": 2
+      "warn: ⚠️ React Router Future Flag": 2,
+      "error: Warning: React does not recognize": 1
     },
     "ui/pages/confirmations/components/UI/send-hero/send-hero.test.tsx": {
       "error: Warning: React does not recognize": 5,
@@ -2138,6 +2145,9 @@
     "ui/pages/confirmations/hooks/send/useNameValidation.test.ts": {
       "error: Unexpected key \"DNS\" found in": 1,
       "warn: ⚠️ React Router Future Flag": 2
+    },
+    "app/scripts/lib/forwardRequestToSnap.test.ts": {
+      "error: Error from onAfterRequest hook: Error:": 2
     },
     "app/scripts/lib/migrator/index.test.js": {
       "warn: Migration 139: typeof state.SelectedNetworkController is": 1,
@@ -2506,7 +2516,7 @@
     "ui/pages/bridge/prepare/bridge-transaction-settings-modal.test.tsx": {
       "Reselect: Identity function warnings": 3,
       "Reselect: Input stability warnings": 1,
-      "MetaMask: Background connection not initialized": 972,
+      "MetaMask: Background connection not initialized": 976,
       "warn: ⚠️ React Router Future Flag": 2,
       "error: Warning: You seem to have": 2,
       "React: Act warnings (component updates not wrapped)": 2
