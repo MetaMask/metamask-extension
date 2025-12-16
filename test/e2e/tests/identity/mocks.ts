@@ -5,7 +5,10 @@ import {
 } from '@metamask/account-tree-controller';
 import { AuthenticationController } from '@metamask/profile-sync-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
-import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
+import {
+  UserStorageMockttpController,
+  pathRegexps,
+} from '../../helpers/identity/user-storage/userStorageMockttpController';
 
 const AuthMocks = AuthenticationController.Mocks;
 
@@ -14,6 +17,40 @@ type MockResponse = {
   requestMethod: 'GET' | 'POST' | 'PUT' | 'DELETE';
   response: unknown;
 };
+
+/**
+ * Check if a specific user storage path is already mocked on the server.
+ *
+ * @param server - mockttp server instance
+ * @param featureKey - the feature key to check (e.g., 'accounts_v2', 'wallets')
+ * @returns true if the path is already mocked
+ */
+async function isPathAlreadyMocked(
+  server: Mockttp,
+  featureKey: keyof typeof pathRegexps,
+): Promise<boolean> {
+  const endpoints = await server.getMockedEndpoints();
+
+  return endpoints.some((endpoint) => {
+    // Access the internal rule structure to check matchers
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const matchers = (endpoint as any).rule?.matchers || [];
+
+    return matchers.some(
+      (matcher: { type: string; regexSource?: string; path?: string }) => {
+        // Check regex-path matchers (used by UserStorageMockttpController)
+        if (matcher.type === 'regex-path' && matcher.regexSource) {
+          return matcher.regexSource.includes(featureKey);
+        }
+        // Check simple-path matchers
+        if (matcher.type === 'simple-path' && matcher.path) {
+          return matcher.path.includes(featureKey);
+        }
+        return false;
+      },
+    );
+  });
+}
 
 /**
  * E2E mock setup for authentication APIs only (nonce, login, token).
@@ -42,24 +79,22 @@ export async function mockIdentityServices(
   mockAPICall(server, AuthMocks.getMockAuthLoginResponse());
   mockAPICall(server, AuthMocks.getMockAuthAccessTokenResponse());
 
-  // Storage - always call setupPath to ensure handlers are registered on the current server
-  // setupPath handles preserving existing response data when updating the server reference
-  userStorageMockttpControllerInstance.setupPath(
+  // Storage - only set up paths that aren't already mocked
+  const pathsToSetup = [
     USER_STORAGE_FEATURE_NAMES.accounts,
-    server,
-  );
-  userStorageMockttpControllerInstance.setupPath(
     USER_STORAGE_FEATURE_NAMES.addressBook,
-    server,
-  );
-  userStorageMockttpControllerInstance.setupPath(
     USER_STORAGE_WALLETS_FEATURE_KEY,
-    server,
-  );
-  userStorageMockttpControllerInstance.setupPath(
     USER_STORAGE_GROUPS_FEATURE_KEY,
-    server,
-  );
+  ] as const;
+
+  for (const path of pathsToSetup) {
+    const alreadyMocked = await isPathAlreadyMocked(server, path);
+    if (!alreadyMocked) {
+      userStorageMockttpControllerInstance.setupPath(path, server);
+    } else {
+      console.log(`[Identity Mocks] Path '${path}' already mocked, skipping`);
+    }
+  }
 }
 
 export const MOCK_SRP_E2E_IDENTIFIER_BASE_KEY = 'MOCK_SRP_IDENTIFIER';
