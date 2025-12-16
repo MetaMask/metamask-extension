@@ -40,11 +40,11 @@ async function isPathAlreadyMocked(
       (matcher: { type: string; regexSource?: string; path?: string }) => {
         // Check regex-path matchers (used by UserStorageMockttpController)
         if (matcher.type === 'regex-path' && matcher.regexSource) {
-          return matcher.regexSource.includes(featureKey);
+          return matcher.regexSource.includes(String(featureKey));
         }
         // Check simple-path matchers
         if (matcher.type === 'simple-path' && matcher.path) {
-          return matcher.path.includes(featureKey);
+          return matcher.path.includes(String(featureKey));
         }
         return false;
       },
