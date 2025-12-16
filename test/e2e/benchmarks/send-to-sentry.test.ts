@@ -62,13 +62,19 @@ describe('send-to-sentry', () => {
   });
 
   describe('persona derivation', () => {
-    it.each([
-      ['standardHome', 'standard'],
-      ['powerUserHome', 'powerUser'],
-      ['userActions', 'standard'],
-    ])('derives %s pageType → %s persona', (pageType, expected) => {
-      const persona = pageType === 'powerUserHome' ? 'powerUser' : 'standard';
-      expect(persona).toBe(expected);
+    it('derives standardHome pageType → standard persona', () => {
+      const persona = 'standardHome' === 'powerUserHome' ? 'powerUser' : 'standard';
+      expect(persona).toBe('standard');
+    });
+
+    it('derives powerUserHome pageType → powerUser persona', () => {
+      const persona = 'powerUserHome' === 'powerUserHome' ? 'powerUser' : 'standard';
+      expect(persona).toBe('powerUser');
+    });
+
+    it('derives userActions pageType → standard persona', () => {
+      const persona = 'userActions' === 'powerUserHome' ? 'powerUser' : 'standard';
+      expect(persona).toBe('standard');
     });
   });
 

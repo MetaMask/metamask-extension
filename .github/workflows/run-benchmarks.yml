@@ -98,6 +98,8 @@ jobs:
           GITHUB_REF_NAME: ${{ inputs.branch || github.head_ref || github.ref_name }}
           GITHUB_JOB: ${{ github.job }}
         run: |
+          echo "Debug: inputs.branch=${{ inputs.branch }}, github.head_ref=${{ github.head_ref }}, github.ref_name=${{ github.ref_name }}"
+          echo "Debug: GITHUB_REF_NAME=${GITHUB_REF_NAME}"
           yarn tsx test/e2e/benchmarks/send-to-sentry.ts \
             --results test-artifacts/benchmarks/${{ env.OUTPUT_NAME }} \
             --browser ${{ matrix.browser }} \

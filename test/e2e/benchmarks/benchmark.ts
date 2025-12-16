@@ -29,7 +29,6 @@ import {
   TEST_TITLES,
   WITH_STATE_POWER_USER,
 } from './constants';
-import { initSentryReporter, reportBenchmarkMetrics } from './sentry-reporter';
 
 const ALL_PAGES = Object.values(PAGES);
 
@@ -292,15 +291,6 @@ async function main(): Promise<void> {
     retries,
     persona,
   );
-
-  // Report metrics to Sentry if configured
-  if (initSentryReporter) {
-    await reportBenchmarkMetrics(results, {
-      persona: persona as 'standard' | 'powerUser',
-      browser: process.env.SELENIUM_BROWSER || 'chrome',
-      buildType: process.env.BUILD_TYPE || 'browserify',
-    });
-  }
 
   if (out) {
     const outputDirectory = path.dirname(out);
