@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { TransactionType } from '@metamask/transaction-controller';
 import { Routes, Route, useNavigate, useParams } from 'react-router-dom';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ORIGIN_METAMASK,
   TRACE_ENABLED_SIGN_METHODS,
 } from '../../../../shared/constants/app';
-import Loading from '../../../components/ui/loading-screen';
 import {
   clearConfirmTransaction,
   setTransactionToConfirm,
@@ -39,6 +39,7 @@ import ConfirmDecryptMessage from '../../confirm-decrypt-message';
 import ConfirmEncryptionPublicKey from '../../confirm-encryption-public-key';
 import ConfirmTransactionSwitch from '../confirm-transaction-switch';
 import Confirm from '../confirm/confirm';
+import LoadingScreen from '../../../components/ui/loading-screen';
 import useCurrentConfirmation from '../hooks/useCurrentConfirmation';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -215,7 +216,20 @@ const ConfirmTransaction = () => {
     );
   }
 
-  return <Loading />;
+  // Only show skeleton loading for dapp-initiated contract interactions (not MetaMask Send flow or token transfers)
+  const isDappTransaction =
+    transaction?.origin && transaction.origin !== ORIGIN_METAMASK;
+  const isTokenTransfer = [
+    TransactionType.tokenMethodTransfer,
+    TransactionType.tokenMethodTransferFrom,
+    TransactionType.tokenMethodSafeTransferFrom,
+    TransactionType.simpleSend,
+  ].includes(type);
+  if (isDappTransaction && !isTokenTransfer) {
+    return <Confirm confirmationId={paramsTransactionId} />;
+  }
+
+  return <LoadingScreen />;
 };
 
 export default ConfirmTransaction;

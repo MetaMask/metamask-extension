@@ -68,7 +68,7 @@ describe('Add account', function () {
         const resetPasswordPage = new ResetPasswordPage(driver);
         await resetPasswordPage.checkPageIsLoaded();
         await resetPasswordPage.resetPassword(E2E_SRP, WALLET_PASSWORD);
-        await resetPasswordPage.waitForSeedPhraseInputToNotBeVisible();
+        await resetPasswordPage.waitForPasswordInputToNotBeVisible();
 
         // Check wallet balance for both accounts
         await homePage.checkPageIsLoaded();

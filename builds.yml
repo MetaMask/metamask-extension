@@ -312,6 +312,7 @@ env:
   - SEGMENT_HOST: null
   - SENTRY_DSN: null
   - SENTRY_DSN_DEV: null
+  - SENTRY_DSN_PERFORMANCE: null
   # also INFURA_PROJECT_ID below
 
   ###

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { hexToNumber, KnownCaipNamespace, CaipChainId } from '@metamask/utils';
 import {
@@ -19,14 +19,12 @@ import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/
 import {
   formatGatorAmountLabel,
   getGatorPermissionDisplayMetadata,
-  getGatorPermissionTokenInfo,
   GatorPermissionData,
 } from '../../../../shared/lib/gator-permissions';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import { getUseExternalServices } from '../../../selectors';
 import { shortenAddress } from '../../../helpers/utils/util';
-import { getTokenStandardAndDetailsByChain } from '../../../store/actions';
 import { useDisplayName } from '../../../hooks/snaps/useDisplayName';
+import { useGatorPermissionTokenInfo } from '../../../hooks/gator-permissions/useGatorPermissionTokenInfo';
 import { PermissionItemProps } from './types';
 
 export const PermissionItem: React.FC<PermissionItemProps> = ({
@@ -41,44 +39,16 @@ export const PermissionItem: React.FC<PermissionItemProps> = ({
   const permissionData = permission.permission.permissionResponse.permission
     .data as GatorPermissionData;
 
-  const allowExternalServices = useSelector(getUseExternalServices);
-
   const caipChainId: CaipChainId = `${KnownCaipNamespace.Eip155}:${hexToNumber(permission.chainId)}`;
 
   const networkConfig = networkConfigurationsByCaipChainId?.[caipChainId];
 
-  // Resolve token info (native or ERC-20) for this permission
-  const [resolvedTokenInfo, setResolvedTokenInfo] = useState<{
-    symbol: string;
-    decimals: number;
-  }>({ symbol: 'Unknown Token', decimals: 18 });
-
-  // Resolve token info (native or ERC-20) for this permission
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      const info = await getGatorPermissionTokenInfo({
-        permissionType: permission.permissionType,
-        chainId: permission.chainId,
-        networkConfig,
-        permissionData,
-        allowExternalServices,
-        getTokenStandardAndDetailsByChain,
-      });
-      if (!cancelled) {
-        setResolvedTokenInfo(info);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [
-    allowExternalServices,
-    permission.permissionType,
+  // Use the hook to fetch token information (handles both native and ERC-20 tokens)
+  const { tokenInfo } = useGatorPermissionTokenInfo(
+    permissionData.tokenAddress as string | undefined,
     permission.chainId,
-    networkConfig,
-    permissionData,
-  ]);
+    permission.permissionType,
+  );
 
   // Format amount description for this permission
   const formatAmountDescription = useCallback(
@@ -133,9 +103,9 @@ export const PermissionItem: React.FC<PermissionItemProps> = ({
   const formattedDescription = useMemo(() => {
     let description = formatAmountDescription(
       amount,
-      resolvedTokenInfo.symbol,
+      tokenInfo.symbol,
       frequency,
-      resolvedTokenInfo.decimals,
+      tokenInfo.decimals,
     );
 
     // Append account information to the formatted description
@@ -147,8 +117,8 @@ export const PermissionItem: React.FC<PermissionItemProps> = ({
     return description;
   }, [
     amount,
-    resolvedTokenInfo.symbol,
-    resolvedTokenInfo.decimals,
+    tokenInfo.symbol,
+    tokenInfo.decimals,
     frequency,
     signerAddress,
     accountName,

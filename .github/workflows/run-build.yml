@@ -86,6 +86,7 @@ jobs:
       ANALYTICS_DATA_DELETION_ENDPOINT: ${{ secrets.ANALYTICS_DATA_DELETION_ENDPOINT }}
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
       SENTRY_DSN_DEV: ${{ secrets.SENTRY_DSN_DEV }}
+      SENTRY_DSN_PERFORMANCE: ${{ vars.SENTRY_DSN_PERFORMANCE }}
       TZ: 'UTC' # Ensures the bundles are consistent across machine time zones
       VAPID_KEY: ${{ secrets.VAPID_KEY }}
     steps:

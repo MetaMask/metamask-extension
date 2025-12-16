@@ -15,6 +15,8 @@ export default class ShieldClaimPage {
     text: accountName,
   });
 
+  private readonly backButton = '[data-testid="settings-back-button"]';
+
   private readonly claimErrorToast = '[data-testid="claim-submit-toast-error"]';
 
   private readonly claimSuccessToast = {
@@ -310,5 +312,13 @@ export default class ShieldClaimPage {
     await this.clickSubmitButton();
 
     console.log('Claim form submitted');
+  }
+
+  /**
+   * Click the back button to navigate back to the claims list
+   */
+  async clickBackButton(): Promise<void> {
+    console.log('Clicking back button on claim detail page');
+    await this.driver.clickElement(this.backButton);
   }
 }

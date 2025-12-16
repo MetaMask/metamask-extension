@@ -943,9 +943,6 @@
   "bridgeEnterAmount": {
     "message": "选择金额"
   },
-  "bridgeEnterAmountAndSelectAccount": {
-    "message": "输入金额并选择目标账户"
-  },
   "bridgeExplorerLinkViewOn": {
     "message": "在 $1 上查看"
   },
@@ -2432,9 +2429,6 @@
     "message": "授予以太坊提供商对 $1 的访问权限",
     "description": "The parameter is the name of the requesting origin"
   },
-  "ethereumPublicAddress": {
-    "message": "以太坊公钥"
-  },
   "etherscan": {
     "message": "Etherscan"
   },
@@ -2556,11 +2550,12 @@
     "message": "忘记密码？"
   },
   "forgotPasswordSocialDescription": {
-    "message": "MetaMask 无法恢复您的密码。"
+    "message": "MetaMask 无法恢复您的密码。",
+    "description": "$1 is the support link"
   },
   "forgotPasswordSocialStep1": {
     "message": "如果您在启用了 $1（如面容 ID）的设备上已登录 MetaMask，您可以在此处重设密码。",
-    "description": "$1 is bold biometrics turned on"
+    "description": "$1 is bold heading"
   },
   "forgotPasswordSocialStep1Biometrics": {
     "message": "生物特征识别（如面容 ID）的设备上"
@@ -3876,9 +3871,6 @@
   "nftAutoDetectionEnabled": {
     "message": "已启用 NFT 自动检测"
   },
-  "nftDisclaimer": {
-    "message": "免责声明：MetaMask 从源网址中提取媒体文件。该网址有时会因铸造 NFT 的市场而改变。"
-  },
   "nftEmptyDescription": {
     "message": "NFT 世界广阔无限，立即开启您的收藏之旅。"
   },
@@ -3910,9 +3902,6 @@
   },
   "noAccountsFound": {
     "message": "未找到符合给定查询条件的账户"
-  },
-  "noConnectedAccountTitle": {
-    "message": "MetaMask 未连接到此站点"
   },
   "noConnectionDescription": {
     "message": "要连接到网站，请找到并选择“连接”按钮。记住，MetaMask 仅限连接到 Web3 上的网站"
@@ -4645,10 +4634,7 @@
   "permissions": {
     "message": "权限"
   },
-  "permissionsPageEmptyContent": {
-    "message": "此处无内容"
-  },
-  "permissionsPageEmptySubContent": {
+  "permissionsPageEmptyDescription": {
     "message": "您可以在此处查看您授予已安装 Snap 或已连接站点的许可。"
   },
   "permitSimulationChange_approve": {
@@ -4917,12 +4903,6 @@
   "rateIncludesMMFee": {
     "message": "包含 $1% 的 MM 手续费。"
   },
-  "reAddAccounts": {
-    "message": "重新添加任何其他账户"
-  },
-  "reAdded": {
-    "message": "重新添加"
-  },
   "readdToken": {
     "message": "将来您还可以通过账户选项菜单中的“导入代币”来添加此代币。"
   },
@@ -5079,33 +5059,6 @@
   },
   "resetWallet": {
     "message": "重设您的钱包"
-  },
-  "resetWalletSubHeader": {
-    "message": "MetaMask不会保留密码的副本。如果您在解锁账户时遇到问题，需要重置您的钱包。您可以提供设置钱包时使用的私钥助记词，以进行重置。"
-  },
-  "resetWalletSubHeaderSocial": {
-    "message": "MetaMask 不会保存您的密码副本。若您遇到账户解锁问题，则需要重设钱包。若您持有私钥助记词，可使用它从本设备中清除当前钱包及账户列表。"
-  },
-  "resetWalletUsingSRP": {
-    "message": "此操作将从此设备中删除您当前的钱包和私钥助记词，以及您编制的账户列表。使用助记词进行重置后，您将会看到一个账户列表（基于用于重置的助记词）。这个新列表将自动包括有余额的账户。您还可以使用之前创建的$1。您导入的自定义账户需要是$2，添加到账户中的任何自定义代币也需要是$3。"
-  },
-  "resetWalletUsingSRPSocial": {
-    "message": "使用私钥助记词重设后，您将看到一个新的账户列表。此列表包含有余额的账户。您可以执行此前的 $1 操作。但您需要重新添加所有已导入的 $2 和 $3。 "
-  },
-  "resetWalletUsingSRPSocialAccounts": {
-    "message": "重新添加任何其他账户"
-  },
-  "resetWalletUsingSRPSocialCustomAccounts": {
-    "message": "自定义账户"
-  },
-  "resetWalletUsingSRPSocialCustomTokens": {
-    "message": "自定义代币"
-  },
-  "resetWalletWarning": {
-    "message": "在继续之前，请确保您所使用的私钥助记词正确无误。您将无法撤消此操作。"
-  },
-  "resetWalletWarningSocial": {
-    "message": "重设前请务必使用正确的私钥助记词。此操作无法撤销。"
   },
   "resolutionProtocol": {
     "message": "通过 $1 解析的地址",
