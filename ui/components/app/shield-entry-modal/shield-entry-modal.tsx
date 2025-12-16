@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   COHORT_NAMES,
   MODAL_TYPE,
@@ -113,7 +113,8 @@ const ShieldEntryModal = ({
 
     if (ctaActionClicked === ShieldCtaActionClickedEnum.Dismiss) {
       captureShieldCtaClickedEvent({
-        source: ShieldCtaSourceEnum.Homepage, // FIXME: get the correct source
+        // ShieldCtaSourceEnum & EntryModalSourceEnum are the same enum, so we can cast it to ShieldCtaSourceEnum
+        source: source as unknown as ShieldCtaSourceEnum,
         ctaActionClicked: ShieldCtaActionClickedEnum.Dismiss,
         marketingUtmParams,
       });
@@ -164,9 +165,11 @@ const ShieldEntryModal = ({
   };
 
   const handleOnLearnMoreClick = () => {
+    const source = determineEntryModalSource();
     const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
     captureShieldCtaClickedEvent({
-      source: ShieldCtaSourceEnum.Homepage, // FIXME: get the correct source
+      // ShieldCtaSourceEnum & EntryModalSourceEnum are the same enum, so we can cast it to ShieldCtaSourceEnum
+      source: source as unknown as ShieldCtaSourceEnum,
       ctaActionClicked: ShieldCtaActionClickedEnum.LearnMore,
       redirectToUrl: TRANSACTION_SHIELD_LINK,
       marketingUtmParams,

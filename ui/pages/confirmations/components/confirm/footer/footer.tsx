@@ -5,7 +5,7 @@ import {
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
 import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
 import { ConfirmAlertModal } from '../../../../../components/app/alert-system/confirm-alert-modal';
@@ -293,8 +293,7 @@ const Footer = () => {
     onDappSwapCompleted,
   ]);
 
-  const { isEnabled, isPaused } = useEnableShieldCoverageChecks();
-  const isShowShieldFooterCoverageIndicator = isEnabled || isPaused;
+  const { isShowCoverageIndicator } = useEnableShieldCoverageChecks();
 
   return (
     <>
@@ -306,7 +305,7 @@ const Footer = () => {
         // but only applied to the bottom of the box, so it doesn't overlap with
         // the shield footer coverage indicator
         style={
-          isShowShieldFooterCoverageIndicator
+          isShowCoverageIndicator
             ? { boxShadow: '0 4px 16px -8px var(--color-shadow-default)' }
             : undefined
         }

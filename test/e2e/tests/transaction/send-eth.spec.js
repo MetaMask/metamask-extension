@@ -5,7 +5,6 @@ const {
 } = require('../../page-objects/flows/login.flow');
 const { withFixtures, WINDOW_TITLES, DAPP_URL } = require('../../helpers');
 const FixtureBuilder = require('../../fixtures/fixture-builder');
-const { CHAIN_IDS } = require('../../../../shared/constants/network');
 const { mockSpotPrices } = require('../tokens/utils/mocks');
 
 const PREFERENCES_STATE_MOCK = {
@@ -77,7 +76,7 @@ describe('Send ETH', function () {
           );
           await driver.wait(async () => {
             const confirmedTxes = await driver.findElements(
-              '.transaction-list__completed-transactions .activity-list-item',
+              '.transaction-status-label--confirmed',
             );
             return confirmedTxes.length === 1;
           }, 10000);
@@ -127,7 +126,7 @@ describe('Send ETH', function () {
 
           await driver.wait(async () => {
             const confirmedTxes = await driver.findElements(
-              '.transaction-list__completed-transactions .activity-list-item',
+              '.transaction-status-label--confirmed',
             );
             return confirmedTxes.length === 1;
           }, 10000);
@@ -179,9 +178,7 @@ describe('Send ETH', function () {
             '[data-testid="account-overview__activity-tab"]',
           );
 
-          await driver.findElement(
-            '.transaction-list__completed-transactions .activity-list-item',
-          );
+          await driver.findElement('.transaction-status-label--confirmed');
 
           // The previous findElement already serves as the guard here for the assertElementNotPresent
           await driver.assertElementNotPresent(
@@ -234,8 +231,8 @@ describe('Send ETH', function () {
               hardfork: 'muirGlacier',
             },
             testSpecificMock: async (mockServer) => {
-              await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
-                '0x0000000000000000000000000000000000000000': {
+              await mockSpotPrices(mockServer, {
+                'eip155:1/slip44:60': {
                   price: 1700,
                   marketCap: 382623505141,
                   pricePercentChange1d: 0,
@@ -294,7 +291,7 @@ describe('Send ETH', function () {
               '[data-testid="account-overview__activity-tab"]',
             );
             await driver.waitForSelector(
-              '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
+              '.transaction-status-label--confirmed',
             );
             await driver.waitForSelector({
               css: '[data-testid="transaction-list-item-primary-currency"]',
@@ -323,8 +320,8 @@ describe('Send ETH', function () {
               .build(),
             title: this.test.fullTitle(),
             testSpecificMock: async (mockServer) => {
-              await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
-                '0x0000000000000000000000000000000000000000': {
+              await mockSpotPrices(mockServer, {
+                'eip155:1/slip44:60': {
                   price: 1700,
                   marketCap: 382623505141,
                   pricePercentChange1d: 0,
@@ -387,7 +384,7 @@ describe('Send ETH', function () {
               '[data-testid="account-overview__activity-tab"]',
             );
             await driver.waitForSelector(
-              '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
+              '.transaction-status-label--confirmed',
             );
             await driver.waitForSelector({
               css: '[data-testid="transaction-list-item-primary-currency"]',

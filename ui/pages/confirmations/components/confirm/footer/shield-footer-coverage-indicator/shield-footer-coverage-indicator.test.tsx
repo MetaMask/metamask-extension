@@ -13,6 +13,7 @@ jest.mock(
     useEnableShieldCoverageChecks: jest.fn(() => ({
       isEnabled: true,
       isPaused: false,
+      isShowCoverageIndicator: true,
     })),
   }),
 );

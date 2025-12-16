@@ -23,45 +23,12 @@ exports[`SiteCellTooltip should render correctly 1`] = `
           <div
             class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
           >
-            <div
-              class="flex [&>div]:!rounded-none"
-            >
-              <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(24, 187, 242);"
-              >
-                <svg
-                  height="16"
-                  width="16"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#018E7E"
-                    height="16"
-                    transform="translate(1.27443694462452 -0.70536555867255) rotate(363.1 8.00000000000000 8.00000000000000)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F91A01"
-                    height="16"
-                    transform="translate(4.77517448786361 4.32045917553571) rotate(54.5 8.00000000000000 8.00000000000000)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#FB1882"
-                    height="16"
-                    transform="translate(-12.74149319278223 -7.73329651016405) rotate(360.4 8.00000000000000 8.00000000000000)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
-              </div>
-            </div>
+            <img
+              alt="maskicon"
+              height="16"
+              src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E"
+              width="16"
+            />
           </div>
         </div>
         <div
@@ -71,45 +38,12 @@ exports[`SiteCellTooltip should render correctly 1`] = `
           <div
             class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
           >
-            <div
-              class="flex [&>div]:!rounded-none"
-            >
-              <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(245, 180, 0);"
-              >
-                <svg
-                  height="16"
-                  width="16"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#C81459"
-                    height="16"
-                    transform="translate(0.10864265332767 3.07061028661092) rotate(138.0 8.00000000000000 8.00000000000000)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#018E89"
-                    height="16"
-                    transform="translate(6.38260583525896 0.38215457860863) rotate(152.6 8.00000000000000 8.00000000000000)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#2372E1"
-                    height="16"
-                    transform="translate(-12.49164843832654 -7.75621157686422) rotate(374.4 8.00000000000000 8.00000000000000)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
-              </div>
-            </div>
+            <img
+              alt="maskicon"
+              height="16"
+              src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E"
+              width="16"
+            />
           </div>
         </div>
         <div
@@ -119,45 +53,12 @@ exports[`SiteCellTooltip should render correctly 1`] = `
           <div
             class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
           >
-            <div
-              class="flex [&>div]:!rounded-none"
-            >
-              <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(250, 142, 0);"
-              >
-                <svg
-                  height="16"
-                  width="16"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#1885F2"
-                    height="16"
-                    transform="translate(0.05978858756790 -0.03113472460451) rotate(387.3 8.00000000000000 8.00000000000000)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#FB1849"
-                    height="16"
-                    transform="translate(-9.72057309011477 2.14708403285471) rotate(199.5 8.00000000000000 8.00000000000000)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#C8143B"
-                    height="16"
-                    transform="translate(-13.05163541736290 8.22393174999413) rotate(284.9 8.00000000000000 8.00000000000000)"
-                    width="16"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
-              </div>
-            </div>
+            <img
+              alt="maskicon"
+              height="16"
+              src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E"
+              width="16"
+            />
           </div>
         </div>
       </div>

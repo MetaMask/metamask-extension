@@ -39,7 +39,7 @@ export const ImportTokensModalConfirm = ({ networkFilter }) => {
     networkFilter[currentNetwork?.chainId];
   return (
     <Box paddingTop={6}>
-      <Text textAlign={TextAlign.Center}>
+      <Text textAlign={TextAlign.Center} fontWeight={FontWeight.Medium}>
         {Object.keys(pendingTokens).length === 1
           ? t('likeToImportToken')
           : t('likeToImportTokens')}

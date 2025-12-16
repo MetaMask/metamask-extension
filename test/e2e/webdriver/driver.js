@@ -463,8 +463,10 @@ class Driver {
    * Waits for multiple elements that match the given locators to reach the specified state within the timeout period.
    *
    * @param {Array<string | object>} rawLocators - Array of element locators
-   * @param {number} timeout - Optional parameter that specifies the maximum amount of time (in milliseconds)
-   * to wait for the condition to be met and desired state of the elements to wait for.
+   * @param {object} [options] - Optional configuration object
+   * @param {number} [options.timeout] - Maximum time (in milliseconds) to wait for the condition to be met.
+   * Defaults to the driver's timeout value.
+   * @param {string} [options.state] - Desired state of the elements to wait for.
    * It defaults to 'visible', indicating that the method will wait until the elements are visible on the page.
    * The other supported state is 'detached', which means waiting until the elements are removed from the DOM.
    * @returns {Promise<Array<WebElement>>} Promise resolving when all elements meet the state or timeout occurs.
@@ -951,10 +953,12 @@ class Driver {
    * @param {object} options - Options for the wait.
    * @param {number} options.timeout - The maximum amount of time (in milliseconds) to wait for the condition to be met.
    * @param {number} options.interval - The interval (in milliseconds) between checks for the condition.
+   * @param {number} [options.stableFor] - If provided, after the condition is met, waits this many milliseconds
+   * and re-checks to ensure the condition remains stable. Useful for UI states that may fluctuate before settling.
    * @returns {Promise<void>} A promise that resolves when the condition is met or the timeout is reached.
    * @throws {Error} Throws an error if the condition is not met within the timeout period.
    */
-  async waitUntil(condition, { interval, timeout }) {
+  async waitUntil(condition, { interval, timeout, stableFor = 0 }) {
     const startTime = Date.now();
     const endTime = startTime + timeout;
 
@@ -963,7 +967,17 @@ class Driver {
     while (true) {
       const result = await condition();
       if (result === true) {
-        return; // Condition met
+        // If stableFor is set, verify the condition remains stable
+        if (stableFor > 0) {
+          await this.delay(stableFor);
+          const stableResult = await condition();
+          if (stableResult === true) {
+            return; // Condition met and stable
+          }
+          // Condition became unstable, continue waiting
+        } else {
+          return; // Condition met
+        }
       }
 
       const currentTime = Date.now();

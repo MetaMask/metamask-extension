@@ -122,8 +122,8 @@
     "currencyRates": {
       "ETH": {
         "conversionDate": "number",
-        "conversionRate": 1700.0000000000002,
-        "usdConversionRate": 1700.0000000000002
+        "conversionRate": 1700,
+        "usdConversionRate": 1700
       },
       "MON": {
         "conversionDate": "number",
@@ -283,7 +283,6 @@
     "allIgnoredTokens": {},
     "allDetectedTokens": {},
     "tokenBalances": "object",
-    "transactionData": "object",
     "smartTransactionsState": {
       "fees": {},
       "feesByChainId": "object",
@@ -332,9 +331,11 @@
     "fcmToken": "string",
     "isUpdatingFCMToken": "boolean",
     "remoteFeatureFlags": {
-      "feature1": true,
-      "feature2": false,
-      "feature3": { "name": "groupC", "value": "valueC" },
+      "enableMultichainAccountsState2": {
+        "enabled": true,
+        "featureVersion": "2",
+        "minimumVersion": "12.19.0"
+      },
       "sendRedesign": { "enabled": false }
     },
     "cacheTimestamp": "number",
@@ -346,6 +347,8 @@
     "orderedTransactionHistory": "object",
     "claimsConfigurations": "object",
     "claims": "object",
+    "initialEnqueueCompleted": "boolean",
+    "syncQueue": "object",
     "accountsByChainId": "object",
     "unapprovedDecryptMsgs": "object",
     "unapprovedDecryptMsgCount": 0,
@@ -406,6 +409,7 @@
     "transactionBatches": "object",
     "lastFetchedBlockNumbers": "object",
     "submitHistory": "object",
+    "transactionData": "object",
     "accountTree": "object",
     "isAccountTreeSyncingInProgress": "boolean",
     "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean",
@@ -423,9 +427,7 @@
     "rewardsSeasons": "object",
     "rewardsSeasonStatuses": "object",
     "rewardsSubscriptionTokens": "object",
-    "srpSessionData": "object",
-    "syncQueue": "object",
-    "initialEnqueueCompleted": "boolean"
+    "srpSessionData": "object"
   },
   "ramps": "object",
   "rewards": "object",

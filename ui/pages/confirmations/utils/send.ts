@@ -5,7 +5,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { addHexPrefix } from 'ethereumjs-util';
-import { NavigateFunction } from 'react-router-dom-v5-compat';
+import { NavigateFunction } from 'react-router-dom';
 
 import { Numeric, NumericBase } from '../../../../shared/modules/Numeric';
 import {
