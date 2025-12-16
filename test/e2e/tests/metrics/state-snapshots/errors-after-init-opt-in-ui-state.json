@@ -295,6 +295,7 @@
     "allNfts": "object",
     "ignoredNfts": "object",
     "domains": "object",
+    "drafts": "object",
     "logs": "object",
     "fiatCurrency": "usd",
     "rates": {

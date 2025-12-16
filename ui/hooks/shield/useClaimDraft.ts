@@ -1,7 +1,7 @@
 import { ClaimDraft } from '@metamask/claims-controller';
 import { useCallback } from 'react';
-import { deleteClaimDraft, saveClaimDraft } from '../../store/actions';
 import { useSelector } from 'react-redux';
+import { deleteClaimDraft, saveClaimDraft } from '../../store/actions';
 import { getClaimDrafts } from '../../selectors/shield/claims';
 
 export const useClaimDraft = () => {
@@ -9,11 +9,10 @@ export const useClaimDraft = () => {
 
   const saveDraft = useCallback(
     async (draftData: Partial<ClaimDraft>): Promise<ClaimDraft> => {
-
       const savedDraft = await saveClaimDraft(draftData);
       return savedDraft;
     },
-    [drafts],
+    [],
   );
 
   const getDraft = useCallback(
@@ -23,12 +22,9 @@ export const useClaimDraft = () => {
     [drafts],
   );
 
-  const deleteDraft = useCallback(
-    async (draftId: string): Promise<void> => {
-      await deleteClaimDraft(draftId);
-    },
-    [drafts],
-  );
+  const deleteDraft = useCallback(async (draftId: string): Promise<void> => {
+    await deleteClaimDraft(draftId);
+  }, []);
 
   return {
     drafts,

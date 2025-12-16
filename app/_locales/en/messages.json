@@ -6095,11 +6095,11 @@
     "message": "Note: You can have a maximum of $1 active claims at a single time.",
     "description": "The $1 is the maximum number of active claims"
   },
-  "shieldClaimGroupDrafts": {
-    "message": "Drafts"
-  },
   "shieldClaimGroupCompleted": {
     "message": "Completed claims"
+  },
+  "shieldClaimGroupDrafts": {
+    "message": "Drafts"
   },
   "shieldClaimGroupNoCompletedClaims": {
     "message": "No completed claims"
