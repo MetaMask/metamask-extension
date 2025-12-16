@@ -1,5 +1,4 @@
 // ShieldDetailPage class for interacting with the Shield Detail page
-import assert from 'assert';
 import { Driver } from '../../../../webdriver/driver';
 
 export default class ShieldDetailPage {
@@ -27,7 +26,10 @@ export default class ShieldDetailPage {
   private readonly cancelMembershipModal =
     '[data-testid="cancel-membership-modal"]';
 
-  private readonly chargesElement = '[data-testid="shield-detail-charges"]';
+  private readonly chargesElement = (text: string) => ({
+    css: '[data-testid="shield-detail-charges"]',
+    text,
+  });
 
   private readonly customerIdElement = (text: string) => ({
     css: '[data-testid="shield-detail-customer-id"]',
@@ -45,8 +47,10 @@ export default class ShieldDetailPage {
     text,
   });
 
-  private readonly nextBillingElement =
-    '[data-testid="shield-detail-next-billing"]';
+  private readonly nextBillingElement = (text: string) => ({
+    css: '[data-testid="shield-detail-next-billing"]',
+    text,
+  });
 
   private readonly notificationShieldBanner =
     '.transaction-shield-page__notification-banner';
@@ -240,12 +244,7 @@ export default class ShieldDetailPage {
    */
   async checkNextBillingDate(expectedText: string): Promise<void> {
     console.log(`Checking next billing date contains: ${expectedText}`);
-    const element = await this.driver.findElement(this.nextBillingElement);
-    const actualText = await element.getText();
-    assert.ok(
-      actualText.includes(expectedText),
-      `Expected text to contain "${expectedText}" but got "${actualText}"`,
-    );
+    await this.driver.waitForSelector(this.nextBillingElement(expectedText));
   }
 
   /**
@@ -255,12 +254,7 @@ export default class ShieldDetailPage {
    */
   async checkCharges(expectedText: string): Promise<void> {
     console.log(`Checking charges contain: ${expectedText}`);
-    const element = await this.driver.findElement(this.chargesElement);
-    const actualText = await element.getText();
-    assert.ok(
-      actualText.includes(expectedText),
-      `Expected text to contain "${expectedText}" but got "${actualText}"`,
-    );
+    await this.driver.waitForSelector(this.chargesElement(expectedText));
   }
 
   /**
