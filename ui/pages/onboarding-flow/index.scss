@@ -21,6 +21,7 @@
     max-width: 446px;
     min-height: 627px;
     height: auto;
+    margin-bottom: 32px;
 
     @include design-system.screen-sm-min {
       padding-inline: 24px;
