@@ -32,11 +32,16 @@ describe(`migration #${version}`, () => {
   });
 
   it('cleans up localforage entries matching price API pattern', async () => {
-    const priceApiKey = 'cachedFetch:https://price.api.cx.metamask.io/v1/chains/137/historical-prices';
+    const priceApiKey =
+      'cachedFetch:https://price.api.cx.metamask.io/v1/chains/137/historical-prices';
     const otherKey = 'cachedFetch:https://other.api.com/data';
     const nonCacheKey = 'someOtherKey';
 
-    mockLocalforage.keys.mockResolvedValue([priceApiKey, otherKey, nonCacheKey]);
+    mockLocalforage.keys.mockResolvedValue([
+      priceApiKey,
+      otherKey,
+      nonCacheKey,
+    ]);
 
     const oldStorage = {
       meta: { version: 184 },
@@ -50,9 +55,10 @@ describe(`migration #${version}`, () => {
     expect(mockLocalforage.removeItem).toHaveBeenCalledWith(priceApiKey);
   });
 
-
   it('handles localforage errors gracefully', async () => {
-    mockLocalforage.keys.mockRejectedValue(new Error('IndexedDB not available'));
+    mockLocalforage.keys.mockRejectedValue(
+      new Error('IndexedDB not available'),
+    );
 
     const oldStorage = {
       meta: { version: 184 },
@@ -106,7 +112,7 @@ describe(`migration #${version}`, () => {
 
     // Should remove all 3 price API keys from localforage
     expect(mockLocalforage.removeItem).toHaveBeenCalledTimes(3);
-    priceApiKeys.forEach(key => {
+    priceApiKeys.forEach((key) => {
       expect(mockLocalforage.removeItem).toHaveBeenCalledWith(key);
     });
   });

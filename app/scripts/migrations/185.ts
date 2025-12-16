@@ -28,14 +28,16 @@ export async function migrate(
   try {
     // Clean up IndexedDB (localforage) entries - this is where fetchWithCache actually stores data
     const allKeys = await localforage.keys();
-    const keysToRemove = allKeys.filter(key =>
-      key.startsWith('cachedFetch:https://price.api.cx.metamask.io/v1/chains/')
+    const keysToRemove = allKeys.filter((key) =>
+      key.startsWith('cachedFetch:https://price.api.cx.metamask.io/v1/chains/'),
     );
 
     // Remove the matching keys from IndexedDB
-    await Promise.all(keysToRemove.map(key => localforage.removeItem(key)));
+    await Promise.all(keysToRemove.map((key) => localforage.removeItem(key)));
 
-    console.log(`Migration #${version}: Cleaned up ${keysToRemove.length} cache entries for historical price API`);
+    console.log(
+      `Migration #${version}: Cleaned up ${keysToRemove.length} cache entries for historical price API`,
+    );
   } catch (error) {
     console.warn(`Migration #${version}: Could not access localforage:`, error);
     // Continue with migration even if localforage cleanup fails
