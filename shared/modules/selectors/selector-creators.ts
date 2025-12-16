@@ -7,38 +7,62 @@ import {
 } from 'reselect';
 import { shallowEqual, fastDeepEqual } from './selector-equality-functions';
 
-// Note: createSelectorCreator is still needed for createSelectiveDeepEqualSelector
-// which requires custom equality logic that can't be expressed via the factory.
-
 // ============================================================================
 // Selector Factory
 // ============================================================================
+//
+// Use `createSelectorWith` to build custom selector creators with specific
+// equality and memoization behavior. For common patterns, use the pre-configured
+// selector creators exported below (e.g., `createDeepEqualSelector`).
 
 /**
- * Equality comparison strategy for selector inputs or results.
+ * Equality comparison strategies for selector inputs or results.
  *
- * - `Reference` - Strict equality (`===`). Fastest, use when references are stable.
- * - `Shallow` - Compares arrays by elements, objects by property values (one level deep).
- * - `Deep` - Full recursive comparison via lodash `isEqual`. Most expensive.
- * - `FastDeep` - Optimized deep equality that short-circuits on structural differences.
+ * Choose based on your data's referential stability and structure:
+ *
+ * | Mode        | Complexity | Best For                                           |
+ * |-------------|------------|---------------------------------------------------|
+ * | `Reference` | O(1)       | Immer state, memoized selectors, primitives        |
+ * | `Shallow`   | O(n)       | Arrays/objects with stable element references      |
+ * | `FastDeep`  | O(n)-O(n×d)| Structural changes common (length/key count)       |
+ * | `Deep`      | O(n×d)     | Unstable nested data (last resort)                 |
+ *
+ * **Decision tree:**
+ * 1. Are inputs referentially stable (immer, memoized)? → `Reference`
+ * 2. Is the container recreated but elements stable? → `Shallow`
+ * 3. Do structural changes (add/remove) happen often? → `FastDeep`
+ * 4. None of the above? → `Deep` (but consider refactoring first)
  */
 export const EqualityMode = {
+  /** Strict equality (`===`). O(1). Use when references are stable. */
   Reference: 'reference',
+  /** Compares arrays by elements, objects by values. O(n). */
   Shallow: 'shallow',
+  /** Full recursive comparison via lodash `isEqual`. O(n×d). Expensive. */
   Deep: 'deep',
+  /** Checks length/keys first, then deep compare. O(n) best case. */
   FastDeep: 'fast-deep',
 } as const;
 
 export type EqualityMode = (typeof EqualityMode)[keyof typeof EqualityMode];
 
 /**
- * Memoization strategy for the selector.
+ * Memoization strategies for selector caching.
  *
- * - `Lru` - Least-recently-used cache (default). Best for most use cases.
- * - `Weak` - WeakMap-based caching. Keys are garbage-collected when no longer referenced.
+ * | Mode   | Cache Size | Memory     | Best For                              |
+ * |--------|------------|------------|---------------------------------------|
+ * | `Lru`  | Bounded    | Predictable| Most selectors, parameterized lookups |
+ * | `Weak` | Unbounded  | Auto-GC    | Many unique object keys               |
+ *
+ * **Decision tree:**
+ * 1. Do you pass objects as selector arguments? → Consider `Weak`
+ * 2. Is the argument set bounded (e.g., chain IDs)? → `Lru` with `maxSize`
+ * 3. Default case? → `Lru` (size 1)
  */
 export const MemoizeMode = {
+  /** LRU cache with configurable size. Predictable memory usage. */
   Lru: 'lru',
+  /** WeakMap-based. Auto garbage collection when object keys are dereferenced. */
   Weak: 'weakmap',
 } as const;
 
@@ -46,42 +70,60 @@ export type MemoizeMode = (typeof MemoizeMode)[keyof typeof MemoizeMode];
 
 /**
  * Configuration options for {@link createSelectorWith}.
+ *
+ * All options are optional and have sensible defaults matching reselect's
+ * standard `createSelector` behavior.
  */
 export type SelectorOptions = {
   /**
-   * Equality comparison for input selectors.
-   * Determines when the result function should be re-executed.
+   * How to compare input selector results to determine if recalculation is needed.
+   *
+   * - `Reference`: Only recalculate if `prevInput !== nextInput`
+   * - `Shallow`: Recalculate if any element/property reference changed
+   * - `Deep`/`FastDeep`: Recalculate only if values actually differ
    *
    * @default EqualityMode.Reference
    */
   inputEquality?: EqualityMode;
 
   /**
-   * Equality comparison for the result.
-   * When set, compares new results against cached results to prevent
-   * unnecessary downstream re-renders even when inputs change.
+   * How to compare selector results to determine if a new reference should
+   * be returned to consumers. Prevents unnecessary re-renders when the
+   * computed result is equivalent to the cached result.
    *
-   * @default undefined (disabled)
+   * Set this when your result function may produce equal-but-not-identical
+   * outputs (e.g., filtering to same subset, computing same aggregate).
+   *
+   * @default undefined — always return new result when inputs change
    */
   resultEquality?: EqualityMode;
 
   /**
-   * Memoization strategy.
+   * Cache eviction strategy.
+   *
+   * - `Lru`: Fixed-size cache, evicts least-recently-used entries
+   * - `Weak`: Unlimited cache, auto-cleans when keys are garbage collected
    *
    * @default MemoizeMode.Lru
    */
   memoize?: MemoizeMode;
 
   /**
-   * Maximum cache size for LRU memoization.
-   * Only applies when `memoize: MemoizeMode.Lru`.
+   * Maximum entries in the LRU cache. Only applies when `memoize` is `Lru`.
+   *
+   * Increase for parameterized selectors called with multiple argument
+   * combinations (e.g., `getTokensForChain(state, chainId)`).
    *
    * @default 1
    */
   maxSize?: number;
 };
 
-/** Maps equality mode to comparison function */
+/**
+ * Maps equality mode to its comparison function implementation.
+ *
+ * @internal
+ */
 const equalityFunctions: Record<
   EqualityMode,
   (a: unknown, b: unknown) => boolean
@@ -93,71 +135,50 @@ const equalityFunctions: Record<
 };
 
 /**
- * Factory for creating customized selector creators with composable options.
+ * Creates a reselect-compatible selector creator with custom equality and
+ * memoization behavior.
  *
- * This is the recommended way to create selectors with non-default behavior.
- * It provides a unified API for configuring input equality, result equality,
- * memoization strategy, and cache size.
+ * Use this factory when you need a combination not covered by the pre-configured
+ * creators, or when you want explicit control over selector behavior.
  *
- * ## Quick Reference
- *
- * | Option | Values | Default | Use Case |
- * |--------|--------|---------|----------|
- * | `inputEquality` | `EqualityMode.*` | `Reference` | Compare inputs to decide recalculation |
- * | `resultEquality` | `EqualityMode.*` | `undefined` | Compare results to prevent re-renders |
- * | `memoize` | `MemoizeMode.*` | `Lru` | Cache eviction strategy |
- * | `maxSize` | `number` | `1` | LRU cache capacity |
- *
- * ## When to Use Each Option
- *
- * ### Input Equality
- * - `Reference` (default): Inputs are stable references (immer, normalized state)
- * - `Shallow`: Inputs are recreated arrays/objects with stable elements
- * - `Deep`: Inputs are deeply nested and may be recreated with same values
- * - `FastDeep`: Like `Deep` but optimized when structural changes are common
- *
- * ### Result Equality
- * - `undefined` (default): Result changes whenever inputs change
- * - `Shallow`/`Deep`: Result may be equivalent even when inputs differ,
- * e.g., aggregations, derived booleans, filtered subsets
- *
- * @param options - Configuration for the selector creator
- * @returns A selector creator function compatible with reselect's `createSelector`
- * @example
+ * @param options - Configuration for equality checks and memoization
+ * @returns A `createSelector`-compatible function
+ * @example Basic usage
  * ```ts
- * // Deep input equality (replaces createDeepEqualSelector)
- * const createDeepInputSelector = createSelectorWith({
- *   inputEquality: EqualityMode.Deep,
- * });
- *
- * // Shallow input + result equality
- * const createStableSelector = createSelectorWith({
+ * // Shallow input equality (like createShallowEqualSelector)
+ * const createShallowSelector = createSelectorWith({
  *   inputEquality: EqualityMode.Shallow,
- *   resultEquality: EqualityMode.Deep,
  * });
  *
- * // Large LRU cache for parameterized selectors
- * const createCachedSelector = createSelectorWith({
- *   memoize: MemoizeMode.Lru,
- *   maxSize: 50,
- * });
- *
- * // WeakMap for selectors called with many distinct objects
- * const createWeakSelector = createSelectorWith({
- *   memoize: MemoizeMode.Weak,
- * });
+ * const getVisibleAccounts = createShallowSelector(
+ *   getAccounts,
+ *   getVisibilityFilter,
+ *   (accounts, filter) => accounts.filter(matchesFilter(filter)),
+ * );
  * ```
- * @example
+ * @example Result equality to prevent re-renders
  * ```ts
- * // Practical usage: account balance aggregation
- * const createBalanceSelector = createSelectorWith({
- *   inputEquality: EqualityMode.Shallow,
- *   resultEquality: EqualityMode.Deep,
+ * // Result may be equivalent even when inputs change
+ * const createStableResultSelector = createSelectorWith({
+ *   resultEquality: EqualityMode.Shallow,
  * });
  *
- * const getTotalBalance = createBalanceSelector(
- *   getVisibleAccounts,
- *   (accounts) => accounts.reduce((sum, a) => sum + BigInt(a.balance), 0n),
+ * const getActiveChainIds = createStableResultSelector(
+ *   getNetworks,
+ *   (networks) => networks.filter((n) => n.active).map((n) => n.chainId),
+ * );
+ * ```
+ * @example Parameterized selector with larger cache
+ * ```ts
+ * const createMultiChainSelector = createSelectorWith({
+ *   memoize: MemoizeMode.Lru,
+ *   maxSize: 20, // Cache results for up to 20 different chainIds
+ * });
+ *
+ * const getTokensForChain = createMultiChainSelector(
+ *   getAllTokens,
+ *   (_state, chainId: Hex) => chainId,
+ *   (tokens, chainId) => tokens[chainId] ?? [],
  * );
  * ```
  */
