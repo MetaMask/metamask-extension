@@ -209,10 +209,22 @@ describe('Permit Confirmation', () => {
       'Permit',
     );
 
+    // Get the pending permit ID to override chainId on the message
+    const pendingPermitId = Object.keys(
+      mockedMetaMaskState.unapprovedTypedMessages,
+    )[0];
+
     await act(async () => {
       await integrationTestRender({
         preloadedState: {
           ...mockedMetaMaskState,
+          // Override the chainId on the message to mainnet to match the nock mock
+          unapprovedTypedMessages: {
+            [pendingPermitId]: {
+              ...mockedMetaMaskState.unapprovedTypedMessages[pendingPermitId],
+              chainId: '0x1',
+            },
+          },
           selectedNetworkClientId: 'testNetworkConfigurationId',
           providerConfig: {
             type: 'rpc',
