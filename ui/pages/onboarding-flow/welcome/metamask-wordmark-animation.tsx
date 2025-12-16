@@ -138,6 +138,8 @@ export default function MetamaskWordMarkAnimation({
         dark.value = theme === ThemeType.dark;
       }
 
+      prevThemeRef.current = theme;
+
       // Fire the appropriate trigger
       if (skipTransition) {
         still?.fire();
