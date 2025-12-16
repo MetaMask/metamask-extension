@@ -857,11 +857,12 @@ export const getNativeTokenCachedBalanceByChainIdSelector = createSelector(
   },
 );
 
-// eslint-disable-next-line jsdoc/require-param
 /**
  * Get the tokens across chains for a given account address
  *
  * @deprecated use getAllAssets instead
+ * @param {object} state - Redux state
+ * @param {string} accountAddress - The address of the account
  */
 export const getTokensAcrossChainsByAccountAddressSelector = createSelector(
   [
@@ -879,6 +880,7 @@ export const getTokensAcrossChainsByAccountAddressSelector = createSelector(
     nativeTokenBalancesByChainId,
     selectedAddress,
   ) => {
+    console.log('DEBUG getTokensAcrossChainsByAccountAddressSelector CALLED');
     const tokensByChain = {};
 
     const chainIds = new Set([
