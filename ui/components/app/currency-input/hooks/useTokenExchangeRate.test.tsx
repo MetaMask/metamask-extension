@@ -215,5 +215,36 @@ describe('useProcessNewDecimalValue', () => {
         '0x89',
       );
     });
+
+    it('ERC-20: caches rates per chain to prevent cross-chain contamination', async () => {
+      const tokenAddress = '0x0000000000000000000000000000000000000003';
+      (fetchTokenExchangeRates as jest.Mock).mockReturnValue(
+        Promise.resolve({ [tokenAddress]: 1.5 }),
+      );
+
+      // First render on chain 0x5
+      renderUseTokenExchangeRate(tokenAddress, undefined, '0x5');
+
+      await waitFor(() => {
+        expect(fetchTokenExchangeRates).toHaveBeenCalledWith(
+          'ETH',
+          [tokenAddress],
+          '0x5',
+        );
+      });
+
+      // Second render on chain 0x89 - should trigger a new fetch, not use cached rate
+      renderUseTokenExchangeRate(tokenAddress, undefined, '0x89');
+
+      await waitFor(() => {
+        expect(fetchTokenExchangeRates).toHaveBeenCalledWith(
+          'POL',
+          [tokenAddress],
+          '0x89',
+        );
+      });
+
+      expect(fetchTokenExchangeRates).toHaveBeenCalledTimes(2);
+    });
   });
 });

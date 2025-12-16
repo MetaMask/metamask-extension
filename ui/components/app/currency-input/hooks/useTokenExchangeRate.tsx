@@ -63,10 +63,11 @@ export default function useTokenExchangeRate(
       return nativeConversionRate;
     }
 
+    // Cache key includes chainId to prevent cross-chain rate contamination
+    const cacheKey = `${chainId}-${tokenAddress}`;
+
     const isLoadingOrUnavailable = tokenAddress
-      ? ([LOADING, FAILED] as ExchangeRate[]).includes(
-          exchangeRates[tokenAddress],
-        )
+      ? ([LOADING, FAILED] as ExchangeRate[]).includes(exchangeRates[cacheKey])
       : false;
 
     if (isLoadingOrUnavailable) {
@@ -75,14 +76,14 @@ export default function useTokenExchangeRate(
 
     const contractExchangeRates = crossChainTokenExchangeRates[chainId] ?? {};
     const contractExchangeRate =
-      contractExchangeRates[tokenAddress] || exchangeRates[tokenAddress];
+      contractExchangeRates[tokenAddress] || exchangeRates[cacheKey];
 
     if (!contractExchangeRate) {
       // TODO: Fix "Calling setState from useMemo may trigger an infinite loop"
       // eslint-disable-next-line react-compiler/react-compiler
       setExchangeRates((prev) => ({
         ...prev,
-        [tokenAddress]: LOADING,
+        [cacheKey]: LOADING,
       }));
       fetchTokenExchangeRates(nativeCurrency, [tokenAddress], chainId)
         .then((addressToExchangeRate) => {
@@ -90,13 +91,13 @@ export default function useTokenExchangeRate(
             ...prev,
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
             // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-            [tokenAddress]: addressToExchangeRate[tokenAddress] || FAILED,
+            [cacheKey]: addressToExchangeRate[tokenAddress] || FAILED,
           }));
         })
         .catch(() => {
           setExchangeRates((prev) => ({
             ...prev,
-            [tokenAddress]: FAILED,
+            [cacheKey]: FAILED,
           }));
         });
       return undefined;
