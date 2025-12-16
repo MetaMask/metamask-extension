@@ -1,5 +1,6 @@
 import { ReactNodeLike } from 'prop-types';
 import React, { ReactNode } from 'react';
+import { TransactionMeta } from '@metamask/transaction-controller';
 
 import { Page } from '../../../components/multichain/pages/page';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
@@ -22,7 +23,6 @@ import { GasFeeTokenToast } from '../components/confirm/info/shared/gas-fee-toke
 import { Splash } from '../components/confirm/splash';
 import { DappSwapContextProvider } from '../context/dapp-swap';
 import { EditGasModes } from '../../../../shared/constants/gas';
-import { TransactionMeta } from '@metamask/transaction-controller';
 
 const EIP1559TransactionGasModal = () => {
   const { currentConfirmation } = useConfirmContext();
