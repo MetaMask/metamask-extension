@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   Box,
   BoxProps,
@@ -72,6 +72,13 @@ export default function LoginOptions({
 }) {
   const t = useI18nContext();
   const theme = useTheme();
+
+  const backgroundColorForLoginOptions = useMemo(() => {
+    return theme === ThemeType.light
+      ? 'var(--welcome-bg-light)'
+      : 'var(--color-accent02-dark)';
+  }, [theme]);
+
   return (
     <Box>
       <SocialButton
@@ -122,7 +129,7 @@ export default function LoginOptions({
         className="options-modal__or"
       >
         <Text
-          width={BlockSize.Min}
+          width={BlockSize.Max}
           variant={TextVariant.bodyMd}
           fontWeight={FontWeight.Medium}
           color={TextColor.textAlternative}
@@ -133,8 +140,8 @@ export default function LoginOptions({
           style={{
             position: 'relative',
             zIndex: 1,
+            backgroundColor: backgroundColorForLoginOptions,
           }}
-          className="options-modal__or-text"
         >
           {t('or')}
         </Text>
