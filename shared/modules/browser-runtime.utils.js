@@ -81,13 +81,13 @@ export function getIsBrowserPrerenderBroken(
 }
 
 /**
- * Returns true if the browser is no longer affected by a bug that causes MV3 updates to break service workers,
- * and Extension updates are stable.
+ * Returns true if the Chromium-based browser is no longer affected by a bug
+ * that causes MV3 updates to break service workers, and Extension updates are stable.
  *
  * @param {import('bowser').Parser} bowser - optional Bowser Parser instance to check against
  * @returns {boolean} Whether the browser is no longer affected by the MV3 update bug.
  */
-export function getIsBrowserMV3StableUpdatesSupported(
+export function getIsChromiumBrowserMV3StableUpdatesSupported(
   bowser = Bowser.getParser(window.navigator.userAgent),
 ) {
   return (

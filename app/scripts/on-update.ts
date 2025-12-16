@@ -1,7 +1,7 @@
 import log from 'loglevel';
 import Bowser from 'bowser';
 import { PLATFORM_FIREFOX } from '../../shared/constants/app';
-import { getIsBrowserMV3StableUpdatesSupported } from '../../shared/modules/browser-runtime.utils';
+import { getIsChromiumBrowserMV3StableUpdatesSupported } from '../../shared/modules/browser-runtime.utils';
 import { getPlatform } from './lib/util';
 import type MetaMaskController from './metamask-controller';
 import type ExtensionPlatform from './platforms/extension';
@@ -54,7 +54,7 @@ export function onUpdate(
 
   if (
     !isFirefox &&
-    !getIsBrowserMV3StableUpdatesSupported(
+    !getIsChromiumBrowserMV3StableUpdatesSupported(
       Bowser.getParser(globalThis.navigator.userAgent),
     )
   ) {
