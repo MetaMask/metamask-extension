@@ -2,6 +2,9 @@ import { Driver } from '../../webdriver/driver';
 import { WINDOW_TITLES } from '../../helpers';
 import SnapSimpleKeyringPage from '../pages/snap-simple-keyring-page';
 import TestDapp from '../pages/test-dapp';
+import PersonalSignConfirmation from '../pages/confirmations/redesign/personal-sign-confirmation';
+import SignTypedDataConfirmation from '../pages/confirmations/redesign/sign-typed-data-confirmation';
+import PermitConfirmation from '../pages/confirmations/redesign/permit-confirmation';
 
 /**
  * This function initiates the steps for a personal sign with snap account on test dapp.
@@ -19,7 +22,12 @@ export const personalSignWithSnapAccount = async (
 ): Promise<void> => {
   const testDapp = new TestDapp(driver);
   await testDapp.checkPageIsLoaded();
-  await testDapp.personalSign();
+  await testDapp.clickPersonalSign();
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  const confirmation = new PersonalSignConfirmation(driver);
+  await confirmation.verifyConfirmationHeadingTitle();
+  // Cannot wait for window to close as new window is opened with Finish signing
+  await confirmation.clickFooterConfirmButton();
   if (!isSyncFlow) {
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await new SnapSimpleKeyringPage(driver).approveRejectSnapAccountTransaction(
@@ -52,7 +60,13 @@ export const signTypedDataWithSnapAccount = async (
 ): Promise<void> => {
   const testDapp = new TestDapp(driver);
   await testDapp.checkPageIsLoaded();
-  await testDapp.signTypedData();
+  await testDapp.clickSignTypedData();
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  const confirmation = new SignTypedDataConfirmation(driver);
+  await confirmation.verifyConfirmationHeadingTitle();
+  // Cannot wait for window to close as new window is opened with Finish signing
+  await confirmation.clickFooterConfirmButton();
+
   if (!isSyncFlow) {
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await new SnapSimpleKeyringPage(driver).approveRejectSnapAccountTransaction(
@@ -85,7 +99,12 @@ export const signTypedDataV3WithSnapAccount = async (
 ): Promise<void> => {
   const testDapp = new TestDapp(driver);
   await testDapp.checkPageIsLoaded();
-  await testDapp.signTypedDataV3Redesign();
+  await testDapp.clickSignTypedDatav3();
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  const confirmation = new SignTypedDataConfirmation(driver);
+  await confirmation.verifyConfirmationHeadingTitle();
+  // Cannot wait for window to close as new window is opened with Finish signing
+  await confirmation.clickFooterConfirmButton();
 
   if (!isSyncFlow) {
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -119,7 +138,12 @@ export const signTypedDataV4WithSnapAccount = async (
 ): Promise<void> => {
   const testDapp = new TestDapp(driver);
   await testDapp.checkPageIsLoaded();
-  await testDapp.signTypedDataV4();
+  await testDapp.clickSignTypedDatav4();
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  const confirmation = new SignTypedDataConfirmation(driver);
+  await confirmation.verifyConfirmationHeadingTitle();
+  // Cannot wait for window to close as new window is opened with Finish signing
+  await confirmation.clickFooterConfirmButton();
   if (!isSyncFlow) {
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await new SnapSimpleKeyringPage(driver).approveRejectSnapAccountTransaction(
@@ -152,7 +176,12 @@ export const signPermitWithSnapAccount = async (
 ): Promise<void> => {
   const testDapp = new TestDapp(driver);
   await testDapp.checkPageIsLoaded();
-  await testDapp.signPermit();
+  await testDapp.clickPermit();
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  const confirmation = new PermitConfirmation(driver);
+  await confirmation.verifyOrigin();
+  // Cannot wait for window to close as new window is opened with Finish signing
+  await confirmation.clickFooterConfirmButton();
   if (!isSyncFlow) {
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await new SnapSimpleKeyringPage(driver).approveRejectSnapAccountTransaction(
