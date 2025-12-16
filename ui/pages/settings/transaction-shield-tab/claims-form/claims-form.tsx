@@ -382,7 +382,7 @@ const ClaimsForm = ({ mode = 'new' }: ClaimsFormProps) => {
 
       // Delete the draft if we were editing one
       if (currentDraftId) {
-        deleteDraft(currentDraftId);
+        await deleteDraft(currentDraftId);
       }
 
       dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.Success));
@@ -437,8 +437,8 @@ const ClaimsForm = ({ mode = 'new' }: ClaimsFormProps) => {
     caseDescription,
   ]);
 
-  const handleSaveDraft = useCallback(() => {
-    saveDraft({
+  const handleSaveDraft = useCallback(async () => {
+    await saveDraft({
       chainId,
       email,
       impactedWalletAddress: impactedWalletAddress as `0x${string}`,
