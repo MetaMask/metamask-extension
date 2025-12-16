@@ -541,14 +541,13 @@ export default function createRPCMethodTrackingMiddleware({
         });
       }
 
-      // Exclude address_alert_response so useTrustSignalMetrics value is preserved during finalization
-      const { address_alert_response: _, ...eventPropsWithoutAddressAlert } =
-        eventProperties;
       const properties = {
-        ...eventPropsWithoutAddressAlert,
+        ...eventProperties,
         ...blockaidMetricProps,
         location,
       };
+      // Exclude address_alert_response so useTrustSignalMetrics value is preserved during finalization
+      delete properties.address_alert_response;
 
       if (
         event === MetaMetricsEventName.SignatureRejected ||
