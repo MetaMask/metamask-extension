@@ -3877,9 +3877,6 @@
   "nftAutoDetectionEnabled": {
     "message": "Détection automatique des NFT activée"
   },
-  "nftDisclaimer": {
-    "message": "Avertissement : MetaMask importe le fichier multimédia de l'URL source. Cette URL est parfois modifiée par la place de marché sur laquelle le NFT a été minté."
-  },
   "nftEmptyDescription": {
     "message": "Le monde des NFT s’offre à vous. Commencez votre collection dès aujourd’hui."
   },
@@ -3911,9 +3908,6 @@
   },
   "noAccountsFound": {
     "message": "Aucun compte trouvé pour la demande de recherche effectuée"
-  },
-  "noConnectedAccountTitle": {
-    "message": "MetaMask n’est pas connecté à ce site"
   },
   "noConnectionDescription": {
     "message": "Pour vous connecter à un site, trouvez et sélectionnez le bouton « connecter ». N’oubliez pas que MetaMask ne peut se connecter qu’à des sites Web3"
@@ -4646,10 +4640,7 @@
   "permissions": {
     "message": "Autorisations"
   },
-  "permissionsPageEmptyContent": {
-    "message": "Rien à voir ici"
-  },
-  "permissionsPageEmptySubContent": {
+  "permissionsPageEmptyDescription": {
     "message": "Ici, vous pouvez voir les autorisations que vous avez accordées aux Snaps installés ou aux sites connectés."
   },
   "permitSimulationChange_approve": {

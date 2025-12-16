@@ -3877,9 +3877,6 @@
   "nftAutoDetectionEnabled": {
     "message": "Ενεργοποιήθηκε η αυτόματη ανίχνευση NFT"
   },
-  "nftDisclaimer": {
-    "message": "Αποποίηση ευθυνών: Το MetaMask αντλεί το αρχείο πολυμέσων από το url της πηγής. Αυτό το url μερικές φορές αλλάζει ανάλογα με την αγορά στην οποία εκδόθηκε το NFT."
-  },
   "nftEmptyDescription": {
     "message": "Υπάρχει ένας ολόκληρος κόσμος NFT εκεί έξω. Ξεκινήστε τη συλλογή σας σήμερα."
   },
@@ -3911,9 +3908,6 @@
   },
   "noAccountsFound": {
     "message": "Δεν βρέθηκαν λογαριασμοί για το συγκεκριμένο αίτημα αναζήτησης"
-  },
-  "noConnectedAccountTitle": {
-    "message": "Το MetaMask δεν συνδέεται με αυτόν τον ιστότοπο"
   },
   "noConnectionDescription": {
     "message": "Για να συνδεθείτε σε έναν ιστότοπο, βρείτε και επιλέξτε το κουμπί \"Σύνδεση\". Να θυμάστε ότι το MetaMask μπορεί να συνδεθεί μόνο με ιστότοπους στο web3"
@@ -4646,10 +4640,7 @@
   "permissions": {
     "message": "Άδειες"
   },
-  "permissionsPageEmptyContent": {
-    "message": "Δεν υπάρχει τίποτα εδώ"
-  },
-  "permissionsPageEmptySubContent": {
+  "permissionsPageEmptyDescription": {
     "message": "Εδώ μπορείτε να δείτε τις άδειες χρήσης που έχετε δώσει στα εγκατεστημένα Snaps ή στους συνδεδεμένους ιστότοπους."
   },
   "permitSimulationChange_approve": {

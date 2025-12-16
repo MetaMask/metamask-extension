@@ -13,7 +13,6 @@ import {
   loginWithBalanceValidation,
   loginWithoutBalanceValidation,
 } from '../../page-objects/flows/login.flow';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 const infuraSepoliaUrl =
   'https://sepolia.infura.io/v3/00000000000000000000000000000000';
@@ -38,25 +37,8 @@ async function mockInfura(mockServer: Mockttp): Promise<void> {
 
 async function mockInfuraResponses(mockServer: Mockttp): Promise<void> {
   await mockInfura(mockServer);
-  // Mock spot-prices for mainnet (for aggregated balance calculation)
-  await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
-    '0x0000000000000000000000000000000000000000': {
-      price: 1700,
-      marketCap: 382623505141,
-      pricePercentChange1d: 0,
-    },
-  });
-  // Mock spot-prices for localhost (where test starts)
-  await mockSpotPrices(mockServer, CHAIN_IDS.LOCALHOST, {
-    '0x0000000000000000000000000000000000000000': {
-      price: 1700,
-      marketCap: 382623505141,
-      pricePercentChange1d: 0,
-    },
-  });
-  // Mock spot-prices for Sepolia (where test switches to)
-  await mockSpotPrices(mockServer, CHAIN_IDS.SEPOLIA, {
-    '0x0000000000000000000000000000000000000000': {
+  await mockSpotPrices(mockServer, {
+    'eip155:1/slip44:60': {
       price: 1700,
       marketCap: 382623505141,
       pricePercentChange1d: 0,
@@ -66,14 +48,12 @@ async function mockInfuraResponses(mockServer: Mockttp): Promise<void> {
 
 async function mockPriceApi(mockServer: Mockttp) {
   const spotPricesMockEth = await mockServer
-    .forGet(
-      /^https:\/\/price\.api\.cx\.metamask\.io\/v2\/chains\/\d+\/spot-prices/u,
-    )
+    .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
 
     .thenCallback(() => ({
       statusCode: 200,
       json: {
-        '0x0000000000000000000000000000000000000000': {
+        'eip155:1/slip44:60': {
           id: 'ethereum',
           price: 1,
           marketCap: 112500000,

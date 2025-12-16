@@ -17,9 +17,23 @@ export class FixtureExtensionStore extends ExtensionStore {
 
   #initializing?: Promise<void>;
 
-  constructor() {
+  /**
+   * Construct a FixtureExtensionStore.
+   *
+   * If the `initialize` argument is `false`, the store is assumed to be initialized already.
+   *
+   * @param args - Arguments
+   * @param args.initialize - Whether to initialize the store by reading and setting fixtures.
+   */
+  constructor({ initialize = false }: { initialize?: boolean } = {}) {
     super();
-    this.#initializing = this.#init();
+
+    if (initialize) {
+      this.#initializing = this.#init();
+    } else {
+      this.#initializing = Promise.resolve();
+      this.#initialized = true;
+    }
   }
 
   async #init() {

@@ -1,3 +1,5 @@
+const consoleReporterRules = require('./test/jest/console-reporter-rules-unit');
+
 module.exports = {
   collectCoverageFrom: [
     '<rootDir>/app/scripts/**/*.(js|ts|tsx)',
@@ -13,7 +15,13 @@ module.exports = {
   // Jest doesn't support Prettier 3 yet, so we use Prettier 2
   prettierPath: require.resolve('prettier-2'),
   reporters: [
-    'default',
+    [
+      'jest-clean-console-reporter',
+      {
+        rules: consoleReporterRules,
+      },
+    ],
+    'summary',
     [
       'jest-junit',
       {
