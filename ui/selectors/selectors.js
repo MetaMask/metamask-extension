@@ -814,7 +814,11 @@ export function getSelectedAccountTokensAcrossChains(state) {
 
     const nativeBalance = nativeTokenBalancesByChainId[chainId];
     if (nativeBalance) {
-      const nativeTokenInfo = getNativeTokenInfo(state, chainId);
+      const nativeTokenInfo = getNativeTokenInfo(
+        state.metamask.networkConfigurationsByChainId,
+        state.metamask.provider,
+        chainId,
+      );
       tokensByChain[chainId].push({
         ...nativeTokenInfo,
         address: '',
@@ -875,6 +879,7 @@ export const getTokensAcrossChainsByAccountAddressSelector = createSelector(
     nativeTokenBalancesByChainId,
     selectedAddress,
   ) => {
+    console.log('DEBUG getTokensAcrossChainsByAccountAddressSelector CALLED');
     const tokensByChain = {};
 
     const chainIds = new Set([
