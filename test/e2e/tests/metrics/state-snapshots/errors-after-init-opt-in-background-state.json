@@ -52,7 +52,7 @@
     "onboardingDate": null,
     "outdatedBrowserWarningLastShown": "object",
     "popupGasPollTokens": "object",
-    "sidePanelGasPollTokens": "object",
+    "sidePanelGasPollTokens": [],
     "productTour": "accountIcon",
     "recoveryPhraseReminderHasBeenShown": true,
     "recoveryPhraseReminderLastShown": "number",
