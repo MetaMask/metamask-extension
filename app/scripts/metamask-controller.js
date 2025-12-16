@@ -1181,10 +1181,12 @@ export default class MetamaskController extends EventEmitter {
           {
             snapId: process.env.PERMISSIONS_KERNEL_SNAP_ID,
             handleRequest: this.handleSnapRequest.bind(this),
-            onBeforeRequest: () =>
-              (rpcBlockingMiddlewareState.isBlocked = true),
-            onAfterRequest: () =>
-              (rpcBlockingMiddlewareState.isBlocked = false),
+            onBeforeRequest: () => {
+              rpcBlockingMiddlewareState.isBlocked = true;
+            },
+            onAfterRequest: () => {
+              rpcBlockingMiddlewareState.isBlocked = false;
+            },
           },
           params,
           req,
