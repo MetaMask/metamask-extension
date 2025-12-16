@@ -46,6 +46,11 @@ export const isMultichainAccountsFeatureEnabled = (
     return semver.gte(APP_VERSION, minimumVersion);
   };
 
+  // Some e2e/integration tests can force multichain accounts state 1 and 2 to be enabled.
+  if (process.env.FORCE_MULTICHAIN_ACCOUNTS_FEATURE_FLAG) {
+    return true;
+  }
+
   if (featureVersion === FEATURE_VERSION_2) {
     if (process.env.IN_TEST) {
       // Some E2E tests depend on multichain accounts v2 being disabled, so we run
