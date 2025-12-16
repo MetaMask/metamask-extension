@@ -47,7 +47,7 @@ export const isMultichainAccountsFeatureEnabled = (
   };
 
   // Some e2e/integration tests can force multichain accounts state 1 and 2 to be enabled.
-  if (process.env.FORCE_MULTICHAIN_ACCOUNTS_FEATURE_FLAG) {
+  if (process.env.FORCE_MULTICHAIN_ACCOUNTS_FEATURE_FLAG === 'true') {
     return true;
   }
 
