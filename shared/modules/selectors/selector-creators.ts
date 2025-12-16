@@ -1,7 +1,199 @@
 import { isEqual } from 'lodash';
-import { createSelectorCreator, lruMemoize, weakMapMemoize } from 'reselect';
 import {
+  createSelectorCreator,
+  lruMemoize,
+  weakMapMemoize,
+  type CreateSelectorFunction,
+} from 'reselect';
 import { shallowEqual, fastDeepEqual } from './selector-equality-functions';
+
+// Note: createSelectorCreator is still needed for createSelectiveDeepEqualSelector
+// which requires custom equality logic that can't be expressed via the factory.
+
+// ============================================================================
+// Selector Factory
+// ============================================================================
+
+/**
+ * Equality comparison strategy for selector inputs or results.
+ *
+ * - `Reference` - Strict equality (`===`). Fastest, use when references are stable.
+ * - `Shallow` - Compares arrays by elements, objects by property values (one level deep).
+ * - `Deep` - Full recursive comparison via lodash `isEqual`. Most expensive.
+ * - `FastDeep` - Optimized deep equality that short-circuits on structural differences.
+ */
+export const EqualityMode = {
+  Reference: 'reference',
+  Shallow: 'shallow',
+  Deep: 'deep',
+  FastDeep: 'fast-deep',
+} as const;
+
+export type EqualityMode = (typeof EqualityMode)[keyof typeof EqualityMode];
+
+/**
+ * Memoization strategy for the selector.
+ *
+ * - `Lru` - Least-recently-used cache (default). Best for most use cases.
+ * - `Weak` - WeakMap-based caching. Keys are garbage-collected when no longer referenced.
+ */
+export const MemoizeMode = {
+  Lru: 'lru',
+  Weak: 'weakmap',
+} as const;
+
+export type MemoizeMode = (typeof MemoizeMode)[keyof typeof MemoizeMode];
+
+/**
+ * Configuration options for {@link createSelectorWith}.
+ */
+export type SelectorOptions = {
+  /**
+   * Equality comparison for input selectors.
+   * Determines when the result function should be re-executed.
+   *
+   * @default EqualityMode.Reference
+   */
+  inputEquality?: EqualityMode;
+
+  /**
+   * Equality comparison for the result.
+   * When set, compares new results against cached results to prevent
+   * unnecessary downstream re-renders even when inputs change.
+   *
+   * @default undefined (disabled)
+   */
+  resultEquality?: EqualityMode;
+
+  /**
+   * Memoization strategy.
+   *
+   * @default MemoizeMode.Lru
+   */
+  memoize?: MemoizeMode;
+
+  /**
+   * Maximum cache size for LRU memoization.
+   * Only applies when `memoize: MemoizeMode.Lru`.
+   *
+   * @default 1
+   */
+  maxSize?: number;
+};
+
+/** Maps equality mode to comparison function */
+const equalityFunctions: Record<
+  EqualityMode,
+  (a: unknown, b: unknown) => boolean
+> = {
+  [EqualityMode.Reference]: (a, b) => a === b,
+  [EqualityMode.Shallow]: shallowEqual,
+  [EqualityMode.Deep]: isEqual,
+  [EqualityMode.FastDeep]: fastDeepEqual,
+};
+
+/**
+ * Factory for creating customized selector creators with composable options.
+ *
+ * This is the recommended way to create selectors with non-default behavior.
+ * It provides a unified API for configuring input equality, result equality,
+ * memoization strategy, and cache size.
+ *
+ * ## Quick Reference
+ *
+ * | Option | Values | Default | Use Case |
+ * |--------|--------|---------|----------|
+ * | `inputEquality` | `EqualityMode.*` | `Reference` | Compare inputs to decide recalculation |
+ * | `resultEquality` | `EqualityMode.*` | `undefined` | Compare results to prevent re-renders |
+ * | `memoize` | `MemoizeMode.*` | `Lru` | Cache eviction strategy |
+ * | `maxSize` | `number` | `1` | LRU cache capacity |
+ *
+ * ## When to Use Each Option
+ *
+ * ### Input Equality
+ * - `Reference` (default): Inputs are stable references (immer, normalized state)
+ * - `Shallow`: Inputs are recreated arrays/objects with stable elements
+ * - `Deep`: Inputs are deeply nested and may be recreated with same values
+ * - `FastDeep`: Like `Deep` but optimized when structural changes are common
+ *
+ * ### Result Equality
+ * - `undefined` (default): Result changes whenever inputs change
+ * - `Shallow`/`Deep`: Result may be equivalent even when inputs differ,
+ * e.g., aggregations, derived booleans, filtered subsets
+ *
+ * @param options - Configuration for the selector creator
+ * @returns A selector creator function compatible with reselect's `createSelector`
+ * @example
+ * ```ts
+ * // Deep input equality (replaces createDeepEqualSelector)
+ * const createDeepInputSelector = createSelectorWith({
+ *   inputEquality: EqualityMode.Deep,
+ * });
+ *
+ * // Shallow input + result equality
+ * const createStableSelector = createSelectorWith({
+ *   inputEquality: EqualityMode.Shallow,
+ *   resultEquality: EqualityMode.Deep,
+ * });
+ *
+ * // Large LRU cache for parameterized selectors
+ * const createCachedSelector = createSelectorWith({
+ *   memoize: MemoizeMode.Lru,
+ *   maxSize: 50,
+ * });
+ *
+ * // WeakMap for selectors called with many distinct objects
+ * const createWeakSelector = createSelectorWith({
+ *   memoize: MemoizeMode.Weak,
+ * });
+ * ```
+ * @example
+ * ```ts
+ * // Practical usage: account balance aggregation
+ * const createBalanceSelector = createSelectorWith({
+ *   inputEquality: EqualityMode.Shallow,
+ *   resultEquality: EqualityMode.Deep,
+ * });
+ *
+ * const getTotalBalance = createBalanceSelector(
+ *   getVisibleAccounts,
+ *   (accounts) => accounts.reduce((sum, a) => sum + BigInt(a.balance), 0n),
+ * );
+ * ```
+ */
+export function createSelectorWith(
+  options: SelectorOptions = {},
+): CreateSelectorFunction {
+  const {
+    inputEquality = EqualityMode.Reference,
+    resultEquality,
+    memoize = MemoizeMode.Lru,
+    maxSize,
+  } = options;
+
+  const memoizeFn = memoize === MemoizeMode.Weak ? weakMapMemoize : lruMemoize;
+  const inputEqualityFn = equalityFunctions[inputEquality];
+
+  // Build memoize options
+  const memoizeOptions: {
+    maxSize?: number;
+    equalityCheck?: (a: unknown, b: unknown) => boolean;
+    resultEqualityCheck?: (a: unknown, b: unknown) => boolean;
+  } = {
+    equalityCheck: inputEqualityFn,
+  };
+
+  if (memoize === MemoizeMode.Lru && maxSize !== undefined) {
+    memoizeOptions.maxSize = maxSize;
+  }
+
+  if (resultEquality) {
+    memoizeOptions.resultEqualityCheck = equalityFunctions[resultEquality];
+  }
+
+  return createSelectorCreator(memoizeFn, memoizeOptions);
+}
+
 
 /**
  * Creates a selector with deep equality comparison using lodash `isEqual`.
