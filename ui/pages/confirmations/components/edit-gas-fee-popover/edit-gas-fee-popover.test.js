@@ -9,7 +9,6 @@ import {
 import { EditGasModes } from '../../../../../shared/constants/gas';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
-import { GasFeeContextProvider } from '../../../../contexts/gasFee';
 
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { ETH_EOA_METHODS } from '../../../../../shared/constants/eth-methods';
