@@ -200,11 +200,7 @@ import {
   TraceOperation,
 } from '../../shared/lib/trace';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
-import {
-  MultichainNetworks,
-  SOLANA_CHAINS,
-  TRON_CHAINS,
-} from '../../shared/constants/multichain/networks';
+import { NON_EVM_ACCOUNT_CHANGED_CONFIGS } from '../../shared/constants/multichain/networks';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
@@ -1684,26 +1680,17 @@ export default class MetamaskController extends EventEmitter {
     let lastSelectedAddress;
     const lastSelectedAccountAddressByNetwork = {};
 
-    // this throws if there is no Solana or Tron account... perhaps we should handle this better at the controller level
+    NON_EVM_ACCOUNT_CHANGED_CONFIGS.forEach(({ network }) => {
+      // this throws if there is no account for the given network... perhaps we should handle this better at the controller level
     try {
-      lastSelectedAccountAddressByNetwork[MultichainNetworks.SOLANA] =
+        lastSelectedAccountAddressByNetwork[network] =
         this.accountsController.getSelectedMultichainAccount(
-          MultichainNetworks.SOLANA,
+            network,
         )?.address;
     } catch {
       // noop
     }
-
-    ///: BEGIN:ONLY_INCLUDE_IF(tron)
-    try {
-      lastSelectedAccountAddressByNetwork[MultichainNetworks.TRON] =
-        this.accountsController.getSelectedMultichainAccount(
-          MultichainNetworks.TRON,
-        )?.address;
-    } catch {
-      // noop
-    }
-    ///: END:ONLY_INCLUDE_IF
+    });
 
     this.controllerMessenger.subscribe(
       'PreferencesController:stateChange',
@@ -1812,25 +1799,6 @@ export default class MetamaskController extends EventEmitter {
       getAuthorizedScopesByOrigin,
     );
 
-    const multichainAccountChangedConfigs = [
-      {
-        network: MultichainNetworks.SOLANA,
-        chains: SOLANA_CHAINS,
-        notificationProperty:
-          KnownSessionProperties.SolanaAccountChangedNotifications,
-        accountType: SolAccountType.DataAccount,
-      },
-      ///: BEGIN:ONLY_INCLUDE_IF(tron)
-      {
-        network: MultichainNetworks.TRON,
-        chains: TRON_CHAINS,
-        notificationProperty:
-          KnownSessionProperties.TronAccountChangedNotifications,
-        accountType: TrxAccountType.Eoa,
-      },
-      ///: END:ONLY_INCLUDE_IF
-    ];
-
     // TODO: To be removed when state 2 is fully transitioned.
     // wallet_notify for solana accountChanged when selected account changes
     this.controllerMessenger.subscribe(
@@ -1882,7 +1850,7 @@ export default class MetamaskController extends EventEmitter {
       `${this.permissionController.name}:stateChange`,
       async (currentValue, previousValue) => {
         const origins = uniq([...previousValue.keys(), ...currentValue.keys()]);
-        multichainAccountChangedConfigs.forEach(
+        NON_EVM_ACCOUNT_CHANGED_CONFIGS.forEach(
           ({ chains, notificationProperty, network }) => {
             origins.forEach((origin) => {
               const previousCaveatValue = previousValue.get(origin);
@@ -1939,7 +1907,7 @@ export default class MetamaskController extends EventEmitter {
           groupId,
         );
 
-        multichainAccountChangedConfigs.forEach(
+        NON_EVM_ACCOUNT_CHANGED_CONFIGS.forEach(
           ({ network, accountType, notificationProperty, chains }) => {
             const [account] =
               this.accountTreeController.getAccountsFromSelectedAccountGroup({
@@ -6355,7 +6323,6 @@ export default class MetamaskController extends EventEmitter {
       getNonEvmSupportedMethods: this.getNonEvmSupportedMethods.bind(this),
     });
 
-    // Handle Solana account notifications
     // The optional chain operator below shouldn't be needed as
     // the existence of sessionProperties is enforced by the caveat
     // validator, but we are still seeing some instances where it
@@ -6363,68 +6330,43 @@ export default class MetamaskController extends EventEmitter {
     // https://github.com/MetaMask/metamask-extension/issues/33412
     // This suggests state corruption, but we can't find definitive proof that.
     // For now we are using this patch which is harmless and silences the error in Sentry.
-    const solanaAccountsChangedNotifications =
-      caip25Caveat.value.sessionProperties?.[
-        KnownSessionProperties.SolanaAccountChangedNotifications
-      ];
-    const solanaScope =
-      sessionScopes[MultichainNetworks.SOLANA] ||
-      sessionScopes[MultichainNetworks.SOLANA_DEVNET] ||
-      sessionScopes[MultichainNetworks.SOLANA_TESTNET];
+    NON_EVM_ACCOUNT_CHANGED_CONFIGS.forEach(
+      ({ network, chains, notificationProperty }) => {
+        const accountsChangedNotifications =
+          caip25Caveat.value.sessionProperties?.[notificationProperty];
 
-    if (solanaAccountsChangedNotifications && solanaScope) {
-      const { accounts } = solanaScope;
-      const parsedPermittedSolanaAddresses = accounts.map((caipAccountId) => {
+        if (!accountsChangedNotifications) {
+          return;
+        }
+
+        // Find the scope by checking all chains in the config
+        const scopeObject = chains
+          .map((chain) => sessionScopes[chain])
+          .find((scope) => scope !== undefined);
+
+        if (!scopeObject) {
+          return;
+        }
+
+        const { accounts } = scopeObject;
+        const parsedPermittedAddresses = accounts.map((caipAccountId) => {
         const { address } = parseCaipAccountId(caipAccountId);
         return address;
       });
 
-      const [accountAddressToEmit] = this.sortMultichainAccountsByLastSelected(
-        parsedPermittedSolanaAddresses,
-      );
+        const [accountAddressToEmit] =
+          this.sortMultichainAccountsByLastSelected(parsedPermittedAddresses);
 
       if (accountAddressToEmit) {
         this._notifyMultichainAccountChange(
           origin,
           [accountAddressToEmit],
-          MultichainNetworks.SOLANA,
+            network,
         );
       }
+      },
+    );
     }
-
-    ///: BEGIN:ONLY_INCLUDE_IF(tron)
-    // Handle Tron account notifications
-    const tronAccountsChangedNotifications =
-      caip25Caveat.value.sessionProperties?.[
-        KnownSessionProperties.TronAccountChangedNotifications
-      ];
-
-    const tronScope =
-      sessionScopes[MultichainNetworks.TRON] ||
-      sessionScopes[MultichainNetworks.TRON_NILE] ||
-      sessionScopes[MultichainNetworks.TRON_SHASTA];
-
-    if (tronAccountsChangedNotifications && tronScope) {
-      const { accounts } = tronScope;
-      const parsedPermittedTronAddresses = accounts.map((caipAccountId) => {
-        const { address } = parseCaipAccountId(caipAccountId);
-        return address;
-      });
-
-      const [accountAddressToEmit] = this.sortMultichainAccountsByLastSelected(
-        parsedPermittedTronAddresses,
-      );
-
-      if (accountAddressToEmit) {
-        this._notifyMultichainAccountChange(
-          origin,
-          [accountAddressToEmit],
-          MultichainNetworks.TRON,
-        );
-      }
-    }
-    ///: END:ONLY_INCLUDE_IF
-  } // ---------------------------------------------------------------------------
   // Identity Management (signature operations)
 
   getAddTransactionRequest({
