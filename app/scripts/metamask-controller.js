@@ -473,10 +473,7 @@ export default class MetamaskController extends EventEmitter {
   constructor(opts) {
     super();
 
-    const {
-      autoConfigureControllers = true,
-      controllerMessenger = getRootMessenger(),
-    } = opts;
+    const { controllerMessenger = getRootMessenger() } = opts;
 
     this.defaultMaxListeners = 20;
 
@@ -540,13 +537,9 @@ export default class MetamaskController extends EventEmitter {
     // Fire a ping message to check if other extensions are running
     checkForMultipleVersionsRunning();
 
-    if (autoConfigureControllers) {
-      this.configureAllControllers();
-    }
-
     // Don't add anything that interacts with a `controller` in the constructor,
     // that should go inside `configureAllControllers`.
-    // Fin.
+    this.configureAllControllers();
   }
 
   /**

@@ -1138,21 +1138,54 @@ export function setupController(
     preinstalledSnaps,
     requestSafeReload,
     cronjobControllerStorageManager,
-    // set to false because we need to subscribe to some events *before*
-    // configuring controllers to ensure we are able to record state changes
-    autoConfigureControllers: false,
   });
 
+  /**
+   * @type {Array<string>} List of controller store keys that have changed since initialization.
+   */
+  const changedControllerKeys = [];
+  const currentState = controller.store.getState();
+  for (const key of Object.keys(currentState)) {
+    const initialControllerState = initState[key] || {};
+    const newControllerState = currentState[key];
+    const newControllerStateKeys = Object.keys(newControllerState);
+
+    // if the number of keys has changed, we need to persist the new state
+    if (
+      newControllerStateKeys.length !==
+      Object.keys(initialControllerState).length
+    ) {
+      changedControllerKeys.push(key);
+      break;
+    }
+
+    // if any of the controller's own top-level keys have changed
+    // (reference comparison). If any have, we need to persist the new state.
+    for (const subKey of newControllerStateKeys) {
+      if (newControllerState[subKey] !== initialControllerState[subKey]) {
+        changedControllerKeys.push(key);
+        break;
+      }
+    }
+  }
+  if (changedControllerKeys.length > 0) {
+    log.info(
+      `MetaMaskController state changed during configuration for controllers: ${changedControllerKeys.join(', ')}. Persisting updated state.`,
+    );
+    // persist the new state
+    update(currentState).catch((error) => {
+      log.error('Error persisting updated controller state:', error);
+      sentry?.captureException(error);
+    });
+  }
+
   // this persistence hooks must happen before `controller.configureAllControllers`
-  // or some update might not be persisted!
+  // or some updates might not be persisted!
   controller.store.on('update', update);
   controller.store.on('error', (error) => {
     log.error('MetaMask controller.store error:', error);
     sentry?.captureException(error);
   });
-
-  // `autoConfigureControllers` is `false`, so we have to call this manually here.
-  controller.configureAllControllers();
 
   setupEnsIpfsResolver({
     getCurrentChainId: () =>
