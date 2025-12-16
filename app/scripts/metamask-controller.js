@@ -5563,7 +5563,8 @@ export default class MetamaskController extends EventEmitter {
     // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
     // It is not necessary to await this since it is just expected for the snap to receive
     // the information without blocking the login flow.
-    this.forwardSelectedAccountGroupToSnapKeyring(
+    // eslint-disable-next-line no-void
+    void this.forwardSelectedAccountGroupToSnapKeyring(
       await this.getSnapKeyring(),
       this.accountTreeController.getSelectedAccountGroup(),
     );
