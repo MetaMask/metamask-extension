@@ -126,6 +126,9 @@ const { safePersist, requestSafeReload } =
 global.stateHooks.getMostRecentPersistedState = () =>
   persistenceManager.mostRecentRetrievedState;
 
+// Expose storageKind for Sentry tagging (used to distinguish 'data' vs 'split' storage)
+global.stateHooks.getStorageKind = () => persistenceManager.storageKind;
+
 /**
  * A helper function to log the current state of the vault. Useful for debugging
  * purposes, to, in the case of database corruption, an possible way for an end
