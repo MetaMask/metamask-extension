@@ -14,14 +14,6 @@
     background-color: var(--color-accent03-light);
   }
 
-  &--welcome-login {
-    background-color: var(--welcome-bg-light);
-
-    @media (prefers-color-scheme: dark) {
-      background-color: var(--color-accent02-dark);
-    }
-  }
-
   &__container {
     padding-inline: 16px;
     padding-top: 16px;
