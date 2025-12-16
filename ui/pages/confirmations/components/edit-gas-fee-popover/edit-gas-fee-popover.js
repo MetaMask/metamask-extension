@@ -141,7 +141,7 @@ const EditGasFeePopover = ({ transaction, editGasMode }) => {
 
 EditGasFeePopover.propTypes = {
   transaction: PropTypes.object.isRequired,
-  editGasMode: PropTypes.string.isRequired,
+  editGasMode: PropTypes.string,
 };
 
 export default EditGasFeePopover;

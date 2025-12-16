@@ -177,7 +177,7 @@ const CancelSpeedupPopover = ({ transaction, editGasMode }) => {
 
 CancelSpeedupPopover.propTypes = {
   transaction: PropTypes.object.isRequired,
-  editGasMode: PropTypes.string.isRequired,
+  editGasMode: PropTypes.string,
 };
 
 export default CancelSpeedupPopover;
