@@ -1,21 +1,22 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { AccountTreeControllerState } from '@metamask/account-tree-controller';
+import { toChecksumAddress } from 'ethereumjs-util';
 import mockState from '../../../../../test/data/mock-state.json';
-import { createMockInternalAccount } from '../../../../../test/jest/mocks';
-import { InternalAccountWithBalance } from '../../../../selectors';
+import {
+  getSelectedAccountGroupFromAccountTree,
+  getSelectedInternalAccountFromMockState,
+} from '../../../../../test/jest/mocks';
+import {
+  InternalAccountWithBalance,
+  MetaMaskReduxState,
+} from '../../../../selectors';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import { SrpListItem } from './srp-list-item';
 
 const mockTotalFiatBalance = '100';
-const mockAccount: InternalAccountWithBalance = {
-  ...createMockInternalAccount({
-    name: 'Test Account',
-    address: '0xB1BAF6A2f4A808937bb97a2F12CCF08F1233e3D9',
-  }),
-  balance: mockTotalFiatBalance,
-};
 
 const mocks = {
   useMultichainAccountTotalFiatBalance: jest.fn().mockReturnValue({
@@ -31,7 +32,7 @@ jest.mock('../../../../helpers/utils/util', () => ({
   ...jest.requireActual('../../../../helpers/utils/util'),
 }));
 
-const render = () => {
+const render = (mockAccount: InternalAccountWithBalance) => {
   const store = configureMockStore([thunk])(mockState);
   return renderWithProvider(<SrpListItem account={mockAccount} />, store);
 };
@@ -48,15 +49,31 @@ describe('SrpListItem', () => {
     jest.clearAllMocks();
   });
 
-  it('renders account name and shortened address', () => {
-    const { getByText } = render();
+  const mockAccount: InternalAccountWithBalance = {
+    ...getSelectedInternalAccountFromMockState(
+      mockState as unknown as MetaMaskReduxState,
+    ),
+    balance: mockTotalFiatBalance,
+  };
+  const mockAccountGroup = getSelectedAccountGroupFromAccountTree(
+    // TODO: Use widen type here.
+    mockState.metamask
+      .accountTree as unknown as AccountTreeControllerState['accountTree'],
+  );
 
-    expect(getByText(mockAccount.metadata.name)).toBeInTheDocument();
-    expect(getByText(shortenAddress(mockAccount.address))).toBeInTheDocument();
+  it('renders account name and shortened address', () => {
+    const { getByText } = render(mockAccount);
+
+    expect(mockAccountGroup).toBeDefined();
+    expect(mockAccountGroup.accounts).toContain(mockAccount.id);
+    expect(getByText(mockAccountGroup.metadata.name)).toBeInTheDocument();
+    expect(
+      getByText(shortenAddress(toChecksumAddress(mockAccount.address))),
+    ).toBeInTheDocument();
   });
 
   it('calls useMultichainAccountTotalFiatBalance with correct account', () => {
-    render();
+    render(mockAccount);
 
     expect(mocks.useMultichainAccountTotalFiatBalance).toHaveBeenCalledWith(
       mockAccount,
