@@ -134,10 +134,23 @@ window.localStorage = {
 };
 
 // used for native dark/light mode detection
-window.matchMedia = () => ({
-  // Used for NFT list virtualization
-  // eslint-disable-next-line no-empty-function
-  addEventListener: () => {},
+window.matchMedia = (query) => ({
+  matches: false,
+  media: query,
+  onchange: null,
+  addListener: () => {
+    // deprecated - no-op
+  },
+  removeListener: () => {
+    // deprecated - no-op
+  },
+  addEventListener: () => {
+    // no-op for tests
+  },
+  removeEventListener: () => {
+    // no-op for tests
+  },
+  dispatchEvent: () => true,
 });
 
 // override @metamask/logo
