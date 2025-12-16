@@ -126,7 +126,6 @@ export type AppStateControllerState = {
   onboardingDate: number | null;
   outdatedBrowserWarningLastShown: number | null;
   popupGasPollTokens: string[];
-  sidePanelGasPollTokens: string[];
   productTour?: string;
   recoveryPhraseReminderHasBeenShown: boolean;
   recoveryPhraseReminderLastShown: number;
@@ -253,8 +252,7 @@ export type AppStateControllerMessenger = Messenger<
 type PollingTokenType =
   | 'popupGasPollTokens'
   | 'notificationGasPollTokens'
-  | 'fullScreenGasPollTokens'
-  | 'sidePanelGasPollTokens';
+  | 'fullScreenGasPollTokens';
 
 type AppStateControllerInitState = Partial<
   Omit<
@@ -302,7 +300,6 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   onboardingDate: null,
   outdatedBrowserWarningLastShown: null,
   popupGasPollTokens: [],
-  sidePanelGasPollTokens: [],
   productTour: 'accountIcon',
   recoveryPhraseReminderHasBeenShown: false,
   recoveryPhraseReminderLastShown: new Date().getTime(),
@@ -532,12 +529,6 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     usedInUi: true,
   },
   popupGasPollTokens: {
-    includeInStateLogs: true,
-    persist: false,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  sidePanelGasPollTokens: {
     includeInStateLogs: true,
     persist: false,
     includeInDebugSnapshot: true,
@@ -1225,7 +1216,6 @@ export class AppStateController extends BaseController<
       'popupGasPollTokens',
       'notificationGasPollTokens',
       'fullScreenGasPollTokens',
-      'sidePanelGasPollTokens',
     ];
 
     return validTokenTypes.includes(pollingTokenType);
@@ -1239,7 +1229,6 @@ export class AppStateController extends BaseController<
       state.popupGasPollTokens = [];
       state.notificationGasPollTokens = [];
       state.fullScreenGasPollTokens = [];
-      state.sidePanelGasPollTokens = [];
     });
   }
 
