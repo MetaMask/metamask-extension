@@ -59,6 +59,7 @@ import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
 import {
   isEvmAccountType,
   SolAccountType,
+  EthScope,
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   BtcScope,
   ///: END:ONLY_INCLUDE_IF
@@ -5855,8 +5856,20 @@ export default class MetamaskController extends EventEmitter {
    * @returns {string[]} The sorted accounts addresses.
    */
   sortMultichainAccountsByLastSelected(addresses) {
-    const internalAccounts = this.accountsController.listMultichainAccounts();
-    return this.sortAddressesWithInternalAccounts(addresses, internalAccounts);
+    const getLastSelected = (address) => {
+      const account = this.accountsController.getAccountByAddress(address);
+      if (!account) {
+        return undefined;
+      }
+      const context = this.multichainAccountService.getAccountContext(
+        account.id,
+      );
+      // Get EOA account as it's the only account having lastSelected set
+      return context?.group?.get({ scopes: [EthScope.Eoa] })?.metadata
+        .lastSelected;
+    };
+
+    return addresses.sort((a, b) => getLastSelected(b) - getLastSelected(a));
   }
 
   /**
