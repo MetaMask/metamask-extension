@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
@@ -18,6 +18,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import classnames from 'classnames';
+import log from 'loglevel';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Modal,
@@ -80,6 +81,8 @@ const ShieldEntryModal = ({
   const modalType: ModalType = useSelector(getModalTypeForShieldEntryModal);
   const triggeringCohort = useSelector(getShieldEntryModalTriggeringCohort);
 
+  const [actionLoading, setActionLoading] = useState(false);
+
   const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
 
   const determineEntryModalSource = useCallback((): EntryModalSourceEnum => {
@@ -102,80 +105,116 @@ const ShieldEntryModal = ({
   const handleOnClose = async (
     ctaActionClicked: ShieldCtaActionClickedEnum = ShieldCtaActionClickedEnum.Dismiss,
   ) => {
-    const source = determineEntryModalSource();
-    const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
-    captureShieldEntryModalEvent({
-      source,
-      type: modalType,
-      modalCtaActionClicked: ctaActionClicked,
-      marketingUtmParams,
-    });
-
-    if (ctaActionClicked === ShieldCtaActionClickedEnum.Dismiss) {
-      captureShieldCtaClickedEvent({
-        // ShieldCtaSourceEnum & EntryModalSourceEnum are the same enum, so we can cast it to ShieldCtaSourceEnum
-        source: source as unknown as ShieldCtaSourceEnum,
-        ctaActionClicked: ShieldCtaActionClickedEnum.Dismiss,
+    try {
+      const source = determineEntryModalSource();
+      const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
+      captureShieldEntryModalEvent({
+        source,
+        type: modalType,
+        modalCtaActionClicked: ctaActionClicked,
         marketingUtmParams,
       });
-    }
 
-    if (skipEventSubmission) {
-      onClose?.();
-      return;
-    } else if (shouldSubmitEvent) {
+      if (ctaActionClicked === ShieldCtaActionClickedEnum.Dismiss) {
+        captureShieldCtaClickedEvent({
+          // ShieldCtaSourceEnum & EntryModalSourceEnum are the same enum, so we can cast it to ShieldCtaSourceEnum
+          source: source as unknown as ShieldCtaSourceEnum,
+          ctaActionClicked: ShieldCtaActionClickedEnum.Dismiss,
+          marketingUtmParams,
+        });
+      }
+
+      if (skipEventSubmission) {
+        onClose?.();
+        return;
+      } else if (shouldSubmitEvent) {
+        await dispatch(
+          submitSubscriptionUserEvents({
+            event: SubscriptionUserEvent.ShieldEntryModalViewed,
+            cohort: triggeringCohort,
+          }),
+        );
+      }
+
       await dispatch(
-        submitSubscriptionUserEvents({
-          event: SubscriptionUserEvent.ShieldEntryModalViewed,
-          cohort: triggeringCohort,
+        setShowShieldEntryModalOnce({
+          show: false,
+          hasUserInteractedWithModal: true,
         }),
       );
+    } catch (error) {
+      log.error('[handleOnClose] error', error);
+    } finally {
+      setActionLoading(false);
     }
-
-    await dispatch(
-      setShowShieldEntryModalOnce({
-        show: false,
-        hasUserInteractedWithModal: true,
-      }),
-    );
   };
 
   const handleOnGetStarted = async () => {
-    const source = determineEntryModalSource();
-    const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
+    if (actionLoading) {
+      return;
+    }
 
-    captureShieldCtaClickedEvent({
-      // ShieldCtaSourceEnum & EntryModalSourceEnum are the same enum, so we can cast it to ShieldCtaSourceEnum
-      source: source as unknown as ShieldCtaSourceEnum,
-      ctaActionClicked: ShieldCtaActionClickedEnum.Start14DayTrial,
-      redirectToPage: SHIELD_PLAN_ROUTE,
-      marketingUtmParams,
-    });
+    setActionLoading(true);
 
-    // Ensure handleOnClose completes before redirecting
-    await handleOnClose(ShieldCtaActionClickedEnum.Start14DayTrial);
+    try {
+      const source = determineEntryModalSource();
+      const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
 
-    navigate({
-      pathname: SHIELD_PLAN_ROUTE,
-      search:
-        Object.keys(marketingUtmParams).length > 0
-          ? `?${new URLSearchParams(marketingUtmParams).toString()}`
-          : `?source=${source}`,
-    });
+      captureShieldCtaClickedEvent({
+        // ShieldCtaSourceEnum & EntryModalSourceEnum are the same enum, so we can cast it to ShieldCtaSourceEnum
+        source: source as unknown as ShieldCtaSourceEnum,
+        ctaActionClicked: ShieldCtaActionClickedEnum.Start14DayTrial,
+        redirectToPage: SHIELD_PLAN_ROUTE,
+        marketingUtmParams,
+      });
+
+      // Ensure handleOnClose completes before redirecting
+      await handleOnClose(ShieldCtaActionClickedEnum.Start14DayTrial);
+
+      navigate({
+        pathname: SHIELD_PLAN_ROUTE,
+        search:
+          Object.keys(marketingUtmParams).length > 0
+            ? `?${new URLSearchParams(marketingUtmParams).toString()}`
+            : `?source=${source}`,
+      });
+    } catch (error) {
+      log.error('[handleOnGetStarted] error', error);
+    } finally {
+      setActionLoading(false);
+    }
   };
 
   const handleOnLearnMoreClick = () => {
-    const source = determineEntryModalSource();
-    const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
-    captureShieldCtaClickedEvent({
-      // ShieldCtaSourceEnum & EntryModalSourceEnum are the same enum, so we can cast it to ShieldCtaSourceEnum
-      source: source as unknown as ShieldCtaSourceEnum,
-      ctaActionClicked: ShieldCtaActionClickedEnum.LearnMore,
-      redirectToUrl: TRANSACTION_SHIELD_LINK,
-      marketingUtmParams,
-    });
+    if (actionLoading) {
+      return;
+    }
+    setActionLoading(true);
 
-    window.open(TRANSACTION_SHIELD_LINK, '_blank', 'noopener,noreferrer');
+    try {
+      const source = determineEntryModalSource();
+      const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
+      captureShieldCtaClickedEvent({
+        // ShieldCtaSourceEnum & EntryModalSourceEnum are the same enum, so we can cast it to ShieldCtaSourceEnum
+        source: source as unknown as ShieldCtaSourceEnum,
+        ctaActionClicked: ShieldCtaActionClickedEnum.LearnMore,
+        redirectToUrl: TRANSACTION_SHIELD_LINK,
+        marketingUtmParams,
+      });
+
+      captureShieldEntryModalEvent({
+        source,
+        type: modalType,
+        modalCtaActionClicked: ShieldCtaActionClickedEnum.LearnMore,
+        marketingUtmParams,
+      });
+
+      window.open(TRANSACTION_SHIELD_LINK, '_blank', 'noopener,noreferrer');
+    } catch (error) {
+      log.error('[handleOnLearnMoreClick] error', error);
+    } finally {
+      setActionLoading(false);
+    }
   };
 
   return (
@@ -185,7 +224,14 @@ const ShieldEntryModal = ({
       autoFocus={false}
       isClosedOnOutsideClick={false}
       isClosedOnEscapeKey={false}
-      onClose={() => handleOnClose()}
+      onClose={() => {
+        if (actionLoading) {
+          return;
+        }
+
+        setActionLoading(true);
+        handleOnClose();
+      }}
       className="shield-entry-modal"
       data-theme={ThemeType.dark}
     >
@@ -197,7 +243,14 @@ const ShieldEntryModal = ({
         className="shield-entry-modal__content"
       >
         <ModalHeader
-          onClose={() => handleOnClose()}
+          onClose={() => {
+            if (actionLoading) {
+              return;
+            }
+
+            setActionLoading(true);
+            handleOnClose();
+          }}
           closeButtonProps={{
             'data-testid': 'shield-entry-modal-close-button',
             className: 'absolute top-2 right-2',
