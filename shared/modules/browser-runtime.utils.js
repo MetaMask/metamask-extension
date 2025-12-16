@@ -7,7 +7,7 @@ import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import {
   BROKEN_PRERENDER_BROWSER_VERSIONS,
-  FIXED_MV3_STABLE_UPDATES_BROWSER_VERSIONS,
+  FIXED_MV3_STABLE_UPDATES_CHROMIUM_BROWSER_VERSIONS,
   FIXED_PRERENDER_BROWSER_VERSIONS,
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
@@ -90,7 +90,10 @@ export function getIsBrowserPrerenderBroken(
 export function getIsBrowserMV3StableUpdatesSupported(
   bowser = Bowser.getParser(window.navigator.userAgent),
 ) {
-  return bowser.satisfies(FIXED_MV3_STABLE_UPDATES_BROWSER_VERSIONS) ?? false;
+  return (
+    bowser.satisfies(FIXED_MV3_STABLE_UPDATES_CHROMIUM_BROWSER_VERSIONS) ??
+    false
+  );
 }
 
 /**
