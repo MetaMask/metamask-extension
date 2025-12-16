@@ -473,7 +473,10 @@ export default class MetamaskController extends EventEmitter {
   constructor(opts) {
     super();
 
-    const { controllerMessenger = getRootMessenger() } = opts;
+    const {
+      isFirstMetaMaskControllerSetup,
+      controllerMessenger = getRootMessenger(),
+    } = opts;
 
     this.defaultMaxListeners = 20;
 
@@ -488,7 +491,7 @@ export default class MetamaskController extends EventEmitter {
     this.platform = opts.platform;
     this.notificationManager = opts.notificationManager;
     const initState = opts.initState || {};
-    this.version = process.env.METAMASK_VERSION;
+    const version = process.env.METAMASK_VERSION;
     this.recordFirstTimeInfo(initState);
     this.featureFlags = opts.featureFlags;
 
@@ -525,39 +528,11 @@ export default class MetamaskController extends EventEmitter {
 
     this.extension.runtime.onInstalled.addListener((details) => {
       if (details.reason === 'update') {
-        if (this.version === '8.1.0') {
+        if (version === '8.1.0') {
           this.platform.openExtensionInBrowser();
         }
       }
     });
-
-    // Multiple MetaMask instances launched warning
-    this.extension.runtime.onMessageExternal.addListener(onMessageReceived);
-
-    // Fire a ping message to check if other extensions are running
-    checkForMultipleVersionsRunning();
-
-    // Don't add anything that interacts with a `controller` in the constructor,
-    // that should go inside `configureAllControllers`.
-    this.configureAllControllers();
-  }
-
-  /**
-   * @type {boolean} Indicates whether all controllers have been configured.
-   */
-  #hasConfiguredAllControllers = false;
-
-  /**
-   * Ensures all controllers are configured. No-op if they have already been configured.
-   *
-   * If you need to do something with a controller immediately on MetaMaskController
-   * start up you should do that in here, not in the constructor.
-   */
-  configureAllControllers() {
-    if (this.#hasConfiguredAllControllers) {
-      return;
-    }
-    this.#hasConfiguredAllControllers = true;
 
     this.multichainSubscriptionManager = new MultichainSubscriptionManager({
       getNetworkClientById: this.controllerMessenger.call.bind(
@@ -703,7 +678,7 @@ export default class MetamaskController extends EventEmitter {
       controllersByName,
     } = this.#initControllers({
       initFunctions: controllerInitFunctions,
-      initState: this.opts.initState || {},
+      initState,
     });
 
     this.controllerApi = controllerApi;
@@ -1135,9 +1110,9 @@ export default class MetamaskController extends EventEmitter {
     this.metamaskMiddleware = createMetamaskMiddleware({
       static: {
         eth_syncing: false,
-        web3_clientVersion: `MetaMask/v${this.version}`,
+        web3_clientVersion: `MetaMask/v${version}`,
       },
-      version: this.version,
+      version,
       // account mgmt
       getAccounts: (requestOrigin) => getAccounts({ origin: requestOrigin }),
       // tx signing
@@ -1372,7 +1347,7 @@ export default class MetamaskController extends EventEmitter {
     ];
 
     if (isManifestV3) {
-      if (this.opts.isFirstMetaMaskControllerSetup === true) {
+      if (isFirstMetaMaskControllerSetup === true) {
         this.resetStates(resetMethods);
         this.extension.storage.session.set({
           isFirstMetaMaskControllerSetup: false,
@@ -1414,6 +1389,11 @@ export default class MetamaskController extends EventEmitter {
     // https://github.com/MetaMask/metamask-extension/issues/15491
     // TODO:LegacyProvider: Delete
     this.publicConfigStore = this.createPublicConfigStore();
+
+    // Multiple MetaMask instances launched warning
+    this.extension.runtime.onMessageExternal.addListener(onMessageReceived);
+    // Fire a ping message to check if other extensions are running
+    checkForMultipleVersionsRunning();
 
     if (this.onboardingController.state.completedOnboarding) {
       this.postOnboardingInitialization();
@@ -5581,7 +5561,12 @@ export default class MetamaskController extends EventEmitter {
 
     // TODO: Move this logic to the SnapKeyring directly.
     // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
-    await this.forwardSelectedAccountGroupToSnapKeyring(
+    // It is not necessary to await this since it is just expected for the snap to receive
+    // the information without blocking the login flow. Despite not awaiting for
+    // forwardSelectedAccountGroupToSnapKeyring to be completed, we still want to await for
+    // getSnapKeyring to ensure the Snap keyring is available.
+    // eslint-disable-next-line no-void
+    void this.forwardSelectedAccountGroupToSnapKeyring(
       await this.getSnapKeyring(),
       this.accountTreeController.getSelectedAccountGroup(),
     );
@@ -7713,7 +7698,7 @@ export default class MetamaskController extends EventEmitter {
           return Boolean(this._isClientOpen && isUnlocked);
         },
         getVersion: () => {
-          return this.version;
+          return process.env.METAMASK_VERSION;
         },
         getInterfaceState: (...args) =>
           this.controllerMessenger.call(
@@ -8626,7 +8611,7 @@ export default class MetamaskController extends EventEmitter {
    */
   recordFirstTimeInfo(initState) {
     if (!('firstTimeInfo' in initState)) {
-      const { version } = this;
+      const version = process.env.METAMASK_VERSION;
       initState.firstTimeInfo = {
         version,
         date: Date.now(),
