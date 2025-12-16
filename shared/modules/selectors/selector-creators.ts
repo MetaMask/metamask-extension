@@ -194,6 +194,11 @@ export function createSelectorWith(
   return createSelectorCreator(memoizeFn, memoizeOptions);
 }
 
+// ============================================================================
+// Pre-configured Selector Creators
+// ============================================================================
+// The following are convenient pre-configured selector creators for common
+// patterns. For custom combinations, use `createSelectorWith()` directly.
 
 /**
  * Creates a selector with deep equality comparison using lodash `isEqual`.
@@ -240,10 +245,9 @@ export function createSelectorWith(
  * ```
  * @see {@link createSelector} - Preferred default; uses reference equality
  */
-export const createDeepEqualSelector = createSelectorCreator(
-  lruMemoize,
-  isEqual,
-);
+export const createDeepEqualSelector = createSelectorWith({
+  inputEquality: EqualityMode.Deep,
+});
 
 /**
  * Creates a selector using WeakMap-based memoization.
@@ -285,7 +289,9 @@ export const createDeepEqualSelector = createSelectorCreator(
  * ```
  * @see {@link createSelector} - Preferred default; uses reference equality with LRU
  */
-export const createWeakMapSelector = createSelectorCreator(weakMapMemoize);
+export const createWeakMapSelector = createSelectorWith({
+  memoize: MemoizeMode.Weak,
+});
 
 /**
  * Creates a selector with a configurable LRU cache size for parameterized selectors.
@@ -332,7 +338,7 @@ export const createWeakMapSelector = createSelectorCreator(weakMapMemoize);
  * @returns Selector creator with specified cache size
  */
 export const createLruSelector = (maxSize = 10) =>
-  createSelectorCreator(lruMemoize, { maxSize });
+  createSelectorWith({ memoize: MemoizeMode.Lru, maxSize });
 
 /**
  * Creates a selector with shallow equality comparison for inputs.
@@ -418,10 +424,9 @@ export const createShallowEqualSelector = createSelectorCreator(
  * @see {@link fastDeepEqual} - The underlying comparison function
  * @see {@link createDeepEqualSelector} - Alternative without structural pre-checks
  */
-export const createFastDeepEqualSelector = createSelectorCreator(
-  lruMemoize,
-  fastDeepEqual,
-);
+export const createFastDeepEqualSelector = createSelectorWith({
+  inputEquality: EqualityMode.FastDeep,
+});
 
 /**
  * Creates a selector that compares results (outputs) rather than inputs.
@@ -464,11 +469,8 @@ export const createFastDeepEqualSelector = createSelectorCreator(
  * ```
  * @see {@link createDeepEqualSelector} - For input equality comparison instead
  */
-export const createResultEqualSelector = createSelectorCreator({
-  memoize: lruMemoize,
-  memoizeOptions: {
-    resultEqualityCheck: isEqual,
-  },
+export const createResultEqualSelector = createSelectorWith({
+  resultEquality: EqualityMode.Deep,
 });
 
 /**
