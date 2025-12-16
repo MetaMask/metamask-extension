@@ -1160,7 +1160,7 @@ export function setupController(
     }
 
     // if any of the controller's own top-level keys have changed
-    // (reference comparison). If any have, we need to persist the new state.
+    // (via reference comparison) we need to persist the new state.
     for (const subKey of newControllerStateKeys) {
       if (newControllerState[subKey] !== initialControllerState[subKey]) {
         changedControllerKeys.push(key);
