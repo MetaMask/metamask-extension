@@ -33,6 +33,7 @@
       "recoveryPhraseReminderLastShown": "number",
       "showShieldEntryModalOnce": "boolean",
       "showTestnetMessageInDropdown": true,
+      "sidePanelGasPollTokens": "object",
       "snapsInstallPrivacyWarningShown": true,
       "termsOfUseLastAgreed": "number",
       "trezorModel": null
