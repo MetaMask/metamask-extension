@@ -286,7 +286,7 @@ export const createDeepEqualSelector = createSelectorWith({
  *
  * ## When to Avoid
  * 1. **Primitive arguments** - WeakMap only accepts objects as keys; use
- * {@link createLruSelector} for selectors with string/number parameters
+ * {@link createParameterizedSelector} for selectors with string/number parameters
  * 2. **Unstable references** - If input selectors create new objects on each call,
  * the cache will never hit; use an equality-based selector instead
  * 3. **Small, bounded argument sets** - Standard LRU memoization is simpler and
@@ -315,18 +315,19 @@ export const createWeakMapSelector = createSelectorWith({
 });
 
 /**
- * Creates a selector with a configurable LRU cache size for parameterized selectors.
+ * Creates a selector with a configurable LRU cache for parameterized selectors.
  *
- * Standard `createSelector` caches only the most recent result. This creator
- * maintains multiple cached results, evicting the least-recently-used when full.
+ * Standard `createSelector` caches only the most recent result. Parameterized
+ * selectors (those receiving dynamic arguments like IDs or filters) need a
+ * multi-slot cache to avoid thrashing when called with different arguments.
  *
  * ## When to Use
- * 1. **Parameterized selectors** - Selector receives dynamic arguments (e.g., IDs,
- * filters) and is called with a bounded set of values
- * 2. **Repeated access patterns** - Same arguments are requested multiple times
+ * 1. **Selectors with dynamic arguments** - Called with varying parameters
+ * (e.g., `getTokenByAddress(state, address)`, `getAccountById(state, id)`)
+ * 2. **Bounded argument sets** - The variety of arguments is limited and predictable
+ * (e.g., chain IDs, account indices)
+ * 3. **Repeated access patterns** - Same arguments are requested multiple times
  * within a render cycle or across navigation
- * 3. **Expensive computations** - Result function is costly and caching multiple
- * results provides meaningful performance benefit
  *
  * ## When to Avoid
  * 1. **Unbounded argument variety** - If arguments are highly unique (e.g., timestamps),
@@ -340,7 +341,7 @@ export const createWeakMapSelector = createSelectorWith({
  * ```ts
  * // Cache results for multiple chain IDs accessed during render.
  * // allTokens structure: { [chainId]: { [address]: Token[] } }
- * const createChainSelector = createLruSelector(20);
+ * const createChainSelector = createParameterizedSelector(20);
  *
  * const selectTokensForChain = createChainSelector(
  *   (state) => state.metamask.allTokens,
@@ -357,9 +358,85 @@ export const createWeakMapSelector = createSelectorWith({
  * ```
  * @param maxSize - Maximum number of cached results (default: 10)
  * @returns Selector creator with specified cache size
+ * @see {@link createParameterizedShallowEqualSelector} - With shallow input equality
+ * @see {@link createParameterizedDeepEqualSelector} - With deep input equality
  */
-export const createLruSelector = (maxSize = 10) =>
+export const createParameterizedSelector = (maxSize = 10) =>
   createSelectorWith({ memoize: MemoizeMode.Lru, maxSize });
+
+/**
+ * Creates a parameterized selector with shallow equality comparison for inputs.
+ *
+ * Combines multi-slot LRU caching (for varying arguments) with shallow equality
+ * (for inputs where the container is recreated but elements are stable).
+ *
+ * ## When to Use
+ * 1. **Parameterized selectors with filtered/mapped inputs** - Inputs come from
+ * upstream selectors that filter or map collections
+ * 2. **Spread objects as parameters** - Objects passed as arguments are recreated
+ * but property values are referentially stable
+ *
+ * @example
+ * ```ts
+ * const createAccountSelector = createParameterizedShallowEqualSelector(10);
+ *
+ * const getAccountTokensByNetwork = createAccountSelector(
+ *   getFilteredTokens,    // May recreate array but elements are stable
+ *   (_state, networkId: string) => networkId,
+ *   (tokens, networkId) => tokens.filter((t) => t.networkId === networkId),
+ * );
+ * ```
+ * @param maxSize - Maximum number of cached results (default: 10)
+ * @returns Selector creator with shallow input equality and LRU cache
+ * @see {@link createParameterizedSelector} - With reference equality (faster)
+ * @see {@link createParameterizedDeepEqualSelector} - With deep equality
+ */
+export const createParameterizedShallowEqualSelector = (maxSize = 10) =>
+  createSelectorWith({
+    inputEquality: EqualityMode.Shallow,
+    memoize: MemoizeMode.Lru,
+    maxSize,
+  });
+
+/**
+ * Creates a parameterized selector with deep equality comparison for inputs.
+ *
+ * Combines multi-slot LRU caching (for varying arguments) with deep equality
+ * (for inputs that are recreated with equivalent nested values).
+ *
+ * **⚠️ Use sparingly** - deep equality checks are expensive (O(n×d)).
+ *
+ * ## When to Use
+ * 1. **Parameterized selectors with unstable nested inputs** - Inputs are deeply
+ * nested objects that may be recreated with the same values
+ * 2. **External/uncontrolled data sources** - Working with data where referential
+ * stability cannot be guaranteed
+ *
+ * ## When to Avoid
+ * 1. **Shallow comparison is sufficient** - Use {@link createParameterizedShallowEqualSelector}
+ * 2. **Inputs are referentially stable** - Use {@link createParameterizedSelector}
+ *
+ * @example
+ * ```ts
+ * const createConfigSelector = createParameterizedDeepEqualSelector(5);
+ *
+ * const getNetworkConfig = createConfigSelector(
+ *   getComputedConfigs,   // Deeply nested, recreated each time
+ *   (_state, chainId: Hex) => chainId,
+ *   (configs, chainId) => configs[chainId] ?? DEFAULT_CONFIG,
+ * );
+ * ```
+ * @param maxSize - Maximum number of cached results (default: 10)
+ * @returns Selector creator with deep input equality and LRU cache
+ * @see {@link createParameterizedSelector} - With reference equality (faster)
+ * @see {@link createParameterizedShallowEqualSelector} - With shallow equality
+ */
+export const createParameterizedDeepEqualSelector = (maxSize = 10) =>
+  createSelectorWith({
+    inputEquality: EqualityMode.Deep,
+    memoize: MemoizeMode.Lru,
+    maxSize,
+  });
 
 /**
  * Creates a selector with shallow equality comparison for inputs.
