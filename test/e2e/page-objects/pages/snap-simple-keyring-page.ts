@@ -1,5 +1,5 @@
 import { Driver } from '../../webdriver/driver';
-import { regularDelayMs, WINDOW_TITLES } from '../../helpers';
+import { veryLargeDelayMs, WINDOW_TITLES } from '../../helpers';
 
 class SnapSimpleKeyringPage {
   private readonly driver: Driver;
@@ -171,7 +171,7 @@ class SnapSimpleKeyringPage {
       'Approve/Reject snap account transaction on Snap Simple Keyring page',
     );
 
-    await this.driver.delay(regularDelayMs);
+    await this.driver.delay(veryLargeDelayMs);
 
     if (isSignatureRequest) {
       await this.driver.clickElementAndWaitForWindowToClose(
