@@ -123,17 +123,18 @@ export default class TransactionBreakdown extends PureComponent {
             </Text>
           </TransactionBreakdownRow>
         )}
-        {gasPaidByAddress && (
-          // TODO: Use i18n
-          <TransactionBreakdownRow title="Gas Paid By">
-            <RecipientWithAddress
-              checksummedRecipientAddress={gasPaidByAddress}
-              addressOnly
-            />
-          </TransactionBreakdownRow>
-        )}
+        {}
         {!isGasFeeSponsored && (
           <>
+            {gasPaidByAddress && (
+              // TODO: Use i18n
+              <TransactionBreakdownRow title="Gas Paid By">
+                <RecipientWithAddress
+                  checksummedRecipientAddress={gasPaidByAddress}
+                  addressOnly
+                />
+              </TransactionBreakdownRow>
+            )}
             <TransactionBreakdownRow
               title={
                 l1HexGasTotal
