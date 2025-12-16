@@ -32,21 +32,23 @@ export const QuotedSwapTransactionData = () => {
 
   return (
     <Box>
-      <ConfirmInfoSection>
-        <ConfirmInfoExpandableRow
-          label={approvalLabel}
-          content={
-            <TransactionData
-              data={(approval as TxData)?.data as Hex}
-              to={(approval as TxData)?.to as Hex}
-              noPadding
-              nestedTransactionIndex={1}
-            />
-          }
-        >
-          <ConfirmInfoRowText text="" />
-        </ConfirmInfoExpandableRow>
-      </ConfirmInfoSection>
+      {approval && (
+        <ConfirmInfoSection>
+          <ConfirmInfoExpandableRow
+            label={approvalLabel}
+            content={
+              <TransactionData
+                data={(approval as TxData)?.data as Hex}
+                to={(approval as TxData)?.to as Hex}
+                noPadding
+                nestedTransactionIndex={1}
+              />
+            }
+          >
+            <ConfirmInfoRowText text="" />
+          </ConfirmInfoExpandableRow>
+        </ConfirmInfoSection>
+      )}
       <ConfirmInfoSection>
         <ConfirmInfoExpandableRow
           label={tradeLabel}
