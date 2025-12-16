@@ -9,6 +9,8 @@
   --width-max: 798px;
   --width-max-sidepanel: 490px;
   --header-height: 68px;
+  color-scheme: dark light;
+  background-color: light-dark(var(--brand-colors-grey-grey000), var(--brand-colors-grey-grey900));
 }
 
 html,
@@ -25,28 +27,8 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-html {
-  @include design-system.screen-sm-max {
-    &:not([data-theme]) {
-      background-color: var(--color-background-default);
-    }
-  }
-
-  /*
-    Until we get the user's preference from React state,
-    assume the user is in dark mode, because the default
-    theme is system preference
-  */
-  @media (prefers-color-scheme: dark) {
-    &:not([data-theme]) {
-      color: var(--brand-colors-white);
-      background-color: var(--brand-colors-grey-grey900);
-
-      body {
-        color: var(--brand-colors-white);
-      }
-    }
-  }
+html[data-theme] {
+  background-color: var(--color-background-default);
 }
 
 /* stylelint-disable */
@@ -55,10 +37,6 @@ html {
   height: 100%;
   display: flex;
   flex-direction: column;
-
-  html[data-theme] & {
-    background: var(--color-background-alternative);
-  }
 }
 /* stylelint-enable */
 
