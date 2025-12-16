@@ -84,7 +84,7 @@ const {
   mockEmptyStalelistAndHotlist,
 } = require('./tests/phishing-controller/mocks');
 const { mockNotificationServices } = require('./tests/notifications/mocks');
-const { mockIdentityServices } = require('./tests/identity/mocks');
+const { mockAuthServices } = require('./tests/identity/mocks');
 
 const emptyHtmlPage = () => `<!DOCTYPE html>
 <html lang="en">
@@ -1057,8 +1057,8 @@ async function setupMocking(
   // Notification APIs
   await mockNotificationServices(server);
 
-  // Identity APIs
-  await mockIdentityServices(server);
+  // Identity Auth APIs (auth only, storage mocks are handled by test-specific mocks)
+  await mockAuthServices(server);
 
   await server.forGet(/^https:\/\/sourcify.dev\/(.*)/u).thenCallback(() => {
     return {

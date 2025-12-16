@@ -16,6 +16,18 @@ type MockResponse = {
 };
 
 /**
+ * E2E mock setup for authentication APIs only (nonce, login, token).
+ * Use this when you only need auth mocks without user storage.
+ *
+ * @param server - server obj used to mock our endpoints
+ */
+export async function mockAuthServices(server: Mockttp) {
+  mockAPICall(server, AuthMocks.getMockAuthNonceResponse());
+  mockAPICall(server, AuthMocks.getMockAuthLoginResponse());
+  mockAPICall(server, AuthMocks.getMockAuthAccessTokenResponse());
+}
+
+/**
  * E2E mock setup for identity APIs (Auth, UserStorage, Backup and sync)
  *
  * @param server - server obj used to mock our endpoints
@@ -30,47 +42,24 @@ export async function mockIdentityServices(
   mockAPICall(server, AuthMocks.getMockAuthLoginResponse());
   mockAPICall(server, AuthMocks.getMockAuthAccessTokenResponse());
 
-  // Storage
-  if (
-    !userStorageMockttpControllerInstance?.paths.get(
-      USER_STORAGE_FEATURE_NAMES.accounts,
-    )
-  ) {
-    userStorageMockttpControllerInstance.setupPath(
-      USER_STORAGE_FEATURE_NAMES.accounts,
-      server,
-    );
-  }
-  if (
-    !userStorageMockttpControllerInstance?.paths.get(
-      USER_STORAGE_FEATURE_NAMES.addressBook,
-    )
-  ) {
-    userStorageMockttpControllerInstance.setupPath(
-      USER_STORAGE_FEATURE_NAMES.addressBook,
-      server,
-    );
-  }
-  if (
-    !userStorageMockttpControllerInstance?.paths.get(
-      USER_STORAGE_WALLETS_FEATURE_KEY,
-    )
-  ) {
-    userStorageMockttpControllerInstance.setupPath(
-      USER_STORAGE_WALLETS_FEATURE_KEY,
-      server,
-    );
-  }
-  if (
-    !userStorageMockttpControllerInstance?.paths.get(
-      USER_STORAGE_GROUPS_FEATURE_KEY,
-    )
-  ) {
-    userStorageMockttpControllerInstance.setupPath(
-      USER_STORAGE_GROUPS_FEATURE_KEY,
-      server,
-    );
-  }
+  // Storage - always call setupPath to ensure handlers are registered on the current server
+  // setupPath handles preserving existing response data when updating the server reference
+  userStorageMockttpControllerInstance.setupPath(
+    USER_STORAGE_FEATURE_NAMES.accounts,
+    server,
+  );
+  userStorageMockttpControllerInstance.setupPath(
+    USER_STORAGE_FEATURE_NAMES.addressBook,
+    server,
+  );
+  userStorageMockttpControllerInstance.setupPath(
+    USER_STORAGE_WALLETS_FEATURE_KEY,
+    server,
+  );
+  userStorageMockttpControllerInstance.setupPath(
+    USER_STORAGE_GROUPS_FEATURE_KEY,
+    server,
+  );
 }
 
 export const MOCK_SRP_E2E_IDENTIFIER_BASE_KEY = 'MOCK_SRP_IDENTIFIER';
