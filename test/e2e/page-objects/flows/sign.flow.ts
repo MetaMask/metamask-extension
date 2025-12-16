@@ -26,10 +26,13 @@ export const personalSignWithSnapAccount = async (
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   const confirmation = new PersonalSignConfirmation(driver);
   await confirmation.verifyConfirmationHeadingTitle();
-  // Cannot wait for window to close as new window is opened with Finish signing
-  await confirmation.clickFooterConfirmButton();
-  await driver.delay(2000);
-  if (!isSyncFlow) {
+  if (isSyncFlow) {
+    await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+  } else {
+    // Cannot wait for window to close as new window is opened with Finish signing.
+    // So we add a hardcoded delay to avoid race condition with the window dialog being closed and re-opened very fast
+    await confirmation.clickFooterConfirmButton();
+    await driver.delay(2000);
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await new SnapSimpleKeyringPage(driver).approveRejectSnapAccountTransaction(
       approveTransaction,
@@ -65,11 +68,13 @@ export const signTypedDataWithSnapAccount = async (
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   const confirmation = new SignTypedDataConfirmation(driver);
   await confirmation.verifyConfirmationHeadingTitle();
-  // Cannot wait for window to close as new window is opened with Finish signing
-  await confirmation.clickFooterConfirmButton();
-  await driver.delay(2000);
-
-  if (!isSyncFlow) {
+  if (isSyncFlow) {
+    await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+  } else {
+    // Cannot wait for window to close as new window is opened with Finish signing.
+    // So we add a hardcoded delay to avoid race condition with the window dialog being closed and re-opened very fast
+    await confirmation.clickFooterConfirmButton();
+    await driver.delay(2000);
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await new SnapSimpleKeyringPage(driver).approveRejectSnapAccountTransaction(
       approveTransaction,
@@ -105,11 +110,13 @@ export const signTypedDataV3WithSnapAccount = async (
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   const confirmation = new SignTypedDataConfirmation(driver);
   await confirmation.verifyConfirmationHeadingTitle();
-  // Cannot wait for window to close as new window is opened with Finish signing
-  await confirmation.clickFooterConfirmButton();
-  await driver.delay(2000);
-
-  if (!isSyncFlow) {
+  if (isSyncFlow) {
+    await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+  } else {
+    // Cannot wait for window to close as new window is opened with Finish signing.
+    // So we add a hardcoded delay to avoid race condition with the window dialog being closed and re-opened very fast
+    await confirmation.clickFooterConfirmButton();
+    await driver.delay(2000);
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await new SnapSimpleKeyringPage(driver).approveRejectSnapAccountTransaction(
       approveTransaction,
@@ -145,11 +152,13 @@ export const signTypedDataV4WithSnapAccount = async (
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   const confirmation = new SignTypedDataConfirmation(driver);
   await confirmation.verifyConfirmationHeadingTitle();
-  // Cannot wait for window to close as new window is opened with Finish signing
-  await confirmation.clickFooterConfirmButton();
-  await driver.delay(2000);
-
-  if (!isSyncFlow) {
+  if (isSyncFlow) {
+    await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+  } else {
+    // Cannot wait for window to close as new window is opened with Finish signing.
+    // So we add a hardcoded delay to avoid race condition with the window dialog being closed and re-opened very fast
+    await confirmation.clickFooterConfirmButton();
+    await driver.delay(2000);
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await new SnapSimpleKeyringPage(driver).approveRejectSnapAccountTransaction(
       approveTransaction,
@@ -185,11 +194,13 @@ export const signPermitWithSnapAccount = async (
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   const confirmation = new PermitConfirmation(driver);
   await confirmation.verifyOrigin();
-  // Cannot wait for window to close as new window is opened with Finish signing
-  await confirmation.clickFooterConfirmButton();
-  await driver.delay(2000);
-
-  if (!isSyncFlow) {
+  if (isSyncFlow) {
+    await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+  } else {
+    // Cannot wait for window to close as new window is opened with Finish signing.
+    // So we add a hardcoded delay to avoid race condition with the window dialog being closed and re-opened very fast
+    await confirmation.clickFooterConfirmButton();
+    await driver.delay(2000);
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await new SnapSimpleKeyringPage(driver).approveRejectSnapAccountTransaction(
       approveTransaction,
