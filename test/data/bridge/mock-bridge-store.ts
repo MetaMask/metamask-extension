@@ -233,6 +233,8 @@ export const createBridgeMockStore = ({
           },
         },
       },
+      accountsAssets: {},
+      allIgnoredTokens: {},
       slides: [],
       accountTree: {
         wallets: {

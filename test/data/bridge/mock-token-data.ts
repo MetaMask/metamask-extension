@@ -13,6 +13,7 @@ export const mockTokenData = {
         {
           address: '0x514910771af9ca656af840dff83e8264ecf986ca',
           balance: 'e',
+          decimals: 18,
         },
       ],
       '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b': [
