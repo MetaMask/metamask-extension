@@ -21,7 +21,7 @@
       "µWebSockets: Fallback to Node implementation": 1,
       "Reselect: Identity function warnings": 3,
       "Reselect: Input stability warnings": 1,
-      "MetaMask: Background connection not initialized": 6,
+      "MetaMask: Background connection not initialized": 8,
       "warn: ⚠️ React Router Future Flag": 2,
       "error: Warning: A component is changing": 2,
       "Test errors: Uncaught TypeErrors": 1
@@ -359,7 +359,7 @@
       "µWebSockets: Compatibility warnings": 1,
       "µWebSockets: Fallback to Node implementation": 1,
       "MetaMask: Chain processing errors": 2,
-      "Test errors: Fetch failures": 2
+      "Test errors: Fetch failures": 3
     },
     "ui/components/multichain/pages/gator-permissions/components/review-gator-permission-item.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
@@ -2506,9 +2506,10 @@
     "ui/pages/bridge/prepare/bridge-transaction-settings-modal.test.tsx": {
       "Reselect: Identity function warnings": 3,
       "Reselect: Input stability warnings": 1,
-      "MetaMask: Background connection not initialized": 908,
+      "MetaMask: Background connection not initialized": 972,
       "warn: ⚠️ React Router Future Flag": 2,
-      "error: Warning: You seem to have": 2
+      "error: Warning: You seem to have": 2,
+      "React: Act warnings (component updates not wrapped)": 2
     },
     "ui/pages/bridge/hooks/useEnableMissingNetwork.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2,

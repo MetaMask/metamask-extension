@@ -3,7 +3,8 @@
     "test/integration/onboarding/wallet-created.test.tsx": {
       "Reselect: Identity function warnings": 7,
       "Reselect: Input stability warnings": 6,
-      "warn: ⚠️ React Router Future Flag": 2
+      "warn: ⚠️ React Router Future Flag": 2,
+      "warn: Infura project ID not found,": 1
     },
     "test/integration/notifications&auth/notifications-activation.test.tsx": {
       "Reselect: Identity function warnings": 9,
@@ -40,7 +41,8 @@
     "test/integration/onboarding/import-wallet.test.tsx": {
       "Reselect: Identity function warnings": 7,
       "Reselect: Input stability warnings": 6,
-      "warn: ⚠️ React Router Future Flag": 2
+      "warn: ⚠️ React Router Future Flag": 2,
+      "warn: Infura project ID not found,": 1
     },
     "test/integration/confirmations/signatures/personalSign.test.tsx": {
       "Reselect: Identity function warnings": 10,
@@ -104,7 +106,8 @@
     "test/integration/confirmations/signatures/permit-single.test.tsx": {
       "Reselect: Identity function warnings": 11,
       "Reselect: Input stability warnings": 8,
-      "warn: ⚠️ React Router Future Flag": 2
+      "warn: ⚠️ React Router Future Flag": 2,
+      "React: State updates on unmounted components": 1
     },
     "test/integration/confirmations/signatures/permit-tradeOrder.test.tsx": {
       "Reselect: Identity function warnings": 11,
