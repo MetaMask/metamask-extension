@@ -1156,15 +1156,14 @@ export function setupController(
       Object.keys(initialControllerState).length
     ) {
       changedControllerKeys.push(key);
-      break;
-    }
-
-    // if any of the controller's own top-level keys have changed
-    // (via reference comparison) we need to persist the new state.
-    for (const subKey of newControllerStateKeys) {
-      if (newControllerState[subKey] !== initialControllerState[subKey]) {
-        changedControllerKeys.push(key);
-        break;
+    } else {
+      // if any of the controller's own top-level keys have changed
+      // (via reference comparison) we need to persist the new state.
+      for (const subKey of newControllerStateKeys) {
+        if (newControllerState[subKey] !== initialControllerState[subKey]) {
+          changedControllerKeys.push(key);
+          break;
+        }
       }
     }
   }
