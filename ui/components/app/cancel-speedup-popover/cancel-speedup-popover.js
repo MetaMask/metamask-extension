@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import React, { useEffect } from 'react';
 import { EditGasModes, PriorityLevels } from '../../../../shared/constants/gas';
@@ -26,7 +27,7 @@ import {
 import { ModalContent } from '../../component-library/modal-content/deprecated';
 import { ModalHeader } from '../../component-library/modal-header/deprecated';
 
-const CancelSpeedupPopover = () => {
+const CancelSpeedupPopoverWrapped = () => {
   const {
     cancelTransaction,
     editGasMode,
@@ -155,6 +156,25 @@ const CancelSpeedupPopover = () => {
       </ModalContent>
     </Modal>
   );
+};
+
+const CancelSpeedupPopover = ({ transaction, editGasMode }) => {
+  const { currentModal } = useTransactionModalContext();
+
+  if (currentModal !== 'cancelSpeedUpTransaction') {
+    return null;
+  }
+
+  return (
+    <GasFeeContextProvider transaction={transaction} editGasMode={editGasMode}>
+      <CancelSpeedupPopoverWrapped />
+    </GasFeeContextProvider>
+  );
+};
+
+CancelSpeedupPopover.propTypes = {
+  transaction: PropTypes.object.isRequired,
+  editGasMode: PropTypes.string.isRequired,
 };
 
 export default CancelSpeedupPopover;

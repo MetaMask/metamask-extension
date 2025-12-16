@@ -43,10 +43,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 import { EditGasModes } from '../../../../shared/constants/gas';
-import {
-  GasFeeContextProvider,
-  useGasFeeContext,
-} from '../../../contexts/gasFee';
+import { useGasFeeContext } from '../../../contexts/gasFee';
 import {
   TransactionModalContextProvider,
   useTransactionModalContext,
@@ -453,21 +450,25 @@ const TransactionListItem = (props) => {
     !isLegacyTransaction(transaction?.txParams);
 
   return (
-    <GasFeeContextProvider
-      transaction={transactionGroup.primaryTransaction}
-      editGasMode={editGasMode}
-    >
-      <TransactionModalContextProvider>
-        <TransactionListItemInner {...props} setEditGasMode={setEditGasMode} />
-        {supportsEIP1559 && (
-          <>
-            <CancelSpeedupPopover />
-            <EditGasFeePopover />
-            <AdvancedGasFeePopover />
-          </>
-        )}
-      </TransactionModalContextProvider>
-    </GasFeeContextProvider>
+    <TransactionModalContextProvider>
+      <TransactionListItemInner {...props} setEditGasMode={setEditGasMode} />
+      {supportsEIP1559 && (
+        <>
+          <CancelSpeedupPopover
+            transaction={transaction}
+            editGasMode={editGasMode}
+          />
+          <EditGasFeePopover
+            transaction={transaction}
+            editGasMode={editGasMode}
+          />
+          <AdvancedGasFeePopover
+            transaction={transaction}
+            editGasMode={editGasMode}
+          />
+        </>
+      )}
+    </TransactionModalContextProvider>
   );
 };
 
