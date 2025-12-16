@@ -22,10 +22,13 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
   BoxAlignItems,
-  BoxBackgroundColor,
   AvatarNetwork,
   FontWeight,
 } from '@metamask/design-system-react';
+import {
+  BackgroundColor,
+  TextColor as DesignSystemTextColor,
+} from '../../../helpers/constants/design-system';
 import {
   Modal,
   ModalOverlay,
@@ -242,9 +245,12 @@ export const AddressQRCodeModal: React.FC<AddressQRCodeModalProps> = ({
                 size={ButtonSize.Lg}
                 isFullWidth
                 onClick={handleCopyClick}
-                className={
+                style={
                   addressCopied
-                    ? `${BoxBackgroundColor.SuccessMuted} ${TextColor.SuccessDefault}`
+                    ? {
+                        backgroundColor: `var(--color-${BackgroundColor.successMuted})`,
+                        color: `var(--color-${DesignSystemTextColor.successDefault})`,
+                      }
                     : undefined
                 }
                 data-testid="address-qr-code-modal-copy-button"
