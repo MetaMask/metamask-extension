@@ -382,7 +382,7 @@ const ClaimsForm = ({ mode = 'new' }: ClaimsFormProps) => {
 
       // Delete the draft if we were editing one
       if (currentDraftId) {
-        deleteDraft(currentDraftId);
+        await deleteDraft(currentDraftId);
       }
 
       dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.Success));
@@ -437,18 +437,16 @@ const ClaimsForm = ({ mode = 'new' }: ClaimsFormProps) => {
     caseDescription,
   ]);
 
-  const handleSaveDraft = useCallback(() => {
-    saveDraft(
-      {
-        chainId,
-        email,
-        impactedWalletAddress,
-        impactedTransactionHash,
-        reimbursementWalletAddress,
-        caseDescription,
-      },
-      currentDraftId,
-    );
+  const handleSaveDraft = useCallback(async () => {
+    await saveDraft({
+      chainId,
+      email,
+      impactedWalletAddress: impactedWalletAddress as `0x${string}`,
+      impactedTxHash: impactedTransactionHash as `0x${string}`,
+      reimbursementWalletAddress: reimbursementWalletAddress as `0x${string}`,
+      description: caseDescription,
+      draftId: currentDraftId,
+    });
     dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.DraftSaved));
     navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);
   }, [
@@ -459,9 +457,9 @@ const ClaimsForm = ({ mode = 'new' }: ClaimsFormProps) => {
     impactedTransactionHash,
     reimbursementWalletAddress,
     caseDescription,
-    currentDraftId,
     dispatch,
     navigate,
+    currentDraftId,
   ]);
 
   return (
