@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { toChecksumAddress } from 'ethereumjs-util';
-import { useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
 import {
@@ -46,7 +46,7 @@ export default function useTokenExchangeRate(
   const crossChainTokenExchangeRates: Record<
     Hex,
     Record<string, number>
-  > = useSelector(getCrossChainTokenExchangeRates);
+  > = useSelector(getCrossChainTokenExchangeRates, shallowEqual);
 
   const [exchangeRates, setExchangeRates] = useState<
     Record<string, ExchangeRate>
