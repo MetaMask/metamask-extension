@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.13.1]
 
+### Fixed
+
+- Extension will automatically restart after updating in Chromium browsers older than v143 that are affected by a bug causing broken MV3 updates (#38867)
+
 ## [13.13.0]
 
 ### Added
