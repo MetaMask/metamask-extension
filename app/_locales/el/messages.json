@@ -2432,9 +2432,6 @@
     "message": "Χορήγηση πρόσβασης στον πάροχο Ethereum σε $1",
     "description": "The parameter is the name of the requesting origin"
   },
-  "ethereumPublicAddress": {
-    "message": "Δημόσια διεύθυνση του Ethereum"
-  },
   "etherscan": {
     "message": "Etherscan"
   },
