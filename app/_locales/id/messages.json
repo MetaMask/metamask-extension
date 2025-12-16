@@ -2432,9 +2432,6 @@
     "message": "Berikan penyedia Ethereum akses ke $1",
     "description": "The parameter is the name of the requesting origin"
   },
-  "ethereumPublicAddress": {
-    "message": "Alamat publik Ethereum"
-  },
   "etherscan": {
     "message": "Etherscan"
   },
@@ -3909,9 +3906,6 @@
   "noAccountsFound": {
     "message": "Tidak ditemukan akun untuk kueri pencarian yang diberikan"
   },
-  "noConnectedAccountTitle": {
-    "message": "MetaMask tidak terhubung ke situs ini"
-  },
   "noConnectionDescription": {
     "message": "Untuk terhubung ke situs, cari dan pilih tombol \"hubungkan\". Ingat MetaMask hanya dapat terhubung ke situs di web3"
   },
@@ -4643,10 +4637,7 @@
   "permissions": {
     "message": "Izin"
   },
-  "permissionsPageEmptyContent": {
-    "message": "Tak ada apa pun di sini"
-  },
-  "permissionsPageEmptySubContent": {
+  "permissionsPageEmptyDescription": {
     "message": "Di sinilah Anda dapat melihat izin yang Anda berikan untuk Snap yang terinstal atau situs yang terhubung."
   },
   "permitSimulationChange_approve": {
