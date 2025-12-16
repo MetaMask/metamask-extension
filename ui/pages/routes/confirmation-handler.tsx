@@ -34,10 +34,9 @@ import {
   selectHasSwapsQuotes,
   selectShowAwaitingSwapScreen,
 } from '../../ducks/swaps/swaps';
-import { useModalState } from '../../hooks/useModalState';
+import { useCloseModals } from '../../hooks/useQueryState';
 
 const EXEMPTED_ROUTES = [
-  ACCOUNT_LIST_PAGE_ROUTE,
   AWAITING_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
@@ -66,7 +65,7 @@ export const ConfirmationHandler = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { pathname } = location;
-  const { closeModals } = useModalState();
+  const closeModals = useCloseModals();
 
   const envType = getEnvironmentType();
   const isFullscreen = envType === ENVIRONMENT_TYPE_FULLSCREEN;

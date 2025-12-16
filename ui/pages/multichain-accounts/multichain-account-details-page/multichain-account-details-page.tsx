@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AccountGroupId, AccountWalletType } from '@metamask/account-api';
 import classnames from 'classnames';
@@ -44,7 +44,6 @@ import {
 } from '../../../helpers/constants/routes';
 import { MultichainSrpBackup } from '../../../components/multichain-accounts/multichain-srp-backup';
 import { useWalletInfo } from '../../../hooks/multichain-accounts/useWalletInfo';
-import { MultichainAccountEditModal } from '../../../components/multichain-accounts/multichain-account-edit-modal';
 import { AccountRemoveModal } from '../../../components/multichain-accounts/account-remove-modal';
 import { removeAccount } from '../../../store/actions';
 import {
@@ -85,8 +84,7 @@ export const MultichainAccountDetailsPage = () => {
   const seedAddressIcon = useSelector((state) =>
     getIconSeedAddressByAccountGroupId(state, accountGroupId),
   );
-  const [isAccountRenameModalOpen, setIsAccountRenameModalOpen] =
-    useState(false);
+  const [, setSearchParams] = useSearchParams();
   const [isAccountRemoveModalOpen, setIsAccountRemoveModalOpen] =
     useState(false);
 
@@ -122,7 +120,12 @@ export const MultichainAccountDetailsPage = () => {
   };
 
   const handleAccountNameAction = () => {
-    setIsAccountRenameModalOpen(true);
+    if (multichainAccount?.id) {
+      setSearchParams(
+        { show: 'rename-account', 'account-id': multichainAccount.id },
+        { replace: true },
+      );
+    }
   };
 
   const handleAccountRemoveAction = useCallback(() => {
@@ -295,13 +298,6 @@ export const MultichainAccountDetailsPage = () => {
               }
             />
           </Box>
-        )}
-        {isAccountRenameModalOpen && (
-          <MultichainAccountEditModal
-            isOpen={isAccountRenameModalOpen}
-            onClose={() => setIsAccountRenameModalOpen(false)}
-            accountGroupId={multichainAccount.id}
-          />
         )}
         {isAccountRemoveModalOpen && (
           <AccountRemoveModal

@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useRef } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { matchPath } from 'react-router-dom';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -22,8 +22,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Box } from '../../component-library';
 import { getUnapprovedTransactions } from '../../../selectors';
-
-import { toggleNetworkMenu } from '../../../store/actions';
+import { useModalState } from '../../../hooks/useModalState';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
@@ -52,7 +51,7 @@ export const AppHeader = ({ location }) => {
   const { chainId, isEvm } = multichainNetwork;
   const networkIconSrc = getNetworkIcon(chainId, isEvm);
 
-  const dispatch = useDispatch();
+  const networkModal = useModalState('network');
 
   const environmentType = getEnvironmentType();
   const popupStatus = environmentType === ENVIRONMENT_TYPE_POPUP;
@@ -94,7 +93,7 @@ export const AppHeader = ({ location }) => {
 
   // Callback for network dropdown
   const networkOpenCallback = useCallback(() => {
-    dispatch(toggleNetworkMenu());
+    networkModal.open();
     trackEvent({
       event: MetaMetricsEventName.NavNetworkMenuOpened,
       category: MetaMetricsEventCategory.Navigation,
@@ -103,7 +102,7 @@ export const AppHeader = ({ location }) => {
         chain_id: chainId,
       },
     });
-  }, [chainId, dispatch, trackEvent]);
+  }, [chainId, networkModal, trackEvent]);
 
   const unlockedStyling = {
     alignItems: AlignItems.center,

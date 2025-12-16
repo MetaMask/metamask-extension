@@ -1,16 +1,20 @@
 import { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
-import { closeNetworkMenu } from '../store/actions';
+import { useQueryState } from './useQueryState';
 
-export function useModalState() {
-  const dispatch = useDispatch();
+type Modal = 'network' | 'rename-account';
 
-  const closeModals = useCallback(
-    () => dispatch(closeNetworkMenu()),
-    [dispatch],
-  );
+export function useModalState(modalName: Modal) {
+  const [show, setShow] = useQueryState('show');
 
-  return {
-    closeModals,
-  };
+  const isOpen = show === modalName;
+
+  const open = useCallback(() => {
+    setShow(modalName);
+  }, [modalName, setShow]);
+
+  const close = useCallback(() => {
+    setShow(null);
+  }, [setShow]);
+
+  return { isOpen, open, close };
 }

@@ -1,25 +1,34 @@
 import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { useAppSelector } from '../../store/store';
-import { setEditedNetwork } from '../../store/actions';
+import { useSearchParams } from 'react-router-dom';
+import type { AccountGroupId } from '@metamask/account-api';
 import { NetworkListMenu } from '../../components/multichain/network-list-menu';
-import { useModalState } from '../../hooks/useModalState';
+import { MultichainAccountEditModal } from '../../components/multichain-accounts/multichain-account-edit-modal';
+import { setEditedNetwork } from '../../store/actions';
+import { useQueryState } from '../../hooks/useQueryState';
 
 export const Modals = () => {
   const dispatch = useDispatch();
-  const { closeModals } = useModalState();
-  const isNetworkMenuOpen = useAppSelector(
-    ({ appState }) => appState.isNetworkMenuOpen,
-  );
+  const [, setSearchParams] = useSearchParams();
+  const [show] = useQueryState('show');
+  const [accountId] = useQueryState('account-id');
 
   const handleClose = useCallback(() => {
-    closeModals();
+    setSearchParams({}, { replace: true });
     dispatch(setEditedNetwork());
-  }, [closeModals, dispatch]);
-
-  const modal = isNetworkMenuOpen ? 'network' : undefined;
+  }, [setSearchParams, dispatch]);
 
   return (
-    <>{modal === 'network' && <NetworkListMenu onClose={handleClose} />}</>
+    <>
+      {show === 'network' && <NetworkListMenu onClose={handleClose} />}
+
+      {show === 'rename-account' && accountId && (
+        <MultichainAccountEditModal
+          isOpen={true}
+          accountGroupId={decodeURIComponent(accountId) as AccountGroupId}
+          onClose={handleClose}
+        />
+      )}
+    </>
   );
 };
