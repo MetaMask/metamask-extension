@@ -1,8 +1,9 @@
 import { ClaimDraft } from '@metamask/claims-controller';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { deleteClaimDraft, saveClaimDraft } from '../../store/actions';
 import { getClaimDrafts } from '../../selectors/shield/claims';
+import { MAX_DRAFT_CLAIMS } from '../../pages/settings/transaction-shield-tab/claims-form/constants';
 
 export const useClaimDraft = () => {
   const drafts = useSelector(getClaimDrafts);
@@ -26,8 +27,13 @@ export const useClaimDraft = () => {
     await deleteClaimDraft(draftId);
   }, []);
 
+  const hasMaxDrafts = useMemo(() => {
+    return drafts.length >= MAX_DRAFT_CLAIMS;
+  }, [drafts]);
+
   return {
     drafts,
+    hasMaxDrafts,
     saveDraft,
     getDraft,
     deleteDraft,

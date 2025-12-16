@@ -6128,8 +6128,8 @@
     "message": "Active claims"
   },
   "shieldClaimGroupActiveNote": {
-    "message": "Note: You can have a maximum of $1 active claims at a single time.",
-    "description": "The $1 is the maximum number of active claims"
+    "message": "Note: You can have a maximum of $1 drafts and $2 active claims at a single time.",
+    "description": "The $1 is the maximum number of drafts and $2 is the maximum number of active claims"
   },
   "shieldClaimGroupCompleted": {
     "message": "Completed claims"
@@ -6187,6 +6187,9 @@
   },
   "shieldClaimMaxClaimsLimitExceeded": {
     "message": "You have reached the maximum limit of open claims. Please contact support if you need to submit additional claims."
+  },
+  "shieldClaimMaxDraftsReached": {
+    "message": "You have reached the maximum number of drafts. Please delete a draft to save a new one."
   },
   "shieldClaimNetwork": {
     "message": "Select network"

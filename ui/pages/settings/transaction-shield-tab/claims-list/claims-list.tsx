@@ -27,8 +27,7 @@ import { ThemeType } from '../../../../../shared/constants/preferences';
 import { useTheme } from '../../../../hooks/useTheme';
 import { CLAIMS_TAB_KEYS, ClaimsTabKey } from '../types';
 import { useClaimDraft } from '../../../../hooks/shield/useClaimDraft';
-
-const MAX_PENDING_CLAIMS = 3;
+import { MAX_DRAFT_CLAIMS, MAX_PENDING_CLAIMS } from '../claims-form/constants';
 
 const ClaimsList = () => {
   const t = useI18nContext();
@@ -237,7 +236,10 @@ const ClaimsList = () => {
                   variant={TextVariant.BodySm}
                   color={TextColor.TextAlternative}
                 >
-                  {t('shieldClaimGroupActiveNote', [MAX_PENDING_CLAIMS])}
+                  {t('shieldClaimGroupActiveNote', [
+                    MAX_DRAFT_CLAIMS,
+                    MAX_PENDING_CLAIMS,
+                  ])}
                 </Text>
               </Box>
             </Box>

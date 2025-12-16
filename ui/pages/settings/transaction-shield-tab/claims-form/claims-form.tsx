@@ -70,6 +70,7 @@ import {
   ShieldCtaSourceEnum,
 } from '../../../../../shared/constants/subscriptions';
 import { getLatestShieldSubscription } from '../../../../selectors/subscription';
+import Tooltip from '../../../../components/ui/tooltip';
 import {
   ERROR_MESSAGE_MAP,
   FIELD_ERROR_MESSAGE_KEY_MAP,
@@ -84,11 +85,12 @@ type ClaimsFormProps = {
 
 const ClaimsForm = ({ mode = 'new' }: ClaimsFormProps) => {
   const isView = mode === 'view';
+  const isNew = mode === 'new';
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { refetchClaims } = useClaims();
-  const { saveDraft, deleteDraft } = useClaimDraft();
+  const { hasMaxDrafts, saveDraft, deleteDraft } = useClaimDraft();
   const validSubmissionWindowDays = useSelector(getValidSubmissionWindowDays);
   const latestShieldSubscription = useSelector(getLatestShieldSubscription);
   const { captureShieldCtaClickedEvent, captureShieldClaimSubmissionEvent } =
@@ -462,6 +464,41 @@ const ClaimsForm = ({ mode = 'new' }: ClaimsFormProps) => {
     currentDraftId,
   ]);
 
+  const saveDraftButton = useMemo(() => {
+    const disableNewDrafts = hasMaxDrafts && isNew;
+    const draftButton = (
+      <Button
+        data-testid="shield-claim-save-draft-button"
+        className={disableNewDrafts ? 'w-full' : 'flex-1'}
+        variant={ButtonVariant.Secondary}
+        size={ButtonSize.Lg}
+        disabled={!hasAnyDraftData || isSubmittingClaim || hasMaxDrafts}
+        onClick={handleSaveDraft}
+      >
+        {t('shieldClaimSaveAsDraft')}
+      </Button>
+    );
+    if (disableNewDrafts) {
+      return (
+        <Tooltip
+          title={t('shieldClaimMaxDraftsReached')}
+          wrapperClassName="flex-1"
+          position="top"
+        >
+          {draftButton}
+        </Tooltip>
+      );
+    }
+    return draftButton;
+  }, [
+    hasMaxDrafts,
+    isNew,
+    hasAnyDraftData,
+    isSubmittingClaim,
+    handleSaveDraft,
+    t,
+  ]);
+
   return (
     <Box
       className="submit-claim-page flex flex-col pt-4 px-4 pb-4"
@@ -743,16 +780,7 @@ const ClaimsForm = ({ mode = 'new' }: ClaimsFormProps) => {
 
       {!isView && (
         <Box className="flex gap-2">
-          <Button
-            data-testid="shield-claim-save-draft-button"
-            className="flex-1"
-            variant={ButtonVariant.Secondary}
-            size={ButtonSize.Lg}
-            disabled={!hasAnyDraftData || isSubmittingClaim}
-            onClick={handleSaveDraft}
-          >
-            {t('shieldClaimSaveAsDraft')}
-          </Button>
+          {saveDraftButton}
           <Button
             data-testid="shield-claim-submit-button"
             className="flex-1"
