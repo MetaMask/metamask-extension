@@ -62,7 +62,6 @@ export const GatorPermissionsControllerInit: ControllerInitFunction<
       addPendingRevocation: controller.addPendingRevocation.bind(controller),
       submitDirectRevocation:
         controller.submitDirectRevocation.bind(controller),
-      submitRevocation: controller.submitRevocation.bind(controller),
     },
   };
 };

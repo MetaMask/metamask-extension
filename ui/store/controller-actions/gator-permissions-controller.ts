@@ -15,6 +15,15 @@ export const fetchAndUpdateGatorPermissions = async (
   );
 };
 
+/**
+ * Adds a pending revocation for a delegation that requires an on-chain transaction.
+ * This method is used for revocations that come with a transaction that has to be
+ * confirmed before marking the permission as revoked.
+ *
+ * @param params - The parameters for pending revocation.
+ * @param params.txId - The transaction ID associated with the revocation.
+ * @param params.permissionContext - The permission context to revoke.
+ */
 export const addPendingRevocation = async ({
   txId,
   permissionContext,
@@ -30,6 +39,14 @@ export const addPendingRevocation = async ({
   ]);
 };
 
+/**
+ * Submits a revocation for a delegation that is already disabled on-chain.
+ * This method is used when a delegation has already been disabled and does not
+ * require an on-chain transaction to revoke the permission.
+ *
+ * @param params - The parameters for direct revocation.
+ * @param params.permissionContext - The permission context to revoke.
+ */
 export const submitDirectRevocation = async ({
   permissionContext,
 }: {
@@ -40,14 +57,6 @@ export const submitDirectRevocation = async ({
       permissionContext,
     },
   ]);
-};
-
-export const submitRevocation = async ({
-  permissionContext,
-}: {
-  permissionContext: Hex;
-}): Promise<void> => {
-  await submitRequestToBackground('submitRevocation', [{ permissionContext }]);
 };
 
 /**

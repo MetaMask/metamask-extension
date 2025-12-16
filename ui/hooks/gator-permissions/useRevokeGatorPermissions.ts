@@ -174,6 +174,7 @@ export function useRevokeGatorPermissions({
       );
 
       if (isDisabled) {
+        // Return null since no actual transaction is needed when already disabled
         await submitDirectRevocation({ permissionContext });
         return null;
       }

@@ -3015,9 +3015,6 @@ export default class MetamaskController extends EventEmitter {
         gatorPermissionsController.submitDirectRevocation.bind(
           gatorPermissionsController,
         ),
-      submitRevocation: gatorPermissionsController.submitRevocation.bind(
-        gatorPermissionsController,
-      ),
       checkDelegationDisabled: this.checkDelegationDisabled.bind(this),
 
       // KeyringController
