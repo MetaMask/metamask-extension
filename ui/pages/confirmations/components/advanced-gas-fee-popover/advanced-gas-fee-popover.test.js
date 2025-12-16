@@ -62,14 +62,12 @@ const render = async () => {
   await act(
     async () =>
       (result = renderWithProvider(
-        <GasFeeContextProvider
+        <AdvancedGasFeePopover
           transaction={{
             userFeeLevel: 'high',
             txParams: { gas: '0x5208' },
           }}
-        >
-          <AdvancedGasFeePopover />
-        </GasFeeContextProvider>,
+        />,
         store,
       )),
   );

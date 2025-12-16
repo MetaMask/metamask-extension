@@ -106,7 +106,7 @@ const render = (
   });
 
   return renderWithProvider(
-    <GasFeeContextProvider
+    <CancelSpeedupPopover
       transaction={{
         userFeeLevel: 'tenPercentIncreased',
         txParams: {
@@ -117,9 +117,7 @@ const render = (
       }}
       editGasMode={EditGasModes.cancel}
       {...props}
-    >
-      <CancelSpeedupPopover />
-    </GasFeeContextProvider>,
+    />,
     store,
   );
 };

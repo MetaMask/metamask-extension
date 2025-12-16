@@ -48,26 +48,14 @@ export default {
   decorators: [
     (story) => (
       <Provider store={store}>
-        <GasFeeContextProvider
-          transaction={{
-            userFeeLevel: 'tenPercentIncreased',
-            txParams: {
-              gas: '0x5208',
-              maxFeePerGas: MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_HEX_WEI,
-              maxPriorityFeePerGas: '0x59682f00',
-            },
+        <TransactionModalContext.Provider
+          value={{
+            closeModal: () => undefined,
+            currentModal: 'cancelSpeedUpTransaction',
           }}
-          editGasMode={EditGasModes.cancel}
         >
-          <TransactionModalContext.Provider
-            value={{
-              closeModal: () => undefined,
-              currentModal: 'cancelSpeedUpTransaction',
-            }}
-          >
-            {story()}
-          </TransactionModalContext.Provider>
-        </GasFeeContextProvider>
+          {story()}
+        </TransactionModalContext.Provider>
       </Provider>
     ),
   ],
@@ -76,7 +64,18 @@ export default {
 export const DefaultStory = (args) => {
   return (
     <div style={{ width: '600px' }}>
-      <CancelSpeedupPopover {...args} />
+      <CancelSpeedupPopover
+        transaction={{
+          userFeeLevel: 'tenPercentIncreased',
+          txParams: {
+            gas: '0x5208',
+            maxFeePerGas: MOCK_SUGGESTED_MEDIUM_MAXFEEPERGAS_HEX_WEI,
+            maxPriorityFeePerGas: '0x59682f00',
+          },
+        }}
+        editGasMode={EditGasModes.cancel}
+        {...args}
+      />
     </div>
   );
 };

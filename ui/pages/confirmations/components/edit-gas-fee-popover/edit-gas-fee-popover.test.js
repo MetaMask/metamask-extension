@@ -60,7 +60,7 @@ const MOCK_FEE_ESTIMATE = {
   networkCongestion: 0.7,
 };
 
-const render = async ({ txProps, contextProps } = {}) => {
+const render = async ({ txProps, props } = {}) => {
   const store = configureStore({
     metamask: {
       currencyRates: {},
@@ -104,12 +104,10 @@ const render = async ({ txProps, contextProps } = {}) => {
   await act(
     async () =>
       (result = renderWithProvider(
-        <GasFeeContextProvider
+        <EditGasFeePopover
           transaction={{ txParams: { gas: '0x5208' }, ...txProps }}
-          {...contextProps}
-        >
-          <EditGasFeePopover />
-        </GasFeeContextProvider>,
+          {...props}
+        />,
         store,
       )),
   );

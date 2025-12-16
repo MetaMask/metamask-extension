@@ -5,6 +5,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useTransactionModalContext } from '../../../../contexts/transaction-modal';
 import Box from '../../../../components/ui/box';
 import Popover from '../../../../components/ui/popover';
+import { GasFeeContextProvider } from '../../../../contexts/gasFee';
 
 import { AdvancedGasFeePopoverContextProvider } from './context';
 import AdvancedGasFeeInputs from './advanced-gas-fee-inputs';
