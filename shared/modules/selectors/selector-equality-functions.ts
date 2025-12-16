@@ -1,58 +1,60 @@
 import { isEqual } from 'lodash';
 
 /**
- * Compares two arrays by length and element reference equality.
- * Faster than deep equality for arrays of objects with stable references.
+ * Shallow equality comparison that handles both arrays and objects.
  *
- * @param a - First array
- * @param b - Second array
- * @returns True if arrays have same length and same element references
+ * - Arrays: Compares by length and element reference equality
+ * - Objects: Compares by key count and property reference equality
+ * - Primitives: Compares by value (===)
+ *
+ * This is the recommended shallow equality function for selectors with mixed
+ * input types. Equivalent to React's `shallowEqual`.
+ *
+ * @param a - First value
+ * @param b - Second value
+ * @returns True if values are shallowly equal
  */
-export const shallowArrayEqual = (a: unknown[], b: unknown[]) => {
+export const shallowEqual = (a: unknown, b: unknown): boolean => {
   if (a === b) {
     return true;
   }
-  if (!Array.isArray(a) || !Array.isArray(b) || a.length !== b.length) {
+  if (a === null || b === null) {
     return false;
   }
-  for (let i = 0; i < a.length; i++) {
-    if (a[i] !== b[i]) {
+  if (typeof a !== 'object' || typeof b !== 'object') {
+    return false;
+  }
+
+  // Both are arrays
+  if (Array.isArray(a) && Array.isArray(b)) {
+    if (a.length !== b.length) {
       return false;
     }
-  }
-  return true;
-};
-
-/**
- * Compares two objects by their own enumerable keys and values (shallow).
- * Faster than deep equality for flat objects.
- *
- * @param a - First object
- * @param b - Second object
- * @returns True if objects have same keys and values (by reference)
- */
-export const shallowObjectEqual = (
-  a: Record<string, unknown>,
-  b: Record<string, unknown>,
-) => {
-  if (a === b) {
+    for (let i = 0; i < a.length; i++) {
+      if (a[i] !== b[i]) {
+        return false;
+      }
+    }
     return true;
   }
-  if (
-    typeof a !== 'object' ||
-    typeof b !== 'object' ||
-    a === null ||
-    b === null
-  ) {
+
+  // One is array, one is object - not equal
+  if (Array.isArray(a) || Array.isArray(b)) {
     return false;
   }
+
+  // Both are plain objects
   const keysA = Object.keys(a);
   const keysB = Object.keys(b);
   if (keysA.length !== keysB.length) {
     return false;
   }
   for (const key of keysA) {
-    if (!Object.hasOwn(b, key) || a[key] !== b[key]) {
+    if (
+      !Object.hasOwn(b, key) ||
+      (a as Record<string, unknown>)[key] !==
+        (b as Record<string, unknown>)[key]
+    ) {
       return false;
     }
   }

@@ -1,10 +1,7 @@
 import { isEqual } from 'lodash';
 import { createSelectorCreator, lruMemoize, weakMapMemoize } from 'reselect';
 import {
-  shallowArrayEqual,
-  shallowObjectEqual,
-  fastDeepEqual,
-} from './selector-equality-functions';
+import { shallowEqual, fastDeepEqual } from './selector-equality-functions';
 
 /**
  * Creates a selector with deep equality comparison using lodash `isEqual`.
@@ -146,95 +143,43 @@ export const createLruSelector = (maxSize = 10) =>
   createSelectorCreator(lruMemoize, { maxSize });
 
 /**
- * Creates a selector with shallow array comparison for input equality.
+ * Creates a selector with shallow equality comparison for inputs.
  *
- * Compares arrays by length and element reference equality (O(n) where n = array length).
- * Faster than deep equality when array elements have stable references.
+ * Automatically handles both arrays and objects:
+ * - Arrays: Compares by length and element reference equality
+ * - Objects: Compares by key count and property reference equality
+ *
+ * This is the recommended shallow equality selector for mixed input types.
+ * Replaces {@link createShallowArrayEqualSelector} and {@link createShallowObjectEqualSelector}.
  *
  * ## When to Use
- * 1. **Arrays of stable objects** - Elements are memoized or come from normalized
- * state where references are preserved across updates
- * 2. **Filtered/sliced results** - Upstream selector returns a new array reference
- * but contains the same object references (e.g., `.filter()`, `.slice()`)
- * 3. **Computed array selections** - Result is an array derived from multiple inputs
- * where the contained objects don't change frequently
+ * 1. **Filtered/mapped collections** - Upstream selector returns new array/object
+ * references but contained elements have stable references
+ * 2. **Spread/merged objects** - Objects combined via spread where property values
+ * are referentially stable
+ * 3. **Mixed input types** - Some inputs are arrays, others are objects
  *
  * ## When to Avoid
- * 1. **Arrays of primitives that are recreated** - New arrays with same primitive
- * values won't match; consider {@link createDeepEqualSelector}
- * 2. **Nested arrays/objects within elements** - Shallow comparison won't detect
- * changes inside array elements; use {@link createFastDeepEqualSelector}
- * 3. **Unstable element references** - If elements are recreated on each selector
- * call, shallow comparison provides no benefit
+ * 1. **Nested structures** - Shallow comparison won't detect changes in nested
+ * properties; use {@link createFastDeepEqualSelector} or {@link createDeepEqualSelector}
+ * 2. **Unstable element references** - If elements are recreated on each call,
+ * shallow comparison provides no benefit
  *
  * @example
  * ```ts
- * // Filtering accounts - account objects are stable references from state
- * const getEvmAccounts = createShallowArrayEqualSelector(
- *   getInternalAccounts,
- *   (accounts) => accounts.filter((account) => isEvmAccountType(account.type)),
- * );
- *
- * // Transactions from TransactionController use immer, so object references
- * // remain stable when unchanged. Sorting creates a new array but element
- * // references are preserved - ideal for shallow array comparison.
- * const getTransactions = createShallowArrayEqualSelector(
- *   (state) => state.metamask?.transactions,
- *   (transactions) => {
- *     if (!transactions?.length) return EMPTY_ARRAY;
- *     return [...transactions].sort((a, b) => a.time - b.time);
- *   },
+ * // Works with both array and object inputs
+ * const getAccountsWithConfig = createShallowEqualSelector(
+ *   getFilteredAccounts,  // Array - compared by element refs
+ *   getNetworkConfig,     // Object - compared by property refs
+ *   (accounts, config) => accounts.map((a) => ({ ...a, network: config })),
  * );
  * ```
- * @see {@link shallowArrayEqual} - The underlying comparison function
+ * @see {@link shallowEqual} - The underlying comparison function
+ * @see {@link createSelectorWith} - For combining with result equality
  */
-export const createShallowArrayEqualSelector = createSelectorCreator(
+export const createShallowEqualSelector = createSelectorCreator(
   lruMemoize,
-  shallowArrayEqual,
-);
-
-/**
- * Creates a selector with shallow object comparison for input equality.
- *
- * Compares objects by key count and property reference equality (O(n) where n = key count).
- * Faster than deep equality when property values have stable references.
- *
- * ## When to Use
- * 1. **Flat configuration objects** - Objects with primitive or stable reference values
- * that may be recreated with the same contents
- * 2. **Merged/spread objects** - Upstream selector combines objects via spread operator
- * but underlying property values are referentially stable
- * 3. **Computed object selections** - Result is an object derived from state where
- * property values don't change frequently
- *
- * ## When to Avoid
- * 1. **Nested objects** - Shallow comparison won't detect changes in nested properties;
- * use {@link createFastDeepEqualSelector} or {@link createDeepEqualSelector}
- * 2. **Objects with array values** - Arrays are compared by reference only; if arrays
- * are recreated, use {@link createDeepEqualSelector}
- * 3. **Dynamic key sets** - If object shape changes frequently (keys added/removed),
- * comparison overhead increases
- *
- * @example
- * ```ts
- * // Wrapping state slices with fallbacks - object values are stable references
- * const selectRatesStateForBalances = createShallowObjectEqualSelector(
- *   getAssetsRates,
- *   getHistoricalPrices,
- *   (conversionRates, historicalPrices) => ({
- *     conversionRates: conversionRates ?? EMPTY_OBJECT,
- *     historicalPrices: historicalPrices ?? EMPTY_OBJECT,
- *   }),
- * );
- *
- * // The wrapped objects are stable references from state, so shallow comparison
- * // detects when the returned object is equivalent to the previous result.
- * ```
- * @see {@link shallowObjectEqual} - The underlying comparison function
- */
-export const createShallowObjectEqualSelector = createSelectorCreator(
-  lruMemoize,
-  shallowObjectEqual,
+  shallowEqual,
 );
 
 /**
