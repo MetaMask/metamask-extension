@@ -156,6 +156,7 @@ import {
 } from './multichain/networks';
 import { getRemoteFeatureFlags } from './remote-feature-flags';
 import { getApprovalRequestsByType } from './approvals';
+import { getHasShieldEntryModalShownOnce } from './subscription';
 
 /**
  * @typedef {import('../../ui/store/store').MetaMaskReduxState} MetaMaskReduxState
@@ -305,7 +306,12 @@ export function getPendingShieldCohortTxType(state) {
 }
 
 export function getShouldSubmitEventsForShieldEntryModal(state) {
-  return state.appState.shieldEntryModal?.shouldSubmitEvents;
+  const hasShieldEntryModalShownOnce = getHasShieldEntryModalShownOnce(state);
+  if (hasShieldEntryModalShownOnce) {
+    // if the modal has been shown to the user, we don't need to submit events anymore
+    return false;
+  }
+  return Boolean(state.appState.shieldEntryModal?.shouldSubmitEvents);
 }
 
 export function getModalTypeForShieldEntryModal(state) {
