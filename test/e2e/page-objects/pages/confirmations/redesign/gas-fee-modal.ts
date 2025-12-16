@@ -246,7 +246,7 @@ export default class GasFeeModal {
         await this.selectHighGasFee();
         break;
       default:
-        throw new Error(`Unknown gas fee level: ${level}`);
+        throw new Error('Unknown gas fee level');
     }
   }
 
