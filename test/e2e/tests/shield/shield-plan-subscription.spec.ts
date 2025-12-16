@@ -79,6 +79,16 @@ function createShieldFixtureCrypto() {
         },
       },
     })
+    .withTokenBalancesController({
+      tokenBalances: {
+        '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+          '0x1': {
+            '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': '100000000', // 100 USDC (6 decimals)
+            '0xdac17f958d2ee523a2206206994597c13d831ec7': '100000000', // 100 USDT (6 decimals)
+          },
+        },
+      },
+    })
     .withAccountTracker({
       accountsByChainId: {
         '0x1': {
@@ -261,6 +271,9 @@ describe('Shield Subscription Tests', function () {
 
             await homePage.checkShieldEntryModalIsDisplayed();
             await homePage.clickOnShieldEntryModalGetStarted();
+
+            console.log('shieldDetailPage 111 +++++++++++++++++++++++');
+            console.log('shieldDetailPage 222 !!!!!+++++++++++++++++++++++');
 
             const shieldPlanPage = new ShieldPlanPage(driver);
             await shieldPlanPage.checkPageIsLoaded();
