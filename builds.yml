@@ -468,4 +468,7 @@ env:
   - IS_SIDEPANEL: true
 
   # Accounts framework
-  - FORCE_MULTICHAIN_ACCOUNTS_FEATURE_FLAG: 'true'
+  # NOTE: This flag is used to progressively enable the multichain accounts progressively in
+  # contexts that might still rely on the remote feature flag.
+  # TODO: Remove this env var once the feature flag has been fully removed!
+  - FORCE_MULTICHAIN_ACCOUNTS_FEATURE_FLAG: false
