@@ -4,6 +4,7 @@ import { ClaimsProvider } from '../../../../contexts/claims/claims';
 import ClaimsList from '../claims-list';
 import ClaimsForm from '../claims-form';
 import { TRANSACTION_SHIELD_CLAIM_ROUTES } from '../../../../helpers/constants/routes';
+import { CLAIMS_FORM_MODES } from '../types';
 
 const ClaimsArea = () => {
   return (
@@ -16,15 +17,15 @@ const ClaimsArea = () => {
         />
         <Route
           path={`${TRANSACTION_SHIELD_CLAIM_ROUTES.EDIT_DRAFT.RELATIVE}/:draftId`}
-          element={<ClaimsForm mode="edit-draft" />}
+          element={<ClaimsForm mode={CLAIMS_FORM_MODES.EDIT_DRAFT} />}
         />
         <Route
           path={`${TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW_PENDING.RELATIVE}/:claimId`}
-          element={<ClaimsForm mode="view" />}
+          element={<ClaimsForm mode={CLAIMS_FORM_MODES.VIEW} />}
         />
         <Route
           path={`${TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW_HISTORY.RELATIVE}/:claimId`}
-          element={<ClaimsForm mode="view" />}
+          element={<ClaimsForm mode={CLAIMS_FORM_MODES.VIEW} />}
         />
       </RouterRoutes>
     </ClaimsProvider>

@@ -37,10 +37,7 @@ import {
   BorderRadius,
   TextColor as DsTextColor,
 } from '../../../../helpers/constants/design-system';
-import {
-  useClaimState,
-  ClaimStateMode,
-} from '../../../../hooks/shield/useClaimState';
+import { useClaimState } from '../../../../hooks/shield/useClaimState';
 import { useClaimDraft } from '../../../../hooks/shield/useClaimDraft';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -56,6 +53,8 @@ import {
 } from '../../../../helpers/constants/common';
 import { FileUploader } from '../../../../components/component-library/file-uploader';
 import {
+  CLAIMS_FORM_MODES,
+  ClaimsFormMode,
   SUBMIT_CLAIM_ERROR_CODES,
   SUBMIT_CLAIM_FIELDS,
   SubmitClaimField,
@@ -79,13 +78,13 @@ import {
 } from './constants';
 import { isValidTransactionHash } from './utils';
 
-type ClaimsFormProps = {
-  mode?: ClaimStateMode;
-};
-
-const ClaimsForm = ({ mode = 'new' }: ClaimsFormProps) => {
-  const isView = mode === 'view';
-  const isNew = mode === 'new';
+const ClaimsForm = ({
+  mode = CLAIMS_FORM_MODES.NEW,
+}: {
+  mode?: ClaimsFormMode;
+}) => {
+  const isView = mode === CLAIMS_FORM_MODES.VIEW;
+  const isNew = mode === CLAIMS_FORM_MODES.NEW;
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();

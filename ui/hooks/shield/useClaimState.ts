@@ -3,11 +3,13 @@ import { useLocation } from 'react-router-dom';
 import { Attachment as ClaimAttachment } from '@metamask/claims-controller';
 import { useClaims } from '../../contexts/claims/claims';
 import { generateClaimSignature } from '../../store/actions';
+import {
+  CLAIMS_FORM_MODES,
+  ClaimsFormMode,
+} from '../../pages/settings/transaction-shield-tab/types';
 import { useClaimDraft } from './useClaimDraft';
 
-export type ClaimStateMode = 'new' | 'view' | 'edit-draft';
-
-export const useClaimState = (mode: ClaimStateMode = 'new') => {
+export const useClaimState = (mode: ClaimsFormMode = CLAIMS_FORM_MODES.NEW) => {
   const { pathname } = useLocation();
   const { claims } = useClaims();
   const { getDraft } = useClaimDraft();
@@ -25,8 +27,8 @@ export const useClaimState = (mode: ClaimStateMode = 'new') => {
   const [claimSignature, setClaimSignature] = useState<string>('');
   const [currentDraftId, setCurrentDraftId] = useState<string | undefined>();
 
-  const isView = mode === 'view';
-  const isEditDraft = mode === 'edit-draft';
+  const isView = mode === CLAIMS_FORM_MODES.VIEW;
+  const isEditDraft = mode === CLAIMS_FORM_MODES.EDIT_DRAFT;
   const claimOrDraftId = pathname.split('/').pop();
 
   useEffect(() => {
