@@ -13,6 +13,7 @@ import {
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
   getTokenSortConfig,
+  getUseExternalServices,
 } from '../../../../selectors';
 import { endTrace, TraceName } from '../../../../../shared/lib/trace';
 import { useNetworkFilter } from '../hooks';
@@ -81,6 +82,9 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     getIsMultichainAccountsState2Enabled,
   );
 
+  const useExternalServices = useSelector(getUseExternalServices);
+  console.log('🚀 ~ TokenList ~ useExternalServices:', useExternalServices);
+
   const networksToShow = useMemo(() => {
     return isGlobalNetworkSelectorRemoved
       ? enabledNetworksByNamespace
@@ -102,9 +106,14 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
         },
       ]);
 
-      return sortAssets([...filteredAssets], tokenSortConfig);
-    }
+      // Filter out non-EVM assets when basic functionality toggle is OFF
+      const finalAssets = useExternalServices
+        ? filteredAssets
+        : filteredAssets.filter((asset) => isEvmChainId(asset.chainId));
 
+      return sortAssets([...finalAssets], tokenSortConfig);
+    }
+    console.log('🚀 ~ TokenList ~ accountGroupIdAssets:', accountGroupIdAssets);
     const accountAssetsPreSort = Object.entries(accountGroupIdAssets).flatMap(
       ([chainId, assets]) => {
         if (!allEnabledNetworksForAllNamespaces.includes(chainId)) {
@@ -129,7 +138,13 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
       tokenSortConfig,
     );
 
-    return accountAssets.map((asset) => {
+    // Filter out non-EVM assets when basic functionality toggle is OFF
+    const finalAccountAssets = useExternalServices
+      ? accountAssets
+      : accountAssets.filter((asset) => isEvmChainId(asset.chainId));
+    console.log('🚀 ~ TokenList ~ finalAccountAssets:', finalAccountAssets);
+
+    return finalAccountAssets.map((asset) => {
       const token: TokenWithFiatAmount = {
         ...asset,
         tokenFiatAmount: asset.fiat?.balance,
@@ -153,6 +168,8 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     // newTokensImported included in deps, but not in hook's logic
     newTokensImported,
     allEnabledNetworksForAllNamespaces,
+    shouldHideZeroBalanceTokens,
+    useExternalServices,
   ]);
 
   const virtualizer = useVirtualizer({
