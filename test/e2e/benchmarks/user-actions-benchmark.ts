@@ -20,7 +20,6 @@ import {
   MOCK_TOKENS_ETHEREUM,
 } from '../tests/bridge/constants';
 import { Driver } from '../webdriver/driver';
-import { TEST_TITLES } from './constants';
 
 async function mockTokensEthereum(mockServer: Mockttp) {
   return await mockServer
@@ -33,8 +32,9 @@ async function mockTokensEthereum(mockServer: Mockttp) {
     });
 }
 
-async function loadNewAccount(): Promise<number> {
+async function loadNewAccount(): Promise<{ duration: number; title: string }> {
   let loadingTimes: number = 0;
+  const title = 'benchmark-userActions-loadNewAccount';
 
   await withFixtures(
     {
@@ -43,7 +43,7 @@ async function loadNewAccount(): Promise<number> {
       localNodeOptions: {
         accounts: 1,
       },
-      title: TEST_TITLES.USER_ACTION_LOAD_NEW_ACCOUNT,
+      title,
     },
     async ({ driver }: { driver: Driver }) => {
       await unlockWallet(driver);
@@ -60,16 +60,18 @@ async function loadNewAccount(): Promise<number> {
         timestampAfterAction.getTime() - timestampBeforeAction.getTime();
     },
   );
-  return loadingTimes;
+  return { duration: loadingTimes, title };
 }
 
-async function confirmTx(): Promise<number> {
+async function confirmTx(): Promise<{ duration: number; title: string }> {
   let loadingTimes: number = 0;
+  const title = 'benchmark-userActions-confirmTx';
+
   await withFixtures(
     {
       fixtures: new FixtureBuilder().build(),
       disableServerMochaToBackground: true,
-      title: TEST_TITLES.USER_ACTION_CONFIRM_TX,
+      title,
     },
     async ({ driver }: { driver: Driver }) => {
       await loginWithBalanceValidation(driver);
@@ -107,17 +109,19 @@ async function confirmTx(): Promise<number> {
         timestampAfterAction.getTime() - timestampBeforeAction.getTime();
     },
   );
-  return loadingTimes;
+  return { duration: loadingTimes, title };
 }
 
 async function bridgeUserActions(): Promise<{
   loadPage: number;
   loadAssetPicker: number;
   searchToken: number;
+  title: string;
 }> {
   let loadPage: number = 0;
   let loadAssetPicker: number = 0;
   let searchToken: number = 0;
+  const title = 'benchmark-userActions-bridgeUserActions';
 
   const fixtureBuilder = new FixtureBuilder()
     .withNetworkControllerOnMainnet()
@@ -128,7 +132,7 @@ async function bridgeUserActions(): Promise<{
       fixtures: fixtureBuilder.build(),
       disableServerMochaToBackground: true,
       testSpecificMock: mockTokensEthereum,
-      title: TEST_TITLES.USER_ACTION_BRIDGE,
+      title,
       manifestFlags: {
         remoteFeatureFlags: {
           bridgeConfig: DEFAULT_BRIDGE_FEATURE_FLAGS,
@@ -169,7 +173,7 @@ async function bridgeUserActions(): Promise<{
         timestampBeforeTokenSearch.getTime();
     },
   );
-  return { loadPage, loadAssetPicker, searchToken };
+  return { loadPage, loadAssetPicker, searchToken, title };
 }
 
 async function main(): Promise<void> {
@@ -195,18 +199,25 @@ async function main(): Promise<void> {
         searchToken: number;
       }
   > = {};
+
+  const loadNewAccountResult = await loadNewAccount();
   results.loadNewAccount = {
-    testTitle: TEST_TITLES.USER_ACTION_LOAD_NEW_ACCOUNT,
-    duration: await loadNewAccount(),
+    testTitle: loadNewAccountResult.title,
+    duration: loadNewAccountResult.duration,
   };
+
+  const confirmTxResult = await confirmTx();
   results.confirmTx = {
-    testTitle: TEST_TITLES.USER_ACTION_CONFIRM_TX,
-    duration: await confirmTx(),
+    testTitle: confirmTxResult.title,
+    duration: confirmTxResult.duration,
   };
+
   const bridgeResults = await bridgeUserActions();
   results.bridge = {
-    testTitle: TEST_TITLES.USER_ACTION_BRIDGE,
-    ...bridgeResults,
+    testTitle: bridgeResults.title,
+    loadPage: bridgeResults.loadPage,
+    loadAssetPicker: bridgeResults.loadAssetPicker,
+    searchToken: bridgeResults.searchToken,
   };
   const { out } = argv as { out?: string };
 

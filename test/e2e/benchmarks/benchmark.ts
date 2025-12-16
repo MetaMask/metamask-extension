@@ -26,7 +26,6 @@ import {
   ALL_METRICS,
   DEFAULT_NUM_BROWSER_LOADS,
   DEFAULT_NUM_PAGE_LOADS,
-  TEST_TITLES,
   WITH_STATE_POWER_USER,
 } from './constants';
 
@@ -35,13 +34,14 @@ const ALL_PAGES = Object.values(PAGES);
 async function measurePageStandard(
   pageName: string,
   pageLoads: number,
-): Promise<Metrics[]> {
+): Promise<{ metrics: Metrics[]; title: string }> {
   const metrics: Metrics[] = [];
+  const title = 'measurePageStandard';
   await withFixtures(
     {
       fixtures: new FixtureBuilder().build(),
       disableServerMochaToBackground: true,
-      title: TEST_TITLES.MEASURE_PAGE_STANDARD,
+      title,
     },
     async ({ driver, getNetworkReport, clearNetworkReport }) => {
       await unlockWallet(driver);
@@ -61,17 +61,18 @@ async function measurePageStandard(
       }
     },
   );
-  return metrics;
+  return { metrics, title };
 }
 
 async function measurePagePowerUser(
   pageName: string,
   pageLoads: number,
-): Promise<Metrics[]> {
+): Promise<{ metrics: Metrics[]; title: string }> {
   const metrics: Metrics[] = [];
+  const title = 'measurePagePowerUser';
   await withFixtures(
     {
-      title: TEST_TITLES.MEASURE_PAGE_POWER_USER,
+      title,
       fixtures: (
         await generateWalletState(WITH_STATE_POWER_USER, true)
       ).build(),
@@ -120,7 +121,7 @@ async function measurePagePowerUser(
       }
     },
   );
-  return metrics;
+  return { metrics, title };
 }
 
 function calculateResult(calc: (array: number[]) => number) {
@@ -184,13 +185,15 @@ async function profilePageLoad(
 
   for (const pageName of pages) {
     let runResults: Metrics[] = [];
+    let testTitle = '';
 
     for (let i = 0; i < browserLoads; i += 1) {
       console.log('Starting browser load', i + 1, 'of', browserLoads);
-      const result = await retry({ retries }, () =>
+      const { metrics, title } = await retry({ retries }, () =>
         measurePageFunction(pageName, pageLoads),
       );
-      runResults = runResults.concat(result);
+      runResults = runResults.concat(metrics);
+      testTitle = title; // Title is the same for all runs
     }
 
     if (runResults.some((result) => result.navigation.length > 1)) {
@@ -220,10 +223,6 @@ async function profilePageLoad(
     }
 
     const reportingPageName = `${persona}${capitalize(pageName)}`;
-    const testTitle =
-      persona === 'powerUser'
-        ? TEST_TITLES.MEASURE_PAGE_POWER_USER
-        : TEST_TITLES.MEASURE_PAGE_STANDARD;
 
     results[reportingPageName] = {
       testTitle,

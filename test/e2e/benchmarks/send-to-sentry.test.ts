@@ -1,6 +1,5 @@
 import { execSync } from 'child_process';
 import * as Sentry from '@sentry/node';
-import { TEST_TITLES } from './constants';
 
 jest.mock('@sentry/node', () => ({
   init: jest.fn(),
@@ -25,7 +24,7 @@ jest.mock('child_process', () => ({
 describe('send-to-sentry', () => {
   const mockResults = {
     standardHome: {
-      testTitle: TEST_TITLES.MEASURE_PAGE_STANDARD,
+      testTitle: 'measurePageStandard',
       mean: {
         uiStartup: 500,
         load: 400,
@@ -41,11 +40,11 @@ describe('send-to-sentry', () => {
 
   const mockUserActionResults = {
     loadNewAccount: {
-      testTitle: TEST_TITLES.USER_ACTION_LOAD_NEW_ACCOUNT,
+      testTitle: 'benchmark-userActions-loadNewAccount',
       duration: 1234,
     },
     bridge: {
-      testTitle: TEST_TITLES.USER_ACTION_BRIDGE,
+      testTitle: 'benchmark-userActions-bridgeUserActions',
       loadPage: 100,
       loadAssetPicker: 200,
       searchToken: 300,
@@ -101,7 +100,7 @@ describe('send-to-sentry', () => {
         'ci.browser': 'chrome',
         'ci.buildType': 'browserify',
         'ci.pageType': 'standardHome',
-        'ci.testTitle': TEST_TITLES.MEASURE_PAGE_STANDARD,
+        'ci.testTitle': 'measurePageStandard',
       };
 
       for (const [key, value] of Object.entries(tags)) {
@@ -113,7 +112,7 @@ describe('send-to-sentry', () => {
       expect(Sentry.setTag).toHaveBeenCalledWith('ci.pageType', 'standardHome');
       expect(Sentry.setTag).toHaveBeenCalledWith(
         'ci.testTitle',
-        TEST_TITLES.MEASURE_PAGE_STANDARD,
+        'measurePageStandard',
       );
     });
   });
@@ -157,15 +156,15 @@ describe('send-to-sentry', () => {
   describe('testTitle from JSON', () => {
     it('uses testTitle from standard benchmark results', () => {
       const { testTitle } = mockResults.standardHome;
-      expect(testTitle).toBe(TEST_TITLES.MEASURE_PAGE_STANDARD);
+      expect(testTitle).toBe('measurePageStandard');
     });
 
     it('uses testTitle from user action results', () => {
       expect(mockUserActionResults.loadNewAccount.testTitle).toBe(
-        TEST_TITLES.USER_ACTION_LOAD_NEW_ACCOUNT,
+        'benchmark-userActions-loadNewAccount',
       );
       expect(mockUserActionResults.bridge.testTitle).toBe(
-        TEST_TITLES.USER_ACTION_BRIDGE,
+        'benchmark-userActions-bridgeUserActions',
       );
     });
   });

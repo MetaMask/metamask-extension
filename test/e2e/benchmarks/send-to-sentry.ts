@@ -13,7 +13,6 @@ import { promises as fs } from 'fs';
 import * as Sentry from '@sentry/node';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
-import { TEST_TITLES } from './constants';
 import type { BenchmarkResults } from './types-generated';
 
 /** Gets current git commit hash, or 'unknown' if unavailable. */
@@ -136,8 +135,8 @@ async function main() {
       const testTitle =
         value.testTitle ||
         (persona === 'powerUser'
-          ? TEST_TITLES.MEASURE_PAGE_POWER_USER
-          : TEST_TITLES.MEASURE_PAGE_STANDARD);
+          ? 'measurePagePowerUser'
+          : 'measurePageStandard');
       setCommonTags(testTitle);
 
       Sentry.startSpan(
