@@ -7,7 +7,10 @@ import { useSelector } from 'react-redux';
 import { DAY } from '../../../../../../../../shared/constants/time';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import { ConfirmInfoRowDivider } from '../../../../../../../components/app/confirm/info/row';
-import { getNativeTokenInfo } from '../../../../../../../selectors';
+import {
+  getNativeTokenInfo,
+  MetaMaskReduxState,
+} from '../../../../../../../selectors';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../../../shared/constants/network';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { NativeAmountRow } from './native-amount-row';
@@ -49,8 +52,7 @@ export const NativeTokenStreamDetails: React.FC<{
 
   const { symbol, decimals } = useSelector(
     (state: {
-      metamask: {
-        networkConfigurationsByChainId: Record<string, unknown>;
+      metamask: MetaMaskReduxState['metamask'] & {
         provider: Record<string, unknown>;
       };
     }) =>

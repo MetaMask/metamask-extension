@@ -9,7 +9,10 @@ import {
   ConfirmInfoRowDivider,
 } from '../../../../../../../components/app/confirm/info/row';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
-import { getNativeTokenInfo } from '../../../../../../../selectors';
+import {
+  getNativeTokenInfo,
+  MetaMaskReduxState,
+} from '../../../../../../../selectors';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../../../shared/constants/network';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { formatPeriodDuration } from './typed-sign-permission-util';
@@ -49,8 +52,7 @@ export const NativeTokenPeriodicDetails: React.FC<{
 
   const { symbol, decimals } = useSelector(
     (state: {
-      metamask: {
-        networkConfigurationsByChainId: Record<string, unknown>;
+      metamask: MetaMaskReduxState['metamask'] & {
         provider: Record<string, unknown>;
       };
     }) =>

@@ -182,8 +182,7 @@ const CrossChainSwapTxDetails = () => {
   // TODO set for gasless swaps
   const gasCurrency = useSelector(
     (state: {
-      metamask: {
-        networkConfigurationsByChainId: Record<string, unknown>;
+      metamask: MetaMaskReduxState['metamask'] & {
         provider: Record<string, unknown>;
       };
     }) =>
