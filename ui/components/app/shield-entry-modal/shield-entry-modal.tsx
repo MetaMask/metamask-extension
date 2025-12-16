@@ -84,7 +84,10 @@ const ShieldEntryModal = ({
 
   const determineEntryModalSource = useCallback((): EntryModalSourceEnum => {
     const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
-    if (Object.keys(marketingUtmParams).length > 0) {
+    const marketingUtmSource = marketingUtmParams.utm_source;
+    if (marketingUtmSource === EntryModalSourceEnum.Carousel) {
+      return EntryModalSourceEnum.Carousel;
+    } else if (Object.keys(marketingUtmParams).length > 0) {
       return EntryModalSourceEnum.Marketing;
     } else if (triggeringCohort === COHORT_NAMES.POST_TX) {
       return EntryModalSourceEnum.PostTransaction;
