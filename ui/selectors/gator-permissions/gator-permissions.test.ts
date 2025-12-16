@@ -31,6 +31,7 @@ const MOCK_CHAIN_ID_POLYGON = '0x89' as Hex;
 
 type MockGatorPermissionsStorageEntriesConfig = {
   [chainId: string]: {
+    erc20TokenRevocation: number;
     nativeTokenStream: number;
     nativeTokenPeriodic: number;
     erc20TokenStream: number;
@@ -71,6 +72,10 @@ function mockGatorPermissionsStorageEntriesFactory(
   config: MockGatorPermissionsStorageEntriesConfig,
 ): GatorPermissionsMap {
   const mockGatorPermissionsMap: GatorPermissionsMap = {
+    'erc20-token-revocation': {
+      [MOCK_CHAIN_ID_MAINNET]: [],
+      [MOCK_CHAIN_ID_POLYGON]: [],
+    },
     'native-token-stream': {
       [MOCK_CHAIN_ID_MAINNET]: [],
       [MOCK_CHAIN_ID_POLYGON]: [],
@@ -249,12 +254,14 @@ function mockGatorPermissionsStorageEntriesFactory(
 describe('Gator Permissions Selectors', () => {
   const mockGatorPermissionsMap = mockGatorPermissionsStorageEntriesFactory({
     [MOCK_CHAIN_ID_MAINNET]: {
+      erc20TokenRevocation: 1,
       nativeTokenStream: 1,
       nativeTokenPeriodic: 1,
       erc20TokenStream: 1,
       siteOrigin: 'http://localhost:8000',
     },
     [MOCK_CHAIN_ID_POLYGON]: {
+      erc20TokenRevocation: 1,
       nativeTokenStream: 1,
       nativeTokenPeriodic: 1,
       erc20TokenStream: 1,
@@ -294,6 +301,10 @@ describe('Gator Permissions Selectors', () => {
         const emptyState = {
           metamask: {
             gatorPermissionsMapSerialized: JSON.stringify({
+              'erc20-token-revocation': {
+                [MOCK_CHAIN_ID_MAINNET]: [],
+                [MOCK_CHAIN_ID_POLYGON]: [],
+              },
               'native-token-stream': {
                 [MOCK_CHAIN_ID_MAINNET]: [],
                 [MOCK_CHAIN_ID_POLYGON]: [],
@@ -334,12 +345,14 @@ describe('Gator Permissions Selectors', () => {
         const customMockGatorPermissionsMap =
           mockGatorPermissionsStorageEntriesFactory({
             [MOCK_CHAIN_ID_MAINNET]: {
+              erc20TokenRevocation: 1,
               nativeTokenStream: 2,
               nativeTokenPeriodic: 1,
               erc20TokenStream: 3,
               siteOrigin: 'http://localhost:8000',
             },
             [MOCK_CHAIN_ID_POLYGON]: {
+              erc20TokenRevocation: 1,
               nativeTokenStream: 1,
               nativeTokenPeriodic: 2,
               erc20TokenStream: 0,
@@ -454,6 +467,10 @@ describe('Gator Permissions Selectors', () => {
             [MOCK_CHAIN_ID_MAINNET]: [],
             [MOCK_CHAIN_ID_POLYGON]: [],
           },
+          'erc20-token-revocation': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
           other: {
             [MOCK_CHAIN_ID_MAINNET]: [],
             [MOCK_CHAIN_ID_POLYGON]: [],
@@ -498,6 +515,10 @@ describe('Gator Permissions Selectors', () => {
             [MOCK_CHAIN_ID_POLYGON]: [],
           },
           'erc20-token-periodic': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          'erc20-token-revocation': {
             [MOCK_CHAIN_ID_MAINNET]: [],
             [MOCK_CHAIN_ID_POLYGON]: [],
           },
@@ -547,6 +568,10 @@ describe('Gator Permissions Selectors', () => {
           'erc20-token-periodic': {
             [MOCK_CHAIN_ID_MAINNET]: [],
             [MOCK_CHAIN_ID_POLYGON]: [undefined, { permissionResponse: {} }],
+          },
+          'erc20-token-revocation': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
           },
           other: {
             [MOCK_CHAIN_ID_MAINNET]: [],
@@ -626,6 +651,10 @@ describe('Gator Permissions Selectors', () => {
                 [MOCK_CHAIN_ID_MAINNET]: [],
                 [MOCK_CHAIN_ID_POLYGON]: [],
               },
+              'erc20-token-revocation': {
+                [MOCK_CHAIN_ID_MAINNET]: [],
+                [MOCK_CHAIN_ID_POLYGON]: [],
+              },
               other: {
                 [MOCK_CHAIN_ID_MAINNET]: [],
                 [MOCK_CHAIN_ID_POLYGON]: [],
@@ -647,12 +676,14 @@ describe('Gator Permissions Selectors', () => {
         const customMockGatorPermissionsMap =
           mockGatorPermissionsStorageEntriesFactory({
             [MOCK_CHAIN_ID_MAINNET]: {
+              erc20TokenRevocation: 1,
               nativeTokenStream: 2,
               nativeTokenPeriodic: 1,
               erc20TokenStream: 3,
               siteOrigin: 'http://localhost:8000',
             },
             [MOCK_CHAIN_ID_POLYGON]: {
+              erc20TokenRevocation: 1,
               nativeTokenStream: 1,
               nativeTokenPeriodic: 2,
               erc20TokenStream: 0,
@@ -694,12 +725,14 @@ describe('Gator Permissions Selectors', () => {
         const nativeOnlyMockGatorPermissionsMap =
           mockGatorPermissionsStorageEntriesFactory({
             [MOCK_CHAIN_ID_MAINNET]: {
+              erc20TokenRevocation: 1,
               nativeTokenStream: 2,
               nativeTokenPeriodic: 1,
               erc20TokenStream: 0,
               siteOrigin: 'http://localhost:8000',
             },
             [MOCK_CHAIN_ID_POLYGON]: {
+              erc20TokenRevocation: 1,
               nativeTokenStream: 0,
               nativeTokenPeriodic: 3,
               erc20TokenStream: 0,
@@ -741,12 +774,14 @@ describe('Gator Permissions Selectors', () => {
         const erc20OnlyMockGatorPermissionsMap =
           mockGatorPermissionsStorageEntriesFactory({
             [MOCK_CHAIN_ID_MAINNET]: {
+              erc20TokenRevocation: 1,
               nativeTokenStream: 0,
               nativeTokenPeriodic: 0,
               erc20TokenStream: 4,
               siteOrigin: 'http://localhost:8000',
             },
             [MOCK_CHAIN_ID_POLYGON]: {
+              erc20TokenRevocation: 1,
               nativeTokenStream: 0,
               nativeTokenPeriodic: 0,
               erc20TokenStream: 2,
@@ -788,12 +823,14 @@ describe('Gator Permissions Selectors', () => {
         const mixedMockGatorPermissionsMap =
           mockGatorPermissionsStorageEntriesFactory({
             [MOCK_CHAIN_ID_MAINNET]: {
+              erc20TokenRevocation: 1,
               nativeTokenStream: 1,
               nativeTokenPeriodic: 0,
               erc20TokenStream: 2,
               siteOrigin: 'http://localhost:8000',
             },
             [MOCK_CHAIN_ID_POLYGON]: {
+              erc20TokenRevocation: 1,
               nativeTokenStream: 0,
               nativeTokenPeriodic: 2,
               erc20TokenStream: 1,
@@ -847,6 +884,7 @@ describe('Gator Permissions Selectors', () => {
         const singleChainMockGatorPermissionsMap =
           mockGatorPermissionsStorageEntriesFactory({
             [MOCK_CHAIN_ID_MAINNET]: {
+              erc20TokenRevocation: 1,
               nativeTokenStream: 2,
               nativeTokenPeriodic: 1,
               erc20TokenStream: 1,
@@ -885,12 +923,14 @@ describe('Gator Permissions Selectors', () => {
         const multiChainMockGatorPermissionsMap =
           mockGatorPermissionsStorageEntriesFactory({
             [MOCK_CHAIN_ID_MAINNET]: {
+              erc20TokenRevocation: 1,
               nativeTokenStream: 5,
               nativeTokenPeriodic: 3,
               erc20TokenStream: 2,
               siteOrigin: 'http://localhost:8000',
             },
             [MOCK_CHAIN_ID_POLYGON]: {
+              erc20TokenRevocation: 1,
               nativeTokenStream: 1,
               nativeTokenPeriodic: 0,
               erc20TokenStream: 4,
@@ -993,12 +1033,14 @@ describe('Gator Permissions Selectors', () => {
         const customMockGatorPermissionsMap =
           mockGatorPermissionsStorageEntriesFactory({
             [MOCK_CHAIN_ID_MAINNET]: {
+              erc20TokenRevocation: 1,
               nativeTokenStream: 2,
               nativeTokenPeriodic: 1,
               erc20TokenStream: 1,
               siteOrigin: 'http://example.com',
             },
             [MOCK_CHAIN_ID_POLYGON]: {
+              erc20TokenRevocation: 1,
               nativeTokenStream: 1,
               nativeTokenPeriodic: 2,
               erc20TokenStream: 0,
@@ -1052,6 +1094,10 @@ describe('Gator Permissions Selectors', () => {
                 [MOCK_CHAIN_ID_MAINNET]: [],
                 [MOCK_CHAIN_ID_POLYGON]: [],
               },
+              'erc20-token-revocation': {
+                [MOCK_CHAIN_ID_MAINNET]: [],
+                [MOCK_CHAIN_ID_POLYGON]: [],
+              },
               other: {
                 [MOCK_CHAIN_ID_MAINNET]: [],
                 [MOCK_CHAIN_ID_POLYGON]: [],
@@ -1095,6 +1141,10 @@ describe('Gator Permissions Selectors', () => {
             [MOCK_CHAIN_ID_POLYGON]: [],
           },
           'erc20-token-periodic': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          'erc20-token-revocation': {
             [MOCK_CHAIN_ID_MAINNET]: [],
             [MOCK_CHAIN_ID_POLYGON]: [],
           },
@@ -1145,6 +1195,10 @@ describe('Gator Permissions Selectors', () => {
             [MOCK_CHAIN_ID_MAINNET]: [],
             [MOCK_CHAIN_ID_POLYGON]: [],
           },
+          'erc20-token-revocation': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
           other: {
             [MOCK_CHAIN_ID_MAINNET]: [],
             [MOCK_CHAIN_ID_POLYGON]: [],
@@ -1189,6 +1243,10 @@ describe('Gator Permissions Selectors', () => {
             [MOCK_CHAIN_ID_POLYGON]: [],
           },
           'erc20-token-periodic': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          'erc20-token-revocation': {
             [MOCK_CHAIN_ID_MAINNET]: [],
             [MOCK_CHAIN_ID_POLYGON]: [],
           },
@@ -1239,6 +1297,10 @@ describe('Gator Permissions Selectors', () => {
             [MOCK_CHAIN_ID_MAINNET]: [],
             [MOCK_CHAIN_ID_POLYGON]: [undefined, { permissionResponse: {} }],
           },
+          'erc20-token-revocation': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
           other: {
             [MOCK_CHAIN_ID_MAINNET]: [],
             [MOCK_CHAIN_ID_POLYGON]: [],
@@ -1276,6 +1338,7 @@ describe('Gator Permissions Selectors', () => {
             gatorPermissionsMapSerialized: JSON.stringify(
               mockGatorPermissionsStorageEntriesFactory({
                 [MOCK_CHAIN_ID_MAINNET]: {
+                  erc20TokenRevocation: 1,
                   nativeTokenStream: 1,
                   nativeTokenPeriodic: 1,
                   erc20TokenStream: 1,
@@ -1306,6 +1369,7 @@ describe('Gator Permissions Selectors', () => {
             gatorPermissionsMapSerialized: JSON.stringify(
               mockGatorPermissionsStorageEntriesFactory({
                 [MOCK_CHAIN_ID_MAINNET]: {
+                  erc20TokenRevocation: 1,
                   nativeTokenStream: 1,
                   nativeTokenPeriodic: 1,
                   erc20TokenStream: 1,
@@ -1337,6 +1401,7 @@ describe('Gator Permissions Selectors', () => {
             gatorPermissionsMapSerialized: JSON.stringify(
               mockGatorPermissionsStorageEntriesFactory({
                 [MOCK_CHAIN_ID_MAINNET]: {
+                  erc20TokenRevocation: 1,
                   nativeTokenStream: 1,
                   nativeTokenPeriodic: 1,
                   erc20TokenStream: 1,
@@ -1399,6 +1464,10 @@ describe('Gator Permissions Selectors', () => {
               [MOCK_CHAIN_ID_MAINNET]: [],
               [MOCK_CHAIN_ID_POLYGON]: [],
             },
+            'erc20-token-revocation': {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
             other: {
               [MOCK_CHAIN_ID_MAINNET]: [],
               [MOCK_CHAIN_ID_POLYGON]: [],
@@ -1422,12 +1491,14 @@ describe('Gator Permissions Selectors', () => {
       const customMockGatorPermissionsMap =
         mockGatorPermissionsStorageEntriesFactory({
           [MOCK_CHAIN_ID_MAINNET]: {
+            erc20TokenRevocation: 1,
             nativeTokenStream: 2,
             nativeTokenPeriodic: 1,
             erc20TokenStream: 1,
             siteOrigin: 'https://example.com',
           },
           [MOCK_CHAIN_ID_POLYGON]: {
+            erc20TokenRevocation: 1,
             nativeTokenStream: 1,
             nativeTokenPeriodic: 2,
             erc20TokenStream: 1,
@@ -1464,12 +1535,14 @@ describe('Gator Permissions Selectors', () => {
             gatorPermissionsMapSerialized: JSON.stringify(
               mockGatorPermissionsStorageEntriesFactory({
                 [MOCK_CHAIN_ID_MAINNET]: {
+                  erc20TokenRevocation: 1,
                   nativeTokenStream: 2,
                   nativeTokenPeriodic: 1,
                   erc20TokenStream: 1,
                   siteOrigin: 'http://localhost:8000',
                 },
                 [MOCK_CHAIN_ID_POLYGON]: {
+                  erc20TokenRevocation: 1,
                   nativeTokenStream: 1,
                   nativeTokenPeriodic: 0,
                   erc20TokenStream: 1,
@@ -1503,6 +1576,7 @@ describe('Gator Permissions Selectors', () => {
             gatorPermissionsMapSerialized: JSON.stringify(
               mockGatorPermissionsStorageEntriesFactory({
                 [MOCK_CHAIN_ID_MAINNET]: {
+                  erc20TokenRevocation: 1,
                   nativeTokenStream: 1,
                   nativeTokenPeriodic: 1,
                   erc20TokenStream: 1,
@@ -1533,6 +1607,7 @@ describe('Gator Permissions Selectors', () => {
             gatorPermissionsMapSerialized: JSON.stringify(
               mockGatorPermissionsStorageEntriesFactory({
                 [MOCK_CHAIN_ID_MAINNET]: {
+                  erc20TokenRevocation: 1,
                   nativeTokenStream: 1,
                   nativeTokenPeriodic: 1,
                   erc20TokenStream: 1,
@@ -1563,12 +1638,14 @@ describe('Gator Permissions Selectors', () => {
             gatorPermissionsMapSerialized: JSON.stringify(
               mockGatorPermissionsStorageEntriesFactory({
                 [MOCK_CHAIN_ID_MAINNET]: {
+                  erc20TokenRevocation: 1,
                   nativeTokenStream: 2,
                   nativeTokenPeriodic: 1,
                   erc20TokenStream: 0,
                   siteOrigin: 'http://localhost:8000',
                 },
                 [MOCK_CHAIN_ID_POLYGON]: {
+                  erc20TokenRevocation: 1,
                   nativeTokenStream: 0,
                   nativeTokenPeriodic: 1,
                   erc20TokenStream: 2,
@@ -1621,6 +1698,10 @@ describe('Gator Permissions Selectors', () => {
                 [MOCK_CHAIN_ID_MAINNET]: [],
                 [MOCK_CHAIN_ID_POLYGON]: [],
               },
+              'erc20-token-revocation': {
+                [MOCK_CHAIN_ID_MAINNET]: [],
+                [MOCK_CHAIN_ID_POLYGON]: [],
+              },
               other: {
                 [MOCK_CHAIN_ID_MAINNET]: [],
                 [MOCK_CHAIN_ID_POLYGON]: [],
@@ -1660,6 +1741,10 @@ describe('Gator Permissions Selectors', () => {
             [MOCK_CHAIN_ID_POLYGON]: [],
           },
           'erc20-token-periodic': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          'erc20-token-revocation': {
             [MOCK_CHAIN_ID_MAINNET]: [],
             [MOCK_CHAIN_ID_POLYGON]: [],
           },
@@ -1711,6 +1796,10 @@ describe('Gator Permissions Selectors', () => {
             [MOCK_CHAIN_ID_MAINNET]: [],
             [MOCK_CHAIN_ID_POLYGON]: [undefined, { permissionResponse: {} }],
           },
+          'erc20-token-revocation': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
           other: {
             [MOCK_CHAIN_ID_MAINNET]: [],
             [MOCK_CHAIN_ID_POLYGON]: [],
@@ -1749,6 +1838,7 @@ describe('Gator Permissions Selectors', () => {
             gatorPermissionsMapSerialized: JSON.stringify(
               mockGatorPermissionsStorageEntriesFactory({
                 [MOCK_CHAIN_ID_MAINNET]: {
+                  erc20TokenRevocation: 1,
                   nativeTokenStream: 1,
                   nativeTokenPeriodic: 1,
                   erc20TokenStream: 1,
@@ -1779,6 +1869,7 @@ describe('Gator Permissions Selectors', () => {
             gatorPermissionsMapSerialized: JSON.stringify(
               mockGatorPermissionsStorageEntriesFactory({
                 [MOCK_CHAIN_ID_MAINNET]: {
+                  erc20TokenRevocation: 1,
                   nativeTokenStream: 1,
                   nativeTokenPeriodic: 1,
                   erc20TokenStream: 1,
@@ -1809,6 +1900,7 @@ describe('Gator Permissions Selectors', () => {
             gatorPermissionsMapSerialized: JSON.stringify(
               mockGatorPermissionsStorageEntriesFactory({
                 [MOCK_CHAIN_ID_MAINNET]: {
+                  erc20TokenRevocation: 1,
                   nativeTokenStream: 1,
                   nativeTokenPeriodic: 1,
                   erc20TokenStream: 1,
@@ -1945,6 +2037,10 @@ describe('Gator Permissions Selectors', () => {
               [MOCK_CHAIN_ID_MAINNET]: [],
               [MOCK_CHAIN_ID_POLYGON]: [],
             },
+            'erc20-token-revocation': {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
             other: {
               [MOCK_CHAIN_ID_MAINNET]: [],
               [MOCK_CHAIN_ID_POLYGON]: [],
@@ -2044,6 +2140,10 @@ describe('Gator Permissions Selectors', () => {
               [MOCK_CHAIN_ID_POLYGON]: [],
             },
             'erc20-token-periodic': {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            'erc20-token-revocation': {
               [MOCK_CHAIN_ID_MAINNET]: [],
               [MOCK_CHAIN_ID_POLYGON]: [],
             },
@@ -2169,6 +2269,10 @@ describe('Gator Permissions Selectors', () => {
               [MOCK_CHAIN_ID_MAINNET]: [],
               [MOCK_CHAIN_ID_POLYGON]: [],
             },
+            'erc20-token-revocation': {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
             other: {
               [MOCK_CHAIN_ID_MAINNET]: [],
               [MOCK_CHAIN_ID_POLYGON]: [],
@@ -2213,6 +2317,10 @@ describe('Gator Permissions Selectors', () => {
               [MOCK_CHAIN_ID_POLYGON]: [],
             },
             'erc20-token-periodic': {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            'erc20-token-revocation': {
               [MOCK_CHAIN_ID_MAINNET]: [],
               [MOCK_CHAIN_ID_POLYGON]: [],
             },
@@ -2270,6 +2378,10 @@ describe('Gator Permissions Selectors', () => {
               [MOCK_CHAIN_ID_MAINNET]: [],
               [MOCK_CHAIN_ID_POLYGON]: [],
             },
+            'erc20-token-revocation': {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
             other: {
               [MOCK_CHAIN_ID_MAINNET]: [],
               [MOCK_CHAIN_ID_POLYGON]: [],
@@ -2292,12 +2404,14 @@ describe('Gator Permissions Selectors', () => {
       const customMockGatorPermissionsMap =
         mockGatorPermissionsStorageEntriesFactory({
           [MOCK_CHAIN_ID_MAINNET]: {
+            erc20TokenRevocation: 1,
             nativeTokenStream: 2,
             nativeTokenPeriodic: 1,
             erc20TokenStream: 1,
             siteOrigin: 'https://example.com',
           },
           [MOCK_CHAIN_ID_POLYGON]: {
+            erc20TokenRevocation: 1,
             nativeTokenStream: 1,
             nativeTokenPeriodic: 2,
             erc20TokenStream: 1,
@@ -2429,12 +2543,14 @@ describe('Gator Permissions Selectors', () => {
         const multiOriginMockGatorPermissionsMap =
           mockGatorPermissionsStorageEntriesFactory({
             [MOCK_CHAIN_ID_MAINNET]: {
+              erc20TokenRevocation: 1,
               nativeTokenStream: 2,
               nativeTokenPeriodic: 1,
               erc20TokenStream: 1,
               siteOrigin: 'https://example.com',
             },
             [MOCK_CHAIN_ID_POLYGON]: {
+              erc20TokenRevocation: 1,
               nativeTokenStream: 1,
               nativeTokenPeriodic: 0,
               erc20TokenStream: 1,
@@ -2478,6 +2594,7 @@ describe('Gator Permissions Selectors', () => {
             gatorPermissionsMapSerialized: JSON.stringify(
               mockGatorPermissionsStorageEntriesFactory({
                 [MOCK_CHAIN_ID_MAINNET]: {
+                  erc20TokenRevocation: 1,
                   nativeTokenStream: 2,
                   nativeTokenPeriodic: 1,
                   erc20TokenStream: 1,
@@ -2507,6 +2624,7 @@ describe('Gator Permissions Selectors', () => {
             gatorPermissionsMapSerialized: JSON.stringify(
               mockGatorPermissionsStorageEntriesFactory({
                 [MOCK_CHAIN_ID_MAINNET]: {
+                  erc20TokenRevocation: 1,
                   nativeTokenStream: 1,
                   nativeTokenPeriodic: 1,
                   erc20TokenStream: 1,
@@ -2577,6 +2695,10 @@ describe('Gator Permissions Selectors', () => {
             [MOCK_CHAIN_ID_POLYGON]: [],
           },
           'erc20-token-periodic': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
+          'erc20-token-revocation': {
             [MOCK_CHAIN_ID_MAINNET]: [],
             [MOCK_CHAIN_ID_POLYGON]: [],
           },
@@ -2686,6 +2808,10 @@ describe('Gator Permissions Selectors', () => {
             [MOCK_CHAIN_ID_MAINNET]: [],
             [MOCK_CHAIN_ID_POLYGON]: [],
           },
+          'erc20-token-revocation': {
+            [MOCK_CHAIN_ID_MAINNET]: [],
+            [MOCK_CHAIN_ID_POLYGON]: [],
+          },
           other: {
             [MOCK_CHAIN_ID_MAINNET]: [],
             [MOCK_CHAIN_ID_POLYGON]: [],
@@ -2738,6 +2864,7 @@ describe('Gator Permissions Selectors', () => {
             gatorPermissionsMapSerialized: JSON.stringify(
               mockGatorPermissionsStorageEntriesFactory({
                 [MOCK_CHAIN_ID_MAINNET]: {
+                  erc20TokenRevocation: 1,
                   nativeTokenStream: 1,
                   nativeTokenPeriodic: 1,
                   erc20TokenStream: 1,
@@ -2772,12 +2899,14 @@ describe('Gator Permissions Selectors', () => {
         const multiChainMockGatorPermissionsMap =
           mockGatorPermissionsStorageEntriesFactory({
             [MOCK_CHAIN_ID_MAINNET]: {
+              erc20TokenRevocation: 1,
               nativeTokenStream: 2,
               nativeTokenPeriodic: 1,
               erc20TokenStream: 1,
               siteOrigin: 'https://example.com',
             },
             [MOCK_CHAIN_ID_POLYGON]: {
+              erc20TokenRevocation: 1,
               nativeTokenStream: 3,
               nativeTokenPeriodic: 2,
               erc20TokenStream: 1,
@@ -2821,6 +2950,7 @@ describe('Gator Permissions Selectors', () => {
             gatorPermissionsMapSerialized: JSON.stringify(
               mockGatorPermissionsStorageEntriesFactory({
                 [MOCK_CHAIN_ID_MAINNET]: {
+                  erc20TokenRevocation: 1,
                   nativeTokenStream: 1,
                   nativeTokenPeriodic: 1,
                   erc20TokenStream: 1,

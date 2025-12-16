@@ -54,19 +54,24 @@ exports[`Review Gator Permissions Page render renders correctly 1`] = `
         style="overflow: auto;"
       >
         <div
-          class="flex flex-col gap-2 justify-center p-4"
+          class="flex flex-col justify-center p-4 h-full"
           data-testid="no-connections"
         >
-          <p
-            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center"
+          <div
+            class="flex flex-col gap-3 items-center justify-center bg-default max-w-56 mx-auto"
           >
-            Nothing to see here
-          </p>
-          <p
-            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center"
-          >
-            This is where you can see the permissions you've given to installed Snaps or connected sites.
-          </p>
+            <img
+              alt="No permissions detected. Once you grant permissions to a site or install a Snap, the details will appear here."
+              height="72"
+              src="/images/empty-state-permissions-light.png"
+              width="72"
+            />
+            <p
+              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center"
+            >
+              No permissions detected. Once you grant permissions to a site or install a Snap, the details will appear here.
+            </p>
+          </div>
         </div>
       </div>
     </div>
