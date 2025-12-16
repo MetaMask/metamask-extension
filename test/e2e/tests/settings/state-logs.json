@@ -882,6 +882,7 @@
     "showPermissionsTour": "boolean",
     "showShieldEntryModalOnce": "boolean",
     "showTestnetMessageInDropdown": "boolean",
+    "sidePanelGasPollTokens": [],
     "signatureRequests": {},
     "signatureSecurityAlertResponses": {},
     "syncQueue": {
