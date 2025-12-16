@@ -1909,6 +1909,7 @@
         "chokidar>anymatch": true,
         "chokidar>braces": true,
         "chokidar>fsevents": true,
+        "tsx>fsevents": true,
         "eslint>glob-parent": true,
         "chokidar>is-binary-path": true,
         "del>is-glob": true,
@@ -3498,6 +3499,13 @@
         "gulp-watch>chokidar>fsevents>node-pre-gyp": true
       }
     },
+    "tsx>fsevents": {
+      "globals": {
+        "console.assert": true,
+        "process.platform": true
+      },
+      "native": true
+    },
     "string.prototype.matchall>es-abstract>function.prototype.name": {
       "globals": {
         "document": true
@@ -3682,7 +3690,7 @@
       },
       "packages": {
         "stylelint>global-modules>global-prefix>ini": true,
-        "stylelint>global-modules>global-prefix>which": true
+        "@sentry/cli>which": true
       }
     },
     "eslint-plugin-react>es-iterator-helpers>globalthis": {
@@ -4293,12 +4301,14 @@
     },
     "@sentry/cli>which>isexe": {
       "builtin": {
-        "fs": true
+        "fs.statSync": true,
+        "fs/promises.stat": true
       },
       "globals": {
-        "TESTING_WINDOWS": true,
         "process.env.PATHEXT": true,
+        "process.env._ISEXE_TEST_PLATFORM_": true,
         "process.getgid": true,
+        "process.getgroups": true,
         "process.getuid": true,
         "process.platform": true
       }
@@ -8720,13 +8730,15 @@
         "webpack-dev-server>sockjs>websocket-driver>websocket-extensions": true
       }
     },
-    "stylelint>global-modules>global-prefix>which": {
+    "@sentry/cli>which": {
       "builtin": {
-        "path.join": true
+        "path.delimiter": true,
+        "path.join": true,
+        "path.posix.sep": true,
+        "path.sep": true
       },
       "globals": {
         "process.cwd": true,
-        "process.env.OSTYPE": true,
         "process.env.PATH": true,
         "process.env.PATHEXT": true,
         "process.platform": true
