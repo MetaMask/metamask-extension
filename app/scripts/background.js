@@ -1152,11 +1152,9 @@ export function setupController(
 
     // if the number of keys has changed, we need to persist the new state
     if (
-      newControllerStateKeys.length !==
+      newControllerStateKeys.length ===
       Object.keys(initialControllerState).length
     ) {
-      changedControllerKeys.push(key);
-    } else {
       // if any of the controller's own top-level keys have changed
       // (via reference comparison) we need to persist the new state.
       for (const subKey of newControllerStateKeys) {
@@ -1165,6 +1163,8 @@ export function setupController(
           break;
         }
       }
+    } else {
+      changedControllerKeys.push(key);
     }
   }
   if (changedControllerKeys.length > 0) {
