@@ -212,7 +212,7 @@ describe('Permit Confirmation', () => {
     // Get the pending permit ID to override chainId on the message
     const pendingPermitId = Object.keys(
       mockedMetaMaskState.unapprovedTypedMessages,
-    )[0];
+    )[0] as keyof typeof mockedMetaMaskState.unapprovedTypedMessages;
 
     await act(async () => {
       await integrationTestRender({
@@ -222,7 +222,7 @@ describe('Permit Confirmation', () => {
           unapprovedTypedMessages: {
             [pendingPermitId]: {
               ...mockedMetaMaskState.unapprovedTypedMessages[pendingPermitId],
-              chainId: '0x1',
+              chainId: '0x1' as const,
             },
           },
           selectedNetworkClientId: 'testNetworkConfigurationId',
