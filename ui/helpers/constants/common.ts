@@ -81,5 +81,5 @@ export const FIXED_PRERENDER_BROWSER_VERSIONS = {
 export const FIXED_MV3_STABLE_UPDATES_BROWSER_VERSIONS = {
   // https://chromiumdash.appspot.com/commit/4ff63e1f75af997e93f53b57aca21fc9cfd1cdb5
   chrome: '>=143.0.7465.0',
-  edge: '>=143.0.7465.0',
+  edge: '>=143',
 };
