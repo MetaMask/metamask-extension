@@ -158,7 +158,6 @@ export default function RecoveryPhraseChips({
   return (
     <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
       <Box
-        padding={4}
         borderRadius={BorderRadius.LG}
         display={Display.Grid}
         width={BlockSize.Full}
@@ -170,7 +169,6 @@ export default function RecoveryPhraseChips({
           display={Display.Grid}
           justifyContent={JustifyContent.center}
           alignItems={AlignItems.center}
-          gap={2}
           data-testid="recovery-phrase-chips"
           data-recovery-phrase={secretRecoveryPhrase.join(':')}
           data-quiz-words={JSON.stringify(quizWords)}
@@ -216,20 +214,27 @@ export default function RecoveryPhraseChips({
                 }}
               >
                 <Text
+                  variant={TextVariant.inherit}
                   color={TextColor.textAlternative}
                   className="recovery-phrase__word-index"
                 >
                   {index + 1}.
                 </Text>
-                <Text>{isQuizWord ? wordToDisplay : word}</Text>
+                <Text variant={TextVariant.inherit}>
+                  {isQuizWord ? wordToDisplay : word}
+                </Text>
               </Box>
             ) : (
               <TextField
                 testId={`recovery-phrase-chip-${index}`}
                 key={index}
                 value={wordToDisplay}
+                inputProps={{
+                  textVariant: TextVariant.inherit,
+                }}
                 startAccessory={
                   <Text
+                    variant={TextVariant.inherit}
                     color={TextColor.textAlternative}
                     className="recovery-phrase__word-index"
                   >
