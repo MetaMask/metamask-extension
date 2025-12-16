@@ -1,15 +1,12 @@
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { CaipChainId } from '@metamask/utils';
 import {
-  CAIP_FORMATTED_EVM_TEST_CHAINS,
+  CAIP_FORMATTED_TEST_CHAINS,
   CHAIN_IDS,
   FEATURED_NETWORK_CHAIN_IDS,
   TEST_NETWORK_IDS,
 } from '../../../../shared/constants/network';
-import {
-  MultichainNetworks,
-  SOLANA_TEST_CHAINS,
-} from '../../../../shared/constants/multichain/networks';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 
 export type NetworkAddressItem = {
   chainId: string;
@@ -128,8 +125,6 @@ export const getCompatibleNetworksForAccount = (
 
   // Filter out test networks
   return compatibleItems.filter(
-    (item) =>
-      !CAIP_FORMATTED_EVM_TEST_CHAINS.includes(item.chainId) &&
-      !SOLANA_TEST_CHAINS.includes(item.chainId as CaipChainId),
+    (item) => !CAIP_FORMATTED_TEST_CHAINS.includes(item.chainId as CaipChainId),
   );
 };
