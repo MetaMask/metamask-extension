@@ -40,6 +40,10 @@ type SrpInputFormProps = {
    * Callback to close the SRP details modal when you have a custom description
    */
   onSrpDetailsModalClose?: () => void;
+  /**
+   * Prefills the SRP input grid when provided
+   */
+  initialSecretRecoveryPhrase?: string;
 };
 
 const SrpInputForm = ({
@@ -49,6 +53,7 @@ const SrpInputForm = ({
   showDescription = true,
   toggleSrpDetailsModal = false,
   onSrpDetailsModalClose,
+  initialSecretRecoveryPhrase,
 }: SrpInputFormProps) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -107,6 +112,7 @@ const SrpInputForm = ({
             <SrpInputImport
               onChange={setSecretRecoveryPhrase}
               onClearCallback={onClearCallback}
+              initialSrp={initialSecretRecoveryPhrase}
             />
             {error && (
               <Box marginTop={2}>

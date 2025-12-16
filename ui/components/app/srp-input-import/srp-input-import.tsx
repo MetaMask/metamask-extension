@@ -45,6 +45,7 @@ type ListOfTextFieldRefs = {
 type SrpInputImportProps = {
   onChange: (srp: string) => void;
   onClearCallback?: () => void;
+  initialSrp?: string;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -52,6 +53,7 @@ type SrpInputImportProps = {
 export default function SrpInputImport({
   onChange,
   onClearCallback,
+  initialSrp,
 }: SrpInputImportProps) {
   const t = useI18nContext();
   const [draftSrp, setDraftSrp] = useState<DraftSrp[]>([]);
@@ -65,6 +67,12 @@ export default function SrpInputImport({
   useEffect(() => {
     onChangeRef.current = onChange;
   }, [onChange]);
+
+  useEffect(() => {
+    if (initialSrp && draftSrp.length === 0) {
+      onSrpPaste(initialSrp);
+    }
+  }, [initialSrp, draftSrp.length]);
 
   const checkForInvalidWords = useCallback(
     (srp?: DraftSrp[]) => {

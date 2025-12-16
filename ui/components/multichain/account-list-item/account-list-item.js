@@ -201,7 +201,7 @@ const AccountListItem = ({
   return (
     <Box
       display={Display.Flex}
-      padding={4}
+      padding={3}
       backgroundColor={selected ? Color.primaryMuted : Color.transparent}
       className={classnames('multichain-account-list-item items-center', {
         'multichain-account-list-item--selected': selected,

@@ -40,6 +40,8 @@ export const ImportSrp = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const [srpError, setSrpError] = useState('');
+  const defaultSecretRecoveryPhrase =
+    'lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor';
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const isSocialLoginEnabled = useSelector(getIsSocialLoginFlow);
   const isSeedlessPasswordOutdated = useSelector(getIsSeedlessPasswordOutdated);
@@ -126,6 +128,7 @@ export const ImportSrp = () => {
         error={srpError}
         setSecretRecoveryPhrase={setSecretRecoveryPhrase}
         onClearCallback={() => setSrpError('')}
+        initialSecretRecoveryPhrase={defaultSecretRecoveryPhrase}
       />
       <Box
         display={Display.Flex}

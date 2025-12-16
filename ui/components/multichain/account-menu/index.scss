@@ -1,14 +1,22 @@
 .multichain-account-menu-popover {
   &__dialog {
     max-height: 100%;
+    width: 100vw;
+    max-width: 100vw;
+    height: 100vh;
   }
 
   .popover-content {
     border-radius: 0;
+    max-width: none;
   }
 
   &__list {
     overflow: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 8px;
+    padding: 8px 16px 16px;
 
     &--menu-item-hidden {
       opacity: 0.5;
