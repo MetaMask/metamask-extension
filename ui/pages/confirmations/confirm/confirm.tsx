@@ -21,12 +21,21 @@ import { ConfirmNav } from '../components/confirm/nav/nav';
 import { GasFeeTokenToast } from '../components/confirm/info/shared/gas-fee-token-toast/gas-fee-token-toast';
 import { Splash } from '../components/confirm/splash';
 import { DappSwapContextProvider } from '../context/dapp-swap';
+import { EditGasModes } from '../../../../shared/constants/gas';
+import { TransactionMeta } from '@metamask/transaction-controller';
 
 const EIP1559TransactionGasModal = () => {
+  const { currentConfirmation } = useConfirmContext();
   return (
     <>
-      <EditGasFeePopover />
-      <AdvancedGasFeePopover />
+      <EditGasFeePopover
+        transaction={currentConfirmation as TransactionMeta}
+        editGasMode={EditGasModes.modifyInPlace}
+      />
+      <AdvancedGasFeePopover
+        transaction={currentConfirmation as TransactionMeta}
+        editGasMode={EditGasModes.modifyInPlace}
+      />
     </>
   );
 };
