@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
 import { CaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import type { Location as HistoryLocation } from 'history';
 import {
   Box,
   Modal,
@@ -65,8 +65,11 @@ const getBuyUrl = (
   return buyUrl.toString();
 };
 
-export const NonEvmBalanceCheck = () => {
-  const location = useLocation();
+type NonEvmBalanceCheckProps = {
+  location: HistoryLocation;
+};
+
+export const NonEvmBalanceCheck = ({ location }: NonEvmBalanceCheckProps) => {
   const dispatch = useDispatch();
   const metaMetricsId = useSelector(getMetaMetricsId);
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);

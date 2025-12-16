@@ -3,7 +3,7 @@ const {
   createInternalTransactionWithMaxAmount,
   reviewTransaction,
 } = require('../../page-objects/flows/transaction');
-const FixtureBuilder = require('../../fixture-builder');
+const FixtureBuilder = require('../../fixtures/fixture-builder');
 const { GAS_API_BASE_URL } = require('../../../../shared/constants/swaps');
 const {
   loginWithBalanceValidation,

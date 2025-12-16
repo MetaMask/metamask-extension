@@ -3,7 +3,7 @@ import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import { E2E_SRP as FIRST_TEST_E2E_SRP } from '../../default-fixture';
+import { E2E_SRP as FIRST_TEST_E2E_SRP } from '../../fixtures/default-fixture';
 import { WALLET_PASSWORD } from '../../helpers';
 import {
   SECOND_TEST_E2E_SRP,

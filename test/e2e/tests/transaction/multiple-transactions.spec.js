@@ -1,7 +1,7 @@
 const assert = require('assert');
 const { withFixtures, regularDelayMs, unlockWallet } = require('../../helpers');
 const { DAPP_URL, WINDOW_TITLES } = require('../../constants');
-const FixtureBuilder = require('../../fixture-builder');
+const FixtureBuilder = require('../../fixtures/fixture-builder');
 
 describe('Multiple transactions', function () {
   it('creates multiple queued transactions, then confirms', async function () {

@@ -5,7 +5,7 @@ import {
   createDappTransaction,
 } from '../../page-objects/flows/transaction';
 import { withFixtures, WINDOW_TITLES } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import SendTokenConfirmPage from '../../page-objects/pages/send/send-token-confirmation-page';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import { CHAIN_IDS } from '../../../../shared/constants/network';

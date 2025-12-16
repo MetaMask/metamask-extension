@@ -76,6 +76,7 @@ describe('useDappSwapActions', () => {
           },
         }),
       );
+      expect(mockCaptureSwapSubmit).toHaveBeenCalled();
     });
   });
 
@@ -93,7 +94,6 @@ describe('useDappSwapActions', () => {
       expect(deleteDappSwapComparisonData).toHaveBeenCalledWith(
         'f8172040-b3d0-11f0-a882-3f99aa2e9f0c',
       );
-      expect(mockCaptureSwapSubmit).toHaveBeenCalled();
     });
   });
 });

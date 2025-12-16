@@ -4,7 +4,7 @@ import { Mockttp } from 'mockttp';
 import { type FeatureFlagResponse } from '@metamask/bridge-controller';
 
 import { emptyHtmlPage } from '../../mock-e2e';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { Driver } from '../../webdriver/driver';

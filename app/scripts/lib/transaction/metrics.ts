@@ -1102,6 +1102,8 @@ async function buildEventFragmentProperties({
     transactionMetricsRequest.getAccountBalance,
   );
 
+  addHashProperty(transactionMeta, properties, transactionMetricsRequest);
+
   // Only calculate and add domain to properties for "Transaction Submitted" and "Transaction Finalized" events
   if (
     status === TransactionStatus.submitted ||
@@ -1409,4 +1411,29 @@ function determineTransactionTypeAndContractInteraction(
     transactionType: TransactionType.simpleSend,
     isContractInteraction: false,
   };
+}
+
+function addHashProperty(
+  transactionMeta: TransactionMeta,
+  properties: Record<string, Json | undefined>,
+  transactionMetricsRequest: TransactionMetricsRequest,
+) {
+  const isExtensionUxPna25Enabled =
+    transactionMetricsRequest.getFeatureFlags()?.extensionUxPna25;
+  const isPna25Acknowledged = transactionMetricsRequest.getPna25Acknowledged();
+  const isMetricsOptedIn = transactionMetricsRequest.getParticipateInMetrics();
+  const isFinalisedStatus = [
+    TransactionStatus.confirmed,
+    TransactionStatus.dropped,
+    TransactionStatus.failed,
+  ].includes(transactionMeta.status);
+
+  if (
+    isExtensionUxPna25Enabled &&
+    isPna25Acknowledged &&
+    isMetricsOptedIn &&
+    isFinalisedStatus
+  ) {
+    properties.transaction_hash = transactionMeta.hash;
+  }
 }

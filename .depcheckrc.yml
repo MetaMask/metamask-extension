@@ -8,6 +8,7 @@ ignores:
   - '@lavamoat/webpack'
   - '@lavamoat/allow-scripts'
   - '@babel/runtime'
+  - 'react-compiler-runtime'
   - '@fortawesome/fontawesome-free'
   - 'punycode'
   # injected via build system
@@ -83,6 +84,7 @@ ignores:
   - 'core-js-pure' # polyfills
   # babel
   - '@babel/plugin-transform-logical-assignment-operators'
+  - 'babel-plugin-react-compiler'
   # used in image optimization script
   - 'sharp'
   # trezor

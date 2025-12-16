@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import ActivityList from '../../page-objects/pages/home/activity-list';
 import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
 import HomePage from '../../page-objects/pages/home/homepage';

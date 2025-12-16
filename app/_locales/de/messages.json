@@ -1954,7 +1954,7 @@
     "message": "Verstanden!"
   },
   "deprecatedNetworkDescription": {
-    "message": "Das Netzwerk, zu dem Sie eine Verbindung herstellen möchten, wird von Metamask nicht mehr unterstützt. $1"
+    "message": "Das Netzwerk, zu dem Sie eine Verbindung herstellen möchten, wird von MetaMask nicht mehr unterstützt. $1"
   },
   "description": {
     "message": "Beschreibung"
@@ -2470,9 +2470,6 @@
   "exploreDefi": {
     "message": "DeFi erkunden"
   },
-  "exploreweb3": {
-    "message": "Web3 erkunden"
-  },
   "exportYourData": {
     "message": "Ihre Daten exportieren"
   },
@@ -2600,9 +2597,6 @@
   },
   "function": {
     "message": "Funktion: $1"
-  },
-  "fundingMethod": {
-    "message": "Methode der Mittelbereitstellung"
   },
   "gas": {
     "message": "Gas"
@@ -4997,9 +4991,6 @@
   "recipientEditAriaLabel": {
     "message": "Empfänger bearbeiten"
   },
-  "recipientPlaceholder": {
-    "message": "Gültige Adresse eingeben oder einfügen"
-  },
   "recoveryPhraseReminderBackupStart": {
     "message": "Jetzt sichern"
   },
@@ -6677,19 +6668,19 @@
   },
   "swapIncludesGasAndMetaMaskFee": {
     "message": "Enthält Gas und eine MetaMask-Gebühr von $1%",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFee": {
     "message": "Enthält eine MetaMask-Gebühr von $1%.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFeeAlt": {
     "message": "Angebot umfasst $1% MetaMask-Gebühr",
-    "description": "Provides information about the fee that metamask takes for swaps using the latest copy. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
     "message": "Enthält eine MetaMask-Gebühr von $1% bis $2.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
   },
   "swapLearnMore": {
     "message": "Mehr über Swaps erfahren"
@@ -6708,7 +6699,7 @@
   },
   "swapMetaMaskFeeDescription": {
     "message": "Die Gebühr von $1% ist automatisch in diesem Angebot enthalten. Sie zahlen sie als Gegenleistung für eine Lizenz zur Nutzung der Software von MetaMask zur Aggregation von Liquiditätsanbieterinformationen.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapNQuotesWithDot": {
     "message": "$1 Angebote.",
@@ -7004,12 +6995,6 @@
   },
   "time": {
     "message": "Zeit"
-  },
-  "tipsForUsingAWallet": {
-    "message": "Tipps zur Verwendung einer Wallet"
-  },
-  "tipsForUsingAWalletDescription": {
-    "message": "Das Hinzufügen von Tokens eröffnet weitere Möglichkeiten zur Nutzung von web3."
   },
   "to": {
     "message": "An"
@@ -7519,18 +7504,8 @@
   "walletConnectionGuide": {
     "message": "unsere Hardware-Wallet-Verbindungsanleitung"
   },
-  "walletDetails": {
-    "message": "Wallet-Details"
-  },
   "walletName": {
     "message": "Wallet-Name"
-  },
-  "walletNotFoundDescription": {
-    "message": "Die Wallet mit der ID $1 wurde nicht gefunden.",
-    "description": "$1 is the wallet ID"
-  },
-  "walletNotFoundTitle": {
-    "message": "Wallet nicht gefunden"
   },
   "walletReadyLearn": {
     "message": "$1 Sie können diese Phrase sicher aufbewahren, damit Sie nie den Zugriff auf Ihr Geld verlieren.",

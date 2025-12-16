@@ -1,7 +1,7 @@
 /* eslint-disable mocha/no-skipped-tests */
 import { MockttpServer } from 'mockttp';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { unlockWallet, WINDOW_TITLES, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { createDappTransaction } from '../../page-objects/flows/transaction';
@@ -87,7 +87,6 @@ describe('Smart Transactions', function () {
         await sendPage.selectTokenFee('USDC');
         await driver.delay(1000);
         await sendPage.clickConfirmButton();
-        await sendPage.clickViewActivity();
 
         const activityList = new ActivityListPage(driver);
         await activityList.checkNoFailedTransactions();

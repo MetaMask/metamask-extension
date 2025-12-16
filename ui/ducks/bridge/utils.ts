@@ -29,6 +29,10 @@ import { getAssetImageUrl, toAssetId } from '../../../shared/lib/asset-utils';
 import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../shared/constants/bridge';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
+import {
+  TRON_RESOURCE_SYMBOLS_SET,
+  type TronResourceSymbol,
+} from '../../../shared/constants/multichain/assets';
 import type { TokenPayload, BridgeToken } from './types';
 
 // Re-export isNonEvmChainId from bridge-controller for backward compatibility
@@ -49,11 +53,8 @@ export const isTronEnergyOrBandwidthResource = (
   symbol: string | undefined,
 ): boolean => {
   return (
-    Boolean(chainId?.toString().includes('tron:')) &&
-    Boolean(
-      symbol?.toUpperCase().includes('ENERGY') ||
-        symbol?.toUpperCase().includes('BANDWIDTH'),
-    )
+    Boolean(chainId?.toString()?.includes('tron:')) &&
+    TRON_RESOURCE_SYMBOLS_SET.has(symbol?.toLowerCase() as TronResourceSymbol)
   );
 };
 

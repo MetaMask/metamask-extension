@@ -18,7 +18,6 @@ import {
 } from '../../../selectors/transactions';
 import {
   getSelectedAccount,
-  getShouldHideZeroBalanceTokens,
   getSelectedMultichainNetworkChainId,
   getEnabledNetworks,
 } from '../../../selectors';
@@ -70,12 +69,6 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
-import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
-import {
-  RAMPS_CARD_VARIANT_TYPES,
-  RampsCard,
-} from '../../multichain/ramps-card/ramps-card';
-import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { ActivityListItem } from '../../multichain/activity-list-item';
 import {
@@ -514,17 +507,6 @@ export default function UnifiedTransactionList({
   const groupedUnifiedActivityItems =
     groupAnyTransactionsByDate(unifiedActivityItems);
 
-  const shouldHideZeroBalanceTokens = useSelector(
-    getShouldHideZeroBalanceTokens,
-  );
-  const { totalFiatBalance } = useAccountTotalFiatBalance(
-    selectedAccount,
-    shouldHideZeroBalanceTokens,
-  );
-  const balanceIsZero = Number(totalFiatBalance) === 0;
-  const isBuyableChain = useSelector(getIsNativeTokenBuyable);
-  const showRampsCard = isBuyableChain && balanceIsZero;
-
   useEffect(() => {
     stopIncomingTransactionPolling();
     startIncomingTransactionPolling();
@@ -699,9 +681,6 @@ export default function UnifiedTransactionList({
             showImportTokenButton={false}
           />
         )}
-        {showRampsCard ? (
-          <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.ACTIVITY} />
-        ) : null}
         {processedUnifiedActivityItems.length === 0 ? (
           <TransactionActivityEmptyState
             className="mx-auto mt-5 mb-6"

@@ -5,7 +5,7 @@ const {
   DAPP_URL,
   WINDOW_TITLES,
 } = require('../constants');
-const FixtureBuilder = require('../fixture-builder');
+const FixtureBuilder = require('../fixtures/fixture-builder');
 const {
   mockSignatureInsightsSnap,
 } = require('../mock-response-data/snaps/snap-binary-mocks');

@@ -2,7 +2,7 @@ const {
   loginWithBalanceValidation,
 } = require('../../page-objects/flows/login.flow');
 const { withFixtures } = require('../../helpers');
-const FixtureBuilder = require('../../fixture-builder');
+const FixtureBuilder = require('../../fixtures/fixture-builder');
 const { CHAIN_IDS } = require('../../../../shared/constants/network');
 const { GAS_API_BASE_URL } = require('../../../../shared/constants/swaps');
 const { mockSpotPrices } = require('../tokens/utils/mocks');

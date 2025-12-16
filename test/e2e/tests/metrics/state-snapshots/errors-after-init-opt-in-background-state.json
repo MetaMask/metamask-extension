@@ -52,6 +52,7 @@
     "outdatedBrowserWarningLastShown": "object",
     "pendingShieldCohort": null,
     "pendingShieldCohortTxType": null,
+    "pna25Acknowledged": "boolean",
     "popupGasPollTokens": "object",
     "productTour": "accountIcon",
     "recoveryPhraseReminderHasBeenShown": true,
@@ -404,6 +405,7 @@
     "allIgnoredTokens": {},
     "allDetectedTokens": {}
   },
+  "TransactionPayController": { "transactionData": "object" },
   "TxController": {
     "methodData": "object",
     "transactions": "object",

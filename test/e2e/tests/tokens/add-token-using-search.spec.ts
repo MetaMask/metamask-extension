@@ -1,6 +1,6 @@
 import { MockedEndpoint, Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';

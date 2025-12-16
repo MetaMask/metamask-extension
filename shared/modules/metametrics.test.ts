@@ -47,6 +47,8 @@ const createTransactionMetricsRequest = (customProps = {}) => {
     getIsConfirmationAdvancedDetailsOpen: jest.fn(),
     getHDEntropyIndex: jest.fn(),
     getNetworkRpcUrl: jest.fn(),
+    getFeatureFlags: jest.fn(),
+    getPna25Acknowledged: jest.fn(),
     ...customProps,
   } as TransactionMetricsRequest;
 };

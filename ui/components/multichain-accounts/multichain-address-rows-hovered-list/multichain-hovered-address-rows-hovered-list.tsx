@@ -24,7 +24,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { BackgroundColor } from '../../../helpers/constants/design-system';
 import { Popover, PopoverPosition } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -77,7 +77,7 @@ export const MultichainHoveredAddressRowsList = ({
 }: MultichainAddressRowsListProps) => {
   const t = useI18nContext();
   const [, handleCopy] = useCopyToClipboard();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [isHoverOpen, setIsHoverOpen] = useState(false);
   const [referenceElement, setReferenceElement] = useState<HTMLElement | null>(
     null,
@@ -264,11 +264,11 @@ export const MultichainHoveredAddressRowsList = ({
   const handleViewAllClick = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
       e.stopPropagation();
-      history.push(
+      navigate(
         `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(groupId)}`,
       );
     },
-    [groupId, history],
+    [groupId, navigate],
   );
 
   const renderedRows = useMemo(() => {

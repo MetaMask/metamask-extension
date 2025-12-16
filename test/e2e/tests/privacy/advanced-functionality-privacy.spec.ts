@@ -2,7 +2,7 @@ import assert from 'assert';
 import { Mockttp, MockedEndpoint } from 'mockttp';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import AccountList from '../../page-objects/pages/account-list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';

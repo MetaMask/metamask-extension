@@ -7,7 +7,7 @@ import prettier from 'prettier';
 import { isObject, Json, JsonRpcResponse } from '@metamask/utils';
 import { Mockttp, MockttpServer } from 'mockttp';
 import { SENTRY_UI_STATE } from '../../../../app/scripts/constants/sentry-state';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { withFixtures, sentryRegEx } from '../../helpers';
 import { PAGES } from '../../webdriver/driver';
 import { MOCK_META_METRICS_ID } from '../../constants';
@@ -145,7 +145,6 @@ async function matchesSnapshot({
   update?: boolean;
 }): Promise<void> {
   const snapshotPath = resolve(__dirname, `./state-snapshots/${snapshot}.json`);
-  console.log('snapshotPath', snapshotPath);
   const rawSnapshotData = await fs.readFile(snapshotPath, {
     encoding: 'utf-8',
   });
@@ -803,6 +802,10 @@ describe('Sentry errors', function () {
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
           await new LoginPage(driver).checkPageIsLoaded();
+
+          // Wait for state to settle
+          await driver.delay(5_000);
+
           // Erase `getSentryAppState` hook, simulating a "before initialization" state
           await driver.executeScript(
             'window.stateHooks.getSentryAppState = undefined',
@@ -1148,7 +1151,6 @@ describe('Sentry errors', function () {
           const mockTextBody = (await mockedRequest.body.getText()).split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const appState = mockJsonBody?.extra?.appState;
-          console.log('mockJsonBody', mockJsonBody);
           const { extensionId, installType } = mockJsonBody.extra;
           assert.deepStrictEqual(Object.keys(appState), [
             'browser',

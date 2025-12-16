@@ -2,7 +2,7 @@ import { Mockttp } from 'mockttp';
 
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SendPage from '../../page-objects/pages/send/send-page';
 import SendTokenConfirmPage from '../../page-objects/pages/send/send-token-confirmation-page';

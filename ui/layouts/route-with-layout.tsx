@@ -55,7 +55,6 @@ export const RouteWithLayout = ({
         {typeof children === 'function' ? children(props) : children}
       </Layout>
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [Layout, Component, childrenDep]);
 
   if (authenticated) {

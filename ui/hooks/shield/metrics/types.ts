@@ -13,6 +13,7 @@ import {
   ShieldErrorStateActionClickedEnum,
   ShieldErrorStateLocationEnum,
   ShieldErrorStateViewEnum,
+  ShieldUnexpectedErrorEventLocationEnum,
 } from '../../../../shared/constants/subscriptions';
 import { DefaultSubscriptionPaymentOptions } from '../../../../shared/types';
 
@@ -28,7 +29,7 @@ export type CaptureShieldEntryModalEventParams = {
   /**
    * The UTM ID used if source is marketing campaign
    */
-  marketingUtmId?: string;
+  marketingUtmParams?: Record<string, string>;
 
   /**
    * The type of transaction after which the entry modal is triggered
@@ -150,7 +151,7 @@ export type CaptureShieldCtaClickedEventParams = {
   /**
    * The UTM ID used if source is marketing campaign
    */
-  marketingUtmId?: string;
+  marketingUtmParams?: Record<string, string>;
 };
 
 export type CaptureShieldClaimSubmissionEventParams = {
@@ -196,3 +197,8 @@ export type CaptureShieldErrorStateClickedEventParams =
     location: ShieldErrorStateLocationEnum;
     view: ShieldErrorStateViewEnum;
   };
+
+export type CaptureShieldUnexpectedErrorEventParams = {
+  errorMessage: string;
+  location: ShieldUnexpectedErrorEventLocationEnum;
+};

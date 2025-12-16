@@ -1,7 +1,7 @@
 import { Suite } from 'mocha';
 import { toHex } from '@metamask/controller-utils';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import GeneralSettings from '../../page-objects/pages/settings/general-settings';

@@ -1,7 +1,7 @@
 import { Mockttp } from 'mockttp';
 
-import { E2E_SRP } from '../../../default-fixture';
-import FixtureBuilder from '../../../fixture-builder';
+import { E2E_SRP } from '../../../fixtures/default-fixture';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { withFixtures, unlockWallet, WALLET_PASSWORD } from '../../../helpers';
 import {
   UserStorageMockttpController,

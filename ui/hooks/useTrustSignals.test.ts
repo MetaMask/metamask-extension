@@ -1,3 +1,4 @@
+import { renderHook } from '@testing-library/react-hooks';
 import { NameType } from '@metamask/name-controller';
 import { getAddressSecurityAlertResponse } from '../selectors';
 import {
@@ -60,15 +61,17 @@ describe('useTrustSignals', () => {
         label: TRUST_LABEL_MOCK,
       });
 
-      const result = useTrustSignal(
-        VALUE_MOCK,
-        NameType.ETHEREUM_ADDRESS,
-        '0x1',
-      );
+      renderHook(() => {
+        const result = useTrustSignal(
+          VALUE_MOCK,
+          NameType.ETHEREUM_ADDRESS,
+          '0x1',
+        );
 
-      expect(result).toStrictEqual({
-        state: TrustSignalDisplayState.Malicious,
-        label: TRUST_LABEL_MOCK,
+        expect(result).toStrictEqual({
+          state: TrustSignalDisplayState.Malicious,
+          label: TRUST_LABEL_MOCK,
+        });
       });
     });
   });
@@ -91,18 +94,20 @@ describe('useTrustSignals', () => {
           },
         ];
 
-        const results = useTrustSignals(requests);
+        renderHook(() => {
+          const results = useTrustSignals(requests);
 
-        expect(results).toHaveLength(1);
-        expect(results[0]).toStrictEqual({
-          state: TrustSignalDisplayState.Malicious,
-          label: TRUST_LABEL_MOCK,
+          expect(results).toHaveLength(1);
+          expect(results[0]).toStrictEqual({
+            state: TrustSignalDisplayState.Malicious,
+            label: TRUST_LABEL_MOCK,
+          });
+
+          expect(getAddressSecurityAlertResponseMock).toHaveBeenCalledWith(
+            undefined,
+            `ethereum:${VALUE_MOCK.toLowerCase()}`,
+          );
         });
-
-        expect(getAddressSecurityAlertResponseMock).toHaveBeenCalledWith(
-          undefined,
-          `ethereum:${VALUE_MOCK.toLowerCase()}`,
-        );
       });
 
       it('returns unknown state when no chain id is provided', () => {
@@ -121,12 +126,14 @@ describe('useTrustSignals', () => {
           },
         ];
 
-        const results = useTrustSignals(requests);
+        renderHook(() => {
+          const results = useTrustSignals(requests);
 
-        expect(results).toHaveLength(1);
-        expect(results[0]).toStrictEqual({
-          state: TrustSignalDisplayState.Unknown,
-          label: null,
+          expect(results).toHaveLength(1);
+          expect(results[0]).toStrictEqual({
+            state: TrustSignalDisplayState.Unknown,
+            label: null,
+          });
         });
       });
 
@@ -146,12 +153,14 @@ describe('useTrustSignals', () => {
           },
         ];
 
-        const results = useTrustSignals(requests);
+        renderHook(() => {
+          const results = useTrustSignals(requests);
 
-        expect(results).toHaveLength(1);
-        expect(results[0]).toStrictEqual({
-          state: TrustSignalDisplayState.Warning,
-          label: WARNING_LABEL_MOCK,
+          expect(results).toHaveLength(1);
+          expect(results[0]).toStrictEqual({
+            state: TrustSignalDisplayState.Warning,
+            label: WARNING_LABEL_MOCK,
+          });
         });
       });
 
@@ -171,12 +180,14 @@ describe('useTrustSignals', () => {
           },
         ];
 
-        const results = useTrustSignals(requests);
+        renderHook(() => {
+          const results = useTrustSignals(requests);
 
-        expect(results).toHaveLength(1);
-        expect(results[0]).toStrictEqual({
-          state: TrustSignalDisplayState.Verified,
-          label: VERIFIED_LABEL_MOCK,
+          expect(results).toHaveLength(1);
+          expect(results[0]).toStrictEqual({
+            state: TrustSignalDisplayState.Verified,
+            label: VERIFIED_LABEL_MOCK,
+          });
         });
       });
 
@@ -196,12 +207,14 @@ describe('useTrustSignals', () => {
           },
         ];
 
-        const results = useTrustSignals(requests);
+        renderHook(() => {
+          const results = useTrustSignals(requests);
 
-        expect(results).toHaveLength(1);
-        expect(results[0]).toStrictEqual({
-          state: TrustSignalDisplayState.Unknown,
-          label: 'Benign Address',
+          expect(results).toHaveLength(1);
+          expect(results[0]).toStrictEqual({
+            state: TrustSignalDisplayState.Unknown,
+            label: 'Benign Address',
+          });
         });
       });
 
@@ -221,12 +234,14 @@ describe('useTrustSignals', () => {
           },
         ];
 
-        const results = useTrustSignals(requests);
+        renderHook(() => {
+          const results = useTrustSignals(requests);
 
-        expect(results).toHaveLength(1);
-        expect(results[0]).toStrictEqual({
-          state: TrustSignalDisplayState.Unknown,
-          label: 'Error occurred',
+          expect(results).toHaveLength(1);
+          expect(results[0]).toStrictEqual({
+            state: TrustSignalDisplayState.Unknown,
+            label: 'Error occurred',
+          });
         });
       });
 
@@ -243,12 +258,14 @@ describe('useTrustSignals', () => {
           },
         ];
 
-        const results = useTrustSignals(requests);
+        renderHook(() => {
+          const results = useTrustSignals(requests);
 
-        expect(results).toHaveLength(1);
-        expect(results[0]).toStrictEqual({
-          state: TrustSignalDisplayState.Unknown,
-          label: 'Some label',
+          expect(results).toHaveLength(1);
+          expect(results[0]).toStrictEqual({
+            state: TrustSignalDisplayState.Unknown,
+            label: 'Some label',
+          });
         });
       });
 
@@ -267,12 +284,14 @@ describe('useTrustSignals', () => {
           },
         ];
 
-        const results = useTrustSignals(requests);
+        renderHook(() => {
+          const results = useTrustSignals(requests);
 
-        expect(results).toHaveLength(1);
-        expect(results[0]).toStrictEqual({
-          state: TrustSignalDisplayState.Verified,
-          label: null,
+          expect(results).toHaveLength(1);
+          expect(results[0]).toStrictEqual({
+            state: TrustSignalDisplayState.Verified,
+            label: null,
+          });
         });
       });
     });
@@ -289,12 +308,14 @@ describe('useTrustSignals', () => {
           },
         ];
 
-        const results = useTrustSignals(requests);
+        renderHook(() => {
+          const results = useTrustSignals(requests);
 
-        expect(results).toHaveLength(1);
-        expect(results[0]).toStrictEqual({
-          state: TrustSignalDisplayState.Unknown,
-          label: null,
+          expect(results).toHaveLength(1);
+          expect(results[0]).toStrictEqual({
+            state: TrustSignalDisplayState.Unknown,
+            label: null,
+          });
         });
       });
 
@@ -309,12 +330,14 @@ describe('useTrustSignals', () => {
           },
         ];
 
-        const results = useTrustSignals(requests);
+        renderHook(() => {
+          const results = useTrustSignals(requests);
 
-        expect(results).toHaveLength(1);
-        expect(results[0]).toStrictEqual({
-          state: TrustSignalDisplayState.Unknown,
-          label: null,
+          expect(results).toHaveLength(1);
+          expect(results[0]).toStrictEqual({
+            state: TrustSignalDisplayState.Unknown,
+            label: null,
+          });
         });
       });
 
@@ -334,12 +357,14 @@ describe('useTrustSignals', () => {
           },
         ];
 
-        const results = useTrustSignals(requests);
+        renderHook(() => {
+          const results = useTrustSignals(requests);
 
-        expect(results).toHaveLength(1);
-        expect(results[0]).toStrictEqual({
-          state: TrustSignalDisplayState.Loading,
-          label: null,
+          expect(results).toHaveLength(1);
+          expect(results[0]).toStrictEqual({
+            state: TrustSignalDisplayState.Loading,
+            label: null,
+          });
         });
       });
     });
@@ -373,36 +398,40 @@ describe('useTrustSignals', () => {
           },
         ];
 
-        const results = useTrustSignals(requests);
+        renderHook(() => {
+          const results = useTrustSignals(requests);
 
-        expect(results).toHaveLength(2);
-        expect(results[0]).toStrictEqual({
-          state: TrustSignalDisplayState.Malicious,
-          label: TRUST_LABEL_MOCK,
-        });
-        expect(results[1]).toStrictEqual({
-          state: TrustSignalDisplayState.Verified,
-          label: VERIFIED_LABEL_MOCK,
-        });
+          expect(results).toHaveLength(2);
+          expect(results[0]).toStrictEqual({
+            state: TrustSignalDisplayState.Malicious,
+            label: TRUST_LABEL_MOCK,
+          });
+          expect(results[1]).toStrictEqual({
+            state: TrustSignalDisplayState.Verified,
+            label: VERIFIED_LABEL_MOCK,
+          });
 
-        expect(getAddressSecurityAlertResponseMock).toHaveBeenCalledTimes(2);
-        expect(getAddressSecurityAlertResponseMock).toHaveBeenNthCalledWith(
-          1,
-          undefined,
-          `ethereum:${VALUE_MOCK.toLowerCase()}`,
-        );
-        expect(getAddressSecurityAlertResponseMock).toHaveBeenNthCalledWith(
-          2,
-          undefined,
-          `ethereum:${VALUE_MOCK_2.toLowerCase()}`,
-        );
+          expect(getAddressSecurityAlertResponseMock).toHaveBeenCalledTimes(2);
+          expect(getAddressSecurityAlertResponseMock).toHaveBeenNthCalledWith(
+            1,
+            undefined,
+            `ethereum:${VALUE_MOCK.toLowerCase()}`,
+          );
+          expect(getAddressSecurityAlertResponseMock).toHaveBeenNthCalledWith(
+            2,
+            undefined,
+            `ethereum:${VALUE_MOCK_2.toLowerCase()}`,
+          );
+        });
       });
 
       it('handles empty requests array', () => {
-        const results = useTrustSignals([]);
+        renderHook(() => {
+          const results = useTrustSignals([]);
 
-        expect(results).toHaveLength(0);
-        expect(getAddressSecurityAlertResponseMock).not.toHaveBeenCalled();
+          expect(results).toHaveLength(0);
+          expect(getAddressSecurityAlertResponseMock).not.toHaveBeenCalled();
+        });
       });
     });
 
@@ -428,16 +457,18 @@ describe('useTrustSignals', () => {
           },
         ];
 
-        const results = useTrustSignals(requests);
+        renderHook(() => {
+          const results = useTrustSignals(requests);
 
-        expect(results).toHaveLength(2);
-        expect(results[0]).toStrictEqual({
-          state: TrustSignalDisplayState.Malicious,
-          label: TRUST_LABEL_MOCK,
-        });
-        expect(results[1]).toStrictEqual({
-          state: TrustSignalDisplayState.Malicious,
-          label: TRUST_LABEL_MOCK,
+          expect(results).toHaveLength(2);
+          expect(results[0]).toStrictEqual({
+            state: TrustSignalDisplayState.Malicious,
+            label: TRUST_LABEL_MOCK,
+          });
+          expect(results[1]).toStrictEqual({
+            state: TrustSignalDisplayState.Malicious,
+            label: TRUST_LABEL_MOCK,
+          });
         });
       });
     });

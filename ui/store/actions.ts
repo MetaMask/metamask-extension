@@ -374,7 +374,7 @@ export function resetOAuthLoginState() {
  */
 export function createNewVaultAndSyncWithSocial(
   password: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       const primaryKeyring = await createNewVault(password);
@@ -409,18 +409,23 @@ export function createNewVaultAndSyncWithSocial(
  * Starts polling for the subscriptions.
  */
 export function subscriptionsStartPolling(): ThunkAction<
-  void,
+  string | undefined,
   MetaMaskReduxState,
   unknown,
   AnyAction
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('subscriptionsStartPolling');
+      const pollingToken = await submitRequestToBackground(
+        'subscriptionsStartPolling',
+        [],
+      );
+      return pollingToken;
     } catch (error) {
       log.error('[subscriptionsStartPolling] error', error);
       dispatch(displayWarning(error));
     }
+    return undefined;
   };
 }
 
@@ -508,7 +513,15 @@ export function getSubscriptions(): ThunkAction<
   AnyAction
 > {
   return async (_dispatch: MetaMaskReduxDispatch) => {
-    return await submitRequestToBackground('getSubscriptions');
+    try {
+      const subscriptions = await submitRequestToBackground('getSubscriptions');
+      return subscriptions;
+    } catch (error) {
+      log.error('[getSubscriptions] error', error);
+      throw new Error(
+        `Failed to fetch subscriptions, ${getErrorMessage(error)}`,
+      );
+    }
   };
 }
 
@@ -524,9 +537,17 @@ export function getSubscriptionPricing(): ThunkAction<
   AnyAction
 > {
   return async (_dispatch: MetaMaskReduxDispatch) => {
-    return await submitRequestToBackground<PricingResponse>(
-      'getSubscriptionPricing',
-    );
+    try {
+      const pricing = await submitRequestToBackground<PricingResponse>(
+        'getSubscriptionPricing',
+      );
+      return pricing;
+    } catch (error) {
+      log.error('[getSubscriptionPricing] error', error);
+      throw new Error(
+        `Failed to fetch subscription pricing, ${getErrorMessage(error)}`,
+      );
+    }
   };
 }
 
@@ -626,8 +647,16 @@ export function updateSubscriptionCryptoPaymentMethod(
 export function cancelSubscription(params: {
   subscriptionId: string;
 }): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (_dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('cancelSubscription', [params]);
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('cancelSubscription', [params]);
+    } catch (error) {
+      log.error('[cancelSubscription] error', error);
+      dispatch(displayWarning(error));
+      throw new Error(
+        `Failed to cancel subscription, ${getErrorMessage(error)}`,
+      );
+    }
   };
 }
 
@@ -635,7 +664,14 @@ export function unCancelSubscription(params: {
   subscriptionId: string;
 }): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (_dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('unCancelSubscription', [params]);
+    try {
+      await submitRequestToBackground('unCancelSubscription', [params]);
+    } catch (error) {
+      log.error('[unCancelSubscription] error', error);
+      throw new Error(
+        `Failed to uncancel subscription, ${getErrorMessage(error)}`,
+      );
+    }
   };
 }
 
@@ -646,11 +682,17 @@ export function getSubscriptionBillingPortalUrl(): ThunkAction<
   AnyAction
 > {
   return async (_dispatch: MetaMaskReduxDispatch) => {
-    const res = await submitRequestToBackground<BillingPortalResponse>(
-      'getSubscriptionBillingPortalUrl',
-      [],
-    );
-    return res;
+    try {
+      const billingPortalUrl = await submitRequestToBackground(
+        'getSubscriptionBillingPortalUrl',
+      );
+      return billingPortalUrl;
+    } catch (error) {
+      log.error('[getSubscriptionBillingPortalUrl] error', error);
+      throw new Error(
+        `Failed to get subscription billing portal url, ${getErrorMessage(error)}`,
+      );
+    }
   };
 }
 
@@ -780,7 +822,7 @@ export function setShieldSubscriptionMetricsProps(
  */
 export function restoreSocialBackupAndGetSeedPhrase(
   password: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       // restore the vault using the seed phrase
@@ -1072,7 +1114,7 @@ export function generateNewMnemonicAndAddToVault(): ThunkAction<
 }
 export function createNewVaultAndGetSeedPhrase(
   password: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -1097,7 +1139,7 @@ export function createNewVaultAndGetSeedPhrase(
 
 export function unlockAndGetSeedPhrase(
   password: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -4713,7 +4755,7 @@ export function toggleAccountMenu() {
 
 export function toggleNetworkMenu(payload?: {
   isAddingNewNetwork: boolean;
-  isMultiRpcOnboarding: boolean;
+  isMultiRpcOnboarding?: boolean;
   isAccessedFromDappConnectedSitePopover?: boolean;
 }) {
   return {
@@ -4722,15 +4764,14 @@ export function toggleNetworkMenu(payload?: {
   };
 }
 
-export function setAccountDetailsAddress(address: string) {
+export function closeNetworkMenu() {
   return {
-    type: actionConstants.SET_ACCOUNT_DETAILS_ADDRESS,
-    payload: address,
+    type: actionConstants.CLOSE_NETWORK_MENU,
   };
 }
 
 export function setParticipateInMetaMetrics(
-  participationPreference: boolean,
+  participationPreference: boolean | null,
 ): ThunkAction<
   Promise<[boolean, string]>,
   MetaMaskReduxState,
@@ -4780,6 +4821,15 @@ export function setDataCollectionForMarketing(
       type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
       value: dataCollectionPreference,
     });
+  };
+}
+
+export function setPna25Acknowledged(
+  acknowledged: boolean,
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    log.debug(`background.setPna25Acknowledged`);
+    await submitRequestToBackground('setPna25Acknowledged', [acknowledged]);
   };
 }
 
@@ -5089,7 +5139,7 @@ export function setIsIpfsGatewayEnabled(
 }
 
 export function setUseAddressBarEnsResolution(
-  val: string,
+  val: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.setUseAddressBarEnsResolution`);

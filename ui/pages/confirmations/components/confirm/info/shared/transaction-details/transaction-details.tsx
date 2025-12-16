@@ -46,7 +46,7 @@ export const OriginRow = () => {
   return (
     <ConfirmInfoAlertRow
       alertKey={RowAlertKey.RequestFrom}
-      ownerId={currentConfirmation.id}
+      ownerId={currentConfirmation?.id}
       data-testid="transaction-details-origin-row"
       label={t('requestFrom')}
       tooltip={t('requestFromTransactionDescription')}

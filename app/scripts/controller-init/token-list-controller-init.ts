@@ -32,7 +32,10 @@ export const TokenListControllerInit: ControllerInitFunction<
     return useTokenDetection || petnamesEnabled || useTransactionSimulations;
   };
 
+  // TODO: Fix TokenListControllerMessenger type - add TokenListControllerActions & TokenListControllerEvents
+  // TODO: Bump @metamask/network-controller to match assets-controllers
   const controller = new TokenListController({
+    // @ts-expect-error - Messenger type mismatch due to missing controller actions/events and dependency version mismatch
     messenger: controllerMessenger,
     state: persistedState.TokenListController,
     preventPollingOnNetworkRestart: !isTokenListPollingRequired(

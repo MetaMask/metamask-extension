@@ -123,6 +123,7 @@ const UnlockPageWithNavState = (props) => {
 UnlockPageWithNavState.propTypes = {
   navigate: PropTypes.func.isRequired,
   location: PropTypes.object.isRequired,
+  onSubmit: PropTypes.func,
 };
 
 // Export the connected component for Storybook/testing

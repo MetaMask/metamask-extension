@@ -30,7 +30,10 @@ import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDeta
 import { isWebUrl } from '../../../../../../app/scripts/lib/util';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import { getImageForChainId } from '../../../../../selectors/multichain';
-import { ASSET_ROUTE } from '../../../../../helpers/constants/routes';
+import {
+  ASSET_ROUTE,
+  PREVIOUS_ROUTE,
+} from '../../../../../helpers/constants/routes';
 
 type NftFullImageProps = {
   params?: {
@@ -102,7 +105,7 @@ export default function NftFullImage({ params }: NftFullImageProps) {
   const onClose = useCallback(() => {
     if (navigationType === 'PUSH') {
       // Previous navigation was a PUSH, so safe to go back
-      navigate(-1);
+      navigate(PREVIOUS_ROUTE);
     } else {
       // Fallback: go to the asset details route explicitly
       navigate(`${ASSET_ROUTE}/${hexChainId}/${asset}/${id}`, {
