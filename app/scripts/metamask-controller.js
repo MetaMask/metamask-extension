@@ -115,7 +115,6 @@ import {
   getSessionScopes,
   setPermittedEthChainIds,
   getPermittedAccountsForScopes,
-  KnownSessionProperties,
   getAllScopesFromCaip25CaveatValue,
   requestPermittedChainsPermissionIncremental,
   getCaip25PermissionFromLegacyPermissions,
@@ -1682,14 +1681,14 @@ export default class MetamaskController extends EventEmitter {
 
     NON_EVM_ACCOUNT_CHANGED_CONFIGS.forEach(({ network }) => {
       // this throws if there is no account for the given network... perhaps we should handle this better at the controller level
-    try {
+      try {
         lastSelectedAccountAddressByNetwork[network] =
-        this.accountsController.getSelectedMultichainAccount(
+          this.accountsController.getSelectedMultichainAccount(
             network,
-        )?.address;
-    } catch {
-      // noop
-    }
+          )?.address;
+      } catch {
+        // noop
+      }
     });
 
     this.controllerMessenger.subscribe(
@@ -1799,52 +1798,6 @@ export default class MetamaskController extends EventEmitter {
       getAuthorizedScopesByOrigin,
     );
 
-    // TODO: To be removed when state 2 is fully transitioned.
-    // wallet_notify for solana accountChanged when selected account changes
-    this.controllerMessenger.subscribe(
-      `${this.accountsController.name}:selectedAccountChange`,
-      async (account) => {
-        if (
-          account.type === SolAccountType.DataAccount &&
-          account.address !== lastSelectedSolanaAccountAddress
-        ) {
-          lastSelectedSolanaAccountAddress = account.address;
-
-          const originsWithSolanaAccountChangedNotifications =
-            getOriginsWithSessionProperty(
-              this.permissionController.state,
-              KnownSessionProperties.SolanaAccountChangedNotifications,
-            );
-
-          // returns a map of origins to permitted solana accounts
-          const solanaAccounts = getPermittedAccountsForScopesByOrigin(
-            this.permissionController.state,
-            SOLANA_CHAINS,
-          );
-
-          if (solanaAccounts.size > 0) {
-            for (const [origin, accounts] of solanaAccounts.entries()) {
-              const parsedSolanaAddresses = accounts.map((caipAccountId) => {
-                const { address } = parseCaipAccountId(caipAccountId);
-                return address;
-              });
-
-              if (
-                parsedSolanaAddresses.includes(account.address) &&
-                originsWithSolanaAccountChangedNotifications[origin]
-              ) {
-                this._notifyMultichainAccountChange(
-                  origin,
-                  [account.address],
-                  MultichainNetworks.SOLANA,
-                );
-              }
-            }
-          }
-        }
-      },
-    );
-
     // wallet_notify for multichain accountChanged when permission changes
     this.controllerMessenger.subscribe(
       `${this.permissionController.name}:stateChange`,
@@ -1912,6 +1865,7 @@ export default class MetamaskController extends EventEmitter {
             const [account] =
               this.accountTreeController.getAccountsFromSelectedAccountGroup({
                 scopes: [network],
+                type: accountType,
               });
 
             const lastSelectedAccountAddress =
@@ -6350,23 +6304,23 @@ export default class MetamaskController extends EventEmitter {
 
         const { accounts } = scopeObject;
         const parsedPermittedAddresses = accounts.map((caipAccountId) => {
-        const { address } = parseCaipAccountId(caipAccountId);
-        return address;
-      });
+          const { address } = parseCaipAccountId(caipAccountId);
+          return address;
+        });
 
         const [accountAddressToEmit] =
           this.sortMultichainAccountsByLastSelected(parsedPermittedAddresses);
 
-      if (accountAddressToEmit) {
-        this._notifyMultichainAccountChange(
-          origin,
-          [accountAddressToEmit],
+        if (accountAddressToEmit) {
+          this._notifyMultichainAccountChange(
+            origin,
+            [accountAddressToEmit],
             network,
-        );
-      }
+          );
+        }
       },
     );
-    }
+  }
   // Identity Management (signature operations)
 
   getAddTransactionRequest({

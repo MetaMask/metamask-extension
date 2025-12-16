@@ -6,6 +6,7 @@ import {
   SolScope,
   TrxScope,
   TrxAccountType,
+  KeyringAccountType,
 } from '@metamask/keyring-api';
 import { KnownSessionProperties } from '@metamask/chain-agnostic-permission';
 import {
@@ -425,7 +426,7 @@ type NonEvmAccountChangedConfig = {
   network: MultichainNetworks;
   chains: CaipChainId[];
   notificationProperty: KnownSessionProperties;
-  accountType: SolAccountType | TrxAccountType;
+  accountType: KeyringAccountType;
 };
 
 export const NON_EVM_ACCOUNT_CHANGED_CONFIGS: NonEvmAccountChangedConfig[] = [
