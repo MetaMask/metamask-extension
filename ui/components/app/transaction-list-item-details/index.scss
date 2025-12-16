@@ -75,30 +75,6 @@
     padding: 8px 16px;
   }
 
-  &__header-buttons {
-    display: flex;
-    flex-direction: row;
-  }
-
-  & &__header-button {
-    &-rounded-button {
-      @include design-system.H8;
-
-      padding: 8px;
-      min-width: 75px;
-      margin-right: 8px;
-    }
-
-    &-tooltip-container {
-      display: flex !important;
-      height: 100%;
-    }
-
-    &:not(:last-child) {
-      margin-right: 8px;
-    }
-  }
-
   &__sender-to-recipient-container {
     margin-bottom: 8px;
 

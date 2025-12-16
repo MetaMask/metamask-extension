@@ -37,6 +37,12 @@ async function mockPhpConversion(mockServer: Mockttp) {
         return {
           statusCode: 200,
           json: {
+            eth: {
+              name: 'Ether',
+              ticker: 'eth',
+              value: 1,
+              currencyType: 'crypto',
+            },
             usd: {
               name: 'US Dollar',
               ticker: 'usd',
@@ -46,9 +52,9 @@ async function mockPhpConversion(mockServer: Mockttp) {
           },
         };
       }),
-    // Mock v2 spot-prices for chain 1 (mainnet)
+    // Mock v3 spot-prices
     await mockServer
-      .forGet('https://price.api.cx.metamask.io/v2/chains/1/spot-prices')
+      .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
       .thenCallback((request) => {
         const url = new URL(request.url);
         const vsCurrency = url.searchParams.get('vsCurrency');
@@ -58,7 +64,7 @@ async function mockPhpConversion(mockServer: Mockttp) {
           return {
             statusCode: 200,
             json: {
-              '0x0000000000000000000000000000000000000000': {
+              'eip155:1/slip44:60': {
                 id: 'ethereum',
                 price: 100000, // 1 ETH = 100,000 PHP
                 marketCap: 382623505141,
@@ -72,9 +78,9 @@ async function mockPhpConversion(mockServer: Mockttp) {
         return {
           statusCode: 200,
           json: {
-            '0x0000000000000000000000000000000000000000': {
+            'eip155:1/slip44:60': {
               id: 'ethereum',
-              price: 2500, // 1 ETH = 2,500 USD
+              price: 1,
               marketCap: 382623505141,
               pricePercentChange1d: 0,
             },
@@ -98,6 +104,7 @@ describe('Localization', function () {
               showNativeTokenAsMainBalance: false,
             },
           })
+          .withEnabledNetworks({ eip155: { '0x1': true } })
           .build(),
         testSpecificMock: mockPhpConversion,
         title: this.test?.fullTitle(),

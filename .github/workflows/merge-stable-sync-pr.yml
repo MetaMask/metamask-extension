@@ -15,7 +15,7 @@ jobs:
         github.event.comment.author_association == 'MEMBER' ||
         github.event.comment.author_association == 'OWNER'
       )
-    uses: MetaMask/github-tools/.github/workflows/merge-approved-pr.yml@7c0ab4db1e9c1d5673fe7958e8959f1842edbebd
+    uses: MetaMask/github-tools/.github/workflows/merge-approved-pr.yml@v1
     with:
       pr-number: ${{ github.event.issue.number }}
       # Merge PRs from stable-main-X.Y.Z into main

@@ -174,7 +174,7 @@ function getSignatureEventProperty(
     security_alert_source: securityAlertSource,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    ui_customizations: uiCustomizations,
+    ...(uiCustomizations.length > 0 && { ui_customizations: uiCustomizations }),
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     hd_entropy_index: 0,
@@ -220,7 +220,7 @@ export async function assertSignatureConfirmedMetrics({
   mockedEndpoints,
   signatureType,
   primaryType = '',
-  uiCustomizations = ['redesigned_confirmation'],
+  uiCustomizations = [],
   withAnonEvents = false,
   securityAlertReason,
   securityAlertResponse,
@@ -269,7 +269,7 @@ export async function assertSignatureRejectedMetrics({
   mockedEndpoints,
   signatureType,
   primaryType = '',
-  uiCustomizations = ['redesigned_confirmation'],
+  uiCustomizations = [],
   location,
   expectedProps = {},
   withAnonEvents = false,

@@ -7,21 +7,22 @@ import { useAsyncResult } from '../../../hooks/useAsync';
 import { forceUpdateMetamaskState } from '../../../store/actions';
 import { updateSelectedGasFeeToken } from '../../../store/controller-actions/transaction-controller';
 import { useConfirmContext } from '../context/confirm';
-import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsufficientBalanceAlerts';
 import { useIsGaslessSupported } from './gas/useIsGaslessSupported';
+import { useHasInsufficientBalance } from './useHasInsufficientBalance';
 
 export function useAutomaticGasFeeTokenSelect() {
   const dispatch = useDispatch();
-  const { isSupported: isGaslessSupported, isSmartTransaction } =
-    useIsGaslessSupported();
+  const {
+    isSupported: isGaslessSupported,
+    isSmartTransaction,
+    pending,
+  } = useIsGaslessSupported();
   const [firstCheck, setFirstCheck] = useState(true);
 
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const hasInsufficientBalance = Boolean(
-    useInsufficientBalanceAlerts()?.length,
-  );
+  const { hasInsufficientBalance } = useHasInsufficientBalance();
 
   const {
     gasFeeTokens,
@@ -40,8 +41,10 @@ export function useAutomaticGasFeeTokenSelect() {
     await forceUpdateMetamaskState(dispatch);
   }, [dispatch, transactionId, firstGasFeeTokenAddress]);
 
+  const isGaslessSupportedAndFinished = isGaslessSupported && !pending;
+
   const shouldSelect =
-    isGaslessSupported &&
+    isGaslessSupportedAndFinished &&
     hasInsufficientBalance &&
     !selectedGasFeeToken &&
     Boolean(firstGasFeeTokenAddress);

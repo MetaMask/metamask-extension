@@ -9,12 +9,14 @@ describe('Swap tests', function (this: Suite) {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
   it('updates recommended swap quote incrementally when SSE events are received', async function () {
     await withFixtures(
-      getBridgeFixtures(
-        this.test?.fullTitle(),
-        BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
-        false,
-        true,
-      ),
+      {
+        ...getBridgeFixtures(
+          this.test?.fullTitle(),
+          BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+          false,
+          true,
+        ),
+      },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await unlockWallet(driver);
 
