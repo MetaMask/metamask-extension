@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { DAPP_URL } from '../../constants';
-import { WINDOW_TITLES } from '../../helpers';
+import { veryLargeDelayMs, WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 
 class TestDapp {
@@ -1103,6 +1103,9 @@ class TestDapp {
     console.log('Sign message with personal sign');
     await this.clickPersonalSign();
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+    // TODO: refactor #MMQA-1237. This method follows an incorrect pattern: mixing Dialog POM with TestDapp POM
+    // To fix flakiness adding a delay, but we should wait for the dialog to be ready instead and this should not be done in the test dapp page
+    await this.driver.delay(veryLargeDelayMs);
     await this.driver.clickElementAndWaitForWindowToClose(
       this.confirmSignatureButtonRedesign,
     );
@@ -1115,6 +1118,9 @@ class TestDapp {
     console.log('Sign message with signPermit');
     await this.clickPermit();
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+    // TODO: refactor #MMQA-1237. This method follows an incorrect pattern: mixing Dialog POM with TestDapp POM
+    // To fix flakiness adding a delay, but we should wait for the dialog to be ready instead and this should not be done in the test dapp page
+    await this.driver.delay(veryLargeDelayMs);
     await this.driver.clickElementAndWaitForWindowToClose(
       this.confirmSignatureButtonRedesign,
     );
@@ -1127,6 +1133,9 @@ class TestDapp {
     console.log('Sign message with signTypedData');
     await this.clickSignTypedData();
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+    // TODO: refactor #MMQA-1237. This method follows an incorrect pattern: mixing Dialog POM with TestDapp POM
+    // To fix flakiness adding a delay, but we should wait for the dialog to be ready instead and this should not be done in the test dapp page
+    await this.driver.delay(veryLargeDelayMs);
     await this.driver.clickElementAndWaitForWindowToClose(
       this.confirmSignatureButtonRedesign,
     );

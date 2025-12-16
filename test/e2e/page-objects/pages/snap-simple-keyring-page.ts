@@ -171,7 +171,7 @@ class SnapSimpleKeyringPage {
       'Approve/Reject snap account transaction on Snap Simple Keyring page',
     );
 
-    await this.driver.delay(5000);
+    await this.driver.delay(regularDelayMs);
 
     if (isSignatureRequest) {
       await this.driver.clickElementAndWaitForWindowToClose(
