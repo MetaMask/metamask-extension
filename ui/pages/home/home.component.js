@@ -172,6 +172,7 @@ export default class Home extends PureComponent {
   state = {
     canShowBlockageNotification: true,
     notificationClosing: false,
+    shouldEvaluateCohortEligibility: true,
   };
 
   constructor(props) {
@@ -235,6 +236,8 @@ export default class Home extends PureComponent {
       isSignedIn,
     } = this.props;
 
+    const { shouldEvaluateCohortEligibility } = this.state;
+
     const {
       newNetworkAddedConfigurationId: prevNewNetworkAddedConfigurationId,
     } = _prevProps;
@@ -253,9 +256,15 @@ export default class Home extends PureComponent {
     }
 
     // Check for pending Shield cohort evaluation if user is signed in
-    if (pendingShieldCohort && evaluateCohortEligibility && isSignedIn) {
+    if (
+      shouldEvaluateCohortEligibility &&
+      pendingShieldCohort &&
+      evaluateCohortEligibility &&
+      isSignedIn
+    ) {
       setPendingShieldCohort(null);
       evaluateCohortEligibility(pendingShieldCohort);
+      this.setState({ shouldEvaluateCohortEligibility: false });
     }
 
     // Check for redirect after default page on updates
