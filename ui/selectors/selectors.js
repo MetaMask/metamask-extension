@@ -879,7 +879,6 @@ export const getTokensAcrossChainsByAccountAddressSelector = createSelector(
     nativeTokenBalancesByChainId,
     selectedAddress,
   ) => {
-    console.log('DEBUG getTokensAcrossChainsByAccountAddressSelector CALLED');
     const tokensByChain = {};
 
     const chainIds = new Set([
