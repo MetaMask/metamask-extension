@@ -8,7 +8,7 @@ import {
   RecurringInterval,
 } from '@metamask/subscription-controller';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Checkbox, TextVariant } from '@metamask/design-system-react';
 import { Hex } from '@metamask/utils';
 import {

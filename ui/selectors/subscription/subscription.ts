@@ -46,7 +46,10 @@ export function getIsActiveShieldSubscription(
 export function getHasShieldEntryModalShownOnce(
   state: SubscriptionState,
 ): boolean {
-  return Boolean(state.metamask.showShieldEntryModalOnce !== null);
+  const showShieldEntryModalOnce = state.metamask?.showShieldEntryModalOnce;
+  return Boolean(
+    showShieldEntryModalOnce !== null && showShieldEntryModalOnce !== undefined,
+  );
 }
 
 export function getLastUsedShieldSubscriptionPaymentDetails(

@@ -12,7 +12,7 @@ import {
   ModalType,
 } from '@metamask/subscription-controller';
 import log from 'loglevel';
-import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   TransactionParams,
   TransactionType,

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import type { Location as RouterLocation } from 'react-router-dom-v5-compat';
+import { useLocation } from 'react-router-dom';
 import log from 'loglevel';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -160,11 +160,8 @@ async function updateStateFromUrl(
   }
 }
 
-type DeepLinkProps = {
-  location: RouterLocation;
-};
-
-export const DeepLink = ({ location }: DeepLinkProps) => {
+export const DeepLink = () => {
+  const location = useLocation();
   const t = useI18nContext() as TranslateFunction;
   const dispatch = useDispatch();
   // it's technically not possible for a natural flow to reach this page

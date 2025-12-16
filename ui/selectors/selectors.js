@@ -137,7 +137,7 @@ import { hasTransactionData } from '../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
-import { EMPTY_ARRAY } from './shared';
+import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 import {
   getAllUnapprovedTransactions,
   getCurrentNetworkTransactions,
@@ -156,6 +156,7 @@ import {
 } from './multichain/networks';
 import { getRemoteFeatureFlags } from './remote-feature-flags';
 import { getApprovalRequestsByType } from './approvals';
+import { getHasShieldEntryModalShownOnce } from './subscription';
 
 /**
  * @typedef {import('../../ui/store/store').MetaMaskReduxState} MetaMaskReduxState
@@ -305,7 +306,12 @@ export function getPendingShieldCohortTxType(state) {
 }
 
 export function getShouldSubmitEventsForShieldEntryModal(state) {
-  return state.appState.shieldEntryModal?.shouldSubmitEvents;
+  const hasShieldEntryModalShownOnce = getHasShieldEntryModalShownOnce(state);
+  if (hasShieldEntryModalShownOnce) {
+    // if the modal has been shown to the user, we don't need to submit events anymore
+    return false;
+  }
+  return Boolean(state.appState.shieldEntryModal?.shouldSubmitEvents);
 }
 
 export function getModalTypeForShieldEntryModal(state) {
@@ -2105,12 +2111,10 @@ export const getUnapprovedTransaction = createDeepEqualSelector(
 );
 
 export const getTransaction = createDeepEqualSelector(
-  (state) => getCurrentNetworkTransactions(state),
+  getCurrentNetworkTransactions,
   (_, transactionId) => transactionId,
-  (unapprovedTxs, transactionId) => {
-    return (
-      Object.values(unapprovedTxs).find(({ id }) => id === transactionId) || {}
-    );
+  (transactions, transactionId) => {
+    return transactions.find(({ id }) => id === transactionId) || EMPTY_OBJECT;
   },
 );
 

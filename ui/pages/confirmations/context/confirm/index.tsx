@@ -27,7 +27,7 @@ export const ConfirmContextProvider: React.FC<{
   const [isScrollToBottomCompleted, setIsScrollToBottomCompleted] =
     useState(true);
   const { currentConfirmation } = useCurrentConfirmation(confirmationId);
-  useSyncConfirmPath(currentConfirmation, confirmationId);
+  useSyncConfirmPath(currentConfirmation);
 
   const value = useMemo(
     () => ({

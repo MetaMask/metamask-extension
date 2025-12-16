@@ -22,6 +22,7 @@ import {
 } from '../../shared/modules/selectors/util';
 import { getSelectedInternalAccount } from './accounts';
 import { hasPendingApprovals, getApprovalRequestsByType } from './approvals';
+import { EMPTY_ARRAY } from './shared';
 
 const INVALID_INITIAL_TRANSACTION_TYPES = [
   TransactionType.cancel,
@@ -40,17 +41,14 @@ const allowedSwapsSmartTransactionStatusesForActivityList = [
   SmartTransactionStatuses.CANCELLED,
 ];
 
-export const getTransactions = createDeepEqualSelector(
-  (state) => {
-    const { transactions } = state.metamask ?? {};
-
+export const getTransactions = createSelector(
+  (state) => state.metamask?.transactions,
+  (transactions) => {
     if (!transactions?.length) {
-      return [];
+      return EMPTY_ARRAY;
     }
-
     return [...transactions].sort((a, b) => a.time - b.time); // Ascending
   },
-  (transactions) => transactions,
 );
 
 export const getAllNetworkTransactions = createDeepEqualSelector(
@@ -65,21 +63,26 @@ export const getAllNetworkTransactions = createDeepEqualSelector(
   },
 );
 
-export const getCurrentNetworkTransactions = createDeepEqualSelector(
-  (state) => {
-    const transactions = getTransactions(state);
+// Safe wrapper that prevents crashes when provider config is unavailable
+const getProviderConfigSafe = (state) => {
+  try {
+    return getProviderConfig(state);
+  } catch {
+    return null;
+  }
+};
 
-    if (!transactions.length) {
+export const getCurrentNetworkTransactions = createDeepEqualSelector(
+  getTransactions,
+  getProviderConfigSafe,
+  (transactions, providerConfig) => {
+    if (!transactions.length || !providerConfig) {
       return [];
     }
-
-    const { chainId } = getProviderConfig(state);
-
     return transactions.filter(
-      (transaction) => transaction.chainId === chainId,
+      (transaction) => transaction.chainId === providerConfig.chainId,
     );
   },
-  (transactions) => transactions,
 );
 
 export const incomingTxListSelectorAllChains = createDeepEqualSelector(

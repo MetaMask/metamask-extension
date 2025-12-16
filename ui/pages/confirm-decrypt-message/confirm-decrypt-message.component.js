@@ -5,7 +5,7 @@ import copyToClipboard from 'copy-to-clipboard';
 import classnames from 'classnames';
 import log from 'loglevel';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom-v5-compat';
+import { useNavigate, useParams } from 'react-router-dom';
 import { cloneDeep } from 'lodash';
 
 import AccountListItem from '../../components/app/account-list-item';

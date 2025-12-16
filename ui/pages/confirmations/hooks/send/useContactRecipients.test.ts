@@ -1,5 +1,5 @@
 import { isAddress as isEvmAddress } from 'ethers/lib/utils';
-import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
 import * as selectors from '../../../../selectors';
 import * as SendContext from '../../context/send';

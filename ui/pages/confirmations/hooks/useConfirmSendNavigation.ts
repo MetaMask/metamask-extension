@@ -3,7 +3,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { useCallback } from 'react';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 
 import { useConfirmContext } from '../context/confirm';
 import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';

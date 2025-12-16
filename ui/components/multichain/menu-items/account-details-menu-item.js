@@ -1,9 +1,7 @@
 import React, { useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-
-import { useNavigate } from 'react-router-dom-v5-compat';
-
+import { useNavigate } from 'react-router-dom';
 import { MenuItem } from '../../ui/menu';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -13,7 +11,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { IconName, Text } from '../../component-library';
 import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
-import { getHDEntropyIndex } from '../../../selectors/selectors';
+import { getHDEntropyIndex } from '../../../selectors';
 import { MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE } from '../../../helpers/constants/routes';
 
 export const AccountDetailsMenuItem = ({

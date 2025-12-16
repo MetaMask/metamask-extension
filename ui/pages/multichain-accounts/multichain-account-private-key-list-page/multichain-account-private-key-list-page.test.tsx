@@ -13,8 +13,8 @@ const backButtonTestId = 'multichain-account-address-list-page-back-button';
 // Use actual group IDs from mock-state.json
 const MOCK_GROUP_ID = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0' as AccountGroupId;
 
-jest.mock('react-router-dom-v5-compat', () => ({
-  ...jest.requireActual('react-router-dom-v5-compat'),
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
   useParams: () => mockUseParams(),
 }));

@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
-import { useNavigate, useParams } from 'react-router-dom-v5-compat';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
   AccountGroupId,
