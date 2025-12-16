@@ -466,3 +466,6 @@ env:
   # PNA25 (Privacy Notice)
   - EXTENSION_UX_PNA25: true
   - IS_SIDEPANEL: true
+
+  # Accounts framework
+  - FORCE_MULTICHAIN_ACCOUNTS_FEATURE_FLAG: 'true'
