@@ -1,13 +1,14 @@
 import { jest } from '@jest/globals';
+import localforage from 'localforage';
 import { migrate, version } from './185';
 
-// Mock localforage
-const mockLocalforage = {
-  keys: jest.fn() as jest.MockedFunction<() => Promise<string[]>>,
-  removeItem: jest.fn() as jest.MockedFunction<(key: string) => Promise<void>>,
-};
+// Mock localforage after importing it
+jest.mock('localforage', () => ({
+  keys: jest.fn(),
+  removeItem: jest.fn(),
+}));
 
-jest.mock('localforage', () => mockLocalforage);
+const mockLocalforage = jest.mocked(localforage);
 
 describe(`migration #${version}`, () => {
   beforeEach(() => {
