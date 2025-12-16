@@ -14,18 +14,12 @@ import { useGasFeeEstimates } from '../../../../hooks/useGasFeeEstimates';
 import { useFeeCalculations } from '../../components/confirm/info/hooks/useFeeCalculations';
 import { updateTransactionGasFees } from '../../../../store/actions';
 import { type GasOption } from '../../types/gas';
-import { EMPTY_VALUE_STRING, GasOptionIcon } from '../../constants/gas';
+import { EMPTY_VALUE_STRING } from '../../constants/gas';
 import { toHumanEstimatedTimeRange } from '../../utils/time';
 import { useTransactionNativeTicker } from '../transactions/useTransactionNativeTicker';
 import { hexWEIToDecGWEI } from '../../../../../shared/modules/conversion.utils';
 
 const HEX_ZERO = '0x0';
-
-const GasEstimateFeeLevelEmojis = {
-  [GasFeeEstimateLevel.Low]: GasOptionIcon.Low,
-  [GasFeeEstimateLevel.Medium]: GasOptionIcon.Medium,
-  [GasFeeEstimateLevel.High]: GasOptionIcon.High,
-};
 
 export const useGasFeeEstimateLevelOptions = ({
   handleCloseModals,
@@ -73,6 +67,26 @@ export const useGasFeeEstimateLevelOptions = ({
 
   if (shouldIncludeGasFeeEstimateLevelOptions) {
     Object.values(GasFeeEstimateLevel).forEach((level) => {
+      // Skip adding the high option if it has the same fees as the medium option
+      if (
+        level === GasFeeEstimateLevel.High &&
+        transactionGasFeeEstimates?.type === GasFeeEstimateType.FeeMarket
+      ) {
+        const mediumEstimates =
+          transactionGasFeeEstimates[GasFeeEstimateLevel.Medium];
+        const highEstimates =
+          transactionGasFeeEstimates[GasFeeEstimateLevel.High];
+
+        const hasSameFees =
+          mediumEstimates?.maxFeePerGas === highEstimates?.maxFeePerGas &&
+          mediumEstimates?.maxPriorityFeePerGas ===
+            highEstimates?.maxPriorityFeePerGas;
+
+        if (hasSameFees) {
+          return;
+        }
+      }
+
       const estimatedTime = toHumanEstimatedTimeRange(
         networkGasFeeEstimates[level].minWaitTimeEstimate,
         networkGasFeeEstimates[level].maxWaitTimeEstimate,
@@ -110,7 +124,6 @@ export const useGasFeeEstimateLevelOptions = ({
         });
 
       options.push({
-        emoji: GasEstimateFeeLevelEmojis[level],
         estimatedTime,
         isSelected: userFeeLevel === level,
         key: level,

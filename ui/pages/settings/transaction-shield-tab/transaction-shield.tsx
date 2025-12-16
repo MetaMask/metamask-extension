@@ -630,7 +630,9 @@ const TransactionShield = () => {
                   style={{ flexShrink: 0 }}
                 />
               ) : (
-                <Icon name={detail.icon} size={IconSize.Xl} />
+                <Box className="flex-shrink-0">
+                  <Icon name={detail.icon} size={IconSize.Xl} />
+                </Box>
               )}
               <Box
                 width={BlockSize.Full}
@@ -664,7 +666,9 @@ const TransactionShield = () => {
               paddingTop={2}
               paddingBottom={2}
             >
-              <Icon name={IconName.MetamaskFoxOutline} size={IconSize.Xl} />
+              <Box className="flex-shrink-0">
+                <Icon name={IconName.MetamaskFoxOutline} size={IconSize.Xl} />
+              </Box>
               <Box
                 width={BlockSize.Full}
                 display={Display.Flex}
@@ -792,7 +796,7 @@ const TransactionShield = () => {
               {billingDetails(
                 t('shieldTxMembershipBillingDetailsCharges'),
                 isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)
-                  ? `${getProductPrice(productInfo as Product)} ${displayedShieldSubscription.paymentMethod.crypto.tokenSymbol.toUpperCase()} (${displayedShieldSubscription.interval === RECURRING_INTERVALS.year ? t('shieldPlanAnnual') : t('shieldPlanMonthly')})`
+                  ? `${getProductPrice(productInfo as Product)} ${displayedShieldSubscription.paymentMethod.crypto.tokenSymbol} (${displayedShieldSubscription.interval === RECURRING_INTERVALS.year ? t('shieldPlanAnnual') : t('shieldPlanMonthly')})`
                   : `${formatCurrency(
                       getProductPrice(productInfo as Product),
                       productInfo?.currency.toUpperCase(),

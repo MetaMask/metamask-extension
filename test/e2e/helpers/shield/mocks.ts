@@ -38,6 +38,8 @@ export class ShieldMockttpService {
 
   #coverageStatus: 'covered' | 'not_covered' | 'malicious' = 'covered';
 
+  #currentPaymentTokenSymbol: 'USDC' | 'USDT' = 'USDC';
+
   #customClaimsResponse: unknown[] | null = null;
 
   async setup(
@@ -48,6 +50,7 @@ export class ShieldMockttpService {
       subscriptionId?: string;
       coverageStatus?: 'covered' | 'not_covered' | 'malicious';
       claimErrorCode?: string;
+      defaultPaymentMethod?: 'card' | 'crypto';
       claimsResponse?: unknown[];
     },
   ) {
@@ -78,6 +81,7 @@ export class ShieldMockttpService {
     await this.#handleCheckoutSession(server);
     await this.#handleCancelSubscription(server, overrides);
     await this.#handleRenewSubscription(server, overrides);
+    await this.#handleUpdateCryptoPaymentMethod(server);
     await server
       .forPost(SUBSCRIPTION_API.USER_EVENTS)
       .thenJson(200, SHIELD_USER_EVENTS_RESPONSE);
@@ -194,6 +198,7 @@ export class ShieldMockttpService {
     server: Mockttp,
     overrides?: {
       isActiveUser?: boolean;
+      defaultPaymentMethod?: 'card' | 'crypto';
     },
   ) {
     // GET subscriptions - returns data only if subscription was requested
@@ -217,12 +222,36 @@ export class ShieldMockttpService {
           };
         }
 
-        // Return crypto subscription if crypto was subscribed, otherwise card
-        if (this.#hasSubscribedToShieldCrypto) {
-          const cryptoSubscription =
+        // Return crypto subscription if crypto was subscribed, or if defaultPaymentMethod is 'crypto'
+        const shouldReturnCrypto =
+          this.#hasSubscribedToShieldCrypto ||
+          (overrides?.isActiveUser &&
+            !this.#hasSubscribedToShield &&
+            overrides?.defaultPaymentMethod === 'crypto');
+
+        if (shouldReturnCrypto) {
+          const baseCryptoSubscription =
             this.#selectedInterval === 'month'
               ? BASE_SHIELD_SUBSCRIPTION_CRYPTO_MONTHLY
               : BASE_SHIELD_SUBSCRIPTION_CRYPTO;
+
+          // Create subscription with current payment token
+          const cryptoSubscription = {
+            ...baseCryptoSubscription,
+            paymentMethod: {
+              type: 'crypto',
+              crypto: {
+                chainId: '0x1',
+                tokenAddress:
+                  this.#currentPaymentTokenSymbol === 'USDT'
+                    ? '0xdac17f958d2ee523a2206206994597c13d831ec7'
+                    : '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                tokenSymbol: this.#currentPaymentTokenSymbol,
+                payerAddress: '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1',
+              },
+            },
+          };
+
           return {
             statusCode: 200,
             json: {
@@ -297,6 +326,50 @@ export class ShieldMockttpService {
         return {
           statusCode: 200,
           json: { ...BASE_SHIELD_SUBSCRIPTION_CARD, cancelAtPeriodEnd: false },
+        };
+      });
+  }
+
+  async #handleUpdateCryptoPaymentMethod(server: Mockttp) {
+    // Mock the PATCH endpoint for updating crypto payment method
+    // Endpoint: /subscriptions/:subscriptionId/payment-method/crypto
+    // Use regex to match any subscription ID
+    const escapedBaseUrl = BASE_SUBSCRIPTION_API_URL.replace(
+      /[.*+?^${}()|[\]\\]/gu,
+      '\\$&',
+    );
+    const updatePaymentMethodRegex = new RegExp(
+      `^${escapedBaseUrl}/subscriptions/[^/]+/payment-method/crypto$`,
+      'u',
+    );
+
+    await server
+      .forPatch(updatePaymentMethodRegex)
+      .always()
+      .thenCallback(async (request) => {
+        const body = (await request.body.getJson()) as {
+          tokenSymbol?: string;
+          chainId?: string;
+          payerAddress?: string;
+          rawTransaction?: string;
+          recurringInterval?: string;
+          billingCycles?: number;
+        };
+
+        // Update payment token symbol based on the request
+        if (body?.tokenSymbol === 'USDT' || body?.tokenSymbol === 'USDC') {
+          this.#currentPaymentTokenSymbol = body.tokenSymbol;
+        }
+
+        // Update interval if provided
+        if (body?.recurringInterval) {
+          this.#selectedInterval =
+            body.recurringInterval === 'month' ? 'month' : 'year';
+        }
+
+        return {
+          statusCode: 200,
+          json: { success: true },
         };
       });
   }
