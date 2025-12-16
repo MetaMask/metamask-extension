@@ -26,3 +26,18 @@ export const WITH_STATE_POWER_USER = {
   withPreferences: true,
   withUnreadNotifications: 15,
 };
+
+/**
+ * Test title constants for benchmark tests.
+ * These are used for Sentry tagging and should match the actual test titles.
+ */
+export const TEST_TITLES = {
+  // Standard user benchmark
+  MEASURE_PAGE_STANDARD: 'measurePageStandard',
+  // Power user benchmark
+  MEASURE_PAGE_POWER_USER: 'measurePagePowerUser',
+  // User action benchmarks
+  USER_ACTION_LOAD_NEW_ACCOUNT: 'benchmark-userActions-loadNewAccount',
+  USER_ACTION_CONFIRM_TX: 'benchmark-userActions-confirmTx',
+  USER_ACTION_BRIDGE: 'benchmark-userActions-bridgeUserActions',
+};

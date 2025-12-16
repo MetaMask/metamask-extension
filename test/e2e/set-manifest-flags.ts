@@ -29,6 +29,7 @@ function parseIntOrUndefined(value: string | undefined): number | undefined {
 export async function setManifestFlags(flags: ManifestFlags = {}) {
   if (process.env.CI) {
     flags.ci = {
+      ...flags.ci,
       enabled: true,
       branch: process.env.BRANCH,
       commitHash: process.env.HEAD_COMMIT_HASH,

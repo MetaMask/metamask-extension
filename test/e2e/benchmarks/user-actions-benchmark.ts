@@ -20,6 +20,7 @@ import {
   MOCK_TOKENS_ETHEREUM,
 } from '../tests/bridge/constants';
 import { Driver } from '../webdriver/driver';
+import { TEST_TITLES } from './constants';
 
 async function mockTokensEthereum(mockServer: Mockttp) {
   return await mockServer
@@ -42,7 +43,7 @@ async function loadNewAccount(): Promise<number> {
       localNodeOptions: {
         accounts: 1,
       },
-      title: 'benchmark-userActions-loadNewAccount',
+      title: TEST_TITLES.USER_ACTION_LOAD_NEW_ACCOUNT,
     },
     async ({ driver }: { driver: Driver }) => {
       await unlockWallet(driver);
@@ -68,7 +69,7 @@ async function confirmTx(): Promise<number> {
     {
       fixtures: new FixtureBuilder().build(),
       disableServerMochaToBackground: true,
-      title: 'benchmark-userActions-confirmTx',
+      title: TEST_TITLES.USER_ACTION_CONFIRM_TX,
     },
     async ({ driver }: { driver: Driver }) => {
       await loginWithBalanceValidation(driver);
@@ -127,7 +128,7 @@ async function bridgeUserActions(): Promise<{
       fixtures: fixtureBuilder.build(),
       disableServerMochaToBackground: true,
       testSpecificMock: mockTokensEthereum,
-      title: 'benchmark-userActions-bridgeUserActions',
+      title: TEST_TITLES.USER_ACTION_BRIDGE,
       manifestFlags: {
         remoteFeatureFlags: {
           bridgeConfig: DEFAULT_BRIDGE_FEATURE_FLAGS,
@@ -186,12 +187,27 @@ async function main(): Promise<void> {
 
   const results: Record<
     string,
-    number | { loadPage: number; loadAssetPicker: number; searchToken: number }
+    | { testTitle: string; duration: number }
+    | {
+        testTitle: string;
+        loadPage: number;
+        loadAssetPicker: number;
+        searchToken: number;
+      }
   > = {};
-  results.loadNewAccount = await loadNewAccount();
-  results.confirmTx = await confirmTx();
+  results.loadNewAccount = {
+    testTitle: TEST_TITLES.USER_ACTION_LOAD_NEW_ACCOUNT,
+    duration: await loadNewAccount(),
+  };
+  results.confirmTx = {
+    testTitle: TEST_TITLES.USER_ACTION_CONFIRM_TX,
+    duration: await confirmTx(),
+  };
   const bridgeResults = await bridgeUserActions();
-  results.bridge = bridgeResults;
+  results.bridge = {
+    testTitle: TEST_TITLES.USER_ACTION_BRIDGE,
+    ...bridgeResults,
+  };
   const { out } = argv as { out?: string };
 
   if (out) {

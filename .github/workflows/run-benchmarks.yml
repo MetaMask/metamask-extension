@@ -5,6 +5,10 @@ on:
         required: true
         type: string
         description: The run ID to get builds from
+      branch:
+        required: false
+        type: string
+        description: The branch name (github.head_ref for PRs, github.ref_name for pushes)
     secrets:
       INFURA_PROJECT_ID:
         required: true
@@ -91,7 +95,7 @@ jobs:
           SENTRY_DSN_PERFORMANCE: ${{ vars.SENTRY_DSN_PERFORMANCE }}
           PR_NUMBER: ${{ github.event.pull_request.number || 'none' }}
           HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
-          GITHUB_REF_NAME: ${{ github.head_ref || github.ref_name }}
+          GITHUB_REF_NAME: ${{ inputs.branch || github.head_ref || github.ref_name }}
           GITHUB_JOB: ${{ github.job }}
         run: |
           yarn tsx test/e2e/benchmarks/send-to-sentry.ts \

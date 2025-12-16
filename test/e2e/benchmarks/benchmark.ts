@@ -26,6 +26,7 @@ import {
   ALL_METRICS,
   DEFAULT_NUM_BROWSER_LOADS,
   DEFAULT_NUM_PAGE_LOADS,
+  TEST_TITLES,
   WITH_STATE_POWER_USER,
 } from './constants';
 import { initSentryReporter, reportBenchmarkMetrics } from './sentry-reporter';
@@ -41,7 +42,7 @@ async function measurePageStandard(
     {
       fixtures: new FixtureBuilder().build(),
       disableServerMochaToBackground: true,
-      title: 'measurePageStandard',
+      title: TEST_TITLES.MEASURE_PAGE_STANDARD,
     },
     async ({ driver, getNetworkReport, clearNetworkReport }) => {
       await unlockWallet(driver);
@@ -71,7 +72,7 @@ async function measurePagePowerUser(
   const metrics: Metrics[] = [];
   await withFixtures(
     {
-      title: 'measurePagePowerUser',
+      title: TEST_TITLES.MEASURE_PAGE_POWER_USER,
       fixtures: (
         await generateWalletState(WITH_STATE_POWER_USER, true)
       ).build(),
@@ -220,8 +221,13 @@ async function profilePageLoad(
     }
 
     const reportingPageName = `${persona}${capitalize(pageName)}`;
+    const testTitle =
+      persona === 'powerUser'
+        ? TEST_TITLES.MEASURE_PAGE_POWER_USER
+        : TEST_TITLES.MEASURE_PAGE_STANDARD;
 
     results[reportingPageName] = {
+      testTitle,
       mean: meanResult(result),
       min: minResult(result),
       max: maxResult(result),

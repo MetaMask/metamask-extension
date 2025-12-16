@@ -1,23 +1,11 @@
 #!/usr/bin/env tsx
 /**
- * Standalone script to send benchmark results to Sentry.
- * Run this after benchmark.ts completes to send metrics.
+ * Sends benchmark results to Sentry. Called by CI after benchmark.ts completes.
  *
- * Supports two JSON formats:
- * 1. Standard benchmark: { pageName: { mean, min, max, stdDev, p75, p95 } }
- * 2. User actions benchmark: { actionName: number | { metric: number } }
+ * Reads JSON from --results and sends metrics as Sentry spans with tags for
+ * filtering (ci.browser, ci.buildType, ci.persona, ci.testTitle, etc.).
  *
- * Persona is automatically derived from pageType:
- * - standardHome → standard
- * - powerUserHome → powerUser
- * - userActions → standard
- *
- * Usage:
- * SENTRY_DSN_PERFORMANCE=... yarn tsx test/e2e/benchmarks/send-to-sentry.ts \
- * --results test-artifacts/benchmarks/benchmark-chrome-browserify-standardHome.json \
- * --browser chrome \
- * --buildType browserify \
- * --pageType standardHome
+ * Requires SENTRY_DSN_PERFORMANCE env var. Skips silently if not set.
  */
 
 import { execSync } from 'child_process';
@@ -25,11 +13,10 @@ import { promises as fs } from 'fs';
 import * as Sentry from '@sentry/node';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
+import { TEST_TITLES } from './constants';
 import type { BenchmarkResults } from './types-generated';
 
-/**
- * Get the current git commit hash.
- */
+/** Gets current git commit hash, or 'unknown' if unavailable. */
 function getGitCommitHash(): string {
   try {
     return execSync('git rev-parse HEAD', { encoding: 'utf-8' }).trim();
@@ -38,9 +25,7 @@ function getGitCommitHash(): string {
   }
 }
 
-/**
- * Get the current git branch name.
- */
+/** Gets current git branch name, or 'local' if unavailable. */
 function getGitBranch(): string {
   try {
     return execSync('git branch --show-current', { encoding: 'utf-8' }).trim();
@@ -50,11 +35,11 @@ function getGitBranch(): string {
 }
 
 /**
- * Check if this is a standard benchmark result (has mean/min/max/etc).
+ * Type guard for standard benchmark results (has mean/min/max/etc).
+ *
+ * @param value - The value to check.
  */
-function isStandardBenchmarkResult(
-  value: unknown,
-): value is BenchmarkResults {
+function isStandardBenchmarkResult(value: unknown): value is BenchmarkResults {
   return (
     typeof value === 'object' &&
     value !== null &&
@@ -63,20 +48,28 @@ function isStandardBenchmarkResult(
   );
 }
 
+/** User action result with testTitle and numeric timing metrics. */
+type UserActionResult = {
+  testTitle: string;
+  [key: string]: string | number;
+};
+
 /**
- * Check if this is a user actions benchmark result (number or nested object).
+ * Type guard for user action results (has testTitle and at least one numeric metric).
+ *
+ * @param value - The value to check.
  */
-function isUserActionResult(
-  value: unknown,
-): value is number | Record<string, number> {
-  if (typeof value === 'number') {
-    return true;
+function isUserActionResult(value: unknown): value is UserActionResult {
+  if (typeof value !== 'object' || value === null) {
+    return false;
   }
-  if (typeof value === 'object' && value !== null) {
-    // Check if all values are numbers (nested user action like bridge)
-    return Object.values(value).every((v) => typeof v === 'number');
+  const obj = value as Record<string, unknown>;
+  // Must have testTitle
+  if (typeof obj.testTitle !== 'string') {
+    return false;
   }
-  return false;
+  // Must have at least one numeric metric
+  return Object.values(obj).some((v) => typeof v === 'number');
 }
 
 async function main() {
@@ -121,7 +114,7 @@ async function main() {
   // Derive persona from pageType
   const persona = argv.pageType === 'powerUserHome' ? 'powerUser' : 'standard';
 
-  // Set common tags
+  // Set common tags for all spans
   const setCommonTags = (testTitle: string) => {
     Sentry.setTag('ci.branch', process.env.GITHUB_REF_NAME || getGitBranch());
     Sentry.setTag('ci.prNumber', process.env.PR_NUMBER || 'none');
@@ -139,8 +132,13 @@ async function main() {
 
   for (const [name, value] of Object.entries(results)) {
     if (isStandardBenchmarkResult(value)) {
-      // Standard benchmark format with statistical data
-      setCommonTags(`Benchmark: ${name}`);
+      // Get testTitle from result, fallback to derived title
+      const testTitle =
+        value.testTitle ||
+        (persona === 'powerUser'
+          ? TEST_TITLES.MEASURE_PAGE_POWER_USER
+          : TEST_TITLES.MEASURE_PAGE_STANDARD);
+      setCommonTags(testTitle);
 
       Sentry.startSpan(
         {
@@ -148,6 +146,7 @@ async function main() {
           op: 'benchmark',
         },
         () => {
+          // Send mean values as measurements (queryable in Sentry)
           for (const [metricName, metricValue] of Object.entries(
             value.mean || {},
           )) {
@@ -157,20 +156,11 @@ async function main() {
               'millisecond',
             );
           }
-
-          Sentry.setContext('benchmark.stats', {
-            mean: value.mean || {},
-            min: value.min || {},
-            max: value.max || {},
-            stdDev: value.stdDev || {},
-            p75: value.p75 || {},
-            p95: value.p95 || {},
-          });
         },
       );
     } else if (isUserActionResult(value)) {
-      // User actions benchmark format
-      setCommonTags(`UserAction: ${name}`);
+      // testTitle is required in user action results
+      setCommonTags(value.testTitle);
 
       Sentry.startSpan(
         {
@@ -178,13 +168,9 @@ async function main() {
           op: 'user-action',
         },
         () => {
-          // Prefix measurements with 'userAction.' for easier querying
-          if (typeof value === 'number') {
-            // Simple timing: { loadNewAccount: 1234 }
-            Sentry.setMeasurement('userAction.duration', value, 'millisecond');
-          } else {
-            // Nested timings: { bridge: { loadPage: 100, loadAssetPicker: 200 } }
-            for (const [metricName, metricValue] of Object.entries(value)) {
+          // Send all numeric metrics as measurements
+          for (const [metricName, metricValue] of Object.entries(value)) {
+            if (typeof metricValue === 'number') {
               Sentry.setMeasurement(
                 `userAction.${metricName}`,
                 metricValue,

@@ -1,11 +1,11 @@
 import { execSync } from 'child_process';
 import * as Sentry from '@sentry/node';
+import { TEST_TITLES } from './constants';
 
 jest.mock('@sentry/node', () => ({
   init: jest.fn(),
   setTag: jest.fn(),
   setMeasurement: jest.fn(),
-  setContext: jest.fn(),
   startSpan: jest.fn((_options, callback) => callback()),
   flush: jest.fn().mockResolvedValue(true),
 }));
@@ -25,6 +25,7 @@ jest.mock('child_process', () => ({
 describe('send-to-sentry', () => {
   const mockResults = {
     standardHome: {
+      testTitle: TEST_TITLES.MEASURE_PAGE_STANDARD,
       mean: {
         uiStartup: 500,
         load: 400,
@@ -35,6 +36,19 @@ describe('send-to-sentry', () => {
       stdDev: { uiStartup: 25, load: 20, firstPaint: 20 },
       p75: { uiStartup: 520, load: 420, firstPaint: 440 },
       p95: { uiStartup: 545, load: 445, firstPaint: 455 },
+    },
+  };
+
+  const mockUserActionResults = {
+    loadNewAccount: {
+      testTitle: TEST_TITLES.USER_ACTION_LOAD_NEW_ACCOUNT,
+      duration: 1234,
+    },
+    bridge: {
+      testTitle: TEST_TITLES.USER_ACTION_BRIDGE,
+      loadPage: 100,
+      loadAssetPicker: 200,
+      searchToken: 300,
     },
   };
 
@@ -81,7 +95,7 @@ describe('send-to-sentry', () => {
         'ci.browser': 'chrome',
         'ci.buildType': 'browserify',
         'ci.pageType': 'standardHome',
-        'ci.testTitle': 'Benchmark: standardHome',
+        'ci.testTitle': TEST_TITLES.MEASURE_PAGE_STANDARD,
       };
 
       for (const [key, value] of Object.entries(tags)) {
@@ -93,7 +107,7 @@ describe('send-to-sentry', () => {
       expect(Sentry.setTag).toHaveBeenCalledWith('ci.pageType', 'standardHome');
       expect(Sentry.setTag).toHaveBeenCalledWith(
         'ci.testTitle',
-        'Benchmark: standardHome',
+        TEST_TITLES.MEASURE_PAGE_STANDARD,
       );
     });
   });
@@ -102,8 +116,10 @@ describe('send-to-sentry', () => {
     it('creates span with correct name and operation', () => {
       Sentry.startSpan(
         { name: 'benchmark.standardHome', op: 'benchmark' },
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        () => {},
+        () => {
+          // Callback contains Sentry.setMeasurement calls
+          Sentry.setMeasurement('benchmark.uiStartup', 500, 'millisecond');
+        },
       );
 
       expect(Sentry.startSpan).toHaveBeenCalledWith(
@@ -130,24 +146,20 @@ describe('send-to-sentry', () => {
         'millisecond',
       );
     });
+  });
 
-    it('sets benchmark.stats context with full statistics', () => {
-      Sentry.setContext('benchmark.stats', {
-        mean: mockResults.standardHome.mean,
-        min: mockResults.standardHome.min,
-        max: mockResults.standardHome.max,
-        stdDev: mockResults.standardHome.stdDev,
-        p75: mockResults.standardHome.p75,
-        p95: mockResults.standardHome.p95,
-      });
+  describe('testTitle from JSON', () => {
+    it('uses testTitle from standard benchmark results', () => {
+      const { testTitle } = mockResults.standardHome;
+      expect(testTitle).toBe(TEST_TITLES.MEASURE_PAGE_STANDARD);
+    });
 
-      expect(Sentry.setContext).toHaveBeenCalledWith(
-        'benchmark.stats',
-        expect.objectContaining({
-          mean: expect.any(Object),
-          stdDev: expect.any(Object),
-          p95: expect.any(Object),
-        }),
+    it('uses testTitle from user action results', () => {
+      expect(mockUserActionResults.loadNewAccount.testTitle).toBe(
+        TEST_TITLES.USER_ACTION_LOAD_NEW_ACCOUNT,
+      );
+      expect(mockUserActionResults.bridge.testTitle).toBe(
+        TEST_TITLES.USER_ACTION_BRIDGE,
       );
     });
   });

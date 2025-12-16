@@ -266,6 +266,7 @@ jobs:
       - build-test-mv2-webpack
     with:
       builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
+      branch: ${{ github.head_ref || github.ref_name }}
     secrets:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
 
