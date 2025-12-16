@@ -254,6 +254,7 @@ import {
   makeMethodMiddlewareMaker,
 } from './lib/rpc-method-middleware';
 import createOriginMiddleware from './lib/createOriginMiddleware';
+import createRpcBlockingMiddleware from './lib/rpcBlockingMiddleware';
 import createMainFrameOriginMiddleware from './lib/createMainFrameOriginMiddleware';
 import createTabIdMiddleware from './lib/createTabIdMiddleware';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
@@ -1064,6 +1065,19 @@ export default class MetamaskController extends EventEmitter {
       ),
     });
 
+    const rpcBlockingMiddlewareState = { isBlocked: false };
+    const eip7715BlockingMiddleware = createRpcBlockingMiddleware({
+      state: rpcBlockingMiddlewareState,
+      allowedOrigins: [
+        process.env.GATOR_PERMISSIONS_PROVIDER_SNAP_ID,
+        process.env.PERMISSIONS_KERNEL_SNAP_ID,
+      ],
+      errorMessage:
+        'Cannot process requests while a wallet_requestExecutionPermissions request is in process',
+    });
+
+    this.eip7715BlockingMiddleware = eip7715BlockingMiddleware;
+
     this.eip7702Middleware = createScaffoldMiddleware({
       wallet_upgradeAccount: createAsyncMiddleware(async (req, res) => {
         await walletUpgradeAccount(req, res, {
@@ -1167,6 +1181,12 @@ export default class MetamaskController extends EventEmitter {
           {
             snapId: process.env.PERMISSIONS_KERNEL_SNAP_ID,
             handleRequest: this.handleSnapRequest.bind(this),
+            onBeforeRequest: () => {
+              rpcBlockingMiddlewareState.isBlocked = true;
+            },
+            onAfterRequest: () => {
+              rpcBlockingMiddlewareState.isBlocked = false;
+            },
           },
           params,
           req,
@@ -5541,7 +5561,12 @@ export default class MetamaskController extends EventEmitter {
 
     // TODO: Move this logic to the SnapKeyring directly.
     // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
-    await this.forwardSelectedAccountGroupToSnapKeyring(
+    // It is not necessary to await this since it is just expected for the snap to receive
+    // the information without blocking the login flow. Despite not awaiting for
+    // forwardSelectedAccountGroupToSnapKeyring to be completed, we still want to await for
+    // getSnapKeyring to ensure the Snap keyring is available.
+    // eslint-disable-next-line no-void
+    void this.forwardSelectedAccountGroupToSnapKeyring(
       await this.getSnapKeyring(),
       this.accountTreeController.getSelectedAccountGroup(),
     );
@@ -7407,6 +7432,9 @@ export default class MetamaskController extends EventEmitter {
           ),
       }),
     );
+
+    // Block requests while a wallet_requestExecutionPermissions request is in process.
+    engine.push(this.eip7715BlockingMiddleware);
 
     engine.push(
       createPPOMMiddleware(

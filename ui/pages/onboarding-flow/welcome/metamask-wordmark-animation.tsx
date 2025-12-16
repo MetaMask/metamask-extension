@@ -1,12 +1,14 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import {
   useRive,
   useRiveFile,
   Layout,
   Fit,
   Alignment,
+  StateMachineInput,
 } from '@rive-app/react-canvas';
 import { Box } from '@metamask/design-system-react';
+import classnames from 'classnames';
 import { useTheme } from '../../../hooks/useTheme';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import {
@@ -20,6 +22,14 @@ type MetamaskWordMarkAnimationProps = {
   skipTransition?: boolean;
 };
 
+// State machine and input names as constants
+const STATE_MACHINE_NAME = 'WordmarkBuildUp';
+const INPUT_NAMES = {
+  DARK: 'Dark',
+  STILL: 'Still',
+  START: 'Start',
+} as const;
+
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function MetamaskWordMarkAnimation({
@@ -27,7 +37,6 @@ export default function MetamaskWordMarkAnimation({
   isAnimationComplete = false,
   skipTransition = false,
 }: MetamaskWordMarkAnimationProps) {
-  const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const theme = useTheme();
   const context = useRiveWasmContext();
   const { isWasmReady, error: wasmError, setIsAnimationCompleted } = context;
@@ -36,6 +45,15 @@ export default function MetamaskWordMarkAnimation({
     error: bufferError,
     loading: bufferLoading,
   } = useRiveWasmFile('./images/riv_animations/metamask_wordmark.riv');
+
+  // Refs grouped together
+  const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const prevThemeRef = useRef(theme);
+  const inputsRef = useRef<{
+    dark?: StateMachineInput;
+    still?: StateMachineInput;
+    start?: StateMachineInput;
+  }>({});
 
   useEffect(() => {
     if (wasmError) {
@@ -87,34 +105,51 @@ export default function MetamaskWordMarkAnimation({
     },
   });
 
-  // Trigger the animation start when rive is loaded and WASM is ready
+  // Track if animation has been initialized
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  // Cache and initialize state machine inputs
+  const cacheInputs = useCallback(() => {
+    if (!rive) {
+      return false;
+    }
+    const inputs = rive.stateMachineInputs(STATE_MACHINE_NAME);
+    if (!inputs) {
+      return false;
+    }
+    inputsRef.current = {
+      dark: inputs.find((input) => input.name === INPUT_NAMES.DARK),
+      still: inputs.find((input) => input.name === INPUT_NAMES.STILL),
+      start: inputs.find((input) => input.name === INPUT_NAMES.START),
+    };
+    return true;
+  }, [rive]);
+
+  // Trigger the animation start when rive is loaded and WASM is ready (only once)
   useEffect(() => {
-    if (rive && isWasmReady && !bufferLoading && buffer) {
-      // Get the state machine inputs
-      const inputs = rive.stateMachineInputs('WordmarkBuildUp');
+    const shouldInitialize =
+      rive && isWasmReady && !bufferLoading && buffer && !isInitialized;
 
-      if (inputs) {
-        // Set the Dark toggle based on system preference or default to true (dark mode)
-        const darkToggle = inputs.find((input) => input.name === 'Dark');
-        if (darkToggle && theme === ThemeType.dark) {
-          darkToggle.value = true;
-        }
+    if (shouldInitialize && cacheInputs()) {
+      const { dark, still, start } = inputsRef.current;
 
-        if (skipTransition) {
-          const stillTrigger = inputs.find((input) => input.name === 'Still');
-          if (stillTrigger) {
-            stillTrigger.fire();
-          }
-        } else {
-          const startTrigger = inputs.find((input) => input.name === 'Start');
-          if (startTrigger) {
-            startTrigger.fire();
-          }
-        }
-
-        // Play the state machine
-        rive.play();
+      // Set the Dark toggle based on current theme
+      if (dark) {
+        dark.value = theme === ThemeType.dark;
       }
+
+      prevThemeRef.current = theme;
+
+      // Fire the appropriate trigger
+      if (skipTransition) {
+        still?.fire();
+      } else {
+        start?.fire();
+      }
+
+      // Play the state machine
+      rive.play();
+      setIsInitialized(true);
     }
 
     // Cleanup timeout on unmount
@@ -126,42 +161,62 @@ export default function MetamaskWordMarkAnimation({
     };
   }, [
     rive,
-    theme,
     isWasmReady,
     skipTransition,
     bufferLoading,
     buffer,
+    isInitialized,
+    theme,
+    cacheInputs,
     setIsAnimationCompleted,
   ]);
 
-  // Don't render Rive component until ready or if loading/failed
-  if (
-    !isWasmReady ||
-    bufferLoading ||
-    !buffer ||
-    status === 'loading' ||
-    status === 'failed'
-  ) {
-    if (status === 'failed') {
-      // Trigger animation complete to show the UI
-      if (!isAnimationComplete) {
-        setIsAnimationComplete(true);
-      }
+  // Handle theme changes after initialization (update dark toggle without re-triggering animation)
+  useEffect(() => {
+    if (!rive || !isInitialized || prevThemeRef.current === theme) {
+      return;
     }
+
+    const { dark, still } = inputsRef.current;
+
+    if (dark) {
+      dark.value = theme === ThemeType.dark;
+      // Fire the Still trigger to refresh the visual state with new theme
+      still?.fire();
+    }
+
+    prevThemeRef.current = theme;
+  }, [rive, theme, isInitialized]);
+
+  const isLoading =
+    !isWasmReady || bufferLoading || !buffer || status === 'loading';
+  const hasFailed = status === 'failed';
+
+  // Trigger animation complete on failure
+  useEffect(() => {
+    if (hasFailed && !isAnimationComplete) {
+      setIsAnimationComplete(true);
+    }
+  }, [hasFailed, isAnimationComplete, setIsAnimationComplete]);
+
+  // Don't render Rive component until ready or if loading/failed
+  if (isLoading || hasFailed) {
     return (
       <Box
-        className={`riv-animation__wordmark-container ${status === 'failed' ? 'riv-animation__wordmark-container--complete' : ''}`}
+        className={classnames('riv-animation__wordmark-container', {
+          'riv-animation__wordmark-container--complete': hasFailed,
+        })}
       />
     );
   }
 
   return (
     <Box
-      className={`riv-animation__wordmark-container ${
-        isAnimationComplete && !skipTransition
-          ? 'riv-animation__wordmark-container--complete'
-          : ''
-      } ${skipTransition ? 'riv-animation__wordmark-container--skip-transition' : ''} `}
+      className={classnames('riv-animation__wordmark-container', {
+        'riv-animation__wordmark-container--complete':
+          isAnimationComplete && !skipTransition,
+        'riv-animation__wordmark-container--skip-transition': skipTransition,
+      })}
     >
       <RiveComponent className="riv-animation__canvas" />
     </Box>
