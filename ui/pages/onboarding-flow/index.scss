@@ -23,12 +23,18 @@
   }
 
   &__container {
-    padding-inline: 24px;
-    padding-top: 32px;
-    padding-bottom: 32px;
+    padding-inline: 16px;
+    padding-top: 16px;
+    padding-bottom: 16px;
     max-width: 446px;
     min-height: 627px;
     height: auto;
+
+    @include design-system.screen-sm-min {
+      padding-inline: 24px;
+      padding-top: 32px;
+      padding-bottom: 32px;
+    }
 
     &--full {
       padding-inline: 0;
@@ -39,7 +45,8 @@
       height: 100%;
     }
 
-    &--popup {
+    &--popup,
+    &--sidepanel {
       padding-inline: 16px;
       padding-top: 16px;
       padding-bottom: 24px;
