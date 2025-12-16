@@ -2419,9 +2419,6 @@
     "message": "Tabhair rochtain do sholáthraí Ethereum ar $1",
     "description": "The parameter is the name of the requesting origin"
   },
-  "ethereumPublicAddress": {
-    "message": "Seoladh poiblí Ethereum"
-  },
   "etherscan": {
     "message": "Etherscan"
   },
@@ -3906,9 +3903,6 @@
   "noAccountsFound": {
     "message": "Ní bhfuarthas aon chuntais don fhiosrúchán cuardaigh tugtha"
   },
-  "noConnectedAccountTitle": {
-    "message": "Níl MetaMask ceangailte leis an suíomh seo"
-  },
   "noConnectionDescription": {
     "message": "Chun ceangal le suíomh, aimsigh agus roghnaigh an cnaipe \"ceangail\". Cuimhnigh nach féidir le MetaMask ceangal ach le suíomhanna ar an ngréasán 3."
   },
@@ -4643,10 +4637,7 @@
   "permissions": {
     "message": "Ceadanna"
   },
-  "permissionsPageEmptyContent": {
-    "message": "Níl aon rud le feiceáil anseo"
-  },
-  "permissionsPageEmptySubContent": {
+  "permissionsPageEmptyDescription": {
     "message": "Seo an áit ar féidir leat na ceadanna atá tugtha agat do Snaps suiteáilte nó do shuíomhanna nasctha a fheiceáil."
   },
   "permitSimulationChange_approve": {
