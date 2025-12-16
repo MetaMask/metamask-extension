@@ -43,7 +43,6 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 import { EditGasModes } from '../../../../shared/constants/gas';
-import { useGasFeeContext } from '../../../contexts/gasFee';
 import {
   TransactionModalContextProvider,
   useTransactionModalContext,
@@ -75,6 +74,7 @@ function TransactionListItemInner({
   setEditGasMode,
   isEarliestNonce = false,
   chainId,
+  supportsEIP1559,
 }) {
   const t = useI18nContext();
   const navigate = useNavigate();
@@ -83,7 +83,6 @@ function TransactionListItemInner({
   const [showCancelEditGasPopover, setShowCancelEditGasPopover] =
     useState(false);
   const [showRetryEditGasPopover, setShowRetryEditGasPopover] = useState(false);
-  const { supportsEIP1559 } = useGasFeeContext();
   const { openModal } = useTransactionModalContext();
   const dispatch = useDispatch();
 
@@ -451,7 +450,11 @@ const TransactionListItem = (props) => {
 
   return (
     <TransactionModalContextProvider>
-      <TransactionListItemInner {...props} setEditGasMode={setEditGasMode} />
+      <TransactionListItemInner
+        {...props}
+        setEditGasMode={setEditGasMode}
+        supportsEIP1559={supportsEIP1559}
+      />
       {supportsEIP1559 && (
         <>
           <CancelSpeedupPopover
