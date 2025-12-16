@@ -27,7 +27,7 @@ export const personalSignWithSnapAccount = async (
   const confirmation = new PersonalSignConfirmation(driver);
   await confirmation.verifyConfirmationHeadingTitle();
   // Cannot wait for window to close as new window is opened with Finish signing
-  await confirmation.clickFooterConfirmButton();
+  await confirmation.clickFooterConfirmButtonAndWaitToDisappear();
   if (!isSyncFlow) {
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await new SnapSimpleKeyringPage(driver).approveRejectSnapAccountTransaction(
@@ -65,7 +65,7 @@ export const signTypedDataWithSnapAccount = async (
   const confirmation = new SignTypedDataConfirmation(driver);
   await confirmation.verifyConfirmationHeadingTitle();
   // Cannot wait for window to close as new window is opened with Finish signing
-  await confirmation.clickFooterConfirmButton();
+  await confirmation.clickFooterConfirmButtonAndWaitToDisappear();
 
   if (!isSyncFlow) {
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -104,7 +104,7 @@ export const signTypedDataV3WithSnapAccount = async (
   const confirmation = new SignTypedDataConfirmation(driver);
   await confirmation.verifyConfirmationHeadingTitle();
   // Cannot wait for window to close as new window is opened with Finish signing
-  await confirmation.clickFooterConfirmButton();
+  await confirmation.clickFooterConfirmButtonAndWaitToDisappear();
 
   if (!isSyncFlow) {
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -143,7 +143,7 @@ export const signTypedDataV4WithSnapAccount = async (
   const confirmation = new SignTypedDataConfirmation(driver);
   await confirmation.verifyConfirmationHeadingTitle();
   // Cannot wait for window to close as new window is opened with Finish signing
-  await confirmation.clickFooterConfirmButton();
+  await confirmation.clickFooterConfirmButtonAndWaitToDisappear();
   if (!isSyncFlow) {
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await new SnapSimpleKeyringPage(driver).approveRejectSnapAccountTransaction(
@@ -181,7 +181,7 @@ export const signPermitWithSnapAccount = async (
   const confirmation = new PermitConfirmation(driver);
   await confirmation.verifyOrigin();
   // Cannot wait for window to close as new window is opened with Finish signing
-  await confirmation.clickFooterConfirmButton();
+  await confirmation.clickFooterConfirmButtonAndWaitToDisappear();
   if (!isSyncFlow) {
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await new SnapSimpleKeyringPage(driver).approveRejectSnapAccountTransaction(
