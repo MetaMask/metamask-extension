@@ -1302,11 +1302,6 @@ const getStateForAssetSelector = ({ metamask }: any) => {
   } as AssetListState;
 };
 
-// export const getAllAssets = createDeepEqualSelector(
-//   getStateForAssetSelector,
-//   (assetListState: AssetListState) => selectAllAssets(assetListState),
-// );
-
 export const getAssetsBySelectedAccountGroup = createDeepEqualSelector(
   getStateForAssetSelector,
   (assetListState: AssetListState) =>
