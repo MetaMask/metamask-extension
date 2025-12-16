@@ -1,4 +1,11 @@
-import React, { useCallback, useContext, useMemo } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+  useRef,
+  useEffect,
+} from 'react';
 import qrCode from 'qrcode-generator';
 import { CaipChainId } from '@metamask/utils';
 import {
@@ -8,12 +15,14 @@ import {
   TextColor,
   Button,
   IconName,
+  IconColor,
   ButtonVariant,
   ButtonSize,
   Box,
   BoxFlexDirection,
   BoxJustifyContent,
   BoxAlignItems,
+  BoxBackgroundColor,
   AvatarNetwork,
   FontWeight,
 } from '@metamask/design-system-react';
@@ -64,8 +73,20 @@ export const AddressQRCodeModal: React.FC<AddressQRCodeModalProps> = ({
   networkImageSrc,
 }) => {
   const t = useI18nContext();
-  const [copied, handleCopy] = useCopyToClipboard();
+  const [, handleCopy] = useCopyToClipboard();
   const trackEvent = useContext(MetaMetricsContext);
+
+  const [addressCopied, setAddressCopied] = useState(false);
+  const timeoutRef = useRef<number | null>(null);
+
+  // Cleanup timeout when component unmounts
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   // Address segmentation for display
   const addressStart = address.substring(0, PREFIX_LEN);
@@ -90,6 +111,16 @@ export const AddressQRCodeModal: React.FC<AddressQRCodeModalProps> = ({
   // Handle copy address
   const handleCopyClick = useCallback(() => {
     handleCopy(address);
+    setAddressCopied(true);
+
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    timeoutRef.current = window.setTimeout(() => {
+      setAddressCopied(false);
+      timeoutRef.current = null;
+    }, 1000);
   }, [address, handleCopy]);
 
   // Get block explorer info from network configuration
@@ -200,12 +231,25 @@ export const AddressQRCodeModal: React.FC<AddressQRCodeModalProps> = ({
               </Text>
               <Button
                 variant={ButtonVariant.Tertiary}
-                endIconName={copied ? IconName.CopySuccess : IconName.Copy}
+                endIconName={
+                  addressCopied ? IconName.CopySuccess : IconName.Copy
+                }
+                endIconProps={{
+                  color: addressCopied
+                    ? IconColor.SuccessDefault
+                    : IconColor.IconDefault,
+                }}
                 size={ButtonSize.Lg}
                 isFullWidth
                 onClick={handleCopyClick}
+                className={
+                  addressCopied
+                    ? `${BoxBackgroundColor.SuccessMuted} ${TextColor.SuccessDefault}`
+                    : undefined
+                }
+                data-testid="address-qr-code-modal-copy-button"
               >
-                {t('copyAddressShort')}
+                {addressCopied ? t('addressCopied') : t('copyAddressShort')}
               </Button>
             </Box>
 
