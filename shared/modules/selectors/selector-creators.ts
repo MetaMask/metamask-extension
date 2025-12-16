@@ -375,10 +375,54 @@ export const createLruSelector = (maxSize = 10) =>
  * @see {@link shallowEqual} - The underlying comparison function
  * @see {@link createSelectorWith} - For combining with result equality
  */
-export const createShallowEqualSelector = createSelectorCreator(
-  lruMemoize,
-  shallowEqual,
-);
+export const createShallowEqualSelector = createSelectorWith({
+  inputEquality: EqualityMode.Shallow,
+});
+
+/**
+ * Creates a selector with shallow equality for both inputs and results.
+ *
+ * Compares inputs and results by reference at one level deep:
+ * - Arrays: by length and element references
+ * - Objects: by key count and property references
+ *
+ * ## When to Use
+ * 1. **Immer-backed state** - Inputs come from controllers using immer where
+ * object references are stable when unchanged
+ * 2. **Filtered/shaped collections** - Result is a new array/object wrapper
+ * but contained elements have stable references
+ * 3. **Preventing downstream re-renders** - Result may be equivalent even
+ * when the selector recomputes
+ *
+ * ## When to Avoid
+ * 1. **Deeply nested changes** - Shallow comparison won't detect changes
+ * inside nested objects; use {@link createDeepEqualSelector}
+ * 2. **Primitive results** - No benefit for strings/numbers/booleans
+ *
+ * @example
+ * ```ts
+ * // Transactions from immer have stable refs. Filtering creates a new object
+ * // but values are same refs - shallow result equality catches this.
+ * const getUnapprovedTransactions = createShallowEqualInputAndResultSelector(
+ *   getTransactions,
+ *   getCurrentChainId,
+ *   (transactions, chainId) => {
+ *     const unapproved: Record<string, Transaction> = {};
+ *     for (const tx of transactions) {
+ *       if (tx.status === 'unapproved' && tx.chainId === chainId) {
+ *         unapproved[tx.id] = tx;
+ *       }
+ *     }
+ *     return unapproved;
+ *   },
+ * );
+ * ```
+ * @see {@link createSelectorWith} - For custom equality combinations
+ */
+export const createShallowEqualInputAndResultSelector = createSelectorWith({
+  inputEquality: EqualityMode.Shallow,
+  resultEquality: EqualityMode.Shallow,
+});
 
 /**
  * Creates a selector with optimized deep equality that short-circuits on
@@ -471,6 +515,39 @@ export const createFastDeepEqualSelector = createSelectorWith({
  */
 export const createResultEqualSelector = createSelectorWith({
   resultEquality: EqualityMode.Deep,
+});
+
+/**
+ * Creates a selector with shallow equality for results only.
+ *
+ * Uses reference equality for inputs (fast) but shallow equality for results.
+ * Useful when inputs are already stable (from immer) but the result function
+ * creates new arrays/objects that may be shallowly equivalent.
+ *
+ * ## When to Use
+ * 1. **Stable inputs, recreated results** - Input selectors return stable refs
+ * but result function creates new array/object wrappers
+ * 2. **Mapped/filtered outputs** - Result is `.map()` or `.filter()` output
+ * with stable element references
+ * 3. **Spread objects** - Result combines inputs via spread but values are stable
+ *
+ * ## When to Avoid
+ * 1. **Unstable inputs** - If inputs need equality checking, use
+ * {@link createShallowEqualInputAndResultSelector}
+ * 2. **Deeply nested results** - Shallow comparison won't detect nested changes
+ *
+ * @example
+ * ```ts
+ * // Inputs are stable from immer, but sorting creates new array
+ * const getSortedAccounts = createShallowResultSelector(
+ *   getInternalAccounts,
+ *   (accounts) => [...accounts].sort((a, b) => a.name.localeCompare(b.name)),
+ * );
+ * ```
+ * @see {@link createShallowEqualInputAndResultSelector} - When inputs also need shallow equality
+ */
+export const createShallowResultSelector = createSelectorWith({
+  resultEquality: EqualityMode.Shallow,
 });
 
 /**
