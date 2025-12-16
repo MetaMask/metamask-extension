@@ -164,6 +164,13 @@ async function setupMocking(
         console.log('Request going to a live server ============', url);
         return {};
       }
+      // Debug: Log if user-storage requests are hitting the catch-all
+      if (url.includes('user-storage')) {
+        console.log(
+          '[DEBUG] User storage request hitting catch-all mock ============',
+          url,
+        );
+      }
       console.log('Request redirected to the catch all mock ============', url);
       return {
         // If the URL or the host is not in the allowlist nor blocklisted, we return a 200.

@@ -60,6 +60,9 @@ describe('Account syncing - Multiple SRPs', function () {
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
 
+        // Wait for the initial account sync to complete before interacting with accounts
+        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
+
         const header = new HeaderNavbar(driver);
         await header.checkPageIsLoaded();
         await header.openAccountMenu();

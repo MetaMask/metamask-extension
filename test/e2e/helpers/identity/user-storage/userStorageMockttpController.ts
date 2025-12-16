@@ -154,6 +154,9 @@ export class UserStorageMockttpController {
     request: Pick<CompletedRequest, 'path' | 'body' | 'headers'>,
     statusCode: number = 204,
   ) => {
+    console.log(
+      `[UserStorageMockttpController] PUT request received for path: ${path}, url: ${request.path}`,
+    );
     const srpIdentifier = getSrpIdentifierFromHeaders(request.headers);
     const isFeatureEntry = determineIfFeatureEntryFromURL(request.path);
 
@@ -163,6 +166,9 @@ export class UserStorageMockttpController {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       batch_delete?: string[];
     };
+    console.log(
+      `[UserStorageMockttpController] PUT data keys: ${data ? Object.keys(data).join(', ') : 'null'}`,
+    );
 
     // We're handling batch delete inside the PUT method due to API limitations
     if (data?.batch_delete) {
@@ -198,6 +204,9 @@ export class UserStorageMockttpController {
     }
 
     if (data?.data) {
+      console.log(
+        `[UserStorageMockttpController] Processing data.data for path: ${path}`,
+      );
       const newOrUpdatedSingleOrBatchEntries =
         isFeatureEntry && typeof data?.data === 'string'
           ? [
@@ -213,10 +222,17 @@ export class UserStorageMockttpController {
               SrpIdentifier: srpIdentifier,
             }));
 
+      console.log(
+        `[UserStorageMockttpController] Entries to add/update: ${newOrUpdatedSingleOrBatchEntries.length}`,
+      );
+
       newOrUpdatedSingleOrBatchEntries.forEach((entry) => {
         const internalPathData = this.paths.get(path);
 
         if (!internalPathData) {
+          console.log(
+            `[UserStorageMockttpController] WARNING: No internalPathData for path: ${path}`,
+          );
           return;
         }
 
@@ -233,6 +249,9 @@ export class UserStorageMockttpController {
                 : existingEntry,
             ),
           });
+          console.log(
+            `[UserStorageMockttpController] Updated existing entry: ${entry.HashedKey}`,
+          );
         } else {
           this.paths.set(path, {
             ...internalPathData,
@@ -243,6 +262,9 @@ export class UserStorageMockttpController {
               entry as { HashedKey: string; Data: string },
             ],
           });
+          console.log(
+            `[UserStorageMockttpController] Added new entry: ${entry.HashedKey}, total entries now: ${this.paths.get(path)?.response.length}`,
+          );
         }
 
         if (newOrUpdatedSingleOrBatchEntries.length === 1) {
@@ -330,6 +352,9 @@ export class UserStorageMockttpController {
     },
   ) => {
     const previouslySetupPath = this.paths.get(path);
+    console.log(
+      `[UserStorageMockttpController] Setting up path: ${path}, previouslySetup: ${!!previouslySetupPath}, regex: ${pathRegexps[path]}`,
+    );
 
     this.paths.set(path, {
       response: overrides?.getResponse || previouslySetupPath?.response || [],

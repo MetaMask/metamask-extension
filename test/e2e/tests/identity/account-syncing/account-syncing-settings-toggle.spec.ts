@@ -4,7 +4,7 @@ import {
   USER_STORAGE_WALLETS_FEATURE_KEY,
 } from '@metamask/account-tree-controller';
 import { PAGES } from '../../../webdriver/driver';
-import { withFixtures, unlockWallet } from '../../../helpers';
+import { withFixtures, unlockWallet, getCleanAppState } from '../../../helpers';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
 import {
   UserStorageMockttpController,
@@ -12,6 +12,7 @@ import {
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
+import HomePage from '../../../page-objects/pages/home/homepage';
 import BackupAndSyncSettings from '../../../page-objects/pages/settings/backup-and-sync-settings';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
@@ -55,6 +56,10 @@ describe('Account syncing - Settings Toggle', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
+        // Wait for the initial account sync to complete before adding new accounts
+        const homePage = new HomePage(driver);
+        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
+
         const header = new HeaderNavbar(driver);
         await header.checkPageIsLoaded();
         await header.openAccountMenu();
@@ -83,6 +88,15 @@ describe('Account syncing - Settings Toggle', function () {
         // Wait for sync operation to complete
         await waitUntilSyncedAccountsNumberEquals(2);
         await waitUntilEventsEmittedNumberEquals(1);
+
+        // Log the synced state for debugging
+        const storageState = userStorageMockttpController.paths.get(
+          USER_STORAGE_GROUPS_FEATURE_KEY,
+        )?.response;
+        console.log(
+          '[Phase 1] User storage accounts after adding Account 2:',
+          JSON.stringify(storageState),
+        );
 
         await accountListPage.checkAccountDisplayedInAccountList(
           SECOND_ACCOUNT_NAME,
@@ -115,6 +129,19 @@ describe('Account syncing - Settings Toggle', function () {
           THIRD_ACCOUNT_NAME,
         );
 
+        // Log the final user storage state - should still only have 2 accounts
+        const finalStorageState = userStorageMockttpController.paths.get(
+          USER_STORAGE_GROUPS_FEATURE_KEY,
+        )?.response;
+        console.log(
+          '[Phase 2] User storage accounts after adding Account 3 (with sync disabled):',
+          JSON.stringify(finalStorageState),
+        );
+        console.log(
+          '[Phase 2] Number of accounts in user storage:',
+          finalStorageState?.length ?? 0,
+        );
+
         await accountListPage.closeMultichainAccountsPage();
       },
     );
@@ -129,6 +156,26 @@ describe('Account syncing - Settings Toggle', function () {
       async ({ driver }) => {
         // Login to fresh app instance to test sync restoration
         await unlockWallet(driver);
+
+        // Wait for the initial account sync to complete before interacting with accounts
+        const homePage = new HomePage(driver);
+        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
+
+        // Log the current user storage state for debugging
+        const currentStorageState = userStorageMockttpController.paths.get(
+          USER_STORAGE_GROUPS_FEATURE_KEY,
+        )?.response;
+        console.log(
+          '[Phase 3] Current user storage accounts:',
+          JSON.stringify(currentStorageState),
+        );
+
+        // Log the current app state for debugging
+        const appState = await getCleanAppState(driver);
+        console.log(
+          '[Phase 3] hasAccountTreeSyncingSyncedAtLeastOnce:',
+          appState?.metamask?.hasAccountTreeSyncingSyncedAtLeastOnce,
+        );
 
         const header = new HeaderNavbar(driver);
         await header.checkPageIsLoaded();

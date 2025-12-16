@@ -50,6 +50,10 @@ describe('Account syncing - Accounts with Balances', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
+        // Wait for the initial account sync to complete before interacting with accounts
+        const homePage = new HomePage(driver);
+        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
+
         const header = new HeaderNavbar(driver);
         await header.checkPageIsLoaded();
         await header.openAccountMenu();
