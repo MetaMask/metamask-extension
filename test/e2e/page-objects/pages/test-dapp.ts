@@ -1104,7 +1104,7 @@ class TestDapp {
     await this.clickPersonalSign();
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     // TODO: refactor #MMQA-1237. This method follows an incorrect pattern: mixing Dialog POM with TestDapp POM
-    // To fix flakiness adding a delay, but we should wait for the dialog to be ready instead and this should not be done in the test dapp page
+    // We should wait for the dialog to be ready instead, but this should not be done in the test dapp page as the page object method is in the Confirm page object
     await this.driver.delay(veryLargeDelayMs);
     await this.driver.clickElementAndWaitForWindowToClose(
       this.confirmSignatureButtonRedesign,
@@ -1119,7 +1119,7 @@ class TestDapp {
     await this.clickPermit();
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     // TODO: refactor #MMQA-1237. This method follows an incorrect pattern: mixing Dialog POM with TestDapp POM
-    // To fix flakiness adding a delay, but we should wait for the dialog to be ready instead and this should not be done in the test dapp page
+    // We should wait for the dialog to be ready instead, but this should not be done in the test dapp page as the page object method is in the Confirm page object
     await this.driver.delay(veryLargeDelayMs);
     await this.driver.clickElementAndWaitForWindowToClose(
       this.confirmSignatureButtonRedesign,
@@ -1134,8 +1134,8 @@ class TestDapp {
     await this.clickSignTypedData();
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     // TODO: refactor #MMQA-1237. This method follows an incorrect pattern: mixing Dialog POM with TestDapp POM
-    // To fix flakiness adding a delay, but we should wait for the dialog to be ready instead and this should not be done in the test dapp page
-    await this.driver.delay(veryLargeDelayMs);
+    // We should wait for the dialog to be ready instead, but this should not be done in the test dapp page as the page object method is in the Confirm page object
+    await this.driver.delay(5000);
     await this.driver.clickElementAndWaitForWindowToClose(
       this.confirmSignatureButtonRedesign,
     );
