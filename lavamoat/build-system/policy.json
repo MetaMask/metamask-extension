@@ -3682,7 +3682,7 @@
       },
       "packages": {
         "stylelint>global-modules>global-prefix>ini": true,
-        "@sentry/cli>which": true
+        "@lavamoat/allow-scripts>@npmcli/run-script>which": true
       }
     },
     "eslint-plugin-react>es-iterator-helpers>globalthis": {
@@ -4291,7 +4291,7 @@
         "process": true
       }
     },
-    "@sentry/cli>which>isexe": {
+    "@lavamoat/allow-scripts>@npmcli/run-script>which>isexe": {
       "builtin": {
         "fs.statSync": true,
         "fs/promises.stat": true
@@ -8722,7 +8722,7 @@
         "webpack-dev-server>sockjs>websocket-driver>websocket-extensions": true
       }
     },
-    "@sentry/cli>which": {
+    "@lavamoat/allow-scripts>@npmcli/run-script>which": {
       "builtin": {
         "path.delimiter": true,
         "path.join": true,
@@ -8736,7 +8736,7 @@
         "process.platform": true
       },
       "packages": {
-        "@sentry/cli>which>isexe": true
+        "@lavamoat/allow-scripts>@npmcli/run-script>which>isexe": true
       }
     },
     "@storybook/react>@storybook/node-logger>npmlog>gauge>wide-align": {
