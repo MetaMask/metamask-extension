@@ -75,10 +75,6 @@
     padding: 8px;
 
     @include design-system.screen-sm-min {
-      padding: 12px;
-    }
-
-    @include design-system.screen-sm-min {
       padding: 16px;
     }
   }
