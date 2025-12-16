@@ -2,7 +2,6 @@
 import { EthScope, SolScope } from '@metamask/keyring-api';
 import { waitFor } from '@testing-library/react';
 import { cloneDeep } from 'lodash';
-// fetchWithCache was replaced with fetch
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
   DEFAULT_USE_HISTORICAL_PRICES_METADATA,
