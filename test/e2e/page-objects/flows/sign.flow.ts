@@ -30,7 +30,7 @@ export const personalSignWithSnapAccount = async (
     await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
   } else {
     // Cannot wait for window to close as new window is opened with Finish signing.
-    // So we add a hardcoded delay to avoid race condition with the window dialog being closed and re-opened very fast
+    // So we add a hardcoded delay to avoid race condition with the window dialog being closed and re-opened very fast (to fix with MMQA-1240)
     await confirmation.clickFooterConfirmButton();
     await driver.delay(2000);
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -72,7 +72,7 @@ export const signTypedDataWithSnapAccount = async (
     await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
   } else {
     // Cannot wait for window to close as new window is opened with Finish signing.
-    // So we add a hardcoded delay to avoid race condition with the window dialog being closed and re-opened very fast
+    // So we add a hardcoded delay to avoid race condition with the window dialog being closed and re-opened very fast (to fix with MMQA-1240)
     await confirmation.clickFooterConfirmButton();
     await driver.delay(2000);
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -114,7 +114,7 @@ export const signTypedDataV3WithSnapAccount = async (
     await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
   } else {
     // Cannot wait for window to close as new window is opened with Finish signing.
-    // So we add a hardcoded delay to avoid race condition with the window dialog being closed and re-opened very fast
+    // So we add a hardcoded delay to avoid race condition with the window dialog being closed and re-opened very fast (to fix with MMQA-1240)
     await confirmation.clickFooterConfirmButton();
     await driver.delay(2000);
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -156,7 +156,7 @@ export const signTypedDataV4WithSnapAccount = async (
     await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
   } else {
     // Cannot wait for window to close as new window is opened with Finish signing.
-    // So we add a hardcoded delay to avoid race condition with the window dialog being closed and re-opened very fast
+    // So we add a hardcoded delay to avoid race condition with the window dialog being closed and re-opened very fast (to fix with MMQA-1240)
     await confirmation.clickFooterConfirmButton();
     await driver.delay(2000);
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -198,7 +198,7 @@ export const signPermitWithSnapAccount = async (
     await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
   } else {
     // Cannot wait for window to close as new window is opened with Finish signing.
-    // So we add a hardcoded delay to avoid race condition with the window dialog being closed and re-opened very fast
+    // So we add a hardcoded delay to avoid race condition with the window dialog being closed and re-opened very fast (to fix with MMQA-1240)
     await confirmation.clickFooterConfirmButton();
     await driver.delay(2000);
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
