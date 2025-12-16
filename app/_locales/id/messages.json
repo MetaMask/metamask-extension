@@ -2432,9 +2432,6 @@
     "message": "Berikan penyedia Ethereum akses ke $1",
     "description": "The parameter is the name of the requesting origin"
   },
-  "ethereumPublicAddress": {
-    "message": "Alamat publik Ethereum"
-  },
   "etherscan": {
     "message": "Etherscan"
   },
