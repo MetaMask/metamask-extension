@@ -1,9 +1,8 @@
 import nock from 'nock';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { parseAccountGroupId } from '@metamask/account-api';
-import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AccountsControllerState } from '@metamask/accounts-controller';
-import { AccountTreeController, AccountTreeControllerState } from '@metamask/account-tree-controller';
+import { AccountTreeControllerState } from '@metamask/account-tree-controller';
 
 // Used to "relax" (widen) types that are too strict. This can be useful when using mocked data from JSON
 // files. As some of the literal strings are being interpreted as general strings, this can cause some
