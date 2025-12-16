@@ -145,15 +145,20 @@ describe('useContactSyncing', () => {
     });
   });
 
-  it('should not dispatch conditions are not met', async () => {
+  it('should return shouldDispatchContactSyncing as false when conditions are not met', async () => {
     const { mocks, dispatchContactSyncing, shouldDispatchContactSyncing } =
       arrangeAndAct({ isContactSyncingEnabled: false });
 
-    await dispatchContactSyncing();
+    // Note: dispatchContactSyncing() will always dispatch the action now.
+    // The caller (MetamaskIdentityProvider's useEffect) is responsible for
+    // checking shouldDispatchContactSyncing before calling.
+    // This test verifies that shouldDispatchContactSyncing is false.
+    expect(shouldDispatchContactSyncing).toBe(false);
 
+    // Verify that if called anyway, it still dispatches (the check is the caller's responsibility)
+    await dispatchContactSyncing();
     await waitFor(() => {
-      expect(mocks.mockSyncContactsAction).not.toHaveBeenCalled();
-      expect(shouldDispatchContactSyncing).toBe(false);
+      expect(mocks.mockSyncContactsAction).toHaveBeenCalled();
     });
   });
 });

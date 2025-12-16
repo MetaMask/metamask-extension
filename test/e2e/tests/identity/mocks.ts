@@ -99,6 +99,10 @@ const getE2ESrpIdentifierForPublicKey = (publicKey: string) => {
 function mockAPICall(server: Mockttp, response: MockResponse) {
   let requestRuleBuilder: RequestRuleBuilder | undefined;
 
+  console.log(
+    `[Identity Mocks] Setting up mock for ${response.requestMethod} ${response.url}`,
+  );
+
   if (response.requestMethod === 'GET') {
     requestRuleBuilder = server.forGet(response.url);
   }
@@ -117,6 +121,9 @@ function mockAPICall(server: Mockttp, response: MockResponse) {
 
   requestRuleBuilder?.thenCallback(async (request) => {
     const { path, body } = request;
+    console.log(
+      `[Identity Mocks] ${response.requestMethod} request received: ${path}`,
+    );
 
     const [requestBodyJson, requestBodyText] = await Promise.all([
       body.getJson(),

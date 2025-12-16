@@ -146,15 +146,20 @@ describe('useAccountSyncing', () => {
     });
   });
 
-  it('should not dispatch conditions are not met', async () => {
+  it('should return shouldDispatchAccountSyncing as false when conditions are not met', async () => {
     const { mocks, dispatchAccountSyncing, shouldDispatchAccountSyncing } =
       arrangeAndAct({ completedOnboarding: false });
 
-    await dispatchAccountSyncing();
+    // Note: dispatchAccountSyncing() will always dispatch the action now.
+    // The caller (MetamaskIdentityProvider's useEffect) is responsible for
+    // checking shouldDispatchAccountSyncing before calling.
+    // This test verifies that shouldDispatchAccountSyncing is false.
+    expect(shouldDispatchAccountSyncing).toBe(false);
 
+    // Verify that if called anyway, it still dispatches (the check is the caller's responsibility)
+    await dispatchAccountSyncing();
     await waitFor(() => {
-      expect(mocks.mockSyncAccountsAction).not.toHaveBeenCalled();
-      expect(shouldDispatchAccountSyncing).toBe(false);
+      expect(mocks.mockSyncAccountsAction).toHaveBeenCalled();
     });
   });
 });
