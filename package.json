@@ -252,7 +252,8 @@
     "@metamask/bridge-controller@npm:^63.2.0": "patch:@metamask/bridge-controller@npm%3A64.0.0#~/.yarn/patches/@metamask-bridge-controller-npm-64.0.0-956740f7c8.patch",
     "@metamask/assets-controllers@npm:^92.0.0": "patch:@metamask/assets-controllers@npm%3A93.1.0#~/.yarn/patches/@metamask-assets-controllers-npm-93.1.0-0f2b5956ff.patch",
     "@metamask/assets-controllers@npm:^93.0.0": "patch:@metamask/assets-controllers@npm%3A93.1.0#~/.yarn/patches/@metamask-assets-controllers-npm-93.1.0-0f2b5956ff.patch",
-    "@metamask/assets-controllers@npm:^91.0.0": "patch:@metamask/assets-controllers@npm%3A93.1.0#~/.yarn/patches/@metamask-assets-controllers-npm-93.1.0-0f2b5956ff.patch"
+    "@metamask/assets-controllers@npm:^91.0.0": "patch:@metamask/assets-controllers@npm%3A93.1.0#~/.yarn/patches/@metamask-assets-controllers-npm-93.1.0-0f2b5956ff.patch",
+    "@metamask/keyring-utils": "file:../accounts/packages/keyring-utils"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -306,7 +307,7 @@
     "@metamask/error-reporting-service": "^3.0.0",
     "@metamask/eth-json-rpc-filters": "^9.0.0",
     "@metamask/eth-json-rpc-middleware": "^22.0.1",
-    "@metamask/eth-ledger-bridge-keyring": "11.1.2",
+    "@metamask/eth-ledger-bridge-keyring": "file:../accounts/packages/keyring-eth-ledger-bridge",
     "@metamask/eth-qr-keyring": "^1.1.0",
     "@metamask/eth-sig-util": "^8.2.0",
     "@metamask/eth-snap-keyring": "^18.0.2",
@@ -325,7 +326,7 @@
     "@metamask/kernel-ui": "^0.3.0",
     "@metamask/kernel-utils": "^0.3.0",
     "@metamask/keyring-api": "^21.3.0",
-    "@metamask/keyring-controller": "^25.0.0",
+    "@metamask/keyring-controller": "file:../core/packages/keyring-controller",
     "@metamask/keyring-internal-api": "^9.1.0",
     "@metamask/keyring-internal-snap-client": "^8.0.0",
     "@metamask/keyring-snap-client": "^8.1.0",

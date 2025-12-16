@@ -101,6 +101,7 @@ import {
   getApprovalFlows,
   getCurrentNetworkTransactions,
   getIsSigningQRHardwareTransaction,
+  getHardwareSigningState,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getPermissionSubjects,
   getFirstSnapInstallOrUpdateRequest,
@@ -217,6 +218,7 @@ import type {
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
+import { HardwareWalletError } from '@metamask/keyring-utils';
 
 type CustomGasSettings = {
   gas?: string;
@@ -2096,6 +2098,7 @@ export function updateAndApproveTx(
   txMeta: TransactionMeta,
   dontShowLoadingIndicator: boolean,
   loadingIndicatorMessage: string,
+  closeWindow: boolean = true,
 ): ThunkAction<
   Promise<TransactionMeta | null>,
   MetaMaskReduxState,
@@ -2141,11 +2144,25 @@ export function updateAndApproveTx(
         dispatch(completedTx(txMeta.id));
         dispatch(hideLoadingIndication());
         dispatch(updateCustomNonce(''));
-        dispatch(closeCurrentNotificationWindow());
+        console.log(
+          '[updateAndApproveTx] Transaction completed, closeWindow:',
+          closeWindow,
+        );
+        if (closeWindow) {
+          console.log(
+            '[updateAndApproveTx] Calling closeCurrentNotificationWindow',
+          );
+          dispatch(closeCurrentNotificationWindow());
+        } else {
+          console.log(
+            '[updateAndApproveTx] NOT closing window (closeWindow=false)',
+          );
+        }
         return txMeta;
       })
       .catch((err) => {
         dispatch(hideLoadingIndication());
+        console.log('updateAndApproveTx error', err);
         return Promise.reject(err);
       });
   };
@@ -4096,13 +4113,40 @@ export function closeCurrentNotificationWindow(): ThunkAction<
   return (_, getState) => {
     const state = getState();
     const approvalFlows = getApprovalFlows(state);
+    const hardwareSigningState = getHardwareSigningState(state);
+    const envType = getEnvironmentType();
+    const hasPendingTx = hasTransactionPendingApprovals(state);
+    const isSigningQR = getIsSigningQRHardwareTransaction(state);
+
+    debugger;
+    console.log('[closeCurrentNotificationWindow] Checking conditions:', {
+      envType,
+      isNotification: envType === ENVIRONMENT_TYPE_NOTIFICATION,
+      hasPendingTx,
+      isSigningQR,
+      hardwareSigningState,
+      approvalFlowsLength: approvalFlows.length,
+      willClose:
+        envType === ENVIRONMENT_TYPE_NOTIFICATION &&
+        !hasPendingTx &&
+        !isSigningQR &&
+        !hardwareSigningState &&
+        approvalFlows.length === 0,
+    });
+
     if (
       getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION &&
       !hasTransactionPendingApprovals(state) &&
       !getIsSigningQRHardwareTransaction(state) &&
+      !hardwareSigningState &&
       approvalFlows.length === 0
     ) {
+      console.log('[closeCurrentNotificationWindow] CLOSING POPUP');
       attemptCloseNotificationPopup();
+    } else {
+      console.log(
+        '[closeCurrentNotificationWindow] NOT closing popup - blocked by conditions',
+      );
     }
   };
 }
@@ -5687,21 +5731,61 @@ export function updateHiddenAccountsList(
  *
  * @param id - The pending approval id
  * @param [value] - The value required to confirm a pending approval
+ * @param [options] - Additional options for the approval
  */
 export function resolvePendingApproval(
   id: string,
   value: unknown,
+  options?: unknown,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (_dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('resolvePendingApproval', [id, value]);
+  return async (_dispatch: MetaMaskReduxDispatch, getState) => {
+    console.log(
+      '[resolvePendingApproval] Starting approval resolution for id:',
+      id,
+    );
+
+    await submitRequestToBackground('resolvePendingApproval', [
+      id,
+      value,
+      options,
+    ]);
+    debugger;
+
+    console.log(
+      '[resolvePendingApproval] Approval resolved, forcing state update...',
+    );
+
     // Before closing the current window, check if any additional confirmations
     // are added as a result of this confirmation being accepted
+    await forceUpdateMetamaskState(_dispatch);
 
-    const { pendingApprovals } = await forceUpdateMetamaskState(_dispatch);
-    if (Object.values(pendingApprovals).length === 0) {
+    // Get the updated state after force update
+    const state = getState();
+    const pendingApprovals = state.metamask.pendingApprovals;
+    const hardwareSigningState = getHardwareSigningState(state);
+    const pendingApprovalsCount = Object.values(pendingApprovals).length;
+    debugger;
+
+    console.log('[resolvePendingApproval] State after update:', {
+      pendingApprovalsCount,
+      hardwareSigningState,
+      willCallClose: pendingApprovalsCount === 0 && !hardwareSigningState,
+    });
+
+    // Don't close window if:
+    // 1. There are still pending approvals, OR
+    // 2. Hardware signing is in progress (Ledger, Trezor, etc.)
+    if (pendingApprovalsCount === 0 && !hardwareSigningState) {
+      console.log(
+        '[resolvePendingApproval] Calling closeCurrentNotificationWindow',
+      );
       _dispatch(closeCurrentNotificationWindow());
+    } else {
+      console.log(
+        '[resolvePendingApproval] NOT calling closeCurrentNotificationWindow',
+      );
     }
   };
 }
@@ -8155,4 +8239,31 @@ export async function generateClaimSignature(
     chainId,
     walletAddress,
   ]);
+}
+
+/**
+ * Sets the hardware signing state when a hardware wallet signing request is initiated
+ *
+ * @param accountAddress - The account address or null to clear the state
+ * @param deviceType - The hardware device type
+ * @param transactionId - Optional transaction ID
+ */
+export function setHardwareSigningState(
+  accountAddress: string | null,
+  deviceType?: 'ledger' | 'trezor' | 'lattice' | 'qr',
+  transactionId?: string,
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch) => {
+    console.log(
+      '[setHardwareSigningState] Setting hardware signing state',
+      accountAddress,
+      deviceType,
+      transactionId,
+    );
+    await submitRequestToBackground('setHardwareSigningState', [
+      accountAddress ? { accountAddress, deviceType, transactionId } : null,
+    ]);
+    // Force Redux state update to ensure hardwareSigningState is immediately available
+    await forceUpdateMetamaskState(dispatch);
+  };
 }

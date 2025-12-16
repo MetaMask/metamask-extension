@@ -79,12 +79,24 @@ function shouldCloseNotificationPopup({
   totalUnapprovedCount,
   hasApprovalFlows,
   isSigningQRHardwareTransaction,
+  hardwareSigningState,
 }) {
   const shouldClose =
     isNotification &&
     totalUnapprovedCount === 0 &&
     !hasApprovalFlows &&
-    !isSigningQRHardwareTransaction;
+    !isSigningQRHardwareTransaction &&
+    !hardwareSigningState;
+
+  debugger;
+  console.log('[shouldCloseNotificationPopup]', {
+    isNotification,
+    totalUnapprovedCount,
+    hasApprovalFlows,
+    isSigningQRHardwareTransaction,
+    hardwareSigningState,
+    shouldClose,
+  });
 
   return shouldClose;
 }
@@ -167,6 +179,7 @@ export default class Home extends PureComponent {
     rewardsOnboardingEnabled: PropTypes.bool,
     rewardsOnboardingModalOpen: PropTypes.bool,
     showPna25Modal: PropTypes.bool.isRequired,
+    hardwareSigningState: PropTypes.object,
   };
 
   state = {
@@ -178,6 +191,7 @@ export default class Home extends PureComponent {
     super(props);
 
     const { attemptCloseNotificationPopup } = this.props;
+    console.log('props', props);
     if (shouldCloseNotificationPopup(props)) {
       this.state.notificationClosing = true;
       attemptCloseNotificationPopup();

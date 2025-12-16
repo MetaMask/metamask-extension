@@ -93,6 +93,11 @@ export type AppStateControllerState = {
     favIconUrl?: string;
   };
   browserEnvironment: Record<string, string>;
+  hardwareSigningState: {
+    accountAddress: string;
+    deviceType: string;
+    transactionId?: string;
+  } | null;
   connectedStatusPopoverHasBeenShown: boolean;
   // States used for displaying the changed network toast
   currentExtensionPopupId: number;
@@ -261,6 +266,7 @@ type AppStateControllerInitState = Partial<
     | 'signatureSecurityAlertResponses'
     | 'addressSecurityAlertResponses'
     | 'currentExtensionPopupId'
+    | 'hardwareSigningState'
     | 'networkConnectionBanner'
   >
 >;
@@ -277,6 +283,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   appActiveTab: undefined,
   browserEnvironment: {},
   connectedStatusPopoverHasBeenShown: true,
+  hardwareSigningState: null,
   defaultHomeActiveTabName: null,
   enableEnforcedSimulations: true,
   enableEnforcedSimulationsForTransactions: {},
@@ -337,6 +344,7 @@ function getInitialStateOverrides() {
   return {
     addressSecurityAlertResponses: {},
     currentExtensionPopupId: 0,
+    hardwareSigningState: null,
     nftsDropdownState: {},
     signatureSecurityAlertResponses: {},
     networkConnectionBanner: {
@@ -419,6 +427,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     usedInUi: true,
   },
   fullScreenGasPollTokens: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  hardwareSigningState: {
     includeInStateLogs: true,
     persist: false,
     includeInDebugSnapshot: true,
@@ -1696,5 +1710,27 @@ export class AppStateController extends BaseController<
     uniqueId: string,
   ): DappSwapComparisonData | undefined {
     return this.state.dappSwapComparisonData?.[uniqueId] ?? undefined;
+  }
+
+  /**
+   * Gets the current hardware signing state
+   *
+   * @returns The hardware signing state or null if no signing is in progress
+   */
+  getHardwareSigningState(): AppStateControllerState['hardwareSigningState'] {
+    return this.state.hardwareSigningState;
+  }
+
+  /**
+   * Sets the hardware signing state when a hardware wallet signing request is in progress
+   *
+   * @param hardwareSigningState - The hardware signing state containing accountAddress, deviceType, and optional transactionId, or null to clear
+   */
+  setHardwareSigningState(
+    hardwareSigningState: AppStateControllerState['hardwareSigningState'],
+  ): void {
+    this.update((state) => {
+      state.hardwareSigningState = hardwareSigningState;
+    });
   }
 }

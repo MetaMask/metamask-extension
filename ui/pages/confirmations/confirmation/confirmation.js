@@ -42,6 +42,7 @@ import {
   getUseSafeChainsListValidation,
   getSnapsMetadata,
   getHideSnapBranding,
+  getHardwareSigningState,
 } from '../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import Callout from '../../../components/ui/callout';
@@ -247,6 +248,7 @@ export default function ConfirmationPage({
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
   );
+  const hardwareSigningState = useSelector(getHardwareSigningState);
   const [approvalFlowLoadingText, setApprovalFlowLoadingText] = useState(null);
 
   const { id } = useParams();
@@ -365,10 +367,12 @@ export default function ConfirmationPage({
     // return them to the default route. Otherwise, if the number of pending
     // confirmations reduces to a number that is less than the currently
     // viewed index, reset the index.
+    // Don't redirect if hardware signing is in progress (Ledger, etc.)
     if (
       pendingConfirmations.length === 0 &&
       (approvalFlows.length === 0 || totalUnapprovedCount !== 0) &&
-      redirectToHomeOnZeroConfirmations
+      redirectToHomeOnZeroConfirmations &&
+      !hardwareSigningState
     ) {
       navigate(DEFAULT_ROUTE);
     }
@@ -378,6 +382,7 @@ export default function ConfirmationPage({
     totalUnapprovedCount,
     navigate,
     redirectToHomeOnZeroConfirmations,
+    hardwareSigningState,
   ]);
 
   useEffect(() => {

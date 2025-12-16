@@ -18,7 +18,10 @@ import { errorCodes, JsonRpcError, rpcErrors } from '@metamask/rpc-errors';
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
 import { OneKeyKeyring, TrezorKeyring } from '@metamask/eth-trezor-keyring';
-import { LedgerKeyring } from '@metamask/eth-ledger-bridge-keyring';
+import {
+  LedgerKeyring,
+  LedgerStatusError,
+} from '@metamask/eth-ledger-bridge-keyring';
 import LatticeKeyring from 'eth-lattice-keyring';
 import { rawChainData } from 'eth-chainlist';
 import { QrKeyring } from '@metamask/eth-qr-keyring';
@@ -3241,6 +3244,10 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setShieldSubscriptionMetricsProps.bind(
           appStateController,
         ),
+      setHardwareSigningState:
+        appStateController.setHardwareSigningState.bind(appStateController),
+      getHardwareSigningState:
+        appStateController.getHardwareSigningState.bind(appStateController),
 
       // EnsController
       tryReverseResolveAddress:

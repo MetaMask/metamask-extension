@@ -5,9 +5,7 @@ import {
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
-import { useNavigate } from 'react-router-dom';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
-import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
 import { ConfirmAlertModal } from '../../../../../components/app/alert-system/confirm-alert-modal';
 import {
   Box,
@@ -23,29 +21,25 @@ import {
   FlexDirection,
   Severity,
 } from '../../../../../helpers/constants/design-system';
-import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { doesAddressRequireLedgerHidConnection } from '../../../../../selectors';
 import { useConfirmationNavigation } from '../../../hooks/useConfirmationNavigation';
-import { resolvePendingApproval } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
 import { useIsGaslessLoading } from '../../../hooks/gas/useIsGaslessLoading';
 import { useEnableShieldCoverageChecks } from '../../../hooks/transactions/useEnableShieldCoverageChecks';
-import { useTransactionConfirm } from '../../../hooks/transactions/useTransactionConfirm';
 import { useConfirmActions } from '../../../hooks/useConfirmActions';
-import { useDappSwapActions } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapActions';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
-import {
-  isAddEthereumChainType,
-  useAddEthereumChain,
-} from '../../../hooks/useAddEthereumChain';
+import { isAddEthereumChainType } from '../../../hooks/useAddEthereumChain';
 import { isSignatureTransactionType } from '../../../utils';
 import { getConfirmationSender } from '../utils';
 import { useUserSubscriptions } from '../../../../../hooks/subscription/useSubscription';
+import { useConfirmationSubmit } from '../../../hooks/useConfirmationSubmit';
 import OriginThrottleModal from './origin-throttle-modal';
 import ShieldFooterAgreement from './shield-footer-agreement';
 import ShieldFooterCoverageIndicator from './shield-footer-coverage-indicator/shield-footer-coverage-indicator';
+import { setHardwareSigningState } from '../../../../../store/actions';
+import { isAddressLedger } from '../../../../../ducks/metamask/metamask';
 
 export type OnCancelHandler = ({
   location,
@@ -203,22 +197,20 @@ const CancelButton = ({
 };
 
 const Footer = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { onDappSwapCompleted } = useDappSwapActions();
-  const { onTransactionConfirm } = useTransactionConfirm();
-  const { navigateNext } = useConfirmationNavigation();
-  const { onSubmit: onAddEthereumChain } = useAddEthereumChain();
-
   const { currentConfirmation, isScrollToBottomCompleted } =
     useConfirmContext<TransactionMeta>();
 
   const { isGaslessLoading } = useIsGaslessLoading();
-
   const { from } = getConfirmationSender(currentConfirmation);
   const { shouldThrottleOrigin } = useOriginThrottling();
   const [showOriginThrottleModal, setShowOriginThrottleModal] = useState(false);
   const { onCancel, resetTransactionState } = useConfirmActions();
+  const { submit } = useConfirmationSubmit();
+  const { navigateNext } = useConfirmationNavigation();
+  const dispatch = useDispatch();
+  const isLedgerAccount = useSelector(
+    (state) => from && isAddressLedger(state, from),
+  );
 
   const hardwareWalletRequiresConnection = useSelector((state) => {
     if (from) {
@@ -230,9 +222,6 @@ const Footer = () => {
   });
 
   const isSignature = isSignatureTransactionType(currentConfirmation);
-  const isTransactionConfirmation = isCorrectDeveloperTransactionType(
-    currentConfirmation?.type,
-  );
   const isAddEthereumChain = isAddEthereumChainType(currentConfirmation);
 
   const isConfirmDisabled =
@@ -241,32 +230,39 @@ const Footer = () => {
     isGaslessLoading;
 
   const onSubmit = useCallback(async () => {
-    if (!currentConfirmation) {
-      return;
+    console.log(
+      '[Footer onSubmit] Starting, isLedgerAccount:',
+      isLedgerAccount,
+      'from:',
+      from,
+    );
+    if (from && isLedgerAccount) {
+      console.log('[Footer onSubmit] Setting hardware signing state...');
+      await dispatch(
+        setHardwareSigningState(from, 'ledger', currentConfirmation.id),
+      );
+      console.log('[Footer onSubmit] Hardware signing state set');
+    }
+    console.log('[Footer onSubmit] Calling submit()...');
+    const { success, retryable } = await submit();
+    console.log('[Footer onSubmit] Submit completed:', { success, retryable });
+    debugger;
+    // For Ledger accounts, keep the request alive to show signing status
+    if (!isLedgerAccount && (success || !retryable)) {
+      resetTransactionState();
     }
 
-    if (isAddEthereumChain) {
-      await onAddEthereumChain();
-      navigate(DEFAULT_ROUTE);
-    } else if (isTransactionConfirmation) {
-      await onTransactionConfirm();
-      navigateNext(currentConfirmation.id);
-    } else {
-      await dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
-      navigateNext(currentConfirmation.id);
+    // Only clear hardware signing state on failure or if not retryable
+    if (isLedgerAccount && !success && !retryable) {
+      await dispatch(setHardwareSigningState(null));
     }
-
-    resetTransactionState();
   }, [
-    currentConfirmation,
+    from,
+    isLedgerAccount,
+    submit,
     dispatch,
-    navigate,
-    isTransactionConfirmation,
-    isAddEthereumChain,
-    navigateNext,
-    onTransactionConfirm,
+    currentConfirmation.id,
     resetTransactionState,
-    onAddEthereumChain,
   ]);
 
   const handleFooterCancel = useCallback(async () => {
@@ -275,12 +271,14 @@ const Footer = () => {
       return;
     }
 
+    // Clear hardware signing state when cancelling
+    if (isLedgerAccount) {
+      await dispatch(setHardwareSigningState(null));
+    }
+
     await onCancel({ location: MetaMetricsEventLocation.Confirmation });
 
-    onDappSwapCompleted();
-    if (isAddEthereumChain) {
-      navigate(DEFAULT_ROUTE);
-    } else {
+    if (!isAddEthereumChain) {
       navigateNext(currentConfirmation.id);
     }
   }, [
@@ -289,8 +287,8 @@ const Footer = () => {
     shouldThrottleOrigin,
     currentConfirmation,
     isAddEthereumChain,
-    navigate,
-    onDappSwapCompleted,
+    isLedgerAccount,
+    dispatch,
   ]);
 
   const { isShowCoverageIndicator } = useEnableShieldCoverageChecks();
