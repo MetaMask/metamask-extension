@@ -54,6 +54,7 @@
     "pendingShieldCohortTxType": null,
     "pna25Acknowledged": "boolean",
     "popupGasPollTokens": "object",
+    "sidePanelGasPollTokens": [],
     "productTour": "accountIcon",
     "recoveryPhraseReminderHasBeenShown": true,
     "recoveryPhraseReminderLastShown": "number",
