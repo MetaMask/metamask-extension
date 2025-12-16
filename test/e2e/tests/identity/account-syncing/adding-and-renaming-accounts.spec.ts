@@ -20,7 +20,7 @@ import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
-import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
+
 import { mockIdentityServices } from '../mocks';
 import { arrangeTestUtils } from './helpers';
 
@@ -49,7 +49,6 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
         USER_STORAGE_WALLETS_FEATURE_KEY,
         server,
       );
-      mockMultichainAccountsFeatureFlagStateTwo(server);
       return mockIdentityServices(server, userStorageMockttpController);
     };
 
