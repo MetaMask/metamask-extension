@@ -5,6 +5,7 @@ import { hasProperty } from '@metamask/utils';
 import {
   handlers as localHandlers,
   eip1193OnlyHandlers,
+  eip7702Handlers,
   ethAccountsHandler,
 } from './handlers';
 import { getPermissionsHandler } from './handlers/wallet-getPermissions';
@@ -31,6 +32,9 @@ export const createEthAccountsMethodMiddleware = makeMethodMiddlewareMaker([
 // The primary home of RPC method implementations for the MultiChain API.
 export const createMultichainMethodMiddleware =
   makeMethodMiddlewareMaker(localHandlers);
+
+// RPC method implementations for EIP-7702 account upgrades.
+export const makeEip7702Middleware = makeMethodMiddlewareMaker(eip7702Handlers);
 
 /**
  * Creates a method middleware factory function given a set of method handlers.

@@ -1,11 +1,7 @@
 import EventEmitter from 'events';
 import { finished, pipeline } from 'readable-stream';
 import browser from 'webextension-polyfill';
-import {
-  createAsyncMiddleware,
-  createScaffoldMiddleware,
-  JsonRpcEngine,
-} from '@metamask/json-rpc-engine';
+import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
@@ -91,20 +87,6 @@ import {
   MultichainApiNotifications,
   walletCreateSession,
 } from '@metamask/multichain-api-middleware';
-
-import {
-  getCallsStatus,
-  getCapabilities,
-  processSendCalls,
-  walletGetCallsStatus,
-  walletGetCapabilities,
-  walletSendCalls,
-} from '@metamask/eip-5792-middleware';
-
-import {
-  walletUpgradeAccount,
-  walletGetAccountUpgradeStatus,
-} from '@metamask/eip-7702-internal-rpc-middleware';
 
 import {
   Caip25CaveatMutators,
@@ -252,6 +234,7 @@ import {
   createUnsupportedMethodMiddleware,
   createMultichainMethodMiddleware,
   makeMethodMiddlewareMaker,
+  makeEip7702Middleware,
 } from './lib/rpc-method-middleware';
 import createOriginMiddleware from './lib/createOriginMiddleware';
 import createRpcBlockingMiddleware from './lib/rpcBlockingMiddleware';
@@ -972,75 +955,6 @@ export default class MetamaskController extends EventEmitter {
       return this.getPermittedAccounts(innerOrigin);
     };
 
-    this.eip5792Middleware = createScaffoldMiddleware({
-      wallet_getCapabilities: createAsyncMiddleware(async (req, res) =>
-        walletGetCapabilities(req, res, {
-          getAccounts,
-          getCapabilities: getCapabilities.bind(
-            null,
-            {
-              getDismissSmartAccountSuggestionEnabled: () =>
-                this.preferencesController.state.preferences
-                  .dismissSmartAccountSuggestionEnabled,
-              getIsSmartTransaction: (chainId) =>
-                getIsSmartTransaction(this._getMetaMaskState(), chainId),
-              isAtomicBatchSupported:
-                this.txController.isAtomicBatchSupported.bind(
-                  this.txController,
-                ),
-              isRelaySupported,
-              getSendBundleSupportedChains,
-              isAuxiliaryFundsSupported: (chainId) =>
-                ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId),
-            },
-            this.controllerMessenger,
-          ),
-        }),
-      ),
-      wallet_sendCalls: createAsyncMiddleware(async (req, res) => {
-        return await walletSendCalls(req, res, {
-          getAccounts,
-          processSendCalls: processSendCalls.bind(
-            null,
-            {
-              addTransaction: this.txController.addTransaction.bind(
-                this.txController,
-              ),
-              addTransactionBatch: this.txController.addTransactionBatch.bind(
-                this.txController,
-              ),
-              getDismissSmartAccountSuggestionEnabled: () =>
-                this.preferencesController.state.preferences
-                  .dismissSmartAccountSuggestionEnabled,
-              isAtomicBatchSupported:
-                this.txController.isAtomicBatchSupported.bind(
-                  this.txController,
-                ),
-              validateSecurity: (securityAlertId, request, chainId) =>
-                validateRequestWithPPOM({
-                  chainId,
-                  ppomController: this.ppomController,
-                  request,
-                  securityAlertId,
-                  updateSecurityAlertResponse:
-                    this.updateSecurityAlertResponse.bind(this),
-                  getSecurityAlertsConfig:
-                    this.getSecurityAlertsConfig.bind(this),
-                }),
-              isAuxiliaryFundsSupported: (chainId) =>
-                ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId),
-            },
-            this.controllerMessenger,
-          ),
-        });
-      }),
-      wallet_getCallsStatus: createAsyncMiddleware(async (req, res) =>
-        walletGetCallsStatus(req, res, {
-          getCallsStatus: getCallsStatus.bind(null, this.controllerMessenger),
-        }),
-      ),
-    });
-
     const rpcBlockingMiddlewareState = { isBlocked: false };
     const eip7715BlockingMiddleware = createRpcBlockingMiddleware({
       state: rpcBlockingMiddlewareState,
@@ -1054,33 +968,15 @@ export default class MetamaskController extends EventEmitter {
 
     this.eip7715BlockingMiddleware = eip7715BlockingMiddleware;
 
-    this.eip7702Middleware = createScaffoldMiddleware({
-      wallet_upgradeAccount: createAsyncMiddleware(async (req, res) => {
-        await walletUpgradeAccount(req, res, {
-          upgradeAccount: this.upgradeAccount.bind(this),
-          getCurrentChainIdForDomain:
-            this.getCurrentChainIdForDomain.bind(this),
-          isEip7702Supported: this.isEip7702Supported.bind(this),
-          getPermittedAccountsForOrigin: async () => {
-            return getAccounts({ origin: req.origin });
-          },
-        });
-      }),
-      wallet_getAccountUpgradeStatus: createAsyncMiddleware(
-        async (req, res) => {
-          await walletGetAccountUpgradeStatus(req, res, {
-            getCurrentChainIdForDomain:
-              this.getCurrentChainIdForDomain.bind(this),
-            getCode: this.getCode.bind(this),
-            getSelectedNetworkClientIdForChain:
-              this.getSelectedNetworkClientIdForChain.bind(this),
-            getPermittedAccountsForOrigin: async () => {
-              return getAccounts({ origin: req.origin });
-            },
-            isEip7702Supported: this.isEip7702Supported.bind(this),
-          });
-        },
-      ),
+    // EIP-7702 middleware for account upgrades (only available to pre-installed snaps)
+    this.eip7702Middleware = makeEip7702Middleware({
+      getAccounts: (origin) => getAccounts({ origin }),
+      upgradeAccount: this.upgradeAccount.bind(this),
+      getCurrentChainIdForDomain: this.getCurrentChainIdForDomain.bind(this),
+      isEip7702Supported: this.isEip7702Supported.bind(this),
+      getCode: this.getCode.bind(this),
+      getSelectedNetworkClientIdForChain:
+        this.getSelectedNetworkClientIdForChain.bind(this),
     });
 
     this.metamaskMiddleware = createMetamaskMiddleware({
@@ -7337,6 +7233,49 @@ export default class MetamaskController extends EventEmitter {
         ),
       rejectApprovalRequestsForOrigin: () =>
         this.rejectOriginPendingApprovals(origin),
+
+      // EIP-5792 hooks
+      getCapabilitiesHooks: {
+        getDismissSmartAccountSuggestionEnabled: () =>
+          this.preferencesController.state.preferences
+            .dismissSmartAccountSuggestionEnabled,
+        getIsSmartTransaction: (chainId) =>
+          getIsSmartTransaction(this._getMetaMaskState(), chainId),
+        isAtomicBatchSupported: this.txController.isAtomicBatchSupported.bind(
+          this.txController,
+        ),
+        isRelaySupported,
+        getSendBundleSupportedChains,
+        isAuxiliaryFundsSupported: (chainId) =>
+          ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId),
+      },
+      processSendCallsHooks: {
+        addTransaction: this.txController.addTransaction.bind(
+          this.txController,
+        ),
+        addTransactionBatch: this.txController.addTransactionBatch.bind(
+          this.txController,
+        ),
+        getDismissSmartAccountSuggestionEnabled: () =>
+          this.preferencesController.state.preferences
+            .dismissSmartAccountSuggestionEnabled,
+        isAtomicBatchSupported: this.txController.isAtomicBatchSupported.bind(
+          this.txController,
+        ),
+        validateSecurity: (securityAlertId, request, chainId) =>
+          validateRequestWithPPOM({
+            chainId,
+            ppomController: this.ppomController,
+            request,
+            securityAlertId,
+            updateSecurityAlertResponse:
+              this.updateSecurityAlertResponse.bind(this),
+            getSecurityAlertsConfig: this.getSecurityAlertsConfig.bind(this),
+          }),
+        isAuxiliaryFundsSupported: (chainId) =>
+          ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId),
+      },
+      eip5792Messenger: this.controllerMessenger,
     };
   }
 
@@ -7826,8 +7765,6 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(this.metamaskMiddleware);
 
-    engine.push(this.eip5792Middleware);
-
     if (subjectType === SubjectType.Snap && isSnapPreinstalled(origin)) {
       engine.push(this.eip7702Middleware);
     }
@@ -7988,12 +7925,11 @@ export default class MetamaskController extends EventEmitter {
       createMultichainMethodMiddleware({
         subjectType,
         ...this.setupCommonMiddlewareHooks(origin),
+        getAccounts: this.getPermittedAccounts.bind(this, origin),
       }),
     );
 
     engine.push(this.metamaskMiddleware);
-
-    engine.push(this.eip5792Middleware);
 
     try {
       const caip25Caveat = this.permissionController.getCaveat(

@@ -56,6 +56,7 @@ jest.mock('./handlers', () => ({
   handlers: [getHandler()],
   eip1193OnlyHandlers: [getHandler()],
   ethAccountsHandler: getHandler(),
+  eip7702Handlers: [getHandler()],
 }));
 
 describe.each([
