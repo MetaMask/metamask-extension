@@ -21,6 +21,7 @@ describe('createRpcBlockingMiddleware', () => {
 
   it('calls next when not blocked', () => {
     const middleware = createRpcBlockingMiddleware({
+      allowedOrigins: [],
       state: { isBlocked: false },
     });
     const req = createRequest();
@@ -36,6 +37,7 @@ describe('createRpcBlockingMiddleware', () => {
   it('ends with an error when blocked and origin is not a preinstalled snap', () => {
     const customMessage = 'Requests are temporarily blocked';
     const middleware = createRpcBlockingMiddleware({
+      allowedOrigins: [],
       state: { isBlocked: true },
       errorMessage: customMessage,
     });
@@ -57,6 +59,7 @@ describe('createRpcBlockingMiddleware', () => {
     isSnapPreinstalledMock.mockReturnValue(true);
 
     const middleware = createRpcBlockingMiddleware({
+      allowedOrigins: [],
       state: { isBlocked: true },
     });
 
@@ -69,8 +72,26 @@ describe('createRpcBlockingMiddleware', () => {
     expect(end).not.toHaveBeenCalled();
   });
 
+  it('calls next when blocked but origin is in allowedOrigins', () => {
+    const allowedOrigin = 'https://dapp.example';
+    const middleware = createRpcBlockingMiddleware({
+      allowedOrigins: [allowedOrigin],
+      state: { isBlocked: true },
+    });
+
+    const req = createRequest(allowedOrigin);
+    const next = jest.fn();
+    const end = jest.fn();
+
+    middleware(req, res, next, end);
+
+    expect(next).toHaveBeenCalledTimes(1);
+    expect(end).not.toHaveBeenCalled();
+  });
+
   it('ends with an error when blocked and origin is missing', () => {
     const middleware = createRpcBlockingMiddleware({
+      allowedOrigins: [],
       state: { isBlocked: true },
     });
 
@@ -91,6 +112,7 @@ describe('createRpcBlockingMiddleware', () => {
     const state = { isBlocked: true };
 
     const middleware = createRpcBlockingMiddleware({
+      allowedOrigins: [],
       state,
     });
 
