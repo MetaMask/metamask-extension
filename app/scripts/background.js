@@ -114,7 +114,7 @@ const inTest = process.env.IN_TEST;
 const useFixtureStore =
   inTest && getManifestFlags().testing?.forceExtensionStore !== true;
 const localStore = useFixtureStore
-  ? new FixtureExtensionStore()
+  ? new FixtureExtensionStore({ initialize: true })
   : new ExtensionStore();
 const persistenceManager = new PersistenceManager({ localStore });
 

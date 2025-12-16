@@ -1,6 +1,5 @@
 /* eslint-disable mocha/no-skipped-tests */
 import { MockttpServer } from 'mockttp';
-import { CHAIN_IDS } from '@metamask/transaction-controller';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { unlockWallet, WINDOW_TITLES, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
@@ -60,8 +59,8 @@ describe('Smart Transactions', function () {
       {
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: MockttpServer) => {
-          await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
-            '0x0000000000000000000000000000000000000000': {
+          await mockSpotPrices(mockServer, {
+            'eip155:1/slip44:60': {
               price: 1700,
               marketCap: 382623505141,
               pricePercentChange1d: 0,
@@ -108,8 +107,8 @@ describe('Smart Transactions', function () {
       {
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: MockttpServer) => {
-          await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
-            '0x0000000000000000000000000000000000000000': {
+          await mockSpotPrices(mockServer, {
+            'eip155:1/slip44:60': {
               price: 1700,
               marketCap: 382623505141,
               pricePercentChange1d: 0,

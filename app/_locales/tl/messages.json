@@ -2432,9 +2432,6 @@
     "message": "Payagan ang pag-access sa Ethereum provider sa $1",
     "description": "The parameter is the name of the requesting origin"
   },
-  "ethereumPublicAddress": {
-    "message": "Pampublikong address ng Ethereum"
-  },
   "etherscan": {
     "message": "Etherscan"
   },
@@ -3877,9 +3874,6 @@
   "nftAutoDetectionEnabled": {
     "message": "Pinagana ang autodetection ng NFT"
   },
-  "nftDisclaimer": {
-    "message": "Disclaimer: Kinukuha ng MetaMask ang media file mula sa pinagmulang url. Ang url na ito kung minsan ay pinapalitan ng marketplace kung saan nalikha ang NFT."
-  },
   "nftEmptyDescription": {
     "message": "Malawak ang mundo ng mga NFT. Simulan mo na ang iyong koleksyon ngayon."
   },
@@ -3911,9 +3905,6 @@
   },
   "noAccountsFound": {
     "message": "Walang nakitang account para sa ibinigay na query sa paghahanap"
-  },
-  "noConnectedAccountTitle": {
-    "message": "Ang MetaMask ay hindi nakakonekta sa site na ito"
   },
   "noConnectionDescription": {
     "message": "Para kumonekta sa site, hanapin at piliin ang \"connect\" button. Tandaan na ang MetaMask ay maaari lamang kumonekta sa mga site sa web3"
@@ -4646,10 +4637,7 @@
   "permissions": {
     "message": "Mga Pahintulot"
   },
-  "permissionsPageEmptyContent": {
-    "message": "Walang makikita rito"
-  },
-  "permissionsPageEmptySubContent": {
+  "permissionsPageEmptyDescription": {
     "message": "Dito mo makikita ang mga pahintulot na iyong binigay sa mga naka-install na Snap o konektadong site."
   },
   "permitSimulationChange_approve": {
