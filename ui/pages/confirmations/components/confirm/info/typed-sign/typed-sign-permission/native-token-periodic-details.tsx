@@ -3,7 +3,7 @@ import { NativeTokenPeriodicPermission } from '@metamask/gator-permissions-contr
 import type { Hex } from '@metamask/utils';
 import React from 'react';
 
-import { DefaultRootState, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowDivider,
@@ -47,8 +47,18 @@ export const NativeTokenPeriodicDetails: React.FC<{
 
   const { startTime, periodAmount, periodDuration } = permission.data;
 
-  const { symbol, decimals } = useSelector<DefaultRootState, NativeTokenInfo>(
-    (state) => getNativeTokenInfo(state, chainId) as NativeTokenInfo,
+  const { symbol, decimals } = useSelector(
+    (state: {
+      metamask: {
+        networkConfigurationsByChainId: Record<string, unknown>;
+        provider: Record<string, unknown>;
+      };
+    }) =>
+      getNativeTokenInfo(
+        state.metamask.networkConfigurationsByChainId,
+        state.metamask.provider,
+        chainId,
+      ) as NativeTokenInfo,
   );
 
   const tokenImageUrl = CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId];

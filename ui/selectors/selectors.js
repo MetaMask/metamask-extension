@@ -835,109 +835,93 @@ export function getSelectedAccountTokensAcrossChains(state) {
  * @param {string} chainId - The chainId of the account
  */
 export const getNativeTokenCachedBalanceByChainIdSelector = createSelector(
-  (state) => state,
+  (state) => state.metamask.accountsByChainId,
   (_state, accountAddress) => accountAddress,
-  (state, accountAddress) =>
-    getNativeTokenCachedBalanceByChainIdByAccountAddress(state, accountAddress),
-);
+  (accountsByChainId, selectedAddress) => {
+    const checksummedSelectedAddress = toChecksumHexAddress(selectedAddress);
 
-/**
- * Get the tokens across chains for a given account address
- *
- * @param {object} state - Redux state
- * @param {string} accountAddress - The address of the account
- */
-export const getTokensAcrossChainsByAccountAddressSelector = createSelector(
-  (state) => state,
-  (_state, accountAddress) => accountAddress,
-  (state, accountAddress) =>
-    getTokensAcrossChainsByAccountAddress(state, accountAddress),
-);
-
-/**
- * Get the native token balance for a given account address and chainId
- *
- * @param {object} state - Redux state
- * @param {string} selectedAddress - The address of the selected account
- */
-export function getNativeTokenCachedBalanceByChainIdByAccountAddress(
-  state,
-  selectedAddress,
-) {
-  const { accountsByChainId } = state.metamask;
-
-  const checksummedSelectedAddress = toChecksumHexAddress(selectedAddress);
-
-  const balancesByChainId = {};
-  for (const [chainId, accounts] of Object.entries(accountsByChainId || {})) {
-    if (accounts[checksummedSelectedAddress]) {
-      balancesByChainId[chainId] = accounts[checksummedSelectedAddress].balance;
+    const balancesByChainId = {};
+    for (const [chainId, accounts] of Object.entries(accountsByChainId || {})) {
+      if (accounts[checksummedSelectedAddress]) {
+        balancesByChainId[chainId] =
+          accounts[checksummedSelectedAddress].balance;
+      }
     }
-  }
-  return balancesByChainId;
-}
+    return balancesByChainId;
+  },
+);
 
-/**
- * Get the tokens across chains for a given account address
- *
- * @param {object} state - Redux state
- * @param {string} selectedAddress - The address of the selected account
- */
-export function getTokensAcrossChainsByAccountAddress(state, selectedAddress) {
-  const { allTokens } = state.metamask;
-
-  const tokensByChain = {};
-
-  const nativeTokenBalancesByChainId =
-    getNativeTokenCachedBalanceByChainIdByAccountAddress(
-      state,
+export const getTokensAcrossChainsByAccountAddressSelector =
+  createDeepEqualSelector(
+    [
+      (state) => state.metamask.allTokens,
+      (state) => state.metamask.networkConfigurationsByChainId,
+      (state) => state.metamask.provider,
+      (state, accountAddress) =>
+        getNativeTokenCachedBalanceByChainIdSelector(state, accountAddress),
+      (_state, accountAddress) => accountAddress,
+    ],
+    (
+      allTokens,
+      networkConfigurationsByChainId,
+      provider,
+      nativeTokenBalancesByChainId,
       selectedAddress,
-    );
+    ) => {
+      const tokensByChain = {};
 
-  const chainIds = new Set([
-    ...Object.keys(allTokens || {}),
-    ...Object.keys(nativeTokenBalancesByChainId || {}),
-  ]);
+      const chainIds = new Set([
+        ...Object.keys(allTokens || {}),
+        ...Object.keys(nativeTokenBalancesByChainId || {}),
+      ]);
 
-  chainIds.forEach((chainId) => {
-    if (!tokensByChain[chainId]) {
-      tokensByChain[chainId] = [];
-    }
+      chainIds.forEach((chainId) => {
+        if (!tokensByChain[chainId]) {
+          tokensByChain[chainId] = [];
+        }
 
-    if (allTokens[chainId]?.[selectedAddress]) {
-      allTokens[chainId][selectedAddress].forEach((token) => {
-        const tokenWithChain = { ...token, chainId, isNative: false };
-        tokensByChain[chainId].push(tokenWithChain);
+        if (allTokens[chainId]?.[selectedAddress]) {
+          allTokens[chainId][selectedAddress].forEach((token) => {
+            const tokenWithChain = { ...token, chainId, isNative: false };
+            tokensByChain[chainId].push(tokenWithChain);
+          });
+        }
+
+        const nativeBalance = nativeTokenBalancesByChainId[chainId];
+        if (nativeBalance) {
+          const nativeTokenInfo = getNativeTokenInfo(
+            networkConfigurationsByChainId,
+            provider,
+            chainId,
+          );
+          tokensByChain[chainId].push({
+            ...nativeTokenInfo,
+            address: '',
+            balance: nativeBalance,
+            chainId,
+            isNative: true,
+            image: getNativeCurrencyForChain(chainId),
+          });
+        }
       });
-    }
-
-    const nativeBalance = nativeTokenBalancesByChainId[chainId];
-    if (nativeBalance) {
-      const nativeTokenInfo = getNativeTokenInfo(state, chainId);
-      tokensByChain[chainId].push({
-        ...nativeTokenInfo,
-        address: '',
-        balance: nativeBalance,
-        chainId,
-        isNative: true,
-        image: getNativeCurrencyForChain(chainId),
-      });
-    }
-  });
-  return tokensByChain;
-}
+      return tokensByChain;
+    },
+  );
 
 /**
  * Retrieves native token information (symbol, decimals, name) for a given chainId from the state,
  * without hardcoding any values.
  *
- * @param {object} state - Redux state
+ * @param {object} networkConfigurationsByChainId - Network configurations by chain ID
+ * @param {object} provider - Provider
  * @param {string} chainId - Chain ID
  * @returns {object} Native token information
  */
-export function getNativeTokenInfo(state, chainId) {
-  const { networkConfigurationsByChainId } = state.metamask;
-
+export function getNativeTokenInfo(
+  networkConfigurationsByChainId,
+  provider,
+  chainId,
+) {
   const networkConfig = networkConfigurationsByChainId?.[chainId];
 
   // Fill native token info by network config (if a user has a network added)
@@ -954,7 +938,6 @@ export function getNativeTokenInfo(state, chainId) {
   }
 
   // Fill native token info by DApp provider
-  const { provider } = state.metamask;
   if (provider?.chainId === chainId) {
     const symbol = provider.ticker || AssetType.native;
     const decimals = provider.nativeCurrency?.decimals || 18;
