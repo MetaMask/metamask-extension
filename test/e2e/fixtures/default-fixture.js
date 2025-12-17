@@ -285,6 +285,11 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         initialEnqueueCompleted: false,
         syncQueue: {},
       },
+      RemoteFeatureFlagController: {
+        // Set cache timestamp far in the future so persisted flags are used instead of fetching
+        cacheTimestamp: 9999999999999,
+        remoteFeatureFlags: {},
+      },
       config: {},
       firstTimeInfo: {
         date: 1665507600000,
