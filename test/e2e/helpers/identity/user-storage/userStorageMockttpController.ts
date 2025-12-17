@@ -91,10 +91,16 @@ export class UserStorageMockttpController {
     request: Pick<CompletedRequest, 'path' | 'headers'>,
     statusCode: number = 200,
   ) => {
+    console.log(
+      `[UserStorageMockttpController] GET request received for path: ${path}, url: ${request.path}`,
+    );
     const srpIdentifier = getSrpIdentifierFromHeaders(request.headers);
     const internalPathData = this.paths.get(path);
 
     if (!internalPathData) {
+      console.log(
+        `[UserStorageMockttpController] GET: No data found for path: ${path}`,
+      );
       this.eventEmitter.emit(UserStorageMockttpControllerEvents.GET_NOT_FOUND, {
         path,
         statusCode,
@@ -294,9 +300,15 @@ export class UserStorageMockttpController {
     request: Pick<CompletedRequest, 'path'>,
     statusCode: number = 204,
   ) => {
+    console.log(
+      `[UserStorageMockttpController] DELETE request received for path: ${path}, url: ${request.path}`,
+    );
     const internalPathData = this.paths.get(path);
 
     if (!internalPathData) {
+      console.log(
+        `[UserStorageMockttpController] DELETE: No data found for path: ${path}`,
+      );
       this.eventEmitter.emit(
         UserStorageMockttpControllerEvents.DELETE_NOT_FOUND,
         {
@@ -341,6 +353,35 @@ export class UserStorageMockttpController {
     };
   };
 
+  /**
+   * Check if a path is already mocked on the mockttp server.
+   * This prevents duplicate handler registration during test retries.
+   */
+  private async isPathMockedOnServer(
+    server: Mockttp,
+    path: keyof typeof pathRegexps,
+  ): Promise<boolean> {
+    const endpoints = await server.getMockedEndpoints();
+    return endpoints.some((endpoint) => {
+      // Access the internal rule structure to check matchers
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const matchers = (endpoint as any).rule?.matchers || [];
+      return matchers.some(
+        (matcher: { type: string; regexSource?: string; path?: string }) => {
+          // Check regex-path matchers
+          if (matcher.type === 'regex-path' && matcher.regexSource) {
+            return matcher.regexSource.includes(String(path));
+          }
+          // Check simple-path matchers
+          if (matcher.type === 'simple-path' && matcher.path) {
+            return matcher.path.includes(String(path));
+          }
+          return false;
+        },
+      );
+    });
+  }
+
   setupPath = async (
     path: keyof typeof pathRegexps,
     server: Mockttp,
@@ -352,8 +393,13 @@ export class UserStorageMockttpController {
     },
   ) => {
     const previouslySetupPath = this.paths.get(path);
+
+    // Check if handlers already exist on the mockttp server
+    // This can happen during test retries when the mockttp server is reused
+    const alreadyMockedOnServer = await this.isPathMockedOnServer(server, path);
+
     console.log(
-      `[UserStorageMockttpController] Setting up path: ${path}, previouslySetup: ${!!previouslySetupPath}, regex: ${pathRegexps[path]}`,
+      `[UserStorageMockttpController] Setting up path: ${path}, previouslySetup: ${!!previouslySetupPath}, alreadyMockedOnServer: ${alreadyMockedOnServer}, regex: ${pathRegexps[path]}`,
     );
 
     this.paths.set(path, {
@@ -361,6 +407,8 @@ export class UserStorageMockttpController {
       server,
     });
 
+    // Always register handlers - mockttp will use the most recently registered
+    // handler for a given path pattern, which will point to this controller instance
     await this.paths
       .get(path)
       ?.server.forGet(pathRegexps[path])
