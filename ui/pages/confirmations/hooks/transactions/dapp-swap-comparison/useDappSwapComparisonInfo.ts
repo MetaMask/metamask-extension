@@ -31,9 +31,11 @@ const getGasFromQuote = (quote: QuoteResponse) => {
 };
 
 export function useDappSwapComparisonInfo() {
-  const { dappSwapQa } = useSelector(getRemoteFeatureFlags) as {
+  const { dappSwapUi, dappSwapQa } = useSelector(getRemoteFeatureFlags) as {
+    dappSwapUi: { enabled: boolean };
     dappSwapQa: { enabled: boolean };
   };
+
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const {
     quotes,
@@ -237,7 +239,13 @@ export function useDappSwapComparisonInfo() {
   const { selectedQuoteValueDifference = 0, tokenAmountDifference = 0 } =
     useMemo(() => {
       try {
-        if (!selectedQuote || !swapInfo || !simulationData || !tokenDetails) {
+        if (
+          !selectedQuote ||
+          !swapInfo ||
+          !simulationData ||
+          !tokenDetails ||
+          !dappSwapUi?.enabled
+        ) {
           return {};
         }
 
@@ -301,9 +309,11 @@ export function useDappSwapComparisonInfo() {
       simulationData,
       swapInfo,
       tokenDetails,
+      dappSwapUi.enabled,
     ]);
 
   return {
+    dappSwapUi,
     fiatRates,
     minDestTokenAmountInUSD: getDestinationTokenUSDValue(
       selectedQuote?.quote?.minDestTokenAmount ?? '0',
