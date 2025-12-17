@@ -6,8 +6,8 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { useDisplayName } from '../../../../hooks/useDisplayName';
 import { NameType } from '@metamask/name-controller';
+import { useDisplayName } from '../../../../hooks/useDisplayName';
 import { Icon, IconSize } from '../../../../components/component-library';
 import Identicon from '../../../../components/ui/identicon';
 import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
