@@ -233,6 +233,15 @@ describe('MetaMask onboarding', function () {
               [CHAIN_IDS.MAINNET]: true,
             },
           })
+          .withAccountTracker({
+            accountsByChainId: {
+              '0x1': {
+                '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+                  balance: '0x15af1d78b58c40000', // 25 ETH
+                },
+              },
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) =>
