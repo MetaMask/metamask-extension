@@ -10,7 +10,7 @@ import {
 import { runKernel } from './ocap-kernel';
 ///: END:ONLY_INCLUDE_IF(ocap-kernel)
 
-import initLedger from './ledger';
+import initLedger from './ledger/ledger';
 import initTrezor from './trezor';
 import initLattice from './lattice';
 
