@@ -2432,9 +2432,6 @@
     "message": "Cấp quyền truy cập $1 cho nhà cung cấp Ethereum",
     "description": "The parameter is the name of the requesting origin"
   },
-  "ethereumPublicAddress": {
-    "message": "Địa chỉ công khai trên Ethereum"
-  },
   "etherscan": {
     "message": "Etherscan"
   },
@@ -3909,9 +3906,6 @@
   "noAccountsFound": {
     "message": "Không tìm thấy tài khoản nào cho cụm từ tìm kiếm đã đưa ra"
   },
-  "noConnectedAccountTitle": {
-    "message": "MetaMask không được kết nối với trang web này"
-  },
   "noConnectionDescription": {
     "message": "Để kết nối với trang web, hãy tìm và chọn nút \"kết nối\". Hãy nhớ rằng, MetaMask chỉ có thể kết nối với các trang web trên web3"
   },
@@ -4643,10 +4637,7 @@
   "permissions": {
     "message": "Quyền"
   },
-  "permissionsPageEmptyContent": {
-    "message": "Không có thông báo nào ở đây"
-  },
-  "permissionsPageEmptySubContent": {
+  "permissionsPageEmptyDescription": {
     "message": "Đây là nơi bạn có thể xem các quyền mà bạn đã cấp cho các Snap đã cài đặt hoặc các trang web đã kết nối."
   },
   "permitSimulationChange_approve": {

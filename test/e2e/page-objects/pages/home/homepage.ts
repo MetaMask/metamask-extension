@@ -117,14 +117,13 @@ class HomePage {
     this.headerNavbar = new HeaderNavbar(driver);
   }
 
-  async checkPageIsLoaded({
-    timeout = 10000,
-  }: { timeout?: number } = {}): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForMultipleSelectors(
-        [this.sendButton, this.activityTab, this.tokensTab],
-        { timeout },
-      );
+      await this.driver.waitForMultipleSelectors([
+        this.sendButton,
+        this.activityTab,
+        this.tokensTab,
+      ]);
     } catch (e) {
       console.log('Timeout while waiting for home page to be loaded', e);
       throw e;

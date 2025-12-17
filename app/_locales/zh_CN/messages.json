@@ -2429,9 +2429,6 @@
     "message": "授予以太坊提供商对 $1 的访问权限",
     "description": "The parameter is the name of the requesting origin"
   },
-  "ethereumPublicAddress": {
-    "message": "以太坊公钥"
-  },
   "etherscan": {
     "message": "Etherscan"
   },
@@ -3906,9 +3903,6 @@
   "noAccountsFound": {
     "message": "未找到符合给定查询条件的账户"
   },
-  "noConnectedAccountTitle": {
-    "message": "MetaMask 未连接到此站点"
-  },
   "noConnectionDescription": {
     "message": "要连接到网站，请找到并选择“连接”按钮。记住，MetaMask 仅限连接到 Web3 上的网站"
   },
@@ -4640,10 +4634,7 @@
   "permissions": {
     "message": "权限"
   },
-  "permissionsPageEmptyContent": {
-    "message": "此处无内容"
-  },
-  "permissionsPageEmptySubContent": {
+  "permissionsPageEmptyDescription": {
     "message": "您可以在此处查看您授予已安装 Snap 或已连接站点的许可。"
   },
   "permitSimulationChange_approve": {
