@@ -65,7 +65,6 @@ import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import {
   getNetworkIdentifier,
   getPreferences,
-  getTheme,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getUnapprovedConfirmations,
   ///: END:ONLY_INCLUDE_IF
@@ -76,6 +75,7 @@ import {
   getUnapprovedTransactions,
   getPendingApprovals,
 } from '../../selectors';
+import { useTheme } from '../../hooks/useTheme';
 
 import {
   hideImportNftsModal,
@@ -359,7 +359,7 @@ export default function Routes() {
   );
   const providerId = useAppSelector(getNetworkIdentifier);
   const { type: providerType } = useAppSelector(getProviderConfig);
-  const theme = useAppSelector(getTheme);
+  const theme = useTheme();
   const showExtensionInFullSizeView = useAppSelector(
     getShowExtensionInFullSizeView,
   );
