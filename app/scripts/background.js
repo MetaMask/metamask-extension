@@ -1244,7 +1244,7 @@ export function setupController(
         persistenceManager.update(key, currentState[key]);
       });
       // then persist it
-      persistenceManager.persist().catch((error) => {
+      safePersist().catch((error) => {
         log.error('Error persisting updated state:', error);
         sentry?.captureException(error);
       });
