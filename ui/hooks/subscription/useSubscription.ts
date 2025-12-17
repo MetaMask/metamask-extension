@@ -80,6 +80,8 @@ import {
   selectCandidateSubscriptionId,
   selectSeasonStatus,
 } from '../../ducks/rewards/selectors';
+import { useSeasonStatus } from '../rewards/useSeasonStatus';
+import { useCandidateSubscriptionId } from '../rewards/useCandidateSubscriptionId';
 import {
   TokenWithApprovalAmount,
   useSubscriptionPricing,
@@ -778,6 +780,13 @@ export const useShieldRewards = (): {
     (candidateSubscriptionId === 'pending' ||
       candidateSubscriptionId === 'retry');
   const hasAccountOptedInResultError = candidateSubscriptionId === 'error';
+
+  // entry point hooks
+  const { fetchCandidateSubscriptionId } = useCandidateSubscriptionId();
+  useSeasonStatus({
+    subscriptionId: candidateSubscriptionId,
+    onAuthorizationError: fetchCandidateSubscriptionId,
+  });
 
   const hasAccountOptedInResultValue = Boolean(
     seasonStatus && candidateSubscriptionId && !hasAccountOptedInResultPending,
