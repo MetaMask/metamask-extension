@@ -19,6 +19,8 @@ import { mockIdentityServices } from '../mocks';
 import { arrangeTestUtils } from './helpers';
 
 describe('Account syncing - Settings Toggle', function () {
+  this.timeout(160000); // This test is very long, so we need an unusually high timeout
+
   const DEFAULT_ACCOUNT_NAME = 'Account 1';
   const SECOND_ACCOUNT_NAME = 'Account 2';
   const THIRD_ACCOUNT_NAME = 'Account 3';
