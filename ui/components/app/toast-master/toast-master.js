@@ -571,6 +571,8 @@ const ClaimSubmitToast = () => {
   const isSuccess = showClaimSubmitToast === ClaimSubmitToastType.Success;
   const isDraftSaved = showClaimSubmitToast === ClaimSubmitToastType.DraftSaved;
   const isErrored = showClaimSubmitToast === ClaimSubmitToastType.Errored;
+  const isDraftDeleted =
+    showClaimSubmitToast === ClaimSubmitToastType.DraftDeleted;
 
   const description = useMemo(() => {
     if (isSuccess) {
@@ -582,8 +584,18 @@ const ClaimSubmitToast = () => {
     if (isErrored) {
       return '';
     }
+    if (isDraftDeleted) {
+      return t('shieldClaimDeleteDraftDescription');
+    }
     return showClaimSubmitToast;
-  }, [showClaimSubmitToast, t, isSuccess, isDraftSaved, isErrored]);
+  }, [
+    isSuccess,
+    isDraftSaved,
+    isErrored,
+    isDraftDeleted,
+    showClaimSubmitToast,
+    t,
+  ]);
 
   const toastText = useMemo(() => {
     if (isSuccess) {
@@ -592,8 +604,11 @@ const ClaimSubmitToast = () => {
     if (isDraftSaved) {
       return t('shieldClaimDraftSaved');
     }
+    if (isDraftDeleted) {
+      return t('shieldClaimDeletedDraft');
+    }
     return t('shieldClaimSubmitError');
-  }, [isSuccess, isDraftSaved, t]);
+  }, [isSuccess, isDraftSaved, isDraftDeleted, t]);
 
   const dataTestId = useMemo(() => {
     if (isSuccess) {
@@ -602,8 +617,11 @@ const ClaimSubmitToast = () => {
     if (isDraftSaved) {
       return 'claim-draft-saved-toast';
     }
+    if (isDraftDeleted) {
+      return 'claim-draft-deleted-toast';
+    }
     return 'claim-submit-toast-error';
-  }, [isSuccess, isDraftSaved]);
+  }, [isSuccess, isDraftSaved, isDraftDeleted]);
 
   return (
     showClaimSubmitToast !== null && (
@@ -618,7 +636,7 @@ const ClaimSubmitToast = () => {
               isSuccess || isDraftSaved ? IconName.CheckBold : IconName.CircleX
             }
             color={
-              isSuccess || isDraftSaved
+              isSuccess || isDraftSaved || isDraftDeleted
                 ? IconColor.successDefault
                 : IconColor.errorDefault
             }

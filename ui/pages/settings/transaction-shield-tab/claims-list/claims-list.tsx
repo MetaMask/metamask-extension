@@ -59,11 +59,20 @@ const ClaimsList = () => {
 
   const claimItem = useCallback(
     (claimData: Claim | ClaimDraft, tabKey: ClaimsTabKey, isDraft = false) => {
-      const formattedDate = isDraft
-        ? ''
-        : getShortDateFormatterV2().format(
-            new Date((claimData as Claim).createdAt),
-          );
+      let formattedDate = '';
+
+      if (isDraft) {
+        const updatedAt = (claimData as ClaimDraft).updatedAt ?? null;
+        if (updatedAt) {
+          formattedDate = t('shieldClaimsLastEdited', [
+            getShortDateFormatterV2().format(new Date(updatedAt)),
+          ]);
+        }
+      } else {
+        formattedDate = getShortDateFormatterV2().format(
+          new Date((claimData as Claim).createdAt),
+        );
+      }
 
       const id = isDraft
         ? (claimData as ClaimDraft).draftId
@@ -98,13 +107,15 @@ const ClaimsList = () => {
               >
                 {t('shieldClaimsNumber', [id])}
               </Text>
-              <Text
-                variant={TextVariant.BodySm}
-                textAlign={TextAlign.Left}
-                color={TextColor.TextAlternative}
-              >
-                {formattedDate}
-              </Text>
+              {formattedDate && (
+                <Text
+                  variant={TextVariant.BodySm}
+                  textAlign={TextAlign.Left}
+                  color={TextColor.TextAlternative}
+                >
+                  {formattedDate}
+                </Text>
+              )}
             </Box>
 
             <Icon

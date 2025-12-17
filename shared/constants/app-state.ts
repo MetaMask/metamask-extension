@@ -47,6 +47,7 @@ export enum ClaimSubmitToastType {
   Success = 'success',
   Errored = 'errored',
   DraftSaved = 'draft-saved',
+  DraftDeleted = 'draft-deleted',
 }
 
 export type NetworkConnectionBanner =

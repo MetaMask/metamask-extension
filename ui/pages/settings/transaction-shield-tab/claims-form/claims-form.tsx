@@ -85,6 +85,7 @@ const ClaimsForm = ({
 }) => {
   const isView = mode === CLAIMS_FORM_MODES.VIEW;
   const isNew = mode === CLAIMS_FORM_MODES.NEW;
+  const isEditDraft = mode === CLAIMS_FORM_MODES.EDIT_DRAFT;
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -449,7 +450,9 @@ const ClaimsForm = ({
       draftId: currentDraftId,
     });
     dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.DraftSaved));
-    navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);
+    if (!isEditDraft) {
+      navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);
+    }
   }, [
     saveDraft,
     chainId,
@@ -458,12 +461,37 @@ const ClaimsForm = ({
     impactedTransactionHash,
     reimbursementWalletAddress,
     caseDescription,
+    currentDraftId,
+    isEditDraft,
     dispatch,
     navigate,
-    currentDraftId,
   ]);
 
-  const saveDraftButton = useMemo(() => {
+  const handleDeleteDraft = useCallback(async () => {
+    if (!currentDraftId) {
+      return;
+    }
+    await deleteDraft(currentDraftId);
+    dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.DraftDeleted));
+    navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);
+  }, [currentDraftId, deleteDraft, dispatch, navigate]);
+
+  const saveDeleteDraftButton = useMemo(() => {
+    if (isEditDraft) {
+      return (
+        <Button
+          data-testid="shield-claim-delete-draft-button"
+          className="flex-1"
+          variant={ButtonVariant.Secondary}
+          size={ButtonSize.Lg}
+          disabled={isSubmittingClaim}
+          onClick={handleDeleteDraft}
+        >
+          {t('shieldClaimDeleteDraft')}
+        </Button>
+      );
+    }
+
     const disableNewDrafts = hasMaxDrafts && isNew;
     const draftButton = (
       <Button
@@ -471,7 +499,7 @@ const ClaimsForm = ({
         className={disableNewDrafts ? 'w-full' : 'flex-1'}
         variant={ButtonVariant.Secondary}
         size={ButtonSize.Lg}
-        disabled={!hasAnyDraftData || isSubmittingClaim || hasMaxDrafts}
+        disabled={!hasAnyDraftData || isSubmittingClaim || disableNewDrafts}
         onClick={handleSaveDraft}
       >
         {t('shieldClaimSaveAsDraft')}
@@ -490,12 +518,14 @@ const ClaimsForm = ({
     }
     return draftButton;
   }, [
+    isEditDraft,
     hasMaxDrafts,
     isNew,
     hasAnyDraftData,
     isSubmittingClaim,
     handleSaveDraft,
     t,
+    handleDeleteDraft,
   ]);
 
   return (
@@ -557,7 +587,12 @@ const ClaimsForm = ({
         name="email"
         size={FormTextFieldSize.Lg}
         onChange={(e) => setEmail(e.target.value)}
-        onBlur={() => validateEmail()}
+        onBlur={() => {
+          validateEmail();
+          if (isEditDraft) {
+            handleSaveDraft();
+          }
+        }}
         value={email}
         error={Boolean(errors.email)}
         required
@@ -586,7 +621,12 @@ const ClaimsForm = ({
         name="reimbursement-wallet-address"
         size={FormTextFieldSize.Lg}
         onChange={(e) => setReimbursementWalletAddress(e.target.value)}
-        onBlur={() => validateReimbursementWalletAddress()}
+        onBlur={() => {
+          validateReimbursementWalletAddress();
+          if (isEditDraft) {
+            handleSaveDraft();
+          }
+        }}
         value={reimbursementWalletAddress}
         error={Boolean(errors.reimbursementWalletAddress)}
         required
@@ -609,6 +649,9 @@ const ClaimsForm = ({
         impactedWalletAddress={impactedWalletAddress}
         onAccountSelect={(address) => {
           setImpactedWalletAddress(address);
+          if (isEditDraft) {
+            handleSaveDraft();
+          }
           const sameWalletAddressErrorKey =
             ERROR_MESSAGE_MAP[SUBMIT_CLAIM_ERROR_CODES.INVALID_WALLET_ADDRESSES]
               ?.messageKey ?? '';
@@ -632,6 +675,9 @@ const ClaimsForm = ({
         selectedChainId={chainId}
         onNetworkSelect={(selectedChainId) => {
           setChainId(selectedChainId);
+          if (isEditDraft) {
+            handleSaveDraft();
+          }
         }}
         disabled={isView}
       />
@@ -677,7 +723,12 @@ const ClaimsForm = ({
         name="impacted-tx-hash"
         size={FormTextFieldSize.Lg}
         onChange={(e) => setImpactedTransactionHash(e.target.value)}
-        onBlur={() => validateImpactedTxHash()}
+        onBlur={() => {
+          validateImpactedTxHash();
+          if (isEditDraft) {
+            handleSaveDraft();
+          }
+        }}
         value={impactedTransactionHash}
         error={Boolean(errors.impactedTxHash)}
         required
@@ -700,7 +751,12 @@ const ClaimsForm = ({
           data-testid="shield-claim-description-textarea"
           placeholder={t('shieldClaimDescriptionPlaceholder')}
           onChange={(e) => setCaseDescription(e.target.value)}
-          onBlur={() => validateDescription()}
+          onBlur={() => {
+            validateDescription();
+            if (isEditDraft) {
+              handleSaveDraft();
+            }
+          }}
           value={caseDescription}
           error={Boolean(errors.caseDescription)}
           width={BlockSize.Full}
@@ -779,7 +835,7 @@ const ClaimsForm = ({
 
       {!isView && (
         <Box className="flex gap-2">
-          {saveDraftButton}
+          {saveDeleteDraftButton}
           <Button
             data-testid="shield-claim-submit-button"
             className="flex-1"

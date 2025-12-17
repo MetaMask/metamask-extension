@@ -6076,6 +6076,15 @@
   "shieldClaimChainNotSupported": {
     "message": "This chain is not supported."
   },
+  "shieldClaimDeleteDraft": {
+    "message": "Delete draft"
+  },
+  "shieldClaimDeleteDraftDescription": {
+    "message": "Your claim draft has been deleted."
+  },
+  "shieldClaimDeletedDraft": {
+    "message": "Draft deleted"
+  },
   "shieldClaimDescription": {
     "message": "Description of case"
   },
@@ -6248,6 +6257,10 @@
   },
   "shieldClaimWalletOwnershipValidationFailed": {
     "message": "Wallet ownership validation failed."
+  },
+  "shieldClaimsLastEdited": {
+    "message": "Last edited: $1",
+    "description": "The $1 is the date"
   },
   "shieldClaimsListTitle": {
     "message": "Claims"
