@@ -9,50 +9,61 @@ import { RawLocator } from '../../../common';
 export default class GasFeeModal {
   private driver: Driver;
 
-  // Estimates Modal selectors
-  private readonly gasOptionLow: RawLocator = '[data-testid="gas-option-low"]';
-
-  private readonly gasOptionMedium: RawLocator =
-    '[data-testid="gas-option-medium"]';
-
-  private readonly gasOptionHigh: RawLocator =
-    '[data-testid="gas-option-high"]';
-
-  private readonly gasOptionAdvanced: RawLocator =
-    '[data-testid="gas-option-advanced"]';
-
-  private readonly gasOptionSiteSuggested: RawLocator =
-    '[data-testid="gas-option-site_suggested"]';
-
-  // Modal content selectors
-  private readonly estimatesModal: RawLocator =
-    '[data-testid="gas-fee-estimates-modal"]';
-
   private readonly advancedEIP1559Modal: RawLocator =
     '[data-testid="gas-fee-advanced-eip1559-modal"]';
 
   private readonly advancedGasPriceModal: RawLocator =
     '[data-testid="gas-fee-advanced-gas-price-modal"]';
 
-  // Advanced EIP-1559 Modal selectors
+  private readonly cancelButton: RawLocator =
+    '[data-testid="gas-fee-modal-cancel-button"]';
+
+  private readonly estimatesModal: RawLocator =
+    '[data-testid="gas-fee-estimates-modal"]';
+
+  private readonly gasLimitInput: RawLocator = '[id="gas-input"]';
+
+  private readonly gasOptionAdvanced: RawLocator =
+    '[data-testid="gas-option-advanced"]';
+
+  private readonly gasOptionHigh: RawLocator =
+    '[data-testid="gas-option-high"]';
+
+  private readonly gasOptionLow: RawLocator = '[data-testid="gas-option-low"]';
+
+  private readonly gasOptionMedium: RawLocator =
+    '[data-testid="gas-option-medium"]';
+
+  private readonly gasOptionSiteSuggested: RawLocator =
+    '[data-testid="gas-option-site_suggested"]';
+
+  private readonly gasPriceInput: RawLocator = '[id="gas-price-input"]';
+
   private readonly maxBaseFeeInput: RawLocator = '[id="max-base-fee-input"]';
 
   private readonly priorityFeeInput: RawLocator = '[id="priority-fee-input"]';
 
-  // Advanced Gas Price Modal selectors (legacy)
-  private readonly gasPriceInput: RawLocator = '[id="gas-price-input"]';
-
-  // Shared selectors
-  private readonly gasLimitInput: RawLocator = '[id="gas-input"]';
-
   private readonly saveButton: RawLocator =
     '[data-testid="gas-fee-modal-save-button"]';
 
-  private readonly cancelButton: RawLocator =
-    '[data-testid="gas-fee-modal-cancel-button"]';
-
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  /**
+   * Checks if the advanced EIP-1559 modal is displayed.
+   */
+  async checkAdvancedEIP1559ModalIsDisplayed(): Promise<void> {
+    console.log('Checking if advanced EIP-1559 modal is displayed');
+    await this.driver.waitForSelector(this.advancedEIP1559Modal);
+  }
+
+  /**
+   * Checks if the advanced gas price modal (legacy) is displayed.
+   */
+  async checkAdvancedGasPriceModalIsDisplayed(): Promise<void> {
+    console.log('Checking if advanced gas price modal is displayed');
+    await this.driver.waitForSelector(this.advancedGasPriceModal);
   }
 
   /**
@@ -61,46 +72,6 @@ export default class GasFeeModal {
   async checkEstimatesModalIsDisplayed(): Promise<void> {
     console.log('Checking if gas fee estimates modal is displayed');
     await this.driver.waitForSelector(this.estimatesModal);
-  }
-
-  /**
-   * Selects the low gas fee option.
-   */
-  async selectLowGasFee(): Promise<void> {
-    console.log('Selecting low gas fee option');
-    await this.driver.clickElement(this.gasOptionLow);
-  }
-
-  /**
-   * Selects the medium gas fee option.
-   */
-  async selectMediumGasFee(): Promise<void> {
-    console.log('Selecting medium gas fee option');
-    await this.driver.clickElement(this.gasOptionMedium);
-  }
-
-  /**
-   * Selects the high gas fee option.
-   */
-  async selectHighGasFee(): Promise<void> {
-    console.log('Selecting high gas fee option');
-    await this.driver.clickElement(this.gasOptionHigh);
-  }
-
-  /**
-   * Selects the dapp/site suggested gas fee option.
-   */
-  async selectSiteSuggestedGasFee(): Promise<void> {
-    console.log('Selecting site suggested gas fee option');
-    await this.driver.clickElement(this.gasOptionSiteSuggested);
-  }
-
-  /**
-   * Opens the advanced gas fee modal by clicking the advanced option.
-   */
-  async openAdvancedGasFeeModal(): Promise<void> {
-    console.log('Opening advanced gas fee modal');
-    await this.driver.clickElement(this.gasOptionAdvanced);
   }
 
   /**
@@ -136,14 +107,40 @@ export default class GasFeeModal {
     });
   }
 
-  // ============ Advanced EIP-1559 Modal Methods ============
+  /**
+   * Clicks the cancel button to go back to estimates modal.
+   */
+  async clickCancel(): Promise<void> {
+    console.log('Clicking cancel button');
+    await this.driver.clickElementAndWaitToDisappear(this.cancelButton);
+  }
 
   /**
-   * Checks if the advanced EIP-1559 modal is displayed.
+   * Clicks the save button to save gas fee changes.
    */
-  async checkAdvancedEIP1559ModalIsDisplayed(): Promise<void> {
-    console.log('Checking if advanced EIP-1559 modal is displayed');
-    await this.driver.waitForSelector(this.advancedEIP1559Modal);
+  async clickSave(): Promise<void> {
+    console.log('Clicking save button');
+    await this.driver.clickElementAndWaitToDisappear(this.saveButton);
+  }
+
+  /**
+   * Enters the gas limit value.
+   *
+   * @param value - The gas limit value to enter
+   */
+  async enterGasLimit(value: string): Promise<void> {
+    console.log(`Entering gas limit: ${value}`);
+    await this.driver.fill(this.gasLimitInput, value);
+  }
+
+  /**
+   * Enters the gas price value in the legacy advanced modal.
+   *
+   * @param value - The gas price value to enter (in Gwei)
+   */
+  async enterGasPrice(value: string): Promise<void> {
+    console.log(`Entering gas price: ${value}`);
+    await this.driver.fill(this.gasPriceInput, value);
   }
 
   /**
@@ -167,87 +164,45 @@ export default class GasFeeModal {
   }
 
   /**
-   * Enters the gas limit value.
-   *
-   * @param value - The gas limit value to enter
+   * Opens the advanced gas fee modal by clicking the advanced option.
    */
-  async enterGasLimit(value: string): Promise<void> {
-    console.log(`Entering gas limit: ${value}`);
-    await this.driver.fill(this.gasLimitInput, value);
-  }
-
-  // ============ Advanced Gas Price Modal Methods (Legacy) ============
-
-  /**
-   * Checks if the advanced gas price modal (legacy) is displayed.
-   */
-  async checkAdvancedGasPriceModalIsDisplayed(): Promise<void> {
-    console.log('Checking if advanced gas price modal is displayed');
-    await this.driver.waitForSelector(this.advancedGasPriceModal);
+  async openAdvancedGasFeeModal(): Promise<void> {
+    console.log('Opening advanced gas fee modal');
+    await this.driver.clickElementAndWaitToDisappear(this.gasOptionAdvanced);
   }
 
   /**
-   * Enters the gas price value in the legacy advanced modal.
-   *
-   * @param value - The gas price value to enter (in Gwei)
+   * Selects the high gas fee option.
    */
-  async enterGasPrice(value: string): Promise<void> {
-    console.log(`Entering gas price: ${value}`);
-    await this.driver.fill(this.gasPriceInput, value);
-  }
-
-  // ============ Common Modal Actions ============
-
-  /**
-   * Clicks the save button to save gas fee changes.
-   */
-  async clickSave(): Promise<void> {
-    console.log('Clicking save button');
-    await this.driver.clickElement(this.saveButton);
+  async selectHighGasFee(): Promise<void> {
+    console.log('Selecting high gas fee option');
+    await this.driver.clickElementAndWaitToDisappear(this.gasOptionHigh);
   }
 
   /**
-   * Clicks the cancel button to go back to estimates modal.
+   * Selects the low gas fee option.
    */
-  async clickCancel(): Promise<void> {
-    console.log('Clicking cancel button');
-    await this.driver.clickElement(this.cancelButton);
+  async selectLowGasFee(): Promise<void> {
+    console.log('Selecting low gas fee option');
+    await this.driver.clickElementAndWaitToDisappear(this.gasOptionLow);
   }
 
   /**
-   * Waits for the modal to close.
+   * Selects the medium gas fee option.
    */
-  async waitForModalToClose(): Promise<void> {
-    console.log('Waiting for modal to close');
-    await this.driver.assertElementNotPresent(this.estimatesModal, {
-      waitAtLeastGuard: 500,
-    });
+  async selectMediumGasFee(): Promise<void> {
+    console.log('Selecting medium gas fee option');
+    await this.driver.clickElementAndWaitToDisappear(this.gasOptionMedium);
   }
 
-  // ============ High-Level Helper Methods ============
-
   /**
-   * Updates gas fee to a specific level (low, medium, or high).
-   *
-   * @param level - The gas fee level to select
+   * Selects the dapp/site suggested gas fee option.
    */
-  async updateGasFeeLevel(level: 'low' | 'medium' | 'high'): Promise<void> {
-    console.log(`Updating gas fee to ${level}`);
-    await this.checkEstimatesModalIsDisplayed();
-
-    switch (level) {
-      case 'low':
-        await this.selectLowGasFee();
-        break;
-      case 'medium':
-        await this.selectMediumGasFee();
-        break;
-      case 'high':
-        await this.selectHighGasFee();
-        break;
-      default:
-        throw new Error('Unknown gas fee level');
-    }
+  async selectSiteSuggestedGasFee(): Promise<void> {
+    console.log('Selecting site suggested gas fee option');
+    await this.driver.clickElementAndWaitToDisappear(
+      this.gasOptionSiteSuggested,
+    );
   }
 
   /**
@@ -301,5 +256,29 @@ export default class GasFeeModal {
     }
 
     await this.clickSave();
+  }
+
+  /**
+   * Updates gas fee to a specific level (low, medium, or high).
+   *
+   * @param level - The gas fee level to select
+   */
+  async updateGasFeeLevel(level: 'low' | 'medium' | 'high'): Promise<void> {
+    console.log(`Updating gas fee to ${level}`);
+    await this.checkEstimatesModalIsDisplayed();
+
+    switch (level) {
+      case 'low':
+        await this.selectLowGasFee();
+        break;
+      case 'medium':
+        await this.selectMediumGasFee();
+        break;
+      case 'high':
+        await this.selectHighGasFee();
+        break;
+      default:
+        throw new Error('Unknown gas fee level');
+    }
   }
 }
