@@ -288,7 +288,16 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       RemoteFeatureFlagController: {
         // Set cache timestamp far in the future so persisted flags are used instead of fetching
         cacheTimestamp: 9999999999999,
-        remoteFeatureFlags: {},
+        remoteFeatureFlags: {
+          enableMultichainAccountsState2: {
+            enabled: true,
+            featureVersion: '2',
+            minimumVersion: '12.19.0',
+          },
+          sendRedesign: {
+            enabled: false,
+          },
+        },
       },
       config: {},
       firstTimeInfo: {
