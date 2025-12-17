@@ -33,7 +33,7 @@ export default function SRPDetailsModal({ onClose }: { onClose: () => void }) {
       <ModalOverlay />
       <ModalContent alignItems={AlignItems.center}>
         <ModalHeader onClose={onClose}>
-          <Text variant={TextVariant.headingMd} textAlign={TextAlign.Center}>
+          <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
             {t('srpDetailsTitle')}
           </Text>
         </ModalHeader>
