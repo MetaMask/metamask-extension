@@ -1,13 +1,12 @@
 import { strict as assert } from 'assert';
 import { MockedEndpoint, Mockttp } from 'mockttp';
-import { withFixtures, WALLET_PASSWORD } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 
 const DEFAULT_FIXTURE_ACCOUNT = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
-const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
 
 /**
  * Mock feature flags API with assetsAccountApiBalances enabled
@@ -93,7 +92,7 @@ describe('TokenBalancesController - Account API v4 with RPC Fallback', function 
                   symbol: 'DAI',
                   type: 'erc20',
                   decimals: 18,
-                  balance: '50.000000000000000000',
+                  balance: '0.200000000000000000',
                   chainId: 1,
                 },
               ],
@@ -235,7 +234,7 @@ describe('TokenBalancesController - Account API v4 with RPC Fallback', function 
     ];
   }
 
-  it.only('fetches token balances successfully using Account API v4', async function () {
+  it('fetches token balances successfully using Account API v4', async function () {
     async function mockSuccessfulApis(
       mockServer: Mockttp,
     ): Promise<MockedEndpoint[]> {
