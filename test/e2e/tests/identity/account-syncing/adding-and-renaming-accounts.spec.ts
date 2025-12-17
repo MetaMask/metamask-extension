@@ -20,8 +20,7 @@ import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
-import { BIP44_STAGE_TWO } from '../../multichain-accounts/feature-flag-mocks';
-
+import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
 import { mockIdentityServices } from '../mocks';
 import { arrangeTestUtils } from './helpers';
 
@@ -41,25 +40,23 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
   it('adds a new account and sync it across multiple phases', async function () {
     const userStorageMockttpController = new UserStorageMockttpController();
 
-    const sharedMockSetup = async (server: Mockttp) => {
-      await userStorageMockttpController.setupPath(
+    const sharedMockSetup = (server: Mockttp) => {
+      userStorageMockttpController.setupPath(
         USER_STORAGE_GROUPS_FEATURE_KEY,
         server,
       );
-      await userStorageMockttpController.setupPath(
+      userStorageMockttpController.setupPath(
         USER_STORAGE_WALLETS_FEATURE_KEY,
         server,
       );
-      return await mockIdentityServices(server, userStorageMockttpController);
+      mockMultichainAccountsFeatureFlagStateTwo(server);
+      return mockIdentityServices(server, userStorageMockttpController);
     };
 
     // Phase 1: Add a new account and verify it syncs
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withBackupAndSyncSettings()
-          .withRemoteFeatureFlags(BIP44_STAGE_TWO)
-          .build(),
+        fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
       },
@@ -114,10 +111,7 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
     // Phase 2: Login to fresh instance, verify account persists, rename and add more accounts
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withBackupAndSyncSettings()
-          .withRemoteFeatureFlags(BIP44_STAGE_TWO)
-          .build(),
+        fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
       },
@@ -189,9 +183,7 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
     // Phase 3: Complete onboarding flow from scratch to verify all changes persist
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
-          .withRemoteFeatureFlags(BIP44_STAGE_TWO)
-          .build(),
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
       },

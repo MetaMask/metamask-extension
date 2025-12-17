@@ -5,10 +5,7 @@ import {
 } from '@metamask/account-tree-controller';
 import { AuthenticationController } from '@metamask/profile-sync-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
-import {
-  UserStorageMockttpController,
-  pathRegexps,
-} from '../../helpers/identity/user-storage/userStorageMockttpController';
+import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
 
 const AuthMocks = AuthenticationController.Mocks;
 
@@ -17,52 +14,6 @@ type MockResponse = {
   requestMethod: 'GET' | 'POST' | 'PUT' | 'DELETE';
   response: unknown;
 };
-
-/**
- * Check if a specific user storage path is already mocked on the server.
- *
- * @param server - mockttp server instance
- * @param featureKey - the feature key to check (e.g., 'accounts_v2', 'wallets')
- * @returns true if the path is already mocked
- */
-async function isPathAlreadyMocked(
-  server: Mockttp,
-  featureKey: keyof typeof pathRegexps,
-): Promise<boolean> {
-  const endpoints = await server.getMockedEndpoints();
-
-  return endpoints.some((endpoint) => {
-    // Access the internal rule structure to check matchers
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const matchers = (endpoint as any).rule?.matchers || [];
-
-    return matchers.some(
-      (matcher: { type: string; regexSource?: string; path?: string }) => {
-        // Check regex-path matchers (used by UserStorageMockttpController)
-        if (matcher.type === 'regex-path' && matcher.regexSource) {
-          return matcher.regexSource.includes(String(featureKey));
-        }
-        // Check simple-path matchers
-        if (matcher.type === 'simple-path' && matcher.path) {
-          return matcher.path.includes(String(featureKey));
-        }
-        return false;
-      },
-    );
-  });
-}
-
-/**
- * E2E mock setup for authentication APIs only (nonce, login, token).
- * Use this when you only need auth mocks without user storage.
- *
- * @param server - server obj used to mock our endpoints
- */
-export async function mockAuthServices(server: Mockttp) {
-  mockAPICall(server, AuthMocks.getMockAuthNonceResponse());
-  mockAPICall(server, AuthMocks.getMockAuthLoginResponse());
-  mockAPICall(server, AuthMocks.getMockAuthAccessTokenResponse());
-}
 
 /**
  * E2E mock setup for identity APIs (Auth, UserStorage, Backup and sync)
@@ -79,21 +30,46 @@ export async function mockIdentityServices(
   mockAPICall(server, AuthMocks.getMockAuthLoginResponse());
   mockAPICall(server, AuthMocks.getMockAuthAccessTokenResponse());
 
-  // Storage - only set up paths that aren't already mocked
-  const pathsToSetup = [
-    USER_STORAGE_FEATURE_NAMES.accounts,
-    USER_STORAGE_FEATURE_NAMES.addressBook,
-    USER_STORAGE_WALLETS_FEATURE_KEY,
-    USER_STORAGE_GROUPS_FEATURE_KEY,
-  ] as const;
-
-  for (const path of pathsToSetup) {
-    const alreadyMocked = await isPathAlreadyMocked(server, path);
-    if (!alreadyMocked) {
-      await userStorageMockttpControllerInstance.setupPath(path, server);
-    } else {
-      console.log(`[Identity Mocks] Path '${path}' already mocked, skipping`);
-    }
+  // Storage
+  if (
+    !userStorageMockttpControllerInstance?.paths.get(
+      USER_STORAGE_FEATURE_NAMES.accounts,
+    )
+  ) {
+    userStorageMockttpControllerInstance.setupPath(
+      USER_STORAGE_FEATURE_NAMES.accounts,
+      server,
+    );
+  }
+  if (
+    !userStorageMockttpControllerInstance?.paths.get(
+      USER_STORAGE_FEATURE_NAMES.addressBook,
+    )
+  ) {
+    userStorageMockttpControllerInstance.setupPath(
+      USER_STORAGE_FEATURE_NAMES.addressBook,
+      server,
+    );
+  }
+  if (
+    !userStorageMockttpControllerInstance?.paths.get(
+      USER_STORAGE_WALLETS_FEATURE_KEY,
+    )
+  ) {
+    userStorageMockttpControllerInstance.setupPath(
+      USER_STORAGE_WALLETS_FEATURE_KEY,
+      server,
+    );
+  }
+  if (
+    !userStorageMockttpControllerInstance?.paths.get(
+      USER_STORAGE_GROUPS_FEATURE_KEY,
+    )
+  ) {
+    userStorageMockttpControllerInstance.setupPath(
+      USER_STORAGE_GROUPS_FEATURE_KEY,
+      server,
+    );
   }
 }
 
@@ -123,10 +99,6 @@ const getE2ESrpIdentifierForPublicKey = (publicKey: string) => {
 function mockAPICall(server: Mockttp, response: MockResponse) {
   let requestRuleBuilder: RequestRuleBuilder | undefined;
 
-  console.log(
-    `[Identity Mocks] Setting up mock for ${response.requestMethod} ${response.url}`,
-  );
-
   if (response.requestMethod === 'GET') {
     requestRuleBuilder = server.forGet(response.url);
   }
@@ -145,9 +117,6 @@ function mockAPICall(server: Mockttp, response: MockResponse) {
 
   requestRuleBuilder?.thenCallback(async (request) => {
     const { path, body } = request;
-    console.log(
-      `[Identity Mocks] ${response.requestMethod} request received: ${path}`,
-    );
 
     const [requestBodyJson, requestBodyText] = await Promise.all([
       body.getJson(),
@@ -195,12 +164,12 @@ export async function mockInfuraAndAccountSync(
   const accounts = options.accountsToMockBalances ?? [];
 
   // Set up User Storage / Account Sync mock
-  await userStorageMockttpController.setupPath(
+  userStorageMockttpController.setupPath(
     USER_STORAGE_WALLETS_FEATURE_KEY,
     mockServer,
   );
 
-  await userStorageMockttpController.setupPath(
+  userStorageMockttpController.setupPath(
     USER_STORAGE_GROUPS_FEATURE_KEY,
     mockServer,
   );
@@ -226,7 +195,7 @@ export async function mockInfuraAndAccountSync(
     });
   }
 
-  await mockIdentityServices(mockServer, userStorageMockttpController);
+  mockIdentityServices(mockServer, userStorageMockttpController);
 }
 
 /**

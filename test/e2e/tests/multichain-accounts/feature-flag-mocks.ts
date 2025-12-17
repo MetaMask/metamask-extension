@@ -106,9 +106,6 @@ export const mockMultichainAccountsFeatureFlagStateTwo = (
   mockServer: Mockttp,
 ) => {
   const distribution = isFlaskBuild() ? 'flask' : 'main';
-  console.log(
-    `[Feature Flag Mock] mockMultichainAccountsFeatureFlagStateTwo using distribution: ${distribution}`,
-  );
   return mockServer
     .forGet(FEATURE_FLAGS_URL)
     .withQuery({
@@ -116,10 +113,7 @@ export const mockMultichainAccountsFeatureFlagStateTwo = (
       distribution,
       environment: 'dev',
     })
-    .thenCallback((req) => {
-      console.log(
-        `[Feature Flag Mock] Received request for feature flags: ${req.url}`,
-      );
+    .thenCallback(() => {
       return {
         ok: true,
         statusCode: 200,

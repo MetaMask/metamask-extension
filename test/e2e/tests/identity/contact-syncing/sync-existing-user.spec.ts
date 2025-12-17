@@ -120,18 +120,15 @@ describe('Contact Syncing - Existing User', function () {
         {
           fixtures: new FixtureBuilder({ onboarding: true }).build(),
           title: this.test?.fullTitle(),
-          testSpecificMock: async (server: Mockttp) => {
-            await userStorageMockttpController.setupPath(
+          testSpecificMock: (server: Mockttp) => {
+            userStorageMockttpController.setupPath(
               USER_STORAGE_FEATURE_NAMES.addressBook,
               server,
               {
                 getResponse: mockedContactSyncResponse,
               },
             );
-            return await mockIdentityServices(
-              server,
-              userStorageMockttpController,
-            );
+            return mockIdentityServices(server, userStorageMockttpController);
           },
         },
         async ({ driver }) => {
@@ -279,15 +276,12 @@ describe('Contact Syncing - Existing User', function () {
         {
           fixtures: new FixtureBuilder({ onboarding: true }).build(),
           title: this.test?.fullTitle(),
-          testSpecificMock: async (server: Mockttp) => {
-            await userStorageMockttpController.setupPath(
+          testSpecificMock: (server: Mockttp) => {
+            userStorageMockttpController.setupPath(
               USER_STORAGE_FEATURE_NAMES.addressBook,
               server,
             );
-            return await mockIdentityServices(
-              server,
-              userStorageMockttpController,
-            );
+            return mockIdentityServices(server, userStorageMockttpController);
           },
         },
         async ({ driver }) => {

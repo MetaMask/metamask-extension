@@ -15,8 +15,7 @@ import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { IDENTITY_TEAM_SEED_PHRASE_2 } from '../constants';
-import { BIP44_STAGE_TWO } from '../../multichain-accounts/feature-flag-mocks';
-
+import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
 import { arrangeTestUtils } from './helpers';
 
 describe('Account syncing - Multiple SRPs', function () {
@@ -35,25 +34,23 @@ describe('Account syncing - Multiple SRPs', function () {
   it('adds accounts across multiple SRPs and sync them', async function () {
     const userStorageMockttpController = new UserStorageMockttpController();
 
-    const sharedMockSetup = async (server: Mockttp) => {
-      await userStorageMockttpController.setupPath(
+    const sharedMockSetup = (server: Mockttp) => {
+      userStorageMockttpController.setupPath(
         USER_STORAGE_GROUPS_FEATURE_KEY,
         server,
       );
-      await userStorageMockttpController.setupPath(
+      userStorageMockttpController.setupPath(
         USER_STORAGE_WALLETS_FEATURE_KEY,
         server,
       );
-      return await mockIdentityServices(server, userStorageMockttpController);
+      mockMultichainAccountsFeatureFlagStateTwo(server);
+      return mockIdentityServices(server, userStorageMockttpController);
     };
 
     // Phase 1: Add a second account to the first SRP
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withBackupAndSyncSettings()
-          .withRemoteFeatureFlags(BIP44_STAGE_TWO)
-          .build(),
+        fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
       },
@@ -62,9 +59,6 @@ describe('Account syncing - Multiple SRPs', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
-
-        // Wait for the initial account sync to complete before interacting with accounts
-        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
 
         const header = new HeaderNavbar(driver);
         await header.checkPageIsLoaded();
@@ -150,10 +144,7 @@ describe('Account syncing - Multiple SRPs', function () {
     // Phase 2: Login to fresh instance, import second SRP and verify all accounts persist
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withBackupAndSyncSettings()
-          .withRemoteFeatureFlags(BIP44_STAGE_TWO)
-          .build(),
+        fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
       },

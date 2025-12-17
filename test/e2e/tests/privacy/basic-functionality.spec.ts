@@ -30,7 +30,7 @@ async function mockApis(
   userStorageMockttpController: UserStorageMockttpController,
   mockedAccountSyncResponse: UserStorageResponseData[],
 ) {
-  await userStorageMockttpController.setupPath(
+  userStorageMockttpController.setupPath(
     USER_STORAGE_FEATURE_NAMES.accounts,
     mockServer,
     {

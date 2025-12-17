@@ -91,16 +91,10 @@ export class UserStorageMockttpController {
     request: Pick<CompletedRequest, 'path' | 'headers'>,
     statusCode: number = 200,
   ) => {
-    console.log(
-      `[UserStorageMockttpController] GET request received for path: ${path}, url: ${request.path}`,
-    );
     const srpIdentifier = getSrpIdentifierFromHeaders(request.headers);
     const internalPathData = this.paths.get(path);
 
     if (!internalPathData) {
-      console.log(
-        `[UserStorageMockttpController] GET: No data found for path: ${path}`,
-      );
       this.eventEmitter.emit(UserStorageMockttpControllerEvents.GET_NOT_FOUND, {
         path,
         statusCode,
@@ -160,9 +154,6 @@ export class UserStorageMockttpController {
     request: Pick<CompletedRequest, 'path' | 'body' | 'headers'>,
     statusCode: number = 204,
   ) => {
-    console.log(
-      `[UserStorageMockttpController] PUT request received for path: ${path}, url: ${request.path}`,
-    );
     const srpIdentifier = getSrpIdentifierFromHeaders(request.headers);
     const isFeatureEntry = determineIfFeatureEntryFromURL(request.path);
 
@@ -172,9 +163,6 @@ export class UserStorageMockttpController {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       batch_delete?: string[];
     };
-    console.log(
-      `[UserStorageMockttpController] PUT data keys: ${data ? Object.keys(data).join(', ') : 'null'}`,
-    );
 
     // We're handling batch delete inside the PUT method due to API limitations
     if (data?.batch_delete) {
@@ -210,9 +198,6 @@ export class UserStorageMockttpController {
     }
 
     if (data?.data) {
-      console.log(
-        `[UserStorageMockttpController] Processing data.data for path: ${path}`,
-      );
       const newOrUpdatedSingleOrBatchEntries =
         isFeatureEntry && typeof data?.data === 'string'
           ? [
@@ -228,17 +213,10 @@ export class UserStorageMockttpController {
               SrpIdentifier: srpIdentifier,
             }));
 
-      console.log(
-        `[UserStorageMockttpController] Entries to add/update: ${newOrUpdatedSingleOrBatchEntries.length}`,
-      );
-
       newOrUpdatedSingleOrBatchEntries.forEach((entry) => {
         const internalPathData = this.paths.get(path);
 
         if (!internalPathData) {
-          console.log(
-            `[UserStorageMockttpController] WARNING: No internalPathData for path: ${path}`,
-          );
           return;
         }
 
@@ -255,9 +233,6 @@ export class UserStorageMockttpController {
                 : existingEntry,
             ),
           });
-          console.log(
-            `[UserStorageMockttpController] Updated existing entry: ${entry.HashedKey}`,
-          );
         } else {
           this.paths.set(path, {
             ...internalPathData,
@@ -268,9 +243,6 @@ export class UserStorageMockttpController {
               entry as { HashedKey: string; Data: string },
             ],
           });
-          console.log(
-            `[UserStorageMockttpController] Added new entry: ${entry.HashedKey}, total entries now: ${this.paths.get(path)?.response.length}`,
-          );
         }
 
         if (newOrUpdatedSingleOrBatchEntries.length === 1) {
@@ -300,15 +272,9 @@ export class UserStorageMockttpController {
     request: Pick<CompletedRequest, 'path'>,
     statusCode: number = 204,
   ) => {
-    console.log(
-      `[UserStorageMockttpController] DELETE request received for path: ${path}, url: ${request.path}`,
-    );
     const internalPathData = this.paths.get(path);
 
     if (!internalPathData) {
-      console.log(
-        `[UserStorageMockttpController] DELETE: No data found for path: ${path}`,
-      );
       this.eventEmitter.emit(
         UserStorageMockttpControllerEvents.DELETE_NOT_FOUND,
         {
@@ -353,36 +319,7 @@ export class UserStorageMockttpController {
     };
   };
 
-  /**
-   * Check if a path is already mocked on the mockttp server.
-   * This prevents duplicate handler registration during test retries.
-   */
-  private async isPathMockedOnServer(
-    server: Mockttp,
-    path: keyof typeof pathRegexps,
-  ): Promise<boolean> {
-    const endpoints = await server.getMockedEndpoints();
-    return endpoints.some((endpoint) => {
-      // Access the internal rule structure to check matchers
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const matchers = (endpoint as any).rule?.matchers || [];
-      return matchers.some(
-        (matcher: { type: string; regexSource?: string; path?: string }) => {
-          // Check regex-path matchers
-          if (matcher.type === 'regex-path' && matcher.regexSource) {
-            return matcher.regexSource.includes(String(path));
-          }
-          // Check simple-path matchers
-          if (matcher.type === 'simple-path' && matcher.path) {
-            return matcher.path.includes(String(path));
-          }
-          return false;
-        },
-      );
-    });
-  }
-
-  setupPath = async (
+  setupPath = (
     path: keyof typeof pathRegexps,
     server: Mockttp,
     overrides?: {
@@ -394,36 +331,26 @@ export class UserStorageMockttpController {
   ) => {
     const previouslySetupPath = this.paths.get(path);
 
-    // Check if handlers already exist on the mockttp server
-    // This can happen during test retries when the mockttp server is reused
-    const alreadyMockedOnServer = await this.isPathMockedOnServer(server, path);
-
-    console.log(
-      `[UserStorageMockttpController] Setting up path: ${path}, previouslySetup: ${!!previouslySetupPath}, alreadyMockedOnServer: ${alreadyMockedOnServer}, regex: ${pathRegexps[path]}`,
-    );
-
     this.paths.set(path, {
       response: overrides?.getResponse || previouslySetupPath?.response || [],
       server,
     });
 
-    // Always register handlers - mockttp will use the most recently registered
-    // handler for a given path pattern, which will point to this controller instance
-    await this.paths
+    this.paths
       .get(path)
       ?.server.forGet(pathRegexps[path])
       .always()
       .thenCallback((request) =>
         this.onGet(path, request, overrides?.getStatusCode),
       );
-    await this.paths
+    this.paths
       .get(path)
       ?.server.forPut(pathRegexps[path])
       .always()
       .thenCallback((request) =>
         this.onPut(path, request, overrides?.putStatusCode),
       );
-    await this.paths
+    this.paths
       .get(path)
       ?.server.forDelete(pathRegexps[path])
       .always()

@@ -1926,13 +1926,6 @@ class FixtureBuilder {
   }
 
   withRemoteFeatureFlags(remoteFeatureFlags = {}) {
-    // Initialize RemoteFeatureFlagController if it doesn't exist
-    if (!this.fixture.data.RemoteFeatureFlagController) {
-      this.fixture.data.RemoteFeatureFlagController = {
-        cacheTimestamp: 0,
-        remoteFeatureFlags: {},
-      };
-    }
     merge(
       this.fixture.data.RemoteFeatureFlagController.remoteFeatureFlags,
       remoteFeatureFlags,

@@ -59,14 +59,14 @@ export const useAccountSyncing = () => {
 
   const dispatchAccountSyncing = useCallback(() => {
     try {
-      // Note: We don't check shouldDispatchAccountSyncing here because the caller
-      // (MetamaskIdentityProvider's useEffect) already checks it. Checking again
-      // here can cause race conditions due to stale closures in Firefox.
+      if (!shouldDispatchAccountSyncing) {
+        return;
+      }
       dispatch(syncAccountTreeWithUserStorage());
     } catch (e) {
       log.error(e);
     }
-  }, [dispatch]);
+  }, [dispatch, shouldDispatchAccountSyncing]);
 
   return {
     dispatchAccountSyncing,

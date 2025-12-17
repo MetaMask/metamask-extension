@@ -164,20 +164,6 @@ async function setupMocking(
         console.log('Request going to a live server ============', url);
         return {};
       }
-      // Debug: Log if user-storage requests are hitting the catch-all
-      if (url.includes('user-storage')) {
-        console.log(
-          '[DEBUG] User storage request hitting catch-all mock ============',
-          url,
-        );
-      }
-      // Debug: Log if feature flag requests are hitting the catch-all (they shouldn't!)
-      if (url.includes('client-config.api.cx.metamask.io')) {
-        console.log(
-          '[DEBUG] FEATURE FLAG REQUEST hitting catch-all mock (SHOULD NOT HAPPEN!) ============',
-          url,
-        );
-      }
       console.log('Request redirected to the catch all mock ============', url);
       return {
         // If the URL or the host is not in the allowlist nor blocklisted, we return a 200.

@@ -41,17 +41,14 @@ describe('Contact syncing - New User', function () {
       {
         fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: async (server: Mockttp) => {
+        testSpecificMock: (server: Mockttp) => {
           // Setup contact syncing mock path
-          await userStorageMockttpController.setupPath(
+          userStorageMockttpController.setupPath(
             USER_STORAGE_FEATURE_NAMES.addressBook,
             server,
           );
 
-          return await mockIdentityServices(
-            server,
-            userStorageMockttpController,
-          );
+          return mockIdentityServices(server, userStorageMockttpController);
         },
       },
       async ({ driver }) => {
@@ -131,18 +128,15 @@ describe('Contact syncing - New User', function () {
       {
         fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: async (server: Mockttp) => {
-          await userStorageMockttpController.setupPath(
+        testSpecificMock: (server: Mockttp) => {
+          userStorageMockttpController.setupPath(
             USER_STORAGE_FEATURE_NAMES.addressBook,
             server,
             {
               getResponse: [], // Empty remote storage
             },
           );
-          return await mockIdentityServices(
-            server,
-            userStorageMockttpController,
-          );
+          return mockIdentityServices(server, userStorageMockttpController);
         },
       },
       async ({ driver }) => {

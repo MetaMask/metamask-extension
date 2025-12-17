@@ -11,10 +11,9 @@ import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onb
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
-
+import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
 import { mockInfuraAndAccountSync } from '../mocks';
 import { arrangeTestUtils } from './helpers';
-import { BIP44_STAGE_TWO } from '../../multichain-accounts/feature-flag-mocks';
 
 describe('Account syncing - Accounts with Balances', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
@@ -35,6 +34,7 @@ describe('Account syncing - Accounts with Balances', function () {
     const userStorageMockttpController = new UserStorageMockttpController();
 
     const phase1MockSetup = (server: Mockttp) => {
+      mockMultichainAccountsFeatureFlagStateTwo(server);
       return mockInfuraAndAccountSync(server, userStorageMockttpController, {
         accountsToMockBalances: balancesAccounts,
       });
@@ -43,19 +43,12 @@ describe('Account syncing - Accounts with Balances', function () {
     // Phase 1: Create and sync accounts
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withBackupAndSyncSettings()
-          .withRemoteFeatureFlags(BIP44_STAGE_TWO)
-          .build(),
+        fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: phase1MockSetup,
       },
       async ({ driver }) => {
         await unlockWallet(driver);
-
-        // Wait for the initial account sync to complete before interacting with accounts
-        const homePage = new HomePage(driver);
-        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
 
         const header = new HeaderNavbar(driver);
         await header.checkPageIsLoaded();
@@ -94,6 +87,7 @@ describe('Account syncing - Accounts with Balances', function () {
 
     // Phase 2: Fresh onboarding with balance mocking to discover additional accounts
     const phase2MockSetup = (server: Mockttp) => {
+      mockMultichainAccountsFeatureFlagStateTwo(server);
       return mockInfuraAndAccountSync(server, userStorageMockttpController, {
         accountsToMockBalances: balancesAccounts,
       });
@@ -102,7 +96,13 @@ describe('Account syncing - Accounts with Balances', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true })
-          .withRemoteFeatureFlags(BIP44_STAGE_TWO)
+          .withRemoteFeatureFlags({
+            enableMultichainAccountsState2: {
+              enabled: true,
+              featureVersion: '2',
+              minimumVersion: '13.5.0',
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: phase2MockSetup,

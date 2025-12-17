@@ -56,14 +56,14 @@ export const useContactSyncing = () => {
 
   const dispatchContactSyncing = useCallback(() => {
     try {
-      // Note: We don't check shouldDispatchContactSyncing here because the caller
-      // (MetamaskIdentityProvider's useEffect) already checks it. Checking again
-      // here can cause race conditions due to stale closures in Firefox.
+      if (!shouldDispatchContactSyncing) {
+        return;
+      }
       dispatch(syncContactsWithUserStorage());
     } catch (e) {
       log.error(e);
     }
-  }, [dispatch]);
+  }, [dispatch, shouldDispatchContactSyncing]);
 
   return {
     dispatchContactSyncing,
