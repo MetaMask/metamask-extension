@@ -5,7 +5,6 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { Page } from '../../../components/multichain/pages/page';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import { TransactionModalContextProvider } from '../../../contexts/transaction-modal';
-import AdvancedGasFeePopover from '../components/advanced-gas-fee-popover';
 import { BlockaidLoadingIndicator } from '../components/confirm/blockaid-loading-indicator';
 import { ConfirmAlerts } from '../components/confirm/confirm-alerts';
 import { Footer } from '../components/confirm/footer';
@@ -16,29 +15,15 @@ import { SmartTransactionsBannerAlert } from '../components/smart-transactions-b
 import { PluggableSection } from '../components/confirm/pluggable-section';
 import ScrollToBottom from '../components/confirm/scroll-to-bottom';
 import { Title, TitleSkeleton } from '../components/confirm/title';
-import EditGasFeePopover from '../components/edit-gas-fee-popover';
 import { ConfirmContextProvider, useConfirmContext } from '../context/confirm';
 import { ConfirmNav } from '../components/confirm/nav/nav';
 import { GasFeeTokenToast } from '../components/confirm/info/shared/gas-fee-token-toast/gas-fee-token-toast';
 import { Splash } from '../components/confirm/splash';
 import { DappSwapContextProvider } from '../context/dapp-swap';
-import { EditGasModes } from '../../../../shared/constants/gas';
-
-const EIP1559TransactionGasModal = () => {
-  const { currentConfirmation } = useConfirmContext();
-  return (
-    <>
-      <EditGasFeePopover
-        transaction={currentConfirmation as TransactionMeta}
-        editGasMode={EditGasModes.modifyInPlace}
-      />
-      <AdvancedGasFeePopover
-        transaction={currentConfirmation as TransactionMeta}
-        editGasMode={EditGasModes.modifyInPlace}
-      />
-    </>
-  );
-};
+import {
+  GasFeeModalContextProvider,
+  GasFeeModalWrapper,
+} from '../context/gas-fee-modal';
 
 const GasFeeContextProviderWrapper: React.FC<{
   children: ReactNode;
@@ -76,27 +61,30 @@ const ConfirmContent = () => {
 const Confirm: React.FC<{ confirmationId?: string }> = ({ confirmationId }) => (
   <ConfirmContextProvider confirmationId={confirmationId}>
     <DappSwapContextProvider>
-      <TransactionModalContextProvider>
-        {/* This context should be removed once we implement the new edit gas fees popovers */}
-        <GasFeeContextProviderWrapper>
-          <EIP1559TransactionGasModal />
-          <ConfirmAlerts>
-            <Page className="confirm_wrapper">
-              <ConfirmNav />
-              <Header />
-              <SmartTransactionsBannerAlert marginType="noTop" />
-              <ScrollToBottom>
-                <BlockaidLoadingIndicator />
-                <LedgerInfo />
-                <ConfirmContent />
-              </ScrollToBottom>
-              <GasFeeTokenToast />
-              <Footer />
-              <Splash />
-            </Page>
-          </ConfirmAlerts>
-        </GasFeeContextProviderWrapper>
-      </TransactionModalContextProvider>
+      <GasFeeModalContextProvider>
+        <TransactionModalContextProvider>
+          <GasFeeContextProviderWrapper>
+            <ConfirmAlerts>
+              <>
+                <Page className="confirm_wrapper">
+                  <ConfirmNav />
+                  <Header />
+                  <SmartTransactionsBannerAlert marginType="noTop" />
+                  <ScrollToBottom>
+                    <BlockaidLoadingIndicator />
+                    <LedgerInfo />
+                    <ConfirmContent />
+                  </ScrollToBottom>
+                  <GasFeeTokenToast />
+                  <Footer />
+                  <Splash />
+                </Page>
+                <GasFeeModalWrapper />
+              </>
+            </ConfirmAlerts>
+          </GasFeeContextProviderWrapper>
+        </TransactionModalContextProvider>
+      </GasFeeModalContextProvider>
     </DappSwapContextProvider>
   </ConfirmContextProvider>
 );

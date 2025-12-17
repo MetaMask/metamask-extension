@@ -124,7 +124,10 @@ export const AdvancedEIP1559Modal = ({
   return (
     <Modal isOpen={true} onClose={handleCloseModals}>
       <ModalOverlay />
-      <ModalContent size={ModalContentSize.Md}>
+      <ModalContent
+        size={ModalContentSize.Md}
+        data-testid="gas-fee-advanced-eip1559-modal"
+      >
         <ModalHeader>{t('advancedEIP1559ModalTitle')}</ModalHeader>
         <ModalBody>
           <MaxBaseFeeInput
@@ -151,6 +154,7 @@ export const AdvancedEIP1559Modal = ({
             gap={4}
           >
             <Button
+              data-testid="gas-fee-modal-cancel-button"
               style={{ flex: 1 }}
               size={ButtonSize.Lg}
               variant={ButtonVariant.Secondary}
@@ -159,6 +163,7 @@ export const AdvancedEIP1559Modal = ({
               {t('cancel')}
             </Button>
             <Button
+              data-testid="gas-fee-modal-save-button"
               style={{ flex: 1 }}
               size={ButtonSize.Lg}
               isDisabled={hasError}
