@@ -431,7 +431,7 @@
     "message": "Cảnh báo"
   },
   "alertAccountTypeUpgradeMessage": {
-    "message": "Bạn đang nâng cấp tài khoản lên tài khoản thông minh. Địa chỉ tài khoản hiện tại của bạn sẽ được giữ nguyên, nhưng giao dịch sẽ nhanh hơn và phí mạng sẽ thấp hơn. $1."
+    "message": "Bạn đang nâng cấp tài khoản lên tài khoản thông minh. Địa chỉ tài khoản hiện tại của bạn sẽ được giữ nguyên, nhưng giao dịch sẽ nhanh hơn và phí mạng sẽ thấp hơn. $1"
   },
   "alertAccountTypeUpgradeTitle": {
     "message": "Loại tài khoản"

@@ -431,7 +431,7 @@
     "message": "Alerto"
   },
   "alertAccountTypeUpgradeMessage": {
-    "message": "Ina-update mo ang account mo para maging smart account. Hindi magbabago ang address ng account mo pero magiging mas mabilis ang mga transaksyon at mas mababa ang bayarin sa network. $1."
+    "message": "Ina-update mo ang account mo para maging smart account. Hindi magbabago ang address ng account mo pero magiging mas mabilis ang mga transaksyon at mas mababa ang bayarin sa network. $1"
   },
   "alertAccountTypeUpgradeTitle": {
     "message": "Uri ng account"

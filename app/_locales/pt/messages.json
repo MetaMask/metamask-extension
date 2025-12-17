@@ -431,7 +431,7 @@
     "message": "Alerta"
   },
   "alertAccountTypeUpgradeMessage": {
-    "message": "Você está atualizando sua conta para uma conta inteligente. Você manterá o mesmo endereço de conta, além de desbloquear transações mais rápidas e taxas de rede mais baixas. $1."
+    "message": "Você está atualizando sua conta para uma conta inteligente. Você manterá o mesmo endereço de conta, além de desbloquear transações mais rápidas e taxas de rede mais baixas. $1"
   },
   "alertAccountTypeUpgradeTitle": {
     "message": "Tipo de conta"
