@@ -14,6 +14,73 @@ import {
 import { mockSpotPrices } from '../tokens/utils/mocks';
 
 async function mockApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
+  // Mock feature flags API to prevent Redux initialization issues
+  await mockServer
+    .forGet('https://client-config.api.cx.metamask.io/v1/flags')
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: [{}],
+    }));
+
+  // Mock Infura RPC endpoints for mainnet
+  const infuraPattern = /mainnet\.infura\.io/u;
+  await mockServer
+    .forPost(infuraPattern)
+    .withJsonBodyIncluding({ method: 'eth_blockNumber' })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: { jsonrpc: '2.0', id: 1, result: '0x1234567' },
+    }));
+
+  await mockServer
+    .forPost(infuraPattern)
+    .withJsonBodyIncluding({ method: 'eth_getBalance' })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: { jsonrpc: '2.0', id: 1, result: '0x15af1d78b58c40000' }, // 25 ETH
+    }));
+
+  await mockServer
+    .forPost(infuraPattern)
+    .withJsonBodyIncluding({ method: 'eth_chainId' })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: { jsonrpc: '2.0', id: 1, result: '0x1' },
+    }));
+
+  await mockServer
+    .forPost(infuraPattern)
+    .withJsonBodyIncluding({ method: 'net_version' })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: { jsonrpc: '2.0', id: 1, result: '1' },
+    }));
+
+  await mockServer
+    .forPost(infuraPattern)
+    .withJsonBodyIncluding({ method: 'eth_getBlockByNumber' })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        jsonrpc: '2.0',
+        id: 1,
+        result: {
+          number: '0x1234567',
+          hash: '0x0000000000000000000000000000000000000000000000000000000000000000',
+          timestamp: '0x64',
+          baseFeePerGas: '0x7',
+        },
+      },
+    }));
+
+  // Mock gas API
+  await mockServer
+    .forGet('https://gas.api.cx.metamask.io/v1/supportedNetworks')
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: ['0x1'],
+    }));
+
   return [
     await mockServer
       .forGet('https://token.api.cx.metamask.io/tokens/1')
