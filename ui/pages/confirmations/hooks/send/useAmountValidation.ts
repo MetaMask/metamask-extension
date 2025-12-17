@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Numeric } from '../../../../../shared/modules/Numeric';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
+  addLeadingZeroIfNeeded,
   fromTokenMinUnitsNumeric,
   isValidPositiveNumericString,
 } from '../../utils/send';
@@ -43,7 +44,7 @@ export const useAmountValidation = () => {
 
     try {
       const result = (await validateAmountWithSnap(
-        value || '0',
+        addLeadingZeroIfNeeded(value) || '0',
       )) as SnapOnAmountInputResult;
 
       if (result.errors?.length > 0) {
