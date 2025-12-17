@@ -939,30 +939,11 @@ export default class MetamaskController extends EventEmitter {
           );
           const { address } = this.accountsController.getSelectedAccount();
 
-          const isState2Enabled =
-            this.isMultichainAccountsFeatureState2Enabled();
-          console.log(
-            '[MetaMaskController] isState2Enabled for account sync:',
-            isState2Enabled,
-          );
+          ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+          await this.getSnapKeyring();
+          ///: END:ONLY_INCLUDE_IF
 
-          if (isState2Enabled) {
-            console.log(
-              '[MetaMaskController] State2 enabled, calling syncWithUserStorageAtLeastOnce',
-            );
-            ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-            await this.getSnapKeyring();
-            ///: END:ONLY_INCLUDE_IF
-
-            await this.accountTreeController.syncWithUserStorageAtLeastOnce();
-            console.log(
-              '[MetaMaskController] syncWithUserStorageAtLeastOnce completed',
-            );
-          } else {
-            console.log(
-              '[MetaMaskController] State2 NOT enabled, skipping account sync',
-            );
-          }
+          await this.accountTreeController.syncWithUserStorageAtLeastOnce();
 
           if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
             // importing multiple SRPs on social login rehydration
@@ -4934,11 +4915,9 @@ export default class MetamaskController extends EventEmitter {
       }
 
       const syncAndDiscoverAccounts = async () => {
-        if (this.isMultichainAccountsFeatureState2Enabled()) {
-          // We want to trigger a full sync of the account tree after importing a new SRP
-          // because `hasAccountTreeSyncingSyncedAtLeastOnce` is already true
-          await this.accountTreeController.syncWithUserStorage();
-        }
+        // We want to trigger a full sync of the account tree after importing a new SRP
+        // because `hasAccountTreeSyncingSyncedAtLeastOnce` is already true
+        await this.accountTreeController.syncWithUserStorage();
 
         let discoveredAccounts;
 
@@ -5194,7 +5173,6 @@ export default class MetamaskController extends EventEmitter {
         // check if external services are enabled
         const { useExternalServices } = this.preferencesController.state;
         if (
-          this.isMultichainAccountsFeatureState2Enabled() &&
           useExternalServices // skip the account sync if external services are disabled
         ) {
           ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -5419,11 +5397,11 @@ export default class MetamaskController extends EventEmitter {
         },
       );
       if (isHdKeyring) {
+        ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+        await this.getSnapKeyring();
+        ///: END:ONLY_INCLUDE_IF
+        await this.accountTreeController.syncWithUserStorageAtLeastOnce();
         if (this.isMultichainAccountsFeatureState2Enabled()) {
-          ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-          await this.getSnapKeyring();
-          ///: END:ONLY_INCLUDE_IF
-          await this.accountTreeController.syncWithUserStorageAtLeastOnce();
           await this.discoverAndCreateAccounts(metadata.id);
         } else {
           await this._addAccountsWithBalance(
