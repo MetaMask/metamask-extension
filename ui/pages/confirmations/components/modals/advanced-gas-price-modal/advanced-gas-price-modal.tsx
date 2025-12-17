@@ -107,7 +107,10 @@ export const AdvancedGasPriceModal = ({
   return (
     <Modal isOpen={true} onClose={handleCloseModals}>
       <ModalOverlay />
-      <ModalContent size={ModalContentSize.Md}>
+      <ModalContent
+        size={ModalContentSize.Md}
+        data-testid="gas-fee-advanced-gas-price-modal"
+      >
         <ModalHeader>{t('advancedGasPriceModalTitle')}</ModalHeader>
         <ModalBody>
           <GasPriceInput
@@ -124,6 +127,7 @@ export const AdvancedGasPriceModal = ({
             gap={4}
           >
             <Button
+              data-testid="gas-fee-modal-cancel-button"
               style={{ flex: 1 }}
               size={ButtonSize.Lg}
               variant={ButtonVariant.Secondary}
@@ -132,6 +136,7 @@ export const AdvancedGasPriceModal = ({
               {t('cancel')}
             </Button>
             <Button
+              data-testid="gas-fee-modal-save-button"
               style={{ flex: 1 }}
               size={ButtonSize.Lg}
               isDisabled={hasError}
