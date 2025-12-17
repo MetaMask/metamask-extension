@@ -272,9 +272,6 @@ describe('Shield Subscription Tests', function () {
             await homePage.checkShieldEntryModalIsDisplayed();
             await homePage.clickOnShieldEntryModalGetStarted();
 
-            console.log('shieldDetailPage 111 +++++++++++++++++++++++');
-            console.log('shieldDetailPage 222 !!!!!+++++++++++++++++++++++');
-
             const shieldPlanPage = new ShieldPlanPage(driver);
             await shieldPlanPage.checkPageIsLoaded();
 

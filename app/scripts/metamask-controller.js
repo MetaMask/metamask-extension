@@ -1710,7 +1710,7 @@ export default class MetamaskController extends EventEmitter {
             this.tokenDetectionController
               .detectTokens({ chainIds: [chainId] })
               .catch((err) => {
-                console.log('Error detecting tokens', err);
+                log.error('Error detecting tokens', { err });
               });
           }
         }

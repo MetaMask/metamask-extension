@@ -294,9 +294,6 @@ describe('TokenBalancesController - Account API v4 with RPC Fallback', function 
 
         const assetListPage = new AssetListPage(driver);
 
-        // Wait for the TokenBalancesController to poll and fetch balances
-        await driver.delay(35000);
-
         // Verify the Account API mock endpoint is registered
         const accountApiEndpoint = mockedEndpoint.find(
           (endpoint: MockedEndpoint) =>
@@ -372,9 +369,6 @@ describe('TokenBalancesController - Account API v4 with RPC Fallback', function 
       async ({ driver, mockedEndpoint }) => {
         // Login to existing wallet (onboarding already complete in fixture)
         await loginWithBalanceValidation(driver);
-
-        // Wait for the TokenBalancesController to poll and fetch balances
-        await driver.delay(35000);
 
         // Verify that Account API mock endpoint is registered (and failed)
         const accountApiEndpoint = mockedEndpoint.find(
@@ -458,9 +452,6 @@ describe('TokenBalancesController - Account API v4 with RPC Fallback', function 
       async ({ driver, mockedEndpoint }) => {
         // Login to existing wallet (onboarding already complete in fixture)
         await loginWithBalanceValidation(driver);
-
-        // Wait for the TokenBalancesController to poll and fetch balances via RPC
-        await driver.delay(35000);
 
         // Verify that RPC mock endpoints are registered
         const infuraEndpoints = mockedEndpoint.filter(
