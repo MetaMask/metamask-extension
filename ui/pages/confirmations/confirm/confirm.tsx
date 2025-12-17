@@ -1,6 +1,5 @@
 import { ReactNodeLike } from 'prop-types';
 import React, { ReactNode } from 'react';
-import { TransactionMeta } from '@metamask/transaction-controller';
 
 import { Page } from '../../../components/multichain/pages/page';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
