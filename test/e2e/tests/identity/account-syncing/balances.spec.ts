@@ -14,6 +14,7 @@ import HomePage from '../../../page-objects/pages/home/homepage';
 
 import { mockInfuraAndAccountSync } from '../mocks';
 import { arrangeTestUtils } from './helpers';
+import { BIP44_STAGE_TWO } from '../../multichain-accounts/feature-flag-mocks';
 
 describe('Account syncing - Accounts with Balances', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
@@ -42,7 +43,10 @@ describe('Account syncing - Accounts with Balances', function () {
     // Phase 1: Create and sync accounts
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
+        fixtures: new FixtureBuilder()
+          .withBackupAndSyncSettings()
+          .withRemoteFeatureFlags(BIP44_STAGE_TWO)
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: phase1MockSetup,
       },
@@ -98,13 +102,7 @@ describe('Account syncing - Accounts with Balances', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true })
-          .withRemoteFeatureFlags({
-            enableMultichainAccountsState2: {
-              enabled: true,
-              featureVersion: '2',
-              minimumVersion: '13.5.0',
-            },
-          })
+          .withRemoteFeatureFlags(BIP44_STAGE_TWO)
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: phase2MockSetup,

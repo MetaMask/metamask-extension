@@ -15,6 +15,7 @@ import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { IDENTITY_TEAM_SEED_PHRASE_2 } from '../constants';
+import { BIP44_STAGE_TWO } from '../../multichain-accounts/feature-flag-mocks';
 
 import { arrangeTestUtils } from './helpers';
 
@@ -49,7 +50,10 @@ describe('Account syncing - Multiple SRPs', function () {
     // Phase 1: Add a second account to the first SRP
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
+        fixtures: new FixtureBuilder()
+          .withBackupAndSyncSettings()
+          .withRemoteFeatureFlags(BIP44_STAGE_TWO)
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
       },
@@ -146,7 +150,10 @@ describe('Account syncing - Multiple SRPs', function () {
     // Phase 2: Login to fresh instance, import second SRP and verify all accounts persist
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
+        fixtures: new FixtureBuilder()
+          .withBackupAndSyncSettings()
+          .withRemoteFeatureFlags(BIP44_STAGE_TWO)
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
       },

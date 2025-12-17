@@ -14,6 +14,7 @@ import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
+import { BIP44_STAGE_TWO } from '../../multichain-accounts/feature-flag-mocks';
 
 import { arrangeTestUtils } from './helpers';
 
@@ -51,7 +52,10 @@ describe('Account syncing - Unsupported Account types', function () {
     // Phase 1: Create regular accounts and import a private key account
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
+        fixtures: new FixtureBuilder()
+          .withBackupAndSyncSettings()
+          .withRemoteFeatureFlags(BIP44_STAGE_TWO)
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
       },
@@ -128,7 +132,10 @@ describe('Account syncing - Unsupported Account types', function () {
     // Phase 2: Login to fresh instance and verify only regular accounts persist
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
+        fixtures: new FixtureBuilder()
+          .withBackupAndSyncSettings()
+          .withRemoteFeatureFlags(BIP44_STAGE_TWO)
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
       },

@@ -20,6 +20,7 @@ import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
+import { BIP44_STAGE_TWO } from '../../multichain-accounts/feature-flag-mocks';
 
 import { mockIdentityServices } from '../mocks';
 import { arrangeTestUtils } from './helpers';
@@ -55,7 +56,10 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
     // Phase 1: Add a new account and verify it syncs
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
+        fixtures: new FixtureBuilder()
+          .withBackupAndSyncSettings()
+          .withRemoteFeatureFlags(BIP44_STAGE_TWO)
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
       },
@@ -110,7 +114,10 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
     // Phase 2: Login to fresh instance, verify account persists, rename and add more accounts
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
+        fixtures: new FixtureBuilder()
+          .withBackupAndSyncSettings()
+          .withRemoteFeatureFlags(BIP44_STAGE_TWO)
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
       },
@@ -182,7 +189,9 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
     // Phase 3: Complete onboarding flow from scratch to verify all changes persist
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        fixtures: new FixtureBuilder({ onboarding: true })
+          .withRemoteFeatureFlags(BIP44_STAGE_TWO)
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
       },

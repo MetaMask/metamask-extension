@@ -15,6 +15,7 @@ import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import BackupAndSyncSettings from '../../../page-objects/pages/settings/backup-and-sync-settings';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
+import { BIP44_STAGE_TWO } from '../../multichain-accounts/feature-flag-mocks';
 
 import { mockIdentityServices } from '../mocks';
 import { arrangeTestUtils } from './helpers';
@@ -48,7 +49,10 @@ describe('Account syncing - Settings Toggle', function () {
     // Phase 1: Initial setup and account creation with sync enabled
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
+        fixtures: new FixtureBuilder()
+          .withBackupAndSyncSettings()
+          .withRemoteFeatureFlags(BIP44_STAGE_TWO)
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
       },
@@ -148,7 +152,10 @@ describe('Account syncing - Settings Toggle', function () {
     // Phase 3: Fresh app instance to verify sync persistence
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
+        fixtures: new FixtureBuilder()
+          .withBackupAndSyncSettings()
+          .withRemoteFeatureFlags(BIP44_STAGE_TWO)
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
       },
