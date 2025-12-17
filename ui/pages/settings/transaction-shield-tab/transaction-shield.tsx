@@ -19,6 +19,7 @@ import {
   IconSize,
   Text,
   TextButton,
+  TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -280,15 +281,24 @@ const TransactionShield = () => {
     }
     if (isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)) {
       return (
-        <CryptoAccountDisplay
-          payerAddress={
-            displayedShieldSubscription.paymentMethod.crypto.payerAddress
-          }
-          tokenSymbol={
-            displayedShieldSubscription.paymentMethod.crypto.tokenSymbol
-          }
-          chainId={displayedShieldSubscription.paymentMethod.crypto.chainId}
-        />
+        <Text
+          asChild
+          variant={TextVariant.BodySm}
+          color={TextColor.TextAlternative}
+          className="flex items-center gap-1"
+        >
+          {t('shieldTxDetails3DescriptionCryptoWithAccount', [
+            displayedShieldSubscription.paymentMethod.crypto.tokenSymbol,
+            <CryptoAccountDisplay
+              key="crypto-account-display"
+              payerAddress={
+                displayedShieldSubscription.paymentMethod.crypto.payerAddress
+              }
+              chainId={displayedShieldSubscription.paymentMethod.crypto.chainId}
+              showIcon={false}
+            />,
+          ])}
+        </Text>
       );
     }
     return t('shieldPlanCard');

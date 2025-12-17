@@ -1,40 +1,75 @@
-import React, { useMemo } from 'react';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Text, TextColor, TextVariant } from '@metamask/design-system-react';
+import React from 'react';
+import {
+  AvatarAccountSize,
+  Box,
+  Text,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { useDisplayName } from '../../../../hooks/useDisplayName';
 import { NameType } from '@metamask/name-controller';
+import { Icon, IconSize } from '../../../../components/component-library';
+import Identicon from '../../../../components/ui/identicon';
+import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
 
 const CryptoAccountDisplay = ({
   payerAddress,
-  tokenSymbol,
   chainId,
+  showIcon = true,
 }: {
   payerAddress: string;
-  tokenSymbol: string;
   chainId: string;
+  showIcon?: boolean;
 }) => {
-  const t = useI18nContext();
-  const { name, subtitle } = useDisplayName({
+  const { name, icon, image, subtitle } = useDisplayName({
     value: payerAddress,
     type: NameType.ETHEREUM_ADDRESS,
     preferContractSymbol: false,
     variation: chainId,
   });
 
-  const accountName = useMemo(() => {
+  const renderIcon = () => {
+    // If icon exists, use it (trust signal /unknown)
+    if (icon) {
+      return (
+        <Icon
+          name={icon.name}
+          className="crypto-account-display__icon"
+          size={IconSize.Sm}
+          color={icon.color}
+        />
+      );
+    }
+
+    if (image) {
+      return <Identicon address={payerAddress} diameter={16} image={image} />;
+    }
+
+    return (
+      <PreferredAvatar
+        className="rounded-md"
+        address={payerAddress}
+        size={AvatarAccountSize.Xs}
+      />
+    );
+  };
+
+  const renderAccountName = () => {
     if (subtitle) {
-      return `${name}, ${subtitle}`;
+      return (
+        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+          {name}, {subtitle}
+        </Text>
+      );
     }
     return name;
-  }, [name, subtitle, payerAddress]);
+  };
 
   return (
-    <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-      {t('shieldTxDetails3DescriptionCryptoWithAccount', [
-        tokenSymbol,
-        accountName,
-      ])}
-    </Text>
+    <Box className="flex gap-2 items-center">
+      {showIcon && renderIcon()}
+      {renderAccountName()}
+    </Box>
   );
 };
 

@@ -35,8 +35,8 @@ import {
 } from '../../../../../shared/lib/shield';
 import { isCardPaymentMethod, isCryptoPaymentMethod } from '../types';
 import AddFundsModal from '../../../../components/app/modals/add-funds-modal';
-import { ConfirmInfoRowAddress } from '../../../../components/app/confirm/info/row/address';
 import { TRANSACTION_SHIELD_CLAIM_ROUTES } from '../../../../helpers/constants/routes';
+import CryptoAccountDisplay from '../components/crypto-account-display';
 
 const ManageShieldPlan = ({ isPastPlan = false }: { isPastPlan?: boolean }) => {
   const t = useI18nContext();
@@ -226,15 +226,14 @@ const ManageShieldPlan = ({ isPastPlan = false }: { isPastPlan?: boolean }) => {
               <ButtonRow
                 title={t('shieldTxBillingAccount')}
                 description={
-                  <ConfirmInfoRowAddress
-                    address={
+                  <CryptoAccountDisplay
+                    payerAddress={
                       displayedShieldSubscription.paymentMethod.crypto
                         .payerAddress
                     }
                     chainId={
                       displayedShieldSubscription.paymentMethod.crypto.chainId
                     }
-                    showFullName
                   />
                 }
               />
