@@ -463,5 +463,54 @@ describe('Send ETH', function () {
         );
       });
     });
+
+    it('shows error and does not prefill form when scanning EIP-681 ERC20 transfer QR code', async function () {
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilder().build(),
+          ganacheOptions: defaultGanacheOptions,
+          title: this.test.fullTitle(),
+        },
+        async ({ driver }) => {
+          await unlockWallet(driver);
+
+          await driver.assertElementNotPresent('.loading-overlay__spinner');
+          const balance = await driver.findElement(
+            '[data-testid="eth-overview__primary-currency"]',
+          );
+          assert.ok(/^[\d.]+\sETH$/u.test(await balance.getText()));
+
+          await openActionMenuAndStartSendFlow(driver);
+          // choose to scan via QR code
+          await driver.clickElement('[data-testid="ens-qr-scan-button"]');
+          await driver.findVisibleElement('[data-testid="qr-scanner-modal"]');
+
+          // Simulate scanning an EIP-681 ERC20 transfer QR code
+          // Note: The actual QR scanning is mocked in the test environment
+          await driver.executeScript(`
+            window.postMessage({
+              type: 'qr-scanned',
+              value: 'ethereum:0x89205a3a3b2a69de6dbf7f01ed13b2108b2c43e7/transfer?address=0x8e23ee67d1332ad560396262c48ffbb01f93d052&uint256=1'
+            }, '*');
+          `);
+
+          // Verify error message is shown
+          await driver.waitForSelector({
+            css: '.qr-scanner__error',
+            text: "We couldn't identify that QR code",
+          });
+
+          // Close QR scanner
+          await driver.clickElement({ text: 'Cancel', tag: 'button' });
+
+          // Verify send form is not prefilled
+          const addressInput = await driver.findElement(
+            'input[placeholder="Enter public address (0x) or domain name"]',
+          );
+          const addressInputValue = await addressInput.getProperty('value');
+          assert.equal(addressInputValue, '');
+        },
+      );
+    });
   });
 });
