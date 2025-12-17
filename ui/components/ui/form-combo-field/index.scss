@@ -1,10 +1,6 @@
 .form-combo-field {
   width: 100%;
 
-  ::-webkit-scrollbar {
-    width: 0;
-  }
-
   &__value > div {
     outline: 0;
     width: 100%;
