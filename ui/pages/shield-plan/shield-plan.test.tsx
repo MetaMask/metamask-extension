@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockState from '../../../test/data/mock-state.json';
+import { initialState as rewardsInitialState } from '../../ducks/rewards';
 import ShieldPlan from './shield-plan';
 
 const mockUseNavigate = jest.fn();
@@ -24,7 +25,10 @@ describe('Change payment method', () => {
   });
 
   it('should show shield plan page', async () => {
-    const mockStore = configureMockStore([])(mockState);
+    const mockStore = configureMockStore([])({
+      ...mockState,
+      rewards: rewardsInitialState,
+    });
     const { getByTestId } = renderWithProvider(<ShieldPlan />, mockStore);
 
     expect(getByTestId('shield-plan-page')).toBeInTheDocument();
