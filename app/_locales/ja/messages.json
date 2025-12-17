@@ -2432,9 +2432,6 @@
     "message": "イーサリアムプロバイダーに$1へのアクセス権を付与する",
     "description": "The parameter is the name of the requesting origin"
   },
-  "ethereumPublicAddress": {
-    "message": "イーサリアムのパブリックアドレス"
-  },
   "etherscan": {
     "message": "Etherscan"
   },
@@ -3909,9 +3906,6 @@
   "noAccountsFound": {
     "message": "指定された検索クエリでアカウントが見つかりませんでした"
   },
-  "noConnectedAccountTitle": {
-    "message": "MetaMaskはこのサイトに接続されていません"
-  },
   "noConnectionDescription": {
     "message": "サイトに接続するには、「接続」ボタンを見つけて選択します。MetaMaskはWeb3のサイトにしか接続できないのでご注意ください"
   },
@@ -4643,10 +4637,7 @@
   "permissions": {
     "message": "アクセス許可"
   },
-  "permissionsPageEmptyContent": {
-    "message": "ここに表示する内容はありません"
-  },
-  "permissionsPageEmptySubContent": {
+  "permissionsPageEmptyDescription": {
     "message": "ここには、インストールされたSnapや接続されたサイトに付与したアクセス許可が表示されます。"
   },
   "permitSimulationChange_approve": {

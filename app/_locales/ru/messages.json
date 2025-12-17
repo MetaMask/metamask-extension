@@ -2432,9 +2432,6 @@
     "message": "Предоставить поставщику Ethereum доступ к $1",
     "description": "The parameter is the name of the requesting origin"
   },
-  "ethereumPublicAddress": {
-    "message": "Публичный адрес Ethereum"
-  },
   "etherscan": {
     "message": "Etherscan"
   },
@@ -3909,9 +3906,6 @@
   "noAccountsFound": {
     "message": "По данному поисковому запросу счетов не найдено"
   },
-  "noConnectedAccountTitle": {
-    "message": "MetaMask не подключен к этому сайту"
-  },
   "noConnectionDescription": {
     "message": "Для подключения к сайту найдите и нажмите кнопку «подключиться». Помните, что MetaMask может подключаться только к сайтам в web3"
   },
@@ -4643,10 +4637,7 @@
   "permissions": {
     "message": "Разрешения"
   },
-  "permissionsPageEmptyContent": {
-    "message": "Здесь нечего смотреть"
-  },
-  "permissionsPageEmptySubContent": {
+  "permissionsPageEmptyDescription": {
     "message": "Здесь вы можете увидеть разрешения, которые вы предоставили установленным Snaps или подключенным сайтам."
   },
   "permitSimulationChange_approve": {

@@ -2432,9 +2432,6 @@
     "message": "Ethereum sağlayıcısına $1 erişimi ver",
     "description": "The parameter is the name of the requesting origin"
   },
-  "ethereumPublicAddress": {
-    "message": "Ethereum genel adresi"
-  },
   "etherscan": {
     "message": "Etherscan"
   },
@@ -3909,9 +3906,6 @@
   "noAccountsFound": {
     "message": "Belirtilen arama sorgusu için hesap bulunamadı"
   },
-  "noConnectedAccountTitle": {
-    "message": "MetaMask bu siteye bağlı değil"
-  },
   "noConnectionDescription": {
     "message": "Bir siteye bağlanmak için \"bağlan\" düğmesini bularak seçin. MetaMask'in sadece web3 üzerindeki sitelere bağlanabildiğini unutmayın"
   },
@@ -4643,10 +4637,7 @@
   "permissions": {
     "message": "İzinler"
   },
-  "permissionsPageEmptyContent": {
-    "message": "Burada gösterilecek bir şey yok"
-  },
-  "permissionsPageEmptySubContent": {
+  "permissionsPageEmptyDescription": {
     "message": "Burada, yüklü Snap'lere veya bağlı sitelere verdiğiniz izinleri görebilirsiniz."
   },
   "permitSimulationChange_approve": {

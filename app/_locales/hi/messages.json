@@ -2429,9 +2429,6 @@
     "message": "Ethereum प्रोवाइडर को $1 तक एक्सेस दें",
     "description": "The parameter is the name of the requesting origin"
   },
-  "ethereumPublicAddress": {
-    "message": "Ethereum पब्लिक एड्रेस"
-  },
   "etherscan": {
     "message": "Etherscan"
   },
@@ -3906,9 +3903,6 @@
   "noAccountsFound": {
     "message": "दी गई खोज क्वेरी के लिए कोई अकाउंट नहीं मिला"
   },
-  "noConnectedAccountTitle": {
-    "message": "MetaMask इस साइट से कनेक्टेड नहीं है।"
-  },
   "noConnectionDescription": {
     "message": "किसी साइट से कनेक्ट करने के लिए, \"कनेक्ट करें\" बटन ढूंढें और चुनें। याद रखें MetaMask केवल web3 पर साइटों से कनेक्ट हो सकता है"
   },
@@ -4640,10 +4634,7 @@
   "permissions": {
     "message": "अनुमतियां"
   },
-  "permissionsPageEmptyContent": {
-    "message": "यहाँ देखने के लिए कुछ नहीं है।"
-  },
-  "permissionsPageEmptySubContent": {
+  "permissionsPageEmptyDescription": {
     "message": "यहां पर आप इंस्टॉल किए गए Snaps या कनेक्टेड साइटों को दी गई अनुमतियां देख सकते हैं।"
   },
   "permitSimulationChange_approve": {

@@ -2432,9 +2432,6 @@
     "message": "Otorgar acceso al proveedor de Ethereum a $1",
     "description": "The parameter is the name of the requesting origin"
   },
-  "ethereumPublicAddress": {
-    "message": "Dirección pública de Ethereum"
-  },
   "etherscan": {
     "message": "Etherscan"
   },
@@ -3909,9 +3906,6 @@
   "noAccountsFound": {
     "message": "No se encuentran cuentas para la consulta de búsqueda determinada"
   },
-  "noConnectedAccountTitle": {
-    "message": "MetaMask no está conectado a este sitio"
-  },
   "noConnectionDescription": {
     "message": "Para conectarse a un sitio, busque y seleccione el botón \"conectar\". Recuerde que MetaMask solo puede conectarse a sitios en Web3"
   },
@@ -4643,10 +4637,7 @@
   "permissions": {
     "message": "Permisos"
   },
-  "permissionsPageEmptyContent": {
-    "message": "No hay nada que ver aquí"
-  },
-  "permissionsPageEmptySubContent": {
+  "permissionsPageEmptyDescription": {
     "message": "Aquí es donde puedes ver los permisos que has otorgado a los Snaps instalados o a los sitios conectados."
   },
   "permitSimulationChange_approve": {
