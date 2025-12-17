@@ -2,10 +2,14 @@ import EventEmitter from 'events';
 import { finished, pipeline } from 'readable-stream';
 import browser from 'webextension-polyfill';
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
+import {
+  JsonRpcEngineV2,
+  asLegacyMiddleware,
+} from '@metamask/json-rpc-engine/v2';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
-import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
+import { providerAsMiddlewareV2 } from '@metamask/eth-json-rpc-middleware';
 import { debounce, uniq } from 'lodash';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
@@ -253,7 +257,7 @@ import {
   getPlatform,
   getBooleanFlag,
 } from './lib/util';
-import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
+import { createMetamaskMiddleware } from './lib/createMetamaskMiddleware';
 import {
   createHyperliquidReferralMiddleware,
   HyperliquidPermissionTriggerType,
@@ -979,7 +983,8 @@ export default class MetamaskController extends EventEmitter {
         this.getSelectedNetworkClientIdForChain.bind(this),
     });
 
-    this.metamaskMiddleware = createMetamaskMiddleware({
+    // A JsonRpcEngineV2 middleware. Prefer this over `this.metamaskMiddlewareLegacy`
+    this.metamaskMiddlewareV2 = createMetamaskMiddleware({
       static: {
         eth_syncing: false,
         web3_clientVersion: `MetaMask/v${version}`,
@@ -1066,6 +1071,14 @@ export default class MetamaskController extends EventEmitter {
         );
       },
     });
+
+    // A legacy JsonRpcEngine middleware. Use this for backwards compatibility.
+    // Prefer `this.metamaskMiddlewareV2` for new code.
+    this.metamaskMiddlewareLegacy = asLegacyMiddleware(
+      JsonRpcEngineV2.create({
+        middleware: [...this.metamaskMiddlewareV2],
+      }),
+    );
 
     // ensure isClientOpenAndUnlocked is updated when memState updates
     this.on('update', (memState) => this._onStateUpdate(memState));
@@ -7760,16 +7773,24 @@ export default class MetamaskController extends EventEmitter {
       }),
     );
 
-    engine.push(filterMiddleware);
-    engine.push(subscriptionManager.middleware);
-
-    engine.push(this.metamaskMiddleware);
-
     if (subjectType === SubjectType.Snap && isSnapPreinstalled(origin)) {
       engine.push(this.eip7702Middleware);
     }
 
-    engine.push(providerAsMiddleware(proxyClient.provider));
+    engine.push(filterMiddleware);
+    engine.push(subscriptionManager.middleware);
+
+    // JsonRpcEngineV2 boundary
+    engine.push(
+      asLegacyMiddleware(
+        JsonRpcEngineV2.create({
+          middleware: [
+            ...this.metamaskMiddlewareV2,
+            providerAsMiddlewareV2(proxyClient.provider),
+          ],
+        }),
+      ),
+    );
 
     return engine;
   }
@@ -7929,7 +7950,7 @@ export default class MetamaskController extends EventEmitter {
       }),
     );
 
-    engine.push(this.metamaskMiddleware);
+    engine.push(this.metamaskMiddlewareLegacy);
 
     try {
       const caip25Caveat = this.permissionController.getCaveat(
