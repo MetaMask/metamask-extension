@@ -119,7 +119,7 @@ const localStore = useFixtureStore
   : new ExtensionStore();
 const persistenceManager = new PersistenceManager({ localStore });
 
-const { safePersist, requestSafeReload } =
+const { safePersist, requestSafeReload, evacuate } =
   getRequestSafeReload(persistenceManager);
 
 // Setup global hook for improved Sentry state snapshots during initialization
@@ -2021,4 +2021,14 @@ async function initBackground(backup) {
 }
 if (!process.env.SKIP_BACKGROUND_INITIALIZATION) {
   initBackground(null);
+}
+
+if (inTest) {
+  // listen for test messages from the background
+  browser.runtime.onMessage.addListener(async (message, _sender) => {
+    if (message.type === 'STOP_PERSISTENCE') {
+      await evacuate();
+      return { status: 'PERSISTENCE_STOPPED' };
+    }
+  });
 }

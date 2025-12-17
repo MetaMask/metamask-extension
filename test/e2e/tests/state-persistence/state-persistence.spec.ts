@@ -55,6 +55,27 @@ const getFixtureOptions = (
   },
 });
 
+const stopTheDatabasePersistence = async (driver: Driver) => {
+  const result = await driver.executeAsyncScript(`
+    const callback = arguments[arguments.length - 1];
+    const browser = globalThis.browser ?? globalThis.chrome;
+    browser.runtime
+      .sendMessage({ type: 'STOP_PERSISTENCE' })
+      .then((response) => callback({ response }))
+      .catch((error) =>
+        callback({
+          error: error?.message ?? error?.toString?.() ?? error,
+        }),
+      );
+  `);
+
+  if (result?.error) {
+    throw new Error(result.error);
+  }
+
+  return (result?.response ?? {}) as { status: 'PERSISTENCE_STOPPED' };
+};
+
 /**
  * Seeds the split-state migration flags directly into extension storage.
  *
@@ -287,7 +308,7 @@ const ensureHomeReady = async (driver: Driver) => {
 };
 
 /**
- * Runs a background script, reloads the extension, and waits for restart.
+ * Reloads the extension, and waits for restart.
  *
  * @param driver - WebDriver instance.
  * @returns Result object from the executed script.
@@ -297,6 +318,7 @@ const reloadExtension = async (driver: Driver) => {
   const blankWindow = await driver.openNewPage('about:blank');
 
   await driver.switchToWindow(extensionWindow);
+  await stopTheDatabasePersistence(driver);
   await driver.executeScript(
     `(globalThis.browser ?? globalThis.chrome).runtime.reload()`,
   );
@@ -366,7 +388,7 @@ const assertAccountVisible = async (
 // these tests are a bit flaky in CI, so i'm skipping them so we can get some
 // testing done - David M
 // eslint-disable-next-line mocha/no-skipped-tests
-describe.skip('State Persistence', function () {
+describe('State Persistence', function () {
   this.timeout(120000);
 
   describe('data state', function () {
@@ -413,6 +435,7 @@ describe.skip('State Persistence', function () {
 
           await expectDataStateStorage(driver);
 
+          await stopTheDatabasePersistence(driver);
           await setLocalStorageFlags(driver);
           await reloadAndUnlock(driver);
           await assertAccountVisible(
@@ -439,6 +462,8 @@ describe.skip('State Persistence', function () {
         async ({ driver }) => {
           console.log('completing onboarding and sync');
           await completeOnboardingAndSync(driver);
+
+          await stopTheDatabasePersistence(driver);
 
           // sanity
           console.log('expecting data state storage');
@@ -490,6 +515,8 @@ describe.skip('State Persistence', function () {
             true,
             'precondition: platformSplitStateGradualRolloutAttempted should be true',
           );
+
+          await stopTheDatabasePersistence(driver);
 
           console.log('setting manifest flags to use split state');
           // Set the manifest flags to use split state so the migration would be
