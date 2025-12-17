@@ -84,6 +84,7 @@ const TransactionShield = () => {
   const navigate = useNavigate();
   const { search } = useLocation();
   const { captureShieldCtaClickedEvent } = useSubscriptionMetrics();
+
   const shouldWaitForSubscriptionCreation = useMemo(() => {
     const searchParams = new URLSearchParams(search);
     // param to wait for subscription creation happen in the background
@@ -537,7 +538,9 @@ const TransactionShield = () => {
                 />
               </ButtonRowContainer>
             </Box>
-            <Box className="border-t border-muted my-4 w-full h-px" />
+            <Box className="transaction-shield-page__divider my-4">
+              <Box className="border-t border-muted w-full h-px" />
+            </Box>
           </>
         )}
 

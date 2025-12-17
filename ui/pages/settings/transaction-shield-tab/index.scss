@@ -7,6 +7,12 @@
     margin-top: 120px;
   }
 
+  &__divider {
+    padding-inline: 16px;
+    @include design-system.screen-sm-min {
+      padding-inline: 0;
+    }
+  }
 
   &__membership {
     height: 128px;
