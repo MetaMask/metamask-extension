@@ -934,14 +934,22 @@ export default class MetamaskController extends EventEmitter {
           firstTimeFlowType,
         } = currState;
         if (!prevCompletedOnboarding && currCompletedOnboarding) {
+          console.log('[MetaMaskController] Onboarding completed, checking if should sync accounts');
           const { address } = this.accountsController.getSelectedAccount();
 
-          if (this.isMultichainAccountsFeatureState2Enabled()) {
+          const isState2Enabled = this.isMultichainAccountsFeatureState2Enabled();
+          console.log('[MetaMaskController] isState2Enabled for account sync:', isState2Enabled);
+          
+          if (isState2Enabled) {
+            console.log('[MetaMaskController] State2 enabled, calling syncWithUserStorageAtLeastOnce');
             ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
             await this.getSnapKeyring();
             ///: END:ONLY_INCLUDE_IF
 
             await this.accountTreeController.syncWithUserStorageAtLeastOnce();
+            console.log('[MetaMaskController] syncWithUserStorageAtLeastOnce completed');
+          } else {
+            console.log('[MetaMaskController] State2 NOT enabled, skipping account sync');
           }
 
           if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
@@ -1478,7 +1486,13 @@ export default class MetamaskController extends EventEmitter {
     const featureFlag =
       this.remoteFeatureFlagController?.state?.remoteFeatureFlags
         ?.enableMultichainAccountsState2;
-    return isMultichainAccountsFeatureEnabled(featureFlag, FEATURE_VERSION_2);
+    const result = isMultichainAccountsFeatureEnabled(featureFlag, FEATURE_VERSION_2);
+    console.log('[MetaMaskController] isMultichainAccountsFeatureState2Enabled called:', {
+      featureFlag,
+      result,
+      allRemoteFlags: this.remoteFeatureFlagController?.state?.remoteFeatureFlags,
+    });
+    return result;
   }
 
   postOnboardingInitialization() {
