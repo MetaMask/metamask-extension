@@ -24,7 +24,6 @@ import {
   cancelSubscription,
   estimateGas,
   estimateRewardsPoints,
-  getRewardsHasAccountOptedIn,
   getRewardsSeasonMetadata,
   getSubscriptionBillingPortalUrl,
   getSubscriptions,
@@ -36,7 +35,7 @@ import {
   updateSubscriptionCardPaymentMethod,
 } from '../../store/actions';
 import { useAsyncCallback, useAsyncResult } from '../useAsync';
-import { MetaMaskReduxDispatch } from '../../store/store';
+import { MetaMaskReduxDispatch, useAppSelector } from '../../store/store';
 import {
   selectIsSignedIn,
   selectSessionData,
@@ -77,6 +76,10 @@ import { useAccountTotalFiatBalance } from '../useAccountTotalFiatBalance';
 import { getNetworkConfigurationsByChainId } from '../../../shared/modules/selectors/networks';
 import { isCryptoPaymentMethod } from '../../pages/settings/transaction-shield-tab/types';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import {
+  selectCandidateSubscriptionId,
+  selectSeasonStatus,
+} from '../../ducks/rewards/selectors';
 import {
   TokenWithApprovalAmount,
   useSubscriptionPricing,
@@ -763,6 +766,23 @@ export const useShieldRewards = (): {
     getUpdatedAndSortedAccountsWithCaipAccountId,
   );
 
+  // Checking if user has opted in to rewards
+  const rewardsActiveAccountSubscriptionId = useAppSelector(
+    (state) => state.metamask.rewardsActiveAccount?.subscriptionId,
+  );
+  const seasonStatus = useSelector(selectSeasonStatus);
+  const candidateSubscriptionId = useSelector(selectCandidateSubscriptionId);
+
+  const hasAccountOptedInResultPending =
+    !rewardsActiveAccountSubscriptionId &&
+    (candidateSubscriptionId === 'pending' ||
+      candidateSubscriptionId === 'retry');
+  const hasAccountOptedInResultError = candidateSubscriptionId === 'error';
+
+  const hasAccountOptedInResultValue = Boolean(
+    seasonStatus && candidateSubscriptionId && !hasAccountOptedInResultPending,
+  );
+
   const caipAccountId = useMemo(() => {
     if (!primaryKeyring) {
       return null;
@@ -785,20 +805,6 @@ export const useShieldRewards = (): {
     }
     return primaryAccountWithCaipChainId.caipAccountId;
   }, [primaryKeyring, accountsWithCaipChainId]);
-
-  const {
-    value: hasAccountOptedInResultValue,
-    pending: hasAccountOptedInResultPending,
-    error: hasAccountOptedInResultError,
-  } = useAsyncResult<boolean>(async () => {
-    if (!caipAccountId) {
-      return false;
-    }
-    const optinStatus = await dispatch(
-      getRewardsHasAccountOptedIn(caipAccountId),
-    );
-    return optinStatus;
-  }, [caipAccountId]);
 
   const {
     value: pointsValue,
