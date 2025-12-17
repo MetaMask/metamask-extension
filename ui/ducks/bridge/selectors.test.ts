@@ -10,8 +10,10 @@ import {
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { SolAccountType, SolScope } from '@metamask/keyring-api';
-import { getAddress } from 'ethers/lib/utils';
-import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
+import {
+  createBridgeMockStore,
+  MOCK_EVM_ACCOUNT,
+} from '../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import mockErc20Erc20Quotes from '../../../test/data/bridge/mock-quotes-erc20-erc20.json';
@@ -198,13 +200,24 @@ describe('Bridge selectors', () => {
       });
       const result = getFromChains(state as never);
 
-      expect(result).toHaveLength(2);
-      expect(result[0]).toStrictEqual(
-        expect.objectContaining({ chainId: CHAIN_IDS.MAINNET }),
-      );
-      expect(result[1]).toStrictEqual(
-        expect.objectContaining({ chainId: CHAIN_IDS.LINEA_MAINNET }),
-      );
+      expect(result).toHaveLength(3);
+      expect(result.map(({ chainId, name }) => ({ chainId, name })))
+        .toMatchInlineSnapshot(`
+        [
+          {
+            "chainId": "0x1",
+            "name": "Ethereum",
+          },
+          {
+            "chainId": "0xe708",
+            "name": "Linea",
+          },
+          {
+            "chainId": "0xa",
+            "name": "OP",
+          },
+        ]
+      `);
     });
 
     it('returns empty list when bridgeFeatureFlags are not set', () => {
@@ -1617,16 +1630,23 @@ describe('Bridge selectors', () => {
         featureFlagOverrides: {
           bridgeConfig: {
             chains: {
-              [MultichainNetworks.SOLANA]: {
+              [CHAIN_IDS.MAINNET]: {
+                isActiveSrc: true,
+                isActiveDest: true,
+              },
+              [ChainId.SOLANA]: {
                 isActiveSrc: true,
                 isActiveDest: true,
               },
             },
           },
         },
+        bridgeSliceOverrides: {
+          fromToken: toBridgeToken(getNativeAssetForChainId(ChainId.ETH)),
+        },
         metamaskStateOverrides: {
           internalAccounts: {
-            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            selectedAccount: MOCK_EVM_ACCOUNT.id,
           },
           accountTree: {
             // This account group only has 1 Solana account
@@ -1642,8 +1662,8 @@ describe('Bridge selectors', () => {
       );
       const result = getFromAccount(state as never);
       expect(result).toMatchObject({
-        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-        id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        address: MOCK_EVM_ACCOUNT.address,
+        id: MOCK_EVM_ACCOUNT.id,
         type: 'eip155:eoa',
       });
     });

@@ -19,10 +19,8 @@ import {
 } from '@metamask/bridge-controller';
 import { handleFetch } from '@metamask/controller-utils';
 import { Numeric } from '../../../shared/modules/Numeric';
-import {
-  BRIDGE_CHAINID_COMMON_TOKEN_PAIR,
-  toAssetIdOrThrow,
-} from '../../../shared/constants/bridge';
+import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../shared/constants/bridge';
+import { toAssetId } from '../../../shared/lib/asset-utils';
 import {
   TRON_RESOURCE_SYMBOLS_SET,
   type TronResourceSymbol,
@@ -191,6 +189,15 @@ export const isNetworkAdded = (
   chainId: Hex | CaipChainId,
 ) => availableNetworks.some((network) => network.chainId === chainId);
 
+const toAssetIdOrThrow = (chainId: number | string, address = '') => {
+  const chainIdInCaip = formatChainIdToCaip(chainId);
+  const assetId = toAssetId(address, chainIdInCaip);
+  if (!assetId) {
+    throw new Error(`Failed to create asset ID for: ${address} on ${chainId}`);
+  }
+  return assetId;
+};
+
 export const toBridgeToken = (
   payload: TokenPayload['payload'],
 ): BridgeToken => {
@@ -214,7 +221,7 @@ const createBridgeTokenPayload = (
     symbol: string;
     decimals: number;
     name: string;
-    assetId: CaipAssetType;
+    assetId?: CaipAssetType;
   },
   chainId: ChainId | Hex | CaipChainId,
 ): TokenPayload['payload'] | null => {
