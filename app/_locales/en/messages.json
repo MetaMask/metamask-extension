@@ -6347,7 +6347,7 @@
     "message": "Authorize $1/month for 12 months ($2 total). You'll be billed monthly, not the full amount now."
   },
   "shieldFooterAgreement": {
-    "message": "By continuing, I agree to Transaction Shield $1."
+    "message": "By continuing, I agree to Transaction Shield $1"
   },
   "shieldNotCovered": {
     "message": "Not covered"
