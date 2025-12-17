@@ -98,15 +98,6 @@ export const CONNECTED_ROUTE = '/connected';
 export const CONNECTED_ACCOUNTS_ROUTE = '/connected/accounts';
 export const CONFIRM_TRANSACTION_ROUTE = '/confirm-transaction';
 export const CONFIRMATION_V_NEXT_ROUTE = '/confirmation';
-export const CONFIRM_SEND_ETHER_PATH = '/send-ether';
-export const CONFIRM_SEND_TOKEN_PATH = '/send-token';
-export const CONFIRM_DEPLOY_CONTRACT_PATH = '/deploy-contract';
-export const CONFIRM_APPROVE_PATH = '/approve';
-export const CONFIRM_SET_APPROVAL_FOR_ALL_PATH = '/set-approval-for-all';
-export const CONFIRM_TRANSFER_FROM_PATH = '/transfer-from';
-export const CONFIRM_SAFE_TRANSFER_FROM_PATH = '/safe-transfer-from';
-export const CONFIRM_TOKEN_METHOD_PATH = '/token-method';
-export const CONFIRM_INCREASE_ALLOWANCE_PATH = '/increase-allowance';
 export const SIGNATURE_REQUEST_PATH = '/signature-request';
 export const DECRYPT_MESSAGE_REQUEST_PATH = '/decrypt-message-request';
 export const ENCRYPTION_PUBLIC_KEY_REQUEST_PATH =
@@ -432,51 +423,6 @@ export const ROUTES = [
   {
     path: `${CONFIRMATION_V_NEXT_ROUTE}/:id`,
     label: 'New Confirmation Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: `${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_SEND_ETHER_PATH}`,
-    label: 'Confirm Send Ether Transaction Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: `${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_SEND_TOKEN_PATH}`,
-    label: 'Confirm Send Token Transaction Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: `${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_DEPLOY_CONTRACT_PATH}`,
-    label: 'Confirm Deploy Contract Transaction Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: `${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_APPROVE_PATH}`,
-    label: 'Confirm Approve Transaction Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: `${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_SET_APPROVAL_FOR_ALL_PATH}`,
-    label: 'Confirm Set Approval For All Transaction Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: `${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_TRANSFER_FROM_PATH}`,
-    label: 'Confirm Transfer From Transaction Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: `${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_SAFE_TRANSFER_FROM_PATH}`,
-    label: 'Confirm Safe Transfer From Transaction Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: `${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_TOKEN_METHOD_PATH}`,
-    label: 'Confirm Token Method Transaction Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: `${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_INCREASE_ALLOWANCE_PATH}`,
-    label: 'Confirm Increase Allowance Transaction Page',
     trackInAnalytics: true,
   },
   {
