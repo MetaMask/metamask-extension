@@ -42,7 +42,7 @@ describe('Add wallet', function () {
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .build(),
         testSpecificMock: async (server: Mockttp) => {
-          userStorageMockttpController.setupPath(
+          await userStorageMockttpController.setupPath(
             USER_STORAGE_FEATURE_NAMES.accounts,
             server,
             {
@@ -50,7 +50,10 @@ describe('Add wallet', function () {
             },
           );
           await mockPriceApi(server);
-          return mockIdentityServices(server, userStorageMockttpController);
+          return await mockIdentityServices(
+            server,
+            userStorageMockttpController,
+          );
         },
         title: this.test?.fullTitle(),
       },
@@ -124,7 +127,10 @@ describe('Add wallet', function () {
               getResponse: mockedAccountSyncResponse,
             },
           );
-          return mockIdentityServices(server, userStorageMockttpController);
+          return await mockIdentityServices(
+            server,
+            userStorageMockttpController,
+          );
         },
         title: this.test?.fullTitle(),
       },
@@ -174,14 +180,17 @@ describe('Add wallet', function () {
           .build(),
         testSpecificMock: async (server: Mockttp) => {
           await mockPriceApi(server);
-          userStorageMockttpController.setupPath(
+          await userStorageMockttpController.setupPath(
             USER_STORAGE_FEATURE_NAMES.accounts,
             server,
             {
               getResponse: mockedAccountSyncResponse,
             },
           );
-          return mockIdentityServices(server, userStorageMockttpController);
+          return await mockIdentityServices(
+            server,
+            userStorageMockttpController,
+          );
         },
         title: this.test?.fullTitle(),
       },

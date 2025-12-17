@@ -40,16 +40,16 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
   it('adds a new account and sync it across multiple phases', async function () {
     const userStorageMockttpController = new UserStorageMockttpController();
 
-    const sharedMockSetup = (server: Mockttp) => {
-      userStorageMockttpController.setupPath(
+    const sharedMockSetup = async (server: Mockttp) => {
+      await userStorageMockttpController.setupPath(
         USER_STORAGE_GROUPS_FEATURE_KEY,
         server,
       );
-      userStorageMockttpController.setupPath(
+      await userStorageMockttpController.setupPath(
         USER_STORAGE_WALLETS_FEATURE_KEY,
         server,
       );
-      return mockIdentityServices(server, userStorageMockttpController);
+      return await mockIdentityServices(server, userStorageMockttpController);
     };
 
     // Phase 1: Add a new account and verify it syncs

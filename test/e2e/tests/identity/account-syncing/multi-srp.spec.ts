@@ -43,7 +43,7 @@ describe('Account syncing - Multiple SRPs', function () {
         USER_STORAGE_WALLETS_FEATURE_KEY,
         server,
       );
-      return mockIdentityServices(server, userStorageMockttpController);
+      return await mockIdentityServices(server, userStorageMockttpController);
     };
 
     // Phase 1: Add a second account to the first SRP

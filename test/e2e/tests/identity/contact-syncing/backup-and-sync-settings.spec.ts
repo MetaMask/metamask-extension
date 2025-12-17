@@ -25,13 +25,16 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
         {
           fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
           title: this.test?.fullTitle(),
-          testSpecificMock: (server: Mockttp) => {
-            userStorageMockttpController.setupPath(
+          testSpecificMock: async (server: Mockttp) => {
+            await userStorageMockttpController.setupPath(
               USER_STORAGE_FEATURE_NAMES.addressBook,
               server,
             );
 
-            return mockIdentityServices(server, userStorageMockttpController);
+            return await mockIdentityServices(
+              server,
+              userStorageMockttpController,
+            );
           },
         },
         async ({ driver }) => {
@@ -149,12 +152,15 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
         {
           fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
           title: this.test?.fullTitle(),
-          testSpecificMock: (server: Mockttp) => {
-            userStorageMockttpController.setupPath(
+          testSpecificMock: async (server: Mockttp) => {
+            await userStorageMockttpController.setupPath(
               USER_STORAGE_FEATURE_NAMES.addressBook,
               server,
             );
-            return mockIdentityServices(server, userStorageMockttpController);
+            return await mockIdentityServices(
+              server,
+              userStorageMockttpController,
+            );
           },
         },
         async ({ driver }) => {
@@ -196,12 +202,15 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
         {
           fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
           title: this.test?.fullTitle(),
-          testSpecificMock: (server: Mockttp) => {
-            userStorageMockttpController.setupPath(
+          testSpecificMock: async (server: Mockttp) => {
+            await userStorageMockttpController.setupPath(
               USER_STORAGE_FEATURE_NAMES.addressBook,
               server,
             );
-            return mockIdentityServices(server, userStorageMockttpController);
+            return await mockIdentityServices(
+              server,
+              userStorageMockttpController,
+            );
           },
         },
         async ({ driver }) => {

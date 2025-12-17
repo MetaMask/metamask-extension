@@ -226,7 +226,7 @@ export async function mockInfuraAndAccountSync(
     });
   }
 
-  mockIdentityServices(mockServer, userStorageMockttpController);
+  await mockIdentityServices(mockServer, userStorageMockttpController);
 }
 
 /**

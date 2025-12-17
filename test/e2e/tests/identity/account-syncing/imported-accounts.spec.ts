@@ -45,7 +45,7 @@ describe('Account syncing - Unsupported Account types', function () {
         USER_STORAGE_WALLETS_FEATURE_KEY,
         server,
       );
-      return mockIdentityServices(server, userStorageMockttpController);
+      return await mockIdentityServices(server, userStorageMockttpController);
     };
 
     // Phase 1: Create regular accounts and import a private key account
