@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
-import { extractFailedTestPaths } from '../../.github/scripts/extract-failed-tests';
+import { extractPreviousRunResults } from '../../.github/scripts/extract-failed-tests';
 import {
   formatTime,
   normalizeTestPath,
@@ -76,40 +76,43 @@ async function runningOnGitHubActions(fullTestList: string[]) {
   // Check if this is a re-run with previous results available
   if (runAttempt > 1 && previousResultsPath) {
     console.log(
-      'Re-run detected (attempt %d), extracting failed tests from previous run...',
+      'Re-run detected (attempt %d), extracting results from previous run...',
       runAttempt,
     );
 
-    const failedTests = await extractFailedTestPaths(previousResultsPath);
+    const { failedTests, executedTests } =
+      await extractPreviousRunResults(previousResultsPath);
 
-    if (failedTests.length > 0) {
+    // Tests to re-run = failed tests + tests that were never executed
+    // This handles cases where early failures prevented other tests from running
+    const neverExecutedTests = myOriginalTestList.filter(
+      (testPath) => !executedTests.includes(testPath),
+    );
+
+    if (neverExecutedTests.length > 0) {
       console.log(
-        `Found ${failedTests.length} failed test files in previous run:`,
-        failedTests,
+        `Found ${neverExecutedTests.length} tests that were never executed in previous run:`,
+        neverExecutedTests,
       );
-
-      // Only run tests that were in our original chunk AND failed in the previous run
-      const myTestList = myOriginalTestList.filter((testPath) =>
-        failedTests.includes(testPath),
-      );
-
-      if (myTestList.length > 0) {
-        console.log(
-          `Re-running ${myTestList.length} failed tests from this chunk:`,
-          myTestList,
-        );
-        return { myTestList, changedOrNewTests };
-      }
-
-      console.log(
-        'No failed tests found in this chunk from previous run, skipping.',
-      );
-      return { myTestList: [], changedOrNewTests };
     }
 
-    console.log(
-      'No failed tests found in previous results, running all tests in chunk.',
-    );
+    const testsToRerun = [
+      ...new Set([
+        ...failedTests.filter((t) => myOriginalTestList.includes(t)),
+        ...neverExecutedTests,
+      ]),
+    ];
+
+    if (testsToRerun.length > 0) {
+      console.log(
+        `Re-running ${testsToRerun.length} tests (failed + never executed):`,
+        testsToRerun,
+      );
+      return { myTestList: testsToRerun, changedOrNewTests };
+    }
+
+    console.log('All tests in this chunk passed in previous run, skipping.');
+    return { myTestList: [], changedOrNewTests };
   }
 
   return { myTestList: myOriginalTestList, changedOrNewTests };
