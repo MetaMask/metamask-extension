@@ -45,15 +45,9 @@ export function useSpenderAlerts(): Alert[] {
         txData as `0x${string}`,
       );
       if (approvalData?.spender) {
-        // Check if this is a revoke transaction
-        const isRevokeTransaction =
-          approvalData.isRevokeAll ||
-          (approvalData.amountOrTokenId &&
-            new BigNumber(approvalData.amountOrTokenId).isZero());
-
         return {
           spenderAddress: approvalData.spender,
-          isRevoke: Boolean(isRevokeTransaction),
+          isRevoke: Boolean(approvalData.isRevoke),
         };
       }
     }

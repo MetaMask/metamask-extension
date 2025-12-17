@@ -355,12 +355,42 @@ export function parseApprovalTransactionData(data: Hex):
       amountOrTokenId?: BigNumber;
       isApproveAll?: boolean;
       isRevokeAll?: boolean;
+      isRevoke?: boolean;
       name: string;
       tokenAddress?: Hex;
       spender?: Hex;
     }
   | undefined {
-  const transactionDescription = parseStandardTokenTransactionData(data);
+  // Try to decode with each interface to determine the token standard
+  const interfaces = [
+    { iface: erc20Interface, isERC20: true },
+    { iface: erc721Interface, isERC20: false },
+    { iface: erc1155Interface, isERC20: false },
+    { iface: USDCInterface, isERC20: true },
+    { iface: permit2Interface, isERC20: true },
+  ];
+
+  let transactionDescription;
+  let isERC20 = false;
+
+  for (const { iface, isERC20: isERC20Type } of interfaces) {
+    try {
+      transactionDescription = iface.parseTransaction({ data });
+      if (transactionDescription) {
+        // If it's an approval method, record if it's ERC20
+        if (
+          APPROVAL_METHOD_NAMES.includes(transactionDescription.name) ||
+          transactionDescription.name === 'approve'
+        ) {
+          isERC20 = isERC20Type;
+        }
+        break;
+      }
+    } catch {
+      // Intentionally empty
+    }
+  }
+
   const { args, name } = transactionDescription ?? {};
 
   if (!APPROVAL_METHOD_NAMES.includes(name ?? '') || !name) {
@@ -369,6 +399,7 @@ export function parseApprovalTransactionData(data: Hex):
 
   const rawAmountOrTokenId =
     args?._value ?? // ERC-20 - approve
+    args?._tokenId ?? // ERC-721 - approve
     args?.increment ?? // Fiat Token V2 - increaseAllowance
     args?.amount; // Permit2 - approve
 
@@ -382,10 +413,24 @@ export function parseApprovalTransactionData(data: Hex):
   const isRevokeAll = name === 'setApprovalForAll' && args?._approved === false;
   const tokenAddress = name === 'approve' ? args?.token : undefined;
 
+  // Determine if this is a revoke transaction
+  // - ERC-721/ERC-1155: setApprovalForAll(operator, false)
+  // - ERC-721: approve(address(0), tokenId) - approving zero address
+  // - ERC-20: approve(spender, 0) - zero amount
+  const isERC721SingleRevoke =
+    !isERC20 &&
+    name === 'approve' &&
+    spender?.toLowerCase() === '0x0000000000000000000000000000000000000000';
+
+  const isERC20Revoke = isERC20 && amountOrTokenId?.isZero();
+
+  const isRevoke = isRevokeAll || isERC721SingleRevoke || isERC20Revoke;
+
   return {
     amountOrTokenId,
     isApproveAll,
     isRevokeAll,
+    isRevoke,
     name,
     tokenAddress,
     spender,

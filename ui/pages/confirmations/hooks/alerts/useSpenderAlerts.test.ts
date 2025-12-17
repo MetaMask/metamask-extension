@@ -124,6 +124,7 @@ describe('useSpenderAlerts', () => {
       mockParseApprovalTransactionData.mockReturnValue({
         name: 'approve',
         spender: MOCK_SPENDER_ADDRESS as `0x${string}`,
+        isRevoke: false,
       });
 
       // Mock malicious trust signal response
@@ -161,6 +162,7 @@ describe('useSpenderAlerts', () => {
       mockParseApprovalTransactionData.mockReturnValue({
         name: 'approve',
         spender: MOCK_SPENDER_ADDRESS as `0x${string}`,
+        isRevoke: false,
       });
 
       // Mock warning trust signal response
@@ -192,6 +194,7 @@ describe('useSpenderAlerts', () => {
       mockParseApprovalTransactionData.mockReturnValue({
         name: 'approve',
         spender: MOCK_SPENDER_ADDRESS as `0x${string}`,
+        isRevoke: false,
       });
 
       // Mock benign trust signal response (verified/unknown)
@@ -222,6 +225,7 @@ describe('useSpenderAlerts', () => {
       mockParseApprovalTransactionData.mockReturnValue({
         name: 'approve',
         spender: MOCK_SPENDER_ADDRESS as `0x${string}`,
+        isRevoke: false,
       });
 
       // Mock unknown trust signal response
@@ -235,7 +239,7 @@ describe('useSpenderAlerts', () => {
       expect(result.current).toHaveLength(0);
     });
 
-    it('should not return alert when revoking malicious spender (amount == 0)', () => {
+    it('should not return alert when revoking ERC-20 malicious spender (amount == 0)', () => {
       const mockTransaction = {
         id: MOCK_TRANSACTION_ID,
         type: TransactionType.tokenMethodApprove,
@@ -253,7 +257,8 @@ describe('useSpenderAlerts', () => {
       mockParseApprovalTransactionData.mockReturnValue({
         name: 'approve',
         spender: MOCK_SPENDER_ADDRESS as `0x${string}`,
-        amountOrTokenId: new BigNumber(0), // Zero amount = revoke
+        amountOrTokenId: new BigNumber(0),
+        isRevoke: true, // Detected as revoke
       });
 
       // Mock malicious trust signal response
@@ -264,7 +269,7 @@ describe('useSpenderAlerts', () => {
 
       const { result } = renderHook(() => useSpenderAlerts());
 
-      // Should not show alert for revoke transaction
+      // Should not show alert for ERC-20 revoke transaction
       expect(result.current).toHaveLength(0);
     });
 
@@ -287,6 +292,7 @@ describe('useSpenderAlerts', () => {
         name: 'setApprovalForAll',
         spender: MOCK_SPENDER_ADDRESS as `0x${string}`,
         isRevokeAll: true, // Revoking all approvals
+        isRevoke: true, // Detected as revoke
       });
 
       // Mock malicious trust signal response
@@ -298,6 +304,77 @@ describe('useSpenderAlerts', () => {
       const { result } = renderHook(() => useSpenderAlerts());
 
       // Should not show alert for revoke transaction
+      expect(result.current).toHaveLength(0);
+    });
+
+    it('should return alert for ERC-721 approve with tokenId 0 (SECURITY: prevent bypass)', () => {
+      const mockTransaction = {
+        id: MOCK_TRANSACTION_ID,
+        type: TransactionType.tokenMethodApprove,
+        chainId: '0x1',
+        txParams: {
+          data: '0xerc721approvedata',
+        },
+      };
+
+      mockUseConfirmContext.mockReturnValue({
+        currentConfirmation: mockTransaction,
+        isScrollToBottomCompleted: false,
+        setIsScrollToBottomCompleted: jest.fn(),
+      } as unknown as ReturnType<typeof useConfirmContext>);
+      mockParseApprovalTransactionData.mockReturnValue({
+        name: 'approve',
+        spender: MOCK_SPENDER_ADDRESS as `0x${string}`,
+        amountOrTokenId: new BigNumber(0), // TokenId 0 - NOT a revoke!
+        isRevoke: false, // Correctly NOT detected as revoke
+      });
+
+      // Mock malicious trust signal response
+      mockUseTrustSignal.mockReturnValue({
+        state: TrustSignalDisplayState.Malicious,
+        label: 'Known malicious address',
+      });
+
+      const { result } = renderHook(() => useSpenderAlerts());
+
+      // SECURITY: Should show alert for NFT approval even with tokenId 0
+      // This prevents attackers from bypassing the security alert
+      expect(result.current).toHaveLength(1);
+      expect(result.current[0]).toEqual(expectedMaliciousAlert);
+    });
+
+    it('should not return alert when revoking ERC-721 single token approval (address(0))', () => {
+      const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+      const mockTransaction = {
+        id: MOCK_TRANSACTION_ID,
+        type: TransactionType.tokenMethodApprove,
+        chainId: '0x1',
+        txParams: {
+          data: '0xerc721approvedata',
+        },
+      };
+
+      mockUseConfirmContext.mockReturnValue({
+        currentConfirmation: mockTransaction,
+        isScrollToBottomCompleted: false,
+        setIsScrollToBottomCompleted: jest.fn(),
+      } as unknown as ReturnType<typeof useConfirmContext>);
+      mockParseApprovalTransactionData.mockReturnValue({
+        name: 'approve',
+        spender: ZERO_ADDRESS as `0x${string}`, // Zero address = revoke for ERC-721
+        amountOrTokenId: new BigNumber(123), // Some tokenId
+        isRevoke: true, // Detected as revoke
+      });
+
+      // Mock malicious trust signal - but spender is zero address
+      mockUseTrustSignal.mockReturnValue({
+        state: TrustSignalDisplayState.Unknown, // Zero address won't be malicious
+        label: null,
+      });
+
+      const { result } = renderHook(() => useSpenderAlerts());
+
+      // Should not show alert when revoking ERC-721 approval via approve(address(0), tokenId)
       expect(result.current).toHaveLength(0);
     });
   });
