@@ -56,7 +56,7 @@ export class ShieldMockttpService {
   ) {
     // Mock Identity Services first as shield/subscription APIs depend on it (Auth Token)
     const userStorageMockttpController = new UserStorageMockttpController();
-    userStorageMockttpController.setupPath(
+    await userStorageMockttpController.setupPath(
       USER_STORAGE_FEATURE_NAMES.accounts,
       server,
     );

@@ -90,7 +90,7 @@ export async function mockIdentityServices(
   for (const path of pathsToSetup) {
     const alreadyMocked = await isPathAlreadyMocked(server, path);
     if (!alreadyMocked) {
-      userStorageMockttpControllerInstance.setupPath(path, server);
+      await userStorageMockttpControllerInstance.setupPath(path, server);
     } else {
       console.log(`[Identity Mocks] Path '${path}' already mocked, skipping`);
     }
@@ -195,12 +195,12 @@ export async function mockInfuraAndAccountSync(
   const accounts = options.accountsToMockBalances ?? [];
 
   // Set up User Storage / Account Sync mock
-  userStorageMockttpController.setupPath(
+  await userStorageMockttpController.setupPath(
     USER_STORAGE_WALLETS_FEATURE_KEY,
     mockServer,
   );
 
-  userStorageMockttpController.setupPath(
+  await userStorageMockttpController.setupPath(
     USER_STORAGE_GROUPS_FEATURE_KEY,
     mockServer,
   );

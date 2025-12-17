@@ -34,12 +34,12 @@ describe('Account syncing - Multiple SRPs', function () {
   it('adds accounts across multiple SRPs and sync them', async function () {
     const userStorageMockttpController = new UserStorageMockttpController();
 
-    const sharedMockSetup = (server: Mockttp) => {
-      userStorageMockttpController.setupPath(
+    const sharedMockSetup = async (server: Mockttp) => {
+      await userStorageMockttpController.setupPath(
         USER_STORAGE_GROUPS_FEATURE_KEY,
         server,
       );
-      userStorageMockttpController.setupPath(
+      await userStorageMockttpController.setupPath(
         USER_STORAGE_WALLETS_FEATURE_KEY,
         server,
       );

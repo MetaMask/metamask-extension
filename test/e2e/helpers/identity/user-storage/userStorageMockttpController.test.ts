@@ -14,7 +14,7 @@ describe('UserStorageMockttpController', () => {
     it('handles GET requests that have empty response', async () => {
       const controller = new UserStorageMockttpController();
 
-      controller.setupPath(USER_STORAGE_FEATURE_NAMES.accounts, mockServer);
+      await controller.setupPath(USER_STORAGE_FEATURE_NAMES.accounts, mockServer);
 
       const request = await controller.onGet(
         USER_STORAGE_FEATURE_NAMES.accounts,
@@ -46,7 +46,7 @@ describe('UserStorageMockttpController', () => {
         },
       ];
 
-      controller.setupPath(USER_STORAGE_FEATURE_NAMES.accounts, mockServer, {
+      await controller.setupPath(USER_STORAGE_FEATURE_NAMES.accounts, mockServer, {
         getResponse: mockedData,
       });
 
@@ -80,7 +80,7 @@ describe('UserStorageMockttpController', () => {
         },
       ];
 
-      controller.setupPath(USER_STORAGE_FEATURE_NAMES.accounts, mockServer, {
+      await controller.setupPath(USER_STORAGE_FEATURE_NAMES.accounts, mockServer, {
         getResponse: mockedData,
       });
 
@@ -114,7 +114,7 @@ describe('UserStorageMockttpController', () => {
         },
       ];
 
-      controller.setupPath(USER_STORAGE_FEATURE_NAMES.accounts, mockServer, {
+      await controller.setupPath(USER_STORAGE_FEATURE_NAMES.accounts, mockServer, {
         getResponse: mockedData,
       });
 
@@ -154,7 +154,7 @@ describe('UserStorageMockttpController', () => {
         SrpIdentifier: `${MOCK_SRP_E2E_IDENTIFIER_BASE_KEY}_1`,
       };
 
-      controller.setupPath(USER_STORAGE_FEATURE_NAMES.accounts, mockServer, {
+      await controller.setupPath(USER_STORAGE_FEATURE_NAMES.accounts, mockServer, {
         getResponse: mockedData,
       });
 
@@ -211,7 +211,7 @@ describe('UserStorageMockttpController', () => {
         SrpIdentifier: `${MOCK_SRP_E2E_IDENTIFIER_BASE_KEY}_1`,
       };
 
-      controller.setupPath(USER_STORAGE_FEATURE_NAMES.accounts, mockServer, {
+      await controller.setupPath(USER_STORAGE_FEATURE_NAMES.accounts, mockServer, {
         getResponse: mockedData,
       });
 
@@ -276,7 +276,7 @@ describe('UserStorageMockttpController', () => {
         },
       ];
 
-      controller.setupPath(USER_STORAGE_FEATURE_NAMES.accounts, mockServer, {
+      await controller.setupPath(USER_STORAGE_FEATURE_NAMES.accounts, mockServer, {
         getResponse: mockedData,
       });
 
@@ -332,7 +332,7 @@ describe('UserStorageMockttpController', () => {
         },
       ];
 
-      controller.setupPath(USER_STORAGE_FEATURE_NAMES.accounts, mockServer, {
+      await controller.setupPath(USER_STORAGE_FEATURE_NAMES.accounts, mockServer, {
         getResponse: mockedData,
       });
 
@@ -381,7 +381,7 @@ describe('UserStorageMockttpController', () => {
         },
       ];
 
-      controller.setupPath(USER_STORAGE_FEATURE_NAMES.accounts, mockServer, {
+      await controller.setupPath(USER_STORAGE_FEATURE_NAMES.accounts, mockServer, {
         getResponse: mockedData,
       });
 
@@ -434,7 +434,7 @@ describe('UserStorageMockttpController', () => {
         },
       ];
 
-      controller.setupPath(USER_STORAGE_FEATURE_NAMES.accounts, mockServer, {
+      await controller.setupPath(USER_STORAGE_FEATURE_NAMES.accounts, mockServer, {
         getResponse: mockedData,
       });
 

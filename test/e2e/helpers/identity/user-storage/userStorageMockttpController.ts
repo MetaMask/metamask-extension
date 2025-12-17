@@ -341,7 +341,7 @@ export class UserStorageMockttpController {
     };
   };
 
-  setupPath = (
+  setupPath = async (
     path: keyof typeof pathRegexps,
     server: Mockttp,
     overrides?: {
@@ -361,21 +361,21 @@ export class UserStorageMockttpController {
       server,
     });
 
-    this.paths
+    await this.paths
       .get(path)
       ?.server.forGet(pathRegexps[path])
       .always()
       .thenCallback((request) =>
         this.onGet(path, request, overrides?.getStatusCode),
       );
-    this.paths
+    await this.paths
       .get(path)
       ?.server.forPut(pathRegexps[path])
       .always()
       .thenCallback((request) =>
         this.onPut(path, request, overrides?.putStatusCode),
       );
-    this.paths
+    await this.paths
       .get(path)
       ?.server.forDelete(pathRegexps[path])
       .always()

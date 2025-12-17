@@ -36,12 +36,12 @@ describe('Account syncing - Unsupported Account types', function () {
   it('does not sync imported accounts and exclude them when logging into a fresh app instance', async function () {
     const userStorageMockttpController = new UserStorageMockttpController();
 
-    const sharedMockSetup = (server: Mockttp) => {
-      userStorageMockttpController.setupPath(
+    const sharedMockSetup = async (server: Mockttp) => {
+      await userStorageMockttpController.setupPath(
         USER_STORAGE_GROUPS_FEATURE_KEY,
         server,
       );
-      userStorageMockttpController.setupPath(
+      await userStorageMockttpController.setupPath(
         USER_STORAGE_WALLETS_FEATURE_KEY,
         server,
       );

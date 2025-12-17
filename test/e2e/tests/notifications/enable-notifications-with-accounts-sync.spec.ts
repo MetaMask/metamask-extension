@@ -75,7 +75,7 @@ describe('Enable Notifications - With Accounts Syncing On', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (server: Mockttp) => {
-            userStorageMockttpController.setupPath(
+            await userStorageMockttpController.setupPath(
               USER_STORAGE_FEATURE_NAMES.accounts,
               server,
               {
@@ -124,7 +124,7 @@ describe('Enable Notifications - With Accounts Syncing On', function () {
             .build(),
           title: this.test?.fullTitle(),
           testSpecificMock: async (server: Mockttp) => {
-            userStorageMockttpController.setupPath(
+            await userStorageMockttpController.setupPath(
               USER_STORAGE_FEATURE_NAMES.accounts,
               server,
             );
