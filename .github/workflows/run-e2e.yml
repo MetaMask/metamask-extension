@@ -76,6 +76,7 @@ jobs:
       PR_NUMBER: ${{ github.event.pull_request.number || '' }}
       TEST_SUITE_NAME: ${{ inputs.test-suite-name }}
       IS_SIDEPANEL: true
+      RUN_ATTEMPT: ${{ github.run_attempt }}
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -133,12 +134,24 @@ jobs:
           name: test-runs-for-splitting
           path: test/test-results/
 
+      # On re-run (run_attempt > 1), download previous test results to identify failed tests
+      - name: Download previous test results (on re-run)
+        if: ${{ github.run_attempt > 1 }}
+        id: download-previous-results
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.JOB_NAME }}
+          path: ./previous-test-results/
+
       - name: Run E2E tests
         timeout-minutes: ${{ inputs.test-timeout-minutes }}
         run: ${{ inputs.test-command }} --retries 1
         env:
           # The properties are picked up by mocha-junit-reporter and added to the XML test results
           PROPERTIES: 'JOB_NAME:${{ env.JOB_NAME }},RUN_ID:${{ env.RUN_ID }},PR_NUMBER:${{ env.PR_NUMBER }}'
+          # On re-run, pass the path to previous results to run only failed tests
+          PREVIOUS_RESULTS_PATH: ${{ steps.download-previous-results.outcome == 'success' && './previous-test-results/test/test-results/e2e' || '' }}
 
       - name: Upload test artifacts
         if: ${{ !cancelled() }}

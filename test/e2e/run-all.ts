@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
+import { extractFailedTestPaths } from '../../.github/scripts/extract-failed-tests';
 import {
   formatTime,
   normalizeTestPath,
@@ -39,7 +40,7 @@ const getTestPathsForTestDir = async (testDir: string): Promise<string[]> => {
 };
 
 // For running E2Es in parallel in GitHub Actions
-function runningOnGitHubActions(fullTestList: string[]) {
+async function runningOnGitHubActions(fullTestList: string[]) {
   let changedOrNewTests: string[] = [];
 
   if (!shouldE2eQualityGateBeSkipped()) {
@@ -53,9 +54,11 @@ function runningOnGitHubActions(fullTestList: string[]) {
   // GitHub Actions uses matrix.index (0-based) and matrix.total values for test splitting
   const matrixIndex = parseInt(process.env.MATRIX_INDEX || '0', 10);
   const matrixTotal = parseInt(process.env.MATRIX_TOTAL || '1', 10);
+  const runAttempt = parseInt(process.env.RUN_ATTEMPT || '1', 10);
+  const previousResultsPath = process.env.PREVIOUS_RESULTS_PATH;
 
   console.log(
-    `GitHub Actions matrix: index ${matrixIndex} of ${matrixTotal} total jobs`,
+    `GitHub Actions matrix: index ${matrixIndex} of ${matrixTotal} total jobs (attempt ${runAttempt})`,
   );
 
   const chunks = splitTestsByTimings(
@@ -68,9 +71,48 @@ function runningOnGitHubActions(fullTestList: string[]) {
     `Expected chunk run time: ${formatTime(chunks[matrixIndex].time)}`,
   );
 
-  const myTestList = chunks[matrixIndex].paths || [];
+  const myOriginalTestList = chunks[matrixIndex].paths || [];
 
-  return { myTestList, changedOrNewTests };
+  // Check if this is a re-run with previous results available
+  if (runAttempt > 1 && previousResultsPath) {
+    console.log(
+      'Re-run detected (attempt %d), extracting failed tests from previous run...',
+      runAttempt,
+    );
+
+    const failedTests = await extractFailedTestPaths(previousResultsPath);
+
+    if (failedTests.length > 0) {
+      console.log(
+        `Found ${failedTests.length} failed test files in previous run:`,
+        failedTests,
+      );
+
+      // Only run tests that were in our original chunk AND failed in the previous run
+      const myTestList = myOriginalTestList.filter((testPath) =>
+        failedTests.includes(testPath),
+      );
+
+      if (myTestList.length > 0) {
+        console.log(
+          `Re-running ${myTestList.length} failed tests from this chunk:`,
+          myTestList,
+        );
+        return { myTestList, changedOrNewTests };
+      }
+
+      console.log(
+        'No failed tests found in this chunk from previous run, skipping.',
+      );
+      return { myTestList: [], changedOrNewTests };
+    }
+
+    console.log(
+      'No failed tests found in previous results, running all tests in chunk.',
+    );
+  }
+
+  return { myTestList: myOriginalTestList, changedOrNewTests };
 }
 
 async function main(): Promise<void> {
@@ -225,6 +267,12 @@ async function main(): Promise<void> {
   if (process.env.GITHUB_ACTION) {
     ({ myTestList, changedOrNewTests } =
       await runningOnGitHubActions(testPaths));
+
+    // If no tests to run (e.g., all passed in previous attempt), exit early
+    if (myTestList.length === 0) {
+      console.log('No tests to run, exiting successfully.');
+      return;
+    }
   } else {
     myTestList = testPaths;
   }
