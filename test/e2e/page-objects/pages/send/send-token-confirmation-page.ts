@@ -21,7 +21,7 @@ class SendTokenConfirmPage {
 
   private readonly editGasFeeItem = (
     gasFeeType: 'low' | 'medium' | 'high' | 'custom' | 'dappSuggested',
-  ) => `[data-testid="edit-gas-fee-item-${gasFeeType}"] > span:first-child`;
+  ) => `[data-testid="edit-gas-fee-item-${gasFeeType}"]`;
 
   private readonly editGasFeeSeconds = {
     text: 'sec',
