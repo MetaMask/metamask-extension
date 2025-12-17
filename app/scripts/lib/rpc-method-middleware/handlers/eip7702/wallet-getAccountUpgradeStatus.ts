@@ -71,17 +71,12 @@ async function walletGetAccountUpgradeStatusImplementation(
     isEip7702Supported,
   }: WalletGetAccountUpgradeStatusHooks,
 ): Promise<void> {
-  // Cast to satisfy the external handler's expected type
-  await walletGetAccountUpgradeStatusHandler(
-    req as Parameters<typeof walletGetAccountUpgradeStatusHandler>[0],
-    res as PendingJsonRpcResponse,
-    {
-      getCurrentChainIdForDomain,
-      getCode,
-      getSelectedNetworkClientIdForChain,
-      getPermittedAccountsForOrigin: async () => getAccounts(req.origin),
-      isEip7702Supported,
-    },
-  );
+  await walletGetAccountUpgradeStatusHandler(req, res, {
+    getCurrentChainIdForDomain,
+    getCode,
+    getSelectedNetworkClientIdForChain,
+    getPermittedAccountsForOrigin: async () => getAccounts(req.origin),
+    isEip7702Supported,
+  });
   return end();
 }

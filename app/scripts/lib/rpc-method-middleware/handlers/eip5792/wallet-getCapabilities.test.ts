@@ -78,30 +78,15 @@ describe('wallet_getCapabilities', () => {
   });
 
   it('calls the external wallet_getCapabilities handler', async () => {
-    const { handler } = createMockedHandler();
+    const { handler, end, response } = createMockedHandler();
 
     await handler(baseRequest);
 
     expect(mockExternalHandler).toHaveBeenCalledTimes(1);
-  });
-
-  it('calls end callback after processing', async () => {
-    const { handler, end } = createMockedHandler();
-
-    await handler(baseRequest);
-
     expect(end).toHaveBeenCalledTimes(1);
-  });
-
-  it('returns capabilities in the response', async () => {
-    const { handler, response } = createMockedHandler();
-
-    await handler(baseRequest);
-
-    expect(response.result).toStrictEqual({
-      '0x1': {
-        atomicBatch: { supported: true },
-      },
+    expect(mockExternalHandler).toHaveBeenCalledWith(baseRequest, response, {
+      getAccounts: expect.any(Function),
+      getCapabilities: expect.any(Function),
     });
   });
 });

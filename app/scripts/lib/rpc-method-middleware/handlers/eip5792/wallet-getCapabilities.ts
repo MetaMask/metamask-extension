@@ -2,7 +2,11 @@ import type {
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
 } from '@metamask/json-rpc-engine';
-import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
+import type {
+  Hex,
+  JsonRpcRequest,
+  PendingJsonRpcResponse,
+} from '@metamask/utils';
 import {
   walletGetCapabilities as walletGetCapabilitiesHandler,
   getCapabilities,
@@ -63,11 +67,13 @@ async function walletGetCapabilitiesImplementation(
 ): Promise<void> {
   await walletGetCapabilitiesHandler(req, res, {
     getAccounts: async () => getAccounts(),
-    getCapabilities: getCapabilities.bind(
-      null,
-      getCapabilitiesHooks,
-      eip5792Messenger,
-    ),
+    getCapabilities: (address: Hex, chainIds?: Hex[]) =>
+      getCapabilities(
+        getCapabilitiesHooks,
+        eip5792Messenger,
+        address,
+        chainIds,
+      ),
   });
   return end();
 }

@@ -23,7 +23,7 @@ const baseRequest = {
   jsonrpc: '2.0' as const,
   id: 1,
   method: 'wallet_getAccountUpgradeStatus',
-  origin: 'metamask',
+  origin: 'test.com',
   params: {
     account: '0xdead' as `0x${string}`,
     chainId: '0x1' as `0x${string}`,
@@ -83,12 +83,13 @@ describe('wallet_getAccountUpgradeStatus', () => {
     ]);
   });
 
-  it('calls the external wallet_getAccountUpgradeStatus handler', async () => {
-    const { handler } = createMockedHandler();
+  it('calls the external wallet_getAccountUpgradeStatus handler and ends the request', async () => {
+    const { handler, end } = createMockedHandler();
 
     await handler(baseRequest);
 
     expect(mockExternalHandler).toHaveBeenCalledTimes(1);
+    expect(end).toHaveBeenCalledTimes(1);
   });
 
   it('passes the correct hooks to the external handler', async () => {
@@ -119,14 +120,6 @@ describe('wallet_getAccountUpgradeStatus', () => {
     expect(hooksPassed).toHaveProperty('getPermittedAccountsForOrigin');
   });
 
-  it('calls end callback after processing', async () => {
-    const { handler, end } = createMockedHandler();
-
-    await handler(baseRequest);
-
-    expect(end).toHaveBeenCalledTimes(1);
-  });
-
   it('returns the status result in the response', async () => {
     const { handler, response } = createMockedHandler();
 
@@ -141,8 +134,8 @@ describe('wallet_getAccountUpgradeStatus', () => {
     await handler(baseRequest);
 
     const hooksPassed = mockExternalHandler.mock.calls[0][2];
-    await hooksPassed.getPermittedAccountsForOrigin();
+    await hooksPassed.getPermittedAccountsForOrigin('test.com');
 
-    expect(getAccounts).toHaveBeenCalledWith('metamask');
+    expect(getAccounts).toHaveBeenCalledWith('test.com');
   });
 });

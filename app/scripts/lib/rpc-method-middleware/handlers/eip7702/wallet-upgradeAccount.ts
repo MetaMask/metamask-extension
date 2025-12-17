@@ -76,16 +76,11 @@ async function walletUpgradeAccountImplementation(
     getAccounts,
   }: WalletUpgradeAccountHooks,
 ): Promise<void> {
-  // Cast to satisfy the external handler's expected type
-  await walletUpgradeAccountHandler(
-    req as Parameters<typeof walletUpgradeAccountHandler>[0],
-    res,
-    {
-      upgradeAccount,
-      getCurrentChainIdForDomain,
-      isEip7702Supported,
-      getPermittedAccountsForOrigin: async () => getAccounts(req.origin),
-    },
-  );
+  await walletUpgradeAccountHandler(req, res, {
+    upgradeAccount,
+    getCurrentChainIdForDomain,
+    isEip7702Supported,
+    getPermittedAccountsForOrigin: async () => getAccounts(req.origin),
+  });
   return end();
 }

@@ -84,28 +84,15 @@ describe('wallet_sendCalls', () => {
   });
 
   it('calls the external wallet_sendCalls handler', async () => {
-    const { handler } = createMockedHandler();
+    const { handler, end, response } = createMockedHandler();
 
     await handler(baseRequest);
 
     expect(mockExternalHandler).toHaveBeenCalledTimes(1);
-  });
-
-  it('calls end callback after processing', async () => {
-    const { handler, end } = createMockedHandler();
-
-    await handler(baseRequest);
-
     expect(end).toHaveBeenCalledTimes(1);
-  });
-
-  it('returns the batch call ID in the response', async () => {
-    const { handler, response } = createMockedHandler();
-
-    await handler(baseRequest);
-
-    expect(response.result).toStrictEqual({
-      id: '0x123abc',
+    expect(mockExternalHandler).toHaveBeenCalledWith(baseRequest, response, {
+      getAccounts: expect.any(Function),
+      processSendCalls: expect.any(Function),
     });
   });
 });

@@ -73,26 +73,15 @@ describe('wallet_getCallsStatus', () => {
   });
 
   it('calls the external wallet_getCallsStatus handler', async () => {
-    const { handler } = createMockedHandler();
+    const { handler, response, end } = createMockedHandler();
 
     await handler(baseRequest);
 
     expect(mockExternalHandler).toHaveBeenCalledTimes(1);
-  });
-
-  it('calls end callback after processing', async () => {
-    const { handler, end } = createMockedHandler();
-
-    await handler(baseRequest);
-
     expect(end).toHaveBeenCalledTimes(1);
-  });
-
-  it('returns the call status in the response', async () => {
-    const { handler, response } = createMockedHandler();
-
-    await handler(baseRequest);
-
+    expect(mockExternalHandler).toHaveBeenCalledWith(baseRequest, response, {
+      getCallsStatus: expect.any(Function),
+    });
     expect(response.result).toStrictEqual({
       status: 'CONFIRMED',
       receipts: [
