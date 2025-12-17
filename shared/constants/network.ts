@@ -211,6 +211,8 @@ export const CHAIN_IDS = {
   MONAD: '0x8f',
   HYPE: '0x3e7',
   X_LAYER: '0xc4',
+  ETHERLINK: '0xa729',
+  MSU: '0x10b3e',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -375,6 +377,8 @@ export const LUKSO_DISPLAY_NAME = 'Lukso';
 export const INJECTIVE_DISPLAY_NAME = 'Injective';
 export const HYPEREVM_DISPLAY_NAME = 'HyperEVM';
 export const X_LAYER_DISPLAY_NAME = 'X Layer';
+export const ETHERLINK_DISPLAY_NAME = 'Etherlink';
+export const MSU_DISPLAY_NAME = 'MapleStory Universe';
 
 // If `network.ts` is being run in the Node.js environment, `infura-project-id.ts` will not be imported,
 // so we need to look at process.env.INFURA_PROJECT_ID instead.
@@ -462,6 +466,8 @@ export const CURRENCY_SYMBOLS = {
   INJECTIVE: 'INJ',
   HYPE: 'HYPE',
   X_LAYER: 'OKB',
+  ETHERLINK: 'XTZ',
+  MSU: 'NXPC',
 } as const;
 
 // Non-EVM currency symbols
@@ -687,6 +693,10 @@ export const INJECTIVE_IMAGE_URL = './images/injective.svg';
 export const HYPEREVM_IMAGE_URL = './images/hyperevm.svg';
 export const X_LAYER_IMAGE_URL = './images/x-layer.svg';
 export const X_LAYER_NATIVE_TOKEN_IMAGE_URL = './images/x-layer-native.svg';
+export const ETHERLINK_IMAGE_URL = './images/etherlink.svg';
+export const ETHERLINK_NATIVE_TOKEN_IMAGE_URL = './images/etherlink-native.svg';
+export const MSU_IMAGE_URL = './images/msu.svg';
+export const MSU_NATIVE_TOKEN_IMAGE_URL = './images/msu-native.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -859,6 +869,8 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.HYPE]: HYPEREVM_DISPLAY_NAME,
   [CHAIN_IDS.CRONOS]: CRONOS_DISPLAY_NAME,
   [CHAIN_IDS.X_LAYER]: X_LAYER_DISPLAY_NAME,
+  [CHAIN_IDS.ETHERLINK]: ETHERLINK_DISPLAY_NAME,
+  [CHAIN_IDS.MSU]: MSU_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -1020,6 +1032,8 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.INJECTIVE]: CURRENCY_SYMBOLS.INJECTIVE,
   [CHAIN_IDS.HYPE]: CURRENCY_SYMBOLS.HYPE,
   [CHAIN_IDS.X_LAYER]: CURRENCY_SYMBOLS.X_LAYER,
+  [CHAIN_IDS.ETHERLINK]: CURRENCY_SYMBOLS.ETHERLINK,
+  [CHAIN_IDS.MSU]: CURRENCY_SYMBOLS.MSU,
 } as const;
 
 /**
@@ -1201,6 +1215,8 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.INJECTIVE]: INJECTIVE_IMAGE_URL,
   [CHAIN_IDS.HYPE]: HYPEREVM_IMAGE_URL,
   [CHAIN_IDS.X_LAYER]: X_LAYER_IMAGE_URL,
+  [CHAIN_IDS.ETHERLINK]: ETHERLINK_IMAGE_URL,
+  [CHAIN_IDS.MSU]: MSU_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1288,6 +1304,8 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.HYPE]: HYPEREVM_IMAGE_URL,
   [CHAIN_IDS.CRONOS]: CRONOS_IMAGE_URL,
   [CHAIN_IDS.X_LAYER]: X_LAYER_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.ETHERLINK]: ETHERLINK_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.MSU]: MSU_NATIVE_TOKEN_IMAGE_URL,
   [MultichainNetworks.SOLANA]: SOLANA_IMAGE_URL,
   [MultichainNetworks.SOLANA_TESTNET]: SOLANA_TESTNET_IMAGE_URL,
   [MultichainNetworks.SOLANA_DEVNET]: SOLANA_DEVNET_IMAGE_URL,
