@@ -15,7 +15,7 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import { KeyringObject } from '@metamask/keyring-controller';
 import { Json } from '@metamask/utils';
 import {
-  EntryModalSourceEnum,
+  ShieldMetricsSoruceEnum,
   ShieldSubscriptionRequestSubscriptionStateEnum,
   ShieldUserAccountCategoryEnum,
   ShieldUserAccountTypeEnum,
@@ -226,7 +226,7 @@ export function getSubscriptionRequestTrackingProps(
       shieldSubscriptionMetricsProps?.marketingUtmParams,
     ),
     source:
-      shieldSubscriptionMetricsProps?.source || EntryModalSourceEnum.Settings,
+      shieldSubscriptionMetricsProps?.source || ShieldMetricsSoruceEnum.Settings,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     multi_chain_balance_category: getUserBalanceCategory(

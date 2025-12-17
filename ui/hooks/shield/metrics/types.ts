@@ -7,9 +7,8 @@ import {
 } from '@metamask/subscription-controller';
 import { TransactionType } from '@metamask/transaction-controller';
 import {
-  EntryModalSourceEnum,
+  ShieldMetricsSoruceEnum,
   ShieldCtaActionClickedEnum,
-  ShieldCtaSourceEnum,
   ShieldErrorStateActionClickedEnum,
   ShieldErrorStateLocationEnum,
   ShieldErrorStateViewEnum,
@@ -22,7 +21,7 @@ import {
 } from '../../../../shared/types';
 
 export type CaptureShieldEntryModalEventParams = {
-  source: EntryModalSourceEnum;
+  source: ShieldMetricsSoruceEnum;
   type: ModalType;
 
   /**
@@ -104,7 +103,7 @@ export type CaptureShieldCryptoConfirmationEventParams =
   };
 
 export type CaptureShieldCtaClickedEventParams = {
-  source: ShieldCtaSourceEnum;
+  source: ShieldMetricsSoruceEnum;
 
   ctaActionClicked: ShieldCtaActionClickedEnum;
 

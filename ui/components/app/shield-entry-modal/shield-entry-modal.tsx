@@ -42,9 +42,8 @@ import {
 } from '../../../selectors';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
 import {
-  EntryModalSourceEnum,
+  ShieldMetricsSoruceEnum,
   ShieldCtaActionClickedEnum,
-  ShieldCtaSourceEnum,
 } from '../../../../shared/constants/subscriptions';
 import {
   AlignItems,
@@ -82,24 +81,29 @@ const ShieldEntryModal = ({
 
   const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
 
-  const determineEntryModalSource = useCallback((): EntryModalSourceEnum => {
+  const determineEntryModalSource = useCallback((): ShieldMetricsSoruceEnum => {
     const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
-    const marketingUtmSource = marketingUtmParams.utm_source;
-    if (marketingUtmSource === EntryModalSourceEnum.Carousel) {
-      return EntryModalSourceEnum.Carousel;
-    } else if (Object.keys(marketingUtmParams).length > 0) {
-      return EntryModalSourceEnum.Marketing;
-    } else if (triggeringCohort === COHORT_NAMES.POST_TX) {
-      return EntryModalSourceEnum.PostTransaction;
-    } else if (triggeringCohort === COHORT_NAMES.WALLET_HOME) {
-      return EntryModalSourceEnum.Homepage;
-    } else if (pathname.startsWith(SETTINGS_ROUTE)) {
-      return EntryModalSourceEnum.Settings;
+    const marketingUtmSource = marketingUtmParams?.utm_source;
+
+    // If the deep link is from the carousel or notification, return the corresponding source.
+    if (marketingUtmSource === ShieldMetricsSoruceEnum.Carousel) {
+      return ShieldMetricsSoruceEnum.Carousel;
+    } else if (marketingUtmSource === ShieldMetricsSoruceEnum.Notification) {
+      return ShieldMetricsSoruceEnum.Notification;
     }
 
-    // TODO: Add logics for other entry modal sources, Carousel and Notification.
+    // If current page is from deep link and found marketing UTM params, return the marketing source.
+    if (Object.keys(marketingUtmParams).length > 0) {
+      return ShieldMetricsSoruceEnum.Marketing;
+    } else if (triggeringCohort === COHORT_NAMES.POST_TX) {
+      return ShieldMetricsSoruceEnum.PostTransaction;
+    } else if (triggeringCohort === COHORT_NAMES.WALLET_HOME) {
+      return ShieldMetricsSoruceEnum.Homepage;
+    } else if (pathname.startsWith(SETTINGS_ROUTE)) {
+      return ShieldMetricsSoruceEnum.Settings;
+    }
 
-    return EntryModalSourceEnum.Homepage;
+    return ShieldMetricsSoruceEnum.Homepage;
   }, [triggeringCohort, pathname, search]);
 
   const handleOnClose = async (
@@ -116,8 +120,7 @@ const ShieldEntryModal = ({
 
     if (ctaActionClicked === ShieldCtaActionClickedEnum.Dismiss) {
       captureShieldCtaClickedEvent({
-        // ShieldCtaSourceEnum & EntryModalSourceEnum are the same enum, so we can cast it to ShieldCtaSourceEnum
-        source: source as unknown as ShieldCtaSourceEnum,
+        source,
         ctaActionClicked: ShieldCtaActionClickedEnum.Dismiss,
         marketingUtmParams,
       });
@@ -149,7 +152,7 @@ const ShieldEntryModal = ({
 
     captureShieldCtaClickedEvent({
       // ShieldCtaSourceEnum & EntryModalSourceEnum are the same enum, so we can cast it to ShieldCtaSourceEnum
-      source: source as unknown as ShieldCtaSourceEnum,
+      source,
       ctaActionClicked: ShieldCtaActionClickedEnum.Start14DayTrial,
       redirectToPage: SHIELD_PLAN_ROUTE,
       marketingUtmParams,
@@ -172,7 +175,7 @@ const ShieldEntryModal = ({
     const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
     captureShieldCtaClickedEvent({
       // ShieldCtaSourceEnum & EntryModalSourceEnum are the same enum, so we can cast it to ShieldCtaSourceEnum
-      source: source as unknown as ShieldCtaSourceEnum,
+      source,
       ctaActionClicked: ShieldCtaActionClickedEnum.LearnMore,
       redirectToUrl: TRANSACTION_SHIELD_LINK,
       marketingUtmParams,
