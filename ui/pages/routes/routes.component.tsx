@@ -195,12 +195,6 @@ const SnapList = mmLazy(
 const SnapView = mmLazy(
   (() => import('../snaps/snap-view/index.js')) as unknown as DynamicImportType,
 );
-const ConfirmTransaction = mmLazy(
-  (() =>
-    import(
-      '../confirmations/confirm-transaction/index.js'
-    )) as unknown as DynamicImportType,
-);
 const ConfirmEncryptionPublicKey = mmLazy(
   (() =>
     import(
