@@ -135,7 +135,7 @@ export const Amount = ({
     // For ERC1155 tokens, use name or just show balance without symbol
     if (asset?.standard === ERC1155) {
       const displayName = asset?.name ? ` ${asset.name}` : '';
-      return `${balance} ${displayName} ${t('available')}`;
+      return `${balance}${displayName} ${t('available')}`;
     }
 
     // For other tokens, use symbol
