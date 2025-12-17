@@ -1,7 +1,3 @@
-/**
- * Opens the side panel in the current window and closes the current popup/window.
- * @returns true if successful, false if sidepanel API not available
- */
 export async function openSidepanel(): Promise<boolean> {
   if (!chrome.sidePanel?.open) {
     return false;
@@ -24,4 +20,3 @@ export async function openSidepanel(): Promise<boolean> {
 
   return false;
 }
-
