@@ -38,14 +38,6 @@
     color: var(--color-text-default);
   }
 
-  &__notification-banner {
-    margin-inline: 0;
-
-    @include design-system.screen-sm-max {
-      margin-inline: -16px;
-    }
-  }
-
   &-shield-banner {
     &__container {
       position: absolute;
