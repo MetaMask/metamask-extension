@@ -365,6 +365,7 @@ const assertAccountVisible = async (
 
 // these tests are a bit flaky in CI, so i'm skipping them so we can get some
 // testing done - David M
+// eslint-disable-next-line mocha/no-skipped-tests
 describe.skip('State Persistence', function () {
   this.timeout(120000);
 
