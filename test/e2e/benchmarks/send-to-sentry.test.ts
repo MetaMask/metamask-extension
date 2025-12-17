@@ -3,9 +3,9 @@ import * as Sentry from '@sentry/node';
 
 jest.mock('@sentry/node', () => ({
   init: jest.fn(),
-  setTag: jest.fn(),
-  setMeasurement: jest.fn(),
-  startSpan: jest.fn((_options, callback) => callback()),
+  logger: {
+    info: jest.fn(),
+  },
   flush: jest.fn().mockResolvedValue(true),
 }));
 
@@ -61,94 +61,93 @@ describe('send-to-sentry', () => {
   });
 
   describe('persona derivation', () => {
+    const derivePersona = (pageType: string) =>
+      pageType === 'powerUserHome' ? 'powerUser' : 'standard';
+
     it('derives standardHome pageType → standard persona', () => {
-      const persona = 'standardHome' === 'powerUserHome' ? 'powerUser' : 'standard';
-      expect(persona).toBe('standard');
+      expect(derivePersona('standardHome')).toBe('standard');
     });
 
     it('derives powerUserHome pageType → powerUser persona', () => {
-      const persona = 'powerUserHome' === 'powerUserHome' ? 'powerUser' : 'standard';
-      expect(persona).toBe('powerUser');
+      expect(derivePersona('powerUserHome')).toBe('powerUser');
     });
 
     it('derives userActions pageType → standard persona', () => {
-      const persona = 'userActions' === 'powerUserHome' ? 'powerUser' : 'standard';
-      expect(persona).toBe('standard');
+      expect(derivePersona('userActions')).toBe('standard');
     });
   });
 
   describe('Sentry initialization', () => {
-    it('initializes with correct DSN and sample rate', () => {
+    it('initializes with logs enabled', () => {
       const dsn = 'https://test@sentry.io/123';
-      Sentry.init({ dsn, tracesSampleRate: 1.0 });
+      Sentry.init({
+        dsn,
+        _experiments: { enableLogs: true },
+      });
 
       expect(Sentry.init).toHaveBeenCalledWith({
         dsn,
-        tracesSampleRate: 1.0,
+        _experiments: { enableLogs: true },
       });
     });
   });
 
-  describe('Sentry tags', () => {
-    it('sets all required CI tags', () => {
-      const tags = {
-        'ci.branch': 'feature/test',
-        'ci.prNumber': '123',
-        'ci.commitHash': 'abc123',
-        'ci.job': 'benchmark',
-        'ci.persona': 'standard',
-        'ci.browser': 'chrome',
-        'ci.buildType': 'browserify',
-        'ci.pageType': 'standardHome',
-        'ci.testTitle': 'measurePageStandard',
+  describe('Sentry logger', () => {
+    it('sends benchmark results as structured log with grouped objects', () => {
+      const attributes = {
+        ci: {
+          branch: 'feature/test',
+          prNumber: '123',
+          commitHash: 'abc123',
+          job: 'benchmark',
+          persona: 'standard',
+          browser: 'chrome',
+          buildType: 'browserify',
+          pageType: 'standardHome',
+          testTitle: 'measurePageStandard',
+        },
+        benchmark_mean: mockResults.standardHome.mean,
+        benchmark_p75: mockResults.standardHome.p75,
+        benchmark_p95: mockResults.standardHome.p95,
       };
 
-      for (const [key, value] of Object.entries(tags)) {
-        Sentry.setTag(key, value);
-      }
+      Sentry.logger.info('benchmark.standardHome', attributes);
 
-      expect(Sentry.setTag).toHaveBeenCalledTimes(9);
-      expect(Sentry.setTag).toHaveBeenCalledWith('ci.persona', 'standard');
-      expect(Sentry.setTag).toHaveBeenCalledWith('ci.pageType', 'standardHome');
-      expect(Sentry.setTag).toHaveBeenCalledWith(
-        'ci.testTitle',
-        'measurePageStandard',
+      expect(Sentry.logger.info).toHaveBeenCalledWith(
+        'benchmark.standardHome',
+        expect.objectContaining({
+          ci: expect.objectContaining({
+            persona: 'standard',
+            testTitle: 'measurePageStandard',
+          }),
+          benchmark_mean: expect.objectContaining({
+            uiStartup: 500,
+            load: 400,
+          }),
+        }),
       );
     });
-  });
 
-  describe('Sentry transactions', () => {
-    it('creates span with correct name and operation', () => {
-      Sentry.startSpan(
-        { name: 'benchmark.standardHome', op: 'benchmark' },
-        () => {
-          // Callback contains Sentry.setMeasurement calls
-          Sentry.setMeasurement('benchmark.uiStartup', 500, 'millisecond');
+    it('sends user action results as structured log', () => {
+      const attributes = {
+        ci: {
+          branch: 'feature/test',
+          prNumber: '123',
+          testTitle: 'benchmark-userActions-loadNewAccount',
         },
-      );
+        duration: 1234,
+      };
 
-      expect(Sentry.startSpan).toHaveBeenCalledWith(
-        { name: 'benchmark.standardHome', op: 'benchmark' },
-        expect.any(Function),
-      );
-    });
+      Sentry.logger.info('userAction.loadNewAccount', attributes);
 
-    it('sets measurements with benchmark prefix', () => {
-      for (const [metric, value] of Object.entries(
-        mockResults.standardHome.mean,
-      )) {
-        Sentry.setMeasurement(`benchmark.${metric}`, value, 'millisecond');
-      }
-
-      expect(Sentry.setMeasurement).toHaveBeenCalledWith(
-        'benchmark.uiStartup',
-        500,
-        'millisecond',
-      );
-      expect(Sentry.setMeasurement).toHaveBeenCalledWith(
-        'benchmark.load',
-        400,
-        'millisecond',
+      expect(Sentry.logger.info).toHaveBeenCalledWith(
+        'userAction.loadNewAccount',
+        expect.objectContaining({
+          ci: expect.objectContaining({
+            testTitle: 'benchmark-userActions-loadNewAccount',
+          }),
+          duration: 1234,
+        }),
       );
     });
   });

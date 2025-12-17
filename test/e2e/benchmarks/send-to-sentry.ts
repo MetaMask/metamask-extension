@@ -2,8 +2,8 @@
 /**
  * Sends benchmark results to Sentry. Called by CI after benchmark.ts completes.
  *
- * Reads JSON from --results and sends metrics as Sentry spans with tags for
- * filtering (ci.browser, ci.buildType, ci.persona, ci.testTitle, etc.).
+ * Reads JSON from --results and sends metrics as Sentry structured logs with
+ * attributes for filtering (ci.browser, ci.buildType, ci.persona, etc.).
  *
  * Requires SENTRY_DSN_PERFORMANCE env var. Skips silently if not set.
  */
@@ -107,78 +107,45 @@ async function main() {
 
   Sentry.init({
     dsn: SENTRY_DSN,
-    tracesSampleRate: 1.0,
+    _experiments: {
+      enableLogs: true,
+    },
   });
 
   // Derive persona from pageType
   const persona = argv.pageType === 'powerUserHome' ? 'powerUser' : 'standard';
 
-  // Set common tags for all spans
-  const setCommonTags = (testTitle: string) => {
-    Sentry.setTag('ci.branch', process.env.GITHUB_REF_NAME || getGitBranch());
-    Sentry.setTag('ci.prNumber', process.env.PR_NUMBER || 'none');
-    Sentry.setTag(
-      'ci.commitHash',
-      process.env.HEAD_COMMIT_HASH || getGitCommitHash(),
-    );
-    Sentry.setTag('ci.job', process.env.GITHUB_JOB || 'local');
-    Sentry.setTag('ci.persona', persona);
-    Sentry.setTag('ci.browser', argv.browser);
-    Sentry.setTag('ci.buildType', argv.buildType);
-    Sentry.setTag('ci.pageType', argv.pageType);
-    Sentry.setTag('ci.testTitle', testTitle);
+  // CI metadata grouped together
+  const ci = {
+    branch: process.env.GITHUB_REF_NAME || getGitBranch(),
+    prNumber: process.env.PR_NUMBER || 'none',
+    commitHash: process.env.HEAD_COMMIT_HASH || getGitCommitHash(),
+    job: process.env.GITHUB_JOB || 'local',
+    persona,
+    browser: argv.browser,
+    buildType: argv.buildType,
+    pageType: argv.pageType,
   };
 
   for (const [name, value] of Object.entries(results)) {
     if (isStandardBenchmarkResult(value)) {
-      // Get testTitle from result, fallback to derived title
-      const testTitle =
-        value.testTitle ||
-        (persona === 'powerUser'
-          ? 'measurePagePowerUser'
-          : 'measurePageStandard');
-      setCommonTags(testTitle);
-
-      Sentry.startSpan(
-        {
-          name: `benchmark.${name}`,
-          op: 'benchmark',
-        },
-        () => {
-          // Send mean values as measurements (queryable in Sentry)
-          for (const [metricName, metricValue] of Object.entries(
-            value.mean || {},
-          )) {
-            Sentry.setMeasurement(
-              `benchmark.${metricName}`,
-              metricValue,
-              'millisecond',
-            );
-          }
-        },
-      );
+      Sentry.logger.info(`benchmark.${name}`, {
+        ci: { ...ci, testTitle: value.testTitle },
+        benchmark_mean: value.mean || {},
+        benchmark_p75: value.p75 || {},
+        benchmark_p95: value.p95 || {},
+      });
     } else if (isUserActionResult(value)) {
-      // testTitle is required in user action results
-      setCommonTags(value.testTitle);
-
-      Sentry.startSpan(
-        {
-          name: `userAction.${name}`,
-          op: 'user-action',
-        },
-        () => {
-          // Send all numeric metrics as measurements
-          for (const [metricName, metricValue] of Object.entries(value)) {
-            if (typeof metricValue === 'number') {
-              Sentry.setMeasurement(
-                `userAction.${metricName}`,
-                metricValue,
-                'millisecond',
-              );
-            }
-          }
-        },
-      );
+      const metrics: Record<string, number> = {};
+      for (const [key, val] of Object.entries(value)) {
+        if (typeof val === 'number') {
+          metrics[key] = val;
+        }
+      }
+      Sentry.logger.info(`userAction.${name}`, {
+        ci: { ...ci, testTitle: value.testTitle },
+        ...metrics,
+      });
     }
   }
 
