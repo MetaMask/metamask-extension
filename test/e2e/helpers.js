@@ -177,6 +177,10 @@ async function withFixtures(options, testSuite) {
     extendedTimeoutMultiplier = 1,
   } = options;
 
+  if (process.env.RUN_ATTEMPT === '1') {
+    throw new Error('forced failure');
+  }
+
   // Normalize localNodeOptions
   const localNodeOptsNormalized = normalizeLocalNodeOptions(localNodeOptions);
 
