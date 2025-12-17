@@ -9,9 +9,10 @@
   --width-max: 798px;
   --width-max-sidepanel: 490px;
   --header-height: 68px;
+
   color-scheme: dark light;
-  color: light-dark(var(--brand-colors-grey-grey900), var(--brand-colors-grey-grey000));
-  background-color: light-dark(var(--brand-colors-grey-grey000), var(--brand-colors-grey-grey900));
+  color: light-dark(var(--brand-colors-grey-grey1000), var(--brand-colors-grey-grey050));
+  background-color: light-dark(var(--brand-colors-grey-grey050), var(--brand-colors-grey-grey1000));
 }
 
 html,
@@ -29,7 +30,7 @@ body {
 
 html[data-theme] {
   color: var(--color-text-default);
-  background-color: var(--color-background-default);
+  background-color: var(--color-background-alternative);
 }
 
 /* stylelint-disable */
