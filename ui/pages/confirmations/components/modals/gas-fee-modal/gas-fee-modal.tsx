@@ -7,10 +7,12 @@ import { GasModalType } from '../../../constants/gas';
 
 export const GasFeeModal = ({
   setGasModalVisible,
+  initialModalType = GasModalType.EstimatesModal,
 }: {
   setGasModalVisible: (visible: boolean) => void;
+  initialModalType?: GasModalType;
 }) => {
-  const [activeModal, setActiveModal] = useState(GasModalType.EstimatesModal);
+  const [activeModal, setActiveModal] = useState(initialModalType);
 
   const handleCloseModals = useCallback(() => {
     setGasModalVisible(false);

@@ -41,8 +41,11 @@ export const EstimatesModal = ({
 
   return (
     <Modal isOpen onClose={handleCloseModals}>
-      <ModalOverlay data-testid="modal-overlay" />
-      <ModalContent size={ModalContentSize.Md}>
+      <ModalOverlay />
+      <ModalContent
+        size={ModalContentSize.Md}
+        data-testid="gas-fee-estimates-modal"
+      >
         <ModalHeader onClose={handleCloseModals}>
           {t('editGasFeeModalTitle')}
         </ModalHeader>
