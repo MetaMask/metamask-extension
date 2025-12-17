@@ -66,8 +66,6 @@ import { MetaMaskReduxDispatch } from '../../../store/store';
 import { setOnboardingModalOpen } from '../../../ducks/rewards';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { linkRewardToShieldSubscription } from '../../../store/actions';
-import { getAccountName, getInternalAccounts } from '../../../selectors';
-import { shortenAddress } from '../../../helpers/utils/util';
 import { isCardPaymentMethod, isCryptoPaymentMethod } from './types';
 import {
   ButtonRow,
@@ -76,6 +74,7 @@ import {
   MembershipHeader,
 } from './components';
 import ReactivateButton from './components/reactivate-button';
+import CryptoAccountDisplay from './components/crypto-account-display';
 
 const TransactionShield = () => {
   const t = useI18nContext();
@@ -83,7 +82,6 @@ const TransactionShield = () => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const navigate = useNavigate();
   const { search } = useLocation();
-  const internalAccounts = useSelector(getInternalAccounts);
   const { captureShieldCtaClickedEvent } = useSubscriptionMetrics();
   const shouldWaitForSubscriptionCreation = useMemo(() => {
     const searchParams = new URLSearchParams(search);
@@ -276,35 +274,25 @@ const TransactionShield = () => {
       : priceDetails;
   }, [displayedShieldSubscription, isTrialing, t, trialDaysLeft, priceDetails]);
 
-  const payerAccountName = useMemo(() => {
-    if (
-      !displayedShieldSubscription ||
-      !isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)
-    ) {
-      return '';
-    }
-    return (
-      getAccountName(
-        internalAccounts,
-        displayedShieldSubscription.paymentMethod.crypto.payerAddress,
-      ) || ''
-    );
-  }, [displayedShieldSubscription, internalAccounts]);
-
   const paymentMethodDetails = useMemo(() => {
     if (!displayedShieldSubscription) {
       return '';
     }
     if (isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)) {
-      const { payerAddress } = displayedShieldSubscription.paymentMethod.crypto;
-      const displayName = payerAccountName || shortenAddress(payerAddress);
-      return t('shieldTxDetails3DescriptionCryptoWithAccount', [
-        displayedShieldSubscription.paymentMethod.crypto.tokenSymbol,
-        displayName,
-      ]);
+      return (
+        <CryptoAccountDisplay
+          payerAddress={
+            displayedShieldSubscription.paymentMethod.crypto.payerAddress
+          }
+          tokenSymbol={
+            displayedShieldSubscription.paymentMethod.crypto.tokenSymbol
+          }
+          chainId={displayedShieldSubscription.paymentMethod.crypto.chainId}
+        />
+      );
     }
     return t('shieldPlanCard');
-  }, [displayedShieldSubscription, payerAccountName, t]);
+  }, [displayedShieldSubscription, t]);
 
   const handleLinkRewardToShieldSubscription = useCallback(
     async (subscriptionId: string, rewardPoints: number) => {

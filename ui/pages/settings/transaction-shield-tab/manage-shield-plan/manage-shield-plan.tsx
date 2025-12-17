@@ -243,7 +243,7 @@ const ManageShieldPlan = ({ isPastPlan = false }: { isPastPlan?: boolean }) => {
               displayedShieldSubscription?.status !==
                 SUBSCRIPTION_STATUSES.provisional && (
                 <>
-                  <Box className="border-t border-muted w-full h-px" />
+                  <Box className="border-t border-muted my-4 w-full h-px" />
                   <ButtonRow
                     data-testid="shield-detail-view-billing-history-button"
                     title={t(
@@ -258,7 +258,7 @@ const ManageShieldPlan = ({ isPastPlan = false }: { isPastPlan?: boolean }) => {
             {isPastPlan &&
               displayedShieldSubscription?.isEligibleForSupport && (
                 <>
-                  <Box className="border-t border-muted w-full h-px" />
+                  <Box className="border-t border-muted my-4 w-full h-px" />
                   <ButtonRow
                     data-testid="shield-detail-submit-case-button"
                     title={t('shieldTxMembershipMakeClaim')}
