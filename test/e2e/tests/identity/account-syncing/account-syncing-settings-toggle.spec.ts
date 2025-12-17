@@ -12,6 +12,7 @@ import {
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
+import HomePage from '../../../page-objects/pages/home/homepage';
 import BackupAndSyncSettings from '../../../page-objects/pages/settings/backup-and-sync-settings';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
@@ -56,6 +57,10 @@ describe('Account syncing - Settings Toggle', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
+        // Wait for the initial account sync to complete before adding new accounts
+        const homePage = new HomePage(driver);
+        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
 
         const header = new HeaderNavbar(driver);
         await header.checkPageIsLoaded();
@@ -131,6 +136,10 @@ describe('Account syncing - Settings Toggle', function () {
       async ({ driver }) => {
         // Login to fresh app instance to test sync restoration
         await unlockWallet(driver);
+
+        // Wait for the account sync to complete before verifying accounts
+        const homePage = new HomePage(driver);
+        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
 
         const header = new HeaderNavbar(driver);
         await header.checkPageIsLoaded();

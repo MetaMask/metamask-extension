@@ -6,12 +6,7 @@ import {
 } from '@metamask/account-tree-controller';
 import { E2E_SRP } from '../../../fixtures/default-fixture';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
-import {
-  withFixtures,
-  unlockWallet,
-  WALLET_PASSWORD,
-  getCleanAppState,
-} from '../../../helpers';
+import { withFixtures, unlockWallet, WALLET_PASSWORD } from '../../../helpers';
 import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
@@ -121,12 +116,8 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
         await unlockWallet(driver);
 
         // Wait for the initial account sync to complete before interacting with accounts
-        await driver.wait(async () => {
-          const uiState = await getCleanAppState(driver);
-          return (
-            uiState.metamask.hasAccountTreeSyncingSyncedAtLeastOnce === true
-          );
-        }, 30000);
+        const homePage = new HomePage(driver);
+        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
 
         const header = new HeaderNavbar(driver);
         await header.checkPageIsLoaded();
