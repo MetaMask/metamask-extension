@@ -16,6 +16,7 @@ import {
 import { NOTIFICATIONS_ROUTE } from '../../helpers/constants/routes';
 import { useMarkNotificationAsRead } from '../../hooks/metamask-notifications/useNotifications';
 import { useSnapNotificationTimeouts } from '../../hooks/useNotificationTimeouts';
+import { openSidepanel } from '../../helpers/utils/sidepanel';
 import {
   NotificationComponents,
   TRIGGER_TYPES,
@@ -36,7 +37,7 @@ export function NotificationsListItem({
   const { markNotificationAsRead } = useMarkNotificationAsRead();
 
   const handleNotificationClick = useCallback(async () => {
-    // Handle side panel notification click (from Contentful actionType field)
+    // Handle side panel notification click (from Contentful actionType field, can be modified to use a different property)
     const actionType =
       'template' in notification
         ? (notification.template as Record<string, unknown>)?.actionType
@@ -50,23 +51,7 @@ export function NotificationsListItem({
         },
       ]);
 
-      if (!chrome.sidePanel?.open) {
-        return;
-      }
-
-      try {
-        const tabs = await chrome.tabs.query({
-          active: true,
-          currentWindow: true,
-        });
-
-        if (tabs?.[0]?.windowId) {
-          await chrome.sidePanel.open({ windowId: tabs[0].windowId });
-          window.close();
-        }
-      } catch {
-        // Silently fail
-      }
+      await openSidepanel();
 
       return;
     }

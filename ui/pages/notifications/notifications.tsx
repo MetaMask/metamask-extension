@@ -35,6 +35,8 @@ import {
 } from '../../helpers/constants/design-system';
 import { deleteExpiredNotifications } from '../../store/actions';
 import { useSidePanelEnabled } from '../../hooks/useSidePanelEnabled';
+// eslint-disable-next-line import/no-restricted-paths
+import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { NotificationsList, TAB_KEYS } from './notifications-list';
 import { NewFeatureTag } from './NewFeatureTag';
 
@@ -91,26 +93,31 @@ const useCombinedNotifications = () => {
   const isSidePanelEnabled = useSidePanelEnabled();
 
   const combinedNotifications = useMemo(() => {
-    const isInSidePanel = window.location.pathname.includes('sidepanel.html');
+    const currentEnvironment = getEnvironmentType();
+
+    const isEnvironmentApplicable = (n: INotification) => {
+      // POC using a Contentful property. This can be modified to use a different property.
+      const actionType =
+        'template' in n
+          ? (n.template as Record<string, unknown>)?.actionType
+          : undefined;
+      if (!actionType) {
+        return true;
+      }
+      // Hide notifications promoting sidepanel if feature is disabled
+      if (actionType === 'sidepanel' && !isSidePanelEnabled) {
+        return false;
+      }
+      // Hide notifications promoting the current environment
+      return actionType !== currentEnvironment;
+    };
 
     const notifications = [
       ...snapNotifications,
       ...featureAnnouncementNotifications,
       ...walletNotifications,
     ]
-      .filter((n) => {
-        // Filter out sidepanel notifications if:
-        // 1. Side panel is not supported/enabled
-        // 2. Already viewing in side panel mode
-        const actionType =
-          'template' in n
-            ? (n.template as Record<string, unknown>)?.actionType
-            : undefined;
-        if (actionType === 'sidepanel') {
-          return isSidePanelEnabled && !isInSidePanel;
-        }
-        return true;
-      })
+      .filter(isEnvironmentApplicable)
       .sort(
         (a, b) =>
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
