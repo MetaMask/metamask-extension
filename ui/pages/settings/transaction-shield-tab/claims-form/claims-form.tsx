@@ -382,9 +382,16 @@ const ClaimsForm = ({
       // track the event when the claim submission is completed
       trackClaimSubmissionEvent('completed');
 
-      // Delete the draft if we were editing one
+      // Delete the draft if we were editing one.
       if (currentDraftId) {
-        await deleteDraft(currentDraftId);
+        try {
+          await deleteDraft(currentDraftId);
+        } catch {
+          // Draft deletion failed, but the claim was already submitted successfully.
+          console.error(
+            'Failed to delete draft after successful claim submission',
+          );
+        }
       }
 
       dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.Success));
