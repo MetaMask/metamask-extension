@@ -9,7 +9,7 @@ import {
 } from '@metamask/subscription-controller';
 import { cloneDeep } from 'lodash';
 import { flushPromises } from '../../../test/lib/timer-helpers';
-import { renderHookWithProvider } from '../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockState from '../../../test/data/mock-state.json';
 import * as actions from '../../store/actions';
 import { MINUTE } from '../../../shared/constants/time';

@@ -1,5 +1,5 @@
 import { act, waitFor } from '@testing-library/react';
-import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { useGasIncluded7702 } from './useGasIncluded7702';
 

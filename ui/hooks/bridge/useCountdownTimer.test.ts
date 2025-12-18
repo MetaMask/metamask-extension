@@ -1,4 +1,4 @@
-import { renderHookWithProvider } from '../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { flushPromises } from '../../../test/lib/timer-helpers';
 import { useCountdownTimer } from './useCountdownTimer';
@@ -18,7 +18,7 @@ describe('useCountdownTimer', () => {
     const { result } = renderUseCountdownTimer(
       createBridgeMockStore({
         featureFlagOverrides: {
-          extensionConfig: { maxRefreshCount: 5, refreshRate: 40000 },
+          bridgeConfig: { maxRefreshCount: 5, refreshRate: 40000 },
         },
         bridgeStateOverrides: {
           quotesLastFetched,

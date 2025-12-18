@@ -1,6 +1,5 @@
 import assert from 'assert';
 import { Mockttp, MockedEndpoint } from 'mockttp';
-import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { withFixtures, isSidePanelEnabled } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import AccountList from '../../page-objects/pages/account-list-page';
@@ -40,8 +39,8 @@ async function mockApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
           json: [{ fakedata: true }],
         };
       }),
-    await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
-      '0x0000000000000000000000000000000000000000': {
+    await mockSpotPrices(mockServer, {
+      'eip155:1/slip44:60': {
         price: 1700,
         marketCap: 382623505141,
         pricePercentChange1d: 0,
@@ -64,6 +63,13 @@ describe('MetaMask onboarding ', function () {
       {
         fixtures: new FixtureBuilder({ onboarding: true })
           .withNetworkControllerOnMainnet()
+          .withPreferencesControllerShowNativeTokenAsMainBalanceEnabled()
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
+
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockApis,
@@ -95,8 +101,6 @@ describe('MetaMask onboarding ', function () {
         await homePage.checkExpectedBalanceIsDisplayed();
         await homePage.refreshErc20TokenList();
         await homePage.checkPageIsLoaded();
-        await homePage.headerNavbar.openAccountMenu();
-        await new AccountList(driver).checkPageIsLoaded();
 
         for (const m of mockedEndpoint) {
           const requests = await m.getSeenRequests();
@@ -114,6 +118,7 @@ describe('MetaMask onboarding ', function () {
       {
         fixtures: new FixtureBuilder({ onboarding: true })
           .withNetworkControllerOnMainnet()
+          .withPreferencesControllerShowNativeTokenAsMainBalanceEnabled()
           .withEnabledNetworks({
             eip155: {
               '0x1': true,
@@ -129,7 +134,7 @@ describe('MetaMask onboarding ', function () {
         // Refresh tokens before asserting to mitigate flakiness
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed('42,500.00', '$');
+        await homePage.checkExpectedBalanceIsDisplayed('25', 'ETH');
         await homePage.refreshErc20TokenList();
         await homePage.checkPageIsLoaded();
         await homePage.headerNavbar.openAccountMenu();

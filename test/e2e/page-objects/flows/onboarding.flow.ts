@@ -26,8 +26,12 @@ import TermsOfUseUpdateModal from '../pages/dialog/terms-of-use-update-modal';
 export const handleSidepanelPostOnboarding = async (
   driver: Driver,
 ): Promise<void> => {
-  // Only run on Chrome-based browsers (Firefox doesn't support sidepanel)
-  if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+  // Only run when sidepanel is actually enabled on Chrome
+  const isSidepanelEnabled =
+    process.env.SELENIUM_BROWSER === 'chrome' &&
+    process.env.IS_SIDEPANEL === 'true';
+
+  if (!isSidepanelEnabled) {
     return;
   }
 

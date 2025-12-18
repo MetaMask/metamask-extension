@@ -8,6 +8,7 @@ import {
 } from '@metamask/remote-feature-flag-controller';
 import { ENVIRONMENT } from '../../../development/build/constants';
 import { previousValueComparator } from '../lib/util';
+import { getBaseSemVerVersion } from '../../../shared/lib/feature-flags/version-gating';
 import { ControllerInitFunction } from './types';
 import {
   RemoteFeatureFlagControllerInitMessenger,
@@ -89,6 +90,7 @@ export const RemoteFeatureFlagControllerInit: ControllerInitFunction<
     disabled: getIsDisabled(),
     getMetaMetricsId: () =>
       initMessenger.call('MetaMetricsController:getMetaMetricsId'),
+    clientVersion: getBaseSemVerVersion(),
     clientConfigApiService: new ClientConfigApiService({
       fetch: globalThis.fetch.bind(globalThis),
       config: {
