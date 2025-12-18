@@ -75,6 +75,7 @@ export default function ClearMetaMetricsData() {
     <Modal isOpen onClose={closeModal}>
       <ModalOverlay />
       <ModalContent
+        alignItems={AlignItems.center}
         modalDialogProps={{
           display: Display.Flex,
           flexDirection: FlexDirection.Column,
@@ -124,7 +125,7 @@ export default function ClearMetaMetricsData() {
               onClick={deleteMetaMetricsData}
               danger
             >
-              {t('clear')}
+              {t('delete')}
             </Button>
           </Box>
         </ModalFooter>
