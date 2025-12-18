@@ -446,33 +446,51 @@ const ClaimsForm = ({
     caseDescription,
   ]);
 
-  const handleSaveDraft = useCallback(async () => {
-    await saveDraft({
+  const handleSaveDraft = useCallback(
+    async ({
+      silent = false,
+    }: {
+      // silent flag is used for autosave to avoid showing toast every time user changes the form
+      silent?: boolean;
+    } = {}) => {
+      try {
+        await saveDraft({
+          chainId,
+          email,
+          impactedWalletAddress: impactedWalletAddress as `0x${string}`,
+          impactedTxHash: impactedTransactionHash as `0x${string}`,
+          reimbursementWalletAddress:
+            reimbursementWalletAddress as `0x${string}`,
+          description: caseDescription,
+          draftId: currentDraftId,
+        });
+        if (!silent) {
+          dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.DraftSaved));
+          if (!isEditDraft) {
+            navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);
+          }
+        }
+      } catch (error) {
+        if (!silent) {
+          throw error;
+        }
+        // Silently ignore autosave errors to avoid unhandled promise rejections
+      }
+    },
+    [
+      saveDraft,
       chainId,
       email,
-      impactedWalletAddress: impactedWalletAddress as `0x${string}`,
-      impactedTxHash: impactedTransactionHash as `0x${string}`,
-      reimbursementWalletAddress: reimbursementWalletAddress as `0x${string}`,
-      description: caseDescription,
-      draftId: currentDraftId,
-    });
-    dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.DraftSaved));
-    if (!isEditDraft) {
-      navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);
-    }
-  }, [
-    saveDraft,
-    chainId,
-    email,
-    impactedWalletAddress,
-    impactedTransactionHash,
-    reimbursementWalletAddress,
-    caseDescription,
-    currentDraftId,
-    isEditDraft,
-    dispatch,
-    navigate,
-  ]);
+      impactedWalletAddress,
+      impactedTransactionHash,
+      reimbursementWalletAddress,
+      caseDescription,
+      currentDraftId,
+      isEditDraft,
+      dispatch,
+      navigate,
+    ],
+  );
 
   const handleDeleteDraft = useCallback(async () => {
     if (!currentDraftId) {
@@ -507,7 +525,7 @@ const ClaimsForm = ({
         variant={ButtonVariant.Secondary}
         size={ButtonSize.Lg}
         disabled={!hasAnyDraftData || isSubmittingClaim || disableNewDrafts}
-        onClick={handleSaveDraft}
+        onClick={() => handleSaveDraft()}
       >
         {t('shieldClaimSaveAsDraft')}
       </Button>
@@ -597,7 +615,7 @@ const ClaimsForm = ({
         onBlur={() => {
           validateEmail();
           if (isEditDraft) {
-            handleSaveDraft();
+            handleSaveDraft({ silent: true });
           }
         }}
         value={email}
@@ -631,7 +649,7 @@ const ClaimsForm = ({
         onBlur={() => {
           validateReimbursementWalletAddress();
           if (isEditDraft) {
-            handleSaveDraft();
+            handleSaveDraft({ silent: true });
           }
         }}
         value={reimbursementWalletAddress}
@@ -657,7 +675,7 @@ const ClaimsForm = ({
         onAccountSelect={(address) => {
           setImpactedWalletAddress(address);
           if (isEditDraft) {
-            handleSaveDraft();
+            handleSaveDraft({ silent: true });
           }
           const sameWalletAddressErrorKey =
             ERROR_MESSAGE_MAP[SUBMIT_CLAIM_ERROR_CODES.INVALID_WALLET_ADDRESSES]
@@ -683,7 +701,7 @@ const ClaimsForm = ({
         onNetworkSelect={(selectedChainId) => {
           setChainId(selectedChainId);
           if (isEditDraft) {
-            handleSaveDraft();
+            handleSaveDraft({ silent: true });
           }
         }}
         disabled={isView}
@@ -733,7 +751,7 @@ const ClaimsForm = ({
         onBlur={() => {
           validateImpactedTxHash();
           if (isEditDraft) {
-            handleSaveDraft();
+            handleSaveDraft({ silent: true });
           }
         }}
         value={impactedTransactionHash}
@@ -761,7 +779,7 @@ const ClaimsForm = ({
           onBlur={() => {
             validateDescription();
             if (isEditDraft) {
-              handleSaveDraft();
+              handleSaveDraft({ silent: true });
             }
           }}
           value={caseDescription}

@@ -581,11 +581,11 @@ const ClaimSubmitToast = () => {
     if (isDraftSaved) {
       return t('shieldClaimDraftSavedDescription');
     }
-    if (isErrored) {
-      return '';
-    }
     if (isDraftDeleted) {
       return t('shieldClaimDeleteDraftDescription');
+    }
+    if (isErrored) {
+      return '';
     }
     return showClaimSubmitToast;
   }, [
@@ -633,7 +633,9 @@ const ClaimSubmitToast = () => {
         startAdornment={
           <Icon
             name={
-              isSuccess || isDraftSaved ? IconName.CheckBold : IconName.CircleX
+              isSuccess || isDraftSaved || isDraftDeleted
+                ? IconName.CheckBold
+                : IconName.CircleX
             }
             color={
               isSuccess || isDraftSaved || isDraftDeleted
