@@ -286,14 +286,14 @@ echo ""
 echo "  2) Drop triggers ONLY (keep data intact)"
 echo "     → Tests: get() works, set() fails"
 echo ""
-echo "  3) Delete 'data' and 'meta' keys + delete BACKUP vault"
-echo "     → Expected: Fresh install flow (no recovery possible)"
+echo "  3) Clear file references only (keep files intact)"
+echo "     → Tests orphaned files scenario"
 echo ""
 echo "  4) Delete external files only (keep database intact)"
 echo "     → Tests file ID mismatch scenario"
 echo ""
-echo "  5) Clear file references only (keep files intact)"
-echo "     → Tests orphaned files scenario"
+echo "  5) Delete 'data' and 'meta' keys + delete BACKUP vault"
+echo "     → Expected: Fresh install flow (no recovery possible)"
 echo ""
 echo "  === Cleanup ==="
 echo "  6) ${RED}NUCLEAR: Delete ALL MetaMask storage (fresh start)${NC}"
@@ -377,6 +377,60 @@ case $choice in
 
     3)
         echo ""
+        echo -e "${YELLOW}Clearing file references from PRIMARY vault...${NC}"
+
+        if [ -z "$PRIMARY_DB" ]; then
+            echo -e "${RED}ERROR: Primary vault database not found!${NC}"
+            exit 1
+        fi
+
+        # Must drop triggers to modify file table
+        echo "Dropping triggers (required for deletion)..."
+        drop_triggers "$PRIMARY_DB"
+        echo -e "${GREEN}✓ Triggers dropped${NC}"
+
+        sqlite3 "$PRIMARY_DB" "DELETE FROM file;" 2>/dev/null || true
+        echo -e "${GREEN}✓ File references cleared${NC}"
+
+        echo ""
+        echo -e "${GREEN}✓ File reference clearing complete!${NC}"
+        echo ""
+        echo "External files still exist, but database no longer references them."
+        echo ""
+        echo -e "${YELLOW}Expected behavior:${NC}"
+        echo "  - Orphaned files scenario"
+        echo "  - MetaMask behavior depends on how data was stored"
+        ;;
+
+    4)
+        echo ""
+        echo -e "${YELLOW}Deleting external files from PRIMARY vault...${NC}"
+
+        if [ -z "$PRIMARY_FILES" ] || [ ! -d "$PRIMARY_FILES" ]; then
+            echo -e "${YELLOW}No external files folder found.${NC}"
+            echo "Data may be stored inline in the SQLite database."
+            exit 0
+        fi
+
+        echo "External files in PRIMARY vault:"
+        ls -la "$PRIMARY_FILES" 2>/dev/null | tail -n +4
+
+        find "$PRIMARY_FILES" -type f -delete 2>/dev/null
+        echo -e "${GREEN}✓ External files deleted${NC}"
+
+        echo ""
+        echo -e "${GREEN}✓ External file deletion complete!${NC}"
+        echo ""
+        echo "Database still references these files, but they no longer exist."
+        echo ""
+        echo -e "${YELLOW}Expected behavior:${NC}"
+        echo "  - MetaMask may fail to read vault data"
+        echo "  - Could result in 'An unexpected error occurred'"
+        echo "  - Note: Firefox may self-heal by regenerating files"
+        ;;
+
+    5)
+        echo ""
         echo -e "${RED}WARNING: This will delete primary vault data AND backup!${NC}"
         echo -e "${RED}Recovery will NOT be possible without the SRP!${NC}"
         read -p "Are you sure? (yes/no): " confirm
@@ -437,60 +491,6 @@ case $choice in
         echo -e "${YELLOW}Expected behavior:${NC}"
         echo "  - MetaMask should show fresh install/onboarding flow"
         echo "  - No recovery possible without SRP"
-        ;;
-
-    4)
-        echo ""
-        echo -e "${YELLOW}Deleting external files from PRIMARY vault...${NC}"
-
-        if [ -z "$PRIMARY_FILES" ] || [ ! -d "$PRIMARY_FILES" ]; then
-            echo -e "${YELLOW}No external files folder found.${NC}"
-            echo "Data may be stored inline in the SQLite database."
-            exit 0
-        fi
-
-        echo "External files in PRIMARY vault:"
-        ls -la "$PRIMARY_FILES" 2>/dev/null | tail -n +4
-
-        find "$PRIMARY_FILES" -type f -delete 2>/dev/null
-        echo -e "${GREEN}✓ External files deleted${NC}"
-
-        echo ""
-        echo -e "${GREEN}✓ External file deletion complete!${NC}"
-        echo ""
-        echo "Database still references these files, but they no longer exist."
-        echo ""
-        echo -e "${YELLOW}Expected behavior:${NC}"
-        echo "  - MetaMask may fail to read vault data"
-        echo "  - Could result in 'An unexpected error occurred'"
-        echo "  - Note: Firefox may self-heal by regenerating files"
-        ;;
-
-    5)
-        echo ""
-        echo -e "${YELLOW}Clearing file references from PRIMARY vault...${NC}"
-
-        if [ -z "$PRIMARY_DB" ]; then
-            echo -e "${RED}ERROR: Primary vault database not found!${NC}"
-            exit 1
-        fi
-
-        # Must drop triggers to modify file table
-        echo "Dropping triggers (required for deletion)..."
-        drop_triggers "$PRIMARY_DB"
-        echo -e "${GREEN}✓ Triggers dropped${NC}"
-
-        sqlite3 "$PRIMARY_DB" "DELETE FROM file;" 2>/dev/null || true
-        echo -e "${GREEN}✓ File references cleared${NC}"
-
-        echo ""
-        echo -e "${GREEN}✓ File reference clearing complete!${NC}"
-        echo ""
-        echo "External files still exist, but database no longer references them."
-        echo ""
-        echo -e "${YELLOW}Expected behavior:${NC}"
-        echo "  - Orphaned files scenario"
-        echo "  - MetaMask behavior depends on how data was stored"
         ;;
 
     6)
