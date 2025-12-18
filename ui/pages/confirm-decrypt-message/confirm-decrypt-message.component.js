@@ -5,7 +5,7 @@ import copyToClipboard from 'copy-to-clipboard';
 import classnames from 'classnames';
 import log from 'loglevel';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom-v5-compat';
+import { useNavigate, useParams } from 'react-router-dom';
 import { cloneDeep } from 'lodash';
 
 import AccountListItem from '../../components/app/account-list-item';
@@ -212,7 +212,7 @@ const MessageBody = forwardRef(
     const onDecryptMessage = async (event) => {
       event.stopPropagation(event);
 
-      const params = messageData.msgParams;
+      const params = { ...messageData.msgParams };
       params.metamaskId = messageData.id;
 
       const result = await dispatch(decryptMsgInline(params));
@@ -349,7 +349,7 @@ const Footer = ({
 
   const onSubmitClick = async (event) => {
     event.stopPropagation(event);
-    const params = messageData.msgParams;
+    const params = { ...messageData.msgParams };
     params.metamaskId = messageData.id;
 
     await dispatch(decryptMsg(params));

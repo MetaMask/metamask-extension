@@ -3,7 +3,7 @@ import { act } from 'react-dom/test-utils';
 import configureMockStore from 'redux-mock-store';
 
 import mockState from '../../../../../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../../../../../test/lib/render-helpers-navigate';
 import { MetaMetricsContext } from '../../../../../../../../contexts/metametrics';
 import PermitSimulationValueDisplay from './value-display';
 

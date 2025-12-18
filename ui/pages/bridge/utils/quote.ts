@@ -6,10 +6,7 @@ import {
   isNativeAddress,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
-import type {
-  NetworkConfiguration,
-  AddNetworkFields,
-} from '@metamask/network-controller';
+import { type CaipChainId, type Hex } from '@metamask/utils';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
 import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
@@ -107,14 +104,22 @@ export const formatProviderLabel = (args?: {
   bridges: QuoteResponse['quote']['bridges'];
 }): `${string}_${string}` => `${args?.bridgeId}_${args?.bridges[0]}`;
 
-export const sanitizeAmountInput = (textToSanitize: string) => {
-  return (
-    textToSanitize
-      .replace(/[^\d.]+/gu, '')
-      // Only allow one decimal point, ignore digits after second decimal point
-      .split('.', 2)
-      .join('.')
-  );
+export const sanitizeAmountInput = (
+  textToSanitize: string,
+  dropNumbersAfterSecondDecimal = true,
+) => {
+  // Remove non-numeric and non-decimal characters
+  const cleanedString = textToSanitize.replace(/[^\d.]+/gu, '');
+  // Find first decimal point and use its index to split the string into two parts
+  const pointIndex = cleanedString.indexOf('.');
+  const firstPart = cleanedString.slice(0, pointIndex + 1);
+  const secondPart = dropNumbersAfterSecondDecimal
+    ? // Ignore digits after second decimal point
+      cleanedString.slice(pointIndex + 1).split('.')[0]
+    : // Preserve digits after second decimal point
+      cleanedString.slice(pointIndex + 1).replace(/[^\d]+/gu, '');
+
+  return [firstPart, secondPart].filter(Boolean).join('');
 };
 
 /**
@@ -136,15 +141,15 @@ export const safeAmountForCalc = (
 export const isQuoteExpiredOrInvalid = ({
   activeQuote,
   toToken,
-  toChain,
-  fromChain,
+  toChainId,
+  fromChainId,
   isQuoteExpired,
   insufficientBal,
 }: {
   activeQuote: QuoteResponse | null;
   toToken: BridgeToken | null;
-  toChain?: NetworkConfiguration | AddNetworkFields;
-  fromChain?: NetworkConfiguration;
+  toChainId?: Hex | CaipChainId;
+  fromChainId?: Hex | CaipChainId;
   isQuoteExpired: boolean;
   insufficientBal?: boolean;
 }): boolean => {
@@ -153,7 +158,7 @@ export const isQuoteExpiredOrInvalid = ({
     isQuoteExpired &&
     (!insufficientBal ||
       // `insufficientBal` is always true for non-EVM chains (Solana, Bitcoin)
-      (fromChain && isNonEvmChainId(fromChain.chainId)))
+      (fromChainId && isNonEvmChainId(fromChainId)))
   ) {
     return true;
   }
@@ -187,8 +192,8 @@ export const isQuoteExpiredOrInvalid = ({
     const quoteDestChainIdCaip = destChainId
       ? formatChainIdToCaip(destChainId)
       : '';
-    const selectedDestChainIdCaip = toChain?.chainId
-      ? formatChainIdToCaip(toChain.chainId)
+    const selectedDestChainIdCaip = toChainId
+      ? formatChainIdToCaip(toChainId)
       : '';
 
     const addressMatch =

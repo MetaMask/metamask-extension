@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import {
@@ -133,7 +133,7 @@ export const AccountList = () => {
       >
         {t('accounts')}
       </Header>
-      <Content className="account-list-page__content">
+      <Content className="account-list-page__content" paddingInline={0}>
         <Box
           flexDirection={FlexDirection.Column}
           paddingTop={1}

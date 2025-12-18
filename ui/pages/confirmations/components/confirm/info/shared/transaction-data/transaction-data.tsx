@@ -4,8 +4,7 @@ import { hexStripZeros } from '@ethersproject/bytes';
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import _ from 'lodash';
-import { Hex } from '@metamask/utils';
-import { TxData } from '@metamask/bridge-controller';
+import { Hex, isHexString } from '@metamask/utils';
 
 import { APPROVAL_METHOD_NAMES } from '../../../../../../../../shared/constants/transaction';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
@@ -51,19 +50,20 @@ export const TransactionData = ({
   nestedTransactionIndex?: number;
 } = {}) => {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { isQuotedSwapDisplayedInInfo, selectedQuote } = useDappSwapContext();
+  const { isQuotedSwapDisplayedInInfo } = useDappSwapContext();
   const { nestedTransactions, txParams } = currentConfirmation ?? {};
   const { data: currentData, to: currentTo } = txParams ?? {};
-  let transactionData = data ?? (currentData as Hex);
-  if (isQuotedSwapDisplayedInInfo) {
-    transactionData = (selectedQuote?.trade as TxData)?.data as Hex;
-  }
+  const transactionData = data ?? (currentData as Hex);
   const transactionTo = to ?? (currentTo as Hex);
 
   const decodeResponse = useDecodedTransactionData({
     data: transactionData,
     to: transactionTo,
   });
+
+  if (nestedTransactionIndex === undefined && isQuotedSwapDisplayedInInfo) {
+    return null;
+  }
 
   const { value, pending } = decodeResponse;
 
@@ -264,7 +264,11 @@ function ParamValue({
     valueString = renderShortTokenId(valueString, 5);
   }
 
-  if (!Array.isArray(value) && valueString.startsWith('0x')) {
+  if (
+    !Array.isArray(value) &&
+    valueString.startsWith('0x') &&
+    isHexString(valueString)
+  ) {
     valueString = hexStripZeros(valueString);
   }
 

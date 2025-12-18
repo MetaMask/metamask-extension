@@ -9,7 +9,7 @@ import { SecretType } from '@metamask/seedless-onboarding-controller';
 import { bytesToBase64, stringToBytes } from '@metamask/utils';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils';
-import { E2E_SRP } from '../../default-fixture';
+import { E2E_SRP } from '../../fixtures/default-fixture';
 import {
   AuthServer,
   MetadataService,

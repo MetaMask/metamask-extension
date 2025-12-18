@@ -1,7 +1,6 @@
 /* eslint-disable mocha/no-skipped-tests */
 import { MockttpServer } from 'mockttp';
-import { CHAIN_IDS } from '@metamask/transaction-controller';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { unlockWallet, WINDOW_TITLES, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { createDappTransaction } from '../../page-objects/flows/transaction';
@@ -60,8 +59,8 @@ describe('Smart Transactions', function () {
       {
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: MockttpServer) => {
-          await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
-            '0x0000000000000000000000000000000000000000': {
+          await mockSpotPrices(mockServer, {
+            'eip155:1/slip44:60': {
               price: 1700,
               marketCap: 382623505141,
               pricePercentChange1d: 0,
@@ -87,7 +86,6 @@ describe('Smart Transactions', function () {
         await sendPage.selectTokenFee('USDC');
         await driver.delay(1000);
         await sendPage.clickConfirmButton();
-        await sendPage.clickViewActivity();
 
         const activityList = new ActivityListPage(driver);
         await activityList.checkNoFailedTransactions();
@@ -96,7 +94,7 @@ describe('Smart Transactions', function () {
         await activityList.checkTxAction({
           action: 'Sent',
           txIndex: 2,
-          completedTxs: 2,
+          confirmedTx: 2,
         });
         await activityList.checkTxAmountInActivity(`-0 ETH`, 1);
         await activityList.checkTxAmountInActivity(`-0.01 ETH`, 2);
@@ -109,8 +107,8 @@ describe('Smart Transactions', function () {
       {
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: MockttpServer) => {
-          await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
-            '0x0000000000000000000000000000000000000000': {
+          await mockSpotPrices(mockServer, {
+            'eip155:1/slip44:60': {
               price: 1700,
               marketCap: 382623505141,
               pricePercentChange1d: 0,

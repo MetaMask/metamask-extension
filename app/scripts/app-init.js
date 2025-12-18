@@ -148,20 +148,6 @@ function importAllScripts() {
 self.addEventListener('install', importAllScripts);
 
 /*
- * A keepalive message listener to prevent Service Worker getting shut down due to inactivity.
- * UI sends the message periodically, in a setInterval.
- * Chrome will revive the service worker if it was shut down, whenever a new message is sent, but only if a listener was defined here.
- *
- * chrome below needs to be replaced by cross-browser object,
- * but there is issue in importing webextension-polyfill into service worker.
- * chrome does seems to work in at-least all chromium based browsers
- */
-chrome.runtime.onMessage.addListener(() => {
-  importAllScripts();
-  return false;
-});
-
-/*
  * If the service worker is stopped and restarted, then the 'install' event will not occur
  * and the chrome.runtime.onMessage will only occur if it was a message that restarted the
  * the service worker. To ensure that importAllScripts is called, we need to call it in module

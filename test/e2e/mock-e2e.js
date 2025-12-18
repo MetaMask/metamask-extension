@@ -75,14 +75,10 @@ const blocklistedHosts = [
   'linea-mainnet.infura.io',
   'linea-sepolia.infura.io',
   'testnet-rpc.monad.xyz',
-  'carrot.megaeth.com',
+  'timothy.megaeth.com',
   'sei-mainnet.infura.io',
   'mainnet.infura.io',
   'sepolia.infura.io',
-  'cdn.jsdelivr.net',
-  'unpkg.com',
-  'mock-redirect-url.com',
-  'claims.dev-api.cx.metamask.io',
 ];
 const {
   mockEmptyStalelistAndHotlist,
@@ -333,6 +329,19 @@ async function setupMocking(
         statusCode: 200,
         json: {},
       };
+    });
+
+  // SENTRY_DSN_PERFORMANCE
+  await server
+    .forPost('https://sentry.io/api/4510302346608640/envelope/')
+    .thenPassThrough({
+      beforeRequest: (req) => {
+        console.log(
+          'Request going to Sentry metamask-performance ============',
+          req.url,
+        );
+        return {};
+      },
     });
 
   await server
@@ -918,16 +927,11 @@ async function setupMocking(
 
   // Price API: Spot prices for native token (ETH)
   // Uses zero address (0x0000000000000000000000000000000000000000) to represent native token
-  // API format: v2/chains/{chainId}/spot-prices?tokenAddresses={address}&vsCurrency=usd&includeMarketData=true
+  // API format: v3/spot-prices?assetIds={assetIds}&vsCurrency=usd&includeMarketData=true
   await server
-    .forGet(
-      `https://price.api.cx.metamask.io/v2/chains/${parseInt(
-        chainId,
-        16,
-      )}/spot-prices`,
-    )
+    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
     .withQuery({
-      tokenAddresses: '0x0000000000000000000000000000000000000000',
+      assetIds: 'eip155:1/slip44:60',
       vsCurrency: 'usd',
       includeMarketData: 'true',
     })
@@ -935,7 +939,7 @@ async function setupMocking(
       return {
         statusCode: 200,
         json: {
-          '0x0000000000000000000000000000000000000000': {
+          'eip155:1/slip44:60': {
             id: 'ethereum',
             price: ethConversionInUsd,
             marketCap: 382623505141,
@@ -1331,17 +1335,9 @@ async function setupMocking(
       return;
     }
 
-    // Exclude browser API requests, portfolio requests, and test-only domains from privacy report
-    const isTestOnlyDomain =
-      request.headers.host === 'cdn.jsdelivr.net' ||
-      request.headers.host === 'unpkg.com' ||
-      request.headers.host === 'mock-redirect-url.com' ||
-      request.headers.host === 'claims.dev-api.cx.metamask.io';
-
     if (
       request.headers.host.match(browserAPIRequestDomains) === null &&
-      !portfolioRequestsMatcher(request) &&
-      !isTestOnlyDomain
+      !portfolioRequestsMatcher(request)
     ) {
       privacyReport.add(request.headers.host);
     }

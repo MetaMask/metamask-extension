@@ -16,9 +16,9 @@ import ConfirmDecryptMessage from './confirm-decrypt-message.component';
 
 const messageIdMock = '12345';
 
-jest.mock('react-router-dom-v5-compat', () => {
+jest.mock('react-router-dom', () => {
   return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
+    ...jest.requireActual('react-router-dom'),
     useParams: () => ({
       id: messageIdMock,
     }),

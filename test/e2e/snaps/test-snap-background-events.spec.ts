@@ -4,7 +4,7 @@ import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow'
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { Driver } from '../webdriver/driver';
 import { withFixtures, WINDOW_TITLES } from '../helpers';
-import FixtureBuilder from '../fixture-builder';
+import FixtureBuilder from '../fixtures/fixture-builder';
 import { DAPP_PATH } from '../constants';
 
 describe('Test Snap Background Events', function () {

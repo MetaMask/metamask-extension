@@ -43,11 +43,11 @@ import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { withMetaMetrics } from '../../contexts/metametrics';
 import LoginErrorModal from '../onboarding-flow/welcome/login-error-modal';
 import { LOGIN_ERROR } from '../onboarding-flow/welcome/types';
-import MetaFoxHorizontalLogo from '../../components/ui/metafox-logo/horizontal-logo';
 import ConnectionsRemovedModal from '../../components/app/connections-removed-modal';
 import { getCaretCoordinates } from './unlock-page.util';
 import ResetPasswordModal from './reset-password-modal';
 import FormattedCounter from './formatted-counter';
+import { MetamaskWordmarkLogo } from './metamask-wordmark-logo';
 
 const FoxAppearAnimation = lazy(
   () => import('../onboarding-flow/welcome/fox-appear-animation'),
@@ -70,10 +70,6 @@ class UnlockPage extends Component {
      * Location router for redirect after action
      */
     location: PropTypes.object.isRequired,
-    /**
-     * Navigation state from v5-compat navigation context
-     */
-    navState: PropTypes.object,
     /**
      * If isUnlocked is true will redirect to most recent route in history
      */
@@ -127,6 +123,10 @@ class UnlockPage extends Component {
      * Indicates if the environment is a popup
      */
     isPopup: PropTypes.bool,
+    /**
+     * Indicates if the wallet is reset in progress
+     */
+    isWalletResetInProgress: PropTypes.bool,
   };
 
   state = {
@@ -157,13 +157,12 @@ class UnlockPage extends Component {
   }
 
   UNSAFE_componentWillMount() {
-    const { isUnlocked, navigate, location, navState } = this.props;
+    const { isUnlocked, navigate, location } = this.props;
 
     if (isUnlocked) {
       // Redirect to the intended route if available, otherwise DEFAULT_ROUTE
       let redirectTo = DEFAULT_ROUTE;
-      // Read from both v5 location.state and v5-compat navState
-      const fromLocation = location.state?.from || navState?.from;
+      const fromLocation = location.state?.from;
       if (fromLocation?.pathname) {
         const search = fromLocation.search || '';
         redirectTo = fromLocation.pathname + search;
@@ -185,6 +184,12 @@ class UnlockPage extends Component {
         // if the seedless onboarding user is not authenticated, redirect to the onboarding welcome page
         this.props.navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
       }
+    }
+    if (
+      this.props.isWalletResetInProgress &&
+      this.props.firstTimeFlowType === null
+    ) {
+      this.props.navigate(DEFAULT_ROUTE, { replace: true });
     }
   }
 
@@ -505,7 +510,6 @@ class UnlockPage extends Component {
 
     const needHelpText = t('needHelpLinkText');
     const isRehydrationFlow = isSocialLoginFlow && !isOnboardingCompleted;
-    const isTestEnvironment = Boolean(process.env.IN_TEST);
 
     return (
       <Box
@@ -557,9 +561,7 @@ class UnlockPage extends Component {
               {isRehydrationFlow ? (
                 this.renderMascot()
               ) : (
-                <MetaFoxHorizontalLogo
-                  className={`unlock-page__mascot-container__horizontal-logo ${this.props.isPopup ? 'unlock-page__mascot-container__horizontal-logo--popup' : ''}`}
-                />
+                <MetamaskWordmarkLogo isPopup={this.props.isPopup} />
               )}
               {isBeta() ? (
                 <Text
@@ -609,7 +611,7 @@ class UnlockPage extends Component {
               value={password}
               error={Boolean(error)}
               helpText={this.renderHelpText()}
-              autoComplete
+              autoComplete={false}
               autoFocus
               width={BlockSize.Full}
               marginBottom={4}
@@ -644,40 +646,42 @@ class UnlockPage extends Component {
                 : t('forgotPassword')}
             </Button>
 
-            <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
-              {t('needHelp', [
-                <Button
-                  variant={ButtonVariant.Link}
-                  color={TextColor.primaryDefault}
-                  href={SUPPORT_LINK}
-                  type="button"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  key="need-help-link"
-                  onClick={() => {
-                    this.context.trackEvent(
-                      {
-                        category: MetaMetricsEventCategory.Navigation,
-                        event: MetaMetricsEventName.SupportLinkClicked,
-                        properties: {
-                          url: SUPPORT_LINK,
+            {isRehydrationFlow && (
+              <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
+                {t('needHelp', [
+                  <Button
+                    variant={ButtonVariant.Link}
+                    color={TextColor.primaryDefault}
+                    href={SUPPORT_LINK}
+                    type="button"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    key="need-help-link"
+                    onClick={() => {
+                      this.context.trackEvent(
+                        {
+                          category: MetaMetricsEventCategory.Navigation,
+                          event: MetaMetricsEventName.SupportLinkClicked,
+                          properties: {
+                            url: SUPPORT_LINK,
+                          },
                         },
-                      },
-                      {
-                        contextPropsIntoEventProperties: [
-                          MetaMetricsContextProp.PageTitle,
-                        ],
-                      },
-                    );
-                  }}
-                >
-                  {needHelpText}
-                </Button>,
-              ])}
-            </Text>
+                        {
+                          contextPropsIntoEventProperties: [
+                            MetaMetricsContextProp.PageTitle,
+                          ],
+                        },
+                      );
+                    }}
+                  >
+                    {needHelpText}
+                  </Button>,
+                ])}
+              </Text>
+            )}
           </Box>
         </Box>
-        {!isTestEnvironment && !isRehydrationFlow && (
+        {!isRehydrationFlow && (
           <Suspense fallback={<Box />}>
             <FoxAppearAnimation />
           </Suspense>

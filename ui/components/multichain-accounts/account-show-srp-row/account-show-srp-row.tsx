@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
   TextVariant,
@@ -80,6 +80,7 @@ export const AccountShowSrpRow = ({ account }: AccountShowSrpRowProps) => {
           isOpen={srpQuizModalVisible}
           onClose={() => setSrpQuizModalVisible(false)}
           closeAfterCompleting
+          navigate={navigate}
         />
       ) : null}
     </>

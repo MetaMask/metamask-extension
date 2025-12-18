@@ -1,0 +1,13 @@
+diff --git a/dist/types.cjs b/dist/types.cjs
+index a83a797b8f01747a6d51eb1219669c729955f039..ea9eb54bf3a0ae7ed3c75a8bb9904dd925a50a16 100644
+--- a/dist/types.cjs
++++ b/dist/types.cjs
+@@ -47,6 +47,8 @@ var ChainId;
+     ChainId[ChainId["SOLANA"] = 1151111081099710] = "SOLANA";
+     ChainId[ChainId["BTC"] = 20000000000001] = "BTC";
+     ChainId[ChainId["TRON"] = 728126428] = "TRON";
++    ChainId[ChainId["SEI"] = 1329] = "SEI";
++    ChainId[ChainId["MONAD"] = 143] = "MONAD";
+ })(ChainId || (exports.ChainId = ChainId = {}));
+ var RequestStatus;
+ (function (RequestStatus) {

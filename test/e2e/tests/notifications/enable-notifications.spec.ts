@@ -1,6 +1,6 @@
 import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { Driver } from '../../webdriver/driver';
 import {
   enableNotificationsThroughGlobalMenu,
@@ -10,7 +10,6 @@ import NotificationsSettingsPage from '../../page-objects/pages/settings/notific
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { completeOnboardFlowIdentity } from '../identity/flows';
 import AccountListPage from '../../page-objects/pages/account-list-page';
-import { ACCOUNT_TYPE } from '../../constants';
 import { MockttpNotificationTriggerServer } from '../../helpers/notifications/mock-notification-trigger-server';
 import { mockNotificationServices, notificationsMockAccounts } from './mocks';
 
@@ -116,7 +115,9 @@ describe('Enable Notifications - Without Accounts Syncing', function () {
       await headerNavbar.openAccountMenu();
 
       const accountListPage = new AccountListPage(driver);
-      await accountListPage.addAccount({ accountType: ACCOUNT_TYPE.Ethereum });
+      await accountListPage.addMultichainAccount();
+      await accountListPage.checkMultichainAccountNameDisplayed('Account 2');
+      await accountListPage.closeMultichainAccountsPage();
     }
   });
 });

@@ -24,7 +24,6 @@ import {
 import {
   MetaMetricsTransactionEventSource,
   MetaMetricsEventCategory,
-  MetaMetricsEventUiCustomization,
   MetaMetricsEventTransactionEstimateType,
 } from '../../../../shared/constants/metametrics';
 import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../shared/lib/transactions-controller-utils';
@@ -94,7 +93,7 @@ const mockTransactionMetricsRequest = {
   getParticipateInMetrics: jest.fn(),
   getTokenStandardAndDetails: jest.fn(),
   getTransaction: jest.fn(),
-  provider: provider as Provider,
+  provider: provider as unknown as Provider,
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   snapAndHardwareMessenger: jest.fn() as any,
@@ -105,6 +104,10 @@ const mockTransactionMetricsRequest = {
   getIsConfirmationAdvancedDetailsOpen: jest.fn(),
   getHDEntropyIndex: jest.fn(),
   getNetworkRpcUrl: jest.fn(),
+  getFeatureFlags: jest.fn(),
+  getPna25Acknowledged: jest.fn(),
+  getAddressSecurityAlertResponse: jest.fn(),
+  getSecurityAlertsEnabled: jest.fn(),
 } as TransactionMetricsRequest;
 
 describe('Transaction metrics', () => {
@@ -133,6 +136,7 @@ describe('Transaction metrics', () => {
     mockTransactionMeta = {
       id: '1',
       status: TransactionStatus.unapproved,
+      hash: '0x1234567890123456789012345678901234567890',
       txParams: {
         from: fromAccount.address,
         to: '0x1678a085c290ebd122dc42cba69373b5953b831d',
@@ -179,6 +183,9 @@ describe('Transaction metrics', () => {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
       account_type: undefined,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      address_alert_response: 'not_applicable',
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
       api_method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
@@ -236,7 +243,7 @@ describe('Transaction metrics', () => {
       transaction_type: TransactionType.simpleSend,
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      ui_customizations: ['redesigned_confirmation'],
+      ui_customizations: null,
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
       transaction_advanced_view: undefined,
@@ -341,10 +348,7 @@ describe('Transaction metrics', () => {
         persist: true,
         properties: {
           ...expectedProperties,
-          ui_customizations: [
-            'gas_estimation_failed',
-            'redesigned_confirmation',
-          ],
+          ui_customizations: ['gas_estimation_failed'],
           gas_estimation_failed: true,
         },
         sensitiveProperties: expectedSensitiveProperties,
@@ -374,10 +378,7 @@ describe('Transaction metrics', () => {
           ...expectedProperties,
           security_alert_reason: BlockaidReason.maliciousDomain,
           security_alert_response: 'Malicious',
-          ui_customizations: [
-            'flagged_as_malicious',
-            'redesigned_confirmation',
-          ],
+          ui_customizations: ['flagged_as_malicious'],
           ppom_eth_call_count: 5,
           ppom_eth_getCode_count: 3,
         },
@@ -467,10 +468,7 @@ describe('Transaction metrics', () => {
         persist: true,
         properties: {
           ...expectedProperties,
-          ui_customizations: [
-            'flagged_as_malicious',
-            'redesigned_confirmation',
-          ],
+          ui_customizations: ['flagged_as_malicious'],
           security_alert_reason: BlockaidReason.maliciousDomain,
           security_alert_response: 'Malicious',
           ppom_eth_call_count: 5,
@@ -489,10 +487,7 @@ describe('Transaction metrics', () => {
             ...expectedProperties,
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            ui_customizations: [
-              'flagged_as_malicious',
-              'redesigned_confirmation',
-            ],
+            ui_customizations: ['flagged_as_malicious'],
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             security_alert_reason: BlockaidReason.maliciousDomain,
@@ -620,10 +615,7 @@ describe('Transaction metrics', () => {
         persist: true,
         properties: {
           ...expectedProperties,
-          ui_customizations: [
-            'flagged_as_malicious',
-            'redesigned_confirmation',
-          ],
+          ui_customizations: ['flagged_as_malicious'],
           security_alert_reason: BlockaidReason.maliciousDomain,
           security_alert_response: 'Malicious',
           ppom_eth_call_count: 5,
@@ -645,10 +637,7 @@ describe('Transaction metrics', () => {
             ...expectedProperties,
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            ui_customizations: [
-              'flagged_as_malicious',
-              'redesigned_confirmation',
-            ],
+            ui_customizations: ['flagged_as_malicious'],
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             security_alert_reason: BlockaidReason.maliciousDomain,
@@ -837,10 +826,7 @@ describe('Transaction metrics', () => {
         persist: true,
         properties: {
           ...expectedProperties,
-          ui_customizations: [
-            'flagged_as_malicious',
-            'redesigned_confirmation',
-          ],
+          ui_customizations: ['flagged_as_malicious'],
           security_alert_reason: BlockaidReason.maliciousDomain,
           security_alert_response: 'Malicious',
           ppom_eth_call_count: 5,
@@ -864,10 +850,7 @@ describe('Transaction metrics', () => {
             ...expectedProperties,
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            ui_customizations: [
-              'flagged_as_malicious',
-              'redesigned_confirmation',
-            ],
+            ui_customizations: ['flagged_as_malicious'],
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             security_alert_reason: BlockaidReason.maliciousDomain,
@@ -922,9 +905,7 @@ describe('Transaction metrics', () => {
         asset_type: AssetType.unknown,
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        ui_customizations: [
-          MetaMetricsEventUiCustomization.RedesignedConfirmation,
-        ],
+        ui_customizations: null,
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         is_smart_transaction: undefined,
@@ -1149,10 +1130,7 @@ describe('Transaction metrics', () => {
         persist: true,
         properties: {
           ...expectedProperties,
-          ui_customizations: [
-            'flagged_as_malicious',
-            'redesigned_confirmation',
-          ],
+          ui_customizations: ['flagged_as_malicious'],
           security_alert_reason: BlockaidReason.maliciousDomain,
           security_alert_response: 'Malicious',
           ppom_eth_call_count: 5,
@@ -1175,10 +1153,7 @@ describe('Transaction metrics', () => {
             ...expectedProperties,
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            ui_customizations: [
-              'flagged_as_malicious',
-              'redesigned_confirmation',
-            ],
+            ui_customizations: ['flagged_as_malicious'],
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             security_alert_reason: BlockaidReason.maliciousDomain,
@@ -1294,10 +1269,7 @@ describe('Transaction metrics', () => {
         persist: true,
         properties: {
           ...expectedProperties,
-          ui_customizations: [
-            'flagged_as_malicious',
-            'redesigned_confirmation',
-          ],
+          ui_customizations: ['flagged_as_malicious'],
           security_alert_reason: BlockaidReason.maliciousDomain,
           security_alert_response: 'Malicious',
           ppom_eth_call_count: 5,
@@ -1316,10 +1288,7 @@ describe('Transaction metrics', () => {
             ...expectedProperties,
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            ui_customizations: [
-              'flagged_as_malicious',
-              'redesigned_confirmation',
-            ],
+            ui_customizations: ['flagged_as_malicious'],
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             security_alert_reason: BlockaidReason.maliciousDomain,
@@ -1701,6 +1670,185 @@ describe('Transaction metrics', () => {
           simulation_receiving_assets_total_value: '200',
         }),
       );
+    });
+  });
+
+  describe('transaction hash property', () => {
+    describe('included when', () => {
+      // @ts-expect-error This function is missing from the Mocha type definitions
+      it.each([
+        [TransactionStatus.failed, handleTransactionFailed],
+        [TransactionStatus.dropped, handleTransactionDropped],
+        [
+          TransactionStatus.confirmed,
+          (request: TransactionMetricsRequest, args: TransactionEventPayload) =>
+            handleTransactionConfirmed(
+              request,
+              args.transactionMeta as TransactionMetaEventPayload,
+            ),
+        ],
+      ])(
+        'transaction is %s and metrics opted in and pna25 acknowledged',
+        async (
+          status: TransactionStatus,
+          handler: (
+            request: TransactionMetricsRequest,
+            args: TransactionEventPayload,
+          ) => Promise<void>,
+        ) => {
+          const mockMetricsRequest = {
+            ...mockTransactionMetricsRequest,
+            getFeatureFlags: jest.fn().mockReturnValue({
+              extensionUxPna25: true,
+            }),
+            getPna25Acknowledged: jest.fn().mockReturnValue(true),
+            getParticipateInMetrics: jest.fn().mockReturnValue(true),
+          } as TransactionMetricsRequest;
+
+          const failedTransactionMeta = {
+            ...mockTransactionMeta,
+            status,
+          } as TransactionMeta;
+
+          await handler(mockMetricsRequest, {
+            transactionMeta: failedTransactionMeta,
+          });
+
+          const { properties } = jest.mocked(
+            mockTransactionMetricsRequest.createEventFragment,
+          ).mock.calls[0][0];
+
+          expect(properties).toStrictEqual(
+            expect.objectContaining({
+              transaction_hash: mockTransactionMeta.hash,
+            }),
+          );
+        },
+      );
+    });
+
+    describe('not included when', () => {
+      // @ts-expect-error This function is missing from the Mocha type definitions
+      it.each([
+        [TransactionStatus.unapproved, handleTransactionAdded],
+        [TransactionStatus.approved, handleTransactionApproved],
+        [TransactionStatus.submitted, handleTransactionSubmitted],
+      ])(
+        'transaction is %s and metrics opted in and pna25 acknowledged',
+        async (
+          status: TransactionStatus,
+          handler: (
+            request: TransactionMetricsRequest,
+            args: TransactionEventPayload,
+          ) => Promise<void>,
+        ) => {
+          const transactionMeta = {
+            ...mockTransactionMeta,
+            status,
+          } as TransactionMeta;
+
+          await handler(mockTransactionMetricsRequest, {
+            transactionMeta,
+          });
+
+          const { properties } = jest.mocked(
+            mockTransactionMetricsRequest.createEventFragment,
+          ).mock.calls[0][0];
+
+          expect(properties).not.toStrictEqual(
+            expect.objectContaining({
+              transaction_hash: mockTransactionMeta.hash,
+            }),
+          );
+        },
+      );
+
+      it('metrics not opted in', async () => {
+        const mockMetricsRequest = {
+          ...mockTransactionMetricsRequest,
+          getFeatureFlags: jest.fn().mockReturnValue({
+            extensionUxPna25: true,
+          }),
+          getPna25Acknowledged: jest.fn().mockReturnValue(true),
+          getParticipateInMetrics: jest.fn().mockReturnValue(false),
+        } as TransactionMetricsRequest;
+        const failedTransactionMeta = {
+          ...mockTransactionMeta,
+          status: TransactionStatus.failed,
+        } as TransactionMeta;
+
+        await handleTransactionFailed(mockMetricsRequest, {
+          transactionMeta: failedTransactionMeta as TransactionMetaEventPayload,
+        });
+
+        const { properties } = jest.mocked(
+          mockTransactionMetricsRequest.createEventFragment,
+        ).mock.calls[0][0];
+
+        expect(properties).not.toStrictEqual(
+          expect.objectContaining({
+            transaction_hash: mockTransactionMeta.hash,
+          }),
+        );
+      });
+
+      it('pna25 not acknowledged', async () => {
+        const mockMetricsRequest = {
+          ...mockTransactionMetricsRequest,
+          getFeatureFlags: jest.fn().mockReturnValue({
+            extensionUxPna25: true,
+          }),
+          getPna25Acknowledged: jest.fn().mockReturnValue(false),
+          getParticipateInMetrics: jest.fn().mockReturnValue(true),
+        } as TransactionMetricsRequest;
+        const failedTransactionMeta = {
+          ...mockTransactionMeta,
+          status: TransactionStatus.failed,
+        } as TransactionMeta;
+
+        await handleTransactionFailed(mockMetricsRequest, {
+          transactionMeta: failedTransactionMeta as TransactionMetaEventPayload,
+        });
+
+        const { properties } = jest.mocked(
+          mockTransactionMetricsRequest.createEventFragment,
+        ).mock.calls[0][0];
+
+        expect(properties).not.toStrictEqual(
+          expect.objectContaining({
+            transaction_hash: mockTransactionMeta.hash,
+          }),
+        );
+      });
+
+      it('ff not enabled', async () => {
+        const mockMetricsRequest = {
+          ...mockTransactionMetricsRequest,
+          getFeatureFlags: jest.fn().mockReturnValue({
+            extensionUxPna25: false,
+          }),
+          getPna25Acknowledged: jest.fn().mockReturnValue(true),
+          getParticipateInMetrics: jest.fn().mockReturnValue(true),
+        } as TransactionMetricsRequest;
+        const failedTransactionMeta = {
+          ...mockTransactionMeta,
+          status: TransactionStatus.failed,
+        } as TransactionMeta;
+
+        await handleTransactionFailed(mockMetricsRequest, {
+          transactionMeta: failedTransactionMeta as TransactionMetaEventPayload,
+        });
+
+        const { properties } = jest.mocked(
+          mockTransactionMetricsRequest.createEventFragment,
+        ).mock.calls[0][0];
+
+        expect(properties).not.toStrictEqual(
+          expect.objectContaining({
+            transaction_hash: mockTransactionMeta.hash,
+          }),
+        );
+      });
     });
   });
 });

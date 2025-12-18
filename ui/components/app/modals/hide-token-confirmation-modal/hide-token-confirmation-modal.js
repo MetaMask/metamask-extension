@@ -22,7 +22,7 @@ function mapStateToProps(state) {
   return {
     chainId: getCurrentChainId(state),
     token: state.appState.modal.modalState.props.token,
-    history: state.appState.modal.modalState.props.history,
+    navigate: state.appState.modal.modalState.props.navigate,
     networkConfigurationsByChainId: getNetworkConfigurationsByChainId(state),
     getAccountForChain: (caipChainId) =>
       getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId),
@@ -85,7 +85,7 @@ class HideTokenConfirmationModal extends Component {
       image: PropTypes.string,
       chainId: PropTypes.string,
     }),
-    history: PropTypes.object,
+    navigate: PropTypes.func,
   };
 
   state = {};
@@ -96,7 +96,7 @@ class HideTokenConfirmationModal extends Component {
       token,
       hideToken,
       hideModal,
-      history,
+      navigate,
       networkConfigurationsByChainId,
       getAccountForChain,
     } = this.props;
@@ -154,7 +154,7 @@ class HideTokenConfirmationModal extends Component {
                   getAccountForChain,
                 );
               }
-              history.push(DEFAULT_ROUTE);
+              navigate(DEFAULT_ROUTE);
             }}
           >
             {this.context.t('hide')}

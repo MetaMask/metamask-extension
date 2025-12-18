@@ -1,4 +1,5 @@
 import { ApprovalType } from '@metamask/controller-utils';
+import { KnownCaipNamespace } from '@metamask/utils';
 import {
   BtcAccountType,
   EthAccountType,
@@ -2796,7 +2797,11 @@ describe('getNativeTokenInfo', () => {
       name: 'MyToken',
     };
 
-    const result = selectors.getNativeTokenInfo(mocks.state, '0x1337');
+    const result = selectors.getNativeTokenInfo(
+      mocks.state.metamask.networkConfigurationsByChainId,
+      mocks.state.metamask.provider,
+      '0x1337',
+    );
     expect(result).toStrictEqual({
       symbol: 'HELLO',
       decimals: 18,
@@ -2811,7 +2816,11 @@ describe('getNativeTokenInfo', () => {
       name: undefined,
     };
 
-    const result = selectors.getNativeTokenInfo(mocks.state, '0x1337');
+    const result = selectors.getNativeTokenInfo(
+      mocks.state.metamask.networkConfigurationsByChainId,
+      mocks.state.metamask.provider,
+      '0x1337',
+    );
     expect(result).toStrictEqual({
       symbol: 'NATIVE',
       decimals: 18,
@@ -2828,7 +2837,11 @@ describe('getNativeTokenInfo', () => {
       nickname: 'MyToken',
     };
 
-    const result = selectors.getNativeTokenInfo(mocks.state, '0x1337');
+    const result = selectors.getNativeTokenInfo(
+      mocks.state.metamask.networkConfigurationsByChainId,
+      mocks.state.metamask.provider,
+      '0x1337',
+    );
     expect(result).toStrictEqual({
       symbol: 'HELLO',
       decimals: 18,
@@ -2845,7 +2858,11 @@ describe('getNativeTokenInfo', () => {
       nickname: undefined,
     };
 
-    const result = selectors.getNativeTokenInfo(mocks.state, '0x1337');
+    const result = selectors.getNativeTokenInfo(
+      mocks.state.metamask.networkConfigurationsByChainId,
+      mocks.state.metamask.provider,
+      '0x1337',
+    );
     expect(result).toStrictEqual({
       symbol: 'NATIVE',
       decimals: 18,
@@ -2856,7 +2873,11 @@ describe('getNativeTokenInfo', () => {
   it('provides native token from known list of hardcoded native tokens', () => {
     const mocks = arrange();
 
-    const result = selectors.getNativeTokenInfo(mocks.state, '0x89');
+    const result = selectors.getNativeTokenInfo(
+      mocks.state.metamask.networkConfigurationsByChainId,
+      mocks.state.metamask.provider,
+      '0x89',
+    );
     expect(result).toStrictEqual({
       symbol: 'POL',
       decimals: 18,
@@ -2866,7 +2887,11 @@ describe('getNativeTokenInfo', () => {
 
   it('fallbacks for unknown native token info', () => {
     const mocks = arrange();
-    const result = selectors.getNativeTokenInfo(mocks.state, '0xFakeToken');
+    const result = selectors.getNativeTokenInfo(
+      mocks.state.metamask.networkConfigurationsByChainId,
+      mocks.state.metamask.provider,
+      '0xFakeToken',
+    );
     expect(result).toStrictEqual({
       symbol: 'NATIVE',
       decimals: 18,
@@ -3035,5 +3060,175 @@ describe('getGasFeesSponsoredNetworkEnabled', () => {
     expect(result).toStrictEqual(gasFeesSponsoredNetwork);
     expect(result['0x1']).toBe(true);
     expect(result['0x2']).toBe(false);
+  });
+});
+
+describe('getHasAnyEvmNetworkEnabled', () => {
+  it('returns true when at least one EVM network is enabled', () => {
+    const state = {
+      metamask: {
+        enabledNetworkMap: {
+          [KnownCaipNamespace.Eip155]: {
+            '0x1': true,
+            '0x5': false,
+          },
+        },
+      },
+    };
+    expect(selectors.getHasAnyEvmNetworkEnabled(state)).toBe(true);
+  });
+
+  it('returns false when no EVM networks are enabled', () => {
+    const state = {
+      metamask: {
+        enabledNetworkMap: {
+          [KnownCaipNamespace.Eip155]: {
+            '0x1': false,
+            '0x5': false,
+          },
+        },
+      },
+    };
+    expect(selectors.getHasAnyEvmNetworkEnabled(state)).toBe(false);
+  });
+
+  it('returns false when EVM namespace is empty', () => {
+    const state = {
+      metamask: {
+        enabledNetworkMap: {
+          [KnownCaipNamespace.Eip155]: {},
+        },
+      },
+    };
+    expect(selectors.getHasAnyEvmNetworkEnabled(state)).toBe(false);
+  });
+
+  it('returns false when EVM namespace is not present', () => {
+    const state = {
+      metamask: {
+        enabledNetworkMap: {
+          [KnownCaipNamespace.Solana]: {
+            'solana:mainnet': true,
+          },
+        },
+      },
+    };
+    expect(selectors.getHasAnyEvmNetworkEnabled(state)).toBe(false);
+  });
+
+  it('returns true when multiple EVM networks are enabled', () => {
+    const state = {
+      metamask: {
+        enabledNetworkMap: {
+          [KnownCaipNamespace.Eip155]: {
+            '0x1': true,
+            '0x89': true,
+            '0xa': true,
+          },
+        },
+      },
+    };
+    expect(selectors.getHasAnyEvmNetworkEnabled(state)).toBe(true);
+  });
+
+  it('returns true when mixed enabled/disabled EVM networks with at least one enabled', () => {
+    const state = {
+      metamask: {
+        enabledNetworkMap: {
+          [KnownCaipNamespace.Eip155]: {
+            '0x1': false,
+            '0x89': true,
+            '0xa': false,
+          },
+          [KnownCaipNamespace.Solana]: {
+            'solana:mainnet': true,
+          },
+        },
+      },
+    };
+    expect(selectors.getHasAnyEvmNetworkEnabled(state)).toBe(true);
+  });
+});
+
+describe('getShouldSubmitEventsForShieldEntryModal', () => {
+  it('returns true if `shouldSubmitEvents` is true', () => {
+    const state = {
+      appState: {
+        shieldEntryModal: {
+          show: true,
+          shouldSubmitEvents: true,
+        },
+      },
+    };
+
+    const result = selectors.getShouldSubmitEventsForShieldEntryModal(state);
+    expect(result).toBe(true);
+  });
+
+  it('returns true if `metamask.showShieldEntryModalOnce` is null', () => {
+    const state = {
+      metamask: {
+        showShieldEntryModalOnce: null,
+      },
+      appState: {
+        shieldEntryModal: {
+          show: true,
+          hasUserInteractedWithModal: false,
+          shouldSubmitEvents: true,
+        },
+      },
+    };
+
+    const result = selectors.getShouldSubmitEventsForShieldEntryModal(state);
+    expect(result).toBe(true);
+  });
+
+  it('returns false if `metamask.showShieldEntryModalOnce` is false', () => {
+    const state = {
+      metamask: {
+        showShieldEntryModalOnce: false,
+      },
+      appState: {
+        shieldEntryModal: {
+          show: true,
+          hasUserInteractedWithModal: false,
+        },
+      },
+    };
+
+    const result = selectors.getShouldSubmitEventsForShieldEntryModal(state);
+    expect(result).toBe(false);
+  });
+
+  it('returns false if `metamask.showShieldEntryModalOnce` is true', () => {
+    const state = {
+      metamask: {
+        showShieldEntryModalOnce: true,
+      },
+      appState: {
+        shieldEntryModal: {
+          show: true,
+          hasUserInteractedWithModal: false,
+        },
+      },
+    };
+
+    const result = selectors.getShouldSubmitEventsForShieldEntryModal(state);
+    expect(result).toBe(false);
+  });
+
+  it('returns false if shouldSubmitEvents is false', () => {
+    const state = {
+      appState: {
+        shieldEntryModal: {
+          show: true,
+          hasUserInteractedWithModal: false,
+          shouldSubmitEvents: false,
+        },
+      },
+    };
+
+    const result = selectors.getShouldSubmitEventsForShieldEntryModal(state);
+    expect(result).toBe(false);
   });
 });

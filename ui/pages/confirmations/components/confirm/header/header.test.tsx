@@ -11,8 +11,8 @@ import { renderWithConfirmContextProvider } from '../../../../../../test/lib/con
 import configureStore from '../../../../../store/store';
 import Header from './header';
 
-jest.mock('react-router-dom-v5-compat', () => ({
-  ...jest.requireActual('react-router-dom-v5-compat'),
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   useNavigate: () => jest.fn(),
 }));
 

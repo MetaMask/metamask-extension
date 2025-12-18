@@ -16,7 +16,8 @@ import {
 
 // This should be long enough that it doesn't trigger when the popup is opened soon after startup.
 // The extension can take a few seconds to start up after a reload.
-const BACKGROUND_CONNECTION_TIMEOUT = 10_000; // 10 Seconds
+// changed from 10_000 to 15_000 on 11/26/2025 in order to measure effect.
+const BACKGROUND_CONNECTION_TIMEOUT = 15_000; // 15 Seconds
 
 type Message = {
   data: {

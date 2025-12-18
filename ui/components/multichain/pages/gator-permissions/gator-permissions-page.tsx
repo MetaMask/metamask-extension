@@ -1,7 +1,6 @@
 import React, { useRef } from 'react';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { isSnapId } from '@metamask/snaps-utils';
 import { Content, Header, Page } from '../page';
 import {
   ButtonIcon,
@@ -25,32 +24,31 @@ import {
   AlignItems,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useTheme } from '../../../../hooks/useTheme';
+import { TabEmptyState } from '../../../ui/tab-empty-state';
+import { ThemeType } from '../../../../../shared/constants/preferences';
 import {
   DEFAULT_ROUTE,
   PERMISSIONS,
   TOKEN_TRANSFER_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { useGatorPermissions } from '../../../../hooks/gator-permissions/useGatorPermissions';
-import { getConnectedSitesListWithNetworkInfo } from '../../../../selectors';
 import {
   AppState,
   getAggregatedGatorPermissionsCountAcrossAllChains,
+  getTotalUniqueSitesCount,
 } from '../../../../selectors/gator-permissions/gator-permissions';
 import { PermissionListItem } from './components/permission-list-item';
 
 export const GatorPermissionsPage = () => {
   const t = useI18nContext();
+  const theme = useTheme();
   const navigate = useNavigate();
   const headerRef = useRef<HTMLSpanElement>(null);
-  const sitesConnectionsList = useSelector(
-    getConnectedSitesListWithNetworkInfo,
-  );
   const totalGatorPermissions = useSelector((state: AppState) =>
     getAggregatedGatorPermissionsCountAcrossAllChains(state, 'token-transfer'),
   );
-  const totalSitesConnections = Object.keys(sitesConnectionsList).filter(
-    (site) => !isSnapId(site),
-  ).length;
+  const totalSitesConnections = useSelector(getTotalUniqueSitesCount);
   const totalPermissions = totalGatorPermissions + totalSitesConnections;
 
   // Hook uses cache-first strategy: returns cached data immediately if available,
@@ -165,24 +163,24 @@ export const GatorPermissionsPage = () => {
         flexDirection={FlexDirection.Column}
         justifyContent={JustifyContent.center}
         height={BlockSize.Full}
-        gap={2}
         padding={4}
       >
-        <Text
-          variant={TextVariant.bodyMdMedium}
-          backgroundColor={BackgroundColor.backgroundDefault}
-          textAlign={TextAlign.Center}
-        >
-          {t('permissionsPageEmptyContent')}
-        </Text>
-        <Text
-          variant={TextVariant.bodyMd}
-          color={TextColor.textAlternative}
-          backgroundColor={BackgroundColor.backgroundDefault}
-          textAlign={TextAlign.Center}
-        >
-          {t('permissionsPageEmptySubContent')}
-        </Text>
+        <TabEmptyState
+          icon={
+            <img
+              src={
+                theme === ThemeType.dark
+                  ? '/images/empty-state-permissions-dark.png'
+                  : '/images/empty-state-permissions-light.png'
+              }
+              alt={t('permissionsPageEmptyDescription')}
+              width={72}
+              height={72}
+            />
+          }
+          description={t('permissionsPageEmptyDescription')}
+          className="mx-auto"
+        />
       </Box>
     );
   };

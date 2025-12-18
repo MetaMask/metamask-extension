@@ -2,9 +2,8 @@ import Tooltip from '@material-ui/core/Tooltip';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import classnames from 'classnames';
 import { TransactionStatus } from '@metamask/transaction-controller';
-import { Button, ButtonVariant } from '../../component-library';
+import { Button, ButtonVariant } from '@metamask/design-system-react';
 import { getMaximumGasTotalInHexWei } from '../../../../shared/modules/gas.utils';
 import { getConversionRate } from '../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -15,7 +14,7 @@ import { getSelectedAccount } from '../../../selectors';
 export default function CancelButton({
   cancelTransaction,
   transaction,
-  detailsModal,
+  ...props
 }) {
   const t = useI18nContext();
   const { status } = transaction;
@@ -37,14 +36,9 @@ export default function CancelButton({
     <Button
       onClick={cancelTransaction}
       variant={ButtonVariant.Secondary}
-      block
-      className={classnames({
-        'transaction-list-item__header-button': !detailsModal,
-        'transaction-list-item-details__header-button-rounded-button':
-          detailsModal,
-      })}
       disabled={isDisabled}
       data-testid="cancel-button"
+      {...props}
     >
       {t('cancel')}
     </Button>
