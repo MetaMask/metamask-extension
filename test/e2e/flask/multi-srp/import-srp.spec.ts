@@ -37,7 +37,7 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
       },
       async (driver: Driver) => {
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkAccountBelongsToSrp('Account 2', 2);
+        await accountListPage.checkAccountBelongsToSrp('Account 1', 2);
       },
     );
   });

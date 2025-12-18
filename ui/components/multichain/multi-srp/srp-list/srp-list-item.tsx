@@ -21,6 +21,7 @@ import { Text, Box } from '../../../component-library';
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
 import { getMultichainAggregatedBalance } from '../../../../selectors/assets';
+import { getAccountGroupNameByInternalAccount } from '../../../../ducks/bridge/selectors';
 
 type SrpListItemProps = {
   account: InternalAccountWithBalance;
@@ -31,6 +32,9 @@ export const SrpListItem = ({ account }: SrpListItemProps) => {
   const isEvmAccount = isEvmAccountType(account.type);
   const multichainAggregatedBalance = useSelector((state) =>
     getMultichainAggregatedBalance(state, account),
+  );
+  const accountGroupName = useSelector((state) =>
+    getAccountGroupNameByInternalAccount(state, account),
   );
 
   const balance = useMemo(() => {
@@ -60,7 +64,7 @@ export const SrpListItem = ({ account }: SrpListItemProps) => {
           ellipsis
           paddingInlineStart={3}
         >
-          {account.metadata.name}
+          {accountGroupName ?? account.metadata.name}
         </Text>
         <Text
           variant={TextVariant.bodySm}

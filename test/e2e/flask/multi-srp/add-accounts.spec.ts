@@ -15,6 +15,7 @@ const addAccountToSrp = async (driver: Driver, srpIndex: number) => {
   await accountListPage.addMultichainAccount({
     srpIndex,
   });
+  await accountListPage.checkAccountNameIsDisplayed('Account 2');
 
   await accountListPage.closeMultichainAccountsPage();
   await accountListPage.checkAccountBelongsToSrp('Account 2', srpIndex + 1);
