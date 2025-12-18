@@ -93,5 +93,18 @@
   "sandbox": {
     "pages": ["snaps/index.html"]
   },
-  "short_name": "__MSG_appName__"
+  "short_name": "__MSG_appName__",
+  "sidebar_action": {
+    "default_icon": {
+      "16": "images/icon-16.png",
+      "19": "images/icon-19.png",
+      "32": "images/icon-32.png",
+      "38": "images/icon-38.png",
+      "64": "images/icon-64.png",
+      "128": "images/icon-128.png",
+      "512": "images/icon-512.png"
+    },
+    "default_title": "__MSG_appName__",
+    "default_panel": "sidepanel.html"
+  }
 }
