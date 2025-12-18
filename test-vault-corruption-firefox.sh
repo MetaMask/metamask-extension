@@ -283,8 +283,8 @@ echo "  === Primary Vault Corruption Tests ==="
 echo "  1) ${RED}FULL corruption${NC}: Drop triggers + delete data/meta + delete files + clear refs"
 echo "     → Storage becomes structurally corrupted (writes fail)"
 echo ""
-echo "  2) Delete 'data' and 'meta' keys only (minimal corruption)"
-echo "     → Expected: Vault recovery flow should trigger"
+echo "  2) Drop triggers ONLY (keep data intact)"
+echo "     → Tests: get() works, set() fails"
 echo ""
 echo "  3) Delete 'data' and 'meta' keys + delete BACKUP vault"
 echo "     → Expected: Fresh install flow (no recovery possible)"
@@ -351,37 +351,28 @@ case $choice in
 
     2)
         echo ""
-        echo -e "${YELLOW}Deleting 'data' and 'meta' keys from PRIMARY vault...${NC}"
+        echo -e "${YELLOW}Dropping triggers ONLY (keeping data intact)...${NC}"
 
         if [ -z "$PRIMARY_DB" ]; then
             echo -e "${RED}ERROR: Primary vault database not found!${NC}"
             exit 1
         fi
 
-        # Must drop triggers to delete data
-        echo "Dropping triggers (required for deletion)..."
+        # Drop Firefox triggers (makes writes fail!)
+        echo "Dropping Firefox triggers..."
         drop_triggers "$PRIMARY_DB"
         echo -e "${GREEN}✓ Triggers dropped${NC}"
 
-        # Delete the data key
-        sqlite3 "$PRIMARY_DB" "DELETE FROM object_data WHERE key LIKE '%ebub%' OR key LIKE '%data%';"
-        echo -e "${GREEN}✓ Deleted 'data' key${NC}"
-
-        # Delete the meta key
-        sqlite3 "$PRIMARY_DB" "DELETE FROM object_data WHERE key LIKE '%nfub%' OR key LIKE '%meta%';"
-        echo -e "${GREEN}✓ Deleted 'meta' key${NC}"
-
         echo ""
-        echo -e "${GREEN}✓ Minimal corruption complete!${NC}"
+        echo -e "${GREEN}✓ Trigger corruption complete!${NC}"
         echo ""
-        echo -e "${BLUE}The IndexedDB backup (metamask-backup) is still intact.${NC}"
+        echo -e "${BLUE}Data is still intact. Only triggers are removed.${NC}"
         echo ""
         echo -e "${YELLOW}Expected behavior:${NC}"
-        echo "  - MetaMask should detect missing vault"
-        echo "  - Vault recovery flow should trigger"
-        echo "  - User should be prompted to enter password to restore"
-        echo ""
-        echo -e "${YELLOW}Note: Triggers were dropped, so storage writes may fail.${NC}"
+        echo "  - browser.storage.local.get() should WORK"
+        echo "  - browser.storage.local.set() should FAIL"
+        echo "  - MetaMask opens normally but can't save state changes"
+        echo "  - After restart: 'An unexpected error occurred'"
         ;;
 
     3)
