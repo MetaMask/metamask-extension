@@ -29,7 +29,7 @@ export const SUPPORTED_PAYMENT_TOKEN_IMAGES: Record<string, string> = {
 /**
  * The source where the Shield entry modal is triggered from
  */
-export enum ShieldMetricsSoruceEnum {
+export enum ShieldMetricsSourceEnum {
   Notification = 'notification',
   Carousel = 'carousel',
   Homepage = 'homepage',

@@ -15,7 +15,7 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import { KeyringObject } from '@metamask/keyring-controller';
 import { Json } from '@metamask/utils';
 import {
-  ShieldMetricsSoruceEnum,
+  ShieldMetricsSourceEnum,
   ShieldSubscriptionRequestSubscriptionStateEnum,
   ShieldUserAccountCategoryEnum,
   ShieldUserAccountTypeEnum,
@@ -161,19 +161,19 @@ export function getShieldMarketingTrackingProps(
  */
 export function determineSubscriptionMetricsSourceFromMarketingUtmParams(
   marketingUtmParams: Record<string, string>,
-): ShieldMetricsSoruceEnum | undefined {
+): ShieldMetricsSourceEnum | undefined {
   const marketingUtmSource = marketingUtmParams?.utm_source;
 
   // If the deep link is from the carousel or notification, return the corresponding source.
-  if (marketingUtmSource === ShieldMetricsSoruceEnum.Carousel) {
-    return ShieldMetricsSoruceEnum.Carousel;
-  } else if (marketingUtmSource === ShieldMetricsSoruceEnum.Notification) {
-    return ShieldMetricsSoruceEnum.Notification;
+  if (marketingUtmSource === ShieldMetricsSourceEnum.Carousel) {
+    return ShieldMetricsSourceEnum.Carousel;
+  } else if (marketingUtmSource === ShieldMetricsSourceEnum.Notification) {
+    return ShieldMetricsSourceEnum.Notification;
   }
 
   // If current page is from deep link and found marketing UTM params, return the marketing source.
   if (Object.keys(marketingUtmParams).length > 0) {
-    return ShieldMetricsSoruceEnum.Marketing;
+    return ShieldMetricsSourceEnum.Marketing;
   }
 }
 
@@ -257,7 +257,7 @@ export function getSubscriptionRequestTrackingProps(
     ),
     source:
       shieldSubscriptionMetricsProps?.source ||
-      ShieldMetricsSoruceEnum.Settings,
+      ShieldMetricsSourceEnum.Settings,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     multi_chain_balance_category: getUserBalanceCategory(

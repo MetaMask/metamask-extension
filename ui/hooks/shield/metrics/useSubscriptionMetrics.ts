@@ -14,7 +14,7 @@ import {
 } from '../../../../shared/modules/shield';
 import { MetaMaskReduxDispatch } from '../../../store/store';
 import { setShieldSubscriptionMetricsProps } from '../../../store/actions';
-import { ShieldMetricsSoruceEnum } from '../../../../shared/constants/subscriptions';
+import { ShieldMetricsSourceEnum } from '../../../../shared/constants/subscriptions';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import {
   CaptureShieldPaymentMethodChangeEventParams,
@@ -65,7 +65,7 @@ export const useSubscriptionMetrics = () => {
   const setShieldSubscriptionMetricsPropsToBackground = useCallback(
     async (props: {
       marketingUtmParams?: Record<string, string>;
-      source: ShieldMetricsSoruceEnum;
+      source: ShieldMetricsSourceEnum;
       rewardPoints?: number;
     }) => {
       await dispatch(

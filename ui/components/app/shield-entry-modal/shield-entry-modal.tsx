@@ -43,7 +43,7 @@ import {
 } from '../../../selectors';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
 import {
-  ShieldMetricsSoruceEnum,
+  ShieldMetricsSourceEnum,
   ShieldCtaActionClickedEnum,
 } from '../../../../shared/constants/subscriptions';
 import {
@@ -87,7 +87,7 @@ const ShieldEntryModal = ({
 
   const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
 
-  const determineEntryModalSource = useCallback((): ShieldMetricsSoruceEnum => {
+  const determineEntryModalSource = useCallback((): ShieldMetricsSourceEnum => {
     const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
     const source =
       determineSubscriptionMetricsSourceFromMarketingUtmParams(
@@ -98,14 +98,14 @@ const ShieldEntryModal = ({
     }
 
     if (triggeringCohort === COHORT_NAMES.POST_TX) {
-      return ShieldMetricsSoruceEnum.PostTransaction;
+      return ShieldMetricsSourceEnum.PostTransaction;
     } else if (triggeringCohort === COHORT_NAMES.WALLET_HOME) {
-      return ShieldMetricsSoruceEnum.Homepage;
+      return ShieldMetricsSourceEnum.Homepage;
     } else if (pathname.startsWith(SETTINGS_ROUTE)) {
-      return ShieldMetricsSoruceEnum.Settings;
+      return ShieldMetricsSourceEnum.Settings;
     }
 
-    return ShieldMetricsSoruceEnum.Homepage;
+    return ShieldMetricsSourceEnum.Homepage;
   }, [triggeringCohort, pathname, search]);
 
   const handleOnClose = async (

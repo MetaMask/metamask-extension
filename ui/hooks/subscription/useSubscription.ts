@@ -61,7 +61,7 @@ import {
 import { useSubscriptionMetrics } from '../shield/metrics/useSubscriptionMetrics';
 import { CaptureShieldSubscriptionRequestParams } from '../shield/metrics/types';
 import {
-  ShieldMetricsSoruceEnum,
+  ShieldMetricsSourceEnum,
   ShieldSubscriptionRequestSubscriptionStateEnum,
 } from '../../../shared/constants/subscriptions';
 import { DefaultSubscriptionPaymentOptions } from '../../../shared/types';
@@ -513,7 +513,7 @@ export const useHandleSubscription = ({
   }, [lastSubscription]);
 
   const determineSubscriptionRequestSource =
-    useCallback((): ShieldMetricsSoruceEnum => {
+    useCallback((): ShieldMetricsSourceEnum => {
       const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
       const source =
         determineSubscriptionMetricsSourceFromMarketingUtmParams(
@@ -526,18 +526,18 @@ export const useHandleSubscription = ({
       const sourceParam = new URLSearchParams(search).get('source');
       switch (sourceParam) {
         case 'homepage':
-          return ShieldMetricsSoruceEnum.Homepage;
+          return ShieldMetricsSourceEnum.Homepage;
         case 'post_transaction':
-          return ShieldMetricsSoruceEnum.PostTransaction;
+          return ShieldMetricsSourceEnum.PostTransaction;
         case 'notification':
-          return ShieldMetricsSoruceEnum.Notification;
+          return ShieldMetricsSourceEnum.Notification;
         case 'carousel':
-          return ShieldMetricsSoruceEnum.Carousel;
+          return ShieldMetricsSourceEnum.Carousel;
         case 'marketing':
-          return ShieldMetricsSoruceEnum.Marketing;
+          return ShieldMetricsSourceEnum.Marketing;
         case 'settings':
         default:
-          return ShieldMetricsSoruceEnum.Settings;
+          return ShieldMetricsSourceEnum.Settings;
       }
     }, [search]);
 
