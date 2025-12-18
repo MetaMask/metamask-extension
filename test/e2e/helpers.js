@@ -8,14 +8,10 @@ const WebSocket = require('ws');
 const createStaticServer = require('../../development/create-static-server');
 const { setupMocking } = require('./mock-e2e');
 const { setupMockingPassThrough } = require('./mock-e2e-pass-through');
-const { Anvil } = require('./seeder/anvil');
-const { Ganache } = require('./seeder/ganache');
 const FixtureServer = require('./fixtures/fixture-server');
 const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
 const { PAGES } = require('./webdriver/driver');
-const AnvilSeeder = require('./seeder/anvil-seeder');
-const GanacheSeeder = require('./seeder/ganache-seeder');
 const { Bundler } = require('./bundler');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const { setManifestFlags } = require('./set-manifest-flags');
@@ -221,12 +217,16 @@ async function withFixtures(options, testSuite) {
 
       switch (nodeType) {
         case 'anvil':
+          // eslint-disable-next-line node/global-require, no-case-declarations -- load this module conditionally
+          const { Anvil } = require('./seeder/anvil');
           localNode = new Anvil();
           await localNode.start(nodeOptions);
           localNodes.push(localNode);
           break;
 
         case 'ganache':
+          // eslint-disable-next-line node/global-require, no-case-declarations -- load this module conditionally
+          const { Ganache } = require('./seeder/ganache');
           localNode = new Ganache();
           await localNode.start(nodeOptions);
           localNodes.push(localNode);
@@ -251,10 +251,14 @@ async function withFixtures(options, testSuite) {
     if (smartContract) {
       switch (localNodeOptsNormalized[0].type) {
         case 'anvil':
+          // eslint-disable-next-line node/global-require, no-case-declarations -- load this module conditionally
+          const AnvilSeeder = require('./seeder/anvil-seeder');
           seeder = new AnvilSeeder(localNodes[0].getProvider());
           break;
 
         case 'ganache':
+          // eslint-disable-next-line node/global-require, no-case-declarations -- load this module conditionally
+          const GanacheSeeder = require('./seeder/ganache-seeder');
           seeder = new GanacheSeeder(localNodes[0].getProvider());
           break;
 
@@ -764,10 +768,18 @@ async function initBundler(
 ) {
   try {
     const nodeType = localNodeOptsNormalized[0].type;
-    const seeder =
-      nodeType === 'ganache'
-        ? new GanacheSeeder(localNodeServer.getProvider())
-        : new AnvilSeeder(localNodeServer.getProvider());
+
+    let seeder;
+
+    if (nodeType === 'ganache') {
+      // eslint-disable-next-line node/global-require -- load this module conditionally
+      const GanacheSeeder = require('./seeder/ganache-seeder');
+      seeder = new GanacheSeeder(localNodeServer.getProvider());
+    } else {
+      // eslint-disable-next-line node/global-require -- load this module conditionally
+      const AnvilSeeder = require('./seeder/anvil-seeder');
+      seeder = new AnvilSeeder(localNodeServer.getProvider());
+    }
 
     await seeder.deploySmartContract(SMART_CONTRACTS.ENTRYPOINT);
 
