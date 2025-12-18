@@ -159,9 +159,7 @@ export const BridgeCTAButton = ({
       }}
       loading={isSubmitting}
       disabled={
-        !isTxSubmittable ||
-        isQuoteExpired ||
-        needsDestinationAddress ||
+        (!needsDestinationAddress && (!isTxSubmittable || isQuoteExpired)) ||
         isSubmitting
       }
     >
