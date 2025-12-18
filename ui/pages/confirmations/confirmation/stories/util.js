@@ -4,10 +4,18 @@ import { NetworkStatus } from '@metamask/network-controller';
 import configureStore from '../../../../store/store';
 import testData from '../../../../../.storybook/test-data';
 import { Box } from '../../../../components/component-library';
-import { mockNetworkState } from '../../../../../test/stub/networks';
+import {
+  mockMultichainNetworkState,
+  mockNetworkState,
+} from '../../../../../test/stub/networks';
 
 const STORE_MOCK = {
   ...testData,
+  activeTab: {
+    origin: 'https://metamask.github.io',
+    protocol: 'https:',
+    url: 'https://metamask.github.io/test-dapp/',
+  },
   metamask: {
     approvalFlows: [],
     currentCurrency: 'USD',
@@ -35,10 +43,16 @@ const STORE_MOCK = {
         status: NetworkStatus.Available,
       },
     }),
+    ...mockMultichainNetworkState(),
     pendingApprovals: {
       testId: {
         id: 'testId',
         origin: 'npm:@test/test-snap',
+      },
+    },
+    enabledNetworkMap: {
+      eip155: {
+        '0x1': true,
       },
     },
     selectedNetworkClientId: 'testNetworkClientId',
@@ -49,9 +63,9 @@ const STORE_MOCK = {
       },
     },
     tokenList: {},
-    accounts: testData.metamask.accounts,
     internalAccounts: testData.metamask.internalAccounts,
     accountsByChainId: testData.metamask.accountsByChainId,
+    accountTree: testData.metamask.accountTree,
     snaps: {
       'npm:@test/test-snap': {
         id: 'npm:@test/test-snap',

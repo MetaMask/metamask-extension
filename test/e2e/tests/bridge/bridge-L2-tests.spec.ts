@@ -1,82 +1,67 @@
 import { Suite } from 'mocha';
 import { unlockWallet, withFixtures } from '../../helpers';
-import HomePage from '../../page-objects/pages/home/homepage';
-import {
-  switchToNetworkFlow,
-  searchAndSwitchToNetworkFlow,
-} from '../../page-objects/flows/network.flow';
 import { DEFAULT_BRIDGE_FEATURE_FLAGS } from './constants';
 import { bridgeTransaction, getBridgeL2Fixtures } from './bridge-test-utils';
 
 describe('Bridge tests', function (this: Suite) {
-  it('should execete bridge transactions on L2 networks', async function () {
+  this.timeout(120000); // Needs a higher timeout as it's a longer tests
+  it('should execute bridge transactions on L2 networks', async function () {
     await withFixtures(
       getBridgeL2Fixtures(this.test?.fullTitle(), DEFAULT_BRIDGE_FEATURE_FLAGS),
       async ({ driver }) => {
         await unlockWallet(driver);
-        const homePage = new HomePage(driver);
-        await homePage.check_expectedBalanceIsDisplayed();
 
-        // Add Arbitrum One and make it the current network
-        await searchAndSwitchToNetworkFlow(driver, 'Arbitrum One');
-
-        await bridgeTransaction(
+        await bridgeTransaction({
           driver,
-          {
+          quote: {
             amount: '1',
             tokenFrom: 'ETH',
             tokenTo: 'ETH',
             fromChain: 'Linea',
             toChain: 'Ethereum',
           },
-          1,
-          '23.9999',
-        );
+          expectedTransactionsCount: 1,
+          expectedDestAmount: '0.991',
+        });
 
-        await bridgeTransaction(
+        await bridgeTransaction({
           driver,
-          {
+          quote: {
             amount: '1',
             tokenFrom: 'ETH',
             tokenTo: 'ETH',
             fromChain: 'Linea',
-            toChain: 'Arbitrum One',
+            toChain: 'Arbitrum',
           },
-          2,
-          '22.9999',
-        );
+          expectedTransactionsCount: 2,
+          expectedDestAmount: '0.991',
+        });
 
-        // Switch to Ethereum to set it as the current network
-        await switchToNetworkFlow(driver, 'Ethereum Mainnet');
-
-        await bridgeTransaction(
+        await bridgeTransaction({
           driver,
-          {
+          quote: {
             amount: '10',
             tokenFrom: 'DAI',
             tokenTo: 'DAI',
             fromChain: 'Linea',
-            toChain: 'Arbitrum One',
+            toChain: 'Arbitrum',
           },
-          4,
-          '22.9998',
-        );
+          expectedTransactionsCount: 4,
+          expectedDestAmount: '9.905',
+        });
 
-        // Switch to Arbitrum One to set it as the current network
-        await switchToNetworkFlow(driver, 'Arbitrum One');
-
-        await bridgeTransaction(
+        await bridgeTransaction({
           driver,
-          {
+          quote: {
             amount: '10',
             tokenFrom: 'DAI',
             tokenTo: 'DAI',
             fromChain: 'Linea',
             toChain: 'Ethereum',
           },
-          6,
-          '22.9997',
-        );
+          expectedTransactionsCount: 6,
+          expectedDestAmount: '9.67',
+        });
       },
     );
   });

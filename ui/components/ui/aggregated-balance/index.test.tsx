@@ -5,7 +5,7 @@ import '@testing-library/jest-dom';
 import thunk from 'redux-thunk';
 import { SolAccountType, SolMethod, SolScope } from '@metamask/keyring-api';
 import { Cryptocurrency } from '@metamask/assets-controllers';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { MultichainNativeAssets } from '../../../../shared/constants/multichain/assets';
 import mockState from '../../../../test/data/mock-state.json';
 import { SOLANA_WALLET_SNAP_ID } from '../../../../shared/lib/accounts';
@@ -23,6 +23,7 @@ const mockNonEvmBalance = '1';
 const mockNonEvmAccount = {
   address: 'DtMUkCoeyzs35B6EpQQxPyyog6TRwXxV1W1Acp8nWBNa',
   id: '542490c8-d178-433b-9f31-f680b11f45a5',
+  scopes: [SolScope.Mainnet],
   metadata: {
     name: 'Solana Account',
     keyring: {
@@ -75,7 +76,8 @@ const mockMetamaskStore = {
   },
   cryptocurrencies: [Cryptocurrency.Solana],
   remoteFeatureFlags: {
-    addSolanaAccount: true,
+    solanaAccounts: { enabled: true, minimumVersion: '13.6.0' },
+    bitcoinAccounts: { enabled: true, minimumVersion: '13.6.0' },
   },
 };
 
@@ -93,7 +95,8 @@ describe('AggregatedBalance Component', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
-  it('renders Spinner when balances are missing', () => {
+
+  it('renders a skeleton when balances are missing', () => {
     const testStore = getStore({
       metamask: {
         ...mockMetamaskStore,
@@ -111,8 +114,8 @@ describe('AggregatedBalance Component', () => {
       testStore,
     );
 
-    const spinner = container.querySelector('.spinner');
-    expect(spinner).toBeInTheDocument();
+    const skeleton = container.querySelector('.mm-skeleton');
+    expect(skeleton).toBeInTheDocument();
   });
 
   it('renders fiat balance when showNativeTokenAsMainBalance is false', () => {

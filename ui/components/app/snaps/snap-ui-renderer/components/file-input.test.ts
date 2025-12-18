@@ -1,6 +1,6 @@
 import { Box, Form, Field, FileInput, Button } from '@metamask/snaps-sdk/jsx';
-import { fireEvent } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { fireEvent, waitFor } from '@testing-library/react';
+import { userEvent } from '@testing-library/user-event';
 import * as backgroundConnection from '../../../../../store/background-connection';
 import {
   MOCK_INTERFACE_ID,
@@ -40,30 +40,32 @@ describe('SnapUIFileInput', () => {
 
     // JSDOM doesn't support array buffer so we overwrite it
     file.arrayBuffer = async () => {
-      return new Uint8Array([102, 111, 111]);
+      return [102, 111, 111] as unknown as ArrayBuffer;
     };
 
     const input = container.querySelector('#input') as HTMLInputElement;
     expect(input).toBeDefined();
     await userEvent.upload(input, file);
 
-    expect(submitRequestToBackground).toHaveBeenNthCalledWith(
-      1,
-      'updateInterfaceState',
-      [
-        MOCK_INTERFACE_ID,
-        {
-          form: {
-            input: {
-              contentType: 'image/svg',
-              contents: 'Zm9v',
-              name: 'foo.svg',
-              size: 3,
+    await waitFor(() => {
+      expect(submitRequestToBackground).toHaveBeenNthCalledWith(
+        1,
+        'updateInterfaceState',
+        [
+          MOCK_INTERFACE_ID,
+          {
+            form: {
+              input: {
+                contentType: 'image/svg',
+                contents: 'Zm9v',
+                name: 'foo.svg',
+                size: 3,
+              },
             },
           },
-        },
-      ],
-    );
+        ],
+      );
+    });
 
     expect(submitRequestToBackground).toHaveBeenNthCalledWith(
       2,

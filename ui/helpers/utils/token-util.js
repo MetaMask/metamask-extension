@@ -1,11 +1,15 @@
 import log from 'loglevel';
-import { getTokenStandardAndDetails } from '../../store/actions';
+import {
+  getTokenStandardAndDetails,
+  getTokenStandardAndDetailsByChain,
+} from '../../store/actions';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
 import { TokenStandard } from '../../../shared/constants/transaction';
 import { getTokenValueParam } from '../../../shared/lib/metamask-controller-utils';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import { Numeric } from '../../../shared/modules/Numeric';
+import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import * as util from './util';
 import { formatCurrency } from './confirm-tx.util';
 
@@ -73,7 +77,11 @@ async function getDecimalsFromContract(tokenAddress) {
 }
 
 export function getTokenMetadata(tokenAddress, tokenList) {
-  return tokenAddress && tokenList[tokenAddress.toLowerCase()];
+  return (
+    tokenAddress &&
+    (tokenList[tokenAddress.toLowerCase()] ??
+      tokenList[toChecksumHexAddress(tokenAddress)])
+  );
 }
 
 async function getSymbol(tokenAddress, tokenList) {
@@ -256,15 +264,28 @@ export function getTokenFiatAmount(
   return result;
 }
 
+/**
+ * Processes and combines data into a token or NFT details
+ *
+ * @param {string} tokenAddress
+ * @param {string} currentUserAddress
+ * @param {string} transactionData
+ * @param {unknown[]} existingNfts
+ * @param {string} chainId
+ * @returns Token or NFT details
+ */
 export async function getAssetDetails(
   tokenAddress,
   currentUserAddress,
   transactionData,
   existingNfts,
+  chainId,
 ) {
   const tokenData = parseStandardTokenTransactionData(transactionData);
   if (!tokenData) {
-    throw new Error('Unable to detect valid token data');
+    throw new Error(
+      `Unable to detect valid token data for token: ${tokenAddress}`,
+    );
   }
 
   // Sometimes the tokenId value is parsed as "_value" param. Not seeing this often any more, but still occasionally:
@@ -280,6 +301,9 @@ export async function getAssetDetails(
   // if a tokenId is present check if there is an NFT in state matching the address/tokenId
   // and avoid unnecessary network requests to query token details we already have
   if (existingNfts?.length && tokenId) {
+    /**
+     * @type {import('@metamask/assets-controllers').Nft | undefined}
+     */
     const existingNft = existingNfts.find(
       ({ address, tokenId: _tokenId }) =>
         isEqualCaseInsensitive(tokenAddress, address) && _tokenId === tokenId,
@@ -294,11 +318,18 @@ export async function getAssetDetails(
   }
 
   try {
-    tokenDetails = await getTokenStandardAndDetails(
-      tokenAddress,
-      currentUserAddress,
-      tokenId,
-    );
+    tokenDetails = chainId
+      ? await getTokenStandardAndDetailsByChain(
+          tokenAddress,
+          currentUserAddress,
+          tokenId,
+          chainId,
+        )
+      : await getTokenStandardAndDetails(
+          tokenAddress,
+          currentUserAddress,
+          tokenId,
+        );
   } catch (error) {
     log.warn(error);
     // if we can't determine any token standard or details return the data we can extract purely from the parsed transaction data

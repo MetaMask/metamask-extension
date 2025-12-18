@@ -20,6 +20,8 @@ export const resolveCaveats = (caveats: Caveats) => {
   return caveats.build();
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type RemoveFirst<T extends unknown[]> = T extends [unknown, ...infer Rest]
   ? Rest
   : never;

@@ -1,10 +1,12 @@
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { Driver } from '../webdriver/driver';
-import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
-import FixtureBuilder from '../fixture-builder';
-import { withFixtures } from '../helpers';
+import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import FixtureBuilder from '../fixtures/fixture-builder';
+import { withFixtures, WINDOW_TITLES } from '../helpers';
 import { switchAndApproveDialogSwitchToTestSnap } from '../page-objects/flows/snap-permission.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
+import { mockBip32Snap } from '../mock-response-data/snaps/snap-binary-mocks';
+import { DAPP_PATH } from '../constants';
 
 const bip32PublicKey =
   '"0x043e98d696ae15caef75fa8dd204a7c5c08d1272b2218ba3c20feeb4c691eec366606ece56791c361a2320e7fad8bcbb130f66d51c591fc39767ab2856e93f8dfb"';
@@ -25,11 +27,16 @@ describe('Test Snap bip-32', function () {
   it('tests various functions of bip-32', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder().withKeyringControllerMultiSRP().build(),
+        testSpecificMock: mockBip32Snap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        // We explicitly choose to await balances to prevent flakiness due to long login times.
+        await loginWithBalanceValidation(driver);
 
         const testSnaps = new TestSnaps(driver);
 
@@ -39,14 +46,14 @@ describe('Test Snap bip-32', function () {
         });
 
         // check the installation status
-        await testSnaps.check_installationComplete(
+        await testSnaps.checkInstallationComplete(
           'connectBip32Button',
           'Reconnect to BIP-32 Snap',
         );
 
         // Click bip32 button to get private key and validate the result
         await testSnaps.scrollAndClickButton('getBip32PublicKeyButton');
-        await testSnaps.check_messageResultSpan(
+        await testSnaps.checkMessageResultSpan(
           'bip32PublicKeyResultSpan',
           bip32PublicKey,
         );
@@ -55,7 +62,7 @@ describe('Test Snap bip-32', function () {
         await testSnaps.scrollAndClickButton(
           'getBip32CompressedPublicKeyButton',
         );
-        await testSnaps.check_messageResultSpan(
+        await testSnaps.checkMessageResultSpan(
           'bip32PublicKeyResultSpan',
           bip32CompressedPublicKey,
         );
@@ -64,7 +71,7 @@ describe('Test Snap bip-32', function () {
         await testSnaps.fillMessage('messageSecp256k1Input', 'foo bar');
         await testSnaps.clickButton('signBip32messageSecp256k1Button');
         await switchAndApproveDialogSwitchToTestSnap(driver);
-        await testSnaps.check_messageResultSpan(
+        await testSnaps.checkMessageResultSpan(
           'bip32MessageResultSecp256k1Span',
           publicKeyGeneratedWithSecp256k1Message,
         );
@@ -74,7 +81,7 @@ describe('Test Snap bip-32', function () {
         await testSnaps.fillMessage('messageEd25519Input', 'foo bar');
         await testSnaps.clickButton('signEd25519MessageButton');
         await switchAndApproveDialogSwitchToTestSnap(driver);
-        await testSnaps.check_messageResultSpan(
+        await testSnaps.checkMessageResultSpan(
           'bip32MessageResultEd25519Span',
           publicKeyGeneratedWithEd2551,
         );
@@ -83,13 +90,13 @@ describe('Test Snap bip-32', function () {
         await testSnaps.fillMessage('messageEd25519Bip32Input', 'foo bar');
         await testSnaps.scrollAndClickButton('signEd25519Bip32MessageButton');
         await switchAndApproveDialogSwitchToTestSnap(driver);
-        await testSnaps.check_messageResultSpan(
+        await testSnaps.checkMessageResultSpan(
           'messageResultEd25519SBip32Span',
           publicKeyGeneratedWithEd25519Bip32,
         );
 
         // Select entropy source SRP 1, enter a message, sign, approve and validate the result
-        await testSnaps.scrollAndSelectEntropySource(
+        await testSnaps.selectEntropySource(
           'bip32EntropyDropDown',
           'SRP 1 (primary)',
         );
@@ -97,37 +104,33 @@ describe('Test Snap bip-32', function () {
         await testSnaps.fillMessage('messageSecp256k1Input', 'bar baz');
         await testSnaps.clickButton('signBip32messageSecp256k1Button');
         await switchAndApproveDialogSwitchToTestSnap(driver);
-        await testSnaps.check_messageResultSpan(
+        await testSnaps.checkMessageResultSpan(
           'bip32MessageResultSecp256k1Span',
           publicKeyGeneratedWithEntropySourceSRP1,
         );
 
         // Select entropy source SRP 2, enter a message, sign, approve and validate the result
-        await testSnaps.scrollAndSelectEntropySource(
-          'bip32EntropyDropDown',
-          'SRP 2',
-        );
+        await testSnaps.selectEntropySource('bip32EntropyDropDown', 'SRP 2');
+
         await testSnaps.fillMessage('messageSecp256k1Input', 'bar baz');
         await testSnaps.clickButton('signBip32messageSecp256k1Button');
         await switchAndApproveDialogSwitchToTestSnap(driver);
-        await testSnaps.check_messageResultSpan(
+        await testSnaps.checkMessageResultSpan(
           'bip32MessageResultSecp256k1Span',
           publicKeyGeneratedWithEntropySourceSRP2,
         );
 
         // Select an invalid (non-existent) entropy source, enter a message, sign, approve and validate the result
-        await testSnaps.scrollAndSelectEntropySource(
-          'bip32EntropyDropDown',
-          'Invalid',
-        );
+        await testSnaps.selectEntropySource('bip32EntropyDropDown', 'Invalid');
         await testSnaps.fillMessage('messageSecp256k1Input', 'bar baz');
         await testSnaps.clickButton('signBip32messageSecp256k1Button');
 
-        // Check the error message and close the alert.
-        await driver.waitForAlert(
-          'Entropy source with ID "invalid" not found.',
-        );
-        await driver.closeAlertPopup();
+        // Verify that the expected error alert appears
+
+        await driver.waitForBrowserAlert({
+          text: 'Entropy source with ID "invalid" not found.',
+          windowTitle: WINDOW_TITLES.TestSnaps,
+        });
       },
     );
   });

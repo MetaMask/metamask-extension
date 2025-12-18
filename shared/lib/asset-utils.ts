@@ -3,23 +3,28 @@ import {
   parseCaipChainId,
   CaipAssetTypeStruct,
   CaipChainId,
-  Hex,
+  type Hex,
   isCaipAssetType,
   isCaipChainId,
   isStrictHexString,
   parseCaipAssetType,
+  KnownCaipNamespace,
 } from '@metamask/utils';
 
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { MultichainNetwork } from '@metamask/multichain-transactions-controller';
-import { toHex } from '@metamask/controller-utils';
 import {
   getNativeAssetForChainId,
   isNativeAddress,
 } from '@metamask/bridge-controller';
-import { MINUTE } from '../constants/time';
+import { Asset } from '@metamask/assets-controllers';
+import getFetchWithTimeout from '../modules/fetch-with-timeout';
 import { decimalToPrefixedHex } from '../modules/conversion.utils';
-import fetchWithCache from './fetch-with-cache';
+import {
+  TRON_RESOURCE_SYMBOLS_SET,
+  TronResourceSymbol,
+} from '../constants/multichain/assets';
+import { TEN_SECONDS_IN_MILLISECONDS } from './transactions-controller-utils';
 
 const TOKEN_API_V3_BASE_URL = 'https://tokens.api.cx.metamask.io/v3';
 const STATIC_METAMASK_BASE_URL = 'https://static.cx.metamask.io';
@@ -32,16 +37,18 @@ export const toAssetId = (
     return address;
   }
   if (isNativeAddress(address)) {
-    return getNativeAssetForChainId(chainId)?.assetId as CaipAssetType;
+    return getNativeAssetForChainId(chainId)?.assetId;
   }
   if (chainId === MultichainNetwork.Solana) {
     return CaipAssetTypeStruct.create(`${chainId}/token:${address}`);
   }
   // EVM assets
-  if (!isStrictHexString(address)) {
-    return undefined;
+  if (isStrictHexString(address)) {
+    return CaipAssetTypeStruct.create(
+      `${chainId}/erc20:${address.toLowerCase()}`,
+    );
   }
-  return CaipAssetTypeStruct.create(`${chainId}/erc20:${address}`);
+  return undefined;
 };
 
 /**
@@ -70,8 +77,8 @@ export const getAssetImageUrl = (
   )}.png`;
 };
 
-type AssetMetadata = {
-  assetId: string;
+export type AssetMetadata = {
+  assetId: CaipAssetType;
   symbol: string;
   name: string;
   decimals: number;
@@ -90,29 +97,28 @@ export const fetchAssetMetadata = async (
   chainId: Hex | CaipChainId,
   abortSignal?: AbortSignal,
 ) => {
-  const chainIdInCaip = isCaipChainId(chainId)
-    ? chainId
-    : toEvmCaipChainId(chainId);
-
-  const assetId = toAssetId(address, chainIdInCaip);
-
-  if (!assetId) {
-    return undefined;
-  }
-
   try {
-    const [assetMetadata]: AssetMetadata[] = await fetchWithCache({
-      url: `${TOKEN_API_V3_BASE_URL}/assets?assetIds=${assetId}`,
-      fetchOptions: {
-        method: 'GET',
-        headers: { 'X-Client-Id': 'extension' },
-        signal: abortSignal,
-      },
-      cacheOptions: {
-        cacheRefreshTime: MINUTE,
-      },
-      functionName: 'fetchAssetMetadata',
-    });
+    const chainIdInCaip = isCaipChainId(chainId)
+      ? chainId
+      : toEvmCaipChainId(chainId);
+
+    const assetId = toAssetId(address, chainIdInCaip);
+
+    if (!assetId) {
+      return undefined;
+    }
+    const fetchWithTimeout = getFetchWithTimeout(TEN_SECONDS_IN_MILLISECONDS);
+
+    const [assetMetadata]: AssetMetadata[] = await (
+      await fetchWithTimeout(
+        `${TOKEN_API_V3_BASE_URL}/assets?assetIds=${assetId}`,
+        {
+          method: 'GET',
+          headers: { 'X-Client-Id': 'extension' },
+          signal: abortSignal,
+        },
+      )
+    ).json();
 
     const commonFields = {
       symbol: assetMetadata.symbol,
@@ -134,10 +140,99 @@ export const fetchAssetMetadata = async (
     const { reference } = parseCaipChainId(chainIdInCaip);
     return {
       ...commonFields,
-      address: toHex(address),
+      address: address.toLowerCase(),
       chainId: decimalToPrefixedHex(reference),
     };
   } catch (error) {
     return undefined;
   }
+};
+
+/**
+ * Fetches the metadata for a list of token assetIds
+ *
+ * @param assetIds - The assetIds of the tokens
+ * @param abortSignal - The abort signal for the fetch request
+ * @returns The metadata for the tokens by assetId
+ */
+export const fetchAssetMetadataForAssetIds = async (
+  assetIds: (CaipAssetType | null)[],
+  abortSignal?: AbortSignal,
+) => {
+  try {
+    const fetchWithTimeout = getFetchWithTimeout(TEN_SECONDS_IN_MILLISECONDS);
+    const assetIdsString = assetIds
+      .map((assetId) => {
+        if (!assetId) {
+          return null;
+        }
+        const { assetReference } = parseCaipAssetType(assetId);
+        if (isStrictHexString(assetReference)) {
+          return assetId.toLowerCase();
+        }
+        return assetId;
+      })
+      .filter(Boolean)
+      .join(',');
+    if (!assetIdsString) {
+      return {};
+    }
+    const assetMetadata: AssetMetadata[] = await (
+      await fetchWithTimeout(
+        `${TOKEN_API_V3_BASE_URL}/assets?assetIds=${assetIdsString}`,
+        {
+          method: 'GET',
+          headers: { 'X-Client-Id': 'extension' },
+          signal: abortSignal,
+        },
+      )
+    ).json();
+
+    return assetMetadata.reduce(
+      (acc, asset) => {
+        acc[asset.assetId] = asset;
+        return acc;
+      },
+      {} as Record<CaipAssetType, AssetMetadata>,
+    );
+  } catch (error) {
+    return null;
+  }
+};
+
+/**
+ * Checks if the given chain ID is an EVM chain ID
+ *
+ * @param chainId - The chain ID to check. It can be in caip or hex format.
+ * @returns `true` if the chain ID is an EVM chain ID, `false` otherwise.
+ */
+export const isEvmChainId = (chainId: CaipChainId | Hex) => {
+  const chainIdInCaip = isCaipChainId(chainId)
+    ? chainId
+    : toEvmCaipChainId(chainId);
+
+  // TODO Replace with isEvmCaipChainId from @metamask/multichain-network-controller when it is exported
+  const { namespace } = parseCaipChainId(chainIdInCaip);
+  return namespace === KnownCaipNamespace.Eip155;
+};
+
+/**
+ * Checks if the given assetId is a Tron resource
+ *
+ * @param asset - The assetId to check.
+ * @returns `true` if the assetId is a Tron resource, `false` otherwise.
+ */
+export const isTronResource = (asset: Asset): boolean => {
+  if (!isCaipAssetType(asset.assetId)) {
+    return false;
+  }
+  const { chain } = parseCaipAssetType(asset.assetId);
+
+  if (chain.namespace !== KnownCaipNamespace.Tron) {
+    return false;
+  }
+
+  return TRON_RESOURCE_SYMBOLS_SET.has(
+    asset.symbol?.toLowerCase() as TronResourceSymbol,
+  );
 };

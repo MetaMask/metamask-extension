@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import log from 'loglevel';
-
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import AccountListItem from '../../components/app/account-list-item';
-import Identicon from '../../components/ui/identicon';
+import { PreferredAvatar } from '../../components/app/preferred-avatar';
 import { PageContainerFooter } from '../../components/ui/page-container';
 
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
@@ -27,7 +27,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
     clearConfirmTransaction: PropTypes.func.isRequired,
     cancelEncryptionPublicKey: PropTypes.func.isRequired,
     encryptionPublicKey: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired,
+    navigate: PropTypes.func.isRequired,
     requesterAddress: PropTypes.string,
     txData: PropTypes.object,
     subjectMetadata: PropTypes.object,
@@ -107,7 +107,10 @@ export default class ConfirmEncryptionPublicKey extends Component {
 
     return (
       <div className="request-encryption-public-key__request-icon">
-        <Identicon diameter={40} address={requesterAddress} />
+        <PreferredAvatar
+          size={AvatarAccountSize.Lg}
+          address={requesterAddress}
+        />
       </div>
     );
   };
@@ -162,7 +165,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
       cancelEncryptionPublicKey,
       clearConfirmTransaction,
       encryptionPublicKey,
-      history,
+      navigate,
       mostRecentOverviewPage,
       txData,
     } = this.props;
@@ -183,7 +186,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
             },
           });
           clearConfirmTransaction();
-          history.push(mostRecentOverviewPage);
+          navigate(mostRecentOverviewPage);
         }}
         onSubmit={async (event) => {
           await encryptionPublicKey(txData, event);
@@ -196,7 +199,7 @@ export default class ConfirmEncryptionPublicKey extends Component {
             },
           });
           clearConfirmTransaction();
-          history.push(mostRecentOverviewPage);
+          navigate(mostRecentOverviewPage);
         }}
       />
     );

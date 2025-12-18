@@ -1,3 +1,4 @@
+import { Hex } from '@metamask/utils';
 import { getNetworkNameByChainId } from '../feature-flags';
 import { ProviderConfigState, getCurrentChainId } from './networks';
 
@@ -24,10 +25,27 @@ export type SwapsFeatureFlags = {
   smartTransactions: SmartTransactionsFeatureFlag;
 };
 
-type FeatureFlagsMetaMaskState = {
+export type SmartTransactionNetwork = {
+  extensionActive?: boolean;
+  sentinelUrl?: string;
+  extensionReturnTxHashAsap?: boolean;
+  extensionReturnTxHashAsapBatch?: boolean;
+  extensionSkipSmartTransactionStatusPage?: boolean;
+  batchStatusPollingInterval?: number;
+};
+
+export type SmartTransactionsNetworks = {
+  [chainId: Hex]: SmartTransactionNetwork | undefined;
+  default?: SmartTransactionNetwork;
+};
+
+export type FeatureFlagsMetaMaskState = {
   metamask: {
     swapsState: {
       swapsFeatureFlags: SwapsFeatureFlags;
+    };
+    remoteFeatureFlags?: {
+      smartTransactionsNetworks?: SmartTransactionsNetworks;
     };
   };
 };
@@ -44,10 +62,34 @@ export function getFeatureFlagsByChainId(
   if (!featureFlags?.[networkName]) {
     return null;
   }
+  const smartTransactionsNetworks =
+    state.metamask.remoteFeatureFlags?.smartTransactionsNetworks;
+  const defaultConfig = smartTransactionsNetworks?.default ?? {};
+  const chainSpecificConfig =
+    smartTransactionsNetworks?.[effectiveChainId as Hex] ?? {};
+
+  // Merge with fallback precedence: chainSpecific > default > hardcoded defaults (false)
+  // TODO: this is temporary until we deprecate this file and implement a better flag system.
+  const remoteFlags = {
+    extensionReturnTxHashAsap:
+      chainSpecificConfig.extensionReturnTxHashAsap ??
+      defaultConfig.extensionReturnTxHashAsap ??
+      false,
+    extensionReturnTxHashAsapBatch:
+      chainSpecificConfig.extensionReturnTxHashAsapBatch ??
+      defaultConfig.extensionReturnTxHashAsapBatch ??
+      false,
+    extensionSkipSmartTransactionStatusPage:
+      chainSpecificConfig.extensionSkipSmartTransactionStatusPage ??
+      defaultConfig.extensionSkipSmartTransactionStatusPage ??
+      false,
+  };
+
   return {
     smartTransactions: {
       ...featureFlags.smartTransactions,
       ...featureFlags[networkName].smartTransactions,
+      ...remoteFlags,
     },
   };
 }

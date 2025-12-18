@@ -2,18 +2,17 @@ import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import {
   BorderRadius,
   Display,
+  FlexDirection,
   FontWeight,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { Box, Text } from '../../../../components/component-library';
-import { formatCurrency } from '../../../../helpers/utils/confirm-tx.util';
-import {
-  getPricePrecision,
-  loadingOpacity,
-  getShortDateFormatter,
-} from '../../util';
+import { loadingOpacity, getDynamicShortDate } from '../../util';
+import { useFormatters } from '../../../../hooks/useFormatters';
 import { Skeleton } from '../../../../components/component-library/skeleton';
+import { TokenCellPercentChange } from '../../../../components/app/assets/token-cell/cells';
+import { TokenFiatDisplayInfo } from '../../../../components/app/assets/types';
 
 /**
  * A component that shows a skeleton loading state in place of the the main price
@@ -59,50 +58,6 @@ const AssetChartPriceDeltaEmptyState = () => (
   <Text variant={TextVariant.bodyMdMedium}>{'\u00A0'}</Text>
 );
 
-const chartUp = (
-  <svg
-    className="chart-up"
-    width="12"
-    height="12"
-    viewBox="0 0 12 12"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M9.75 3.8125L6.25 7.4875L4.91667 5.3875L2.25 8.1875"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M8.08398 3.8125H9.75065V5.5625"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
-const chartDown = (
-  <svg
-    className="chart-down"
-    width="12"
-    height="12"
-    viewBox="0 0 12 12"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M9.75 8.1875L6.25 4.5125L4.91667 6.6125L2.25 3.8125"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M8.08398 8.1875H9.75065V6.4375"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
 // A component that shows the price of an asset at a
 // certain time, along with the delta from a previous price.
 const AssetChartPrice = forwardRef(
@@ -113,6 +68,7 @@ const AssetChartPrice = forwardRef(
       price?: number;
       date: number;
       comparePrice?: number;
+      asset?: TokenFiatDisplayInfo;
     },
     ref,
   ) => {
@@ -121,7 +77,7 @@ const AssetChartPrice = forwardRef(
       date: props.date,
     });
     useImperativeHandle(ref, () => ({ setPrice }));
-
+    const { formatCurrencyTokenPrice } = useFormatters();
     const { loading, currency, comparePrice } = props;
     const priceDelta =
       price !== undefined && comparePrice !== undefined
@@ -155,39 +111,31 @@ const AssetChartPrice = forwardRef(
             marginBottom={1}
             style={{ opacity: shouldShowMainPriceMuted ? loadingOpacity : 1 }}
           >
-            {formatCurrency(`${price}`, currency, getPricePrecision(price))}
+            {formatCurrencyTokenPrice(price, currency)}
           </Text>
         )}
         {shouldShowDeltaLoading && <AssetChartDeltaLoading />}
         {shouldShowDeltaEmptyState && <AssetChartPriceDeltaEmptyState />}
         {(shouldShowDelta || shouldShowDeltaMuted) && (
-          <Box style={{ opacity: loading ? loadingOpacity : 1 }}>
-            {priceDelta >= 0 ? chartUp : chartDown}
-            <Text
-              display={Display.InlineBlock}
-              variant={TextVariant.bodyMdMedium}
-              marginLeft={1}
-              marginRight={1}
-              color={
-                priceDelta >= 0
-                  ? TextColor.successDefault
-                  : TextColor.errorDefault
-              }
-            >
-              {formatCurrency(
-                `${Math.abs(priceDelta)}`,
-                currency,
-                getPricePrecision(priceDelta),
-              )}{' '}
-              ({priceDelta >= 0 ? '+' : ''}
-              {(100 * (priceDelta / comparePrice)).toFixed(2)}%)
-            </Text>
+          <Box
+            style={{ opacity: loading ? loadingOpacity : 1 }}
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+          >
+            {props.asset && (
+              <TokenCellPercentChange
+                token={props.asset}
+                price={price}
+                comparePrice={comparePrice}
+              />
+            )}
             <Text
               display={Display.InlineBlock}
               variant={TextVariant.bodyMdMedium}
               color={TextColor.textAlternative}
+              marginLeft={2}
             >
-              {getShortDateFormatter().format(date)}
+              {getDynamicShortDate(date)}
             </Text>
           </Box>
         )}

@@ -1,7 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import { createProjectLogger } from '@metamask/utils';
-import { isSolanaChainId } from '@metamask/bridge-controller';
+import { useNavigate } from 'react-router-dom';
+import {
+  getQuotesReceivedProperties,
+  isNonEvmChainId,
+} from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import {
   AWAITING_SIGNATURES_ROUTE,
@@ -12,16 +14,17 @@ import {
 import { setDefaultHomeActiveTabName } from '../../../store/actions';
 import { submitBridgeTx } from '../../../ducks/bridge-status/actions';
 import { setWasTxDeclined } from '../../../ducks/bridge/actions';
+import { isHardwareWallet } from '../../../../shared/modules/selectors';
 import {
-  getSmartTransactionsEnabled,
-  isHardwareWallet,
-} from '../../../../shared/modules/selectors';
-import useSnapConfirmation from './useSnapConfirmation';
+  getBridgeQuotes,
+  getFromAccount,
+  getIsStxEnabled,
+  getWarningLabels,
+} from '../../../ducks/bridge/selectors';
+import { captureException } from '../../../../shared/lib/sentry';
 
 const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';
 const APPROVAL_TX_ERROR = 'Approve transaction failed';
-
-const debugLog = createProjectLogger('bridge');
 
 export const isAllowanceResetError = (error: unknown): boolean => {
   const errorMessage = (error as Error).message ?? '';
@@ -54,52 +57,80 @@ const isHardwareWalletUserRejection = (error: unknown): boolean => {
 };
 
 export default function useSubmitBridgeTransaction() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const hardwareWalletUsed = useSelector(isHardwareWallet);
 
-  // This redirects to the confirmation page if an unapproved snap confirmation exists
-  useSnapConfirmation();
+  const smartTransactionsEnabled = useSelector(getIsStxEnabled);
 
-  const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
+  const fromAccount = useSelector(getFromAccount);
+  const { recommendedQuote } = useSelector(getBridgeQuotes);
+  const warnings = useSelector(getWarningLabels);
+
   const submitBridgeTransaction = async (
     quoteResponse: QuoteResponse & QuoteMetadata,
   ) => {
-    if (hardwareWalletUsed) {
-      history.push(`${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`);
+    if (!fromAccount) {
+      throw new Error(
+        'Failed to submit bridge transaction: No selected account',
+      );
     }
-
-    if (isSolanaChainId(quoteResponse.quote.srcChainId)) {
-      // Move to activity tab before submitting a transaction
-      // This is a temporary solution to avoid the transaction not being shown in the activity tab
-      // We should find a better solution in the future
-      await dispatch(setDefaultHomeActiveTabName('activity'));
-      await dispatch(submitBridgeTx(quoteResponse, false));
-      // The useSnapConfirmation hook redirects to the confirmation page right after
-      // submitting the tx so everything below is unnecessary and we can return early
-      return;
+    if (hardwareWalletUsed) {
+      navigate(`${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`);
     }
 
     // Execute transaction(s)
     try {
-      await dispatch(submitBridgeTx(quoteResponse, smartTransactionsEnabled));
+      // Handle non-EVM source chains (Solana, Bitcoin, Tron)
+      const isNonEvmSource = isNonEvmChainId(quoteResponse.quote.srcChainId);
+
+      if (isNonEvmSource) {
+        // Submit the transaction first, THEN navigate
+        await dispatch(
+          submitBridgeTx(
+            fromAccount.address,
+            quoteResponse,
+            false,
+            getQuotesReceivedProperties(
+              quoteResponse,
+              warnings,
+              true,
+              recommendedQuote,
+            ),
+          ),
+        );
+        await dispatch(setDefaultHomeActiveTabName('activity'));
+        navigate(DEFAULT_ROUTE, { state: { stayOnHomePage: true } });
+        return;
+      }
+
+      await dispatch(
+        submitBridgeTx(
+          fromAccount.address,
+          quoteResponse,
+          smartTransactionsEnabled,
+          getQuotesReceivedProperties(
+            quoteResponse,
+            warnings,
+            true,
+            recommendedQuote,
+          ),
+        ),
+      );
     } catch (e) {
-      debugLog('Bridge transaction failed', e);
+      captureException(e);
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
         dispatch(setWasTxDeclined(true));
-        history.push(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
+        navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
       } else {
         await dispatch(setDefaultHomeActiveTabName('activity'));
-        history.push(DEFAULT_ROUTE);
+        navigate(DEFAULT_ROUTE);
       }
       return;
     }
     // Route user to activity tab on Home page
     await dispatch(setDefaultHomeActiveTabName('activity'));
-    history.push({
-      pathname: DEFAULT_ROUTE,
-      state: { stayOnHomePage: true },
-    });
+    navigate(DEFAULT_ROUTE, { state: { stayOnHomePage: true } });
   };
 
   return {

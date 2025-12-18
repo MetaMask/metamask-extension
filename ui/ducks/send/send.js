@@ -23,7 +23,6 @@ import {
   CONTRACT_ADDRESS_ERROR,
   FLOAT_TOKENS_ERROR,
   INSUFFICIENT_FUNDS_ERROR,
-  INSUFFICIENT_FUNDS_FOR_GAS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
   NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR,
   INVALID_RECIPIENT_ADDRESS_ERROR,
@@ -32,13 +31,13 @@ import {
   SWAPS_NO_QUOTES,
   SWAPS_QUOTES_ERROR,
   INVALID_HEX_DATA_ERROR,
-} from '../../pages/confirmations/send/send.constants';
+} from '../../pages/confirmations/send-legacy/send.constants';
 
 import {
   isBalanceSufficient,
   isERC1155BalanceSufficient,
   isTokenBalanceSufficient,
-} from '../../pages/confirmations/send/send.utils';
+} from '../../pages/confirmations/send-legacy/send.utils';
 import {
   getCurrentChainId,
   getSelectedNetworkClientId,
@@ -50,7 +49,6 @@ import {
   getIsMainnet,
   getTargetAccount,
   getIsNonStandardEthChain,
-  checkNetworkAndAccountSupports1559,
   getUseTokenDetection,
   getTokenList,
   getAddressBookEntryOrAccountName,
@@ -539,7 +537,6 @@ export const initialState = {
  *
  * @typedef {object} MetaMaskState
  * @property {SendState} send - The state of the send flow.
- * @property {object} metamask - The state of the metamask store.
  */
 
 const name = 'send';
@@ -565,7 +562,7 @@ export const computeEstimatedGasLimit = createAsyncThunk(
   'send/computeEstimatedGasLimit',
   async (_, thunkApi) => {
     const state = thunkApi.getState();
-    const { send, metamask } = state;
+    const { send } = state;
     const draftTransaction =
       send.draftTransactions[send.currentTransactionUUID];
     const unapprovedTxs = getUnapprovedTransactions(state);
@@ -599,7 +596,6 @@ export const computeEstimatedGasLimit = createAsyncThunk(
     ) {
       const gasLimit = await estimateGasLimitForSend({
         gasPrice: draftTransaction.gas.gasPrice,
-        blockGasLimit: metamask.currentBlockGasLimit,
         selectedAddress: selectedAccount.address,
         sendToken: draftTransaction.sendAsset.details,
         to: draftTransaction.recipient.address?.toLowerCase(),
@@ -650,7 +646,6 @@ export const initializeSendState = createAsyncThunk(
   async ({ chainHasChanged = false } = {}, thunkApi) => {
     /**
      * @typedef {object} ReduxState
-     * @property {object} metamask - Half baked type for the MetaMask object
      * @property {SendState} send - the send state
      */
 
@@ -661,12 +656,13 @@ export const initializeSendState = createAsyncThunk(
     const isNonStandardEthChain = getIsNonStandardEthChain(state);
     const selectedNetworkClientId = getSelectedNetworkClientId(state);
     const chainId = getCurrentChainId(state);
-    let eip1559support = checkNetworkAndAccountSupports1559(state);
+    let eip1559support =
+      state.metamask.networksMetadata?.[selectedNetworkClientId]?.EIPS?.[1559];
     if (eip1559support === undefined) {
       eip1559support = await getCurrentNetworkEIP1559Compatibility();
     }
     const account = getSelectedAccount(state);
-    const { send: sendState, metamask } = state;
+    const { send: sendState } = state;
     const draftTransaction =
       sendState.draftTransactions[sendState.currentTransactionUUID];
 
@@ -736,7 +732,6 @@ export const initializeSendState = createAsyncThunk(
       // required gas. If this value isn't nullish, set it as the new gasLimit
       const estimatedGasLimit = await estimateGasLimitForSend({
         gasPrice,
-        blockGasLimit: metamask.currentBlockGasLimit,
         selectedAddress: getSender(state),
         sendToken: draftTransaction.sendAsset.details,
         to: draftTransaction.recipient.address.toLowerCase(),
@@ -1021,7 +1016,6 @@ const slice = createSlice({
         slice.caseReducers.updateAmountToMax(state);
       }
       slice.caseReducers.validateAmountField(state);
-      slice.caseReducers.validateGasField(state);
       // validate send state
       slice.caseReducers.validateSendState(state);
     },
@@ -1315,6 +1309,14 @@ const slice = createSlice({
     updateRecipient: (state, action) => {
       const draftTransaction =
         state.draftTransactions[state.currentTransactionUUID];
+
+      // If no transactions are found, reset to ADD_RECIPIENT state
+      if (!draftTransaction) {
+        state.stage = SEND_STAGES.ADD_RECIPIENT;
+        slice.caseReducers.validateSendState(state);
+        return;
+      }
+
       draftTransaction.recipient.error = null;
       state.recipientInput = '';
       draftTransaction.recipient.address = action.payload.address ?? '';
@@ -1416,13 +1418,6 @@ const slice = createSlice({
       draftTransaction.amount.value = addHexPrefix(action.payload);
       // Once amount has changed, validate the field
       slice.caseReducers.validateAmountField(state);
-      if (draftTransaction.sendAsset.type === AssetType.native) {
-        // if sending the native asset the amount being sent will impact the
-        // gas field as well because the gas validation takes into
-        // consideration the available balance minus amount sent before
-        // checking if there is enough left to cover the gas fee.
-        slice.caseReducers.validateGasField(state);
-      }
     },
     /**
      * updates the userInputHexData state key
@@ -1526,8 +1521,6 @@ const slice = createSlice({
             slice.caseReducers.validateSendState(state);
           }
           break;
-        // set error to INSUFFICIENT_FUNDS_FOR_GAS_ERROR if the account balance is lower
-        // than the total price of the transaction inclusive of gas fees.
         case !isBalanceSufficient({
           amount:
             draftTransaction.sendAsset.type === AssetType.native
@@ -1537,19 +1530,8 @@ const slice = createSlice({
             draftTransaction.sendAsset.type === AssetType.native
               ? draftTransaction.sendAsset.balance
               : state.selectedAccount.balance,
-          gasTotal: draftTransaction.gas.gasTotal ?? '0x0',
         }): {
-          const isInsufficientWithoutGas =
-            draftTransaction.sendAsset.type === AssetType.native &&
-            !isBalanceSufficient({
-              amount: draftTransaction.amount.value,
-              balance: draftTransaction.sendAsset.balance,
-              gasTotal: '0x0', // assume gas is free
-            });
-
-          draftTransaction.amount.error = isInsufficientWithoutGas
-            ? INSUFFICIENT_FUNDS_ERROR
-            : INSUFFICIENT_FUNDS_FOR_GAS_ERROR;
+          draftTransaction.amount.error = INSUFFICIENT_FUNDS_ERROR;
           if (draftTransaction.status !== SEND_STATUSES.INVALID) {
             slice.caseReducers.validateSendState(state);
           }
@@ -1562,39 +1544,6 @@ const slice = createSlice({
             slice.caseReducers.validateSendState(state);
           }
       }
-    },
-    /**
-     * Checks if the user has enough funds to cover the cost of gas, always
-     * uses the native currency and does not take into account the amount
-     * being sent. If the user has enough to cover cost of gas but not gas
-     * + amount then the error will be displayed on the amount field.
-     *
-     * @param {SendStateDraft} state - A writable draft of the send state to be
-     *  updated.
-     * @returns {void}
-     */
-    validateGasField: (state) => {
-      const draftTransaction =
-        state.draftTransactions[state.currentTransactionUUID];
-
-      if (!draftTransaction) {
-        return;
-      }
-
-      const insufficientFunds = !isBalanceSufficient({
-        amount:
-          draftTransaction.sendAsset.type === AssetType.native
-            ? draftTransaction.amount.value
-            : '0x0',
-        balance:
-          draftTransaction.fromAccount?.balance ??
-          state.selectedAccount.balance,
-        gasTotal: draftTransaction.gas.gasTotal ?? '0x0',
-      });
-
-      draftTransaction.gas.error = insufficientFunds
-        ? INSUFFICIENT_FUNDS_ERROR
-        : null;
     },
     validateRecipientUserInput: (state, action) => {
       const draftTransaction =
@@ -1680,21 +1629,12 @@ const slice = createSlice({
         const isSwapAndSend = getIsDraftSwapAndSend(draftTransaction);
 
         const getIsIgnorableAmountError = () =>
-          [
-            INSUFFICIENT_TOKENS_ERROR,
-            INSUFFICIENT_FUNDS_ERROR,
-            INSUFFICIENT_FUNDS_FOR_GAS_ERROR,
-          ].includes(draftTransaction.amount.error) &&
-          !draftTransaction.sendAsset.balance;
+          [INSUFFICIENT_TOKENS_ERROR, INSUFFICIENT_FUNDS_ERROR].includes(
+            draftTransaction.amount.error,
+          ) && !draftTransaction.sendAsset.balance;
 
-        const { quotes, gas } = draftTransaction;
+        const { quotes } = draftTransaction;
         const bestQuote = quotes ? calculateBestQuote(quotes) : undefined;
-
-        const derivedGasPrice =
-          hexToDecimal(gas?.gasTotal || '0x0') > 0 &&
-          hexToDecimal(gas?.gasLimit || '0x0') > 0
-            ? new Numeric(gas.gasTotal, 16).divide(gas.gasLimit, 16).toString()
-            : undefined;
 
         switch (true) {
           case Boolean(
@@ -1827,27 +1767,6 @@ const slice = createSlice({
             });
             draftTransaction.status = SEND_STATUSES.INVALID;
             break;
-          case bestQuote &&
-            !isBalanceSufficient({
-              amount:
-                draftTransaction.sendAsset.type === AssetType.native
-                  ? draftTransaction.amount.value
-                  : undefined,
-              balance: state.selectedAccount.balance,
-              gasTotal: calcGasTotal(
-                new Numeric(
-                  bestQuote?.gasParams?.maxGas || 0,
-                  10,
-                ).toPrefixedHexString(),
-                derivedGasPrice ?? '0x0',
-              ),
-            }): {
-            if (!draftTransaction.amount.error) {
-              draftTransaction.amount.error = INSUFFICIENT_FUNDS_FOR_GAS_ERROR;
-            }
-            draftTransaction.status = SEND_STATUSES.INVALID;
-            break;
-          }
           case isSwapAndSend && !bestQuote:
             slice.caseReducers.addHistoryEntry(state, {
               payload: `No swap and send quote available`,
@@ -1888,7 +1807,6 @@ const slice = createSlice({
                 action.payload.account.balance;
             }
             slice.caseReducers.validateAmountField(state);
-            slice.caseReducers.validateGasField(state);
             slice.caseReducers.validateSendState(state);
           }
         }
@@ -1975,20 +1893,6 @@ const slice = createSlice({
         if (draftTransaction) {
           draftTransaction.gas.gasLimit = action.payload.gasLimit;
           draftTransaction.gas.gasTotal = action.payload.gasTotal;
-          if (action.payload.chainHasChanged) {
-            // If the state was reinitialized as a result of the user changing
-            // the network from the network dropdown, then the selected asset is
-            // no longer valid and should be set to the native asset for the
-            // network.
-            draftTransaction.sendAsset.type = AssetType.native;
-            draftTransaction.sendAsset.balance =
-              draftTransaction.fromAccount?.balance ??
-              state.selectedAccount.balance;
-            draftTransaction.sendAsset.details = null;
-
-            draftTransaction.receiveAsset =
-              draftTransactionInitialState.receiveAsset;
-          }
         }
         slice.caseReducers.updateGasFeeEstimates(state, {
           payload: {
@@ -2017,7 +1921,6 @@ const slice = createSlice({
           slice.caseReducers.updateAmountToMax(state);
         }
         slice.caseReducers.validateAmountField(state);
-        slice.caseReducers.validateGasField(state);
         slice.caseReducers.validateSendState(state);
       })
       .addCase(initializeSendState.rejected, (state) => {
@@ -2117,7 +2020,6 @@ const slice = createSlice({
             }
 
             slice.caseReducers.validateAmountField(state);
-            slice.caseReducers.validateGasField(state);
             slice.caseReducers.validateSendState(state);
           }
         }
@@ -2715,12 +2617,14 @@ export function updateSendAsset(
           asset.error = INVALID_ASSET_TYPE;
           throw new Error(INVALID_ASSET_TYPE);
         } else {
+          const selectedNetworkClientId = getSelectedNetworkClientId(state);
           let isCurrentOwner = true;
           try {
             isCurrentOwner = await isNftOwner(
               sendingAddress,
               details.address,
               details.tokenId,
+              selectedNetworkClientId,
             );
           } catch (err) {
             const message = getErrorMessage(err);
@@ -2877,7 +2781,7 @@ export function resetSendState() {
  * @returns {ThunkAction<void>}
  */
 
-export function signTransaction(history) {
+export function signTransaction(navigate) {
   return async (dispatch, getState) => {
     const state = getState();
     const globalNetworkClientId = getSelectedNetworkClientId(state);
@@ -2963,12 +2867,9 @@ export function signTransaction(history) {
             draftTransaction.sendAsset.type === AssetType.native,
         ),
       );
-      history.push(CONFIRM_TRANSACTION_ROUTE);
+      navigate(CONFIRM_TRANSACTION_ROUTE);
     } else {
-      let transactionType =
-        draftTransaction.recipient.type === RECIPIENT_TYPES.SMART_CONTRACT
-          ? TransactionType.contractInteraction
-          : TransactionType.simpleSend;
+      let transactionType;
 
       if (draftTransaction.sendAsset.type !== AssetType.native) {
         if (draftTransaction.sendAsset.type === AssetType.NFT) {
@@ -3088,7 +2989,7 @@ export function signTransaction(history) {
         transactionId = swapAndSendTxId;
 
         await dispatch(setDefaultHomeActiveTabName('activity'));
-        history.push(DEFAULT_ROUTE);
+        navigate(DEFAULT_ROUTE);
       } else {
         // basic send
         const { id: basicSendTxId } = await dispatch(
@@ -3099,7 +3000,7 @@ export function signTransaction(history) {
           }),
         );
         transactionId = basicSendTxId;
-        history.push(CONFIRM_TRANSACTION_ROUTE);
+        navigate(CONFIRM_TRANSACTION_ROUTE);
       }
       await dispatch(
         setMaxValueMode(

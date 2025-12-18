@@ -7,7 +7,7 @@ import {
 import {
   SmartTransactionStatuses,
   SmartTransactionMinedTx,
-} from '@metamask/smart-transactions-controller/dist/types';
+} from '@metamask/smart-transactions-controller';
 import { CHAIN_IDS } from '../../shared/constants/network';
 import {
   ETH_4337_METHODS,

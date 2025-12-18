@@ -5,6 +5,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/keyring-api';
+import { useSelector } from 'react-redux';
 import {
   Display,
   FlexDirection,
@@ -48,6 +49,10 @@ import {
 } from '../../../hooks/useMultichainTransactionDisplay';
 import { MultichainProviderConfig } from '../../../../shared/constants/multichain/networks';
 import {
+  getInternalAccountsObject,
+  isNonEvmAccount,
+} from '../../../selectors/accounts';
+import {
   formatTimestamp,
   getTransactionUrl,
   getAddressUrl,
@@ -61,6 +66,8 @@ export type MultichainTransactionDetailsModalProps = {
   networkConfig: MultichainProviderConfig;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function MultichainTransactionDetailsModal({
   transaction,
   onClose,
@@ -83,8 +90,14 @@ export function MultichainTransactionDetailsModal({
     id,
   } = useMultichainTransactionDisplay(transaction, networkConfig);
 
+  const internalAccountsById = useSelector(getInternalAccountsObject);
+  const txInternalAccount = internalAccountsById?.[transaction.account];
+  const nonEvmSenderAddress = isNonEvmAccount(txInternalAccount)
+    ? txInternalAccount?.address
+    : undefined;
+
   const getStatusColor = (txStatus: string) => {
-    switch (txStatus.toLowerCase()) {
+    switch (txStatus?.toLowerCase()) {
       case TransactionStatus.Confirmed:
         return TextColor.successDefault;
       case TransactionStatus.Unconfirmed:
@@ -170,6 +183,8 @@ export function MultichainTransactionDetailsModal({
     [TransactionType.Send]: t('send'),
     [TransactionType.Receive]: t('receive'),
     [TransactionType.Swap]: t('swap'),
+    [TransactionType.StakeDeposit]: t('stakingDeposit'),
+    [TransactionType.StakeWithdraw]: t('stakingWithdrawal'),
     [TransactionType.Unknown]: t('interaction'),
   };
 
@@ -212,17 +227,25 @@ export function MultichainTransactionDetailsModal({
             gap={4}
           >
             {/* Status */}
-            <Box
-              display={Display.Flex}
-              justifyContent={JustifyContent.spaceBetween}
-            >
-              <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
-                {t('status')}
-              </Text>
-              <Text variant={TextVariant.bodyMd} color={getStatusColor(status)}>
-                {capitalize(t(statusKey))}
-              </Text>
-            </Box>
+            {status && (
+              <Box
+                display={Display.Flex}
+                justifyContent={JustifyContent.spaceBetween}
+              >
+                <Text
+                  variant={TextVariant.bodyMd}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {t('status')}
+                </Text>
+                <Text
+                  variant={TextVariant.bodyMd}
+                  color={getStatusColor(status)}
+                >
+                  {capitalize(t(statusKey))}
+                </Text>
+              </Box>
+            )}
 
             {/* Transaction ID */}
             <Box
@@ -276,9 +299,12 @@ export function MultichainTransactionDetailsModal({
             gap={4}
           >
             {/* From */}
-            {type === TransactionType.Send
-              ? accountComponent(t('from'), userAddress)
-              : accountComponent(t('from'), from?.address)}
+            {accountComponent(
+              t('from'),
+              type === TransactionType.Send
+                ? nonEvmSenderAddress || userAddress
+                : from?.address,
+            )}
 
             {/* Amounts per token */}
             <>
@@ -318,8 +344,12 @@ export function MultichainTransactionDetailsModal({
                 event: MetaMetricsEventName.ExternalLinkClicked,
                 category: MetaMetricsEventCategory.Navigation,
                 properties: {
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
                   link_type: MetaMetricsEventLinkType.AccountTracker,
                   location: 'Transaction Details',
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
                   url_domain: getURLHostName(getTransactionUrl(id, chain)),
                 },
               });

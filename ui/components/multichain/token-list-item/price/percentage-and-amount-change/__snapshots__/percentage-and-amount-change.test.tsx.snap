@@ -3,14 +3,14 @@
 exports[`PercentageChange Component render renders correctly 1`] = `
 <div>
   <div
-    class="mm-box mm-box--display-flex"
+    class="mm-box gap-1 mm-box--display-flex"
   >
     <p
       class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-success-default"
       data-testid="token-increase-decrease-value"
       style="white-space: pre;"
     >
-      +$12.21 
+      +$12.21
     </p>
     <p
       class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-success-default"

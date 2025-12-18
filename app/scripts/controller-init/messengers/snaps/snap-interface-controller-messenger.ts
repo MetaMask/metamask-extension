@@ -1,13 +1,20 @@
-import { Messenger } from '@metamask/base-controller';
-import { GetSnap } from '@metamask/snaps-controllers';
+import { Messenger } from '@metamask/messenger';
+import {
+  AccountsControllerListMultichainAccountsAction,
+  GetSnap,
+} from '@metamask/snaps-controllers';
 import {
   AcceptRequest,
   HasApprovalRequest,
 } from '@metamask/approval-controller';
 import { MaybeUpdateState, TestOrigin } from '@metamask/phishing-controller';
 import { NotificationListUpdatedEvent } from '@metamask/notification-services-controller/notification-services';
-import { AccountsControllerGetAccountByAddressAction } from '@metamask/accounts-controller';
 import { MultichainAssetsControllerGetStateAction } from '@metamask/assets-controllers';
+import {
+  AccountsControllerGetAccountByAddressAction,
+  AccountsControllerGetSelectedMultichainAccountAction,
+} from '@metamask/accounts-controller';
+import { RootMessenger } from '../../../lib/messenger';
 
 type Actions =
   | MaybeUpdateState
@@ -15,8 +22,10 @@ type Actions =
   | HasApprovalRequest
   | AcceptRequest
   | GetSnap
+  | MultichainAssetsControllerGetStateAction
+  | AccountsControllerGetSelectedMultichainAccountAction
   | AccountsControllerGetAccountByAddressAction
-  | MultichainAssetsControllerGetStateAction;
+  | AccountsControllerListMultichainAccountsAction;
 
 type Events = NotificationListUpdatedEvent;
 
@@ -33,19 +42,31 @@ export type SnapInterfaceControllerMessenger = ReturnType<
  * @returns The restricted messenger.
  */
 export function getSnapInterfaceControllerMessenger(
-  messenger: Messenger<Actions, Events>,
+  messenger: RootMessenger<Actions, Events>,
 ) {
-  return messenger.getRestricted({
-    name: 'SnapInterfaceController',
-    allowedActions: [
+  const controllerMessenger = new Messenger<
+    'SnapInterfaceController',
+    Actions,
+    Events,
+    typeof messenger
+  >({
+    namespace: 'SnapInterfaceController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    actions: [
       `PhishingController:maybeUpdateState`,
       `PhishingController:testOrigin`,
       `ApprovalController:hasRequest`,
       `ApprovalController:acceptRequest`,
       `SnapController:get`,
-      'AccountsController:getAccountByAddress',
       'MultichainAssetsController:getState',
+      `AccountsController:getSelectedMultichainAccount`,
+      `AccountsController:getAccountByAddress`,
+      `AccountsController:listMultichainAccounts`,
     ],
-    allowedEvents: ['NotificationServicesController:notificationsListUpdated'],
+    events: ['NotificationServicesController:notificationsListUpdated'],
   });
+  return controllerMessenger;
 }

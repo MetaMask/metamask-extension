@@ -1,7 +1,6 @@
 import { JsonRpcRequest, SnapId } from '@metamask/snaps-sdk';
 import {
   BtcScope,
-  CaipChainId,
   DiscoverAccountsRequest,
   SolScope,
 } from '@metamask/keyring-api';
@@ -9,7 +8,11 @@ import {
   SnapKeyring,
   SnapKeyringInternalOptions,
 } from '@metamask/eth-snap-keyring';
-import { Messenger } from '@metamask/base-controller';
+import {
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import { AccountsControllerActions } from '@metamask/accounts-controller';
 import { SnapControllerActions } from '@metamask/snaps-controllers';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
@@ -18,14 +21,12 @@ import {
   getUniqueAccountName,
   MultichainWalletSnapClient,
   SnapAccountNameOptions,
-  WalletSnapOptions,
+  CreateAccountSnapOptions,
 } from './accounts';
 import { SOLANA_WALLET_SNAP_ID } from './solana-wallet-snap';
 import { BITCOIN_WALLET_SNAP_ID } from './bitcoin-wallet-snap';
 
 const SOLANA_SCOPES = [SolScope.Mainnet, SolScope.Testnet, SolScope.Devnet];
-
-const BITCOIN_SCOPES = [BtcScope.Mainnet, BtcScope.Testnet];
 
 describe('accounts', () => {
   describe('getUniqueAccountName', () => {
@@ -101,9 +102,12 @@ describe('accounts', () => {
 
     const getRootMessenger = () => {
       return new Messenger<
+        MockAnyNamespace,
         AccountsControllerActions | SnapControllerActions,
         never
-      >();
+      >({
+        namespace: MOCK_ANY_NAMESPACE,
+      });
     };
 
     const getMessenger = () => {
@@ -120,21 +124,20 @@ describe('accounts', () => {
       return messenger;
     };
 
-    const getClient = (snapId: SnapId, scopes: CaipChainId[]) => {
+    const getClient = (snapId: SnapId) => {
       return new MultichainWalletSnapClient(
         snapId,
-        scopes,
         getSnapKeyring(),
         getMessenger(),
       );
     };
 
     const getSolanaClient = () => {
-      return getClient(SOLANA_WALLET_SNAP_ID, SOLANA_SCOPES);
+      return getClient(SOLANA_WALLET_SNAP_ID);
     };
 
     const getBitcoinClient = () => {
-      return getClient(BITCOIN_WALLET_SNAP_ID, BITCOIN_SCOPES);
+      return getClient(BITCOIN_WALLET_SNAP_ID);
     };
 
     beforeEach(() => {
@@ -147,7 +150,7 @@ describe('accounts', () => {
 
         mockSnapKeyringCreateAccount.mockResolvedValue({});
 
-        const options: WalletSnapOptions = {
+        const options: CreateAccountSnapOptions = {
           derivationPath: 'm/',
           accountNameSuggestion: 'My Main Solana Account',
         };
@@ -175,7 +178,7 @@ describe('accounts', () => {
         const autoInjectedAccountNameSuggestion =
           await client.getNextAvailableAccountName(); // Will be named for Solana account index 2.
 
-        const options: WalletSnapOptions = {
+        const options: CreateAccountSnapOptions = {
           derivationPath: 'm/',
           // No explicit `accountNameSuggestion`.
         };
@@ -264,7 +267,7 @@ describe('accounts', () => {
             params: {
               entropySource,
               groupIndex,
-              scopes: SOLANA_SCOPES,
+              scopes: [SolScope.Mainnet],
             },
           },
           snapId: SOLANA_WALLET_SNAP_ID,
@@ -298,7 +301,7 @@ describe('accounts', () => {
           },
         );
 
-        await client.discoverAccounts(entropySource);
+        await client.discoverAccounts(entropySource, SolScope.Mainnet);
         expect(mockSnapControllerHandleRequest).toHaveBeenCalledTimes(3);
         expect(mockSnapControllerHandleRequest).toHaveBeenNthCalledWith(
           1,

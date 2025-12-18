@@ -1,21 +1,30 @@
-import configureStore from 'redux-mock-store';
-import React from 'react';
-import { screen } from '@testing-library/react';
 import {
   SimulationData,
   SimulationErrorCode,
+  TransactionContainerType,
   TransactionMeta,
+  TransactionStatus,
 } from '@metamask/transaction-controller';
+import { screen } from '@testing-library/react';
 import { BigNumber } from 'bignumber.js';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import mockState from '../../../../../test/data/mock-state.json';
+import React from 'react';
+import configureStore from 'redux-mock-store';
+import { cloneDeep } from 'lodash';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
-import { SimulationDetails, StaticRow } from './simulation-details';
-import { useBalanceChanges } from './useBalanceChanges';
+import mockState from '../../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { AlertMetricsProvider } from '../../../../components/app/alert-system/contexts/alertMetricsContext';
 import { BalanceChangeList } from './balance-change-list';
+import { SimulationDetails, StaticRow } from './simulation-details';
 import { BalanceChange } from './types';
+import { useBalanceChanges } from './useBalanceChanges';
 
-const store = configureStore()(mockState);
+const TRANSACTION_ID_MOCK = 'testTransactionId';
+
+const BALANCE_CHANGES_MOCK = [
+  { amount: new BigNumber(-123) },
+  { amount: new BigNumber(456) },
+] as BalanceChange[];
 
 jest.mock('./useBalanceChanges', () => ({
   useBalanceChanges: jest.fn(),
@@ -31,6 +40,7 @@ jest.mock(
   '../../../../components/app/confirm/info/row/alert-row/alert-row',
   () => ({
     ConfirmInfoAlertRow: jest.fn(({ label }) => <>{label}</>),
+    getAlertTextColors: jest.fn(() => 'textDefault'),
   }),
 );
 
@@ -46,17 +56,52 @@ const renderSimulationDetails = (
   simulationData?: Partial<SimulationData>,
   metricsOnly?: boolean,
   staticRows?: StaticRow[],
-) =>
-  renderWithProvider(
-    <SimulationDetails
-      transaction={
-        { id: 'testTransactionId', simulationData } as TransactionMeta
-      }
-      metricsOnly={metricsOnly}
-      staticRows={staticRows}
-    />,
-    store,
+  transactionMetadata?: Partial<
+    TransactionMeta & { smartTransactionStatus?: string }
+  >,
+) => {
+  const trackAlertActionClicked = jest.fn();
+  const trackAlertRender = jest.fn();
+  const trackInlineAlertClicked = jest.fn();
+
+  const state = cloneDeep(mockState);
+
+  // Extract smartTransactionStatus from transactionMetadata
+  const { smartTransactionStatus, ...txMetadata } = transactionMetadata || {};
+
+  if (txMetadata && Object.keys(txMetadata).length > 0) {
+    state.metamask.transactions.push({
+      id: TRANSACTION_ID_MOCK,
+      simulationData,
+      ...txMetadata,
+    } as never);
+  }
+
+  return renderWithProvider(
+    <AlertMetricsProvider
+      metrics={{
+        trackAlertActionClicked,
+        trackAlertRender,
+        trackInlineAlertClicked,
+      }}
+    >
+      <SimulationDetails
+        transaction={
+          {
+            id: TRANSACTION_ID_MOCK,
+            simulationData,
+            ...txMetadata,
+          } as TransactionMeta
+        }
+        metricsOnly={metricsOnly}
+        staticRows={staticRows}
+        isTransactionsRedesign
+        smartTransactionStatus={smartTransactionStatus}
+      />
+    </AlertMetricsProvider>,
+    configureStore()(state),
   );
+};
 
 describe('SimulationDetails', () => {
   beforeEach(() => {
@@ -67,20 +112,20 @@ describe('SimulationDetails', () => {
     });
   });
 
-  it('renders loading indicator when simulation data is not available', () => {
-    renderSimulationDetails();
-    expect(screen.getByRole('progressbar')).toBeInTheDocument();
+  it('renders skeleton loader when simulation data is not available', () => {
+    const { container } = renderSimulationDetails();
+    expect(container.querySelector('.mm-skeleton')).toBeInTheDocument();
   });
 
-  it('renders loading indicator when balance changes are pending', () => {
+  it('renders skeleton loader when balance changes are pending', () => {
     (useBalanceChanges as jest.Mock).mockReturnValue({
       pending: true,
       value: [],
     });
 
-    renderSimulationDetails({});
+    const { container } = renderSimulationDetails({});
 
-    expect(screen.getByRole('progressbar')).toBeInTheDocument();
+    expect(container.querySelector('.mm-skeleton')).toBeInTheDocument();
   });
 
   it('renders error content when simulation error is reverted', () => {
@@ -111,21 +156,19 @@ describe('SimulationDetails', () => {
     expect(screen.getByText(/Unavailable/u)).toBeInTheDocument();
   });
 
-  it('renders empty content when there are no balance changes', () => {
+  it('renders empty content when there are no balance changes with proper alignment', () => {
     renderSimulationDetails({});
 
-    expect(screen.getByText(/No changes/u)).toBeInTheDocument();
+    const noChangesText = screen.getByText(/No changes/u);
+    expect(noChangesText).toBeInTheDocument();
+    expect(noChangesText).toHaveClass('mm-box--width-11/12');
+    expect(noChangesText).toHaveClass('mm-text--text-align-right');
   });
 
   it('passes the correct properties to BalanceChangeList components', () => {
-    const balanceChangesMock = [
-      { amount: new BigNumber(-123) },
-      { amount: new BigNumber(456) },
-    ] as BalanceChange[];
-
     (useBalanceChanges as jest.Mock).mockReturnValue({
       pending: false,
-      value: balanceChangesMock,
+      value: BALANCE_CHANGES_MOCK,
     });
 
     renderSimulationDetails({});
@@ -135,7 +178,7 @@ describe('SimulationDetails', () => {
     expect(BalanceChangeList).toHaveBeenCalledWith(
       expect.objectContaining({
         heading: 'You send',
-        balanceChanges: [balanceChangesMock[0]],
+        balanceChanges: [BALANCE_CHANGES_MOCK[0]],
       }),
       {},
     );
@@ -143,7 +186,170 @@ describe('SimulationDetails', () => {
     expect(BalanceChangeList).toHaveBeenCalledWith(
       expect.objectContaining({
         heading: 'You receive',
-        balanceChanges: [balanceChangesMock[1]],
+        balanceChanges: [BALANCE_CHANGES_MOCK[1]],
+      }),
+      {},
+    );
+  });
+
+  it('uses correct heading text based on transaction status', () => {
+    (useBalanceChanges as jest.Mock).mockReturnValue({
+      pending: false,
+      value: BALANCE_CHANGES_MOCK,
+    });
+
+    // Test confirmed status
+    renderSimulationDetails({}, false, [], {
+      status: TransactionStatus.confirmed,
+    });
+    expect(BalanceChangeList).toHaveBeenCalledWith(
+      expect.objectContaining({
+        heading: 'You sent',
+        balanceChanges: [BALANCE_CHANGES_MOCK[0]],
+      }),
+      {},
+    );
+
+    // Test submitted status
+    renderSimulationDetails({}, false, [], {
+      status: TransactionStatus.submitted,
+    });
+    expect(BalanceChangeList).toHaveBeenCalledWith(
+      expect.objectContaining({
+        heading: "You're sending",
+        balanceChanges: [BALANCE_CHANGES_MOCK[0]],
+      }),
+      {},
+    );
+
+    // Test default (unapproved status)
+    renderSimulationDetails({}, false, [], {
+      status: TransactionStatus.unapproved,
+    });
+    expect(BalanceChangeList).toHaveBeenCalledWith(
+      expect.objectContaining({
+        heading: 'You send',
+        balanceChanges: [BALANCE_CHANGES_MOCK[0]],
+      }),
+      {},
+    );
+  });
+
+  it('prioritizes Smart Transaction status over regular transaction status', () => {
+    (useBalanceChanges as jest.Mock).mockReturnValue({
+      pending: false,
+      value: BALANCE_CHANGES_MOCK,
+    });
+
+    // Test: Smart Transaction success should override submitted transaction status
+    renderSimulationDetails({}, false, [], {
+      status: TransactionStatus.submitted,
+      smartTransactionStatus: 'success',
+    });
+    expect(BalanceChangeList).toHaveBeenCalledWith(
+      expect.objectContaining({
+        heading: 'You sent', // Should show "You sent" due to Smart Transaction success
+        balanceChanges: [BALANCE_CHANGES_MOCK[0]],
+      }),
+      {},
+    );
+
+    // Test: Smart Transaction pending should override unapproved transaction status
+    renderSimulationDetails({}, false, [], {
+      status: TransactionStatus.unapproved,
+      smartTransactionStatus: 'pending',
+    });
+    expect(BalanceChangeList).toHaveBeenCalledWith(
+      expect.objectContaining({
+        heading: "You're sending", // Should show "You're sending" due to Smart Transaction pending
+        balanceChanges: [BALANCE_CHANGES_MOCK[0]],
+      }),
+      {},
+    );
+  });
+
+  it('uses correct heading text for incoming balance changes based on transaction status', () => {
+    (useBalanceChanges as jest.Mock).mockReturnValue({
+      pending: false,
+      value: BALANCE_CHANGES_MOCK,
+    });
+
+    // Clear previous calls to focus on incoming balance changes
+    jest.clearAllMocks();
+
+    // Test confirmed status
+    renderSimulationDetails({}, false, [], {
+      status: TransactionStatus.confirmed,
+    });
+    expect(BalanceChangeList).toHaveBeenCalledWith(
+      expect.objectContaining({
+        heading: "You've received",
+        balanceChanges: [BALANCE_CHANGES_MOCK[1]],
+      }),
+      {},
+    );
+
+    jest.clearAllMocks();
+
+    // Test submitted status
+    renderSimulationDetails({}, false, [], {
+      status: TransactionStatus.submitted,
+    });
+    expect(BalanceChangeList).toHaveBeenCalledWith(
+      expect.objectContaining({
+        heading: "You're receiving",
+        balanceChanges: [BALANCE_CHANGES_MOCK[1]],
+      }),
+      {},
+    );
+
+    jest.clearAllMocks();
+
+    // Test default (unapproved status)
+    renderSimulationDetails({}, false, [], {
+      status: TransactionStatus.unapproved,
+    });
+    expect(BalanceChangeList).toHaveBeenCalledWith(
+      expect.objectContaining({
+        heading: 'You receive',
+        balanceChanges: [BALANCE_CHANGES_MOCK[1]],
+      }),
+      {},
+    );
+  });
+
+  it('prioritizes Smart Transaction status over regular transaction status for incoming balance changes', () => {
+    (useBalanceChanges as jest.Mock).mockReturnValue({
+      pending: false,
+      value: BALANCE_CHANGES_MOCK,
+    });
+
+    jest.clearAllMocks();
+
+    // Test: Smart Transaction success should override submitted transaction status
+    renderSimulationDetails({}, false, [], {
+      status: TransactionStatus.submitted,
+      smartTransactionStatus: 'success',
+    });
+    expect(BalanceChangeList).toHaveBeenCalledWith(
+      expect.objectContaining({
+        heading: "You've received", // Should show "You've received" due to Smart Transaction success
+        balanceChanges: [BALANCE_CHANGES_MOCK[1]],
+      }),
+      {},
+    );
+
+    jest.clearAllMocks();
+
+    // Test: Smart Transaction pending should override unapproved transaction status
+    renderSimulationDetails({}, false, [], {
+      status: TransactionStatus.unapproved,
+      smartTransactionStatus: 'pending',
+    });
+    expect(BalanceChangeList).toHaveBeenCalledWith(
+      expect.objectContaining({
+        heading: "You're receiving", // Should show "You're receiving" due to Smart Transaction pending
+        balanceChanges: [BALANCE_CHANGES_MOCK[1]],
       }),
       {},
     );
@@ -172,6 +378,7 @@ describe('SimulationDetails', () => {
             },
             amount: new BigNumber(123),
             fiatAmount: 456,
+            usdAmount: 789,
           },
         ],
       },
@@ -187,5 +394,18 @@ describe('SimulationDetails', () => {
       }),
       {},
     );
+  });
+
+  it('indicates that simulation details are enforced', () => {
+    (useBalanceChanges as jest.Mock).mockReturnValue({
+      pending: false,
+      value: BALANCE_CHANGES_MOCK,
+    });
+
+    const { getByText } = renderSimulationDetails({}, false, [], {
+      containerTypes: [TransactionContainerType.EnforcedSimulations],
+    });
+
+    expect(getByText('Balance changes')).toBeInTheDocument();
   });
 });

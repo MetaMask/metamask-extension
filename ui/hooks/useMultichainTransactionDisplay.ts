@@ -59,23 +59,27 @@ export function useMultichainTransactionDisplay(
     decimalPlaces,
   );
   const baseFee = aggregateAmount(
-    transaction.fees.filter((fee) => fee.type === 'base') as Movement[],
+    (transaction.fees || []).filter((fee) => fee.type === 'base') as Movement[],
     true,
     locale,
   );
   const priorityFee = aggregateAmount(
-    transaction.fees.filter((fee) => fee.type === 'priority') as Movement[],
+    (transaction.fees || []).filter(
+      (fee) => fee.type === 'priority',
+    ) as Movement[],
     true,
     locale,
   );
 
   const typeToTitle: Partial<Record<TransactionType, string>> = {
     // TODO: Add support for other transaction types
-    [TransactionType.Send]: t('send'),
-    [TransactionType.Receive]: t('receive'),
+    [TransactionType.Send]: t('sent'),
+    [TransactionType.Receive]: t('received'),
     [TransactionType.Swap]: `${t('swap')} ${from?.unit} ${t(
       'to',
     ).toLowerCase()} ${to?.unit}`,
+    [TransactionType.StakeDeposit]: t('stakingDeposit'),
+    [TransactionType.StakeWithdraw]: t('stakingWithdrawal'),
     [TransactionType.Unknown]: t('interaction'),
   };
 

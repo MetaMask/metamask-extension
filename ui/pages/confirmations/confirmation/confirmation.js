@@ -9,13 +9,21 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { produce } from 'immer';
 import log from 'loglevel';
-import { ApprovalType } from '@metamask/controller-utils';
+import {
+  ApprovalType,
+  NETWORKS_BYPASSING_VALIDATION,
+} from '@metamask/controller-utils';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
-import { CHAIN_SPEC_URL } from '../../../../shared/constants/network';
+import {
+  CHAIN_SPEC_URL,
+  BUILT_IN_NETWORKS,
+  FEATURED_RPCS,
+} from '../../../../shared/constants/network';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import {
   MetaMetricsEventCategory,
@@ -31,7 +39,7 @@ import {
   getUnapprovedTxCount,
   getApprovalFlows,
   getTotalUnapprovedCount,
-  useSafeChainsListValidationSelector,
+  getUseSafeChainsListValidation,
   getSnapsMetadata,
   getHideSnapBranding,
 } from '../../../selectors';
@@ -226,7 +234,7 @@ export default function ConfirmationPage({
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const pendingConfirmations = useSelector(
     getMemoizedUnapprovedTemplatedConfirmations,
   );
@@ -234,7 +242,7 @@ export default function ConfirmationPage({
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
   const totalUnapprovedCount = useSelector(getTotalUnapprovedCount);
   const useSafeChainsListValidation = useSelector(
-    useSafeChainsListValidationSelector,
+    getUseSafeChainsListValidation,
   );
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
@@ -242,6 +250,7 @@ export default function ConfirmationPage({
   const [approvalFlowLoadingText, setApprovalFlowLoadingText] = useState(null);
 
   const { id } = useParams();
+
   const pendingRoutedConfirmation = pendingConfirmations.find(
     (confirmation) => confirmation.id === id,
   );
@@ -271,7 +280,6 @@ export default function ConfirmationPage({
     setInputStates((currentState) => ({ ...currentState, [key]: value }));
   };
   const [loading, setLoading] = useState(false);
-  const [loadingText, setLoadingText] = useState();
 
   const [submitAlerts, setSubmitAlerts] = useState([]);
 
@@ -319,7 +327,7 @@ export default function ConfirmationPage({
           },
           t,
           dispatch,
-          history,
+          navigate,
           {
             matchedChain,
             currencySymbolWarning,
@@ -337,7 +345,7 @@ export default function ConfirmationPage({
     pendingConfirmation,
     t,
     dispatch,
-    history,
+    navigate,
     matchedChain,
     currencySymbolWarning,
     trackEvent,
@@ -362,13 +370,13 @@ export default function ConfirmationPage({
       (approvalFlows.length === 0 || totalUnapprovedCount !== 0) &&
       redirectToHomeOnZeroConfirmations
     ) {
-      history.push(DEFAULT_ROUTE);
+      navigate(DEFAULT_ROUTE);
     }
   }, [
     pendingConfirmations,
     approvalFlows,
     totalUnapprovedCount,
-    history,
+    navigate,
     redirectToHomeOnZeroConfirmations,
   ]);
 
@@ -397,9 +405,17 @@ export default function ConfirmationPage({
           setMatchedChain(_matchedChain);
           setChainFetchComplete(true);
           setProviderError(null);
+
+          const isWhitelistedSymbol =
+            NETWORKS_BYPASSING_VALIDATION[
+              _pendingConfirmation.requestData.chainId?.toLowerCase()
+            ]?.symbol?.toLowerCase() ===
+            _pendingConfirmation.requestData.ticker?.toLowerCase();
+
           if (
             _matchedChain?.nativeCurrency?.symbol?.toLowerCase() ===
-            _pendingConfirmation.requestData.ticker?.toLowerCase()
+              _pendingConfirmation.requestData.ticker?.toLowerCase() ||
+            isWhitelistedSymbol
           ) {
             setCurrencySymbolWarning(null);
           } else {
@@ -450,7 +466,6 @@ export default function ConfirmationPage({
 
   const handleSubmitResult = (submitResult) => {
     if (submitResult?.length > 0) {
-      setLoadingText(templatedValues.submitText);
       setSubmitAlerts(submitResult);
       setLoading(true);
     } else {
@@ -464,6 +479,23 @@ export default function ConfirmationPage({
       pendingConfirmation?.requestData?.fromNetworkConfiguration?.chainId &&
       pendingConfirmation?.requestData?.toNetworkConfiguration?.chainId
     ) {
+      // Check if the destination network is custom (not built-in, featured, or multichain)
+      const toChainId =
+        pendingConfirmation.requestData.toNetworkConfiguration.chainId;
+
+      const isBuiltInNetwork = Object.values(BUILT_IN_NETWORKS).some(
+        (builtInNetwork) => builtInNetwork.chainId === toChainId,
+      );
+      const isFeaturedRpc = FEATURED_RPCS.some(
+        (featuredRpc) => featuredRpc.chainId === toChainId,
+      );
+      const isMultichainProviderConfig = Object.values(MultichainNetworks).some(
+        (multichainNetwork) => multichainNetwork === toChainId,
+      );
+
+      const isCustomNetwork =
+        !isBuiltInNetwork && !isFeaturedRpc && !isMultichainProviderConfig;
+
       trackEvent({
         category: MetaMetricsEventCategory.Network,
         event: MetaMetricsEventName.NavNetworkSwitched,
@@ -473,6 +505,7 @@ export default function ConfirmationPage({
             pendingConfirmation.requestData.fromNetworkConfiguration.chainId,
           to_network:
             pendingConfirmation.requestData.toNetworkConfiguration.chainId,
+          custom_network: isCustomNetwork,
           referrer: {
             url: window.location.origin,
           },
@@ -500,12 +533,12 @@ export default function ConfirmationPage({
       : null);
 
   return (
-    <ConfirmContextProvider>
+    <ConfirmContextProvider confirmationId={id}>
       <TemplateAlertContextProvider
         confirmationId={pendingConfirmation.id}
         onSubmit={!templatedValues.hideSubmitButton && handleSubmit}
       >
-        <div className="confirmation-page">
+        <div className="confirmation-page h-full">
           <Header
             confirmation={pendingConfirmation}
             isSnapCustomUIDialog={isSnapCustomUIDialog}
@@ -585,7 +618,6 @@ export default function ConfirmationPage({
               onCancel={templatedValues.onCancel}
               submitText={templatedValues.submitText}
               cancelText={templatedValues.cancelText}
-              loadingText={loadingText || templatedValues.loadingText}
               loading={loading}
               submitAlerts={submitAlerts.map((alert, idx) => (
                 <Callout

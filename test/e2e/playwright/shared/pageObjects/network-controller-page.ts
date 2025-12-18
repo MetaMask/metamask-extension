@@ -107,8 +107,6 @@ export class NetworkController {
     await this.addNetworkButton.click();
     const addBtn = this.page.getByTestId(`add-network-${options.networkName}`);
     await addBtn.click();
-    await this.approveBtn.click();
-    await this.gotItBtn.click();
   }
 
   async selectNetwork(options: {

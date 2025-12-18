@@ -2,7 +2,11 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { getAccountLink } from '@metamask/etherscan-link';
 
-import Button from '../../../components/ui/button';
+import {
+  Button,
+  ButtonVariant,
+  ButtonSize,
+} from '../../../components/component-library';
 import Checkbox from '../../../components/ui/check-box';
 import Dropdown from '../../../components/ui/dropdown';
 
@@ -10,12 +14,28 @@ import { Box, BannerAlert } from '../../../components/component-library';
 import { getURLHostName } from '../../../helpers/utils/util';
 
 import { HardwareDeviceNames } from '../../../../shared/constants/hardware-wallets';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { capitalizeStr } from './utils';
 
 class AccountList extends Component {
   state = {
     pathValue: null,
   };
+
+  componentDidMount() {
+    const { device } = this.props;
+    const { trackEvent } = this.context;
+
+    trackEvent({
+      event: MetaMetricsEventName.ConnectHardwareWalletAccountSelectorViewed,
+      properties: {
+        device_type: capitalizeStr(device),
+      },
+    });
+  }
 
   goToNextPage = () => {
     // If we have < 5 accounts, it's restricted by BIP-44
@@ -67,10 +87,6 @@ class AccountList extends Component {
         </div>
       </div>
     );
-  }
-
-  capitalizeDevice(device) {
-    return device.slice(0, 1).toUpperCase() + device.slice(1);
   }
 
   renderHeader() {
@@ -213,16 +229,17 @@ class AccountList extends Component {
     return (
       <div className="new-external-account-form__buttons">
         <Button
-          type="secondary"
-          large
-          className="new-external-account-form__button"
+          variant={ButtonVariant.Secondary}
+          size={ButtonSize.Lg}
+          block
           onClick={this.props.onCancel.bind(this)}
         >
           {this.context.t('cancel')}
         </Button>
         <Button
-          type="primary"
-          large
+          variant={ButtonVariant.Primary}
+          size={ButtonSize.Lg}
+          block
           className="new-external-account-form__button unlock"
           disabled={disabled}
           onClick={this.props.onUnlockAccounts.bind(
@@ -240,7 +257,13 @@ class AccountList extends Component {
   renderForgetDevice() {
     return (
       <div className="hw-forget-device-container">
-        <a onClick={this.props.onForgetDevice.bind(this, this.props.device)}>
+        <a
+          onClick={this.props.onForgetDevice.bind(
+            this,
+            this.props.device,
+            this.props.selectedPath,
+          )}
+        >
           {this.context.t('forgetDevice')}
         </a>
       </div>

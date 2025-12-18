@@ -2,7 +2,7 @@ import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
 
 import { Text } from '../text';
 
-# Text
+# Text (deprecated use @metamask/design-system-react)
 
 Good typography improves readability, legibility and hierarchy of information.
 
@@ -163,6 +163,33 @@ import { FontStyle } from '../../../helpers/constants/design-system';
 </Text>
 <Text fontStyle={FontStyle.Italic}>
   bold
+</Text>
+```
+
+### Font Family
+
+Use the `fontFamily` prop and the `FontFamily` enum from `./text.types` to change the font family of the `Text` component. There are 3 font families:
+
+- `FontFamily.Default` (Geist)
+- `FontFamily.Accent` (MMSans)
+- `FontFamily.Hero` (MMPoly)
+
+<Canvas>
+  <Story id="components-componentlibrary-text--font-family-story" />
+</Canvas>
+
+```jsx
+import { Text } from '../../component-library';
+import { FontFamily } from '../../../helpers/constants/design-system';
+
+<Text fontFamily={FontFamily.Default}>
+  Default Font (Geist)
+</Text>
+<Text fontFamily={FontFamily.Accent}>
+  Accent Font (MMSans)
+</Text>
+<Text fontFamily={FontFamily.Hero}>
+  Hero Font (MMPoly)
 </Text>
 ```
 

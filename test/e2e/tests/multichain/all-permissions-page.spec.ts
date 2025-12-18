@@ -1,6 +1,6 @@
 import { DEFAULT_FIXTURE_ACCOUNT, DAPP_HOST_ADDRESS } from '../../constants';
 import { withFixtures, WINDOW_TITLES } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import ExperimentalSettings from '../../page-objects/pages/settings/experimental-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import Homepage from '../../page-objects/pages/home/homepage';
@@ -13,7 +13,7 @@ describe('Permissions Page', function () {
   it('should show connected site permissions when a single dapp is connected', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },
@@ -30,13 +30,13 @@ describe('Permissions Page', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         const homepage = new Homepage(driver);
-        await homepage.check_pageIsLoaded();
-        await homepage.check_expectedBalanceIsDisplayed();
+        await homepage.checkPageIsLoaded();
+        await homepage.checkExpectedBalanceIsDisplayed();
         await homepage.headerNavbar.openPermissionsPage();
 
         const permissionListPage = new PermissionListPage(driver);
-        await permissionListPage.check_pageIsLoaded();
-        await permissionListPage.check_connectedToSite(DAPP_HOST_ADDRESS);
+        await permissionListPage.checkPageIsLoaded();
+        await permissionListPage.checkConnectedToSite(DAPP_HOST_ADDRESS);
       },
     );
   });
@@ -44,7 +44,7 @@ describe('Permissions Page', function () {
   it('should show all permissions listed when experimental settings toggle is off', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -57,19 +57,19 @@ describe('Permissions Page', function () {
 
         // go to experimental settings page and toggle request queue
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
         await settingsPage.goToExperimentalSettings();
 
         const experimentalSettings = new ExperimentalSettings(driver);
-        await experimentalSettings.check_pageIsLoaded();
+        await experimentalSettings.checkPageIsLoaded();
         await settingsPage.closeSettingsPage();
 
         // go to homepage and check site permissions
-        await new Homepage(driver).check_pageIsLoaded();
+        await new Homepage(driver).checkPageIsLoaded();
         await headerNavbar.openPermissionsPage();
         const permissionListPage = new PermissionListPage(driver);
-        await permissionListPage.check_pageIsLoaded();
-        await permissionListPage.check_connectedToSite(DAPP_HOST_ADDRESS);
+        await permissionListPage.checkPageIsLoaded();
+        await permissionListPage.checkConnectedToSite(DAPP_HOST_ADDRESS);
       },
     );
   });

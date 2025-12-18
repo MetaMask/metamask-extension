@@ -1,18 +1,19 @@
-import * as path from 'path';
 import { strict as assert } from 'assert';
 import { By } from 'selenium-webdriver';
 import nacl from 'tweetnacl';
 import { largeDelayMs, regularDelayMs, WINDOW_TITLES } from '../../helpers';
+import { DAPP_PATH } from '../../constants';
 import { Driver } from '../../webdriver/driver';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
-import {
-  SOLANA_DEVNET_URL,
-  withSolanaAccountSnap,
-} from '../../tests/solana/common-solana';
+import { SOLANA_DEVNET_URL } from '../../tests/solana/common-solana';
+import AccountListPage from '../../page-objects/pages/account-list-page';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
+import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 
 export type FixtureCallbackArgs = { driver: Driver; extensionId: string };
 
-export const acccount1 = '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer';
+export const account1 = '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer';
 export const account1Short = '4tE7...Uxer';
 export const account2Short = 'ExTE...GNtt';
 
@@ -20,31 +21,9 @@ export const account2Short = 'ExTE...GNtt';
  * Default options for setting up Solana E2E test environment
  */
 export const DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS = {
-  dappPaths: [
-    path.join(
-      '..',
-      '..',
-      'node_modules',
-      '@metamask',
-      'test-dapp-solana',
-      'dist',
-    ),
-  ],
-} satisfies Parameters<typeof withSolanaAccountSnap>[0];
-
-/**
- * Inspired by `addAccountInWalletAndAuthorize` in test/e2e/flask/multichain-api/testHelpers.ts
- *
- * @param driver
- */
-const selectAccountsAndAuthorize = async (driver: Driver): Promise<void> => {
-  const editButtons = await driver.findElements('[data-testid="edit"]');
-  await editButtons[0].click();
-
-  const checkboxes = await driver.findElements('input[type="checkbox" i]');
-  await checkboxes[0].click(); // select all checkbox without deselecting the already selected accounts
-
-  await driver.clickElement({ text: 'Update', tag: 'button' });
+  dappOptions: {
+    customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+  },
 };
 
 /**
@@ -53,31 +32,19 @@ const selectAccountsAndAuthorize = async (driver: Driver): Promise<void> => {
  * @param driver
  */
 const selectDevnet = async (driver: Driver): Promise<void> => {
-  const permissionsTab = await driver.findElement(
-    '[data-testid="permissions-tab"]',
-  );
-  await permissionsTab.click();
-  const editButtons = await driver.findElements('[data-testid="edit"]');
-  await editButtons[1].click();
-  await driver.delay(largeDelayMs);
-  const networkListItems = await driver.findElements(
-    '.multichain-network-list-item',
-  );
+  console.log('select devnet on permissions tab');
 
-  for (const item of networkListItems) {
-    const networkNameDiv = await item.findElement(By.css('div[data-testid]'));
-    const network = await networkNameDiv.getAttribute('data-testid');
-    if (network === 'Solana Devnet') {
-      const checkbox = await item.findElement(By.css('input[type="checkbox"]'));
-      const isChecked = await checkbox.isSelected();
+  const connectAccountConfirmation = new ConnectAccountConfirmation(driver);
+  await connectAccountConfirmation.checkPageIsLoaded();
+  await connectAccountConfirmation.goToPermissionsTab();
+  await connectAccountConfirmation.openEditNetworksModal();
 
-      if (!isChecked) {
-        await checkbox.click();
-      }
-      break;
-    }
-  }
-  await driver.clickElement({ text: 'Update', tag: 'button' });
+  const networkPermissionSelectModal = new NetworkPermissionSelectModal(driver);
+  await networkPermissionSelectModal.checkPageIsLoaded();
+  await networkPermissionSelectModal.selectNetwork({
+    networkName: 'Solana Devnet',
+  });
+  await networkPermissionSelectModal.clickConfirmEditButton();
 };
 
 /**
@@ -86,21 +53,21 @@ const selectDevnet = async (driver: Driver): Promise<void> => {
  * @param driver
  * @param testDapp
  * @param options
- * @param options.selectAllAccounts
  * @param options.includeDevnet
  */
 export const connectSolanaTestDapp = async (
   driver: Driver,
   testDapp: TestDappSolana,
   options: {
-    selectAllAccounts?: boolean;
     includeDevnet?: boolean;
   } = {},
 ): Promise<void> => {
+  console.log('connect solana test dapp');
+  await testDapp.checkPageIsLoaded();
   const header = await testDapp.getHeader();
   // Set the endpoint to devnet
   await header.setEndpoint(SOLANA_DEVNET_URL);
-  await driver.clickElement({ text: 'Update', tag: 'button' });
+  await testDapp.clickUpdateEndpointButton();
 
   await header.connect();
 
@@ -114,20 +81,17 @@ export const connectSolanaTestDapp = async (
   await driver.delay(largeDelayMs);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-  if (options?.selectAllAccounts) {
-    await selectAccountsAndAuthorize(driver);
-  }
   if (options?.includeDevnet) {
     await selectDevnet(driver);
   }
-  await driver.clickElementAndWaitForWindowToClose({
-    text: 'Connect',
-    tag: 'button',
-  });
+
+  const connectAccountConfirmation = new ConnectAccountConfirmation(driver);
+  await connectAccountConfirmation.checkPageIsLoaded();
+  await connectAccountConfirmation.confirmConnect();
 
   // Go back to the test dapp window
   await testDapp.switchTo();
-  await console.log('connected');
+  console.log('solana test dapp connected');
 };
 
 /**
@@ -168,13 +132,15 @@ export const switchToAccount = async (
   driver: Driver,
   accountName: string,
 ): Promise<void> => {
-  await driver.clickElementSafe('[data-testid="account-menu-icon"]');
-  await driver.delay(regularDelayMs);
-  await driver.clickElement({
-    text: accountName,
-    tag: 'button',
-  });
-  await driver.delay(regularDelayMs);
+  const nonEvmHomepage = new NonEvmHomepage(driver);
+  await nonEvmHomepage.checkPageIsLoaded();
+  await nonEvmHomepage.headerNavbar.openAccountMenu();
+
+  const accountListPage = new AccountListPage(driver);
+  await accountListPage.checkPageIsLoaded();
+  await accountListPage.checkAccountDisplayedInAccountList(accountName);
+  await accountListPage.switchToAccount(accountName);
+  await nonEvmHomepage.headerNavbar.checkAccountLabel(accountName);
 };
 
 /**

@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { Driver } from '../../webdriver/driver';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import ExperimentalSettings from '../../page-objects/pages/settings/experimental-settings';
@@ -22,24 +22,27 @@ describe('Add snap account experimental settings', function (this: Suite) {
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.openAddAccountModal();
-        await accountListPage.check_addAccountSnapButtonNotPresent();
+        await accountListPage.addMultichainWallet();
+        await accountListPage.checkAddAccountSnapButtonNotPresent();
         await accountListPage.closeAccountModal();
+        await accountListPage.closeMultichainAccountsPage();
 
         // Navigate to experimental settings and enable Add account Snap.
         await headerNavbar.openSettingsPage();
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
         await settingsPage.goToExperimentalSettings();
 
         const experimentalSettings = new ExperimentalSettings(driver);
-        await experimentalSettings.check_pageIsLoaded();
+        await experimentalSettings.checkPageIsLoaded();
         await experimentalSettings.toggleAddAccountSnap();
-
+        await driver.clickElement(
+          '.settings-page__header__title-container__close-button',
+        );
         // Make sure the "Add account Snap" button is visible.
         await headerNavbar.openAccountMenu();
-        await accountListPage.openAddAccountModal();
-        await accountListPage.check_addAccountSnapButtonIsDisplayed();
+        await accountListPage.addMultichainWallet();
+        await accountListPage.checkAddAccountSnapButtonIsDisplayed();
       },
     );
   });

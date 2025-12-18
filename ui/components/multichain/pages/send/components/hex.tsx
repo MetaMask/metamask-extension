@@ -8,7 +8,7 @@ import {
   getSendHexDataError,
 } from '../../../../../ducks/send';
 import { Textarea } from '../../../../component-library/textarea';
-import { INVALID_HEX_DATA_ERROR } from '../../../../../pages/confirmations/send/send.constants';
+import { INVALID_HEX_DATA_ERROR } from '../../../../../pages/confirmations/send-legacy/send.constants';
 import {
   TextVariant,
   TextColor,

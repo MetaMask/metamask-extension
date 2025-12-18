@@ -32,8 +32,8 @@ export const NotificationsTagCounter = ({
         style={{
           position: 'absolute',
           cursor: 'pointer',
-          top: '-5px',
-          left: '10px',
+          top: 0,
+          left: '50%',
           zIndex: 1,
         }}
         backgroundColor={BackgroundColor.errorDefault}

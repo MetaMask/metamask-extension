@@ -2,28 +2,36 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import { CaipChainId } from '@metamask/utils';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { DiscoveredAccount, KeyringAccount } from '@metamask/keyring-api';
-import { KeyringInternalSnapClient } from '@metamask/keyring-internal-snap-client';
+import {
+  KeyringInternalSnapClient,
+  KeyringInternalSnapClientMessenger,
+} from '@metamask/keyring-internal-snap-client';
 import {
   SnapKeyring,
   SnapKeyringInternalOptions,
 } from '@metamask/eth-snap-keyring';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import { SnapId } from '@metamask/snaps-sdk';
 import { HandleSnapRequest as SnapControllerHandleRequest } from '@metamask/snaps-controllers';
 import { AccountsControllerGetNextAvailableAccountNameAction } from '@metamask/accounts-controller';
-import { captureException } from '@sentry/browser';
 ///: END:ONLY_INCLUDE_IF
 import { MultichainNetworks } from '../../constants/multichain/networks';
+import { captureException } from '../sentry';
+import { HardwareDeviceNames } from '../../constants/hardware-wallets';
 import { BITCOIN_WALLET_SNAP_ID } from './bitcoin-wallet-snap';
 import { SOLANA_WALLET_SNAP_ID } from './solana-wallet-snap';
+import { TRON_WALLET_SNAP_ID } from './tron-wallet-snap';
 
 /**
  * Supported non-EVM Snaps.
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 type SUPPORTED_WALLET_SNAP_ID =
   | typeof SOLANA_WALLET_SNAP_ID
-  | typeof BITCOIN_WALLET_SNAP_ID;
+  | typeof BITCOIN_WALLET_SNAP_ID
+  | typeof TRON_WALLET_SNAP_ID;
 
 /**
  * Get the next available account name based on the suggestion and the list of
@@ -90,13 +98,27 @@ export async function getNextAvailableSnapAccountName(
       // for all 3 networks.
       return `Solana Account ${accountNumber}`;
     }
+    case TRON_WALLET_SNAP_ID: {
+      return `Tron Account ${accountNumber}`;
+    }
     default:
       return defaultSnapAccountName;
   }
 }
 
+export function isHardwareAccount(account: InternalAccount): boolean {
+  try {
+    const keyringType = account?.metadata?.keyring?.type;
+    return Object.values(HardwareDeviceNames).includes(
+      keyringType as HardwareDeviceNames,
+    );
+  } catch {
+    return false;
+  }
+}
+
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-export type WalletSnapOptions = {
+export type CreateAccountSnapOptions = {
   scope?: CaipChainId;
   derivationPath?: DiscoveredAccount['derivationPath'];
   entropySource?: string;
@@ -108,7 +130,7 @@ export type WalletSnapClient = {
   getSnapId(): SnapId;
 
   createAccount(
-    options: WalletSnapOptions,
+    options: CreateAccountSnapOptions,
     internalOptions?: SnapKeyringInternalOptions,
   ): Promise<KeyringAccount>;
 
@@ -118,6 +140,7 @@ export type WalletSnapClient = {
 };
 
 export type MultichainWalletSnapClientMessenger = Messenger<
+  'MultichainWalletSnapClient',
   | SnapControllerHandleRequest
   | AccountsControllerGetNextAvailableAccountNameAction,
   never
@@ -128,33 +151,31 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
 
   readonly #snapKeyring: SnapKeyring;
 
-  readonly #scopes: CaipChainId[];
-
   readonly #client: KeyringInternalSnapClient;
 
   readonly #messenger: MultichainWalletSnapClientMessenger;
 
   constructor(
     snapId: SUPPORTED_WALLET_SNAP_ID,
-    scopes: CaipChainId[],
     snapKeyring: SnapKeyring,
     messenger: MultichainWalletSnapClientMessenger,
   ) {
     this.#snapId = snapId;
     this.#snapKeyring = snapKeyring;
 
-    this.#scopes = scopes;
-
     this.#messenger = messenger;
 
+    const clientMessenger: KeyringInternalSnapClientMessenger = new Messenger({
+      namespace: 'KeyringInternalSnapClient',
+      parent: messenger,
+    });
+    messenger.delegate({
+      messenger: clientMessenger,
+      actions: ['SnapController:handleRequest'],
+    });
     this.#client = new KeyringInternalSnapClient({
       snapId,
-      // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
-      messenger: messenger.getRestricted({
-        name: 'KeyringInternalSnapClient',
-        allowedActions: ['SnapController:handleRequest'],
-        allowedEvents: [],
-      }),
+      messenger: clientMessenger,
     });
   }
 
@@ -163,7 +184,7 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
   }
 
   async createAccount(
-    { accountNameSuggestion, ...options }: WalletSnapOptions,
+    { accountNameSuggestion, ...options }: CreateAccountSnapOptions,
     internalOptions?: SnapKeyringInternalOptions,
   ): Promise<KeyringAccount> {
     // Automatically name the account if not provided.
@@ -199,22 +220,18 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
     );
   }
 
-  async #discoverAccountsOn(
+  async discoverAccounts(
     entropySource: string,
-    groupIndex: number,
-  ): Promise<DiscoveredAccount[]> {
-    return await this.#client.discoverAccounts(
-      this.#scopes,
-      entropySource,
-      groupIndex,
-    );
-  }
+    scope: CaipChainId,
+  ): Promise<KeyringAccount[]> {
+    const accounts: KeyringAccount[] = [];
 
-  async discoverAccounts(entropySource: string) {
-    // TODO: Maybe use `Promise.all` or `Promise.allSettled` instead (for now we go sequentially
-    // because of our naming logic).
     for (let index = 0; ; index++) {
-      const discovered = await this.#discoverAccountsOn(entropySource, index);
+      const discovered = await this.#client.discoverAccounts(
+        [scope],
+        entropySource,
+        index,
+      );
 
       // We stop discovering accounts if none got discovered for that index.
       if (discovered.length === 0) {
@@ -225,16 +242,19 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
       // account naming logic.
       for (const { derivationPath } of discovered) {
         try {
-          const options: WalletSnapOptions = {
+          const options: CreateAccountSnapOptions = {
+            scope,
             derivationPath,
             entropySource,
+            synchronize: true,
           };
 
-          await this.createAccount(options, {
+          const account = await this.createAccount(options, {
             displayConfirmation: false,
             displayAccountNameSuggestion: false,
             setSelectedAccount: false,
           });
+          accounts.push(account);
         } catch (error) {
           console.warn(
             `Unable to create discovered account: ${derivationPath}:`,
@@ -245,6 +265,8 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
         }
       }
     }
+
+    return accounts;
   }
 }
 ///: END:ONLY_INCLUDE_IF

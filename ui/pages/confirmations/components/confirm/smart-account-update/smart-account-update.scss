@@ -1,0 +1,70 @@
+@use "design-system";
+
+.smart-account-update {
+  &__container {
+    font-size: 12px;
+    height: 100%;
+    position: relative;
+    overflow: auto;
+    width: 100vw;
+
+    @media screen and (min-width: design-system.$break-large) {
+      width: 85vw;
+      height: auto;
+    }
+
+    @media screen and (min-width: 768px) {
+      width: 80vw;
+      height: auto;
+    }
+
+    @media screen and (min-width: 1280px) {
+      width: 62vw;
+      height: auto;
+    }
+  }
+
+  &__inner {
+    height: 100%;
+    width: 100%;
+    max-width: 360px;
+    padding: 0;
+
+    @media screen and (min-width: design-system.$break-large) {
+      padding: 16px;
+      height: auto;
+    }
+  }
+
+  &__update {
+    min-height: 48px;
+  }
+
+  &__back-btn {
+    position: absolute;
+    top: 10px;
+    left: 20px;
+
+    @media screen and (min-width: design-system.$break-large) {
+      top: 20px;
+    }
+  }
+
+  &__close-btn {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+
+    @media screen and (min-width: design-system.$break-large) {
+      top: 20px;
+    }
+  }
+
+  &__title {
+    margin-top: 10px;
+
+    @media screen and (min-width: design-system.$break-large) {
+      margin-top: 0;
+    }
+  }
+}

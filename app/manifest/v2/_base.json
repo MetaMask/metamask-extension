@@ -31,14 +31,7 @@
   "content_scripts": [
     {
       "matches": ["file://*/*", "http://*/*", "https://*/*"],
-      "js": [
-        "scripts/disable-console.js",
-        "scripts/lockdown-install.js",
-        "scripts/lockdown-run.js",
-        "scripts/lockdown-more.js",
-        "scripts/contentscript.js",
-        "scripts/inpage.js"
-      ],
+      "js": ["scripts/contentscript.js", "scripts/inpage.js"],
       "run_at": "document_start",
       "all_frames": true
     },
@@ -61,6 +54,7 @@
   },
   "manifest_version": 2,
   "name": "__MSG_appName__",
+  "optional_permissions": ["clipboardRead"],
   "permissions": [
     "storage",
     "unlimitedStorage",
@@ -73,7 +67,8 @@
     "webRequest",
     "webRequestBlocking",
     "*://*.eth/",
-    "notifications"
+    "notifications",
+    "identity"
   ],
   "short_name": "__MSG_appName__"
 }

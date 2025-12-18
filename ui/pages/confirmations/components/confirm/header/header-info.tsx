@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
+import { AvatarAccountSize } from '@metamask/design-system-react';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventLocation,
@@ -39,7 +40,7 @@ import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipien
 import { SignatureRequestType } from '../../../types/confirm';
 import { isSignatureTransactionType } from '../../../utils/confirm';
 import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
-import Identicon from '../../../../../components/ui/identicon';
+import { PreferredAvatar } from '../../../../../components/app/preferred-avatar';
 import { getHDEntropyIndex } from '../../../../../selectors/selectors';
 import { AdvancedDetailsButton } from './advanced-details-button';
 
@@ -51,8 +52,13 @@ const HeaderInfo = () => {
 
   const { currentConfirmation } = useConfirmContext();
 
-  const { senderAddress: fromAddress, senderName: fromName } =
-    useConfirmationRecipientInfo();
+  const {
+    senderAddress: fromAddress,
+    senderName: fromName,
+    walletName,
+    isBIP44,
+    hasMoreThanOneWallet,
+  } = useConfirmationRecipientInfo();
 
   const t = useI18nContext();
 
@@ -63,13 +69,21 @@ const HeaderInfo = () => {
   const eventProps = isSignature
     ? {
         location: MetaMetricsEventLocation.SignatureConfirmation,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         signature_type: (currentConfirmation as SignatureRequestType)?.msgParams
           ?.signatureMethod,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         hd_entropy_index: hdEntropyIndex,
       }
     : {
         location: MetaMetricsEventLocation.Transaction,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         transaction_type: currentConfirmation?.type,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         hd_entropy_index: hdEntropyIndex,
       };
 
@@ -95,6 +109,7 @@ const HeaderInfo = () => {
       <Box
         display={Display.Flex}
         justifyContent={JustifyContent.flexEnd}
+        gap={4}
         style={{
           alignSelf: 'flex-end',
         }}
@@ -136,7 +151,10 @@ const HeaderInfo = () => {
                 flexDirection={FlexDirection.Column}
                 alignItems={AlignItems.center}
               >
-                <Identicon address={fromAddress} diameter={40} />
+                <PreferredAvatar
+                  address={fromAddress}
+                  size={AvatarAccountSize.Lg}
+                />
                 <Text
                   fontWeight={FontWeight.Bold}
                   variant={TextVariant.bodyMd}
@@ -148,6 +166,15 @@ const HeaderInfo = () => {
                 >
                   {fromName}
                 </Text>
+                {isBIP44 && hasMoreThanOneWallet && (
+                  <Text
+                    variant={TextVariant.bodySm}
+                    color={TextColor.textAlternative}
+                    marginTop={1}
+                  >
+                    {walletName}
+                  </Text>
+                )}
               </Box>
               <Box style={{ position: 'absolute', right: 0 }}>
                 <ButtonIcon

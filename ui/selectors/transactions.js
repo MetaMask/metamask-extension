@@ -4,7 +4,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller/dist/types';
+import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller';
 import {
   PRIORITY_STATUS_HASH,
   PENDING_STATUS_HASH,
@@ -20,9 +20,9 @@ import {
   createDeepEqualSelector,
   filterAndShapeUnapprovedTransactions,
 } from '../../shared/modules/selectors/util';
-import { FEATURED_NETWORK_CHAIN_IDS } from '../../shared/constants/network';
 import { getSelectedInternalAccount } from './accounts';
 import { hasPendingApprovals, getApprovalRequestsByType } from './approvals';
+import { EMPTY_ARRAY } from './shared';
 
 const INVALID_INITIAL_TRANSACTION_TYPES = [
   TransactionType.cancel,
@@ -41,17 +41,14 @@ const allowedSwapsSmartTransactionStatusesForActivityList = [
   SmartTransactionStatuses.CANCELLED,
 ];
 
-export const getTransactions = createDeepEqualSelector(
-  (state) => {
-    const { transactions } = state.metamask ?? {};
-
+export const getTransactions = createSelector(
+  (state) => state.metamask?.transactions,
+  (transactions) => {
     if (!transactions?.length) {
-      return [];
+      return EMPTY_ARRAY;
     }
-
     return [...transactions].sort((a, b) => a.time - b.time); // Ascending
   },
-  (transactions) => transactions,
 );
 
 export const getAllNetworkTransactions = createDeepEqualSelector(
@@ -62,28 +59,30 @@ export const getAllNetworkTransactions = createDeepEqualSelector(
     if (!transactions.length) {
       return [];
     }
-    const popularNetworks = FEATURED_NETWORK_CHAIN_IDS;
-    return transactions.filter((transaction) =>
-      popularNetworks.includes(transaction.chainId),
-    );
+    return transactions;
   },
 );
 
-export const getCurrentNetworkTransactions = createDeepEqualSelector(
-  (state) => {
-    const transactions = getTransactions(state);
+// Safe wrapper that prevents crashes when provider config is unavailable
+const getProviderConfigSafe = (state) => {
+  try {
+    return getProviderConfig(state);
+  } catch {
+    return null;
+  }
+};
 
-    if (!transactions.length) {
+export const getCurrentNetworkTransactions = createDeepEqualSelector(
+  getTransactions,
+  getProviderConfigSafe,
+  (transactions, providerConfig) => {
+    if (!transactions.length || !providerConfig) {
       return [];
     }
-
-    const { chainId } = getProviderConfig(state);
-
     return transactions.filter(
-      (transaction) => transaction.chainId === chainId,
+      (transaction) => transaction.chainId === providerConfig.chainId,
     );
   },
-  (transactions) => transactions,
 );
 
 export const incomingTxListSelectorAllChains = createDeepEqualSelector(
@@ -301,7 +300,10 @@ const insertOrderedNonce = (nonces, nonceToInsert) => {
   for (let i = 0; i < nonces.length; i++) {
     const nonce = nonces[i];
 
-    if (Number(hexToDecimal(nonce)) > Number(hexToDecimal(nonceToInsert))) {
+    if (
+      Number(hexToDecimal(nonce.split('-')[0])) >
+      Number(hexToDecimal(nonceToInsert.split('-')[0]))
+    ) {
       insertIndex = i;
       break;
     }
@@ -395,7 +397,7 @@ const mergeNonNonceTransactionGroups = (
   });
 };
 
-const groupAndSortTransactionsByNonce = (transactions) => {
+export const groupAndSortTransactionsByNonce = (transactions) => {
   const unapprovedTransactionGroups = [];
   const incomingTransactionGroups = [];
   const orderedNonces = [];
@@ -403,6 +405,7 @@ const groupAndSortTransactionsByNonce = (transactions) => {
 
   transactions.forEach((transaction) => {
     const {
+      networkClientId,
       txParams: { nonce } = {},
       status,
       type,
@@ -410,16 +413,12 @@ const groupAndSortTransactionsByNonce = (transactions) => {
       txReceipt,
     } = transaction;
 
+    const nonceNetworkKey = `${nonce}-${networkClientId}`;
     // Don't group transactions by nonce if:
     // 1. Tx nonce is undefined
     // 2. Tx is incoming (deposit)
-    // 3. Tx is custodial (mmi specific)
-    let shouldNotBeGrouped =
+    const shouldNotBeGrouped =
       typeof nonce === 'undefined' || type === TransactionType.incoming;
-
-    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-    shouldNotBeGrouped = shouldNotBeGrouped || Boolean(transaction.custodyId);
-    ///: END:ONLY_INCLUDE_IF
 
     if (shouldNotBeGrouped) {
       const transactionGroup = {
@@ -439,8 +438,8 @@ const groupAndSortTransactionsByNonce = (transactions) => {
           transactionGroup,
         );
       }
-    } else if (nonce in nonceToTransactionsMap) {
-      const nonceProps = nonceToTransactionsMap[nonce];
+    } else if (nonceNetworkKey in nonceToTransactionsMap) {
+      const nonceProps = nonceToTransactionsMap[nonceNetworkKey];
       insertTransactionByTime(nonceProps.transactions, transaction);
 
       const {
@@ -552,7 +551,7 @@ const groupAndSortTransactionsByNonce = (transactions) => {
         nonceProps.hasCancelled = true;
       }
     } else {
-      nonceToTransactionsMap[nonce] = {
+      nonceToTransactionsMap[nonceNetworkKey] = {
         nonce,
         transactions: [transaction],
         initialTransaction: transaction,
@@ -566,7 +565,7 @@ const groupAndSortTransactionsByNonce = (transactions) => {
           (status in PRIORITY_STATUS_HASH ||
             status === TransactionStatus.dropped),
       };
-      insertOrderedNonce(orderedNonces, nonce);
+      insertOrderedNonce(orderedNonces, nonceNetworkKey);
     }
   });
 

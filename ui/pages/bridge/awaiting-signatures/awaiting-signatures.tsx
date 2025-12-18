@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import isEqual from 'lodash/isEqual';
+import { isCrossChain } from '@metamask/bridge-controller';
 
 import {
   isHardwareWallet,
@@ -33,6 +34,8 @@ import {
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function AwaitingSignatures() {
   const t = useI18nContext();
   const { activeQuote } = useSelector(getBridgeQuotes, shallowEqual);
@@ -51,19 +54,35 @@ export default function AwaitingSignatures() {
       event: 'Awaiting Signature(s) on a HW wallet',
       category: MetaMetricsEventCategory.Swaps,
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         needs_two_confirmations: needsTwoConfirmations,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_from: fromToken?.symbol ?? '',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_to: toToken?.symbol ?? '',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         is_hardware_wallet: hardwareWalletUsed,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         hardware_wallet_type: hardwareWalletType ?? '',
       },
       sensitiveProperties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_from_amount: activeQuote?.quote?.srcTokenAmount ?? '',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_to_amount: activeQuote?.quote?.destTokenAmount ?? '',
       },
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const isSwap =
+    fromChain && !isCrossChain(fromChain.chainId, toChain?.chainId);
 
   return (
     <div className="awaiting-bridge-signatures">
@@ -87,7 +106,7 @@ export default function AwaitingSignatures() {
             {t('swapConfirmWithHwWallet')}
           </Text>
         )}
-        {needsTwoConfirmations && (
+        {needsTwoConfirmations && activeQuote && (
           <>
             <Text variant={TextVariant.bodyMdBold} marginTop={2}>
               {t('bridgeConfirmTwoTransactions')}
@@ -102,26 +121,16 @@ export default function AwaitingSignatures() {
                 >
                   1
                 </AvatarBase>
-                {/* <BridgeStepIcon stepNumber={1} /> */}
-                {t('bridgeAllowSwappingOf', [
-                  <Text
-                    as="span"
-                    variant={TextVariant.bodyMd}
-                    key="allowAmount"
-                  >
-                    {fromAmount}
-                  </Text>,
-                  <Text as="span" variant={TextVariant.bodyMd} key="allowToken">
-                    {fromToken?.symbol}
-                  </Text>,
-                  <Text
-                    as="span"
-                    variant={TextVariant.bodyMd}
-                    key="allowNetwork"
-                  >
-                    {fromChain?.name}
-                  </Text>,
-                ])}
+                {t(
+                  isSwap
+                    ? 'unifiedSwapAllowSwappingOf'
+                    : 'bridgeAllowSwappingOf',
+                  [
+                    activeQuote.sentAmount?.amount,
+                    fromToken?.symbol,
+                    fromChain?.name,
+                  ],
+                )}
               </li>
               <li>
                 <AvatarBase
@@ -132,16 +141,10 @@ export default function AwaitingSignatures() {
                 >
                   2
                 </AvatarBase>
-                {t('bridgeFromTo', [
-                  <Text as="span" variant={TextVariant.bodyMd} key="fromAmount">
-                    {fromAmount}
-                  </Text>,
-                  <Text as="span" variant={TextVariant.bodyMd} key="fromToken">
-                    {fromToken?.symbol}
-                  </Text>,
-                  <Text as="span" variant={TextVariant.bodyMd} key="toNetwork">
-                    {toChain?.name}
-                  </Text>,
+                {t(isSwap ? 'unifiedSwapFromTo' : 'bridgeFromTo', [
+                  fromAmount,
+                  fromToken?.symbol,
+                  isSwap ? toToken?.symbol : toChain?.name,
                 ])}
               </li>
             </ul>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import {
@@ -21,6 +21,7 @@ import {
 import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain/networks';
 import { MOCK_TRANSACTION_BY_TYPE } from '../../../../.storybook/initial-states/transactions';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import TransactionList, {
   filterTransactionsByToken,
 } from './transaction-list.component';
@@ -33,6 +34,9 @@ const MOCK_INTERNAL_ACCOUNT = createMockInternalAccount({
 const defaultState = {
   metamask: {
     ...mockState.metamask,
+    enabledNetworkMap: {
+      [CHAIN_IDS.GOERLI]: true,
+    },
     transactions: [MOCK_TRANSACTION_BY_TYPE[TransactionType.incoming]],
     internalAccounts: {
       accounts: { [MOCK_INTERNAL_ACCOUNT.id]: MOCK_INTERNAL_ACCOUNT },
@@ -46,40 +50,42 @@ const btcState = {
     ...mockState.metamask,
     nonEvmTransactions: {
       [MOCK_ACCOUNT_BIP122_P2WPKH.id]: {
-        transactions: [
-          {
-            timestamp: 1733736433,
-            chain: MultichainNetworks.BITCOIN,
-            status: 'confirmed',
-            type: 'send',
-            account: MOCK_ACCOUNT_BIP122_P2WPKH.id,
-            from: [],
-            to: [
-              {
-                address: MOCK_ACCOUNT_BIP122_P2WPKH.address,
-                asset: {
-                  fungible: true,
-                  type: '',
-                  unit: 'BTC',
-                  amount: '1.1',
+        [MultichainNetworks.BITCOIN]: {
+          transactions: [
+            {
+              timestamp: 1733736433,
+              chain: MultichainNetworks.BITCOIN,
+              status: 'confirmed',
+              type: 'send',
+              account: MOCK_ACCOUNT_BIP122_P2WPKH.id,
+              from: [],
+              to: [
+                {
+                  address: MOCK_ACCOUNT_BIP122_P2WPKH.address,
+                  asset: {
+                    fungible: true,
+                    type: '',
+                    unit: 'BTC',
+                    amount: '1.1',
+                  },
                 },
-              },
-              {
-                address: MOCK_ACCOUNT_BIP122_P2WPKH.address,
-                asset: {
-                  fungible: true,
-                  type: '',
-                  unit: 'BTC',
-                  amount: '0.1',
+                {
+                  address: MOCK_ACCOUNT_BIP122_P2WPKH.address,
+                  asset: {
+                    fungible: true,
+                    type: '',
+                    unit: 'BTC',
+                    amount: '0.1',
+                  },
                 },
-              },
-            ],
-            fees: [],
-            events: [],
-          },
-        ],
-        next: null,
-        lastUpdated: expect.any(Number),
+              ],
+              fees: [],
+              events: [],
+            },
+          ],
+          next: null,
+          lastUpdated: expect.any(Number),
+        },
       },
     },
     internalAccounts: {
@@ -101,60 +107,62 @@ const solanaSwapState = {
     ...mockState.metamask,
     nonEvmTransactions: {
       [MOCK_ACCOUNT_SOLANA_MAINNET.id]: {
-        transactions: [
-          {
-            id: '2pfnv4drhnitfzCFKxiRoJMzFQpG7wZ9mpRQVk7xm5TQ27g6FZH95HVF6KgwQBS872yGtyhuq57jXXS1y29ub11',
-            timestamp: 1740480781,
-            chain: MultichainNetworks.SOLANA,
-            status: 'confirmed',
-            type: 'swap',
-            from: [
-              {
-                address: MOCK_ACCOUNT_SOLANA_MAINNET.address,
-                asset: {
-                  fungible: true,
-                  type: 'solCaip19',
-                  unit: 'SOL',
-                  amount: '0.01',
+        [MultichainNetworks.SOLANA]: {
+          transactions: [
+            {
+              id: '2pfnv4drhnitfzCFKxiRoJMzFQpG7wZ9mpRQVk7xm5TQ27g6FZH95HVF6KgwQBS872yGtyhuq57jXXS1y29ub11',
+              timestamp: 1740480781,
+              chain: MultichainNetworks.SOLANA,
+              status: 'confirmed',
+              type: 'swap',
+              from: [
+                {
+                  address: MOCK_ACCOUNT_SOLANA_MAINNET.address,
+                  asset: {
+                    fungible: true,
+                    type: 'solCaip19',
+                    unit: 'SOL',
+                    amount: '0.01',
+                  },
                 },
-              },
-            ],
-            to: [
-              {
-                address: MOCK_ACCOUNT_SOLANA_MAINNET.address,
-                asset: {
-                  fungible: true,
-                  type: 'bonkCaip19',
-                  unit: 'BONK',
-                  amount: '0.00000001', // Test extremely small amounts
+              ],
+              to: [
+                {
+                  address: MOCK_ACCOUNT_SOLANA_MAINNET.address,
+                  asset: {
+                    fungible: true,
+                    type: 'bonkCaip19',
+                    unit: 'BONK',
+                    amount: '0.00000001', // Test extremely small amounts
+                  },
                 },
-              },
-            ],
-            fees: [
-              {
-                type: 'base',
-                asset: {
-                  fungible: true,
-                  type: '',
-                  unit: 'SOL',
-                  amount: '0.000005',
+              ],
+              fees: [
+                {
+                  type: 'base',
+                  asset: {
+                    fungible: true,
+                    type: '',
+                    unit: 'SOL',
+                    amount: '0.000005',
+                  },
                 },
-              },
-              {
-                type: 'priority',
-                asset: {
-                  fungible: true,
-                  type: '',
-                  unit: 'SOL',
-                  amount: '0.000069798',
+                {
+                  type: 'priority',
+                  asset: {
+                    fungible: true,
+                    type: '',
+                    unit: 'SOL',
+                    amount: '0.000069798',
+                  },
                 },
-              },
-            ],
-            events: [{ status: 'confirmed', timestamp: 1740480781 }],
-          },
-        ],
-        next: null,
-        lastUpdated: expect.any(Number),
+              ],
+              events: [{ status: 'confirmed', timestamp: 1740480781 }],
+            },
+          ],
+          next: null,
+          lastUpdated: expect.any(Number),
+        },
       },
     },
     internalAccounts: {
@@ -168,6 +176,7 @@ const solanaSwapState = {
     selectedAddress: MOCK_ACCOUNT_SOLANA_MAINNET.address,
     completedOnboarding: true,
     transactions: [],
+    selectedMultichainNetworkChainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
   },
 };
 
@@ -232,7 +241,7 @@ describe('TransactionList', () => {
 
     // The activity list item has a status of "Confirmed" and a type of "Send"
     expect(getByText('Confirmed')).toBeInTheDocument();
-    expect(getByText('Send')).toBeInTheDocument();
+    expect(getByText('Sent')).toBeInTheDocument();
     expect(getByText('-1.2 BTC')).toBeInTheDocument();
 
     // A BTC activity list item exists
@@ -300,7 +309,7 @@ describe('TransactionList', () => {
             blockExplorerUrls: [],
             chainId: '0xe708',
             defaultRpcEndpointIndex: 0,
-            name: 'Linea Mainnet',
+            name: 'Linea',
             nativeCurrency: 'ETH',
             rpcEndpoints: [
               {
@@ -323,9 +332,7 @@ describe('TransactionList', () => {
       store,
     );
     expect(
-      queryByText(
-        'Please switch to Linea Mainnet network to view transactions',
-      ),
+      queryByText('Please switch to Linea network to view transactions'),
     ).toBeNull();
   });
 
@@ -347,6 +354,13 @@ describe('TransactionList', () => {
 
   describe('keepOnlyNonEvmTransactionsForToken', () => {
     const transactionWithSolAndToken = {
+      from: [
+        {
+          asset: {
+            type: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+          },
+        },
+      ],
       to: [
         {
           asset: {
@@ -361,6 +375,13 @@ describe('TransactionList', () => {
       ],
     };
     const transactionWithOnlySol = {
+      from: [
+        {
+          asset: {
+            type: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+          },
+        },
+      ],
       to: [
         {
           asset: {
@@ -370,6 +391,13 @@ describe('TransactionList', () => {
       ],
     };
     const transactionWithOnlyToken = {
+      from: [
+        {
+          asset: {
+            type: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+          },
+        },
+      ],
       to: [
         {
           asset: {
@@ -380,11 +408,17 @@ describe('TransactionList', () => {
     };
 
     const nonEvmTransactions = {
-      transactions: [
-        transactionWithSolAndToken,
-        transactionWithOnlySol,
-        transactionWithOnlyToken,
-      ],
+      [MOCK_ACCOUNT_SOLANA_MAINNET.id]: {
+        [MultichainNetworks.SOLANA]: {
+          transactions: [
+            transactionWithSolAndToken,
+            transactionWithOnlySol,
+            transactionWithOnlyToken,
+          ],
+          next: null,
+          lastUpdated: expect.any(Number),
+        },
+      },
     };
 
     it('filters out transactions that do not involve the token address', () => {
@@ -392,12 +426,16 @@ describe('TransactionList', () => {
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
 
       const result = filterTransactionsByToken(
-        nonEvmTransactions,
+        nonEvmTransactions[MOCK_ACCOUNT_SOLANA_MAINNET.id][
+          MultichainNetworks.SOLANA
+        ],
         tokenAddress,
       );
 
       expect(result).toStrictEqual({
         transactions: [transactionWithSolAndToken, transactionWithOnlyToken],
+        next: null,
+        lastUpdated: expect.any(Number),
       });
     });
 
@@ -405,11 +443,21 @@ describe('TransactionList', () => {
       const tokenAddress = undefined;
 
       const result = filterTransactionsByToken(
-        nonEvmTransactions,
+        nonEvmTransactions[MOCK_ACCOUNT_SOLANA_MAINNET.id][
+          MultichainNetworks.SOLANA
+        ],
         tokenAddress,
       );
 
-      expect(result).toStrictEqual(nonEvmTransactions);
+      expect(result).toStrictEqual({
+        transactions: [
+          transactionWithSolAndToken,
+          transactionWithOnlySol,
+          transactionWithOnlyToken,
+        ],
+        next: null,
+        lastUpdated: expect.any(Number),
+      });
     });
   });
 });

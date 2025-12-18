@@ -12,15 +12,11 @@ import { Driver, PAGES } from './webdriver/driver';
 
 import { createDriverTransport } from './api-specs/helpers';
 
-import FixtureBuilder from './fixture-builder';
-import {
-  withFixtures,
-  openDapp,
-  unlockWallet,
-  DAPP_URL,
-  ACCOUNT_1,
-} from './helpers';
+import FixtureBuilder from './fixtures/fixture-builder';
+import { withFixtures, unlockWallet } from './helpers';
+import { DAPP_URL, ACCOUNT_1 } from './constants';
 import transformOpenRPCDocument from './api-specs/transform';
+import HomePage from './page-objects/pages/home/homepage';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const mockServer = require('@open-rpc/mock-server/build/index').default;
@@ -30,7 +26,7 @@ async function main() {
   const chainId = 1337;
   await withFixtures(
     {
-      dapp: true,
+      dappOptions: { numberOfTestDapps: 1 },
       fixtures: new FixtureBuilder().build(),
       localNodeOptions: 'none',
       title: 'api-specs coverage',
@@ -49,12 +45,16 @@ async function main() {
       server.start();
 
       await unlockWallet(driver);
+      const homePage = new HomePage(driver);
+      await homePage.checkPageIsLoaded();
+      // We don't have balance so we expect to see Fund Your Wallet
+      await homePage.checkExpectedBalanceIsDisplayed('0', 'ETH');
 
       // Navigate to extension home screen
       await driver.navigate(PAGES.HOME);
 
       // Open Dapp
-      await openDapp(driver, undefined, DAPP_URL);
+      await driver.openNewPage(DAPP_URL);
 
       const testCoverageResults = await testCoverage({
         openrpcDocument: parsedDoc,

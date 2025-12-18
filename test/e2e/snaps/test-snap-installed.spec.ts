@@ -1,11 +1,16 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { MockedEndpoint, Mockttp } from 'mockttp';
-import FixtureBuilder from '../fixture-builder';
+import FixtureBuilder from '../fixtures/fixture-builder';
 import { Driver } from '../webdriver/driver';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { completeSnapInstallSwitchToTestSnap } from '../page-objects/flows/snap-permission.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
+import {
+  mockDialogSnap,
+  mockErrorSnap,
+} from '../mock-response-data/snaps/snap-binary-mocks';
+import { DAPP_PATH } from '../constants';
 
 const { strict: assert } = require('assert');
 const { withFixtures, getEventPayloads } = require('../helpers');
@@ -40,13 +45,19 @@ async function mockedSnapInstall(mockServer: Mockttp) {
 
 describe('Test Snap installed', function () {
   it('metrics are sent correctly and error snap validation', async function () {
-    async function mockSegment(mockServer: Mockttp) {
-      return [await mockedSnapInstall(mockServer)];
+    async function mockSegmentAndSnaps(mockServer: Mockttp) {
+      return [
+        await mockedSnapInstall(mockServer),
+        await mockErrorSnap(mockServer),
+        await mockDialogSnap(mockServer),
+      ];
     }
 
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
             metaMetricsId: 'fake-metrics-id',
@@ -54,7 +65,7 @@ describe('Test Snap installed', function () {
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockSegment,
+        testSpecificMock: mockSegmentAndSnaps,
       },
       async ({
         driver,
@@ -67,7 +78,7 @@ describe('Test Snap installed', function () {
         await openTestSnapClickButtonAndInstall(driver, 'connectDialogsButton');
 
         // Check installation success
-        await testSnaps.check_installationComplete(
+        await testSnaps.checkInstallationComplete(
           'connectDialogsButton',
           'Reconnect to Dialogs Snap',
         );
@@ -76,25 +87,31 @@ describe('Test Snap installed', function () {
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.deepStrictEqual(events[0].event, 'Snap Installed');
         assert.deepStrictEqual(events[0].properties, {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_id: 'npm:@metamask/dialog-example-snap',
-          origin: 'https://metamask.github.io',
+          origin: 'http://127.0.0.1:8080',
           version: '2.3.1',
           category: 'Snaps',
           locale: 'en',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id: '0x539',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: 'background',
         });
 
         // Click to connect to errors snap and validate the install snaps result
         await testSnaps.scrollAndClickButton('connectErrorsButton');
         await completeSnapInstallSwitchToTestSnap(driver);
-        await testSnaps.check_installedSnapsResult(
+        await testSnaps.checkInstalledSnapsResult(
           'npm:@metamask/dialog-example-snap, npm:@metamask/error-example-snap',
         );
 
         // Click Send error button and validate the message result
         await testSnaps.scrollAndClickButton('sendErrorButton');
-        await testSnaps.check_messageResultSpan(
+        await testSnaps.checkMessageResultSpan(
           'errorResultSpan',
           '"Hello, world!"',
         );

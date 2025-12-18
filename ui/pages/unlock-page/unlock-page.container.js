@@ -1,5 +1,4 @@
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -13,7 +12,17 @@ import {
   tryUnlockMetamask,
   markPasswordForgotten,
   forceUpdateMetamaskState,
+  checkIsSeedlessPasswordOutdated,
+  resetOnboarding,
+  resetWallet,
+  getIsSeedlessOnboardingUserAuthenticated,
 } from '../../store/actions';
+import { getIsSocialLoginFlow, getFirstTimeFlowType } from '../../selectors';
+import {
+  getCompletedOnboarding,
+  getIsWalletResetInProgress,
+} from '../../ducks/metamask/metamask';
+import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import UnlockPage from './unlock-page.component';
 
 const mapStateToProps = (state) => {
@@ -22,6 +31,10 @@ const mapStateToProps = (state) => {
   } = state;
   return {
     isUnlocked,
+    isSocialLoginFlow: getIsSocialLoginFlow(state),
+    isOnboardingCompleted: getCompletedOnboarding(state),
+    firstTimeFlowType: getFirstTimeFlowType(state),
+    isWalletResetInProgress: getIsWalletResetInProgress(state),
   };
 };
 
@@ -30,31 +43,49 @@ const mapDispatchToProps = (dispatch) => {
     tryUnlockMetamask: (password) => dispatch(tryUnlockMetamask(password)),
     markPasswordForgotten: () => dispatch(markPasswordForgotten()),
     forceUpdateMetamaskState: () => forceUpdateMetamaskState(dispatch),
+    loginWithDifferentMethod: () => dispatch(resetOnboarding()),
+    checkIsSeedlessPasswordOutdated: () =>
+      dispatch(checkIsSeedlessPasswordOutdated()),
+    resetWallet: () => dispatch(resetWallet()),
+    getIsSeedlessOnboardingUserAuthenticated: () =>
+      dispatch(getIsSeedlessOnboardingUserAuthenticated()),
   };
 };
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const {
-    // eslint-disable-next-line no-shadow
-    markPasswordForgotten,
-    // eslint-disable-next-line no-shadow
-    tryUnlockMetamask,
+    markPasswordForgotten: propsMarkPasswordForgotten,
+    tryUnlockMetamask: propsTryUnlockMetamask,
     ...restDispatchProps
   } = dispatchProps;
-  const { history, onSubmit: ownPropsSubmit, ...restOwnProps } = ownProps;
+  const {
+    navigate,
+    onSubmit: ownPropsSubmit,
+    location,
+    ...restOwnProps
+  } = ownProps;
+
+  const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
 
   const onImport = async () => {
-    await markPasswordForgotten();
-    history.push(RESTORE_VAULT_ROUTE);
+    await propsMarkPasswordForgotten();
+    navigate(RESTORE_VAULT_ROUTE, { replace: true });
 
-    if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
-      global.platform.openExtensionInBrowser(RESTORE_VAULT_ROUTE);
+    if (isPopup) {
+      global.platform.openExtensionInBrowser?.(RESTORE_VAULT_ROUTE);
     }
   };
 
   const onSubmit = async (password) => {
-    await tryUnlockMetamask(password);
-    history.push(DEFAULT_ROUTE);
+    await propsTryUnlockMetamask(password);
+    // Redirect to the intended route if available, otherwise DEFAULT_ROUTE
+    let redirectTo = DEFAULT_ROUTE;
+    const fromLocation = location.state?.from;
+    if (fromLocation?.pathname) {
+      const search = fromLocation.search || '';
+      redirectTo = fromLocation.pathname + search;
+    }
+    navigate(redirectTo);
   };
 
   return {
@@ -63,11 +94,15 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...restOwnProps,
     onRestore: onImport,
     onSubmit: ownPropsSubmit || onSubmit,
-    history,
+    navigate,
+    location,
+    isPopup,
   };
 };
 
-export default compose(
-  withRouter,
+const UnlockPageConnected = compose(
+  withRouterHooks,
   connect(mapStateToProps, mapDispatchToProps, mergeProps),
 )(UnlockPage);
+
+export default UnlockPageConnected;

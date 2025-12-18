@@ -52,7 +52,18 @@ jest.mock('../..', () => ({
   TokenListItem: jest.fn(() => <div>TokenListItem</div>),
 }));
 
-jest.mock('./Asset', () => jest.fn(() => <div>AssetComponent</div>));
+const mockUseSafeChains = jest.fn().mockReturnValue({
+  safeChains: [],
+});
+jest.mock(
+  '../../../../pages/settings/networks-tab/networks-form/use-safe-chains',
+  () => ({
+    useSafeChains: () => mockUseSafeChains(),
+  }),
+);
+
+const mockAsset = jest.fn((..._args) => <div>AssetComponent</div>);
+jest.mock('./Asset', () => jest.fn((...args) => mockAsset(...args)));
 
 describe('AssetList', () => {
   const handleAssetChangeMock = jest.fn();
@@ -128,6 +139,7 @@ describe('AssetList', () => {
       .mockReturnValueOnce(['1 ETH', { value: '1', suffix: 'ETH' }]);
 
     handleAssetChangeMock.mockClear();
+    jest.clearAllMocks();
   });
 
   it('should render the token list', () => {
@@ -228,5 +240,97 @@ describe('AssetList', () => {
     expect(screen.getAllByTestId('asset-list-item')[0]).toHaveClass(
       'multichain-asset-picker-list-item--disabled',
     );
+  });
+
+  it('should show the scam warning modal', () => {
+    const safeChainDetails = {
+      chainId: '1',
+      nativeCurrency: {
+        symbol: 'ETH',
+      },
+    };
+    mockUseSafeChains.mockReturnValue({
+      safeChains: [safeChainDetails],
+    });
+
+    (useMultichainSelector as jest.Mock).mockImplementation((selector) => {
+      if (selector === getMultichainCurrentNetwork) {
+        return { chainId: '0x1' };
+      }
+      if (selector === getMultichainCurrentChainId) {
+        return '0x1';
+      }
+      return undefined;
+    });
+    (useSelector as jest.Mock)
+      .mockImplementationOnce(() => ['0xToken1'])
+      .mockImplementation((selector) => {
+        if (selector === getNativeCurrency) {
+          return nativeCurrency;
+        }
+        if (selector === getSelectedAccountCachedBalance) {
+          return balanceValue;
+        }
+        if (selector === getPreferences) {
+          return true;
+        }
+        return undefined;
+      });
+
+    render(
+      <AssetList
+        handleAssetChange={handleAssetChangeMock}
+        asset={{
+          type: AssetType.native,
+          image: CHAIN_ID_TOKEN_IMAGE_MAP['0x1'],
+          symbol: 'ETH',
+          chainId: '0x1',
+        }}
+        tokenList={tokenList}
+      />,
+    );
+
+    expect(mockAsset.mock.calls).toMatchSnapshot();
+  });
+
+  it('should pass an undefined nativeCurrencySymbol if the safe chains are not loaded', () => {
+    (useMultichainSelector as jest.Mock).mockImplementation((selector) => {
+      if (selector === getMultichainCurrentNetwork) {
+        return { chainId: '0x1' };
+      }
+      if (selector === getMultichainCurrentChainId) {
+        return '0x1';
+      }
+      return undefined;
+    });
+    (useSelector as jest.Mock)
+      .mockImplementationOnce(() => ['0xToken1'])
+      .mockImplementation((selector) => {
+        if (selector === getNativeCurrency) {
+          return nativeCurrency;
+        }
+        if (selector === getSelectedAccountCachedBalance) {
+          return balanceValue;
+        }
+        if (selector === getPreferences) {
+          return true;
+        }
+        return undefined;
+      });
+
+    render(
+      <AssetList
+        handleAssetChange={handleAssetChangeMock}
+        asset={{
+          type: AssetType.native,
+          image: CHAIN_ID_TOKEN_IMAGE_MAP['0x1'],
+          symbol: 'ETH',
+          chainId: '0x1',
+        }}
+        tokenList={tokenList}
+      />,
+    );
+
+    expect(mockAsset.mock.calls).toMatchSnapshot();
   });
 });

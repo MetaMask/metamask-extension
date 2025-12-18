@@ -1,8 +1,15 @@
-import { Messenger } from '@metamask/base-controller';
+import { deriveStateFromMetadata } from '@metamask/base-controller';
 import {
-  AllowedActions,
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+  MockAnyNamespace,
+} from '@metamask/messenger';
+import { DeleteRegulationStatus } from '../../../../shared/constants/metametrics';
+import {
   MetaMetricsDataDeletionController,
-  type MetaMetricsDataDeletionControllerMessengerActions,
+  MetaMetricsDataDeletionControllerMessenger,
 } from './metametrics-data-deletion';
 
 describe('MetaMetricsDataDeletionController', () => {
@@ -120,7 +127,115 @@ describe('MetaMetricsDataDeletionController', () => {
       });
     });
   });
+
+  describe('metadata', () => {
+    it('includes expected state in debug snapshots', () => {
+      const { controller } = setupController({
+        options: {
+          state: {
+            // Populate optional properties to ensure they show up in snapshot
+            metaMetricsDataDeletionStatus: DeleteRegulationStatus.Unknown,
+          },
+        },
+      });
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'includeInDebugSnapshot',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "metaMetricsDataDeletionId": null,
+          "metaMetricsDataDeletionStatus": "UNKNOWN",
+          "metaMetricsDataDeletionTimestamp": 0,
+        }
+      `);
+    });
+
+    it('includes expected state in state logs', () => {
+      const { controller } = setupController({
+        options: {
+          state: {
+            // Populate optional properties to ensure they show up in snapshot
+            metaMetricsDataDeletionStatus: DeleteRegulationStatus.Unknown,
+          },
+        },
+      });
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'includeInStateLogs',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "metaMetricsDataDeletionId": null,
+          "metaMetricsDataDeletionStatus": "UNKNOWN",
+          "metaMetricsDataDeletionTimestamp": 0,
+        }
+      `);
+    });
+
+    it('persists expected state', () => {
+      const { controller } = setupController({
+        options: {
+          state: {
+            // Populate optional properties to ensure they show up in snapshot
+            metaMetricsDataDeletionStatus: DeleteRegulationStatus.Unknown,
+          },
+        },
+      });
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'persist',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "metaMetricsDataDeletionId": null,
+          "metaMetricsDataDeletionStatus": "UNKNOWN",
+          "metaMetricsDataDeletionTimestamp": 0,
+        }
+      `);
+    });
+
+    it('exposes expected state to UI', () => {
+      const { controller } = setupController({
+        options: {
+          state: {
+            // Populate optional properties to ensure they show up in snapshot
+            metaMetricsDataDeletionStatus: DeleteRegulationStatus.Unknown,
+          },
+        },
+      });
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'usedInUi',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "metaMetricsDataDeletionId": null,
+          "metaMetricsDataDeletionStatus": "UNKNOWN",
+          "metaMetricsDataDeletionTimestamp": 0,
+        }
+      `);
+    });
+  });
 });
+
+type RootMessenger = Messenger<
+  MockAnyNamespace,
+  MessengerActions<MetaMetricsDataDeletionControllerMessenger>,
+  MessengerEvents<MetaMetricsDataDeletionControllerMessenger>
+>;
 
 /**
  * Setup a test controller instance.
@@ -143,15 +258,11 @@ function setupController({
   dataDeletionService: ConstructorParameters<
     typeof MetaMetricsDataDeletionController
   >[0]['dataDeletionService'];
-  messenger: Messenger<
-    MetaMetricsDataDeletionControllerMessengerActions | AllowedActions,
-    never
-  >;
+  messenger: RootMessenger;
 } {
-  const messenger = new Messenger<
-    MetaMetricsDataDeletionControllerMessengerActions | AllowedActions,
-    never
-  >();
+  const messenger: RootMessenger = new Messenger({
+    namespace: MOCK_ANY_NAMESPACE,
+  });
   messenger.registerActionHandler(
     'MetaMetricsController:getState',
     jest.fn().mockReturnValue({ metaMetricsId }),
@@ -167,14 +278,23 @@ function setupController({
       .mockResolvedValue(mockFetchDeletionRegulationStatusResponse),
     ...options?.dataDeletionService,
   };
+  const controllerMessenger = new Messenger<
+    'MetaMetricsDataDeletionController',
+    MessengerActions<MetaMetricsDataDeletionControllerMessenger>,
+    MessengerEvents<MetaMetricsDataDeletionControllerMessenger>,
+    typeof messenger
+  >({
+    namespace: 'MetaMetricsDataDeletionController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    actions: ['MetaMetricsController:getState'],
+  });
   const constructorOptions = {
     dataDeletionService: mockDataDeletionService,
     getMetaMetricsId: jest.fn().mockReturnValue('mockMetaMetricsId'),
-    messenger: messenger.getRestricted({
-      name: 'MetaMetricsDataDeletionController',
-      allowedActions: ['MetaMetricsController:getState'],
-      allowedEvents: [],
-    }),
+    messenger: controllerMessenger,
     ...options,
   };
   const controller = new MetaMetricsDataDeletionController(constructorOptions);

@@ -31,6 +31,8 @@ import { banner } from './banner';
 import { skeleton } from './skeleton';
 import { addressInput } from './address-input';
 import { assetSelector } from './asset-selector';
+import { accountSelector } from './account-selector';
+import { dateTimePicker } from './date-time-picker';
 
 export const COMPONENT_MAPPING = {
   AssetSelector: assetSelector,
@@ -66,6 +68,10 @@ export const COMPONENT_MAPPING = {
   Section: section,
   Banner: banner,
   Skeleton: skeleton,
+  AccountSelector: accountSelector,
+  DateTimePicker: dateTimePicker,
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type COMPONENT_MAPPING = typeof COMPONENT_MAPPING;

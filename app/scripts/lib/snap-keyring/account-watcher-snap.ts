@@ -1,4 +1,4 @@
-// BEGIN:ONLY_INCLUDE_IF(build-flask)
+// BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
 import { SnapId } from '@metamask/snaps-sdk';
 
 export const ACCOUNT_WATCHER_SNAP_ID: SnapId =

@@ -1,27 +1,30 @@
 /**
  * @jest-environment node
  */
-import { Messenger } from '@metamask/base-controller';
-import { AccountsController } from '@metamask/accounts-controller';
-import { Hex } from '@metamask/utils';
-import { KeyringControllerStateChangeEvent } from '@metamask/keyring-controller';
-import type { MultichainNetworkControllerNetworkDidChangeEvent } from '@metamask/multichain-network-controller';
-import { SnapControllerStateChangeEvent } from '@metamask/snaps-controllers';
+import { deriveStateFromMetadata } from '@metamask/base-controller';
 import {
-  SnapKeyringAccountAssetListUpdatedEvent,
-  SnapKeyringAccountBalancesUpdatedEvent,
-  SnapKeyringAccountTransactionsUpdatedEvent,
-} from '@metamask/eth-snap-keyring';
+  AccountsController,
+  AccountsControllerMessenger,
+} from '@metamask/accounts-controller';
+import {
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+  MockAnyNamespace,
+} from '@metamask/messenger';
+import type { Hex } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { ThemeType } from '../../../shared/constants/preferences';
 import type {
-  AllowedActions,
-  AllowedEvents,
   PreferencesControllerMessenger,
   PreferencesControllerState,
 } from './preferences-controller';
-import { PreferencesController } from './preferences-controller';
+import {
+  PreferencesController,
+  ReferralStatus,
+} from './preferences-controller';
 
 const NETWORK_CONFIGURATION_DATA = mockNetworkState(
   {
@@ -44,29 +47,30 @@ const setupController = ({
   state,
 }: {
   state?: Partial<PreferencesControllerState>;
-}) => {
+} = {}) => {
   const messenger = new Messenger<
-    AllowedActions,
-    | AllowedEvents
-    | KeyringControllerStateChangeEvent
-    | SnapControllerStateChangeEvent
-    | SnapKeyringAccountAssetListUpdatedEvent
-    | SnapKeyringAccountBalancesUpdatedEvent
-    | SnapKeyringAccountTransactionsUpdatedEvent
-    | MultichainNetworkControllerNetworkDidChangeEvent
-  >();
+    MockAnyNamespace,
+    | MessengerActions<PreferencesControllerMessenger>
+    | MessengerActions<AccountsControllerMessenger>,
+    | MessengerEvents<PreferencesControllerMessenger>
+    | MessengerEvents<AccountsControllerMessenger>
+  >({ namespace: MOCK_ANY_NAMESPACE });
   const preferencesControllerMessenger: PreferencesControllerMessenger =
-    messenger.getRestricted({
-      name: 'PreferencesController',
-      allowedActions: [
-        'AccountsController:getAccountByAddress',
-        'AccountsController:setAccountName',
-        'AccountsController:getSelectedAccount',
-        'AccountsController:setSelectedAccount',
-        'NetworkController:getState',
-      ],
-      allowedEvents: ['AccountsController:stateChange'],
+    new Messenger({
+      namespace: 'PreferencesController',
+      parent: messenger,
     });
+  messenger.delegate({
+    messenger: preferencesControllerMessenger,
+    actions: [
+      'AccountsController:getAccountByAddress',
+      'AccountsController:setAccountName',
+      'AccountsController:getSelectedAccount',
+      'AccountsController:setSelectedAccount',
+      'NetworkController:getState',
+    ],
+    events: ['AccountsController:stateChange'],
+  });
 
   messenger.registerActionHandler(
     'NetworkController:getState',
@@ -79,9 +83,18 @@ const setupController = ({
     state,
   });
 
-  const accountsControllerMessenger = messenger.getRestricted({
-    name: 'AccountsController',
-    allowedEvents: [
+  const accountsControllerMessenger = new Messenger<
+    'AccountsController',
+    MessengerActions<AccountsControllerMessenger>,
+    MessengerEvents<AccountsControllerMessenger>,
+    typeof messenger
+  >({
+    namespace: 'AccountsController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: accountsControllerMessenger,
+    events: [
       'KeyringController:stateChange',
       'SnapController:stateChange',
       'SnapKeyring:accountAssetListUpdated',
@@ -89,7 +102,6 @@ const setupController = ({
       'SnapKeyring:accountTransactionsUpdated',
       'MultichainNetworkController:networkDidChange',
     ],
-    allowedActions: [],
   });
   const mockAccountsControllerState = {
     internalAccounts: {
@@ -110,6 +122,29 @@ const setupController = ({
 };
 
 describe('preferences controller', () => {
+  describe('initialization and merging', () => {
+    it('defaults avatarType to maskicon', () => {
+      const { controller } = setupController({});
+      expect(controller.state.preferences.avatarType).toBe('maskicon');
+    });
+
+    it('preserves existing avatarType', () => {
+      const { controller } = setupController({});
+      const defaultPreferences = controller.state.preferences;
+
+      const { controller: mergedController } = setupController({
+        state: {
+          preferences: {
+            ...defaultPreferences,
+            avatarType: 'jazzicon',
+          },
+        },
+      });
+
+      expect(mergedController.state.preferences.avatarType).toBe('jazzicon');
+    });
+  });
+
   describe('useBlockie', () => {
     it('defaults useBlockie to false', () => {
       const { controller } = setupController({});
@@ -153,12 +188,10 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
-            },
-          ],
-          keyringsMetadata: [
-            {
-              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
-              name: '',
+              metadata: {
+                id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+                name: '',
+              },
             },
           ],
         },
@@ -204,12 +237,10 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
-            },
-          ],
-          keyringsMetadata: [
-            {
-              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
-              name: '',
+              metadata: {
+                id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+                name: '',
+              },
             },
           ],
         },
@@ -261,12 +292,10 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
-            },
-          ],
-          keyringsMetadata: [
-            {
-              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
-              name: '',
+              metadata: {
+                id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+                name: '',
+              },
             },
           ],
         },
@@ -302,12 +331,10 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
-            },
-          ],
-          keyringsMetadata: [
-            {
-              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
-              name: '',
+              metadata: {
+                id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+                name: '',
+              },
             },
           ],
         },
@@ -362,11 +389,17 @@ describe('preferences controller', () => {
       expect(controller.state.useMultiAccountBalanceChecker).toStrictEqual(
         true,
       );
+      expect(controller.state.isMultiAccountBalancesEnabled).toStrictEqual(
+        true,
+      );
     });
 
     it('should set the setUseMultiAccountBalanceChecker property in state', () => {
       controller.setUseMultiAccountBalanceChecker(false);
       expect(controller.state.useMultiAccountBalanceChecker).toStrictEqual(
+        false,
+      );
+      expect(controller.state.isMultiAccountBalancesEnabled).toStrictEqual(
         false,
       );
     });
@@ -512,12 +545,10 @@ describe('preferences controller', () => {
             {
               type: 'HD Key Tree',
               accounts: [firstAddress, secondAddress],
-            },
-          ],
-          keyringsMetadata: [
-            {
-              id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
-              name: '',
+              metadata: {
+                id: '01JKDGGBRE3DGZA7N1PZJSQK4W',
+                name: '',
+              },
             },
           ],
         },
@@ -534,7 +565,6 @@ describe('preferences controller', () => {
     });
   });
 
-  ///: BEGIN:ONLY_INCLUDE_IF(petnames)
   describe('setUseExternalNameSources', () => {
     const { controller } = setupController({});
     it('should default to true', () => {
@@ -546,7 +576,6 @@ describe('preferences controller', () => {
       expect(controller.state.useExternalNameSources).toStrictEqual(false);
     });
   });
-  ///: END:ONLY_INCLUDE_IF
 
   describe('setUseTransactionSimulations', () => {
     const { controller } = setupController({});
@@ -569,21 +598,6 @@ describe('preferences controller', () => {
     it('should set the setServiceWorkerKeepAlivePreference property in state', () => {
       controller.setServiceWorkerKeepAlivePreference(false);
       expect(controller.state.enableMV3TimestampSave).toStrictEqual(false);
-    });
-  });
-
-  describe('setBitcoinSupportEnabled', () => {
-    const { controller } = setupController({});
-    it('has the default value as false', () => {
-      expect(controller.state.bitcoinSupportEnabled).toStrictEqual(false);
-    });
-
-    it('sets the bitcoinSupportEnabled property in state to true and then false', () => {
-      controller.setBitcoinSupportEnabled(true);
-      expect(controller.state.bitcoinSupportEnabled).toStrictEqual(true);
-
-      controller.setBitcoinSupportEnabled(false);
-      expect(controller.state.bitcoinSupportEnabled).toStrictEqual(false);
     });
   });
 
@@ -651,21 +665,6 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('bitcoinTestnetSupportEnabled', () => {
-    it('defaults bitcoinTestnetSupportEnabled to false', () => {
-      const { controller } = setupController({});
-      expect(controller.state.bitcoinTestnetSupportEnabled).toStrictEqual(
-        false,
-      );
-    });
-
-    it('setBitcoinTestnetSupportEnabled to true', () => {
-      const { controller } = setupController({});
-      controller.setBitcoinTestnetSupportEnabled(true);
-      expect(controller.state.bitcoinTestnetSupportEnabled).toStrictEqual(true);
-    });
-  });
-
   describe('knownMethodData', () => {
     it('defaults knownMethodData', () => {
       const { controller } = setupController({});
@@ -701,6 +700,7 @@ describe('preferences controller', () => {
       const { controller } = setupController({});
       expect(controller.state.preferences).toStrictEqual({
         autoLockTimeLimit: undefined,
+        avatarType: 'maskicon',
         showExtensionInFullSizeView: false,
         privacyMode: false,
         showFiatInTestnets: false,
@@ -708,14 +708,16 @@ describe('preferences controller', () => {
         smartTransactionsMigrationApplied: false,
         smartTransactionsOptInStatus: true,
         useNativeCurrencyAsPrimaryCurrency: true,
+        useSidePanelAsDefault: false,
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
-        shouldShowAggregatedBalancePopover: true,
+        skipDeepLinkInterstitial: false,
         dismissSmartAccountSuggestionEnabled: false,
         featureNotificationsEnabled: false,
         showConfirmationAdvancedDetails: false,
         showMultiRpcModal: false,
         showNativeTokenAsMainBalance: false,
+        smartAccountOptIn: true,
         tokenSortConfig: {
           key: 'tokenFiatAmount',
           order: 'dsc',
@@ -730,21 +732,24 @@ describe('preferences controller', () => {
       controller.setPreference('showConfirmationAdvancedDetails', true);
       expect(controller.getPreferences()).toStrictEqual({
         autoLockTimeLimit: undefined,
+        avatarType: 'maskicon',
         showExtensionInFullSizeView: false,
         showFiatInTestnets: false,
         showTestNetworks: false,
         smartTransactionsMigrationApplied: false,
         smartTransactionsOptInStatus: true,
         useNativeCurrencyAsPrimaryCurrency: true,
+        useSidePanelAsDefault: false,
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
+        skipDeepLinkInterstitial: false,
         privacyMode: false,
-        shouldShowAggregatedBalancePopover: true,
         dismissSmartAccountSuggestionEnabled: false,
         featureNotificationsEnabled: false,
         showConfirmationAdvancedDetails: true,
         showMultiRpcModal: false,
         showNativeTokenAsMainBalance: false,
+        smartAccountOptIn: true,
         tokenSortConfig: {
           key: 'tokenFiatAmount',
           order: 'dsc',
@@ -841,74 +846,6 @@ describe('preferences controller', () => {
     });
   });
 
-  describe('getDisabledUpgradeAccountsByChain', () => {
-    it('returns empty object if disabledAccountUpgradeChainsAddresses is empty', () => {
-      const { controller } = setupController({});
-      expect(controller.getDisabledUpgradeAccountsByChain()).toStrictEqual({});
-    });
-
-    it('returns disabledAccountUpgrades state', () => {
-      const mockStateObject = {
-        [CHAIN_IDS.MAINNET]: ['0x0'] as Hex[],
-        [CHAIN_IDS.GOERLI]: ['0x1'] as Hex[],
-      };
-      const { controller } = setupController({
-        state: {
-          disabledUpgradeAccountsByChain: mockStateObject,
-        },
-      });
-
-      expect(controller.getDisabledUpgradeAccountsByChain()).toStrictEqual(
-        mockStateObject,
-      );
-    });
-  });
-
-  describe('disableAccountUpgrade', () => {
-    it('adds chain ID, address to disabledAccountUpgrades if empty', () => {
-      const { controller } = setupController({});
-
-      controller.disableAccountUpgrade(CHAIN_IDS.GOERLI, '0x0');
-
-      expect(controller.state.disabledUpgradeAccountsByChain).toStrictEqual({
-        [CHAIN_IDS.GOERLI]: ['0x0'],
-      });
-    });
-
-    it('adds chain ID, address to disabledAccountUpgrades if not empty', () => {
-      const { controller } = setupController({
-        state: {
-          disabledUpgradeAccountsByChain: {
-            [CHAIN_IDS.MAINNET]: ['0x0'],
-          },
-        },
-      });
-
-      controller.disableAccountUpgrade(CHAIN_IDS.GOERLI, '0x1');
-
-      expect(controller.state.disabledUpgradeAccountsByChain).toStrictEqual({
-        [CHAIN_IDS.MAINNET]: ['0x0'],
-        [CHAIN_IDS.GOERLI]: ['0x1'],
-      });
-    });
-
-    it('does not add chain ID to disabledAccountUpgrades if duplicate', () => {
-      const { controller } = setupController({
-        state: {
-          disabledUpgradeAccountsByChain: {
-            [CHAIN_IDS.MAINNET]: ['0x0'],
-          },
-        },
-      });
-
-      controller.disableAccountUpgrade(CHAIN_IDS.MAINNET, '0x0');
-
-      expect(controller.state.disabledUpgradeAccountsByChain).toStrictEqual({
-        [CHAIN_IDS.MAINNET]: ['0x0'],
-      });
-    });
-  });
-
   describe('manageInstitutionalWallets', () => {
     it('defaults manageInstitutionalWallets to false', () => {
       const { controller } = setupController({});
@@ -921,6 +858,534 @@ describe('preferences controller', () => {
       const { controller } = setupController({});
       controller.setManageInstitutionalWallets(true);
       expect(controller.state.manageInstitutionalWallets).toStrictEqual(true);
+    });
+  });
+
+  describe('metadata', () => {
+    it('includes expected state in debug snapshots', () => {
+      const { controller } = setupController({
+        // Set optional props that have no default value, so they show up in snapshot
+        state: { textDirection: 'auto' },
+      });
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'includeInDebugSnapshot',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "advancedGasFee": {},
+          "currentLocale": "",
+          "dismissSeedBackUpReminder": false,
+          "enableMV3TimestampSave": true,
+          "featureFlags": {},
+          "forgottenPassword": false,
+          "isMultiAccountBalancesEnabled": true,
+          "ledgerTransportType": "u2f",
+          "openSeaEnabled": true,
+          "overrideContentSecurityPolicyHeader": true,
+          "preferences": {
+            "autoLockTimeLimit": undefined,
+            "avatarType": "maskicon",
+            "dismissSmartAccountSuggestionEnabled": false,
+            "featureNotificationsEnabled": false,
+            "hideZeroBalanceTokens": false,
+            "petnamesEnabled": true,
+            "privacyMode": false,
+            "showConfirmationAdvancedDetails": false,
+            "showExtensionInFullSizeView": false,
+            "showFiatInTestnets": false,
+            "showMultiRpcModal": false,
+            "showNativeTokenAsMainBalance": false,
+            "showTestNetworks": false,
+            "skipDeepLinkInterstitial": false,
+            "smartAccountOptIn": true,
+            "smartTransactionsMigrationApplied": false,
+            "smartTransactionsOptInStatus": true,
+            "tokenNetworkFilter": {},
+            "tokenSortConfig": {
+              "key": "tokenFiatAmount",
+              "order": "dsc",
+              "sortCallback": "stringNumeric",
+            },
+            "useNativeCurrencyAsPrimaryCurrency": true,
+            "useSidePanelAsDefault": false,
+          },
+          "theme": "os",
+          "use4ByteResolution": true,
+          "useAddressBarEnsResolution": true,
+          "useBlockie": false,
+          "useCurrencyRateCheck": true,
+          "useMultiAccountBalanceChecker": true,
+          "useNftDetection": true,
+          "usePhishDetect": true,
+          "useTokenDetection": true,
+          "useTransactionSimulations": true,
+        }
+      `);
+    });
+
+    it('includes expected state in state logs', () => {
+      const { controller } = setupController({
+        // Set optional props that have no default value, so they show up in snapshot
+        state: { textDirection: 'auto' },
+      });
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'includeInStateLogs',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "addSnapAccountEnabled": false,
+          "advancedGasFee": {},
+          "currentLocale": "",
+          "dismissSeedBackUpReminder": false,
+          "enableMV3TimestampSave": true,
+          "featureFlags": {},
+          "forgottenPassword": false,
+          "identities": {},
+          "ipfsGateway": "dweb.link",
+          "isIpfsGatewayEnabled": true,
+          "isMultiAccountBalancesEnabled": true,
+          "knownMethodData": {},
+          "ledgerTransportType": "u2f",
+          "lostIdentities": {},
+          "manageInstitutionalWallets": false,
+          "openSeaEnabled": true,
+          "overrideContentSecurityPolicyHeader": true,
+          "preferences": {
+            "autoLockTimeLimit": undefined,
+            "avatarType": "maskicon",
+            "dismissSmartAccountSuggestionEnabled": false,
+            "featureNotificationsEnabled": false,
+            "hideZeroBalanceTokens": false,
+            "petnamesEnabled": true,
+            "privacyMode": false,
+            "showConfirmationAdvancedDetails": false,
+            "showExtensionInFullSizeView": false,
+            "showFiatInTestnets": false,
+            "showMultiRpcModal": false,
+            "showNativeTokenAsMainBalance": false,
+            "showTestNetworks": false,
+            "skipDeepLinkInterstitial": false,
+            "smartAccountOptIn": true,
+            "smartTransactionsMigrationApplied": false,
+            "smartTransactionsOptInStatus": true,
+            "tokenNetworkFilter": {},
+            "tokenSortConfig": {
+              "key": "tokenFiatAmount",
+              "order": "dsc",
+              "sortCallback": "stringNumeric",
+            },
+            "useNativeCurrencyAsPrimaryCurrency": true,
+            "useSidePanelAsDefault": false,
+          },
+          "referrals": {
+            "hyperliquid": {},
+          },
+          "securityAlertsEnabled": true,
+          "selectedAddress": "",
+          "snapRegistryList": {},
+          "snapsAddSnapAccountModalDismissed": false,
+          "textDirection": "auto",
+          "theme": "os",
+          "use4ByteResolution": true,
+          "useAddressBarEnsResolution": true,
+          "useBlockie": false,
+          "useCurrencyRateCheck": true,
+          "useExternalNameSources": true,
+          "useExternalServices": true,
+          "useMultiAccountBalanceChecker": true,
+          "useNftDetection": true,
+          "usePhishDetect": true,
+          "useSafeChainsListValidation": true,
+          "useTokenDetection": true,
+          "useTransactionSimulations": true,
+          "watchEthereumAccountEnabled": false,
+        }
+      `);
+    });
+
+    it('persists expected state', () => {
+      const { controller } = setupController({
+        // Set optional props that have no default value, so they show up in snapshot
+        state: { textDirection: 'auto' },
+      });
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'persist',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "addSnapAccountEnabled": false,
+          "advancedGasFee": {},
+          "currentLocale": "",
+          "dismissSeedBackUpReminder": false,
+          "enableMV3TimestampSave": true,
+          "featureFlags": {},
+          "forgottenPassword": false,
+          "identities": {},
+          "ipfsGateway": "dweb.link",
+          "isIpfsGatewayEnabled": true,
+          "isMultiAccountBalancesEnabled": true,
+          "knownMethodData": {},
+          "ledgerTransportType": "u2f",
+          "lostIdentities": {},
+          "manageInstitutionalWallets": false,
+          "openSeaEnabled": true,
+          "overrideContentSecurityPolicyHeader": true,
+          "preferences": {
+            "autoLockTimeLimit": undefined,
+            "avatarType": "maskicon",
+            "dismissSmartAccountSuggestionEnabled": false,
+            "featureNotificationsEnabled": false,
+            "hideZeroBalanceTokens": false,
+            "petnamesEnabled": true,
+            "privacyMode": false,
+            "showConfirmationAdvancedDetails": false,
+            "showExtensionInFullSizeView": false,
+            "showFiatInTestnets": false,
+            "showMultiRpcModal": false,
+            "showNativeTokenAsMainBalance": false,
+            "showTestNetworks": false,
+            "skipDeepLinkInterstitial": false,
+            "smartAccountOptIn": true,
+            "smartTransactionsMigrationApplied": false,
+            "smartTransactionsOptInStatus": true,
+            "tokenNetworkFilter": {},
+            "tokenSortConfig": {
+              "key": "tokenFiatAmount",
+              "order": "dsc",
+              "sortCallback": "stringNumeric",
+            },
+            "useNativeCurrencyAsPrimaryCurrency": true,
+            "useSidePanelAsDefault": false,
+          },
+          "referrals": {
+            "hyperliquid": {},
+          },
+          "securityAlertsEnabled": true,
+          "selectedAddress": "",
+          "snapRegistryList": {},
+          "snapsAddSnapAccountModalDismissed": false,
+          "textDirection": "auto",
+          "theme": "os",
+          "use4ByteResolution": true,
+          "useAddressBarEnsResolution": true,
+          "useBlockie": false,
+          "useCurrencyRateCheck": true,
+          "useExternalNameSources": true,
+          "useExternalServices": true,
+          "useMultiAccountBalanceChecker": true,
+          "useNftDetection": true,
+          "usePhishDetect": true,
+          "useSafeChainsListValidation": true,
+          "useTokenDetection": true,
+          "useTransactionSimulations": true,
+          "watchEthereumAccountEnabled": false,
+        }
+      `);
+    });
+
+    it('exposes expected state to UI', () => {
+      const { controller } = setupController({
+        // Set optional props that have no default value, so they show up in snapshot
+        state: { textDirection: 'auto' },
+      });
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'usedInUi',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "addSnapAccountEnabled": false,
+          "advancedGasFee": {},
+          "currentLocale": "",
+          "dismissSeedBackUpReminder": false,
+          "enableMV3TimestampSave": true,
+          "featureFlags": {},
+          "forgottenPassword": false,
+          "identities": {},
+          "ipfsGateway": "dweb.link",
+          "isIpfsGatewayEnabled": true,
+          "isMultiAccountBalancesEnabled": true,
+          "knownMethodData": {},
+          "ledgerTransportType": "u2f",
+          "lostIdentities": {},
+          "manageInstitutionalWallets": false,
+          "openSeaEnabled": true,
+          "overrideContentSecurityPolicyHeader": true,
+          "preferences": {
+            "autoLockTimeLimit": undefined,
+            "avatarType": "maskicon",
+            "dismissSmartAccountSuggestionEnabled": false,
+            "featureNotificationsEnabled": false,
+            "hideZeroBalanceTokens": false,
+            "petnamesEnabled": true,
+            "privacyMode": false,
+            "showConfirmationAdvancedDetails": false,
+            "showExtensionInFullSizeView": false,
+            "showFiatInTestnets": false,
+            "showMultiRpcModal": false,
+            "showNativeTokenAsMainBalance": false,
+            "showTestNetworks": false,
+            "skipDeepLinkInterstitial": false,
+            "smartAccountOptIn": true,
+            "smartTransactionsMigrationApplied": false,
+            "smartTransactionsOptInStatus": true,
+            "tokenNetworkFilter": {},
+            "tokenSortConfig": {
+              "key": "tokenFiatAmount",
+              "order": "dsc",
+              "sortCallback": "stringNumeric",
+            },
+            "useNativeCurrencyAsPrimaryCurrency": true,
+            "useSidePanelAsDefault": false,
+          },
+          "referrals": {
+            "hyperliquid": {},
+          },
+          "securityAlertsEnabled": true,
+          "selectedAddress": "",
+          "snapRegistryList": {},
+          "snapsAddSnapAccountModalDismissed": false,
+          "textDirection": "auto",
+          "theme": "os",
+          "use4ByteResolution": true,
+          "useAddressBarEnsResolution": true,
+          "useBlockie": false,
+          "useCurrencyRateCheck": true,
+          "useExternalNameSources": true,
+          "useExternalServices": true,
+          "useMultiAccountBalanceChecker": true,
+          "useNftDetection": true,
+          "usePhishDetect": true,
+          "useSafeChainsListValidation": true,
+          "useTokenDetection": true,
+          "useTransactionSimulations": true,
+          "watchEthereumAccountEnabled": false,
+        }
+      `);
+    });
+  });
+
+  describe('Hyperliquid referral methods', () => {
+    describe('addReferralApprovedAccount', () => {
+      const { controller } = setupController({});
+
+      it('adds an account with approved status', () => {
+        const testAccount = '0x123';
+
+        controller.addReferralApprovedAccount(testAccount);
+        expect(
+          controller.state.referrals.hyperliquid[testAccount],
+        ).toStrictEqual(ReferralStatus.Approved);
+      });
+
+      it('overwrites existing account status', () => {
+        const testAccount = '0x123';
+
+        controller.addReferralDeclinedAccount(testAccount);
+        expect(
+          controller.state.referrals.hyperliquid[testAccount],
+        ).toStrictEqual(ReferralStatus.Declined);
+
+        controller.addReferralApprovedAccount(testAccount);
+        expect(
+          controller.state.referrals.hyperliquid[testAccount],
+        ).toStrictEqual(ReferralStatus.Approved);
+      });
+
+      it('adds multiple unique accounts', () => {
+        const testAccount1 = '0x123';
+        const testAccount2 = '0x456';
+
+        controller.addReferralApprovedAccount(testAccount1);
+        controller.addReferralApprovedAccount(testAccount2);
+        expect(
+          controller.state.referrals.hyperliquid[testAccount1],
+        ).toStrictEqual(ReferralStatus.Approved);
+        expect(
+          controller.state.referrals.hyperliquid[testAccount2],
+        ).toStrictEqual(ReferralStatus.Approved);
+      });
+    });
+
+    describe('addReferralPassedAccount', () => {
+      const { controller } = setupController({});
+
+      it('adds account with passed status', () => {
+        const testAccount = '0x123';
+
+        controller.addReferralPassedAccount(testAccount);
+        expect(
+          controller.state.referrals.hyperliquid[testAccount],
+        ).toStrictEqual(ReferralStatus.Passed);
+      });
+
+      it('overwrites existing account status', () => {
+        const testAccount = '0x123';
+
+        controller.addReferralApprovedAccount(testAccount);
+        expect(
+          controller.state.referrals.hyperliquid[testAccount],
+        ).toStrictEqual(ReferralStatus.Approved);
+
+        controller.addReferralPassedAccount(testAccount);
+        expect(
+          controller.state.referrals.hyperliquid[testAccount],
+        ).toStrictEqual(ReferralStatus.Passed);
+      });
+    });
+
+    describe('addReferralDeclinedAccount', () => {
+      const { controller } = setupController({});
+
+      it('adds account with declined status', () => {
+        const testAccount = '0x123';
+
+        controller.addReferralDeclinedAccount(testAccount);
+        expect(
+          controller.state.referrals.hyperliquid[testAccount],
+        ).toStrictEqual(ReferralStatus.Declined);
+      });
+
+      it('overwrites existing account status', () => {
+        const testAccount = '0x123';
+
+        controller.addReferralPassedAccount(testAccount);
+        expect(
+          controller.state.referrals.hyperliquid[testAccount],
+        ).toStrictEqual(ReferralStatus.Passed);
+
+        controller.addReferralDeclinedAccount(testAccount);
+        expect(
+          controller.state.referrals.hyperliquid[testAccount],
+        ).toStrictEqual(ReferralStatus.Declined);
+      });
+    });
+
+    describe('removeReferralDeclinedAccount', () => {
+      it('removes the specified account from referrals completely', () => {
+        const testAccount1 = '0x123';
+        const testAccount2 = '0x456';
+        const { controller } = setupController({
+          state: {
+            referrals: {
+              hyperliquid: {
+                [testAccount1]: ReferralStatus.Declined,
+                [testAccount2]: ReferralStatus.Declined,
+              },
+            },
+          },
+        });
+
+        controller.removeReferralDeclinedAccount(testAccount1);
+        expect(
+          controller.state.referrals.hyperliquid[testAccount1],
+        ).toBeUndefined();
+        expect(
+          controller.state.referrals.hyperliquid[testAccount2],
+        ).toStrictEqual(ReferralStatus.Declined);
+      });
+
+      it('handles removing non-existent account gracefully', () => {
+        const testAccount1 = '0x123';
+        const testAccount2 = '0x456';
+        const { controller } = setupController({
+          state: {
+            referrals: {
+              hyperliquid: {
+                [testAccount1]: ReferralStatus.Declined,
+              },
+            },
+          },
+        });
+
+        controller.removeReferralDeclinedAccount(testAccount2);
+        expect(
+          controller.state.referrals.hyperliquid[testAccount1],
+        ).toStrictEqual(ReferralStatus.Declined);
+        expect(
+          controller.state.referrals.hyperliquid[testAccount2],
+        ).toBeUndefined();
+      });
+    });
+
+    describe('setAccountsReferralApproved', () => {
+      it('sets all accounts to approved status', () => {
+        const { controller } = setupController({});
+        const testAccounts = ['0x123', '0x456'] as Hex[];
+
+        controller.setAccountsReferralApproved(testAccounts);
+        expect(controller.state.referrals.hyperliquid['0x123']).toStrictEqual(
+          ReferralStatus.Approved,
+        );
+        expect(controller.state.referrals.hyperliquid['0x456']).toStrictEqual(
+          ReferralStatus.Approved,
+        );
+      });
+
+      it('overwrites existing account statuses', () => {
+        const existingAccount = '0x123';
+        const newAccount = '0x456';
+        const accountsToApprove = [existingAccount, newAccount] as Hex[];
+
+        const { controller } = setupController({
+          state: {
+            referrals: {
+              hyperliquid: {
+                [existingAccount]: ReferralStatus.Declined,
+              },
+            },
+          },
+        });
+
+        controller.setAccountsReferralApproved(accountsToApprove);
+        expect(
+          controller.state.referrals.hyperliquid[existingAccount],
+        ).toStrictEqual(ReferralStatus.Approved);
+        expect(
+          controller.state.referrals.hyperliquid[newAccount],
+        ).toStrictEqual(ReferralStatus.Approved);
+      });
+
+      it('handles empty array input gracefully', () => {
+        const existingAccount = '0x123';
+        const { controller } = setupController({
+          state: {
+            referrals: {
+              hyperliquid: {
+                [existingAccount]: ReferralStatus.Approved,
+              },
+            },
+          },
+        });
+
+        controller.setAccountsReferralApproved([]);
+        expect(
+          controller.state.referrals.hyperliquid[existingAccount],
+        ).toStrictEqual(ReferralStatus.Approved);
+      });
+    });
+
+    describe('referral state defaults', () => {
+      it('initializes with empty referral record', () => {
+        const { controller } = setupController({});
+
+        expect(controller.state.referrals.hyperliquid).toStrictEqual({});
+      });
     });
   });
 });

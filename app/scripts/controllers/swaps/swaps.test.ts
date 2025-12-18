@@ -1,10 +1,13 @@
+/* eslint-disable jest/no-commented-out-tests -- quality-sprint-dec-2025 */
+
 import { BigNumber } from '@ethersproject/bignumber';
+import { deriveStateFromMetadata } from '@metamask/base-controller';
 import { ChainId, InfuraNetworkType } from '@metamask/controller-utils';
 import BigNumberjs from 'bignumber.js';
 import { mapValues } from 'lodash';
 import * as ethersProviders from '@ethersproject/providers';
 import { Hex } from '@metamask/utils';
-import { SafeEventEmitterProvider } from '@metamask/eth-json-rpc-provider';
+import { InternalProvider } from '@metamask/eth-json-rpc-provider';
 import { NetworkClientId } from '@metamask/network-controller';
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -46,8 +49,12 @@ const TEST_AGG_ID_APPROVAL = 'TEST_AGG_APPROVAL';
 
 const MOCK_PROVIDER_RESULT_STUB = {
   // 1 gwei
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   eth_gasPrice: '0x0de0b6b3a7640000',
   // by default, all accounts are external accounts (not contracts)
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   eth_getCode: '0x',
 };
 
@@ -164,7 +171,7 @@ function mockNetworkControllerGetNetworkClientById(
   networkClientsById: Record<
     NetworkClientId,
     {
-      provider: SafeEventEmitterProvider;
+      provider: InternalProvider;
       configuration: {
         chainId: Hex;
       };
@@ -748,8 +755,12 @@ describe('SwapsController', function () {
         const { provider } = createTestProviderTools({
           scaffold: {
             // 1 gwei
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             eth_gasPrice: '0x0de0b6b3a7640000',
             // by default, all accounts are external accounts (not contracts)
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             eth_getCode: '0x',
           },
           networkId: 1,
@@ -832,9 +843,15 @@ describe('SwapsController', function () {
         const { provider } = createTestProviderTools({
           scaffold: {
             // 1 gwei
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             eth_gasPrice: '0x0de0b6b3a7640000',
             // by default, all accounts are external accounts (not contracts)
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             eth_getCode: '0x',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             eth_call:
               '0x000000000000000000000000000000000000000000000000000103c18816d4e8',
           },
@@ -919,9 +936,15 @@ describe('SwapsController', function () {
         const { provider } = createTestProviderTools({
           scaffold: {
             // 1 gwei
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             eth_gasPrice: '0x0de0b6b3a7640000',
             // by default, all accounts are external accounts (not contracts)
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             eth_getCode: '0x',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             eth_call:
               '0x000000000000000000000000000000000000000000000000000103c18816d4e8',
           },
@@ -1005,8 +1028,12 @@ describe('SwapsController', function () {
         const { provider } = createTestProviderTools({
           scaffold: {
             // 1 gwei
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             eth_gasPrice: '0x0de0b6b3a7640000',
             // by default, all accounts are external accounts (not contracts)
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             eth_getCode: '0x',
           },
           networkId: 100,
@@ -1039,7 +1066,7 @@ describe('SwapsController', function () {
         });
 
         expect(fetchWithCacheSpy).toHaveBeenCalledWith({
-          url: 'https://swap.api.cx.metamask.io/networks/100',
+          url: 'https://bridge.api.cx.metamask.io/networks/100',
           fetchOptions: {
             method: 'GET',
           },
@@ -1719,6 +1746,118 @@ describe('SwapsController', function () {
           'Expected non-empty array param.',
         );
       });
+    });
+  });
+
+  describe('metadata', () => {
+    it('includes expected state in debug snapshots', () => {
+      const controller = getSwapsController();
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'includeInDebugSnapshot',
+        ),
+      ).toMatchInlineSnapshot(`{}`);
+    });
+
+    it('includes expected state in state logs', () => {
+      const controller = getSwapsController();
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'includeInStateLogs',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "swapsState": {
+            "approveTxId": null,
+            "customApproveTxData": "",
+            "customGasPrice": null,
+            "customMaxFeePerGas": null,
+            "customMaxGas": "",
+            "customMaxPriorityFeePerGas": null,
+            "errorKey": "",
+            "fetchParams": null,
+            "quotes": {},
+            "quotesLastFetched": null,
+            "quotesPollingLimitEnabled": false,
+            "routeState": "",
+            "saveFetchedQuotes": false,
+            "selectedAggId": null,
+            "swapsFeatureFlags": {},
+            "swapsFeatureIsLive": true,
+            "swapsQuotePrefetchingRefreshTime": 60000,
+            "swapsQuoteRefreshTime": 60000,
+            "swapsStxBatchStatusRefreshTime": 10000,
+            "swapsStxGetTransactionsRefreshTime": 10000,
+            "swapsStxMaxFeeMultiplier": 2,
+            "swapsStxStatusDeadline": 180,
+            "swapsUserFeeLevel": "",
+            "tokens": null,
+            "topAggId": null,
+            "tradeTxId": null,
+          },
+        }
+      `);
+    });
+
+    it('persists expected state', () => {
+      const controller = getSwapsController();
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'persist',
+        ),
+      ).toMatchInlineSnapshot(`{}`);
+    });
+
+    it('exposes expected state to UI', () => {
+      const controller = getSwapsController();
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'usedInUi',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "swapsState": {
+            "approveTxId": null,
+            "customApproveTxData": "",
+            "customGasPrice": null,
+            "customMaxFeePerGas": null,
+            "customMaxGas": "",
+            "customMaxPriorityFeePerGas": null,
+            "errorKey": "",
+            "fetchParams": null,
+            "quotes": {},
+            "quotesLastFetched": null,
+            "quotesPollingLimitEnabled": false,
+            "routeState": "",
+            "saveFetchedQuotes": false,
+            "selectedAggId": null,
+            "swapsFeatureFlags": {},
+            "swapsFeatureIsLive": true,
+            "swapsQuotePrefetchingRefreshTime": 60000,
+            "swapsQuoteRefreshTime": 60000,
+            "swapsStxBatchStatusRefreshTime": 10000,
+            "swapsStxGetTransactionsRefreshTime": 10000,
+            "swapsStxMaxFeeMultiplier": 2,
+            "swapsStxStatusDeadline": 180,
+            "swapsUserFeeLevel": "",
+            "tokens": null,
+            "topAggId": null,
+            "tradeTxId": null,
+          },
+        }
+      `);
     });
   });
 });

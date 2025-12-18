@@ -1,26 +1,33 @@
 import { Controller as AuthenticationController } from '@metamask/profile-sync-controller/auth';
-import { Messenger } from '@metamask/base-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ControllerInitRequest } from '../types';
 import {
   getAuthenticationControllerMessenger,
   AuthenticationControllerMessenger,
+  AuthenticationControllerInitMessenger,
+  getAuthenticationControllerInitMessenger,
 } from '../messengers/identity';
+import { getRootMessenger } from '../../lib/messenger';
 import { AuthenticationControllerInit } from './authentication-controller-init';
 
 jest.mock('@metamask/profile-sync-controller/auth');
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<AuthenticationControllerMessenger>
+  ControllerInitRequest<
+    AuthenticationControllerMessenger,
+    AuthenticationControllerInitMessenger
+  >
 > {
-  const baseControllerMessenger = new Messenger();
+  const baseControllerMessenger = getRootMessenger();
 
   return {
     ...buildControllerInitRequestMock(),
     controllerMessenger: getAuthenticationControllerMessenger(
       baseControllerMessenger,
     ),
-    initMessenger: undefined,
+    initMessenger: getAuthenticationControllerInitMessenger(
+      baseControllerMessenger,
+    ),
   };
 }
 
@@ -48,7 +55,7 @@ describe('AuthenticationControllerInit', () => {
       messenger: requestMock.controllerMessenger,
       state: requestMock.persistedState.AuthenticationController,
       metametrics: {
-        getMetaMetricsId: requestMock.getMetaMetricsId,
+        getMetaMetricsId: expect.any(Function),
         agent: 'extension',
       },
     });

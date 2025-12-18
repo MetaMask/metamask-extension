@@ -1,20 +1,32 @@
+const { DAPP_PATH, DAPP_URL } = require('../constants');
 const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
-const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
+const FixtureBuilder = require('../fixtures/fixture-builder');
+const {
+  mockBip32Snap,
+  mockBip44Snap,
+} = require('../mock-response-data/snaps/snap-binary-mocks');
+
+async function mockSnapBinaries(mockServer) {
+  return [await mockBip32Snap(mockServer), await mockBip44Snap(mockServer)];
+}
 
 describe('Test Snap Multi Install', function () {
   it('test multi install snaps', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         failOnConsoleError: false,
+        fixtures: new FixtureBuilder().build(),
+        testSpecificMock: mockSnapBinaries,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);
 
         // navigate to test snaps page and multi-install snaps
-        await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
+        await driver.openNewPage(DAPP_URL);
 
         // wait for page to load
         await driver.waitForSelector({
@@ -47,6 +59,10 @@ describe('Test Snap Multi Install', function () {
         });
 
         // wait and scroll if necessary
+        await driver.waitForSelector({
+          tag: 'h3',
+          text: 'Add to MetaMask',
+        });
         await driver.clickElementSafe(
           '[data-testid="snap-install-scroll"]',
           3000,

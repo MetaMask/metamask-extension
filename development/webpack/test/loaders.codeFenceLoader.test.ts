@@ -26,7 +26,10 @@ console.log('I am Groot.');
       ? source.replace(`${fencedSource}\n`, '')
       : source;
 
-    let resolveCallback: (value: CallbackArgs) => void;
+    // `withResolvers` is supported by Node.js LTS. It's optional in global type due to older
+    // browser support.
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const { promise, resolve } = Promise.withResolvers!<CallbackArgs>();
     const mockContext = {
       getOptions: () => {
         return {
@@ -37,13 +40,10 @@ console.log('I am Groot.');
         };
       },
       resourcePath: '<resource-path>',
-      callback: (...args: CallbackArgs) => resolveCallback(args),
+      callback: (...args: CallbackArgs) => resolve(args),
     } as unknown as LoaderContext<CodeFenceLoaderOptions>;
-    const deferredPromise = new Promise<CallbackArgs>((resolve) => {
-      resolveCallback = resolve;
-    });
     mockContext.callback = mockContext.callback.bind(mockContext);
-    return { context: mockContext, source, expected, deferredPromise };
+    return { context: mockContext, source, expected, deferredPromise: promise };
   }
 
   [false, true].forEach((omitFeature) => {

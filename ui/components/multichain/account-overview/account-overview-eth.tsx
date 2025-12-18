@@ -17,11 +17,7 @@ export const AccountOverviewEth = (props: AccountOverviewEthProps) => {
       showActivity={true}
       {...props}
     >
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-        <EthOverview />
-        ///: END:ONLY_INCLUDE_IF
-      }
+      {<EthOverview />}
     </AccountOverviewLayout>
   );
 };

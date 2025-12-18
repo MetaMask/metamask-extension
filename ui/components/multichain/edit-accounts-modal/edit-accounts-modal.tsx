@@ -1,5 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { CaipAccountId } from '@metamask/utils';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Modal,
@@ -18,7 +19,7 @@ import {
   IconName,
   Icon,
 } from '../../component-library';
-import { AccountListItem } from '..';
+import { AccountListItem } from '../account-list-item';
 
 import {
   JustifyContent,
@@ -37,7 +38,10 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
-import { WalletClientType } from '../../../hooks/accounts/useMultichainWalletSnapClient';
+import {
+  WalletClientType,
+  EVM_WALLET_TYPE,
+} from '../../../hooks/accounts/useMultichainWalletSnapClient';
 import { EditAccountAddAccountForm } from './add-account';
 import { EditAccountModalAddNewAccountOption } from './add-new-account-option';
 
@@ -68,9 +72,9 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
   const [selectedAccountAddresses, setSelectedAccountAddresses] = useState(
     defaultSelectedAccountAddresses,
   );
-  const [accountType, setAccountType] = useState<WalletClientType | 'EVM'>(
-    'EVM',
-  );
+  const [accountType, setAccountType] = useState<
+    WalletClientType | typeof EVM_WALLET_TYPE
+  >(EVM_WALLET_TYPE);
   useEffect(() => {
     setSelectedAccountAddresses(defaultSelectedAccountAddresses);
   }, [
@@ -112,6 +116,27 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
 
   const defaultSet = new Set(defaultSelectedAccountAddresses);
   const selectedSet = new Set(selectedAccountAddresses);
+
+  const handleAddAccount = useCallback(
+    async (completed: boolean, newAccount?: InternalAccount) => {
+      if (completed && newAccount) {
+        const [scope] = newAccount.scopes;
+        if (!scope) {
+          // Should never happen since `scopes` is declared as a non-empty array on the
+          // account type.
+          throw new Error('Account has no scope');
+        }
+        // NOTE: For now we only rely on 1 single CAIP-10. The CAIP namespace is
+        // used under the hood and we assume all account's scope use the same
+        // namespace.
+        // TODO: Maybe use multiple CAIP-10 for each scopes instead?
+        const newAccountCaipAccountId: CaipAccountId = `${scope}:${newAccount.address}`;
+        onSubmit([...selectedAccountAddresses, newAccountCaipAccountId]);
+        onClose();
+      }
+    },
+    [selectedAccountAddresses, onSubmit, onClose],
+  );
 
   return (
     <Modal
@@ -252,7 +277,9 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
       )}
       {modalStage === EditAccountModalStage.AddNewAccount && (
         <EditAccountModalAddNewAccountOption
-          setAccountTypeToAdd={(accountTypeToAdd: WalletClientType | 'EVM') => {
+          setAccountTypeToAdd={(
+            accountTypeToAdd: WalletClientType | typeof EVM_WALLET_TYPE,
+          ) => {
             setAccountType(accountTypeToAdd);
             setModalStage(EditAccountModalStage.EditAccounts);
           }}
@@ -262,9 +289,7 @@ export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
         <EditAccountAddAccountForm
           onBack={() => setModalStage(EditAccountModalStage.AddNewAccount)}
           onClose={() => setModalStage(EditAccountModalStage.AccountList)}
-          onActionComplete={async () => {
-            setModalStage(EditAccountModalStage.AccountList);
-          }}
+          onActionComplete={handleAddAccount}
           accountType={accountType}
         />
       )}

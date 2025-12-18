@@ -11,11 +11,8 @@ import '../ui/css/index.scss';
 import localeList from '../app/_locales/index.json';
 import * as allLocales from './locales';
 import { I18nProvider, LegacyI18nProvider } from './i18n';
-import MetaMetricsProviderStorybook from './metametrics';
 import testData from './test-data.js';
-import { Router } from 'react-router-dom';
-import { createBrowserHistory } from 'history';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import { setBackgroundConnection } from '../ui/store/background-connection';
 import { metamaskStorybookTheme } from './metamask-storybook-theme';
 import { DocsContainer } from '@storybook/addon-docs';
@@ -109,7 +106,6 @@ export const getNewState = (state, props) => {
 };
 
 export const store = configureStore(testData);
-const history = createBrowserHistory();
 const proxiedBackground = new Proxy(
   {},
   {
@@ -147,26 +143,35 @@ const metamaskDecorator = (story, context) => {
     }
   }, [isDark]);
 
+  // Get initial entries from story parameters, default to ['/'] if not provided
+  const initialEntries = context.parameters?.initialEntries || ['/'];
+  const path = context.parameters?.path || '*';
+
+  // Wrap story in a component to defer execution until route matches
+  const StoryComponent = () => story();
+
   return (
     <Provider store={store}>
-      <MemoryRouter>
-        <MetaMetricsProviderStorybook>
-          <AlertMetricsProvider
-            metrics={{
-              trackAlertActionClicked: () => undefined,
-              trackAlertRender: () => undefined,
-              trackInlineAlertClicked: () => undefined,
-            }}
+      <MemoryRouter initialEntries={initialEntries}>
+        <AlertMetricsProvider
+          metrics={{
+            trackAlertActionClicked: () => undefined,
+            trackAlertRender: () => undefined,
+            trackInlineAlertClicked: () => undefined,
+          }}
+        >
+          <I18nProvider
+            currentLocale={currentLocale}
+            current={current}
+            en={allLocales.en}
           >
-            <I18nProvider
-              currentLocale={currentLocale}
-              current={current}
-              en={allLocales.en}
-            >
-              <LegacyI18nProvider>{story()}</LegacyI18nProvider>
-            </I18nProvider>
-          </AlertMetricsProvider>
-        </MetaMetricsProviderStorybook>
+            <LegacyI18nProvider>
+              <Routes>
+                <Route path={path} element={<StoryComponent />} />
+              </Routes>
+            </LegacyI18nProvider>
+          </I18nProvider>
+        </AlertMetricsProvider>
       </MemoryRouter>
     </Provider>
   );

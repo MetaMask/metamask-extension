@@ -1,10 +1,11 @@
 import startCase from 'lodash/startCase';
 import { version as VERSION } from '../package.json';
-
-start().catch(console.error);
+import { getPageLoadBenchmarkComment } from './page-load-benchmark-pr-comment';
+import { postCommentWithMetamaskBot } from './utils/benchmark-utils';
 
 const benchmarkPlatforms = ['chrome', 'firefox'];
 const buildTypes = ['browserify', 'webpack'];
+const pageTypes = ['standardHome', 'powerUserHome'];
 
 type BenchmarkResults = Record<
   (typeof benchmarkPlatforms)[number],
@@ -13,6 +14,8 @@ type BenchmarkResults = Record<
     Record<string, Record<string, Record<string, string>>>
   >
 >;
+
+start().catch(console.error);
 
 function getHumanReadableSize(bytes: number): string {
   if (!bytes) {
@@ -44,21 +47,22 @@ function getPercentageChange(from: number, to: number): number {
  * @returns True if the artifact exists, false if it doesn't
  */
 async function artifactExists(url: string): Promise<boolean> {
-  // Using a regular GET request here rather than HEAD because for some reason CircleCI always
-  // returns 404 for HEAD requests.
-  const response = await fetch(url);
+  const response = await fetch(url, { method: 'HEAD' });
   return response.ok;
 }
 
 async function start(): Promise<void> {
   const {
     PR_COMMENT_TOKEN,
+    OWNER,
+    REPOSITORY,
+    RUN_ID,
     PR_NUMBER,
     HEAD_COMMIT_HASH,
     MERGE_BASE_COMMIT_HASH,
-    CIRCLE_BUILD_NUM,
-    CIRCLE_WORKFLOW_JOB_ID,
     HOST_URL,
+    LAVAMOAT_POLICY_CHANGED,
+    POST_NEW_BUILDS,
   } = process.env as Record<string, string>;
 
   if (!PR_NUMBER) {
@@ -67,7 +71,6 @@ async function start(): Promise<void> {
   }
 
   const SHORT_SHA1 = HEAD_COMMIT_HASH.slice(0, 7);
-  const BUILD_LINK_BASE = `https://output.circle-artifacts.com/output/job/${CIRCLE_WORKFLOW_JOB_ID}/artifacts/0`;
 
   type BuildType = {
     chrome?: string;
@@ -77,23 +80,24 @@ async function start(): Promise<void> {
   // links to extension builds
   const buildMap: Record<string, BuildType> = {
     builds: {
-      chrome: `${BUILD_LINK_BASE}/builds/metamask-chrome-${VERSION}.zip`,
-      firefox: `${BUILD_LINK_BASE}/builds-mv2/metamask-firefox-${VERSION}.zip`,
+      chrome: `${HOST_URL}/build-dist-browserify/builds/metamask-chrome-${VERSION}.zip`,
+      firefox: `${HOST_URL}/build-dist-mv2-browserify/builds/metamask-firefox-${VERSION}.zip`,
     },
     'builds (beta)': {
-      chrome: `${HOST_URL}/builds-beta/metamask-beta-chrome-${VERSION}-beta.0.zip`,
+      chrome: `${HOST_URL}/build-beta-browserify/builds/metamask-beta-chrome-${VERSION}-beta.0.zip`,
+      firefox: `${HOST_URL}/build-beta-mv2-browserify/builds/metamask-beta-firefox-${VERSION}-beta.0.zip`,
     },
     'builds (flask)': {
-      chrome: `${BUILD_LINK_BASE}/builds-flask/metamask-flask-chrome-${VERSION}-flask.0.zip`,
-      firefox: `${BUILD_LINK_BASE}/builds-flask-mv2/metamask-flask-firefox-${VERSION}-flask.0.zip`,
+      chrome: `${HOST_URL}/build-flask-browserify/builds/metamask-flask-chrome-${VERSION}-flask.0.zip`,
+      firefox: `${HOST_URL}/build-flask-mv2-browserify/builds/metamask-flask-firefox-${VERSION}-flask.0.zip`,
     },
     'builds (test)': {
-      chrome: `${BUILD_LINK_BASE}/builds-test/metamask-chrome-${VERSION}.zip`,
-      firefox: `${BUILD_LINK_BASE}/builds-test-mv2/metamask-firefox-${VERSION}.zip`,
+      chrome: `${HOST_URL}/build-test-browserify/builds/metamask-chrome-${VERSION}.zip`,
+      firefox: `${HOST_URL}/build-test-mv2-browserify/builds/metamask-firefox-${VERSION}.zip`,
     },
     'builds (test-flask)': {
-      chrome: `${BUILD_LINK_BASE}/builds-test-flask/metamask-flask-chrome-${VERSION}-flask.0.zip`,
-      firefox: `${BUILD_LINK_BASE}/builds-test-flask-mv2/metamask-flask-firefox-${VERSION}-flask.0.zip`,
+      chrome: `${HOST_URL}/build-test-flask-browserify/builds/metamask-flask-chrome-${VERSION}-flask.0.zip`,
+      firefox: `${HOST_URL}/build-test-flask-mv2-browserify/builds/metamask-flask-firefox-${VERSION}-flask.0.zip`,
     },
   };
 
@@ -106,7 +110,6 @@ async function start(): Promise<void> {
 
   // links to bundle browser builds
   const bundles: Record<string, string[]> = {};
-  const sourceMapRoot = '/build-artifacts/source-map-explorer/';
   const fileRoots = [
     'background',
     'common',
@@ -118,14 +121,14 @@ async function start(): Promise<void> {
   for (const fileRoot of fileRoots) {
     bundles[fileRoot] = [];
     let fileIndex = 0;
-    let url = `${BUILD_LINK_BASE}${sourceMapRoot}${fileRoot}-${fileIndex}.html`;
+    let url = `${HOST_URL}/source-map-explorer/${fileRoot}-${fileIndex}.html`;
     console.log(`Verifying ${url}`);
     while (await artifactExists(url)) {
       const link = `<a href="${url}">${fileIndex}</a>`;
       bundles[fileRoot].push(link);
 
       fileIndex += 1;
-      url = `${BUILD_LINK_BASE}${sourceMapRoot}${fileRoot}-${fileIndex}.html`;
+      url = `${HOST_URL}/source-map-explorer/${fileRoot}-${fileIndex}.html`;
       console.log(`Verifying ${url}`);
     }
     console.log(`Not found: ${url}`);
@@ -144,8 +147,7 @@ async function start(): Promise<void> {
   const tsMigrationDashboardUrl = `${HOST_URL}/ts-migration-dashboard/index.html`;
   const tsMigrationDashboardLink = `<a href="${tsMigrationDashboardUrl}">Dashboard</a>`;
 
-  // links to bundle browser builds
-  const depVizUrl = `${BUILD_LINK_BASE}/build-artifacts/build-viz/index.html`;
+  const depVizUrl = `${HOST_URL}/lavamoat-viz/index.html`;
   const depVizLink = `<a href="${depVizUrl}">Build System</a>`;
 
   const bundleSizeStatsUrl = `${HOST_URL}/bundle-size/bundle_size.json`;
@@ -154,22 +156,32 @@ async function start(): Promise<void> {
   const userActionsStatsUrl = `${HOST_URL}/benchmarks/benchmark-chrome-browserify-userActions.json`;
   const userActionsStatsLink = `<a href="${userActionsStatsUrl}">User Actions Stats</a>`;
 
-  // link to artifacts
-  const allArtifactsUrl = `https://app.circleci.com/pipelines/github/MetaMask/metamask-extension/jobs/${CIRCLE_BUILD_NUM}/artifacts/`;
+  const allArtifactsUrl = `https://github.com/${OWNER}/${REPOSITORY}/actions/runs/${RUN_ID}#artifacts`;
 
-  const contentRows = [
-    ...buildContentRows,
-    `build viz: ${depVizLink}`,
+  const contentRows = [];
+
+  // Only post new Extension builds if this run is not using old builds
+  if (POST_NEW_BUILDS === 'true') {
+    contentRows.push(...buildContentRows);
+  }
+
+  // Only show lavamoat build viz link if the policy files changed
+  if (LAVAMOAT_POLICY_CHANGED === 'true') {
+    contentRows.push(`lavamoat build viz: ${depVizLink}`);
+  }
+
+  contentRows.push(
     `bundle size: ${bundleSizeStatsLink}`,
     `user-actions-benchmark: ${userActionsStatsLink}`,
     `storybook: ${storybookLink}`,
     `typescript migration: ${tsMigrationDashboardLink}`,
-    `<a href="${allArtifactsUrl}">all CircleCI artifacts</a>`,
+    `<a href="${allArtifactsUrl}">all artifacts</a>`,
     `<details>
        <summary>bundle viz:</summary>
        ${bundleMarkup}
      </details>`,
-  ];
+  );
+
   const hiddenContent = `<ul>${contentRows
     .map((row) => `<li>${row}</li>`)
     .join('\n')}</ul>`;
@@ -180,27 +192,32 @@ async function start(): Promise<void> {
   for (const platform of benchmarkPlatforms) {
     benchmarkResults[platform] = {};
     for (const buildType of buildTypes) {
-      const benchmarkUrl = `${HOST_URL}/benchmarks/benchmark-${platform}-${buildType}-pageload.json`;
-      try {
-        const benchmarkResponse = await fetch(benchmarkUrl);
-        if (!benchmarkResponse.ok) {
-          throw new Error(
-            `Failed to fetch benchmark data, status ${benchmarkResponse.statusText}`,
+      benchmarkResults[platform][buildType] = {};
+      for (const page of pageTypes) {
+        const benchmarkUrl = `${HOST_URL}/benchmarks/benchmark-${platform}-${buildType}-${page}.json`;
+        try {
+          const benchmarkResponse = await fetch(benchmarkUrl);
+          if (!benchmarkResponse.ok) {
+            throw new Error(
+              `Failed to fetch benchmark data, status ${benchmarkResponse.statusText}`,
+            );
+          }
+          const benchmark = await benchmarkResponse.json();
+          benchmarkResults[platform][buildType][page] = benchmark[page];
+        } catch (error) {
+          console.error(
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            `Error encountered processing benchmark data for ${platform}-${buildType}-${page}: '${error}'`,
           );
         }
-        const benchmark = await benchmarkResponse.json();
-        benchmarkResults[platform][buildType] = benchmark;
-      } catch (error) {
-        console.error(
-          `Error encountered processing benchmark data for '${platform}': '${error}'`,
-        );
       }
     }
   }
 
   const summaryPlatform = benchmarkPlatforms[0];
   const summaryBuildType = buildTypes[0];
-  const summaryPage = 'home';
+  const summaryPage = pageTypes[0];
   let commentBody = artifactsBody;
   if (benchmarkResults[summaryPlatform][summaryBuildType]) {
     try {
@@ -259,13 +276,26 @@ async function start(): Promise<void> {
             for (const metric of allMetrics) {
               let metricData = `<td>${metric}</td>`;
               for (const measure of allMeasures) {
-                metricData += `<td align="right">${Math.round(
-                  parseFloat(
+                // Default to dash if data is missing (e.g. firstPaint for Firefox, or the benchmark crashed)
+                let output = '-';
+
+                // if this platform-buildType-page exists in the data (the benchmark didn't crash)
+                if (benchmarkResults[platform][buildType][page]) {
+                  const individualMetricString =
                     benchmarkResults[platform][buildType][page][measure][
                       metric
-                    ],
-                  ),
-                )}</td>`;
+                    ];
+
+                  const individualMetricNumber = Math.round(
+                    parseFloat(individualMetricString),
+                  );
+
+                  // If it's a number, output it
+                  if (!isNaN(individualMetricNumber)) {
+                    output = individualMetricNumber.toString();
+                  }
+                }
+                metricData += `<td align="right">${output}</td>`;
               }
               metricRows.push(metricData);
             }
@@ -299,10 +329,18 @@ async function start(): Promise<void> {
 
       commentBody += `${benchmarkBody}`;
     } catch (error) {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       console.error(`Error constructing benchmark results: '${error}'`);
     }
   } else {
     console.log(`No results for ${summaryPlatform} found; skipping benchmark`);
+  }
+
+  // Add the page load benchmark results
+  const pageLoadBenchmarkComment = await getPageLoadBenchmarkComment();
+  if (pageLoadBenchmarkComment) {
+    commentBody += pageLoadBenchmarkComment;
   }
 
   try {
@@ -328,18 +366,24 @@ async function start(): Promise<void> {
       common: prBundleSizeStats.common.size,
     };
 
-    const devSizes = Object.keys(prSizes).reduce((sizes, part) => {
-      sizes[part as keyof typeof prSizes] =
-        devBundleSizeStats[MERGE_BASE_COMMIT_HASH][part] || 0;
-      return sizes;
-    }, {} as Record<keyof typeof prSizes, number>);
+    const devSizes = Object.keys(prSizes).reduce(
+      (sizes, part) => {
+        sizes[part as keyof typeof prSizes] =
+          devBundleSizeStats[MERGE_BASE_COMMIT_HASH][part] || 0;
+        return sizes;
+      },
+      {} as Record<keyof typeof prSizes, number>,
+    );
 
-    const diffs = Object.keys(prSizes).reduce((output, part) => {
-      output[part] =
-        prSizes[part as keyof typeof prSizes] -
-        devSizes[part as keyof typeof prSizes];
-      return output;
-    }, {} as Record<string, number>);
+    const diffs = Object.keys(prSizes).reduce(
+      (output, part) => {
+        output[part] =
+          prSizes[part as keyof typeof prSizes] -
+          devSizes[part as keyof typeof prSizes];
+        return output;
+      },
+      {} as Record<string, number>,
+    );
 
     const sizeDiffRows = Object.keys(diffs).map(
       (part) =>
@@ -369,30 +413,19 @@ async function start(): Promise<void> {
 
     commentBody += sizeDiffBody;
   } catch (error) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     console.error(`Error constructing bundle size diffs results: '${error}'`);
   }
 
-  const JSON_PAYLOAD = JSON.stringify({ body: commentBody });
-  const POST_COMMENT_URI = `https://api.github.com/repos/metamask/metamask-extension/issues/${PR_NUMBER}/comments`;
-  console.log(`Announcement:\n${commentBody}`);
-
-  if (PR_COMMENT_TOKEN) {
-    console.log(`Posting to: ${POST_COMMENT_URI}`);
-
-    const response = await fetch(POST_COMMENT_URI, {
-      method: 'POST',
-      body: JSON_PAYLOAD,
-      headers: {
-        'User-Agent': 'metamaskbot',
-        Authorization: `token ${PR_COMMENT_TOKEN}`,
-      },
-    });
-    if (!response.ok) {
-      throw new Error(
-        `Post comment failed with status '${response.statusText}'`,
-      );
-    }
-  }
+  await postCommentWithMetamaskBot({
+    commentBody,
+    owner: OWNER,
+    repository: REPOSITORY,
+    prNumber: PR_NUMBER,
+    commentToken: PR_COMMENT_TOKEN,
+    optionalLog: `Announcement:\n${commentBody}`,
+  });
 }
 
 async function runBenchmarkGate(
@@ -464,6 +497,8 @@ async function runBenchmarkGate(
       }
     }
   } catch (error) {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     console.error(`Error encountered fetching benchmark gate data: '${error}'`);
   }
 

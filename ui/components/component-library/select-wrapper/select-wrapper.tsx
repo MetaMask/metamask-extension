@@ -9,6 +9,8 @@ import {
 import { SelectContext } from './select-wrapper.context';
 
 export const SelectWrapper: SelectWrapperComponent = React.forwardRef(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'div'>(
     {
       className = '',

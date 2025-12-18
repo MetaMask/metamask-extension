@@ -51,7 +51,7 @@ export default function JsonImportSubview({
         {t('usedByClients')}
         <ButtonLink
           size={Size.inherit}
-          href={ZENDESK_URLS.IMPORTED_ACCOUNTS}
+          href={ZENDESK_URLS.IMPORTED_ACCOUNT_JSON}
           target="_blank"
           rel="noopener noreferrer"
         >

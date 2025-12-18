@@ -6,21 +6,28 @@ import {
   AccountsControllerSetSelectedAccountAction,
   AccountsControllerState,
 } from '@metamask/accounts-controller';
-import { Hex, Json } from '@metamask/utils';
+import { Json, Hex } from '@metamask/utils';
 import {
   BaseController,
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  RestrictedMessenger,
+  StateMetadata,
 } from '@metamask/base-controller';
+import type { Messenger } from '@metamask/messenger';
 import { NetworkControllerGetStateAction } from '@metamask/network-controller';
-import {
-  ETHERSCAN_SUPPORTED_CHAIN_IDS,
-  type PreferencesState,
-} from '@metamask/preferences-controller';
+import { type PreferencesState } from '@metamask/preferences-controller';
 import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
+
+/**
+ * Referral status for an account (currently used for Hyperliquid referrals)
+ */
+export enum ReferralStatus {
+  Approved = 'approved',
+  Passed = 'passed',
+  Declined = 'declined',
+}
 
 type AccountIdentityEntry = {
   address: string;
@@ -71,12 +78,10 @@ export type AllowedActions =
  */
 export type AllowedEvents = AccountsControllerChangeEvent;
 
-export type PreferencesControllerMessenger = RestrictedMessenger<
+export type PreferencesControllerMessenger = Messenger<
   typeof controllerName,
   PreferencesControllerActions | AllowedActions,
-  PreferencesControllerEvents | AllowedEvents,
-  AllowedActions['type'],
-  AllowedEvents['type']
+  PreferencesControllerEvents | AllowedEvents
 >;
 
 type PreferencesControllerOptions = {
@@ -86,71 +91,82 @@ type PreferencesControllerOptions = {
 
 export type Preferences = {
   autoLockTimeLimit?: number;
-  showExtensionInFullSizeView: boolean;
-  showFiatInTestnets: boolean;
-  showTestNetworks: boolean;
-  smartTransactionsOptInStatus: boolean;
-  smartTransactionsMigrationApplied: boolean;
-  showNativeTokenAsMainBalance: boolean;
-  useNativeCurrencyAsPrimaryCurrency: boolean;
+  avatarType?: 'maskicon' | 'jazzicon' | 'blockies';
+  dismissSmartAccountSuggestionEnabled: boolean;
+  featureNotificationsEnabled: boolean;
   hideZeroBalanceTokens: boolean;
   petnamesEnabled: boolean;
-  featureNotificationsEnabled: boolean;
-  showMultiRpcModal: boolean;
   privacyMode: boolean;
   showConfirmationAdvancedDetails: boolean;
+  showExtensionInFullSizeView: boolean;
+  showFiatInTestnets: boolean;
+  showMultiRpcModal: boolean;
+  showNativeTokenAsMainBalance: boolean;
+  showTestNetworks: boolean;
+  skipDeepLinkInterstitial: boolean;
+  smartAccountOptIn: boolean;
+  smartTransactionsOptInStatus: boolean;
+  smartTransactionsMigrationApplied: boolean;
+  tokenNetworkFilter: Record<string, boolean>;
   tokenSortConfig: {
     key: string;
     order: string;
     sortCallback: string;
   };
-  tokenNetworkFilter: Record<string, boolean>;
-  shouldShowAggregatedBalancePopover: boolean;
-  dismissSmartAccountSuggestionEnabled: boolean;
+  useNativeCurrencyAsPrimaryCurrency: boolean;
+  useSidePanelAsDefault?: boolean;
 };
 
 // Omitting properties that already exist in the PreferencesState, as part of the preferences property.
 export type PreferencesControllerState = Omit<
   PreferencesState,
+  | 'displayNftMedia'
   | 'showTestNetworks'
   | 'smartTransactionsOptInStatus'
   | 'smartTransactionsMigrationApplied'
   | 'privacyMode'
   | 'tokenSortConfig'
-  | 'useMultiRpcMigration'
+  | 'showMultiRpcModal'
+  | 'dismissSmartAccountSuggestionEnabled'
+  | 'smartAccountOptIn'
+  | 'smartAccountOptInForAccounts'
+  | 'showIncomingTransactions'
+  | 'tokenNetworkFilter'
 > & {
-  useBlockie: boolean;
-  usePhishDetect: boolean;
-  dismissSeedBackUpReminder: boolean;
-  overrideContentSecurityPolicyHeader: boolean;
-  useMultiAccountBalanceChecker: boolean;
-  use4ByteResolution: boolean;
-  useCurrencyRateCheck: boolean;
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-  watchEthereumAccountEnabled: boolean;
-  ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-  bitcoinSupportEnabled: boolean;
-  bitcoinTestnetSupportEnabled: boolean;
-  ///: END:ONLY_INCLUDE_IF
   addSnapAccountEnabled?: boolean;
   advancedGasFee: Record<string, Record<string, string>>;
-  knownMethodData: Record<string, string>;
   currentLocale: string;
+  dismissSeedBackUpReminder: boolean;
+  enableMV3TimestampSave: boolean;
   forgottenPassword: boolean;
-  preferences: Preferences;
-  useAddressBarEnsResolution: boolean;
+  knownMethodData: Record<string, string>;
   ledgerTransportType: LedgerTransportTypes;
+  manageInstitutionalWallets: boolean;
+  openSeaEnabled: boolean;
+  overrideContentSecurityPolicyHeader: boolean;
+  preferences: Preferences;
   // TODO: Replace `Json` with correct type
   snapRegistryList: Record<string, Json>;
-  theme: ThemeType;
   snapsAddSnapAccountModalDismissed?: boolean;
-  useExternalNameSources: boolean;
-  enableMV3TimestampSave: boolean;
-  useExternalServices: boolean;
   textDirection?: string;
-  manageInstitutionalWallets: boolean;
-  disabledUpgradeAccountsByChain?: Record<Hex, Hex[]>;
+  theme: ThemeType;
+  use4ByteResolution: boolean;
+  useAddressBarEnsResolution: boolean;
+  /** @deprecated Use avatarType instead */
+  useBlockie: boolean;
+  useCurrencyRateCheck: boolean;
+  useExternalNameSources: boolean;
+  useExternalServices: boolean;
+  isMultiAccountBalancesEnabled: boolean;
+  useMultiAccountBalanceChecker: boolean;
+  usePhishDetect: boolean;
+  referrals: {
+    hyperliquid: Record<Hex, ReferralStatus>;
+  };
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
+  watchEthereumAccountEnabled: boolean;
+  ///: END:ONLY_INCLUDE_IF
 };
 
 /**
@@ -158,105 +174,86 @@ export type PreferencesControllerState = Omit<
  */
 export const getDefaultPreferencesControllerState =
   (): PreferencesControllerState => ({
-    selectedAddress: '',
-    useBlockie: false,
-    usePhishDetect: true,
-    dismissSeedBackUpReminder: false,
-    overrideContentSecurityPolicyHeader: true,
-    useMultiAccountBalanceChecker: true,
-    useSafeChainsListValidation: true,
-    // set to true means the dynamic list from the API is being used
-    // set to false will be using the static list from contract-metadata
-    useTokenDetection: true,
-    useNftDetection: true,
-    use4ByteResolution: true,
-    useCurrencyRateCheck: true,
-    openSeaEnabled: true,
-    securityAlertsEnabled: true,
-    watchEthereumAccountEnabled: false,
-    bitcoinSupportEnabled: false,
-    bitcoinTestnetSupportEnabled: false,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: false,
     ///: END:ONLY_INCLUDE_IF
     advancedGasFee: {},
-    featureFlags: {},
-    knownMethodData: {},
     currentLocale: '',
-    identities: {},
-    lostIdentities: {},
+    dismissSeedBackUpReminder: false,
+    enableMV3TimestampSave: true,
+    featureFlags: {},
     forgottenPassword: false,
-    preferences: {
-      autoLockTimeLimit: undefined,
-      showExtensionInFullSizeView: false,
-      showFiatInTestnets: false,
-      showTestNetworks: false,
-      smartTransactionsOptInStatus: true,
-      smartTransactionsMigrationApplied: false,
-      showNativeTokenAsMainBalance: false,
-      useNativeCurrencyAsPrimaryCurrency: true,
-      hideZeroBalanceTokens: false,
-      petnamesEnabled: true,
-      featureNotificationsEnabled: false,
-      showConfirmationAdvancedDetails: false,
-      showMultiRpcModal: false,
-      privacyMode: false,
-      shouldShowAggregatedBalancePopover: true, // by default user should see popover;
-      dismissSmartAccountSuggestionEnabled: false,
-      tokenSortConfig: {
-        key: 'tokenFiatAmount',
-        order: 'dsc',
-        sortCallback: 'stringNumeric',
-      },
-      tokenNetworkFilter: {},
-    },
+    identities: {},
     // ENS decentralized website resolution
     ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
     isIpfsGatewayEnabled: true,
-    useAddressBarEnsResolution: true,
+    knownMethodData: {},
     // Ledger transport type is deprecated. We currently only support webhid
     // on chrome, and u2f on firefox.
     ledgerTransportType: window.navigator.hid
       ? LedgerTransportTypes.webhid
       : LedgerTransportTypes.u2f,
+    lostIdentities: {},
+    manageInstitutionalWallets: false,
+    openSeaEnabled: true,
+    overrideContentSecurityPolicyHeader: true,
+    preferences: {
+      autoLockTimeLimit: undefined,
+      avatarType: 'maskicon',
+      dismissSmartAccountSuggestionEnabled: false,
+      featureNotificationsEnabled: false,
+      hideZeroBalanceTokens: false,
+      petnamesEnabled: true,
+      privacyMode: false,
+      showConfirmationAdvancedDetails: false,
+      showExtensionInFullSizeView: false,
+      showFiatInTestnets: false,
+      showMultiRpcModal: false,
+      showNativeTokenAsMainBalance: false,
+      showTestNetworks: false,
+      skipDeepLinkInterstitial: false,
+      smartAccountOptIn: true,
+      smartTransactionsOptInStatus: true,
+      smartTransactionsMigrationApplied: false,
+      tokenNetworkFilter: {},
+      tokenSortConfig: {
+        key: 'tokenFiatAmount',
+        order: 'dsc',
+        sortCallback: 'stringNumeric',
+      },
+      useNativeCurrencyAsPrimaryCurrency: true,
+      useSidePanelAsDefault: false,
+    },
+    securityAlertsEnabled: true,
+    selectedAddress: '',
     snapRegistryList: {},
-    theme: ThemeType.os,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     snapsAddSnapAccountModalDismissed: false,
     ///: END:ONLY_INCLUDE_IF
+    theme: ThemeType.os,
+    use4ByteResolution: true,
+    useAddressBarEnsResolution: true,
+    useBlockie: false,
+    useCurrencyRateCheck: true,
     useExternalNameSources: true,
-    useTransactionSimulations: true,
-    enableMV3TimestampSave: true,
     // Turning OFF basic functionality toggle means turning OFF this useExternalServices flag.
     // Whenever useExternalServices is false, certain features will be disabled.
     // The flag is true by Default, meaning the toggle is ON by default.
     useExternalServices: true,
     // from core PreferencesController
     isMultiAccountBalancesEnabled: true,
-    showIncomingTransactions: {
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.MAINNET]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.GOERLI]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.BSC]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.BSC_TESTNET]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.OPTIMISM]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.OPTIMISM_SEPOLIA]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.POLYGON]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.POLYGON_TESTNET]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.AVALANCHE]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.AVALANCHE_TESTNET]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.FANTOM]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.FANTOM_TESTNET]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.SEPOLIA]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.LINEA_GOERLI]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.LINEA_SEPOLIA]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.LINEA_MAINNET]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONBEAM]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONBEAM_TESTNET]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONRIVER]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
+    useMultiAccountBalanceChecker: true,
+    useNftDetection: true,
+    usePhishDetect: true,
+    useSafeChainsListValidation: true,
+    // set to true means the dynamic list from the API is being used
+    // set to false will be using the static list from contract-metadata
+    useTokenDetection: true,
+    useTransactionSimulations: true,
+    watchEthereumAccountEnabled: false,
+    referrals: {
+      hyperliquid: {},
     },
-    manageInstitutionalWallets: false,
-    disabledUpgradeAccountsByChain: {},
   });
 
 /**
@@ -266,169 +263,236 @@ export const getDefaultPreferencesControllerState =
  * using the `persist` flag; and if they can be sent to Sentry or not, using
  * the `anonymous` flag.
  */
-const controllerMetadata = {
-  selectedAddress: {
-    persist: true,
-    anonymous: false,
-  },
-  useBlockie: {
-    persist: true,
-    anonymous: true,
-  },
-  usePhishDetect: {
-    persist: true,
-    anonymous: true,
-  },
-  dismissSeedBackUpReminder: {
-    persist: true,
-    anonymous: true,
-  },
-  overrideContentSecurityPolicyHeader: {
-    persist: true,
-    anonymous: true,
-  },
-  useMultiAccountBalanceChecker: {
-    persist: true,
-    anonymous: true,
-  },
-  useSafeChainsListValidation: {
-    persist: true,
-    anonymous: false,
-  },
-  useTokenDetection: {
-    persist: true,
-    anonymous: true,
-  },
-  useNftDetection: {
-    persist: true,
-    anonymous: true,
-  },
-  use4ByteResolution: {
-    persist: true,
-    anonymous: true,
-  },
-  useCurrencyRateCheck: {
-    persist: true,
-    anonymous: true,
-  },
-  openSeaEnabled: {
-    persist: true,
-    anonymous: true,
-  },
-  securityAlertsEnabled: {
-    persist: true,
-    anonymous: false,
-  },
-  watchEthereumAccountEnabled: {
-    persist: true,
-    anonymous: false,
-  },
-  bitcoinSupportEnabled: {
-    persist: true,
-    anonymous: false,
-  },
-  bitcoinTestnetSupportEnabled: {
-    persist: true,
-    anonymous: false,
-  },
+const controllerMetadata: StateMetadata<PreferencesControllerState> = {
   addSnapAccountEnabled: {
+    includeInStateLogs: true,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
+    usedInUi: true,
   },
   advancedGasFee: {
     persist: true,
-    anonymous: true,
-  },
-  featureFlags: {
-    persist: true,
-    anonymous: true,
-  },
-  knownMethodData: {
-    persist: true,
-    anonymous: false,
+    includeInStateLogs: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
   },
   currentLocale: {
+    includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
   },
-  identities: {
+  dismissSeedBackUpReminder: {
+    includeInStateLogs: true,
     persist: true,
-    anonymous: false,
-  },
-  lostIdentities: {
-    persist: true,
-    anonymous: false,
-  },
-  forgottenPassword: {
-    persist: true,
-    anonymous: true,
-  },
-  preferences: {
-    persist: true,
-    anonymous: true,
-    properties: {
-      smartTransactionsOptInStatus: {
-        persist: true,
-        anonymous: true,
-      },
-      smartTransactionsMigrationApplied: {
-        persist: true,
-        anonymous: true,
-      },
-    },
-  },
-  ipfsGateway: {
-    persist: true,
-    anonymous: false,
-  },
-  isIpfsGatewayEnabled: {
-    persist: true,
-    anonymous: false,
-  },
-  useAddressBarEnsResolution: {
-    persist: true,
-    anonymous: true,
-  },
-  ledgerTransportType: {
-    persist: true,
-    anonymous: true,
-  },
-  snapRegistryList: {
-    persist: true,
-    anonymous: false,
-  },
-  theme: {
-    persist: true,
-    anonymous: true,
-  },
-  snapsAddSnapAccountModalDismissed: {
-    persist: true,
-    anonymous: false,
-  },
-  useExternalNameSources: {
-    persist: true,
-    anonymous: false,
-  },
-  useTransactionSimulations: {
-    persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
   },
   enableMV3TimestampSave: {
+    includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
   },
-  useExternalServices: {
+  featureFlags: {
+    includeInStateLogs: true,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  forgottenPassword: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  identities: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: false,
+    usedInUi: true,
+  },
+  ipfsGateway: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: false,
+    usedInUi: true,
+  },
+  isIpfsGatewayEnabled: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: false,
+    usedInUi: true,
+  },
+  knownMethodData: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: false,
+    usedInUi: true,
+  },
+  ledgerTransportType: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  lostIdentities: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: false,
+    usedInUi: true,
+  },
+  manageInstitutionalWallets: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: false,
+    usedInUi: true,
+  },
+  openSeaEnabled: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  overrideContentSecurityPolicyHeader: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  preferences: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  securityAlertsEnabled: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: false,
+    usedInUi: true,
+  },
+  selectedAddress: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: false,
+    usedInUi: true,
+  },
+  snapRegistryList: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: false,
+    usedInUi: true,
+  },
+  snapsAddSnapAccountModalDismissed: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: false,
+    usedInUi: true,
   },
   textDirection: {
+    includeInStateLogs: true,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
+    usedInUi: true,
   },
-  isMultiAccountBalancesEnabled: { persist: true, anonymous: true },
-  showIncomingTransactions: { persist: true, anonymous: true },
-  manageInstitutionalWallets: { persist: true, anonymous: false },
-  disabledUpgradeAccountsByChain: { persist: true, anonymous: false },
+  theme: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  use4ByteResolution: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  useAddressBarEnsResolution: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  /** @deprecated Use avatarType instead */
+  useBlockie: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  useCurrencyRateCheck: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  useExternalNameSources: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: false,
+    usedInUi: true,
+  },
+  useExternalServices: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: false,
+    usedInUi: true,
+  },
+  isMultiAccountBalancesEnabled: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  useMultiAccountBalanceChecker: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  useNftDetection: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  usePhishDetect: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  useSafeChainsListValidation: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: false,
+    usedInUi: true,
+  },
+  useTokenDetection: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  useTransactionSimulations: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  watchEthereumAccountEnabled: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: false,
+    usedInUi: true,
+  },
+  referrals: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: false,
+    usedInUi: true,
+  },
 };
 
 export class PreferencesController extends BaseController<
@@ -444,17 +508,30 @@ export class PreferencesController extends BaseController<
    * @param options.state - The initial controller state
    */
   constructor({ messenger, state }: PreferencesControllerOptions) {
+    const defaultState = getDefaultPreferencesControllerState();
+
+    const mergedState = {
+      ...defaultState,
+      ...state,
+      preferences: {
+        ...defaultState.preferences,
+        ...state?.preferences,
+      },
+      // TODO - These two properties are the same, we only need isMultiAccountBalancesEnabled to keep it compatible with core PreferencesController
+      // At some point we should completely remove all references and methods for useMultiAccountBalanceChecker and use isMultiAccountBalancesEnabled instead.
+      isMultiAccountBalancesEnabled:
+        state?.useMultiAccountBalanceChecker ??
+        defaultState.isMultiAccountBalancesEnabled,
+    };
+
     super({
       messenger,
       metadata: controllerMetadata,
       name: controllerName,
-      state: {
-        ...getDefaultPreferencesControllerState(),
-        ...state,
-      },
+      state: mergedState,
     });
 
-    this.messagingSystem.subscribe(
+    this.messenger.subscribe(
       'AccountsController:stateChange',
       this.#handleAccountsControllerSync.bind(this),
     );
@@ -478,6 +555,7 @@ export class PreferencesController extends BaseController<
   /**
    * Setter for the `useBlockie` property
    *
+   * @deprecated Use setAvatarType instead
    * @param val - Whether or not the user prefers blockie indicators
    */
   setUseBlockie(val: boolean): void {
@@ -505,6 +583,7 @@ export class PreferencesController extends BaseController<
   setUseMultiAccountBalanceChecker(val: boolean): void {
     this.update((state) => {
       state.useMultiAccountBalanceChecker = val;
+      state.isMultiAccountBalancesEnabled = val;
     });
   }
 
@@ -612,7 +691,7 @@ export class PreferencesController extends BaseController<
   }
   ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   /**
    * Setter for the `watchEthereumAccountEnabled` property.
    *
@@ -622,32 +701,6 @@ export class PreferencesController extends BaseController<
   setWatchEthereumAccountEnabled(watchEthereumAccountEnabled: boolean): void {
     this.update((state) => {
       state.watchEthereumAccountEnabled = watchEthereumAccountEnabled;
-    });
-  }
-  ///: END:ONLY_INCLUDE_IF
-
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-  /**
-   * Setter for the `bitcoinSupportEnabled` property.
-   *
-   * @param bitcoinSupportEnabled - Whether or not the user wants to
-   * enable the "Add a new Bitcoin account (Beta)" button.
-   */
-  setBitcoinSupportEnabled(bitcoinSupportEnabled: boolean): void {
-    this.update((state) => {
-      state.bitcoinSupportEnabled = bitcoinSupportEnabled;
-    });
-  }
-
-  /**
-   * Setter for the `bitcoinTestnetSupportEnabled` property.
-   *
-   * @param bitcoinTestnetSupportEnabled - Whether or not the user wants to
-   * enable the "Add a new Bitcoin account (Testnet)" button.
-   */
-  setBitcoinTestnetSupportEnabled(bitcoinTestnetSupportEnabled: boolean): void {
-    this.update((state) => {
-      state.bitcoinTestnetSupportEnabled = bitcoinTestnetSupportEnabled;
     });
   }
   ///: END:ONLY_INCLUDE_IF
@@ -748,7 +801,7 @@ export class PreferencesController extends BaseController<
    * @param address - A new hex address for an account
    */
   setSelectedAddress(address: string): void {
-    const account = this.messagingSystem.call(
+    const account = this.messenger.call(
       'AccountsController:getAccountByAddress',
       address,
     );
@@ -756,10 +809,7 @@ export class PreferencesController extends BaseController<
       throw new Error(`Identity for '${address} not found`);
     }
 
-    this.messagingSystem.call(
-      'AccountsController:setSelectedAccount',
-      account.id,
-    );
+    this.messenger.call('AccountsController:setSelectedAccount', account.id);
   }
 
   /**
@@ -769,7 +819,7 @@ export class PreferencesController extends BaseController<
    * @returns The hex address for the currently selected account
    */
   getSelectedAddress(): string {
-    const selectedAccount = this.messagingSystem.call(
+    const selectedAccount = this.messenger.call(
       'AccountsController:getSelectedAccount',
     );
 
@@ -791,12 +841,12 @@ export class PreferencesController extends BaseController<
       );
     }
 
-    const account = this.messagingSystem.call(
+    const account = this.messenger.call(
       'AccountsController:getAccountByAddress',
       address,
     );
     if (account) {
-      this.messagingSystem.call(
+      this.messenger.call(
         'AccountsController:setAccountName',
         account.id,
         label,
@@ -964,23 +1014,9 @@ export class PreferencesController extends BaseController<
     });
   }
 
-  getDisabledUpgradeAccountsByChain(): Record<Hex, Hex[]> {
-    return this.state.disabledUpgradeAccountsByChain ?? {};
-  }
-
-  disableAccountUpgrade(chainId: Hex, address: Hex): void {
+  setUseSidePanelAsDefault(value: boolean): void {
     this.update((state) => {
-      const { disabledUpgradeAccountsByChain = {} } = state;
-      const addressLowerCase = address.toLowerCase() as Hex;
-
-      if (
-        !disabledUpgradeAccountsByChain[chainId]?.includes(addressLowerCase)
-      ) {
-        if (!disabledUpgradeAccountsByChain[chainId]) {
-          disabledUpgradeAccountsByChain[chainId] = [];
-        }
-        disabledUpgradeAccountsByChain[chainId].push(addressLowerCase);
-      }
+      state.preferences.useSidePanelAsDefault = value;
     });
   }
 
@@ -1012,7 +1048,7 @@ export class PreferencesController extends BaseController<
         }
         return acc;
       },
-      { ...(lostIdentities ?? {}) },
+      { ...lostIdentities },
     );
 
     const updatedIdentities = Object.values(accounts).reduce(
@@ -1032,6 +1068,38 @@ export class PreferencesController extends BaseController<
       state.identities = updatedIdentities;
       state.lostIdentities = updatedLostIdentities;
       state.selectedAddress = selectedAccount?.address || ''; // it will be an empty string during onboarding
+    });
+  }
+
+  addReferralApprovedAccount(accountAddress: Hex) {
+    this.update((state) => {
+      state.referrals.hyperliquid[accountAddress] = ReferralStatus.Approved;
+    });
+  }
+
+  addReferralPassedAccount(accountAddress: Hex) {
+    this.update((state) => {
+      state.referrals.hyperliquid[accountAddress] = ReferralStatus.Passed;
+    });
+  }
+
+  addReferralDeclinedAccount(accountAddress: Hex) {
+    this.update((state) => {
+      state.referrals.hyperliquid[accountAddress] = ReferralStatus.Declined;
+    });
+  }
+
+  removeReferralDeclinedAccount(accountAddress: Hex) {
+    this.update((state) => {
+      delete state.referrals.hyperliquid[accountAddress];
+    });
+  }
+
+  setAccountsReferralApproved(accountAddresses: Hex[]) {
+    this.update((state) => {
+      accountAddresses.forEach((address) => {
+        state.referrals.hyperliquid[address] = ReferralStatus.Approved;
+      });
     });
   }
 }

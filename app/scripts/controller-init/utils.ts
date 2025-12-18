@@ -37,6 +37,7 @@ type ControllerMessengerCallback = (
 ) => BaseRestrictedControllerMessenger;
 
 export type ControllersToInitialize =
+  | 'AccountTrackerController'
   | 'AuthenticationController'
   | 'CronjobController'
   | 'DeFiPositionsController'
@@ -55,12 +56,12 @@ export type ControllersToInitialize =
   | 'SnapInterfaceController'
   | 'PPOMController'
   | 'TransactionController'
+  | 'TransactionPayController'
   | 'UserStorageController';
 
 type InitFunction<Name extends ControllersToInitialize> =
   ControllerInitFunction<
     ControllerByName[Name],
-    // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
     ReturnType<(typeof CONTROLLER_MESSENGERS)[Name]['getMessenger']>,
     ReturnType<(typeof CONTROLLER_MESSENGERS)[Name]['getInitMessenger']>
   >;
@@ -154,10 +155,10 @@ export function initControllers({
     const persistedStateKey =
       persistedStateKeyRaw === null
         ? undefined
-        : persistedStateKeyRaw ?? controllerName;
+        : (persistedStateKeyRaw ?? controllerName);
 
     const memStateKey =
-      memStateKeyRaw === null ? undefined : memStateKeyRaw ?? controllerName;
+      memStateKeyRaw === null ? undefined : (memStateKeyRaw ?? controllerName);
 
     // @ts-expect-error: Union too complex.
     partialControllersByName[controllerName] = controller;
@@ -197,7 +198,9 @@ function getControllerOrThrow<Name extends ControllerName>(
   const controller = controllersByName[name];
 
   if (!controller) {
-    throw new Error(`Controller requested before it was initialized: ${name}`);
+    throw new Error(
+      `Controller requested before it was initialized: ${String(name)}`,
+    );
   }
 
   return controller;

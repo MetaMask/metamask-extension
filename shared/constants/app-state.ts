@@ -1,3 +1,5 @@
+import { NetworkClientId } from '@metamask/network-controller';
+import { Hex } from 'viem';
 import { TraceName } from '../lib/trace';
 import { MetaMetricsEventName } from './metametrics';
 
@@ -11,7 +13,6 @@ export enum AccountOverviewTabKey {
 export const ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP = {
   [AccountOverviewTabKey.Tokens]: MetaMetricsEventName.TokenScreenOpened,
   [AccountOverviewTabKey.DeFi]: MetaMetricsEventName.DeFiScreenOpened,
-  [AccountOverviewTabKey.Nfts]: MetaMetricsEventName.NftScreenOpened,
   [AccountOverviewTabKey.Activity]: MetaMetricsEventName.ActivityScreenOpened,
 } as const;
 
@@ -30,4 +31,29 @@ export type CarouselSlide = {
   dismissed?: boolean;
   href?: string;
   undismissable?: boolean;
+  startDate?: string;
+  endDate?: string;
+  priorityPlacement?: boolean;
+  variableName?: string;
+  cardPlacement?: string;
 };
+
+export enum PasswordChangeToastType {
+  Success = 'success',
+  Errored = 'errored',
+}
+
+export enum ClaimSubmitToastType {
+  Success = 'success',
+  Errored = 'errored',
+}
+
+export type NetworkConnectionBanner =
+  | { status: 'unknown' | 'available' }
+  | {
+      status: 'degraded' | 'unavailable';
+      networkName: string;
+      networkClientId: NetworkClientId;
+      chainId: Hex;
+      isInfuraEndpoint: boolean;
+    };

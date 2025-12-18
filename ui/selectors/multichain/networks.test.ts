@@ -4,7 +4,11 @@ import {
   RpcEndpointType,
   NetworkStatus,
 } from '@metamask/network-controller';
-import type { Hex, CaipChainId } from '@metamask/utils';
+import {
+  type Hex,
+  type CaipChainId,
+  KnownCaipNamespace,
+} from '@metamask/utils';
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 
 import { type NetworkState } from '../../../shared/modules/selectors/networks';
@@ -22,14 +26,42 @@ import {
   getSelectedMultichainNetworkChainId,
   getSelectedMultichainNetworkConfiguration,
   getIsEvmMultichainNetworkSelected,
+  selectFirstUnavailableEvmNetwork,
 } from './networks';
+
+// Mock the main selectors to avoid circular dependency
+jest.mock('../selectors', () => ({
+  getIsBitcoinSupportEnabled: jest.fn((state) => {
+    const { bitcoinAccounts } = state.metamask.remoteFeatureFlags;
+    // Keep this simple, only check if it's enabled or not.
+    return bitcoinAccounts?.enabled;
+  }),
+  getIsSolanaSupportEnabled: jest.fn((state) => {
+    const { solanaAccounts } = state.metamask.remoteFeatureFlags;
+    // Keep this simple, only check if it's enabled or not.
+    return solanaAccounts?.enabled;
+  }),
+  getIsSolanaTestnetSupportEnabled: jest.fn(
+    (state) => state.metamask.remoteFeatureFlags.solanaTestnetsEnabled,
+  ),
+  getIsBitcoinTestnetSupportEnabled: jest.fn(
+    (state) => state.metamask.remoteFeatureFlags.bitcoinTestnetsEnabled,
+  ),
+  getIsTronSupportEnabled: jest.fn((state) => {
+    const { tronAccounts } = state.metamask.remoteFeatureFlags;
+    // Keep this simple, only check if it's enabled or not.
+    return tronAccounts?.enabled;
+  }),
+  getIsTronTestnetSupportEnabled: jest.fn(
+    (state) => state.metamask.remoteFeatureFlags.tronTestnetsEnabled,
+  ),
+  getEnabledNetworks: jest.fn(() => ({ eip155: {} })),
+}));
 
 type TestState = AccountsState &
   MultichainNetworkControllerState &
   NetworkState &
-  RemoteFeatureFlagsState & {
-    metamask: { bitcoinSupportEnabled: boolean };
-  };
+  RemoteFeatureFlagsState;
 
 const mockNonEvmNetworks: Record<CaipChainId, MultichainNetworkConfiguration> =
   {
@@ -49,18 +81,6 @@ const mockNonEvmNetworks: Record<CaipChainId, MultichainNetworkConfiguration> =
       chainId: BtcScope.Mainnet,
       name: 'Bitcoin',
       nativeCurrency: `${BtcScope.Mainnet}/slip44:0`,
-      isEvm: false,
-    },
-    [BtcScope.Testnet]: {
-      chainId: BtcScope.Testnet,
-      name: 'Bitcoin Testnet',
-      nativeCurrency: `${BtcScope.Testnet}/slip44:0`,
-      isEvm: false,
-    },
-    [BtcScope.Signet]: {
-      chainId: BtcScope.Signet,
-      name: 'Bitcoin Signet',
-      nativeCurrency: `${BtcScope.Signet}/slip44:0`,
       isEvm: false,
     },
   };
@@ -124,9 +144,13 @@ const mockEvmNetworksWithOldConfig: Record<Hex, NetworkConfiguration> = {
 const mockState: TestState = {
   metamask: {
     remoteFeatureFlags: {
-      addSolanaAccount: true,
+      solanaAccounts: { enabled: true, minimumVersion: '13.6.0' },
+      solanaTestnetsEnabled: true,
+      bitcoinTestnetsEnabled: false,
+      bitcoinAccounts: { enabled: true, minimumVersion: '13.6.0' },
+      tronAccounts: { enabled: true, minimumVersion: '13.6.0' },
+      tronTestnetsEnabled: false,
     },
-    bitcoinSupportEnabled: true,
     multichainNetworkConfigurationsByChainId: {
       ...mockNonEvmNetworks,
     },
@@ -184,7 +208,7 @@ describe('Multichain network selectors', () => {
           ...mockState.metamask,
           remoteFeatureFlags: {
             ...mockState.metamask.remoteFeatureFlags,
-            addSolanaAccount: false,
+            solanaAccounts: { enabled: false, minimumVersion: '13.6.0' },
           },
         },
       };
@@ -196,31 +220,6 @@ describe('Multichain network selectors', () => {
       ).toStrictEqual([
         {
           [BtcScope.Mainnet]: mockNonEvmNetworks[BtcScope.Mainnet],
-          [BtcScope.Testnet]: mockNonEvmNetworks[BtcScope.Testnet],
-          [BtcScope.Signet]: mockNonEvmNetworks[BtcScope.Signet],
-          ...mockEvmNetworksWithNewConfig,
-        },
-        mockEvmNetworksWithOldConfig,
-      ]);
-    });
-
-    it('returns all multichain network configurations by chain ID excluding Bitcoin when support is disabled and there no Bitcoin account', () => {
-      const mockMultichainNetworkStateWithBitcoinSupportDisabled = {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          bitcoinSupportEnabled: false,
-        },
-      };
-
-      expect(
-        getMultichainNetworkConfigurationsByChainId(
-          mockMultichainNetworkStateWithBitcoinSupportDisabled,
-        ),
-      ).toStrictEqual([
-        {
-          [SolScope.Mainnet]: mockNonEvmNetworks[SolScope.Mainnet],
-          [SolScope.Devnet]: mockNonEvmNetworks[SolScope.Devnet],
           ...mockEvmNetworksWithNewConfig,
         },
         mockEvmNetworksWithOldConfig,
@@ -234,9 +233,16 @@ describe('Multichain network selectors', () => {
           ...mockState.metamask,
           remoteFeatureFlags: {
             ...mockState.metamask.remoteFeatureFlags,
-            addSolanaAccount: false,
+            solanaAccounts: { enabled: false, minimumVersion: '13.6.0' },
+            bitcoinAccounts: { enabled: false, minimumVersion: '13.6.0' },
           },
-          bitcoinSupportEnabled: false,
+          // Ensure no accounts with Bitcoin/Solana scopes exist
+          internalAccounts: {
+            selectedAccount: MOCK_ACCOUNT_EOA.id,
+            accounts: {
+              [MOCK_ACCOUNT_EOA.id]: MOCK_ACCOUNT_EOA,
+            },
+          },
         },
       };
 
@@ -257,9 +263,9 @@ describe('Multichain network selectors', () => {
           ...mockState.metamask,
           remoteFeatureFlags: {
             ...mockState.metamask.remoteFeatureFlags,
-            addSolanaAccount: false,
+            solanaAccounts: { enabled: false, minimumVersion: '13.6.0' },
+            bitcoinAccounts: { enabled: false, minimumVersion: '13.6.0' },
           },
-          bitcoinSupportEnabled: false,
           internalAccounts: {
             ...mockState.metamask.internalAccounts,
             accounts: {
@@ -291,15 +297,19 @@ describe('Multichain network selectors', () => {
           ...mockState.metamask,
           remoteFeatureFlags: {
             ...mockState.metamask.remoteFeatureFlags,
-            addSolanaAccount: false,
+            solanaAccounts: { enabled: false, minimumVersion: '13.6.0' },
+            bitcoinAccounts: { enabled: true, minimumVersion: '13.6.0' },
           },
-          bitcoinSupportEnabled: false,
           internalAccounts: {
             ...mockState.metamask.internalAccounts,
             accounts: {
               ...mockState.metamask.internalAccounts.accounts,
               [MOCK_ACCOUNT_BIP122_P2WPKH.id]: MOCK_ACCOUNT_BIP122_P2WPKH,
             },
+          },
+          multichainNetworkConfigurationsByChainId: {
+            [BtcScope.Mainnet]: mockNonEvmNetworks[BtcScope.Mainnet],
+            ...mockEvmNetworksWithNewConfig,
           },
         },
       };
@@ -312,8 +322,6 @@ describe('Multichain network selectors', () => {
         {
           ...mockEvmNetworksWithNewConfig,
           [BtcScope.Mainnet]: mockNonEvmNetworks[BtcScope.Mainnet],
-          [BtcScope.Testnet]: mockNonEvmNetworks[BtcScope.Testnet],
-          [BtcScope.Signet]: mockNonEvmNetworks[BtcScope.Signet],
         },
         mockEvmNetworksWithOldConfig,
       ]);
@@ -326,9 +334,9 @@ describe('Multichain network selectors', () => {
           ...mockState.metamask,
           remoteFeatureFlags: {
             ...mockState.metamask.remoteFeatureFlags,
-            addSolanaAccount: false,
+            solanaAccounts: { enabled: false, minimumVersion: '13.6.0' },
+            bitcoinAccounts: { enabled: true, minimumVersion: '13.6.0' },
           },
-          bitcoinSupportEnabled: false,
           internalAccounts: {
             ...mockState.metamask.internalAccounts,
             accounts: {
@@ -340,6 +348,12 @@ describe('Multichain network selectors', () => {
         },
       };
 
+      const expectedNonEvmNetworks = {
+        [SolScope.Mainnet]: mockNonEvmNetworks[SolScope.Mainnet],
+        [SolScope.Devnet]: mockNonEvmNetworks[SolScope.Devnet],
+        [BtcScope.Mainnet]: mockNonEvmNetworks[BtcScope.Mainnet],
+      };
+
       expect(
         getMultichainNetworkConfigurationsByChainId(
           mockMultichainNetworkStateWithBitcoinSupportDisabled,
@@ -347,7 +361,7 @@ describe('Multichain network selectors', () => {
       ).toStrictEqual([
         {
           ...mockEvmNetworksWithNewConfig,
-          ...mockNonEvmNetworks,
+          ...expectedNonEvmNetworks,
         },
         mockEvmNetworksWithOldConfig,
       ]);
@@ -388,6 +402,278 @@ describe('Multichain network selectors', () => {
           mockMultichainNetworkStateWithEvmSelected,
         ),
       ).toStrictEqual(mockEvmNetworksWithNewConfig['eip155:1']);
+    });
+  });
+
+  describe('selectFirstUnavailableEvmNetwork', () => {
+    it('returns the first EVM Infura-powered network that does not have a status of "available"', () => {
+      const mockStateWithMultipleUnavailableNetworks = {
+        metamask: {
+          enabledNetworkMap: {
+            [KnownCaipNamespace.Eip155]: {
+              '0x1': true,
+              '0xaa36a7': true,
+            },
+          },
+          networksMetadata: {
+            mainnet: {
+              EIPS: {},
+              status: NetworkStatus.Unavailable,
+            },
+            sepolia: {
+              EIPS: {},
+              status: NetworkStatus.Blocked,
+            },
+          },
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1' as const,
+              name: 'Ethereum Mainnet',
+              nativeCurrency: 'ETH',
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Infura as const,
+                  url: 'https://mainnet.infura.io/v3/{infuraProjectId}' as const,
+                  networkClientId: 'mainnet' as const,
+                },
+              ],
+              defaultRpcEndpointIndex: 0,
+              blockExplorerUrls: [],
+              defaultBlockExplorerUrlIndex: 0,
+            },
+            '0xaa36a7': {
+              chainId: '0xaa36a7' as const,
+              name: 'Sepolia',
+              nativeCurrency: 'SepoliaETH',
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Infura as const,
+                  url: 'https://sepolia.infura.io/v3/{infuraProjectId}' as const,
+                  networkClientId: 'sepolia' as const,
+                },
+              ],
+              defaultRpcEndpointIndex: 0,
+              blockExplorerUrls: [],
+              defaultBlockExplorerUrlIndex: 0,
+            },
+          },
+          selectedNetworkClientId: 'mainnet',
+        },
+      };
+
+      expect(
+        selectFirstUnavailableEvmNetwork(
+          mockStateWithMultipleUnavailableNetworks,
+        ),
+      ).toStrictEqual({
+        networkName: 'Ethereum Mainnet',
+        networkClientId: 'mainnet',
+        chainId: '0x1',
+        isInfuraEndpoint: true,
+      });
+    });
+
+    it('returns the first EVM custom network that does not have a status of "available"', () => {
+      const mockStateWithMultipleUnavailableNetworks = {
+        metamask: {
+          enabledNetworkMap: {
+            [KnownCaipNamespace.Eip155]: {
+              '0x1000': true,
+              '0xaa36a7': true,
+            },
+          },
+          networksMetadata: {
+            'AAAA-BBBB-CCCC-DDDD': {
+              EIPS: {},
+              status: NetworkStatus.Unavailable,
+            },
+            sepolia: {
+              EIPS: {},
+              status: NetworkStatus.Blocked,
+            },
+          },
+          networkConfigurationsByChainId: {
+            '0x1000': {
+              chainId: '0x1000' as const,
+              name: 'Custom Network',
+              nativeCurrency: 'ETH',
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Custom as const,
+                  url: 'https://custom.network',
+                  networkClientId: 'AAAA-BBBB-CCCC-DDDD' as const,
+                },
+              ],
+              defaultRpcEndpointIndex: 0,
+              blockExplorerUrls: [],
+              defaultBlockExplorerUrlIndex: 0,
+            },
+            '0xaa36a7': {
+              chainId: '0xaa36a7' as const,
+              name: 'Sepolia',
+              nativeCurrency: 'SepoliaETH',
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Infura as const,
+                  url: 'https://sepolia.infura.io/v3/{infuraProjectId}' as const,
+                  networkClientId: 'sepolia' as const,
+                },
+              ],
+              defaultRpcEndpointIndex: 0,
+              blockExplorerUrls: [],
+              defaultBlockExplorerUrlIndex: 0,
+            },
+          },
+          selectedNetworkClientId: 'AAAA-BBBB-CCCC-DDDD',
+        },
+      };
+
+      expect(
+        selectFirstUnavailableEvmNetwork(
+          mockStateWithMultipleUnavailableNetworks,
+        ),
+      ).toStrictEqual({
+        networkName: 'Custom Network',
+        networkClientId: 'AAAA-BBBB-CCCC-DDDD',
+        chainId: '0x1000',
+        isInfuraEndpoint: false,
+      });
+    });
+
+    it('returns null when all enabled EVM networks are available', () => {
+      const mockStateWithAvailableEvmNetworks = {
+        metamask: {
+          enabledNetworkMap: {
+            [KnownCaipNamespace.Eip155]: {
+              '0x1': true,
+              '0xaa36a7': true,
+            },
+          },
+          networksMetadata: {
+            mainnet: {
+              EIPS: {},
+              status: NetworkStatus.Available,
+            },
+            sepolia: {
+              EIPS: {},
+              status: NetworkStatus.Available,
+            },
+          },
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1' as const,
+              name: 'Ethereum Mainnet',
+              nativeCurrency: 'ETH',
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Infura as const,
+                  url: 'https://mainnet.infura.io/v3/{infuraProjectId}' as const,
+                  networkClientId: 'mainnet' as const,
+                },
+              ],
+              defaultRpcEndpointIndex: 0,
+              blockExplorerUrls: [],
+              defaultBlockExplorerUrlIndex: 0,
+            },
+            '0xaa36a7': {
+              chainId: '0xaa36a7' as const,
+              name: 'Sepolia',
+              nativeCurrency: 'SepoliaETH',
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Infura as const,
+                  url: 'https://sepolia.infura.io/v3/{infuraProjectId}' as const,
+                  networkClientId: 'sepolia' as const,
+                },
+              ],
+              defaultRpcEndpointIndex: 0,
+              blockExplorerUrls: [],
+              defaultBlockExplorerUrlIndex: 0,
+            },
+          },
+          selectedNetworkClientId: 'mainnet',
+        },
+      };
+
+      expect(
+        selectFirstUnavailableEvmNetwork(mockStateWithAvailableEvmNetworks),
+      ).toBeNull();
+    });
+
+    it('returns null when no EVM networks are enabled', () => {
+      const mockStateWithNoEnabledEvmNetworks = {
+        metamask: {
+          enabledNetworkMap: {
+            [KnownCaipNamespace.Eip155]: {},
+          },
+          networksMetadata: {},
+          networkConfigurationsByChainId: {},
+          selectedNetworkClientId: 'mainnet',
+        },
+      };
+
+      expect(
+        selectFirstUnavailableEvmNetwork(mockStateWithNoEnabledEvmNetworks),
+      ).toBeNull();
+    });
+
+    it('skips networks with missing metadata', () => {
+      const mockStateWithMissingMetadata = {
+        metamask: {
+          enabledNetworkMap: {
+            [KnownCaipNamespace.Eip155]: {
+              '0x1': true,
+            },
+          },
+          networksMetadata: {},
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1' as const,
+              name: 'Ethereum Mainnet',
+              nativeCurrency: 'ETH',
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Infura as const,
+                  url: 'https://mainnet.infura.io/v3/{infuraProjectId}' as const,
+                  networkClientId: 'mainnet' as const,
+                },
+              ],
+              defaultRpcEndpointIndex: 0,
+              blockExplorerUrls: [],
+              defaultBlockExplorerUrlIndex: 0,
+            },
+          },
+          selectedNetworkClientId: 'mainnet',
+        },
+      };
+
+      expect(
+        selectFirstUnavailableEvmNetwork(mockStateWithMissingMetadata),
+      ).toBeNull();
+    });
+
+    it('skips networks that do not have network configurations', () => {
+      const mockStateWithMissingNetworkConfig = {
+        metamask: {
+          enabledNetworkMap: {
+            [KnownCaipNamespace.Eip155]: {
+              '0x1': true,
+            },
+          },
+          networksMetadata: {
+            mainnet: {
+              EIPS: {},
+              status: NetworkStatus.Unavailable,
+            },
+          },
+          networkConfigurationsByChainId: {},
+          selectedNetworkClientId: 'mainnet',
+        },
+      };
+
+      expect(
+        selectFirstUnavailableEvmNetwork(mockStateWithMissingNetworkConfig),
+      ).toBeNull();
     });
   });
 });

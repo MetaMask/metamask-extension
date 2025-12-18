@@ -2,8 +2,8 @@ import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import '@testing-library/jest-dom/extend-expect';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import '@testing-library/jest-dom';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { domainInitialState } from '../../../../ducks/domains';
@@ -25,7 +25,7 @@ describe('AddContact component', () => {
   const props = {
     addressBook: MOCK_ADDRESS_BOOK,
     internalAccounts: [createMockInternalAccount()],
-    history: { push: jest.fn() },
+    navigate: jest.fn(),
     addToAddressBook: jest.fn(),
     scanQrCode: jest.fn(),
     qrCodeData: { type: 'address', values: { address: '0x123456789abcdef' } },
@@ -52,7 +52,7 @@ describe('AddContact component', () => {
     const { getByText } = renderWithProvider(<AddContact {...props} />, store);
 
     expect(getByText('Username')).toBeInTheDocument();
-    expect(getByText('Ethereum public address')).toBeInTheDocument();
+    expect(getByText('Public address')).toBeInTheDocument();
   });
 
   it('should validate the address correctly', async () => {

@@ -179,12 +179,16 @@ export const getMaliciousUnapprovedTransaction = (
     ),
     securityAlertResponse: {
       block: 6485814,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       result_type: 'Malicious',
       reason: 'raw_native_token_transfer',
       description:
         'Interaction with a known malicious address: 0x5fbdb2315678afecb367f032d93f642f64180aa3',
       features: ['Interaction with a known malicious address'],
       providerRequestsCount: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         eth_getBlockByNumber: 1,
       },
       source: 'local',

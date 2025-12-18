@@ -18,7 +18,7 @@ import {
 
 import Popover from '../../../ui/popover';
 import Box from '../../../ui/box';
-import Button from '../../../ui/button';
+import { Button, ButtonVariant } from '../../../component-library';
 import DetectedTokenDetails from '../detected-token-details/detected-token-details';
 import { trace, endTrace, TraceName } from '../../../../../shared/lib/trace';
 
@@ -82,14 +82,16 @@ const DetectedTokenSelectionPopover = ({
     <>
       <Button
         className="detected-token-selection-popover__ignore-button"
-        type="secondary"
+        variant={ButtonVariant.Secondary}
+        block
         onClick={() => onIgnoreAll()}
       >
         {t('ignoreAll')}
       </Button>
       <Button
         className="detected-token-selection-popover__import-button"
-        type="primary"
+        variant={ButtonVariant.Primary}
+        block
         onClick={() => {
           endTrace({ name: TraceName.AccountOverviewAssetListTab });
           trace({ name: TraceName.AccountOverviewAssetListTab });

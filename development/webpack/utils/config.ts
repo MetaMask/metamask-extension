@@ -1,13 +1,11 @@
 import { join } from 'node:path';
 import { readFileSync } from 'node:fs';
-import { parse as parseYaml } from 'yaml';
 import { parse } from 'dotenv';
 import { setEnvironmentVariables } from '../../build/set-environment-variables';
 import type { Variables } from '../../lib/variables';
+import type { BuildTypesConfig, BuildType } from '../../lib/build-type';
 import { type Args } from './cli';
 import { getExtensionVersion } from './version';
-
-const BUILDS_YML_PATH = join(__dirname, '../../../builds.yml');
 
 /**
  * Coerce `"true"`, `"false"`, and `"null"` to their respective JavaScript
@@ -64,7 +62,7 @@ export function getBuildName(
   type: string,
   build: BuildType,
   isDev: boolean,
-  args: Pick<Args, 'manifest_version' | 'lavamoat' | 'snow' | 'lockdown'>,
+  args: Pick<Args, 'manifest_version' | 'lavamoat' | 'snow'>,
 ) {
   const buildName =
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
@@ -75,8 +73,7 @@ export function getBuildName(
     const mv3Str = args.manifest_version === 3 ? ' MV3' : '';
     const lavamoatStr = args.lavamoat ? ' lavamoat' : '';
     const snowStr = args.snow ? ' snow' : '';
-    const lockdownStr = args.lockdown ? ' lockdown' : '';
-    return `${buildName}${mv3Str}${lavamoatStr}${snowStr}${lockdownStr}`;
+    return `${buildName}${mv3Str}${lavamoatStr}${snowStr}`;
   }
   return buildName;
 }
@@ -92,7 +89,7 @@ export function getBuildName(
  */
 export function getVariables(
   { type, env, ...args }: Args,
-  buildConfig: BuildConfig,
+  buildConfig: BuildTypesConfig,
 ) {
   const activeBuild = buildConfig.buildTypes[type];
   const variables = loadConfigVars(activeBuild, buildConfig);
@@ -113,7 +110,7 @@ export function getVariables(
   setEnvironmentVariables({
     buildName: getBuildName(type, activeBuild, isDevBuild, args),
     buildType: type,
-    environment: env,
+    environment: args.test ? 'testing' : env,
     isDevBuild,
     isTestBuild: args.test,
     version: version.versionName,
@@ -136,7 +133,6 @@ export function getVariables(
   variables.set('ENABLE_SENTRY', args.sentry.toString());
   variables.set('ENABLE_SNOW', args.snow.toString());
   variables.set('ENABLE_LAVAMOAT', args.lavamoat.toString());
-  variables.set('ENABLE_LOCKDOWN', args.lockdown.toString());
 
   // convert the variables to a format that can be used by SWC, which expects
   // values be JSON stringified, as it JSON.parses them internally.
@@ -158,64 +154,38 @@ export function getVariables(
   return { variables, safeVariables, version };
 }
 
-export type BuildType = {
-  id: number;
-  features?: string[];
-  env?: (string | { [k: string]: unknown })[];
-  isPrerelease?: boolean;
-  buildNameOverride?: string;
-};
-
-export type BuildConfig = {
-  buildTypes: Record<string, BuildType>;
-  env: (string | Record<string, unknown>)[];
-  features: Record<
-    string,
-    null | { env?: (string | { [k: string]: unknown })[] }
-  >;
-};
-
 /**
- *
- */
-export function getBuildTypes(): BuildConfig {
-  return parseYaml(readFileSync(BUILDS_YML_PATH, 'utf8'));
-}
-
-/**
- * Loads configuration variables from process.env, .metamaskrc, and build.yml.
+ * Loads configuration variables from process.env, .metamaskprodrc, .metamaskrc, and build.yml.
  *
  * The order of precedence is:
  * 1. process.env
- * 2. .metamaskrc
- * 3. build.yml
+ * 2. .metamaskprodrc
+ * 3. .metamaskrc
+ * 4. builds.yml
  *
  * i.e., if a variable is defined in `process.env`, it will take precedence over
- * the same variable defined in `.metamaskrc` or `build.yml`.
+ * the same variable defined in `.metamaskprodrc`, `.metamaskrc` or `build.yml`.
  *
  * @param activeBuild
  * @param build
  * @param build.env
- * @param build.features
  * @returns
  */
 function loadConfigVars(
   activeBuild: Pick<BuildType, 'env' | 'features'>,
-  { env, features }: BuildConfig,
+  { env }: BuildTypesConfig,
 ) {
   const definitions = loadEnv();
+  addRc(definitions, join(__dirname, '../../../.metamaskprodrc'));
   addRc(definitions, join(__dirname, '../../../.metamaskrc'));
   addVars(activeBuild.env);
-  activeBuild.features?.forEach((feature) => addVars(features[feature]?.env));
   addVars(env);
 
-  function addVars(pairs?: (string | Record<string, unknown>)[]): void {
-    pairs?.forEach((pair) => {
-      if (typeof pair === 'string') return;
-      Object.entries(pair).forEach(([key, value]) => {
-        if (definitions.has(key)) return;
-        definitions.set(key, value);
-      });
+  function addVars(pairs: Record<string, unknown> = {}): void {
+    Object.entries(pairs).forEach(([key, value]) => {
+      if (value === undefined) return;
+      if (definitions.has(key)) return;
+      definitions.set(key, value);
     });
   }
 

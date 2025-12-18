@@ -8,6 +8,7 @@
   min-width: 0;
   flex-direction: column;
   width: 100%;
+  gap: 16px;
 
   &-fullscreen {
     align-items: center;
@@ -26,27 +27,19 @@
     }
   }
 
-  &__icon_button {
-    margin-top: 0 !important;
-  }
-
   &__buttons {
     display: flex;
     flex-direction: row;
     height: 100%;
-    margin-bottom: 12px;
-    padding: 0 16px;
     width: 100%;
-
-    .wallet-overview-fullscreen > & {
-      width: auto;
-    }
+    max-width: calc(490px - 32px); // 490px (sidepanel max-width) - 32px (side padding)
   }
 
   &__currency-wrapper {
     display: flex;
     flex-direction: row;
     gap: 8px;
+    flex-wrap: wrap;
   }
 }
 
@@ -62,22 +55,24 @@
   font-weight: 500;
 }
 
+// Makes the tooltip wrapper take the full width of the flex container same as the button
+.tooltip-button-wrapper {
+  flex: 1;
+}
+
 .coin-overview,
-.eth-overview {
+.eth-overview,
+.token-overview {
+  &__button {
+    flex: 1;
+  }
+
   &__balance {
     display: flex;
     flex-direction: column;
     min-width: 0;
     position: relative;
     align-items: start;
-    margin: 16px 0;
-    padding: 0 16px;
-    max-width: 326px;
-  }
-
-  &__icon-button {
-    margin-top: 0 !important;
-    color: var(--color-icon-default);
   }
 
   &__primary-container {
@@ -169,12 +164,5 @@
 
   &__button:last-of-type {
     margin-right: 0;
-  }
-}
-
-.balance-popover {
-  &__container {
-    z-index: design-system.$modal-z-index;
-    margin-top: -4px;
   }
 }

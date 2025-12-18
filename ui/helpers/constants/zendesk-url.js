@@ -20,16 +20,30 @@ const ZENDESK_URLS = {
     'https://support.metamask.io/managing-my-wallet/accounts-and-addresses/how-to-import-an-account/',
   IMPORTED_ACCOUNTS:
     'https://support.metamask.io/managing-my-wallet/accounts-and-addresses/what-are-imported-accounts-/',
+  IMPORTED_ACCOUNT_JSON:
+    'https://support.metamask.io/start/how-to-import-an-account/#how-can-i-import-my-private-key-using-a-json-file',
+  IMPORTED_ACCOUNTS_PRIVATE_KEY:
+    'https://support.metamask.io/start/use-an-existing-wallet/#importing-using-a-private-key',
   INFURA_BLOCKAGE:
     'https://support.metamask.io/troubleshooting/why-infura-cannot-serve-certain-areas/',
   LEDGER_FIREFOX_U2F_GUIDE:
     'https://support.ledger.com/hc/en-us/articles/10371387758493-MetaMask-Firefox-Ledger-Integration-Issue?support=true',
   LEGACY_WEB3:
     'https://support.metamask.io/third-party-platforms-and-dapps/metamask-legacy-web3/',
-  NFT_TOKENS:
-    'https://support.metamask.io/nfts/nft-tokens-in-your-metamask-wallet/',
+  PASSWORD_ARTICLE:
+    'https://support.metamask.io/configure/wallet/passwords-and-metamask/',
   PASSWORD_AND_SRP_ARTICLE:
     'https://support.metamask.io/getting-started/user-guide-secret-recovery-phrase-password-and-private-keys/',
+  PRIVATE_KEY_GUIDE:
+    'https://support.metamask.io/start/user-guide-secret-recovery-phrase-password-and-private-keys/#private-keys',
+  PASSWORD_RESET:
+    'https://support.metamask.io/configure/wallet/how-can-i-reset-my-password/',
+  RESET_ADD_MISSING_ACCOUNT:
+    'https://support.metamask.io/configure/accounts/how-to-add-missing-accounts-after-restoring-with-secret-recovery-phrase/',
+  RESET_DISPLAY_TOKENS:
+    'https://support.metamask.io/manage-crypto/tokens/how-to-display-tokens-in-metamask/',
+  RESET_IMPORT_AN_ACCOUNT:
+    'https://support.metamask.io/start/how-to-import-an-account/',
   SECRET_RECOVERY_PHRASE:
     'https://support.metamask.io/privacy-and-security/what-is-a-secret-recovery-phrase-and-how-to-keep-your-crypto-wallet-secure/',
   NON_CUSTODIAL_WALLET:

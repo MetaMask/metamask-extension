@@ -25,9 +25,13 @@ export interface ContainerStyleUtilityProps extends StyleUtilityProps {
   maxWidth?: ContainerMaxWidth;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type ContainerProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, ContainerStyleUtilityProps>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type ContainerComponent = <C extends React.ElementType = 'div'>(
   props: ContainerProps<C>,
 ) => React.ReactElement | null;

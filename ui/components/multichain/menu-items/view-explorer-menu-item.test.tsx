@@ -1,6 +1,7 @@
 import React from 'react';
 import { BtcAccountType } from '@metamask/keyring-api';
-import { fireEvent, renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { fireEvent } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
@@ -42,6 +43,7 @@ const render = (account = mockAccount) => {
 
 describe('ViewExplorerMenuItem', () => {
   it('renders "View on explorer"', () => {
+    // @ts-expect-error mocking platform
     global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
 
     const { getByText, getByTestId } = render();
@@ -60,6 +62,7 @@ describe('ViewExplorerMenuItem', () => {
       mockNonEvmAccount.address,
     );
     const expectedExplorerUrlHost = new URL(expectedExplorerUrl).host;
+    // @ts-expect-error mocking platform
     global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
 
     const { getByText, getByTestId } = render(mockNonEvmAccount);

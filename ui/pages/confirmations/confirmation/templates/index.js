@@ -8,6 +8,7 @@ import {
   addNetwork,
 } from '../../../../store/actions';
 import {
+  HYPERLIQUID_APPROVAL_TYPE,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
   ///: END:ONLY_INCLUDE_IF
@@ -20,7 +21,6 @@ import removeSnapAccount from './remove-snap-account';
 import snapAccountRedirect from './snap-account-redirect';
 import createNamedSnapAccount from './create-named-snap-account';
 ///: END:ONLY_INCLUDE_IF
-import addEthereumChain from './add-ethereum-chain';
 import switchEthereumChain from './switch-ethereum-chain';
 import success from './success';
 import error from './error';
@@ -28,9 +28,9 @@ import snapAlert from './snaps/snap-alert/snap-alert';
 import snapConfirmation from './snaps/snap-confirmation/snap-confirmation';
 import snapPrompt from './snaps/snap-prompt/snap-prompt';
 import snapDefault from './snaps/snap-default/snap-default';
+import hyperliquidReferralConsent from './hyperliquid-referral-consent';
 
 const APPROVAL_TEMPLATES = {
-  [ApprovalType.AddEthereumChain]: addEthereumChain,
   [ApprovalType.SwitchEthereumChain]: switchEthereumChain,
   // Use ApprovalType from utils controller
   [ApprovalType.ResultSuccess]: success,
@@ -51,6 +51,7 @@ const APPROVAL_TEMPLATES = {
   [SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect]:
     snapAccountRedirect,
   ///: END:ONLY_INCLUDE_IF
+  [HYPERLIQUID_APPROVAL_TYPE]: hyperliquidReferralConsent,
 };
 
 export const TEMPLATED_CONFIRMATION_APPROVAL_TYPES =

@@ -1,11 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  KeyringMetadata,
-  KeyringObject,
-  KeyringTypes,
-} from '@metamask/keyring-controller';
+import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
+import { AvatarAccountSize } from '@metamask/design-system-react';
+import { useNavigate } from 'react-router-dom';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
@@ -16,6 +14,7 @@ import {
   AlignItems,
   Display,
   FlexDirection,
+  JustifyContent,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -24,19 +23,10 @@ import {
   getInternalAccountByAddress,
   getMetaMaskAccountsOrdered,
   getMetaMaskKeyrings,
-  getMetaMaskKeyringsMetadata,
-  getUseBlockie,
 } from '../../../selectors';
-import {
-  clearAccountDetails,
-  hideWarning,
-  setAccountDetailsAddress,
-} from '../../../store/actions';
+import { clearAccountDetails, hideWarning } from '../../../store/actions';
 import HoldToRevealModal from '../../app/modals/hold-to-reveal-modal/hold-to-reveal-modal';
 import {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
   Box,
   Modal,
   ModalOverlay,
@@ -46,7 +36,7 @@ import {
   ModalBody,
 } from '../../component-library';
 import { AddressCopyButton } from '../address-copy-button';
-
+import { PreferredAvatar } from '../../app/preferred-avatar';
 import SRPQuiz from '../../app/srp-quiz-modal';
 import { findKeyringId } from '../../../../shared/lib/keyring';
 import { isAbleToRevealSrp } from '../../../helpers/utils/util';
@@ -56,14 +46,16 @@ import { AccountDetailsAuthenticate } from './account-details-authenticate';
 import { AccountDetailsDisplay } from './account-details-display';
 import { AccountDetailsKey } from './account-details-key';
 
-type AccountDetailsProps = { address: string };
+type AccountDetailsProps = {
+  address: string;
+};
 
 export const AccountDetails = ({ address }: AccountDetailsProps) => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
-  const useBlockie = useSelector(getUseBlockie);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
   const account = useSelector((state) =>
     getInternalAccountByAddress(state, address),
@@ -86,9 +78,6 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
   showModal = !showHoldToReveal && !srpQuizModalVisible;
 
   const keyrings: KeyringObject[] = useSelector(getMetaMaskKeyrings);
-  const keyringsMetadata: KeyringMetadata[] = useSelector(
-    getMetaMaskKeyringsMetadata,
-  );
 
   // Snap accounts have an entropy source that is the id of the hd keyring
   const keyringId =
@@ -96,7 +85,7 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
     isMultichainWalletSnap(snapId) &&
     entropySource
       ? entropySource
-      : findKeyringId(keyrings, keyringsMetadata, {
+      : findKeyringId(keyrings, {
           address,
         });
 
@@ -111,21 +100,15 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
   const [privateKey, setPrivateKey] = useState('');
 
   const onClose = useCallback(() => {
-    dispatch(setAccountDetailsAddress(''));
     dispatch(clearAccountDetails());
     dispatch(hideWarning());
   }, [dispatch]);
 
   const avatar = (
-    <AvatarAccount
-      variant={
-        useBlockie
-          ? AvatarAccountVariant.Blockies
-          : AvatarAccountVariant.Jazzicon
-      }
+    <PreferredAvatar
       address={address}
       size={AvatarAccountSize.Lg}
-      style={{ margin: '0 auto' }}
+      className="mx-auto"
     />
   );
 
@@ -149,6 +132,10 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
               } else if (attemptingExport === AttemptExportState.None) {
                 onClose();
               }
+            }}
+            childrenWrapperProps={{
+              display: Display.Flex,
+              justifyContent: JustifyContent.center,
             }}
           >
             {attemptingExport === AttemptExportState.PrivateKey
@@ -215,7 +202,11 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
             category: MetaMetricsEventCategory.Keys,
             event: MetaMetricsEventName.KeyExportCanceled,
             properties: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               key_type: MetaMetricsEventKeyType.Pkey,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               hd_entropy_index: hdEntropyIndex,
             },
           });
@@ -227,7 +218,7 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
         }}
         holdToRevealType="PrivateKey"
       />
-      {displayExportSrpQuiz && (
+      {displayExportSrpQuiz && navigate && (
         <SRPQuiz
           keyringId={keyringId}
           isOpen={srpQuizModalVisible}
@@ -236,6 +227,7 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
             onClose();
           }}
           closeAfterCompleting
+          navigate={navigate}
         />
       )}
     </>

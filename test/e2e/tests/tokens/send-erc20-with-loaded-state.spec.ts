@@ -1,5 +1,5 @@
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -14,19 +14,9 @@ describe('Send ERC20', function () {
       {
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
-          .withTokensController({
-            allTokens: {
-              '0x1': {
-                '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
-                  {
-                    address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-                    symbol: 'DAI',
-                    decimals: 18,
-                    isERC721: false,
-                    aggregators: [],
-                  },
-                ],
-              },
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
             },
           })
           .build(),
@@ -46,16 +36,17 @@ describe('Send ERC20', function () {
 
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
-        await homePage.check_pageIsLoaded();
-        await assetListPage.clickOnAsset('DAI');
+        await homePage.checkPageIsLoaded();
+        await assetListPage.importTokenBySearch('DAI');
+        await assetListPage.clickOnAsset('Dai Stablecoin');
 
         // Send DAI
         const tokenOverviewPage = new TokenOverviewPage(driver);
-        await tokenOverviewPage.check_pageIsLoaded();
+        await tokenOverviewPage.checkPageIsLoaded();
         await tokenOverviewPage.clickSend();
 
         const sendTokenPage = new SendTokenPage(driver);
-        await sendTokenPage.check_pageIsLoaded();
+        await sendTokenPage.checkPageIsLoaded();
         await sendTokenPage.fillRecipient(
           '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
         );
@@ -65,15 +56,15 @@ describe('Send ERC20', function () {
         // Check transaction in the Activity list
         const tokenTransferTransactionConfirmation =
           new TokenTransferTransactionConfirmation(driver);
-        await tokenTransferTransactionConfirmation.check_walletInitiatedHeadingTitle();
-        await tokenTransferTransactionConfirmation.check_networkParagraph();
-        await tokenTransferTransactionConfirmation.check_networkFeeParagraph();
+        await tokenTransferTransactionConfirmation.checkWalletInitiatedHeadingTitle();
+        await tokenTransferTransactionConfirmation.checkNetworkParagraph();
+        await tokenTransferTransactionConfirmation.checkNetworkFeeParagraph();
 
         await tokenTransferTransactionConfirmation.clickFooterConfirmButton();
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
         const activityList = new ActivityListPage(driver);
-        await activityList.check_confirmedTxNumberDisplayedInActivity();
-        await activityList.check_txAmountInActivity('-10 DAI');
+        await activityList.checkConfirmedTxNumberDisplayedInActivity();
+        await activityList.checkTxAmountInActivity('-10 DAI');
       },
     );
   });

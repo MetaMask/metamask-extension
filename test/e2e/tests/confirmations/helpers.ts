@@ -1,11 +1,13 @@
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { withFixtures } from '../../helpers';
 import { MockedEndpoint, Mockttp } from '../../mock-e2e';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
 import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
 import { MOCK_META_METRICS_ID } from '../../constants';
+import { mockDialogSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
+import { BIP44_STAGE_TWO } from '../multichain-accounts/feature-flag-mocks';
 
 export const DECODING_E2E_API_URL =
   'https://signature-insights.api.cx.metamask.io/v1';
@@ -27,9 +29,16 @@ export function withTransactionEnvelopeTypeFixtures(
   mocks?: (mockServer: Mockttp) => Promise<MockedEndpoint[]>, // Add mocks as an optional parameter
   smartContract?: typeof SMART_CONTRACTS,
 ) {
+  const combinedMocks = async (
+    mockServer: Mockttp,
+  ): Promise<MockedEndpoint[]> => {
+    const baseMocks = mocks ? await mocks(mockServer) : [];
+    const dialogSnapMocks = await mockDialogSnap(mockServer);
+    return [...baseMocks, ...[dialogSnapMocks]];
+  };
   return withFixtures(
     {
-      dapp: true,
+      dappOptions: { numberOfTestDapps: 1 },
       driverOptions: { timeOut: 20000 },
       fixtures: new FixtureBuilder()
         .withPermissionControllerConnectedToTestDapp()
@@ -43,7 +52,35 @@ export function withTransactionEnvelopeTypeFixtures(
           ? { hardfork: 'muirGlacier' }
           : {},
       ...(smartContract && { smartContract }),
-      ...(mocks && { testSpecificMock: mocks }),
+      testSpecificMock: combinedMocks,
+      title,
+    },
+    testFunction,
+  );
+}
+
+export function withSignatureFixtures(
+  // Default params first is discouraged because it makes it hard to call the function without the
+  // optional parameters. But it doesn't apply here because we're always passing in a variable for
+  // title. It's optional because it's sometimes unset.
+  // eslint-disable-next-line @typescript-eslint/default-param-last
+  title: string = '',
+  testFunction: Parameters<typeof withFixtures>[1],
+  mocks?: (mockServer: Mockttp) => Promise<MockedEndpoint[]>, // Add mocks as an optional parameter
+) {
+  return withFixtures(
+    {
+      dappOptions: { numberOfTestDapps: 1 },
+      driverOptions: { timeOut: 20000 },
+      fixtures: new FixtureBuilder()
+        .withPermissionControllerConnectedToTestDapp()
+        .withMetaMetricsController({
+          metaMetricsId: MOCK_META_METRICS_ID,
+          participateInMetaMetrics: true,
+        })
+        .build(),
+      localNodeOptions: {},
+      testSpecificMock: mocks,
       title,
     },
     testFunction,
@@ -152,6 +189,8 @@ export async function mockPermitDecoding(mockServer: Mockttp) {
 export async function mockedSourcifyTokenSend(mockServer: Mockttp) {
   return await mockServer
     .forGet('https://www.4byte.directory/api/v1/signatures/')
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     .withQuery({ hex_signature: '0xa9059cbb' })
     .always()
     .thenCallback(() => ({
@@ -162,10 +201,18 @@ export async function mockedSourcifyTokenSend(mockServer: Mockttp) {
         previous: null,
         results: [
           {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             bytes_signature: '©\u0005»',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             created_at: '2016-07-09T03:58:28.234977Z',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             hex_signature: '0xa9059cbb',
             id: 145,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             text_signature: 'transfer(address,uint256)',
           },
         ],
@@ -183,6 +230,8 @@ export async function mockEip7702FeatureFlag(mockServer: Mockttp) {
           statusCode: 200,
           json: [
             {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               confirmations_eip_7702: {
                 contracts: {
                   '0xaa36a7': [
@@ -199,10 +248,18 @@ export async function mockEip7702FeatureFlag(mockServer: Mockttp) {
                         '0x4c15775d0c6d5bd37a7aa7aafc62e85597ea705024581b8b5cb0edccc4e6a69e26c495b3ae725815a377c9789bff43bf19e4dd1eaa679e65133e49ceee3ea87f1b',
                     },
                   ],
+                  '0x1': [
+                    {
+                      address: '0xabcabcabcabcabcabcabcabcabcabcabcabcabca',
+                      signature:
+                        '0x5b394cc656b760fc15e855f9b8b9d0eec6337328361771c696d7f5754f0348e06298d34243e815ff8b5ce869e5f310c37dd100c1827e91b56bb208d1fafcf3a71c',
+                    },
+                  ],
                 },
-                supportedChains: ['0xaa36a7', '0x539'],
+                supportedChains: ['0xaa36a7', '0x539', '0x1'],
               },
             },
+            BIP44_STAGE_TWO,
           ],
         };
       }),
@@ -212,7 +269,7 @@ export async function mockDeFiPositionFeatureFlag(mockServer: Mockttp) {
   return [
     await mockServer
       .forGet(
-        'https://defiadapters.dev-api.cx.metamask.io/positions/0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+        'https://defiadapters.api.cx.metamask.io/positions/0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
       )
       .thenCallback(() => {
         return {
@@ -548,7 +605,22 @@ export async function mockDeFiPositionFeatureFlag(mockServer: Mockttp) {
             {
               assetsDefiPositionsEnabled: true,
             },
+            BIP44_STAGE_TWO,
           ],
+        };
+      }),
+    await mockServer
+      .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            'eip155:1/slip44:60': {
+              price: 1700,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
+          },
         };
       }),
   ];
@@ -557,7 +629,7 @@ export async function mockNoDeFiPositionFeatureFlag(mockServer: Mockttp) {
   return [
     await mockServer
       .forGet(
-        'https://defiadapters.dev-api.cx.metamask.io/positions/0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+        'https://defiadapters.api.cx.metamask.io/positions/0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
       )
       .thenCallback(() => {
         return {
@@ -576,6 +648,12 @@ export async function mockNoDeFiPositionFeatureFlag(mockServer: Mockttp) {
             {
               assetsDefiPositionsEnabled: true,
             },
+            {
+              sendRedesign: {
+                enabled: false,
+              },
+            },
+            BIP44_STAGE_TWO,
           ],
         };
       }),
@@ -586,7 +664,7 @@ export async function mockDefiPositionsFailure(mockServer: Mockttp) {
   return [
     await mockServer
       .forGet(
-        'https://defiadapters.dev-api.cx.metamask.io/positions/0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+        'https://defiadapters.api.cx.metamask.io/positions/0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
       )
       .thenCallback(() => {
         return {
@@ -604,6 +682,7 @@ export async function mockDefiPositionsFailure(mockServer: Mockttp) {
             {
               assetsDefiPositionsEnabled: true,
             },
+            BIP44_STAGE_TWO,
           ],
         };
       }),

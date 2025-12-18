@@ -1,4 +1,4 @@
-import { ApprovalType, detectSIWE } from '@metamask/controller-utils';
+import { detectSIWE } from '@metamask/controller-utils';
 import { errorCodes } from '@metamask/rpc-errors';
 import { isValidAddress } from 'ethereumjs-util';
 import { MESSAGE_TYPE, ORIGIN_METAMASK } from '../../../shared/constants/app';
@@ -14,6 +14,7 @@ import {
   BlockaidResultType,
   BlockaidReason,
 } from '../../../shared/constants/security-provider';
+import { ResultType } from '../../../shared/lib/trust-signals';
 import {
   PRIMARY_TYPES_ORDER,
   PRIMARY_TYPES_PERMIT,
@@ -26,9 +27,7 @@ import {
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../ui/helpers/utils/metrics';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { shouldUseRedesignForSignatures } from '../../../shared/lib/confirmation.utils';
+import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
 
 /**
@@ -73,15 +72,6 @@ const RATE_LIMIT_MAP = {
   [MESSAGE_TYPE.WALLET_GET_CALLS_STATUS]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
   [MESSAGE_TYPE.WALLET_GET_CAPABILITIES]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
   [MESSAGE_TYPE.WALLET_SEND_CALLS]: RATE_LIMIT_TYPES.NON_RATE_LIMITED,
-};
-
-const MESSAGE_TYPE_TO_APPROVAL_TYPE = {
-  [MESSAGE_TYPE.PERSONAL_SIGN]: ApprovalType.PersonalSign,
-  [MESSAGE_TYPE.SIGN]: ApprovalType.SignTransaction,
-  [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA]: ApprovalType.EthSignTypedData,
-  [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V1]: ApprovalType.EthSignTypedData,
-  [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3]: ApprovalType.EthSignTypedData,
-  [MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4]: ApprovalType.EthSignTypedData,
 };
 
 /**
@@ -239,7 +229,7 @@ function isMultichainRequestMethod(method) {
  * @param {Function} opts.getAccountType
  * @param {Function} opts.getDeviceModel
  * @param {Function} opts.getHardwareTypeForMetric
- * @param {RestrictedMessenger} opts.snapAndHardwareMessenger
+ * @param {Messenger} opts.snapAndHardwareMessenger
  * @param {number} [opts.globalRateLimitTimeout] - time, in milliseconds, of the sliding
  * time window that should limit the number of method calls tracked to globalRateLimitMaxAmount.
  * @param {number} [opts.globalRateLimitMaxAmount] - max number of method calls that should
@@ -332,10 +322,14 @@ export default function createRPCMethodTrackingMiddleware({
 
     let sensitiveEventProperties;
 
+    const isPreinstalledSnap = isSnapPreinstalled(origin);
+
     // Boolean variable that reduces code duplication and increases legibility
     const shouldTrackEvent =
       // Don't track if the request came from our own UI or background
       origin !== ORIGIN_METAMASK &&
+      // Don't track requests coming from preinstalled Snaps
+      !isPreinstalledSnap &&
       // Don't track if the rate limit has been hit
       !isRateLimited &&
       // Don't track if the global rate limit has been hit
@@ -380,21 +374,11 @@ export default function createRPCMethodTrackingMiddleware({
           BlockaidResultType.NotApplicable;
         eventProperties.security_alert_reason =
           req.securityAlertResponse?.reason ?? BlockaidReason.notApplicable;
+        eventProperties.address_alert_response = ResultType.Loading;
 
         if (req.securityAlertResponse?.description) {
           eventProperties.security_alert_description =
             req.securityAlertResponse.description;
-        }
-
-        if (
-          shouldUseRedesignForSignatures({
-            approvalType: MESSAGE_TYPE_TO_APPROVAL_TYPE[invokedMethod],
-          })
-        ) {
-          eventProperties.ui_customizations = [
-            ...(eventProperties.ui_customizations || []),
-            MetaMetricsEventUiCustomization.RedesignedConfirmation,
-          ];
         }
 
         const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(
@@ -531,6 +515,20 @@ export default function createRPCMethodTrackingMiddleware({
 
       CUSTOM_PROPERTIES_MAP[invokedMethod]?.(req, res, stage, eventProperties);
 
+      if (eventType.REQUESTED === MetaMetricsEventName.SignatureRequested) {
+        // get the snap and hardware info again in case we were not able to during the initial request
+        // because the KeyringController was locked
+        const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(
+          getAccountType,
+          getDeviceModel,
+          getHardwareTypeForMetric,
+          snapAndHardwareMessenger,
+        );
+
+        // merge the snapAndHardwareInfo into eventProperties
+        Object.assign(eventProperties, snapAndHardwareInfo);
+      }
+
       let blockaidMetricProps = {};
       if (SIGNING_METHODS.includes(invokedMethod)) {
         const securityAlertResponse =
@@ -542,11 +540,14 @@ export default function createRPCMethodTrackingMiddleware({
           securityAlertResponse,
         });
       }
+
       const properties = {
         ...eventProperties,
         ...blockaidMetricProps,
         location,
       };
+      // Exclude address_alert_response so useTrustSignalMetrics value is preserved during finalization
+      delete properties.address_alert_response;
 
       if (
         event === MetaMetricsEventName.SignatureRejected ||

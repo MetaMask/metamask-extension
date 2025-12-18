@@ -229,14 +229,8 @@
   "enterPasswordContinue": {
     "message": "יש להזין ססמה כדי להמשיך"
   },
-  "ethereumPublicAddress": {
-    "message": "כתובת אתריום ציבורית"
-  },
   "etherscanView": {
     "message": "הצג חשבון ב- Etherscan"
-  },
-  "expandView": {
-    "message": "הרחב תצוגה"
   },
   "failed": {
     "message": "נכשל"
@@ -257,20 +251,8 @@
   "gasLimit": {
     "message": "הגבלת דלק"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "הגבלת דלק היא המספר המרבי של יחידות דלק שהנך מוכנ/ה להוציא."
-  },
   "gasLimitTooLow": {
     "message": "הגבלת הדלק חייבת להיות לפחות 21000"
-  },
-  "gasPrice": {
-    "message": "מחיר גז (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "מחיר הדלק נמוך במיוחד"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "מחיר הדלק מציין את כמות האת'ר שהנך מוכנ/ה לשלם עבור כל יחידת דלק."
   },
   "gasUsed": {
     "message": "דלק שנעשה בו שימוש"
@@ -629,9 +611,6 @@
   "supportCenter": {
     "message": "בקר/י במרכז התמיכה שלנו"
   },
-  "switchNetworks": {
-    "message": "החלף רשתות"
-  },
   "symbol": {
     "message": "סמל"
   },
@@ -640,9 +619,6 @@
   },
   "terms": {
     "message": "תנאי שימוש"
-  },
-  "tips": {
-    "message": "טיפים"
   },
   "to": {
     "message": "אל"
@@ -722,9 +698,6 @@
   "unlock": {
     "message": "בטל נעילה"
   },
-  "unlockMessage": {
-    "message": "הרשת המבוזרת מחכה"
-  },
   "urlErrorMsg": {
     "message": "כתובות URI דורשות את קידומת HTTP/HTTPS המתאימה."
   },
@@ -748,8 +721,5 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "ה-seed phrase הפרטי שלך"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "מחיר גז אפס על האצה"
   }
 }

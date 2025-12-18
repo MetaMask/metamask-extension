@@ -1,7 +1,7 @@
 import log from 'loglevel';
-import { captureException } from '@sentry/browser';
 import { isEmpty } from 'lodash';
 import { RuntimeObject, hasProperty, isObject } from '@metamask/utils';
+import { captureException } from '../../../../shared/lib/sentry';
 import { MISSING_VAULT_ERROR } from '../../../../shared/constants/errors';
 import { IndexedDBStore } from './indexeddb-store';
 import type {
@@ -12,10 +12,33 @@ import type {
 } from './base-store';
 
 export type Backup = {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   KeyringController?: unknown;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   AppMetadataController?: unknown;
   meta?: MetaData;
 };
+
+export const backedUpStateKeys = [
+  'KeyringController',
+  'AppMetadataController',
+] as const;
+
+/**
+ * This Error represents an error that occurs during persistence operations.
+ * It includes a backup of the state at the time of the error.
+ */
+export class PersistenceError extends Error {
+  backup: object | null;
+
+  constructor(message: string, backup: object | null) {
+    super(message);
+    this.name = 'PersistenceError';
+    this.backup = backup;
+  }
+}
 
 /**
  * Pulls out the relevant state from the MetaMask state object and returns
@@ -46,6 +69,8 @@ function makeBackup(state: MetaMaskStateType, meta: MetaData): Backup {
  */
 function hasVault(
   state?: MetaMaskStateType,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
 ): state is { KeyringController: RuntimeObject & Record<'vault', unknown> } {
   const keyringController = state?.KeyringController;
   return (
@@ -115,7 +140,7 @@ export class PersistenceManager {
 
   #localStore: BaseStore;
 
-  #backupDb: IndexedDBStore;
+  #backupDb: IndexedDBStore | null = null;
 
   #backup?: string;
 
@@ -123,12 +148,36 @@ export class PersistenceManager {
 
   constructor({ localStore }: { localStore: BaseStore }) {
     this.#localStore = localStore;
-    this.#backupDb = new IndexedDBStore();
   }
 
   async open() {
     if (!this.#open) {
-      await this.#backupDb.open('metamask-backup', 1);
+      try {
+        const db = new IndexedDBStore();
+        await db.open('metamask-backup', 1);
+        this.#backupDb = db;
+      } catch (error) {
+        // `indexedDB` can't be used by addons in FF in some instances of
+        // private browsing mode due to this bug:
+        // https://bugzilla.mozilla.org/show_bug.cgi?id=1982707. In these
+        // cases we just won't have a backup vault.
+        if (
+          isObject(error) &&
+          error instanceof DOMException &&
+          error.name === 'InvalidStateError' &&
+          error.message ===
+            'A mutation operation was attempted on a database that did not allow mutations.'
+        ) {
+          captureException(error);
+          console.warn(
+            'Could not open backup database; automatic vault recovery will not be available.',
+          );
+          console.error(error);
+        } else {
+          // rethrow since we couldn't handle it here.
+          throw error;
+        }
+      }
       this.#open = true;
     }
   }
@@ -136,6 +185,8 @@ export class PersistenceManager {
   setMetadata(metadata: MetaData) {
     this.#metadata = metadata;
   }
+
+  #pendingState: void | AbortController = undefined;
 
   /**
    * Sets the state in the local store.
@@ -158,10 +209,24 @@ export class PersistenceManager {
       throw new Error('MetaMask - metadata must be set before calling "set"');
     }
 
+    const abortController = new AbortController();
+
+    // If we already have a write _pending_, abort it so the more up-to-date
+    // write can take its place. This is to prevent piling up multiple writes
+    // in the lock queue, which is pointless because we only care about the most
+    // recent write. This should rarely happen, as elsewhere we make use of
+    // `debounce` for all `set` requests in order to slow them to once per
+    // 1000ms; however, if the state is very large it *can* take more than the
+    // `debounce`'s `wait` time to write, resulting in a pile up right here.
+    // This prevents that pile up from happening.
+    this.#pendingState?.abort();
+    this.#pendingState = abortController;
+
     await navigator.locks.request(
       STATE_LOCK,
-      { mode: 'exclusive' },
+      { mode: 'exclusive', signal: abortController.signal },
       async () => {
+        this.#pendingState = undefined;
         try {
           // atomically set all the keys
           await this.#localStore.set({
@@ -176,7 +241,7 @@ export class PersistenceManager {
             // and the backup has changed
             if (this.#backup !== stringifiedBackup) {
               // save it to the backup DB
-              await this.#backupDb.set(backup);
+              await this.#backupDb?.set(backup);
               this.#backup = stringifiedBackup;
             }
           }
@@ -201,11 +266,17 @@ export class PersistenceManager {
    * Retrieves the current state of the local store. If the store is empty,
    * it returns undefined. If the store is not open, it throws an error.
    *
+   * @param options - An object containing options for the retrieval.
+   * @param options.validateVault - A flag indicating whether to validate the vault
    * @returns The current state of the local store or null if the store is empty.
    * @throws Error if the vault is missing and a backup vault is found in IndexedDB.
    * @throws Error if the local store is not open.
    */
-  async get(): Promise<MetaMaskStorageStructure | undefined> {
+  async get({
+    validateVault,
+  }: {
+    validateVault: boolean;
+  }): Promise<MetaMaskStorageStructure | undefined> {
     await this.open();
 
     return await navigator.locks.request(
@@ -214,20 +285,25 @@ export class PersistenceManager {
       async () => {
         const result = await this.#localStore.get();
 
-        // if we don't have a vault
-        if (!hasVault(result?.data)) {
-          // check if we have a backup in IndexedDB. we need to throw an error
-          // so that the user can be told about it. if we don't, carry on as if
-          // everything is fine (it might be, or maybe we lost BOTH the primary
-          // and backup vaults -- yikes!)
-          const backup = await this.getBackup();
-          // this check verifies if we have any keys saved in our backup.
-          // we use this as a sigil to determine if we've ever saved a vault
-          // before.
-          if (Object.values(backup).some((value) => value !== undefined)) {
-            // we've got some data (we haven't checked for a vault, as the
-            // background+UI are responsible for determining what happens now)
-            throw new Error(MISSING_VAULT_ERROR);
+        if (validateVault) {
+          // if we don't have a vault
+          if (!hasVault(result?.data)) {
+            // check if we have a backup in IndexedDB. we need to throw an error
+            // so that the user can be prompted to recover it. if we don't,
+            // carry on as if everything is fine (it might be, or maybe we lost
+            // BOTH the primary and backup vaults -- yikes!)
+            const backup = await this.getBackup();
+            // this check verifies if we have any keys saved in our backup.
+            // we use this as a sigil to determine if we've ever saved a vault
+            // before.
+            if (
+              backup &&
+              Object.values(backup).some((value) => value !== undefined)
+            ) {
+              // we've got some data (we haven't checked for a vault, as the
+              // background+UI are responsible for determining what happens now)
+              throw new PersistenceError(MISSING_VAULT_ERROR, backup);
+            }
           }
         }
 
@@ -243,13 +319,40 @@ export class PersistenceManager {
     );
   }
 
-  async getBackup(): Promise<Backup> {
-    const [KeyringController, AppMetadataController, meta] =
-      await this.#backupDb.get([
-        'KeyringController',
-        'AppMetadataController',
-        `meta`,
-      ]);
+  /**
+   * Resets the local store and the backup database. This method is used to
+   * clear the state and metadata, effectively resetting the application to
+   * its initial state.
+   */
+  async reset() {
+    await navigator.locks.request(
+      STATE_LOCK,
+      { mode: 'exclusive' },
+      async () => {
+        await Promise.all([
+          this.#localStore.reset(),
+          await this.#backupDb?.reset(),
+        ]);
+        this.#backup = undefined;
+        this.#isExtensionInitialized = false;
+        this.#dataPersistenceFailing = false;
+        this.#metadata = undefined;
+        this.cleanUpMostRecentRetrievedState();
+      },
+    );
+  }
+
+  /**
+   * Retrieves the backup object containing the state of various controllers.
+   */
+  async getBackup(): Promise<Backup | undefined> {
+    const backupDb = this.#backupDb;
+    if (!backupDb) {
+      return undefined;
+    }
+    const [KeyringController, AppMetadataController, meta] = await backupDb.get(
+      [...backedUpStateKeys, `meta`],
+    );
     return {
       KeyringController,
       AppMetadataController,
@@ -265,7 +368,7 @@ export class PersistenceManager {
     let state: MetaMaskStateType | Backup | undefined;
     let source: string | null = null;
     try {
-      state = (await this.get())?.data;
+      state = (await this.get({ validateVault: false }))?.data;
       source = 'primary database';
     } catch (e) {
       console.error('Error getting state from persistence manager', e);

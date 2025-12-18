@@ -15,6 +15,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
 import { BalanceChange } from './types';
 import {
   AssetType,
@@ -53,18 +54,26 @@ const BALANCE_CHANGE_MOCK = {
   fiatAmount: 1.23,
 } as unknown as BalanceChange;
 
-const DISPLAY_NAME_UNKNOWN_MOCK = { hasPetname: false, name: null };
+const DISPLAY_NAME_UNKNOWN_MOCK = {
+  hasPetname: false,
+  name: null,
+  displayState: TrustSignalDisplayState.Unknown,
+  isAccount: false,
+};
 
 const DISPLAY_NAME_DEFAULT_MOCK = {
   hasPetname: false,
   name: SYMBOL_MOCK,
   contractDisplayName: SYMBOL_MOCK,
+  displayState: TrustSignalDisplayState.Unknown,
 };
 
 const DISPLAY_NAME_SAVED_MOCK = {
   hasPetname: true,
   name: 'testName',
   contractDisplayName: SYMBOL_MOCK,
+  displayState: TrustSignalDisplayState.Unknown,
+  isAccount: false,
 };
 
 describe('useSimulationMetrics', () => {
@@ -87,7 +96,7 @@ describe('useSimulationMetrics', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let trackEventMock: jest.MockedFunction<any>;
 
-  function expectUpdateTransactionEventFragmentCalled(
+  function useExpectUpdateTransactionEventFragmentCalled(
     {
       balanceChanges,
       simulationData,
@@ -160,6 +169,8 @@ describe('useSimulationMetrics', () => {
       expect(updateTransactionEventFragmentMock).toHaveBeenCalledWith(
         expect.objectContaining({
           properties: expect.objectContaining({
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             simulation_latency: LOADING_TIME_MOCK,
           }),
         }),
@@ -189,15 +200,19 @@ describe('useSimulationMetrics', () => {
         useDisplayNamesMock.mockReset();
         useDisplayNamesMock.mockReturnValue([]);
 
-        expectUpdateTransactionEventFragmentCalled(
-          {
-            simulationData: simulationData as SimulationData,
-          },
-          expect.objectContaining({
-            properties: expect.objectContaining({
-              simulation_response: simulationResponse,
+        renderHook(() =>
+          useExpectUpdateTransactionEventFragmentCalled(
+            {
+              simulationData: simulationData as SimulationData,
+            },
+            expect.objectContaining({
+              properties: expect.objectContaining({
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                simulation_response: simulationResponse,
+              }),
             }),
-          }),
+          ),
         );
       },
     );
@@ -214,15 +229,17 @@ describe('useSimulationMetrics', () => {
           amount: new BigNumber(isNegative ? -1 : 1),
         };
 
-        expectUpdateTransactionEventFragmentCalled(
-          {
-            balanceChanges: [balanceChange, balanceChange, balanceChange],
-          },
-          expect.objectContaining({
-            properties: expect.objectContaining({
-              [property]: 3,
+        renderHook(() =>
+          useExpectUpdateTransactionEventFragmentCalled(
+            {
+              balanceChanges: [balanceChange, balanceChange, balanceChange],
+            },
+            expect.objectContaining({
+              properties: expect.objectContaining({
+                [property]: 3,
+              }),
             }),
-          }),
+          ),
         );
       },
     );
@@ -294,21 +311,23 @@ describe('useSimulationMetrics', () => {
         property: string,
         value: AssetType[],
       ) => {
-        expectUpdateTransactionEventFragmentCalled(
-          {
-            balanceChanges: [
-              {
-                ...BALANCE_CHANGE_MOCK,
-                asset: { ...BALANCE_CHANGE_MOCK.asset, standard },
-                amount: new BigNumber(isNegative ? -1 : 1),
-              } as BalanceChange,
-            ],
-          },
-          expect.objectContaining({
-            properties: expect.objectContaining({
-              [property]: value,
+        renderHook(() =>
+          useExpectUpdateTransactionEventFragmentCalled(
+            {
+              balanceChanges: [
+                {
+                  ...BALANCE_CHANGE_MOCK,
+                  asset: { ...BALANCE_CHANGE_MOCK.asset, standard },
+                  amount: new BigNumber(isNegative ? -1 : 1),
+                } as BalanceChange,
+              ],
+            },
+            expect.objectContaining({
+              properties: expect.objectContaining({
+                [property]: value,
+              }),
             }),
-          }),
+          ),
         );
       },
     );
@@ -358,15 +377,17 @@ describe('useSimulationMetrics', () => {
           fiatAmount,
         };
 
-        expectUpdateTransactionEventFragmentCalled(
-          {
-            balanceChanges: [balanceChange],
-          },
-          expect.objectContaining({
-            properties: expect.objectContaining({
-              [property]: [expected],
+        renderHook(() =>
+          useExpectUpdateTransactionEventFragmentCalled(
+            {
+              balanceChanges: [balanceChange],
+            },
+            expect.objectContaining({
+              properties: expect.objectContaining({
+                [property]: [expected],
+              }),
             }),
-          }),
+          ),
         );
       },
     );
@@ -457,15 +478,17 @@ describe('useSimulationMetrics', () => {
           asset: { ...BALANCE_CHANGE_MOCK.asset, standard },
         };
 
-        expectUpdateTransactionEventFragmentCalled(
-          {
-            balanceChanges: [balanceChange as BalanceChange],
-          },
-          expect.objectContaining({
-            properties: expect.objectContaining({
-              [property]: [expected],
+        renderHook(() =>
+          useExpectUpdateTransactionEventFragmentCalled(
+            {
+              balanceChanges: [balanceChange as BalanceChange],
+            },
+            expect.objectContaining({
+              properties: expect.objectContaining({
+                [property]: [expected],
+              }),
             }),
-          }),
+          ),
         );
       },
     );
@@ -480,23 +503,25 @@ describe('useSimulationMetrics', () => {
         const balanceChange1 = {
           ...BALANCE_CHANGE_MOCK,
           amount: new BigNumber(isNegative ? -1 : 1),
-          fiatAmount: 1.23,
+          usdAmount: 1.23,
         };
 
         const balanceChange2 = {
           ...balanceChange1,
-          fiatAmount: 1.23,
+          usdAmount: 1.23,
         };
 
-        expectUpdateTransactionEventFragmentCalled(
-          {
-            balanceChanges: [balanceChange1, balanceChange2],
-          },
-          expect.objectContaining({
-            properties: expect.objectContaining({
-              [property]: 2.46,
+        renderHook(() =>
+          useExpectUpdateTransactionEventFragmentCalled(
+            {
+              balanceChanges: [balanceChange1, balanceChange2],
+            },
+            expect.objectContaining({
+              properties: expect.objectContaining({
+                [property]: 2.46,
+              }),
             }),
-          }),
+          ),
         );
       },
     );
@@ -504,23 +529,35 @@ describe('useSimulationMetrics', () => {
 
   describe('creates incomplete asset event', () => {
     it('if petname is unknown', () => {
-      useSimulationMetrics({
-        enableMetrics: true,
-        balanceChanges: [BALANCE_CHANGE_MOCK],
-        simulationData: undefined,
-        loading: false,
-        transactionId: TRANSACTION_ID_MOCK,
-      });
+      renderHook(() =>
+        useSimulationMetrics({
+          enableMetrics: true,
+          balanceChanges: [BALANCE_CHANGE_MOCK],
+          simulationData: undefined,
+          loading: false,
+          transactionId: TRANSACTION_ID_MOCK,
+        }),
+      );
 
       expect(trackEventMock).toHaveBeenCalledTimes(1);
       expect(trackEventMock).toHaveBeenCalledWith({
         category: MetaMetricsEventCategory.Transactions,
         event: MetaMetricsEventName.SimulationIncompleteAssetDisplayed,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           asset_address: ADDRESS_MOCK,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           asset_petname: PetnameType.Unknown,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           asset_symbol: undefined,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           asset_type: AssetType.ERC20,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           fiat_conversion_available: FiatType.Available,
           location: 'confirmation',
         },
@@ -531,23 +568,35 @@ describe('useSimulationMetrics', () => {
       useDisplayNamesMock.mockReset();
       useDisplayNamesMock.mockReturnValue([DISPLAY_NAME_SAVED_MOCK]);
 
-      useSimulationMetrics({
-        enableMetrics: true,
-        balanceChanges: [{ ...BALANCE_CHANGE_MOCK, fiatAmount: null }],
-        simulationData: undefined,
-        loading: false,
-        transactionId: TRANSACTION_ID_MOCK,
-      });
+      renderHook(() =>
+        useSimulationMetrics({
+          enableMetrics: true,
+          balanceChanges: [{ ...BALANCE_CHANGE_MOCK, fiatAmount: null }],
+          simulationData: undefined,
+          loading: false,
+          transactionId: TRANSACTION_ID_MOCK,
+        }),
+      );
 
       expect(trackEventMock).toHaveBeenCalledTimes(1);
       expect(trackEventMock).toHaveBeenCalledWith({
         category: MetaMetricsEventCategory.Transactions,
         event: MetaMetricsEventName.SimulationIncompleteAssetDisplayed,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           asset_address: ADDRESS_MOCK,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           asset_petname: PetnameType.Saved,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           asset_symbol: SYMBOL_MOCK,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           asset_type: AssetType.ERC20,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           fiat_conversion_available: FiatType.NotAvailable,
           location: 'confirmation',
         },
@@ -575,13 +624,15 @@ describe('useSimulationMetrics', () => {
       enableMetrics: boolean,
       simulationData: { error: { code: SimulationErrorCode } } | undefined,
     ) => {
-      useSimulationMetrics({
-        enableMetrics,
-        balanceChanges: [BALANCE_CHANGE_MOCK],
-        simulationData: simulationData as SimulationData,
-        loading: false,
-        transactionId: TRANSACTION_ID_MOCK,
-      });
+      renderHook(() =>
+        useSimulationMetrics({
+          enableMetrics,
+          balanceChanges: [BALANCE_CHANGE_MOCK],
+          simulationData: simulationData as SimulationData,
+          loading: false,
+          transactionId: TRANSACTION_ID_MOCK,
+        }),
+      );
 
       expect(updateTransactionEventFragmentMock).not.toHaveBeenCalled();
     },

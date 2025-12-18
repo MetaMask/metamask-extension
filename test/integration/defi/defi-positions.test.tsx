@@ -34,7 +34,7 @@ const setupSubmitRequestToBackgroundMocks = (
 ) => {
   mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
     createMockImplementation({
-      ...(mockRequests ?? {}),
+      ...mockRequests,
     }),
   );
 };
@@ -49,10 +49,21 @@ const accountName = account.metadata.name;
 
 const withMetamaskConnectedToMainnet = {
   ...mockMetaMaskState,
+  participateInMetaMetrics: true,
+  dataCollectionForMarketing: false,
   selectedNetworkClientId: 'testNetworkConfigurationId',
   preferences: {
     ...mockMetaMaskState.preferences,
     tokenNetworkFilter: {
+      '0x1': true,
+      '0x89': true,
+      '0xaa36a7': true,
+      '0xe705': true,
+      '0xe708': true,
+    },
+  },
+  enabledNetworkMap: {
+    eip155: {
       '0x1': true,
       '0x89': true,
       '0xaa36a7': true,
@@ -235,6 +246,8 @@ const withMetamaskConnectedToMainnet = {
   },
 };
 
+const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
+
 describe('Defi positions list', () => {
   beforeEach(() => {
     process.env.PORTFOLIO_VIEW = 'true';
@@ -271,6 +284,11 @@ describe('Defi positions list', () => {
           '0x1': true,
         },
       },
+      enabledNetworkMap: {
+        eip155: {
+          '0x1': true,
+        },
+      },
     };
     await act(async () => {
       await integrationTestRender({
@@ -282,8 +300,10 @@ describe('Defi positions list', () => {
     await screen.findByText(accountName);
 
     await clickElementById('account-overview__defi-tab');
-    await clickElementById('sort-by-networks');
-    await clickElementById('network-filter-current__button');
+    if (!isGlobalNetworkSelectorRemoved) {
+      await clickElementById('sort-by-networks');
+      await clickElementById('network-filter-current__button');
+    }
     await waitForElementByText('AaveV3 Mainnet');
     await waitForElementByText('MetaMask Staking');
     await waitForElementByTextToNotBePresent('AaveV3 Polygon');
@@ -343,7 +363,7 @@ describe('Defi positions list', () => {
     expect(stakingPosition).toHaveTextContent('Staked');
     expect(stakingPosition.parentElement).toHaveTextContent('Wrapped Ether');
     expect(stakingPosition.parentElement).toHaveTextContent(
-      '2.10267 Wrapped Ether',
+      '2.103 Wrapped Ether',
     );
     expect(stakingPosition.parentElement).toHaveTextContent('$6,522.67');
 
@@ -358,7 +378,6 @@ describe('Defi positions list', () => {
               MetaMetricsEventName.DeFiDetailsOpened,
         );
 
-      console.log(JSON.stringify(metricsEvents));
       expect(metricsEvents).toHaveLength(2);
     });
 
@@ -376,7 +395,11 @@ describe('Defi positions list', () => {
       event: MetaMetricsEventName.DeFiDetailsOpened,
       properties: {
         location: 'Home',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: '0x1',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         protocol_id: 'aave-v3',
       },
       environmentType: 'background',
@@ -392,7 +415,11 @@ describe('Defi positions list', () => {
       event: MetaMetricsEventName.DeFiDetailsOpened,
       properties: {
         location: 'Home',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: '0x1',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         protocol_id: 'metamask-staking',
       },
       environmentType: 'background',

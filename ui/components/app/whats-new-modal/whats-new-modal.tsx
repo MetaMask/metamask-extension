@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
@@ -20,7 +20,6 @@ import {
 import { getSortedAnnouncementsToShow } from '../../../selectors';
 import { updateViewedNotifications } from '../../../store/actions';
 import { Modal, ModalContent, ModalOverlay } from '../../component-library';
-import { CreateSolanaAccountModal } from '../../multichain/create-solana-account-modal';
 import { getTranslatedUINotifications } from './notifications';
 
 type WhatsNewModalProps = {
@@ -48,14 +47,12 @@ type RenderNotificationProps = {
   notification: NotificationType;
   onClose: () => void;
   onNotificationViewed: (id: number) => Promise<void>;
-  onCreateSolanaAccount: () => void;
 };
 
 const renderNotification = ({
   notification,
   onClose,
   onNotificationViewed,
-  onCreateSolanaAccount,
 }: RenderNotificationProps) => {
   const { id, title, image, modal } = notification;
 
@@ -78,7 +75,11 @@ const renderNotification = ({
       {modal?.body && <modal.body.component title={title} />}
       {modal?.footer && (
         <modal.footer.component
-          onAction={onCreateSolanaAccount}
+          onAction={() => {
+            // No action needed for whats-new notifications
+            // This is required by the ModalFooterProps type
+            console.log('No action needed for now');
+          }}
           onCancel={handleNotificationClose}
         />
       )}
@@ -86,11 +87,11 @@ const renderNotification = ({
   );
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function WhatsNewModal({ onClose }: WhatsNewModalProps) {
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
-  const [showCreateSolanaAccountModal, setShowCreateSolanaAccountModal] =
-    useState(false);
 
   const notifications = useSelector(getSortedAnnouncementsToShow);
 
@@ -109,10 +110,6 @@ export default function WhatsNewModal({ onClose }: WhatsNewModalProps) {
     onClose();
   };
 
-  const handleCreateSolanaAccount = () => {
-    setShowCreateSolanaAccountModal(true);
-  };
-
   return (
     <>
       <Modal
@@ -120,7 +117,7 @@ export default function WhatsNewModal({ onClose }: WhatsNewModalProps) {
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onClose={handleModalClose}
         data-testid="whats-new-modal"
-        isOpen={notifications.length > 0 && !showCreateSolanaAccountModal}
+        isOpen={notifications.length > 0}
         isClosedOnOutsideClick
         isClosedOnEscapeKey
         autoFocus={false}
@@ -134,18 +131,9 @@ export default function WhatsNewModal({ onClose }: WhatsNewModalProps) {
             notification,
             onClose,
             onNotificationViewed: handleNotificationViewed,
-            onCreateSolanaAccount: handleCreateSolanaAccount,
           });
         })}
       </Modal>
-      {showCreateSolanaAccountModal && (
-        <CreateSolanaAccountModal
-          onClose={() => {
-            setShowCreateSolanaAccountModal(false);
-            handleModalClose();
-          }}
-        />
-      )}
     </>
   );
 }

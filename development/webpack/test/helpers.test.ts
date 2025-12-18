@@ -25,32 +25,47 @@ describe('./utils/helpers.ts', () => {
     const originalReaddirSync = fs.readdirSync;
     const otherHtmlEntries = ['one.html', 'two.html'];
     const appRoot = '<app-root>';
+    const htmlPages = join(appRoot, 'html', 'pages');
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mock.method(fs, 'readdirSync', function (path: string, options: any) {
-      if (path === appRoot) {
+      if (path === htmlPages) {
         return [...otherHtmlEntries, 'three.not-html'];
       }
       return originalReaddirSync.call(fs, path, options);
     });
 
     const manifest = {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       manifest_version: 2,
       background: {
         scripts: ['background.js'],
         page: 'background.html',
       },
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       browser_action: {
         // use one from `otherHtmlEntries`, to ensure we don't duplicate things
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         default_popup: otherHtmlEntries[0],
       },
       // images/test.ing.png will be omitted from entry points
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       web_accessible_resources: ['images/test.ing.png', 'testing.js'],
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       content_scripts: [
         {
           matches: ['file://*/*', 'http://*/*', 'https://*/*'],
           js: ['scripts/contentscript.js', 'scripts/inpage.js'],
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           run_at: 'document_start',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           all_frames: true,
         },
         {
@@ -88,9 +103,9 @@ describe('./utils/helpers.ts', () => {
       },
     };
     const expectedHtml = {
-      background: join(appRoot, `background.html`),
-      one: join(appRoot, `one.html`),
-      two: join(appRoot, `two.html`),
+      background: join(htmlPages, `background.html`),
+      one: join(htmlPages, `one.html`),
+      two: join(htmlPages, `two.html`),
       // notice: three.not-html is NOT included, since it doesn't have an `.html` extension
     };
     const expectedEntries = { ...expectedScripts, ...expectedHtml };
@@ -110,10 +125,11 @@ describe('./utils/helpers.ts', () => {
     const originalReaddirSync = fs.readdirSync;
     const otherHtmlEntries = ['one.html', 'two.html'];
     const appRoot = '<app-root>';
+    const htmlPages = join(appRoot, 'html', 'pages');
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mock.method(fs, 'readdirSync', (path: string, options: any) => {
-      if (path === appRoot) {
+      if (path === htmlPages) {
         return [...otherHtmlEntries, 'three.not-html'];
       }
       return originalReaddirSync.call(fs, path, options);
@@ -122,10 +138,16 @@ describe('./utils/helpers.ts', () => {
     const manifest = {
       name: 'MetaMask',
       version: '1.0.0',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       manifest_version: 3,
       background: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         service_worker: 'background.js',
       },
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       web_accessible_resources: [
         {
           matches: ['<all_urls>'],
@@ -133,15 +155,25 @@ describe('./utils/helpers.ts', () => {
           resources: ['images/test.ing.png', 'testing.js'],
         },
       ],
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       browser_action: {
         // use one from `otherHtmlEntries`, to ensure we don't duplicate things
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         default_popup: otherHtmlEntries[0],
       },
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       content_scripts: [
         {
           matches: ['file://*/*', 'http://*/*', 'https://*/*'],
           js: ['scripts/contentscript.js'],
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           run_at: 'document_start',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           all_frames: true,
         },
         {
@@ -163,7 +195,7 @@ describe('./utils/helpers.ts', () => {
         import: join(appRoot, `vendor/trezor/content-script.js`),
       },
       'background.js': {
-        chunkLoading: false,
+        chunkLoading: 'import-scripts',
         filename: 'background.js',
         import: join(appRoot, `background.js`),
       },
@@ -174,8 +206,8 @@ describe('./utils/helpers.ts', () => {
       },
     };
     const expectedHtml = {
-      one: join(appRoot, `one.html`),
-      two: join(appRoot, `two.html`),
+      one: join(htmlPages, `one.html`),
+      two: join(htmlPages, `two.html`),
       // notice: three.not-html is NOT included, since it doesn't have an `.html` extension
     };
     const expectedEntries = {
@@ -197,17 +229,20 @@ describe('./utils/helpers.ts', () => {
   it('should handle manifest.json files with empty sections', () => {
     const originalReaddirSync = fs.readdirSync;
     const appRoot = '<app-root>';
+    const htmlPages = join(appRoot, 'html', 'pages');
 
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mock.method(fs, 'readdirSync', (path: string, options: any) => {
-      if (path === appRoot) {
+      if (path === htmlPages) {
         return [];
       }
       return originalReaddirSync.call(fs, path, options);
     });
 
     const manifestv2 = {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       manifest_version: 2,
       background: {},
     } as helpers.ManifestV2;
@@ -217,24 +252,13 @@ describe('./utils/helpers.ts', () => {
     const manifestv3 = {
       name: 'MetaMask',
       version: '1.0.0',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       manifest_version: 3,
       background: {},
     } as helpers.ManifestV3;
     const { entry: entryv3 } = helpers.collectEntries(manifestv3, appRoot);
     assert.deepStrictEqual(entryv3, {});
-  });
-
-  it('should throw if an entry file starts with an underscore', () => {
-    const manifest = {
-      manifest_version: 2,
-      background: {
-        page: '_badfile.html',
-      },
-    } as helpers.ManifestV2;
-    assert.throws(
-      () => helpers.collectEntries(manifest, ''),
-      /Error: Invalid Entrypoint Filename Detected/u,
-    );
   });
 
   describe('logStats', () => {

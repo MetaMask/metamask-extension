@@ -18,6 +18,12 @@ import { useBalanceChanges } from '../../../simulation-details/useBalanceChanges
 import { OriginRow } from '../shared/transaction-details/transaction-details';
 import { NetworkRow } from '../shared/network-row/network-row';
 
+const nonNativeSendTransactionTypes = [
+  TransactionType.tokenMethodTransfer,
+  TransactionType.tokenMethodTransferFrom,
+  TransactionType.tokenMethodSafeTransferFrom,
+];
+
 export const TokenDetailsSection = () => {
   const t = useI18nContext();
   const { currentConfirmation: transactionMeta } =
@@ -28,6 +34,7 @@ export const TokenDetailsSection = () => {
     selectConfirmationAdvancedDetailsOpen,
   );
 
+  const transactionType = transactionMeta.type as TransactionType;
   const isSimulationError = Boolean(
     transactionMeta.simulationData?.error?.code,
   );
@@ -39,8 +46,11 @@ export const TokenDetailsSection = () => {
   const isSimulationEmpty = balanceChanges.length === 0;
 
   const shouldShowTokenRow =
-    transactionMeta.type !== TransactionType.simpleSend &&
-    (showAdvancedDetails || isSimulationEmpty || isSimulationError);
+    transactionType !== TransactionType.simpleSend &&
+    (showAdvancedDetails ||
+      isSimulationEmpty ||
+      nonNativeSendTransactionTypes.includes(transactionType) ||
+      isSimulationError);
 
   const tokenRow = shouldShowTokenRow && (
     <ConfirmInfoRow

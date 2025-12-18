@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 import {
   BackgroundColor,
   BorderColor,
@@ -11,11 +12,13 @@ import {
 } from '../../../helpers/constants/connected-sites';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { BadgeStatus } from '../badge-status';
-import { isInternalAccountInPermittedAccountIds } from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
 import {
   getAllPermittedAccountsForCurrentTab,
   getInternalAccountByAddress,
+  getIsMultichainAccountsState2Enabled,
 } from '../../../selectors';
+import { getAccountGroupsByAddress } from '../../../selectors/multichain-accounts/account-tree';
+import { MultichainAccountsState } from '../../../selectors/multichain-accounts/account-tree.types';
 
 export type ConnectedStatusProps = {
   address: string;
@@ -36,14 +39,32 @@ export const ConnectedStatus: React.FC<ConnectedStatusProps> = ({
 }): JSX.Element => {
   const t = useI18nContext();
 
+  const isState2Enabled = useSelector(getIsMultichainAccountsState2Enabled);
+  const addressArray = useMemo(() => [address], [address]);
+  const [accountGroup] = useSelector((state: MultichainAccountsState) =>
+    getAccountGroupsByAddress(state, addressArray),
+  );
+
   // Get the permitted accounts and the internal account for the address
   const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
   const internalAccount = useSelector((state) =>
     getInternalAccountByAddress(state, address),
   );
 
-  const currentTabIsConnectedToSelectedAddress =
-    isInternalAccountInPermittedAccountIds(internalAccount, permittedAccounts);
+  const currentTabIsConnectedToSelectedAddress = useMemo(() => {
+    if (!isState2Enabled) {
+      return (
+        internalAccount &&
+        isInternalAccountInPermittedAccountIds(
+          internalAccount,
+          permittedAccounts,
+        )
+      );
+    }
+    return accountGroup?.accounts.some((account) =>
+      isInternalAccountInPermittedAccountIds(account, permittedAccounts),
+    );
+  }, [isState2Enabled, accountGroup, internalAccount, permittedAccounts]);
 
   let status = STATUS_NOT_CONNECTED;
   if (isActive) {

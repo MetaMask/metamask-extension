@@ -6,6 +6,7 @@ import { ManifestPlugin } from '../utils/plugins/ManifestPlugin';
 import { ZipOptions } from '../utils/plugins/ManifestPlugin/types';
 import { Manifest } from '../utils/helpers';
 import { transformManifest } from '../utils/plugins/ManifestPlugin/helpers';
+import { MANIFEST_DEV_KEY } from '../../build/constants';
 import { generateCases, type Combination, mockWebpack } from './helpers';
 
 describe('ManifestPlugin', () => {
@@ -64,11 +65,9 @@ describe('ManifestPlugin', () => {
         zip,
       } = testCase;
       const context = join(__dirname, `fixtures/ManifestPlugin/${fixture}`);
-      const baseManifest = require(join(
-        context,
-        `manifest/v${manifestVersion}`,
-        '_base.json',
-      ));
+      const baseManifest = require(
+        join(context, `manifest/v${manifestVersion}`, '_base.json'),
+      );
       const expectedAssets = getExpectedAssets(zip, browsers, files);
       const validateManifest = getValidateManifest(testCase, baseManifest);
 
@@ -91,10 +90,14 @@ describe('ManifestPlugin', () => {
         compilation.options.context = context;
         const manifestPlugin = new ManifestPlugin({
           browsers,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           manifest_version: manifestVersion,
           version: '1.0.0.0',
           versionName: '1.0.0',
           description,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           web_accessible_resources: webAccessibleResources,
           ...getZipOptions(zip),
         });
@@ -220,10 +223,13 @@ describe('ManifestPlugin', () => {
   describe('should transform the manifest object', () => {
     const keep = ['scripts/contentscript.js', 'scripts/inpage.js'];
     const argsMatrix = {
-      lockdown: [true, false],
       test: [true, false],
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      manifest_version: [2, 3] as const,
     };
     const manifestMatrix = {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       content_scripts: [
         undefined,
         [],
@@ -244,7 +250,7 @@ describe('ManifestPlugin', () => {
         const hasTabsPermission = (manifest.permissions || []).includes('tabs');
         const transform = transformManifest(args, false);
 
-        if (args.test && hasTabsPermission) {
+        if (args.test && args.manifest_version === 2 && hasTabsPermission) {
           it("throws in test mode when manifest already contains 'tabs' permission", () => {
             assert(transform, 'transform should be truthy');
             const p = () => {
@@ -256,28 +262,10 @@ describe('ManifestPlugin', () => {
               'should throw when manifest contains tabs already',
             );
           });
-        } else if (!args.lockdown || args.test) {
-          it(`works for args.test of ${args.test} and args.lockdown of ${
-            args.lockdown
-          }. Manifest: ${JSON.stringify(manifest)}`, () => {
+        } else if (args.test && args.manifest_version === 2) {
+          it(`works for args.test of ${args.test}. Manifest: ${JSON.stringify(manifest)}`, () => {
             assert(transform, 'transform should be truthy');
             const transformed = transform(manifest, 'chrome');
-            if (args.lockdown) {
-              assert.deepStrictEqual(
-                transformed.content_scripts,
-                manifest.content_scripts,
-                'nothing should change in lockdown mode',
-              );
-            } else {
-              const stripped = manifest.content_scripts?.[0]?.js?.filter(
-                (js) => js !== 'lockdown.js',
-              );
-              assert.deepStrictEqual(
-                transformed.content_scripts?.[0]?.js,
-                stripped,
-                'lockdown.js should be removed when not in lockdown mode.',
-              );
-            }
 
             if (args.test) {
               assert.deepStrictEqual(
@@ -297,9 +285,16 @@ describe('ManifestPlugin', () => {
   describe('manifest flags in development mode', () => {
     const emptyTestManifest = {} as chrome.runtime.Manifest;
     const notEmptyTestManifest = {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       _flags: { remoteFeatureFlags: { testFlag: false, testFlag2: 'value1' } },
     } as unknown as chrome.runtime.Manifest;
-    const mockFlags = { _flags: { remoteFeatureFlags: { testFlag: true } } };
+    const mockFlags = {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      _flags: { remoteFeatureFlags: { testFlag: true } },
+      key: MANIFEST_DEV_KEY,
+    };
     const manifestOverridesPath = 'testManifestOverridesPath.json';
     const fs = require('node:fs');
     const { mock } = require('node:test');
@@ -315,7 +310,8 @@ describe('ManifestPlugin', () => {
         return fs.readFileSync.original(path, options);
       });
       const transform = transformManifest(
-        { lockdown: true, test: false },
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        { test: false, manifest_version: 3 },
         true,
         manifestOverridesPath,
       );
@@ -338,7 +334,8 @@ describe('ManifestPlugin', () => {
         return fs.readFileSync.original(path, options);
       });
       const transform = transformManifest(
-        { lockdown: true, test: false },
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        { test: false, manifest_version: 3 },
         true,
         manifestOverridesPath,
       );
@@ -348,12 +345,15 @@ describe('ManifestPlugin', () => {
       assert.deepStrictEqual(
         transformed,
         {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           _flags: {
             remoteFeatureFlags: {
               testFlag2: 'value1',
               testFlag: true,
             },
           },
+          key: MANIFEST_DEV_KEY,
         },
         'manifest should merge original properties with overrides, with overrides taking precedence',
       );
@@ -367,7 +367,8 @@ describe('ManifestPlugin', () => {
       });
 
       const transform = transformManifest(
-        { lockdown: true, test: false },
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        { test: false, manifest_version: 3 },
         true,
         manifestOverridesPath,
       );
@@ -384,7 +385,8 @@ describe('ManifestPlugin', () => {
 
     it('silently ignores non-ENOENT filesystem errors', () => {
       const transform = transformManifest(
-        { lockdown: true, test: false },
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        { test: false, manifest_version: 3 },
         true,
         manifestOverridesPath,
       );

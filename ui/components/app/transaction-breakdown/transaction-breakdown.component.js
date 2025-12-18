@@ -6,6 +6,7 @@ import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display
 import HexToDecimal from '../../ui/hex-to-decimal';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
+import { RecipientWithAddress } from '../../ui/sender-to-recipient/sender-to-recipient.component';
 import TransactionBreakdownRow from './transaction-breakdown-row';
 
 export default class TransactionBreakdown extends PureComponent {
@@ -32,6 +33,8 @@ export default class TransactionBreakdown extends PureComponent {
     l1HexGasTotal: PropTypes.string,
     sourceAmountFormatted: PropTypes.string,
     destinationAmountFormatted: PropTypes.string,
+    gasPaidByAddress: PropTypes.string,
+    chainId: PropTypes.string,
   };
 
   static defaultProps = {
@@ -59,6 +62,8 @@ export default class TransactionBreakdown extends PureComponent {
       l1HexGasTotal,
       sourceAmountFormatted,
       destinationAmountFormatted,
+      gasPaidByAddress,
+      chainId,
     } = this.props;
     return (
       <div className={classnames('transaction-breakdown', className)}>
@@ -101,6 +106,15 @@ export default class TransactionBreakdown extends PureComponent {
             >
               {primaryCurrency}
             </span>
+          </TransactionBreakdownRow>
+        )}
+        {gasPaidByAddress && (
+          // TODO: Use i18n
+          <TransactionBreakdownRow title="Gas Paid By">
+            <RecipientWithAddress
+              checksummedRecipientAddress={gasPaidByAddress}
+              addressOnly
+            />
           </TransactionBreakdownRow>
         )}
         <TransactionBreakdownRow
@@ -246,12 +260,14 @@ export default class TransactionBreakdown extends PureComponent {
             type={PRIMARY}
             value={totalInHex}
             numberOfDecimals={l1HexGasTotal ? 18 : null}
+            chainId={chainId}
           />
           {showFiat && (
             <UserPreferencedCurrencyDisplay
               className="transaction-breakdown__value"
               type={SECONDARY}
               value={totalInHex}
+              chainId={chainId}
             />
           )}
         </TransactionBreakdownRow>

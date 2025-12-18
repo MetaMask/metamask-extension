@@ -1,7 +1,7 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import messages from '../../../../app/_locales/en/messages.json';
@@ -13,6 +13,7 @@ import ConfigureSnapPopup, {
 const mockOnClose = jest.fn();
 const mockStore = configureMockStore([])(mockState);
 describe('ConfigureSnapPopup', () => {
+  // @ts-expect-error mocking platform
   global.platform = { openTab: jest.fn(), closeCurrentWindow: jest.fn() };
 
   it('should show configure popup title and description', async () => {

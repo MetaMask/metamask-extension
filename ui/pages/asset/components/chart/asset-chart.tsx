@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Chart,
   LineElement,
@@ -14,7 +14,14 @@ import {
 import { Line } from 'react-chartjs-2';
 import classnames from 'classnames';
 import { brandColor } from '@metamask/design-tokens';
-import { CaipAssetType, Hex } from '@metamask/utils';
+import {
+  Hex,
+  isCaipAssetType,
+  isHexString,
+  KnownCaipNamespace,
+  toCaipAssetType,
+  hexToNumber,
+} from '@metamask/utils';
 import { trim } from 'lodash';
 import { Duration } from 'luxon';
 import { useTheme } from '../../../../hooks/useTheme';
@@ -32,6 +39,7 @@ import {
   ButtonBase,
   ButtonBaseSize,
 } from '../../../../components/component-library';
+import { TokenFiatDisplayInfo } from '../../../../components/app/assets/types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useHistoricalPrices } from '../../hooks/useHistoricalPrices';
 import { loadingOpacity } from '../../util';
@@ -54,18 +62,22 @@ Chart.register(
 const initialChartOptions: ChartOptions<'line'> & { fill: boolean } = {
   normalized: true,
   parsing: false,
-  aspectRatio: 2.9,
+  aspectRatio: 2.6,
   layout: { autoPadding: false, padding: 0 },
   animation: { duration: 0 },
   fill: true,
   backgroundColor: ({ chart }) => {
     const gradient = chart.ctx.createLinearGradient(0, 0, 0, chart.height);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     gradient.addColorStop(0, `${chart.options.borderColor}60`);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     gradient.addColorStop(1, `${chart.options.borderColor}00`);
     return gradient;
   },
   elements: {
-    line: { borderWidth: 2 },
+    line: { borderWidth: 1.5 },
     point: { pointStyle: false },
   },
   plugins: {
@@ -127,22 +139,49 @@ const getTranslatedTimeRangeLabel = (
   );
 };
 
+export function convertAddressToAssetCaipType(
+  address: string,
+  chainId: string,
+) {
+  if (isCaipAssetType(address)) {
+    return address;
+  }
+
+  // Create EIP155 EVM asset type
+  if (isHexString(address) && isHexString(chainId)) {
+    return toCaipAssetType(
+      KnownCaipNamespace.Eip155,
+      hexToNumber(chainId).toString(),
+      'erc20',
+      address,
+    );
+  }
+
+  // Unsupported CAIP asset type
+  return undefined;
+}
+
 // A chart showing historic prices for a native or token asset
 const AssetChart = ({
   chainId,
   address,
   currentPrice,
   currency,
+  asset,
 }: {
   chainId: Hex;
   address: string;
   currentPrice?: number;
   currency: string;
+  asset?: TokenFiatDisplayInfo;
 }) => {
   const t = useI18nContext();
   const theme = useTheme();
 
-  const timeRanges = useChartTimeRanges(address as CaipAssetType, currency);
+  const caipAssetType = useMemo(() => {
+    return convertAddressToAssetCaipType(address, chainId);
+  }, [address, chainId]);
+  const timeRanges = useChartTimeRanges(caipAssetType, currency);
 
   const [selectedTimeRange, setSelectedTimeRange] = useState<string>(
     timeRanges[0] ?? 'P1D',
@@ -190,7 +229,11 @@ const AssetChart = ({
   }, [currentPrice]);
 
   return (
-    <Box borderRadius={BorderRadius.LG}>
+    <Box
+      borderRadius={BorderRadius.LG}
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+    >
       <AssetChartPrice
         ref={priceRef}
         loading={loading}
@@ -198,10 +241,17 @@ const AssetChart = ({
         price={currentPrice}
         date={Date.now()}
         comparePrice={prices?.[0]?.y}
+        asset={asset}
       />
+
       <Box
         data-testid="asset-price-chart"
         marginTop={4}
+        backgroundColor={
+          loading && !prices
+            ? BackgroundColor.backgroundSection
+            : BackgroundColor.transparent
+        }
         borderRadius={BorderRadius.LG}
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
@@ -275,9 +325,9 @@ const AssetChart = ({
           style={prices ? undefined : { visibility: `hidden` }}
           display={Display.Flex}
           justifyContent={JustifyContent.spaceBetween}
-          marginTop={4}
-          marginLeft={4}
-          marginRight={4}
+          marginTop={2}
+          marginLeft={3}
+          marginRight={3}
         >
           {timeRanges.map((timeRange) => (
             <ButtonBase
@@ -286,8 +336,10 @@ const AssetChart = ({
                 'time-range-button__selected': timeRange === selectedTimeRange,
               })}
               onClick={() => setSelectedTimeRange(timeRange)}
-              variant={TextVariant.bodySmMedium}
+              variant={TextVariant.bodyXsMedium}
               size={ButtonBaseSize.Sm}
+              paddingLeft={2}
+              paddingRight={2}
               backgroundColor={BackgroundColor.transparent}
               color={TextColor.textAlternative}
             >

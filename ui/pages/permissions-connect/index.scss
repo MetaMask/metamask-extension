@@ -20,7 +20,7 @@
   background: var(--color-background-default);
   display: flex;
   flex-direction: column;
-  height: auto;
+  height: 100%;
   width: 100%;
 
   @include design-system.screen-sm-min {
@@ -62,10 +62,6 @@
     grid-column: 2;
     justify-self: flex-end;
     font-weight: bold;
-  }
-
-  .connect-page {
-    background-color: var(--color-background-alternative); // main-container adds the width but overrides the boxProps. So, we need extra class to apply css
   }
 }
 

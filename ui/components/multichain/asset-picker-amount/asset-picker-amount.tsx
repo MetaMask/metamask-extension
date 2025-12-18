@@ -1,6 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { TokenListMap } from '@metamask/assets-controllers';
+import {
+  AddNetworkFields,
+  NetworkConfiguration,
+} from '@metamask/network-controller';
+import { CaipChainId } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Box, Text } from '../../component-library';
 import {
@@ -14,6 +19,9 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
+  getAllChainsToPoll,
+  getCompleteAddressBook,
+  getCurrentNetwork,
   getIpfsGateway,
   getNativeCurrencyImage,
   getSelectedInternalAccount,
@@ -27,14 +35,25 @@ import {
 import {
   getCurrentDraftTransaction,
   getIsNativeSendPossible,
+  getRecipient,
   getSendMaxModeState,
+  updateRecipient,
   type Amount,
   type Asset,
 } from '../../../ducks/send';
-import { NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR } from '../../../pages/confirmations/send/send.constants';
+import { NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR } from '../../../pages/confirmations/send-legacy/send.constants';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import useGetAssetImageUrl from '../../../hooks/useGetAssetImageUrl';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import {
+  getCurrentChainId,
+  getNetworkConfigurationsByChainId,
+} from '../../../../shared/modules/selectors/networks';
+import {
+  detectNfts,
+  setActiveNetworkWithError,
+  setEnabledNetworks,
+} from '../../../store/actions';
+import { setToChainId } from '../../../ducks/bridge/actions';
 import MaxClearButton from './max-clear-button';
 import {
   AssetPicker,
@@ -51,7 +70,9 @@ type AssetPickerAmountProps = OverridingUnion<
     amount: Amount;
     isAmountLoading?: boolean;
     action?: 'send' | 'receive';
+    disableMaxButton?: boolean;
     error?: string;
+    showNetworkPicker?: boolean;
     /**
      * Callback for when the amount changes; disables the input when undefined
      */
@@ -62,6 +83,13 @@ type AssetPickerAmountProps = OverridingUnion<
   }
 >;
 
+type NetworkOption =
+  | (NetworkConfiguration & {
+      nickname?: string;
+    })
+  | AddNetworkFields
+  | (Omit<NetworkConfiguration, 'chainId'> & { chainId: CaipChainId });
+
 // A component that combines an asset picker with an input for the amount to send.
 export const AssetPickerAmount = ({
   asset,
@@ -69,12 +97,14 @@ export const AssetPickerAmount = ({
   onAmountChange,
   action,
   isAmountLoading,
+  disableMaxButton = false,
+  showNetworkPicker,
   error: passedError,
   ...assetPickerProps
 }: AssetPickerAmountProps) => {
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const t = useI18nContext();
-
+  const dispatch = useDispatch();
   const { swapQuotesError, sendAsset, receiveAsset } = useSelector(
     getCurrentDraftTransaction,
   );
@@ -88,8 +118,14 @@ export const AssetPickerAmount = ({
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
   const nativeCurrencyImageUrl = useSelector(getNativeCurrencyImage);
   const tokenList = useSelector(getTokenList) as TokenListMap;
+  const addressBook = useSelector(getCompleteAddressBook);
+  const recipient = useSelector(getRecipient);
 
   const ipfsGateway = useSelector(getIpfsGateway);
+  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+  const showNetworkPickerinModal = showNetworkPicker;
+  const currentNetwork = useSelector(getCurrentNetwork);
+  const allChainIds = useSelector(getAllChainsToPoll);
 
   useEffect(() => {
     // if this input is immutable – avoids double fire
@@ -109,7 +145,7 @@ export const AssetPickerAmount = ({
 
     // disable max mode and replace with "0"
     onAmountChange('0x0');
-  }, [isNativeSendPossible]);
+  }, [isDisabled, isMaxMode, isNativeSendPossible, onAmountChange]);
 
   const [isFocused, setIsFocused] = useState(false);
   const [isNFTInputChanged, setIsTokenInputChanged] = useState(false);
@@ -146,7 +182,7 @@ export const AssetPickerAmount = ({
     if (!asset) {
       throw new Error('No asset is drafted for sending');
     }
-  }, [selectedAccount]);
+  }, [asset, selectedAccount]);
 
   let borderColor = BorderColor.borderMuted;
 
@@ -222,6 +258,52 @@ export const AssetPickerAmount = ({
         <AssetPicker
           action={action}
           asset={standardizedAsset}
+          networkProps={
+            showNetworkPickerinModal
+              ? {
+                  network: currentNetwork as unknown as NetworkOption,
+                  networks: Object.values(allNetworks) as NetworkOption[],
+                  onNetworkChange: (networkConfig) => {
+                    const rpcEndpoint =
+                      networkConfig.rpcEndpoints[
+                        networkConfig.defaultRpcEndpointIndex
+                      ];
+                    dispatch(setToChainId(networkConfig.chainId));
+                    dispatch(detectNfts(allChainIds));
+
+                    dispatch(setEnabledNetworks(networkConfig.chainId));
+                    dispatch(
+                      setActiveNetworkWithError(
+                        'networkClientId' in rpcEndpoint
+                          ? rpcEndpoint.networkClientId
+                          : networkConfig.chainId,
+                      ),
+                    );
+
+                    // Only proceed if we have recipient and addressBook
+                    if (recipient?.address && addressBook) {
+                      // Check if there's a contact with the same address on the NEW network
+                      const contactIsNotExistsOnNewNetwork = addressBook.find(
+                        (item) => {
+                          return (
+                            item.address === recipient.address &&
+                            item.chainId !== networkConfig.chainId
+                          );
+                        },
+                      );
+
+                      // If no contact exists on the new network, clear the recipient
+                      if (contactIsNotExistsOnNewNetwork) {
+                        dispatch(
+                          updateRecipient({ address: '', nickname: '' }),
+                        );
+                      }
+                    }
+                  },
+                  header: t('yourNetworks'),
+                }
+              : undefined
+          }
           {...assetPickerProps}
         />
         <SwappableCurrencyInput
@@ -245,9 +327,10 @@ export const AssetPickerAmount = ({
           </Text>
         )}
         {/* The fiat value will always leave dust and is often inaccurate anyways */}
-        {onAmountChange && isNativeSendPossible && !isSwapAndSendFromNative && (
-          <MaxClearButton asset={asset} />
-        )}
+        {onAmountChange &&
+          isNativeSendPossible &&
+          !isSwapAndSendFromNative &&
+          !disableMaxButton && <MaxClearButton asset={asset} />}
       </Box>
     </Box>
   );

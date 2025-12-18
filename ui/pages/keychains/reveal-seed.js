@@ -1,7 +1,7 @@
 import qrCode from 'qrcode-generator';
 import React, { useContext, useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { getErrorMessage } from '../../../shared/modules/error';
 import {
   MetaMetricsEventCategory,
@@ -26,7 +26,6 @@ import Box from '../../components/ui/box';
 import ExportTextContainer from '../../components/ui/export-text-container';
 import { Tab, Tabs } from '../../components/ui/tabs';
 import { MetaMetricsContext } from '../../contexts/metametrics';
-import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
   AlignItems,
   BlockSize,
@@ -39,25 +38,26 @@ import {
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { requestRevealSeedWords } from '../../store/actions';
-import { getHDEntropyIndex } from '../../selectors/selectors';
+import { getHDEntropyIndex } from '../../selectors';
+import { endTrace, trace, TraceName } from '../../../shared/lib/trace';
+import { PREVIOUS_ROUTE } from '../../helpers/constants/routes';
 
 const PASSWORD_PROMPT_SCREEN = 'PASSWORD_PROMPT_SCREEN';
 const REVEAL_SEED_SCREEN = 'REVEAL_SEED_SCREEN';
 
-export default function RevealSeedPage() {
-  const history = useHistory();
-  const { keyringId } = useParams();
+function RevealSeedPage() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
+  const { keyringId } = useParams();
 
   const [screen, setScreen] = useState(PASSWORD_PROMPT_SCREEN);
   const [password, setPassword] = useState('');
   const [seedWords, setSeedWords] = useState(null);
   const [completedLongPress, setCompletedLongPress] = useState(false);
   const [error, setError] = useState(null);
-  const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const [isShowingHoldModal, setIsShowingHoldModal] = useState(false);
   const [srpViewEventTracked, setSrpViewEventTracked] = useState(false);
 
@@ -98,6 +98,9 @@ export default function RevealSeedPage() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    trace({
+      name: TraceName.RevealSeed,
+    });
     setSeedWords(null);
     setCompletedLongPress(false);
     setError(null);
@@ -126,6 +129,11 @@ export default function RevealSeedPage() {
           },
         });
         setError(getErrorMessage(e));
+      })
+      .finally(() => {
+        endTrace({
+          name: TraceName.RevealSeed,
+        });
       });
   };
 
@@ -210,19 +218,13 @@ export default function RevealSeedPage() {
         >
           <Tab
             name={t('revealSeedWordsText')}
-            className="reveal-seed__tab"
-            activeClassName="reveal-seed__active-tab"
             tabKey="text-seed"
+            className="flex-1"
           >
             <Label marginTop={4}>{t('yourPrivateSeedPhrase')}</Label>
             <ExportTextContainer text={seedWords} onClickCopy={onClickCopy} />
           </Tab>
-          <Tab
-            name={t('revealSeedWordsQR')}
-            className="reveal-seed__tab"
-            activeClassName="reveal-seed__active-tab"
-            tabKey="qr-srp"
-          >
+          <Tab name={t('revealSeedWordsQR')} tabKey="qr-srp" className="flex-1">
             <Box
               display={Display.Flex}
               justifyContent={JustifyContent.center}
@@ -266,7 +268,7 @@ export default function RevealSeedPage() {
                 hd_entropy_index: hdEntropyIndex,
               },
             });
-            history.push(mostRecentOverviewPage);
+            navigate(PREVIOUS_ROUTE);
           }}
         >
           {t('cancel')}
@@ -315,7 +317,7 @@ export default function RevealSeedPage() {
                 key_type: MetaMetricsEventKeyType.Srp,
               },
             });
-            history.push(mostRecentOverviewPage);
+            navigate(PREVIOUS_ROUTE);
           }}
         >
           {t('close')}
@@ -408,3 +410,5 @@ export default function RevealSeedPage() {
     </Box>
   );
 }
+
+export default RevealSeedPage;

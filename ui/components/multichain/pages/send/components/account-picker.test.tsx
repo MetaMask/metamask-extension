@@ -3,7 +3,8 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { BtcAccountType } from '@metamask/keyring-api';
 import mockState from '../../../../../../test/data/mock-state.json';
-import { fireEvent, renderWithProvider } from '../../../../../../test/jest';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import { fireEvent } from '../../../../../../test/jest';
 import { SEND_STAGES } from '../../../../../ducks/send';
 import {
   INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
@@ -43,6 +44,8 @@ const render = (
       ...state.metamask,
       permissionHistory: {
         'https://test.dapp': {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           eth_accounts: {
             accounts: {
               '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': 1596681857076,
@@ -133,10 +136,18 @@ describe('SendPageAccountPicker', () => {
             {
               type: 'HD Key Tree',
               accounts: [mockAccount.address],
+              metadata: {
+                id: 'test-keyring-id-1',
+                name: '',
+              },
             },
             {
               type: 'Snap Keyring',
               accounts: [mockBtcAccount.address],
+              metadata: {
+                id: 'test-keyring-id-2',
+                name: '',
+              },
             },
           ],
         },

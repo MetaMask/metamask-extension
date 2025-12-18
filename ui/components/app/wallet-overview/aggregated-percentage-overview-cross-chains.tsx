@@ -10,13 +10,14 @@ import {
   getPreferences,
   getMarketData,
   getChainIdsToPoll,
+  selectAnyEnabledNetworksAreAvailable,
 } from '../../../selectors';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { formatValue, isValidAmount } from '../../../../app/scripts/lib/util';
-import { getIntlLocale } from '../../../ducks/locale/locale';
+import { useFormatters } from '../../../hooks/useFormatters';
 import {
   Display,
   TextColor,
@@ -27,9 +28,15 @@ import { getCalculatedTokenAmount1dAgo } from '../../../helpers/utils/util';
 import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountTotalCrossChainFiatBalance';
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import { TokenWithBalance } from '../assets/types';
+import { Skeleton } from '../../component-library/skeleton';
+import { isZeroAmount } from '../../../helpers/utils/number-utils';
 
-export const AggregatedPercentageOverviewCrossChains = () => {
-  const locale = useSelector(getIntlLocale);
+export const AggregatedPercentageOverviewCrossChains = ({
+  trailingChild,
+}: {
+  trailingChild: () => JSX.Element | null;
+}) => {
+  const { formatCurrencyCompact } = useFormatters();
   const fiatCurrency = useSelector(getCurrentCurrency);
   const { privacyMode } = useSelector(getPreferences);
   const selectedAccount = useSelector(getSelectedAccount);
@@ -50,6 +57,9 @@ export const AggregatedPercentageOverviewCrossChains = () => {
   } = useAccountTotalCrossChainFiatBalance(
     selectedAccount,
     formattedTokensWithBalancesPerChain,
+  );
+  const anyEnabledNetworksAreAvailable = useSelector(
+    selectAnyEnabledNetworksAreAvailable,
   );
 
   const getPerChainTotalFiat1dAgo = (
@@ -113,7 +123,9 @@ export const AggregatedPercentageOverviewCrossChains = () => {
   const amountChangeCrossChains =
     totalCrossChainBalance - crossChainTotalBalance1dAgo;
   const percentageChangeCrossChains =
-    (amountChangeCrossChains / crossChainTotalBalance1dAgo) * 100 || 0;
+    crossChainTotalBalance1dAgo === 0
+      ? 0
+      : (amountChangeCrossChains / crossChainTotalBalance1dAgo) * 100;
 
   const formattedPercentChangeCrossChains = formatValue(
     amountChangeCrossChains === 0 ? 0 : percentageChangeCrossChains,
@@ -125,27 +137,10 @@ export const AggregatedPercentageOverviewCrossChains = () => {
     formattedAmountChangeCrossChains =
       (amountChangeCrossChains as number) >= 0 ? '+' : '';
 
-    const options = {
-      notation: 'compact',
-      compactDisplay: 'short',
-      maximumFractionDigits: 2,
-    } as const;
-
-    try {
-      // For currencies compliant with ISO 4217 Standard
-      formattedAmountChangeCrossChains += `${Intl.NumberFormat(locale, {
-        ...options,
-        style: 'currency',
-        currency: fiatCurrency,
-      }).format(amountChangeCrossChains as number)} `;
-    } catch {
-      // Non-standard Currency Codes
-      formattedAmountChangeCrossChains += `${Intl.NumberFormat(locale, {
-        ...options,
-        minimumFractionDigits: 2,
-        style: 'decimal',
-      }).format(amountChangeCrossChains as number)} `;
-    }
+    formattedAmountChangeCrossChains += formatCurrencyCompact(
+      amountChangeCrossChains,
+      fiatCurrency,
+    );
   }
 
   let color = TextColor.textDefault;
@@ -163,28 +158,36 @@ export const AggregatedPercentageOverviewCrossChains = () => {
   }
 
   return (
-    <Box display={Display.Flex}>
-      <SensitiveText
-        variant={TextVariant.bodyMdMedium}
-        color={color}
-        data-testid="aggregated-value-change"
-        style={{ whiteSpace: 'pre' }}
-        isHidden={privacyMode}
-        ellipsis
-        length="10"
-      >
-        {formattedAmountChangeCrossChains}
-      </SensitiveText>
-      <SensitiveText
-        variant={TextVariant.bodyMdMedium}
-        color={color}
-        data-testid="aggregated-percentage-change"
-        isHidden={privacyMode}
-        ellipsis
-        length="10"
-      >
-        {formattedPercentChangeCrossChains}
-      </SensitiveText>
-    </Box>
+    <Skeleton
+      isLoading={
+        !anyEnabledNetworksAreAvailable &&
+        isZeroAmount(formattedAmountChangeCrossChains)
+      }
+    >
+      <Box display={Display.Flex} className="gap-1">
+        <SensitiveText
+          variant={TextVariant.bodyMdMedium}
+          color={color}
+          data-testid="aggregated-value-change"
+          style={{ whiteSpace: 'pre' }}
+          isHidden={privacyMode}
+          ellipsis
+          length="10"
+        >
+          {formattedAmountChangeCrossChains}
+        </SensitiveText>
+        <SensitiveText
+          variant={TextVariant.bodyMdMedium}
+          color={color}
+          data-testid="aggregated-percentage-change"
+          isHidden={privacyMode}
+          ellipsis
+          length="10"
+        >
+          {formattedPercentChangeCrossChains}
+        </SensitiveText>
+      </Box>
+      {trailingChild()}
+    </Skeleton>
   );
 };

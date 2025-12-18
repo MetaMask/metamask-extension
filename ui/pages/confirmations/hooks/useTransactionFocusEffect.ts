@@ -6,6 +6,7 @@ import { useWindowFocus } from '../../../hooks/useWindowFocus';
 import { useConfirmContext } from '../context/confirm';
 
 const FOCUSABLE_TYPES: Set<TransactionType> = new Set([
+  TransactionType.batch,
   TransactionType.contractInteraction,
   TransactionType.deployContract,
   TransactionType.simpleSend,

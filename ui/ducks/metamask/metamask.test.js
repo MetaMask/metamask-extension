@@ -10,7 +10,6 @@ import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import reduceMetamask, {
-  getBlockGasLimit,
   getConversionRate,
   getGasEstimateType,
   getGasEstimateTypeByChainId,
@@ -23,6 +22,7 @@ import reduceMetamask, {
   isNotEIP1559Network,
   getCurrentCurrency,
   getAllNfts,
+  getTokensByChainId,
 } from './metamask';
 
 jest.mock('@metamask/transaction-controller', () => ({
@@ -118,10 +118,6 @@ describe('MetaMask Reducers', () => {
           selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
         },
         cachedBalances: {},
-        currentBlockGasLimit: '0x4c1878',
-        currentBlockGasLimitByChainId: {
-          '0x5': '0x4c1878',
-        },
         useCurrencyRateCheck: true,
         currencyRates: {
           GoerliETH: {
@@ -130,32 +126,6 @@ describe('MetaMask Reducers', () => {
         },
         currentCurrency: 'usd',
         ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI }),
-        accounts: {
-          '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825': {
-            code: '0x',
-            balance: '0x47c9d71831c76efe',
-            nonce: '0x1b',
-            address: '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825',
-          },
-          '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb': {
-            code: '0x',
-            balance: '0x37452b1315889f80',
-            nonce: '0xa',
-            address: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
-          },
-          '0x2f8d4a878cfa04a6e60d46362f5644deab66572d': {
-            code: '0x',
-            balance: '0x30c9d71831c76efe',
-            nonce: '0x1c',
-            address: '0x2f8d4a878cfa04a6e60d46362f5644deab66572d',
-          },
-          '0xd85a4b6a394794842887b8284293d69163007bbb': {
-            code: '0x',
-            balance: '0x0',
-            nonce: '0x0',
-            address: '0xd85a4b6a394794842887b8284293d69163007bbb',
-          },
-        },
         accountsByChainId: {
           '0x5': {
             '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825': {
@@ -288,12 +258,6 @@ describe('MetaMask Reducers', () => {
   });
 
   describe('metamask state selectors', () => {
-    describe('getBlockGasLimit', () => {
-      it('should return the current block gas limit', () => {
-        expect(getBlockGasLimit(mockState)).toStrictEqual('0x4c1878');
-      });
-    });
-
     describe('getConversionRate()', () => {
       it('should return the eth conversion rate', () => {
         expect(getConversionRate(mockState)).toStrictEqual(1200.88200327);
@@ -738,6 +702,74 @@ describe('MetaMask Reducers', () => {
           },
         ],
       });
+    });
+  });
+
+  describe('getTokensByChainId', () => {
+    const state = {
+      metamask: {
+        allTokens: {
+          '0x1': {
+            '0x123': [
+              { symbol: 'ETH', address: '0xabc' },
+              { symbol: 'DAI', address: '0xdef' },
+            ],
+          },
+          '0x2': {
+            '0x456': [{ symbol: 'USDC', address: '0xghi' }],
+          },
+        },
+        internalAccounts: {
+          selectedAccount: 'account1',
+          accounts: {
+            account1: {
+              address: '0x123',
+            },
+            account2: {
+              address: '0x456',
+            },
+          },
+        },
+      },
+    };
+
+    it('returns tokens for the selected account and chain ID', () => {
+      const tokens = getTokensByChainId(state, '0x1');
+      expect(tokens).toStrictEqual([
+        { symbol: 'ETH', address: '0xabc' },
+        { symbol: 'DAI', address: '0xdef' },
+      ]);
+    });
+
+    it('returns an empty array if no tokens exist for the chain ID', () => {
+      const tokens = getTokensByChainId(state, '0x3');
+      expect(tokens).toStrictEqual([]);
+    });
+
+    it('returns an empty array if no tokens exist for the selected account', () => {
+      const stateWithNoTokens = {
+        ...state,
+        metamask: {
+          ...state.metamask,
+          allTokens: {
+            '0x1': {},
+          },
+        },
+      };
+      const tokens = getTokensByChainId(stateWithNoTokens, '0x1');
+      expect(tokens).toStrictEqual([]);
+    });
+
+    it('returns an empty array if allTokens is undefined', () => {
+      const stateWithNoTokens = {
+        ...state,
+        metamask: {
+          ...state.metamask,
+          allTokens: undefined,
+        },
+      };
+      const tokens = getTokensByChainId(stateWithNoTokens, '0x1');
+      expect(tokens).toStrictEqual([]);
     });
   });
 });

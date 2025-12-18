@@ -1,5 +1,6 @@
-import React, { useContext, RefObject } from 'react';
+import React, { useContext, RefObject, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { parseCaipChainId } from '@metamask/utils';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -7,7 +8,6 @@ import {
   ButtonLink,
   ButtonLinkSize,
   ButtonSecondary,
-  IconName,
   Popover,
   PopoverPosition,
   Text,
@@ -20,42 +20,77 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { I18nContext } from '../../../contexts/i18n';
-import { getCurrentNetwork, getOriginOfCurrentTab } from '../../../selectors';
+import { getAllDomains, getOriginOfCurrentTab } from '../../../selectors';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { getURLHost } from '../../../helpers/utils/util';
 import { getImageForChainId } from '../../../selectors/multichain';
 import { toggleNetworkMenu } from '../../../store/actions';
+import Tooltip from '../../ui/tooltip';
 
 type ConnectedSitePopoverProps = {
+  referenceElement: RefObject<HTMLElement>;
   isOpen: boolean;
+  onClose: () => void;
   isConnected: boolean;
   onClick: () => void;
-  onClose: () => void;
-  referenceElement?: RefObject<HTMLElement>;
 };
 
-export const ConnectedSitePopover = ({
+export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
+  referenceElement,
   isOpen,
+  onClose,
   isConnected,
   onClick,
-  onClose,
-  referenceElement,
-}: ConnectedSitePopoverProps) => {
+}) => {
   const t = useContext(I18nContext);
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
   const siteName = getURLHost(activeTabOrigin);
-  // TODO: Replace it with networkClient Selector
-  // const activeDomain = useSelector(getAllDomains);
-  // const networkClientId = activeDomain?.[activeTabOrigin];
-  const currentNetwork = useSelector(getCurrentNetwork);
+
+  const allDomains = useSelector(getAllDomains);
+  const networkConfigurationsByChainId = useSelector(
+    getNetworkConfigurationsByChainId,
+  );
   const dispatch = useDispatch();
+
+  // Get the network that this dapp is actually connected to using domain mapping
+  const dappActiveNetwork = useMemo(() => {
+    if (!activeTabOrigin || !allDomains) {
+      return null;
+    }
+
+    // Get the networkClientId for this domain
+    const networkClientId = allDomains[activeTabOrigin];
+    if (!networkClientId) {
+      return null;
+    }
+
+    // Find the network configuration that has this networkClientId
+    const networkConfiguration = Object.values(
+      networkConfigurationsByChainId,
+    ).find((network) => {
+      return network.rpcEndpoints.some(
+        (rpcEndpoint) => rpcEndpoint.networkClientId === networkClientId,
+      );
+    });
+
+    return networkConfiguration || null;
+  }, [activeTabOrigin, allDomains, networkConfigurationsByChainId]);
+
+  const getChainIdForImage = (chainId: `${string}:${string}`): string => {
+    const { namespace, reference } = parseCaipChainId(chainId);
+    return namespace === 'eip155'
+      ? `0x${parseInt(reference, 10).toString(16)}`
+      : chainId;
+  };
 
   return (
     <Popover
       referenceElement={referenceElement?.current}
       isOpen={isOpen}
-      style={{ width: '256px' }}
+      style={{ width: '260px' }}
       onClickOutside={onClose}
       data-testid="connected-site-popover"
+      paddingTop={3}
       paddingLeft={0}
       paddingRight={0}
       offset={[8, 8]}
@@ -73,8 +108,20 @@ export const ConnectedSitePopover = ({
           paddingRight={4}
           paddingBottom={2}
         >
-          <Text variant={TextVariant.bodyMdMedium}>{siteName}</Text>
-          {isConnected ? (
+          {siteName?.length && siteName?.length > 20 ? (
+            <Tooltip
+              title={siteName}
+              data-testid="site-name-tooltip"
+              position="bottom"
+            >
+              <Text variant={TextVariant.bodyMdMedium} ellipsis>
+                {siteName}
+              </Text>
+            </Tooltip>
+          ) : (
+            <Text variant={TextVariant.bodyMdMedium}>{siteName}</Text>
+          )}
+          {isConnected && dappActiveNetwork ? (
             <Box
               display={Display.Flex}
               flexDirection={FlexDirection.Row}
@@ -85,14 +132,22 @@ export const ConnectedSitePopover = ({
                 size={AvatarNetworkSize.Xs}
                 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
                 // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-                name={currentNetwork?.nickname || ''}
+                name={dappActiveNetwork?.name || ''}
                 src={
-                  currentNetwork?.chainId
-                    ? getImageForChainId(currentNetwork.chainId)
-                    : undefined
+                  dappActiveNetwork?.chainId?.includes(':')
+                    ? getImageForChainId(
+                        getChainIdForImage(
+                          dappActiveNetwork.chainId as `${string}:${string}`,
+                        ),
+                      )
+                    : getImageForChainId(dappActiveNetwork?.chainId)
                 }
               />
               <ButtonLink
+                size={ButtonLinkSize.Sm}
+                textProps={{
+                  variant: TextVariant.bodySm,
+                }}
                 onClick={() =>
                   dispatch(
                     toggleNetworkMenu({
@@ -102,8 +157,9 @@ export const ConnectedSitePopover = ({
                     }),
                   )
                 }
+                data-testid="connected-site-popover-network-button"
               >
-                {currentNetwork?.nickname}
+                {(dappActiveNetwork as { name?: string })?.name}
               </ButtonLink>
             </Box>
           ) : (
@@ -117,7 +173,10 @@ export const ConnectedSitePopover = ({
         </Box>
         {!isConnected && (
           <Box paddingLeft={4} paddingRight={4} paddingTop={2}>
-            <Text variant={TextVariant.bodyMd}>
+            <Text
+              variant={TextVariant.bodyMd}
+              color={TextColor.textAlternative}
+            >
               {t('connectionPopoverDescription')}
             </Text>
             <ButtonLink
@@ -129,23 +188,13 @@ export const ConnectedSitePopover = ({
             </ButtonLink>
           </Box>
         )}
-        <Box paddingTop={2} paddingLeft={4} paddingRight={4}>
-          <ButtonSecondary
-            endIconName={IconName.Export}
-            block
-            onClick={() => {
-              if (isConnected) {
-                onClick();
-              } else {
-                global.platform.openTab({
-                  url: 'https://portfolio.metamask.io/explore/dapps',
-                });
-              }
-            }}
-          >
-            {isConnected ? t('managePermissions') : t('exploreweb3')}
-          </ButtonSecondary>
-        </Box>
+        {isConnected && (
+          <Box paddingTop={4} paddingLeft={4} paddingRight={4}>
+            <ButtonSecondary block onClick={onClick}>
+              {t('managePermissions')}
+            </ButtonSecondary>
+          </Box>
+        )}
       </Box>
     </Popover>
   );

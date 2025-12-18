@@ -21,19 +21,35 @@ import { SignatureRequestType } from '../types/confirm';
 import { memoizedGetTokenStandardAndDetails } from '../utils/token';
 import Confirm from './confirm';
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    replace: jest.fn(),
-  }),
-}));
-
 jest.mock('../hooks/useAssetDetails', () => ({
   ...jest.requireActual('../hooks/useAssetDetails'),
   useAssetDetails: jest.fn().mockResolvedValue({
     decimals: '4',
   }),
 }));
+
+jest.mock('../hooks/gas/useIsGaslessLoading', () => ({
+  useIsGaslessLoading: () => {
+    return { isGaslessLoading: false };
+  },
+}));
+
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom', () => {
+  const actual = jest.requireActual('react-router-dom');
+  return {
+    ...actual,
+    useNavigate: () => mockUseNavigate,
+    useSearchParams: () => [new URLSearchParams(''), jest.fn()],
+    useLocation: () => ({
+      pathname: '/',
+      search: '',
+      hash: '',
+      state: null,
+      key: 'test',
+    }),
+  };
+});
 
 const middleware = [thunk];
 const mockedAssetDetails = jest.mocked(useAssetDetails);

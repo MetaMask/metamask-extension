@@ -149,4 +149,25 @@ describe('Browser Runtime Utils', () => {
       expect(result).toStrictEqual(false);
     });
   });
+
+  describe('getBrowserName', () => {
+    it('should return the name of the browser', () => {
+      const bowser = Bowser.getParser(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101 Firefox/91.0',
+      );
+      const result = BrowserRuntimeUtil.getBrowserName(bowser);
+      expect(result).toStrictEqual('Firefox');
+    });
+    it('should return Brave when given a brave browser', () => {
+      const bowser = Bowser.getParser(
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36',
+      );
+      const result = BrowserRuntimeUtil.getBrowserName(bowser, {
+        userAgent:
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36',
+        brave: {},
+      });
+      expect(result).toStrictEqual('Brave');
+    });
+  });
 });

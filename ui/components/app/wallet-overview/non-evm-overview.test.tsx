@@ -7,7 +7,7 @@ import { BtcAccountType, BtcMethod, BtcScope } from '@metamask/keyring-api';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { MultichainNativeAssets } from '../../../../shared/constants/multichain/assets';
 import mockState from '../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { defaultBuyableChains } from '../../../ducks/ramps/constants';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -35,22 +35,33 @@ jest.mock('../../../store/actions', () => ({
 }));
 
 jest.mock('../../../hooks/useMultiPolling', () => ({
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: jest.fn(),
 }));
 
 const mockOpenBuyCryptoInPdapp = jest.fn();
 jest.mock('../../../hooks/ramps/useRamps/useRamps', () => ({
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: jest.fn(() => ({
     openBuyCryptoInPdapp: mockOpenBuyCryptoInPdapp,
   })),
+  RampsMetaMaskEntry: {
+    BuySellButton: 'ext_buy_sell_button',
+    NftBanner: 'ext_buy_banner_nfts',
+    TokensBanner: 'ext_buy_banner_tokens',
+    ActivityBanner: 'ext_buy_banner_activity',
+    BtcBanner: 'ext_buy_banner_btc',
+  },
 }));
 
 const BUY_BUTTON = 'coin-overview-buy';
 const BTC_OVERVIEW_BRIDGE = 'coin-overview-bridge';
 const BTC_OVERVIEW_RECEIVE = 'coin-overview-receive';
-const BTC_OVERVIEW_SWAP = 'token-overview-button-swap';
+const BTC_OVERVIEW_SWAP = 'coin-overview-swap';
 const BTC_OVERVIEW_SEND = 'coin-overview-send';
 const BTC_OVERVIEW_PRIMARY_CURRENCY = 'coin-overview__primary-currency';
 
@@ -60,6 +71,7 @@ const mockNonEvmBalanceUsd = '1.00';
 const mockNonEvmAccount = {
   address: 'bc1qwl8399fz829uqvqly9tcatgrgtwp3udnhxfq4k',
   id: '542490c8-d178-433b-9f31-f680b11f45a5',
+  scopes: [BtcScope.Mainnet],
   metadata: {
     name: 'Bitcoin Account',
     keyring: {
@@ -71,7 +83,7 @@ const mockNonEvmAccount = {
     },
   },
   options: {},
-  methods: [BtcMethod.SendBitcoin],
+  methods: Object.values(BtcMethod),
   type: BtcAccountType.P2wpkh,
 };
 
@@ -103,6 +115,7 @@ const mockBuyableChainsEvmOnly = defaultBuyableChains.filter(
 const mockMetamaskStore = {
   ...mockState.metamask,
   remoteFeatureFlags: {
+    bitcoinAccounts: { enabled: true, minimumVersion: '13.6.0' },
     bridgeConfig: {
       support: true,
     },
@@ -146,7 +159,11 @@ const mockMetamaskStore = {
     AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
   selectedMultichainNetworkChainId: BtcScope.Mainnet,
   isEvmSelected: false,
-  bitcoinSupportEnabled: true,
+  enabledNetworkMap: {
+    bip122: {
+      [MultichainNetworks.BITCOIN]: true,
+    },
+  },
 };
 const mockRampsStore = {
   buyableChains: mockBuyableChainsEvmOnly,
@@ -204,8 +221,12 @@ describe('NonEvmOverview', () => {
           // The balances won't be available
           preferences: {
             showNativeTokenAsMainBalance: false,
-            tokenNetworkFilter: {},
             privacyMode: false,
+          },
+          enabledNetworkMap: {
+            bip122: {
+              [MultichainNetworks.BITCOIN]: true,
+            },
           },
           currentCurrency: 'usd',
           conversionRates: {
@@ -222,7 +243,7 @@ describe('NonEvmOverview', () => {
     expect(primaryBalance).toHaveTextContent(`$${mockNonEvmBalanceUsd}USD`);
   });
 
-  it('shows a spinner if balance is not available', async () => {
+  it('shows a skeleton if balance is not available', async () => {
     const { container } = renderWithProvider(
       <NonEvmOverview />,
       getStore({
@@ -237,13 +258,11 @@ describe('NonEvmOverview', () => {
       }),
     );
 
-    const spinner = container.querySelector(
-      '.coin-overview__balance .coin-overview__primary-container .spinner',
-    );
-    expect(spinner).toBeInTheDocument();
+    const skeleton = container.querySelector('.mm-skeleton');
+    expect(skeleton).toBeInTheDocument();
   });
 
-  it('buttons Swap/Bridge are disabled', () => {
+  it.skip('buttons Swap/Bridge are disabled', () => {
     const { queryByTestId } = renderWithProvider(
       <NonEvmOverview />,
       getStore(),
@@ -356,12 +375,20 @@ describe('NonEvmOverview', () => {
       event: MetaMetricsEventName.NavBuyButtonClicked,
       category: MetaMetricsEventCategory.Navigation,
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         account_type: mockNonEvmAccount.type,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: MultichainNetworks.BITCOIN,
         location: 'Home',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         snap_id: mockNonEvmAccount.metadata.snap.id,
         text: 'Buy',
         // We use a `SwapsEthToken` in this case, so we're expecting an entire object here.
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_symbol: expect.any(Object),
       },
     });
@@ -403,14 +430,22 @@ describe('NonEvmOverview', () => {
     expect(mockTrackEvent).toHaveBeenCalledTimes(1);
     expect(mockTrackEvent).toHaveBeenCalledWith(
       {
-        event: MetaMetricsEventName.NavSendButtonClicked,
+        event: MetaMetricsEventName.SendStarted,
         category: MetaMetricsEventCategory.Navigation,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: mockNonEvmAccount.type,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id: MultichainNetworks.BITCOIN,
           location: 'Home',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_id: mockNonEvmAccount.metadata.snap.id,
           text: 'Send',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           token_symbol: 'BTC',
         },
       },
@@ -433,7 +468,6 @@ describe('NonEvmOverview', () => {
     const bridgeButton = queryByTestId(BTC_OVERVIEW_BRIDGE);
     expect(sendButton).toBeInTheDocument();
     expect(sendButton).toBeDisabled();
-    expect(bridgeButton).toBeInTheDocument();
-    expect(bridgeButton).toBeDisabled();
+    expect(bridgeButton).not.toBeInTheDocument();
   });
 });

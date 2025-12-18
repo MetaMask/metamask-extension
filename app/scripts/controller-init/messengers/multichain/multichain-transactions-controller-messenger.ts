@@ -1,4 +1,4 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import {
   AccountsControllerAccountAddedEvent,
   AccountsControllerAccountRemovedEvent,
@@ -7,6 +7,7 @@ import {
 } from '@metamask/accounts-controller';
 import { HandleSnapRequest } from '@metamask/snaps-controllers';
 import { KeyringControllerGetStateAction } from '@metamask/keyring-controller';
+import { RootMessenger } from '../../../lib/messenger';
 
 type Actions =
   | AccountsControllerListMultichainAccountsAction
@@ -30,19 +31,29 @@ export type MultichainTransactionsControllerMessenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getMultichainTransactionsControllerMessenger(
-  messenger: Messenger<Actions, Events>,
+  messenger: RootMessenger<Actions, Events>,
 ) {
-  return messenger.getRestricted({
-    name: 'MultichainTransactionsController',
-    allowedEvents: [
+  const controllerMessenger = new Messenger<
+    'MultichainTransactionsController',
+    Actions,
+    Events,
+    typeof messenger
+  >({
+    namespace: 'MultichainTransactionsController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    events: [
       'AccountsController:accountAdded',
       'AccountsController:accountRemoved',
       'AccountsController:accountTransactionsUpdated',
     ],
-    allowedActions: [
+    actions: [
       'AccountsController:listMultichainAccounts',
       'SnapController:handleRequest',
       'KeyringController:getState',
     ],
   });
+  return controllerMessenger;
 }

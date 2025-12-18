@@ -1,4 +1,3 @@
-import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
 import { unlockWallet, WINDOW_TITLES } from '../../../helpers';
@@ -7,7 +6,7 @@ import {
   mockSignatureApproved,
   mockSignatureRejected,
   scrollAndConfirmAndAssertConfirm,
-  withTransactionEnvelopeTypeFixtures,
+  withSignatureFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../../constants';
@@ -81,9 +80,8 @@ const signatureMessageWithoutVerifyingContract = [
 
 describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
   it('initiates and confirms', async function () {
-    await withTransactionEnvelopeTypeFixtures(
+    await withSignatureFixtures(
       this.test?.fullTitle(),
-      TransactionEnvelopeType.legacy,
       async ({
         driver,
         localNodes,
@@ -131,9 +129,8 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
   });
 
   it('initiates and rejects', async function () {
-    await withTransactionEnvelopeTypeFixtures(
+    await withSignatureFixtures(
       this.test?.fullTitle(),
-      TransactionEnvelopeType.legacy,
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
@@ -168,9 +165,8 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
   });
 
   it('signs message with verifyingContract field missing', async function () {
-    await withTransactionEnvelopeTypeFixtures(
+    await withSignatureFixtures(
       this.test?.fullTitle(),
-      TransactionEnvelopeType.legacy,
       async ({ driver }: TestSuiteArguments) => {
         await unlockWallet(driver);
         const testDappIndividualRequest = new TestDappIndividualRequest(driver);
@@ -220,8 +216,8 @@ async function assertInfoValues({
 async function assertVerifiedResults(driver: Driver, publicAddress: string) {
   const testDapp = new TestDapp(driver);
   await driver.waitUntilXWindowHandles(2);
-  await testDapp.check_successSignTypedDataV4(publicAddress);
-  await testDapp.verify_successSignTypedDataV4Result(
+  await testDapp.checkSuccessSignTypedDataV4(publicAddress);
+  await testDapp.verifySuccessSignTypedDataV4Result(
     '0xcd2f9c55840f5e1bcf61812e93c1932485b524ca673b36355482a4fbdf52f692684f92b4f4ab6f6c8572dacce46bd107da154be1c06939b855ecce57a1616ba71b',
   );
 }

@@ -1,0 +1,91 @@
+{
+  "hasCancelled": false,
+  "hasRetried": false,
+  "initialTransaction": {
+    "actionId": "1750466510323.613",
+    "chainId": "0xa",
+    "hash": "0x5599b6a84528c4f2d21c6af9cf9f5cf1f96fe1a4cd90dd21fd98ef6bb2e7b1f2",
+    "id": "854126e0-4e38-11f0-88da-53f7e315d450",
+    "networkClientId": "e4987d4e-e8f4-4bc7-ab8e-331b4c9ccfec",
+    "origin": "metamask",
+    "postTxBalance": "0x1028fcda9ba542",
+    "preTxBalance": "0x102a2a24fea3bf",
+    "sendFlowHistory": [],
+    "status": "confirmed",
+    "submittedTime": 1750466512312,
+    "time": 1750466510926,
+    "type": "swap",
+    "userEditedGasLimit": false,
+    "userFeeLevel": "medium",
+    "v": "0x1",
+    "verifiedOnBlockchain": true
+  },
+  "nonce": "0x1d",
+  "primaryTransaction": {
+    "actionId": "1750466510323.613",
+    "baseFeePerGas": "0x1e8aed",
+    "blockTimestamp": "0x6855ffd1",
+    "chainId": "0xa",
+    "hash": "0x5599b6a84528c4f2d21c6af9cf9f5cf1f96fe1a4cd90dd21fd98ef6bb2e7b1f2",
+    "id": "854126e0-4e38-11f0-88da-53f7e315d450",
+    "layer1GasFee": "0x03685f243d",
+    "networkClientId": "e4987d4e-e8f4-4bc7-ab8e-331b4c9ccfec",
+    "origin": "metamask",
+    "postTxBalance": "0x1028fcda9ba542",
+    "preTxBalance": "0x102a2a24fea3bf",
+    "status": "confirmed",
+    "submittedTime": 1750466512312,
+    "time": 1750466510926,
+    "type": "swap",
+    "userEditedGasLimit": false,
+    "userFeeLevel": "medium",
+    "verifiedOnBlockchain": true
+  },
+  "transactions": [
+    {
+      "actionId": "1750466510323.613",
+      "baseFeePerGas": "0x1e8aed",
+      "blockTimestamp": "0x6855ffd1",
+      "chainId": "0xa",
+      "defaultGasEstimates": {
+        "estimateType": "medium",
+        "gas": "0xbc9e6",
+        "maxFeePerGas": "0x1327642",
+        "maxPriorityFeePerGas": "0x186a0"
+      },
+      "firstRetryBlockNumber": "0x8311301",
+      "gasFeeEstimates": {
+        "high": {
+          "maxFeePerGas": "0x1327642",
+          "maxPriorityFeePerGas": "0x186a0"
+        },
+        "low": {
+          "maxFeePerGas": "0x3e835a",
+          "maxPriorityFeePerGas": "0x186a0"
+        },
+        "medium": {
+          "maxFeePerGas": "0x5d01b7",
+          "maxPriorityFeePerGas": "0x186a0"
+        },
+        "type": "fee-market"
+      },
+      "gasFeeEstimatesLoaded": true,
+      "gasLimitNoBuffer": "0xbc9e6",
+      "hash": "0x5599b6a84528c4f2d21c6af9cf9f5cf1f96fe1a4cd90dd21fd98ef6bb2e7b1f2",
+      "id": "854126e0-4e38-11f0-88da-53f7e315d450",
+      "layer1GasFee": "0x03685f243d",
+      "networkClientId": "e4987d4e-e8f4-4bc7-ab8e-331b4c9ccfec",
+      "origin": "metamask",
+      "postTxBalance": "0x1028fcda9ba542",
+      "preTxBalance": "0x102a2a24fea3bf",
+      "sendFlowHistory": [],
+      "status": "confirmed",
+      "submittedTime": 1750466512312,
+      "time": 1750466510926,
+      "type": "swap",
+      "userEditedGasLimit": false,
+      "userFeeLevel": "medium",
+      "verifiedOnBlockchain": true
+    }
+  ]
+}

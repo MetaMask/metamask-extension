@@ -1,5 +1,6 @@
 import { preventSinonAssertSyntax } from './sinon-assert-syntax';
 import { preventJavaScriptFileAdditions } from './javascript-additions';
+import { preventDeprecatedImports } from './prevent-deprecated-imports';
 
 const RULES: IRule[] = [
   {
@@ -13,6 +14,12 @@ const RULES: IRule[] = [
     fn: preventJavaScriptFileAdditions,
     errorMessage:
       'The diff includes a newly created JS or JSX file. Please use TS or TSX instead.',
+  },
+  {
+    name: "Don't import deprecated UI components in new files",
+    fn: preventDeprecatedImports,
+    errorMessage:
+      'The diff includes imports from deprecated paths. Please use @metamask/design-system-react instead. See: https://github.com/MetaMask/metamask-extension/blob/main/docs/design-system.md',
   },
 ];
 

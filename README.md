@@ -47,11 +47,10 @@ If you are not a MetaMask Internal Developer, or are otherwise developing on a f
 
 ## Building on your local machine
 
-- Install [Node.js](https://nodejs.org) version 20
+- Install [Node.js](https://nodejs.org) version 24
   - If you are using [nvm](https://github.com/nvm-sh/nvm#installing-and-updating) (recommended) running `nvm use` will automatically choose the right node version for you.
 - Enable Corepack by executing the command `corepack enable` within the metamask-extension project. Corepack is a utility included with Node.js by default. It manages Yarn on a per-project basis, using the version specified by the `packageManager` property in the project's package.json file. Please note that modern releases of [Yarn](https://yarnpkg.com/getting-started/install) are not intended to be installed globally or via npm.
 - Duplicate `.metamaskrc.dist` within the root and rename it to `.metamaskrc` by running `cp .metamaskrc{.dist,}`.
-
   - Replace the `INFURA_PROJECT_ID` value with your own personal [Infura API Key](https://docs.infura.io/networks/ethereum/how-to/secure-a-project/project-id).
     - If you don't have an Infura account, you can create one for free on the [Infura website](https://app.infura.io/register).
   - If debugging MetaMetrics, you'll need to add a value for `SEGMENT_WRITE_KEY` [Segment write key](https://segment.com/docs/connections/find-writekey/), see [Developing on MetaMask - Segment](./development/README.md#segment).
@@ -71,7 +70,6 @@ If you are not a MetaMask Internal Developer, or are otherwise developing on a f
 
 - Run `yarn install` to install the dependencies.
 - Build the project to the `./dist/` folder with `yarn dist` (for Chromium-based browsers) or `yarn dist:mv2` (for Firefox)
-
   - Optionally, to create a development build you can instead run `yarn start` (for Chromium-based browsers) or `yarn start:mv2` (for Firefox)
   - Uncompressed builds can be found in `/dist`, compressed builds can be found in `/builds` once they're built.
   - See the [build system readme](./development/build/README.md) for build system usage information.
@@ -110,6 +108,8 @@ You can also start a development build using the `yarn webpack` command, or `yar
 
 #### React and Redux DevTools
 
+To use React or Redux DevTools you'll first need to set `METAMASK_REACT_REDUX_DEVTOOLS` to `true` in `.metamaskrc`.
+
 To start the [React DevTools](https://github.com/facebook/react-devtools), run `yarn devtools:react` with a development build installed in a browser. This will open in a separate window; no browser extension is required.
 
 To start the [Redux DevTools Extension](https://github.com/reduxjs/redux-devtools/tree/main/extension):
@@ -142,12 +142,11 @@ Our e2e test suite can be run on either Firefox or Chrome. Here's how to get sta
 
 Before running e2e tests, ensure you've run `yarn install` to download dependencies. Next, you'll need a test build. You have 3 options:
 
-1. Use `yarn download-builds:test` to quickly download and unzip test builds for Chrome and Firefox into the `./dist/` folder. This method is fast and convenient for standard testing.
+1. Use `yarn download-builds --build-type test` to quickly download and unzip test builds for Chrome and Firefox into the `./dist/` folder. This method is fast and convenient for standard testing.
 2. Create a custom test build: for testing against different build types, use `yarn build:test`. This command allows you to generate test builds for various types, including:
    - `yarn build:test` for main build
    - `yarn build:test:flask` for flask build
    - `yarn build:test:mv2` for mv2 build
-   - `yarn build:test:mmi` for mmi build
 3. Start a test build with live changes: `yarn start:test` is particularly useful for development. It starts a test build that automatically recompiles application code upon changes. This option is ideal for iterative testing and development. This command also allows you to generate test builds for various types, including:
    - `yarn start:test` for main build
    - `yarn start:test:flask` for flask build
@@ -208,6 +207,18 @@ Different build types have different e2e tests sets. In order to run them look i
     "test:e2e:chrome:snaps": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --snaps",
     "test:e2e:firefox": "SELENIUM_BROWSER=firefox node test/e2e/run-all.js",
 ```
+
+### Test and iterate on GitHub Actions more quickly
+
+Running the full workflow on GitHub Actions can take 30 minutes or more, but there are ways to speed it up for faster iteration
+
+- `[builds-from-run: <run-id>]` in the last commit message - If you didn't change any code that will change the builds, you can use this to speed up CI by about 10 minutes
+  - You probably want to use either the last completed run on branch `main` https://github.com/MetaMask/metamask-extension/actions/workflows/main.yml?query=branch%3Amain, or the last run on your feature branch. The run-id is at the end of the URL like https://github.com/MetaMask/metamask-extension/actions/runs/xxxxxxxx
+  - For security, you will be prevented from merging the PR in this test state.
+  - If this is popular (a lot of people using it in commit messages, praising it on Slack), we may be able to harden this state, trigger it more automatically, make the UX easier, and allow merges.
+- `[skip-e2e]` in the last commit message - Skips the E2E test suite
+- `[skip-unit]` in the last commit message _(command not working yet, coming soon)_ - Skips the unit test suite
+- `trigger-ci-*` as the branch name - This allows you to run the CI workflow without attaching it to a PR. This is useful if you need to test some things that you know will never be merged. Please clean up after yourself when you're done, and delete the branch.
 
 ### Changing dependencies
 

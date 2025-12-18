@@ -1,4 +1,4 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import {
   SnapInstalled,
   SnapUpdated,
@@ -6,11 +6,11 @@ import {
   SnapEnabled,
   SnapUninstalled,
   HandleSnapRequest,
-  GetAllSnaps,
 } from '@metamask/snaps-controllers';
 import { GetPermissions } from '@metamask/permission-controller';
+import { RootMessenger } from '../../../lib/messenger';
 
-type Actions = GetPermissions | HandleSnapRequest | GetAllSnaps;
+type Actions = GetPermissions | HandleSnapRequest;
 
 type Events =
   | SnapInstalled
@@ -31,21 +31,30 @@ export type CronjobControllerMessenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getCronjobControllerMessenger(
-  messenger: Messenger<Actions, Events>,
+  messenger: RootMessenger<Actions, Events>,
 ) {
-  return messenger.getRestricted({
-    name: 'CronjobController',
-    allowedEvents: [
+  const controllerMessenger = new Messenger<
+    'CronjobController',
+    Actions,
+    Events,
+    typeof messenger
+  >({
+    namespace: 'CronjobController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    events: [
       'SnapController:snapInstalled',
       'SnapController:snapUpdated',
       'SnapController:snapUninstalled',
       'SnapController:snapEnabled',
       'SnapController:snapDisabled',
     ],
-    allowedActions: [
-      `PermissionController:getPermissions`,
+    actions: [
+      'PermissionController:getPermissions',
       'SnapController:handleRequest',
-      'SnapController:getAll',
     ],
   });
+  return controllerMessenger;
 }

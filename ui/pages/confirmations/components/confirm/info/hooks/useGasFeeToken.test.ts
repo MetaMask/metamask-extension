@@ -1,12 +1,14 @@
 import { Hex } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
 import { GasFeeToken } from '@metamask/transaction-controller';
+
+import { CHAIN_IDS } from '../../../../../../../shared/constants/network';
+import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../shared/constants/transaction';
 import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../test/data/confirmations/contract-interaction';
 import { renderHookWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import { GAS_FEE_TOKEN_MOCK as GAS_FEE_TOKEN_MOCK_BASE } from '../../../../../../../test/data/confirmations/gas';
 import {
-  NATIVE_TOKEN_ADDRESS,
   RATE_WEI_NATIVE,
   useGasFeeToken,
   useSelectedGasFeeToken,
@@ -20,25 +22,80 @@ const GAS_FEE_TOKEN_MOCK: GasFeeToken = {
   symbol: 'USDC',
 };
 
-const STATE_MOCK = getMockConfirmStateForTransaction(
-  genUnapprovedContractInteractionConfirmation({
-    address: FROM_MOCK,
-    gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
-    selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
-  }),
-  {
-    metamask: {
-      preferences: {
-        showFiatInTestnets: true,
+function getState({
+  gasFeeTokens,
+  chainId,
+  currencyRates,
+}: {
+  gasFeeTokens?: GasFeeToken[];
+  chainId?: Hex;
+  currencyRates?: Record<string, { conversionRate: number }>;
+} = {}) {
+  const networkConfigurations: Record<string, unknown> = {};
+  let providerConfig = {};
+
+  // Add Polygon network configuration if using Polygon chainId
+  if (chainId === CHAIN_IDS.POLYGON) {
+    networkConfigurations[CHAIN_IDS.POLYGON] = {
+      chainId: CHAIN_IDS.POLYGON,
+      name: 'Polygon',
+      nativeCurrency: 'POL',
+      ticker: 'POL',
+      rpcEndpoints: [
+        {
+          type: 'custom',
+          url: 'https://polygon-rpc.com',
+          networkClientId: 'polygon-network',
+        },
+      ],
+      defaultRpcEndpointIndex: 0,
+      blockExplorerUrls: [],
+    };
+    providerConfig = {
+      type: 'rpc',
+      chainId: CHAIN_IDS.POLYGON,
+      ticker: 'POL',
+      nickname: 'Polygon',
+      rpcUrl: 'https://polygon-rpc.com',
+    };
+  }
+
+  return getMockConfirmStateForTransaction(
+    genUnapprovedContractInteractionConfirmation({
+      address: FROM_MOCK,
+      chainId,
+      gasFeeTokens: gasFeeTokens ?? [GAS_FEE_TOKEN_MOCK],
+      selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
+    }),
+    {
+      metamask: {
+        preferences: {
+          showFiatInTestnets: true,
+        },
+        ...(currencyRates && { currencyRates }),
+        ...(Object.keys(networkConfigurations).length > 0 && {
+          networkConfigurationsByChainId: networkConfigurations,
+        }),
+        ...(chainId === CHAIN_IDS.POLYGON && {
+          providerConfig,
+        }),
       },
     },
-  },
-);
+  );
+}
 
-function runHook({ tokenAddress }: { tokenAddress: Hex }) {
+function runHook({
+  gasFeeTokens,
+  tokenAddress,
+}: {
+  gasFeeTokens?: GasFeeToken[];
+  tokenAddress?: Hex;
+}) {
+  const state = getState({ gasFeeTokens });
+
   const { result } = renderHookWithConfirmContextProvider(
     () => useGasFeeToken({ tokenAddress }),
-    STATE_MOCK,
+    state,
   );
 
   return result.current;
@@ -47,7 +104,7 @@ function runHook({ tokenAddress }: { tokenAddress: Hex }) {
 function runUseSelectedGasFeeTokenHook() {
   const { result } = renderHookWithConfirmContextProvider(
     useSelectedGasFeeToken,
-    STATE_MOCK,
+    getState(),
   );
 
   return result.current;
@@ -74,7 +131,7 @@ describe('useGasFeeToken', () => {
     expect(result.balanceFiat).toStrictEqual('$2,345.00');
   });
 
-  it('returns transfer tranasction', () => {
+  it('returns token transfer tranasction', () => {
     const result = runHook({ tokenAddress: GAS_FEE_TOKEN_MOCK.tokenAddress });
     expect(result.transferTransaction).toStrictEqual({
       data: `0xa9059cbb000000000000000000000000${GAS_FEE_TOKEN_MOCK.recipient.slice(
@@ -87,9 +144,25 @@ describe('useGasFeeToken', () => {
     });
   });
 
-  it('returns undefined if no gas fee token', () => {
-    const result = runHook({ tokenAddress: '0x123' });
-    expect(result).toBeUndefined();
+  it('returns native transfer tranasction if future native token', () => {
+    const result = runHook({
+      gasFeeTokens: [
+        { ...GAS_FEE_TOKEN_MOCK, tokenAddress: NATIVE_TOKEN_ADDRESS },
+      ],
+      tokenAddress: NATIVE_TOKEN_ADDRESS,
+    });
+    expect(result.transferTransaction).toStrictEqual({
+      gas: GAS_FEE_TOKEN_MOCK.gasTransfer,
+      maxFeePerGas: GAS_FEE_TOKEN_MOCK.maxFeePerGas,
+      maxPriorityFeePerGas: GAS_FEE_TOKEN_MOCK.maxPriorityFeePerGas,
+      to: GAS_FEE_TOKEN_MOCK.recipient,
+      value: GAS_FEE_TOKEN_MOCK.amount,
+    });
+  });
+
+  it('returns native gas fee token if no token address', () => {
+    const result = runHook({ tokenAddress: undefined });
+    expect(result.tokenAddress).toStrictEqual(NATIVE_TOKEN_ADDRESS);
   });
 
   describe('returns native gas fee token', () => {
@@ -145,6 +218,25 @@ describe('useGasFeeToken', () => {
         }),
       );
     });
+  });
+
+  it('returns fiat amount with < prefix when less than 0.01', () => {
+    const smallAmountToken: GasFeeToken = {
+      ...GAS_FEE_TOKEN_MOCK,
+      amount: toHex(1), // Very small amount
+    };
+
+    const state = getState({
+      gasFeeTokens: [smallAmountToken],
+      currencyRates: { ETH: { conversionRate: 1 } },
+    });
+
+    const { result } = renderHookWithConfirmContextProvider(
+      () => useGasFeeToken({ tokenAddress: smallAmountToken.tokenAddress }),
+      state,
+    );
+
+    expect(result.current.amountFiat).toBe('< $0.01');
   });
 
   describe('useSelectedGasFeeToken', () => {

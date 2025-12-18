@@ -5,8 +5,8 @@ import ObjectMultiplex from '@metamask/object-multiplex';
 // @ts-expect-error types/readable-stream.d.ts does not get picked up by ts-node
 import { pipeline } from 'readable-stream';
 import { Substream } from '@metamask/object-multiplex/dist/Substream';
-import PortStream from 'extension-port-stream';
-import { EXTENSION_MESSAGES } from '../../../shared/constants/app';
+import { ExtensionPortStream } from 'extension-port-stream';
+import { EXTENSION_MESSAGES } from '../../../shared/constants/messages';
 import { COOKIE_ID_MARKETING_WHITELIST_ORIGINS } from '../constants/marketing-site-whitelist';
 import { checkForLastError } from '../../../shared/modules/browser-runtime.utils';
 import {
@@ -29,7 +29,7 @@ export const isDetectedCookieMarketingSite: boolean =
 let cookieHandlerPageMux: ObjectMultiplex,
   cookieHandlerPageChannel: Substream,
   cookieHandlerExtPort: browser.Runtime.Port,
-  cookieHandlerExtStream: PortStream | null,
+  cookieHandlerExtStream: ExtensionPortStream | null,
   cookieHandlerMux: ObjectMultiplex,
   cookieHandlerExtChannel: Substream;
 
@@ -37,7 +37,6 @@ function setupCookieHandlerStreamsFromOrigin(origin: string): void {
   const cookieHandlerPageStream = new WindowPostMessageStream({
     name: CONTENT_SCRIPT,
     target: 'CookieHandlerPage',
-    targetWindow: window,
     targetOrigin: origin,
   });
 
@@ -45,6 +44,32 @@ function setupCookieHandlerStreamsFromOrigin(origin: string): void {
   // so we can handle the channels individually
   cookieHandlerPageMux = new ObjectMultiplex();
   cookieHandlerPageMux.setMaxListeners(25);
+
+  /**
+   * Graceful shutdown handler for the cookie handler page mux.
+   *
+   * WHY THIS IS NEEDED:
+   * This code runs in EXTENSION CONTEXT (content script), not page context.
+   * When the page navigates or closes, the underlying transport terminates,
+   * but the extension-side mux persists. Without this handler, the pipeline
+   * throws "ERR_STREAM_PREMATURE_CLOSE" errors.
+   *
+   * See provider-stream.ts for detailed explanation, and:
+   * - https://github.com/MetaMask/metamask-extension/issues/26337
+   * - https://github.com/MetaMask/metamask-extension/issues/35241
+   */
+  const endCookieHandlerPageMuxIfOpen = () => {
+    if (
+      !cookieHandlerPageMux.destroyed &&
+      !cookieHandlerPageMux.writableEnded
+    ) {
+      cookieHandlerPageMux.end();
+    }
+  };
+
+  // Attach handlers to detect when the underlying transport terminates
+  cookieHandlerPageStream.once?.('close', endCookieHandlerPageMuxIfOpen);
+  cookieHandlerPageStream.once?.('end', endCookieHandlerPageMuxIfOpen);
 
   pipeline(
     cookieHandlerPageMux,
@@ -72,12 +97,29 @@ export const setupCookieHandlerExtStreams = (): void => {
   cookieHandlerExtPort = browser.runtime.connect({
     name: CONTENT_SCRIPT,
   });
-  cookieHandlerExtStream = new PortStream(cookieHandlerExtPort);
+  cookieHandlerExtStream = new ExtensionPortStream(cookieHandlerExtPort, {
+    chunkSize: 0,
+  });
 
   // create and connect channel muxers
   // so we can handle the channels individually
   cookieHandlerMux = new ObjectMultiplex();
   cookieHandlerMux.setMaxListeners(25);
+
+  /**
+   * Graceful shutdown handler for the cookie handler extension mux.
+   * See the comment in provider-stream.ts for detailed explanation of why these
+   * handlers are necessary in extension context but not in page context.
+   */
+  const endCookieHandlerMuxIfOpen = () => {
+    if (!cookieHandlerMux.destroyed && !cookieHandlerMux.writableEnded) {
+      cookieHandlerMux.end();
+    }
+  };
+
+  // Attach handlers to detect when the underlying transport terminates
+  cookieHandlerExtStream?.once?.('close', endCookieHandlerMuxIfOpen);
+  cookieHandlerExtStream?.once?.('end', endCookieHandlerMuxIfOpen);
 
   pipeline(
     cookieHandlerMux,
@@ -143,8 +185,8 @@ const destroyCookieExtStreams = () => {
 };
 
 /**
- * This listener destroys the phishing extension streams when the extension port is disconnected,
- * so that streams may be re-established later the phishing extension port is reconnected.
+ * This listener destroys the cookie extension streams when the extension port is disconnected,
+ * so that streams may be re-established later the cookie extension port is reconnected.
  */
 const onDisconnectDestroyCookieStreams = () => {
   const err = checkForLastError();
@@ -163,7 +205,9 @@ const onDisconnectDestroyCookieStreams = () => {
    * once the port and connections are ready. Delay time is arbitrary.
    */
   if (err) {
-    console.warn(`${err} Resetting the phishing streams.`);
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+    console.warn(`${err} Resetting the cookie streams.`);
     setTimeout(setupCookieHandlerExtStreams, 1000);
   }
 };
@@ -177,7 +221,7 @@ const onMessageSetUpCookieHandlerStreams = (msg: {
       setupCookieHandlerExtStreams();
     }
     return Promise.resolve(
-      `MetaMask: handled "${EXTENSION_MESSAGES.READY}" for phishing streams`,
+      `MetaMask: handled "${EXTENSION_MESSAGES.READY}" for cookie streams`,
     );
   }
   return undefined;

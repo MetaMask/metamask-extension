@@ -370,7 +370,6 @@ function setupAutoDetectMocking(
     .withQuery({
       limit: 50,
       includeTopBid: true,
-      chainIds: ['1', '59144'],
       continuation: '',
     })
     .thenCallback(() => {
@@ -385,6 +384,19 @@ function setupAutoDetectMocking(
   const ENS_ID =
     '15045599024596508941101550399035548037687903197647023388282056880789326977958';
   server
+    .forGet(`https://nft.api.cx.metamask.io/collections`)
+    .withQuery({
+      chainId: '1',
+      contract: `${ENS_ADDRESS}`,
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: ensTokenResponse,
+      };
+    });
+
+  server
     .forGet('https://nft.api.cx.metamask.io/tokens')
     .withQuery({
       chainIds: '1',
@@ -397,51 +409,6 @@ function setupAutoDetectMocking(
       return {
         statusCode: 200,
         json: ensTokenResponse,
-      };
-    });
-
-  // eth_blockNumber
-  server
-    .forPost('/v3/00000000000000000000000000000000')
-    .withBodyIncluding('eth_blockNumber')
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          jsonrpc: '2.0',
-          id: 1111111111111111,
-          result: '0x1',
-        },
-      };
-    });
-
-  // eth_getBlockByNumber
-  server
-    .forPost('/v3/00000000000000000000000000000000')
-    .withBodyIncluding('eth_getBlockByNumber')
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          jsonrpc: '2.0',
-          id: 1111111111111111,
-          result: {},
-        },
-      };
-    });
-
-  // eth_call
-  server
-    .forPost('/v3/00000000000000000000000000000000')
-    .withBodyIncluding('eth_call')
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          jsonrpc: '2.0',
-          id: 1111111111111111,
-          result: '0x1',
-        },
       };
     });
 }

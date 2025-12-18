@@ -1,28 +1,35 @@
+const { withFixtures, unlockWallet } = require('../helpers');
 const {
-  withFixtures,
-  openDapp,
-  unlockWallet,
+  DAPP_ONE_URL,
+  DAPP_PATH,
+  DAPP_URL,
   WINDOW_TITLES,
-} = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
-const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
+} = require('../constants');
+const FixtureBuilder = require('../fixtures/fixture-builder');
+const {
+  mockSignatureInsightsSnap,
+} = require('../mock-response-data/snaps/snap-binary-mocks');
 
 describe('Test Snap Signature Insights', function () {
   it('tests Signature Insights functionality', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: {
+          numberOfTestDapps: 1,
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
+        failOnConsoleError: false,
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        failOnConsoleError: false,
+        testSpecificMock: mockSignatureInsightsSnap,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);
 
         // navigate to test snaps page and connect
-        await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
+        await driver.openNewPage(DAPP_ONE_URL);
 
         // wait for page to load
         await driver.waitForSelector({
@@ -74,7 +81,7 @@ describe('Test Snap Signature Insights', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // open the test-dapp page
-        await openDapp(driver);
+        await driver.openNewPage(DAPP_URL);
 
         // TEST ONE: personal sign
         // find and scroll to personal sign and click sign

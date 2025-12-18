@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { BtcScope, SolScope } from '@metamask/keyring-api';
+import { BtcScope, SolScope, TrxScope } from '@metamask/keyring-api';
 import {
   Box,
   IconName,
@@ -9,7 +9,10 @@ import {
   ModalContent,
   ModalHeader,
 } from '../../component-library';
-import { WalletClientType } from '../../../hooks/accounts/useMultichainWalletSnapClient';
+import {
+  WalletClientType,
+  EVM_WALLET_TYPE,
+} from '../../../hooks/accounts/useMultichainWalletSnapClient';
 import { CreateSnapAccount } from '../create-snap-account/create-snap-account';
 import { CreateEthAccount } from '../create-eth-account';
 import { getHdKeyringOfSelectedAccountOrPrimaryKeyring } from '../../../selectors';
@@ -22,7 +25,7 @@ import {
 import { SrpList } from '../multi-srp/srp-list';
 
 type EditAccountAddAccountFormProps = {
-  accountType: WalletClientType | 'EVM'; // undefined is default evm.
+  accountType: WalletClientType | typeof EVM_WALLET_TYPE; // undefined is default evm.
   onActionComplete: (completed: boolean) => Promise<void>;
   onBack: () => void;
   onClose: () => void;
@@ -46,6 +49,11 @@ export const EditAccountAddAccountForm: React.FC<
     trackEvent({
       category: MetaMetricsEventCategory.Accounts,
       event: MetaMetricsEventName.SecretRecoveryPhrasePickerClicked,
+      properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        button_type: 'picker',
+      },
     });
     setShowSrpSelection((previous) => !previous);
   }, []);
@@ -63,6 +71,12 @@ export const EditAccountAddAccountForm: React.FC<
           clientType: WalletClientType.Solana,
           chainId: SolScope.Mainnet,
           networkName: t('networkNameSolana'),
+        };
+      case WalletClientType.Tron:
+        return {
+          clientType: WalletClientType.Tron,
+          chainId: TrxScope.Mainnet,
+          networkName: t('networkNameTron'),
         };
       default:
         return { clientType: null, chainId: null, networkName: null };
@@ -111,12 +125,14 @@ export const EditAccountAddAccountForm: React.FC<
                   clientType={clientType}
                   chainId={chainId}
                   setNewlyCreatedAccountAsSelected={true}
+                  redirectToOverview={false}
                 />
               ) : (
                 <CreateEthAccount
                   onActionComplete={onActionComplete}
                   selectedKeyringId={selectedKeyringId}
                   onSelectSrp={onSelectSrp}
+                  redirectToOverview={false}
                 />
               )}
             </>
