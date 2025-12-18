@@ -26,7 +26,6 @@ import {
 import {
   getUseExternalServices,
   getNetworkConfigurationIdByChainId,
-  isNonEvmAccount,
   getSwapsDefaultToken,
 } from '../../../selectors';
 import { getIsMultichainAccountsState2Enabled } from '../../../selectors/multichain-accounts/feature-flags';
@@ -139,9 +138,6 @@ const CoinButtons = ({
   const nativeToken = isEvmNetwork ? 'ETH' : multichainNativeToken;
 
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
-
-  const isNonEvmAccountWithoutExternalServices =
-    !isExternalServicesEnabled && isNonEvmAccount(account);
 
   const buttonTooltips = {
     buyButton: [{ condition: !isBuyableChain, message: '' }],
@@ -444,7 +440,7 @@ const CoinButtons = ({
             />
           )
         }
-        disabled={!isSigningEnabled || isNonEvmAccountWithoutExternalServices}
+        disabled={!isSigningEnabled}
         label={t('send')}
         onClick={handleSendOnClick}
         width={BlockSize.Full}

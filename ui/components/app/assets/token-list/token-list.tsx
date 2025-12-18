@@ -107,9 +107,14 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
       ]);
 
       // Filter out non-EVM assets when basic functionality toggle is OFF
+      // Exception: Keep assets for the currently selected non-EVM chain
       const finalAssets = useExternalServices
         ? filteredAssets
-        : filteredAssets.filter((asset) => isEvmChainId(asset.chainId));
+        : filteredAssets.filter(
+            (asset) =>
+              isEvmChainId(asset.chainId) ||
+              (!isEvm && asset.chainId === currentNetwork.chainId),
+          );
 
       return sortAssets([...finalAssets], tokenSortConfig);
     }
@@ -139,9 +144,14 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     );
 
     // Filter out non-EVM assets when basic functionality toggle is OFF
+    // Exception: Keep assets for the currently selected non-EVM chain
     const finalAccountAssets = useExternalServices
       ? accountAssets
-      : accountAssets.filter((asset) => isEvmChainId(asset.chainId));
+      : accountAssets.filter(
+          (asset) =>
+            isEvmChainId(asset.chainId) ||
+            (!isEvm && asset.chainId === currentNetwork.chainId),
+        );
     console.log('🚀 ~ TokenList ~ finalAccountAssets:', finalAccountAssets);
 
     return finalAccountAssets.map((asset) => {

@@ -1,4 +1,5 @@
 import React, { useCallback, useState, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 
 import {
   Box,
@@ -32,6 +33,8 @@ import { useAssetSelectionMetrics } from '../../../hooks/send/metrics/useAssetSe
 import { useChainNetworkNameAndImageMap } from '../../../hooks/useChainNetworkNameAndImage';
 import { AssetFilterMethod } from '../../../context/send-metrics';
 import { type Asset } from '../../../types/send';
+import { getUseExternalServices } from '../../../../../selectors';
+import { isEvmChainId } from '../../../../../../shared/lib/asset-utils';
 
 type NetworkFilterProps = {
   tokens: Asset[];
@@ -52,6 +55,7 @@ export const NetworkFilter = ({
   const { addAssetFilterMethod, removeAssetFilterMethod } =
     useAssetSelectionMetrics();
   const chainNetworkNAmeAndImageMap = useChainNetworkNameAndImageMap();
+  const useExternalServices = useSelector(getUseExternalServices);
 
   // Extract and sort unique chain IDs by total fiat balance from tokens only
   const uniqueChainIds = useMemo(() => {
@@ -79,12 +83,21 @@ export const NetworkFilter = ({
     });
 
     // Sort chain IDs by total fiat balance (descending - highest first)
-    return Array.from(chainIds).sort((chainIdA, chainIdB) => {
+    const sortedChainIds = Array.from(chainIds).sort((chainIdA, chainIdB) => {
       const balanceA = chainIdBalances.get(chainIdA) || 0;
       const balanceB = chainIdBalances.get(chainIdB) || 0;
       return balanceB - balanceA;
     });
-  }, [tokens, nfts]);
+
+    // When BFT is OFF, filter out non-EVM chains
+    if (!useExternalServices) {
+      return sortedChainIds.filter((chainId) =>
+        isEvmChainId(chainId as `0x${string}`),
+      );
+    }
+
+    return sortedChainIds;
+  }, [tokens, nfts, useExternalServices]);
 
   const { displayName, displayIcon, isAllNetworks } = useMemo(() => {
     if (selectedChainId === null) {
