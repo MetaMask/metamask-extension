@@ -45,10 +45,6 @@ import {
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 import { EditGasModes } from '../../../../shared/constants/gas';
 import {
-  GasFeeContextProvider,
-  useGasFeeContext,
-} from '../../../contexts/gasFee';
-import {
   TransactionModalContextProvider,
   useTransactionModalContext,
 } from '../../../contexts/transaction-modal';
@@ -78,6 +74,7 @@ function TransactionListItemInner({
   setEditGasMode,
   isEarliestNonce = false,
   chainId,
+  supportsEIP1559,
 }) {
   const t = useI18nContext();
   const navigate = useNavigate();
@@ -86,7 +83,6 @@ function TransactionListItemInner({
   const [showCancelEditGasPopover, setShowCancelEditGasPopover] =
     useState(false);
   const [showRetryEditGasPopover, setShowRetryEditGasPopover] = useState(false);
-  const { supportsEIP1559 } = useGasFeeContext();
   const { openModal } = useTransactionModalContext();
   const dispatch = useDispatch();
 
@@ -438,6 +434,7 @@ TransactionListItemInner.propTypes = {
   isEarliestNonce: PropTypes.bool,
   setEditGasMode: PropTypes.func,
   chainId: PropTypes.string,
+  supportsEIP1559: PropTypes.bool,
 };
 
 const TransactionListItem = (props) => {
@@ -450,21 +447,29 @@ const TransactionListItem = (props) => {
     !isLegacyTransaction(transaction?.txParams);
 
   return (
-    <GasFeeContextProvider
-      transaction={transactionGroup.primaryTransaction}
-      editGasMode={editGasMode}
-    >
-      <TransactionModalContextProvider>
-        <TransactionListItemInner {...props} setEditGasMode={setEditGasMode} />
-        {supportsEIP1559 && (
-          <>
-            <CancelSpeedupPopover />
-            <EditGasFeePopover />
-            <AdvancedGasFeePopover />
-          </>
-        )}
-      </TransactionModalContextProvider>
-    </GasFeeContextProvider>
+    <TransactionModalContextProvider>
+      <TransactionListItemInner
+        {...props}
+        setEditGasMode={setEditGasMode}
+        supportsEIP1559={supportsEIP1559}
+      />
+      {supportsEIP1559 && (
+        <>
+          <CancelSpeedupPopover
+            transaction={transaction}
+            editGasMode={editGasMode}
+          />
+          <EditGasFeePopover
+            transaction={transaction}
+            editGasMode={editGasMode}
+          />
+          <AdvancedGasFeePopover
+            transaction={transaction}
+            editGasMode={editGasMode}
+          />
+        </>
+      )}
+    </TransactionModalContextProvider>
   );
 };
 
