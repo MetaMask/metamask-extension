@@ -6,23 +6,25 @@ alwaysApply: false
 
 Reference: [MetaMask Unit Testing Guidelines](https://github.com/MetaMask/contributor-docs/blob/main/docs/testing/unit-testing.md)
 
-
 # MetaMask Extension - Cursor Rules
 
 ## Unit Testing Guidelines
 
 ### Testing Framework
+
 - **ALWAYS use Jest** for unit tests (not Mocha or Tape)
 - Leverage Jest's built-in features: module mocks, timer mocks, snapshots, and parallel test execution
 
 ### Test File Organization
 
 #### File Placement
+
 - **ALWAYS colocate test files with implementation files**
 - Test files should use the `.test.ts` or `.test.tsx` extension
 - Place test file in the same directory as the code it tests
 
 Example:
+
 ```
 ✅ CORRECT:
 src/
@@ -37,11 +39,13 @@ test/
 ```
 
 #### Test Structure
+
 - **ALWAYS wrap tests for the same function/method in a `describe` block**
 - Use nested `describe` blocks to organize tests by method/function name
 - Use `describe` blocks with "when..." or "if..." to group tests under scenarios
 
 Example:
+
 ```typescript
 describe('KeyringController', () => {
   describe('addAccount', () => {
@@ -63,12 +67,14 @@ describe('KeyringController', () => {
 ### Test Descriptions
 
 #### Writing `it` Statements
+
 - **NEVER use "should" at the beginning of test names**
 - **NEVER repeat the function/method name in the test description**
 - Describe the desired behavior in present tense
 - Focus on a single aspect of behavior per test
 
 Examples:
+
 ```typescript
 ❌ WRONG:
 it('should not stop the block tracker', () => {});
@@ -80,10 +86,12 @@ it('adds the given token to "tokens" in state', () => {});
 ```
 
 #### Test Focus
+
 - **Keep tests focused on one aspect of behavior**
 - If using "and" in a test description, consider splitting into multiple tests
 
 Example:
+
 ```typescript
 ❌ WRONG:
 it('starts the block tracker and returns the block number', () => {});
@@ -96,6 +104,7 @@ it('returns the block number', () => {});
 ### Testing Approach
 
 #### Private Code
+
 - **NEVER directly test private code**
 - Test private methods/functions through their public interface
 - Private code includes:
@@ -106,6 +115,7 @@ it('returns the block number', () => {});
   - Functions/methods tagged with `@private` JSDoc
 
 #### Test Phase Organization
+
 - **Clearly separate the three phases of a test:**
   1. **Arrange**: Set up test data and preconditions
   2. **Act**: Execute the code being tested
@@ -114,12 +124,14 @@ it('returns the block number', () => {});
 - Consider using comments like `// Arrange`, `// Act`, `// Assert` for complex tests
 
 #### Test Data
+
 - **Keep critical data inside the test**
 - Don't spread essential test data across multiple variables at file level
 - Make the test "story" self-contained and easy to follow
 - Inline important data rather than referencing distant constants
 
 Example:
+
 ```typescript
 ✅ CORRECT:
 it('loads the token list for the selected chain', async () => {
@@ -140,24 +152,28 @@ it('loads the token list for the selected chain', async () => {
 ### Mocking and Test Utilities
 
 #### Mock Functions
+
 - **Use Jest's mock functions instead of Sinon**
 - Use `jest.fn()` instead of `sinon.stub()`
 - Use `jest.spyOn(object, method)` instead of `sinon.spy()` or `sinon.stub()`
 - Use `jest.useFakeTimers()` instead of `sinon.useFakeTimers()`
 
 #### Manual Mocks
+
 - **AVOID general manual mocks in `__mocks__/` directories**
 - Manual mocks in `__mocks__/` are automatically applied to ALL tests
 - Only use manual mocks when absolutely necessary and document their impact
 - Prefer inline mocks with `jest.mock()` for test-specific behavior
 
 #### Test Helpers
+
 - Create helper functions to reduce boilerplate
 - Use TypeScript for type-safe test utilities
 - Prefer async/await for test helpers that set up controllers or async resources
 - Include cleanup/teardown in helper functions (use try/finally)
 
 Example:
+
 ```typescript
 async function withController(...args: WithControllerArgs) {
   const controller = new TokensController(options);
@@ -173,12 +189,14 @@ async function withController(...args: WithControllerArgs) {
 ### Snapshot Testing
 
 #### Snapshot Test Naming
+
 - **NEVER name snapshot tests as "should render correctly" or "renders correctly"**
 - **ALWAYS use "render matches snapshot" or similar variants**
 - Add context when needed: "render matches snapshot when not enabled"
 - Remember: Snapshots only check for changes, NOT correctness
 
 Examples:
+
 ```typescript
 ❌ WRONG:
 it('should renders correctly', () => {});
@@ -193,11 +211,13 @@ it('render matches snapshot with custom props', () => {});
 ### Async Testing Best Practices
 
 #### Async/Await Usage
+
 - **ALWAYS use async/await instead of callbacks or done()**
 - Return promises from test functions when using async operations
 - Never mix done() callbacks with async/await
 
 Examples:
+
 ```typescript
 ❌ WRONG:
 it('fetches data', (done) => {
@@ -215,12 +235,14 @@ it('fetches data', async () => {
 ```
 
 #### Timer Mocking
+
 - Use `jest.useFakeTimers()` with fake timers for time-dependent code
 - Use `jest.advanceTimersByTime()` to control time progression
 - Remember to call `jest.runAllTimers()` or `jest.advanceTimersByTime()` before assertions
 - Clean up timers with `jest.useRealTimers()` in `afterEach`
 
 Example:
+
 ```typescript
 describe('debounce', () => {
   beforeEach(() => {
@@ -245,12 +267,14 @@ describe('debounce', () => {
 ```
 
 #### Error Path Testing
+
 - **ALWAYS test both success and error paths for async operations**
 - Use `expect().rejects.toThrow()` for async error assertions
 - Test error recovery and cleanup behavior
 - Verify specific error types and messages
 
 Example:
+
 ```typescript
 it('throws an error when the network request fails', async () => {
   nock('https://api.example.com')
@@ -274,11 +298,13 @@ it('cleans up resources after an error', async () => {
 ```
 
 #### Async State Changes
+
 - Use `waitFor()` or similar patterns for async state changes (React Testing Library)
 - Set appropriate test timeouts for long-running operations
 - Avoid arbitrary delays with `setTimeout()` in tests
 
 Example:
+
 ```typescript
 it('updates state after async operation', async () => {
   render(<MyComponent />);
@@ -294,15 +320,19 @@ it('updates state after async operation', async () => {
 ### Mock Data Management
 
 #### Test Data Factories
+
 - Create factory functions for complex test objects
 - Use builders for objects with many optional properties
 - Keep factories in test files or colocated test-utils (not in `__mocks__/`)
 - Prefer minimal valid objects, adding only necessary properties per test
 
 Example:
+
 ```typescript
 // Good: Factory function for creating test data
-function createMockTransaction(overrides: Partial<Transaction> = {}): Transaction {
+function createMockTransaction(
+  overrides: Partial<Transaction> = {},
+): Transaction {
   return {
     id: '1',
     status: 'pending',
@@ -318,7 +348,7 @@ describe('TransactionController', () => {
   it('updates transaction status', () => {
     const transaction = createMockTransaction({
       id: '42',
-      status: 'submitted'
+      status: 'submitted',
     });
 
     controller.updateTransaction(transaction);
@@ -329,11 +359,13 @@ describe('TransactionController', () => {
 ```
 
 #### Builder Pattern for Complex Objects
+
 - Use builder pattern for objects with many optional fields
 - Chain methods for readability
 - Provide sensible defaults
 
 Example:
+
 ```typescript
 class TransactionBuilder {
   private transaction: Partial<Transaction> = {
@@ -367,11 +399,13 @@ it('processes confirmed transactions', () => {
 ```
 
 #### Avoid Shared Mutable State
+
 - Don't reuse mock objects across tests
 - Each test should create its own fresh mock data
 - Be careful with module-level constants that are mutated
 
 Example:
+
 ```typescript
 ❌ WRONG:
 const mockAccount = { address: '0x123', balance: '100' };
@@ -407,12 +441,14 @@ it('has initial balance', () => {
 Reference: [MetaMask Controller Guidelines](https://github.com/MetaMask/core/blob/main/docs/controller-guidelines.md)
 
 #### Controller Lifecycle Testing
+
 - **ALWAYS test controller initialization with default state**
 - Test controller destruction/cleanup (if `destroy()` method exists)
 - Verify state is properly initialized with partial state options
 - Test that default state function (`getDefault${ControllerName}State`) returns correct values
 
 Example:
+
 ```typescript
 describe('TokensController', () => {
   describe('constructor', () => {
@@ -452,12 +488,14 @@ describe('TokensController', () => {
 ```
 
 #### State Management Testing
+
 - **Test state updates through controller methods, not direct state manipulation**
 - Verify state changes trigger appropriate events via messenger
 - Use `controller.state` to access state (NOT internal properties)
 - Test that state metadata is correctly defined (persist, anonymous, usedInUi)
 
 Example:
+
 ```typescript
 describe('TokensController', () => {
   describe('addToken', () => {
@@ -483,10 +521,7 @@ describe('TokensController', () => {
       const messenger = getTokensMessenger();
       const stateChangeListener = jest.fn();
 
-      messenger.subscribe(
-        'TokensController:stateChange',
-        stateChangeListener,
-      );
+      messenger.subscribe('TokensController:stateChange', stateChangeListener);
 
       const controller = new TokensController({ messenger });
       controller.addToken({ address: '0x123', symbol: 'DAI', decimals: 18 });
@@ -498,12 +533,14 @@ describe('TokensController', () => {
 ```
 
 #### Messenger Interaction Testing
+
 - Mock other controllers using messenger allowedActions
 - Test event subscriptions and publications
 - Verify messenger calls to other controllers
 - Test that controller responds correctly to events from other controllers
 
 Example:
+
 ```typescript
 describe('PreferencesController', () => {
   it('updates when AccountsController state changes', () => {
@@ -537,12 +574,14 @@ describe('PreferencesController', () => {
 ```
 
 #### Selector Testing
+
 - Test selectors as pure functions independently from controllers
 - Use actual controller state shape in selector tests
 - Test memoization behavior if using `reselect`
 - Export selectors under `${controllerName}Selectors` object
 
 Example:
+
 ```typescript
 import { accountsControllerSelectors } from './AccountsController';
 
@@ -568,21 +607,21 @@ describe('accountsControllerSelectors', () => {
 ```
 
 #### External Dependency Mocking
+
 - Mock network requests (use `nock` for HTTP)
 - Mock blockchain interactions (eth_call, eth_sendTransaction, etc.)
 - Mock storage operations
 - Mock other controllers via messenger
 
 Example:
+
 ```typescript
 describe('TokensController', () => {
   describe('fetchTokens', () => {
     it('fetches tokens from API', async () => {
       nock('https://token-api.example.com')
         .get('/tokens/1')
-        .reply(200, [
-          { address: '0x123', symbol: 'DAI', decimals: 18 },
-        ]);
+        .reply(200, [{ address: '0x123', symbol: 'DAI', decimals: 18 }]);
 
       const controller = new TokensController({
         messenger: getTokensMessenger(),
@@ -609,12 +648,14 @@ describe('TokensController', () => {
 ```
 
 #### Action Method Testing
+
 - Test methods as high-level actions, not just state setters
 - Verify business logic within action methods
 - Test side effects (API calls, event emissions, messenger calls)
 - Test validation and error handling
 
 Example:
+
 ```typescript
 describe('AlertsController', () => {
   describe('dismissAlert', () => {
@@ -649,16 +690,19 @@ describe('AlertsController', () => {
 ## General Coding Standards
 
 ### TypeScript
+
 - Prefer TypeScript over JavaScript for all new code
 - Use proper type annotations (avoid `any`)
 - Define interfaces for complex objects and function parameters
 
 ### Code Organization
+
 - Export public interfaces only
 - Keep implementation details private
 - Use meaningful variable and function names
 
 ### Documentation
+
 - Add JSDoc comments for public APIs
 - Document complex logic inline
 - Keep comments up-to-date with code changes
@@ -668,6 +712,7 @@ describe('AlertsController', () => {
 Before submitting tests, ensure:
 
 ### Basic Structure
+
 - [ ] Test file is colocated with implementation
 - [ ] Tests are organized with `describe` blocks by method/function
 - [ ] Test descriptions use present tense without "should"
@@ -676,6 +721,7 @@ Before submitting tests, ensure:
 - [ ] Test phases (Arrange, Act, Assert) are clear
 
 ### Mocking and Data
+
 - [ ] Critical test data is kept inline
 - [ ] Jest mocks are used (not Sinon)
 - [ ] Manual mocks in `__mocks__/` are avoided
@@ -684,12 +730,14 @@ Before submitting tests, ensure:
 - [ ] Fresh mock data created per test
 
 ### Async Testing
+
 - [ ] async/await used (not done() callbacks)
 - [ ] Fake timers used for time-dependent code
 - [ ] Both success and error paths tested for async operations
 - [ ] Appropriate timeouts set for long operations
 
 ### Controller Testing (if applicable)
+
 - [ ] Controller initialization tested with default state
 - [ ] State updates tested through controller methods
 - [ ] Messenger interactions verified
@@ -698,8 +746,8 @@ Before submitting tests, ensure:
 - [ ] External dependencies properly mocked
 
 ### Final Checks
+
 - [ ] Snapshot tests are named "render matches snapshot"
 - [ ] All tests pass and are deterministic
 - [ ] Tests run in isolation (can run individually)
 - [ ] No console errors or warnings
-

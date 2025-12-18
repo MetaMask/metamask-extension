@@ -37,18 +37,23 @@ Reference: [MetaMask Pull Request Guidelines](https://github.com/MetaMask/contri
 
 ```markdown
 ## Context
+
 [Explain the background, domain-specific information, and any relevant history]
 
 ## Problem
+
 [Describe what's insufficient about current behavior or what user need exists]
 
 ## Solution
+
 [Explain your approach and how it addresses the problem]
 
 ## Implementation Notes
+
 [Call out any non-obvious changes, complex logic, or design decisions]
 
 ## Screenshots/Videos (if applicable)
+
 [Add visual documentation for UI changes]
 ```
 
@@ -82,6 +87,7 @@ Reference: [MetaMask Pull Request Guidelines](https://github.com/MetaMask/contri
 - Explain non-obvious implementation details inline
 
 Example:
+
 ```
 💡 This refactoring was necessary because the previous approach didn't
 handle edge cases when the user switches networks mid-transaction.
@@ -104,6 +110,7 @@ Reference: ["Leaving Comments on My Own Pull Requests" by Hector Castro](https:/
 - Prototype if needed to understand how to decompose the work
 
 Example:
+
 ```
 ❌ WRONG: Large unfocused PR
 "Add token management and update network handling and refactor state"
@@ -136,6 +143,7 @@ PR 3: "Add token removal functionality"
 - Use questions and suggestions, not commands
 
 Examples:
+
 ```
 ❌ WRONG: Commanding
 "Delete this comment"
@@ -158,6 +166,7 @@ Examples:
 - Prevents extended back-and-forth discussions
 
 Example:
+
 ````markdown
 ```suggestion
 const activeAccounts = accounts.filter(account => account.isActive);
@@ -171,6 +180,7 @@ const activeAccounts = accounts.filter(account => account.isActive);
 - Common prefixes: `Nit:`, `Nitpick:`, `Optional:`
 
 Example:
+
 ```
 Nit: Jest has a `jest.mocked` function you could use here instead of
 `jest.MockFunction`. That should let you clean this up a bit if you wanted.
@@ -191,6 +201,7 @@ Nit: Jest has a `jest.mocked` function you could use here instead of
 - Call out clever solutions, thorough testing, or clear documentation
 
 Example:
+
 ```
 ✨ This is a really elegant solution! The error handling here is
 particularly well thought out.
@@ -212,12 +223,14 @@ particularly well thought out.
 - Always explain your reasoning clearly
 
 When to use:
+
 - Security vulnerabilities
 - Breaking changes without migration
 - Fundamentally flawed approach
 - Missing critical functionality
 
 When NOT to use:
+
 - Style preferences
 - Minor improvements
 - Non-blocking suggestions
@@ -240,6 +253,7 @@ When NOT to use:
 - Focus on the technical content
 
 Example response:
+
 ```
 Thanks for the feedback! Could you help me understand what specific
 concerns you have about this approach? I'd like to address them properly.
@@ -253,11 +267,13 @@ concerns you have about this approach? I'd like to address them properly.
 - Find commits in the "Conversation" view
 
 Example:
+
 ```
 Good catch! Updated in abc1234.
 ```
 
 Tips:
+
 - Copy commit ID from Conversation view
 - GitHub will auto-link when you paste
 - Can also type commit ID directly in comment
@@ -279,6 +295,7 @@ Tips:
 - Credit original author appropriately
 
 Example:
+
 ```
 @original-author I need to move forward with this work to unblock other
 features. I'll be taking over this PR and will make sure to preserve your
@@ -317,6 +334,7 @@ commits and credit your work. Thanks for getting this started!
 - **Always inform reviewers and collaborators**
 
 Example:
+
 ```
 ⚠️ I needed to rebase this PR to fix a merge conflict. All reviewers
 have been notified. Please re-review if needed.
@@ -340,6 +358,7 @@ have been notified. Please re-review if needed.
    - Edit PR title before merging if needed
 
 Example:
+
 ```
 ❌ WRONG: Modified format
 Add token validation
@@ -355,6 +374,7 @@ This PR adds token validation...
 ## Best Practices Checklist
 
 ### Before Creating a PR:
+
 - [ ] Code is complete and tested
 - [ ] All tests pass locally
 - [ ] Code follows style guidelines
@@ -363,6 +383,7 @@ This PR adds token validation...
 - [ ] Commit messages are clear and descriptive
 
 ### When Creating a PR:
+
 - [ ] PR title is clear and descriptive
 - [ ] Description answers: context, problem, solution
 - [ ] Screenshots/videos included for UI changes
@@ -372,6 +393,7 @@ This PR adds token validation...
 - [ ] Single focused purpose (no "and" in title)
 
 ### When Reviewing a PR:
+
 - [ ] Read description and understand context
 - [ ] Assume good intent
 - [ ] Focus on solving user story, not just style
@@ -383,6 +405,7 @@ This PR adds token validation...
 - [ ] Consider offline discussion if needed
 
 ### When Receiving Feedback:
+
 - [ ] Assume positive intent
 - [ ] Be open to other perspectives
 - [ ] Link to commits that address feedback
@@ -390,6 +413,7 @@ This PR adds token validation...
 - [ ] Consider video call if tension arises
 
 ### When Maintaining a PR:
+
 - [ ] Avoid rebasing after receiving comments
 - [ ] Push new changes as new commits
 - [ ] Communicate if taking over someone's PR
@@ -397,6 +421,7 @@ This PR adds token validation...
 - [ ] Respond to all feedback (even if just acknowledging)
 
 ### When Merging a PR:
+
 - [ ] All conversations resolved or acknowledged
 - [ ] All required approvals received
 - [ ] CI/CD checks passing
@@ -407,6 +432,7 @@ This PR adds token validation...
 ## Communication Examples
 
 ### Requesting Review:
+
 ```
 @reviewer This PR adds token validation logic. I'd especially appreciate
 feedback on the approach in `validateToken()` (lines 45-78) as I had to
@@ -414,6 +440,7 @@ make some tradeoffs there.
 ```
 
 ### Responding to Feedback:
+
 ```
 Great point about edge cases! I've added additional validation and tests
 for those scenarios in commit abc1234. Let me know if this addresses your
@@ -421,6 +448,7 @@ concerns.
 ```
 
 ### Explaining Complex Changes:
+
 ```
 💡 The reason for this seemingly complex approach is that we need to
 maintain backwards compatibility with the old API while supporting the
@@ -428,6 +456,7 @@ new format. This will be simplified in the next major version.
 ```
 
 ### Suggesting Improvements:
+
 ```
 This looks good! One thought: have you considered using memoization here?
 It might improve performance for large token lists. Not blocking though,
@@ -435,6 +464,7 @@ just something to think about.
 ```
 
 ### Taking Work Offline:
+
 ```
 I have some thoughts about the overall architecture here that might be
 better discussed in person. Would you be available for a quick call
@@ -446,4 +476,3 @@ tomorrow to talk through some alternatives?
 - [MetaMask Pull Request Guidelines](https://github.com/MetaMask/contributor-docs/blob/main/docs/pull-requests.md)
 - [GitHub - Write Better Commits](https://github.blog/2022-06-30-write-better-commits-build-better-projects/)
 - [How to Write a Git Commit Message](https://commit.style)
-

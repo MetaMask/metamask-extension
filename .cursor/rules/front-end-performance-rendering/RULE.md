@@ -11,17 +11,20 @@ This file covers rendering performance optimization rules including list keys, v
 ### Rule: Use Proper Keys for Lists
 
 **DO:**
+
 - Use unique, stable identifiers from data (address, id, uuid) as keys
 - Ensure keys are stable across re-renders
 - Only use index if list never reorders and items don't have IDs
 
 **DON'T:**
+
 - Use array index as key for dynamic lists that can reorder, filter, or have items added/removed
 - Use random values or Math.random() as keys
 
 **Why:** Using array index as key breaks React's reconciliation when lists can be reordered, filtered, or items added/removed. This causes state to get mixed up between items, bugs with form inputs, focus, animations, and performance issues from unnecessary re-renders.
 
 **Example - WRONG:**
+
 ```typescript
 const TokenList = ({ tokens }: TokenListProps) => {
   return (
@@ -35,6 +38,7 @@ const TokenList = ({ tokens }: TokenListProps) => {
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 const TokenList = ({ tokens }: TokenListProps) => {
   return (
@@ -50,13 +54,16 @@ const TokenList = ({ tokens }: TokenListProps) => {
 ### Rule: Virtualize Long Lists
 
 **DO:**
+
 - Use virtualization libraries (react-window or react-virtualized) for lists with 100+ items
 - Only render visible items to improve performance
 
 **DON'T:**
+
 - Render 1000+ items at once without virtualization
 
 **Example - WRONG:**
+
 ```typescript
 const TransactionList = ({ transactions }: TransactionListProps) => {
   return (
@@ -70,6 +77,7 @@ const TransactionList = ({ transactions }: TransactionListProps) => {
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 import { FixedSizeList } from 'react-window';
 
@@ -94,10 +102,12 @@ const TransactionList = ({ transactions }: TransactionListProps) => {
 ```
 
 **Recommended libraries:**
+
 - react-window - Lightweight, recommended for most use cases
 - react-virtualized - More features, larger bundle size
 
 **Example - CORRECT: Variable Size Virtual Scrolling**
+
 ```typescript
 import { VariableSizeList } from 'react-window';
 
@@ -134,15 +144,18 @@ const TransactionList = ({ transactions }: TransactionListProps) => {
 ### Rule: Use React.memo for Expensive Components
 
 **DO:**
+
 - Wrap expensive components in React.memo to skip re-renders when props haven't changed
 - Use custom comparison function when needed
 - Apply to components that render often with same props
 
 **DON'T:**
+
 - Use React.memo on components whose props change frequently
 - Use React.memo on simple components that are already fast to render
 
 **When to use React.memo:**
+
 - ✅ Component renders often with same props
 - ✅ Component is expensive to render (complex calculations, large lists)
 - ✅ Component is in the middle of a frequently updating tree
@@ -150,6 +163,7 @@ const TransactionList = ({ transactions }: TransactionListProps) => {
 - ❌ Component is already fast to render
 
 **Example - WRONG:**
+
 ```typescript
 const TokenListItem = ({ token, onSelect }: TokenListItemProps) => {
   return (
@@ -161,6 +175,7 @@ const TokenListItem = ({ token, onSelect }: TokenListItemProps) => {
 ```
 
 **Example - CORRECT: Memoized component**
+
 ```typescript
 const TokenListItem = React.memo(({ token, onSelect }: TokenListItemProps) => {
   return (
@@ -172,6 +187,7 @@ const TokenListItem = React.memo(({ token, onSelect }: TokenListItemProps) => {
 ```
 
 **Example - CORRECT: With custom comparison**
+
 ```typescript
 const TokenListItem = React.memo(
   ({ token, onSelect }: TokenListItemProps) => {
@@ -192,14 +208,17 @@ const TokenListItem = React.memo(
 ### Rule: Use Pagination and Infinite Scroll for Large Datasets
 
 **DO:**
+
 - Load data in chunks for very large datasets
 - Implement progressive pagination with page size limits
 - Use refs for page tracking to avoid unnecessary re-renders
 
 **DON'T:**
+
 - Load all assets/data at once (1000+ items) which blocks UI
 
 **Example - WRONG:**
+
 ```typescript
 const AssetList = ({ accountId }: AssetListProps) => {
   const [assets, setAssets] = useState([]);
@@ -218,6 +237,7 @@ const AssetList = ({ accountId }: AssetListProps) => {
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 const AssetList = ({ accountId }: AssetListProps) => {
   const [assets, setAssets] = useState([]);
@@ -261,14 +281,17 @@ const AssetList = ({ accountId }: AssetListProps) => {
 ### Rule: Use React.lazy for Route-Based Code Splitting
 
 **DO:**
+
 - Use React.lazy() and Suspense for route-based code splitting
 - Lazy load pages and heavy components
 - Provide fallback UI in Suspense boundaries
 
 **DON'T:**
+
 - Import all pages upfront
 
 **Example - WRONG:**
+
 ```typescript
 import Settings from './pages/Settings';
 import Tokens from './pages/Tokens';
@@ -286,6 +309,7 @@ const App = () => {
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 import { lazy, Suspense } from 'react';
 
@@ -309,11 +333,13 @@ const App = () => {
 ### Rule: Lazy Load Heavy Components
 
 **DO:**
+
 - Lazy load modals and heavy components that aren't immediately visible
 - Use IntersectionObserver for lazy loading images
 - Start loading images before they become visible (use rootMargin)
 
 **Example - CORRECT:**
+
 ```typescript
 const QRCodeScanner = lazy(() => import('./components/QRCodeScanner'));
 
@@ -338,6 +364,7 @@ const SendToken = () => {
 ```
 
 **Example - CORRECT: Lazy load asset images**
+
 ```typescript
 const AssetCard = ({ asset }: AssetCardProps) => {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -377,16 +404,19 @@ const AssetCard = ({ asset }: AssetCardProps) => {
 ### Rule: Memoize Expensive Computations
 
 **DO:**
+
 - Use useMemo for Map creation, array transformations, and expensive operations
 - Memoize computations that depend on props/state that change frequently
 - Move complex computations to Redux selectors when possible
 
 **DON'T:**
+
 - Create Maps, Sets, or complex objects during render without memoization
 - Run expensive map/filter/reduce operations on every render
 - Perform expensive operations in components when they can be moved to selectors
 
 **Example - WRONG:**
+
 ```typescript
 const UnconnectedAccountAlert = () => {
   const internalAccounts = useSelector(getInternalAccounts);
@@ -408,6 +438,7 @@ const UnconnectedAccountAlert = () => {
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 const UnconnectedAccountAlert = () => {
   const internalAccounts = useSelector(getInternalAccounts);
@@ -434,6 +465,7 @@ const UnconnectedAccountAlert = () => {
 ```
 
 **Example - WRONG: Expensive operations without memoization**
+
 ```typescript
 const AssetDashboard = ({ assets, filters }: AssetDashboardProps) => {
   // These run on EVERY render, even if assets/filters haven't changed
@@ -458,6 +490,7 @@ const AssetDashboard = ({ assets, filters }: AssetDashboardProps) => {
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 const AssetDashboard = ({ assets, filters }: AssetDashboardProps) => {
   // Memoize filtered and enriched assets
@@ -489,14 +522,17 @@ const AssetDashboard = ({ assets, filters }: AssetDashboardProps) => {
 ### Rule: Move Complex Computations to Selectors
 
 **DO:**
+
 - Move expensive computations from components to Redux selectors
 - Use createSelector for memoized selectors
 - Keep selectors focused on specific state slices
 
 **DON'T:**
+
 - Perform expensive computations in component render functions
 
 **Example - WRONG:**
+
 ```typescript
 const AssetList = () => {
   const assets = useSelector(state => state.assets);
@@ -512,6 +548,7 @@ const AssetList = () => {
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 // In selectors file:
 const selectAssets = (state) => state.assets;
@@ -539,11 +576,13 @@ const AssetList = () => {
 ### Rule: Use Web Workers for Heavy Computations
 
 **DO:**
+
 - Use Web Workers for very expensive computations (crypto operations, large data transformations)
 - Terminate workers on component unmount
 - Use refs to maintain worker references
 
 **Example - CORRECT:**
+
 ```typescript
 // worker.ts
 self.onmessage = (e) => {
@@ -588,10 +627,12 @@ const AssetList = ({ assets, filters }: AssetListProps) => {
 ### Rule: Debounce Frequent Updates
 
 **DO:**
+
 - Debounce rapid updates to avoid UI jitter
 - Use debounced values for frequently changing data like balances
 
 **Example - CORRECT:**
+
 ```typescript
 import { useDebouncedValue } from './hooks/useDebouncedValue';
 
@@ -616,4 +657,3 @@ function useDebouncedValue<T>(value: T, delay: number): T {
   return debounced;
 }
 ```
-

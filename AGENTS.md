@@ -29,6 +29,7 @@ Instructions for AI coding agents working on MetaMask Browser Extension.
 ### Comprehensive Guidelines Location
 
 Read these files for detailed coding standards:
+
 - Controller patterns: `.cursor/rules/controller-guidelines/RULE.md`
 - Unit testing standards: `.cursor/rules/unit-testing-guidelines/RULE.md`
 - E2E testing standards: `.cursor/rules/e2e-testing-guidelines/RULE.md`
@@ -77,18 +78,19 @@ yarn start
 ### Optional Configuration
 
 In `.metamaskrc`, you can also configure:
+
 - `PASSWORD` - Auto-fill development wallet password
 - `SEGMENT_WRITE_KEY` - For MetaMetrics debugging
 - `SENTRY_DSN` - For error tracking debugging
 
 ### Common Setup Issues
 
-| Issue | Solution |
-|-------|----------|
-| `command not found: yarn` | Run `corepack enable` |
-| Build fails with policy errors | Run `yarn lavamoat:auto` |
-| Invalid Infura key error | Check `INFURA_PROJECT_ID` in `.metamaskrc` |
-| Ganache won't start | Ensure port 8545 is available |
+| Issue                            | Solution                                                                                                |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `command not found: yarn`        | Run `corepack enable`                                                                                   |
+| Build fails with policy errors   | Run `yarn lavamoat:auto`                                                                                |
+| Invalid Infura key error         | Check `INFURA_PROJECT_ID` in `.metamaskrc`                                                              |
+| Ganache won't start              | Ensure port 8545 is available                                                                           |
 | Git hooks not working in VS Code | Follow [Husky troubleshooting](https://typicode.github.io/husky/troubleshooting.html#command-not-found) |
 
 ---
@@ -119,6 +121,7 @@ yarn download-builds --build-type test
 ```
 
 **Build System Notes:**
+
 - `yarn start` uses Webpack (faster, development)
 - `yarn dist` uses Browserify + LavaMoat (production)
 - `--apply-lavamoat=false` flag speeds up development builds
@@ -154,6 +157,7 @@ yarn test:e2e:benchmark    # Performance benchmarks
 ```
 
 **Testing Notes:**
+
 - Unit tests should be colocated with source files (`.test.ts`/`.test.tsx`)
 - Always create a test build before running E2E tests
 - Use `--leave-running` to debug failed E2E tests
@@ -377,27 +381,28 @@ When creating a controller, follow these critical patterns from `.cursor/rules/c
 
 **Every state property MUST have metadata with these properties:**
 
-| Property | Type | Purpose | Example Value |
-|----------|------|---------|---------------|
-| `anonymous` OR `includeInDebugSnapshot` | boolean | Safe for Sentry? (no PII) | `anonymous: true` |
-| `includeInStateLogs` | boolean | Include in state logs? | `false` for sensitive data |
-| `persist` | boolean | Save to storage? | `true` for user data |
-| `usedInUi` | boolean | Used by UI? | `true` if rendered |
+| Property                                | Type    | Purpose                   | Example Value              |
+| --------------------------------------- | ------- | ------------------------- | -------------------------- |
+| `anonymous` OR `includeInDebugSnapshot` | boolean | Safe for Sentry? (no PII) | `anonymous: true`          |
+| `includeInStateLogs`                    | boolean | Include in state logs?    | `false` for sensitive data |
+| `persist`                               | boolean | Save to storage?          | `true` for user data       |
+| `usedInUi`                              | boolean | Used by UI?               | `true` if rendered         |
 
 **Example:**
+
 ```typescript
 const tokensControllerMetadata = {
   tokens: {
-    anonymous: true,           // No PII, safe for Sentry
-    includeInStateLogs: true,  // Safe to include in logs
-    persist: true,             // Should be saved
-    usedInUi: true,           // Rendered in UI
+    anonymous: true, // No PII, safe for Sentry
+    includeInStateLogs: true, // Safe to include in logs
+    persist: true, // Should be saved
+    usedInUi: true, // Rendered in UI
   },
   apiKey: {
-    anonymous: false,          // Sensitive
+    anonymous: false, // Sensitive
     includeInStateLogs: false, // Must exclude from logs
-    persist: true,             // But should be saved
-    usedInUi: false,          // Backend only
+    persist: true, // But should be saved
+    usedInUi: false, // Backend only
   },
 };
 ```
@@ -640,22 +645,23 @@ metamask-extension/
 
 ### Finding Specific Code
 
-| What You Need | Where to Look |
-|---------------|---------------|
-| Controllers (business logic) | `app/scripts/controllers/` |
-| React Components | `ui/components/` or `ui/pages/` |
-| Redux State Management | `ui/ducks/` (slices) and `ui/selectors/` |
-| Background Scripts | `app/scripts/` |
-| Constants | `shared/constants/` |
-| Utility Functions | `shared/lib/` or `ui/helpers/` |
-| Type Definitions | `shared/types/` or `types/` |
-| State Migrations | `app/scripts/migrations/` |
-| Build Configuration | `development/build/` and `development/webpack/` |
-| Extension Manifests | `app/manifest/v2/` or `app/manifest/v3/` |
+| What You Need                | Where to Look                                   |
+| ---------------------------- | ----------------------------------------------- |
+| Controllers (business logic) | `app/scripts/controllers/`                      |
+| React Components             | `ui/components/` or `ui/pages/`                 |
+| Redux State Management       | `ui/ducks/` (slices) and `ui/selectors/`        |
+| Background Scripts           | `app/scripts/`                                  |
+| Constants                    | `shared/constants/`                             |
+| Utility Functions            | `shared/lib/` or `ui/helpers/`                  |
+| Type Definitions             | `shared/types/` or `types/`                     |
+| State Migrations             | `app/scripts/migrations/`                       |
+| Build Configuration          | `development/build/` and `development/webpack/` |
+| Extension Manifests          | `app/manifest/v2/` or `app/manifest/v3/`        |
 
 ### Architecture Patterns
 
 **Controllers** (Background Scripts):
+
 - Inherit from `BaseController` (from `@metamask/base-controller`)
 - Manage wallet state and business logic
 - Communicate via Messenger pattern (pub/sub)
@@ -663,6 +669,7 @@ metamask-extension/
 - See `.cursor/rules/controller-guidelines.mdc` for detailed patterns
 
 **React Components** (UI):
+
 - Functional components with hooks (no class components)
 - Props destructured in function parameters
 - Redux for global state, local state for UI-only data
@@ -672,6 +679,7 @@ metamask-extension/
 - See `.cursor/rules/coding-guidelines/RULE.md` and `.cursor/rules/front-end-performance-rendering/RULE.md`
 
 **Testing**:
+
 - Unit tests colocated with source files (`.test.ts`)
 - Jest for unit tests, Playwright for E2E
 - Test files organized with `describe` blocks by method/function
@@ -682,6 +690,7 @@ metamask-extension/
 When you modify certain files, you typically need to update related files:
 
 **When modifying a Controller:**
+
 ```
 app/scripts/controllers/foo/foo-controller.ts → ALSO UPDATE:
 ├── app/scripts/controllers/foo/foo-controller.test.ts (tests)
@@ -690,6 +699,7 @@ app/scripts/controllers/foo/foo-controller.ts → ALSO UPDATE:
 ```
 
 **When modifying a React Component:**
+
 ```
 ui/components/foo/foo.tsx → ALSO UPDATE:
 ├── ui/components/foo/foo.test.tsx (tests)
@@ -699,6 +709,7 @@ ui/components/foo/foo.tsx → ALSO UPDATE:
 ```
 
 **When modifying Redux State (ducks):**
+
 ```
 ui/ducks/foo/foo.ts → ALSO UPDATE:
 ├── ui/ducks/foo/foo.test.ts (tests)
@@ -707,6 +718,7 @@ ui/ducks/foo/foo.ts → ALSO UPDATE:
 ```
 
 **When adding/removing dependencies:**
+
 ```
 package.json → MUST UPDATE:
 ├── yarn.lock (run yarn install)
@@ -716,6 +728,7 @@ package.json → MUST UPDATE:
 ```
 
 **When modifying state shape:**
+
 ```
 app/scripts/controllers/foo/foo-controller.ts → MUST CREATE:
 └── app/scripts/migrations/[next-number].ts (migration for state change)
@@ -732,6 +745,7 @@ Feature flags allow you to enable/disable features during development. They're d
 ### Available Feature Flags
 
 Check `.metamaskrc.dist` for the current list of feature flags. Common ones:
+
 - `MULTICHAIN` - Multi-chain support
 - `BLOCKAID_PUBLIC_KEY` - Security features
 - Various experimental features
@@ -739,6 +753,7 @@ Check `.metamaskrc.dist` for the current list of feature flags. Common ones:
 ### Using Feature Flags
 
 **Method 1: Configure in `.metamaskrc`**
+
 ```bash
 # Edit .metamaskrc
 MULTICHAIN=1
@@ -749,6 +764,7 @@ yarn build:test
 ```
 
 **Method 2: Pass as environment variable**
+
 ```bash
 # Enable for single build
 MULTICHAIN=1 yarn build:test
@@ -774,6 +790,7 @@ Override remote feature flags using `.manifest-overrides.json`:
 ```
 
 Set in `.metamaskrc`:
+
 ```
 MANIFEST_OVERRIDES=.manifest-overrides.json
 ```
@@ -789,6 +806,7 @@ LavaMoat is a supply chain security tool that restricts what dependencies can do
 ### When to Update LavaMoat Policies
 
 Update policies whenever you:
+
 - ✅ Add a new dependency
 - ✅ Update an existing dependency
 - ✅ Remove a dependency
@@ -798,6 +816,7 @@ Update policies whenever you:
 ### How to Update Policies
 
 **Automated (Recommended):**
+
 ```bash
 # Update all policies (build system + webapp)
 yarn lavamoat:auto
@@ -807,6 +826,7 @@ yarn lavamoat:auto
 ```
 
 **Manual:**
+
 ```bash
 # Update webapp policies (app/scripts)
 yarn lavamoat:webapp:auto
@@ -827,6 +847,7 @@ yarn lavamoat:debug:webapp        # Webapp debug
 ```
 
 **Common Issues:**
+
 - **Policy fails on macOS/Windows:** Platform-specific optional dependencies. Regenerate on the target platform.
 - **Dynamic imports fail:** LavaMoat's static analysis may miss dynamic code. May need manual policy updates.
 - **Can't build at all:** Try `--apply-lavamoat=false` for development, but fix before merging.
@@ -834,6 +855,7 @@ yarn lavamoat:debug:webapp        # Webapp debug
 ### Development Without LavaMoat
 
 For faster iteration during development:
+
 ```bash
 yarn start --apply-lavamoat=false       # Development build
 yarn start:test --apply-lavamoat=false  # Test build
@@ -847,14 +869,14 @@ yarn start:test --apply-lavamoat=false  # Test build
 
 ### Manifest V2 vs Manifest V3
 
-| Feature | MV2 (Firefox) | MV3 (Chrome/Chromium) |
-|---------|---------------|------------------------|
-| **Build Flag** | `ENABLE_MV3=false` | Default |
-| **Start Command** | `yarn start:mv2` | `yarn start` |
-| **Dist Command** | `yarn dist:mv2` | `yarn dist` |
-| **Background** | Background page | Service worker |
-| **Permissions** | Broader access | More restrictive |
-| **APIs** | `browser.*` namespace | `chrome.*` namespace |
+| Feature           | MV2 (Firefox)         | MV3 (Chrome/Chromium) |
+| ----------------- | --------------------- | --------------------- |
+| **Build Flag**    | `ENABLE_MV3=false`    | Default               |
+| **Start Command** | `yarn start:mv2`      | `yarn start`          |
+| **Dist Command**  | `yarn dist:mv2`       | `yarn dist`           |
+| **Background**    | Background page       | Service worker        |
+| **Permissions**   | Broader access        | More restrictive      |
+| **APIs**          | `browser.*` namespace | `chrome.*` namespace  |
 
 ### Building for Different Browsers
 
@@ -875,16 +897,19 @@ yarn build:test:mv2           # Firefox MV2
 ### Browser-Specific Considerations
 
 **Firefox:**
+
 - Must use MV2 (Manifest V2)
 - Use `webextension-polyfill` for cross-browser compatibility
 - Test with `yarn test:e2e:firefox`
 
 **Chrome/Chromium:**
+
 - Uses MV3 (Manifest V3) by default
 - Service worker limitations (no DOM access in background)
 - Test with `yarn test:e2e:chrome`
 
 **Both:**
+
 - Code should use `browser.*` namespace (polyfilled for Chrome)
 - Conditional logic for browser differences in `app/scripts/lib/util.js`
 
@@ -897,6 +922,7 @@ yarn build:test:mv2           # Firefox MV2
 **Location:** Colocated with source files (`.test.ts` or `.test.tsx`)
 
 **Running:**
+
 ```bash
 yarn test:unit              # All unit tests
 yarn test:unit:watch        # Watch mode
@@ -904,6 +930,7 @@ yarn test:unit:coverage     # With coverage
 ```
 
 **Key Principles:**
+
 - Use Jest (not Mocha or Tape)
 - Test through public interfaces (not private methods)
 - Keep critical test data inline
@@ -911,6 +938,7 @@ yarn test:unit:coverage     # With coverage
 - Never use "should" in test names (use present tense)
 
 **Example:**
+
 ```typescript
 describe('TokensController', () => {
   describe('addToken', () => {
@@ -932,6 +960,7 @@ describe('TokensController', () => {
 **Location:** `test/e2e/tests/`
 
 **Running:**
+
 ```bash
 # Must build test build first!
 yarn build:test              # or yarn start:test
@@ -948,6 +977,7 @@ yarn test:e2e:single test/e2e/tests/TEST_NAME.spec.js \
 ```
 
 **Options:**
+
 - `--browser` - chrome, firefox, or all
 - `--debug` - Verbose logging
 - `--leave-running` - Keep browser open on failure
@@ -955,6 +985,7 @@ yarn test:e2e:single test/e2e/tests/TEST_NAME.spec.js \
 - `--update-snapshot` - Update snapshots
 
 **E2E Best Practices:**
+
 - Always use test builds (not dev builds)
 - Tests should be independent and isolated
 - Use page objects for reusable UI interactions
@@ -971,12 +1002,14 @@ yarn test:e2e:single test/e2e/tests/TEST_NAME.spec.js \
 **Location:** `test/integration/`
 
 **Running:**
+
 ```bash
 yarn test:integration
 yarn test:integration:coverage
 ```
 
 **Coverage Goals:**
+
 - Unit tests: > 80% coverage
 - Critical paths: > 90% coverage
 - E2E tests: Cover main user workflows
@@ -1007,6 +1040,7 @@ yarn generate:migration
 5. **Include version number** in migration metadata
 
 **Example Migration:**
+
 ```typescript
 import { cloneDeep } from 'lodash';
 
@@ -1048,27 +1082,32 @@ function transformData(state: any): void {
 **Reference:** Follow the [PR template](https://github.com/MetaMask/metamask-extension/blob/main/.github/pull-request-template.md) when creating pull requests.
 
 **PR Title Format:**
+
 - Clear and descriptive
 - Will be used in squash commit message
 - Example: "Add token validation for custom networks"
 
 **Description Section:**
+
 - **Context:** What's the background?
 - **Problem:** What needs to be fixed/added?
 - **Solution:** How do your changes address it?
 - Answer: "What is the reason for the change?" and "What is the improvement/solution?"
 
 **Changelog Entry:**
+
 - If End-User-Facing: Write a short user-facing description in past tense
   - Example: `CHANGELOG entry: Added a new tab for users to see their NFTs`
   - Example: `CHANGELOG entry: Fixed a bug that was causing some NFTs to flicker`
 - If not End-User-Facing: Write `CHANGELOG entry: null` or label with `no-changelog`
 
 **Related Issues:**
+
 - List all related issues using `Fixes: #issue-number` format
 - Link to related PRs if applicable
 
 **Manual Testing Steps:**
+
 - Provide numbered steps to test the changes
 - Include specific pages/features to test
 - Example:
@@ -1077,11 +1116,13 @@ function transformData(state: any): void {
   3. Verify this behavior...
 
 **Screenshots/Recordings:**
+
 - **Before:** Screenshots/videos showing the previous state (for UI changes)
 - **After:** Screenshots/videos showing the new state (for UI changes)
 - Required for all UI changes
 
 **Pre-merge Author Checklist:**
+
 - [ ] Followed [MetaMask Contributor Docs](https://github.com/MetaMask/contributor-docs) and [MetaMask Extension Coding Standards](https://github.com/MetaMask/metamask-extension/blob/main/.github/guidelines/CODING_GUIDELINES.md)
 - [ ] Completed the PR template to the best of ability
 - [ ] Included tests if applicable
@@ -1089,6 +1130,7 @@ function transformData(state: any): void {
 - [ ] Applied the right labels on the PR (see [labeling guidelines](https://github.com/MetaMask/metamask-extension/blob/main/.github/guidelines/LABELING_GUIDELINES.md))
 
 **Additional PR Comments:**
+
 - Call out non-obvious changes
 - Explain complex logic inline
 - Link to related issues/PRs
@@ -1217,6 +1259,7 @@ useEffect(() => {
 ```
 
 **Detailed Guidelines:**
+
 - General coding: `.cursor/rules/coding-guidelines/RULE.md`
 - Performance optimization:
   - `.cursor/rules/front-end-performance-rendering/RULE.md` (rendering performance)
@@ -1310,6 +1353,7 @@ Before marking a component complete:
 **Rule of thumb:** Profile first with React DevTools, then optimize what matters.
 
 **See:**
+
 - `.cursor/rules/front-end-performance-rendering/RULE.md` - Rendering performance (keys, memoization, virtualization)
 - `.cursor/rules/front-end-performance-hooks-effects/RULE.md` - Hooks & effects optimization
 - `.cursor/rules/front-end-performance-react-compiler/RULE.md` - React Compiler considerations & anti-patterns
@@ -1391,43 +1435,43 @@ Before marking a component complete:
 
 ### Build Issues
 
-| Problem | Solution |
-|---------|----------|
-| `Module not found` errors | Run `yarn install` again |
+| Problem                      | Solution                                                     |
+| ---------------------------- | ------------------------------------------------------------ |
+| `Module not found` errors    | Run `yarn install` again                                     |
 | `Out of memory` during build | Increase Node heap: `NODE_OPTIONS=--max-old-space-size=4096` |
-| LavaMoat policy errors | Run `yarn lavamoat:auto` |
-| Webpack cache issues | Run `yarn webpack:clearcache` |
-| Stale build artifacts | Delete `dist/` and `build/` directories |
+| LavaMoat policy errors       | Run `yarn lavamoat:auto`                                     |
+| Webpack cache issues         | Run `yarn webpack:clearcache`                                |
+| Stale build artifacts        | Delete `dist/` and `build/` directories                      |
 
 ### Test Issues
 
-| Problem | Solution |
-|---------|----------|
-| E2E tests fail to start | Build test build first: `yarn build:test` |
-| Tests hang indefinitely | Check if port 8545 (Ganache) is available |
-| Snapshot tests fail | Update snapshots: `yarn test:unit -u` |
-| Browser not launching | Check if browser is installed and in PATH |
-| Random E2E failures | Use `--retries` flag or check for race conditions |
+| Problem                 | Solution                                          |
+| ----------------------- | ------------------------------------------------- |
+| E2E tests fail to start | Build test build first: `yarn build:test`         |
+| Tests hang indefinitely | Check if port 8545 (Ganache) is available         |
+| Snapshot tests fail     | Update snapshots: `yarn test:unit -u`             |
+| Browser not launching   | Check if browser is installed and in PATH         |
+| Random E2E failures     | Use `--retries` flag or check for race conditions |
 
 ### Development Issues
 
-| Problem | Solution |
-|---------|----------|
-| Extension won't load | Check browser console for errors |
-| Hot reload not working | Restart `yarn start` |
-| Changes not appearing | Hard refresh extension (chrome://extensions) |
-| State corrupted | Clear extension data in browser |
-| Port already in use | Kill process on port: `lsof -ti:PORT \| xargs kill -9` |
+| Problem                | Solution                                               |
+| ---------------------- | ------------------------------------------------------ |
+| Extension won't load   | Check browser console for errors                       |
+| Hot reload not working | Restart `yarn start`                                   |
+| Changes not appearing  | Hard refresh extension (chrome://extensions)           |
+| State corrupted        | Clear extension data in browser                        |
+| Port already in use    | Kill process on port: `lsof -ti:PORT \| xargs kill -9` |
 
 ### Dependency Issues
 
-| Problem | Solution |
-|---------|----------|
-| Yarn version mismatch | Run `corepack enable` |
-| Package install fails | Clear cache: `yarn cache clean && yarn install` |
-| Peer dependency warnings | Check if packages are compatible |
-| Allow-scripts fails | Run `yarn allow-scripts auto` |
-| Attributions check fails | Run `yarn attributions:generate` |
+| Problem                  | Solution                                        |
+| ------------------------ | ----------------------------------------------- |
+| Yarn version mismatch    | Run `corepack enable`                           |
+| Package install fails    | Clear cache: `yarn cache clean && yarn install` |
+| Peer dependency warnings | Check if packages are compatible                |
+| Allow-scripts fails      | Run `yarn allow-scripts auto`                   |
+| Attributions check fails | Run `yarn attributions:generate`                |
 
 ---
 

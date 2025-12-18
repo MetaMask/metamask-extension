@@ -20,6 +20,7 @@ React Compiler automatically applies memoization to improve update performance (
 2. Skipping expensive calculations - Memoizing expensive computations within components and hooks
 
 **Example: Automatic Fine-Grained Reactivity**
+
 ```typescript
 // React Compiler automatically prevents unnecessary re-renders
 function FriendList({ friends }) {
@@ -42,6 +43,7 @@ function FriendList({ friends }) {
 ```
 
 **Example: Automatic Memoization of Expensive Calculations**
+
 ```typescript
 // React Compiler automatically memoizes expensive computations
 function TableContainer({ items }) {
@@ -56,6 +58,7 @@ function TableContainer({ items }) {
 ### React Compiler Assumptions
 
 React Compiler assumes your code:
+
 - Is valid, semantic JavaScript
 - Tests nullable/optional values before accessing (e.g., enable strictNullChecks in TypeScript)
 - Follows the Rules of React
@@ -80,21 +83,26 @@ React Compiler operates on a single file at a time - it only uses information wi
 Effects memoization is still an open area of research. React Compiler can sometimes memoize differently from manual memoization, which can cause issues with effects that rely on dependencies not changing to prevent infinite loops.
 
 **Recommendation:**
+
 - Keep existing useMemo() and useCallback() calls - Especially for effect dependencies to ensure behavior doesn't change
 - Write new code without useMemo/useCallback - Let React Compiler handle it automatically
 - React Compiler will statically validate that auto-memoization matches existing manual memoization
 - If it can't prove they're the same, the component/hook is safely skipped over
 
 **Example - CORRECT: Keep existing useMemo for effect dependencies**
+
 ```typescript
 const TokenBalance = ({ address }: Props) => {
   const network = useSelector(getNetwork);
 
   // Keep useMemo to ensure effect behavior is preserved
-  const networkConfig = useMemo(() => ({
-    chainId: network.chainId,
-    rpcUrl: network.rpcUrl,
-  }), [network.chainId, network.rpcUrl]);
+  const networkConfig = useMemo(
+    () => ({
+      chainId: network.chainId,
+      rpcUrl: network.rpcUrl,
+    }),
+    [network.chainId, network.rpcUrl],
+  );
 
   useEffect(() => {
     fetchBalance(address, networkConfig);
@@ -103,6 +111,7 @@ const TokenBalance = ({ address }: Props) => {
 ```
 
 **Example - CORRECT: New code - no manual memoization needed**
+
 ```typescript
 const TokenList = ({ tokens }: TokenListProps) => {
   // React Compiler handles this automatically
@@ -127,12 +136,15 @@ Due to React Compiler's single-file compilation limitation and inability to see 
 #### 1. Cross-File Dependencies
 
 **DO:**
+
 - Use manual memoization for computations that depend on values from other files
 
 **DON'T:**
+
 - Rely on React Compiler to optimize cross-file dependencies
 
 **Example - WRONG:**
+
 ```typescript
 // file1.ts
 export const getProcessedTokens = (tokens: Token[]) => {
@@ -151,15 +163,13 @@ const AssetList = () => {
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 const AssetList = () => {
   const tokens = useSelector(getTokens);
 
   // Manual memoization required - function from another file
-  const processed = useMemo(
-    () => getProcessedTokens(tokens),
-    [tokens]
-  );
+  const processed = useMemo(() => getProcessedTokens(tokens), [tokens]);
 };
 ```
 
@@ -168,19 +178,22 @@ const AssetList = () => {
 #### 2. Redux Selectors and External State Management
 
 **DO:**
+
 - Use manual memoization for Redux-derived values
 
 **DON'T:**
+
 - Rely on React Compiler to optimize Redux selectors
 
 **Example - WRONG:**
+
 ```typescript
 const AssetList = () => {
   const tokens = useSelector(getTokens); // External state
   const balances = useSelector(getBalances); // External state
 
   // React Compiler can't see into Redux - manual memoization needed
-  const tokensWithBalances = tokens.map(token => ({
+  const tokensWithBalances = tokens.map((token) => ({
     ...token,
     balance: balances[token.address],
   }));
@@ -188,6 +201,7 @@ const AssetList = () => {
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 const AssetList = () => {
   const tokens = useSelector(getTokens);
@@ -195,11 +209,12 @@ const AssetList = () => {
 
   // Manual memoization required - React Compiler can't optimize Redux values
   const tokensWithBalances = useMemo(
-    () => tokens.map(token => ({
-      ...token,
-      balance: balances[token.address],
-    })),
-    [tokens, balances]
+    () =>
+      tokens.map((token) => ({
+        ...token,
+        balance: balances[token.address],
+      })),
+    [tokens, balances],
   );
 };
 ```
@@ -209,9 +224,11 @@ const AssetList = () => {
 #### 3. Values from External Hooks or Libraries
 
 **DO:**
+
 - Use manual memoization for values returned from hooks in external libraries or custom hooks defined in other files
 
 **Example - WRONG:**
+
 ```typescript
 // hooks.ts (different file)
 export function useTokenTracker({ tokens }) {
@@ -234,17 +251,19 @@ const TokenTracker = ({ tokens }: Props) => {
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 const TokenTracker = ({ tokens }: Props) => {
   const { tokensWithBalances } = useTokenTracker({ tokens });
 
   // Manual memoization required - hook from another file
   const formattedTokens = useMemo(
-    () => tokensWithBalances.map(token => ({
-      ...token,
-      formattedBalance: formatCurrency(token.balance),
-    })),
-    [tokensWithBalances, formatCurrency]
+    () =>
+      tokensWithBalances.map((token) => ({
+        ...token,
+        formattedBalance: formatCurrency(token.balance),
+      })),
+    [tokensWithBalances, formatCurrency],
   );
 };
 ```
@@ -254,9 +273,11 @@ const TokenTracker = ({ tokens }: Props) => {
 #### 4. Conditional Logic with External State
 
 **DO:**
+
 - Use manual memoization when conditional logic combines props/state with external state
 
 **Example - WRONG:**
+
 ```typescript
 const AssetPicker = ({ hideZeroBalance }: Props) => {
   const tokens = useSelector(getTokens); // External state
@@ -264,12 +285,13 @@ const AssetPicker = ({ hideZeroBalance }: Props) => {
 
   // Conditional filtering - React Compiler may not optimize this
   const filteredTokens = hideZeroBalance
-    ? tokens.filter(t => balances[t.address] > 0)
+    ? tokens.filter((t) => balances[t.address] > 0)
     : tokens;
 };
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 const AssetPicker = ({ hideZeroBalance }: Props) => {
   const tokens = useSelector(getTokens);
@@ -277,10 +299,9 @@ const AssetPicker = ({ hideZeroBalance }: Props) => {
 
   // Manual memoization required - conditional + external state
   const filteredTokens = useMemo(
-    () => hideZeroBalance
-      ? tokens.filter(t => balances[t.address] > 0)
-      : tokens,
-    [hideZeroBalance, tokens, balances]
+    () =>
+      hideZeroBalance ? tokens.filter((t) => balances[t.address] > 0) : tokens,
+    [hideZeroBalance, tokens, balances],
   );
 };
 ```
@@ -290,9 +311,11 @@ const AssetPicker = ({ hideZeroBalance }: Props) => {
 #### 5. Functions Passed to Third-Party Components
 
 **DO:**
+
 - Use manual useCallback when passing functions to components from external libraries
 
 **Example - WRONG:**
+
 ```typescript
 import { ThirdPartyList } from 'some-library'; // External library
 
@@ -313,6 +336,7 @@ const TokenList = ({ tokens, onSelect }: Props) => {
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 const TokenList = ({ tokens, onSelect }: Props) => {
   const dispatch = useDispatch();
@@ -337,16 +361,18 @@ const TokenList = ({ tokens, onSelect }: Props) => {
 #### 6. Computations Dependent on Refs or DOM Values
 
 **DO:**
+
 - Use manual memoization when computations depend on useRef values, DOM queries, or other mutable values
 
 **Example - WRONG:**
+
 ```typescript
 const TokenInput = ({ tokens }: Props) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [filter, setFilter] = useState('');
 
   // React Compiler can't track ref.current changes statically
-  const filteredTokens = tokens.filter(token => {
+  const filteredTokens = tokens.filter((token) => {
     const inputValue = inputRef.current?.value || filter;
     return token.symbol.includes(inputValue);
   });
@@ -354,6 +380,7 @@ const TokenInput = ({ tokens }: Props) => {
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 const TokenInput = ({ tokens }: Props) => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -362,7 +389,7 @@ const TokenInput = ({ tokens }: Props) => {
   // Manual memoization required - refs are mutable
   const filteredTokens = useMemo(() => {
     const inputValue = inputRef.current?.value || filter;
-    return tokens.filter(token => token.symbol.includes(inputValue));
+    return tokens.filter((token) => token.symbol.includes(inputValue));
   }, [tokens, filter]); // Note: ref.current not in deps (intentional)
 };
 ```
@@ -372,17 +399,18 @@ const TokenInput = ({ tokens }: Props) => {
 #### 7. Reselect Selectors and Complex Compositions
 
 **DO:**
+
 - Use Reselect selectors (already memoized) when available
 - Use manual memoization if selector not available
 
 **Example - WRONG:**
+
 ```typescript
 // selectors.ts (different file)
 export const selectTotalBalance = createSelector(
   [getAccounts, getBalances],
-  (accounts, balances) => accounts.reduce((sum, acc) =>
-    sum + balances[acc.address], 0
-  )
+  (accounts, balances) =>
+    accounts.reduce((sum, acc) => sum + balances[acc.address], 0),
 );
 
 // component.tsx
@@ -393,13 +421,15 @@ const Dashboard = () => {
   const balances = useSelector(getBalances);
 
   // React Compiler can't see into selectTotalBalance from another file
-  const totalBalance = accounts.reduce((sum, acc) =>
-    sum + balances[acc.address], 0
+  const totalBalance = accounts.reduce(
+    (sum, acc) => sum + balances[acc.address],
+    0,
   );
 };
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 // Option 1: Use Reselect selector (preferred - already memoized)
 const Dashboard = () => {
@@ -413,7 +443,7 @@ const Dashboard = () => {
 
   const totalBalance = useMemo(
     () => accounts.reduce((sum, acc) => sum + balances[acc.address], 0),
-    [accounts, balances]
+    [accounts, balances],
   );
 };
 ```
@@ -423,22 +453,28 @@ const Dashboard = () => {
 #### 8. Effect Dependencies (Keep Existing Memoization)
 
 **DO:**
+
 - Keep existing useMemo/useCallback for effect dependencies
 
 **DON'T:**
+
 - Remove existing memoization for effect dependencies
 
 **Example - CORRECT:**
+
 ```typescript
 const TokenBalance = ({ address }: Props) => {
   const [balance, setBalance] = useState('0');
   const network = useSelector(getNetwork);
 
   // Keep useMemo to ensure effect behavior is preserved
-  const networkConfig = useMemo(() => ({
-    chainId: network.chainId,
-    rpcUrl: network.rpcUrl,
-  }), [network.chainId, network.rpcUrl]);
+  const networkConfig = useMemo(
+    () => ({
+      chainId: network.chainId,
+      rpcUrl: network.rpcUrl,
+    }),
+    [network.chainId, network.rpcUrl],
+  );
 
   useEffect(() => {
     // Stable networkConfig reference prevents infinite loops
@@ -450,6 +486,7 @@ const TokenBalance = ({ address }: Props) => {
 **Why:** React Compiler will statically validate that auto-memoization matches existing manual memoization. If it can't prove they're the same, it safely skips compilation. To ensure effect behavior doesn't change, keep existing useMemo/useCallback calls for effect dependencies.
 
 **Recommendation:**
+
 - Keep existing useMemo/useCallback for effects
 - Write new code without manual memoization (let React Compiler handle it)
 - If you notice unexpected effect behavior, file an issue
@@ -457,9 +494,11 @@ const TokenBalance = ({ address }: Props) => {
 #### 9. Context Values from External Providers
 
 **DO:**
+
 - Use manual memoization if computation is expensive when consuming context from providers defined in other files
 
 **Example - WRONG:**
+
 ```typescript
 // context.tsx (different file)
 export const ExternalI18nContext = createContext(/* ... */);
@@ -476,6 +515,7 @@ const TokenDisplay = ({ token }: Props) => {
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 const TokenDisplay = ({ token }: Props) => {
   const { formatCurrency, locale } = useContext(ExternalI18nContext);
@@ -483,7 +523,7 @@ const TokenDisplay = ({ token }: Props) => {
   // Manual memoization if this computation is expensive
   const formattedBalance = useMemo(
     () => formatCurrency(token.balance, locale),
-    [formatCurrency, token.balance, locale]
+    [formatCurrency, token.balance, locale],
   );
 };
 ```
@@ -493,15 +533,17 @@ const TokenDisplay = ({ token }: Props) => {
 #### 10. Computations with Multiple Cross-File Dependencies
 
 **DO:**
+
 - Use manual memoization when computations combine multiple external sources from different files
 
 **Example - WRONG:**
+
 ```typescript
 import { formatCurrency } from './utils'; // External function
 import { CurrencyContext } from './context'; // External context
 
 const AssetCard = ({ assetId }: Props) => {
-  const asset = useSelector(state => selectAsset(state, assetId)); // Redux
+  const asset = useSelector((state) => selectAsset(state, assetId)); // Redux
   const { locale } = useContext(CurrencyContext); // Context from another file
 
   // Multiple external dependencies from different files
@@ -513,9 +555,10 @@ const AssetCard = ({ assetId }: Props) => {
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 const AssetCard = ({ assetId }: Props) => {
-  const asset = useSelector(state => selectAsset(state, assetId));
+  const asset = useSelector((state) => selectAsset(state, assetId));
   const { locale } = useContext(CurrencyContext);
 
   // Manual memoization required - multiple external sources from different files
@@ -524,7 +567,7 @@ const AssetCard = ({ assetId }: Props) => {
       name: asset.name,
       balance: formatCurrency(asset.balance, locale),
     }),
-    [asset, locale] // formatCurrency is stable if from another file
+    [asset, locale], // formatCurrency is stable if from another file
   );
 };
 ```
@@ -534,6 +577,7 @@ const AssetCard = ({ assetId }: Props) => {
 ### Decision Tree: Do You Need Manual Memoization?
 
 **Is the computation/value:**
+
 - From another file (imported function/hook)? → ✅ Manual memoization required
 - From Redux selectors? → ✅ Manual memoization required
 - From external library (node_modules)? → ✅ Manual memoization required
@@ -543,6 +587,7 @@ const AssetCard = ({ assetId }: Props) => {
 - Simple props/state within same file? → ❌ React Compiler handles it
 
 **Is the callback:**
+
 - Used as useEffect dependency? → ✅ Keep existing useCallback
 - Passed to external component/library? → ✅ Manual useCallback required
 - Depends on imported functions/hooks? → ✅ Manual useCallback required
@@ -551,6 +596,7 @@ const AssetCard = ({ assetId }: Props) => {
 ### Summary: React Compiler Capabilities and Limitations
 
 **React Compiler CAN optimize:**
+
 - Components and hooks within the same file
 - Expensive calculations within components/hooks
 - Fine-grained reactivity (preventing cascading re-renders)
@@ -559,6 +605,7 @@ const AssetCard = ({ assetId }: Props) => {
 - Simple conditional memoization based on props/state
 
 **React Compiler CANNOT optimize:**
+
 - Code across file boundaries (single-file compilation)
 - Functions/hooks imported from other files
 - Redux selectors and external state management
@@ -568,11 +615,13 @@ const AssetCard = ({ assetId }: Props) => {
 - Effect dependencies (keep existing useMemo/useCallback - open research area)
 
 **Key Limitations:**
+
 - Single-file compilation - Cannot see across files
 - No type information - Doesn't use TypeScript/Flow types
 - Effects memoization - Still an open research area
 
 **Best Practices:**
+
 - Write new code without useMemo/useCallback - let React Compiler handle it
 - Keep existing useMemo/useCallback for effect dependencies
 - Use manual memoization for cross-file dependencies
@@ -589,6 +638,7 @@ const AssetCard = ({ assetId }: Props) => {
 **Solution:** Only memoize expensive operations or when passing to memoized children.
 
 **Example - WRONG:**
+
 ```typescript
 // This is overkill and adds unnecessary complexity
 const SimpleComponent = React.memo(() => {
@@ -601,6 +651,7 @@ const SimpleComponent = React.memo(() => {
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 // Only memoize when actually needed
 const SimpleComponent = ({ prop1, prop2, prop3 }: Props) => {
@@ -619,6 +670,7 @@ const SimpleComponent = ({ prop1, prop2, prop3 }: Props) => {
 **Solution:** Always include all dependencies. Use ESLint rule `react-hooks/exhaustive-deps`.
 
 **Example - WRONG:**
+
 ```typescript
 const TokenList = ({ tokens, filter }: TokenListProps) => {
   // Dependencies are wrong - should include filter!
@@ -631,6 +683,7 @@ const TokenList = ({ tokens, filter }: TokenListProps) => {
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 const TokenList = ({ tokens, filter }: TokenListProps) => {
   const filteredTokens = useMemo(() => {
@@ -648,6 +701,7 @@ const TokenList = ({ tokens, filter }: TokenListProps) => {
 **Solution:** Use unique, stable identifiers from data.
 
 **Example - WRONG:**
+
 ```typescript
 const TokenList = ({ tokens }: TokenListProps) => {
   // If tokens can be reordered/filtered, this breaks React's reconciliation
@@ -662,6 +716,7 @@ const TokenList = ({ tokens }: TokenListProps) => {
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 const TokenList = ({ tokens }: TokenListProps) => {
   return (

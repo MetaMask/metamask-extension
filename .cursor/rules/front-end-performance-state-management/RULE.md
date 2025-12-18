@@ -11,14 +11,17 @@ This file covers Redux and state management optimization rules including reducer
 ### Rule: Never Mutate State in Reducers
 
 **DO:**
+
 - Always create new objects/arrays for state updates
 - Use spread operators or immutability helpers
 - Use Redux Toolkit (uses Immer internally)
 
 **DON'T:**
+
 - Mutate state directly (most common cause of Redux bugs)
 
 **Example - WRONG:**
+
 ```typescript
 function todosReducer(state = [], action) {
   switch (action.type) {
@@ -32,6 +35,7 @@ function todosReducer(state = [], action) {
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 function todosReducer(state = [], action) {
   switch (action.type) {
@@ -46,13 +50,16 @@ function todosReducer(state = [], action) {
 ### Rule: Reducers Must Not Have Side Effects
 
 **DO:**
+
 - Keep reducers pure (only depend on state and action arguments)
 - Move side effects to action creators or middleware
 
 **DON'T:**
+
 - Include API calls, random values, or date calculations in reducers
 
 **Example - WRONG:**
+
 ```typescript
 function myReducer(state = initialState, action) {
   switch (action.type) {
@@ -71,6 +78,7 @@ function myReducer(state = initialState, action) {
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 function myReducer(state = initialState, action) {
   switch (action.type) {
@@ -99,13 +107,16 @@ function fetchData() {
 ### Rule: Do Not Put Non-Serializable Values in State
 
 **DO:**
+
 - Store only plain objects, arrays, and primitives
 - Keep state serializable for time-travel debugging and persistence
 
 **DON'T:**
+
 - Store Promises, Symbols, Maps/Sets, functions, or class instances
 
 **Example - WRONG:**
+
 ```typescript
 const initialState = {
   data: new Map(), // Map is not serializable
@@ -115,6 +126,7 @@ const initialState = {
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 const initialState = {
   data: {}, // Plain object
@@ -126,13 +138,16 @@ const initialState = {
 ### Rule: Batch Actions When Possible
 
 **DO:**
+
 - Combine multiple related actions into a single action when possible
 - Reduces number of reducer calls and re-renders
 
 **DON'T:**
+
 - Dispatch multiple separate actions for related state updates
 
 **Example - WRONG:**
+
 ```typescript
 function updateUserAndPosts(user, posts) {
   return (dispatch) => {
@@ -143,6 +158,7 @@ function updateUserAndPosts(user, posts) {
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 function updateUserAndPosts(user, posts) {
   return {
@@ -169,14 +185,17 @@ function rootReducer(state = initialState, action) {
 ### Rule: Normalize State Shape
 
 **DO:**
+
 - Use normalized state with `byId` and `allIds` patterns for complex data
 - Avoid deeply nested structures
 - Makes updates more efficient and prevents duplication
 
 **DON'T:**
+
 - Store deeply nested relational data
 
 **Example - WRONG:**
+
 ```typescript
 const state = {
   users: {
@@ -192,6 +211,7 @@ const state = {
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 const normalizedState = {
   users: {
@@ -212,11 +232,13 @@ const normalizedState = {
 ### Rule: Use Immer for Deep Updates
 
 **DO:**
+
 - Use Redux Toolkit (uses Immer internally)
 - Write "mutating" logic that's actually immutable
 - Simplifies complex state updates
 
 **Example - CORRECT: Using Redux Toolkit with Immer**
+
 ```typescript
 import { createSlice } from '@reduxjs/toolkit';
 
@@ -245,17 +267,22 @@ const usersSlice = createSlice({
 ### Rule: Batch State Updates
 
 **DO:**
+
 - Combine multiple state updates into a single update when possible
 - Reduces number of re-renders
 
 **DON'T:**
+
 - Update state multiple times separately for related changes
 
 **Example - WRONG:**
+
 ```typescript
-const updateMultipleTokens = (updates: Array<{ tokenId: string; balance: string }>) => {
+const updateMultipleTokens = (
+  updates: Array<{ tokenId: string; balance: string }>,
+) => {
   updates.forEach(({ tokenId, balance }) => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       tokens: {
         ...prev.tokens,
@@ -270,18 +297,24 @@ const updateMultipleTokens = (updates: Array<{ tokenId: string; balance: string 
 ```
 
 **Example - CORRECT:**
+
 ```typescript
-const updateMultipleTokens = (updates: Array<{ tokenId: string; balance: string }>) => {
-  setState(prev => ({
+const updateMultipleTokens = (
+  updates: Array<{ tokenId: string; balance: string }>,
+) => {
+  setState((prev) => ({
     ...prev,
     tokens: {
       ...prev.tokens,
       byId: {
         ...prev.tokens.byId,
-        ...updates.reduce((acc, { tokenId, balance }) => {
-          acc[tokenId] = { ...prev.tokens.byId[tokenId], balance };
-          return acc;
-        }, {} as Record<string, Token>),
+        ...updates.reduce(
+          (acc, { tokenId, balance }) => {
+            acc[tokenId] = { ...prev.tokens.byId[tokenId], balance };
+            return acc;
+          },
+          {} as Record<string, Token>,
+        ),
       },
     },
   })); // Single re-render!
@@ -291,13 +324,16 @@ const updateMultipleTokens = (updates: Array<{ tokenId: string; balance: string 
 ### Rule: Avoid Identity Functions as Output Selectors
 
 **DO:**
+
 - Always transform data in output selector
 - Use createDeepEqualSelector if you need deep equality
 
 **DON'T:**
+
 - Use identity functions in createSelector (provides no memoization benefit)
 
 **Example - WRONG:**
+
 ```typescript
 export const getInternalAccounts = createSelector(
   (state: AccountsState) =>
@@ -307,6 +343,7 @@ export const getInternalAccounts = createSelector(
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 export const getInternalAccounts = createSelector(
   (state: AccountsState) => state.metamask.internalAccounts.accounts,
@@ -327,13 +364,16 @@ export const getInternalAccounts = createDeepEqualSelector(
 ### Rule: Select Only Needed Properties in Selectors
 
 **DO:**
+
 - Select only the specific properties needed from state
 - Use granular input selectors
 
 **DON'T:**
+
 - Return entire state objects or large state slices
 
 **Example - WRONG:**
+
 ```typescript
 const selectAccountTreeStateForBalances = createSelector(
   (state: BalanceCalculationState) => state.metamask,
@@ -342,6 +382,7 @@ const selectAccountTreeStateForBalances = createSelector(
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 const selectAccountTreeStateForBalances = createSelector(
   [
@@ -360,27 +401,31 @@ const selectAccountTreeStateForBalances = createSelector(
 ### Rule: Use Granular Input Selectors
 
 **DO:**
+
 - Create granular input selectors for composition
 - Build complex selectors from simple ones
 
 **DON'T:**
+
 - Access state directly with broad selectors (can't be composed efficiently)
 
 **Example - WRONG:**
+
 ```typescript
 const selectExpensiveComputation = createSelector(
   (state) => state.metamask, // Too broad
   (metamask) => {
     // Expensive computation using many properties
     return metamask.tokens
-      .filter(t => t.balance > 0)
-      .map(t => ({ ...t, computed: expensiveTransform(t) }))
+      .filter((t) => t.balance > 0)
+      .map((t) => ({ ...t, computed: expensiveTransform(t) }))
       .sort((a, b) => b.balance - a.balance);
   },
 );
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 const selectTokens = (state) => state.metamask.tokens;
 const selectTokenBalances = (state) => state.metamask.tokenBalances;
@@ -390,8 +435,8 @@ const selectExpensiveComputation = createSelector(
   (tokens, balances) => {
     // Only recomputes when tokens or balances change
     return tokens
-      .filter(t => balances[t.address] > 0)
-      .map(t => ({ ...t, computed: expensiveTransform(t) }))
+      .filter((t) => balances[t.address] > 0)
+      .map((t) => ({ ...t, computed: expensiveTransform(t) }))
       .sort((a, b) => balances[b.address] - balances[a.address]);
   },
 );
@@ -400,24 +445,29 @@ const selectExpensiveComputation = createSelector(
 ### Rule: Use createDeepEqualSelector Sparingly
 
 **DO:**
+
 - Use createSelector by default
 - Use createDeepEqualSelector only when inputs keep the same reference but nested values change
 - Document why you chose createDeepEqualSelector
 
 **DON'T:**
+
 - Use createDeepEqualSelector for all selectors (isEqual runs on every evaluation, expensive for large payloads)
 
 **Context:** updateMetamaskState applies background patches to Redux using Immer. Immer guarantees structural sharing: only the objects along the mutated path receive new references, while untouched branches retain their identity.
 
 **When to use createSelector:**
+
 - Works best when input selectors point directly at the branch that changes
 - Most selectors can rely on reference changes produced by reducers
 
 **When to use createDeepEqualSelector:**
+
 - When patches touch other controllers but Redux still replaces the parent object you depend on
 - When rebuilding complex aggregates (sorting, merging, normalizing) that always produce fresh structures but semantic contents often stay the same
 
 **Example - CORRECT: createSelector (most cases)**
+
 ```typescript
 export const getInternalAccountByAddress = createSelector(
   (state) => state.metamask.internalAccounts.accounts,
@@ -431,6 +481,7 @@ export const getInternalAccountByAddress = createSelector(
 ```
 
 **Example - CORRECT: createDeepEqualSelector (when needed)**
+
 ```typescript
 export const getWalletsWithAccounts = createDeepEqualSelector(
   getMetaMaskAccountsOrdered,
@@ -461,19 +512,23 @@ export const getWalletsWithAccounts = createDeepEqualSelector(
 ```
 
 **Guard rails:**
+
 - If a deep selector becomes hot, profile it with React DevTools before shipping
 - Document why you chose createDeepEqualSelector so future contributors can revisit the trade-off
 
 ### Rule: Combine Related Selectors into One Memoized Selector
 
 **DO:**
+
 - Combine multiple useSelector calls into a single memoized selector
 - Reduce redundant subscriptions and re-renders
 
 **DON'T:**
+
 - Call multiple selectors in sequence (each creates separate subscription)
 
 **Example - WRONG:**
+
 ```typescript
 const {
   activeQuote,
@@ -487,6 +542,7 @@ const fromChain = useSelector(getFromChain);
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 const selectBridgeQuoteCardView = createSelector(
   [
@@ -555,6 +611,7 @@ const MultichainBridgeQuoteCard = () => {
 ```
 
 **Benefits:**
+
 - Only one subscription; component rerenders once per state change instead of once per selector
 - Shared memoization ensures combined output only changes when at least one dependency does
 - Centralizes domain-specific shaping logic in selector layer
@@ -562,13 +619,16 @@ const MultichainBridgeQuoteCard = () => {
 ### Rule: Avoid Inline Selector Functions in useSelector
 
 **DO:**
+
 - Extract selector functions to memoized selectors
 - Use useCallback for selector functions if needed
 
 **DON'T:**
+
 - Create selector functions inline in useSelector (creates new reference every render)
 
 **Example - WRONG:**
+
 ```typescript
 const Connections = () => {
   const subjectMetadata = useSelector((state) => {
@@ -585,13 +645,15 @@ const Connections = () => {
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 // Option 1: Extract to memoized selector (preferred)
 const selectConnectedAccountGroups = createSelector(
   [
     (state) => state,
     (_state, showConnectionStatus: boolean) => showConnectionStatus,
-    (_state, _showConnectionStatus, permittedAddresses: string[]) => permittedAddresses,
+    (_state, _showConnectionStatus, permittedAddresses: string[]) =>
+      permittedAddresses,
   ],
   (state, showConnectionStatus, permittedAddresses) => {
     if (!showConnectionStatus || permittedAddresses.length === 0) {
@@ -604,7 +666,11 @@ const selectConnectedAccountGroups = createSelector(
 const Connections = () => {
   const subjectMetadata = useSelector(getConnectedSitesList);
   const connectedAccountGroups = useSelector((state) =>
-    selectConnectedAccountGroups(state, showConnectionStatus, permittedAddresses)
+    selectConnectedAccountGroups(
+      state,
+      showConnectionStatus,
+      permittedAddresses,
+    ),
   );
 };
 
@@ -617,7 +683,7 @@ const Connections = () => {
       }
       return getAccountGroupsByAddress(state, permittedAddresses);
     },
-    [showConnectionStatus, permittedAddresses]
+    [showConnectionStatus, permittedAddresses],
   );
 
   const connectedAccountGroups = useSelector(selectConnectedGroups);
@@ -627,23 +693,29 @@ const Connections = () => {
 ### Rule: Avoid Multiple useSelector Calls for Same State Slice
 
 **DO:**
+
 - Select entire slice once or create single memoized selector
 
 **DON'T:**
+
 - Create multiple useSelector calls for the same state slice (creates unnecessary subscriptions)
 
 **Example - WRONG:**
+
 ```typescript
 const Routes = () => {
   const alertOpen = useAppSelector((state) => state.appState.alertOpen);
   const alertMessage = useAppSelector((state) => state.appState.alertMessage);
   const isLoading = useAppSelector((state) => state.appState.isLoading);
-  const loadingMessage = useAppSelector((state) => state.appState.loadingMessage);
+  const loadingMessage = useAppSelector(
+    (state) => state.appState.loadingMessage,
+  );
   // ... 20+ more selectors from same slice
 };
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 // Option 1: Select entire slice once
 const Routes = () => {
@@ -653,16 +725,13 @@ const Routes = () => {
 
 // Option 2: Create single memoized selector
 const selectAppState = (state) => state.appState;
-const selectAppStateSlice = createSelector(
-  [selectAppState],
-  (appState) => ({
-    alertOpen: appState.alertOpen,
-    alertMessage: appState.alertMessage,
-    isLoading: appState.isLoading,
-    loadingMessage: appState.loadingMessage,
-    // ... other properties
-  })
-);
+const selectAppStateSlice = createSelector([selectAppState], (appState) => ({
+  alertOpen: appState.alertOpen,
+  alertMessage: appState.alertMessage,
+  isLoading: appState.isLoading,
+  loadingMessage: appState.loadingMessage,
+  // ... other properties
+}));
 
 const Routes = () => {
   const appStateSlice = useAppSelector(selectAppStateSlice);
@@ -672,17 +741,20 @@ const Routes = () => {
 ### Rule: Avoid Inefficient Use of Object.values() and Object.keys() in Selectors
 
 **DO:**
+
 - Store arrays alongside objects in state if frequently accessed
 - Properly memoize object-to-array conversion
 - Use createDeepEqualSelector for deeply nested structures
 - Normalize state structure to avoid conversions
 
 **DON'T:**
+
 - Use Object.values() or Object.keys() in selectors without proper memoization (creates new array references on every call)
 
 **Why:** When state is stored as objects keyed by ID, selectors frequently use Object.values() to convert to arrays. This creates new array references on every selector evaluation, even when underlying data hasn't changed, causing unnecessary re-renders.
 
 **Example - WRONG:**
+
 ```typescript
 export const getInternalAccounts = createSelector(
   (state: AccountsState) =>
@@ -692,6 +764,7 @@ export const getInternalAccounts = createSelector(
 ```
 
 **Solution 1: Store Arrays Alongside Objects**
+
 ```typescript
 interface AccountsState {
   accounts: {
@@ -709,6 +782,7 @@ const selectAllAccounts = createSelector(
 ```
 
 **Solution 2: Proper Memoization**
+
 ```typescript
 // Base selector returns the object
 const selectAccountsObject = (state: AccountsState) =>
@@ -725,6 +799,7 @@ export const getInternalAccounts = createSelector(
 ```
 
 **Solution 3: Normalize State Structure**
+
 ```typescript
 // Before: Nested objects
 {
@@ -760,22 +835,27 @@ const selectNftsByAccount = createSelector(
 ### Rule: Avoid Deep Property Access in Selectors
 
 **DO:**
+
 - Use granular input selectors for each level
 - Compose selectors from base selectors
 
 **DON'T:**
+
 - Access deeply nested properties directly (fragile to state structure changes)
 
 **Example - WRONG:**
+
 ```typescript
 const selectGroupAccounts = createSelector(
   (state, walletId, groupId) =>
-    state.metamask.accountTree.wallets[walletId]?.groups[groupId]?.accounts ?? [],
+    state.metamask.accountTree.wallets[walletId]?.groups[groupId]?.accounts ??
+    [],
   (accounts) => accounts,
 );
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 // Base selectors for each level
 const selectAccountTree = (state) => state.metamask.accountTree;
@@ -798,13 +878,16 @@ const selectGroupAccounts = createSelector(
 ### Rule: Avoid Repeated Object Traversal in Selectors
 
 **DO:**
+
 - Use shared base selector and composition
 - Build derived selectors from base selectors
 
 **DON'T:**
+
 - Traverse the same nested object structure independently in multiple selectors
 
 **Example - WRONG:**
+
 ```typescript
 const selectAllWallets = createSelector(
   (state) => state.metamask.accountTree.wallets,
@@ -831,6 +914,7 @@ const selectAllAccounts = createSelector(
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 // Single traversal, multiple derived selectors
 const selectWalletsObject = (state) => state.metamask.accountTree.wallets;
@@ -851,13 +935,16 @@ const selectAllAccounts = createSelector([selectAllGroups], (groups) =>
 ### Rule: Avoid Selectors That Reorganize Nested State
 
 **DO:**
+
 - Store data in the needed format if both formats are needed frequently
 - Normalize state to avoid reorganization
 
 **DON'T:**
+
 - Reorganize nested state structures on every selector call (expensive, creates new object references)
 
 **Example - WRONG:**
+
 ```typescript
 export const getNftContractsByAddressByChain = createSelector(
   getNftContractsByChainByAccount,
@@ -891,6 +978,7 @@ export const getNftContractsByAddressByChain = createSelector(
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 // Option 1: Store in both formats if both are needed frequently
 interface NftState {
@@ -912,13 +1000,16 @@ interface NftState {
 ### Rule: Avoid Filtering/Searching Through Nested Objects
 
 **DO:**
+
 - Maintain lookup indexes in state
 - Use O(1) lookups instead of O(n) searches
 
 **DON'T:**
+
 - Use Object.values().find() or Object.values().filter() to search (O(n), creates temporary arrays)
 
 **Example - WRONG:**
+
 ```typescript
 export const getInternalAccountByAddress = createSelector(
   (state) => state.metamask.internalAccounts.accounts,
@@ -932,6 +1023,7 @@ export const getInternalAccountByAddress = createSelector(
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 // State includes address-to-ID mapping
 interface AccountsState {
@@ -942,9 +1034,10 @@ interface AccountsState {
 }
 
 const selectAccountByAddress = createSelector(
-  (state, address) => state.metamask.internalAccounts.accounts.byAddress[address.toLowerCase()],
+  (state, address) =>
+    state.metamask.internalAccounts.accounts.byAddress[address.toLowerCase()],
   (state) => state.metamask.internalAccounts.accounts.byId,
-  (accountId, accountsById) => accountId ? accountsById[accountId] : undefined,
+  (accountId, accountsById) =>
+    accountId ? accountsById[accountId] : undefined,
 );
 ```
-

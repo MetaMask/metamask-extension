@@ -11,15 +11,18 @@ This file covers React hooks and effects optimization rules including useEffect 
 ### Rule: Don't Overuse useEffect
 
 **DO:**
+
 - Calculate derived state during render instead of using useEffect
 - Only use useEffect for side effects (data fetching, DOM manipulation, subscriptions)
 
 **DON'T:**
+
 - Use useEffect for derived state that can be calculated during render
 
 **Reference:** See: You Might Not Need an Effect
 
 **Example - WRONG:**
+
 ```typescript
 const TokenDisplay = ({ token }: TokenDisplayProps) => {
   const [displayName, setDisplayName] = useState('');
@@ -33,6 +36,7 @@ const TokenDisplay = ({ token }: TokenDisplayProps) => {
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 const TokenDisplay = ({ token }: TokenDisplayProps) => {
   const displayName = `${token.symbol} (${token.name})`;
@@ -43,13 +47,16 @@ const TokenDisplay = ({ token }: TokenDisplayProps) => {
 ### Rule: Minimize useEffect Dependencies
 
 **DO:**
+
 - Reduce dependencies by moving values to default parameters when possible
 - Only include dependencies that actually trigger the effect
 
 **DON'T:**
+
 - Include unnecessary dependencies that cause effects to run too often
 
 **Example - WRONG:**
+
 ```typescript
 const TokenBalance = ({ address, network, refreshInterval }: Props) => {
   const [balance, setBalance] = useState('0');
@@ -68,6 +75,7 @@ const TokenBalance = ({ address, network, refreshInterval }: Props) => {
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 const TokenBalance = ({ address, network, refreshInterval = 10000 }: Props) => {
   const [balance, setBalance] = useState('0');
@@ -88,23 +96,27 @@ const TokenBalance = ({ address, network, refreshInterval = 10000 }: Props) => {
 ### Rule: Never Use JSON.stringify in useEffect Dependencies
 
 **DO:**
+
 - Use useEqualityCheck hook for deep equality checks (recommended)
 - Use useRef with deep equality check in effect
 - Normalize to stable primitives when possible
 - Use createDeepEqualSelector for Redux selectors
 
 **DON'T:**
+
 - Use JSON.stringify in dependencies (expensive, unreliable, breaks with functions/circular refs)
 - Use useMemo with JSON.stringify (defeats purpose)
 
 **Why:** JSON.stringify executes on every render, string comparison is slower than reference comparison, creates new string objects defeating memoization, can cause infinite loops, and doesn't handle circular references or functions.
 
 **When You Need Deep Equality:**
+
 - Nested properties of an object change (deep equality)
 - Array elements change (deep equality)
 - Object reference changes but values are the same (should NOT trigger)
 
 **Example - WRONG:**
+
 ```typescript
 const usePolling = (input: PollingInput) => {
   useEffect(() => {
@@ -114,6 +126,7 @@ const usePolling = (input: PollingInput) => {
 ```
 
 **Example - CORRECT: Option 1 - Use useEqualityCheck hook (Recommended)**
+
 ```typescript
 import { useEqualityCheck } from './hooks/useEqualityCheck';
 import { isEqual } from 'lodash';
@@ -128,6 +141,7 @@ const usePolling = (input: PollingInput) => {
 ```
 
 **Example - CORRECT: Option 2 - useRef with deep equality check**
+
 ```typescript
 import { isEqual } from 'lodash';
 
@@ -145,6 +159,7 @@ const usePolling = (input: PollingInput) => {
 ```
 
 **Example - CORRECT: Option 3 - Normalize to stable primitives**
+
 ```typescript
 const usePolling = (input: PollingInput) => {
   const inputId = useMemo(() => input.id, [input.id]);
@@ -159,13 +174,14 @@ const usePolling = (input: PollingInput) => {
 
 **When to Use Each Approach:**
 
-| Approach | Use When | Pros | Cons |
-|----------|----------|------|------|
-| useEqualityCheck | Objects/arrays from props or external state | Simple, reusable, handles edge cases | Requires hook import |
-| useRef + isEqual | One-off cases, custom logic needed | Full control, no extra hook | More boilerplate |
-| Normalize to primitives | Can extract stable IDs/values | Most performant, clear dependencies | Not always possible |
+| Approach                | Use When                                    | Pros                                 | Cons                 |
+| ----------------------- | ------------------------------------------- | ------------------------------------ | -------------------- |
+| useEqualityCheck        | Objects/arrays from props or external state | Simple, reusable, handles edge cases | Requires hook import |
+| useRef + isEqual        | One-off cases, custom logic needed          | Full control, no extra hook          | More boilerplate     |
+| Normalize to primitives | Can extract stable IDs/values               | Most performant, clear dependencies  | Not always possible  |
 
 **Key Principles:**
+
 - Use deep equality when object references change frequently but values don't
 - Prefer useEqualityCheck hook - Already implemented in codebase
 - Normalize when possible - Extract stable primitives (IDs, strings, numbers)
@@ -175,21 +191,24 @@ const usePolling = (input: PollingInput) => {
 ### Rule: Include All Dependencies in useEffect
 
 **DO:**
+
 - Include all values used in the effect in the dependency array
 - Use useRef with a flag if you truly only want to track once
 
 **DON'T:**
+
 - Use empty dependency arrays when values from closure are used (creates stale closures)
 - Skip dependencies to avoid re-running effects
 
 **Example - WRONG:**
+
 ```typescript
 const Name = ({ type, name }: NameProps) => {
   useEffect(() => {
     trackEvent({
       properties: {
-        petname_category: type,  // Uses 'type' from closure
-        has_petname: Boolean(name?.length),  // Uses 'name' from closure
+        petname_category: type, // Uses 'type' from closure
+        has_petname: Boolean(name?.length), // Uses 'name' from closure
       },
     });
   }, []); // Empty deps - 'type' and 'name' are stale!
@@ -197,6 +216,7 @@ const Name = ({ type, name }: NameProps) => {
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 const Name = ({ type, name }: NameProps) => {
   useEffect(() => {
@@ -227,26 +247,30 @@ const Name = ({ type, name }: NameProps) => {
 ### Rule: Include All Dependencies in useMemo/useCallback
 
 **DO:**
+
 - Always include all dependencies in useMemo/useCallback dependency arrays
 - Use ESLint rule react-hooks/exhaustive-deps to catch missing dependencies
 
 **DON'T:**
+
 - Skip dependencies (causes stale closures and bugs)
 
 **Example - WRONG:**
+
 ```typescript
 const TokenList = ({ tokens, filter }: TokenListProps) => {
   const filteredTokens = useMemo(() => {
-    return tokens.filter(token => token.symbol.includes(filter));
+    return tokens.filter((token) => token.symbol.includes(filter));
   }, [tokens]); // Missing filter dependency!
 };
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 const TokenList = ({ tokens, filter }: TokenListProps) => {
   const filteredTokens = useMemo(() => {
-    return tokens.filter(token => token.symbol.includes(filter));
+    return tokens.filter((token) => token.symbol.includes(filter));
   }, [tokens, filter]); // All dependencies included
 };
 ```
@@ -254,13 +278,16 @@ const TokenList = ({ tokens, filter }: TokenListProps) => {
 ### Rule: Avoid Cascading useEffect Chains
 
 **DO:**
+
 - Combine effects or compute during render using useMemo
 - Use single effect for async operations
 
 **DON'T:**
+
 - Create multiple effects where one sets state that triggers another (causes unnecessary re-renders)
 
 **Example - WRONG:**
+
 ```typescript
 const useHistoricalPrices = () => {
   const [prices, setPrices] = useState([]);
@@ -288,6 +315,7 @@ const useHistoricalPrices = () => {
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 const useHistoricalPrices = () => {
   // Compute prices during render from Redux state
@@ -314,13 +342,16 @@ const useHistoricalPrices = () => {
 ### Rule: Avoid Conditional Early Returns with All Dependencies
 
 **DO:**
+
 - Split effects when conditional logic excludes some dependencies
 - Ensure all dependencies in array are actually used
 
 **DON'T:**
+
 - Include dependencies that aren't used when condition is true
 
 **Example - WRONG:**
+
 ```typescript
 const useHistoricalPrices = ({ isEvm, chainId, address }: Props) => {
   useEffect(() => {
@@ -334,6 +365,7 @@ const useHistoricalPrices = ({ isEvm, chainId, address }: Props) => {
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 // Option 1: Split effects
 const useHistoricalPrices = ({ isEvm, chainId, address }: Props) => {
@@ -360,13 +392,16 @@ const useHistoricalPrices = ({ isEvm, chainId, address }: Props) => {
 ### Rule: Use useRef for Persistent Values
 
 **DO:**
+
 - Use useRef for values that need to persist across renders
 - Use refs for mounted flags, intervals, and other persistent state
 
 **DON'T:**
+
 - Use regular variables for values that need to persist (they get reset on every render)
 
 **Example - WRONG:**
+
 ```typescript
 const usePolling = (input: PollingInput) => {
   let isMounted = false; // Gets reset every render!
@@ -383,6 +418,7 @@ const usePolling = (input: PollingInput) => {
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 const usePolling = (input: PollingInput) => {
   const isMountedRef = useRef(false);
@@ -401,14 +437,17 @@ const usePolling = (input: PollingInput) => {
 ### Rule: Always Call Hooks Unconditionally
 
 **DO:**
+
 - Always call hooks in the same order on every render
 - Use conditional logic inside hooks, not conditional hook calls
 
 **DON'T:**
+
 - Call hooks conditionally (breaks Rules of Hooks)
 - Create hooks dynamically or in loops
 
 **Example - WRONG:**
+
 ```typescript
 const TokenDisplay = ({ token, showDetails }: TokenDisplayProps) => {
   const [balance, setBalance] = useState('0');
@@ -426,6 +465,7 @@ const TokenDisplay = ({ token, showDetails }: TokenDisplayProps) => {
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 const TokenDisplay = ({ token, showDetails }: TokenDisplayProps) => {
   const [balance, setBalance] = useState('0');
@@ -447,10 +487,11 @@ const TokenDisplay = ({ token, showDetails }: TokenDisplayProps) => {
 ```
 
 **Example - WRONG: Dynamic hook creation**
+
 ```typescript
 const AssetList = ({ assets }: AssetListProps) => {
   // ⚠️ Number of hooks changes based on assets.length!
-  const balances = assets.map(asset => {
+  const balances = assets.map((asset) => {
     const [balance, setBalance] = useState('0'); // Wrong!
     useEffect(() => {
       fetchBalance(asset.id).then(setBalance);
@@ -461,6 +502,7 @@ const AssetList = ({ assets }: AssetListProps) => {
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 // Option 1: Custom hook for single asset
 const useAssetBalance = (assetId: string) => {
@@ -493,22 +535,25 @@ const AssetItem = ({ asset }: { asset: Asset }) => {
 ### Rule: Prevent Cascading Re-renders from Hook Dependencies
 
 **DO:**
+
 - Use selectors and memoization to break re-render chains
 - Isolate hook dependencies by extracting stable values
 - Use component composition to prevent unnecessary re-renders
 
 **DON'T:**
+
 - Create effects that depend on frequently changing values without memoization
 
 **Example - WRONG:**
+
 ```typescript
 const Dashboard = () => {
-  const accounts = useSelector(state => state.accounts); // Large array
+  const accounts = useSelector((state) => state.accounts); // Large array
   const [filteredAccounts, setFilteredAccounts] = useState([]);
 
   // Effect runs whenever accounts array reference changes
   useEffect(() => {
-    const filtered = accounts.filter(a => a.isActive);
+    const filtered = accounts.filter((a) => a.isActive);
     setFilteredAccounts(filtered); // Triggers re-render
   }, [accounts]); // accounts reference changes frequently
 
@@ -520,12 +565,12 @@ const Dashboard = () => {
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 // In selectors file:
 const selectAccounts = (state) => state.accounts;
-const selectActiveAccounts = createSelector(
-  [selectAccounts],
-  (accounts) => accounts.filter(a => a.isActive),
+const selectActiveAccounts = createSelector([selectAccounts], (accounts) =>
+  accounts.filter((a) => a.isActive),
 );
 
 // In component:
@@ -545,6 +590,7 @@ const Dashboard = () => {
 ```
 
 **Example - WRONG: Hook depends on frequently changing object**
+
 ```typescript
 const TokenCard = ({ token }: TokenCardProps) => {
   const [formattedBalance, setFormattedBalance] = useState('');
@@ -557,6 +603,7 @@ const TokenCard = ({ token }: TokenCardProps) => {
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 const TokenCard = ({ token }: TokenCardProps) => {
   // Extract primitive values that change less frequently
@@ -576,14 +623,17 @@ const TokenCard = ({ token }: TokenCardProps) => {
 ### Rule: Use Component Composition to Prevent Re-renders
 
 **DO:**
+
 - Move state down to components that need it
 - Pass children as props to prevent re-renders
 - Isolate state changes to specific components
 
 **DON'T:**
+
 - Keep all state at the top level causing unnecessary re-renders
 
 **Example - WRONG:**
+
 ```typescript
 const Dashboard = () => {
   const [count, setCount] = useState(0);
@@ -601,6 +651,7 @@ const Dashboard = () => {
 ```
 
 **Example - CORRECT: Move state down**
+
 ```typescript
 const Dashboard = () => {
   return (
@@ -623,6 +674,7 @@ const Counter = () => {
 ```
 
 **Example - CORRECT: Pass children as props**
+
 ```typescript
 const Dashboard = ({ children }: { children: React.ReactNode }) => {
   const [count, setCount] = useState(0);
@@ -647,19 +699,22 @@ const Dashboard = ({ children }: { children: React.ReactNode }) => {
 ### Rule: Prevent State Updates After Component Unmount
 
 **DO:**
+
 - Check mounted state before updating state in async operations
 - Use cancelled flag pattern with cleanup
 
 **DON'T:**
+
 - Update state after component unmount (causes memory leaks and React warnings)
 
 **Example - WRONG:**
+
 ```typescript
 const TokenBalance = ({ address }: TokenBalanceProps) => {
   const [balance, setBalance] = useState('0');
 
   useEffect(() => {
-    fetchBalance(address).then(result => {
+    fetchBalance(address).then((result) => {
       setBalance(result); // ⚠️ May update after unmount!
     });
   }, [address]);
@@ -667,6 +722,7 @@ const TokenBalance = ({ address }: TokenBalanceProps) => {
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 const TokenBalance = ({ address }: TokenBalanceProps) => {
   const [balance, setBalance] = useState('0');
@@ -693,27 +749,31 @@ const TokenBalance = ({ address }: TokenBalanceProps) => {
 ### Rule: Use AbortController for Fetch Requests
 
 **DO:**
+
 - Use AbortController to cancel fetch requests on unmount
 - Check if request was aborted before updating state
 - Handle AbortError appropriately
 
 **DON'T:**
+
 - Leave fetch requests running after component unmount
 
 **Example - WRONG:**
+
 ```typescript
 const AssetList = ({ chainId }: AssetListProps) => {
   const [assets, setAssets] = useState([]);
 
   useEffect(() => {
     fetch(`/api/assets/${chainId}`)
-      .then(res => res.json())
-      .then(data => setAssets(data)); // Request continues after unmount!
+      .then((res) => res.json())
+      .then((data) => setAssets(data)); // Request continues after unmount!
   }, [chainId]);
 };
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 const AssetList = ({ chainId }: AssetListProps) => {
   const [assets, setAssets] = useState([]);
@@ -722,13 +782,13 @@ const AssetList = ({ chainId }: AssetListProps) => {
     const controller = new AbortController();
 
     fetch(`/api/assets/${chainId}`, { signal: controller.signal })
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         if (!controller.signal.aborted) {
           setAssets(data);
         }
       })
-      .catch(error => {
+      .catch((error) => {
         if (error.name !== 'AbortError') {
           console.error('Failed to fetch assets:', error);
         }
@@ -744,13 +804,16 @@ const AssetList = ({ chainId }: AssetListProps) => {
 ### Rule: Clean Up Intervals and Subscriptions
 
 **DO:**
+
 - Always clean up intervals, timeouts, and subscriptions in useEffect cleanup
 - Use cancelled flag pattern for async operations in intervals
 
 **DON'T:**
+
 - Leave intervals or subscriptions running after unmount
 
 **Example - WRONG:**
+
 ```typescript
 const PriceTicker = ({ tokenAddress }: PriceTickerProps) => {
   const [price, setPrice] = useState(0);
@@ -767,6 +830,7 @@ const PriceTicker = ({ tokenAddress }: PriceTickerProps) => {
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 const PriceTicker = ({ tokenAddress }: PriceTickerProps) => {
   const [price, setPrice] = useState(0);
@@ -795,14 +859,17 @@ const PriceTicker = ({ tokenAddress }: PriceTickerProps) => {
 ### Rule: Avoid Large Object Retention in Closures
 
 **DO:**
+
 - Extract only needed data from large objects
 - Use refs for stable references to avoid capturing large objects in closures
 - Minimize what's captured in closure scope
 
 **DON'T:**
+
 - Capture large objects in closures (prevents garbage collection)
 
 **Example - WRONG:**
+
 ```typescript
 const TransactionList = ({ transactions }: TransactionListProps) => {
   const [filtered, setFiltered] = useState([]);
@@ -811,8 +878,8 @@ const TransactionList = ({ transactions }: TransactionListProps) => {
     // Large transactions array captured in closure
     const expensiveFilter = () => {
       return transactions
-        .filter(tx => tx.status === 'pending')
-        .map(tx => expensiveTransform(tx)); // Large object retained!
+        .filter((tx) => tx.status === 'pending')
+        .map((tx) => expensiveTransform(tx)); // Large object retained!
     };
 
     const interval = setInterval(() => {
@@ -825,6 +892,7 @@ const TransactionList = ({ transactions }: TransactionListProps) => {
 ```
 
 **Example - CORRECT:**
+
 ```typescript
 const TransactionList = ({ transactions }: TransactionListProps) => {
   const [filtered, setFiltered] = useState([]);
@@ -842,8 +910,8 @@ const TransactionList = ({ transactions }: TransactionListProps) => {
       // Use ref to avoid capturing transactions in closure
       const currentTransactions = transactionsRef.current;
       return currentTransactions
-        .filter(tx => tx.status === 'pending')
-        .map(tx => ({
+        .filter((tx) => tx.status === 'pending')
+        .map((tx) => ({
           id: tx.id,
           amount: tx.amount,
           // Only extract needed properties, not entire object
@@ -866,4 +934,3 @@ const TransactionList = ({ transactions }: TransactionListProps) => {
   }, []); // Empty deps - uses ref instead
 };
 ```
-

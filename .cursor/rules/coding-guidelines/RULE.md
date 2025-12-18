@@ -10,6 +10,7 @@ Reference: [MetaMask Coding Guidelines](https://github.com/MetaMask/metamask-ext
 ## TypeScript
 
 ### Use TypeScript for All New Code
+
 - **ALWAYS write new components and utilities in TypeScript**
 - Enforce proper typing (avoid `any` unless absolutely necessary)
 - Refactor existing JavaScript to TypeScript when time allows
@@ -18,6 +19,7 @@ Reference: [MetaMask Coding Guidelines](https://github.com/MetaMask/metamask-ext
 Reference: [MetaMask TypeScript Guidelines](https://github.com/MetaMask/contributor-docs/blob/main/docs/typescript.md)
 
 ### TypeScript Best Practices
+
 - Define explicit types for function parameters and return values
 - Use interfaces for object shapes
 - Use type aliases for complex types
@@ -25,6 +27,7 @@ Reference: [MetaMask TypeScript Guidelines](https://github.com/MetaMask/contribu
 - Use `unknown` instead of `any` when type is truly unknown
 
 Example:
+
 ```typescript
 ✅ CORRECT:
 interface Token {
@@ -50,11 +53,13 @@ const tokens = []; // No type annotation
 ## React Components
 
 ### Use Functional Components and Hooks
+
 - **ALWAYS use functional components instead of class components**
 - Use hooks for state management and side effects
 - Functional components are more concise and readable
 
 Example:
+
 ```tsx
 ✅ CORRECT: Functional component with hooks
 import React, { useState, useEffect } from 'react';
@@ -99,11 +104,13 @@ class TokenList extends React.Component {
 ### Component Optimization
 
 #### Break Down Large Components
+
 - Avoid large return statements
 - Break components into smaller, focused sub-components
 - Each component should have a single responsibility
 
 Example:
+
 ```tsx
 ❌ WRONG: Large monolithic component
 const Dashboard = () => {
@@ -161,12 +168,14 @@ const DashboardContent = () => (
 ```
 
 #### Use Memoization Techniques
+
 - Use `useMemo` for expensive computed values
 - Use `useCallback` for function references passed to child components
 - Follow React's recommended guidance on optimization
 - Don't over-optimize - profile first
 
 Example:
+
 ```tsx
 ✅ CORRECT: Using memoization
 import React, { useMemo, useCallback } from 'react';
@@ -227,6 +236,7 @@ const TokenList = ({ tokens, onTokenClick }: TokenListProps) => {
 ```
 
 #### Use useEffect Judiciously
+
 - Use `useEffect` for side effects (data fetching, DOM manipulation, subscriptions)
 - Don't overuse effects - many things don't need effects
 - Consider if the operation should happen during render instead
@@ -235,6 +245,7 @@ const TokenList = ({ tokens, onTokenClick }: TokenListProps) => {
 Reference: [You Might Not Need an Effect](https://react.dev/learn/you-might-not-need-an-effect)
 
 Example:
+
 ```tsx
 ✅ CORRECT: Appropriate useEffect usage
 const TokenBalance = ({ address }: TokenBalanceProps) => {
@@ -278,11 +289,13 @@ const TokenDisplay = ({ token }: TokenDisplayProps) => {
 ```
 
 ### Use Object Destructuring for Props
+
 - **ALWAYS destructure props in function parameters**
 - Improves readability and avoids repetitive `props.` references
 - Makes it clear what props the component uses
 
 Example:
+
 ```tsx
 ✅ CORRECT:
 interface MyComponentProps {
@@ -314,11 +327,13 @@ const MyComponent = (props: MyComponentProps) => {
 ## File Organization
 
 ### Organize Related Files in One Folder
+
 - Group all files related to a component in a single directory
 - Follow consistent structure across components
 - Use index.ts for clean imports
 
 Standard component structure:
+
 ```
 component-name/
 ├── component-name.tsx          # Main component file
@@ -333,6 +348,7 @@ component-name/
 ```
 
 Example index.ts:
+
 ```typescript
 export { ComponentName } from './component-name';
 export type { ComponentNameProps } from './component-name.types';
@@ -341,11 +357,13 @@ export type { ComponentNameProps } from './component-name.types';
 ## Naming Conventions
 
 ### Component Names
+
 - **ALWAYS use PascalCase for components**
 - Names should be descriptive and specific
 - Avoid generic names like `Component` or `Container`
 
 Examples:
+
 ```typescript
 ✅ CORRECT:
 TextField
@@ -363,11 +381,13 @@ Container
 ```
 
 ### Function Names
+
 - **Use camelCase for functions declared inside components**
 - Use descriptive action verbs
 - Handlers should start with `handle`
 
 Examples:
+
 ```typescript
 ✅ CORRECT:
 const handleInputChange = () => { };
@@ -384,10 +404,12 @@ const validate = () => { };
 ```
 
 ### Hook Names
+
 - **Use `use` prefix for custom hooks**
 - Name should describe what the hook does
 
 Examples:
+
 ```typescript
 ✅ CORRECT:
 const useTokenBalance = () => { };
@@ -402,10 +424,12 @@ const getDebounce = () => { };
 ```
 
 ### Higher-Order Component Names
+
 - **Use `with` prefix for HOCs**
 - Describe the functionality being added
 
 Examples:
+
 ```typescript
 ✅ CORRECT:
 const withAuth = (Component) => { };
@@ -420,6 +444,7 @@ const loading = (Component) => { };
 ## Code Reusability
 
 ### Avoid Repetitive Code (DRY Principle)
+
 - **If writing duplicated code, extract into reusable utilities**
 - Create shared components for repeated UI patterns
 - Create custom hooks for repeated logic
@@ -428,6 +453,7 @@ const loading = (Component) => { };
 Reference: [The Wrong Abstraction](https://sandimetz.com/blog/2016/1/20/the-wrong-abstraction)
 
 Example:
+
 ```tsx
 ❌ WRONG: Duplicated code
 const TokenA = () => {
@@ -487,12 +513,14 @@ const TokenB = () => {
 ## Documentation
 
 ### Document Components
+
 - **Add documentation for all public components**
 - Include props descriptions
 - Include usage examples
 - Document any non-obvious behavior
 
 Example component README:
+
 ```markdown
 # TokenListItem
 
@@ -508,21 +536,23 @@ Displays a single token in a list with its symbol, name, and balance.
 
 \`\`\`tsx
 <TokenListItem
-  token={{ symbol: 'DAI', name: 'Dai Stablecoin', balance: '100' }}
-  onClick={(token) => console.log(token)}
-  isSelected={false}
+token={{ symbol: 'DAI', name: 'Dai Stablecoin', balance: '100' }}
+onClick={(token) => console.log(token)}
+isSelected={false}
 />
 \`\`\`
 ```
 
 ### Document Utilities with TSDoc
+
 - **Use TSDoc format for all utility functions**
 - Document parameters, return values, and exceptions
 - Include examples for complex functions
 - Add links to relevant resources
 
 Example:
-```typescript
+
+````typescript
 /**
  * Formats a token balance for display, handling decimals and large numbers.
  *
@@ -549,11 +579,12 @@ export function formatBalance(
 ): string {
   // Implementation
 }
-```
+````
 
 ## Testing
 
 ### Write Tests for All Components and Utilities
+
 - **ALWAYS write tests for new code**
 - Tests reduce possibilities of errors and regressions
 - Ensure components behave as expected
@@ -562,6 +593,7 @@ export function formatBalance(
 Reference: [MetaMask Unit Testing Guidelines](https://github.com/MetaMask/contributor-docs/blob/main/docs/unit-testing.md)
 
 Example:
+
 ```typescript
 import { render, screen, fireEvent } from '@testing-library/react';
 import { TokenListItem } from './token-list-item';
@@ -605,6 +637,7 @@ describe('TokenListItem', () => {
 ## External Packages
 
 ### Use Well-Maintained Packages Only
+
 - **Only add packages if functionality doesn't exist and can't be easily implemented**
 - Before adding a package, check if a small utility function would suffice
 - Use [Snyk Advisor](https://snyk.io/advisor/) to assess:
@@ -615,7 +648,9 @@ describe('TokenListItem', () => {
 - Package must be in good standing to be added
 
 ### Evaluation Checklist
+
 Before adding a package:
+
 - [ ] Functionality can't be implemented with a small utility
 - [ ] Package is actively maintained (recent updates)
 - [ ] Package has good security score on Snyk
@@ -625,6 +660,7 @@ Before adding a package:
 - [ ] Package license is compatible with project
 
 ### Update Dependencies
+
 - **Update dependencies when you notice they are out of date**
 - Check for security vulnerabilities regularly
 - Test thoroughly after updates
@@ -633,6 +669,7 @@ Before adding a package:
 ## Code Style
 
 ### General Guidelines
+
 - Use consistent formatting (Prettier handles this)
 - Follow ESLint rules configured in the project
 - Keep functions small and focused
@@ -643,7 +680,9 @@ Before adding a package:
 - Remove console.logs before committing
 
 ### Early Returns
+
 Example:
+
 ```typescript
 ❌ WRONG: Deep nesting
 function processToken(token: Token | null) {
@@ -685,11 +724,13 @@ function processToken(token: Token | null): string | null {
 Before submitting a PR, ensure:
 
 ### TypeScript
+
 - [ ] New code is written in TypeScript
 - [ ] Types are explicitly defined (no implicit any)
 - [ ] Interfaces/types are properly documented
 
 ### React Components
+
 - [ ] Functional components used (not classes)
 - [ ] Hooks used appropriately
 - [ ] Props are destructured
@@ -698,11 +739,13 @@ Before submitting a PR, ensure:
 - [ ] useEffect used judiciously with proper cleanup
 
 ### File Organization
+
 - [ ] Files organized in component-specific folders
 - [ ] Follows standard structure (component, types, tests, styles)
 - [ ] index.ts exports public API
 
 ### Naming
+
 - [ ] Components use PascalCase
 - [ ] Functions use camelCase
 - [ ] Hooks use `use` prefix
@@ -710,6 +753,7 @@ Before submitting a PR, ensure:
 - [ ] Names are descriptive and meaningful
 
 ### Code Quality
+
 - [ ] No duplicated code
 - [ ] Reusable utilities/components extracted
 - [ ] Code is readable and maintainable
@@ -717,22 +761,26 @@ Before submitting a PR, ensure:
 - [ ] No console.logs or commented code
 
 ### Documentation
+
 - [ ] Component has README with props and examples
 - [ ] Utility functions have TSDoc comments
 - [ ] Complex logic has explanatory comments
 
 ### Testing
+
 - [ ] Unit tests written for components
 - [ ] Unit tests written for utilities
 - [ ] Tests follow naming conventions
 - [ ] Tests cover happy paths and error cases
 
 ### Dependencies
+
 - [ ] No new dependencies added without justification
 - [ ] New dependencies evaluated with Snyk Advisor
 - [ ] Dependencies are up to date
 
 ### Linting & Formatting
+
 - [ ] Code passes ESLint checks
 - [ ] Code is formatted with Prettier
 - [ ] No TypeScript errors
