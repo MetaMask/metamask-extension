@@ -41,7 +41,23 @@ permissions:
   id-token: write # required for s3 uploads
 
 jobs:
+  check-skip-merge-queue:
+    name: Check if pull request can skip merge queue
+    runs-on: ubuntu-latest
+    outputs:
+      skip-merge-queue: ${{ steps.check-skip-merge-queue.outputs.up-to-date }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        if: github.event_name == 'merge_group'
+      - name: Check pull request merge queue status
+        id: check-skip-merge-queue
+        if: github.event_name == 'merge_group'
+        uses: MetaMask/github-tools/.github/actions/check-skip-merge-queue@v1
+
   identify-builds:
+    name: Identify builds from run
+    if: github.event_name != 'merge_group' || needs.check-skip-merge-queue.outputs.skip-merge-queue != 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 2
     outputs:
@@ -61,6 +77,8 @@ jobs:
         run: .github/scripts/identify-builds-from-run.sh
 
   prep-deps:
+    name: Prepare dependencies
+    if: github.event_name != 'merge_group' || needs.check-skip-merge-queue.outputs.skip-merge-queue != 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -81,6 +99,7 @@ jobs:
 
   lint-workflows:
     name: Lint workflows
+    if: github.event_name != 'merge_group' || needs.check-skip-merge-queue.outputs.skip-merge-queue != 'true'
     uses: MetaMask/github-tools/.github/workflows/lint-workflows.yml@v1
 
   test-lint:
@@ -365,12 +384,14 @@ jobs:
 
   build-storybook:
     name: Build storybook
+    if: github.event_name != 'merge_group' || needs.check-skip-merge-queue.outputs.skip-merge-queue != 'true'
     uses: ./.github/workflows/build-storybook.yml
     secrets:
       STORYBOOK_TOKEN: ${{ secrets.STORYBOOK_TOKEN }}
 
   build-ts-migration-dashboard:
     name: Build ts migration dashboard
+    if: github.event_name != 'merge_group' || needs.check-skip-merge-queue.outputs.skip-merge-queue != 'true'
     uses: ./.github/workflows/build-ts-migration-dashboard.yml
     secrets:
       TS_MIGRATION_DASHBOARD_TOKEN: ${{ secrets.TS_MIGRATION_DASHBOARD_TOKEN }}
@@ -579,9 +600,17 @@ jobs:
       - e2e-chrome
       - e2e-firefox
       - identify-builds
+    env:
+      SKIPPED: ${{ needs.check-skip-merge-queue.outputs.skip-merge-queue == 'true' }}
     steps:
       - name: Check that all jobs have passed
         run: |
+          # If the merge queue was skipped, consider all jobs as passed
+          if [[ "$SKIPPED" == "true" ]]; then
+            echo "Merge queue skipped, considering all jobs as passed"
+            exit 0
+          fi
+
           # Check if all non-E2E jobs passed
           if [[ "${{ needs.all-jobs-completed.outputs.PASSED }}" != "true" ]]; then
             echo "Non-E2E jobs failed"
