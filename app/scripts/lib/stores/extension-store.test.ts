@@ -48,7 +48,7 @@ describe('ExtensionStore', () => {
     it('throws an error if called in a browser that does not support local storage', async () => {
       const localStore = setup({ localMock: false });
       await expect(() => localStore.set(MOCK_STATE)).rejects.toThrow(
-        'Metamask- cannot persist state to local store as this browser does not support this action',
+        'MetaMask - cannot persist state to local store as this browser does not support this action',
       );
     });
 
