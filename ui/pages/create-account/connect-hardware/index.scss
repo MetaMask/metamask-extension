@@ -258,11 +258,6 @@
   &.unsupported-browser {
     height: 210px;
     overflow: auto;
-    scrollbar-width: none;
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
   }
 
   &.account-list {
