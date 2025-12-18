@@ -1,6 +1,10 @@
 ---
-alwaysApply: true
+description: Guidelines for Writing E2E Tests
+globs: test/e2e/**/*.spec.ts,test/e2e/**/*.spec.js,test/e2e/page-objects/**/*.ts
+alwaysApply: false
 ---
+Reference: [MetaMask Extension E2E Test Guidelines](https://github.com/MetaMask/contributor-docs/blob/main/docs/testing/e2e/extension-e2e-guidelines.md)
+
 # MetaMask Extension E2E Testing Guidelines
 
 ## Core Principles
@@ -399,6 +403,10 @@ await withFixtures(
   }
 );
 ```
+
+## Deprecated Patterns
+
+For a complete list of E2E test anti-patterns with regex detection patterns, see [BUGBOT.md](../BUGBOT.md).
 
 ## Code Review Checklist
 
