@@ -127,7 +127,7 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-browserify
-      build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build prod' || 'yarn build dist' }}
+      build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build prod --features tron' || 'yarn build dist --features tron' }}
       builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets: inherit
 
@@ -137,7 +137,7 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-mv2-browserify
-      build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build prod' || 'yarn build dist' }}
+      build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build prod --features tron' || 'yarn build dist --features tron' }}
       mozilla-lint: true
       enable-mv3: false
       builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
@@ -149,7 +149,7 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-beta-browserify
-      build-command: yarn build --build-type beta dist
+      build-command: yarn build --build-type beta dist --features tron
       builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets: inherit
 
@@ -159,7 +159,7 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-beta-mv2-browserify
-      build-command: yarn build --build-type beta dist
+      build-command: yarn build --build-type beta dist --features tron
       mozilla-lint: false # Disabled as it is failing for some reason
       enable-mv3: false
       builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
@@ -171,7 +171,7 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-browserify
-      build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build --build-type flask prod' || 'yarn build --build-type flask dist' }}
+      build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build --build-type flask prod --features tron' || 'yarn build --build-type flask dist --features tron' }}
       builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets: inherit
 
@@ -181,7 +181,7 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-mv2-browserify
-      build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build --build-type flask prod' || 'yarn build --build-type flask dist' }}
+      build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build --build-type flask prod --features tron' || 'yarn build --build-type flask dist --features tron' }}
       mozilla-lint: true
       enable-mv3: false
       builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
@@ -193,7 +193,7 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-browserify
-      build-command: yarn build:test
+      build-command: yarn build:test --features tron
       builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets: inherit
 
@@ -203,7 +203,7 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-mv2-browserify
-      build-command: yarn build:test:mv2
+      build-command: yarn build:test:mv2 --features tron
       mozilla-lint: false # Disabled as it is failing for some reason
       enable-mv3: false
       builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
@@ -215,7 +215,7 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-flask-browserify
-      build-command: yarn build:test:flask
+      build-command: yarn build:test:flask --features tron
       builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets: inherit
 
@@ -225,7 +225,7 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-flask-mv2-browserify
-      build-command: yarn build:test:flask:mv2
+      build-command: yarn build:test:flask:mv2 --features tron
       mozilla-lint: false # Disabled as it is failing for some reason
       enable-mv3: false
       builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
@@ -237,7 +237,7 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-webpack
-      build-command: yarn build:test:webpack
+      build-command: yarn build:test:webpack --addFeature tron
       validate-source-maps: false # Disabled as webpack outputs are not supported by validate-source-maps
       builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets: inherit
@@ -248,7 +248,7 @@ jobs:
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-mv2-webpack
-      build-command: yarn build:test:webpack:mv2
+      build-command: yarn build:test:webpack:mv2 --addFeature tron
       validate-source-maps: false # Disabled as webpack outputs are not supported by validate-source-maps
       builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
     secrets: inherit
