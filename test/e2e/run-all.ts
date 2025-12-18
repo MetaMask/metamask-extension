@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
-import { extractTestResults } from '../../.github/scripts/extract-passed-tests';
+import { extractTestResults } from '../../.github/scripts/extract-test-results';
 import {
   formatTime,
   normalizeTestPath,
@@ -91,27 +91,34 @@ async function runningOnGitHubActions(fullTestList: string[]) {
       return { myTestList: myOriginalTestList, changedOrNewTests };
     }
 
-    // Only re-run tests that explicitly failed in previous run
-    // Tests that passed are skipped, tests that weren't executed stay skipped
-    // (they might have been skipped because they passed in an earlier attempt)
-    const testsToRerun = myOriginalTestList.filter((testPath) =>
-      failed.includes(testPath),
+    // Re-run tests that failed OR were never executed in previous run
+    // Only skip tests that explicitly passed - this ensures:
+    // 1. Failed tests get re-run
+    // 2. Tests that never executed (due to crash/cancel) also get run
+    // 3. Only confirmed passing tests are skipped
+    const testsToRerun = myOriginalTestList.filter(
+      (testPath) => !passed.includes(testPath),
     );
 
+    const failedInChunk = testsToRerun.filter((t) => failed.includes(t)).length;
+    const notExecutedInChunk = testsToRerun.length - failedInChunk;
     console.log(
-      `Previous run: ${passed.length} passed, ${failed.length} failed`,
+      `Previous run results: ${passed.length} passed, ${failed.length} failed`,
+    );
+    console.log(
+      `This chunk: ${failedInChunk} failed, ${notExecutedInChunk} not executed`,
     );
 
     if (testsToRerun.length > 0) {
       console.log(
-        `Re-running ${testsToRerun.length} failed tests:`,
+        `Re-running ${testsToRerun.length} tests (${failedInChunk} failed, ${notExecutedInChunk} not executed):`,
         testsToRerun,
       );
       return { myTestList: testsToRerun, changedOrNewTests };
     }
 
-    // No failed tests to re-run - either all passed or failures were in other chunks
-    console.log('No failed tests in this chunk to re-run, skipping.');
+    // No tests to re-run - all tests in this chunk passed
+    console.log('All tests in this chunk passed, skipping.');
     return { myTestList: [], changedOrNewTests };
   }
 
