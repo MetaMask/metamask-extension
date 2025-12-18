@@ -83,7 +83,6 @@ export function useConfirmationNavigation() {
         const index = getIndex(pendingConfirmations[0].id);
         navigateToIndex(index);
       } else {
-        console.log('activity tab navigation********************');
         await dispatch(setDefaultHomeActiveTabName('activity'));
         navigate(DEFAULT_ROUTE, { state: { stayOnHomePage: true } });
       }

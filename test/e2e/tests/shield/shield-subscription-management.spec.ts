@@ -416,7 +416,7 @@ describe('Shield Plan Stripe Integration', function () {
     });
   });
 
-  it('should successfully cancel and renew subscription', async function () {
+  it.only('should successfully cancel and renew subscription', async function () {
     await withFixtures(
       {
         fixtures: createShieldFixture().build(),

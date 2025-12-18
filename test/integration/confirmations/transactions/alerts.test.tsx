@@ -501,7 +501,6 @@ describe('Contract Interaction Confirmation Alerts', () => {
       await screen.findByTestId('alert-modal__selected-alert'),
     ).toHaveTextContent(
       'We can’t move forward with this transaction until you manually update the fee.',
-      // "This transaction won't go through until a previous transaction is complete. Learn how to cancel or speed up a transaction.",
     );
 
     fireEvent.click(await screen.findByTestId('alert-modal-next-button'));
