@@ -5791,7 +5791,9 @@ export default class MetamaskController extends EventEmitter {
         .lastSelected;
     };
 
-    return addresses.sort((a, b) => getLastSelected(b) - getLastSelected(a));
+    return addresses.sort(
+      (a, b) => (getLastSelected(b) ?? 0) - (getLastSelected(a) ?? 0),
+    );
   }
 
   /**
