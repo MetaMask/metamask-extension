@@ -12,14 +12,12 @@ import {
 } from '../../../store/actions';
 import { useConfirmContext } from '../context/confirm';
 import { useConfirmSendNavigation } from './useConfirmSendNavigation';
-import { useConfirmationNavigation } from './useConfirmationNavigation';
 
 export const useConfirmActions = () => {
   const dispatch = useDispatch();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { navigateBackIfSend } = useConfirmSendNavigation();
   const { id: currentConfirmationId } = currentConfirmation || {};
-  const { navigateNextOrHome } = useConfirmationNavigation();
 
   const rejectApproval = useCallback(
     async ({ location }: { location?: MetaMetricsEventLocation } = {}) => {
@@ -57,8 +55,6 @@ export const useConfirmActions = () => {
       }
       if (navigateBackForSend) {
         await navigateBackIfSend();
-      } else {
-        await navigateNextOrHome(currentConfirmation.id);
       }
       await rejectApproval({ location });
       resetTransactionState();
@@ -68,7 +64,6 @@ export const useConfirmActions = () => {
       navigateBackIfSend,
       rejectApproval,
       resetTransactionState,
-      navigateNextOrHome,
     ],
   );
 
