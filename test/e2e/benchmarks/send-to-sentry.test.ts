@@ -82,14 +82,12 @@ describe('send-to-sentry', () => {
       const dsn = 'https://test@sentry.io/123';
       Sentry.init({
         dsn,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        _experiments: { enableLogs: true },
+        enableLogs: true,
       });
 
       expect(Sentry.init).toHaveBeenCalledWith({
         dsn,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        _experiments: { enableLogs: true },
+        enableLogs: true,
       });
     });
   });

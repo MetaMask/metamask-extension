@@ -107,11 +107,7 @@ async function main() {
 
   Sentry.init({
     dsn: SENTRY_DSN,
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    // We need to respect sentry's label so we can benchmarks as logs to query and report
-    _experiments: {
-      enableLogs: true,
-    },
+    enableLogs: true,
   });
 
   // Derive persona from pageType
