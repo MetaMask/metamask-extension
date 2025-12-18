@@ -32843,7 +32843,7 @@ __metadata:
     "@metamask/preferences-controller": "npm:^21.0.0"
     "@metamask/preinstalled-example-snap": "npm:^0.7.2"
     "@metamask/profile-metrics-controller": "npm:^2.0.0"
-    "@metamask/profile-sync-controller": "npm:^26.0.0"
+    "@metamask/profile-sync-controller": "npm:^27.0.0"
     "@metamask/providers": "npm:^22.1.1"
     "@metamask/rate-limit-controller": "npm:^7.0.0"
     "@metamask/remote-feature-flag-controller": "npm:^3.0.0"

@@ -1362,7 +1362,7 @@ export class AppStateController extends BaseController<
    */
   updateNftDropDownState(nftsDropdownState: Json): void {
     this.update((state) => {
-      // @ts-expect-error this is caused by a bug in Immer, not being able to handle recursive types like Json
+      // @ts-expect-error This is caused by TypeScript's type instantiation depth limit with Json type
       state.nftsDropdownState = nftsDropdownState;
     });
   }
