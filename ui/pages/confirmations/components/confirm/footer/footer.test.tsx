@@ -58,7 +58,7 @@ jest.mock('react-redux', () => ({
 }));
 jest.mock('../../../hooks/useConfirmationNavigation', () => ({
   useConfirmationNavigation: jest.fn(() => ({
-    navigateNext: jest.fn(),
+    navigateNextOrHome: jest.fn(),
     navigateToId: jest.fn(),
   })),
 }));
@@ -553,9 +553,9 @@ describe('ConfirmFooter', () => {
       it.each(['Confirm', 'Cancel'])(
         'on %s button click',
         async (buttonText: string) => {
-          const navigateNextMock = jest.fn();
+          const navigateNextOrHomeMock = jest.fn();
           useConfirmationNavigationMock.mockReturnValue({
-            navigateNext: navigateNextMock,
+            navigateNextOrHome: navigateNextOrHomeMock,
             navigateToId: jest.fn(),
           } as unknown as ReturnType<typeof useConfirmationNavigation>);
 
@@ -589,10 +589,10 @@ describe('ConfirmFooter', () => {
 
           // Wait for async operations to complete
           await waitFor(() => {
-            expect(navigateNextMock).toHaveBeenCalledTimes(1);
+            expect(navigateNextOrHomeMock).toHaveBeenCalledTimes(1);
           });
 
-          expect(navigateNextMock).toHaveBeenCalledWith(
+          expect(navigateNextOrHomeMock).toHaveBeenCalledWith(
             contractInteractionConfirmation.id,
           );
         },

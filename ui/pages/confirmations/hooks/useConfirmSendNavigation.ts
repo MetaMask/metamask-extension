@@ -21,7 +21,7 @@ export const useConfirmSendNavigation = () => {
   const navigate = useNavigate();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { enabled: isSendRedesignEnabled } = useRedesignedSendFlow();
-  const { navigateNext } = useConfirmationNavigation();
+  const { navigateNextOrHome } = useConfirmationNavigation();
 
   const navigateBackIfSend = useCallback(async () => {
     if (!isSendRedesignEnabled) {
@@ -31,9 +31,14 @@ export const useConfirmSendNavigation = () => {
     if (origin === 'metamask' && type && SendTransactionTypes.includes(type)) {
       navigate(PREVIOUS_ROUTE);
     } else {
-      await navigateNext(currentConfirmation.id);
+      await navigateNextOrHome(currentConfirmation.id);
     }
-  }, [currentConfirmation, navigate, isSendRedesignEnabled, navigateNext]);
+  }, [
+    currentConfirmation,
+    navigate,
+    isSendRedesignEnabled,
+    navigateNextOrHome,
+  ]);
 
   return { navigateBackIfSend };
 };

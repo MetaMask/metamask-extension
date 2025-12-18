@@ -74,7 +74,7 @@ export function useConfirmationNavigation() {
     [confirmations, navigateToId],
   );
 
-  const navigateNext = useCallback(
+  const navigateNextOrHome = useCallback(
     async (confirmationId: string) => {
       const pendingConfirmations = confirmations.filter(
         (confirmation) => confirmation.id !== confirmationId,
@@ -97,7 +97,7 @@ export function useConfirmationNavigation() {
     getIndex,
     navigateToId,
     navigateToIndex,
-    navigateNext,
+    navigateNextOrHome,
   };
 }
 

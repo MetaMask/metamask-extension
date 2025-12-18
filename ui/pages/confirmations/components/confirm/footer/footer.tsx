@@ -207,7 +207,7 @@ const Footer = () => {
   const navigate = useNavigate();
   const { onDappSwapCompleted } = useDappSwapActions();
   const { onTransactionConfirm } = useTransactionConfirm();
-  const { navigateNext } = useConfirmationNavigation();
+  const { navigateNextOrHome } = useConfirmationNavigation();
   const { onSubmit: onAddEthereumChain } = useAddEthereumChain();
 
   const { currentConfirmation, isScrollToBottomCompleted } =
@@ -250,10 +250,10 @@ const Footer = () => {
       navigate(DEFAULT_ROUTE);
     } else if (isTransactionConfirmation) {
       await onTransactionConfirm();
-      await navigateNext(currentConfirmation.id);
+      await navigateNextOrHome(currentConfirmation.id);
     } else {
       await dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
-      await navigateNext(currentConfirmation.id);
+      await navigateNextOrHome(currentConfirmation.id);
     }
 
     resetTransactionState();
@@ -263,7 +263,7 @@ const Footer = () => {
     navigate,
     isTransactionConfirmation,
     isAddEthereumChain,
-    navigateNext,
+    navigateNextOrHome,
     onTransactionConfirm,
     resetTransactionState,
     onAddEthereumChain,
@@ -281,10 +281,10 @@ const Footer = () => {
     if (isAddEthereumChain) {
       navigate(DEFAULT_ROUTE);
     } else {
-      await navigateNext(currentConfirmation.id);
+      await navigateNextOrHome(currentConfirmation.id);
     }
   }, [
-    navigateNext,
+    navigateNextOrHome,
     onCancel,
     shouldThrottleOrigin,
     currentConfirmation,
