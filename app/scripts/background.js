@@ -1577,7 +1577,6 @@ async function triggerUi() {
     tabs[0].extData &&
     tabs[0].extData.indexOf('vivaldi_tab') > -1;
 
-  // Check if user prefers sidepanel - if so, content script already opened it
   const sidepanelPreferred =
     controller?.preferencesController?.state?.preferences
       ?.useSidePanelAsDefault ?? false;
