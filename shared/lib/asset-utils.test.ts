@@ -128,7 +128,7 @@ describe('asset-utils', () => {
       const chainId = 'eip155:1' as CaipChainId;
 
       const result = toAssetId(address, chainId);
-      expect(result).toBe(`eip155:1/erc20:${address.toLowerCase()}`);
+      expect(result).toBe(`eip155:1/erc20:${address}`);
       expect(CaipAssetTypeStruct.validate(result)).toStrictEqual([
         undefined,
         result,
@@ -188,7 +188,7 @@ describe('asset-utils', () => {
       );
 
       expect(mockFetchWithTimeout).toHaveBeenCalledWith(
-        `${TOKEN_API_V3_BASE_URL}/assets?assetIds=${mockAssetId + 'ABcDe'.toLowerCase()}`,
+        `${TOKEN_API_V3_BASE_URL}/assets?assetIds=${mockAssetId + 'ABcDe'}`,
         {
           method: 'GET',
           headers: { 'X-Client-Id': 'extension' },
@@ -199,8 +199,8 @@ describe('asset-utils', () => {
         symbol: 'TEST',
         decimals: 18,
         image:
-          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x123abcde.png',
-        assetId: 'eip155:1/erc20:0x123abcde',
+          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x123ABcDe.png',
+        assetId: 'eip155:1/erc20:0x123ABcDe',
         address: '0x123abcde',
         chainId: mockHexChainId,
       });

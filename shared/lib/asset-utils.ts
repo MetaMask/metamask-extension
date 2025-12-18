@@ -10,9 +10,8 @@ import {
   parseCaipAssetType,
   KnownCaipNamespace,
 } from '@metamask/utils';
-
+import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
-import { MultichainNetwork } from '@metamask/multichain-transactions-controller';
 import {
   getNativeAssetForChainId,
   isNativeAddress,
@@ -20,6 +19,7 @@ import {
 import { Asset } from '@metamask/assets-controllers';
 import getFetchWithTimeout from '../modules/fetch-with-timeout';
 import { decimalToPrefixedHex } from '../modules/conversion.utils';
+import { MultichainNetworks } from '../constants/multichain/networks';
 import {
   TRON_RESOURCE_SYMBOLS_SET,
   TronResourceSymbol,
@@ -39,13 +39,17 @@ export const toAssetId = (
   if (isNativeAddress(address)) {
     return getNativeAssetForChainId(chainId)?.assetId;
   }
-  if (chainId === MultichainNetwork.Solana) {
+  if (chainId === MultichainNetworks.SOLANA) {
     return CaipAssetTypeStruct.create(`${chainId}/token:${address}`);
   }
+  if (chainId === MultichainNetworks.TRON) {
+    return CaipAssetTypeStruct.create(`${chainId}/trc20:${address}`);
+  }
   // EVM assets
-  if (isStrictHexString(address)) {
+  const checksummedAddress = toChecksumHexAddress(address) ?? address;
+  if (chainId && isStrictHexString(checksummedAddress)) {
     return CaipAssetTypeStruct.create(
-      `${chainId}/erc20:${address.toLowerCase()}`,
+      `${chainId}/erc20:${checksummedAddress}`,
     );
   }
   return undefined;
@@ -127,7 +131,7 @@ export const fetchAssetMetadata = async (
       assetId,
     };
 
-    if (chainId === MultichainNetwork.Solana && assetId) {
+    if (chainId === MultichainNetworks.SOLANA && assetId) {
       const { assetReference } = parseCaipAssetType(assetId);
       return {
         ...commonFields,
