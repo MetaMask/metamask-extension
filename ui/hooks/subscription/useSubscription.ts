@@ -66,6 +66,7 @@ import {
 } from '../../../shared/constants/subscriptions';
 import { DefaultSubscriptionPaymentOptions } from '../../../shared/types';
 import {
+  determineSubscriptionMetricsSourceFromMarketingUtmParams,
   getShieldMarketingUtmParamsForMetrics,
   getUserBalanceCategory,
   SHIELD_ERROR,
@@ -514,9 +515,14 @@ export const useHandleSubscription = ({
   const determineSubscriptionRequestSource =
     useCallback((): ShieldMetricsSoruceEnum => {
       const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
-      if (Object.keys(marketingUtmParams).length > 0) {
-        return ShieldMetricsSoruceEnum.Marketing;
+      const source =
+        determineSubscriptionMetricsSourceFromMarketingUtmParams(
+          marketingUtmParams,
+        );
+      if (source) {
+        return source;
       }
+
       const sourceParam = new URLSearchParams(search).get('source');
       switch (sourceParam) {
         case 'homepage':
@@ -614,19 +620,21 @@ export const useHandleSubscription = ({
       }
     }, [
       dispatch,
-      defaultOptions,
-      isTrialed,
       selectedPaymentMethod,
+      selectedToken?.address,
+      selectedToken?.symbol,
       selectedPlan,
-      selectedToken,
-      executeSubscriptionCryptoApprovalTransaction,
       useTestClock,
-      captureShieldSubscriptionRequestEvent,
-      latestSubscriptionStatus,
-      modalType,
-      determineSubscriptionRequestSource,
       search,
+      defaultOptions,
+      setShieldSubscriptionMetricsPropsToBackground,
+      determineSubscriptionRequestSource,
       rewardPoints,
+      latestSubscriptionStatus,
+      isTrialed,
+      modalType,
+      captureShieldSubscriptionRequestEvent,
+      executeSubscriptionCryptoApprovalTransaction,
     ]);
 
   return {

@@ -53,7 +53,10 @@ import {
 } from '../../../helpers/constants/design-system';
 import { TRANSACTION_SHIELD_LINK } from '../../../helpers/constants/common';
 import { ThemeType } from '../../../../shared/constants/preferences';
-import { getShieldMarketingUtmParamsForMetrics } from '../../../../shared/modules/shield';
+import {
+  determineSubscriptionMetricsSourceFromMarketingUtmParams,
+  getShieldMarketingUtmParamsForMetrics,
+} from '../../../../shared/modules/shield';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
@@ -83,13 +86,12 @@ const ShieldEntryModal = ({
 
   const determineEntryModalSource = useCallback((): ShieldMetricsSoruceEnum => {
     const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
-    const marketingUtmSource = marketingUtmParams?.utm_source;
-
-    // If the deep link is from the carousel or notification, return the corresponding source.
-    if (marketingUtmSource === ShieldMetricsSoruceEnum.Carousel) {
-      return ShieldMetricsSoruceEnum.Carousel;
-    } else if (marketingUtmSource === ShieldMetricsSoruceEnum.Notification) {
-      return ShieldMetricsSoruceEnum.Notification;
+    const source =
+      determineSubscriptionMetricsSourceFromMarketingUtmParams(
+        marketingUtmParams,
+      );
+    if (source) {
+      return source;
     }
 
     // If current page is from deep link and found marketing UTM params, return the marketing source.
