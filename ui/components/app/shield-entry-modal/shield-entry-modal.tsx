@@ -97,10 +97,7 @@ const ShieldEntryModal = ({
       return source;
     }
 
-    // If current page is from deep link and found marketing UTM params, return the marketing source.
-    if (Object.keys(marketingUtmParams).length > 0) {
-      return ShieldMetricsSoruceEnum.Marketing;
-    } else if (triggeringCohort === COHORT_NAMES.POST_TX) {
+    if (triggeringCohort === COHORT_NAMES.POST_TX) {
       return ShieldMetricsSoruceEnum.PostTransaction;
     } else if (triggeringCohort === COHORT_NAMES.WALLET_HOME) {
       return ShieldMetricsSoruceEnum.Homepage;
