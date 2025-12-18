@@ -49,8 +49,7 @@ const setupPageStreams = () => {
     target: METAMASK_INPAGE,
   });
 
-  // Open sidepanel on UI-requiring methods if user preferred
-  // Required for user gesture context preservation
+  // Setup listeners so sidepanel can be opened if preferred
   setupSidepanelListener();
 
   // create and connect channel muxers

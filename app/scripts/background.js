@@ -1588,7 +1588,7 @@ async function triggerUi() {
     (isVivaldi || openPopupCount === 0) &&
     !currentlyActiveMetamaskTab &&
     !sidePanelIsOpen &&
-    // Skip notification window if user prefers sidepanel (content script already opened it)
+    // Skip notification window if user prefers sidepanel (handled by setupSidepanelMessageHandler)
     !(sidepanelPreferred && sidepanelSupported)
   ) {
     uiIsTriggering = true;
@@ -1739,7 +1739,7 @@ const initSidePanelBehavior = async () => {
 
 initSidePanelBehavior();
 
-// Listen for content script requests to open sidepanel (preserves user gesture context)
+// Listen for requests from setupSidepanelListener
 setupSidepanelMessageHandler({
   isSidepanelPreferred: () =>
     controller?.preferencesController?.state?.preferences
