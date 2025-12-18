@@ -822,7 +822,6 @@ export function getSelectedAccountTokensAcrossChains(state) {
     if (nativeBalance) {
       const nativeTokenInfo = getNativeTokenInfo(
         state.metamask.networkConfigurationsByChainId,
-        state.metamask.provider,
         chainId,
       );
       tokensByChain[chainId].push({
@@ -873,7 +872,6 @@ export const getTokensAcrossChainsByAccountAddressSelector = createSelector(
   [
     (state) => state.metamask.allTokens,
     (state) => state.metamask.networkConfigurationsByChainId,
-    (state) => state.metamask.provider,
     (state, accountAddress) =>
       getNativeTokenCachedBalanceByChainIdSelector(state, accountAddress),
     (_state, accountAddress) => accountAddress,
@@ -881,7 +879,6 @@ export const getTokensAcrossChainsByAccountAddressSelector = createSelector(
   (
     allTokens,
     networkConfigurationsByChainId,
-    provider,
     nativeTokenBalancesByChainId,
     selectedAddress,
   ) => {
@@ -908,7 +905,6 @@ export const getTokensAcrossChainsByAccountAddressSelector = createSelector(
       if (nativeBalance) {
         const nativeTokenInfo = getNativeTokenInfo(
           networkConfigurationsByChainId,
-          provider,
           chainId,
         );
         tokensByChain[chainId].push({
@@ -930,15 +926,10 @@ export const getTokensAcrossChainsByAccountAddressSelector = createSelector(
  * without hardcoding any values.
  *
  * @param {object} networkConfigurationsByChainId - Network configurations by chain ID
- * @param {object} provider - Provider
  * @param {string} chainId - Chain ID
  * @returns {object} Native token information
  */
-export function getNativeTokenInfo(
-  networkConfigurationsByChainId,
-  provider,
-  chainId,
-) {
+export function getNativeTokenInfo(networkConfigurationsByChainId, chainId) {
   const networkConfig = networkConfigurationsByChainId?.[chainId];
 
   // Fill native token info by network config (if a user has a network added)
@@ -946,19 +937,6 @@ export function getNativeTokenInfo(
     const symbol = networkConfig.nativeCurrency || AssetType.native;
     const decimals = 18;
     const name = networkConfig.name || 'Native Token';
-
-    return {
-      symbol,
-      decimals,
-      name,
-    };
-  }
-
-  // Fill native token info by DApp provider
-  if (provider?.chainId === chainId) {
-    const symbol = provider.ticker || AssetType.native;
-    const decimals = provider.nativeCurrency?.decimals || 18;
-    const name = provider.nickname || 'Native Token';
 
     return {
       symbol,

@@ -58,7 +58,6 @@ export const NativeTokenStreamDetails: React.FC<{
     }) =>
       getNativeTokenInfo(
         state.metamask.networkConfigurationsByChainId,
-        state.metamask.provider,
         chainId,
       ) as NativeTokenInfo,
   );

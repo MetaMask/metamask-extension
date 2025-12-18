@@ -188,7 +188,6 @@ const CrossChainSwapTxDetails = () => {
     }) =>
       getNativeTokenInfo(
         state.metamask.networkConfigurationsByChainId,
-        state.metamask.provider,
         srcChainTxMeta?.chainId ?? '',
       ),
   ) as { decimals: number; symbol: string };
