@@ -1,19 +1,13 @@
 .multichain-edit-accounts-page {
   // Calculate height accounting for snap header (64px min-height)
-  &.multichain-page {
-    height: calc(100vh - 64px) !important;
-    max-height: calc(100vh - 64px) !important;
-    overflow: hidden !important;
-  }
-
-  // Prevent the outer Box wrapper from overflowing
+  // Applied to inner Box which has height-full class
   &.mm-box--height-full {
     height: calc(100vh - 64px) !important;
     max-height: calc(100vh - 64px) !important;
     overflow: hidden !important;
   }
 
-  .multichain-page__inner-container {
+  &.multichain-page__inner-container {
     position: relative;
     height: 100% !important;
     overflow: hidden !important;
