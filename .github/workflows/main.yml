@@ -59,6 +59,8 @@ jobs:
     name: Identify builds from run
     if: github.event_name != 'merge_group' || needs.check-skip-merge-queue.outputs.skip-merge-queue != 'true'
     runs-on: ubuntu-latest
+    needs:
+      - check-skip-merge-queue
     timeout-minutes: 2
     outputs:
       builds-from-run: ${{ steps.identify-builds.outputs.builds-from-run }}
@@ -80,6 +82,8 @@ jobs:
     name: Prepare dependencies
     if: github.event_name != 'merge_group' || needs.check-skip-merge-queue.outputs.skip-merge-queue != 'true'
     runs-on: ubuntu-latest
+    needs:
+      - check-skip-merge-queue
     timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
@@ -100,6 +104,8 @@ jobs:
   lint-workflows:
     name: Lint workflows
     if: github.event_name != 'merge_group' || needs.check-skip-merge-queue.outputs.skip-merge-queue != 'true'
+    needs:
+      - check-skip-merge-queue
     uses: MetaMask/github-tools/.github/workflows/lint-workflows.yml@v1
 
   test-lint:
@@ -385,6 +391,8 @@ jobs:
   build-storybook:
     name: Build storybook
     if: github.event_name != 'merge_group' || needs.check-skip-merge-queue.outputs.skip-merge-queue != 'true'
+    needs:
+      - check-skip-merge-queue
     uses: ./.github/workflows/build-storybook.yml
     secrets:
       STORYBOOK_TOKEN: ${{ secrets.STORYBOOK_TOKEN }}
@@ -392,6 +400,8 @@ jobs:
   build-ts-migration-dashboard:
     name: Build ts migration dashboard
     if: github.event_name != 'merge_group' || needs.check-skip-merge-queue.outputs.skip-merge-queue != 'true'
+    needs:
+      - check-skip-merge-queue
     uses: ./.github/workflows/build-ts-migration-dashboard.yml
     secrets:
       TS_MIGRATION_DASHBOARD_TOKEN: ${{ secrets.TS_MIGRATION_DASHBOARD_TOKEN }}
@@ -595,6 +605,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs:
+      - check-skip-merge-queue
       - all-jobs-completed
       - needs-e2e
       - e2e-chrome
