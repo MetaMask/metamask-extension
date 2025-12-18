@@ -7305,37 +7305,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-account-service@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "@metamask/multichain-account-service@npm:4.0.0"
-  dependencies:
-    "@ethereumjs/util": "npm:^9.1.0"
-    "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/eth-snap-keyring": "npm:^18.0.0"
-    "@metamask/key-tree": "npm:^10.1.1"
-    "@metamask/keyring-api": "npm:^21.0.0"
-    "@metamask/keyring-internal-api": "npm:^9.0.0"
-    "@metamask/keyring-snap-client": "npm:^8.0.0"
-    "@metamask/keyring-utils": "npm:^3.1.0"
-    "@metamask/messenger": "npm:^0.3.0"
-    "@metamask/snaps-sdk": "npm:^9.0.0"
-    "@metamask/snaps-utils": "npm:^11.0.0"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.8.1"
-    async-mutex: "npm:^0.5.0"
-  peerDependencies:
-    "@metamask/account-api": ^0.12.0
-    "@metamask/accounts-controller": ^35.0.0
-    "@metamask/error-reporting-service": ^3.0.0
-    "@metamask/keyring-controller": ^25.0.0
-    "@metamask/providers": ^22.0.0
-    "@metamask/snaps-controllers": ^14.0.0
-    webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/b5e5cb6f7d4a8e077935a2a47e230f788ada79cc25829c781e3a26f9b80acaa93980f66bb9d931498400ae3873882e2040066cc83bdea36735029dacb39ad7db
-  languageName: node
-  linkType: hard
-
-"@metamask/multichain-account-service@npm:^4.0.1":
+"@metamask/multichain-account-service@npm:^4.0.0, @metamask/multichain-account-service@npm:^4.0.1":
   version: 4.0.1
   resolution: "@metamask/multichain-account-service@npm:4.0.1"
   dependencies:
@@ -8656,7 +8626,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^62.3.0, @metamask/transaction-controller@npm:^62.3.1, @metamask/transaction-controller@npm:^62.4.0, @metamask/transaction-controller@npm:^62.5.0, @metamask/transaction-controller@npm:^62.7.0":
+"@metamask/transaction-controller@npm:^62.3.0, @metamask/transaction-controller@npm:^62.3.1, @metamask/transaction-controller@npm:^62.4.0, @metamask/transaction-controller@npm:^62.5.0, @metamask/transaction-controller@npm:^62.6.0, @metamask/transaction-controller@npm:^62.7.0":
   version: 62.7.0
   resolution: "@metamask/transaction-controller@npm:62.7.0"
   dependencies:
@@ -8691,44 +8661,6 @@ __metadata:
     "@babel/runtime": ^7.0.0
     "@metamask/eth-block-tracker": ">=9"
   checksum: 10/f9b34194b4e9bf775f66256da6fe0908854346da348238d122856a3bae3621e6ccafab273ed6c4f2b175848a2d74f0257a9f98a6efc6ff14f19b8d37bc256737
-  languageName: node
-  linkType: hard
-
-"@metamask/transaction-controller@npm:^62.6.0":
-  version: 62.6.0
-  resolution: "@metamask/transaction-controller@npm:62.6.0"
-  dependencies:
-    "@ethereumjs/common": "npm:^4.4.0"
-    "@ethereumjs/tx": "npm:^5.4.0"
-    "@ethereumjs/util": "npm:^9.1.0"
-    "@ethersproject/abi": "npm:^5.7.0"
-    "@ethersproject/contracts": "npm:^5.7.0"
-    "@ethersproject/providers": "npm:^5.7.0"
-    "@ethersproject/wallet": "npm:^5.7.0"
-    "@metamask/accounts-controller": "npm:^35.0.0"
-    "@metamask/approval-controller": "npm:^8.0.0"
-    "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/controller-utils": "npm:^11.16.0"
-    "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/gas-fee-controller": "npm:^26.0.0"
-    "@metamask/messenger": "npm:^0.3.0"
-    "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/network-controller": "npm:^27.0.0"
-    "@metamask/nonce-tracker": "npm:^6.0.0"
-    "@metamask/remote-feature-flag-controller": "npm:^3.0.0"
-    "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/utils": "npm:^11.8.1"
-    async-mutex: "npm:^0.5.0"
-    bignumber.js: "npm:^9.1.2"
-    bn.js: "npm:^5.2.1"
-    eth-method-registry: "npm:^4.0.0"
-    fast-json-patch: "npm:^3.1.1"
-    lodash: "npm:^4.17.21"
-    uuid: "npm:^8.3.2"
-  peerDependencies:
-    "@babel/runtime": ^7.0.0
-    "@metamask/eth-block-tracker": ">=9"
-  checksum: 10/d02731b018ee575dd9a8ca3529f9296cda51e9bf939628c7846c37a4cc024fdf41960393489c203c30c09730c68016be2c98619fcd60aaa3f24db7921069fc00
   languageName: node
   linkType: hard
 

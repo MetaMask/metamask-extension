@@ -26,18 +26,8 @@ export const TokenBalancesControllerInit: ControllerInitFunction<
     accountsApiChainIds: () => {
       const state = initMessenger.call('RemoteFeatureFlagController:getState');
 
-      console.log(
-        'RemoteFeatureFlagController state ......',
-        JSON.stringify(state, null, 2),
-      );
-
       const featureFlagForAccountApiBalances =
         state?.remoteFeatureFlags?.assetsAccountApiBalances;
-
-      console.log(
-        'featureFlagForAccountApiBalances ......',
-        featureFlagForAccountApiBalances,
-      );
 
       return Array.isArray(featureFlagForAccountApiBalances)
         ? (featureFlagForAccountApiBalances as `0x${string}`[])
