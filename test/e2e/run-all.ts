@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
-import { extractPreviousRunResults } from '../../.github/scripts/extract-failed-tests';
+import { extractPassedTestPaths } from '../../.github/scripts/extract-failed-tests';
 import {
   formatTime,
   normalizeTestPath,
@@ -76,38 +76,26 @@ async function runningOnGitHubActions(fullTestList: string[]) {
   // Check if this is a re-run with previous results available
   if (runAttempt > 1 && previousResultsPath) {
     console.log(
-      'Re-run detected (attempt %d), extracting results from previous run...',
+      'Re-run detected (attempt %d), checking for passed tests to skip...',
       runAttempt,
     );
 
-    const { failedTests, executedTests } =
-      await extractPreviousRunResults(previousResultsPath);
+    const passedTests = await extractPassedTestPaths(previousResultsPath);
 
-    // Tests to re-run = failed tests + tests that were never executed
-    // This handles cases where early failures prevented other tests from running
-    const neverExecutedTests = myOriginalTestList.filter(
-      (testPath) => !executedTests.includes(testPath),
+    // Simple approach: run everything EXCEPT tests that definitely passed
+    // If no passed tests found (error, no results, etc.), run all tests (safe default)
+    const testsToRerun = myOriginalTestList.filter(
+      (testPath) => !passedTests.includes(testPath),
     );
 
-    if (neverExecutedTests.length > 0) {
+    if (passedTests.length > 0) {
       console.log(
-        `Found ${neverExecutedTests.length} tests that were never executed in previous run:`,
-        neverExecutedTests,
+        `Skipping ${passedTests.length} tests that passed in previous run`,
       );
     }
 
-    const testsToRerun = [
-      ...new Set([
-        ...failedTests.filter((t) => myOriginalTestList.includes(t)),
-        ...neverExecutedTests,
-      ]),
-    ];
-
     if (testsToRerun.length > 0) {
-      console.log(
-        `Re-running ${testsToRerun.length} tests (failed + never executed):`,
-        testsToRerun,
-      );
+      console.log(`Re-running ${testsToRerun.length} tests:`, testsToRerun);
       return { myTestList: testsToRerun, changedOrNewTests };
     }
 
