@@ -16,7 +16,9 @@ export const SnapUIImage = ({
   style,
   borderRadius,
 }: SnapUIImageProps) => {
-  const src = isValidUrl(value) ? value : `data:image/svg+xml;utf8,${encodeURIComponent(value)}`;
+  const src = isValidUrl(value)
+    ? value
+    : `data:image/svg+xml;utf8,${encodeURIComponent(value)}`;
 
   return (
     <img
