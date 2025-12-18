@@ -28,7 +28,6 @@ export const MultichainEditAccountsPageWrapper = ({
   permissions,
   isSnapsPermissionsRequest,
 }: MultichainEditAccountsPageWrapperProps) => {
-  debugger;
   const requestedCaip25CaveatValueWithExistingPermissions = useMemo(() => {
     return getCaip25CaveatValueFromPermissions(permissions);
   }, [permissions]);
