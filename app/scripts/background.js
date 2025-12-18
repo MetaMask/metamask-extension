@@ -50,6 +50,7 @@ import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
 import { HYPERLIQUID_ORIGIN } from '../../shared/constants/referrals';
+import { setupSidepanelMessageHandler } from './sidepanel-helper';
 import {
   CorruptionHandler,
   hasVault,
@@ -111,6 +112,7 @@ const BADGE_COLOR_APPROVAL = '#0376C9';
 const BADGE_MAX_COUNT = 9;
 
 const inTest = process.env.IN_TEST;
+const isSidepanelEnabled = process.env.IS_SIDEPANEL === 'true';
 const useFixtureStore =
   inTest && getManifestFlags().testing?.forceExtensionStore !== true;
 const localStore = useFixtureStore
@@ -1583,6 +1585,22 @@ async function triggerUi() {
   ) {
     uiIsTriggering = true;
     try {
+      // Check if user prefers sidepanel - if so, content script already triggered
+      // sidepanel opening with user gesture context, so skip notification window
+      // Skip in E2E tests until tests have been updated to use sidepanel
+      if (!inTest && isSidepanelEnabled) {
+        const useSidePanelAsDefault =
+          controller?.preferencesController?.state?.preferences
+            ?.useSidePanelAsDefault ?? false;
+
+        if (useSidePanelAsDefault && browser?.sidePanel?.open) {
+          // Content script already sent OPEN_SIDEPANEL_IF_PREFERRED message
+          // which opens sidepanel with user gesture context - skip notification window
+          return;
+        }
+      }
+
+      // Open notification window
       const currentPopupId = controller.appStateController.getCurrentPopupId();
       await notificationManager.showPopup(
         (newPopupId) =>
@@ -1703,7 +1721,7 @@ function onNavigateToTab() {
 const initSidePanelBehavior = async () => {
   // Only initialize sidepanel behavior if the feature flag is enabled
   // and the browser supports the sidePanel API (not Firefox)
-  if (process.env.IS_SIDEPANEL?.toString() !== 'true' || !browser?.sidePanel) {
+  if (!isSidepanelEnabled || !browser?.sidePanel) {
     return;
   }
 
@@ -1729,11 +1747,18 @@ const initSidePanelBehavior = async () => {
 
 initSidePanelBehavior();
 
+// Listen for content script requests to open sidepanel (preserves user gesture context)
+setupSidepanelMessageHandler({
+  getUseSidePanelAsDefault: () =>
+    controller?.preferencesController?.state?.preferences
+      ?.useSidePanelAsDefault ?? false,
+});
+
 // Listen for preference changes to update side panel behavior dynamically
 const setupPreferenceListener = async () => {
   // Only setup preference listener if the feature flag is enabled
   // and the browser supports the sidePanel API (not Firefox)
-  if (process.env.IS_SIDEPANEL?.toString() !== 'true' || !browser?.sidePanel) {
+  if (!isSidepanelEnabled || !browser?.sidePanel) {
     return;
   }
 
