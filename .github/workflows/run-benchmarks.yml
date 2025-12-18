@@ -41,9 +41,7 @@ jobs:
       OUTPUT_NAME: benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}.json
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
       SENTRY_DSN_PERFORMANCE: ${{ vars.SENTRY_DSN_PERFORMANCE }}
-      # Environment variables for Sentry metrics reporting
-      BUILD_TYPE: ${{ matrix.buildType }}
-      PR_NUMBER: ${{ github.event.pull_request.number }}
+      PR_NUMBER: ${{ github.event.pull_request.number || 'none' }}
       HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
     continue-on-error: true
     steps:
@@ -88,15 +86,9 @@ jobs:
       - name: Send benchmark results to Sentry
         if: ${{ vars.SENTRY_DSN_PERFORMANCE }}
         env:
-          SENTRY_DSN_PERFORMANCE: ${{ vars.SENTRY_DSN_PERFORMANCE }}
-          PR_NUMBER: ${{ github.event.pull_request.number || 'none' }}
-          HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
-          GITHUB_JOB: ${{ github.job }}
-          # Pass both values, let bash resolve the correct one
           GH_HEAD_REF: ${{ github.head_ref }}
           GH_REF_NAME: ${{ github.ref_name }}
         run: |
-          # For PRs, use github.head_ref (actual branch). For pushes, use github.ref_name.
           export GITHUB_REF_NAME="${GH_HEAD_REF:-$GH_REF_NAME}"
           yarn tsx test/e2e/benchmarks/send-to-sentry.ts \
             --results test-artifacts/benchmarks/${{ env.OUTPUT_NAME }} \
