@@ -663,12 +663,16 @@ function saveTimestamp() {
  * @returns {Promise} Setup complete.
  */
 async function initialize(backup) {
+  log.info('[initialize] Starting...', { hasBackup: !!backup });
   const offscreenPromise = isManifestV3 ? createOffscreen() : null;
 
+  log.info('[initialize] Loading state from persistence...');
   const initData = await loadStateFromPersistence(backup);
+  log.info('[initialize] State loaded');
 
   const initState = initData.data;
   const initLangCode = await getFirstPreferredLangCode();
+  log.info('[initialize] Got lang code:', initLangCode);
 
   let isFirstMetaMaskControllerSetup;
 
@@ -859,6 +863,7 @@ async function loadPhishingWarningPage() {
  * @returns {Promise<{data: MetaMaskState meta: {version: number}}>} Last data emitted from previous instance of MetaMask.
  */
 export async function loadStateFromPersistence(backup) {
+  log.info('[loadStateFromPersistence] Starting...', { hasBackup: !!backup });
   if (process.env.WITH_STATE) {
     const withState = JSON.parse(process.env.WITH_STATE);
 
@@ -899,10 +904,22 @@ export async function loadStateFromPersistence(backup) {
       preMigrationVersionedData.meta.version = 155;
     }
   } else {
+    log.info('[loadStateFromPersistence] Loading state from persistenceManager...');
     const validateVault = true;
-    preMigrationVersionedData = await persistenceManager.get({ validateVault });
+    try {
+      preMigrationVersionedData = await persistenceManager.get({ validateVault });
+      log.info('[loadStateFromPersistence] State loaded successfully', {
+        hasData: !!preMigrationVersionedData?.data,
+        hasVault: !!preMigrationVersionedData?.data?.KeyringController?.vault,
+        metaVersion: preMigrationVersionedData?.meta?.version,
+      });
+    } catch (error) {
+      log.error('[loadStateFromPersistence] Error loading state:', error);
+      throw error;
+    }
   }
 
+  log.info('[loadStateFromPersistence] Creating migrator...');
   const migrator = new Migrator({
     migrations,
     defaultVersion: process.env.WITH_STATE
@@ -924,11 +941,17 @@ export async function loadStateFromPersistence(backup) {
   });
 
   if (!preMigrationVersionedData?.data && !preMigrationVersionedData?.meta) {
+    log.info('[loadStateFromPersistence] No existing state, generating initial state...');
     preMigrationVersionedData = migrator.generateInitialState(firstTimeState);
   }
 
   // migrate data
+  log.info('[loadStateFromPersistence] Running migrations...');
   const versionedData = await migrator.migrateData(preMigrationVersionedData);
+  log.info('[loadStateFromPersistence] Migrations complete', {
+    hasVersionedData: !!versionedData,
+    metaVersion: versionedData?.meta?.version,
+  });
   if (!versionedData) {
     throw new Error('MetaMask - migrator returned undefined');
   } else if (!isObject(versionedData.meta)) {
@@ -949,7 +972,9 @@ export async function loadStateFromPersistence(backup) {
   persistenceManager.setMetadata(versionedData.meta);
 
   // write to disk
+  log.info('[loadStateFromPersistence] Persisting state...');
   await persistenceManager.set(versionedData.data);
+  log.info('[loadStateFromPersistence] State persisted. Complete!');
 
   // return just the data
   return versionedData;
@@ -1910,5 +1935,6 @@ async function initBackground(backup) {
   }
 }
 if (!process.env.SKIP_BACKGROUND_INITIALIZATION) {
+  log.info('[background.js] Starting initBackground...');
   initBackground(null);
 }

@@ -151,12 +151,18 @@ export class PersistenceManager {
   }
 
   async open() {
+    console.log('[PersistenceManager] Opening storage...');
+
+    // eslint-disable-next-line no-negated-condition
     if (!this.#open) {
       try {
         const db = new IndexedDBStore();
+        console.log('[PersistenceManager] Attempting to open IndexedDB...');
         await db.open('metamask-backup', 1);
+        console.log('[PersistenceManager] IndexedDB opened successfully!');
         this.#backupDb = db;
       } catch (error) {
+        console.error('[PersistenceManager] IndexedDB FAILED:', error);
         // `indexedDB` can't be used by addons in FF in some instances of
         // private browsing mode due to this bug:
         // https://bugzilla.mozilla.org/show_bug.cgi?id=1982707. In these
@@ -179,6 +185,9 @@ export class PersistenceManager {
         }
       }
       this.#open = true;
+      console.log('[PersistenceManager] Storage opened.');
+    } else {
+      console.log('[PersistenceManager] Storage already open.');
     }
   }
 
@@ -229,10 +238,37 @@ export class PersistenceManager {
         this.#pendingState = undefined;
         try {
           // atomically set all the keys
-          await this.#localStore.set({
-            data: state,
-            meta,
+          const stateString = JSON.stringify(state);
+          log.info('[PersistenceManager.set] Attempting to save state...', {
+            stateKeys: Object.keys(state),
+            metaVersion: meta?.version,
+            stateSize: stateString.length,
           });
+
+          // Log sizes of each controller state to find the bloat
+          const controllerSizes = Object.entries(state)
+            .map(([key, value]) => ({
+              key,
+              size: JSON.stringify(value).length,
+            }))
+            .sort((a, b) => b.size - a.size)
+            .slice(0, 10); // Top 10 largest
+          log.info('[PersistenceManager.set] Largest controller states:', controllerSizes);
+          try {
+            await this.#localStore.set({
+              data: state,
+              meta,
+            });
+            log.info('[PersistenceManager.set] State saved successfully');
+          } catch (setError) {
+            log.error('[PersistenceManager.set] localStore.set failed:', setError);
+            log.error('[PersistenceManager.set] Error details:', {
+              message: (setError as Error)?.message,
+              name: (setError as Error)?.name,
+              stack: (setError as Error)?.stack,
+            });
+            throw setError;
+          }
 
           const backup = makeBackup(state, meta);
           // if we have a vault we can back it up
@@ -277,13 +313,20 @@ export class PersistenceManager {
   }: {
     validateVault: boolean;
   }): Promise<MetaMaskStorageStructure | undefined> {
+    log.info('[PersistenceManager.get] Starting...', { validateVault });
     await this.open();
 
     return await navigator.locks.request(
       STATE_LOCK,
       { mode: 'shared' },
       async () => {
+        log.info('[PersistenceManager.get] Calling localStore.get()...');
         const result = await this.#localStore.get();
+        log.info('[PersistenceManager.get] localStore.get() returned', {
+          hasResult: !!result,
+          hasData: !!result?.data,
+          hasMeta: !!result?.meta,
+        });
 
         if (validateVault) {
           // if we don't have a vault

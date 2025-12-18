@@ -1574,13 +1574,17 @@ export default class MetamaskController extends EventEmitter {
    * @param groupId - Currently selected account group.
    */
   async forwardSelectedAccountGroupToSnapKeyring(snapKeyring, groupId) {
+    log.info('[forwardSelectedAccountGroupToSnapKeyring] Starting...', { hasSnapKeyring: !!snapKeyring, groupId });
     if (!snapKeyring) {
       // Nothing to forward if the Snap keyring is not available.
+      log.info('[forwardSelectedAccountGroupToSnapKeyring] No snap keyring, returning early');
       return;
     }
 
     if (groupId) {
+      log.info('[forwardSelectedAccountGroupToSnapKeyring] Getting account group object...');
       const group = this.accountTreeController.getAccountGroupObject(groupId);
+      log.info('[forwardSelectedAccountGroupToSnapKeyring] Got group:', { hasGroup: !!group, accountCount: group?.accounts?.length });
       if (group) {
         // FIXME: For now, only our non-EVM Snaps support this `keyring_setSelectedAccounts`
         // method. There's also no way to know which optional method is supported on an
@@ -5482,7 +5486,9 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} password - The user's password
    */
   async submitPassword(password) {
+    log.info('[submitPassword] Called');
     await this.submitPasswordOrEncryptionKey({ password });
+    log.info('[submitPassword] Complete');
   }
 
   /**
@@ -5506,34 +5512,58 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} params.encryptionKey - The user's encryption key.
    */
   async submitPasswordOrEncryptionKey({ password, encryptionKey }) {
+    log.info('[submitPasswordOrEncryptionKey] Starting...');
     const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
+    log.info('[submitPasswordOrEncryptionKey] isSocialLoginFlow:', isSocialLoginFlow);
 
     // Before attempting to unlock the keyrings, we need the offscreen to have loaded.
+    log.info('[submitPasswordOrEncryptionKey] Waiting for offscreenPromise...');
     await this.offscreenPromise;
+    log.info('[submitPasswordOrEncryptionKey] offscreenPromise resolved');
 
     if (encryptionKey) {
+      log.info('[submitPasswordOrEncryptionKey] Using encryptionKey...');
       await this.keyringController.submitEncryptionKey(encryptionKey);
+      log.info('[submitPasswordOrEncryptionKey] encryptionKey submitted');
     } else {
-      await this.keyringController.submitPassword(password);
+      log.info('[submitPasswordOrEncryptionKey] Using password...');
+      log.info('[submitPasswordOrEncryptionKey] Vault exists:', !!this.keyringController.state?.vault);
+      try {
+        await this.keyringController.submitPassword(password);
+        log.info('[submitPasswordOrEncryptionKey] Password submitted successfully');
+      } catch (error) {
+        log.error('[submitPasswordOrEncryptionKey] Password submission failed:', error);
+        throw error;
+      }
       if (isSocialLoginFlow) {
         // unlock the seedless onboarding vault
+        log.info('[submitPasswordOrEncryptionKey] Submitting to seedlessOnboardingController...');
         await this.seedlessOnboardingController.submitPassword(password);
+        log.info('[submitPasswordOrEncryptionKey] seedlessOnboardingController done');
       }
     }
 
+    log.info('[submitPasswordOrEncryptionKey] Checking for latest block...');
     try {
       await this.blockTracker.checkForLatestBlock();
+      log.info('[submitPasswordOrEncryptionKey] Block check complete');
     } catch (error) {
       log.error('Error while unlocking extension.', error);
     }
 
+    log.info('[submitPasswordOrEncryptionKey] Updating accounts...');
     await this.accountsController.updateAccounts();
+    log.info('[submitPasswordOrEncryptionKey] Accounts updated');
 
     // Init multichain accounts after creating internal accounts.
+    log.info('[submitPasswordOrEncryptionKey] Initializing multichainAccountService...');
     await this.multichainAccountService.init();
+    log.info('[submitPasswordOrEncryptionKey] multichainAccountService initialized');
 
     // Force account-tree refresh after all accounts have been updated.
+    log.info('[submitPasswordOrEncryptionKey] Initializing accountTreeController...');
     this.accountTreeController.init();
+    log.info('[submitPasswordOrEncryptionKey] accountTreeController initialized');
 
     // TODO: Move this logic to the SnapKeyring directly.
     // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
@@ -5546,6 +5576,7 @@ export default class MetamaskController extends EventEmitter {
       await this.getSnapKeyring(),
       this.accountTreeController.getSelectedAccountGroup(),
     );
+    log.info('[submitPasswordOrEncryptionKey] Forwarded selected account group');
 
     if (this.isMultichainAccountsFeatureState2Enabled()) {
       const resyncAndAlignAccounts = async () => {
@@ -5566,6 +5597,8 @@ export default class MetamaskController extends EventEmitter {
       // eslint-disable-next-line no-void
       void resyncAndAlignAccounts();
     }
+
+    log.info('[submitPasswordOrEncryptionKey] Complete!');
   }
 
   async _loginUser(password) {
