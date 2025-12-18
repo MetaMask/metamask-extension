@@ -6,13 +6,13 @@ import React, {
   useMemo,
   useState,
 } from 'react';
+import { useNavigate } from 'react-router-dom';
 
+import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
+import { usePrevious } from '../../../../hooks/usePrevious';
 import useCurrentConfirmation from '../../hooks/useCurrentConfirmation';
 import useSyncConfirmPath from '../../hooks/useSyncConfirmPath';
 import { Confirmation } from '../../types/confirm';
-import { usePrevious } from '../../../../hooks/usePrevious';
-import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
-import { useNavigate } from 'react-router-dom';
 
 export type ConfirmContextType = {
   currentConfirmation: Confirmation;
