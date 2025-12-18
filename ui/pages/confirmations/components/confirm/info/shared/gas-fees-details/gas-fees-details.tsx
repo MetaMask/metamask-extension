@@ -1,5 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import React, { Dispatch, SetStateAction } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { Box } from '../../../../../../../components/component-library';
 import {
@@ -19,11 +19,7 @@ import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { useAutomaticGasFeeTokenSelect } from '../../../../../hooks/useAutomaticGasFeeTokenSelect';
 
-export const GasFeesDetails = ({
-  setShowCustomizeGasPopover,
-}: {
-  setShowCustomizeGasPopover: Dispatch<SetStateAction<boolean>>;
-}) => {
+export const GasFeesDetails = (): JSX.Element | null => {
   const t = useI18nContext();
   useAutomaticGasFeeTokenSelect();
 
@@ -65,8 +61,6 @@ export const GasFeesDetails = ({
         fiatFee={estimatedFeeFiat}
         fiatFeeWith18SignificantDigits={estimatedFeeFiatWith18SignificantDigits}
         nativeFee={estimatedFeeNative}
-        supportsEIP1559={supportsEIP1559}
-        setShowCustomizeGasPopover={setShowCustomizeGasPopover}
       />
       {showAdvancedDetails &&
         hasLayer1GasFee &&

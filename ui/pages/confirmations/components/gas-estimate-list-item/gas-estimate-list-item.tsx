@@ -30,6 +30,7 @@ const SelectedIndicator = () => {
 };
 
 const ListItem = ({
+  optionKey,
   name,
   isSelected,
   time,
@@ -38,6 +39,7 @@ const ListItem = ({
   onClick,
   tooltipProps,
 }: {
+  optionKey: string;
   name: string;
   isSelected?: boolean;
   time?: string;
@@ -50,7 +52,7 @@ const ListItem = ({
 
   return (
     <Box
-      data-testid={`gas-option-${name}`}
+      data-testid={`gas-option-${optionKey}`}
       flexDirection={BoxFlexDirection.Row}
       backgroundColor={isSelected ? BoxBackgroundColor.PrimaryMuted : undefined}
       padding={2}
@@ -138,6 +140,7 @@ export const GasEstimateListItem = ({ option }: { option: GasOption }) => {
   const {
     estimatedTime,
     isSelected,
+    key,
     name,
     onSelect,
     value,
@@ -147,6 +150,7 @@ export const GasEstimateListItem = ({ option }: { option: GasOption }) => {
 
   return (
     <ListItem
+      optionKey={key}
       name={name}
       isSelected={isSelected}
       time={estimatedTime}

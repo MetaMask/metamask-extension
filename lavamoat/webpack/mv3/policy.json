@@ -2747,6 +2747,11 @@
         "browserify>url": true
       }
     },
+    "humanize-duration": {
+      "globals": {
+        "define": true
+      }
+    },
     "eth-ens-namehash>idna-uts46-hx": {
       "globals": {
         "define": true
