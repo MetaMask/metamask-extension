@@ -39,20 +39,22 @@ export const setupSidepanelMessageHandler = ({
   }
 
   browser.runtime.onMessage.addListener((message, sender) => {
-    if (message?.type === EXTENSION_MESSAGES.OPEN_SIDEPANEL) {
-      if (
-        isSidepanelPreferred() &&
-        // @ts-expect-error sidePanel API not in webextension-polyfill types yet
-        browser.sidePanel?.open &&
-        sender?.tab?.id
-      ) {
-        // @ts-expect-error sidePanel API not in webextension-polyfill types yet
-        browser.sidePanel.open({ tabId: sender.tab.id }).catch(() => {
-          // triggerUi will show notification window as fallback
-        });
-      }
-      return true;
+    if (message?.type !== EXTENSION_MESSAGES.OPEN_SIDEPANEL) {
+      return undefined;
     }
+
+    if (
+      isSidepanelPreferred() &&
+      // @ts-expect-error sidePanel API not in webextension-polyfill types yet
+      browser.sidePanel?.open &&
+      sender?.tab?.id
+    ) {
+      // @ts-expect-error sidePanel API not in webextension-polyfill types yet
+      browser.sidePanel.open({ tabId: sender.tab.id }).catch(() => {
+        // Failed to open sidepanel
+      });
+    }
+
     return undefined;
   });
 };
