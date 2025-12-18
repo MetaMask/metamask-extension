@@ -29,16 +29,16 @@ Instructions for AI coding agents working on MetaMask Browser Extension.
 ### Comprehensive Guidelines Location
 
 Read these files for detailed coding standards:
-- Controller patterns: `.cursor/rules/controller-guidelines.mdc`
-- Unit testing standards: `.cursor/rules/unit-testing-guidelines.mdc`
-- E2E testing standards: `.cursor/rules/e2e-testing-guidelines.mdc`
+- Controller patterns: `.cursor/rules/controller-guidelines/RULE.md`
+- Unit testing standards: `.cursor/rules/unit-testing-guidelines/RULE.md`
+- E2E testing standards: `.cursor/rules/e2e-testing-guidelines/RULE.md`
 - Front-end performance:
-  - `.cursor/rules/front-end-performance-rendering.mdc` (rendering performance - start here)
-  - `.cursor/rules/front-end-performance-hooks-effects.mdc` (hooks & effects)
-  - `.cursor/rules/front-end-performance-react-compiler.mdc` (React Compiler & anti-patterns)
-  - `.cursor/rules/front-end-performance-state-management.mdc` (Redux & state management)
-- PR workflow: `.cursor/rules/pull-request-guidelines.mdc`
-- Code style: `.cursor/rules/coding-guidelines.mdc`
+  - `.cursor/rules/front-end-performance-rendering/RULE.md` (rendering performance - start here)
+  - `.cursor/rules/front-end-performance-hooks-effects/RULE.md` (hooks & effects)
+  - `.cursor/rules/front-end-performance-react-compiler/RULE.md` (React Compiler & anti-patterns)
+  - `.cursor/rules/front-end-performance-state-management/RULE.md` (Redux & state management)
+- PR workflow: `.cursor/rules/pull-request-guidelines/RULE.md`
+- Code style: `.cursor/rules/coding-guidelines/RULE.md`
 - Official guidelines: `.github/guidelines/CODING_GUIDELINES.md`
 
 ---
@@ -157,7 +157,7 @@ yarn test:e2e:benchmark    # Performance benchmarks
 - Unit tests should be colocated with source files (`.test.ts`/`.test.tsx`)
 - Always create a test build before running E2E tests
 - Use `--leave-running` to debug failed E2E tests
-- See `.cursor/rules/unit-testing-guidelines.mdc` for testing standards
+- See `.cursor/rules/unit-testing-guidelines/RULE.md` for testing standards
 
 ### Linting & Formatting
 
@@ -265,9 +265,9 @@ yarn test:e2e:single test/e2e/tests/new-test.spec.js --browser=chrome
 
 ```bash
 # 1. Identify file type and read relevant guidelines
-# - Controller? Read .cursor/rules/controller-guidelines.mdc
-# - React component? Read .cursor/rules/coding-guidelines.mdc
-# - Test? Read .cursor/rules/unit-testing-guidelines.mdc
+# - Controller? Read .cursor/rules/controller-guidelines/RULE.md
+# - React component? Read .cursor/rules/coding-guidelines/RULE.md
+# - Test? Read .cursor/rules/unit-testing-guidelines/RULE.md
 
 # 2. Make changes following guidelines
 
@@ -343,7 +343,7 @@ yarn test:e2e:single path/to/test.spec.js --browser=chrome
 
 ```bash
 # 1. MUST read controller guidelines first
-# Read .cursor/rules/controller-guidelines.mdc
+# Read .cursor/rules/controller-guidelines/RULE.md
 
 # 2. Create controller file (TypeScript only)
 # Location: app/scripts/controllers/your-controller/your-controller.ts
@@ -371,7 +371,7 @@ yarn lint:changed:fix
 
 ### Controller Development Patterns
 
-When creating a controller, follow these critical patterns from `.cursor/rules/controller-guidelines.mdc`:
+When creating a controller, follow these critical patterns from `.cursor/rules/controller-guidelines/RULE.md`:
 
 #### State Metadata Requirements
 
@@ -532,7 +532,7 @@ class TokensController extends BaseController</*...*/> {
 }
 ```
 
-**See `.cursor/rules/controller-guidelines.mdc` for complete patterns with detailed examples.**
+**See `.cursor/rules/controller-guidelines/RULE.md` for complete patterns with detailed examples.**
 
 ---
 
@@ -669,13 +669,13 @@ metamask-extension/
 - Performance optimizations: useMemo, useCallback, React.memo
 - Unique IDs as keys (not array index for dynamic lists)
 - Organized in component folders with tests, styles, and types
-- See `.cursor/rules/coding-guidelines.mdc` and `.cursor/rules/front-end-performance-rendering.mdc`
+- See `.cursor/rules/coding-guidelines/RULE.md` and `.cursor/rules/front-end-performance-rendering/RULE.md`
 
 **Testing**:
 - Unit tests colocated with source files (`.test.ts`)
 - Jest for unit tests, Playwright for E2E
 - Test files organized with `describe` blocks by method/function
-- See `.cursor/rules/unit-testing-guidelines.mdc` for testing patterns
+- See `.cursor/rules/unit-testing-guidelines/RULE.md` for testing patterns
 
 ### File Modification Patterns
 
@@ -925,7 +925,7 @@ describe('TokensController', () => {
 });
 ```
 
-**Detailed Guidelines:** See `.cursor/rules/unit-testing-guidelines.mdc`
+**Detailed Guidelines:** See `.cursor/rules/unit-testing-guidelines/RULE.md`
 
 ### E2E Tests
 
@@ -962,7 +962,9 @@ yarn test:e2e:single test/e2e/tests/TEST_NAME.spec.js \
 - Use fixtures to set up state programmatically
 - Use `data-testid` for element locators
 
-**Detailed Guidelines:** See `.cursor/rules/e2e-testing-guidelines.mdc`
+**Detailed Guidelines:** See `.cursor/rules/e2e-testing-guidelines/RULE.md`
+
+**Deprecated Patterns:** See `.cursor/BUGBOT.md` for a list of deprecated E2E testing patterns to avoid.
 
 ### Integration Tests
 
@@ -1106,7 +1108,7 @@ function transformData(state: any): void {
 - [ ] Review the squash commit message (auto-generated from PR)
 - [ ] **Don't modify the commit title format** (must be: `Title (#number)`)
 
-**Detailed Guidelines:** See `.cursor/rules/pull-request-guidelines.mdc`
+**Detailed Guidelines:** See `.cursor/rules/pull-request-guidelines/RULE.md`
 
 ---
 
@@ -1215,12 +1217,12 @@ useEffect(() => {
 ```
 
 **Detailed Guidelines:**
-- General coding: `.cursor/rules/coding-guidelines.mdc`
+- General coding: `.cursor/rules/coding-guidelines/RULE.md`
 - Performance optimization:
-  - `.cursor/rules/front-end-performance-rendering.mdc` (rendering performance)
-  - `.cursor/rules/front-end-performance-hooks-effects.mdc` (hooks & effects)
-  - `.cursor/rules/front-end-performance-react-compiler.mdc` (React Compiler & anti-patterns)
-  - `.cursor/rules/front-end-performance-state-management.mdc` (Redux & state management)
+  - `.cursor/rules/front-end-performance-rendering/RULE.md` (rendering performance)
+  - `.cursor/rules/front-end-performance-hooks-effects/RULE.md` (hooks & effects)
+  - `.cursor/rules/front-end-performance-react-compiler/RULE.md` (React Compiler & anti-patterns)
+  - `.cursor/rules/front-end-performance-state-management/RULE.md` (Redux & state management)
 
 ---
 
@@ -1308,10 +1310,10 @@ Before marking a component complete:
 **Rule of thumb:** Profile first with React DevTools, then optimize what matters.
 
 **See:**
-- `.cursor/rules/front-end-performance-rendering.mdc` - Rendering performance (keys, memoization, virtualization)
-- `.cursor/rules/front-end-performance-hooks-effects.mdc` - Hooks & effects optimization
-- `.cursor/rules/front-end-performance-react-compiler.mdc` - React Compiler considerations & anti-patterns
-- `.cursor/rules/front-end-performance-state-management.mdc` - Redux & state management optimization
+- `.cursor/rules/front-end-performance-rendering/RULE.md` - Rendering performance (keys, memoization, virtualization)
+- `.cursor/rules/front-end-performance-hooks-effects/RULE.md` - Hooks & effects optimization
+- `.cursor/rules/front-end-performance-react-compiler/RULE.md` - React Compiler considerations & anti-patterns
+- `.cursor/rules/front-end-performance-state-management/RULE.md` - Redux & state management optimization
 
 ---
 
@@ -1568,16 +1570,17 @@ Performance Checks (React Components):
 
 ### Coding Guidelines
 
-- **Controller Patterns:** [.cursor/rules/controller-guidelines.mdc](./.cursor/rules/controller-guidelines.mdc)
-- **Unit Testing:** [.cursor/rules/unit-testing-guidelines.mdc](./.cursor/rules/unit-testing-guidelines.mdc)
-- **E2E Testing:** [.cursor/rules/e2e-testing-guidelines.mdc](./.cursor/rules/e2e-testing-guidelines.mdc)
+- **Controller Patterns:** [.cursor/rules/controller-guidelines/RULE.md](./.cursor/rules/controller-guidelines/RULE.md)
+- **Unit Testing:** [.cursor/rules/unit-testing-guidelines/RULE.md](./.cursor/rules/unit-testing-guidelines/RULE.md)
+- **E2E Testing:** [.cursor/rules/e2e-testing-guidelines/RULE.md](./.cursor/rules/e2e-testing-guidelines/RULE.md)
+- **E2E Deprecated Patterns:** [.cursor/BUGBOT.md](./.cursor/BUGBOT.md)
 - **Front-End Performance:**
-  - [Rendering Performance](.cursor/rules/front-end-performance-rendering.mdc) - Start here (keys, memoization, virtualization)
-  - [Hooks & Effects](.cursor/rules/front-end-performance-hooks-effects.mdc) - useEffect best practices
-  - [React Compiler & Anti-Patterns](.cursor/rules/front-end-performance-react-compiler.mdc) - React Compiler considerations
-  - [State Management](.cursor/rules/front-end-performance-state-management.mdc) - Redux optimization
-- **Pull Requests:** [.cursor/rules/pull-request-guidelines.mdc](./.cursor/rules/pull-request-guidelines.mdc)
-- **General Coding:** [.cursor/rules/coding-guidelines.mdc](./.cursor/rules/coding-guidelines.mdc)
+  - [Rendering Performance](.cursor/rules/front-end-performance-rendering/RULE.md) - Start here (keys, memoization, virtualization)
+  - [Hooks & Effects](.cursor/rules/front-end-performance-hooks-effects/RULE.md) - useEffect best practices
+  - [React Compiler & Anti-Patterns](.cursor/rules/front-end-performance-react-compiler/RULE.md) - React Compiler considerations
+  - [State Management](.cursor/rules/front-end-performance-state-management/RULE.md) - Redux optimization
+- **Pull Requests:** [.cursor/rules/pull-request-guidelines/RULE.md](./.cursor/rules/pull-request-guidelines/RULE.md)
+- **General Coding:** [.cursor/rules/coding-guidelines/RULE.md](./.cursor/rules/coding-guidelines/RULE.md)
 - **Official Guidelines:** [.github/guidelines/CODING_GUIDELINES.md](./.github/guidelines/CODING_GUIDELINES.md)
 
 ### External Resources

@@ -112,16 +112,16 @@ When you read guideline files, note:
 - Multiple locations if the same rule appears in different files
 - Cross-references to other guidelines (e.g., AGENTS.md)
 
-- **All files**: `.cursor/rules/coding-guidelines.mdc`
-- **Unit test files** (`.test.ts`): `.cursor/rules/unit-testing-guidelines.mdc`
-- **E2E test files** (`.spec.ts`, `test/e2e/`): `.cursor/rules/e2e-testing-guidelines.mdc`
-- **Controller files**: `.cursor/rules/controller-guidelines.mdc`
-- **Redux files**: `.cursor/rules/front-end-performance-state-management.mdc`
+- **All files**: `.cursor/rules/coding-guidelines/RULE.md`
+- **Unit test files** (`.test.ts`): `.cursor/rules/unit-testing-guidelines/RULE.md`
+- **E2E test files** (`.spec.ts`, `test/e2e/`): `.cursor/rules/e2e-testing-guidelines/RULE.md`
+- **Controller files**: `.cursor/rules/controller-guidelines/RULE.md`
+- **Redux files**: `.cursor/rules/front-end-performance-state-management/RULE.md`
 - **Components**:
-  - `.cursor/rules/coding-guidelines.mdc` (general React patterns)
-  - `.cursor/rules/front-end-performance-rendering.mdc` (rendering performance - keys, memoization, virtualization)
-  - `.cursor/rules/front-end-performance-hooks-effects.mdc` (hooks & effects)
-  - `.cursor/rules/front-end-performance-react-compiler.mdc` (React Compiler considerations)
+  - `.cursor/rules/coding-guidelines/RULE.md` (general React patterns)
+  - `.cursor/rules/front-end-performance-rendering/RULE.md` (rendering performance - keys, memoization, virtualization)
+  - `.cursor/rules/front-end-performance-hooks-effects/RULE.md` (hooks & effects)
+  - `.cursor/rules/front-end-performance-react-compiler/RULE.md` (React Compiler considerations)
 
 ### Step 4: Analyze Only the Changed Lines
 
@@ -309,6 +309,43 @@ Rule: .cursor/rules/coding-guidelines.mdc
 Guideline: coding-guidelines.mdc (React components section)
 ```
 
+### Step 4.6: Determine PR Readiness Status (MANDATORY)
+
+**Before generating the report header, determine the status using these STRICT rules:**
+
+| Critical Count | High Count | Status |
+|----------------|------------|--------|
+| > 0 | any | ❌ NOT READY |
+| 0 | > 0 | ⚠️ NEEDS REVIEW |
+| 0 | 0 | ✅ READY TO MERGE |
+
+**Status Definitions:**
+- **❌ NOT READY** = At least one CRITICAL issue exists → PR cannot merge until fixed
+- **⚠️ NEEDS REVIEW** = No critical issues, but HIGH priority issues should be addressed
+- **✅ READY TO MERGE** = No critical or high issues → PR meets quality standards
+
+**Pre-Output Verification (MANDATORY):**
+Before writing the status in the header, verify:
+- [ ] Count critical issues → If count > 0, status MUST be "❌ NOT READY"
+- [ ] Count high issues → If critical = 0 and high > 0, status MUST be "⚠️ NEEDS REVIEW"
+- [ ] Status text matches the actual issue counts in summary line
+- [ ] **NEVER mark "READY TO MERGE" if any CRITICAL issues exist**
+
+**Example Verification:**
+```
+Summary: 1 critical, 0 high, 0 medium
+         ↓
+         1 > 0 → Status MUST be ❌ NOT READY
+
+Summary: 0 critical, 2 high, 3 medium
+         ↓
+         0 critical, 2 high > 0 → Status MUST be ⚠️ NEEDS REVIEW
+
+Summary: 0 critical, 0 high, 5 medium
+         ↓
+         0 critical, 0 high → Status MUST be ✅ READY TO MERGE
+```
+
 ### Step 5: Generate Report
 
 **EVIDENCE REQUIREMENTS:**
@@ -370,6 +407,13 @@ Output the analysis in this **concise format**:
 
 **After generating the report, save it to:** `CODEBOT_ANALYSIS_[branch-name].md`
 
+**⚠️ EXCLUDED FROM OUTPUT - DO NOT ADD THESE SECTIONS:**
+- ❌ "Files Analyzed" table (listing all changed files)
+- ❌ "Verified Clean" or "Clean files list" (listing files with no issues)
+- ❌ "Verification" section (internal checks should NOT appear in output)
+- ❌ Summary table at the end (redundant with header summary)
+- ❌ Analysis date or timestamps
+
 **Report Guidelines:**
 - Start with PR readiness status in the header
 - Show issue count summary immediately
@@ -378,7 +422,6 @@ Output the analysis in this **concise format**:
 - Use compact `file.ts:XX` format for locations
 - Show code snippets only for critical issues
 - **Include rule reference for every issue** (compact format: `📚 Rule: [file] → [section]`)
-- **Do NOT include:** Clean files list, files analyzed table, or verification section in output
 - Verification must still happen internally (Step 7) but is not shown in the report
 
 ### Step 6: Generate PR Description
@@ -504,9 +547,12 @@ Verify:
 
 ### 🟡 HIGH (Should Fix - Exit Code 0 with warnings)
 
-**Criteria:** Performance issues, strong recommendations, or patterns that will cause maintenance problems
+**Criteria:** Performance issues, strong recommendations, deprecated patterns, or patterns that will cause maintenance problems
+
+**⚠️ Deprecated patterns are always HIGH severity** (not Critical). Deprecated means "should be replaced" not "blocks merge".
 
 **Examples (MUST have evidence):**
+- ✅ `driver.delay()` usage in E2E tests — **Deprecated**, use page object wait methods
 - ✅ Missing React.memo on frequently rendered component
 - ✅ No useMemo for expensive computation (array.sort on 100+ items)
 - ✅ Missing useCallback for child component callback prop
@@ -590,6 +636,14 @@ Bad:  "Line 50: Uses any type" (but line 50 was not changed in this branch)
 Good: Only report violations in lines marked with + in git diff
 ```
 
+❌ **Status Mismatch with Issue Counts**
+```
+Bad:  "✅ READY TO MERGE" with "1 critical issue"
+      Status says ready but critical issues exist → CONTRADICTORY
+Good: "❌ NOT READY" with "1 critical issue"
+      Status correctly reflects blocking issues
+```
+
 ✅ **DO: Be Precise and Verified**
 - Every issue = Specific file + line + code + fix + rule reference
 - Every report = Fresh analysis with git diff and read_file
@@ -605,7 +659,7 @@ CODEBOT references detailed guidelines in `.cursor/rules/` for comprehensive rul
 
 ### Unit Test Files (*.test.ts, *.test.tsx)
 
-**Reference:** `.cursor/rules/unit-testing-guidelines.mdc`
+**Reference:** `.cursor/rules/unit-testing-guidelines/RULE.md`
 
 **CRITICAL Checks:**
 - [ ] No "should" in test names (use present tense)
@@ -625,7 +679,7 @@ CODEBOT references detailed guidelines in `.cursor/rules/` for comprehensive rul
 - [ ] Test data factories used for complex objects (not shared mutable state)
 - [ ] Timer mocking used for time-dependent code (jest.useFakeTimers)
 
-**See `.cursor/rules/unit-testing-guidelines.mdc` for:**
+**See `.cursor/rules/unit-testing-guidelines/RULE.md` for:**
 - Detailed examples of correct vs incorrect test patterns
 - Controller-specific testing patterns
 - Mocking strategies
@@ -633,18 +687,20 @@ CODEBOT references detailed guidelines in `.cursor/rules/` for comprehensive rul
 
 ### E2E Test Files (*.spec.ts, *.spec.js, test/e2e/**)
 
-**Reference:** `.cursor/rules/e2e-testing-guidelines.mdc`
+**Reference:** `.cursor/rules/e2e-testing-guidelines/RULE.md`
 
 **CRITICAL Checks:**
 - [ ] No "should" in test names (use present tense)
 - [ ] No "and" combining multiple scenarios in test names
-- [ ] No `driver.delay()` usage (use page object wait methods instead) — **See Deprecated Patterns**
 - [ ] Using `data-testid` for element locators (not CSS classes or XPath)
 - [ ] No debug console.log statements
 - [ ] No `any` types
 - [ ] Using `withFixtures` for proper setup/cleanup
 
-**HIGH Priority Checks:**
+**Deprecated Pattern Detection:** See `.cursor/BUGBOT.md` for regex patterns used to detect anti-patterns.
+
+**HIGH Priority Checks (includes deprecated patterns):**
+- [ ] ⚠️ No `driver.delay()` usage — **Deprecated**, use page object wait methods instead
 - [ ] Using page objects for page interactions (not raw driver calls)
 - [ ] Using fixtures to set up state (not UI interactions for setup)
 - [ ] Explicit assertions with clear error messages
@@ -661,14 +717,7 @@ CODEBOT references detailed guidelines in `.cursor/rules/` for comprehensive rul
 
 **Deprecated Patterns (E2E):**
 
-When CODEBOT detects deprecated E2E patterns, use the deprecation notice format:
-
-| ⚠️ Deprecated Pattern | Replacement |
-|----------------------|-------------|
-| `driver.delay(X)` | Use page object wait methods: `page.check_XXXIsDisplayed()`, `driver.waitForSelector()` |
-| `await driver.clickElement('.css-class')` | Use `data-testid`: `driver.clickElement('[data-testid="button-id"]')` |
-| `await driver.findElement('div > div:nth-child(2)')` | Use page object methods with `data-testid` locators |
-| Raw driver calls in tests | Use page object methods |
+See `.cursor/BUGBOT.md` for the complete list of E2E anti-patterns with regex detection patterns.
 
 **Report Format for Deprecated Patterns:**
 
@@ -676,10 +725,10 @@ When CODEBOT detects deprecated E2E patterns, use the deprecation notice format:
 ⚠️ **DEPRECATED:** `driver.delay()` should not be used in E2E tests.
 → **Use instead:** Page object wait methods like `assetListPage.checkTokenAmountIsDisplayed()` or `driver.waitForSelector()`
 
-📚 Rule: `.cursor/rules/e2e-testing-guidelines.mdc` → "Timing and Waits" section
+📚 Rule: `.cursor/rules/e2e-testing-guidelines/RULE.md` → "Timing and Waits" section
 ```
 
-**See `.cursor/rules/e2e-testing-guidelines.mdc` for:**
+**See `.cursor/rules/e2e-testing-guidelines/RULE.md` for:**
 - Page object model patterns
 - Wait strategies and timing
 - Element locator best practices
@@ -688,7 +737,7 @@ When CODEBOT detects deprecated E2E patterns, use the deprecation notice format:
 
 ### Controller Files (*Controller.ts, *-controller.ts)
 
-**Reference:** `.cursor/rules/controller-guidelines.mdc`
+**Reference:** `.cursor/rules/controller-guidelines/RULE.md`
 
 **CRITICAL Checks:**
 - [ ] Extends `BaseController`
@@ -708,7 +757,7 @@ When CODEBOT detects deprecated E2E patterns, use the deprecation notice format:
 - [ ] Action methods validate inputs and throw descriptive errors
 - [ ] Controller lifecycle properly handled (initialization, cleanup)
 
-**See `.cursor/rules/controller-guidelines.mdc` for:**
+**See `.cursor/rules/controller-guidelines/RULE.md` for:**
 - Complete controller architecture patterns
 - State metadata examples
 - Messenger usage patterns
@@ -716,7 +765,7 @@ When CODEBOT detects deprecated E2E patterns, use the deprecation notice format:
 
 ### Redux Files (*reducer.ts, *slice.ts, *actions.ts, *selectors.ts)
 
-**Reference:** `.cursor/rules/front-end-performance-state-management.mdc` (for Redux patterns)
+**Reference:** `.cursor/rules/front-end-performance-state-management/RULE.md` (for Redux patterns)
 
 **CRITICAL Checks:**
 - [ ] No state mutations in reducers (unless using Redux Toolkit with Immer)
@@ -731,7 +780,7 @@ When CODEBOT detects deprecated E2E patterns, use the deprecation notice format:
 - [ ] Using `createAsyncThunk` for async
 - [ ] Actions follow Flux Standard Action pattern
 
-**See `.cursor/rules/front-end-performance-state-management.mdc` for:**
+**See `.cursor/rules/front-end-performance-state-management/RULE.md` for:**
 - Redux optimization patterns
 - Selector memoization strategies
 - State normalization examples
@@ -739,10 +788,10 @@ When CODEBOT detects deprecated E2E patterns, use the deprecation notice format:
 ### Component Files (*.tsx, *.jsx)
 
 **Reference:**
-- `.cursor/rules/coding-guidelines.mdc` (general React patterns)
-- `.cursor/rules/front-end-performance-rendering.mdc` (rendering performance)
-- `.cursor/rules/front-end-performance-hooks-effects.mdc` (hooks & effects)
-- `.cursor/rules/front-end-performance-react-compiler.mdc` (React Compiler considerations)
+- `.cursor/rules/coding-guidelines/RULE.md` (general React patterns)
+- `.cursor/rules/front-end-performance-rendering/RULE.md` (rendering performance)
+- `.cursor/rules/front-end-performance-hooks-effects/RULE.md` (hooks & effects)
+- `.cursor/rules/front-end-performance-react-compiler/RULE.md` (React Compiler considerations)
 
 **CRITICAL Checks:**
 - [ ] TypeScript (not JavaScript)
@@ -772,23 +821,23 @@ When CODEBOT detects deprecated E2E patterns, use the deprecation notice format:
 - [ ] React Compiler: Manual memoization for cross-file dependencies (Redux, external hooks)
 - [ ] React Compiler: Keep existing useMemo/useCallback for effect dependencies
 
-**See `.cursor/rules/front-end-performance-rendering.mdc` for:**
+**See `.cursor/rules/front-end-performance-rendering/RULE.md` for:**
 - Key usage patterns
 - Virtualization examples
 - React.memo usage guidelines
 
-**See `.cursor/rules/front-end-performance-hooks-effects.mdc` for:**
+**See `.cursor/rules/front-end-performance-hooks-effects/RULE.md` for:**
 - useEffect best practices
 - When NOT to use useEffect
 - Cleanup patterns
 
-**See `.cursor/rules/front-end-performance-react-compiler.mdc` for:**
+**See `.cursor/rules/front-end-performance-react-compiler/RULE.md` for:**
 - React Compiler capabilities and limitations
 - When manual memoization is still required (cross-file dependencies, Redux, external libraries)
 - Decision tree for manual memoization needs
 - Keep existing useMemo/useCallback for effect dependencies
 
-**See `.cursor/rules/coding-guidelines.mdc` for:**
+**See `.cursor/rules/coding-guidelines/RULE.md` for:**
 - Component structure patterns
 - Props destructuring examples
 - General React best practices
@@ -853,6 +902,12 @@ Before generating final report, perform these checks internally. **These checks 
 - [ ] No "likely" or "probably" language in issue descriptions
 - [ ] Every violation can be immediately found by developer opening the file
 
+### Status Accuracy (CRITICAL)
+- [ ] **If critical issues > 0, status MUST be "❌ NOT READY"** (never "READY TO MERGE")
+- [ ] **If high issues > 0 (and critical = 0), status MUST be "⚠️ NEEDS REVIEW"**
+- [ ] Status in header matches actual issue counts in summary
+- [ ] Verified Step 4.6 rules were applied correctly
+
 ### Reproducibility
 - [ ] If running on same branch twice, same issues would be found
 - [ ] Analysis method used consistently (Standard or Deep mode)
@@ -866,31 +921,31 @@ Before generating final report, perform these checks internally. **These checks 
 
 | Violation | Fix | Reference |
 |-----------|-----|-----------|
-| Test name has "should" | Remove "should", use present tense | `.cursor/rules/unit-testing-guidelines.mdc` or `.cursor/rules/e2e-testing-guidelines.mdc` |
-| Direct state mutation | Use `this.update()` in controllers | `.cursor/rules/controller-guidelines.mdc` ("All state updates use this.update()") |
-| Missing BaseController | Extend from BaseController | `.cursor/rules/controller-guidelines.mdc` ("Controller Structure") |
-| Using `any` type | Add explicit types | `.cursor/rules/coding-guidelines.mdc` ("TypeScript Best Practices") |
-| Class component | Convert to functional component | `.cursor/rules/coding-guidelines.mdc` (lines 45-89, "Use Functional Components and Hooks") |
-| Props not destructured | Destructure in function params | `.cursor/rules/coding-guidelines.mdc` (lines 90-120, "Use Object Destructuring for Props") |
-| Console.log in code | Remove debug statements | `.cursor/rules/coding-guidelines.mdc` ("Code Style" section) |
-| No state metadata | Add metadata with persist/anonymous/usedInUi | `.cursor/rules/controller-guidelines.mdc` |
-| Getter method in controller | Export as selector function | `.cursor/rules/controller-guidelines.mdc` |
-| Redux state mutation | Use Redux Toolkit or immutable updates | `.cursor/rules/front-end-performance-state-management.mdc` |
-| Index as key | Use unique ID from data (item.id, item.address) | `.cursor/rules/front-end-performance-rendering.mdc` |
-| Missing memoization | Wrap expensive calculation in useMemo | `.cursor/rules/front-end-performance-rendering.mdc` |
-| useEffect for derived state | Calculate during render instead | `.cursor/rules/front-end-performance-hooks-effects.mdc` |
-| JSON.stringify in dependencies | Use useEqualityCheck or normalize to primitives | `.cursor/rules/front-end-performance-hooks-effects.mdc` |
-| Missing dependencies in hooks | Include all dependencies (use ESLint rule) | `.cursor/rules/front-end-performance-hooks-effects.mdc` |
-| Hooks called conditionally | Call hooks unconditionally, use conditional logic inside | `.cursor/rules/front-end-performance-hooks-effects.mdc` |
-| No useEffect cleanup | Add cleanup for intervals/subscriptions/fetch | `.cursor/rules/front-end-performance-hooks-effects.mdc` |
-| Inline selector functions | Extract to memoized selectors | `.cursor/rules/front-end-performance-state-management.mdc` |
-| Multiple useSelector calls | Combine into single selector | `.cursor/rules/front-end-performance-state-management.mdc` |
-| Identity function selector | Always transform data in selector | `.cursor/rules/front-end-performance-state-management.mdc` |
-| Cascading useEffect chains | Combine effects or compute during render | `.cursor/rules/front-end-performance-hooks-effects.mdc` |
-| **E2E:** `driver.delay()` usage | ⚠️ **Deprecated:** Use page object wait methods instead | `.cursor/rules/e2e-testing-guidelines.mdc` ("Timing and Waits") |
-| **E2E:** CSS class locator | Use `data-testid` attribute | `.cursor/rules/e2e-testing-guidelines.mdc` ("Element Locators") |
-| **E2E:** Raw driver calls | Use page object methods | `.cursor/rules/e2e-testing-guidelines.mdc` ("Page Object Model") |
-| **E2E:** UI setup instead of fixtures | Use `FixtureBuilder` for state setup | `.cursor/rules/e2e-testing-guidelines.mdc` ("Controlling State") |
+| Test name has "should" | Remove "should", use present tense | `.cursor/rules/unit-testing-guidelines/RULE.md` or `.cursor/rules/e2e-testing-guidelines/RULE.md` |
+| Direct state mutation | Use `this.update()` in controllers | `.cursor/rules/controller-guidelines/RULE.md` ("All state updates use this.update()") |
+| Missing BaseController | Extend from BaseController | `.cursor/rules/controller-guidelines/RULE.md` ("Controller Structure") |
+| Using `any` type | Add explicit types | `.cursor/rules/coding-guidelines/RULE.md` ("TypeScript Best Practices") |
+| Class component | Convert to functional component | `.cursor/rules/coding-guidelines/RULE.md` (lines 45-89, "Use Functional Components and Hooks") |
+| Props not destructured | Destructure in function params | `.cursor/rules/coding-guidelines/RULE.md` (lines 90-120, "Use Object Destructuring for Props") |
+| Console.log in code | Remove debug statements | `.cursor/rules/coding-guidelines/RULE.md` ("Code Style" section) |
+| No state metadata | Add metadata with persist/anonymous/usedInUi | `.cursor/rules/controller-guidelines/RULE.md` |
+| Getter method in controller | Export as selector function | `.cursor/rules/controller-guidelines/RULE.md` |
+| Redux state mutation | Use Redux Toolkit or immutable updates | `.cursor/rules/front-end-performance-state-management/RULE.md` |
+| Index as key | Use unique ID from data (item.id, item.address) | `.cursor/rules/front-end-performance-rendering/RULE.md` |
+| Missing memoization | Wrap expensive calculation in useMemo | `.cursor/rules/front-end-performance-rendering/RULE.md` |
+| useEffect for derived state | Calculate during render instead | `.cursor/rules/front-end-performance-hooks-effects/RULE.md` |
+| JSON.stringify in dependencies | Use useEqualityCheck or normalize to primitives | `.cursor/rules/front-end-performance-hooks-effects/RULE.md` |
+| Missing dependencies in hooks | Include all dependencies (use ESLint rule) | `.cursor/rules/front-end-performance-hooks-effects/RULE.md` |
+| Hooks called conditionally | Call hooks unconditionally, use conditional logic inside | `.cursor/rules/front-end-performance-hooks-effects/RULE.md` |
+| No useEffect cleanup | Add cleanup for intervals/subscriptions/fetch | `.cursor/rules/front-end-performance-hooks-effects/RULE.md` |
+| Inline selector functions | Extract to memoized selectors | `.cursor/rules/front-end-performance-state-management/RULE.md` |
+| Multiple useSelector calls | Combine into single selector | `.cursor/rules/front-end-performance-state-management/RULE.md` |
+| Identity function selector | Always transform data in selector | `.cursor/rules/front-end-performance-state-management/RULE.md` |
+| Cascading useEffect chains | Combine effects or compute during render | `.cursor/rules/front-end-performance-hooks-effects/RULE.md` |
+| **E2E:** `driver.delay()` usage | ⚠️ **Deprecated:** Use page object wait methods instead | `.cursor/rules/e2e-testing-guidelines/RULE.md` ("Timing and Waits") |
+| **E2E:** CSS class locator | Use `data-testid` attribute | `.cursor/rules/e2e-testing-guidelines/RULE.md` ("Element Locators") |
+| **E2E:** Raw driver calls | Use page object methods | `.cursor/rules/e2e-testing-guidelines/RULE.md` ("Page Object Model") |
+| **E2E:** UI setup instead of fixtures | Use `FixtureBuilder` for state setup | `.cursor/rules/e2e-testing-guidelines/RULE.md` ("Controlling State") |
 
 **Note:** For detailed examples and comprehensive guidelines, see the referenced rule files in `.cursor/rules/`.
 
@@ -907,14 +962,14 @@ CODEBOT automatically:
 - ✅ Ensures reproducible results
 
 **Rule Files Reference:**
-- `.cursor/rules/coding-guidelines.mdc` - General coding standards
-- `.cursor/rules/unit-testing-guidelines.mdc` - Unit test patterns and best practices
-- `.cursor/rules/e2e-testing-guidelines.mdc` - E2E test patterns, page objects, and deprecated patterns
-- `.cursor/rules/controller-guidelines.mdc` - Controller architecture patterns
-- `.cursor/rules/front-end-performance-rendering.mdc` - Rendering performance (keys, memoization, virtualization)
-- `.cursor/rules/front-end-performance-hooks-effects.mdc` - Hooks & effects optimization
-- `.cursor/rules/front-end-performance-react-compiler.mdc` - React Compiler considerations
-- `.cursor/rules/front-end-performance-state-management.mdc` - Redux & state management
+- `.cursor/rules/coding-guidelines/RULE.md` - General coding standards
+- `.cursor/rules/unit-testing-guidelines/RULE.md` - Unit test patterns and best practices
+- `.cursor/rules/e2e-testing-guidelines/RULE.md` - E2E test patterns, page objects, and deprecated patterns
+- `.cursor/rules/controller-guidelines/RULE.md` - Controller architecture patterns
+- `.cursor/rules/front-end-performance-rendering/RULE.md` - Rendering performance (keys, memoization, virtualization)
+- `.cursor/rules/front-end-performance-hooks-effects/RULE.md` - Hooks & effects optimization
+- `.cursor/rules/front-end-performance-react-compiler/RULE.md` - React Compiler considerations
+- `.cursor/rules/front-end-performance-state-management/RULE.md` - Redux & state management
 
 No configuration needed - it just works! When rules are updated in `.cursor/rules/`, CODEBOT automatically uses the latest guidelines.
 
