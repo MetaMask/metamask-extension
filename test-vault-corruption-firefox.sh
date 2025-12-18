@@ -408,17 +408,36 @@ case $choice in
             echo -e "${YELLOW}Primary vault not found, skipping...${NC}"
         fi
 
-        # Delete BACKUP vault data
-        if [ -n "$BACKUP_DB" ]; then
-            drop_triggers "$BACKUP_DB"
-            sqlite3 "$BACKUP_DB" "DELETE FROM object_data;"
-            sqlite3 "$BACKUP_DB" "DELETE FROM file;" 2>/dev/null || true
-            if [ -d "$BACKUP_FILES" ]; then
-                rm -rf "$BACKUP_FILES"/*
+        # Delete BACKUP vault from BOTH permanent AND temporary storage
+        echo ""
+        echo -e "${YELLOW}Looking for backup databases in ALL storage locations...${NC}"
+        backup_deleted=0
+
+        # Check BOTH permanent and temporary storage
+        for storage_path in "$EXTENSION_STORAGE/idb" "$TEMP_STORAGE/idb"; do
+            if [ -d "$storage_path" ]; then
+                echo ""
+                echo "Checking: $storage_path"
+                for db in "$storage_path"/*.sqlite; do
+                    if [ -f "$db" ]; then
+                        db_name=$(sqlite3 "$db" "SELECT name FROM database LIMIT 1;" 2>/dev/null)
+                        echo "  Found: $(basename "$db") → $db_name"
+                        # Match metamask-backup
+                        if [[ "$db_name" == *"metamask-backup"* ]]; then
+                            echo -e "  ${RED}→ Deleting backup database!${NC}"
+                            rm -f "$db"
+                            rm -rf "${db%.sqlite}.files"
+                            backup_deleted=$((backup_deleted + 1))
+                        fi
+                    fi
+                done
             fi
-            echo -e "${GREEN}✓ Backup vault deleted${NC}"
+        done
+
+        if [ $backup_deleted -gt 0 ]; then
+            echo -e "${GREEN}✓ Deleted $backup_deleted backup database(s)${NC}"
         else
-            echo -e "${YELLOW}Backup vault not found, skipping...${NC}"
+            echo -e "${YELLOW}No backup databases found.${NC}"
         fi
 
         echo ""
