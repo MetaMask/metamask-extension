@@ -48,9 +48,7 @@ export const toAssetId = (
   // EVM assets
   const checksummedAddress = toChecksumHexAddress(address) ?? address;
   if (chainId && isStrictHexString(checksummedAddress)) {
-    return CaipAssetTypeStruct.create(
-      `${chainId}/erc20:${checksummedAddress}`,
-    );
+    return CaipAssetTypeStruct.create(`${chainId}/erc20:${checksummedAddress}`);
   }
   return undefined;
 };
