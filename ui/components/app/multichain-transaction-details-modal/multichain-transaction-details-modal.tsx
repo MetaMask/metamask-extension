@@ -42,11 +42,8 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ConfirmInfoRowDivider as Divider } from '../confirm/info/row';
-import {
-  getAccountByAddress,
-  getURLHostName,
-  shortenAddress,
-} from '../../../helpers/utils/util';
+import { getURLHostName, shortenAddress } from '../../../helpers/utils/util';
+import { getAccountName } from '../../../selectors';
 import {
   KEYRING_TRANSACTION_STATUS_KEY,
   useMultichainTransactionDisplay,
@@ -120,8 +117,8 @@ export function MultichainTransactionDetailsModal({
     if (!address) {
       return null;
     }
-    const account = getAccountByAddress(internalAccounts, address);
-    const displayName = account?.metadata?.name || shortenAddress(address);
+    const accountName = getAccountName(internalAccounts, address);
+    const displayName = accountName || shortenAddress(address);
 
     return (
       <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
