@@ -1,24 +1,13 @@
 import browser from 'webextension-polyfill';
-import { CONTENT_SCRIPT } from './constants/stream';
 import { EXTENSION_MESSAGES } from '../../shared/constants/messages';
-
-const isSidepanelEnabled = process.env.IS_SIDEPANEL === 'true';
-
-const notifyBackgroundToOpenSidepanel = () => {
-  browser.runtime
-    .sendMessage({ type: EXTENSION_MESSAGES.OPEN_SIDEPANEL })
-    .catch(() => {
-      // Background will handle as appropriate
-    });
-};
+import { CONTENT_SCRIPT } from './constants/stream';
 
 /**
- * Listens for methods requiring approval and notifies background to open sidepanel.
- * Must be called synchronously to preserve user gesture context.
+ * Sets up a listener for RPC calls and notifies background to open sidepanel.
+ * Called from setupPageStreams
  */
 export const setupSidepanelListener = () => {
-  // Skip in E2E tests until tests have been updated to use sidepanel
-  if (process.env.IN_TEST || !isSidepanelEnabled) {
+  if (process.env.IN_TEST) {
     return;
   }
 
@@ -26,9 +15,14 @@ export const setupSidepanelListener = () => {
     if (event.source !== window || event.data?.target !== CONTENT_SCRIPT) {
       return;
     }
-    // Send for any RPC call - background will handle appropriately
-    if (event.data?.data?.data?.method) {
-      notifyBackgroundToOpenSidepanel();
+
+    const method = event.data?.data?.data?.method;
+    if (method) {
+      browser.runtime
+        .sendMessage({ type: EXTENSION_MESSAGES.OPEN_SIDEPANEL })
+        .catch(() => {
+          // Background will handle as appropriate
+        });
     }
   });
 };
@@ -40,24 +34,21 @@ type Props = {
 export const setupSidepanelMessageHandler = ({
   isSidepanelPreferred,
 }: Props) => {
-  // Skip in E2E tests until tests have been updated to use sidepanel
-  if (process.env.IN_TEST || !isSidepanelEnabled) {
+  if (process.env.IN_TEST) {
     return;
   }
 
   browser.runtime.onMessage.addListener((message, sender) => {
     if (message?.type === EXTENSION_MESSAGES.OPEN_SIDEPANEL) {
-      const sidepanelPreferred = isSidepanelPreferred();
-
       if (
-        sidepanelPreferred &&
+        isSidepanelPreferred() &&
         // @ts-expect-error sidePanel API not in webextension-polyfill types yet
         browser.sidePanel?.open &&
         sender?.tab?.id
       ) {
         // @ts-expect-error sidePanel API not in webextension-polyfill types yet
         browser.sidePanel.open({ tabId: sender.tab.id }).catch(() => {
-          // Notification window will be used as fallback
+          // triggerUi will show notification window as fallback
         });
       }
       return true;

@@ -1576,19 +1576,23 @@ async function triggerUi() {
     tabs.length > 0 &&
     tabs[0].extData &&
     tabs[0].extData.indexOf('vivaldi_tab') > -1;
+
+  // Check if user prefers sidepanel - if so, content script already opened it
+  const sidepanelPreferred =
+    controller?.preferencesController?.state?.preferences
+      ?.useSidePanelAsDefault ?? false;
+  const sidepanelSupported = Boolean(browser?.sidePanel?.open);
+
   if (
     !uiIsTriggering &&
     (isVivaldi || openPopupCount === 0) &&
     !currentlyActiveMetamaskTab &&
     !sidePanelIsOpen &&
-    true
+    // Skip notification window if user prefers sidepanel (content script already opened it)
+    !(sidepanelPreferred && sidepanelSupported)
   ) {
     uiIsTriggering = true;
     try {
-      // Open notification window as fallback
-      // Note: If user prefers sidepanel, content script already tried to open it
-      // via OPEN_SIDEPANEL message. If successful, sidePanelIsOpen would be true
-      // and we wouldn't reach here. If it failed, this ensures UI is still shown.
       const currentPopupId = controller.appStateController.getCurrentPopupId();
       await notificationManager.showPopup(
         (newPopupId) =>
