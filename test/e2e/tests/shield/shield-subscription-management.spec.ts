@@ -476,7 +476,7 @@ describe('Shield Plan Stripe Integration', function () {
     );
   });
 
-  it.only('should be able to change payment method from crypto to crypto (USDC -> USDT)', async function () {
+  it('should be able to change payment method from crypto to crypto (USDC -> USDT)', async function () {
     await withFixtures(
       {
         fixtures: createShieldFixtureCrypto()
