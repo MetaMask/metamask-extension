@@ -3,28 +3,47 @@ import path from 'path';
 import { normalizeTestPath, XML } from './shared/utils';
 
 /**
- * Extracts the paths of test files that passed in a previous run.
- * On re-run, we skip these tests and only run the rest (failed + never executed).
+ * Result of extracting test paths from previous run results.
+ */
+export interface ExtractedTestResults {
+  /** Test files that passed (all suites passed) */
+  passed: string[];
+  /** Test files that failed (at least one suite failed) */
+  failed: string[];
+  /** All test files that were executed */
+  executed: string[];
+}
+
+/**
+ * Extracts the paths of test files that passed and failed in a previous run.
+ * On re-run, we only run failed tests - passed tests are skipped and
+ * tests that were never executed stay in the queue.
  *
  * A test file is only considered "passed" if ALL of its test suites pass.
  * This handles files with multiple test suites where some pass and some fail.
  *
  * @param resultsDir - Directory containing XML test result files
- * @returns Array of normalized test file paths that fully passed
+ * @returns Object containing arrays of passed, failed, and executed test file paths
  */
-export async function extractPassedTestPaths(
+export async function extractTestResults(
   resultsDir: string,
-): Promise<string[]> {
+): Promise<ExtractedTestResults> {
+  const emptyResult: ExtractedTestResults = {
+    passed: [],
+    failed: [],
+    executed: [],
+  };
+
   if (!existsSync(resultsDir)) {
     console.log(`Results directory does not exist: ${resultsDir}`);
-    return [];
+    return emptyResult;
   }
 
   const files = readdirSync(resultsDir).filter((f) => f.endsWith('.xml'));
 
   if (files.length === 0) {
     console.log(`No XML files found in: ${resultsDir}`);
-    return [];
+    return emptyResult;
   }
 
   // Track all executed test files and which ones have failures
@@ -66,7 +85,22 @@ export async function extractPassedTestPaths(
   console.log(`Found ${failedTests.size} failed test files`);
   console.log(`Found ${passedTests.length} fully passed test files`);
 
-  return passedTests;
+  return {
+    passed: passedTests,
+    failed: [...failedTests],
+    executed: [...executedTests],
+  };
+}
+
+/**
+ * Legacy function for backward compatibility.
+ * @deprecated Use extractTestResults instead
+ */
+export async function extractPassedTestPaths(
+  resultsDir: string,
+): Promise<string[]> {
+  const results = await extractTestResults(resultsDir);
+  return results.passed;
 }
 
 /**
@@ -76,9 +110,11 @@ if (require.main === module) {
   const resultsDir =
     process.argv[2] || 'previous-test-results/test/test-results/e2e';
 
-  extractPassedTestPaths(resultsDir)
-    .then((passedTests) => {
-      console.log('Passed tests:', passedTests);
+  extractTestResults(resultsDir)
+    .then((results) => {
+      console.log('Passed tests:', results.passed);
+      console.log('Failed tests:', results.failed);
+      console.log('Executed tests:', results.executed);
     })
     .catch((error) => {
       console.error('Error:', error);
