@@ -36,7 +36,10 @@ const convertHexBalanceToDecimal = (hex: string, decimals: number): string =>
     ? new BigNumber(hex, 16).div(new BigNumber(10).pow(decimals)).toString(10)
     : '0';
 
-const getNonEvmAccountIds = (state: BridgeAppState, id: AccountGroupId) =>
+const getNonEvmAccountIds = (
+  state: BridgeAppState,
+  id: AccountGroupId,
+): string[] =>
   ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS.map(
     (scope) => getInternalAccountByGroupAndCaip(state, id, scope)?.id,
   ).filter((matchedId) => matchedId !== undefined);
