@@ -244,4 +244,40 @@ describe('TokenListItem', () => {
       }),
     );
   });
+  it('handles clicking staking opens tab', async () => {
+    const store = configureMockStore()(state);
+    const { queryByTestId, container } = renderWithProvider(
+      <TokenListItem isStakeable {...props} />,
+      store,
+    );
+
+    const stakeButton = queryByTestId(
+      `staking-entrypoint-${CHAIN_IDS.MAINNET}`,
+    );
+
+    expect(stakeButton).toBeInTheDocument();
+    expect(stakeButton).not.toBeDisabled();
+    expect(container).toMatchSnapshot();
+
+    stakeButton && fireEvent.click(stakeButton);
+    expect(openTabSpy).toHaveBeenCalledTimes(1);
+
+    await waitFor(() => {
+      // 1. Assert we still open the staking URL
+      expect(openTabSpy).toHaveBeenCalledWith({
+        url: expect.stringContaining('/stake?metamaskEntry=ext_stake_button'),
+      });
+
+      // 2. Extract the URL we actually opened
+      const { url } = openTabSpy.mock.calls[0][0] as { url: string };
+      const parsedUrl = new URL(url);
+
+      // 3. Check that accountAddress is present and correct
+      const accountAddress = parsedUrl.searchParams.get('accountAddress');
+      // This is the address we put into `state.metamask.internalAccounts.accounts`
+      expect(accountAddress).toBe(
+        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+      );
+    });
+  });
 });
