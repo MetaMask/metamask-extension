@@ -6,10 +6,14 @@ import {
   createScaffoldMiddleware,
   JsonRpcEngine,
 } from '@metamask/json-rpc-engine';
+import {
+  asLegacyMiddleware,
+  JsonRpcEngineV2,
+} from '@metamask/json-rpc-engine/v2';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
-import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
+import { providerAsMiddlewareV2 } from '@metamask/eth-json-rpc-middleware';
 import { debounce, uniq } from 'lodash';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
@@ -1083,7 +1087,10 @@ export default class MetamaskController extends EventEmitter {
       ),
     });
 
-    this.metamaskMiddleware = createMetamaskMiddleware({
+    /**
+     * An array of JsonRpcEngineV2 middleware functions.
+     */
+    this.metamaskMiddlewareV2 = createMetamaskMiddleware({
       static: {
         eth_syncing: false,
         web3_clientVersion: `MetaMask/v${version}`,
@@ -7821,18 +7828,25 @@ export default class MetamaskController extends EventEmitter {
       }),
     );
 
-    engine.push(filterMiddleware);
-    engine.push(subscriptionManager.middleware);
-
-    engine.push(this.metamaskMiddleware);
-
     engine.push(this.eip5792Middleware);
 
     if (subjectType === SubjectType.Snap && isSnapPreinstalled(origin)) {
       engine.push(this.eip7702Middleware);
     }
 
-    engine.push(providerAsMiddleware(proxyClient.provider));
+    engine.push(filterMiddleware);
+    engine.push(subscriptionManager.middleware);
+
+    engine.push(
+      asLegacyMiddleware(
+        JsonRpcEngineV2.create({
+          middleware: [
+            ...this.metamaskMiddlewareV2,
+            providerAsMiddlewareV2(proxyClient.provider),
+          ],
+        }),
+      ),
+    );
 
     return engine;
   }
@@ -7991,8 +8005,6 @@ export default class MetamaskController extends EventEmitter {
       }),
     );
 
-    engine.push(this.metamaskMiddleware);
-
     engine.push(this.eip5792Middleware);
 
     try {
@@ -8041,13 +8053,21 @@ export default class MetamaskController extends EventEmitter {
       ),
     );
 
-    engine.push(async (req, res, _next, end) => {
-      const { provider } = this.networkController.getNetworkClientById(
-        req.networkClientId,
-      );
-      res.result = await provider.request(req);
-      return end();
-    });
+    engine.push(
+      asLegacyMiddleware(
+        JsonRpcEngineV2.create({
+          middleware: [
+            ...this.metamaskMiddlewareV2,
+            async ({ request, context }) => {
+              const { provider } = this.networkController.getNetworkClientById(
+                context.assertGet('networkClientId'),
+              );
+              return await provider.request(request);
+            },
+          ],
+        }),
+      ),
+    );
 
     return engine;
   }
