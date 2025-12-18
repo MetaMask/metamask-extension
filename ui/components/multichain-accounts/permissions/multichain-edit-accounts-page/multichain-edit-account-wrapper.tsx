@@ -28,6 +28,7 @@ export const MultichainEditAccountsPageWrapper = ({
   permissions,
   isSnapsPermissionsRequest,
 }: MultichainEditAccountsPageWrapperProps) => {
+  debugger;
   const requestedCaip25CaveatValueWithExistingPermissions = useMemo(() => {
     return getCaip25CaveatValueFromPermissions(permissions);
   }, [permissions]);
@@ -53,17 +54,29 @@ export const MultichainEditAccountsPageWrapper = ({
     (namespace) => namespace !== KnownCaipNamespace.Wallet,
   );
 
-  const { connectedAccountGroups, supportedAccountGroups } =
-    useAccountGroupsForPermissions(
-      requestedCaip25CaveatValueWithExistingPermissions,
-      requestedCaipAccountIds,
-      requestedCaipChainIds,
-      requestedNamespacesWithoutWallet,
-    );
+  const {
+    connectedAccountGroups,
+    selectedAndRequestedAccountGroups,
+    supportedAccountGroups,
+  } = useAccountGroupsForPermissions(
+    requestedCaip25CaveatValueWithExistingPermissions,
+    requestedCaipAccountIds,
+    requestedCaipChainIds,
+    requestedNamespacesWithoutWallet,
+  );
 
   const connectedAccountGroupIds = useMemo(() => {
-    return connectedAccountGroups.map((group) => group.id);
-  }, [connectedAccountGroups]);
+    const selectedIds = new Set(
+      selectedAndRequestedAccountGroups.map((group) => group.id),
+    );
+    const additionalConnectedGroups = connectedAccountGroups.filter(
+      (group) => !selectedIds.has(group.id),
+    );
+    return [
+      ...selectedAndRequestedAccountGroups.map((group) => group.id),
+      ...additionalConnectedGroups.map((group) => group.id),
+    ];
+  }, [selectedAndRequestedAccountGroups, connectedAccountGroups]);
 
   return (
     <MultichainEditAccountsPage
