@@ -14,6 +14,7 @@ import {
   BlockaidResultType,
   BlockaidReason,
 } from '../../../shared/constants/security-provider';
+import { ResultType } from '../../../shared/lib/trust-signals';
 import {
   PRIMARY_TYPES_ORDER,
   PRIMARY_TYPES_PERMIT,
@@ -373,6 +374,7 @@ export default function createRPCMethodTrackingMiddleware({
           BlockaidResultType.NotApplicable;
         eventProperties.security_alert_reason =
           req.securityAlertResponse?.reason ?? BlockaidReason.notApplicable;
+        eventProperties.address_alert_response = ResultType.Loading;
 
         if (req.securityAlertResponse?.description) {
           eventProperties.security_alert_description =
@@ -538,11 +540,14 @@ export default function createRPCMethodTrackingMiddleware({
           securityAlertResponse,
         });
       }
+
       const properties = {
         ...eventProperties,
         ...blockaidMetricProps,
         location,
       };
+      // Exclude address_alert_response so useTrustSignalMetrics value is preserved during finalization
+      delete properties.address_alert_response;
 
       if (
         event === MetaMetricsEventName.SignatureRejected ||
