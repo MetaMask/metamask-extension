@@ -22,8 +22,9 @@ exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
         </p>
         <p
           class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+          style="width: 32px;"
         >
-          (0:30)
+          0:30
         </p>
         <div
           class="mm-box"
@@ -207,8 +208,9 @@ exports[`MultichainBridgeQuoteCard should render gas sponsored text when gasSpon
         </p>
         <p
           class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+          style="width: 32px;"
         >
-          (0:30)
+          0:30
         </p>
         <div
           class="mm-box"
@@ -408,8 +410,9 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote (no MM fe
         </p>
         <p
           class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+          style="width: 32px;"
         >
-          (0:30)
+          0:30
         </p>
         <div
           class="mm-box"
@@ -593,8 +596,9 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote while loa
         </p>
         <p
           class="mm-box mm-text mm-text--body-sm mm-box--color-error-default"
+          style="width: 32px;"
         >
-          (0:00)
+          0:00
         </p>
         <div
           class="mm-box"
