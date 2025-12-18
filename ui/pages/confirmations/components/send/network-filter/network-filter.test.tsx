@@ -11,6 +11,10 @@ import { NetworkFilter } from './network-filter';
 jest.mock('../../../../../hooks/useI18nContext');
 jest.mock('../../../hooks/send/metrics/useAssetSelectionMetrics');
 jest.mock('../../../hooks/useChainNetworkNameAndImage');
+jest.mock('react-redux', () => ({
+  ...jest.requireActual('react-redux'),
+  useSelector: jest.fn(() => true), // Mock useExternalServices as true (BFT ON)
+}));
 jest.mock('../../../../../components/component-library', () => ({
   Box: ({
     children,
