@@ -2,36 +2,27 @@ import { existsSync, readdirSync, readFileSync } from 'fs';
 import path from 'path';
 import { normalizeTestPath, XML } from './shared/utils';
 
-export interface PreviousRunResults {
-  /** Test files that failed or had errors in the previous run */
-  failedTests: string[];
-  /** All test files that were executed (passed or failed) in the previous run */
-  executedTests: string[];
-}
-
 /**
- * Extracts test results from XML test results of a previous run.
- * Returns both failed tests and all executed tests, so we can identify
- * tests that were never executed (e.g., due to early termination).
+ * Extracts the paths of test files that passed in a previous run.
+ * On re-run, we skip these tests and only run the rest (failed + never executed).
  *
  * @param resultsDir - Directory containing XML test result files
- * @returns Object containing failed tests and all executed tests
+ * @returns Array of normalized test file paths that passed
  */
-export async function extractPreviousRunResults(
+export async function extractPassedTestPaths(
   resultsDir: string,
-): Promise<PreviousRunResults> {
+): Promise<string[]> {
   if (!existsSync(resultsDir)) {
     console.log(`Results directory does not exist: ${resultsDir}`);
-    return { failedTests: [], executedTests: [] };
+    return [];
   }
 
-  const failedTests: string[] = [];
-  const executedTests: string[] = [];
+  const passedTests: string[] = [];
   const files = readdirSync(resultsDir).filter((f) => f.endsWith('.xml'));
 
   if (files.length === 0) {
     console.log(`No XML files found in: ${resultsDir}`);
-    return { failedTests: [], executedTests: [] };
+    return [];
   }
 
   for (const file of files) {
@@ -44,14 +35,13 @@ export async function extractPreviousRunResults(
           continue;
         }
 
-        const testPath = normalizeTestPath(suite.$.file);
-        executedTests.push(testPath);
-
         const failures = parseInt(suite.$.failures || '0', 10);
         const errors = parseInt(suite.$.errors || '0', 10);
 
-        if (failures > 0 || errors > 0) {
-          failedTests.push(testPath);
+        // Only track tests that definitively passed (no failures, no errors)
+        if (failures === 0 && errors === 0) {
+          const testPath = normalizeTestPath(suite.$.file);
+          passedTests.push(testPath);
         }
       }
     } catch (error) {
@@ -59,16 +49,10 @@ export async function extractPreviousRunResults(
     }
   }
 
-  const uniqueFailedTests = [...new Set(failedTests)];
-  const uniqueExecutedTests = [...new Set(executedTests)];
+  const uniquePassedTests = [...new Set(passedTests)];
+  console.log(`Found ${uniquePassedTests.length} passed test files`);
 
-  console.log(`Found ${uniqueFailedTests.length} failed test files`);
-  console.log(`Found ${uniqueExecutedTests.length} executed test files`);
-
-  return {
-    failedTests: uniqueFailedTests,
-    executedTests: uniqueExecutedTests,
-  };
+  return uniquePassedTests;
 }
 
 /**
@@ -78,10 +62,9 @@ if (require.main === module) {
   const resultsDir =
     process.argv[2] || 'previous-test-results/test/test-results/e2e';
 
-  extractPreviousRunResults(resultsDir)
-    .then((results) => {
-      console.log('Failed tests:', results.failedTests);
-      console.log('Executed tests:', results.executedTests);
+  extractPassedTestPaths(resultsDir)
+    .then((passedTests) => {
+      console.log('Passed tests:', passedTests);
     })
     .catch((error) => {
       console.error('Error:', error);
