@@ -2,14 +2,10 @@ import React, {
   ReactElement,
   createContext,
   useContext,
-  useEffect,
   useMemo,
   useState,
 } from 'react';
-import { useNavigate } from 'react-router-dom';
 
-import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
-import { usePrevious } from '../../../../hooks/usePrevious';
 import useCurrentConfirmation from '../../hooks/useCurrentConfirmation';
 import useSyncConfirmPath from '../../hooks/useSyncConfirmPath';
 import { Confirmation } from '../../types/confirm';
@@ -28,18 +24,10 @@ export const ConfirmContextProvider: React.FC<{
   children: ReactElement;
   confirmationId?: string;
 }> = ({ children, confirmationId }) => {
-  const navigate = useNavigate();
   const [isScrollToBottomCompleted, setIsScrollToBottomCompleted] =
     useState(true);
   const { currentConfirmation } = useCurrentConfirmation(confirmationId);
-  const prevCurrentConfirmation = usePrevious(currentConfirmation);
   useSyncConfirmPath(currentConfirmation);
-
-  useEffect(() => {
-    if (prevCurrentConfirmation && !currentConfirmation) {
-      navigate(DEFAULT_ROUTE, { state: { stayOnHomePage: true } });
-    }
-  }, [currentConfirmation, prevCurrentConfirmation, navigate]);
 
   const value = useMemo(
     () => ({

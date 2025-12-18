@@ -14,6 +14,7 @@ import {
   CONFIRMATION_V_NEXT_ROUTE,
   CONNECT_ROUTE,
   DECRYPT_MESSAGE_REQUEST_PATH,
+  DEFAULT_ROUTE,
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
   SIGNATURE_REQUEST_PATH,
 } from '../../../helpers/constants/routes';
@@ -80,9 +81,11 @@ export function useConfirmationNavigation() {
       if (pendingConfirmations.length >= 1) {
         const index = getIndex(pendingConfirmations[0].id);
         navigateToIndex(index);
+      } else {
+        navigate(DEFAULT_ROUTE);
       }
     },
-    [confirmations, getIndex, navigateToIndex],
+    [confirmations, getIndex, navigateToIndex, navigate],
   );
 
   return {
