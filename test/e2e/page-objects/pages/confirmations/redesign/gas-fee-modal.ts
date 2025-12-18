@@ -18,6 +18,8 @@ export default class GasFeeModal {
   private readonly cancelButton: RawLocator =
     '[data-testid="gas-fee-modal-cancel-button"]';
 
+  private readonly editGasFeeModalTitle = { text: 'Edit gas fee', tag: 'h4' };
+
   private readonly estimatesModal: RawLocator =
     '[data-testid="gas-fee-estimates-modal"]';
 
@@ -105,6 +107,22 @@ export default class GasFeeModal {
       css: selector,
       text: expectedValue,
     });
+  }
+
+  async checkPageIsLoaded(): Promise<void> {
+    try {
+      await this.driver.waitForMultipleSelectors([
+        this.editGasFeeModalTitle,
+        this.gasOptionLow,
+        this.gasOptionMedium,
+        this.gasOptionHigh,
+        this.gasOptionAdvanced,
+      ]);
+    } catch (e) {
+      console.log('Timeout while waiting for gas fee modal to be loaded', e);
+      throw e;
+    }
+    console.log('Gas fee modal is loaded');
   }
 
   /**
