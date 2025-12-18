@@ -1,11 +1,15 @@
-const { strict: assert } = require('assert');
-const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
-const {
-  loginWithBalanceValidation,
-} = require('../../page-objects/flows/login.flow');
-const { withFixtures, WINDOW_TITLES, DAPP_URL } = require('../../helpers');
-const FixtureBuilder = require('../../fixtures/fixture-builder');
-const { mockSpotPrices } = require('../tokens/utils/mocks');
+import { strict as assert } from 'assert';
+import { MockttpServer } from 'mockttp';
+import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { withFixtures, WINDOW_TITLES, DAPP_URL } from '../../helpers';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import { mockSpotPrices } from '../tokens/utils/mocks';
+import { Driver } from '../../webdriver/driver';
+import GasFeeModal from '../../page-objects/pages/confirmations/redesign/gas-fee-modal';
+import SendTokenConfirmPage from '../../page-objects/pages/send/send-token-confirmation-page';
+import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import { Anvil } from '../../seeder/anvil';
 
 const PREFERENCES_STATE_MOCK = {
   preferences: {
@@ -21,9 +25,9 @@ describe('Send ETH', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          title: this.test.fullTitle(),
+          title: this.test?.fullTitle(),
         },
-        async ({ driver }) => {
+        async ({ driver }: { driver: Driver }) => {
           await loginWithBalanceValidation(driver);
 
           await driver.clickElement('[data-testid="eth-overview-send"]');
@@ -33,7 +37,8 @@ describe('Send ETH', function () {
             '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
           );
 
-          const inputAmount = await driver.findElement(
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const inputAmount: any = await driver.findElement(
             'input[placeholder="0"]',
           );
 
@@ -94,9 +99,9 @@ describe('Send ETH', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          title: this.test.fullTitle(),
+          title: this.test?.fullTitle(),
         },
-        async ({ driver }) => {
+        async ({ driver }: { driver: Driver }) => {
           await loginWithBalanceValidation(driver);
 
           await driver.clickElement('[data-testid="eth-overview-send"]');
@@ -105,7 +110,8 @@ describe('Send ETH', function () {
             '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
           );
 
-          const inputAmount = await driver.findElement(
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const inputAmount: any = await driver.findElement(
             'input[placeholder="0"]',
           );
           await inputAmount.press('1');
@@ -145,9 +151,19 @@ describe('Send ETH', function () {
         {
           fixtures: new FixtureBuilder().build(),
           smartContract,
-          title: this.test.fullTitle(),
+          title: this.test?.fullTitle(),
         },
-        async ({ driver, contractRegistry, localNodes }) => {
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: {
+          driver: Driver;
+          contractRegistry: {
+            getContractAddress: (contract: string) => Promise<string>;
+          };
+          localNodes: Anvil[];
+        }) => {
           const contractAddress =
             await contractRegistry.getContractAddress(smartContract);
           await loginWithBalanceValidation(driver, localNodes[0]);
@@ -192,9 +208,9 @@ describe('Send ETH', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          title: this.test.fullTitle(),
+          title: this.test?.fullTitle(),
         },
-        async ({ driver }) => {
+        async ({ driver }: { driver: Driver }) => {
           await loginWithBalanceValidation(driver);
 
           await driver.clickElement('[data-testid="eth-overview-send"]');
@@ -218,7 +234,7 @@ describe('Send ETH', function () {
     });
 
     describe('from dapp using advanced gas controls', function () {
-      it('should display the correct gas price on the legacy transaction', async function () {
+      it('displays the correct gas price on the legacy transaction', async function () {
         await withFixtures(
           {
             dappOptions: { numberOfTestDapps: 1 },
@@ -226,11 +242,11 @@ describe('Send ETH', function () {
               .withPermissionControllerConnectedToTestDapp()
               .withPreferencesController(PREFERENCES_STATE_MOCK)
               .build(),
-            title: this.test.fullTitle(),
+            title: this.test?.fullTitle(),
             localNodeOptions: {
               hardfork: 'muirGlacier',
             },
-            testSpecificMock: async (mockServer) => {
+            testSpecificMock: async (mockServer: MockttpServer) => {
               await mockSpotPrices(mockServer, {
                 'eip155:1/slip44:60': {
                   price: 1700,
@@ -240,43 +256,27 @@ describe('Send ETH', function () {
               });
             },
           },
-          async ({ driver }) => {
+          async ({ driver }: { driver: Driver }) => {
             await loginWithBalanceValidation(driver);
+
+            const sendTokenConfirmPage = new SendTokenConfirmPage(driver);
+            const gasFeeModal = new GasFeeModal(driver);
+            const activityListPage = new ActivityListPage(driver);
 
             // initiates a send from the dapp
             await driver.openNewPage(DAPP_URL);
             await driver.clickElement({ text: 'Send', tag: 'button' });
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-            await driver.clickElement('[data-testid="edit-gas-fee-icon"]');
-            await driver.waitForSelector({
-              text: '0.000042 ETH',
-            });
-            await driver.clickElement({
-              text: 'Edit suggested gas fee',
-              tag: 'button',
-            });
-            await driver.waitForSelector({
-              text: 'Edit priority',
-              tag: 'header',
+            // Open gas fee modal and set custom legacy gas values
+            await sendTokenConfirmPage.clickEditGasFeeIcon();
+            await gasFeeModal.setCustomLegacyGasFee({
+              gasPrice: '100',
+              gasLimit: '21000',
             });
 
-            // Edit priority gas fee form
-            const inputs = await driver.findElements('input[type="number"]');
-            const gasLimitInput = inputs[0];
-            const gasPriceInput = inputs[1];
-            await gasLimitInput.fill('21000');
-            await gasPriceInput.fill('100');
-            await driver.clickElement({ text: 'Save', tag: 'button' });
-            await driver.findElement({
-              css: '[data-testid="first-gas-field"]',
-              text: '0.0021',
-            });
-
-            await driver.findElement({
-              css: '[data-testid="native-currency"]',
-              text: '$3.57',
-            });
+            await sendTokenConfirmPage.checkFirstGasFee('0.0021');
+            await sendTokenConfirmPage.checkNativeCurrency('$3.57');
 
             await driver.clickElementAndWaitForWindowToClose({
               text: 'Confirm',
@@ -287,9 +287,7 @@ describe('Send ETH', function () {
             );
 
             // finds the transaction in the transactions list
-            await driver.clickElement(
-              '[data-testid="account-overview__activity-tab"]',
-            );
+            await activityListPage.openActivityTab();
             await driver.waitForSelector(
               '.transaction-status-label--confirmed',
             );
@@ -310,7 +308,7 @@ describe('Send ETH', function () {
         );
       });
 
-      it('should display correct gas values for EIP-1559 transaction', async function () {
+      it('displays correct gas values for EIP-1559 transaction', async function () {
         await withFixtures(
           {
             dappOptions: { numberOfTestDapps: 1 },
@@ -318,8 +316,8 @@ describe('Send ETH', function () {
               .withPermissionControllerConnectedToTestDapp()
               .withPreferencesController(PREFERENCES_STATE_MOCK)
               .build(),
-            title: this.test.fullTitle(),
-            testSpecificMock: async (mockServer) => {
+            title: this.test?.fullTitle(),
+            testSpecificMock: async (mockServer: MockttpServer) => {
               await mockSpotPrices(mockServer, {
                 'eip155:1/slip44:60': {
                   price: 1700,
@@ -329,8 +327,12 @@ describe('Send ETH', function () {
               });
             },
           },
-          async ({ driver }) => {
+          async ({ driver }: { driver: Driver }) => {
             await loginWithBalanceValidation(driver);
+
+            const sendTokenConfirmPage = new SendTokenConfirmPage(driver);
+            const gasFeeModal = new GasFeeModal(driver);
+            const activityListPage = new ActivityListPage(driver);
 
             // initiates a transaction from the dapp
             await driver.openNewPage(DAPP_URL);
@@ -341,31 +343,15 @@ describe('Send ETH', function () {
 
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-            await driver.clickElement('[data-testid="edit-gas-fee-icon"]');
-            await driver.clickElement(
-              '[data-testid="edit-gas-fee-item-custom"]',
-            );
-
-            const baseFeeInput = await driver.findElement(
-              '[data-testid="base-fee-input"]',
-            );
-            await baseFeeInput.fill('25');
-            const priorityFeeInput = await driver.findElement(
-              '[data-testid="priority-fee-input"]',
-            );
-            await priorityFeeInput.fill('1');
-
-            await driver.clickElement({ text: 'Save', tag: 'button' });
-
-            await driver.findElement({
-              css: '[data-testid="first-gas-field"]',
-              text: '0.045',
+            // Open gas fee modal and set custom EIP-1559 gas values
+            await sendTokenConfirmPage.clickEditGasFeeIcon();
+            await gasFeeModal.setCustomEIP1559GasFee({
+              maxBaseFee: '25',
+              priorityFee: '1',
             });
 
-            await driver.findElement({
-              css: '[data-testid="native-currency"]',
-              text: '$76.59',
-            });
+            await sendTokenConfirmPage.checkFirstGasFee('0.045');
+            await sendTokenConfirmPage.checkNativeCurrency('$76.59');
 
             await driver.clickElementAndWaitForWindowToClose({
               text: 'Confirm',
@@ -380,9 +366,7 @@ describe('Send ETH', function () {
               '[data-testid="eth-overview__primary-currency"]',
             );
 
-            await driver.clickElement(
-              '[data-testid="account-overview__activity-tab"]',
-            );
+            await activityListPage.openActivityTab();
             await driver.waitForSelector(
               '.transaction-status-label--confirmed',
             );
@@ -411,9 +395,9 @@ describe('Send ETH', function () {
              */
             assert.equal(allFeeValues.length > 0, true);
 
-            allFeeValues.forEach(async (feeValue) => {
+            for (const feeValue of allFeeValues) {
               assert.equal(/\d+\.?\d*/u.test(await feeValue.getText()), true);
-            });
+            }
           },
         );
       });
@@ -431,9 +415,9 @@ describe('Send ETH', function () {
               })
               .withPreferencesControllerPetnamesDisabled()
               .build(),
-            title: this.test.fullTitle(),
+            title: this.test?.fullTitle(),
           },
-          async ({ driver }) => {
+          async ({ driver }: { driver: Driver }) => {
             await loginWithBalanceValidation(driver);
 
             await driver.clickElement('[data-testid="eth-overview-send"]');
