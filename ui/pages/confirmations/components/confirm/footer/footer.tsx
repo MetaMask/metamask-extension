@@ -250,10 +250,10 @@ const Footer = () => {
       navigate(DEFAULT_ROUTE);
     } else if (isTransactionConfirmation) {
       await onTransactionConfirm();
-      navigateNext(currentConfirmation.id);
+      await navigateNext(currentConfirmation.id);
     } else {
       await dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
-      navigateNext(currentConfirmation.id);
+      await navigateNext(currentConfirmation.id);
     }
 
     resetTransactionState();
@@ -281,7 +281,7 @@ const Footer = () => {
     if (isAddEthereumChain) {
       navigate(DEFAULT_ROUTE);
     } else {
-      navigateNext(currentConfirmation.id);
+      await navigateNext(currentConfirmation.id);
     }
   }, [
     navigateNext,
