@@ -453,7 +453,7 @@ describe('NonEvmOverview', () => {
     );
   });
 
-  it('disables the Send and Bridge buttons if external services are disabled', () => {
+  it('does not disable the Send button when external services are disabled (filtering happens upstream)', () => {
     const { queryByTestId } = renderWithProvider(
       <NonEvmOverview />,
       getStore({
@@ -467,7 +467,8 @@ describe('NonEvmOverview', () => {
     const sendButton = queryByTestId(BTC_OVERVIEW_SEND);
     const bridgeButton = queryByTestId(BTC_OVERVIEW_BRIDGE);
     expect(sendButton).toBeInTheDocument();
-    expect(sendButton).toBeDisabled();
+    // Send button is no longer disabled - non-EVM filtering happens upstream in token/network lists
+    expect(sendButton).not.toBeDisabled();
     expect(bridgeButton).not.toBeInTheDocument();
   });
 });
