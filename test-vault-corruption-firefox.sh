@@ -181,9 +181,6 @@ fi
 echo ""
 IDB_PATH="$ACTIVE_STORAGE/idb"
 
-# Backup location
-BACKUP_DIR="$HOME/Desktop/metamask-firefox-backup-$(date +%Y%m%d-%H%M%S)"
-
 # Find databases
 echo -e "${BLUE}Current Storage State:${NC}"
 echo "---"
@@ -270,33 +267,38 @@ echo ""
 echo "---"
 echo ""
 
-# Decode key helper (ROT-1 decode)
-decode_key() {
-    echo "$1" | tr 'a-zA-Z' 'z-za-yZ-ZA-Y' | sed 's/^0//'
+# Helper function to drop Firefox triggers before modifying
+drop_triggers() {
+    local db="$1"
+    sqlite3 "$db" "DROP TRIGGER IF EXISTS object_data_delete_trigger;" 2>/dev/null
+    sqlite3 "$db" "DROP TRIGGER IF EXISTS object_data_update_trigger;" 2>/dev/null
+    sqlite3 "$db" "DROP TRIGGER IF EXISTS object_data_insert_trigger;" 2>/dev/null
+    sqlite3 "$db" "DROP TRIGGER IF EXISTS file_update_trigger;" 2>/dev/null
 }
 
 # Menu
 echo -e "${YELLOW}Select corruption type:${NC}"
 echo ""
-echo "  === Vault Recovery Tests ==="
-echo "  1) Corrupt PRIMARY vault (browser.storage.local) - Keep backup intact"
+echo "  === Primary Vault Corruption Tests ==="
+echo "  1) ${RED}FULL corruption${NC}: Drop triggers + delete data/meta + delete files + clear refs"
+echo "     → Storage becomes structurally corrupted (writes fail)"
+echo ""
+echo "  2) Delete 'data' and 'meta' keys only (minimal corruption)"
 echo "     → Expected: Vault recovery flow should trigger"
 echo ""
-echo "  === Complete Loss Tests ==="
-echo "  2) Corrupt BOTH primary AND backup vaults"
+echo "  3) Delete 'data' and 'meta' keys + delete BACKUP vault"
 echo "     → Expected: Fresh install flow (no recovery possible)"
 echo ""
-echo "  === File Corruption Tests ==="
-echo "  3) Delete external files (keep database references)"
-echo "     → Expected: Test file ID mismatch scenario"
+echo "  4) Delete external files only (keep database intact)"
+echo "     → Tests file ID mismatch scenario"
 echo ""
-echo "  4) Corrupt SQLite database structure"
-echo "     → Expected: Database read error"
+echo "  5) Clear file references only (keep files intact)"
+echo "     → Tests orphaned files scenario"
 echo ""
-echo "  === Recovery & Cleanup ==="
-echo "  5) Restore from backup"
+echo "  === Cleanup ==="
 echo "  6) ${RED}NUCLEAR: Delete ALL MetaMask storage (fresh start)${NC}"
 echo "     → Fixes 'An unexpected error occurred' after reinstall"
+echo ""
 echo "  7) Exit without changes"
 echo ""
 read -p "Enter choice [1-7]: " choice
@@ -304,62 +306,87 @@ read -p "Enter choice [1-7]: " choice
 case $choice in
     1)
         echo ""
-        echo -e "${YELLOW}Creating backup...${NC}"
-        mkdir -p "$BACKUP_DIR"
-        cp -r "$ACTIVE_STORAGE" "$BACKUP_DIR/"
-        echo -e "${GREEN}✓ Backup created at: $BACKUP_DIR${NC}"
+        echo -e "${YELLOW}FULL corruption of PRIMARY vault...${NC}"
+        echo -e "${RED}This will make storage structurally corrupted (writes will fail)${NC}"
 
-        echo ""
-        echo -e "${YELLOW}Corrupting PRIMARY vault (browser.storage.local)...${NC}"
-
-        if [ -n "$PRIMARY_DB" ]; then
-            # Firefox uses triggers with custom functions that don't exist outside Firefox
-            # We need to drop the triggers before modifying data
-            echo "Disabling Firefox triggers..."
-            sqlite3 "$PRIMARY_DB" "DROP TRIGGER IF EXISTS object_data_delete_trigger;"
-            sqlite3 "$PRIMARY_DB" "DROP TRIGGER IF EXISTS object_data_update_trigger;"
-            sqlite3 "$PRIMARY_DB" "DROP TRIGGER IF EXISTS object_data_insert_trigger;"
-            sqlite3 "$PRIMARY_DB" "DROP TRIGGER IF EXISTS file_update_trigger;"
-            echo -e "${GREEN}✓ Triggers disabled${NC}"
-
-            # Delete the data key (0ebub = "data" in ROT-1)
-            sqlite3 "$PRIMARY_DB" "DELETE FROM object_data WHERE key LIKE '%ebub%' OR key LIKE '%data%';"
-            echo -e "${GREEN}✓ Deleted 'data' key from webExtensions-storage-local${NC}"
-
-            # Delete the meta key (0nfub = "meta" in ROT-1)
-            sqlite3 "$PRIMARY_DB" "DELETE FROM object_data WHERE key LIKE '%nfub%' OR key LIKE '%meta%';"
-            echo -e "${GREEN}✓ Deleted 'meta' key from webExtensions-storage-local${NC}"
-
-            # Delete external files
-            if [ -d "$PRIMARY_FILES" ]; then
-                rm -rf "$PRIMARY_FILES"/*
-                echo -e "${GREEN}✓ Deleted external data files${NC}"
-            fi
-
-            # Clear file references
-            sqlite3 "$PRIMARY_DB" "DELETE FROM file;" 2>/dev/null || true
-            echo -e "${GREEN}✓ Cleared file references${NC}"
-        else
+        if [ -z "$PRIMARY_DB" ]; then
             echo -e "${RED}ERROR: Primary vault database not found!${NC}"
             echo "The extension may not have been initialized with a wallet."
             exit 1
         fi
 
+        # Drop Firefox triggers (makes writes fail!)
+        echo "Dropping Firefox triggers..."
+        drop_triggers "$PRIMARY_DB"
+        echo -e "${GREEN}✓ Triggers dropped (storage writes will now fail!)${NC}"
+
+        # Delete the data key (0ebub = "data" in ROT-1)
+        sqlite3 "$PRIMARY_DB" "DELETE FROM object_data WHERE key LIKE '%ebub%' OR key LIKE '%data%';"
+        echo -e "${GREEN}✓ Deleted 'data' key${NC}"
+
+        # Delete the meta key (0nfub = "meta" in ROT-1)
+        sqlite3 "$PRIMARY_DB" "DELETE FROM object_data WHERE key LIKE '%nfub%' OR key LIKE '%meta%';"
+        echo -e "${GREEN}✓ Deleted 'meta' key${NC}"
+
+        # Delete external files
+        if [ -d "$PRIMARY_FILES" ]; then
+            rm -rf "$PRIMARY_FILES"/*
+            echo -e "${GREEN}✓ Deleted external files${NC}"
+        fi
+
+        # Clear file references
+        sqlite3 "$PRIMARY_DB" "DELETE FROM file;" 2>/dev/null || true
+        echo -e "${GREEN}✓ Cleared file references${NC}"
+
         echo ""
-        echo -e "${GREEN}✓ PRIMARY vault corruption complete!${NC}"
+        echo -e "${RED}✗ PRIMARY vault is now FULLY corrupted!${NC}"
         echo ""
         echo -e "${BLUE}The IndexedDB backup (metamask-backup) is still intact.${NC}"
         echo ""
-        echo "Now open Firefox and try to access MetaMask."
         echo -e "${YELLOW}Expected behavior:${NC}"
-        echo "  - MetaMask should detect missing vault"
         echo "  - Vault recovery flow should trigger"
-        echo "  - User should be prompted to enter password to restore"
+        echo "  - After entering password, writes will FAIL"
+        echo "  - 'Storage is corrupted' message should appear"
         ;;
 
     2)
         echo ""
-        echo -e "${RED}WARNING: This will corrupt BOTH primary AND backup storage!${NC}"
+        echo -e "${YELLOW}Deleting 'data' and 'meta' keys from PRIMARY vault...${NC}"
+
+        if [ -z "$PRIMARY_DB" ]; then
+            echo -e "${RED}ERROR: Primary vault database not found!${NC}"
+            exit 1
+        fi
+
+        # Must drop triggers to delete data
+        echo "Dropping triggers (required for deletion)..."
+        drop_triggers "$PRIMARY_DB"
+        echo -e "${GREEN}✓ Triggers dropped${NC}"
+
+        # Delete the data key
+        sqlite3 "$PRIMARY_DB" "DELETE FROM object_data WHERE key LIKE '%ebub%' OR key LIKE '%data%';"
+        echo -e "${GREEN}✓ Deleted 'data' key${NC}"
+
+        # Delete the meta key
+        sqlite3 "$PRIMARY_DB" "DELETE FROM object_data WHERE key LIKE '%nfub%' OR key LIKE '%meta%';"
+        echo -e "${GREEN}✓ Deleted 'meta' key${NC}"
+
+        echo ""
+        echo -e "${GREEN}✓ Minimal corruption complete!${NC}"
+        echo ""
+        echo -e "${BLUE}The IndexedDB backup (metamask-backup) is still intact.${NC}"
+        echo ""
+        echo -e "${YELLOW}Expected behavior:${NC}"
+        echo "  - MetaMask should detect missing vault"
+        echo "  - Vault recovery flow should trigger"
+        echo "  - User should be prompted to enter password to restore"
+        echo ""
+        echo -e "${YELLOW}Note: Triggers were dropped, so storage writes may fail.${NC}"
+        ;;
+
+    3)
+        echo ""
+        echo -e "${RED}WARNING: This will delete primary vault data AND backup!${NC}"
         echo -e "${RED}Recovery will NOT be possible without the SRP!${NC}"
         read -p "Are you sure? (yes/no): " confirm
 
@@ -369,35 +396,19 @@ case $choice in
         fi
 
         echo ""
-        echo -e "${YELLOW}Creating backup...${NC}"
-        mkdir -p "$BACKUP_DIR"
-        cp -r "$ACTIVE_STORAGE" "$BACKUP_DIR/"
-        echo -e "${GREEN}✓ Backup created at: $BACKUP_DIR${NC}"
-
-        echo ""
-        echo -e "${YELLOW}Corrupting ALL vault storage...${NC}"
-
-        # Helper function to drop Firefox triggers before modifying
-        drop_triggers() {
-            local db="$1"
-            sqlite3 "$db" "DROP TRIGGER IF EXISTS object_data_delete_trigger;" 2>/dev/null
-            sqlite3 "$db" "DROP TRIGGER IF EXISTS object_data_update_trigger;" 2>/dev/null
-            sqlite3 "$db" "DROP TRIGGER IF EXISTS object_data_insert_trigger;" 2>/dev/null
-            sqlite3 "$db" "DROP TRIGGER IF EXISTS file_update_trigger;" 2>/dev/null
-        }
+        echo -e "${YELLOW}Deleting 'data' and 'meta' from PRIMARY + deleting BACKUP...${NC}"
 
         # Corrupt PRIMARY vault
         if [ -n "$PRIMARY_DB" ]; then
             drop_triggers "$PRIMARY_DB"
-            sqlite3 "$PRIMARY_DB" "DELETE FROM object_data;"
-            sqlite3 "$PRIMARY_DB" "DELETE FROM file;" 2>/dev/null || true
-            if [ -d "$PRIMARY_FILES" ]; then
-                rm -rf "$PRIMARY_FILES"/*
-            fi
-            echo -e "${GREEN}✓ Primary vault corrupted${NC}"
+            sqlite3 "$PRIMARY_DB" "DELETE FROM object_data WHERE key LIKE '%ebub%' OR key LIKE '%data%';"
+            sqlite3 "$PRIMARY_DB" "DELETE FROM object_data WHERE key LIKE '%nfub%' OR key LIKE '%meta%';"
+            echo -e "${GREEN}✓ Primary vault data/meta deleted${NC}"
+        else
+            echo -e "${YELLOW}Primary vault not found, skipping...${NC}"
         fi
 
-        # Corrupt BACKUP vault
+        # Delete BACKUP vault data
         if [ -n "$BACKUP_DB" ]; then
             drop_triggers "$BACKUP_DB"
             sqlite3 "$BACKUP_DB" "DELETE FROM object_data;"
@@ -405,132 +416,71 @@ case $choice in
             if [ -d "$BACKUP_FILES" ]; then
                 rm -rf "$BACKUP_FILES"/*
             fi
-            echo -e "${GREEN}✓ Backup vault corrupted${NC}"
-        fi
-
-        # Corrupt localforage (optional)
-        if [ -n "$LOCALFORAGE_DB" ]; then
-            drop_triggers "$LOCALFORAGE_DB"
-            sqlite3 "$LOCALFORAGE_DB" "DELETE FROM object_data;"
-            sqlite3 "$LOCALFORAGE_DB" "DELETE FROM file;" 2>/dev/null || true
-            if [ -d "$LOCALFORAGE_FILES" ]; then
-                rm -rf "$LOCALFORAGE_FILES"/*
-            fi
-            echo -e "${GREEN}✓ Cached data corrupted${NC}"
+            echo -e "${GREEN}✓ Backup vault deleted${NC}"
+        else
+            echo -e "${YELLOW}Backup vault not found, skipping...${NC}"
         fi
 
         echo ""
-        echo -e "${RED}✗ Complete vault destruction done!${NC}"
+        echo -e "${RED}✗ Both primary and backup vaults are now corrupted!${NC}"
         echo ""
         echo -e "${YELLOW}Expected behavior:${NC}"
         echo "  - MetaMask should show fresh install/onboarding flow"
         echo "  - No recovery possible without SRP"
         ;;
 
-    3)
-        echo ""
-        echo -e "${YELLOW}Creating backup...${NC}"
-        mkdir -p "$BACKUP_DIR"
-        cp -r "$ACTIVE_STORAGE" "$BACKUP_DIR/"
-        echo -e "${GREEN}✓ Backup created at: $BACKUP_DIR${NC}"
-
-        echo ""
-        echo -e "${YELLOW}Deleting external files (keeping database references)...${NC}"
-
-        files_deleted=0
-
-        if [ -d "$PRIMARY_FILES" ]; then
-            echo "Primary vault files:"
-            ls -la "$PRIMARY_FILES" 2>/dev/null | tail -n +4
-            find "$PRIMARY_FILES" -type f -delete 2>/dev/null
-            files_deleted=$((files_deleted + 1))
-            echo -e "${GREEN}✓ Primary vault files deleted${NC}"
-        fi
-
-        if [ -d "$BACKUP_FILES" ]; then
-            echo ""
-            echo "Backup vault files:"
-            ls -la "$BACKUP_FILES" 2>/dev/null | tail -n +4
-            find "$BACKUP_FILES" -type f -delete 2>/dev/null
-            files_deleted=$((files_deleted + 1))
-            echo -e "${GREEN}✓ Backup vault files deleted${NC}"
-        fi
-
-        if [ $files_deleted -eq 0 ]; then
-            echo -e "${YELLOW}No external files found to delete.${NC}"
-            echo "Data may be stored inline in the SQLite database."
-        else
-            echo ""
-            echo -e "${GREEN}✓ File deletion complete!${NC}"
-            echo ""
-            echo "Database still references these files, but they no longer exist."
-            echo "This tests the file ID mismatch scenario."
-            echo ""
-            echo -e "${YELLOW}Expected behavior:${NC}"
-            echo "  - MetaMask may fail to read vault data"
-            echo "  - Could result in 'An unexpected error occurred'"
-            echo "  - Note: Firefox may self-heal by regenerating files"
-        fi
-        ;;
-
     4)
         echo ""
-        echo -e "${YELLOW}Creating backup...${NC}"
-        mkdir -p "$BACKUP_DIR"
-        cp -r "$ACTIVE_STORAGE" "$BACKUP_DIR/"
-        echo -e "${GREEN}✓ Backup created at: $BACKUP_DIR${NC}"
+        echo -e "${YELLOW}Deleting external files from PRIMARY vault...${NC}"
 
-        echo ""
-        echo -e "${YELLOW}Corrupting SQLite database structure...${NC}"
-
-        if [ -n "$PRIMARY_DB" ]; then
-            # Write garbage to the middle of the file to corrupt it
-            dd if=/dev/urandom of="$PRIMARY_DB" bs=1 count=100 seek=4096 conv=notrunc 2>/dev/null
-            echo -e "${GREEN}✓ Primary vault database corrupted${NC}"
+        if [ -z "$PRIMARY_FILES" ] || [ ! -d "$PRIMARY_FILES" ]; then
+            echo -e "${YELLOW}No external files folder found.${NC}"
+            echo "Data may be stored inline in the SQLite database."
+            exit 0
         fi
 
+        echo "External files in PRIMARY vault:"
+        ls -la "$PRIMARY_FILES" 2>/dev/null | tail -n +4
+
+        find "$PRIMARY_FILES" -type f -delete 2>/dev/null
+        echo -e "${GREEN}✓ External files deleted${NC}"
+
         echo ""
-        echo -e "${GREEN}✓ Database corruption complete!${NC}"
+        echo -e "${GREEN}✓ External file deletion complete!${NC}"
+        echo ""
+        echo "Database still references these files, but they no longer exist."
         echo ""
         echo -e "${YELLOW}Expected behavior:${NC}"
-        echo "  - SQLite read errors"
-        echo "  - 'An unexpected error occurred' or similar"
-        echo "  - Recovery may trigger if backup is intact"
+        echo "  - MetaMask may fail to read vault data"
+        echo "  - Could result in 'An unexpected error occurred'"
+        echo "  - Note: Firefox may self-heal by regenerating files"
         ;;
 
     5)
         echo ""
-        # Find most recent backup
-        LATEST_BACKUP=$(ls -td ~/Desktop/metamask-firefox-backup-* 2>/dev/null | head -1)
+        echo -e "${YELLOW}Clearing file references from PRIMARY vault...${NC}"
 
-        if [ -z "$LATEST_BACKUP" ]; then
-            echo -e "${RED}No backup found on Desktop!${NC}"
+        if [ -z "$PRIMARY_DB" ]; then
+            echo -e "${RED}ERROR: Primary vault database not found!${NC}"
             exit 1
         fi
 
-        echo "Found backup: $LATEST_BACKUP"
-        read -p "Restore from this backup? (yes/no): " confirm
+        # Must drop triggers to modify file table
+        echo "Dropping triggers (required for deletion)..."
+        drop_triggers "$PRIMARY_DB"
+        echo -e "${GREEN}✓ Triggers dropped${NC}"
 
-        if [ "$confirm" != "yes" ]; then
-            echo "Aborted."
-            exit 0
-        fi
+        sqlite3 "$PRIMARY_DB" "DELETE FROM file;" 2>/dev/null || true
+        echo -e "${GREEN}✓ File references cleared${NC}"
 
         echo ""
-        echo -e "${YELLOW}Restoring from backup...${NC}"
-
-        # Remove current storage
-        rm -rf "$ACTIVE_STORAGE"
-
-        # Restore from backup (find the folder inside the backup)
-        BACKUP_STORAGE=$(ls -d "$LATEST_BACKUP"/moz-extension* 2>/dev/null | head -1)
-        if [ -n "$BACKUP_STORAGE" ]; then
-            cp -r "$BACKUP_STORAGE" "$ACTIVE_STORAGE"
-            echo -e "${GREEN}✓ Storage restored from backup${NC}"
-        else
-            echo -e "${RED}Could not find storage in backup!${NC}"
-            exit 1
-        fi
+        echo -e "${GREEN}✓ File reference clearing complete!${NC}"
+        echo ""
+        echo "External files still exist, but database no longer references them."
+        echo ""
+        echo -e "${YELLOW}Expected behavior:${NC}"
+        echo "  - Orphaned files scenario"
+        echo "  - MetaMask behavior depends on how data was stored"
         ;;
 
     6)
