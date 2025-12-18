@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ApprovalType } from '@metamask/controller-utils';
 import { isEqual } from 'lodash';
@@ -23,6 +23,7 @@ import {
   getApprovalFlows,
   selectPendingApprovalsForNavigation,
 } from '../../../selectors';
+import { setDefaultHomeActiveTabName } from '../../../store/actions';
 
 const CONNECT_APPROVAL_TYPES = [
   ApprovalType.WalletRequestPermissions,
@@ -37,7 +38,7 @@ export function useConfirmationNavigation() {
   const navigate = useNavigate();
   const { search: queryString } = useLocation();
   const count = confirmations.length;
-
+  const dispatch = useDispatch();
   const getIndex = useCallback(
     (confirmationId?: string) => {
       if (!confirmationId) {
@@ -82,6 +83,7 @@ export function useConfirmationNavigation() {
         const index = getIndex(pendingConfirmations[0].id);
         navigateToIndex(index);
       } else {
+        dispatch(setDefaultHomeActiveTabName('activity'));
         navigate(DEFAULT_ROUTE);
       }
     },

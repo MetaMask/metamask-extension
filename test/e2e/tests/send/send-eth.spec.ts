@@ -8,7 +8,7 @@ import SendPage from '../../page-objects/pages/send/send-page';
 import SendTokenConfirmPage from '../../page-objects/pages/send/send-token-confirmation-page';
 import { Driver } from '../../webdriver/driver';
 import { DAPP_PATH } from '../../constants';
-import { regularDelayMs, WINDOW_TITLES, withFixtures } from '../../helpers';
+import { WINDOW_TITLES, withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { mockLookupSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 import { openTestSnapClickButtonAndInstall } from '../../page-objects/flows/install-test-snap.flow';
@@ -83,7 +83,7 @@ describe('Send ETH', function () {
     );
   });
 
-  it.only('it should be possible to send to address book entry', async function () {
+  it('it should be possible to send to address book entry', async function () {
     await withFixtures(
       {
         forceBip44Version: false,
@@ -120,9 +120,7 @@ describe('Send ETH', function () {
         await sendPage.fillAmount('1');
         await sendPage.pressContinueButton();
 
-        await driver.delay(3000);
         await sendTokenConfirmationPage.clickOnConfirm();
-        await homePage.goToActivityList();
         await activityListPage.checkTransactionActivityByText('Sent');
         await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);
         await activityListPage.checkTxAmountInActivity('-1 ETH');
