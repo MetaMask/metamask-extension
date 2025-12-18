@@ -202,6 +202,7 @@ export default class GasFeeModal {
    */
   async selectLowGasFee(): Promise<void> {
     console.log('Selecting low gas fee option');
+    await this.driver.waitForElementToStopMoving(this.gasOptionLow);
     await this.driver.clickElementAndWaitToDisappear(this.gasOptionLow);
   }
 
