@@ -348,7 +348,7 @@
     "@metamask/name-controller": "^9.0.0",
     "@metamask/network-controller": "^27.0.0",
     "@metamask/network-enablement-controller": "^3.1.0",
-    "@metamask/notification-services-controller": "^20.0.0",
+    "@metamask/notification-services-controller": "^21.0.0",
     "@metamask/object-multiplex": "^2.0.0",
     "@metamask/obs-store": "^9.0.0",
     "@metamask/permission-controller": "^12.1.0",
