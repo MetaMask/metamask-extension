@@ -21,6 +21,10 @@ import {
 } from './identity';
 import HideTokenConfirmationModal from './hide-token-confirmation-modal';
 import QRScanner from './qr-scanner';
+import {
+  HardwareWalletErrorModal,
+  HARDWARE_WALLET_ERROR_MODAL_NAME,
+} from './hardware-wallet-error-modal';
 
 import ConfirmRemoveAccount from './confirm-remove-account';
 import ConfirmResetAccount from './confirm-reset-account';
@@ -292,6 +296,20 @@ const MODALS = {
     },
     laptopModalStyle: {
       ...modalContainerLaptopStyle,
+    },
+  },
+
+  [HARDWARE_WALLET_ERROR_MODAL_NAME]: {
+    contents: <HardwareWalletErrorModal />,
+    testId: 'hardware-wallet-error-modal',
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
     },
   },
 

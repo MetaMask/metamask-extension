@@ -246,7 +246,6 @@ const Footer = () => {
     console.log('[Footer onSubmit] Calling submit()...');
     const { success, retryable } = await submit();
     console.log('[Footer onSubmit] Submit completed:', { success, retryable });
-    debugger;
     // For Ledger accounts, keep the request alive to show signing status
     if (!isLedgerAccount && (success || !retryable)) {
       resetTransactionState();

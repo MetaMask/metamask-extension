@@ -40,6 +40,7 @@ import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
 import { TextVariant } from '../../helpers/constants/design-system';
 import { useTxAlerts } from '../../hooks/bridge/useTxAlerts';
 import { getFromChain, getBridgeQuotes } from '../../ducks/bridge/selectors';
+import { HardwareWalletErrorProvider } from '../../contexts/hardware-wallets';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
 import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
@@ -146,37 +147,39 @@ const CrossChainSwap = () => {
         {t('swap')}
       </Header>
       <Content padding={0}>
-        <Routes>
-          <Route
-            path={toRelativeRoutePath(PREPARE_SWAP_ROUTE)}
-            element={
-              <>
-                <BridgeTransactionSettingsModal
-                  isOpen={isSettingsModalOpen}
-                  onClose={() => {
-                    setIsSettingsModalOpen(false);
-                  }}
-                />
-                <PrepareBridgePage
-                  onOpenSettings={() => setIsSettingsModalOpen(true)}
-                />
-              </>
-            }
-          />
-          <Route
-            path={toRelativeRoutePath(AWAITING_SIGNATURES_ROUTE)}
-            element={
-              <>
-                <Content>
-                  <AwaitingSignatures />
-                </Content>
-                <Footer>
-                  <AwaitingSignaturesCancelButton />
-                </Footer>
-              </>
-            }
-          />
-        </Routes>
+        <HardwareWalletErrorProvider>
+          <Routes>
+            <Route
+              path={toRelativeRoutePath(PREPARE_SWAP_ROUTE)}
+              element={
+                <>
+                  <BridgeTransactionSettingsModal
+                    isOpen={isSettingsModalOpen}
+                    onClose={() => {
+                      setIsSettingsModalOpen(false);
+                    }}
+                  />
+                  <PrepareBridgePage
+                    onOpenSettings={() => setIsSettingsModalOpen(true)}
+                  />
+                </>
+              }
+            />
+            <Route
+              path={toRelativeRoutePath(AWAITING_SIGNATURES_ROUTE)}
+              element={
+                <>
+                  <Content>
+                    <AwaitingSignatures />
+                  </Content>
+                  <Footer>
+                    <AwaitingSignaturesCancelButton />
+                  </Footer>
+                </>
+              }
+            />
+          </Routes>
+        </HardwareWalletErrorProvider>
       </Content>
     </Page>
   );

@@ -4118,7 +4118,6 @@ export function closeCurrentNotificationWindow(): ThunkAction<
     const hasPendingTx = hasTransactionPendingApprovals(state);
     const isSigningQR = getIsSigningQRHardwareTransaction(state);
 
-    debugger;
     console.log('[closeCurrentNotificationWindow] Checking conditions:', {
       envType,
       isNotification: envType === ENVIRONMENT_TYPE_NOTIFICATION,
@@ -5751,7 +5750,6 @@ export function resolvePendingApproval(
       value,
       options,
     ]);
-    debugger;
 
     console.log(
       '[resolvePendingApproval] Approval resolved, forcing state update...',
@@ -5766,7 +5764,6 @@ export function resolvePendingApproval(
     const pendingApprovals = state.metamask.pendingApprovals;
     const hardwareSigningState = getHardwareSigningState(state);
     const pendingApprovalsCount = Object.values(pendingApprovals).length;
-    debugger;
 
     console.log('[resolvePendingApproval] State after update:', {
       pendingApprovalsCount,

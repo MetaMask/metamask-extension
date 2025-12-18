@@ -2967,9 +2967,114 @@
   "hardwareWalletConnected": {
     "message": "Hardware wallet connected"
   },
+  "hardwareWalletConnectionRecoveryLedgerStep1": {
+    "message": "Your Ledger is unlocked",
+    "description": "Ledger is the hardware wallet device"
+  },
+  "hardwareWalletConnectionRecoveryLedgerStep2": {
+    "message": "The Ethereum app is open"
+  },
+  "hardwareWalletConnectionRecoverySteps": {
+    "message": "To continue, make sure:"
+  },
+  "hardwareWalletConnectionRecoveryTrezorStep1": {
+    "message": "Your Trezor is connected",
+    "description": "Trezor is the hardware wallet device"
+  },
+  "hardwareWalletConnectionRecoveryTrezorStep2": {
+    "message": "You have entered your PIN"
+  },
+  "hardwareWalletErrorContinueButton": {
+    "message": "Continue"
+  },
+  "hardwareWalletErrorDescriptionDeviceLocked": {
+    "message": "Unlock it and try again to continue",
+    "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletErrorRecoveryApp1": {
+    "message": "Connect your hardware wallet device"
+  },
+  "hardwareWalletErrorRecoveryApp2": {
+    "message": "Open the Ethereum app on your device"
+  },
+  "hardwareWalletErrorRecoveryApp3": {
+    "message": "Ensure no other apps are running on the device"
+  },
+  "hardwareWalletErrorRecoveryConnection1": {
+    "message": "Ensure your hardware wallet is properly connected via USB"
+  },
+  "hardwareWalletErrorRecoveryConnection2": {
+    "message": "Try using a different USB cable or port"
+  },
+  "hardwareWalletErrorRecoveryConnection3": {
+    "message": "Restart your device and try connecting again"
+  },
+  "hardwareWalletErrorRecoveryDefault1": {
+    "message": "Disconnect and reconnect your hardware wallet"
+  },
+  "hardwareWalletErrorRecoveryDefault2": {
+    "message": "If the problem persists, please contact support"
+  },
+  "hardwareWalletErrorRecoveryPermission1": {
+    "message": "Click the retry button to request device access again"
+  },
+  "hardwareWalletErrorRecoveryPermission2": {
+    "message": "Select your hardware wallet from the browser's device selection dialog"
+  },
+  "hardwareWalletErrorRecoveryPermission3": {
+    "message": "If you don't see your device, make sure it's plugged in and unlocked"
+  },
+  "hardwareWalletErrorRecoveryTimeout1": {
+    "message": "The connection timed out. Please ensure your device is ready and unlocked"
+  },
+  "hardwareWalletErrorRecoveryTimeout2": {
+    "message": "Try the operation again"
+  },
+  "hardwareWalletErrorRecoveryTitle": {
+    "message": "How to fix this:"
+  },
+  "hardwareWalletErrorRecoveryUnlock1": {
+    "message": "Enter your PIN to unlock your hardware wallet device"
+  },
+  "hardwareWalletErrorRecoveryUnlock2": {
+    "message": "Ensure the device is not in standby mode"
+  },
+  "hardwareWalletErrorRecoveryUnlock3": {
+    "message": "Try again after unlocking"
+  },
+  "hardwareWalletErrorRecoveryUserCancel": {
+    "message": "You cancelled the operation. You can try again when ready"
+  },
+  "hardwareWalletErrorRecoveryWebHID1": {
+    "message": "WebHID is not available in your browser. Please use Chrome, Edge, or another WebHID-compatible browser"
+  },
+  "hardwareWalletErrorRecoveryWebHID2": {
+    "message": "Alternatively, update your browser to the latest version"
+  },
+  "hardwareWalletErrorSomethingWentWrong": {
+    "message": "Something went wrong"
+  },
+  "hardwareWalletErrorSomethingWentWrongDescription": {
+    "message": "Make sure your $1 is set up with the Secret Recovery Phrase or passphrase for this account",
+    "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletErrorTitle": {
+    "message": "Hardware Wallet Error"
+  },
+  "hardwareWalletErrorTitleConnectYourDevice": {
+    "message": "Connect your $1 device",
+    "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletErrorTitleDeviceLocked": {
+    "message": "$1 locked",
+    "description": "$1 is the hardware wallet type"
+  },
   "hardwareWalletLegacyDescription": {
     "message": "(legacy)",
     "description": "Text representing the MEW path"
+  },
+  "hardwareWalletStartTransactionFlow": {
+    "message": "Start transaction flow"
   },
   "hardwareWalletSubmissionWarningStep1": {
     "message": "Be sure your $1 is plugged in and to select the Ethereum app."
