@@ -118,7 +118,6 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
 
       return sortAssets([...finalAssets], tokenSortConfig);
     }
-    console.log('🚀 ~ TokenList ~ accountGroupIdAssets:', accountGroupIdAssets);
     const accountAssetsPreSort = Object.entries(accountGroupIdAssets).flatMap(
       ([chainId, assets]) => {
         if (!allEnabledNetworksForAllNamespaces.includes(chainId)) {
@@ -152,7 +151,6 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
             isEvmChainId(asset.chainId) ||
             (!isEvm && asset.chainId === currentNetwork.chainId),
         );
-    console.log('🚀 ~ TokenList ~ finalAccountAssets:', finalAccountAssets);
 
     return finalAccountAssets.map((asset) => {
       const token: TokenWithFiatAmount = {
