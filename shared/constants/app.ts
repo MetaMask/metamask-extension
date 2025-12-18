@@ -12,7 +12,8 @@ export type EnvironmentType =
   | 'popup'
   | 'notification'
   | 'fullscreen'
-  | 'background';
+  | 'background'
+  | 'sidepanel';
 export const ENVIRONMENT_TYPE_POPUP = 'popup';
 export const ENVIRONMENT_TYPE_NOTIFICATION = 'notification';
 export const ENVIRONMENT_TYPE_FULLSCREEN = 'fullscreen';
