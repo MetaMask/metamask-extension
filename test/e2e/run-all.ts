@@ -98,10 +98,15 @@ async function runningOnGitHubActions(fullTestList: string[]) {
       failed.includes(testPath),
     );
 
-    console.log(`Previous run: ${passed.length} passed, ${failed.length} failed`);
+    console.log(
+      `Previous run: ${passed.length} passed, ${failed.length} failed`,
+    );
 
     if (testsToRerun.length > 0) {
-      console.log(`Re-running ${testsToRerun.length} failed tests:`, testsToRerun);
+      console.log(
+        `Re-running ${testsToRerun.length} failed tests:`,
+        testsToRerun,
+      );
       return { myTestList: testsToRerun, changedOrNewTests };
     }
 
