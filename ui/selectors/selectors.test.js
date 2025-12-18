@@ -2783,7 +2783,6 @@ describe('getNativeTokenInfo', () => {
     const state = {
       metamask: {
         networkConfigurationsByChainId: {},
-        provider: {},
       },
     };
 
@@ -2799,7 +2798,6 @@ describe('getNativeTokenInfo', () => {
 
     const result = selectors.getNativeTokenInfo(
       mocks.state.metamask.networkConfigurationsByChainId,
-      mocks.state.metamask.provider,
       '0x1337',
     );
     expect(result).toStrictEqual({
@@ -2818,49 +2816,6 @@ describe('getNativeTokenInfo', () => {
 
     const result = selectors.getNativeTokenInfo(
       mocks.state.metamask.networkConfigurationsByChainId,
-      mocks.state.metamask.provider,
-      '0x1337',
-    );
-    expect(result).toStrictEqual({
-      symbol: 'NATIVE',
-      decimals: 18,
-      name: 'Native Token',
-    });
-  });
-
-  it('provides native token from DApp provider', () => {
-    const mocks = arrange();
-    mocks.state.metamask.provider = {
-      chainId: '0x1337',
-      ticker: 'HELLO',
-      nativeCurrency: { decimals: 18 },
-      nickname: 'MyToken',
-    };
-
-    const result = selectors.getNativeTokenInfo(
-      mocks.state.metamask.networkConfigurationsByChainId,
-      mocks.state.metamask.provider,
-      '0x1337',
-    );
-    expect(result).toStrictEqual({
-      symbol: 'HELLO',
-      decimals: 18,
-      name: 'MyToken',
-    });
-  });
-
-  it('provides native token from DApp provider but with fallbacks for missing fields', () => {
-    const mocks = arrange();
-    mocks.state.metamask.provider = {
-      chainId: '0x1337',
-      ticker: undefined,
-      nativeCurrency: undefined,
-      nickname: undefined,
-    };
-
-    const result = selectors.getNativeTokenInfo(
-      mocks.state.metamask.networkConfigurationsByChainId,
-      mocks.state.metamask.provider,
       '0x1337',
     );
     expect(result).toStrictEqual({
@@ -2875,7 +2830,6 @@ describe('getNativeTokenInfo', () => {
 
     const result = selectors.getNativeTokenInfo(
       mocks.state.metamask.networkConfigurationsByChainId,
-      mocks.state.metamask.provider,
       '0x89',
     );
     expect(result).toStrictEqual({
@@ -2889,7 +2843,6 @@ describe('getNativeTokenInfo', () => {
     const mocks = arrange();
     const result = selectors.getNativeTokenInfo(
       mocks.state.metamask.networkConfigurationsByChainId,
-      mocks.state.metamask.provider,
       '0xFakeToken',
     );
     expect(result).toStrictEqual({
