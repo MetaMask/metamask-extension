@@ -200,7 +200,7 @@ exports[`Bridge renders the component with initial props 1`] = `
                       <img
                         alt="mUSD logo"
                         class="mm-avatar-token__token-image"
-                        src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xaca92e438df0b2401ff60da7e4337b687a2435da.png"
+                        src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xacA92E438df0B2401fF60dA7E4337B687a2435DA.png"
                       />
                     </div>
                     <div

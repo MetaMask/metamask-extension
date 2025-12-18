@@ -349,12 +349,12 @@ describe('Bridge selectors', () => {
 
       expect(result).toStrictEqual({
         address: '0xaca92e438df0b2401ff60da7e4337b687a2435da',
-        assetId: 'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da',
+        assetId: 'eip155:1/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
         balance: '0',
         chainId: 'eip155:1',
         decimals: 6,
         image:
-          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xaca92e438df0b2401ff60da7e4337b687a2435da.png',
+          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xacA92E438df0B2401fF60dA7E4337B687a2435DA.png',
         name: 'MetaMask USD',
         symbol: 'mUSD',
       });
