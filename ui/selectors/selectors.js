@@ -927,7 +927,7 @@ export const getTokensAcrossChainsByAccountAddressSelector = createSelector(
  *
  * @param {object} networkConfigurationsByChainId - Network configurations by chain ID
  * @param {string} chainId - Chain ID
- * @returns {object} Native token information
+ * @returns {{ symbol: string, decimals: number, name: string }} Native token information
  */
 export function getNativeTokenInfo(networkConfigurationsByChainId, chainId) {
   const networkConfig = networkConfigurationsByChainId?.[chainId];

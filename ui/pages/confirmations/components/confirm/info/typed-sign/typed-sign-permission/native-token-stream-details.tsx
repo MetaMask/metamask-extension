@@ -16,12 +16,6 @@ import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { NativeAmountRow } from './native-amount-row';
 import { DateAndTimeRow } from './date-and-time-row';
 
-type NativeTokenInfo = {
-  symbol: string;
-  decimals: number;
-  name: string;
-};
-
 /**
  * Component for displaying native token stream permission details.
  * Shows initial allowance, max allowance, stream start date, expiration date, stream rate, and daily available amount.
@@ -50,16 +44,8 @@ export const NativeTokenStreamDetails: React.FC<{
   // DAY is in milliseconds, so we divide by 1000 to get seconds
   const amountPerDay = new BigNumber(amountPerSecond).mul(DAY / 1000);
 
-  const { symbol, decimals } = useSelector(
-    (state: {
-      metamask: MetaMaskReduxState['metamask'] & {
-        provider: Record<string, unknown>;
-      };
-    }) =>
-      getNativeTokenInfo(
-        state.metamask.networkConfigurationsByChainId,
-        chainId,
-      ) as NativeTokenInfo,
+  const { symbol, decimals } = useSelector((state: MetaMaskReduxState) =>
+    getNativeTokenInfo(state.metamask.networkConfigurationsByChainId, chainId),
   );
 
   const tokenImageUrl = CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId];
