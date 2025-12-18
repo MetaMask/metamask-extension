@@ -85,6 +85,7 @@ export const KeyringControllerInit: ControllerInitFunction<
       ),
     );
   } else {
+    console.log('MIMO Adding keyring builders');
     additionalKeyrings.push(
       hardwareKeyringBuilderFactory(
         TrezorKeyring as unknown as KeyringClass,

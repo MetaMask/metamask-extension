@@ -88,6 +88,7 @@ export type HardwareWalletAdapter = {
   /**
    * Verify the device is ready for operations
    * (e.g., Ledger requires the Ethereum app to be open)
+   *
    * @returns true if ready
    * @throws {HardwareWalletError} if device is not ready (locked, wrong app, etc.)
    */

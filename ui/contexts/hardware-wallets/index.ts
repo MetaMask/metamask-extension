@@ -1,12 +1,19 @@
+// Split context exports (recommended - prevents unnecessary rerenders)
 export {
-  HardwareWalletContext,
   HardwareWalletProvider,
-} from './HardwareWalletContext';
+  useHardwareWallet,
+  useHardwareWalletConfig,
+  useHardwareWalletState,
+  useHardwareWalletActions,
+} from './HardwareWalletContext.split';
+
+// Legacy exports (for backward compatibility)
+export { HardwareWalletContext } from './HardwareWalletContext';
+
 export {
   HardwareWalletErrorProvider,
   useHardwareWalletError,
 } from './HardwareWalletErrorProvider';
-export { useHardwareWallet } from './useHardwareWallet';
 export { ConnectionState } from './connectionState';
 export * from './errors';
 export * from './types';

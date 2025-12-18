@@ -219,6 +219,7 @@ import type {
   TemporaryMessageDataType,
 } from './store';
 import { HardwareWalletError } from '@metamask/keyring-utils';
+import { KeyringType } from '@metamask/keyring-api';
 
 type CustomGasSettings = {
   gas?: string;
@@ -1419,6 +1420,16 @@ export function addNewAccount(
   };
 }
 
+export async function checkHardwareDeviceIsUnlocked(
+  deviceName: HardwareDeviceNames,
+  hdPath: string,
+): Promise<boolean> {
+  return await submitRequestToBackground<boolean>('checkHardwareStatus', [
+    deviceName,
+    hdPath,
+  ]);
+}
+
 export function checkHardwareStatus(
   deviceName: HardwareDeviceNames,
   hdPath: string,
@@ -1429,10 +1440,7 @@ export function checkHardwareStatus(
 
     let unlocked = false;
     try {
-      unlocked = await submitRequestToBackground<boolean>(
-        'checkHardwareStatus',
-        [deviceName, hdPath],
-      );
+      unlocked = await checkHardwareDeviceIsUnlocked(deviceName, hdPath);
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning(error));
@@ -6245,8 +6253,25 @@ export function getOpenMetamaskTabsIds(): ThunkAction<
   };
 }
 
+/**
+ * Attempts to create a transport for a Ledger hardware wallet.
+ *
+ * @returns A promise that resolves to a boolean indicating whether the transport was created successfully.
+ */
 export async function attemptLedgerTransportCreation() {
   return await submitRequestToBackground('attemptLedgerTransportCreation');
+}
+
+/**
+ * Gets the app name and version from the connected Ledger device.
+ *
+ * @returns A promise that resolves to an object containing the app name and version.
+ */
+export async function getLedgerAppNameAndVersion(): Promise<{
+  app: string;
+  name: string;
+}> {
+  return await submitRequestToBackground('getLedgerAppNameAndVersion');
 }
 
 /**
@@ -8263,4 +8288,14 @@ export function setHardwareSigningState(
     // Force Redux state update to ensure hardwareSigningState is immediately available
     await forceUpdateMetamaskState(dispatch);
   };
+}
+
+export async function getHdPathForHardwareKeyring(
+  deviceName: HardwareDeviceNames,
+): Promise<string> {
+  const hdPath = await submitRequestToBackground<string>(
+    'getHdPathForHardwareKeyring',
+    [deviceName],
+  );
+  return hdPath;
 }

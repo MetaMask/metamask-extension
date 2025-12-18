@@ -120,6 +120,7 @@ export default function useSubmitBridgeTransaction() {
         ),
       );
     } catch (e) {
+      console.log('[useSubmitBridgeTransaction] Error:', e);
       captureException(e);
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
         dispatch(setWasTxDeclined(true));

@@ -2,6 +2,7 @@ import {
   LedgerBridge,
   LedgerSignTypedDataParams,
   LedgerSignTypedDataResponse,
+  handleLedgerTransportError,
 } from '@metamask/eth-ledger-bridge-keyring';
 import { TransportStatusError } from '@ledgerhq/errors';
 import {
@@ -66,6 +67,7 @@ export class LedgerOffscreenBridge
   }
 
   attemptMakeApp(): Promise<boolean> {
+    console.log('[LedgerOffscreenBridge] attemptMakeApp');
     return this.#sendMessage(
       {
         action: LedgerAction.makeApp,
@@ -82,6 +84,12 @@ export class LedgerOffscreenBridge
       },
       { timeout: MESSAGE_TIMEOUT },
     );
+  }
+
+  getAppAndName(): Promise<{ app: string; name: string }> {
+    return this.#sendMessage({
+      action: LedgerAction.getAppAndName,
+    });
   }
 
   getPublicKey(params: { hdPath: string }): Promise<{
@@ -145,33 +153,43 @@ export class LedgerOffscreenBridge
         },
         (response) => {
           clearTimeout(responseTimeout);
+          console.log(
+            '[LedgerOffscreenBridge] #sendMessage response:',
+            response,
+          );
           if (response?.success) {
             resolve(response.payload || response.success);
           } else {
-            // Need to process the payload to get the error
-            // and then reject with the error
+            // Process the error from the offscreen document
             const error = response?.payload?.error;
 
+            // Reconstruct the original error from the serialized error
+            let reconstructedError: Error;
             if (
               error &&
               typeof error.statusCode === 'number' &&
               error.statusCode > 0
             ) {
-              // This is TransportStatusError, convert the SerializedLedgerError to a TransportStatusError
-              // TransportStatusError will regenerate the error message based on the statusCode
-              const transportStatusError = new TransportStatusError(
-                error.statusCode,
-              );
-              reject(transportStatusError);
+              // Reconstruct TransportStatusError
+              reconstructedError = new TransportStatusError(error.statusCode);
             } else if (error?.message) {
-              // Regenerate the error based on the SerializedLedgerError
-              const newError = new Error(error.message, {
+              // Reconstruct generic Error
+              reconstructedError = new Error(error.message, {
                 cause: error,
               });
-              reject(newError);
             } else {
-              // Fallback for unknown Ledger errors when error information is not available
-              reject(new Error('Unknown Ledger error occurred'));
+              // Fallback for unknown error structure
+              reconstructedError = new Error('Unknown Ledger error occurred');
+            }
+
+            // Use centralized error handler to convert to LedgerHardwareWalletError
+            try {
+              handleLedgerTransportError(
+                reconstructedError,
+                'Ledger operation failed',
+              );
+            } catch (ledgerError) {
+              reject(ledgerError);
             }
           }
         },

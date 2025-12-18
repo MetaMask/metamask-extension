@@ -30,7 +30,8 @@ import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import { Row } from '../layout';
 import {
   HardwareWalletError,
-  useHardwareWallet,
+  useHardwareWalletActions,
+  useHardwareWalletConfig,
   useHardwareWalletError,
 } from '../../../contexts/hardware-wallets';
 
@@ -69,7 +70,10 @@ export const BridgeCTAButton = ({
 
   const isTxSubmittable = useIsTxSubmittable();
 
-  const { isHardwareWalletAccount, ensureDeviceReady } = useHardwareWallet();
+  // Optimized: Only subscribe to config (no rerenders on connection state changes)
+  const { isHardwareWalletAccount } = useHardwareWalletConfig();
+  // Optimized: Only subscribe to actions (stable, never rerenders)
+  const { ensureDeviceReady } = useHardwareWalletActions();
 
   const { showErrorModal } = useHardwareWalletError();
 

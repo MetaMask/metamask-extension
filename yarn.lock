@@ -6486,7 +6486,7 @@ __metadata:
 
 "@metamask/eth-ledger-bridge-keyring@file:../accounts/packages/keyring-eth-ledger-bridge::locator=metamask-crx%40workspace%3A.":
   version: 11.1.2
-  resolution: "@metamask/eth-ledger-bridge-keyring@file:../accounts/packages/keyring-eth-ledger-bridge#../accounts/packages/keyring-eth-ledger-bridge::hash=2d6694&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/eth-ledger-bridge-keyring@file:../accounts/packages/keyring-eth-ledger-bridge#../accounts/packages/keyring-eth-ledger-bridge::hash=e95701&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@ethereumjs/rlp": "npm:^5.0.2"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -6495,7 +6495,7 @@ __metadata:
     "@metamask/eth-sig-util": "npm:^8.2.0"
     "@metamask/keyring-utils": "workspace:^"
     hdkey: "npm:^2.1.0"
-  checksum: 10/b799f3d89e18282dad261692f0d67cc5999b07eaa603b278aae2f689aa6d30bb72588f260e4d8a5f782bf03a4a5565bc2cba5c4d2c14f9712fa55bbb79f74bc9
+  checksum: 10/38a4784bf02af1761687b43d944f5c0bc28943a31e21f85c9c0e239dd5b647eec6dfee1a791629fdd60b9698fd71c2259988ea8164fcf432bf959ad26f103fc2
   languageName: node
   linkType: hard
 
@@ -7036,7 +7036,7 @@ __metadata:
 
 "@metamask/keyring-controller@file:../core/packages/keyring-controller::locator=metamask-crx%40workspace%3A.":
   version: 25.0.0
-  resolution: "@metamask/keyring-controller@file:../core/packages/keyring-controller#../core/packages/keyring-controller::hash=49970b&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/keyring-controller@file:../core/packages/keyring-controller#../core/packages/keyring-controller::hash=429103&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@metamask/base-controller": "npm:^9.0.0"
@@ -7053,7 +7053,7 @@ __metadata:
     immer: "npm:^9.0.6"
     lodash: "npm:^4.17.21"
     ulid: "npm:^2.3.0"
-  checksum: 10/7804d2f716316af499b46d9d8e3ab83f8895c457b2ca2969fa4ec81827087564773ef33646e8f26e8d4117b1554968bc164e9692d6d0ca9e9041230d47a46398
+  checksum: 10/e2261aeff19977262b6c1152eedd0739a9cdc2b90c6fa8d7e023ae6bc6a23606e4edad2a94920861b34f0c0733994a71b71dabfe8738923eef1ad5e6b45822be
   languageName: node
   linkType: hard
 

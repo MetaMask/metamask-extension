@@ -12,9 +12,11 @@ import { useDispatch } from 'react-redux';
 import { showModal, hideModal } from '../../store/actions';
 import { HARDWARE_WALLET_ERROR_MODAL_NAME } from '../../components/app/modals/hardware-wallet-error-modal';
 import {
-  HardwareWalletContext,
   HardwareWalletProvider,
-} from './HardwareWalletContext';
+  useHardwareWalletConfig,
+  useHardwareWalletState,
+  useHardwareWalletActions,
+} from './HardwareWalletContext.split';
 import { ConnectionStatus } from './types';
 import type { HardwareWalletError } from './errors';
 
@@ -61,7 +63,11 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const dispatch = useDispatch();
-  const hardwareWallet = useContext(HardwareWalletContext);
+
+  // Optimized: Use split hooks to subscribe only to what we need
+  const { isHardwareWalletAccount, walletType } = useHardwareWalletConfig();
+  const { connectionState } = useHardwareWalletState();
+  const { retry, clearError } = useHardwareWalletActions();
 
   // Store the current error to display (independent of connection state)
   const [displayedError, setDisplayedError] =
@@ -69,14 +75,6 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
   const isModalOpenRef = useRef(false);
   // Track the last error from connection state to detect resolution
   const lastConnectionErrorRef = useRef<HardwareWalletError | null>(null);
-
-  const {
-    connectionState,
-    isHardwareWalletAccount,
-    walletType,
-    retry,
-    clearError,
-  } = hardwareWallet;
 
   /**
    * Handle retry action from the modal

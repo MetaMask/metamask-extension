@@ -2917,6 +2917,8 @@ export default class MetamaskController extends EventEmitter {
       unlockHardwareWalletAccount: this.unlockHardwareWalletAccount.bind(this),
       attemptLedgerTransportCreation:
         this.attemptLedgerTransportCreation.bind(this),
+      getLedgerAppNameAndVersion: this.getLedgerAppNameAndVersion.bind(this),
+      getHdPathForHardwareKeyring: this.getHdPathForHardwareKeyring.bind(this),
 
       // qr hardware devices
       completeQrCodeScan:
@@ -5677,7 +5679,39 @@ export default class MetamaskController extends EventEmitter {
   async attemptLedgerTransportCreation() {
     return await this.#withKeyringForDevice(
       { name: HardwareDeviceNames.ledger },
-      async (keyring) => keyring.attemptMakeApp(),
+      async (keyring) => {
+        const result = await keyring.attemptMakeApp();
+        console.log('MIMO Result:', result);
+        return result;
+      },
+    );
+  }
+
+  async getLedgerAppNameAndVersion() {
+    return await this.#withKeyringForDevice(
+      { name: HardwareDeviceNames.ledger },
+      async (keyring) => {
+        const result = await keyring.getAppAndName();
+        console.log(
+          '[MetamaskController] Ledger app name and version:',
+          result,
+        );
+        return result;
+      },
+    );
+  }
+
+  async getHdPathForHardwareKeyring(keyringType) {
+    return await this.#withKeyringForDevice(
+      { name: keyringType },
+      (keyring) => keyring.hdPath,
+    );
+  }
+
+  async checkEthAppOpen() {
+    return await this.#withKeyringForDevice(
+      { name: HardwareDeviceNames.ledger },
+      async (keyring) => keyring.checkEthAppOpen(),
     );
   }
 

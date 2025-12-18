@@ -1,16 +1,23 @@
-import { LEDGER_USB_VENDOR_ID } from '../../../../shared/constants/hardware-wallets';
-import { attemptLedgerTransportCreation } from '../../../store/actions';
 import {
-  createHardwareWalletError,
-  ErrorCode,
-  type HardwareWalletError,
-} from '../errors';
+  HardwareDeviceNames,
+  LEDGER_USB_VENDOR_ID,
+} from '../../../../shared/constants/hardware-wallets';
+import {
+  attemptLedgerTransportCreation,
+  getHdPathForHardwareKeyring,
+  getLedgerAppNameAndVersion,
+} from '../../../store/actions';
+import { createHardwareWalletError, ErrorCode } from '../errors';
 import {
   DeviceEvent,
   HardwareWalletType,
   type HardwareWalletAdapter,
   type HardwareWalletAdapterOptions,
 } from '../types';
+import {
+  extractHardwareWalletErrorCode,
+  reconstructHardwareWalletError,
+} from '../rpcErrorUtils';
 
 const LOG_TAG = '[LedgerAdapter]';
 
@@ -62,6 +69,12 @@ export class LedgerAdapter implements HardwareWalletAdapter {
     }
   }
 
+  private async getHdPath(): Promise<string> {
+    const path = await getHdPathForHardwareKeyring(HardwareDeviceNames.ledger);
+    console.log(LOG_TAG, 'Hd path:', path);
+    return path;
+  }
+
   /**
    * Connect to Ledger device
    * Verifies device is physically connected AND Ethereum app is open
@@ -91,17 +104,12 @@ export class LedgerAdapter implements HardwareWalletAdapter {
         );
       }
 
-      // Step 3: Verify Ethereum app is open
-      // attemptLedgerTransportCreation calls keyring.attemptMakeApp()
-      // which throws native HardwareWalletError instances from @metamask/keyring-utils
-      const result = await attemptLedgerTransportCreation();
-      console.log(LOG_TAG, 'attemptLedgerTransportCreation result:', result);
+      // Step 3: Attempt to create a transport for the device
+      await attemptLedgerTransportCreation();
 
       // Mark as connected - device is present AND app is open
       this.connected = true;
       this.currentDeviceId = deviceId;
-
-      console.log(LOG_TAG, 'Device connected and Ethereum app verified');
     } catch (error) {
       console.error(LOG_TAG, 'Connection error:', error);
 
@@ -109,16 +117,11 @@ export class LedgerAdapter implements HardwareWalletAdapter {
       this.connected = false;
       this.currentDeviceId = null;
 
-      // The error from keyring is already a HardwareWalletError with proper code
-      // Call appropriate callbacks based on error code
-      if (
-        error &&
-        typeof error === 'object' &&
-        'code' in error &&
-        typeof error.code === 'string'
-      ) {
-        const errorCode = error.code as ErrorCode;
+      // Extract the error code from the JsonRpcError
+      const errorCode = extractHardwareWalletErrorCode(error);
 
+      if (errorCode) {
+        // Call appropriate callbacks based on error code
         if (
           errorCode === ErrorCode.AUTH_LOCK_001 ||
           errorCode === ErrorCode.AUTH_LOCK_002
@@ -129,8 +132,12 @@ export class LedgerAdapter implements HardwareWalletAdapter {
         }
       }
 
-      // Re-throw the original error from keyring - it's already properly formatted
-      throw error;
+      // Reconstruct and re-throw as a proper HardwareWalletError
+      const hwError = reconstructHardwareWalletError(
+        error,
+        HardwareWalletType.LEDGER,
+      );
+      throw hwError;
     }
   }
 
@@ -215,38 +222,28 @@ export class LedgerAdapter implements HardwareWalletAdapter {
       // which throws native HardwareWalletError instances from @metamask/keyring-utils
       // These errors already have proper codes like AUTH_LOCK_001, DEVICE_STATE_001, etc.
       console.log(LOG_TAG, 'Calling attemptLedgerTransportCreation');
-      await attemptLedgerTransportCreation();
+      const result = await attemptLedgerTransportCreation();
+      console.log(LOG_TAG, 'Result:', result);
+
+      // Get the app name and version from the Ledger device
+      const appInfo = await getLedgerAppNameAndVersion();
+      console.log(LOG_TAG, 'Ledger app info:', appInfo);
 
       // If successful, device is ready with Ethereum app open
       console.log(LOG_TAG, 'Device ready verified successfully');
-      return true;
+      return Boolean(result);
     } catch (error) {
       console.error(LOG_TAG, 'Error verifying device ready:', error);
-      console.log(LOG_TAG, 'Error type:', typeof error);
-      console.log(LOG_TAG, 'Error code:', (error as HardwareWalletError)?.code);
-      console.log(
-        LOG_TAG,
-        'Error userActionable:',
-        (error as HardwareWalletError)?.userActionable,
-      );
-      console.log(
-        LOG_TAG,
-        'Error has code property:',
-        'code' in (error as object),
-      );
 
-      // The error from keyring is already a HardwareWalletError with proper code
-      // Emit appropriate device events based on the error code for UI state updates
-      if (
-        error &&
-        typeof error === 'object' &&
-        'code' in error &&
-        typeof error.code === 'string'
-      ) {
-        const errorCode = error.code as ErrorCode;
-        console.log(LOG_TAG, 'Mapped error code:', errorCode);
+      // Extract the error code from the JsonRpcError
+      // When errors cross the RPC boundary, HardwareWalletError properties
+      // are serialized into JsonRpcError.data
+      const errorCode = extractHardwareWalletErrorCode(error);
 
-        // Emit events so UI can update connection state
+      console.log(LOG_TAG, 'Extracted error code:', errorCode);
+
+      if (errorCode) {
+        // Emit appropriate device events based on the error code for UI state updates
         if (
           errorCode === ErrorCode.AUTH_LOCK_001 ||
           errorCode === ErrorCode.AUTH_LOCK_002
@@ -263,7 +260,6 @@ export class LedgerAdapter implements HardwareWalletAdapter {
             error: error as unknown as Error,
           });
         } else if (errorCode === ErrorCode.DEVICE_STATE_003) {
-          // Device disconnected
           console.log(LOG_TAG, 'Emitting DISCONNECTED event');
           this.options.onDeviceEvent({
             event: DeviceEvent.DISCONNECTED,
@@ -272,9 +268,19 @@ export class LedgerAdapter implements HardwareWalletAdapter {
         }
       }
 
-      // Re-throw the original error from keyring - it's already properly formatted
-      console.log(LOG_TAG, 'Re-throwing error');
-      throw error;
+      // Reconstruct the HardwareWalletError before re-throwing
+      // This ensures consumers of this error get a proper HardwareWalletError instance
+      const hwError = reconstructHardwareWalletError(
+        error,
+        HardwareWalletType.LEDGER,
+      );
+
+      console.log(LOG_TAG, 'Re-throwing reconstructed error:', {
+        code: hwError.code,
+        userActionable: hwError.userActionable,
+      });
+
+      throw hwError;
     }
   }
 }
