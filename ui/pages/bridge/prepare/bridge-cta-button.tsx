@@ -28,6 +28,11 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import { Row } from '../layout';
+import {
+  HardwareWalletError,
+  useHardwareWallet,
+  useHardwareWalletError,
+} from '../../../contexts/hardware-wallets';
 
 export const BridgeCTAButton = ({
   onFetchNewQuotes,
@@ -63,6 +68,10 @@ export const BridgeCTAButton = ({
   const wasTxDeclined = useSelector(getWasTxDeclined);
 
   const isTxSubmittable = useIsTxSubmittable();
+
+  const { isHardwareWalletAccount, ensureDeviceReady } = useHardwareWallet();
+
+  const { showErrorModal } = useHardwareWalletError();
 
   const label = useMemo(() => {
     if (wasTxDeclined) {
@@ -101,6 +110,9 @@ export const BridgeCTAButton = ({
     }
 
     if (isTxSubmittable || isTxAlertPresent) {
+      if (isHardwareWalletAccount) {
+        return 'hardwareWalletStartTransactionFlow';
+      }
       return 'swap';
     }
 
@@ -119,6 +131,7 @@ export const BridgeCTAButton = ({
     needsDestinationAddress,
     activeQuote,
     isNoQuotesAvailable,
+    isHardwareWalletAccount,
   ]);
 
   // Label for the secondary button that re-starts quote fetching
@@ -128,6 +141,19 @@ export const BridgeCTAButton = ({
     }
     return undefined;
   }, [wasTxDeclined, isQuoteExpired]);
+
+  // useEffect(() => {
+  //   showErrorModal(
+  //     new HardwareWalletError('test', {
+  //       code: ErrorCode.AUTH_LOCK_001,
+  //       severity: Severity.ERROR,
+  //       category: Category.AUTHENTICATION,
+  //       retryStrategy: RetryStrategy.RETRY,
+  //       userActionable: true,
+  //       userMessage: 'test',
+  //     }),
+  //   );
+  // }, []);
 
   return (activeQuote || needsDestinationAddress) && !secondaryButtonLabel ? (
     <Button
@@ -145,6 +171,30 @@ export const BridgeCTAButton = ({
         }
 
         if (activeQuote && isTxSubmittable && !isSubmitting) {
+          try {
+            if (isHardwareWalletAccount) {
+              console.log('[BridgeCTAButton] Calling ensureDeviceReady');
+              await ensureDeviceReady();
+              console.log('[BridgeCTAButton] ensureDeviceReady succeeded');
+            }
+          } catch (error) {
+            console.log('[BridgeCTAButton] Error caught:', error);
+            console.log('[BridgeCTAButton] Error type:', typeof error);
+            console.log(
+              '[BridgeCTAButton] Error instanceof HardwareWalletError:',
+              error instanceof HardwareWalletError,
+            );
+            console.log(
+              '[BridgeCTAButton] Error code:',
+              (error as HardwareWalletError)?.code,
+            );
+            console.log(
+              '[BridgeCTAButton] Error userActionable:',
+              (error as HardwareWalletError)?.userActionable,
+            );
+            showErrorModal(error as HardwareWalletError);
+            return;
+          }
           try {
             // We don't need to worry about setting to false if the tx submission succeeds
             // because we route immediately to Activity list page
