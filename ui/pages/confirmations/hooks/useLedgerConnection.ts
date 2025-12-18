@@ -47,9 +47,6 @@ const useLedgerConnection = () => {
         webHidConnectedStatus !== WebHIDConnectedStatuses.connected
       ) {
         const devices = await window.navigator?.hid?.getDevices();
-        devices?.forEach((device) => {
-          console.log('device', device);
-        });
         const webHidIsConnected = devices?.some(
           (device) => device.vendorId === Number(LEDGER_USB_VENDOR_ID),
         );
