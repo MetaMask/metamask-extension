@@ -102,7 +102,9 @@ export const Toast = ({
         data-testid={dataTestId}
         {...contentProps}
       >
-        {startAdornment}
+        {startAdornment && (
+          <Box className="flex-shrink-0">{startAdornment}</Box>
+        )}
         <Box>
           <Text
             className="toast-text"
