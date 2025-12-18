@@ -47,6 +47,9 @@ describe('Confirmation Redesign Token Send', function () {
       });
 
       it('Sends a type 2 transaction (EIP1559)', async function () {
+        if (process.env.RUN_ATTEMPT === '1') {
+          throw new Error('forced failure for single test');
+        }
         await withTransactionEnvelopeTypeFixtures(
           this.test?.fullTitle(),
           TransactionEnvelopeType.feeMarket,
