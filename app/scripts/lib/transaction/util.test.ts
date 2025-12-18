@@ -61,6 +61,7 @@ const TRANSACTION_PARAMS_MOCK: TransactionParams = {
 
 const TRANSACTION_OPTIONS_MOCK: AddTransactionOptions = {
   actionId: 'mockActionId',
+  requestId: 'mockActionId',
   networkClientId: 'mockNetworkClientId',
   origin: 'mockOrigin',
   requireApproval: false,
