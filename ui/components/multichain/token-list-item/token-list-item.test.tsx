@@ -62,6 +62,12 @@ describe('TokenListItem', () => {
     openTabSpy = jest.spyOn(global.platform, 'openTab');
     (mockGetIntlLocale as unknown as jest.Mock).mockReturnValue('en-US');
   });
+
+  beforeEach(() => {
+    // Clear spy call history so each test starts fresh
+    openTabSpy.mockClear();
+  });
+  
   const props = {
     onClick: jest.fn(),
     tokenImage: '',
