@@ -4,21 +4,6 @@ import { EXTENSION_MESSAGES } from '../../shared/constants/messages';
 
 const isSidepanelEnabled = process.env.IS_SIDEPANEL === 'true';
 
-const METHODS_REQUIRING_UI = [
-  'eth_sendTransaction',
-  'eth_signTransaction',
-  'eth_sign',
-  'personal_sign',
-  'eth_signTypedData',
-  'eth_signTypedData_v3',
-  'eth_signTypedData_v4',
-  'wallet_addEthereumChain',
-  'wallet_switchEthereumChain',
-  'wallet_requestPermissions',
-  'eth_requestAccounts',
-  'wallet_requestSnaps',
-];
-
 const notifyBackgroundToOpenSidepanel = () => {
   browser.runtime
     .sendMessage({ type: EXTENSION_MESSAGES.OPEN_SIDEPANEL })
@@ -41,8 +26,8 @@ export const setupSidepanelListener = () => {
     if (event.source !== window || event.data?.target !== CONTENT_SCRIPT) {
       return;
     }
-    const method = event.data?.data?.data?.method;
-    if (method && METHODS_REQUIRING_UI.includes(method)) {
+    // Send for any RPC call - background will handle appropriately
+    if (event.data?.data?.data?.method) {
       notifyBackgroundToOpenSidepanel();
     }
   });

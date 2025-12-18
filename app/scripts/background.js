@@ -1585,22 +1585,10 @@ async function triggerUi() {
   ) {
     uiIsTriggering = true;
     try {
-      // Skip in E2E tests until tests have been updated to use sidepanel
-      if (!inTest && isSidepanelEnabled) {
-        // Check if user prefers sidepanel - if so, content script already triggered
-        // sidepanel opening with user gesture context, so skip notification window
-        const sidepanelPreferred =
-          controller?.preferencesController?.state?.preferences
-            ?.useSidePanelAsDefault ?? false;
-
-        if (sidepanelPreferred && browser?.sidePanel?.open) {
-          // Content script already sent OPEN_SIDEPANEL_IF_PREFERRED message
-          // which opens sidepanel with user gesture context - skip notification window
-          return;
-        }
-      }
-
-      // Open notification window
+      // Open notification window as fallback
+      // Note: If user prefers sidepanel, content script already tried to open it
+      // via OPEN_SIDEPANEL message. If successful, sidePanelIsOpen would be true
+      // and we wouldn't reach here. If it failed, this ensures UI is still shown.
       const currentPopupId = controller.appStateController.getCurrentPopupId();
       await notificationManager.showPopup(
         (newPopupId) =>
