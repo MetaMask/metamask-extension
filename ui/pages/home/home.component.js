@@ -88,7 +88,6 @@ function shouldCloseNotificationPopup({
     !isSigningQRHardwareTransaction &&
     !hardwareSigningState;
 
-  debugger;
   console.log('[shouldCloseNotificationPopup]', {
     isNotification,
     totalUnapprovedCount,

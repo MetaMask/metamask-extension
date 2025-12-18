@@ -104,7 +104,6 @@ export function useTransactionConfirm() {
     // transaction confirmation screen is a full screen modal that appear over the app and will be dismissed after transaction approved
     // navigate to shield settings page first before approving transaction to wait for subscription creation there
     handleShieldSubscriptionApprovalTransactionAfterConfirm(newTransactionMeta);
-    debugger;
     const closeWindow = !isLedgerAccount;
     console.log(
       '[useTransactionConfirm] Approving transaction, isLedgerAccount:',

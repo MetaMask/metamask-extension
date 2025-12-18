@@ -82,13 +82,11 @@ export const useConfirmationSubmit = () => {
     }, [onAddEthereumChain, navigate]);
 
   const submitApproval = useCallback(async (): Promise<SubmissionResult> => {
-    debugger;
     if (!currentConfirmation) {
       return { success: false, retryable: false };
     }
 
     try {
-      debugger;
       const deleteAfterResult = Boolean(isLedgerAccount);
       await dispatch(
         resolvePendingApproval(currentConfirmation.id, undefined, {

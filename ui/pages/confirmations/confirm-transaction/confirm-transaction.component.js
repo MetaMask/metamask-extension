@@ -161,7 +161,12 @@ const ConfirmTransaction = () => {
         if (origin !== ORIGIN_METAMASK) {
           dispatch(getContractMethodData(data, use4ByteResolution));
         }
-      } else if (prevTransactionId && !transactionId && !totalUnapproved && !hardwareSigningState) {
+      } else if (
+        prevTransactionId &&
+        !transactionId &&
+        !totalUnapproved &&
+        !hardwareSigningState
+      ) {
         await dispatch(setDefaultHomeActiveTabName('activity'));
         navigate(DEFAULT_ROUTE, { replace: true });
       } else if (
