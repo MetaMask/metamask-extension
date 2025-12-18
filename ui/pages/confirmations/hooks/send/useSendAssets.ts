@@ -21,6 +21,10 @@ export const useSendAssets = (): SendAssets => {
     // When BFT is OFF, filter out non-EVM tokens
     if (!useExternalServices) {
       const filteredTokens = tokens.filter((token) => {
+        // Skip tokens without a chainId
+        if (!token.chainId) {
+          return false;
+        }
         // chainId is Hex for EVM chains or CaipChainId for non-EVM chains
         return isEvmChainId(token.chainId as CaipChainId | Hex);
       });
