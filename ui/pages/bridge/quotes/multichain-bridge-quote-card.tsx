@@ -25,6 +25,7 @@ import {
   getQuoteRequest,
   getIsToOrFromNonEvm,
   getIsStxEnabled,
+  getValidationErrors,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { formatNetworkFee, formatTokenAmount } from '../utils/quote';
@@ -86,6 +87,7 @@ export const MultichainBridgeQuoteCard = ({
   const slippage = useSelector(getSlippage);
   const isSolanaSwap = useSelector(getIsSolanaSwap);
   const dispatch = useDispatch();
+  const { isEstimatedReturnLow } = useSelector(getValidationErrors);
 
   const isToOrFromNonEvm = useSelector(getIsToOrFromNonEvm);
   const gasFeesSponsoredNetworkEnabled = useSelector(
@@ -207,8 +209,9 @@ export const MultichainBridgeQuoteCard = ({
               <Text
                 variant={TextVariant.bodySm}
                 color={getTimerColor(secondsUntilNextRefresh)}
+                style={{ width: 32 }}
               >
-                {`(0:${secondsUntilNextRefresh < 10 ? '0' : ''}${secondsUntilNextRefresh})`}
+                {`0:${secondsUntilNextRefresh < 10 ? '0' : ''}${secondsUntilNextRefresh}`}
               </Text>
             )}
 
@@ -327,7 +330,11 @@ export const MultichainBridgeQuoteCard = ({
               <Row gap={1} data-testid="network-fees-included">
                 <Text
                   variant={TextVariant.bodySm}
-                  color={TextColor.textAlternative}
+                  color={
+                    isEstimatedReturnLow
+                      ? TextColor.warningDefault
+                      : TextColor.textAlternative
+                  }
                   style={{ textDecoration: 'line-through' }}
                 >
                   {activeQuote.includedTxFees?.valueInCurrency
@@ -336,13 +343,17 @@ export const MultichainBridgeQuoteCard = ({
                         currency,
                       )
                     : formatNetworkFee(
-                        activeQuote.totalNetworkFee?.valueInCurrency,
+                        activeQuote.gasFee.effective?.valueInCurrency,
                         currency,
                       )}
                 </Text>
                 <Text
                   variant={TextVariant.bodySm}
-                  color={TextColor.textAlternative}
+                  color={
+                    isEstimatedReturnLow
+                      ? TextColor.warningDefault
+                      : TextColor.textAlternative
+                  }
                 >
                   {t('swapGasFeesIncluded')}
                 </Text>
@@ -351,11 +362,15 @@ export const MultichainBridgeQuoteCard = ({
             {!shouldShowGasSponsored && !activeQuote.quote.gasIncluded && (
               <Text
                 variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
+                color={
+                  isEstimatedReturnLow
+                    ? TextColor.warningDefault
+                    : TextColor.textAlternative
+                }
                 data-testid="network-fees"
               >
                 {formatNetworkFee(
-                  activeQuote.totalNetworkFee?.valueInCurrency,
+                  activeQuote.gasFee.effective?.valueInCurrency,
                   currency,
                 )}
               </Text>

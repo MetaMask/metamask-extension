@@ -7,6 +7,131 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.13.1]
+
+### Fixed
+
+- Extension will automatically restart after updating in Chromium browsers older than v143 that are affected by a bug causing broken MV3 updates (#38867)
+
+## [13.13.0]
+
+### Added
+
+- feat: added metrics for pna25 banner (#38403)
+- Adds event tracing for hide token. (#38358)
+- Enable tx submission before swap quotes are loaded (#37963)
+- Adds shield rewards modal (#38379)
+- Sidepanel enabled (#38550)
+- Link/claims rewards points from shield subscription (#38489)
+- Updated claims navigation and UI (#38380)
+- Bumped `@metamask/seedless-onboarding-controller` to v7.1.0 (#38499)
+- Add inactive state for shield banner animation asset (#38515)
+- Updated `@metamask/shield-controller` to `3.1.0` (#38472)
+- Add max values to Tron resources (#38518)
+- Update text for shield transaction not covered (#38511)
+- Add change payment method from crypto -> crypto / crypto -> card (in paused state only) (#38165)
+- Remove smart transaction status page (#38460)
+- Estimate rewards points for shield subscription (#38462)
+- Design upgrades for Confirmations (#38399)
+- Fix amount component to be only accept numeric inputs (#38235)
+- Update shield coverage alert icon (#38343)
+- Support gasless crosschain swaps with STX and eth_sendBundle (#38325)
+- Improve network logo and enable native token logo for Cronos (chain ID 25) (#38311)
+- Extend metrics with `transaction_hash` if it's opted in (#38181)
+- Introduces metametrics banner (#38112)
+- Added the edge case of insufficient balance quotes for gas fees sponsored swap (#38353)
+- Added new network client `megaeth-testnet-v2` and removed network client `megaeth-testnet` (#38426)
+- Bump assets controllers to v92 (#38359)
+- Bump assets controllers to v93 (#38521)
+- Refresh gator permissions after revoke state is changed (#38427)
+- Advanced permissions are now ordered by startTime (#37858)
+
+### Fixed
+
+- Fixed the migration script for adding MegaETH testnet v2 (#38573)
+- Fixed swap transactions not appearing in activity list when Solana account is selected (#38529)
+- Layout inconsistencies (#38535)
+- Fixed bug where the EVM addresses were not checksummed (#38539)
+- Layout inconsistencies - account pages (#38533)
+- Fix cannot convert undefined or null to object sentry (#38471)
+- Permission page footer background (#38497)
+- Removed danger icon from protect wallet modal (#38508)
+- Fixed recipient modal overflow when account names are long (#38454)
+- Fix scroll issue on network modal (#38439)
+- Fixed an issue where `active` in `snap_getClientStatus` would be `undefined` (#38479)
+- When Network manager selection is Solana and a new popular network is added, the defi and NFTs tabs are missing (#38419)
+- Fix speed estimation to factor chain transacting on rather than selected network (#38342)
+- Remove 0x0..dead address from blocker alerts (#38345)
+- Improved responsiveness of revoke button in Gator permissions by adding immediate UI feedback (#38184)
+- Update recipient placeholder text in send (#38236)
+- Improve error message when UI can't retrieve state from background process (#38564)
+- Increase timeout for UI calls to background from 10s to 16s, potentially preventing UI crash on very slow devices (#38561)
+- Account list padding (#38492)
+
+## [13.12.2]
+
+### Fixed
+
+- Increase timeout for UI calls to background from 10s to 16s, potentially preventing UI crash on very slow devices (#38561)
+- Improve error message when UI can't retrieve state from background process (#38564)
+
+## [13.12.1]
+
+### Fixed
+
+- Adds bounds to currencyRates (#38591)
+
+## [13.12.0]
+
+### Added
+
+- Add subscription retry button to notify server check when user balance is sufficient (#36847)
+- Align shield illustration to bottom in popup mode (#38340)
+- Default to BIP-44 UI for account & wallet details (#37984)
+- Shield plan save last payment detail everytime user select token (#38314)
+- Truncated site name (#38033)
+- Updated text and alignment on shield coverage alert modal (#38286)
+- Adds UI for handling for api errors on shield plan page (#38090)
+- Removed legacy funding card components in preparation for improved empty state experience (#37290)
+- Enforces dark mode on the active membership banner (#38204)
+- Adds theme-based toggling of the Rive shield icon’s Dark state to switch colors for light/dark modes (#38223)
+- Integrated balance empty state for zero-balance accounts on mainnet networks (#37196)
+- Shows a site if it has no connection but has permissions granted to it (#36811)
+- Confirmations for sidepanel (#38375)
+- Show minimum token amount required on payment methods (#38290)
+- Adds MegaETH Mainnet to FEATURED_RPCS (#38369)
+- Remove sidepanel feature (#38532)
+
+### Fixed
+
+- Optimizes subscription polling (#38378)
+- Don't show shield coverage if basic functionality is off (#38351)
+- Fix forgot password when basic functionality is turned off (#38344)
+- Fix api error show in shield subscription start with card checkout tab close manually (#38308)
+- Fixed a bug where swapping from the Mon token page suggested ETH instead of MON when all Popular Networks were enabled (#38349)
+  Added missing MONAD (143) and SEI (1329) chain IDs to the
+  bridge-controller to ensure correct chain resolution
+- Fixed a bug where the tron icon was not showing in the activity list details modal (#38264)
+- Fixed balance empty state incorrectly showing when price conversion data is unavailable but tokens are present (#38284)
+- Add `signRewardsMessage` method ([#566](https://github.com/MetaMask/snap-bitcoin-wallet/pull/566)) (#38315)
+- Show correct balance values in fiat for gas tokens (#38249)
+- Added ability to view Gator permissions filtered by specific site origin (#37736)
+- Fixed the Lattice hardware wallet flow to reuse cached credentials instead of asking users to reconnect every time (#37781)
+- Reverts "refactor: extract confirmation handler" (#38189)
+- Custom swap slippage validation allows invalid inputs (#38066)
+- Changed minimum received amount to be the token amount (#38150)
+- Removed the `isTestEnvironment` checks from all Rive animation–related files (#38110)
+- Updated useTheme hook and logo for unlock page (#38002)
+- Increase background connection unresponsive timeout (#38322)
+- Fix fullscreen swap confirmation (#38446)
+- Fix layout inconsistencies (#38416)
+- Fix confirmation layout in sidepanel (#38410)
+- Fix `manage permission` route (#38485)
+- Fixes layout inconsistencies while in fullscreen mode (#38483)
+- Fix shield confirmation transaction back handle in popup mode (#38502)
+- Fix asset page layout (#38537)
+- Fix navigation for the backup srp settings (#38544)
+
 ## [13.11.2]
 
 ### Fixed
@@ -1340,7 +1465,12 @@ authorized by the user.` error until the user fully revoked dapp
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.11.2...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.13.1...HEAD
+[13.13.1]: https://github.com/MetaMask/metamask-extension/compare/v13.13.0...v13.13.1
+[13.13.0]: https://github.com/MetaMask/metamask-extension/compare/v13.12.2...v13.13.0
+[13.12.2]: https://github.com/MetaMask/metamask-extension/compare/v13.12.1...v13.12.2
+[13.12.1]: https://github.com/MetaMask/metamask-extension/compare/v13.12.0...v13.12.1
+[13.12.0]: https://github.com/MetaMask/metamask-extension/compare/v13.11.2...v13.12.0
 [13.11.2]: https://github.com/MetaMask/metamask-extension/compare/v13.11.1...v13.11.2
 [13.11.1]: https://github.com/MetaMask/metamask-extension/compare/v13.11.0...v13.11.1
 [13.11.0]: https://github.com/MetaMask/metamask-extension/compare/v13.10.4...v13.11.0

@@ -1,5 +1,5 @@
 import { ChainId, formatChainIdToCaip } from '@metamask/bridge-controller';
-import { renderHookWithProvider } from '../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
@@ -39,7 +39,7 @@ describe('useTokenAlerts', () => {
   it('should set token alert when toChain is Solana', async () => {
     const mockStoreState = createBridgeMockStore({
       featureFlagOverrides: {
-        extensionConfig: {
+        bridgeConfig: {
           chains: {
             [formatChainIdToCaip(ChainId.SOLANA)]: {
               isActiveSrc: true,

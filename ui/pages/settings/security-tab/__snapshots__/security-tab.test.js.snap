@@ -141,7 +141,7 @@ exports[`Security Tab should match snapshot 1`] = `
             class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
             data-testid="reveal-seed-words"
           >
-            Back up Secret Recovery Phrase
+            Reveal Secret Recovery Phrase
           </button>
         </div>
       </div>

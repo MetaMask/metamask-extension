@@ -1,5 +1,5 @@
 import mockState from '../../../../../../../test/data/mock-state.json';
-import { renderHookWithProvider } from '../../../../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
 import { useFourByte } from './useFourByte';
 
 const DATA_MOCK = '0xd0e30db0';

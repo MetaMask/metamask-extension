@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { JsonRpcResponseStruct } from '@metamask/utils';
 
 import { flushPromises } from '../../../../test/lib/timer-helpers';
@@ -7,7 +8,7 @@ import { DappSwapMiddlewareRequest } from './dapp-swap-util';
 
 const REQUEST_MOCK = {
   params: [],
-  id: '',
+  id: '1234567',
   jsonrpc: '2.0' as const,
   origin: 'test.com',
   networkClientId: 'networkClientId',
@@ -20,7 +21,11 @@ const getNetworkConfigurationByNetworkClientId = jest.fn();
 const createMiddleware = (
   args: {
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    dappSwapMetricsFlag?: { enabled: boolean; bridge_quote_fees: number };
+    dappSwapMetricsFlag?: {
+      enabled: boolean;
+      bridge_quote_fees: number;
+      origins: string[];
+    };
   } = {},
 ) => {
   const middlewareFunction = createDappSwapMiddleware({
@@ -28,7 +33,11 @@ const createMiddleware = (
     setDappSwapComparisonData,
     getNetworkConfigurationByNetworkClientId,
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    dappSwapMetricsFlag: { enabled: true, bridge_quote_fees: 250 },
+    dappSwapMetricsFlag: {
+      enabled: true,
+      bridge_quote_fees: 250,
+      origins: ['https://metamask.github.io'],
+    },
     ...args,
   });
   return { middlewareFunction };
@@ -60,7 +69,11 @@ describe('DappSwapMiddleware', () => {
     fetchQuotes.mockReturnValueOnce(mockBridgeQuotes);
     const { middlewareFunction } = createMiddleware({
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      dappSwapMetricsFlag: { enabled: false, bridge_quote_fees: 250 },
+      dappSwapMetricsFlag: {
+        enabled: false,
+        bridge_quote_fees: 250,
+        origins: ['https://metamask.github.io'],
+      },
     });
 
     const req = {
@@ -68,7 +81,7 @@ describe('DappSwapMiddleware', () => {
       method: 'eth_sendTransaction',
       origin: 'https://metamask.github.io',
       securityAlertResponse: {
-        securityAlertId: '123',
+        securityAlertId: '1234567',
       },
       params: [
         {
@@ -105,7 +118,7 @@ describe('DappSwapMiddleware', () => {
       method: 'eth_sendTransaction',
       origin: 'https://metamask.github.io',
       securityAlertResponse: {
-        securityAlertId: '123',
+        securityAlertId: '1234567',
       },
       params: [
         {
@@ -151,7 +164,7 @@ describe('DappSwapMiddleware', () => {
       method: 'eth_sendTransaction',
       origin: 'https://metamask.github.io',
       securityAlertResponse: {
-        securityAlertId: '123',
+        securityAlertId: '1234567',
       },
       params: [
         {
@@ -171,13 +184,13 @@ describe('DappSwapMiddleware', () => {
 
     await flushPromises();
 
-    expect(setDappSwapComparisonData).toHaveBeenCalledWith('123', {
+    expect(setDappSwapComparisonData).toHaveBeenCalledWith('1234567', {
       commands: '0x100604',
       error: 'Error fetching bridge quotes: fail',
     });
   });
 
-  it('capture error if request if not valid batch request', async () => {
+  it('capture error if request is not valid batch request', async () => {
     fetchQuotes = jest.fn().mockRejectedValue(new Error('fail'));
     getNetworkConfigurationByNetworkClientId.mockReturnValueOnce({
       chainId: '0x1',
@@ -190,7 +203,7 @@ describe('DappSwapMiddleware', () => {
       method: 'eth_sendTransaction',
       origin: 'https://metamask.github.io',
       securityAlertResponse: {
-        securityAlertId: '123',
+        securityAlertId: '1234567',
       },
       params: [
         {
@@ -215,10 +228,50 @@ describe('DappSwapMiddleware', () => {
 
     await flushPromises();
 
-    expect(setDappSwapComparisonData).toHaveBeenCalledWith('123', {
+    expect(setDappSwapComparisonData).toHaveBeenCalledWith('1234567', {
       commands: '0x100604',
       error:
-        'Error fetching bridge quotes: Error: Error getting data from swap: invalid batch transaction, invalid command',
+        'Error fetching bridge quotes: Error getting data from swap: invalid batch transaction, invalid command',
     });
+  });
+
+  it('does not fetch quotes if origin is not in the list of allowed origins', async () => {
+    fetchQuotes.mockReturnValueOnce(mockBridgeQuotes);
+    const { middlewareFunction } = createMiddleware({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      dappSwapMetricsFlag: {
+        enabled: true,
+        bridge_quote_fees: 250,
+        origins: ['https://metamask.github.io'],
+      },
+    });
+
+    const req = {
+      ...REQUEST_MOCK,
+      method: 'eth_sendTransaction',
+      origin: 'https://test.com',
+      securityAlertResponse: {
+        securityAlertId: '1234567',
+      },
+      params: [
+        {
+          data: '0x3593564c000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000068f0dd1b0000000000000000000000000000000000000000000000000000000000000003100604000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000044000000000000000000000000000000000000000000000000000000000000004c000000000000000000000000000000000000000000000000000000000000003c0000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000003070b0e000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000022000000000000000000000000000000000000000000000000000000000000002a000000000000000000000000000000000000000000000000000000000000001a000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000005af3107a4000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000af88d065e77c8cc2239327c5edb3a432268e583100000000000000000000000000000000000000000000000000000000000001f4000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000060000000000000000000000000af88d065e77c8cc2239327c5edb3a432268e5831000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000060000000000000000000000000af88d065e77c8cc2239327c5edb3a432268e58310000000000000000000000007ffc3dbf3b2b50ff3a1d5523bc24bb5043837b1400000000000000000000000000000000000000000000000000000000000000190000000000000000000000000000000000000000000000000000000000000060000000000000000000000000af88d065e77c8cc2239327c5edb3a432268e5831000000000000000000000000178239802520a9c99dcbd791f81326b70298d62900000000000000000000000000000000000000000000000000000000000601470c',
+          from: '0x12312312312312',
+          chainId: '1',
+          calls: [],
+        },
+      ],
+      networkClientId: 'networkClientId',
+    };
+
+    await middlewareFunction(
+      req as unknown as DappSwapMiddlewareRequest<(string | { to: string })[]>,
+      { ...JsonRpcResponseStruct.TYPE },
+      () => undefined,
+    );
+
+    await flushPromises();
+
+    expect(fetchQuotes).not.toHaveBeenCalled();
   });
 });

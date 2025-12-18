@@ -12,6 +12,7 @@ import { AuthenticationController } from '@metamask/profile-sync-controller';
 import {
   AccountsControllerGetSelectedAccountAction,
   AccountsControllerListAccountsAction,
+  AccountsControllerSelectedEvmAccountChangeEvent,
 } from '@metamask/accounts-controller';
 import {
   AccountTrackerUpdateNativeBalancesAction,
@@ -62,7 +63,8 @@ type AllowedEvents =
   | PreferencesControllerStateChangeEvent
   | TokensControllerStateChangeEvent
   | AccountActivityServiceStatusChangedEvent
-  | AccountActivityServiceBalanceUpdatedEvent;
+  | AccountActivityServiceBalanceUpdatedEvent
+  | AccountsControllerSelectedEvmAccountChangeEvent;
 
 export type TokenBalancesControllerMessenger = ReturnType<
   typeof getTokenBalancesControllerMessenger
@@ -109,6 +111,7 @@ export function getTokenBalancesControllerMessenger(
       'KeyringController:accountRemoved',
       'AccountActivityService:statusChanged',
       'AccountActivityService:balanceUpdated',
+      'AccountsController:selectedEvmAccountChange',
     ],
   });
   return controllerMessenger;

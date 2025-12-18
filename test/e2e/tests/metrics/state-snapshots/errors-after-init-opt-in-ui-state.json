@@ -157,6 +157,7 @@
     "onboardingDate": null,
     "outdatedBrowserWarningLastShown": "object",
     "popupGasPollTokens": "object",
+    "sidePanelGasPollTokens": [],
     "productTour": "accountIcon",
     "recoveryPhraseReminderHasBeenShown": true,
     "recoveryPhraseReminderLastShown": "number",
@@ -202,12 +203,7 @@
     "isEvmSelected": "boolean",
     "networksWithTransactionActivity": "object",
     "selectedNetworkClientId": "string",
-    "networksMetadata": {
-      "networkConfigurationId": {
-        "EIPS": { "1559": true },
-        "status": "available"
-      }
-    },
+    "networksMetadata": "object",
     "networkConfigurationsByChainId": "object",
     "keyrings": "object",
     "addSnapAccountEnabled": "boolean",
@@ -288,7 +284,6 @@
     "allIgnoredTokens": {},
     "allDetectedTokens": {},
     "tokenBalances": "object",
-    "transactionData": "object",
     "smartTransactionsState": {
       "fees": {},
       "feesByChainId": "object",
@@ -337,9 +332,11 @@
     "fcmToken": "string",
     "isUpdatingFCMToken": "boolean",
     "remoteFeatureFlags": {
-      "feature1": true,
-      "feature2": false,
-      "feature3": { "name": "groupC", "value": "valueC" },
+      "enableMultichainAccountsState2": {
+        "enabled": true,
+        "featureVersion": "2",
+        "minimumVersion": "12.19.0"
+      },
       "sendRedesign": { "enabled": false }
     },
     "cacheTimestamp": "number",
@@ -351,6 +348,8 @@
     "orderedTransactionHistory": "object",
     "claimsConfigurations": "object",
     "claims": "object",
+    "initialEnqueueCompleted": "boolean",
+    "syncQueue": "object",
     "accountsByChainId": "object",
     "unapprovedDecryptMsgs": "object",
     "unapprovedDecryptMsgCount": 0,
@@ -411,6 +410,7 @@
     "transactionBatches": "object",
     "lastFetchedBlockNumbers": "object",
     "submitHistory": "object",
+    "transactionData": "object",
     "accountTree": "object",
     "isAccountTreeSyncingInProgress": "boolean",
     "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean",

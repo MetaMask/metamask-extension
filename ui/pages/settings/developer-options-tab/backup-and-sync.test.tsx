@@ -2,7 +2,7 @@ import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { useDeleteAccountSyncingDataFromUserStorage } from '../../../hooks/identity/useAccountSyncing';
-import { renderHookWithProviderTyped } from '../../../../test/lib/render-helpers';
+import { renderHookWithProviderTyped } from '../../../../test/lib/render-helpers-navigate';
 import {
   BackupAndSyncDevSettings,
   useDeleteAccountSyncDataProps,

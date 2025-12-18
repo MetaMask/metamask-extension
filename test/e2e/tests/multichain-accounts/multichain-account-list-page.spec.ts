@@ -4,6 +4,7 @@ import { Driver } from '../../webdriver/driver';
 import { mockSnapSimpleKeyringAndSite } from '../account/snap-keyring-site-mocks';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { DAPP_PATH } from '../../constants';
 import { WINDOW_TITLES } from '../../helpers';
 import { AccountType, withMultichainAccountsDesignEnabled } from './common';
@@ -14,7 +15,6 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
       {
         title: this.test?.fullTitle(),
         accountType: AccountType.HardwareWallet,
-        state: 2,
       },
       async (driver: Driver) => {
         const accountListPage = new AccountListPage(driver);
@@ -39,8 +39,9 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
         dappOptions: {
           customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
         },
-        testSpecificMock: mockSnapSimpleKeyringAndSite,
-        state: 2,
+        testSpecificMock: async (mockServer) => {
+          return mockSnapSimpleKeyringAndSite(mockServer);
+        },
       },
       async (driver: Driver) => {
         await installSnapSimpleKeyring(driver);
@@ -51,6 +52,9 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
+
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openAccountMenu();
 
         const accountListPage = new AccountListPage(driver);
 

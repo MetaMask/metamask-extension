@@ -45,7 +45,6 @@ const SendContainer = ({ children }: { children: React.ReactNode }) => {
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
           height={BlockSize.Full}
-          style={{ maxWidth: '650px' }}
           width={BlockSize.Full}
         >
           <Box className="redesigned__send__sticky-header">
