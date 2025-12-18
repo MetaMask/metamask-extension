@@ -107,6 +107,8 @@ async function main() {
 
   Sentry.init({
     dsn: SENTRY_DSN,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    // We need to respect sentry's label so we can benchmarks as logs to query and report
     _experiments: {
       enableLogs: true,
     },
@@ -115,35 +117,50 @@ async function main() {
   // Derive persona from pageType
   const persona = argv.pageType === 'powerUserHome' ? 'powerUser' : 'standard';
 
-  // CI metadata grouped together
-  const ci = {
-    branch: process.env.GITHUB_REF_NAME || getGitBranch(),
-    prNumber: process.env.PR_NUMBER || 'none',
-    commitHash: process.env.HEAD_COMMIT_HASH || getGitCommitHash(),
-    job: process.env.GITHUB_JOB || 'local',
-    persona,
-    browser: argv.browser,
-    buildType: argv.buildType,
-    pageType: argv.pageType,
+  // CI metadata as flat attributes
+  const ciAttributes = {
+    'ci.branch': process.env.GITHUB_REF_NAME || getGitBranch(),
+    'ci.prNumber': process.env.PR_NUMBER || 'none',
+    'ci.commitHash': process.env.HEAD_COMMIT_HASH || getGitCommitHash(),
+    'ci.job': process.env.GITHUB_JOB || 'local',
+    'ci.persona': persona,
+    'ci.browser': argv.browser,
+    'ci.buildType': argv.buildType,
+    'ci.pageType': argv.pageType,
   };
+
+  // Helper to flatten an object with a prefix (e.g., 'benchmark.mean')
+  const flatten = (obj: Record<string, number> | undefined, prefix: string) =>
+    Object.entries(obj || {}).reduce(
+      (acc, [key, val]) => ({ ...acc, [`${prefix}.${key}`]: val }),
+      {} as Record<string, number>,
+    );
 
   for (const [name, value] of Object.entries(results)) {
     if (isStandardBenchmarkResult(value)) {
+      // Flatten benchmark metrics with prefixes for queryability
+      const benchmarkAttributes = {
+        ...flatten(value.mean, 'benchmark.mean'),
+        ...flatten(value.p75, 'benchmark.p75'),
+        ...flatten(value.p95, 'benchmark.p95'),
+      };
+
       Sentry.logger.info(`benchmark.${name}`, {
-        ci: { ...ci, testTitle: value.testTitle },
-        benchmark_mean: value.mean || {},
-        benchmark_p75: value.p75 || {},
-        benchmark_p95: value.p95 || {},
+        ...ciAttributes,
+        'ci.testTitle': value.testTitle,
+        ...benchmarkAttributes,
       });
     } else if (isUserActionResult(value)) {
-      const metrics: Record<string, number> = {};
-      for (const [key, val] of Object.entries(value)) {
-        if (typeof val === 'number') {
-          metrics[key] = val;
-        }
-      }
+      // Extract numeric metrics only
+      const metrics = Object.entries(value).reduce(
+        (acc, [key, val]) =>
+          typeof val === 'number' ? { ...acc, [key]: val } : acc,
+        {} as Record<string, number>,
+      );
+
       Sentry.logger.info(`userAction.${name}`, {
-        ci: { ...ci, testTitle: value.testTitle },
+        ...ciAttributes,
+        'ci.testTitle': value.testTitle,
         ...metrics,
       });
     }

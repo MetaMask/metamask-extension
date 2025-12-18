@@ -82,33 +82,35 @@ describe('send-to-sentry', () => {
       const dsn = 'https://test@sentry.io/123';
       Sentry.init({
         dsn,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         _experiments: { enableLogs: true },
       });
 
       expect(Sentry.init).toHaveBeenCalledWith({
         dsn,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         _experiments: { enableLogs: true },
       });
     });
   });
 
   describe('Sentry logger', () => {
-    it('sends benchmark results as structured log with grouped objects', () => {
+    it('sends benchmark results as structured log with flat attributes', () => {
       const attributes = {
-        ci: {
-          branch: 'feature/test',
-          prNumber: '123',
-          commitHash: 'abc123',
-          job: 'benchmark',
-          persona: 'standard',
-          browser: 'chrome',
-          buildType: 'browserify',
-          pageType: 'standardHome',
-          testTitle: 'measurePageStandard',
-        },
-        benchmark_mean: mockResults.standardHome.mean,
-        benchmark_p75: mockResults.standardHome.p75,
-        benchmark_p95: mockResults.standardHome.p95,
+        'ci.branch': 'feature/test',
+        'ci.prNumber': '123',
+        'ci.commitHash': 'abc123',
+        'ci.job': 'benchmark',
+        'ci.persona': 'standard',
+        'ci.browser': 'chrome',
+        'ci.buildType': 'browserify',
+        'ci.pageType': 'standardHome',
+        'ci.testTitle': 'measurePageStandard',
+        'benchmark.mean.uiStartup': 500,
+        'benchmark.mean.load': 400,
+        'benchmark.mean.firstPaint': 420,
+        'benchmark.p75.uiStartup': 520,
+        'benchmark.p95.uiStartup': 545,
       };
 
       Sentry.logger.info('benchmark.standardHome', attributes);
@@ -116,25 +118,19 @@ describe('send-to-sentry', () => {
       expect(Sentry.logger.info).toHaveBeenCalledWith(
         'benchmark.standardHome',
         expect.objectContaining({
-          ci: expect.objectContaining({
-            persona: 'standard',
-            testTitle: 'measurePageStandard',
-          }),
-          benchmark_mean: expect.objectContaining({
-            uiStartup: 500,
-            load: 400,
-          }),
+          'ci.persona': 'standard',
+          'ci.testTitle': 'measurePageStandard',
+          'benchmark.mean.uiStartup': 500,
+          'benchmark.mean.load': 400,
         }),
       );
     });
 
     it('sends user action results as structured log', () => {
       const attributes = {
-        ci: {
-          branch: 'feature/test',
-          prNumber: '123',
-          testTitle: 'benchmark-userActions-loadNewAccount',
-        },
+        'ci.branch': 'feature/test',
+        'ci.prNumber': '123',
+        'ci.testTitle': 'benchmark-userActions-loadNewAccount',
         duration: 1234,
       };
 
@@ -143,9 +139,7 @@ describe('send-to-sentry', () => {
       expect(Sentry.logger.info).toHaveBeenCalledWith(
         'userAction.loadNewAccount',
         expect.objectContaining({
-          ci: expect.objectContaining({
-            testTitle: 'benchmark-userActions-loadNewAccount',
-          }),
+          'ci.testTitle': 'benchmark-userActions-loadNewAccount',
           duration: 1234,
         }),
       );
