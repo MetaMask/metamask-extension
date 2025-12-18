@@ -267,6 +267,12 @@ Whenever you change dependencies (adding, removing, or updating, either in `pack
 - [How to add new confirmations](./docs/confirmations.md)
 - [Browser support guidelines](./docs/browser-support.md)
 
+## Experimental Features
+
+Some features in this repository may be experimental and subject to change
+before being released to all users.
+
+
 ## Dapp Developer Resources
 
 - [Extend MetaMask's features w/ MetaMask Snaps.](https://docs.metamask.io/snaps/)
