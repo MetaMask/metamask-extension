@@ -73,3 +73,6 @@ BLOCKAID_PUBLIC_KEY=
 
 ; Set this to `true` to enable Metamask Shield
 ; METAMASK_SHIELD_ENABLED='false'
+
+; Set this to `true` to enable authentication controller environment config to match build type (default use production only)
+; FORCE_AUTH_MATCH_BUILD='false'

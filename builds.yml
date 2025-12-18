@@ -466,3 +466,6 @@ env:
   # PNA25 (Privacy Notice)
   - EXTENSION_UX_PNA25: true
   - IS_SIDEPANEL: true
+
+  # Authentication (Profile sync)
+  - FORCE_AUTH_MATCH_BUILD: false
