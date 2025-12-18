@@ -49,39 +49,34 @@ export const setupSidepanelListener = () => {
 };
 
 type Props = {
-  getUseSidePanelAsDefault: () => boolean;
+  isSidepanelPreferred: () => boolean;
 };
 
 export const setupSidepanelMessageHandler = ({
-  getUseSidePanelAsDefault,
+  isSidepanelPreferred,
 }: Props) => {
   // Skip in E2E tests until tests have been updated to use sidepanel
   if (process.env.IN_TEST || !isSidepanelEnabled) {
     return;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const browserWithSidePanel = browser as any;
+  browser.runtime.onMessage.addListener((message, sender) => {
+    if (message?.type === EXTENSION_MESSAGES.OPEN_SIDEPANEL) {
+      const sidepanelPreferred = isSidepanelPreferred();
 
-  browser.runtime.onMessage.addListener(
-    (message: { type?: string }, sender: browser.Runtime.MessageSender) => {
-      if (message?.type === EXTENSION_MESSAGES.OPEN_SIDEPANEL) {
-        const useSidePanelAsDefault = getUseSidePanelAsDefault();
-
-        if (
-          useSidePanelAsDefault &&
-          browserWithSidePanel?.sidePanel?.open &&
-          sender?.tab?.id
-        ) {
-          browserWithSidePanel.sidePanel
-            .open({ tabId: sender.tab.id })
-            .catch(() => {
-              // Notification window will be used as fallback
-            });
-        }
-        return true;
+      if (
+        sidepanelPreferred &&
+        // @ts-expect-error sidePanel API not in webextension-polyfill types yet
+        browser.sidePanel?.open &&
+        sender?.tab?.id
+      ) {
+        // @ts-expect-error sidePanel API not in webextension-polyfill types yet
+        browser.sidePanel.open({ tabId: sender.tab.id }).catch(() => {
+          // Notification window will be used as fallback
+        });
       }
-      return undefined;
-    },
-  );
+      return true;
+    }
+    return undefined;
+  });
 };

@@ -1585,15 +1585,15 @@ async function triggerUi() {
   ) {
     uiIsTriggering = true;
     try {
-      // Check if user prefers sidepanel - if so, content script already triggered
-      // sidepanel opening with user gesture context, so skip notification window
       // Skip in E2E tests until tests have been updated to use sidepanel
       if (!inTest && isSidepanelEnabled) {
-        const useSidePanelAsDefault =
+        // Check if user prefers sidepanel - if so, content script already triggered
+        // sidepanel opening with user gesture context, so skip notification window
+        const sidepanelPreferred =
           controller?.preferencesController?.state?.preferences
             ?.useSidePanelAsDefault ?? false;
 
-        if (useSidePanelAsDefault && browser?.sidePanel?.open) {
+        if (sidepanelPreferred && browser?.sidePanel?.open) {
           // Content script already sent OPEN_SIDEPANEL_IF_PREFERRED message
           // which opens sidepanel with user gesture context - skip notification window
           return;
@@ -1749,7 +1749,7 @@ initSidePanelBehavior();
 
 // Listen for content script requests to open sidepanel (preserves user gesture context)
 setupSidepanelMessageHandler({
-  getUseSidePanelAsDefault: () =>
+  isSidepanelPreferred: () =>
     controller?.preferencesController?.state?.preferences
       ?.useSidePanelAsDefault ?? false,
 });
