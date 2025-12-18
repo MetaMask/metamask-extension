@@ -2,7 +2,13 @@ import type { AddNetworkFields } from '@metamask/network-controller';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { BtcScope, SolScope, TrxScope } from '@metamask/keyring-api';
 import { capitalize, pick } from 'lodash';
-import { Hex, hexToNumber } from '@metamask/utils';
+import {
+  CaipChainId,
+  Hex,
+  hexToNumber,
+  KnownCaipNamespace,
+  toCaipChainId,
+} from '@metamask/utils';
 import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
 import { MultichainNetworks } from './multichain/networks';
 
@@ -705,8 +711,10 @@ export const TEST_CHAINS: Hex[] = [
   CHAIN_IDS.MONAD_TESTNET,
 ];
 
-export const CAIP_FORMATTED_TEST_CHAINS = [
-  ...TEST_CHAINS.map((chainId) => `eip155:${hexToNumber(chainId)}`),
+export const CAIP_FORMATTED_TEST_CHAINS: CaipChainId[] = [
+  ...TEST_CHAINS.map((chainId) =>
+    toCaipChainId(KnownCaipNamespace.Eip155, hexToNumber(chainId).toString()),
+  ),
   ...NON_EVM_TESTNET_IDS,
 ];
 
