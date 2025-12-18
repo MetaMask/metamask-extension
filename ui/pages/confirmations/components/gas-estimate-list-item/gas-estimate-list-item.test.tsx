@@ -20,7 +20,7 @@ describe('GasEstimateListItem', () => {
       <GasEstimateListItem option={mockOption} />,
     );
 
-    expect(getByTestId('gas-option-Fast')).toBeInTheDocument();
+    expect(getByTestId('gas-option-fast')).toBeInTheDocument();
     expect(getByText('Fast')).toBeInTheDocument();
     expect(getByText('15 sec')).toBeInTheDocument();
     expect(getByText('0.0001 ETH')).toBeInTheDocument();
@@ -35,7 +35,7 @@ describe('GasEstimateListItem', () => {
       <GasEstimateListItem option={option} />,
     );
 
-    fireEvent.click(getByTestId('gas-option-Fast'));
+    fireEvent.click(getByTestId('gas-option-fast'));
     expect(onSelectMock).toHaveBeenCalledTimes(1);
   });
 
@@ -46,7 +46,7 @@ describe('GasEstimateListItem', () => {
       <GasEstimateListItem option={selectedOption} />,
     );
 
-    const listItem = getByTestId('gas-option-Fast');
+    const listItem = getByTestId('gas-option-fast');
     expect(listItem).toHaveClass('gas-fee-token-list-item--selected');
   });
 
