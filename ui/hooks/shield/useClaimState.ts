@@ -31,8 +31,8 @@ export const useClaimState = (mode: ClaimsFormMode = CLAIMS_FORM_MODES.NEW) => {
   const isEditDraft = mode === CLAIMS_FORM_MODES.EDIT_DRAFT;
   const claimOrDraftId = pathname.split('/').pop();
 
-  // Track if draft has been loaded once to prevent re-running on autosave
-  const hasDraftLoadedRef = useRef(false);
+  // Track which draft ID was loaded to prevent re-running on autosave
+  const loadedDraftIdRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (isView || !chainId || !impactedWalletAddress) {
@@ -64,17 +64,18 @@ export const useClaimState = (mode: ClaimsFormMode = CLAIMS_FORM_MODES.NEW) => {
     }
   }, [isView, claimOrDraftId, claims]);
 
-  // Load draft data for edit-draft mode (only once on initial mount)
+  // Load draft data for edit-draft mode
   useEffect(() => {
-    // Skip if already loaded to prevent overwriting form state on autosave
-    if (hasDraftLoadedRef.current) {
+    // Skip if this specific draft was already loaded (prevents autosave from overwriting form state)
+    // but allow loading when navigating to a different draft
+    if (loadedDraftIdRef.current === claimOrDraftId) {
       return;
     }
 
     if (isEditDraft && claimOrDraftId) {
       const draftDetails = getDraft(claimOrDraftId);
       if (draftDetails) {
-        hasDraftLoadedRef.current = true;
+        loadedDraftIdRef.current = claimOrDraftId;
         setCurrentDraftId(draftDetails.draftId);
         setEmail(draftDetails.email || '');
         setChainId(draftDetails.chainId || '');
