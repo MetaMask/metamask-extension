@@ -55,6 +55,147 @@ const getFixtureOptions = (
   },
 });
 
+const logOnboardingDiagnostics = async (driver: Driver, label: string) => {
+  try {
+    const diagnostics = await driver.executeAsyncScript(`
+      const callback = arguments[arguments.length - 1];
+      (async () => {
+        const label = ${JSON.stringify(label)};
+        const selectors = {
+          getStarted: '[data-testid="get-started"]',
+          createWallet: '[data-testid="onboarding-create-wallet"]',
+          importWallet: '[data-testid="onboarding-import-wallet"]',
+          createWithSrp: '[data-testid="onboarding-create-with-srp-button"]',
+          importWithSrp: '[data-testid="onboarding-import-with-srp-button"]',
+          createWithGoogle: '[data-testid="onboarding-create-with-google-button"]',
+          importWithGoogle: '[data-testid="onboarding-import-with-google-button"]',
+          welcomeLogin: '.welcome-login',
+          welcomeLoginOptions: '.welcome-login__options',
+          wordmarkContainer: '.riv-animation__wordmark-container',
+          wordmarkCanvas: '.riv-animation__canvas',
+          loadingLogo: '.loading-logo',
+        };
+
+        const describeElement = (element) => {
+          if (!element) {
+            return null;
+          }
+          const rect = element.getBoundingClientRect();
+          const styles = window.getComputedStyle(element);
+          return {
+            tag: element.tagName,
+            id: element.id,
+            className: element.className,
+            text: (element.textContent || '').trim().slice(0, 120),
+            rect: {
+              x: rect.x,
+              y: rect.y,
+              width: rect.width,
+              height: rect.height,
+            },
+            styles: {
+              display: styles.display,
+              visibility: styles.visibility,
+              opacity: styles.opacity,
+              pointerEvents: styles.pointerEvents,
+            },
+          };
+        };
+
+        const elements = {};
+        for (const [key, selector] of Object.entries(selectors)) {
+          const matches = document.querySelectorAll(selector);
+          elements[key] = {
+            selector,
+            count: matches.length,
+            first: describeElement(matches[0]),
+          };
+        }
+
+        const stateHooksReady = Boolean(
+          window.stateHooks && window.stateHooks.getCleanAppState,
+        );
+        const state = stateHooksReady
+          ? await window.stateHooks.getCleanAppState()
+          : null;
+        const metamask = state && state.metamask ? state.metamask : null;
+        const appState = state && state.appState ? state.appState : null;
+        const stateSummary = state
+          ? {
+              version: state.version ?? null,
+              metamask: metamask
+                ? {
+                    completedOnboarding: metamask.completedOnboarding ?? null,
+                    isUnlocked: metamask.isUnlocked ?? null,
+                    seedPhraseBackedUp: metamask.seedPhraseBackedUp ?? null,
+                    firstTimeFlowType: metamask.firstTimeFlowType ?? null,
+                    onboardingTabs: metamask.onboardingTabs
+                      ? Object.keys(metamask.onboardingTabs)
+                      : null,
+                    onboardingDate: metamask.onboardingDate ?? null,
+                  }
+                : null,
+              appState: appState
+                ? {
+                    currentRoute: appState.currentRoute ?? null,
+                    previousRoute: appState.previousRoute ?? null,
+                    isLoading: appState.isLoading ?? null,
+                  }
+                : null,
+            }
+          : null;
+
+        const wordmarkContainer = document.querySelector(
+          '.riv-animation__wordmark-container',
+        );
+
+        callback({
+          label,
+          timestamp: new Date().toISOString(),
+          location: {
+            href: window.location.href,
+            pathname: window.location.pathname,
+            hash: window.location.hash,
+            title: document.title,
+            readyState: document.readyState,
+          },
+          stateHooksReady,
+          wordmark: {
+            classList: wordmarkContainer
+              ? Array.from(wordmarkContainer.classList)
+              : null,
+          },
+          elements,
+          state: stateSummary,
+        });
+      })().catch((error) =>
+        callback({
+          error: error?.message ?? String(error),
+        }),
+      );
+    `);
+
+    if (diagnostics?.error) {
+      console.log(`Onboarding diagnostics failed (${label}):`, diagnostics);
+      return;
+    }
+
+    console.log(
+      `Onboarding diagnostics (${label}):\n${JSON.stringify(
+        diagnostics,
+        null,
+        2,
+      )}`,
+    );
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    console.log(
+      `Onboarding diagnostics crashed (${label}):`,
+      errorMessage,
+    );
+  }
+};
+
 const pausePersistence = async (driver: Driver) => {
   const result = await driver.executeAsyncScript(`
     const callback = arguments[arguments.length - 1];
@@ -486,7 +627,12 @@ describe('State Persistence', function () {
       await withFixtures(
         getFixtureOptions(this, { storageKind: 'data' }),
         async ({ driver }) => {
-          await completeOnboardingAndSync(driver);
+          try {
+            await completeOnboardingAndSync(driver);
+          } catch (error) {
+            await logOnboardingDiagnostics(driver, 'onboarding-failure');
+            throw error;
+          }
 
           await pausePersistence(driver);
 

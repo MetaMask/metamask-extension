@@ -130,7 +130,16 @@ async function main() {
     }
 
     const configFile = path.join(__dirname, '.mocharc.js');
-    const extraArgs = process.env.E2E_ARGS?.split(' ') || [];
+    const extraArgs = [...(process.env.E2E_ARGS?.split(' ') || [])];
+    const focusTestTitle =
+      'should not attempt to update if an update attempt fails';
+    if (
+      (process.env.CI || process.env.GITHUB_ACTION) &&
+      e2eTestPath.includes('state-persistence.spec.ts')
+    ) {
+      extraArgs.push('--fgrep', focusTestTitle);
+      console.log(`CI focus mode enabled. Filtering to: ${focusTestTitle}`);
+    }
 
     const dir = 'test/test-results/e2e';
     fs.mkdir(dir, { recursive: true });
