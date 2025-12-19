@@ -83,7 +83,6 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
   );
 
   const useExternalServices = useSelector(getUseExternalServices);
-  console.log('🚀 ~ TokenList ~ useExternalServices:', useExternalServices);
 
   const networksToShow = useMemo(() => {
     return isGlobalNetworkSelectorRemoved
