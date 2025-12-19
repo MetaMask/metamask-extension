@@ -208,9 +208,7 @@ export class SubscriptionService {
         currentShieldSubscription,
         undefined,
         {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          error_message: errorMessage,
+          error: errorMessage,
         },
       );
 
@@ -460,9 +458,7 @@ export class SubscriptionService {
           currentShieldSubscription,
           txMeta,
           {
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            error_message: errorMessage,
+            error: errorMessage,
           },
         );
       }
