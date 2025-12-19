@@ -55,7 +55,7 @@ describe('Send ERC20', function () {
     );
   });
 
-  it.only('it should be possible to send Max token value', async function () {
+  it('it should be possible to send Max token value', async function () {
     await withFixtures(
       {
         forceBip44Version: false,
