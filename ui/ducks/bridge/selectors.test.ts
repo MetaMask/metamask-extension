@@ -282,7 +282,8 @@ describe('Bridge selectors', () => {
         assetId: 'eip155:1/slip44:60',
         chainId: 'eip155:1',
         decimals: 18,
-        image: 'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png',
+        image:
+          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png',
         name: 'Ether',
         symbol: 'ETH',
         balance: '0',
@@ -300,7 +301,8 @@ describe('Bridge selectors', () => {
         assetId: 'eip155:1/slip44:60',
         chainId: 'eip155:1',
         decimals: 18,
-        image: 'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png',
+        image:
+          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png',
         name: 'Ether',
         symbol: 'ETH',
         balance: '0',
@@ -443,7 +445,8 @@ describe('Bridge selectors', () => {
         chainId: 'eip155:1',
         decimals: 18,
         iconUrl: '',
-        image: 'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png',
+        image:
+          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png',
         name: 'Ether',
         symbol: 'ETH',
       });

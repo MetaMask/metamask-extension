@@ -32,24 +32,39 @@ const STATIC_METAMASK_BASE_URL = 'https://static.cx.metamask.io';
 
 export const toAssetId = (
   address: Hex | CaipAssetType | string,
-  chainId: CaipChainId,
+  chainId?: CaipChainId | Hex,
 ): CaipAssetType | undefined => {
+  let addressToUse = address;
+  let chainIdToUse = isStrictHexString(chainId)
+    ? toEvmCaipChainId(chainId)
+    : chainId;
+
+  // Use chainId and address from caip assetId if provided
   if (isCaipAssetType(address)) {
-    return address;
+    const { assetReference, chainId: chainIdFromCaipAssetId } =
+      parseCaipAssetType(address);
+    addressToUse = assetReference;
+    chainIdToUse = chainIdFromCaipAssetId;
   }
-  if (isNativeAddress(address)) {
-    return getNativeAssetForChainId(chainId)?.assetId;
+  if (!chainIdToUse) {
+    return undefined;
   }
-  if (chainId === MultichainNetworks.SOLANA) {
-    return CaipAssetTypeStruct.create(`${chainId}/token:${address}`);
+
+  if (isNativeAddress(addressToUse)) {
+    return getNativeAssetForChainId(chainIdToUse)?.assetId;
   }
-  if (chainId === MultichainNetworks.TRON) {
-    return CaipAssetTypeStruct.create(`${chainId}/trc20:${address}`);
+  if (chainIdToUse === MultichainNetworks.SOLANA) {
+    return CaipAssetTypeStruct.create(`${chainIdToUse}/token:${addressToUse}`);
+  }
+  if (chainIdToUse === MultichainNetworks.TRON) {
+    return CaipAssetTypeStruct.create(`${chainIdToUse}/trc20:${addressToUse}`);
   }
   // EVM assets
-  const checksummedAddress = toChecksumHexAddress(address) ?? address;
-  if (chainId && isStrictHexString(checksummedAddress)) {
-    return CaipAssetTypeStruct.create(`${chainId}/erc20:${checksummedAddress}`);
+  const checksummedAddress = toChecksumHexAddress(addressToUse) ?? addressToUse;
+  if (isStrictHexString(checksummedAddress)) {
+    return CaipAssetTypeStruct.create(
+      `${chainIdToUse}/erc20:${checksummedAddress}`,
+    );
   }
   return undefined;
 };
@@ -65,16 +80,12 @@ export const getAssetImageUrl = (
   assetId: CaipAssetType | string,
   chainId: CaipChainId | Hex,
 ) => {
-  const chainIdInCaip = isCaipChainId(chainId)
-    ? chainId
-    : toEvmCaipChainId(chainId);
-
-  const assetIdInCaip = toAssetId(assetId, chainIdInCaip);
+  const assetIdInCaip = toAssetId(assetId, chainId);
   if (!assetIdInCaip) {
     return undefined;
   }
   const normalizedAssetId = (
-    isNonEvmChainId(chainIdInCaip) ? assetIdInCaip : assetIdInCaip.toLowerCase()
+    isNonEvmChainId(chainId) ? assetIdInCaip : assetIdInCaip.toLowerCase()
   ).replaceAll(':', '/');
 
   return `${STATIC_METAMASK_BASE_URL}/api/v2/tokenIcons/assets/${
@@ -103,11 +114,7 @@ export const fetchAssetMetadata = async (
   abortSignal?: AbortSignal,
 ) => {
   try {
-    const chainIdInCaip = isCaipChainId(chainId)
-      ? chainId
-      : toEvmCaipChainId(chainId);
-
-    const assetId = toAssetId(address, chainIdInCaip);
+    const assetId = toAssetId(address, chainId);
 
     if (!assetId) {
       return undefined;
@@ -128,11 +135,11 @@ export const fetchAssetMetadata = async (
     const commonFields = {
       symbol: assetMetadata.symbol,
       decimals: assetMetadata.decimals,
-      image: getAssetImageUrl(assetId, chainIdInCaip),
+      image: getAssetImageUrl(assetId, chainId),
       assetId,
     };
 
-    if (isNonEvmChainId(chainIdInCaip) && assetId) {
+    if (isNonEvmChainId(chainId) && assetId) {
       const { assetReference } = parseCaipAssetType(assetId);
       return {
         ...commonFields,
@@ -142,11 +149,13 @@ export const fetchAssetMetadata = async (
       };
     }
 
-    const { reference } = parseCaipChainId(chainIdInCaip);
+    const hexChainId = isStrictHexString(chainId)
+      ? chainId
+      : decimalToPrefixedHex(parseCaipChainId(chainId).reference);
     return {
       ...commonFields,
       address: address.toLowerCase(),
-      chainId: decimalToPrefixedHex(reference),
+      chainId: hexChainId,
     };
   } catch (error) {
     return undefined;

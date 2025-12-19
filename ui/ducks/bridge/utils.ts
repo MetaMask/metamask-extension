@@ -273,7 +273,7 @@ export const toBridgeToken = (
       (assetId
         ? getAssetImageUrl(assetId, caipChainId)
         : (imageFromPayload ?? '')) ?? '',
-    assetId: assetId,
+    assetId,
   };
 };
 const createBridgeTokenPayload = (
