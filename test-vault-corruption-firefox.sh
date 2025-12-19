@@ -292,16 +292,20 @@ echo ""
 echo "  4) Delete external files only (keep database intact)"
 echo "     → Tests file ID mismatch scenario"
 echo ""
-echo "  5) Delete 'data' and 'meta' keys + delete BACKUP vault"
+echo "  5) ${YELLOW}Rename files to be 'off by one'${NC} (real-world crash recovery bug)"
+echo "     → Exact reproduction of GitHub issue #9196 comment"
+echo "     → File IDs in SQLite don't match actual filenames"
+echo ""
+echo "  6) Delete 'data' and 'meta' keys + delete BACKUP vault"
 echo "     → Expected: Fresh install flow (no recovery possible)"
 echo ""
 echo "  === Cleanup ==="
-echo "  6) ${RED}NUCLEAR: Delete ALL MetaMask storage (fresh start)${NC}"
+echo "  7) ${RED}NUCLEAR: Delete ALL MetaMask storage (fresh start)${NC}"
 echo "     → Fixes 'An unexpected error occurred' after reinstall"
 echo ""
-echo "  7) Exit without changes"
+echo "  8) Exit without changes"
 echo ""
-read -p "Enter choice [1-7]: " choice
+read -p "Enter choice [1-8]: " choice
 
 case $choice in
     1)
@@ -431,6 +435,100 @@ case $choice in
 
     5)
         echo ""
+        echo -e "${YELLOW}Renaming external files to be 'off by one'...${NC}"
+        echo ""
+        echo -e "${CYAN}This reproduces the exact bug from GitHub issue #9196:${NC}"
+        echo "  - Firefox stores large data in numbered files (e.g., '3039')"
+        echo "  - SQLite 'file' table references these by number"
+        echo "  - After a crash, file number and SQLite can get out of sync"
+        echo "  - User fix: Copy file and increment name by 1"
+        echo ""
+
+        if [ -z "$PRIMARY_FILES" ] || [ ! -d "$PRIMARY_FILES" ]; then
+            echo -e "${YELLOW}No external files folder found.${NC}"
+            echo "Data may be stored inline in the SQLite database (too small for external files)."
+            echo ""
+            echo "To test this scenario, you need a wallet with enough state"
+            echo "that Firefox stores it in external files (>1KB typically)."
+            exit 0
+        fi
+
+        # Find numbered files
+        echo "Scanning for numbered files in: $PRIMARY_FILES"
+        echo ""
+
+        FILES_TO_RENAME=()
+        for f in "$PRIMARY_FILES"/*; do
+            if [ -f "$f" ]; then
+                filename=$(basename "$f")
+                # Check if filename is purely numeric
+                if [[ "$filename" =~ ^[0-9]+$ ]]; then
+                    FILES_TO_RENAME+=("$f")
+                fi
+            fi
+        done
+
+        if [ ${#FILES_TO_RENAME[@]} -eq 0 ]; then
+            echo -e "${YELLOW}No numbered files found in the external files folder.${NC}"
+            echo ""
+            echo "Files found:"
+            ls -la "$PRIMARY_FILES" 2>/dev/null | tail -n +4
+            echo ""
+            echo "The 'off by one' bug requires numbered files."
+            echo "Try using MetaMask more to generate larger state data."
+            exit 0
+        fi
+
+        echo "Found ${#FILES_TO_RENAME[@]} numbered file(s):"
+        for f in "${FILES_TO_RENAME[@]}"; do
+            filename=$(basename "$f")
+            size=$(ls -lh "$f" 2>/dev/null | awk '{print $5}')
+            echo "  - $filename ($size)"
+        done
+        echo ""
+
+        # Rename each file to be -1 (simulating the off-by-one mismatch after crash)
+        # Real-world bug: SQLite says file "3040" but actual file is "3039"
+        # To reproduce: rename "3039" → "3038", so SQLite looks for "3039" and can't find it
+        echo -e "${YELLOW}Renaming files to create mismatch (file -1)...${NC}"
+        for f in "${FILES_TO_RENAME[@]}"; do
+            filename=$(basename "$f")
+            if [ "$filename" -le 0 ]; then
+                echo -e "${YELLOW}  Skipping $filename (can't go below 0)${NC}"
+                continue
+            fi
+            new_number=$((filename - 1))
+            new_path="$PRIMARY_FILES/$new_number"
+
+            # Check if target already exists
+            if [ -e "$new_path" ]; then
+                echo -e "${YELLOW}  Skipping $filename → $new_number (target exists)${NC}"
+            else
+                mv "$f" "$new_path"
+                echo -e "${GREEN}  ✓ Renamed: $filename → $new_number${NC}"
+            fi
+        done
+
+        echo ""
+        echo -e "${GREEN}✓ File renaming complete!${NC}"
+        echo ""
+        echo "The SQLite 'file' table references the ORIGINAL file numbers,"
+        echo "but the actual files now have LOWER numbers (off by -1)."
+        echo ""
+        echo "Example: SQLite says 'file 3039' but actual file is now '3038'"
+        echo ""
+        echo -e "${YELLOW}Expected behavior:${NC}"
+        echo "  - browser.storage.local.get() should FAIL"
+        echo "  - Error: 'An unexpected error occurred'"
+        echo "  - Firefox can't find the files the database references"
+        echo ""
+        echo -e "${CYAN}User workaround (from GitHub):${NC}"
+        echo "  - Copy the file and increment the name by 1"
+        echo "  - Example: Copy '3038' → '3039' to match what SQLite expects"
+        ;;
+
+    6)
+        echo ""
         echo -e "${RED}WARNING: This will delete primary vault data AND backup!${NC}"
         echo -e "${RED}Recovery will NOT be possible without the SRP!${NC}"
         read -p "Are you sure? (yes/no): " confirm
@@ -493,7 +591,7 @@ case $choice in
         echo "  - No recovery possible without SRP"
         ;;
 
-    6)
+    7)
         echo ""
         echo -e "${RED}╔═══════════════════════════════════════════════════════════════╗${NC}"
         echo -e "${RED}║  WARNING: This will DELETE ALL MetaMask storage for Firefox!  ║${NC}"
@@ -559,7 +657,7 @@ case $choice in
         exit 0
         ;;
 
-    7)
+    8)
         echo "Exiting without changes."
         exit 0
         ;;
