@@ -121,11 +121,6 @@ export const AccountOverviewTabs = ({
     getIsMultichainAccountsState2Enabled,
   );
   const showUnifiedTransactionList = isBIP44FeatureFlagEnabled;
-  console.log(
-    'defaultHomeActiveTabName********************',
-    defaultHomeActiveTabName,
-  );
-  console.log('showActivity********************', showTokens, showActivity);
   return (
     <>
       <AssetListTokenDetection />
