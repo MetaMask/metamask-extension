@@ -47,6 +47,7 @@ describe('Send ERC20', function () {
         await sendPage.pressOnAmountInput('BACK_SPACE');
         await sendPage.pressContinueButton();
 
+        await driver.delay(3000);
         await confirmation.checkPageIsLoaded();
         await confirmation.clickFooterConfirmButton();
         await activityListPage.checkTransactionActivityByText('Sent');
