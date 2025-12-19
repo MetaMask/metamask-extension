@@ -76,6 +76,7 @@ export function useConfirmationNavigation() {
 
   const navigateNextOrHome = useCallback(
     async (confirmationId: string) => {
+      await dispatch(setDefaultHomeActiveTabName('activity'));
       const pendingConfirmations = confirmations.filter(
         (confirmation) => confirmation.id !== confirmationId,
       );
@@ -83,7 +84,6 @@ export function useConfirmationNavigation() {
         const index = getIndex(pendingConfirmations[0].id);
         navigateToIndex(index);
       } else {
-        await dispatch(setDefaultHomeActiveTabName('activity'));
         navigate(DEFAULT_ROUTE, { state: { stayOnHomePage: true } });
       }
     },
