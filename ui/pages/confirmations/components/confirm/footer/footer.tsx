@@ -244,16 +244,15 @@ const Footer = () => {
     if (!currentConfirmation) {
       return;
     }
-
     if (isAddEthereumChain) {
       await onAddEthereumChain();
       navigate(DEFAULT_ROUTE);
     } else if (isTransactionConfirmation) {
       await onTransactionConfirm();
-      await navigateNextOrHome(currentConfirmation.id);
+      navigateNextOrHome(currentConfirmation.id);
     } else {
       await dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
-      await navigateNextOrHome(currentConfirmation.id);
+      navigateNextOrHome(currentConfirmation.id);
     }
 
     resetTransactionState();
@@ -281,7 +280,7 @@ const Footer = () => {
     if (isAddEthereumChain) {
       navigate(DEFAULT_ROUTE);
     } else {
-      await navigateNextOrHome(currentConfirmation.id);
+      navigateNextOrHome(currentConfirmation.id);
     }
   }, [
     navigateNextOrHome,

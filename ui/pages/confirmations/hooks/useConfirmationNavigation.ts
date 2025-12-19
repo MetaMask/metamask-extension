@@ -75,8 +75,7 @@ export function useConfirmationNavigation() {
   );
 
   const navigateNextOrHome = useCallback(
-    async (confirmationId: string) => {
-      await dispatch(setDefaultHomeActiveTabName('activity'));
+    (confirmationId: string) => {
       const pendingConfirmations = confirmations.filter(
         (confirmation) => confirmation.id !== confirmationId,
       );
@@ -84,10 +83,11 @@ export function useConfirmationNavigation() {
         const index = getIndex(pendingConfirmations[0].id);
         navigateToIndex(index);
       } else {
-        navigate(DEFAULT_ROUTE, { state: { stayOnHomePage: true } });
+        dispatch(setDefaultHomeActiveTabName('activity'));
+        navigate(DEFAULT_ROUTE, { replace: true });
       }
     },
-    [confirmations, getIndex, navigateToIndex, navigate],
+    [confirmations, dispatch, getIndex, navigateToIndex, navigate],
   );
 
   return {

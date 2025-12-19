@@ -34,6 +34,10 @@ export function GasFeeTokenIcon({
   tokenAddress: Hex;
 }) {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+
+  if (!currentConfirmation) {
+    return null;
+  }
   const { chainId } = currentConfirmation;
 
   const networkConfiguration = useSelector((state) =>

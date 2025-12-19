@@ -87,6 +87,7 @@ describe('Smart Transactions', function () {
         await driver.delay(1000);
         await sendPage.clickConfirmButton();
 
+        await homePage.goToActivityList();
         const activityList = new ActivityListPage(driver);
         await activityList.checkNoFailedTransactions();
         // At the moment, there is 1 Sent and 1 Unnamed transaction (issue #35565)
