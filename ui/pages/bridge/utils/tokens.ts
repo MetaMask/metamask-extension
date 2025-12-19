@@ -11,12 +11,10 @@ import {
   intersection,
 } from '@metamask/superstruct';
 import {
-  type CaipAssetType,
   CaipAssetTypeStruct,
   type CaipChainId,
   CaipChainIdStruct,
 } from '@metamask/utils';
-import { STATIC_METAMASK_BASE_URL } from '../../../../shared/constants/bridge';
 
 const MinimalAssetSchema = type({
   /**
