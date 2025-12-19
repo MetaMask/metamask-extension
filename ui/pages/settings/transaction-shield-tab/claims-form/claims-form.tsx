@@ -1,4 +1,11 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import { debounce } from 'lodash';
 import { isValidHexAddress } from '@metamask/controller-utils';
 import {
   Box,
@@ -22,6 +29,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import classnames from 'classnames';
+import log from 'loglevel';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useClaims } from '../../../../contexts/claims/claims';
 import {
@@ -77,6 +85,8 @@ import {
   MAX_FILE_SIZE_MB,
 } from './constants';
 import { isValidTransactionHash } from './utils';
+
+const DEBOUNCE_TIME_MS = 2000;
 
 const ClaimsForm = ({
   mode = CLAIMS_FORM_MODES.NEW,
@@ -446,13 +456,33 @@ const ClaimsForm = ({
     caseDescription,
   ]);
 
+  const debouncedShowDraftSavedToast = useRef(
+    debounce(() => {
+      dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.DraftSaved));
+    }, DEBOUNCE_TIME_MS),
+  ).current;
+
+  const debouncedLogDraftError = useRef(
+    debounce((error: unknown) => {
+      log.error('Error saving draft', error);
+    }, DEBOUNCE_TIME_MS),
+  ).current;
+
+  // Cleanup debounced functions on unmount to prevent calls on unmounted component
+  useEffect(() => {
+    return () => {
+      debouncedShowDraftSavedToast.cancel();
+      debouncedLogDraftError.cancel();
+    };
+  }, [debouncedShowDraftSavedToast, debouncedLogDraftError]);
+
   const handleSaveDraft = useCallback(
     async ({
-      silent = false,
+      shouldDebounce = false,
       overrides = {},
     }: {
-      // silent flag is used for autosave to avoid showing toast every time user changes the form
-      silent?: boolean;
+      // shouldDebounce flag is used for autosave to debounce toast/log instead of firing on every form change
+      shouldDebounce?: boolean;
       // overrides allow passing new values directly to avoid stale closure issues with async React state updates
       overrides?: {
         chainId?: string;
@@ -471,17 +501,20 @@ const ClaimsForm = ({
           description: caseDescription,
           draftId: currentDraftId,
         });
-        if (!silent) {
+        if (shouldDebounce) {
+          debouncedShowDraftSavedToast();
+        } else {
           dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.DraftSaved));
           if (!isEditDraft) {
             navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);
           }
         }
       } catch (error) {
-        if (!silent) {
-          console.log('Error saving draft', error);
+        if (shouldDebounce) {
+          debouncedLogDraftError(error);
+        } else {
+          log.error('Error saving draft', error);
         }
-        // Silently ignore autosave errors to avoid unhandled promise rejections
       }
     },
     [
@@ -496,6 +529,8 @@ const ClaimsForm = ({
       isEditDraft,
       dispatch,
       navigate,
+      debouncedShowDraftSavedToast,
+      debouncedLogDraftError,
     ],
   );
 
@@ -626,7 +661,7 @@ const ClaimsForm = ({
         onBlur={async () => {
           validateEmail();
           if (isEditDraft) {
-            await handleSaveDraft({ silent: true });
+            await handleSaveDraft({ shouldDebounce: true });
           }
         }}
         value={email}
@@ -660,7 +695,7 @@ const ClaimsForm = ({
         onBlur={async () => {
           validateReimbursementWalletAddress();
           if (isEditDraft) {
-            await handleSaveDraft({ silent: true });
+            await handleSaveDraft({ shouldDebounce: true });
           }
         }}
         value={reimbursementWalletAddress}
@@ -687,7 +722,7 @@ const ClaimsForm = ({
           setImpactedWalletAddress(address);
           if (isEditDraft) {
             await handleSaveDraft({
-              silent: true,
+              shouldDebounce: true,
               overrides: { impactedWalletAddress: address },
             });
           }
@@ -716,7 +751,7 @@ const ClaimsForm = ({
           setChainId(selectedChainId);
           if (isEditDraft) {
             await handleSaveDraft({
-              silent: true,
+              shouldDebounce: true,
               overrides: { chainId: selectedChainId },
             });
           }
@@ -768,7 +803,7 @@ const ClaimsForm = ({
         onBlur={async () => {
           validateImpactedTxHash();
           if (isEditDraft) {
-            await handleSaveDraft({ silent: true });
+            await handleSaveDraft({ shouldDebounce: true });
           }
         }}
         value={impactedTransactionHash}
@@ -796,7 +831,7 @@ const ClaimsForm = ({
           onBlur={async () => {
             validateDescription();
             if (isEditDraft) {
-              await handleSaveDraft({ silent: true });
+              await handleSaveDraft({ shouldDebounce: true });
             }
           }}
           value={caseDescription}
