@@ -6,7 +6,9 @@ export async function runTrackedTask<Return>(
   taskName: string,
   fn: () => Promise<Return>,
 ): Promise<Return> {
-  if (!sentry) return fn();
+  if (!sentry) {
+    return fn();
+  }
 
   const attributes = {
     'task.name': taskName,
