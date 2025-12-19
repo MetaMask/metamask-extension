@@ -15,6 +15,7 @@ import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import {
   getNativeAssetForChainId,
   isNativeAddress,
+  isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import { Asset } from '@metamask/assets-controllers';
 import getFetchWithTimeout from '../modules/fetch-with-timeout';
@@ -72,11 +73,13 @@ export const getAssetImageUrl = (
   if (!assetIdInCaip) {
     return undefined;
   }
+  const normalizedAssetId = (
+    isNonEvmChainId(chainIdInCaip) ? assetIdInCaip : assetIdInCaip.toLowerCase()
+  ).replaceAll(':', '/');
 
-  return `${STATIC_METAMASK_BASE_URL}/api/v2/tokenIcons/assets/${assetIdInCaip.replaceAll(
-    ':',
-    '/',
-  )}.png`;
+  return `${STATIC_METAMASK_BASE_URL}/api/v2/tokenIcons/assets/${
+    normalizedAssetId
+  }.png`;
 };
 
 export type AssetMetadata = {
