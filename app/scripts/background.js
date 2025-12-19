@@ -2029,8 +2029,7 @@ if (inTest) {
     if (message.type === 'STOP_PERSISTENCE') {
       await evacuate();
       return { status: 'PERSISTENCE_STOPPED' };
-    } else {
-      return Promise.resolve();
     }
+    return Promise.resolve();
   });
 }
