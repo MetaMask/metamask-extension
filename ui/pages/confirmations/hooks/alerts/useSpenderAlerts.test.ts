@@ -371,7 +371,6 @@ describe('useSpenderAlerts', () => {
           data: '0xsetApprovalForAllRevokeData',
         },
       };
-
       mockUseConfirmContext.mockReturnValue({
         currentConfirmation: mockTransaction,
         isScrollToBottomCompleted: false,
@@ -382,7 +381,6 @@ describe('useSpenderAlerts', () => {
         spender: MOCK_SPENDER_ADDRESS as `0x${string}`,
         isRevokeAll: true,
       });
-
       mockUseTrustSignal.mockReturnValue({
         state: TrustSignalDisplayState.Malicious,
         label: 'Known malicious address',
@@ -404,7 +402,6 @@ describe('useSpenderAlerts', () => {
           data: '0xapproveRevokeData',
         },
       };
-
       mockUseConfirmContext.mockReturnValue({
         currentConfirmation: mockTransaction,
         isScrollToBottomCompleted: false,
@@ -416,12 +413,10 @@ describe('useSpenderAlerts', () => {
         amountOrTokenId: new BigNumber(0),
         isRevokeAll: false,
       });
-
       setupSelectorMocks(
         { '0x1': { data: { [tokenAddress]: { symbol: 'TEST' } } } },
         {},
       );
-
       mockUseTrustSignal.mockReturnValue({
         state: TrustSignalDisplayState.Malicious,
         label: 'Known malicious address',
@@ -438,7 +433,6 @@ describe('useSpenderAlerts', () => {
         message: { spender: MOCK_SPENDER_ADDRESS, value: '0' },
         types: {},
       });
-
       const mockSignatureRequest = {
         id: MOCK_TRANSACTION_ID,
         type: 'eth_signTypedData',
@@ -446,7 +440,6 @@ describe('useSpenderAlerts', () => {
           data: mockPermitData,
         },
       };
-
       mockUseConfirmContext.mockReturnValue({
         currentConfirmation: mockSignatureRequest,
         isScrollToBottomCompleted: false,
@@ -458,7 +451,6 @@ describe('useSpenderAlerts', () => {
         domain: { name: 'Token', version: '1' },
         types: {},
       });
-
       mockUseTrustSignal.mockReturnValue({
         state: TrustSignalDisplayState.Malicious,
         label: 'Known malicious address',
@@ -479,7 +471,6 @@ describe('useSpenderAlerts', () => {
         message: { spender: MOCK_SPENDER_ADDRESS, allowed: false },
         types: {},
       });
-
       const mockSignatureRequest = {
         id: MOCK_TRANSACTION_ID,
         type: 'eth_signTypedData',
@@ -487,7 +478,6 @@ describe('useSpenderAlerts', () => {
           data: mockPermitData,
         },
       };
-
       mockUseConfirmContext.mockReturnValue({
         currentConfirmation: mockSignatureRequest,
         isScrollToBottomCompleted: false,
@@ -503,7 +493,6 @@ describe('useSpenderAlerts', () => {
         },
         types: {},
       });
-
       mockUseTrustSignal.mockReturnValue({
         state: TrustSignalDisplayState.Malicious,
         label: 'Known malicious address',
@@ -523,7 +512,6 @@ describe('useSpenderAlerts', () => {
           data: '0xapprovedata',
         },
       };
-
       mockUseConfirmContext.mockReturnValue({
         currentConfirmation: mockTransaction,
         isScrollToBottomCompleted: false,
@@ -535,7 +523,6 @@ describe('useSpenderAlerts', () => {
         amountOrTokenId: new BigNumber(1000),
         isRevokeAll: false,
       });
-
       mockUseTrustSignal.mockReturnValue({
         state: TrustSignalDisplayState.Warning,
         label: 'Potentially suspicious address',
@@ -558,7 +545,6 @@ describe('useSpenderAlerts', () => {
           data: '0xapproveNFTData',
         },
       };
-
       mockUseConfirmContext.mockReturnValue({
         currentConfirmation: mockTransaction,
         isScrollToBottomCompleted: false,
@@ -570,12 +556,10 @@ describe('useSpenderAlerts', () => {
         amountOrTokenId: new BigNumber(0),
         isRevokeAll: false,
       });
-
       setupSelectorMocks(
         {},
         { '0x1': { [nftContractAddress]: { name: 'TestNFT' } } },
       );
-
       mockUseTrustSignal.mockReturnValue({
         state: TrustSignalDisplayState.Malicious,
         label: 'Known malicious address',
