@@ -792,7 +792,10 @@ export const useShieldRewards = (): {
   });
 
   const hasAccountOptedInResultValue = Boolean(
-    seasonStatus && candidateSubscriptionId && !hasAccountOptedInResultPending,
+    seasonStatus &&
+      candidateSubscriptionId &&
+      !hasAccountOptedInResultPending &&
+      !hasAccountOptedInResultError,
   );
 
   const caipAccountId = useMemo(() => {
