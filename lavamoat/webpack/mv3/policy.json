@@ -1170,6 +1170,9 @@
       }
     },
     "@metamask/snaps-sdk": {
+      "globals": {
+        "URL": true
+      },
       "packages": {
         "@metamask/superstruct": true,
         "@metamask/utils": true,

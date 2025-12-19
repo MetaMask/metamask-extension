@@ -443,7 +443,7 @@
     "message": "Alerte"
   },
   "alertAccountTypeUpgradeMessage": {
-    "message": "Vous passez d'un compte standard à un compte intelligent. Vous conserverez la même adresse de compte tout en bénéficiant de transactions plus rapides et de frais de réseau moins élevés. $1."
+    "message": "Vous passez d'un compte standard à un compte intelligent. Vous conserverez la même adresse de compte tout en bénéficiant de transactions plus rapides et de frais de réseau moins élevés. $1"
   },
   "alertAccountTypeUpgradeTitle": {
     "message": "Type de compte"
