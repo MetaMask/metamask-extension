@@ -63,7 +63,7 @@ function isRevokeOperation(
         return true;
       }
       if (approvalData.amountOrTokenId?.isZero()) {
-        const chainId = transactionMeta.chainId;
+        const { chainId } = transactionMeta;
         const tokenAddress = (
           approvalData.tokenAddress || transactionMeta.txParams?.to
         )?.toLowerCase();
