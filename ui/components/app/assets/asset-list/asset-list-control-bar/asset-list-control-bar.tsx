@@ -84,6 +84,7 @@ import {
   showImportNftsModal,
   showImportTokensModal,
   showModal,
+  updateBalancesFoAccounts,
 } from '../../../../../store/actions';
 import Tooltip from '../../../../ui/tooltip';
 import {
@@ -278,6 +279,9 @@ const AssetListControlBar = ({
   };
 
   const handleRefresh = () => {
+    dispatch(
+      updateBalancesFoAccounts(Object.keys(enabledNetworksByNamespace), false),
+    );
     dispatch(detectTokens(Object.keys(enabledNetworksByNamespace)));
     closePopover();
   };

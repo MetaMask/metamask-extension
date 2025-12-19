@@ -108,6 +108,9 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.openAccountMenu();
+
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
 

@@ -184,6 +184,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     getScrollElement: () => scrollContainerRef?.current || null,
     estimateSize: () => ASSET_CELL_HEIGHT,
     overscan: 10,
+    initialOffset: scrollContainerRef?.current?.scrollTop,
   });
 
   useEffect(() => {

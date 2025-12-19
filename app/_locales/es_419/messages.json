@@ -685,9 +685,6 @@
   "ethGasPriceFetchWarning": {
     "message": "Se muestra el precio del gas de respaldo, ya que el servicio para calcular el precio del gas principal no se encuentra disponible en este momento."
   },
-  "ethereumPublicAddress": {
-    "message": "Dirección pública de Ethereum"
-  },
   "etherscan": {
     "message": "Etherscan"
   },
