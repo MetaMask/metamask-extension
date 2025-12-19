@@ -17,6 +17,7 @@ export const POST_UNLOCK_DELAY = 20000;
 /**
  * Skips the current test if running on Firefox.
  * Account syncing tests are flaky on Firefox due to timing issues.
+ *
  * @param context - The Mocha test context (this)
  */
 export function skipOnFirefox(context: Mocha.Context): void {
