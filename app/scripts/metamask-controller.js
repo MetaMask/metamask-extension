@@ -2917,8 +2917,7 @@ export default class MetamaskController extends EventEmitter {
       unlockHardwareWalletAccount: this.unlockHardwareWalletAccount.bind(this),
       attemptLedgerTransportCreation:
         this.attemptLedgerTransportCreation.bind(this),
-      getLedgerAppNameAndVersion: this.getLedgerAppNameAndVersion.bind(this),
-      getHdPathForHardwareKeyring: this.getHdPathForHardwareKeyring.bind(this),
+      getAppNameAndVersion: this.getAppNameAndVersion.bind(this),
 
       // qr hardware devices
       completeQrCodeScan:
@@ -5679,40 +5678,26 @@ export default class MetamaskController extends EventEmitter {
   async attemptLedgerTransportCreation() {
     return await this.#withKeyringForDevice(
       { name: HardwareDeviceNames.ledger },
-      async (keyring) => {
-        const result = await keyring.attemptMakeApp();
-        console.log('MIMO Result:', result);
-        return result;
-      },
+      async (keyring) => await keyring.attemptMakeApp(),
     );
   }
 
-  async getLedgerAppNameAndVersion() {
-    return await this.#withKeyringForDevice(
+  async getAppNameAndVersion() {
+    const {
+      payload: { success, payload },
+    } = await this.#withKeyringForDevice(
       { name: HardwareDeviceNames.ledger },
-      async (keyring) => {
-        const result = await keyring.getAppAndName();
-        console.log(
-          '[MetamaskController] Ledger app name and version:',
-          result,
-        );
-        return result;
-      },
+      async (keyring) => await keyring.getAppNameAndVersion(),
     );
-  }
 
-  async getHdPathForHardwareKeyring(keyringType) {
-    return await this.#withKeyringForDevice(
-      { name: keyringType },
-      (keyring) => keyring.hdPath,
-    );
-  }
+    console.log('getAppNameAndVersion', success, payload);
 
-  async checkEthAppOpen() {
-    return await this.#withKeyringForDevice(
-      { name: HardwareDeviceNames.ledger },
-      async (keyring) => keyring.checkEthAppOpen(),
-    );
+    if (!success) {
+      // The payload is the error from the iframe
+      throw payload;
+    }
+
+    return payload;
   }
 
   /**

@@ -5,9 +5,13 @@ import {
 import {
   attemptLedgerTransportCreation,
   getHdPathForHardwareKeyring,
-  getLedgerAppNameAndVersion,
+  getAppNameAndVersion,
 } from '../../../store/actions';
-import { createHardwareWalletError, ErrorCode } from '../errors';
+import {
+  createHardwareWalletError,
+  ErrorCode,
+  parseErrorByType,
+} from '../errors';
 import {
   DeviceEvent,
   HardwareWalletType,
@@ -209,7 +213,7 @@ export class LedgerAdapter implements HardwareWalletAdapter {
    * These errors are already properly formatted and include all necessary metadata
    */
   async verifyDeviceReady(): Promise<boolean> {
-    if (!this.isConnected()) {
+    if (!this.currentDeviceId) {
       throw createHardwareWalletError(
         ErrorCode.DEVICE_STATE_003,
         HardwareWalletType.LEDGER,
@@ -217,21 +221,28 @@ export class LedgerAdapter implements HardwareWalletAdapter {
       );
     }
 
+    if (!this.isConnected()) {
+      try {
+        await this.connect(this.currentDeviceId);
+      } catch (error) {
+        throw createHardwareWalletError(
+          ErrorCode.DEVICE_STATE_003,
+          HardwareWalletType.LEDGER,
+          error instanceof Error ? error.message : 'Unknown error',
+          {
+            cause: error instanceof Error ? error : undefined,
+          },
+        );
+      }
+    }
+
     try {
-      // attemptLedgerTransportCreation calls keyring.attemptMakeApp()
-      // which throws native HardwareWalletError instances from @metamask/keyring-utils
-      // These errors already have proper codes like AUTH_LOCK_001, DEVICE_STATE_001, etc.
-      console.log(LOG_TAG, 'Calling attemptLedgerTransportCreation');
-      const result = await attemptLedgerTransportCreation();
-      console.log(LOG_TAG, 'Result:', result);
-
+      console.log(LOG_TAG, 'Calling getAppNameAndVersion');
       // Get the app name and version from the Ledger device
-      const appInfo = await getLedgerAppNameAndVersion();
-      console.log(LOG_TAG, 'Ledger app info:', appInfo);
+      const { appName } = await getAppNameAndVersion();
+      console.log(LOG_TAG, 'Ledger app info:', appName);
 
-      // If successful, device is ready with Ethereum app open
-      console.log(LOG_TAG, 'Device ready verified successfully');
-      return Boolean(result);
+      return appName === 'Ethereum';
     } catch (error) {
       console.error(LOG_TAG, 'Error verifying device ready:', error);
 
@@ -261,6 +272,13 @@ export class LedgerAdapter implements HardwareWalletAdapter {
           });
         } else if (errorCode === ErrorCode.DEVICE_STATE_003) {
           console.log(LOG_TAG, 'Emitting DISCONNECTED event');
+          this.options.onDeviceEvent({
+            event: DeviceEvent.DISCONNECTED,
+            error: error as unknown as Error,
+          });
+        } else {
+          // Catch-all for other errors
+          console.log(LOG_TAG, 'Emitting DISCONNECTED event (catch-all)');
           this.options.onDeviceEvent({
             event: DeviceEvent.DISCONNECTED,
             error: error as unknown as Error,

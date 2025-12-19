@@ -6267,11 +6267,11 @@ export async function attemptLedgerTransportCreation() {
  *
  * @returns A promise that resolves to an object containing the app name and version.
  */
-export async function getLedgerAppNameAndVersion(): Promise<{
-  app: string;
-  name: string;
+export async function getAppNameAndVersion(): Promise<{
+  appName: string;
+  version: string;
 }> {
-  return await submitRequestToBackground('getLedgerAppNameAndVersion');
+  return await submitRequestToBackground('getAppNameAndVersion');
 }
 
 /**

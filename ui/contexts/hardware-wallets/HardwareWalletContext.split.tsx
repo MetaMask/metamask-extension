@@ -435,6 +435,11 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
     const abortSignal = abortControllerRef.current?.signal;
 
     const handleNativeConnect = (device: HIDDevice) => {
+      console.log(
+        LOG_TAG,
+        'Native connect event for device:',
+        device.productId,
+      );
       if (abortSignal?.aborted) {
         return;
       }
@@ -493,6 +498,22 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
         return;
       }
 
+      // Reuse existing adapter if same device and already connected
+      const existingAdapter = adapterRef.current;
+      if (existingAdapter?.isConnected()) {
+        const currentDeviceId = deviceIdRef.current;
+        const currentWalletType = walletTypeRef.current;
+
+        if (currentDeviceId === id && currentWalletType === type) {
+          console.log(
+            LOG_TAG,
+            `Reusing existing connection to ${type} device: ${id}`,
+          );
+          updateConnectionState(ConnectionState.connected());
+          return;
+        }
+      }
+
       isConnectingRef.current = true;
       console.log(LOG_TAG, `Connecting to ${type} device: ${id}`);
 
@@ -501,6 +522,7 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
       updateConnectionState(ConnectionState.connecting());
 
       try {
+        // Only destroy if we're not reusing (different device or not connected)
         adapterRef.current?.destroy();
 
         const adapterOptions: HardwareWalletAdapterOptions = {
@@ -593,7 +615,7 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
     }
 
     getDeviceId()
-      .then((id) => {
+      .then(async (id) => {
         if (abortSignal?.aborted) {
           return;
         }
@@ -610,12 +632,14 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
         ) {
           hasAutoConnectedRef.current = true;
           lastConnectedAccountRef.current = accountAddress ?? null;
-          connectRef.current?.(detectedWalletType, id);
+          // Await connection to ensure state updates to 'connected'
+          await connectRef.current?.(detectedWalletType, id);
+          console.log(LOG_TAG, 'Auto-connection completed');
         }
       })
       .catch((error: unknown) => {
         const errorMessage = isError(error) ? error.message : String(error);
-        console.error(LOG_TAG, 'Error getting device ID:', errorMessage);
+        console.error(LOG_TAG, 'Error during auto-connection:', errorMessage);
       });
   }, [
     isHardwareWalletAccount,
@@ -818,33 +842,37 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
 
     const adapter = adapterRef.current;
 
-    if (adapter?.isConnected()) {
-      if (adapter.verifyDeviceReady) {
-        await adapter.verifyDeviceReady();
-      }
-      if (!abortSignal?.aborted) {
-        updateConnectionState(ConnectionState.ready());
-      }
-      return true;
-    }
+    // If not connected, try to connect first
+    if (!adapter?.isConnected()) {
+      // Use refs to access current state values without creating dependencies
+      const currentDeviceId = deviceIdRef.current;
+      const currentDetectedWalletType = detectedWalletTypeRef.current;
 
-    // Use refs to access current state values without creating dependencies
-    const currentDeviceId = deviceIdRef.current;
-    const currentDetectedWalletType = detectedWalletTypeRef.current;
+      if (!currentDeviceId || !currentDetectedWalletType) {
+        updateConnectionState(
+          ConnectionState.error(
+            'connection_failed',
+            new Error('Hardware wallet device not found'),
+          ),
+        );
+        return false;
+      }
 
-    if (currentDeviceId && currentDetectedWalletType) {
       await connect(currentDetectedWalletType, currentDeviceId);
-
-      if (!abortSignal?.aborted) {
-        if (adapter?.verifyDeviceReady) {
-          await adapter.verifyDeviceReady();
-        }
-        updateConnectionState(ConnectionState.ready());
-      }
-      return true;
     }
 
-    throw new Error('Hardware wallet device not found');
+    // Common logic: verify device readiness and update connection state
+    if (!abortSignal?.aborted) {
+      if (adapter?.verifyDeviceReady) {
+        const result = await adapter.verifyDeviceReady();
+        if (result) {
+          updateConnectionState(ConnectionState.ready());
+          return true;
+        }
+      }
+    }
+
+    return false;
   }, [connect, updateConnectionState]);
 
   // Memoized context values
