@@ -102,19 +102,19 @@ export function getBuildName(
  *
  * Resolution order:
  * 1. If `--test` is set, returns 'testing'
- * 2. If `--metamaskEnvironment` is explicitly set via CLI, uses that value
+ * 2. If `--targetEnvironment` is explicitly set via CLI, uses that value
  * 3. If `--env development`, returns 'development'
  * 4. Otherwise, auto-detects from git context (release branch, main, PR, or other)
  *
  * NOTE: 'production' environment is NEVER auto-detected. It must be explicitly
- * set via --metamaskEnvironment to prevent accidental pollution of production
+ * set via --targetEnvironment to prevent accidental pollution of production
  * Sentry with events from local or CI test builds.
  *
  * @param args - The parsed CLI arguments
  * @returns The resolved environment string
  */
 export function resolveEnvironment(
-  args: Pick<Args, 'test' | 'env' | 'metamaskEnvironment'>,
+  args: Pick<Args, 'test' | 'env' | 'targetEnvironment'>,
 ): Environment {
   // Test builds always use 'testing' environment
   if (args.test) {
@@ -123,8 +123,8 @@ export function resolveEnvironment(
 
   // If explicitly set via CLI, use that value
   // This is the ONLY way to get 'production' environment
-  if (args.metamaskEnvironment && isEnvironment(args.metamaskEnvironment)) {
-    return args.metamaskEnvironment;
+  if (args.targetEnvironment && isEnvironment(args.targetEnvironment)) {
+    return args.targetEnvironment;
   }
 
   // Development builds use 'development' environment

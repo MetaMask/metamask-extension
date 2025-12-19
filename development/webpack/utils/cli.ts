@@ -376,7 +376,7 @@ function getOptions(
       type: 'boolean',
     },
 
-    metamaskEnvironment: {
+    targetEnvironment: {
       array: false,
       choices: environmentOptions,
       defaultDescription:
@@ -421,7 +421,7 @@ export function getDryRunMessage(
   return `🦊 Build Config 🦊
 
 Environment (--env): ${args.env}
-MetaMask Environment: ${resolvedEnvironment ?? args.metamaskEnvironment ?? '(auto-detected)'}
+Target Environment: ${resolvedEnvironment ?? args.targetEnvironment ?? '(auto-detected)'}
 Minify: ${args.minify}
 Watch: ${args.watch}
 Cache: ${args.cache}
