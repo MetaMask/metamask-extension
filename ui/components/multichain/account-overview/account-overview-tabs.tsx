@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo } from 'react';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Hex, isStrictHexString } from '@metamask/utils';
@@ -48,6 +48,9 @@ export const AccountOverviewTabs = ({
   showActivity,
   showDefi,
 }: AccountOverviewTabsProps) => {
+  const [activeTabKey, setActiveTabKey] = useState<
+    AccountOverviewTabKey | undefined
+  >(defaultHomeActiveTabName ?? undefined);
   const navigate = useNavigate();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -73,6 +76,7 @@ export const AccountOverviewTabs = ({
 
   const handleTabClick = useCallback(
     (tabName: AccountOverviewTabKey) => {
+      setActiveTabKey(tabName);
       onTabClick(tabName);
       if (tabName === AccountOverviewTabKey.Nfts) {
         dispatch(detectNfts(selectedChainIds));
@@ -128,7 +132,7 @@ export const AccountOverviewTabs = ({
 
       <Tabs<AccountOverviewTabKey>
         defaultActiveTabKey={defaultHomeActiveTabName ?? undefined}
-        activeTabKey={defaultHomeActiveTabName ?? undefined}
+        activeTabKey={activeTabKey}
         onTabClick={handleTabClick}
         tabListProps={{
           className: 'px-4',
