@@ -111,6 +111,7 @@ buildTypes:
       - APPLE_EXPERIMENTAL_CLIENT_ID
       - GOOGLE_CLIENT_ID_REF: GOOGLE_EXPERIMENTAL_CLIENT_ID
       - APPLE_CLIENT_ID_REF: APPLE_EXPERIMENTAL_CLIENT_ID
+      - ENABLE_SETTINGS_PAGE_DEV_OPTIONS: true
     isPrerelease: true
     manifestOverrides: app/build-types/experimental/manifest
     buildNameOverride: MetaMask Experimental

@@ -290,6 +290,7 @@ export type ControllerStatePropertiesEnumerated = {
   unapprovedTypedMessagesCount: SignatureControllerState['unapprovedTypedMessagesCount'];
   signatureRequests: SignatureControllerState['signatureRequests'];
   smartTransactionsState: SmartTransactionsControllerState['smartTransactionsState'];
+  isReady: SnapControllerState['isReady'];
   snaps: SnapControllerState['snaps'];
   snapStates: SnapControllerState['snapStates'];
   unencryptedSnapStates: SnapControllerState['unencryptedSnapStates'];
@@ -298,6 +299,7 @@ export type ControllerStatePropertiesEnumerated = {
   database: SnapsRegistryState['database'];
   lastUpdated: SnapsRegistryState['lastUpdated'];
   databaseUnavailable: SnapsRegistryState['databaseUnavailable'];
+  signature: SnapsRegistryState['signature'];
   subjectMetadata: SubjectMetadataControllerState['subjectMetadata'];
   swapsState: SwapsControllerState['swapsState'];
   tokenBalances: TokenBalancesControllerState['tokenBalances'];
