@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { TransactionType } from '@metamask/transaction-controller';
 import { NameType } from '@metamask/name-controller';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from 'bignumber.js';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../context/confirm';
@@ -101,9 +101,6 @@ const expectedMaliciousAlert = {
 
 const MOCK_TOKEN_ADDRESS = '0xTokenAddress';
 
-let mockErc20Cache: Record<string, { data: Record<string, unknown> }> = {};
-let mockNftCache: Record<string, Record<string, unknown>> = {};
-
 function setupSelectorMocks(
   erc20Cache: Record<string, { data: Record<string, unknown> }> = {},
   nftCache: Record<string, Record<string, unknown>> = {},
@@ -117,8 +114,6 @@ describe('useSpenderAlerts', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockErc20Cache = {};
-    mockNftCache = {};
     mockUseI18nContext.mockReturnValue(mockT);
     mockUseTrustSignal.mockReturnValue({
       state: TrustSignalDisplayState.Unknown,
@@ -367,7 +362,7 @@ describe('useSpenderAlerts', () => {
   });
 
   describe('revoke operations', () => {
-    it('should return empty array for setApprovalForAll revocation with malicious spender', () => {
+    it('returns empty array for setApprovalForAll revocation with malicious spender', () => {
       const mockTransaction = {
         id: MOCK_TRANSACTION_ID,
         type: TransactionType.tokenMethodSetApprovalForAll,
@@ -398,7 +393,7 @@ describe('useSpenderAlerts', () => {
       expect(result.current).toHaveLength(0);
     });
 
-    it('should return empty array for ERC20 approval revocation (zero amount) with malicious spender', () => {
+    it('returns empty array for ERC20 approval revocation (zero amount) with malicious spender', () => {
       const tokenAddress = MOCK_TOKEN_ADDRESS.toLowerCase();
       const mockTransaction = {
         id: MOCK_TRANSACTION_ID,
@@ -437,7 +432,7 @@ describe('useSpenderAlerts', () => {
       expect(result.current).toHaveLength(0);
     });
 
-    it('should return empty array for permit signature revocation (zero value) with malicious spender', () => {
+    it('returns empty array for permit signature revocation (zero value) with malicious spender', () => {
       const mockPermitData = JSON.stringify({
         domain: { name: 'Token', version: '1' },
         message: { spender: MOCK_SPENDER_ADDRESS, value: '0' },
@@ -474,7 +469,7 @@ describe('useSpenderAlerts', () => {
       expect(result.current).toHaveLength(0);
     });
 
-    it('should return empty array for DAI permit revocation (allowed: false) with malicious spender', () => {
+    it('returns empty array for DAI permit revocation (allowed: false) with malicious spender', () => {
       const mockPermitData = JSON.stringify({
         domain: {
           name: 'Dai',
@@ -519,7 +514,7 @@ describe('useSpenderAlerts', () => {
       expect(result.current).toHaveLength(0);
     });
 
-    it('should still return alert for warning spender when NOT a revoke (non-zero amount)', () => {
+    it('returns alert for warning spender when NOT a revoke (non-zero amount)', () => {
       const mockTransaction = {
         id: MOCK_TRANSACTION_ID,
         type: TransactionType.tokenMethodApprove,
@@ -552,7 +547,7 @@ describe('useSpenderAlerts', () => {
       expect(result.current[0]).toEqual(expectedWarningAlert);
     });
 
-    it('should still return alert for NFT approval with token ID 0 (found in NFT cache)', () => {
+    it('returns alert for NFT approval with token ID 0 (found in NFT cache)', () => {
       const nftContractAddress = '0xnftcontractaddress';
       const mockTransaction = {
         id: MOCK_TRANSACTION_ID,
