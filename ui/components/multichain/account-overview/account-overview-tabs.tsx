@@ -127,6 +127,7 @@ export const AccountOverviewTabs = ({
       <AssetListTokenDetection />
 
       <Tabs<AccountOverviewTabKey>
+        defaultActiveTabKey={defaultHomeActiveTabName ?? undefined}
         activeTabKey={defaultHomeActiveTabName ?? undefined}
         onTabClick={handleTabClick}
         tabListProps={{
