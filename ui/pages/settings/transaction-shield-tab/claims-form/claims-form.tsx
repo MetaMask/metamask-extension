@@ -449,15 +449,22 @@ const ClaimsForm = ({
   const handleSaveDraft = useCallback(
     async ({
       silent = false,
+      overrides = {},
     }: {
       // silent flag is used for autosave to avoid showing toast every time user changes the form
       silent?: boolean;
+      // overrides allow passing new values directly to avoid stale closure issues with async React state updates
+      overrides?: {
+        chainId?: string;
+        impactedWalletAddress?: string;
+      };
     } = {}) => {
       try {
         await saveDraft({
-          chainId,
+          chainId: overrides.chainId ?? chainId,
           email,
-          impactedWalletAddress: impactedWalletAddress as `0x${string}`,
+          impactedWalletAddress: (overrides.impactedWalletAddress ??
+            impactedWalletAddress) as `0x${string}`,
           impactedTxHash: impactedTransactionHash as `0x${string}`,
           reimbursementWalletAddress:
             reimbursementWalletAddress as `0x${string}`,
@@ -496,9 +503,13 @@ const ClaimsForm = ({
     if (!currentDraftId) {
       return;
     }
-    await deleteDraft(currentDraftId);
-    dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.DraftDeleted));
-    navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);
+    try {
+      await deleteDraft(currentDraftId);
+      dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.DraftDeleted));
+      navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);
+    } catch (error) {
+      console.error('Failed to delete draft', error);
+    }
   }, [currentDraftId, deleteDraft, dispatch, navigate]);
 
   const saveDeleteDraftButton = useMemo(() => {
@@ -675,7 +686,10 @@ const ClaimsForm = ({
         onAccountSelect={async (address) => {
           setImpactedWalletAddress(address);
           if (isEditDraft) {
-            await handleSaveDraft({ silent: true });
+            await handleSaveDraft({
+              silent: true,
+              overrides: { impactedWalletAddress: address },
+            });
           }
           const sameWalletAddressErrorKey =
             ERROR_MESSAGE_MAP[SUBMIT_CLAIM_ERROR_CODES.INVALID_WALLET_ADDRESSES]
@@ -701,7 +715,10 @@ const ClaimsForm = ({
         onNetworkSelect={async (selectedChainId) => {
           setChainId(selectedChainId);
           if (isEditDraft) {
-            await handleSaveDraft({ silent: true });
+            await handleSaveDraft({
+              silent: true,
+              overrides: { chainId: selectedChainId },
+            });
           }
         }}
         disabled={isView}
