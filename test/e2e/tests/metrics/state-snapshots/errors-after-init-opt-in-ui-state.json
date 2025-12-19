@@ -302,11 +302,13 @@
       "sol": { "conversionDate": 0, "conversionRate": 0 }
     },
     "cryptocurrencies": ["btc", "sol"],
+    "isReady": "boolean",
     "snaps": "object",
     "events": "object",
     "database": "object",
     "lastUpdated": "number",
     "databaseUnavailable": "boolean",
+    "signature": "string",
     "interfaces": "object",
     "insights": "object",
     "names": "object",
