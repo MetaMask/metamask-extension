@@ -285,7 +285,11 @@ export const useTokensWithFiltering = (
                   (getNativeAssetForChainId(token.chainId)?.icon ||
                     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
                     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-                    getNativeAssetForChainId(token.chainId)?.iconUrl),
+                    getNativeAssetForChainId(token.chainId)?.iconUrl ||
+                    getAssetImageUrl(
+                      token.address,
+                      formatChainIdToCaip(token.chainId),
+                    )),
                 accountType: token.accountType,
               };
             } else {
@@ -307,7 +311,9 @@ export const useTokensWithFiltering = (
                   (token.image ||
                     (token.address &&
                       tokenList?.[token.address.toLowerCase()]?.iconUrl)) ??
-                  (assetId ? getAssetImageUrl(assetId, formatChainIdToCaip(token.chainId)) : undefined) ??
+                  (assetId
+                    ? getAssetImageUrl(assetId, token.chainId)
+                    : undefined) ??
                   '',
               };
             }
