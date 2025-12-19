@@ -132,7 +132,7 @@ export const fetchAssetMetadata = async (
       assetId,
     };
 
-    if (chainId === MultichainNetworks.SOLANA && assetId) {
+    if (isNonEvmChainId(chainIdInCaip) && assetId) {
       const { assetReference } = parseCaipAssetType(assetId);
       return {
         ...commonFields,
