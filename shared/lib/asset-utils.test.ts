@@ -147,7 +147,8 @@ describe('asset-utils', () => {
     it('should return correct image URL for non-hex CAIP asset ID', () => {
       const assetId =
         `${MultichainNetworks.SOLANA}/token:aBCD` as CaipAssetType;
-      const expectedUrl = 'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4usfv8p8njdtrepy1vzqkqzkvdp/token/abcd.png';
+      const expectedUrl =
+        'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4usfv8p8njdtrepy1vzqkqzkvdp/token/abcd.png';
 
       expect(getAssetImageUrl(assetId, 'eip155:1')).toBe(expectedUrl);
     });
