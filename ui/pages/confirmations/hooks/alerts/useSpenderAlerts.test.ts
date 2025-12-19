@@ -391,7 +391,7 @@ describe('useSpenderAlerts', () => {
       expect(result.current).toHaveLength(0);
     });
 
-    it('returns empty array for ERC20 approval revocation (zero amount) with malicious spender', () => {
+    it('returns empty array for ERC20 approval revocation with malicious spender', () => {
       const tokenAddress = MOCK_TOKEN_ADDRESS.toLowerCase();
       const mockTransaction = {
         id: MOCK_TRANSACTION_ID,
@@ -427,7 +427,7 @@ describe('useSpenderAlerts', () => {
       expect(result.current).toHaveLength(0);
     });
 
-    it('returns empty array for permit signature revocation (zero value) with malicious spender', () => {
+    it('returns empty array for permit signature revocation with malicious spender', () => {
       const mockPermitData = JSON.stringify({
         domain: { name: 'Token', version: '1' },
         message: { spender: MOCK_SPENDER_ADDRESS, value: '0' },
@@ -461,7 +461,7 @@ describe('useSpenderAlerts', () => {
       expect(result.current).toHaveLength(0);
     });
 
-    it('returns empty array for DAI permit revocation (allowed: false) with malicious spender', () => {
+    it('returns empty array for DAI permit revocation with malicious spender', () => {
       const mockPermitData = JSON.stringify({
         domain: {
           name: 'Dai',
@@ -503,7 +503,7 @@ describe('useSpenderAlerts', () => {
       expect(result.current).toHaveLength(0);
     });
 
-    it('returns alert for warning spender when NOT a revoke (non-zero amount)', () => {
+    it('returns alert for warning spender when NOT a revoke', () => {
       const mockTransaction = {
         id: MOCK_TRANSACTION_ID,
         type: TransactionType.tokenMethodApprove,
