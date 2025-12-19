@@ -1015,6 +1015,10 @@ function setupBundlerDefaults(
             './**/node_modules/marked',
             './**/node_modules/@solana',
             './**/node_modules/axios',
+            // Lattice hardware wallet deps (gridplus-sdk@4 pulls in modern syntax, e.g. `??=` in viem)
+            './**/node_modules/eth-lattice-keyring',
+            './**/node_modules/gridplus-sdk',
+            './**/node_modules/viem',
             // Ocap Kernel
             './**/node_modules/@endo',
             './**/node_modules/@agoric',
