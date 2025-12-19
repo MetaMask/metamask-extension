@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/browser';
+import type * as Sentry from '@sentry/browser';
 
 const sentry = globalThis.sentry as typeof Sentry | undefined;
 
@@ -43,7 +43,7 @@ export async function runTrackedTask<Return>(
         );
 
         // Creates an *error event* (Issue), separate from the span:
-        Sentry.captureException(err, {
+        sentry.captureException(err, {
           tags: { 'task.name': taskName, 'task.status': 'failed' },
           extra: {
             'task.duration_ms': durationMs,
