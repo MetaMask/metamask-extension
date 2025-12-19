@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { TransactionType } from '@metamask/transaction-controller';
 import { NameType } from '@metamask/name-controller';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from 'bignumber.js';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../context/confirm';
@@ -53,31 +53,9 @@ jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
 }));
 
-const mockIsSecurityAlertsAPIEnabled = jest.requireMock(
-  '../../../../../app/scripts/lib/ppom/security-alerts-api',
-).isSecurityAlertsAPIEnabled;
-
-const mockUseSelector = jest.requireMock('react-redux').useSelector;
-
-const mockUseTrustSignal = useTrustSignal as jest.MockedFunction<
-  typeof useTrustSignal
->;
-const mockUseI18nContext = useI18nContext as jest.MockedFunction<
-  typeof useI18nContext
->;
-const mockUseConfirmContext = useConfirmContext as jest.MockedFunction<
-  typeof useConfirmContext
->;
-const mockParseApprovalTransactionData =
-  parseApprovalTransactionData as jest.MockedFunction<
-    typeof parseApprovalTransactionData
-  >;
-const mockParseTypedDataMessage = parseTypedDataMessage as jest.MockedFunction<
-  typeof parseTypedDataMessage
->;
-
 const MOCK_SPENDER_ADDRESS = '0x1234567890123456789012345678901234567890';
 const MOCK_TRANSACTION_ID = 'test-tx-id';
+const MOCK_TOKEN_ADDRESS = '0xTokenAddress';
 
 const expectedWarningAlert = {
   actions: [],
@@ -99,38 +77,70 @@ const expectedMaliciousAlert = {
   severity: Severity.Danger,
 };
 
-const MOCK_TOKEN_ADDRESS = '0xTokenAddress';
+type SetupOptions = {
+  erc20Cache?: Record<string, { data: Record<string, unknown> }>;
+  nftCache?: Record<string, Record<string, unknown>>;
+  trustSignalState?: TrustSignalDisplayState;
+  trustSignalLabel?: string | null;
+};
 
-let mockErc20Cache: Record<string, { data: Record<string, unknown> }> = {};
-let mockNftCache: Record<string, Record<string, unknown>> = {};
+function setupTest({
+  erc20Cache = {},
+  nftCache = {},
+  trustSignalState = TrustSignalDisplayState.Unknown,
+  trustSignalLabel = null,
+}: SetupOptions = {}) {
+  const mockT = (key: string) => key;
 
-function setupSelectorMocks(
-  erc20Cache: Record<string, { data: Record<string, unknown> }> = {},
-  nftCache: Record<string, Record<string, unknown>> = {},
-) {
+  const mockUseI18nContext = useI18nContext as jest.MockedFunction<
+    typeof useI18nContext
+  >;
+  const mockUseTrustSignal = useTrustSignal as jest.MockedFunction<
+    typeof useTrustSignal
+  >;
+  const mockIsSecurityAlertsAPIEnabled = jest.requireMock(
+    '../../../../../app/scripts/lib/ppom/security-alerts-api',
+  ).isSecurityAlertsAPIEnabled;
+  const mockUseSelector = jest.requireMock('react-redux').useSelector;
+
+  jest.clearAllMocks();
+
+  mockUseI18nContext.mockReturnValue(mockT);
+  mockUseTrustSignal.mockReturnValue({
+    state: trustSignalState,
+    label: trustSignalLabel,
+  });
+  mockIsSecurityAlertsAPIEnabled.mockReturnValue(true);
   mockUseSelector.mockReset();
   mockUseSelector.mockReturnValueOnce(erc20Cache).mockReturnValueOnce(nftCache);
+
+  return {
+    mockUseConfirmContext: useConfirmContext as jest.MockedFunction<
+      typeof useConfirmContext
+    >,
+    mockParseApprovalTransactionData:
+      parseApprovalTransactionData as jest.MockedFunction<
+        typeof parseApprovalTransactionData
+      >,
+    mockParseTypedDataMessage: parseTypedDataMessage as jest.MockedFunction<
+      typeof parseTypedDataMessage
+    >,
+    mockUseTrustSignal,
+  };
 }
 
 describe('useSpenderAlerts', () => {
-  const mockT = (key: string) => key;
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-    mockErc20Cache = {};
-    mockNftCache = {};
-    mockUseI18nContext.mockReturnValue(mockT);
-    mockUseTrustSignal.mockReturnValue({
-      state: TrustSignalDisplayState.Unknown,
-      label: null,
-    });
-    mockIsSecurityAlertsAPIEnabled.mockReturnValue(true);
-    setupSelectorMocks();
-  });
-
   describe('approval transactions', () => {
-    it('should return alert for malicious spender in tokenMethodApprove', () => {
-      // Mock transaction data
+    it('returns alert for malicious spender in tokenMethodApprove', () => {
+      const {
+        mockUseConfirmContext,
+        mockParseApprovalTransactionData,
+        mockUseTrustSignal,
+      } = setupTest({
+        trustSignalState: TrustSignalDisplayState.Malicious,
+        trustSignalLabel: 'Known malicious address',
+      });
+
       const mockTransaction = {
         id: MOCK_TRANSACTION_ID,
         type: TransactionType.tokenMethodApprove,
@@ -150,12 +160,6 @@ describe('useSpenderAlerts', () => {
         spender: MOCK_SPENDER_ADDRESS as `0x${string}`,
       });
 
-      // Mock malicious trust signal response
-      mockUseTrustSignal.mockReturnValue({
-        state: TrustSignalDisplayState.Malicious,
-        label: 'Known malicious address',
-      });
-
       const { result } = renderHook(() => useSpenderAlerts());
 
       expect(mockUseTrustSignal).toHaveBeenCalledWith(
@@ -167,8 +171,13 @@ describe('useSpenderAlerts', () => {
       expect(result.current[0]).toEqual(expectedMaliciousAlert);
     });
 
-    it('should return alert for warning spender in tokenMethodApprove', () => {
-      // Mock transaction data
+    it('returns alert for warning spender in tokenMethodApprove', () => {
+      const { mockUseConfirmContext, mockParseApprovalTransactionData } =
+        setupTest({
+          trustSignalState: TrustSignalDisplayState.Warning,
+          trustSignalLabel: 'Potentially suspicious address',
+        });
+
       const mockTransaction = {
         id: MOCK_TRANSACTION_ID,
         type: TransactionType.tokenMethodApprove,
@@ -185,12 +194,6 @@ describe('useSpenderAlerts', () => {
       mockParseApprovalTransactionData.mockReturnValue({
         name: 'approve',
         spender: MOCK_SPENDER_ADDRESS as `0x${string}`,
-      });
-
-      // Mock warning trust signal response
-      mockUseTrustSignal.mockReturnValue({
-        state: TrustSignalDisplayState.Warning,
-        label: 'Potentially suspicious address',
       });
 
       const { result } = renderHook(() => useSpenderAlerts());
@@ -199,7 +202,13 @@ describe('useSpenderAlerts', () => {
       expect(result.current[0]).toEqual(expectedWarningAlert);
     });
 
-    it('should return empty array for benign spender', () => {
+    it('returns empty array for benign spender', () => {
+      const { mockUseConfirmContext, mockParseApprovalTransactionData } =
+        setupTest({
+          trustSignalState: TrustSignalDisplayState.Verified,
+          trustSignalLabel: 'Verified contract',
+        });
+
       const mockTransaction = {
         id: MOCK_TRANSACTION_ID,
         type: TransactionType.tokenMethodApprove,
@@ -216,12 +225,6 @@ describe('useSpenderAlerts', () => {
       mockParseApprovalTransactionData.mockReturnValue({
         name: 'approve',
         spender: MOCK_SPENDER_ADDRESS as `0x${string}`,
-      });
-
-      // Mock benign trust signal response (verified/unknown)
-      mockUseTrustSignal.mockReturnValue({
-        state: TrustSignalDisplayState.Verified,
-        label: 'Verified contract',
       });
 
       const { result } = renderHook(() => useSpenderAlerts());
@@ -229,7 +232,10 @@ describe('useSpenderAlerts', () => {
       expect(result.current).toHaveLength(0);
     });
 
-    it('should return empty array for unknown trust signal state', () => {
+    it('returns empty array for unknown trust signal state', () => {
+      const { mockUseConfirmContext, mockParseApprovalTransactionData } =
+        setupTest();
+
       const mockTransaction = {
         id: MOCK_TRANSACTION_ID,
         type: TransactionType.tokenMethodApprove,
@@ -246,12 +252,6 @@ describe('useSpenderAlerts', () => {
       mockParseApprovalTransactionData.mockReturnValue({
         name: 'approve',
         spender: MOCK_SPENDER_ADDRESS as `0x${string}`,
-      });
-
-      // Mock unknown trust signal response
-      mockUseTrustSignal.mockReturnValue({
-        state: TrustSignalDisplayState.Unknown,
-        label: null,
       });
 
       const { result } = renderHook(() => useSpenderAlerts());
@@ -261,7 +261,12 @@ describe('useSpenderAlerts', () => {
   });
 
   describe('permit signatures', () => {
-    it('should return alert for malicious spender in permit signature', () => {
+    it('returns alert for malicious spender in permit signature', () => {
+      const { mockUseConfirmContext, mockParseTypedDataMessage } = setupTest({
+        trustSignalState: TrustSignalDisplayState.Malicious,
+        trustSignalLabel: 'Phishing address',
+      });
+
       const mockPermitData = JSON.stringify({
         domain: { name: 'Token', version: '1' },
         message: { spender: MOCK_SPENDER_ADDRESS },
@@ -286,12 +291,6 @@ describe('useSpenderAlerts', () => {
         message: { spender: MOCK_SPENDER_ADDRESS },
         domain: { name: 'Token', version: '1' },
         types: {},
-      });
-
-      // Mock malicious trust signal response
-      mockUseTrustSignal.mockReturnValue({
-        state: TrustSignalDisplayState.Malicious,
-        label: 'Phishing address',
       });
 
       const { result } = renderHook(() => useSpenderAlerts());
@@ -300,7 +299,12 @@ describe('useSpenderAlerts', () => {
       expect(result.current[0]).toEqual(expectedMaliciousAlert);
     });
 
-    it('should return warning alert for warning spender in permit signature', () => {
+    it('returns warning alert for warning spender in permit signature', () => {
+      const { mockUseConfirmContext, mockParseTypedDataMessage } = setupTest({
+        trustSignalState: TrustSignalDisplayState.Warning,
+        trustSignalLabel: 'Suspicious activity detected',
+      });
+
       const mockPermitData = JSON.stringify({
         domain: { name: 'Token', version: '1' },
         message: { spender: MOCK_SPENDER_ADDRESS },
@@ -327,19 +331,15 @@ describe('useSpenderAlerts', () => {
         types: {},
       });
 
-      // Mock warning trust signal response
-      mockUseTrustSignal.mockReturnValue({
-        state: TrustSignalDisplayState.Warning,
-        label: 'Suspicious activity detected',
-      });
-
       const { result } = renderHook(() => useSpenderAlerts());
 
       expect(result.current).toHaveLength(1);
       expect(result.current[0]).toEqual(expectedWarningAlert);
     });
 
-    it('should return empty array for non-permit signature', () => {
+    it('returns empty array for non-permit signature', () => {
+      const { mockUseConfirmContext, mockParseTypedDataMessage } = setupTest();
+
       const mockSignatureRequest = {
         id: MOCK_TRANSACTION_ID,
         type: 'eth_signTypedData',
@@ -367,7 +367,13 @@ describe('useSpenderAlerts', () => {
   });
 
   describe('revoke operations', () => {
-    it('should return empty array for setApprovalForAll revocation with malicious spender', () => {
+    it('returns empty array for setApprovalForAll revocation with malicious spender', () => {
+      const { mockUseConfirmContext, mockParseApprovalTransactionData } =
+        setupTest({
+          trustSignalState: TrustSignalDisplayState.Malicious,
+          trustSignalLabel: 'Known malicious address',
+        });
+
       const mockTransaction = {
         id: MOCK_TRANSACTION_ID,
         type: TransactionType.tokenMethodSetApprovalForAll,
@@ -388,18 +394,20 @@ describe('useSpenderAlerts', () => {
         isRevokeAll: true,
       });
 
-      mockUseTrustSignal.mockReturnValue({
-        state: TrustSignalDisplayState.Malicious,
-        label: 'Known malicious address',
-      });
-
       const { result } = renderHook(() => useSpenderAlerts());
 
       expect(result.current).toHaveLength(0);
     });
 
-    it('should return empty array for ERC20 approval revocation (zero amount) with malicious spender', () => {
+    it('returns empty array for ERC20 approval revocation (zero amount) with malicious spender', () => {
       const tokenAddress = MOCK_TOKEN_ADDRESS.toLowerCase();
+      const { mockUseConfirmContext, mockParseApprovalTransactionData } =
+        setupTest({
+          erc20Cache: { '0x1': { data: { [tokenAddress]: { symbol: 'TEST' } } } },
+          trustSignalState: TrustSignalDisplayState.Malicious,
+          trustSignalLabel: 'Known malicious address',
+        });
+
       const mockTransaction = {
         id: MOCK_TRANSACTION_ID,
         type: TransactionType.tokenMethodApprove,
@@ -422,22 +430,17 @@ describe('useSpenderAlerts', () => {
         isRevokeAll: false,
       });
 
-      setupSelectorMocks(
-        { '0x1': { data: { [tokenAddress]: { symbol: 'TEST' } } } },
-        {},
-      );
-
-      mockUseTrustSignal.mockReturnValue({
-        state: TrustSignalDisplayState.Malicious,
-        label: 'Known malicious address',
-      });
-
       const { result } = renderHook(() => useSpenderAlerts());
 
       expect(result.current).toHaveLength(0);
     });
 
-    it('should return empty array for permit signature revocation (zero value) with malicious spender', () => {
+    it('returns empty array for permit signature revocation (zero value) with malicious spender', () => {
+      const { mockUseConfirmContext, mockParseTypedDataMessage } = setupTest({
+        trustSignalState: TrustSignalDisplayState.Malicious,
+        trustSignalLabel: 'Known malicious address',
+      });
+
       const mockPermitData = JSON.stringify({
         domain: { name: 'Token', version: '1' },
         message: { spender: MOCK_SPENDER_ADDRESS, value: '0' },
@@ -464,17 +467,17 @@ describe('useSpenderAlerts', () => {
         types: {},
       });
 
-      mockUseTrustSignal.mockReturnValue({
-        state: TrustSignalDisplayState.Malicious,
-        label: 'Known malicious address',
-      });
-
       const { result } = renderHook(() => useSpenderAlerts());
 
       expect(result.current).toHaveLength(0);
     });
 
-    it('should return empty array for DAI permit revocation (allowed: false) with malicious spender', () => {
+    it('returns empty array for DAI permit revocation (allowed: false) with malicious spender', () => {
+      const { mockUseConfirmContext, mockParseTypedDataMessage } = setupTest({
+        trustSignalState: TrustSignalDisplayState.Malicious,
+        trustSignalLabel: 'Known malicious address',
+      });
+
       const mockPermitData = JSON.stringify({
         domain: {
           name: 'Dai',
@@ -509,17 +512,18 @@ describe('useSpenderAlerts', () => {
         types: {},
       });
 
-      mockUseTrustSignal.mockReturnValue({
-        state: TrustSignalDisplayState.Malicious,
-        label: 'Known malicious address',
-      });
-
       const { result } = renderHook(() => useSpenderAlerts());
 
       expect(result.current).toHaveLength(0);
     });
 
-    it('should still return alert for warning spender when NOT a revoke (non-zero amount)', () => {
+    it('still returns alert for warning spender when NOT a revoke (non-zero amount)', () => {
+      const { mockUseConfirmContext, mockParseApprovalTransactionData } =
+        setupTest({
+          trustSignalState: TrustSignalDisplayState.Warning,
+          trustSignalLabel: 'Potentially suspicious address',
+        });
+
       const mockTransaction = {
         id: MOCK_TRANSACTION_ID,
         type: TransactionType.tokenMethodApprove,
@@ -541,19 +545,21 @@ describe('useSpenderAlerts', () => {
         isRevokeAll: false,
       });
 
-      mockUseTrustSignal.mockReturnValue({
-        state: TrustSignalDisplayState.Warning,
-        label: 'Potentially suspicious address',
-      });
-
       const { result } = renderHook(() => useSpenderAlerts());
 
       expect(result.current).toHaveLength(1);
       expect(result.current[0]).toEqual(expectedWarningAlert);
     });
 
-    it('should still return alert for NFT approval with token ID 0 (found in NFT cache)', () => {
+    it('still returns alert for NFT approval with token ID 0 (found in NFT cache)', () => {
       const nftContractAddress = '0xnftcontractaddress';
+      const { mockUseConfirmContext, mockParseApprovalTransactionData } =
+        setupTest({
+          nftCache: { '0x1': { [nftContractAddress]: { name: 'TestNFT' } } },
+          trustSignalState: TrustSignalDisplayState.Malicious,
+          trustSignalLabel: 'Known malicious address',
+        });
+
       const mockTransaction = {
         id: MOCK_TRANSACTION_ID,
         type: TransactionType.tokenMethodApprove,
@@ -574,16 +580,6 @@ describe('useSpenderAlerts', () => {
         spender: MOCK_SPENDER_ADDRESS as `0x${string}`,
         amountOrTokenId: new BigNumber(0),
         isRevokeAll: false,
-      });
-
-      setupSelectorMocks(
-        {},
-        { '0x1': { [nftContractAddress]: { name: 'TestNFT' } } },
-      );
-
-      mockUseTrustSignal.mockReturnValue({
-        state: TrustSignalDisplayState.Malicious,
-        label: 'Known malicious address',
       });
 
       const { result } = renderHook(() => useSpenderAlerts());
