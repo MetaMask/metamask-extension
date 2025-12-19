@@ -479,7 +479,7 @@ const ClaimsForm = ({
         }
       } catch (error) {
         if (!silent) {
-          throw error;
+          console.log('Error saving draft', error);
         }
         // Silently ignore autosave errors to avoid unhandled promise rejections
       }
