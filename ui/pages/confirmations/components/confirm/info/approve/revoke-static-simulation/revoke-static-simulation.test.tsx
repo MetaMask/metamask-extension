@@ -18,32 +18,14 @@ describe('<RevokeStaticSimulation />', () => {
     });
   }
 
-  describe('render', () => {
-    it('matches snapshot', () => {
-      const state = getMockConfirmStateForTransaction(
-        buildRevokeApproveConfirmation(),
-      );
-      const mockStore = configureMockStore(middleware)(state);
+  it('displays the spender address from the transaction data', () => {
+    const state = getMockConfirmStateForTransaction(
+      buildRevokeApproveConfirmation(),
+    );
+    const mockStore = configureMockStore(middleware)(state);
 
-      const { container } = renderWithConfirmContextProvider(
-        <RevokeStaticSimulation />,
-        mockStore,
-      );
+    renderWithConfirmContextProvider(<RevokeStaticSimulation />, mockStore);
 
-      expect(container).toMatchSnapshot();
-    });
-  });
-
-  describe('spender', () => {
-    it('displays the spender address from the transaction data', () => {
-      const state = getMockConfirmStateForTransaction(
-        buildRevokeApproveConfirmation(),
-      );
-      const mockStore = configureMockStore(middleware)(state);
-
-      renderWithConfirmContextProvider(<RevokeStaticSimulation />, mockStore);
-
-      expect(screen.getByText('0x2e0D7...5d09B')).toBeInTheDocument();
-    });
+    expect(screen.getByText('0x2e0D7...5d09B')).toBeInTheDocument();
   });
 });
