@@ -253,7 +253,10 @@ export class PersistenceManager {
             }))
             .sort((a, b) => b.size - a.size)
             .slice(0, 10); // Top 10 largest
-          log.info('[PersistenceManager.set] Largest controller states:', controllerSizes);
+          log.info(
+            '[PersistenceManager.set] Largest controller states:',
+            controllerSizes,
+          );
           try {
             await this.#localStore.set({
               data: state,
@@ -261,7 +264,10 @@ export class PersistenceManager {
             });
             log.info('[PersistenceManager.set] State saved successfully');
           } catch (setError) {
-            log.error('[PersistenceManager.set] localStore.set failed:', setError);
+            log.error(
+              '[PersistenceManager.set] localStore.set failed:',
+              setError,
+            );
             log.error('[PersistenceManager.set] Error details:', {
               message: (setError as Error)?.message,
               name: (setError as Error)?.name,
@@ -321,11 +327,38 @@ export class PersistenceManager {
       { mode: 'shared' },
       async () => {
         log.info('[PersistenceManager.get] Calling localStore.get()...');
-        const result = await this.#localStore.get();
+
+        let result: MetaMaskStorageStructure | null;
+        try {
+          result = await this.#localStore.get();
+        } catch (localStoreError) {
+          // browser.storage.local.get() failed entirely (e.g., Firefox file corruption)
+          // Check if we have a backup - if so, trigger vault recovery flow
+          log.error(
+            '[PersistenceManager.get] localStore.get() failed:',
+            localStoreError,
+          );
+
+          const backup = await this.getBackup();
+          if (backup && hasVault(backup)) {
+            // We have a backup with a vault - trigger vault recovery flow
+            log.info(
+              '[PersistenceManager.get] Backup found with vault - triggering recovery flow',
+            );
+            throw new PersistenceError(MISSING_VAULT_ERROR, backup);
+          }
+
+          // No backup available - re-throw the original error
+          log.error(
+            '[PersistenceManager.get] No backup available - cannot recover',
+          );
+          throw localStoreError;
+        }
+
         log.info('[PersistenceManager.get] localStore.get() returned', {
-          hasResult: !!result,
-          hasData: !!result?.data,
-          hasMeta: !!result?.meta,
+          hasResult: Boolean(result),
+          hasData: Boolean(result?.data),
+          hasMeta: Boolean(result?.meta),
         });
 
         if (validateVault) {
