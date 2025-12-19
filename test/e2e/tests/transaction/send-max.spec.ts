@@ -52,7 +52,12 @@ describe('Sending with max amount', function () {
           text: 'Confirm',
           tag: 'button',
         });
-        await validateTransaction(driver, '-24.99945808');
+        if (process.env.RUN_ATTEMPT === '1') {
+          // will fail
+          await validateTransaction(driver, '15000000');
+        } else {
+          await validateTransaction(driver, '-24.99945808');
+        }
       },
     );
   });
