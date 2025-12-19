@@ -59,9 +59,6 @@ export const toAssetId = (
   if (chainIdToUse === MultichainNetworks.TRON) {
     return CaipAssetTypeStruct.create(`${chainIdToUse}/trc20:${addressToUse}`);
   }
-  if (chainId === MultichainNetworks.TRON) {
-    return CaipAssetTypeStruct.create(`${chainId}/trc20:${address}`);
-  }
   // EVM assets
   const checksummedAddress = toChecksumHexAddress(addressToUse) ?? addressToUse;
   if (isStrictHexString(checksummedAddress)) {
