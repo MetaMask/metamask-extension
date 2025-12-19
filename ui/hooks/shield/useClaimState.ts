@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Attachment as ClaimAttachment } from '@metamask/claims-controller';
 import { useClaims } from '../../contexts/claims/claims';
@@ -31,6 +31,9 @@ export const useClaimState = (mode: ClaimsFormMode = CLAIMS_FORM_MODES.NEW) => {
   const isEditDraft = mode === CLAIMS_FORM_MODES.EDIT_DRAFT;
   const claimOrDraftId = pathname.split('/').pop();
 
+  // Track if draft has been loaded once to prevent re-running on autosave
+  const hasDraftLoadedRef = useRef(false);
+
   useEffect(() => {
     if (isView || !chainId || !impactedWalletAddress) {
       return;
@@ -61,11 +64,17 @@ export const useClaimState = (mode: ClaimsFormMode = CLAIMS_FORM_MODES.NEW) => {
     }
   }, [isView, claimOrDraftId, claims]);
 
-  // Load draft data for edit-draft mode
+  // Load draft data for edit-draft mode (only once on initial mount)
   useEffect(() => {
+    // Skip if already loaded to prevent overwriting form state on autosave
+    if (hasDraftLoadedRef.current) {
+      return;
+    }
+
     if (isEditDraft && claimOrDraftId) {
       const draftDetails = getDraft(claimOrDraftId);
       if (draftDetails) {
+        hasDraftLoadedRef.current = true;
         setCurrentDraftId(draftDetails.draftId);
         setEmail(draftDetails.email || '');
         setChainId(draftDetails.chainId || '');
