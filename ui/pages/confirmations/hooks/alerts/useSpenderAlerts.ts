@@ -98,8 +98,7 @@ function isRevokeOperation(
       const typedDataMessage = parseTypedDataMessage(msgData);
       const { primaryType, message, domain } = typedDataMessage;
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      if (PRIMARY_TYPES_PERMIT.includes(primaryType as any)) {
+      if (PRIMARY_TYPES_PERMIT.some((type) => type === primaryType)) {
         if (
           message?.allowed === false &&
           domain?.verifyingContract === DAI_CONTRACT_ADDRESS
@@ -173,8 +172,7 @@ export function useSpenderAlerts(): Alert[] {
         const typedDataMessage = parseTypedDataMessage(msgData);
         const { primaryType } = typedDataMessage;
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        if (PRIMARY_TYPES_PERMIT.includes(primaryType as any)) {
+        if (PRIMARY_TYPES_PERMIT.some((type) => type === primaryType)) {
           return typedDataMessage.message?.spender || null;
         }
       }
