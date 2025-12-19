@@ -21,7 +21,7 @@ export const useConfirmSendNavigation = () => {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { enabled: isSendRedesignEnabled } = useRedesignedSendFlow();
 
-  const navigateBackIfSend = useCallback(async () => {
+  const navigateBackIfSend = useCallback(() => {
     if (!isSendRedesignEnabled) {
       return;
     }

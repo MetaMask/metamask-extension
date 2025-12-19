@@ -244,6 +244,7 @@ const Footer = () => {
     if (!currentConfirmation) {
       return;
     }
+
     if (isAddEthereumChain) {
       await onAddEthereumChain();
       navigate(DEFAULT_ROUTE);

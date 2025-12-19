@@ -54,7 +54,7 @@ export const useConfirmActions = () => {
         return;
       }
       if (navigateBackForSend) {
-        await navigateBackIfSend();
+        navigateBackIfSend();
       }
       await rejectApproval({ location });
       resetTransactionState();
