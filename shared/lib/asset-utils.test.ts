@@ -147,7 +147,7 @@ describe('asset-utils', () => {
     it('should return correct image URL for non-hex CAIP asset ID', () => {
       const assetId =
         `${MultichainNetworks.SOLANA}/token:aBCD` as CaipAssetType;
-      const expectedUrl = `${STATIC_METAMASK_BASE_URL}/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/aBCD.png`;
+      const expectedUrl = 'https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4usfv8p8njdtrepy1vzqkqzkvdp/token/abcd.png';
 
       expect(getAssetImageUrl(assetId, 'eip155:1')).toBe(expectedUrl);
     });
@@ -199,7 +199,7 @@ describe('asset-utils', () => {
         symbol: 'TEST',
         decimals: 18,
         image:
-          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x123ABcDe.png',
+          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x123abcde.png',
         assetId: 'eip155:1/erc20:0x123ABcDe',
         address: '0x123abcde',
         chainId: mockHexChainId,
