@@ -280,7 +280,8 @@
     "SnapsRegistry": {
       "database": "object",
       "databaseUnavailable": "boolean",
-      "lastUpdated": "number"
+      "lastUpdated": "number",
+      "signature": "string"
     },
     "SubjectMetadataController": { "subjectMetadata": "object" },
     "SubscriptionController": "object",
@@ -313,5 +314,5 @@
     "config": "object",
     "firstTimeInfo": "object"
   },
-  "meta": { "version": 184 }
+  "meta": { "version": 185 }
 }
