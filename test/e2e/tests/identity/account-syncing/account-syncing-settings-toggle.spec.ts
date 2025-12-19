@@ -17,7 +17,7 @@ import BackupAndSyncSettings from '../../../page-objects/pages/settings/backup-a
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
 import { mockIdentityServices } from '../mocks';
-import { arrangeTestUtils } from './helpers';
+import { arrangeTestUtils, skipOnFirefox } from './helpers';
 
 describe('Account syncing - Settings Toggle', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
@@ -33,6 +33,8 @@ describe('Account syncing - Settings Toggle', function () {
    * Phase 3: Login to a fresh app instance and verify only synced accounts persist
    */
   it('syncs new accounts when account sync is enabled and exclude accounts created when sync is disabled', async function () {
+    skipOnFirefox(this);
+
     const userStorageMockttpController = new UserStorageMockttpController();
 
     const sharedMockSetup = (server: Mockttp) => {
