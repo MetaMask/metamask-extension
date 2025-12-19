@@ -272,6 +272,7 @@ export const toBridgeToken = (
     chainId: isNonEvmChainId(payload.chainId)
       ? caipChainId
       : formatChainIdToHex(payload.chainId),
+    // chainId: payload.chainId,
     image:
       (assetId
         ? getAssetImageUrl(assetId, caipChainId)
