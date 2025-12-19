@@ -443,7 +443,7 @@
     "message": "提醒"
   },
   "alertAccountTypeUpgradeMessage": {
-    "message": "您正在将账户升级为智能账户。您将保留原账户地址，同时拥有更快的交易速度和更低的网络费用。$1。"
+    "message": "您正在将账户升级为智能账户。您将保留原账户地址，同时拥有更快的交易速度和更低的网络费用。$1"
   },
   "alertAccountTypeUpgradeTitle": {
     "message": "账户类型"

@@ -443,7 +443,7 @@
     "message": "Alerta"
   },
   "alertAccountTypeUpgradeMessage": {
-    "message": "Está actualizando su cuenta a una cuenta inteligente. Mantendrá la misma dirección de cuenta y accederá a transacciones más rápidas y tarifas de red más bajas. $1."
+    "message": "Está actualizando su cuenta a una cuenta inteligente. Mantendrá la misma dirección de cuenta y accederá a transacciones más rápidas y tarifas de red más bajas. $1"
   },
   "alertAccountTypeUpgradeTitle": {
     "message": "Tipo de cuenta"

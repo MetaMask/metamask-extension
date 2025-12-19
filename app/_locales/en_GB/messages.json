@@ -452,7 +452,7 @@
     "message": "Alert"
   },
   "alertAccountTypeUpgradeMessage": {
-    "message": "You're updating your account to a smart account. You'll keep the same account address while unlocking faster transactions and lower network fees. $1."
+    "message": "You're updating your account to a smart account. You'll keep the same account address while unlocking faster transactions and lower network fees. $1"
   },
   "alertAccountTypeUpgradeTitle": {
     "message": "Account type"
