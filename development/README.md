@@ -75,15 +75,15 @@ automatically categorized by environment based on build target and GitHub contex
 
 ### Environments
 
-| Environment         | When Used                    | Build Command     | Branch/Context       |
-| ------------------- | ---------------------------- | ----------------- | -------------------- |
-| `production`        | Production releases          | `yarn build prod` | `stable` branch      |
-| `staging`           | Main branch builds           | `yarn build dist` | `main` branch        |
-| `development`       | Local development            | `yarn start`      | Local dev server     |
-| `testing`           | E2E test builds              | `yarn build:test` | Any                  |
-| `pull-request`      | PR builds                    | `yarn build dist` | `pull_request` event |
-| `release-candidate` | Release branches             | `yarn build dist` | `release/*` branches |
-| `other`             | Fallback (should not happen) | -                 | Uncategorized        |
+| Environment         | When Used                    | Build Command     | Webpack Command                                                | Branch/Context       |
+| ------------------- | ---------------------------- | ----------------- | -------------------------------------------------------------- | -------------------- |
+| `production`        | Production releases          | `yarn build prod` | `yarn webpack --env production --targetEnvironment production` | `stable` branch      |
+| `staging`           | Main branch builds           | `yarn build dist` | `yarn webpack --env production`                                | `main` branch        |
+| `development`       | Local development            | `yarn start`      | `yarn webpack --env development --watch`                       | Local dev server     |
+| `testing`           | E2E test builds              | `yarn build:test` | `yarn webpack --env production --test`                         | Any                  |
+| `pull-request`      | PR builds                    | `yarn build dist` | `yarn webpack --env production`                                | `pull_request` event |
+| `release-candidate` | Release branches             | `yarn build dist` | `yarn webpack --env production`                                | `release/*` branches |
+| `other`             | Fallback (should not happen) | -                 | -                                                              | Uncategorized        |
 
 For non-main build types (beta, flask, experimental), the environment includes the build type suffix:
 
