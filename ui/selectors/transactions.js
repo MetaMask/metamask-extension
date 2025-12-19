@@ -18,8 +18,8 @@ import {
 } from '../../shared/modules/selectors/networks';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import {
-  createShallowEqualSelector,
   createShallowEqualInputAndResultSelector,
+  createParameterizedShallowEqualSelector,
 } from '../../shared/modules/selectors/selector-creators';
 import { getSelectedInternalAccount } from './accounts';
 import { hasPendingApprovals, getApprovalRequestsByType } from './approvals';
@@ -53,9 +53,14 @@ export const getUnapprovedTransactions =
     createUnapprovedTransactionsMap,
   );
 
+// Parameterized selector creator with LRU cache for multiple chainId arguments.
+// This prevents cache thrashing when switching between different chains.
+const createChainIdSelector = createParameterizedShallowEqualSelector(10);
+
 /**
  * Factory that creates a memoized selector for transactions by chainId.
- * Each call creates a new selector instance with its own cache.
+ * Each call creates a new selector instance with its own LRU cache (size 10)
+ * that can store results for multiple chainIds simultaneously.
  *
  * @returns {Function} Selector function (state, chainId) => transactions[]
  * @example
@@ -69,7 +74,7 @@ export const getUnapprovedTransactions =
  * const txs = useSelector((state) => getChainTxs(state, chainId));
  */
 export const makeGetTransactionsByChainId = () =>
-  createShallowEqualSelector(
+  createChainIdSelector(
     getTransactions,
     (_, chainId) => chainId,
     (transactions, chainId) => {
