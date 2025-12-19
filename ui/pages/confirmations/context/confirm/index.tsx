@@ -6,9 +6,11 @@ import React, {
   useMemo,
   useState,
 } from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
+import { setDefaultHomeActiveTabName } from '../../../../store/actions';
 import { usePrevious } from '../../../../hooks/usePrevious';
 import useCurrentConfirmation from '../../hooks/useCurrentConfirmation';
 import useSyncConfirmPath from '../../hooks/useSyncConfirmPath';
@@ -34,12 +36,14 @@ export const ConfirmContextProvider: React.FC<{
   useSyncConfirmPath(currentConfirmation);
   const navigate = useNavigate();
   const previousConfirmation = usePrevious(currentConfirmation);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (previousConfirmation && !currentConfirmation) {
+      dispatch(setDefaultHomeActiveTabName('activity'));
       navigate(DEFAULT_ROUTE, { replace: true });
     }
-  }, [previousConfirmation, currentConfirmation, navigate]);
+  }, [previousConfirmation, currentConfirmation, navigate, dispatch]);
 
   const value = useMemo(
     () => ({

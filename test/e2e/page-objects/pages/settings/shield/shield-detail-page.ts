@@ -305,7 +305,7 @@ export default class ShieldDetailPage {
 
     await this.checkMembershipStatus(membershipStatus);
 
-    // await this.checkNextBillingDate(nextBillingDate);
+    await this.checkNextBillingDate(nextBillingDate);
 
     await this.checkCharges(charges);
 
