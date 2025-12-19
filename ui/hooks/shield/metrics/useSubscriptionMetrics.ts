@@ -8,34 +8,35 @@ import {
 import { getMetaMaskHdKeyrings } from '../../../selectors';
 import { useAccountTotalFiatBalance } from '../../useAccountTotalFiatBalance';
 import {
+  formatExistingSubscriptionEventProps,
   getShieldCommonTrackingProps,
   getShieldMarketingTrackingProps,
 } from '../../../../shared/modules/shield';
 import { MetaMaskReduxDispatch } from '../../../store/store';
 import { setShieldSubscriptionMetricsProps } from '../../../store/actions';
-import { EntryModalSourceEnum } from '../../../../shared/constants/subscriptions';
+import { ShieldMetricsSourceEnum } from '../../../../shared/constants/subscriptions';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import {
+  CaptureShieldPaymentMethodChangeEventParams,
+  ExistingSubscriptionEventParams,
+} from '../../../../shared/types';
+import {
   CaptureShieldClaimSubmissionEventParams,
-  CaptureShieldCryptoConfirmationEventParams,
   CaptureShieldCtaClickedEventParams,
   CaptureShieldEligibilityCohortAssignedEventParams,
   CaptureShieldEligibilityCohortTimeoutEventParams,
   CaptureShieldEntryModalEventParams,
   CaptureShieldErrorStateClickedEventParams,
   CaptureShieldMembershipCancelledEventParams,
-  CaptureShieldPaymentMethodChangeEventParams,
   CaptureShieldSubscriptionRequestParams,
   CaptureShieldSubscriptionRestartRequestEventParams,
   CaptureShieldUnexpectedErrorEventParams,
-  ExistingSubscriptionEventParams,
 } from './types';
 import {
   formatCaptureShieldCtaClickedEventProps,
   formatCaptureShieldEligibilityCohortEventsProps,
   formatCaptureShieldPaymentMethodChangeEventProps,
   formatDefaultShieldSubscriptionRequestEventProps,
-  formatExistingSubscriptionEventProps,
 } from './utils';
 
 export const useSubscriptionMetrics = () => {
@@ -64,13 +65,15 @@ export const useSubscriptionMetrics = () => {
   const setShieldSubscriptionMetricsPropsToBackground = useCallback(
     async (props: {
       marketingUtmParams?: Record<string, string>;
-      source: EntryModalSourceEnum;
+      source: ShieldMetricsSourceEnum;
+      rewardPoints?: number;
     }) => {
       await dispatch(
         setShieldSubscriptionMetricsProps({
           marketingUtmParams: props.marketingUtmParams,
           source: props.source,
           userBalanceInUSD: Number(totalFiatBalance),
+          rewardPoints: props.rewardPoints,
         }),
       );
     },
@@ -180,12 +183,8 @@ export const useSubscriptionMetrics = () => {
         properties: {
           ...commonTrackingProps,
           ...formattedParams,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           status: params.requestStatus,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          error_message: params.errorMessage,
+          error: params.errorMessage,
         },
       });
     },
@@ -212,9 +211,7 @@ export const useSubscriptionMetrics = () => {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           status: params.cancellationStatus,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          error_message: params.errorMessage,
+          error: params.errorMessage,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           latest_subscription_duration: params.latestSubscriptionDuration,
@@ -245,9 +242,7 @@ export const useSubscriptionMetrics = () => {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           status: params.changeStatus,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          error_message: params.errorMessage,
+          error: params.errorMessage,
         },
       });
     },
@@ -274,32 +269,6 @@ export const useSubscriptionMetrics = () => {
         properties: {
           ...commonTrackingProps,
           ...formattedParams,
-        },
-      });
-    },
-    [trackEvent, selectedAccount, hdKeyingsMetadata, totalFiatBalance],
-  );
-
-  const captureShieldCryptoConfirmationEvent = useCallback(
-    (params: CaptureShieldCryptoConfirmationEventParams) => {
-      const commonTrackingProps = getShieldCommonTrackingProps(
-        selectedAccount,
-        hdKeyingsMetadata,
-        Number(totalFiatBalance),
-      );
-
-      const formattedParams =
-        formatDefaultShieldSubscriptionRequestEventProps(params);
-
-      trackEvent({
-        event: MetaMetricsEventName.ShieldSubscriptionCryptoConfirmation,
-        category: MetaMetricsEventCategory.Shield,
-        properties: {
-          ...commonTrackingProps,
-          ...formattedParams,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          has_insufficient_gas: params.hasInsufficientGas,
         },
       });
     },
@@ -347,9 +316,7 @@ export const useSubscriptionMetrics = () => {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           submission_status: params.submissionStatus,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          error_message: params.errorMessage,
+          error: params.errorMessage,
         },
       });
     },
@@ -416,7 +383,6 @@ export const useSubscriptionMetrics = () => {
     captureShieldPaymentMethodChangeEvent,
     captureShieldCtaClickedEvent,
     captureShieldClaimSubmissionEvent,
-    captureShieldCryptoConfirmationEvent,
     captureShieldEligibilityCohortEvent,
     captureCommonExistingShieldSubscriptionEvents,
     captureShieldErrorStateClickedEvent,

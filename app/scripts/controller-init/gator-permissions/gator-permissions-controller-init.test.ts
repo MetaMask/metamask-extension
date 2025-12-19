@@ -1,7 +1,7 @@
 import { GatorPermissionsController } from '@metamask/gator-permissions-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
 import type { ControllerInitRequest } from '../types';
-import { isGatorPermissionsFeatureEnabled } from '../../../../shared/modules/environment';
+import { getEnabledAdvancedPermissions } from '../../../../shared/modules/environment';
 import {
   getGatorPermissionsControllerMessenger,
   GatorPermissionsControllerMessenger,
@@ -36,7 +36,9 @@ describe('GatorPermissionsControllerInit', () => {
 
   beforeEach(() => {
     jest.resetAllMocks();
-    jest.mocked(isGatorPermissionsFeatureEnabled).mockReturnValue(true);
+    jest
+      .mocked(getEnabledAdvancedPermissions)
+      .mockReturnValue(['native-token-stream']);
     process.env.GATOR_PERMISSIONS_PROVIDER_SNAP_ID =
       MOCK_GATOR_PERMISSIONS_PROVIDER_SNAP_ID;
   });
@@ -59,7 +61,9 @@ describe('GatorPermissionsControllerInit', () => {
 
   it('initializes with correct messenger and state(gator permissions feature enabled)', () => {
     const requestMock = buildInitRequestMock();
-    jest.mocked(isGatorPermissionsFeatureEnabled).mockReturnValue(true);
+    jest
+      .mocked(getEnabledAdvancedPermissions)
+      .mockReturnValue(['native-token-stream']);
     GatorPermissionsControllerInit(requestMock);
 
     expect(GatorPermissionsControllerClassMock).toHaveBeenCalledWith({
@@ -74,7 +78,7 @@ describe('GatorPermissionsControllerInit', () => {
 
   it('initializes with correct messenger and state(gator permissions feature disabled)', () => {
     const requestMock = buildInitRequestMock();
-    jest.mocked(isGatorPermissionsFeatureEnabled).mockReturnValue(false);
+    jest.mocked(getEnabledAdvancedPermissions).mockReturnValue([]);
     GatorPermissionsControllerInit(requestMock);
 
     expect(GatorPermissionsControllerClassMock).toHaveBeenCalledWith({
@@ -101,7 +105,9 @@ describe('GatorPermissionsControllerInit', () => {
   it('handles undefined persistedState.GatorPermissionsController', () => {
     const requestMock = buildInitRequestMock();
     requestMock.persistedState.GatorPermissionsController = undefined;
-    jest.mocked(isGatorPermissionsFeatureEnabled).mockReturnValue(true);
+    jest
+      .mocked(getEnabledAdvancedPermissions)
+      .mockReturnValue(['native-token-stream']);
 
     GatorPermissionsControllerInit(requestMock);
 

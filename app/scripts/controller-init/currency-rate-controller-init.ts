@@ -27,7 +27,6 @@ export const CurrencyRateControllerInit: ControllerInitFunction<
   const controller = new CurrencyRateController({
     // @ts-expect-error - CurrencyRateController is persisted as 'CurrencyController' but init pattern expects 'CurrencyRateController'
     state: persistedState.CurrencyController,
-    // @ts-expect-error - Messenger type mismatch due to missing controller actions/events and dependency version mismatch
     messenger: controllerMessenger,
     includeUsdRate: true,
     useExternalServices: () =>

@@ -12,7 +12,10 @@ import {
   SimulationTokenBalanceChange,
 } from '@metamask/transaction-controller';
 import { parseApprovalTransactionData } from '../transaction.utils';
-import { getCommandValues } from './dapp-swap-command-utils';
+import {
+  DappSwapDecodingError,
+  getCommandValues,
+} from './dapp-swap-command-utils';
 
 export const ABI = [
   {
@@ -75,20 +78,7 @@ export function getDataFromSwap(
   commandBytes: string[],
   inputs: string[],
 ) {
-  const { amountMin, quotesInput } = getCommandValues(
-    commandBytes,
-    inputs,
-    chainId,
-  );
-
-  return {
-    amountMin,
-    quotesInput,
-    tokenAddresses: [
-      quotesInput?.destTokenAddress,
-      quotesInput?.srcTokenAddress,
-    ],
-  };
+  return getCommandValues(commandBytes, inputs, chainId);
 }
 
 export function getBestQuote(
@@ -191,8 +181,9 @@ export function checkValidSingleOrBatchTransaction(
   if (!nestedTransactions || nestedTransactions?.length === 0) {
     return;
   }
+
   if (nestedTransactions.length > 3) {
-    throw new Error(
+    throw new DappSwapDecodingError(
       'Error getting data from swap: invalid batch transaction maximum 3 nested transactions allowed',
     );
   }
@@ -205,7 +196,7 @@ export function checkValidSingleOrBatchTransaction(
         ),
     )
   ) {
-    throw new Error(
+    throw new DappSwapDecodingError(
       'Error getting data from swap: invalid batch transaction, invalid command',
     );
   }
@@ -214,8 +205,8 @@ export function checkValidSingleOrBatchTransaction(
     data?.startsWith(FOUR_BYTE_EXECUTE_SWAP_CONTRACT),
   );
   if (trade?.length !== 1) {
-    throw new Error(
-      'Error getting data from swap: invalid batch transaction, trade needed',
+    throw new DappSwapDecodingError(
+      `Error getting data from swap: invalid batch transaction, ${trade?.length} trade(s) found.`,
     );
   }
 
@@ -233,7 +224,7 @@ export function checkValidSingleOrBatchTransaction(
         permit2ApprovalParsed?.spender?.toLowerCase() !==
           trade[0].to?.toLowerCase()))
   ) {
-    throw new Error(
+    throw new DappSwapDecodingError(
       'Error getting data from swap: invalid batch transaction, unexpected permit2 approval',
     );
   }
@@ -257,7 +248,7 @@ export function checkValidSingleOrBatchTransaction(
       erc20ApprovalParsed?.spender?.toLowerCase() !==
         trade[0].to?.toLowerCase())
   ) {
-    throw new Error(
+    throw new DappSwapDecodingError(
       'Error getting data from swap: invalid batch transaction, unexpected erc20 approval',
     );
   }

@@ -6,10 +6,7 @@ import { setBackgroundConnection } from '../../store/background-connection';
 import { MOCKS, CONSTANTS } from '../../../test/jest';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
-import {
-  CROSS_CHAIN_SWAP_ROUTE,
-  PREPARE_SWAP_ROUTE,
-} from '../../helpers/constants/routes';
+import { PREPARE_SWAP_ROUTE } from '../../helpers/constants/routes';
 import CrossChainSwap from '.';
 
 const mockResetBridgeState = jest.fn();
@@ -35,9 +32,9 @@ setBackgroundConnection({
 } as any);
 
 const mockUseNavigate = jest.fn();
-jest.mock('react-router-dom-v5-compat', () => {
+jest.mock('react-router-dom', () => {
   return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
+    ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
     useLocation: () => ({
       pathname: '/cross-chain/swaps/prepare-swap-page',
@@ -86,7 +83,7 @@ describe('Bridge', () => {
   it('renders the component with initial props', async () => {
     const bridgeMockStore = createBridgeMockStore({
       featureFlagOverrides: {
-        extensionConfig: {
+        bridgeConfig: {
           support: true,
           refreshRate: 5000,
           maxRefreshCount: 5,
@@ -107,7 +104,7 @@ describe('Bridge', () => {
     const { container, getByText } = renderWithProvider(
       <CrossChainSwap />,
       store,
-      CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE,
+      PREPARE_SWAP_ROUTE,
     );
 
     expect(getByText('Swap')).toBeInTheDocument();

@@ -1,6 +1,6 @@
 import React from 'react';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore, { MetaMaskReduxDispatch } from '../../../store/store';
 import { EditAccountNameModal } from './edit-account-name-modal';
 

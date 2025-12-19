@@ -19,6 +19,7 @@ type SettingProps = {
   showToggle?: boolean;
   dataTestId?: string;
   disabled?: boolean;
+  enableMarginBottom?: boolean;
 };
 
 export const Setting = ({
@@ -29,6 +30,7 @@ export const Setting = ({
   showToggle = true,
   dataTestId,
   disabled = false,
+  enableMarginBottom = true,
 }: SettingProps) => {
   const t = useI18nContext();
 
@@ -38,7 +40,7 @@ export const Setting = ({
       justifyContent={JustifyContent.spaceBetween}
       alignItems={AlignItems.flexStart}
       marginTop={3}
-      marginBottom={3}
+      marginBottom={enableMarginBottom ? 3 : 0}
       className="privacy-settings__setting__wrapper"
       data-testid={dataTestId}
     >

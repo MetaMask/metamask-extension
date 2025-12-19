@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
-import { Navigate, useNavigate } from 'react-router-dom-v5-compat';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { AvatarAccountSize } from '@metamask/design-system-react';
 import TextField from '../../../../components/ui/text-field';
 import PageContainerFooter from '../../../../components/ui/page-container/page-container-footer';
@@ -145,7 +145,7 @@ export default function EditContact({
           data-testid="edit-contact-address"
         >
           <div className="address-book__view-contact__group__label">
-            {t('ethereumPublicAddress')}
+            {t('publicAddress')}
           </div>
           <TextField
             id="address"

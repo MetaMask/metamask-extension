@@ -1,19 +1,19 @@
 import { useCallback, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import {
   AWAITING_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
-  ACCOUNT_LIST_PAGE_ROUTE,
   UNLOCK_ROUTE,
   CONNECT_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
+  SHIELD_PLAN_ROUTE,
+  TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
 import { getConfirmationRoute } from '../confirmations/hooks/useConfirmationNavigation';
 // eslint-disable-next-line import/no-restricted-paths
@@ -33,11 +33,9 @@ import {
   selectHasSwapsQuotes,
   selectShowAwaitingSwapScreen,
 } from '../../ducks/swaps/swaps';
-import { useNavState } from '../../contexts/navigation-state';
 import { useModalState } from '../../hooks/useModalState';
 
 const EXEMPTED_ROUTES = [
-  ACCOUNT_LIST_PAGE_ROUTE,
   AWAITING_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
@@ -47,6 +45,9 @@ const EXEMPTED_ROUTES = [
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
+  // shield approval transaction back to shield plan and transaction shield settings page on cancel/confirm, need to be exempted otherwise it will redirect to home page
+  SHIELD_PLAN_ROUTE,
+  TRANSACTION_SHIELD_ROUTE,
 ];
 
 const SNAP_APPROVAL_TYPES = [
@@ -63,7 +64,6 @@ export const ConfirmationHandler = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { pathname } = location;
-  const navState = useNavState();
   const { closeModals } = useModalState();
 
   const envType = getEnvironmentType();
@@ -76,11 +76,7 @@ export const ConfirmationHandler = () => {
   const swapsFetchParams = useSelector(getFetchParams);
   const pendingApprovals = useSelector(selectPendingApprovalsForNavigation);
   const hasApprovalFlows = useSelector(selectHasApprovalFlows);
-
-  // Read stayOnHomePage from both v5 location.state and v5-compat navState
-  const stayOnHomePage =
-    Boolean(location.state?.stayOnHomePage) ||
-    Boolean(navState?.stayOnHomePage);
+  const stayOnHomePage = Boolean(location.state?.stayOnHomePage);
 
   const canRedirect = !isNotification && !stayOnHomePage;
 
