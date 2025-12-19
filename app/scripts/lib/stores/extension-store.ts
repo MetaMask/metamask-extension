@@ -62,9 +62,17 @@ export default class ExtensionStore implements BaseStore {
     }
     const { local } = browser.storage;
 
-    log.info('[ExtensionStore.set] Attempting browser.storage.local.set...');
+    const payload = { data, meta };
+    const payloadStr = JSON.stringify(payload);
+    const dataKeys = data ? Object.keys(data) : [];
+    log.info('[ExtensionStore.set] Attempting browser.storage.local.set...', {
+      payloadSize: payloadStr.length,
+      dataKeysCount: dataKeys.length,
+      dataKeys,
+      metaVersion: meta?.version,
+    });
     try {
-      const result = await local.set({ data, meta });
+      const result = await local.set(payload);
       log.info('[ExtensionStore.set] Success');
       return result;
     } catch (error) {
