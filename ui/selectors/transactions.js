@@ -16,10 +16,11 @@ import {
   getProviderConfig,
   getCurrentChainId,
 } from '../../shared/modules/selectors/networks';
+import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import {
-  createDeepEqualSelector,
   createShallowEqualSelector,
-} from '../../shared/modules/selectors/util';
+  createShallowEqualInputAndResultSelector,
+} from '../../shared/modules/selectors/selector-creators';
 import { getSelectedInternalAccount } from './accounts';
 import { hasPendingApprovals, getApprovalRequestsByType } from './approvals';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
@@ -46,10 +47,11 @@ export const getTransactions = createSelector(
  * @param {object} state - Root state
  * @returns {Record<string, object>} Object with transaction IDs as keys
  */
-export const getUnapprovedTransactions = createShallowEqualSelector(
-  getTransactions,
-  createUnapprovedTransactionsMap,
-);
+export const getUnapprovedTransactions =
+  createShallowEqualInputAndResultSelector(
+    getTransactions,
+    createUnapprovedTransactionsMap,
+  );
 
 /**
  * Factory that creates a memoized selector for transactions by chainId.
