@@ -141,7 +141,7 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
     symbol: 'mUSD',
     decimals: 6,
     name: 'MetaMask USD',
-    assetId: `${toEvmCaipChainId(CHAIN_IDS.MAINNET)}/token:${toChecksumHexAddress('0xaca92e438df0b2401ff60da7e4337b687a2435da')}`,
+    assetId: `${toEvmCaipChainId(CHAIN_IDS.MAINNET)}/erc20:${toChecksumHexAddress('0xaca92e438df0b2401ff60da7e4337b687a2435da')}`,
   },
   [toEvmCaipChainId(CHAIN_IDS.OPTIMISM)]: {
     // ETH -> USDC on Optimism
