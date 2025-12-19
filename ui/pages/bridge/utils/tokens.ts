@@ -179,10 +179,3 @@ export async function fetchTokensBySearchQuery({
       .filter(Boolean),
   };
 }
-
-export const getImageUrlFromAssetId = (assetId: CaipAssetType) => {
-  return `${STATIC_METAMASK_BASE_URL}/api/v2/tokenIcons/assets/${assetId.replaceAll(
-    ':',
-    '/',
-  )}.png`;
-};
