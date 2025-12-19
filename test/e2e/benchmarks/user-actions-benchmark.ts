@@ -189,32 +189,30 @@ async function main(): Promise<void> {
       }),
   );
 
-  const results: Record<
-    string,
-    | { testTitle: string; duration: number }
-    | {
-        testTitle: string;
-        loadPage: number;
-        loadAssetPicker: number;
-        searchToken: number;
-      }
-  > = {};
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const results: Record<string, any> = {};
+
+  // User actions use default state, so persona is always 'standard'
+  const persona = 'standard';
 
   const loadNewAccountResult = await loadNewAccount();
   results.loadNewAccount = {
     testTitle: loadNewAccountResult.title,
+    persona,
     duration: loadNewAccountResult.duration,
   };
 
   const confirmTxResult = await confirmTx();
   results.confirmTx = {
     testTitle: confirmTxResult.title,
+    persona,
     duration: confirmTxResult.duration,
   };
 
   const bridgeResults = await bridgeUserActions();
   results.bridge = {
     testTitle: bridgeResults.title,
+    persona,
     loadPage: bridgeResults.loadPage,
     loadAssetPicker: bridgeResults.loadAssetPicker,
     searchToken: bridgeResults.searchToken,

@@ -25,6 +25,7 @@ describe('send-to-sentry', () => {
   const mockResults = {
     standardHome: {
       testTitle: 'measurePageStandard',
+      persona: 'standard',
       mean: {
         uiStartup: 500,
         load: 400,
@@ -41,10 +42,12 @@ describe('send-to-sentry', () => {
   const mockUserActionResults = {
     loadNewAccount: {
       testTitle: 'benchmark-userActions-loadNewAccount',
+      persona: 'standard',
       duration: 1234,
     },
     bridge: {
       testTitle: 'benchmark-userActions-bridgeUserActions',
+      persona: 'standard',
       loadPage: 100,
       loadAssetPicker: 200,
       searchToken: 300,
@@ -60,20 +63,20 @@ describe('send-to-sentry', () => {
     delete process.env.GITHUB_JOB;
   });
 
-  describe('persona derivation', () => {
-    const derivePersona = (pageType: string) =>
-      pageType === 'powerUserHome' ? 'powerUser' : 'standard';
-
-    it('derives standardHome pageType → standard persona', () => {
-      expect(derivePersona('standardHome')).toBe('standard');
+  describe('persona from JSON', () => {
+    it('reads persona from standard benchmark results', () => {
+      expect(mockResults.standardHome.persona).toBe('standard');
     });
 
-    it('derives powerUserHome pageType → powerUser persona', () => {
-      expect(derivePersona('powerUserHome')).toBe('powerUser');
+    it('reads persona from user action results', () => {
+      expect(mockUserActionResults.loadNewAccount.persona).toBe('standard');
+      expect(mockUserActionResults.bridge.persona).toBe('standard');
     });
 
-    it('derives userActions pageType → standard persona', () => {
-      expect(derivePersona('userActions')).toBe('standard');
+    it('falls back to standard if persona not in JSON', () => {
+      const resultWithoutPersona = { testTitle: 'test', mean: {} };
+      const persona = resultWithoutPersona.persona || 'standard';
+      expect(persona).toBe('standard');
     });
   });
 

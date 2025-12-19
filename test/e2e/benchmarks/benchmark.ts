@@ -34,9 +34,10 @@ const ALL_PAGES = Object.values(PAGES);
 async function measurePageStandard(
   pageName: string,
   pageLoads: number,
-): Promise<{ metrics: Metrics[]; title: string }> {
+): Promise<{ metrics: Metrics[]; title: string; persona: string }> {
   const metrics: Metrics[] = [];
   const title = 'measurePageStandard';
+  const persona = 'standard';
   await withFixtures(
     {
       fixtures: new FixtureBuilder().build(),
@@ -61,15 +62,16 @@ async function measurePageStandard(
       }
     },
   );
-  return { metrics, title };
+  return { metrics, title, persona };
 }
 
 async function measurePagePowerUser(
   pageName: string,
   pageLoads: number,
-): Promise<{ metrics: Metrics[]; title: string }> {
+): Promise<{ metrics: Metrics[]; title: string; persona: string }> {
   const metrics: Metrics[] = [];
   const title = 'measurePagePowerUser';
+  const persona = 'powerUser';
   await withFixtures(
     {
       title,
@@ -121,7 +123,7 @@ async function measurePagePowerUser(
       }
     },
   );
-  return { metrics, title };
+  return { metrics, title, persona };
 }
 
 function calculateResult(calc: (array: number[]) => number) {
@@ -186,14 +188,20 @@ async function profilePageLoad(
   for (const pageName of pages) {
     let runResults: Metrics[] = [];
     let testTitle = '';
+    let resultPersona = '';
 
     for (let i = 0; i < browserLoads; i += 1) {
       console.log('Starting browser load', i + 1, 'of', browserLoads);
-      const { metrics, title } = await retry({ retries }, () =>
+      const {
+        metrics,
+        title,
+        persona: fnPersona,
+      } = await retry({ retries }, () =>
         measurePageFunction(pageName, pageLoads),
       );
       runResults = runResults.concat(metrics);
       testTitle = title; // Title is the same for all runs
+      resultPersona = fnPersona; // Persona is the same for all runs
     }
 
     if (runResults.some((result) => result.navigation.length > 1)) {
@@ -215,17 +223,16 @@ async function profilePageLoad(
 
     for (const [key, tracePath] of Object.entries(ALL_METRICS)) {
       // Using lodash get to support nested properties like 'navigation[0].load'
-      // Filter out undefined/NaN values (e.g., first run may not have UI Startup)
       result[key] = runResults
         .map((metrics) => get(metrics, tracePath) as number)
-        .filter((value) => value !== undefined && !Number.isNaN(value))
         .sort((a, b) => a - b); // Sort the array as numbers, not strings
     }
 
-    const reportingPageName = `${persona}${capitalize(pageName)}`;
+    const reportingPageName = `${resultPersona}${capitalize(pageName)}`;
 
     results[reportingPageName] = {
       testTitle,
+      persona: resultPersona,
       mean: meanResult(result),
       min: minResult(result),
       max: maxResult(result),

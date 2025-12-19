@@ -26,6 +26,7 @@ export type StatisticalResult = {
 
 export type BenchmarkResults = {
   testTitle?: string;
+  persona?: string;
   mean: StatisticalResult;
   min: StatisticalResult;
   max: StatisticalResult;

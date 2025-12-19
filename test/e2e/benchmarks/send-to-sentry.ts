@@ -47,10 +47,11 @@ function isStandardBenchmarkResult(value: unknown): value is BenchmarkResults {
   );
 }
 
-/** User action result with testTitle and numeric timing metrics. */
+/** User action result with testTitle, persona and numeric timing metrics. */
 type UserActionResult = {
   testTitle: string;
-  [key: string]: string | number;
+  persona?: string;
+  [key: string]: string | number | undefined;
 };
 
 /**
@@ -110,16 +111,12 @@ async function main() {
     enableLogs: true,
   });
 
-  // Derive persona from pageType
-  const persona = argv.pageType === 'powerUserHome' ? 'powerUser' : 'standard';
-
-  // CI metadata as flat attributes
-  const ciAttributes = {
+  // CI metadata as flat attributes (persona comes from each result's JSON)
+  const baseCiAttributes = {
     'ci.branch': process.env.GITHUB_REF_NAME || getGitBranch(),
     'ci.prNumber': process.env.PR_NUMBER || 'none',
     'ci.commitHash': process.env.HEAD_COMMIT_HASH || getGitCommitHash(),
     'ci.job': process.env.GITHUB_JOB || 'local',
-    'ci.persona': persona,
     'ci.browser': argv.browser,
     'ci.buildType': argv.buildType,
     'ci.pageType': argv.pageType,
@@ -142,7 +139,8 @@ async function main() {
       };
 
       Sentry.logger.info(`benchmark.${name}`, {
-        ...ciAttributes,
+        ...baseCiAttributes,
+        'ci.persona': value.persona || 'standard',
         'ci.testTitle': value.testTitle,
         ...benchmarkAttributes,
       });
@@ -155,7 +153,8 @@ async function main() {
       );
 
       Sentry.logger.info(`userAction.${name}`, {
-        ...ciAttributes,
+        ...baseCiAttributes,
+        'ci.persona': value.persona || 'standard',
         'ci.testTitle': value.testTitle,
         ...metrics,
       });
