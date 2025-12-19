@@ -610,6 +610,9 @@
   "allTimeLow": {
     "message": "All-time low"
   },
+  "allTokens": {
+    "message": "All tokens"
+  },
   "allowAddRpc": {
     "message": "Add RPC"
   },
@@ -5622,6 +5625,9 @@
   },
   "revokeSimulationDetailsDesc": {
     "message": "You're removing someone's permission to spend tokens from your account."
+  },
+  "revokeTokenApprovals": {
+    "message": "Revoke token approvals"
   },
   "reward": {
     "message": "Reward"
