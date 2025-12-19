@@ -111,6 +111,7 @@
     "toChainId": "null",
     "toToken": "null",
     "txAlert": "null",
+    "txAlertStatus": "number",
     "wasTxDeclined": "boolean"
   },
   "browser": "string",
