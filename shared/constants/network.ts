@@ -211,6 +211,7 @@ export const CHAIN_IDS = {
   MONAD: '0x8f',
   HYPE: '0x3e7',
   X_LAYER: '0xc4',
+  TEMPO_TESTNET: '0xa5bd',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
