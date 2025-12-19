@@ -3,6 +3,7 @@ import { isEmpty } from 'lodash';
 import { RuntimeObject, hasProperty, isObject } from '@metamask/utils';
 import { captureException } from '../../../../shared/lib/sentry';
 import { MISSING_VAULT_ERROR } from '../../../../shared/constants/errors';
+import { getManifestFlags } from '../../../../shared/lib/manifestFlags';
 import { IndexedDBStore } from './indexeddb-store';
 import type {
   MetaMaskStateType,
@@ -10,6 +11,8 @@ import type {
   BaseStore,
   MetaData,
 } from './base-store';
+
+export type StorageKind = 'data' | 'split';
 
 export type Backup = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -25,6 +28,8 @@ export const backedUpStateKeys = [
   'KeyringController',
   'AppMetadataController',
 ] as const;
+
+export type BackedUpStateKey = (typeof backedUpStateKeys)[number];
 
 /**
  * This Error represents an error that occurs during persistence operations.
@@ -53,11 +58,14 @@ export class PersistenceError extends Error {
  * @returns A Backup object containing the state of various controllers.
  */
 function makeBackup(state: MetaMaskStateType, meta: MetaData): Backup {
-  return {
-    KeyringController: state?.KeyringController,
-    AppMetadataController: state?.AppMetadataController,
-    meta,
-  };
+  const backup = Object.create(null);
+  for (const key of backedUpStateKeys) {
+    if (hasProperty(state, key)) {
+      backup[key] = state[key];
+    }
+  }
+  backup.meta = meta;
+  return backup;
 }
 
 /**
@@ -108,11 +116,20 @@ const STATE_LOCK = 'state-lock';
  *
  * Usage:
  * The `PersistenceManager` is instantiated with a `localStore`, which is an
- * implementation of the `BaseStore` class (either `ExtensionStore` or
- * `ReadOnlyNetworkStore`). It provides methods for setting and retrieving
+ * implementation of the `BaseStore` class (`ExtensionStore`). It provides methods for setting and retrieving
  * state, managing metadata, and handling cleanup tasks.
  */
 export class PersistenceManager {
+  /**
+   * DefaultStorageKind is a static property that defines the default storage
+   * kind to be used by the PersistenceManager. It checks if the code is running
+   * in a test environment and retrieves the storage kind from manifest flags
+   * if available; otherwise, it defaults to 'data'.
+   */
+  static readonly defaultStorageKind = ((process.env.IN_TEST
+    ? getManifestFlags().testing?.storageKind
+    : null) ?? 'data') as StorageKind;
+
   /**
    * dataPersistenceFailing is a boolean that is set to true if the storage
    * system attempts to write state and the write operation fails. This is only
@@ -182,11 +199,35 @@ export class PersistenceManager {
     }
   }
 
-  setMetadata(metadata: MetaData) {
-    this.#metadata = metadata;
+  /**
+   * Retrieves a clone of the current metadata.
+   *
+   * @returns A clone of the current metadata object.
+   */
+  getMetaData(): MetaData | undefined {
+    return structuredClone(this.#metadata);
   }
 
-  #pendingState: void | AbortController = undefined;
+  setMetadata(metadata: MetaData) {
+    // don't rewrite if nothing has changed
+    // this is a cheap comparison since metadata is small.
+    if (
+      this.storageKind === 'split' &&
+      JSON.stringify(this.#metadata) === JSON.stringify(metadata)
+    ) {
+      return;
+    }
+    this.#metadata = metadata;
+    if (this.storageKind === 'split') {
+      this.#pendingPairs.set('meta', metadata);
+    }
+  }
+
+  #currentLockAbortController: void | AbortController = undefined;
+
+  #pendingPairs = new Map<string, unknown>();
+
+  storageKind: StorageKind = PersistenceManager.defaultStorageKind;
 
   /**
    * Sets the state in the local store.
@@ -199,6 +240,12 @@ export class PersistenceManager {
    * @throws Error if the data persistence fails during the write operation.
    */
   async set(state: MetaMaskStateType) {
+    if (this.storageKind !== 'data') {
+      throw new Error(
+        'MetaMask - cannot set full state when storageKind is not "data"',
+      );
+    }
+
     await this.open();
 
     if (!state) {
@@ -219,14 +266,14 @@ export class PersistenceManager {
     // 1000ms; however, if the state is very large it *can* take more than the
     // `debounce`'s `wait` time to write, resulting in a pile up right here.
     // This prevents that pile up from happening.
-    this.#pendingState?.abort();
-    this.#pendingState = abortController;
+    this.#currentLockAbortController?.abort();
+    this.#currentLockAbortController = abortController;
 
     await navigator.locks.request(
       STATE_LOCK,
       { mode: 'exclusive', signal: abortController.signal },
       async () => {
-        this.#pendingState = undefined;
+        this.#currentLockAbortController = undefined;
         try {
           // atomically set all the keys
           await this.#localStore.set({
@@ -244,6 +291,105 @@ export class PersistenceManager {
               await this.#backupDb?.set(backup);
               this.#backup = stringifiedBackup;
             }
+          }
+
+          if (this.#dataPersistenceFailing) {
+            this.#dataPersistenceFailing = false;
+          }
+        } catch (err) {
+          if (!this.#dataPersistenceFailing) {
+            this.#dataPersistenceFailing = true;
+            captureException(err);
+          }
+          log.error('error setting state in local store:', err);
+        } finally {
+          this.#isExtensionInitialized = true;
+        }
+      },
+    );
+  }
+
+  /**
+   * Updates a specific top-level (Controller) key in the local store.
+   *
+   * @param key - The top-level key to update in the local store.
+   * @param value - The value to set for the specified key. Specify `undefined`
+   * to delete the key.
+   * @throws Error if the storageKind is not 'split'.
+   */
+  update(key: keyof MetaMaskStateType, value: unknown | undefined) {
+    if (this.storageKind !== 'split') {
+      throw new Error(
+        'MetaMask - cannot set individual keys when storageKind is not "split"',
+      );
+    }
+    this.#pendingPairs.set(key, value);
+  }
+
+  async persist() {
+    if (this.storageKind !== 'split') {
+      throw new Error(
+        'MetaMask - cannot use `persist` when storageKind is not "split"',
+      );
+    }
+
+    await this.open();
+
+    const meta = this.#metadata;
+    if (!meta) {
+      throw new Error(
+        'MetaMask - metadata must be set before calling "persist"',
+      );
+    }
+
+    const abortController = new AbortController();
+
+    // If we already have a write _pending_, abort it so the more up-to-date
+    // write can take its place. This is to prevent piling up multiple writes
+    // in the lock queue, which is pointless because we only care about the most
+    // recent write. This should rarely happen, as elsewhere we make use of
+    // `debounce` for all `persist` requests in order to slow them to once per
+    // 1000ms; however, if the state is very large it *can* take more than the
+    // `debounce`'s `wait` time to write, resulting in a pile up right here.
+    // This prevents that pile up from happening.
+    this.#currentLockAbortController?.abort();
+    this.#currentLockAbortController = abortController;
+
+    await navigator.locks.request(
+      STATE_LOCK,
+      { mode: 'exclusive', signal: abortController.signal },
+      async () => {
+        this.#currentLockAbortController = undefined;
+        try {
+          const clone = structuredClone(this.#pendingPairs);
+          // reset the pendingPairs
+          this.#pendingPairs.clear();
+          try {
+            // save the pairs
+            await this.#localStore.setKeyValues(clone);
+          } catch (err) {
+            // merge the clone with the pending pairs again
+            for (const [key, value] of clone.entries()) {
+              // we can't just overwrite because other `update` calls might have
+              // happened since we created the clone. We don't want to overwrite
+              // any new changes.
+              if (!this.#pendingPairs.has(key)) {
+                this.#pendingPairs.set(key, value);
+              }
+            }
+            throw err;
+          }
+
+          const partialState = Object.create(null);
+          for (const [key, value] of clone.entries()) {
+            if (backedUpStateKeys.includes(key as BackedUpStateKey)) {
+              partialState[key] = value;
+            }
+          }
+          if (hasVault(partialState)) {
+            const backup = makeBackup(partialState, meta);
+            // save it to the backup DB
+            await this.#backupDb?.set(backup);
           }
 
           if (this.#dataPersistenceFailing) {
@@ -314,6 +460,11 @@ export class PersistenceManager {
         if (!this.#isExtensionInitialized) {
           this.#mostRecentRetrievedState = result;
         }
+
+        // if storageKind is not set in meta, we haven't migrated, so it is still
+        // `"data"`.
+        this.storageKind = result.meta?.storageKind ?? 'data';
+
         return result;
       },
     );
@@ -337,6 +488,7 @@ export class PersistenceManager {
         this.#isExtensionInitialized = false;
         this.#dataPersistenceFailing = false;
         this.#metadata = undefined;
+        this.storageKind = PersistenceManager.defaultStorageKind;
         this.cleanUpMostRecentRetrievedState();
       },
     );
@@ -402,5 +554,43 @@ export class PersistenceManager {
     if (this.#mostRecentRetrievedState) {
       this.#mostRecentRetrievedState = null;
     }
+  }
+
+  /**
+   * Migrates the storage from 'data' kind to 'split' kind by separating
+   * each top-level controller state into its own key in the storage.
+   *
+   * @param state - The MetaMask state tree containing all controller states to
+   * migrate
+   * @throws Error if the metadata is not set before calling this method.
+   *
+   * This method should only be called when no other write operations can
+   * occur.
+   */
+  async migrateToSplitState(state: MetaMaskStateType) {
+    if (this.storageKind === 'split') {
+      log.debug('[Split State]: Storage is already split, skipping migration');
+      return;
+    }
+
+    if (!this.#metadata) {
+      throw new Error(
+        'MetaMask - metadata must be set before calling "migrateToSplitState"',
+      );
+    }
+
+    this.storageKind = 'split';
+    const metadata = structuredClone(this.#metadata);
+    metadata.storageKind = 'split';
+    this.setMetadata(metadata);
+    for (const [key, value] of Object.entries(state)) {
+      this.update(key, value);
+    }
+
+    // mark data key for deletion
+    this.update('data', undefined);
+
+    log.debug('[Split State]: Migrating to split state storage');
+    await this.persist();
   }
 }
