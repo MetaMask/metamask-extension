@@ -254,6 +254,7 @@ import {
   makeMethodMiddlewareMaker,
 } from './lib/rpc-method-middleware';
 import createOriginMiddleware from './lib/createOriginMiddleware';
+import createRpcBlockingMiddleware from './lib/rpcBlockingMiddleware';
 import createMainFrameOriginMiddleware from './lib/createMainFrameOriginMiddleware';
 import createTabIdMiddleware from './lib/createTabIdMiddleware';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
@@ -434,7 +435,6 @@ import {
 } from './controller-init/claims';
 import { ProfileMetricsControllerInit } from './controller-init/profile-metrics-controller-init';
 import { ProfileMetricsServiceInit } from './controller-init/profile-metrics-service-init';
-import { getQuotesForConfirmation } from './lib/dapp-swap/dapp-swap-util';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1016,30 +1016,8 @@ export default class MetamaskController extends EventEmitter {
                 this.txController.isAtomicBatchSupported.bind(
                   this.txController,
                 ),
-              validateSecurity: (securityAlertId, request, chainId) => {
-                // Code below to get quote is placed here as securityAlertId is not available in the middleware
-                // this needs to be cleaned up
-                // https://github.com/MetaMask/MetaMask-planning/issues/6345
-                getQuotesForConfirmation({
-                  req,
-                  fetchQuotes: this.controllerMessenger.call.bind(
-                    this.controllerMessenger,
-                    `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.FETCH_QUOTES}`,
-                  ),
-                  setDappSwapComparisonData:
-                    this.appStateController.setDappSwapComparisonData.bind(
-                      this.appStateController,
-                    ),
-                  getNetworkConfigurationByNetworkClientId:
-                    this.networkController.getNetworkConfigurationByNetworkClientId.bind(
-                      this.networkController,
-                    ),
-                  dappSwapMetricsFlag:
-                    this.remoteFeatureFlagController?.state?.remoteFeatureFlags
-                      ?.dappSwapMetrics,
-                  securityAlertId,
-                });
-                return validateRequestWithPPOM({
+              validateSecurity: (securityAlertId, request, chainId) =>
+                validateRequestWithPPOM({
                   chainId,
                   ppomController: this.ppomController,
                   request,
@@ -1048,8 +1026,7 @@ export default class MetamaskController extends EventEmitter {
                     this.updateSecurityAlertResponse.bind(this),
                   getSecurityAlertsConfig:
                     this.getSecurityAlertsConfig.bind(this),
-                });
-              },
+                }),
               isAuxiliaryFundsSupported: (chainId) =>
                 ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId),
             },
@@ -1063,6 +1040,19 @@ export default class MetamaskController extends EventEmitter {
         }),
       ),
     });
+
+    const rpcBlockingMiddlewareState = { isBlocked: false };
+    const eip7715BlockingMiddleware = createRpcBlockingMiddleware({
+      state: rpcBlockingMiddlewareState,
+      allowedOrigins: [
+        process.env.GATOR_PERMISSIONS_PROVIDER_SNAP_ID,
+        process.env.PERMISSIONS_KERNEL_SNAP_ID,
+      ],
+      errorMessage:
+        'Cannot process requests while a wallet_requestExecutionPermissions request is in process',
+    });
+
+    this.eip7715BlockingMiddleware = eip7715BlockingMiddleware;
 
     this.eip7702Middleware = createScaffoldMiddleware({
       wallet_upgradeAccount: createAsyncMiddleware(async (req, res) => {
@@ -1167,6 +1157,12 @@ export default class MetamaskController extends EventEmitter {
           {
             snapId: process.env.PERMISSIONS_KERNEL_SNAP_ID,
             handleRequest: this.handleSnapRequest.bind(this),
+            onBeforeRequest: () => {
+              rpcBlockingMiddlewareState.isBlocked = true;
+            },
+            onAfterRequest: () => {
+              rpcBlockingMiddlewareState.isBlocked = false;
+            },
           },
           params,
           req,
@@ -5541,7 +5537,12 @@ export default class MetamaskController extends EventEmitter {
 
     // TODO: Move this logic to the SnapKeyring directly.
     // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
-    await this.forwardSelectedAccountGroupToSnapKeyring(
+    // It is not necessary to await this since it is just expected for the snap to receive
+    // the information without blocking the login flow. Despite not awaiting for
+    // forwardSelectedAccountGroupToSnapKeyring to be completed, we still want to await for
+    // getSnapKeyring to ensure the Snap keyring is available.
+    // eslint-disable-next-line no-void
+    void this.forwardSelectedAccountGroupToSnapKeyring(
       await this.getSnapKeyring(),
       this.accountTreeController.getSelectedAccountGroup(),
     );
@@ -7407,6 +7408,9 @@ export default class MetamaskController extends EventEmitter {
           ),
       }),
     );
+
+    // Block requests while a wallet_requestExecutionPermissions request is in process.
+    engine.push(this.eip7715BlockingMiddleware);
 
     engine.push(
       createPPOMMiddleware(

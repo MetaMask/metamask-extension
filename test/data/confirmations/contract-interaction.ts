@@ -214,6 +214,7 @@ export const genUnapprovedContractInteractionConfirmation = ({
 
 export const mockSwapConfirmation = {
   chainId: '0x2105',
+  requestId: '1234567',
   id: 'f8172040-b3d0-11f0-a882-3f99aa2e9f0c',
   networkClientId: 'base-mainnet',
   origin: 'https://app.uniswap.org',

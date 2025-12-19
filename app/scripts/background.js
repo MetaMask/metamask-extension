@@ -115,7 +115,7 @@ const inTest = process.env.IN_TEST;
 const useFixtureStore =
   inTest && getManifestFlags().testing?.forceExtensionStore !== true;
 const localStore = useFixtureStore
-  ? new FixtureExtensionStore()
+  ? new FixtureExtensionStore({ initialize: true })
   : new ExtensionStore();
 const persistenceManager = new PersistenceManager({ localStore });
 
@@ -741,43 +741,6 @@ async function initialize(backup) {
     cronjobControllerStorageManager,
   );
 
-  if (persistenceManager.storageKind === 'split') {
-    controller.store.on(
-      'stateChange',
-      async ({ controllerKey, newState, _oldState, _patches }) => {
-        persistenceManager.update(controllerKey, newState);
-
-        // if this key is one of the `backedUpStateKeys` we must always
-        // re-persist all of the other `backedUpStateKeys`, as they must always
-        // stored in the backup DB together.
-        if (backedUpStateKeys.includes(controllerKey)) {
-          backedUpStateKeys.forEach((key) => {
-            if (key === controllerKey) {
-              // already updated this one
-              return;
-            }
-            const state = controller.controllerMessenger.call(
-              `${key}:getState`,
-            );
-            persistenceManager.update(key, state);
-          });
-        }
-        try {
-          await safePersist();
-        } catch (error) {
-          log.error('Error persisting state change:', error);
-          sentry?.captureException(error);
-        }
-      },
-    );
-  } else {
-    controller.store.on('update', safePersist);
-  }
-  controller.store.on('error', (error) => {
-    log.error('MetaMask controller.store error:', error);
-    sentry?.captureException(error);
-  });
-
   // `setupController` sets up the `controller` object, so we can use it now:
   maybeDetectPhishing(controller);
 
@@ -1244,6 +1207,96 @@ export function setupController(
     preinstalledSnaps,
     requestSafeReload,
     cronjobControllerStorageManager,
+  });
+
+  /**
+   * @type {Array<string>} List of controller store keys that have changed since initialization.
+   */
+  const changedControllerKeys = [];
+  const currentState = controller.store.getState();
+  for (const key of Object.keys(currentState)) {
+    const initialControllerState = initState[key] || {};
+    const newControllerState = currentState[key];
+    const newControllerStateKeys = Object.keys(newControllerState);
+
+    // if the number of keys has changed, we need to persist the new state
+    if (
+      newControllerStateKeys.length ===
+      Object.keys(initialControllerState).length
+    ) {
+      // if any of the controller's own top-level keys have changed
+      // (via reference comparison) we need to persist the new state.
+      for (const subKey of newControllerStateKeys) {
+        if (newControllerState[subKey] !== initialControllerState[subKey]) {
+          changedControllerKeys.push(key);
+          break;
+        }
+      }
+    } else {
+      changedControllerKeys.push(key);
+    }
+  }
+
+  if (persistenceManager.storageKind === 'split') {
+    if (changedControllerKeys.length > 0) {
+      log.info(
+        `MetaMaskController state changed during configuration for controllers: ${changedControllerKeys.join(', ')}. Persisting updated state.`,
+      );
+      // update the new state
+      changedControllerKeys.forEach((key) => {
+        persistenceManager.update(key, currentState[key]);
+      });
+      // then persist it
+      safePersist().catch((error) => {
+        log.error('Error persisting updated state:', error);
+        sentry?.captureException(error);
+      });
+    }
+
+    controller.store.on(
+      'stateChange',
+      async ({ controllerKey, newState, _oldState, _patches }) => {
+        persistenceManager.update(controllerKey, newState);
+
+        // if this key is one of the `backedUpStateKeys` we must always
+        // re-persist all of the other `backedUpStateKeys`, as they must always
+        // stored in the backup DB together.
+        if (backedUpStateKeys.includes(controllerKey)) {
+          backedUpStateKeys.forEach((key) => {
+            if (key === controllerKey) {
+              // already updated this one
+              return;
+            }
+            const state = controller.controllerMessenger.call(
+              `${key}:getState`,
+            );
+            persistenceManager.update(key, state);
+          });
+        }
+        try {
+          await safePersist();
+        } catch (error) {
+          log.error('Error persisting state change:', error);
+          sentry?.captureException(error);
+        }
+      },
+    );
+  } else {
+    if (changedControllerKeys.length > 0) {
+      log.info(
+        `MetaMaskController state changed during configuration for controllers: ${changedControllerKeys.join(', ')}. Persisting updated state.`,
+      );
+      // persist the new state
+      safePersist(currentState).catch((error) => {
+        log.error('Error persisting updated controller state:', error);
+        sentry?.captureException(error);
+      });
+    }
+    controller.store.on('update', safePersist);
+  }
+  controller.store.on('error', (error) => {
+    log.error('MetaMask controller.store error:', error);
+    sentry?.captureException(error);
   });
 
   setupEnsIpfsResolver({
