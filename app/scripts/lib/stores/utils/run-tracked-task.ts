@@ -2,10 +2,10 @@ import * as Sentry from '@sentry/browser';
 
 const sentry = globalThis.sentry as typeof Sentry | undefined;
 
-export async function runTrackedTask<T>(
+export async function runTrackedTask<Return>(
   taskName: string,
-  fn: () => Promise<T>,
-): Promise<T> {
+  fn: () => Promise<Return>,
+): Promise<Return> {
   if (!sentry) return fn();
 
   const attributes = {
