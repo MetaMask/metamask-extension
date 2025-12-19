@@ -63,7 +63,6 @@ describe('Address Book', function (this: Suite) {
         await sendTokenPage.goToNextScreen();
         await new TransactionConfirmation(driver).clickFooterConfirmButton();
 
-        await homePage.goToActivityList();
         const activityList = new ActivityListPage(driver);
         await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
         await activityList.checkTxAction({ action: 'Sent' });
