@@ -35,11 +35,10 @@ import type {
   ERC20Asset,
   NativeAsset,
 } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
-import { toAssetId } from '../../../shared/lib/asset-utils';
+import { getAssetImageUrl, toAssetId } from '../../../shared/lib/asset-utils';
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
 import type { BridgeToken } from '../../ducks/bridge/types';
 import { isTronEnergyOrBandwidthResource } from '../../ducks/bridge/utils';
-import { getImageUrlFromAssetId } from '../../pages/bridge/utils/tokens';
 
 // This transforms the token object from the bridge-api into the format expected by the AssetPicker
 const buildTokenData = (
@@ -308,7 +307,7 @@ export const useTokensWithFiltering = (
                   (token.image ||
                     (token.address &&
                       tokenList?.[token.address.toLowerCase()]?.iconUrl)) ??
-                  (assetId ? getImageUrlFromAssetId(assetId) : undefined) ??
+                  (assetId ? getAssetImageUrl(assetId, formatChainIdToCaip(token.chainId)) : undefined) ??
                   '',
               };
             }
