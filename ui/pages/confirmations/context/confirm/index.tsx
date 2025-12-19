@@ -2,10 +2,14 @@ import React, {
   ReactElement,
   createContext,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from 'react';
+import { useNavigate } from 'react-router-dom';
 
+import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
+import { usePrevious } from '../../../../hooks/usePrevious';
 import useCurrentConfirmation from '../../hooks/useCurrentConfirmation';
 import useSyncConfirmPath from '../../hooks/useSyncConfirmPath';
 import { Confirmation } from '../../types/confirm';
@@ -28,6 +32,14 @@ export const ConfirmContextProvider: React.FC<{
     useState(true);
   const { currentConfirmation } = useCurrentConfirmation(confirmationId);
   useSyncConfirmPath(currentConfirmation);
+  const navigate = useNavigate();
+  const previousConfirmation = usePrevious(currentConfirmation);
+
+  useEffect(() => {
+    if (previousConfirmation && !currentConfirmation) {
+      navigate(DEFAULT_ROUTE, { replace: true });
+    }
+  }, [previousConfirmation, currentConfirmation, navigate]);
 
   const value = useMemo(
     () => ({
