@@ -50,6 +50,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
         if: github.event_name == 'merge_group'
+
       - name: Check pull request merge queue status
         id: check-skip-merge-queue
         if: github.event_name == 'merge_group'
