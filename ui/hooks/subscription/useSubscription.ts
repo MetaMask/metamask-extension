@@ -79,6 +79,7 @@ import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import {
   selectCandidateSubscriptionId,
   selectSeasonStatus,
+  selectSeasonStatusLoading,
 } from '../../ducks/rewards/selectors';
 import { useSeasonStatus } from '../rewards/useSeasonStatus';
 import { useCandidateSubscriptionId } from '../rewards/useCandidateSubscriptionId';
@@ -774,11 +775,13 @@ export const useShieldRewards = (): {
   );
   const seasonStatus = useSelector(selectSeasonStatus);
   const candidateSubscriptionId = useSelector(selectCandidateSubscriptionId);
+  const seasonStatusLoading = useSelector(selectSeasonStatusLoading);
 
   const hasAccountOptedInResultPending =
     !rewardsActiveAccountSubscriptionId &&
     (candidateSubscriptionId === 'pending' ||
-      candidateSubscriptionId === 'retry');
+      candidateSubscriptionId === 'retry' ||
+      seasonStatusLoading);
   const hasAccountOptedInResultError = candidateSubscriptionId === 'error';
 
   // entry point hooks
