@@ -20,7 +20,8 @@ import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../selectors/multichain-accounts/account-tree';
-import { TEST_CHAINS } from '../../../../../shared/constants/network';
+import { CHAIN_IDS, TEST_CHAINS } from '../../../../../shared/constants/network';
+import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 
 type UseTokenDisplayInfoProps = {
   token: TokenWithFiatAmount;
@@ -106,12 +107,17 @@ export const useTokenDisplayInfo = ({
           ]?.name) ||
       token.symbol;
 
-    const tokenImage =
+    let tokenImage =
       tokenData?.iconUrl ||
       (token.chainId &&
         erc20TokensByChain?.[token.chainId]?.data?.[token.address.toLowerCase()]
           ?.iconUrl) ||
       token.image;
+
+    // Temporary override for Tempo Testnet tokens until Tempo token assets are
+    // served from Metamask CDN
+    if (token.chainId === CHAIN_IDS.TEMPO_TESTNET && token.address)
+      tokenImage = `https://tempoxyz.github.io/tempo-apps/${hexToDecimal(token.chainId)}/icons/${token.address.toLowerCase()}.svg`;
 
     return {
       title,
