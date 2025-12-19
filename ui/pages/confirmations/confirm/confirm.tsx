@@ -35,27 +35,27 @@ const GasFeeContextProviderWrapper: React.FC<{
   );
 };
 
-// Early loading check to show skeletons immediately without waiting for heavy hooks
-const ConfirmContent = () => {
-  const { currentConfirmation } = useConfirmContext();
+// // Early loading check to show skeletons immediately without waiting for heavy hooks
+// const ConfirmContent = () => {
+//   const { currentConfirmation } = useConfirmContext();
 
-  if (!currentConfirmation) {
-    return (
-      <>
-        <TitleSkeleton />
-        <InfoSkeleton />
-      </>
-    );
-  }
+//   if (!currentConfirmation) {
+//     return (
+//       <>
+//         <TitleSkeleton />
+//         <InfoSkeleton />
+//       </>
+//     );
+//   }
 
-  return (
-    <>
-      <Title />
-      <Info />
-      <PluggableSection />
-    </>
-  );
-};
+//   return (
+//     <>
+//       <Title />
+//       <Info />
+//       <PluggableSection />
+//     </>
+//   );
+// };
 
 const Confirm: React.FC<{ confirmationId?: string }> = ({ confirmationId }) => (
   <ConfirmContextProvider confirmationId={confirmationId}>
@@ -72,7 +72,9 @@ const Confirm: React.FC<{ confirmationId?: string }> = ({ confirmationId }) => (
                   <ScrollToBottom>
                     <BlockaidLoadingIndicator />
                     <LedgerInfo />
-                    <ConfirmContent />
+                    <Title />
+                    <Info />
+                    <PluggableSection />
                   </ScrollToBottom>
                   <GasFeeTokenToast />
                   <Footer />
