@@ -396,7 +396,7 @@ Box.propTypes = {
    */
   as: PropTypes.string,
   /**
-   * The color of the Typography component Should use the COLOR object from
+   * The color of the text content. Should use the COLOR object from
    * ./ui/helpers/constants/design-system.js
    */
   color: MultipleTextColors,

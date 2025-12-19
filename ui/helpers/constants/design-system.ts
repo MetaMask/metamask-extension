@@ -495,27 +495,6 @@ export enum IconColor {
 }
 
 /**
- * @deprecated This type has been deprecated in favor of TextVariant from @metamask/design-system-react
- */
-export enum TypographyVariant {
-  H1 = 'h1',
-  H2 = 'h2',
-  H3 = 'h3',
-  H4 = 'h4',
-  H5 = 'h5',
-  H6 = 'h6',
-  H7 = 'h7',
-  H8 = 'h8',
-  H9 = 'h9',
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  paragraph = 'p',
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  span = 'span',
-}
-
-/**
  * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react
  */
 export enum TextVariant {

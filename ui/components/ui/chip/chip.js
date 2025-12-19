@@ -99,7 +99,7 @@ Chip.propTypes = {
    */
   label: PropTypes.string,
   /**
-   * The label props of the component. Most Typography props can be used
+   * The label props of the component. Most Text props can be used
    */
   labelProps: PropTypes.shape({
     ...omit(TextVariant.propTypes, ['children', 'className']),

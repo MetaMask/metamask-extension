@@ -20,7 +20,6 @@ import TextField from '../../ui/text-field';
 import TextArea from '../../ui/textarea/textarea';
 import Tooltip from '../../ui/tooltip/tooltip';
 import TruncatedDefinitionList from '../../ui/truncated-definition-list';
-import Typography from '../../ui/typography';
 import UrlIcon from '../../ui/url-icon';
 import {
   ConfirmInfoRow,
@@ -123,7 +122,6 @@ export const safeComponentList = {
   TextField,
   Tooltip,
   TruncatedDefinitionList,
-  Typography,
   SmartTransactionStatusPage,
   UrlIcon,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)

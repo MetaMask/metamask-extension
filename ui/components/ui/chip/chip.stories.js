@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import {
-  TypographyVariant,
+  TextVariant,
   SEVERITIES,
   Color,
   BorderColor,
@@ -71,7 +71,7 @@ export default {
           control: {
             type: 'select',
           },
-          options: Object.values(TypographyVariant),
+          options: Object.values(TextVariant),
         },
       },
     },
@@ -123,7 +123,7 @@ DefaultStory.args = {
   backgroundColor: BackgroundColor.backgroundAlternative,
   labelProps: {
     color: TextColor.textDefault,
-    variant: TypographyVariant.H6,
+    variant: TextVariant.bodySm,
   },
 };
 

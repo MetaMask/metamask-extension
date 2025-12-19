@@ -6,6 +6,7 @@ import { waitFor } from '@testing-library/react';
 import { ApprovalType } from '@metamask/controller-utils';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import Confirmation from '../confirmation';
+import { TextVariant } from '../../../../helpers/constants/design-system';
 
 jest.mock('../../../../../shared/lib/fetch-with-cache');
 
@@ -18,10 +19,10 @@ const mockApproval = {
     header: [
       {
         key: 'headerText',
-        name: 'Typography',
+        name: 'Text',
         children: 'Success mock',
         properties: {
-          variant: 'h2',
+          variant: TextVariant.headingMd,
           class: 'header-mock-class',
         },
       },

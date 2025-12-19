@@ -4,6 +4,7 @@ import {
   ErrorOptions,
   SuccessOptions,
 } from '@metamask/approval-controller';
+
 import { IconName, IconSize } from '../../../components/component-library';
 import {
   FontWeight,
@@ -11,7 +12,7 @@ import {
   AlignItems,
   FlexDirection,
   JustifyContent,
-  TypographyVariant,
+  TextVariant,
   TextAlign,
   IconColor,
   BackgroundColor,
@@ -120,9 +121,9 @@ export class ResultTemplate {
                 ? undefined
                 : {
                     key: 'title',
-                    element: 'Typography',
+                    element: 'Text',
                     props: {
-                      variant: TypographyVariant.H3,
+                      variant: TextVariant.headingSm,
                       fontWeight: FontWeight.Bold,
                     },
                     children:

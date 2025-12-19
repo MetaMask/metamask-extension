@@ -192,7 +192,7 @@ FormField.propTypes = {
    */
   titleText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   /**
-   * A custom component to replace the title text Typography component
+   * A custom component to replace the title Text component
    * titleText will be ignored if this is provided
    */
   TitleTextCustomComponent: PropTypes.node,
@@ -201,7 +201,7 @@ FormField.propTypes = {
    */
   titleUnit: PropTypes.string,
   /**
-   * A custom component to replace the title unit Typography component
+   * A custom component to replace the title unit Text component
    * titleUnit will be ignored if this is provided
    */
   TitleUnitCustomComponent: PropTypes.node,

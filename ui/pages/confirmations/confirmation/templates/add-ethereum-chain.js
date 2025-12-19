@@ -10,7 +10,7 @@ import {
   Display,
   FlexDirection,
   Severity,
-  TypographyVariant,
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
 import {
   DEFAULT_ROUTE,
@@ -255,28 +255,24 @@ function getValues(pendingApproval, t, actions, navigate, data) {
   return {
     content: [
       {
-        element: 'Typography',
+        element: 'Text',
         key: 'title',
         children: title,
         props: {
-          variant: TypographyVariant.H3,
-          align: 'center',
+          variant: TextVariant.headingSm,
+          alignItems: AlignItems.center,
           fontWeight: 'bold',
-          boxProps: {
-            margin: [0, 0, 4],
-          },
+          margin: [0, 0, 4],
         },
       },
       {
-        element: 'Typography',
+        element: 'Text',
         key: 'description',
         children: subtitle,
         props: {
-          variant: TypographyVariant.H6,
-          align: 'center',
-          boxProps: {
-            margin: originIsMetaMask ? [0, 8, 4] : [0, 0, 4],
-          },
+          variant: TextVariant.bodySm,
+          alignItems: AlignItems.center,
+          margin: originIsMetaMask ? [0, 8, 4] : [0, 0, 4],
         },
       },
       {
@@ -322,7 +318,7 @@ function getValues(pendingApproval, t, actions, navigate, data) {
         },
       },
       {
-        element: 'Typography',
+        element: 'Text',
         key: 'only-add-networks-you-trust',
         children: [
           {
@@ -345,13 +341,11 @@ function getValues(pendingApproval, t, actions, navigate, data) {
           },
         ],
         props: {
-          variant: TypographyVariant.H6,
-          boxProps: {
-            margin: originIsMetaMask ? [0, 8] : 0,
-            display: Display.Flex,
-            flexDirection: FlexDirection.Column,
-            alignItems: AlignItems.center,
-          },
+          variant: TextVariant.bodySm,
+          margin: originIsMetaMask ? [0, 8] : 0,
+          display: Display.Flex,
+          flexDirection: FlexDirection.Column,
+          alignItems: AlignItems.center,
         },
       },
     ],

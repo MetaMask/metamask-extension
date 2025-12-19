@@ -147,11 +147,11 @@ function getValues(pendingApproval, t, actions, _history) {
   return {
     content: [
       {
-        element: 'Typography',
+        element: 'Text',
         key: 'title',
         children: 'Example',
         props: {
-          variant: TypographyVariant.H3,
+          variant: TextVariant.headingSm,
           align: 'center',
           fontWeight: 'bold',
           boxProps: {
