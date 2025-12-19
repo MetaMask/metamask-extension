@@ -126,6 +126,7 @@ export function loadShieldConfig(): ShieldEnvConfig {
     buildTypeEnv = BUILD_TYPE.experimental;
   } else if (buildType === 'flask') {
     buildTypeEnv = BUILD_TYPE.flask;
+    // `uat` build type for uat environment only build
   } else if (buildType === 'beta' || buildType === 'uat') {
     buildTypeEnv = BUILD_TYPE.beta;
   }

@@ -20,6 +20,7 @@ export function loadAuthenticationConfig(): Env {
   }
 
   const buildType = process.env.METAMASK_BUILD_TYPE;
+  // `uat` build type for uat environment only build
   if (buildType === 'beta' || buildType === 'uat') {
     return Env.UAT;
   }
