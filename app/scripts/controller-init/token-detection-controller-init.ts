@@ -13,9 +13,9 @@ export const TokenDetectionControllerInit: ControllerInitFunction<
   const controller = new TokenDetectionController({
     // @ts-expect-error: TODO: Investigate type mismatch.
     messenger: controllerMessenger,
-    getBalancesInSingleCall: (...args) =>
+    getBalancesUsingMulticall: (...args) =>
       initMessenger.call(
-        'AssetsContractController:getBalancesInSingleCall',
+        'AssetsContractController:getBalancesUsingMulticall',
         ...args,
       ),
     trackMetaMetricsEvent: (...args) =>
