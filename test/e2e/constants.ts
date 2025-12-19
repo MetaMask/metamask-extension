@@ -127,6 +127,15 @@ export const DEFAULT_SOLANA_BALANCE = 1; // SOL
 /* Title of Portfolio page */
 export const PORTFOLIO_PAGE_TITLE = 'MetaMask Portfolio';
 
+/* Default TRON address created using test SRP */
+export const DEFAULT_TRON_ADDRESS = 'TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3';
+
+/* Second TRON address created using test SRP */
+export const DEFAULT_TRON_ADDRESS_2 = 'TEcjynxEx7bPfDByW1uwPgsLCBhqynvpQx';
+
+/* Default TRON address created using test SRP */
+export const DEFAULT_TRON_ADDRESS_SHORT = 'TJ3Q...vGS3';
+
 /* Account types */
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -195,6 +204,7 @@ export const WINDOW_TITLES = Object.freeze({
   TestDappSendIndividualRequest: 'E2E Test Dapp - Send Individual Request',
   MultichainTestDApp: 'Multichain Test Dapp',
   SolanaTestDApp: 'Solana Test Dapp',
+  TronTestDApp: 'Tron Test Dapp',
   TestSnaps: 'Test Snaps',
   ERC4337Snap: 'Account Abstraction Snap',
 });
