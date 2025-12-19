@@ -99,7 +99,13 @@ const expectedMaliciousAlert = {
   severity: Severity.Danger,
 };
 
-const MOCK_TOKEN_ADDRESS = '0xTokenAddress';
+const MOCK_TOKEN_ADDRESS = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+const MOCK_NFT_CONTRACT_ADDRESS = '0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d';
+const MOCK_UNKNOWN_TOKEN_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f';
+const MOCK_APPROVE_CALLDATA =
+  '0x095ea7b30000000000000000000000001234567890123456789012345678901234567890';
+const MOCK_SET_APPROVAL_FOR_ALL_CALLDATA =
+  '0xa22cb4650000000000000000000000001234567890123456789012345678901234567890';
 
 function setupSelectorMocks(
   erc20Cache: Record<string, { data: Record<string, unknown> }> = {},
@@ -368,7 +374,7 @@ describe('useSpenderAlerts', () => {
         type: TransactionType.tokenMethodSetApprovalForAll,
         chainId: '0x1',
         txParams: {
-          data: '0xsetApprovalForAllRevokeData',
+          data: MOCK_SET_APPROVAL_FOR_ALL_CALLDATA,
         },
       };
       mockUseConfirmContext.mockReturnValue({
@@ -399,7 +405,7 @@ describe('useSpenderAlerts', () => {
         chainId: '0x1',
         txParams: {
           to: MOCK_TOKEN_ADDRESS,
-          data: '0xapproveRevokeData',
+          data: MOCK_APPROVE_CALLDATA,
         },
       };
       mockUseConfirmContext.mockReturnValue({
@@ -509,7 +515,7 @@ describe('useSpenderAlerts', () => {
         type: TransactionType.tokenMethodApprove,
         chainId: '0x1',
         txParams: {
-          data: '0xapprovedata',
+          data: MOCK_APPROVE_CALLDATA,
         },
       };
       mockUseConfirmContext.mockReturnValue({
@@ -535,14 +541,13 @@ describe('useSpenderAlerts', () => {
     });
 
     it('returns alert for NFT approval with token ID 0 (found in NFT cache)', () => {
-      const nftContractAddress = '0xnftcontractaddress';
       const mockTransaction = {
         id: MOCK_TRANSACTION_ID,
         type: TransactionType.tokenMethodApprove,
         chainId: '0x1',
         txParams: {
-          to: '0xNFTContractAddress',
-          data: '0xapproveNFTData',
+          to: MOCK_NFT_CONTRACT_ADDRESS,
+          data: MOCK_APPROVE_CALLDATA,
         },
       };
       mockUseConfirmContext.mockReturnValue({
@@ -558,8 +563,41 @@ describe('useSpenderAlerts', () => {
       });
       setupSelectorMocks(
         {},
-        { '0x1': { [nftContractAddress]: { name: 'TestNFT' } } },
+        { '0x1': { [MOCK_NFT_CONTRACT_ADDRESS]: { name: 'TestNFT' } } },
       );
+      mockUseTrustSignal.mockReturnValue({
+        state: TrustSignalDisplayState.Malicious,
+        label: 'Known malicious address',
+      });
+
+      const { result } = renderHook(() => useSpenderAlerts());
+
+      expect(result.current).toHaveLength(1);
+      expect(result.current[0]).toEqual(expectedMaliciousAlert);
+    });
+
+    it('returns alert for unknown token approval with zero amount (token is not in any cache)', () => {
+      const mockTransaction = {
+        id: MOCK_TRANSACTION_ID,
+        type: TransactionType.tokenMethodApprove,
+        chainId: '0x1',
+        txParams: {
+          to: MOCK_UNKNOWN_TOKEN_ADDRESS,
+          data: MOCK_APPROVE_CALLDATA,
+        },
+      };
+      mockUseConfirmContext.mockReturnValue({
+        currentConfirmation: mockTransaction,
+        isScrollToBottomCompleted: false,
+        setIsScrollToBottomCompleted: jest.fn(),
+      } as unknown as ReturnType<typeof useConfirmContext>);
+      mockParseApprovalTransactionData.mockReturnValue({
+        name: 'approve',
+        spender: MOCK_SPENDER_ADDRESS as `0x${string}`,
+        amountOrTokenId: new BigNumber(0),
+        isRevokeAll: false,
+      });
+      setupSelectorMocks({}, {});
       mockUseTrustSignal.mockReturnValue({
         state: TrustSignalDisplayState.Malicious,
         label: 'Known malicious address',
