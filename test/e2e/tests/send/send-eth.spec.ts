@@ -120,6 +120,7 @@ describe('Send ETH', function () {
         await sendPage.fillAmount('1');
         await sendPage.pressContinueButton();
 
+        await driver.delay(3000);
         await sendTokenConfirmationPage.clickOnConfirm();
         await activityListPage.checkTransactionActivityByText('Sent');
         await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);

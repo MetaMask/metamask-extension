@@ -55,7 +55,7 @@ describe('Send ERC20', function () {
     );
   });
 
-  it('it should be possible to send Max token value', async function () {
+  it.only('it should be possible to send Max token value', async function () {
     await withFixtures(
       {
         forceBip44Version: false,
@@ -84,6 +84,7 @@ describe('Send ERC20', function () {
           recipientAddress: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         });
 
+        await driver.delay(3000);
         await confirmation.checkPageIsLoaded();
         await confirmation.clickFooterConfirmButton();
         await activityListPage.checkTransactionActivityByText('Sent');

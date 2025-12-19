@@ -250,10 +250,18 @@ const Footer = () => {
       navigate(DEFAULT_ROUTE);
     } else if (isTransactionConfirmation) {
       await onTransactionConfirm();
-      navigateNextOrHome(currentConfirmation.id);
+      if (
+        currentConfirmation?.type !== TransactionType.shieldSubscriptionApprove
+      ) {
+        navigateNextOrHome(currentConfirmation.id);
+      }
     } else {
       await dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
-      navigateNextOrHome(currentConfirmation.id);
+      if (
+        currentConfirmation?.type !== TransactionType.shieldSubscriptionApprove
+      ) {
+        navigateNextOrHome(currentConfirmation.id);
+      }
     }
 
     resetTransactionState();
