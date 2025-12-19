@@ -107,15 +107,13 @@ const ClaimsList = () => {
               >
                 {t('shieldClaimsNumber', [id])}
               </Text>
-              {formattedDate && (
-                <Text
-                  variant={TextVariant.BodySm}
-                  textAlign={TextAlign.Left}
-                  color={TextColor.TextAlternative}
-                >
-                  {formattedDate}
-                </Text>
-              )}
+              <Text
+                variant={TextVariant.BodySm}
+                textAlign={TextAlign.Left}
+                color={TextColor.TextAlternative}
+              >
+                {formattedDate}
+              </Text>
             </Box>
 
             <Icon
@@ -128,6 +126,37 @@ const ClaimsList = () => {
       );
     },
     [navigate, t],
+  );
+
+  const claimsGroup = useCallback(
+    (groupDetails: {
+      title: string;
+      claims: Claim[] | ClaimDraft[];
+      tabKey: ClaimsTabKey;
+      isDraft?: boolean;
+    }) => {
+      return (
+        <Box>
+          <Text
+            variant={TextVariant.HeadingSm}
+            fontWeight={FontWeight.Medium}
+            className="mb-3"
+          >
+            {groupDetails.title}
+          </Text>
+          <Box className="flex flex-col gap-2">
+            {groupDetails.claims.map((claim) =>
+              claimItem(
+                claim,
+                groupDetails.tabKey,
+                groupDetails.isDraft ?? false,
+              ),
+            )}
+          </Box>
+        </Box>
+      );
+    },
+    [claimItem],
   );
 
   const emptyClaimsView = useCallback(
@@ -210,39 +239,20 @@ const ClaimsList = () => {
             <Box className="flex-1 overflow-y-auto">
               <Box padding={4} className="flex flex-col gap-4">
                 {/* Active claims */}
-                {pendingClaims.length > 0 && (
-                  <Box>
-                    <Text
-                      variant={TextVariant.HeadingSm}
-                      fontWeight={FontWeight.Medium}
-                      className="mb-3"
-                    >
-                      {t('shieldClaimGroupActive')}
-                    </Text>
-                    <Box className="flex flex-col gap-2">
-                      {pendingClaims.map((claim) =>
-                        claimItem(claim, CLAIMS_TAB_KEYS.PENDING),
-                      )}
-                    </Box>
-                  </Box>
-                )}
+                {pendingClaims.length > 0 &&
+                  claimsGroup({
+                    title: t('shieldClaimGroupActive'),
+                    claims: pendingClaims,
+                    tabKey: CLAIMS_TAB_KEYS.PENDING,
+                  })}
                 {/* Draft claims */}
-                {drafts.length > 0 && (
-                  <Box>
-                    <Text
-                      variant={TextVariant.HeadingSm}
-                      fontWeight={FontWeight.Medium}
-                      className="mb-3"
-                    >
-                      {t('shieldClaimGroupDrafts')}
-                    </Text>
-                    <Box className="flex flex-col gap-2">
-                      {drafts.map((draft) =>
-                        claimItem(draft, CLAIMS_TAB_KEYS.PENDING, true),
-                      )}
-                    </Box>
-                  </Box>
-                )}
+                {drafts.length > 0 &&
+                  claimsGroup({
+                    title: t('shieldClaimGroupDrafts'),
+                    claims: drafts,
+                    tabKey: CLAIMS_TAB_KEYS.PENDING,
+                    isDraft: true,
+                  })}
                 <Text
                   variant={TextVariant.BodySm}
                   color={TextColor.TextAlternative}
@@ -281,39 +291,19 @@ const ClaimsList = () => {
         {completedClaims.length > 0 || rejectedClaims.length > 0 ? (
           <Box padding={4} className="flex flex-col gap-4">
             {/* Completed claims */}
-            {completedClaims.length > 0 && (
-              <Box>
-                <Text
-                  variant={TextVariant.HeadingSm}
-                  fontWeight={FontWeight.Medium}
-                  className="mb-3"
-                >
-                  {t('shieldClaimGroupCompleted')}
-                </Text>
-                <Box className="flex flex-col gap-2">
-                  {completedClaims.map((claim) =>
-                    claimItem(claim, CLAIMS_TAB_KEYS.HISTORY),
-                  )}
-                </Box>
-              </Box>
-            )}
+            {completedClaims.length > 0 &&
+              claimsGroup({
+                title: t('shieldClaimGroupCompleted'),
+                claims: completedClaims,
+                tabKey: CLAIMS_TAB_KEYS.HISTORY,
+              })}
             {/* Rejected claims */}
-            {rejectedClaims.length > 0 && (
-              <Box>
-                <Text
-                  variant={TextVariant.HeadingSm}
-                  fontWeight={FontWeight.Medium}
-                  className="mb-3"
-                >
-                  {t('shieldClaimGroupRejected')}
-                </Text>
-                <Box className="flex flex-col gap-2">
-                  {rejectedClaims.map((claim) =>
-                    claimItem(claim, CLAIMS_TAB_KEYS.HISTORY),
-                  )}
-                </Box>
-              </Box>
-            )}
+            {rejectedClaims.length > 0 &&
+              claimsGroup({
+                title: t('shieldClaimGroupRejected'),
+                claims: rejectedClaims,
+                tabKey: CLAIMS_TAB_KEYS.HISTORY,
+              })}
           </Box>
         ) : (
           emptyClaimsView(CLAIMS_TAB_KEYS.HISTORY)

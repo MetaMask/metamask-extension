@@ -612,10 +612,10 @@ const ClaimsForm = ({
         name="email"
         size={FormTextFieldSize.Lg}
         onChange={(e) => setEmail(e.target.value)}
-        onBlur={() => {
+        onBlur={async () => {
           validateEmail();
           if (isEditDraft) {
-            handleSaveDraft({ silent: true });
+            await handleSaveDraft({ silent: true });
           }
         }}
         value={email}
@@ -646,10 +646,10 @@ const ClaimsForm = ({
         name="reimbursement-wallet-address"
         size={FormTextFieldSize.Lg}
         onChange={(e) => setReimbursementWalletAddress(e.target.value)}
-        onBlur={() => {
+        onBlur={async () => {
           validateReimbursementWalletAddress();
           if (isEditDraft) {
-            handleSaveDraft({ silent: true });
+            await handleSaveDraft({ silent: true });
           }
         }}
         value={reimbursementWalletAddress}
@@ -672,10 +672,10 @@ const ClaimsForm = ({
         label={`${t('shieldClaimImpactedWalletAddress')}*`}
         modalTitle={t('shieldClaimSelectAccount')}
         impactedWalletAddress={impactedWalletAddress}
-        onAccountSelect={(address) => {
+        onAccountSelect={async (address) => {
           setImpactedWalletAddress(address);
           if (isEditDraft) {
-            handleSaveDraft({ silent: true });
+            await handleSaveDraft({ silent: true });
           }
           const sameWalletAddressErrorKey =
             ERROR_MESSAGE_MAP[SUBMIT_CLAIM_ERROR_CODES.INVALID_WALLET_ADDRESSES]
@@ -698,10 +698,10 @@ const ClaimsForm = ({
         label={`${t('shieldClaimNetwork')}*`}
         modalTitle={t('shieldClaimSelectNetwork')}
         selectedChainId={chainId}
-        onNetworkSelect={(selectedChainId) => {
+        onNetworkSelect={async (selectedChainId) => {
           setChainId(selectedChainId);
           if (isEditDraft) {
-            handleSaveDraft({ silent: true });
+            await handleSaveDraft({ silent: true });
           }
         }}
         disabled={isView}
@@ -748,10 +748,10 @@ const ClaimsForm = ({
         name="impacted-tx-hash"
         size={FormTextFieldSize.Lg}
         onChange={(e) => setImpactedTransactionHash(e.target.value)}
-        onBlur={() => {
+        onBlur={async () => {
           validateImpactedTxHash();
           if (isEditDraft) {
-            handleSaveDraft({ silent: true });
+            await handleSaveDraft({ silent: true });
           }
         }}
         value={impactedTransactionHash}
@@ -776,10 +776,10 @@ const ClaimsForm = ({
           data-testid="shield-claim-description-textarea"
           placeholder={t('shieldClaimDescriptionPlaceholder')}
           onChange={(e) => setCaseDescription(e.target.value)}
-          onBlur={() => {
+          onBlur={async () => {
             validateDescription();
             if (isEditDraft) {
-              handleSaveDraft({ silent: true });
+              await handleSaveDraft({ silent: true });
             }
           }}
           value={caseDescription}
