@@ -89,11 +89,6 @@ async function main() {
       default: 'browserify',
       description: 'Build type (browserify or webpack)',
     })
-    .option('pageType', {
-      type: 'string',
-      default: 'standardHome',
-      description: 'Page type (standardHome, powerUserHome, userActions)',
-    })
     .parse();
 
   const SENTRY_DSN = process.env.SENTRY_DSN_PERFORMANCE;
@@ -119,7 +114,6 @@ async function main() {
     'ci.job': process.env.GITHUB_JOB || 'local',
     'ci.browser': argv.browser,
     'ci.buildType': argv.buildType,
-    'ci.pageType': argv.pageType,
   };
 
   // Helper to flatten an object with a prefix (e.g., 'benchmark.mean')

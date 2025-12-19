@@ -93,8 +93,7 @@ jobs:
           yarn tsx test/e2e/benchmarks/send-to-sentry.ts \
             --results test-artifacts/benchmarks/${{ env.OUTPUT_NAME }} \
             --browser ${{ matrix.browser }} \
-            --buildType ${{ matrix.buildType }} \
-            --pageType ${{ matrix.pageType }}
+            --buildType ${{ matrix.buildType }}
 
       - name: Upload '${{ env.OUTPUT_NAME }}' to S3
         if: ${{ vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}

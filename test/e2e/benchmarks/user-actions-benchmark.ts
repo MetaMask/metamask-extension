@@ -32,9 +32,15 @@ async function mockTokensEthereum(mockServer: Mockttp) {
     });
 }
 
-async function loadNewAccount(): Promise<{ duration: number; title: string }> {
+const USER_ACTIONS_PERSONA = 'standard';
+
+async function loadNewAccount(): Promise<{
+  duration: number;
+  testTitle: string;
+  persona: string;
+}> {
   let loadingTimes: number = 0;
-  const title = 'benchmark-userActions-loadNewAccount';
+  const testTitle = 'benchmark-userActions-loadNewAccount';
 
   await withFixtures(
     {
@@ -43,7 +49,7 @@ async function loadNewAccount(): Promise<{ duration: number; title: string }> {
       localNodeOptions: {
         accounts: 1,
       },
-      title,
+      title: testTitle,
     },
     async ({ driver }: { driver: Driver }) => {
       await unlockWallet(driver);
@@ -60,18 +66,22 @@ async function loadNewAccount(): Promise<{ duration: number; title: string }> {
         timestampAfterAction.getTime() - timestampBeforeAction.getTime();
     },
   );
-  return { duration: loadingTimes, title };
+  return { duration: loadingTimes, testTitle, persona: USER_ACTIONS_PERSONA };
 }
 
-async function confirmTx(): Promise<{ duration: number; title: string }> {
+async function confirmTx(): Promise<{
+  duration: number;
+  testTitle: string;
+  persona: string;
+}> {
   let loadingTimes: number = 0;
-  const title = 'benchmark-userActions-confirmTx';
+  const testTitle = 'benchmark-userActions-confirmTx';
 
   await withFixtures(
     {
       fixtures: new FixtureBuilder().build(),
       disableServerMochaToBackground: true,
-      title,
+      title: testTitle,
     },
     async ({ driver }: { driver: Driver }) => {
       await loginWithBalanceValidation(driver);
@@ -109,19 +119,20 @@ async function confirmTx(): Promise<{ duration: number; title: string }> {
         timestampAfterAction.getTime() - timestampBeforeAction.getTime();
     },
   );
-  return { duration: loadingTimes, title };
+  return { duration: loadingTimes, testTitle, persona: USER_ACTIONS_PERSONA };
 }
 
 async function bridgeUserActions(): Promise<{
   loadPage: number;
   loadAssetPicker: number;
   searchToken: number;
-  title: string;
+  testTitle: string;
+  persona: string;
 }> {
   let loadPage: number = 0;
   let loadAssetPicker: number = 0;
   let searchToken: number = 0;
-  const title = 'benchmark-userActions-bridgeUserActions';
+  const testTitle = 'benchmark-userActions-bridgeUserActions';
 
   const fixtureBuilder = new FixtureBuilder()
     .withNetworkControllerOnMainnet()
@@ -132,7 +143,7 @@ async function bridgeUserActions(): Promise<{
       fixtures: fixtureBuilder.build(),
       disableServerMochaToBackground: true,
       testSpecificMock: mockTokensEthereum,
-      title,
+      title: testTitle,
       manifestFlags: {
         remoteFeatureFlags: {
           bridgeConfig: DEFAULT_BRIDGE_FEATURE_FLAGS,
@@ -173,7 +184,13 @@ async function bridgeUserActions(): Promise<{
         timestampBeforeTokenSearch.getTime();
     },
   );
-  return { loadPage, loadAssetPicker, searchToken, title };
+  return {
+    loadPage,
+    loadAssetPicker,
+    searchToken,
+    testTitle,
+    persona: USER_ACTIONS_PERSONA,
+  };
 }
 
 async function main(): Promise<void> {
@@ -189,34 +206,11 @@ async function main(): Promise<void> {
       }),
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const results: Record<string, any> = {};
+  const results: Record<string, Record<string, string | number>> = {};
 
-  // User actions use default state, so persona is always 'standard'
-  const persona = 'standard';
-
-  const loadNewAccountResult = await loadNewAccount();
-  results.loadNewAccount = {
-    testTitle: loadNewAccountResult.title,
-    persona,
-    duration: loadNewAccountResult.duration,
-  };
-
-  const confirmTxResult = await confirmTx();
-  results.confirmTx = {
-    testTitle: confirmTxResult.title,
-    persona,
-    duration: confirmTxResult.duration,
-  };
-
-  const bridgeResults = await bridgeUserActions();
-  results.bridge = {
-    testTitle: bridgeResults.title,
-    persona,
-    loadPage: bridgeResults.loadPage,
-    loadAssetPicker: bridgeResults.loadAssetPicker,
-    searchToken: bridgeResults.searchToken,
-  };
+  results.loadNewAccount = await loadNewAccount();
+  results.confirmTx = await confirmTx();
+  results.bridge = await bridgeUserActions();
   const { out } = argv as { out?: string };
 
   if (out) {

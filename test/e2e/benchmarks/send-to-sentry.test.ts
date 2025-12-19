@@ -105,7 +105,6 @@ describe('send-to-sentry', () => {
         'ci.persona': 'standard',
         'ci.browser': 'chrome',
         'ci.buildType': 'browserify',
-        'ci.pageType': 'standardHome',
         'ci.testTitle': 'measurePageStandard',
         'benchmark.mean.uiStartup': 500,
         'benchmark.mean.load': 400,

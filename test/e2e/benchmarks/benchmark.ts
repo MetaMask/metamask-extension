@@ -200,8 +200,8 @@ async function profilePageLoad(
         measurePageFunction(pageName, pageLoads),
       );
       runResults = runResults.concat(metrics);
-      testTitle = title; // Title is the same for all runs
-      resultPersona = fnPersona; // Persona is the same for all runs
+      testTitle = title;
+      resultPersona = fnPersona;
     }
 
     if (runResults.some((result) => result.navigation.length > 1)) {
