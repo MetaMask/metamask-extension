@@ -33,6 +33,7 @@ import {
   MultichainAvatarGroupType,
 } from '../avatar-group/multichain-avatar-group';
 import { getIconSeedAddressesByAccountGroups } from '../../../../selectors/multichain-accounts/account-tree';
+import { getAvatarType } from '../../../app/preferred-avatar/preferred-avatar';
 
 export type MultichainSiteCellTooltipProps = {
   accountGroups?: AccountGroupWithInternalAccounts[];
@@ -47,10 +48,19 @@ type TooltipContentProps = {
   networks?: EvmAndMultichainNetworkConfigurationsWithCaipChainId[];
   moreAccountsText?: string;
   moreNetworksText?: string;
+  avatarAccountVariant?: AvatarAccountVariant;
+  seedAddresses?: Record<string, string>;
 };
 
 const TooltipContent = React.memo<TooltipContentProps>(
-  ({ accountGroups, networks, moreAccountsText, moreNetworksText }) => {
+  ({
+    accountGroups,
+    networks,
+    moreAccountsText,
+    moreNetworksText,
+    avatarAccountVariant,
+    seedAddresses,
+  }) => {
     const displayAccountGroups = accountGroups?.slice(0, TOOLTIP_LIMIT) ?? [];
     const displayNetworks = networks?.slice(0, TOOLTIP_LIMIT) ?? [];
     const hasMoreAccounts =
@@ -77,8 +87,8 @@ const TooltipContent = React.memo<TooltipContentProps>(
             >
               <AvatarAccount
                 size={AvatarAccountSize.Xs}
-                address={acc.id}
-                variant={AvatarAccountVariant.Jazzicon}
+                address={seedAddresses?.[acc.id] ?? ''}
+                variant={avatarAccountVariant}
               />
               <Text
                 color={TextColor.overlayInverse}
@@ -166,6 +176,7 @@ TooltipContent.displayName = 'TooltipContent';
 export const MultichainSiteCellTooltip =
   React.memo<MultichainSiteCellTooltipProps>(({ accountGroups, networks }) => {
     const t = useI18nContext();
+    const avatarAccountVariant = useSelector(getAvatarType);
 
     const seedAddresses = useSelector((state: MultichainAccountsState) =>
       getIconSeedAddressesByAccountGroups(state, accountGroups ?? []),
@@ -225,6 +236,8 @@ export const MultichainSiteCellTooltip =
             networks={networks}
             moreAccountsText={moreAccountsText}
             moreNetworksText={moreNetworksText}
+            avatarAccountVariant={avatarAccountVariant}
+            seedAddresses={seedAddresses}
           />
         }
         arrow

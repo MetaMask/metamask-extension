@@ -3,7 +3,7 @@ import { waitFor } from '@testing-library/react';
 import { Numeric } from '../../../../../shared/modules/Numeric';
 import mockState from '../../../../../test/data/mock-state.json';
 import { EVM_NATIVE_ASSET } from '../../../../../test/data/send/assets';
-import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { Asset, AssetStandard } from '../../types/send';
 import * as SendContext from '../../context/send';
 import {
@@ -414,5 +414,26 @@ describe('useAmountValidation', () => {
 
     const error = await result.current.validateNonEvmAmountAsync();
     expect(error).toEqual(undefined);
+  });
+
+  it('returns error when non-EVM account has zero balance', async () => {
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      asset: {
+        isNative: true,
+        rawBalance: '0x0',
+        decimals: 18,
+      },
+      chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      from: MOCK_ADDRESS_1,
+      value: '1',
+    } as unknown as SendContext.SendContextType);
+
+    const { result } = renderHookWithProvider(
+      () => useAmountValidation(),
+      mockState,
+    );
+    await waitFor(() =>
+      expect(result.current.amountError).toEqual('Insufficient funds'),
+    );
   });
 });

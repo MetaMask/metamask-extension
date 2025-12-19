@@ -7,7 +7,7 @@ import { decodeTransactionData } from '../../../../../../store/actions';
 import { DecodedTransactionDataResponse } from '../../../../../../../shared/types/transaction-decode';
 import { useConfirmContext } from '../../../../context/confirm';
 import { hasTransactionData } from '../../../../../../../shared/modules/transaction.utils';
-import { use4ByteResolutionSelector } from '../../../../../../selectors';
+import { getUse4ByteResolution } from '../../../../../../selectors';
 
 export function useDecodedTransactionData({
   data,
@@ -19,7 +19,7 @@ export function useDecodedTransactionData({
   transactionTypeFilter?: string;
 } = {}): AsyncResult<DecodedTransactionDataResponse | undefined> {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const isDecodeEnabled = useSelector(use4ByteResolutionSelector);
+  const isDecodeEnabled = useSelector(getUse4ByteResolution);
 
   const currentTransactionType = currentConfirmation?.type;
   const chainId = currentConfirmation?.chainId as Hex;

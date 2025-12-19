@@ -75,7 +75,7 @@ const blocklistedHosts = [
   'linea-mainnet.infura.io',
   'linea-sepolia.infura.io',
   'testnet-rpc.monad.xyz',
-  'carrot.megaeth.com',
+  'timothy.megaeth.com',
   'sei-mainnet.infura.io',
   'mainnet.infura.io',
   'sepolia.infura.io',
@@ -198,6 +198,7 @@ async function setupMocking(
       };
     });
 
+  // Subscriptions Eligibility
   await server
     .forGet(
       'https://subscription.dev-api.cx.metamask.io/v1/subscriptions/eligibility',
@@ -205,7 +206,18 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: [],
+        json: [
+          {
+            canSubscribe: false,
+            canViewEntryModal: false,
+            minBalanceUSD: 1000,
+            product: 'shield',
+            modalType: 'A',
+            cohorts: [],
+            assignedCohort: null,
+            hasAssignedCohortExpired: null,
+          },
+        ],
       };
     });
 
@@ -317,6 +329,19 @@ async function setupMocking(
         statusCode: 200,
         json: {},
       };
+    });
+
+  // SENTRY_DSN_PERFORMANCE
+  await server
+    .forPost('https://sentry.io/api/4510302346608640/envelope/')
+    .thenPassThrough({
+      beforeRequest: (req) => {
+        console.log(
+          'Request going to Sentry metamask-performance ============',
+          req.url,
+        );
+        return {};
+      },
     });
 
   await server
@@ -900,15 +925,25 @@ async function setupMocking(
       };
     });
 
+  // Price API: Spot prices for native token (ETH)
+  // Uses zero address (0x0000000000000000000000000000000000000000) to represent native token
+  // API format: v3/spot-prices?assetIds={assetIds}&vsCurrency=usd&includeMarketData=true
   await server
-    .forGet('https://min-api.cryptocompare.com/data/pricemulti')
-    .withQuery({ fsyms: 'ETH', tsyms: 'usd' })
+    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
+    .withQuery({
+      assetIds: 'eip155:1/slip44:60',
+      vsCurrency: 'usd',
+      includeMarketData: 'true',
+    })
     .thenCallback(() => {
       return {
         statusCode: 200,
         json: {
-          ETH: {
-            USD: ethConversionInUsd,
+          'eip155:1/slip44:60': {
+            id: 'ethereum',
+            price: ethConversionInUsd,
+            marketCap: 382623505141,
+            pricePercentChange1d: 0,
           },
         },
       };

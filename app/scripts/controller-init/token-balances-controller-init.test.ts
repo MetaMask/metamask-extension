@@ -46,6 +46,14 @@ function getInitRequestMock(): jest.Mocked<
       }) as never,
   );
 
+  baseMessenger.registerActionHandler(
+    'OnboardingController:getState',
+    () =>
+      ({
+        completedOnboarding: true,
+      }) as never,
+  );
+
   const requestMock = {
     ...buildControllerInitRequestMock(),
     controllerMessenger: getTokenBalancesControllerMessenger(baseMessenger),
@@ -72,6 +80,8 @@ describe('TokenBalancesControllerInit', () => {
       queryMultipleAccounts: true,
       allowExternalServices: expect.any(Function),
       accountsApiChainIds: expect.any(Function),
+      platform: 'extension',
+      isOnboarded: expect.any(Function),
     });
   });
 });

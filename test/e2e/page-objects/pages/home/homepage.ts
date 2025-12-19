@@ -4,6 +4,11 @@ import { Ganache } from '../../../seeder/ganache';
 import { Anvil } from '../../../seeder/anvil';
 import HeaderNavbar from '../header-navbar';
 import { getCleanAppState, regularDelayMs } from '../../../helpers';
+import {
+  BASE_ACCOUNT_SYNC_INTERVAL,
+  BASE_ACCOUNT_SYNC_TIMEOUT,
+  POST_UNLOCK_DELAY,
+} from '../../../tests/identity/account-syncing/helpers';
 
 class HomePage {
   protected driver: Driver;
@@ -47,6 +52,10 @@ class HomePage {
 
   private readonly erc20TokenDropdown = {
     testId: 'asset-list-control-bar-action-button',
+  };
+
+  private readonly fundYourWalletBanner = {
+    text: 'Fund your wallet',
   };
 
   private readonly loadingOverlay = {
@@ -99,6 +108,11 @@ class HomePage {
   private readonly shieldEntryModalSkip =
     '[data-testid="shield-entry-modal-close-button"]';
 
+  private readonly multichainTokenListButton = `[data-testid="multichain-token-list-button"]`;
+
+  private readonly emptyBalance =
+    '[data-testid="coin-overview-balance-empty-state"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
     this.headerNavbar = new HeaderNavbar(driver);
@@ -118,6 +132,65 @@ class HomePage {
     console.log('Home page is loaded');
   }
 
+  async waitForNetworkAndDOMReady(): Promise<void> {
+    console.log(
+      'Waiting for network idle, DOM loaded, page completed, and Redux state ready',
+    );
+    try {
+      // Wait for DOM to be ready
+      await this.driver.executeScript(`
+        return new Promise((resolve) => {
+          if (document.readyState === 'complete') {
+            resolve();
+          } else {
+            window.addEventListener('load', () => resolve(), { once: true });
+          }
+        });
+      `);
+
+      // Wait for Redux state to be ready
+      await this.driver.executeAsyncScript(`
+        const callback = arguments[arguments.length - 1];
+        const maxAttempts = 50;
+        let attempts = 0;
+
+        const checkReduxReady = () => {
+          attempts++;
+
+          if (window.stateHooks?.getCleanAppState) {
+            try {
+              const state = window.stateHooks.getCleanAppState();
+
+              if (state && typeof state === 'object') {
+                if (state.metamask && typeof state.metamask === 'object') {
+                  console.log('Redux state is ready');
+                  callback();
+                  return;
+                }
+              }
+            } catch (e) {
+              console.log('Redux state not ready yet, attempt ' + attempts);
+            }
+          }
+
+          if (attempts >= maxAttempts) {
+            console.log('Redux state check timeout, continuing anyway');
+            callback();
+            return;
+          }
+          setTimeout(checkReduxReady, 100);
+        };
+        checkReduxReady();
+      `);
+
+      console.log(
+        'Network idle, DOM loaded, page completed, and Redux state ready',
+      );
+    } catch (e) {
+      console.log('Error waiting for network, DOM, and Redux ready', e);
+    }
+  }
+
   async checkPageIsNotLoaded(): Promise<void> {
     console.log('Check home page is not loaded');
     await this.driver.assertElementNotPresent(this.activityTab, {
@@ -132,6 +205,11 @@ class HomePage {
     await this.driver.clickElementAndWaitToDisappear(
       this.backupRemindMeLaterButton,
     );
+  }
+
+  async clickBackupRemindMeLaterButtonSafe(): Promise<void> {
+    await this.driver.clickElementSafe(this.backupRemindMeLaterButton);
+    await this.driver.assertElementNotPresent(this.backupRemindMeLaterButton);
   }
 
   async closeSurveyToast(surveyName: string): Promise<void> {
@@ -279,6 +357,10 @@ class HomePage {
     expectedBalance: string = '25',
     symbol: string = 'ETH',
   ): Promise<void> {
+    if (expectedBalance === '0') {
+      await this.driver.waitForSelector(this.fundYourWalletBanner);
+      return;
+    }
     try {
       await this.driver.waitForSelector({
         css: this.balance,
@@ -294,6 +376,19 @@ class HomePage {
     console.log(
       `Expected balance ${expectedBalance} ${symbol} is displayed on homepage`,
     );
+  }
+
+  /**
+   * Checks if the balance empty state is displayed on homepage.
+   * Criteria:
+   * - The account group has a zero balance across all aggregated mainnet networks.
+   * - The account group is not on a test network
+   * - The account group is not in a cached state
+   * Not a replacement for checkExpectedBalanceIsDisplayed('0') this is still valid in certain cases.
+   */
+  async checkBalanceEmptyStateIsDisplayed(): Promise<void> {
+    console.log('Check balance empty state is displayed on homepage');
+    await this.driver.waitForSelector(this.emptyBalance);
   }
 
   /**
@@ -314,13 +409,27 @@ class HomePage {
 
   /**
    * This function checks if account syncing has been successfully completed at least once.
+   * Includes a delay before checking to give Firefox more time to initialize (reduces flakiness).
    */
   async checkHasAccountSyncingSyncedAtLeastOnce(): Promise<void> {
+    console.log(
+      `Waiting ${POST_UNLOCK_DELAY}ms before checking account sync state (Firefox timing fix)`,
+    );
+    await this.driver.delay(POST_UNLOCK_DELAY);
     console.log('Check if account syncing has synced at least once');
-    await this.driver.wait(async () => {
-      const uiState = await getCleanAppState(this.driver);
-      return uiState.metamask.hasAccountTreeSyncingSyncedAtLeastOnce === true;
-    }, 30000); // Syncing can take some time so adding a longer timeout to reduce flakes
+    await this.driver.waitUntil(
+      async () => {
+        const uiState = await getCleanAppState(this.driver);
+        // Check for nullish, as the state we might seems to be `null` sometimes.
+        return (
+          uiState?.metamask?.hasAccountTreeSyncingSyncedAtLeastOnce === true
+        );
+      },
+      {
+        interval: BASE_ACCOUNT_SYNC_INTERVAL,
+        timeout: BASE_ACCOUNT_SYNC_TIMEOUT, // Syncing can take some time so adding a longer timeout to reduce flakes
+      },
+    );
   }
 
   async checkIfSendButtonIsClickable(): Promise<boolean> {
@@ -355,7 +464,9 @@ class HomePage {
   ): Promise<void> {
     let expectedBalance: string;
     if (localNode) {
-      expectedBalance = (await localNode.getBalance(address)).toString();
+      const balance = await localNode.getBalance(address);
+      expectedBalance = balance.toFixed(3);
+      expectedBalance = Number(expectedBalance).toString();
     } else {
       expectedBalance = '25';
     }
@@ -448,6 +559,14 @@ class HomePage {
     console.log('Check no shield entry modal is displayed on homepage');
     await this.driver.assertElementNotPresent(this.shieldEntryModal, {
       waitAtLeastGuard: regularDelayMs,
+    });
+  }
+
+  async checkShieldEntryModalNotPresent(): Promise<void> {
+    console.log('Check shield entry modal is not present on homepage');
+    await this.driver.assertElementNotPresent(this.shieldEntryModal, {
+      waitAtLeastGuard: regularDelayMs,
+      timeout: 2000,
     });
   }
 }

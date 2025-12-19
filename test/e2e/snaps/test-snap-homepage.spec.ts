@@ -1,7 +1,7 @@
 import { Suite } from 'mocha';
 import { Driver } from '../webdriver/driver';
 import { withFixtures, WINDOW_TITLES } from '../helpers';
-import FixtureBuilder from '../fixture-builder';
+import FixtureBuilder from '../fixtures/fixture-builder';
 import HeaderNavbar from '../page-objects/pages/header-navbar';
 import SnapListPage from '../page-objects/pages/snap-list-page';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';

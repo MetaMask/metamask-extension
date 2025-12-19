@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -190,7 +190,12 @@ export const NetworkConnectionBanner = () => {
         networkClientId: networkConnectionBanner.networkClientId,
       });
 
-      dispatch(setEditedNetwork({ chainId: networkConnectionBanner.chainId }));
+      dispatch(
+        setEditedNetwork({
+          chainId: networkConnectionBanner.chainId,
+          trackRpcUpdateFromBanner: true,
+        }),
+      );
       navigate(NETWORKS_ROUTE);
     }
   }, [networkConnectionBanner, dispatch, navigate]);

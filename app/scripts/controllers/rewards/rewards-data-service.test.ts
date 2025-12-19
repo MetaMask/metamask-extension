@@ -114,7 +114,7 @@ describe('RewardsDataService', () => {
       expect(service.name).toBe('RewardsDataService');
     });
 
-    it('uses UAT URL by default when no environment is set', () => {
+    it('uses PRD URL by default when no environment is set', () => {
       service = createService();
       expect(service.name).toBe('RewardsDataService');
     });
@@ -153,6 +153,14 @@ describe('RewardsDataService', () => {
       );
       expect(registerSpy).toHaveBeenCalledWith(
         'RewardsDataService:getOptInStatus',
+        expect.any(Function),
+      );
+      expect(registerSpy).toHaveBeenCalledWith(
+        'RewardsDataService:getSeasonMetadata',
+        expect.any(Function),
+      );
+      expect(registerSpy).toHaveBeenCalledWith(
+        'RewardsDataService:getDiscoverSeasons',
         expect.any(Function),
       );
     });
@@ -501,6 +509,7 @@ describe('RewardsDataService', () => {
         id: 'test-subscription-id',
         referralCode: 'test-referral-code',
         accounts: [],
+        createdAt: new Date().toISOString(),
       },
     };
 
@@ -659,6 +668,7 @@ describe('RewardsDataService', () => {
       id: mockSubscriptionId,
       referralCode: 'test-referral-code',
       accounts: [],
+      createdAt: new Date().toISOString(),
     };
 
     const mockOptinResponse: LoginResponseDto = {

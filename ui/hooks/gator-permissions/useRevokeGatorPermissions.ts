@@ -1,33 +1,31 @@
-import { useCallback, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useCallback } from 'react';
+import { useStore } from 'react-redux';
 import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import { decodeDelegations } from '@metamask/delegation-core';
 import {
   PermissionTypesWithCustom,
   Signer,
   StoredGatorPermissionSanitized,
 } from '@metamask/gator-permissions-controller';
+import { getMemoizedInternalAccountByAddress } from '../../selectors/accounts';
 import {
   addTransaction,
   findNetworkClientIdByChainId,
 } from '../../store/actions';
-import { getInternalAccounts } from '../../selectors';
-import { useConfirmationNavigation } from '../../pages/confirmations/hooks/useConfirmationNavigation';
 import {
   encodeDisableDelegation,
-  Delegation,
   getDelegationHashOffchain,
 } from '../../../shared/lib/delegation/delegation';
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import {
   addPendingRevocation,
   submitRevocation,
   checkDelegationDisabled,
 } from '../../store/controller-actions/gator-permissions-controller';
+import { useGatorPermissionRedirect } from './useGatorPermissionRedirect';
+import { extractDelegationFromGatorPermissionContext } from './utils';
 
 export type RevokeGatorPermissionArgs = {
   accountAddress: Hex;
@@ -50,41 +48,8 @@ export function useRevokeGatorPermissions({
   chainId: Hex;
   onRedirect?: () => void;
 }) {
-  const [transactionId, setTransactionId] = useState<string | undefined>();
-  const { confirmations, navigateToId } = useConfirmationNavigation();
-  const internalAccounts = useSelector(getInternalAccounts);
-
-  const isRedirectPending = confirmations.some(
-    (conf) => conf.id === transactionId,
-  );
-
-  /**
-   * Extracts the delegation from the gator permission encoded context.
-   *
-   * @param permissionContext - The gator permission context to extract the delegation from.
-   * @returns The delegation.
-   * @throws An error if no delegation is found.
-   */
-  const extractDelegationFromGatorPermissionContext = useCallback(
-    (permissionContext: Hex): Delegation => {
-      // Gator 7715 permissions only have a single signed delegation:
-      const delegations = decodeDelegations(permissionContext);
-      const firstDelegation = delegations[0];
-      if (!firstDelegation) {
-        throw new Error('No delegation found');
-      }
-
-      if (delegations.length !== 1) {
-        throw new Error('Multiple delegations found');
-      }
-
-      return {
-        ...firstDelegation,
-        salt: `0x${firstDelegation.salt.toString(16)}`,
-      };
-    },
-    [],
-  );
+  const { setTransactionId } = useGatorPermissionRedirect({ onRedirect });
+  const store = useStore();
 
   /**
    * Asserts that the gator permission(s) is not empty.
@@ -137,21 +102,6 @@ export function useRevokeGatorPermissions({
   );
 
   /**
-   * Finds an internal account by its address that matches the delegator of the gator permission.
-   *
-   * @param delegator - The address of the delegator to find.
-   * @returns The internal account if found, otherwise undefined.
-   */
-  const findInternalAccountByAddress = useCallback(
-    (delegator: Hex) => {
-      return internalAccounts.find((account) =>
-        isEqualCaseInsensitive(account.address, delegator),
-      );
-    },
-    [internalAccounts],
-  );
-
-  /**
    * Builds the arguments for revoking a gator permission.
    *
    * @param gatorPermission - The gator permission to revoke.
@@ -165,7 +115,8 @@ export function useRevokeGatorPermissions({
       >,
     ): RevokeGatorPermissionArgs => {
       const { permissionResponse } = gatorPermission;
-      const internalAccount = findInternalAccountByAddress(
+      const internalAccount = getMemoizedInternalAccountByAddress(
+        store.getState(),
         permissionResponse.address as Hex,
       );
       if (!internalAccount) {
@@ -180,7 +131,7 @@ export function useRevokeGatorPermissions({
         accountAddress: internalAccount.address as Hex,
       };
     },
-    [findInternalAccountByAddress],
+    [store],
   );
 
   /**
@@ -259,10 +210,7 @@ export function useRevokeGatorPermissions({
 
       return transactionMeta;
     },
-    [
-      buildRevokeGatorPermissionArgs,
-      extractDelegationFromGatorPermissionContext,
-    ],
+    [buildRevokeGatorPermissionArgs],
   );
 
   /**
@@ -293,6 +241,7 @@ export function useRevokeGatorPermissions({
       addRevokeGatorPermissionTransaction,
       assertCorrectChainId,
       assertNotEmptyGatorPermission,
+      setTransactionId,
     ],
   );
 
@@ -341,19 +290,12 @@ export function useRevokeGatorPermissions({
       addRevokeGatorPermissionTransaction,
       assertCorrectChainId,
       assertNotEmptyGatorPermission,
+      setTransactionId,
     ],
   );
-
-  useEffect(() => {
-    if (isRedirectPending && transactionId) {
-      navigateToId(transactionId);
-      onRedirect?.();
-    }
-  }, [isRedirectPending, navigateToId, transactionId, onRedirect]);
 
   return {
     revokeGatorPermission,
     revokeGatorPermissionBatch,
-    findInternalAccountByAddress,
   };
 }

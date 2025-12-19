@@ -14,6 +14,7 @@ export type ConfirmInfoRowCurrencyProps = {
   currency?: string;
   'data-testid'?: string;
   className?: string;
+  chainId?: string;
 };
 
 // todo: the component currently takes care of displaying value in the currency passed
@@ -25,6 +26,7 @@ export const ConfirmInfoRowCurrency = ({
   currency,
   'data-testid': dataTestId,
   className,
+  chainId,
 }: ConfirmInfoRowCurrencyProps) => (
   <Box
     display={Display.Flex}
@@ -41,6 +43,7 @@ export const ConfirmInfoRowCurrency = ({
         currency={currency}
         value={`${value}`}
         className={className}
+        chainId={chainId}
       />
     ) : (
       <UserPreferencedCurrencyDisplay

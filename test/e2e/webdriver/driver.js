@@ -226,6 +226,16 @@ class Driver {
     if (typeof locator === 'string') {
       // If locator is a string we assume its a css selector
       return By.css(locator);
+    } else if (locator.css && locator.value) {
+      // Providing both css and value props will use xpath to look for an element
+      // matching the CSS selector with a specific value attribute.
+      const quotedValue = quoteXPathText(locator.value);
+      const baseXpath = cssToXPath.parse(locator.css).toXPath();
+      // Handle both cases: XPaths with predicates ending in ']' and simple XPaths without predicates
+      const xpath = baseXpath.endsWith(']')
+        ? baseXpath.replace(/\]$/u, ` and @value=${quotedValue}]`)
+        : `${baseXpath}[@value=${quotedValue}]`;
+      return By.xpath(xpath);
     } else if (locator.value) {
       // For backwards compatibility, checking if the locator has a value prop
       // tells us this is a Selenium locator
@@ -453,8 +463,10 @@ class Driver {
    * Waits for multiple elements that match the given locators to reach the specified state within the timeout period.
    *
    * @param {Array<string | object>} rawLocators - Array of element locators
-   * @param {number} timeout - Optional parameter that specifies the maximum amount of time (in milliseconds)
-   * to wait for the condition to be met and desired state of the elements to wait for.
+   * @param {object} [options] - Optional configuration object
+   * @param {number} [options.timeout] - Maximum time (in milliseconds) to wait for the condition to be met.
+   * Defaults to the driver's timeout value.
+   * @param {string} [options.state] - Desired state of the elements to wait for.
    * It defaults to 'visible', indicating that the method will wait until the elements are visible on the page.
    * The other supported state is 'detached', which means waiting until the elements are removed from the DOM.
    * @returns {Promise<Array<WebElement>>} Promise resolving when all elements meet the state or timeout occurs.
@@ -941,10 +953,12 @@ class Driver {
    * @param {object} options - Options for the wait.
    * @param {number} options.timeout - The maximum amount of time (in milliseconds) to wait for the condition to be met.
    * @param {number} options.interval - The interval (in milliseconds) between checks for the condition.
+   * @param {number} [options.stableFor] - If provided, after the condition is met, waits this many milliseconds
+   * and re-checks to ensure the condition remains stable. Useful for UI states that may fluctuate before settling.
    * @returns {Promise<void>} A promise that resolves when the condition is met or the timeout is reached.
    * @throws {Error} Throws an error if the condition is not met within the timeout period.
    */
-  async waitUntil(condition, { interval, timeout }) {
+  async waitUntil(condition, { interval, timeout, stableFor = 0 }) {
     const startTime = Date.now();
     const endTime = startTime + timeout;
 
@@ -953,7 +967,17 @@ class Driver {
     while (true) {
       const result = await condition();
       if (result === true) {
-        return; // Condition met
+        // If stableFor is set, verify the condition remains stable
+        if (stableFor > 0) {
+          await this.delay(stableFor);
+          const stableResult = await condition();
+          if (stableResult === true) {
+            return; // Condition met and stable
+          }
+          // Condition became unstable, continue waiting
+        } else {
+          return; // Condition met
+        }
       }
 
       const currentTime = Date.now();
@@ -1037,14 +1061,22 @@ class Driver {
    * @param {object} [options] - optional parameter to specify additional options.
    * @param {boolean} [options.waitForControllers] - optional parameter to specify whether to wait for the controllers to be loaded.
    * Defaults to true.
+   * @param {number} [options.waitForControllersTimeout] - optional parameter to specify the timeout in milliseconds for waiting
+   * for the controllers to be loaded. Defaults to 10000 (10 seconds).
    * @returns {Promise} promise resolves when the page has finished loading
    * @throws {Error} Will throw an error if the navigation fails or the page does not load within the timeout period.
    */
-  async navigate(page = PAGES.HOME, { waitForControllers = true } = {}) {
+  async navigate(
+    page = PAGES.HOME,
+    {
+      waitForControllers = true,
+      waitForControllersTimeout = this.timeout,
+    } = {},
+  ) {
     const response = await this.driver.get(`${this.extensionUrl}/${page}.html`);
     // Wait for asynchronous JavaScript to load
     if (waitForControllers) {
-      await this.waitForControllersLoaded();
+      await this.waitForControllersLoaded(waitForControllersTimeout);
     }
     return response;
   }
@@ -1055,13 +1087,15 @@ class Driver {
    * This function waits until an element with the class 'controller-loaded' is located,
    * indicating that the controllers have finished loading.
    *
+   * @param {number} [timeout] - optional timeout in milliseconds for waiting for the controllers to be loaded.
+   * Defaults to 10000 (10 seconds).
    * @returns {Promise<void>} A promise that resolves when the controllers are loaded.
    * @throws {Error} Will throw an error if the element is not located within the timeout period.
    */
-  async waitForControllersLoaded() {
+  async waitForControllersLoaded(timeout = 10000) {
     await this.driver.wait(
       until.elementLocated(this.buildLocator('.controller-loaded')),
-      10 * 1000,
+      timeout,
     );
   }
 
@@ -1644,6 +1678,8 @@ class Driver {
       'Failed to load resource: the server responded with a status of 502 (Bad Gateway)',
       // Sentry error that is not actually a problem
       'Event fragment with id transaction-added-',
+      // Sidepanel
+      'GL Context was lost',
     ]);
 
     const cdpConnection = await this.driver.createCDPConnection('page');

@@ -2,7 +2,7 @@ import { SnapId } from '@metamask/snaps-sdk';
 import { parseCaipAssetType, CaipAssetType } from '@metamask/utils';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import {
   sendMultichainTransaction,
   setDefaultHomeActiveTabName,

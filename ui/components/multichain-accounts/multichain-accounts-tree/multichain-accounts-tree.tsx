@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Box, ButtonLink, ButtonLinkSize, Text } from '../../component-library';
 import {
   AlignItems,
@@ -17,7 +17,7 @@ import {
 import { ConsolidatedWallets } from '../../../selectors/multichain-accounts/account-tree.types';
 import { MergedInternalAccount } from '../../../selectors/selectors.types';
 import { HiddenAccountList } from '../../multichain/account-list-menu/hidden-account-list';
-import { WALLET_DETAILS_ROUTE } from '../../../helpers/constants/routes';
+import { MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import { matchesSearchPattern } from './utils';
 
 export type MultichainAccountsTreeProps = {
@@ -45,16 +45,16 @@ export const MultichainAccountsTree = ({
   onClose,
   onAccountTreeItemClick,
 }: MultichainAccountsTreeProps) => {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const handleWalletDetailsClick = useCallback(
     (walletId: string) => {
-      history.push(
-        WALLET_DETAILS_ROUTE.replace(':id', encodeURIComponent(walletId)),
+      navigate(
+        `${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/${encodeURIComponent(walletId)}`,
       );
       onClose();
     },
-    [history, onClose],
+    [navigate, onClose],
   );
 
   const accountsTree = useMemo(() => {

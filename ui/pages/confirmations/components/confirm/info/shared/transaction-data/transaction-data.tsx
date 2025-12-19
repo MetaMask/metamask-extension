@@ -4,7 +4,7 @@ import { hexStripZeros } from '@ethersproject/bytes';
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import _ from 'lodash';
-import { Hex } from '@metamask/utils';
+import { Hex, isHexString } from '@metamask/utils';
 
 import { APPROVAL_METHOD_NAMES } from '../../../../../../../../shared/constants/transaction';
 import { useDecodedTransactionData } from '../../hooks/useDecodedTransactionData';
@@ -33,6 +33,7 @@ import {
 // eslint-disable-next-line import/no-restricted-paths
 import { UniswapPathPool } from '../../../../../../../../app/scripts/lib/transaction/decode/uniswap';
 import { useConfirmContext } from '../../../../../context/confirm';
+import { useDappSwapContext } from '../../../../../context/dapp-swap';
 import { hasTransactionData } from '../../../../../../../../shared/modules/transaction.utils';
 import { renderShortTokenId } from '../../../../../../../components/app/assets/nfts/nft-details/utils';
 import { BatchedApprovalFunction } from '../batched-approval-function/batched-approval-function';
@@ -49,6 +50,7 @@ export const TransactionData = ({
   nestedTransactionIndex?: number;
 } = {}) => {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const { isQuotedSwapDisplayedInInfo } = useDappSwapContext();
   const { nestedTransactions, txParams } = currentConfirmation ?? {};
   const { data: currentData, to: currentTo } = txParams ?? {};
   const transactionData = data ?? (currentData as Hex);
@@ -58,6 +60,10 @@ export const TransactionData = ({
     data: transactionData,
     to: transactionTo,
   });
+
+  if (nestedTransactionIndex === undefined && isQuotedSwapDisplayedInInfo) {
+    return null;
+  }
 
   const { value, pending } = decodeResponse;
 
@@ -258,7 +264,11 @@ function ParamValue({
     valueString = renderShortTokenId(valueString, 5);
   }
 
-  if (!Array.isArray(value) && valueString.startsWith('0x')) {
+  if (
+    !Array.isArray(value) &&
+    valueString.startsWith('0x') &&
+    isHexString(valueString)
+  ) {
     valueString = hexStripZeros(valueString);
   }
 

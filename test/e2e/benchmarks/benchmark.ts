@@ -11,7 +11,7 @@ import {
   getFirstParentDirectoryThatExists,
   isWritable,
 } from '../../helpers/file';
-import FixtureBuilder from '../fixture-builder';
+import FixtureBuilder from '../fixtures/fixture-builder';
 import { unlockWallet, withFixtures } from '../helpers';
 import AccountListPage from '../page-objects/pages/account-list-page';
 import HeaderNavbar from '../page-objects/pages/header-navbar';
@@ -40,7 +40,7 @@ async function measurePageStandard(
     {
       fixtures: new FixtureBuilder().build(),
       disableServerMochaToBackground: true,
-      title: 'benchmark-pageload',
+      title: 'measurePageStandard',
     },
     async ({ driver, getNetworkReport, clearNetworkReport }) => {
       await unlockWallet(driver);

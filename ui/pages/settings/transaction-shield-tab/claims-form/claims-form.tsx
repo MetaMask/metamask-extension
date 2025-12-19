@@ -20,7 +20,7 @@ import {
   IconSize,
 } from '@metamask/design-system-react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import classnames from 'classnames';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useClaims } from '../../../../contexts/claims/claims';
@@ -29,8 +29,6 @@ import {
   TextareaResize,
 } from '../../../../components/component-library/textarea';
 import {
-  BannerAlert,
-  BannerAlertSeverity,
   FormTextField,
   FormTextFieldSize,
 } from '../../../../components/component-library';
@@ -43,18 +41,15 @@ import { useClaimState } from '../../../../hooks/shield/useClaimState';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { isValidEmail } from '../../../../../app/scripts/lib/util';
-import {
-  DEFAULT_ROUTE,
-  TRANSACTION_SHIELD_CLAIM_ROUTES,
-} from '../../../../helpers/constants/routes';
-import {
-  submitShieldClaim,
-  setDefaultHomeActiveTabName,
-} from '../../../../store/actions';
+import { TRANSACTION_SHIELD_CLAIM_ROUTES } from '../../../../helpers/constants/routes';
+import { submitShieldClaim } from '../../../../store/actions';
 import LoadingScreen from '../../../../components/ui/loading-screen';
 import { setShowClaimSubmitToast } from '../../../../components/app/toast-master/utils';
 import { ClaimSubmitToastType } from '../../../../../shared/constants/app-state';
-import { TRANSACTION_SHIELD_LINK } from '../../../../helpers/constants/common';
+import {
+  TRANSACTION_SHIELD_SUPPORT_LINK,
+  FIND_TRANSACTION_HASH_LINK,
+} from '../../../../helpers/constants/common';
 import { FileUploader } from '../../../../components/component-library/file-uploader';
 import {
   SUBMIT_CLAIM_ERROR_CODES,
@@ -68,7 +63,7 @@ import { getValidSubmissionWindowDays } from '../../../../selectors/shield/claim
 import { useSubscriptionMetrics } from '../../../../hooks/shield/metrics/useSubscriptionMetrics';
 import {
   ShieldCtaActionClickedEnum,
-  ShieldCtaSourceEnum,
+  ShieldMetricsSourceEnum,
 } from '../../../../../shared/constants/subscriptions';
 import { getLatestShieldSubscription } from '../../../../selectors/subscription';
 import {
@@ -83,7 +78,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { refetchClaims, pendingClaims } = useClaims();
+  const { refetchClaims } = useClaims();
   const validSubmissionWindowDays = useSelector(getValidSubmissionWindowDays);
   const latestShieldSubscription = useSelector(getLatestShieldSubscription);
   const { captureShieldCtaClickedEvent, captureShieldClaimSubmissionEvent } =
@@ -113,16 +108,23 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
     Partial<
       Record<
         SubmitClaimField,
-        { key: SubmitClaimField; msg: string } | undefined
+        | { key: SubmitClaimField; msg: string; params?: (string | number)[] }
+        | undefined
       >
     >
   >({});
 
   const setErrorMessage = useCallback(
-    (field: SubmitClaimField, message: string | undefined) => {
+    (
+      field: SubmitClaimField,
+      messageKey: string | undefined,
+      params?: (string | number)[],
+    ) => {
       setErrors((state) => ({
         ...state,
-        [field]: message ? { key: field, msg: message } : undefined,
+        [field]: messageKey
+          ? { key: field, msg: messageKey, params }
+          : undefined,
       }));
     },
     [setErrors],
@@ -279,44 +281,53 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
           }
         });
       } else {
+        const messageFromErrorMap = data
+          ? ERROR_MESSAGE_MAP[data?.errorCode]
+          : undefined;
+
+        let params;
+        switch (data?.errorCode) {
+          case SUBMIT_CLAIM_ERROR_CODES.SUBMISSION_WINDOW_EXPIRED:
+            params = [validSubmissionWindowDays];
+            break;
+          default:
+            break;
+        }
+
+        // if error message has field, set error message for the field instead of showing toast message
+        if (messageFromErrorMap?.field) {
+          setErrorMessage(
+            messageFromErrorMap.field,
+            messageFromErrorMap.messageKey,
+            params,
+          );
+          return;
+        }
+
         // if no error details, show error using toast message
         let toastMessage = '';
         if (message === ClaimSubmitToastType.Errored) {
           toastMessage = ClaimSubmitToastType.Errored;
         } else {
-          const messageFromErrorMap = data
-            ? ERROR_MESSAGE_MAP[data.errorCode]
-            : undefined;
-          // needs to translate message because of the params
           toastMessage = messageFromErrorMap
-            ? t(messageFromErrorMap.messageKey, messageFromErrorMap.params)
+            ? t(messageFromErrorMap.messageKey, params)
             : message;
-
-          // if error message has field, set error message for the field instead of showing toast message
-          if (messageFromErrorMap?.field) {
-            // needs to translate message because of the params
-            setErrorMessage(
-              messageFromErrorMap.field,
-              t(messageFromErrorMap.messageKey, messageFromErrorMap.params),
-            );
-            return;
-          }
         }
         // if message is not mapped we use toast
         dispatch(setShowClaimSubmitToast(toastMessage));
       }
     },
-    [dispatch, setErrorMessage, t],
+    [dispatch, setErrorMessage, t, validSubmissionWindowDays],
   );
 
-  const handleOpenActivityTab = useCallback(async () => {
+  const onClickFindTransactionHash = useCallback(async () => {
+    window.open(FIND_TRANSACTION_HASH_LINK, '_blank', 'noopener,noreferrer');
     captureShieldCtaClickedEvent({
-      source: ShieldCtaSourceEnum.Settings,
+      source: ShieldMetricsSourceEnum.Settings,
       ctaActionClicked: ShieldCtaActionClickedEnum.FindingTxHash,
+      redirectToUrl: FIND_TRANSACTION_HASH_LINK,
     });
-    dispatch(setDefaultHomeActiveTabName('activity'));
-    navigate(DEFAULT_ROUTE);
-  }, [dispatch, navigate, captureShieldCtaClickedEvent]);
+  }, [captureShieldCtaClickedEvent]);
 
   const handleSubmitClaim = useCallback(async () => {
     if (isInvalidData) {
@@ -392,28 +403,16 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
 
   return (
     <Box
-      className="submit-claim-page flex flex-col"
+      className="submit-claim-page flex flex-col pt-4 px-4 pb-4"
       data-testid="submit-claim-page"
-      padding={4}
       gap={4}
     >
-      {!isView && pendingClaims.length > 0 && (
-        <BannerAlert
-          severity={BannerAlertSeverity.Info}
-          title={t('shieldClaimsPendingAlertTitle')}
-          description={t('shieldClaimsPendingAlertDescription')}
-          actionButtonLabel={t('shieldClaimsPendingAlertActionButtonLabel')}
-          actionButtonOnClick={() => {
-            navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);
-          }}
-        />
-      )}
       <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
         {isView
           ? t('shieldClaimDetailsViewClaims', [
               <TextButton key="here-link" className="min-w-0" asChild>
                 <a
-                  href={TRANSACTION_SHIELD_LINK}
+                  href={TRANSACTION_SHIELD_SUPPORT_LINK}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -425,26 +424,19 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
               validSubmissionWindowDays,
               <TextButton key="here-link" className="min-w-0" asChild>
                 <a
-                  href={TRANSACTION_SHIELD_LINK}
+                  href={TRANSACTION_SHIELD_SUPPORT_LINK}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  {t('here')}
+                  {t('shieldClaimViewGuidelines')}
                 </a>
               </TextButton>,
             ])}
       </Text>
       {/* Personal details */}
       <Box>
-        <Text variant={TextVariant.HeadingSm}>
+        <Text variant={TextVariant.HeadingSm} className="mb-2">
           {t('shieldClaimPersonalDetails')}
-        </Text>
-        <Text
-          variant={TextVariant.BodySm}
-          color={TextColor.TextAlternative}
-          className="mb-2"
-        >
-          {t('shieldClaimPersonalDetailsDescription')}
         </Text>
         <Box
           borderColor={BoxBorderColor.BorderMuted}
@@ -455,9 +447,11 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
         label={`${t('shieldClaimEmail')}*`}
         placeholder="johncarpenter@sample.com"
         inputProps={{ 'data-testid': 'shield-claim-email-input' }}
-        helpText={t(
-          errors.email ? errors.email.msg : 'shieldClaimEmailHelpText',
-        )}
+        helpText={
+          errors.email
+            ? t(errors.email.msg, errors.email.params)
+            : t('shieldClaimEmailHelpText')
+        }
         helpTextProps={{
           'data-testid': 'shield-claim-help-text',
           color: DsTextColor.textAlternative,
@@ -483,11 +477,14 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
           'data-testid': 'shield-claim-reimbursement-wallet-address-help-text',
           color: DsTextColor.textAlternative,
         }}
-        helpText={t(
+        helpText={
           errors.reimbursementWalletAddress
-            ? errors.reimbursementWalletAddress.msg
-            : 'shieldClaimReimbursementWalletAddressHelpText',
-        )}
+            ? t(
+                errors.reimbursementWalletAddress.msg,
+                errors.reimbursementWalletAddress.params,
+              )
+            : t('shieldClaimReimbursementWalletAddressHelpText')
+        }
         id="reimbursement-wallet-address"
         name="reimbursement-wallet-address"
         size={FormTextFieldSize.Lg}
@@ -501,17 +498,9 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
       />
       {/* Incident details */}
       <Box className="mt-4">
-        <Text variant={TextVariant.HeadingSm}>
+        <Text variant={TextVariant.HeadingSm} className="mb-2">
           {t('shieldClaimIncidentDetails')}
         </Text>
-        <Text
-          variant={TextVariant.BodySm}
-          color={TextColor.TextAlternative}
-          className="mb-2"
-        >
-          {t('shieldClaimIncidentDetailsDescription')}
-        </Text>
-
         <Box
           borderColor={BoxBorderColor.BorderMuted}
           className="w-full h-[1px] border border-b-0"
@@ -557,12 +546,16 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
         }}
         helpText={
           errors.impactedTxHash ? (
-            <Text variant={TextVariant.BodySm} color={TextColor.Inherit}>
-              {`${t(errors.impactedTxHash?.msg)}. `}
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.Inherit}
+              data-testid="shield-claim-impacted-tx-hash-error"
+            >
+              {`${t(errors.impactedTxHash?.msg, errors.impactedTxHash?.params)} `}
               <TextButton
                 size={TextButtonSize.BodySm}
                 className="min-w-0"
-                onClick={handleOpenActivityTab}
+                onClick={onClickFindTransactionHash}
               >
                 {t('shieldClaimImpactedTxHashHelpTextLink')}
               </TextButton>
@@ -572,11 +565,11 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
               variant={TextVariant.BodySm}
               color={TextColor.TextAlternative}
             >
-              {t('shieldClaimImpactedTxHashHelpText')}{' '}
+              {`${t('shieldClaimImpactedTxHashHelpText')} `}
               <TextButton
                 size={TextButtonSize.BodySm}
                 className="min-w-0"
-                onClick={handleOpenActivityTab}
+                onClick={onClickFindTransactionHash}
               >
                 {t('shieldClaimImpactedTxHashHelpTextLink')}
               </TextButton>
@@ -629,7 +622,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
             className="mt-0.5"
             data-testid="shield-claim-description-error"
           >
-            {t(errors.caseDescription.msg)}
+            {t(errors.caseDescription.msg, errors.caseDescription.params)}
           </Text>
         )}
       </Box>

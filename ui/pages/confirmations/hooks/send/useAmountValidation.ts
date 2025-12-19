@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Numeric } from '../../../../../shared/modules/Numeric';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
+  addLeadingZeroIfNeeded,
   fromTokenMinUnitsNumeric,
   isValidPositiveNumericString,
 } from '../../utils/send';
@@ -37,9 +38,13 @@ export const useAmountValidation = () => {
       return undefined;
     }
 
+    if (rawBalanceNumeric.isZero()) {
+      return t('insufficientFundsSend');
+    }
+
     try {
       const result = (await validateAmountWithSnap(
-        value || '0',
+        addLeadingZeroIfNeeded(value) || '0',
       )) as SnapOnAmountInputResult;
 
       if (result.errors?.length > 0) {
@@ -49,7 +54,7 @@ export const useAmountValidation = () => {
     } catch (error) {
       return t('invalidValue');
     }
-  }, [t, value, validateAmountWithSnap, isNonEvmSendType]);
+  }, [t, value, validateAmountWithSnap, isNonEvmSendType, rawBalanceNumeric]);
 
   const validateAmountAsync = useCallback(async () => {
     if (!value) {

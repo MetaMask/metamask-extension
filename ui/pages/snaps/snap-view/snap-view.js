@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { hasProperty } from '@metamask/utils';
-import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   AlignItems,
   BackgroundColor,
@@ -24,6 +24,7 @@ import SnapSettings from './snap-settings';
 function SnapView() {
   const navigate = useNavigate();
   const location = useLocation();
+
   const { pathname } = location;
   // The snap ID is in URI-encoded form in the last path segment of the URL.
   const snapId = decodeURIComponent(pathname.match(/[^/]+$/u)[0]);

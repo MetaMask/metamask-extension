@@ -37,10 +37,8 @@ describe('Multichain API - Non EVM', function () {
             });
 
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
             const confirmation = new SnapSignInConfirmation(driver);
             await confirmation.checkPageIsLoaded();
-            await confirmation.checkAccountIsDisplayed('Solana 1');
             await confirmation.clickFooterConfirmButton();
           },
         );
@@ -80,7 +78,7 @@ describe('Multichain API - Non EVM', function () {
 
             const confirmation = new SnapTransactionConfirmation(driver);
             await confirmation.checkPageIsLoaded();
-            await confirmation.checkAccountIsDisplayed('Solana 1');
+            await confirmation.checkAccountIsDisplayed('Account 1');
             await confirmation.clickFooterConfirmButton();
 
             await driver.switchToWindowWithTitle(

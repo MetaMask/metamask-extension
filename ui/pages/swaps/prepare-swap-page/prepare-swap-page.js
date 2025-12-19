@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 import PropTypes from 'prop-types';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { uniqBy, isEqual, isEmpty } from 'lodash';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import { getAccountLink, getTokenTrackerLink } from '@metamask/etherscan-link';
 import classnames from 'classnames';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -560,7 +560,6 @@ export default function PrepareSwapPage({
     if (!fromToken?.symbol && !fetchParamsFromToken?.symbol) {
       dispatch(setSwapsFromToken(defaultSwapsToken));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -766,7 +765,6 @@ export default function PrepareSwapPage({
     if (fromToken?.address && !selectedToToken?.address && defaultToToken) {
       dispatch(setSwapToToken(defaultToToken));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fromToken?.address]);
 
   const onOpenImportTokenModalClick = (item) => {

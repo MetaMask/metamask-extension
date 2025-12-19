@@ -50,7 +50,9 @@ import { decodeSnapIdFromPathname } from '../../helpers/utils/snaps';
 import { getIsSeedlessPasswordOutdated } from '../../ducks/metamask/metamask';
 import { getIsMetaMaskShieldFeatureEnabled } from '../../../shared/modules/environment';
 import { getHasSubscribedToShield } from '../../selectors/subscription/subscription';
+import { SHIELD_QUERY_PARAMS } from '../../../shared/lib/deep-links/routes/shield';
 import Settings from './settings.component';
+import { CLAIMS_TAB_KEYS } from './transaction-shield-tab/types';
 
 const ROUTES_TO_I18N_KEYS = {
   [ABOUT_US_ROUTE]: 'about',
@@ -77,7 +79,7 @@ const ROUTES_TO_I18N_KEYS = {
 
 const mapStateToProps = (state, ownProps) => {
   const { location } = ownProps;
-  const { pathname } = location;
+  const { pathname, search } = location;
   const { ticker } = getProviderConfig(state);
   const {
     metamask: { currencyRates, socialLoginEmail },
@@ -85,6 +87,11 @@ const mapStateToProps = (state, ownProps) => {
   const settingsPageSnapsIds = getSettingsPageSnapsIds(state);
   const snapsMetadata = getSnapsMetadata(state);
   const conversionDate = currencyRates[ticker]?.conversionDate;
+
+  const searchParams = new URLSearchParams(search);
+  // param to check and show shield entry modal at start
+  const shouldShowShieldEntryModal =
+    searchParams.get(SHIELD_QUERY_PARAMS.showShieldEntryModal) === 'true';
 
   const pathNameTail = pathname.match(/[^/]+$/u)?.[0] || '';
   const isAddressEntryPage = pathNameTail.includes('0x');
@@ -108,8 +115,11 @@ const mapStateToProps = (state, ownProps) => {
   const isShieldClaimNewPage = Boolean(
     pathname.match(TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL),
   );
-  const isShieldClaimViewPage = Boolean(
-    pathname.startsWith(TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW.FULL),
+  const isShieldClaimViewActivePage = Boolean(
+    pathname.startsWith(TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW_PENDING.FULL),
+  );
+  const isShieldClaimViewCompletedPage = Boolean(
+    pathname.startsWith(TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW_HISTORY.FULL),
   );
   const isShieldClaimBasePage = Boolean(
     pathname.startsWith(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE),
@@ -128,8 +138,8 @@ const mapStateToProps = (state, ownProps) => {
     pathnameI18nKey = 'securitySrpWalletRecovery';
   }
 
-  // If pathname is `TRANSACTION_SHIELD_CLAIM_VIEW_ROUTE` rename the tab title to "Claim details"
-  if (pathname.startsWith(TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW.FULL)) {
+  // If pathname is view claim route rename the tab title to "Claim details"
+  if (isShieldClaimViewActivePage || isShieldClaimViewCompletedPage) {
     pathnameI18nKey = 'shieldClaimsListTitle';
   }
 
@@ -145,11 +155,13 @@ const mapStateToProps = (state, ownProps) => {
   } else if (isRevealSrpListPage || isPasswordChangePage) {
     backRoute = SECURITY_ROUTE;
   } else if (isShieldClaimNewPage) {
-    backRoute = TRANSACTION_SHIELD_ROUTE;
-  } else if (isShieldClaimViewPage) {
     backRoute = TRANSACTION_SHIELD_CLAIM_ROUTES.BASE;
+  } else if (isShieldClaimViewActivePage) {
+    backRoute = `${TRANSACTION_SHIELD_CLAIM_ROUTES.BASE}?tab=${CLAIMS_TAB_KEYS.PENDING}`;
+  } else if (isShieldClaimViewCompletedPage) {
+    backRoute = `${TRANSACTION_SHIELD_CLAIM_ROUTES.BASE}?tab=${CLAIMS_TAB_KEYS.HISTORY}`;
   } else if (isShieldClaimBasePage) {
-    backRoute = TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL;
+    backRoute = TRANSACTION_SHIELD_ROUTE;
   }
 
   const addressName = getAddressBookEntryOrAccountName(
@@ -188,6 +200,7 @@ const mapStateToProps = (state, ownProps) => {
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     pathnameI18nKey,
     settingsPageSnaps,
+    shouldShowShieldEntryModal,
     snapSettingsTitle,
     useExternalServices,
   };

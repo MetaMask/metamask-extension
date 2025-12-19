@@ -2,7 +2,7 @@ import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import {
@@ -35,6 +35,14 @@ jest.mock('../../../store/actions.ts', () => ({
   hideImportNftsModal: jest.fn().mockReturnValue(jest.fn().mockResolvedValue()),
 }));
 
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom', () => {
+  return {
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
+
 describe('ImportNftsModal', () => {
   let store = configureMockStore([thunk])(mockState);
 
@@ -42,12 +50,21 @@ describe('ImportNftsModal', () => {
     jest.restoreAllMocks();
   });
 
-  it('should enable the "Import" button when valid entries are input into both Address and TokenId fields', () => {
-    const { getByText, getByPlaceholderText } = renderWithProvider(
+  it('should enable the "Import" button when valid entries are input into both Address and TokenId fields and a network is selected', () => {
+    const { getByText, getByPlaceholderText, getByTestId } = renderWithProvider(
       <ImportNftsModal onClose={jest.fn()} />,
       store,
     );
     expect(getByText('Import')).not.toBeEnabled();
+
+    // Select a network first
+    const networkSelectorButton = getByTestId(
+      'test-import-tokens-drop-down-custom-import',
+    );
+    fireEvent.click(networkSelectorButton);
+    const networkItem = getByTestId('Goerli');
+    fireEvent.click(networkItem);
+
     const addressInput = getByPlaceholderText('0x...');
     const tokenIdInput = getByPlaceholderText('Enter the token id');
     fireEvent.change(addressInput, {
@@ -59,12 +76,42 @@ describe('ImportNftsModal', () => {
     expect(getByText('Import')).toBeEnabled();
   });
 
-  it('should not enable the "Import" button when an invalid entry is input into one or both Address and TokenId fields', () => {
+  it('should not enable the "Import" button when no network is selected', () => {
     const { getByText, getByPlaceholderText } = renderWithProvider(
       <ImportNftsModal onClose={jest.fn()} />,
       store,
     );
     expect(getByText('Import')).not.toBeEnabled();
+
+    // Fill in valid address and tokenId but don't select a network
+    const addressInput = getByPlaceholderText('0x...');
+    const tokenIdInput = getByPlaceholderText('Enter the token id');
+    fireEvent.change(addressInput, {
+      target: { value: VALID_ADDRESS },
+    });
+    fireEvent.change(tokenIdInput, {
+      target: { value: VALID_TOKENID },
+    });
+
+    // Button should still be disabled without network selection
+    expect(getByText('Import')).not.toBeEnabled();
+  });
+
+  it('should not enable the "Import" button when an invalid entry is input into one or both Address and TokenId fields', () => {
+    const { getByText, getByPlaceholderText, getByTestId } = renderWithProvider(
+      <ImportNftsModal onClose={jest.fn()} />,
+      store,
+    );
+    expect(getByText('Import')).not.toBeEnabled();
+
+    // Select a network first
+    const networkSelectorButton = getByTestId(
+      'test-import-tokens-drop-down-custom-import',
+    );
+    fireEvent.click(networkSelectorButton);
+    const networkItem = getByTestId('Goerli');
+    fireEvent.click(networkItem);
+
     const addressInput = getByPlaceholderText('0x...');
     const tokenIdInput = getByPlaceholderText('Enter the token id');
     fireEvent.change(addressInput, {
@@ -73,15 +120,20 @@ describe('ImportNftsModal', () => {
     fireEvent.change(tokenIdInput, {
       target: { value: VALID_TOKENID },
     });
-    expect(getByText('Import')).not.toBeEnabled();
+
+    expect(getByText('Import')).not.toBeEnabled(); // Invalid token address, valid token id
+
     fireEvent.change(addressInput, {
       target: { value: VALID_ADDRESS },
     });
-    expect(getByText('Import')).toBeEnabled();
+
+    expect(getByText('Import')).toBeEnabled(); // Valid token address, valid token id
+
     fireEvent.change(tokenIdInput, {
       target: { value: INVALID_TOKENID },
     });
-    expect(getByText('Import')).not.toBeEnabled();
+
+    expect(getByText('Import')).not.toBeEnabled(); // Valid token address, invalid token id
   });
 
   it('should call addNftVerifyOwnership, updateNftDropDownState, setNewNftAddedMessage, and ignoreTokens action with correct values (tokenId should not be in scientific notation)', async () => {
@@ -153,6 +205,15 @@ describe('ImportNftsModal', () => {
       <ImportNftsModal onClose={jest.fn()} />,
       store,
     );
+
+    // Select a network first
+    const networkSelectorButton = getByTestId(
+      'test-import-tokens-drop-down-custom-import',
+    );
+    fireEvent.click(networkSelectorButton);
+    const networkItem = getByTestId('Goerli');
+    fireEvent.click(networkItem);
+
     const addressInput = getByPlaceholderText('0x...');
     const tokenIdInput = getByPlaceholderText('Enter the token id');
     fireEvent.change(addressInput, {
@@ -241,9 +302,10 @@ describe('ImportNftsModal', () => {
     // Click import
     fireEvent.click(getByText('Import'));
 
-    // Get the actual networkClientId that was used in the addNftVerifyOwnership call
-    const addNftCall = addNftVerifyOwnership.mock.calls[1];
-    const usedNetworkClientId = addNftCall[2]; // Third argument is the networkClientId
+    // Get the actual networkClientId that was used in the addNftVerifyOwnership call (use last call to be robust against previous test calls)
+    const addNftCalls = addNftVerifyOwnership.mock.calls;
+    const lastCall = addNftCalls[addNftCalls.length - 1];
+    const usedNetworkClientId = lastCall[2]; // Third argument is the networkClientId
 
     expect(addNftVerifyOwnership).toHaveBeenCalledWith(
       VALID_ADDRESS,
@@ -259,32 +321,27 @@ describe('ImportNftsModal', () => {
 
   it('should route to default route when cancel button is clicked', () => {
     const onClose = jest.fn();
-    const { getByText, history } = renderWithProvider(
+    const { getByText } = renderWithProvider(
       <ImportNftsModal onClose={onClose} />,
       store,
     );
-    const mockPush = jest.spyOn(history, 'push');
 
     const cancelButton = getByText('Cancel');
     fireEvent.click(cancelButton);
 
     // Verify both onClose and history.push are called
     expect(onClose).toHaveBeenCalled();
-    expect(mockPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 
   it('should route to default route when close button is clicked', () => {
     const onClose = jest.fn();
-    const { history } = renderWithProvider(
-      <ImportNftsModal onClose={onClose} />,
-      store,
-    );
-    const mockPush = jest.spyOn(history, 'push');
+    renderWithProvider(<ImportNftsModal onClose={onClose} />, store);
 
     fireEvent.click(document.querySelector('button[aria-label="Close"]'));
 
     // Verify both onClose and history.push are called
     expect(onClose).toHaveBeenCalled();
-    expect(mockPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 });

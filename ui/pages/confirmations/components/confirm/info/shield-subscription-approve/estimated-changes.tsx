@@ -39,8 +39,8 @@ export const EstimatedChanges = ({
           isYearlySubscription
             ? null
             : t('shieldEstimatedChangesMonthlyTooltipText', [
-                `$${approvalAmount}`,
                 `$${Number(approvalAmount) / 12}`,
+                `$${approvalAmount}`,
               ])
         }
       />

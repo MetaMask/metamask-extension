@@ -3,6 +3,7 @@
  * These types are used across UI and background to avoid import restrictions
  */
 
+import { RecurringInterval } from '@metamask/subscription-controller';
 import { CaipAccountId, CaipAssetType } from '@metamask/utils';
 
 export enum SeasonRewardType {
@@ -160,6 +161,15 @@ export type EstimatePerpsContextDto = {
   coin: string;
 };
 
+export type EstimateShieldContextDto = {
+  /**
+   * Recurring interval of the shield subscription
+   *
+   * @example 'month'
+   */
+  recurringInterval: RecurringInterval;
+};
+
 export type EstimatePointsContextDto = {
   /**
    * Swap context data, must be present for SWAP activity
@@ -170,6 +180,11 @@ export type EstimatePointsContextDto = {
    * PERPS context data, must be present for PERPS activity
    */
   perpsContext?: EstimatePerpsContextDto;
+
+  /**
+   * Shield context data, must be present for SHIELD activity
+   */
+  shieldContext?: EstimateShieldContextDto;
 };
 
 /**
@@ -183,7 +198,8 @@ export type PointsEventEarnType =
   | 'REFERRAL'
   | 'SIGN_UP_BONUS'
   | 'LOYALTY_BONUS'
-  | 'ONE_TIME_BONUS';
+  | 'ONE_TIME_BONUS'
+  | 'SHIELD';
 
 export type EstimatedPointsDto = {
   /**
@@ -199,4 +215,73 @@ export type EstimatedPointsDto = {
    * @example 200
    */
   bonusBips: number;
+};
+
+/**
+ * UI toast state for rewards errors.
+ */
+export type RewardsErrorToastState = {
+  isOpen: boolean;
+  title: string;
+  description: string;
+  actionText?: string;
+  onActionClick?: () => void;
+};
+
+export type RewardsGeoMetadata = {
+  /**
+   * The geographic location string (e.g., 'US', 'CA-ON', 'FR')
+   */
+  geoLocation: string;
+  /**
+   * Whether the location is allowed for opt-in
+   */
+  optinAllowedForGeo: boolean;
+};
+
+/**
+ * Input DTO for getting opt-in status of multiple addresses
+ */
+export type OptInStatusInputDto = {
+  /**
+   * The addresses to check opt-in status for
+   *
+   * @example [
+   *   '0xDE37C32E8dbD1CD325B8023a00550a5beA97eF13',
+   *   '0xDE37C32E8dbD1CD325B8023a00550a5beA97eF14',
+   *   '0xDE37C32E8dbD1CD325B8023a00550a5beA97eF15'
+   * ]
+   */
+  addresses: string[];
+};
+
+/**
+ * Response DTO for opt-in status of multiple addresses
+ */
+export type OptInStatusDto = {
+  /**
+   * The opt-in status of the addresses in the same order as the input
+   *
+   * @example [true, true, false]
+   */
+  ois: boolean[];
+
+  /**
+   * The subscription IDs of the addresses in the same order as the input
+   *
+   * @example ['sub_123', 'sub_456', null]
+   */
+  sids: (string | null)[];
+};
+
+/**
+ * Response DTO for opt-out operation
+ */
+export type OptOutDto = {
+  /**
+   * Whether the opt-out operation was successful
+   *
+   * @example true
+   */
+  success: boolean;
 };

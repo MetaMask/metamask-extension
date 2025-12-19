@@ -32,7 +32,8 @@ describe('srp-reveal-quiz', () => {
   });
 
   it('should go through the full sequence of steps', async () => {
-    renderWithProvider(<SRPQuiz isOpen />, store);
+    const mockNavigate = jest.fn();
+    renderWithProvider(<SRPQuiz isOpen navigate={mockNavigate} />, store);
 
     expect(screen.queryByTestId('srp-quiz-get-started')).toBeInTheDocument();
 

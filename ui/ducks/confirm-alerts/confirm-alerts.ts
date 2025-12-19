@@ -116,6 +116,11 @@ export type Alert = {
   showArrow?: boolean;
 
   /**
+   * The background color of the alert details.
+   */
+  alertDetailsBackgroundColor?: BackgroundColor;
+
+  /**
    * The custom button text for acknowledging the alert in modal.
    */
   customAcknowledgeButtonText?: string;
@@ -168,7 +173,7 @@ export type ConfirmAlertsState = {
 
 type UpdateAlertsAction = {
   type: 'UPDATE_ALERTS';
-  ownerId: string;
+  ownerId: string | undefined;
   alerts: Alert[];
 };
 
@@ -181,7 +186,7 @@ type SetAlertConfirmedAction = {
 
 type ClearAlertsAction = {
   type: 'CLEAR_ALERTS';
-  ownerId: string;
+  ownerId: string | undefined;
 };
 
 type Action = UpdateAlertsAction | SetAlertConfirmedAction | ClearAlertsAction;
@@ -196,6 +201,10 @@ export default function confirmAlertsReducer(
   state: ConfirmAlertsState = INIT_STATE,
   action: Action,
 ) {
+  if (action.ownerId === undefined) {
+    return state;
+  }
+
   switch (action.type) {
     case 'UPDATE_ALERTS':
       return {
@@ -237,7 +246,7 @@ export default function confirmAlertsReducer(
 }
 
 export function updateAlerts(
-  ownerId: string,
+  ownerId: string | undefined,
   alerts: Alert[],
 ): UpdateAlertsAction {
   return {
@@ -260,7 +269,7 @@ export function setAlertConfirmed(
   };
 }
 
-export function clearAlerts(ownerId: string): ClearAlertsAction {
+export function clearAlerts(ownerId: string | undefined): ClearAlertsAction {
   return {
     type: 'CLEAR_ALERTS',
     ownerId,

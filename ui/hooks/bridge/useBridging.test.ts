@@ -9,9 +9,9 @@ import * as bridgeSelectors from '../../ducks/bridge/selectors';
 import useBridging from './useBridging';
 
 const mockUseNavigate = jest.fn();
-jest.mock('react-router-dom-v5-compat', () => {
+jest.mock('react-router-dom', () => {
   return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
+    ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
   };
 });
@@ -77,7 +77,7 @@ describe('useBridging', () => {
         false,
       ],
       [
-        '/cross-chain/swaps/prepare-swap-page?',
+        '/cross-chain/swaps/prepare-swap-page?from=eip155:1/slip44:60',
         {
           ...getNativeAssetForChainId(CHAIN_IDS.MAINNET),
           chainId: 243,

@@ -4,7 +4,8 @@ import {
 } from '@metamask/transaction-controller';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { PRODUCT_TYPES } from '@metamask/subscription-controller';
+import { useNavigate } from 'react-router-dom';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
 import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
 import { ConfirmAlertModal } from '../../../../../components/app/alert-system/confirm-alert-modal';
@@ -33,6 +34,7 @@ import { useIsGaslessLoading } from '../../../hooks/gas/useIsGaslessLoading';
 import { useEnableShieldCoverageChecks } from '../../../hooks/transactions/useEnableShieldCoverageChecks';
 import { useTransactionConfirm } from '../../../hooks/transactions/useTransactionConfirm';
 import { useConfirmActions } from '../../../hooks/useConfirmActions';
+import { useDappSwapActions } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapActions';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
 import {
   isAddEthereumChainType,
@@ -40,6 +42,7 @@ import {
 } from '../../../hooks/useAddEthereumChain';
 import { isSignatureTransactionType } from '../../../utils';
 import { getConfirmationSender } from '../utils';
+import { useUserSubscriptions } from '../../../../../hooks/subscription/useSubscription';
 import OriginThrottleModal from './origin-throttle-modal';
 import ShieldFooterAgreement from './shield-footer-agreement';
 import ShieldFooterCoverageIndicator from './shield-footer-coverage-indicator/shield-footer-coverage-indicator';
@@ -119,6 +122,9 @@ const ConfirmButton = ({
     setConfirmModalVisible(true);
   }, []);
 
+  const { trialedProducts } = useUserSubscriptions();
+  const isShieldTrialed = trialedProducts?.includes(PRODUCT_TYPES.SHIELD);
+
   return (
     <>
       {confirmModalVisible && (
@@ -159,7 +165,11 @@ const ConfirmButton = ({
         >
           {currentConfirmation?.type ===
           TransactionType.shieldSubscriptionApprove
-            ? t('shieldStartNowCTA')
+            ? t(
+                isShieldTrialed
+                  ? 'shieldStartNowCTA'
+                  : 'shieldStartNowCTAWithTrial',
+              )
             : t('confirm')}
         </Button>
       )}
@@ -194,7 +204,8 @@ const CancelButton = ({
 
 const Footer = () => {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
+  const { onDappSwapCompleted } = useDappSwapActions();
   const { onTransactionConfirm } = useTransactionConfirm();
   const { navigateNext } = useConfirmationNavigation();
   const { onSubmit: onAddEthereumChain } = useAddEthereumChain();
@@ -236,7 +247,7 @@ const Footer = () => {
 
     if (isAddEthereumChain) {
       await onAddEthereumChain();
-      history.push(DEFAULT_ROUTE);
+      navigate(DEFAULT_ROUTE);
     } else if (isTransactionConfirmation) {
       await onTransactionConfirm();
       navigateNext(currentConfirmation.id);
@@ -249,7 +260,7 @@ const Footer = () => {
   }, [
     currentConfirmation,
     dispatch,
-    history,
+    navigate,
     isTransactionConfirmation,
     isAddEthereumChain,
     navigateNext,
@@ -266,8 +277,9 @@ const Footer = () => {
 
     await onCancel({ location: MetaMetricsEventLocation.Confirmation });
 
+    onDappSwapCompleted();
     if (isAddEthereumChain) {
-      history.push(DEFAULT_ROUTE);
+      navigate(DEFAULT_ROUTE);
     } else {
       navigateNext(currentConfirmation.id);
     }
@@ -277,11 +289,11 @@ const Footer = () => {
     shouldThrottleOrigin,
     currentConfirmation,
     isAddEthereumChain,
-    history,
+    navigate,
+    onDappSwapCompleted,
   ]);
 
-  const { isEnabled, isPaused } = useEnableShieldCoverageChecks();
-  const isShowShieldFooterCoverageIndicator = isEnabled || isPaused;
+  const { isShowCoverageIndicator } = useEnableShieldCoverageChecks();
 
   return (
     <>
@@ -293,7 +305,7 @@ const Footer = () => {
         // but only applied to the bottom of the box, so it doesn't overlap with
         // the shield footer coverage indicator
         style={
-          isShowShieldFooterCoverageIndicator
+          isShowCoverageIndicator
             ? { boxShadow: '0 4px 16px -8px var(--color-shadow-default)' }
             : undefined
         }

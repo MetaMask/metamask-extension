@@ -15,7 +15,6 @@ import { finished } from 'readable-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import { isObject, hasProperty } from '@metamask/utils';
-import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { ExtensionPortStream } from 'extension-port-stream';
 import { withResolvers } from '../../shared/lib/promise-with-resolvers';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
@@ -23,9 +22,7 @@ import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   ENVIRONMENT_TYPE_SIDEPANEL,
-  ///: END:ONLY_INCLUDE_IF
   PLATFORM_FIREFOX,
   MESSAGE_TYPE,
 } from '../../shared/constants/app';
@@ -62,9 +59,11 @@ import {
   PersistenceManager,
 } from './lib/stores/persistence-manager';
 import ExtensionStore from './lib/stores/extension-store';
-import ReadOnlyNetworkStore from './lib/stores/read-only-network-store';
+import { FixtureExtensionStore } from './lib/stores/fixture-extension-store';
+import { useSplitStateStorage } from './lib/use-split-state-storage';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
+import { updateRemoteFeatureFlags } from './lib/update-remote-feature-flags';
 import ExtensionPlatform from './platforms/extension';
 import { SENTRY_BACKGROUND_STATE } from './constants/sentry-state';
 
@@ -80,6 +79,7 @@ import { getPlatform, shouldEmitDappViewedEvent } from './lib/util';
 import { createOffscreen } from './offscreen';
 import { setupMultiplex } from './lib/stream-utils';
 import rawFirstTimeState from './first-time-state';
+import { onUpdate } from './on-update';
 
 /* eslint-enable import/first */
 
@@ -101,7 +101,7 @@ import { HyperliquidPermissionTriggerType } from './lib/createHyperliquidReferra
  * @typedef {import('./lib/stores/persistence-manager').Backup} Backup
  */
 
-// MV3 configures the ExtensionLazyListener in app-init.js and sets it on globalThis.stateHooks,
+// MV3 configures the ExtensionLazyListener in service-worker.ts and sets it on globalThis.stateHooks,
 // but in MV2 we don't need to do that, so we create it here (and we don't add any lazy listeners,
 // as it doesn't need them).
 const lazyListener =
@@ -109,20 +109,25 @@ const lazyListener =
 
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_APPROVAL = '#0376C9';
-// eslint-disable-next-line @metamask/design-tokens/color-no-hex
-const BADGE_COLOR_NOTIFICATION = '#D73847';
 const BADGE_MAX_COUNT = 9;
 
 const inTest = process.env.IN_TEST;
-const useReadOnlyNetworkStore =
+const useFixtureStore =
   inTest && getManifestFlags().testing?.forceExtensionStore !== true;
-const localStore = useReadOnlyNetworkStore
-  ? new ReadOnlyNetworkStore()
+const localStore = useFixtureStore
+  ? new FixtureExtensionStore({ initialize: true })
   : new ExtensionStore();
 const persistenceManager = new PersistenceManager({ localStore });
+
+const { safePersist, requestSafeReload } =
+  getRequestSafeReload(persistenceManager);
+
 // Setup global hook for improved Sentry state snapshots during initialization
 global.stateHooks.getMostRecentPersistedState = () =>
   persistenceManager.mostRecentRetrievedState;
+
+// Expose storageKind for Sentry tagging (used to distinguish 'data' vs 'split' storage)
+global.stateHooks.getStorageKind = () => persistenceManager.storageKind;
 
 /**
  * A helper function to log the current state of the vault. Useful for debugging
@@ -153,9 +158,7 @@ const isFirefox = getPlatform() === PLATFORM_FIREFOX;
 let openPopupCount = 0;
 let notificationIsOpen = false;
 let uiIsTriggering = false;
-///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
 let sidePanelIsOpen = false;
-///: END:ONLY_INCLUDE_IF
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
 let controller;
@@ -179,7 +182,9 @@ const ONE_SECOND_IN_MILLISECONDS = 1_000;
 // Timeout for initializing phishing warning page.
 const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
-lazyListener.once('runtime', 'onInstalled').then(handleOnInstalled);
+lazyListener.once('runtime', 'onInstalled').then((details) => {
+  handleOnInstalled(details);
+});
 
 /**
  * This deferred Promise is used to track whether initialization has finished.
@@ -509,7 +514,7 @@ const handleOnConnect = async (port) => {
 
   try {
     // `handleOnConnect` can be called asynchronously, well after the `onConnect`
-    // event was emitted, due to the lazy listener setup in `app-init.js`, so we
+    // event was emitted, due to the lazy listener setup in `service-worker.ts`, so we
     // might not be able to send this message if the window has already closed.
     port.postMessage({
       data: {
@@ -725,9 +730,6 @@ async function initialize(backup) {
   const cronjobControllerStorageManager = new CronjobControllerStorageManager();
   await cronjobControllerStorageManager.init();
 
-  const { update, requestSafeReload } =
-    getRequestSafeReload(persistenceManager);
-
   setupController(
     initState,
     initLangCode,
@@ -736,15 +738,8 @@ async function initialize(backup) {
     initData.meta,
     offscreenPromise,
     preinstalledSnaps,
-    requestSafeReload,
     cronjobControllerStorageManager,
   );
-
-  controller.store.on('update', update);
-  controller.store.on('error', (error) => {
-    log.error('MetaMask controller.store error:', error);
-    sentry?.captureException(error);
-  });
 
   // `setupController` sets up the `controller` object, so we can use it now:
   maybeDetectPhishing(controller);
@@ -917,7 +912,8 @@ export async function loadStateFromPersistence(backup) {
     migrations,
     defaultVersion: process.env.WITH_STATE
       ? // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
-        require('../../test/e2e/default-fixture').FIXTURE_STATE_METADATA_VERSION
+        require('../../test/e2e/fixtures/fixture-builder')
+          .FIXTURE_STATE_METADATA_VERSION
       : null,
   });
 
@@ -926,18 +922,23 @@ export async function loadStateFromPersistence(backup) {
     console.warn(err);
     // get vault structure without secrets
     const vaultStructure = getObjStructure(preMigrationVersionedData);
-    sentry.captureException(err, {
+    sentry?.captureException(err, {
       // "extra" key is required by Sentry
       extra: { vaultStructure },
     });
   });
 
+  let writeAllKeysToState = false;
   if (!preMigrationVersionedData?.data && !preMigrationVersionedData?.meta) {
+    // brand new state; write all keys!
+    writeAllKeysToState = true;
     preMigrationVersionedData = migrator.generateInitialState(firstTimeState);
   }
 
   // migrate data
-  const versionedData = await migrator.migrateData(preMigrationVersionedData);
+  const { state: versionedData, changedKeys } = await migrator.migrateData(
+    preMigrationVersionedData,
+  );
   if (!versionedData) {
     throw new Error('MetaMask - migrator returned undefined');
   } else if (!isObject(versionedData.meta)) {
@@ -949,6 +950,12 @@ export async function loadStateFromPersistence(backup) {
       `MetaMask - migrator metadata version has invalid type '${typeof versionedData
         .meta.version}'`,
     );
+  } else if (
+    !['data', 'split', undefined].includes(versionedData.meta.storageKind)
+  ) {
+    throw new Error(
+      `MetaMask - migrator metadata storageKind has invalid value '${versionedData.meta.storageKind}'`,
+    );
   } else if (!isObject(versionedData.data)) {
     throw new Error(
       `MetaMask - migrator data has invalid type '${typeof versionedData.data}'`,
@@ -957,8 +964,61 @@ export async function loadStateFromPersistence(backup) {
   // this initializes the meta/version data as a class variable to be used for future writes
   persistenceManager.setMetadata(versionedData.meta);
 
-  // write to disk
-  await persistenceManager.set(versionedData.data);
+  log.debug(
+    "[Split State]: Loaded data from persistence with storageKind '%s'",
+    persistenceManager.storageKind,
+  );
+  if (persistenceManager.storageKind === 'data') {
+    const alreadyTried =
+      versionedData.meta.platformSplitStateGradualRolloutAttempted === true;
+    const shouldUseSplitStateStorage =
+      !alreadyTried && (await useSplitStateStorage(versionedData.data));
+    log.debug(
+      '[Split State]: shouldUseSplitStateStorage: %s (alreadyTried: %s)',
+      shouldUseSplitStateStorage,
+      alreadyTried,
+    );
+    if (shouldUseSplitStateStorage) {
+      // a sigil to mark that we *tried* to migrate to split state storage
+      versionedData.meta.platformSplitStateGradualRolloutAttempted = true;
+      persistenceManager.setMetadata(versionedData.meta);
+    }
+
+    log.debug(
+      "[Split State]: Writing data to persistence with storageKind 'data'",
+    );
+    // write to disk
+    await persistenceManager.set(versionedData.data);
+
+    if (shouldUseSplitStateStorage) {
+      await persistenceManager.migrateToSplitState(versionedData.data);
+      versionedData.meta = persistenceManager.getMetaData();
+      if (versionedData.meta !== undefined) {
+        delete versionedData.meta.platformSplitStateGradualRolloutAttempted;
+        // persist the new metadata one more time
+        persistenceManager.setMetadata(versionedData.meta);
+      }
+      await persistenceManager.persist();
+    }
+  } else if (persistenceManager.storageKind === 'split') {
+    if (writeAllKeysToState) {
+      for (const [key, value] of Object.entries(versionedData.data)) {
+        persistenceManager.update(key, value);
+      }
+    } else {
+      // write changes only
+      for (const key of changedKeys) {
+        persistenceManager.update(key, versionedData.data[key]);
+      }
+    }
+    // write to disk
+    await persistenceManager.persist();
+  } else {
+    throw new Error(
+      `MetaMask - persistenceManager has invalid storageKind '${persistenceManager.storageKind}'`,
+    );
+  }
+  log.debug('[Split State]: Load complete.');
 
   // return just the data
   return versionedData;
@@ -1106,7 +1166,6 @@ function trackAppOpened(environment) {
  * @param {object} stateMetadata - Metadata about the initial state and migrations, including the most recent migration version
  * @param {Promise<void>} offscreenPromise - A promise that resolves when the offscreen document has finished initialization.
  * @param {Array} preinstalledSnaps - A list of preinstalled Snaps loaded from disk during boot.
- * @param {() => Promise<void>)} requestSafeReload - A function that requests a safe reload of the extension.
  * @param {CronjobControllerStorageManager} cronjobControllerStorageManager - A storage manager for the CronjobController.
  */
 export function setupController(
@@ -1117,7 +1176,6 @@ export function setupController(
   stateMetadata,
   offscreenPromise,
   preinstalledSnaps,
-  requestSafeReload,
   cronjobControllerStorageManager,
 ) {
   //
@@ -1151,6 +1209,96 @@ export function setupController(
     cronjobControllerStorageManager,
   });
 
+  /**
+   * @type {Array<string>} List of controller store keys that have changed since initialization.
+   */
+  const changedControllerKeys = [];
+  const currentState = controller.store.getState();
+  for (const key of Object.keys(currentState)) {
+    const initialControllerState = initState[key] || {};
+    const newControllerState = currentState[key];
+    const newControllerStateKeys = Object.keys(newControllerState);
+
+    // if the number of keys has changed, we need to persist the new state
+    if (
+      newControllerStateKeys.length ===
+      Object.keys(initialControllerState).length
+    ) {
+      // if any of the controller's own top-level keys have changed
+      // (via reference comparison) we need to persist the new state.
+      for (const subKey of newControllerStateKeys) {
+        if (newControllerState[subKey] !== initialControllerState[subKey]) {
+          changedControllerKeys.push(key);
+          break;
+        }
+      }
+    } else {
+      changedControllerKeys.push(key);
+    }
+  }
+
+  if (persistenceManager.storageKind === 'split') {
+    if (changedControllerKeys.length > 0) {
+      log.info(
+        `MetaMaskController state changed during configuration for controllers: ${changedControllerKeys.join(', ')}. Persisting updated state.`,
+      );
+      // update the new state
+      changedControllerKeys.forEach((key) => {
+        persistenceManager.update(key, currentState[key]);
+      });
+      // then persist it
+      safePersist().catch((error) => {
+        log.error('Error persisting updated state:', error);
+        sentry?.captureException(error);
+      });
+    }
+
+    controller.store.on(
+      'stateChange',
+      async ({ controllerKey, newState, _oldState, _patches }) => {
+        persistenceManager.update(controllerKey, newState);
+
+        // if this key is one of the `backedUpStateKeys` we must always
+        // re-persist all of the other `backedUpStateKeys`, as they must always
+        // stored in the backup DB together.
+        if (backedUpStateKeys.includes(controllerKey)) {
+          backedUpStateKeys.forEach((key) => {
+            if (key === controllerKey) {
+              // already updated this one
+              return;
+            }
+            const state = controller.controllerMessenger.call(
+              `${key}:getState`,
+            );
+            persistenceManager.update(key, state);
+          });
+        }
+        try {
+          await safePersist();
+        } catch (error) {
+          log.error('Error persisting state change:', error);
+          sentry?.captureException(error);
+        }
+      },
+    );
+  } else {
+    if (changedControllerKeys.length > 0) {
+      log.info(
+        `MetaMaskController state changed during configuration for controllers: ${changedControllerKeys.join(', ')}. Persisting updated state.`,
+      );
+      // persist the new state
+      safePersist(currentState).catch((error) => {
+        log.error('Error persisting updated controller state:', error);
+        sentry?.captureException(error);
+      });
+    }
+    controller.store.on('update', safePersist);
+  }
+  controller.store.on('error', (error) => {
+    log.error('MetaMask controller.store error:', error);
+    sentry?.captureException(error);
+  });
+
   setupEnsIpfsResolver({
     getCurrentChainId: () =>
       getCurrentChainId({ metamask: controller.networkController.state }),
@@ -1169,9 +1317,7 @@ export function setupController(
       openPopupCount > 0 ||
       Boolean(Object.keys(openMetamaskTabsIDs).length) ||
       notificationIsOpen ||
-      ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
       sidePanelIsOpen ||
-      ///: END:ONLY_INCLUDE_IF
       false
     );
   };
@@ -1247,7 +1393,8 @@ export function setupController(
       controller.setupTrustedCommunication(portStream, remotePort.sender);
       trackAppOpened(processName);
 
-      initializeRemoteFeatureFlags();
+      // lazily update the remote feature flags every time the UI is opened.
+      updateRemoteFeatureFlags(controller);
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         openPopupCount += 1;
@@ -1259,7 +1406,6 @@ export function setupController(
         });
       }
 
-      ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
       if (processName === ENVIRONMENT_TYPE_SIDEPANEL) {
         sidePanelIsOpen = true;
         finished(portStream, () => {
@@ -1269,7 +1415,6 @@ export function setupController(
           onCloseEnvironmentInstances(isClientOpen, ENVIRONMENT_TYPE_SIDEPANEL);
         });
       }
-      ///: END:ONLY_INCLUDE_IF
 
       if (processName === ENVIRONMENT_TYPE_NOTIFICATION) {
         notificationIsOpen = true;
@@ -1460,16 +1605,12 @@ export function setupController(
    */
   function updateBadge() {
     const pendingApprovalCount = getPendingApprovalCount();
-    const unreadNotificationsCount = getUnreadNotificationsCount();
 
     let label = '';
-    let badgeColor = BADGE_COLOR_APPROVAL;
+    const badgeColor = BADGE_COLOR_APPROVAL;
 
     if (pendingApprovalCount) {
       label = getBadgeLabel(pendingApprovalCount, BADGE_MAX_COUNT);
-    } else if (unreadNotificationsCount > 0) {
-      label = getBadgeLabel(unreadNotificationsCount, BADGE_MAX_COUNT);
-      badgeColor = BADGE_COLOR_NOTIFICATION;
     }
 
     try {
@@ -1488,22 +1629,6 @@ export function setupController(
     }
   }
 
-  /**
-   * Initializes remote feature flags by making a request to fetch them from the clientConfigApi.
-   * This function is called when MM is during internal process.
-   * If the request fails, the error will be logged but won't interrupt extension initialization.
-   *
-   * @returns {Promise<void>} A promise that resolves when the remote feature flags have been updated.
-   */
-  async function initializeRemoteFeatureFlags() {
-    try {
-      // initialize the request to fetch remote feature flags
-      await controller.remoteFeatureFlagController.updateRemoteFeatureFlags();
-    } catch (error) {
-      log.error('Error initializing remote feature flags:', error);
-    }
-  }
-
   function getPendingApprovalCount() {
     try {
       const pendingApprovalCount =
@@ -1512,55 +1637,6 @@ export function setupController(
       return pendingApprovalCount;
     } catch (error) {
       console.error('Failed to get pending approval count:', error);
-      return 0;
-    }
-  }
-
-  function getUnreadNotificationsCount() {
-    try {
-      const { isNotificationServicesEnabled, isFeatureAnnouncementsEnabled } =
-        controller.notificationServicesController.state;
-
-      const snapNotificationCount = Object.values(
-        controller.notificationServicesController.state
-          .metamaskNotificationsList,
-      ).filter(
-        (notification) =>
-          notification.type ===
-            NotificationServicesController.Constants.TRIGGER_TYPES.SNAP &&
-          notification.readDate === null,
-      ).length;
-
-      const featureAnnouncementCount = isFeatureAnnouncementsEnabled
-        ? controller.notificationServicesController.state.metamaskNotificationsList.filter(
-            (notification) =>
-              !notification.isRead &&
-              notification.type ===
-                NotificationServicesController.Constants.TRIGGER_TYPES
-                  .FEATURES_ANNOUNCEMENT,
-          ).length
-        : 0;
-
-      const walletNotificationCount = isNotificationServicesEnabled
-        ? controller.notificationServicesController.state.metamaskNotificationsList.filter(
-            (notification) =>
-              !notification.isRead &&
-              notification.type !==
-                NotificationServicesController.Constants.TRIGGER_TYPES
-                  .FEATURES_ANNOUNCEMENT &&
-              notification.type !==
-                NotificationServicesController.Constants.TRIGGER_TYPES.SNAP,
-          ).length
-        : 0;
-
-      const unreadNotificationsCount =
-        snapNotificationCount +
-        featureAnnouncementCount +
-        walletNotificationCount;
-
-      return unreadNotificationsCount;
-    } catch (error) {
-      console.error('Failed to get unread notifications count:', error);
       return 0;
     }
   }
@@ -1615,9 +1691,7 @@ async function triggerUi() {
     !uiIsTriggering &&
     (isVivaldi || openPopupCount === 0) &&
     !currentlyActiveMetamaskTab &&
-    ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
     !sidePanelIsOpen &&
-    ///: END:ONLY_INCLUDE_IF
     true
   ) {
     uiIsTriggering = true;
@@ -1660,15 +1734,16 @@ const addAppInstalledEvent = () => {
  *
  * @param {[chrome.runtime.InstalledDetails]} params - Array containing a single installation details object.
  */
-function handleOnInstalled([details]) {
+async function handleOnInstalled([details]) {
   if (details.reason === 'install') {
     onInstall();
-  } else if (
-    details.reason === 'update' &&
-    details.previousVersion &&
-    details.previousVersion !== platform.getVersion()
-  ) {
-    onUpdate(details.previousVersion);
+  } else if (details.reason === 'update') {
+    const { previousVersion } = details;
+    if (!previousVersion || previousVersion === platform.getVersion()) {
+      return;
+    }
+    await isInitialized;
+    onUpdate(controller, platform, previousVersion, requestSafeReload);
   }
 }
 
@@ -1680,56 +1755,6 @@ function onInstall() {
   addAppInstalledEvent();
   if (!process.env.IN_TEST && !process.env.METAMASK_DEBUG) {
     platform.openExtensionInBrowser();
-  }
-}
-///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
-// Only register sidepanel context menu for browsers that support it (Chrome/Edge/Brave)
-// and when the feature flag is enabled
-if (
-  browser.contextMenus &&
-  browser.sidePanel &&
-  process.env.IS_SIDEPANEL?.toString() === 'true'
-) {
-  browser.runtime.onInstalled.addListener(() => {
-    browser.contextMenus.create({
-      id: 'openSidePanel',
-      title: 'MetaMask Sidepanel',
-      contexts: ['all'],
-    });
-  });
-  browser.contextMenus.onClicked.addListener((info, tab) => {
-    if (info.menuItemId === 'openSidePanel') {
-      // This will open the panel in all the pages on the current window.
-      browser.sidePanel.open({ windowId: tab.windowId });
-    }
-  });
-}
-///: END:ONLY_INCLUDE_IF
-
-// // On first install, open a new tab with MetaMask
-// async function onInstall() {
-//   const storeAlreadyExisted = Boolean(await localStore.get());
-//   // If the store doesn't exist, then this is the first time running this script,
-//   // and is therefore an install
-//   if (process.env.IN_TEST) {
-//     addAppInstalledEvent();
-//   } else if (!storeAlreadyExisted && !process.env.METAMASK_DEBUG) {
-//     addAppInstalledEvent();
-//     platform.openExtensionInBrowser();
-//   }
-// }
-
-/**
- * Trigger actions that should happen only upon update installation
- *
- * @param previousVersion
- */
-async function onUpdate(previousVersion) {
-  await isInitialized;
-  log.debug('Update installation detected');
-  controller.appStateController.setLastUpdatedAt(Date.now());
-  if (previousVersion) {
-    controller.appStateController.setLastUpdatedFromVersion(previousVersion);
   }
 }
 
@@ -1786,7 +1811,6 @@ function onNavigateToTab() {
   });
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
 // Sidepanel-specific functionality
 // Set initial side panel behavior based on user preference
 const initSidePanelBehavior = async () => {
@@ -1800,10 +1824,10 @@ const initSidePanelBehavior = async () => {
     // Wait for controller to be initialized
     await isInitialized;
 
-    // Get user preference (default to true for side panel)
+    // Get user preference (default to false for side panel)
     const useSidePanelAsDefault =
       controller?.preferencesController?.state?.preferences
-        ?.useSidePanelAsDefault ?? true;
+        ?.useSidePanelAsDefault ?? false;
 
     // Set panel behavior based on preference
     if (browser?.sidePanel?.setPanelBehavior) {
@@ -1834,7 +1858,8 @@ const setupPreferenceListener = async () => {
       'PreferencesController:stateChange',
       (state) => {
         const useSidePanelAsDefault =
-          state?.preferences?.useSidePanelAsDefault ?? true;
+          state?.preferences?.useSidePanelAsDefault ?? false;
+
         if (browser?.sidePanel?.setPanelBehavior) {
           browser.sidePanel
             .setPanelBehavior({
@@ -1961,7 +1986,6 @@ browser.tabs.onUpdated.addListener(async (tabId) => {
 
   return {};
 });
-///: END:ONLY_INCLUDE_IF
 
 function setupSentryGetStateGlobal(store) {
   global.stateHooks.getSentryAppState = function () {

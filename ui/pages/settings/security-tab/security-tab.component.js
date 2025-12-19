@@ -232,6 +232,8 @@ export default class SecurityTab extends PureComponent {
     const getButtonText = () => {
       if (socialLoginEnabled) {
         return t('securitySrpWalletRecovery');
+      } else if (isSeedPhraseBackedUp) {
+        return t('revealSeedWords');
       }
       return t('revealSecretRecoveryPhrase');
     };
@@ -298,6 +300,7 @@ export default class SecurityTab extends PureComponent {
             <SRPQuiz
               isOpen={this.state.srpQuizModalVisible}
               onClose={this.hideSrpQuizModal}
+              navigate={this.props.navigate}
             />
           )}
         </div>

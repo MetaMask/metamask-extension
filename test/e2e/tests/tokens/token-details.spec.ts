@@ -2,7 +2,7 @@ import { Mockttp } from 'mockttp';
 import { Context } from 'mocha';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { formatCurrency } from '../../../../ui/helpers/utils/confirm-tx.util';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -33,7 +33,7 @@ describe('Token Details', function () {
         ...fixtures,
         title: (this as Context).test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => [
-          await mockEmptyPrices(mockServer, chainId),
+          await mockEmptyPrices(mockServer),
           await mockEmptyHistoricalPrices(mockServer, tokenAddress, chainId),
         ],
       },
@@ -80,8 +80,13 @@ describe('Token Details', function () {
         title: (this as Context).test?.fullTitle(),
         ethConversionInUsd,
         testSpecificMock: async (mockServer: Mockttp) => [
-          await mockSpotPrices(mockServer, chainId, {
-            [tokenAddress.toLowerCase()]: marketData,
+          await mockSpotPrices(mockServer, {
+            'eip155:1/slip44:60': {
+              price: 10000,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
+            [`eip155:1/erc20:${tokenAddress.toLowerCase()}`]: marketData,
           }),
           await mockHistoricalPrices(mockServer, {
             address: tokenAddress,
@@ -127,6 +132,15 @@ describe('Token Details', function () {
       {
         ...fixtures,
         title: (this as Context).test?.fullTitle(),
+        testSpecificMock: async (mockServer: Mockttp) => [
+          await mockSpotPrices(mockServer, {
+            'eip155:1/slip44:60': {
+              price: 1700,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
+          }),
+        ],
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
@@ -135,7 +149,7 @@ describe('Token Details', function () {
         await homePage.checkPageIsLoaded();
 
         const assetListPage = new AssetListPage(driver);
-        await assetListPage.openTokenDetails('ETH');
+        await assetListPage.openTokenDetails('Ethereum');
 
         // check display of price in details
         await assetListPage.checkTokenPrice('$1,700.00');

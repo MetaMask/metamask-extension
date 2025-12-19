@@ -3,17 +3,25 @@ import {
   PaymentType,
   RecurringInterval,
   ModalType,
+  CohortName,
 } from '@metamask/subscription-controller';
 import { TransactionType } from '@metamask/transaction-controller';
 import {
-  EntryModalSourceEnum,
+  ShieldMetricsSourceEnum,
   ShieldCtaActionClickedEnum,
-  ShieldCtaSourceEnum,
+  ShieldErrorStateActionClickedEnum,
+  ShieldErrorStateLocationEnum,
+  ShieldErrorStateViewEnum,
+  ShieldSubscriptionRequestSubscriptionStateEnum,
+  ShieldUnexpectedErrorEventLocationEnum,
 } from '../../../../shared/constants/subscriptions';
-import { DefaultSubscriptionPaymentOptions } from '../../../../shared/types';
+import {
+  DefaultSubscriptionPaymentOptions,
+  ExistingSubscriptionEventParams,
+} from '../../../../shared/types';
 
 export type CaptureShieldEntryModalEventParams = {
-  source: EntryModalSourceEnum;
+  source: ShieldMetricsSourceEnum;
   type: ModalType;
 
   /**
@@ -24,7 +32,7 @@ export type CaptureShieldEntryModalEventParams = {
   /**
    * The UTM ID used if source is marketing campaign
    */
-  marketingUtmId?: string;
+  marketingUtmParams?: Record<string, string>;
 
   /**
    * The type of transaction after which the entry modal is triggered
@@ -38,7 +46,7 @@ export type CaptureShieldSubscriptionRequestParams =
       /**
        * Current subscription status before the new subscription request was started (cancelled, expired, etc.)
        */
-      subscriptionState: SubscriptionStatus | 'none';
+      subscriptionState: ShieldSubscriptionRequestSubscriptionStateEnum;
 
       /**
        * Actual options selected by the user for the new subscription request.
@@ -60,33 +68,6 @@ export type CaptureShieldSubscriptionRequestParams =
       requestStatus: 'started' | 'completed' | 'failed';
     };
 
-export type ExistingSubscriptionEventParams = {
-  /**
-   * Current subscription status before restarting the subscription. (e.g. cancelled, expired, etc.)
-   */
-  subscriptionStatus: SubscriptionStatus;
-
-  /**
-   * The payment type used for the previous subscription.
-   */
-  paymentType: PaymentType;
-
-  /**
-   * The billing interval used for the previous subscription.
-   */
-  billingInterval: RecurringInterval;
-
-  /**
-   * The crypto payment chain used for the previous subscription.
-   */
-  cryptoPaymentChain?: string;
-
-  /**
-   * The crypto payment currency used for the previous subscription.
-   */
-  cryptoPaymentCurrency?: string;
-};
-
 export type CaptureShieldMembershipCancelledEventParams =
   ExistingSubscriptionEventParams & {
     cancellationStatus: 'succeeded' | 'failed';
@@ -97,33 +78,11 @@ export type CaptureShieldMembershipCancelledEventParams =
     latestSubscriptionDuration: number;
   };
 
-/**
- * Capture the event when the payment method is changed whilst the membership is active.
- */
-export type CaptureShieldPaymentMethodChangeEventParams =
+export type CaptureShieldSubscriptionRestartRequestEventParams =
   ExistingSubscriptionEventParams & {
-    newPaymentType: PaymentType;
-    newBillingInterval: RecurringInterval;
-    newPaymentCurrency: string;
-    newCryptoPaymentChain?: string;
-    changeStatus: 'succeeded' | 'failed';
+    requestStatus: 'completed' | 'failed';
     errorMessage?: string;
   };
-
-/**
- * Capture the event when the payment method is retried after unsuccessful deduction attempt.
- */
-export type CaptureShieldPaymentMethodRetriedEventParams =
-  ExistingSubscriptionEventParams;
-
-/**
- * Capture the event when payment failed due to insufficient allowance or users want to renew subscription that is ending soon.
- */
-export type CaptureShieldPaymentMethodUpdatedEventParams =
-  ExistingSubscriptionEventParams;
-
-export type CaptureShieldBillingHistoryOpenedEventParams =
-  ExistingSubscriptionEventParams;
 
 /**
  * Triggered when the user has opened the crypto confirmation screen for a subscription or rejected the approval transaction.
@@ -144,7 +103,7 @@ export type CaptureShieldCryptoConfirmationEventParams =
   };
 
 export type CaptureShieldCtaClickedEventParams = {
-  source: ShieldCtaSourceEnum;
+  source: ShieldMetricsSourceEnum;
 
   ctaActionClicked: ShieldCtaActionClickedEnum;
 
@@ -155,7 +114,7 @@ export type CaptureShieldCtaClickedEventParams = {
   /**
    * The UTM ID used if source is marketing campaign
    */
-  marketingUtmId?: string;
+  marketingUtmParams?: Record<string, string>;
 };
 
 export type CaptureShieldClaimSubmissionEventParams = {
@@ -172,4 +131,37 @@ export type CaptureShieldClaimSubmissionEventParams = {
   submissionStatus: 'started' | 'completed' | 'failed';
 
   errorMessage?: string;
+};
+
+/**
+ * Capture the event when the user is assigned to a cohort based on eligibility rate.
+ */
+export type CaptureShieldEligibilityCohortAssignedEventParams = {
+  cohort: CohortName;
+  modalType: ModalType;
+  numberOfEligibleCohorts: number;
+};
+
+/**
+ * Capture the event when the user is timed out from a cohort.
+ */
+export type CaptureShieldEligibilityCohortTimeoutEventParams = {
+  cohort: CohortName;
+  numberOfEligibleCohorts: number;
+};
+
+/**
+ * Capture the event when the user clicks on the error state.
+ */
+export type CaptureShieldErrorStateClickedEventParams =
+  ExistingSubscriptionEventParams & {
+    errorCause: string;
+    actionClicked: ShieldErrorStateActionClickedEnum;
+    location: ShieldErrorStateLocationEnum;
+    view: ShieldErrorStateViewEnum;
+  };
+
+export type CaptureShieldUnexpectedErrorEventParams = {
+  errorMessage: string;
+  location: ShieldUnexpectedErrorEventLocationEnum;
 };

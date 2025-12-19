@@ -24,23 +24,39 @@ export const isMultichainAccountsFeatureEnabled = (
   enableMultichainAccounts: MultichainAccountsFeatureFlag | undefined | null,
   featureVersion: string,
 ) => {
-  if (!enableMultichainAccounts || !APP_VERSION) {
-    return false;
+  const isFeatureEnabled = () => {
+    if (!enableMultichainAccounts || !APP_VERSION) {
+      return false;
+    }
+
+    const {
+      enabled,
+      featureVersion: currentFeatureVersion,
+      minimumVersion,
+    } = enableMultichainAccounts;
+
+    if (!enabled || !currentFeatureVersion || !minimumVersion) {
+      return false;
+    }
+
+    if (currentFeatureVersion !== featureVersion) {
+      return false;
+    }
+
+    return semver.gte(APP_VERSION, minimumVersion);
+  };
+
+  if (featureVersion === FEATURE_VERSION_2) {
+    if (process.env.IN_TEST) {
+      // Some E2E tests depend on multichain accounts v2 being disabled, so we run
+      // this logic only for those.
+      return isFeatureEnabled();
+    }
+
+    // But now, state 2 is enabled by default in production and development environments.
+    return true;
   }
 
-  const {
-    enabled,
-    featureVersion: currentFeatureVersion,
-    minimumVersion,
-  } = enableMultichainAccounts;
-
-  if (!enabled || !currentFeatureVersion || !minimumVersion) {
-    return false;
-  }
-
-  if (currentFeatureVersion !== featureVersion) {
-    return false;
-  }
-
-  return semver.gte(APP_VERSION, minimumVersion);
+  // For feature version 1, we still rely on the feature flag.
+  return isFeatureEnabled();
 };

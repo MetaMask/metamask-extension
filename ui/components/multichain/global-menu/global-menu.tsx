@@ -1,5 +1,5 @@
 import React, { useContext, useMemo } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import browser from 'webextension-polyfill';
 import {
@@ -26,6 +26,7 @@ import {
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/modules/environment';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
+import { useBrowserSupportsSidePanel } from '../../../hooks/useBrowserSupportsSidePanel';
 import {
   selectIsMetamaskNotificationsEnabled,
   selectIsMetamaskNotificationsFeatureSeen,
@@ -37,7 +38,6 @@ import {
   Popover,
   PopoverPosition,
   Tag,
-  Text,
 } from '../../component-library';
 
 import { MenuItem } from '../../ui/menu';
@@ -68,7 +68,6 @@ import {
   getAnySnapUpdateAvailable,
   getThirdPartyNotifySnaps,
   getUseExternalServices,
-  getPreferences,
 } from '../../../selectors';
 import {
   AlignItems,
@@ -94,8 +93,11 @@ import { useUserSubscriptions } from '../../../hooks/subscription/useSubscriptio
 import {
   getIsShieldSubscriptionActive,
   getIsShieldSubscriptionPaused,
+  getShieldSubscription,
+  getSubscriptionPaymentData,
 } from '../../../../shared/lib/shield';
-import { useRewardsContext } from '../../../contexts/rewards';
+import { selectRewardsEnabled } from '../../../ducks/rewards/selectors';
+import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
 
 const METRICS_LOCATION = 'Global Menu';
 
@@ -113,10 +115,12 @@ export const GlobalMenu = ({
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
+  const { captureCommonExistingShieldSubscriptionEvents } =
+    useSubscriptionMetrics();
   const basicFunctionality = useSelector(getUseExternalServices);
-  const { rewardsEnabled } = useRewardsContext();
+  const rewardsEnabled = useSelector(selectRewardsEnabled);
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const { notificationsUnreadCount } = useUnreadNotificationsCounter();
   const { notificationsReadCount } = useReadNotificationsCounter();
@@ -160,12 +164,16 @@ export const GlobalMenu = ({
   const snapsUpdatesAvailable = useSelector(getAnySnapUpdateAvailable);
   hasThirdPartyNotifySnaps = useSelector(getThirdPartyNotifySnaps).length > 0;
 
-  // Check if side panel is currently the default (vs popup)
-  const preferences = useSelector(getPreferences);
-  const isSidePanelDefault = preferences?.useSidePanelAsDefault ?? true;
-
-  // Check if sidepanel feature is enabled (both build flag and LaunchDarkly flag)
+  // Check if sidepanel feature is enabled
   const isSidePanelEnabled = useSidePanelEnabled();
+
+  // Check if browser actually supports sidepanel (Arc browser has API but doesn't work)
+  const browserSupportsSidePanel = useBrowserSupportsSidePanel();
+
+  // Current environment type
+  const currentEnvironment = getEnvironmentType();
+  const isSidepanel = currentEnvironment === ENVIRONMENT_TYPE_SIDEPANEL;
+  const isPopup = currentEnvironment === ENVIRONMENT_TYPE_POPUP;
 
   const showPriorityTag = useMemo(
     () =>
@@ -188,43 +196,60 @@ export const GlobalMenu = ({
     }
 
     try {
-      const newValue = !isSidePanelDefault;
-      await dispatch(setUseSidePanelAsDefault(newValue));
-
-      // If switching from sidepanel to popup view, close the current sidepanel
-      if (
-        isSidePanelDefault &&
-        getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL
-      ) {
-        // Close only the sidepanel, not the entire browser window
+      // Case 1: Currently in sidepanel, switching to popup
+      if (isSidepanel) {
+        await dispatch(setUseSidePanelAsDefault(false));
+        // Close the sidepanel
         window.close();
+        return;
       }
-      // If switching from popup to sidepanel view, open the sidepanel
-      else if (
-        !isSidePanelDefault &&
-        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
-      ) {
-        try {
-          const browserWithSidePanel = browser as typeof browser & {
-            sidePanel?: {
-              open: (options: { windowId: number }) => Promise<void>;
-            };
+
+      // Case 2: Currently in popup
+      if (isPopup) {
+        const browserWithSidePanel = browser as typeof browser & {
+          sidePanel?: {
+            open: (options: { windowId: number }) => Promise<void>;
           };
-          if (browserWithSidePanel?.sidePanel?.open) {
-            const tabs = await browser.tabs.query({
-              active: true,
-              currentWindow: true,
-            });
-            if (tabs && tabs.length > 0 && tabs[0].windowId) {
-              await browserWithSidePanel.sidePanel.open({
-                windowId: tabs[0].windowId,
-              });
-              // Close the popup after successfully opening the sidepanel
-              window.close();
-            }
+        };
+
+        // If sidePanel.open is undefined (e.g., Arc browser), don't do anything
+        if (!browserWithSidePanel?.sidePanel?.open) {
+          console.log(
+            'sidePanel.open is undefined - browser does not support sidepanel',
+          );
+          return;
+        }
+
+        const tabs = await browser.tabs.query({
+          active: true,
+          currentWindow: true,
+        });
+
+        if (tabs && tabs.length > 0 && tabs[0].windowId) {
+          // Try to open sidepanel FIRST, before setting preference
+          await browserWithSidePanel.sidePanel.open({
+            windowId: tabs[0].windowId,
+          });
+
+          // Wait a moment and verify sidepanel actually opened
+          await new Promise((resolve) => setTimeout(resolve, 500));
+
+          // Check if sidepanel context exists - if not, the open didn't work (Arc browser)
+          const contexts = await chrome.runtime.getContexts({
+            contextTypes: ['SIDE_PANEL' as chrome.runtime.ContextType],
+          });
+
+          if (!contexts || contexts.length === 0) {
+            console.log(
+              'Sidepanel did not open - browser does not support sidepanel properly',
+            );
+            return;
           }
-        } catch (error) {
-          console.error('Error opening side panel:', error);
+
+          // Only set preference after verifying sidepanel actually opened
+          await dispatch(setUseSidePanelAsDefault(true));
+          // Close the popup after successfully opening the sidepanel
+          window.close();
         }
       }
     } catch (error) {
@@ -298,7 +323,43 @@ export const GlobalMenu = ({
         read_count: notificationsReadCount,
       },
     });
-    history.push(NOTIFICATIONS_ROUTE);
+    navigate(NOTIFICATIONS_ROUTE);
+    closeMenu();
+  };
+
+  const handleSupportMenuClick = () => {
+    dispatch(setShowSupportDataConsentModal(true));
+    trackEvent(
+      {
+        category: MetaMetricsEventCategory.Home,
+        event: MetaMetricsEventName.SupportLinkClicked,
+        properties: {
+          url: supportLink,
+          location: METRICS_LOCATION,
+        },
+      },
+      {
+        contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
+      },
+    );
+    if (showPriorityTag) {
+      // track priority support clicked event
+      const shieldSubscription = getShieldSubscription(subscriptions);
+      const { cryptoPaymentChain, cryptoPaymentCurrency } =
+        getSubscriptionPaymentData(shieldSubscription);
+      if (shieldSubscription) {
+        captureCommonExistingShieldSubscriptionEvents(
+          {
+            subscriptionStatus: shieldSubscription.status,
+            paymentType: shieldSubscription.paymentMethod.type,
+            billingInterval: shieldSubscription.interval,
+            cryptoPaymentChain,
+            cryptoPaymentCurrency,
+          },
+          MetaMetricsEventName.ShieldPrioritySupportClicked,
+        );
+      }
+    }
     closeMenu();
   };
 
@@ -311,11 +372,12 @@ export const GlobalMenu = ({
       onClickOutside={closeMenu}
       onPressEscKey={closeMenu}
       style={{
-        overflow: 'hidden',
         minWidth: 225,
+        maxHeight: 'calc(100vh - var(--header-height))',
       }}
       offset={[0, 8]}
       position={PopoverPosition.BottomEnd}
+      className="overflow-y-auto"
     >
       {basicFunctionality && (
         <>
@@ -336,6 +398,11 @@ export const GlobalMenu = ({
               <NotificationsTagCounter />
             </Box>
           </MenuItem>
+          <Box
+            borderColor={BorderColor.borderMuted}
+            width={BlockSize.Full}
+            style={{ height: '1px', borderBottomWidth: 0 }}
+          ></Box>
         </>
       )}
       {rewardsEnabled && (
@@ -345,8 +412,7 @@ export const GlobalMenu = ({
         />
       )}
 
-      {(getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
-        getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) && (
+      {(isPopup || isSidepanel) && (
         <MenuItem
           iconName={IconName.Export}
           onClick={() => {
@@ -363,37 +429,55 @@ export const GlobalMenu = ({
           data-testid="global-menu-expand-view"
         >
           {t('openFullScreen')}
-          <Text
-            variant={TextVariant.bodySmMedium}
-            color={TextColor.textAlternative}
-          >
-            {t('metamaskExtension')}
-          </Text>
         </MenuItem>
       )}
-      {account &&
-        getEnvironmentType() !== ENVIRONMENT_TYPE_POPUP &&
-        getEnvironmentType() !== ENVIRONMENT_TYPE_SIDEPANEL && (
-          <>
-            <AccountDetailsMenuItem
+      {account && !isPopup && !isSidepanel && (
+        <>
+          <AccountDetailsMenuItem
+            metricsLocation={METRICS_LOCATION}
+            closeMenu={closeMenu}
+            address={account.address}
+          />
+          {isMultichainAccountsState2Enabled ? null : (
+            <ViewExplorerMenuItem
               metricsLocation={METRICS_LOCATION}
               closeMenu={closeMenu}
-              address={account.address}
+              account={account}
             />
-            {isMultichainAccountsState2Enabled ? null : (
-              <ViewExplorerMenuItem
-                metricsLocation={METRICS_LOCATION}
-                closeMenu={closeMenu}
-                account={account}
-              />
-            )}
-          </>
-        )}
+          )}
+        </>
+      )}
       <Box
         borderColor={BorderColor.borderMuted}
         width={BlockSize.Full}
         style={{ height: '1px', borderBottomWidth: 0 }}
       ></Box>
+      {/* Toggle between popup and sidepanel - only show if browser supports it */}
+      {getBrowserName() !== PLATFORM_FIREFOX &&
+        browserSupportsSidePanel === true &&
+        isSidePanelEnabled &&
+        (isPopup || isSidepanel) && (
+          <MenuItem
+            iconName={isSidepanel ? IconName.Popup : IconName.Sidepanel}
+            onClick={async () => {
+              await toggleDefaultView();
+              trackEvent({
+                event: MetaMetricsEventName.ViewportSwitched,
+                category: MetaMetricsEventCategory.Navigation,
+                properties: {
+                  location: METRICS_LOCATION,
+                  to: isSidepanel
+                    ? ENVIRONMENT_TYPE_POPUP
+                    : ENVIRONMENT_TYPE_SIDEPANEL,
+                },
+              });
+              closeMenu();
+            }}
+            data-testid="global-menu-toggle-view"
+          >
+            {isSidepanel ? t('switchToPopup') : t('switchToSidePanel')}
+          </MenuItem>
+        )}
       <MenuItem
         to={
           isGatorPermissionsRevocationFeatureEnabled()
@@ -416,32 +500,6 @@ export const GlobalMenu = ({
       >
         {t('allPermissions')}
       </MenuItem>
-      {/* Toggle between popup and sidepanel - only for Chrome when sidepanel is enabled */}
-      {getBrowserName() !== PLATFORM_FIREFOX &&
-        isSidePanelEnabled &&
-        (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
-          getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) && (
-          <MenuItem
-            iconName={IconName.Expand}
-            onClick={async () => {
-              await toggleDefaultView();
-              trackEvent({
-                event: MetaMetricsEventName.ViewportSwitched,
-                category: MetaMetricsEventCategory.Navigation,
-                properties: {
-                  location: METRICS_LOCATION,
-                  to: isSidePanelDefault
-                    ? ENVIRONMENT_TYPE_POPUP
-                    : ENVIRONMENT_TYPE_SIDEPANEL,
-                },
-              });
-              closeMenu();
-            }}
-            data-testid="global-menu-toggle-view"
-          >
-            {isSidePanelDefault ? t('switchToPopup') : t('switchToSidePanel')}
-          </MenuItem>
-        )}
       <MenuItem
         data-testid="global-menu-networks"
         iconName={IconName.Hierarchy}
@@ -462,25 +520,7 @@ export const GlobalMenu = ({
       </MenuItem>
       <MenuItem
         iconName={IconName.MessageQuestion}
-        onClick={() => {
-          dispatch(setShowSupportDataConsentModal(true));
-          trackEvent(
-            {
-              category: MetaMetricsEventCategory.Home,
-              event: MetaMetricsEventName.SupportLinkClicked,
-              properties: {
-                url: supportLink,
-                location: METRICS_LOCATION,
-              },
-            },
-            {
-              contextPropsIntoEventProperties: [
-                MetaMetricsContextProp.PageTitle,
-              ],
-            },
-          );
-          closeMenu();
-        }}
+        onClick={handleSupportMenuClick}
         data-testid="global-menu-support"
       >
         <Box

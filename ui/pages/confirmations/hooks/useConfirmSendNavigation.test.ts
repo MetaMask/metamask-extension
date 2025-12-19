@@ -1,20 +1,18 @@
 import mockState from '../../../../test/data/mock-state.json';
-import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import * as ConfirmContext from '../context/confirm';
 import { useRedesignedSendFlow } from './useRedesignedSendFlow';
 import { useConfirmSendNavigation } from './useConfirmSendNavigation';
 
 const mockUseRedesignedSendFlow = jest.mocked(useRedesignedSendFlow);
 
-const mockHistory = {
-  goBack: jest.fn(),
-  push: jest.fn(),
-};
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => mockHistory,
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom', () => {
+  return {
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -60,7 +58,7 @@ describe('useConfirmSendNavigation', () => {
     const result = renderHook();
     result.navigateBackIfSend();
 
-    expect(mockHistory.goBack).not.toHaveBeenCalled();
+    expect(mockUseNavigate).not.toHaveBeenCalled();
   });
 
   it('navigates back when send redesign is enabled and confirmation is metamask simpleSend', () => {
@@ -72,7 +70,7 @@ describe('useConfirmSendNavigation', () => {
     const result = renderHook();
     result.navigateBackIfSend();
 
-    expect(mockHistory.goBack).toHaveBeenCalled();
+    expect(mockUseNavigate).toHaveBeenCalledWith(-1);
   });
 
   it('does not navigate back when send redesign is enabled but origin is not metamask', () => {
@@ -84,7 +82,7 @@ describe('useConfirmSendNavigation', () => {
     const result = renderHook();
     result.navigateBackIfSend();
 
-    expect(mockHistory.goBack).not.toHaveBeenCalled();
+    expect(mockUseNavigate).not.toHaveBeenCalled();
   });
 
   it('does not navigate back when send redesign is enabled but type is not simpleSend', () => {
@@ -96,7 +94,7 @@ describe('useConfirmSendNavigation', () => {
     const result = renderHook();
     result.navigateBackIfSend();
 
-    expect(mockHistory.goBack).not.toHaveBeenCalled();
+    expect(mockUseNavigate).not.toHaveBeenCalled();
   });
 
   it('does not navigate back when send redesign is enabled but both origin and type do not match', () => {
@@ -108,6 +106,6 @@ describe('useConfirmSendNavigation', () => {
     const result = renderHook();
     result.navigateBackIfSend();
 
-    expect(mockHistory.goBack).not.toHaveBeenCalled();
+    expect(mockUseNavigate).not.toHaveBeenCalled();
   });
 });

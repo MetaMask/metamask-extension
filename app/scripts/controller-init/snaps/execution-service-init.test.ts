@@ -69,7 +69,6 @@ describe('ExecutionServiceInit', () => {
       messenger: expect.any(Object),
       offscreenPromise: expect.any(Promise),
       setupSnapProvider: expect.any(Function),
-      pingTimeout: process.env.IN_TEST ? 60000 : 5000, // see https://github.com/MetaMask/metamask-extension/issues/36935
     });
   });
 });

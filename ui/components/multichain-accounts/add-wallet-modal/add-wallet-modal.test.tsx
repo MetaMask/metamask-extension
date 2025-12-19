@@ -1,7 +1,7 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 import { useSelector } from 'react-redux';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
   ADD_WALLET_PAGE_ROUTE,
   CONNECT_HARDWARE_ROUTE,
@@ -13,16 +13,16 @@ import {
 } from '../../../selectors';
 import { AddWalletModal } from './add-wallet-modal';
 
-const mockHistoryPush = jest.fn();
 const mockOpenExtensionInBrowser = jest.fn();
 const mockUseSelector = useSelector as jest.MockedFunction<typeof useSelector>;
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockHistoryPush,
-  }),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom', () => {
+  return {
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -42,9 +42,7 @@ describe('AddWalletModal', () => {
   const mockOnClose = jest.fn();
 
   beforeEach(() => {
-    mockOnClose.mockClear();
-    mockHistoryPush.mockClear();
-    mockOpenExtensionInBrowser.mockClear();
+    jest.clearAllMocks();
 
     // Mock useSelector to return false for manageInstitutionalWallets by default
     mockUseSelector.mockReturnValue(false);
@@ -75,7 +73,7 @@ describe('AddWalletModal', () => {
     fireEvent.click(screen.getByText('importAWallet'));
 
     expect(mockOnClose).toHaveBeenCalledTimes(1);
-    expect(mockHistoryPush).toHaveBeenCalledWith(IMPORT_SRP_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(IMPORT_SRP_ROUTE);
   });
 
   it('calls onClose and navigates when import account option is clicked', () => {
@@ -84,7 +82,7 @@ describe('AddWalletModal', () => {
     fireEvent.click(screen.getByText('importAnAccount'));
 
     expect(mockOnClose).toHaveBeenCalledTimes(1);
-    expect(mockHistoryPush).toHaveBeenCalledWith(ADD_WALLET_PAGE_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(ADD_WALLET_PAGE_ROUTE);
   });
 
   it('calls onClose and opens hardware wallet route in expanded view', () => {
@@ -96,7 +94,7 @@ describe('AddWalletModal', () => {
     expect(mockOpenExtensionInBrowser).toHaveBeenCalledWith(
       CONNECT_HARDWARE_ROUTE,
     );
-    expect(mockHistoryPush).not.toHaveBeenCalled();
+    expect(mockUseNavigate).not.toHaveBeenCalled();
   });
 
   it('does not render when isOpen is false', () => {
@@ -155,9 +153,6 @@ describe('AddWalletModal', () => {
     mockUseSelector.mockImplementation((selector) => {
       return selector === getIsWatchEthereumAccountEnabled;
     });
-
-    const mockTrackEvent = jest.fn();
-    jest.spyOn(React, 'useContext').mockImplementation(() => mockTrackEvent);
 
     renderWithProvider(<AddWalletModal isOpen={true} onClose={mockOnClose} />);
 

@@ -12,5 +12,6 @@ export const InstitutionalSnapControllerInit: ControllerInitFunction<
 
   return {
     controller,
+    persistedStateKey: null,
   };
 };

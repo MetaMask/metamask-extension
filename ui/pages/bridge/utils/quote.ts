@@ -2,13 +2,11 @@ import { BigNumber } from 'bignumber.js';
 import {
   type QuoteResponse,
   formatChainIdToCaip,
+  formatAddressToCaipReference,
   isNativeAddress,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
-import type {
-  NetworkConfiguration,
-  AddNetworkFields,
-} from '@metamask/network-controller';
+import { type CaipChainId, type Hex } from '@metamask/utils';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
 import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
@@ -106,18 +104,52 @@ export const formatProviderLabel = (args?: {
   bridges: QuoteResponse['quote']['bridges'];
 }): `${string}_${string}` => `${args?.bridgeId}_${args?.bridges[0]}`;
 
+export const sanitizeAmountInput = (
+  textToSanitize: string,
+  dropNumbersAfterSecondDecimal = true,
+) => {
+  // Remove non-numeric and non-decimal characters
+  const cleanedString = textToSanitize.replace(/[^\d.]+/gu, '');
+  // Find first decimal point and use its index to split the string into two parts
+  const pointIndex = cleanedString.indexOf('.');
+  const firstPart = cleanedString.slice(0, pointIndex + 1);
+  const secondPart = dropNumbersAfterSecondDecimal
+    ? // Ignore digits after second decimal point
+      cleanedString.slice(pointIndex + 1).split('.')[0]
+    : // Preserve digits after second decimal point
+      cleanedString.slice(pointIndex + 1).replace(/[^\d]+/gu, '');
+
+  return [firstPart, secondPart].filter(Boolean).join('');
+};
+
+/**
+ * Sanitizes the amount string for BigNumber calculations by converting empty strings or single decimal points to '0'.
+ *
+ * @param amount - The raw amount string from input
+ * @returns A safe string for BigNumber operations
+ */
+export const safeAmountForCalc = (
+  amount: string | null | undefined,
+): string => {
+  if (!amount) {
+    return '0';
+  }
+  const sanitized = sanitizeAmountInput(amount);
+  return sanitized === '' || sanitized === '.' ? '0' : sanitized;
+};
+
 export const isQuoteExpiredOrInvalid = ({
   activeQuote,
   toToken,
-  toChain,
-  fromChain,
+  toChainId,
+  fromChainId,
   isQuoteExpired,
   insufficientBal,
 }: {
   activeQuote: QuoteResponse | null;
   toToken: BridgeToken | null;
-  toChain?: NetworkConfiguration | AddNetworkFields;
-  fromChain?: NetworkConfiguration;
+  toChainId?: Hex | CaipChainId;
+  fromChainId?: Hex | CaipChainId;
   isQuoteExpired: boolean;
   insufficientBal?: boolean;
 }): boolean => {
@@ -126,32 +158,52 @@ export const isQuoteExpiredOrInvalid = ({
     isQuoteExpired &&
     (!insufficientBal ||
       // `insufficientBal` is always true for non-EVM chains (Solana, Bitcoin)
-      (fromChain && isNonEvmChainId(fromChain.chainId)))
+      (fromChainId && isNonEvmChainId(fromChainId)))
   ) {
     return true;
   }
 
   // 2. Ensure the quote still matches the currently selected destination asset / chain
   if (activeQuote && toToken) {
-    const quoteDestAddress =
-      activeQuote.quote?.destAsset?.address?.toLowerCase() || '';
-    const selectedDestAddress = toToken.address?.toLowerCase() || '';
+    const destChainId = activeQuote.quote?.destChainId;
 
-    const quoteDestChainIdCaip = activeQuote.quote?.destChainId
-      ? formatChainIdToCaip(activeQuote.quote.destChainId)
+    // For non-EVM chains (Solana, Bitcoin, Tron), don't use toLowerCase() as addresses
+    // are case-sensitive (base58 encoding uses both upper and lowercase letters)
+    const isNonEvmDest = destChainId && isNonEvmChainId(destChainId);
+
+    // Extract raw addresses from CAIP-19 format if present
+    // The bridge API returns plain addresses, but UI may store CAIP-19 asset IDs
+    const quoteDestAddressRaw = activeQuote.quote?.destAsset?.address
+      ? formatAddressToCaipReference(activeQuote.quote.destAsset.address)
       : '';
-    const selectedDestChainIdCaip = toChain?.chainId
-      ? formatChainIdToCaip(toChain.chainId)
+    const selectedDestAddressRaw = toToken.address
+      ? formatAddressToCaipReference(toToken.address)
       : '';
 
-    return !(
-      (quoteDestAddress === selectedDestAddress ||
-        // Extension's native asset address may be different from bridge-api's native
-        // asset address so if both assets are native, we should still return true
-        (isNativeAddress(quoteDestAddress) &&
-          isNativeAddress(selectedDestAddress))) &&
-      quoteDestChainIdCaip === selectedDestChainIdCaip
-    );
+    // For EVM chains, normalize to lowercase for comparison (addresses are case-insensitive)
+    // For non-EVM chains, preserve case (base58 addresses are case-sensitive)
+    const quoteDestAddress = isNonEvmDest
+      ? quoteDestAddressRaw
+      : quoteDestAddressRaw.toLowerCase();
+    const selectedDestAddress = isNonEvmDest
+      ? selectedDestAddressRaw
+      : selectedDestAddressRaw.toLowerCase();
+
+    const quoteDestChainIdCaip = destChainId
+      ? formatChainIdToCaip(destChainId)
+      : '';
+    const selectedDestChainIdCaip = toChainId
+      ? formatChainIdToCaip(toChainId)
+      : '';
+
+    const addressMatch =
+      quoteDestAddress === selectedDestAddress ||
+      (isNativeAddress(quoteDestAddress) &&
+        isNativeAddress(selectedDestAddress));
+    const chainMatch = quoteDestChainIdCaip === selectedDestChainIdCaip;
+    const isInvalid = !(addressMatch && chainMatch);
+
+    return isInvalid;
   }
 
   return false;

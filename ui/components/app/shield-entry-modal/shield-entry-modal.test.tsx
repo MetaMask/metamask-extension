@@ -3,17 +3,19 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { SubscriptionUserEvent } from '@metamask/subscription-controller';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import * as actions from '../../../store/actions';
 import { SHIELD_PLAN_ROUTE } from '../../../helpers/constants/routes';
 import MockState from '../../../../test/data/mock-state.json';
 import ShieldEntryModal from './shield-entry-modal';
 
 const mockUseNavigate = jest.fn();
-jest.mock('react-router-dom-v5-compat', () => {
+const mockUseLocation = jest.fn();
+jest.mock('react-router-dom', () => {
   return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
+    ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
+    useLocation: () => mockUseLocation(),
   };
 });
 
@@ -47,6 +49,10 @@ describe('Shield Entry Modal', () => {
     submitSubscriptionUserEventsSpy = jest
       .spyOn(actions, 'submitSubscriptionUserEvents')
       .mockReturnValueOnce(jest.fn().mockResolvedValueOnce(true));
+    mockUseLocation.mockReturnValue({
+      pathname: '/any-other-path',
+      search: '',
+    });
   });
 
   it('should render', () => {
@@ -61,7 +67,10 @@ describe('Shield Entry Modal', () => {
 
     const closeButton = getByTestId('shield-entry-modal-close-button');
     fireEvent.click(closeButton);
-    expect(setShowShieldEntryModalOnceSpy).toHaveBeenCalledWith(false);
+    expect(setShowShieldEntryModalOnceSpy).toHaveBeenCalledWith({
+      show: false,
+      hasUserInteractedWithModal: true,
+    });
   });
 
   it('should call onGetStarted when the get started button is clicked', async () => {
@@ -72,9 +81,15 @@ describe('Shield Entry Modal', () => {
     );
 
     fireEvent.click(getStartedButton);
-    expect(setShowShieldEntryModalOnceSpy).toHaveBeenCalledWith(false);
+    expect(setShowShieldEntryModalOnceSpy).toHaveBeenCalledWith({
+      show: false,
+      hasUserInteractedWithModal: true,
+    });
     await waitFor(() => {
-      expect(mockUseNavigate).toHaveBeenCalledWith(SHIELD_PLAN_ROUTE);
+      expect(mockUseNavigate).toHaveBeenCalledWith({
+        pathname: SHIELD_PLAN_ROUTE,
+        search: '?source=homepage',
+      });
     });
   });
 
@@ -101,7 +116,10 @@ describe('Shield Entry Modal', () => {
         event: SubscriptionUserEvent.ShieldEntryModalViewed,
         cohort: mockState.appState.shieldEntryModal.triggeringCohort,
       });
-      expect(setShowShieldEntryModalOnceSpy).toHaveBeenCalledWith(false);
+      expect(setShowShieldEntryModalOnceSpy).toHaveBeenCalledWith({
+        show: false,
+        hasUserInteractedWithModal: true,
+      });
     });
   });
 });

@@ -156,4 +156,69 @@ describe('useCurrencyDisplay', () => {
       });
     });
   });
+
+  describe('when chainId is provided', () => {
+    it('should format native currency correctly for EVM chains', () => {
+      const state = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          completedOnboarding: true,
+          currentCurrency: 'usd',
+          currencyRates: { ETH: { conversionRate: 280.45 } },
+        },
+      };
+
+      const wrapper = ({ children }) => (
+        <Provider store={configureStore(state)}>{children}</Provider>
+      );
+
+      const { result } = renderHook(
+        () =>
+          useCurrencyDisplay(
+            '0x16345785d8a0000', // 0.1 in Wei
+            { currency: 'POL', numberOfDecimals: 4 },
+            '0x89', // Polygon chainId
+          ),
+        { wrapper },
+      );
+
+      const [displayValue, parts] = result.current;
+      expect(parts.value).toStrictEqual('0.1');
+      expect(parts.suffix).toStrictEqual('POL');
+      expect(displayValue).toStrictEqual('0.1 POL');
+    });
+
+    it('should use EVM formatting for transactions on EVM chains even with non-EVM accounts', () => {
+      const state = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          completedOnboarding: true,
+          currentCurrency: 'usd',
+          currencyRates: { ETH: { conversionRate: 280.45 } },
+        },
+      };
+
+      const wrapper = ({ children }) => (
+        <Provider store={configureStore(state)}>{children}</Provider>
+      );
+
+      // Polygon chainId (EVM)
+      const { result } = renderHook(
+        () =>
+          useCurrencyDisplay(
+            '0xde0b6b3a7640000', // 1 in Wei
+            { currency: 'POL' },
+            '0x89',
+          ),
+        { wrapper },
+      );
+
+      const [displayValue, parts] = result.current;
+      expect(displayValue).toStrictEqual('1 POL');
+      expect(parts.value).toStrictEqual('1');
+      expect(parts.suffix).toStrictEqual('POL');
+    });
+  });
 });

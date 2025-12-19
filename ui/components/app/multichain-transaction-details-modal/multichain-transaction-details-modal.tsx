@@ -5,6 +5,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/keyring-api';
+import { useSelector } from 'react-redux';
 import {
   Display,
   FlexDirection,
@@ -42,11 +43,17 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ConfirmInfoRowDivider as Divider } from '../confirm/info/row';
 import { getURLHostName, shortenAddress } from '../../../helpers/utils/util';
+import { getAccountName } from '../../../selectors';
 import {
   KEYRING_TRANSACTION_STATUS_KEY,
   useMultichainTransactionDisplay,
 } from '../../../hooks/useMultichainTransactionDisplay';
 import { MultichainProviderConfig } from '../../../../shared/constants/multichain/networks';
+import {
+  getInternalAccounts,
+  getInternalAccountsObject,
+  isNonEvmAccount,
+} from '../../../selectors/accounts';
 import {
   formatTimestamp,
   getTransactionUrl,
@@ -85,6 +92,13 @@ export function MultichainTransactionDetailsModal({
     id,
   } = useMultichainTransactionDisplay(transaction, networkConfig);
 
+  const internalAccounts = useSelector(getInternalAccounts);
+  const internalAccountsById = useSelector(getInternalAccountsObject);
+  const txInternalAccount = internalAccountsById?.[transaction.account];
+  const nonEvmSenderAddress = isNonEvmAccount(txInternalAccount)
+    ? txInternalAccount?.address
+    : undefined;
+
   const getStatusColor = (txStatus: string) => {
     switch (txStatus?.toLowerCase()) {
       case TransactionStatus.Confirmed:
@@ -99,8 +113,14 @@ export function MultichainTransactionDetailsModal({
   };
   const statusKey = KEYRING_TRANSACTION_STATUS_KEY[status];
 
-  const accountComponent = (label: string, address?: string) =>
-    address ? (
+  const accountComponent = (label: string, address?: string) => {
+    if (!address) {
+      return null;
+    }
+    const accountName = getAccountName(internalAccounts, address);
+    const displayName = accountName || shortenAddress(address);
+
+    return (
       <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
         <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
           {label}
@@ -116,7 +136,7 @@ export function MultichainTransactionDetailsModal({
             externalLink
             href={getAddressUrl(address, chain)}
           >
-            {shortenAddress(address)}
+            {displayName}
             <Icon
               marginLeft={2}
               name={IconName.Export}
@@ -133,7 +153,8 @@ export function MultichainTransactionDetailsModal({
           </ButtonLink>
         </Box>
       </Box>
-    ) : null;
+    );
+  };
 
   const amountComponent = (
     asset:
@@ -172,6 +193,8 @@ export function MultichainTransactionDetailsModal({
     [TransactionType.Send]: t('send'),
     [TransactionType.Receive]: t('receive'),
     [TransactionType.Swap]: t('swap'),
+    [TransactionType.StakeDeposit]: t('stakingDeposit'),
+    [TransactionType.StakeWithdraw]: t('stakingWithdrawal'),
     [TransactionType.Unknown]: t('interaction'),
   };
 
@@ -286,9 +309,12 @@ export function MultichainTransactionDetailsModal({
             gap={4}
           >
             {/* From */}
-            {type === TransactionType.Send
-              ? accountComponent(t('from'), userAddress)
-              : accountComponent(t('from'), from?.address)}
+            {accountComponent(
+              t('from'),
+              type === TransactionType.Send
+                ? nonEvmSenderAddress || userAddress
+                : from?.address,
+            )}
 
             {/* Amounts per token */}
             <>

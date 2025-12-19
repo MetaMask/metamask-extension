@@ -3,7 +3,7 @@ import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sd
 import { expect } from '@playwright/test';
 
 import { getCleanAppState, withFixtures } from '../../../helpers';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { mockIdentityServices } from '../mocks';
 import {
   IDENTITY_TEAM_SEED_PHRASE,

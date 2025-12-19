@@ -33,6 +33,13 @@ export const TokenBalancesControllerInit: ControllerInitFunction<
         ? (featureFlagForAccountApiBalances as `0x${string}`[])
         : [];
     },
+    platform: 'extension',
+    isOnboarded: () => {
+      const { completedOnboarding } = initMessenger.call(
+        'OnboardingController:getState',
+      );
+      return completedOnboarding;
+    },
   });
 
   return {

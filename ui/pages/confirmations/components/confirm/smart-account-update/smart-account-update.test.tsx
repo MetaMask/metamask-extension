@@ -9,6 +9,14 @@ import { Confirmation } from '../../../types/confirm';
 import { setSmartAccountOptIn } from '../../../../../store/actions';
 import { SmartAccountUpdate } from './smart-account-update';
 
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom', () => {
+  return {
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
+
 jest.mock('../../../../../hooks/useMultiPolling', () => ({
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -17,7 +25,6 @@ jest.mock('../../../../../hooks/useMultiPolling', () => ({
 }));
 
 jest.mock('../../../../../store/actions', () => ({
-  setAccountDetailsAddress: jest.fn(),
   setSmartAccountOptIn: jest.fn(),
 }));
 
@@ -70,19 +77,20 @@ describe('SmartAccountUpdate', () => {
     expect(getByText('Successful!')).toBeDefined();
   });
 
-  it('call history.replace when close button is clicked', () => {
+  it('call useNavigate when close button is clicked', () => {
     const mockStore = configureMockStore([])(
       getMockConfirmStateForTransaction(
         upgradeAccountConfirmation as Confirmation,
       ),
     );
-    const { getByTestId, history } = renderWithConfirmContextProvider(
+    const { getByTestId } = renderWithConfirmContextProvider(
       <SmartAccountUpdate />,
       mockStore,
+      `/confirm-transaction/${upgradeAccountConfirmation.id}`,
+      upgradeAccountConfirmation.id,
     );
-    const mockReplace = jest.spyOn(history, 'replace');
 
     fireEvent.click(getByTestId('smart-account-update-close'));
-    expect(mockReplace).toHaveBeenCalled();
+    expect(mockUseNavigate).toHaveBeenCalledWith('/', { replace: true });
   });
 });

@@ -11,6 +11,7 @@ import {
   getAllNamespacesFromCaip25CaveatValue,
   getAllScopesFromCaip25CaveatValue,
   getCaipAccountIdsFromCaip25CaveatValue,
+  KnownSessionProperties,
 } from '@metamask/chain-agnostic-permission';
 import {
   CaipAccountId,
@@ -89,6 +90,7 @@ import { AccountGroupWithInternalAccounts } from '../../../selectors/multichain-
 import { getMultichainNetwork } from '../../../selectors/multichain';
 import { TrustSignalDisplayState } from '../../../hooks/useTrustSignals';
 import { useOriginTrustSignals } from '../../../hooks/useOriginTrustSignals';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 
 export type MultichainAccountsConnectPageRequest = {
   permissions?: PermissionsRequest;
@@ -158,6 +160,24 @@ export const MultichainAccountsConnectPage: React.FC<
     () => getCaip25CaveatValueFromPermissions(request.permissions),
     [request.permissions],
   );
+
+  const requestedScopes = getAllScopesFromCaip25CaveatValue(
+    requestedCaip25CaveatValue,
+  );
+
+  const isSolanaWalletStandardRequest =
+    requestedScopes.length === 1 &&
+    requestedScopes[0] === MultichainNetworks.SOLANA &&
+    requestedCaip25CaveatValue.sessionProperties[
+      KnownSessionProperties.SolanaAccountChangedNotifications
+    ];
+
+  const isTronWalletAdapterRequest =
+    requestedScopes.length === 1 &&
+    requestedScopes[0] === MultichainNetworks.TRON &&
+    requestedCaip25CaveatValue.sessionProperties[
+      KnownSessionProperties.TronAccountChangedNotifications
+    ];
 
   const requestedCaip25CaveatValueWithExistingPermissions = useMemo(
     () =>
@@ -239,6 +259,28 @@ export const MultichainAccountsConnectPage: React.FC<
       ...testNetworkConfigurations,
     ].map(({ caipChainId }) => caipChainId);
 
+    // If globally selected network is a test network, include that in the default selected networks for connection request
+    const currentlySelectedNetworkChainId = currentlySelectedNetwork.chainId;
+    const selectedNetworkIsTestNetwork = testNetworkConfigurations.find(
+      (network: { caipChainId: CaipChainId }) =>
+        network.caipChainId === currentlySelectedNetworkChainId,
+    );
+
+    const defaultSelectedNetworkList = selectedNetworkIsTestNetwork
+      ? [...nonTestNetworkConfigurations, selectedNetworkIsTestNetwork].map(
+          ({ caipChainId }) => caipChainId,
+        )
+      : nonTestNetworkConfigurations.map(({ caipChainId }) => caipChainId);
+
+    // If the request is an EIP-1193 request (with no specific chains requested), a Solana wallet standard or a tronWallet library request , return the default selected network list
+    if (
+      (requestedCaipChainIds.length === 0 && isEip1193Request) ||
+      isSolanaWalletStandardRequest ||
+      isTronWalletAdapterRequest
+    ) {
+      return defaultSelectedNetworkList;
+    }
+
     const walletRequest =
       requestedCaipChainIds.filter(
         (caipChainId) =>
@@ -265,19 +307,7 @@ export const MultichainAccountsConnectPage: React.FC<
       ]),
     );
 
-    // If globally selected network is a test network, include that in the default selected networks for connection request
-    const currentlySelectedNetworkChainId = currentlySelectedNetwork.chainId;
-    const selectedNetworkIsTestNetwork = testNetworkConfigurations.find(
-      (network: { caipChainId: CaipChainId }) =>
-        network.caipChainId === currentlySelectedNetworkChainId,
-    );
-
-    const defaultSelectedNetworkList = selectedNetworkIsTestNetwork
-      ? [...nonTestNetworkConfigurations, selectedNetworkIsTestNetwork].map(
-          ({ caipChainId }) => caipChainId,
-        )
-      : nonTestNetworkConfigurations.map(({ caipChainId }) => caipChainId);
-
+    // if we have specifically requested chains, return the supported requested chains plus the already connected chains
     if (supportedRequestedCaipChainIds.length > 0) {
       return Array.from(
         new Set([
