@@ -276,7 +276,7 @@ export const ReviewGatorPermissionItem = ({
 
           expirationDate: {
             translationKey: 'gatorPermissionsExpirationDate',
-            value: getExpirationDate(),
+            value: getExpirationDate(permissionResponse.rules || []),
             testId: 'review-gator-permission-expiration-date',
           },
           streamRate: {
@@ -290,7 +290,7 @@ export const ReviewGatorPermissionItem = ({
         },
       };
     },
-    [tokenMetadata, t, getExpirationDate],
+    [tokenMetadata, t, getExpirationDate, permissionResponse.rules],
   );
 
   /**
@@ -331,13 +331,13 @@ export const ReviewGatorPermissionItem = ({
 
           expirationDate: {
             translationKey: 'gatorPermissionsExpirationDate',
-            value: getExpirationDate(),
+            value: getExpirationDate(permissionResponse.rules || []),
             testId: 'review-gator-permission-expiration-date',
           },
         },
       };
     },
-    [tokenMetadata, getExpirationDate],
+    [tokenMetadata, getExpirationDate, permissionResponse.rules],
   );
 
   /**
@@ -361,18 +361,12 @@ export const ReviewGatorPermissionItem = ({
         expandedDetails: {
           expirationDate: {
             translationKey: 'gatorPermissionsExpirationDate',
-            value: getExpirationDate(
-              (
-                permissionResponse.permission as unknown as {
-                  rules: GatorPermissionRule[];
-                }
-              ).rules,
-            ),
+            value: getExpirationDate(permissionResponse.rules || []),
             testId: 'review-gator-permission-expiration-date',
           },
         },
       };
-    }, [t, getExpirationDate, permissionResponse.permission]);
+    }, [t, getExpirationDate, permissionResponse.rules]);
 
   /**
    * Returns the permission details
@@ -400,6 +394,7 @@ export const ReviewGatorPermissionItem = ({
     permissionType,
     getTokenStreamPermissionDetails,
     permissionResponse.permission,
+    permissionResponse.rules,
     getTokenPeriodicPermissionDetails,
     getTokenRevocationPermissionDetails,
   ]);
