@@ -163,41 +163,51 @@ export const unapprovedEncryptionPublicKeyMsgsSelector = (state) =>
 export const unapprovedTypedMessagesSelector = (state) =>
   state.metamask.unapprovedTypedMessages;
 
-export const smartTransactionsListSelector = (state) => {
-  const { address: selectedAddress } = getSelectedInternalAccount(state);
-  return state.metamask.smartTransactionsState?.smartTransactions?.[
-    getCurrentChainId(state)
-  ]
-    ?.filter((smartTransaction) => {
-      if (
-        smartTransaction.txParams?.from !== selectedAddress ||
-        smartTransaction.confirmed
-      ) {
-        return false;
-      }
-      // If a swap or non-swap smart transaction is pending, we want to show it in the Activity list.
-      if (smartTransaction.status === SmartTransactionStatuses.PENDING) {
-        return true;
-      }
-      // In the future we should have the same behavior for Swaps and non-Swaps transactions.
-      // For that we need to submit Smart Swaps via the TransactionController as we do for
-      // non-Swaps Smart Transactions.
-      return (
-        (smartTransaction.type === TransactionType.swap ||
-          smartTransaction.type === TransactionType.swapApproval) &&
-        allowedSwapsSmartTransactionStatusesForActivityList.includes(
-          smartTransaction.status,
-        )
-      );
-    })
-    .map((stx) => ({
-      ...stx,
-      isSmartTransaction: true,
-      status: stx.status?.startsWith('cancelled')
-        ? SmartTransactionStatus.cancelled
-        : stx.status,
-    }));
-};
+// Memoized to prevent new array creation on every render
+export const smartTransactionsListSelector = createSelector(
+  getSelectedInternalAccount,
+  (state) => state.metamask.smartTransactionsState?.smartTransactions,
+  getCurrentChainId,
+  (selectedInternalAccount, smartTransactions, chainId) => {
+    const selectedAddress = selectedInternalAccount?.address;
+    const chainSmartTransactions = smartTransactions?.[chainId];
+
+    if (!chainSmartTransactions?.length) {
+      return EMPTY_ARRAY;
+    }
+
+    return chainSmartTransactions
+      .filter((smartTransaction) => {
+        if (
+          smartTransaction.txParams?.from !== selectedAddress ||
+          smartTransaction.confirmed
+        ) {
+          return false;
+        }
+        // If a swap or non-swap smart transaction is pending, we want to show it in the Activity list.
+        if (smartTransaction.status === SmartTransactionStatuses.PENDING) {
+          return true;
+        }
+        // In the future we should have the same behavior for Swaps and non-Swaps transactions.
+        // For that we need to submit Smart Swaps via the TransactionController as we do for
+        // non-Swaps Smart Transactions.
+        return (
+          (smartTransaction.type === TransactionType.swap ||
+            smartTransaction.type === TransactionType.swapApproval) &&
+          allowedSwapsSmartTransactionStatusesForActivityList.includes(
+            smartTransaction.status,
+          )
+        );
+      })
+      .map((stx) => ({
+        ...stx,
+        isSmartTransaction: true,
+        status: stx.status?.startsWith('cancelled')
+          ? SmartTransactionStatus.cancelled
+          : stx.status,
+      }));
+  },
+);
 
 export const selectedAddressTxListSelectorAllChain = createSelector(
   getSelectedInternalAccount,

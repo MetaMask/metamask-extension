@@ -21,7 +21,7 @@ export const NftDetectionControllerInit: ControllerInitFunction<
 
   const controller = new NftDetectionController({
     messenger: controllerMessenger,
-    addNft: (...args) => nftController().addNft(...args),
+    addNfts: (...args) => nftController().addNfts(...args),
     getNftState: () => nftController().state,
     // added this to track previous value of useNftDetection, should be true on very first initializing of controller[]
     disabled: !preferencesController().state.useNftDetection,

@@ -68,7 +68,6 @@ import {
   getAnySnapUpdateAvailable,
   getThirdPartyNotifySnaps,
   getUseExternalServices,
-  getPreferences,
 } from '../../../selectors';
 import {
   AlignItems,
@@ -165,15 +164,16 @@ export const GlobalMenu = ({
   const snapsUpdatesAvailable = useSelector(getAnySnapUpdateAvailable);
   hasThirdPartyNotifySnaps = useSelector(getThirdPartyNotifySnaps).length > 0;
 
-  // Check if side panel is currently the default (vs popup)
-  const preferences = useSelector(getPreferences);
-  const isSidePanelDefault = preferences?.useSidePanelAsDefault ?? false;
-
   // Check if sidepanel feature is enabled
   const isSidePanelEnabled = useSidePanelEnabled();
 
   // Check if browser actually supports sidepanel (Arc browser has API but doesn't work)
   const browserSupportsSidePanel = useBrowserSupportsSidePanel();
+
+  // Current environment type
+  const currentEnvironment = getEnvironmentType();
+  const isSidepanel = currentEnvironment === ENVIRONMENT_TYPE_SIDEPANEL;
+  const isPopup = currentEnvironment === ENVIRONMENT_TYPE_POPUP;
 
   const showPriorityTag = useMemo(
     () =>
@@ -195,12 +195,9 @@ export const GlobalMenu = ({
       return;
     }
 
-    const currentEnvironment = getEnvironmentType();
-    const newValue = !isSidePanelDefault;
-
     try {
       // Case 1: Currently in sidepanel, switching to popup
-      if (currentEnvironment === ENVIRONMENT_TYPE_SIDEPANEL) {
+      if (isSidepanel) {
         await dispatch(setUseSidePanelAsDefault(false));
         // Close the sidepanel
         window.close();
@@ -208,57 +205,51 @@ export const GlobalMenu = ({
       }
 
       // Case 2: Currently in popup
-      if (currentEnvironment === ENVIRONMENT_TYPE_POPUP) {
-        // If switching TO sidepanel (newValue is true)
-        if (newValue) {
-          const browserWithSidePanel = browser as typeof browser & {
-            sidePanel?: {
-              open: (options: { windowId: number }) => Promise<void>;
-            };
+      if (isPopup) {
+        const browserWithSidePanel = browser as typeof browser & {
+          sidePanel?: {
+            open: (options: { windowId: number }) => Promise<void>;
           };
+        };
 
-          // If sidePanel.open is undefined (e.g., Arc browser), don't do anything
-          if (!browserWithSidePanel?.sidePanel?.open) {
+        // If sidePanel.open is undefined (e.g., Arc browser), don't do anything
+        if (!browserWithSidePanel?.sidePanel?.open) {
+          console.log(
+            'sidePanel.open is undefined - browser does not support sidepanel',
+          );
+          return;
+        }
+
+        const tabs = await browser.tabs.query({
+          active: true,
+          currentWindow: true,
+        });
+
+        if (tabs && tabs.length > 0 && tabs[0].windowId) {
+          // Try to open sidepanel FIRST, before setting preference
+          await browserWithSidePanel.sidePanel.open({
+            windowId: tabs[0].windowId,
+          });
+
+          // Wait a moment and verify sidepanel actually opened
+          await new Promise((resolve) => setTimeout(resolve, 500));
+
+          // Check if sidepanel context exists - if not, the open didn't work (Arc browser)
+          const contexts = await chrome.runtime.getContexts({
+            contextTypes: ['SIDE_PANEL' as chrome.runtime.ContextType],
+          });
+
+          if (!contexts || contexts.length === 0) {
             console.log(
-              'sidePanel.open is undefined - browser does not support sidepanel',
+              'Sidepanel did not open - browser does not support sidepanel properly',
             );
             return;
           }
 
-          const tabs = await browser.tabs.query({
-            active: true,
-            currentWindow: true,
-          });
-
-          if (tabs && tabs.length > 0 && tabs[0].windowId) {
-            // Try to open sidepanel FIRST, before setting preference
-            await browserWithSidePanel.sidePanel.open({
-              windowId: tabs[0].windowId,
-            });
-
-            // Wait a moment and verify sidepanel actually opened
-            await new Promise((resolve) => setTimeout(resolve, 500));
-
-            // Check if sidepanel context exists - if not, the open didn't work (Arc browser)
-            const contexts = await chrome.runtime.getContexts({
-              contextTypes: ['SIDE_PANEL' as chrome.runtime.ContextType],
-            });
-
-            if (!contexts || contexts.length === 0) {
-              console.log(
-                'Sidepanel did not open - browser does not support sidepanel properly',
-              );
-              return;
-            }
-
-            // Only set preference AFTER verifying sidepanel actually opened
-            await dispatch(setUseSidePanelAsDefault(true));
-            // Close the popup after successfully opening the sidepanel
-            window.close();
-          }
-        } else {
-          // Switching TO popup (newValue is false) - just update preference
-          await dispatch(setUseSidePanelAsDefault(false));
+          // Only set preference after verifying sidepanel actually opened
+          await dispatch(setUseSidePanelAsDefault(true));
+          // Close the popup after successfully opening the sidepanel
+          window.close();
         }
       }
     } catch (error) {
@@ -421,8 +412,7 @@ export const GlobalMenu = ({
         />
       )}
 
-      {(getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
-        getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) && (
+      {(isPopup || isSidepanel) && (
         <MenuItem
           iconName={IconName.Export}
           onClick={() => {
@@ -441,24 +431,22 @@ export const GlobalMenu = ({
           {t('openFullScreen')}
         </MenuItem>
       )}
-      {account &&
-        getEnvironmentType() !== ENVIRONMENT_TYPE_POPUP &&
-        getEnvironmentType() !== ENVIRONMENT_TYPE_SIDEPANEL && (
-          <>
-            <AccountDetailsMenuItem
+      {account && !isPopup && !isSidepanel && (
+        <>
+          <AccountDetailsMenuItem
+            metricsLocation={METRICS_LOCATION}
+            closeMenu={closeMenu}
+            address={account.address}
+          />
+          {isMultichainAccountsState2Enabled ? null : (
+            <ViewExplorerMenuItem
               metricsLocation={METRICS_LOCATION}
               closeMenu={closeMenu}
-              address={account.address}
+              account={account}
             />
-            {isMultichainAccountsState2Enabled ? null : (
-              <ViewExplorerMenuItem
-                metricsLocation={METRICS_LOCATION}
-                closeMenu={closeMenu}
-                account={account}
-              />
-            )}
-          </>
-        )}
+          )}
+        </>
+      )}
       <Box
         borderColor={BorderColor.borderMuted}
         width={BlockSize.Full}
@@ -468,10 +456,9 @@ export const GlobalMenu = ({
       {getBrowserName() !== PLATFORM_FIREFOX &&
         browserSupportsSidePanel === true &&
         isSidePanelEnabled &&
-        (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
-          getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) && (
+        (isPopup || isSidepanel) && (
           <MenuItem
-            iconName={isSidePanelDefault ? IconName.Popup : IconName.Sidepanel}
+            iconName={isSidepanel ? IconName.Popup : IconName.Sidepanel}
             onClick={async () => {
               await toggleDefaultView();
               trackEvent({
@@ -479,7 +466,7 @@ export const GlobalMenu = ({
                 category: MetaMetricsEventCategory.Navigation,
                 properties: {
                   location: METRICS_LOCATION,
-                  to: isSidePanelDefault
+                  to: isSidepanel
                     ? ENVIRONMENT_TYPE_POPUP
                     : ENVIRONMENT_TYPE_SIDEPANEL,
                 },
@@ -488,7 +475,7 @@ export const GlobalMenu = ({
             }}
             data-testid="global-menu-toggle-view"
           >
-            {isSidePanelDefault ? t('switchToPopup') : t('switchToSidePanel')}
+            {isSidepanel ? t('switchToPopup') : t('switchToSidePanel')}
           </MenuItem>
         )}
       <MenuItem

@@ -105,6 +105,7 @@ describe('AccountTrackerControllerInit', () => {
       allowExternalServices: expect.any(Function),
       accountsApiChainIds: expect.any(Function),
       fetchingEnabled: expect.any(Function),
+      isOnboarded: expect.any(Function),
     });
   });
 
