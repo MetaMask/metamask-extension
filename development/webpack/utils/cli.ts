@@ -416,12 +416,12 @@ function getOptions(
 export function getDryRunMessage(
   args: Args,
   features: Features,
-  resolvedEnvironment?: string,
+  resolvedEnvironment: string,
 ) {
   return `🦊 Build Config 🦊
 
 Environment (--env): ${args.env}
-Target Environment: ${resolvedEnvironment ?? args.targetEnvironment ?? '(auto-detected)'}
+Target Environment: ${resolvedEnvironment}${args.targetEnvironment ? '' : ' (auto-detected)'}
 Minify: ${args.minify}
 Watch: ${args.watch}
 Cache: ${args.cache}

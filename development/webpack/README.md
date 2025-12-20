@@ -69,15 +69,15 @@ Note: multiple array options cannot be set this way, due to this bug in yargs: h
 
 ### `--targetEnvironment`
 
-Explicitly sets the build environment for Sentry reporting and feature flags. If not specified, it is auto-detected from git context.
+Explicitly sets the build environment for Sentry reporting and feature flags. If not specified, it is auto-detected from git.
 
 | Value               | When Used                                    |
 | ------------------- | -------------------------------------------- |
 | `production`        | Must be explicitly set (never auto-detected) |
 | `development`       | `--env development`                          |
 | `testing`           | `--test` flag                                |
-| `staging`           | `main` branch                                |
-| `release-candidate` | `release/*` branch                           |
+| `staging`           | `main` branch on CI                          |
+| `release-candidate` | `release/*` branch on CI                     |
 | `pull-request`      | `pull_request` GitHub event                  |
 | `other`             | Local builds or any other context (default)  |
 
