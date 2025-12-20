@@ -74,7 +74,11 @@ describe('send-to-sentry', () => {
     });
 
     it('falls back to standard if persona not in JSON', () => {
-      const resultWithoutPersona: { testTitle: string; mean: object; persona?: string } = { testTitle: 'test', mean: {} };
+      const resultWithoutPersona: {
+        testTitle: string;
+        mean: object;
+        persona?: string;
+      } = { testTitle: 'test', mean: {} };
       const persona = resultWithoutPersona.persona || 'standard';
       expect(persona).toBe('standard');
     });
