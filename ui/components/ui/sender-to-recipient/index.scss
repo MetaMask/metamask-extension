@@ -212,4 +212,10 @@
       }
     }
   }
+
+  // Disabled state - shows text cursor when copy is disabled
+  // Uses !important to override variant-specific cursor:pointer styles
+  &__party--disabled {
+    cursor: text !important;
+  }
 }
