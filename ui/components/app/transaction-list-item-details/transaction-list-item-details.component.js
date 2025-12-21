@@ -259,7 +259,19 @@ export default class TransactionListItemDetails extends PureComponent {
                 senderName={senderNickname}
                 senderAddress={senderAddress}
                 chainId={chainId}
-                disableCopy
+                disableSenderCopy
+                showFullRecipientName
+                hideRecipientTooltip
+                onRecipientClick={() => {
+                  this.context.trackEvent({
+                    category: MetaMetricsEventCategory.Navigation,
+                    event: 'Copied "To" Address',
+                    properties: {
+                      action: 'Activity Log',
+                      legacy_event: true,
+                    },
+                  });
+                }}
               />
             </div>
             <div className="transaction-list-item-details__cards-container">

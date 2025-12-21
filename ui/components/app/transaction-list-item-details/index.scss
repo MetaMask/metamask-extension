@@ -79,6 +79,10 @@
     margin-bottom: 8px;
 
     .sender-to-recipient {
+      // Allow height to expand for wrapped text
+      height: auto !important;
+      min-height: 42px;
+
       .sender-to-recipient__party {
         border: none;
 
@@ -88,6 +92,32 @@
 
         &--recipient {
           padding-right: 0;
+          // Allow text wrapping for recipient in transaction details
+          white-space: normal !important;
+          overflow: visible !important;
+          align-items: center;
+          flex-wrap: wrap;
+
+          // Override tooltip wrapper's nowrap
+          .sender-to-recipient__tooltip-wrapper {
+            white-space: normal !important;
+            overflow: visible !important;
+            text-overflow: clip !important;
+          }
+
+          // Override the Name component's nowrap styles
+          .name {
+            max-width: 100%;
+            flex-wrap: wrap;
+
+            .name__value,
+            .name__name {
+              white-space: normal !important;
+              overflow: visible !important;
+              text-overflow: clip !important;
+              word-break: break-word;
+            }
+          }
         }
       }
     }
