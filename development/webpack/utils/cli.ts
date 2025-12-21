@@ -421,7 +421,7 @@ export function getDryRunMessage(
   return `🦊 Build Config 🦊
 
 Environment (--env): ${args.env}
-Target Environment: ${resolvedEnvironment}${args.targetEnvironment ? '' : ' (auto-detected)'}
+Target Environment: ${resolvedEnvironment}${resolvedEnvironment === args.targetEnvironment ? '' : ' (auto-detected)'}
 Minify: ${args.minify}
 Watch: ${args.watch}
 Cache: ${args.cache}
