@@ -1097,7 +1097,7 @@
         "@metamask/keyring-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/superstruct": true,
-        "@metamask/eip-5792-middleware>@metamask/transaction-controller": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "lodash": true,
         "uuid": true
@@ -2001,7 +2001,7 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/shield-controller>@metamask/signature-controller": true,
+        "@metamask/signature-controller": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "cockatiel": true,
@@ -4242,6 +4242,11 @@
       "packages": {
         "stream-http": true,
         "browserify>url": true
+      }
+    },
+    "humanize-duration": {
+      "globals": {
+        "define": true
       }
     },
     "@metamask/notification-services-controller>firebase>@firebase/app>idb": {

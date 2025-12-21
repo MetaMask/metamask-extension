@@ -101,6 +101,14 @@ export const PermissionItem: React.FC<PermissionItemProps> = ({
 
   // Only memoize the formatted description since it depends on multiple values
   const formattedDescription = useMemo(() => {
+    // For erc20-token-revocation, only show account info (no amount/frequency data)
+    if (permission.permissionType === 'erc20-token-revocation') {
+      if (signerAddress) {
+        return accountName || shortenAddress(signerAddress);
+      }
+      return '';
+    }
+
     let description = formatAmountDescription(
       amount,
       tokenInfo.symbol,
@@ -123,6 +131,7 @@ export const PermissionItem: React.FC<PermissionItemProps> = ({
     signerAddress,
     accountName,
     formatAmountDescription,
+    permission.permissionType,
   ]);
 
   return (
