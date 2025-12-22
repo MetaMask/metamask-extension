@@ -615,6 +615,12 @@
     "message": "Allow $1 to withdraw and spend up to the following amount:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
   },
+  "alreadyImported": {
+    "message": "Already imported"
+  },
+  "alreadyImportedOn": {
+    "message": "Already imported on:"
+  },
   "amount": {
     "message": "Amount"
   },
@@ -1808,6 +1814,9 @@
   "currentAccountNotConnected": {
     "message": "Your current account is not connected"
   },
+  "currentChain": {
+    "message": "Current chain"
+  },
   "currentExtension": {
     "message": "Current extension page"
   },
@@ -2128,6 +2137,12 @@
   },
   "details": {
     "message": "Details"
+  },
+  "detectingTokenChains": {
+    "message": "Detecting where this token exists…"
+  },
+  "detectingTokenChains": {
+    "message": "Detecting which chains this token exists on"
   },
   "developerOptions": {
     "message": "Developer Options"
@@ -5916,11 +5931,20 @@
   "selectAnAccountAlreadyConnected": {
     "message": "This account has already been connected to MetaMask"
   },
+  "selectChainsToImport": {
+    "message": "Select which chains you'd like to import this token on:"
+  },
+  "selectChainsToImportToken": {
+    "message": "Import on these chains:"
+  },
   "selectEnableDisplayMediaPrivacyPreference": {
     "message": "Turn on Display NFT Media"
   },
   "selectHdPath": {
     "message": "Select HD path"
+  },
+  "selectMainnetsToImport": {
+    "message": "Select the mainnets where you want this token to appear in your wallet."
   },
   "selectNFTPrivacyPreference": {
     "message": "Enable NFT Autodetection"
@@ -5939,6 +5963,9 @@
   },
   "selectSecretRecoveryPhrase": {
     "message": "Select Secret Recovery Phrase"
+  },
+  "selectTestnetsToImport": {
+    "message": "Optional: select testnets where you also want to track this token."
   },
   "selectType": {
     "message": "Select type"
@@ -7924,6 +7951,27 @@
   },
   "tokenDetails": {
     "message": "Token details"
+  },
+  "tokenExistsOnMainnets": {
+    "message": "Main networks"
+  },
+  "tokenExistsOnMainnets": {
+    "message": "This token exists on these mainnets:"
+  },
+  "tokenExistsOnMultipleChainsSubtitle": {
+    "message": "Choose where you’d like to import this token. You can select one or more networks."
+  },
+  "tokenExistsOnMultipleChainsTitle": {
+    "message": "This token exists on multiple networks"
+  },
+  "tokenExistsOnOtherChains": {
+    "message": "This token exists on multiple chains:"
+  },
+  "tokenExistsOnTestnets": {
+    "message": "Test networks"
+  },
+  "tokenExistsOnTestnets": {
+    "message": "This token exists on these testnets:"
   },
   "tokenFoundTitle": {
     "message": "1 new token found"

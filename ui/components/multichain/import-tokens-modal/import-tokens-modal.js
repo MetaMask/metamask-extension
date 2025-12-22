@@ -277,6 +277,8 @@ export const ImportTokensModal = ({ onClose }) => {
   const [selectedChainsForImport, setSelectedChainsForImport] = useState([]);
   const [chainsWhereTokenExists, setChainsWhereTokenExists] = useState([]);
   const [isDetectingChains, setIsDetectingChains] = useState(false);
+  // Ref to track the address currently being detected to prevent race conditions
+  const detectingAddressRef = useRef(null);
 
   const blockExplorerUrl =
     networkConfigurations[selectedNetwork]?.blockExplorerUrls?.[
@@ -527,6 +529,8 @@ export const ImportTokensModal = ({ onClose }) => {
         return [];
       }
 
+      // Store the address we're detecting to prevent race conditions
+      detectingAddressRef.current = address;
       setIsDetectingChains(true);
       // Popular EVM chains to check (mainnet and testnet)
       const chainsToCheck = [
@@ -577,8 +581,23 @@ export const ImportTokensModal = ({ onClose }) => {
       const results = await Promise.all(checkPromises);
       const existingChains = results.filter(Boolean);
 
-      setChainsWhereTokenExists(existingChains);
-      setIsDetectingChains(false);
+      // Only update state if the address being detected still matches the current customAddress
+      // This prevents race conditions where an older detection completes after a newer one
+      setChainsWhereTokenExists((prevChains) => {
+        // Check if the address we're detecting is still the current one
+        if (detectingAddressRef.current === address) {
+          return existingChains;
+        }
+        // If address has changed, return previous state to avoid stale updates
+        return prevChains;
+      });
+      setIsDetectingChains((prevIsDetecting) => {
+        // Only set to false if this is still the current detection
+        if (detectingAddressRef.current === address) {
+          return false;
+        }
+        return prevIsDetecting;
+      });
 
       return existingChains;
     },
@@ -874,6 +893,8 @@ export const ImportTokensModal = ({ onClose }) => {
     setDecimalAutoFilled(false);
     setMainnetTokenWarning(null);
     setShowSymbolAndDecimals(false);
+    // Reset detection ref when address changes to prevent race conditions
+    detectingAddressRef.current = null;
 
     const addressIsValid = isValidHexAddress(address, {
       allowNonPrefixed: false,
@@ -925,9 +946,16 @@ export const ImportTokensModal = ({ onClose }) => {
 
     // Detect on-chain token existence if address is valid
     if (addressIsValid && !addressIsEmpty && standard === TokenStandard.ERC20) {
+      // Set the detecting address ref before starting detection
+      detectingAddressRef.current = standardAddress;
       detectTokenOnChains(standardAddress).catch((error) => {
         console.warn('Failed to detect token on chains:', error);
       });
+    } else {
+      // Clear detection state if address is invalid or empty
+      detectingAddressRef.current = null;
+      setChainsWhereTokenExists([]);
+      setIsDetectingChains(false);
     }
     switch (true) {
       case !addressIsValid && !addressIsEmpty:
@@ -989,6 +1017,9 @@ export const ImportTokensModal = ({ onClose }) => {
         !multichainCheck.existsOnCurrentChain:
         setCustomAddressError(null);
         setMultichainChains(multichainCheck.existsOnChains);
+        // Reset selected chains when switching to a new multichain token
+        // to prevent stale selections from previous token addresses
+        setSelectedChainsForImport([]);
         break;
 
       default:
@@ -1112,7 +1143,13 @@ export const ImportTokensModal = ({ onClose }) => {
       (item) => !item.isAlreadyImported,
     );
 
-    if (availableChains.length === 0 && !isDetectingChains) {
+    // Only hide the selector if there are no chains to show at all
+    // (neither already imported nor available to import)
+    if (
+      availableChains.length === 0 &&
+      alreadyImportedChains.length === 0 &&
+      !isDetectingChains
+    ) {
       return null;
     }
 
