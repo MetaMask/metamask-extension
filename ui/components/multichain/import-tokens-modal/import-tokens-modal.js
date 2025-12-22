@@ -46,6 +46,7 @@ import {
   hideImportTokensModal,
   setConfirmationExchangeRates,
   getTokenStandardAndDetailsByChain,
+  getCode,
 } from '../../../store/actions';
 import {
   BannerAlert,
@@ -59,8 +60,12 @@ import {
   Text,
   ButtonSecondary,
   IconName,
+  Icon,
+  IconSize,
   ModalBody,
   AvatarNetworkSize,
+  Checkbox,
+  Tag,
 } from '../../component-library';
 import { FormTextField } from '../../component-library/form-text-field/deprecated';
 import TokenSearch from '../../app/import-token/token-search';
@@ -75,8 +80,13 @@ import {
   TextAlign,
   TextColor,
   TextVariant,
+  FontWeight,
+  AlignItems,
+  BorderRadius,
+  BorderColor,
+  BackgroundColor,
+  IconColor,
 } from '../../../helpers/constants/design-system';
-
 import {
   SECURITY_ROUTE,
   DEFAULT_ROUTE,
@@ -86,7 +96,6 @@ import {
   isValidHexAddress,
   toChecksumHexAddress,
 } from '../../../../shared/modules/hexstring-utils';
-// TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../../shared/constants/tokens';
@@ -95,7 +104,6 @@ import {
   TokenStandard,
 } from '../../../../shared/constants/transaction';
 import {
-  checkExistingAddresses,
   getURLHostName,
   fetchTokenExchangeRates,
 } from '../../../helpers/utils/util';
@@ -192,7 +200,7 @@ export const ImportTokensModal = ({ onClose }) => {
         setSelectedNetwork(chainId);
       }
     }
-  }, [currentMultichainChainId, chainId]); // This should not be executed when selectedNetwork changes
+  }, [currentMultichainChainId, chainId, selectedNetwork]); // This should not be executed when selectedNetwork changes
 
   const useTokenDetection = useSelector(
     ({ metamask }) => metamask.useTokenDetection,
@@ -204,7 +212,6 @@ export const ImportTokensModal = ({ onClose }) => {
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const accounts = useSelector(getInternalAccounts);
   const allTokens = useSelector(getAllTokens);
-  const tokens = allTokens?.[chainId]?.[selectedAccount.address] || [];
   const contractExchangeRates = useSelector(getTokenExchangeRates);
 
   // Use the new useTokensWithFiltering hook for getting token data
@@ -266,6 +273,10 @@ export const ImportTokensModal = ({ onClose }) => {
   const [tokenStandard, setTokenStandard] = useState(TokenStandard.none);
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
   const [showSymbolAndDecimals, setShowSymbolAndDecimals] = useState(false);
+  const [multichainChains, setMultichainChains] = useState([]);
+  const [selectedChainsForImport, setSelectedChainsForImport] = useState([]);
+  const [chainsWhereTokenExists, setChainsWhereTokenExists] = useState([]);
+  const [isDetectingChains, setIsDetectingChains] = useState(false);
 
   const blockExplorerUrl =
     networkConfigurations[selectedNetwork]?.blockExplorerUrls?.[
@@ -309,12 +320,108 @@ export const ImportTokensModal = ({ onClose }) => {
         return;
       }
 
-      // All tokens should be from the same chain since UI clears selection on network change
+      const hasMultichainImport =
+        selectedChainsForImport.length > 0 &&
+        customAddress &&
+        customSymbol &&
+        customDecimals !== undefined;
+
+      if (hasMultichainImport) {
+        const allChainsToImport = [
+          selectedNetwork,
+          ...selectedChainsForImport.filter((id) => id !== selectedNetwork),
+        ];
+
+        const importPromises = allChainsToImport.map(async (targetChainId) => {
+          const chainConfig =
+            allNetworks[targetChainId] || networkConfigurations[targetChainId];
+          if (!chainConfig) {
+            console.warn(`No network config found for chain ${targetChainId}`);
+            return;
+          }
+
+          let networkClientId;
+          if (isNonEvmChainId(targetChainId)) {
+            const accountForChain = getAccountForChain(targetChainId);
+            if (!accountForChain) {
+              console.warn(`No account found for chain ${targetChainId}`);
+              return;
+            }
+
+            const assetId = toAssetId(customAddress, targetChainId);
+            if (assetId) {
+              await dispatch(
+                multichainAddAssets([assetId], accountForChain.id),
+              );
+
+              trackEvent({
+                event: MetaMetricsEventName.TokenAdded,
+                category: MetaMetricsEventCategory.Wallet,
+                sensitiveProperties: {
+                  token_symbol: customSymbol,
+                  token_contract_address: customAddress,
+                  token_decimal_precision: customDecimals,
+                  source_connection_method: MetaMetricsTokenEventSource.Custom,
+                  token_standard: TokenStandard.none,
+                  asset_type: AssetType.token,
+                  chain_id: targetChainId,
+                },
+              });
+            }
+          } else {
+            const defaultRpcIndex = chainConfig.defaultRpcEndpointIndex ?? 0;
+            networkClientId =
+              chainConfig.rpcEndpoints?.[defaultRpcIndex]?.networkClientId;
+
+            if (!networkClientId) {
+              console.warn(
+                `No network client ID found for chain ${targetChainId}`,
+              );
+              return;
+            }
+
+            const tokenForChain = {
+              address: customAddress,
+              symbol: customSymbol,
+              decimals: customDecimals,
+              chainId: targetChainId,
+              name: customName || customSymbol,
+              standard: tokenStandard,
+              isCustom: true,
+            };
+
+            await dispatch(addImportedTokens([tokenForChain], networkClientId));
+
+            // Track event for EVM
+            trackEvent({
+              event: MetaMetricsEventName.TokenAdded,
+              category: MetaMetricsEventCategory.Wallet,
+              sensitiveProperties: {
+                token_symbol: customSymbol,
+                token_contract_address: customAddress,
+                token_decimal_precision: customDecimals,
+                source_connection_method: MetaMetricsTokenEventSource.Custom,
+                token_standard: TokenStandard.ERC20,
+                asset_type: AssetType.token,
+                chain_id: targetChainId,
+              },
+            });
+          }
+        });
+
+        await Promise.all(importPromises);
+
+        dispatch(setNewTokensImported(customSymbol));
+        dispatch(clearPendingTokens());
+        dispatch(hideImportTokensModal());
+        navigate(DEFAULT_ROUTE);
+        return;
+      }
+
       const { chainId: tokenChainId } = addedTokenValues[0];
       const isNonEvm = isNonEvmChainId(tokenChainId);
 
       if (isNonEvm) {
-        // Handle non-EVM tokens
         const accountForChain = getAccountForChain(tokenChainId);
 
         if (!accountForChain) {
@@ -322,10 +429,8 @@ export const ImportTokensModal = ({ onClose }) => {
           return;
         }
 
-        // Convert all tokens to CAIP asset format
         const assetIds = addedTokenValues
           .map((token) => {
-            // Convert address to CAIP asset format
             const assetId =
               token.assetId || toAssetId(token.address, tokenChainId);
 
@@ -338,13 +443,12 @@ export const ImportTokensModal = ({ onClose }) => {
 
             return assetId;
           })
-          .filter((assetId) => assetId !== null); // Remove any failed conversions
+          .filter((assetId) => assetId !== null);
 
         if (assetIds.length > 0) {
           await dispatch(multichainAddAssets(assetIds, accountForChain.id));
         }
       } else {
-        // Handle EVM tokens - use existing batch import
         const networkConfig = networkConfigurations[tokenChainId];
         if (!networkConfig) {
           console.warn(`No network config found for chain ${tokenChainId}`);
@@ -403,7 +507,83 @@ export const ImportTokensModal = ({ onClose }) => {
     trackEvent,
     networkConfigurations,
     getAccountForChain,
+    selectedChainsForImport,
+    customAddress,
+    customSymbol,
+    customDecimals,
+    customName,
+    tokenStandard,
+    selectedNetwork,
+    allNetworks,
   ]);
+
+  // Detects which chains the token contract actually exists on
+  const detectTokenOnChains = useCallback(
+    async (address) => {
+      if (
+        !address ||
+        !isValidHexAddress(address, { allowNonPrefixed: false })
+      ) {
+        return [];
+      }
+
+      setIsDetectingChains(true);
+      // Popular EVM chains to check (mainnet and testnet)
+      const chainsToCheck = [
+        CHAIN_IDS.MAINNET,
+        CHAIN_IDS.BASE,
+        CHAIN_IDS.ARBITRUM,
+        CHAIN_IDS.BNB_CHAIN,
+        CHAIN_IDS.POLYGON,
+        CHAIN_IDS.OPTIMISM,
+        CHAIN_IDS.AVALANCHE,
+        CHAIN_IDS.LINEA_MAINNET,
+        CHAIN_IDS.SEPOLIA,
+        CHAIN_IDS.GOERLI,
+        CHAIN_IDS.BASE_SEPOLIA,
+        CHAIN_IDS.ARBITRUM_SEPOLIA,
+        CHAIN_IDS.MEGAETH_TESTNET,
+        CHAIN_IDS.MONAD_TESTNET,
+      ];
+
+      const checkPromises = chainsToCheck.map(async (checkChainId) => {
+        try {
+          const chainConfig =
+            allNetworks[checkChainId] || networkConfigurations[checkChainId];
+          if (!chainConfig) {
+            return null;
+          }
+
+          const defaultRpcIndex = chainConfig.defaultRpcEndpointIndex ?? 0;
+          const networkClientId =
+            chainConfig.rpcEndpoints?.[defaultRpcIndex]?.networkClientId;
+
+          if (!networkClientId) {
+            return null;
+          }
+
+          const code = await getCode(address, networkClientId);
+          const contractExists = code && code !== '0x' && code !== '0x0';
+
+          if (contractExists) {
+            return checkChainId;
+          }
+          return null;
+        } catch (error) {
+          return null;
+        }
+      });
+
+      const results = await Promise.all(checkPromises);
+      const existingChains = results.filter(Boolean);
+
+      setChainsWhereTokenExists(existingChains);
+      setIsDetectingChains(false);
+
+      return existingChains;
+    },
+    [allNetworks, networkConfigurations],
+  );
 
   useEffect(() => {
     const pendingTokenKeys = Object.keys(pendingTokens);
@@ -652,6 +832,39 @@ export const ImportTokensModal = ({ onClose }) => {
     setMode('confirm');
   };
 
+  // Checks if a token address exists on multiple chains
+  function checkTokenAcrossChains(
+    address,
+    allTokensByChain,
+    accountAddress,
+    currentChainId,
+  ) {
+    if (!address || !allTokensByChain || !accountAddress) {
+      return { existsOnChains: [], isMultichain: false };
+    }
+
+    const existsOnChains = [];
+    const lowerAddress = address.toLowerCase();
+
+    // Check all chains
+    Object.keys(allTokensByChain).forEach((tokenChainId) => {
+      const tokensOnChain =
+        allTokensByChain[tokenChainId]?.[accountAddress] || [];
+      const exists = tokensOnChain.some(
+        (token) => token.address.toLowerCase() === lowerAddress,
+      );
+      if (exists) {
+        existsOnChains.push(tokenChainId);
+      }
+    });
+
+    return {
+      existsOnChains,
+      isMultichain: existsOnChains.length > 0,
+      existsOnCurrentChain: existsOnChains.includes(currentChainId),
+    };
+  }
+
   const handleCustomAddressChange = async (value) => {
     const address = value.trim();
 
@@ -666,6 +879,17 @@ export const ImportTokensModal = ({ onClose }) => {
       allowNonPrefixed: false,
     });
     const standardAddress = addHexPrefix(address).toLowerCase();
+
+    const addressIsEmpty = address.length === 0 || address === EMPTY_ADDRESS;
+
+    if (addressIsEmpty) {
+      setCustomSymbol('');
+      setCustomDecimals(0);
+      setCustomSymbolError(null);
+      setCustomDecimalsError(null);
+      setChainsWhereTokenExists([]);
+      return;
+    }
 
     const isMainnetToken = Object.keys(STATIC_MAINNET_TOKEN_LIST).some(
       (key) => key.toLowerCase() === address.toLowerCase(),
@@ -685,7 +909,26 @@ export const ImportTokensModal = ({ onClose }) => {
       }
     }
 
-    const addressIsEmpty = address.length === 0 || address === EMPTY_ADDRESS;
+    const multichainCheck =
+      addressIsValid && !addressIsEmpty
+        ? checkTokenAcrossChains(
+            address,
+            allTokens,
+            selectedAccount.address,
+            selectedNetwork,
+          )
+        : {
+            existsOnChains: [],
+            isMultichain: false,
+            existsOnCurrentChain: false,
+          };
+
+    // Detect on-chain token existence if address is valid
+    if (addressIsValid && !addressIsEmpty && standard === TokenStandard.ERC20) {
+      detectTokenOnChains(standardAddress).catch((error) => {
+        console.warn('Failed to detect token on chains:', error);
+      });
+    }
     switch (true) {
       case !addressIsValid && !addressIsEmpty:
         setCustomAddressError(t('invalidAddress'));
@@ -735,16 +978,436 @@ export const ImportTokensModal = ({ onClose }) => {
         setShowSymbolAndDecimals(false);
         break;
 
-      case checkExistingAddresses(address, tokens):
+      case multichainCheck.existsOnCurrentChain:
         setCustomAddressError(t('tokenAlreadyAdded'));
         setShowSymbolAndDecimals(false);
+        setMultichainChains([]);
+        setSelectedChainsForImport([]);
+        break;
+
+      case multichainCheck.isMultichain &&
+        !multichainCheck.existsOnCurrentChain:
+        setCustomAddressError(null);
+        setMultichainChains(multichainCheck.existsOnChains);
         break;
 
       default:
+        setCustomAddressError(null);
+        setMultichainChains([]);
+        setSelectedChainsForImport([]);
         if (standard) {
           setTokenStandard(standard);
         }
     }
+  };
+
+  const MultichainImportSelector = () => {
+    // Helper to check if chain is testnet
+    const isTestnetChain = (inputChainId) => {
+      const chainIdToCompare = isEvmChainId(inputChainId)
+        ? formatChainIdToHex(inputChainId)
+        : inputChainId;
+      return (
+        chainIdToCompare === CHAIN_IDS.GOERLI ||
+        chainIdToCompare === CHAIN_IDS.SEPOLIA ||
+        chainIdToCompare === CHAIN_IDS.LINEA_GOERLI ||
+        chainIdToCompare === CHAIN_IDS.LINEA_SEPOLIA ||
+        chainIdToCompare === CHAIN_IDS.BASE_SEPOLIA ||
+        chainIdToCompare === CHAIN_IDS.ARBITRUM_SEPOLIA ||
+        chainIdToCompare === CHAIN_IDS.OPTIMISM_SEPOLIA ||
+        chainIdToCompare === CHAIN_IDS.MEGAETH_TESTNET ||
+        chainIdToCompare === CHAIN_IDS.MEGAETH_TESTNET_V2 ||
+        chainIdToCompare === CHAIN_IDS.MONAD_TESTNET ||
+        inputChainId.includes('testnet') ||
+        inputChainId.includes('Testnet') ||
+        NON_EVM_TESTNET_IDS.includes(inputChainId)
+      );
+    };
+
+    // Combine both sources: chains from wallet (multichainChains) and chains detected on-chain
+    // Use a Set to avoid duplicates
+    const allChainsSet = new Set([
+      ...multichainChains,
+      ...chainsWhereTokenExists,
+    ]);
+    const chainsToShow = Array.from(allChainsSet);
+
+    // Helper function to find network by chainId (handles both hex and CAIP formats)
+    const findNetworkByChainId = (lookupChainId) => {
+      let network =
+        allNetworks[lookupChainId] || networkConfigurations[lookupChainId];
+
+      if (network) {
+        return { network, chainIdToCompare: lookupChainId };
+      }
+
+      if (isEvmChainId(lookupChainId)) {
+        const hexChainId = formatChainIdToHex(lookupChainId);
+        const caipChainId = formatChainIdToCaip(lookupChainId);
+
+        network = allNetworks[caipChainId];
+        if (network) {
+          return { network, chainIdToCompare: hexChainId };
+        }
+
+        network = networkConfigurations[hexChainId];
+        if (network) {
+          return { network, chainIdToCompare: hexChainId };
+        }
+      }
+
+      const foundNetwork = Object.values(allNetworks).find((n) => {
+        const nChainId = isEvmChainId(n.chainId)
+          ? formatChainIdToHex(n.chainId)
+          : n.chainId;
+        const inputChainId = isEvmChainId(lookupChainId)
+          ? formatChainIdToHex(lookupChainId)
+          : lookupChainId;
+        return nChainId === inputChainId;
+      });
+
+      if (foundNetwork) {
+        const chainIdToCompare = isEvmChainId(foundNetwork.chainId)
+          ? formatChainIdToHex(foundNetwork.chainId)
+          : foundNetwork.chainId;
+        return { network: foundNetwork, chainIdToCompare };
+      }
+
+      return null;
+    };
+
+    // Get network info for each chain where token exists.
+    // Mark a chain as "already imported" if it exists in the user's wallet (multichainChains).
+    // This ensures already-imported chains never show as checkboxes, even before on-chain detection completes.
+    const chainsWithNetworkInfo = chainsToShow
+      .map((tokenChainId) => {
+        const result = findNetworkByChainId(tokenChainId);
+
+        if (!result || !result.network) {
+          return null;
+        }
+
+        const { network, chainIdToCompare } = result;
+        // If token is in wallet (multichainChains), it's already imported
+        // This check happens immediately, preventing checkboxes from showing initially
+        const isAlreadyImported = multichainChains.includes(chainIdToCompare);
+
+        return {
+          chainId: network.chainId,
+          chainIdToCompare,
+          network,
+          isTestnet: isTestnetChain(network.chainId),
+          isAlreadyImported,
+        };
+      })
+      .filter(Boolean);
+    // Hide multichain selector if the token only exists on the currently selected network
+    const otherChainsWithNetworkInfo = chainsWithNetworkInfo.filter(
+      (item) => item.chainIdToCompare !== selectedNetwork,
+    );
+    const alreadyImportedChains = otherChainsWithNetworkInfo.filter(
+      (item) => item.isAlreadyImported,
+    );
+    const availableChains = otherChainsWithNetworkInfo.filter(
+      (item) => !item.isAlreadyImported,
+    );
+
+    if (availableChains.length === 0 && !isDetectingChains) {
+      return null;
+    }
+
+    // Separate mainnet and testnet chains from the ones that are still
+    // available to import (checkboxes). Already-imported chains are shown
+    // in a separate read-only list above the checkboxes.
+    const mainnetChains = availableChains.filter((item) => !item.isTestnet);
+    const testnetChains = availableChains.filter((item) => item.isTestnet);
+
+    return (
+      <Box paddingTop={2} paddingLeft={4} paddingRight={4} paddingBottom={2}>
+        <Box marginBottom={3}>
+          <Text
+            variant={TextVariant.headingSm}
+            marginBottom={1}
+            fontWeight={FontWeight.Bold}
+          >
+            {t('tokenExistsOnMultipleChainsTitle')}
+          </Text>
+          <Text
+            variant={TextVariant.bodySm}
+            color={TextColor.textMuted}
+            marginBottom={0}
+          >
+            {t('tokenExistsOnMultipleChainsSubtitle')}
+          </Text>
+        </Box>
+
+        {alreadyImportedChains.length > 0 && (
+          <Box
+            marginBottom={3}
+            padding={3}
+            borderRadius={BorderRadius.MD}
+            backgroundColor={BackgroundColor.backgroundAlternative}
+            borderWidth={1}
+            borderColor={BorderColor.borderMuted}
+          >
+            <Box
+              display={Display.Flex}
+              alignItems={AlignItems.center}
+              marginBottom={2}
+            >
+              <Icon
+                name={IconName.CheckCircle}
+                color={IconColor.successDefault}
+                marginRight={1}
+              />
+              <Text
+                variant={TextVariant.bodySm}
+                fontWeight={FontWeight.Medium}
+                color={TextColor.textDefault}
+              >
+                {t('tokenAlreadyAdded')}
+              </Text>
+            </Box>
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              gap={1}
+            >
+              {alreadyImportedChains.map((item) => {
+                const networkDisplayName =
+                  item.network?.nickname || item.network?.name || item.chainId;
+
+                return (
+                  <Box
+                    key={`imported-${item.chainId}`}
+                    display={Display.Flex}
+                    alignItems={AlignItems.center}
+                    justifyContent="space-between"
+                    padding={2}
+                    borderRadius={BorderRadius.SM}
+                    backgroundColor={BackgroundColor.backgroundDefault}
+                  >
+                    <Box
+                      display={Display.Flex}
+                      alignItems={AlignItems.center}
+                      gap={1}
+                    >
+                      <Icon
+                        name={IconName.Check}
+                        color={IconColor.successDefault}
+                        size={IconSize.Sm}
+                      />
+                      <Text
+                        variant={TextVariant.bodyMd}
+                        fontWeight={FontWeight.Medium}
+                      >
+                        {networkDisplayName}
+                      </Text>
+                    </Box>
+                    <Tag
+                      label={t('alreadyImported')}
+                      backgroundColor={BackgroundColor.successMuted}
+                    />
+                  </Box>
+                );
+              })}
+            </Box>
+          </Box>
+        )}
+
+        {isDetectingChains && (
+          <Box marginBottom={4}>
+            <Text variant={TextVariant.bodySm} color={TextColor.textMuted}>
+              {t('detectingTokenChains')}...
+            </Text>
+          </Box>
+        )}
+
+        {mainnetChains.length > 0 && (
+          <Box marginBottom={3}>
+            <Text
+              variant={TextVariant.bodySm}
+              marginBottom={1}
+              fontWeight={FontWeight.Bold}
+            >
+              {t('tokenExistsOnMainnets')}
+            </Text>
+            <Text
+              variant={TextVariant.bodySm}
+              color={TextColor.textMuted}
+              marginBottom={2}
+            >
+              {t('selectMainnetsToImport')}
+            </Text>
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              gap={1}
+            >
+              {mainnetChains.map((item) => {
+                const networkDisplayName =
+                  item.network?.nickname || item.network?.name || item.chainId;
+                const isChecked =
+                  selectedChainsForImport.includes(item.chainIdToCompare) ||
+                  item.isAlreadyImported;
+
+                return (
+                  <Box
+                    key={item.chainId}
+                    display={Display.Flex}
+                    alignItems={AlignItems.center}
+                    padding={2}
+                    borderRadius={BorderRadius.MD}
+                    borderWidth={1}
+                    borderColor={
+                      isChecked
+                        ? BorderColor.primaryDefault
+                        : BorderColor.borderMuted
+                    }
+                    backgroundColor={
+                      isChecked
+                        ? BackgroundColor.primaryMuted
+                        : BackgroundColor.backgroundDefault
+                    }
+                    style={{
+                      transition: 'all 0.2s ease',
+                      cursor: item.isAlreadyImported ? 'default' : 'pointer',
+                    }}
+                  >
+                    <Checkbox
+                      id={`multichain-import-${item.chainId}`}
+                      label={
+                        <Text
+                          variant={TextVariant.bodyMd}
+                          fontWeight={
+                            isChecked ? FontWeight.Medium : FontWeight.Normal
+                          }
+                        >
+                          {networkDisplayName}
+                        </Text>
+                      }
+                      isChecked={isChecked}
+                      isDisabled={item.isAlreadyImported}
+                      onChange={(e) => {
+                        if (!item.isAlreadyImported && e.target.checked) {
+                          setSelectedChainsForImport([
+                            ...selectedChainsForImport,
+                            item.chainIdToCompare,
+                          ]);
+                        } else if (!item.isAlreadyImported) {
+                          setSelectedChainsForImport(
+                            selectedChainsForImport.filter(
+                              (id) => id !== item.chainIdToCompare,
+                            ),
+                          );
+                        }
+                      }}
+                    />
+                  </Box>
+                );
+              })}
+            </Box>
+          </Box>
+        )}
+
+        {testnetChains.length > 0 && (
+          <Box marginBottom={3}>
+            <Text
+              variant={TextVariant.bodySm}
+              marginBottom={1}
+              fontWeight={FontWeight.Bold}
+            >
+              {t('tokenExistsOnTestnets')}
+            </Text>
+            <Text
+              variant={TextVariant.bodySm}
+              color={TextColor.textMuted}
+              marginBottom={2}
+            >
+              {t('selectTestnetsToImport')}
+            </Text>
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              gap={1}
+            >
+              {testnetChains.map((item) => {
+                const networkDisplayName =
+                  item.network?.nickname || item.network?.name || item.chainId;
+                const isChecked =
+                  selectedChainsForImport.includes(item.chainIdToCompare) ||
+                  item.isAlreadyImported;
+
+                return (
+                  <Box
+                    key={item.chainId}
+                    display={Display.Flex}
+                    alignItems={AlignItems.center}
+                    padding={2}
+                    borderRadius={BorderRadius.MD}
+                    borderWidth={1}
+                    borderColor={
+                      isChecked
+                        ? BorderColor.primaryDefault
+                        : BorderColor.borderMuted
+                    }
+                    backgroundColor={
+                      isChecked
+                        ? BackgroundColor.primaryMuted
+                        : BackgroundColor.backgroundDefault
+                    }
+                    style={{
+                      transition: 'all 0.2s ease',
+                      cursor: item.isAlreadyImported ? 'default' : 'pointer',
+                    }}
+                  >
+                    <Checkbox
+                      id={`multichain-import-${item.chainId}`}
+                      label={
+                        <Box
+                          display={Display.Flex}
+                          alignItems={AlignItems.center}
+                          gap={1}
+                        >
+                          <Text
+                            variant={TextVariant.bodyMd}
+                            fontWeight={
+                              isChecked ? FontWeight.Medium : FontWeight.Normal
+                            }
+                          >
+                            {networkDisplayName}
+                          </Text>
+                          <Tag
+                            label={t('testnet')}
+                            backgroundColor={BackgroundColor.warningMuted}
+                          />
+                        </Box>
+                      }
+                      isChecked={isChecked}
+                      isDisabled={item.isAlreadyImported}
+                      onChange={(e) => {
+                        if (!item.isAlreadyImported && e.target.checked) {
+                          setSelectedChainsForImport([
+                            ...selectedChainsForImport,
+                            item.chainIdToCompare,
+                          ]);
+                        } else if (!item.isAlreadyImported) {
+                          setSelectedChainsForImport(
+                            selectedChainsForImport.filter(
+                              (id) => id !== item.chainIdToCompare,
+                            ),
+                          );
+                        }
+                      }}
+                    />
+                  </Box>
+                );
+              })}
+            </Box>
+          </Box>
+        )}
+      </Box>
+    );
   };
 
   const accountAddress = useMemo(
@@ -852,7 +1515,14 @@ export const ImportTokensModal = ({ onClose }) => {
         </ModalHeader>
         <Box className="import-tokens-modal__body">
           {isConfirming ? (
-            <ImportTokensModalConfirm networkFilter={networkFilter} />
+            // <ImportTokensModalConfirm networkFilter={networkFilter} />
+            <Box>
+              <ImportTokensModalConfirm networkFilter={networkFilter} />
+              {/* Show multichain selector if token exists on other chains */}
+              {(chainsWhereTokenExists.length > 0 ||
+                multichainChains.length > 0) &&
+                customAddress && <MultichainImportSelector />}
+            </Box>
           ) : (
             <>
               <NetworkSelectorCustomImport

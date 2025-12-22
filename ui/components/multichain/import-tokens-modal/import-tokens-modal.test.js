@@ -9,6 +9,8 @@ import {
   getTokenStandardAndDetailsByChain,
   setPendingTokens,
   setConfirmationExchangeRates,
+  addImportedTokens,
+  setNewTokensImported,
 } from '../../../store/actions';
 import mockState from '../../../../test/data/mock-state.json';
 import { TokenStandard } from '../../../../shared/constants/transaction';
@@ -44,6 +46,33 @@ jest.mock('../../../store/actions', () => ({
   setConfirmationExchangeRates: jest
     .fn()
     .mockImplementation(() => ({ type: 'SET_CONFIRMATION_EXCHANGE_RATES' })),
+
+  // New mocks for multichain logic
+  getCode: jest
+    .fn()
+    // Return "0x" so RPC detection runs but treats chain as "no code" (we use wallet-import based multichain)
+    .mockResolvedValue('0x'),
+  addImportedTokens: jest
+    .fn()
+    .mockImplementation((tokens, networkClientId) => ({
+      type: 'ADD_IMPORTED_TOKENS',
+      payload: { tokens, networkClientId },
+    })),
+  multichainAddAssets: jest.fn().mockImplementation((assetIds, accountId) => ({
+    type: 'MULTICHAIN_ADD_ASSETS',
+    payload: { assetIds, accountId },
+  })),
+  setNewTokensImported: jest.fn().mockImplementation((label) => ({
+    type: 'SET_NEW_TOKENS_IMPORTED',
+    payload: label,
+  })),
+  hideImportTokensModal: jest
+    .fn()
+    .mockImplementation(() => ({ type: 'HIDE_IMPORT_TOKENS_MODAL' })),
+  setNewTokensImportedError: jest.fn().mockImplementation((err) => ({
+    type: 'SET_NEW_TOKENS_IMPORTED_ERROR',
+    payload: err,
+  })),
 }));
 
 describe('ImportTokensModal', () => {
@@ -99,6 +128,48 @@ describe('ImportTokensModal', () => {
     return renderWithProvider(<ImportTokensModal onClose={onClose} />, store);
   };
 
+  const MULTICHAIN_TOKEN_ADDRESS = '0xbc0a08a3b560327Ec16842B5f3bF46FA029366b1';
+
+  const renderWithMultichainState = ({
+    selectedChainId = CHAIN_IDS.MAINNET,
+    importedOnChains = [CHAIN_IDS.MAINNET, CHAIN_IDS.BNB_CHAIN],
+  } = {}) => {
+    const accountAddress = mockState.metamask.selectedAddress;
+
+    const allTokens = importedOnChains.reduce((acc, chainId) => {
+      acc[chainId] = {
+        [accountAddress]: [
+          {
+            address: MULTICHAIN_TOKEN_ADDRESS,
+            symbol: 'PRINTR',
+            decimals: 18,
+          },
+        ],
+      };
+      return acc;
+    }, {});
+
+    const store = configureStore({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        allTokens,
+        providerConfig: {
+          ...mockState.metamask.providerConfig,
+          chainId: selectedChainId,
+        },
+        tokensChainsCache: {
+          [CHAIN_IDS.GOERLI]: {
+            timestamp: Date.now(),
+            data: {},
+          },
+        },
+      },
+    });
+
+    return renderWithProvider(<ImportTokensModal onClose={jest.fn()} />, store);
+  };
+
   describe('Search', () => {
     it('renders expected elements', () => {
       const { getByText, getByPlaceholderText } = render();
@@ -144,7 +215,6 @@ describe('ImportTokensModal', () => {
       const customTokenButton = getByText('Custom token');
       fireEvent.click(customTokenButton);
 
-      // Enter token address first
       const tokenAddress = '0xB7b78f0Caa05C4743b231ACa619f60124FEA4261';
       const eventTokenAddress = { target: { value: tokenAddress } };
       fireEvent.change(
@@ -418,6 +488,114 @@ describe('ImportTokensModal', () => {
       const { getByTestId } = render();
 
       expect(getByTestId('import-tokens-button-next')).toBeDisabled();
+    });
+  });
+
+  describe('Multichain import functionality', () => {
+    it('shows multichain selector with correct copy and chains', async () => {
+      const { getByText, getByTestId, queryByText } = renderWithMultichainState(
+        {
+          selectedChainId: CHAIN_IDS.MAINNET,
+          importedOnChains: [CHAIN_IDS.MAINNET, CHAIN_IDS.BNB_CHAIN],
+        },
+      );
+
+      // Go to Custom token tab
+      fireEvent.click(getByText('Custom token'));
+
+      // Enter the multichain token address
+      await fireEvent.change(
+        getByTestId('import-tokens-modal-custom-address'),
+        {
+          target: { value: MULTICHAIN_TOKEN_ADDRESS },
+        },
+      );
+
+      // Wait for symbol / decimals inputs so validation has finished
+      await waitFor(() =>
+        expect(
+          getByTestId('import-tokens-modal-custom-symbol'),
+        ).toBeInTheDocument(),
+      );
+
+      // Fill symbol and decimals to enable Next
+      fireEvent.change(getByTestId('import-tokens-modal-custom-symbol'), {
+        target: { value: 'PRINTR' },
+      });
+      fireEvent.change(getByTestId('import-tokens-modal-custom-decimals'), {
+        target: { value: '18' },
+      });
+
+      fireEvent.click(getByText('Next'));
+
+      // Header + helper text from new UX copy
+      await waitFor(() =>
+        expect(
+          getByText('This token exists on multiple networks'),
+        ).toBeInTheDocument(),
+      );
+      expect(
+        getByText(
+          'Choose where you’d like to import this token. You can select one or more networks.',
+        ),
+      ).toBeInTheDocument();
+
+      // Mainnets section
+      expect(getByText('Main networks')).toBeInTheDocument();
+      expect(
+        getByText(
+          'Select the mainnets where you want this token to appear in your wallet.',
+        ),
+      ).toBeInTheDocument();
+
+      // Chains where the token exists (from allTokens)
+      expect(getByText('Ethereum')).toBeInTheDocument();
+      expect(getByText('BNB Chain')).toBeInTheDocument();
+
+      // Sanity: unrelated chains should not be present
+      expect(queryByText('OP')).not.toBeInTheDocument();
+    });
+
+    it('imports custom token on multiple selected chains', async () => {
+      const { getByText, getByTestId } = renderWithMultichainState({
+        selectedChainId: CHAIN_IDS.MAINNET,
+        importedOnChains: [CHAIN_IDS.MAINNET, CHAIN_IDS.BNB_CHAIN],
+      });
+
+      fireEvent.click(getByText('Custom token'));
+
+      await fireEvent.change(
+        getByTestId('import-tokens-modal-custom-address'),
+        {
+          target: { value: MULTICHAIN_TOKEN_ADDRESS },
+        },
+      );
+
+      await waitFor(() =>
+        expect(
+          getByTestId('import-tokens-modal-custom-symbol'),
+        ).toBeInTheDocument(),
+      );
+
+      fireEvent.change(getByTestId('import-tokens-modal-custom-symbol'), {
+        target: { value: 'PRINTR' },
+      });
+      fireEvent.change(getByTestId('import-tokens-modal-custom-decimals'), {
+        target: { value: '18' },
+      });
+
+      fireEvent.click(getByText('Next'));
+
+      // Select both Ethereum and BNB Chain
+      fireEvent.click(getByText('Ethereum'));
+      fireEvent.click(getByText('BNB Chain'));
+
+      fireEvent.click(getByText('Import'));
+
+      await waitFor(() => {
+        expect(addImportedTokens).toHaveBeenCalled();
+        expect(setNewTokensImported).toHaveBeenCalledWith('PRINTR');
+      });
     });
   });
 });
