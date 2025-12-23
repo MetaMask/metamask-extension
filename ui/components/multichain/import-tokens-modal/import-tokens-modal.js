@@ -1016,8 +1016,14 @@ export const ImportTokensModal = ({ onClose }) => {
       case multichainCheck.existsOnCurrentChain:
         setCustomAddressError(t('tokenAlreadyAdded'));
         setShowSymbolAndDecimals(false);
-        setMultichainChains([]);
+        // Preserve all chains where the token already exists in the wallet so
+        // the multichain selector can correctly show the "Already imported"
+        // state for other networks.
+        setMultichainChains(multichainCheck.existsOnChains);
         setSelectedChainsForImport([]);
+        if (standard) {
+          setTokenStandard(standard);
+        }
         break;
 
       case multichainCheck.isMultichain &&
@@ -1027,6 +1033,9 @@ export const ImportTokensModal = ({ onClose }) => {
         // Reset selected chains when switching to a new multichain token
         // to prevent stale selections from previous token addresses
         setSelectedChainsForImport([]);
+        if (standard) {
+          setTokenStandard(standard);
+        }
         break;
 
       default:
