@@ -2139,9 +2139,6 @@
     "message": "Details"
   },
   "detectingTokenChains": {
-    "message": "Detecting where this token exists…"
-  },
-  "detectingTokenChains": {
     "message": "Detecting which chains this token exists on"
   },
   "developerOptions": {
@@ -7953,9 +7950,6 @@
     "message": "Token details"
   },
   "tokenExistsOnMainnets": {
-    "message": "Main networks"
-  },
-  "tokenExistsOnMainnets": {
     "message": "This token exists on these mainnets:"
   },
   "tokenExistsOnMultipleChainsSubtitle": {
@@ -7966,9 +7960,6 @@
   },
   "tokenExistsOnOtherChains": {
     "message": "This token exists on multiple chains:"
-  },
-  "tokenExistsOnTestnets": {
-    "message": "Test networks"
   },
   "tokenExistsOnTestnets": {
     "message": "This token exists on these testnets:"

@@ -184,23 +184,28 @@ export const ImportTokensModal = ({ onClose }) => {
 
   // Initialize selected network with current multichain network, handling both EVM and non-EVM
   useEffect(() => {
-    if (!selectedNetwork || selectedNetwork === chainId) {
-      // Initialize or update with the current multichain network
-      if (currentMultichainChainId) {
-        if (isEvmChainId(currentMultichainChainId)) {
-          // For EVM networks, convert from CAIP format to hex
-          const hexChainId = formatChainIdToHex(currentMultichainChainId);
-          setSelectedNetwork(hexChainId);
-        } else {
-          // For non-EVM networks, use the chain ID directly
-          setSelectedNetwork(currentMultichainChainId);
-        }
-      } else if (!selectedNetwork) {
-        // Fallback to default EVM chain if no multichain network selected
-        setSelectedNetwork(chainId);
-      }
+    // Only initialize if selectedNetwork is not set or matches the default chainId
+    // This prevents re-initialization when user manually changes selectedNetwork
+    const shouldInitialize = !selectedNetwork || selectedNetwork === chainId;
+    if (!shouldInitialize) {
+      return;
     }
-  }, [currentMultichainChainId, chainId, selectedNetwork]); // This should not be executed when selectedNetwork changes
+
+    // Initialize or update with the current multichain network
+    if (currentMultichainChainId) {
+      if (isEvmChainId(currentMultichainChainId)) {
+        // For EVM networks, convert from CAIP format to hex
+        const hexChainId = formatChainIdToHex(currentMultichainChainId);
+        setSelectedNetwork(hexChainId);
+      } else {
+        // For non-EVM networks, use the chain ID directly
+        setSelectedNetwork(currentMultichainChainId);
+      }
+    } else if (!selectedNetwork) {
+      // Fallback to default EVM chain if no multichain network selected
+      setSelectedNetwork(chainId);
+    }
+  }, [currentMultichainChainId, chainId, selectedNetwork]);
 
   const useTokenDetection = useSelector(
     ({ metamask }) => metamask.useTokenDetection,
@@ -909,6 +914,8 @@ export const ImportTokensModal = ({ onClose }) => {
       setCustomSymbolError(null);
       setCustomDecimalsError(null);
       setChainsWhereTokenExists([]);
+      setIsDetectingChains(false);
+      detectingAddressRef.current = null;
       return;
     }
 
@@ -1552,7 +1559,6 @@ export const ImportTokensModal = ({ onClose }) => {
         </ModalHeader>
         <Box className="import-tokens-modal__body">
           {isConfirming ? (
-            // <ImportTokensModalConfirm networkFilter={networkFilter} />
             <Box>
               <ImportTokensModalConfirm networkFilter={networkFilter} />
               {/* Show multichain selector if token exists on other chains */}
