@@ -229,9 +229,6 @@
   "enterPasswordContinue": {
     "message": "برای ادامه رمز عبور را وارد کنید"
   },
-  "ethereumPublicAddress": {
-    "message": "آدرس عمومی ایتریم"
-  },
   "etherscanView": {
     "message": "حساب را در Etherscan ببینید"
   },

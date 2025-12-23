@@ -1170,6 +1170,9 @@
       }
     },
     "@metamask/snaps-sdk": {
+      "globals": {
+        "URL": true
+      },
       "packages": {
         "@metamask/superstruct": true,
         "@metamask/utils": true,
@@ -2747,6 +2750,11 @@
         "browserify>url": true
       }
     },
+    "humanize-duration": {
+      "globals": {
+        "define": true
+      }
+    },
     "eth-ens-namehash>idna-uts46-hx": {
       "globals": {
         "define": true
@@ -3365,6 +3373,14 @@
     "react-focus-lock>react-clientside-effect": {
       "packages": {
         "@babel/runtime": true,
+        "react": true
+      }
+    },
+    "react-compiler-runtime": {
+      "globals": {
+        "console.error": true
+      },
+      "packages": {
         "react": true
       }
     },

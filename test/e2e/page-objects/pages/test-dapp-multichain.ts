@@ -11,6 +11,13 @@ const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 class TestDappMultichain {
   private readonly driver: Driver;
 
+  private readonly connectedAccount = (account: string) => {
+    return {
+      testId: 'connected-accounts-list',
+      text: account,
+    };
+  };
+
   private readonly connectExternallyConnectableButton = {
     text: 'Connect',
     tag: 'button',
@@ -27,6 +34,10 @@ class TestDappMultichain {
 
   private readonly invokeAllMethodsButton = {
     testId: 'invoke-all-methods-button',
+  };
+
+  private readonly sessionResultListItem = (resultNumber: number) => {
+    return `#session-method-details-${resultNumber}`;
   };
 
   private readonly walletCreateSessionButton = '#create-session-btn';
@@ -74,6 +85,12 @@ class TestDappMultichain {
       throw e;
     }
     console.log('Multichain Test Dapp page is loaded');
+  }
+
+  async checkResultListTotalItems(totalItems: number): Promise<void> {
+    await this.driver.waitForSelector(
+      this.sessionResultListItem(totalItems - 1),
+    );
   }
 
   async clickConnectExternallyConnectableButton() {
@@ -196,20 +213,48 @@ class TestDappMultichain {
   /**
    * Retrieves permitted session object.
    *
+   * @param params - The parameters for retrieving the session.
+   * @param params.numberOfResultItems - The number of result items expected. Defaults to 2.
    * @returns the session object.
    */
-  async getSession(): Promise<{
+  async getSession({
+    numberOfResultItems = 2,
+  }: { numberOfResultItems?: number } = {}): Promise<{
     sessionScopes: Record<string, NormalizedScopeObject>;
   }> {
     await this.driver.switchToWindowWithTitle(WINDOW_TITLES.MultichainTestDApp);
     await this.clickWalletGetSessionButton();
+    // Wait for the complete result list to be displayed to avoid race conditions with the results
+    await this.checkResultListTotalItems(numberOfResultItems);
+
     await this.clickFirstResultSummary();
 
     const getSessionRawResult = await this.driver.waitForSelector(
       this.firstSessionMethodResult,
     );
-    await this.driver.delay(veryLargeDelayMs);
-    return JSON.parse(await getSessionRawResult.getText());
+
+    // Wait for the element text to be valid JSON
+    let parsedResult:
+      | { sessionScopes: Record<string, NormalizedScopeObject> }
+      | undefined;
+    await this.driver.wait(async () => {
+      try {
+        const text = await getSessionRawResult.getText();
+        if (!text || text.trim().length === 0) {
+          return false;
+        }
+        parsedResult = JSON.parse(text);
+        return true;
+      } catch {
+        return false;
+      }
+    });
+    if (!parsedResult) {
+      throw new Error(
+        'Failed to parse session result: JSON parsing did not complete',
+      );
+    }
+    return parsedResult;
   }
 
   /**
@@ -409,6 +454,13 @@ class TestDappMultichain {
       css: this.walletNotifyResult,
       text: scope,
     });
+  }
+
+  async checkConnectedAccounts(expectedAccounts: string[]): Promise<void> {
+    console.log('Checking connected accounts on multichain test dapp.');
+    for (const account of expectedAccounts) {
+      await this.driver.waitForSelector(this.connectedAccount(account));
+    }
   }
 }
 

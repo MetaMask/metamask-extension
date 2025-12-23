@@ -9,6 +9,9 @@ import {
   PAYMENT_TYPES,
   PRODUCT_TYPES,
   RECURRING_INTERVALS,
+  Subscription,
+  SUBSCRIPTION_STATUSES,
+  SubscriptionPaymentMethod,
 } from '@metamask/subscription-controller';
 import browser from 'webextension-polyfill';
 import { TransactionType } from '@metamask/transaction-controller';
@@ -17,6 +20,8 @@ import { ENVIRONMENT } from '../../../../development/build/constants';
 import { WebAuthenticator } from '../oauth/types';
 import { createSwapsMockStore } from '../../../../test/jest';
 import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
+import { DAY } from '../../../../shared/constants/time';
+import { SHIELD_ERROR } from '../../../../shared/modules/shield';
 import { SubscriptionService } from './subscription-service';
 import { SubscriptionServiceMessenger } from './types';
 
@@ -49,6 +54,24 @@ const MAINNET_BASE = {
 } as const;
 
 const MOCK_REDIRECT_URI = 'https://mocked-redirect-uri';
+
+const MOCK_ACTIVE_SHIELD_SUBSCRIPTION: Subscription = {
+  id: 'sub_123',
+  status: SUBSCRIPTION_STATUSES.active,
+  products: [
+    {
+      name: PRODUCT_TYPES.SHIELD,
+      currency: 'usd',
+      unitAmount: 100,
+      unitDecimals: 2,
+    },
+  ],
+  paymentMethod: { type: PAYMENT_TYPES.byCard } as SubscriptionPaymentMethod,
+  interval: RECURRING_INTERVALS.month,
+  currentPeriodStart: new Date().toISOString(),
+  currentPeriodEnd: new Date(Date.now() + 30 * DAY).toISOString(),
+  isEligibleForSupport: true,
+};
 
 const getRedirectUrlSpy = jest.fn().mockReturnValue(MOCK_REDIRECT_URI);
 const mockSubmitSponsorshipIntents = jest.fn();
@@ -194,11 +217,14 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
 
   beforeEach(() => {
     process.env = { ...originalEnv };
+    process.env.METAMASK_SHIELD_ENABLED = 'true';
     delete process.env.IN_TEST; // unset IN_TEST environment variable
 
     mockStartShieldSubscriptionWithCard.mockResolvedValue({
       checkoutSessionUrl: mockCheckoutSessionUrl,
     });
+    // Mock getSubscriptions to return active subscription for polling to complete
+    mockGetSubscriptions.mockResolvedValue([MOCK_ACTIVE_SHIELD_SUBSCRIPTION]);
     mockGetAppStateControllerState.mockReturnValue({
       defaultSubscriptionPaymentOptions: {
         defaultBillingInterval: RECURRING_INTERVALS.month,
@@ -344,6 +370,64 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
 
     expect(mockGetRewardSeasonMetadata).toHaveBeenCalledWith('current');
     expect(mockGetHasAccountOptedIn).not.toHaveBeenCalled();
+  });
+
+  it('should poll until paused subscription is found', async () => {
+    mockGetSubscriptions.mockRestore();
+    const pausedSubscription = {
+      ...MOCK_ACTIVE_SHIELD_SUBSCRIPTION,
+      status: SUBSCRIPTION_STATUSES.paused,
+    };
+    mockGetSubscriptions.mockResolvedValue([pausedSubscription]);
+
+    const result = await subscriptionService.startSubscriptionWithCard({
+      products: [PRODUCT_TYPES.SHIELD],
+      isTrialRequested: false,
+      recurringInterval: RECURRING_INTERVALS.month,
+    });
+
+    expect(mockGetSubscriptions).toHaveBeenCalled();
+    expect(result).toEqual([pausedSubscription]);
+  });
+
+  it('should poll multiple times until active subscription is found', async () => {
+    mockGetSubscriptions.mockRestore();
+    // First call returns no subscription, second call returns active subscription
+    mockGetSubscriptions
+      .mockResolvedValueOnce([])
+      .mockResolvedValueOnce([MOCK_ACTIVE_SHIELD_SUBSCRIPTION]);
+
+    const result = await subscriptionService.startSubscriptionWithCard(
+      {
+        products: [PRODUCT_TYPES.SHIELD],
+        isTrialRequested: false,
+        recurringInterval: RECURRING_INTERVALS.month,
+      },
+      undefined,
+      100,
+    );
+
+    expect(mockGetSubscriptions).toHaveBeenCalledTimes(2);
+    expect(result).toEqual([MOCK_ACTIVE_SHIELD_SUBSCRIPTION]);
+  });
+
+  it('should throw timeout error when subscription is not activated within timeout period', async () => {
+    mockGetSubscriptions.mockRestore();
+    // Always return empty subscriptions to simulate no active subscription
+    mockGetSubscriptions.mockResolvedValue([]);
+
+    await expect(() =>
+      subscriptionService.startSubscriptionWithCard(
+        {
+          products: [PRODUCT_TYPES.SHIELD],
+          isTrialRequested: false,
+          recurringInterval: RECURRING_INTERVALS.month,
+        },
+        undefined,
+        100,
+        1000,
+      ),
+    ).rejects.toThrow(SHIELD_ERROR.subscriptionPollingTimedOut);
   });
 });
 

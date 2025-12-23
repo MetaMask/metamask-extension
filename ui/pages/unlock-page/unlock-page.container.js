@@ -18,7 +18,10 @@ import {
   getIsSeedlessOnboardingUserAuthenticated,
 } from '../../store/actions';
 import { getIsSocialLoginFlow, getFirstTimeFlowType } from '../../selectors';
-import { getCompletedOnboarding } from '../../ducks/metamask/metamask';
+import {
+  getCompletedOnboarding,
+  getIsWalletResetInProgress,
+} from '../../ducks/metamask/metamask';
 import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import UnlockPage from './unlock-page.component';
 
@@ -31,6 +34,7 @@ const mapStateToProps = (state) => {
     isSocialLoginFlow: getIsSocialLoginFlow(state),
     isOnboardingCompleted: getCompletedOnboarding(state),
     firstTimeFlowType: getFirstTimeFlowType(state),
+    isWalletResetInProgress: getIsWalletResetInProgress(state),
   };
 };
 
@@ -65,7 +69,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
 
   const onImport = async () => {
     await propsMarkPasswordForgotten();
-    navigate(RESTORE_VAULT_ROUTE);
+    navigate(RESTORE_VAULT_ROUTE, { replace: true });
 
     if (isPopup) {
       global.platform.openExtensionInBrowser?.(RESTORE_VAULT_ROUTE);

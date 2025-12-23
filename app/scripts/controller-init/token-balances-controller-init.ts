@@ -34,6 +34,12 @@ export const TokenBalancesControllerInit: ControllerInitFunction<
         : [];
     },
     platform: 'extension',
+    isOnboarded: () => {
+      const { completedOnboarding } = initMessenger.call(
+        'OnboardingController:getState',
+      );
+      return completedOnboarding;
+    },
   });
 
   return {
