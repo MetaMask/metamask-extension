@@ -1,3 +1,4 @@
+import { MiddlewareContext } from '@metamask/json-rpc-engine/v2';
 import { EthAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
@@ -10,7 +11,7 @@ import {
   AddUserOperationOptions,
   UserOperationController,
 } from '@metamask/user-operation-controller';
-import type { Hex } from '@metamask/utils';
+import type { Hex, JsonRpcRequest } from '@metamask/utils';
 import { addHexPrefix } from 'ethereumjs-util';
 import { PPOMController } from '@metamask/ppom-validator';
 
@@ -37,6 +38,7 @@ import {
   GetAddressSecurityAlertResponse,
   ScanAddressResponse,
 } from '../../../../shared/lib/trust-signals';
+import { getTransactionDataRecipient } from '../../../../shared/modules/transaction.utils';
 
 export type AddTransactionOptions = NonNullable<
   Parameters<TransactionController['addTransaction']>[1]
@@ -67,20 +69,33 @@ export type AddTransactionRequest = FinalAddTransactionRequest & {
 };
 
 export type AddDappTransactionRequest = BaseAddTransactionRequest & {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  dappRequest: Record<string, any>;
+  dappRequest: JsonRpcRequest;
+  requestContext: MiddlewareContext;
 };
+
+const TRANSFER_TYPES = [
+  TransactionType.tokenMethodTransfer,
+  TransactionType.tokenMethodTransferFrom,
+  TransactionType.tokenMethodSafeTransferFrom,
+];
 
 export async function addDappTransaction(
   request: AddDappTransactionRequest,
 ): Promise<string> {
-  const { dappRequest } = request;
-  const { id: actionId, method, origin } = dappRequest;
-  const { securityAlertResponse, traceContext } = dappRequest;
+  const { dappRequest, requestContext } = request;
+  const { id, method } = dappRequest;
+  const actionId = String(id);
+
+  // TODO: Find a home for and define the appropriate MiddlewareContext type
+  const origin = requestContext.assertGet('origin') as string;
+  const securityAlertResponse = requestContext.get('securityAlertResponse') as
+    | SecurityAlertResponse
+    | undefined;
+  const traceContext = requestContext.get('traceContext');
 
   const transactionOptions: Partial<AddTransactionOptions> = {
     actionId,
+    requestId: String(id),
     method,
     origin,
     // This is the default behaviour but specified here for clarity
@@ -299,6 +314,7 @@ async function validateSecurity(request: AddTransactionRequest) {
 
   scanAddressForTrustSignals(request);
   const { type } = transactionOptions;
+  const { data, value, to } = transactionParams;
 
   const typeIsExcludedFromPPOM =
     SECURITY_PROVIDER_EXCLUDED_TRANSACTION_TYPES.includes(
@@ -309,17 +325,21 @@ async function validateSecurity(request: AddTransactionRequest) {
     return;
   }
 
+  const isTransfer =
+    value === '0x0' && TRANSFER_TYPES.includes(type as TransactionType);
+
+  const recipient =
+    isTransfer && data ? getTransactionDataRecipient(data) : undefined;
+
   if (
-    internalAccounts.some(
-      ({ address }) =>
-        address.toLowerCase() === transactionParams.to?.toLowerCase(),
-    )
+    isInternalAccount(internalAccounts, to) ||
+    isInternalAccount(internalAccounts, recipient)
   ) {
     return;
   }
 
   try {
-    const { from, to, value, data } = transactionParams;
+    const { from } = transactionParams;
     const { actionId, origin } = transactionOptions;
 
     const ppomRequest = {
@@ -359,4 +379,31 @@ async function validateSecurity(request: AddTransactionRequest) {
   } catch (error) {
     handlePPOMError(error, 'Error validating JSON RPC using PPOM: ');
   }
+}
+
+export function stripSingleLeadingZero(hex: string): string {
+  if (!hex.startsWith('0x0') || hex.length <= 3) {
+    return hex;
+  }
+  return `0x${hex.slice(3)}`;
+}
+
+function normalizeAddress(address?: string): string | undefined {
+  return address?.toLowerCase();
+}
+
+function isInternalAccount(
+  internalAccounts: { address: string }[],
+  address?: string,
+): boolean {
+  const normalized = normalizeAddress(address);
+  if (!normalized) {
+    return false;
+  }
+
+  const internalSet = new Set(
+    internalAccounts.map((acc) => normalizeAddress(acc.address)),
+  );
+
+  return internalSet.has(normalized);
 }

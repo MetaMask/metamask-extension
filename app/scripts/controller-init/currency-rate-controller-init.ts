@@ -22,10 +22,10 @@ export const CurrencyRateControllerInit: ControllerInitFunction<
   CurrencyRateControllerMessenger,
   CurrencyRateControllerInitMessenger
 > = ({ controllerMessenger, initMessenger, persistedState }) => {
+  // TODO: Fix CurrencyRateControllerMessenger type - add CurrencyRateControllerActions & CurrencyRateControllerEvents
+  // TODO: Bump @metamask/network-controller to match assets-controllers
   const controller = new CurrencyRateController({
-    // @ts-expect-error: `CurrencyRateController` is persisted as
-    // `CurrencyController`, but the controller init pattern doesn't
-    // allow this in the type of `persistedState`.
+    // @ts-expect-error - CurrencyRateController is persisted as 'CurrencyController' but init pattern expects 'CurrencyRateController'
     state: persistedState.CurrencyController,
     messenger: controllerMessenger,
     includeUsdRate: true,
@@ -33,27 +33,6 @@ export const CurrencyRateControllerInit: ControllerInitFunction<
       initMessenger.call('PreferencesController:getState').useExternalServices,
     tokenPricesService: new CodefiTokenPricesServiceV2(),
   });
-
-  // TODO: This logic should be ported to `CurrencyRateController` directly.
-  const originalFetchMultiExchangeRate =
-    // @ts-expect-error: Accessing private method.
-    controller.fetchMultiExchangeRate.bind(controller);
-
-  // @ts-expect-error: Accessing private method.
-  controller.fetchMultiExchangeRate = (...args) => {
-    const { useCurrencyRateCheck } = initMessenger.call(
-      'PreferencesController:getState',
-    );
-
-    if (useCurrencyRateCheck) {
-      return originalFetchMultiExchangeRate(...args);
-    }
-
-    return {
-      conversionRate: null,
-      usdConversionRate: null,
-    };
-  };
 
   return {
     memStateKey: 'CurrencyController',

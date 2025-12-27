@@ -38,7 +38,7 @@ export function getAlertTextColors(
       return TextColor.warningDefault;
     case ConfirmInfoRowVariant.Default:
     default:
-      return defaultColor ?? TextColor.textDefault;
+      return defaultColor ?? TextColor.textAlternative;
   }
 }
 
@@ -108,9 +108,16 @@ export const ConfirmInfoAlertRow = ({
       <InlineAlert
         alertKey={alertKey}
         severity={selectedAlertSeverity}
-        showArrow={selectedAlertShowArrow}
-        textOverride={selectedAlertInlineAlertText}
+        showArrow={Boolean(
+          selectedAlertShowArrow && selectedAlertInlineAlertText,
+        )}
+        textOverride={selectedAlertInlineAlertText || ''}
         onClick={onClickHandler}
+        iconName={selectedAlert?.iconName}
+        iconColor={selectedAlert?.iconColor}
+        iconRight={selectedAlert?.inlineAlertIconRight}
+        pill={selectedAlert?.inlineAlertTextPill}
+        backgroundColor={selectedAlert?.inlineAlertTextBackgroundColor}
       />
     </Box>
   ) : (

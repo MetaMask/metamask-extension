@@ -11,6 +11,7 @@ import {
 import { PPOMController } from '@metamask/ppom-validator';
 import { SmartTransactionsController } from '@metamask/smart-transactions-controller';
 import { TransactionController } from '@metamask/transaction-controller';
+import { TransactionPayController } from '@metamask/transaction-pay-controller';
 import { AccountsController } from '@metamask/accounts-controller';
 import {
   AccountTrackerController,
@@ -81,6 +82,11 @@ import {
   AccountActivityService,
   BackendWebSocketService,
 } from '@metamask/core-backend';
+import { ClaimsController, ClaimsService } from '@metamask/claims-controller';
+import {
+  ProfileMetricsController,
+  ProfileMetricsService,
+} from '@metamask/profile-metrics-controller';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -117,6 +123,7 @@ export type Controller =
   | AuthenticationController
   | BridgeController
   | BridgeStatusController
+  | ClaimsController
   | CronjobController
   | CurrencyRateController
   | DecryptMessageController
@@ -180,6 +187,7 @@ export type Controller =
   | TokenListController
   | TokensController
   | TransactionController
+  | TransactionPayController
   | InstitutionalSnapController
   | UserOperationController
   | UserStorageController
@@ -192,7 +200,10 @@ export type Controller =
   | BackendWebSocketService
   | AccountActivityService
   | MultichainAccountService
-  | NetworkEnablementController;
+  | NetworkEnablementController
+  | ClaimsService
+  | ProfileMetricsController
+  | ProfileMetricsService;
 
 /**
  * Flat state object for all controllers supporting or required by modular initialization.
@@ -210,6 +221,7 @@ export type ControllerFlatState = AccountOrderController['state'] &
   AuthenticationController['state'] &
   BridgeController['state'] &
   BridgeStatusController['state'] &
+  ClaimsController['state'] &
   CronjobController['state'] &
   CurrencyRateController['state'] &
   DeFiPositionsController['state'] &
@@ -257,10 +269,12 @@ export type ControllerFlatState = AccountOrderController['state'] &
   TokenListController['state'] &
   TokensController['state'] &
   TransactionController['state'] &
+  TransactionPayController['state'] &
   UserOperationController['state'] &
   UserStorageController['state'] &
   TokenRatesController['state'] &
   NftController['state'] &
   NftDetectionController['state'] &
   NetworkEnablementController['state'] &
-  AccountTrackerController['state'];
+  AccountTrackerController['state'] &
+  ProfileMetricsController['state'];

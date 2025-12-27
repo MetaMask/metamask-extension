@@ -63,6 +63,32 @@ function getState({
         preferences: {
           showFiatInTestnets: true,
         },
+        internalAccounts: {
+          accounts: {
+            'mock-account-id': {
+              address: '0x2e0d7e8c45221fca00d74a3609a0f7097035d09b',
+              id: 'mock-account-id',
+              metadata: {
+                importTime: 0,
+                name: 'Test Account',
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              options: {},
+              methods: [],
+              type: 'eip155:eoa',
+            },
+          },
+          selectedAccount: 'mock-account-id',
+        },
+        accountsByChainId: {
+          '0x5': {
+            '0x2e0d7e8c45221fca00d74a3609a0f7097035d09b': {
+              balance: '0xde0b6b3a7640000',
+            },
+          },
+        },
       },
     },
   );
@@ -94,6 +120,7 @@ describe('GasFeeTokenModal', () => {
     useIsGaslessSupportedMock.mockReturnValue({
       isSmartTransaction: true,
       isSupported: true,
+      pending: false,
     });
   });
 
@@ -186,6 +213,7 @@ describe('GasFeeTokenModal', () => {
     useIsGaslessSupportedMock.mockReturnValue({
       isSmartTransaction: false,
       isSupported: true,
+      pending: false,
     });
 
     const result = renderWithConfirmContextProvider(

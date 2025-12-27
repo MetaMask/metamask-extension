@@ -62,6 +62,7 @@ async function start(): Promise<void> {
     MERGE_BASE_COMMIT_HASH,
     HOST_URL,
     LAVAMOAT_POLICY_CHANGED,
+    POST_NEW_BUILDS,
   } = process.env as Record<string, string>;
 
   if (!PR_NUMBER) {
@@ -157,7 +158,12 @@ async function start(): Promise<void> {
 
   const allArtifactsUrl = `https://github.com/${OWNER}/${REPOSITORY}/actions/runs/${RUN_ID}#artifacts`;
 
-  const contentRows = [...buildContentRows];
+  const contentRows = [];
+
+  // Only post new Extension builds if this run is not using old builds
+  if (POST_NEW_BUILDS === 'true') {
+    contentRows.push(...buildContentRows);
+  }
 
   // Only show lavamoat build viz link if the policy files changed
   if (LAVAMOAT_POLICY_CHANGED === 'true') {

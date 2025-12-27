@@ -1,12 +1,20 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { AccountListItemMenu } from '.';
 
 const mockShowModal = jest.fn();
 const mockAddPermittedAccount = jest.fn();
+
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom', () => {
+  return {
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 jest.mock('../../../store/actions', () => {
   return {

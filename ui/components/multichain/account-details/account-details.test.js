@@ -10,7 +10,6 @@ import {
   clearAccountDetails,
   exportAccount,
   hideWarning,
-  setAccountDetailsAddress,
 } from '../../../store/actions';
 import configureStore from '../../../store/store';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
@@ -28,7 +27,6 @@ describe('AccountDetails', () => {
     mockState.metamask.internalAccounts.accounts,
   )[0];
   const { address } = account;
-  const mockSetAccountDetailsAddress = jest.fn();
   const mockClearAccountDetails = jest.fn();
   const mockExportAccount = jest.fn().mockResolvedValue(true);
   const mockHideWarning = jest.fn();
@@ -37,7 +35,6 @@ describe('AccountDetails', () => {
     clearAccountDetails.mockReturnValue(mockClearAccountDetails);
     exportAccount.mockReturnValue(mockExportAccount);
     hideWarning.mockReturnValue(mockHideWarning);
-    setAccountDetailsAddress.mockReturnValue(mockSetAccountDetailsAddress);
   });
 
   afterEach(() => jest.clearAllMocks());
@@ -150,7 +147,8 @@ describe('AccountDetails', () => {
   });
 
   it('shows srp flow when the `Show Secret Recovery Phrase` button is clicked', async () => {
-    const { getByTestId } = render();
+    const mockNavigate = jest.fn();
+    const { getByTestId } = render({ navigate: mockNavigate });
 
     const showSRPButton = getByTestId('account-details-display-export-srp');
     fireEvent.click(showSRPButton);

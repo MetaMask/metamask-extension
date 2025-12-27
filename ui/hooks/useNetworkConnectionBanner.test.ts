@@ -1,6 +1,6 @@
 import { act } from '@testing-library/react';
 import { RpcEndpointType } from '@metamask/network-controller';
-import { renderHookWithProviderTyped } from '../../test/lib/render-helpers';
+import { renderHookWithProviderTyped } from '../../test/lib/render-helpers-navigate';
 import { selectFirstUnavailableEvmNetwork } from '../selectors/multichain/networks';
 import { getNetworkConnectionBanner } from '../selectors/selectors';
 import { updateNetworkConnectionBanner } from '../store/actions';
@@ -188,6 +188,7 @@ describe('useNetworkConnectionBanner', () => {
               /* eslint-disable @typescript-eslint/naming-convention */
               banner_type: 'degraded',
               chain_id_caip: 'eip155:1',
+              rpc_domain: 'mainnet.infura.io',
               rpc_endpoint_url: 'mainnet.infura.io',
               /* eslint-enable @typescript-eslint/naming-convention */
             },
@@ -294,6 +295,7 @@ describe('useNetworkConnectionBanner', () => {
             /* eslint-disable @typescript-eslint/naming-convention */
             banner_type: 'unavailable',
             chain_id_caip: 'eip155:1',
+            rpc_domain: 'mainnet.infura.io',
             rpc_endpoint_url: 'mainnet.infura.io',
             /* eslint-enable @typescript-eslint/naming-convention */
           },

@@ -220,14 +220,8 @@
   "enterPasswordContinue": {
     "message": "ለመቀጠል የይለፍ ቃል ያስገቡ"
   },
-  "ethereumPublicAddress": {
-    "message": "Ethereum ሕዝባዊ አድራሻ"
-  },
   "etherscanView": {
     "message": "መለያውን በ Etherscan ላይ ይመልከቱ"
-  },
-  "expandView": {
-    "message": "እይታን ዘርጋ"
   },
   "failed": {
     "message": "አልተሳካም"

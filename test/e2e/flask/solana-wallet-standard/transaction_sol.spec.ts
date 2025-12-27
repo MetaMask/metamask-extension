@@ -125,16 +125,14 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
             await driver.delay(largeDelayMs);
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-            // Confirm connection
-            await driver.clickElement({ text: 'Connect', tag: 'button' });
-            await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
             // Look for the target chain to be set to Devnet
             const permission = await driver.findElement(
               By.xpath("//p[contains(text(), 'Solana Devnet')]"),
             );
-
             assert.ok(permission);
+
+            // Confirm connection
+            await driver.clickElement({ text: 'Confirm', tag: 'span' });
           },
         );
       });

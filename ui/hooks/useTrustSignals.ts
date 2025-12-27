@@ -1,3 +1,6 @@
+'use no memo';
+// TODO: Fix - Calling `useTrustSignals` from `useTrustSignal`, which is not a component, violates the rules of hooks.
+
 import { useSelector } from 'react-redux';
 import { NameType } from '@metamask/name-controller';
 import { getAddressSecurityAlertResponse } from '../selectors';
@@ -7,6 +10,7 @@ import {
   mapChainIdToSupportedEVMChain,
 } from '../../shared/lib/trust-signals';
 import { SecurityAlertResponse } from '../pages/confirmations/types/confirm';
+import { useI18nContext } from './useI18nContext';
 
 export type UseTrustSignalRequest = {
   value: string;
@@ -29,10 +33,24 @@ export type TrustSignalResult = {
   label: string | null;
 };
 
+/**
+ * Hook to retrieve trust signal information for a single address.
+ *
+ * This hook fetches security alert data for a given Ethereum address and chain,
+ * and returns the trust state (e.g., malicious, verified, unknown) along with
+ * any associated label.
+ *
+ * @param value - The address or value to check for trust signals.
+ * @param type - The type of the value (e.g., NameType.ETHEREUM_ADDRESS).
+ * @param chainId - The chain ID where the address is being used. While technically
+ * optional for compatibility, omitting this parameter will result in an unknown
+ * trust signal being returned.
+ * @returns An object containing the trust signal display state and label.
+ */
 export function useTrustSignal(
   value: string,
   type: NameType,
-  chainId?: string,
+  chainId: string | undefined,
 ): TrustSignalResult {
   return useTrustSignals([{ value, type, chainId }])[0];
 }
@@ -40,6 +58,8 @@ export function useTrustSignal(
 export function useTrustSignals(
   requests: UseTrustSignalRequest[],
 ): TrustSignalResult[] {
+  const t = useI18nContext();
+
   return useSelector((state) =>
     requests.map(({ value, type, chainId }) => {
       if (type !== NameType.ETHEREUM_ADDRESS) {
@@ -78,8 +98,12 @@ export function useTrustSignals(
         };
       }
 
-      const label = securityAlertResponse.label || null;
       const trustState = getTrustState(securityAlertResponse);
+
+      const label =
+        trustState === TrustSignalDisplayState.Malicious
+          ? t('nameModalTitleMalicious')
+          : securityAlertResponse.label || null;
 
       return {
         state: trustState,

@@ -9,3 +9,5 @@ export const ACCOUNT_TYPE_LABELS: Partial<Record<KeyringAccountType, string>> =
     [BtcAccountType.P2wpkh]: 'Native SegWit',
     [BtcAccountType.P2tr]: 'Taproot',
   };
+
+export const ASSET_CELL_HEIGHT = 62;

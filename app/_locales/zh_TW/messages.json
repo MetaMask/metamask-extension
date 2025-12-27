@@ -438,14 +438,8 @@
   "ethGasPriceFetchWarning": {
     "message": "顯示備用 gas 價格，因為目前主要的 gas 估計服務無法使用。"
   },
-  "ethereumPublicAddress": {
-    "message": "以太坊公開位址"
-  },
   "etherscanView": {
     "message": "在 Etherscan 上查看帳戶"
-  },
-  "expandView": {
-    "message": "展開畫面"
   },
   "externalExtension": {
     "message": "外部擴充功能"

@@ -30,8 +30,7 @@ import {
   FlexDirection,
   JustifyContent,
 } from '../../helpers/constants/design-system';
-import { NotificationsPage } from '../../components/multichain';
-import { Content } from '../../components/multichain/pages/page';
+import { Content, Page } from '../../components/multichain/pages/page';
 import { NotificationComponents } from '../notifications/notification-components';
 import { NotificationDetailsHeader } from './notification-details-header/notification-details-header';
 import { NotificationDetailsBody } from './notification-details-body/notification-details-body';
@@ -72,14 +71,17 @@ const notificationMocks = {
   RocketPoolStakeCompleted: createMockNotificationRocketPoolStakeCompleted,
   RocketPoolUnStakeCompleted: createMockNotificationRocketPoolUnStakeCompleted,
   FeatureAnnouncement: createMockFeatureAnnouncementRaw,
-} as const;
+};
 
 const Template = ({ notification }: { notification: Notification }) => {
   const ncs = NotificationComponents[notification.type];
+  if (!ncs.details) {
+    return <Box>Unhandled Details: {notification.type}</Box>;
+  }
 
   return (
     <Box marginLeft={'auto'} marginRight={'auto'}>
-      <NotificationsPage>
+      <Page>
         <NotificationDetailsHeader
           onClickBack={() => console.log('click back')}
         >
@@ -99,23 +101,24 @@ const Template = ({ notification }: { notification: Notification }) => {
               notification={notification}
             />
             <NotificationDetailsFooter
-              footer={ncs.footer}
+              footer={ncs.details.footer}
               notification={notification}
             />
           </Box>
         </Content>
-      </NotificationsPage>
+      </Page>
     </Box>
   );
 };
 
 const stories = {} as {
-  [key in keyof typeof notificationMocks]: StoryFn<typeof NotificationDetails>;
+  [key in keyof typeof notificationMocks]: StoryFn<typeof Template>;
 };
 
 Object.entries(notificationMocks).forEach(([storyName, createMock]) => {
-  stories[storyName] = Template.bind({});
-  stories[storyName].args = { notification: processNotification(createMock()) };
+  const key = storyName as keyof typeof notificationMocks;
+  stories[key] = Template.bind({});
+  stories[key].args = { notification: processNotification(createMock()) };
 });
 
 export const EthSent = stories.EthSent;

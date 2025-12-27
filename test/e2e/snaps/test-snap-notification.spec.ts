@@ -4,14 +4,18 @@ import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import HeaderNavbar from '../page-objects/pages/header-navbar';
 import { withFixtures, unlockWallet, WINDOW_TITLES } from '../helpers';
-import FixtureBuilder from '../fixture-builder';
+import FixtureBuilder from '../fixtures/fixture-builder';
 import NotificationsListPage from '../page-objects/pages/notifications-list-page';
 import { mockNotificationSnap } from '../mock-response-data/snaps/snap-binary-mocks';
+import { DAPP_PATH } from '../constants';
 
 describe('Test Snap Notification', function () {
   it('can send 1 correctly read in-app notification', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockNotificationSnap,
         title: this.test?.fullTitle(),
@@ -58,6 +62,9 @@ describe('Test Snap Notification', function () {
       {
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockNotificationSnap,
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {

@@ -223,14 +223,8 @@
   "enterPasswordContinue": {
     "message": "Ange lösenord för att fortsätta"
   },
-  "ethereumPublicAddress": {
-    "message": "Ethereum offentlig adress"
-  },
   "etherscanView": {
     "message": "Visa konto på Etherscan"
-  },
-  "expandView": {
-    "message": "Expandera vy"
   },
   "failed": {
     "message": "Misslyckades"

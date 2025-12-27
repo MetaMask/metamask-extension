@@ -19,7 +19,6 @@ jest.mock('./extension-store', () => {
     return { set: mockStoreSet, get: mockStoreGet };
   });
 });
-jest.mock('./read-only-network-store');
 jest.mock('loglevel', () => ({
   error: jest.fn(),
 }));

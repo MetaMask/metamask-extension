@@ -21,10 +21,12 @@ import {
   updateCustomNonce,
 } from '../../../../../../../store/actions';
 import { useConfirmContext } from '../../../../../context/confirm';
+import { useDappSwapContext } from '../../../../../context/dapp-swap';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
 import { isSignatureTransactionType } from '../../../../../utils';
-import { TransactionData } from '../transaction-data/transaction-data';
 import { NestedTransactionData } from '../../batch/nested-transaction-data/nested-transaction-data';
+import { QuotedSwapTransactionData } from '../quote-transaction-data/quoted-transaction-data';
+import { TransactionData } from '../transaction-data/transaction-data';
 
 const NonceDetails = () => {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -92,6 +94,7 @@ export const AdvancedDetails = ({
 }: {
   overrideVisibility?: boolean;
 }) => {
+  const { isQuotedSwapDisplayedInInfo } = useDappSwapContext();
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,
   );
@@ -105,6 +108,7 @@ export const AdvancedDetails = ({
       <NonceDetails />
       <TransactionData />
       <NestedTransactionData />
+      {isQuotedSwapDisplayedInInfo && <QuotedSwapTransactionData />}
     </>
   );
 };

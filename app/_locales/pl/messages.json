@@ -229,14 +229,8 @@
   "enterPasswordContinue": {
     "message": "Podaj hasło żeby kontynuować"
   },
-  "ethereumPublicAddress": {
-    "message": "Adres publiczny Ethereum"
-  },
   "etherscanView": {
     "message": "Zobacz konto na Etherscan"
-  },
-  "expandView": {
-    "message": "Rozwiń widok"
   },
   "failed": {
     "message": "Nie udało się"

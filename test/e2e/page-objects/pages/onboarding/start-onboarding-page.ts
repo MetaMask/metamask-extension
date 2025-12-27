@@ -20,11 +20,6 @@ class StartOnboardingPage {
   private readonly termsOfUseAgreeButton =
     '[data-testid="terms-of-use-agree-button"]';
 
-  private readonly logInMessage = {
-    text: `Let's get started`,
-    tag: 'h2',
-  };
-
   private readonly createWalletButton =
     '[data-testid="onboarding-create-wallet"]';
 
@@ -86,7 +81,6 @@ class StartOnboardingPage {
   async checkLoginPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
-        this.logInMessage,
         this.createWalletButton,
         this.importWalletButton,
       ]);
@@ -100,13 +94,27 @@ class StartOnboardingPage {
   async createWalletWithSrp(socialLoginEnabled = true): Promise<void> {
     await this.driver.clickElement(this.createWalletButton);
     if (socialLoginEnabled) {
-      await this.driver.clickElement(this.onboardingCreateWithSrpButton);
+      await this.clickCreateWithSrpButton();
     }
   }
 
-  async importWallet(): Promise<void> {
-    await this.driver.clickElement(this.importWalletButton);
+  async clickCreateWithSrpButton(): Promise<void> {
+    await this.driver.clickElement(this.onboardingCreateWithSrpButton);
+  }
+
+  async clickImportWithSrpButton(): Promise<void> {
     await this.driver.clickElement(this.onboardingImportWithSrpButton);
+  }
+
+  async checkUserSrpButtonIsVisible(): Promise<void> {
+    await this.driver.waitForSelector(this.onboardingImportWithSrpButton);
+  }
+
+  async importWallet(withSrpButton = true): Promise<void> {
+    await this.driver.clickElement(this.importWalletButton);
+    if (withSrpButton) {
+      await this.driver.clickElement(this.onboardingImportWithSrpButton);
+    }
   }
 
   async createWalletWithSocialLogin(
@@ -135,6 +143,19 @@ class StartOnboardingPage {
 
     await this.driver.waitForSelector(socialLoginButton);
     await this.driver.clickElement(socialLoginButton);
+  }
+
+  async checkSocialSignUpFormIsVisible(): Promise<void> {
+    try {
+      await this.driver.waitForSelector(this.onboardingCreateWithGoogleButton);
+    } catch (e) {
+      console.log(
+        'Timeout while waiting for social sign up form to be loaded',
+        e,
+      );
+      throw e;
+    }
+    console.log('Social sign up form is loaded');
   }
 }
 

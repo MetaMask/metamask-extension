@@ -13,7 +13,8 @@ import {
 } from '../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { useAssetDetails } from '../../../hooks/useAssetDetails';
-import { isGatorPermissionsFeatureEnabled } from '../../../../../../shared/modules/environment';
+import { getEnabledAdvancedPermissions } from '../../../../../../shared/modules/environment';
+import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import Info from './info';
 
 jest.mock('../../simulation-details/useBalanceChanges', () => ({
@@ -54,7 +55,9 @@ jest.mock('../../../hooks/useTransactionFocusEffect', () => ({
 
 jest.mock('../../../../../../shared/modules/environment', () => ({
   ...jest.requireActual('../../../../../../shared/modules/environment'),
-  isGatorPermissionsFeatureEnabled: jest.fn().mockReturnValue(true),
+  getEnabledAdvancedPermissions: jest
+    .fn()
+    .mockReturnValue(['native-token-stream']),
 }));
 
 jest.mock('react-router-dom', () => ({
@@ -65,6 +68,7 @@ jest.mock('react-router-dom', () => ({
 describe('Info', () => {
   const mockedAssetDetails = jest.mocked(useAssetDetails);
   const mockedUseParams = jest.mocked(useParams);
+  const MOCK_CONFIRMATION_ID = '1';
 
   beforeEach(() => {
     mockedAssetDetails.mockImplementation(() => ({
@@ -97,7 +101,7 @@ describe('Info', () => {
   });
 
   it('throws an error if gator permissions feature is not enabled', () => {
-    jest.mocked(isGatorPermissionsFeatureEnabled).mockReturnValue(false);
+    jest.mocked(getEnabledAdvancedPermissions).mockReturnValue([]);
 
     const state = getMockTypedSignPermissionConfirmState();
     const mockStore = configureMockStore([])(state);
@@ -138,11 +142,16 @@ describe('Info', () => {
   });
 
   it('renders info section for addEthereumChain request', () => {
-    mockedUseParams.mockReturnValue({ id: '1' });
+    mockedUseParams.mockReturnValue({ id: MOCK_CONFIRMATION_ID });
 
     const state = getMockAddEthereumChainConfirmState();
     const mockStore = configureMockStore([])(state);
-    renderWithConfirmContextProvider(<Info />, mockStore);
+    renderWithConfirmContextProvider(
+      <Info />,
+      mockStore,
+      DEFAULT_ROUTE,
+      MOCK_CONFIRMATION_ID,
+    );
 
     expect(screen.getByText('Test Network')).toBeInTheDocument();
     expect(screen.getByText('example.com')).toBeInTheDocument();

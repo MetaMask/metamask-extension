@@ -1,9 +1,5 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import {
-  PRODUCT_TYPES,
-  SUBSCRIPTION_STATUSES,
-} from '@metamask/subscription-controller';
 import withRouterHooks from '../../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import {
   setIpfsGateway,
@@ -41,7 +37,7 @@ import {
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { openBasicFunctionalityModal } from '../../../ducks/app/app';
 import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
-import { getUserSubscriptions } from '../../../selectors/subscription';
+import { getIsActiveShieldSubscription } from '../../../selectors/subscription';
 import SecurityTab from './security-tab.component';
 
 const mapStateToProps = (state) => {
@@ -66,27 +62,13 @@ const mapStateToProps = (state) => {
 
   const networkConfigurations = getNetworkConfigurationsByChainId(state);
 
-  const { subscriptions } = getUserSubscriptions(state);
-  // get shield subscription
-  const shieldSubscription = subscriptions.find((subscription) =>
-    subscription.products.some(
-      (product) => product.name === PRODUCT_TYPES.SHIELD,
-    ),
-  );
-
-  const hasActiveShieldSubscription = [
-    SUBSCRIPTION_STATUSES.active,
-    SUBSCRIPTION_STATUSES.trialing,
-    SUBSCRIPTION_STATUSES.provisional,
-  ].includes(shieldSubscription?.status);
-
   return {
     networkConfigurations,
     participateInMetaMetrics: getParticipateInMetaMetrics(state),
     dataCollectionForMarketing: getDataCollectionForMarketing(state),
     usePhishDetect,
     useTokenDetection,
-    hasActiveShieldSubscription,
+    hasActiveShieldSubscription: getIsActiveShieldSubscription(state),
     ipfsGateway,
     useMultiAccountBalanceChecker,
     useSafeChainsListValidation,

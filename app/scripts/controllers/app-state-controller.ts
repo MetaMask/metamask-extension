@@ -11,7 +11,12 @@ import {
   AcceptRequest,
   AddApprovalRequest,
 } from '@metamask/approval-controller';
-import { DeferredPromise, Json, createDeferredPromise } from '@metamask/utils';
+import {
+  DeferredPromise,
+  Hex,
+  Json,
+  createDeferredPromise,
+} from '@metamask/utils';
 import type { QrScanRequest, SerializedUR } from '@metamask/eth-qr-keyring';
 import type { Messenger } from '@metamask/messenger';
 import { Browser } from 'webextension-polyfill';
@@ -19,6 +24,8 @@ import {
   KeyringControllerGetStateAction,
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
+import { QuoteResponse } from '@metamask/bridge-controller';
+
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
@@ -49,11 +56,28 @@ import {
   GetAddressSecurityAlertResponse,
   AddAddressSecurityAlertResponse,
 } from '../../../shared/lib/trust-signals';
+import {
+  DefaultSubscriptionPaymentOptions,
+  ShieldSubscriptionMetricsPropsFromUI,
+} from '../../../shared/types';
 import type {
   Preferences,
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
 } from './preferences-controller';
+
+export type DappSwapComparisonData = {
+  quotes?: QuoteResponse[];
+  latency?: number;
+  commands?: string;
+  error?: string;
+  swapInfo?: {
+    srcTokenAddress: Hex;
+    destTokenAddress: Hex;
+    srcTokenAmount: Hex;
+    destTokenAmountMin: Hex;
+  };
+};
 
 export type AppStateControllerState = {
   activeQrCodeScanRequest: QrScanRequest | null;
@@ -90,16 +114,19 @@ export type AppStateControllerState = {
   isUpdateAvailable: boolean;
   lastInteractedConfirmationInfo?: LastInteractedConfirmationInfo;
   lastUpdatedAt: number | null;
+  lastUpdatedFromVersion: string | null;
   lastViewedUserSurvey: number | null;
   networkConnectionBanner: NetworkConnectionBanner;
   newPrivacyPolicyToastClickedOrClosed: boolean | null;
   newPrivacyPolicyToastShownDate: number | null;
+  pna25Acknowledged: boolean;
   nftsDetectionNoticeDismissed: boolean;
   nftsDropdownState: Json;
   notificationGasPollTokens: string[];
   onboardingDate: number | null;
   outdatedBrowserWarningLastShown: number | null;
   popupGasPollTokens: string[];
+  sidePanelGasPollTokens: string[];
   productTour?: string;
   recoveryPhraseReminderHasBeenShown: boolean;
   recoveryPhraseReminderLastShown: number;
@@ -122,6 +149,23 @@ export type AppStateControllerState = {
   updateModalLastDismissedAt: number | null;
   hasShownMultichainAccountsIntroModal: boolean;
   showShieldEntryModalOnce: boolean | null;
+  pendingShieldCohort: string | null;
+  pendingShieldCohortTxType: string | null;
+  defaultSubscriptionPaymentOptions?: DefaultSubscriptionPaymentOptions;
+  dappSwapComparisonData?: {
+    [uniqueId: string]: DappSwapComparisonData;
+  };
+
+  /**
+   * The properties for the Shield subscription metrics.
+   * Since we can't access some of these properties in the background, we need to get them from the UI.
+   */
+  shieldSubscriptionMetricsProps?: ShieldSubscriptionMetricsPropsFromUI;
+
+  /**
+   * Whether the wallet reset is in progress.
+   */
+  isWalletResetInProgress: boolean;
 };
 
 const controllerName = 'AppStateController';
@@ -149,6 +193,11 @@ export type AppStateControllerSetCanTrackWalletFundsObtainedAction = {
   handler: AppStateController['setCanTrackWalletFundsObtained'];
 };
 
+export type AppStateControllerSetPendingShieldCohortAction = {
+  type: 'AppStateController:setPendingShieldCohort';
+  handler: AppStateController['setPendingShieldCohort'];
+};
+
 /**
  * Actions exposed by the {@link AppStateController}.
  */
@@ -156,7 +205,8 @@ export type AppStateControllerActions =
   | AppStateControllerGetStateAction
   | AppStateControllerGetUnlockPromiseAction
   | AppStateControllerRequestQrCodeScanAction
-  | AppStateControllerSetCanTrackWalletFundsObtainedAction;
+  | AppStateControllerSetCanTrackWalletFundsObtainedAction
+  | AppStateControllerSetPendingShieldCohortAction;
 
 /**
  * Actions that this controller is allowed to call.
@@ -203,7 +253,8 @@ export type AppStateControllerMessenger = Messenger<
 type PollingTokenType =
   | 'popupGasPollTokens'
   | 'notificationGasPollTokens'
-  | 'fullScreenGasPollTokens';
+  | 'fullScreenGasPollTokens'
+  | 'sidePanelGasPollTokens';
 
 type AppStateControllerInitState = Partial<
   Omit<
@@ -241,14 +292,17 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   isRampCardClosed: false,
   isUpdateAvailable: false,
   lastUpdatedAt: null,
+  lastUpdatedFromVersion: null,
   lastViewedUserSurvey: null,
   newPrivacyPolicyToastClickedOrClosed: null,
   newPrivacyPolicyToastShownDate: null,
+  pna25Acknowledged: false,
   nftsDetectionNoticeDismissed: false,
   notificationGasPollTokens: [],
   onboardingDate: null,
   outdatedBrowserWarningLastShown: null,
   popupGasPollTokens: [],
+  sidePanelGasPollTokens: [],
   productTour: 'accountIcon',
   recoveryPhraseReminderHasBeenShown: false,
   recoveryPhraseReminderLastShown: new Date().getTime(),
@@ -268,6 +322,10 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   updateModalLastDismissedAt: null,
   hasShownMultichainAccountsIntroModal: false,
   showShieldEntryModalOnce: null,
+  pendingShieldCohort: null,
+  pendingShieldCohortTxType: null,
+  isWalletResetInProgress: false,
+  dappSwapComparisonData: {},
   ...getInitialStateOverrides(),
 });
 
@@ -407,6 +465,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
+  lastUpdatedFromVersion: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
   lastViewedUserSurvey: {
     includeInStateLogs: true,
     persist: true,
@@ -426,6 +490,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     usedInUi: true,
   },
   newPrivacyPolicyToastShownDate: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  pna25Acknowledged: {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: true,
@@ -462,6 +532,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     usedInUi: true,
   },
   popupGasPollTokens: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  sidePanelGasPollTokens: {
     includeInStateLogs: true,
     persist: false,
     includeInDebugSnapshot: true,
@@ -599,6 +675,42 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
+  pendingShieldCohort: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  pendingShieldCohortTxType: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  isWalletResetInProgress: {
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+    includeInStateLogs: true,
+  },
+  defaultSubscriptionPaymentOptions: {
+    includeInStateLogs: false,
+    persist: true,
+    includeInDebugSnapshot: false,
+    usedInUi: false,
+  },
+  shieldSubscriptionMetricsProps: {
+    includeInStateLogs: false,
+    persist: true,
+    includeInDebugSnapshot: false,
+    usedInUi: false,
+  },
+  dappSwapComparisonData: {
+    includeInStateLogs: false,
+    persist: false,
+    includeInDebugSnapshot: false,
+    usedInUi: true,
+  },
 };
 
 export class AppStateController extends BaseController<
@@ -679,6 +791,11 @@ export class AppStateController extends BaseController<
     this.messenger.registerActionHandler(
       'AppStateController:setCanTrackWalletFundsObtained',
       this.setCanTrackWalletFundsObtained.bind(this),
+    );
+
+    this.messenger.registerActionHandler(
+      'AppStateController:setPendingShieldCohort',
+      this.setPendingShieldCohort.bind(this),
     );
 
     this.#approvalRequestId = null;
@@ -800,6 +917,12 @@ export class AppStateController extends BaseController<
   setNewPrivacyPolicyToastShownDate(time: number): void {
     this.update((state) => {
       state.newPrivacyPolicyToastShownDate = time;
+    });
+  }
+
+  setPna25Acknowledged(acknowledged: boolean): void {
+    this.update((state) => {
+      state.pna25Acknowledged = acknowledged;
     });
   }
 
@@ -943,6 +1066,17 @@ export class AppStateController extends BaseController<
   setLastUpdatedAt(lastUpdatedAt: number): void {
     this.update((state) => {
       state.lastUpdatedAt = lastUpdatedAt;
+    });
+  }
+
+  /**
+   * Record the previous version the user updated from
+   *
+   * @param fromVersion - the version the user updated from
+   */
+  setLastUpdatedFromVersion(fromVersion: string): void {
+    this.update((state) => {
+      state.lastUpdatedFromVersion = fromVersion;
     });
   }
 
@@ -1091,6 +1225,7 @@ export class AppStateController extends BaseController<
       'popupGasPollTokens',
       'notificationGasPollTokens',
       'fullScreenGasPollTokens',
+      'sidePanelGasPollTokens',
     ];
 
     return validTokenTypes.includes(pollingTokenType);
@@ -1104,6 +1239,7 @@ export class AppStateController extends BaseController<
       state.popupGasPollTokens = [];
       state.notificationGasPollTokens = [];
       state.fullScreenGasPollTokens = [];
+      state.sidePanelGasPollTokens = [];
     });
   }
 
@@ -1496,9 +1632,80 @@ export class AppStateController extends BaseController<
     });
   }
 
+  setPendingShieldCohort(cohort: string | null, txType?: string | null): void {
+    this.update((state) => {
+      state.pendingShieldCohort = cohort;
+      if (txType !== undefined) {
+        state.pendingShieldCohortTxType = txType;
+      }
+    });
+  }
+
   setCanTrackWalletFundsObtained(enabled: boolean): void {
     this.update((state) => {
       state.canTrackWalletFundsObtained = enabled;
     });
+  }
+
+  setIsWalletResetInProgress(isResetting: boolean): void {
+    this.update((state) => {
+      state.isWalletResetInProgress = isResetting;
+    });
+  }
+
+  getIsWalletResetInProgress(): boolean {
+    return this.state.isWalletResetInProgress;
+  }
+
+  setDefaultSubscriptionPaymentOptions(
+    defaultSubscriptionPaymentOptions: DefaultSubscriptionPaymentOptions,
+  ): void {
+    this.update((state) => {
+      state.defaultSubscriptionPaymentOptions =
+        defaultSubscriptionPaymentOptions;
+    });
+  }
+
+  /**
+   * Update the Shield subscription metrics properties which are not accessible in the background directly.
+   *
+   * @param shieldSubscriptionMetricsProps - The Shield subscription metrics properties.
+   */
+  setShieldSubscriptionMetricsProps(
+    shieldSubscriptionMetricsProps: ShieldSubscriptionMetricsPropsFromUI,
+  ): void {
+    this.update((state) => {
+      state.shieldSubscriptionMetricsProps = shieldSubscriptionMetricsProps;
+    });
+  }
+
+  deleteDappSwapComparisonData(uniqueId: string): void {
+    this.update((state) => {
+      delete state.dappSwapComparisonData?.[uniqueId];
+      state.dappSwapComparisonData = {
+        ...state.dappSwapComparisonData,
+      };
+    });
+  }
+
+  setDappSwapComparisonData(
+    uniqueId: string,
+    info: DappSwapComparisonData,
+  ): void {
+    this.update((state) => {
+      state.dappSwapComparisonData = {
+        ...state.dappSwapComparisonData,
+        [uniqueId]: {
+          ...(state.dappSwapComparisonData?.[uniqueId] ?? {}),
+          ...info,
+        },
+      };
+    });
+  }
+
+  getDappSwapComparisonData(
+    uniqueId: string,
+  ): DappSwapComparisonData | undefined {
+    return this.state.dappSwapComparisonData?.[uniqueId] ?? undefined;
   }
 }

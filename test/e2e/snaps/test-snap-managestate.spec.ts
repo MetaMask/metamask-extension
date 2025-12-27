@@ -1,7 +1,8 @@
 import { Driver } from '../webdriver/driver';
 import { withFixtures } from '../helpers';
-import FixtureBuilder from '../fixture-builder';
+import FixtureBuilder from '../fixtures/fixture-builder';
 import { mockManageStateSnap } from '../mock-response-data/snaps/snap-binary-mocks';
+import { DAPP_PATH } from '../constants';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
@@ -10,6 +11,9 @@ describe('Test Snap manageState', function () {
   it('can use the new state API', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockManageStateSnap,
         title: this.test?.fullTitle(),
@@ -76,6 +80,9 @@ describe('Test Snap manageState', function () {
       {
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockManageStateSnap,
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {

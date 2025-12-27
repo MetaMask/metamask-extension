@@ -28,11 +28,13 @@ import {
   __HMR_READY__,
   SNOW_MODULE_RE,
   TREZOR_MODULE_RE,
+  UI_DIR_RE,
 } from './utils/helpers';
 import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
 import { getCodeFenceLoader } from './utils/loaders/codeFenceLoader';
 import { getSwcLoader } from './utils/loaders/swcLoader';
+import { getReactCompilerLoader } from './utils/loaders/reactCompilerLoader';
 import { getVariables } from './utils/config';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import { getLatestCommit } from './utils/git';
@@ -44,15 +46,8 @@ if (args.dryRun) {
   exit(0);
 }
 
-// #region short circuit for unsupported build configurations
-if (args.manifest_version === 3) {
-  throw new Error(
-    "The webpack build doesn't support manifest_version version 3 yet. So sorry.",
-  );
-}
-// #endregion short circuit for unsupported build configurations
-
 const context = join(__dirname, '../../app');
+const nodeModules = join(__dirname, '../../node_modules');
 const isDevelopment = args.env === 'development';
 const MANIFEST_VERSION = args.manifest_version;
 const manifestPath = join(context, `manifest/v${MANIFEST_VERSION}/_base.json`);
@@ -88,6 +83,7 @@ const cache = args.cache
         // `buildDependencies`
         config: [
           __filename,
+          join(context, '../.metamaskprodrc'),
           join(context, '../.metamaskrc'),
           join(context, '../builds.yml'),
           browsersListPath,
@@ -105,10 +101,7 @@ const plugins: WebpackPluginInstance[] = [
     preprocessorOptions: { useWith: false },
     minify: args.minify,
     test: /\.html$/u, // default is eta/html, we only want html
-    data: {
-      isTest: args.test,
-      shouldIncludeSnow: args.snow,
-    },
+    data: { isTest: args.test },
     preload: [
       {
         attributes: { as: 'font', crossorigin: true },
@@ -170,6 +163,32 @@ const plugins: WebpackPluginInstance[] = [
       // misc images
       // TODO: fix overlap between this folder and automatically bundled assets
       { from: join(context, 'images'), to: 'images' },
+      // Copy rive.wasm for Rive animations
+      {
+        from: join(nodeModules, '@rive-app/canvas/rive.wasm'),
+        to: 'images/riv_animations/rive.wasm',
+      },
+      // snaps MV3 needs the offscreen document
+      ...(MANIFEST_VERSION === 3
+        ? [
+            {
+              from: join(
+                nodeModules,
+                '@metamask/snaps-execution-environments',
+                'dist/webpack/iframe/index.html',
+              ),
+              to: 'snaps/index.html',
+            },
+            {
+              from: join(
+                nodeModules,
+                '@metamask/snaps-execution-environments',
+                'dist/webpack/iframe/bundle.js',
+              ),
+              to: 'snaps/bundle.js',
+            },
+          ]
+        : []),
     ],
   }),
 ];
@@ -194,6 +213,13 @@ if (args.progress) {
   const { ProgressPlugin } = require('webpack');
   plugins.push(new ProgressPlugin());
 }
+if (args.reactCompilerVerbose) {
+  const {
+    ReactCompilerPlugin,
+  } = require('./utils/plugins/ReactCompilerPlugin');
+  plugins.push(new ReactCompilerPlugin());
+}
+
 // #endregion plugins
 
 const swcConfig = { args, browsersListQuery, isDevelopment };
@@ -201,6 +227,11 @@ const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
 const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
 const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
 const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
+const reactCompilerLoader = getReactCompilerLoader(
+  '17',
+  args.reactCompilerVerbose,
+  args.reactCompilerDebug,
+);
 
 const config = {
   entry,
@@ -303,6 +334,11 @@ const config = {
         dependency: 'url',
         type: 'asset/resource',
       },
+      {
+        test: /^(?!.*\.(?:test|stories|container)\.)(?:.*)\.(?:m?[jt]s|[jt]sx)$/u,
+        include: UI_DIR_RE,
+        use: [reactCompilerLoader],
+      },
       // own typescript, and own typescript with jsx
       {
         test: /\.(?:ts|mts|tsx)$/u,
@@ -397,9 +433,9 @@ const config = {
           codeFenceLoader,
         ],
       },
-      // images, fonts, wasm, etc.
+      // images, fonts, wasm, riv etc.
       {
-        test: /\.(?:png|jpe?g|ico|webp|svg|gif|woff2|wasm)$/u,
+        test: /\.(?:png|jpe?g|ico|webp|svg|gif|woff2|wasm|riv)$/u,
         type: 'asset/resource',
         generator: { filename: 'assets/[name].[contenthash][ext]' },
       },

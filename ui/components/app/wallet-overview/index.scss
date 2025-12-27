@@ -32,13 +32,14 @@
     flex-direction: row;
     height: 100%;
     width: 100%;
-    max-width: 420px;
+    max-width: calc(490px - 32px); // 490px (sidepanel max-width) - 32px (side padding)
   }
 
   &__currency-wrapper {
     display: flex;
     flex-direction: row;
     gap: 8px;
+    flex-wrap: wrap;
   }
 }
 
@@ -72,7 +73,6 @@
     min-width: 0;
     position: relative;
     align-items: start;
-    max-width: 326px;
   }
 
   &__primary-container {

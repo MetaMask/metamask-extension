@@ -110,9 +110,7 @@ import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { DAY } from '../../shared/constants/time';
 import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   ENVIRONMENT_TYPE_SIDEPANEL,
-  ///: END:ONLY_INCLUDE_IF
   ENVIRONMENT_TYPE_POPUP,
 } from '../../shared/constants/app';
 import {
@@ -139,7 +137,7 @@ import { hasTransactionData } from '../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
-import { EMPTY_ARRAY } from './shared';
+import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 import {
   getAllUnapprovedTransactions,
   getCurrentNetworkTransactions,
@@ -158,6 +156,7 @@ import {
 } from './multichain/networks';
 import { getRemoteFeatureFlags } from './remote-feature-flags';
 import { getApprovalRequestsByType } from './approvals';
+import { getHasShieldEntryModalShownOnce } from './subscription';
 
 /**
  * @typedef {import('../../ui/store/store').MetaMaskReduxState} MetaMaskReduxState
@@ -223,7 +222,7 @@ export function getNewNetworkAdded(state) {
 
 /**
  * @param state
- * @returns {{ chainId: import('@metamask/utils').Hex; nickname: string; editCompleted: boolean} | undefined}
+ * @returns {{ chainId: import('@metamask/utils').Hex; nickname?: string; editCompleted?: boolean; newNetwork?: boolean; trackRpcUpdateFromBanner?: boolean} | undefined}
  */
 export function getEditedNetwork(state) {
   return state.appState.editedNetwork;
@@ -291,16 +290,36 @@ export function getKeyringSnapRemovalResult(state) {
 
 export const getPendingTokens = (state) => state.appState.pendingTokens;
 
-export function getShowConnectionsRemovedModal(state) {
-  return state.appState.showConnectionsRemovedModal;
+export function getShowShieldEntryModal(state) {
+  const { show, hasUserInteractedWithModal } =
+    state.appState.shieldEntryModal || {};
+  // only show the modal if `show` is true and user has not interacted with the modal
+  return Boolean(show) && !hasUserInteractedWithModal;
 }
 
-export function getShowShieldEntryModal(state) {
-  return state.appState.shieldEntryModal?.show;
+export function getPendingShieldCohort(state) {
+  return state.metamask.pendingShieldCohort;
+}
+
+export function getPendingShieldCohortTxType(state) {
+  return state.metamask.pendingShieldCohortTxType;
 }
 
 export function getShouldSubmitEventsForShieldEntryModal(state) {
-  return state.appState.shieldEntryModal?.shouldSubmitEvents;
+  const hasShieldEntryModalShownOnce = getHasShieldEntryModalShownOnce(state);
+  if (hasShieldEntryModalShownOnce) {
+    // if the modal has been shown to the user, we don't need to submit events anymore
+    return false;
+  }
+  return Boolean(state.appState.shieldEntryModal?.shouldSubmitEvents);
+}
+
+export function getModalTypeForShieldEntryModal(state) {
+  return state.appState.shieldEntryModal?.modalType;
+}
+
+export function getShieldEntryModalTriggeringCohort(state) {
+  return state.appState.shieldEntryModal?.triggeringCohort;
 }
 
 /** `metamask` slice selectors */
@@ -469,7 +488,7 @@ export const getMetaMaskAccounts = createDeepEqualSelector(
           }
         } else {
           const multichainNetwork = multichainNetworkProviders.find((network) =>
-            network.isAddressCompatible(internalAccount.address),
+            internalAccount.scopes.some((scope) => scope === network.chainId),
           );
           account = {
             ...account,
@@ -759,6 +778,7 @@ export function getSelectedAccountNativeTokenCachedBalanceByChainId(state) {
  * Based on the current account address, query for all tokens across all chain networks on that account,
  * including the native tokens, without hardcoding any native token information.
  *
+ * @deprecated use getAssetsBySelectedAccountGroup instead
  * @param {object} state - Redux state
  * @returns {object} An object mapping chain IDs to arrays of tokens (including native tokens) with balances.
  */
@@ -800,7 +820,10 @@ export function getSelectedAccountTokensAcrossChains(state) {
 
     const nativeBalance = nativeTokenBalancesByChainId[chainId];
     if (nativeBalance) {
-      const nativeTokenInfo = getNativeTokenInfo(state, chainId);
+      const nativeTokenInfo = getNativeTokenInfo(
+        state.metamask.networkConfigurationsByChainId,
+        chainId,
+      );
       tokensByChain[chainId].push({
         ...nativeTokenInfo,
         address: '',
@@ -817,114 +840,96 @@ export function getSelectedAccountTokensAcrossChains(state) {
 /**
  * Get the native token balance for a given account address and chainId
  *
+ * @deprecated use selectBalanceByWallet instead
  * @param {object} state - Redux state
  * @param {string} accountAddress - The address of the account
  * @param {string} chainId - The chainId of the account
  */
 export const getNativeTokenCachedBalanceByChainIdSelector = createSelector(
-  (state) => state,
+  (state) => state.metamask.accountsByChainId,
   (_state, accountAddress) => accountAddress,
-  (state, accountAddress) =>
-    getNativeTokenCachedBalanceByChainIdByAccountAddress(state, accountAddress),
+  (accountsByChainId, selectedAddress) => {
+    const checksummedSelectedAddress = toChecksumHexAddress(selectedAddress);
+
+    const balancesByChainId = {};
+    for (const [chainId, accounts] of Object.entries(accountsByChainId || {})) {
+      if (accounts[checksummedSelectedAddress]) {
+        balancesByChainId[chainId] =
+          accounts[checksummedSelectedAddress].balance;
+      }
+    }
+    return balancesByChainId;
+  },
 );
 
+// eslint-disable-next-line jsdoc/require-param
 /**
  * Get the tokens across chains for a given account address
  *
- * @param {object} state - Redux state
- * @param {string} accountAddress - The address of the account
+ * @deprecated use getAllAssets instead
  */
 export const getTokensAcrossChainsByAccountAddressSelector = createSelector(
-  (state) => state,
-  (_state, accountAddress) => accountAddress,
-  (state, accountAddress) =>
-    getTokensAcrossChainsByAccountAddress(state, accountAddress),
+  [
+    (state) => state.metamask.allTokens,
+    (state) => state.metamask.networkConfigurationsByChainId,
+    (state, accountAddress) =>
+      getNativeTokenCachedBalanceByChainIdSelector(state, accountAddress),
+    (_state, accountAddress) => accountAddress,
+  ],
+  (
+    allTokens,
+    networkConfigurationsByChainId,
+    nativeTokenBalancesByChainId,
+    selectedAddress,
+  ) => {
+    const tokensByChain = {};
+
+    const chainIds = new Set([
+      ...Object.keys(allTokens || {}),
+      ...Object.keys(nativeTokenBalancesByChainId || {}),
+    ]);
+
+    chainIds.forEach((chainId) => {
+      if (!tokensByChain[chainId]) {
+        tokensByChain[chainId] = [];
+      }
+
+      if (allTokens[chainId]?.[selectedAddress]) {
+        allTokens[chainId][selectedAddress].forEach((token) => {
+          const tokenWithChain = { ...token, chainId, isNative: false };
+          tokensByChain[chainId].push(tokenWithChain);
+        });
+      }
+
+      const nativeBalance = nativeTokenBalancesByChainId[chainId];
+      if (nativeBalance) {
+        const nativeTokenInfo = getNativeTokenInfo(
+          networkConfigurationsByChainId,
+          chainId,
+        );
+        tokensByChain[chainId].push({
+          ...nativeTokenInfo,
+          address: '',
+          balance: nativeBalance,
+          chainId,
+          isNative: true,
+          image: getNativeCurrencyForChain(chainId),
+        });
+      }
+    });
+    return tokensByChain;
+  },
 );
-
-/**
- * Get the native token balance for a given account address and chainId
- *
- * @param {object} state - Redux state
- * @param {string} selectedAddress - The address of the selected account
- */
-export function getNativeTokenCachedBalanceByChainIdByAccountAddress(
-  state,
-  selectedAddress,
-) {
-  const { accountsByChainId } = state.metamask;
-
-  const checksummedSelectedAddress = toChecksumHexAddress(selectedAddress);
-
-  const balancesByChainId = {};
-  for (const [chainId, accounts] of Object.entries(accountsByChainId || {})) {
-    if (accounts[checksummedSelectedAddress]) {
-      balancesByChainId[chainId] = accounts[checksummedSelectedAddress].balance;
-    }
-  }
-  return balancesByChainId;
-}
-
-/**
- * Get the tokens across chains for a given account address
- *
- * @param {object} state - Redux state
- * @param {string} selectedAddress - The address of the selected account
- */
-export function getTokensAcrossChainsByAccountAddress(state, selectedAddress) {
-  const { allTokens } = state.metamask;
-
-  const tokensByChain = {};
-
-  const nativeTokenBalancesByChainId =
-    getNativeTokenCachedBalanceByChainIdByAccountAddress(
-      state,
-      selectedAddress,
-    );
-
-  const chainIds = new Set([
-    ...Object.keys(allTokens || {}),
-    ...Object.keys(nativeTokenBalancesByChainId || {}),
-  ]);
-
-  chainIds.forEach((chainId) => {
-    if (!tokensByChain[chainId]) {
-      tokensByChain[chainId] = [];
-    }
-
-    if (allTokens[chainId]?.[selectedAddress]) {
-      allTokens[chainId][selectedAddress].forEach((token) => {
-        const tokenWithChain = { ...token, chainId, isNative: false };
-        tokensByChain[chainId].push(tokenWithChain);
-      });
-    }
-
-    const nativeBalance = nativeTokenBalancesByChainId[chainId];
-    if (nativeBalance) {
-      const nativeTokenInfo = getNativeTokenInfo(state, chainId);
-      tokensByChain[chainId].push({
-        ...nativeTokenInfo,
-        address: '',
-        balance: nativeBalance,
-        chainId,
-        isNative: true,
-        image: getNativeCurrencyForChain(chainId),
-      });
-    }
-  });
-  return tokensByChain;
-}
 
 /**
  * Retrieves native token information (symbol, decimals, name) for a given chainId from the state,
  * without hardcoding any values.
  *
- * @param {object} state - Redux state
+ * @param {object} networkConfigurationsByChainId - Network configurations by chain ID
  * @param {string} chainId - Chain ID
- * @returns {object} Native token information
+ * @returns {{ symbol: string, decimals: number, name: string }} Native token information
  */
-export function getNativeTokenInfo(state, chainId) {
-  const { networkConfigurationsByChainId } = state.metamask;
-
+export function getNativeTokenInfo(networkConfigurationsByChainId, chainId) {
   const networkConfig = networkConfigurationsByChainId?.[chainId];
 
   // Fill native token info by network config (if a user has a network added)
@@ -932,20 +937,6 @@ export function getNativeTokenInfo(state, chainId) {
     const symbol = networkConfig.nativeCurrency || AssetType.native;
     const decimals = 18;
     const name = networkConfig.name || 'Native Token';
-
-    return {
-      symbol,
-      decimals,
-      name,
-    };
-  }
-
-  // Fill native token info by DApp provider
-  const { provider } = state.metamask;
-  if (provider?.chainId === chainId) {
-    const symbol = provider.ticker || AssetType.native;
-    const decimals = provider.nativeCurrency?.decimals || 18;
-    const name = provider.nickname || 'Native Token';
 
     return {
       symbol,
@@ -1628,6 +1619,9 @@ const selectSnapId = (_state, snapId) => snapId;
  */
 export const selectInstalledSnaps = (state) => state.metamask.snaps;
 
+export const selectIsNetworkMenuOpen = (state) =>
+  state.appState.isNetworkMenuOpen;
+
 /**
  * Retrieve registry data for requested Snap.
  *
@@ -1851,13 +1845,11 @@ export function getAppActiveTab(state) {
 }
 
 export function getOriginOfCurrentTab(state) {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   // For sidepanel, always use appActiveTab
   if (getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) {
     const appActiveTab = getAppActiveTab(state);
     return appActiveTab?.origin;
   }
-  ///: END:ONLY_INCLUDE_IF
   // For all other cases, use activeTab
   return state.activeTab.origin;
 }
@@ -1975,6 +1967,10 @@ export function getIsSwapsChain(state, overrideChainId) {
     : ALLOWED_PROD_SWAPS_CHAIN_IDS.includes(chainId);
 }
 
+export function selectHasBridgeQuotes(state) {
+  return Boolean(Object.values(state.metamask.quotes || {}).length);
+}
+
 /**
  * @deprecated Check if chainId is in ALLOWED_BRIDGE_CHAIN_IDS constant instead
  * @param state - The Redux state
@@ -2087,12 +2083,10 @@ export const getUnapprovedTransaction = createDeepEqualSelector(
 );
 
 export const getTransaction = createDeepEqualSelector(
-  (state) => getCurrentNetworkTransactions(state),
+  getCurrentNetworkTransactions,
   (_, transactionId) => transactionId,
-  (unapprovedTxs, transactionId) => {
-    return (
-      Object.values(unapprovedTxs).find(({ id }) => id === transactionId) || {}
-    );
+  (transactions, transactionId) => {
+    return transactions.find(({ id }) => id === transactionId) || EMPTY_OBJECT;
   },
 );
 
@@ -2971,6 +2965,7 @@ export function getIsDynamicTokenListAvailable(state) {
     CHAIN_IDS.MOONBEAM,
     CHAIN_IDS.MOONRIVER,
     CHAIN_IDS.SEI,
+    CHAIN_IDS.MONAD,
   ].includes(chainId);
 }
 
@@ -3190,6 +3185,17 @@ export function getIsBitcoinTestnetSupportEnabled(state) {
   return Boolean(bitcoinTestnetsEnabled);
 }
 
+/**
+ * Get the state of the `tronTestnetsEnabled` remote feature flag.
+ *
+ * @param {*} state
+ * @returns The state of the `tronTestnetsEnabled` remote feature flag.
+ */
+export function getIsTronTestnetSupportEnabled(state) {
+  const { tronTestnetsEnabled } = getRemoteFeatureFlags(state);
+  return Boolean(tronTestnetsEnabled);
+}
+
 export function getIsWatchEthereumAccountEnabled(state) {
   return state.metamask.watchEthereumAccountEnabled;
 }
@@ -3225,6 +3231,21 @@ export function getIsSolanaSupportEnabled(state) {
 }
 
 /**
+ * Get the state of the `tronSupportEnabled` remote feature flag.
+ *
+ * @param {*} _state
+ * @returns The state of the `tronSupportEnabled` remote feature flag.
+ */
+export function getIsTronSupportEnabled(_state) {
+  let enabled = false;
+  ///: BEGIN:ONLY_INCLUDE_IF(tron)
+  const { tronAccounts } = getRemoteFeatureFlags(_state);
+  enabled = isMultichainFeatureEnabled(tronAccounts);
+  ///: END:ONLY_INCLUDE_IF
+  return enabled;
+}
+
+/**
  * Checks if the new settings redesign is enabled
  *
  * @param state - The state of the application
@@ -3249,6 +3270,20 @@ export function getIsDefiPositionsEnabled(state) {
   return Boolean(assetsDefiPositionsEnabled);
 }
 
+/**
+ * Returns true if any EVM networks are enabled in the network filter.
+ *
+ * @param {*} state
+ * @returns {boolean} True if at least one EVM network is enabled.
+ */
+export function getHasAnyEvmNetworkEnabled(state) {
+  const enabledNetworks = getEnabledNetworks(state);
+  const enabledEvmNetworks = enabledNetworks[KnownCaipNamespace.Eip155] ?? {};
+  return Object.values(enabledEvmNetworks).some(
+    (isEnabled) => isEnabled === true,
+  );
+}
+
 export function getIsCustomNetwork(state) {
   const chainId = getCurrentChainId(state);
 
@@ -3265,6 +3300,18 @@ export function getIsCustomNetwork(state) {
 export function getNetworkDiscoverButtonEnabled(state) {
   const { neNetworkDiscoverButton } = getRemoteFeatureFlags(state);
   return neNetworkDiscoverButton;
+}
+
+/**
+ * Get the state of the `gasFeesSponsoredNetwork` remote feature flag.
+ * This flag determines whether the user should see a `Gas sponsored` label on the network menu list.
+ *
+ * @param {*} state
+ * @returns The state of the `gasFeesSponsoredNetwork` remote feature flag.
+ */
+export function getGasFeesSponsoredNetworkEnabled(state) {
+  const { gasFeesSponsoredNetwork } = getRemoteFeatureFlags(state);
+  return gasFeesSponsoredNetwork;
 }
 
 export function getBlockExplorerLinkText(
@@ -3448,7 +3495,7 @@ export const getUpdatedAndSortedAccountsWithCaipAccountId =
     });
   });
 
-export const useSafeChainsListValidationSelector = (state) => {
+export const getUseSafeChainsListValidation = (state) => {
   return state.metamask.useSafeChainsListValidation;
 };
 
@@ -4097,6 +4144,16 @@ export function getShowUpdateModal(state) {
     enoughTimePassedSinceLastUpdate;
 
   return showUpdateModal;
+}
+
+/**
+ * Gets the previous version that the extension was updated from.
+ *
+ * @param {import('../../ui/store/store').MetaMaskReduxState} state - The MetaMask state.
+ * @returns {string | null} The previous version string, or null if not available.
+ */
+export function getLastUpdatedFromVersion(state) {
+  return state.metamask.lastUpdatedFromVersion;
 }
 
 /**

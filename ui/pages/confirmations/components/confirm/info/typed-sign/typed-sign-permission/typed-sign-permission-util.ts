@@ -1,3 +1,5 @@
+'use no memo';
+
 import { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import {
@@ -105,4 +107,23 @@ export const useNativeTokenLabel = (chainId: Hex): string => {
   );
 
   return config?.nativeCurrency ?? 'NATIVE';
+};
+
+/**
+ * Returns the localized description for a given permission type.
+ *
+ * @param i18nContext - i18n function
+ * @param permissionType - decoded permission type identifier
+ * @returns Localized description string
+ */
+export const getPermissionDescription = (
+  i18nContext: ReturnType<typeof useI18nContext>,
+  permissionType?: string,
+): string => {
+  switch (permissionType) {
+    case 'erc20-token-revocation':
+      return i18nContext('confirmTitleDescERC20Revocation');
+    default:
+      return i18nContext('confirmTitleDescPermission');
+  }
 };

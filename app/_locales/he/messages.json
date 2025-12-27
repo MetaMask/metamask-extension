@@ -229,14 +229,8 @@
   "enterPasswordContinue": {
     "message": "יש להזין ססמה כדי להמשיך"
   },
-  "ethereumPublicAddress": {
-    "message": "כתובת אתריום ציבורית"
-  },
   "etherscanView": {
     "message": "הצג חשבון ב- Etherscan"
-  },
-  "expandView": {
-    "message": "הרחב תצוגה"
   },
   "failed": {
     "message": "נכשל"

@@ -5,7 +5,7 @@ import {
   type UpdateNetworkFields,
   RpcEndpointType,
 } from '@metamask/network-controller';
-import { Hex, isStrictHexString } from '@metamask/utils';
+import { Hex, isStrictHexString, hexToNumber } from '@metamask/utils';
 import { NETWORKS_BYPASSING_VALIDATION } from '@metamask/controller-utils';
 import {
   MetaMetricsEventCategory,
@@ -27,6 +27,7 @@ import {
   isSafeChainId,
 } from '../../../../../shared/modules/network.utils';
 import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
+import { isPublicEndpointUrl } from '../../../../../shared/lib/network-utils';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
@@ -81,6 +82,7 @@ import { useNetworkFormState } from './networks-form-state';
 export const NetworksForm = ({
   networkFormState,
   existingNetwork,
+  trackRpcUpdateFromBanner,
   onRpcAdd,
   onBlockExplorerAdd,
   toggleNetworkMenuAfterSubmit = true,
@@ -89,6 +91,7 @@ export const NetworksForm = ({
 }: {
   networkFormState: ReturnType<typeof useNetworkFormState>;
   existingNetwork?: UpdateNetworkFields;
+  trackRpcUpdateFromBanner?: boolean;
   onRpcAdd: () => void;
   onBlockExplorerAdd: () => void;
   toggleNetworkMenuAfterSubmit?: boolean;
@@ -308,6 +311,40 @@ export const NetworksForm = ({
               }),
             );
             await dispatch(setEnabledNetworks(existingNetwork.chainId));
+          }
+
+          // Track RPC update from network connection banner
+          if (trackRpcUpdateFromBanner) {
+            const newRpcEndpoint =
+              networkPayload.rpcEndpoints[
+                networkPayload.defaultRpcEndpointIndex
+              ];
+            const oldRpcEndpoint =
+              existingNetwork.rpcEndpoints?.[
+                existingNetwork.defaultRpcEndpointIndex ?? 0
+              ];
+
+            const chainIdAsDecimal = hexToNumber(chainIdHex);
+
+            const sanitizeRpcUrl = (url: string) =>
+              isPublicEndpointUrl(url, infuraProjectId ?? '')
+                ? onlyKeepHost(url)
+                : 'custom';
+
+            trackEvent({
+              category: MetaMetricsEventCategory.Network,
+              event: MetaMetricsEventName.NetworkConnectionBannerRpcUpdated,
+              // The names of Segment properties have a particular case.
+              /* eslint-disable @typescript-eslint/naming-convention */
+              properties: {
+                chain_id_caip: `eip155:${chainIdAsDecimal}`,
+                from_rpc_domain: oldRpcEndpoint?.url
+                  ? sanitizeRpcUrl(oldRpcEndpoint.url)
+                  : 'unknown',
+                to_rpc_domain: sanitizeRpcUrl(newRpcEndpoint.url),
+              },
+              /* eslint-enable @typescript-eslint/naming-convention */
+            });
           }
         } else {
           await dispatch(addNetwork(networkPayload));

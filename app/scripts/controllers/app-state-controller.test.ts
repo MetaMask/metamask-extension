@@ -311,11 +311,13 @@ describe('AppStateController', () => {
         controller.addPollingToken('token1', 'popupGasPollTokens');
         controller.addPollingToken('token2', 'notificationGasPollTokens');
         controller.addPollingToken('token3', 'fullScreenGasPollTokens');
+        controller.addPollingToken('token4', 'sidePanelGasPollTokens');
         controller.clearPollingTokens();
 
         expect(controller.state.popupGasPollTokens).toStrictEqual([]);
         expect(controller.state.notificationGasPollTokens).toStrictEqual([]);
         expect(controller.state.fullScreenGasPollTokens).toStrictEqual([]);
+        expect(controller.state.sidePanelGasPollTokens).toStrictEqual([]);
       });
     });
   });
@@ -773,6 +775,7 @@ describe('AppStateController', () => {
               "hasShownMultichainAccountsIntroModal": false,
               "isRampCardClosed": false,
               "isUpdateAvailable": false,
+              "isWalletResetInProgress": false,
               "lastInteractedConfirmationInfo": {
                 "chainId": "0x1",
                 "id": "123",
@@ -780,6 +783,7 @@ describe('AppStateController', () => {
                 "timestamp": 1000,
               },
               "lastUpdatedAt": null,
+              "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
               "newPrivacyPolicyToastClickedOrClosed": null,
               "newPrivacyPolicyToastShownDate": null,
@@ -788,6 +792,9 @@ describe('AppStateController', () => {
               "notificationGasPollTokens": [],
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
+              "pendingShieldCohort": null,
+              "pendingShieldCohortTxType": null,
+              "pna25Acknowledged": false,
               "popupGasPollTokens": [],
               "productTour": "accountIcon",
               "recoveryPhraseReminderHasBeenShown": false,
@@ -801,6 +808,7 @@ describe('AppStateController', () => {
               "showPermissionsTour": true,
               "showShieldEntryModalOnce": null,
               "showTestnetMessageInDropdown": true,
+              "sidePanelGasPollTokens": [],
               "signatureSecurityAlertResponses": {},
               "slides": [],
               "snapsInstallPrivacyWarningShown": false,
@@ -860,6 +868,7 @@ describe('AppStateController', () => {
               "hasShownMultichainAccountsIntroModal": false,
               "isRampCardClosed": false,
               "isUpdateAvailable": false,
+              "isWalletResetInProgress": false,
               "lastInteractedConfirmationInfo": {
                 "chainId": "0x1",
                 "id": "123",
@@ -867,6 +876,7 @@ describe('AppStateController', () => {
                 "timestamp": 1000,
               },
               "lastUpdatedAt": null,
+              "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
               "newPrivacyPolicyToastClickedOrClosed": null,
               "newPrivacyPolicyToastShownDate": null,
@@ -875,6 +885,9 @@ describe('AppStateController', () => {
               "notificationGasPollTokens": [],
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
+              "pendingShieldCohort": null,
+              "pendingShieldCohortTxType": null,
+              "pna25Acknowledged": false,
               "popupGasPollTokens": [],
               "productTour": "accountIcon",
               "recoveryPhraseReminderHasBeenShown": false,
@@ -888,6 +901,7 @@ describe('AppStateController', () => {
               "showPermissionsTour": true,
               "showShieldEntryModalOnce": null,
               "showTestnetMessageInDropdown": true,
+              "sidePanelGasPollTokens": [],
               "signatureSecurityAlertResponses": {},
               "slides": [],
               "snapsInstallPrivacyWarningShown": false,
@@ -939,6 +953,7 @@ describe('AppStateController', () => {
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
               "hasShownMultichainAccountsIntroModal": false,
               "isRampCardClosed": false,
+              "isWalletResetInProgress": false,
               "lastInteractedConfirmationInfo": {
                 "chainId": "0x1",
                 "id": "123",
@@ -946,12 +961,15 @@ describe('AppStateController', () => {
                 "timestamp": 1000,
               },
               "lastUpdatedAt": null,
+              "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
               "newPrivacyPolicyToastClickedOrClosed": null,
               "newPrivacyPolicyToastShownDate": null,
               "nftsDetectionNoticeDismissed": false,
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
+              "pendingShieldCohortTxType": null,
+              "pna25Acknowledged": false,
               "productTour": "accountIcon",
               "recoveryPhraseReminderHasBeenShown": false,
               "recoveryPhraseReminderLastShown": 1000,
@@ -1011,6 +1029,7 @@ describe('AppStateController', () => {
               "connectedStatusPopoverHasBeenShown": true,
               "currentExtensionPopupId": 0,
               "currentPopupId": 0,
+              "dappSwapComparisonData": {},
               "defaultHomeActiveTabName": null,
               "enableEnforcedSimulations": true,
               "enableEnforcedSimulationsForTransactions": {},
@@ -1020,6 +1039,7 @@ describe('AppStateController', () => {
               "hasShownMultichainAccountsIntroModal": false,
               "isRampCardClosed": false,
               "isUpdateAvailable": false,
+              "isWalletResetInProgress": false,
               "lastInteractedConfirmationInfo": {
                 "chainId": "0x1",
                 "id": "123",
@@ -1027,6 +1047,7 @@ describe('AppStateController', () => {
                 "timestamp": 1000,
               },
               "lastUpdatedAt": null,
+              "lastUpdatedFromVersion": null,
               "lastViewedUserSurvey": null,
               "networkConnectionBanner": {
                 "status": "unknown",
@@ -1037,6 +1058,9 @@ describe('AppStateController', () => {
               "notificationGasPollTokens": [],
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
+              "pendingShieldCohort": null,
+              "pendingShieldCohortTxType": null,
+              "pna25Acknowledged": false,
               "popupGasPollTokens": [],
               "productTour": "accountIcon",
               "recoveryPhraseReminderHasBeenShown": false,
@@ -1049,6 +1073,7 @@ describe('AppStateController', () => {
               "showNetworkBanner": true,
               "showPermissionsTour": true,
               "showShieldEntryModalOnce": null,
+              "sidePanelGasPollTokens": [],
               "signatureSecurityAlertResponses": {},
               "slides": [],
               "snapsInstallPrivacyWarningShown": false,

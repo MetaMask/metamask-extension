@@ -1,5 +1,6 @@
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { TransactionParams } from '@metamask/eth-json-rpc-middleware';
+import { MiddlewareContext } from '@metamask/json-rpc-engine/v2';
 import {
   TransactionController,
   TransactionMeta,
@@ -32,6 +33,7 @@ import {
   AddTransactionRequest,
   addDappTransaction,
   addTransaction,
+  stripSingleLeadingZero,
 } from './util';
 
 jest.mock('../ppom/ppom-util');
@@ -59,18 +61,25 @@ const TRANSACTION_PARAMS_MOCK: TransactionParams = {
 
 const TRANSACTION_OPTIONS_MOCK: AddTransactionOptions = {
   actionId: 'mockActionId',
+  requestId: 'mockActionId',
   networkClientId: 'mockNetworkClientId',
   origin: 'mockOrigin',
   requireApproval: false,
   type: TransactionType.simpleSend,
 };
 
-const DAPP_REQUEST_MOCK = {
-  id: TRANSACTION_OPTIONS_MOCK.actionId,
+const makeDappRequest = () => ({
+  jsonrpc: '2.0' as const,
+  id: TRANSACTION_OPTIONS_MOCK.actionId as string,
   method: 'eth_sendTransaction',
-  origin: TRANSACTION_OPTIONS_MOCK.origin,
-  securityAlertResponse: { test: 'value' },
-};
+  params: [],
+});
+
+const makeRequestContext = () =>
+  new MiddlewareContext<Record<PropertyKey, unknown>>({
+    origin: TRANSACTION_OPTIONS_MOCK.origin as string,
+    securityAlertResponse: { test: 'value' },
+  });
 
 const TRANSACTION_META_MOCK: TransactionMeta = {
   id: 'testId',
@@ -155,7 +164,8 @@ describe('Transaction Utils', () => {
 
     dappRequest = {
       ...request,
-      dappRequest: DAPP_REQUEST_MOCK,
+      dappRequest: makeDappRequest(),
+      requestContext: makeRequestContext(),
     };
   });
 
@@ -527,6 +537,40 @@ describe('Transaction Utils', () => {
 
         expect(validateRequestWithPPOMMock).toHaveBeenCalledTimes(0);
       });
+
+      it('does not call PPOM if is a transfer to self and value is zero', async () => {
+        const INTERNAL_ACCOUNT_ADDRESS_2 =
+          '0x68d3ad12ea94779cb37262be1c179dbd8e208afe';
+        const sendRequest = {
+          ...request,
+          internalAccounts: [
+            createMockInternalAccount({
+              address: INTERNAL_ACCOUNT_ADDRESS_2,
+            }),
+          ],
+          transactionParams: {
+            ...request.transactionParams,
+            data: '0xa9059cbb00000000000000000000000068d3ad12ea94779cb37262be1c179dbd8e208afe00000000000000000000000000000000000000000000000000000000000f4240',
+            value: '0x0',
+          },
+        };
+
+        await addTransaction({
+          ...sendRequest,
+          transactionOptions: {
+            ...TRANSACTION_OPTIONS_MOCK,
+            type: TransactionType.tokenMethodTransfer,
+          },
+          securityAlertsEnabled: true,
+          chainId: '0x1',
+        });
+
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledTimes(1);
+
+        expect(validateRequestWithPPOMMock).toHaveBeenCalledTimes(0);
+      });
     });
 
     describe('adds trust signals', () => {
@@ -616,9 +660,11 @@ describe('Transaction Utils', () => {
           request.transactionController.addTransaction,
         ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
           ...TRANSACTION_OPTIONS_MOCK,
-          method: DAPP_REQUEST_MOCK.method,
+          method: makeDappRequest().method,
           requireApproval: true,
-          securityAlertResponse: DAPP_REQUEST_MOCK.securityAlertResponse,
+          securityAlertResponse: makeRequestContext().assertGet(
+            'securityAlertResponse',
+          ),
           type: undefined,
         });
       });
@@ -693,6 +739,18 @@ describe('Transaction Utils', () => {
           'Test Error',
         );
       });
+    });
+  });
+
+  describe('stripSingleLeadingZero', () => {
+    it('returns the same hex if it does not start with 0x0', () => {
+      expect(stripSingleLeadingZero('0x1a2b3c')).toBe('0x1a2b3c');
+    });
+
+    it('strips a single leading zero from the hex', () => {
+      expect(stripSingleLeadingZero('0x0123')).toBe('0x123');
+      expect(stripSingleLeadingZero('0x0abcdef')).toBe('0xabcdef');
+      expect(stripSingleLeadingZero('0x0001')).toBe('0x001');
     });
   });
 });

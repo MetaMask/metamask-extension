@@ -4,6 +4,7 @@ export enum RowAlertKey {
   AccountTypeUpgrade = 'accountTypeUpgrade',
   ChainName = 'chainName',
   EstimatedChangesStatic = 'estimatedChangesStatic',
+  Spender = 'spender',
   EstimatedFee = 'estimatedFee',
   IncomingTokens = 'incomingTokens',
   InteractingWith = 'interactingWith',
@@ -18,6 +19,7 @@ export enum RowAlertKey {
 
 export enum AlertActionKey {
   Buy = 'buy',
+  InteractingWith = 'interactingWith',
   ShowAdvancedGasFeeModal = 'showAdvancedGasModal',
   ShowGasFeeModal = 'showGasFeeModal',
   ShowPendingConfirmation = 'showPendingConfirmation',

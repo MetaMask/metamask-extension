@@ -223,14 +223,8 @@
   "enterPasswordContinue": {
     "message": "Pokračujte zadaním hesla"
   },
-  "ethereumPublicAddress": {
-    "message": "Verejná adresa Ethereum"
-  },
   "etherscanView": {
     "message": "Prohlédněte si účet na Etherscan"
-  },
-  "expandView": {
-    "message": "Rozbaliť zobrazenie"
   },
   "failed": {
     "message": "Neúspěšné"

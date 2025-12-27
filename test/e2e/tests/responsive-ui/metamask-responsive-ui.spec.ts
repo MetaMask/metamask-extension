@@ -1,8 +1,8 @@
 import { Suite } from 'mocha';
-import { E2E_SRP } from '../../default-fixture';
+import { E2E_SRP } from '../../fixtures/default-fixture';
 import { WALLET_PASSWORD } from '../../constants';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import HomePage from '../../page-objects/pages/home/homepage';
 import LoginPage from '../../page-objects/pages/login-page';
@@ -53,7 +53,7 @@ describe('MetaMask Responsive UI', function (this: Suite) {
         const resetPasswordPage = new ResetPasswordPage(driver);
         await resetPasswordPage.checkPageIsLoaded();
         await resetPasswordPage.resetPassword(E2E_SRP, WALLET_PASSWORD);
-        await resetPasswordPage.waitForSeedPhraseInputToNotBeVisible();
+        await resetPasswordPage.waitForPasswordInputToNotBeVisible();
 
         // Check balance renders correctly
         const homePage = new HomePage(driver);

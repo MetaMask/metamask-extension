@@ -2,7 +2,6 @@ import { act } from 'react-dom/test-utils';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
-import { isAtomicBatchSupported } from '../../../../store/controller-actions/transaction-controller';
 import { isRelaySupported } from '../../../../store/actions';
 import { useIsGaslessSupported } from './useIsGaslessSupported';
 import { useGaslessSupportedSmartTransactions } from './useGaslessSupportedSmartTransactions';
@@ -16,8 +15,6 @@ jest.mock('../../../../store/actions', () => ({
 }));
 
 jest.mock('./useGaslessSupportedSmartTransactions');
-
-const CHAIN_ID_MOCK = '0x5';
 
 async function runHook() {
   const { result } = renderHookWithConfirmContextProvider(
@@ -35,7 +32,6 @@ async function runHook() {
 }
 
 describe('useIsGaslessSupported', () => {
-  const isAtomicBatchSupportedMock = jest.mocked(isAtomicBatchSupported);
   const isRelaySupportedMock = jest.mocked(isRelaySupported);
   const useGaslessSupportedSmartTransactionsMock = jest.mocked(
     useGaslessSupportedSmartTransactions,
@@ -44,7 +40,6 @@ describe('useIsGaslessSupported', () => {
   beforeEach(() => {
     jest.resetAllMocks();
 
-    isAtomicBatchSupportedMock.mockResolvedValue([]);
     isRelaySupportedMock.mockResolvedValue(false);
     useGaslessSupportedSmartTransactionsMock.mockReturnValue({
       isSmartTransaction: false,
@@ -67,91 +62,56 @@ describe('useIsGaslessSupported', () => {
     expect(result).toStrictEqual({
       isSupported: true,
       isSmartTransaction: true,
+      pending: false,
     });
   });
 
   describe('if smart transaction disabled', () => {
     it('returns true if chain supports EIP-7702 and account is supported and relay supported and send bundle supported', async () => {
       isRelaySupportedMock.mockResolvedValue(true);
-      isAtomicBatchSupportedMock.mockResolvedValue([
-        {
-          chainId: CHAIN_ID_MOCK,
-          isSupported: true,
-          delegationAddress: '0x123',
-        },
-      ]);
 
       const result = await runHook();
 
       expect(result).toStrictEqual({
         isSupported: true,
         isSmartTransaction: false,
-      });
-    });
-
-    it('returns false if account not upgraded', async () => {
-      isRelaySupportedMock.mockResolvedValue(true);
-      isAtomicBatchSupportedMock.mockResolvedValue([
-        {
-          chainId: CHAIN_ID_MOCK,
-          isSupported: false,
-          delegationAddress: undefined,
-        },
-      ]);
-
-      const result = await runHook();
-
-      expect(result).toStrictEqual({
-        isSupported: false,
-        isSmartTransaction: false,
+        pending: false,
       });
     });
 
     it('returns false if chain does not support EIP-7702', async () => {
-      isRelaySupportedMock.mockResolvedValue(true);
-      isAtomicBatchSupportedMock.mockResolvedValue([]);
+      isRelaySupportedMock.mockResolvedValue(false);
 
       const result = await runHook();
 
       expect(result).toStrictEqual({
         isSupported: false,
         isSmartTransaction: false,
+        pending: false,
       });
     });
 
     it('returns false if upgraded account not supported', async () => {
-      isRelaySupportedMock.mockResolvedValue(true);
-      isAtomicBatchSupportedMock.mockResolvedValue([
-        {
-          chainId: CHAIN_ID_MOCK,
-          isSupported: false,
-          delegationAddress: '0x123',
-        },
-      ]);
+      isRelaySupportedMock.mockResolvedValue(false);
 
       const result = await runHook();
 
       expect(result).toStrictEqual({
         isSupported: false,
         isSmartTransaction: false,
+        pending: false,
       });
     });
 
     it('returns false if relay not supported', async () => {
       isRelaySupportedMock.mockResolvedValue(false);
-      isAtomicBatchSupportedMock.mockResolvedValue([
-        {
-          chainId: CHAIN_ID_MOCK,
-          isSupported: true,
-          delegationAddress: '0x123',
-        },
-      ]);
 
       const result = await runHook();
 
       expect(result).toStrictEqual({
         isSupported: false,
         isSmartTransaction: false,
+        pending: false,
       });
     });
   });
@@ -166,18 +126,7 @@ describe('useIsGaslessSupported', () => {
     expect(result).toStrictEqual({
       isSupported: false,
       isSmartTransaction: true,
-    });
-  });
-
-  it('returns false if atomic batch returns no matching chainId', async () => {
-    isRelaySupportedMock.mockResolvedValue(true);
-    isAtomicBatchSupportedMock.mockResolvedValue([
-      { chainId: '0x1', isSupported: true, delegationAddress: '0x123' },
-    ]);
-    const result = await runHook();
-    expect(result).toStrictEqual({
-      isSupported: false,
-      isSmartTransaction: false,
+      pending: false,
     });
   });
 
@@ -189,24 +138,17 @@ describe('useIsGaslessSupported', () => {
     });
 
     // these mocks shouldn't be called when pending is true
-    isAtomicBatchSupportedMock.mockResolvedValue([
-      {
-        chainId: CHAIN_ID_MOCK,
-        isSupported: true,
-        delegationAddress: '0x123',
-      },
-    ]);
     isRelaySupportedMock.mockResolvedValue(true);
 
     const result = await runHook();
 
     // since pending=true, 7702 eligibility shouldn't be checked yet
-    expect(isAtomicBatchSupportedMock).not.toHaveBeenCalled();
     expect(isRelaySupportedMock).not.toHaveBeenCalled();
 
     expect(result).toStrictEqual({
       isSupported: false,
       isSmartTransaction: true,
+      pending: true,
     });
   });
 });

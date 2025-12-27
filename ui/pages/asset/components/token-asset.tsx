@@ -9,7 +9,7 @@ import {
 } from '@metamask/utils';
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
@@ -25,7 +25,7 @@ import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { getTokenList, selectERC20TokensByChain } from '../../../selectors';
 import { showModal } from '../../../store/actions';
-import { getMultichainAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
+import { getAssetDetailsAccountUrl } from '../../../helpers/utils/multichain/blockExplorer';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
@@ -64,7 +64,7 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
   );
   const isEvm = isEvmChainId(chainId);
 
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
 
@@ -112,7 +112,7 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
 
   const blockExplorerLink = isEvm
     ? tokenTrackerLink
-    : getMultichainAccountUrl(
+    : getAssetDetailsAccountUrl(
         parseCaipAssetType(address as CaipAssetType).assetReference,
         multichainNetwork,
       );
@@ -141,10 +141,9 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
       optionsButton={
         <AssetOptions
           isNativeAsset={false}
-          isEvm={isEvm}
           onRemove={() =>
             dispatch(
-              showModal({ name: 'HIDE_TOKEN_CONFIRMATION', token, history }),
+              showModal({ name: 'HIDE_TOKEN_CONFIRMATION', token, navigate }),
             )
           }
           onClickBlockExplorer={() => {
@@ -163,7 +162,7 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
             });
             global.platform.openTab({ url: blockExplorerLink });
           }}
-          tokenSymbol={token.symbol}
+          token={token}
         />
       }
     />

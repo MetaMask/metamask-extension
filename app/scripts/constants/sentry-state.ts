@@ -81,6 +81,7 @@ export const SENTRY_BACKGROUND_STATE = {
     showNetworkBanner: true,
     showAccountBanner: true,
     showTestnetMessageInDropdown: true,
+    sidePanelGasPollTokens: true,
     surveyLinkLastClickedOrClosed: true,
     snapsInstallPrivacyWarningShown: true,
     termsOfUseLastAgreed: true,
@@ -92,6 +93,8 @@ export const SENTRY_BACKGROUND_STATE = {
     lastUpdatedAt: true,
     shieldEndingToastLastClickedOrClosed: true,
     shieldPausedToastLastClickedOrClosed: true,
+    isWalletResetInProgress: false,
+    pna25Acknowledged: false,
   },
   MultichainBalancesController: {
     balances: false,
@@ -381,6 +384,9 @@ export const SENTRY_BACKGROUND_STATE = {
     transactions: false,
     lastFetchedBlockNumbers: false,
     methodData: false,
+  },
+  TransactionPayController: {
+    transactionData: false,
   },
   TxController: {
     transactions: false,

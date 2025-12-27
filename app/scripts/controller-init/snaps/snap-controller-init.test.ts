@@ -54,7 +54,6 @@ describe('SnapControllerInit', () => {
       messenger: expect.any(Object),
       state: undefined,
       closeAllConnections: expect.any(Function),
-      dynamicPermissions: ['endowment:caip25'],
       encryptor: expect.any(Object),
       environmentEndowmentPermissions: expect.any(Array),
       excludedPermissions: expect.any(Object),
@@ -63,11 +62,13 @@ describe('SnapControllerInit', () => {
         rejectInvalidPlatformVersion: false,
         requireAllowlist: false,
         forcePreinstalledSnaps: false,
+        autoUpdatePreinstalledSnaps: false,
       },
       getFeatureFlags: expect.any(Function),
       getMnemonicSeed: expect.any(Function),
       preinstalledSnaps: expect.any(Array),
       trackEvent: expect.any(Function),
+      ensureOnboardingComplete: expect.any(Function),
     });
   });
 

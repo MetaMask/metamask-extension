@@ -148,12 +148,17 @@ async function defineAndRunBuildTasks() {
       'sentryHooks',
       'sentry',
       'logEncryptedVault',
+      'history', // needed by Sentry and react-router-dom v6 HashRouter
       // Globals used by `react-dom`
       'getSelection',
       // globals `opera` needs to function
       'opr',
       // for @popperjs/core and snap simple keyring site
       'devicePixelRatio',
+      // for @tanstack/react-virtual
+      'ResizeObserver',
+      'setTimeout',
+      'clearTimeout',
     ];
 
     if (

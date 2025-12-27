@@ -1,6 +1,6 @@
 import React, { useEffect, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { getTokenTrackerLink, getAccountLink } from '@metamask/etherscan-link';
 import { Nft } from '@metamask/assets-controllers';
@@ -318,6 +318,7 @@ export function NftDetailsComponent({
     navigateToSendRoute(navigate, isSendRedesignEnabled, {
       address: nft.address,
       chainId: nftChainId,
+      tokenId: nft.tokenId,
     });
   };
 
@@ -928,14 +929,6 @@ export function NftDetailsComponent({
                 />
               );
             })}
-          </Box>
-          <Box>
-            <Text
-              color={TextColor.textAlternative}
-              variant={TextVariant.bodyXs}
-            >
-              {t('nftDisclaimer')}
-            </Text>
           </Box>
         </Box>
       </Content>

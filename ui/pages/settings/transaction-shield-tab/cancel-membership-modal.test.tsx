@@ -5,7 +5,7 @@ import {
   SUBSCRIPTION_STATUSES,
   Subscription,
 } from '@metamask/subscription-controller';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import CancelMembershipModal from './cancel-membership-modal';
 
 const mockSubscription: Subscription = {
@@ -23,6 +23,7 @@ const mockSubscription: Subscription = {
       displayBrand: 'Visa',
     },
   },
+  isEligibleForSupport: true,
 };
 
 describe('Cancel Membership Modal', () => {

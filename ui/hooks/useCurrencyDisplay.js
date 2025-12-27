@@ -16,6 +16,7 @@ import {
 } from '../../shared/constants/network';
 import { Numeric } from '../../shared/modules/Numeric';
 import { EtherDenomination } from '../../shared/constants/common';
+import { isEvmChainId } from '../../shared/lib/asset-utils';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import { getCurrencyRates } from '../ducks/metamask/metamask';
 import { useFormatters } from './useFormatters';
@@ -156,12 +157,15 @@ export function useCurrencyDisplay(
     currency === nativeCurrency ||
     currency === CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[chainId];
 
+  // Check if the transaction's chain is EVM, not just the account
+  const isTransactionOnEvmChain = chainId ? isEvmChainId(chainId) : isEvm;
+
   const value = useMemo(() => {
     if (displayValue) {
       return displayValue;
     }
 
-    if (!isEvm && !isAggregatedFiatOverviewBalance) {
+    if (!isTransactionOnEvmChain && !isAggregatedFiatOverviewBalance) {
       return formatNonEvmAssetCurrencyDisplay({
         tokenSymbol: nativeCurrency,
         isNativeCurrency,
@@ -203,7 +207,7 @@ export function useCurrencyDisplay(
     });
   }, [
     displayValue,
-    isEvm,
+    isTransactionOnEvmChain,
     isNativeCurrency,
     isUserPreferredCurrency,
     currency,

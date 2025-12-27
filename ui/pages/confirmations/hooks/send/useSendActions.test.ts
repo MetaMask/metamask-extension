@@ -3,7 +3,7 @@ import { waitFor } from '@testing-library/react';
 
 import mockState from '../../../../../test/data/mock-state.json';
 import { EVM_ASSET, SOLANA_ASSET } from '../../../../../test/data/send/assets';
-import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { setDefaultHomeActiveTabName } from '../../../../store/actions';
 import * as SendUtils from '../../utils/send';
 import * as MultichainTransactionUtils from '../../utils/multichain-snaps';
@@ -15,20 +15,18 @@ const MOCK_ADDRESS_2 = '0xd12662965960f3855a09f85396459429a595d741';
 const MOCK_ADDRESS_3 = '4Nd1m5PztHZbA1FtdYzWxTjLdQdHZr4sqoZKxK3x3hJv';
 const MOCK_ADDRESS_4 = '9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin';
 
-const mockHistory = {
-  goBack: jest.fn(),
-  push: jest.fn(),
-};
-
 jest.mock('../../../../store/actions', () => ({
   ...jest.requireActual('../../../../store/actions'),
   setDefaultHomeActiveTabName: jest.fn(),
 }));
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => mockHistory,
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom', () => {
+  return {
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -63,13 +61,13 @@ describe('useSendQueryParams', () => {
   it('result returns method handleCancel to cancel send', () => {
     const result = renderHook();
     result.handleCancel();
-    expect(mockHistory.push).toHaveBeenCalledWith('/');
+    expect(mockUseNavigate).toHaveBeenCalledWith('/');
   });
 
   it('result returns method handleBack to goto previous page', () => {
     const result = renderHook();
     result.handleBack();
-    expect(mockHistory.goBack).toHaveBeenCalled();
+    expect(mockUseNavigate).toHaveBeenCalledWith(-1);
   });
 
   it('handleSubmit is able to submit evm send', async () => {
@@ -96,7 +94,7 @@ describe('useSendQueryParams', () => {
     expect(mockSubmitEvmTransaction).toHaveBeenCalled();
 
     await waitFor(() => {
-      expect(mockHistory.push).toHaveBeenCalledWith(
+      expect(mockUseNavigate).toHaveBeenCalledWith(
         '/confirm-transaction?maxValueMode=true',
       );
     });
@@ -120,7 +118,7 @@ describe('useSendQueryParams', () => {
     await waitFor(() => {
       expect(mockSetDefaultHomeActiveTabName).toHaveBeenCalledWith('activity');
       expect(mockSubmitNonEvmTransaction).toHaveBeenCalled();
-      expect(mockHistory.push).toHaveBeenCalledWith('/');
+      expect(mockUseNavigate).toHaveBeenCalledWith('/');
     });
   });
 });

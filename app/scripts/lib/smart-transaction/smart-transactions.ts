@@ -61,6 +61,7 @@ export type FeatureFlags = {
     maxDeadline?: number;
     extensionReturnTxHashAsap?: boolean;
     extensionReturnTxHashAsapBatch?: boolean;
+    extensionSkipSmartTransactionStatusPage?: boolean;
   };
 };
 
@@ -95,6 +96,7 @@ class SmartTransactionHook {
       maxDeadline?: number;
       extensionReturnTxHashAsap?: boolean;
       extensionReturnTxHashAsapBatch?: boolean;
+      extensionSkipSmartTransactionStatusPage?: boolean;
     };
   };
 
@@ -140,9 +142,21 @@ class SmartTransactionHook {
     this.#chainId = transactionMeta.chainId;
     this.#txParams = transactionMeta.txParams;
     this.#transactions = transactions;
-    this.#shouldShowStatusPage = Boolean(
-      transactionMeta.type !== TransactionType.bridge ||
-        (this.#transactions && this.#transactions.length > 0),
+    const extensionSkipSmartTransactionStatusPage =
+      featureFlags?.smartTransactions?.extensionSkipSmartTransactionStatusPage;
+
+    this.#shouldShowStatusPage = extensionSkipSmartTransactionStatusPage
+      ? false
+      : Boolean(
+          (transactionMeta.type !== TransactionType.bridge &&
+            transactionMeta.type !==
+              TransactionType.shieldSubscriptionApprove) ||
+            (this.#transactions && this.#transactions.length > 0),
+        );
+
+    log.info(
+      '[SmartTransaction] shouldShowStatusPage:',
+      this.#shouldShowStatusPage,
     );
   }
 
@@ -378,6 +392,7 @@ class SmartTransactionHook {
               status: SmartTransactionStatuses.PENDING,
               creationTime: Date.now(),
               uuid,
+              chainId: this.#chainId,
             },
             isDapp: this.#isDapp,
             txId: this.#transactionMeta.id,

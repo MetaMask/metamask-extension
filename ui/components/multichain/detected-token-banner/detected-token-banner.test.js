@@ -1,5 +1,6 @@
 import React from 'react';
-import { fireEvent, renderWithProvider, screen } from '../../../../test/jest';
+import { fireEvent } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import testData from '../../../../.storybook/test-data';
 
@@ -37,13 +38,14 @@ describe('DetectedTokensBanner', () => {
   });
   it('should render number of tokens detected link', () => {
     const store = configureStore(mockStore);
-    renderWithProvider(<DetectedTokensBanner {...args} />, store);
+    const { getByText } = renderWithProvider(
+      <DetectedTokensBanner {...args} />,
+      store,
+    );
 
-    expect(
-      screen.getByText('3 new tokens found in this account'),
-    ).toBeInTheDocument();
+    expect(getByText('3 new tokens found in this account')).toBeInTheDocument();
 
-    fireEvent.click(screen.getByText('Import tokens'));
+    fireEvent.click(getByText('Import tokens'));
     expect(setShowDetectedTokensSpy).toHaveBeenCalled();
   });
 });

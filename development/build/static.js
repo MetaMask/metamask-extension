@@ -123,6 +123,11 @@ function getCopyTargets(
       dest: `images`,
     },
     {
+      src: getPathInsideNodeModules('@rive-app/canvas', 'rive.wasm'),
+      dest: `images/riv_animations/rive.wasm`,
+      pattern: '',
+    },
+    {
       src: getPathInsideNodeModules('@metamask/contract-metadata', 'images/'),
       dest: `images/contract`,
     },

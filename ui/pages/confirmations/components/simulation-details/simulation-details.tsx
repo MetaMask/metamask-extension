@@ -3,6 +3,7 @@ import {
   SimulationErrorCode,
   TransactionContainerType,
   TransactionMeta,
+  TransactionStatus,
 } from '@metamask/transaction-controller';
 import React, { Fragment, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -24,7 +25,7 @@ import {
   IconSize,
   Text,
 } from '../../../../components/component-library';
-import Preloader from '../../../../components/ui/icon/preloader/preloader-icon.component';
+import { Skeleton } from '../../../../components/component-library/skeleton';
 import Tooltip from '../../../../components/ui/tooltip';
 import {
   AlignItems,
@@ -35,6 +36,7 @@ import {
   FlexDirection,
   IconColor,
   JustifyContent,
+  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
@@ -60,19 +62,7 @@ export type SimulationDetailsProps = {
   metricsOnly?: boolean;
   staticRows?: StaticRow[];
   transaction: TransactionMeta;
-};
-
-/**
- * Displayed while loading the simulation preview.
- *
- * @returns
- */
-const LoadingIndicator: React.FC = () => {
-  return (
-    <div role="progressbar">
-      <Preloader size={20} />
-    </div>
-  );
+  smartTransactionStatus?: string;
 };
 
 /**
@@ -115,13 +105,26 @@ const ErrorContent: React.FC<{ error: SimulationError }> = ({ error }) => {
 const EmptyContent: React.FC = () => {
   const t = useI18nContext();
   return (
-    <Text color={TextColor.textDefault} variant={TextVariant.bodyMd}>
+    <Text
+      color={TextColor.textDefault}
+      variant={TextVariant.bodyMd}
+      width={BlockSize.ElevenTwelfths}
+      textAlign={TextAlign.Right}
+    >
       {t('simulationDetailsNoChanges')}
     </Text>
   );
 };
 
-const HeaderWithAlert = ({ transactionId }: { transactionId: string }) => {
+const HeaderWithAlert = ({
+  title,
+  titleTooltip,
+  transactionId,
+}: {
+  title?: string;
+  titleTooltip?: string;
+  transactionId: string;
+}) => {
   const t = useI18nContext();
   const isEnforcedSimulationsSupported = useIsEnforcedSimulationsSupported();
 
@@ -137,13 +140,17 @@ const HeaderWithAlert = ({ transactionId }: { transactionId: string }) => {
     TransactionContainerType.EnforcedSimulations,
   );
 
-  const label = isEnforced
-    ? t('simulationDetailsTitleEnforced')
-    : t('simulationDetailsTitle');
+  const label =
+    title ??
+    (isEnforced
+      ? t('simulationDetailsTitleEnforced')
+      : t('simulationDetailsTitle'));
 
-  const tooltip = isEnforced
-    ? t('simulationDetailsTitleTooltipEnforced')
-    : t('simulationDetailsTitleTooltip');
+  const tooltip =
+    titleTooltip ??
+    (isEnforced
+      ? t('simulationDetailsTitleTooltipEnforced')
+      : t('simulationDetailsTitleTooltip'));
 
   const [settingsModalVisible, setSettingsModalVisible] =
     useState<boolean>(false);
@@ -229,11 +236,21 @@ const LegacyHeader = () => {
  * @param props.children
  * @param props.isTransactionsRedesign
  * @param props.transactionId
+ * @param props.title
+ * @param props.titleTooltip
  */
 const HeaderLayout: React.FC<{
   isTransactionsRedesign: boolean;
   transactionId: string;
-}> = ({ children, isTransactionsRedesign, transactionId }) => {
+  title?: string;
+  titleTooltip?: string;
+}> = ({
+  children,
+  isTransactionsRedesign,
+  transactionId,
+  title,
+  titleTooltip,
+}) => {
   return (
     <Box
       display={Display.Flex}
@@ -242,7 +259,11 @@ const HeaderLayout: React.FC<{
       justifyContent={JustifyContent.spaceBetween}
     >
       {isTransactionsRedesign ? (
-        <HeaderWithAlert transactionId={transactionId} />
+        <HeaderWithAlert
+          title={title}
+          titleTooltip={titleTooltip}
+          transactionId={transactionId}
+        />
       ) : (
         <LegacyHeader />
       )}
@@ -255,16 +276,27 @@ const HeaderLayout: React.FC<{
  * Top-level layout for the simulation preview.
  *
  * @param props
+ * @param props.title
+ * @param props.titleTooltip
  * @param props.inHeader
  * @param props.isTransactionsRedesign
  * @param props.children
  * @param props.transactionId
  */
-const SimulationDetailsLayout: React.FC<{
+export const SimulationDetailsLayout: React.FC<{
+  title?: string;
+  titleTooltip?: string;
   inHeader?: React.ReactNode;
   isTransactionsRedesign: boolean;
   transactionId: string;
-}> = ({ inHeader, isTransactionsRedesign, transactionId, children }) =>
+}> = ({
+  title,
+  titleTooltip,
+  inHeader,
+  isTransactionsRedesign,
+  transactionId,
+  children,
+}) =>
   isTransactionsRedesign ? (
     <ConfirmInfoSection noPadding>
       <Box
@@ -287,6 +319,8 @@ const SimulationDetailsLayout: React.FC<{
         <HeaderLayout
           isTransactionsRedesign={isTransactionsRedesign}
           transactionId={transactionId}
+          title={title}
+          titleTooltip={titleTooltip}
         >
           {inHeader}
         </HeaderLayout>
@@ -306,7 +340,7 @@ const SimulationDetailsLayout: React.FC<{
           : BorderColor.borderDefault
       }
       paddingInline={3}
-      paddingTop={1}
+      paddingTop={2}
       paddingBottom={2}
       margin={isTransactionsRedesign ? null : 4}
       gap={3}
@@ -314,6 +348,7 @@ const SimulationDetailsLayout: React.FC<{
       <HeaderLayout
         isTransactionsRedesign={isTransactionsRedesign}
         transactionId={transactionId}
+        titleTooltip={titleTooltip}
       >
         {inHeader}
       </HeaderLayout>
@@ -347,6 +382,8 @@ const BalanceChangesAlert = ({ transactionId }: { transactionId: string }) => {
           <InlineAlert
             onClick={handleInlineAlertClick}
             severity={selectedAlertSeverity}
+            showArrow={false}
+            textOverride={''}
           />
         </Box>
       )}
@@ -364,6 +401,38 @@ const BalanceChangesAlert = ({ transactionId }: { transactionId: string }) => {
   );
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+function SimulationDetailsSkeleton({
+  isTransactionsRedesign,
+  transactionId,
+}: {
+  isTransactionsRedesign: boolean;
+  transactionId: string;
+}) {
+  return (
+    <SimulationDetailsLayout
+      isTransactionsRedesign={isTransactionsRedesign}
+      transactionId={transactionId}
+    >
+      <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={3}>
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          justifyContent={JustifyContent.spaceBetween}
+          alignItems={AlignItems.center}
+        >
+          <Skeleton height={20} width={72} />
+          <Skeleton height={20} width={100} />
+        </Box>
+        <Box display={Display.Flex} justifyContent={JustifyContent.flexEnd}>
+          <Skeleton height={18} width={40} />
+        </Box>
+      </Box>
+    </SimulationDetailsLayout>
+  );
+}
+
 /**
  * Preview of a transaction's effects using simulation data.
  *
@@ -374,6 +443,7 @@ const BalanceChangesAlert = ({ transactionId }: { transactionId: string }) => {
  * used inside the transaction redesign flow.
  * @param props.metricsOnly - Whether to only track metrics and not render the UI.
  * @param props.staticRows - Optional static rows to display.
+ * @param props.smartTransactionStatus - Optional Smart Transaction status to override transaction status for immediate UI updates.
  */
 export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   transaction,
@@ -381,6 +451,7 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   isTransactionsRedesign = false,
   metricsOnly = false,
   staticRows = [],
+  smartTransactionStatus,
 }: SimulationDetailsProps) => {
   const t = useI18nContext();
   const { chainId, id: transactionId, simulationData } = transaction;
@@ -409,11 +480,10 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
 
   if (loading) {
     return (
-      <SimulationDetailsLayout
-        inHeader={<LoadingIndicator />}
+      <SimulationDetailsSkeleton
         isTransactionsRedesign={isTransactionsRedesign}
         transactionId={transactionId}
-      ></SimulationDetailsLayout>
+      />
     );
   }
 
@@ -462,6 +532,50 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   const outgoing = balanceChanges.filter((bc) => bc.amount.isNegative());
   const incoming = balanceChanges.filter((bc) => !bc.amount.isNegative());
 
+  // Determine the appropriate heading text based on transaction status
+  const getHeadingText = (translationKeys: {
+    default: string;
+    inProgress: string;
+    completed: string;
+  }) => {
+    const { status } = transaction;
+
+    // If we have Smart Transaction status, use it as priority
+    // This fixes the delay issue between Smart Transaction and regular transaction status updates
+    if (smartTransactionStatus === 'success') {
+      return t(translationKeys.completed);
+    } else if (smartTransactionStatus === 'pending') {
+      return t(translationKeys.inProgress);
+    }
+
+    // Fallback to regular transaction status
+    if (status === TransactionStatus.confirmed) {
+      return t(translationKeys.completed);
+    } else if (
+      status === TransactionStatus.submitted ||
+      status === TransactionStatus.signed ||
+      status === TransactionStatus.approved
+    ) {
+      return t(translationKeys.inProgress);
+    }
+    // Default for confirmation flows and other statuses (unapproved, failed, etc.)
+    return t(translationKeys.default);
+  };
+
+  const getOutgoingHeadingText = () =>
+    getHeadingText({
+      default: 'simulationDetailsOutgoingHeading',
+      inProgress: 'simulationDetailsOutgoingHeadingSending',
+      completed: 'simulationDetailsOutgoingHeadingSent',
+    });
+
+  const getIncomingHeadingText = () =>
+    getHeadingText({
+      default: 'simulationDetailsIncomingHeading',
+      inProgress: 'simulationDetailsIncomingHeadingReceiving',
+      completed: 'simulationDetailsIncomingHeadingReceived',
+    });
+
   return (
     <SimulationDetailsLayout
       isTransactionsRedesign={isTransactionsRedesign}
@@ -479,12 +593,12 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
           </Fragment>
         ))}
         <BalanceChangeList
-          heading={t('simulationDetailsOutgoingHeading')}
+          heading={getOutgoingHeadingText()}
           balanceChanges={outgoing}
           testId="simulation-rows-outgoing"
         />
         <BalanceChangeList
-          heading={t('simulationDetailsIncomingHeading')}
+          heading={getIncomingHeadingText()}
           balanceChanges={incoming}
           testId="simulation-rows-incoming"
         />

@@ -7,7 +7,7 @@ import { loginWithBalanceValidation } from '../../../page-objects/flows/login.fl
 import { scrollAndConfirmAndAssertConfirm } from '../helpers';
 import { TestSuiteArguments, toggleAdvancedDetails } from './shared';
 
-const FixtureBuilder = require('../../../fixture-builder');
+const FixtureBuilder = require('../../../fixtures/fixture-builder');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
 describe('Confirmation Redesign ERC721 Approve Component', function () {
@@ -209,6 +209,6 @@ async function confirmApproveTransaction(driver: Driver) {
 
   await driver.clickElement({ text: 'Activity', tag: 'button' });
   await driver.waitForSelector(
-    '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
+    '.transaction-status-label--confirmed:nth-of-type(1)',
   );
 }

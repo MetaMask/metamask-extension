@@ -24,6 +24,10 @@ import {
   getTransactionControllerInitMessenger,
 } from './transaction-controller-messenger';
 import {
+  getTransactionPayControllerMessenger,
+  getTransactionPayControllerInitMessenger,
+} from './transaction-pay-controller-messenger';
+import {
   getBackendWebSocketServiceMessenger,
   getBackendWebSocketServiceInitMessenger,
   getAccountActivityServiceMessenger,
@@ -195,6 +199,13 @@ import {
   getUserOperationControllerMessenger,
 } from './user-operation-controller-messenger';
 import { getRewardsDataServiceMessenger } from './reward-data-service-messenger';
+import {
+  getClaimsControllerInitMessenger,
+  getClaimsControllerMessenger,
+} from './claims/claims-controller-messenger';
+import { getClaimsServiceMessenger } from './claims/claims-service-messenger';
+import { getProfileMetricsControllerMessenger } from './profile-metrics-controller-messenger';
+import { getProfileMetricsServiceMessenger } from './profile-metrics-service-messenger';
 
 export type { AccountOrderControllerMessenger } from './account-order-controller-messenger';
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
@@ -387,6 +398,11 @@ export {
   getTokensControllerMessenger,
   getTokensControllerInitMessenger,
 } from './tokens-controller-messenger';
+export type { TransactionPayControllerInitMessenger } from './transaction-pay-controller-messenger';
+export {
+  getTransactionPayControllerMessenger,
+  getTransactionPayControllerInitMessenger,
+} from './transaction-pay-controller-messenger';
 export type {
   UserOperationControllerMessenger,
   UserOperationControllerInitMessenger,
@@ -395,6 +411,8 @@ export {
   getUserOperationControllerMessenger,
   getUserOperationControllerInitMessenger,
 } from './user-operation-controller-messenger';
+export { getProfileMetricsControllerMessenger } from './profile-metrics-controller-messenger';
+export { getProfileMetricsServiceMessenger } from './profile-metrics-service-messenger';
 
 export const CONTROLLER_MESSENGERS = {
   AccountOrderController: {
@@ -443,6 +461,14 @@ export const CONTROLLER_MESSENGERS = {
   },
   BridgeStatusController: {
     getMessenger: getBridgeStatusControllerMessenger,
+    getInitMessenger: noop,
+  },
+  ClaimsController: {
+    getMessenger: getClaimsControllerMessenger,
+    getInitMessenger: getClaimsControllerInitMessenger,
+  },
+  ClaimsService: {
+    getMessenger: getClaimsServiceMessenger,
     getInitMessenger: noop,
   },
   CronjobController: {
@@ -683,6 +709,10 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getTransactionControllerMessenger,
     getInitMessenger: getTransactionControllerInitMessenger,
   },
+  TransactionPayController: {
+    getMessenger: getTransactionPayControllerMessenger,
+    getInitMessenger: getTransactionPayControllerInitMessenger,
+  },
   UserOperationController: {
     getMessenger: getUserOperationControllerMessenger,
     getInitMessenger: getUserOperationControllerInitMessenger,
@@ -738,5 +768,13 @@ export const CONTROLLER_MESSENGERS = {
   NetworkEnablementController: {
     getMessenger: getNetworkEnablementControllerMessenger,
     getInitMessenger: getNetworkEnablementControllerInitMessenger,
+  },
+  ProfileMetricsController: {
+    getMessenger: getProfileMetricsControllerMessenger,
+    getInitMessenger: noop,
+  },
+  ProfileMetricsService: {
+    getMessenger: getProfileMetricsServiceMessenger,
+    getInitMessenger: noop,
   },
 } as const;

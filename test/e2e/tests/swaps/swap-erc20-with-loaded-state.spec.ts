@@ -1,6 +1,6 @@
 import { MockttpServer, CompletedRequest } from 'mockttp';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TokenOverviewPage from '../../page-objects/pages/token-overview-page';
@@ -18,7 +18,7 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
 
   return [
     await mockEmptyHistoricalPrices(mockServer, ETH_ADDRESS, '0x1'),
-    await mockEmptyPrices(mockServer, '1'),
+    await mockEmptyPrices(mockServer),
     await mockServer
       .forGet('https://bridge.api.cx.metamask.io/token/1')
       .thenCallback(() => ({

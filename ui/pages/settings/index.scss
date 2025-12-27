@@ -236,7 +236,6 @@
     flex-flow: row nowrap;
     height: 100%;
     overflow: auto;
-    scrollbar-color: var(--color-icon-muted) transparent;
 
     &__tabs {
       display: flex;
@@ -247,18 +246,6 @@
       @include design-system.screen-sm-min {
         flex: 0 0 40%;
         max-width: 197px;
-      }
-
-      .tab-bar__tab {
-        @include design-system.screen-sm-min {
-          max-height: 50px;
-        }
-
-        &__caret {
-          @include design-system.screen-sm-min {
-            display: none;
-          }
-        }
       }
     }
 
@@ -409,7 +396,9 @@
 
         &__modules {
           @include design-system.screen-sm-max {
-            display: block;
+            display: flex;
+            flex-flow: column;
+            overflow-y: auto;
           }
         }
       }
@@ -426,7 +415,6 @@
   }
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
 // Sidepanel-specific styles: apply popup layout regardless of viewport width
 .settings-page--sidepanel {
   .settings-page__header__title-container {
@@ -447,7 +435,6 @@
       text-overflow: ellipsis;
       overflow: hidden;
       white-space: nowrap;
-      max-width: 250px;
     }
 
     &__close-button {
@@ -507,8 +494,32 @@
       flex: 1 1 auto;
 
       .tab-bar__tab {
+        @include design-system.screen-sm-min {
+          @include design-system.H4;
+
+          max-height: none;
+        }
+
+        &__selected-indicator {
+          display: none;
+        }
+
         &__caret {
           display: block;
+        }
+
+        &__content {
+          &__title {
+            @include design-system.screen-sm-min {
+              @include design-system.H4;
+            }
+          }
+        }
+
+        &--active {
+          @include design-system.screen-sm-min {
+            background-color: unset;
+          }
         }
       }
     }
@@ -536,8 +547,8 @@
     }
 
     .settings-page__content__modules {
-      display: block;
+      display: flex;
+      flex-flow: column;
     }
   }
 }
-///: END:ONLY_INCLUDE_IF

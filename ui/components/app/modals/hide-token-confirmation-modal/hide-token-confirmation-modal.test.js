@@ -3,12 +3,12 @@ import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import * as actions from '../../../../store/actions';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import HideTokenConfirmationModal from '.';
 
-const mockHistoryPush = jest.fn();
+const mockUseNavigate = jest.fn();
 const mockHideModal = jest.fn();
 const mockHideToken = jest.fn().mockResolvedValue();
 
@@ -40,9 +40,7 @@ describe('Hide Token Confirmation Modal', () => {
       modal: {
         modalState: {
           props: {
-            history: {
-              push: mockHistoryPush,
-            },
+            navigate: mockUseNavigate,
             token: tokenState,
           },
         },
@@ -88,6 +86,7 @@ describe('Hide Token Confirmation Modal', () => {
     expect(actions.ignoreTokens).toHaveBeenCalledWith({
       tokensToIgnore: tokenState.address,
       networkClientId: 'goerli',
+      chainId: '0x5',
     });
   });
 
@@ -104,9 +103,7 @@ describe('Hide Token Confirmation Modal', () => {
         modal: {
           modalState: {
             props: {
-              history: {
-                push: mockHistoryPush,
-              },
+              navigate: mockUseNavigate,
               token: tokenState2,
             },
           },
@@ -131,6 +128,7 @@ describe('Hide Token Confirmation Modal', () => {
     expect(actions.ignoreTokens).toHaveBeenCalledWith({
       tokensToIgnore: tokenState2.address,
       networkClientId: 'bsc',
+      chainId: '0x89',
     });
   });
 });

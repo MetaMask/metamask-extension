@@ -21,7 +21,7 @@ export type FixtureCallbackArgs = { driver: Driver; extensionId: string };
  */
 export const DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS = {
   dappOptions: {
-    customDappPaths: [DAPP_PATH.TEST_DAPP_MULTICHAIN],
+    customDappPaths: [DAPP_PATH.TEST_DAPP_MULTICHAIN, DAPP_PATH.TEST_SNAPS],
   },
   localNodeOptions: [
     {
@@ -72,7 +72,7 @@ export const addAccountInWalletAndAuthorize = async (
 
   const editConnectedAccountsModal = new EditConnectedAccountsModal(driver);
   await editConnectedAccountsModal.checkPageIsLoaded();
-  await editConnectedAccountsModal.addNewEthereumAccount();
+  await editConnectedAccountsModal.addNewAccount();
 
   await connectAccountConfirmation.checkPageIsLoaded();
   await connectAccountConfirmation.confirmConnect();

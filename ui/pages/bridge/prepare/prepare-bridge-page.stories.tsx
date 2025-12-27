@@ -1,11 +1,12 @@
 import React from 'react';
 import { Provider } from 'react-redux';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import configureStore from '../../../store/store';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 
 import CrossChainSwap from '../index';
-import { MemoryRouter } from 'react-router-dom';
 import {
   CROSS_CHAIN_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
@@ -13,6 +14,7 @@ import {
 import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20.json';
 import {
   formatChainIdToCaip,
+  QuoteResponse,
   RequestStatus,
 } from '@metamask/bridge-controller';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
@@ -23,19 +25,28 @@ const storybook = {
   component: CrossChainSwap,
 };
 
+// Navigate to the correct route on mount
+const RouteNavigator = ({ to, children }) => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    navigate(to, { replace: true });
+  }, [navigate, to]);
+
+  return children;
+};
+
 const Wrapper = ({ children }) => (
   <div style={{ width: '400px', height: '600px' }}>
-    <MemoryRouter
-      initialEntries={[CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE]}
-    >
+    <RouteNavigator to={CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE}>
       {children}
-    </MemoryRouter>
+    </RouteNavigator>
   </div>
 );
 
 const mockFeatureFlags = {
   extensionSupport: true,
-  extensionConfig: {
+  bridgeConfig: {
     refreshRate: 30000,
     priceImpactThreshold: {
       normal: 1,
@@ -64,12 +75,10 @@ const mockFeatureFlags = {
 };
 const mockBridgeSlice = {
   toChainId: CHAIN_IDS.LINEA_MAINNET,
-  toNativeExchangeRate: 1,
-  toTokenExchangeRate: 0.99,
   fromTokenInputValue: '1',
 };
 export const DefaultStory = () => {
-  return <CrossChainSwap />;
+  return <CrossChainSwap location={{ search: '' }} />;
 };
 DefaultStory.storyName = 'Default';
 DefaultStory.decorators = [
@@ -81,17 +90,7 @@ DefaultStory.decorators = [
           bridgeSliceOverrides: mockBridgeSlice,
           bridgeStateOverrides: {
             quotes: [],
-            destTokens: {
-              '0x1234': { symbol: 'USDC', address: '0x1234', decimals: 6 },
-            },
-            srcTokens: {
-              '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85': {
-                symbol: 'USDC',
-                address: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
-                decimals: 6,
-              },
-            },
-            quotesLastFetchedMs: Date.now(),
+            quotesLastFetched: Date.now(),
           },
           metamaskStateOverrides: {
             useExternalServices: true,
@@ -119,7 +118,7 @@ DefaultStory.decorators = [
 ];
 
 export const LoadingStory = () => {
-  return <CrossChainSwap />;
+  return <CrossChainSwap location={{ search: '' }} />;
 };
 LoadingStory.storyName = 'Loading Quotes';
 LoadingStory.decorators = [
@@ -134,16 +133,6 @@ LoadingStory.decorators = [
               quotes: [],
               quotesLastFetched: 134,
               quotesLoadingStatus: RequestStatus.LOADING,
-              destTokens: {
-                '0x1234': { symbol: 'USDC', address: '0x1234', decimals: 6 },
-              },
-              srcTokens: {
-                '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85': {
-                  symbol: 'USDC',
-                  address: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
-                  decimals: 6,
-                },
-              },
             },
             metamaskStateOverrides: {
               useExternalServices: true,
@@ -170,7 +159,7 @@ LoadingStory.decorators = [
 ];
 
 export const NoQuotesStory = () => {
-  return <CrossChainSwap />;
+  return <CrossChainSwap location={{ search: '' }} />;
 };
 NoQuotesStory.storyName = 'No Quotes';
 NoQuotesStory.decorators = [
@@ -185,13 +174,11 @@ NoQuotesStory.decorators = [
               quoteRequest: {
                 srcChainId: CHAIN_IDS.MAINNET,
                 destChainId: CHAIN_IDS.LINEA_MAINNET,
-                srcToken: {
-                  address: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
-                },
+                srcTokenAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
                 srcTokenAmount: '1',
                 destTokenAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
                 destWalletAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
-                slippage: '1',
+                slippage: 1,
                 walletAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
                 gasIncluded: true,
                 insufficientBal: false,
@@ -225,7 +212,7 @@ NoQuotesStory.decorators = [
 ];
 
 export const QuotesFetchedStory = () => {
-  return <CrossChainSwap />;
+  return <CrossChainSwap location={{ search: '' }} />;
 };
 QuotesFetchedStory.storyName = 'Quotes Available';
 QuotesFetchedStory.decorators = [
@@ -237,19 +224,9 @@ QuotesFetchedStory.decorators = [
             featureFlagOverrides: mockFeatureFlags,
             bridgeSliceOverrides: mockBridgeSlice,
             bridgeStateOverrides: {
-              quotes: mockBridgeQuotesErc20Erc20,
+              quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
               quotesLastFetched: Date.now(),
               quotesLoadingStatus: RequestStatus.FETCHED,
-              destTokens: {
-                '0x1234': { symbol: 'USDC', address: '0x1234', decimals: 6 },
-              },
-              srcTokens: {
-                '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85': {
-                  symbol: 'USDC',
-                  address: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
-                  decimals: 6,
-                },
-              },
             },
             metamaskStateOverrides: {
               useExternalServices: true,
@@ -280,7 +257,7 @@ const mockHardwareAccount = createMockInternalAccount({
   keyringType: KeyringTypes.ledger,
 });
 export const AlertsPresentStory = () => {
-  return <CrossChainSwap />;
+  return <CrossChainSwap location={{ search: '' }} />;
 };
 AlertsPresentStory.storyName = 'Alerts present';
 AlertsPresentStory.decorators = [
@@ -304,7 +281,7 @@ AlertsPresentStory.decorators = [
               },
             },
             bridgeStateOverrides: {
-              quotes: mockBridgeQuotesErc20Erc20,
+              quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
               quotesLastFetched: Date.now(),
               quotesLoadingStatus: RequestStatus.FETCHED,
               quoteRequest: {
@@ -314,7 +291,7 @@ AlertsPresentStory.decorators = [
                 destTokenAddress: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
                 srcTokenAmount: '1',
                 destWalletAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
-                slippage: '1',
+                slippage: 1,
                 walletAddress: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85',
                 gasIncluded: true,
                 insufficientBal: false,

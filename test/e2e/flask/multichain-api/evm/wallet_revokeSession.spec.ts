@@ -7,7 +7,7 @@ import {
   WINDOW_TITLES,
   withFixtures,
 } from '../../../helpers';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
 import EditConnectedAccountsModal from '../../../page-objects/pages/dialog/edit-connected-accounts-modal';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
@@ -52,7 +52,7 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
           driver,
         );
         await editConnectedAccountsModal.checkPageIsLoaded();
-        await editConnectedAccountsModal.addNewEthereumAccount();
+        await editConnectedAccountsModal.addNewAccount();
 
         await connectAccountConfirmation.checkPageIsLoaded();
         await connectAccountConfirmation.confirmConnect();
@@ -71,7 +71,9 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
 
         await testDapp.revokeSession();
 
-        const parsedResult = await testDapp.getSession();
+        const parsedResult = await testDapp.getSession({
+          numberOfResultItems: 3,
+        });
         const resultSessionScopes = parsedResult.sessionScopes;
         assert.deepStrictEqual(
           resultSessionScopes,
@@ -119,7 +121,7 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
           driver,
         );
         await editConnectedAccountsModal.checkPageIsLoaded();
-        await editConnectedAccountsModal.addNewEthereumAccount();
+        await editConnectedAccountsModal.addNewAccount();
 
         await connectAccountConfirmation.checkPageIsLoaded();
         await connectAccountConfirmation.confirmConnect();

@@ -84,7 +84,9 @@ const useAlerts = (ownerId: string) => {
 
   const unconfirmedDangerAlerts = alerts.filter(
     (alert) =>
-      !isAlertConfirmed(alert.key) && alert.severity === Severity.Danger,
+      !isAlertConfirmed(alert.key) &&
+      alert.severity === Severity.Danger &&
+      !alert.acknowledgeBypass,
   );
 
   const hasAlerts = alerts.length > 0;
@@ -97,7 +99,9 @@ const useAlerts = (ownerId: string) => {
 
   const unconfirmedFieldDangerAlerts = fieldAlerts.filter(
     (alert) =>
-      !isAlertConfirmed(alert.key) && alert.severity === Severity.Danger,
+      !isAlertConfirmed(alert.key) &&
+      alert.severity === Severity.Danger &&
+      !alert.acknowledgeBypass,
   );
 
   return {
@@ -127,6 +131,7 @@ function sortAlertsBySeverity(alerts: Alert[]): Alert[] {
     [Severity.Warning]: 2,
     [Severity.Info]: 1,
     [Severity.Success]: 0,
+    [Severity.Disabled]: 0,
   };
 
   return [...alerts].sort(

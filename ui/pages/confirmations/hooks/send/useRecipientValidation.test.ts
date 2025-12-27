@@ -6,7 +6,7 @@ import {
   EVM_ASSET,
   SOLANA_ASSET,
 } from '../../../../../test/data/send/assets';
-import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useSendContext } from '../../context/send';
 import * as SendValidationUtils from '../../utils/sendValidations';

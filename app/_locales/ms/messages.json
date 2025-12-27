@@ -226,14 +226,8 @@
   "enterPasswordContinue": {
     "message": "Masukkan kata laluan untuk teruskan"
   },
-  "ethereumPublicAddress": {
-    "message": "Alamat Awam Ethereum"
-  },
   "etherscanView": {
     "message": "Lihat akaun di Etherscan"
-  },
-  "expandView": {
-    "message": "Kembangkan Paparan"
   },
   "failed": {
     "message": "Gagal"

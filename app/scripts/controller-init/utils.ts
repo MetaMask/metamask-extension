@@ -56,6 +56,7 @@ export type ControllersToInitialize =
   | 'SnapInterfaceController'
   | 'PPOMController'
   | 'TransactionController'
+  | 'TransactionPayController'
   | 'UserStorageController';
 
 type InitFunction<Name extends ControllersToInitialize> =
@@ -197,7 +198,9 @@ function getControllerOrThrow<Name extends ControllerName>(
   const controller = controllersByName[name];
 
   if (!controller) {
-    throw new Error(`Controller requested before it was initialized: ${name}`);
+    throw new Error(
+      `Controller requested before it was initialized: ${String(name)}`,
+    );
   }
 
   return controller;

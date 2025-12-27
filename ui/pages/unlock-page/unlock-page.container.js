@@ -1,5 +1,4 @@
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -15,9 +14,15 @@ import {
   forceUpdateMetamaskState,
   checkIsSeedlessPasswordOutdated,
   resetOnboarding,
+  resetWallet,
+  getIsSeedlessOnboardingUserAuthenticated,
 } from '../../store/actions';
 import { getIsSocialLoginFlow, getFirstTimeFlowType } from '../../selectors';
-import { getCompletedOnboarding } from '../../ducks/metamask/metamask';
+import {
+  getCompletedOnboarding,
+  getIsWalletResetInProgress,
+} from '../../ducks/metamask/metamask';
+import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import UnlockPage from './unlock-page.component';
 
 const mapStateToProps = (state) => {
@@ -29,6 +34,7 @@ const mapStateToProps = (state) => {
     isSocialLoginFlow: getIsSocialLoginFlow(state),
     isOnboardingCompleted: getCompletedOnboarding(state),
     firstTimeFlowType: getFirstTimeFlowType(state),
+    isWalletResetInProgress: getIsWalletResetInProgress(state),
   };
 };
 
@@ -40,6 +46,9 @@ const mapDispatchToProps = (dispatch) => {
     loginWithDifferentMethod: () => dispatch(resetOnboarding()),
     checkIsSeedlessPasswordOutdated: () =>
       dispatch(checkIsSeedlessPasswordOutdated()),
+    resetWallet: () => dispatch(resetWallet()),
+    getIsSeedlessOnboardingUserAuthenticated: () =>
+      dispatch(getIsSeedlessOnboardingUserAuthenticated()),
   };
 };
 
@@ -50,17 +59,19 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...restDispatchProps
   } = dispatchProps;
   const {
-    history,
+    navigate,
     onSubmit: ownPropsSubmit,
     location,
     ...restOwnProps
   } = ownProps;
 
+  const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
+
   const onImport = async () => {
     await propsMarkPasswordForgotten();
-    history.push(RESTORE_VAULT_ROUTE);
+    navigate(RESTORE_VAULT_ROUTE, { replace: true });
 
-    if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+    if (isPopup) {
       global.platform.openExtensionInBrowser?.(RESTORE_VAULT_ROUTE);
     }
   };
@@ -69,11 +80,12 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     await propsTryUnlockMetamask(password);
     // Redirect to the intended route if available, otherwise DEFAULT_ROUTE
     let redirectTo = DEFAULT_ROUTE;
-    if (location.state?.from?.pathname) {
-      const search = location.state.from.search || '';
-      redirectTo = location.state.from.pathname + search;
+    const fromLocation = location.state?.from;
+    if (fromLocation?.pathname) {
+      const search = fromLocation.search || '';
+      redirectTo = fromLocation.pathname + search;
     }
-    history.push(redirectTo);
+    navigate(redirectTo);
   };
 
   return {
@@ -82,12 +94,15 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...restOwnProps,
     onRestore: onImport,
     onSubmit: ownPropsSubmit || onSubmit,
-    history,
+    navigate,
     location,
+    isPopup,
   };
 };
 
-export default compose(
-  withRouter,
+const UnlockPageConnected = compose(
+  withRouterHooks,
   connect(mapStateToProps, mapDispatchToProps, mergeProps),
 )(UnlockPage);
+
+export default UnlockPageConnected;

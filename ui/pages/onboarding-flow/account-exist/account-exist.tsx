@@ -1,5 +1,5 @@
 import React, { useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Button,
@@ -29,7 +29,6 @@ import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
   forceUpdateMetamaskState,
   resetOnboarding,
-  setFirstTimeFlowType,
 } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -59,7 +58,9 @@ export default function AccountExist() {
     // reset onboarding flow
     await dispatch(resetOnboarding());
     await forceUpdateMetamaskState(dispatch);
-    navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
+    navigate(ONBOARDING_WELCOME_ROUTE, {
+      replace: true,
+    });
   };
 
   const onDone = async () => {
@@ -78,15 +79,11 @@ export default function AccountExist() {
       tags: { source: 'account_status_redirect' },
       parentContext: onboardingParentContext?.current,
     });
-    await dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialImport));
     navigate(ONBOARDING_UNLOCK_ROUTE, { replace: true });
   };
 
   useEffect(() => {
-    if (firstTimeFlowType !== FirstTimeFlowType.socialCreate) {
-      navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
-    }
-    if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
+    if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
       // Track page view event for account already exists page
       trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
@@ -97,9 +94,11 @@ export default function AccountExist() {
         op: TraceOperation.OnboardingUserJourney,
         parentContext: onboardingParentContext?.current,
       });
+    } else {
+      navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
     }
     return () => {
-      if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
+      if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
         bufferedEndTrace?.({
           name: TraceName.OnboardingNewSocialAccountExists,
         });

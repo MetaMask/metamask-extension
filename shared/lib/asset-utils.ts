@@ -17,8 +17,13 @@ import {
   getNativeAssetForChainId,
   isNativeAddress,
 } from '@metamask/bridge-controller';
+import { Asset } from '@metamask/assets-controllers';
 import getFetchWithTimeout from '../modules/fetch-with-timeout';
 import { decimalToPrefixedHex } from '../modules/conversion.utils';
+import {
+  TRON_RESOURCE_SYMBOLS_SET,
+  TronResourceSymbol,
+} from '../constants/multichain/assets';
 import { TEN_SECONDS_IN_MILLISECONDS } from './transactions-controller-utils';
 
 const TOKEN_API_V3_BASE_URL = 'https://tokens.api.cx.metamask.io/v3';
@@ -209,4 +214,25 @@ export const isEvmChainId = (chainId: CaipChainId | Hex) => {
   // TODO Replace with isEvmCaipChainId from @metamask/multichain-network-controller when it is exported
   const { namespace } = parseCaipChainId(chainIdInCaip);
   return namespace === KnownCaipNamespace.Eip155;
+};
+
+/**
+ * Checks if the given assetId is a Tron resource
+ *
+ * @param asset - The assetId to check.
+ * @returns `true` if the assetId is a Tron resource, `false` otherwise.
+ */
+export const isTronResource = (asset: Asset): boolean => {
+  if (!isCaipAssetType(asset.assetId)) {
+    return false;
+  }
+  const { chain } = parseCaipAssetType(asset.assetId);
+
+  if (chain.namespace !== KnownCaipNamespace.Tron) {
+    return false;
+  }
+
+  return TRON_RESOURCE_SYMBOLS_SET.has(
+    asset.symbol?.toLowerCase() as TronResourceSymbol,
+  );
 };

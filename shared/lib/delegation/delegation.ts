@@ -1,31 +1,24 @@
 import { encode } from '@metamask/abi-utils';
-import { getChecksumAddress } from '@metamask/utils';
-import { keccak } from 'ethereumjs-util';
-import { getCaveatArrayPacketHash, type Caveat } from './caveat';
+import { getChecksumAddress, type Hex } from '@metamask/utils';
+import {
+  Delegation as CoreDelegationStruct,
+  ROOT_AUTHORITY,
+  ANY_BENEFICIARY,
+  hashDelegation,
+} from '@metamask/delegation-core';
 import { resolveCaveats, type Caveats } from './caveatBuilder';
-import { concat, toFunctionSelector, toHex, type Hex } from './utils';
+import { concat, toFunctionSelector, toHex } from './utils';
 import {
   encodeExecutionCalldatas,
   ExecutionMode,
   ExecutionStruct,
 } from './execution';
-/**
- * To be used on a delegation as the root authority.
- */
-export const ROOT_AUTHORITY =
-  '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
 
-/**
- * To be used in the allowList field of a gas delegation so as not to restrict who can redeem the gas delegation.
- */
-export const ANY_BENEFICIARY = '0x0000000000000000000000000000000000000a11';
-
-/**
- * To be used when generating a delegation hash to be signed
- * NOTE: signature is omitted from the Delegation typehash
- */
-export const DELEGATION_TYPEHASH =
-  '0x88c1d2ecf185adf710588203a5f263f0ff61be0d33da39792cde19ba9aa4331e' as Hex;
+export {
+  ROOT_AUTHORITY,
+  ANY_BENEFICIARY,
+  DELEGATION_TYPEHASH,
+} from '@metamask/delegation-core';
 
 /**
  * The function selector for the redeemDelegations function
@@ -64,34 +57,31 @@ export const toDelegationStruct = (
 };
 
 /**
- * Represents a delegation that grants permissions from a delegator to a delegate.
+ * Represents a DelegationStruct as defined in the Delegation Framework.
+ * This uses Hex strings for all byte fields and bigint for salt, which is useful
+ * for on-chain operations and EIP-712 signing.
+ *
+ * This type is based on DelegationStruct from @metamask/delegation-core but
+ * constrains all byte fields to Hex strings for consistency within MetaMask Extension.
+ */
+export type DelegationStruct = CoreDelegationStruct<Hex>;
+
+/**
+ * Represents a delegation with Hex string for salt (legacy format).
+ * This type maintains backward compatibility for code that expects salt as a Hex string.
  *
  * @property delegate - The address of the entity receiving the delegation.
  * @property delegator - The address of the entity granting the delegation.
  * @property authority - The authority under which this delegation is granted. For root delegations, this is ROOT_AUTHORITY.
  * @property caveats - An array of restrictions or conditions applied to this delegation.
- * @property salt - A unique value to prevent replay attacks and ensure uniqueness of the delegation.
+ * @property salt - A unique value to prevent replay attacks and ensure uniqueness of the delegation (as Hex string).
  * @property signature - The cryptographic signature validating this delegation.
  */
-export type Delegation = {
-  delegate: Hex;
-  delegator: Hex;
-  authority: Hex;
-  caveats: Caveat[];
+export type Delegation = Omit<DelegationStruct, 'salt'> & {
   salt: Hex;
-  signature: Hex;
 };
 
 export type UnsignedDelegation = Omit<Delegation, 'signature'>;
-
-/**
- * Represents a DelegationStruct as defined in the Delegation Framework.
- * This is distinguished from the Delegation type by requiring the salt to be a bigint
- * instead of a Hex string, which is useful for on-chain operations and EIP-712 signing.
- */
-export type DelegationStruct = Omit<Delegation, 'salt'> & {
-  salt: bigint;
-};
 
 /**
  * ABI Encodes a delegation.
@@ -133,24 +123,14 @@ export const encodePermissionContexts = (delegations: Delegation[][]) => {
 
 /**
  * This function is used to get the hash of the Delegation parameters.
+ * Uses the hashDelegation function from @metamask/delegation-core.
  *
  * @param input - The Delegation parameters to be hashed.
  * @returns Returns the hash of the Delegation parameters.
  */
 export const getDelegationHashOffchain = (input: Delegation): Hex => {
   const delegationStruct = toDelegationStruct(input);
-  const encoded = encode(
-    ['bytes32', 'address', 'address', 'bytes32', 'bytes32', 'uint'],
-    [
-      DELEGATION_TYPEHASH,
-      delegationStruct.delegate,
-      delegationStruct.delegator,
-      delegationStruct.authority,
-      getCaveatArrayPacketHash(delegationStruct.caveats),
-      delegationStruct.salt,
-    ],
-  );
-  return toHex(keccak(Buffer.from(encoded)));
+  return hashDelegation(delegationStruct);
 };
 
 type BaseCreateDelegationOptions = {
@@ -262,6 +242,37 @@ export const encodeDisableDelegation = ({
   );
 
   return concat([encodedSignature, encodedData]);
+};
+
+/**
+ * Encodes the calldata for a disabledDelegations(bytes32) view call.
+ * This is used to check if a delegation has already been disabled on-chain.
+ *
+ * @param params
+ * @param params.delegationHash - The hash of the delegation to check.
+ * @returns The encoded calldata.
+ */
+export const encodeDisabledDelegationsCheck = ({
+  delegationHash,
+}: {
+  delegationHash: Hex;
+}): Hex => {
+  const encodedSignature = toFunctionSelector('disabledDelegations(bytes32)');
+  const encodedData = toHex(encode(['bytes32'], [delegationHash]));
+  return concat([encodedSignature, encodedData]);
+};
+
+/**
+ * Decodes the result from a disabledDelegations(bytes32) view call.
+ *
+ * @param result - The raw hex result from the eth_call.
+ * @returns True if the delegation is disabled, false otherwise.
+ */
+export const decodeDisabledDelegationsResult = (result: Hex): boolean => {
+  if (!result || result === '0x') {
+    return false;
+  }
+  return BigInt(result) !== 0n;
 };
 
 /**

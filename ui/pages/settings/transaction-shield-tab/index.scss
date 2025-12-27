@@ -1,31 +1,7 @@
 .transaction-shield-page {
-  &__membership {
-    background-size: 85px;
-    height: 85px;
-
-    .transaction-shield-page__membership-text {
-      color: var(--color-accent03-light);
-    }
-
-    &--active {
-      background: url('/images/shield-membership-active.png') no-repeat right -10px center;
-      background-color: var(--color-accent03-dark);
-    }
-
-    &--loading {
-      background: var(--color-border-muted);
-    }
-
-    &--inactive {
-      background: url('/images/shield-membership-inactive.png') no-repeat right -10px center;
-      background-color: var(--color-background-subsection);
-
-      .transaction-shield-page__membership-text {
-        color: var(--color-text-default);
-      }
-    }
+  &__error-content {
+    margin-top: 120px;
   }
-
 
   &__row {
     margin-bottom: 1px;
@@ -42,8 +18,34 @@
     }
   }
 
-  .warning-button:hover {
-    color: var(--color-warning-default);
+  &__membership {
+    height: 85px;
+    position: relative;
+    overflow: hidden;
+
+    &--active {
+      background-color: var(--color-accent03-dark);
+    }
+
+    &--loading {
+      background-color: var(--color-border-muted);
+    }
+
+    &--inactive {
+      background-color: var(--color-background-subsection);
+
+      &-light {
+        background-color: var(--shield-membership-inactive-light);
+      }
+    }
+  }
+
+  &__membership-text {
+    color: var(--color-accent03-light);
+  }
+
+  &__membership--inactive &__membership-text {
+    color: var(--color-text-default);
   }
 
   &__notification-banner {
@@ -52,5 +54,44 @@
     @include design-system.screen-sm-max {
       margin-inline: -16px;
     }
+  }
+
+  &-shield-banner {
+    &__container {
+      position: absolute;
+      top: -4px;
+      right: 0;
+      height: 93px;
+      width: 93px;
+    }
+
+    &__canvas {
+      height: 100%;
+      width: 100%;
+    }
+  }
+
+  &-shield-icon {
+    &__container {
+      height: 32px;
+      width: 32px;
+    }
+
+    &__canvas {
+      height: 100%;
+      width: 100%;
+    }
+  }
+}
+
+.account-selector-modal {
+  .account-selector-modal__account {
+    &:hover {
+      background-color: var(--color-background-hover);
+    }
+  }
+
+  &__account--selected {
+    background-color: var(--color-primary-muted);
   }
 }

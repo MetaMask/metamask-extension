@@ -20,9 +20,11 @@ import { useNetworkAndOriginSwitchingAlerts } from './alerts/useNetworkAndOrigin
 import { useSelectedAccountAlerts } from './alerts/useSelectedAccountAlerts';
 import { useAddressTrustSignalAlerts } from './alerts/useAddressTrustSignalAlerts';
 import { useOriginTrustSignalAlerts } from './alerts/useOriginTrustSignalAlerts';
+import { useSpenderAlerts } from './alerts/useSpenderAlerts';
 import { useTokenTrustSignalAlerts } from './alerts/useTokenTrustSignalAlerts';
 import { useShieldCoverageAlert } from './alerts/useShieldCoverageAlert';
 import { useAddEthereumChainAlerts } from './alerts/useAddEthereumChainAlerts';
+import { useBurnAddressAlert } from './alerts/transactions/useBurnAddressAlert';
 
 function useSignatureAlerts(): Alert[] {
   const accountMismatchAlerts = useAccountMismatchAlerts();
@@ -36,6 +38,7 @@ function useSignatureAlerts(): Alert[] {
 
 function useTransactionAlerts(): Alert[] {
   const accountTypeUpgradeAlerts = useAccountTypeUpgrade();
+  const burnAddressAlert = useBurnAddressAlert();
   const firstTimeInteractionAlert = useFirstTimeInteractionAlert();
   const gasEstimateFailedAlerts = useGasEstimateFailedAlerts();
   const gasFeeLowAlerts = useGasFeeLowAlerts();
@@ -53,6 +56,7 @@ function useTransactionAlerts(): Alert[] {
   return useMemo(
     () => [
       ...accountTypeUpgradeAlerts,
+      ...burnAddressAlert,
       ...firstTimeInteractionAlert,
       ...gasEstimateFailedAlerts,
       ...gasFeeLowAlerts,
@@ -69,6 +73,7 @@ function useTransactionAlerts(): Alert[] {
     ],
     [
       accountTypeUpgradeAlerts,
+      burnAddressAlert,
       firstTimeInteractionAlert,
       gasEstimateFailedAlerts,
       gasFeeLowAlerts,
@@ -95,6 +100,7 @@ export default function useConfirmationAlerts(): Alert[] {
   const networkAndOriginSwitchingAlerts = useNetworkAndOriginSwitchingAlerts();
   const addressTrustSignalAlerts = useAddressTrustSignalAlerts();
   const originTrustSignalAlerts = useOriginTrustSignalAlerts();
+  const spenderAlerts = useSpenderAlerts();
   const addEthereumChainAlerts = useAddEthereumChainAlerts();
 
   return useMemo(
@@ -107,6 +113,7 @@ export default function useConfirmationAlerts(): Alert[] {
       ...networkAndOriginSwitchingAlerts,
       ...addressTrustSignalAlerts,
       ...originTrustSignalAlerts,
+      ...spenderAlerts,
       ...addEthereumChainAlerts,
     ],
     [
@@ -118,6 +125,7 @@ export default function useConfirmationAlerts(): Alert[] {
       networkAndOriginSwitchingAlerts,
       addressTrustSignalAlerts,
       originTrustSignalAlerts,
+      spenderAlerts,
       addEthereumChainAlerts,
     ],
   );

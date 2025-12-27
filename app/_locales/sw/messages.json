@@ -223,14 +223,8 @@
   "enterPasswordContinue": {
     "message": "Ingiza nenosiri ili uendelee"
   },
-  "ethereumPublicAddress": {
-    "message": "Anwani ya Umma ya Ethereum"
-  },
   "etherscanView": {
     "message": "Tazama akaunti kwenye Etherscan"
-  },
-  "expandView": {
-    "message": "Panua Mwonekano"
   },
   "failed": {
     "message": "Imeshindwa"

@@ -27,14 +27,11 @@ import { NetworkRow } from '../shared/network-row/network-row';
 import { SigningInWithRow } from '../shared/sign-in-with-row/sign-in-with-row';
 import { TypedSignV4Simulation } from './typed-sign-v4-simulation';
 
-const TypedSignInfo: React.FC = () => {
-  const t = useI18nContext();
+const useTokenContract = () => {
   const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
-  const isSimulationSupported = useTypesSignSimulationEnabledInfo();
-  const isBIP44 = useIsBIP44();
 
   if (!currentConfirmation?.msgParams) {
-    return null;
+    return {};
   }
 
   const {
@@ -45,7 +42,22 @@ const TypedSignInfo: React.FC = () => {
   const isPermit = isPermitSignatureRequest(currentConfirmation);
   const isOrder = isOrderSignatureRequest(currentConfirmation);
   const tokenContract = isPermit || isOrder ? verifyingContract : undefined;
+
+  return { tokenContract, verifyingContract, spender, isPermit };
+};
+
+const TypedSignInfo: React.FC = () => {
+  const t = useI18nContext();
+  const isSimulationSupported = useTypesSignSimulationEnabledInfo();
+  const isBIP44 = useIsBIP44();
+  const { tokenContract, verifyingContract, spender, isPermit } =
+    useTokenContract();
   const { decimalsNumber } = useGetTokenStandardAndDetails(tokenContract);
+
+  const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
+  if (!currentConfirmation?.msgParams) {
+    return null;
+  }
 
   const chainId = currentConfirmation.chainId as string;
 
@@ -60,9 +72,13 @@ const TypedSignInfo: React.FC = () => {
       <ConfirmInfoSection data-testid="confirmation_request-section">
         {isPermit && (
           <>
-            <ConfirmInfoRow label={t('spender')}>
+            <ConfirmInfoAlertRow
+              alertKey={RowAlertKey.Spender}
+              ownerId={currentConfirmation.id}
+              label={t('spender')}
+            >
               <ConfirmInfoRowAddress address={spender} chainId={chainId} />
-            </ConfirmInfoRow>
+            </ConfirmInfoAlertRow>
             <ConfirmInfoRowDivider />
           </>
         )}

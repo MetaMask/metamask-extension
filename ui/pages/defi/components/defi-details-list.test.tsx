@@ -11,9 +11,9 @@ const mockUseParams = jest
   .mockReturnValue({ chainId: CHAIN_IDS.MAINNET, protocolId: 'aave' });
 
 const mockUseNavigate = jest.fn();
-jest.mock('react-router-dom-v5-compat', () => {
+jest.mock('react-router-dom', () => {
   return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
+    ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
     useParams: () => mockUseParams(),
   };
@@ -22,7 +22,7 @@ jest.mock('react-router-dom-v5-compat', () => {
 describe('DeFiDetailsPage', () => {
   const store = configureMockStore([thunk])(mockState);
 
-  beforeAll(() => {
+  beforeEach(() => {
     jest.clearAllMocks();
   });
 

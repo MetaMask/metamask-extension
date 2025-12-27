@@ -13,8 +13,44 @@
       width: 100%;
     }
 
+    &-text {
+      width: 100%;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
     .mm-button-base {
       height: 60px;
     }
   }
+}
+
+.riv-animation {
+  &__wallet-ready-container {
+    height: 400px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    pointer-events: none;
+  }
+
+
+  &__canvas {
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.title {
+  text-align: center;
+  font-family: var(--font-family-accent);
+  font-size: 40px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 40px; /* 100% */
+  letter-spacing: -0.26px;
+  margin-bottom: 48px;
 }

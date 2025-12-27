@@ -1,14 +1,17 @@
+const { DAPP_PATH, DAPP_URL } = require('../constants');
 const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
+const FixtureBuilder = require('../fixtures/fixture-builder');
 const {
   mockImagesSnap,
 } = require('../mock-response-data/snaps/snap-binary-mocks');
-const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap Images', function () {
   it('can display images in snap ui', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockImagesSnap,
         title: this.test.fullTitle(),
@@ -17,7 +20,7 @@ describe('Test Snap Images', function () {
         await unlockWallet(driver);
 
         // navigate to test snaps page and connect
-        await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
+        await driver.driver.get(DAPP_URL);
 
         // wait for page to load
         await driver.waitForSelector({

@@ -15,6 +15,12 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { createNextMultichainAccountGroup } from '../../../store/actions';
 import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useAccountsOperationsLoadingStates';
+import {
+  endTrace,
+  trace,
+  TraceName,
+  TraceOperation,
+} from '../../../../shared/lib/trace';
 
 export type AddMultichainAccountProps = {
   walletId: AccountWalletId;
@@ -56,9 +62,20 @@ export const AddMultichainAccount = ({
       return;
     }
 
-    setIsLoading(true);
-    await dispatch(createNextMultichainAccountGroup(walletId));
-    setIsLoading(false);
+    try {
+      trace({
+        name: TraceName.CreateMultichainAccount,
+        op: TraceOperation.AccountCreate,
+      });
+
+      setIsLoading(true);
+      await dispatch(createNextMultichainAccountGroup(walletId));
+    } finally {
+      setIsLoading(false);
+      endTrace({
+        name: TraceName.CreateMultichainAccount,
+      });
+    }
   };
 
   return (

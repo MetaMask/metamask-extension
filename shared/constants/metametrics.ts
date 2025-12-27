@@ -541,6 +541,24 @@ export type MetaMetricsUserTraits = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   profile_id?: string;
+  /**
+   * Whether the user has opted into Rewards.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  has_rewards_opted_in?: string;
+  /**
+   * Whether the user was referred when opting into Rewards.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  rewards_referred?: boolean;
+  /**
+   * The referral code used when opting into Rewards.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  rewards_referral_code_used?: string;
 };
 
 export enum MetaMetricsUserTrait {
@@ -647,6 +665,12 @@ export enum MetaMetricsUserTrait {
    * Identified when the user adds or removes configured chains (evm or non-evm)
    */
   ChainIdList = 'chain_id_list',
+  /**
+   * Rewards-specific traits
+   */
+  HasRewardsOptedIn = 'has_rewards_opted_in',
+  RewardsReferred = 'rewards_referred',
+  RewardsReferralCodeUsed = 'rewards_referral_code_used',
 }
 
 /**
@@ -719,8 +743,7 @@ export enum MetaMetricsEventName {
   EncryptionPublicKeyRequested = 'Encryption Requested',
   ErrorOccured = 'Error occured',
   ExternalLinkClicked = 'External Link Clicked',
-  ImportSecretRecoveryPhraseClicked = 'Import Secret Recovery Phrase Clicked',
-  ImportSecretRecoveryPhraseCompleted = 'Import Secret Recovery Phrase Completed',
+  ImportSecretRecoveryPhrase = 'Import Secret Recovery Phrase',
   KeyExportSelected = 'Key Export Selected',
   KeyExportRequested = 'Key Export Requested',
   KeyExportFailed = 'Key Export Failed',
@@ -741,6 +764,7 @@ export enum MetaMetricsEventName {
   NavPermissionsOpened = 'Permissions Opened',
   NetworkConnectionBannerShown = 'Network Connection Banner Shown',
   NetworkConnectionBannerUpdateRpcClicked = 'Network Connection Banner Update RPC Clicked',
+  NetworkConnectionBannerRpcUpdated = 'Network Connection Banner RPC Updated',
   UpdatePermissionedNetworks = 'Update Permissioned Networks',
   UpdatePermissionedAccounts = 'Update Permissioned Accounts',
   ViewPermissionedNetworks = 'View Permissioned Networks',
@@ -754,6 +778,7 @@ export enum MetaMetricsEventName {
   NavSwapButtonClicked = 'Swap Button Clicked',
   NavReceiveButtonClicked = 'Receive Button Clicked',
   NftAdded = 'NFT Added',
+  NoticeUpdateDisplayed = 'Notice Update Displayed',
   OnboardingWalletSecurityStarted = 'SRP Backup Selected',
   OnboardingWalletSecuritySkipInitiated = 'SRP Skip Backup Selected',
   OnboardingWalletSecuritySkipConfirmed = 'SRP Backup Skipped',
@@ -827,6 +852,7 @@ export enum MetaMetricsEventName {
   TokenHidden = 'Token Hidden',
   TokenImportCanceled = 'Token Import Canceled',
   TokenImportClicked = 'Token Import Clicked',
+  ToastDisplayed = 'Toast Displayed',
   WalletSetupStarted = 'Wallet Setup Started',
   WalletFundsObtained = 'Wallet Funds Obtained',
   WalletImportStarted = 'Wallet Import Started',
@@ -837,11 +863,13 @@ export enum MetaMetricsEventName {
   WalletSetupFailure = 'Wallet Setup Failure',
   WalletSetupCompleted = 'Wallet Setup Completed',
   SocialLoginCompleted = 'Social Login Completed',
+  SocialLoginFailed = 'Social Login Failed',
   AccountAlreadyExistsPageViewed = 'Account Already Exists Page Viewed',
   AccountNotFoundPageViewed = 'Account Not Found Page Viewed',
   RehydrationPasswordAttempted = 'Rehydration Password Attempted',
   RehydrationCompleted = 'Rehydration Completed',
   RehydrationPasswordFailed = 'Rehydration Password Failed',
+  UseDifferentLoginMethodClicked = 'Use Different Login Method Clicked',
   // BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   WatchEthereumAccountsToggled = 'Watch Ethereum Accounts Toggled',
   // END:ONLY_INCLUDE_IF
@@ -940,6 +968,43 @@ export enum MetaMetricsEventName {
   ExtensionPinned = 'Extension Pinned',
   // Extension Port Stream
   PortStreamChunked = 'Port Stream Chunked',
+  // Hardware Wallets
+  AddHardwareWalletClicked = 'Add Hardware Wallet Clicked',
+  HardwareWalletButtonClicked = 'Hardware Wallet Button Clicked',
+  ConnectHardwareWalletClicked = 'Connect Hardware Wallet Clicked',
+  ConnectHardwareWalletDeviceFound = 'Connect Hardware Wallet Device Found',
+  ConnectHardwareWalletContinueButtonClicked = 'Connect Hardware Wallet Continue Button Clicked',
+  ConnectHardwareWalletAccountSelectorViewed = 'Connect Hardware Wallet Account Selector Viewed',
+  HardwareWalletAccountConnected = 'Hardware Wallet Account Connected',
+  HardwareWalletForgotten = 'Hardware Wallet Forgotten',
+  HardwareWalletMarketingButtonClicked = 'Hardware Wallet Marketing Button Clicked',
+  HardwareWalletConnectionFailed = 'Hardware Wallet Connection Failed',
+  ViewportSwitched = 'Viewport Switched',
+  // Rewards
+  RewardsOptInStarted = 'REWARDS_OPT_IN_STARTED',
+  RewardsOptInFailed = 'REWARDS_OPT_IN_FAILED',
+  RewardsOptInCompleted = 'REWARDS_OPT_IN_COMPLETED',
+  RewardsAccountLinkingStarted = 'REWARDS_ACCOUNT_LINKING_STARTED',
+  RewardsAccountLinkingCompleted = 'REWARDS_ACCOUNT_LINKING_COMPLETED',
+  RewardsAccountLinkingFailed = 'REWARDS_ACCOUNT_LINKING_FAILED',
+  // Shield
+  ShieldEntryModal = 'Shield Entry Modal',
+  ShieldSubscriptionRequest = 'Shield Subscription Request',
+  ShieldMembershipRestartRequest = 'Shield Membership Restart Request',
+  ShieldMembershipCancelled = 'Shield Membership Cancelled',
+  ShieldPaymentMethodChange = 'Shield Payment Method Change',
+  ShieldPaymentMethodRetried = 'Shield Payment Method Retried',
+  ShieldPaymentMethodUpdated = 'Shield Payment Method Updated',
+  ShieldBillingHistoryOpened = 'Shield Billing History Opened',
+  ShieldMembershipErrorStateClicked = 'Shield Membership Error State Clicked',
+  ShieldCtaClicked = 'Shield CTA Clicked',
+  ShieldClaimSubmission = 'Shield Claim Submission',
+  ShieldSubscriptionCryptoConfirmation = 'Shield Subscription Crypto Confirmation',
+  ShieldPrioritySupportClicked = 'Shield Priority Support Clicked',
+  ShieldEligibilityCohortAssigned = 'Shield Eligibility Cohort Assigned',
+  ShieldEligibilityCohortTimeout = 'Shield Eligibility Cohort Timeout',
+  ShieldSubscriptionUnexpectedErrorEvent = 'Shield Subscription Unexpected Error',
+  ShieldOptInRewards = 'Shield Opt In Rewards',
 }
 
 export enum MetaMetricsEventAccountType {
@@ -1004,6 +1069,8 @@ export enum MetaMetricsEventCategory {
   Confirmations = 'Confirmations',
   CrossChainSwaps = 'Cross Chain Swaps',
   PortStream = 'Port Stream',
+  Rewards = 'Rewards',
+  Shield = 'Shield',
 }
 
 export enum MetaMetricsEventLinkType {
@@ -1073,7 +1140,6 @@ export enum MetaMetricsEventUiCustomization {
   FlaggedAsWarning = 'flagged_as_warning',
   GasEstimationFailed = 'gas_estimation_failed',
   Order = 'order',
-  RedesignedConfirmation = 'redesigned_confirmation',
   SecurityAlertError = 'security_alert_error',
   Siwe = 'sign_in_with_ethereum',
   Permit = 'permit',

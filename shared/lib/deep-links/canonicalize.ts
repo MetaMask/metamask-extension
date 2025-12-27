@@ -13,14 +13,18 @@ export function canonicalize(url: URL): string {
 
   const sigParams = url.searchParams.get(SIG_PARAMS_PARAM);
 
-  if (sigParams) {
-    const allowedParams = sigParams.split(',');
+  if (typeof sigParams === 'string') {
     const signedParams = new URLSearchParams();
+    // sigParams might be "" (empty), in which case we
+    // don't need to split and search
+    if (sigParams) {
+      const allowedParams = sigParams.split(',');
 
-    for (const allowedParam of allowedParams) {
-      const values = url.searchParams.getAll(allowedParam);
-      for (const value of values) {
-        signedParams.append(allowedParam, value);
+      for (const allowedParam of allowedParams) {
+        const values = url.searchParams.getAll(allowedParam);
+        for (const value of values) {
+          signedParams.append(allowedParam, value);
+        }
       }
     }
 

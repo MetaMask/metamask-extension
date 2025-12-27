@@ -237,6 +237,23 @@ function getOptions(
       group: toOrange('Developer assistance:'),
       type: 'boolean',
     },
+    reactCompilerVerbose: {
+      array: false,
+      default: false,
+      description:
+        'Enables/disables React Compiler verbose mode and statistics',
+      group: toOrange('Developer assistance:'),
+      type: 'boolean',
+    },
+    reactCompilerDebug: {
+      array: false,
+      choices: ['all', 'critical', 'none'] as const,
+      default: 'none',
+      description:
+        'Sets React Compiler panic threshold that fails the build for all errors or critical errors only. If `none`, the build will not fail.',
+      group: toOrange('Developer assistance:'),
+      type: 'string',
+    },
 
     ...prerequisites,
     zip: {
@@ -277,7 +294,7 @@ function getOptions(
       alias: 'v',
       array: false,
       choices: [2, 3] as Manifest['manifest_version'][],
-      default: 2 as Manifest['manifest_version'],
+      default: 3 as Manifest['manifest_version'],
       description: "Changes manifest.json format to the given version's schema",
       group: toOrange('Build options:'),
       type: 'number',
@@ -394,6 +411,8 @@ LavaMoat debug: ${args.lavamoatDebug}
 Generate policy: ${args.generatePolicy}
 Snow: ${args.snow}
 Sentry: ${args.sentry}
+React Compiler verbose: ${args.reactCompilerVerbose}
+React Compiler debug: ${args.reactCompilerDebug}
 Manifest version: ${args.manifest_version}
 Release version: ${args.releaseVersion}
 Browsers: ${args.browser.join(', ')}

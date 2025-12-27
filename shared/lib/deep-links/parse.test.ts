@@ -132,4 +132,39 @@ describe('parse', () => {
 
     expect(mockVerify).toHaveBeenCalledWith(new URL(urlStr));
   });
+
+  it("removes the SIG_PARAMS_PARAM from the handler's query parameters", async () => {
+    mockRoutes.set('/test', { handler: mockHandler } as unknown as Route);
+    mockVerify.mockResolvedValue(VALID);
+
+    const urlStr1 = 'https://example.com/test?sig=bar&sig_params=';
+    await parse(new URL(urlStr1));
+    // `sig_params` should be removed from the handler's searchParams
+    expect(mockHandler).toHaveBeenCalledWith(new URLSearchParams());
+
+    const urlStr2 =
+      'https://example.com/test?sig=bar&sig_params=value&value=123';
+    await parse(new URL(urlStr2));
+    // `sig_params` should be removed from the handler's searchParams, `value`
+    // should remain because it is listed in `sig_params`
+    expect(mockHandler).toHaveBeenCalledWith(
+      new URLSearchParams([['value', '123']]),
+    );
+
+    const urlStr3 = 'https://example.com/test?sig=bar&sig_params=&value=123';
+    await parse(new URL(urlStr3));
+    // `sig_params` should be removed from the handler's searchParams, `value`
+    // should also be removed because it is not in `sig_params`
+    expect(mockHandler).toHaveBeenCalledWith(new URLSearchParams());
+
+    const urlStr4 =
+      'https://example.com/test?sig=bar&sig_params=value&value=123&foo=bar';
+    await parse(new URL(urlStr4));
+    // `sig_params` should be removed from the handler's searchParams, `value`
+    // should remain because it is listed in `sig_params`, `foo` should be removed
+    // because it is not listed in `sig_params`
+    expect(mockHandler).toHaveBeenCalledWith(
+      new URLSearchParams([['value', '123']]),
+    );
+  });
 });

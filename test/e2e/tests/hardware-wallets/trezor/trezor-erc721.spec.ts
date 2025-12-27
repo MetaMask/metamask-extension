@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import TestDappPage from '../../../page-objects/pages/test-dapp';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { DAPP_URL, WINDOW_TITLES, withFixtures } from '../../../helpers';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
@@ -34,12 +34,7 @@ describe('Trezor Hardware', function (this: Suite) {
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           '0x100000000000000000000',
         );
-        await loginWithBalanceValidation(
-          driver,
-          undefined,
-          undefined,
-          '1208925.8196',
-        );
+        await loginWithBalanceValidation(driver, undefined, undefined, '1.21M');
 
         // deploy action
         const testDappPage = new TestDappPage(driver);
@@ -76,12 +71,7 @@ describe('Trezor Hardware', function (this: Suite) {
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address as `0x${string}`,
           '0x100000000000000000000',
         );
-        await loginWithBalanceValidation(
-          driver,
-          undefined,
-          undefined,
-          '1208925.8196',
-        );
+        await loginWithBalanceValidation(driver, undefined, undefined, '1.21M');
 
         const contractAddress = await (
           contractRegistry as ContractAddressRegistry
@@ -148,7 +138,7 @@ describe('Trezor Hardware', function (this: Suite) {
           driver,
           undefined,
           undefined,
-          balance?.toString(),
+          `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
         );
 
         const contractAddress =
@@ -204,7 +194,7 @@ describe('Trezor Hardware', function (this: Suite) {
           driver,
           undefined,
           undefined,
-          balance?.toString(),
+          `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
         );
         const contractAddress = await (
           contractRegistry as ContractAddressRegistry

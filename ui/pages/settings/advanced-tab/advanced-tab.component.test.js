@@ -14,6 +14,7 @@ const mockSetStxPrefEnabled = jest.fn();
 const mockSetManageInstitutionalWallets = jest.fn();
 const mockSetDismissSmartAccountSuggestionEnabled = jest.fn();
 const mockSetUseSmartAccount = jest.fn();
+const mockSetShowExtensionInFullSizeView = jest.fn();
 const mockDisplayErrorInSettings = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => {
@@ -27,6 +28,7 @@ jest.mock('../../../store/actions.ts', () => {
     setDismissSmartAccountSuggestionEnabled: () =>
       mockSetDismissSmartAccountSuggestionEnabled,
     setSmartAccountOptIn: () => mockSetUseSmartAccount,
+    setShowExtensionInFullSizeView: () => mockSetShowExtensionInFullSizeView,
   };
 });
 
@@ -42,6 +44,13 @@ jest.mock('../../../helpers/utils/export-utils', () => ({
     .mockResolvedValueOnce({})
     .mockImplementationOnce(new Error('state file error')),
 }));
+
+// Mock window.logStateString which is set up in ui/index.js
+const mockLogStateString = jest.fn();
+Object.defineProperty(window, 'logStateString', {
+  value: mockLogStateString,
+  writable: true,
+});
 
 jest.mock('webextension-polyfill', () => ({
   runtime: {
@@ -126,6 +135,21 @@ describe('AdvancedTab Component', () => {
     expect(mockSetShowTestNetworks).toHaveBeenCalled();
   });
 
+  it('should toggle show extension in full size view', () => {
+    const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
+
+    const fullSizeViewSection = queryByTestId(
+      'advanced-setting-show-extension-in-full-size-view',
+    );
+    const fullSizeViewToggle = fullSizeViewSection.querySelector(
+      'input[type="checkbox"]',
+    );
+
+    fireEvent.click(fullSizeViewToggle);
+
+    expect(mockSetShowExtensionInFullSizeView).toHaveBeenCalled();
+  });
+
   it('should toggle manage institutional wallets', () => {
     const { queryAllByRole } = renderWithProvider(<AdvancedTab />, mockStore);
 
@@ -188,6 +212,11 @@ describe('AdvancedTab Component', () => {
   });
 
   describe('renderStateLogs', () => {
+    beforeEach(() => {
+      mockLogStateString.mockClear();
+      mockDisplayErrorInSettings.mockClear();
+    });
+
     it('should render the toggle button for state log download', () => {
       const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
       const stateLogButton = queryByTestId('advanced-setting-state-logs');
@@ -195,6 +224,10 @@ describe('AdvancedTab Component', () => {
     });
 
     it('should call exportAsFile when the toggle button is clicked', async () => {
+      // Mock successful state log retrieval
+      mockLogStateString.mockImplementation((callback) => {
+        callback(null, '{"state": "data"}');
+      });
       const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
       const stateLogButton = queryByTestId(
         'advanced-setting-state-logs-button',
@@ -205,6 +238,10 @@ describe('AdvancedTab Component', () => {
       });
     });
     it('should call displayErrorInSettings when the state file download fails', async () => {
+      // Mock failed state log retrieval
+      mockLogStateString.mockImplementation((callback) => {
+        callback(new Error('state file error'), null);
+      });
       const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
       const stateLogButton = queryByTestId(
         'advanced-setting-state-logs-button',

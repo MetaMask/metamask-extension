@@ -30,9 +30,9 @@ jest.mock('../../../../../helpers/utils/util', () => ({
 jest.mock('copy-to-clipboard');
 
 const mockUseNavigate = jest.fn();
-jest.mock('react-router-dom-v5-compat', () => {
+jest.mock('react-router-dom', () => {
   return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
+    ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
   };
 });
@@ -176,7 +176,7 @@ describe('NFT Details', () => {
       });
 
       expect(mockUseNavigate).toHaveBeenCalledWith(
-        '/send/amount-recipient?asset=0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414&chainId=0x1',
+        '/send/amount-recipient?asset=0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414&chainId=0x1&tokenId=1',
       );
     });
   });
