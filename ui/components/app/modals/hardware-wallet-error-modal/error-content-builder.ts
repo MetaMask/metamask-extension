@@ -35,17 +35,22 @@ export function buildErrorContent(
     // Device state - Wrong app
     case ErrorCode.DEVICE_STATE_001:
       return {
-        icon: IconName.Refresh,
+        icon: IconName.Apps,
         title: t('hardwareWalletErrorTitleConnectYourDevice', [walletType]),
-        recoveryInstructions: [
-          t('hardwareWalletErrorRecoveryApp1'),
-          t('hardwareWalletErrorRecoveryApp2'),
-          t('hardwareWalletErrorRecoveryApp3'),
-        ],
+        recoveryInstructions: [t('hardwareWalletErrorRecoveryOpenApp')],
       };
 
     // Device state - Disconnected/Connection issues
     case ErrorCode.DEVICE_STATE_002:
+      return {
+        icon: IconName.Plug,
+        title: t('hardwareWalletErrorTitleConnectYourDevice', [walletType]),
+        recoveryInstructions: [
+          t('hardwareWalletErrorRecoveryConnection1'),
+          t('hardwareWalletErrorRecoveryConnection2'),
+          t('hardwareWalletErrorRecoveryConnection3'),
+        ],
+      };
     case ErrorCode.DEVICE_STATE_003:
     case ErrorCode.DEVICE_STATE_004:
     case ErrorCode.DEVICE_STATE_005:
@@ -74,7 +79,7 @@ export function buildErrorContent(
     case ErrorCode.CONFIG_PERM_001:
       return {
         icon: IconName.SecurityKey,
-        title: t('hardwareWalletErrorTitle'),
+        title: t('hardwareWalletErrorRecoveryPermissionTitle'),
         recoveryInstructions: [
           t('hardwareWalletErrorRecoveryPermission1'),
           t('hardwareWalletErrorRecoveryPermission2'),
@@ -86,7 +91,7 @@ export function buildErrorContent(
     case ErrorCode.CONN_CLOSED_001:
       return {
         icon: IconName.Close,
-        title: t('hardwareWalletErrorTitle'),
+        title: t('hardwareWalletErrorRecoveryConnectionTitle'),
         recoveryInstructions: [
           t('hardwareWalletErrorRecoveryConnection1'),
           t('hardwareWalletErrorRecoveryConnection2'),

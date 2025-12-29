@@ -7,11 +7,7 @@ import {
   getHdPathForHardwareKeyring,
   getAppNameAndVersion,
 } from '../../../store/actions';
-import {
-  createHardwareWalletError,
-  ErrorCode,
-  parseErrorByType,
-} from '../errors';
+import { createHardwareWalletError, ErrorCode } from '../errors';
 import {
   DeviceEvent,
   HardwareWalletType,
@@ -192,38 +188,14 @@ export class LedgerAdapter implements HardwareWalletAdapter {
   }
 
   /**
-   * Get current app name (verify Ethereum app is open)
-   * Re-checks connectivity with the device
-   */
-  async getCurrentAppName(): Promise<string> {
-    if (!this.isConnected()) {
-      throw createHardwareWalletError(
-        ErrorCode.DEVICE_STATE_003,
-        HardwareWalletType.LEDGER,
-        'Device not connected',
-      );
-    }
-
-    return (await attemptLedgerTransportCreation()) as string;
-  }
-
-  /**
    * Verify the device is ready for operations (Ethereum app is open)
    * Throws HardwareWalletError from the KeyringController/Ledger keyring
    * These errors are already properly formatted and include all necessary metadata
    */
-  async verifyDeviceReady(): Promise<boolean> {
-    if (!this.currentDeviceId) {
-      throw createHardwareWalletError(
-        ErrorCode.DEVICE_STATE_003,
-        HardwareWalletType.LEDGER,
-        'Device not connected',
-      );
-    }
-
+  async verifyDeviceReady(deviceId: string): Promise<void> {
     if (!this.isConnected()) {
       try {
-        await this.connect(this.currentDeviceId);
+        await this.connect(deviceId);
       } catch (error) {
         throw createHardwareWalletError(
           ErrorCode.DEVICE_STATE_003,
@@ -242,7 +214,13 @@ export class LedgerAdapter implements HardwareWalletAdapter {
       const { appName } = await getAppNameAndVersion();
       console.log(LOG_TAG, 'Ledger app info:', appName);
 
-      return appName === 'Ethereum';
+      if (appName !== 'Ethereum') {
+        throw createHardwareWalletError(
+          ErrorCode.DEVICE_STATE_001,
+          HardwareWalletType.LEDGER,
+          `Ethereum app is not open, got ${appName}`,
+        );
+      }
     } catch (error) {
       console.error(LOG_TAG, 'Error verifying device ready:', error);
 

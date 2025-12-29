@@ -5683,21 +5683,13 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async getAppNameAndVersion() {
-    const {
-      payload: { success, payload },
-    } = await this.#withKeyringForDevice(
+    const result = await this.#withKeyringForDevice(
       { name: HardwareDeviceNames.ledger },
       async (keyring) => await keyring.getAppNameAndVersion(),
     );
+    console.log('[getAppNameAndVersion] result', result);
 
-    console.log('getAppNameAndVersion', success, payload);
-
-    if (!success) {
-      // The payload is the error from the iframe
-      throw payload;
-    }
-
-    return payload;
+    return result;
   }
 
   /**

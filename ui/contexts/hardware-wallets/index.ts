@@ -7,9 +7,6 @@ export {
   useHardwareWalletActions,
 } from './HardwareWalletContext.split';
 
-// Legacy exports (for backward compatibility)
-export { HardwareWalletContext } from './HardwareWalletContext';
-
 export {
   HardwareWalletErrorProvider,
   useHardwareWalletError,

@@ -1,4 +1,5 @@
 import {
+  GetAppNameAndVersionResponse,
   LedgerBridge,
   LedgerSignTypedDataParams,
   LedgerSignTypedDataResponse,
@@ -67,7 +68,6 @@ export class LedgerOffscreenBridge
   }
 
   attemptMakeApp(): Promise<boolean> {
-    console.log('[LedgerOffscreenBridge] attemptMakeApp');
     return this.#sendMessage(
       {
         action: LedgerAction.makeApp,
@@ -86,7 +86,8 @@ export class LedgerOffscreenBridge
     );
   }
 
-  getAppAndName(): Promise<{ app: string; name: string }> {
+  getAppNameAndVersion(): Promise<GetAppNameAndVersionResponse> {
+    console.log('[LedgerOffscreenBridge] getAppNameAndVersion starting');
     return this.#sendMessage({
       action: LedgerAction.getAppAndName,
     });
@@ -137,6 +138,7 @@ export class LedgerOffscreenBridge
     message: IFrameMessage<TAction>,
     { timeout }: { timeout?: number } = {},
   ): Promise<ResponsePayload> {
+    console.log('[LedgerOffscreenBridge] sending #sendMessage', message);
     return new Promise((resolve, reject) => {
       let responseTimeout: ReturnType<typeof setTimeout>;
 

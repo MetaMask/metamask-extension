@@ -1,6 +1,5 @@
 import React from 'react';
 import { Meta, StoryObj } from '@storybook/react';
-import { Provider } from 'react-redux';
 import { HardwareWalletErrorModal } from './hardware-wallet-error-modal';
 import {
   ErrorCode,
@@ -8,30 +7,27 @@ import {
   HardwareWalletError,
 } from '../../../../contexts/hardware-wallets/errors';
 import { HardwareWalletType } from '../../../../contexts/hardware-wallets/types';
-import configureStore from '../../../../store/store';
-
-const store = configureStore({
-  metamask: {
-    currentLocale: 'en',
-  },
-});
+import { HardwareWalletProvider } from '../../../../contexts/hardware-wallets/HardwareWalletContext.split';
 
 const meta: Meta<typeof HardwareWalletErrorModal> = {
   title: 'Components/App/Modals/HardwareWalletErrorModal',
   component: HardwareWalletErrorModal,
   decorators: [
     (Story) => (
-      <Provider store={store}>
+      <HardwareWalletProvider>
         <div
           style={{
             maxWidth: '500px',
-            margin: '0 auto',
+            margin: '40px auto',
             padding: '20px',
+            backgroundColor: 'var(--color-background-default)',
+            borderRadius: '8px',
+            boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
           }}
         >
           <Story />
         </div>
-      </Provider>
+      </HardwareWalletProvider>
     ),
   ],
   argTypes: {

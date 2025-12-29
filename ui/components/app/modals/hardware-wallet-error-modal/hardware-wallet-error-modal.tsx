@@ -27,8 +27,8 @@ import {
   type HardwareWalletError,
 } from '../../../../contexts/hardware-wallets/errors';
 import { HardwareWalletType } from '../../../../contexts/hardware-wallets/types';
-import { buildErrorContent } from './error-content-builder';
 import { useHardwareWallet } from '../../../../contexts/hardware-wallets';
+import { buildErrorContent } from './error-content-builder';
 
 type HardwareWalletErrorModalProps = {
   error: HardwareWalletError;
@@ -167,14 +167,6 @@ export const HardwareWalletErrorModal: React.FC<
       >
         {canRetry ? (
           <>
-            <Button
-              variant={ButtonVariant.Secondary}
-              size={ButtonSize.Lg}
-              block
-              onClick={handleCancel}
-            >
-              {t('cancel')}
-            </Button>
             <Button
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}

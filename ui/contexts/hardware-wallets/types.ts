@@ -92,7 +92,7 @@ export type HardwareWalletAdapter = {
    * @returns true if ready
    * @throws {HardwareWalletError} if device is not ready (locked, wrong app, etc.)
    */
-  verifyDeviceReady?(): Promise<boolean>;
+  verifyDeviceReady?(deviceId: string): Promise<boolean>;
 };
 
 /**
@@ -123,9 +123,6 @@ export type HardwareWalletContextType = {
   // Actions
   connect: (type: HardwareWalletType, deviceId: string) => Promise<void>;
   disconnect: () => Promise<void>;
-  executeWithWallet: <T>(
-    operation: (adapter: HardwareWalletAdapter) => Promise<T>,
-  ) => Promise<T>;
   clearError: () => void;
   retry: () => Promise<void>;
   checkWebHidPermission: () => Promise<WebHIDPermissionState>;
