@@ -108,8 +108,6 @@ class HomePage {
   private readonly shieldEntryModalSkip =
     '[data-testid="shield-entry-modal-close-button"]';
 
-  private readonly multichainTokenListButton = `[data-testid="multichain-token-list-button"]`;
-
   private readonly emptyBalance =
     '[data-testid="coin-overview-balance-empty-state"]';
 
@@ -316,6 +314,18 @@ class HomePage {
     await this.driver.assertElementNotPresent(
       this.backupSecretRecoveryPhraseNotification,
     );
+  }
+
+  async checkBalanceIsDisplayed(): Promise<void> {
+    console.log('Check balance element is displayed on homepage');
+    const balanceElement = await this.driver.waitForSelector(this.balance);
+    const balanceText = await balanceElement.getText();
+    if (!/^[\d.]+\sETH$/u.test(balanceText)) {
+      throw new Error(
+        `Balance format invalid. Expected format "X.XX ETH", got "${balanceText}"`,
+      );
+    }
+    console.log(`Balance is displayed: ${balanceText}`);
   }
 
   async checkBasicFunctionalityOffWarnigMessageIsDisplayed(): Promise<void> {

@@ -1,7 +1,7 @@
 import { Driver } from '../../../webdriver/driver';
 
 class SendTokenConfirmPage {
-  private driver: Driver;
+  private readonly driver: Driver;
 
   private readonly cancelButton = '[data-testid="cancel-footer-button"]';
 
@@ -111,6 +111,37 @@ class SendTokenConfirmPage {
     console.log('Token amount transfer details are correct');
   }
 
+  async checkRecipientAddressDisplayedCount(
+    address: string,
+    expectedCount: number,
+  ): Promise<void> {
+    console.log(
+      `Checking recipient address ${address} is displayed ${expectedCount} times on confirmation screen`,
+    );
+    // Wait for at least one instance to be present first
+    await this.driver.waitForSelector({ text: address });
+
+    const recipientAddresses = await this.driver.findElements({
+      text: address,
+    });
+    if (recipientAddresses.length !== expectedCount) {
+      throw new Error(
+        `Expected recipient address to be displayed ${expectedCount} times, but found ${recipientAddresses.length}`,
+      );
+    }
+    console.log(
+      `Recipient address displayed ${expectedCount} times as expected`,
+    );
+  }
+
+  async checkTransactionAmount(amount: string): Promise<void> {
+    console.log(`Checking transaction amount is ${amount}`);
+    await this.driver.waitForSelector({
+      css: 'h2',
+      text: amount,
+    });
+  }
+
   /**
    * Clicks the edit gas fee icon to open the gas fee modal.
    */
@@ -181,6 +212,12 @@ class SendTokenConfirmPage {
   async clickMetaMaskDialogConfirm(): Promise<void> {
     console.log('Clicking on Confirm button');
     await this.driver.clickElement(this.confirmButton);
+  }
+
+  async confirmAndWaitForWindowToClose(): Promise<void> {
+    console.log('Clicking Confirm and waiting for window to close');
+    await this.driver.clickElementAndWaitForWindowToClose(this.confirmButton);
+    console.log('Confirmation window closed');
   }
 }
 
