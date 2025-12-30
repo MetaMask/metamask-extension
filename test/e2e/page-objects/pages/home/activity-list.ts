@@ -148,6 +148,7 @@ class ActivityListPage {
 
   /**
    * Checks that all fee values displayed in the transaction details are numeric.
+   * Uses waitUntil to avoid race conditions with getText().
    *
    * @returns A promise that resolves if all fee values are numeric.
    */
@@ -155,21 +156,19 @@ class ActivityListPage {
     console.log('Checking that all fee values are numeric');
     await this.driver.waitForSelector(this.baseFeeLabel);
 
-    const allFeeValues = await this.driver.findElements(this.feeValues);
-    assert.equal(
-      allFeeValues.length > 0,
-      true,
-      'Expected fee values to be displayed',
-    );
-
-    for (const feeValue of allFeeValues) {
-      const text = await feeValue.getText();
-      assert.equal(
-        /\d+\.?\d*/u.test(text),
-        true,
-        `Expected fee value "${text}" to be numeric`,
-      );
-    }
+    await this.driver.wait(async () => {
+      const allFeeValues = await this.driver.findElements(this.feeValues);
+      if (allFeeValues.length === 0) {
+        return false;
+      }
+      for (const feeValue of allFeeValues) {
+        const text = await feeValue.getText();
+        if (!/\d+\.?\d*/u.test(text)) {
+          return false;
+        }
+      }
+      return true;
+    }, 10000);
     console.log('All fee values are numeric');
   }
 

@@ -316,16 +316,18 @@ class HomePage {
     );
   }
 
+  /**
+   * Checks that balance is displayed in the correct format (X.XX ETH).
+   * Uses waitUntil to avoid race conditions with getText().
+   */
   async checkBalanceIsDisplayed(): Promise<void> {
     console.log('Check balance element is displayed on homepage');
-    const balanceElement = await this.driver.waitForSelector(this.balance);
-    const balanceText = await balanceElement.getText();
-    if (!/^[\d.]+\sETH$/u.test(balanceText)) {
-      throw new Error(
-        `Balance format invalid. Expected format "X.XX ETH", got "${balanceText}"`,
-      );
-    }
-    console.log(`Balance is displayed: ${balanceText}`);
+    await this.driver.wait(async () => {
+      const balanceElement = await this.driver.findElement(this.balance);
+      const balanceText = await balanceElement.getText();
+      return /^[\d.]+\sETH$/u.test(balanceText);
+    }, 10000);
+    console.log('Balance is displayed in correct format');
   }
 
   async checkBasicFunctionalityOffWarnigMessageIsDisplayed(): Promise<void> {
