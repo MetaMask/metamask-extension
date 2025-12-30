@@ -191,8 +191,11 @@ export class LedgerAdapter implements HardwareWalletAdapter {
    * Verify the device is ready for operations (Ethereum app is open)
    * Throws HardwareWalletError from the KeyringController/Ledger keyring
    * These errors are already properly formatted and include all necessary metadata
+   *
+   * @param deviceId - The device ID to verify
+   * @returns true if device is ready
    */
-  async verifyDeviceReady(deviceId: string): Promise<void> {
+  async verifyDeviceReady(deviceId: string): Promise<boolean> {
     if (!this.isConnected()) {
       try {
         await this.connect(deviceId);
@@ -221,6 +224,8 @@ export class LedgerAdapter implements HardwareWalletAdapter {
           `Ethereum app is not open, got ${appName}`,
         );
       }
+
+      return true;
     } catch (error) {
       console.error(LOG_TAG, 'Error verifying device ready:', error);
 
