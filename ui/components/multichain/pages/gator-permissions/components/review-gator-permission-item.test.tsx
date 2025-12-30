@@ -730,7 +730,7 @@ describe('Permission List Item', () => {
         > = {
           permissionResponse: {
             chainId: '0x1',
-            address: mockSelectedAccountAddress,
+            address: mockAccountAddress,
             permission: {
               type: 'native-token-periodic',
               isAdjustmentAllowed: false,
@@ -782,7 +782,7 @@ describe('Permission List Item', () => {
         > = {
           permissionResponse: {
             chainId: '0x1',
-            address: mockSelectedAccountAddress,
+            address: mockAccountAddress,
             permission: {
               type: 'native-token-periodic',
               isAdjustmentAllowed: false,
