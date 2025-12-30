@@ -349,8 +349,6 @@ describe('Send ETH', function () {
               '0xa9059cbb0000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C970000000000000000000000000000000000000000000000000000000000000000a',
             );
 
-            // Wait for continue button to be clickable
-            await sendPage.isContinueButtonEnabled();
             await sendPage.pressContinueButton();
 
             // Verify the recipient address is displayed correctly (should show the actual recipient, not the one in the data)
