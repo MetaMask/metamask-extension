@@ -302,8 +302,8 @@ describe('Send ETH', function () {
               WINDOW_TITLES.ExtensionInFullScreenView,
             );
 
-            // Verify balance is displayed
-            await homePage.checkExpectedBalanceIsDisplayed();
+            // Verify balance is displayed (format only, not exact value since gas was consumed)
+            await homePage.checkBalanceIsDisplayed();
 
             // Find the transaction in the transactions list
             await activityListPage.openActivityTab();
