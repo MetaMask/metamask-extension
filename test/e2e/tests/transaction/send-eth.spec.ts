@@ -79,7 +79,7 @@ describe('Send ETH', function () {
       );
     });
 
-    it('finds the transaction in the transactions list and verifies confirmation screen', async function () {
+    it('displays the correct amount on the confirmation screen', async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
