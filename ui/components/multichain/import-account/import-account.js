@@ -24,6 +24,8 @@ import * as actions from '../../../store/actions';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
 import { getIsSocialLoginFlow } from '../../../selectors';
 
+// importAccountDuplicateError
+
 // Subviews
 import JsonImportView from './json';
 import PrivateKeyImportView from './private-key';
@@ -66,6 +68,11 @@ export const ImportAccount = ({ onActionComplete }) => {
     } catch (error) {
       const message = getErrorMessage(error);
       trackImportEvent(strategy, message);
+
+      if (handleKeyringControllerError(error)) {
+        return false;
+      }
+
       translateWarning(message);
       return false;
     }
@@ -130,6 +137,22 @@ export const ImportAccount = ({ onActionComplete }) => {
       // so slice off the first 3 chars and last 2 chars, and feed to i18n
       dispatch(actions.displayWarning(t(message.slice(3, -2))));
     }
+  }
+
+  function handleKeyringControllerError(error) {
+    // This is not the best way to handle error messages coming from the KeyringController.
+    // We should have a mapping that allows us to map error codes to i18n messages.
+    // However, for now, we will just check if the error message starts with
+    // 'KeyringController -' and if so, we will trim that part and translate
+    // the rest of the message.
+    const errorPrefix = 'KeyringController -';
+    if (error.message.startsWith(errorPrefix)) {
+      const trimmedMessage = error.message.slice(errorPrefix.length).trim();
+      translateWarning(trimmedMessage);
+      return true;
+    }
+
+    return false;
   }
 
   return (
