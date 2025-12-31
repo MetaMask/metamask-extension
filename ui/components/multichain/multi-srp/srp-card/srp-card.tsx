@@ -1,13 +1,10 @@
 import React, { useState, useContext, useCallback } from 'react';
-import { useSelector } from 'react-redux';
 import type { AccountWalletId } from '@metamask/account-api';
 
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { useWalletInfo } from '../../../../hooks/multichain-accounts/useWalletInfo';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import {
-  useSingleWalletAccountsBalanceCallback,
-} from '../../../../hooks/multichain-accounts/useWalletBalance';
+import { useSingleWalletAccountsBalanceCallback } from '../../../../hooks/multichain-accounts/useWalletBalance';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -55,21 +52,23 @@ export const SrpCard = ({
 }: SrpCardProps) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
-  const { multichainAccounts, keyringId, isSRPBackedUp } =
-    useWalletInfo(walletId);
+  const { multichainAccounts, keyringId } = useWalletInfo(walletId);
   const [showAccounts, setShowAccounts] = useState<boolean>(false);
   const walletAccountBalance = useSingleWalletAccountsBalanceCallback(walletId);
 
-  const showHideText = useCallback((index: number, numberOfAccounts: number): string => {
-    if (numberOfAccounts > 1) {
+  const showHideText = useCallback(
+    (numberOfAccounts: number): string => {
+      if (numberOfAccounts > 1) {
+        return showAccounts
+          ? t('SrpListHideAccounts', [numberOfAccounts])
+          : t('SrpListShowAccounts', [numberOfAccounts]);
+      }
       return showAccounts
-        ? t('SrpListHideAccounts', [numberOfAccounts])
-        : t('SrpListShowAccounts', [numberOfAccounts]);
-    }
-    return showAccounts
-      ? t('SrpListHideSingleAccount', [numberOfAccounts])
-      : t('SrpListShowSingleAccount', [numberOfAccounts]);
-  }, [showAccounts, t]);
+        ? t('SrpListHideSingleAccount', [numberOfAccounts])
+        : t('SrpListShowSingleAccount', [numberOfAccounts]);
+    },
+    [showAccounts, t],
+  );
 
   return (
     <Card
@@ -110,8 +109,7 @@ export const SrpCard = ({
                 event.stopPropagation();
                 trackEvent({
                   category: MetaMetricsEventCategory.Accounts,
-                  event:
-                    MetaMetricsEventName.SecretRecoveryPhrasePickerClicked,
+                  event: MetaMetricsEventName.SecretRecoveryPhrasePickerClicked,
                   properties: {
                     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -121,15 +119,11 @@ export const SrpCard = ({
                 setShowAccounts((prevState) => !prevState);
               }}
             >
-              {showHideText(index, multichainAccounts.length)}
+              {showHideText(multichainAccounts.length)}
             </Text>
           )}
         </Box>
-        <Box
-          display={Display.Flex}
-          alignItems={AlignItems.center}
-          gap={1}
-        >
+        <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
           {isSettingsPage && (
             <Text
               variant={TextVariant.bodyMdMedium}

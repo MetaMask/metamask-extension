@@ -8,10 +8,6 @@ import type { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
-import { InternalAccountWithBalance } from '../../../../selectors';
-import { shortenAddress } from '../../../../helpers/utils/util';
-// eslint-disable-next-line import/no-restricted-paths
-import { normalizeSafeAddress } from '../../../../../app/scripts/lib/multichain/address';
 import { FirstTimeFlowType } from '../../../../../shared/constants/onboarding';
 import { SrpCard } from './srp-card';
 
@@ -19,7 +15,9 @@ const mockWalletId = 'mock-wallet-id' as AccountWalletId;
 const mockTotalFiatBalance = '$100.00';
 
 const mocks = {
-  useSingleWalletAccountsBalanceCallback: jest.fn().mockReturnValue((_: AccountGroupId) => mockTotalFiatBalance),
+  useSingleWalletAccountsBalanceCallback: jest
+    .fn()
+    .mockReturnValue((_: AccountGroupId) => mockTotalFiatBalance),
   onActionComplete: jest.fn(),
   useWalletInfoCallback: jest.fn().mockReturnValue({
     multichainAccounts: [
@@ -27,7 +25,7 @@ const mocks = {
         accountId: 'mock-account-id-1' as AccountGroupId,
         metadata: {
           name: 'Mock Account 1',
-        }
+        },
       },
     ],
     keyringId: '01JKAF3DSGM3AB87EM9N0K41AJ',
