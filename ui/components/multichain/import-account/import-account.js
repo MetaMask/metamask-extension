@@ -24,8 +24,6 @@ import * as actions from '../../../store/actions';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
 import { getIsSocialLoginFlow } from '../../../selectors';
 
-// importAccountDuplicateError
-
 // Subviews
 import JsonImportView from './json';
 import PrivateKeyImportView from './private-key';
