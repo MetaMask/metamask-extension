@@ -1,11 +1,10 @@
 import React, { useState, useContext, useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import type { AccountWalletId, AccountGroupId } from '@metamask/account-api';
+import type { AccountWalletId } from '@metamask/account-api';
 
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { useWalletInfo } from '../../../../hooks/multichain-accounts/useWalletInfo';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { getIsPrimarySeedPhraseBackedUp } from '../../../../ducks/metamask/metamask';
 import {
   useSingleWalletAccountsBalanceCallback,
 } from '../../../../hooks/multichain-accounts/useWalletBalance';
@@ -58,9 +57,6 @@ export const SrpCard = ({
   const trackEvent = useContext(MetaMetricsContext);
   const { multichainAccounts, keyringId, isSRPBackedUp } =
     useWalletInfo(walletId);
-  const isPrimarySeedPhraseBackedUp = useSelector(
-    getIsPrimarySeedPhraseBackedUp,
-  );
   const [showAccounts, setShowAccounts] = useState<boolean>(false);
   const walletAccountBalance = useSingleWalletAccountsBalanceCallback(walletId);
 
@@ -89,7 +85,7 @@ export const SrpCard = ({
             button_type: 'srp_select',
           },
         });
-        onActionComplete(keyringId, shouldTriggerBackup);
+        keyringId && onActionComplete(keyringId, shouldTriggerBackup);
       }}
       className="select-srp__container"
       marginBottom={3}
