@@ -452,7 +452,7 @@
     "message": "Alert"
   },
   "alertAccountTypeUpgradeMessage": {
-    "message": "You're updating your account to a smart account. You'll keep the same account address while unlocking faster transactions and lower network fees. $1."
+    "message": "You're updating your account to a smart account. You'll keep the same account address while unlocking faster transactions and lower network fees. $1"
   },
   "alertAccountTypeUpgradeTitle": {
     "message": "Account type"
@@ -609,6 +609,9 @@
   },
   "allTimeLow": {
     "message": "All-time low"
+  },
+  "allTokens": {
+    "message": "All tokens"
   },
   "allowAddRpc": {
     "message": "Add RPC"
@@ -5622,6 +5625,9 @@
   },
   "revokeSimulationDetailsDesc": {
     "message": "You're removing someone's permission to spend tokens from your account."
+  },
+  "revokeTokenApprovals": {
+    "message": "Revoke token approvals"
   },
   "reward": {
     "message": "Reward"

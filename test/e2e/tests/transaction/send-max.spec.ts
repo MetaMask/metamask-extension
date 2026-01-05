@@ -143,6 +143,7 @@ describe('Sending with max amount', function () {
 
           // update estimates to low
           await sendTokenConfirmPage.clickEditGasFeeIcon();
+          await gasFeeModal.checkPageIsLoaded();
           await gasFeeModal.selectLowGasFee();
 
           // has correct updated value on the confirm screen the transaction
