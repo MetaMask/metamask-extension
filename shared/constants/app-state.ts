@@ -58,10 +58,3 @@ export type NetworkConnectionBanner =
       isInfuraEndpoint: boolean;
     };
 
-/**
- * Seedless onboarding migration versions.
- * - DataType (1): Assigns PrimarySrp/ImportedSrp/ImportedPrivateKey to legacy secrets
- */
-export enum SeedlessOnboardingMigrationVersion {
-  DataType = 1,
-}

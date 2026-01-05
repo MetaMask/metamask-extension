@@ -126,6 +126,7 @@ import {
 
 import {
   SeedlessOnboardingControllerErrorMessage,
+  SeedlessOnboardingMigrationVersion,
   SecretType,
   RecoveryError,
   EncAccountDataType,
@@ -170,7 +171,6 @@ import {
   MetaMetricsEventName,
   MetaMetricsRequestedThrough,
 } from '../../shared/constants/metametrics';
-import { SeedlessOnboardingMigrationVersion } from '../../shared/constants/app-state';
 
 import {
   getStorageItem,
@@ -3984,7 +3984,7 @@ export default class MetamaskController extends EventEmitter {
       createSeedPhraseBackupSuccess = true;
 
       // Set migration version for new users so migration never runs
-      this.appStateController.setSeedlessOnboardingMigrationVersion(
+      this.seedlessOnboardingController.setMigrationVersion(
         SeedlessOnboardingMigrationVersion.DataType,
       );
 
@@ -7943,7 +7943,10 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Run seedless onboarding migrations based on the current migration version.
+   * Run seedless onboarding migrations.
+   *
+   * This method delegates to the SeedlessOnboardingController's runMigrations() method,
+   * which handles the migration version tracking and migration logic internally.
    *
    * @param {object} options - Options for migration.
    * @param {boolean} options.skipOnboardingCheck - If true, skips the completedOnboarding check.
@@ -7951,89 +7954,13 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<void>}
    */
   async _runSeedlessOnboardingMigrations({ skipOnboardingCheck = false } = {}) {
-    const { seedlessOnboardingMigrationVersion } =
-      this.appStateController.state;
     const { completedOnboarding } = this.onboardingController.state;
 
     if (!skipOnboardingCheck && !completedOnboarding) {
       return;
     }
 
-    if (
-      seedlessOnboardingMigrationVersion <
-      SeedlessOnboardingMigrationVersion.DataType
-    ) {
-      await this._migrateSeedlessDataTypes();
-    }
-  }
-
-  /**
-   * Assigns dataType (PrimarySrp/ImportedSrp/ImportedPrivateKey) to legacy secrets.
-   * Data is pre-sorted by server (PrimarySrp first, then by createdAt).
-   *
-   * @returns {Promise<void>}
-   */
-  async _migrateSeedlessDataTypes() {
-    try {
-      const secretDatas = await this.fetchAllSecretData();
-
-      if (!secretDatas || secretDatas.length === 0) {
-        this.appStateController.setSeedlessOnboardingMigrationVersion(
-          SeedlessOnboardingMigrationVersion.DataType,
-        );
-        return;
-      }
-
-      let hasPrimarySrp = secretDatas.some(
-        (secret) => secret.dataType === EncAccountDataType.PrimarySrp,
-      );
-
-      const updates = [];
-
-      for (const secret of secretDatas) {
-        if (!secret.itemId || secret.itemId === 'PW_BACKUP') {
-          continue;
-        }
-
-        if (secret.dataType !== undefined && secret.dataType !== null) {
-          continue;
-        }
-
-        let dataType;
-
-        if (secret.type === SecretType.Mnemonic) {
-          if (hasPrimarySrp) {
-            dataType = EncAccountDataType.ImportedSrp;
-          } else {
-            dataType = EncAccountDataType.PrimarySrp;
-            hasPrimarySrp = true;
-          }
-        } else if (secret.type === SecretType.PrivateKey) {
-          dataType = EncAccountDataType.ImportedPrivateKey;
-        } else {
-          continue;
-        }
-
-        updates.push({ itemId: secret.itemId, dataType });
-      }
-
-      if (updates.length === 1) {
-        await this.seedlessOnboardingController.updateSecretDataItem(
-          updates[0],
-        );
-      } else if (updates.length > 1) {
-        await this.seedlessOnboardingController.batchUpdateSecretDataItems({
-          updates,
-        });
-      }
-
-      this.appStateController.setSeedlessOnboardingMigrationVersion(
-        SeedlessOnboardingMigrationVersion.DataType,
-      );
-    } catch (error) {
-      log.error('Failed to migrate seedless data types', error);
-      throw error;
-    }
+    await this.seedlessOnboardingController.runMigrations();
   }
 
   /**
