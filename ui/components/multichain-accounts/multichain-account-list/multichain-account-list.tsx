@@ -284,7 +284,7 @@ export const MultichainAccountList = ({
             }
             startAccessory={
               showAccountCheckbox ? (
-                <Box marginRight={4}>
+                <Box>
                   <Checkbox
                     isChecked={selectedAccountGroupsSet.has(
                       groupId as AccountGroupId,
