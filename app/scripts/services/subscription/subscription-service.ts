@@ -45,10 +45,7 @@ import {
   getShieldSubscription,
 } from '../../../../shared/lib/shield';
 import { SHIELD_ERROR } from '../../../../shared/modules/shield';
-import {
-  captureException as sentryCaptureException,
-  captureMessage,
-} from '../../../../shared/lib/sentry';
+import { captureException as sentryCaptureException } from '../../../../shared/lib/sentry';
 import { getErrorMessage } from '../../../../shared/modules/error';
 import {
   SubscriptionServiceAction,
@@ -100,59 +97,77 @@ export class SubscriptionService {
     params: Extract<UpdatePaymentMethodOpts, { paymentType: 'card' }>,
     currentTabId?: number,
   ) {
-    const { paymentType } = params;
-    if (paymentType !== PAYMENT_TYPES.byCard) {
-      throw new Error('Only card payment type is supported');
-    }
-
-    const redirectUrl = this.#webAuthenticator.getRedirectURL();
-
-    const { redirectUrl: checkoutSessionUrl } = (await this.#messenger.call(
-      'SubscriptionController:updatePaymentMethod',
-      {
-        ...params,
-        successUrl: redirectUrl,
-      },
-    )) as { redirectUrl: string };
-
-    // skipping redirect and open new tab in test environment
-    if (!process.env.IN_TEST) {
-      await this.#openAndWaitForTabToClose({
-        url: checkoutSessionUrl,
-        successUrl: redirectUrl,
-      });
-
-      if (!currentTabId) {
-        // open extension browser shield settings if open from pop up (no current tab)
-        this.#platform.openExtensionInBrowser('/settings/transaction-shield');
+    try {
+      const { paymentType } = params;
+      if (paymentType !== PAYMENT_TYPES.byCard) {
+        throw new Error('Only card payment type is supported');
       }
+
+      const redirectUrl = this.#webAuthenticator.getRedirectURL();
+
+      const { redirectUrl: checkoutSessionUrl } = (await this.#messenger.call(
+        'SubscriptionController:updatePaymentMethod',
+        {
+          ...params,
+          successUrl: redirectUrl,
+        },
+      )) as { redirectUrl: string };
+
+      // skipping redirect and open new tab in test environment
+      if (!process.env.IN_TEST) {
+        await this.#openAndWaitForTabToClose({
+          url: checkoutSessionUrl,
+          successUrl: redirectUrl,
+        });
+
+        if (!currentTabId) {
+          // open extension browser shield settings if open from pop up (no current tab)
+          this.#platform.openExtensionInBrowser('/settings/transaction-shield');
+        }
+      }
+
+      const subscriptions = await this.#messenger.call(
+        'SubscriptionController:getSubscriptions',
+      );
+
+      return subscriptions;
+    } catch (err) {
+      const errorMessage = getErrorMessage(err);
+      const error = new Error(
+        `Failed to update subscription card payment method, ${errorMessage}`,
+      );
+      this.#captureException(error);
+      throw error;
     }
-
-    const subscriptions = await this.#messenger.call(
-      'SubscriptionController:getSubscriptions',
-    );
-
-    return subscriptions;
   }
 
   async updateSubscriptionCryptoPaymentMethod(
     params: Extract<UpdatePaymentMethodOpts, { paymentType: 'crypto' }>,
   ) {
-    const { paymentType } = params;
-    if (paymentType !== PAYMENT_TYPES.byCrypto) {
-      throw new Error('Only crypto payment type is supported');
+    try {
+      const { paymentType } = params;
+      if (paymentType !== PAYMENT_TYPES.byCrypto) {
+        throw new Error('Only crypto payment type is supported');
+      }
+
+      await this.#messenger.call(
+        'SubscriptionController:updatePaymentMethod',
+        params,
+      );
+
+      const subscriptions = await this.#messenger.call(
+        'SubscriptionController:getSubscriptions',
+      );
+
+      return subscriptions;
+    } catch (err) {
+      const errorMessage = getErrorMessage(err);
+      const error = new Error(
+        `Failed to update subscription crypto payment method, ${errorMessage}`,
+      );
+      this.#captureException(error);
+      throw error;
     }
-
-    await this.#messenger.call(
-      'SubscriptionController:updatePaymentMethod',
-      params,
-    );
-
-    const subscriptions = await this.#messenger.call(
-      'SubscriptionController:getSubscriptions',
-    );
-
-    return subscriptions;
   }
 
   async startSubscriptionWithCard(
@@ -287,11 +302,11 @@ export class SubscriptionService {
     } catch (error) {
       log.error('Failed to submit sponsorship intent', error);
 
-      captureMessage('Failed to submit sponsorship intent', {
-        extra: {
-          error,
-        },
-      });
+      this.#captureException(
+        new Error(
+          `Failed to submit sponsorship intent, ${getErrorMessage(error)}`,
+        ),
+      );
     }
   }
 

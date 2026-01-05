@@ -616,7 +616,6 @@ export function startSubscriptionWithCard(params: {
       const error = new Error(
         `Failed to start subscription with card, ${getErrorMessage(err)}`,
       );
-      captureException(error);
       throw error;
     }
   };
@@ -657,9 +656,11 @@ export function cancelSubscription(params: {
     } catch (error) {
       log.error('[cancelSubscription] error', error);
       dispatch(displayWarning(error));
-      throw new Error(
+      const cancelSubscriptionError = new Error(
         `Failed to cancel subscription, ${getErrorMessage(error)}`,
       );
+      captureException(cancelSubscriptionError);
+      throw error;
     }
   };
 }
@@ -672,9 +673,11 @@ export function unCancelSubscription(params: {
       await submitRequestToBackground('unCancelSubscription', [params]);
     } catch (error) {
       log.error('[unCancelSubscription] error', error);
-      throw new Error(
+      const unCancelSubscriptionError = new Error(
         `Failed to uncancel subscription, ${getErrorMessage(error)}`,
       );
+      captureException(unCancelSubscriptionError);
+      throw unCancelSubscriptionError;
     }
   };
 }
@@ -693,9 +696,11 @@ export function getSubscriptionBillingPortalUrl(): ThunkAction<
       return billingPortalUrl;
     } catch (error) {
       log.error('[getSubscriptionBillingPortalUrl] error', error);
-      throw new Error(
+      const getSubscriptionBillingPortalUrlError = new Error(
         `Failed to get subscription billing portal url, ${getErrorMessage(error)}`,
       );
+      captureException(getSubscriptionBillingPortalUrlError);
+      throw getSubscriptionBillingPortalUrlError;
     }
   };
 }
