@@ -65,11 +65,11 @@ automatically categorized by environment based on build target and GitHub contex
 
 ### Sentry Projects
 
-| Project                  | Purpose                                        | DSN Variable             |
-|--------------------------| ---------------------------------------------- | ------------------------ |
-| **test-metamask**        | Local dev and one-off QA testing               | `SENTRY_DSN_DEV`         |
-| **metamask-performance** | CI/CD and automated performance testing        | `SENTRY_DSN_PERFORMANCE` |
-| **metamask-extension**   | Production events only                         | `SENTRY_DSN`             |
+| Project                  | Purpose                                 | DSN Variable             |
+| ------------------------ | --------------------------------------- | ------------------------ |
+| **test-metamask**        | Local dev and one-off QA testing        | `SENTRY_DSN_DEV`         |
+| **metamask-performance** | CI/CD and automated performance testing | `SENTRY_DSN_PERFORMANCE` |
+| **metamask-extension**   | Production events only                  | `SENTRY_DSN`             |
 
 > ⚠️ **Important**: Never use `SENTRY_DSN` (production) for local development or CI/CD builds.
 > Use `SENTRY_DSN_DEV` for local development and manual QA testing.
