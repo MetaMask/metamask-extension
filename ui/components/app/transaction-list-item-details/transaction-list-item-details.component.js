@@ -269,16 +269,6 @@ export default class TransactionListItemDetails extends PureComponent {
                     },
                   });
                 }}
-                onSenderClick={() => {
-                  this.context.trackEvent({
-                    category: MetaMetricsEventCategory.Navigation,
-                    event: 'Copied "From" Address',
-                    properties: {
-                      action: 'Activity Log',
-                      legacy_event: true,
-                    },
-                  });
-                }}
               />
             </div>
             <div className="transaction-list-item-details__cards-container">

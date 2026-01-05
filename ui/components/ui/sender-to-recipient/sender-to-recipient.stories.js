@@ -38,9 +38,6 @@ export default {
     onRecipientClick: {
       action: 'onRecipientClick',
     },
-    onSenderClick: {
-      action: 'onSenderClick',
-    },
     warnUserOnAccountMismatch: {
       control: 'boolean',
     },

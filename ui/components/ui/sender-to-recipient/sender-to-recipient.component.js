@@ -29,56 +29,26 @@ function SenderAddress({
   addressOnly,
   checksummedSenderAddress,
   senderName,
-  onSenderClick,
   senderAddress,
   warnUserOnAccountMismatch,
 }) {
-  const t = useI18nContext();
-  const [addressCopied, setAddressCopied] = useState(false);
-  let tooltipHtml = <p>{t('copiedExclamation')}</p>;
-  if (!addressCopied) {
-    tooltipHtml = addressOnly ? (
-      <p>{t('copyAddress')}</p>
-    ) : (
-      <p>
-        {shortenAddress(checksummedSenderAddress)}
-        <br />
-        {t('copyAddress')}
-      </p>
-    );
-  }
   return (
     <div
       className="sender-to-recipient__party sender-to-recipient__party--sender gap-1"
-      onClick={() => {
-        setAddressCopied(true);
-        copyToClipboard(checksummedSenderAddress, COPY_OPTIONS);
-        if (onSenderClick) {
-          onSenderClick();
-        }
-      }}
     >
       <PreferredAvatar
         address={toChecksumHexAddress(senderAddress)}
         size={AvatarAccountSize.Sm}
       />
-      <Tooltip
-        position="bottom"
-        html={tooltipHtml}
-        wrapperClassName="sender-to-recipient__tooltip-wrapper"
-        containerClassName="sender-to-recipient__tooltip-container"
-        onHidden={() => setAddressCopied(false)}
-      >
-        <div className="sender-to-recipient__name text-s-body-xs">
-          {addressOnly ? (
-            <span>
-              {`${senderName || shortenAddress(checksummedSenderAddress)}`}
-            </span>
-          ) : (
-            senderName
-          )}
-        </div>
-      </Tooltip>
+      <div className="sender-to-recipient__name text-s-body-xs">
+        {addressOnly ? (
+          <span>
+            {`${senderName || shortenAddress(checksummedSenderAddress)}`}
+          </span>
+        ) : (
+          senderName
+        )}
+      </div>
       {warnUserOnAccountMismatch && (
         <AccountMismatchWarning address={senderAddress} />
       )}
@@ -91,7 +61,6 @@ SenderAddress.propTypes = {
   checksummedSenderAddress: PropTypes.string,
   addressOnly: PropTypes.bool,
   senderAddress: PropTypes.string,
-  onSenderClick: PropTypes.func,
   warnUserOnAccountMismatch: PropTypes.bool,
 };
 
@@ -190,7 +159,6 @@ export default function SenderToRecipient({
   senderName,
   recipientName,
   onRecipientClick,
-  onSenderClick,
   recipientAddress,
   variant,
   warnUserOnAccountMismatch,
@@ -210,7 +178,6 @@ export default function SenderToRecipient({
         checksummedSenderAddress={checksummedSenderAddress}
         addressOnly={addressOnly}
         senderName={senderName}
-        onSenderClick={onSenderClick}
         senderAddress={senderAddress}
         warnUserOnAccountMismatch={warnUserOnAccountMismatch}
       />
@@ -248,7 +215,6 @@ SenderToRecipient.propTypes = {
   variant: PropTypes.oneOf([DEFAULT_VARIANT, CARDS_VARIANT, FLAT_VARIANT]),
   addressOnly: PropTypes.bool,
   onRecipientClick: PropTypes.func,
-  onSenderClick: PropTypes.func,
   warnUserOnAccountMismatch: PropTypes.bool,
   recipientIsOwnedAccount: PropTypes.bool,
   chainId: PropTypes.string,
