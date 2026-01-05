@@ -44,8 +44,8 @@ describe('PersistenceManager', () => {
 
   describe('set', () => {
     beforeEach(() => {
-      manager.storageKind = "data";
-    })
+      manager.storageKind = 'data';
+    });
     it('throws if state is missing', async () => {
       await expect(
         manager.set(undefined as unknown as MetaMaskStateType),
@@ -143,7 +143,7 @@ describe('PersistenceManager', () => {
     });
 
     it('does not overwrite mostRecentRetrievedState if already initialized', async () => {
-      manager.storageKind = "data";
+      manager.storageKind = 'data';
       mockStoreGet.mockResolvedValueOnce({ data: MOCK_DATA });
       // First call to get -> sets isExtensionInitialized = false -> sets mostRecentRetrievedState
       await manager.get({ validateVault: false });
@@ -343,7 +343,7 @@ describe('PersistenceManager', () => {
 
   describe('Locks', () => {
     it('should acquire a lock when setting state', async () => {
-      manager.storageKind = "data";
+      manager.storageKind = 'data';
       manager.setMetadata({ version: 10 });
 
       manager.open = jest.fn().mockResolvedValue(undefined);
