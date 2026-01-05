@@ -520,11 +520,13 @@ export function getSubscriptions(): ThunkAction<
     try {
       const subscriptions = await submitRequestToBackground('getSubscriptions');
       return subscriptions;
-    } catch (error) {
-      log.error('[getSubscriptions] error', error);
-      throw new Error(
-        `Failed to fetch subscriptions, ${getErrorMessage(error)}`,
+    } catch (err) {
+      log.error('[getSubscriptions] error', err);
+      const error = new Error(
+        `Failed to fetch subscriptions, ${getErrorMessage(err)}`,
       );
+      captureException(error);
+      throw error;
     }
   };
 }
@@ -546,11 +548,13 @@ export function getSubscriptionPricing(): ThunkAction<
         'getSubscriptionPricing',
       );
       return pricing;
-    } catch (error) {
-      log.error('[getSubscriptionPricing] error', error);
-      throw new Error(
-        `Failed to fetch subscription pricing, ${getErrorMessage(error)}`,
+    } catch (err) {
+      log.error('[getSubscriptionPricing] error', err);
+      const error = new Error(
+        `Failed to fetch subscription pricing, ${getErrorMessage(err)}`,
       );
+      captureException(error);
+      throw error;
     }
   };
 }
@@ -566,10 +570,20 @@ export function getSubscriptionPricing(): ThunkAction<
 export async function getSubscriptionCryptoApprovalAmount(
   params: GetCryptoApproveTransactionRequest,
 ): Promise<GetCryptoApproveTransactionResponse> {
-  return await submitRequestToBackground<string>(
-    'getSubscriptionCryptoApprovalAmount',
-    [params],
-  );
+  try {
+    const cryptoApprovalAmount = await submitRequestToBackground<string>(
+      'getSubscriptionCryptoApprovalAmount',
+      [params],
+    );
+    return cryptoApprovalAmount;
+  } catch (err) {
+    log.error('[getSubscriptionCryptoApprovalAmount] error', err);
+    const error = new Error(
+      `Failed to get subscription crypto approval amount, ${getErrorMessage(err)}`,
+    );
+    captureException(error);
+    throw error;
+  }
 }
 
 /**
@@ -597,8 +611,12 @@ export function startSubscriptionWithCard(params: {
       );
 
       return subscriptions;
-    } catch (error) {
-      console.error('[startSubscriptionWithCard] error', error);
+    } catch (err) {
+      log.error('[startSubscriptionWithCard] error', err);
+      const error = new Error(
+        `Failed to start subscription with card, ${getErrorMessage(err)}`,
+      );
+      captureException(error);
       throw error;
     }
   };

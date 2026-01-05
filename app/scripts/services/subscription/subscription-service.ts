@@ -46,6 +46,11 @@ import {
 } from '../../../../shared/lib/shield';
 import { SHIELD_ERROR } from '../../../../shared/modules/shield';
 import {
+  captureException as sentryCaptureException,
+  captureMessage,
+} from '../../../../shared/lib/sentry';
+import { getErrorMessage } from '../../../../shared/modules/error';
+import {
   SubscriptionServiceAction,
   SubscriptionServiceEvent,
   SubscriptionServiceOptions,
@@ -72,14 +77,18 @@ export class SubscriptionService {
 
   #webAuthenticator: WebAuthenticator;
 
+  #captureException: (error: unknown) => void;
+
   constructor({
     messenger,
     platform,
     webAuthenticator,
+    captureException = sentryCaptureException,
   }: SubscriptionServiceOptions) {
     this.#messenger = messenger;
     this.#platform = platform;
     this.#webAuthenticator = webAuthenticator;
+    this.#captureException = captureException;
 
     this.#messenger.registerActionHandler(
       `${SERVICE_NAME}:submitSubscriptionSponsorshipIntent`,
@@ -216,7 +225,13 @@ export class SubscriptionService {
       if (errorMessage.toLocaleLowerCase().includes('already exists')) {
         await this.#messenger.call('SubscriptionController:getSubscriptions');
       }
-      throw error;
+
+      const subscriptionError = new Error(
+        `Failed to start subscription with card, ${errorMessage}`,
+      );
+
+      this.#captureException(subscriptionError);
+      throw subscriptionError;
     }
   }
 
@@ -271,6 +286,12 @@ export class SubscriptionService {
       );
     } catch (error) {
       log.error('Failed to submit sponsorship intent', error);
+
+      captureMessage('Failed to submit sponsorship intent', {
+        extra: {
+          error,
+        },
+      });
     }
   }
 
@@ -302,8 +323,13 @@ export class SubscriptionService {
           rewardPoints,
         );
       }
-    } catch (error) {
-      log.error('Failed to link reward to existing subscription', error);
+    } catch (err) {
+      log.error('Failed to link reward to existing subscription', err);
+
+      const error = new Error(
+        `Failed to link reward to existing subscription, ${getErrorMessage(err)}`,
+      );
+      this.#captureException(error);
     }
   }
 
@@ -462,6 +488,12 @@ export class SubscriptionService {
           },
         );
       }
+
+      this.#captureException(
+        new Error(
+          `Error on Shield subscription approval transaction, ${getErrorMessage(error)}`,
+        ),
+      );
       throw error;
     }
   }
@@ -664,6 +696,10 @@ export class SubscriptionService {
       }
     } catch (error) {
       log.error('Failed to assign post tx cohort', error);
+
+      this.#captureException(
+        new Error(`Failed to assign post tx cohort, ${getErrorMessage(error)}`),
+      );
     }
   }
 
