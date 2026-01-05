@@ -1,4 +1,4 @@
-|[{# This is a basic workflow that is manually triggered
+# This is a basic workflow that is manually triggered
 
 name: Manual workflow
 
@@ -30,4 +30,4 @@ jobs:
     # Runs a single command using the runners shell
     - name: Send greeting
       run: echo "Hello ${{ inputs.name }}"
-}|]
+
