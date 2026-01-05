@@ -111,6 +111,10 @@ class SendTokenConfirmPage {
     console.log('Token amount transfer details are correct');
   }
 
+  /**
+   * Checks that the recipient address is displayed the expected number of times.
+   * Uses driver.wait() to retry and avoid race conditions.
+   */
   async checkRecipientAddressDisplayedCount(
     address: string,
     expectedCount: number,
@@ -118,17 +122,12 @@ class SendTokenConfirmPage {
     console.log(
       `Checking recipient address ${address} is displayed ${expectedCount} times on confirmation screen`,
     );
-    // Wait for at least one instance to be present first
-    await this.driver.waitForSelector({ text: address });
-
-    const recipientAddresses = await this.driver.findElements({
-      text: address,
-    });
-    if (recipientAddresses.length !== expectedCount) {
-      throw new Error(
-        `Expected recipient address to be displayed ${expectedCount} times, but found ${recipientAddresses.length}`,
-      );
-    }
+    await this.driver.wait(async () => {
+      const recipientAddresses = await this.driver.findElements({
+        text: address,
+      });
+      return recipientAddresses.length === expectedCount;
+    }, 10000);
     console.log(
       `Recipient address displayed ${expectedCount} times as expected`,
     );
