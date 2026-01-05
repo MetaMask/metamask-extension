@@ -39,10 +39,18 @@ const convertHexBalanceToDecimal = (hex: string, decimals: number): string =>
 const getNonEvmAccountIds = (
   state: BridgeAppState,
   id: AccountGroupId,
-): string[] =>
-  ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS.map(
-    (scope) => getInternalAccountByGroupAndCaip(state, id, scope)?.id,
-  ).filter((matchedId) => matchedId !== undefined);
+): string[] => {
+  const accountIds: string[] = [];
+
+  ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS.forEach((scope) => {
+    const accountId = getInternalAccountByGroupAndCaip(state, id, scope)?.id;
+    if (accountId) {
+      accountIds.push(accountId);
+    }
+  });
+
+  return accountIds;
+};
 
 const getEvmAccountAddress = (state: BridgeAppState, id: AccountGroupId) =>
   getInternalAccountByGroupAndCaip(state, id, 'eip155:1')?.address;
